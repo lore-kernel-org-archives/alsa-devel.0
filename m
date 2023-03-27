@@ -4,85 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF8B4C76195
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Mar 2023 13:24:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2DFDC761AF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Mar 2023 13:24:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B53883B;
-	Mon, 27 Mar 2023 15:23:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B53883B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6AD5200;
+	Mon, 27 Mar 2023 15:23:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6AD5200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679923437;
-	bh=+fcZvxX97vA2m/ogwTBOs9kzLHaA+njNUSUDR7zOHSI=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=r40mExdKYFIunN+FIazrFozcOyb8Vg3eiNHcT6OWh/wdoEiHJp8iN/VYMYbhgTYLy
-	 0NHHoKV6BPh2m8800zWstSAHnY7PzJC4G3bz6NXfY/3h/im/sXi6FkfPNA5g7hPhoU
-	 l7Xv3+iBomoVIUpAj+eWCtoRv0H+zGLh8AxcQzRo=
+	s=default; t=1679923452;
+	bh=psx29dt3nCpa8f7De58KBdXDOdDW5kkvAJov8nB6ofc=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=lMGRXHui+jckQrMVhpzVtO2O+PLtruxyGNSWH8qRRxZKaJsjcjnrP3/pcLLEm+PFz
+	 Xn0ao1k4b7kL3cBjs9gec2ykEy+7NJwK8i2DqdwJ2J1BcnmGrhWFZ4zYHdYHfNySDZ
+	 Pr8z6TI1uFsrHr5MG8+E/1qR1QZMJHUvnYAvQ6Vw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 625A5F80495;
-	Mon, 27 Mar 2023 15:23:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07685F8052E;
+	Mon, 27 Mar 2023 15:23:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E8F1F80527; Mon, 27 Mar 2023 15:23:01 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 829BBF8053D; Mon, 27 Mar 2023 15:23:17 +0200 (CEST)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
+ [IPv6:2a00:1450:4864:20::531])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C0BACF800C9
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 15:22:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0BACF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 14CAFF800C9
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 15:23:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14CAFF800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=u6fo6LTA
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5636D6121E;
-	Mon, 27 Mar 2023 13:22:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DDDCC433EF;
-	Mon, 27 Mar 2023 13:22:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679923371;
-	bh=+fcZvxX97vA2m/ogwTBOs9kzLHaA+njNUSUDR7zOHSI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=u6fo6LTAQ4RARP9+kbRX0ydvNepTHHiRWm/Tj4NshewYQlu20tDwhn8nIFgF+5ugK
-	 xQQIv6l/fh3IVPUt0CLVD4NEQfi3KOL7e6heeFCqTRBNGSr8PWDI7KT//yWclspGAb
-	 p+8Mp0tkk3KM//ycR5G3kseORuFTitwQq2VMeWbYgB+v4Xxyu+W8sAHwhGv/T+l6G1
-	 +zHajyiCECTfNbYXVJ6vdk1aODzQsDU/+bgfBxSgYo9xl3jKUmZ8TDAzXIi9c/j0jd
-	 ZSUSoWwRbeZ+ioXMtcp1x3P8ZdlgYqAWTGrDYGgkGcRlke7ii0EI7JTa+4NJJh44Ry
-	 ncOxQekI9ae3g==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, regressions@lists.linux.dev,
- yung-chuan.liao@linux.intel.com, tiwai@suse.com, bagasdotme@gmail.com,
- pierre-louis.bossart@linux.intel.com, Jason Montleon <jmontleo@redhat.com>
-In-Reply-To: <20230324170711.2526-1-jmontleo@redhat.com>
-References: <20230324170711.2526-1-jmontleo@redhat.com>
-Subject: Re: [PATCH] ASoC: hdac_hdmi: use set_stream() instead of
- set_tdm_slots()
-Message-Id: <167992336898.3162140.14844931662953043048.b4-ty@kernel.org>
-Date: Mon, 27 Mar 2023 14:22:48 +0100
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=fBdz5o8q
+Received: by mail-ed1-x531.google.com with SMTP id eh3so36073350edb.11
+        for <alsa-devel@alsa-project.org>;
+ Mon, 27 Mar 2023 06:23:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1679923389;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RAzgsxWh6iXA0Nkdpgf/2nCg4Tswo7Jo12F1Nk5UNUo=;
+        b=fBdz5o8qi/Khlda5m9/yDdNzXPS0MNmVt/DaVgzii1B2WIVPpnEomjCEobZnn3Skfd
+         iUzOZyFrp6PwIRZqxHwuQ2VtOTKVFfEDWL2o+uQ2PqQmOlvvywYXzU61f6ZyswdiIntW
+         g9lt1f+YAPywDl4UbdvFIi1H6ONB0/6bgKlExrPL7Idco0A2bNKtE8Qmn7as7GBpYEgh
+         DqRhZQN1TGtQGQSfetXAj8fNv1CY3M705cWxv0MSqOy1tGPwyjqBTwpNVldWV4wQt3kD
+         D88Q0nVmfqbuZGOkvYHQCK2Gz/D1JS3XpX77uyqXL+brFlcgU4Kz+fvqx5NMfbgJAzIX
+         ua7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679923389;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RAzgsxWh6iXA0Nkdpgf/2nCg4Tswo7Jo12F1Nk5UNUo=;
+        b=xC+eLmq88XkwhczeHjsNs1rCMQVC+aNdfTttJ1dagR4ZD3cC51n91wMezlzCoU3iRA
+         awD4eFBVeWOPCwSsJegPxrP1vxOdVJbKTdym8e2PRMejQX+xeMA5vRx0xUlAsWUgrZpC
+         YAR5XT1DaHVnn5DfQpI8oONYFGfmRZmcN/FAgthZLdJ6ZoBQ7GXTOWqVqLm0c0gQZ+M4
+         vV/uZ/OzRQ46lVvUi6rkwam/vlevWf9yHJDQ9uPq9+n/C/y9zhnU0/UULEPTXHNxC7mc
+         JYbl/WJ28Ox9ErhhbqoxaK5SFvAUvTiN8+ot+AM6MOJ6Lfmz/0NyqYKER4kxvcsZYj89
+         QCNQ==
+X-Gm-Message-State: AAQBX9dYMO86Hx6H8ci0T2a4uMCVv9hnpxb467wZaZGEEQ+XKe0HaZM6
+	GBKAOeBwPs96YkWDw59sk2XY9Q==
+X-Google-Smtp-Source: 
+ AKy350Yzur9V43SIMdNu02lm0MTMhSQJ9oj2fMsNEnVoo1PNdyeY8nk4vpk1vFV5UUzWcfbhUnR4hQ==
+X-Received: by 2002:a17:907:7e8e:b0:932:dae5:2af9 with SMTP id
+ qb14-20020a1709077e8e00b00932dae52af9mr15876869ejc.51.1679923389159;
+        Mon, 27 Mar 2023 06:23:09 -0700 (PDT)
+Received: from krzk-bin.. ([2a02:810d:15c0:828:581e:789c:7616:5ee])
+        by smtp.gmail.com with ESMTPSA id
+ gy24-20020a170906f25800b00930445428acsm14286814ejb.14.2023.03.27.06.23.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Mar 2023 06:23:08 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-arm-msm@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/10] ASoC: add audio digital codecs for Qualcomm SM8550
+Date: Mon, 27 Mar 2023 15:22:44 +0200
+Message-Id: <20230327132254.147975-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-2eb1a
-Message-ID-Hash: S4MWIJE2KIEIZZMEXNT644YTTEGO6O6S
-X-Message-ID-Hash: S4MWIJE2KIEIZZMEXNT644YTTEGO6O6S
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: SO654OMDGPN27QA2XSHVMVGK3M5DPQCW
+X-Message-ID-Hash: SO654OMDGPN27QA2XSHVMVGK3M5DPQCW
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: stable@vger.kernel.org
+CC: Patrick Lai <quic_plai@quicinc.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S4MWIJE2KIEIZZMEXNT644YTTEGO6O6S/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SO654OMDGPN27QA2XSHVMVGK3M5DPQCW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,37 +123,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 24 Mar 2023 13:07:11 -0400, Jason Montleon wrote:
-> hdac_hdmi was not updated to use set_stream() instead of set_tdm_slots()
-> in the original commit so HDMI no longer produces audio.
-> 
-> 
+Hi,
 
-Applied to
+This patchset can be merged as is - no dependencies.
 
-   broonie/sound.git for-next
+Changes since v2
+================
+1. Rebase.
+2. New patch: ASoC: dt-bindings: qcom,lpass-va-macro: Add missing NPL clock.
+3. Add Rb tags.
 
-Thanks!
+Changes since v1
+================
+1. Move the flag define to common header.
 
-[1/1] ASoC: hdac_hdmi: use set_stream() instead of set_tdm_slots()
-      commit: f6887a71bdd2f0dcba9b8180dd2223cfa8637e85
+NOT a dependency
+================
+The patchset can be applied independently of my previous fix:
+https://lore.kernel.org/linux-arm-msm/20230310100937.32485-1-krzysztof.kozlowski@linaro.org/T/#u
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Logically, better if they were together, but code will work fine other way.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Best regards,
+Krzysztof
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Krzysztof Kozlowski (10):
+  ASoC: dt-bindings: qcom,lpass-rx-macro: narrow clocks per variants
+  ASoC: dt-bindings: qcom,lpass-rx-macro: Add SM8550 RX macro
+  ASoC: codecs: lpass-rx-macro: add support for SM8550
+  ASoC: dt-bindings: qcom,lpass-tx-macro: narrow clocks per variants
+  ASoC: dt-bindings: qcom,lpass-tx-macro: Add SM8550 TX macro
+  ASoC: codecs: lpass-tx-macro: add support for SM8550
+  ASoC: dt-bindings: qcom,lpass-va-macro: Add missing NPL clock
+  ASoC: dt-bindings: qcom,lpass-va-macro: Add SM8550 VA macro
+  ASoC: dt-bindings: qcom,lpass-wsa-macro: Add SM8550 WSA macro
+  ASoC: codecs: lpass-wsa-macro: add support for SM8550
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+ .../bindings/sound/qcom,lpass-rx-macro.yaml   | 76 +++++++++++++---
+ .../bindings/sound/qcom,lpass-tx-macro.yaml   | 81 +++++++++++++----
+ .../bindings/sound/qcom,lpass-va-macro.yaml   | 86 ++++++++++++++++---
+ .../bindings/sound/qcom,lpass-wsa-macro.yaml  | 23 ++++-
+ sound/soc/codecs/lpass-macro-common.h         |  3 +
+ sound/soc/codecs/lpass-rx-macro.c             | 36 ++++++--
+ sound/soc/codecs/lpass-tx-macro.c             | 35 ++++++--
+ sound/soc/codecs/lpass-wsa-macro.c            | 37 ++++++--
+ 8 files changed, 309 insertions(+), 68 deletions(-)
 
-Thanks,
-Mark
+-- 
+2.34.1
 
