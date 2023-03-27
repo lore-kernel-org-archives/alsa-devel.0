@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D7DAC76195
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Mar 2023 11:33:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA7E7C7619A
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Mar 2023 11:33:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9061E846;
-	Mon, 27 Mar 2023 13:32:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9061E846
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF75C832;
+	Mon, 27 Mar 2023 13:33:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF75C832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679916815;
-	bh=58pnKGSviTtqNykvGmfmeZspIor2bKCh++f0ZWX2v6o=;
+	s=default; t=1679916835;
+	bh=A8fa1U2k8HIt+aUvT9iAmQ8NFUjhI+mD7u/jz/kl+yk=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lBIH6bSsIP+V+RHUn40hczVfePV4S6/WMF6SXaClhxkK4ZxAC3xQ/gtVSWOuoRp4T
-	 EypfBXwfcTVxGH4N+stQ/NfL/ftzFqqfExwHLHu5stmWQFbIhs8d5r0QcxjYc640ZJ
-	 n/zdjB9WBJE0jEKpawb7Jj34ChFsxbhhAlyCplfU=
+	b=cofHtjwZ279Hr98mYSKRSwQVIOV3XU/GyPACItdAHhSuWJxvfgdOrXcKRBR1XZzT/
+	 VYw/F1xGGIF/FXY9Yd2iOhSrmQy+97mE4PmL5Z1+M3/Jzjv3LifNDBsneh97y7nXdT
+	 PaTCl1CtLlrZpVeq/K++9ty2iFWCYKd7RuNx8aAo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4348CF805AD;
-	Mon, 27 Mar 2023 13:29:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C35CCF8057E;
+	Mon, 27 Mar 2023 13:29:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1587DF80588; Mon, 27 Mar 2023 13:29:51 +0200 (CEST)
+	id 0083CF805A8; Mon, 27 Mar 2023 13:29:53 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2A78AF80563
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 13:29:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A78AF80563
+	by alsa1.perex.cz (Postfix) with ESMTPS id 75AC3F80578
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 13:29:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75AC3F80578
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VBBDyqlm
+ header.s=Intel header.b=kgZFiaOl
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679916578; x=1711452578;
+  t=1679916588; x=1711452588;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=58pnKGSviTtqNykvGmfmeZspIor2bKCh++f0ZWX2v6o=;
-  b=VBBDyqlmiEu4Xl+3Usvt4vk2rlNkWQlwS/UmSY3faXbMwOiNoLZdjIEE
-   W1H+IutUAQLeoMLygVpu4P57xQvuJIHmp1yph4KsYWQyjOv5KyKT65R7Y
-   LcQQrh55MntAtOclAkccD8FXpbdbqirLGRuQKz7l7qFJfZ3EMR8NV/cNO
-   Er2olgfLOu0rjT0gzjjkQ4mM2X0pwR7ZxzD2KCrOS7i0bqDzENZWJcOqY
-   IXyq8n/kBtC49rXsTY1MqlHE0Kbov++AditKucM5LEAS1Koq4fAtWBPZe
-   vmDcfkQoxOzudiYnVfr7+85XwSIQo1xrWp8a94bL07RWwjzVWuEoH0WXY
+  bh=A8fa1U2k8HIt+aUvT9iAmQ8NFUjhI+mD7u/jz/kl+yk=;
+  b=kgZFiaOlTgmGhHygZQOeoiaLfmiOG13SZW+TaeNXudCE9PhWYAQsIrrd
+   gnJKRooyjb+RdNBhDsIzyjNjKM0aPlt311dBHII2/XGVLqI9qYSHNy6Lx
+   tIl/OizZ+9PRtPP/0z0G0wFF2ZUwL68dByfRCvPS+3yY7tTkLDPLTCWGp
+   E0/3U6foQwAQ3MHMOAlmls5IkN3dMhDvFobZrAh4bmpXRJO+iCLMeY3VZ
+   tNQ2c6ACNqgvDlFKHF/oyLSZGGzReq7/ZaFM3XkMnLBd/iLFUJiTvg8ib
+   QH+se8z6QBHn3h74bKMYlY0kK1yIt/+8mKxACOxz1L/3c75+vH+t8Frce
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10661"; a="367987018"
+X-IronPort-AV: E=McAfee;i="6600,9927,10661"; a="367987053"
 X-IronPort-AV: E=Sophos;i="5.98,294,1673942400";
-   d="scan'208";a="367987018"
+   d="scan'208";a="367987053"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2023 04:29:36 -0700
+ 27 Mar 2023 04:29:45 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10661"; a="857620492"
+X-IronPort-AV: E=McAfee;i="6600,9927,10661"; a="857620544"
 X-IronPort-AV: E=Sophos;i="5.98,294,1673942400";
-   d="scan'208";a="857620492"
+   d="scan'208";a="857620544"
 Received: from asebenix-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.223.110])
   by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2023 04:29:33 -0700
+ 27 Mar 2023 04:29:42 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
 	tiwai@suse.de,
 	perex@perex.cz
-Subject: [PATCH 12/18] ASoC: SOF: Intel: hda-mlink: add helpers to set link
- SYNC frequency
-Date: Mon, 27 Mar 2023 14:29:25 +0300
-Message-Id: <20230327112931.23411-13-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 15/18] ASoC: SOF: Intel: hda-mlink: program SoundWire LSDIID
+ registers
+Date: Mon, 27 Mar 2023 14:29:28 +0300
+Message-Id: <20230327112931.23411-16-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230327112931.23411-1-peter.ujfalusi@linux.intel.com>
 References: <20230327112931.23411-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 5ZSYEZ7YQFB7BFBYE4XARV2XKFNMPXNU
-X-Message-ID-Hash: 5ZSYEZ7YQFB7BFBYE4XARV2XKFNMPXNU
+Message-ID-Hash: 52SDYFGYFAFND3C4PM7AKKXALNLEGVK4
+X-Message-ID-Hash: 52SDYFGYFAFND3C4PM7AKKXALNLEGVK4
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5ZSYEZ7YQFB7BFBYE4XARV2XKFNMPXNU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/52SDYFGYFAFND3C4PM7AKKXALNLEGVK4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,21 +106,18 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-These helpers configure the ratio between the base clock and the
-hardware signal used for link synchronization.
+Each SoundWire peripheral can be programmed from the manager side
+either with a regular command FIFO, or with the HDaudio CORB/RIRB
+DMA-based mechanism. The mapping between SoundWire peripheral and SDI
+address is handled with the LSDIID register.
 
-The SYNCPRD is written before the first sublink is powered-up. The
-SYNCPU bit is set, but it will only be cleared after the link is
-powered-up, hence the implementation with a set/wait pattern.
+This mapping only works of course if each peripheral has a unique
+address across all links. This has already been enforced in previous
+Intel contributions allowing for an IDA-based solution for the device
+number allocation.
 
-These helpers are currently only needed by SoundWire support, where
-the lock is taken at a higher level, so only the _unlocked versions
-are exposed for now.
-
-Note that the _wait_bit() implementation is similar to previous
-helpers in drivers/soundwire, but with sleep duration and timeout
-aligned with hardware recommendations. If desired, this helper could
-be modified in a second step with e.g. readl_poll_timeout().
+The checks on the dev_num are handled at the SoundWire level, but the
+locking is handled at the hda-mlink level.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -128,163 +125,81 @@ Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- include/sound/hda-mlink.h       | 27 ++++++++++
- sound/soc/sof/intel/hda-mlink.c | 90 +++++++++++++++++++++++++++++++++
- 2 files changed, 117 insertions(+)
+ include/sound/hda-mlink.h       |  5 +++++
+ sound/soc/sof/intel/hda-mlink.c | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
 
 diff --git a/include/sound/hda-mlink.h b/include/sound/hda-mlink.h
-index ebc7c5b07557..7ef1cd9b72ec 100644
+index 64106d439fd8..fc63aec97119 100644
 --- a/include/sound/hda-mlink.h
 +++ b/include/sound/hda-mlink.h
-@@ -17,6 +17,12 @@ int hdac_bus_eml_get_count(struct hdac_bus *bus, bool alt, int elid);
- void hdac_bus_eml_enable_interrupt(struct hdac_bus *bus, bool alt, int elid, bool enable);
- bool hdac_bus_eml_check_interrupt(struct hdac_bus *bus, bool alt, int elid);
+@@ -41,6 +41,8 @@ int hdac_bus_eml_power_down_unlocked(struct hdac_bus *bus, bool alt, int elid, i
+ int hdac_bus_eml_sdw_power_up_unlocked(struct hdac_bus *bus, int sublink);
+ int hdac_bus_eml_sdw_power_down_unlocked(struct hdac_bus *bus, int sublink);
  
-+int hdac_bus_eml_set_syncprd_unlocked(struct hdac_bus *bus, bool alt, int elid, u32 syncprd);
-+int hdac_bus_eml_sdw_set_syncprd_unlocked(struct hdac_bus *bus, u32 syncprd);
++int hdac_bus_eml_sdw_set_lsdiid(struct hdac_bus *bus, int sublink, int dev_num);
 +
-+int hdac_bus_eml_wait_syncpu_unlocked(struct hdac_bus *bus, bool alt, int elid);
-+int hdac_bus_eml_sdw_wait_syncpu_unlocked(struct hdac_bus *bus);
-+
- int hdac_bus_eml_power_up(struct hdac_bus *bus, bool alt, int elid, int sublink);
- int hdac_bus_eml_power_up_unlocked(struct hdac_bus *bus, bool alt, int elid, int sublink);
- 
-@@ -47,6 +53,27 @@ hdac_bus_eml_enable_interrupt(struct hdac_bus *bus, bool alt, int elid, bool ena
- static inline bool
- hdac_bus_eml_check_interrupt(struct hdac_bus *bus, bool alt, int elid) { return false; }
- 
-+static inline int
-+hdac_bus_eml_set_syncprd_unlocked(struct hdac_bus *bus, bool alt, int elid, u32 syncprd)
-+{
-+	return 0;
-+}
-+
-+static inline int
-+hdac_bus_eml_sdw_set_syncprd_unlocked(struct hdac_bus *bus, u32 syncprd)
-+{
-+	return 0;
-+}
-+
-+static inline int
-+hdac_bus_eml_wait_syncpu_unlocked(struct hdac_bus *bus, bool alt, int elid)
-+{
-+	return 0;
-+}
-+
-+static inline int
-+hdac_bus_eml_sdw_wait_syncpu_unlocked(struct hdac_bus *bus) { return 0; }
-+
+ void hda_bus_ml_put_all(struct hdac_bus *bus);
+ void hda_bus_ml_reset_losidv(struct hdac_bus *bus);
+ int hda_bus_ml_resume(struct hdac_bus *bus);
+@@ -131,6 +133,9 @@ hdac_bus_eml_sdw_power_up_unlocked(struct hdac_bus *bus, int sublink) { return 0
  static inline int
- hdac_bus_eml_power_up(struct hdac_bus *bus, bool alt, int elid, int sublink)
- {
+ hdac_bus_eml_sdw_power_down_unlocked(struct hdac_bus *bus, int sublink) { return 0; }
+ 
++static inline int
++hdac_bus_eml_sdw_set_lsdiid(struct hdac_bus *bus, int sublink, int dev_num) { return 0; }
++
+ static inline void hda_bus_ml_put_all(struct hdac_bus *bus) { }
+ static inline void hda_bus_ml_reset_losidv(struct hdac_bus *bus) { }
+ static inline int hda_bus_ml_resume(struct hdac_bus *bus) { return 0; }
 diff --git a/sound/soc/sof/intel/hda-mlink.c b/sound/soc/sof/intel/hda-mlink.c
-index cd5bbfa3684d..1515c2327130 100644
+index 0912989ce729..87e6c5f2f3ea 100644
 --- a/sound/soc/sof/intel/hda-mlink.c
 +++ b/sound/soc/sof/intel/hda-mlink.c
-@@ -254,6 +254,46 @@ static bool hdaml_link_check_interrupt(u32 __iomem *lctl)
- 	return val & AZX_ML_LCTL_INTSTS;
+@@ -323,6 +323,16 @@ static bool hdaml_link_check_cmdsync(u32 __iomem *lsync, u32 cmdsync_mask)
+ 	return !!(val & cmdsync_mask);
  }
  
-+static int hdaml_wait_bit(void __iomem *base, int offset, u32 mask, u32 target)
-+{
-+	int timeout = HDAML_POLL_DELAY_RETRY;
-+	u32 reg_read;
-+
-+	do {
-+		reg_read = readl(base + offset);
-+		if ((reg_read & mask) == target)
-+			return 0;
-+
-+		timeout--;
-+		usleep_range(HDAML_POLL_DELAY_MIN_US,
-+			     HDAML_POLL_DELAY_MIN_US + HDAML_POLL_DELAY_SLACK_US);
-+	} while (timeout != 0);
-+
-+	return -EAGAIN;
-+}
-+
-+static void hdaml_link_set_syncprd(u32 __iomem *lsync, u32 syncprd)
++static void hdaml_link_set_lsdiid(u32 __iomem *lsdiid, int dev_num)
 +{
 +	u32 val;
 +
-+	val = readl(lsync);
-+	val &= ~AZX_REG_ML_LSYNC_SYNCPRD;
-+	val |= (syncprd & AZX_REG_ML_LSYNC_SYNCPRD);
++	val = readl(lsdiid);
++	val |= BIT(dev_num);
 +
-+	/*
-+	 * set SYNCPU but do not wait. The bit is cleared by hardware when
-+	 * the link becomes active.
-+	 */
-+	val |= AZX_REG_ML_LSYNC_SYNCPU;
-+
-+	writel(val, lsync);
-+}
-+
-+static int hdaml_link_wait_syncpu(u32 __iomem *lsync)
-+{
-+	return hdaml_wait_bit(lsync, 0, AZX_REG_ML_LSYNC_SYNCPU, 0);
++	writel(val, lsdiid);
 +}
 +
  /* END HDAML section */
  
  static int hda_ml_alloc_h2link(struct hdac_bus *bus, int index)
-@@ -402,6 +442,56 @@ bool hdac_bus_eml_check_interrupt(struct hdac_bus *bus, bool alt, int elid)
+@@ -698,6 +708,26 @@ int hdac_bus_eml_sdw_power_down_unlocked(struct hdac_bus *bus, int sublink)
  }
- EXPORT_SYMBOL_NS(hdac_bus_eml_check_interrupt, SND_SOC_SOF_HDA_MLINK);
+ EXPORT_SYMBOL_NS(hdac_bus_eml_sdw_power_down_unlocked, SND_SOC_SOF_HDA_MLINK);
  
-+int hdac_bus_eml_set_syncprd_unlocked(struct hdac_bus *bus, bool alt, int elid, u32 syncprd)
++int hdac_bus_eml_sdw_set_lsdiid(struct hdac_bus *bus, int sublink, int dev_num)
 +{
 +	struct hdac_ext2_link *h2link;
 +	struct hdac_ext_link *hlink;
 +
-+	h2link = find_ext2_link(bus, alt, elid);
++	h2link = find_ext2_link(bus, true, AZX_REG_ML_LEPTR_ID_SDW);
 +	if (!h2link)
-+		return 0;
-+
-+	if (!h2link->lss)
-+		return 0;
++		return -ENODEV;
 +
 +	hlink = &h2link->hext_link;
 +
-+	hdaml_link_set_syncprd(hlink->ml_addr + AZX_REG_ML_LSYNC, syncprd);
++	mutex_lock(&h2link->eml_lock);
++
++	hdaml_link_set_lsdiid(hlink->ml_addr + AZX_REG_ML_LSDIID_OFFSET(sublink), dev_num);
++
++	mutex_unlock(&h2link->eml_lock);
 +
 +	return 0;
-+}
-+EXPORT_SYMBOL_NS(hdac_bus_eml_set_syncprd_unlocked, SND_SOC_SOF_HDA_MLINK);
++} EXPORT_SYMBOL_NS(hdac_bus_eml_sdw_set_lsdiid, SND_SOC_SOF_HDA_MLINK);
 +
-+int hdac_bus_eml_sdw_set_syncprd_unlocked(struct hdac_bus *bus, u32 syncprd)
-+{
-+	return hdac_bus_eml_set_syncprd_unlocked(bus, true, AZX_REG_ML_LEPTR_ID_SDW, syncprd);
-+}
-+EXPORT_SYMBOL_NS(hdac_bus_eml_sdw_set_syncprd_unlocked, SND_SOC_SOF_HDA_MLINK);
-+
-+int hdac_bus_eml_wait_syncpu_unlocked(struct hdac_bus *bus, bool alt, int elid)
-+{
-+	struct hdac_ext2_link *h2link;
-+	struct hdac_ext_link *hlink;
-+
-+	h2link = find_ext2_link(bus, alt, elid);
-+	if (!h2link)
-+		return 0;
-+
-+	if (!h2link->lss)
-+		return 0;
-+
-+	hlink = &h2link->hext_link;
-+
-+	return hdaml_link_wait_syncpu(hlink->ml_addr + AZX_REG_ML_LSYNC);
-+}
-+EXPORT_SYMBOL_NS(hdac_bus_eml_wait_syncpu_unlocked, SND_SOC_SOF_HDA_MLINK);
-+
-+int hdac_bus_eml_sdw_wait_syncpu_unlocked(struct hdac_bus *bus)
-+{
-+	return hdac_bus_eml_wait_syncpu_unlocked(bus, true, AZX_REG_ML_LEPTR_ID_SDW);
-+}
-+EXPORT_SYMBOL_NS(hdac_bus_eml_sdw_wait_syncpu_unlocked, SND_SOC_SOF_HDA_MLINK);
-+
- static int hdac_bus_eml_power_up_base(struct hdac_bus *bus, bool alt, int elid, int sublink,
- 				      bool eml_lock)
+ void hda_bus_ml_put_all(struct hdac_bus *bus)
  {
+ 	struct hdac_ext_link *hlink;
 -- 
 2.40.0
 
