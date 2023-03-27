@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D59C77B62
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Mar 2023 12:17:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF8B4C76195
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Mar 2023 13:24:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C97B828;
-	Mon, 27 Mar 2023 14:16:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C97B828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B53883B;
+	Mon, 27 Mar 2023 15:23:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B53883B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679919457;
-	bh=E0aEdCM3jvSMs/38zuXbXkxHJ78t/3YMqCcj/tnhccs=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1679923437;
+	bh=+fcZvxX97vA2m/ogwTBOs9kzLHaA+njNUSUDR7zOHSI=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=prU6/N2r53tVOZaFKi1Awm81A5PMsrV7MoVSCw5qvzKsgOMN1bD2F5JFcbtNwUOTw
-	 IGFnolJ/TLcyWVlm5H2KH/UNmRq31VFBlwZvbdG472q0XSfr2F1u+oNqGraxs1HudE
-	 kCvMBKt8l9YWzcLQiKpgZfp/D6o23mvmLuB+3ddo=
+	b=r40mExdKYFIunN+FIazrFozcOyb8Vg3eiNHcT6OWh/wdoEiHJp8iN/VYMYbhgTYLy
+	 0NHHoKV6BPh2m8800zWstSAHnY7PzJC4G3bz6NXfY/3h/im/sXi6FkfPNA5g7hPhoU
+	 l7Xv3+iBomoVIUpAj+eWCtoRv0H+zGLh8AxcQzRo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A748F80114;
-	Mon, 27 Mar 2023 14:16:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 625A5F80495;
+	Mon, 27 Mar 2023 15:23:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C42C0F80272; Mon, 27 Mar 2023 14:16:19 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 6E8F1F80527; Mon, 27 Mar 2023 15:23:01 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A2FD5F80114
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 14:16:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2FD5F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id C0BACF800C9
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 15:22:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0BACF800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rTqOSQRs
+ header.s=k20201202 header.b=u6fo6LTA
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id D8CF4B80B7E;
-	Mon, 27 Mar 2023 12:16:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19C62C4339C;
-	Mon, 27 Mar 2023 12:16:12 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5636D6121E;
+	Mon, 27 Mar 2023 13:22:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DDDCC433EF;
+	Mon, 27 Mar 2023 13:22:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679919373;
-	bh=E0aEdCM3jvSMs/38zuXbXkxHJ78t/3YMqCcj/tnhccs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rTqOSQRsCLihHxxFpDn+uPb23rtNaKM4885EluAW0rTF6ImFoM8RmNcuJHcmdoTYH
-	 OYNDidlkJ0No4vMTWwurwEgfSvui/QeXabiytVmUK30z864Xq7iJqtcUMc3OgSYL27
-	 2aK82Ni2iLUUuAPZ7LpZ5WzrjLPw6nEMigrCN+UJhGKR/IZX72RZkK99H3NdmC17nA
-	 rLAT4IA+982U9IWwE7sc261yNx+vEj169dtARnlsUsVgNfZAGJm091DJZ3CSADkpo8
-	 7uMosQYkO+6DSyHWNuBSgppnrjCwitBH6Aihv4PC42fjLxGZSjFCWMycfBTnpGRAB5
-	 By4u5+shGx7lw==
-Date: Mon, 27 Mar 2023 13:16:10 +0100
+	s=k20201202; t=1679923371;
+	bh=+fcZvxX97vA2m/ogwTBOs9kzLHaA+njNUSUDR7zOHSI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=u6fo6LTAQ4RARP9+kbRX0ydvNepTHHiRWm/Tj4NshewYQlu20tDwhn8nIFgF+5ugK
+	 xQQIv6l/fh3IVPUt0CLVD4NEQfi3KOL7e6heeFCqTRBNGSr8PWDI7KT//yWclspGAb
+	 p+8Mp0tkk3KM//ycR5G3kseORuFTitwQq2VMeWbYgB+v4Xxyu+W8sAHwhGv/T+l6G1
+	 +zHajyiCECTfNbYXVJ6vdk1aODzQsDU/+bgfBxSgYo9xl3jKUmZ8TDAzXIi9c/j0jd
+	 ZSUSoWwRbeZ+ioXMtcp1x3P8ZdlgYqAWTGrDYGgkGcRlke7ii0EI7JTa+4NJJh44Ry
+	 ncOxQekI9ae3g==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: da7213.c: add missing pm_runtime_disable()
-Message-ID: <ZCGJCoFj6DLUEcmT@sirena.org.uk>
-References: <87fs9r6ktm.wl-kuninori.morimoto.gx@renesas.com>
+To: alsa-devel@alsa-project.org, regressions@lists.linux.dev,
+ yung-chuan.liao@linux.intel.com, tiwai@suse.com, bagasdotme@gmail.com,
+ pierre-louis.bossart@linux.intel.com, Jason Montleon <jmontleo@redhat.com>
+In-Reply-To: <20230324170711.2526-1-jmontleo@redhat.com>
+References: <20230324170711.2526-1-jmontleo@redhat.com>
+Subject: Re: [PATCH] ASoC: hdac_hdmi: use set_stream() instead of
+ set_tdm_slots()
+Message-Id: <167992336898.3162140.14844931662953043048.b4-ty@kernel.org>
+Date: Mon, 27 Mar 2023 14:22:48 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RIMLg1e2eQKu4z/i"
-Content-Disposition: inline
-In-Reply-To: <87fs9r6ktm.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: Single tasking: Just Say No.
-Message-ID-Hash: WHDYMU6SS3I6EFGY5RSWFGLC4NL5K6VH
-X-Message-ID-Hash: WHDYMU6SS3I6EFGY5RSWFGLC4NL5K6VH
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-2eb1a
+Message-ID-Hash: S4MWIJE2KIEIZZMEXNT644YTTEGO6O6S
+X-Message-ID-Hash: S4MWIJE2KIEIZZMEXNT644YTTEGO6O6S
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -75,14 +76,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Linux-ALSA <alsa-devel@alsa-project.org>,
- Duy Nguyen <duy.nguyen.rh@renesas.com>, Khanh Le <khanh.le.xr@renesas.com>
+CC: stable@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WHDYMU6SS3I6EFGY5RSWFGLC4NL5K6VH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S4MWIJE2KIEIZZMEXNT644YTTEGO6O6S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,43 +91,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Fri, 24 Mar 2023 13:07:11 -0400, Jason Montleon wrote:
+> hdac_hdmi was not updated to use set_stream() instead of set_tdm_slots()
+> in the original commit so HDMI no longer produces audio.
+> 
+> 
 
---RIMLg1e2eQKu4z/i
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Mon, Mar 27, 2023 at 01:32:06AM +0000, Kuninori Morimoto wrote:
-> da7213.c is missing pm_runtime_disable(), thus we will get
-> below error when rmmod -> insmod. This patch solves it.
->=20
-> 	$ rmmod  snd-soc-da7213.ko
-> 	$ insmod snd-soc-da7213.ko
-> 	da7213 0-001a: Unbalanced pm_runtime_enable!"
->=20
-> [Kuninori adjusted to latest upstream]
->=20
-> Signed-off-by: Duy Nguyen <duy.nguyen.rh@renesas.com>
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Tested-by: Khanh Le <khanh.le.xr@renesas.com>
+   broonie/sound.git for-next
 
-If Duy originally wrote the patch it should have a From: line
-saying they wrote it (they should be the commit author in your
-local git, in which case git send-email will do the right thing).
+Thanks!
 
---RIMLg1e2eQKu4z/i
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: hdac_hdmi: use set_stream() instead of set_tdm_slots()
+      commit: f6887a71bdd2f0dcba9b8180dd2223cfa8637e85
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQhiQkACgkQJNaLcl1U
-h9C9Mgf/VrpHe60VTzNb8sO611f7eQkYe5DhgFhH7Z1RyjmwBrh3g9csxFAT2N4m
-pLt2zQ6Zn+K65fZWkEO7dYcT/gcSYWljei2kO99uSiYTn1UIvrvXavwM4kCQkXVR
-ptf2Ah/3F8LI8UE82OyqZy8dWPeSELY2a/XnqXj5QhX/c3euLIhaeIS9x/xnbSZY
-sDk/4iEXxc46A2P10xASU3eSQk/bYKEKVtjGAa4vFhaNe8LIIVWrVHuE1Fp7QW+3
-4x1Bd7YAmKdPq/rAWCz5I9amsW+IZ/6vWj4I0yDiONP7miSrblUlEqG8f+LzuMW0
-XzgJfUOacytQc4ba2QaRVkHxuQVq1A==
-=u4HI
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---RIMLg1e2eQKu4z/i--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
