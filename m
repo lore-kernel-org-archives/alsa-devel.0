@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7413C77B61
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:19:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9218C6FD18
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:19:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42FA120C;
-	Wed, 29 Mar 2023 18:18:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42FA120C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FD82852;
+	Wed, 29 Mar 2023 18:18:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FD82852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680106764;
-	bh=TiDZf70jeQfr36qj/e41nmgZiBXRk41rQikD65Jxb54=;
+	s=default; t=1680106775;
+	bh=IdjIh0wT2/3yrJPSccinDcBxrc30xnoqps+lSBNYAs0=;
 	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=kRdUx7B06Zu2xd706tVkAzkpOO6rJgtSNLgeBFrsAs10efSGqOHj4AYn1P4orWOTO
-	 kIkqFYZYA/mjwXmKJBkjD9ORLl1d86HFS+QsFXbemB6XTF2dw4ek+4HbMd5XACqjgr
-	 NYh0ANeHpFjCknwOodttuGAf/j40XYg9WXhVZg2c=
+	b=qwKeVIN9P7efBbBQv9I+xnrU9pv32SHleLmexNS6cr5scBVSysgx/OKsMkwdPOPZ3
+	 73hSk6V2bzu5ox7W2hPEbVCYH0KpLgQ987jaAEhlRj+9k2TwDwAkR91fwjpanSIZnl
+	 gBuMc577VdORdkLav1RAUT04ZVxxEsr46N0uI1/I=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE83EF80563;
-	Wed, 29 Mar 2023 18:14:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E642F805D6;
+	Wed, 29 Mar 2023 18:15:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5FDADF80272; Mon, 27 Mar 2023 23:29:06 +0200 (CEST)
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com
- [IPv6:2607:f8b0:4864:20::52c])
+	id 41B57F80272; Mon, 27 Mar 2023 23:33:05 +0200 (CEST)
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com
+ [IPv6:2607:f8b0:4864:20::62b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 979D7F800C9
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 23:28:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 979D7F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 64E44F80114
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 23:32:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64E44F80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=CNgY+0Hv
-Received: by mail-pg1-x52c.google.com with SMTP id h14so6012689pgj.7
+ header.s=20210112 header.b=Xwdz5uLY
+Received: by mail-pl1-x62b.google.com with SMTP id o2so9771895plg.4
         for <alsa-devel@alsa-project.org>;
- Mon, 27 Mar 2023 14:28:56 -0700 (PDT)
+ Mon, 27 Mar 2023 14:32:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679952533;
+        d=gmail.com; s=20210112; t=1679952777;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NxdwX2D0akAAHFQeGjtNuXXTLf+CXBqbpNejn6s2rPQ=;
-        b=CNgY+0HvxXretnJUh6TwLmwHNJBQ5Dteqa/KPd8Vgf1JafDdnHGtXeuM7AqZ1hRk4P
-         UX+gK7l02pcmmhMcjf7/GKp6SORxoTh1I+R9OR+46k6JM+OUrsiAag+bkOSLAr/cVbVg
-         UC/oXxXgZ2ZOJz+mVBoZ5Q86Ts+Ga1aShfEVT+VHNp7atEgtKb38T8pczJgt5OqXQJvc
-         tp9BdxRDtYIGKCpzj7nLbHn1gPThVYSjD6qGot69RoW+mW8G7iD8bL1ha0Ntoq6YGt6d
-         2pUrnEp9QIZXJ1mu1TLPDBzuhs9PuNgN7Sgcj/u/6HhU/GiSUWN7XmO+nlORV5N2Lzl0
-         R+fA==
+        bh=XS2emH9pO0VgJZsxSC0xvhXyPpgeamtgkfj2ufmzoQ4=;
+        b=Xwdz5uLYMkKRlJ7QhGHhUC5a0UXyllyo2QTGKel5MghlcGLxRd7qS32BKrQGGRTUVO
+         dS2EBwDqrsCp43dEDKpFrQwqOSirUzUd7Zx6ef+klRwvlEmPXsMkxO1de9sZ45IeIRLr
+         thbxu7pCIPnD9WHTmgOr2nEB3tkvXF3fAA//SopzBmrE5gCNirZ/yzQUlC939aTAQubv
+         7ZU7rBejIkb/1D8We0DDriPd6ps3/mHIeUae3Q4NSImnrh6oD6f3V+lE9sRgFQCfM/iM
+         l18V511EuGsVQDYxbGdSymvXl2ZluFZ0XYpXR41aUM/BNbm5jFrB5kdCNI0Aqq6i8Hhd
+         i5bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679952533;
+        d=1e100.net; s=20210112; t=1679952777;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=NxdwX2D0akAAHFQeGjtNuXXTLf+CXBqbpNejn6s2rPQ=;
-        b=X0r8GabqJeXcChu+S06T2DMD5MZB2FpyNmOvQTvnf0SEfSatcDgd8J40pdfwoNuui+
-         Od/ljnL7cE8ZbXmNy5EKMTjBis7hlJv+rRSXimMxcwgiFiJDqPdo1u9V12NB+V4GPy7C
-         VEuI+GNuDOPNb9UryapEIyODEAYkHRv55TPumivI0EpbQ6+B6+x7RI0mASlqI/Acd8uW
-         vwdihyJs2LpnTr6s4EostUvp8mc+0QeVhsJr0afAkSo2evjfpAh75+mn4xXFPEyuzPoK
-         aeTUIKKcnEIqB10VIRmLcv5vZBYFlc56D2UOnwCvCS5uJCT2Q2JPUnjb8+bR4b9xBHXP
-         /2WQ==
-X-Gm-Message-State: AAQBX9cvZvbP8BJh9bZZnWpOU0yIszi46ye5Bbaz91z3+KpTcjlUyVAG
-	HwB1x3xW+vOKk4daYp4CvXY=
+        bh=XS2emH9pO0VgJZsxSC0xvhXyPpgeamtgkfj2ufmzoQ4=;
+        b=S4u1oWBnkn9E0WHorOh7nuv699NPVbwYTc/l/PBrjI3ZE0Pv8CtbDBbuwDX1xzGcEN
+         bPWn0qLeu758ZInxImoVP1AWMa5EJ5UoOjAA3cHC1xkEeaU0aNld4jC4A6aaBwPsJ2r6
+         kTQ0Y81Pgv2SdWouf3TqJ0zEz6BK7P3e+f5ABN0MDwbZSRHrTclMlKv2t3VAxa45SNsz
+         zzIzEpzevpT8dDQw7Oyho6SiQbatJxXU6QX9k02JmqdX1ooIpKyAkCNYVfl41SoNvV2x
+         muuTXRieIyMNRx7bLU5oyBanshU3OMissMP4qaKHGlWDv9S06Jo03e7vBhy+VSdllAjQ
+         zGTA==
+X-Gm-Message-State: AAQBX9e8DIL4/zDJ81XAN3kYOiN9iAY/3JUbRnbzk66iTR2nGsN3SVPp
+	wKwl3FIlDYwsRTRLkZAXhCU=
 X-Google-Smtp-Source: 
- AKy350b0G5xWtgH2YUl068CugJHSnX4vrh0PXrGTf1h20eLEFC6MuwtOTq7nIu/wqDcF1yos9dq4Tw==
-X-Received: by 2002:a62:5b04:0:b0:623:6131:66ca with SMTP id
- p4-20020a625b04000000b00623613166camr11299362pfb.32.1679952532866;
-        Mon, 27 Mar 2023 14:28:52 -0700 (PDT)
+ AKy350YAuWuNPsuEzw8wb8fThG1T4e3di0A7+p9ziVG/f3zg3S/YXInHB0CFIngc350y0EZkMIaXXA==
+X-Received: by 2002:a17:90b:314e:b0:23d:286:47d3 with SMTP id
+ ip14-20020a17090b314e00b0023d028647d3mr14953135pjb.40.1679952776972;
+        Mon, 27 Mar 2023 14:32:56 -0700 (PDT)
 Received: from pavilion.. ([2402:e280:2146:a9a:db37:2c9f:dcb8:89a9])
         by smtp.gmail.com with ESMTPSA id
- i26-20020aa7909a000000b0062d85a1df56sm2333616pfa.178.2023.03.27.14.28.49
+ z18-20020a63e552000000b0050f6add54fcsm15294399pgj.44.2023.03.27.14.32.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Mar 2023 14:28:52 -0700 (PDT)
+        Mon, 27 Mar 2023 14:32:56 -0700 (PDT)
 From: Saalim Quadri <danascape@gmail.com>
 To: krzysztof.kozlowski@linaro.org,
 	broonie@kernel.org,
@@ -83,9 +83,9 @@ To: krzysztof.kozlowski@linaro.org,
 	krzysztof.kozlowski+dt@linaro.org,
 	robh+dt@kernel.org,
 	shengjiu.wang@nxp.com
-Subject: [PATCH v2] ASoC: dt-bindings: ak4458: Convert to dtschema
-Date: Tue, 28 Mar 2023 02:58:46 +0530
-Message-Id: <20230327212846.28928-1-danascape@gmail.com>
+Subject: [PATCH v3] ASoC: dt-bindings: ak4458: Convert to dtschema
+Date: Tue, 28 Mar 2023 03:02:50 +0530
+Message-Id: <20230327213250.29199-1-danascape@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -95,9 +95,9 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RS3SBWACNNSHPAQTQQAR63EIZWSMVLBH
-X-Message-ID-Hash: RS3SBWACNNSHPAQTQQAR63EIZWSMVLBH
-X-Mailman-Approved-At: Wed, 29 Mar 2023 16:14:49 +0000
+Message-ID-Hash: 4EXHAKYA2PB7PLGVZSXZSJAMOMXEPWCE
+X-Message-ID-Hash: 4EXHAKYA2PB7PLGVZSXZSJAMOMXEPWCE
+X-Mailman-Approved-At: Wed, 29 Mar 2023 16:14:50 +0000
 CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, Saalim Quadri <danascape@gmail.com>
 X-Mailman-Version: 3.3.8
@@ -105,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RS3SBWACNNSHPAQTQQAR63EIZWSMVLBH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4EXHAKYA2PB7PLGVZSXZSJAMOMXEPWCE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,6 +121,8 @@ Signed-off-by: Saalim Quadri <danascape@gmail.com>
 Changes:
 V1 -> V2: Use the correct way for dsd-path property
           Drop ak4458 label form example
+V2 -> V3: ak4458 is the only one that does not support dsd-path, so we
+          do not require to define an array
 
  .../devicetree/bindings/sound/ak4458.txt      | 28 --------
  .../bindings/sound/asahi-kasei,ak4458.yaml    | 65 +++++++++++++++++++
@@ -164,7 +166,7 @@ index 0416c14895d6..000000000000
 -};
 diff --git a/Documentation/devicetree/bindings/sound/asahi-kasei,ak4458.yaml b/Documentation/devicetree/bindings/sound/asahi-kasei,ak4458.yaml
 new file mode 100644
-index 000000000000..a3cd29517a17
+index 000000000000..3842e75d9921
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/sound/asahi-kasei,ak4458.yaml
 @@ -0,0 +1,65 @@
@@ -207,7 +209,7 @@ index 000000000000..a3cd29517a17
 +      properties:
 +        compatible:
 +          contains:
-+            enum:
++            const:
 +              asahi-kasei,ak4458
 +
 +    then:
