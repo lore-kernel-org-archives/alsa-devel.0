@@ -4,101 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29C29C761AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Mar 2023 15:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69068C6FD18
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Mar 2023 15:53:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B30271D6;
-	Tue, 28 Mar 2023 17:06:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B30271D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9924B1EE;
+	Tue, 28 Mar 2023 17:53:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9924B1EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680016064;
-	bh=xUNlQk4ZeG4wB7Jntilk/cJVavfxutCo2LLVtiAW/2M=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1680018831;
+	bh=N/0Q2ofWL1px+rKg7cbc8KWr7TkYVLJkqMMOXNaxdNQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cPd+aoqYQ9yFt7xe4RRxrnR1IIg395swkXAwYD5yC5UY7GeoeVsfY/F5wknAGqGaP
-	 W87Ajo0k/+UyKYVTzbAxCwLzRMsQIw+vq9Qvfbh336pPeSiXCYcidm4Zzo0Tm6vC71
-	 AFlgGdF6ZjnBfDFGL3JCPVQ0v7F2DrE2J7k0hpcQ=
+	b=rCDYq30REy4pPPgIa1of0rJYRKiZHKPm8CfkO3ghx+xPFEYwtRGtatOarUIOFg5d6
+	 AZn7prCvbOQWkubAlHQpnMayY4nV3cahA2ORe4IdIEN+VCKlqXosr0xJh4CnG6qsm8
+	 HcOvTuRq8QiU0RaLI8Ftct0Oa5Fx0pyFIiOqqTwM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB369F80114;
-	Tue, 28 Mar 2023 17:06:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DDA4F80114;
+	Tue, 28 Mar 2023 17:52:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7616EF80272; Tue, 28 Mar 2023 17:06:26 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E94A8F80290; Tue, 28 Mar 2023 17:52:31 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7B084F8021D
-	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2023 17:06:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B084F8021D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6DF93F80249
+	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2023 17:52:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DF93F80249
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=YNlazFSs
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680015982; x=1711551982;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xUNlQk4ZeG4wB7Jntilk/cJVavfxutCo2LLVtiAW/2M=;
-  b=YNlazFSsT3OP39tz8owjwSEB8xzfnURdIKRcKMAILLNAXnkUscPcmlUK
-   owjFwgIEFgV5UaOfKzUCgSrmRTaPKgxtWT8U3rpJrhWiDmGzXO1kj+OfN
-   aJDEN/p7dUTWZLmFOWFY+VkAtFmxtIac3mcH9jb2ipb4Im4xAa1fw9k7L
-   xKgVrqOith5MJOugzhlgL+WIdYknI9YTufFU4A8wvMp0vECKM1/voshLx
-   1pXILtymloTVfy1siL79ZuQkJc6pdLKCVW/umYl5SHjkZwkLQs3B9J1S7
-   eL2CWrdSK8Sjkn6WsiqIXTD/O2/SbG+Anl3SROnq562/weE6Txp3CxvmD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10662"; a="320243745"
-X-IronPort-AV: E=Sophos;i="5.98,297,1673942400";
-   d="scan'208";a="320243745"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Mar 2023 08:05:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10662"; a="794860772"
-X-IronPort-AV: E=Sophos;i="5.98,297,1673942400";
-   d="scan'208";a="794860772"
-Received: from nchadha-mobl.amr.corp.intel.com (HELO [10.212.131.27])
- ([10.212.131.27])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Mar 2023 08:05:54 -0700
-Message-ID: <d826c3ac-4211-d4b7-38d4-059ccaea179c@linux.intel.com>
-Date: Tue, 28 Mar 2023 08:24:19 -0500
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=rzwSHNXz
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A477461871;
+	Tue, 28 Mar 2023 15:52:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E64EC433D2;
+	Tue, 28 Mar 2023 15:52:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1680018744;
+	bh=N/0Q2ofWL1px+rKg7cbc8KWr7TkYVLJkqMMOXNaxdNQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=rzwSHNXzPA7AMhJbSZffuulKOqXtRg4P5Qyv+373duLbJh8qP1hJ1h1akNsErxJ1C
+	 drti1Y7AAZAaX91u9xzal5l5yY+2loWagf9IHl60dL2YmF0ubzagpC7Xf2Q+P8Q4OX
+	 9bCvOF9D6kLl8VHGGrYlwp7vaahN04AAOwumn32ch9Xqtig3p3T3ZDy9CRTLgHDJBm
+	 i6ymSJhMZmWFIVjR91InD6a1Q333mHhPVAtOYUIQR3BptFUeOrtMUwdUFIqKVdxeqd
+	 wEA/+TLwDD9ovvWUIRTSL/cf516im5w6illGgjCToc55JBXE6BTRzcb61Sq0ep6Dmu
+	 IXaN7fZY1I9Jw==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>,
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <20230328094901.50763-1-cristian.ciocaltea@collabora.com>
+References: <20230328094901.50763-1-cristian.ciocaltea@collabora.com>
+Subject: Re: [PATCH] ASoC: es8316: Handle optional IRQ assignment
+Message-Id: <168001874221.43606.9872298334839661286.b4-ty@kernel.org>
+Date: Tue, 28 Mar 2023 16:52:22 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.9.0
-Subject: Re: [PATCH 08/18] ASoC: SOF: Intel: hda-mlink: introduce helpers for
- 'extended links' PM
-Content-Language: en-US
-To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com,
- broonie@kernel.org, tiwai@suse.de, perex@perex.cz
-References: <20230327112931.23411-1-peter.ujfalusi@linux.intel.com>
- <20230327112931.23411-9-peter.ujfalusi@linux.intel.com>
- <cc5a4267-f050-c311-5d56-a2e7cfe7e747@linux.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <cc5a4267-f050-c311-5d56-a2e7cfe7e747@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 3KACBEGBPUZ4X5ZMP4DAZUCQVAJHHU7F
-X-Message-ID-Hash: 3KACBEGBPUZ4X5ZMP4DAZUCQVAJHHU7F
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-Mailer: b4 0.13-dev-bd1bf
+Message-ID-Hash: NR4B2TXZDFCJV6BLZJEGVDR5SS7F4LLC
+X-Message-ID-Hash: NR4B2TXZDFCJV6BLZJEGVDR5SS7F4LLC
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com, rander.wang@intel.com
+CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3KACBEGBPUZ4X5ZMP4DAZUCQVAJHHU7F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NR4B2TXZDFCJV6BLZJEGVDR5SS7F4LLC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,23 +91,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-
->> +static int check_power_active(u32 __iomem *lctl, int sublink, bool
->> enable)
+On Tue, 28 Mar 2023 12:49:01 +0300, Cristian Ciocaltea wrote:
+> The driver is able to work fine without relying on a mandatory interrupt
+> being assigned to the I2C device. This is only needed when making use of
+> the jack-detect support.
 > 
-> Should last argument be named 'active' instead of 'enable'? It would
-> make more sense to me.
+> However, the following warning message is always emitted when there is
+> no such interrupt available:
+> 
+> [...]
 
-Naming is the hardest part, eh?
+Applied to
 
-I am not super happy with 'active', since the 'not-active' part is not
-very clear: it's not suspended, it's really powered-off/disabled.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-I also didn't want to introduce a power state, since again it's on or
-off and we don't want to introduce the Dx concepts here.
+Thanks!
 
-If I had to revisit this, my preference would be:
+[1/1] ASoC: es8316: Handle optional IRQ assignment
+      commit: 39db65a0a17b54915b269d3685f253a4731f344c
 
-static int check_sublink_power(u32 __iomem *lctl, int sublink, bool enabled)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
