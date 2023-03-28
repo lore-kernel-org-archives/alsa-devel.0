@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A881C6FD18
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Mar 2023 16:21:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 746BDC6FD18
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Mar 2023 16:25:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 713581ED;
-	Tue, 28 Mar 2023 18:21:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 713581ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3AD91F1;
+	Tue, 28 Mar 2023 18:24:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3AD91F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680020517;
-	bh=QXIxC+HFAzPCFa2dbcu1x4Rgy2UHcDAAW0LmarVegc0=;
+	s=default; t=1680020719;
+	bh=Cmt6dYB1i08BY8RgvHW0foGfwvEI5SrF8P9HKbnL9nQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=nQgdC2woKWMeF2ElcrX/tDadHGpN1/BzbLb88dAu1gAbjZZ56IUJ+IcId3YGfYpGi
-	 WNuHvu8KOfrT0g/0We92Es0X4ageaS4y0yGywJzthWVZKP0OgfgW3NCC5BDhvgsh4w
-	 CTjNEt+2rnCAYRdw+oEYTMZXsZaZcX2oE33t5Dg4=
+	b=USmii0ONSr6Rg6kj2zB8+VTvB2BgiunrVJSQ/9yGpxtgHIcq0xyHKITaDQvgu7rEQ
+	 BhF3buMuRgvSEnKdKxejH0tY/1dM/OdcM7nlTq2BhxWJ8W0YOnOgV4d0CBStULSXNS
+	 6GmwY/5rQk1mnjR1zv6Bm8FTLwIQU6zPmFAjQH3c=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D704BF80272;
-	Tue, 28 Mar 2023 18:20:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E769F80114;
+	Tue, 28 Mar 2023 18:24:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48BF4F80272; Tue, 28 Mar 2023 18:20:40 +0200 (CEST)
+	id E924BF80272; Tue, 28 Mar 2023 18:24:00 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB1ECF80114
-	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2023 18:20:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB1ECF80114
+	by alsa1.perex.cz (Postfix) with ESMTP id 66257F80114
+	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2023 18:23:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66257F80114
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1680020437317707777-webhooks-bot@alsa-project.org>
-References: <1680020437317707777-webhooks-bot@alsa-project.org>
+In-Reply-To: <1680020639345186234-webhooks-bot@alsa-project.org>
+References: <1680020639345186234-webhooks-bot@alsa-project.org>
 Subject: Headphone jack volume on ALC287 (Thinkpad X1 extreme gen 5) is too
- low unless the speaker volume channel is past a certain threshold.
-Message-Id: <20230328162040.48BF4F80272@alsa1.perex.cz>
-Date: Tue, 28 Mar 2023 18:20:40 +0200 (CEST)
-Message-ID-Hash: MP62LKCI6KUKCSPKU5IWWLQI4UMI35V4
-X-Message-ID-Hash: MP62LKCI6KUKCSPKU5IWWLQI4UMI35V4
+ low unless the speaker channel's volume is past a certain threshold.
+Message-Id: <20230328162400.E924BF80272@alsa1.perex.cz>
+Date: Tue, 28 Mar 2023 18:24:00 +0200 (CEST)
+Message-ID-Hash: LL7QV2SNHEDDPFAES6IRJ3X7GOCGWWC6
+X-Message-ID-Hash: LL7QV2SNHEDDPFAES6IRJ3X7GOCGWWC6
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -56,7 +56,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MP62LKCI6KUKCSPKU5IWWLQI4UMI35V4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LL7QV2SNHEDDPFAES6IRJ3X7GOCGWWC6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -65,7 +65,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #298 was opened from Noted-Jrelvas:
+alsa-project/alsa-ucm-conf issue #298 was edited from Noted-Jrelvas:
 
 First of all, apologies for the verbose title.
 
