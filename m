@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 198B3C77B61
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Mar 2023 13:07:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A747C761AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Mar 2023 13:08:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33BD81ED;
-	Tue, 28 Mar 2023 15:06:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33BD81ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id A71D71F4;
+	Tue, 28 Mar 2023 15:07:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A71D71F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680008864;
-	bh=e0on/ajK/K7eTP8ZnOWGHOWj2oiKytDkWpqgnUGOMrw=;
+	s=default; t=1680008890;
+	bh=Btr6NHvYLB/xkpVUjlZmZJCzeAFJkZvgqsZK4XxnX1E=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YuWhsM1I5C19Oik8a05ueYuVvM1pp5wZwqMOuecTPykhCBnXc+7hWypj4z4Q1syPD
-	 a4eWd2PD1ZQsY5W3M1l1HZ5E74Tu/kNspGVoxjgeQmsHp4K7/+effzGjyUnUvzwfaS
-	 r00SMCW1icFFYsNO73W5jHwCW5pHma+RZ/feIUUA=
+	b=qBUEXHodbXkuco49puUZgdK5soCwQM+Sr7LcdvpITZAu3zfNgEDNQLnrUWbGU03KF
+	 YRFz0JXykywvVZnyHISagSmyRzpuVzQEM37JVDoA35xsy1nLPETELbG5t7GDGswDlc
+	 GLdSLg73iytajsqXOj1VujG/8VHVqbMRXFfNOvHo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7893F80249;
-	Tue, 28 Mar 2023 15:06:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B86AF80482;
+	Tue, 28 Mar 2023 15:06:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4ECCF8032D; Tue, 28 Mar 2023 15:06:26 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id CEEBAF80290; Tue, 28 Mar 2023 15:06:27 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 229B6F8024E
-	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2023 15:06:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 229B6F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 33CFFF80272
+	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2023 15:06:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33CFFF80272
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=WGp5Yvr0
+ header.s=k20201202 header.b=QtIqVtDc
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 97A60B81C19;
-	Tue, 28 Mar 2023 13:06:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3482C4339C;
-	Tue, 28 Mar 2023 13:06:19 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9E7D0616E7;
+	Tue, 28 Mar 2023 13:06:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 469A7C433D2;
+	Tue, 28 Mar 2023 13:06:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1680008781;
-	bh=e0on/ajK/K7eTP8ZnOWGHOWj2oiKytDkWpqgnUGOMrw=;
+	s=k20201202; t=1680008776;
+	bh=Btr6NHvYLB/xkpVUjlZmZJCzeAFJkZvgqsZK4XxnX1E=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=WGp5Yvr0it8ocFsSmyLLXoiDdqeG7S4/DH7hfALM+uokqcZzD4pMMoVP+4/YNTevc
-	 kg13S6Dqtps6hRkv7x7zqUja8s9GPlEkoANhHqoUdfMSI1dDERtKX+prXfw11l0W5m
-	 FB6N/tza1DGBJPUIfyaaQ+q/P/eyyWv7Wa9LKiLKjRROMEwzjhmo2aKGG63HVKUQVY
-	 S7TSgTrHKDToouEEEIYNsd0NIbmOUn97eyndxwkfVm1d1DeWdb+aq8XApPev36Le1H
-	 tuKW8VY6e3ofI41mqfzb4aemeipthPS3pMGZyhxXJU3ql8oCn1bCsE5x2cUVsXxYxE
-	 mKJQd1iVctcyg==
+	b=QtIqVtDcEsosOvgOgdwhZJ9XPefcfJXm5oRkK8qT0OxXrmfLZbHf5nz9KOW2syJvV
+	 wtjRQzz5N1vW2qsDYR7XLC8/ZEqgIiw/ChhdHguiCQ/6NGltVXi3JQlmbIl/GLvP+5
+	 MHci+uALA5TorVKz++EWbeGP4wtwvfkRcyug/HKbJ0zZFK53b67nmoyPDm6g3QEXcp
+	 dvRH52xDvAoQxp9Lq6fdyWq0cNxLx5c4Y4yY4XUhw0XM+gcdXqGIKsZbXcBo88YXyu
+	 QPV1u9RenDn3llCHxq1E3x1SteYKNf8r1Ao7GFZbm/Y8AWZU7KDFCYApM+eQEexN3O
+	 qaAbJ1xBibl7g==
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87mt3xg2tk.wl-kuninori.morimoto.gx@renesas.com>
-References: <87mt3xg2tk.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2] ASoC: da7213.c: add missing pm_runtime_disable()
-Message-Id: <168000877970.3186216.8522973646599551190.b4-ty@kernel.org>
-Date: Tue, 28 Mar 2023 14:06:19 +0100
+In-Reply-To: <87h6u76nhq.wl-kuninori.morimoto.gx@renesas.com>
+References: <87h6u76nhq.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: soc-core.c: add snd_soc_add_pcm_runtimes()
+Message-Id: <168000877487.3186216.5436634013499000710.b4-ty@kernel.org>
+Date: Tue, 28 Mar 2023 14:06:14 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-2eb1a
-Message-ID-Hash: 7VCP4DGAVBQ4SWGJRD4MFAF35EL7BGJJ
-X-Message-ID-Hash: 7VCP4DGAVBQ4SWGJRD4MFAF35EL7BGJJ
+Message-ID-Hash: AMP7OBDQXI24EHR4EM3P2EWSQQ7GPN6N
+X-Message-ID-Hash: AMP7OBDQXI24EHR4EM3P2EWSQQ7GPN6N
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,14 +74,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Linux-ALSA <alsa-devel@alsa-project.org>,
- Duy Nguyen <duy.nguyen.rh@renesas.com>, Khanh Le <khanh.le.xr@renesas.com>
+CC: Linux-ALSA <alsa-devel@alsa-project.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7VCP4DGAVBQ4SWGJRD4MFAF35EL7BGJJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AMP7OBDQXI24EHR4EM3P2EWSQQ7GPN6N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,15 +89,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 28 Mar 2023 00:03:03 +0000, Kuninori Morimoto wrote:
-> da7213.c is missing pm_runtime_disable(), thus we will get
-> below error when rmmod -> insmod.
+On Mon, 27 Mar 2023 00:34:26 +0000, Kuninori Morimoto wrote:
+> Current ASoC supports snd_soc_add_pcm_runtime(), but user need to
+> call it one-by-one if it has multi dai_links.
+> This patch adds snd_soc_add_pcm_runtimes() which supports multi
+> dai_links.
 > 
-> 	$ rmmod  snd-soc-da7213.ko
-> 	$ insmod snd-soc-da7213.ko
-> 	da7213 0-001a: Unbalanced pm_runtime_enable!"
 > 
-> [...]
 
 Applied to
 
@@ -106,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: da7213.c: add missing pm_runtime_disable()
-      commit: 44378cd113e5f15bb0a89f5ac5a0e687b52feb90
+[1/1] ASoC: soc-core.c: add snd_soc_add_pcm_runtimes()
+      commit: ffaf886e249ee269f9084c21fbd8617ce9b83817
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
