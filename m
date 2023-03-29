@@ -4,84 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC854C74A5B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:52:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BF3EC6FD18
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 21:53:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 900A4828;
-	Wed, 29 Mar 2023 18:51:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 900A4828
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8D491F0;
+	Wed, 29 Mar 2023 23:52:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8D491F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680108752;
-	bh=n3UbnkUVFSQ4Q0HVTYwtuIs/I4cn+sbwqdlpfV5F9FQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=qfun9M62r+28S4WXueICnN2Jf87ASXL67QTa1gPRDLHt4pQaw9L57aQ0PDmDHkbUd
-	 +r7KqJ5dMBeebtZLfyM73fBt1JLLeqQ5N6/Ri8Z/9Wna4gXtw8qU7I0rZg/Z7OwhcU
-	 lt5Ye2yYpxySyJi0G6nLpkUSzeQ1Vy9jwo8ymAWk=
+	s=default; t=1680126802;
+	bh=0/w2nTHfudeBdNQW+rFGrDVYni/MRhAdMUenjEvtJC4=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=gGVpP1jFLScpsZ3sXK+ijc01EVYFPydujkAOKafxiHrJ+LrmBskvuDOFpzrbu/1h1
+	 NwCxWrOxNjOuL+C9Fw/tR8mUZLbKNKOkwYrugkapTgY3/Xlf6ORngwu9T/EVHNR2fw
+	 WLWSCi4SnL7/i8O4eUs/uI6iy9G9VjBAFADEBWVg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 126EBF80495;
-	Wed, 29 Mar 2023 18:50:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C317F80423;
+	Wed, 29 Mar 2023 23:45:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AA6E5F80272; Wed, 29 Mar 2023 18:50:47 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 139CBF8024E
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2023 18:50:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 139CBF8024E
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=PXG8Y8PY
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3F57561DC5;
-	Wed, 29 Mar 2023 16:50:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BF07C433D2;
-	Wed, 29 Mar 2023 16:50:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1680108641;
-	bh=n3UbnkUVFSQ4Q0HVTYwtuIs/I4cn+sbwqdlpfV5F9FQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=PXG8Y8PYY2cBZH/oWyz5HPZGQSd0qlXK8FP+oPgfk+XtLSsNNRXYP2eVd4C302Vl9
-	 3Wlo9AyfThXdIw7r5iY3jh0bjPHAT158ghursmG0aUjb3MCU44af8QuMzS/i4RGBBT
-	 q23b10dYoVQx3O++rUW/og2tCaGAaVtr98Q5F5thETUR7ZXmZlTCZcFaDoFXCcK8kT
-	 NqAqylBWqy7KI/kpqHi819Vq2kldnZpvUdSiYS4n0nc6qY616/9xgGxC2Hcb14rFmt
-	 SIFggsitdNfhUTlCG9FklfFOx+JEwucCdAupot2xhNxaoQv0e5d4pnl4ubwXAkjjQz
-	 utQj09BLsHgZw==
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87v8ikcsr5.wl-kuninori.morimoto.gx@renesas.com>
-References: <87v8ikcsr5.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: soc-topology.c: dai_link->platform again
-Message-Id: <168010864022.3244592.16855327449834755638.b4-ty@kernel.org>
-Date: Wed, 29 Mar 2023 17:50:40 +0100
+	id 8FBE4F80423; Wed, 29 Mar 2023 23:45:30 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 286A0F8024E
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2023 23:45:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 286A0F8024E
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-2eb1a
-Message-ID-Hash: 3A4J4KI7GZXBU2GZSVKTA4GRB62PVDTJ
-X-Message-ID-Hash: 3A4J4KI7GZXBU2GZSVKTA4GRB62PVDTJ
-X-MailFrom: broonie@kernel.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1680126326643504143-webhooks-bot@alsa-project.org>
+References: <1680126326643504143-webhooks-bot@alsa-project.org>
+Subject: Does this compile any code?
+Message-Id: <20230329214530.8FBE4F80423@alsa1.perex.cz>
+Date: Wed, 29 Mar 2023 23:45:30 +0200 (CEST)
+Message-ID-Hash: 7GQGVHIUZPBF2NZJTO4YPUGA63UXLNPJ
+X-Message-ID-Hash: 7GQGVHIUZPBF2NZJTO4YPUGA63UXLNPJ
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Linux-ALSA <alsa-devel@alsa-project.org>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3A4J4KI7GZXBU2GZSVKTA4GRB62PVDTJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7GQGVHIUZPBF2NZJTO4YPUGA63UXLNPJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,39 +64,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 29 Mar 2023 00:21:03 +0000, Kuninori Morimoto wrote:
-> On SOF, many topology is assuming dai_link->platform exists, and is
-> allowed to be overwritten on each link_load().
-> This patch restore the removed dai_link->platform for SOF, and add
-> the comment.
-> 
-> 
+alsa-project/alsa-lib issue #309 was opened from stefan11111:
 
-Applied to
+If I build the same kernel twice, I get this output when building it the second time:
+```
+# make
+  CALL    scripts/checksyscalls.sh
+  DESCEND objtool
+Kernel: arch/x86/boot/bzImage is ready  (#17)
+```
+If I build the kernel again, only changing SND_X86, I get this output:
+```
+# make
+  SYNC    include/config/auto.conf
+  CALL    scripts/checksyscalls.sh
+  DESCEND objtool
+Kernel: arch/x86/boot/bzImage is ready  (#17)
 
-   broonie/sound.git for-6.4
+```
+It doesn't look like that option compiles any code.
 
-Thanks!
-
-[1/1] ASoC: soc-topology.c: dai_link->platform again
-      commit: 6a7c51b4d91b5d73aae2647356990573643b2ae4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/309
+Repository URL: https://github.com/alsa-project/alsa-lib
