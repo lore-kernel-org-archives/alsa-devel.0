@@ -4,90 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C671C74A5B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 06:42:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A654C6FD18
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 06:42:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CA42210;
-	Wed, 29 Mar 2023 08:41:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CA42210
+	by alsa0.perex.cz (Postfix) with ESMTPS id D975D1F0;
+	Wed, 29 Mar 2023 08:41:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D975D1F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680072144;
-	bh=phk7DHrdRm11u9djUYh9qTBFjTjWmNBXB3BeFeWU060=;
+	s=default; t=1680072157;
+	bh=Sd/2yeWBSaCkyTAkKo6QO/dzp6+ERi2BsCUQfIO5+uQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OeaXDNpEPFpaCReqDufIBpIIrkFPn136CyKMehKRut31ATwzs668ljmNTxXWAUovu
-	 JtCNFjvxi/WgarkS5+yiZRfEe+Ed7z5r6NYzd1QBeCuH3Psx57YfVKym0YVOwWdoOQ
-	 /BjYTVXuMoAXQkvWBQTFzrRFjTartQkw4DLaDqrY=
+	b=Bw54nb92MvWZLRs0X1PSRLf9hUYR0FH1K4NaRU1pf1f+3iEqALZVhG8EmuZ7d7gr2
+	 L7OEY70Wk3vcCMkmzWffYPbsph8oxEPMvSg+1J+0/WVkv4u8qciMk2Fci+iVwwjLeE
+	 tLAtHmbnSvyLzkvyLmLVVs24b7v4fnJEZ+G5JOFw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD1D1F800C9;
-	Wed, 29 Mar 2023 08:40:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22D25F80534;
+	Wed, 29 Mar 2023 08:41:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4EFF8F80549; Wed, 29 Mar 2023 08:40:54 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id B600DF80534; Wed, 29 Mar 2023 08:41:09 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2518BF800C9
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2023 08:40:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2518BF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id E1B15F80272
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2023 08:41:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1B15F80272
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=EJyhKwRc;
+ header.s=susede2_rsa header.b=RwFHr/YS;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ysgLnIEj
+ header.s=susede2_ed25519 header.b=nx3CIlnW
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A0D2F1FE00;
-	Wed, 29 Mar 2023 06:40:51 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9A94C1FE00;
+	Wed, 29 Mar 2023 06:41:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1680072051;
+	t=1680072067;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OKyQejGwKbnhOJsduSfCmlmzVYqAMtFLNz7TtFHd31E=;
-	b=EJyhKwRcyH9/+o5zdi7GEU3YX3/2kHYQB3Qb0vTDERawndoL9GBScUDWmx2JspiVxy0LiG
-	6JF24Dlm8CcQRz9L2+H3MBEimCgKyCD8ekbZe5lfOAEHkYo3lYMHrlMQ6UcIdI8oP2dlGH
-	32pJ/yCkYZYnnmHfPlXDCRg2twgzRok=
+	bh=6eVMx4cYrWfQFg9K5FPsSvy7Hd/6KsQ20mwjxWzT3YQ=;
+	b=RwFHr/YSoWsUgxnrEMfW0ke73Et8itQ8B5hCZ5DvHIG1GtoNb7z2KKL5MUpflqD4RjrWrB
+	lhW34+7RbRbPgBhrDXjMZlwemkU7UY32mYQ4Ky3bzRybHA14gN7N+1//MACjMeAlL56tPx
+	ONh0J4jAI7jBZoORGQec6niB06ZdJ6Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1680072051;
+	s=susede2_ed25519; t=1680072067;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OKyQejGwKbnhOJsduSfCmlmzVYqAMtFLNz7TtFHd31E=;
-	b=ysgLnIEjcdeVZPdZQlIEsKnYVxYVRwh2fMu/mmdDTAX+ihb7bg33BRgRkTB3fT20saxqjE
-	fW0Jz9AytVdTUcAg==
+	bh=6eVMx4cYrWfQFg9K5FPsSvy7Hd/6KsQ20mwjxWzT3YQ=;
+	b=nx3CIlnWYtSJjYnO0+C1SOPEWi0LYiIFt1OfzTHMxSyh55aqKlt5XHgKmG+iAv3b/TVnr4
+	G5QRqSbfMaWG+aAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 682D2138FF;
-	Wed, 29 Mar 2023 06:40:51 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 79A5D138FF;
+	Wed, 29 Mar 2023 06:41:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id D6SxGHPdI2Q3JgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 29 Mar 2023 06:40:51 +0000
-Date: Wed, 29 Mar 2023 08:40:50 +0200
-Message-ID: <87pm8soya5.wl-tiwai@suse.de>
+	id JWf3HIPdI2RUJgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 29 Mar 2023 06:41:07 +0000
+Date: Wed, 29 Mar 2023 08:41:07 +0200
+Message-ID: <87o7ocoy9o.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Tasos Sahanidis <tasos@tasossah.com>
-Subject: Re: [PATCH] ALSA: ymfpci: Use u16 consistently for old_legacy_ctrl
-In-Reply-To: <20230329043627.178899-1-tasos@tasossah.com>
-References: <20230329043627.178899-1-tasos@tasossah.com>
+Subject: Re: [PATCH] ALSA: ymfpci: Use register macro in place of integer
+ literal
+In-Reply-To: <20230329043918.179352-1-tasos@tasossah.com>
+References: <20230329043918.179352-1-tasos@tasossah.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: KJG5DHHZKVQOEJCMDK2LHDXO2ZH7NU2F
-X-Message-ID-Hash: KJG5DHHZKVQOEJCMDK2LHDXO2ZH7NU2F
+Message-ID-Hash: 27JCEFD5JUFGQTUHAL7FBIVQTHCZGQHB
+X-Message-ID-Hash: 27JCEFD5JUFGQTUHAL7FBIVQTHCZGQHB
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KJG5DHHZKVQOEJCMDK2LHDXO2ZH7NU2F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/27JCEFD5JUFGQTUHAL7FBIVQTHCZGQHB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,11 +112,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 29 Mar 2023 06:36:27 +0200,
+On Wed, 29 Mar 2023 06:39:18 +0200,
 Tasos Sahanidis wrote:
 > 
-> There's no need to switch between unsigned short and u16, especially since
-> all the functions that end up using old_legacy_ctrl specify u16 anyway.
+> The macro for said register already exists, so just use it, to make the
+> code more readable.
 > 
 > Signed-off-by: Tasos Sahanidis <tasos@tasossah.com>
 
