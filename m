@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B491C6FD18
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:20:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A2DCC6FD18
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:52:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 632AF3E8;
-	Wed, 29 Mar 2023 18:19:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 632AF3E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F6527F1;
+	Wed, 29 Mar 2023 18:51:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F6527F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680106812;
-	bh=2QDriybfok28zgEIOBPq16NBqwdvGyH821rDD9mIx0M=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=iF89J7Wql5lPgKWCp/4Fwj0+DiBSTAUW731HahJJG4Kny8HZppcKK1kZGKMxM2mqV
-	 r9bI+KFksE/GOHa5MDEDLeUP1o3kXhDA28nuGufwIoUj3Pj0TqJoWs7mDWbQepJUxs
-	 QOEATIDhTKWuBNME1sE1u6cc0NAK/uUWtLENbx44=
+	s=default; t=1680108725;
+	bh=8PokWA7vbzRuUZwYlu85KkHqJXaMzEsP02sMayeBbW0=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=nZ+8RIL7/wwlxFCSRiN2gvjTEfUUbPEaqvYFcs8/EY4ux/oZzoVha4j5B3wG7Bhfj
+	 4lmYSKikpXWNllzcYasxJntXZ2XDP3IYAPc8i30VucKMaYC2gaOAO3SiWKgM3cF2i9
+	 sauDpNAHAD99DgqdDmsBSdz5tWEK2VgNNyp1q26Q=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09F0EF805D9;
-	Wed, 29 Mar 2023 18:15:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2C7EF80272;
+	Wed, 29 Mar 2023 18:50:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1EE4EF80272; Mon, 27 Mar 2023 16:56:32 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 28787F80290; Wed, 29 Mar 2023 18:50:46 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1DA1DF80249
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 16:56:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DA1DF80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id C8EB8F80249
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2023 18:50:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8EB8F80249
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=brFZTdzb
+ header.s=k20201202 header.b=azMSDg9h
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 43784CE1796;
-	Mon, 27 Mar 2023 14:56:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 802D1C433EF;
-	Mon, 27 Mar 2023 14:56:20 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4436A61DC2;
+	Wed, 29 Mar 2023 16:50:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 090C5C433D2;
+	Wed, 29 Mar 2023 16:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679928980;
-	bh=2QDriybfok28zgEIOBPq16NBqwdvGyH821rDD9mIx0M=;
-	h=From:To:Cc:Subject:Date:From;
-	b=brFZTdzbRCEJKhn/gixnOI7R3/N5P9HVm/0P4E4JsRnzL4oyI4qiXPv2EJ2oH6O2k
-	 xB4+Dl/nsUWxx/F1iujnEROwvQxsY8sLMrSqjtUtv94z05xfhU7nhJ5d0kQiFuK5py
-	 18eGd8iJ8GH4eGv1C3qtCsG9kq0SqWnzaPWiFwzKfEmKpWVsFt5tAkmdDdaWA2hsTo
-	 GH6MfXbJakVM86+TGz3xeHrYjW6ckFq8Hz84yMfDP74lPvlJ98VMs1bGhd32Ra692D
-	 nXn+kMdPYq1nErt8ITK/GWk4hzrVctwoBOMmyD4r+1831iFEJfumCWj/3W+4bqTpxi
-	 Znsy0YiPL4uKA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1pgoGr-000537-AR; Mon, 27 Mar 2023 16:56:30 +0200
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>
-Subject: [PATCH] ASoC: qcom: audioreach: drop stray 'get' from error message
-Date: Mon, 27 Mar 2023 16:55:55 +0200
-Message-Id: <20230327145555.19351-1-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=k20201202; t=1680108636;
+	bh=8PokWA7vbzRuUZwYlu85KkHqJXaMzEsP02sMayeBbW0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=azMSDg9heTi0pw51OiaaMcXxUKKklFzKZz+Dyv1hWKxuZwvRTsfVEdQd62BvAiWH8
+	 GRvcIIYs7KPmsTXGtDiod9D7Inyk9VQtJ9JXidoFBKMKMMZAYd9vRNPuMHlHPmnF+H
+	 9ojSEW6AMJeOhWArapUORE2ngEcacEmaFJSiF7jiliKfmQtZ7cYGKAr3p8TxqnNFPp
+	 Xp0imGUdRCZG9ZrBJweDXwaB2bw8erWVoQHipwf6WVKGlYsPnMiKbRLMrnwEGwJyQQ
+	 BmTJQknWEZ5F9DHLYMK2Kqg9Ux+OZI701e2yr7AhR8q7Pk3OiNFt2UiIkT8xHFIxvF
+	 gdas6E1/fOZiA==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20230329113828.28562-1-peter.ujfalusi@linux.intel.com>
+References: <20230329113828.28562-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH for v6.3-rc] ASoC: SOF: avoid a NULL dereference with
+ unsupported widgets
+Message-Id: <168010863363.3244560.3817581008251520478.b4-ty@kernel.org>
+Date: Wed, 29 Mar 2023 17:50:33 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: johan+linaro@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-2eb1a
+Message-ID-Hash: HK6OE7JYU5CVSPYP5JPPOAVLO2P7JZ3S
+X-Message-ID-Hash: HK6OE7JYU5CVSPYP5JPPOAVLO2P7JZ3S
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: KMG3S7YJ75JBA3A6WEWMICPY7LI4BGVL
-X-Message-ID-Hash: KMG3S7YJ75JBA3A6WEWMICPY7LI4BGVL
-X-Mailman-Approved-At: Wed, 29 Mar 2023 16:15:08 +0000
-CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Johan Hovold <johan+linaro@kernel.org>
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ guennadi.liakhovetski@linux.intel.com, stable@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KMG3S7YJ75JBA3A6WEWMICPY7LI4BGVL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HK6OE7JYU5CVSPYP5JPPOAVLO2P7JZ3S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,27 +91,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Drop the stray 'get', which appears to be a copy-paste error, from the
-registration-failure error message.
+On Wed, 29 Mar 2023 14:38:28 +0300, Peter Ujfalusi wrote:
+> If an IPC4 topology contains an unsupported widget, its .module_info
+> field won't be set, then sof_ipc4_route_setup() will cause a kernel
+> Oops trying to dereference it. Add a check for such cases.
+> 
+> 
 
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- sound/soc/qcom/qdsp6/q6apm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied to
 
-diff --git a/sound/soc/qcom/qdsp6/q6apm.c b/sound/soc/qcom/qdsp6/q6apm.c
-index 994c9e823a88..a7a3f973eb6d 100644
---- a/sound/soc/qcom/qdsp6/q6apm.c
-+++ b/sound/soc/qcom/qdsp6/q6apm.c
-@@ -676,7 +676,7 @@ static int apm_probe(gpr_device_t *gdev)
- 
- 	ret = devm_snd_soc_register_component(dev, &q6apm_audio_component, NULL, 0);
- 	if (ret < 0) {
--		dev_err(dev, "failed to get register q6apm: %d\n", ret);
-+		dev_err(dev, "failed to register q6apm: %d\n", ret);
- 		return ret;
- 	}
- 
--- 
-2.39.2
+   broonie/sound.git for-6.3
+
+Thanks!
+
+[1/1] ASoC: SOF: avoid a NULL dereference with unsupported widgets
+      commit: e3720f92e0237921da537e47a0b24e27899203f8
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
