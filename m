@@ -4,29 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BD93C6FD18
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 03:44:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E565C6FD18
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 04:17:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 492971F4;
-	Wed, 29 Mar 2023 05:43:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 492971F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1CC1201;
+	Wed, 29 Mar 2023 06:16:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1CC1201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680061463;
-	bh=Z9MLbxN1y1FYQ3fpZDPrND5+9oADOQYOYfQSKEM29rQ=;
-	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=JnGmB9L0oN7XjzhlEhqoRwignQ5GJ4tWNICF0v1Tep8WUpUZegvTYv2szQie/vk0R
-	 jV68IBHXJ6Tkwnrrm8mDSfkJLmXiIzqV5NPbF46RFNgmcoLCgpYkP8bLoDFaSPLFtt
-	 t9wp8CbYowmX0EG5wr/quq/s6hLxud37bddTwm3M=
+	s=default; t=1680063454;
+	bh=/w7wXYIbbjds+dHj8hzQlMWEZHlwt0WI/Lgw35hj5Dc=;
+	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From:Reply-To:Cc:From;
+	b=ps3TeTllSZFgdbGSCsosRQVtuvc2XHVvxSfzKeebAurRtkc4puGR/7m4jkMGM+/Qy
+	 EZZTUOoCnu/0B3OWNomnriDwiS2LTK+NH/7Bjx2GWR9JZWaiZYljtT7Zv4OV9aHgGR
+	 +L57Jix8YRv1M1h3kdxljv3qX7KVJ7RHjszPhj3I=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93645F80272;
-	Wed, 29 Mar 2023 05:43:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC77AF80290;
+	Wed, 29 Mar 2023 06:15:50 +0200 (CEST)
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: ymfpci: Add error messages for abritrary IO ports on
- older chips
-Date: Wed, 29 Mar 2023 06:42:04 +0300
+Subject: [PATCH 2/4] ALSA: ymfpci: Move allocation of saved registers to
+ struct snd_ymfpci
+Date: Wed, 29 Mar 2023 07:14:38 +0300
+In-Reply-To: <20230329041440.177363-1-tasos@tasossah.com>
+References: <20230329041440.177363-1-tasos@tasossah.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -37,7 +40,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VR3QYXSYS2JNFNYGYABG5FMFUKCHZBF3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -47,7 +51,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168006138739.26.16436862701500259301@mailman-core.alsa-project.org>
+ <168006334833.26.13441719652980718121@mailman-core.alsa-project.org>
 From: Tasos Sahanidis via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Tasos Sahanidis <tasos@tasossah.com>
 Cc: tiwai@suse.com, tasos@tasossah.com
@@ -55,51 +59,53 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C330DF80272; Wed, 29 Mar 2023 05:43:00 +0200 (CEST)
+	id 268CFF80482; Wed, 29 Mar 2023 06:15:42 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED shortcircuit=no autolearn=ham
-	autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	RCVD_IN_DNSWL_HI,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED shortcircuit=no
+	autolearn=ham autolearn_force=no version=3.4.6
 Received: from devnull.tasossah.com (devnull.tasossah.com
  [IPv6:2001:41d0:1:e60e::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C0903F80249
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2023 05:42:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0903F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1B274F80249
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2023 06:15:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B274F80249
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=devnull.tasossah.com header.i=@devnull.tasossah.com
- header.a=rsa-sha256 header.s=vps header.b=vfoak8xs
+ header.a=rsa-sha256 header.s=vps header.b=qhFMrGN4
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=devnull.tasossah.com; s=vps; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Ziq/jGWpLC/n6alqejFSgr4MJv2Xynwp34TQ3DqonPM=; b=vfoak8xsSsZ3QS6pkQKMjwkGnM
-	KqYuUVDS9SlQnIrWhAoKKdo9kjuoqhlHO0hmjGl+neHo9SwvqS4gN6CXt9hRBpjoU9dEhd/IWx72n
-	6jcAwrl+2+qxTSqzkPWERHfs3uRTz8qUdeQc+S2hy8x0WuTi9XrFM5eVgFL8ZCSULauE=;
+	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=oulTBEm0RqyNtZsXDc80rF/xwAAA0O9HvPhrSextl04=; b=qhFMrGN4mJrZE1L28wLYYeLGcn
+	mJkPvr3lgAaS+I414Uqb7vPkMc9+l23PVNTcNxpe47bDSWodRfkzizv4O7nYHaC2M/nnojsgjyssT
+	XkXAmz5v9TBH26IFBVJNyeSZ+sQtA09IQEKYabbPe3HsbogSktrtWVqNPsfzewzgZZgI=;
 Received: from [2a02:587:6a11:9400::d54] (helo=localhost.localdomain)
 	by devnull.tasossah.com with esmtpsa  (TLS1.3) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.93)
 	(envelope-from <tasos@tasossah.com>)
-	id 1phMi4-00GuNu-7k; Wed, 29 Mar 2023 06:42:52 +0300
+	id 1phNDP-00GucY-Ou; Wed, 29 Mar 2023 07:15:15 +0300
 From: Tasos Sahanidis <tasos@tasossah.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: ymfpci: Add error messages for abritrary IO ports on
- older chips
-Date: Wed, 29 Mar 2023 06:42:04 +0300
-Message-Id: <20230329034204.171901-1-tasos@tasossah.com>
+Subject: [PATCH 2/4] ALSA: ymfpci: Move allocation of saved registers to
+ struct snd_ymfpci
+Date: Wed, 29 Mar 2023 07:14:38 +0300
+Message-Id: <20230329041440.177363-3-tasos@tasossah.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230329041440.177363-1-tasos@tasossah.com>
+References: <20230329041440.177363-1-tasos@tasossah.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: A4U22ORSTTKVL4JSK63V3VVBHCAAHGV4
-X-Message-ID-Hash: A4U22ORSTTKVL4JSK63V3VVBHCAAHGV4
+Message-ID-Hash: VR3QYXSYS2JNFNYGYABG5FMFUKCHZBF3
+X-Message-ID-Hash: VR3QYXSYS2JNFNYGYABG5FMFUKCHZBF3
 X-MailFrom: tasos@tasossah.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -112,7 +118,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VR3QYXSYS2JNFNYGYABG5FMFUKCHZBF3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,98 +128,116 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-As an end user, it can be confusing to request an arbitrary IO port be
-used only to find out that it doesn't work without an obvious reason,
-especially since /sys/module/snd_ymfpci/parameters/{fm,joystick,mpu}_port
-indicate 0 after the module has been loaded.
-
-In my case, I was unaware that the YMF724 did not support such usage, and
-thus ended up spending time attempting to debug the issue.
-
-Now, when a user attempts to request an IO port that isn't supported by
-the hardware, the following message is printed:
-
-[   25.549530] snd_ymfpci 0000:06:05.0: The Yamaha DS-1 (YMF724F) does not support arbitrary IO ports for FM (requested 0x1234)
+The registers were previously allocated when CONFIG_PM_SLEEP was set,
+however this only saved an insignificant amount of memory otherwise.
 
 Signed-off-by: Tasos Sahanidis <tasos@tasossah.com>
 ---
- sound/pci/ymfpci/ymfpci.c | 35 +++++++++++++++++++++++++----------
- 1 file changed, 25 insertions(+), 10 deletions(-)
+ sound/pci/ymfpci/ymfpci.h      | 31 ++++++++++++++++++++++++++++++-
+ sound/pci/ymfpci/ymfpci_main.c | 34 ----------------------------------
+ 2 files changed, 30 insertions(+), 35 deletions(-)
 
-diff --git a/sound/pci/ymfpci/ymfpci.c b/sound/pci/ymfpci/ymfpci.c
-index 1e198e4d5..de5dc5337 100644
---- a/sound/pci/ymfpci/ymfpci.c
-+++ b/sound/pci/ymfpci/ymfpci.c
-@@ -98,8 +98,10 @@ static int snd_ymfpci_create_gameport(struct snd_ymfpci *chip, int dev,
- 		case 0x204: legacy_ctrl2 |= 2 << 6; break;
- 		case 0x205: legacy_ctrl2 |= 3 << 6; break;
- 		default:
--			dev_err(chip->card->dev,
--				"invalid joystick port %#x", io_port);
-+			if (io_port > 0)
-+				dev_err(chip->card->dev,
-+					"The %s does not support arbitrary IO ports for the game port (requested 0x%x)\n",
-+					chip->card->shortname, (unsigned int)io_port);
- 			return -EINVAL;
- 		}
- 	}
-@@ -186,6 +188,13 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 	default: model = str = "???"; break;
- 	}
+diff --git a/sound/pci/ymfpci/ymfpci.h b/sound/pci/ymfpci/ymfpci.h
+index 2103654c6..04e280004 100644
+--- a/sound/pci/ymfpci/ymfpci.h
++++ b/sound/pci/ymfpci/ymfpci.h
+@@ -268,6 +268,35 @@ struct snd_ymfpci_pcm {
+ 	u32 shift;
+ };
  
-+	strcpy(card->driver, str);
-+	sprintf(card->shortname, "Yamaha %s (%s)", model, str);
-+	sprintf(card->longname, "%s at 0x%lx, irq %i",
-+		card->shortname,
-+		chip->reg_area_phys,
-+		chip->irq);
++static const int saved_regs_index[] = {
++	/* spdif */
++	YDSXGR_SPDIFOUTCTRL,
++	YDSXGR_SPDIFOUTSTATUS,
++	YDSXGR_SPDIFINCTRL,
++	/* volumes */
++	YDSXGR_PRIADCLOOPVOL,
++	YDSXGR_NATIVEDACINVOL,
++	YDSXGR_NATIVEDACOUTVOL,
++	YDSXGR_BUF441OUTVOL,
++	YDSXGR_NATIVEADCINVOL,
++	YDSXGR_SPDIFLOOPVOL,
++	YDSXGR_SPDIFOUTVOL,
++	YDSXGR_ZVOUTVOL,
++	YDSXGR_LEGACYOUTVOL,
++	/* address bases */
++	YDSXGR_PLAYCTRLBASE,
++	YDSXGR_RECCTRLBASE,
++	YDSXGR_EFFCTRLBASE,
++	YDSXGR_WORKBASE,
++	/* capture set up */
++	YDSXGR_MAPOFREC,
++	YDSXGR_RECFORMAT,
++	YDSXGR_RECSLOTSR,
++	YDSXGR_ADCFORMAT,
++	YDSXGR_ADCSLOTSR,
++};
++#define YDSXGR_NUM_SAVED_REGS	ARRAY_SIZE(saved_regs_index)
 +
- 	legacy_ctrl = 0;
- 	legacy_ctrl2 = 0x0800;	/* SBEN = 0, SMOD = 01, LAD = 0 */
+ struct snd_ymfpci {
+ 	int irq;
  
-@@ -218,7 +227,13 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 		case 0x398: legacy_ctrl2 |= 1; break;
- 		case 0x3a0: legacy_ctrl2 |= 2; break;
- 		case 0x3a8: legacy_ctrl2 |= 3; break;
--		default: fm_port[dev] = 0; break;
-+		default:
-+			if (fm_port[dev] > 0)
-+				dev_err(card->dev,
-+					"The %s does not support arbitrary IO ports for FM (requested 0x%x)\n",
-+					card->shortname, (unsigned int)fm_port[dev]);
-+			fm_port[dev] = 0;
-+			break;
- 		}
- 		if (fm_port[dev] > 0)
- 			fm_res = devm_request_region(&pci->dev, fm_port[dev],
-@@ -234,7 +249,13 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 		case 0x300: legacy_ctrl2 |= 1 << 4; break;
- 		case 0x332: legacy_ctrl2 |= 2 << 4; break;
- 		case 0x334: legacy_ctrl2 |= 3 << 4; break;
--		default: mpu_port[dev] = 0; break;
-+		default:
-+			if (mpu_port[dev] > 0)
-+				dev_err(card->dev,
-+					"The %s does not support arbitrary IO ports for MPU-401 (requested 0x%x)\n",
-+					card->shortname, (unsigned int)mpu_port[dev]);
-+			mpu_port[dev] = 0;
-+			break;
- 		}
- 		if (mpu_port[dev] > 0)
- 			mpu_res = devm_request_region(&pci->dev, mpu_port[dev],
-@@ -257,12 +278,6 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
- 	if (err  < 0)
- 		return err;
+@@ -345,7 +374,7 @@ struct snd_ymfpci {
+ 	const struct firmware *dsp_microcode;
+ 	const struct firmware *controller_microcode;
  
--	strcpy(card->driver, str);
--	sprintf(card->shortname, "Yamaha %s (%s)", model, str);
--	sprintf(card->longname, "%s at 0x%lx, irq %i",
--		card->shortname,
--		chip->reg_area_phys,
--		chip->irq);
- 	err = snd_ymfpci_pcm(chip, 0);
+-	u32 *saved_regs;
++	u32 saved_regs[YDSXGR_NUM_SAVED_REGS];
+ 	u32 saved_ydsxgr_mode;
+ 	u16 saved_dsxg_legacy;
+ 	u16 saved_dsxg_elegacy;
+diff --git a/sound/pci/ymfpci/ymfpci_main.c b/sound/pci/ymfpci/ymfpci_main.c
+index 6d13f4152..8bf647824 100644
+--- a/sound/pci/ymfpci/ymfpci_main.c
++++ b/sound/pci/ymfpci/ymfpci_main.c
+@@ -2220,35 +2220,6 @@ static void snd_ymfpci_free(struct snd_card *card)
+ 	release_firmware(chip->controller_microcode);
+ }
+ 
+-static const int saved_regs_index[] = {
+-	/* spdif */
+-	YDSXGR_SPDIFOUTCTRL,
+-	YDSXGR_SPDIFOUTSTATUS,
+-	YDSXGR_SPDIFINCTRL,
+-	/* volumes */
+-	YDSXGR_PRIADCLOOPVOL,
+-	YDSXGR_NATIVEDACINVOL,
+-	YDSXGR_NATIVEDACOUTVOL,
+-	YDSXGR_BUF441OUTVOL,
+-	YDSXGR_NATIVEADCINVOL,
+-	YDSXGR_SPDIFLOOPVOL,
+-	YDSXGR_SPDIFOUTVOL,
+-	YDSXGR_ZVOUTVOL,
+-	YDSXGR_LEGACYOUTVOL,
+-	/* address bases */
+-	YDSXGR_PLAYCTRLBASE,
+-	YDSXGR_RECCTRLBASE,
+-	YDSXGR_EFFCTRLBASE,
+-	YDSXGR_WORKBASE,
+-	/* capture set up */
+-	YDSXGR_MAPOFREC,
+-	YDSXGR_RECFORMAT,
+-	YDSXGR_RECSLOTSR,
+-	YDSXGR_ADCFORMAT,
+-	YDSXGR_ADCSLOTSR,
+-};
+-#define YDSXGR_NUM_SAVED_REGS	ARRAY_SIZE(saved_regs_index)
+-
+ static int snd_ymfpci_suspend(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+@@ -2372,11 +2343,6 @@ int snd_ymfpci_create(struct snd_card *card,
  	if (err < 0)
  		return err;
+ 
+-	chip->saved_regs = devm_kmalloc_array(&pci->dev, YDSXGR_NUM_SAVED_REGS,
+-					      sizeof(u32), GFP_KERNEL);
+-	if (!chip->saved_regs)
+-		return -ENOMEM;
+-
+ 	snd_ymfpci_proc_init(card, chip);
+ 
+ 	return 0;
 -- 
 2.25.1
 
