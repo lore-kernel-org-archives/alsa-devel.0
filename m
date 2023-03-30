@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E66EC6FD1D
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Mar 2023 15:52:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AFF5C6FD1D
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Mar 2023 15:55:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C0F11F1;
-	Thu, 30 Mar 2023 17:52:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C0F11F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E9741EF;
+	Thu, 30 Mar 2023 17:54:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E9741EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680191572;
-	bh=BSUfJfr83wX9l4HrIiQobhzo1rcuyRmRcqPrz4EvtpU=;
+	s=default; t=1680191737;
+	bh=8fdkxzGEdTcj5Iqg31XzGMXh3GLbZjg3ksGnHCEhgaw=;
 	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FKfcwH0i7zEyImvajL1TUQF4yr2ZnQID/t7etf+nTvVHulMXRly1fJ3FKUE5i/jJU
-	 t6pUXMbPOKCVxlj6jUjBCwlk9sWkgDNVt837WcEK7zGTHmMMU0KtjR4wBNU4D4Iq+q
-	 yAuOMpHp5YR93t7H1VQrpA11GI03xaHVFeloLB9Y=
+	b=mevriZw1m2WwjfOWxa0Jjp/w8zug4tMMa1IXj84sBu7wQxQvKXRG9rZObbvqbW6h2
+	 iYYtdF/KEi1cXQybM/pQRCHn24X03cLTEzojAB/gNyV521MMzKPlbzdckiXIFju8I5
+	 7ZfHMHTxFKWtcRicZI7Z89bs2WnFjfsSdu9q9QfY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A66F0F80272;
-	Thu, 30 Mar 2023 17:51:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4714CF80272;
+	Thu, 30 Mar 2023 17:54:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1CF12F80272; Thu, 30 Mar 2023 17:51:34 +0200 (CEST)
+	id ABA2FF80272; Thu, 30 Mar 2023 17:54:21 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 15322F80249
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2023 17:51:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15322F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id EB39EF80249
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2023 17:54:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB39EF80249
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=apklYUU9;
+ header.s=susede2_rsa header.b=xnQIj2c8;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=xGYNFdYt
+ header.s=susede2_ed25519 header.b=axyRbsyV
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3FE0E1FE12;
-	Thu, 30 Mar 2023 15:51:26 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AFA2D1FE10;
+	Thu, 30 Mar 2023 15:54:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1680191486;
+	t=1680191657;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9bk6llO7HTeW/P1KTvZtZjBozqqI5PJsCukncdMWzxU=;
-	b=apklYUU9YnljJxMXSVTDL9IVfzkD+ydOtkS2IVYrbf1Pyjt7RbDfcLrWIYpAxH1DLNUh75
-	bk4QMxscoXgtIrm4udhAcCR5/NOEUFBpDLZXEhNw9W3lBT7fd4zz99B31dxc+s4G04YWMG
-	QgfIqjP4bOx1CucGlIdj+1IgvnBpvOA=
+	bh=a2MQ1f3LkYw8V/ereBWjDqsoDnid7UAHay1UaLYZ9M0=;
+	b=xnQIj2c8/lha+ALtaT/nGH67Xx5c0Inbdat+Rzo+U+Zs9jUji2NL/D7OlCKyOnrijbITAX
+	Cj39tMpOv7SC7YOL3OjYbZyc1ZS+DL5Jiy606wntaKD98UtC5pur7Nptm5Z/GMoQclEieh
+	cLCctMupA5ox5vPwTn0MgEv7Tm523dI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1680191486;
+	s=susede2_ed25519; t=1680191657;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9bk6llO7HTeW/P1KTvZtZjBozqqI5PJsCukncdMWzxU=;
-	b=xGYNFdYtQYY3DtFo2iB0n2M02bgmJfq8swBvwqHlveMFguekKf2dDqDCaUkQT2rP1VEl1H
-	odj1/etuObqMwhCw==
+	bh=a2MQ1f3LkYw8V/ereBWjDqsoDnid7UAHay1UaLYZ9M0=;
+	b=axyRbsyVStzHNVlOzpmHa4MhOrAN85601+RYWE8mkLgrKeRCXi8DHFGBGHPGcDK+shhDc5
+	2ALZ95BEKfVa+3CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0EDE91348E;
-	Thu, 30 Mar 2023 15:51:26 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74EA11348E;
+	Thu, 30 Mar 2023 15:54:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id VhDGAv6vJWQ3WAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 30 Mar 2023 15:51:26 +0000
-Date: Thu, 30 Mar 2023 17:51:25 +0200
-Message-ID: <87bkkakzk2.wl-tiwai@suse.de>
+	id U4W9G6mwJWSjWQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 30 Mar 2023 15:54:17 +0000
+Date: Thu, 30 Mar 2023 17:54:16 +0200
+Message-ID: <87a5zukzfb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 06/18] ASoC: SOF: Intel: hda-mlink: add structures to
- parse ALT links
-In-Reply-To: <20230327112931.23411-7-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH 08/18] ASoC: SOF: Intel: hda-mlink: introduce helpers for
+ 'extended links' PM
+In-Reply-To: <20230327112931.23411-9-peter.ujfalusi@linux.intel.com>
 References: <20230327112931.23411-1-peter.ujfalusi@linux.intel.com>
-	<20230327112931.23411-7-peter.ujfalusi@linux.intel.com>
+	<20230327112931.23411-9-peter.ujfalusi@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: KQB5ZNFXLISERHRSZONOPYPTY4XRPAK2
-X-Message-ID-Hash: KQB5ZNFXLISERHRSZONOPYPTY4XRPAK2
+Message-ID-Hash: JDXWGVB3FV4JVMCVGQP5VBRVIM75AIW3
+X-Message-ID-Hash: JDXWGVB3FV4JVMCVGQP5VBRVIM75AIW3
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KQB5ZNFXLISERHRSZONOPYPTY4XRPAK2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JDXWGVB3FV4JVMCVGQP5VBRVIM75AIW3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,38 +114,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 27 Mar 2023 13:29:19 +0200,
+On Mon, 27 Mar 2023 13:29:21 +0200,
 Peter Ujfalusi wrote:
 > 
->  int hda_bus_ml_get_capabilities(struct hdac_bus *bus)
->  {
-> -	if (bus->mlcap)
-> -		return snd_hdac_ext_bus_get_ml_capabilities(bus);
-> +	u32 link_count;
-> +	int ret;
-> +	int i;
+> +/*
+> + * Hardware recommendations are to wait ~10us before checking any hardware transition
+> + * reported by bits changing status.
+> + * This value does not need to be super-precise, a slack of 5us is perfectly acceptable.
+> + * The worst-case is about 1ms before reporting an issue
+> + */
+> +#define HDAML_POLL_DELAY_MIN_US 10
+> +#define HDAML_POLL_DELAY_SLACK_US 5
+> +#define HDAML_POLL_DELAY_RETRY  100
 > +
-> +	if (!bus->mlcap)
-> +		return 0;
+> +static int check_power_active(u32 __iomem *lctl, int sublink, bool enable)
+> +{
+> +	int mask = BIT(sublink) << AZX_ML_LCTL_CPA_SHIFT;
+> +	int retry = HDAML_POLL_DELAY_RETRY;
+> +	u32 val;
 > +
-> +	link_count = readl(bus->mlcap + AZX_REG_ML_MLCD) + 1;
-> +
-> +	dev_dbg(bus->dev, "HDAudio Multi-Link count: %d\n", link_count);
-> +
-> +	for (i = 0; i < link_count; i++) {
-> +		ret = hda_ml_alloc_h2link(bus, i);
-> +		if (ret < 0) {
-> +			hda_bus_ml_free(bus);
-> +			return ret;
+> +	usleep_range(HDAML_POLL_DELAY_MIN_US,
+> +		     HDAML_POLL_DELAY_MIN_US + HDAML_POLL_DELAY_SLACK_US);
+> +	do {
+> +		val = readl(lctl);
+> +		if (enable) {
+> +			if (val & mask)
+> +				return 0;
+> +		} else {
+> +			if (!(val & mask))
+> +				return 0;
 > +		}
-> +	}
->  	return 0;
+> +		usleep_range(HDAML_POLL_DELAY_MIN_US,
+> +			     HDAML_POLL_DELAY_MIN_US + HDAML_POLL_DELAY_SLACK_US);
+> +
+> +	} while (--retry);
+> +
+> +	return -EIO;
+> +}
 
-This makes that each call of hda_bus_ml_get_capabilities() adds the
-h2link entries blindly.  If the driver calls it multiple times
-mistakenly (the function name sounds as if it's just a helper to query
-the capability bits), it'll lead to doubly entries.  Maybe adding some
-check would be safer, IMO.
+Can read_poll_timeout() and co be alternative?
 
 
 thanks,
