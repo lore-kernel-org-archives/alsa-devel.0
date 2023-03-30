@@ -4,87 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AB22C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Mar 2023 16:08:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08322C6FD1D
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Mar 2023 16:13:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC8C71F9;
-	Thu, 30 Mar 2023 18:07:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC8C71F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDC201EF;
+	Thu, 30 Mar 2023 18:12:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDC201EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680192484;
-	bh=mW/RkKS/oQrTTY1djOYWQ8rDykVKEFOwuXP32mYUi/0=;
+	s=default; t=1680192778;
+	bh=IfmUeqezkNqiaju5vernUXTtKzaKmOo/eWqsN6k6QwU=;
 	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UfkBRDV+/h3FPJuZ5h79UvK0dLQ+/dgRTKNKDwL7t9jJyslaroiTPmXPpBWct8N4G
-	 5nrnY7HM7sh5+LY1x6I36DvJwPf775+vM51xyzVdQY/frYm+qvxFQsyG8yRqUZSe4J
-	 TAPQqDJ4lAyIERjBBlsuiwGblsI8lmT1awflyuU0=
+	b=Xh0S3Zwo/TVGzwonvRQa7eolUHUoE9/2yiH06p9srzbGcvoIC/dT7ZcqX3R7S63F8
+	 JZ7zWfvFWNC+8WYqdnW2jPCqF3stSUNZGdgf4afz/ZnR+kAewGTuQeo4wwDJH90Km2
+	 JXoUQ6+0YjBcW1iIChTp9qeMBMnMohv/ixefe7R4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EE6EF8053D;
-	Thu, 30 Mar 2023 18:06:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30D06F80272;
+	Thu, 30 Mar 2023 18:11:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C8095F80272; Thu, 30 Mar 2023 17:16:35 +0200 (CEST)
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
- [61.152.239.71])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	id 6918EF80272; Thu, 30 Mar 2023 18:11:42 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B3F97F80249
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2023 17:16:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3F97F80249
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 9596F24DEAE;
-	Thu, 30 Mar 2023 23:16:09 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 30 Mar
- 2023 23:16:09 +0800
-Received: from [192.168.125.96] (113.72.144.76) by EXMBX168.cuchost.com
- (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 30 Mar
- 2023 23:16:08 +0800
-Message-ID: <2d5a8dae-73fd-b1f8-089e-041637d66b0d@starfivetech.com>
-Date: Thu, 30 Mar 2023 23:16:08 +0800
+	by alsa1.perex.cz (Postfix) with ESMTPS id AA9AEF8021D
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2023 18:11:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA9AEF8021D
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=DDNWx9VT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680192700; x=1711728700;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=IfmUeqezkNqiaju5vernUXTtKzaKmOo/eWqsN6k6QwU=;
+  b=DDNWx9VTRBv8c9EaAOGFLum2xrx/DFkyGwKzkHVLDRK6p6n/d106xcLJ
+   /4CLX/QYVcs7yJGUdkqkUm1GtabDg/SqhdXfoOV+75aMJyENmHHYQLOA8
+   aP4i8goHsHCkvYphApPQ/D8c+clUc1nWcrTJ+fLc77swcmLjEoA9GUjpt
+   rB/76AOiSb7xpSH0cR29Y1a33QHJyYTB2oRSe8jayH+xpsvo4sLdxBY0j
+   GhDLSUL8jgRpzYHTJE/hpQNiwZEElQpq0brgqTL+GksSEY/WamfZdFPTP
+   36IsrKrH+ceNTR4N/Rr2eQ/eMk7A/Ery8vBOL12TAmuG5uNNni+0GZRoK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="321601846"
+X-IronPort-AV: E=Sophos;i="5.98,305,1673942400";
+   d="scan'208";a="321601846"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Mar 2023 09:09:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="1014491430"
+X-IronPort-AV: E=Sophos;i="5.98,305,1673942400";
+   d="scan'208";a="1014491430"
+Received: from leedong-mobl.amr.corp.intel.com (HELO [10.209.122.136])
+ ([10.209.122.136])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Mar 2023 09:09:37 -0700
+Message-ID: <146f6100-9f99-f463-603c-332c5b9d9eef@linux.intel.com>
+Date: Thu, 30 Mar 2023 11:09:36 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v1 3/3] riscv: dts: starfive: add tdm node and sound card
-To: Conor Dooley <conor.dooley@microchip.com>, Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>
-References: <20230329153320.31390-1-walker.chen@starfivetech.com>
- <20230329153320.31390-4-walker.chen@starfivetech.com>
- <d455a90a-7e63-2254-75cb-70cb26ae7483@linaro.org>
- <af015701-f1ff-4b1e-9b1b-c635fc684ce6@spud>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.9.0
+Subject: Re: [PATCH 06/18] ASoC: SOF: Intel: hda-mlink: add structures to
+ parse ALT links
 Content-Language: en-US
-From: Walker Chen <walker.chen@starfivetech.com>
-In-Reply-To: <af015701-f1ff-4b1e-9b1b-c635fc684ce6@spud>
-Content-Type: text/plain; charset="UTF-8"
+To: Takashi Iwai <tiwai@suse.de>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+References: <20230327112931.23411-1-peter.ujfalusi@linux.intel.com>
+ <20230327112931.23411-7-peter.ujfalusi@linux.intel.com>
+ <87bkkakzk2.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <87bkkakzk2.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.144.76]
-X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-X-MailFrom: walker.chen@starfivetech.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Message-ID-Hash: 7NHJ6NNWTBOBERM3MCPZ5VTXJ3VWRW2B
+X-Message-ID-Hash: 7NHJ6NNWTBOBERM3MCPZ5VTXJ3VWRW2B
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZLHQ4NMHXRK6Y6OVDFRGCJ2YYV2YCRBW
-X-Message-ID-Hash: ZLHQ4NMHXRK6Y6OVDFRGCJ2YYV2YCRBW
-X-Mailman-Approved-At: Thu, 30 Mar 2023 16:06:32 +0000
-CC: Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Emil Renner Berthing <emil.renner.berthing@canonical.com>,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ rander.wang@intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZLHQ4NMHXRK6Y6OVDFRGCJ2YYV2YCRBW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7NHJ6NNWTBOBERM3MCPZ5VTXJ3VWRW2B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,85 +108,46 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 
-On 2023/3/30 15:58, Conor Dooley wrote:
-> On Thu, Mar 30, 2023 at 09:43:10AM +0200, Krzysztof Kozlowski wrote:
->> On 29/03/2023 17:33, Walker Chen wrote:
->> > Add the tdm controller node and sound card for the StarFive JH7110 SoC.
+On 3/30/23 10:51, Takashi Iwai wrote:
+> On Mon, 27 Mar 2023 13:29:19 +0200,
+> Peter Ujfalusi wrote:
+>>
+>>  int hda_bus_ml_get_capabilities(struct hdac_bus *bus)
+>>  {
+>> -	if (bus->mlcap)
+>> -		return snd_hdac_ext_bus_get_ml_capabilities(bus);
+>> +	u32 link_count;
+>> +	int ret;
+>> +	int i;
+>> +
+>> +	if (!bus->mlcap)
+>> +		return 0;
+>> +
+>> +	link_count = readl(bus->mlcap + AZX_REG_ML_MLCD) + 1;
+>> +
+>> +	dev_dbg(bus->dev, "HDAudio Multi-Link count: %d\n", link_count);
+>> +
+>> +	for (i = 0; i < link_count; i++) {
+>> +		ret = hda_ml_alloc_h2link(bus, i);
+>> +		if (ret < 0) {
+>> +			hda_bus_ml_free(bus);
+>> +			return ret;
+>> +		}
+>> +	}
+>>  	return 0;
 > 
->> > +		compatible = "fixed-clock";
->> > +		clock-output-names = "wm8960_mclk";
->> > +		#clock-cells = <0>;
->> > +	};
->> > +
->> >  	i2srx_bclk_ext: i2srx-bclk-ext-clock {
->> >  		compatible = "fixed-clock";
->> >  		clock-output-names = "i2srx_bclk_ext";
->> > @@ -375,6 +381,27 @@
->> >  			status = "disabled";
->> >  		};
->> >  
->> > +		tdm: tdm@10090000 {
->> > +			compatible = "starfive,jh7110-tdm";
->> > +			reg = <0x0 0x10090000 0x0 0x1000>;
->> > +			clocks = <&syscrg JH7110_SYSCLK_TDM_AHB>,
->> > +				 <&syscrg JH7110_SYSCLK_TDM_APB>,
->> > +				 <&syscrg JH7110_SYSCLK_TDM_INTERNAL>,
->> > +				 <&syscrg JH7110_SYSCLK_TDM_TDM>,
->> > +				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
->> > +				 <&tdm_ext>;
->> > +			clock-names = "tdm_ahb", "tdm_apb",
->> > +				      "tdm_internal", "tdm",
->> > +				      "mclk_inner", "tdm_ext";
->> > +			resets = <&syscrg JH7110_SYSRST_TDM_AHB>,
->> > +				 <&syscrg JH7110_SYSRST_TDM_APB>,
->> > +				 <&syscrg JH7110_SYSRST_TDM_CORE>;
->> > +			dmas = <&dma 20>, <&dma 21>;
->> > +			dma-names = "rx","tx";
->> > +			#sound-dai-cells = <0>;
->> > +			status = "disabled";
->> > +		};
->> > +
->> >  		stgcrg: clock-controller@10230000 {
->> >  			compatible = "starfive,jh7110-stgcrg";
->> >  			reg = <0x0 0x10230000 0x0 0x10000>;
->> > @@ -601,5 +628,12 @@
->> >  			#reset-cells = <1>;
->> >  			power-domains = <&pwrc JH7110_PD_VOUT>;
->> >  		};
->> > +
->> > +		sound0: snd-card0 {
->> 
->> 1. Why card0?
->> 2. Where is this node located? In MMIO bus? Run some basic checks on
->> your DTS before submitting upstream.
->> dtbs_check
->> dtbs W=1
->> 
->> 3. Why this is even in the DTSI? This really looks wrong.
-> 
-> Excuse me for not following here, but Walker, could you point me at
-> where in the schematic for the VisionFive 2 that this wm8960 actually
-> is?
-> I know ~nothing about audio, but good old Google tells me that this is a
-> dedicated codec chip and I was looking at [1] and could not easily find
-> it on the schematic.
-> 
-> Thanks,
-> Conor.
-> 
-> 1 https://doc-en.rvspace.org/VisionFive2/PDF/SCH_RV002_V1.2A_20221216.pdf
+> This makes that each call of hda_bus_ml_get_capabilities() adds the
+> h2link entries blindly.  If the driver calls it multiple times
+> mistakenly (the function name sounds as if it's just a helper to query
+> the capability bits), it'll lead to doubly entries.  Maybe adding some
+> check would be safer, IMO.
 
-Hi Conor,
+Interesting comment, I didn't think of that one.
 
-The TDM need work together with external codec WM8960 by plugging the raspberry pie
- audio board into the 40-pin, which is found in sheet 21 of the schematic. Because the
- 40-pin of VisionFive2 is fully compatible with the pins of Raspberry pie audio board. 
+This function is currently called in the probe and indirectly via
+hda_init_caps(). I think the driver framework guarantees the probe is
+only called once, doesn't it?
 
-For more information of the audio board, you can take a look at the following webpage:
-https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/
-
-The schematic of audio board:
-https://files.seeedstudio.com/wiki/MIC_HATv1.0_for_raspberrypi/src/ReSpeaker%202-Mics%20Pi%20HAT_SCH.pdf
-
-Best regards,
-Walker
+we can also rename this function to make it clearer if there are any
+suggestions, but the name is aligned with previous implementations of
+the snd_hdac_ext stuff.
