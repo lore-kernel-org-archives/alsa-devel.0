@@ -4,124 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BB5AC761AF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Mar 2023 14:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73694C77B60
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Mar 2023 15:33:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B961C1F1;
-	Thu, 30 Mar 2023 16:30:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B961C1F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC6261F1;
+	Thu, 30 Mar 2023 17:32:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC6261F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680186669;
-	bh=wIvjUQI7ZY2zkX/cddd4Uw7YYmzZ3fwXp/8dEQj1MBY=;
-	h=Date:Subject:To:References:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From:Reply-To:From;
-	b=PiN4XsvSfGvqE1UOEKaIGRjZkpy5I5nq2Ufx2kjFClq+WGw8nhm5up5n50zOspoxV
-	 rkyClRVFSriODDx6f/zaX8y7GEvIKZ3Gu8sUzWttJGcHtow5K7LV2KPEm7LSp/MtMC
-	 qePUYt9Xevy0YkZnuZ4dnh2DaMfxiBHtdYRExgbo=
+	s=default; t=1680190385;
+	bh=zWpYYIuYTJgHtpRIFKGjq97qGd3ak9fMCXilbjSs6k8=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=SZGflJMtqyY0BxneIoejUU9r+ytnv9tmdzCFHQQniK6gJKCRTUh6MUmar9mLFv4S5
+	 vBlIUCOqiHMsaoiDiynN2wW2YMDQ4e4ATE4K+NVzPhQlB9zp8pr4IBSOwOv+UTxzzr
+	 f71wtt04cqJgaGxjBW2Nte1InZdWsfkTFI43ipeA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D26B1F80272;
-	Thu, 30 Mar 2023 16:29:54 +0200 (CEST)
-Date: Thu, 30 Mar 2023 17:29:25 +0300
-Subject: Re: [PATCH] ALSA: ac97: Define dummy functions for snd_ac97_suspend()
- and resume()
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-References: <20230330132847.12882-1-tiwai@suse.de>
-In-Reply-To: <20230330132847.12882-1-tiwai@suse.de>
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TKEK7ZR65KKP2U75SQHYDR3WYZGQ2K6F/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <168018659339.26.12679433410350969665@mailman-core.alsa-project.org>
-From: Tasos Sahanidis via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Tasos Sahanidis <tasos@tasossah.com>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id 3FC1DF80272;
+	Thu, 30 Mar 2023 17:31:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD54BF80249; Thu, 30 Mar 2023 16:29:47 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.0 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	NICE_REPLY_A,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED shortcircuit=no
-	autolearn=ham autolearn_force=no version=3.4.6
-Received: from devnull.tasossah.com (devnull.tasossah.com
- [IPv6:2001:41d0:1:e60e::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id ECA39F80272; Thu, 30 Mar 2023 17:31:48 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0BC19F80249
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2023 16:29:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BC19F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id E2CF1F8021D
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2023 17:31:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2CF1F8021D
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=devnull.tasossah.com header.i=@devnull.tasossah.com
- header.a=rsa-sha256 header.s=vps header.b=VNpwIuFM
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=devnull.tasossah.com; s=vps; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=GSkjQdd6Mmrcd4nsmrZ8Rt2FXmaJlWJyZn9ardTty2o=; b=VNpwIuFMIZzl0OEsCXKNPncHG7
-	nXjHFAOJ5lkPTrlqGuiqOK52mQqq4iyF3hgztGyTr5yTRjlhbf/qgh7wSm66ouCC+SbEYZuPtJPOQ
-	4fq1XYxFpgCFbaRcZVX+ELyau50uwMTVj8COle9KY72iN9HZklEmL0l1thXsZSZkqtxA=;
-Received: from ppp-94-67-117-41.home.otenet.gr ([94.67.117.41]
- helo=[192.168.1.1])
-	by devnull.tasossah.com with esmtpsa  (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <tasos@tasossah.com>)
-	id 1phtHW-00H7kI-Hk; Thu, 30 Mar 2023 17:29:38 +0300
-Message-ID: <d3892730-4098-5147-6055-dbde869b132f@tasossah.com>
-Date: Thu, 30 Mar 2023 17:29:25 +0300
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=CeZlAwWx
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id DD71FB82901;
+	Thu, 30 Mar 2023 15:31:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F9F6C433A0;
+	Thu, 30 Mar 2023 15:31:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1680190295;
+	bh=zWpYYIuYTJgHtpRIFKGjq97qGd3ak9fMCXilbjSs6k8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CeZlAwWxbJ/bSZ4un7FNN3IwfDFkF57yLnYL5VB3GqWTc+RtBL1ZbCJKgkCiCyhCe
+	 W9bxnsrfYa3nY8YragtJajwGpLOlNq8xCJ1l6N5NW+wggEG2DHJN+mIHJi4BYBgAKi
+	 X+3u/R3OTq8wo6QU2I82zI6SaRv2we2sUxJkjfTHyldFPo0uefwu6seN2mMgB/LWTN
+	 lZ2HHx84EA4CQrTwxkVnV2r6HHpn4QGib1M01Jyr8EQTyF+xGTfknYGoRuej3EV4v4
+	 CM90jK5JiAUGUPj40gfJQsD/wZjyqbdCQ7dOed1fdDTIvoUVFSQYUscQs+BAtuLdYh
+	 xmrs4ZPpbL+TQ==
+Date: Thu, 30 Mar 2023 16:31:30 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Walker Chen <walker.chen@starfivetech.com>
+Subject: Re: [PATCH v1 3/3] riscv: dts: starfive: add tdm node and sound card
+Message-ID: <0d108d6c-e892-418b-b9af-6c2dd133dd71@spud>
+References: <20230329153320.31390-1-walker.chen@starfivetech.com>
+ <20230329153320.31390-4-walker.chen@starfivetech.com>
+ <d455a90a-7e63-2254-75cb-70cb26ae7483@linaro.org>
+ <af015701-f1ff-4b1e-9b1b-c635fc684ce6@spud>
+ <2d5a8dae-73fd-b1f8-089e-041637d66b0d@starfivetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH] ALSA: ac97: Define dummy functions for snd_ac97_suspend()
- and resume()
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-References: <20230330132847.12882-1-tiwai@suse.de>
-From: Tasos Sahanidis <tasos@tasossah.com>
-In-Reply-To: <20230330132847.12882-1-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: TKEK7ZR65KKP2U75SQHYDR3WYZGQ2K6F
-X-Message-ID-Hash: TKEK7ZR65KKP2U75SQHYDR3WYZGQ2K6F
-X-MailFrom: tasos@tasossah.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="524gvXDbAwMwRBbT"
+Content-Disposition: inline
+In-Reply-To: <2d5a8dae-73fd-b1f8-089e-041637d66b0d@starfivetech.com>
+Message-ID-Hash: 5O3ZOUUQVY6LQCRJYU3ISNOMTSZ5KSWB
+X-Message-ID-Hash: 5O3ZOUUQVY6LQCRJYU3ISNOMTSZ5KSWB
+X-MailFrom: conor@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+CC: Conor Dooley <conor.dooley@microchip.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TKEK7ZR65KKP2U75SQHYDR3WYZGQ2K6F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5O3ZOUUQVY6LQCRJYU3ISNOMTSZ5KSWB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,13 +99,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 2023-03-30 16:28, Takashi Iwai wrote:
-> For allowing the build without CONFIG_PM, add definitions of dummy
-> functions for snd_ac97_suspend() and snd_ac97_resume() without
-> CONFIG_PM, too.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Apologies for not catching this.
+--524gvXDbAwMwRBbT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Tasos Sahanidis <tasos@tasossah.com>
+On Thu, Mar 30, 2023 at 11:16:08PM +0800, Walker Chen wrote:
+> On 2023/3/30 15:58, Conor Dooley wrote:
+
+> > Excuse me for not following here, but Walker, could you point me at
+> > where in the schematic for the VisionFive 2 that this wm8960 actually
+> > is?
+> > I know ~nothing about audio, but good old Google tells me that this is a
+> > dedicated codec chip and I was looking at [1] and could not easily find
+> > it on the schematic.
+
+> > 1 https://doc-en.rvspace.org/VisionFive2/PDF/SCH_RV002_V1.2A_20221216.p=
+df
+
+> The TDM need work together with external codec WM8960 by plugging the ras=
+pberry pie
+>  audio board into the 40-pin, which is found in sheet 21 of the schematic=
+=2E Because the
+>  40-pin of VisionFive2 is fully compatible with the pins of Raspberry pie=
+ audio board.=20
+>=20
+> For more information of the audio board, you can take a look at the follo=
+wing webpage:
+> https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/
+>=20
+> The schematic of audio board:
+> https://files.seeedstudio.com/wiki/MIC_HATv1.0_for_raspberrypi/src/ReSpea=
+ker%202-Mics%20Pi%20HAT_SCH.pdf
+
+Ahh, I feared that this was the case. If it's not on the board, then it
+shouldn't be in the dts (and certainly nothing should be in
+jh7110.dtsi!).
+I suppose this should be a dt-overlay, but I don't know anything about
+the upstream infrastructure for those. Nor do I know what is permitted
+in terms of overlays.
+
+Thanks,
+Conor.
+
+--524gvXDbAwMwRBbT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZCWrTgAKCRB4tDGHoIJi
+0thyAP9IOF81Os1a6pA5/JU5Af3gbxCn4Cc3tX9CYpHYnbRm9gD/VG+H1kKtvfr1
+pLpzYaEOOfN3raDJEzVDTJIcLmCSJwg=
+=ORTa
+-----END PGP SIGNATURE-----
+
+--524gvXDbAwMwRBbT--
