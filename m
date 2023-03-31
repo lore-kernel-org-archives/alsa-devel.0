@@ -4,102 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02F11C76196
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Mar 2023 14:23:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81EE4C761A6
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Mar 2023 14:35:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B8891F0;
-	Fri, 31 Mar 2023 16:22:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B8891F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EF3F1F7;
+	Fri, 31 Mar 2023 16:34:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EF3F1F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680272623;
-	bh=pMbn/keYuRq1wybLbMXPwLJt+Z4c6h3kLfduI67Mxio=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=KiliUXA810QhjzbShQyCP5WvYqo9TG3BvAvXiZ5zPsnoM/+rRQVcaSN6gUi/V5ptl
-	 ImiZn01AlRiVokhEyyWqbwhh0EGmf6ZQZQ73prhw39UBW9eV3oYrFea5gmT2orDb0H
-	 IZz6229SsDeLnHbKDIUX7goxx1Jv+rfdGUvI8bHg=
+	s=default; t=1680273341;
+	bh=X4+QCHiBy7gZhN6kPilGhg9+VcjqlpmTmtX0Ri7Pe7w=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=O/NlMuozcMV+630JkMGXiSpuAI/JjcCp+4Hzwkdb9aNDrv2od8JjGodBK6dFCk3Bi
+	 qSo4dCveYLmX0ec0y8pEzj5AWWgMNF34TdiHXNXrW07G7wEbUi6jv0bpY4z6fDTiAV
+	 v7oNwdlrWjzXpKoLXfhZL+q/Icx4a6+gzg94UIjU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B3FAF8024E;
-	Fri, 31 Mar 2023 16:22:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4824BF80272;
+	Fri, 31 Mar 2023 16:34:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3CB30F8024E; Fri, 31 Mar 2023 16:22:27 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D5271F80272; Fri, 31 Mar 2023 16:34:24 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2DECDF80114
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2023 16:22:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DECDF80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2995DF8021D
+	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2023 16:34:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2995DF8021D
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=BI2c//Cy;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=0QdhZyQq
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=NLWYgNUG
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1E33D1F38D;
-	Fri, 31 Mar 2023 14:22:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1680272540;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=uJG6oLic2lPhCafieYdDAHvsBdaWP6uC54ZO4+WfWao=;
-	b=BI2c//CyRzaAh5bq++f620NBzAd3tcxymF+Zpm/HqszDsznl5EacAZfmgusG8Q9xljqAPj
-	sZaa3aEMEU7mg0B0V7zTAzrK4N4nT4aUnPMvbQE42kOjUaCiuV4626kLCXWOs02183ovfe
-	/dLS7i4zMGekxsiSl7JxpMX7/GU17S0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1680272540;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=uJG6oLic2lPhCafieYdDAHvsBdaWP6uC54ZO4+WfWao=;
-	b=0QdhZyQq5YSwTuK7+FvMWMKnkObEGCo7uyyaYmWL2ZqQEeqvL1fBj1ID/kwV2PxAqgl+FG
-	vz3MS4MG0g2tQDDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 00929134F7;
-	Fri, 31 Mar 2023 14:22:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ZRP5OpvsJmT7ZQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 31 Mar 2023 14:22:19 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/hdmi: Preserve the previous PCM device upon
- re-enablement
-Date: Fri, 31 Mar 2023 16:22:17 +0200
-Message-Id: <20230331142217.19791-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+	by ams.source.kernel.org (Postfix) with ESMTPS id 8BDD9B82FEB;
+	Fri, 31 Mar 2023 14:34:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA755C433EF;
+	Fri, 31 Mar 2023 14:34:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1680273257;
+	bh=X4+QCHiBy7gZhN6kPilGhg9+VcjqlpmTmtX0Ri7Pe7w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NLWYgNUG4DD6rCvFj5OkS8rBidfOjP9Zn2NXjH8eeWWFZ+T63s6bPjb04PsSwe0Xe
+	 ZEHvLmdCjCSXvcHQL1O+h2rhbZBikgygkkd9j31aV2dU3LvUWegcB1dXwT7rAAceUc
+	 /TvHmIR1TKcZjAGyoOZ/uopLykYdb5PK1xJrGzqojYT2sV8dOOb0ZUPrFNEMz6to3J
+	 UxLWGERQ1unxFQWdCJxBCAMO3PjFfIlBD6eukAvouUOuTAceqrlvO/5/GtsV+fMnUi
+	 tDtKKT/0RyCGx3ZnIWGAnqZc+sG+31VU29QLsvRqIv7Exeq5DcXy9aqbZazdofMFMd
+	 kKbtmiypJ7rGg==
+Date: Fri, 31 Mar 2023 15:34:13 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Emil Abildgaard Svendsen <EMAS@bang-olufsen.dk>
+Subject: Re: [PATCH] ASoC: fsl_sai: Use physical format width
+Message-ID: <ZCbvZVV4+Ent9Dsx@sirena.org.uk>
+References: 
+ <CAA+D8AOMTQ00Ah21w54DVXin3KcYkVxaGVd64Z_pSzv+Ooj9vw@mail.gmail.com>
+ <20230331142537.1399524-1-emas@bang-olufsen.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VCSQRCSP6F42WX4KKBBSSVNVZ5EC6SUH
-X-Message-ID-Hash: VCSQRCSP6F42WX4KKBBSSVNVZ5EC6SUH
-X-MailFrom: tiwai@suse.de
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="YXpDZxuoKdcGqtRv"
+Content-Disposition: inline
+In-Reply-To: <20230331142537.1399524-1-emas@bang-olufsen.dk>
+X-Cookie: Single tasking: Just Say No.
+Message-ID-Hash: C5EIINYGEEBJQWC4ZFPBILWDELWSL3HI
+X-Message-ID-Hash: C5EIINYGEEBJQWC4ZFPBILWDELWSL3HI
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+CC: "shengjiu.wang@gmail.com" <shengjiu.wang@gmail.com>,
+ "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "festevam@gmail.com" <festevam@gmail.com>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+ "tiwai@suse.com" <tiwai@suse.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VCSQRCSP6F42WX4KKBBSSVNVZ5EC6SUH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C5EIINYGEEBJQWC4ZFPBILWDELWSL3HI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,79 +98,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When a DRM driver turns on or off the screen with the audio
-capability, it notifies the ELD to HD-audio HDMI codec driver via
-component ops.  HDMI codec driver, in turn, attaches or detaches the
-PCM stream for the given port on the fly.
 
-The problem is that, since the recent code change, the HDMI driver
-always treats the PCM stream assignment dynamically; this ended up the
-confusion of the PCM device appearance.  e.g. when a screen goes once
-off and on again, it may appear on a different PCM device before the
-screen-off.  Although the application should treat such a change, it
-doesn't seem working gracefully with the current pipewire (maybe
-PulseAudio, too).
+--YXpDZxuoKdcGqtRv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-As a workaround, this patch changes the HDMI codec driver behavior
-slightly to be more consistent.  Now it remembers the previous PCM
-slot for the given port and try to assign to it.  That is, if a port
-is re-enabled, the driver tries to use the same PCM slot that was
-assigned to that port previously.  If it conflicts, a new slot is
-searched and used like before, instead.
+On Fri, Mar 31, 2023 at 02:26:33PM +0000, Emil Abildgaard Svendsen wrote:
+> On 3/31/23 04:55, Shengjiu Wang wrote:
 
-Fixes: ef6f5494faf6 ("ALSA: hda/hdmi: Use only dynamic PCM device allocation")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217259
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_hdmi.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+> > There are different requirements for this slot width. Some need physical
+> > width,
+> > Some need format width. We need to be careful about change here.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 9ea633fe9339..90352dbc8052 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -81,6 +81,7 @@ struct hdmi_spec_per_pin {
- 	struct delayed_work work;
- 	struct hdmi_pcm *pcm; /* pointer to spec->pcm_rec[n] dynamically*/
- 	int pcm_idx; /* which pcm is attached. -1 means no pcm is attached */
-+	int prev_pcm_idx; /* previously assigned pcm index */
- 	int repoll_count;
- 	bool setup; /* the stream has been set up by prepare callback */
- 	bool silent_stream;
-@@ -1380,9 +1381,17 @@ static void hdmi_attach_hda_pcm(struct hdmi_spec *spec,
- 	/* pcm already be attached to the pin */
- 	if (per_pin->pcm)
- 		return;
-+	/* try the previously used slot at first */
-+	idx = per_pin->prev_pcm_idx;
-+	if (idx >= 0) {
-+		if (!test_bit(idx, &spec->pcm_bitmap))
-+			goto found;
-+		per_pin->prev_pcm_idx = -1; /* no longer valid, clear it */
-+	}
- 	idx = hdmi_find_pcm_slot(spec, per_pin);
- 	if (idx == -EBUSY)
- 		return;
-+ found:
- 	per_pin->pcm_idx = idx;
- 	per_pin->pcm = get_hdmi_pcm(spec, idx);
- 	set_bit(idx, &spec->pcm_bitmap);
-@@ -1399,6 +1408,7 @@ static void hdmi_detach_hda_pcm(struct hdmi_spec *spec,
- 	idx = per_pin->pcm_idx;
- 	per_pin->pcm_idx = -1;
- 	per_pin->pcm = NULL;
-+	per_pin->prev_pcm_idx = idx;
- 	if (idx >= 0 && idx < spec->pcm_used)
- 		clear_bit(idx, &spec->pcm_bitmap);
- }
-@@ -1924,6 +1934,7 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
- 
- 		per_pin->pcm = NULL;
- 		per_pin->pcm_idx = -1;
-+		per_pin->prev_pcm_idx = -1;
- 		per_pin->pin_nid = pin_nid;
- 		per_pin->pin_nid_idx = spec->num_nids;
- 		per_pin->dev_id = i;
--- 
-2.35.3
+> I might be wrong but shouldn't physical width always correspond to what
+> can be physically measured. If you need the slot width, the same as
+> format width you use a format with matching widths like
+> SNDRV_PCM_FORMAT_S24_3LE?
 
+The point is more that things are likely to be relying on the
+current behaviour, for example CODECs that don't actually support
+24 bit audio due to a power of two requirement but cope fine when
+you play 24 bit audio in a 32 bit timeslot.  This creates issues
+changing things even if the new behaviour is in some sense
+better.  This is one of the unfortunate consequences of DT.
+
+--YXpDZxuoKdcGqtRv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQm72EACgkQJNaLcl1U
+h9BzJQf8Dun08ytWS8qbZ5qM5+dIIh0MDYQJEJMFiye8wSFAec33HuDII5g7mA/3
+pBOq7ZEY9h7trz8dmjVldFrU7x6UQ/A1SO5muAPkVD2qlsw+ETFNQpn4mTQatlJ/
+gJOxxrz0FVC36wWmZ2Fl9fUR2mxQwt3E3RB5jPZ4GrghWBwx6TpCeHXYtPrfZOrd
+CyvduM4Z9YSbpB/eT8Xuo10QxQzCOXxH/KJwpvDJ2de8YPoKzCKLbMJ6BhDvuyB9
+XS1/u90Iw5KvmnTtlpeo3iN2HDPhCXQtRuycCW6ub5XZ2xMnnA+kddHCql3QQd0m
+OhZNTA2Mk4ekYhpAs/Cb1wDhcl51YQ==
+=60DW
+-----END PGP SIGNATURE-----
+
+--YXpDZxuoKdcGqtRv--
