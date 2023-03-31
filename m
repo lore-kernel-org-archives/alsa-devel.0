@@ -4,141 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B868C76196
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Mar 2023 12:12:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71D1FC6FD18
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Mar 2023 13:15:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F00F201;
-	Fri, 31 Mar 2023 14:11:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F00F201
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5CCE1FE;
+	Fri, 31 Mar 2023 15:15:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5CCE1FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680264757;
-	bh=luw6WRoKOCKMpjLWXT9F2/F5B8AJlhK54WDtBlSG0zM=;
-	h=Date:To:Subject:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From:Reply-To:Cc:From;
-	b=bjyyx/JA+1HlsxQRtp9dt67qr143tx6imoryuDsXYbgrxmQobWKImpOYH13MdBbP3
-	 YsBDx5fXa6maJNH6rhrwZJSfnkScBSdGKfAFBlWVSNy55F6kPBLbJgSUENSWcfLq9I
-	 3MWH+8LuAOvh6wfgiNlDtE1v3l5eHs84qYA+3znk=
+	s=default; t=1680268553;
+	bh=ElQipzBcY4KMggMY+UKzQLm1C6J3oRRCnD3Lc53TuvM=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=PpIye5vBlpBKLz7pu78BaPEh0PBKq8yRJaQGAHmo+0oNFtcGf36P59snPWRHjwEjw
+	 YbPz+sxPkksaXApdsta1jMxiZlURd79AX7KCxqsvxAT2TZkK0raI0YetgBMvG8sUkv
+	 7X3Jw8MOURgeRK0529GQDypW8qwEDEaDAEewsLEM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E46B5F8024E;
-	Fri, 31 Mar 2023 14:11:24 +0200 (CEST)
-Date: Fri, 31 Mar 2023 14:11:04 +0200
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v5 2/5] mfd: Add support for the Lantiq PEF2256 framer
-In-Reply-To: <6d39e9c3-fb6a-4b2a-9889-8fe8d86716d5@linaro.org>
-References: <20230328092645.634375-1-herve.codina@bootlin.com>
-	<20230328092645.634375-3-herve.codina@bootlin.com>
-	<20230330160510.GB489249@google.com>
-	<20230331094208.41ab4420@bootlin.com>
-	<6d39e9c3-fb6a-4b2a-9889-8fe8d86716d5@linaro.org>
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PGL23H6HBO4XKMOIXDPUY45PNIA6LRCU/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <168026468438.26.13238104728611675195@mailman-core.alsa-project.org>
-From: Herve Codina via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id 06033F8024E;
+	Fri, 31 Mar 2023 15:14:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68B74F8024E; Fri, 31 Mar 2023 14:11:20 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED shortcircuit=no autolearn=ham autolearn_force=no
-	version=3.4.6
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::223])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id F1CB1F8024E; Fri, 31 Mar 2023 15:14:35 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 114BBF80114
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2023 14:11:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 114BBF80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 79469F80114
+	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2023 15:14:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79469F80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=G/P7ooR6
-Received: (Authenticated sender: herve.codina@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id CE5866000C;
-	Fri, 31 Mar 2023 12:11:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1680264669;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VlFjaEgglGp4LuEAhX3Eu2KitorIUFC8QsINMFBMePg=;
-	b=G/P7ooR673wIkTHXtogfVKLqLVvxP9iSUJhbBPA0jBi46ucYB/ay6zGFAPJvLQuYGeesZu
-	G2qdWoQOTRtT1BDQy+evrDZKkBsap0H2FXS1Gibw54F/NakKab9Y8rij6uS9aQZggDlDk0
-	m6eq3/XUqhFZLvfC7JL0KuPSeDkPaC1FyfzrtWgwWNGPMXzIRZCC9T1TQ9Xne3tJ30JBir
-	MmANr3cLZNj/XOoOMcuI0W2qjQnHhXmskYvmpfDES1thXXFm5yugnbcwFbkR8K/Fi7CDeM
-	7yUkr6oY/zFhHLJpqHEjQreBpihPohVWzp4Obk0FvbeWh71jMd6wIL7LmicBFw==
-Date: Fri, 31 Mar 2023 14:11:04 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v5 2/5] mfd: Add support for the Lantiq PEF2256 framer
-Message-ID: <20230331141104.42445da9@bootlin.com>
-In-Reply-To: <6d39e9c3-fb6a-4b2a-9889-8fe8d86716d5@linaro.org>
-References: <20230328092645.634375-1-herve.codina@bootlin.com>
-	<20230328092645.634375-3-herve.codina@bootlin.com>
-	<20230330160510.GB489249@google.com>
-	<20230331094208.41ab4420@bootlin.com>
-	<6d39e9c3-fb6a-4b2a-9889-8fe8d86716d5@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-redhat-linux-gnu)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=d7J9TbIG
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 024B26290E;
+	Fri, 31 Mar 2023 13:14:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D38AC4339C;
+	Fri, 31 Mar 2023 13:14:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1680268468;
+	bh=ElQipzBcY4KMggMY+UKzQLm1C6J3oRRCnD3Lc53TuvM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d7J9TbIGKK72qyYbTw60L++4GpuVGuVYpJv1k2ctWapzJQtFOHjkPYu6LSPTfIhR0
+	 37viDlCuPz4fQ/mq+weHr+OpWxaNUZUHQg9a1zSoEP1j1vjZkFLmC8OkQtZD/NX1V0
+	 d3DC5MOvlybv8wOZhbG2UMvokIhWcwelxRJ8YRG+W/+eoX/jfxCQY4tknl17B56DyV
+	 sRvhp4rPd4uAid3oXL+u2rQJwYPM2N7LtuP4t89pJcVNtTAE5fIQzBMt2HBZjI6Qku
+	 xdPh0zS2gKVb3FJ6ecobgkyWmE/ISV0NJh8VZNl4wtzuKMGSy9guvUQWZWdhrYIt8K
+	 j6dFl8O/kbDQw==
+Date: Fri, 31 Mar 2023 18:44:24 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH V8 0/8] Add SoundWire support for AMD platforms
+Message-ID: <ZCbcsPdde09rY6jj@matsya>
+References: <20230321050901.115439-1-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: PGL23H6HBO4XKMOIXDPUY45PNIA6LRCU
-X-Message-ID-Hash: PGL23H6HBO4XKMOIXDPUY45PNIA6LRCU
-X-MailFrom: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230321050901.115439-1-Vijendar.Mukunda@amd.com>
+Message-ID-Hash: ME6P2VOOPMV2WRXZOYOALPGWATJ64FEC
+X-Message-ID-Hash: ME6P2VOOPMV2WRXZOYOALPGWATJ64FEC
+X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+ Mario.Limonciello@amd.com, amadeuszx.slawinski@linux.intel.com,
+ Mastan.Katragadda@amd.com, Arungopal.kondaveeti@amd.com,
+ claudiu.beznea@microchip.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PGL23H6HBO4XKMOIXDPUY45PNIA6LRCU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ME6P2VOOPMV2WRXZOYOALPGWATJ64FEC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -147,129 +91,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Krzysztof, Lee
+On 21-03-23, 10:38, Vijendar Mukunda wrote:
+> ACP IP(v6.x) block has two SoundWire manager instance support.
+> This patchset adds support for AMD SoundWire manager driver.
 
-On Fri, 31 Mar 2023 11:13:30 +0200
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+Applied, thanks
 
-> On 31/03/2023 09:42, Herve Codina wrote:
-> > Hi Lee,
-> > 
-> > On Thu, 30 Mar 2023 17:05:10 +0100
-> > Lee Jones <lee@kernel.org> wrote:
-> >   
-> >> On Tue, 28 Mar 2023, Herve Codina wrote:
-> >>  
-> >>> The Lantiq PEF2256 is a framer and line interface component designed to
-> >>> fulfill all required interfacing between an analog E1/T1/J1 line and the
-> >>> digital PCM system highway/H.100 bus.    
-> >>
-> >> My goodness!
-> >>
-> >> It's been a long time since I've seen anything quite like this.  
-> > 
-> > Yes, old things but working on recent kernel.
-> >   
-> >>
-> >> My suggestion to you:
-> >>
-> >> * Split this up into components that fit functional subsystems  
-> > 
-> > It is done. The audio part is present in ASoC subsystem (path 5 in this
-> > series). pinctrl function is implemented in this driver and, as I don't
-> > want to share registers, I would prefer to keep this function inside this
-> > driver.  
-> 
-> The amount of defines and huge functions like pef2256_setup_e1()
-> contradict it.
-> 
-> Even the pef2256_setup_e1() really does not follow Linux coding style -
-> you know the size requirement, right?
-
-I know that pef2256_setup_e1() is quite big and I will look at a way
-to split it in a consistent way.
-
-> 
-> pef2256_get_groups_count, struct pinmux_ops and others - this is
-> pinctrl, not MFD! They cannot be in MFD driver.
-
-Maybe the issue is that MFD was not a good choice.
-The "function" provided are not independent of each other.
-The "main" driver (pef2256.c) needs to do the setup and handle the interrupt.
-The "function" provided are some glues in order to be used in some sub-systems
-such as audio. Indeed, ASoC needs a codec DAI to be connected to a CPU DAI.
-These "functions" need to be started (ie probe()) after the pef2256 setup was
-done. So a start (probe()) order relationship is needed.
-
-If a MFD driver needs independent children to handle independent functions,
-the pef2256 does not fit well as a MFD driver.
-
-I switched from misc to MFD just to handle child DT nodes instead of having
-phandles. Using child DT nodes instead of phandles is really a good thing and
-need to be kept.
-The switch to MFD was probably not the best thing to do.
-
-What do you think if I switched back the pef2256 "main" driver (pef2256.c) to
-misc ?
-
-
-> 
-> > 
-> > Also, I sent a RFC related to HDLC and PHY. In this RFC, the pef2256 is
-> > considered as a PHY and handled in the PHY subsystem.
-> >   https://lore.kernel.org/linux-kernel/20230323103154.264546-1-herve.codina@bootlin.com/
-> >   
-> >> * Run checkpatch.pl  
-> > 
-> > I did.  
-> 
-> There are tons of weird indentation,e.g.:
-> +#define     PEF2256_2X_PC_XPC_XLT	(0x8 << 0)
->         ^^^^ there is only one space after #define
-
-I ran checkpatch.pl, not checkpatch.pl --strict.
-
-The spaces related the #define can be seen on many other drivers.
-
-#define FOO_REG_BAR	0x10
-#define   FOO_REG_BAR_BIT0	BIT(0)
-#define   FOO_REG_BAR_BIT4	BIT(4)
-
-The first line is the register offset and the other lines (indented) are
-the bits description related to this register.
-
-> 
-> ... and other style issues:
-> 
-> CHECK: Please don't use multiple blank lines
-> CHECK: spaces preferred around that '+' (ctx:VxV)
-> CHECK: Alignment should match open parenthesis
-> CHECK: Macro argument reuse '_groups' - possible side-effects?
-> CHECK: usleep_range is preferred over udelay; see
-> Documentation/timers/timers-howto.rst
-> CHECK: spaces preferred around that '/' (ctx:VxV)
-
-I will have a look and fix them in the next iteration.
-
-> 
-> 
-> >   
-> >> * Remove all of the debug prints  
-> > 
-> > I can do that in the next iteration if really needed.
-> >   
-> >> * Move all of the defines out to a header file  
-> > 
-> > These defines are related to registers. As I don't want to share these
-> > registers, is it really necessary to use a header file for them ?
-> >   
-> >> * Be more verbose in your documentation / comments  
-> > 
-> > I can improve the API documentation present in include/mfd/pef2256.h.
-> > Do you thing that is necessary ? Only a few devices will use this API.
-> >   
-> Krzysztof
-> 
-
-Best regards,
-Hervé
+-- 
+~Vinod
