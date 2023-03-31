@@ -4,114 +4,163 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15BAAC7619A
-	for <alsa-devel@archiver.kernel.org>; Sun,  2 Apr 2023 08:12:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEE0EC7619A
+	for <alsa-devel@archiver.kernel.org>; Sun,  2 Apr 2023 08:12:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FAFB823;
-	Sun,  2 Apr 2023 10:11:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FAFB823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87088827;
+	Sun,  2 Apr 2023 10:12:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87088827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680423162;
-	bh=u+/EvSKy4AHbpiLuIF+mJW9616jnGCmXGnZTUKGlGvI=;
-	h=Date:Subject:From:To:References:In-Reply-To:CC:List-Id:
+	s=default; t=1680423171;
+	bh=qEBi/2/XGVf3QpqvzWB/GksrhasWX5+9m/gmHY0HB0s=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pHXtH12wGNa36oGsar/VK+6At3VlA6+Pqo6jt1USR1azOoHyJqp0qV0DHhkSWolo6
-	 ody/2hrOZ81aNyzCMYlZKEGULCVt91kPPUJjo4ep5E3MhDSE72+f7H+9N8hcfVO1/c
-	 ehCF5YYDyMKfO9N6AtuveWIRhJE1CO7ypG+OwBQc=
+	b=IGcAmD0wX8dCKZbnqUq/KDMMTTRhePCIlOSWc6fcUhhv0D/YZlgUsxuMpKF0IIfxH
+	 ltM6a9tj7NLuuILT+fuRecjmJiaUDehmOA24pGXvqgz/S1D11mMUJCqDEj0XbvYk+f
+	 M6NLJTn5NXESkka2YSnLKOWu96F60uYTLPiFeDbg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7C87F80533;
-	Sun,  2 Apr 2023 10:11:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97880F80542;
+	Sun,  2 Apr 2023 10:11:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D89AF80272; Fri, 31 Mar 2023 13:42:47 +0200 (CEST)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
- [IPv6:2a00:1450:4864:20::536])
+	id D572AF8024E; Fri, 31 Mar 2023 14:37:48 +0200 (CEST)
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com
+ [IPv6:2607:f8b0:4864:20::1133])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 131D6F80114
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2023 13:42:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 131D6F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id CC1E0F80114
+	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2023 14:37:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC1E0F80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=fairphone.com header.i=@fairphone.com
- header.a=rsa-sha256 header.s=fair header.b=VN+f7qPZ
-Received: by mail-ed1-x536.google.com with SMTP id ek18so88476380edb.6
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=ZMrC7RQQ
+Received: by mail-yw1-x1133.google.com with SMTP id
+ 00721157ae682-545cb3c9898so337082327b3.7
         for <alsa-devel@alsa-project.org>;
- Fri, 31 Mar 2023 04:42:39 -0700 (PDT)
+ Fri, 31 Mar 2023 05:37:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1680262958; x=1682854958;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1680266252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K4UMt/uQavZvUD9jlmkMLKcZa3Scbrdah2/KVZEgnww=;
-        b=VN+f7qPZVike+udaEK6uUPh17uXFK9dM3elIMx+dnL3YEpuM28Xt0JtM3X4BjiE40p
-         lc1WL9u/UkcBusz289hoiNNHESo2f0DlAf/YjTCxO5f37mm13xtKrUmCstczo2uu5Fkh
-         jokVwQV2Gdtx28sdsHsEivCG6Ekgii/hhDE9Y2Pjqof0LunmbmQdh1VPJZs5UtMJMke4
-         MH0YnhQGKsBa35bv/1gnqeAkvu5f52ujLY5EACddKeWY6qHMAnaK6Xs74/f/vIggeFIX
-         Nwwm/qOu/3NFlzmdC+uqYF4r7TdkQoc4bd5RMG+9PKjhATumppOys8TDOd3qNcPvf+ab
-         5dmw==
+        bh=E6lKdgk6THqQzNp4VvxVKewKaHaWOnEhQknxk2acjn0=;
+        b=ZMrC7RQQSpVfgy/SHMpfC+E2QpLMDaY5/yaDkSHUKYAESGTlYtEL7g/qRUeknQy91P
+         zUvgfNL0L6h3FNfh9c8D2HFAFVYOCP9WG625XToYyxYEiXALrCS5KsLDkaIeSbXlXde1
+         eg6UEhsSIBdX6MmhPhtTRLpJ9X4gdd+QI1NZNQSGtPnmNcH0Md5Wv/wDx/8mZJzSNT7K
+         vAZIJkR9VzoIqc5aO0g4o0xB+IpDOheOKDhB6ttu5EMPirHAV26dyaOz/pB9Dw1cQhWl
+         Nw5HjfOlvF3F0OheAjfDdZPbDekSVJ+CefyXJevdAGQrjbRZSi8YsUnd1+evdQw6Mb3h
+         4YIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680262958; x=1682854958;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=K4UMt/uQavZvUD9jlmkMLKcZa3Scbrdah2/KVZEgnww=;
-        b=A1nxdM8qnRiWyUb+ZnpS0xFiOcmwNvPDvqFoc/Y2GwQQToZkM5ItDa5Nf8ML64dlrJ
-         LoV84pmEJbLh7y9bq6o8xJC16r/phmHZvux5rLuKsokSZm+WkJYGn5nzYshTjSnwg24n
-         pZaiewyKkP7Af2JbJ5R2Qpe1M9fpl1dma4dZk6A6NG3uqK0yZUwcd0jb+UfYwGn3uDDP
-         fAJLHACZNMDQTaZlUf89DEDyDfgaCGsFTBVtuAdLlz0qNMo+5GKe6tyvRTKX5auIkbDi
-         8AT+/eErsrYecibuDHZuWJKEMx3hRXU/PUUFEtVdAlBPN5OPltVDL5sETEnyjb/2h7G1
-         aWyA==
-X-Gm-Message-State: AAQBX9dp4h3BnPf4KEZFR+i0YcCJlTZzYJx/1cilDZFNC5bsFmgFPeRu
-	W/7JsZUG9EYjiWxy1kLyBdPpsg==
+        d=1e100.net; s=20210112; t=1680266252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E6lKdgk6THqQzNp4VvxVKewKaHaWOnEhQknxk2acjn0=;
+        b=Cx8EO8GTO9QOtUQP2f4MZR6NbH/7LMoaFsSRdmTLwrD40ANBuvELAGe0NAGp+KwNGr
+         ui9uQNix4zOiI+RZXSp53/MalOWcaETXu4TF40uO0GGVUepN1GPPYZOfNUpwBY5uRnk4
+         wemnt7wdgWI95bI7Yb3GAUfam/uPgWFZV5aO5pjk8UXhCi1Dc6B/0gliUv55N81t2MYZ
+         wxQdQFxnO0rZbL6Vhvmb+727zcL5xLU9l2vp4DdmV7sZRy779qdCJMoIMd76nhZZre6A
+         e6NBAKXLfGBt5BF+dl3EbjT+27B/ezUGi4mVV7EQZ5XjfBpTQU251wuMnalzDIFYP6O6
+         J6wg==
+X-Gm-Message-State: AAQBX9e8RxNiiG17w3xRB3N0OF+sDQj+wMERlLt48vlFuC+j4146JIN4
+	tZG/e8sitCutwCe9pdPgtgHjSSE8tdFvpg4AHdwF+w==
 X-Google-Smtp-Source: 
- AKy350bU6YNYtfDrZJb4mmhrOkc2Dbh79ZNF3PcRCc5KbPdRkJ5TYvPvhlSpYorjEEX8ZCut+dDJnA==
-X-Received: by 2002:a17:906:9f04:b0:944:8c30:830d with SMTP id
- fy4-20020a1709069f0400b009448c30830dmr19555868ejc.42.1680262957896;
-        Fri, 31 Mar 2023 04:42:37 -0700 (PDT)
-Received: from localhost (144-178-202-138.static.ef-service.nl.
- [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id
- 1-20020a170906058100b00946c5da4d32sm890571ejn.40.2023.03.31.04.42.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 31 Mar 2023 04:42:37 -0700 (PDT)
-Mime-Version: 1.0
+ AKy350aQG4pTb9063C5UpGPTZlWu/1jB1S9bOfbEf1bci1cyW8YxugalTaCiIXNAm4RWMBbCrWxYKS+tBxFA+9FzOXI=
+X-Received: by 2002:a81:c84a:0:b0:541:753d:32f9 with SMTP id
+ k10-20020a81c84a000000b00541753d32f9mr13384037ywl.9.1680266252481; Fri, 31
+ Mar 2023 05:37:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230330200402.2731992-1-robh@kernel.org>
+In-Reply-To: <20230330200402.2731992-1-robh@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 31 Mar 2023 14:37:21 +0200
+Message-ID: 
+ <CACRpkdYwM5Kw4XB9S5qoqdK-boiYp2iu=LRZ-B-vJb1k9fNnig@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: pinctrl: Drop unneeded quotes
+To: Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 31 Mar 2023 13:42:37 +0200
-Message-Id: <CRKJIAFM4FQS.CLF4S9AUEBBX@otso>
-Subject: Re: [PATCH 5/8] ASoC: codecs: lpass: register mclk after runtime pm
-From: "Luca Weiss" <luca.weiss@fairphone.com>
-To: "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>,
- <broonie@kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230209122806.18923-1-srinivas.kandagatla@linaro.org>
- <20230209122806.18923-6-srinivas.kandagatla@linaro.org>
- <CREKOWOABXLP.28VKF824CFB3O@otso>
- <e782e78c-422f-fbf9-94a3-3557c9f7fc7e@linaro.org>
-In-Reply-To: <e782e78c-422f-fbf9-94a3-3557c9f7fc7e@linaro.org>
-X-MailFrom: luca.weiss@fairphone.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-MailFrom: linus.walleij@linaro.org
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: FNLYGWMCRPEAVOQW6BOOKLOFE5TGU3P2
-X-Message-ID-Hash: FNLYGWMCRPEAVOQW6BOOKLOFE5TGU3P2
-X-Mailman-Approved-At: Sun, 02 Apr 2023 08:07:49 +0000
-CC: lgirdwood@gmail.com, tiwai@suse.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, steev@kali.org, johan+linaro@kernel.org,
- quic_bjorande@quicinc.com
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: KERGS6HEMTE4CSMQBYMIPCGGBTRWEFO6
+X-Message-ID-Hash: KERGS6HEMTE4CSMQBYMIPCGGBTRWEFO6
+X-Mailman-Approved-At: Sun, 02 Apr 2023 08:07:50 +0000
+CC: =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Hector Martin <marcan@marcan.st>,
+ Sven Peter <sven@svenpeter.dev>, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+ Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@jms.id.au>,
+ Damien Le Moal <damien.lemoal@wdc.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Dong Aisheng <aisheng.dong@nxp.com>, Fabio Estevam <festevam@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Sascha Hauer <s.hauer@pengutronix.de>, NXP Linux Team <linux-imx@nxp.com>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Heiko Stuebner <heiko@sntech.de>, Tomasz Figa <tomasz.figa@gmail.com>,
+ Alim Akhtar <alim.akhtar@samsung.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Emil Renner Berthing <kernel@esmil.dk>,
+ Jianlong Huang <jianlong.huang@starfivetech.com>,
+ Dvorkin Dmitry <dvorkin@tibbo.com>, Wells Lu <wellslutw@gmail.com>,
+ Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+ Michal Simek <michal.simek@xilinx.com>,
+ Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, Mark Kettenis <kettenis@openbsd.org>,
+ =?UTF-8?Q?Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
+ Jonas Gorski <jonas.gorski@gmail.com>, - <patches@opensource.cirrus.com>,
+ Patrick Rudolph <patrick.rudolph@9elements.com>, Peng Fan <peng.fan@nxp.com>,
+ Paul Cercueil <paul@crapouillou.net>,
+ Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Lars Povlsen <lars.povlsen@microchip.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Jacopo Mondi <jacopo+renesas@jmondi.org>,
+ Chris Brandt <chris.brandt@renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Gareth Williams <gareth.williams.jx@renesas.com>,
+ Phil Edworthy <phil.edworthy@renesas.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Drew Fustini <drew@beagleboard.org>,
+ Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Krzysztof Kozlowski <krzk@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ linux-actions@lists.infradead.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, asahi@lists.linux.dev,
+ linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FNLYGWMCRPEAVOQW6BOOKLOFE5TGU3P2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KERGS6HEMTE4CSMQBYMIPCGGBTRWEFO6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,213 +169,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri Mar 24, 2023 at 2:40 PM CET, Srinivas Kandagatla wrote:
-> Hi Luca,
->
-> On 24/03/2023 11:22, Luca Weiss wrote:
-> > Hi Srinivas,
-> >=20
-> > On Thu Feb 9, 2023 at 1:28 PM CET, Srinivas Kandagatla wrote:
-> >> move mclk out registration after runtime pm is enabled so that the
-> >> clk framework can resume the codec if it requires to enable the mclk o=
-ut.
-> >>
-> >> Fixes: c96baa2949b2 ("ASoC: codecs: wsa-macro: add runtime pm support"=
-)
-> >> Fixes: 72ad25eabda0 ("ASoC: codecs: va-macro: add runtime pm support")
-> >> Fixes: 366ff79ed539 ("ASoC: codecs: rx-macro: add runtime pm support")
-> >> Fixes: 1fb83bc5cf64 ("ASoC: codecs: tx-macro: add runtime pm support")
-> >> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> >=20
-> > I see the following remoteproc crash with this patch in on
-> > sm6350/sm7225-fairphone-fp4.
-> >=20
-> > To be clear, all the audio parts for that SoC are not upstream (yet) an=
-d
-> > there's still many issues to solve so not sure if it's actually my faul=
-t.
-> >=20
->
-> please try this patch Amit did report this issue before
->
-> https://lore.kernel.org/lkml/20230323110125.23790-1-srinivas.kandagatla@l=
-inaro.org/
+On Thu, Mar 30, 2023 at 10:05=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
+e:
 
-Right, that fixes it on sm6350/sm7225 also. Thanks!
-
-Regards
-Luca
-
+> Cleanup bindings dropping unneeded quotes. Once all these are fixed,
+> checking for this can be enabled in yamllint.
 >
->
-> thanks,
-> srini
-> > Anyways, getting this crash after starting adsp.
-> >=20
-> > [   97.212943] qcom_q6v5_pas 3000000.remoteproc: fatal error received: =
-ABT_dal.c:287:ABTimeout: AHB Bus hang is detected, Number of bus hang detec=
-ted :=3D 1 , addr0 =3D 0x3370000 , addr1 =3D 0x0!!!
-> > [   97.212995] remoteproc remoteproc0: crash detected in 3000000.remote=
-proc: type fatal error
-> > [   97.213015] remoteproc remoteproc0: handling crash #1 in 3000000.rem=
-oteproc
-> > [   97.213022] remoteproc remoteproc0: recovering 3000000.remoteproc
-> >=20
-> > This happens just after some clocks on the adsp get disabled, this is
-> > from my own debug prints:
-> > [   97.189097] q6afe_set_lpass_clock: clk_id=3D780, attri=3D1, clk_root=
-=3D0, freq=3D0
-> > [   97.189426] q6afe_set_lpass_clock: clk_id=3D781, attri=3D1, clk_root=
-=3D0, freq=3D0
-> >=20
-> > And then a couple of seconds later the whole phone just crashes into th=
-e
-> > 900e mode.
-> >=20
-> > Regards
-> > Luca
-> >=20
-> >=20
-> >> ---
-> >>   sound/soc/codecs/lpass-rx-macro.c  |  8 ++++----
-> >>   sound/soc/codecs/lpass-tx-macro.c  |  8 ++++----
-> >>   sound/soc/codecs/lpass-va-macro.c  | 20 ++++++++++----------
-> >>   sound/soc/codecs/lpass-wsa-macro.c |  9 ++++-----
-> >>   4 files changed, 22 insertions(+), 23 deletions(-)
-> >>
-> >> diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpas=
-s-rx-macro.c
-> >> index a9ef9d5ffcc5..dd6970d5eb8d 100644
-> >> --- a/sound/soc/codecs/lpass-rx-macro.c
-> >> +++ b/sound/soc/codecs/lpass-rx-macro.c
-> >> @@ -3601,10 +3601,6 @@ static int rx_macro_probe(struct platform_devic=
-e *pdev)
-> >>   	if (ret)
-> >>   		goto err_fsgen;
-> >>  =20
-> >> -	ret =3D rx_macro_register_mclk_output(rx);
-> >> -	if (ret)
-> >> -		goto err_clkout;
-> >> -
-> >>   	ret =3D devm_snd_soc_register_component(dev, &rx_macro_component_dr=
-v,
-> >>   					      rx_macro_dai,
-> >>   					      ARRAY_SIZE(rx_macro_dai));
-> >> @@ -3618,6 +3614,10 @@ static int rx_macro_probe(struct platform_devic=
-e *pdev)
-> >>   	pm_runtime_set_active(dev);
-> >>   	pm_runtime_enable(dev);
-> >>  =20
-> >> +	ret =3D rx_macro_register_mclk_output(rx);
-> >> +	if (ret)
-> >> +		goto err_clkout;
-> >> +
-> >>   	return 0;
-> >>  =20
-> >>   err_clkout:
-> >> diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpas=
-s-tx-macro.c
-> >> index 2ef62d6edc30..b9475ba55e20 100644
-> >> --- a/sound/soc/codecs/lpass-tx-macro.c
-> >> +++ b/sound/soc/codecs/lpass-tx-macro.c
-> >> @@ -2036,10 +2036,6 @@ static int tx_macro_probe(struct platform_devic=
-e *pdev)
-> >>   	if (ret)
-> >>   		goto err_fsgen;
-> >>  =20
-> >> -	ret =3D tx_macro_register_mclk_output(tx);
-> >> -	if (ret)
-> >> -		goto err_clkout;
-> >> -
-> >>   	ret =3D devm_snd_soc_register_component(dev, &tx_macro_component_dr=
-v,
-> >>   					      tx_macro_dai,
-> >>   					      ARRAY_SIZE(tx_macro_dai));
-> >> @@ -2052,6 +2048,10 @@ static int tx_macro_probe(struct platform_devic=
-e *pdev)
-> >>   	pm_runtime_set_active(dev);
-> >>   	pm_runtime_enable(dev);
-> >>  =20
-> >> +	ret =3D tx_macro_register_mclk_output(tx);
-> >> +	if (ret)
-> >> +		goto err_clkout;
-> >> +
-> >>   	return 0;
-> >>  =20
-> >>   err_clkout:
-> >> diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpas=
-s-va-macro.c
-> >> index b0b6cf29cba3..1623ba78ddb3 100644
-> >> --- a/sound/soc/codecs/lpass-va-macro.c
-> >> +++ b/sound/soc/codecs/lpass-va-macro.c
-> >> @@ -1524,16 +1524,6 @@ static int va_macro_probe(struct platform_devic=
-e *pdev)
-> >>   	if (ret)
-> >>   		goto err_mclk;
-> >>  =20
-> >> -	ret =3D va_macro_register_fsgen_output(va);
-> >> -	if (ret)
-> >> -		goto err_clkout;
-> >> -
-> >> -	va->fsgen =3D clk_hw_get_clk(&va->hw, "fsgen");
-> >> -	if (IS_ERR(va->fsgen)) {
-> >> -		ret =3D PTR_ERR(va->fsgen);
-> >> -		goto err_clkout;
-> >> -	}
-> >> -
-> >>   	if (va->has_swr_master) {
-> >>   		/* Set default CLK div to 1 */
-> >>   		regmap_update_bits(va->regmap, CDC_VA_TOP_CSR_SWR_MIC_CTL0,
-> >> @@ -1560,6 +1550,16 @@ static int va_macro_probe(struct platform_devic=
-e *pdev)
-> >>   	pm_runtime_set_active(dev);
-> >>   	pm_runtime_enable(dev);
-> >>  =20
-> >> +	ret =3D va_macro_register_fsgen_output(va);
-> >> +	if (ret)
-> >> +		goto err_clkout;
-> >> +
-> >> +	va->fsgen =3D clk_hw_get_clk(&va->hw, "fsgen");
-> >> +	if (IS_ERR(va->fsgen)) {
-> >> +		ret =3D PTR_ERR(va->fsgen);
-> >> +		goto err_clkout;
-> >> +	}
-> >> +
-> >>   	return 0;
-> >>  =20
-> >>   err_clkout:
-> >> diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpa=
-ss-wsa-macro.c
-> >> index 5cfe96f6e430..c0b86d69c72e 100644
-> >> --- a/sound/soc/codecs/lpass-wsa-macro.c
-> >> +++ b/sound/soc/codecs/lpass-wsa-macro.c
-> >> @@ -2451,11 +2451,6 @@ static int wsa_macro_probe(struct platform_devi=
-ce *pdev)
-> >>   	if (ret)
-> >>   		goto err_fsgen;
-> >>  =20
-> >> -	ret =3D wsa_macro_register_mclk_output(wsa);
-> >> -	if (ret)
-> >> -		goto err_clkout;
-> >> -
-> >> -
-> >>   	ret =3D devm_snd_soc_register_component(dev, &wsa_macro_component_d=
-rv,
-> >>   					      wsa_macro_dai,
-> >>   					      ARRAY_SIZE(wsa_macro_dai));
-> >> @@ -2468,6 +2463,10 @@ static int wsa_macro_probe(struct platform_devi=
-ce *pdev)
-> >>   	pm_runtime_set_active(dev);
-> >>   	pm_runtime_enable(dev);
-> >>  =20
-> >> +	ret =3D wsa_macro_register_mclk_output(wsa);
-> >> +	if (ret)
-> >> +		goto err_clkout;
-> >> +
-> >>   	return 0;
-> >>  =20
-> >>   err_clkout:
-> >> --=20
-> >> 2.21.0
-> >=20
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Acked-by: Hector Martin <marcan@marcan.st>
+> Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> Reviewed-by: Heiko Stuebner <heiko@sntech.de> #rockchip
+> Reviewed-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v2:
+>  - Rebase on pinctrl tree
 
+I applied it quickly before something else changes!
+
+Thanks for respinning, and thanks as always for driving these changes.
+
+Yours,
+Linus Walleij
