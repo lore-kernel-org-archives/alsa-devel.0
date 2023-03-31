@@ -4,106 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8F80C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Fri, 31 Mar 2023 02:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACF3EC7619A
+	for <alsa-devel@archiver.kernel.org>; Fri, 31 Mar 2023 03:21:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65540201;
-	Fri, 31 Mar 2023 04:56:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65540201
+	by alsa0.perex.cz (Postfix) with ESMTPS id E571C201;
+	Fri, 31 Mar 2023 05:20:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E571C201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680231426;
-	bh=X/tsONxZ8L1WAeAR1ROCGDulqWscAhL3Lp5vAG+Z23w=;
-	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
+	s=default; t=1680232904;
+	bh=OhOoIPLTYSmHJFC100ng8UOjacxJ0N+xcLOSz4rGIvQ=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sgijmBjNAg0VAbYINBnGFffv+fFL+MPFLYyK2CZrnwZsw3vguMmpMZ0Z3MC4VIfM1
-	 yrVfnYTjVZGEBK0tPGR2eYy+vSjPuS8ZN52Ik4ORKvI4Pklf2DkkcWhxXMXXuF9+ov
-	 HOxWeeeRk94jk09HDfmqDDIz5VvXqQhtB9pAf/Ts=
+	b=ZY+KWkjS+Q/UjlSJN+Hb0a7fXPGu+1Lb+oh2iMWPEW4eQ9NOyPTLXq9EZtHeE5XFf
+	 FKAufQmn9Fx0m2Jq28EUJUwoTlMu6j2CZXG23eGQA6jvdWzhH15aO0o13MnkCR6NLe
+	 O4VmB1Inof20k2x/pucMFOg2zrNX7HLH78QH/YfM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66B1FF80272;
-	Fri, 31 Mar 2023 04:55:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2139AF80272;
+	Fri, 31 Mar 2023 05:20:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8D00DF80272; Fri, 31 Mar 2023 04:55:47 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D86A3F80290; Fri, 31 Mar 2023 05:20:23 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 62D4FF8021D
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2023 04:55:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62D4FF8021D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 69667F8021D
+	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2023 05:20:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69667F8021D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=j6snYCTS
-Received: by mail-wr1-x432.google.com with SMTP id h17so20980751wrt.8
-        for <alsa-devel@alsa-project.org>;
- Thu, 30 Mar 2023 19:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680231337; x=1682823337;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=R0f0oYaBiIjZngwKKrarE3ZU4R7VLA65VkJQmbsO7p4=;
-        b=j6snYCTSc3mn9magen+ARP9tyBjdlqAg7Msxhi4LmTS+IMoHqzu/tVUg95/7GQ6fK1
-         Ab33kcxf2rMwtLKQFmY0q2/ynhw8dxHAA/ErsVFtm/f8HYQqlkegFOko3J2MRW/gozSA
-         zbFnAUPiwIsIfxZeD3NpRyiDH1t8mHcxYUHFlEa3a5uH/Q4E0EOa5K2KdXoGm2ikXbEJ
-         cFacjZNut43G140mcjfDOYCH49vCCq1WXMeWr4OoqMcEDx1mVacsHdDwvKbriOa6D9An
-         8vEDs5Gks6sYn2jJamaaMSvpCJ2dMNSlgydmr867/IW5q8kungIpa1YhWEGPeH+UTAyt
-         yw1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680231337; x=1682823337;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R0f0oYaBiIjZngwKKrarE3ZU4R7VLA65VkJQmbsO7p4=;
-        b=S7VHGukG1IXIDiaZc9q610X/H2bLFw0I4HO09G0KXblZ6iqJR+v7wt0TDe3oBtnQY7
-         TMmIsMHeq9+NLdULVPOT+73VtffsyYGFygZzG+StOHBcJ7CJh1SgETGvYgRjSKJb5JUN
-         xrVGMsnGezNWnLqehrnsqk3CaVmLV39wYsWF+LjkcdyRq4dy9hv3jWy81eCZbRfyFag7
-         1olH3XtetZhndS+6aGBypVMDhi5WAfOmap8XU7Su/8kG9NAZLQ0cZ8AVn1Ce782f2KOv
-         7FKKVq8UCD6OufDxXEnhCmi3MafHsnznjBD6aPu8U7uFse5n5/gFhKa/hSYsQtFOnRPN
-         eyUQ==
-X-Gm-Message-State: AAQBX9ejamsCVXvKTL+ibr5oavpFz09JdbvBWFGvVSUZ8gp188ptmJSK
-	XrrJMX5vXXVd671PCGhgnrKrnOd6X6s0ff62dz0=
-X-Google-Smtp-Source: 
- AKy350aoW6eyWZ7Vy7uL9TzBTgI+9gM4kG0Y6ga+Ywwo/3Ce7novHeVGH33oyhBjPnINiHx5c4pgOiCGaiSL/Y/+Rnw=
-X-Received: by 2002:a5d:5152:0:b0:2c7:17b8:5759 with SMTP id
- u18-20020a5d5152000000b002c717b85759mr4385251wrt.3.1680231336775; Thu, 30 Mar
- 2023 19:55:36 -0700 (PDT)
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=dYyYY0qj
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680232817; x=1711768817;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=OhOoIPLTYSmHJFC100ng8UOjacxJ0N+xcLOSz4rGIvQ=;
+  b=dYyYY0qjK9fvy07sWsS3oBgaAYf9gZgOWoXYuvmC/LNBtpnomaMkxOSP
+   yVWUO8tMITt3QvuGhKGqAtJICM8VPAGNaXIvb3CDnNDavcsFPWpptYasN
+   NLJFoeQJTFqulpiObqdPpFLgCvYZaAzFyz7zefq36lZBv8NqeKttoIBUS
+   6gME8gR+yaV3hrYjPu/09ZF/t8/xSygZavp6GAeFfecDfw25e5fXpp0NF
+   0pWKYcPVsOoL3I5SiatXC37p/8N6GFnECQjW8sh1xQgcRjWk9us1WkDRd
+   9U5CNhRXo5uvcY5Nov/ffEgL2Wzs5HWzK9yN+D8IizJgaEIUqQtVWX36q
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="342992675"
+X-IronPort-AV: E=Sophos;i="5.98,306,1673942400";
+   d="scan'208";a="342992675"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Mar 2023 20:20:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10665"; a="684938161"
+X-IronPort-AV: E=Sophos;i="5.98,306,1673942400";
+   d="scan'208";a="684938161"
+Received: from chuaweiz-mobl.amr.corp.intel.com (HELO [10.209.109.216])
+ ([10.209.109.216])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Mar 2023 20:20:05 -0700
+Message-ID: <b2e7f501-105f-7ba8-1eb8-972b867046d1@linux.intel.com>
+Date: Thu, 30 Mar 2023 22:05:35 -0500
 MIME-Version: 1.0
-References: <20230330083040.77085-1-emas@bang-olufsen.dk>
-In-Reply-To: <20230330083040.77085-1-emas@bang-olufsen.dk>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Fri, 31 Mar 2023 10:55:25 +0800
-Message-ID: 
- <CAA+D8AOMTQ00Ah21w54DVXin3KcYkVxaGVd64Z_pSzv+Ooj9vw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Use physical format width
-To: Emil Abildgaard Svendsen <EMAS@bang-olufsen.dk>
-Message-ID-Hash: BDAOF4YPK6GIZZHIJKDSIGITBBK7NQUW
-X-Message-ID-Hash: BDAOF4YPK6GIZZHIJKDSIGITBBK7NQUW
-X-MailFrom: shengjiu.wang@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.9.0
+Subject: Re: [PATCH 06/18] ASoC: SOF: Intel: hda-mlink: add structures to
+ parse ALT links
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+References: <20230327112931.23411-1-peter.ujfalusi@linux.intel.com>
+ <20230327112931.23411-7-peter.ujfalusi@linux.intel.com>
+ <87bkkakzk2.wl-tiwai@suse.de>
+ <146f6100-9f99-f463-603c-332c5b9d9eef@linux.intel.com>
+ <87355mkt97.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <87355mkt97.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: RYFAE5YTCCZFA33YJARWLSOHOYHTIECY
+X-Message-ID-Hash: RYFAE5YTCCZFA33YJARWLSOHOYHTIECY
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.8
-CC: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+CC: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com,
+ broonie@kernel.org, alsa-devel@alsa-project.org,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ rander.wang@intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BDAOF4YPK6GIZZHIJKDSIGITBBK7NQUW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RYFAE5YTCCZFA33YJARWLSOHOYHTIECY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,34 +108,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-T24gVGh1LCBNYXIgMzAsIDIwMjMgYXQgNDozMOKAr1BNIEVtaWwgQWJpbGRnYWFyZCBTdmVuZHNl
-biA8DQpFTUFTQGJhbmctb2x1ZnNlbi5kaz4gd3JvdGU6DQoNCj4gU2xvdCB3aWR0aCBzaG91bGQg
-Zm9sbG93IHRoZSBwaHlzaWNhbCB3aWR0aCBvZiB0aGUgZm9ybWF0IGluc3RlYWQgb2YgdGhlDQo+
-IGRhdGEgd2lkdGguDQo+DQo+IFRoaXMgaXMgbmVlZGVkIGZvciBmb3JtYXRzIGxpa2UgU05EUlZf
-UENNX0ZNVEJJVF9TMjRfTEUgd2hlcmUgcGh5c2ljYWwNCj4gd2lkdGggaXMgMzIgYW5kIGRhdGEg
-d2lkdGggaXMgMjQuIEJ5IHVzaW5nIHRoZSBwaHlzaWNhbCB3aWR0aCwgZGF0YQ0KPiB3b24ndCBn
-ZXQgbWlzYWxpZ25lZC4NCg0KDQpUaGVyZSBhcmUgZGlmZmVyZW50IHJlcXVpcmVtZW50cyBmb3Ig
-dGhpcyBzbG90IHdpZHRoLiBTb21lIG5lZWQgcGh5c2ljYWwNCndpZHRoLA0KU29tZSBuZWVkIGZv
-cm1hdCB3aWR0aC4gV2UgbmVlZCB0byBiZSBjYXJlZnVsIGFib3V0IGNoYW5nZSBoZXJlLg0KDQpB
-Y3R1YWxseSB0aGVyZSBpcyAuc2V0X3RkbV9zbG90IEFQSSBmb3Igc2xvdCBzcGVjaWZpYyBzZXR0
-aW5nLCBwbGVhc2UgdXNlDQp0aGlzIEFQSS4NCg0KYmVzdCByZWdhcmRzDQp3YW5nIHNoZW5naml1
-DQoNCj4NCj4gU2lnbmVkLW9mZi1ieTogRW1pbCBTdmVuZHNlbiA8ZW1hc0BiYW5nLW9sdWZzZW4u
-ZGs+DQo+IC0tLQ0KPiAgc291bmQvc29jL2ZzbC9mc2xfc2FpLmMgfCAyICstDQo+ICAxIGZpbGUg
-Y2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4NCj4gZGlmZiAtLWdpdCBh
-L3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jIGIvc291bmQvc29jL2ZzbC9mc2xfc2FpLmMNCj4gaW5k
-ZXggOTM5YzZiZGQyMmM0Li4yMTNlMmQ0NjIwNzYgMTAwNjQ0DQo+IC0tLSBhL3NvdW5kL3NvYy9m
-c2wvZnNsX3NhaS5jDQo+ICsrKyBiL3NvdW5kL3NvYy9mc2wvZnNsX3NhaS5jDQo+IEBAIC01MTks
-MTMgKzUxOSwxMyBAQCBzdGF0aWMgaW50IGZzbF9zYWlfaHdfcGFyYW1zKHN0cnVjdA0KPiBzbmRf
-cGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLA0KPiAgICAgICAgIHVuc2lnbmVkIGludCBjaGFubmVs
-cyA9IHBhcmFtc19jaGFubmVscyhwYXJhbXMpOw0KPiAgICAgICAgIHN0cnVjdCBzbmRfZG1hZW5n
-aW5lX2RhaV9kbWFfZGF0YSAqZG1hX3BhcmFtczsNCj4gICAgICAgICBzdHJ1Y3QgZnNsX3NhaV9k
-bF9jZmcgKmRsX2NmZyA9IHNhaS0+ZGxfY2ZnOw0KPiArICAgICAgIHUzMiBzbG90X3dpZHRoID0g
-cGFyYW1zX3BoeXNpY2FsX3dpZHRoKHBhcmFtcyk7DQo+ICAgICAgICAgdTMyIHdvcmRfd2lkdGgg
-PSBwYXJhbXNfd2lkdGgocGFyYW1zKTsNCj4gICAgICAgICBpbnQgdHJjZV9tYXNrID0gMCwgZGxf
-Y2ZnX2lkeCA9IDA7DQo+ICAgICAgICAgaW50IGRsX2NmZ19jbnQgPSBzYWktPmRsX2NmZ19jbnQ7
-DQo+ICAgICAgICAgdTMyIGRsX3R5cGUgPSBGU0xfU0FJX0RMX0kyUzsNCj4gICAgICAgICB1MzIg
-dmFsX2NyNCA9IDAsIHZhbF9jcjUgPSAwOw0KPiAgICAgICAgIHUzMiBzbG90cyA9IChjaGFubmVs
-cyA9PSAxKSA/IDIgOiBjaGFubmVsczsNCj4gLSAgICAgICB1MzIgc2xvdF93aWR0aCA9IHdvcmRf
-d2lkdGg7DQo+ICAgICAgICAgaW50IGFkaXIgPSB0eCA/IFJYIDogVFg7DQo+ICAgICAgICAgdTMy
-IHBpbnMsIGJjbGs7DQo+ICAgICAgICAgdTMyIHdhdGVybWFyazsNCj4gLS0NCj4gMi4zNC4xDQo+
-DQo=
+
+>>>>  int hda_bus_ml_get_capabilities(struct hdac_bus *bus)
+>>>>  {
+>>>> -	if (bus->mlcap)
+>>>> -		return snd_hdac_ext_bus_get_ml_capabilities(bus);
+>>>> +	u32 link_count;
+>>>> +	int ret;
+>>>> +	int i;
+>>>> +
+>>>> +	if (!bus->mlcap)
+>>>> +		return 0;
+>>>> +
+>>>> +	link_count = readl(bus->mlcap + AZX_REG_ML_MLCD) + 1;
+>>>> +
+>>>> +	dev_dbg(bus->dev, "HDAudio Multi-Link count: %d\n", link_count);
+>>>> +
+>>>> +	for (i = 0; i < link_count; i++) {
+>>>> +		ret = hda_ml_alloc_h2link(bus, i);
+>>>> +		if (ret < 0) {
+>>>> +			hda_bus_ml_free(bus);
+>>>> +			return ret;
+>>>> +		}
+>>>> +	}
+>>>>  	return 0;
+>>>
+>>> This makes that each call of hda_bus_ml_get_capabilities() adds the
+>>> h2link entries blindly.  If the driver calls it multiple times
+>>> mistakenly (the function name sounds as if it's just a helper to query
+>>> the capability bits), it'll lead to doubly entries.  Maybe adding some
+>>> check would be safer, IMO.
+>>
+>> Interesting comment, I didn't think of that one.
+>>
+>> This function is currently called in the probe and indirectly via
+>> hda_init_caps(). I think the driver framework guarantees the probe is
+>> only called once, doesn't it?
+>>
+>> we can also rename this function to make it clearer if there are any
+>> suggestions, but the name is aligned with previous implementations of
+>> the snd_hdac_ext stuff.
+> 
+> Yeah, naming it as an init function would avoid the misuse.
+
+Sure thing, I'll rename it as hda_bus_ml_init().
+
+Thanks for the feedback.
