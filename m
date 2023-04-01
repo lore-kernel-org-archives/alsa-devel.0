@@ -4,110 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1479AC76196
-	for <alsa-devel@archiver.kernel.org>; Sat,  1 Apr 2023 16:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 962F7C6FD1D
+	for <alsa-devel@archiver.kernel.org>; Sat,  1 Apr 2023 18:42:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA4E31F7;
-	Sat,  1 Apr 2023 18:05:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA4E31F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CF391F7;
+	Sat,  1 Apr 2023 20:42:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CF391F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680365166;
-	bh=GwaZnSfPfRSbqOwPqqgwNpYUwru9q1es9ygqnzp+544=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1680374571;
+	bh=YSy1++343dLI0IPsYtSIR7tv1RI7t9o7KnKAjI501Ec=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VEUeAMmln12Y9RukjYD4t+RJ2cW2Bp2Z0t0Bd63qjFU9TajHHOsNU/82cpinjK14k
-	 8m3Pvzko5NUkyk9HGVOkzus3/iCdST14BFS5/wfUdOxfOr0nElMW4iH5ytNj87Avov
-	 px6UsY09lq0R02KumNceP1nvNxnQuopK+gDsx2BI=
+	b=VtTizXMqPPkCTu6Dee9iUveRdjnD9v2OZvhHSruT6YZdIMLgxl95iMLNOtSon2SW/
+	 ZQjsIAIXwXMWTe26CLP8D8YNyB6XlAgG/CdjjvthLCtEutZsWuKp8Scf0Ww1LzCOLh
+	 juk+CzNyP9HSMlXaulAhTRJR25IhC7QBQNNejS0Y=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 265D5F80272;
-	Sat,  1 Apr 2023 18:04:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A57F4F800C9;
+	Sat,  1 Apr 2023 20:41:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1484F80272; Sat,  1 Apr 2023 18:01:33 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 71428F80272; Sat,  1 Apr 2023 20:41:34 +0200 (CEST)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
+ [IPv6:2a00:1450:4864:20::534])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3D286F80249
-	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2023 18:01:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D286F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1EA73F80114
+	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2023 20:41:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EA73F80114
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=JoXZlj32;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=OYhF7iak
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8BB2821B06;
-	Sat,  1 Apr 2023 16:01:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1680364882;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zBwVkxiD0GGrn60bLm591axYcJzhrw8nR4HBiyJXKC4=;
-	b=JoXZlj32DIcZVn8hlnyXMuUg8PEgrdF+TfVmTyjUyougdzPB0ug+mkxNHRJ4tOF/5B0VQP
-	Y0xTW8xIaREJocg6YDxUE94QAb6zpP4ruHEctf92/FRi+d6eiUGM/EG9lGUFA3+2X5ZKMW
-	Rp2Q79vk7jxqTSI6impnZvW0SD0mbho=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1680364882;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zBwVkxiD0GGrn60bLm591axYcJzhrw8nR4HBiyJXKC4=;
-	b=OYhF7iakdQGnoelneAUV7vsXg1BYk8Ovby9MFmy0uBihuYXl9QHCPbY+v1Wdfq2k61vct1
-	r9F5csQ4EXoBDcAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B16A134FB;
-	Sat,  1 Apr 2023 16:01:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id j25bGVJVKGS7RQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Sat, 01 Apr 2023 16:01:22 +0000
-Date: Sat, 01 Apr 2023 18:01:21 +0200
-Message-ID: <871ql3twvi.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: hda/hdmi: Preserve the previous PCM device upon
- re-enablement
-In-Reply-To: <ca19e5ba-efbe-634d-f42d-93d18f27158b@perex.cz>
-References: <20230331142217.19791-1-tiwai@suse.de>
-	<57ffa8e0-83fa-a982-9f48-abbe5f098732@perex.cz>
-	<87v8ihhr9x.wl-tiwai@suse.de>
-	<ca19e5ba-efbe-634d-f42d-93d18f27158b@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: ZTCPHO5W2RBYXKZDWIRYCB7VSEONCKPR
-X-Message-ID-Hash: ZTCPHO5W2RBYXKZDWIRYCB7VSEONCKPR
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=mHydUQdL
+Received: by mail-ed1-x534.google.com with SMTP id eg48so102184812edb.13
+        for <alsa-devel@alsa-project.org>;
+ Sat, 01 Apr 2023 11:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1680374485;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J3CX0tphHwucVQy/XBMHzMB2OpwqIu91GQKmtAUHW5M=;
+        b=mHydUQdLtrrja7rpwWgXxy5mypWihyqXUP8jESwZXYQ+UMo6cyf4ARIpqPZt9seg3I
+         viD8SINsrNFJTY+slyuegQUNoXoyUgGWNqNVbcgVwIxihQmrdkXVXvGZpaqvQ4qtGyhn
+         ZaTg1OeZqPsnFvfI8KPO2vXotEmS84P8VD/aowhwkz4zu+Gs1dEz5PvvBG0+IBWouKmw
+         L9yNjPA4eb8unexMMTlJIKBjfLSGvMAEBV5YJysQGgz7iV0MwdSCRo2BfI7N8tG2RPXh
+         lG0tgpCZrnrW6gB1CVl7u9EUrxINDXJztBVjy4PIQQuPu/r7NvVibcJma2TtbIX2gDp/
+         sApw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680374485;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J3CX0tphHwucVQy/XBMHzMB2OpwqIu91GQKmtAUHW5M=;
+        b=Vw75k0K8a6xgdEWvjXrt+ABDajhv7ROzaY2Oys6t6gXJhytv3sF3dkyyTWMaX4koBw
+         llf4zO96r7tqaQq/Jx04O4ZWVR6lJ2YAbEnWWXdHzKtQgHnuAxuMov158aqnG31knO8A
+         vHZkNkVhLF5i0a80dqQXg/FWcOSWbGRuE+QU8vjwLh5cL91ZZ6bOpOeTRaGWv4XH1dWg
+         9tLbrU0Tx4shWG14/Bz8quY7JK+n+rdlWV/glWVgyBOJm4lmPfVAGf0fD85xI34EWzur
+         2c6qC78Ff/bf7FnkE3l6CkXonOnWXLeuTnJbjfs4dqx0fDkX2pZQj83Ik4fsIlg+mnFR
+         MvlQ==
+X-Gm-Message-State: AAQBX9cl7IrMmAdUqMWTENQoIjDcW5KMHOAreaXNEx8jhQyCqrJZ02Sk
+	k7Cue1nh2H+ZFApaUg2KeN1i/g==
+X-Google-Smtp-Source: 
+ AKy350ZiZuxr3nGNpPlOhGyuV5/ZXciTT5jaK/TheV5lAt/QXLE6MfBHCobXTB/i0A5limdD5B7WdA==
+X-Received: by 2002:aa7:c94c:0:b0:4fc:eee9:417 with SMTP id
+ h12-20020aa7c94c000000b004fceee90417mr27190427edt.18.1680374484789;
+        Sat, 01 Apr 2023 11:41:24 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:ec00:3acd:519:c7c2?
+ ([2a02:810d:15c0:828:ec00:3acd:519:c7c2])
+        by smtp.gmail.com with ESMTPSA id
+ p9-20020a50cd89000000b004c0c5864cc5sm2389927edi.25.2023.04.01.11.41.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 01 Apr 2023 11:41:24 -0700 (PDT)
+Message-ID: <5b0f9fc9-45ef-e501-6840-df4b03d9dab7@linaro.org>
+Date: Sat, 1 Apr 2023 20:41:23 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3] ASoC: dt-bindings: maxim,max98371: Convert to DT
+ schema
+To: =?UTF-8?Q?Andr=c3=a9_Morishita?= <andremorishita@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ anish kumar <yesanishhere@gmail.com>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230401181930.533067-1-andremorishita@gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230401181930.533067-1-andremorishita@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: N2W5RDHRUFCJUQTDRWZ4TV6RBNRN6JSU
+X-Message-ID-Hash: N2W5RDHRUFCJUQTDRWZ4TV6RBNRN6JSU
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Wim Taymans <wim.taymans@gmail.com>
+CC: mairacanal@riseup.net, dri-devel@lists.freedesktop.org,
+ daniel.baluta@nxp.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZTCPHO5W2RBYXKZDWIRYCB7VSEONCKPR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N2W5RDHRUFCJUQTDRWZ4TV6RBNRN6JSU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,46 +123,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 31 Mar 2023 17:40:46 +0200,
-Jaroslav Kysela wrote:
+On 01/04/2023 20:19, André Morishita wrote:
+> Convert the Maxim Integrated MAX98371 audio codec bindings to DT schema.
 > 
-> On 31. 03. 23 17:30, Takashi Iwai wrote:
-> 
-> > That said, the slot preservation becomes effective only when multiple
-> > devices are connected and they are on/off at the same time.  In such a
-> > case, the device order may be changed at each screen on/off with the
-> > current code, while this patch allows keeping the order.  Maybe I
-> > should emphasize about the multiple devices in the patch description.
-> 
-> I though about possibility to remove a monitor completely. Then you
-> can have a gap in the PCM device list.
+> Signed-off-by: André Morishita <andremorishita@gmail.com>
+> ---
+> Changes in v3:
 
-Do you mean the situation where multiple monitors were connected and
-the system is moved afterward to a single monitor environment?  Then
-it might be assigned to the second PCM slot, and that's the designed
-behavior.  In other cases, as long as only a single monitor is used,
-it'll still be assigned to the first PCM slot even with this patch.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> >> The sound server should combine the persistent path only from the ELD
-> >> information for the HDMI devices (if present). The problem may be when
-> >> multiple similar monitors are connected to the machine. It would be
-> >> probably nice to have an unique PCM device name for this usage with
-> >> the serial number of the connected monitor (but I don't think it's in
-> >> ELD? - it is in the EDID spec thought).
-> > 
-> > The name string appears actually in the dialog.  But the automatic
-> > switch doesn't happen.  So we need some improvement / fix.
-> 
-> The switch does not happen because PA/PW use the sink/output path
-> which use the ALSA PCM device identification. This sink/output path
-> also identifies the volume/port preservation. It is not ideal for the
-> hotplug audio devices like HDMI, so we should have another way to
-> identify those devices. The ALSA's PCM name / subdevice name fields in
-> the info structure may be usable for this.
+Best regards,
+Krzysztof
 
-Well, at least, the jack disconnection and re-connection should be
-notified in that case, and I thought the switching may happen.
-But apparently not.
-
-
-Takashi
