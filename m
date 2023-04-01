@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBAF2C76196
-	for <alsa-devel@archiver.kernel.org>; Sun,  2 Apr 2023 08:14:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CEEBC76196
+	for <alsa-devel@archiver.kernel.org>; Sun,  2 Apr 2023 08:14:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35AD5AE8;
-	Sun,  2 Apr 2023 10:13:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35AD5AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50E9B82B;
+	Sun,  2 Apr 2023 10:13:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50E9B82B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680423251;
-	bh=WleuByxv1AX3spoqtOpVYh2+V9Uk+1jSAy8lOEuTbMk=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=HBg014QH48X6fdrhvodf25LM7raG7EV6mnRRzI2KxMPLGPApBf2Olt2ZuQ/sf3PP1
-	 uaDVminXQP5w/k6brq3wAdSIguDr/K65i0K1efHFIorT4RmByKPvz3+0KSbQoKO4NE
-	 q+JopUBNNeBdPqW9AHAe0KcMnpxJNj+kvI0C54oQ=
+	s=default; t=1680423265;
+	bh=bE+dNR7hAwM2i8a8vDUtPNMM0SJCpb/XZgiA8sGgch0=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=CUY8jBv2S0HjGKR3DMXYm2juroszmnsMQSdUpJlb1uu1XLguQa4Q4RElgzNej/Aay
+	 pANAz/1aR9NTx5yT0QqfuNfLr7wVhxf+QiSJMCgNZ+jgj8UD6o0tsLs3q1/XrKqliz
+	 /EPJ6myQEr7Hm+UR140wtoGRDFqfLTKaYqpmyCUc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82C37F80578;
-	Sun,  2 Apr 2023 10:11:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D16FFF8057C;
+	Sun,  2 Apr 2023 10:11:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26546F80272; Sat,  1 Apr 2023 08:01:58 +0200 (CEST)
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com
- [IPv6:2607:f8b0:4864:20::130])
+	id 7D441F80272; Sat,  1 Apr 2023 20:20:14 +0200 (CEST)
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com
+ [IPv6:2607:f8b0:4864:20::c32])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 988C0F800C9
-	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2023 08:01:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 988C0F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 307A5F80114
+	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2023 20:20:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 307A5F80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=H82+/U+c
-Received: by mail-il1-x130.google.com with SMTP id j2so5629343ila.8
+ header.s=20210112 header.b=TWTywiVB
+Received: by mail-oo1-xc32.google.com with SMTP id
+ i4-20020a056820138400b0053e3ccf739cso3123910oow.10
         for <alsa-devel@alsa-project.org>;
- Fri, 31 Mar 2023 23:01:47 -0700 (PDT)
+ Sat, 01 Apr 2023 11:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680328905;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b2U2XsDHoLzpn+9gItu80aF7GJfiGDWT6BnwKoZhBKk=;
-        b=H82+/U+cxD8rA7sivKJHkng97K6qlD0wM1N23xotl4HB6h7PegQVRHpGavi0tyguTZ
-         GIzrNua0ixv/PqJx4jzu5w6TOYt3/rhntWOl6DPZWihQiu5YnBcfTFES0IufTWl4Ra77
-         dPlTt2k636aW5FfjOsp7BTKHIaoox5TOohankzkhuxica+yUsfewBQIoV4+gbOpIfe0L
-         2H+dQYkvpbH+01cbQbvYIGvghRPb/+RqoHphrIrGvr98Qmgd1sqTt0TbVvHjS/YIuXOD
-         waHNqLQAP4T+O0sjDSAU9XqFF7Fca3G+EqWQ/3/e70+p0/zbHTdbbHiWnUkTvGphGp7d
-         +AQw==
+        d=gmail.com; s=20210112; t=1680373205;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fITr2HwYgqLUUk1Kke5I+QMgFMyvuPMKr1ZR1hYIU3I=;
+        b=TWTywiVBMaANiqanN77gtisbmbm/wLVaWH+qyvtSiG7Ip59YMo9aZDcndAj+mKA+np
+         pmRQ/MRD3zciKrhFt0RuZvZz2+h78fnTzX/LcAXMYKtlKZxIYQAoAP4r4EremUZ3sz0b
+         qkxGHWGCNrdO76vAQ9tDN0qdcTRQQlaidz9AixfK1WPfKQHehUmHtsft+IME2e+dtrn+
+         19VBxkzkYCibQxoy7a1ESloaQXtfmxLJ3EhA8uCs0lomI+AfOuw00QACf/hwYVUCwKKU
+         3oeE4S6hC+9ht1tFV7Nti8PwpFUsmbeyI9oqrOcY2RqMGsSjyUcsTXnL2A5iKKaz4EDY
+         DGlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680328905;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b2U2XsDHoLzpn+9gItu80aF7GJfiGDWT6BnwKoZhBKk=;
-        b=Vr5bZSKY0PyZob1FpD8we2iR6WCJk0MwnajdCfArHKy9/GpjZkOFguJwU/BXcfMYnw
-         CKRI9hTi2tGSMRL2TKKCl+8xKnVyWbYciPaT8oAkUJlsa2lQoI5391BV34Kd+N4qhU5a
-         oEtZcniposjv2DAXN6g2h1EOTe7OCRE4Sg6wILXtnzPy1lANOChWW77wpfBVtXcaenem
-         EpL8dkxoUhpOJR5hw3EqVe0yGpzs1Vfjnd/DlIPHHYsJGhZ9XMne6HTdH1GuuPYKoUq7
-         kICIUy5qf/5GbOWjdc2FmFdqRWEIUgaBKQCZPgcDzsR/sFh2uq+rekgWrdKW/JT176dR
-         SxuQ==
-X-Gm-Message-State: AAQBX9dGqQmVX7WiRfRkwqUi+lVQU7+LpkbDMfNcsThzMQP6IOX0CufY
-	cJhd7HT+FAlpX+oMXDDibFPJTOR6jkmWDUsc
+        d=1e100.net; s=20210112; t=1680373205;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fITr2HwYgqLUUk1Kke5I+QMgFMyvuPMKr1ZR1hYIU3I=;
+        b=yWYgzrRBe3rW8yuxQyPaxp+UHvUMP4IM34Sb5hCZ4b+1CpEVSK5ZAPOAbRmEpl9bd0
+         Cr7y7KwvIRNj0Au3B11ifAAqjxO9SX8GOxp8RO8wmU3joncq33o1Dojm8qPq3Bdwn+Ek
+         OenaYqBZP3qT+AkWTWLYyO1PinUKfi+EXjixqpJkLrASWzp2aXccId89HdLhZ7R+xF2Q
+         MHOImxp98M2Lw1DslZR9w/cejdHSQAWQIZCQeUjnLO9dOfnNXYpb12cdpF317NXJAB9H
+         0P41oF71zCghO2A2gOjuD4pjwAmP9qR6Earsf91PoRe8hu5cFLTaAmnCAubjpVuUaRpn
+         nafg==
+X-Gm-Message-State: AAQBX9dXn9IGd5DeZJH+rMNZulYyl7LmUZtgILEgH5BNGd1EAJNKHw0+
+	hFAp3OgeDGbtPRgUlZqpyLI=
 X-Google-Smtp-Source: 
- AKy350YkXdYUmmYhpswBXz+/2z7ssiOIinB0jx2wQCZKq5zKmY7eC7HkeqBQ+BIXkp8JA6MXqUPuYQ==
-X-Received: by 2002:a05:6870:560c:b0:17a:d2ab:aeb8 with SMTP id
- m12-20020a056870560c00b0017ad2abaeb8mr17985248oao.33.1680321531834;
-        Fri, 31 Mar 2023 20:58:51 -0700 (PDT)
+ AKy350ZGi7A5EVHermG2a+d2Y1EJ0swdZU4PDDJgxPBdTR3MqzeWevqrtPAxWogwUpGjkvCHzT782A==
+X-Received: by 2002:a4a:bd8c:0:b0:53c:5f89:eb85 with SMTP id
+ k12-20020a4abd8c000000b0053c5f89eb85mr6913034oop.2.1680373205132;
+        Sat, 01 Apr 2023 11:20:05 -0700 (PDT)
 Received: from heimdal.localdomain ([2804:431:cfec:79f0:85a3:2af2:a6f4:1842])
         by smtp.gmail.com with ESMTPSA id
- ug13-20020a0568714d0d00b001727c3bf124sm1593845oab.31.2023.03.31.20.58.48
+ e193-20020a4a55ca000000b005255e556399sm2159485oob.43.2023.04.01.11.20.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Mar 2023 20:58:51 -0700 (PDT)
+        Sat, 01 Apr 2023 11:20:04 -0700 (PDT)
 From: =?UTF-8?q?Andr=C3=A9=20Morishita?= <andremorishita@gmail.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -87,12 +86,10 @@ To: Liam Girdwood <lgirdwood@gmail.com>,
 	alsa-devel@alsa-project.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: dt-bindings: maxim,max98371: DT schema improvement
-Date: Sat,  1 Apr 2023 00:57:54 -0300
-Message-Id: <20230401035756.856752-1-andremorishita@gmail.com>
+Subject: [PATCH v3] ASoC: dt-bindings: maxim,max98371: Convert to DT schema
+Date: Sat,  1 Apr 2023 15:19:29 -0300
+Message-Id: <20230401181930.533067-1-andremorishita@gmail.com>
 X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230331020527.482991-1-andremorishita@gmail.com>
-References: <20230331020527.482991-1-andremorishita@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -102,8 +99,8 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 33YMAF4HADK5C5B5LFRMDBJQTKUH4W35
-X-Message-ID-Hash: 33YMAF4HADK5C5B5LFRMDBJQTKUH4W35
+Message-ID-Hash: JB3BCGNZO5AP2J7VDYNI3VADM3CUGWDE
+X-Message-ID-Hash: JB3BCGNZO5AP2J7VDYNI3VADM3CUGWDE
 X-Mailman-Approved-At: Sun, 02 Apr 2023 08:08:35 +0000
 CC: mairacanal@riseup.net, dri-devel@lists.freedesktop.org,
  daniel.baluta@nxp.com,
@@ -113,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/33YMAF4HADK5C5B5LFRMDBJQTKUH4W35/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JB3BCGNZO5AP2J7VDYNI3VADM3CUGWDE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,14 +119,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Improve Maxim Integrated MAX98371 audio codec bindings DT schema conversion
+Convert the Maxim Integrated MAX98371 audio codec bindings to DT schema.
 
 Signed-off-by: André Morishita <andremorishita@gmail.com>
 ---
-Changes in v2
-- Generic node names - codec (Krzysztof)
-- Drop label max98371 (Krzysztof)
-- Add sound-dai-cells in example (Krzysztof)
+Changes in v3:
+  - Make commit message and subject as v1 with ASoC subject prefix
+
+Changes in v2:
+   - Generic node names - codec (Krzysztof)
+   - Drop label max98371 (Krzysztof)
+   - Add sound-dai-cells in example (Krzysztof)
 
  .../devicetree/bindings/sound/max98371.txt    | 17 --------
  .../bindings/sound/maxim,max98371.yaml        | 42 +++++++++++++++++++
