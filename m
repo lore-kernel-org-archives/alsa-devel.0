@@ -4,84 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6AE7C76188
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Apr 2023 15:10:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 071BAC76196
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Apr 2023 15:37:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98404823;
-	Mon,  3 Apr 2023 17:09:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98404823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 899B5209;
+	Mon,  3 Apr 2023 17:36:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 899B5209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680534611;
-	bh=lf4upq3FdpRAqhv049TEQuv0s9Un/cwgAomIIpEaq0s=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1680536228;
+	bh=0DsL/zBRqxPzwYW1xlbJyW3fgq5H/wMYEgPOt72hbcQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=p9W8WQl/qpO4FYb8MCeSro9Tng/tj9fIvPLKXULTvFk3CAzxYGPkGsB43N351O24U
-	 rAVcRToPFtNiM+t2DpVKuwZtyk4WgGgt3Rb9ut2qZnAvXmPu3mhVxziRZdVOQftPln
-	 PoKPi27GH0ou6i/JsD+0du8kOrfgbi3gnPc/c8bY=
+	b=BP4woKrCBAzfN9XrLh8Zbof1rhvK72Z4/Ybw+eugEg/LctOnwEZC9JTxgYkNqY4JG
+	 wNwZnr1HEOJ4s1UfI+qbi1f5kdXo2O//zIcdA4H0WmKxaTay6fSxYRN/RbjgEEwPxm
+	 +/txGG6DRC5UXatXX4Hkc7J3WDggtqNnxG29Fw20=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8417FF80548;
-	Mon,  3 Apr 2023 17:08:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74443F8024C;
+	Mon,  3 Apr 2023 17:35:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27655F8015B; Mon,  3 Apr 2023 17:08:04 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 91415F8024C; Sun,  2 Apr 2023 22:25:53 +0200 (CEST)
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com
+ [IPv6:2607:f8b0:4864:20::1030])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1EAF0F8026D
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2023 17:07:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EAF0F8026D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0ED8EF801C0
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2023 22:25:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ED8EF801C0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=iKoGuZuQ
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 20D1361FE1;
-	Mon,  3 Apr 2023 15:07:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4266C4339B;
-	Mon,  3 Apr 2023 15:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1680534470;
-	bh=lf4upq3FdpRAqhv049TEQuv0s9Un/cwgAomIIpEaq0s=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=iKoGuZuQuiB2AATagOH6QT06cLYsL9IFURw0gD3/EwCcErabq2543tv9bsmViTDXB
-	 Ntl5DHlpgqVlZXvPmNd4vL6bsf1c03/hKV9DR5mtxuPdMqGgIMY0cbn29J/u68TUef
-	 KU+pa+ddaDhqh8/zSWnYh9K7fdhpkUmCXXPvN5+q3Ik+VlkvZ3T0iAOPFPAW1cTsxZ
-	 F0cOEI5nr96DvY+HgbJsiOsz9gjO22nE/nfp5/3pr9d53mF7/3AMweg9QiIKo+9vGF
-	 DxRzecYn4/dw3M9u13AIKY5euxw/Bn9SgPflEgvmIk6vs3ehdH6OhK1tAAWikPn7ij
-	 i2LrEc+qA57WQ==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <20230328131018.6820-1-rf@opensource.cirrus.com>
-References: <20230328131018.6820-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH v2] firmware: cs_dsp: Add a debugfs entry containing
- control details
-Message-Id: <168053446957.47553.1396193248539137592.b4-ty@kernel.org>
-Date: Mon, 03 Apr 2023 16:07:49 +0100
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=JJL/4gKU
+Received: by mail-pj1-x1030.google.com with SMTP id
+ p3-20020a17090a74c300b0023f69bc7a68so28473443pjl.4
+        for <alsa-devel@alsa-project.org>;
+ Sun, 02 Apr 2023 13:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680467145;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0DsL/zBRqxPzwYW1xlbJyW3fgq5H/wMYEgPOt72hbcQ=;
+        b=JJL/4gKUlB+EDrmdGZlbC1jz+27kAyWFXYi5QE2itDS70n3dKKpBlG5+H8Zc68dOF0
+         ctfaF/pXj+iAi677i+bxPEBCNwiATGOLjXQZ5f0bS5WBmt3uLh/0STx2EY3hKLsE6QfG
+         wVvIubAgfSBn/xRwaBQwpOXKNhiAWvk/yhfR7SnPz5NBfO6/p4Fssiz/SDGCBkNKodFu
+         QHfeGzE5VJ38VoIhteEi60M8Zx0E5LQu+vXCOvS+PF1BAYO+BLJ+5yTPTifCkIaFR2xC
+         FERc+F5lNGfUyatG99e1THh9yfVJXvp4xC9IFiNGKkxOh8JMkJtQmTj5DYKxqIZRFPGl
+         Bx+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680467145;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0DsL/zBRqxPzwYW1xlbJyW3fgq5H/wMYEgPOt72hbcQ=;
+        b=CnOk0HSo92AeUFL3sxUA+cCjxH2T1DOBY+O6c3whqeFYt+ZrMZXU4D+/o5LrBImjf0
+         RieBBDrI8v1hrKPMh174gvci47hCIw5gZtrd4EvHUtcjAbK5KHjdY2+jlbIKj3Jk4l+w
+         BBnMLOcR8x77Fg7AaF5ijGMbfe3s8By+Rpf8P1AE52gKuRSeINk1qY/U69/n488bFjXT
+         8BdZLAFuG9+lAH9gppsU4y9/P+yR9pMzde26f30Y8LiL/Bxsa5Lu3sNKVuF7qnqTbcuV
+         9j6XL1ccIzHFekgui7AnEy/jQgQQFa+UiWfDYTesbGYRqFmUG5bUxVANWZ8iELJCyXgu
+         BxlA==
+X-Gm-Message-State: AO0yUKU4OlnJYOhzJ82eopSUSpx80NdHfyQojxfUdM2j6hUONH9X7iBX
+	uLaRkGuiNNUPeJGuYnb6iKo=
+X-Google-Smtp-Source: 
+ AK7set9XUGbrFlE96WF8zHGlheV864DgSZZVFIrFsngxHwfoI5PoH44vD2xhON661YS8gY4fORuaVg==
+X-Received: by 2002:a05:6a20:c426:b0:d3:9c13:606 with SMTP id
+ en38-20020a056a20c42600b000d39c130606mr27917046pzb.47.1680467144889;
+        Sun, 02 Apr 2023 13:25:44 -0700 (PDT)
+Received: from pavilion.. ([2409:40f2:100f:dc7:7586:11f6:6763:e4a6])
+        by smtp.gmail.com with ESMTPSA id
+ i17-20020aa787d1000000b00627ed4e23e0sm5402146pfo.101.2023.04.02.13.25.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Apr 2023 13:25:44 -0700 (PDT)
+From: Saalim Quadri <danascape@gmail.com>
+To: krzysztof.kozlowski@linaro.org
+Subject: Re: [PATCH v5] ASoC: dt-bindings: ak4458: Convert to dtschema
+Date: Mon,  3 Apr 2023 01:55:37 +0530
+Message-Id: <20230402202537.4373-1-danascape@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <7554941f-0b90-5cef-48e4-eda12ef92674@linaro.org>
+References: <7554941f-0b90-5cef-48e4-eda12ef92674@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-00303
-Message-ID-Hash: TQCESYU74T6IKDEOWBJMJWZQUT37PESS
-X-Message-ID-Hash: TQCESYU74T6IKDEOWBJMJWZQUT37PESS
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+X-MailFrom: danascape@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Simon Trimmer <simont@opensource.cirrus.com>
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: V6TR3W3HFYWYGE2E43UUVDBZJZMCZQYL
+X-Message-ID-Hash: V6TR3W3HFYWYGE2E43UUVDBZJZMCZQYL
+X-Mailman-Approved-At: Mon, 03 Apr 2023 15:35:52 +0000
+CC: alsa-devel@alsa-project.org, broonie@kernel.org, danascape@gmail.com,
+ daniel.baluta@nxp.com, devicetree@vger.kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, shengjiu.wang@nxp.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TQCESYU74T6IKDEOWBJMJWZQUT37PESS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V6TR3W3HFYWYGE2E43UUVDBZJZMCZQYL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,44 +116,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 28 Mar 2023 14:10:18 +0100, Richard Fitzgerald wrote:
-> The file named 'controls' in the DSP's debugfs root contains a
-> formatted table describing the controls defined within the loaded DSP
-> firmware, it is of the form
-> 
->   name: len region:offset addr fwname algid ctltype flags en dirty
-> 
-> Where flags is represented as a character for each flag if set, or '-',
-> enabled is whether the control is enabled or disabled and dirty is
-> whether the control value is set in the cache but not the hardware.
-> 
-> [...]
+The patch has no major change, as mentioned under the changelog.
+The alignment was changed according to the comment in v4
 
-Applied to
+Apologies,
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] firmware: cs_dsp: Add a debugfs entry containing control details
-      commit: 7a3f924cee4bdfe85eda4e636213e79d3fda6182
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Saalim
