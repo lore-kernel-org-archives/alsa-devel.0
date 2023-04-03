@@ -4,86 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31E15C76196
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Apr 2023 15:38:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81710C76188
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Apr 2023 15:39:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2D03820;
-	Mon,  3 Apr 2023 17:38:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2D03820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E6241FE;
+	Mon,  3 Apr 2023 17:38:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E6241FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680536337;
-	bh=Zu7XJXaGl+P3gaSTxJyRKbQa7fWRaCkjIAK8uuYyaPw=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=FNLd5ETPrVRZ8/VnGfri6J1FociGlOiozvjx4CvnQE9stJWeoNCWQPfs0jz1Vj2yc
-	 rARBnnhYd+COMIkiTVee/4gsrMAmh88kMSC82BquqwUD7hvpQb4jpVDt61s2kKO55c
-	 sVsMAZ+CfKZyKPMxMdc+dHigJX3Hgz2hLGpuQsFU=
+	s=default; t=1680536361;
+	bh=cB27IzkAafy+IWw9S5kJqvtMcIEUaK/BrwzsF3n4r1A=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=B/jbyC0X6CMSdxLsJgePMo8BvuOQc7yqn1M3lgwB34eyH+OB5tzKbrFLSYAceJC4K
+	 z9y70JMWUA2JwPlC2sHR+ppNc5/nUBgMRNHqlW35mc2zMBmk12QwJOm56LchARby+8
+	 qqI3qdEZSCOk8bjwd9V3SkaoGr9RTrNfGjf/Vz7s=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8988F80563;
-	Mon,  3 Apr 2023 17:36:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5F4CF8057B;
+	Mon,  3 Apr 2023 17:36:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 880DAF8024C; Mon,  3 Apr 2023 15:00:40 +0200 (CEST)
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	id 23193F8024C; Mon,  3 Apr 2023 17:27:38 +0200 (CEST)
+Received: from hust.edu.cn (unknown [202.114.0.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8CE5DF801C0
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2023 15:00:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CE5DF801C0
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id 2625724E094;
-	Mon,  3 Apr 2023 20:58:56 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 3 Apr
- 2023 20:58:56 +0800
-Received: from [192.168.125.145] (183.27.97.179) by EXMBX168.cuchost.com
- (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 3 Apr
- 2023 20:58:55 +0800
-Message-ID: <693c38f8-6aec-dd50-94a0-65300b6ed1b2@starfivetech.com>
-Date: Mon, 3 Apr 2023 20:58:54 +0800
+	by alsa1.perex.cz (Postfix) with ESMTPS id 713CAF80171
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2023 17:27:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 713CAF80171
+Received: from LAPTOP-6NFQSDTK.localdomain ([10.12.182.145])
+	(user=yll@hust.edu.cn mech=LOGIN bits=0)
+	by mx1.hust.edu.cn  with ESMTP id 333FRJ5h024979-333FRJ5i024979
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Mon, 3 Apr 2023 23:27:24 +0800
+From: Liliang Ye <yll@hust.edu.cn>
+To: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Dan Carpenter <error27@gmail.com>
+Subject: [PATCH 1/2] ASoC: fsl_mqs: move of_node_put() to the correct location
+Date: Mon,  3 Apr 2023 23:26:47 +0800
+Message-Id: <20230403152647.17638-1-yll@hust.edu.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH v1 3/3] riscv: dts: starfive: add tdm node and sound card
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Jaroslav Kysela
-	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor.dooley@microchip.com>, Emil Renner Berthing
-	<emil.renner.berthing@canonical.com>
-References: <20230329153320.31390-1-walker.chen@starfivetech.com>
- <20230329153320.31390-4-walker.chen@starfivetech.com>
- <d455a90a-7e63-2254-75cb-70cb26ae7483@linaro.org>
-From: Walker Chen <walker.chen@starfivetech.com>
-In-Reply-To: <d455a90a-7e63-2254-75cb-70cb26ae7483@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.97.179]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-X-MailFrom: walker.chen@starfivetech.com
+Content-Transfer-Encoding: 8bit
+X-FEAS-AUTH-USER: yll@hust.edu.cn
+X-MailFrom: yll@hust.edu.cn
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: YRP4ZJXKZGSUB55GPPPTBYV7IPZ6776Q
-X-Message-ID-Hash: YRP4ZJXKZGSUB55GPPPTBYV7IPZ6776Q
+Message-ID-Hash: RDPLHPWY4JEHD7JI7DUF7DWSNY4ZBZPS
+X-Message-ID-Hash: RDPLHPWY4JEHD7JI7DUF7DWSNY4ZBZPS
 X-Mailman-Approved-At: Mon, 03 Apr 2023 15:36:51 +0000
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+CC: hust-os-kernel-patches@googlegroups.com, Liliang Ye <yll@hust.edu.cn>,
+ alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YRP4ZJXKZGSUB55GPPPTBYV7IPZ6776Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RDPLHPWY4JEHD7JI7DUF7DWSNY4ZBZPS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,232 +76,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+of_node_put() should have been done directly after
+mqs_priv->regmap = syscon_node_to_regmap(gpr_np);
+otherwise it creates a reference leak on the success path.
 
+To fix this, of_node_put() is moved to the correct location, and change
+all the gotos to direct returns.
 
-On 2023/3/30 15:43, Krzysztof Kozlowski wrote:
-> On 29/03/2023 17:33, Walker Chen wrote:
->> Add the tdm controller node and sound card for the StarFive JH7110 SoC.
->> 
->> Signed-off-by: Walker Chen <walker.chen@starfivetech.com>
->> ---
->>  .../jh7110-starfive-visionfive-2.dtsi         | 87 +++++++++++++++++++
->>  arch/riscv/boot/dts/starfive/jh7110.dtsi      | 34 ++++++++
->>  2 files changed, 121 insertions(+)
->> 
->> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
->> index 1155b97b593d..35137c2edf5d 100644
->> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
->> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
->> @@ -62,6 +62,10 @@
->>  	clock-frequency = <297000000>;
->>  };
->>  
->> +&wm8960_mclk {
->> +	clock-frequency = <24576000>;
->> +};
->> +
->>  &i2srx_bclk_ext {
->>  	clock-frequency = <12288000>;
->>  };
->> @@ -102,6 +106,14 @@
->>  	pinctrl-names = "default";
->>  	pinctrl-0 = <&i2c0_pins>;
->>  	status = "okay";
->> +
->> +	wm8960: codec@1a {
->> +		compatible = "wlf,wm8960";
->> +		reg = <0x1a>;
->> +		#sound-dai-cells = <0>;
->> +
->> +		wlf,shared-lrclk;
->> +	};
->>  };
->>  
->>  &i2c2 {
->> @@ -214,6 +226,40 @@
->>  			slew-rate = <0>;
->>  		};
->>  	};
->> +
->> +	tdm0_pins: tdm0-pins {
->> +		tdm0-pins-tx {
->> +			pinmux = <GPIOMUX(44, GPOUT_SYS_TDM_TXD,
->> +					      GPOEN_ENABLE,
->> +					      GPI_NONE)>;
->> +			bias-pull-up;
->> +			drive-strength = <2>;
->> +			input-disable;
->> +			input-schmitt-disable;
->> +			slew-rate = <0>;
->> +		};
->> +
->> +		tdm0-pins-rx {
->> +			pinmux = <GPIOMUX(61, GPOUT_HIGH,
->> +					      GPOEN_DISABLE,
->> +					      GPI_SYS_TDM_RXD)>;
->> +			input-enable;
->> +		};
->> +
->> +		tdm0-pins-sync {
->> +			pinmux = <GPIOMUX(63, GPOUT_HIGH,
->> +					      GPOEN_DISABLE,
->> +					      GPI_SYS_TDM_SYNC)>;
->> +			input-enable;
->> +		};
->> +
->> +		tdm0-pins-pcmclk {
->> +			pinmux = <GPIOMUX(38, GPOUT_HIGH,
->> +					      GPOEN_DISABLE,
->> +					      GPI_SYS_TDM_CLK)>;
->> +			input-enable;
->> +		};
->> +	};
->>  };
->>  
->>  &uart0 {
->> @@ -221,3 +267,44 @@
->>  	pinctrl-0 = <&uart0_pins>;
->>  	status = "okay";
->>  };
->> +
->> +&tdm {
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&tdm0_pins>;
->> +	status = "okay";
->> +};
->> +
->> +&sound0 {
->> +	simple-audio-card,dai-link@0 {
->> +		reg = <0>;
->> +		status = "okay";
-> 
-> Why? Drop.
+Fixes: a9d273671440 ("ASoC: fsl_mqs: Fix error handling in probe")
+Signed-off-by: Liliang Ye <yll@hust.edu.cn>
+Reviewed-by: Dan Carpenter <error27@gmail.com>
+---
+ sound/soc/fsl/fsl_mqs.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-Will drop it.
+diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
+index 4922e6795b73..32d20d351bbf 100644
+--- a/sound/soc/fsl/fsl_mqs.c
++++ b/sound/soc/fsl/fsl_mqs.c
+@@ -210,10 +210,10 @@ static int fsl_mqs_probe(struct platform_device *pdev)
+ 		}
+ 
+ 		mqs_priv->regmap = syscon_node_to_regmap(gpr_np);
++		of_node_put(gpr_np);
+ 		if (IS_ERR(mqs_priv->regmap)) {
+ 			dev_err(&pdev->dev, "failed to get gpr regmap\n");
+-			ret = PTR_ERR(mqs_priv->regmap);
+-			goto err_free_gpr_np;
++			return PTR_ERR(mqs_priv->regmap);
+ 		}
+ 	} else {
+ 		regs = devm_platform_ioremap_resource(pdev, 0);
+@@ -242,8 +242,7 @@ static int fsl_mqs_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mqs_priv->mclk)) {
+ 		dev_err(&pdev->dev, "failed to get the clock: %ld\n",
+ 			PTR_ERR(mqs_priv->mclk));
+-		ret = PTR_ERR(mqs_priv->mclk);
+-		goto err_free_gpr_np;
++		return PTR_ERR(mqs_priv->mclk);
+ 	}
+ 
+ 	dev_set_drvdata(&pdev->dev, mqs_priv);
+@@ -252,13 +251,9 @@ static int fsl_mqs_probe(struct platform_device *pdev)
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &soc_codec_fsl_mqs,
+ 			&fsl_mqs_dai, 1);
+ 	if (ret)
+-		goto err_free_gpr_np;
+-	return 0;
+-
+-err_free_gpr_np:
+-	of_node_put(gpr_np);
++		return ret;
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int fsl_mqs_remove(struct platform_device *pdev)
+-- 
+2.34.1
 
-> 
->> +		format = "dsp_a";
->> +		bitclock-master = <&dailink_master>;
->> +		frame-master = <&dailink_master>;
->> +
->> +		widgets =
-> 
-> Drop line break.
-
-OK, will drop it.
-
-> 
->> +				"Microphone", "Mic Jack",
->> +				"Line", "Line In",
->> +				"Line", "Line Out",
->> +				"Speaker", "Speaker",
->> +				"Headphone", "Headphone Jack";
->> +		routing =
-> 
-> Drop unnecessary line break.
-
-OK, will drop it.
-
-> 
->> +				"Headphone Jack", "HP_L",
->> +				"Headphone Jack", "HP_R",
->> +				"Speaker", "SPK_LP",
->> +				"Speaker", "SPK_LN",
->> +				"LINPUT1", "Mic Jack",
->> +				"LINPUT3", "Mic Jack",
->> +				"RINPUT1", "Mic Jack",
->> +				"RINPUT2", "Mic Jack";
->> +		cpu {
->> +			sound-dai = <&tdm>;
->> +		};
->> +
->> +		dailink_master:codec {
-> 
-> Missing space after label:.
-
-Will be fixed.
-
-> 
->> +			sound-dai = <&wm8960>;
->> +			clocks = <&wm8960_mclk>;
->> +			clock-names = "mclk";
->> +		};
->> +	};
->> +};
->> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
->> index b503b6137743..a89158d1d7a6 100644
->> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
->> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
->> @@ -210,6 +210,12 @@
->>  		#clock-cells = <0>;
->>  	};
->>  
->> +	wm8960_mclk: wm8960_mclk {
-> 
-> No underscores in node names. Use consistent naming - do you see here
-> any nodes named "mclk"?
-> 
-> Anyway this is some fake clock. Real clock should come out from wm8960.
-
-Thank you for pointing out this, it will be fixed.
-
-> 
->> +		compatible = "fixed-clock";
->> +		clock-output-names = "wm8960_mclk";
->> +		#clock-cells = <0>;
->> +	};
->> +
->>  	i2srx_bclk_ext: i2srx-bclk-ext-clock {
->>  		compatible = "fixed-clock";
->>  		clock-output-names = "i2srx_bclk_ext";
->> @@ -375,6 +381,27 @@
->>  			status = "disabled";
->>  		};
->>  
->> +		tdm: tdm@10090000 {
->> +			compatible = "starfive,jh7110-tdm";
->> +			reg = <0x0 0x10090000 0x0 0x1000>;
->> +			clocks = <&syscrg JH7110_SYSCLK_TDM_AHB>,
->> +				 <&syscrg JH7110_SYSCLK_TDM_APB>,
->> +				 <&syscrg JH7110_SYSCLK_TDM_INTERNAL>,
->> +				 <&syscrg JH7110_SYSCLK_TDM_TDM>,
->> +				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
->> +				 <&tdm_ext>;
->> +			clock-names = "tdm_ahb", "tdm_apb",
->> +				      "tdm_internal", "tdm",
->> +				      "mclk_inner", "tdm_ext";
->> +			resets = <&syscrg JH7110_SYSRST_TDM_AHB>,
->> +				 <&syscrg JH7110_SYSRST_TDM_APB>,
->> +				 <&syscrg JH7110_SYSRST_TDM_CORE>;
->> +			dmas = <&dma 20>, <&dma 21>;
->> +			dma-names = "rx","tx";
->> +			#sound-dai-cells = <0>;
->> +			status = "disabled";
->> +		};
->> +
->>  		stgcrg: clock-controller@10230000 {
->>  			compatible = "starfive,jh7110-stgcrg";
->>  			reg = <0x0 0x10230000 0x0 0x10000>;
->> @@ -601,5 +628,12 @@
->>  			#reset-cells = <1>;
->>  			power-domains = <&pwrc JH7110_PD_VOUT>;
->>  		};
->> +
->> +		sound0: snd-card0 {
-> 
-> 1. Why card0?
-
-There are several audio interfaces in JH7110 SoC, each as an independent sound card.
-TDM is for snd-card0, latter i2s will be for snd-card1, spdif will be for snd-card2, etc.
-
-> 2. Where is this node located? In MMIO bus? Run some basic checks on
-> your DTS before submitting upstream.
-> dtbs_check
-> dtbs W=1
-> 
-> 3. Why this is even in the DTSI? This really looks wrong.
-
-It seems that the sound node should be located in DTS file more appropriately.
-
-Best regards,
-Walker
