@@ -4,122 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8554C761A6
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 18:19:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECABDC7619A
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 07:15:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1332C1FE;
-	Tue,  4 Apr 2023 20:18:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1332C1FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 025A9204;
+	Wed,  5 Apr 2023 09:14:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 025A9204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680632373;
-	bh=scBo9YtgZwWV5suQ3l92r4nDCPN9quY/NUjpy6AiJ8g=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1680678910;
+	bh=jyhim17DbKVD5JSPrhqsajxFS6s8H9DsF37Jtb6iGUw=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Xc9Ji5jKn45R8UDljlxZBdgeZMRCJ3nj0RHqcr0v5RXi/snhrSYU+O7eoNfb7t7Na
-	 Jo/qa3xHyG9VSDhNZdtMa1jxbzKBgQWmtZcB1FtSPds2AVfabnuzc1jtmr/1Pu1Vsa
-	 tYr9J9+Yw+8o9BlKb5heH7ROqoqH5c7BAg1voIAo=
+	b=U7uX+UOaLQzDdDwjEV26e2aZI9luW5Holq3RESi79zvLQbCtmvIAjmhkvOAfOxBTG
+	 W/oP6HGTsrQICyvOBPDRKfEcSj2/orgRemb4PK1SMzTMiWw/gsUwCqiWpqbe5E8L0V
+	 5g6Izk8K5s4LmjUI8YEaU3lG9wLgBPyUPD51iprw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C298FF8015B;
-	Tue,  4 Apr 2023 20:18:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10C17F801C0;
+	Wed,  5 Apr 2023 09:14:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22D94F8024C; Tue,  4 Apr 2023 20:18:17 +0200 (CEST)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
- [IPv6:2a00:1450:4864:20::536])
+	id 09147F8024C; Mon,  3 Apr 2023 17:53:42 +0200 (CEST)
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com
+ [IPv6:2607:f8b0:4864:20::1031])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 221FBF8015B
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 20:18:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 221FBF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8E14FF80171
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2023 17:53:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E14FF80171
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=RQDpIhiU
-Received: by mail-ed1-x536.google.com with SMTP id ew6so134116557edb.7
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=L4VxjwPU
+Received: by mail-pj1-x1031.google.com with SMTP id j13so27647968pjd.1
         for <alsa-devel@alsa-project.org>;
- Tue, 04 Apr 2023 11:18:12 -0700 (PDT)
+ Mon, 03 Apr 2023 08:53:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680632290;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ir8YBxidmyDjL43kqs3HcIAsaJ4PKAEaZFGmGkOZQXg=;
-        b=RQDpIhiUlw2Y9lmNTIPdcM7xe4l9Dps6+qTrp/9ViFNP8QnQo2FijSxlG1hENEX5Xs
-         acL5CSJjeXPn67PV37G3MBVbxTIgf8Gs8cz1jlbMgNLLeGDfR5BoWHDcVMtsGXlL2ERx
-         C71+sOz9RqE7YXUfDZ8VoHFQa5IcV8YsxlHbQ0Y+sdLCoDGKebETZl1gWiwllaF77z3J
-         k05+fAr7959COxq5K20OpDlOI1/vR/cnxqxO3TQldUiAhSwwUQIAdXRTp3XgGgKaB8Bb
-         hZejIAMAFjAXZ2ZtdYNMyjLxHG7xJoghF+50qfAvawxz5xvZ5Q1W+jKCyoGlav35iOjD
-         bUPQ==
+        d=gmail.com; s=20210112; t=1680537215;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cKTF0BmFIUa1JLXsVVVzhQGo7yEP1rvtiF0Y9gWPb8E=;
+        b=L4VxjwPUo8WCU577qZCEQZ7pu6p8oNyJGyxXFOTQp5zmHJ40pDDjUEWoZvAFMWr3iX
+         IXhsmBYVV4AdZ1cCtSkSWqJbLDs0AYskwC+ekhf21MUBcTOHuyPYrHcUXA2uXYDB5VLI
+         trNo/Qfe4l+xU8uJgND9oZ3yEEMd2JspaHiZOhBGkcsi9V/KmMJ1CmtZMpBAIUkrq+iU
+         BpkttpS2Olw6pBXHactkL2p/xlyok4F6o1qBgQSB1Ti89oxE60tG9NIKtO66/As7KtUU
+         a/9x63J7LoTUlrOlRWk8UnWqN0ukskoztPWhRVb3NA+K1l5PphKlLWGGrGHrSrQIxCya
+         UspA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680632290;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ir8YBxidmyDjL43kqs3HcIAsaJ4PKAEaZFGmGkOZQXg=;
-        b=QWuAzqaEGpQpDqk5bVTXKja70XP1I1AhY2ZXzDIvUv90DosT1j3hVYa6Z3GGPmKhpn
-         xYLVSJSwUFc9dNuk9i1W5szJzB1Q0DwPWVaDh1JopKuqn/JwcBwAMBCAk0kRvOorERWy
-         UuR4lKRyPUL1VUy8VUK3x7BZztR3T6jjcZwONaA/ObSpdtobAnILAmzbxEyaqxOPhE7m
-         MJ6HpXZOVIKpouVS6C9V1k2C+Kdli+EVGhdspaGr7oEwL586dr4nlwzHFn9xUO6imO92
-         x1JLysemYfzeatXRr+vMlafW2UmCVmdjwsSqYJeDeYnCiJFexZ+DtzVskL4A7a/l8+JR
-         vyRw==
-X-Gm-Message-State: AAQBX9diXKX2GypPYr5fYm9GCYduj/4Jd/MzJ2Q7lBJ7eqcNshWa3qNO
-	pxYcnRd5x8oKGyyljvQch9M/AQ==
+        d=1e100.net; s=20210112; t=1680537215;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cKTF0BmFIUa1JLXsVVVzhQGo7yEP1rvtiF0Y9gWPb8E=;
+        b=6MnQAzgwZ3zq4jSpv+qvC2GAIedOOkQYk6UCUxoZ6c12C/Hr1WCnmtDqq1NVtbzeQs
+         asC6Ulw//05wN2SZqC7Qits734YOQXVVrBkvkpNRZtQA+D3mRVrAqr5BV0Cfwuy2165X
+         VhsNGvSKX6umghe2EH2WyFdkLtF+FOlUNiEhy1tgQdI1nGr7U2IO5O3cb+BMzdl6IQ/F
+         LP4VxtoDgYUdePVe1ae0DIMKBmD85WqhkMEW29rWtHEVyCHF/1byWOLJwIXSI2k4qB36
+         +bYGEP2wKDEnkAWoKr8sQL3jhVHD96YT1Na0AF5X+dOqmXAsJ3oojTW/EJ/amCGlTpR6
+         u4dw==
+X-Gm-Message-State: AAQBX9fnKnI8+cS1veB4qlX7d16O/xdFfqGJ6jIEfi9xjV+JcUbKw7rb
+	KullYAdM60hiifW4fyQTvjo=
 X-Google-Smtp-Source: 
- AKy350bkUvS0cmR9W0/1DcwvNmjXy5ym8hk9TIiBhGi2hxcvCv/oMpUcbFc1uyOzsvXDN8o+6zOVQg==
-X-Received: by 2002:aa7:cb47:0:b0:4fc:c7c8:e78d with SMTP id
- w7-20020aa7cb47000000b004fcc7c8e78dmr333454edt.31.1680632290425;
-        Tue, 04 Apr 2023 11:18:10 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:7467:56f4:40b7:cba8?
- ([2a02:810d:15c0:828:7467:56f4:40b7:cba8])
+ AKy350YjCnyh/uk3o/BCfLEHu1k2UKAWFfWt3QXQRhRponKchCMwhVMVZSp02642w72S69hcs1tUig==
+X-Received: by 2002:a17:903:24d:b0:19e:ecaf:c4b4 with SMTP id
+ j13-20020a170903024d00b0019eecafc4b4mr44639769plh.4.1680537215464;
+        Mon, 03 Apr 2023 08:53:35 -0700 (PDT)
+Received: from pavilion.. ([2409:40f2:100f:dc7:d959:f34f:79da:6535])
         by smtp.gmail.com with ESMTPSA id
- o1-20020a50c281000000b00502b0b0d75csm2190606edf.46.2023.04.04.11.18.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Apr 2023 11:18:10 -0700 (PDT)
-Message-ID: <76a524a8-f87a-0147-32cd-5ef6cc55d2bc@linaro.org>
-Date: Tue, 4 Apr 2023 20:18:08 +0200
+ jj21-20020a170903049500b001a19196af48sm6777186plb.64.2023.04.03.08.53.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Apr 2023 08:53:35 -0700 (PDT)
+From: Saalim Quadri <danascape@gmail.com>
+To: krzysztof.kozlowski@linaro.org
+Subject: Re: [PATCH v2] ASoC: dt-bindings: wm8510: Convert to dtschema
+Date: Mon,  3 Apr 2023 21:23:25 +0530
+Message-Id: <20230403155325.5797-1-danascape@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <d6b4df41-02cb-b900-5e8b-8ad08d3d36f1@linaro.org>
+References: <d6b4df41-02cb-b900-5e8b-8ad08d3d36f1@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v2 2/7] dt-bindings: soundwire: qcom: add 16-bit sample
- interval
-To: Rob Herring <robh@kernel.org>
-References: <20230403132503.62090-1-krzysztof.kozlowski@linaro.org>
- <20230403132503.62090-3-krzysztof.kozlowski@linaro.org>
- <20230404142159.GA3827653-robh@kernel.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230404142159.GA3827653-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: NCG2RXKQKWUSGHBM7Z4EXWXAYV4YLQSM
-X-Message-ID-Hash: NCG2RXKQKWUSGHBM7Z4EXWXAYV4YLQSM
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+X-MailFrom: danascape@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Rao Mandadapu <quic_srivasam@quicinc.com>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, Patrick Lai <quic_plai@quicinc.com>
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: R4FELIVBFCLXKMD5JSV7PU7EJ4Z67L5Z
+X-Message-ID-Hash: R4FELIVBFCLXKMD5JSV7PU7EJ4Z67L5Z
+X-Mailman-Approved-At: Wed, 05 Apr 2023 07:13:23 +0000
+CC: alsa-devel@alsa-project.org, broonie@kernel.org, danascape@gmail.com,
+ daniel.baluta@nxp.com, devicetree@vger.kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+ robh+dt@kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NCG2RXKQKWUSGHBM7Z4EXWXAYV4YLQSM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R4FELIVBFCLXKMD5JSV7PU7EJ4Z67L5Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,44 +116,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 04/04/2023 16:21, Rob Herring wrote:
->> diff --git a/Documentation/devicetree/bindings/soundwire/qcom,soundwire.yaml b/Documentation/devicetree/bindings/soundwire/qcom,soundwire.yaml
->> index c283c594fb5c..883b8be9be1b 100644
->> --- a/Documentation/devicetree/bindings/soundwire/qcom,soundwire.yaml
->> +++ b/Documentation/devicetree/bindings/soundwire/qcom,soundwire.yaml
->> @@ -86,7 +86,7 @@ properties:
->>    qcom,ports-sinterval-low:
->>      $ref: /schemas/types.yaml#/definitions/uint8-array
->>      description:
->> -      Sample interval low of each data port.
->> +      Sample interval (only lowest byte) of each data port.
->>        Out ports followed by In ports. Used for Sample Interval calculation.
->>        Value of 0xff indicates that this option is not implemented
->>        or applicable for the respective data port.
->> @@ -94,6 +94,19 @@ properties:
->>      minItems: 3
->>      maxItems: 16
->>  
->> +  qcom,ports-sinterval:
->> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> +    description:
->> +      Sample interval of each data port.
->> +      Out ports followed by In ports. Used for Sample Interval calculation.
->> +      Value of 0xffff indicates that this option is not implemented
->> +      or applicable for the respective data port.
->> +      More info in MIPI Alliance SoundWire 1.0 Specifications.
->> +    minItems: 3
->> +    maxItems: 16
->> +    items:
->> +      maximum: 0xffff
-> 
-> Why not use uint16-array?
+Changes from V1 -> V2:
+    > Added cirrus opensource as the maintainer
+    > Added missing $ref to dai-common.yaml
+    > Dropped I2C and SPI description
+    > Added sound-dai-cells property
+    > Added 'compatible' as the required property
+    > additionalProperties: false -> unevaluatedProperties: false after adding $ref
+    > Added SPI example
 
-Because I am afraid it will grow in next version to 24 or 32 bits. I can
-change easily maximum, but if I put here uint16-array, all DTS will have
-/bytes 16/ annotation.
+Kind Regards,
 
-
-Best regards,
-Krzysztof
-
+Saalim
