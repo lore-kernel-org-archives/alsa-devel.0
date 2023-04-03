@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A289C76196
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Apr 2023 15:09:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6AE7C76188
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Apr 2023 15:10:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECCC6208;
-	Mon,  3 Apr 2023 17:09:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECCC6208
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98404823;
+	Mon,  3 Apr 2023 17:09:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98404823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680534593;
-	bh=ctP9KIAO52Kp15QFrAPu3MWL9C3jbTxflfhT27h9H/o=;
+	s=default; t=1680534611;
+	bh=lf4upq3FdpRAqhv049TEQuv0s9Un/cwgAomIIpEaq0s=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EmOKpeHpiUVtV/6srWvn3vgusUV1L8Es+4kk13y+RiWSqKJD70FA2p1BDi0/P8a3I
-	 gUAznQgtbQV/bp6onSanD9HfEKFBAjWIzeoJisVdFLSURMsKXv0rVBezHZTAunhfnF
-	 xli/gGHhNAB82SiXGMPGvvp7JwDo8TVFxRYQWnXc=
+	b=p9W8WQl/qpO4FYb8MCeSro9Tng/tj9fIvPLKXULTvFk3CAzxYGPkGsB43N351O24U
+	 rAVcRToPFtNiM+t2DpVKuwZtyk4WgGgt3Rb9ut2qZnAvXmPu3mhVxziRZdVOQftPln
+	 PoKPi27GH0ou6i/JsD+0du8kOrfgbi3gnPc/c8bY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B593F80529;
-	Mon,  3 Apr 2023 17:08:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8417FF80548;
+	Mon,  3 Apr 2023 17:08:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B68E3F8015B; Mon,  3 Apr 2023 17:08:02 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 27655F8015B; Mon,  3 Apr 2023 17:08:04 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8C7D8F80249;
-	Mon,  3 Apr 2023 17:07:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C7D8F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1EAF0F8026D
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2023 17:07:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EAF0F8026D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=FOmuBoJ0
+ header.s=k20201202 header.b=iKoGuZuQ
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 679FD61FDF;
-	Mon,  3 Apr 2023 15:07:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8940C433D2;
-	Mon,  3 Apr 2023 15:07:45 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 20D1361FE1;
+	Mon,  3 Apr 2023 15:07:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4266C4339B;
+	Mon,  3 Apr 2023 15:07:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1680534469;
-	bh=ctP9KIAO52Kp15QFrAPu3MWL9C3jbTxflfhT27h9H/o=;
+	s=k20201202; t=1680534470;
+	bh=lf4upq3FdpRAqhv049TEQuv0s9Un/cwgAomIIpEaq0s=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=FOmuBoJ0X4jOYdtKh8CRqMwhs27px+AxE+7pLhSqT8rgHo1i1xYYFbdYNkdz/JFA2
-	 vKMt+++kgjj3YRmzknvo9lZOb/Q56jhn4RA3Sa1REwK+GJiFMTLoSOjTHLj35VxHaP
-	 fh7CH4FBJXxvsG0FqbWZpqyRwU1cbkSKMo1+7BQxEpATSYeNvdG/nbz7NQFxE0AQvT
-	 MovYQmQBu83eW8OPz62qop86uVe+bQsNwLH3cc5mhDuPuaswbj00MJj/W3M2+ZJ0ft
-	 wOOBfKvTDG3xPBLXx5NDA4ILKt43RFg93rAqzKG0atUryCJVU+pCQnOeojVDY+jbMY
-	 iPz2+2o6M1QLw==
+	b=iKoGuZuQuiB2AATagOH6QT06cLYsL9IFURw0gD3/EwCcErabq2543tv9bsmViTDXB
+	 Ntl5DHlpgqVlZXvPmNd4vL6bsf1c03/hKV9DR5mtxuPdMqGgIMY0cbn29J/u68TUef
+	 KU+pa+ddaDhqh8/zSWnYh9K7fdhpkUmCXXPvN5+q3Ik+VlkvZ3T0iAOPFPAW1cTsxZ
+	 F0cOEI5nr96DvY+HgbJsiOsz9gjO22nE/nfp5/3pr9d53mF7/3AMweg9QiIKo+9vGF
+	 DxRzecYn4/dw3M9u13AIKY5euxw/Bn9SgPflEgvmIk6vs3ehdH6OhK1tAAWikPn7ij
+	 i2LrEc+qA57WQ==
 From: Mark Brown <broonie@kernel.org>
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-In-Reply-To: <20230403071651.919027-1-Vijendar.Mukunda@amd.com>
-References: <20230403071651.919027-1-Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH 1/6] ASoC: SOF: amd: remove unused code
-Message-Id: <168053446539.47553.12390291979840159138.b4-ty@kernel.org>
-Date: Mon, 03 Apr 2023 16:07:45 +0100
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20230328131018.6820-1-rf@opensource.cirrus.com>
+References: <20230328131018.6820-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH v2] firmware: cs_dsp: Add a debugfs entry containing
+ control details
+Message-Id: <168053446957.47553.1396193248539137592.b4-ty@kernel.org>
+Date: Mon, 03 Apr 2023 16:07:49 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-00303
-Message-ID-Hash: B4QVL34DNTJ4UFRTKKS42TRBNDPZBT4D
-X-Message-ID-Hash: B4QVL34DNTJ4UFRTKKS42TRBNDPZBT4D
+Message-ID-Hash: TQCESYU74T6IKDEOWBJMJWZQUT37PESS
+X-Message-ID-Hash: TQCESYU74T6IKDEOWBJMJWZQUT37PESS
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,28 +74,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Takashi Iwai <tiwai@suse.com>,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- Rander Wang <rander.wang@intel.com>,
- V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
- Zheng Bin <zhengbin13@huawei.com>,
- "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS"
- <sound-open-firmware@alsa-project.org>,
- open list <linux-kernel@vger.kernel.org>
+CC: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Simon Trimmer <simont@opensource.cirrus.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B4QVL34DNTJ4UFRTKKS42TRBNDPZBT4D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TQCESYU74T6IKDEOWBJMJWZQUT37PESS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,13 +90,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 03 Apr 2023 12:46:41 +0530, Vijendar Mukunda wrote:
-> During initial SOF driver bring up on AMD platforms, only DMIC
-> support was added. As of today, we have a complete SOF solution for
-> I2S endpoints along with DMIC endpoint.
-> This code is no longer required.
-> Remove unused code from RMB and RN platform ACP PCI driver.
+On Tue, 28 Mar 2023 14:10:18 +0100, Richard Fitzgerald wrote:
+> The file named 'controls' in the DSP's debugfs root contains a
+> formatted table describing the controls defined within the loaded DSP
+> firmware, it is of the form
 > 
+>   name: len region:offset addr fwname algid ctltype flags en dirty
+> 
+> Where flags is represented as a character for each flag if set, or '-',
+> enabled is whether the control is enabled or disabled and dirty is
+> whether the control value is set in the cache but not the hardware.
 > 
 > [...]
 
@@ -120,18 +109,8 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: SOF: amd: remove unused code
-      commit: 56e008146e5b46059c5469a8b47478ab78f5b895
-[2/6] ASoC: SOF: amd: remove acp_dai_probe() function
-      commit: 9eb48aeddd8dcf2defd94a837a65e052576cf42b
-[3/6] ASoC: SOF: amd: remove unused variables
-      commit: 2675de62de702dbda936eb0f9a20ce3d8fed5ab5
-[4/6] ASoC: SOF: amd: refactor get_chip_info callback
-      commit: 292b544ef4555ec5c69522e9c6eace6a90c4cd00
-[5/6] ASoC: SOF: amd: refactor error checks in probe call
-      commit: c7a3662f14d7e0add7b50dc2f971e77bebb333cc
-[6/6] ASoC: SOF: amd: refactor dmic codec platform device creation
-      commit: dd6bdd8b4d41b8f9db4b88dff2d10c0c62dbeb1d
+[1/1] firmware: cs_dsp: Add a debugfs entry containing control details
+      commit: 7a3f924cee4bdfe85eda4e636213e79d3fda6182
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
