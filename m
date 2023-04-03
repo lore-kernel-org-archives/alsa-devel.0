@@ -4,30 +4,29 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE03CC761A6
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Apr 2023 07:18:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34A04C761A6
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Apr 2023 07:18:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD90C7F1;
-	Mon,  3 Apr 2023 09:17:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD90C7F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15DFC7F8;
+	Mon,  3 Apr 2023 09:17:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15DFC7F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680506283;
-	bh=R8FKhAHfQ7IuNPbJxqcNGyviEQkoNN17kDEK1gx4m6E=;
+	s=default; t=1680506315;
+	bh=8rhcRHZgJeKI/V2ktHNvqMTwBFPB2PHNGUcxu2Qo6BE=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=THX8ed5ECi0q6aVfwiZ44KG69wxAIKYU+n9EXsSGm/RNvfDf/bQdRMXO/ggkXvmSK
-	 HJ4nFm19Gkx/NS6xZIzndZz/8PFRnqo8RE8zG6UspaM+ueuWBxFdgh0DSb/l5+kypW
-	 ineb3mp6jCeMwQj437cObxnFJYQTvqjBfPwKK1TM=
+	b=fnm0DPhn9PD62KpRjlmRNt8KSX9VdsX8pmIDPSrNBPvx+8CvFuoPdaEiqiFhf3/oY
+	 GHEYIjvG+Y8aoDKRlP2mi/GwYgYXdeT1W8iVfIub+bcFSmuSILd8sjEk0tXv9hxKR5
+	 FUjFeeI3VQ08hz1VezstlzSM2f0El03tmTpTVmww=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B918BF80533;
-	Mon,  3 Apr 2023 09:16:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6F11F8052E;
+	Mon,  3 Apr 2023 09:17:44 +0200 (CEST)
 To: <broonie@kernel.org>
-Subject: [PATCH 6/6] ASoC: SOF: amd: refactor dmic codec platform device
- creation
-Date: Mon, 3 Apr 2023 12:46:46 +0530
+Subject: [PATCH 2/6] ASoC: SOF: amd: remove acp_dai_probe() function
+Date: Mon, 3 Apr 2023 12:46:42 +0530
 In-Reply-To: <20230403071651.919027-1-Vijendar.Mukunda@amd.com>
 References: <20230403071651.919027-1-Vijendar.Mukunda@amd.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -41,7 +40,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YXVETFHNDWNAXJUWM6ZCWFOY6P2IOL4A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5JFWVEQGZU7MI7PYKXCSRK2VL7F7VWCT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -51,7 +50,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168050621098.26.7486882101201297853@mailman-core.alsa-project.org>
+ <168050626428.26.3059148481361019412@mailman-core.alsa-project.org>
 From: Vijendar Mukunda via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
@@ -65,8 +64,6 @@ Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
  Daniel Baluta <daniel.baluta@nxp.com>, Takashi Iwai <tiwai@suse.com>,
  V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
  Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- Rander Wang <rander.wang@intel.com>, Zheng Bin <zhengbin13@huawei.com>,
  "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS"
  <sound-open-firmware@alsa-project.org>,
  open list <linux-kernel@vger.kernel.org>
@@ -74,75 +71,75 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4BFDF8028B; Mon,  3 Apr 2023 09:14:41 +0200 (CEST)
+	id AD440F80482; Mon,  3 Apr 2023 09:17:40 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,URIBL_BLOCKED
 	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam11on20606.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7eaa::606])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam11on20601.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7eae::601])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D70A7F8026D;
-	Mon,  3 Apr 2023 09:14:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D70A7F8026D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 37820F80171;
+	Mon,  3 Apr 2023 09:13:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37820F80171
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=chs/K78J
+ header.s=selector1 header.b=NvTVDFiq
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V0uSoX3UmqULa66homYFZQOKXcW8tmIpYoEZLHNB4p5bb3TqtZK1SnNqb7XwbgHa6vFkhQOl54UI/7YftMhfBjKpjtE9+WNDZQiYiA2Jg4xLcodgz7sowyo1VGV3waIdA7xDNkIySEZ9YwLYWuxrbNUVadt+ybEyHcMBzPXxakMpSYOepM4t3tEfsaWAIaIagtFUeH7n062geNgp90Yy4ZXrF3pG5EfWahMbcyxPpYWhS312T1wmqjGxT+NS1c8GfKvFMOEDC6Wbw/ysXImuSuG2knysDwLXlu/VtaoBUuMUfqc1Uh1QD+4ORUXWDag+Zh7Jhm+NA6mM/9QKEGC9vQ==
+ b=EatI6ZKJk6jvgAazpQDfJoknxZZlhrXOqCB/O9SgAa+CnSujLwTwG2If0XrEW9x1qE7vPBh6eaG7wwYF+P12pp55vzfj3vBl89A70grCRzjRsmtYWXt6BMRaHkW1NyeNWm2FjzJ0rOfyn0wAV6IFtQPkPvtc5xKrbbuA1r4XBWg0M5LkNhyLfN9/jX6s57V6tailGBuGBqdOzgQM9fd3/hiVXXWwVVWbgDXzYYvPWXvEUA8aco3Axmjn1HhTbHkhLHObbGP9sNrCQGCnoJ6SAnIsFpvFAjIxZvR+PimPu38Z3vaTX3baYJux7RlD92wTbxhRkxVRbeqoPZYz8Q3QXA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AU+uHkSU6Exc4JfMFgx7HbIAQ0exW7+oUXuA3dDjqQ8=;
- b=X+NYXOdX2DNh05C4ym4GT0NNBCasJ/m11jE1qfpReOz0Hy5iWYLH13qNYCmYoMriryMVzfxt3o5xZosuCuxt+3+UU182BGECZKoYulHfwn8jCmvBJqwHyWVBjJzlzEyzJiALvGTdh3X/Px2U9nvmN0mHca8ATYJJatAoH35FjJ405YmhJThjsQyKAnwiEoNSpCOqVEsOKHZD+UHEZrCOnCa1RTOSY6Fi6odAKwt9wjY4LHZqQ3ztvd8BA+sJ0HfnI7PwVlhSHbvcWzlFwMGNyK3H6DNOwD8fUh4J31uPZbo08qNhyVU2NhaNUDEaFUPUiENUrRWV3t9evn3IXplZbw==
+ bh=a8K0kPBo0TooEDURIhzOjlCFAL/SHOUXCK2CdNyCA6Y=;
+ b=hMZepzat4YoMvnkIM7bSkFWXEzCSvqX8ksu3kXZBN0q6TPOsggKLVUQDAzMm/qr4O8P/gA+080GBHc5GmKNxeo40pAeSp42m8Ab70wxfTv1++lELsfjtB7WUoYX90jpDfIt2V4sHdZWFmD4LQDJwkzndHrwEN0kXqOY7YlWhl/PNAUBeP4FYyfBBCkreLpmVEGbSpB0KbKuATy9oD5qIorzzIm7U8VNfEFJ5ICggfxoDoeLt0WOcSQ38/ZSyrTYIoe5GjHtayW2sYD2APSFFhc2fK96eRFUMp82guU1yZtgiLRINq3UgkoVai3z4PTWTJyfnIii5/L/AT+jOs4Hudw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AU+uHkSU6Exc4JfMFgx7HbIAQ0exW7+oUXuA3dDjqQ8=;
- b=chs/K78JH3/AJL8PLZB4PzV1kOgl5w1pUE/jFyqI182UUYw5eB09XUsuqRXCIj8hvVmHd88ABz8Mba/RImfPx9yG/H13apN1632U0CRG/UcNs0GmiLzSR2kcm1YnmvsC3wau7c5KG07YbXzLwfEkZ1N0gKYhnCDz5KylzIDLF6A=
-Received: from DM6PR03CA0011.namprd03.prod.outlook.com (2603:10b6:5:40::24) by
- SN7PR12MB6690.namprd12.prod.outlook.com (2603:10b6:806:272::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6254.28; Mon, 3 Apr 2023 07:14:28 +0000
-Received: from DM6NAM11FT020.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:40:cafe::1d) by DM6PR03CA0011.outlook.office365.com
- (2603:10b6:5:40::24) with Microsoft SMTP Server (version=TLS1_2,
+ bh=a8K0kPBo0TooEDURIhzOjlCFAL/SHOUXCK2CdNyCA6Y=;
+ b=NvTVDFiqt++/kgEGuNHOnmFwq06pCFZr6FAr3hQXSotTrQs4OTNh9XuPl8GqCW/roDuZTVmbA9scLZt3jjdRp1gse+ZW5poXAJUWbfFep/aDhiECUhR6jPiPyrt4NNlsJ1701I+IzmuMQOgGQrE72jLXr7ByzLlGOsy4ie0W4iM=
+Received: from MW4PR04CA0320.namprd04.prod.outlook.com (2603:10b6:303:82::25)
+ by CH2PR12MB4214.namprd12.prod.outlook.com (2603:10b6:610:aa::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.33; Mon, 3 Apr
+ 2023 07:13:32 +0000
+Received: from CO1NAM11FT063.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:82:cafe::28) by MW4PR04CA0320.outlook.office365.com
+ (2603:10b6:303:82::25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6254.22 via Frontend
- Transport; Mon, 3 Apr 2023 07:14:28 +0000
+ Transport; Mon, 3 Apr 2023 07:13:31 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DM6NAM11FT020.mail.protection.outlook.com (10.13.172.224) with Microsoft SMTP
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT063.mail.protection.outlook.com (10.13.175.37) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6277.14 via Frontend Transport; Mon, 3 Apr 2023 07:14:28 +0000
-Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.6277.14 via Frontend Transport; Mon, 3 Apr 2023 07:13:31 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 3 Apr
- 2023 02:14:27 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB07.amd.com
- (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 02:13:29 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 3 Apr
- 2023 00:14:27 -0700
+ 2023 02:13:29 -0500
 Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
  SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.34
- via Frontend Transport; Mon, 3 Apr 2023 02:14:22 -0500
+ via Frontend Transport; Mon, 3 Apr 2023 02:13:25 -0500
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 6/6] ASoC: SOF: amd: refactor dmic codec platform device
- creation
-Date: Mon, 3 Apr 2023 12:46:46 +0530
-Message-ID: <20230403071651.919027-6-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 2/6] ASoC: SOF: amd: remove acp_dai_probe() function
+Date: Mon, 3 Apr 2023 12:46:42 +0530
+Message-ID: <20230403071651.919027-2-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230403071651.919027-1-Vijendar.Mukunda@amd.com>
 References: <20230403071651.919027-1-Vijendar.Mukunda@amd.com>
@@ -151,30 +148,30 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT020:EE_|SN7PR12MB6690:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1217d979-d76f-4363-a5a9-08db34131040
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT063:EE_|CH2PR12MB4214:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8c8edd95-836a-40d4-9ce5-08db3412ee84
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	XJbCP4e2f4yWcU+jQhBkGwlpV57RbPVrbfVuFqdULVYfAmesC99I3+sLtLv05N5gF/RkKrAYsOoiqXaMrbu4s5nH4/qrdep4QisWAVJr8243FTnZP6fXYnO3rYQKKxertbKW1jmJwbWLVxYLauOXP28ndd7tOPgg/l8zzkAvjQDeXlet1ywB0qlEvIXWNcapDzjOAvRsGF56CrZFbfTUrjhK0Nlar8/K2asn1nQQSBtgImX+vwcR/TKv5lpm0xNVtr/tNkLljxUb0E+0s8G63Pihk82NJU8+4F7ojjyU15LEgbsj1m91ov5YMj8uUW3wBmM/sCtUSPRrNkz4Hk7g2D0mNEvM+TcLNe8CBsp+LFIoD7O0/Kt6cm7W0QxnEjzQTaf9px3nBQqgAV0Nrk1yMKKH4K7YVURjQrRrzzOG0Mmzm3tK3Y6L8U+S0mNqVUVwGBO/Klqt2pwkrEU3fga+Brqd5bDY6H1pS1+vQn9Muw1wzHhZmBTtGxNM4nDCjCHmEr04oQ7ThuOtBJQlzzBc7D7k5I8p3x56F3cYPowMQaNJqU+8f+BlFvfgm/1r7fgvFMS7S+FcYljH+ZqJgJHvBG2+gcEGZxgtCeFoQrEiaK/ZdkkWULKPVGzONhq44g3YfH2JnCFJMismO/DHfLNAte+CevCZXQk8VRME6K0+eaUtLkzLB2PblJtTwWQjaCliFSIOF+UUeJvWWgJoLCnlkULXFqWaTHU0cf5Q3vYqQC0=
+	Bh5Efio6CEkkC+S9C05gYEYWGCjH7jNBgabN8UzJdZB3vgxSoKXT73Vki0M6U9tgmyhCuo2DCojZObnkYv1tE3LyjGBYfI65fZG7fXnu5ZIJcEv3MrhvBPERf1UNVfNqjgzFRbtV3MLAktX4Y4pMWxCw+5gZMUuNBXvH142bdnMfUutkE3sqYMHb3pbBqhG3HN2gE8sM4FgCczl+m0y9aPNqo75Gdq4x9GcebHyYhWEcREhIhHizte7o3NkjsWf7YyziNFu+LF63LsXwyuBaKPvHGAZYaPLXoez8SWA/pCJJYXQ8rs2xwvSNnCECQJu5BfUzsbtCf/IShIlf3+ZgTSdoLX65bncRK/KFFLzATHuPXyeuELdq5MhNgP+tpBp+VZymbg1DwO8BdxTU0lsvWea2DbPgeoctzCgpMkiquny7BSki/ILBHnXL4Vb74zf1sACV3u/Ku2ElADIxCeUAlpoeV+9TsBxPbBgfaM96/fGXJRRtS7+tlpRN191EihVg9AL+x5Q40U7XzxggGXpzkXbi6YeY0A18AO9aYg++LYqyYUsim9JJyQGr2ctfPD4TOsTFdGzIxKPiVNBalY93MP4q2YDjXVLqTHOoTlO9U2C+wuDLMq3fzJBKnhUfiJj5KwDJ8uJtH1mC1P8UmFVbjyZ1RHVzafbJqtOIHe9BX0GPq7Hz87RybAbIkc5VFzLSnFzpe+CLI+PZlGSAigEDK+ndO1v73+2IqM/zo10mduQ=
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(376002)(136003)(346002)(451199021)(40470700004)(36840700001)(46966006)(36860700001)(186003)(83380400001)(336012)(4326008)(6916009)(6666004)(70206006)(1076003)(26005)(7696005)(426003)(2616005)(47076005)(70586007)(478600001)(54906003)(356005)(81166007)(316002)(82740400003)(41300700001)(5660300002)(2906002)(7416002)(8676002)(8936002)(86362001)(82310400005)(36756003)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(376002)(346002)(136003)(451199021)(46966006)(40470700004)(36840700001)(7416002)(41300700001)(4326008)(82740400003)(82310400005)(8936002)(81166007)(6916009)(26005)(356005)(316002)(5660300002)(86362001)(54906003)(70206006)(70586007)(8676002)(36860700001)(478600001)(2906002)(47076005)(83380400001)(336012)(426003)(7696005)(40460700003)(2616005)(186003)(40480700001)(36756003)(6666004)(1076003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2023 07:14:28.3971
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2023 07:13:31.7375
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 1217d979-d76f-4363-a5a9-08db34131040
+ 8c8edd95-836a-40d4-9ce5-08db3412ee84
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	DM6NAM11FT020.eop-nam11.prod.protection.outlook.com
+	CO1NAM11FT063.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6690
-Message-ID-Hash: YXVETFHNDWNAXJUWM6ZCWFOY6P2IOL4A
-X-Message-ID-Hash: YXVETFHNDWNAXJUWM6ZCWFOY6P2IOL4A
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4214
+Message-ID-Hash: 5JFWVEQGZU7MI7PYKXCSRK2VL7F7VWCT
+X-Message-ID-Hash: 5JFWVEQGZU7MI7PYKXCSRK2VL7F7VWCT
 X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -193,8 +190,6 @@ CC: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
  Daniel Baluta <daniel.baluta@nxp.com>, Takashi Iwai <tiwai@suse.com>,
  V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
  Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- Rander Wang <rander.wang@intel.com>, Zheng Bin <zhengbin13@huawei.com>,
  "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS"
  <sound-open-firmware@alsa-project.org>,
  open list <linux-kernel@vger.kernel.org>
@@ -203,7 +198,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YXVETFHNDWNAXJUWM6ZCWFOY6P2IOL4A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5JFWVEQGZU7MI7PYKXCSRK2VL7F7VWCT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -212,176 +207,125 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Under snd_sof_dev device scope, create platform device for dmic
-codec.
+ACP SOF driver supports different audio configurations.
+Explicit condition check for I2S configuration will break
+other audio endpoint configurations.
+
+acp_dai_probe() function is not required as we have
+machine select logic to select the exact machine.
+
+Remove acp_dai_probe() from existing AMD PCI driver code base.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/sof/amd/acp.c     | 17 +++++++++++++++--
- sound/soc/sof/amd/acp.h     |  2 ++
- sound/soc/sof/amd/pci-rmb.c | 19 +------------------
- sound/soc/sof/amd/pci-rn.c  | 19 +------------------
- 4 files changed, 19 insertions(+), 38 deletions(-)
+ sound/soc/sof/amd/acp-common.c | 16 ----------------
+ sound/soc/sof/amd/acp.h        |  1 -
+ sound/soc/sof/amd/rembrandt.c  |  4 ----
+ sound/soc/sof/amd/renoir.c     |  3 ---
+ 4 files changed, 24 deletions(-)
 
-diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index dbf9ee6d79ed..2ae76bcd3590 100644
---- a/sound/soc/sof/amd/acp.c
-+++ b/sound/soc/sof/amd/acp.c
-@@ -481,11 +481,18 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
- 		return -ENOMEM;
+diff --git a/sound/soc/sof/amd/acp-common.c b/sound/soc/sof/amd/acp-common.c
+index 8ce4c8956933..df36b411a12e 100644
+--- a/sound/soc/sof/amd/acp-common.c
++++ b/sound/soc/sof/amd/acp-common.c
+@@ -18,22 +18,6 @@
+ #include "acp-dsp-offset.h"
+ #include <sound/sof/xtensa.h>
  
- 	adata->dev = sdev;
-+	adata->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
-+							PLATFORM_DEVID_NONE, NULL, 0);
-+	if (IS_ERR(adata->dmic_dev)) {
-+		dev_err(sdev->dev, "failed to register platform for dmic codec\n");
-+		return PTR_ERR(adata->dmic_dev);
-+	}
- 	addr = pci_resource_start(pci, ACP_DSP_BAR);
- 	sdev->bar[ACP_DSP_BAR] = devm_ioremap(sdev->dev, addr, pci_resource_len(pci, ACP_DSP_BAR));
- 	if (!sdev->bar[ACP_DSP_BAR]) {
- 		dev_err(sdev->dev, "ioremap error\n");
--		return -ENXIO;
-+		ret = -ENXIO;
-+		goto unregister_dev;
- 	}
- 
- 	pci_set_master(pci);
-@@ -494,7 +501,8 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
- 	adata->smn_dev = pci_get_device(PCI_VENDOR_ID_AMD, chip->host_bridge_id, NULL);
- 	if (!adata->smn_dev) {
- 		dev_err(sdev->dev, "Failed to get host bridge device\n");
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto unregister_dev;
- 	}
- 
- 	sdev->ipc_irq = pci->irq;
-@@ -529,6 +537,8 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
- 	free_irq(sdev->ipc_irq, sdev);
- free_smn_dev:
- 	pci_dev_put(adata->smn_dev);
-+unregister_dev:
-+	platform_device_unregister(adata->dmic_dev);
- 	return ret;
- }
- EXPORT_SYMBOL_NS(amd_sof_acp_probe, SND_SOC_SOF_AMD_COMMON);
-@@ -543,6 +553,9 @@ int amd_sof_acp_remove(struct snd_sof_dev *sdev)
- 	if (sdev->ipc_irq)
- 		free_irq(sdev->ipc_irq, sdev);
- 
-+	if (adata->dmic_dev)
-+		platform_device_unregister(adata->dmic_dev);
-+
- 	return acp_reset(sdev);
- }
- EXPORT_SYMBOL_NS(amd_sof_acp_remove, SND_SOC_SOF_AMD_COMMON);
+-int acp_dai_probe(struct snd_soc_dai *dai)
+-{
+-	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(dai->component);
+-	const struct sof_amd_acp_desc *desc = get_chip_info(sdev->pdata);
+-	unsigned int val;
+-
+-	val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, desc->i2s_pin_config_offset);
+-	if (val != desc->i2s_mode) {
+-		dev_err(sdev->dev, "I2S Mode is not supported (I2S_PIN_CONFIG: %#x)\n", val);
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_NS(acp_dai_probe, SND_SOC_SOF_AMD_COMMON);
+-
+ /**
+  * amd_sof_ipc_dump() - This function is called when IPC tx times out.
+  * @sdev: SOF device.
 diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
-index fd04e5ae7303..1c535cc6c3a9 100644
+index acad57947616..d7fc24917b3c 100644
 --- a/sound/soc/sof/amd/acp.h
 +++ b/sound/soc/sof/amd/acp.h
-@@ -170,6 +170,8 @@ struct sof_amd_acp_desc {
- /* Common device data struct for ACP devices */
- struct acp_dev_data {
- 	struct snd_sof_dev  *dev;
-+	/* DMIC device */
-+	struct platform_device *dmic_dev;
- 	unsigned int fw_bin_size;
- 	unsigned int fw_data_bin_size;
- 	u32 fw_bin_page_count;
-diff --git a/sound/soc/sof/amd/pci-rmb.c b/sound/soc/sof/amd/pci-rmb.c
-index 2b84f95072d3..eaf70ea6e556 100644
---- a/sound/soc/sof/amd/pci-rmb.c
-+++ b/sound/soc/sof/amd/pci-rmb.c
-@@ -26,8 +26,6 @@
- #define ACP6x_REG_START		0x1240000
- #define ACP6x_REG_END		0x125C000
+@@ -248,7 +248,6 @@ int sof_renoir_ops_init(struct snd_sof_dev *sdev);
+ extern struct snd_sof_dsp_ops sof_rembrandt_ops;
+ int sof_rembrandt_ops_init(struct snd_sof_dev *sdev);
  
--static struct platform_device *dmic_dev;
--
- static const struct sof_amd_acp_desc rembrandt_chip_info = {
- 	.rev		= 6,
- 	.host_bridge_id = HOST_BRIDGE_RMB,
-@@ -65,32 +63,17 @@ static const struct sof_dev_desc rembrandt_desc = {
+-int acp_dai_probe(struct snd_soc_dai *dai);
+ struct snd_soc_acpi_mach *amd_sof_machine_select(struct snd_sof_dev *sdev);
+ /* Machine configuration */
+ int snd_amd_acp_find_config(struct pci_dev *pci);
+diff --git a/sound/soc/sof/amd/rembrandt.c b/sound/soc/sof/amd/rembrandt.c
+index 5288ab882fc9..f1d1ba57ab3a 100644
+--- a/sound/soc/sof/amd/rembrandt.c
++++ b/sound/soc/sof/amd/rembrandt.c
+@@ -48,7 +48,6 @@ static struct snd_soc_dai_driver rembrandt_sof_dai[] = {
+ 			.rate_min = 8000,
+ 			.rate_max = 48000,
+ 		},
+-		.probe = &acp_dai_probe,
+ 	},
  
- static int acp_pci_rmb_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- {
--	struct device *dev = &pci->dev;
- 	unsigned int flag;
--	int ret;
+ 	[I2S_BT_INSTANCE] = {
+@@ -73,7 +72,6 @@ static struct snd_soc_dai_driver rembrandt_sof_dai[] = {
+ 			.rate_min = 8000,
+ 			.rate_max = 48000,
+ 		},
+-		.probe = &acp_dai_probe,
+ 	},
  
- 	flag = snd_amd_acp_find_config(pci);
- 	if (flag != FLAG_AMD_SOF && flag != FLAG_AMD_SOF_ONLY_DMIC)
- 		return -ENODEV;
+ 	[I2S_SP_INSTANCE] = {
+@@ -98,7 +96,6 @@ static struct snd_soc_dai_driver rembrandt_sof_dai[] = {
+ 			.rate_min = 8000,
+ 			.rate_max = 48000,
+ 		},
+-		.probe = &acp_dai_probe,
+ 	},
  
--	ret = sof_pci_probe(pci, pci_id);
--	if (ret != 0)
--		return ret;
--
--	dmic_dev = platform_device_register_data(dev, "dmic-codec", PLATFORM_DEVID_NONE, NULL, 0);
--	if (IS_ERR(dmic_dev)) {
--		dev_err(dev, "failed to create DMIC device\n");
--		sof_pci_remove(pci);
--		return PTR_ERR(dmic_dev);
--	}
--	return ret;
-+	return sof_pci_probe(pci, pci_id);
+ 	[PDM_DMIC_INSTANCE] = {
+@@ -126,7 +123,6 @@ static struct snd_soc_dai_driver rembrandt_sof_dai[] = {
+ 			.rate_min = 8000,
+ 			.rate_max = 96000,
+ 		},
+-		.probe = &acp_dai_probe,
+ 	},
  };
  
- static void acp_pci_rmb_remove(struct pci_dev *pci)
- {
--	if (dmic_dev)
--		platform_device_unregister(dmic_dev);
--
- 	sof_pci_remove(pci);
- }
+diff --git a/sound/soc/sof/amd/renoir.c b/sound/soc/sof/amd/renoir.c
+index adade2e3d3be..47b863f6258c 100644
+--- a/sound/soc/sof/amd/renoir.c
++++ b/sound/soc/sof/amd/renoir.c
+@@ -47,7 +47,6 @@ static struct snd_soc_dai_driver renoir_sof_dai[] = {
+ 			.rate_min = 8000,
+ 			.rate_max = 48000,
+ 		},
+-		.probe = &acp_dai_probe,
+ 	},
  
-diff --git a/sound/soc/sof/amd/pci-rn.c b/sound/soc/sof/amd/pci-rn.c
-index a17b15552a7d..4809cb644152 100644
---- a/sound/soc/sof/amd/pci-rn.c
-+++ b/sound/soc/sof/amd/pci-rn.c
-@@ -26,8 +26,6 @@
- #define ACP3x_REG_START		0x1240000
- #define ACP3x_REG_END		0x125C000
+ 	[I2S_SP_INSTANCE] = {
+@@ -72,7 +71,6 @@ static struct snd_soc_dai_driver renoir_sof_dai[] = {
+ 			.rate_min = 8000,
+ 			.rate_max = 48000,
+ 		},
+-		.probe = &acp_dai_probe,
+ 	},
  
--static struct platform_device *dmic_dev;
--
- static const struct sof_amd_acp_desc renoir_chip_info = {
- 	.rev		= 3,
- 	.host_bridge_id = HOST_BRIDGE_CZN,
-@@ -65,32 +63,17 @@ static const struct sof_dev_desc renoir_desc = {
- 
- static int acp_pci_rn_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- {
--	struct device *dev = &pci->dev;
- 	unsigned int flag;
--	int ret;
- 
- 	flag = snd_amd_acp_find_config(pci);
- 	if (flag != FLAG_AMD_SOF && flag != FLAG_AMD_SOF_ONLY_DMIC)
- 		return -ENODEV;
- 
--	ret = sof_pci_probe(pci, pci_id);
--	if (ret != 0)
--		return ret;
--
--	dmic_dev = platform_device_register_data(dev, "dmic-codec", PLATFORM_DEVID_NONE, NULL, 0);
--	if (IS_ERR(dmic_dev)) {
--		dev_err(dev, "failed to create DMIC device\n");
--		sof_pci_remove(pci);
--		return PTR_ERR(dmic_dev);
--	}
--	return ret;
-+	return sof_pci_probe(pci, pci_id);
+ 	[PDM_DMIC_INSTANCE] = {
+@@ -100,7 +98,6 @@ static struct snd_soc_dai_driver renoir_sof_dai[] = {
+ 			.rate_min = 8000,
+ 			.rate_max = 96000,
+ 		},
+-		.probe = &acp_dai_probe,
+ 	},
  };
- 
- static void acp_pci_rn_remove(struct pci_dev *pci)
- {
--	if (dmic_dev)
--		platform_device_unregister(dmic_dev);
--
- 	return sof_pci_remove(pci);
- }
  
 -- 
 2.34.1
