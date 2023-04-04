@@ -4,110 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECABDC7619A
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 07:15:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA4D2C7619A
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 07:17:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 025A9204;
-	Wed,  5 Apr 2023 09:14:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 025A9204
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29578208;
+	Wed,  5 Apr 2023 09:16:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29578208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680678910;
-	bh=jyhim17DbKVD5JSPrhqsajxFS6s8H9DsF37Jtb6iGUw=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=U7uX+UOaLQzDdDwjEV26e2aZI9luW5Holq3RESi79zvLQbCtmvIAjmhkvOAfOxBTG
-	 W/oP6HGTsrQICyvOBPDRKfEcSj2/orgRemb4PK1SMzTMiWw/gsUwCqiWpqbe5E8L0V
-	 5g6Izk8K5s4LmjUI8YEaU3lG9wLgBPyUPD51iprw=
+	s=default; t=1680679050;
+	bh=Oq9s84jD2Laj3VuxTHu+m2JU5SEkzkZ7QLA+AD230Zg=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=l9bXA16SlH9zNtnuMY2jvsrIJX7rZwiN2mChS8TSV5cvRQxE6nWriXZZjRIc4fs6R
+	 ckysEK9ypM0sqjQrAS1IOfnzfrogMF/AtlBqEK67DBARCSFAcQfO5Sd0E3Mq8BJHtT
+	 EbQIewrgVPjlWcP0VMrPm/lUESlfivpLZ559uFd4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10C17F801C0;
-	Wed,  5 Apr 2023 09:14:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF37BF8024C;
+	Wed,  5 Apr 2023 09:16:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 09147F8024C; Mon,  3 Apr 2023 17:53:42 +0200 (CEST)
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com
- [IPv6:2607:f8b0:4864:20::1031])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D6508F8024C; Tue,  4 Apr 2023 10:47:11 +0200 (CEST)
+Received: from hust.edu.cn (unknown [202.114.0.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8E14FF80171
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2023 17:53:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E14FF80171
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=L4VxjwPU
-Received: by mail-pj1-x1031.google.com with SMTP id j13so27647968pjd.1
-        for <alsa-devel@alsa-project.org>;
- Mon, 03 Apr 2023 08:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680537215;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cKTF0BmFIUa1JLXsVVVzhQGo7yEP1rvtiF0Y9gWPb8E=;
-        b=L4VxjwPUo8WCU577qZCEQZ7pu6p8oNyJGyxXFOTQp5zmHJ40pDDjUEWoZvAFMWr3iX
-         IXhsmBYVV4AdZ1cCtSkSWqJbLDs0AYskwC+ekhf21MUBcTOHuyPYrHcUXA2uXYDB5VLI
-         trNo/Qfe4l+xU8uJgND9oZ3yEEMd2JspaHiZOhBGkcsi9V/KmMJ1CmtZMpBAIUkrq+iU
-         BpkttpS2Olw6pBXHactkL2p/xlyok4F6o1qBgQSB1Ti89oxE60tG9NIKtO66/As7KtUU
-         a/9x63J7LoTUlrOlRWk8UnWqN0ukskoztPWhRVb3NA+K1l5PphKlLWGGrGHrSrQIxCya
-         UspA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680537215;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cKTF0BmFIUa1JLXsVVVzhQGo7yEP1rvtiF0Y9gWPb8E=;
-        b=6MnQAzgwZ3zq4jSpv+qvC2GAIedOOkQYk6UCUxoZ6c12C/Hr1WCnmtDqq1NVtbzeQs
-         asC6Ulw//05wN2SZqC7Qits734YOQXVVrBkvkpNRZtQA+D3mRVrAqr5BV0Cfwuy2165X
-         VhsNGvSKX6umghe2EH2WyFdkLtF+FOlUNiEhy1tgQdI1nGr7U2IO5O3cb+BMzdl6IQ/F
-         LP4VxtoDgYUdePVe1ae0DIMKBmD85WqhkMEW29rWtHEVyCHF/1byWOLJwIXSI2k4qB36
-         +bYGEP2wKDEnkAWoKr8sQL3jhVHD96YT1Na0AF5X+dOqmXAsJ3oojTW/EJ/amCGlTpR6
-         u4dw==
-X-Gm-Message-State: AAQBX9fnKnI8+cS1veB4qlX7d16O/xdFfqGJ6jIEfi9xjV+JcUbKw7rb
-	KullYAdM60hiifW4fyQTvjo=
-X-Google-Smtp-Source: 
- AKy350YjCnyh/uk3o/BCfLEHu1k2UKAWFfWt3QXQRhRponKchCMwhVMVZSp02642w72S69hcs1tUig==
-X-Received: by 2002:a17:903:24d:b0:19e:ecaf:c4b4 with SMTP id
- j13-20020a170903024d00b0019eecafc4b4mr44639769plh.4.1680537215464;
-        Mon, 03 Apr 2023 08:53:35 -0700 (PDT)
-Received: from pavilion.. ([2409:40f2:100f:dc7:d959:f34f:79da:6535])
-        by smtp.gmail.com with ESMTPSA id
- jj21-20020a170903049500b001a19196af48sm6777186plb.64.2023.04.03.08.53.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Apr 2023 08:53:35 -0700 (PDT)
-From: Saalim Quadri <danascape@gmail.com>
-To: krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH v2] ASoC: dt-bindings: wm8510: Convert to dtschema
-Date: Mon,  3 Apr 2023 21:23:25 +0530
-Message-Id: <20230403155325.5797-1-danascape@gmail.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id BDE62F80054
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 10:47:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDE62F80054
+Received: from localhost.localdomain ([10.12.176.39])
+	(user=u202012060@hust.edu.cn mech=LOGIN bits=0)
+	by mx1.hust.edu.cn  with ESMTP id 3348kqDV032411-3348kqDW032411
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Tue, 4 Apr 2023 16:46:57 +0800
+From: Zihao Wang <u202012060@hust.edu.cn>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] ASoC: tegra20_ac97: Add missing unwind goto in
+ tegra20_ac97_platform_probe()
+Date: Tue,  4 Apr 2023 16:46:22 +0800
+Message-Id: <20230404084622.1202-1-u202012060@hust.edu.cn>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <d6b4df41-02cb-b900-5e8b-8ad08d3d36f1@linaro.org>
-References: <d6b4df41-02cb-b900-5e8b-8ad08d3d36f1@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MailFrom: danascape@gmail.com
+X-FEAS-AUTH-USER: u202012060@hust.edu.cn
+X-MailFrom: u202012060@hust.edu.cn
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: R4FELIVBFCLXKMD5JSV7PU7EJ4Z67L5Z
-X-Message-ID-Hash: R4FELIVBFCLXKMD5JSV7PU7EJ4Z67L5Z
-X-Mailman-Approved-At: Wed, 05 Apr 2023 07:13:23 +0000
-CC: alsa-devel@alsa-project.org, broonie@kernel.org, danascape@gmail.com,
- daniel.baluta@nxp.com, devicetree@vger.kernel.org,
- krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
- robh+dt@kernel.org
+Message-ID-Hash: CDEE4MX3VH5KY2GNBVFGNUZA2NQKQ7V5
+X-Message-ID-Hash: CDEE4MX3VH5KY2GNBVFGNUZA2NQKQ7V5
+X-Mailman-Approved-At: Wed, 05 Apr 2023 07:13:24 +0000
+CC: hust-os-kernel-patches@googlegroups.com,
+ Zihao Wang <u202012060@hust.edu.cn>, Dan Carpenter <error27@gmail.com>,
+ alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R4FELIVBFCLXKMD5JSV7PU7EJ4Z67L5Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CDEE4MX3VH5KY2GNBVFGNUZA2NQKQ7V5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,15 +76,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Changes from V1 -> V2:
-    > Added cirrus opensource as the maintainer
-    > Added missing $ref to dai-common.yaml
-    > Dropped I2C and SPI description
-    > Added sound-dai-cells property
-    > Added 'compatible' as the required property
-    > additionalProperties: false -> unevaluatedProperties: false after adding $ref
-    > Added SPI example
+Smatch Warns:
+	sound/soc/tegra/tegra20_ac97.c:321 tegra20_ac97_platform_probe()
+	warn: missing unwind goto?
 
-Kind Regards,
+The goto will set the "soc_ac97_ops" and "soc_ac97_bus" operations to
+NULL.  But they are already NULL at this point so it is a no-op.
+However, just for consistency, change the direct return to a goto.  No
+functional change.
 
-Saalim
+Signed-off-by: Zihao Wang <u202012060@hust.edu.cn>
+Reviewed-by: Dan Carpenter <error27@gmail.com>
+---
+ sound/soc/tegra/tegra20_ac97.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+index d23d88a10899..d00449441e5e 100644
+--- a/sound/soc/tegra/tegra20_ac97.c
++++ b/sound/soc/tegra/tegra20_ac97.c
+@@ -318,7 +318,8 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	ac97->reset = devm_reset_control_get_exclusive(&pdev->dev, "ac97");
+ 	if (IS_ERR(ac97->reset)) {
+ 		dev_err(&pdev->dev, "Can't retrieve ac97 reset\n");
+-		return PTR_ERR(ac97->reset);
++		ret = PTR_ERR(ac97->reset);
++		goto err;
+ 	}
+ 
+ 	ac97->clk_ac97 = devm_clk_get(&pdev->dev, NULL);
+-- 
+2.34.1
+
