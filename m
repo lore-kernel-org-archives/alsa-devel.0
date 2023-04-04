@@ -4,109 +4,176 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19D5CC76188
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 14:37:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB6B3C7619A
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 14:37:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78D6D1FC;
-	Wed,  5 Apr 2023 16:36:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78D6D1FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75830208;
+	Wed,  5 Apr 2023 16:37:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75830208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680705444;
-	bh=nZsZvgABMoA5GoArYeP8GGFxmyORBjVHnk5twzeLhpk=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=HcQ5//tK8n5xAZm1tQjGU7aEC+mZxzhNyFsDfJjkHtaxghOWfxWArqKV/LXreL/s5
-	 ozKI7OquY+AQ/sf2N4cEVFG6H+bHUfGY82NkbLVbpaVXW8mORhrmc4Yz/bSJnvOPfg
-	 w+Ipu7bn+YsjR53T+nGPDNHVX4PGZDxxFSEZQWEQ=
+	s=default; t=1680705473;
+	bh=H89ybMftU/jF/mSnT7t9XXRlldLTbWRKBAeeojhOMGw=;
+	h=From:Date:Subject:References:In-Reply-To:To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=psD7BhKdu1EFhNhga6ZwDpoS7KYeW7R+UXh7+xi7D92+wJwwidMLyvj7OR8s/kkjV
+	 6Gz6l215DQXx8FZJfhLMpSiSlk7YiYL7HdyYbhe2owt7UgAtLDqwwhGBJ21UqZxgXu
+	 Y6CITfI8C2MmcL4ds/bDXxS8Nvh2OUG7xntQmzAM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30E86F8024C;
-	Wed,  5 Apr 2023 16:36:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 184D9F8028B;
+	Wed,  5 Apr 2023 16:36:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5696EF8024C; Wed,  5 Apr 2023 13:16:26 +0200 (CEST)
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com
- [IPv6:2607:f8b0:4864:20::102b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id D9991F80249; Wed,  5 Apr 2023 14:25:36 +0200 (CEST)
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com
+ [64.147.123.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AEDC0F801C0
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 13:16:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEDC0F801C0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 83833F8024C
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 14:25:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83833F8024C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=BBxYrUNN
-Received: by mail-pj1-x102b.google.com with SMTP id
- p13-20020a17090a284d00b0023d2e945aebso3833423pjf.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 05 Apr 2023 04:16:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680693373;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=n6OXfkDuf3MCgikRaPSbB/O12A7AoKBBWB7PbjMP2MY=;
-        b=BBxYrUNNDMwp7+Tqeh1bO3vHzynEz0eJ2RXoNzmmg3eCVXIsCV2koZKaVJlb0ZUxyU
-         W+zimIXyQ8DMibtueC8dVquK0OfEfjc5BsTUgacp2ZH10gtZyKFPAqKlE+xXaHGMk/2D
-         Dr5frSOdrwTuaD6UtKlR+uHhqQcWHNWqsLNWz+fh9tNXLT2FZWGu97t1LqTSnjw7xAEs
-         6/ccGh/xEYnxn3xnLSoY6ncqOhRrTLX/p0gzqxo0jIPJwn406x8mvTC4kvp9x/3B64gN
-         eDPiGll1tt195UBvZu8/5qG7W7xlLj4O3pXWci2QbSE0HNiLETQnnomISHYZh/N4Mj5N
-         mqMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680693373;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n6OXfkDuf3MCgikRaPSbB/O12A7AoKBBWB7PbjMP2MY=;
-        b=LGDBHJfz7VeqcaSfwXBMY94JnpUvSF2xm7Hhu6MU+Y2t9J99r4El1PXBUjSt0euwMm
-         xGlm8i6TIrJ3hezUGdWmSO5Yi5nhZkerDPmJof3JKobOJ9/pvFzwz54p5IWNC4kJtPmB
-         92sucbznp1BZweiG9+OKxrd14yJTUK6AVSsLnmorbhDFbBh9ONDb22PQA0avKRlOUgfj
-         023k1eCHlOkqP//d47qbC4clkTy/GX6IzymODLpGfgZTaF3MI8BwVUKnQlNLNjCcjJ1i
-         rKbcvAIUHvww8d90tP4GuuAC84wK/EkGyzBJ9RmHLADt547hdqFtjmrAUeQrlIcihsb9
-         smWA==
-X-Gm-Message-State: AAQBX9cEMh0kF8jXb3IRw+hTo9HXumU3TrIWWvldqVmEbLKY/H8hexUk
-	0M4CIWoV97GbFduj4j6tFLyv8vN35r34Jvxw
-X-Google-Smtp-Source: 
- AKy350YYBD6yGza/LzBE2u0U8/bo6+93p5WXzhhL3ABjKqpdFYKYX6wXfdST+neNSVrpJjOlP2hRqw==
-X-Received: by 2002:a17:902:d491:b0:1a1:d70f:712d with SMTP id
- c17-20020a170902d49100b001a1d70f712dmr7139789plg.31.1680693372699;
-        Wed, 05 Apr 2023 04:16:12 -0700 (PDT)
-Received: from pavilion.. ([2402:e280:218d:82:89c2:2f77:b4c8:3f7c])
-        by smtp.gmail.com with ESMTPSA id
- ix12-20020a170902f80c00b001960706141fsm9931144plb.149.2023.04.05.04.16.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 04:16:12 -0700 (PDT)
-From: Saalim Quadri <danascape@gmail.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	daniel.baluta@nxp.com
-Subject: [PATCH v3] ASoC: dt-bindings: wm8510: Convert to dtschema
-Date: Wed,  5 Apr 2023 16:46:05 +0530
-Message-Id: <20230405111605.5250-1-danascape@gmail.com>
-X-Mailer: git-send-email 2.34.1
+ unprotected) header.d=cerno.tech header.i=@cerno.tech header.a=rsa-sha256
+ header.s=fm3 header.b=Wts/Ah4x;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=messagingengine.com header.i=@messagingengine.com
+ header.a=rsa-sha256 header.s=fm2 header.b=TJt8SE1I
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailnew.west.internal (Postfix) with ESMTP id E031F2B06740;
+	Wed,  5 Apr 2023 08:25:11 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 05 Apr 2023 08:25:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+	1680697511; x=1680704711; bh=gWfanKGu7k0uR6sCschsWvSUb9iXlQk4TW0
+	N04BwoCQ=; b=Wts/Ah4xwykIELLuVOyydo/p1UGL9G/HJY/ERkwIccdne8UsCAw
+	X0PmG5K0bcqaEyRUzoWHG0oVt+49ZELc6VwPM2bbnB7Q6KDqcs8OOo8ckMbMZ+RL
+	DKwDb8ModcB/XpwqnfSu9kwYDO781wqKfc3k85DrB5IrzhsEsb5/w+mH3LJR/fmM
+	XbWCKuHGNs/G2Ncxgv0wXe0b7UZjnUDqlm/H+vVP7y6M5EzJSI5hwcXryt/7TWcn
+	x2PoNUmovZSVXjqXU442ELIWyFCb2TK0OquEZRilwLsEUnxWf2tD6NYbDZuxZaBO
+	1e9oE8wU1U+oCwmBb981th4h8d6MQ6I15rA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1680697511; x=1680704711; bh=gWfanKGu7k0uR6sCschsWvSUb9iXlQk4TW0
+	N04BwoCQ=; b=TJt8SE1IgEzc0KpglToUainSE4eNFtJFqOIadR3Aw0w4iPzOBCp
+	T7zZ1chmtSiOBxN3MvHWzyoyNC43zazRBLNOMgwV2goNvpcmLNoxWEHiDb/9V03T
+	WqbkUOPppAfDp1lfLQERD4d9RtAdodePkq783ksNdsQOEtZ0YNss3Eprqjfvt/nN
+	kO7L5DariGDXLonWJO+hWIpoZxEYQCsypuK/jqg0nKXQ3uvKiqloZ1BiukZJzPz1
+	YpR3d+y3y6G243Ad9Cj01eNNPcdlL1pIs4n9C1Ejcg0dYX17CKsF9c3c6oJA9TLj
+	OI6pgZjc8LIQJcEp85pkrQBuBvOHfuhKBEg==
+X-ME-Sender: <xms:pGgtZOMldRw9UEzMSSw9I_16P6Nh8uWoC4G5IxdeXhaf6cgqrrzPkw>
+    <xme:pGgtZM8vJW0v5RLXKfpP1B30xBya9iCZQG9f3N4LOeu6GPgZLeDUnDyQ9xb3eVe8U
+    Jjfq16Xf1lnK5HolA0>
+X-ME-Received: 
+ <xmr:pGgtZFSt_W3SaLhjt9yJ8c7kyZV5sinLzmDcveP-bhjWLgYOnINQKkWGt_VoysCLks7z4FJH18Z3Iufubf4jHvGpiizZ09U>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgedvhedrvdejuddgheefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertdertdejnecuhfhrohhmpeforgig
+    ihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrf
+    grthhtvghrnhepvedvleeijeegvdekffehkeehieelhfeggfffheetkeeuledvtdeuffeh
+    teeltdffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:pGgtZOuwD6V3-SK77MsB7UnDET01NWQ1J0FEM_a_tHDV_Wd8LAX3nA>
+    <xmx:pGgtZGc6iX9GiPe48LHMJqyM2e5beO91F8WcGBskctjFG2kJLt3MBQ>
+    <xmx:pGgtZC0EwUEqmao45oOU_dJyzQL31Mo4S3zcbaFAhGu0aeI6ljMT_w>
+    <xmx:p2gtZGJX-HkMFt7mgRW1BHWYhPPxWlY5gUmeCqa4tyFNOW-Njt8_xUIYlj4>
+Feedback-ID: i8771445c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 5 Apr 2023 08:25:07 -0400 (EDT)
+From: Maxime Ripard <maxime@cerno.tech>
+Date: Tue, 04 Apr 2023 12:11:53 +0200
+Subject: [PATCH v3 63/65] ASoC: tlv320aic32x4: pll: Switch to
+ determine_rate
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: danascape@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20221018-clk-range-checks-fixes-v3-63-9a1358472d52@cerno.tech>
+References: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
+In-Reply-To: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
+To: Michael Turquette <mturquette@baylibre.com>,
+  Stephen Boyd <sboyd@kernel.org>,
+  =?utf-8?q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+  Manivannan Sadhasivam <mani@kernel.org>,
+  Nicolas Ferre <nicolas.ferre@microchip.com>,
+  Alexandre Belloni <alexandre.belloni@bootlin.com>,
+  Claudiu Beznea <claudiu.beznea@microchip.com>,
+  Max Filippov <jcmvbkbc@gmail.com>,
+  Charles Keepax <ckeepax@opensource.cirrus.com>,
+  Richard Fitzgerald <rf@opensource.cirrus.com>,
+  Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+  Alexandre Torgue <alexandre.torgue@foss.st.com>,
+  Luca Ceresoli <luca.ceresoli@bootlin.com>,
+  David Lechner <david@lechnology.com>, Sekhar Nori <nsekhar@ti.com>,
+  Abel Vesa <abelvesa@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+  Sascha Hauer <s.hauer@pengutronix.de>,
+  Pengutronix Kernel Team <kernel@pengutronix.de>,
+  Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+  Matthias Brugger <matthias.bgg@gmail.com>,
+  Geert Uytterhoeven <geert+renesas@glider.be>,
+  Dinh Nguyen <dinguyen@kernel.org>,
+  Peter De Schrijver <pdeschrijver@nvidia.com>,
+  Prashant Gaikwad <pgaikwad@nvidia.com>,
+  Thierry Reding <thierry.reding@gmail.com>,
+  Jonathan Hunter <jonathanh@nvidia.com>,
+  Ulf Hansson <ulf.hansson@linaro.org>,
+  Linus Walleij <linus.walleij@linaro.org>,
+ David Airlie <airlied@gmail.com>,  Daniel Vetter <daniel@ffwll.ch>,
+ Vinod Koul <vkoul@kernel.org>,
+  Kishon Vijay Abraham I <kishon@kernel.org>,
+  Alessandro Zummo <a.zummo@towertech.it>, Chen-Yu Tsai <wens@csie.org>,
+  Jernej Skrabec <jernej.skrabec@gmail.com>,
+  Samuel Holland <samuel@sholland.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,  Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>,  Takashi Iwai <tiwai@suse.com>,
+ Paul Cercueil <paul@crapouillou.net>,  Orson Zhai <orsonzhai@gmail.com>,
+  Baolin Wang <baolin.wang@linux.alibaba.com>,
+  Chunyan Zhang <zhang.lyra@gmail.com>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3060; i=maxime@cerno.tech;
+ h=from:subject:message-id; bh=H89ybMftU/jF/mSnT7t9XXRlldLTbWRKBAeeojhOMGw=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDCna37ez8VvEii39va+tcvoZfzdxxUPd2wRkdwVYPMp1lo9Z
+ pGHcUcrCIMbFICumyBIjbL4k7tSs151sfPNg5rAygQxh4OIUgIuIMvzT6NRk4a6VklCfFrt34pOivT
+ dO/vx0ZleDzy3WQH7/Ndt8GP4Xn+z4wbyskuNe7PtDUnKLNxhutHRaJHJKenEay+7oL/bMAA==
+X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
+ fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+X-MailFrom: maxime@cerno.tech
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: OYDL5IJJG2KGWZRP2SUQUK7MBYGGR42E
-X-Message-ID-Hash: OYDL5IJJG2KGWZRP2SUQUK7MBYGGR42E
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: KYXGQ2RIRIG4NAHQZOMEKL7TBMEIQ4KF
+X-Message-ID-Hash: KYXGQ2RIRIG4NAHQZOMEKL7TBMEIQ4KF
 X-Mailman-Approved-At: Wed, 05 Apr 2023 14:36:08 +0000
-CC: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Saalim Quadri <danascape@gmail.com>
+CC: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-arm-kernel@lists.infradead.org, linux-actions@lists.infradead.org,
+ patches@opensource.cirrus.com, linux-stm32@st-md-mailman.stormreply.com,
+ linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+ linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-phy@lists.infradead.org, linux-rtc@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, alsa-devel@alsa-project.org,
+ linux-mips@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OYDL5IJJG2KGWZRP2SUQUK7MBYGGR42E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KYXGQ2RIRIG4NAHQZOMEKL7TBMEIQ4KF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,99 +182,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert the WM8510 audio CODEC bindings to DT schema
+The tlv320aic32x4 PLL clocks implements a mux with a set_parent hook, but
+doesn't provide a determine_rate implementation.
 
-Signed-off-by: Saalim Quadri <danascape@gmail.com>
+This is a bit odd, since set_parent() is there to, as its name implies,
+change the parent of a clock. However, the most likely candidate to
+trigger that parent change is a call to clk_set_rate(), with
+determine_rate() figuring out which parent is the best suited for a
+given rate.
+
+The other trigger would be a call to clk_set_parent(), but it's far less
+used, and it doesn't look like there's any obvious user for that clock.
+
+So, the set_parent hook is effectively unused, possibly because of an
+oversight. However, it could also be an explicit decision by the
+original author to avoid any reparenting but through an explicit call to
+clk_set_parent().
+
+The driver does implement round_rate() though, which means that we can
+change the rate of the clock, but we will never get to change the
+parent.
+
+However, It's hard to tell whether it's been done on purpose or not.
+
+Since we'll start mandating a determine_rate() implementation, let's
+convert the round_rate() implementation to a determine_rate(), which
+will also make the current behavior explicit. And if it was an
+oversight, the clock behaviour can be adjusted later on.
+
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
-Changes from V2 -> V3:
-    > Drop unneeded SPI example
+ sound/soc/codecs/tlv320aic32x4-clk.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-Changes from V1 -> V2:
-    > Added cirrus opensource as the maintainer
-    > Added missing $ref to dai-common.yaml
-    > Dropped I2C and SPI description
-    > Added sound-dai-cells property
-    > Added 'compatible' as the required property
-    > additionalProperties: false -> unevaluatedProperties: false after adding $ref
-    > Added SPI example
+diff --git a/sound/soc/codecs/tlv320aic32x4-clk.c b/sound/soc/codecs/tlv320aic32x4-clk.c
+index 65b72373cb95..d8b8ea3eaa12 100644
+--- a/sound/soc/codecs/tlv320aic32x4-clk.c
++++ b/sound/soc/codecs/tlv320aic32x4-clk.c
+@@ -205,18 +205,23 @@ static unsigned long clk_aic32x4_pll_recalc_rate(struct clk_hw *hw,
+ 	return clk_aic32x4_pll_calc_rate(&settings, parent_rate);
+ }
+ 
+-static long clk_aic32x4_pll_round_rate(struct clk_hw *hw,
+-			unsigned long rate,
+-			unsigned long *parent_rate)
++static int clk_aic32x4_pll_determine_rate(struct clk_hw *hw,
++					  struct clk_rate_request *req)
+ {
+ 	struct clk_aic32x4_pll_muldiv settings;
++	unsigned long rate;
+ 	int ret;
+ 
+-	ret = clk_aic32x4_pll_calc_muldiv(&settings, rate, *parent_rate);
++	ret = clk_aic32x4_pll_calc_muldiv(&settings, req->rate, req->best_parent_rate);
+ 	if (ret < 0)
+-		return 0;
++		return -EINVAL;
+ 
+-	return clk_aic32x4_pll_calc_rate(&settings, *parent_rate);
++	rate = clk_aic32x4_pll_calc_rate(&settings, req->best_parent_rate);
++	if (rate < 0)
++		return rate;
++
++	req->rate = rate;
++	return 0;
+ }
+ 
+ static int clk_aic32x4_pll_set_rate(struct clk_hw *hw,
+@@ -267,7 +272,7 @@ static const struct clk_ops aic32x4_pll_ops = {
+ 	.unprepare = clk_aic32x4_pll_unprepare,
+ 	.is_prepared = clk_aic32x4_pll_is_prepared,
+ 	.recalc_rate = clk_aic32x4_pll_recalc_rate,
+-	.round_rate = clk_aic32x4_pll_round_rate,
++	.determine_rate = clk_aic32x4_pll_determine_rate,
+ 	.set_rate = clk_aic32x4_pll_set_rate,
+ 	.set_parent = clk_aic32x4_pll_set_parent,
+ 	.get_parent = clk_aic32x4_pll_get_parent,
 
- .../devicetree/bindings/sound/wlf,wm8510.yaml | 41 +++++++++++++++++++
- .../devicetree/bindings/sound/wm8510.txt      | 18 --------
- 2 files changed, 41 insertions(+), 18 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8510.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/wm8510.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8510.yaml b/Documentation/devicetree/bindings/sound/wlf,wm8510.yaml
-new file mode 100644
-index 000000000000..6d12b0ac37e2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wlf,wm8510.yaml
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/wlf,wm8510.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: WM8510 audio CODEC
-+
-+maintainers:
-+  - patches@opensource.cirrus.com
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: wlf,wm8510
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        codec@1a {
-+            compatible = "wlf,wm8510";
-+            reg = <0x1a>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/wm8510.txt b/Documentation/devicetree/bindings/sound/wm8510.txt
-deleted file mode 100644
-index e6b6cc041f89..000000000000
---- a/Documentation/devicetree/bindings/sound/wm8510.txt
-+++ /dev/null
-@@ -1,18 +0,0 @@
--WM8510 audio CODEC
--
--This device supports both I2C and SPI (configured with pin strapping
--on the board).
--
--Required properties:
--
--  - compatible : "wlf,wm8510"
--
--  - reg : the I2C address of the device for I2C, the chip select
--          number for SPI.
--
--Example:
--
--wm8510: codec@1a {
--	compatible = "wlf,wm8510";
--	reg = <0x1a>;
--};
 -- 
-2.34.1
+2.39.2
 
