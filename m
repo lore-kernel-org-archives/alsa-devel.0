@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3F8EC761A6
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 09:22:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1578DC6FD1D
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 09:23:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F4F96C1;
-	Tue,  4 Apr 2023 11:21:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F4F96C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9547741;
+	Tue,  4 Apr 2023 11:22:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9547741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680600163;
-	bh=zCzWw5y5GxDj52aseUqSwsnpZbpzlPnahrK5NtzSyvM=;
+	s=default; t=1680600184;
+	bh=Bwr0yu93XpTHCjLm4rVA1DTXsdRkfqA3pX28Vd6D058=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nX67JSEyblHNuHK/oN6AyiOY3YFj+wFFXVYWYoPz5s6T1gHgYcCLTiSbSxD3lcbve
-	 M5E20K7YKFgIb+nIJEJKZERbe5YKkiGg5jGLupLZE5GH4nN3XtiE0Q0yWcOO7Zl4Lu
-	 IJeRlH0DVFAnsvaTNCaXpJiCl0X6gZN9G453/2pA=
+	b=aJAt31SRx2Zby2XXTLnLis/iyEC58rIWLmEF31O3q8KYsnfjiCIWgkLyla8jFwkRV
+	 cB3d7sjQq6vwxSVYLoWOYJ8wWXf1XDXB1TA2CWHZkziuhNGZZzIfAHFuhOpDVXxCwJ
+	 3Uw6DbQ07471gyBuu2oJQfWk+4EmwvF4TQh3ztKE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE155F80549;
-	Tue,  4 Apr 2023 11:21:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8410F80534;
+	Tue,  4 Apr 2023 11:21:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85F5AF80548; Tue,  4 Apr 2023 11:21:06 +0200 (CEST)
+	id DFF66F80558; Tue,  4 Apr 2023 11:21:14 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E52FAF801C0
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 11:20:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E52FAF801C0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8BBC5F8015B
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 11:20:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BBC5F8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Vo238Esm
+ header.s=Intel header.b=Z52Qbw+u
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680600052; x=1712136052;
+  t=1680600059; x=1712136059;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=zCzWw5y5GxDj52aseUqSwsnpZbpzlPnahrK5NtzSyvM=;
-  b=Vo238EsmWd4JftpHSWF9NSmxgUdypkBCeiYV3MRmfgXFv00OS7fiEhEE
-   TXH6sNdA9MFmvjQBnPWvP8GbuNFEaRpw2ST52dnPvJxuzn3GGp8KY6SEr
-   LumAQIS88/nYt8ia/KArdJ+Gfok+58v588Mq/jpq/GG7wfgUvGkzdo8mT
-   efpsnkOmTp5+V6sLkO9AIsD88DnpepZ62GpoiJWHg9QGZW61yvNSy7Mfe
-   F4xaxvBw2FNTWjdfi6qauLW3UahyomKBy7yiF4xX1b56eqrjgvPinqsLd
-   pXicd1m4UKJsZggpPCkuCVFJDnNdgS2/y/DhS2/kPRNB5G1TSwQb6ryN7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339620553"
+  bh=Bwr0yu93XpTHCjLm4rVA1DTXsdRkfqA3pX28Vd6D058=;
+  b=Z52Qbw+uvEqa5UkFgNtGW2pN9llNYwESxcLwO1wRfrJg3DeOs9YpMVsO
+   egaGJk+CnMMk15ONzG45U6Tlsebv51Ypx1Cd5zCL+aFPfJYIp/+1IWuFv
+   7+oyZ59iYRRSPcPKQo8+ayYIW3kLpTZFou6z3f3U9Xy7qzSCxb231I771
+   pMr9hFjNwqhLOkP8V+wbCRXsBLpAzFbGd+ptAtm8nZw00I/8rTy25tyWP
+   EZiRkw9kPNEGgDiF5fV1dzWregRkmkxh8nQlO7OB0ppBr/uh3gJfExsoF
+   5rHDBcRS7mdV1T3Vkpa6pB31X1sFaJYJr0ol+awiWXwfdr+uvDKHatmG/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339620591"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="339620553"
+   d="scan'208";a="339620591"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 02:20:49 -0700
+ 04 Apr 2023 02:20:56 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="688819986"
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="688820035"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="688819986"
+   d="scan'208";a="688820035"
 Received: from vsysoevx-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.33.42])
   by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 02:20:46 -0700
+ 04 Apr 2023 02:20:54 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 03/12] ASoC: SOF: Add support for DSPless mode
-Date: Tue,  4 Apr 2023 12:21:06 +0300
-Message-Id: <20230404092115.27949-4-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 06/12] ASoC: SOF: Intel: hda: make DSPless mode work with DSP
+ disabled in BIOS
+Date: Tue,  4 Apr 2023 12:21:09 +0300
+Message-Id: <20230404092115.27949-7-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
 References: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 56RPS6JQCFNIGXSLPOZVJX73BAHCLTTU
-X-Message-ID-Hash: 56RPS6JQCFNIGXSLPOZVJX73BAHCLTTU
+Message-ID-Hash: QUO7PFLMQUMDWRFYBYMXP4OG6KIZ6Y5I
+X-Message-ID-Hash: QUO7PFLMQUMDWRFYBYMXP4OG6KIZ6Y5I
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/56RPS6JQCFNIGXSLPOZVJX73BAHCLTTU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QUO7PFLMQUMDWRFYBYMXP4OG6KIZ6Y5I/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,322 +102,389 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Via the SOF_DBG_DSPLESS_MODE sof_debug flag the SOF stack can be asked to
-not use the DSP for audio.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The core's support for DSPless mode is only going to be enabled if the
-platform reports that it can be used without DSP.
+When the DSP is disabled in the BIOS, the DSP_BAR and PP_BAR cannot be
+accessed.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+One possible objection noted in initial reviews is that this patch
+adds a number of branches. However the number of branches is actually
+limited in probe/suspend/resume routines mostly, so there isn't really
+a degradation in terms of readability and maintainability. Adding yet
+another level of abstraction/ops/callbacks would increase complexity
+and not really help in terms of code reuse or readability and
+maintainability. A split between controller and DSP driver would be
+even more invasive.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/core.c       |  22 +++++--
- sound/soc/sof/debug.c      |   1 +
- sound/soc/sof/pcm.c        |  13 +++-
- sound/soc/sof/pm.c         |   5 ++
- sound/soc/sof/sof-audio.c  |   2 +-
- sound/soc/sof/sof-client.c |   3 +
- sound/soc/sof/topology.c   | 130 ++++++++++++++++++++++++++++++++++++-
- 7 files changed, 168 insertions(+), 8 deletions(-)
+ sound/soc/sof/intel/hda-dsp.c    | 30 +++++++---
+ sound/soc/sof/intel/hda-ipc.c    |  3 +
+ sound/soc/sof/intel/hda-stream.c | 25 +++++----
+ sound/soc/sof/intel/hda.c        | 94 +++++++++++++++++++++++---------
+ 4 files changed, 107 insertions(+), 45 deletions(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 06bcae631612..9a9d82220fd0 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -208,6 +208,11 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 	/* set up platform component driver */
- 	snd_sof_new_platform_drv(sdev);
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index c9231aeacc53..23c05e6f424a 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -321,6 +321,9 @@ void hda_dsp_ipc_int_enable(struct snd_sof_dev *sdev)
+ 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
+ 	const struct sof_intel_dsp_desc *chip = hda->desc;
  
-+	if (sdev->dspless_mode_selected) {
-+		sof_set_fw_state(sdev, SOF_DSPLESS_MODE);
-+		goto skip_dsp_init;
-+	}
++	if (sdev->dspless_mode_selected)
++		return;
 +
- 	/* register any debug/trace capabilities */
- 	ret = snd_sof_dbg_init(sdev);
+ 	/* enable IPC DONE and BUSY interrupts */
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, chip->ipc_ctl,
+ 			HDA_DSP_REG_HIPCCTL_DONE | HDA_DSP_REG_HIPCCTL_BUSY,
+@@ -336,6 +339,9 @@ void hda_dsp_ipc_int_disable(struct snd_sof_dev *sdev)
+ 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
+ 	const struct sof_intel_dsp_desc *chip = hda->desc;
+ 
++	if (sdev->dspless_mode_selected)
++		return;
++
+ 	/* disable IPC interrupt */
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC,
+ 				HDA_DSP_ADSPIC_IPC, 0);
+@@ -681,6 +687,9 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
+ 	/* power down all hda links */
+ 	hda_bus_ml_suspend(bus);
+ 
++	if (sdev->dspless_mode_selected)
++		goto skip_dsp;
++
+ 	ret = chip->power_down_dsp(sdev);
  	if (ret < 0) {
-@@ -266,6 +271,7 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
- 		dev_dbg(sdev->dev, "SOF firmware trace disabled\n");
+ 		dev_err(sdev->dev, "failed to power down DSP during suspend\n");
+@@ -694,6 +703,7 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
+ 	/* disable ppcap interrupt */
+ 	hda_dsp_ctrl_ppcap_enable(sdev, false);
+ 	hda_dsp_ctrl_ppcap_int_enable(sdev, false);
++skip_dsp:
+ 
+ 	/* disable hda bus irq and streams */
+ 	hda_dsp_ctrl_stop_chip(sdev);
+@@ -744,9 +754,11 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
+ 			hda_codec_jack_check(sdev);
  	}
  
-+skip_dsp_init:
- 	/* hereafter all FW boot flows are for PM reasons */
- 	sdev->first_boot = false;
- 
-@@ -387,12 +393,18 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
- 		return ret;
- 
- 	/* check all mandatory ops */
--	if (!sof_ops(sdev) || !sof_ops(sdev)->probe || !sof_ops(sdev)->run ||
--	    !sof_ops(sdev)->block_read || !sof_ops(sdev)->block_write ||
--	    !sof_ops(sdev)->send_msg || !sof_ops(sdev)->load_firmware ||
--	    !sof_ops(sdev)->ipc_msg_data) {
-+	if (!sof_ops(sdev) || !sof_ops(sdev)->probe) {
-+		sof_ops_free(sdev);
-+		dev_err(dev, "missing mandatory ops\n");
-+		return -EINVAL;
+-	/* enable ppcap interrupt */
+-	hda_dsp_ctrl_ppcap_enable(sdev, true);
+-	hda_dsp_ctrl_ppcap_int_enable(sdev, true);
++	if (!sdev->dspless_mode_selected) {
++		/* enable ppcap interrupt */
++		hda_dsp_ctrl_ppcap_enable(sdev, true);
++		hda_dsp_ctrl_ppcap_int_enable(sdev, true);
 +	}
-+
-+	if (!sdev->dspless_mode_selected &&
-+	    (!sof_ops(sdev)->run || !sof_ops(sdev)->block_read ||
-+	     !sof_ops(sdev)->block_write || !sof_ops(sdev)->send_msg ||
-+	     !sof_ops(sdev)->load_firmware || !sof_ops(sdev)->ipc_msg_data)) {
- 		sof_ops_free(sdev);
--		dev_err(dev, "error: missing mandatory ops\n");
-+		dev_err(dev, "missing mandatory DSP ops\n");
- 		return -EINVAL;
- 	}
  
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index ade0507328af..b42b5982cbbc 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -370,6 +370,7 @@ static const struct soc_fw_state_info {
- 	const char *name;
- } fw_state_dbg[] = {
- 	{SOF_FW_BOOT_NOT_STARTED, "SOF_FW_BOOT_NOT_STARTED"},
-+	{SOF_DSPLESS_MODE, "SOF_DSPLESS_MODE"},
- 	{SOF_FW_BOOT_PREPARE, "SOF_FW_BOOT_PREPARE"},
- 	{SOF_FW_BOOT_IN_PROGRESS, "SOF_FW_BOOT_IN_PROGRESS"},
- 	{SOF_FW_BOOT_FAILED, "SOF_FW_BOOT_FAILED"},
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index d9b4633bba7a..127b68caf9e1 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -330,6 +330,11 @@ static int sof_pcm_trigger(struct snd_soc_component *component,
- 			spcm->stream[substream->stream].suspend_ignored = true;
- 			return 0;
- 		}
-+
-+		/* On suspend the DMA must be stopped in DSPless mode */
-+		if (sdev->dspless_mode_selected)
-+			reset_hw_params = true;
-+
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		ipc_first = true;
-@@ -705,7 +710,6 @@ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
- 
- 	pd->pcm_construct = sof_pcm_new;
- 	pd->ignore_machine = drv_name;
--	pd->be_hw_params_fixup = sof_pcm_dai_link_fixup;
- 	pd->be_pcm_base = SOF_BE_PCM_BASE;
- 	pd->use_dai_pcm_id = true;
- 	pd->topology_name_prefix = "sof";
-@@ -714,4 +718,11 @@ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
- 	pd->module_get_upon_open = 1;
- 
- 	pd->legacy_dai_naming = 1;
-+
-+	/*
-+	 * The fixup is only needed when the DSP is in use as with the DSPless
-+	 * mode we are directly using the audio interface
-+	 */
-+	if (!sdev->dspless_mode_selected)
-+		pd->be_hw_params_fixup = sof_pcm_dai_link_fixup;
- }
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index 8d3383085d12..c74ce8d414e7 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -103,6 +103,11 @@ static int sof_resume(struct device *dev, bool runtime_resume)
- 		return ret;
- 	}
- 
-+	if (sdev->dspless_mode_selected) {
-+		sof_set_fw_state(sdev, SOF_DSPLESS_MODE);
-+		return 0;
-+	}
-+
- 	/*
- 	 * Nothing further to be done for platforms that support the low power
- 	 * D0 substate. Resume trace and return when resuming from
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 4f12e137ff63..7651644fcd62 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -688,7 +688,7 @@ int sof_widget_list_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm,
- 		struct snd_sof_widget *pipe_widget;
- 		struct snd_sof_pipeline *spipe;
- 
--		if (!swidget)
-+		if (!swidget || sdev->dspless_mode_selected)
- 			continue;
- 
- 		spipe = swidget->spipe;
-diff --git a/sound/soc/sof/sof-client.c b/sound/soc/sof/sof-client.c
-index 9017f0864cdd..d6b7caa0cf03 100644
---- a/sound/soc/sof/sof-client.c
-+++ b/sound/soc/sof/sof-client.c
-@@ -130,6 +130,9 @@ int sof_register_clients(struct snd_sof_dev *sdev)
- {
+ cleanup:
+ 	/* display codec can powered off after controller init */
+@@ -843,8 +855,10 @@ int hda_dsp_runtime_suspend(struct snd_sof_dev *sdev)
+ 	};
  	int ret;
  
-+	if (sdev->dspless_mode_selected)
-+		return 0;
-+
- 	/* Register platform independent client devices */
- 	ret = sof_register_ipc_flood_test(sdev);
- 	if (ret) {
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index bc8ca1e05b83..d3d536b0a8f5 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1144,8 +1144,12 @@ static void sof_disconnect_dai_widget(struct snd_soc_component *scomp,
- static int spcm_bind(struct snd_soc_component *scomp, struct snd_sof_pcm *spcm,
- 		     int dir)
- {
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_sof_widget *host_widget;
+-	/* cancel any attempt for DSP D0I3 */
+-	cancel_delayed_work_sync(&hda->d0i3_work);
++	if (!sdev->dspless_mode_selected) {
++		/* cancel any attempt for DSP D0I3 */
++		cancel_delayed_work_sync(&hda->d0i3_work);
++	}
+ 
+ 	/* stop hda controller and power dsp off */
+ 	ret = hda_suspend(sdev, true);
+@@ -866,8 +880,10 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev, u32 target_state)
+ 	};
+ 	int ret;
+ 
+-	/* cancel any attempt for DSP D0I3 */
+-	cancel_delayed_work_sync(&hda->d0i3_work);
++	if (!sdev->dspless_mode_selected) {
++		/* cancel any attempt for DSP D0I3 */
++		cancel_delayed_work_sync(&hda->d0i3_work);
++	}
+ 
+ 	if (target_state == SOF_DSP_PM_D0) {
+ 		/* Set DSP power state */
+diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
+index df541b22b2d2..a838dddb1d32 100644
+--- a/sound/soc/sof/intel/hda-ipc.c
++++ b/sound/soc/sof/intel/hda-ipc.c
+@@ -355,6 +355,9 @@ bool hda_dsp_check_ipc_irq(struct snd_sof_dev *sdev)
+ 	bool ret = false;
+ 	u32 irq_status;
  
 +	if (sdev->dspless_mode_selected)
-+		return 0;
++		return false;
 +
- 	host_widget = snd_sof_find_swidget_sname(scomp,
- 						 spcm->pcm.caps[dir].name,
- 						 dir);
-@@ -2270,6 +2274,126 @@ static struct snd_soc_tplg_ops sof_tplg_ops = {
- 	.bytes_ext_ops_count	= ARRAY_SIZE(sof_bytes_ext_ops),
- };
+ 	/* store status */
+ 	irq_status = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIS);
+ 	trace_sof_intel_hda_irq_ipc_check(sdev, irq_status);
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index 87e31a65b314..79d818e6a0fa 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -874,12 +874,14 @@ int hda_dsp_stream_init(struct snd_sof_dev *sdev)
  
-+static int snd_sof_dspless_kcontrol(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_value *ucontrol)
-+{
-+	return 0;
-+}
-+
-+static const struct snd_soc_tplg_kcontrol_ops sof_dspless_io_ops[] = {
-+	{SOF_TPLG_KCTL_VOL_ID, snd_sof_dspless_kcontrol, snd_sof_dspless_kcontrol},
-+	{SOF_TPLG_KCTL_BYTES_ID, snd_sof_dspless_kcontrol, snd_sof_dspless_kcontrol},
-+	{SOF_TPLG_KCTL_ENUM_ID, snd_sof_dspless_kcontrol, snd_sof_dspless_kcontrol},
-+	{SOF_TPLG_KCTL_SWITCH_ID, snd_sof_dspless_kcontrol, snd_sof_dspless_kcontrol},
-+};
-+
-+static int snd_sof_dspless_bytes_ext_get(struct snd_kcontrol *kcontrol,
-+					 unsigned int __user *binary_data,
-+					 unsigned int size)
-+{
-+	return 0;
-+}
-+
-+static int snd_sof_dspless_bytes_ext_put(struct snd_kcontrol *kcontrol,
-+					 const unsigned int __user *binary_data,
-+					 unsigned int size)
-+{
-+	return 0;
-+}
-+
-+static const struct snd_soc_tplg_bytes_ext_ops sof_dspless_bytes_ext_ops[] = {
-+	{SOF_TPLG_KCTL_BYTES_ID, snd_sof_dspless_bytes_ext_get, snd_sof_dspless_bytes_ext_put},
-+	{SOF_TPLG_KCTL_BYTES_VOLATILE_RO, snd_sof_dspless_bytes_ext_get},
-+};
-+
-+/* external widget init - used for any driver specific init */
-+static int sof_dspless_widget_ready(struct snd_soc_component *scomp, int index,
-+				    struct snd_soc_dapm_widget *w,
-+				    struct snd_soc_tplg_dapm_widget *tw)
-+{
-+	if (WIDGET_IS_DAI(w->id)) {
-+		struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+		struct snd_sof_widget *swidget;
-+		struct snd_sof_dai dai;
-+		int ret;
-+
-+		swidget = kzalloc(sizeof(*swidget), GFP_KERNEL);
-+		if (!swidget)
-+			return -ENOMEM;
-+
-+		memset(&dai, 0, sizeof(dai));
-+
-+		ret = sof_connect_dai_widget(scomp, w, tw, &dai);
-+		if (ret) {
-+			kfree(swidget);
-+			return ret;
+ 		hext_stream = &hda_stream->hext_stream;
+ 
+-		hext_stream->pphc_addr = sdev->bar[HDA_DSP_PP_BAR] +
+-			SOF_HDA_PPHC_BASE + SOF_HDA_PPHC_INTERVAL * i;
++		if (sdev->bar[HDA_DSP_PP_BAR]) {
++			hext_stream->pphc_addr = sdev->bar[HDA_DSP_PP_BAR] +
++				SOF_HDA_PPHC_BASE + SOF_HDA_PPHC_INTERVAL * i;
+ 
+-		hext_stream->pplc_addr = sdev->bar[HDA_DSP_PP_BAR] +
+-			SOF_HDA_PPLC_BASE + SOF_HDA_PPLC_MULTI * num_total +
+-			SOF_HDA_PPLC_INTERVAL * i;
++			hext_stream->pplc_addr = sdev->bar[HDA_DSP_PP_BAR] +
++				SOF_HDA_PPLC_BASE + SOF_HDA_PPLC_MULTI * num_total +
++				SOF_HDA_PPLC_INTERVAL * i;
 +		}
-+
-+		swidget->scomp = scomp;
-+		swidget->widget = w;
-+		mutex_init(&swidget->setup_mutex);
-+		w->dobj.private = swidget;
-+		list_add(&swidget->list, &sdev->widget_list);
-+	}
-+
-+	return 0;
-+}
-+
-+static int sof_dspless_widget_unload(struct snd_soc_component *scomp,
-+				     struct snd_soc_dobj *dobj)
-+{
-+	struct snd_soc_dapm_widget *w = container_of(dobj, struct snd_soc_dapm_widget, dobj);
-+
-+	if (WIDGET_IS_DAI(w->id)) {
-+		struct snd_sof_widget *swidget = dobj->private;
-+
-+		sof_disconnect_dai_widget(scomp, w);
-+
-+		if (!swidget)
-+			return 0;
-+
-+		/* remove and free swidget object */
-+		list_del(&swidget->list);
-+		kfree(swidget);
-+	}
-+
-+	return 0;
-+}
-+
-+static int sof_dspless_link_load(struct snd_soc_component *scomp, int index,
-+				 struct snd_soc_dai_link *link,
-+				 struct snd_soc_tplg_link_config *cfg)
-+{
-+	link->platforms->name = dev_name(scomp->dev);
-+
-+	/* Set nonatomic property for FE dai links for FE-BE compatibility */
-+	if (!link->no_pcm)
-+		link->nonatomic = true;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_tplg_ops sof_dspless_tplg_ops = {
-+	/* external widget init - used for any driver specific init */
-+	.widget_ready	= sof_dspless_widget_ready,
-+	.widget_unload	= sof_dspless_widget_unload,
-+
-+	/* FE DAI - used for any driver specific init */
-+	.dai_load	= sof_dai_load,
-+	.dai_unload	= sof_dai_unload,
-+
-+	/* DAI link - used for any driver specific init */
-+	.link_load	= sof_dspless_link_load,
-+
-+	/* vendor specific kcontrol handlers available for binding */
-+	.io_ops		= sof_dspless_io_ops,
-+	.io_ops_count	= ARRAY_SIZE(sof_dspless_io_ops),
-+
-+	/* vendor specific bytes ext handlers available for binding */
-+	.bytes_ext_ops = sof_dspless_bytes_ext_ops,
-+	.bytes_ext_ops_count = ARRAY_SIZE(sof_dspless_bytes_ext_ops),
-+};
-+
- int snd_sof_load_topology(struct snd_soc_component *scomp, const char *file)
- {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-@@ -2287,7 +2411,11 @@ int snd_sof_load_topology(struct snd_soc_component *scomp, const char *file)
- 		return ret;
- 	}
  
--	ret = snd_soc_tplg_component_load(scomp, &sof_tplg_ops, fw);
-+	if (sdev->dspless_mode_selected)
-+		ret = snd_soc_tplg_component_load(scomp, &sof_dspless_tplg_ops, fw);
-+	else
-+		ret = snd_soc_tplg_component_load(scomp, &sof_tplg_ops, fw);
+ 		hstream = &hext_stream->hstream;
+ 
+@@ -930,13 +932,14 @@ int hda_dsp_stream_init(struct snd_sof_dev *sdev)
+ 
+ 		hext_stream = &hda_stream->hext_stream;
+ 
+-		/* we always have DSP support */
+-		hext_stream->pphc_addr = sdev->bar[HDA_DSP_PP_BAR] +
+-			SOF_HDA_PPHC_BASE + SOF_HDA_PPHC_INTERVAL * i;
++		if (sdev->bar[HDA_DSP_PP_BAR]) {
++			hext_stream->pphc_addr = sdev->bar[HDA_DSP_PP_BAR] +
++				SOF_HDA_PPHC_BASE + SOF_HDA_PPHC_INTERVAL * i;
+ 
+-		hext_stream->pplc_addr = sdev->bar[HDA_DSP_PP_BAR] +
+-			SOF_HDA_PPLC_BASE + SOF_HDA_PPLC_MULTI * num_total +
+-			SOF_HDA_PPLC_INTERVAL * i;
++			hext_stream->pplc_addr = sdev->bar[HDA_DSP_PP_BAR] +
++				SOF_HDA_PPLC_BASE + SOF_HDA_PPLC_MULTI * num_total +
++				SOF_HDA_PPLC_INTERVAL * i;
++		}
+ 
+ 		hstream = &hext_stream->hstream;
+ 
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index a14733aa7a60..483ec80f3160 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -122,8 +122,12 @@ void hda_common_enable_sdw_irq(struct snd_sof_dev *sdev, bool enable)
+ 
+ void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable)
+ {
++	u32 interface_mask = hda_get_interface_mask(sdev);
+ 	const struct sof_intel_dsp_desc *chip;
+ 
++	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
++		return;
 +
- 	if (ret < 0) {
- 		dev_err(scomp->dev, "error: tplg component load failed %d\n",
- 			ret);
+ 	chip = get_chip_info(sdev->pdata);
+ 	if (chip && chip->enable_sdw_irq)
+ 		chip->enable_sdw_irq(sdev, enable);
+@@ -131,10 +135,14 @@ void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable)
+ 
+ static int hda_sdw_acpi_scan(struct snd_sof_dev *sdev)
+ {
++	u32 interface_mask = hda_get_interface_mask(sdev);
+ 	struct sof_intel_hda_dev *hdev;
+ 	acpi_handle handle;
+ 	int ret;
+ 
++	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
++		return -EINVAL;
++
+ 	handle = ACPI_HANDLE(sdev->dev);
+ 
+ 	/* save ACPI info for the probe step */
+@@ -288,8 +296,12 @@ bool hda_common_check_sdw_irq(struct snd_sof_dev *sdev)
+ 
+ static bool hda_dsp_check_sdw_irq(struct snd_sof_dev *sdev)
+ {
++	u32 interface_mask = hda_get_interface_mask(sdev);
+ 	const struct sof_intel_dsp_desc *chip;
+ 
++	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
++		return false;
++
+ 	chip = get_chip_info(sdev->pdata);
+ 	if (chip && chip->check_sdw_irq)
+ 		return chip->check_sdw_irq(sdev);
+@@ -304,8 +316,12 @@ static irqreturn_t hda_dsp_sdw_thread(int irq, void *context)
+ 
+ static bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
+ {
++	u32 interface_mask = hda_get_interface_mask(sdev);
+ 	struct sof_intel_hda_dev *hdev;
+ 
++	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
++		return false;
++
+ 	hdev = sdev->pdata->hw_pdata;
+ 	if (hdev->sdw &&
+ 	    snd_sof_dsp_read(sdev, HDA_DSP_BAR,
+@@ -317,8 +333,12 @@ static bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
+ 
+ void hda_sdw_process_wakeen(struct snd_sof_dev *sdev)
+ {
++	u32 interface_mask = hda_get_interface_mask(sdev);
+ 	struct sof_intel_hda_dev *hdev;
+ 
++	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
++		return;
++
+ 	hdev = sdev->pdata->hw_pdata;
+ 	if (!hdev->sdw)
+ 		return;
+@@ -1010,21 +1030,25 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 	const struct sof_intel_dsp_desc *chip;
+ 	int ret = 0;
+ 
+-	/*
+-	 * detect DSP by checking class/subclass/prog-id information
+-	 * class=04 subclass 03 prog-if 00: no DSP, legacy driver is required
+-	 * class=04 subclass 01 prog-if 00: DSP is present
+-	 *   (and may be required e.g. for DMIC or SSP support)
+-	 * class=04 subclass 03 prog-if 80: either of DSP or legacy mode works
+-	 */
+-	if (pci->class == 0x040300) {
+-		dev_err(sdev->dev, "error: the DSP is not enabled on this platform, aborting probe\n");
+-		return -ENODEV;
+-	} else if (pci->class != 0x040100 && pci->class != 0x040380) {
+-		dev_err(sdev->dev, "error: unknown PCI class/subclass/prog-if 0x%06x found, aborting probe\n", pci->class);
+-		return -ENODEV;
++	if (!sdev->dspless_mode_selected) {
++		/*
++		 * detect DSP by checking class/subclass/prog-id information
++		 * class=04 subclass 03 prog-if 00: no DSP, legacy driver is required
++		 * class=04 subclass 01 prog-if 00: DSP is present
++		 *   (and may be required e.g. for DMIC or SSP support)
++		 * class=04 subclass 03 prog-if 80: either of DSP or legacy mode works
++		 */
++		if (pci->class == 0x040300) {
++			dev_err(sdev->dev, "the DSP is not enabled on this platform, aborting probe\n");
++			return -ENODEV;
++		} else if (pci->class != 0x040100 && pci->class != 0x040380) {
++			dev_err(sdev->dev, "unknown PCI class/subclass/prog-if 0x%06x found, aborting probe\n",
++				pci->class);
++			return -ENODEV;
++		}
++		dev_info(sdev->dev, "DSP detected with PCI class/subclass/prog-if 0x%06x\n",
++			 pci->class);
+ 	}
+-	dev_info(sdev->dev, "DSP detected with PCI class/subclass/prog-if 0x%06x\n", pci->class);
+ 
+ 	chip = get_chip_info(sdev->pdata);
+ 	if (!chip) {
+@@ -1069,6 +1093,9 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 	if (ret < 0)
+ 		goto hdac_bus_unmap;
+ 
++	if (sdev->dspless_mode_selected)
++		goto skip_dsp_setup;
++
+ 	/* DSP base */
+ 	sdev->bar[HDA_DSP_BAR] = pci_ioremap_bar(pci, HDA_DSP_BAR);
+ 	if (!sdev->bar[HDA_DSP_BAR]) {
+@@ -1079,6 +1106,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 
+ 	sdev->mmio_bar = HDA_DSP_BAR;
+ 	sdev->mailbox_bar = HDA_DSP_BAR;
++skip_dsp_setup:
+ 
+ 	/* allow 64bit DMA address if supported by H/W */
+ 	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(64))) {
+@@ -1144,14 +1172,16 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 	if (ret < 0)
+ 		goto free_ipc_irq;
+ 
+-	/* enable ppcap interrupt */
+-	hda_dsp_ctrl_ppcap_enable(sdev, true);
+-	hda_dsp_ctrl_ppcap_int_enable(sdev, true);
++	if (!sdev->dspless_mode_selected) {
++		/* enable ppcap interrupt */
++		hda_dsp_ctrl_ppcap_enable(sdev, true);
++		hda_dsp_ctrl_ppcap_int_enable(sdev, true);
+ 
+-	/* set default mailbox offset for FW ready message */
+-	sdev->dsp_box.offset = HDA_DSP_MBOX_UPLINK_OFFSET;
++		/* set default mailbox offset for FW ready message */
++		sdev->dsp_box.offset = HDA_DSP_MBOX_UPLINK_OFFSET;
+ 
+-	INIT_DELAYED_WORK(&hdev->d0i3_work, hda_dsp_d0i3_work);
++		INIT_DELAYED_WORK(&hdev->d0i3_work, hda_dsp_d0i3_work);
++	}
+ 
+ 	init_waitqueue_head(&hdev->waitq);
+ 
+@@ -1167,7 +1197,8 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ free_streams:
+ 	hda_dsp_stream_free(sdev);
+ /* dsp_unmap: not currently used */
+-	iounmap(sdev->bar[HDA_DSP_BAR]);
++	if (!sdev->dspless_mode_selected)
++		iounmap(sdev->bar[HDA_DSP_BAR]);
+ hdac_bus_unmap:
+ 	platform_device_unregister(hdev->dmic_dev);
+ 	iounmap(bus->remap_addr);
+@@ -1187,8 +1218,9 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+ 	if (nhlt)
+ 		intel_nhlt_free(nhlt);
+ 
+-	/* cancel any attempt for DSP D0I3 */
+-	cancel_delayed_work_sync(&hda->d0i3_work);
++	if (!sdev->dspless_mode_selected)
++		/* cancel any attempt for DSP D0I3 */
++		cancel_delayed_work_sync(&hda->d0i3_work);
+ 
+ 	hda_codec_device_remove(sdev);
+ 
+@@ -1197,14 +1229,19 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+ 	if (!IS_ERR_OR_NULL(hda->dmic_dev))
+ 		platform_device_unregister(hda->dmic_dev);
+ 
+-	/* disable DSP IRQ */
+-	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
+-				SOF_HDA_PPCTL_PIE, 0);
++	if (!sdev->dspless_mode_selected) {
++		/* disable DSP IRQ */
++		snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
++					SOF_HDA_PPCTL_PIE, 0);
++	}
+ 
+ 	/* disable CIE and GIE interrupts */
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
+ 				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN, 0);
+ 
++	if (sdev->dspless_mode_selected)
++		goto skip_disable_dsp;
++
+ 	/* no need to check for error as the DSP will be disabled anyway */
+ 	if (chip && chip->power_down_dsp)
+ 		chip->power_down_dsp(sdev);
+@@ -1213,6 +1250,7 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
+ 				SOF_HDA_PPCTL_GPROCEN, 0);
+ 
++skip_disable_dsp:
+ 	free_irq(sdev->ipc_irq, sdev);
+ 	if (sdev->msi_enabled)
+ 		pci_free_irq_vectors(pci);
+@@ -1221,7 +1259,9 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+ 
+ 	hda_bus_ml_free(sof_to_bus(sdev));
+ 
+-	iounmap(sdev->bar[HDA_DSP_BAR]);
++	if (!sdev->dspless_mode_selected)
++		iounmap(sdev->bar[HDA_DSP_BAR]);
++
+ 	iounmap(bus->remap_addr);
+ 
+ 	sof_hda_bus_exit(sdev);
 -- 
 2.40.0
 
