@@ -4,200 +4,160 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26E39C761A6
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 08:16:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0CDFC761A6
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 09:22:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3536F204;
-	Tue,  4 Apr 2023 10:16:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3536F204
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71D71200;
+	Tue,  4 Apr 2023 11:21:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71D71200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680596210;
-	bh=u5rrtQb7rNCX8CcgD8xmXU9ClGdlgMFhGrYK8HjdI2g=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ecAe/DfkH+qSk0m736kLImILSM23VHRMjSmiEj2RfAOZyzDchzweGGUEPszsvsyHp
-	 paE3zdEwDvp9iChXtT2+BYFadjNrYvqUl/sdIoWYA7PHM6v4rZ0HmUCzEhAd5pfWOk
-	 EbNofjsbDbX9tSSZG7Cy/PsWKkEQsejy2QXPq/YI=
+	s=default; t=1680600133;
+	bh=AhQRfrkjFvDiGbeN/zyWyO7YJn02IFUuX6QRpFlbUC0=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=tshUR4+lgKoz4/bngySg+40uuc30S1bgJZAcw6nqVhmtTBbsiGcA3McLcufGL8X7b
+	 arBT8UjwAAK78rSpop9JNEzgsDP/0CeKn8mYUUGIErp8odY8VuFQWZXSb6qtGBys0U
+	 5YHZbH8Tuh8kOWEC1yIZlA2JJbZ0ymKD+i07xqMw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEC28F8024C;
-	Tue,  4 Apr 2023 10:15:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1F30F80529;
+	Tue,  4 Apr 2023 11:21:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1035DF8024C; Tue,  4 Apr 2023 10:15:35 +0200 (CEST)
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
- [IPv6:2a00:1450:4864:20::52e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id F09F1F80482; Tue,  4 Apr 2023 11:20:54 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8078DF80054
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 10:15:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8078DF80054
+	by alsa1.perex.cz (Postfix) with ESMTPS id B3CEBF8015B
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 11:20:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3CEBF8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=NRYH2aD+
-Received: by mail-ed1-x52e.google.com with SMTP id ek18so127203128edb.6
-        for <alsa-devel@alsa-project.org>;
- Tue, 04 Apr 2023 01:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1680596129;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IxmMKV3AzGJpb+DJfP0Ri3E5yjDAWlJf8T4Fjwm6+p0=;
-        b=NRYH2aD+xdXdnuA7nNqgRSyhnn2aP9Ph2LWz6h3BZx7LmEIuwO6pBaYDb5DRjWxcfW
-         kiGL37qqa+P8NMcCTcvkA1pEy7Ez/DM2uIg+ju1lxKAMbtVHrhmuz1+f7G9jfEMJbr2+
-         Kh4yWf7rKMeTXgCGa0+kzfDR5lL9JW0AwFpI7K61R085HhePmYJBaO3lM3XFD5LnWtDU
-         0QVq98Q1UNtIQL2IaClR7bcRxK2RjweLBmAuX/uuMvNujABRxoLlWLebGlR6G1LWaamv
-         bFuU0aF8qilZvAq3cVH92smx61Te+KxrKTDea43Zy2kAXbJf611pd8vcbbj0yOibK+yt
-         CykA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680596129;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IxmMKV3AzGJpb+DJfP0Ri3E5yjDAWlJf8T4Fjwm6+p0=;
-        b=1ZiE+3WpKc1RJxEpTZ3PuBcLR//a5JMmSQoGwNuBkNN3SciDwFm/kAT0eCTJEwMtDK
-         dkJnw40daDqb2NVhW1zWZsl87RZVQHbdH+a5i6mXcROuUPZPLLb/ai8umobMsbr5WHnZ
-         4I0NT6bNqywW4aUzPGumBiqM1o+oJiKgjUPAIFppsNPUDQ/jpYeIbWxoX92O3hOxO5gF
-         hhSvrpAEXplzxeaH6iTgak/+Zkp8xalqirfS9O8+NmmN0xvD6g2hTHwIqqViHSvKb2a+
-         Vly/TW4FwAS9wY7sy6Gr9IzNz0eR/YnC5073mxi5ZvEWsqKaDxWCQIxgOuT7r1hAt/5L
-         XmCg==
-X-Gm-Message-State: AAQBX9cpTQA9xPBczRYJIboT5oDqxarHtsrenA9rJG0X9dIi1o23j9It
-	U66CC1OW9EvuMbnOONh06XOvSA==
-X-Google-Smtp-Source: 
- AKy350bmdYzpUDTlUygS9hYOdaEvEPlNrLUMLXOcy9WcF2s6LIUp3B4MPrvRrNTyH6Y5JTFrdJSBQg==
-X-Received: by 2002:a17:906:86d0:b0:932:c1e2:998b with SMTP id
- j16-20020a17090686d000b00932c1e2998bmr1319118ejy.15.1680596129470;
-        Tue, 04 Apr 2023 01:15:29 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:233a:5c18:b527:381e?
- ([2a02:810d:15c0:828:233a:5c18:b527:381e])
-        by smtp.gmail.com with ESMTPSA id
- b17-20020a170906491100b008e57b5e0ce9sm5557101ejq.108.2023.04.04.01.15.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Apr 2023 01:15:29 -0700 (PDT)
-Message-ID: <143754c2-9e37-4386-af92-174c0df2eb0a@linaro.org>
-Date: Tue, 4 Apr 2023 10:15:28 +0200
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=R+OCkKT/
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680600048; x=1712136048;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AhQRfrkjFvDiGbeN/zyWyO7YJn02IFUuX6QRpFlbUC0=;
+  b=R+OCkKT//RlrAeKPHm0cmZRpqvNLEV8ir9ttEw+FbcLnrB9IaSpY5CVF
+   utCbd8x8fKU8xzuKG0ag5MBxFiTMiyybFjuG7/61rndmCMCD8kd0z9lUD
+   NhpKxs4k1WEZwW0g6qShvB6TeSyoWFZlgH7lSg04Eb35n0Vd4hgsZvl12
+   CqAdWBuia+0aETekrJgCRtR6r7+2XRgsqLKbPhCP+7u9p4l7RNmd8fyFY
+   1XpajOquSAJ6anmb26BPMxOODw7vw1lJstDOa8s6QwJ4tvi6ePY5CD1Ih
+   AEQEdqqNMxU2OXY1wiZXwFPZqWCbEkaYF9DYhPN3yhKQoBPcVabPW0UGB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339620485"
+X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
+   d="scan'208";a="339620485"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Apr 2023 02:20:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="688819924"
+X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
+   d="scan'208";a="688819924"
+Received: from vsysoevx-mobl.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.249.33.42])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Apr 2023 02:20:39 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Subject: [PATCH 00/12] ASoC: SOF: core/Intel: Introduce DSPless mode
+Date: Tue,  4 Apr 2023 12:21:03 +0300
+Message-Id: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v5 2/5] mfd: Add support for the Lantiq PEF2256 framer
-Content-Language: en-US
-To: Herve Codina <herve.codina@bootlin.com>
-References: <20230328092645.634375-1-herve.codina@bootlin.com>
- <20230328092645.634375-3-herve.codina@bootlin.com>
- <20230330160510.GB489249@google.com> <20230331094208.41ab4420@bootlin.com>
- <6d39e9c3-fb6a-4b2a-9889-8fe8d86716d5@linaro.org>
- <20230331141104.42445da9@bootlin.com>
- <a642e653-e3e2-c3d2-68cb-1efc92be05bb@linaro.org>
- <20230331165904.4e7f46a1@bootlin.com> <20230403142822.GA8371@google.com>
- <20230404092036.2d1cd5d9@bootlin.com>
- <f7ab2fcc-93fc-ce87-8767-579d33907225@linaro.org>
- <20230404100759.5bc9cd20@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230404100759.5bc9cd20@bootlin.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: AHWRDILEBBAJ34DMVCKSQM3LO24RFRJJ
-X-Message-ID-Hash: AHWRDILEBBAJ34DMVCKSQM3LO24RFRJJ
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: P6B2WLN6FWAIRLFKGVOJE6G647MBW3B2
+X-Message-ID-Hash: P6B2WLN6FWAIRLFKGVOJE6G647MBW3B2
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ rander.wang@intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AHWRDILEBBAJ34DMVCKSQM3LO24RFRJJ/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P6B2WLN6FWAIRLFKGVOJE6G647MBW3B2/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 04/04/2023 10:07, Herve Codina wrote:
+Hi,
 
->>> So, the structure I have in mind:
->>> - pef2256.c (MFD)
->>>   implement and do the setup at probe()
->>>   Add the children at probe():
->>>     - pef2256-pinctrl (pinctrl) added using mfd_add_devices()
->>>     - pef2256-codec (ASoC codec) added using devm_of_platform_populate()
->>>
->>> Lee, with this in mind, can the core pef2256.c be a MFD driver ?  
->>
->> You do not use MFD here, so why do you want to keep it in MFD? If you
->> disagree, please tell me where is the MFD code in your patch?
-> 
-> I don't want to absolutely use MFD.
-> I just want to put my driver somewhere and I don't know the right location
-> between MFD and Misc.
-> 
-> Basically, the driver needs to do (little simplified and error path removed):
-> 
->   static const struct mfd_cell pef2256_devs[] = {
->   	{ .name = "lantiq-pef2256-pinctrl", },
->   };
-> 
->   static int pef2256_probe(struct platform_device *pdev)
->   {
-> 	struct pef2256 *pef2256;
-> 	void __iomem *iomem;
-> 	int ret;
-> 	int irq;
-> 
-> 	pef2256 = devm_kzalloc(&pdev->dev, sizeof(*pef2256), GFP_KERNEL);
-> 	if (!pef2256)
-> 		return -ENOMEM;
-> 
-> 	pef2256->dev = &pdev->dev;
-> 
-> 	iomem = devm_platform_ioremap_resource(pdev, 0);
-> 
-> 	pef2256->regmap = devm_regmap_init_mmio(&pdev->dev, iomem,
-> 						&pef2256_regmap_config);
-> 
-> 	pef2256->mclk = devm_clk_get_enabled(&pdev->dev, "mclk");
-> 	pef2256->sclkr = devm_clk_get_enabled(&pdev->dev, "sclkr");
-> 	pef2256->sclkx = devm_clk_get_enabled(&pdev->dev, "sclkx");
-> 
-> 	pef2256->reset_gpio = devm_gpiod_get_optional(&pdev->dev, "reset", GPIOD_OUT_LOW);
-> 	if (pef2256->reset_gpio) {
-> 		gpiod_set_value_cansleep(pef2256->reset_gpio, 1);
-> 		udelay(10);
-> 		gpiod_set_value_cansleep(pef2256->reset_gpio, 0);
-> 		udelay(10);
-> 	}
-> 
-> 	pef2556_of_parse(pef2256, np);
-> 
-> 	irq = platform_get_irq(pdev, 0);
-> 	ret = devm_request_irq(pef2256->dev, irq, pef2256_irq_handler, 0, "pef2256", pef2256);
-> 
-> 	platform_set_drvdata(pdev, pef2256);
-> 
-> 	mfd_add_devices(pef2256->dev, PLATFORM_DEVID_NONE, pef2256_devs,
-> 	      		ARRAY_SIZE(pef2256_devs), NULL, 0, NULL);
+This series will add support for SOF Linux stack to run without using the DSP.
 
-Wait, now you use MFD framework, so the driver is suitable for MFD.
-Before there was nothing like that in your code.
+DSPless mode provides a good tool for verification that the hardware itself
+works correctly by taking the DSP use out from the picture.
+It can only work with interfaces which supports this mode: Intel HDA at the
+moment but with LNL it could be possible to support other audio interfaces.
 
-Best regards,
-Krzysztof
+The main driver for this mode is to be able to test programming sequences,
+low-level code and for low-level verification of a platform.
+
+The feature is not targetted for end-users and it will not make the SOF stack
+to work on hardware without DSP, but it is giving us a tool to debug and enable
+platforms earlier (when for example t he firmware is not mature enough).
+
+Regards,
+Peter
+---
+Peter Ujfalusi (11):
+  ASoC: SOF: Intel: hda-stream: Do not dereference hstream until it is
+    safe
+  ASoC: SOF: Add flag and state which will be used for DSP-less mode
+  ASoC: SOF: Add support for DSPless mode
+  ASoC: SOF: Intel: hda: Skip interfaces not supported on a platform
+  ASoC: SOF: Intel: hda: Add support for DSPless mode
+  ASoC: SOF: Intel: pci-apl: Allow DSPless mode
+  ASoC: SOF: Intel: pci-cnl: Allow DSPless mode
+  ASoC: SOF: Intel: pci-icl: Allow DSPless mode
+  ASoC: SOF: Intel: pci-mtl: Allow DSPless mode
+  ASoC: SOF: Intel: pci-skl: Allow DSPless mode
+  ASoC: SOF: Intel: pci-tgl: Allow DSPless mode
+
+Pierre-Louis Bossart (1):
+  ASoC: SOF: Intel: hda: make DSPless mode work with DSP disabled in
+    BIOS
+
+ include/sound/sof.h               |   5 +
+ sound/soc/sof/core.c              |  31 ++++++-
+ sound/soc/sof/debug.c             |   1 +
+ sound/soc/sof/intel/hda-dai-ops.c |  33 ++++++-
+ sound/soc/sof/intel/hda-dai.c     |  25 ++++-
+ sound/soc/sof/intel/hda-dsp.c     |  30 ++++--
+ sound/soc/sof/intel/hda-ipc.c     |   3 +
+ sound/soc/sof/intel/hda-pcm.c     |  24 +++--
+ sound/soc/sof/intel/hda-stream.c  |  67 ++++++++------
+ sound/soc/sof/intel/hda.c         | 149 +++++++++++++++++++++++-------
+ sound/soc/sof/intel/pci-apl.c     |   2 +
+ sound/soc/sof/intel/pci-cnl.c     |   3 +
+ sound/soc/sof/intel/pci-icl.c     |   2 +
+ sound/soc/sof/intel/pci-mtl.c     |   1 +
+ sound/soc/sof/intel/pci-skl.c     |   2 +
+ sound/soc/sof/intel/pci-tgl.c     |   8 ++
+ sound/soc/sof/pcm.c               |  13 ++-
+ sound/soc/sof/pm.c                |   5 +
+ sound/soc/sof/sof-audio.c         |   2 +-
+ sound/soc/sof/sof-client.c        |   3 +
+ sound/soc/sof/sof-priv.h          |  11 +++
+ sound/soc/sof/topology.c          | 130 +++++++++++++++++++++++++-
+ 22 files changed, 459 insertions(+), 91 deletions(-)
+
+-- 
+2.40.0
 
