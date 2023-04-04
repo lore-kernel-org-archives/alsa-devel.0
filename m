@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6056AC6FD1D
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 09:25:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29537C6FD1D
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 09:25:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65182827;
-	Tue,  4 Apr 2023 11:24:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65182827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1214620F;
+	Tue,  4 Apr 2023 11:24:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1214620F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680600312;
-	bh=x157ULv2Xl+MdfEY0HSEmNl0jgscs3UoEZE2dDY5gsQ=;
+	s=default; t=1680600327;
+	bh=IQ00o2dQfPckEhQ8RlWoZI5+nINBE9Dr9SlUFI+O/DE=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Um9qeTuFfhOzMDAszem4UXKlJAF9HceielSVOJn6qEiBjuwbzreYaZYO1JTojbv1a
-	 r/69MaTHAHAqW8GkbOqQGFFp4Njjaj4mwqfWHBB34hF4Ctoaqy0ib748/iLuG3nFf1
-	 2RT8YLqhv5RK7rh4junudQ6kS040YqwYT+QJWJOw=
+	b=Ea1GUQqTX6XT1iA5Sm6CVKLp4f6teOqGV8GeO+qwL0wdUQ0cGhlsIRwymXvCUm2CI
+	 NkpCpc+DpuXF0DyjyNwCbrUZOxT+vw1uv5NP+aN0dYR7KTeU+zx7rZqP8AbxHxFfkG
+	 jwJMdjDw6R1EbvIzHNwRUQXXMpNAYA01TYnxzeHg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DF54F80495;
-	Tue,  4 Apr 2023 11:23:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6052F80542;
+	Tue,  4 Apr 2023 11:23:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80778F80529; Tue,  4 Apr 2023 11:22:58 +0200 (CEST)
+	id 6AC50F80533; Tue,  4 Apr 2023 11:23:00 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F2341F80171
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 11:20:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2341F80171
+	by alsa1.perex.cz (Postfix) with ESMTPS id D4C1DF8026D
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 11:20:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4C1DF8026D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=H39zIsiO
+ header.s=Intel header.b=Qx8fbKvw
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680600050; x=1712136050;
+  t=1680600053; x=1712136053;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=x157ULv2Xl+MdfEY0HSEmNl0jgscs3UoEZE2dDY5gsQ=;
-  b=H39zIsiO0v7sJD0nEFlBtbcqG3I0sYErqzv5X5gMMECLCx7QqGf46U+h
-   il5fBnO9GyGw6Bhj8K4d9GzP+wDuauWnLtbVm80TAL9H6hLvvli89h2Yk
-   vdl9IcC8K5tgJEtAut5SVv0GMq9bqsb32HtrzRplBwPnjdzHik7Kb2a0l
-   o7sSoQLXXa3rvFiVgn6zGqpPe4XWpGu3hQiHpSL5IkR/u0C0SWdNSYl9k
-   RQM7264Hy28H5Q3mtn8kB2j+G3BtMgo9QPrerYgiMXiWhyfXli2konJ3Y
-   zqlCyj0Z0lDOJ2pWLCs6ZU3G34VuVxbl9m6KCLO+2NVV3+fcIqrfJU3dH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339620524"
+  bh=IQ00o2dQfPckEhQ8RlWoZI5+nINBE9Dr9SlUFI+O/DE=;
+  b=Qx8fbKvwO25SjYycBwk2WsjMEZhDrUkSEXoujJ3dNYbbzqJi9kIgRseo
+   UWj6wqFE2ZZ4JpjOtpUkyTxxSm/9otrUuVQ59j4nQqmi6rJSbWUJtMsxr
+   5Y3aMIkg/+KPfB7qvdNuyneYAo2B9n404+xFCWd6kqSp+GDlhlt/WxeDq
+   59QLTI8QSTOpVhK2XMIKic4vH78Z5+dhiDyyy9ECsY1xxKVEngNRuk+xZ
+   r3lIdu0zRrFFn8AY9SOWZIjyLmbdBE8zv7JDcZROc6/6IZQ4v2yUxrzrg
+   /HDXb9Yy6Kpq1Lrn4eYtQnA9tPWHBPro4FPpUR8W+QFoUwDPxRyLvRitT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339620568"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="339620524"
+   d="scan'208";a="339620568"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 02:20:46 -0700
+ 04 Apr 2023 02:20:51 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="688819969"
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="688820002"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="688819969"
+   d="scan'208";a="688820002"
 Received: from vsysoevx-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.33.42])
   by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 02:20:44 -0700
+ 04 Apr 2023 02:20:49 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 02/12] ASoC: SOF: Add flag and state which will be used for
- DSP-less mode
-Date: Tue,  4 Apr 2023 12:21:05 +0300
-Message-Id: <20230404092115.27949-3-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 04/12] ASoC: SOF: Intel: hda: Skip interfaces not supported on
+ a platform
+Date: Tue,  4 Apr 2023 12:21:07 +0300
+Message-Id: <20230404092115.27949-5-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
 References: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GKWQ4VFCFBPYAF3U5XJI43N55LUBRWJI
-X-Message-ID-Hash: GKWQ4VFCFBPYAF3U5XJI43N55LUBRWJI
+Message-ID-Hash: SILKH3RNMZ4Q2RPOD5OEYXYPUM5TZ4B6
+X-Message-ID-Hash: SILKH3RNMZ4Q2RPOD5OEYXYPUM5TZ4B6
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GKWQ4VFCFBPYAF3U5XJI43N55LUBRWJI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SILKH3RNMZ4Q2RPOD5OEYXYPUM5TZ4B6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,105 +101,114 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The DSPless mode of the ASoC/SOF driver can be used for hardware
-verification and debug on platforms with HDaudio codecs. The DSP mode is
-still needed on existing platforms for SSP, DMIC, SoundWire interfaces
-managed by the GP-DMA.
+Not all interfaces (SSP/DMIC/HDA/SDW) are available on all platforms.
+If the interface is not even supported then there is no point in executing
+a probe or query for that interface.
 
-This mode is also helpful to compare the legacy HDaudio driver with the
-ASoC/SOF driver wrt. codec management and handling. In theory we use the
-same code but differences are sometimes seen on jack detection and event
-handling.
+Introduce a simple function (hda_get_interface_mask) to query the
+interfaces supported on the platform.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
- include/sound/sof.h      |  5 +++++
- sound/soc/sof/core.c     |  9 +++++++++
- sound/soc/sof/sof-priv.h | 11 +++++++++++
- 3 files changed, 25 insertions(+)
+ sound/soc/sof/intel/hda.c | 50 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 44 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index 266e66318f9c..d3c41f87ac31 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -21,6 +21,7 @@ struct snd_sof_dev;
- /**
-  * enum sof_fw_state - DSP firmware state definitions
-  * @SOF_FW_BOOT_NOT_STARTED:	firmware boot is not yet started
-+ * @SOF_DSPLESS_MODE:		DSP is not used
-  * @SOF_FW_BOOT_PREPARE:	preparing for boot (firmware loading for exaqmple)
-  * @SOF_FW_BOOT_IN_PROGRESS:	firmware boot is in progress
-  * @SOF_FW_BOOT_FAILED:		firmware boot failed
-@@ -31,6 +32,7 @@ struct snd_sof_dev;
-  */
- enum sof_fw_state {
- 	SOF_FW_BOOT_NOT_STARTED = 0,
-+	SOF_DSPLESS_MODE,
- 	SOF_FW_BOOT_PREPARE,
- 	SOF_FW_BOOT_IN_PROGRESS,
- 	SOF_FW_BOOT_FAILED,
-@@ -130,6 +132,9 @@ struct sof_dev_desc {
- 	unsigned int ipc_supported_mask;
- 	enum sof_ipc_type ipc_default;
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 65389c7278e2..19aad4141a78 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -44,6 +44,37 @@
+ #define EXCEPT_MAX_HDR_SIZE	0x400
+ #define HDA_EXT_ROM_STATUS_SIZE 8
  
-+	/* The platform supports DSPless mode */
-+	bool dspless_mode_supported;
++static u32 hda_get_interface_mask(struct snd_sof_dev *sdev)
++{
++	const struct sof_intel_dsp_desc *chip;
++	u32 interface_mask = 0;
 +
- 	/* defaults paths for firmware, library and topology files */
- 	const char *default_fw_path[SOF_IPC_TYPE_COUNT];
- 	const char *default_lib_path[SOF_IPC_TYPE_COUNT];
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 7de8673a01ce..06bcae631612 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -365,6 +365,15 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
- 	if (sof_core_debug)
- 		dev_info(dev, "sof_debug value: %#x\n", sof_core_debug);
- 
-+	if (sof_debug_check_flag(SOF_DBG_DSPLESS_MODE)) {
-+		if (plat_data->desc->dspless_mode_supported) {
-+			dev_info(dev, "Switching to DSPless mode\n");
-+			sdev->dspless_mode_selected = true;
-+		} else {
-+			dev_info(dev, "DSPless mode is not supported by the platform\n");
-+		}
++	chip = get_chip_info(sdev->pdata);
++	switch (chip->hw_ip_version) {
++	case SOF_INTEL_TANGIER:
++	case SOF_INTEL_BAYTRAIL:
++	case SOF_INTEL_BROADWELL:
++		interface_mask = BIT(SOF_DAI_INTEL_SSP);
++		break;
++	case SOF_INTEL_CAVS_1_5:
++	case SOF_INTEL_CAVS_1_5_PLUS:
++		interface_mask = BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC) |
++				 BIT(SOF_DAI_INTEL_HDA);
++		break;
++	case SOF_INTEL_CAVS_1_8:
++	case SOF_INTEL_CAVS_2_0:
++	case SOF_INTEL_CAVS_2_5:
++	case SOF_INTEL_ACE_1_0:
++		interface_mask = BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC) |
++				 BIT(SOF_DAI_INTEL_HDA) | BIT(SOF_DAI_INTEL_ALH);
++		break;
++	default:
++		break;
 +	}
 +
- 	/* check IPC support */
- 	if (!(BIT(plat_data->ipc_type) & plat_data->desc->ipc_supported_mask)) {
- 		dev_err(dev, "ipc_type %d is not supported on this platform, mask is %#x\n",
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 5f919162a555..1170989bea57 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -48,6 +48,7 @@ struct snd_sof_pcm_stream;
- #define SOF_DBG_FORCE_NOCODEC			BIT(10) /* ignore all codec-related
- 							 * configurations
- 							 */
-+#define SOF_DBG_DSPLESS_MODE			BIT(15) /* Do not initialize and use the DSP */
- 
- /* Flag definitions used for controlling the DSP dump behavior */
- #define SOF_DBG_DUMP_REGS		BIT(0)
-@@ -528,6 +529,16 @@ struct snd_sof_dev {
- 	spinlock_t ipc_lock;	/* lock for IPC users */
- 	spinlock_t hw_lock;	/* lock for HW IO access */
- 
-+	/*
-+	 * When true the DSP is not used.
-+	 * It is set under the following condition:
-+	 * User sets the SOF_DBG_DSPLESS_MODE flag in sof_debug module parameter
-+	 * and
-+	 * the platform advertises that it can support such mode
-+	 * pdata->desc->dspless_mode_supported is true.
-+	 */
-+	bool dspless_mode_selected;
++	return interface_mask;
++}
 +
- 	/* Main, Base firmware image */
- 	struct sof_firmware basefw;
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
  
+ /*
+@@ -845,6 +876,7 @@ static int dmic_detect_topology_fixup(struct snd_sof_dev *sdev,
+ 
+ static int hda_init_caps(struct snd_sof_dev *sdev)
+ {
++	u32 interface_mask = hda_get_interface_mask(sdev);
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
+ 	struct snd_sof_pdata *pdata = sdev->pdata;
+ 	struct sof_intel_hda_dev *hdev = pdata->hw_pdata;
+@@ -865,6 +897,10 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
+ 
+ 	hda_bus_ml_get_capabilities(bus);
+ 
++	/* Skip SoundWire if it is not supported */
++	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
++		goto skip_soundwire;
++
+ 	/* scan SoundWire capabilities exposed by DSDT */
+ 	ret = hda_sdw_acpi_scan(sdev);
+ 	if (ret < 0) {
+@@ -1486,12 +1522,16 @@ void hda_set_mach_params(struct snd_soc_acpi_mach *mach,
+ 
+ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
+ {
++	u32 interface_mask = hda_get_interface_mask(sdev);
+ 	struct snd_sof_pdata *sof_pdata = sdev->pdata;
+ 	const struct sof_dev_desc *desc = sof_pdata->desc;
+-	struct snd_soc_acpi_mach *mach;
++	struct snd_soc_acpi_mach *mach = NULL;
+ 	const char *tplg_filename;
+ 
+-	mach = snd_soc_acpi_find_machine(desc->machines);
++	/* Try I2S or DMIC if it is supported */
++	if (interface_mask & (BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC)))
++		mach = snd_soc_acpi_find_machine(desc->machines);
++
+ 	if (mach) {
+ 		bool add_extension = false;
+ 		bool tplg_fixup = false;
+@@ -1598,10 +1638,8 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
+ 		}
+ 	}
+ 
+-	/*
+-	 * If I2S fails, try SoundWire
+-	 */
+-	if (!mach)
++	/* If I2S fails, try SoundWire if it is supported */
++	if (!mach && (interface_mask & BIT(SOF_DAI_INTEL_ALH)))
+ 		mach = hda_sdw_machine_select(sdev);
+ 
+ 	/*
 -- 
 2.40.0
 
