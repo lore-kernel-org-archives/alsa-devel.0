@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0186AC761A6
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 10:43:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6EBDC761A6
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 10:43:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E92E20C;
-	Tue,  4 Apr 2023 12:42:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E92E20C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FD22209;
+	Tue,  4 Apr 2023 12:43:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FD22209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680605016;
-	bh=SPP4W5mq6Y+8hpECYf7SeOkBV9H0zwmF5MIq1rFf0Gk=;
+	s=default; t=1680605030;
+	bh=texlN+ae0SmycWuXRad5CpiU9Xez+C8SyXvw+1hdOiY=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dH5Vn1UlIMHWLwN3Xf+9h+XvyfBUdimsAb62ZNv98EdHK6mp9SiVlAdzpXxlNi9Hp
-	 XQIQhcaymFmpFiEJusiD8wBm/5sUToRy/RfdKpPa0OPSeA+WfBhS5MWUl8/ntv9vUR
-	 p9RG7AYo2N5ciWyjfkYHeraqWxlyEkMY+25Tx08o=
+	b=s3rWMg71wFnDfY7Qq+bGoZuXPipu5opEk/JdOKTRhpg7N641Yy7T5QhJdxXFAkVk9
+	 vw/dRUj1msUDWl3eOXIF2oFtcjz/gG9urj4kopIPcHTV7Ondhtn6cILoNiUnxxjQNs
+	 v5oeEaASTreFu2oMAOKlLKEfZaFro9aIunTvFmp8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7966F80563;
-	Tue,  4 Apr 2023 12:41:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55BEBF80495;
+	Tue,  4 Apr 2023 12:41:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34CE2F80549; Tue,  4 Apr 2023 12:41:17 +0200 (CEST)
+	id 632A7F80568; Tue,  4 Apr 2023 12:41:22 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2190DF8015B
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 12:41:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2190DF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 296F3F80054
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 12:41:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 296F3F80054
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=D/iW8uLp
+ header.s=Intel header.b=iobN5r9B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680604862; x=1712140862;
+  t=1680604871; x=1712140871;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=SPP4W5mq6Y+8hpECYf7SeOkBV9H0zwmF5MIq1rFf0Gk=;
-  b=D/iW8uLpJa9U4qXteXzRpV1W2OEeFWbuQyBwx9ElVCxh8fwGkw1qjN9B
-   Iha6HnpHahtH1O0DSZ6k8pqyPBCGATzb25QsQYg16spYifLa7m8HrocXS
-   YIV2BW7z2QDFBDe4D8oCGl6rbwBGjVotfYyTrNzCtCKgrRTAKANcoGrcz
-   rDak5aI895NgSKxQW6bf83YiPy6/r+aD3+JdXgI/kBlgDXqw7N7yEvKsX
-   ODTuNi2MuSYOmE2+ZCd+uRwwL3v1VmdzYas07L2TN1rdKHpHjwWv3lGlI
-   FPeFoAntN9+rdQmSUJKRmxH55wh39Vcv5+TRpohOhiGt5AjmLv76fcxVf
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="340877927"
+  bh=texlN+ae0SmycWuXRad5CpiU9Xez+C8SyXvw+1hdOiY=;
+  b=iobN5r9BeHidKEkoTpOzTzvaBdVFs3T71qU9WDHLQj2vpTSvQTJEZ5O0
+   vywGx88q0zBZNAWcpB9Ggsng2j4DjujXzZ+APAaegL+Oj6dkHuM1nQDkU
+   i1Vu/S+76Hx/d+73RPe+7qn1r/UQOBSsX6tjrTzscwkbjxxCFvjpZyBLw
+   Y8VV5uwgXq07gxkYw6xpOrk/gplzavmApRCNde64vXUNWApLsEz/wGyXr
+   tXpvkM0VUr56b/4vV/uj557sROAyCTb1Xb5OdKb42A9e8Rq99Q+oQrY6K
+   y5zKpJHr8YVh0jObyq20c4dnG2vDoHwGjjItvureMTfKvvUBG9aRTBRdm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="340877976"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="340877927"
+   d="scan'208";a="340877976"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 03:40:57 -0700
+ 04 Apr 2023 03:41:09 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="829930112"
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="829930140"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="829930112"
+   d="scan'208";a="829930140"
 Received: from vsysoevx-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.33.42])
   by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 03:40:54 -0700
+ 04 Apr 2023 03:41:06 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
 	tiwai@suse.de,
 	perex@perex.cz
-Subject: [PATCH v2 01/18] Documentation: sound: add description of Intel
- HDaudio multi-links
-Date: Tue,  4 Apr 2023 13:41:10 +0300
-Message-Id: <20230404104127.5629-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v2 05/18] ASoC: SOF: Intel: hda-mlink: move to a dedicated
+ module
+Date: Tue,  4 Apr 2023 13:41:14 +0300
+Message-Id: <20230404104127.5629-6-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230404104127.5629-1-peter.ujfalusi@linux.intel.com>
 References: <20230404104127.5629-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: WVNFRWXPFKKMYD62OGUGAAVT5J62XTEX
-X-Message-ID-Hash: WVNFRWXPFKKMYD62OGUGAAVT5J62XTEX
+Message-ID-Hash: L6NKMAH4QPJPMK27WSLZTHPHDEASCV3V
+X-Message-ID-Hash: L6NKMAH4QPJPMK27WSLZTHPHDEASCV3V
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WVNFRWXPFKKMYD62OGUGAAVT5J62XTEX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L6NKMAH4QPJPMK27WSLZTHPHDEASCV3V/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,8 +106,12 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Add description of 'Skylake' multi-link structure added in 2015 and
-recent extensions to support SoundWire/DMIC/SSP interfaces.
+Some of the functions will be used for SoundWire enumeration and power
+management, to avoid cycles in module dependencies and simplify
+integration all the HDaudio multi-link needs to move to a dedicated
+module.
+
+Drop no longer needed headers at the same time.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -115,338 +119,246 @@ Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- Documentation/sound/hd-audio/index.rst        |   1 +
- .../sound/hd-audio/intel-multi-link.rst       | 312 ++++++++++++++++++
- 2 files changed, 313 insertions(+)
- create mode 100644 Documentation/sound/hd-audio/intel-multi-link.rst
+ include/sound/hda-mlink.h       | 31 +++++++++++++++++++++++++++++++
+ sound/soc/sof/intel/Kconfig     |  7 +++++++
+ sound/soc/sof/intel/Makefile    |  5 ++++-
+ sound/soc/sof/intel/hda-ctrl.c  |  1 +
+ sound/soc/sof/intel/hda-dsp.c   |  1 +
+ sound/soc/sof/intel/hda-mlink.c | 24 +++++++++++-------------
+ sound/soc/sof/intel/hda.c       |  2 ++
+ sound/soc/sof/intel/hda.h       | 20 --------------------
+ 8 files changed, 57 insertions(+), 34 deletions(-)
+ create mode 100644 include/sound/hda-mlink.h
 
-diff --git a/Documentation/sound/hd-audio/index.rst b/Documentation/sound/hd-audio/index.rst
-index 6e12de9fc34e..baefe4a5d165 100644
---- a/Documentation/sound/hd-audio/index.rst
-+++ b/Documentation/sound/hd-audio/index.rst
-@@ -9,3 +9,4 @@ HD-Audio
-    controls
-    dp-mst
-    realtek-pc-beep
-+   intel-multi-link
-diff --git a/Documentation/sound/hd-audio/intel-multi-link.rst b/Documentation/sound/hd-audio/intel-multi-link.rst
+diff --git a/include/sound/hda-mlink.h b/include/sound/hda-mlink.h
 new file mode 100644
-index 000000000000..bf0bb78833e7
+index 000000000000..beef5f509e47
 --- /dev/null
-+++ b/Documentation/sound/hd-audio/intel-multi-link.rst
-@@ -0,0 +1,312 @@
-+.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-+.. include:: <isonum.txt>
++++ b/include/sound/hda-mlink.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
++/*
++ * This file is provided under a dual BSD/GPLv2 license.  When using or
++ * redistributing this file, you may do so under either license.
++ *
++ * Copyright(c) 2022-2023 Intel Corporation. All rights reserved.
++ */
 +
-+================================================
-+HDAudio multi-link extensions on Intel platforms
-+================================================
++struct hdac_bus;
 +
-+:Copyright: |copy| 2023 Intel Corporation
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_MLINK)
 +
-+This file documents the 'multi-link structure' introduced in 2015 with
-+the Skylake processor and recently extended in newer Intel platforms
++int hda_bus_ml_get_capabilities(struct hdac_bus *bus);
++void hda_bus_ml_free(struct hdac_bus *bus);
++void hda_bus_ml_put_all(struct hdac_bus *bus);
++void hda_bus_ml_reset_losidv(struct hdac_bus *bus);
++int hda_bus_ml_resume(struct hdac_bus *bus);
++int hda_bus_ml_suspend(struct hdac_bus *bus);
 +
-+HDaudio existing link mapping (2015 addition in SkyLake)
-+========================================================
++#else
 +
-+External HDAudio codecs are handled with link #0, while iDISP codec
-+for HDMI/DisplayPort is handled with link #1.
++static inline int
++hda_bus_ml_get_capabilities(struct hdac_bus *bus) { return 0; }
 +
-+The only change to the 2015 definitions is the declaration of the
-+LCAP.ALT=0x0 - since the ALT bit was previously reserved, this is a
-+backwards-compatible change.
++static inline void hda_bus_ml_free(struct hdac_bus *bus) { }
++static inline void hda_bus_ml_put_all(struct hdac_bus *bus) { }
++static inline void hda_bus_ml_reset_losidv(struct hdac_bus *bus) { }
++static inline int hda_bus_ml_resume(struct hdac_bus *bus) { return 0; }
++static inline int hda_bus_ml_suspend(struct hdac_bus *bus) { return 0; }
 +
-+LCTL.SPA and LCTL.CPA are automatically set when exiting reset. They
-+are only used in existing drivers when the SCF value needs to be
-+corrected.
++#endif /* CONFIG_SND_SOC_SOF_HDA */
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index 715ba8a7f2f8..f4eeacf1f281 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -269,6 +269,13 @@ config SND_SOC_SOF_HDA_COMMON
+ 	select SND_INTEL_DSP_CONFIG
+ 	select SND_SOC_SOF_HDA_LINK_BASELINE
+ 	select SND_SOC_SOF_HDA_PROBES
++	select SND_SOC_SOF_HDA_MLINK if SND_SOC_SOF_HDA_LINK
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level.
 +
-+Basic structure for HDaudio codecs
-+----------------------------------
++config SND_SOC_SOF_HDA_MLINK
++	tristate
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+ 	  'select' statements at a higher level.
+diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
+index 38ab86b6a9fe..fdb463c12e91 100644
+--- a/sound/soc/sof/intel/Makefile
++++ b/sound/soc/sof/intel/Makefile
+@@ -5,10 +5,12 @@ snd-sof-acpi-intel-bdw-objs := bdw.o
+ 
+ snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
+ 				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
+-				 hda-dai.o hda-dai-ops.o hda-bus.o hda-mlink.o \
++				 hda-dai.o hda-dai-ops.o hda-bus.o \
+ 				 skl.o hda-loader-skl.o \
+ 				 apl.o cnl.o tgl.o icl.o mtl.o hda-common-ops.o
+ 
++snd-sof-intel-hda-mlink-objs := hda-mlink.o
 +
-+::
+ snd-sof-intel-hda-common-$(CONFIG_SND_SOC_SOF_HDA_PROBES) += hda-probes.o
+ 
+ snd-sof-intel-hda-objs := hda-codec.o
+@@ -19,6 +21,7 @@ obj-$(CONFIG_SND_SOC_SOF_INTEL_ATOM_HIFI_EP) += snd-sof-intel-atom.o
+ obj-$(CONFIG_SND_SOC_SOF_BAYTRAIL) += snd-sof-acpi-intel-byt.o
+ obj-$(CONFIG_SND_SOC_SOF_BROADWELL) += snd-sof-acpi-intel-bdw.o
+ obj-$(CONFIG_SND_SOC_SOF_HDA_COMMON) += snd-sof-intel-hda-common.o
++obj-$(CONFIG_SND_SOC_SOF_HDA_MLINK) += snd-sof-intel-hda-mlink.o
+ obj-$(CONFIG_SND_SOC_SOF_HDA) += snd-sof-intel-hda.o
+ 
+ snd-sof-pci-intel-tng-objs := pci-tng.o
+diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
+index e1dba6b79065..84bf01bd360a 100644
+--- a/sound/soc/sof/intel/hda-ctrl.c
++++ b/sound/soc/sof/intel/hda-ctrl.c
+@@ -19,6 +19,7 @@
+ #include <sound/hdaudio_ext.h>
+ #include <sound/hda_register.h>
+ #include <sound/hda_component.h>
++#include <sound/hda-mlink.h>
+ #include "../ops.h"
+ #include "hda.h"
+ 
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index c9231aeacc53..a8722f0774b1 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -18,6 +18,7 @@
+ #include <linux/module.h>
+ #include <sound/hdaudio_ext.h>
+ #include <sound/hda_register.h>
++#include <sound/hda-mlink.h>
+ #include <trace/events/sof_intel.h>
+ #include "../sof-audio.h"
+ #include "../ops.h"
+diff --git a/sound/soc/sof/intel/hda-mlink.c b/sound/soc/sof/intel/hda-mlink.c
+index e426d5e41e52..fbf86f2350fb 100644
+--- a/sound/soc/sof/intel/hda-mlink.c
++++ b/sound/soc/sof/intel/hda-mlink.c
+@@ -12,21 +12,11 @@
+ 
+ #include <sound/hdaudio_ext.h>
+ #include <sound/hda_register.h>
++#include <sound/hda-mlink.h>
+ 
+-#include <linux/acpi.h>
+ #include <linux/module.h>
+-#include <linux/soundwire/sdw.h>
+-#include <linux/soundwire/sdw_intel.h>
+-#include <sound/intel-dsp-config.h>
+-#include <sound/intel-nhlt.h>
+-#include <sound/sof.h>
+-#include <sound/sof/xtensa.h>
+-#include "../sof-audio.h"
+-#include "../sof-pci-dev.h"
+-#include "../ops.h"
+-#include "hda.h"
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
 +
-+  +-----------+
-+  | ML cap #0 |
-+  +-----------+
-+  | ML cap #1 |---+
-+  +-----------+   |
-+                  |
-+                  +--> 0x0 +---------------+ LCAP
-+                           | ALT=0         |
-+                           +---------------+
-+                           | S192          |
-+                           +---------------+
-+                           | S96           |
-+                           +---------------+
-+                           | S48           |
-+                           +---------------+
-+                           | S24           |
-+                           +---------------+
-+                           | S12           |
-+                           +---------------+
-+                           | S6            |
-+                           +---------------+
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_MLINK)
+ 
+ int hda_bus_ml_get_capabilities(struct hdac_bus *bus)
+ {
+@@ -34,6 +24,7 @@ int hda_bus_ml_get_capabilities(struct hdac_bus *bus)
+ 		return snd_hdac_ext_bus_get_ml_capabilities(bus);
+ 	return 0;
+ }
++EXPORT_SYMBOL_NS(hda_bus_ml_get_capabilities, SND_SOC_SOF_HDA_MLINK);
+ 
+ void hda_bus_ml_free(struct hdac_bus *bus)
+ {
+@@ -47,6 +38,7 @@ void hda_bus_ml_free(struct hdac_bus *bus)
+ 		kfree(hlink);
+ 	}
+ }
++EXPORT_SYMBOL_NS(hda_bus_ml_free, SND_SOC_SOF_HDA_MLINK);
+ 
+ void hda_bus_ml_put_all(struct hdac_bus *bus)
+ {
+@@ -55,6 +47,7 @@ void hda_bus_ml_put_all(struct hdac_bus *bus)
+ 	list_for_each_entry(hlink, &bus->hlink_list, list)
+ 		snd_hdac_ext_bus_link_put(bus, hlink);
+ }
++EXPORT_SYMBOL_NS(hda_bus_ml_put_all, SND_SOC_SOF_HDA_MLINK);
+ 
+ void hda_bus_ml_reset_losidv(struct hdac_bus *bus)
+ {
+@@ -64,6 +57,7 @@ void hda_bus_ml_reset_losidv(struct hdac_bus *bus)
+ 	list_for_each_entry(hlink, &bus->hlink_list, list)
+ 		writel(0, hlink->ml_addr + AZX_REG_ML_LOSIDV);
+ }
++EXPORT_SYMBOL_NS(hda_bus_ml_reset_losidv, SND_SOC_SOF_HDA_MLINK);
+ 
+ int hda_bus_ml_resume(struct hdac_bus *bus)
+ {
+@@ -80,10 +74,14 @@ int hda_bus_ml_resume(struct hdac_bus *bus)
+ 	}
+ 	return 0;
+ }
++EXPORT_SYMBOL_NS(hda_bus_ml_resume, SND_SOC_SOF_HDA_MLINK);
+ 
+ int hda_bus_ml_suspend(struct hdac_bus *bus)
+ {
+ 	return snd_hdac_ext_bus_link_power_down_all(bus);
+ }
++EXPORT_SYMBOL_NS(hda_bus_ml_suspend, SND_SOC_SOF_HDA_MLINK);
+ 
+ #endif
 +
-+                       0x4 +---------------+ LCTL
-+                           | INTSTS        |
-+                           +---------------+
-+                           | CPA           |
-+                           +---------------+
-+                           | SPA           |
-+                           +---------------+
-+                           | SCF           |
-+                           +---------------+
-+
-+                       0x8 +---------------+ LOSIDV
-+                           | L1OSIVD15     |
-+                           +---------------+
-+                           | L1OSIDV..     |
-+                           +---------------+
-+                           | L1OSIDV1      |
-+                           +---------------+
-+
-+                       0xC +---------------+ LSDIID
-+                           | SDIID14       |
-+                           +---------------+
-+                           | SDIID...      |
-+                           +---------------+
-+                           | SDIID0        |
-+                           +---------------+
-+
-+SoundWire HDaudio extended link mapping
-+=======================================
-+
-+A SoundWire extended link is identified when LCAP.ALT=1 and
-+LEPTR.ID=0.
-+
-+DMA control uses the existing LOSIDV register.
-+
-+Changes include additional descriptions for enumeration that were not
-+present in earlier generations.
-+
-+- multi-link synchronization: capabilities in LCAP.LSS and control in LSYNC
-+- number of sublinks (manager IP) in LCAP.LSCOUNT
-+- power management moved from SHIM to LCTL.SPA bits
-+- hand-over to the DSP for access to multi-link registers, SHIM/IP with LCTL.OFLEN
-+- mapping of SoundWire codecs to SDI ID bits
-+- move of SHIM and Cadence registers to different offsets, with no
-+  change in functionality. The LEPTR.PTR value is an offset from the
-+  ML address, with a default value of 0x30000.
-+
-+Extended structure for SoundWire (assuming 4 Manager IP)
-+--------------------------------------------------------
-+
-+::
-+
-+  +-----------+
-+  | ML cap #0 |
-+  +-----------+
-+  | ML cap #1 |
-+  +-----------+
-+  | ML cap #2 |---+
-+  +-----------+   |
-+                  |
-+                  +--> 0x0 +---------------+ LCAP
-+                           | ALT=1         |
-+                           +---------------+
-+                           | INTC          |
-+                           +---------------+
-+                           | OFLS          |
-+                           +---------------+
-+                           | LSS           |
-+                           +---------------+
-+                           | SLCOUNT=4     |-----------+
-+                           +---------------+           |
-+                                                       |
-+                       0x4 +---------------+ LCTL      |
-+                           | INTSTS        |           |
-+                           +---------------+           |
-+                           | CPA (x bits)  |           |
-+                           +---------------+           |
-+                           | SPA (x bits)  |           |
-+                           +---------------+         for each sublink x
-+                           | INTEN         |           |
-+                           +---------------+           |
-+                           | OFLEN         |           |
-+                           +---------------+           |
-+                                                       |
-+                       0x8 +---------------+ LOSIDV    |
-+                           | L1OSIVD15     |           |
-+                           +---------------+           |
-+                           | L1OSIDV..     |           |
-+                           +---------------+           |
-+                           | L1OSIDV1      |       +---+----------------------------------------------------------+
-+                           +---------------+       |                                                              |
-+                                                   v                                                              |
-+             0xC + 0x2 * x +---------------+ LSDIIDx    +---> 0x30000  +-----------------+  0x00030000            |
-+                           | SDIID14       |            |              | SoundWire SHIM  |                        |
-+                           +---------------+            |              | generic         |                        |
-+                           | SDIID...      |            |              +-----------------+  0x00030100            |
-+                           +---------------+            |              | SoundWire IP    |                        |
-+                           | SDIID0        |            |              +-----------------+  0x00036000            |
-+                           +---------------+            |              | SoundWire SHIM  |                        |
-+                                                        |              | vendor-specific |                        |
-+                      0x1C +---------------+ LSYNC      |              +-----------------+                        |
-+                           | CMDSYNC       |            |                                                         v
-+                           +---------------+            |              +-----------------+  0x00030000 + 0x8000 * x
-+                           | SYNCGO        |            |              | SoundWire SHIM  |
-+                           +---------------+            |              | generic         |
-+                           | SYNCPU        |            |              +-----------------+  0x00030100 + 0x8000 * x
-+                           +---------------+            |              | SoundWire IP    |
-+                           | SYNPRD        |            |              +-----------------+  0x00036000 + 0x8000 * x
-+                           +---------------+            |              | SoundWire SHIM  |
-+                                                        |              | vendor-specific |
-+                      0x20 +---------------+ LEPTR      |              +-----------------+
-+                           | ID = 0        |            |
-+                           +---------------+            |
-+                           | VER           |            |
-+                           +---------------+            |
-+                           | PTR           |------------+
-+                           +---------------+
-+
-+
-+DMIC HDaudio extended link mapping
-+==================================
-+
-+A DMIC extended link is identified when LCAP.ALT=1 and
-+LEPTR.ID=0xC1 are set.
-+
-+DMA control uses the existing LOSIDV register
-+
-+Changes include additional descriptions for enumeration that were not
-+present in earlier generations.
-+
-+- multi-link synchronization: capabilities in LCAP.LSS and control in LSYNC
-+- power management with LCTL.SPA bits
-+- hand-over to the DSP for access to multi-link registers, SHIM/IP with LCTL.OFLEN
-+
-+- move of DMIC registers to different offsets, with no change in
-+  functionality. The LEPTR.PTR value is an offset from the ML
-+  address, with a default value of 0x10000.
-+
-+Extended structure for DMIC
-+---------------------------
-+
-+::
-+
-+  +-----------+
-+  | ML cap #0 |
-+  +-----------+
-+  | ML cap #1 |
-+  +-----------+
-+  | ML cap #2 |---+
-+  +-----------+   |
-+                  |
-+                  +--> 0x0 +---------------+ LCAP
-+                           | ALT=1         |
-+                           +---------------+
-+                           | INTC          |
-+                           +---------------+
-+                           | OFLS          |
-+                           +---------------+
-+                           | SLCOUNT=1     |
-+                           +---------------+
-+
-+                       0x4 +---------------+ LCTL
-+                           | INTSTS        |
-+                           +---------------+
-+                           | CPA           |
-+                           +---------------+
-+                           | SPA           |
-+                           +---------------+
-+                           | INTEN         |
-+                           +---------------+
-+                           | OFLEN         |
-+                           +---------------+           +---> 0x10000  +-----------------+  0x00010000
-+                                                       |              | DMIC SHIM       |
-+                       0x8 +---------------+ LOSIDV    |              | generic         |
-+                           | L1OSIVD15     |           |              +-----------------+  0x00010100
-+                           +---------------+           |              | DMIC IP         |
-+                           | L1OSIDV..     |           |              +-----------------+  0x00016000
-+                           +---------------+           |              | DMIC SHIM       |
-+                           | L1OSIDV1      |           |              | vendor-specific |
-+                           +---------------+           |              +-----------------+
-+                                                       |
-+                      0x20 +---------------+ LEPTR     |
-+                           | ID = 0xC1     |           |
-+                           +---------------+           |
-+                           | VER           |           |
-+                           +---------------+           |
-+                           | PTR           |-----------+
-+                           +---------------+
-+
-+
-+SSP HDaudio extended link mapping
-+=================================
-+
-+A DMIC extended link is identified when LCAP.ALT=1 and
-+LEPTR.ID=0xC0 are set.
-+
-+DMA control uses the existing LOSIDV register
-+
-+Changes include additional descriptions for enumeration and control that were not
-+present in earlier generations:
-+- number of sublinks (SSP IP instances) in LCAP.LSCOUNT
-+- power management moved from SHIM to LCTL.SPA bits
-+- hand-over to the DSP for access to multi-link registers, SHIM/IP
-+with LCTL.OFLEN
-+- move of SHIM and SSP IP registers to different offsets, with no
-+change in functionality.  The LEPTR.PTR value is an offset from the ML
-+address, with a default value of 0x28000.
-+
-+Extended structure for SSP (assuming 3 instances of the IP)
-+-----------------------------------------------------------
-+
-+::
-+
-+  +-----------+
-+  | ML cap #0 |
-+  +-----------+
-+  | ML cap #1 |
-+  +-----------+
-+  | ML cap #2 |---+
-+  +-----------+   |
-+                  |
-+                  +--> 0x0 +---------------+ LCAP
-+                           | ALT=1         |
-+                           +---------------+
-+                           | INTC          |
-+                           +---------------+
-+                           | OFLS          |
-+                           +---------------+
-+                           | SLCOUNT=3     |-------------------------for each sublink x -------------------------+
-+                           +---------------+                                                                     |
-+                                                                                                                 |
-+                       0x4 +---------------+ LCTL                                                                |
-+                           | INTSTS        |                                                                     |
-+                           +---------------+                                                                     |
-+                           | CPA (x bits)  |                                                                     |
-+                           +---------------+                                                                     |
-+                           | SPA (x bits)  |                                                                     |
-+                           +---------------+                                                                     |
-+                           | INTEN         |                                                                     |
-+                           +---------------+                                                                     |
-+                           | OFLEN         |                                                                     |
-+                           +---------------+           +---> 0x28000  +-----------------+  0x00028000            |
-+                                                       |              | SSP SHIM        |                        |
-+                       0x8 +---------------+ LOSIDV    |              | generic         |                        |
-+                           | L1OSIVD15     |           |              +-----------------+  0x00028100            |
-+                           +---------------+           |              | SSP IP          |                        |
-+                           | L1OSIDV..     |           |              +-----------------+  0x00028C00            |
-+                           +---------------+           |              | SSP SHIM        |                        |
-+                           | L1OSIDV1      |           |              | vendor-specific |                        |
-+                           +---------------+           |              +-----------------+                        |
-+                                                       |                                                         v
-+                      0x20 +---------------+ LEPTR     |              +-----------------+  0x00028000 + 0x1000 * x
-+                           | ID = 0xC0     |           |              | SSP SHIM        |
-+                           +---------------+           |              | generic         |
-+                           | VER           |           |              +-----------------+  0x00028100 + 0x1000 * x
-+                           +---------------+           |              | SSP IP          |
-+                           | PTR           |-----------+              +-----------------+  0x00028C00 + 0x1000 * x
-+                           +---------------+                          | SSP SHIM        |
-+                                                                      | vendor-specific |
-+                                                                      +-----------------+
++MODULE_LICENSE("Dual BSD/GPL");
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 65389c7278e2..ac61233029b7 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -26,6 +26,7 @@
+ #include <sound/intel-nhlt.h>
+ #include <sound/sof.h>
+ #include <sound/sof/xtensa.h>
++#include <sound/hda-mlink.h>
+ #include "../sof-audio.h"
+ #include "../sof-pci-dev.h"
+ #include "../ops.h"
+@@ -1647,3 +1648,4 @@ MODULE_IMPORT_NS(SND_SOC_SOF_XTENSA);
+ MODULE_IMPORT_NS(SND_INTEL_SOUNDWIRE_ACPI);
+ MODULE_IMPORT_NS(SOUNDWIRE_INTEL_INIT);
+ MODULE_IMPORT_NS(SOUNDWIRE_INTEL);
++MODULE_IMPORT_NS(SND_SOC_SOF_HDA_MLINK);
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 259b34eea677..0e0cfa81a8f2 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -763,26 +763,6 @@ static inline int hda_codec_i915_exit(struct snd_sof_dev *sdev) { return 0; }
+ 
+ #endif
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+-
+-int hda_bus_ml_get_capabilities(struct hdac_bus *bus);
+-void hda_bus_ml_free(struct hdac_bus *bus);
+-void hda_bus_ml_put_all(struct hdac_bus *bus);
+-void hda_bus_ml_reset_losidv(struct hdac_bus *bus);
+-int hda_bus_ml_resume(struct hdac_bus *bus);
+-int hda_bus_ml_suspend(struct hdac_bus *bus);
+-
+-#else
+-
+-static inline int hda_bus_ml_get_capabilities(struct hdac_bus *bus) { return 0; }
+-static inline void hda_bus_ml_free(struct hdac_bus *bus) { }
+-static inline void hda_bus_ml_put_all(struct hdac_bus *bus) { }
+-static inline void hda_bus_ml_reset_losidv(struct hdac_bus *bus) { }
+-static inline int hda_bus_ml_resume(struct hdac_bus *bus) { return 0; }
+-static inline int hda_bus_ml_suspend(struct hdac_bus *bus) { return 0; }
+-
+-#endif /* CONFIG_SND_SOC_SOF_HDA */
+-
+ /*
+  * Trace Control.
+  */
 -- 
 2.40.0
 
