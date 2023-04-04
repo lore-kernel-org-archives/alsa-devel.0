@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 444A2C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 09:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD0E6C6FD1D
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 09:24:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 056966C1;
-	Tue,  4 Apr 2023 11:23:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 056966C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 754753E8;
+	Tue,  4 Apr 2023 11:23:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 754753E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680600265;
-	bh=/X1Fi5qjJ3G6ib3WKl8VFpWGSiFIVJMbwl5VALOKjSw=;
+	s=default; t=1680600283;
+	bh=grYn2ReBpBOCknBZ+84eS2ftxAl1jzdAbXWoKgwPM2o=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uF2zLVDWGPNMb8Oqq87vgYU0STceSVmXuIeFmPx4uoKFeMV4P6pAL1kOy1Hrg548v
-	 642tQV/kbNa2gUrIO8vOEkDdA9sjkYIi4NuWyFwCjaonNj8SsDLqqsjZgXHCia7hGJ
-	 x6jp06hqE8nAg+s/Y35a22Ku7QImcOfI7Lb741rQ=
+	b=ZWNWHlrA8Jwv3c9rVzqPxWvNagQmiGnYgzCdO01TP8qNZsWwgCg1flIZtYFH0Ukii
+	 bc95ghrk5YNpeAajxwFCb4nKqXSLEN1FcS2OZ841CTaf8pfwcdp50mMIAyztD+GBeQ
+	 +TOMQ05lO6UJxWUcF8mh3Z+QYxaHMY8tIIRocsCo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A7A1F80587;
-	Tue,  4 Apr 2023 11:21:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92A9EF80423;
+	Tue,  4 Apr 2023 11:22:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C320FF80557; Tue,  4 Apr 2023 11:21:19 +0200 (CEST)
+	id D9C72F8028B; Tue,  4 Apr 2023 11:22:52 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 82F56F80544
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 11:21:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82F56F80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id F3166F80423
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 11:20:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3166F80423
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ONCpXVpN
+ header.s=Intel header.b=BKec5j3D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680600073; x=1712136073;
+  t=1680600060; x=1712136060;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=/X1Fi5qjJ3G6ib3WKl8VFpWGSiFIVJMbwl5VALOKjSw=;
-  b=ONCpXVpNLmXDf9PwaijVcxbSRx2F8SYyy9q+xZnmX0c/JJt1U9nHed59
-   u+AGlYvn6GWSLwiSOYRU/d7sBb44796LE6TMZWT303rh8v4bmRkI/31RW
-   fh67CzHUCG4j7Md7TWj1mF/mSc7jhf/QSy2U70Zg1kWq405N8pFgEy9KU
-   B89CSDVKF3VuT+Ixc/HOP1TccPPwf4L9+mPlt+q2oMkYVRMdkZSnBpMWY
-   iog5S4X09sCmQT790pw3UOR56HlOSAZg0klF99SnkMniYcS/BrgB8xE58
-   +KaroXvwDVyhv/F02ItnNnmCrbcVI/Mj9b+2MITaKYSWJFNMa9ObZeOD8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339620708"
+  bh=grYn2ReBpBOCknBZ+84eS2ftxAl1jzdAbXWoKgwPM2o=;
+  b=BKec5j3DFjAguqqDgtI4ffWqjyzBnbYEB2qgMnY+rXBupZcnwsPr9TVQ
+   kgYBW1JJHmtXpHsGDnOoorYebT3/JVQfTSRKgPpSjD1HDu4e0LNQSSBCw
+   9ZtukfW7pIq4UX5GYrfP0j+qgTST5kGJxYXalfqEusaM+dFqOwjsJIzAV
+   OAopYxU41avBx88lSqTHNiwPye3YFvpnxlqkXJ70DEavpIVFDQ9iVU+Vs
+   ZnRMTbP2brOEJwLMK5uatkux6Pb0c9PtWrtHVj6MtqLK6FJY5SysXvi67
+   o1oI0DgVjV5SHSRK9J5VIa7qvcx8yrNcHyyln2GRMUjw+Btv6fNsBfXjH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339620607"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="339620708"
+   d="scan'208";a="339620607"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 02:21:10 -0700
+ 04 Apr 2023 02:20:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="688820173"
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="688820060"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="688820173"
+   d="scan'208";a="688820060"
 Received: from vsysoevx-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.33.42])
   by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 02:21:08 -0700
+ 04 Apr 2023 02:20:56 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 12/12] ASoC: SOF: Intel: pci-tgl: Allow DSPless mode
-Date: Tue,  4 Apr 2023 12:21:15 +0300
-Message-Id: <20230404092115.27949-13-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 07/12] ASoC: SOF: Intel: pci-apl: Allow DSPless mode
+Date: Tue,  4 Apr 2023 12:21:10 +0300
+Message-Id: <20230404092115.27949-8-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
 References: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: EYHHMILFVRUXGYSCDVPIYLZGU2RVV76L
-X-Message-ID-Hash: EYHHMILFVRUXGYSCDVPIYLZGU2RVV76L
+Message-ID-Hash: YGW6JNN4PTJU67ZJ7G6LPYI4HV6BASOI
+X-Message-ID-Hash: YGW6JNN4PTJU67ZJ7G6LPYI4HV6BASOI
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EYHHMILFVRUXGYSCDVPIYLZGU2RVV76L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YGW6JNN4PTJU67ZJ7G6LPYI4HV6BASOI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,7 +100,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-set the dspless_mode_supported flag to true for tgl/adl family to allow
+set the dspless_mode_supported flag to true for apl family to allow
 DSPless mode.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
@@ -108,77 +108,29 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
- sound/soc/sof/intel/pci-tgl.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/sof/intel/pci-apl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
-index 22e769e0831d..ca37ff1bbd2a 100644
---- a/sound/soc/sof/intel/pci-tgl.c
-+++ b/sound/soc/sof/intel/pci-tgl.c
-@@ -30,6 +30,7 @@ static const struct sof_dev_desc tgl_desc = {
- 	.chip_info = &tgl_chip_info,
+diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
+index aff6cb573c27..69cad5a6bc72 100644
+--- a/sound/soc/sof/intel/pci-apl.c
++++ b/sound/soc/sof/intel/pci-apl.c
+@@ -29,6 +29,7 @@ static const struct sof_dev_desc bxt_desc = {
+ 	.chip_info = &apl_chip_info,
  	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
  	.ipc_default		= SOF_IPC,
 +	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
  	.default_fw_path = {
  		[SOF_IPC] = "intel/sof",
- 		[SOF_INTEL_IPC4] = "intel/avs/tgl",
-@@ -62,6 +63,7 @@ static const struct sof_dev_desc tglh_desc = {
- 	.chip_info = &tglh_chip_info,
+ 		[SOF_INTEL_IPC4] = "intel/avs/apl",
+@@ -60,6 +61,7 @@ static const struct sof_dev_desc glk_desc = {
+ 	.chip_info = &apl_chip_info,
  	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
  	.ipc_default		= SOF_IPC,
 +	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
  	.default_fw_path = {
  		[SOF_IPC] = "intel/sof",
- 		[SOF_INTEL_IPC4] = "intel/avs/tgl-h",
-@@ -93,6 +95,7 @@ static const struct sof_dev_desc ehl_desc = {
- 	.chip_info = &ehl_chip_info,
- 	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
- 	.ipc_default		= SOF_IPC,
-+	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 		[SOF_INTEL_IPC4] = "intel/avs/ehl",
-@@ -125,6 +128,7 @@ static const struct sof_dev_desc adls_desc = {
- 	.chip_info = &adls_chip_info,
- 	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
- 	.ipc_default		= SOF_IPC,
-+	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 		[SOF_INTEL_IPC4] = "intel/avs/adl-s",
-@@ -157,6 +161,7 @@ static const struct sof_dev_desc adl_desc = {
- 	.chip_info = &tgl_chip_info,
- 	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
- 	.ipc_default		= SOF_IPC,
-+	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 		[SOF_INTEL_IPC4] = "intel/avs/adl",
-@@ -189,6 +194,7 @@ static const struct sof_dev_desc adl_n_desc = {
- 	.chip_info = &tgl_chip_info,
- 	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
- 	.ipc_default		= SOF_IPC,
-+	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 		[SOF_INTEL_IPC4] = "intel/avs/adl-n",
-@@ -221,6 +227,7 @@ static const struct sof_dev_desc rpls_desc = {
- 	.chip_info = &adls_chip_info,
- 	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
- 	.ipc_default		= SOF_IPC,
-+	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 		[SOF_INTEL_IPC4] = "intel/avs/rpl-s",
-@@ -253,6 +260,7 @@ static const struct sof_dev_desc rpl_desc = {
- 	.chip_info = &tgl_chip_info,
- 	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
- 	.ipc_default		= SOF_IPC,
-+	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 		[SOF_INTEL_IPC4] = "intel/avs/rpl",
+ 		[SOF_INTEL_IPC4] = "intel/avs/glk",
 -- 
 2.40.0
 
