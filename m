@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E36CC761A6
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 09:24:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6056AC6FD1D
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 09:25:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB7A2844;
-	Tue,  4 Apr 2023 11:24:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB7A2844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65182827;
+	Tue,  4 Apr 2023 11:24:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65182827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680600294;
-	bh=4iZ04NT03uDG8xbiaCpZHlY8ChVwNLO/N9i0xsFtr3E=;
+	s=default; t=1680600312;
+	bh=x157ULv2Xl+MdfEY0HSEmNl0jgscs3UoEZE2dDY5gsQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CfW93lknRckVrA3bqppqzDk1Nuz6z7B6uIf/JFXTWIO24+K9VfsDwvzhY93EgX2Uf
-	 ICW66KwFgWh8sLuGQ6YNUotKM7xGxi031hEtdEe75rUoV0c+k2Z2vn5WvSKj/NolWk
-	 SyVGLzKaf0Jcsdym7Wv4QQt+NnW83MBMsyz0fRAo=
+	b=Um9qeTuFfhOzMDAszem4UXKlJAF9HceielSVOJn6qEiBjuwbzreYaZYO1JTojbv1a
+	 r/69MaTHAHAqW8GkbOqQGFFp4Njjaj4mwqfWHBB34hF4Ctoaqy0ib748/iLuG3nFf1
+	 2RT8YLqhv5RK7rh4junudQ6kS040YqwYT+QJWJOw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C9B7F80529;
-	Tue,  4 Apr 2023 11:23:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DF54F80495;
+	Tue,  4 Apr 2023 11:23:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9A21AF8028B; Tue,  4 Apr 2023 11:22:55 +0200 (CEST)
+	id 80778F80529; Tue,  4 Apr 2023 11:22:58 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 83B47F8024C
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 11:20:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83B47F8024C
+	by alsa1.perex.cz (Postfix) with ESMTPS id F2341F80171
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 11:20:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2341F80171
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=F6aB2lc2
+ header.s=Intel header.b=H39zIsiO
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680600057; x=1712136057;
+  t=1680600050; x=1712136050;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=4iZ04NT03uDG8xbiaCpZHlY8ChVwNLO/N9i0xsFtr3E=;
-  b=F6aB2lc2ZkI1es9uMPuM+bLsmeziCLPMh6BUKwwvNoYlIpl3R+sJ7RNG
-   txTh/OUPYyXhzbQUEt+75LJwaqC74ISPSUUrE2hbZmbvx2Wbk3V9n4QxM
-   EHK5TeQCT1D2maSEEEMU9QJPkBT/PhHsiHb/j0P4gE2in538nXjsMB5UA
-   ++X+JGXw9w8h1CwBI+paYx58Jn6MgwCU0NRVIFZt55Vrn0QFlSeJPXNJS
-   4CtfUUO91XLnBF381nhSCc/WIgmtvQ5No5VUqVM8Djxfx/DZ8aWqYOq+I
-   6Vc8lnp/Yz6AaM/gMqAWlOnTdvQgGf3enz/seeS9A94r62BdEdnVnT0lP
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339620579"
+  bh=x157ULv2Xl+MdfEY0HSEmNl0jgscs3UoEZE2dDY5gsQ=;
+  b=H39zIsiO0v7sJD0nEFlBtbcqG3I0sYErqzv5X5gMMECLCx7QqGf46U+h
+   il5fBnO9GyGw6Bhj8K4d9GzP+wDuauWnLtbVm80TAL9H6hLvvli89h2Yk
+   vdl9IcC8K5tgJEtAut5SVv0GMq9bqsb32HtrzRplBwPnjdzHik7Kb2a0l
+   o7sSoQLXXa3rvFiVgn6zGqpPe4XWpGu3hQiHpSL5IkR/u0C0SWdNSYl9k
+   RQM7264Hy28H5Q3mtn8kB2j+G3BtMgo9QPrerYgiMXiWhyfXli2konJ3Y
+   zqlCyj0Z0lDOJ2pWLCs6ZU3G34VuVxbl9m6KCLO+2NVV3+fcIqrfJU3dH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339620524"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="339620579"
+   d="scan'208";a="339620524"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 02:20:54 -0700
+ 04 Apr 2023 02:20:46 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="688820018"
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="688819969"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="688820018"
+   d="scan'208";a="688819969"
 Received: from vsysoevx-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.33.42])
   by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 02:20:51 -0700
+ 04 Apr 2023 02:20:44 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 05/12] ASoC: SOF: Intel: hda: Add support for DSPless mode
-Date: Tue,  4 Apr 2023 12:21:08 +0300
-Message-Id: <20230404092115.27949-6-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 02/12] ASoC: SOF: Add flag and state which will be used for
+ DSP-less mode
+Date: Tue,  4 Apr 2023 12:21:05 +0300
+Message-Id: <20230404092115.27949-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
 References: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KF5VWRBHG6IOZ24YVC6LX425QM4BZUAE
-X-Message-ID-Hash: KF5VWRBHG6IOZ24YVC6LX425QM4BZUAE
+Message-ID-Hash: GKWQ4VFCFBPYAF3U5XJI43N55LUBRWJI
+X-Message-ID-Hash: GKWQ4VFCFBPYAF3U5XJI43N55LUBRWJI
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KF5VWRBHG6IOZ24YVC6LX425QM4BZUAE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GKWQ4VFCFBPYAF3U5XJI43N55LUBRWJI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,307 +101,105 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Via the SOF_DBG_DSPLESS_MODE sof_debug flag the SOF stack can be asked to
-not use the DSP for audio.
+The DSPless mode of the ASoC/SOF driver can be used for hardware
+verification and debug on platforms with HDaudio codecs. The DSP mode is
+still needed on existing platforms for SSP, DMIC, SoundWire interfaces
+managed by the GP-DMA.
 
-The use of DSPless mode is governed by the sdev->dspless_mode_selected
-flag which is only going to be set if the user sets sof_debug=0x8000 and
-the platform advertises that the DSPless mode is supported on them.
+This mode is also helpful to compare the legacy HDaudio driver with the
+ASoC/SOF driver wrt. codec management and handling. In theory we use the
+same code but differences are sometimes seen on jack detection and event
+handling.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
- sound/soc/sof/intel/hda-dai-ops.c | 33 +++++++++++++++++++++++++++++-
- sound/soc/sof/intel/hda-dai.c     | 25 ++++++++++++++++++-----
- sound/soc/sof/intel/hda-pcm.c     | 24 +++++++++++++++-------
- sound/soc/sof/intel/hda-stream.c  | 34 ++++++++++++++++---------------
- sound/soc/sof/intel/hda.c         | 19 ++++++++++-------
- 5 files changed, 99 insertions(+), 36 deletions(-)
+ include/sound/sof.h      |  5 +++++
+ sound/soc/sof/core.c     |  9 +++++++++
+ sound/soc/sof/sof-priv.h | 11 +++++++++++
+ 3 files changed, 25 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-dai-ops.c b/sound/soc/sof/intel/hda-dai-ops.c
-index de48f13259f1..4b39cecacd68 100644
---- a/sound/soc/sof/intel/hda-dai-ops.c
-+++ b/sound/soc/sof/intel/hda-dai-ops.c
-@@ -319,13 +319,44 @@ static const struct hda_dai_widget_dma_ops hda_ipc3_dma_ops = {
- 	.post_trigger = hda_ipc3_post_trigger,
- };
+diff --git a/include/sound/sof.h b/include/sound/sof.h
+index 266e66318f9c..d3c41f87ac31 100644
+--- a/include/sound/sof.h
++++ b/include/sound/sof.h
+@@ -21,6 +21,7 @@ struct snd_sof_dev;
+ /**
+  * enum sof_fw_state - DSP firmware state definitions
+  * @SOF_FW_BOOT_NOT_STARTED:	firmware boot is not yet started
++ * @SOF_DSPLESS_MODE:		DSP is not used
+  * @SOF_FW_BOOT_PREPARE:	preparing for boot (firmware loading for exaqmple)
+  * @SOF_FW_BOOT_IN_PROGRESS:	firmware boot is in progress
+  * @SOF_FW_BOOT_FAILED:		firmware boot failed
+@@ -31,6 +32,7 @@ struct snd_sof_dev;
+  */
+ enum sof_fw_state {
+ 	SOF_FW_BOOT_NOT_STARTED = 0,
++	SOF_DSPLESS_MODE,
+ 	SOF_FW_BOOT_PREPARE,
+ 	SOF_FW_BOOT_IN_PROGRESS,
+ 	SOF_FW_BOOT_FAILED,
+@@ -130,6 +132,9 @@ struct sof_dev_desc {
+ 	unsigned int ipc_supported_mask;
+ 	enum sof_ipc_type ipc_default;
  
-+static struct hdac_ext_stream *
-+hda_dspless_get_hext_stream(struct snd_sof_dev *sdev, struct snd_soc_dai *cpu_dai,
-+			    struct snd_pcm_substream *substream)
-+{
-+	struct hdac_stream *hstream = substream->runtime->private_data;
++	/* The platform supports DSPless mode */
++	bool dspless_mode_supported;
 +
-+	return stream_to_hdac_ext_stream(hstream);
-+}
-+
-+static void hda_dspless_setup_hext_stream(struct snd_sof_dev *sdev,
-+					  struct hdac_ext_stream *hext_stream,
-+					  unsigned int format_val)
-+{
-+	/*
-+	 * Save the format_val which was adjusted by the maxbps of the codec.
-+	 * This information is not available on the FE side since there we are
-+	 * using dummy_codec.
-+	 */
-+	hext_stream->hstream.format_val = format_val;
-+}
-+
-+static const struct hda_dai_widget_dma_ops hda_dspless_dma_ops = {
-+	.get_hext_stream = hda_dspless_get_hext_stream,
-+	.setup_hext_stream = hda_dspless_setup_hext_stream,
-+};
-+
- #endif
+ 	/* defaults paths for firmware, library and topology files */
+ 	const char *default_fw_path[SOF_IPC_TYPE_COUNT];
+ 	const char *default_lib_path[SOF_IPC_TYPE_COUNT];
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 7de8673a01ce..06bcae631612 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -365,6 +365,15 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
+ 	if (sof_core_debug)
+ 		dev_info(dev, "sof_debug value: %#x\n", sof_core_debug);
  
- const struct hda_dai_widget_dma_ops *
- hda_select_dai_widget_ops(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
--	struct snd_sof_dai *sdai = swidget->private;
-+	struct snd_sof_dai *sdai;
-+
-+	if (sdev->dspless_mode_selected)
-+		return &hda_dspless_dma_ops;
-+
-+	sdai = swidget->private;
- 
- 	switch (sdev->pdata->ipc_type) {
- 	case SOF_IPC:
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 46a17afdd1ea..0435b7f251aa 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -31,11 +31,18 @@ int hda_dai_config(struct snd_soc_dapm_widget *w, unsigned int flags,
- 		   struct snd_sof_dai_config_data *data)
- {
- 	struct snd_sof_widget *swidget = w->dobj.private;
--	struct snd_soc_component *component = swidget->scomp;
--	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
--	const struct sof_ipc_tplg_ops *tplg_ops = sof_ipc_get_ops(sdev, tplg);
-+	const struct sof_ipc_tplg_ops *tplg_ops;
-+	struct snd_soc_component *component;
-+	struct snd_sof_dev *sdev;
- 	int ret;
- 
-+	if (!swidget)
-+		return 0;
-+
-+	component = swidget->scomp;
-+	sdev = snd_soc_component_get_drvdata(component);
-+	tplg_ops = sof_ipc_get_ops(sdev, tplg);
-+
- 	if (tplg_ops && tplg_ops->dai_config) {
- 		ret = tplg_ops->dai_config(sdev, swidget, flags, data);
- 		if (ret < 0) {
-@@ -56,13 +63,21 @@ hda_dai_get_ops(struct snd_pcm_substream *substream, struct snd_soc_dai *cpu_dai
- 	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(cpu_dai, substream->stream);
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(cpu_dai->component);
- 	struct snd_sof_widget *swidget = w->dobj.private;
--	struct snd_sof_dai *sdai = swidget->private;
-+	struct snd_sof_dai *sdai;
-+
-+	/*
-+	 * The swidget parameter of hda_select_dai_widget_ops() is ignored in
-+	 * case of DSPless mode
-+	 */
-+	if (sdev->dspless_mode_selected)
-+		return hda_select_dai_widget_ops(sdev, NULL);
-+
-+	sdai = swidget->private;
- 
- 	/* select and set the DAI widget ops if not set already */
- 	if (!sdai->platform_private) {
- 		const struct hda_dai_widget_dma_ops *ops =
- 			hda_select_dai_widget_ops(sdev, swidget);
--
- 		if (!ops)
- 			return NULL;
- 
-diff --git a/sound/soc/sof/intel/hda-pcm.c b/sound/soc/sof/intel/hda-pcm.c
-index dc0b359ed9b6..981e7b699bdb 100644
---- a/sound/soc/sof/intel/hda-pcm.c
-+++ b/sound/soc/sof/intel/hda-pcm.c
-@@ -101,18 +101,23 @@ int hda_dsp_pcm_hw_params(struct snd_sof_dev *sdev,
- 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
- 	struct snd_dma_buffer *dmab;
- 	int ret;
--	u32 size, rate, bits;
--
--	size = params_buffer_bytes(params);
--	rate = hda_dsp_get_mult_div(sdev, params_rate(params));
--	bits = hda_dsp_get_bits(sdev, params_width(params));
- 
- 	hstream->substream = substream;
- 
- 	dmab = substream->runtime->dma_buffer_p;
- 
--	hstream->format_val = rate | bits | (params_channels(params) - 1);
--	hstream->bufsize = size;
-+	/*
-+	 * Use the codec required format val (which is link_bps adjusted) when
-+	 * the DSP is not in use
-+	 */
-+	if (!sdev->dspless_mode_selected) {
-+		u32 rate = hda_dsp_get_mult_div(sdev, params_rate(params));
-+		u32 bits = hda_dsp_get_bits(sdev, params_width(params));
-+
-+		hstream->format_val = rate | bits | (params_channels(params) - 1);
++	if (sof_debug_check_flag(SOF_DBG_DSPLESS_MODE)) {
++		if (plat_data->desc->dspless_mode_supported) {
++			dev_info(dev, "Switching to DSPless mode\n");
++			sdev->dspless_mode_selected = true;
++		} else {
++			dev_info(dev, "DSPless mode is not supported by the platform\n");
++		}
 +	}
 +
-+	hstream->bufsize = params_buffer_bytes(params);
- 	hstream->period_bytes = params_period_bytes(params);
- 	hstream->no_period_wakeup  =
- 			(params->info & SNDRV_PCM_INFO_NO_PERIOD_WAKEUP) &&
-@@ -249,6 +254,11 @@ int hda_dsp_pcm_open(struct snd_sof_dev *sdev,
- 	snd_pcm_hw_constraint_integer(substream->runtime,
- 				      SNDRV_PCM_HW_PARAM_PERIODS);
+ 	/* check IPC support */
+ 	if (!(BIT(plat_data->ipc_type) & plat_data->desc->ipc_supported_mask)) {
+ 		dev_err(dev, "ipc_type %d is not supported on this platform, mask is %#x\n",
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 5f919162a555..1170989bea57 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -48,6 +48,7 @@ struct snd_sof_pcm_stream;
+ #define SOF_DBG_FORCE_NOCODEC			BIT(10) /* ignore all codec-related
+ 							 * configurations
+ 							 */
++#define SOF_DBG_DSPLESS_MODE			BIT(15) /* Do not initialize and use the DSP */
  
-+	/* Only S16 and S32 supported by HDA hardware when used without DSP */
-+	if (sdev->dspless_mode_selected)
-+		snd_pcm_hw_constraint_mask64(substream->runtime, SNDRV_PCM_HW_PARAM_FORMAT,
-+					     SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S32);
+ /* Flag definitions used for controlling the DSP dump behavior */
+ #define SOF_DBG_DUMP_REGS		BIT(0)
+@@ -528,6 +529,16 @@ struct snd_sof_dev {
+ 	spinlock_t ipc_lock;	/* lock for IPC users */
+ 	spinlock_t hw_lock;	/* lock for HW IO access */
+ 
++	/*
++	 * When true the DSP is not used.
++	 * It is set under the following condition:
++	 * User sets the SOF_DBG_DSPLESS_MODE flag in sof_debug module parameter
++	 * and
++	 * the platform advertises that it can support such mode
++	 * pdata->desc->dspless_mode_supported is true.
++	 */
++	bool dspless_mode_selected;
 +
- 	/* binding pcm substream to hda stream */
- 	substream->runtime->private_data = &dsp_stream->hstream;
- 	return 0;
-diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
-index 50e92996f928..87e31a65b314 100644
---- a/sound/soc/sof/intel/hda-stream.c
-+++ b/sound/soc/sof/intel/hda-stream.c
-@@ -503,11 +503,12 @@ int hda_dsp_stream_hw_params(struct snd_sof_dev *sdev,
+ 	/* Main, Base firmware image */
+ 	struct sof_firmware basefw;
  
- 	hstream = &hext_stream->hstream;
- 	sd_offset = SOF_STREAM_SD_OFFSET(hstream);
-+	mask = BIT(hstream->index);
- 
--	/* decouple host and link DMA */
--	mask = 0x1 << hstream->index;
--	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
--				mask, mask);
-+	/* decouple host and link DMA if the DSP is used */
-+	if (!sdev->dspless_mode_selected)
-+		snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
-+					mask, mask);
- 
- 	/* clear stream status */
- 	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, sd_offset,
-@@ -608,11 +609,10 @@ int hda_dsp_stream_hw_params(struct snd_sof_dev *sdev,
- 	 *    enable decoupled mode
- 	 */
- 
--	if (chip->quirks & SOF_INTEL_PROCEN_FMT_QUIRK) {
-+	if (!sdev->dspless_mode_selected && (chip->quirks & SOF_INTEL_PROCEN_FMT_QUIRK))
- 		/* couple host and link DMA, disable DSP features */
- 		snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
- 					mask, 0);
--	}
- 
- 	/* program stream format */
- 	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
-@@ -620,11 +620,10 @@ int hda_dsp_stream_hw_params(struct snd_sof_dev *sdev,
- 				SOF_HDA_ADSP_REG_SD_FORMAT,
- 				0xffff, hstream->format_val);
- 
--	if (chip->quirks & SOF_INTEL_PROCEN_FMT_QUIRK) {
-+	if (!sdev->dspless_mode_selected && (chip->quirks & SOF_INTEL_PROCEN_FMT_QUIRK))
- 		/* decouple host and link DMA, enable DSP features */
- 		snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
- 					mask, mask);
--	}
- 
- 	/* program last valid index */
- 	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR,
-@@ -677,20 +676,23 @@ int hda_dsp_stream_hw_free(struct snd_sof_dev *sdev,
- 	struct hdac_ext_stream *hext_stream = container_of(hstream,
- 							 struct hdac_ext_stream,
- 							 hstream);
--	struct hdac_bus *bus = sof_to_bus(sdev);
--	u32 mask = 0x1 << hstream->index;
- 	int ret;
- 
- 	ret = hda_dsp_stream_reset(sdev, hstream);
- 	if (ret < 0)
- 		return ret;
- 
--	spin_lock_irq(&bus->reg_lock);
--	/* couple host and link DMA if link DMA channel is idle */
--	if (!hext_stream->link_locked)
--		snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR,
--					SOF_HDA_REG_PP_PPCTL, mask, 0);
--	spin_unlock_irq(&bus->reg_lock);
-+	if (!sdev->dspless_mode_selected) {
-+		struct hdac_bus *bus = sof_to_bus(sdev);
-+		u32 mask = BIT(hstream->index);
-+
-+		spin_lock_irq(&bus->reg_lock);
-+		/* couple host and link DMA if link DMA channel is idle */
-+		if (!hext_stream->link_locked)
-+			snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR,
-+						SOF_HDA_REG_PP_PPCTL, mask, 0);
-+		spin_unlock_irq(&bus->reg_lock);
-+	}
- 
- 	hda_dsp_stream_spib_config(sdev, hext_stream, HDA_DSP_SPIB_DISABLE, 0);
- 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 19aad4141a78..a14733aa7a60 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -47,32 +47,34 @@
- static u32 hda_get_interface_mask(struct snd_sof_dev *sdev)
- {
- 	const struct sof_intel_dsp_desc *chip;
--	u32 interface_mask = 0;
-+	u32 interface_mask[2] = { 0 };
- 
- 	chip = get_chip_info(sdev->pdata);
- 	switch (chip->hw_ip_version) {
- 	case SOF_INTEL_TANGIER:
- 	case SOF_INTEL_BAYTRAIL:
- 	case SOF_INTEL_BROADWELL:
--		interface_mask = BIT(SOF_DAI_INTEL_SSP);
-+		interface_mask[0] =  BIT(SOF_DAI_INTEL_SSP);
- 		break;
- 	case SOF_INTEL_CAVS_1_5:
- 	case SOF_INTEL_CAVS_1_5_PLUS:
--		interface_mask = BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC) |
--				 BIT(SOF_DAI_INTEL_HDA);
-+		interface_mask[0] = BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC) |
-+				    BIT(SOF_DAI_INTEL_HDA);
-+		interface_mask[1] = BIT(SOF_DAI_INTEL_HDA);
- 		break;
- 	case SOF_INTEL_CAVS_1_8:
- 	case SOF_INTEL_CAVS_2_0:
- 	case SOF_INTEL_CAVS_2_5:
- 	case SOF_INTEL_ACE_1_0:
--		interface_mask = BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC) |
--				 BIT(SOF_DAI_INTEL_HDA) | BIT(SOF_DAI_INTEL_ALH);
-+		interface_mask[0] = BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC) |
-+				    BIT(SOF_DAI_INTEL_HDA) | BIT(SOF_DAI_INTEL_ALH);
-+		interface_mask[1] = BIT(SOF_DAI_INTEL_HDA);
- 		break;
- 	default:
- 		break;
- 	}
- 
--	return interface_mask;
-+	return interface_mask[sdev->dspless_mode_selected];
- }
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
-@@ -1058,6 +1060,9 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- 	hdev->no_ipc_position = sof_ops(sdev)->pcm_pointer ? 1 : 0;
- #endif
- 
-+	if (sdev->dspless_mode_selected)
-+		hdev->no_ipc_position = 1;
-+
- 	/* set up HDA base */
- 	bus = sof_to_bus(sdev);
- 	ret = hda_init(sdev);
 -- 
 2.40.0
 
