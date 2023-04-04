@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29537C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 09:25:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AFD3C6FD1D
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Apr 2023 10:42:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1214620F;
-	Tue,  4 Apr 2023 11:24:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1214620F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DEB3200;
+	Tue,  4 Apr 2023 12:41:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DEB3200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680600327;
-	bh=IQ00o2dQfPckEhQ8RlWoZI5+nINBE9Dr9SlUFI+O/DE=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Ea1GUQqTX6XT1iA5Sm6CVKLp4f6teOqGV8GeO+qwL0wdUQ0cGhlsIRwymXvCUm2CI
-	 NkpCpc+DpuXF0DyjyNwCbrUZOxT+vw1uv5NP+aN0dYR7KTeU+zx7rZqP8AbxHxFfkG
-	 jwJMdjDw6R1EbvIzHNwRUQXXMpNAYA01TYnxzeHg=
+	s=default; t=1680604945;
+	bh=54A74I3QIpJ8Xep57bcN+hRCS6ooz32UF7WqYA5qQ2E=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=sm37oB8E9JY4yQsGqeLo8ABvR0ZMSBivFZ1r+ZmePXZYz7CcXz/qLX24BWKaUpeGv
+	 I8FDtZCZ/M7mz5r5IKxlEwKuW6bsuAMWCX4kbBIF3z/BFt1BC6KD8z/U/dC9Li90uM
+	 pZop4mga33ZEYALwsUmdPHw9BJ/FKUjXxxFe6QEY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6052F80542;
-	Tue,  4 Apr 2023 11:23:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B84E5F8028B;
+	Tue,  4 Apr 2023 12:41:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6AC50F80533; Tue,  4 Apr 2023 11:23:00 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	id 60601F80423; Tue,  4 Apr 2023 12:41:07 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D4C1DF8026D
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 11:20:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4C1DF8026D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 21795F80054
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2023 12:40:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21795F80054
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Qx8fbKvw
+ header.s=Intel header.b=TViwJKwK
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680600053; x=1712136053;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=IQ00o2dQfPckEhQ8RlWoZI5+nINBE9Dr9SlUFI+O/DE=;
-  b=Qx8fbKvwO25SjYycBwk2WsjMEZhDrUkSEXoujJ3dNYbbzqJi9kIgRseo
-   UWj6wqFE2ZZ4JpjOtpUkyTxxSm/9otrUuVQ59j4nQqmi6rJSbWUJtMsxr
-   5Y3aMIkg/+KPfB7qvdNuyneYAo2B9n404+xFCWd6kqSp+GDlhlt/WxeDq
-   59QLTI8QSTOpVhK2XMIKic4vH78Z5+dhiDyyy9ECsY1xxKVEngNRuk+xZ
-   r3lIdu0zRrFFn8AY9SOWZIjyLmbdBE8zv7JDcZROc6/6IZQ4v2yUxrzrg
-   /HDXb9Yy6Kpq1Lrn4eYtQnA9tPWHBPro4FPpUR8W+QFoUwDPxRyLvRitT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339620568"
+  t=1680604860; x=1712140860;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=54A74I3QIpJ8Xep57bcN+hRCS6ooz32UF7WqYA5qQ2E=;
+  b=TViwJKwKPBiKK6vzy3tzm8KEiUJbypFuiqs/r90Cgk1FVkwAmIW6+0XB
+   kitLKNNif1zcAmOm8q5nHZQO/44N3uoMoIN/lrSzGA1DTvGImD0oF3K14
+   hkfl4BlP+dGyFhJ2EWPK6djbF4sEFUoYSbiHDY+nmzWSLU0sIh8+GNC13
+   zgESlzx97LiodbpN/bEzqSThQaNkIUa4QQYzmUqfq3Abh8jJ9FbgBwTxu
+   y5sdIgzq9ElCtOxXvNcZT9QMlWnleTmIJsmJZ+jGFjYUyWMc1/saKeume
+   c01PglXn6/18hhrjfAfesSFqX7CI67U19n4BboN2/VkGSPMMMSr9V7I43
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="340877902"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="339620568"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 02:20:51 -0700
+   d="scan'208";a="340877902"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Apr 2023 03:40:54 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="688820002"
+X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="829930105"
 X-IronPort-AV: E=Sophos;i="5.98,317,1673942400";
-   d="scan'208";a="688820002"
+   d="scan'208";a="829930105"
 Received: from vsysoevx-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.33.42])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Apr 2023 02:20:49 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Apr 2023 03:40:51 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Subject: [PATCH 04/12] ASoC: SOF: Intel: hda: Skip interfaces not supported on
- a platform
-Date: Tue,  4 Apr 2023 12:21:07 +0300
-Message-Id: <20230404092115.27949-5-peter.ujfalusi@linux.intel.com>
+	broonie@kernel.org,
+	tiwai@suse.de,
+	perex@perex.cz
+Subject: [PATCH v2 00/18] ASoC: SOF: Intel: hda-mlink: HDaudio multi-link
+ extension update
+Date: Tue,  4 Apr 2023 13:41:09 +0300
+Message-Id: <20230404104127.5629-1-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
-References: <20230404092115.27949-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SILKH3RNMZ4Q2RPOD5OEYXYPUM5TZ4B6
-X-Message-ID-Hash: SILKH3RNMZ4Q2RPOD5OEYXYPUM5TZ4B6
+Message-ID-Hash: 5ZJMNLMWHPM35RKF55QP7JZ46X374JNP
+X-Message-ID-Hash: 5ZJMNLMWHPM35RKF55QP7JZ46X374JNP
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,13 +86,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  no-subject; digests; suspicious-header
 CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- rander.wang@intel.com
+ rander.wang@intel.com, amadeuszx.slawinski@linux.intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SILKH3RNMZ4Q2RPOD5OEYXYPUM5TZ4B6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5ZJMNLMWHPM35RKF55QP7JZ46X374JNP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,114 +101,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Not all interfaces (SSP/DMIC/HDA/SDW) are available on all platforms.
-If the interface is not even supported then there is no point in executing
-a probe or query for that interface.
+Hi,
 
-Introduce a simple function (hda_get_interface_mask) to query the
-interfaces supported on the platform.
+Changes since v1:
+- Rename hda_bus_ml_get_capabilities() to hda_bus_ml_init() - patch 06/18
+- Rename check_power_active() to check_sublink_power() and the parameter from
+  enable to enabled - patch 08/18
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Not changed: the poll timeout implementation for now, as Pierre mentioned it can
+be done at a later time.
+
+Cover letter:
+
+The following series adds the core support to handle the recently updated
+HDaudio multi-link support to hanlde non HDA links, like SoundWire/DMIC/SSP on
+Intel platform.
+
+For details, please see the first patch which documents the current mlink
+support (introduced at Skylake) and the new extensions, arriving with LNL.
+
+There is no change in functionality for existing HDA support, the extension is
+backwards compatible with existing implementations.
+
+Regards,
+Peter
 ---
- sound/soc/sof/intel/hda.c | 50 ++++++++++++++++++++++++++++++++++-----
- 1 file changed, 44 insertions(+), 6 deletions(-)
+Pierre-Louis Bossart (18):
+  Documentation: sound: add description of Intel HDaudio multi-links
+  ALSA: hda: add HDaudio Extended link definitions
+  ASoC: SOF: Intel: hda-mlink: improve hda_bus_ml_free() helper
+  ASoC: SOF: Intel: hda-mlink: add return value for
+    hda_bus_ml_get_capabilities()
+  ASoC: SOF: Intel: hda-mlink: move to a dedicated module
+  ASoC: SOF: Intel: hda-mlink: add structures to parse ALT links
+  ASoC: SOF: Intel: hda-mlink: special-case HDaudio regular links
+  ASoC: SOF: Intel: hda-mlink: introduce helpers for 'extended links' PM
+  ASoC: SOF: Intel: hda-mlink: add convenience helpers for SoundWire PM
+  ASoC: SOF: Intel: hda-mlink: add helper to return sublink count
+  ASoC: SOF: Intel: hda-mlink: add helpers to enable/check interrupts
+  ASoC: SOF: Intel: hda-mlink: add helpers to set link SYNC frequency
+  ASoC: SOF: Intel: hda-mlink: add helpers for sync_arm/sync_go
+  ASoC: SOF: Intel: hda-mlink: add helper to check cmdsync
+  ASoC: SOF: Intel: hda-mlink: program SoundWire LSDIID registers
+  ASoC: SOF: Intel: hda-mlink: add helpers to retrieve DMIC/SSP hlink
+  ASoC: SOF: Intel: hda-mlink: add helper to offload link ownership
+  ASoC: SOF: Intel: hda-mlink: add helper to retrieve eml_lock
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 65389c7278e2..19aad4141a78 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -44,6 +44,37 @@
- #define EXCEPT_MAX_HDR_SIZE	0x400
- #define HDA_EXT_ROM_STATUS_SIZE 8
- 
-+static u32 hda_get_interface_mask(struct snd_sof_dev *sdev)
-+{
-+	const struct sof_intel_dsp_desc *chip;
-+	u32 interface_mask = 0;
-+
-+	chip = get_chip_info(sdev->pdata);
-+	switch (chip->hw_ip_version) {
-+	case SOF_INTEL_TANGIER:
-+	case SOF_INTEL_BAYTRAIL:
-+	case SOF_INTEL_BROADWELL:
-+		interface_mask = BIT(SOF_DAI_INTEL_SSP);
-+		break;
-+	case SOF_INTEL_CAVS_1_5:
-+	case SOF_INTEL_CAVS_1_5_PLUS:
-+		interface_mask = BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC) |
-+				 BIT(SOF_DAI_INTEL_HDA);
-+		break;
-+	case SOF_INTEL_CAVS_1_8:
-+	case SOF_INTEL_CAVS_2_0:
-+	case SOF_INTEL_CAVS_2_5:
-+	case SOF_INTEL_ACE_1_0:
-+		interface_mask = BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC) |
-+				 BIT(SOF_DAI_INTEL_HDA) | BIT(SOF_DAI_INTEL_ALH);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return interface_mask;
-+}
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
- 
- /*
-@@ -845,6 +876,7 @@ static int dmic_detect_topology_fixup(struct snd_sof_dev *sdev,
- 
- static int hda_init_caps(struct snd_sof_dev *sdev)
- {
-+	u32 interface_mask = hda_get_interface_mask(sdev);
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- 	struct snd_sof_pdata *pdata = sdev->pdata;
- 	struct sof_intel_hda_dev *hdev = pdata->hw_pdata;
-@@ -865,6 +897,10 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 
- 	hda_bus_ml_get_capabilities(bus);
- 
-+	/* Skip SoundWire if it is not supported */
-+	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
-+		goto skip_soundwire;
-+
- 	/* scan SoundWire capabilities exposed by DSDT */
- 	ret = hda_sdw_acpi_scan(sdev);
- 	if (ret < 0) {
-@@ -1486,12 +1522,16 @@ void hda_set_mach_params(struct snd_soc_acpi_mach *mach,
- 
- struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
- {
-+	u32 interface_mask = hda_get_interface_mask(sdev);
- 	struct snd_sof_pdata *sof_pdata = sdev->pdata;
- 	const struct sof_dev_desc *desc = sof_pdata->desc;
--	struct snd_soc_acpi_mach *mach;
-+	struct snd_soc_acpi_mach *mach = NULL;
- 	const char *tplg_filename;
- 
--	mach = snd_soc_acpi_find_machine(desc->machines);
-+	/* Try I2S or DMIC if it is supported */
-+	if (interface_mask & (BIT(SOF_DAI_INTEL_SSP) | BIT(SOF_DAI_INTEL_DMIC)))
-+		mach = snd_soc_acpi_find_machine(desc->machines);
-+
- 	if (mach) {
- 		bool add_extension = false;
- 		bool tplg_fixup = false;
-@@ -1598,10 +1638,8 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
- 		}
- 	}
- 
--	/*
--	 * If I2S fails, try SoundWire
--	 */
--	if (!mach)
-+	/* If I2S fails, try SoundWire if it is supported */
-+	if (!mach && (interface_mask & BIT(SOF_DAI_INTEL_ALH)))
- 		mach = hda_sdw_machine_select(sdev);
- 
- 	/*
+ Documentation/sound/hd-audio/index.rst        |   1 +
+ .../sound/hd-audio/intel-multi-link.rst       | 312 +++++++
+ include/sound/hda-mlink.h                     | 166 ++++
+ include/sound/hda_register.h                  |  40 +-
+ sound/soc/sof/intel/Kconfig                   |   7 +
+ sound/soc/sof/intel/Makefile                  |   5 +-
+ sound/soc/sof/intel/hda-ctrl.c                |   1 +
+ sound/soc/sof/intel/hda-dsp.c                 |   1 +
+ sound/soc/sof/intel/hda-mlink.c               | 822 +++++++++++++++++-
+ sound/soc/sof/intel/hda.c                     |   4 +-
+ sound/soc/sof/intel/hda.h                     |  20 -
+ 11 files changed, 1332 insertions(+), 47 deletions(-)
+ create mode 100644 Documentation/sound/hd-audio/intel-multi-link.rst
+ create mode 100644 include/sound/hda-mlink.h
+
 -- 
 2.40.0
 
