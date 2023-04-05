@@ -4,50 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D0E8C76188
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 20:14:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1372C76188
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 20:15:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DB38820;
-	Wed,  5 Apr 2023 22:14:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DB38820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 128B9825;
+	Wed,  5 Apr 2023 22:14:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 128B9825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680725695;
-	bh=InuCaPx3GCjuhQyeDWDyKUlj11ciHaCHdtc9ogRQyCE=;
+	s=default; t=1680725707;
+	bh=uKemii2rpUbKsgOFyOD+tBK5fvGqF3D2JxBG8N22rBY=;
 	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=RCr4g9oiahgGtFx+Q7hY/Vf5WQ+zyhxmF18p50H3Yz5DcfSvC4MYZl1XeJHlgRxRB
-	 /P3C+ibWVS3kWvAjsG8s97GRYnyDf2+rODI9A6iEWawGSINmIbP+HzPCbyXHmrgRyy
-	 FlR8HCPP0wQQEmAiGdR/nKmzLxNh67nCSgbiCQbo=
+	b=R19FmJzB85HyVWAKlcDxM7S7P/45ole3K97OQOIYV91pSImywbkZSEnKcCW+MqLHU
+	 36ROuvFMK+jbkCD3FiNPNz5FaaA8M6PTz1Q43Hpa7Owp0tkuDMiyGWrWU2d+PR+gMf
+	 J63/riyj6HL6DF2s1Q6zFvKtKduOniSEaIz9cfO8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 709F9F8055B;
-	Wed,  5 Apr 2023 22:12:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA4DBF8055C;
+	Wed,  5 Apr 2023 22:12:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F9CBF80495; Wed,  5 Apr 2023 22:12:41 +0200 (CEST)
+	id 132E8F8055C; Wed,  5 Apr 2023 22:12:43 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org
  [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 16CACF80495
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 22:12:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16CACF80495
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3A76CF8028B
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 22:12:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A76CF8028B
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 7DF8524255
+	by bluemchen.kde.org (Postfix) with ESMTP id 5CF022424A
 	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 16:12:20 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pk9US-DlJ-00
+	id 1pk9US-Dky-00
 	for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2023 22:12:20 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] docs: sound: hda: drop mentions of hda-analyzer
-Date: Wed,  5 Apr 2023 22:12:20 +0200
-Message-Id: <20230405201220.2197848-1-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 1/2] ALSA: hda/sigmatel: add pin overrides for Intel DP45SG
+ motherboard
+Date: Wed,  5 Apr 2023 22:12:19 +0200
+Message-Id: <20230405201220.2197826-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: USGIYS4T226CEBD6H75SE72GTN4V55KA
-X-Message-ID-Hash: USGIYS4T226CEBD6H75SE72GTN4V55KA
+Message-ID-Hash: TNSBEN5AJVSRHNUFGNVMY3AFG4MCYJQA
+X-Message-ID-Hash: TNSBEN5AJVSRHNUFGNVMY3AFG4MCYJQA
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -60,7 +61,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/USGIYS4T226CEBD6H75SE72GTN4V55KA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TNSBEN5AJVSRHNUFGNVMY3AFG4MCYJQA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -69,66 +70,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-It's gone from the repos, presumably because nobody ported it to
-Python 3.
-
-I'm leaving hda-emu in, even though it isn't actually usable with
-current kernels (but with some minor hacking, the encoding tools work).
+Like the other boards from the D*45* series, this one sets up the
+outputs not quite correctly.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- Documentation/sound/hd-audio/notes.rst | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
+ Documentation/sound/hd-audio/models.rst | 2 +-
+ sound/pci/hda/patch_sigmatel.c          | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/sound/hd-audio/notes.rst b/Documentation/sound/hd-audio/notes.rst
-index a9e35b1f87bd..34865d3b7512 100644
---- a/Documentation/sound/hd-audio/notes.rst
-+++ b/Documentation/sound/hd-audio/notes.rst
-@@ -308,9 +308,9 @@ Direct Debugging
- ----------------
- If no model option gives you a better result, and you are a tough guy
- to fight against evil, try debugging via hitting the raw HD-audio
--codec verbs to the device.  Some tools are available: hda-emu and
--hda-analyzer.  The detailed description is found in the sections
--below.  You'd need to enable hwdep for using these tools.  See "Kernel
-+codec verbs to the device.  One tool is available: hda-emu.
-+The detailed description is found in the section below.
-+You'd need to enable hwdep for using this tool.  See the "Kernel
- Configuration" section.
- 
- 
-@@ -339,7 +339,7 @@ When this is enabled, the driver creates hardware-dependent devices
- (one per each codec), and you have a raw access to the device via
- these device files.  For example, ``hwC0D2`` will be created for the
- codec slot #2 of the first card (#0).  For debug-tools such as
--hda-verb and hda-analyzer, the hwdep device has to be enabled.
-+hda-verb, the hwdep device has to be enabled.
- Thus, it'd be better to turn this on always.
- 
- ``CONFIG_SND_HDA_RECONFIG`` is a new option, and this depends on the
-@@ -819,22 +819,6 @@ See README file in the tarball for more details about hda-verb
- program.
- 
- 
--hda-analyzer
--------------
--hda-analyzer provides a graphical interface to access the raw HD-audio
--control, based on pyGTK2 binding.  It's a more powerful version of
--hda-verb.  The program gives you an easy-to-use GUI stuff for showing
--the widget information and adjusting the amp values, as well as the
--proc-compatible output.
--
--The hda-analyzer:
--
--* https://git.alsa-project.org/?p=alsa.git;a=tree;f=hda-analyzer
--
--is a part of alsa.git repository in alsa-project.org:
--
--* git://git.alsa-project.org/alsa.git
--
- Codecgraph
- ----------
- Codecgraph is a utility program to generate a graph and visualizes the
+diff --git a/Documentation/sound/hd-audio/models.rst b/Documentation/sound/hd-audio/models.rst
+index 9b52f50a6854..120430450014 100644
+--- a/Documentation/sound/hd-audio/models.rst
++++ b/Documentation/sound/hd-audio/models.rst
+@@ -704,7 +704,7 @@ ref
+ no-jd
+     BIOS setup but without jack-detection
+ intel
+-    Intel DG45* mobos
++    Intel D*45* mobos
+ dell-m6-amic
+     Dell desktops/laptops with analog mics
+ dell-m6-dmic
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index a794a01a68ca..64a97d8c1b03 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -1955,6 +1955,8 @@ static const struct snd_pci_quirk stac92hd73xx_fixup_tbl[] = {
+ 				"DFI LanParty", STAC_92HD73XX_REF),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DFI, 0x3101,
+ 				"DFI LanParty", STAC_92HD73XX_REF),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x5001,
++				"Intel DP45SG", STAC_92HD73XX_INTEL),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x5002,
+ 				"Intel DG45ID", STAC_92HD73XX_INTEL),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x5003,
 -- 
 2.40.0.152.g15d061e6df
 
