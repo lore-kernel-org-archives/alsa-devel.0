@@ -4,102 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF739C7619A
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 15:04:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B6DEC76188
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 15:37:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B990E1FE;
-	Wed,  5 Apr 2023 17:03:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B990E1FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3178B1FE;
+	Wed,  5 Apr 2023 17:36:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3178B1FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680707042;
-	bh=dFlO+IoyPt/cvrM8e5U9Z6n3Lak/MZq3BRfErTyVWhM=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1680709028;
+	bh=6uAUWj2LjSDCaYsVxyfHMXJlEA0t1d2IhrhQy8FrHuQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UrU+cS97cBo0a2175gXrLwzXu3dpQ0yhbq4KmNpgV0rpz4GwnYAvmbZllXMHfxt8x
-	 zMYfmDSvJAZoZ7mX3X9RoOZv3wlUX6y6hiSVSKA+kRx7ONBmf/n8l1NrqHgUF537yu
-	 VYTN6fBEKicIYfN36XWLXZNoTe/GY4weaUPdD/Es=
+	b=N2UjM+Lixwa81aAF8SLwR+iDeWYxv7z+E4JIPhveSIhFjkmzZ+RjrKqyElaimrzBZ
+	 0uFZFlinxyxLPYe0WbTRiXh0PPoPkeFvRuLWXCzQAsO5ba2KDH8oZnMInQihh0dtaT
+	 aHLhGaH8nl0ol0NZEiqNtBd2Hkx7TQTHK4SGvRpU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B54FF8024C;
-	Wed,  5 Apr 2023 17:02:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D321EF8024C;
+	Wed,  5 Apr 2023 17:35:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC5ABF8024C; Wed,  5 Apr 2023 17:02:44 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 6ACE8F8024C; Wed,  5 Apr 2023 17:35:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8F83EF8015B
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 17:02:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F83EF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 95624F80075
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 17:35:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95624F80075
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=KZCcmhIP
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680706956; x=1712242956;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=dFlO+IoyPt/cvrM8e5U9Z6n3Lak/MZq3BRfErTyVWhM=;
-  b=KZCcmhIPBQuATTdMgkcTwvxe/hDkC+hO3Ehbi85z0BcTKYOyzMUkfV4c
-   yz03bQmIlm86AfMo7+RxGDxznukt0Es7HsujOf9osiYMMevtkPvY1KW96
-   ZwebQhYVKSYl/xDGayTVyDQ2y5Xw4oDKuj9CMfqbHpqld0RpcoqOohyGS
-   hIIjkqb29jYsxsn1h6RtVkNJakFFo+/gpjClk9E6UCvnvOc2dCfyAPvMg
-   M/dmn1n66KZVJHG+H2pwTaYQOUxp1V1456aOlihF2d3DZDQsCddpTJXor
-   8KVqwW90r9tW6wLpMptfKEJBQoM58afvs6AyQm5pJKpQL+j6m8VJCZo9A
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10671"; a="407559720"
-X-IronPort-AV: E=Sophos;i="5.98,321,1673942400";
-   d="scan'208";a="407559720"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2023 08:01:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10671"; a="686779878"
-X-IronPort-AV: E=Sophos;i="5.98,321,1673942400";
-   d="scan'208";a="686779878"
-Received: from mlokuyad-mobl.amr.corp.intel.com (HELO [10.212.149.36])
- ([10.212.149.36])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2023 08:01:56 -0700
-Message-ID: <ecc13046-1a4f-77e7-c4dc-a5a4c1248572@linux.intel.com>
-Date: Wed, 5 Apr 2023 10:01:56 -0500
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=HVoiwecb
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 69A4862717;
+	Wed,  5 Apr 2023 15:35:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54024C433EF;
+	Wed,  5 Apr 2023 15:35:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1680708947;
+	bh=6uAUWj2LjSDCaYsVxyfHMXJlEA0t1d2IhrhQy8FrHuQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=HVoiwecb/ThJcarG7UDJjrvvROgxnPz/ognPPc1RBNKoPeeST9cdr2W2FgiqYszSR
+	 HBbtbQ71iJrM08dQH6NvGoSyOp9AkJpj5PHK4wIajCRfhboSf8iedtzNvQ6UEm7j7N
+	 PzNjMsVw0yE+txn3X23xc4wZQQvTsedwqK48NiuJHI/IjoerKsjBC+IJq23Ieuaqs+
+	 3VwrO4z8gKbRH66PYq+ZI8u4dfIbRZ164Nm7p44jSiMEDd6SKQ6eXfAKB6R26Avt/f
+	 eWiCUIymEPeXPIZOMmFtNeBiXwt/AETiUyHKjfdx0pvRgkkb+U+BwmEyytOj5RHvdf
+	 ak46V37jyWxIg==
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87pm8lc2m7.wl-kuninori.morimoto.gx@renesas.com>
+References: <87pm8lc2m7.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH resend 0/5] ASoC: clarify Codec2Codec params
+Message-Id: <168070894705.71826.16313725811061177061.b4-ty@kernel.org>
+Date: Wed, 05 Apr 2023 16:35:47 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.9.0
-Subject: Re: [PATCH] soundwire: qcom: Fix enumeration of second device on the
- bus
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20230405142926.842173-1-krzysztof.kozlowski@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230405142926.842173-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: DQBQMQVEOMQ3LIAALSB2TIYLSKOGIBL7
-X-Message-ID-Hash: DQBQMQVEOMQ3LIAALSB2TIYLSKOGIBL7
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-Mailer: b4 0.13-dev-00303
+Message-ID-Hash: GGIRZGPO4H33YVSRGZFXVEXESCQGDCUW
+X-Message-ID-Hash: GGIRZGPO4H33YVSRGZFXVEXESCQGDCUW
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: stable@vger.kernel.org, Patrick Lai <quic_plai@quicinc.com>
+CC: Linux-ALSA <alsa-devel@alsa-project.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DQBQMQVEOMQ3LIAALSB2TIYLSKOGIBL7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GGIRZGPO4H33YVSRGZFXVEXESCQGDCUW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,52 +89,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 4/5/23 09:29, Krzysztof Kozlowski wrote:
-> Some Soundwire buses (like &swr0 on Qualcomm HDK8450) have two devices,
-> which can be brought from powerdown state one after another.  We need to
-> keep enumerating them on each slave attached interrupt, otherwise only
-> first will appear.
+On Sun, 02 Apr 2023 22:59:13 +0000, Kuninori Morimoto wrote:
+> ASoC is supporting Codec2Codec, but its parameter name is
+> "params" and "num_params" which are very unclear naming.
 > 
-> Cc: <stable@vger.kernel.org>
-> Fixes: a6e6581942ca ("soundwire: qcom: add auto enumeration support")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> This patch-set clarifies it by replacing to c2c_params / num_c2c_params.
 > 
-> ---
+> Link: https://lore.kernel.org/r/87r0tb6ond.wl-kuninori.morimoto.gx@renesas.com
 > 
-> Cc: Patrick Lai <quic_plai@quicinc.com>
-> ---
->  drivers/soundwire/qcom.c | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index c296e0bf897b..1e5077d91f59 100644
-> --- a/drivers/soundwire/qcom.c
-> +++ b/drivers/soundwire/qcom.c
-> @@ -587,14 +587,9 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
->  			case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
->  				dev_dbg_ratelimited(swrm->dev, "SWR new slave attached\n");
->  				swrm->reg_read(swrm, SWRM_MCP_SLV_STATUS, &slave_status);
-> -				if (swrm->slave_status == slave_status) {
-> -					dev_dbg(swrm->dev, "Slave status not changed %x\n",
-> -						slave_status);
+> [...]
 
-it's not clear to me how removing this test helps with the two-device
-configuration?
+Applied to
 
-Or is this a case where the status for both devices changes at the same
-time but the interrupt status remains set, so the next iteration of the
-loop is ignored?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> -				} else {
-> -					qcom_swrm_get_device_status(swrm);
-> -					qcom_swrm_enumerate(&swrm->bus);
-> -					sdw_handle_slave_status(&swrm->bus, swrm->status);
-> -				}
-> +				qcom_swrm_get_device_status(swrm);
-> +				qcom_swrm_enumerate(&swrm->bus);
-> +				sdw_handle_slave_status(&swrm->bus, swrm->status);
->  				break;
->  			case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
->  				dev_err_ratelimited(swrm->dev,
+Thanks!
+
+[1/5] ASoC: soc.h: clarify Codec2Codec params
+      commit: 7ddc7f91beb285246e926e3adf0b292b071aea33
+[2/5] ASoC: audio-graph-card2: switch to use c2c_params instead of params
+      commit: a1cd7e8017aabe4dded887dcca30e126ec2753c3
+[3/5] ASoC: meson: switch to use c2c_params instead of params
+      commit: 433f4a1697fae78c34377de1ef3abd26aec8214e
+[4/5] ASoC: samsung: switch to use c2c_params instead of params
+      commit: e7a73b05542d82e209af450dd90b730255f6e775
+[5/5] ASoC: soc.h: remove unused params/num_params
+      commit: 1ea63f29c27712d6b9c45af67cd71299d849c5e3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
