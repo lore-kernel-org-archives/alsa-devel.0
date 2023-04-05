@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0C77C76188
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 20:15:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAF41C76188
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 20:16:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6D4C200;
-	Wed,  5 Apr 2023 22:15:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6D4C200
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB4617F1;
+	Wed,  5 Apr 2023 22:15:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB4617F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680725755;
-	bh=VLlA63/gmT1N9oIqk0Hzn12b8Df9wez7TtGPe9Gv+/s=;
+	s=default; t=1680725773;
+	bh=k9j2lb9janarKJilKn9+n0RMnt2tp3PlkIrNa1pxfm0=;
 	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=XJv1cElxORlyoH+8dsC2maNxEyH8RObQ/9MnVqLavgBHhcesvgU0cUN2reH10zm1q
-	 eaNohWM2/TAQn3aGfoo0n+KhPlYUh5J6j/JS2BmMZ8bXEP5+Pi5iWFIy7uXXjS4dtW
-	 Q4eF+I7HvYK9NITzFUlIbnx+i3aWzBz/QOpaqDgg=
+	b=sI6dplSWxjkhR4vukMhUZRHMgaOVVp4xTMlganf37M6pesVi8YGq8j4J43Uc8Fq6k
+	 lL2BrF1nITcQviqutg4RDsNxX1mQ5pvm4xvjCcbKzIafWku9HYLNLt99qL09RLBfOj
+	 d6LWLECpD/d72wt4nMXtaR+AHBg01FhAdvBBRcsQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17EE4F8057F;
-	Wed,  5 Apr 2023 22:12:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C15CCF80588;
+	Wed,  5 Apr 2023 22:12:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26E3CF80563; Wed,  5 Apr 2023 22:12:47 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	id 7B346F8055C; Wed,  5 Apr 2023 22:12:48 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 03F01F80482
+	by alsa1.perex.cz (Postfix) with ESMTPS id 39EFDF80249
 	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 22:12:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03F01F80482
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39EFDF80249
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 1FF132425A
+	by bluemchen.kde.org (Postfix) with ESMTP id 3B38E2425C
 	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 16:12:21 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pk9US-DmH-00
+	id 1pk9US-DmW-00
 	for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2023 22:12:20 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: emu10k1: update label & help in config system
+Subject: [PATCH] ALSA: emu10k1: fix capture interrupt handler unlinking
 Date: Wed,  5 Apr 2023 22:12:20 +0200
-Message-Id: <20230405201220.2197908-1-oswald.buddenhagen@gmx.de>
+Message-Id: <20230405201220.2197923-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FTHQNONNUCQSFIIAJL5RUQDDFTDWPE6I
-X-Message-ID-Hash: FTHQNONNUCQSFIIAJL5RUQDDFTDWPE6I
+Message-ID-Hash: TLKQHWCQUPDPKJGNSI5UYH2BNUDIZCOO
+X-Message-ID-Hash: TLKQHWCQUPDPKJGNSI5UYH2BNUDIZCOO
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -59,7 +60,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FTHQNONNUCQSFIIAJL5RUQDDFTDWPE6I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TLKQHWCQUPDPKJGNSI5UYH2BNUDIZCOO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -68,39 +69,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The newer E-MU cards weren't mentioned at all.
+Due to two copy/pastos, closing the MIC or EFX capture device would
+make a running ADC capture hang due to unsetting its interrupt handler.
+In principle, this would have also allowed dereferencing dangling
+pointers, but we're actually rather thorough at disabling and flushing
+the ints.
 
-The "partially supported" is removed ahead of it becoming mostly untrue.
+While it may sound like one, this actually wasn't a hypothetical bug:
+PortAudio will open a capture stream at startup (and close it right
+away) even if not asked to. If the first device is busy, it will just
+proceed with the next one ... thus killing a concurrent capture.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/Kconfig | 4 ++--
+ sound/pci/emu10k1/emupcm.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index a55836225401..861958451ef5 100644
---- a/sound/pci/Kconfig
-+++ b/sound/pci/Kconfig
-@@ -461,17 +461,17 @@ config SND_INDIGODJX
- 	  will be called snd-indigodjx
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index 48af77ae8020..908f76f1bb9f 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -1236,7 +1236,7 @@ static int snd_emu10k1_capture_mic_close(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
  
- config SND_EMU10K1
--	tristate "Emu10k1 (SB Live!, Audigy, E-mu APS)"
-+	tristate "Emu10k1 (SB Live!, Audigy, E-MU APS/0404/1010/1212/1616/1820)"
- 	select FW_LOADER
- 	select SND_HWDEP
- 	select SND_RAWMIDI
- 	select SND_AC97_CODEC
- 	select SND_TIMER
- 	select SND_SEQ_DEVICE if SND_SEQUENCER != n
- 	depends on ZONE_DMA
- 	help
- 	  Say Y to include support for Sound Blaster PCI 512, Live!,
--	  Audigy and E-mu APS (partially supported) soundcards.
-+	  Audigy and E-MU APS/0404/1010/1212/1616/1820 soundcards.
+-	emu->capture_interrupt = NULL;
++	emu->capture_mic_interrupt = NULL;
+ 	emu->pcm_capture_mic_substream = NULL;
+ 	return 0;
+ }
+@@ -1344,7 +1344,7 @@ static int snd_emu10k1_capture_efx_close(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
  
- 	  The confusing multitude of mixer controls is documented in
- 	  <file:Documentation/sound/cards/sb-live-mixer.rst> and
+-	emu->capture_interrupt = NULL;
++	emu->capture_efx_interrupt = NULL;
+ 	emu->pcm_capture_efx_substream = NULL;
+ 	return 0;
+ }
 -- 
 2.40.0.152.g15d061e6df
 
