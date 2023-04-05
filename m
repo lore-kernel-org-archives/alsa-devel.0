@@ -4,88 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D68BC7EE2A
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 14:30:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B90A2C7EE2C
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 14:30:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64F4CECB;
-	Thu,  6 Apr 2023 16:29:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64F4CECB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C0EEEBE;
+	Thu,  6 Apr 2023 16:29:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C0EEEBE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680791438;
-	bh=RYn84u9G/Zkcu+i+8WqfZViWCExSwrO8oyFcv6bImRM=;
+	s=default; t=1680791448;
+	bh=+MAgGvfu/h+7P347IF6b78RXhyp++yREoQ4RZfMRP0k=;
 	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qs1Dln8R2skgUIYgGoR69JV2kKSliDAW7BBWsK6EefJaQCZEP1nYKA22U+ikqpgQe
-	 vXL/3yhwAd5VN8UVU3dHayZIwek3y8bRUHiidTnxDDxIIv4L1orlfzdZ3mJNuMs6n8
-	 ZmEuw2vg/+09OacN9l7idUY+n9j/yoj4gw2K67ek=
+	b=kA07wB0OOSBqWqPBmNWbBaNnoFxY0j7InRCSO4USfy8G6NVHZvckDa0UDrXdZgqz8
+	 6Cw9MoSyasdx9hr5HJDYNHCoXqlu9gMlmGEqGll15xzuGAtZy/x2/fPQDPN03QNmUP
+	 VK49LFNb8dvWyVAfuy6YWjZXSdB7pGuPVObk4JK8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FE21F805BA;
-	Thu,  6 Apr 2023 16:26:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7199F805BD;
+	Thu,  6 Apr 2023 16:26:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DC891F8024C; Wed,  5 Apr 2023 22:03:59 +0200 (CEST)
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com
- [IPv6:2607:f8b0:4864:20::102f])
+	id 7220CF8024C; Wed,  5 Apr 2023 22:34:36 +0200 (CEST)
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com
+ [IPv6:2607:f8b0:4864:20::62c])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0B236F80075
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 22:03:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B236F80075
+	by alsa1.perex.cz (Postfix) with ESMTPS id 890DCF80075
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 22:34:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 890DCF80075
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=hn5nvYZl
-Received: by mail-pj1-x102f.google.com with SMTP id
- mp3-20020a17090b190300b0023fcc8ce113so40630766pjb.4
+ header.s=20210112 header.b=elPcmQmD
+Received: by mail-pl1-x62c.google.com with SMTP id kq3so35507451plb.13
         for <alsa-devel@alsa-project.org>;
- Wed, 05 Apr 2023 13:03:49 -0700 (PDT)
+ Wed, 05 Apr 2023 13:34:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680725028;
+        d=gmail.com; s=20210112; t=1680726867;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=47jcjFBV2Bf2A+zp4VCowtO0VoXUDpf6jywhaI3b9P0=;
-        b=hn5nvYZlCGOAOIdPKry5XznwJu9mcOIFNVRVPxQyYPWVIwoWUtktRh92Gcd2Ljwxrt
-         +oRDXTiDdt3rS9XUqrgZrL8ZrDnzRZhq/lJ54iOb4LNIwpN1Li9iiGSgw1d8Ps8Rkn4u
-         Jweotuv+VumA6vpcnvL1p/UsYZ7VbuMOTilL3Db0pWVKA3gU4sN8Z1mD8s20N/SfWqi+
-         JT2FF+E7MhpuaGIhydfUKTh9n1q7S8G6hkaLVx+lzI9OBNcHOg7sJBXMHleczMdDkQJ0
-         OoK0Q4Gf2giCezf14j+e7QPHYzV0sRZzkxKjIptHUA2lwN4LKxknCrn+CFPkq0PvK0D9
-         st7A==
+        bh=5mBL1QQnDIB+z3BztabybEP4t58oo66sKusUL7l71Y8=;
+        b=elPcmQmDFHSPWnjoT9RNRUFGZ/sLF7ZJrBubJS73mov6OMm0GsE1UVhCuly7fsIVm8
+         tRBnetr1WyeXNIO48vO0lqssIoZO4KBY1QWM7kUtju3kuvI41M0ajNLUdO+nvZaVa13h
+         58+fKsDHQwOAMyECkfLZuju9GxmHYkNyAmWNMGvUn2dOW+ERke85+NEgOtZL0D/H1YQ3
+         bivEuONqfOpNzY58iJQDAijlL/7s14pLFS9gz/SXXFWGV78Wiq9zyyYBJae8EvUog+Zs
+         LcJvLQAfFl790WqHH6ZMkZq/OvhpkDtO1w8I/+5frxZcAsjeHtRFGKVSw3XJhNPIuV0h
+         NsrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680725028;
+        d=1e100.net; s=20210112; t=1680726867;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=47jcjFBV2Bf2A+zp4VCowtO0VoXUDpf6jywhaI3b9P0=;
-        b=7Vg8l9k9ucbQY5FXN9kxmq8ETRqVUeZCW3oieXPmBbGW4WJVPCJ/G2mf+QMU0BATl/
-         qrd7EzAiUaxBxlNtb2q2DO6GjqjNLUfREnznjOVzTrlQ6r1veEUKGFtP0DEoLsl7YGNU
-         A/SX0advCHKegPB5I/MV2W42EZISfIqA/18F3c2ehmfY3XMRufeBMBbBqiI1CfC0YwG3
-         5LgLHyDCKDjOYqDts7ersBEf3HoZHlBNkSHTiE+/YVrLKGSRDjkIWCxiZro+mi9nNvKb
-         4j/Z/osurLqncT0qoJMmNHdx+6Grtk4CT0bY6UVK5QGk/OqzZs+LZDvsPqJnya5Sje+D
-         Hk7w==
-X-Gm-Message-State: AAQBX9e6Ase6zelPKmqDkFhyxtFB7Me/OEHbklTjhDJt0x0It3YVO/qL
-	nfSgaskixJFtQEbykKtqVoc=
+        bh=5mBL1QQnDIB+z3BztabybEP4t58oo66sKusUL7l71Y8=;
+        b=5Ki/yvhNVtp6AeLoreg03Qz96+KjcVdgHFqi0tFAT8Ppl/tELVsKK2xSuLJ0PzxzPp
+         1v3xZvvT8MWhF2PuUGYm+5woihLPTit2aJwTmhrVI4Powp79PdT9oDe3IePaQuoFCWiS
+         M/eEivXyxFBEOBwP99c3DC0QF8aw1M7NrDKhqEPFm0OKCEzMyt+3I4WCeC75dqoq12W1
+         lMZc3VVyLCGZg7AEo4pLE3u9p+pB/Woo2yk6Okp9oNUODz6k5eTqno0WQzdjANQUPBMb
+         B9SLHf1tVTdL6WliyPq94DAk25Qh5fh/o9VETvKBP3O2GrovMIfbEZPQKcurzC2jbQEC
+         2lWQ==
+X-Gm-Message-State: AAQBX9exnw39lepdfd81L2O/T8YWqeOy54yBVVSQDY10SB9FiyBW+mxT
+	MZyC5uX9whIcMx8FPZU+pjg=
 X-Google-Smtp-Source: 
- AKy350bH9quWl48CyBEK2jXmqe17A0UwrjOLuRyrTJSkFzz6IW+pfSpvPUEigQ04BONESA8FYnRsWQ==
-X-Received: by 2002:a17:90b:1b4a:b0:241:b90:4a1c with SMTP id
- nv10-20020a17090b1b4a00b002410b904a1cmr7863663pjb.44.1680725027654;
-        Wed, 05 Apr 2023 13:03:47 -0700 (PDT)
-Received: from pavilion.. ([2402:e280:218d:82:84b8:1620:d3a4:f59c])
+ AKy350bv/hdrI3VH3BZ76HsUrGFyINmMANwgoAFIha+oi0e7kf0Gs26sQEsMYyx1+5svRIP8E9LUWQ==
+X-Received: by 2002:a17:90b:4c0b:b0:234:1a60:a6b0 with SMTP id
+ na11-20020a17090b4c0b00b002341a60a6b0mr7935298pjb.34.1680726866522;
+        Wed, 05 Apr 2023 13:34:26 -0700 (PDT)
+Received: from pavilion.. ([2402:e280:218d:82:616c:b78a:a01f:5113])
         by smtp.gmail.com with ESMTPSA id
- w7-20020a17090aea0700b00240dee12285sm1761903pjy.34.2023.04.05.13.03.44
+ c12-20020a17090ab28c00b002340d317f3esm1769231pjr.52.2023.04.05.13.34.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 13:03:47 -0700 (PDT)
+        Wed, 05 Apr 2023 13:34:26 -0700 (PDT)
 From: Saalim Quadri <danascape@gmail.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
 	robh+dt@kernel.org,
 	krzysztof.kozlowski+dt@linaro.org,
 	daniel.baluta@nxp.com
-Subject: [PATCH] ASoC: dt-bindings: wm8904: Convert to dtschema
-Date: Thu,  6 Apr 2023 01:33:41 +0530
-Message-Id: <20230405200341.4911-1-danascape@gmail.com>
+Subject: [PATCH] ASoC: dt-bindings: wm8523: Convert to dtschema
+Date: Thu,  6 Apr 2023 02:04:19 +0530
+Message-Id: <20230405203419.5621-1-danascape@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -95,9 +94,9 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: CS72ZMJQWRXPYPBPUETZZROC7SGU74JK
-X-Message-ID-Hash: CS72ZMJQWRXPYPBPUETZZROC7SGU74JK
-X-Mailman-Approved-At: Thu, 06 Apr 2023 14:26:27 +0000
+Message-ID-Hash: TSOET72KQGGPQPTTP3GUTELMPOPPPPCR
+X-Message-ID-Hash: TSOET72KQGGPQPTTP3GUTELMPOPPPPCR
+X-Mailman-Approved-At: Thu, 06 Apr 2023 14:26:28 +0000
 CC: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  Saalim Quadri <danascape@gmail.com>
@@ -106,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CS72ZMJQWRXPYPBPUETZZROC7SGU74JK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TSOET72KQGGPQPTTP3GUTELMPOPPPPCR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,43 +114,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert the WM8904 audio CODEC bindings to DT schema
+Convert the WM8523 audio CODEC bindings to DT schema
 
 Signed-off-by: Saalim Quadri <danascape@gmail.com>
 ---
- .../devicetree/bindings/sound/wlf,wm8904.yaml | 66 +++++++++++++++++++
- .../devicetree/bindings/sound/wm8904.txt      | 33 ----------
- 2 files changed, 66 insertions(+), 33 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8904.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/wm8904.txt
+ .../devicetree/bindings/sound/wlf,wm8523.yaml | 40 +++++++++++++++++++
+ .../devicetree/bindings/sound/wm8523.txt      | 16 --------
+ 2 files changed, 40 insertions(+), 16 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8523.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/wm8523.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8904.yaml b/Documentation/devicetree/bindings/sound/wlf,wm8904.yaml
+diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8523.yaml b/Documentation/devicetree/bindings/sound/wlf,wm8523.yaml
 new file mode 100644
-index 000000000000..78d76c1c1326
+index 000000000000..decc395bb873
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wlf,wm8904.yaml
-@@ -0,0 +1,66 @@
++++ b/Documentation/devicetree/bindings/sound/wlf,wm8523.yaml
+@@ -0,0 +1,40 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/wlf,wm8904.yaml#
++$id: http://devicetree.org/schemas/sound/wlf,wm8523.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: WM8904 audio CODEC
-+
-+description: |
-+  Pins on the device (for linking into audio routes):
-+      * IN1L
-+      * IN1R
-+      * IN2L
-+      * IN2R
-+      * IN3L
-+      * IN3R
-+      * HPOUTL
-+      * HPOUTR
-+      * LINEOUTL
-+      * LINEOUTR
-+      * MICBIAS
++title: WM8523 audio CODEC
 +
 +maintainers:
 +  - patches@opensource.cirrus.com
@@ -161,9 +146,7 @@ index 000000000000..78d76c1c1326
 +
 +properties:
 +  compatible:
-+    enum:
-+      - wlf,wm8904
-+      - wlf,wm8912
++    const: wlf,wm8523
 +
 +  reg:
 +    maxItems: 1
@@ -171,17 +154,9 @@ index 000000000000..78d76c1c1326
 +  "#sound-dai-cells":
 +    const: 0
 +
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    const: mclk
-+
 +required:
 +  - compatible
 +  - reg
-+  - clock-names
-+  - clocks
 +
 +unevaluatedProperties: false
 +
@@ -191,50 +166,31 @@ index 000000000000..78d76c1c1326
 +        #address-cells = <1>;
 +        #size-cells = <0>;
 +        codec@1a {
-+            compatible = "wlf,wm8904";
++            compatible = "wlf,wm8523";
 +            reg = <0x1a>;
-+            clocks = <&pck0>;
-+            clock-names = "mclk";
 +        };
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/wm8904.txt b/Documentation/devicetree/bindings/sound/wm8904.txt
++    };        
+diff --git a/Documentation/devicetree/bindings/sound/wm8523.txt b/Documentation/devicetree/bindings/sound/wm8523.txt
 deleted file mode 100644
-index 66bf261423b9..000000000000
---- a/Documentation/devicetree/bindings/sound/wm8904.txt
+index f3a6485f4b8a..000000000000
+--- a/Documentation/devicetree/bindings/sound/wm8523.txt
 +++ /dev/null
-@@ -1,33 +0,0 @@
--WM8904 audio CODEC
+@@ -1,16 +0,0 @@
+-WM8523 audio CODEC
 -
 -This device supports I2C only.
 -
 -Required properties:
--  - compatible: "wlf,wm8904" or "wlf,wm8912"
--  - reg: the I2C address of the device.
--  - clock-names: "mclk"
--  - clocks: reference to
--    <Documentation/devicetree/bindings/clock/clock-bindings.txt>
 -
--Pins on the device (for linking into audio routes):
+-  - compatible : "wlf,wm8523"
 -
--  * IN1L
--  * IN1R
--  * IN2L
--  * IN2R
--  * IN3L
--  * IN3R
--  * HPOUTL
--  * HPOUTR
--  * LINEOUTL
--  * LINEOUTR
--  * MICBIAS
+-  - reg : the I2C address of the device.
 -
--Examples:
+-Example:
 -
--codec: wm8904@1a {
--	compatible = "wlf,wm8904";
+-wm8523: codec@1a {
+-	compatible = "wlf,wm8523";
 -	reg = <0x1a>;
--	clocks = <&pck0>;
--	clock-names = "mclk";
 -};
 -- 
 2.34.1
