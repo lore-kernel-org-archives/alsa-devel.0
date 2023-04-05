@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45E1DC7619A
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 20:16:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC97DC76188
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 20:17:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3488820;
-	Wed,  5 Apr 2023 22:15:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3488820
+	by alsa0.perex.cz (Postfix) with ESMTPS id BED6C3E8;
+	Wed,  5 Apr 2023 22:16:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BED6C3E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680725803;
-	bh=370f80z1SBdqSRvKTxSJIxv8/zVuK6gY58k882KmcRA=;
+	s=default; t=1680725819;
+	bh=DDUy5jNIWNVz+CPkdlm5M3zI58ma8MsyqIQfvF0N4e8=;
 	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=OBIQ8icz0zZcDLbsm+9Q35GeFhPyp+aSqdSKs4f5zsNPP0K55GhqcOc3UZ0pDCBf4
-	 X3PboKS3EchsI0gMffbw7XTHMOh/sxRstp8BLY8u+hOFGtAuDbuf4fIkxye3F9TlJ3
-	 YI0mFZZmiK9ve7BnkSrBpmGdVtW45aYBFTnzPO2Y=
+	b=vKsT+rl369zXjr/ieNZbDd6dy9zc9O+fsEUdx187/Sm3pFSjKQu8p2zBQnfdKF7ce
+	 6MNCEdVG1f5ikFc3IzFCVUP3e0UzV182YBBbNdGMSEEapxvQAG9J52/3cDxypy7VP9
+	 PanG+Lo8mWe3dKI4U/DEc+Wz+/VWlHPZSrpmK5DE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75FCAF805A8;
-	Wed,  5 Apr 2023 22:13:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2145DF805AC;
+	Wed,  5 Apr 2023 22:13:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 55CE4F8057F; Wed,  5 Apr 2023 22:12:55 +0200 (CEST)
+	id 5B9B4F80588; Wed,  5 Apr 2023 22:12:57 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 447C3F8052E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 439A5F80533
 	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 22:12:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 447C3F8052E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 439A5F80533
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 439DD2425D
+	by bluemchen.kde.org (Postfix) with ESMTP id 0701624259
 	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 16:12:21 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pk9US-Dml-00
+	id 1pk9US-Dm2-00
 	for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2023 22:12:20 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: emu10k1: don't create old pass-through playback device
- on Audigy
+Subject: [PATCH] ALSA: emu10k1: documentation updates
 Date: Wed,  5 Apr 2023 22:12:20 +0200
-Message-Id: <20230405201220.2197938-1-oswald.buddenhagen@gmx.de>
+Message-Id: <20230405201220.2197893-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: M4ML4JRYRBDQBZQ2RDYLODBJFSPZR7WF
-X-Message-ID-Hash: M4ML4JRYRBDQBZQ2RDYLODBJFSPZR7WF
+Message-ID-Hash: BKX5QM4SPIQII4HZJS2FEA5OU6QZ4FMT
+X-Message-ID-Hash: BKX5QM4SPIQII4HZJS2FEA5OU6QZ4FMT
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -60,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M4ML4JRYRBDQBZQ2RDYLODBJFSPZR7WF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BKX5QM4SPIQII4HZJS2FEA5OU6QZ4FMT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -69,46 +68,162 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-It could have never worked, as snd_emu10k1_fx8010_playback_prepare() and
-snd_emu10k1_fx8010_playback_hw_free() assume the emu10k1 offset for the
-ETRAM, and the default DSP code includes no handler for it. It also
-wouldn't make a lot of sense to make it work, as Audigy has an own, much
-simpler, pass-through mechanism. So just skip creation of the device.
+- Less misinformation
+- Language and whitespace fixups
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emupcm.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ Documentation/sound/alsa-configuration.rst  |  5 ++--
+ Documentation/sound/cards/audigy-mixer.rst  | 27 ++++++++++++---------
+ Documentation/sound/cards/sb-live-mixer.rst | 17 +++++++------
+ 3 files changed, 28 insertions(+), 21 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index 48af77ae8020..b1a35b41411a 100644
---- a/sound/pci/emu10k1/emupcm.c
-+++ b/sound/pci/emu10k1/emupcm.c
-@@ -1781,17 +1781,21 @@ int snd_emu10k1_pcm_efx(struct snd_emu10k1 *emu, int device)
- 	struct snd_kcontrol *kctl;
- 	int err;
+diff --git a/Documentation/sound/alsa-configuration.rst b/Documentation/sound/alsa-configuration.rst
+index 5f31fa5e2435..af71c68f1e4e 100644
+--- a/Documentation/sound/alsa-configuration.rst
++++ b/Documentation/sound/alsa-configuration.rst
+@@ -723,9 +723,10 @@ Module for EMU10K1/EMU10k2 based PCI sound cards.
  
--	err = snd_pcm_new(emu->card, "emu10k1 efx", device, 8, 1, &pcm);
-+	err = snd_pcm_new(emu->card, "emu10k1 efx", device, emu->audigy ? 0 : 8, 1, &pcm);
- 	if (err < 0)
- 		return err;
+ * Sound Blaster Live!
+ * Sound Blaster PCI 512
+-* Emu APS (partially supported)
+ * Sound Blaster Audigy
+-	
++* E-MU APS (partially supported)
++* E-MU DAS
++
+ extin
+     bitmap of available external inputs for FX8010 (see below)
+ extout
+diff --git a/Documentation/sound/cards/audigy-mixer.rst b/Documentation/sound/cards/audigy-mixer.rst
+index c506f8d16f2e..aa176451d5b5 100644
+--- a/Documentation/sound/cards/audigy-mixer.rst
++++ b/Documentation/sound/cards/audigy-mixer.rst
+@@ -19,30 +19,30 @@ Digital mixer controls
+ These controls are built using the DSP instructions. They offer extended
+ functionality. Only the default built-in code in the ALSA driver is described
+ here. Note that the controls work as attenuators: the maximum value is the 
+-neutral position leaving the signal unchanged. Note that if the  same destination 
+-is mentioned in multiple controls, the signal is accumulated and can be wrapped 
+-(set to maximal or minimal value without checking of overflow).
++neutral position leaving the signal unchanged. Note that if the same destination
++is mentioned in multiple controls, the signal is accumulated and can be clipped
++(set to maximal or minimal value without checking for overflow).
  
- 	pcm->private_data = emu;
  
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_emu10k1_fx8010_playback_ops);
-+	if (!emu->audigy)
-+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_emu10k1_fx8010_playback_ops);
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_emu10k1_capture_efx_ops);
+ Explanation of used abbreviations:
  
- 	pcm->info_flags = 0;
--	strcpy(pcm->name, "Multichannel Capture/PT Playback");
-+	if (emu->audigy)
-+		strcpy(pcm->name, "Multichannel Capture");
-+	else
-+		strcpy(pcm->name, "Multichannel Capture/PT Playback");
- 	emu->pcm_efx = pcm;
+ DAC
+ 	digital to analog converter
+ ADC
+ 	analog to digital converter
+ I2S
+ 	one-way three wire serial bus for digital sound by Philips Semiconductors
+-        (this standard is used for connecting standalone DAC and ADC converters)
++	(this standard is used for connecting standalone D/A and A/D converters)
+ LFE
+-	low frequency effects (subwoofer signal)
++	low frequency effects (used as subwoofer signal)
+ AC97
+-	a chip containing an analog mixer, DAC and ADC converters
++	a chip containing an analog mixer, D/A and A/D converters
+ IEC958
+ 	S/PDIF
+ FX-bus
+ 	the EMU10K2 chip has an effect bus containing 64 accumulators.
+-        Each of the synthesizer voices can feed its output to these accumulators
+-        and the DSP microcontroller can operate with the resulting sum.
++	Each of the synthesizer voices can feed its output to these accumulators
++	and the DSP microcontroller can operate with the resulting sum.
  
- 	/* EFX capture - record the "FXBUS2" channels, by default we connect the EXTINs 
+ name='PCM Front Playback Volume',index=0
+ ----------------------------------------
+@@ -218,8 +218,8 @@ LFE outputs.
+ name='IEC958 Optical Raw Playback Switch',index=0
+ -------------------------------------------------
+ If this switch is on, then the samples for the IEC958 (S/PDIF) digital
+-output are taken only from the raw FX8010 PCM, otherwise standard front
+-PCM samples are taken.
++output are taken only from the raw iec958 ALSA PCM device (which uses
++accumulators 20 and 21 for left and right PCM by default).
+ 
+ 
+ PCM stream related controls
+@@ -237,8 +237,8 @@ as follows:
+ 
+ name='EMU10K1 PCM Send Routing',index 0-31
+ ------------------------------------------
+-This control specifies the destination - FX-bus accumulators. There 24
+-values with this mapping:
++This control specifies the destination - FX-bus accumulators. There are 24
++values in this mapping:
+ 
+ * 0 -  mono, A destination (FX-bus 0-63), default 0
+ * 1 -  mono, B destination (FX-bus 0-63), default 1
+@@ -306,6 +306,9 @@ MANUALS/PATENTS
+ ftp://opensource.creative.com/pub/doc
+ -------------------------------------
+ 
++Note that the site is defunct, but the documents are available
++from various other locations.
++
+ LM4545.pdf
+ 	AC97 Codec
+ 
+diff --git a/Documentation/sound/cards/sb-live-mixer.rst b/Documentation/sound/cards/sb-live-mixer.rst
+index 357fcd619d39..819886634400 100644
+--- a/Documentation/sound/cards/sb-live-mixer.rst
++++ b/Documentation/sound/cards/sb-live-mixer.rst
+@@ -15,7 +15,7 @@ The ALSA driver programs this portion of chip by default code
+ IEC958 (S/PDIF) raw PCM
+ =======================
+ 
+-This PCM device (it's the 4th PCM device (index 3!) and first subdevice
++This PCM device (it's the 3rd PCM device (index 2!) and first subdevice
+ (index 0) for a given card) allows to forward 48kHz, stereo, 16-bit
+ little endian streams without any modifications to the digital output
+ (coaxial or optical). The universal interface allows the creation of up
+@@ -33,24 +33,24 @@ Digital mixer controls
+ These controls are built using the DSP instructions. They offer extended
+ functionality. Only the default built-in code in the ALSA driver is described
+ here. Note that the controls work as attenuators: the maximum value is the 
+-neutral position leaving the signal unchanged. Note that if the  same destination 
+-is mentioned in multiple controls, the signal is accumulated and can be wrapped 
+-(set to maximal or minimal value without checking of overflow).
++neutral position leaving the signal unchanged. Note that if the same destination
++is mentioned in multiple controls, the signal is accumulated and can be clipped
++(set to maximal or minimal value without checking for overflow).
+ 
+ 
+ Explanation of used abbreviations:
+ 
+ DAC
+ 	digital to analog converter
+ ADC
+ 	analog to digital converter
+ I2S
+ 	one-way three wire serial bus for digital sound by Philips Semiconductors
+-        (this standard is used for connecting standalone DAC and ADC converters)
++	(this standard is used for connecting standalone D/A and A/D converters)
+ LFE
+-	low frequency effects (subwoofer signal)
++	low frequency effects (used as subwoofer signal)
+ AC97
+-	a chip containing an analog mixer, DAC and ADC converters
++	a chip containing an analog mixer, D/A and A/D converters
+ IEC958
+ 	S/PDIF
+ FX-bus
+@@ -313,6 +313,9 @@ MANUALS/PATENTS
+ ftp://opensource.creative.com/pub/doc
+ -------------------------------------
+ 
++Note that the site is defunct, but the documents are available
++from various other locations.
++
+ LM4545.pdf
+ 	AC97 Codec
+ m2049.pdf
 -- 
 2.40.0.152.g15d061e6df
 
