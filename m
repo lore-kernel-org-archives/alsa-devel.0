@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCD62C76188
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 07:38:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30B20C76188
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 07:39:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CBB2E11;
-	Wed,  5 Apr 2023 09:37:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CBB2E11
+	by alsa0.perex.cz (Postfix) with ESMTPS id D58D7E7F;
+	Wed,  5 Apr 2023 09:38:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D58D7E7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680680317;
-	bh=0sxVebL6UfRHSOt0dSSu/uVRK3cpVJ9wDbP8ajFudHU=;
+	s=default; t=1680680343;
+	bh=MiIBJxo7z5pQY2eMoQLvxiCgKXO1FwfRjr2iHbH6Prc=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=qnZ+32eMXkyrTv30zHYPucV2KYGvni/Nun9vgIvgKrJ7ykvVR7dBBIwnlTIB1rqDz
-	 pCYnZDz/ezQ3yhLqYE2X6iU8kacuCArnUqGJLcKVYqvli5jXQNDloj+t/9v+XYurSR
-	 +O1InGd/oDn19RXMW+dh0VjzjGwulvJlOuA33W90=
+	b=J0aiaTqluiU51EeVPlhBOt8Hd5vV95AWz0bm5TEfbODX85YRAedqf843crph1KRKI
+	 5N7ngerWkPMedcdaP1Ahw6AwnUrNXaTJa9eCHBpVAkXgb8U2p35Jb16C9SlbkE/4pW
+	 GKcsBu2e+wqlQHN4S9BU0cz0dkS6bqTAhu1+3zC4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2181F8024C;
-	Wed,  5 Apr 2023 09:37:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C624F80495;
+	Wed,  5 Apr 2023 09:37:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DC120F8024C; Wed,  5 Apr 2023 09:37:13 +0200 (CEST)
+	id 07C62F8052D; Wed,  5 Apr 2023 09:37:35 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 445BAF801C0
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 09:37:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 445BAF801C0
+	by alsa1.perex.cz (Postfix) with ESMTP id AB428F80423
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 09:37:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB428F80423
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1680680229842821360-webhooks-bot@alsa-project.org>
-References: <1680680229842821360-webhooks-bot@alsa-project.org>
+In-Reply-To: <1680680252874516726-webhooks-bot@alsa-project.org>
+References: <1680680252874516726-webhooks-bot@alsa-project.org>
 Subject: http://www.alsa-project.org/alsa-info.sh doesnt exist
-Message-Id: <20230405073713.DC120F8024C@alsa1.perex.cz>
-Date: Wed,  5 Apr 2023 09:37:13 +0200 (CEST)
-Message-ID-Hash: KMDDQIJA3V4AUAQ2NWOOHI5GHNHPTLRL
-X-Message-ID-Hash: KMDDQIJA3V4AUAQ2NWOOHI5GHNHPTLRL
+Message-Id: <20230405073735.07C62F8052D@alsa1.perex.cz>
+Date: Wed,  5 Apr 2023 09:37:35 +0200 (CEST)
+Message-ID-Hash: GCMPGDOVXFRQHUHKR2LIWLQKLARUUEN5
+X-Message-ID-Hash: GCMPGDOVXFRQHUHKR2LIWLQKLARUUEN5
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -55,7 +55,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KMDDQIJA3V4AUAQ2NWOOHI5GHNHPTLRL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GCMPGDOVXFRQHUHKR2LIWLQKLARUUEN5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -64,11 +64,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils issue #199 was opened from petke:
+alsa-project/alsa-utils issue #199 was edited from petke:
 
 http://www.alsa-project.org/alsa-info.sh doesnt exist. http status code 404
 
-Looks like alsa-info.sh tries to update itself, but as that url doesnt exist. It overwrites itself with empty file.
+Looks like alsa-info.sh tries to auto update itself, but as that url doesnt exist. It overwrites itself with empty file.
 
 Issue URL     : https://github.com/alsa-project/alsa-utils/issues/199
 Repository URL: https://github.com/alsa-project/alsa-utils
