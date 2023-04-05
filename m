@@ -4,51 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1372C76188
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 20:15:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E888C76188
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 20:15:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 128B9825;
-	Wed,  5 Apr 2023 22:14:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 128B9825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A0FE3E8;
+	Wed,  5 Apr 2023 22:14:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A0FE3E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680725707;
-	bh=uKemii2rpUbKsgOFyOD+tBK5fvGqF3D2JxBG8N22rBY=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=R19FmJzB85HyVWAKlcDxM7S7P/45ole3K97OQOIYV91pSImywbkZSEnKcCW+MqLHU
-	 36ROuvFMK+jbkCD3FiNPNz5FaaA8M6PTz1Q43Hpa7Owp0tkuDMiyGWrWU2d+PR+gMf
-	 J63/riyj6HL6DF2s1Q6zFvKtKduOniSEaIz9cfO8=
+	s=default; t=1680725725;
+	bh=hVPTjmzbrsunMG+QzLk/IKPx1LfN8ZKm18jelFcBa2M=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=JMr5cWTUachOzYvpXvC0e3sqiKEjchdguUi5k2H99VMzHDHhz1VaOPzhrttTAa2Et
+	 QxyM6qk4S2I7zjeZAP5+yYzuzEA//U5jjFIhSGMcNkRVMuokt2bYs1qWknTfZtgDuI
+	 CI6M1zFlw2pkv6VOePmvlAUhj3MF/eieauNcK0So=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA4DBF8055C;
-	Wed,  5 Apr 2023 22:12:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D014BF80579;
+	Wed,  5 Apr 2023 22:12:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 132E8F8055C; Wed,  5 Apr 2023 22:12:43 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id D942FF8055B; Wed,  5 Apr 2023 22:12:44 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3A76CF8028B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 37577F8026D
 	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 22:12:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A76CF8028B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37577F8026D
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 5CF022424A
+	by bluemchen.kde.org (Postfix) with ESMTP id 5FB9E24252
 	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2023 16:12:20 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pk9US-Dky-00
+	id 1pk9US-Dl4-00
 	for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2023 22:12:20 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] ALSA: hda/sigmatel: add pin overrides for Intel DP45SG
- motherboard
-Date: Wed,  5 Apr 2023 22:12:19 +0200
-Message-Id: <20230405201220.2197826-1-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 2/2] ALSA: hda/sigmatel: fix S/PDIF out on Intel D*45*
+ motherboards
+Date: Wed,  5 Apr 2023 22:12:20 +0200
+Message-Id: <20230405201220.2197826-2-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <20230405201220.2197826-1-oswald.buddenhagen@gmx.de>
+References: <20230405201220.2197826-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TNSBEN5AJVSRHNUFGNVMY3AFG4MCYJQA
-X-Message-ID-Hash: TNSBEN5AJVSRHNUFGNVMY3AFG4MCYJQA
+Message-ID-Hash: VIKSJYZHCZ5L5D7V4DGHMO7ABLMWZ2VS
+X-Message-ID-Hash: VIKSJYZHCZ5L5D7V4DGHMO7ABLMWZ2VS
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -61,7 +63,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TNSBEN5AJVSRHNUFGNVMY3AFG4MCYJQA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VIKSJYZHCZ5L5D7V4DGHMO7ABLMWZ2VS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -70,41 +72,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Like the other boards from the D*45* series, this one sets up the
-outputs not quite correctly.
+The BIOS botches this one completely - it says the 2nd S/PDIF output is
+used, while in fact it's the 1st one. This is tested on DP45SG, but I'm
+assuming it's valid for the other boards in the series as well.
+
+Also add some comments regarding the pins.
+FWIW, the codec is apparently still sold by Tempo Semiconductor, Inc.,
+where one can download the documentation.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- Documentation/sound/hd-audio/models.rst | 2 +-
- sound/pci/hda/patch_sigmatel.c          | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_sigmatel.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/sound/hd-audio/models.rst b/Documentation/sound/hd-audio/models.rst
-index 9b52f50a6854..120430450014 100644
---- a/Documentation/sound/hd-audio/models.rst
-+++ b/Documentation/sound/hd-audio/models.rst
-@@ -704,7 +704,7 @@ ref
- no-jd
-     BIOS setup but without jack-detection
- intel
--    Intel DG45* mobos
-+    Intel D*45* mobos
- dell-m6-amic
-     Dell desktops/laptops with analog mics
- dell-m6-dmic
 diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index a794a01a68ca..64a97d8c1b03 100644
+index 64a97d8c1b03..61258b0aac8d 100644
 --- a/sound/pci/hda/patch_sigmatel.c
 +++ b/sound/pci/hda/patch_sigmatel.c
-@@ -1955,6 +1955,8 @@ static const struct snd_pci_quirk stac92hd73xx_fixup_tbl[] = {
- 				"DFI LanParty", STAC_92HD73XX_REF),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DFI, 0x3101,
- 				"DFI LanParty", STAC_92HD73XX_REF),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x5001,
-+				"Intel DP45SG", STAC_92HD73XX_INTEL),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x5002,
- 				"Intel DG45ID", STAC_92HD73XX_INTEL),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_INTEL, 0x5003,
+@@ -1707,17 +1707,21 @@ static const struct snd_pci_quirk stac925x_fixup_tbl[] = {
+ };
+ 
+ static const struct hda_pintbl ref92hd73xx_pin_configs[] = {
++	// Port A-H
+ 	{ 0x0a, 0x02214030 },
+ 	{ 0x0b, 0x02a19040 },
+ 	{ 0x0c, 0x01a19020 },
+ 	{ 0x0d, 0x02214030 },
+ 	{ 0x0e, 0x0181302e },
+ 	{ 0x0f, 0x01014010 },
+ 	{ 0x10, 0x01014020 },
+ 	{ 0x11, 0x01014030 },
++	// CD in
+ 	{ 0x12, 0x02319040 },
++	// Digial Mic ins
+ 	{ 0x13, 0x90a000f0 },
+ 	{ 0x14, 0x90a000f0 },
++	// Digital outs
+ 	{ 0x22, 0x01452050 },
+ 	{ 0x23, 0x01452050 },
+ 	{}
+@@ -1758,13 +1762,17 @@ static const struct hda_pintbl alienware_m17x_pin_configs[] = {
+ };
+ 
+ static const struct hda_pintbl intel_dg45id_pin_configs[] = {
++	// Analog outputs
+ 	{ 0x0a, 0x02214230 },
+ 	{ 0x0b, 0x02A19240 },
+ 	{ 0x0c, 0x01013214 },
+ 	{ 0x0d, 0x01014210 },
+ 	{ 0x0e, 0x01A19250 },
+ 	{ 0x0f, 0x01011212 },
+ 	{ 0x10, 0x01016211 },
++	// Digital output
++	{ 0x22, 0x01451380 },
++	{ 0x23, 0x40f000f0 },
+ 	{}
+ };
+ 
 -- 
 2.40.0.152.g15d061e6df
 
