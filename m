@@ -4,97 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1F3FC7619A
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 01:13:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87B41C76196
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 06:05:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECA17D8;
-	Thu,  6 Apr 2023 03:12:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECA17D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9022F1FE;
+	Thu,  6 Apr 2023 08:04:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9022F1FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680743602;
-	bh=lIsDN+vZaarAesVEmdLPB+1afsw1CyePFQtNGukJ67Y=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1680761144;
+	bh=rp5HQtE1o/Q9yvI1eqtxVDwlxLZ8alJ1tqymdQQ1khw=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VzGp5whw3DNQPRihWFTk1zD5DoyEQDYWcIvDgTXHt1Gm35SoIigBXj3G4UJThKqDv
-	 z9PLuuhJdYNT/d4UswQnwu8SHD14x+pwxzwPmXMQlZ9guzAk0FuSEop/YqqStfgYkv
-	 sMXxHOFEVMZVrszgayCwKUBEXMUHNa+PRDii+ZeM=
+	b=RhUyDhRGFKogj34F6nJBmQe6oYlzJNg5Qf+Qg+BIB0l1ITOdyV7w4MEpAIKNBRId+
+	 6Kq2fgkXNsKNFRa6OoaU4M9lT2DXssx+OuFDdy6x6d+VtC/8x1IWtHBUpRKHhDFm+F
+	 +CDSJYZXSBtFJk+kxmmEVxr427sW2ewXgc6FL5gg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94D01F8013D;
-	Thu,  6 Apr 2023 03:12:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36152F80246;
+	Thu,  6 Apr 2023 08:04:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2F740F80246; Thu,  6 Apr 2023 03:12:04 +0200 (CEST)
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com
- [209.85.210.54])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id EED81F80246; Thu,  6 Apr 2023 08:04:05 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0A3CFF8013D
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 03:11:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A3CFF8013D
-Received: by mail-ot1-f54.google.com with SMTP id
- f19-20020a9d5f13000000b00693ce5a2f3eso19998783oti.8
-        for <alsa-devel@alsa-project.org>;
- Wed, 05 Apr 2023 18:11:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680743516;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ufRr1P5zgDydxR7b/xl15Olfy3++TXWLHdwr3z6Hl80=;
-        b=aSx3cnuzhwlk+IH38K3kOSifjs0DYIQEDDMZMLkLepo6bq4KuSNhWdXR989/g4RtjM
-         CCSL8icqFHZlCcTDX/oll5rOzLQuTa1mKfzt85yusPJho6XKPXbZ1y+eWtNRqwVDCqpP
-         yyKRJzxV2wyrckx0oqVH9m+FxnwGcNZ8LNroEptSr6B2k3n24WhxC1DO8S+GtHFYXXnu
-         90HgMEkYljUDjATTXzDPn00ms72QwZQcQEyhG7iMRrfeARPiHM9G3c9LjS4xXuRJ+6hP
-         PGl6oTw1TgusuZgCE1qMnj7DvFWEEBotSK1iZcfxb+O6IisWQlrgGw33wc7MBa3xYOZh
-         wc5Q==
-X-Gm-Message-State: AAQBX9cAPcgNpe3vXgBU5oTNkbs13hOj7/kntH5M2o0WzgXd1xGiDTLG
-	LG2CLAEQ83tJQkOdYl8cuQ==
-X-Google-Smtp-Source: 
- AKy350bjf3FJ5xVtkh5VmxXCJxAvfdFKyyINw/vI2AsMAiyk9L0BlsBlKjgXXhCYTQPz2uIVnTTHIw==
-X-Received: by 2002:a9d:65d1:0:b0:69f:1c2c:8f8c with SMTP id
- z17-20020a9d65d1000000b0069f1c2c8f8cmr3847278oth.25.1680743516609;
-        Wed, 05 Apr 2023 18:11:56 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id
- y19-20020a056830209300b0069fb749271bsm193458otq.15.2023.04.05.18.11.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 18:11:56 -0700 (PDT)
-Received: (nullmailer pid 1305711 invoked by uid 1000);
-	Thu, 06 Apr 2023 01:11:55 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Saalim Quadri <danascape@gmail.com>
-In-Reply-To: <20230405200341.4911-1-danascape@gmail.com>
-References: <20230405200341.4911-1-danascape@gmail.com>
-Message-Id: <168074344623.1301612.621743725976519280.robh@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: wm8904: Convert to dtschema
-Date: Wed, 05 Apr 2023 20:11:55 -0500
-Message-ID-Hash: NXL2Z7W34755TYF3EYCPUUKIWEV2ESO3
-X-Message-ID-Hash: NXL2Z7W34755TYF3EYCPUUKIWEV2ESO3
-X-MailFrom: robherring2@gmail.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id 00DFCF80149
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 08:03:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00DFCF80149
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=gGEUgAiF;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=Q1+Bl5Z7
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A460B1FF43;
+	Thu,  6 Apr 2023 06:03:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1680761019;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KUgGoa2sSoKqvMvUDjGPqmnMRk93LVQcWD1Fb/OCBzk=;
+	b=gGEUgAiFS1H7HSGgzVl7nKBDhvoaLjHCyvQR1cjGIItovUUMtMQ3eU2m4+whqpD71SmGUR
+	XXpDZElVcK7My2z+M4MBE7dq+kSNMT0+a7o7bVYA4rhxNFYcyRvJd51H1mTSKoZYyBN46x
+	MH5xoK+fIE9agu3V3WymOfdOeB05aO0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1680761019;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KUgGoa2sSoKqvMvUDjGPqmnMRk93LVQcWD1Fb/OCBzk=;
+	b=Q1+Bl5Z7BbRxECBguBLePCtO1o+7QBZ+Qo9nr8mb4LCn8gAcNAqAkhee7/ZyDPrVPjecZ6
+	unLO5vRitf/fzUCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C433133E5;
+	Thu,  6 Apr 2023 06:03:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id tqqEIbtgLmSgHAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 06 Apr 2023 06:03:39 +0000
+Date: Thu, 06 Apr 2023 08:03:39 +0200
+Message-ID: <87355dwnr8.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Subject: Re: [PATCH] ALSA: document that struct __snd_pcm_mmap_control64 is
+ messed up
+In-Reply-To: <20230405201219.2197759-1-oswald.buddenhagen@gmx.de>
+References: <20230405201219.2197759-1-oswald.buddenhagen@gmx.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: TEB6S5WV6JVE44COT4IYCNSDSNNDT5L6
+X-Message-ID-Hash: TEB6S5WV6JVE44COT4IYCNSDSNNDT5L6
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
- daniel.baluta@nxp.com, robh+dt@kernel.org, broonie@kernel.org,
- patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+CC: alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NXL2Z7W34755TYF3EYCPUUKIWEV2ESO3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TEB6S5WV6JVE44COT4IYCNSDSNNDT5L6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,30 +111,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-On Thu, 06 Apr 2023 01:33:41 +0530, Saalim Quadri wrote:
-> Convert the WM8904 audio CODEC bindings to DT schema
+On Wed, 05 Apr 2023 22:12:19 +0200,
+Oswald Buddenhagen wrote:
 > 
-> Signed-off-by: Saalim Quadri <danascape@gmail.com>
+> I suppose this can't be changed anymore due to binary compat concerns.
+
+Yes, please check the thread at
+  https://lore.kernel.org/all/29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org/
+
+> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 > ---
->  .../devicetree/bindings/sound/wlf,wm8904.yaml | 66 +++++++++++++++++++
->  .../devicetree/bindings/sound/wm8904.txt      | 33 ----------
->  2 files changed, 66 insertions(+), 33 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8904.yaml
->  delete mode 100644 Documentation/devicetree/bindings/sound/wm8904.txt
+>  include/uapi/sound/asound.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+> index de6810e94abe..595a683968bc 100644
+> --- a/include/uapi/sound/asound.h
+> +++ b/include/uapi/sound/asound.h
+> @@ -570,7 +570,7 @@ struct __snd_pcm_mmap_status64 {
+>  struct __snd_pcm_mmap_control64 {
+>  	__pad_before_uframe __pad1;
+>  	snd_pcm_uframes_t appl_ptr;	 /* RW: appl ptr (0...boundary-1) */
+> -	__pad_before_uframe __pad2;
+> +	__pad_before_uframe __pad2;	 // BUG: this should have been __pad_after_uframe!
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
-
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
-
-Full log is available here: https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230405200341.4911-1-danascape@gmail.com
+Writing this alone doesn't help much.  Actual help would be to mention
+that this typo is kept intentionally.
 
 
-audio-codec@1a: Unevaluated properties are not allowed ('AVDD-supply', 'CPVDD-supply', 'DBVDD-supply', 'DCVDD-supply', 'MICVDD-supply' were unexpected)
-	arch/arm64/boot/dts/freescale/imx8mm-verdin-nonwifi-dahlia.dtb
-	arch/arm64/boot/dts/freescale/imx8mm-verdin-wifi-dahlia.dtb
-
+Takashi
