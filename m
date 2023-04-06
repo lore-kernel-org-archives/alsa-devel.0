@@ -4,68 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D683FC7618D
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 15:05:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ED33C76196
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 15:05:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9646EEEC;
-	Thu,  6 Apr 2023 17:04:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9646EEEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52300EF4;
+	Thu,  6 Apr 2023 17:04:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52300EF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680793528;
-	bh=GtLftkpEi/qKGhs+BerPf/zyoGW6Q7axIKhNYx47xGg=;
+	s=default; t=1680793535;
+	bh=33vqUxRIpdpTIDv6WnFlP2Rag1D22LhV1VRJ3Uo6ICk=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bLsdNG8dou3MLl1KN30t5DZ3FC4MWJXTDGcSQ1InqkSix0d1+eKoEHAv7QYkH+0lv
-	 3UrY471U9Y/dvlsCViD6hvcuPPLwRC5kocvFyn2p/LKOdxGGasuMi0Dgvr0l4DMErw
-	 CCZ9vCcFGEW4Sl9Mq/tCbjChD6zNpstfoNW67UOI=
+	b=LwMs5YGdY8N5IT3Ww+x4aSrA1BE8vbIj7fYZmBudRsGTKvyJGpLIjTWwWmd/vN2ib
+	 rI7IoWFTZ0bmX7n2tXV7DmOZIdgMoNnDE5ZTP72LmO8UPVbXs5SfHpFXFGBfLWJBpm
+	 3DCca23nCTHAdDFwa5e7/TSEMggWPYbC9gRpMzTA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24F5FF80448;
-	Thu,  6 Apr 2023 17:03:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A884DF8052E;
+	Thu,  6 Apr 2023 17:03:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA49CF80246; Thu,  6 Apr 2023 17:03:46 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id A1F85F8052E; Thu,  6 Apr 2023 17:03:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EDC87F80171
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 17:03:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDC87F80171
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F8BDF80171
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 17:03:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F8BDF80171
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uzSdRsWm
+ header.s=k20201202 header.b=VIYZGmAU
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 527C062B71;
-	Thu,  6 Apr 2023 15:03:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14862C4339B;
-	Thu,  6 Apr 2023 15:03:37 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C5A2160EC7;
+	Thu,  6 Apr 2023 15:03:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1495EC433D2;
+	Thu,  6 Apr 2023 15:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1680793418;
-	bh=GtLftkpEi/qKGhs+BerPf/zyoGW6Q7axIKhNYx47xGg=;
+	s=k20201202; t=1680793415;
+	bh=33vqUxRIpdpTIDv6WnFlP2Rag1D22LhV1VRJ3Uo6ICk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=uzSdRsWmwiqxw90Yw83aDk2AdlqbAwjyB0Dys9Y/2R5XcpVYLATzxYnVTa0jirAoz
-	 LTF/vS1J3l3TULj+K0mi9mn7qtX/7ej0yQL5iwNcUPjazZYOMiTX10i11hKEuLPGsT
-	 /1OuUaD6VWi5yxQX0f02bk46GUTRs37DK/Hg691kL3DrY8mppgPK8BhbS3Ccl3/73a
-	 bwExKzN4wH0h9TheVQM9uChFWhivaeaeREkr9uoAsQcv7+46hEBnTduGknGNnLwo3E
-	 OHF4TYbbjq63LalQjZPZ5kNw3UnJjiS9jR9E5oZ4m9pTPLlcmRykLT5iAVsSJeyIXx
-	 l511BVWglh2dg==
+	b=VIYZGmAUkPRAdufaC71TJHIapDebSn7OCiJFDqbFd32T6Dz5psrOzmWU2VSrtRU3O
+	 7/JUJ3SydHe0UkQe5jiKBwNMONgmQ+sV9JXK83wO9526gRBOfUMi0DSrfRojUq/CVa
+	 9XaiBSHmJeDUXsRny7Lr2SdsGhreFs1/wQGY7+kdho45vDd+hhfmccmhfkyDeuQDS3
+	 sRkuYotI58OpG/RlSbM+jIEa89yORzVSLxiulv85/wuEQvahAT79aZLraqJD+IjIGf
+	 nhjpMM7E2mHsKtcMxSf0ZuwqCQxpE1sxHGZmKXdQMBhZj7eIPkPiiJScx6U9Ypi9Cz
+	 7MtMuWtubRBMQ==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <877cuqvswc.wl-kuninori.morimoto.gx@renesas.com>
-References: <877cuqvswc.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2] ASoC: soc-dapm.c: tidyup dapm_connect_dai_pair()
-Message-Id: <168079341780.66286.16252350598256964192.b4-ty@kernel.org>
-Date: Thu, 06 Apr 2023 16:03:37 +0100
+To: lgirdwood@gmail.com, shumingf@realtek.com
+In-Reply-To: <20230406085535.52002-1-shumingf@realtek.com>
+References: <20230406085535.52002-1-shumingf@realtek.com>
+Subject: Re: [PATCH v4] ASoC: rt712-sdca: Add RT712 SDCA driver for Mic
+ topology
+Message-Id: <168079341266.66286.15067359243978973036.b4-ty@kernel.org>
+Date: Thu, 06 Apr 2023 16:03:32 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-00303
-Message-ID-Hash: AOEOLOQTC4G4PFWE5WGDFT3Z3ZJNRN6E
-X-Message-ID-Hash: AOEOLOQTC4G4PFWE5WGDFT3Z3ZJNRN6E
+Message-ID-Hash: SXRWTHVWGSPVZVSSOYQGFK3BAFRLOZO7
+X-Message-ID-Hash: SXRWTHVWGSPVZVSSOYQGFK3BAFRLOZO7
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -73,14 +75,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Linux-ALSA <alsa-devel@alsa-project.org>,
- =?utf-8?q?P=C3=A9ter_Uj_falusi?= <peter.ujfalusi@linux.intel.com>
+CC: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
+ oder_chiou@realtek.com, jack.yu@realtek.com, derek.fang@realtek.com,
+ pierre-louis.bossart@intel.com, bard.liao@intel.com, Yijun.Shen@dell.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AOEOLOQTC4G4PFWE5WGDFT3Z3ZJNRN6E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SXRWTHVWGSPVZVSSOYQGFK3BAFRLOZO7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -89,15 +92,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 05 Apr 2023 22:57:55 +0000, Kuninori Morimoto wrote:
-> dapm_connect_dai_pair() handles
-> "Normal/Codec2Codec" x "CPU/Codec" x "Playback/Capture".
+On Thu, 06 Apr 2023 16:55:35 +0800, shumingf@realtek.com wrote:
+> This is the initial codec driver for rt712 SDCA (Mic topology).
+> The host should connect with rt712 SdW2 interface.
 > 
-> (A) is "Codec2Codec" case of "CPU"   widget x "Playback/Capture",
-> (B) is "Normal"      case of "CPU"   widget x "Playback/Capture",
-> (C) is each          case of "Codec" widget.
 > 
-> [...]
 
 Applied to
 
@@ -105,8 +104,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-dapm.c: tidyup dapm_connect_dai_pair()
-      commit: 3456aeb02a28e82235d45da434752e6f441427f0
+[1/1] ASoC: rt712-sdca: Add RT712 SDCA driver for Mic topology
+      commit: 63a511284c9ea72696a5dd0a2d2721bdef19f774
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
