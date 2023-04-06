@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB839C76196
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 15:26:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5CE5C7618D
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 15:28:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 291C0EE4;
-	Thu,  6 Apr 2023 17:25:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 291C0EE4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78903EF9;
+	Thu,  6 Apr 2023 17:28:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78903EF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680794804;
-	bh=s+XO3zR4ii3e8ClegHtQ4DRrb5n2EJHdQRHekAdgQHA=;
+	s=default; t=1680794937;
+	bh=AuqRvjNPqvniUEkFUbyEempUnjM72En1nZZKKVMc4TM=;
 	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=SMFzjbA8Z5y7aCROPWMYbegpSKObBHNin5vpDtUxmPuZv6Uy61KkCCsd0ke919dpW
-	 vkHhIBalmjXBSBgrPx4bAjcSlYMei+beyWcFjf3nCmhDHx195H0QVOx8VE5ZIBKi8c
-	 VjJlm8q4PewL3cP62PUfKIVidWgbi3+5dphq+vnQ=
+	b=JWI/UCvhNNpUfSsi9qRx3f4UtWNZZ5zk5s19R5/QJv38Uwk40iYGfAVKP90UmSI1Z
+	 vSRXwLXZ6aPgheyx8fhfKsKN1A/8TgJYonZhV8PY5jtnZVdlV5X8syLoRVYGhESYiC
+	 5dFrndx5wfaEDguuAd4LtRcdeNl5eJ2izSQYYFjw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5BFB7F80246;
-	Thu,  6 Apr 2023 17:25:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E943F80249;
+	Thu,  6 Apr 2023 17:27:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29836F80246; Thu,  6 Apr 2023 17:25:28 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	id D4BE2F80249; Thu,  6 Apr 2023 17:27:41 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0F055F80149
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 17:25:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F055F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8CD1CF80171
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 17:27:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CD1CF80171
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Auvr9dKN
+ header.s=Intel header.b=lz1bmfmO
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680794725; x=1712330725;
+  t=1680794858; x=1712330858;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=s+XO3zR4ii3e8ClegHtQ4DRrb5n2EJHdQRHekAdgQHA=;
-  b=Auvr9dKNg9T1ucxxUQCKno6PZGe/fBOaUfQhzE1uKfkKvt8Y7DVgnWsS
-   e0hQhQKKp/cgXfaKae/8LfSgrG/BsUbbdLGdQPT6B+zapUxr02uv7aCwV
-   kdX4JJVQobNEnsNPechmmYAxXbpuATV8znYZqXdcjuTLPnL/86mzDo0Rq
-   tF9N8DXT+pr9Kl8O8o9RUoeh5tSL4pcWfT3Sa8g6SoF1rask92qC5/DQm
-   BBTLAmyC8FJhOh6GlVJrpg91YF0L+gmVKDFG7F2SvXlc+wig49tGz7fDo
-   7RgnUzPpZba4X7PpaGJJVWyP6E2im63PuqzCJ4wXVHD9BkAXlwMKO1t5o
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="370594621"
+  bh=AuqRvjNPqvniUEkFUbyEempUnjM72En1nZZKKVMc4TM=;
+  b=lz1bmfmOBWqvcOKFsKBFbbZWqVtC3UCJ9O0eYsAqAQT64z6ssuZzFeMK
+   yQcOUTmOcQkGZCkGYTet8Cp3Y3cMJ8XHy7thcG/94/2xKYEVj5lMsqRvx
+   zCyeJ/9+W5LRQwFrKy7tl5kfuiplbdUnYF8Iitx40qQiX7Jg5RSkmzEQs
+   AIB5ZflcwuhGwOWMgwds2JxpVBuXDZ4WYhkD+U8YFnFdAZcUp2dta8TaM
+   XOjftX3lq1B5RtREY1LPiyCNMZdKnwgzhZpaAzYuMz0/w41xjEdQDFHXx
+   DR2z60b2FOq5pthkJOey9mC6D+7UOzvFWD/4Hg1FVAjW+EGB5CpoD57LM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="344522853"
 X-IronPort-AV: E=Sophos;i="5.98,323,1673942400";
-   d="scan'208";a="370594621"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Apr 2023 08:25:11 -0700
+   d="scan'208";a="344522853"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Apr 2023 08:27:35 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="637346391"
+X-IronPort-AV: E=McAfee;i="6600,9927,10672"; a="776514233"
 X-IronPort-AV: E=Sophos;i="5.98,323,1673942400";
-   d="scan'208";a="637346391"
+   d="scan'208";a="776514233"
 Received: from iherna2-mobl4.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.83.247])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Apr 2023 08:25:10 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Apr 2023 08:27:34 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda: LNL: add HD Audio PCI ID
-Date: Thu,  6 Apr 2023 10:25:00 -0500
-Message-Id: <20230406152500.15104-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ALSA: hda: patch_realtek: add quirk for Asus N7601ZM
+Date: Thu,  6 Apr 2023 10:27:25 -0500
+Message-Id: <20230406152725.15191-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NR5ADCLN7EPOBBCP2LG7LMTHVRTSQ54O
-X-Message-ID-Hash: NR5ADCLN7EPOBBCP2LG7LMTHVRTSQ54O
+Message-ID-Hash: EI5CYT4TSXI5LEMOFGYTUYW5JLCDQ4PA
+X-Message-ID-Hash: EI5CYT4TSXI5LEMOFGYTUYW5JLCDQ4PA
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -80,16 +79,16 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: tiwai@suse.de, broonie@kernel.org, Fred Oh <fred.oh@linux.intel.com>,
+CC: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Erik Brakkee <erik@brakkee.org>, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NR5ADCLN7EPOBBCP2LG7LMTHVRTSQ54O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EI5CYT4TSXI5LEMOFGYTUYW5JLCDQ4PA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,32 +97,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Fred Oh <fred.oh@linux.intel.com>
+Add pins and verbs needed to enable speakers and jack.
 
-Add HD Audio PCI ID for Intel Lunarlake platform.
+The pins and verbs configurations were identified by snooping the
+Windows driver commands, with a nice write-up here:
+https://brakkee.org/site/2023/02/07/fixing-sound-on-the-asus-n7601zm/
 
-Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+Reported-by: Erik Brakkee <erik@brakkee.org>
+Tested-by: Erik Brakkee <erik@brakkee.org>
+Link: https://github.com/thesofproject/linux/issues/4176
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/pci/hda/hda_intel.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/hda/patch_realtek.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 77a592f21947..881b2f3a1551 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2528,6 +2528,9 @@ static const struct pci_device_id azx_ids[] = {
- 	/* Meteorlake-P */
- 	{ PCI_DEVICE(0x8086, 0x7e28),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	/* Lunarlake-P */
-+	{ PCI_DEVICE(0x8086, 0xa828),
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
- 	/* Broxton-P(Apollolake) */
- 	{ PCI_DEVICE(0x8086, 0x5a98),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b501f9489fc1..2baeb6efbdc7 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6959,6 +6959,8 @@ enum {
+ 	ALC269_FIXUP_DELL_M101Z,
+ 	ALC269_FIXUP_SKU_IGNORE,
+ 	ALC269_FIXUP_ASUS_G73JW,
++	ALC269_FIXUP_ASUS_N7601ZM_PINS,
++	ALC269_FIXUP_ASUS_N7601ZM,
+ 	ALC269_FIXUP_LENOVO_EAPD,
+ 	ALC275_FIXUP_SONY_HWEQ,
+ 	ALC275_FIXUP_SONY_DISABLE_AAMIX,
+@@ -7255,6 +7257,29 @@ static const struct hda_fixup alc269_fixups[] = {
+ 			{ }
+ 		}
+ 	},
++	[ALC269_FIXUP_ASUS_N7601ZM_PINS] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x03A11050 },
++			{ 0x1a, 0x03A11C30 },
++			{ 0x21, 0x03211420 },
++			{ }
++		}
++	},
++	[ALC269_FIXUP_ASUS_N7601ZM] = {
++		.type = HDA_FIXUP_VERBS,
++		.v.verbs = (const struct hda_verb[]) {
++			{0x20, AC_VERB_SET_COEF_INDEX, 0x62},
++			{0x20, AC_VERB_SET_PROC_COEF, 0xa007},
++			{0x20, AC_VERB_SET_COEF_INDEX, 0x10},
++			{0x20, AC_VERB_SET_PROC_COEF, 0x8420},
++			{0x20, AC_VERB_SET_COEF_INDEX, 0x0f},
++			{0x20, AC_VERB_SET_PROC_COEF, 0x7774},
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_ASUS_N7601ZM_PINS,
++	},
+ 	[ALC269_FIXUP_LENOVO_EAPD] = {
+ 		.type = HDA_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -9485,6 +9510,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x19ce, "ASUS B9450FA", ALC294_FIXUP_ASUS_HPE),
+ 	SND_PCI_QUIRK(0x1043, 0x19e1, "ASUS UX581LV", ALC295_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
++	SND_PCI_QUIRK(0x1043, 0x12a3, "Asus N7691ZM", ALC269_FIXUP_ASUS_N7601ZM),
+ 	SND_PCI_QUIRK(0x1043, 0x1a30, "ASUS X705UD", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1a8f, "ASUS UX582ZS", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1b11, "ASUS UX431DA", ALC294_FIXUP_ASUS_COEF_1B),
 -- 
 2.37.2
 
