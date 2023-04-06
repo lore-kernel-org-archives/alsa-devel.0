@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 044BFC76196
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 06:11:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B5DAC76196
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 06:11:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C6B8201;
-	Thu,  6 Apr 2023 08:10:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C6B8201
+	by alsa0.perex.cz (Postfix) with ESMTPS id 265381FC;
+	Thu,  6 Apr 2023 08:11:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 265381FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680761469;
-	bh=NazCQr3bAhln/ePn3o1aXlvMTG9oQpnTawyfoEJblM8=;
+	s=default; t=1680761514;
+	bh=4g3iLiUHYgbwBWuuWd9s6T/r1LZ/5ApaAXdBCMAo9us=;
 	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DsN642YTTxfnBGSkinnOUNhUb7BpEVILUiPzelbdqGj/E0m3bXyG8Adok1OK3GGkl
-	 SQaflGJuy+79scLXr2qlZUOrKjkwpcynzUqmBxfpJDmXQHYhACY729GO4Uo5ZklLHu
-	 BG1StZapYyr15zVtYU8cmKO5m6bK80Sp0SYJGHTc=
+	b=cWOo+DfGTsMGgkzJ+4xM+zWcvG+q22l4ecDWurLfLc1JYx/UlkffWs0eFjtNpsQZO
+	 QbXRdLL2xW68R6Gv6Y6C5hZDH36iH45KK4dumzx8TSyTl6KvFSfU1QQmaQfI6TDY8R
+	 SHcOZ6823pk2SOhvXyo8ZQg3PkYCbY1JSLZ1p5Wk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E5E2F80246;
-	Thu,  6 Apr 2023 08:09:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF517F8026A;
+	Thu,  6 Apr 2023 08:11:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CDF7BF80246; Thu,  6 Apr 2023 08:09:52 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 923D3F8026A; Thu,  6 Apr 2023 08:10:51 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 35D31F80149
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 08:09:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35D31F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3443CF80149
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 08:10:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3443CF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=FJ0SFm51;
+ header.s=susede2_rsa header.b=Hp7AYQwq;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=+47uklNr
+ header.s=susede2_ed25519 header.b=Mew4udlN
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B59061FE9D;
-	Thu,  6 Apr 2023 06:09:49 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BB6CB2009E;
+	Thu,  6 Apr 2023 06:10:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1680761389;
+	t=1680761448;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nu37oTLNfK7cDTfYYuexRGbpGZu6hefHeKdYts7CxVk=;
-	b=FJ0SFm51t4seIe8eJt17sZhtnWBjNJVF18yJTdicBMbNKqH8GZyoDqpw2HWiTRF/1IFXrW
-	z24m9XtvAXIbVeGmRVWKobuaQGM/30DxCkvsslnQduYvLd6A2xfHCnLZnWh5EFw4veQ7bQ
-	K329kFjSw40CtXxOsItZk29Cjwm5mf8=
+	bh=L5UU8apjSwf2lMsjwfve9CnzRXFkCKygZml14oqrsZs=;
+	b=Hp7AYQwqwDkBIVJeug+bqDorcxLHZpP+dxZCo7yBv/AJemcCOs7tZDU0ugqLdYZ3z16A2O
+	GnvBJVpH46BW7Js7YAvtkTNFDfkiChQXe8Yr1AefmNmdm/3yThkZkEJeZohgLKPVIM2WJv
+	NaQRg0VT8DJSunLHIFOuMLvoL8y0rck=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1680761389;
+	s=susede2_ed25519; t=1680761448;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nu37oTLNfK7cDTfYYuexRGbpGZu6hefHeKdYts7CxVk=;
-	b=+47uklNrIu9WVPZPeL3+NOfiemV1LLPicA3ZStGoXTyGbjDemjzEfnFqpein5NRveUGpyx
-	5Eh5h5l88cQkHjDQ==
+	bh=L5UU8apjSwf2lMsjwfve9CnzRXFkCKygZml14oqrsZs=;
+	b=Mew4udlNDT2YI5MW2YgU4aBJMWcURkw3lEP4rltnKCha0pNsVN/DMI48mi7izPnxU+dEPu
+	ICCXoPL0JzTBcDAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 96B91133E5;
-	Thu,  6 Apr 2023 06:09:49 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 99410133E5;
+	Thu,  6 Apr 2023 06:10:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id jkT4Iy1iLmSkHwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 06 Apr 2023 06:09:49 +0000
-Date: Thu, 06 Apr 2023 08:09:49 +0200
-Message-ID: <871qkxwngy.wl-tiwai@suse.de>
+	id gR2gJGhiLmQXIAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 06 Apr 2023 06:10:48 +0000
+Date: Thu, 06 Apr 2023 08:10:48 +0200
+Message-ID: <87zg7lv8uv.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Subject: Re: [PATCH] ALSA: i2c/cs8427: fix iec958 mixer control deactivation
-In-Reply-To: <20230405201219.2197811-1-oswald.buddenhagen@gmx.de>
-References: <20230405201219.2197811-1-oswald.buddenhagen@gmx.de>
+Subject: Re: [PATCH 1/2] ALSA: hda/sigmatel: add pin overrides for Intel
+ DP45SG motherboard
+In-Reply-To: <20230405201220.2197826-1-oswald.buddenhagen@gmx.de>
+References: <20230405201220.2197826-1-oswald.buddenhagen@gmx.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: H3U764ZPQALY2JZZF3EN3QZJ5QLQEYJ7
-X-Message-ID-Hash: H3U764ZPQALY2JZZF3EN3QZJ5QLQEYJ7
+Message-ID-Hash: AEFUESEHEODLQWDCBFQ6U7LALFUNV2D5
+X-Message-ID-Hash: AEFUESEHEODLQWDCBFQ6U7LALFUNV2D5
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H3U764ZPQALY2JZZF3EN3QZJ5QLQEYJ7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AEFUESEHEODLQWDCBFQ6U7LALFUNV2D5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,13 +114,12 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 On Wed, 05 Apr 2023 22:12:19 +0200,
 Oswald Buddenhagen wrote:
 > 
-> snd_cs8427_iec958_active() would always delete
-> SNDRV_CTL_ELEM_ACCESS_INACTIVE, even though the function has an
-> argument `active`.
+> Like the other boards from the D*45* series, this one sets up the
+> outputs not quite correctly.
 > 
 > Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 
-Thanks, applied.
+Applied both patches.  Thanks.
 
 
 Takashi
