@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CF24C76196
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 17:05:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39B07C76196
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 17:06:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CBD1F3B;
-	Thu,  6 Apr 2023 19:04:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CBD1F3B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 024F7F4A;
+	Thu,  6 Apr 2023 19:05:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 024F7F4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680800743;
-	bh=S25Cn7Ez0gk3IjAsgs0lYU5PY3NSakxpn1wMdYhpQ1M=;
+	s=default; t=1680800772;
+	bh=N5sK912klgM/ER4FqKzjHt+WOW/x7tYhI9GbmghRsGU=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UjAuUSSW4Co5R5yvWdxneFfiKBoNDifdM0KvY8yet45JVuFztE8Oj12uZZEEt2AXs
-	 TPHYxkGOAMWdXB7skk1WnPR3qA5YZo+N5Iy/F3KmVeHa6yhEa08m7Ui/baNuxjhIUB
-	 KknRp0tX0HFClNura04ad1WNaZEHUGR9Uy0zTI3E=
+	b=pa5/PiQUDJ7PEJ2HPfazJ4jU682BGA6a7Vjtdp/C6N0Ccy4w92HhouGRfHry+TNkn
+	 nqjg5TLpNvaW2F4YlEYW0zjY3BDGZQkS4aTdaaBkZ0ksSERyMMlJ/1T/TsYmwy/Vm+
+	 XVsabVppX+eAdanYVdJ1zg2XkbycexWbgzI04wKE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA161F80246;
-	Thu,  6 Apr 2023 19:04:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BEACF8026A;
+	Thu,  6 Apr 2023 19:04:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD1E9F80249; Thu,  6 Apr 2023 19:04:26 +0200 (CEST)
+	id A5BDAF80246; Thu,  6 Apr 2023 19:04:28 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 38DB8F8015B
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 19:04:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38DB8F8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4E6FCF8013D
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 19:04:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E6FCF8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=AEgj4RM3
+ header.s=k20201202 header.b=pL0yTd04
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 0477A649B8;
-	Thu,  6 Apr 2023 17:04:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8612C433D2;
-	Thu,  6 Apr 2023 17:04:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 83F8C60F00;
+	Thu,  6 Apr 2023 17:04:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD74CC4339B;
+	Thu,  6 Apr 2023 17:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1680800657;
-	bh=S25Cn7Ez0gk3IjAsgs0lYU5PY3NSakxpn1wMdYhpQ1M=;
+	s=k20201202; t=1680800658;
+	bh=N5sK912klgM/ER4FqKzjHt+WOW/x7tYhI9GbmghRsGU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=AEgj4RM3UCv+x/0THOLTJVEjuSm+LLYInLMh3Mpbk8NHb3IlCnRVCT55kBDcFeEEM
-	 LcTdoBIcr02aOnyBNXr/7uF1pfrYnbhpmhAdd5Rd/7+6wGrgBBI7JaoT9sDXRb7n/+
-	 qvxd/jNUrzNbFiB9gEILPk6oZ+KR4h3/RddUxq0D0+OKP1+ily4vOi1sZ0y8T0Jx5y
-	 e3stkzvd+EYq+X5txlKsVJJEK8LsXxL5qCcop0igaAyhIp/UGufnOtV4ZMGyh7WG7K
-	 sEivnbKG++Vxs3Aj0Etx5VSJdgBOnK9u6Sn+2agGszBhY3h36nnvTBj3aSG5mx1nID
-	 yZ4pengdzID+Q==
+	b=pL0yTd04/gErDoWvVDm9b7CP9sESV7p96kxrEO5iN4rj2cGckz0xez902l554JX3d
+	 ysQfqcifYq+gpnd2vgdjCZpf+fE6gzJjwYJTsbkjHfC0fRLPIcHiRsprWOPXvGPHbY
+	 H0mEuDouFt3zYYbe/D+Fky014DuNmtAYloAkxYyqG11sSKBA3EE0ImLoA6JAoHj5nw
+	 Zrno0pNkXbYluDUKrmizMPxwfSTHJZFffObHY/kxrdhUgikw3SawhXhePUqrrKJ08P
+	 8n3wBsfu8h8b/JRITlesueh8iBFCY5ZbS27wdWVaY0liRMeX+Nyt/fOE7SZexYc1n8
+	 RlEBn0wPjE6kg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- ryans.lee@analog.com, pierre-louis.bossart@linux.intel.com,
- Tom Rix <trix@redhat.com>
-In-Reply-To: <20230406152300.1954292-1-trix@redhat.com>
-References: <20230406152300.1954292-1-trix@redhat.com>
-Subject: Re: [PATCH] ASoC: max98363: set varaiable soc_codec_dev_max98363
- storage-class-specifier to static
-Message-Id: <168080065551.124805.6391471744469575073.b4-ty@kernel.org>
-Date: Thu, 06 Apr 2023 18:04:15 +0100
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230406152937.15347-1-pierre-louis.bossart@linux.intel.com>
+References: <20230406152937.15347-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: hda: add __func__ in SoundWire
+ lcount() error logs
+Message-Id: <168080065763.124805.8466344785211173312.b4-ty@kernel.org>
+Date: Thu, 06 Apr 2023 18:04:17 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-00303
-Message-ID-Hash: MLQ34JTIREEUFMN6ESA7MTD7MDXXRV5Y
-X-Message-ID-Hash: MLQ34JTIREEUFMN6ESA7MTD7MDXXRV5Y
+Message-ID-Hash: ZP6FNCLF3KTY4TWIETDMGQOVXB74X4X6
+X-Message-ID-Hash: ZP6FNCLF3KTY4TWIETDMGQOVXB74X4X6
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -77,13 +76,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+CC: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MLQ34JTIREEUFMN6ESA7MTD7MDXXRV5Y/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZP6FNCLF3KTY4TWIETDMGQOVXB74X4X6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,15 +92,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 06 Apr 2023 11:23:00 -0400, Tom Rix wrote:
-> smatch reports
-> sound/soc/codecs/max98363.c:392:39: warning: symbol
->   'soc_codec_dev_max98363' was not declared. Should it be static?
-> 
-> This variable is only used in one file so should be static.
+On Thu, 06 Apr 2023 10:29:37 -0500, Pierre-Louis Bossart wrote:
+> Make sure SoundWire lcount helpers have unique error logs, but a
+> common pattern for reporting issues.
 > 
 > 
-> [...]
 
 Applied to
 
@@ -108,8 +104,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: max98363: set varaiable soc_codec_dev_max98363 storage-class-specifier to static
-      commit: 80a4623eb1910d099e3d3de1564a6dfe16750e60
+[1/1] ASoC: SOF: Intel: hda: add __func__ in SoundWire lcount() error logs
+      commit: e41e1f4ae47499061bec3446c927bdfd2210a329
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
