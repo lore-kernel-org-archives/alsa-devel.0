@@ -4,95 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F16AC77B61
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Apr 2023 07:57:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B69FDC77B61
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Apr 2023 07:58:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76AD4F1F;
-	Mon, 10 Apr 2023 09:56:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76AD4F1F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 215E2F21;
+	Mon, 10 Apr 2023 09:57:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 215E2F21
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681113437;
-	bh=9dIFX3pM5x+qwaPb4y6W6dFtA8fu0m942AZigej6Rg4=;
-	h=Date:From:To:Subject:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ed5Ls0w7qpA6Y0lRPMLs53yeZSI1jXLRVPoSw0ehyMIW3vV8G/q7hlEfmATTJri6O
-	 l8oTydTJuuOSI0RfcO0IBlJ86kTRYRDW3X6+G4jdj32MxQPs+gQmiiu4W/juabcIVt
-	 w0pu/SkfyAZGYAA87DwLrbZTXWfHW7N4I8ghOApg=
+	s=default; t=1681113488;
+	bh=GsFgDJdNK8xqm1AOSyggINbimCT7hd4joqGva+V+40Y=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=flMIlobPfvUzFPHy3HLloFmrTTfSsdOHmgXN0HJBRxMmPuwSMa/ZvAXNqlF+GA5UP
+	 RcX7n8cfaVENE71w/e/qdygwsobgJ5/rX8v5gRAWQnCLjtaoC9ol/0CZluq6hNJOUC
+	 z8w7hoTVrQUwDpBFbnyssWQR7rWlDIY/MJV56EO0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B5C8F8032B;
-	Mon, 10 Apr 2023 09:56:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5AC88F8051F;
+	Mon, 10 Apr 2023 09:56:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 24D22F80246; Thu,  6 Apr 2023 16:42:56 +0200 (CEST)
-Received: from sender4-op-o10.zoho.com (sender4-op-o10.zoho.com
- [136.143.188.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BA8B2F8013D
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 16:42:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA8B2F8013D
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=arinc9.com header.i=arinc.unal@arinc9.com
- header.a=rsa-sha256 header.s=zmail header.b=Twr9TPaK
-ARC-Seal: i=1; a=rsa-sha256; t=1680792157; cv=none;
-	d=zohomail.com; s=zohoarc;
-	b=lhFsL36wim/K65jIXa+gIFWbzebSGbXx5n0fwvKrzfu74fy+ANSpJza+GdIU9UKyFoZCJVYNKmgYQ0SIIzfTGLdnalLYqztpC5qR9ZBNVL7bYuVFBjW2/X0Y+WUEPhTdXSPenswuawwBNRXEcvqcxZph3lae73tX+axRaaGLj9A=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com;
- s=zohoarc;
-	t=1680792157;
- h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To;
-	bh=U4WFoqaG/WTz/rldWrbpYj6I6++dLC1ugFzEHCLlJ1M=;
-	b=OBesM/jnC1O+4SAh5OVj0rUVc7PWoewWj/rr8j/E9QoARht+Agr+F4MVaGi7OkZfjHM0CpfGRf7lgHkmVWQLvyG8DJ1b6yZsxm/W5+7puPDFyRnOBjC7zNo3iFvf352rw/8eVW+5Zb/OTWemejyP7Xp+dM+/ytbD5g6VexFql5A=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=arinc9.com;
-	spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
-	dmarc=pass header.from=<arinc.unal@arinc9.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1680792157;
-	s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
-	h=Message-ID:Date:Date:MIME-Version:From:From:To:To:Cc:Cc:Subject:Subject:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=U4WFoqaG/WTz/rldWrbpYj6I6++dLC1ugFzEHCLlJ1M=;
-	b=Twr9TPaKPpapwK8oz14Qz7EpLcbHKpDu7SfBYDhqq6WwAm7JjIkv/dABRoMMuDeX
-	NynZnpBrGVI0koHOX3mPiQBXKzURu9fu4yMpkP3A9d5qZntMHdcnv1N+NMn14QqnBjb
-	9whSaKFYV1zxQ8erZcA9ORHqJ64+99XNRGt0RacE=
-Received: from [10.10.10.248] (149.91.1.15 [149.91.1.15]) by mx.zohomail.com
-	with SMTPS id 1680792155340132.56001297566422;
- Thu, 6 Apr 2023 07:42:35 -0700 (PDT)
-Message-ID: <3c1eda4a-2dfc-a0d0-d4f5-8b475440a21e@arinc9.com>
-Date: Thu, 6 Apr 2023 17:42:28 +0300
+	id 34EA1F80246; Thu,  6 Apr 2023 17:21:36 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by alsa1.perex.cz (Postfix) with ESMTP id 11CB8F8015B
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 17:21:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11CB8F8015B
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D72F1169E;
+	Thu,  6 Apr 2023 08:22:08 -0700 (PDT)
+Received: from [10.2.7.51] (stinger.cambridge.arm.com [10.2.7.51])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ADE653F762;
+	Thu,  6 Apr 2023 08:21:17 -0700 (PDT)
+Message-ID: <a54a4ea0-f9f5-6869-9629-747c3889a1de@arm.com>
+Date: Thu, 6 Apr 2023 16:21:15 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
  Thunderbird/102.9.0
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Stefan Binding <sbinding@opensource.cirrus.com>,
- Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
- Lucas Tanure <tanureal@opensource.cirrus.com>
+Subject: Re: [PATCH v3 36/65] clk: versatile: sp810: Add a determine_rate hook
 Content-Language: en-US
-Subject: Computer Audio Appears on Input Device
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Maxime Ripard <maxime@cerno.tech>
+References: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
+ <20221018-clk-range-checks-fixes-v3-36-9a1358472d52@cerno.tech>
+From: Pawel Moll <pawel.moll@arm.com>
+In-Reply-To: <20221018-clk-range-checks-fixes-v3-36-9a1358472d52@cerno.tech>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
-X-MailFrom: arinc.unal@arinc9.com
+X-MailFrom: pawel.moll@arm.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: GOZRNDK2MHQVV2TTXPMJ2EHYF6HUFEXF
-X-Message-ID-Hash: GOZRNDK2MHQVV2TTXPMJ2EHYF6HUFEXF
-X-Mailman-Approved-At: Mon, 10 Apr 2023 07:53:23 +0000
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- wulcato@gmail.com
+Message-ID-Hash: GGDGUHPVVSFRGDPLE76MCRRRBYNMBXP4
+X-Message-ID-Hash: GGDGUHPVVSFRGDPLE76MCRRRBYNMBXP4
+X-Mailman-Approved-At: Mon, 10 Apr 2023 07:53:27 +0000
+CC: Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>,
+ =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ Max Filippov <jcmvbkbc@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ David Lechner <david@lechnology.com>, Sekhar Nori <nsekhar@ti.com>,
+ Abel Vesa <abelvesa@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Alessandro Zummo <a.zummo@towertech.it>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Paul Cercueil <paul@crapouillou.net>, Orson Zhai <orsonzhai@gmail.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Chunyan Zhang <zhang.lyra@gmail.com>, linux-kernel@vger.kernel.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-arm-kernel@lists.infradead.org, linux-actions@lists.infradead.org,
+ patches@opensource.cirrus.com, linux-stm32@st-md-mailman.stormreply.com,
+ linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+ linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-phy@lists.infradead.org, linux-rtc@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, alsa-devel@alsa-project.org,
+ linux-mips@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GOZRNDK2MHQVV2TTXPMJ2EHYF6HUFEXF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GGDGUHPVVSFRGDPLE76MCRRRBYNMBXP4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,46 +116,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi all,
+On 04/04/2023 11:11, Maxime Ripard wrote:
+> The Versatile sp810 "timerclken" clock implements a mux with a
+> set_parent hook, but doesn't provide a determine_rate implementation.
+> 
+> This is a bit odd, since set_parent() is there to, as its name implies,
+> change the parent of a clock. 
 
-Me and my friend have got a problem with the computer audio being sent 
-to the receiver as if the headphone microphone hears it.
+Explanation of this mystery is pretty simple - the original patch:
 
-I've got a generic headphone with a microphone. It's got a single jack.
+	commit 6e973d2c438502dcf956e76305258ba7d1c7d1d3
+	Author: Pawel Moll <pawel.moll@arm.com>
+	Date:   Thu Apr 18 18:23:22 2013 +0100
 
-When I plug it to the laptop two devices are detected. Headphones for 
-output, microphone for input.
+	    clk: vexpress: Add separate SP810 driver
 
-As an incorrect behaviour, the computer audio appears on the input 
-device along with output. The expected behaviour should be the audio 
-appears only on the output device.
+predates introduction of determine_rate to clk_ops...
 
-I tried this on my laptop and headphone while my friend tried it on 
-their laptop and headphone.
+	commit 71472c0c06cf9a3d1540762ea205654c584e3bc4
+	Author: James Hogan <jhogan@kernel.org>
+	Date:   Mon Jul 29 12:25:00 2013 +0100
 
-I've tried it on Linux v6.3-rc5 while my friend tried it on v6.1.
+	    clk: add support for clock reparent on set_rate
 
-My laptop has got this audio device:
+and clearly no one (the author included ;-) bothered to have another
+look at this side of the driver.
 
-00:1f.3 Multimedia audio controller: Intel Corporation Comet Lake PCH-LP 
-cAVS
+> And if it was an oversight, then we are at least explicit about our
+> behavior now and it can be further refined down the line.
 
-My friend's laptop has got these:
+It's been one hell of a memory lane trip, but my recollection suggest
+that the main goal of the driver was simply initialisation of the mux
+to select the 1MHz parent, because the other option - 32kHz - just
+didn't make any sense whatsoever. And that would be the case on every
+single platform using SP810 I know (or at least: knew), so it's seems
+to me that making the state permanent, as you're suggesting (or I
+think you're suggesting?) it's the right thing to do.
 
-05:00.6 Audio device: Advanced Micro Devices, Inc. [AMD] Family 17h/19h 
-HD Audio Controller
+Thanks!
 
-05:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Renoir 
-Radeon High Definition Audio Controller
-
-I assumed this was a problem with the HD-Audio Controller driver on 
-Linux as I don't see this behaviour on Windows 10. The drivers on 
-Windows 10:
-
-AMD High Definition Audio Device 10.0.1.24
-Realtek (R)  Audio 6.0.9132.1
-
-What could be causing this behaviour on Linux?
-
-Thanks.
-Arınç
+Paweł
