@@ -4,110 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B69FDC77B61
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Apr 2023 07:58:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A04EBC76196
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Apr 2023 07:58:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 215E2F21;
-	Mon, 10 Apr 2023 09:57:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 215E2F21
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26EF5ECA;
+	Mon, 10 Apr 2023 09:57:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26EF5ECA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681113488;
-	bh=GsFgDJdNK8xqm1AOSyggINbimCT7hd4joqGva+V+40Y=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1681113505;
+	bh=+t7Io9b0xapKrg+J597+vOEMw4l4d8kxiptOV6vFOD8=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=flMIlobPfvUzFPHy3HLloFmrTTfSsdOHmgXN0HJBRxMmPuwSMa/ZvAXNqlF+GA5UP
-	 RcX7n8cfaVENE71w/e/qdygwsobgJ5/rX8v5gRAWQnCLjtaoC9ol/0CZluq6hNJOUC
-	 z8w7hoTVrQUwDpBFbnyssWQR7rWlDIY/MJV56EO0=
+	b=kWMzlSSlqZsn8yeabJ67m8stpQnjF9BfilKNr7e1MRLEEb0b2Rw6PyE6BSz9yPKwh
+	 XWK4ktaq7vOTzhbKNYlrpNa5nrjL2STTBmlA2zDPiIQ8bjlMAbLzy+TbrCyXiPN6T8
+	 U3Vgb7Px+9VaZP0ZEX90FFmSrWw0iX7i38G4D8tQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AC88F8051F;
+	by alsa1.perex.cz (Postfix) with ESMTP id DA994F8052E;
 	Mon, 10 Apr 2023 09:56:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34EA1F80246; Thu,  6 Apr 2023 17:21:36 +0200 (CEST)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11CB8F8015B
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 17:21:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11CB8F8015B
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D72F1169E;
-	Thu,  6 Apr 2023 08:22:08 -0700 (PDT)
-Received: from [10.2.7.51] (stinger.cambridge.arm.com [10.2.7.51])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ADE653F762;
-	Thu,  6 Apr 2023 08:21:17 -0700 (PDT)
-Message-ID: <a54a4ea0-f9f5-6869-9629-747c3889a1de@arm.com>
-Date: Thu, 6 Apr 2023 16:21:15 +0100
+	id 5DB19F8026A; Fri,  7 Apr 2023 00:10:33 +0200 (CEST)
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com
+ [IPv6:2607:f8b0:4864:20::1030])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 235E3F8015B
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2023 00:10:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 235E3F8015B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=iimJxSsT
+Received: by mail-pj1-x1030.google.com with SMTP id
+ l9-20020a17090a3f0900b0023d32684e7fso6898653pjc.1
+        for <alsa-devel@alsa-project.org>;
+ Thu, 06 Apr 2023 15:10:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680819025;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+t7Io9b0xapKrg+J597+vOEMw4l4d8kxiptOV6vFOD8=;
+        b=iimJxSsTN4DPUvczAgFy0U4h9XYwp3BTGx//p8IKWZvW/FUk8uYyw/7g25QSy4j8x7
+         LRQ/xz3YPp43k8DEAs5llOLKBGNMkI441AtF5IOVairVzXSJ0GW4BD25faQGisGN/54Q
+         CAWZaN7dbLW8URWjBaLRLgu2Cc0Z3LzlCMZgUfWwpNpvujjPlSsiUo1274EsP37VwPYE
+         BFjacjhHEGurmkYXU2TacowWJ5u3iZfy0kc/gnBCsL/Xd3Xf2q7N2RC5b0pE2Ce/+c93
+         JIQU7HQPloMwf7n6egsC0PiHjU3z7hHzpqtBaiyKSuh9uKGpfs5C5GRKSU7Kw9uKbiZG
+         0qAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680819025;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+t7Io9b0xapKrg+J597+vOEMw4l4d8kxiptOV6vFOD8=;
+        b=LuArwwYKEflm+YFoaXxkg4z0d6FmxHVONV8gVXVvZMqTbQEeP6l0Qm0b17yU7/UFMx
+         7PYtks7DCv8tEj+zVfUNK+m3DF1JWFtZ8Rr+XHUjYVn6WnsM9oNRMe5Q4gj2LzTrKq+P
+         PvXLZdNu3spDJfsDgkpCGuK3EqL7FgIA3AQg6C9wcMh7KJl8I7M0r7+iCyoP6K41YMZ0
+         tbsdTqBxPvWLj78ifd9Yt86xE+KeQYA3/Vra7tm2EwNZ9zxeOp9tqVpl00Dx+6j07QnK
+         hlH00OqgGwtxMjPvce2Cu1PPI0blxweYVJIOogZxA0x1BaNqzNdIaOcPVL+NI1jeqSNi
+         OG3g==
+X-Gm-Message-State: AAQBX9f+k+QrEDe+RzsWzoSkKNYsyi0ZwM3XoPE95dpAdA6Qmdphb1s+
+	pJlsIUDF0gWVKxx5/6B31Z8=
+X-Google-Smtp-Source: 
+ AKy350aUIQPjcpFlnTV201aedCQbecb4SHDk62k2oFALEXUdwYNP/zwYK4tYwxbFicGu+p4+zmMrHA==
+X-Received: by 2002:a17:90b:4a44:b0:23f:37b6:48f4 with SMTP id
+ lb4-20020a17090b4a4400b0023f37b648f4mr35172pjb.43.1680819024501;
+        Thu, 06 Apr 2023 15:10:24 -0700 (PDT)
+Received: from pavilion.. ([2402:e280:218d:82:a082:a1e:6444:f6a5])
+        by smtp.gmail.com with ESMTPSA id
+ jh19-20020a170903329300b00199193e5ea1sm1825739plb.61.2023.04.06.15.10.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Apr 2023 15:10:23 -0700 (PDT)
+From: Saalim Quadri <danascape@gmail.com>
+To: krzysztof.kozlowski@linaro.org
+Subject: Re: [PATCH] ASoC: dt-bindings: wm8523: Convert to dtschema
+Date: Fri,  7 Apr 2023 03:40:17 +0530
+Message-Id: <20230406221017.4746-1-danascape@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <2dc882b7-d09f-dfa0-67a1-3f9e6f1ac457@linaro.org>
+References: <2dc882b7-d09f-dfa0-67a1-3f9e6f1ac457@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v3 36/65] clk: versatile: sp810: Add a determine_rate hook
-Content-Language: en-US
-To: Maxime Ripard <maxime@cerno.tech>
-References: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
- <20221018-clk-range-checks-fixes-v3-36-9a1358472d52@cerno.tech>
-From: Pawel Moll <pawel.moll@arm.com>
-In-Reply-To: <20221018-clk-range-checks-fixes-v3-36-9a1358472d52@cerno.tech>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-MailFrom: pawel.moll@arm.com
+X-MailFrom: danascape@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: GGDGUHPVVSFRGDPLE76MCRRRBYNMBXP4
-X-Message-ID-Hash: GGDGUHPVVSFRGDPLE76MCRRRBYNMBXP4
-X-Mailman-Approved-At: Mon, 10 Apr 2023 07:53:27 +0000
-CC: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>,
- =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
- Manivannan Sadhasivam <mani@kernel.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@microchip.com>,
- Max Filippov <jcmvbkbc@gmail.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Luca Ceresoli <luca.ceresoli@bootlin.com>,
- David Lechner <david@lechnology.com>, Sekhar Nori <nsekhar@ti.com>,
- Abel Vesa <abelvesa@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Dinh Nguyen <dinguyen@kernel.org>,
- Peter De Schrijver <pdeschrijver@nvidia.com>,
- Prashant Gaikwad <pgaikwad@nvidia.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Ulf Hansson <ulf.hansson@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Alessandro Zummo <a.zummo@towertech.it>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Paul Cercueil <paul@crapouillou.net>, Orson Zhai <orsonzhai@gmail.com>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Chunyan Zhang <zhang.lyra@gmail.com>, linux-kernel@vger.kernel.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- linux-arm-kernel@lists.infradead.org, linux-actions@lists.infradead.org,
- patches@opensource.cirrus.com, linux-stm32@st-md-mailman.stormreply.com,
- linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
- linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-phy@lists.infradead.org, linux-rtc@vger.kernel.org,
- linux-sunxi@lists.linux.dev, alsa-devel@alsa-project.org,
- linux-mips@vger.kernel.org
+Message-ID-Hash: MKUK6KVFZCZ3ZTU77NZ44FMSHXOIVKFP
+X-Message-ID-Hash: MKUK6KVFZCZ3ZTU77NZ44FMSHXOIVKFP
+X-Mailman-Approved-At: Mon, 10 Apr 2023 07:53:29 +0000
+CC: alsa-devel@alsa-project.org, broonie@kernel.org, danascape@gmail.com,
+ daniel.baluta@nxp.com, devicetree@vger.kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+ robh+dt@kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GGDGUHPVVSFRGDPLE76MCRRRBYNMBXP4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MKUK6KVFZCZ3ZTU77NZ44FMSHXOIVKFP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,43 +117,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 04/04/2023 11:11, Maxime Ripard wrote:
-> The Versatile sp810 "timerclken" clock implements a mux with a
-> set_parent hook, but doesn't provide a determine_rate implementation.
-> 
-> This is a bit odd, since set_parent() is there to, as its name implies,
-> change the parent of a clock. 
+Hi,
 
-Explanation of this mystery is pretty simple - the original patch:
+I will check if there are other bindings under wm as well and squash them up into one.
 
-	commit 6e973d2c438502dcf956e76305258ba7d1c7d1d3
-	Author: Pawel Moll <pawel.moll@arm.com>
-	Date:   Thu Apr 18 18:23:22 2013 +0100
+Kind Regards,
 
-	    clk: vexpress: Add separate SP810 driver
-
-predates introduction of determine_rate to clk_ops...
-
-	commit 71472c0c06cf9a3d1540762ea205654c584e3bc4
-	Author: James Hogan <jhogan@kernel.org>
-	Date:   Mon Jul 29 12:25:00 2013 +0100
-
-	    clk: add support for clock reparent on set_rate
-
-and clearly no one (the author included ;-) bothered to have another
-look at this side of the driver.
-
-> And if it was an oversight, then we are at least explicit about our
-> behavior now and it can be further refined down the line.
-
-It's been one hell of a memory lane trip, but my recollection suggest
-that the main goal of the driver was simply initialisation of the mux
-to select the 1MHz parent, because the other option - 32kHz - just
-didn't make any sense whatsoever. And that would be the case on every
-single platform using SP810 I know (or at least: knew), so it's seems
-to me that making the state permanent, as you're suggesting (or I
-think you're suggesting?) it's the right thing to do.
-
-Thanks!
-
-Paweł
+Saalim
