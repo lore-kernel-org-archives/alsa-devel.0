@@ -4,88 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24D11C7618D
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Apr 2023 20:27:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B45BC6FD1D
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Apr 2023 03:34:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74882EE0;
-	Thu,  6 Apr 2023 22:26:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74882EE0
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4B25EC5;
+	Fri,  7 Apr 2023 05:33:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4B25EC5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680812848;
-	bh=z0gnI4xz6i2X3pKzDPyukg2dlEsKFFAw010FtVx1YaQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=SR6pn/tQuwMzwO94LptqWA5cnS7+21ndxvZlmkF3WmQVcfGvx5+IlwNBtXurTdzgV
-	 yN+SS18gOvd3bqofOv59Nk3Uv/29jz1P4522Gcif7XwH9/HrfBTAL6gaRB/ugSuJej
-	 32al1hVTUF9eEXLHydkRaUeITRzXEH5svFPApX3Y=
+	s=default; t=1680838457;
+	bh=PfGKAKBrG+GjHn8xFk2tMGWJ7B8hj/Sm0d2srLZtHD8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=I0q1KqCQC3ID2scDqcNj+0C00jmIfHD2/BHRT7HCBQYuinvd1WREKRslibGrDriWK
+	 hAdNOl05R+fsl00ciwD3+F+9ZYlGUuwVwkJYt5BCpFWWGk99bhqkqQJ1WaaTn88DxC
+	 qKNr8rhBTObi+GQ6Ufj6L0nozIo5Yel6fhWs4f5s=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4286AF80171;
-	Thu,  6 Apr 2023 22:26:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3ACFDF80149;
+	Fri,  7 Apr 2023 05:33:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 244ADF80149; Thu,  6 Apr 2023 22:26:12 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E5E10F80149
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2023 22:26:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5E10F80149
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=cnuNuqJP
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 89AC564328;
-	Thu,  6 Apr 2023 20:26:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCD85C433EF;
-	Thu,  6 Apr 2023 20:26:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1680812766;
-	bh=z0gnI4xz6i2X3pKzDPyukg2dlEsKFFAw010FtVx1YaQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cnuNuqJPRT+naE4FT6Idl0PmuyfHxXLrHLCcEGQUNbXjrYXHlfPFBG6Fsl/9ZnLJn
-	 m4iaxLa1mQSus8aMS/oe4SthXZMbrymt6vCmo4Th8npTJkz5+Ovybe6gGRqlGebTmQ
-	 BqwBOIV92qjJNjEoCJtwiIR2YxtWC3wUbF1cc+5lGca8Af56GT+lGrUFDJQr3oMEs6
-	 YpTNUZvwhl3jTn+r6xkabr4QwfECEtZZig+t/26rA6Es9CkrHbWAoyaVs5BJC13yXA
-	 OOQopOY3KqIzKRizrz17ghtgN5nAiWjV0+IFqZM6Xr3WG2SQhzUpQ/dK6K+HgOGxVm
-	 PCIpXshlSkbig==
-Date: Thu, 6 Apr 2023 21:26:00 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: wm8523: Convert to dtschema
-Message-ID: <2c32b1e0-20f7-4d9f-9dbc-8725562e456e@sirena.org.uk>
-References: <20230405203419.5621-1-danascape@gmail.com>
- <2dc882b7-d09f-dfa0-67a1-3f9e6f1ac457@linaro.org>
+	id A122FF8026A; Fri,  7 Apr 2023 05:32:55 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 80B00F8015B
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2023 05:32:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80B00F8015B
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="a/w5QI6652HIyVVV"
-Content-Disposition: inline
-In-Reply-To: <2dc882b7-d09f-dfa0-67a1-3f9e6f1ac457@linaro.org>
-X-Cookie: Man and wife make one fool.
-Message-ID-Hash: KM5XTUI3RYY4PULFUABLCRNUVMH75BZX
-X-Message-ID-Hash: KM5XTUI3RYY4PULFUABLCRNUVMH75BZX
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1680838368521046638-webhooks-bot@alsa-project.org>
+References: <1680838368521046638-webhooks-bot@alsa-project.org>
+Subject: [question] [ucm] how to manage the ucm and ucm2 for different kernels
+Message-Id: <20230407033255.A122FF8026A@alsa1.perex.cz>
+Date: Fri,  7 Apr 2023 05:32:55 +0200 (CEST)
+Message-ID-Hash: JI77MFQX5LMXCZWB6ZTWTTG6L7ACO6HH
+X-Message-ID-Hash: JI77MFQX5LMXCZWB6ZTWTTG6L7ACO6HH
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Saalim Quadri <danascape@gmail.com>, lgirdwood@gmail.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, daniel.baluta@nxp.com,
- patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KM5XTUI3RYY4PULFUABLCRNUVMH75BZX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JI77MFQX5LMXCZWB6ZTWTTG6L7ACO6HH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,38 +64,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+alsa-project/alsa-lib issue #312 was opened from leif1992:
 
---a/w5QI6652HIyVVV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I got a problem which confused me for a long time. Wish I can get a good answer from here.
 
-On Thu, Apr 06, 2023 at 07:38:19PM +0200, Krzysztof Kozlowski wrote:
+I write the ucm and ucm2 files for my sound card which can work well with my driver. And I need to support both 4.19 kernel (which use the ucm) and the 5.4 kernel (which use the ucm2). They are all deployed in the /usr/share/alsa. However, I need to install to audio driver for both 4.19 and 5.4 (DKMS). The ucm and ucm2 were both deployed at the same time. When I switch the kernel to 5.4, my ubuntu can't load my UCM files normally, and if I removed the files in the usr/share/alsa/ucm and then reboot the OS. My ucm files in the usr/share/alsa/ucm2 can be loaded normally.
 
-> Please squash all your three WM bindings (wm8711, wm8580 and wm8523)
-> into one binding, if they are the same. Probably other WM from your
-> previous submissions as well. We really do not need binding per each of
-> this simple codecs. If they ever need to grow, then we can split them.
+Would you please help me figure out this incompatibility problem?
 
-At a minimum all of these devices should have separate regulator
-specifications should they ever grow regulator support (and ideally
-would have regulators specified in the binding from the get go).
-
-There's also no reason to restrict simple CODECs to a particular
-manufacturer...
-
---a/w5QI6652HIyVVV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQvKtcACgkQJNaLcl1U
-h9BkDgf+M8IXpNfB37GzGQfw02E0ENuLc4LrP+u4L8FJk6W3CcGjYDaG/RO0qOGX
-uILrCetFV4EAMNAKv7LLFIDcIJGuTcNZFBm+RYJDvu2INOoAYjZIeGWylN/rdKFD
-pvlbQQX2e2jb4QfsqJT5dPbDYWhd+PcIy3hB698TuRCmZ5s8rbYw8Yap/N89ZgBQ
-cTea2MuRLe61spgM6oelea5GgHRKIhiNPCsUjfH+waM24o6KsgaRNcR/tGzIKRfi
-Mfo1ffujsCvmBrH2csO8eP7xgbiDwDLmGTrZcePl7XSXEa0259JcYR8qfErqmMxn
-JdozSGQDt9qVftBf0Bn14hHTVfjoKQ==
-=F4uO
------END PGP SIGNATURE-----
-
---a/w5QI6652HIyVVV--
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/312
+Repository URL: https://github.com/alsa-project/alsa-lib
