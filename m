@@ -4,109 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C56BAC7619A
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Apr 2023 05:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34C3AC77B6E
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Apr 2023 05:28:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 542E5ED8;
-	Wed, 12 Apr 2023 07:27:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 542E5ED8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BA33EDE;
+	Wed, 12 Apr 2023 07:27:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BA33EDE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681277275;
-	bh=2Q1QfDLidWOx0vwCBo7twhIaSputg6KvvaS75C4cpKU=;
-	h=Date:From:To:Subject:CC:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1681277293;
+	bh=fIyqBzzfyedgUnGEiV/NeD5ETe4DmVh2UTm9/xHv3y4=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Ubbi3PW2OAWsMBxmC++NPyAovCT+W29HUf4VCe9nnD9/twVxiTaJ+iZKvkP5mXQrs
-	 rXkqsH7o4qPyt3VjGbg6zJ1u23qB+VxDV65uJQhEvDbBA/WRRD5BshmvASLERP49KK
-	 iim+3HF+yhda5hR+ffQUSumNzTyebGeiqVZ+9i7c=
+	b=B7wZeQOLw9476uPk+GJfla8WJDOyh9VLfrLxEwaE1ZqURv61kP62wiyeHtXzqpdDs
+	 8RY6F1K1qvbPkd03qaQ9rzcgz88SYPSARBZim/lkMh95JNXITI5PrA8dMh6Isewz37
+	 4GI0iqOH1qT5gPvFrcK+JDr3ouXAkvWEvnqu1zjo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3874FF8052D;
-	Wed, 12 Apr 2023 07:26:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09607F8053D;
+	Wed, 12 Apr 2023 07:26:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8268F8032B; Mon, 10 Apr 2023 20:21:15 +0200 (CEST)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+	id 26206F8032B; Mon, 10 Apr 2023 20:38:43 +0200 (CEST)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
+ [IPv6:2a00:1450:4864:20::632])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6E18FF80100
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2023 20:21:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E18FF80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0D195F80100
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2023 20:38:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D195F80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=H4sWVlzd
-Received: by mail-wm1-x32e.google.com with SMTP id gw13so3236261wmb.3
+ header.s=20210112 header.b=B6iBCVkG
+Received: by mail-ej1-x632.google.com with SMTP id ud9so14298228ejc.7
         for <alsa-devel@alsa-project.org>;
- Mon, 10 Apr 2023 11:21:09 -0700 (PDT)
+ Mon, 10 Apr 2023 11:38:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1681150867;
-        h=mime-version:subject:message-id:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=kQfXfFvXsi72YzoleRJnsOA1fZ7sAfMWpub553NMAfk=;
-        b=H4sWVlzd9x9oPf/s2EeTuRbzoQb73u5Q2c2cP5Kt8ADoNLqExDmTU/yGzXoyk44teV
-         RWGb2eqTM8yDHnjLJlVn7KLi6rf4/WocjXCvxeSuI9ypRSK+DGLdBkavfMkCg1m5jtUD
-         LEgbn5mVkoJWNzU9fm4FnUkxhGJGS2HdFkUA+PAesqlrljrg2CYFerdpB5ljCVDjoteO
-         UtB9VB1RHbx/QKFfxf7ACDmGwbWmQKC4M7chTS+IUg0vpYE+7Lk9aprCG4shpeik6rlM
-         TOWMSKhaxf0haofu6ekfPJjB75cUdvJz2goNqHW51Pm/R1+gUy2Zzy46pu386mS/XdNS
-         77HA==
+        d=gmail.com; s=20210112; t=1681151915;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6ES1jInJXE7evTAiiVvJ4B0LrnjwfrosLFdTS3njiZg=;
+        b=B6iBCVkG+cR1+fOZY7qGISLD3lPYamnsZFSnIJgz4z39cFNgWIXaehNf6CcN5NndBX
+         s6TvA4Opw5WNuKngwKpDeTVOu1zI2x4rTS2f3JjxCnz5dTzlM6lEVbF78o+1tVTLCgF3
+         6gSa30AaUOXu0s9o538zAICZ/1I9IZGZ1ZcyyaRRrED5774h+JN5S3adMFLwacEG4FV/
+         2KgfNQra6k6aIUphWlXbapGV0YAlgOxcZMRf5pTKP1j5ceTmSbJ6LA7uroJAuX0A16A/
+         4M/bmiexcHYQjkTJxfwZPdz8XO1P4jL8zAYuMhWjetHLZlwZ3jTGCBBrG83M0vxnmpPM
+         aJ9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681150867;
-        h=mime-version:subject:message-id:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kQfXfFvXsi72YzoleRJnsOA1fZ7sAfMWpub553NMAfk=;
-        b=B9X9bBU1R4qg5Lw6Q9NOCLMKWtUBjg5M78eVSf3YyZYtDapmOvn0KT8RRhyTv11OCq
-         gCZUkKA+f2uHmIEUQR+8I0OLcQCevpjuoyE3RqZu+7R8oVK9KI49Wq+jLRefm0jShWMw
-         HCw8EbgeO9gNXpp/NhiUBahGvLd5s7JmOR44h4tu0HRWnXKPYiAcgX+AWlsNhk2UgSMh
-         heU71QeZnXPyIPqFiAj3dR7+1eTiAOBvPD6E93Xzls7l6qNzP2nDXwGdmsgVI3W3k+w/
-         rR+EgmW3zOBEwYawER2IibkHACRvkcnPjTmpz/KXtxfWnwRye3gswIYMC7Ba6aKjXuq2
-         LJdw==
-X-Gm-Message-State: AAQBX9eWGihUfDxBwCbycTxtWwiPSkakt1KQZROpepVL3jZf0H7DJ4yA
-	PbpCNmvA8HzYHuxoWg+65KU=
+        d=1e100.net; s=20210112; t=1681151915;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6ES1jInJXE7evTAiiVvJ4B0LrnjwfrosLFdTS3njiZg=;
+        b=YMVmj41j1StfvrHdG1DejTDUvJvQggs4rLTiyvgqj0ATV73r6qpwfRHqDn6mERTM30
+         E/W0r6cYf2cSWeefRtxns/vEZrULUVrZrDQ9TqLjJsSGnXrBNTL5nmRB7nvAXJBnqNm1
+         OAgJAm61kJGr2jZujPcPfw9bCPGYrl+VnFGXbF5puTNyuDrZD/ASEfOSvgYRETEw41cm
+         V+FgWz5UzfBu69mmUowqGmvf3MDlpWsrJ9O+KATtOZYvxxNyo5wlglkg/ty7ZrwkpxdT
+         rix+TlRG1yQ9KIgmyxqlM0avOy8YofYOukprGIyPdEmF0mGADJPd8xx8ZLQGrSLbdvV6
+         ephQ==
+X-Gm-Message-State: AAQBX9c5iwChTW2GKR7r/VaWf/Ti+J+hjCcbsfZEMHwQR+lVQix2eYJf
+	cRTTcFqIw1AEi9XM9sBw5WM=
 X-Google-Smtp-Source: 
- AKy350ZMIAFpxLpd9ReNoEeTp1OC6PzsYucoAL0PT5xgSbql/ZW5azf6XuwTuFZiZ+6u/lpQzi54FQ==
-X-Received: by 2002:a1c:7303:0:b0:3ed:276d:81a4 with SMTP id
- d3-20020a1c7303000000b003ed276d81a4mr219044wmb.32.1681150867227;
-        Mon, 10 Apr 2023 11:21:07 -0700 (PDT)
-Received: from cem-g15 ([213.152.187.230])
+ AKy350Y1LpknC1jb9Ian0Ak1N5oFZUyx8RoVLld7pvmNpHG3eGxr7/Byws4lR1g9PV0WnXEFDvccwQ==
+X-Received: by 2002:a17:907:7d92:b0:94a:5195:7b6c with SMTP id
+ oz18-20020a1709077d9200b0094a51957b6cmr7359536ejc.35.1681151915002;
+        Mon, 10 Apr 2023 11:38:35 -0700 (PDT)
+Received: from localhost.localdomain ([213.152.187.230])
         by smtp.gmail.com with ESMTPSA id
- iv11-20020a05600c548b00b003ed29189777sm18613841wmb.47.2023.04.10.11.21.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 10 Apr 2023 11:21:06 -0700 (PDT)
-Date: Mon, 10 Apr 2023 20:21:05 +0200
+ jg7-20020a170907970700b0094bb4c75695sm630283ejc.194.2023.04.10.11.38.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Apr 2023 11:38:34 -0700 (PDT)
 From: Cem Kaya <cemkaya.boun@gmail.com>
-To: Cem Kaya <cemkaya.boun@gmail.com>, "=?utf-8?Q?tiwai=40suse.com?="
- <tiwai@suse.com>, "=?utf-8?Q?perex=40perex.cz?=" <perex@perex.cz>
-Message-ID: <31D1DA75-51AE-4868-B959-F0BB53DBA658@getmailspring.com>
-Subject: Subject: [PATCH v4] ASoC: amd: Add Dell G15 5525 to quirks
-X-Mailer: Mailspring
+To: cemkaya.boun@gmail.com,
+	tiwai@suse.com,
+	perex@perex.cz
+Subject: [PATCH v5] ASoC: amd: Add Dell G15 5525 to quirks list
+Date: Mon, 10 Apr 2023 20:38:15 +0200
+Message-Id: <20230410183814.260518-1-cemkaya.boun@gmail.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-MailFrom: cemkaya.boun@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: CZ4OCIYLU5C7RUCDTI6FNYV74ZROHUIT
-X-Message-ID-Hash: CZ4OCIYLU5C7RUCDTI6FNYV74ZROHUIT
+Message-ID-Hash: 4OR6SGG562QKOYB7EMMRYXEWHRMC2DLQ
+X-Message-ID-Hash: 4OR6SGG562QKOYB7EMMRYXEWHRMC2DLQ
 X-Mailman-Approved-At: Wed, 12 Apr 2023 05:22:34 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-X-Content-Filtered-By: Mailman/MimeDel 3.3.8
-CC: "=?utf-8?Q?mario.limonciello=40amd.com?=" <mario.limonciello@amd.com>,
- "=?utf-8?Q?alsa-devel=40alsa-project.org?=" <alsa-devel@alsa-project.org>,
- "=?utf-8?Q?linux-kernel=40vger.kernel.org?=" <linux-kernel@vger.kernel.org>,
- "=?utf-8?Q?lgirdwood=40gmail.com?=" <lgirdwood@gmail.com>,
- "=?utf-8?Q?broonie=40kernel.org?=" <broonie@kernel.org>
+CC: mario.limonciello@amd.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+ stable@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CZ4OCIYLU5C7RUCDTI6FNYV74ZROHUIT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4OR6SGG562QKOYB7EMMRYXEWHRMC2DLQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,22 +112,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-RnJvbSAyMGZhMmE0ZmJiNThlYjc3NWMwZDQ4NjVjM2NmY2VjZDZhOTRlZjE4IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQ0KRnJvbTogQ2VtIEtheWEgPGNlbWtheWEuYm91bkBnbWFpbC5jb20+DQpE
-YXRlOiBNb24sIDEwIEFwciAyMDIzIDE5OjQzOjU2ICswMjAwDQpTdWJqZWN0OiBbUEFUQ0ggdjRd
-IEFTb0M6IGFtZDogQWRkIERlbGwgRzE1IDU1MjUgdG8gcXVpcmtzIGxpc3QNCg0KQWRkIERlbGwg
-RzE1IDU1MjUgUnl6ZW4gRWRpdGlvbiB0byBxdWlya3MgbGlzdCBmb3IgYWNwNnggc28gdGhhdA0K
-aW50ZXJuYWwgbWljIHdvcmtzLg0KDQpMaW5rOiBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcv
-c2hvd19idWcuY2dpP2lkPTIxNzE1NQ0KQ2M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPg0KU2ln
-bmVkLW9mZi1ieTogQ2VtIEtheWEgPGNlbWtheWEuYm91bkBnbWFpbC5jb20+DQotLS0NCnNvdW5k
-L3NvYy9hbWQveWMvYWNwNngtbWFjaC5jIHwgNyArKysrKysrDQoxIGZpbGUgY2hhbmdlZCwgNyBp
-bnNlcnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvYW1kL3ljL2FjcDZ4LW1hY2gu
-YyBiL3NvdW5kL3NvYy9hbWQveWMvYWNwNngtbWFjaC5jDQppbmRleCBhNDI4ZTE3ZjAzMjUuLmUw
-NDRkODExNDk2ZSAxMDA2NDQNCi0tLSBhL3NvdW5kL3NvYy9hbWQveWMvYWNwNngtbWFjaC5jDQor
-KysgYi9zb3VuZC9zb2MvYW1kL3ljL2FjcDZ4LW1hY2guYw0KQEAgLTQ1LDYgKzQ1LDEzIEBAIHN0
-YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIGFjcDZ4X2NhcmQgPSB7DQp9Ow0KDQpzdGF0aWMgY29u
-c3Qgc3RydWN0IGRtaV9zeXN0ZW1faWQgeWNfYWNwX3F1aXJrX3RhYmxlW10gPSB7DQorIHsNCisg
-LmRyaXZlcl9kYXRhID0gJmFjcDZ4X2NhcmQsDQorIC5tYXRjaGVzID0gew0KKyBETUlfTUFUQ0go
-RE1JX0JPQVJEX1ZFTkRPUiwgIkRlbGwgSW5jLiIpLA0KKyBETUlfTUFUQ0goRE1JX1BST0RVQ1Rf
-TkFNRSwgIkRlbGwgRzE1IDU1MjUiKSwNCisgfQ0KKyB9LA0Kew0KLmRyaXZlcl9kYXRhID0gJmFj
-cDZ4X2NhcmQsDQoubWF0Y2hlcyA9IHsNCi0tDQoyLjQwLjANCg0K
+Add Dell G15 5525 Ryzen Edition to quirks list for acp6x so that
+internal mic works.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217155
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Cem Kaya <cemkaya.boun@gmail.com>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index a428e17f0325..e044d811496e 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -45,6 +45,13 @@ static struct snd_soc_card acp6x_card = {
+ };
+
+ static const struct dmi_system_id yc_acp_quirk_table[] = {
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Dell Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Dell G15 5525"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+--
+2.40.0
+
