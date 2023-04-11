@@ -4,29 +4,29 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CD61C77B6F
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 15:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16887C76196
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 15:28:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50B24F0A;
-	Tue, 11 Apr 2023 17:27:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50B24F0A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0984F06;
+	Tue, 11 Apr 2023 17:27:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0984F06
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681226903;
-	bh=YXzYx6RD1cn41fVnW0DD+Z1KLIBev2KwlwkFKC7mWwk=;
+	s=default; t=1681226916;
+	bh=CGz6dOryt6i+9MyE/ROX0UldLs/32MeJGRQXpIrQOPs=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=naEuAMsHtLzGdxRPaOTX+SyI1edwx3VNlnUmnx376HY8aCBz7OL1u9ZIXVCs/gFvd
-	 gwZkxN5KwgPlzChp4NRkSFBDUw5FSGAhUbzEAL7z8a7chrz5JB7x5maPSppw6KW2hz
-	 0owJ7Fw8B5yAai9MHApQW9ND4nZlQRkHzq5y6u7s=
+	b=MfYF21zfmipcgRZqf07tmyPPz/NnSwAhAGB59Xd0pgjLYcMZjVU8DzQXxFt2U8+y+
+	 4DIkrqlkIqSrPaV8Imm03B9rdkAczLHbCK8z4KPqv7sMIQ/rkANUy+QqS2Ox8xp6GN
+	 QQSm2jNGt/gkr8OfX5O2YJAEIKZtHqZ61uJZNQKo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9943AF80529;
-	Tue, 11 Apr 2023 17:26:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3E31F80563;
+	Tue, 11 Apr 2023 17:26:48 +0200 (CEST)
 To: <broonie@kernel.org>
-Subject: [PATCH 5/6] ASoC: cs35l56: Add basic system suspend handling
-Date: Tue, 11 Apr 2023 16:25:27 +0100
+Subject: [PATCH 2/6] ASoC: cs35l56: Use DAPM widget for firmware PLAY/PAUSE
+Date: Tue, 11 Apr 2023 16:25:24 +0100
 In-Reply-To: <20230411152528.329803-1-rf@opensource.cirrus.com>
 References: <20230411152528.329803-1-rf@opensource.cirrus.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -40,7 +40,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/36TMN5534KGZWXEL6X6TEI727EXVSBMK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPV7HUKEMNRNPTCAUIKCXUZ77TMCZJEO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -50,7 +50,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168122680485.26.15149703897978505351@mailman-core.alsa-project.org>
+ <168122680811.26.11649985628420343041@mailman-core.alsa-project.org>
 From: Richard Fitzgerald via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Richard Fitzgerald <rf@opensource.cirrus.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
@@ -59,7 +59,7 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 655F4F8052E; Tue, 11 Apr 2023 17:26:42 +0200 (CEST)
+	id CB0C2F80529; Tue, 11 Apr 2023 17:26:44 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.8 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -69,31 +69,31 @@ Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E6C9CF8051F
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 17:25:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6C9CF8051F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 51EB1F8032B
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 17:25:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51EB1F8032B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=DM5VoCTC
+ header.s=PODMain02222019 header.b=jXi+jFd/
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33B5cuXK012801;
-	Tue, 11 Apr 2023 10:25:33 -0500
+ 33B5cuXJ012801;
+	Tue, 11 Apr 2023 10:25:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=zshJ2gQKlJ/ynFJsVBq5tsN+HV4UHIDxxL3uWopj5Zg=;
- b=DM5VoCTCloezNlSFakb+9+g4SujZAMi0FjC3NoM+LwJfZwvwHlUyo1vH5fea+mETs+wF
- n/nPUZKx3P1Lmic/e4+3njTWYgBzIga0GIZa/dxCwYpLw4IQupftU7JhzLu6dYSbBYuk
- VzqYcebPvgmi4fwsoKEABbIb3tZ5Jm+56s5sTa4D7MFdqhJDsgAqgFadesjcgp6AM1u6
- /TuWlXj/ANm82f9WfiN7Oa9U1WosZd/88Tq9tBp8xDCuAdlxjmqgutH7/9us6kVgE6Xc
- 9UwpQBRrRG6f0xDfaC6UL5K1aQ9MMz2HWnqmgaCSwp6KNRbK/1xIf/rAIw2/XHsM77sP hw==
+ bh=h7DditDHGmOtptShi/lIy8tnhUVRuZRHJPllhupMv7Y=;
+ b=jXi+jFd/d5f6+uOcY0+gYawFBxHSTTPTIen6w0ZT/ClYXA7wZ3r8m5UHnSJIbHIcfoCN
+ n2LOtY77XJeakIJO2hGiufJ5BOECLkEGJhrKZkLwGwRZwsbET52duW2Lmy+lRmvd2Q3m
+ kiWQHLwNXvvpNL8cAkUefFV0DtppUVuk2VSmLR2IKOLNpz5+fJyuGwTUxMGDnpebeSvI
+ DlWnq60ely5Lo0oAegNb1dFrviY3axlRMUzLtVDp1PtFuSuu2HTxbpOSu1Xuk1xPYaKL
+ dxhhYSuayXHpr7XVZSCKr45PWTSlqLbbHRSrYjXCwE81ULL7SPT2xJALCYOnH3oSMdHl Fw==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pu4pq54a3-6
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pu4pq54a3-5
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Apr 2023 10:25:33 -0500
+	Tue, 11 Apr 2023 10:25:32 -0500
 Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 11 Apr
@@ -103,24 +103,24 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  15.2.1118.26 via Frontend Transport; Tue, 11 Apr 2023 10:25:28 -0500
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8AB8645;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5EA2515A4;
 	Tue, 11 Apr 2023 15:25:28 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 5/6] ASoC: cs35l56: Add basic system suspend handling
-Date: Tue, 11 Apr 2023 16:25:27 +0100
-Message-ID: <20230411152528.329803-6-rf@opensource.cirrus.com>
+Subject: [PATCH 2/6] ASoC: cs35l56: Use DAPM widget for firmware PLAY/PAUSE
+Date: Tue, 11 Apr 2023 16:25:24 +0100
+Message-ID: <20230411152528.329803-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230411152528.329803-1-rf@opensource.cirrus.com>
 References: <20230411152528.329803-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: tx4FykHLpFPC7J6eRbmlP1PzJDlsjyuv
-X-Proofpoint-ORIG-GUID: tx4FykHLpFPC7J6eRbmlP1PzJDlsjyuv
+X-Proofpoint-GUID: 7ADj-nRnMCs-naLvQdERRqpVep_mEc0N
+X-Proofpoint-ORIG-GUID: 7ADj-nRnMCs-naLvQdERRqpVep_mEc0N
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 36TMN5534KGZWXEL6X6TEI727EXVSBMK
-X-Message-ID-Hash: 36TMN5534KGZWXEL6X6TEI727EXVSBMK
+Message-ID-Hash: MPV7HUKEMNRNPTCAUIKCXUZ77TMCZJEO
+X-Message-ID-Hash: MPV7HUKEMNRNPTCAUIKCXUZ77TMCZJEO
 X-MailFrom: prvs=9465f6ee37=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -135,7 +135,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/36TMN5534KGZWXEL6X6TEI727EXVSBMK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPV7HUKEMNRNPTCAUIKCXUZ77TMCZJEO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -144,264 +144,187 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This adds the main handling for system suspend but does not handle
-re-patching the firmware after system resume.
+If we use a DAPM widget instead of mute_stream() to send the
+PLAY command we can issue the plays to multiple amps in parallel.
+With mute_stream each codec driver instance is called one at a
+time so we get N * PS0 delay time.
 
-This is a multi-stage suspend and resume because if there is a
-RESET line it is almost certain that it will be shared by all the
-amps. So every amp must have done its suspend before we can
-assert RESET. Likewise we must de-assert RESET before the amps
-can resume.
+DAPM does each stage on every widget in a card before moving to
+the next stage. So all amps will do the PRE_PMU then all will do
+the POST_PMU. The PLAY is sent in the PRE_PMU so that they all
+power-up in parallel. After the PS0 wait in the first POST_PMU
+all the other amps will also be ready so there won't be any extra
+delay, or it will be negligible.
 
-It's preferable to assert RESET before we turning off regulators, and
-while they power up.
-
-The actual suspend and resume is done by using the pair
-pm_runtime_force_suspend() and pm_runtime_force_resume() to
-re-use our runtime suspend/resume sequences.
-
-pm_runtime_force_suspend() will disable our pm_runtime. If we were
-runtime-resumed it calls our runtime_suspend().
-
-pm_runtime_force_resume() re-enables pm_runtime and if we were
-originally runtime-resumed before the pm_runtime_force_suspend()
-it calls our runtime_resume(). Otherwise it leaves us
-runtime-suspended.
-
-The general process is therefore:
-
- suspend() -> finish dsp_work and then run our runtime_suspend
- suspend_late() -> assert RESET and turn off supplies
- resume_early() -> enable supplies and de-assert RESET
- resume() -> pm_runtime_force_resume()
-
-In addition, to prevent the IRQ handler running in the period
-between pm_runtime_force_suspend() and pm_runtime_force_resume()
-the parent IRQ is temporarily disabled:
- - from suspend until suspend_noirq
- - from resume_noirq until resume
+There's also no point waiting for the MBOX ack in the PRE_PMU.
+We won't see a PS0 state in POST_PMU if it didn't ack the PLAY
+command. So we can save a little extra time.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l56-sdw.c |  26 +++++++
- sound/soc/codecs/cs35l56.c     | 126 +++++++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l56.h     |   6 ++
- 3 files changed, 158 insertions(+)
+ sound/soc/codecs/cs35l56.c | 105 +++++++++++++++++++------------------
+ 1 file changed, 55 insertions(+), 50 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l56-sdw.c b/sound/soc/codecs/cs35l56-sdw.c
-index 448ef3609f4c..947d4e5f4dc9 100644
---- a/sound/soc/codecs/cs35l56-sdw.c
-+++ b/sound/soc/codecs/cs35l56-sdw.c
-@@ -450,6 +450,29 @@ static int __maybe_unused cs35l56_sdw_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
-+static int __maybe_unused cs35l56_sdw_system_suspend(struct device *dev)
-+{
-+	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
-+
-+	if (!cs35l56->init_done)
-+		return 0;
-+
-+	/*
-+	 * Disable SoundWire interrupts.
-+	 * Flush - don't cancel because that could leave an unbalanced pm_runtime_get.
-+	 */
-+	cs35l56->sdw_irq_no_unmask = true;
-+	flush_work(&cs35l56->sdw_irq_work);
-+
-+	/* Mask interrupts and flush in case sdw_irq_work was queued again */
-+	sdw_write_no_pm(cs35l56->sdw_peripheral, CS35L56_SDW_GEN_INT_MASK_1, 0);
-+	sdw_read_no_pm(cs35l56->sdw_peripheral, CS35L56_SDW_GEN_INT_STAT_1);
-+	sdw_write_no_pm(cs35l56->sdw_peripheral, CS35L56_SDW_GEN_INT_STAT_1, 0xFF);
-+	flush_work(&cs35l56->sdw_irq_work);
-+
-+	return cs35l56_system_suspend(dev);
-+}
-+
- static int cs35l56_sdw_probe(struct sdw_slave *peripheral, const struct sdw_device_id *id)
- {
- 	struct device *dev = &peripheral->dev;
-@@ -499,6 +522,9 @@ static int cs35l56_sdw_remove(struct sdw_slave *peripheral)
- 
- static const struct dev_pm_ops cs35l56_sdw_pm = {
- 	SET_RUNTIME_PM_OPS(cs35l56_sdw_runtime_suspend, cs35l56_sdw_runtime_resume, NULL)
-+	SYSTEM_SLEEP_PM_OPS(cs35l56_sdw_system_suspend, cs35l56_system_resume)
-+	LATE_SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend_late, cs35l56_system_resume_early)
-+	/* NOIRQ stage not needed, SoundWire doesn't use a hard IRQ */
- };
- 
- static const struct sdw_device_id cs35l56_sdw_id[] = {
 diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 74abcf1c604a..eb85c27ab087 100644
+index 675aad8e909f..997a5c5acaab 100644
 --- a/sound/soc/codecs/cs35l56.c
 +++ b/sound/soc/codecs/cs35l56.c
-@@ -11,8 +11,10 @@
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/interrupt.h>
- #include <linux/math.h>
- #include <linux/module.h>
-+#include <linux/pm.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-@@ -1154,6 +1156,127 @@ int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56)
- }
- EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_CORE);
+@@ -32,6 +32,23 @@
+ static int cs35l56_dsp_event(struct snd_soc_dapm_widget *w,
+ 			     struct snd_kcontrol *kcontrol, int event);
  
-+int cs35l56_system_suspend(struct device *dev)
++static int cs35l56_mbox_send(struct cs35l56_private *cs35l56, unsigned int command)
 +{
-+	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
-+
-+	dev_dbg(dev, "system_suspend\n");
-+
-+	if (cs35l56->component)
-+		flush_work(&cs35l56->dsp_work);
-+
-+	/*
-+	 * The interrupt line is normally shared, but after we start suspending
-+	 * we can't check if our device is the source of an interrupt, and can't
-+	 * clear it. Prevent this race by temporarily disabling the parent irq
-+	 * until we reach _no_irq.
-+	 */
-+	if (cs35l56->irq)
-+		disable_irq(cs35l56->irq);
-+
-+	return pm_runtime_force_suspend(dev);
-+}
-+EXPORT_SYMBOL_GPL(cs35l56_system_suspend);
-+
-+int cs35l56_system_suspend_late(struct device *dev)
-+{
-+	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
-+
-+	dev_dbg(dev, "system_suspend_late\n");
-+
-+	/*
-+	 * Assert RESET before removing supplies.
-+	 * RESET is usually shared by all amps so it must not be asserted until
-+	 * all driver instances have done their suspend() stage.
-+	 */
-+	if (cs35l56->reset_gpio) {
-+		gpiod_set_value_cansleep(cs35l56->reset_gpio, 0);
-+		usleep_range(CS35L56_RESET_PULSE_MIN_US, CS35L56_RESET_PULSE_MIN_US + 400);
-+	}
-+
-+	regulator_bulk_disable(ARRAY_SIZE(cs35l56->supplies), cs35l56->supplies);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(cs35l56_system_suspend_late);
-+
-+int cs35l56_system_suspend_no_irq(struct device *dev)
-+{
-+	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
-+
-+	dev_dbg(dev, "system_suspend_no_irq\n");
-+
-+	/* Handlers are now disabled so the parent IRQ can safely be re-enabled. */
-+	if (cs35l56->irq)
-+		enable_irq(cs35l56->irq);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(cs35l56_system_suspend_no_irq);
-+
-+int cs35l56_system_resume_no_irq(struct device *dev)
-+{
-+	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
-+
-+	dev_dbg(dev, "system_resume_no_irq\n");
-+
-+	/*
-+	 * WAKE interrupts unmask if the CS35L56 hibernates, which can cause
-+	 * spurious interrupts, and the interrupt line is normally shared.
-+	 * We can't check if our device is the source of an interrupt, and can't
-+	 * clear it, until it has fully resumed. Prevent this race by temporarily
-+	 * disabling the parent irq until we complete resume().
-+	 */
-+	if (cs35l56->irq)
-+		disable_irq(cs35l56->irq);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(cs35l56_system_resume_no_irq);
-+
-+int cs35l56_system_resume_early(struct device *dev)
-+{
-+	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
++	unsigned int val;
 +	int ret;
 +
-+	dev_dbg(dev, "system_resume_early\n");
-+
-+	/* Ensure a spec-compliant RESET pulse. */
-+	if (cs35l56->reset_gpio) {
-+		gpiod_set_value_cansleep(cs35l56->reset_gpio, 0);
-+		usleep_range(CS35L56_RESET_PULSE_MIN_US, CS35L56_RESET_PULSE_MIN_US + 400);
-+	}
-+
-+	/* Enable supplies before releasing RESET. */
-+	ret = regulator_bulk_enable(ARRAY_SIZE(cs35l56->supplies), cs35l56->supplies);
++	regmap_write(cs35l56->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1, command);
++	ret = regmap_read_poll_timeout(cs35l56->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
++				       val, (val == 0),
++				       CS35L56_MBOX_POLL_US, CS35L56_MBOX_TIMEOUT_US);
 +	if (ret) {
-+		dev_err(dev, "system_resume_early failed to enable supplies: %d\n", ret);
++		dev_warn(cs35l56->dev, "MBOX command %#x failed: %d\n", command, ret);
 +		return ret;
 +	}
 +
-+	/* Release shared RESET before drivers start resume(). */
-+	gpiod_set_value_cansleep(cs35l56->reset_gpio, 1);
-+
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(cs35l56_system_resume_early);
 +
-+int cs35l56_system_resume(struct device *dev)
+ static int cs35l56_wait_dsp_ready(struct cs35l56_private *cs35l56)
+ {
+ 	int ret;
+@@ -182,10 +199,45 @@ static SOC_VALUE_ENUM_SINGLE_DECL(cs35l56_sdw1tx6_enum,
+ static const struct snd_kcontrol_new sdw1_tx6_mux =
+ 	SOC_DAPM_ENUM("SDW1TX6 SRC", cs35l56_sdw1tx6_enum);
+ 
++static int cs35l56_play_event(struct snd_soc_dapm_widget *w,
++			      struct snd_kcontrol *kcontrol, int event)
 +{
-+	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(component);
++	unsigned int val;
 +	int ret;
 +
-+	dev_dbg(dev, "system_resume\n");
++	dev_dbg(cs35l56->dev, "play: %d\n", event);
 +
-+	/* Undo pm_runtime_force_suspend() before re-enabling the irq */
-+	ret = pm_runtime_force_resume(dev);
-+	if (cs35l56->irq)
-+		enable_irq(cs35l56->irq);
-+
-+	return ret;
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* Don't wait for ACK, we check in POST_PMU that it completed */
++		return regmap_write(cs35l56->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
++				    CS35L56_MBOX_CMD_AUDIO_PLAY);
++	case SND_SOC_DAPM_POST_PMU:
++		/* Wait for firmware to enter PS0 power state */
++		ret = regmap_read_poll_timeout(cs35l56->regmap,
++					       CS35L56_TRANSDUCER_ACTUAL_PS,
++					       val, (val == CS35L56_PS0),
++					       CS35L56_PS0_POLL_US,
++					       CS35L56_PS0_TIMEOUT_US);
++		if (ret)
++			dev_err(cs35l56->dev, "PS0 wait failed: %d\n", ret);
++		return ret;
++	case SND_SOC_DAPM_POST_PMD:
++		return cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_AUDIO_PAUSE);
++	default:
++		return 0;
++	}
 +}
-+EXPORT_SYMBOL_GPL(cs35l56_system_resume);
 +
- static int cs35l56_dsp_init(struct cs35l56_private *cs35l56)
- {
- 	struct wm_adsp *dsp;
-@@ -1451,6 +1574,9 @@ EXPORT_SYMBOL_NS_GPL(cs35l56_remove, SND_SOC_CS35L56_CORE);
+ static const struct snd_soc_dapm_widget cs35l56_dapm_widgets[] = {
+ 	SND_SOC_DAPM_REGULATOR_SUPPLY("VDD_B", 0, 0),
+ 	SND_SOC_DAPM_REGULATOR_SUPPLY("VDD_AMP", 0, 0),
  
- const struct dev_pm_ops cs35l56_pm_ops_i2c_spi = {
- 	SET_RUNTIME_PM_OPS(cs35l56_runtime_suspend, cs35l56_runtime_resume_i2c_spi, NULL)
-+	SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend, cs35l56_system_resume)
-+	LATE_SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend_late, cs35l56_system_resume_early)
-+	NOIRQ_SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend_no_irq, cs35l56_system_resume_no_irq)
++	SND_SOC_DAPM_SUPPLY("PLAY", SND_SOC_NOPM, 0, 0, cs35l56_play_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
++
+ 	SND_SOC_DAPM_OUT_DRV("AMP", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_OUTPUT("SPK"),
+ 
+@@ -252,6 +304,9 @@ static const struct snd_soc_dapm_route cs35l56_audio_map[] = {
+ 	{ "AMP", NULL, "VDD_B" },
+ 	{ "AMP", NULL, "VDD_AMP" },
+ 
++	{ "ASP1 Playback", NULL, "PLAY" },
++	{ "SDW1 Playback", NULL, "PLAY" },
++
+ 	{ "ASP1RX1", NULL, "ASP1 Playback" },
+ 	{ "ASP1RX2", NULL, "ASP1 Playback" },
+ 	{ "DSP1", NULL, "ASP1RX1" },
+@@ -288,23 +343,6 @@ static const struct snd_soc_dapm_route cs35l56_audio_map[] = {
+ 	{ "SDW1 Capture", NULL, "SDW1 TX6 Source" },
  };
- EXPORT_SYMBOL_NS_GPL(cs35l56_pm_ops_i2c_spi, SND_SOC_CS35L56_CORE);
  
-diff --git a/sound/soc/codecs/cs35l56.h b/sound/soc/codecs/cs35l56.h
-index dc91cd7d877f..50278dafc9ca 100644
---- a/sound/soc/codecs/cs35l56.h
-+++ b/sound/soc/codecs/cs35l56.h
-@@ -67,6 +67,12 @@ extern const struct dev_pm_ops cs35l56_pm_ops_i2c_spi;
+-static int cs35l56_mbox_send(struct cs35l56_private *cs35l56, unsigned int command)
+-{
+-	unsigned int val;
+-	int ret;
+-
+-	regmap_write(cs35l56->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1, command);
+-	ret = regmap_read_poll_timeout(cs35l56->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
+-				       val, (val == 0),
+-				       CS35L56_MBOX_POLL_US, CS35L56_MBOX_TIMEOUT_US);
+-	if (ret) {
+-		dev_warn(cs35l56->dev, "MBOX command %#x failed: %d\n", command, ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+ static int cs35l56_dsp_event(struct snd_soc_dapm_widget *w,
+ 			     struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -611,43 +649,11 @@ static int cs35l56_asp_dai_set_sysclk(struct snd_soc_dai *dai,
+ 	return 0;
+ }
  
- int cs35l56_runtime_suspend(struct device *dev);
- int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56);
-+int cs35l56_system_suspend(struct device *dev);
-+int cs35l56_system_suspend_late(struct device *dev);
-+int cs35l56_system_suspend_no_irq(struct device *dev);
-+int cs35l56_system_resume_no_irq(struct device *dev);
-+int cs35l56_system_resume_early(struct device *dev);
-+int cs35l56_system_resume(struct device *dev);
- irqreturn_t cs35l56_irq(int irq, void *data);
- int cs35l56_irq_request(struct cs35l56_private *cs35l56);
- int cs35l56_common_probe(struct cs35l56_private *cs35l56);
+-static int cs35l56_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+-{
+-	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(dai->component);
+-	unsigned int val;
+-	int ret;
+-
+-	dev_dbg(cs35l56->dev, "%s: %d %s\n", __func__, stream, mute ? "mute" : "unmute");
+-
+-	if (stream != SNDRV_PCM_STREAM_PLAYBACK)
+-		return 0;
+-
+-	if (mute) {
+-		ret = cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_AUDIO_PAUSE);
+-	} else {
+-		ret = cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_AUDIO_PLAY);
+-		if (ret == 0) {
+-			/* Wait for firmware to enter PS0 power state */
+-			ret = regmap_read_poll_timeout(cs35l56->regmap,
+-						       CS35L56_TRANSDUCER_ACTUAL_PS,
+-						       val, (val == CS35L56_PS0),
+-						       CS35L56_PS0_POLL_US,
+-						       CS35L56_PS0_TIMEOUT_US);
+-			if (ret)
+-				dev_err(cs35l56->dev, "PS0 wait failed: %d\n", ret);
+-			ret = 0;
+-		}
+-	}
+-
+-	return ret;
+-}
+-
+ static const struct snd_soc_dai_ops cs35l56_ops = {
+ 	.set_fmt = cs35l56_asp_dai_set_fmt,
+ 	.set_tdm_slot = cs35l56_asp_dai_set_tdm_slot,
+ 	.hw_params = cs35l56_asp_dai_hw_params,
+ 	.set_sysclk = cs35l56_asp_dai_set_sysclk,
+-	.mute_stream = cs35l56_mute_stream,
+ };
+ 
+ static void cs35l56_sdw_dai_shutdown(struct snd_pcm_substream *substream,
+@@ -749,7 +755,6 @@ static const struct snd_soc_dai_ops cs35l56_sdw_dai_ops = {
+ 	.shutdown = cs35l56_sdw_dai_shutdown,
+ 	.hw_params = cs35l56_sdw_dai_hw_params,
+ 	.hw_free = cs35l56_sdw_dai_hw_free,
+-	.mute_stream = cs35l56_mute_stream,
+ 	.set_stream = cs35l56_sdw_dai_set_stream,
+ };
+ 
 -- 
 2.30.2
 
