@@ -4,73 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99BF7C77B6F
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 14:20:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3916C77B6F
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 14:20:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA16DF02;
-	Tue, 11 Apr 2023 16:19:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA16DF02
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD596F0C;
+	Tue, 11 Apr 2023 16:20:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD596F0C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681222827;
-	bh=CRz1qKpKwD8iOnTccK2DJ8nejiS+LrBWdZansG+v2EA=;
+	s=default; t=1681222855;
+	bh=YFzILxpIYiv63ImDz5bEYdEX92IZXgELxHml31Egi9w=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JcEN0sCEP6oj8ODU/UevdO+L1ziJkaYNSRGo+akx5cS8Kf+L2lQ+10Nh8MjAWDTUM
-	 8QDHdTdoDFLQInlhZJ3z/lhdQhDt41mtW8nIICuSJYa8K9CSL5Fah1y3E/T9eZz/n6
-	 dIduC6dEWWigxmlkQ6hhURNfq49GbRdrdAL/m2co=
+	b=E+Ze6xekDGLi+e3f2Orf6GVfrGVMXjOhopVLmDc/rLLwyvHy5lmS1KV56n3A8F4XL
+	 HFMpsaqxVGESbX1xnHv2xvEJGqVAHzckYUhxtPITl4cMezVZVIASfP2x3NFcnkoUMB
+	 WRrZTWBTTsSOS0ZwJEe6Hlv4Z4TOYu0Fouh1X6bg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3F92F80448;
-	Tue, 11 Apr 2023 16:19:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DE24F8051F;
+	Tue, 11 Apr 2023 16:19:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59DD8F80448; Tue, 11 Apr 2023 16:19:11 +0200 (CEST)
+	id 5ACADF80448; Tue, 11 Apr 2023 16:19:13 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E8D36F80149
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 16:19:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8D36F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 05DB6F80149
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 16:19:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05DB6F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ts4sT5p2
+ header.s=k20201202 header.b=tYOiw23H
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id B38F46258A;
-	Tue, 11 Apr 2023 14:19:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76958C4339B;
-	Tue, 11 Apr 2023 14:19:01 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A7BE16275F;
+	Tue, 11 Apr 2023 14:19:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77521C4339B;
+	Tue, 11 Apr 2023 14:19:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1681222744;
-	bh=CRz1qKpKwD8iOnTccK2DJ8nejiS+LrBWdZansG+v2EA=;
+	s=k20201202; t=1681222749;
+	bh=YFzILxpIYiv63ImDz5bEYdEX92IZXgELxHml31Egi9w=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ts4sT5p2+hBzUiZXcfVFsOx79tgIGcMH1lo+o6Rs1Ct7XWGHd/ynTuAWO1yazDV8h
-	 m73m6+/csj4UjqarwfQ76oOBMoCF40nOdoTe3dtlgHJOH2fAiQ7n+v6hrdYs9mqlW3
-	 5HIQSZRaerGGJFiwwOq+EAjY/UqVDLKoKjbPdth1fomaiHyG887M0vEtOZye6hcUrQ
-	 JjMUBDv0SAnvEfUumaO+aO+Q+wtuX7u5MdbwHPdgCv8lazawaxFMSM67bBzHv9oUlH
-	 8YK00fregUCzwove319mBVhj26tc8L5x0OnIEOgbsOZO0WpHV5YYpIPgj1IoKZpdyy
-	 wGhtVG2+lfvzw==
+	b=tYOiw23H9xCmwv7lxuKfWTY+u4Mr5SGESCD2nPbHJQCm2POY2NGFGv1XyMgGIjBwN
+	 RF9vFT9yZeJo8zU+1NLC9D5UiGRuaZ9af5tlexNI0bUYZEicW4ImdNIZIpeM0ZRra8
+	 TgOExksGs1nvAIlN1e7AFAXnP6vqMpDI0GImVGOnwKf6mbLagutxCgHiXz1151Wu14
+	 6SE+QQNwzDbqIVlUjZFEd/CB39nw5qYURnH5G0CB6AM87y5jsJkefxLhSDlJJqKhsF
+	 VK+zn0woJV6CKxrcHQVxILYIvjGTY/+vBj5w88G4w8J9q3rQD8isiPp/w1cpHSXaFW
+	 489SQA60dewPg==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Trevor Wu <trevor.wu@mediatek.com>, Guenter Roeck <groeck@chromium.org>,
- Aashish Sharma <shraash@google.com>
-In-Reply-To: <20230411003431.4048700-1-shraash@google.com>
-References: <20230411003431.4048700-1-shraash@google.com>
-Subject: Re: [PATCH] ASoC: mediatek: common: Fix refcount leak in
- parse_dai_link_info
-Message-Id: <168122274119.54453.4476599786792187877.b4-ty@kernel.org>
-Date: Tue, 11 Apr 2023 15:19:01 +0100
+To: tiwai@suse.com, perex@perex.cz, Cem Kaya <cemkaya.boun@gmail.com>
+In-Reply-To: <20230410183814.260518-1-cemkaya.boun@gmail.com>
+References: <20230410183814.260518-1-cemkaya.boun@gmail.com>
+Subject: Re: [PATCH v5] ASoC: amd: Add Dell G15 5525 to quirks list
+Message-Id: <168122274720.54453.13789305143841583675.b4-ty@kernel.org>
+Date: Tue, 11 Apr 2023 15:19:07 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-00303
-Message-ID-Hash: GM3JCVCD2AYNJIL7GROS6DPUP4CNTGKK
-X-Message-ID-Hash: GM3JCVCD2AYNJIL7GROS6DPUP4CNTGKK
+Message-ID-Hash: NWZ77C7IKYCBICJAD2QEIBP356ITZYZT
+X-Message-ID-Hash: NWZ77C7IKYCBICJAD2QEIBP356ITZYZT
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -78,15 +73,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- kernel test robot <lkp@intel.com>, Julia Lawall <julia.lawall@inria.fr>
+CC: mario.limonciello@amd.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com, stable@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GM3JCVCD2AYNJIL7GROS6DPUP4CNTGKK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NWZ77C7IKYCBICJAD2QEIBP356ITZYZT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,11 +89,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 11 Apr 2023 06:04:31 +0530, Aashish Sharma wrote:
-> Add missing of_node_put()s before the returns to balance
-> of_node_get()s and of_node_put()s, which may get unbalanced
-> in case the for loop 'for_each_available_child_of_node' returns
-> early.
+On Mon, 10 Apr 2023 20:38:15 +0200, Cem Kaya wrote:
+> Add Dell G15 5525 Ryzen Edition to quirks list for acp6x so that
+> internal mic works.
 > 
 > 
 
@@ -109,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: common: Fix refcount leak in parse_dai_link_info
-      commit: beed115c2ce78f990222a29abed042582df4e87c
+[1/1] ASoC: amd: Add Dell G15 5525 to quirks list
+      commit: faf15233e59052f4d61cad2da6e56daf33124d96
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
