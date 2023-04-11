@@ -4,30 +4,29 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD6ABC77B70
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 15:28:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CD61C77B6F
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 15:28:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EAAFF11;
-	Tue, 11 Apr 2023 17:27:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EAAFF11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50B24F0A;
+	Tue, 11 Apr 2023 17:27:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50B24F0A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681226890;
-	bh=Y51UQ2ugAy2nOw3puPqR97e5FQ4fHG7M3xmAcy9F10A=;
+	s=default; t=1681226903;
+	bh=YXzYx6RD1cn41fVnW0DD+Z1KLIBev2KwlwkFKC7mWwk=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=UMX0uS8uNX+5PkmRuexzw7Sq+9dqGyrAoWApo8NyeXFsOAGNaYX1iseLpXpC9repe
-	 a+UaXHxpdLx6jPt6SWYB9JX+2UFquXI6cmclIWs6aUVKDLY91686oMDpYV9RL5CK56
-	 EpydKsO+MXffu8mCg9qZvORVbPjfKGDoL+uuM7ps=
+	b=naEuAMsHtLzGdxRPaOTX+SyI1edwx3VNlnUmnx376HY8aCBz7OL1u9ZIXVCs/gFvd
+	 gwZkxN5KwgPlzChp4NRkSFBDUw5FSGAhUbzEAL7z8a7chrz5JB7x5maPSppw6KW2hz
+	 0owJ7Fw8B5yAai9MHApQW9ND4nZlQRkHzq5y6u7s=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE1DFF80552;
-	Tue, 11 Apr 2023 17:25:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9943AF80529;
+	Tue, 11 Apr 2023 17:26:45 +0200 (CEST)
 To: <broonie@kernel.org>
-Subject: [PATCH 3/6] ASoC: cs35l56: Skip first init_completion wait in
- dsp_work if init_done
-Date: Tue, 11 Apr 2023 16:25:25 +0100
+Subject: [PATCH 5/6] ASoC: cs35l56: Add basic system suspend handling
+Date: Tue, 11 Apr 2023 16:25:27 +0100
 In-Reply-To: <20230411152528.329803-1-rf@opensource.cirrus.com>
 References: <20230411152528.329803-1-rf@opensource.cirrus.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -41,7 +40,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IHLDYBNWEZIEEGRSEDAUZILTRWSNEUPH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/36TMN5534KGZWXEL6X6TEI727EXVSBMK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -51,7 +50,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168122675139.26.1346332199626475851@mailman-core.alsa-project.org>
+ <168122680485.26.15149703897978505351@mailman-core.alsa-project.org>
 From: Richard Fitzgerald via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Richard Fitzgerald <rf@opensource.cirrus.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
@@ -60,69 +59,68 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1CCCF80534; Tue, 11 Apr 2023 17:25:47 +0200 (CEST)
+	id 655F4F8052E; Tue, 11 Apr 2023 17:26:42 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-0.8 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CDF97F80448
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 17:25:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDF97F80448
+	by alsa1.perex.cz (Postfix) with ESMTPS id E6C9CF8051F
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 17:25:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6C9CF8051F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=Rdn+cz2P
+ header.s=PODMain02222019 header.b=DM5VoCTC
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33B5cuXH012801;
-	Tue, 11 Apr 2023 10:25:31 -0500
+ 33B5cuXK012801;
+	Tue, 11 Apr 2023 10:25:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=VR8dS9XHi/tcgg98tMyvu5oqdaqQI1zEFWEB3e2GIBY=;
- b=Rdn+cz2PuBzL5/nLw7ZZd+bzotn5bAQU7bm7EuXWXvgYoH/upMoYC6qDk5Abml4ndy4v
- cyHFtHdwxs4Otgq4BRmxkDBoUMLbKPBbAGDUdhX74rD20VEHeBLSxtygp1UscMXrYb8+
- 6/0UbjZ7capl9N97eQhA4fSl6TAaX7l38P711OEAeBwwY8D27mE4/pXCxtvmQ540AxOO
- y+p2Py6Jv/on7ImAJZCpLKMvGxOoLQnzY0bPDQ1KAaGYv8E7k5yWywsEq2OOENX4dhRz
- 3kgBXZyz4g6bmiiUq3gSJy22bJht4Pxz/5eYqnjnx0XHY0KX0IGa230Ftk3ds7xtxdKY Fg==
+ bh=zshJ2gQKlJ/ynFJsVBq5tsN+HV4UHIDxxL3uWopj5Zg=;
+ b=DM5VoCTCloezNlSFakb+9+g4SujZAMi0FjC3NoM+LwJfZwvwHlUyo1vH5fea+mETs+wF
+ n/nPUZKx3P1Lmic/e4+3njTWYgBzIga0GIZa/dxCwYpLw4IQupftU7JhzLu6dYSbBYuk
+ VzqYcebPvgmi4fwsoKEABbIb3tZ5Jm+56s5sTa4D7MFdqhJDsgAqgFadesjcgp6AM1u6
+ /TuWlXj/ANm82f9WfiN7Oa9U1WosZd/88Tq9tBp8xDCuAdlxjmqgutH7/9us6kVgE6Xc
+ 9UwpQBRrRG6f0xDfaC6UL5K1aQ9MMz2HWnqmgaCSwp6KNRbK/1xIf/rAIw2/XHsM77sP hw==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pu4pq54a3-3
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pu4pq54a3-6
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Apr 2023 10:25:31 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+	Tue, 11 Apr 2023 10:25:33 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 11 Apr
  2023 10:25:28 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Tue, 11 Apr 2023 10:25:28 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 11 Apr 2023 10:25:28 -0500
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6EED115B6;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8AB8645;
 	Tue, 11 Apr 2023 15:25:28 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 3/6] ASoC: cs35l56: Skip first init_completion wait in
- dsp_work if init_done
-Date: Tue, 11 Apr 2023 16:25:25 +0100
-Message-ID: <20230411152528.329803-4-rf@opensource.cirrus.com>
+Subject: [PATCH 5/6] ASoC: cs35l56: Add basic system suspend handling
+Date: Tue, 11 Apr 2023 16:25:27 +0100
+Message-ID: <20230411152528.329803-6-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230411152528.329803-1-rf@opensource.cirrus.com>
 References: <20230411152528.329803-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: j7ttbEAZI4NGRR5EORvwAyFKfnenpTWr
-X-Proofpoint-ORIG-GUID: j7ttbEAZI4NGRR5EORvwAyFKfnenpTWr
+X-Proofpoint-GUID: tx4FykHLpFPC7J6eRbmlP1PzJDlsjyuv
+X-Proofpoint-ORIG-GUID: tx4FykHLpFPC7J6eRbmlP1PzJDlsjyuv
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: IHLDYBNWEZIEEGRSEDAUZILTRWSNEUPH
-X-Message-ID-Hash: IHLDYBNWEZIEEGRSEDAUZILTRWSNEUPH
+Message-ID-Hash: 36TMN5534KGZWXEL6X6TEI727EXVSBMK
+X-Message-ID-Hash: 36TMN5534KGZWXEL6X6TEI727EXVSBMK
 X-MailFrom: prvs=9465f6ee37=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -137,7 +135,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IHLDYBNWEZIEEGRSEDAUZILTRWSNEUPH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/36TMN5534KGZWXEL6X6TEI727EXVSBMK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -146,38 +144,264 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-At the start of dsp_work() only wait for init_completion if !init_done.
-This allows system suspend to re-queue dsp_work() without having to
-do a dummy complete() of init_completion.
+This adds the main handling for system suspend but does not handle
+re-patching the firmware after system resume.
 
-A dummy completion in system suspend would have to be conditional on
-init_done. But that would create a possible race condition between our
-system resume and cs35l56_init() in the corner case that we suspend right
-after the SoundWire core has enumerated and reported ATTACHED.
+This is a multi-stage suspend and resume because if there is a
+RESET line it is almost certain that it will be shared by all the
+amps. So every amp must have done its suspend before we can
+assert RESET. Likewise we must de-assert RESET before the amps
+can resume.
 
-It is safer and simpler to have cs35l56_init() as the only place that
-init_completion is completed, and dsp_work() as the only place that
-it is consumed.
+It's preferable to assert RESET before we turning off regulators, and
+while they power up.
+
+The actual suspend and resume is done by using the pair
+pm_runtime_force_suspend() and pm_runtime_force_resume() to
+re-use our runtime suspend/resume sequences.
+
+pm_runtime_force_suspend() will disable our pm_runtime. If we were
+runtime-resumed it calls our runtime_suspend().
+
+pm_runtime_force_resume() re-enables pm_runtime and if we were
+originally runtime-resumed before the pm_runtime_force_suspend()
+it calls our runtime_resume(). Otherwise it leaves us
+runtime-suspended.
+
+The general process is therefore:
+
+ suspend() -> finish dsp_work and then run our runtime_suspend
+ suspend_late() -> assert RESET and turn off supplies
+ resume_early() -> enable supplies and de-assert RESET
+ resume() -> pm_runtime_force_resume()
+
+In addition, to prevent the IRQ handler running in the period
+between pm_runtime_force_suspend() and pm_runtime_force_resume()
+the parent IRQ is temporarily disabled:
+ - from suspend until suspend_noirq
+ - from resume_noirq until resume
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l56.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs35l56-sdw.c |  26 +++++++
+ sound/soc/codecs/cs35l56.c     | 126 +++++++++++++++++++++++++++++++++
+ sound/soc/codecs/cs35l56.h     |   6 ++
+ 3 files changed, 158 insertions(+)
 
+diff --git a/sound/soc/codecs/cs35l56-sdw.c b/sound/soc/codecs/cs35l56-sdw.c
+index 448ef3609f4c..947d4e5f4dc9 100644
+--- a/sound/soc/codecs/cs35l56-sdw.c
++++ b/sound/soc/codecs/cs35l56-sdw.c
+@@ -450,6 +450,29 @@ static int __maybe_unused cs35l56_sdw_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
++static int __maybe_unused cs35l56_sdw_system_suspend(struct device *dev)
++{
++	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
++
++	if (!cs35l56->init_done)
++		return 0;
++
++	/*
++	 * Disable SoundWire interrupts.
++	 * Flush - don't cancel because that could leave an unbalanced pm_runtime_get.
++	 */
++	cs35l56->sdw_irq_no_unmask = true;
++	flush_work(&cs35l56->sdw_irq_work);
++
++	/* Mask interrupts and flush in case sdw_irq_work was queued again */
++	sdw_write_no_pm(cs35l56->sdw_peripheral, CS35L56_SDW_GEN_INT_MASK_1, 0);
++	sdw_read_no_pm(cs35l56->sdw_peripheral, CS35L56_SDW_GEN_INT_STAT_1);
++	sdw_write_no_pm(cs35l56->sdw_peripheral, CS35L56_SDW_GEN_INT_STAT_1, 0xFF);
++	flush_work(&cs35l56->sdw_irq_work);
++
++	return cs35l56_system_suspend(dev);
++}
++
+ static int cs35l56_sdw_probe(struct sdw_slave *peripheral, const struct sdw_device_id *id)
+ {
+ 	struct device *dev = &peripheral->dev;
+@@ -499,6 +522,9 @@ static int cs35l56_sdw_remove(struct sdw_slave *peripheral)
+ 
+ static const struct dev_pm_ops cs35l56_sdw_pm = {
+ 	SET_RUNTIME_PM_OPS(cs35l56_sdw_runtime_suspend, cs35l56_sdw_runtime_resume, NULL)
++	SYSTEM_SLEEP_PM_OPS(cs35l56_sdw_system_suspend, cs35l56_system_resume)
++	LATE_SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend_late, cs35l56_system_resume_early)
++	/* NOIRQ stage not needed, SoundWire doesn't use a hard IRQ */
+ };
+ 
+ static const struct sdw_device_id cs35l56_sdw_id[] = {
 diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 997a5c5acaab..62c44276c121 100644
+index 74abcf1c604a..eb85c27ab087 100644
 --- a/sound/soc/codecs/cs35l56.c
 +++ b/sound/soc/codecs/cs35l56.c
-@@ -866,7 +866,8 @@ static void cs35l56_dsp_work(struct work_struct *work)
- 	unsigned int val;
- 	int ret = 0;
+@@ -11,8 +11,10 @@
+ #include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/gpio/consumer.h>
++#include <linux/interrupt.h>
+ #include <linux/math.h>
+ #include <linux/module.h>
++#include <linux/pm.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+@@ -1154,6 +1156,127 @@ int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56)
+ }
+ EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_CORE);
  
--	if (!wait_for_completion_timeout(&cs35l56->init_completion,
-+	if (!cs35l56->init_done &&
-+	    !wait_for_completion_timeout(&cs35l56->init_completion,
- 					 msecs_to_jiffies(5000))) {
- 		dev_err(cs35l56->dev, "%s: init_completion timed out\n", __func__);
- 		goto complete;
++int cs35l56_system_suspend(struct device *dev)
++{
++	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
++
++	dev_dbg(dev, "system_suspend\n");
++
++	if (cs35l56->component)
++		flush_work(&cs35l56->dsp_work);
++
++	/*
++	 * The interrupt line is normally shared, but after we start suspending
++	 * we can't check if our device is the source of an interrupt, and can't
++	 * clear it. Prevent this race by temporarily disabling the parent irq
++	 * until we reach _no_irq.
++	 */
++	if (cs35l56->irq)
++		disable_irq(cs35l56->irq);
++
++	return pm_runtime_force_suspend(dev);
++}
++EXPORT_SYMBOL_GPL(cs35l56_system_suspend);
++
++int cs35l56_system_suspend_late(struct device *dev)
++{
++	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
++
++	dev_dbg(dev, "system_suspend_late\n");
++
++	/*
++	 * Assert RESET before removing supplies.
++	 * RESET is usually shared by all amps so it must not be asserted until
++	 * all driver instances have done their suspend() stage.
++	 */
++	if (cs35l56->reset_gpio) {
++		gpiod_set_value_cansleep(cs35l56->reset_gpio, 0);
++		usleep_range(CS35L56_RESET_PULSE_MIN_US, CS35L56_RESET_PULSE_MIN_US + 400);
++	}
++
++	regulator_bulk_disable(ARRAY_SIZE(cs35l56->supplies), cs35l56->supplies);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(cs35l56_system_suspend_late);
++
++int cs35l56_system_suspend_no_irq(struct device *dev)
++{
++	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
++
++	dev_dbg(dev, "system_suspend_no_irq\n");
++
++	/* Handlers are now disabled so the parent IRQ can safely be re-enabled. */
++	if (cs35l56->irq)
++		enable_irq(cs35l56->irq);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(cs35l56_system_suspend_no_irq);
++
++int cs35l56_system_resume_no_irq(struct device *dev)
++{
++	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
++
++	dev_dbg(dev, "system_resume_no_irq\n");
++
++	/*
++	 * WAKE interrupts unmask if the CS35L56 hibernates, which can cause
++	 * spurious interrupts, and the interrupt line is normally shared.
++	 * We can't check if our device is the source of an interrupt, and can't
++	 * clear it, until it has fully resumed. Prevent this race by temporarily
++	 * disabling the parent irq until we complete resume().
++	 */
++	if (cs35l56->irq)
++		disable_irq(cs35l56->irq);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(cs35l56_system_resume_no_irq);
++
++int cs35l56_system_resume_early(struct device *dev)
++{
++	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
++	int ret;
++
++	dev_dbg(dev, "system_resume_early\n");
++
++	/* Ensure a spec-compliant RESET pulse. */
++	if (cs35l56->reset_gpio) {
++		gpiod_set_value_cansleep(cs35l56->reset_gpio, 0);
++		usleep_range(CS35L56_RESET_PULSE_MIN_US, CS35L56_RESET_PULSE_MIN_US + 400);
++	}
++
++	/* Enable supplies before releasing RESET. */
++	ret = regulator_bulk_enable(ARRAY_SIZE(cs35l56->supplies), cs35l56->supplies);
++	if (ret) {
++		dev_err(dev, "system_resume_early failed to enable supplies: %d\n", ret);
++		return ret;
++	}
++
++	/* Release shared RESET before drivers start resume(). */
++	gpiod_set_value_cansleep(cs35l56->reset_gpio, 1);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(cs35l56_system_resume_early);
++
++int cs35l56_system_resume(struct device *dev)
++{
++	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
++	int ret;
++
++	dev_dbg(dev, "system_resume\n");
++
++	/* Undo pm_runtime_force_suspend() before re-enabling the irq */
++	ret = pm_runtime_force_resume(dev);
++	if (cs35l56->irq)
++		enable_irq(cs35l56->irq);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(cs35l56_system_resume);
++
+ static int cs35l56_dsp_init(struct cs35l56_private *cs35l56)
+ {
+ 	struct wm_adsp *dsp;
+@@ -1451,6 +1574,9 @@ EXPORT_SYMBOL_NS_GPL(cs35l56_remove, SND_SOC_CS35L56_CORE);
+ 
+ const struct dev_pm_ops cs35l56_pm_ops_i2c_spi = {
+ 	SET_RUNTIME_PM_OPS(cs35l56_runtime_suspend, cs35l56_runtime_resume_i2c_spi, NULL)
++	SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend, cs35l56_system_resume)
++	LATE_SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend_late, cs35l56_system_resume_early)
++	NOIRQ_SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend_no_irq, cs35l56_system_resume_no_irq)
+ };
+ EXPORT_SYMBOL_NS_GPL(cs35l56_pm_ops_i2c_spi, SND_SOC_CS35L56_CORE);
+ 
+diff --git a/sound/soc/codecs/cs35l56.h b/sound/soc/codecs/cs35l56.h
+index dc91cd7d877f..50278dafc9ca 100644
+--- a/sound/soc/codecs/cs35l56.h
++++ b/sound/soc/codecs/cs35l56.h
+@@ -67,6 +67,12 @@ extern const struct dev_pm_ops cs35l56_pm_ops_i2c_spi;
+ 
+ int cs35l56_runtime_suspend(struct device *dev);
+ int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56);
++int cs35l56_system_suspend(struct device *dev);
++int cs35l56_system_suspend_late(struct device *dev);
++int cs35l56_system_suspend_no_irq(struct device *dev);
++int cs35l56_system_resume_no_irq(struct device *dev);
++int cs35l56_system_resume_early(struct device *dev);
++int cs35l56_system_resume(struct device *dev);
+ irqreturn_t cs35l56_irq(int irq, void *data);
+ int cs35l56_irq_request(struct cs35l56_private *cs35l56);
+ int cs35l56_common_probe(struct cs35l56_private *cs35l56);
 -- 
 2.30.2
 
