@@ -4,98 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF56CC76196
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 17:01:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 166BAC76196
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 17:12:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8933F02;
-	Tue, 11 Apr 2023 19:01:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8933F02
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A885F02;
+	Tue, 11 Apr 2023 19:11:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A885F02
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681232512;
-	bh=vfXKcsnaBwQFka1texw0M4BAVLYtN+WCsdiZjdc6HuE=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=LGF/rheKoZMLs2VFIDr8WUFQqACHgPeiC0p7WjBYeu9+QuDRyFB/Ki+sqH4kNNoLa
-	 rySognyRy9yE7PfbmH/jNwVVua8FiZeCvfdLEjgEf7agK3s2+zeHwHJEqDrCQqe/gr
-	 EMAoeLBJSJH1E72DpFVpOZ1Ev5lt2R78KJjzPKm8=
+	s=default; t=1681233162;
+	bh=JzoVnbx8tLn5feqXortZjuu/9XvFQA8pGKKHatA/Zig=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=g2KnUSw2PV/LHA/0ujhd2wRCk6wGQYUdoLXeRHL+kBmMJ9tIZrRAyQq93FEYD/zjC
+	 XAsftXKKCS7iP0mO9ikcG+bITJhFpFbAO8RaP/n1zyTe2dPSaPFh36GzLN3D6+N7DO
+	 OrZNhJyyyDwN8WUxU9Ii8jIS+VLcsGRSW2cBUlk8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2005F8051F;
-	Tue, 11 Apr 2023 19:00:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34F14F80149;
+	Tue, 11 Apr 2023 19:11:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 667F5F8032B; Tue, 11 Apr 2023 19:00:10 +0200 (CEST)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
- [IPv6:2a00:1450:4864:20::62c])
+	id D8481F8032B; Tue, 11 Apr 2023 19:11:25 +0200 (CEST)
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
+ [IPv6:2a00:1450:4864:20::633])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 85B80F80149
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 18:59:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85B80F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5D3B8F80149
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 19:11:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D3B8F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=pWToz4U6
-Received: by mail-ej1-x62c.google.com with SMTP id sh8so22031511ejc.10
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=dFhJFjoA
+Received: by mail-ej1-x633.google.com with SMTP id
+ a640c23a62f3a-94a34a0b531so212891166b.1
         for <alsa-devel@alsa-project.org>;
- Tue, 11 Apr 2023 09:59:56 -0700 (PDT)
+ Tue, 11 Apr 2023 10:11:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1681232394;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=grPBE8/AW9duwaajeZP7b+dDjiUP9gDZ3cyS7x0Oihs=;
-        b=pWToz4U61+BWTGI5jLpq8P1+fo6sLD5Mc/Gm+nUGDHeZB85cL9TEcmjA71LiSsFhWM
-         /LE6IZuzJQVl5jhgetzdMZH0EU1tw1CcVSH16vrzAH+2koLWvj3uQDowXRoNcslhclGR
-         zIiSC3z5m208ODU+CkmFwNhve/hRTfUQVFsc4b4D2C7wst4Og4uuCwfntHCIgvznFWWi
-         NcAiRG0zJDETKSze5g2tJ8GH0IxnRjGSRy84eHTCIQ+0CI+NeUECNUfTF4L5JdBlf6FD
-         sF9R2Cz8dpCc8byPfs9qG8vfK8RMARjxOpIVSvoZAEQ7ejIsDlDajiG12WHq4wV1smGf
-         jLFw==
+        d=linaro.org; s=google; t=1681233079;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pWF1p5GA25OvC5IkhaNGaOg//cQPDFhqXYPwtZg5x8g=;
+        b=dFhJFjoAyK5R5qUYgh0yy2kGnzMaXC2N0bUaD6ds2jGWr+eg21x5h5Y59+bii68GE/
+         O9OXZ1lQnbZX0L9zcVcK68nwXmOBGw7buRRy33ISHJLAuEGTS2nLR1zMzuwp3zmkdtdy
+         YyvHndm7VOLKCNjvlHGUXML5nG5b5Mhp0zotXMfgsTU/+go3Stzmayvk1FaopSuByQqL
+         587TWv3Z5f0LAHsG1rjGcMkqZzYE7zwR2Powj9lwx/wzmD6d7HivHFZ0RvAxu9usT4Ke
+         LUUgzQ3wRAFcgom89mshhLwvHZlZ2KVcium/5sR8t6G9+gXC5f7YtmhjL4kmEjYfkwqm
+         /aQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681232394;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=grPBE8/AW9duwaajeZP7b+dDjiUP9gDZ3cyS7x0Oihs=;
-        b=L9+Z8qfF15Ws5qjXIoohdjqFSiZJiYNALIbfF5LUCRzeuNJ6ySQVeAhYMBLupsTYYw
-         aUVUWvdn0Up/1GUNLNDxhxfezJSsDfTgFj9sRXB9hago2RoUC5BcYpUzMpwP8IDJ5vtY
-         CvZK4xE2JGJ563cDLppZ7BLJwc/vwa2RDLKlq8CxeDibz36VuY8JXu7U57u0YwXTpnOS
-         yS3JdMng88cNg2HsE+RY7Qk52mvgWj9aTsruxe6imfi35Lz39o83eGzae72VoOXv53TY
-         +ck5aRnFQbzzi0V7fH+7cLbIYyxIuCr/aTovXq9kB7zowvXFpDtZsjkjXUPIBCPlrA8J
-         guUw==
-X-Gm-Message-State: AAQBX9fe2LWAv/TBAbi7RknrSV36+YDw8DKP2uJl6kjiAWbSrvoTp1+x
-	POlM4Bfkp07aEgz0TLm4o9A=
+        d=1e100.net; s=20210112; t=1681233079;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pWF1p5GA25OvC5IkhaNGaOg//cQPDFhqXYPwtZg5x8g=;
+        b=3WBiJDaJNkkXQnFlrju7q0MOtwA6v6xqq1iNovTgytp3M5w1wnGxfDv+XGBUJbVXwX
+         p/dvL+B5GSJ9r2EaAv09JylMr6bJaJsxCroV4eVh0qCD9BT90y6Oren4zcxzzBJaa/iu
+         tXeOLYBWApXjWrhzup/1krnuqDuTOJFdbQuczg/L0WEY9H3NKhBNtWSV0v0DaKNbCkJ0
+         TFRjyiz9G3Z+17BI86cGDcWFI7biDpeaCcmWMsf1qNXKYewPLKKfxHK9eNcosS7l5mrM
+         qr2m1NT4akAMyNAcRhmKAuGLOuTkIyN40G5Wsvf84hx8+wd9HclJVt8oqEczZ1Fi2oqt
+         jpcg==
+X-Gm-Message-State: AAQBX9fyuyTjwX2hIkaMdG+WSyRt1JnwJHweBlMtAnQkZMK9NQFSUo31
+	uAFoXHqxa5/kgjZMPtKydO04sw==
 X-Google-Smtp-Source: 
- AKy350YDB905MTox0+gR/vwMshE99CJuQWK4JRRs7QS7l3CVsR5xDfIoYdMawlatVJnqlwj601ICVA==
-X-Received: by 2002:a17:906:3093:b0:932:20a5:5b with SMTP id
- 19-20020a170906309300b0093220a5005bmr8752336ejv.23.1681232394200;
-        Tue, 11 Apr 2023 09:59:54 -0700 (PDT)
-Received: from localhost ([2a02:1210:8629:800:82ee:73ff:feb8:99e3])
-        by smtp.gmail.com with UTF8SMTPSA id
- m9-20020a170906848900b00947a97a42f2sm6337870ejx.103.2023.04.11.09.59.53
+ AKy350a8G75tLqrttqnXqD68zKhR4Bwu9CYLqf4N5npE1a25zQI5U9DFgT07MGKm1HXMLPmOpUvkXg==
+X-Received: by 2002:aa7:c59a:0:b0:504:bba1:de8b with SMTP id
+ g26-20020aa7c59a000000b00504bba1de8bmr3464462edq.19.1681233079521;
+        Tue, 11 Apr 2023 10:11:19 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:f1da:c117:3657:c8a?
+ ([2a02:810d:15c0:828:f1da:c117:3657:c8a])
+        by smtp.gmail.com with ESMTPSA id
+ k6-20020a50cb86000000b00501d73cfc86sm5820199edi.9.2023.04.11.10.11.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Apr 2023 09:59:53 -0700 (PDT)
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To: devicetree@vger.kernel.org
-Subject: [PATCH v3 1/2] dt-bindings: sound: ep93xx: Add I2S description
-Date: Tue, 11 Apr 2023 18:59:50 +0200
-Message-Id: <20230411165951.2335899-1-alexander.sverdlin@gmail.com>
-X-Mailer: git-send-email 2.40.0
+        Tue, 11 Apr 2023 10:11:18 -0700 (PDT)
+Message-ID: <9a7b8fda-9a6a-59e3-3173-1d173b34825a@linaro.org>
+Date: Tue, 11 Apr 2023 19:11:18 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH v3 1/2] dt-bindings: sound: ep93xx: Add I2S description
+Content-Language: en-US
+To: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ devicetree@vger.kernel.org
+References: <20230411165951.2335899-1-alexander.sverdlin@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230411165951.2335899-1-alexander.sverdlin@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 533MGS676F77NAUKHGBHY63VD6EXBM7F
-X-Message-ID-Hash: 533MGS676F77NAUKHGBHY63VD6EXBM7F
-X-MailFrom: alexander.sverdlin@gmail.com
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: DEIRIGU7EIQA2PMVB7REIRGHAYUJJQT3
+X-Message-ID-Hash: DEIRIGU7EIQA2PMVB7REIRGHAYUJJQT3
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Hartley Sweeten <hsweeten@visionengravers.com>,
+CC: Hartley Sweeten <hsweeten@visionengravers.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -106,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/533MGS676F77NAUKHGBHY63VD6EXBM7F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DEIRIGU7EIQA2PMVB7REIRGHAYUJJQT3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,110 +123,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add device tree bindings for Cirrus Logic EP93xx internal SoCs' I2S
-controller.
+On 11/04/2023 18:59, Alexander Sverdlin wrote:
+> Add device tree bindings for Cirrus Logic EP93xx internal SoCs' I2S
+> controller.
+> 
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> ---
+> Changelog:
+> v3:
+> - rebased onto
+>  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> v2:
+>  - Incorporated most of the suggestions from Krzysztof Kozlowski [1]
+>  - Dropped AC97 (deleted from the tree)
+> 
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
----
-Changelog:
-v3:
-- rebased onto
- https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-v2:
- - Incorporated most of the suggestions from Krzysztof Kozlowski [1]
- - Dropped AC97 (deleted from the tree)
+This is a friendly reminder during the review process.
 
-[1]. https://lore.kernel.org/lkml/46d5b6af-23e1-4178-83bc-b4a435b1426e@linaro.org/
+It looks like you received a tag and forgot to add it.
 
- .../bindings/sound/cirrus,ep9301-i2s.yaml     | 66 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 67 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cirrus,ep9301-i2s.yaml
+If you do not know the process, here is a short explanation:
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions. However, there's no need to repost patches *only* to add the
+tags. The upstream maintainer will do that for acks received on the
+version they apply.
 
-diff --git a/Documentation/devicetree/bindings/sound/cirrus,ep9301-i2s.yaml b/Documentation/devicetree/bindings/sound/cirrus,ep9301-i2s.yaml
-new file mode 100644
-index 000000000000..453d493c941f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cirrus,ep9301-i2s.yaml
-@@ -0,0 +1,66 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/cirrus,ep9301-i2s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Cirrus EP93xx I2S Controller
-+
-+description: |
-+  The I2S controller is used to stream serial audio data between the external
-+  I2S CODECs’, ADCs/DACs, and the ARM Core. The controller supports I2S, Left-
-+  and Right-Justified DSP formats.
-+
-+maintainers:
-+  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: cirrus,ep9301-i2s
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 3
-+    maxItems: 3
-+
-+  clock-names:
-+    items:
-+      - const: mclk
-+      - const: sclk
-+      - const: lrclk
-+
-+required:
-+  - compatible
-+  - '#sound-dai-cells'
-+  - reg
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2s: i2s@80820000 {
-+        compatible = "cirrus,ep9301-i2s";
-+        #sound-dai-cells = <0>;
-+        reg = <0x80820000 0x100>;
-+        interrupt-parent = <&vic1>;
-+        interrupts = <28>;
-+        clocks = <&syscon 29>,
-+                 <&syscon 30>,
-+                 <&syscon 31>;
-+        clock-names = "mclk", "sclk", "lrclk";
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e52938f962b5..b39ec6dbcdc9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2072,6 +2072,7 @@ M:	Alexander Sverdlin <alexander.sverdlin@gmail.com>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
- F:	Documentation/devicetree/bindings/iio/adc/cirrus,ep9301-adc.yaml
-+F:	Documentation/devicetree/bindings/sound/cirrus,ep9301-*
- F:	arch/arm/boot/compressed/misc-ep93xx.h
- F:	arch/arm/mach-ep93xx/
- F:	drivers/iio/adc/ep93xx_adc.c
--- 
-2.40.0
+https://elixir.bootlin.com/linux/v5.17/source/Documentation/process/submitting-patches.rst#L540
+
+If a tag was not added on purpose, please state why and what changed.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
 
