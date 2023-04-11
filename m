@@ -4,73 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78571C76196
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 13:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99BF7C77B6F
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 14:20:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 407FEF03;
-	Tue, 11 Apr 2023 15:58:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 407FEF03
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA16DF02;
+	Tue, 11 Apr 2023 16:19:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA16DF02
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681221543;
-	bh=G0dbWK9a/t0F69dWz/H6sf/385PZ7uGbJnFAbsDRnG0=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1681222827;
+	bh=CRz1qKpKwD8iOnTccK2DJ8nejiS+LrBWdZansG+v2EA=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Bjmpa6wQTMMeMiJMwVgqGpGwkpI1yjutODNe4R3n9ZZceUUo5h5A0nA5PneTBvc14
-	 ZA9VEGf4nq1eN2wrBVc65kg5xNP2VzyhWIhuLOdQDy/CsW1py8IiODAMusJGRuw8JY
-	 NtsybwsFkw/VpMrQwW1uolUkDUhRHF8ObW04Ntiw=
+	b=JcEN0sCEP6oj8ODU/UevdO+L1ziJkaYNSRGo+akx5cS8Kf+L2lQ+10Nh8MjAWDTUM
+	 8QDHdTdoDFLQInlhZJ3z/lhdQhDt41mtW8nIICuSJYa8K9CSL5Fah1y3E/T9eZz/n6
+	 dIduC6dEWWigxmlkQ6hhURNfq49GbRdrdAL/m2co=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFDBBF8032B;
-	Tue, 11 Apr 2023 15:57:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3F92F80448;
+	Tue, 11 Apr 2023 16:19:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C4BD8F8032B; Tue, 11 Apr 2023 15:57:45 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id 59DD8F80448; Tue, 11 Apr 2023 16:19:11 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 30624F80149
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 15:57:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30624F80149
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id B3E3823EA1;
-	Tue, 11 Apr 2023 09:57:38 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pmEV8-2cB-00; Tue, 11 Apr 2023 15:57:38 +0200
-Date: Tue, 11 Apr 2023 15:57:38 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 2/2] ALSA: pcm: auto-fill buffer with silence when
- draining playback
-Message-ID: <ZDVnUj2B0EkMiOlA@ugly>
-Mail-Followup-To: Jaroslav Kysela <perex@perex.cz>,
-	alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-References: <20230405201219.2197789-1-oswald.buddenhagen@gmx.de>
- <20230405201219.2197789-2-oswald.buddenhagen@gmx.de>
- <3d75c103-7e94-e6a1-7f3d-7f957c33cddc@perex.cz>
- <ZDEWyjdVE2IocpGY@ugly>
- <22f551f3-deae-1536-bd07-0b9340940ea4@perex.cz>
+	by alsa1.perex.cz (Postfix) with ESMTPS id E8D36F80149
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 16:19:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8D36F80149
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ts4sT5p2
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B38F46258A;
+	Tue, 11 Apr 2023 14:19:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76958C4339B;
+	Tue, 11 Apr 2023 14:19:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1681222744;
+	bh=CRz1qKpKwD8iOnTccK2DJ8nejiS+LrBWdZansG+v2EA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ts4sT5p2+hBzUiZXcfVFsOx79tgIGcMH1lo+o6Rs1Ct7XWGHd/ynTuAWO1yazDV8h
+	 m73m6+/csj4UjqarwfQ76oOBMoCF40nOdoTe3dtlgHJOH2fAiQ7n+v6hrdYs9mqlW3
+	 5HIQSZRaerGGJFiwwOq+EAjY/UqVDLKoKjbPdth1fomaiHyG887M0vEtOZye6hcUrQ
+	 JjMUBDv0SAnvEfUumaO+aO+Q+wtuX7u5MdbwHPdgCv8lazawaxFMSM67bBzHv9oUlH
+	 8YK00fregUCzwove319mBVhj26tc8L5x0OnIEOgbsOZO0WpHV5YYpIPgj1IoKZpdyy
+	 wGhtVG2+lfvzw==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Trevor Wu <trevor.wu@mediatek.com>, Guenter Roeck <groeck@chromium.org>,
+ Aashish Sharma <shraash@google.com>
+In-Reply-To: <20230411003431.4048700-1-shraash@google.com>
+References: <20230411003431.4048700-1-shraash@google.com>
+Subject: Re: [PATCH] ASoC: mediatek: common: Fix refcount leak in
+ parse_dai_link_info
+Message-Id: <168122274119.54453.4476599786792187877.b4-ty@kernel.org>
+Date: Tue, 11 Apr 2023 15:19:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <22f551f3-deae-1536-bd07-0b9340940ea4@perex.cz>
-Message-ID-Hash: NWFUUAX3UPZ3DR7FSWZX5TT65U4CS34S
-X-Message-ID-Hash: NWFUUAX3UPZ3DR7FSWZX5TT65U4CS34S
-X-MailFrom: ossi@kde.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-00303
+Message-ID-Hash: GM3JCVCD2AYNJIL7GROS6DPUP4CNTGKK
+X-Message-ID-Hash: GM3JCVCD2AYNJIL7GROS6DPUP4CNTGKK
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel test robot <lkp@intel.com>, Julia Lawall <julia.lawall@inria.fr>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NWFUUAX3UPZ3DR7FSWZX5TT65U4CS34S/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GM3JCVCD2AYNJIL7GROS6DPUP4CNTGKK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -79,55 +95,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Apr 11, 2023 at 01:09:59PM +0200, Jaroslav Kysela wrote:
->On 08. 04. 23 9:24, Oswald Buddenhagen wrote:
->>> Also, silencing touches the DMA buffer which may not be desired.
->>>
->> hypothetically, yes. but practically? [...]
->
->The buffers can be mmaped so used directly for application and 
->hardware.
->
-yes, and they are owned by the hardware/driver. an application would 
-know better than doing with them anything they were not designed for.
+On Tue, 11 Apr 2023 06:04:31 +0530, Aashish Sharma wrote:
+> Add missing of_node_put()s before the returns to balance
+> of_node_get()s and of_node_put()s, which may get unbalanced
+> in case the for loop 'for_each_available_child_of_node' returns
+> early.
+> 
+> 
 
->>> And lastly drivers can handle draining correctly (stop at the exact
->>> position - see substream->ops->trigger with SNDRV_PCM_TRIGGER_DRAIN
->>> argument).
->>>
->> yeah. hypothetically. afaict, there is exactly one driver which supports
->> this. most (older) hardware wouldn't even have the capability to do such
->> precise timing without external help.
->
->Most hardware has FIFO and most drivers uses the DMA position, so I think that 
->the interrupt -> stop DMA latency may be covered with this FIFO in most cases.
->
-on most hardware it would be quite a stunt to re-program the buffer 
-pointers on the fly to enable a mid-period interrupt. and given the 
-reliability problems insisted on by takashi in the other thread, the 
-approach seems questionable at best. and that's still ignoring the 
-effort of migrating tens (hundreds?) of drivers.
+Applied to
 
->Again, I would improve the documentation.
->
-no amount of documentation will fix a bad api. it's just not how humans 
-work.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
->the silencing is controlled using sw_params, so applications may 
->request the silencing before drain.
->
-yeah, they could, but they don't, and most won't ever.
+Thanks!
 
-you're arguing for not doing a very practical and simple change that 
-will fix a lot of user code at once, for the sake of preventing an 
-entirely hypothetical and implausible problem. that is not a good 
-trade-off.
+[1/1] ASoC: mediatek: common: Fix refcount leak in parse_dai_link_info
+      commit: beed115c2ce78f990222a29abed042582df4e87c
 
->Lastly, I think that you cannot call updated snd_pcm_playback_silence() 
->function with runtime->silence_size == 0.
->
->         if (runtime->silence_size < runtime->boundary) {
->
-you missed the hunk that adjusts the code accordingly.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-regards
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
