@@ -4,28 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA0C7C77B6F
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 15:26:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBD82C77B6F
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 15:27:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0BA8EF8;
-	Tue, 11 Apr 2023 17:26:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0BA8EF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52E7EF05;
+	Tue, 11 Apr 2023 17:26:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52E7EF05
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681226816;
-	bh=x5RqxDLjSk0z2GVWWdkAHnr5fa86Y2cstqFnb1yydHY=;
-	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=gwgfigTIdoC7Ib5L4BmKRpIh1tBsz3WHtWfy5kB5jcicCEic603+bGR96w3tZh0ZE
-	 xz5uMud92n6FsXGcXxAjrEYMnLceLnm09llMuaPenRmeu2VHUCv+/fSv7j7WMOkw6F
-	 QvYBlpMqSVrqU9x08m7OyTAUEY9We57kCookwpIw=
+	s=default; t=1681226844;
+	bh=wVtoPMluT+HbD+tfrKpVbIYt3gzLS28HERMO8KCFL0o=;
+	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From:Reply-To:Cc:From;
+	b=fn63ihpgeEuHa68pXxIkGjLpRoeacapHWKWZ1jgV0WtjMHvX968q0K0B6778jA44V
+	 lKQCdU/1RT+Zbgz1uv60XrhdaIfJgrcEDMOBnCgAsqPJXABpPEmkaxuOmERSGLjC9T
+	 ZL/2yAcv0CU8BHc8lmXQbp8mUlaN2VstcEYW/hIs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D96F8F80524;
-	Tue, 11 Apr 2023 17:25:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2B32F8052D;
+	Tue, 11 Apr 2023 17:25:46 +0200 (CEST)
 To: <broonie@kernel.org>
-Subject: [PATCH 0/6] ASoC: cs35l56: Add system suspend handling
-Date: Tue, 11 Apr 2023 16:25:22 +0100
+Subject: [PATCH 6/6] ASoC: cs35l56: Re-patch firmware after system suspend
+Date: Tue, 11 Apr 2023 16:25:28 +0100
+In-Reply-To: <20230411152528.329803-1-rf@opensource.cirrus.com>
+References: <20230411152528.329803-1-rf@opensource.cirrus.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -37,7 +40,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BFXT66UAJ42YIKHZTQHBKARSMWW7HTOQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YBQEH55QXZ2GEMUCX43KQDOOV6JKOD4Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -47,7 +50,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168122674164.26.7343142697839184525@mailman-core.alsa-project.org>
+ <168122674550.26.8545058503709956172@mailman-core.alsa-project.org>
 From: Richard Fitzgerald via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Richard Fitzgerald <rf@opensource.cirrus.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
@@ -56,7 +59,7 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04453F80529; Tue, 11 Apr 2023 17:25:38 +0200 (CEST)
+	id 9F071F80524; Tue, 11 Apr 2023 17:25:42 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -66,33 +69,33 @@ Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4B55AF8023A
+	by alsa1.perex.cz (Postfix) with ESMTPS id B3CAFF80100
 	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 17:25:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B55AF8023A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3CAFF80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=oWNqFWyO
+ header.s=PODMain02222019 header.b=P0QbHwbR
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33B5cuXF012801;
+ 33B5nsH8029336;
 	Tue, 11 Apr 2023 10:25:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=IDUE8aPv5+jxNFKCCJKdWOof/bnjaMMvSIaTlA9bNcU=;
- b=oWNqFWyO+uHb5+jQtp/n51xZtSQ2V3Je/g3OXvXK0dMOTdOaCnDHXnQP7UKfV2T4tIsP
- nzY40WUDpoLJmqjXYE6BMHUEWYCtHgHVsgi7VqUyo/ib/nnwhfUuooVnuTgshoLI2NoF
- ptNwGulsTqjgUqmON11SP1eFWegZQId8QXS8knX1FB2wyCOgMW0l8Ff7WJI8wZqz103E
- wC4s1W4Sc6qeMeN9EgCw0vUiHtsutCarA9kRsue42CDDZTzxQLwMY5QdT7vev24DlsnD
- g5QgvmG1DjjmYj1OpqnkeSfhz+L0f7K8QjXAHeVasawOsmdxVCfQ5xvFFpk8m+XiIXZ5 oQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pu4pq54a3-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=6ygy8yOQrMF4h+ESCpufA5eR+krnF14NouI1a2OY12M=;
+ b=P0QbHwbRUFD8LR+OlFv+s1w80PsskSQY3RgbuvU0vVMTO4lGNfYZ3hg5fHJAFjm0WSDb
+ zMsQNypXaO/+KlxLB6wKf8Ye7hebByj0ZKVfEc1daBTLM1xPT7+Gh0tDx2Sz+XhvdPX9
+ XfhDBgTE/sfw3Ty9altzzDUOlWtoCsJCvMeZy61gHJK86GdReV+j1Dd5fc9bjnW0968b
+ tomp8HlphuilxGCuvxafGZdPzEA3naVY5EWl+ZE/uxYq+3K/d3hQTJnTaDGtZXck0nNW
+ 0HzHYQjSR+a27BWnR2nPfesqJtCem9deBMiWt16h2jg06AmulAXfmP9pe+NgZPp2/t+8 lg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pu4pq54a4-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Apr 2023 10:25:29 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Tue, 11 Apr 2023 10:25:30 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 11 Apr
  2023 10:25:28 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
@@ -100,22 +103,24 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  Transport; Tue, 11 Apr 2023 10:25:28 -0500
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 40C7445;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9A1753560;
 	Tue, 11 Apr 2023 15:25:28 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 0/6] ASoC: cs35l56: Add system suspend handling
-Date: Tue, 11 Apr 2023 16:25:22 +0100
-Message-ID: <20230411152528.329803-1-rf@opensource.cirrus.com>
+Subject: [PATCH 6/6] ASoC: cs35l56: Re-patch firmware after system suspend
+Date: Tue, 11 Apr 2023 16:25:28 +0100
+Message-ID: <20230411152528.329803-7-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230411152528.329803-1-rf@opensource.cirrus.com>
+References: <20230411152528.329803-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 2QEWHzQlQzCpdtrnPdzQNRGUS7cRrJee
-X-Proofpoint-ORIG-GUID: 2QEWHzQlQzCpdtrnPdzQNRGUS7cRrJee
+X-Proofpoint-GUID: ktI1ak-rDsYuVepHDzrnjs6fl1D85HFD
+X-Proofpoint-ORIG-GUID: ktI1ak-rDsYuVepHDzrnjs6fl1D85HFD
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: BFXT66UAJ42YIKHZTQHBKARSMWW7HTOQ
-X-Message-ID-Hash: BFXT66UAJ42YIKHZTQHBKARSMWW7HTOQ
+Message-ID-Hash: YBQEH55QXZ2GEMUCX43KQDOOV6JKOD4Y
+X-Message-ID-Hash: YBQEH55QXZ2GEMUCX43KQDOOV6JKOD4Y
 X-MailFrom: prvs=9465f6ee37=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -130,7 +135,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BFXT66UAJ42YIKHZTQHBKARSMWW7HTOQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YBQEH55QXZ2GEMUCX43KQDOOV6JKOD4Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -139,30 +144,183 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This set of patches adds handling for system suspend.
-Patches 1..4 make some code changes that simplify the
-suspend implementation, mainly to avoid race conditions.
+Check during cs35l56_system_resume() whether the firmware patch must
+be applied again.
 
-There are two seperate aspects to suspend, and these have
-been done as two patches:
-- the main suspend-resume handling,
-- re-loading the firmware if necessary after resume.
+The FIRMWARE_MISSING flag in the PROTECTION_STATUS register indicates
+whether the firmware has been patched.
 
-Richard Fitzgerald (6):
-  ASoC: cs35l56: Remove quick-cancelling of dsp_work()
-  ASoC: cs35l56: Use DAPM widget for firmware PLAY/PAUSE
-  ASoC: cs35l56: Skip first init_completion wait in dsp_work if
-    init_done
-  ASoC: cs35l56: Always wait for firmware boot in runtime-resume
-  ASoC: cs35l56: Add basic system suspend handling
-  ASoC: cs35l56: Re-patch firmware after system suspend
+In non-secure mode the FIRMWARE_MISSING flag is cleared at the end of
+dsp_work(). If it is set after system-resume we know that dsp_work()
+must be run again.
 
- include/sound/cs35l56.h        |   4 +
- sound/soc/codecs/cs35l56-sdw.c |  36 ++++
- sound/soc/codecs/cs35l56.c     | 335 ++++++++++++++++++++++++++-------
- sound/soc/codecs/cs35l56.h     |   7 +-
- 4 files changed, 308 insertions(+), 74 deletions(-)
+In secure mode the pre-OS loader will have done the secure patching
+and cleared the FIRMWARE_MISSING flag. So this flag does not tell us
+whether firmware memory was lost. But the driver could only be
+downloading non-secure tunings, which is always safe to do.
 
+If the driver has control of RESET we will have asserted it during
+suspend so the firmware patch will have been lost. The driver would only
+have control of RESET in non-secure mode.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ include/sound/cs35l56.h        |  4 ++
+ sound/soc/codecs/cs35l56-sdw.c | 12 +++++-
+ sound/soc/codecs/cs35l56.c     | 67 +++++++++++++++++++++++++++++++++-
+ 3 files changed, 81 insertions(+), 2 deletions(-)
+
+diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
+index 5f8ea2dfaa21..b3300bce74f4 100644
+--- a/include/sound/cs35l56.h
++++ b/include/sound/cs35l56.h
+@@ -95,6 +95,7 @@
+ #define CS35L56_MAIN_RENDER_USER_MUTE			0x3400024
+ #define CS35L56_MAIN_RENDER_USER_VOLUME			0x340002C
+ #define CS35L56_MAIN_POSTURE_NUMBER			0x3400094
++#define CS35L56_PROTECTION_STATUS			0x34000D8
+ #define CS35L56_TRANSDUCER_ACTUAL_PS			0x3400150
+ #define CS35L56_DSP1_YMEM_UNPACKED24_6141		0x3405FF4
+ #define CS35L56_DSP1_PMEM_0				0x3800000
+@@ -216,6 +217,9 @@
+ #define CS35L56_MAIN_POSTURE_MAX			255
+ #define CS35L56_MAIN_POSTURE_MASK			CS35L56_MAIN_POSTURE_MAX
+ 
++/* CS35L56_PROTECTION_STATUS */
++#define CS35L56_FIRMWARE_MISSING			BIT(0)
++
+ /* Software Values */
+ #define CS35L56_HALO_STATE_SHUTDOWN			1
+ #define CS35L56_HALO_STATE_BOOT_DONE			2
+diff --git a/sound/soc/codecs/cs35l56-sdw.c b/sound/soc/codecs/cs35l56-sdw.c
+index 947d4e5f4dc9..e759347423cf 100644
+--- a/sound/soc/codecs/cs35l56-sdw.c
++++ b/sound/soc/codecs/cs35l56-sdw.c
+@@ -473,6 +473,16 @@ static int __maybe_unused cs35l56_sdw_system_suspend(struct device *dev)
+ 	return cs35l56_system_suspend(dev);
+ }
+ 
++static int __maybe_unused cs35l56_sdw_system_resume(struct device *dev)
++{
++	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
++
++	cs35l56->sdw_irq_no_unmask = false;
++	/* runtime_resume re-enables the interrupt */
++
++	return cs35l56_system_resume(dev);
++}
++
+ static int cs35l56_sdw_probe(struct sdw_slave *peripheral, const struct sdw_device_id *id)
+ {
+ 	struct device *dev = &peripheral->dev;
+@@ -522,7 +532,7 @@ static int cs35l56_sdw_remove(struct sdw_slave *peripheral)
+ 
+ static const struct dev_pm_ops cs35l56_sdw_pm = {
+ 	SET_RUNTIME_PM_OPS(cs35l56_sdw_runtime_suspend, cs35l56_sdw_runtime_resume, NULL)
+-	SYSTEM_SLEEP_PM_OPS(cs35l56_sdw_system_suspend, cs35l56_system_resume)
++	SYSTEM_SLEEP_PM_OPS(cs35l56_sdw_system_suspend, cs35l56_sdw_system_resume)
+ 	LATE_SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend_late, cs35l56_system_resume_early)
+ 	/* NOIRQ stage not needed, SoundWire doesn't use a hard IRQ */
+ };
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index eb85c27ab087..18e341744839 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -946,6 +946,7 @@ static void cs35l56_dsp_work(struct work_struct *work)
+ 		goto err_unlock;
+ 	}
+ 
++	regmap_clear_bits(cs35l56->regmap, CS35L56_PROTECTION_STATUS, CS35L56_FIRMWARE_MISSING);
+ 	cs35l56->fw_patched = true;
+ 
+ err_unlock:
+@@ -1026,6 +1027,8 @@ static const struct snd_soc_component_driver soc_component_dev_cs35l56 = {
+ 	.num_controls = ARRAY_SIZE(cs35l56_controls),
+ 
+ 	.set_bias_level = cs35l56_set_bias_level,
++
++	.suspend_bias_off = 1, /* see cs35l56_system_resume() */
+ };
+ 
+ static const struct reg_sequence cs35l56_hibernate_seq[] = {
+@@ -1156,6 +1159,47 @@ int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56)
+ }
+ EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_CORE);
+ 
++static int cs35l56_is_fw_reload_needed(struct cs35l56_private *cs35l56)
++{
++	unsigned int val;
++	int ret;
++
++	/* Nothing to re-patch if we haven't done any patching yet. */
++	if (!cs35l56->fw_patched)
++		return false;
++
++	/*
++	 * If we have control of RESET we will have asserted it so the firmware
++	 * will need re-patching.
++	 */
++	if (cs35l56->reset_gpio)
++		return true;
++
++	/*
++	 * In secure mode FIRMWARE_MISSING is cleared by the BIOS loader so
++	 * can't be used here to test for memory retention.
++	 * Assume that tuning must be re-loaded.
++	 */
++	if (cs35l56->secured)
++		return true;
++
++	ret = pm_runtime_resume_and_get(cs35l56->dev);
++	if (ret) {
++		dev_err(cs35l56->dev, "Failed to runtime_get: %d\n", ret);
++		return ret;
++	}
++
++	ret = regmap_read(cs35l56->regmap, CS35L56_PROTECTION_STATUS, &val);
++	if (ret)
++		dev_err(cs35l56->dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
++	else
++		ret = !!(val & CS35L56_FIRMWARE_MISSING);
++
++	pm_runtime_put_autosuspend(cs35l56->dev);
++
++	return ret;
++}
++
+ int cs35l56_system_suspend(struct device *dev)
+ {
+ 	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
+@@ -1273,7 +1317,28 @@ int cs35l56_system_resume(struct device *dev)
+ 	if (cs35l56->irq)
+ 		enable_irq(cs35l56->irq);
+ 
+-	return ret;
++	if (ret)
++		return ret;
++
++	/* Firmware won't have been loaded if the component hasn't probed */
++	if (!cs35l56->component)
++		return 0;
++
++	ret = cs35l56_is_fw_reload_needed(cs35l56);
++	dev_dbg(cs35l56->dev, "fw_reload_needed: %d\n", ret);
++	if (ret < 1)
++		return ret;
++
++	cs35l56->fw_patched = false;
++	init_completion(&cs35l56->dsp_ready_completion);
++	queue_work(cs35l56->dsp_wq, &cs35l56->dsp_work);
++
++	/*
++	 * suspend_bias_off ensures we are now in BIAS_OFF so there will be
++	 * a BIAS_OFF->BIAS_STANDBY transition to complete dsp patching.
++	 */
++
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(cs35l56_system_resume);
+ 
 -- 
 2.30.2
 
