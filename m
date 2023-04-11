@@ -4,31 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16887C76196
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 15:28:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3DF7C76196
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 16:18:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0984F06;
-	Tue, 11 Apr 2023 17:27:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0984F06
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8929DEF8;
+	Tue, 11 Apr 2023 18:17:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8929DEF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681226916;
-	bh=CGz6dOryt6i+9MyE/ROX0UldLs/32MeJGRQXpIrQOPs=;
-	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	s=default; t=1681229889;
+	bh=31lalTfxEdI/8ju12x41FUfU/Al/UGXdmwm17WQWBN4=;
+	h=Date:To:Subject:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=MfYF21zfmipcgRZqf07tmyPPz/NnSwAhAGB59Xd0pgjLYcMZjVU8DzQXxFt2U8+y+
-	 4DIkrqlkIqSrPaV8Imm03B9rdkAczLHbCK8z4KPqv7sMIQ/rkANUy+QqS2Ox8xp6GN
-	 QQSm2jNGt/gkr8OfX5O2YJAEIKZtHqZ61uJZNQKo=
+	b=UfvwNUjKfyxnli8cNvyqZHG7uoYlEaeHceP+MstC1l1+H+TaFLhw5D8/B8WyJJCHv
+	 gwDEgQYEoBH8y+YzV6KoSHn58QHM8Qwm6jR4/g1NtHnfFNaEIqnIpz4WjxqaKCDZSj
+	 j3sGY3gBJtALipynhZCGeJXTWTxtIW0A0eUAWeEU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3E31F80563;
-	Tue, 11 Apr 2023 17:26:48 +0200 (CEST)
-To: <broonie@kernel.org>
-Subject: [PATCH 2/6] ASoC: cs35l56: Use DAPM widget for firmware PLAY/PAUSE
-Date: Tue, 11 Apr 2023 16:25:24 +0100
-In-Reply-To: <20230411152528.329803-1-rf@opensource.cirrus.com>
-References: <20230411152528.329803-1-rf@opensource.cirrus.com>
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A57EF8032B;
+	Tue, 11 Apr 2023 18:16:56 +0200 (CEST)
+Date: Tue, 11 Apr 2023 18:16:40 +0200
+To: Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH v5 2/5] mfd: Add support for the Lantiq PEF2256 framer
+In-Reply-To: <20230405180023.4aebaa08@bootlin.com>
+References: <20230331094208.41ab4420@bootlin.com>
+ <6d39e9c3-fb6a-4b2a-9889-8fe8d86716d5@linaro.org>
+ <20230331141104.42445da9@bootlin.com>
+ <a642e653-e3e2-c3d2-68cb-1efc92be05bb@linaro.org>
+ <20230331165904.4e7f46a1@bootlin.com>
+ <20230403142822.GA8371@google.com>
+ <20230404092036.2d1cd5d9@bootlin.com>
+ <f7ab2fcc-93fc-ce87-8767-579d33907225@linaro.org>
+ <20230404100759.5bc9cd20@bootlin.com>
+ <143754c2-9e37-4386-af92-174c0df2eb0a@linaro.org>
+ <20230405135450.GF8371@google.com>
+ <20230405180023.4aebaa08@bootlin.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -40,7 +51,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPV7HUKEMNRNPTCAUIKCXUZ77TMCZJEO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5SMP7KHOJ3OJVIO6QV5W7FEAK5LCSP5H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -50,92 +61,100 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168122680811.26.11649985628420343041@mailman-core.alsa-project.org>
-From: Richard Fitzgerald via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com, Richard Fitzgerald <rf@opensource.cirrus.com>
+ <168122981541.26.13005737128909965688@mailman-core.alsa-project.org>
+From: Herve Codina via Alsa-devel <alsa-devel@alsa-project.org>
+Reply-To: Herve Codina <herve.codina@bootlin.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB0C2F80529; Tue, 11 Apr 2023 17:26:44 +0200 (CEST)
+	id 7A54DF8032B; Tue, 11 Apr 2023 18:16:51 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H2,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED shortcircuit=no autolearn=ham
+	autolearn_force=no version=3.4.6
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
+ [217.70.183.201])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 51EB1F8032B
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 17:25:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51EB1F8032B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 63BEEF80149
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 18:16:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63BEEF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=jXi+jFd/
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33B5cuXJ012801;
-	Tue, 11 Apr 2023 10:25:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=h7DditDHGmOtptShi/lIy8tnhUVRuZRHJPllhupMv7Y=;
- b=jXi+jFd/d5f6+uOcY0+gYawFBxHSTTPTIen6w0ZT/ClYXA7wZ3r8m5UHnSJIbHIcfoCN
- n2LOtY77XJeakIJO2hGiufJ5BOECLkEGJhrKZkLwGwRZwsbET52duW2Lmy+lRmvd2Q3m
- kiWQHLwNXvvpNL8cAkUefFV0DtppUVuk2VSmLR2IKOLNpz5+fJyuGwTUxMGDnpebeSvI
- DlWnq60ely5Lo0oAegNb1dFrviY3axlRMUzLtVDp1PtFuSuu2HTxbpOSu1Xuk1xPYaKL
- dxhhYSuayXHpr7XVZSCKr45PWTSlqLbbHRSrYjXCwE81ULL7SPT2xJALCYOnH3oSMdHl Fw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pu4pq54a3-5
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Apr 2023 10:25:32 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 11 Apr
- 2023 10:25:28 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 11 Apr 2023 10:25:28 -0500
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
- [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5EA2515A4;
-	Tue, 11 Apr 2023 15:25:28 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 2/6] ASoC: cs35l56: Use DAPM widget for firmware PLAY/PAUSE
-Date: Tue, 11 Apr 2023 16:25:24 +0100
-Message-ID: <20230411152528.329803-3-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230411152528.329803-1-rf@opensource.cirrus.com>
-References: <20230411152528.329803-1-rf@opensource.cirrus.com>
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=EKMDssOG
+Received: (Authenticated sender: herve.codina@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id EF10F1BF203;
+	Tue, 11 Apr 2023 16:16:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1681229803;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YN1HFAut0wlkhACR1rC7RVWyzDX8GM5pnpZhh86udRk=;
+	b=EKMDssOG843Uardxa6RwBGRbMOzfLVszXIbDuTnWbFZ1B3lncrlUZE++iYyTOzyeat48k7
+	c4g0LlKJTXV/PvvYYgj+aPv3Dw/18k+BqyvXe00AhM2XJV+U5SpZp4EkWwodhOpAISw3y2
+	L5BKZTltFS0CREQXmMmorn5Ya56DHqZJuzUK1SI5i6oezMRh5WOsaOBuuCeUVzoZ6RLJ5V
+	05WE03kqdDkEv0aL/PaqbQfJKN4fDObGcDiEKaMLd4r9anaug2ArnmRnZF/kWNdeGak3pn
+	OcaJh4DOFkxBCDztunLHiPOHVG5Au+YsFQ4ttteU5CeI3yDs0HVDpwwm8YAvTA==
+Date: Tue, 11 Apr 2023 18:16:40 +0200
+From: Herve Codina <herve.codina@bootlin.com>
+To: Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH v5 2/5] mfd: Add support for the Lantiq PEF2256 framer
+Message-ID: <20230411181640.50c19d4e@bootlin.com>
+In-Reply-To: <20230405180023.4aebaa08@bootlin.com>
+References: <20230331094208.41ab4420@bootlin.com>
+ <6d39e9c3-fb6a-4b2a-9889-8fe8d86716d5@linaro.org>
+ <20230331141104.42445da9@bootlin.com>
+ <a642e653-e3e2-c3d2-68cb-1efc92be05bb@linaro.org>
+ <20230331165904.4e7f46a1@bootlin.com>
+ <20230403142822.GA8371@google.com>
+ <20230404092036.2d1cd5d9@bootlin.com>
+ <f7ab2fcc-93fc-ce87-8767-579d33907225@linaro.org>
+ <20230404100759.5bc9cd20@bootlin.com>
+ <143754c2-9e37-4386-af92-174c0df2eb0a@linaro.org>
+ <20230405135450.GF8371@google.com>
+ <20230405180023.4aebaa08@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 7ADj-nRnMCs-naLvQdERRqpVep_mEc0N
-X-Proofpoint-ORIG-GUID: 7ADj-nRnMCs-naLvQdERRqpVep_mEc0N
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: MPV7HUKEMNRNPTCAUIKCXUZ77TMCZJEO
-X-Message-ID-Hash: MPV7HUKEMNRNPTCAUIKCXUZ77TMCZJEO
-X-MailFrom: prvs=9465f6ee37=rf@opensource.cirrus.com
+Message-ID-Hash: 5SMP7KHOJ3OJVIO6QV5W7FEAK5LCSP5H
+X-Message-ID-Hash: 5SMP7KHOJ3OJVIO6QV5W7FEAK5LCSP5H
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com, Richard Fitzgerald <rf@opensource.cirrus.com>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPV7HUKEMNRNPTCAUIKCXUZ77TMCZJEO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5SMP7KHOJ3OJVIO6QV5W7FEAK5LCSP5H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -144,187 +163,153 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-If we use a DAPM widget instead of mute_stream() to send the
-PLAY command we can issue the plays to multiple amps in parallel.
-With mute_stream each codec driver instance is called one at a
-time so we get N * PS0 delay time.
+Hi Lee,
 
-DAPM does each stage on every widget in a card before moving to
-the next stage. So all amps will do the PRE_PMU then all will do
-the POST_PMU. The PLAY is sent in the PRE_PMU so that they all
-power-up in parallel. After the PS0 wait in the first POST_PMU
-all the other amps will also be ready so there won't be any extra
-delay, or it will be negligible.
+On Wed, 5 Apr 2023 18:00:23 +0200
+Herve Codina <herve.codina@bootlin.com> wrote:
 
-There's also no point waiting for the MBOX ack in the PRE_PMU.
-We won't see a PS0 state in POST_PMU if it didn't ack the PLAY
-command. So we can save a little extra time.
+> Hi Lee,
+> On Wed, 5 Apr 2023 14:54:50 +0100
+> Lee Jones <lee@kernel.org> wrote:
+> 
+> > On Tue, 04 Apr 2023, Krzysztof Kozlowski wrote:
+> >   
+> > > On 04/04/2023 10:07, Herve Codina wrote:
+> > >    
+> > > >>> So, the structure I have in mind:
+> > > >>> - pef2256.c (MFD)
+> > > >>>   implement and do the setup at probe()
+> > > >>>   Add the children at probe():
+> > > >>>     - pef2256-pinctrl (pinctrl) added using mfd_add_devices()
+> > > >>>     - pef2256-codec (ASoC codec) added using devm_of_platform_populate()
+> > > >>>
+> > > >>> Lee, with this in mind, can the core pef2256.c be a MFD driver ?    
+> > > >>
+> > > >> You do not use MFD here, so why do you want to keep it in MFD? If you
+> > > >> disagree, please tell me where is the MFD code in your patch?    
+> > > >
+> > > > I don't want to absolutely use MFD.
+> > > > I just want to put my driver somewhere and I don't know the right location
+> > > > between MFD and Misc.
+> > > >
+> > > > Basically, the driver needs to do (little simplified and error path removed):
+> > > >
+> > > >   static const struct mfd_cell pef2256_devs[] = {
+> > > >   	{ .name = "lantiq-pef2256-pinctrl", },
+> > > >   };
+> > > >
+> > > >   static int pef2256_probe(struct platform_device *pdev)
+> > > >   {
+> > > > 	struct pef2256 *pef2256;
+> > > > 	void __iomem *iomem;
+> > > > 	int ret;
+> > > > 	int irq;
+> > > >
+> > > > 	pef2256 = devm_kzalloc(&pdev->dev, sizeof(*pef2256), GFP_KERNEL);
+> > > > 	if (!pef2256)
+> > > > 		return -ENOMEM;
+> > > >
+> > > > 	pef2256->dev = &pdev->dev;
+> > > >
+> > > > 	iomem = devm_platform_ioremap_resource(pdev, 0);
+> > > >
+> > > > 	pef2256->regmap = devm_regmap_init_mmio(&pdev->dev, iomem,
+> > > > 						&pef2256_regmap_config);
+> > > >
+> > > > 	pef2256->mclk = devm_clk_get_enabled(&pdev->dev, "mclk");
+> > > > 	pef2256->sclkr = devm_clk_get_enabled(&pdev->dev, "sclkr");
+> > > > 	pef2256->sclkx = devm_clk_get_enabled(&pdev->dev, "sclkx");
+> > > >
+> > > > 	pef2256->reset_gpio = devm_gpiod_get_optional(&pdev->dev, "reset", GPIOD_OUT_LOW);
+> > > > 	if (pef2256->reset_gpio) {
+> > > > 		gpiod_set_value_cansleep(pef2256->reset_gpio, 1);
+> > > > 		udelay(10);
+> > > > 		gpiod_set_value_cansleep(pef2256->reset_gpio, 0);
+> > > > 		udelay(10);
+> > > > 	}
+> > > >
+> > > > 	pef2556_of_parse(pef2256, np);
+> > > >
+> > > > 	irq = platform_get_irq(pdev, 0);
+> > > > 	ret = devm_request_irq(pef2256->dev, irq, pef2256_irq_handler, 0, "pef2256", pef2256);
+> > > >
+> > > > 	platform_set_drvdata(pdev, pef2256);
+> > > >
+> > > > 	mfd_add_devices(pef2256->dev, PLATFORM_DEVID_NONE, pef2256_devs,
+> > > > 	      		ARRAY_SIZE(pef2256_devs), NULL, 0, NULL);    
+> > >
+> > > Wait, now you use MFD framework, so the driver is suitable for MFD.
+> > > Before there was nothing like that in your code.    
+> > 
+> > Agree, the above is suitable for MFD, since it does all the things I
+> > said your last one did not.  You *can* also use of_platform_populate()
+> > here, since you are *also* requesting and initialising shared resources.
+> > You cannot do *both* however.
+> >   
+> 
+> Thanks for having confirmed that this driver can be a MFD driver.
+> 
+> Related to of_platform_populate() / mfd_add_devices(), I wanted to use both
+> because:
+> - the pinctrl part does not have (and does not need to have) a specific node
+>   with a specific compatible property. In order to instantiate the related
+>   driver mfd_add_devices() is the only way I know.
+> - the audio component nodes have a compatible string and several components
+>   (ie several nodes) can be present. of_platform_populate() call seems the
+>   simple way to instantiate them.
+> 
+> Is there a way to use mfd_add_devices() in this case without the need to
+> count the audio component nodes in order to allocate as much mfd_cell as
+> nodes having a matching compatible property ? Is there an other API to do
+> it ?
+> 
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs35l56.c | 105 +++++++++++++++++++------------------
- 1 file changed, 55 insertions(+), 50 deletions(-)
+I looked deeper for using mfd_add_devices() only and found an issue (related
+to my use-case).
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 675aad8e909f..997a5c5acaab 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -32,6 +32,23 @@
- static int cs35l56_dsp_event(struct snd_soc_dapm_widget *w,
- 			     struct snd_kcontrol *kcontrol, int event);
- 
-+static int cs35l56_mbox_send(struct cs35l56_private *cs35l56, unsigned int command)
-+{
-+	unsigned int val;
-+	int ret;
-+
-+	regmap_write(cs35l56->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1, command);
-+	ret = regmap_read_poll_timeout(cs35l56->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
-+				       val, (val == 0),
-+				       CS35L56_MBOX_POLL_US, CS35L56_MBOX_TIMEOUT_US);
-+	if (ret) {
-+		dev_warn(cs35l56->dev, "MBOX command %#x failed: %d\n", command, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int cs35l56_wait_dsp_ready(struct cs35l56_private *cs35l56)
- {
- 	int ret;
-@@ -182,10 +199,45 @@ static SOC_VALUE_ENUM_SINGLE_DECL(cs35l56_sdw1tx6_enum,
- static const struct snd_kcontrol_new sdw1_tx6_mux =
- 	SOC_DAPM_ENUM("SDW1TX6 SRC", cs35l56_sdw1tx6_enum);
- 
-+static int cs35l56_play_event(struct snd_soc_dapm_widget *w,
-+			      struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(component);
-+	unsigned int val;
-+	int ret;
-+
-+	dev_dbg(cs35l56->dev, "play: %d\n", event);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* Don't wait for ACK, we check in POST_PMU that it completed */
-+		return regmap_write(cs35l56->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
-+				    CS35L56_MBOX_CMD_AUDIO_PLAY);
-+	case SND_SOC_DAPM_POST_PMU:
-+		/* Wait for firmware to enter PS0 power state */
-+		ret = regmap_read_poll_timeout(cs35l56->regmap,
-+					       CS35L56_TRANSDUCER_ACTUAL_PS,
-+					       val, (val == CS35L56_PS0),
-+					       CS35L56_PS0_POLL_US,
-+					       CS35L56_PS0_TIMEOUT_US);
-+		if (ret)
-+			dev_err(cs35l56->dev, "PS0 wait failed: %d\n", ret);
-+		return ret;
-+	case SND_SOC_DAPM_POST_PMD:
-+		return cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_AUDIO_PAUSE);
-+	default:
-+		return 0;
-+	}
-+}
-+
- static const struct snd_soc_dapm_widget cs35l56_dapm_widgets[] = {
- 	SND_SOC_DAPM_REGULATOR_SUPPLY("VDD_B", 0, 0),
- 	SND_SOC_DAPM_REGULATOR_SUPPLY("VDD_AMP", 0, 0),
- 
-+	SND_SOC_DAPM_SUPPLY("PLAY", SND_SOC_NOPM, 0, 0, cs35l56_play_event,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+
- 	SND_SOC_DAPM_OUT_DRV("AMP", SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_OUTPUT("SPK"),
- 
-@@ -252,6 +304,9 @@ static const struct snd_soc_dapm_route cs35l56_audio_map[] = {
- 	{ "AMP", NULL, "VDD_B" },
- 	{ "AMP", NULL, "VDD_AMP" },
- 
-+	{ "ASP1 Playback", NULL, "PLAY" },
-+	{ "SDW1 Playback", NULL, "PLAY" },
-+
- 	{ "ASP1RX1", NULL, "ASP1 Playback" },
- 	{ "ASP1RX2", NULL, "ASP1 Playback" },
- 	{ "DSP1", NULL, "ASP1RX1" },
-@@ -288,23 +343,6 @@ static const struct snd_soc_dapm_route cs35l56_audio_map[] = {
- 	{ "SDW1 Capture", NULL, "SDW1 TX6 Source" },
- };
- 
--static int cs35l56_mbox_send(struct cs35l56_private *cs35l56, unsigned int command)
--{
--	unsigned int val;
--	int ret;
--
--	regmap_write(cs35l56->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1, command);
--	ret = regmap_read_poll_timeout(cs35l56->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
--				       val, (val == 0),
--				       CS35L56_MBOX_POLL_US, CS35L56_MBOX_TIMEOUT_US);
--	if (ret) {
--		dev_warn(cs35l56->dev, "MBOX command %#x failed: %d\n", command, ret);
--		return ret;
--	}
--
--	return 0;
--}
--
- static int cs35l56_dsp_event(struct snd_soc_dapm_widget *w,
- 			     struct snd_kcontrol *kcontrol, int event)
- {
-@@ -611,43 +649,11 @@ static int cs35l56_asp_dai_set_sysclk(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
--static int cs35l56_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
--{
--	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(dai->component);
--	unsigned int val;
--	int ret;
--
--	dev_dbg(cs35l56->dev, "%s: %d %s\n", __func__, stream, mute ? "mute" : "unmute");
--
--	if (stream != SNDRV_PCM_STREAM_PLAYBACK)
--		return 0;
--
--	if (mute) {
--		ret = cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_AUDIO_PAUSE);
--	} else {
--		ret = cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_AUDIO_PLAY);
--		if (ret == 0) {
--			/* Wait for firmware to enter PS0 power state */
--			ret = regmap_read_poll_timeout(cs35l56->regmap,
--						       CS35L56_TRANSDUCER_ACTUAL_PS,
--						       val, (val == CS35L56_PS0),
--						       CS35L56_PS0_POLL_US,
--						       CS35L56_PS0_TIMEOUT_US);
--			if (ret)
--				dev_err(cs35l56->dev, "PS0 wait failed: %d\n", ret);
--			ret = 0;
--		}
--	}
--
--	return ret;
--}
--
- static const struct snd_soc_dai_ops cs35l56_ops = {
- 	.set_fmt = cs35l56_asp_dai_set_fmt,
- 	.set_tdm_slot = cs35l56_asp_dai_set_tdm_slot,
- 	.hw_params = cs35l56_asp_dai_hw_params,
- 	.set_sysclk = cs35l56_asp_dai_set_sysclk,
--	.mute_stream = cs35l56_mute_stream,
- };
- 
- static void cs35l56_sdw_dai_shutdown(struct snd_pcm_substream *substream,
-@@ -749,7 +755,6 @@ static const struct snd_soc_dai_ops cs35l56_sdw_dai_ops = {
- 	.shutdown = cs35l56_sdw_dai_shutdown,
- 	.hw_params = cs35l56_sdw_dai_hw_params,
- 	.hw_free = cs35l56_sdw_dai_hw_free,
--	.mute_stream = cs35l56_mute_stream,
- 	.set_stream = cs35l56_sdw_dai_set_stream,
- };
- 
--- 
-2.30.2
+mfd_add_devices() calls mfd_add_device() and in this function we have:
+---- 8< ----
+	if (IS_ENABLED(CONFIG_OF) && parent->of_node && cell->of_compatible) {
+		for_each_child_of_node(parent->of_node, np) {
+			if (of_device_is_compatible(np, cell->of_compatible)) {
+				/* Ignore 'disabled' devices error free */
+				if (!of_device_is_available(np)) {
+					of_node_put(np);
+					ret = 0;
+					goto fail_alias;
+				}
 
+				ret = mfd_match_of_node_to_dev(pdev, np, cell);
+				if (ret == -EAGAIN)
+					continue;
+				of_node_put(np);
+				if (ret)
+					goto fail_alias;
+
+				break;
+			}
+		}
+
+		if (!pdev->dev.of_node)
+			pr_warn("%s: Failed to locate of_node [id: %d]\n",
+				cell->name, platform_id);
+	}
+---- 8< ----
+
+My issue is related to the loop.
+The loop is aborted if the device is not available (typically 'Disabled' in the
+DT node).
+
+My full pef2256 node can have several pef2256 audio subnodes with compatible
+set to "lantiq,pef2256-codec" and some of them can have 'status = "Disabled";'
+As soon as one device (with my expected compatible) is found 'Disabled', there
+is no way to look at other children.
+
+Having 'continue' in case of device not available in the loop to look at the
+next child will change the behavior of mfd_add_device().
+Do you think that looking at next child if we find a 'not available' child
+can be correct for mfd_add_device() ?
+This probably will have impacts on other MFD drivers.
+
+Best regards,
+Hervé
