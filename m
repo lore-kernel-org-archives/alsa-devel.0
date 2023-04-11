@@ -4,153 +4,152 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B1A7C77B6E
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Apr 2023 05:28:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4293EC7619A
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Apr 2023 05:28:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D9A0EC2;
-	Wed, 12 Apr 2023 07:27:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D9A0EC2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57AE1EE5;
+	Wed, 12 Apr 2023 07:27:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57AE1EE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681277315;
-	bh=eKPMZ3eh1kwDuFELvQo8w68rSa6BbhN8qBrEaqJbYko=;
-	h=Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=C/K/JNE3rOWip4S7R6y/cuaqks6UNC4JI5fBaL9QH9OU6mUajodR4ytjwgElDb44x
-	 jzdwgj9hqu5YW0BscSdc0kywK1vcp0jXPiZEkSio6Xy5BHJzeFkcnB0b78r7WKWUyf
-	 OlVCfzQ2/CDsZCYu1UAzCogLA5lc1ATi52fRVC0c=
+	s=default; t=1681277319;
+	bh=s5Yy+uJ/+6a3RmIpEHCFWkwhcr9WO1iaIKEOWXN68bU=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=BJ5fAEz0cdmJSaWkOfbrEwMKFIQBj2yREzHt9tea1VpHmUQ5p5C4miMIxFIPeYYk7
+	 lOkvP/i301SjfcBr6DpIqXniOZ7YC3c11J8mrrFroYjzvSjyp8MWI8wJ/tA/8Sb2+o
+	 /MavP3u2pYi1dAGdaA71WjMe4zHcDwCaYd1OlLSo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49587F80549;
-	Wed, 12 Apr 2023 07:26:16 +0200 (CEST)
-Date: Tue, 11 Apr 2023 06:04:31 +0530
-Subject: [PATCH] ASoC: mediatek: common: Fix refcount leak in
- parse_dai_link_info
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Trevor Wu <trevor.wu@mediatek.com>, Guenter Roeck <groeck@chromium.org>
-X-Mailman-Rule-Hits: nonmember-moderation
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-X-Mailman-Approved-At: Wed, 12 Apr 2023 05:22:43 +0000
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AYZQZN5T5CNGAFYN7HDRF6HZX2SHRRM7/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <168127717464.26.8163797399161129916@mailman-core.alsa-project.org>
-From: Aashish Sharma via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Aashish Sharma <shraash@google.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- Aashish Sharma <shraash@google.com>, kernel test robot <lkp@intel.com>,
- Julia Lawall <julia.lawall@inria.fr>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id A7DD6F80557;
+	Wed, 12 Apr 2023 07:26:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DE52F8032B; Tue, 11 Apr 2023 02:34:56 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-7.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-	SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL shortcircuit=no
-	autolearn=ham autolearn_force=no version=3.4.6
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
- [IPv6:2607:f8b0:4864:20::b49])
+	id 64CD0F8032B; Tue, 11 Apr 2023 12:28:18 +0200 (CEST)
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com
+ [209.85.210.43])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 443E2F80149
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 02:34:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 443E2F80149
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20210112 header.b=DwHddE9I
-Received: by mail-yb1-xb49.google.com with SMTP id
- p129-20020a254287000000b00aedd4305ff2so7207102yba.13
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8A351F80149
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 12:28:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A351F80149
+Received: by mail-ot1-f43.google.com with SMTP id
+ w15-20020a056830410f00b006a386a0568dso10974868ott.4
         for <alsa-devel@alsa-project.org>;
- Mon, 10 Apr 2023 17:34:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1681173285;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VV8PXIioY+lpB4ukX6X0D5BOfhtAOO5OAgem+yfBPzU=;
-        b=DwHddE9ICDDWjQSM54RArNBxPbpLZ/n6gkwcx9BCskxL2erXnG3TX1P1/lmatz71h8
-         e94TF8KXKDvpyL4+PvFL49b96iK4zjO7oAD6oKVkKVTugVr/ROAVKTo6DG3IYXBNNIwd
-         KZwGLSxNmgNkFDNODIwPNAG9WGleBFL4Lg8DGM0uPXamolTJCKG1FeSxuwZta+gWzIs8
-         GEieLq6UzVi9zxIKuSHQrSuVRgg613rdEsagFCHxGrV1UU9im61ClVqEDPa9FRAv74zx
-         VtHQ3ba/QpGls+Yf8jJ9cbGHYt0miiDAZ36gBf5/V7GI1LYNdafonbUf2M4vYCef0HDE
-         FW+Q==
+ Tue, 11 Apr 2023 03:28:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681173285;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VV8PXIioY+lpB4ukX6X0D5BOfhtAOO5OAgem+yfBPzU=;
-        b=ZW6wneIyQmiNiCWjHZywMQ8/Otu+SEoKp/gI0oySR/Ct11BEloNlNe/QXf4QXfSZFf
-         RZ3vnkrMLXOhrDZfLmluyDJp+dw9BiCEim8Y+eJkUqiRDFemKULchwZREYY5ML18y0Xv
-         xBH94fSRNUx/1jUb6OVIvpMgojEzV5CPLjQCTzuThk2RGO5vh0rzJLzoY66C+RrI3z9N
-         eiNgckMeiOySpOQh4AoDN1LqCu6xcv4p/7YlSL+RLwqMDr+XSsx2SJBAbMTbrlO95fvm
-         YhdslR3qZdf8fjs+zEL7/IXwXshiHMRuV/SLVLa/qHBt9bOUFBaX3oL2o20YE9sRStgR
-         OZIQ==
-X-Gm-Message-State: AAQBX9dnAuteJOlFaVWmvRJLESKNugPpiafA68dIWiyJZheyyhO+Gb23
-	vgLlD6xlF9bocozcxhbonGfLzZVbm/xJ
+        d=1e100.net; s=20210112; t=1681208893;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9k4ZTujQ4vL3rn+nuolFAvnH5smJoZ+VnOtxKctHstQ=;
+        b=O6KSfJ2wzPTSfjA/YQsqodavQUAERqtmBybZrCvrjoCXDWm1wLKjMPr/NBIgu2n7ZT
+         F2ET6mZgRVSlKqlgmnAr+GHUXp0g2m/WhEduRNQyC1CHA7pohr4XRbmtO7d/fGmml3jz
+         xr1lw4GrmjaFX0Hxufd4egKKdWoyJMp5E5CfjMlF06sYTcjc54GcLB37DpZdh0Dn3qtW
+         kZmfp5389bNahNk/pjYjndfOFyeMG+PSJ7oZhqq0h5ir98eGomCvf909YaisfZXWrUVu
+         s9PNimavYJiVL5MQJeaVakqDJyq/zc8AOAgaeol3fWzI4RTbVPnb1TbVyB62l2dVbtPJ
+         cVoA==
+X-Gm-Message-State: AAQBX9fC+Mf567sAIAaExIHpSa48jkJMAvDYR6JJgGlsz0du1CS4QVXn
+	JDkmM7Isssa4DCcQ7O5XEM95pHEvJhg6IUtE
 X-Google-Smtp-Source: 
- AKy350ZOwDyxZ5zmnvjOtmK+m8d2Zb+sInKjo5gza1IG8xreF6QccHiFCV8qDL7zjDXDQLZcFmYPSNKGp1ua
-X-Received: from ezekiel.c.googlers.com
- ([fda3:e722:ac3:cc00:4f:4b78:c0a8:108e])
- (user=shraash job=sendgmr) by 2002:a81:b284:0:b0:544:94fe:4244 with SMTP id
- q126-20020a81b284000000b0054494fe4244mr636814ywh.10.1681173284695; Mon, 10
- Apr 2023 17:34:44 -0700 (PDT)
-Date: Tue, 11 Apr 2023 06:04:31 +0530
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.40.0.577.gac1e443424-goog
-Message-ID: <20230411003431.4048700-1-shraash@google.com>
-Subject: [PATCH] ASoC: mediatek: common: Fix refcount leak in
- parse_dai_link_info
-From: Aashish Sharma <shraash@google.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Trevor Wu <trevor.wu@mediatek.com>, Guenter Roeck <groeck@chromium.org>
+ AKy350ZomM58hihcP8zkn/HtBDY4l1bJYDYjMoD2T1OBg7v9/S3g1DcBYj0ukgE1qx79MvsWwt2ryA==
+X-Received: by 2002:a05:6830:22d1:b0:69f:9cec:1962 with SMTP id
+ q17-20020a05683022d100b0069f9cec1962mr5489351otc.20.1681208893122;
+        Tue, 11 Apr 2023 03:28:13 -0700 (PDT)
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com.
+ [209.85.167.177])
+        by smtp.gmail.com with ESMTPSA id
+ d23-20020a9d4f17000000b006a3df644d31sm3309446otl.37.2023.04.11.03.28.12
+        for <alsa-devel@alsa-project.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Apr 2023 03:28:12 -0700 (PDT)
+Received: by mail-oi1-f177.google.com with SMTP id m2so4647968oiw.0
+        for <alsa-devel@alsa-project.org>;
+ Tue, 11 Apr 2023 03:28:12 -0700 (PDT)
+X-Received: by 2002:a25:d74c:0:b0:b46:c5aa:86ef with SMTP id
+ o73-20020a25d74c000000b00b46c5aa86efmr5126210ybg.12.1681208871324; Tue, 11
+ Apr 2023 03:27:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
+ <20221018-clk-range-checks-fixes-v3-28-9a1358472d52@cerno.tech>
+In-Reply-To: <20221018-clk-range-checks-fixes-v3-28-9a1358472d52@cerno.tech>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 11 Apr 2023 12:27:38 +0200
+X-Gmail-Original-Message-ID: 
+ <CAMuHMdXUEOP_3zjf8nwDyHvZVG-D0AsBjnr=esKzejMMcEiLSQ@mail.gmail.com>
+Message-ID: 
+ <CAMuHMdXUEOP_3zjf8nwDyHvZVG-D0AsBjnr=esKzejMMcEiLSQ@mail.gmail.com>
+Subject: Re: [PATCH v3 28/65] clk: renesas: r9a06g032: Add a determine_rate
+ hook
+To: Maxime Ripard <maxime@cerno.tech>
 Content-Type: text/plain; charset="UTF-8"
-X-MailFrom: 
- 3JKs0ZAcKCnUlakTTlaZhhZeX.VhfTelT-WXoXeTelT-ikhcXVm.hkZ@flex--shraash.bounces.google.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: geert.uytterhoeven@gmail.com
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: AYZQZN5T5CNGAFYN7HDRF6HZX2SHRRM7
-X-Message-ID-Hash: AYZQZN5T5CNGAFYN7HDRF6HZX2SHRRM7
-X-Mailman-Approved-At: Wed, 12 Apr 2023 05:22:43 +0000
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- Aashish Sharma <shraash@google.com>, kernel test robot <lkp@intel.com>,
- Julia Lawall <julia.lawall@inria.fr>
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: FIQLTCBVWTVQZAZ75RCMOO2ZP7FRLCJQ
+X-Message-ID-Hash: FIQLTCBVWTVQZAZ75RCMOO2ZP7FRLCJQ
+X-Mailman-Approved-At: Wed, 12 Apr 2023 05:23:10 +0000
+CC: Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>,
+ =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ Max Filippov <jcmvbkbc@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ David Lechner <david@lechnology.com>, Sekhar Nori <nsekhar@ti.com>,
+ Abel Vesa <abelvesa@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Alessandro Zummo <a.zummo@towertech.it>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Paul Cercueil <paul@crapouillou.net>, Orson Zhai <orsonzhai@gmail.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Chunyan Zhang <zhang.lyra@gmail.com>, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-arm-kernel@lists.infradead.org, linux-actions@lists.infradead.org,
+ patches@opensource.cirrus.com, linux-stm32@st-md-mailman.stormreply.com,
+ linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+ linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-phy@lists.infradead.org, linux-rtc@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, alsa-devel@alsa-project.org,
+ linux-mips@vger.kernel.org, Gareth Williams <gareth.williams.jx@renesas.com>,
+ Herve Codina <herve.codina@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Ralph Siemsen <ralph.siemsen@linaro.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AYZQZN5T5CNGAFYN7HDRF6HZX2SHRRM7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FIQLTCBVWTVQZAZ75RCMOO2ZP7FRLCJQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -159,54 +158,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add missing of_node_put()s before the returns to balance
-of_node_get()s and of_node_put()s, which may get unbalanced
-in case the for loop 'for_each_available_child_of_node' returns
-early.
+CC Gareth, Herv=C3=A9, Miquel, Ralph
 
-Fixes: 4302187d955f ("ASoC: mediatek: common: add soundcard driver common code")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Julia Lawall <julia.lawall@inria.fr>
-Link: https://lore.kernel.org/r/202304090504.2K8L6soj-lkp@intel.com/
-Signed-off-by: Aashish Sharma <shraash@google.com>
----
- sound/soc/mediatek/common/mtk-soundcard-driver.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+On Tue, Apr 4, 2023 at 2:44=E2=80=AFPM Maxime Ripard <maxime@cerno.tech> wr=
+ote:
+> The Renesas r9a06g032 bitselect clock implements a mux with a set_parent
+> hook, but doesn't provide a determine_rate implementation.
+>
+> This is a bit odd, since set_parent() is there to, as its name implies,
+> change the parent of a clock. However, the most likely candidate to
+> trigger that parent change is a call to clk_set_rate(), with
+> determine_rate() figuring out which parent is the best suited for a
+> given rate.
+>
+> The other trigger would be a call to clk_set_parent(), but it's far less
+> used, and it doesn't look like there's any obvious user for that clock.
+>
+> So, the set_parent hook is effectively unused, possibly because of an
+> oversight. However, it could also be an explicit decision by the
+> original author to avoid any reparenting but through an explicit call to
+> clk_set_parent().
+>
+> The latter case would be equivalent to setting the flag
+> CLK_SET_RATE_NO_REPARENT, together with setting our determine_rate hook
+> to __clk_mux_determine_rate(). Indeed, if no determine_rate
+> implementation is provided, clk_round_rate() (through
+> clk_core_round_rate_nolock()) will call itself on the parent if
+> CLK_SET_RATE_PARENT is set, and will not change the clock rate
+> otherwise. __clk_mux_determine_rate() has the exact same behavior when
+> CLK_SET_RATE_NO_REPARENT is set.
+>
+> And if it was an oversight, then we are at least explicit about our
+> behavior now and it can be further refined down the line.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-diff --git a/sound/soc/mediatek/common/mtk-soundcard-driver.c b/sound/soc/mediatek/common/mtk-soundcard-driver.c
-index 7c55c2cb1f21..738093451ccb 100644
---- a/sound/soc/mediatek/common/mtk-soundcard-driver.c
-+++ b/sound/soc/mediatek/common/mtk-soundcard-driver.c
-@@ -47,20 +47,26 @@ int parse_dai_link_info(struct snd_soc_card *card)
- 	/* Loop over all the dai link sub nodes */
- 	for_each_available_child_of_node(dev->of_node, sub_node) {
- 		if (of_property_read_string(sub_node, "link-name",
--					    &dai_link_name))
-+					    &dai_link_name)) {
-+			of_node_put(sub_node);
- 			return -EINVAL;
-+		}
- 
- 		for_each_card_prelinks(card, i, dai_link) {
- 			if (!strcmp(dai_link_name, dai_link->name))
- 				break;
- 		}
- 
--		if (i >= card->num_links)
-+		if (i >= card->num_links) {
-+			of_node_put(sub_node);
- 			return -EINVAL;
-+		}
- 
- 		ret = set_card_codec_info(card, sub_node, dai_link);
--		if (ret < 0)
-+		if (ret < 0) {
-+			of_node_put(sub_node);
- 			return ret;
-+		}
- 	}
- 
- 	return 0;
--- 
-2.40.0.577.gac1e443424-goog
+LGTM, so
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+But I do not have the hardware.
 
+> --- a/drivers/clk/renesas/r9a06g032-clocks.c
+> +++ b/drivers/clk/renesas/r9a06g032-clocks.c
+> @@ -1121,6 +1121,7 @@ static int r9a06g032_clk_mux_set_parent(struct clk_=
+hw *hw, u8 index)
+>  }
+>
+>  static const struct clk_ops clk_bitselect_ops =3D {
+> +       .determine_rate =3D __clk_mux_determine_rate,
+>         .get_parent =3D r9a06g032_clk_mux_get_parent,
+>         .set_parent =3D r9a06g032_clk_mux_set_parent,
+>  };
+> @@ -1145,7 +1146,7 @@ r9a06g032_register_bitsel(struct r9a06g032_priv *cl=
+ocks,
+>
+>         init.name =3D desc->name;
+>         init.ops =3D &clk_bitselect_ops;
+> -       init.flags =3D CLK_SET_RATE_PARENT;
+> +       init.flags =3D CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT;
+>         init.parent_names =3D names;
+>         init.num_parents =3D 2;
+>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
