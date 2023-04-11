@@ -4,88 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AD0DC77B75
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 11:42:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A06FC76196
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 13:26:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AAC8F13;
-	Tue, 11 Apr 2023 13:42:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AAC8F13
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C1EAEF5;
+	Tue, 11 Apr 2023 15:25:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C1EAEF5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681213372;
-	bh=M+aYJc9Iff65DxXoAB8ogDkq4PHM3Fa5/aSta8s9icg=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1681219593;
+	bh=P/iDhHTGwWX+IUkevSeJym7AO9IHqFOgQHaG3NtyP2I=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ksNFY+Vzi1mVye66Dk+N3TgJEddkOObObwflkpY3SH+q+cd9lc8MnyEWhHlgQIAzu
-	 DkHRKlkbXJYLhh+XZPdLtmrX+oS7gt8xYjPfmOjdJMiN1eDgMi4J3lN6LsYnRzhI5f
-	 Vm112jjXaZaHuTR+Z/LGR4JHHQjEKpCVVuDDTIHI=
+	b=GyMb69lEveOeWJdqRkUl8v/IFcc4CIx4d4/zASVHRmyEiemhkt/TUbaxBtO5tI3ag
+	 6X3jDL5ZOtFzCbjIg9VYV6aBLiYWK98Is/XWpiq9fMlnDkzZiiaclhsYqH3Ok/SzuP
+	 c33UaLQ1Pb1eroYbb3cKv9EeICT/5JCA8VZPMT9g=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 531BFF8032B;
-	Tue, 11 Apr 2023 13:41:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2514F8032B;
+	Tue, 11 Apr 2023 15:25:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26DE7F8032B; Tue, 11 Apr 2023 13:41:37 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B7757F8023A
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 13:41:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7757F8023A
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Gi+NbAYZ
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id D15A5F8032B; Tue, 11 Apr 2023 15:25:14 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 17E5C624D3;
-	Tue, 11 Apr 2023 11:41:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B71CC433D2;
-	Tue, 11 Apr 2023 11:41:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1681213292;
-	bh=M+aYJc9Iff65DxXoAB8ogDkq4PHM3Fa5/aSta8s9icg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Gi+NbAYZ9rDCzpokSpqurcCuT1eq/pzlKgw9oq7XPjjqfjMqSMPCBj7k5Zo3eEOuy
-	 kclGJkU6NJP7djkxJcJpsKF+/DdSjZftwXxjYqUhC8v5fS1vnjzxs6Cqfr7ec9QZEB
-	 x6ydgrwOBgE3UFqnesLt/EpqsGwnGLeoz1fDg/yKZ0t1Zd+fA6JfMBVCGftO7/phpp
-	 Pa4efvaWLRIfwjud8WpmDdG5TEuK6mxYC3NrplqbKXB9OfOsjozdq81qvq3zPJatbg
-	 9nLuxXxLsz4/YtUMhW1VTicoC7ffzMO7Ebv2wS7K4KjGUW/wf5FaSIA8Jmx7OKUG54
-	 hy8vPqAIY+4rA==
-Date: Tue, 11 Apr 2023 12:41:26 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: sound: ep93xx: Add I2S description
-Message-ID: <10c3c9ab-66f3-4640-9067-94f44072eec0@sirena.org.uk>
-References: <20230410222958.2321398-1-alexander.sverdlin@gmail.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 29E87F80149
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 15:25:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29E87F80149
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=NUJ9f6re
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681219510; x=1712755510;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=P/iDhHTGwWX+IUkevSeJym7AO9IHqFOgQHaG3NtyP2I=;
+  b=NUJ9f6renYb/RXFqIX587r5H8oPEl+GOz+PQjTFl2i9BN8ymM4k50xFW
+   uxCJpKFN59nY86E+loC5IiJ7FvyaBbXpPprD7tFogTlpPyIH6ZX72Tkga
+   yaUj7x0vYArASS5ylSb147UusaekrKENLwP8Isl/YkfhwXKAjKvFdjih9
+   xZH/cawqsNRpnqeKvaNRzOHb/olJdJx8M3UIyZJ7DhEcLs6NrUa6qrWTG
+   uxL27QDJJfooiP/+z9VHTV0z0JZ0l+2eIENGrYT6AFFmFp2p0Y9lspxTF
+   IFi0CvzkhKACzF717pJUmHT5Onh+UC0B9Zkue503La3ct1OhMk2NyquzB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10677"; a="429901271"
+X-IronPort-AV: E=Sophos;i="5.98,336,1673942400";
+   d="scan'208";a="429901271"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Apr 2023 06:25:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10677"; a="799909332"
+X-IronPort-AV: E=Sophos;i="5.98,336,1673942400";
+   d="scan'208";a="799909332"
+Received: from rpearman-mobl.amr.corp.intel.com (HELO [10.252.132.237])
+ ([10.252.132.237])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Apr 2023 06:25:03 -0700
+Message-ID: <14976031-7d63-4069-8647-3cee41064215@linux.intel.com>
+Date: Tue, 11 Apr 2023 08:25:03 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6kOB8EhJhOnUaMkh"
-Content-Disposition: inline
-In-Reply-To: <20230410222958.2321398-1-alexander.sverdlin@gmail.com>
-X-Cookie: Batteries not included.
-Message-ID-Hash: 77NXQZHVFSUTVWHNJG65VKFNZSCPCKO3
-X-Message-ID-Hash: 77NXQZHVFSUTVWHNJG65VKFNZSCPCKO3
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.9.0
+Subject: Re: [PATCH] ASoC: soc-compress: set pcm nonatomic flag from dai_link
+Content-Language: en-US
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+References: <20230411110831.813-1-srinivas.kandagatla@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230411110831.813-1-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: BJ665LP4DVNGDVJR3QMVLCDMIHD5KS3X
+X-Message-ID-Hash: BJ665LP4DVNGDVJR3QMVLCDMIHD5KS3X
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: devicetree@vger.kernel.org,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Nikita Shubin <nikita.shubin@maquefel.me>
+CC: tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/77NXQZHVFSUTVWHNJG65VKFNZSCPCKO3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BJ665LP4DVNGDVJR3QMVLCDMIHD5KS3X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,29 +102,36 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---6kOB8EhJhOnUaMkh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Apr 11, 2023 at 12:29:57AM +0200, Alexander Sverdlin wrote:
-> Add device tree bindings for Cirrus Logic EP93xx internal SoCs' I2S
-> controller.
+On 4/11/23 06:08, Srinivas Kandagatla wrote:
+> In compress offload case we never set nonatomic flag on a new pcm. This triggers
+> below configuration error with DPCM on Qualcomm setup where dai_links are marked
+> as nonatomic.
+> 
+> "FE is atomic but BE is nonatomic, invalid configuration"
+> 
+> Fix this by Updating the pcm nonatomic flag correcly from the respective dai_link.
+> 
+> CC: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  sound/soc/soc-compress.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> index 554c329ec87f..a8d70274cab8 100644
+> --- a/sound/soc/soc-compress.c
+> +++ b/sound/soc/soc-compress.c
+> @@ -615,6 +615,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+>  			return ret;
+>  		}
+>  
+> +		be_pcm->nonatomic = rtd->dai_link->nonatomic;
+>  		rtd->pcm = be_pcm;
+>  		rtd->fe_compr = 1;
+>  		if (rtd->dai_link->dpcm_playback)
 
-Sorry, it was this one that doesn't apply - please check and resend.
+isn't this fixed already? Daniel Baluta sent a patch for this, already
+applied by Mark:
 
---6kOB8EhJhOnUaMkh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQ1R2YACgkQJNaLcl1U
-h9CsPQf/dGWT4nFxvehjMcRPGeTHx4TX9+eSzAofTCWEtonFqRAoibbGYxQ0Esal
-ExlTGyf4U1ctu/uEzfc+wVtjkIYIcxOrvRS7GcDirQBPT4X/XjkVpQ0wZC8AsZ0F
-HF76qMLqD3cPcOzEoffbO4QxPAojv+UCjlm6yzTKh1LBnCSHR283kNIN+jR8NG+M
-zMW20RC6tUyv0etra8TWQaXxUFO5NkxCDAcerPNaUZCUfth3sJa5LCoj1t8TAuMO
-yfduKjN+YArhgpX8QsulTDgtL1wvXZWXle2hww/kXkpJHUFkWIWOteJr2Ffn7U0K
-QqG+/1/lF1f1SAohndCVIOXk4FJcAg==
-=xaGA
------END PGP SIGNATURE-----
-
---6kOB8EhJhOnUaMkh--
+https://lore.kernel.org/alsa-devel/20230324124019.30826-1-daniel.baluta@oss.nxp.com/
