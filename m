@@ -4,74 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EFFCC77B6F
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 16:51:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C965C76196
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 17:01:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68825A4B;
-	Tue, 11 Apr 2023 18:51:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68825A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43505EF9;
+	Tue, 11 Apr 2023 19:00:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43505EF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681231910;
-	bh=V2jjNNjKa4574wf9AO2VqCkRoBNHFHyVhRtZ/WxYZsg=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=rDST+aYZH+1wg2q+9ea4+mNAzc7D2HXwlkP9xCJ/cL3+ZFe6BhBQpF6qzoB0ZbNfb
-	 tbbOzzrj2EfPVm8L29eiT0C+rp31P3yqixP3MrgNtJlF3E+SMH+1aL77UScGCwQwuW
-	 YF9X34C5RdpxNfRnj4DpeeAqLYrPAtFTPvazd29Y=
+	s=default; t=1681232485;
+	bh=Lw/ZnXt1q+4EeZW1u7iSq1HM1gNpMOsxCIdEh4us6Oo=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ukUALoNpM0NHkjGGPx/UsgADr13DKjfkK7ze5LrIjEmHiKdb1nuijDJpUEB8e4SgT
+	 eCdOxyj71auQlHlOlVsPsUBaPiWPa69Ls+n9Sorb72W0OX3en2t5tjYpUWQOKu/YAb
+	 RcH/JqoVsha6ApW0tVLfbqFeMp0i1Usqx4cVXD7E=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0138F8032B;
-	Tue, 11 Apr 2023 18:50:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED3C9F80149;
+	Tue, 11 Apr 2023 19:00:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A48D3F8032B; Tue, 11 Apr 2023 18:50:32 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id AD3B4F80448; Tue, 11 Apr 2023 19:00:07 +0200 (CEST)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
+ [IPv6:2a00:1450:4864:20::630])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 37AE0F80100
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 18:50:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37AE0F80100
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id C883E20391
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 12:50:19 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pmHCF-5a9-00
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 18:50:19 +0200
-Date: Tue, 11 Apr 2023 18:50:19 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: alsa-devel@alsa-project.org
-Subject: Re: [PATCH 2/2] ALSA: pcm: auto-fill buffer with silence when
- draining playback
-Message-ID: <ZDWPy9YbXWWOqaC+@ugly>
-Mail-Followup-To: alsa-devel@alsa-project.org
-References: <20230405201219.2197789-1-oswald.buddenhagen@gmx.de>
- <20230405201219.2197789-2-oswald.buddenhagen@gmx.de>
- <3d75c103-7e94-e6a1-7f3d-7f957c33cddc@perex.cz>
- <ZDEWyjdVE2IocpGY@ugly>
- <22f551f3-deae-1536-bd07-0b9340940ea4@perex.cz>
- <ZDVnUj2B0EkMiOlA@ugly>
- <6d6c5f3a-81bc-acf4-eb4d-229b581bbe8b@perex.cz>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 51483F80100
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 18:59:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51483F80100
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=DOAGbpdR
+Received: by mail-ej1-x630.google.com with SMTP id xi5so22101692ejb.13
+        for <alsa-devel@alsa-project.org>;
+ Tue, 11 Apr 2023 09:59:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1681232395;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vGiYwUojezuY+RxgL04VGSeCZx3NAMwWwAXac6CUEj4=;
+        b=DOAGbpdR8fzZ9Gbbh7RUCSNW8UQIyEyKCkF2XEomSySEKliCZYU0I0ZXcq4Fe27va4
+         ORMmfWHTLGSvcd14rBdrvYZUymX3QMl1nzwoIJNEoMdMrZwWIvWhl0/IYnxKerFm7oXE
+         mL4cbApBYeVNCmycJghTPN4+Fc5oe0b+zqNNBEf3HW76LmEPGmY9rcm9g1AAcPD6TIA7
+         Drl/+PS9CmF0Uoui4ZzE4+6g3G6Q1G8oNT9ULpSasBmZJYP0FbFMr2To7TWyzAax8FW8
+         Ne/Pwu3o5nHngHK93n+tX8viY7vOK5+u6ziHAbJt+UH3EOxpFFkONo56THp75xj1Oy+K
+         P91g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681232395;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vGiYwUojezuY+RxgL04VGSeCZx3NAMwWwAXac6CUEj4=;
+        b=YQdFvRPK3x2dGKU/Vfmn38ZluJYtCl9ywLLjr88Krg0y1SzZhxj6iK11rlM6Q84sv0
+         mpOQsrqMWVjOwEjNNm8rN9diL0tkqp7krAWAoM2Y3hwedLftVgnr7rNHIgd5IJDfID4H
+         HVPqfhVZ+xfEM/UCvekLjolaBwXsJoUAI/0yG461pBJyT0MdkDAipfLzJbPiKaY8fOBE
+         aYFeqwq/mIua+lyGvtpHv1C/0CbCHWwOXaI8F9zMKKAOS8L7GkZIZRJOsmI+DuRF4j9t
+         nwYWm7CmV5ttKOagOnQl9o20BqTX+ilEH463ppzAVYJFnYHUoVoNBwWiguhmFEMscc14
+         BoYg==
+X-Gm-Message-State: AAQBX9eH6JPL0zP5q0KymTLLxOOHcbZ4Fz0g5+pTVAAOIV9d8Ff8sKfx
+	P7iowwsGVcgfHGxd84HDxySyUBMTllcZdA==
+X-Google-Smtp-Source: 
+ AKy350a5SgWGjIHXpkAStyJFnVJ5KpXf1ETC00q63RutMcZw80dQpaUSiqlTZh8An7yLdQfENLRrfQ==
+X-Received: by 2002:a17:906:d29a:b0:94a:826c:df57 with SMTP id
+ ay26-20020a170906d29a00b0094a826cdf57mr8234940ejb.39.1681232395197;
+        Tue, 11 Apr 2023 09:59:55 -0700 (PDT)
+Received: from localhost ([2a02:1210:8629:800:82ee:73ff:feb8:99e3])
+        by smtp.gmail.com with UTF8SMTPSA id
+ sg35-20020a170907a42300b0092b8c1f41ebsm6299061ejc.24.2023.04.11.09.59.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Apr 2023 09:59:54 -0700 (PDT)
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To: devicetree@vger.kernel.org
+Subject: [PATCH v3 2/2] ASoC: ep93xx: Add OF support
+Date: Tue, 11 Apr 2023 18:59:51 +0200
+Message-Id: <20230411165951.2335899-2-alexander.sverdlin@gmail.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230411165951.2335899-1-alexander.sverdlin@gmail.com>
+References: <20230411165951.2335899-1-alexander.sverdlin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <6d6c5f3a-81bc-acf4-eb4d-229b581bbe8b@perex.cz>
-Message-ID-Hash: C6UR4FH6JIELGNYWZBVRRYAFG4KUE76N
-X-Message-ID-Hash: C6UR4FH6JIELGNYWZBVRRYAFG4KUE76N
-X-MailFrom: ossi@kde.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: DSV32KU4R2Y5EEFRBOHL5SNWAEC4HGL4
+X-Message-ID-Hash: DSV32KU4R2Y5EEFRBOHL5SNWAEC4HGL4
+X-MailFrom: alexander.sverdlin@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+CC: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Nikita Shubin <nikita.shubin@maquefel.me>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C6UR4FH6JIELGNYWZBVRRYAFG4KUE76N/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DSV32KU4R2Y5EEFRBOHL5SNWAEC4HGL4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -80,71 +118,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Apr 11, 2023 at 04:48:58PM +0200, Jaroslav Kysela wrote:
->You're using a hammer to fix a little issue.
->
-yes, but at the time it seemed like a rather small hammer to me.
+Add the new cirrus,ep9301-ac97 and cirrus,ep9301-i2s compatibles.
 
-if large buffers are actually a thing (what for?), then the fill could 
-be limited to two periods or something. it would make the code uglier, 
-though.
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+Changelog:
+v3:
+- rebased onto
+ https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+v2:
+ - Dropped AC97 (deleted from the tree)
 
->Which code does not fill the last period?
->
-a lot, i imagine - doing that is rather counter-intuitive when using the 
-write() access method.
+ sound/soc/cirrus/ep93xx-i2s.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-also, just the last period is not enough, due to the fifo, and possibly 
-delayed/lost irqs.
+diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
+index 2abd1bce2290..afc6b5b570ea 100644
+--- a/sound/soc/cirrus/ep93xx-i2s.c
++++ b/sound/soc/cirrus/ep93xx-i2s.c
+@@ -15,6 +15,7 @@
+ #include <linux/slab.h>
+ #include <linux/clk.h>
+ #include <linux/io.h>
++#include <linux/of.h>
+ 
+ #include <sound/core.h>
+ #include <sound/dmaengine_pcm.h>
+@@ -514,11 +515,18 @@ static void ep93xx_i2s_remove(struct platform_device *pdev)
+ 	clk_put(info->mclk);
+ }
+ 
++static const struct of_device_id ep93xx_i2s_of_ids[] = {
++	{ .compatible = "cirrus,ep9301-i2s" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, ep93xx_i2s_of_ids);
++
+ static struct platform_driver ep93xx_i2s_driver = {
+ 	.probe	= ep93xx_i2s_probe,
+ 	.remove_new = ep93xx_i2s_remove,
+ 	.driver	= {
+ 		.name	= "ep93xx-i2s",
++		.of_match_table = ep93xx_i2s_of_ids,
+ 	},
+ };
+ 
+-- 
+2.40.0
 
->>> the silencing is controlled using sw_params, so applications may
->>> request the silencing before drain.
->>>
->> yeah, they could, but they don't, and most won't ever.
->> 
->> you're arguing for not doing a very practical and simple change that
->> will fix a lot of user code at once, for the sake of preventing an
->> entirely hypothetical and implausible problem. that is not a good
->> trade-off.
->
->I'm arguing that we should not do anything extra with the buffers until 
->the application requests that.
-
->That's the clear API context.
->
-no, it's not. you cannot assume this to be understood as the central 
-guiding principle which trumps more immediate issues. people use an api 
-to solve a specific problem, and they want to do that with the least 
-effort possible. no-one is going to read the whole docu top to bottom 
-and remember every caveat. if it appears to work, people will just call 
-it a day, and that's exactly what will be the case with the use of DRAIN 
-(one needs a somewhat specific configuration and content to even notice 
-that there is a problem).
-
->If we allow modification of the PCM buffer, I think that we should:
->
->- Do not modify the buffer for drivers already working with the
->   appl_ptr data (end position) only.
->
-i suppose that should be detected by the drain callback being set up?
-
->- Handle the situation with the large buffer; it may make sense
->   to change the "wait" operation from the end-of-period interrupt to time
->   scheduler and stop the drain more early when the end-of-valid data condition
->   is fulfilled.
->
-i don't understand what you're asking for.
-
->- Increase the protocol version.
->
->But as I wrote, I would make those extensions configurable 
->(SNDRV_PCM_HW_PARAMS_DRAIN_ALLOW_SILENCE). It can be turned on by default.
->
-i have no clue what would be involved in doing that. to me that sounds 
-like overkill (solving a non-issue), and goes waaaay beyond what i 
-expected to invest into this issue (really, i just wanted to verify that 
-the emu10k1 fixes work, and accidentally discovered that there is a 
-mid-layer issue that affects user space, as the pyalsaaudio lib i'm 
-using doesn't handle it).
-
-regards
