@@ -4,29 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C31F1C76196
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 15:27:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C702DC76196
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Apr 2023 15:27:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45149F10;
-	Tue, 11 Apr 2023 17:26:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45149F10
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3885F15;
+	Tue, 11 Apr 2023 17:26:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3885F15
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681226851;
-	bh=pBwFGn9ELKVEU+Rvm8MJHDCKQ1Ly3rABzADXMPiimPw=;
+	s=default; t=1681226869;
+	bh=Mqw8ivp0XKOZsZETtkKr4zcTpabQvV/v/6kvdtrM03w=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=O2I4Acf9ZvTLHCxR54fq+QkENnTOkmrgpT1dzOnc5e2ybAmyq1+dKnmXb1iPYofPQ
-	 yzciZkyrFHSAEm3y0DkFRoJo/yt/8fTKdMbtZyQBWFAiYpQw+LJSOkTwJk7/AsMBVw
-	 FrbDRAro1besIeG0zn9de+i//v6nPgSctfcNZsnU=
+	b=CJQISNBfMh4sId3nRIhxg4Ehh8lIIFeKNjSZZZnigrrY5Z1q+2CAcvcynA7OyLiAH
+	 8GokFkoDdI5BjaSmHms3Q34rHovZMeyTbeug3skzS4Na07zZNtaLyJhZNq+ZqgLEPD
+	 CgYatW1fGGGMgmQjsuAlyr3ztwDBKninscHZbV/A=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74306F80448;
-	Tue, 11 Apr 2023 17:25:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0ADD1F8053D;
+	Tue, 11 Apr 2023 17:25:50 +0200 (CEST)
 To: <broonie@kernel.org>
-Subject: [PATCH 1/6] ASoC: cs35l56: Remove quick-cancelling of dsp_work()
-Date: Tue, 11 Apr 2023 16:25:23 +0100
+Subject: [PATCH 4/6] ASoC: cs35l56: Always wait for firmware boot in
+ runtime-resume
+Date: Tue, 11 Apr 2023 16:25:26 +0100
 In-Reply-To: <20230411152528.329803-1-rf@opensource.cirrus.com>
 References: <20230411152528.329803-1-rf@opensource.cirrus.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -40,7 +41,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LGCRLWR74BYGKA5PG5OYZBX352ZBGTAY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WKXYQNOUWNR3TIZKTAF6QEOMMONOL4UH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -49,8 +50,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
-Message-ID: 
- <168122674746.26.16881587647873355224@mailman-core.alsa-project.org>
+Message-ID: <168122674948.26.205996534753979275@mailman-core.alsa-project.org>
 From: Richard Fitzgerald via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Richard Fitzgerald <rf@opensource.cirrus.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
@@ -59,7 +59,7 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D181AF8052E; Tue, 11 Apr 2023 17:25:44 +0200 (CEST)
+	id 30C9AF8052D; Tue, 11 Apr 2023 17:25:46 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -69,58 +69,59 @@ Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 739D1F8025E
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 17:25:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 739D1F8025E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9CE5AF8049C
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2023 17:25:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CE5AF8049C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=BJ/NG0t5
+ header.s=PODMain02222019 header.b=FAC8VIMw
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33B5cuXG012801;
-	Tue, 11 Apr 2023 10:25:30 -0500
+ 33B5cuXI012801;
+	Tue, 11 Apr 2023 10:25:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=T8BVSKckGSd2SY73ZmiypxT7jbER0HYHV1vJLiq4DUI=;
- b=BJ/NG0t538sx9JwGhvu/pnvZPy+x6C55fwIg+Fq2rh+riD50LfFcThKKgMLnxfaH5FY1
- IFPOaie4njQDVVJUwrw6TxRztS20fOQ0Eycdn5UhjXLF6aN9IcbsT5Z3yXpurtw/DsQ1
- z4+5utB0tllIZGmjmLCLy0qjpUhTtfM3rz8AZeHt23zYW2B5RUkg32ogLJ+0P7HwdxV0
- T1bFmUhAFFN7kmD/xj+hrmzK+h5yRFeLCgU1ahZB5cWLDn9u0FhYTZVJpwhj/QPw4Nez
- iEHU8ER3Mr8wJUzH6iCe9HzOp60nvAHdD57woCKPieKHeqtoapVoQT0bfXhpFGwA5WtW Gg==
+ bh=LrRfZkDP7c5Q0T8mpcxjLVK8Kk/fn8B2e2G5jGnrSms=;
+ b=FAC8VIMw8WLB4UpbaUmwAgZ6Vz85scE/msDnQt1qjNZwq+PtYUo0DJTpPj1r0cvU6DG7
+ aLH7rRx1xl6jHMLgqg6p+rTHO2OHJ0bKQ5KkDxTfnPqDGZmJjCD4616231zjuwH4IuFa
+ M84vnKWm8b9vGgzCqXKJhgaYDHPTIslFgUTkJzsT5+X/EuNwAkE6Vdf80nDhRkSMk9+G
+ AljJLfD5TUPAcn/nML/jDGkyFyt2LJYfe4hW0IyN+JR4v8e9Wlowzi0p6XuroCB85PLx
+ Hk0gTHx2Rk3nWCUqpsZGGOdYSG0Mco4WOBAt3HsIPuXIpkWPEJe1gpiTdKxuQfJnX/Lt ZQ==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pu4pq54a3-2
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pu4pq54a3-4
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 11 Apr 2023 10:25:30 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+	Tue, 11 Apr 2023 10:25:31 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 11 Apr
  2023 10:25:28 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 11 Apr 2023 10:25:28 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Tue, 11 Apr 2023 10:25:28 -0500
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4FDCA11D4;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7CBD915B7;
 	Tue, 11 Apr 2023 15:25:28 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 1/6] ASoC: cs35l56: Remove quick-cancelling of dsp_work()
-Date: Tue, 11 Apr 2023 16:25:23 +0100
-Message-ID: <20230411152528.329803-2-rf@opensource.cirrus.com>
+Subject: [PATCH 4/6] ASoC: cs35l56: Always wait for firmware boot in
+ runtime-resume
+Date: Tue, 11 Apr 2023 16:25:26 +0100
+Message-ID: <20230411152528.329803-5-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230411152528.329803-1-rf@opensource.cirrus.com>
 References: <20230411152528.329803-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 6S6RnWsp7emdfxw5wLA202O-f7qRP2uu
-X-Proofpoint-ORIG-GUID: 6S6RnWsp7emdfxw5wLA202O-f7qRP2uu
+X-Proofpoint-GUID: eR_esh3LH5b4_I_l2nwUg98T3TvKC-vT
+X-Proofpoint-ORIG-GUID: eR_esh3LH5b4_I_l2nwUg98T3TvKC-vT
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: LGCRLWR74BYGKA5PG5OYZBX352ZBGTAY
-X-Message-ID-Hash: LGCRLWR74BYGKA5PG5OYZBX352ZBGTAY
+Message-ID-Hash: WKXYQNOUWNR3TIZKTAF6QEOMMONOL4UH
+X-Message-ID-Hash: WKXYQNOUWNR3TIZKTAF6QEOMMONOL4UH
 X-MailFrom: prvs=9465f6ee37=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -135,7 +136,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LGCRLWR74BYGKA5PG5OYZBX352ZBGTAY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WKXYQNOUWNR3TIZKTAF6QEOMMONOL4UH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -144,76 +145,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Delete the 'removing' flag and don't kick init_completion to make a
-quick cancel of dsp_work(). Just let it timeout on the wait for the
-completion.
+When we are resuming from a system suspend the CS35L56 has probably
+been hard reset (usually a power-on reset). So we must wait for the
+firmware to boot. On SoundWire we also need it to re-initialize before
+we can read the registers to check the CS35L56 state.
 
-Simplify the code to standard cancelling or flushing of the work.
-This avoids introducing corner cases from a layer of custom signalling.
-It also avoids potential race conditions when system-suspend handling
-is added.
+The simplest way to handle this is for runtime-resume to always wait
+for firmware boot. If the firmware is already booted the overhead is
+only one register read.
 
-Unless the hardware is broken, the dsp_work() will already have started
-and passed the completion before the driver would want to cancel it.
+The system-resume will have to runtime-resume the driver anyway before
+attempting any register access. So this will automatically include the
+wait for initialization on SoundWire.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l56.c | 8 +-------
- sound/soc/codecs/cs35l56.h | 1 -
- 2 files changed, 1 insertion(+), 8 deletions(-)
+ sound/soc/codecs/cs35l56.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
 diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index d97b465f0d3c..675aad8e909f 100644
+index 62c44276c121..74abcf1c604a 100644
 --- a/sound/soc/codecs/cs35l56.c
 +++ b/sound/soc/codecs/cs35l56.c
-@@ -867,7 +867,7 @@ static void cs35l56_dsp_work(struct work_struct *work)
- 		goto complete;
+@@ -1102,10 +1102,8 @@ int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56)
+ 	unsigned int val;
+ 	int ret;
+ 
+-	if (!cs35l56->can_hibernate) {
+-		regcache_cache_only(cs35l56->regmap, false);
++	if (!cs35l56->can_hibernate)
+ 		goto out_sync;
+-	}
+ 
+ 	if (!cs35l56->sdw_peripheral) {
+ 		/*
+@@ -1120,19 +1118,19 @@ int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56)
+ 			     CS35L56_CONTROL_PORT_READY_US + 400);
  	}
  
--	if (!cs35l56->init_done || cs35l56->removing)
-+	if (!cs35l56->init_done)
- 		goto complete;
- 
- 	cs35l56->dsp.part = devm_kasprintf(cs35l56->dev, GFP_KERNEL, "cs35l56%s-%02x",
-@@ -917,9 +917,6 @@ static void cs35l56_dsp_work(struct work_struct *work)
- 		goto err;
- 	}
- 
--	if (cs35l56->removing)
+-	regcache_cache_only(cs35l56->regmap, false);
+-
+-	ret = cs35l56_wait_for_firmware_boot(cs35l56);
+-	if (ret) {
+-		dev_err(cs35l56->dev, "Hibernate wake failed: %d\n", ret);
+-		goto err;
+-	}
+-
+-	ret = cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_PREVENT_AUTO_HIBERNATE);
+-	if (ret)
 -		goto err;
 -
- 	mutex_lock(&cs35l56->irq_lock);
- 
- 	init_completion(&cs35l56->init_completion);
-@@ -967,7 +964,6 @@ static int cs35l56_component_probe(struct snd_soc_component *component)
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(cs35l56_tx_input_texts) != ARRAY_SIZE(cs35l56_tx_input_values));
- 
--	cs35l56->removing = false;
- 	cs35l56->component = component;
- 	wm_adsp2_component_probe(&cs35l56->dsp, component);
- 
-@@ -984,8 +980,6 @@ static void cs35l56_component_remove(struct snd_soc_component *component)
- {
- 	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(component);
- 
--	cs35l56->removing = true;
--	complete(&cs35l56->init_completion);
- 	cancel_work_sync(&cs35l56->dsp_work);
- }
- 
-diff --git a/sound/soc/codecs/cs35l56.h b/sound/soc/codecs/cs35l56.h
-index efc4b99180f9..dc91cd7d877f 100644
---- a/sound/soc/codecs/cs35l56.h
-+++ b/sound/soc/codecs/cs35l56.h
-@@ -49,7 +49,6 @@ struct cs35l56_private {
- 	bool soft_resetting;
- 	bool init_done;
- 	bool sdw_attached;
--	bool removing;
- 	bool fw_patched;
- 	bool can_hibernate;
- 	struct completion init_completion;
+ out_sync:
++	regcache_cache_only(cs35l56->regmap, false);
++
++	ret = cs35l56_wait_for_firmware_boot(cs35l56);
++	if (ret) {
++		dev_err(cs35l56->dev, "Hibernate wake failed: %d\n", ret);
++		goto err;
++	}
++
++	ret = cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_PREVENT_AUTO_HIBERNATE);
++	if (ret)
++		goto err;
++
+ 	/* BOOT_DONE will be 1 if the amp reset */
+ 	regmap_read(cs35l56->regmap, CS35L56_IRQ1_EINT_4, &val);
+ 	if (val & CS35L56_OTP_BOOT_DONE_MASK) {
 -- 
 2.30.2
 
