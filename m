@@ -4,188 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D947BC77B6E
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Apr 2023 09:24:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B88B1C77B6E
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Apr 2023 10:00:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE61910C7;
-	Wed, 12 Apr 2023 11:23:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE61910C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC8C710CB;
+	Wed, 12 Apr 2023 12:00:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC8C710CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681291442;
-	bh=OgAgQO+4ISaTh8KLl6mngBfAs+AadvpEkNzK6cMdh5I=;
-	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=p9vGETIXbD34hQkOnxNCZYQoQQ/EpXryTYfXM620aysLPLXwgnHnbjJHH4knGSSlN
-	 RCG9aA56BMMhc9DVSAh5zjIFLTjAEEWruT4YAiZbG+zxtjriniq/CjPUZvOLq0fwz4
-	 EbvKoGMwoRW/o98mEn6LYDKmFnXM6nyJh+dW+PxA=
+	s=default; t=1681293654;
+	bh=/W6rfVmAoHdfAMN8rHOiddmSq8fFQpiYDiyXyTyXY4M=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=I9i7nU2Qw6MiFesSZqYj7yTrtJ85KeIA7Ar3z6pEiPZwl5SsBEVi0V82m8q+K6ZLs
+	 Mk091f44O6LRorWMmW5GwnCJZfRWVa4YgPZfmEhFAzoZB0kP4Zn51S3KfZteISfNOr
+	 SZBj5O2+TMoIZyVPxfaD4ije53BHNIEwzpvWt8uU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 596E0F80448;
-	Wed, 12 Apr 2023 11:23:12 +0200 (CEST)
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH] ASoC: amd: Add check for acp config flags
-Date: Wed, 12 Apr 2023 14:46:16 +0530
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ICJPBWTJ5XRCNGZLDVTHJHKSHUBQ2SD6/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <168129139184.26.4136263007076580285@mailman-core.alsa-project.org>
-From: Syed Saba Kareem via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Syed Saba Kareem <Syed.SabaKareem@amd.com>
-Cc: Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
- vsujithkumar.reddy@amd.com, ssabakar@amd.com,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Randy Dunlap <rdunlap@infradead.org>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Nathan Chancellor <nathan@kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id 03F1BF8032B;
+	Wed, 12 Apr 2023 11:59:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF77CF80448; Wed, 12 Apr 2023 11:23:08 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam11on20600.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7eae::600])
+	id 928F0F8032B; Wed, 12 Apr 2023 11:59:34 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0CED6F800E5
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2023 11:59:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CED6F800E5
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Z60c+znf
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B7BB0F8025E
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2023 11:22:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7BB0F8025E
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=bcE5tzUt
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bNFO7idDx4vnZQFKefBntmORqh6BohHtI8F6/ouBggrHqskhduk67Zb6DP5d7hE67666IjHpAuGy3ediYhIv1ErZ+PVCTnA2S+f9TMumCNK7uI9QYCtXgGxPh3gpGZUUbBsDsQi02Wz787zmWzwQpDtdLnRy/uls2DnLDjeN/XMNtPmXlEUyVctrRM/s8QYfu4q/gOve2OJilJLHHPyfTsagNtMiU5y0+Kc8H4d/mYg3Rzfby5uVT6gp8zKTSj+/EoTyZXJo7s/t4kbWtuBWlqLI9zCbG+RTVGSO8vc5GY7uAlAS5d4iDwaZc2w2BZYteobqrPDZEpGKhx/ELlN9Ow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dSZ7pKzc3Wk3mYFuiWlcvqqtZrrTvSCCfaWQ/MIpp18=;
- b=OGAGZg+h2YknMYoM3XiAId/WnwbUoDwJY0wZdAJrHxzWeFkE7Xw+9URWixe9jQiFOB5/ZGMdhVnXBvPeMm0rN8BYRKXyr6oOIulj9dfIdDq6/BOmjJ5i9+pOS9kkogthnbXGVbbNCzJSi0MQekJ0ie9H+vIf0sub7yCHYVz96y0otxTHKcf6rmA+clJB1JQDi+JyBs/1CKUyGxdI/h/J7Y9Sf5YOqCCY4LVBJUAPBCq4VT47hxlYbCGwTzCZ9n5eFLlcwzcIE46Lh0zlDyHGGJgMJB4WpTcbAGqxJ6JFpD6GYkhSrquh5SwH2rTIPNuOxmb4X/zapRdFQJmlVW3aEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dSZ7pKzc3Wk3mYFuiWlcvqqtZrrTvSCCfaWQ/MIpp18=;
- b=bcE5tzUtfASnSfE8wZ1N3CjPXQYJD62InoI8PggksVVdlKyQgjTVKyAvwhpDrbd40A/MQIt06whhpZ31E1J1tEnBekqcbkodLkoZIaL5tG8QPxs5v6cKUgY0Bf7eexHrAJDHMNmHENBOawauMOgbfqM12yFq+98FczhZ6A3zwCk=
-Received: from MW4PR03CA0092.namprd03.prod.outlook.com (2603:10b6:303:b7::7)
- by DM4PR12MB5867.namprd12.prod.outlook.com (2603:10b6:8:66::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6298.30; Wed, 12 Apr
- 2023 09:22:54 +0000
-Received: from CO1NAM11FT103.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:b7:cafe::fc) by MW4PR03CA0092.outlook.office365.com
- (2603:10b6:303:b7::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6277.38 via Frontend
- Transport; Wed, 12 Apr 2023 09:22:54 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT103.mail.protection.outlook.com (10.13.174.252) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6298.28 via Frontend Transport; Wed, 12 Apr 2023 09:22:54 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Wed, 12 Apr
- 2023 04:22:53 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Wed, 12 Apr
- 2023 04:22:53 -0500
-Received: from amd-B450M-DS3H.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Wed, 12 Apr 2023 04:22:48 -0500
-From: Syed Saba Kareem <Syed.SabaKareem@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH] ASoC: amd: Add check for acp config flags
-Date: Wed, 12 Apr 2023 14:46:16 +0530
-Message-ID: <20230412091638.1158901-1-Syed.SabaKareem@amd.com>
-X-Mailer: git-send-email 2.25.1
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C4C1E62D3F;
+	Wed, 12 Apr 2023 09:59:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEA01C433EF;
+	Wed, 12 Apr 2023 09:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1681293564;
+	bh=/W6rfVmAoHdfAMN8rHOiddmSq8fFQpiYDiyXyTyXY4M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Z60c+znf1e1oR2lhp7EgZE9McFZ6FvpBnQh3Z3STDZRc4tUuPJ9Pc6vJWDeU4uoPB
+	 paNllylXyfhtWzj6V3XaAXuyzY+bkpritlqDiamD/QnWUN6Fks9UH0KGnoVwMj9ZgN
+	 CQjmpFpigQHYb7KCxaa6LbETv7pGE/e4amFM5cZK++raW9cLWHc4EMhuf1zT00l/9g
+	 iE1B0Eq1AscAq6yQKESyMuREANzI68UClfk5BvjsOR2TFzMJrapEERN6gWhySaaxiZ
+	 d8IXtMweMMEsuAtJZnsOASD82Q62P9+FR99ZWVuVvb15XVQiSfyBFcdnvj0uuMFvNB
+	 zNrw3W/V0RDoA==
+Date: Wed, 12 Apr 2023 10:59:18 +0100
+From: Lee Jones <lee@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Subject: Re: [PATCH v5 2/5] mfd: Add support for the Lantiq PEF2256 framer
+Message-ID: <20230412095918.GZ8371@google.com>
+References: <a642e653-e3e2-c3d2-68cb-1efc92be05bb@linaro.org>
+ <20230331165904.4e7f46a1@bootlin.com>
+ <20230403142822.GA8371@google.com>
+ <20230404092036.2d1cd5d9@bootlin.com>
+ <f7ab2fcc-93fc-ce87-8767-579d33907225@linaro.org>
+ <20230404100759.5bc9cd20@bootlin.com>
+ <143754c2-9e37-4386-af92-174c0df2eb0a@linaro.org>
+ <20230405135450.GF8371@google.com>
+ <20230405180023.4aebaa08@bootlin.com>
+ <20230411181640.50c19d4e@bootlin.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT103:EE_|DM4PR12MB5867:EE_
-X-MS-Office365-Filtering-Correlation-Id: 91c5d2a7-4942-4ced-329b-08db3b377f1e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	blJyLA/524ERpqygHMoTKE9eAoQrvgrVuvh5xYtjWGKUr8PvjJiS+e9/oZKDDnem0BAzXLiR7pin0kspi9MGNUOGkFrEGGjjQi1lmmTkk9s7eN39a6oEcCvpbJb6Tw4IIWsuek3jX1HMJfqfvOeystZmDcp9EWTExpKK3s3Kq+Mfh3hpU2XpcuSZDWWeb1WTGFpOdXMp/GpVLdi44a9KNTC1cX/Xh5Jn7xDrpdn1o8a1ItgUtIwccu00/PPBMaf91HGX6XUe0OINmCh+cD6lIMIS6U/vnN6fnaLf9XYYy7I6I47qL/uZMa4jQSUgTEDp0sxT7E4OHlYonUuajMrcRCinw/FwrNjGm9anGGYD3J8AXtG/N5VrO9J6orYdMeD8xhYnmOjcH9Y73QM/eY2cUJMZ7QvifDhwLkZWa6LFYXVu8S1+7Gslg/33AjUAtZQEHope2hJKK7rN/w3U6Dhkj9Vqkad9cRhS8/6ASJNtvt3nZusUUBe8wCAdIHsp6Grpuy/Cj75qM1ELdU5Yht1nFjZD5YNnZdntr1kimH3jcJ3u8WgUWrwTa779tsIueNJISoC/zPWCqoyYlLNbIUiQsHhG7yxkTEcYMQDjJZQ/yIAbzgmU3lxtYLVhtX6Ysn8SlLJ53JljRs/u8ahTFDHGb2aoCjafXuduFaWDaJxJbdzt5y5bYPzme4cNZuvj4WgCtNITvhScztbUB2Ccts6dusdBkjqH+QQpafF5LPe+PGQ=
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(136003)(396003)(346002)(451199021)(36840700001)(46966006)(40470700004)(36860700001)(40460700003)(336012)(83380400001)(2616005)(47076005)(426003)(478600001)(186003)(7696005)(6666004)(110136005)(1076003)(26005)(54906003)(316002)(2906002)(36756003)(5660300002)(82740400003)(356005)(81166007)(4326008)(70586007)(41300700001)(82310400005)(70206006)(8676002)(8936002)(40480700001)(86362001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2023 09:22:54.3264
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 91c5d2a7-4942-4ced-329b-08db3b377f1e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	CO1NAM11FT103.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5867
-Message-ID-Hash: ICJPBWTJ5XRCNGZLDVTHJHKSHUBQ2SD6
-X-Message-ID-Hash: ICJPBWTJ5XRCNGZLDVTHJHKSHUBQ2SD6
-X-MailFrom: Syed.SabaKareem@amd.com
+In-Reply-To: <20230411181640.50c19d4e@bootlin.com>
+Message-ID-Hash: VVXG3FWITWOZK5YOICYUP7BPOVUVD5MH
+X-Message-ID-Hash: VVXG3FWITWOZK5YOICYUP7BPOVUVD5MH
+X-MailFrom: lee@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com, venkataprasad.potturu@amd.com,
- vsujithkumar.reddy@amd.com, ssabakar@amd.com,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Randy Dunlap <rdunlap@infradead.org>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Nathan Chancellor <nathan@kernel.org>,
- open list <linux-kernel@vger.kernel.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ICJPBWTJ5XRCNGZLDVTHJHKSHUBQ2SD6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VVXG3FWITWOZK5YOICYUP7BPOVUVD5MH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -194,109 +104,158 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We have SOF and generic ACP support enabled for Rembrandt and
-pheonix platforms on some machines. Since we have same PCI id
-used for probing, add check for machine configuration flag to
-avoid conflict with newer pci drivers. Such machine flag has
-been initialized via dmi match on few Chrome machines. If no
-flag is specified probe and register older platform device.
+On Tue, 11 Apr 2023, Herve Codina wrote:
 
-Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
-Reviewed-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/Kconfig        | 2 ++
- sound/soc/amd/ps/acp63.h     | 2 ++
- sound/soc/amd/ps/pci-ps.c    | 8 +++++++-
- sound/soc/amd/yc/acp6x.h     | 3 +++
- sound/soc/amd/yc/pci-acp6x.c | 8 +++++++-
- 5 files changed, 21 insertions(+), 2 deletions(-)
+> Hi Lee,
+>
+> On Wed, 5 Apr 2023 18:00:23 +0200
+> Herve Codina <herve.codina@bootlin.com> wrote:
+>
+> > Hi Lee,
+> > On Wed, 5 Apr 2023 14:54:50 +0100
+> > Lee Jones <lee@kernel.org> wrote:
+> >
+> > > On Tue, 04 Apr 2023, Krzysztof Kozlowski wrote:
+> > >
+> > > > On 04/04/2023 10:07, Herve Codina wrote:
+> > > >
+> > > > >>> So, the structure I have in mind:
+> > > > >>> - pef2256.c (MFD)
+> > > > >>>   implement and do the setup at probe()
+> > > > >>>   Add the children at probe():
+> > > > >>>     - pef2256-pinctrl (pinctrl) added using mfd_add_devices()
+> > > > >>>     - pef2256-codec (ASoC codec) added using devm_of_platform_populate()
+> > > > >>>
+> > > > >>> Lee, with this in mind, can the core pef2256.c be a MFD driver ?
+> > > > >>
+> > > > >> You do not use MFD here, so why do you want to keep it in MFD? If you
+> > > > >> disagree, please tell me where is the MFD code in your patch?
+> > > > >
+> > > > > I don't want to absolutely use MFD.
+> > > > > I just want to put my driver somewhere and I don't know the right location
+> > > > > between MFD and Misc.
+> > > > >
+> > > > > Basically, the driver needs to do (little simplified and error path removed):
+> > > > >
+> > > > >   static const struct mfd_cell pef2256_devs[] = {
+> > > > >   	{ .name = "lantiq-pef2256-pinctrl", },
+> > > > >   };
+> > > > >
+> > > > >   static int pef2256_probe(struct platform_device *pdev)
+> > > > >   {
+> > > > > 	struct pef2256 *pef2256;
+> > > > > 	void __iomem *iomem;
+> > > > > 	int ret;
+> > > > > 	int irq;
+> > > > >
+> > > > > 	pef2256 = devm_kzalloc(&pdev->dev, sizeof(*pef2256), GFP_KERNEL);
+> > > > > 	if (!pef2256)
+> > > > > 		return -ENOMEM;
+> > > > >
+> > > > > 	pef2256->dev = &pdev->dev;
+> > > > >
+> > > > > 	iomem = devm_platform_ioremap_resource(pdev, 0);
+> > > > >
+> > > > > 	pef2256->regmap = devm_regmap_init_mmio(&pdev->dev, iomem,
+> > > > > 						&pef2256_regmap_config);
+> > > > >
+> > > > > 	pef2256->mclk = devm_clk_get_enabled(&pdev->dev, "mclk");
+> > > > > 	pef2256->sclkr = devm_clk_get_enabled(&pdev->dev, "sclkr");
+> > > > > 	pef2256->sclkx = devm_clk_get_enabled(&pdev->dev, "sclkx");
+> > > > >
+> > > > > 	pef2256->reset_gpio = devm_gpiod_get_optional(&pdev->dev, "reset", GPIOD_OUT_LOW);
+> > > > > 	if (pef2256->reset_gpio) {
+> > > > > 		gpiod_set_value_cansleep(pef2256->reset_gpio, 1);
+> > > > > 		udelay(10);
+> > > > > 		gpiod_set_value_cansleep(pef2256->reset_gpio, 0);
+> > > > > 		udelay(10);
+> > > > > 	}
+> > > > >
+> > > > > 	pef2556_of_parse(pef2256, np);
+> > > > >
+> > > > > 	irq = platform_get_irq(pdev, 0);
+> > > > > 	ret = devm_request_irq(pef2256->dev, irq, pef2256_irq_handler, 0, "pef2256", pef2256);
+> > > > >
+> > > > > 	platform_set_drvdata(pdev, pef2256);
+> > > > >
+> > > > > 	mfd_add_devices(pef2256->dev, PLATFORM_DEVID_NONE, pef2256_devs,
+> > > > > 	      		ARRAY_SIZE(pef2256_devs), NULL, 0, NULL);
+> > > >
+> > > > Wait, now you use MFD framework, so the driver is suitable for MFD.
+> > > > Before there was nothing like that in your code.
+> > >
+> > > Agree, the above is suitable for MFD, since it does all the things I
+> > > said your last one did not.  You *can* also use of_platform_populate()
+> > > here, since you are *also* requesting and initialising shared resources.
+> > > You cannot do *both* however.
+> > >
+> >
+> > Thanks for having confirmed that this driver can be a MFD driver.
+> >
+> > Related to of_platform_populate() / mfd_add_devices(), I wanted to use both
+> > because:
+> > - the pinctrl part does not have (and does not need to have) a specific node
+> >   with a specific compatible property. In order to instantiate the related
+> >   driver mfd_add_devices() is the only way I know.
+> > - the audio component nodes have a compatible string and several components
+> >   (ie several nodes) can be present. of_platform_populate() call seems the
+> >   simple way to instantiate them.
+> >
+> > Is there a way to use mfd_add_devices() in this case without the need to
+> > count the audio component nodes in order to allocate as much mfd_cell as
+> > nodes having a matching compatible property ? Is there an other API to do
+> > it ?
+> >
+>
+> I looked deeper for using mfd_add_devices() only and found an issue (related
+> to my use-case).
+>
+> mfd_add_devices() calls mfd_add_device() and in this function we have:
+> ---- 8< ----
+> 	if (IS_ENABLED(CONFIG_OF) && parent->of_node && cell->of_compatible) {
+> 		for_each_child_of_node(parent->of_node, np) {
+> 			if (of_device_is_compatible(np, cell->of_compatible)) {
+> 				/* Ignore 'disabled' devices error free */
+> 				if (!of_device_is_available(np)) {
+> 					of_node_put(np);
+> 					ret = 0;
+> 					goto fail_alias;
+> 				}
+>
+> 				ret = mfd_match_of_node_to_dev(pdev, np, cell);
+> 				if (ret == -EAGAIN)
+> 					continue;
+> 				of_node_put(np);
+> 				if (ret)
+> 					goto fail_alias;
+>
+> 				break;
+> 			}
+> 		}
+>
+> 		if (!pdev->dev.of_node)
+> 			pr_warn("%s: Failed to locate of_node [id: %d]\n",
+> 				cell->name, platform_id);
+> 	}
+> ---- 8< ----
+>
+> My issue is related to the loop.
+> The loop is aborted if the device is not available (typically 'Disabled' in the
+> DT node).
+>
+> My full pef2256 node can have several pef2256 audio subnodes with compatible
+> set to "lantiq,pef2256-codec" and some of them can have 'status = "Disabled";'
+> As soon as one device (with my expected compatible) is found 'Disabled', there
+> is no way to look at other children.
+>
+> Having 'continue' in case of device not available in the loop to look at the
+> next child will change the behavior of mfd_add_device().
+> Do you think that looking at next child if we find a 'not available' child
+> can be correct for mfd_add_device() ?
+> This probably will have impacts on other MFD drivers.
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index c88ebd84bdd5..08e42082f5e9 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -90,6 +90,7 @@ config SND_SOC_AMD_VANGOGH_MACH
- 
- config SND_SOC_AMD_ACP6x
- 	tristate "AMD Audio Coprocessor-v6.x Yellow Carp support"
-+	select SND_AMD_ACP_CONFIG
- 	depends on X86 && PCI
- 	help
- 	  This option enables Audio Coprocessor i.e ACP v6.x support on
-@@ -130,6 +131,7 @@ config SND_SOC_AMD_RPL_ACP6x
- 
- config SND_SOC_AMD_PS
-         tristate "AMD Audio Coprocessor-v6.3 Pink Sardine support"
-+	select SND_AMD_ACP_CONFIG
-         depends on X86 && PCI && ACPI
-         help
-           This option enables Audio Coprocessor i.e ACP v6.3 support on
-diff --git a/sound/soc/amd/ps/acp63.h b/sound/soc/amd/ps/acp63.h
-index 6bf29b520511..dd36790b25ae 100644
---- a/sound/soc/amd/ps/acp63.h
-+++ b/sound/soc/amd/ps/acp63.h
-@@ -111,3 +111,5 @@ struct acp63_dev_data {
- 	u16 pdev_count;
- 	u16 pdm_dev_index;
- };
-+
-+int snd_amd_acp_find_config(struct pci_dev *pci);
-diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
-index 688a1d4643d9..afddb9a77ba4 100644
---- a/sound/soc/amd/ps/pci-ps.c
-+++ b/sound/soc/amd/ps/pci-ps.c
-@@ -247,11 +247,17 @@ static int snd_acp63_probe(struct pci_dev *pci,
- {
- 	struct acp63_dev_data *adata;
- 	u32 addr;
--	u32 irqflags;
-+	u32 irqflags, flag;
- 	int val;
- 	int ret;
- 
- 	irqflags = IRQF_SHARED;
-+
-+	/* Return if acp config flag is defined */
-+	flag = snd_amd_acp_find_config(pci);
-+	if (flag)
-+		return -ENODEV;
-+
- 	/* Pink Sardine device check */
- 	switch (pci->revision) {
- 	case 0x63:
-diff --git a/sound/soc/amd/yc/acp6x.h b/sound/soc/amd/yc/acp6x.h
-index 036207568c04..2de7d1edf00b 100644
---- a/sound/soc/amd/yc/acp6x.h
-+++ b/sound/soc/amd/yc/acp6x.h
-@@ -105,3 +105,6 @@ static inline void acp6x_writel(u32 val, void __iomem *base_addr)
- {
- 	writel(val, base_addr - ACP6x_PHY_BASE_ADDRESS);
- }
-+
-+int snd_amd_acp_find_config(struct pci_dev *pci);
-+
-diff --git a/sound/soc/amd/yc/pci-acp6x.c b/sound/soc/amd/yc/pci-acp6x.c
-index 77c5fa1f7af1..7af6a349b1d4 100644
---- a/sound/soc/amd/yc/pci-acp6x.c
-+++ b/sound/soc/amd/yc/pci-acp6x.c
-@@ -149,10 +149,16 @@ static int snd_acp6x_probe(struct pci_dev *pci,
- 	int index = 0;
- 	int val = 0x00;
- 	u32 addr;
--	unsigned int irqflags;
-+	unsigned int irqflags, flag;
- 	int ret;
- 
- 	irqflags = IRQF_SHARED;
-+
-+	/* Return if acp config flag is defined */
-+	flag = snd_amd_acp_find_config(pci);
-+	if (flag)
-+		return -ENODEV;
-+
- 	/* Yellow Carp device check */
- 	switch (pci->revision) {
- 	case 0x60:
--- 
-2.25.1
+Looks like a bug.  Encountering one disabled cell should not prevent the
+others from registering IMHO.
 
+--
+Lee Jones [李琼斯]
