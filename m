@@ -4,150 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9411C77B6E
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Apr 2023 09:11:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E801C77B6E
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Apr 2023 09:23:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 182D310B7;
-	Wed, 12 Apr 2023 11:10:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 182D310B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9982210B9;
+	Wed, 12 Apr 2023 11:22:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9982210B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681290685;
-	bh=8cTgKx/R/Qdi00COX4uDNL2LK48n3bKpPRqlANnC6kw=;
-	h=Date:To:Subject:References:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From:Reply-To:Cc:From;
-	b=Xnn9f/KWSr3Joyg8fGarHzukO4I+BPXo8E0kmn7+m/+oCxRRcOyJTC2dQj95WywWp
-	 z8IrqZTVPo9bUDGMRShyYXeJyiYzKnj9y6q76nFwHee+UY4NwtkiDNrXPe697RcsN6
-	 ivVSfa8/z8dAec0rLYmlrVu4QAmDHlymn1dGtB7M=
+	s=default; t=1681291401;
+	bh=Ij5tGdQ5E/F9HYBnI40b+hnLie47H04UNhrTvvmkSxY=;
+	h=Date:From:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=YYSbMm5QDcEb1zYrbeDiqfv3/zyRLyeKbSkDS4XQQMnmCtrnRxOhV5psaZlg68AbC
+	 PHB7eoXBogvQXNMANXJ2kG2H3l9JFpMA5rVwrur1N5omXgeQ1rX4D0lFv45XuopcRM
+	 H0ev2vvSVHjW94wRIam4Zt4hqqMYfW23Y8b9AbcU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51501F8032B;
-	Wed, 12 Apr 2023 11:10:11 +0200 (CEST)
-Date: Wed, 12 Apr 2023 09:09:56 +0000
-To: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Subject: Re: [PATCH 2/3] ASoC: cs4271: flat regcache, trivial simplifications
-References: <20230410223902.2321834-1-alexander.sverdlin@gmail.com>
- <20230410223902.2321834-3-alexander.sverdlin@gmail.com>
-In-Reply-To: <20230410223902.2321834-3-alexander.sverdlin@gmail.com>
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BUCG6RQ7ZOJPS3X4DGS42RIPROXWXXCD/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <168129060942.26.2120154679508355729@mailman-core.alsa-project.org>
-From: Charles Keepax via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, Nikita Shubin <nikita.shubin@maquefel.me>,
- David Rhodes <david.rhodes@cirrus.com>,
- James Schulman <james.schulman@cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Lucas Tanure <tanureal@opensource.cirrus.com>,
- Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
- Richard Fitzgerald <rf@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id D6277F8032B;
+	Wed, 12 Apr 2023 11:22:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A63A5F8032B; Wed, 12 Apr 2023 11:10:06 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 3BCE1F8025E; Wed, 12 Apr 2023 11:22:04 +0200 (CEST)
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
+ [208.88.110.44])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5AAEAF80100
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2023 11:10:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AAEAF80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 71ED4F800E5
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2023 11:22:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71ED4F800E5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=eOSmWuQJ
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33C5sGqE023356;
-	Wed, 12 Apr 2023 04:09:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=UigUkNR6881wrnlvVj1g9hFPk4PfO8ZLIjY/sdfTSMs=;
- b=eOSmWuQJX8NCioqB0DvL2oVQhd5/41euMJo8E9Xoj8oOBLlgNnwjUqfmgdWS4agsU+zl
- 6Ym7N5DASTA1H7GZ5re4fQpJSsM9/LKkjAVGGqkJvB8/0UZOWnuTIC2I6vIvrkrwXiXR
- 1iyyM7oFWHWXS6mgokgZdcelIFlxDZxXnjqZ4MtukxU2il+5BawDWTnPUkNRcmN2WhRu
- SHiYXK5rJooEyO1XCW2HJ1XmedCMIkPinH2HstqfzSNByijMhUZ/3W08MfU9jqCs1kQV
- qgM54ungHLlLR5mD7MyJdggf4kKZB5pLl317dRYxgFH72OMMVv6mmQ59ppcuE6odUbLJ EQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pu4pq6jjg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 12 Apr 2023 04:09:58 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Wed, 12 Apr
- 2023 04:09:57 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Wed, 12 Apr 2023 04:09:57 -0500
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 05C7C45;
-	Wed, 12 Apr 2023 09:09:57 +0000 (UTC)
-Date: Wed, 12 Apr 2023 09:09:56 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Subject: Re: [PATCH 2/3] ASoC: cs4271: flat regcache, trivial simplifications
-Message-ID: <20230412090956.GY68926@ediswmail.ad.cirrus.com>
-References: <20230410223902.2321834-1-alexander.sverdlin@gmail.com>
- <20230410223902.2321834-3-alexander.sverdlin@gmail.com>
+ unprotected) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com
+ header.a=rsa-sha256 header.s=DFC430D2-D198-11EC-948E-34200CB392D2
+ header.b=EEzjuPOk
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id BEE719C2069
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2023 05:21:58 -0400 (EDT)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+	by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new,
+ port 10032)
+	with ESMTP id xKlclHa7i8fu; Wed, 12 Apr 2023 05:21:58 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 359E09C1178;
+	Wed, 12 Apr 2023 05:21:58 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 359E09C1178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
+	t=1681291318; bh=Ij5tGdQ5E/F9HYBnI40b+hnLie47H04UNhrTvvmkSxY=;
+	h=Message-ID:Date:MIME-Version:From:To;
+	b=EEzjuPOk+0Azmghbn9PS1jcS7XKrDd46bCPxWqC9YAKNtOApdzREfqXkS3Hcur0iG
+	 BJvJdU1pLqK+2H4mka0utPiOPNyaaw+4GozJVLdqeSbJjMgQpCehsuaMo1HomAp9oS
+	 QAtYT5gpv6p4YotFFBytLBI3OSW99cK/zlFbshUqlsR8rtYZ91RnCQNQ7osvXy3B6n
+	 hVbU6YPSOKy/Efh0Ni4hN8aMNN2BLFDhvLGx4EjMUobzpO4HY7IKgMmSZOpKfBfCKz
+	 gkwJA0QorjfzLGf/6NQ5IVGxkt5zzIODFMt4Gzlf2N9FbHzTO4kAx0zvS+AYso64eS
+	 3aG54cwMNDKDQ==
+X-Virus-Scanned: amavisd-new at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+	by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavisd-new,
+ port 10026)
+	with ESMTP id HYLqrmvGk0ja; Wed, 12 Apr 2023 05:21:58 -0400 (EDT)
+Received: from [192.168.216.94]
+ (lmontsouris-657-1-69-118.w80-15.abo.wanadoo.fr [80.15.101.118])
+	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id D38459C0813;
+	Wed, 12 Apr 2023 05:21:57 -0400 (EDT)
+Message-ID: <28b67f03-fe02-3780-3bd3-5587fc6c284d@savoirfairelinux.com>
+Date: Wed, 12 Apr 2023 11:21:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230410223902.2321834-3-alexander.sverdlin@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: udVNQjJh6RmxTrSwzNkVSE-TvB0h1R_8
-X-Proofpoint-ORIG-GUID: udVNQjJh6RmxTrSwzNkVSE-TvB0h1R_8
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: BUCG6RQ7ZOJPS3X4DGS42RIPROXWXXCD
-X-Message-ID-Hash: BUCG6RQ7ZOJPS3X4DGS42RIPROXWXXCD
-X-MailFrom: prvs=9466a8b822=ckeepax@opensource.cirrus.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Content-Language: en-US
+From: Philip-Dylan Gleonec <philip-dylan.gleonec@savoirfairelinux.com>
+Subject: [question] ASoC: max98088: questions about dai2 usage
+To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: SNXQWW2GDIVJM2XMFCMTI2EZIRTUO5C4
+X-Message-ID-Hash: SNXQWW2GDIVJM2XMFCMTI2EZIRTUO5C4
+X-MailFrom: philip-dylan.gleonec@savoirfairelinux.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, Nikita Shubin <nikita.shubin@maquefel.me>,
- David Rhodes <david.rhodes@cirrus.com>,
- James Schulman <james.schulman@cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Lucas Tanure <tanureal@opensource.cirrus.com>,
- Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
- Richard Fitzgerald <rf@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BUCG6RQ7ZOJPS3X4DGS42RIPROXWXXCD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SNXQWW2GDIVJM2XMFCMTI2EZIRTUO5C4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -156,15 +103,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Apr 11, 2023 at 12:39:01AM +0200, Alexander Sverdlin wrote:
-> - Switch to REGCACHE_FLAT, the whole overhead of RBTREE is not worth it
->   with non sparse register set in the address range 1..7.
-> - Move register width to central location
-> 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> ---
+Hello,
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+I'm currently working with a max98089 codec but could not reach the=20
+module authors.
 
-Thanks,
-Charles
+I'm currently trying to add routes from DAI2 to DAI1 through the LBEN2=20
+multiplexer on the chip. My goal is to route data from a digital=20
+microphone to the SoC connected to DAI1.
+
+I've noticed that the driver already implements a route from DAI2 to the=20
+DAC. I've tried re-using the DACL2 and DACR2 widgets to route them=20
+through a DAPM mux, with no success. I noticed that other codecs use=20
+DAPM_AIFIN/OUT widgets for I2S in/out, but the max98089 does not.
+Should I use such widgets to implement the route ? Are they necessary to=20
+implement a codec-to-codec (max98089 <-> microphone) link ?
+
+In regards to the device tree, do you have examples using both the codec=20
+DAI1 and DAI2 ?
+
+Thanks for your support, and apologies if I misdirected this mail.
+
+Regards,
+--=20
+Philip-Dylan Gleonec
+Consultant en logiciel libre / Ing=C3=A9nieur syst=C3=A8mes embarqu=C3=A9=
+s | Rennes, Fr
+(+33) 9 72 46 89 80 <tel:+14185257354>
