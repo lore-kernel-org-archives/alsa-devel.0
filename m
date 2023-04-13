@@ -4,76 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82B64C77B61
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Apr 2023 15:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0D07C77B61
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Apr 2023 15:15:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FF88F11;
-	Thu, 13 Apr 2023 16:59:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FF88F11
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC6BBF11;
+	Thu, 13 Apr 2023 17:15:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC6BBF11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681398031;
-	bh=PuhnKqVh2UaWJCJxNjWnQ+m0PcNkTJ+5eFHm0awq0rg=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=mKd7jZLQVJUm0p6WnJsEVWkb3enBJ2fVzOzoXpwABtwENWUkIjQxlkOSvujNjoJbG
-	 loyYeHW+88LwzJjP1ZIPM8gB2/0hYoHle8y1LOJXocOhh2lVCXE9/lPRKfh5REcn02
-	 prKWIrooO6lxYjea2oyLqGZxSvIfSRgs08AYf/oA=
+	s=default; t=1681398951;
+	bh=wHnJNHVmb7RqxHn81PnrsufS4lvuIofxtxlWj1muxss=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=F/d+LPQfmeaSU/LFLliAYZ/+EEdG4FpTuJx6ydP/Ai0q2JxcaextyJ0OLRTm1QuPr
+	 PUnTATUbz7EVFZ02/0+uCdQKU4eGohsSTdWUAMUIdcORzdZhqlr/pOxTn61CwE6Q9y
+	 iJd0AeTMuwX5uR8OsiE/dRJ0b/Bm0+U++YCz1nVQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F847F8032B;
-	Thu, 13 Apr 2023 16:59:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04C00F8032B;
+	Thu, 13 Apr 2023 17:14:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 934E1F8032B; Thu, 13 Apr 2023 16:59:13 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	id 9E53AF80448; Thu, 13 Apr 2023 17:14:33 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C763AF8023A
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 16:59:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C763AF8023A
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 5ED7920391
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 10:59:03 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pmyPe-hg4-00
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 16:59:02 +0200
-Date: Thu, 13 Apr 2023 16:59:02 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: ALSA development <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 2/2] ALSA: pcm: auto-fill buffer with silence when
- draining playback
-Message-ID: <ZDgYto5sExV2q3pE@ugly>
-Mail-Followup-To: ALSA development <alsa-devel@alsa-project.org>
-References: <7b317956-deb1-0a75-0a34-f82d6a81cf90@perex.cz>
- <87ttxl7cxd.wl-tiwai@suse.de>
- <ZDZmDyOMYMD4Uu5g@ugly>
- <87wn2ho06z.wl-tiwai@suse.de>
- <54c16616-dee7-b50f-d612-82eef906d1df@perex.cz>
- <871qkoxrrl.wl-tiwai@suse.de>
- <ZDfWZG+VASX/Xo/j@ugly>
- <87ile0vzxp.wl-tiwai@suse.de>
- <ZDfjKgLJ2tpV45eW@ugly>
- <87edoovvdy.wl-tiwai@suse.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 26D90F80100
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 17:14:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26D90F80100
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=haZCSPfI
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5802463F83;
+	Thu, 13 Apr 2023 15:14:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D7FBC433EF;
+	Thu, 13 Apr 2023 15:14:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1681398866;
+	bh=wHnJNHVmb7RqxHn81PnrsufS4lvuIofxtxlWj1muxss=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=haZCSPfIcIuOhMYMjYaPXwhiWiKE7R2JCpEVH3CTDM8noDd6o45zMQhk/M7iWA7fN
+	 fTeTcgNPG20b83Ak8519RWPN5zxIfKbNmMiiP1zrXxVNQ8GcS9J89sIiYtRhw3nldf
+	 FVBG+Rbdf0lxZkgarsc8czYRAnzczuRctsaFIynS6jf6P5tdYdvdqw2FyDRoENjpwg
+	 pnfBZo8dBoVyMwTcfTRTNigVvQ7lhOqUMorwFJGFWGEHVuGNwOCOQdWc0YGVc0kZsr
+	 HBwVl3s+d7jGiL4TqVPhZLmXzP7ArPyi1q7/Q6zKNVLYDWjaYRDr+tAT0Plg2ZjOr6
+	 fr95PaEtlsBNA==
+From: Mark Brown <broonie@kernel.org>
+To: Support Opensource <support.opensource@diasemi.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: 
+ <51976b2515d7007ba5c8aa7524892f147d7cdd51.1681363691.git.christophe.jaillet@wanadoo.fr>
+References: 
+ <51976b2515d7007ba5c8aa7524892f147d7cdd51.1681363691.git.christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] ASoC: da7218: Use devm_clk_get_optional()
+Message-Id: <168139886490.3579559.9766383367823502218.b4-ty@kernel.org>
+Date: Thu, 13 Apr 2023 16:14:24 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <87edoovvdy.wl-tiwai@suse.de>
-Message-ID-Hash: FA66S2ASX6PZPMXNZKZY532PJ7P6PRTB
-X-Message-ID-Hash: FA66S2ASX6PZPMXNZKZY532PJ7P6PRTB
-X-MailFrom: ossi@kde.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-00303
+Message-ID-Hash: 3QS2QK4O352SSJY7MBR6DOPDOCWNN6JG
+X-Message-ID-Hash: 3QS2QK4O352SSJY7MBR6DOPDOCWNN6JG
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+CC: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FA66S2ASX6PZPMXNZKZY532PJ7P6PRTB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3QS2QK4O352SSJY7MBR6DOPDOCWNN6JG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,54 +95,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, Apr 13, 2023 at 02:06:49PM +0200, Takashi Iwai wrote:
->On Thu, 13 Apr 2023 13:10:34 +0200, Oswald Buddenhagen wrote:
->> i don't think that's true. if an app wants to control things finely,
->> it would just use start/stop and manage the timing itself. draining
->> otoh is a convenient fire-and-forget operation. that makes it easy to
->> miss the finer details, which is why i'm so insistent that it should
->> just work out of the box.
->
->Sure, but that's still no excuse to ignore the possibility blindly.
->
-it's not blindly. it's after considering it, and concluding that it's a 
-hypothetical problem at best.
+On Thu, 13 Apr 2023 07:28:33 +0200, Christophe JAILLET wrote:
+> Use devm_clk_get_optional() instead of hand writing it.
+> 
+> 
 
-we could of course do a survey of actually existing publicly accessible 
-code, to quantify the trade-off between apps fixed and apps broken. i 
-actually sort of tried that ...
+Applied to
 
-first thing is that i found lots of stackoverflow answers and similar, 
-and *none* of them even mentioned the need to clear the rest of the 
-buffer. i found a bunch of libs, and none of the apidocs mentioned it in 
-the parts i read. i found one cross-platform how-to which did actually 
-mention it. yay.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-code search was trickier, with rather predictable results:
-basically all hits for drain() were immediately followed by close().
-i found some simple cases of write+drain, and none of them did any 
-additional padding. this includes alsa's own pcm example. but never 
-mind, we're in agreement about this case.
-most other code was some abstraction, so it would be impossible to asses 
-the bigger picture quickly.
-that would be even more the case for apps that use mmap. so i won't even 
-try to provide actual data.
-one thing to consider here is that most of the code are cross-platform 
-abstractions. under such circumstances, it seems kinda inconceivable 
-that the higher level code would make any assumptions about buffer space 
-that has not been filled with fresh samples.
+Thanks!
 
->> and doing it all in user space is yet more code. for all i can
->> tell, it's really just layers of complexity to solve a non-problem.
->
->I don't get it: we're talking about the sw_params call in alsa-lib's
->drain function, and how can it be *so* complex...?
->
-the "drain function" bit is critical here, because it kind of implies 
-resetting it, potentially asynchronously. but if we add a specific bit 
-to the kernel to enable it, then it can be actually set already when the 
-device is set up, and the user space would be rather simple. however, 
-that would overall be still a lot more code than doing it 
-unconditionally, and fully in kernel.
+[1/1] ASoC: da7218: Use devm_clk_get_optional()
+      commit: c6c3581a3e178882c8815462ca129e60be50fde8
 
-regards
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
