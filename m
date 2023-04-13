@@ -4,115 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 375ABC77B6E
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 09:30:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FCF1C77B6E
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 09:40:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BD38E73;
-	Fri, 14 Apr 2023 11:29:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BD38E73
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F812E71;
+	Fri, 14 Apr 2023 11:40:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F812E71
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681464599;
-	bh=1AHToPX24EBXGeLeeTk4I3nInPscgpcjK6cm3QRlaco=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=JANR6iD7xXcak9+XaRDcph12aF4Ym1Nqm0p/sDQ4X8H6TZOT6MMffl9MTDhL42N4y
-	 GMiLXViaZJhG5bGgoYLK0ysdl09aEqUzqIMZfgROoT/W/Vt21UiBVIcMWqxgyxHE7X
-	 ZdDliO1qziwYur1oUWhAJQCqwDH+N/1Nkb35ULI4=
+	s=default; t=1681465252;
+	bh=Hf4h4H5YzhjoZ/QFEntiNPzISHmEDPxFjXkJJZdSM3U=;
+	h=In-Reply-To:References:Date:From:To:Subject:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=RijBhMyzPCPrke3LAlWmPwHWTYS6hDu0GH8qq5DZkPo8Sh3psnRH/uAXd32GuixeK
+	 Fs/JwFRueHGaSjgSfdm8MhAdWW/tImxWJ6ECYAxsX7cgJrmYY0SsT+6M9BW7LdV2tz
+	 klGnaSHrEUE0iU4HW5MTEP2RahYXkkylZZ+WOAnc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9324CF8032B;
-	Fri, 14 Apr 2023 11:28:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE1C7F8032B;
+	Fri, 14 Apr 2023 11:39:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 169B7F8032B; Fri, 14 Apr 2023 11:28:41 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 27EEDF8032B; Thu, 13 Apr 2023 18:34:08 +0200 (CEST)
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
+ [64.147.123.21])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F32B2F80149
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 11:28:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F32B2F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 78A10F800E5
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 18:33:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78A10F800E5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Dyd8VemJ;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=U2Y3GlUy
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6FAA1219D0;
-	Fri, 14 Apr 2023 09:28:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1681464509;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t08R0Aw7vQoR6TxJWUAYF6fRvdCaKK3LgktDIqFjfIQ=;
-	b=Dyd8VemJzl58sF0GCCUtJTmtZ5GivdNJ8qQtNwnsprutgZAqVSXWlCW64hmgHl1KXtFHdF
-	0q4viPxrwq1TCYwAPKauJpTP0YeP5uqG7sh7VErm5TYmV30OKwTnDCtBUneYJiyWfITAyH
-	H/tjRKYkfJ18uzVv5pu68o4PfCZCroc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1681464509;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t08R0Aw7vQoR6TxJWUAYF6fRvdCaKK3LgktDIqFjfIQ=;
-	b=U2Y3GlUyNjSlZFbWBlnt0q3dCFbfhvzcpcokg6AQ23RU1dtfPKgIVH6GMOLlKa6XWlC34/
-	RH8e97F0S68OxnDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 591F913498;
-	Fri, 14 Apr 2023 09:28:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id rVBQFL0cOWTaCQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 14 Apr 2023 09:28:29 +0000
-Date: Fri, 14 Apr 2023 11:28:28 +0200
-Message-ID: <878reun77n.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Subject: Re: [PATCH 2/2] ALSA: pcm: auto-fill buffer with silence when
- draining playback
-In-Reply-To: <ZDkVKhergjGu5S3F@ugly>
-References: <ZDZmDyOMYMD4Uu5g@ugly>
-	<87wn2ho06z.wl-tiwai@suse.de>
-	<54c16616-dee7-b50f-d612-82eef906d1df@perex.cz>
-	<871qkoxrrl.wl-tiwai@suse.de>
-	<ZDfWZG+VASX/Xo/j@ugly>
-	<87ile0vzxp.wl-tiwai@suse.de>
-	<ZDfjKgLJ2tpV45eW@ugly>
-	<87edoovvdy.wl-tiwai@suse.de>
-	<ZDgYto5sExV2q3pE@ugly>
-	<87h6tina31.wl-tiwai@suse.de>
-	<ZDkVKhergjGu5S3F@ugly>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: 5ZRMXYXMAHGTFBTOBUYOH7OW7ZW3YJTY
-X-Message-ID-Hash: 5ZRMXYXMAHGTFBTOBUYOH7OW7ZW3YJTY
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=squebb.ca header.i=@squebb.ca header.a=rsa-sha256
+ header.s=fm1 header.b=n4WaWh7D;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=messagingengine.com header.i=@messagingengine.com
+ header.a=rsa-sha256 header.s=fm3 header.b=g/yYmGEa
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id AFBD232008FD;
+	Thu, 13 Apr 2023 12:33:54 -0400 (EDT)
+Received: from imap52 ([10.202.2.102])
+  by compute5.internal (MEProxy); Thu, 13 Apr 2023 12:33:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:sender
+	:subject:subject:to:to; s=fm1; t=1681403634; x=1681490034; bh=sc
+	qSdP8ZsFrlhVSTT6piR67Y1qxvg+wO3bZF9SXt/TM=; b=n4WaWh7DOuZ9V/nVi7
+	1Dbi/LyvYDUJkQ9OJi3RshemYIXAAN0we6ZepsxjRh/CZe4AfGJeesr+RLfAfMK7
+	xApte/TDdtFBy8liSmjms4khF/H4dTSp2nR6TM9pk0+BGvPJp9j+1BZCAtIMQP6e
+	qDeq2NZ4rkvqjBTB2vKbN+tSJwKKvOLOsc9eJBMH+dTSnimBC7cVdGu3DwiznGen
+	TzUt6EHsmC9Enau8sTnJlJ8iy0MSnMLii5nNlrFVGOyj8lvB3V6L+eGJHG4BBIaV
+	btjleYID9dMXJrvjRYGNr06m/joHA0YGdBz8S99nJLny5bsl9f2A7dJQQ5YTzVa3
+	6vkA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm3; t=1681403634; x=1681490034; bh=scqSdP8ZsFrlh
+	VSTT6piR67Y1qxvg+wO3bZF9SXt/TM=; b=g/yYmGEajNY6IQq1TfE5aSOtXNVEv
+	6a0+1c+YasXOIfiFDSayfBd8cU6gPLVgUAsDaS3ZeFaVFcfnuXTXdnuuPZVVrEG9
+	JFc/Beu16dRN5XlfiV5yq89OydCq8tz4Ardks0g2zcufv4ZO4AtUHRhucV03BWIK
+	i4feYb2b7Gf0B9tPMSV1LNI0Cnw8Ri2TMaraSznoeDMymcJmjRgpl8laOKindAtF
+	4VOwYpRY5ZZru3qhM971Zu4+KbOnBv72bgfFlnpmQQArkebu3MAn9s/p8GFmQr7L
+	L2JBqy70RcRurQt2Fa3loHi0G41OibOsL4hKBS9536AxoMkmD5YQ7lx+w==
+X-ME-Sender: <xms:8S44ZKbC2Ljqpqwv5kK-ce0K9feDLPNJkbWMvXtNMoqTVmO2Wt4T1g>
+    <xme:8S44ZNYgKiBlc6RRvf2h0ti208-N4RZdQX9Z6F8sR1NrO5OYG5pwKY6W_wt-8sTqV
+    lCzSSpQkSYBBvT7dZA>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgedvhedrvdekkedguddtfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfofgr
+    rhhkucfrvggrrhhsohhnfdcuoehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssg
+    drtggrqeenucggtffrrghtthgvrhhnpeefkeefudevveeutdeitdekffevudegkefgheej
+    feeileehhfetkeekgeehvdegheenucffohhmrghinhepphhrohhjvggtthdrohhrghenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmphgvrghr
+    shhonhdqlhgvnhhovhhosehsqhhuvggssgdrtggr
+X-ME-Proxy: <xmx:8S44ZE-XGFzg0M3vTmIhvCPf6l6QmlZwO0EdqU5inaNK7x1Hxs1W-w>
+    <xmx:8S44ZMrSIJJTJtUdDr3_Y9_S8RAS505yLuIHpiBQlRlFq6um7xHAQw>
+    <xmx:8S44ZFoA12_A5l5-c-S5TXJcOC3LX1DjCcZyCDSGF1mFtl7Y1RK3ZQ>
+    <xmx:8i44ZM3-u6MxvVbMO56KEitLoqienJBbc6oB-ORu4dF6MJh2Irhe4w>
+Feedback-ID: ibe194615:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id BFFD2C60091; Thu, 13 Apr 2023 12:33:53 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-334-g8c072af647-fm-20230330.001-g8c072af6
+Mime-Version: 1.0
+Message-Id: <c6a91f32-8c6c-4a39-95d8-ef5c031953ab@app.fastmail.com>
+In-Reply-To: 
+ <MN0PR12MB61013DABE036B5D1BB3518A5E29B9@MN0PR12MB6101.namprd12.prod.outlook.com>
+References: 
+ <OS3P286MB1711DD6556284B69C79C0C4FE19B9@OS3P286MB1711.JPNP286.PROD.OUTLOOK.COM>
+ <MN0PR12MB61013DABE036B5D1BB3518A5E29B9@MN0PR12MB6101.namprd12.prod.outlook.com>
+Date: Thu, 13 Apr 2023 12:33:30 -0400
+From: "Mark Pearson" <mpearson-lenovo@squebb.ca>
+To: "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+ "Baishan Jiang" <bjiang400@outlook.com>, "Mark Brown" <broonie@kernel.org>,
+ "Takashi Iwai" <tiwai@suse.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v2] ASoC: amd: yc: Add ThinkBook 14 G5+ ARP to quirks list
+ for
+ acp6x
+Content-Type: text/plain
+X-MailFrom: mpearson-lenovo@squebb.ca
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: ALSA development <alsa-devel@alsa-project.org>
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: BC4QLK6MGTVCVYN7ZVKC7SBTFFUZJ3V3
+X-Message-ID-Hash: BC4QLK6MGTVCVYN7ZVKC7SBTFFUZJ3V3
+X-Mailman-Approved-At: Fri, 14 Apr 2023 09:39:35 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5ZRMXYXMAHGTFBTOBUYOH7OW7ZW3YJTY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BC4QLK6MGTVCVYN7ZVKC7SBTFFUZJ3V3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,21 +132,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 14 Apr 2023 10:56:10 +0200,
-Oswald Buddenhagen wrote:
-> 
-> On Fri, Apr 14, 2023 at 10:26:26AM +0200, Takashi Iwai wrote:
-> > BTW, I guess that one missing piece in your patch is the case where
-> > the drain is called at the moment of fully filled data.  You added
-> > snd_pcm_playback_silence() at snd_pcm_do_drain_init(), but in this
-> > scenario, the call wouldn't do anything at this moment.  But
-> > snd_pcm_playback_silence() won't be called afterwards because
-> > runtime->silence_size = 0.  So this workaround won't take effect in
-> > that case, no?
-> > 
-> the hunk in snd_pcm_update_hw_ptr0() should take care of that.
 
-OK, I see.  Thanks.
+On Wed, Apr 12, 2023, at 10:47 AM, Limonciello, Mario wrote:
+> [Public]
+>
+> Loop Mark Pearson from Lenovo for awareness.
+>
+>> -----Original Message-----
+>> From: Baishan Jiang <bjiang400@outlook.com>
+>> Sent: Wednesday, April 12, 2023 03:41
+>> To: Mark Brown <broonie@kernel.org>; Takashi Iwai <tiwai@suse.com>;
+>> Limonciello, Mario <Mario.Limonciello@amd.com>; alsa-devel@alsa-
+>> project.org
+>> Cc: Baishan Jiang <bjiang400@outlook.com>
+>> Subject: [PATCH v2] ASoC: amd: yc: Add ThinkBook 14 G5+ ARP to quirks list
+>> for acp6x
+>> 
+>> ThinkBook 14 G5+ ARP uses Ryzen 7735H processor, and has the same
+>> microphone problem as ThinkBook 14 G4+ ARA.
+>> 
+>> Adding 21HY to acp6x quirks table enables microphone for ThinkBook
+>> 14 G5+ ARP.
+>> 
+>> Signed-off-by: Baishan Jiang <bjiang400@outlook.com>
+>
+> It would be generally preferred for systems to start including the _DSD in the
+> BIOS so we can stop growing the quirk list, but if they don't then patches like
+> this make sense.
 
+Ack. I've forwarded to the FW team. Internal ticket is LO-2404.
 
-Takashi
+Realistically though - I'd recommend still carrying on with the patch. This platform isn't in the Linux program and it could take me a while to see if I can get them to accept making changes I'm afraid.
+
+Mark
+
+>
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+>
+>> ---
+>> V1 -> V2: Fixed signed-off-by format
+>> ---
+>>  sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>> 
+>> diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-
+>> mach.c
+>> index 0acdf0156f07..62d8a8e060d2 100644
+>> --- a/sound/soc/amd/yc/acp6x-mach.c
+>> +++ b/sound/soc/amd/yc/acp6x-mach.c
+>> @@ -178,6 +178,13 @@ static const struct dmi_system_id
+>> yc_acp_quirk_table[] = {
+>>  			DMI_MATCH(DMI_PRODUCT_NAME, "21EN"),
+>>  		}
+>>  	},
+>> +	{
+>> +		.driver_data = &acp6x_card,
+>> +		.matches = {
+>> +			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+>> +			DMI_MATCH(DMI_PRODUCT_NAME, "21HY"),
+>> +		}
+>> +	},
+>>  	{
+>>  		.driver_data = &acp6x_card,
+>>  		.matches = {
+>> --
+>> 2.40.0
