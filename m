@@ -4,120 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68421C77B6F
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Apr 2023 13:13:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99804C77B6F
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Apr 2023 13:19:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63DA1F05;
-	Thu, 13 Apr 2023 15:12:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63DA1F05
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B86FF11;
+	Thu, 13 Apr 2023 15:18:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B86FF11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681391600;
-	bh=YnSHS6i+I1rD3M8afon29i3HsRA4D4JOxzgpDOapIRg=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=uggyjMMk28Fzv2+HBEfk6ABuQnOUSdo4FY7GjSt2Hcf0LVr4Plu7CgPG+Q2sWfZfd
-	 p/7Yt+izs+aennXpvuZAZMTNTf4cMYOFCJtmlqhejnmD6KwdEvvuaNt9OlU6lN0YwH
-	 30NjOys+S7u3yTxkuVoRuenvIYru7Bp8jS21cHI0=
+	s=default; t=1681391952;
+	bh=WsT515isnkBKEfuL1ch+L4Wz7bunaVBPcphkIje8zoM=;
+	h=Date:Subject:To:References:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From:Reply-To:Cc:From;
+	b=JBGBSlWH7Fm+OAuzvnrazXx0Npp00+N9K2xu+Kc/wNR4VNixChzWZs3mIX9vCiIpx
+	 ieiEla1wU3j4OEeMNRM+YXOHatD6RR2mniGA+q9lDobn0F80mCcl4YLyWiM5INDRZI
+	 Ke+25pXNSYVZ7+TXTMJ/wFmwdMWsPzSqDUDpAy28=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1774CF800E5;
-	Thu, 13 Apr 2023 15:12:07 +0200 (CEST)
-Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 55A70F8032B; Thu, 13 Apr 2023 15:12:01 +0200 (CEST)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
- [IPv6:2a00:1450:4864:20::62e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C8D4F8023A
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 15:11:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C8D4F8023A
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=gOE0ushq
-Received: by mail-ej1-x62e.google.com with SMTP id ga37so37651560ejc.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 13 Apr 2023 06:11:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1681391511; x=1683983511;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XCWUaiaWVnGIwMXJ072+drdEdGoVEQpMTGC5dkuhkzs=;
-        b=gOE0ushqz0Cf8TvKuw85UEHNM+zO9/7/DBFwDl4ukRzgE2P/+QWipzXCoxv5Pu0P52
-         Q63G/7jfgm/4l+6XJywI04qJPLCXIrbpRKpwGaC/6UyZOadVRT9ohA3AfZerRm2v08S+
-         ki1As17D4K8Mudlkv6SgPeq0FzDra/okKDXdhJs9wR6TifjNyY1n2yMU43ubZjmqW1l8
-         fDML3le/6xGOjHwTqDuyTTShNOUtGih4oWjEGlkNlzu/5NWS5/OJYFpFh6/rUZnxZs6D
-         bxj63uHIG4/ynQm0znyw4ulGSnUCGJVojYZbKIxDsguFZejgys6CJInNZwyfxh1/vJ31
-         hjbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681391511; x=1683983511;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XCWUaiaWVnGIwMXJ072+drdEdGoVEQpMTGC5dkuhkzs=;
-        b=FiqCUx1NrvNImJDLK7k+kdUkBSR3d6DPLoDY5mvQnHDbJ9q/zTB0ull7qhZnzoGhkp
-         8VZE2CEVPhmaoCW0jftyjcvcEOmOhaDPpTswRyfhd/Mx9dMi23IcvR7iIwCEgDkofy+o
-         nTn75m8FCWV96E3pICV9vgOckg7sVkCjFTJOw24TubBUfehryWer69OrVDD0OcOPAOE2
-         9udBJA9znCtA50RY17qKKGxWSC86DOBgHXKSM9GX+fJueCthw7CTWrnQfoV3InLx2xlA
-         Omws2jf9ziq6nwdUvLmIhKV5Auoz4qjSoZOJA2UhDL6m6vA8p59XKHdtqqWFjW2u4yh+
-         WGzA==
-X-Gm-Message-State: AAQBX9cliuu+uUOk61oz7/C253fi+4dNSGquqlI8bBmyBqCFq8LECx8Z
-	NApYJUg/YO90MFrIaDxW/sHJSw==
-X-Google-Smtp-Source: 
- AKy350YJ3uLaEKYbCc3ihWijhwZDDaFIcsFka/6gnLknW+fWV2K5RQUvLCR1fAH6/lNXlxY0M+dGPA==
-X-Received: by 2002:a17:907:d042:b0:94e:c40d:18f4 with SMTP id
- vb2-20020a170907d04200b0094ec40d18f4mr382489ejc.1.1681391510693;
-        Thu, 13 Apr 2023 06:11:50 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id
- s24-20020a170906961800b0094dde59ad39sm969889ejx.79.2023.04.13.06.11.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Apr 2023 06:11:49 -0700 (PDT)
-Message-ID: <541e2684-9df6-b875-df2e-a33ceee7c780@linaro.org>
-Date: Thu, 13 Apr 2023 14:11:48 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v2 7/7] soundwire: qcom: use tabs for indentation in
- defines
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Rao Mandadapu <quic_srivasam@quicinc.com>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org
-References: <20230403132503.62090-1-krzysztof.kozlowski@linaro.org>
- <20230403132503.62090-8-krzysztof.kozlowski@linaro.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20230403132503.62090-8-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: KRHXD4WOJLW6CVBL4E65Y3R7N6HJ5WJR
-X-Message-ID-Hash: KRHXD4WOJLW6CVBL4E65Y3R7N6HJ5WJR
-X-MailFrom: srinivas.kandagatla@linaro.org
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A5FEF8032B;
+	Thu, 13 Apr 2023 15:17:59 +0200 (CEST)
+Date: Thu, 13 Apr 2023 15:17:41 +0200
+Subject: Re: [PATCH 3/7] ASoC: mediatek: mt8188: revise ETDM control flow
+To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
+ lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com
+References: <20230413104713.7174-1-trevor.wu@mediatek.com>
+ <20230413104713.7174-4-trevor.wu@mediatek.com>
+In-Reply-To: <20230413104713.7174-4-trevor.wu@mediatek.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Patrick Lai <quic_plai@quicinc.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KRHXD4WOJLW6CVBL4E65Y3R7N6HJ5WJR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UVMKLC55KGQIJXIAM27DX4QYWAPCPQ5T/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+MIME-Version: 1.0
+Message-ID: 
+ <168139187792.26.17464395245964028785@mailman-core.alsa-project.org>
+From: AngeloGioacchino Del Regno via Alsa-devel <alsa-devel@alsa-project.org>
+Reply-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+Received: by alsa1.perex.cz (Postfix, from userid 50401)
+	id 9B7E7F80448; Thu, 13 Apr 2023 15:17:53 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.3 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED shortcircuit=no autolearn=ham autolearn_force=no
+	version=3.4.6
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 104F5F8025E
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 15:17:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 104F5F8025E
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=N0n+Y06N
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
+ [2.237.20.237])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 593C66603219;
+	Thu, 13 Apr 2023 14:17:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1681391865;
+	bh=R+bkS6zf4+ohM4HlMQeBjxGdxTHQFqSnwecyrY1S5ws=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=N0n+Y06N3L8jygZ9qjWTM90m84pqe5Pa1r6GAp0jKx9i7ETrEDHJM/DCzOdGCfBOA
+	 gWCJuInYXSh2NGi+6MrZwjEW33TUsdwYY7H3QYFBFhlBwOfgMvCOWgYhPLYTWAUVwo
+	 1gbus8SY+zVHg7EewxoLiuxMatP0Kt8tFM1b+l/fCd3teiYyvEQRdDpVyDJFZaLhkd
+	 IdCuJKsSoLMePHf0GhGvlToBw/N23DR+FCDyywWmc3pHCeVqTuJbwcp/6iAE+S7WxW
+	 ihNoZ/88DAtPwSE82kR4IJfAY0Eeoq0+t2hYenPg+fr6oT1C1lm1RrBddwNP8Grv3L
+	 AUv1fKL13TyTg==
+Message-ID: <e36598dd-4f83-90b4-1744-61d18744b02d@collabora.com>
+Date: Thu, 13 Apr 2023 15:17:41 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 3/7] ASoC: mediatek: mt8188: revise ETDM control flow
+Content-Language: en-US
+To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
+ lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com
+References: <20230413104713.7174-1-trevor.wu@mediatek.com>
+ <20230413104713.7174-4-trevor.wu@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230413104713.7174-4-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: UVMKLC55KGQIJXIAM27DX4QYWAPCPQ5T
+X-Message-ID-Hash: UVMKLC55KGQIJXIAM27DX4QYWAPCPQ5T
+X-MailFrom: angelogioacchino.delregno@collabora.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation;
+ header-match-alsa-devel.alsa-project.org-0;
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+X-Mailman-Version: 3.3.8
+Precedence: list
+List-Id: "Alsa-devel mailing list for ALSA developers -
+ http://www.alsa-project.org" <alsa-devel.alsa-project.org>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UVMKLC55KGQIJXIAM27DX4QYWAPCPQ5T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,70 +143,226 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 03/04/2023 14:25, Krzysztof Kozlowski wrote:
-> Use consistently only tabs to indent the value in defines.
+Il 13/04/23 12:47, Trevor Wu ha scritto:
+> Replace register controls in snd_soc_dai_ops with snd_soc_dapm_widgets.
+> startup, shutdown and trigger ops are removed, and create DAPM_SUPPLY
+> to handle mclk, clock gating and etdm enabling. Additionally, mclk setup
+> sequence is also updated because of new supply enabling sequence.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 > ---
-
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-
---srini
->   drivers/soundwire/qcom.c | 34 +++++++++++++++++-----------------
->   1 file changed, 17 insertions(+), 17 deletions(-)
+>   sound/soc/mediatek/mt8188/mt8188-dai-etdm.c | 790 ++++++++++----------
+>   sound/soc/mediatek/mt8188/mt8188-reg.h      |   2 +
+>   2 files changed, 406 insertions(+), 386 deletions(-)
 > 
-> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index f2e1135ef113..77a5e4cbbe9b 100644
-> --- a/drivers/soundwire/qcom.c
-> +++ b/drivers/soundwire/qcom.c
-> @@ -58,9 +58,9 @@
->   #define SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED		BIT(10)
->   #define SWRM_INTERRUPT_STATUS_AUTO_ENUM_FAILED			BIT(11)
->   #define SWRM_INTERRUPT_STATUS_AUTO_ENUM_TABLE_IS_FULL		BIT(12)
-> -#define SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED_V2             BIT(13)
-> -#define SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED_V2              BIT(14)
-> -#define SWRM_INTERRUPT_STATUS_EXT_CLK_STOP_WAKEUP               BIT(16)
-> +#define SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED_V2		BIT(13)
-> +#define SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED_V2		BIT(14)
-> +#define SWRM_INTERRUPT_STATUS_EXT_CLK_STOP_WAKEUP		BIT(16)
->   #define SWRM_INTERRUPT_MAX					17
->   #define SWRM_V1_3_INTERRUPT_MASK_ADDR				0x204
->   #define SWRM_V1_3_INTERRUPT_CLEAR				0x208
-> @@ -125,20 +125,20 @@
->   #define SWRM_REG_VAL_PACK(data, dev, id, reg)	\
->   			((reg) | ((id) << 16) | ((dev) << 20) | ((data) << 24))
+> diff --git a/sound/soc/mediatek/mt8188/mt8188-dai-etdm.c b/sound/soc/mediatek/mt8188/mt8188-dai-etdm.c
+> index fddecf5bf7c6..c276687630ee 100644
+> --- a/sound/soc/mediatek/mt8188/mt8188-dai-etdm.c
+> +++ b/sound/soc/mediatek/mt8188/mt8188-dai-etdm.c
+> @@ -21,6 +21,13 @@
+>   #define ETDM_TO_DAI_ID(x) ((x) + MT8188_AFE_IO_ETDM_START)
+>   #define ENUM_TO_STR(x)	#x
 >   
-> -#define MAX_FREQ_NUM		1
-> -#define TIMEOUT_MS		100
-> -#define QCOM_SWRM_MAX_RD_LEN	0x1
-> -#define QCOM_SDW_MAX_PORTS	14
-> -#define DEFAULT_CLK_FREQ	9600000
-> -#define SWRM_MAX_DAIS		0xF
-> -#define SWR_INVALID_PARAM 0xFF
-> -#define SWR_HSTOP_MAX_VAL 0xF
-> -#define SWR_HSTART_MIN_VAL 0x0
-> -#define SWR_BROADCAST_CMD_ID    0x0F
-> -#define SWR_MAX_CMD_ID	14
-> -#define MAX_FIFO_RD_RETRY 3
-> -#define SWR_OVERFLOW_RETRY_COUNT 30
-> -#define SWRM_LINK_STATUS_RETRY_CNT 100
-> +#define MAX_FREQ_NUM						1
-> +#define TIMEOUT_MS						100
-> +#define QCOM_SWRM_MAX_RD_LEN					0x1
-> +#define QCOM_SDW_MAX_PORTS					14
-> +#define DEFAULT_CLK_FREQ					9600000
-> +#define SWRM_MAX_DAIS						0xF
-> +#define SWR_INVALID_PARAM					0xFF
-> +#define SWR_HSTOP_MAX_VAL					0xF
-> +#define SWR_HSTART_MIN_VAL					0x0
-> +#define SWR_BROADCAST_CMD_ID					0x0F
-> +#define SWR_MAX_CMD_ID						14
-> +#define MAX_FIFO_RD_RETRY					3
-> +#define SWR_OVERFLOW_RETRY_COUNT				30
-> +#define SWRM_LINK_STATUS_RETRY_CNT				100
->   
+> +enum {
+> +	SUPPLY_SEQ_ETDM_MCLK,
+> +	SUPPLY_SEQ_ETDM_CG,
+> +	SUPPLY_SEQ_DPTX_EN,
+> +	SUPPLY_SEQ_ETDM_EN,
+> +};
+> +
 >   enum {
->   	MASTER_ID_WSA = 1,
+>   	MTK_DAI_ETDM_FORMAT_I2S = 0,
+>   	MTK_DAI_ETDM_FORMAT_LJ,
+> @@ -84,7 +91,6 @@ struct mtk_dai_etdm_rate {
+>   };
+>   
+>   struct mtk_dai_etdm_priv {
+> -	unsigned int clock_mode;
+>   	unsigned int data_mode;
+>   	bool slave_mode;
+>   	bool lrck_inv;
+> @@ -100,8 +106,6 @@ struct mtk_dai_etdm_priv {
+>   	unsigned int cowork_slv_count;
+>   	int cowork_slv_id[MT8188_AFE_IO_ETDM_NUM - 1]; //dai_id
+>   	bool in_disable_ch[MT8188_ETDM_MAX_CHANNELS];
+> -	unsigned int en_ref_cnt;
+> -	bool is_prepared;
+>   };
+>   
+>   static const struct mtk_dai_etdm_rate mt8188_etdm_rates[] = {
+> @@ -345,14 +349,82 @@ static int mtk_dai_etdm_get_clkdiv_id_by_dai_id(int dai_id)
+>   	}
+>   }
+>   
+> +static int get_etdm_id_by_name(struct mtk_base_afe *afe,
+> +			       const char *name)
+> +{
+> +	if (!strncmp(name, "ETDM1_IN", strlen("ETDM1_IN")))
+> +		return MT8188_AFE_IO_ETDM1_IN;
+> +	else if (!strncmp(name, "ETDM2_IN", strlen("ETDM2_IN")))
+> +		return MT8188_AFE_IO_ETDM2_IN;
+> +	else if (!strncmp(name, "ETDM1_OUT", strlen("ETDM1_OUT")))
+> +		return MT8188_AFE_IO_ETDM1_OUT;
+> +	else if (!strncmp(name, "ETDM2_OUT", strlen("ETDM2_OUT")))
+> +		return MT8188_AFE_IO_ETDM2_OUT;
+> +	else
+> +		return -EINVAL;
+> +}
+> +
+> +static struct mtk_dai_etdm_priv *get_etdm_priv_by_name(struct mtk_base_afe *afe,
+> +						       const char *name)
+> +{
+> +	struct mt8188_afe_private *afe_priv = afe->platform_priv;
+> +	int dai_id = get_etdm_id_by_name(afe, name);
+> +
+> +	if (dai_id < MT8188_AFE_IO_ETDM_START ||
+> +	    dai_id >= MT8188_AFE_IO_ETDM_END)
+> +		return NULL;
+> +
+> +	return afe_priv->dai_priv[dai_id];
+> +}
+> +
+>   static int mtk_dai_etdm_enable_mclk(struct mtk_base_afe *afe, int dai_id)
+>   {
+>   	struct mt8188_afe_private *afe_priv = afe->platform_priv;
+> +	struct mtk_dai_etdm_priv *etdm_data;
+> +	struct etdm_con_reg etdm_reg;
+> +	unsigned int val = 0;
+> +	unsigned int mask;
+> +	int clkmux_id = mtk_dai_etdm_get_clk_id_by_dai_id(dai_id);
+>   	int clkdiv_id = mtk_dai_etdm_get_clkdiv_id_by_dai_id(dai_id);
+> +	int apll_clk_id;
+> +	int apll;
+> +	int ret;
+> +
+> +	if (!is_valid_etdm_dai(dai_id))
+> +		return -EINVAL;
+> +	etdm_data = afe_priv->dai_priv[dai_id];
+>   
+> -	if (clkdiv_id < 0)
+> +	apll = etdm_data->mclk_apll;
+> +	apll_clk_id = mt8188_afe_get_mclk_source_clk_id(apll);
+> +
+> +	if (clkmux_id < 0 || clkdiv_id < 0)
+>   		return -EINVAL;
+>   
+> +	if (apll_clk_id < 0)
+> +		return apll_clk_id;
+> +
+> +	ret = get_etdm_reg(dai_id, &etdm_reg);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	mask = ETDM_CON1_MCLK_OUTPUT;
+> +	if (etdm_data->mclk_dir == SND_SOC_CLOCK_OUT)
+> +		val = ETDM_CON1_MCLK_OUTPUT;
+> +	regmap_update_bits(afe->regmap, etdm_reg.con1, mask, val);
+> +
+> +	/* enable parent clock before select apll*/
+> +	mt8188_afe_enable_clk(afe, afe_priv->clk[clkmux_id]);
+> +
+> +	/* select apll */
+> +	ret = mt8188_afe_set_clk_parent(afe, afe_priv->clk[clkmux_id],
+> +					afe_priv->clk[apll_clk_id]);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* set rate */
+> +	ret = mt8188_afe_set_clk_rate(afe, afe_priv->clk[clkdiv_id],
+> +				      etdm_data->mclk_freq);
+> +
+>   	mt8188_afe_enable_clk(afe, afe_priv->clk[clkdiv_id]);
+>   
+>   	return 0;
+> @@ -361,12 +433,207 @@ static int mtk_dai_etdm_enable_mclk(struct mtk_base_afe *afe, int dai_id)
+>   static int mtk_dai_etdm_disable_mclk(struct mtk_base_afe *afe, int dai_id)
+>   {
+>   	struct mt8188_afe_private *afe_priv = afe->platform_priv;
+> +	int clkmux_id = mtk_dai_etdm_get_clk_id_by_dai_id(dai_id);
+>   	int clkdiv_id = mtk_dai_etdm_get_clkdiv_id_by_dai_id(dai_id);
+>   
+> -	if (clkdiv_id < 0)
+> +	if (clkmux_id < 0 || clkdiv_id < 0)
+>   		return -EINVAL;
+>   
+>   	mt8188_afe_disable_clk(afe, afe_priv->clk[clkdiv_id]);
+> +	mt8188_afe_disable_clk(afe, afe_priv->clk[clkmux_id]);
+> +
+> +	return 0;
+> +}
+> +
+> +static int mtk_etdm_mclk_connect(struct snd_soc_dapm_widget *source,
+> +				 struct snd_soc_dapm_widget *sink)
+> +{
+> +	struct snd_soc_dapm_widget *w = sink;
+> +	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
+> +	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
+> +	struct mt8188_afe_private *afe_priv = afe->platform_priv;
+> +	struct mtk_dai_etdm_priv *etdm_priv;
+> +	int mclk_id;
+> +
+> +	mclk_id = get_etdm_id_by_name(afe, source->name);
+> +	if (mclk_id < 0) {
+> +		dev_info(afe->dev, "mclk_id < 0");
+
+Since you're returning 0, this doesn't appear to be an error and this print is
+useless unless it is used for debugging purposes.
+
+Please change it to dev_dbg().
+
+> +		return 0;
+> +	}
+> +
+> +	etdm_priv = get_etdm_priv_by_name(afe, w->name);
+> +	if (!etdm_priv) {
+> +		dev_info(afe->dev, "etdm_priv == NULL");
+
+dev_dbg()
+
+> +		return 0;
+> +	}
+> +
+> +	if (get_etdm_id_by_name(afe, sink->name) == mclk_id)
+> +		return !!(etdm_priv->mclk_freq > 0);
+> +
+> +	if (etdm_priv->cowork_source_id == mclk_id) {
+> +		etdm_priv = afe_priv->dai_priv[mclk_id];
+> +		return !!(etdm_priv->mclk_freq > 0);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int mtk_etdm_cowork_connect(struct snd_soc_dapm_widget *source,
+> +				   struct snd_soc_dapm_widget *sink)
+> +{
+> +	struct snd_soc_dapm_widget *w = sink;
+> +	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
+> +	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
+> +	struct mt8188_afe_private *afe_priv = afe->platform_priv;
+> +	struct mtk_dai_etdm_priv *etdm_priv;
+> +	int source_id;
+> +	int i;
+> +
+> +	source_id = get_etdm_id_by_name(afe, source->name);
+> +	if (source_id < 0) {
+> +		dev_info(afe->dev, "%s() source_id < 0\n", __func__);
+
+dev_dbg() please
+
+> +		return 0;
+> +	}
+> +
+> +	etdm_priv = get_etdm_priv_by_name(afe, w->name);
+> +	if (!etdm_priv) {
+> +		dev_info(afe->dev, "%s() etdm_priv == NULL\n", __func__);
+
+...again... and everywhere else.
+
+> +		return 0;
+> +	}
+> +
+
+Regards,
+Angelo
+
