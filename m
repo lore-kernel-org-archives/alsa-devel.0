@@ -4,30 +4,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A50BC77B6C
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Apr 2023 10:50:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6644CC77B6C
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Apr 2023 10:50:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC3EFE9E;
-	Thu, 13 Apr 2023 12:49:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC3EFE9E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39309E76;
+	Thu, 13 Apr 2023 12:49:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39309E76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681383011;
-	bh=pLtH6aMrpufs445v7QPBzu+oYzXLcPZtyecGA6ZqXkA=;
-	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=VD+sEEdtixBFAsUXBg44FmKlJOB3bJH127tbrBMeJ5N87drlcoISf4oc9PR5vURR8
-	 2vRjYhEA8OJ4+aoqvdeQNDf7pGSXPQTP2y6oJTJHPoxjWaqjFD+ADaEHjof25QZHXY
-	 XA0cDHpLDaRAMS3P2qFb4vsk1t4yrHkJYx4mxoRk=
+	s=default; t=1681383022;
+	bh=KyEHJvo9sZ8ahJlbnsBHdc5KvASXh+XwszvRlVlcs7Y=;
+	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From:Reply-To:Cc:From;
+	b=kLR1bogERfMy6Pt1/Yi6MPrqG8V9Ak1bRouKD0NJeviIUelfXT7qCX5WdWfMdHfGV
+	 R2Jpn2QhC9yY8+/yk0GK8utXFS08G6HXmr39BqHcB+Ln16RvMXbPwE9eVGj0I7HwrB
+	 OGx7NT4MvO6KeZt/7YS0A+ar5ssMGX57+AYiL6mQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C0DFF80548;
-	Thu, 13 Apr 2023 12:47:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A908F80564;
+	Thu, 13 Apr 2023 12:47:58 +0200 (CEST)
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
 	<perex@perex.cz>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<matthias.bgg@gmail.com>, <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH 0/7] ASoC: mediatek: mt8188: revise AFE driver
-Date: Thu, 13 Apr 2023 18:47:06 +0800
+Subject: [PATCH 5/7] ASoC: mediatek: mt8188: combine afe component
+ registration
+Date: Thu, 13 Apr 2023 18:47:11 +0800
+In-Reply-To: <20230413104713.7174-1-trevor.wu@mediatek.com>
+References: <20230413104713.7174-1-trevor.wu@mediatek.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -39,7 +43,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W3JBLASWLQV2ERYWAM2N3LFBIC3EP66U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BORR5ONCYI4E6QLFFOX4NZVFCDPPPGWX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -49,7 +53,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168138287513.26.1250865566853287768@mailman-core.alsa-project.org>
+ <168138287712.26.13866477802399575875@mailman-core.alsa-project.org>
 From: Trevor Wu via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Trevor Wu <trevor.wu@mediatek.com>
 Cc: trevor.wu@mediatek.com, alsa-devel@alsa-project.org,
@@ -59,7 +63,7 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1C826F8049C; Thu, 13 Apr 2023 12:47:49 +0200 (CEST)
+	id 74D8FF8032B; Thu, 13 Apr 2023 12:47:50 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -71,58 +75,61 @@ Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3E221F8023A
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 12:47:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E221F8023A
+	by alsa1.perex.cz (Postfix) with ESMTPS id B6EDFF80448
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 12:47:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6EDFF80448
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=gLm8EM70
-X-UUID: 8fba5aead9e811edb6b9f13eb10bd0fe-20230413
+ header.s=dk header.b=mQlTj9/+
+X-UUID: 8fd78660d9e811edb6b9f13eb10bd0fe-20230413
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
- bh=MyZMZdgvFlBgGHc9fU8TE+T3ZTrU0IQYLqH+CTEw/R8=;
-	b=gLm8EM70fkxwpaIUFG0epXDZELlcBk2NyVQrz/GWZlGNqlyBJHUdb00w5HntlHYPYYOWA1NdMuM6UkKADZbkv26/uOaNaNjGD1O5/eHMnX6wbLBJfl/TQN5ROUdGImdN8aBbANpbZqoXiMUMpgD1wfPDEZ2ci5qrJaFYwtEzwDY=;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=iQxj2f8v6Hq2mM43K9p34deiZ+cOeCScETZMUSLPaL4=;
+	b=mQlTj9/+hvbU7lV4QzkpboYtY3dQAgbNkV9VJFLg7lxUtAfCa5v82LZDCL5KagkGseOi6Gqz3kY47JS53G/fsc5TnTkdEPj9m/VY0fvZp0F962wD5ASO+FHXHONOFpC2vHgjnBOV6P8kIudE+AIKqjQIQs3wlbpY5gvvRyrSa9M=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.22,REQID:c3a45b9a-5dd5-4314-bb96-a44b0d9e3004,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:95
-X-CID-INFO: VERSION:1.1.22,REQID:c3a45b9a-5dd5-4314-bb96-a44b0d9e3004,IP:0,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
-	:quarantine,TS:95
-X-CID-META: VersionHash:120426c,CLOUDID:cdbb37a1-8fcb-430b-954a-ba3f00fa94a5,B
-	ulkID:230413184721Z3BDBYIJ,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
+X-CID-O-INFO: VERSION:1.1.22,REQID:703b80eb-59a4-436c-a519-c9f8945f9a66,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:70
+X-CID-INFO: VERSION:1.1.22,REQID:703b80eb-59a4-436c-a519-c9f8945f9a66,IP:0,URL
+	:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTI
+	ON:quarantine,TS:70
+X-CID-META: VersionHash:120426c,CLOUDID:cebb37a1-8fcb-430b-954a-ba3f00fa94a5,B
+	ulkID:2304131847210C30BWX2,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
 	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
 	,OSI:0,OSA:0,AV:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-UUID: 8fba5aead9e811edb6b9f13eb10bd0fe-20230413
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-UUID: 8fd78660d9e811edb6b9f13eb10bd0fe-20230413
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
  mailgw02.mediatek.com
 	(envelope-from <trevor.wu@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 382357207; Thu, 13 Apr 2023 18:47:18 +0800
+	with ESMTP id 208665094; Thu, 13 Apr 2023 18:47:18 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.25; Thu, 13 Apr 2023 18:47:17 +0800
+ 15.2.1118.25; Thu, 13 Apr 2023 18:47:18 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.25 via Frontend Transport; Thu, 13 Apr 2023 18:47:17 +0800
+ 15.2.1118.25 via Frontend Transport; Thu, 13 Apr 2023 18:47:18 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
 	<perex@perex.cz>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<matthias.bgg@gmail.com>, <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH 0/7] ASoC: mediatek: mt8188: revise AFE driver
-Date: Thu, 13 Apr 2023 18:47:06 +0800
-Message-ID: <20230413104713.7174-1-trevor.wu@mediatek.com>
+Subject: [PATCH 5/7] ASoC: mediatek: mt8188: combine afe component
+ registration
+Date: Thu, 13 Apr 2023 18:47:11 +0800
+Message-ID: <20230413104713.7174-6-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230413104713.7174-1-trevor.wu@mediatek.com>
+References: <20230413104713.7174-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
-Message-ID-Hash: W3JBLASWLQV2ERYWAM2N3LFBIC3EP66U
-X-Message-ID-Hash: W3JBLASWLQV2ERYWAM2N3LFBIC3EP66U
+Message-ID-Hash: BORR5ONCYI4E6QLFFOX4NZVFCDPPPGWX
+X-Message-ID-Hash: BORR5ONCYI4E6QLFFOX4NZVFCDPPPGWX
 X-MailFrom: trevor.wu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -138,7 +145,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W3JBLASWLQV2ERYWAM2N3LFBIC3EP66U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BORR5ONCYI4E6QLFFOX4NZVFCDPPPGWX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -147,31 +154,97 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The series of patches consists of three major changes.
-First, remove redundant supply for ADDA DAI dirver. Second, revise ETDM
-control including APLL dynamic switch via DAPM, so APLL can be enabled
-when it is really required. Finally, AFE probe function is updated. Bus
-protection change was dropped at the previous patch because the dependent
-change was not accepted.
+There is no benefit to separate two components for AFE, so DAI driver
+registration is moved to dev_snd_soc_register_component to merge these
+two components.
 
-Trevor Wu (7):
-  ASoC: mediatek: mt8188: remove supply AUDIO_HIRES
-  ASoC: mediatek: mt8188: complete set_tdm_slot function
-  ASoC: mediatek: mt8188: revise ETDM control flow
-  ASoC: mediatek: mt8188: refine APLL control
-  ASoC: mediatek: mt8188: combine afe component registration
-  ASoC: mediatek: mt8188: add bus protection
-  ASoC: dt-bindings: mediatek,mt8188-afe: add audio properties
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+---
+ sound/soc/mediatek/mt8188/mt8188-afe-pcm.c | 37 ++--------------------
+ 1 file changed, 2 insertions(+), 35 deletions(-)
 
- .../bindings/sound/mediatek,mt8188-afe.yaml   |  18 +
- sound/soc/mediatek/mt8188/mt8188-afe-clk.c    | 138 ++-
- sound/soc/mediatek/mt8188/mt8188-afe-clk.h    |  11 +
- sound/soc/mediatek/mt8188/mt8188-afe-pcm.c    | 113 ++-
- sound/soc/mediatek/mt8188/mt8188-dai-adda.c   |  37 -
- sound/soc/mediatek/mt8188/mt8188-dai-etdm.c   | 922 ++++++++++--------
- sound/soc/mediatek/mt8188/mt8188-reg.h        |   2 +
- 7 files changed, 759 insertions(+), 482 deletions(-)
-
+diff --git a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
+index e5f9373bed56..fecc891f892d 100644
+--- a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
++++ b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
+@@ -1898,10 +1898,6 @@ static const struct snd_kcontrol_new mt8188_memif_controls[] = {
+ 			    MT8188_AFE_MEMIF_UL10),
+ };
+ 
+-static const struct snd_soc_component_driver mt8188_afe_pcm_dai_component = {
+-	.name = "mt8188-afe-pcm-dai",
+-};
+-
+ static const struct mtk_base_memif_data memif_data[MT8188_AFE_MEMIF_NUM] = {
+ 	[MT8188_AFE_MEMIF_DL2] = {
+ 		.name = "DL2",
+@@ -3142,9 +3138,8 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	struct mtk_base_afe *afe;
+ 	struct mt8188_afe_private *afe_priv;
+ 	struct device *dev;
+-	int i, irq_id, ret;
+-	struct snd_soc_component *component;
+ 	struct reset_control *rstc;
++	int i, irq_id, ret;
+ 
+ 	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(33));
+ 	if (ret)
+@@ -3280,34 +3275,12 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ 	/* register component */
+ 	ret = devm_snd_soc_register_component(dev, &mt8188_afe_component,
+-					      NULL, 0);
++					      afe->dai_drivers, afe->num_dai_drivers);
+ 	if (ret) {
+ 		dev_warn(dev, "err_platform\n");
+ 		goto err_pm_put;
+ 	}
+ 
+-	component = devm_kzalloc(&pdev->dev, sizeof(*component), GFP_KERNEL);
+-	if (!component) {
+-		ret = -ENOMEM;
+-		goto err_pm_put;
+-	}
+-
+-	ret = snd_soc_component_initialize(component,
+-					   &mt8188_afe_pcm_dai_component,
+-					   &pdev->dev);
+-	if (ret)
+-		goto err_pm_put;
+-#ifdef CONFIG_DEBUG_FS
+-	component->debugfs_prefix = "pcm";
+-#endif
+-	ret = snd_soc_add_component(component,
+-				    afe->dai_drivers,
+-				    afe->num_dai_drivers);
+-	if (ret) {
+-		dev_warn(dev, "err_add_component\n");
+-		goto err_pm_put;
+-	}
+-
+ 	mt8188_afe_init_registers(afe);
+ 
+ 	pm_runtime_put_sync(&pdev->dev);
+@@ -3323,11 +3296,6 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static void mt8188_afe_pcm_dev_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_component(&pdev->dev);
+-}
+-
+ static const struct of_device_id mt8188_afe_pcm_dt_match[] = {
+ 	{ .compatible = "mediatek,mt8188-afe", },
+ 	{},
+@@ -3346,7 +3314,6 @@ static struct platform_driver mt8188_afe_pcm_driver = {
+ 		   .pm = &mt8188_afe_pm_ops,
+ 	},
+ 	.probe = mt8188_afe_pcm_dev_probe,
+-	.remove_new = mt8188_afe_pcm_dev_remove,
+ };
+ 
+ module_platform_driver(mt8188_afe_pcm_driver);
 -- 
 2.18.0
 
