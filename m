@@ -4,89 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC01BC77B77
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Apr 2023 20:01:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ABD7C77B6C
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Apr 2023 02:37:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 943E81020;
-	Wed, 12 Apr 2023 22:00:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 943E81020
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7DDCF72;
+	Thu, 13 Apr 2023 04:36:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7DDCF72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681329660;
-	bh=LvKXJKVNhxMvGBYuMwMT57KEE+v2L3jWxznZmgKxsEA=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1681353457;
+	bh=/yFPLacZ5zD4cyBBeXXj/glDEj/Gpj3zZaG5dwMznfI=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=f9G5wLC/HAYM6XRfCOY4fzsqEcFE3c+PPM21YcgabBFXstGAYtSDXm7YgUEKqL0zV
-	 GPQ5OLnKNJqgT/RsI2859MMaQpp0Y8uGq+fA2lb+HMkjddu5J7uOW4iFYAqC2NHuxE
-	 TJdBt+lBaMo/flWqgqPGLG2tC5Ibf/oI6u26ta3Y=
+	b=GT2gbMUYF27paFACFSpkM3lBgg4FHuxcqnk6/3kIiI84A62cVW5tAXpt+So4/nzTo
+	 zoqVmHsyyHEI1vTJswMKFhYn2JSIlbuEke0kyhr0AO+E85SPY2MrxtSjJWutxBukY6
+	 nw4T3Y/cMTENJVi9XSAYFTEzrXmC9udUDMORKnxo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2AA2FF800E5;
-	Wed, 12 Apr 2023 21:59:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7AB5F80100;
+	Thu, 13 Apr 2023 04:36:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8AAA4F8032B; Wed, 12 Apr 2023 21:59:40 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 5D179F804F2; Thu, 13 Apr 2023 04:36:18 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8EEDCF80149
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2023 21:59:32 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id E19A811D5;
-	Wed, 12 Apr 2023 21:59:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz E19A811D5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1681329571; bh=NHiD1FtFWjaeOzwxNy8tRLM3KhuiHz++ezxSowiCLx8=;
-	h=Date:Subject:To:References:From:Cc:In-Reply-To:From;
-	b=t9SD3D2vFTJ74g9fGadG9YzqcaS6KXgxZ/wSbcR/OeORGu/3Th5DHulY10cvGQPk+
-	 DXSICEv1gTo4Dndgzt9URDtHjtm1Xh4kIazxM2rpD2BI9rdZBrLcIeOGefRxlrZnt8
-	 9uJH0MJ9LxJMMuyuAqcyrjJNajDbmbNcvy5m1bdQ=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	by alsa1.perex.cz (Postfix) with ESMTPS id 164D7F80100
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 04:36:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 164D7F80100
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=tqJ1gPjx
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Wed, 12 Apr 2023 21:59:28 +0200 (CEST)
-Message-ID: <54c16616-dee7-b50f-d612-82eef906d1df@perex.cz>
-Date: Wed, 12 Apr 2023 21:59:28 +0200
+	by dfw.source.kernel.org (Postfix) with ESMTPS id CD7FB63A61;
+	Thu, 13 Apr 2023 02:36:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A7FAC433EF;
+	Thu, 13 Apr 2023 02:36:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1681353368;
+	bh=/yFPLacZ5zD4cyBBeXXj/glDEj/Gpj3zZaG5dwMznfI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=tqJ1gPjxSD8vgTWAjJCkSc4lBc2xYWPCFYx6igY/oTpEpD53o4j4NaCbIBcJ7TKVs
+	 isx711IUVDxo5tHmmvvne0km0d5Jg+MsHnO80LAAhbzVioTpYsVyehxkwdqaBjVPOF
+	 PtCeMwIzSqBKRyMLr1YHTLVwhPyEtb1L7U7DEQOl8DO1bY9psXB7jvK4XEBh0UVvea
+	 ctgNGc3Q0vkyGAhdsqLPZJAE0gXIKEQyENI2K854FMcqPW15C4al1ihvVGfab5kT4J
+	 WPtg7x1NuLpNQ0x5fQLz15WCORkh57s7lLPG2rJPjhqzFVShs7r13hk8ijl/clplWF
+	 nOKQI3C0IrCvQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.2 02/20] ASoC: Intel: soc-acpi: add table for Intel
+ 'Rooks County' NUC M15
+Date: Wed, 12 Apr 2023 22:35:40 -0400
+Message-Id: <20230413023601.74410-2-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230413023601.74410-1-sashal@kernel.org>
+References: <20230413023601.74410-1-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH 2/2] ALSA: pcm: auto-fill buffer with silence when
- draining playback
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-References: <20230405201219.2197789-1-oswald.buddenhagen@gmx.de>
- <20230405201219.2197789-2-oswald.buddenhagen@gmx.de>
- <3d75c103-7e94-e6a1-7f3d-7f957c33cddc@perex.cz> <ZDEWyjdVE2IocpGY@ugly>
- <22f551f3-deae-1536-bd07-0b9340940ea4@perex.cz> <ZDVnUj2B0EkMiOlA@ugly>
- <6d6c5f3a-81bc-acf4-eb4d-229b581bbe8b@perex.cz> <ZDWPy9YbXWWOqaC+@ugly>
- <7b317956-deb1-0a75-0a34-f82d6a81cf90@perex.cz> <87ttxl7cxd.wl-tiwai@suse.de>
- <ZDZmDyOMYMD4Uu5g@ugly> <87wn2ho06z.wl-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <87wn2ho06z.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: KRCLRID2X7C4FSG7UJ46NNAKP4JVJJZL
-X-Message-ID-Hash: KRCLRID2X7C4FSG7UJ46NNAKP4JVJJZL
-X-MailFrom: perex@perex.cz
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: 5BGO5ILID4DOU5INODF3SF7536CACGKN
+X-Message-ID-Hash: 5BGO5ILID4DOU5INODF3SF7536CACGKN
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: ALSA development <alsa-devel@alsa-project.org>,
- Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+CC: Eugene Huang <eugene.huang99@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Mark Brown <broonie@kernel.org>,
+ Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
+ liam.r.girdwood@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, tiwai@suse.com, brent.lu@intel.com,
+ muralidhar.reddy@intel.com, ajye_huang@compal.corp-partner.google.com,
+ arnd@arndb.de, CTLIN0@nuvoton.com, alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KRCLRID2X7C4FSG7UJ46NNAKP4JVJJZL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5BGO5ILID4DOU5INODF3SF7536CACGKN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,37 +100,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 12. 04. 23 12:37, Takashi Iwai wrote:
-> On Wed, 12 Apr 2023 10:04:31 +0200,
-> Oswald Buddenhagen wrote:
->>
->> On Wed, Apr 12, 2023 at 09:54:54AM +0200, Takashi Iwai wrote:
->>> I'm thinking whether we need to change anything in the kernel side for
->>> this at all.  Can't it be changed rather in alsa-lib side instead?
->>>
->> it could, but it would be a lot uglier. user space would have to do a
->> "man-in-the-middle attack" on the data, while in the kernel we can
->> just slightly modify the consumer. this would be particularly obvious
->> in the case of write() access.
-> 
-> But basically it'd be like fiddling sw_params temporarily for
-> draining, I suppose?  And the "attack" here can be taken too
-> seriously; the whole PCM operation can be somehow interfered if a
-> process may have the access to the PCM device, and changing sw_params
-> itself must not introduce too much trouble.
+From: Eugene Huang <eugene.huang99@gmail.com>
 
-This looks like a sane proposal, but some drivers does not require the 
-silencing at all, so we can probably skip this step for them (new 
-SNDRV_PCM_INFO_PERFECT_DRAIN flag?).
+[ Upstream commit 9c691a42b8926c8966561265cdae3ddc7464d3a2 ]
 
-The other not-yet-discussed option is to just print an warning in alsa-lib 
-that the residue samples may be played (when no silencing / period size align 
-is used). Then introduce a new helper function to setup silencing for the 
-drivers without new SNDRV_PCM_INFO_PERFECT_DRAIN flag set.
+Same topology as the HP Omen 16-k0005TX, except with the rt1316 amp
+on link2.
 
-						Jaroslav
+Link: https://github.com/thesofproject/linux/issues/4088
+Signed-off-by: Eugene Huang <eugene.huang99@gmail.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20230314090553.498664-3-yung-chuan.liao@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ .../intel/common/soc-acpi-intel-adl-match.c   | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
+diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+index 28dd2046e4ac5..d8c80041388a7 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+@@ -354,6 +354,20 @@ static const struct snd_soc_acpi_link_adr adl_sdw_rt711_link0_rt1316_link3[] = {
+ 	{}
+ };
+ 
++static const struct snd_soc_acpi_link_adr adl_sdw_rt711_link0_rt1316_link2[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt711_sdca_0_adr),
++		.adr_d = rt711_sdca_0_adr,
++	},
++	{
++		.mask = BIT(2),
++		.num_adr = ARRAY_SIZE(rt1316_2_single_adr),
++		.adr_d = rt1316_2_single_adr,
++	},
++	{}
++};
++
+ static const struct snd_soc_acpi_adr_device mx8373_2_adr[] = {
+ 	{
+ 		.adr = 0x000223019F837300ull,
+@@ -624,6 +638,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-adl-rt711-l0-rt1316-l3.tplg",
+ 	},
++	{
++		.link_mask = 0x5, /* 2 active links required */
++		.links = adl_sdw_rt711_link0_rt1316_link2,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-adl-rt711-l0-rt1316-l2.tplg",
++	},
+ 	{
+ 		.link_mask = 0x1, /* link0 required */
+ 		.links = adl_rvp,
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.39.2
 
