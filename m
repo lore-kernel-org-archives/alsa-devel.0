@@ -4,88 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE503C77B71
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Apr 2023 19:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA8ECC77B70
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 05:54:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D3B1F0D;
-	Thu, 13 Apr 2023 21:14:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D3B1F0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CE3AEA5;
+	Fri, 14 Apr 2023 07:53:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CE3AEA5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681413336;
-	bh=6LbDqH5anZY+c9RRHR2OipyEtk0sIq7DJ0r9nofBKss=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=e9gGF/ejk3R0kIOx2oUdtx4gGqTzR6s+TXON1J8oZm7EjjM61XKCcUgrhzsUIPy7M
-	 jEZfpwyVDGlvjsGVsdeknG3RFD9A8i84zFovRHmHUgjiX0XnYxXowDrky+/6HQjIFz
-	 g+Q4H49SbMXVxW3vMFLvrIyzSznAM25wrN0KLLD8=
+	s=default; t=1681451646;
+	bh=RDvLqoZ2OxZtkwKXjQjSl1rN6exhJ67f9c6pHqDK+bQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Xq6Gw4DzbVODi5Cd7nMPPh+YFaULym5hJLR8wjaJW2H+iqjYN6/lobysfv3Y/LP+5
+	 czjyWjkkd/jmBdO7og8auGxSldoYwcH6Jm3Ywg988Z0D+XcbDJWQ+0Bhnh3Uvgqxh0
+	 TS2hdpWhGZAT5JDSPohl2+2becKwNQGzHgi3D00A=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 903EBF8032B;
-	Thu, 13 Apr 2023 21:14:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06A99F8032B;
+	Fri, 14 Apr 2023 07:52:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04C89F8032B; Thu, 13 Apr 2023 21:14:18 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E75E7F8032B; Fri, 14 Apr 2023 07:51:27 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8DA24F80100
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2023 21:14:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DA24F80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id D5274F8023A
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 07:51:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5274F8023A
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Z3aJqu2j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681413251; x=1712949251;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6LbDqH5anZY+c9RRHR2OipyEtk0sIq7DJ0r9nofBKss=;
-  b=Z3aJqu2j7uDljh7wYmOXFVZvvNBPD+m/epYTVBbzAFRSmdHMsUZoEVV/
-   J8mg/JfbARMfNUx4qV9AcUwnpN8Kgd2F7cvzLue8jaOvIXban/+bTMlSv
-   1gpGnHTFj/MAtGNQM/L0VK6V/d6Yx1LbcQ6sxF+5DDE5Z8KbNSwIsiQ+N
-   SVWbjiK0VdHVNqXa3uVMV2nWGOthyZk9MITTeGa5AodnQLhT6P7QDZCuH
-   rhLkweQJ59uWJnRL6gCAZLw+9sXXm+9fvHyA924RD6WD8jtSrkZamheXt
-   FFjeMTMjF4Ra0Qg0PINWdaLf+wVfUa+MKWlgoSjdTcRh+zhxX4cnVUx0O
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="344276636"
-X-IronPort-AV: E=Sophos;i="5.99,194,1677571200";
-   d="scan'208";a="344276636"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Apr 2023 12:14:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10679"; a="639804126"
-X-IronPort-AV: E=Sophos;i="5.99,194,1677571200";
-   d="scan'208";a="639804126"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
-  by orsmga003.jf.intel.com with ESMTP; 13 Apr 2023 12:13:59 -0700
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de
-Subject: [PATCH] ALSA: hda/hdmi: disable KAE for Intel DG2
-Date: Thu, 13 Apr 2023 22:11:53 +0300
-Message-Id: <20230413191153.3692049-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.40.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JZNOOAQLDO6GAIMREUDMODYFTW22LV7P
-X-Message-ID-Hash: JZNOOAQLDO6GAIMREUDMODYFTW22LV7P
-X-MailFrom: kai.vehmanen@linux.intel.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=oavkeeKu;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=JDY9EPWe
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id ECBE61FD90;
+	Fri, 14 Apr 2023 05:51:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1681451481;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LM0ToUl6uDhZ+diphTL/tMcGkeKTkp0qp6RJ8AH81LY=;
+	b=oavkeeKuVBQsmmDYJXZRsONoQKP7b0FmB0FA1feahncMB1qom+IgNAYDDlehCGEq7Rc634
+	RoSURyu1zaYbtrZUBs3fLgwSf8gpeTjRWVkCqAG4J6zSLRuc0e8fRt4cSj+49bjbPvMudu
+	Vuss1WgVdiwA2m7aNRFqaT+gHSwzcwk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1681451481;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LM0ToUl6uDhZ+diphTL/tMcGkeKTkp0qp6RJ8AH81LY=;
+	b=JDY9EPWelfMusFZKV6XT3rM3sJNKfX5sEWa6vSsji2jjxX9Jkb/1WUQdrh4dyHA2E57hN/
+	NRvp5t8gLt2TaKBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B05CB13421;
+	Fri, 14 Apr 2023 05:51:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id mXtpKtnpOGQgJQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 14 Apr 2023 05:51:21 +0000
+Date: Fri, 14 Apr 2023 07:51:22 +0200
+Message-ID: <87sfd3m2p1.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda/hdmi: disable KAE for Intel DG2
+In-Reply-To: <20230413191153.3692049-1-kai.vehmanen@linux.intel.com>
+References: <20230413191153.3692049-1-kai.vehmanen@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: XAVC524SFXSPZ7NMGYHVLOHDN77WWQPB
+X-Message-ID-Hash: XAVC524SFXSPZ7NMGYHVLOHDN77WWQPB
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: uma.shankar@intel.com, intel-gfx@lists.freedesktop.org,
- kai.vehmanen@linux.intel.com, stable@vger.kernel.org
+CC: alsa-devel@alsa-project.org, uma.shankar@intel.com,
+ intel-gfx@lists.freedesktop.org, stable@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JZNOOAQLDO6GAIMREUDMODYFTW22LV7P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XAVC524SFXSPZ7NMGYHVLOHDN77WWQPB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,35 +112,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use of keep-alive (KAE) has resulted in loss of audio on some A750/770
-cards as the transition from keep-alive to stream playback is not
-working as expected. As there is limited benefit of the new KAE mode
-on discrete cards, revert back to older silent-stream implementation
-on these systems.
+On Thu, 13 Apr 2023 21:11:53 +0200,
+Kai Vehmanen wrote:
+> 
+> Use of keep-alive (KAE) has resulted in loss of audio on some A750/770
+> cards as the transition from keep-alive to stream playback is not
+> working as expected. As there is limited benefit of the new KAE mode
+> on discrete cards, revert back to older silent-stream implementation
+> on these systems.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 15175a4f2bbb ("ALSA: hda/hdmi: add keep-alive support for ADL-P and DG2")
+> Link: https://gitlab.freedesktop.org/drm/intel/-/issues/8307
+> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-Cc: stable@vger.kernel.org
-Fixes: 15175a4f2bbb ("ALSA: hda/hdmi: add keep-alive support for ADL-P and DG2")
-Link: https://gitlab.freedesktop.org/drm/intel/-/issues/8307
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- sound/pci/hda/patch_hdmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks, applied.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 4ffa3a59f419..5c6980394dce 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -4604,7 +4604,7 @@ HDA_CODEC_ENTRY(0x80862814, "DG1 HDMI",	patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x80862815, "Alderlake HDMI",	patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x80862816, "Rocketlake HDMI",	patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x80862818, "Raptorlake HDMI",	patch_i915_tgl_hdmi),
--HDA_CODEC_ENTRY(0x80862819, "DG2 HDMI",	patch_i915_adlp_hdmi),
-+HDA_CODEC_ENTRY(0x80862819, "DG2 HDMI",	patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x8086281a, "Jasperlake HDMI",	patch_i915_icl_hdmi),
- HDA_CODEC_ENTRY(0x8086281b, "Elkhartlake HDMI",	patch_i915_icl_hdmi),
- HDA_CODEC_ENTRY(0x8086281c, "Alderlake-P HDMI", patch_i915_adlp_hdmi),
 
-base-commit: be6247640eea9d9b0ff15607fab7a12f40974985
--- 
-2.40.0
-
+Takashi
