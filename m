@@ -4,143 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D94C3C77B6E
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 15:28:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D8AC77B6E
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 15:31:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3C66E7E;
-	Fri, 14 Apr 2023 17:27:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3C66E7E
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE247E77;
+	Fri, 14 Apr 2023 17:30:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE247E77
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681486124;
-	bh=H/ULxQCRe3fNJS7VoVBWyth+pKAsrnv9FTUn4y03eKo=;
-	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From:Reply-To:Cc:From;
-	b=RV8VgDG6MPZ0oJO5gVwsON79JGJpMgKkEGd3AM4GbtUVnOFm5DRKvaMP3HFXxYLM2
-	 clFlFaUQuUTW9TS8PoVxcD+v9LlX5HryzGiw0gcOuUPofvEAuzQRNL4aEUSIv5j8+9
-	 pttzkAaM/P/jMskvMqy+Cjn6VLCA70jpxwa+mK18=
+	s=default; t=1681486282;
+	bh=Oy7IZNDxb+8PVB8hywDrkI7zMdUitr3Ayz89WzF1QX4=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=dgbDbGGfi6s8JWfTlVL4Bf4wkikNq1JL0KDovbCoJ/RdwWp5lx+t3wU3tWMFg74A+
+	 MAIAUrjx3L+CysBaGLV5VqfAR8+P4gGxiAmBQ5kC9IsgBGrpFwLlzlh6LntplJeMKd
+	 Ha6NrbOiZNmetOYWeSeeBEva7vvWLxcs+OE6d0lc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FA18F80549;
-	Fri, 14 Apr 2023 17:26:25 +0200 (CEST)
-To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi
- Iwai <tiwai@suse.com>
-Subject: [PATCH v1 1/4] ALSA: hda: cs35l41: Clean up Firmware Load Controls
-Date: Fri, 14 Apr 2023 16:25:49 +0100
-In-Reply-To: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
-References: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3W54TJQEGJSFCGUZNTRUZPPAEF7OXDOP/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <168148598468.26.1957619154182707213@mailman-core.alsa-project.org>
-From: Stefan Binding via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com,
- Stefan Binding <sbinding@opensource.cirrus.com>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id D2203F8032B;
+	Fri, 14 Apr 2023 17:30:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30B33F80549; Fri, 14 Apr 2023 17:26:22 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1EE42F8032B; Fri, 14 Apr 2023 17:30:04 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A1319F8049C
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 17:26:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1319F8049C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2CCBDF80149
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 17:29:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CCBDF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=H7Lglqao
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33EDVEGo030487;
-	Fri, 14 Apr 2023 10:26:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=I3l9dEf9Pxrt0iwsB+1r4Bv1ieTEMmtO3O+2uHhuyLc=;
- b=H7LglqaoEwfzYkPgtASdJxtxvolzG99MPScVDQjlRdAQ/DIwrHLNwiBfOMLt06Ac8ZVF
- g/w5FMFls8dIZD6N0QYUtVgwXDAGVV1mkZXQ02BhThiUvHXeczPloFrTAmMEFWp8pQ7p
- ovuA9EApLPzTKianpN0jZ9GT0GbtnWsJg946R0A8AqR7/Liyg06MFq2i/nsk6DVAP1GT
- hyHU5uAFSDlg0tvXpRp2xnpxwmoc4DLopQxlFve5HNLXEI9dGdYfszbomdYw0pfVB6rl
- 9J90AdDUGuCJJExfGtayzfnCymxMSZAjtUqWLZP6npzi7WEK9x0MdX9OdYzFEfygUUXl PA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3pu5p3skxn-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 14 Apr 2023 10:26:02 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Fri, 14 Apr
- 2023 10:25:59 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Fri, 14 Apr 2023 10:25:59 -0500
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.135])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5782211C6;
-	Fri, 14 Apr 2023 15:25:59 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi
- Iwai <tiwai@suse.com>
-Subject: [PATCH v1 1/4] ALSA: hda: cs35l41: Clean up Firmware Load Controls
-Date: Fri, 14 Apr 2023 16:25:49 +0100
-Message-ID: <20230414152552.574502-2-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=kFM8EmCf
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6B38361059;
+	Fri, 14 Apr 2023 15:29:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B5B8C433D2;
+	Fri, 14 Apr 2023 15:29:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1681486196;
+	bh=Oy7IZNDxb+8PVB8hywDrkI7zMdUitr3Ayz89WzF1QX4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kFM8EmCfsJJw9RouzM3gPpsIj3kED9WCbaEvTzfDqL9sUpnrCRRvzemME77DtQjJz
+	 jQ03UsiCuqK5fXBF/+7o/ki1XH6D9PG2X3cyPWifIg6YPDwPhmUEqA7sNSYc9V+iIi
+	 T+j4euThusNa+h+4o/dubrs/YuxdtDaLPtUZGC91A3pYflmMJ9vYjc0IFTPpPh14Ab
+	 tT+dabmBoplKXEr3vOLTG7k2egJjtknbgGzywsKwFuZYTuhgNHDtocRWuKmg65SN9q
+	 AkUah5w5a24IcoTI034nebWQC9MFLefZeXlvAiVpUyDXN+wFQO+EVxTvK71kXy4UCD
+	 bCs03OKn2eezg==
+Date: Fri, 14 Apr 2023 16:29:52 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v1 3/4] ALSA: cs35l41: Fix default regmap values for some
+ registers
+Message-ID: <bd4dbfdd-74e6-4cb1-bd3d-cafad479c4f9@sirena.org.uk>
 References: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
+ <20230414152552.574502-4-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: zUZitPZy_kxOGxncML1uE6UtVdccA4Kb
-X-Proofpoint-GUID: zUZitPZy_kxOGxncML1uE6UtVdccA4Kb
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 3W54TJQEGJSFCGUZNTRUZPPAEF7OXDOP
-X-Message-ID-Hash: 3W54TJQEGJSFCGUZNTRUZPPAEF7OXDOP
-X-MailFrom: prvs=9468da70c5=sbinding@opensource.cirrus.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6EaOANoT/PHVQQX0"
+Content-Disposition: inline
+In-Reply-To: <20230414152552.574502-4-sbinding@opensource.cirrus.com>
+X-Cookie: One Bell System - it works.
+Message-ID-Hash: 2K4ECIZSE7B2LNAKPM3I6EZ7EIHH4KWJ
+X-Message-ID-Hash: 2K4ECIZSE7B2LNAKPM3I6EZ7EIHH4KWJ
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com,
- Stefan Binding <sbinding@opensource.cirrus.com>
+CC: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3W54TJQEGJSFCGUZNTRUZPPAEF7OXDOP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2K4ECIZSE7B2LNAKPM3I6EZ7EIHH4KWJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -149,75 +92,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Ensure Firmware Load control and Firmware Type control
-returns 1 when the value changes.
 
-Remove fw_mutex from firmware load control put, since it is
-unnecessary, and prevents any possibility of mutex inversion.
+--6EaOANoT/PHVQQX0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
+On Fri, Apr 14, 2023 at 04:25:51PM +0100, Stefan Binding wrote:
+> Several values do not match the defaults of CS35L41, fix them.
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index b5210abb5141f..d100189e15b83 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -835,34 +835,26 @@ static int cs35l41_fw_load_ctl_put(struct snd_kcontrol *kcontrol,
- 				   struct snd_ctl_elem_value *ucontrol)
- {
- 	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
--	unsigned int ret = 0;
--
--	mutex_lock(&cs35l41->fw_mutex);
- 
- 	if (cs35l41->request_fw_load == ucontrol->value.integer.value[0])
--		goto err;
-+		return 0;
- 
- 	if (cs35l41->fw_request_ongoing) {
- 		dev_dbg(cs35l41->dev, "Existing request not complete\n");
--		ret = -EBUSY;
--		goto err;
-+		return -EBUSY;
- 	}
- 
- 	/* Check if playback is ongoing when initial request is made */
- 	if (cs35l41->playback_started) {
- 		dev_err(cs35l41->dev, "Cannot Load/Unload firmware during Playback\n");
--		ret = -EBUSY;
--		goto err;
-+		return -EBUSY;
- 	}
- 
- 	cs35l41->fw_request_ongoing = true;
- 	cs35l41->request_fw_load = ucontrol->value.integer.value[0];
- 	schedule_work(&cs35l41->fw_load_work);
- 
--err:
--	mutex_unlock(&cs35l41->fw_mutex);
--
--	return ret;
-+	return 1;
- }
- 
- static int cs35l41_fw_type_ctl_get(struct snd_kcontrol *kcontrol,
-@@ -881,8 +873,12 @@ static int cs35l41_fw_type_ctl_put(struct snd_kcontrol *kcontrol,
- 	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
- 
- 	if (ucontrol->value.enumerated.item[0] < HDA_CS_DSP_NUM_FW) {
--		cs35l41->firmware_type = ucontrol->value.enumerated.item[0];
--		return 0;
-+		if (cs35l41->firmware_type != ucontrol->value.enumerated.item[0]) {
-+			cs35l41->firmware_type = ucontrol->value.enumerated.item[0];
-+			return 1;
-+		} else {
-+			return 0;
-+		}
- 	}
- 
- 	return -EINVAL;
--- 
-2.34.1
+Acked-by: Mark Brown <broonie@kernel.org>
 
+or can this just be applied separately?
+
+--6EaOANoT/PHVQQX0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQ5cW8ACgkQJNaLcl1U
+h9Bcrgf/aqwxlKyZj5mcfULcMCLidR/C2EBHFRwWbp2FHTYko894mSEQVHmdipTI
+MjBD/wolT6glCFEolbcSAv7uKxnyXapCd5BHeJU0P665iMh4vBvXjbIvj5KUmLtK
+sRoIOyVTWoAwoHyTtRD4fexTQRXtTQJ+uzVueGtilDdeTU/IFdEH7x3rMHKhyMk8
+uMGmEWOkjyABUO7tThvCAwKsDoryYeUrd5ExWSbIyCSTC1HMwAlLYMCO8QlveNn0
+CHdpF8xfd1U/1fBG8ZRABb6XypUChaCUIXpJ+uP80GYhHsKkHY4hGIb78ykRBObe
+Mtb1CC8QElLLcvJZ0BY8xywFRescIQ==
+=1T2u
+-----END PGP SIGNATURE-----
+
+--6EaOANoT/PHVQQX0--
