@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45404C7619A
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Apr 2023 09:11:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 912FDC7619A
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Apr 2023 09:11:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E81B86E;
-	Sat, 15 Apr 2023 11:10:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E81B86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AA92DF2;
+	Sat, 15 Apr 2023 11:11:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AA92DF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681549893;
-	bh=dPzhvhNtmpuYL2INdwllZ+OCLuQwF1O2dJxS5UbZZmU=;
+	s=default; t=1681549914;
+	bh=BlWJQbfAxmqzCyKltZtuChU+IXB1xFpetJoDryTxfwY=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=bVQEGQY5Eycy+BEhbyGps21iUsnrP3VajrX4drkEMXfqZy09QEV54l/yoGfg8/XQa
-	 Ej/+SVeAokaSFrQDO0suse63VyerDeqb96c9yviPdNhD+eW2qvc1GyfHHH1xYt6bFm
-	 378PoI/SM3Rj8V1+WBI1QP9+Dz7vChqEh4B9C64k=
+	b=hXnnRRb0uYdyTxmJEoerTeLmlmI6PWzBN5YxA8dXVNVlxyIZzk0dQoEcmFFwEap7I
+	 xUs88R028rlgN2Ka4ZDGVXK7CaqkkCszIhHCEWpQnK79Cr7sNxPuzFqdAXK1wOkWaH
+	 FehrNeEmf/dt+cwfJYhqxS3oiVrd/ZVU4aO0m/rg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F2A2F8053D;
-	Sat, 15 Apr 2023 11:09:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E966F80544;
+	Sat, 15 Apr 2023 11:09:30 +0200 (CEST)
 To: alsa-devel@alsa-project.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 2/9] dt-bindings: ASoC: Add chv3-i2s
-Date: Fri, 14 Apr 2023 16:01:56 +0200
+Subject: [PATCH 7/9] ASoC: ssm2602: Add mute gpio
+Date: Fri, 14 Apr 2023 16:02:01 +0200
 In-Reply-To: <20230414140203.707729-1-pan@semihalf.com>
 References: <20230414140203.707729-1-pan@semihalf.com>
 X-Mailman-Rule-Hits: nonmember-moderation
@@ -44,7 +44,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UI3BICKRKMFU32OCMGUXI6ZJDBJZJJBP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R3DTLIQYF4AM23UIDRROBEJD3YM5QVVJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -54,7 +54,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168154976821.26.18418440357031944166@mailman-core.alsa-project.org>
+ <168154976963.26.12831314436545841195@mailman-core.alsa-project.org>
 From: =?utf-8?q?Pawe=C5=82_Anikiel_via_Alsa-devel?=
  <alsa-devel@alsa-project.org>
 Reply-To: =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
@@ -65,75 +65,75 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03D42F804F2; Fri, 14 Apr 2023 16:02:54 +0200 (CEST)
+	id EFB47F8023A; Fri, 14 Apr 2023 16:02:55 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED shortcircuit=no autolearn=ham autolearn_force=no
 	version=3.4.6
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com
- [IPv6:2a00:1450:4864:20::22f])
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
+ [IPv6:2a00:1450:4864:20::232])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5EB7CF80149
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 16:02:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EB7CF80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id CF7DAF80448
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 16:02:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF7DAF80448
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=semihalf.com header.i=@semihalf.com header.a=rsa-sha256
- header.s=google header.b=HYr1AJD9
-Received: by mail-lj1-x22f.google.com with SMTP id z38so2822991ljq.12
+ header.s=google header.b=JzlusrDN
+Received: by mail-lj1-x232.google.com with SMTP id a10so2280300ljr.5
         for <alsa-devel@alsa-project.org>;
- Fri, 14 Apr 2023 07:02:46 -0700 (PDT)
+ Fri, 14 Apr 2023 07:02:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1681480964; x=1684072964;
+        d=semihalf.com; s=google; t=1681480971; x=1684072971;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WLixTRfjgENcovszATtGl8QPdC0Pd1weyqx+S/unz9w=;
-        b=HYr1AJD9m6oRzthxD0R3069MK8VuvZvtWAoQpZlxrFyHMJ4nU/c5FyZKYeOig8uMSj
-         uGFMmqbadrconO75X6ztpe44p+Ku6G7jL5DmcgyZ1hq12rZFhpZ6hyVtTplNqNBCzJWu
-         XfOR18dwtShwQIar93V5opgVMYaHKJAAYppuruB8+KyzpQPzzM4N+zat0BH2h1IsLCmq
-         UMYJwaoRl7kYzee5Fphzl71rnWPD6vbafkgCvs4E0mDq4T8ySmSLUpqwL0LRET4UdM4B
-         z/7G1KR9DON5ir3hrOMhn9Sal2JyF3iatNVjX0jZFvvZVnEuhX3iMEH7k8m2fup6CVSj
-         mgiQ==
+        bh=l00HAAnjKLxvI4M71LWAa1g6hA4VFu1YZpxf8JORAUs=;
+        b=JzlusrDNdzUZCKHh7U6SmI+KlP/mVczAn9Xb3MZfbiz5r8m1L0lqAf9Z0JgZD3Tqxx
+         X/DTdKdcVdFoEc02n65cBpez+thdu+oE08qMKBCO03cEzFiculVhVRZbG5DLG4CFH5bk
+         EuymseLwwLz74StstE7lynJG+54dZLY4rdi+sSD39UBUKIAUmFkdUUPAgn0+lE7xe9xI
+         aXGxbRy0yeAy20z1zjWdIESJpZ63qTDpzC6yhXnOVrFJUvqPVIkSeblw+Zm3H288fGw7
+         1AGJlriLqc33CclcKMinnVNJN0MwG6Pgb1IsmYYrXUCl7cZ0DdbTtOPnhdownoKzOkWs
+         bywg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681480964; x=1684072964;
+        d=1e100.net; s=20221208; t=1681480971; x=1684072971;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WLixTRfjgENcovszATtGl8QPdC0Pd1weyqx+S/unz9w=;
-        b=hZ7Gbs6/voLojPAOryF6PHMc4UiS1o18YmfKes58KJhhSOm7Ab5IPrBO9D5lJYYcRP
-         pPSKUcPXi36NW/cmzPpb42Sfd96QfGprwlCbdXJF6gvx/XdaLI0UT+otPidyZSblB6xZ
-         b803OKWOpw40kjQtlZHVaBDGJ9CSbKAfFFFZnZhn1KqPBy+7sO0aJ8Bkjwk45aFxpJPe
-         ayME6ua88pC3Sap17mJHhsgFHSUop67qn7A9N1KxzhtoRTpp5GAHalsjtnraMRiywHwI
-         DYPmICEr+9d7luz0Bedj8hmYeiUgq3Ktc056ZJE8gkPPVaDbGsWLnauILY2fZdv9o80r
-         ICaQ==
-X-Gm-Message-State: AAQBX9ftzMZBFib9hhIwVHhiQ/Erl2mfsSJJUx843jLTyVxRlkkNro1d
-	NZvAkCKyailSF55LUO0jsZeq3WqFzQEfv734DzG5KA==
+        bh=l00HAAnjKLxvI4M71LWAa1g6hA4VFu1YZpxf8JORAUs=;
+        b=GrFK6C6FbN5BPUa9c8RRMQZO6nqZ5q7fq4gqpzvcswr9KbtEDh3GD6JSzeHVJ1NQcU
+         er1WHbYEmMUGotAoqjuPG/q5NVBMU8QNpFI9qDcjOAzUcB/jWlv4j2egcwSG3YqBuSqR
+         5+Ae/o4ySo1zx0zrW9GWPvVE16sYfyAbFOnsDsUskSbKyhyTWqgB7+uaub75iUWZhCIS
+         BhJcLJ6bONm39kd+orxFQxsYMmH+KgURS55PP+cZH5UDlNP58/ebFFhGgvYHyOhqA26F
+         UX+USgzQRBGPpL0dbz/ZsIgdevjhA1egls6CWDqO2CQwm9JOr5seEfrdX/e38eIzHIgN
+         fuXg==
+X-Gm-Message-State: AAQBX9fdlUyI2a+GCUz4zrtm73LXLt2/64Pb42R/te0Ewn36Qbigvk96
+	mjgX0URq2b3MjTWaM7TjN1aYOtbKMUXFpod8U3BJzg==
 X-Google-Smtp-Source: 
- AKy350ZYVGEPLLxfVYu+/HWW1CWF15hmWbDiIZLuRfjxN0aQCDsV6QACgfOZTdQ+VsxwMQxddFYJ+A==
-X-Received: by 2002:a05:651c:d5:b0:2a7:6f60:34f2 with SMTP id
- 21-20020a05651c00d500b002a76f6034f2mr2103167ljr.33.1681480964321;
-        Fri, 14 Apr 2023 07:02:44 -0700 (PDT)
+ AKy350ZxhF8jz5Saa4u19lC/KyENjhrRMahkQQL0VeYcZWqgqY9MaL+3miI6fzj/xv1zhuIzYZZSRw==
+X-Received: by 2002:a2e:99d2:0:b0:2a7:ace8:e0ba with SMTP id
+ l18-20020a2e99d2000000b002a7ace8e0bamr2212415ljj.42.1681480971325;
+        Fri, 14 Apr 2023 07:02:51 -0700 (PDT)
 Received: from panikiel.roam.corp.google.com
  (staticline-31-182-201-26.toya.net.pl. [31.182.201.26])
         by smtp.gmail.com with ESMTPSA id
- 15-20020a2eb2cf000000b002a76e2dedbcsm828684ljz.139.2023.04.14.07.02.43
+ 15-20020a2eb2cf000000b002a76e2dedbcsm828684ljz.139.2023.04.14.07.02.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Apr 2023 07:02:44 -0700 (PDT)
+        Fri, 14 Apr 2023 07:02:51 -0700 (PDT)
 From: =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
 To: alsa-devel@alsa-project.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 2/9] dt-bindings: ASoC: Add chv3-i2s
-Date: Fri, 14 Apr 2023 16:01:56 +0200
-Message-ID: <20230414140203.707729-3-pan@semihalf.com>
+Subject: [PATCH 7/9] ASoC: ssm2602: Add mute gpio
+Date: Fri, 14 Apr 2023 16:02:01 +0200
+Message-ID: <20230414140203.707729-8-pan@semihalf.com>
 X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
 In-Reply-To: <20230414140203.707729-1-pan@semihalf.com>
 References: <20230414140203.707729-1-pan@semihalf.com>
@@ -146,8 +146,8 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: UI3BICKRKMFU32OCMGUXI6ZJDBJZJJBP
-X-Message-ID-Hash: UI3BICKRKMFU32OCMGUXI6ZJDBJZJJBP
+Message-ID-Hash: R3DTLIQYF4AM23UIDRROBEJD3YM5QVVJ
+X-Message-ID-Hash: R3DTLIQYF4AM23UIDRROBEJD3YM5QVVJ
 X-Mailman-Approved-At: Sat, 15 Apr 2023 09:08:57 +0000
 CC: tiwai@suse.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
  dinguyen@kernel.org, lars@metafoo.de, nuno.sa@analog.com,
@@ -157,7 +157,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UI3BICKRKMFU32OCMGUXI6ZJDBJZJJBP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R3DTLIQYF4AM23UIDRROBEJD3YM5QVVJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -166,62 +166,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add binding for chv3-i2s device.
+The SSM2603 has a hardware mute pin. Add an optional mute gpio to
+control it.
 
 Signed-off-by: Paweł Anikiel <pan@semihalf.com>
 ---
- .../bindings/sound/google,chv3-i2s.yaml       | 42 +++++++++++++++++++
- 1 file changed, 42 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/google,chv3-i2s.yaml
+ sound/soc/codecs/ssm2602.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/google,chv3-i2s.yaml b/Documentation/devicetree/bindings/sound/google,chv3-i2s.yaml
-new file mode 100644
-index 000000000000..6f49cf059ac5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/google,chv3-i2s.yaml
-@@ -0,0 +1,42 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/google,chv3-i2s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 35c4743e756e..dd81e62d7a3b 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -14,6 +14,7 @@
+ #include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/regmap.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/slab.h>
+ 
+ #include <sound/pcm.h>
+@@ -32,6 +33,8 @@ struct ssm2602_priv {
+ 
+ 	enum ssm2602_type type;
+ 	unsigned int clk_out_pwr;
 +
-+title: Google Chameleon v3 I2S device
++	struct gpio_desc *mute_gpiod;
+ };
+ 
+ /*
+@@ -352,6 +355,10 @@ static int ssm2602_mute(struct snd_soc_dai *dai, int mute, int direction)
+ 	else
+ 		regmap_update_bits(ssm2602->regmap, SSM2602_APDIGI,
+ 				    APDIGI_ENABLE_DAC_MUTE, 0);
 +
-+maintainers:
-+  - Paweł Anikiel <pan@semihalf.com>
++	if (ssm2602->mute_gpiod)
++		gpiod_set_value_cansleep(ssm2602->mute_gpiod, mute);
 +
-+description: |
-+  I2S device for the Google Chameleon v3. The device handles both RX
-+  and TX using a producer/consumer ring buffer design.
+ 	return 0;
+ }
+ 
+@@ -680,6 +687,10 @@ int ssm2602_probe(struct device *dev, enum ssm2602_type type,
+ 	ssm2602->type = type;
+ 	ssm2602->regmap = regmap;
+ 
++	ssm2602->mute_gpiod = devm_gpiod_get_optional(dev, "mute", GPIOD_OUT_LOW);
++	if (IS_ERR(ssm2602->mute_gpiod))
++		return PTR_ERR(ssm2602->mute_gpiod);
 +
-+properties:
-+  compatible:
-+    const: google,chv3-i2s
-+  reg:
-+    items:
-+      - description: core registers
-+      - description: irq registers
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2s0: i2s@c0060300 {
-+        compatible = "google,chv3-i2s";
-+        reg = <0xc0060300 0x100>,
-+              <0xc0060f00 0x10>;
-+        interrupts = <0 20 IRQ_TYPE_LEVEL_HIGH>;
-+    };
+ 	return devm_snd_soc_register_component(dev, &soc_component_dev_ssm2602,
+ 		&ssm2602_dai, 1);
+ }
 -- 
 2.40.0.634.g4ca3ef3211-goog
 
