@@ -4,107 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1262FC77B72
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 14:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF366C77B6E
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 15:27:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19BBEE7A;
-	Fri, 14 Apr 2023 16:26:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19BBEE7A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1CC3E78;
+	Fri, 14 Apr 2023 17:26:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1CC3E78
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681482437;
-	bh=r62Bg7taKN8ueg/SOljV3ygfYWsD/yfJ63Sah7gnkPQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=hxIp250gI9yaB34sD2PjM1HNCQM+Tr3nRLzhKYX/a7QXuMfd3YmMdy+xBEeAtRVkV
-	 jHH0Jl7a8rPv/xoiyEtBlOeTgeNZ1hLWAi1UFZL9+kQQOsXrKelFemxBLAdPRIhOWi
-	 IsLr24vJjz1+QHpEEr954AiEwMjGJNccRafu0MQA=
+	s=default; t=1681486049;
+	bh=IMJGoWV/h2zznnnpWLatVajCasMGruRwlT0SUhiXkc0=;
+	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From:Reply-To:Cc:From;
+	b=R97TnhcXPpaYaydjjIzaVN1RtI4okrI8QAS1emJJG9UcIJQILEQqMteCKOdz85IHx
+	 XkKn94HJsHkW6kJCRrejXlPEDECZdiv7v10RBusiJGkUbphfr4H3jBX5opSLZvvRLl
+	 duPJLkSB/dQXBkwwdCd8Z/H8os0IfBnnwsdAj9LE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D725F8032B;
-	Fri, 14 Apr 2023 16:26:02 +0200 (CEST)
-Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 625A8F8032B; Fri, 14 Apr 2023 16:26:00 +0200 (CEST)
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com
- [IPv6:2607:f8b0:4864:20::1134])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D6C93F80100
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 16:25:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6C93F80100
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=NfzXTOro
-Received: by mail-yw1-x1134.google.com with SMTP id
- 00721157ae682-54fa9da5e5bso147258047b3.1
-        for <alsa-devel@alsa-project.org>;
- Fri, 14 Apr 2023 07:25:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681482354; x=1684074354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r62Bg7taKN8ueg/SOljV3ygfYWsD/yfJ63Sah7gnkPQ=;
-        b=NfzXTOron1qvqMumHJ8TbkBENXe0W8hViQyxOSbW5oiFrYwBM5Y1PvUiLuocP0FSju
-         T/ZspDaJcRa4CmndQUDdbcsp5buNAYI3giOj7fxUJYss5yQdhJp7XUK5lev34FvbBYo/
-         AP9pcycJDxMDEKZ5P/PBeXcVv8iIPLCYOVQQg/EmVescSCpbmzeV9oeKqjXnDMeUGrsM
-         ny9JSyRL39rWp3133GJtLcfXE4q/AGC+1ZpSJcN4wkxk2FwOvGHxRgVwBK1MUxVWKmV3
-         rz+7FkQvIzwWKlQ6vnSslruQgwY1wd+BgagHkS+H3rGhKCVxZgSZL7wTELmSJ8EAJkY0
-         b9tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681482354; x=1684074354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r62Bg7taKN8ueg/SOljV3ygfYWsD/yfJ63Sah7gnkPQ=;
-        b=J3zCSlJ1QOj+SUDGg3MnBzH7wc49+42VSYl9+g9K3KmQgoaRRq9gmHHiy6s8lz2GST
-         6dUidLyy01MDk37zpblOQrV0FeHBM2sE150/OE2lHoBLyx97Ajh9tv0jUD5NucblP+CP
-         8+FX/tiRj+NK/7JcmE0uiI2WzAFlZYiwJP40eqdeczU/YiQdZSoVpWuwGTt0d/pS9HgM
-         PixqCekyrMJPTmgLcG3FLBkrkDJBxp3gxznU3OHxEvsdBYDp37+zhlRaDbPd9ZSuIEdU
-         Dxx+N5c6ScbMZw4fWSDQgFXZQGYmHuhqFbeZC5xrUtusBRbKQMx5CLN+hqkG8+Zgfokn
-         rfbQ==
-X-Gm-Message-State: AAQBX9cAZB3fJ+DukbRl7b4vokvjOBtSvhyxQ7FC1Nm3GYBITHQ+3or1
-	fMYcRkUbby4GbLxObYtITBYXbQ0d95lg0Y1Ncsc=
-X-Google-Smtp-Source: 
- AKy350bl4fFEJ+FQv7ax0cbWG0isQYHV1KwfJdd9yo2Es773geHkplzj7s0xPtYDYCmWURb4N/814xV6jEUFYsp4aHk=
-X-Received: by 2002:a81:eb14:0:b0:54f:b986:9c60 with SMTP id
- n20-20020a81eb14000000b0054fb9869c60mr3688061ywm.7.1681482354504; Fri, 14 Apr
- 2023 07:25:54 -0700 (PDT)
-MIME-Version: 1.0
-References: 
- <CAHhAz+haVH-4Hgsz0PpTgUSW1pX4XxwxXwEd7nLVb0sFFwQwCg@mail.gmail.com>
- <CAPDUAqPVDi4TgAja92tMqMp6rGAyC-eabS_6+W0zThKfsZAxGA@mail.gmail.com>
-In-Reply-To: 
- <CAPDUAqPVDi4TgAja92tMqMp6rGAyC-eabS_6+W0zThKfsZAxGA@mail.gmail.com>
-From: Muni Sekhar <munisekharrms@gmail.com>
-Date: Fri, 14 Apr 2023 19:55:43 +0530
-Message-ID: 
- <CAHhAz+g-Mtz3xhnU9hDHG9DzBuBM_e9_4n0BSRpALRJcyLF0LQ@mail.gmail.com>
-Subject: Re: ALSA: arecord : silennce recorded as 0x80
-To: Luke Koch <lu.ale.koch@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: 3UJ73PTOLMFQPJXQY5TNQ63EFZ5LLQIM
-X-Message-ID-Hash: 3UJ73PTOLMFQPJXQY5TNQ63EFZ5LLQIM
-X-MailFrom: munisekharrms@gmail.com
+	by alsa1.perex.cz (Postfix) with ESMTP id 244E6F80149;
+	Fri, 14 Apr 2023 17:26:14 +0200 (CEST)
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi
+ Iwai <tiwai@suse.com>
+Subject: [PATCH v1 3/4] ALSA: cs35l41: Fix default regmap values for some
+ registers
+Date: Fri, 14 Apr 2023 16:25:51 +0100
+In-Reply-To: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
+References: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: LKML <linux-kernel@vger.kernel.org>,
- alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3UJ73PTOLMFQPJXQY5TNQ63EFZ5LLQIM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FYV5MZ33GMHJ5KDKCXLQIMHHOQ4UTR4T/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+MIME-Version: 1.0
+Message-ID: 
+ <168148597269.26.1569480749441489052@mailman-core.alsa-project.org>
+From: Stefan Binding via Alsa-devel <alsa-devel@alsa-project.org>
+Reply-To: Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com,
+ Stefan Binding <sbinding@opensource.cirrus.com>
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+Received: by alsa1.perex.cz (Postfix, from userid 50401)
+	id 9E4A2F8051F; Fri, 14 Apr 2023 17:26:09 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 943CDF8023A
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 17:26:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 943CDF8023A
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=VtmhZIrD
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 33E7k6Wl003961;
+	Fri, 14 Apr 2023 10:26:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=fjFs/7f3dFz2OTkn4kKsaTBEamc34d9Tzg4y7U6KXUM=;
+ b=VtmhZIrD6mNr91Sr6u02L2CkY8drI77l1O/CeKzpMPLfJmBOtX37Q63ea6B8yMpPVo+s
+ DjdSvpJM/s4ghTWL/gJmlDjNCJ0nnJB4jSHJPlRa9JwtMQHWt5gRayF8K9hP3DUXZS3n
+ 7jxfpkdv42fsrHc03WHT7OlAysLx76ODc4Pp6iWn7eY6x66LZHn89rzA0GSqvGHf4dWn
+ AI51zD14+CrBJlpvesyokbaJ4ga3d9YfFCYH7dr57malXyJyGf8O1EsWAk1gVuwfuEEH
+ COWJl1D9HimtXUImDDvxtakmsf6js3U6l2X0BYy667NLd3edUqVHQW8itvdZ6wdaDVdp +Q==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pxm3qa2sv-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 14 Apr 2023 10:26:01 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Fri, 14 Apr
+ 2023 10:26:00 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 14 Apr 2023 10:26:00 -0500
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.135])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C6B2511C6;
+	Fri, 14 Apr 2023 15:25:59 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi
+ Iwai <tiwai@suse.com>
+Subject: [PATCH v1 3/4] ALSA: cs35l41: Fix default regmap values for some
+ registers
+Date: Fri, 14 Apr 2023 16:25:51 +0100
+Message-ID: <20230414152552.574502-4-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
+References: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: mmGkCZSi7rCS15raiHdKCPZq_Ps-Hxj1
+X-Proofpoint-GUID: mmGkCZSi7rCS15raiHdKCPZq_Ps-Hxj1
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: FYV5MZ33GMHJ5KDKCXLQIMHHOQ4UTR4T
+X-Message-ID-Hash: FYV5MZ33GMHJ5KDKCXLQIMHHOQ4UTR4T
+X-MailFrom: prvs=9468da70c5=sbinding@opensource.cirrus.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation;
+ header-match-alsa-devel.alsa-project.org-0;
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com,
+ Stefan Binding <sbinding@opensource.cirrus.com>
+X-Mailman-Version: 3.3.8
+Precedence: list
+List-Id: "Alsa-devel mailing list for ALSA developers -
+ http://www.alsa-project.org" <alsa-devel.alsa-project.org>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FYV5MZ33GMHJ5KDKCXLQIMHHOQ4UTR4T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,70 +151,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Apr 14, 2023 at 3:45=E2=80=AFPM Luke Koch <lu.ale.koch@gmail.com> w=
-rote:
->
->
-> On Thu, Apr 13, 2023 at 3:50=E2=80=AFPM Muni Sekhar <munisekharrms@gmail.=
-com> wrote:
-> >
-> > Hi all,
-> >
-> > I recorded the silence on the default audio card by running "arecord
-> > -d 5 test.wav."
-> >
-> > Once it exited, I checked the contents by running "hexdump test.wav,"
-> > and I see that silence is recorded as a sequence of 0x80 instead of
-> > 0x00.
-> >
-> > 0000000 4952 4646 0024 8000 4157 4556 6d66 2074
-> > 0000010 0010 0000 0001 0001 1f40 0000 1f40 0000
-> > 0000020 0001 0008 6164 6174 0000 8000 8080 8080
-> > 0000030 8080 8080 8080 8080 8080 8080 8080 8080
-> > 0000040 8080 8080 8080 8080 8080 8080 8080 8080
-> > ...
-> >
-> > What might be the reason for silence being recorded as 0x80 instead of =
-0x0?
-> >
-> >
-> > --
-> > Thanks,
-> > Sekhar
->
-> This is what I found after Googling a bit:
-> Since you didn't specify a format, arecord defaults to 8 bit format (U8).
-> Being unsigned, a negative value for maximum negative amplitude is imposs=
-ible. Therefore the value is given a bias of 128,
-> making 0 the maximum negative amplitude, 255 the maximum positive, and 12=
-8 the center point (or silence).
-Thanks for the clarification.
-So I tried passing signed 8-bit format (S8), and then the arecord died
-immediately, as mentioned below.
+Several values do not match the defaults of CS35L41, fix them.
 
-$ arecord -f S8 test.wav
-Recording WAVE 'test.wav' : Signed 8 bit, Rate 8000 Hz, Mono
-arecord: begin_wave:2481: Wave doesn't support S8 format...
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs35l41-lib.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-For other format S16_LE, the arecord hangs for a few seconds and
-throws an I/O error.
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index 8538e2871c5fa..1e4205295a0de 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -46,7 +46,7 @@ static const struct reg_default cs35l41_reg[] = {
+ 	{ CS35L41_DSP1_RX5_SRC,			0x00000020 },
+ 	{ CS35L41_DSP1_RX6_SRC,			0x00000021 },
+ 	{ CS35L41_DSP1_RX7_SRC,			0x0000003A },
+-	{ CS35L41_DSP1_RX8_SRC,			0x00000001 },
++	{ CS35L41_DSP1_RX8_SRC,			0x0000003B },
+ 	{ CS35L41_NGATE1_SRC,			0x00000008 },
+ 	{ CS35L41_NGATE2_SRC,			0x00000009 },
+ 	{ CS35L41_AMP_DIG_VOL_CTRL,		0x00008000 },
+@@ -58,8 +58,8 @@ static const struct reg_default cs35l41_reg[] = {
+ 	{ CS35L41_IRQ1_MASK2,			0xFFFFFFFF },
+ 	{ CS35L41_IRQ1_MASK3,			0xFFFF87FF },
+ 	{ CS35L41_IRQ1_MASK4,			0xFEFFFFFF },
+-	{ CS35L41_GPIO1_CTRL1,			0xE1000001 },
+-	{ CS35L41_GPIO2_CTRL1,			0xE1000001 },
++	{ CS35L41_GPIO1_CTRL1,			0x81000001 },
++	{ CS35L41_GPIO2_CTRL1,			0x81000001 },
+ 	{ CS35L41_MIXER_NGATE_CFG,		0x00000000 },
+ 	{ CS35L41_MIXER_NGATE_CH1_CFG,		0x00000303 },
+ 	{ CS35L41_MIXER_NGATE_CH2_CFG,		0x00000303 },
+-- 
+2.34.1
 
-$ arecord -f S16_LE test.wav
-Recording WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-arecord: pcm_read:2032: read error: Input/output error
-
-I am not sure why recording works only on the default format of U8.
-For other formats, the record either dies immediately or hangs for a
-timeout and then throws an I/O error. Any ideas about this behaviour?
-
->
-> Best Regards,
-> Luke
->
->
->
-
-
---=20
-Thanks,
-Sekhar
