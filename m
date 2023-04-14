@@ -4,32 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F068CC77B6E
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 15:28:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FBA3C77B6E
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 15:28:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 983A4E10;
-	Fri, 14 Apr 2023 17:27:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 983A4E10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30B49E90;
+	Fri, 14 Apr 2023 17:27:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30B49E90
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681486095;
-	bh=IYMUsl30h/GUzS+5CbazXcfN+uxEWIFS8rfA8c8hyh4=;
+	s=default; t=1681486101;
+	bh=Xh4bvvGPIwsSXzUz2fWNWK/A/e194pkp+26loLSOduQ=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=FUnO8SB6Gl1HHy/dhaZUhV7XlLEqnXUTb3+6PH2z4VmW0nI5QNFf+//oXMhSQk0q5
-	 ys5xM3GI4kD32/1aK5vH0BvFvdKiWSILOCA/4ltIQwYz4pVXUpJGuNlBXjN8+LrG0h
-	 pRiEXX4ytkspjpdQaOCNhcJ3oQbGyQmaMHDm8Gyc=
+	b=q+OYprTxZjrdEyCPfaiUwW3zJQIJpJVijaD56tsd2OwhHfk6SRINyv+gwvRUYlVuE
+	 6y9ExShq3vQ61iocX2AMfgaH64M4/Woa32YlwUzCV53Th+Ruqcvkad6hEFtVWZq5Bf
+	 3nGIbVcM5MKV+smwWKWTgDqtqawCVKQQ/zIr6hqE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C21E1F80533;
-	Fri, 14 Apr 2023 17:26:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D44D6F80542;
+	Fri, 14 Apr 2023 17:26:20 +0200 (CEST)
 To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
         Takashi
  Iwai <tiwai@suse.com>
-Subject: [PATCH v1 4/4] ALSA: hda/realtek: Delete cs35l41 component master
- during free
-Date: Fri, 14 Apr 2023 16:25:52 +0100
+Subject: [PATCH v1 2/4] ALSA: hda: cs35l41: Fix endian conversions
+Date: Fri, 14 Apr 2023 16:25:50 +0100
 In-Reply-To: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
 References: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -43,7 +42,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TXZF5UZEYX2OEEPXN4YH5IFPHR3PRV2I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C7DJKACW2RK4WPEN5D73PRUAKRYNZY2R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -53,7 +52,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168148597653.26.9417569568632907166@mailman-core.alsa-project.org>
+ <168148597931.26.13759243063762682994@mailman-core.alsa-project.org>
 From: Stefan Binding via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Stefan Binding <sbinding@opensource.cirrus.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
@@ -63,70 +62,69 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A9B0F8032B; Fri, 14 Apr 2023 17:26:13 +0200 (CEST)
+	id 48746F80533; Fri, 14 Apr 2023 17:26:16 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7BC29F80448
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 17:26:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BC29F80448
+	by alsa1.perex.cz (Postfix) with ESMTPS id 51B8AF8025E
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 17:26:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51B8AF8025E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=lffR9rAF
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33EDVEGp030487;
-	Fri, 14 Apr 2023 10:26:03 -0500
+ header.s=PODMain02222019 header.b=KwdFeteY
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 33E7k6Wk003961;
+	Fri, 14 Apr 2023 10:26:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=uiepQRJc6hSwibfyXox6IpHGvJY0zVutwuW3J5LXHm8=;
- b=lffR9rAF2TvlA5UVdy2L784HaL99xv6BEHVEVqtxMGmiSImaAEBm8a+hm97At8fmn49Z
- Y15Hu9cxquqpWi/5ApRHSpOqjTSEslpVaBVQiNmj2zMLVMo2kGdp306fYsiCJUr7HSM6
- UhbXCVI/7Dnj+iIqIDZ0b5reAPGh9D6azwwWXn/7tk7uIebRI1UVqATtRJvyCkFW4yuL
- 1Ff9PNaKlpfwu4O8hdBUWKqb5NpR6imTE33QJpogBpdKAyU4K7Uj+rmC1un2nX46NjZe
- N/27btx8c3WXXdLcBbMH1xldfJlcY++fkrofl3hcd+EvdRTUQDEPdR9++E6oV/Fj7vRA Xw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3pu5p3skxn-3
+ bh=K1cH0ZtWLCX8sI+lF/y9e1IRq9QfXxo07nEhVezuoz8=;
+ b=KwdFeteYV3LvVQ4LwHXsqQ6/9A/ryuBJIE/ur0hLpjJfMliaxImDpIFPP+O/q8MDmiqF
+ +kap4nqKA0GMNqbNqI0GsOUYOJay8DXhjJlReMg9BZXvby46xZLTr/lZkB/9sTSilknk
+ mctQ6JUORS8RxXF++tQu/lxSPo/mc1XCf29o+6WQnAXdxQr6WTLm94AfUELMUEIC1a7e
+ MTpEXcqUc1CZ2hiIvYPJ8ETTvftATAi4JO7kmPpPCb2jmGfDXJeYslO8kGOuUUTeuCBc
+ KKZGr5YSNi+GgmK7ktyxQtr1cpyLjcIQWjKBsxASPXwJ+QGwQbbXYCwU4Yy/KeOXdJO4 iQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pxm3qa2sv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 14 Apr 2023 10:26:03 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Fri, 14 Apr 2023 10:26:01 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Fri, 14 Apr
- 2023 10:26:00 -0500
+ 2023 10:25:59 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 14 Apr 2023 10:26:00 -0500
+ 15.2.1118.26 via Frontend Transport; Fri, 14 Apr 2023 10:25:59 -0500
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.135])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0980845D;
-	Fri, 14 Apr 2023 15:26:00 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8ED9545D;
+	Fri, 14 Apr 2023 15:25:59 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
         Takashi
  Iwai <tiwai@suse.com>
-Subject: [PATCH v1 4/4] ALSA: hda/realtek: Delete cs35l41 component master
- during free
-Date: Fri, 14 Apr 2023 16:25:52 +0100
-Message-ID: <20230414152552.574502-5-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 2/4] ALSA: hda: cs35l41: Fix endian conversions
+Date: Fri, 14 Apr 2023 16:25:50 +0100
+Message-ID: <20230414152552.574502-3-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
 References: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: E2mLVeeRv9wTXg4ldyB9dpCwOjvo4cvB
-X-Proofpoint-GUID: E2mLVeeRv9wTXg4ldyB9dpCwOjvo4cvB
+X-Proofpoint-ORIG-GUID: 5jipqptVmrcXanMYxa1yYbmgYy1HOgdG
+X-Proofpoint-GUID: 5jipqptVmrcXanMYxa1yYbmgYy1HOgdG
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: TXZF5UZEYX2OEEPXN4YH5IFPHR3PRV2I
-X-Message-ID-Hash: TXZF5UZEYX2OEEPXN4YH5IFPHR3PRV2I
+Message-ID-Hash: C7DJKACW2RK4WPEN5D73PRUAKRYNZY2R
+X-Message-ID-Hash: C7DJKACW2RK4WPEN5D73PRUAKRYNZY2R
 X-MailFrom: prvs=9468da70c5=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -142,7 +140,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TXZF5UZEYX2OEEPXN4YH5IFPHR3PRV2I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C7DJKACW2RK4WPEN5D73PRUAKRYNZY2R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,26 +149,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This ensures that the driver is properly cleaned up when freed.
+Found during static analysis, ensure variables are correct
+types before endian conversion.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/cs35l41_hda.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3b9f077a227f7..bbeffbb84091e 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6757,6 +6757,8 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
- 		else
- 			spec->gen.pcm_playback_hook = comp_generic_playback_hook;
- 		break;
-+	case HDA_FIXUP_ACT_FREE:
-+		component_master_del(dev, &comp_master_ops);
- 	}
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index d100189e15b83..b02462ae21f04 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -308,8 +308,8 @@ static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
  }
  
+ #if IS_ENABLED(CONFIG_EFI)
+-static int cs35l41_apply_calibration(struct cs35l41_hda *cs35l41, unsigned int ambient,
+-				     unsigned int r0, unsigned int status, unsigned int checksum)
++static int cs35l41_apply_calibration(struct cs35l41_hda *cs35l41, __be32 ambient, __be32 r0,
++				     __be32 status, __be32 checksum)
+ {
+ 	int ret;
+ 
+@@ -379,10 +379,10 @@ static int cs35l41_save_calibration(struct cs35l41_hda *cs35l41)
+ 
+ 				/* Calibration can only be applied whilst the DSP is not running */
+ 				ret = cs35l41_apply_calibration(cs35l41,
+-								cpu_to_be32(cl->calAmbient),
+-								cpu_to_be32(cl->calR),
+-								cpu_to_be32(cl->calStatus),
+-								cpu_to_be32(cl->calR + 1));
++								(__be32)cpu_to_be32(cl->calAmbient),
++								(__be32)cpu_to_be32(cl->calR),
++								(__be32)cpu_to_be32(cl->calStatus),
++								(__be32)cpu_to_be32(cl->calR + 1));
+ 			}
+ 		}
+ 		vfree(data);
+@@ -745,7 +745,7 @@ static int cs35l41_runtime_resume(struct device *dev)
+ 
+ static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
+ {
+-	int halo_sts;
++	__be32 halo_sts;
+ 	int ret;
+ 
+ 	ret = cs35l41_init_dsp(cs35l41);
+@@ -773,7 +773,7 @@ static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
+ 				&halo_sts, sizeof(halo_sts));
+ 
+ 	if (ret) {
+-		dev_err(cs35l41->dev, "Timeout waiting for HALO Core to start. State: %d\n",
++		dev_err(cs35l41->dev, "Timeout waiting for HALO Core to start. State: %u\n",
+ 			 halo_sts);
+ 		goto clean_dsp;
+ 	}
 -- 
 2.34.1
 
