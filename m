@@ -4,96 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E985C77B71
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 16:45:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAF16C77B71
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 16:48:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 814BBE72;
-	Fri, 14 Apr 2023 18:45:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 814BBE72
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AC1AE76;
+	Fri, 14 Apr 2023 18:47:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AC1AE76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681490756;
-	bh=vHUKR7DhIAvrFhltVxCj8MOLOyxuJZYw+4+P51lCZD8=;
-	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=dS/9z4NPQS48HIsqBqr89+7Z9XN1R3aNUEnw0kzM8v2r85oYGHtqwUjbQvu8/KIZk
-	 WaG0fO/0DStFoH+Bo9fA6ILC//crBmTJFBawmOsTDqSLt+44YeZ0PpaDWZD9bFihb6
-	 OoN3+wIBycPaDZfXS8dsyLIAhXqGkFuPNmW0fffA=
+	s=default; t=1681490915;
+	bh=kLySdUEMQr1iUvlQq6Htdfgpuyp1tU6kNYr8ymjcJnQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=IqlfqPK2NyVKB25QfXkKmWzuebaxYNqQXZp8CYQZKyKYkocMrryvmJGj0duj3Ixnq
+	 mzrFEuphN2LLCHl9t7I16wzcdCBcK1JB5k4b9amLbOdwtH4R9enQVQjhhrZXuHUJcE
+	 Z3lSJrESq2OkvgE09dhc85CLYzWyJBB4sfozXsnw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AC99F8032B;
-	Fri, 14 Apr 2023 18:44:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8CB3BF8032B;
+	Fri, 14 Apr 2023 18:47:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72801F8032B; Fri, 14 Apr 2023 18:44:37 +0200 (CEST)
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com
- [IPv6:2607:f8b0:4864:20::b2f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id F30C6F8032B; Fri, 14 Apr 2023 18:47:15 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 25570F80149
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 18:44:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25570F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id D18CCF80100
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 18:47:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D18CCF80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=jgw1Egh6
-Received: by mail-yb1-xb2f.google.com with SMTP id by8so3283645ybb.9
-        for <alsa-devel@alsa-project.org>;
- Fri, 14 Apr 2023 09:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681490672; x=1684082672;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wAR/IhYKHH1BsY9u5IUy+to3NaysIuJyB5TWYLo5Z2o=;
-        b=jgw1Egh6P42XBDZUFH+yg9daQykHh6AKCpRtaq6i5d4z0SWxmXJyC9Ok71sjyVJicP
-         RH0LiE+vojnEARQ3en7nskrXoVorpuhZsO6RVEjD6Hd7cGPy1Mso0rRHFXbReMsQg0FN
-         yeJNpcibVJauTioPVRICssqgXafWOHvPSioGpa2B9C2StgTlVITvv3v3zq8YTkD4GeB0
-         vHroOVsE1GKuENDRzg5oW4ZQ6Vv6YsOTXyREFE0yUj62ejLMAM+wv+x1HnzCat6TIMLD
-         llKOWTBiF8xXdHmCjzxT/VlB+3XMij+gEX/usmx7hOr15yqX+RcOwuELD8kZAc2odWZ7
-         csSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681490672; x=1684082672;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wAR/IhYKHH1BsY9u5IUy+to3NaysIuJyB5TWYLo5Z2o=;
-        b=cKnJeUeO8L/d5sKMSD2ZoqU+o6q620ypzNWQD/qWgWonVp2lMXnPTdN0/nglgEndqj
-         Vk99UMdiapzMdPRbza6DdjqlYVl9oURZxuPS68sSZTykn6rdgmoHm7A4X8OA14/sxAnd
-         DXYmbxjeY9m3+vuL3dKb9sayti8wSQYinUHN7LMtia2jKqewKQfSnWJCxe/W7six2ZPj
-         AMX3qQ3njoRjdrAT6vbHOJh9leaxo++yH2IN+hPtRFS5oew9LDgqV671nG1BiOSZwW7g
-         Sp0X+hzdrhi5bvPsr2dt6LKyMtWbhzxahab8+g5Wo4xzA39Y9QIzfP+YUJpyIrpbANqS
-         ElnQ==
-X-Gm-Message-State: AAQBX9cgIXkl5J0e7tjTw9SNayGXpHts/u4ftCAL7OWHEDt5+2hg6CUQ
-	NIr+vT8XtSd/tQLBlWDGf5u6aBKrAUaumlwAbop3d5aXj50=
-X-Google-Smtp-Source: 
- AKy350b6HKZpFDxiN5KzVpVKgpmCmXy2oMcSdfGc7Ag0RnI02naKR3BtgrOX0ebmblQon+UaUXKyGFl0WOr0lQxaQKw=
-X-Received: by 2002:a25:74d4:0:b0:b8e:cb88:1b8a with SMTP id
- p203-20020a2574d4000000b00b8ecb881b8amr4185958ybc.8.1681490671882; Fri, 14
- Apr 2023 09:44:31 -0700 (PDT)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=XZEjQWuo
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 656D66492F;
+	Fri, 14 Apr 2023 16:47:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C7B7C433EF;
+	Fri, 14 Apr 2023 16:47:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1681490828;
+	bh=kLySdUEMQr1iUvlQq6Htdfgpuyp1tU6kNYr8ymjcJnQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XZEjQWuoiaLMzrotKOefVL+KiaM61y6oJKqWG8HFdNkhwH2QW1Efhz7uwpZtwl6K6
+	 WilqvCdPSuY2QoommbloPIYgOiKpHYPdZaL4AmnjffO1mSDkbcrXBopNbiB6I3rk4W
+	 9ECmmny4LI3rkqydUbpL7fy35cxKUj5LQpPvCqDHwnsPl/6cT/HNAwHQQG2kByojwy
+	 szLQElxMKHDl6PPrQb7NlXFE9D3yyu1jle6XZg8zHfWNo4eDkTz6+PgGRe68r5bvaW
+	 gKTj7wdyFyw7/86HcMpL3EZwShkxgfj/azOQTpdRlKoR/+EG1qydfVIuKH6rgBPIkI
+	 BoVXZFUikBiJg==
+Date: Fri, 14 Apr 2023 17:47:02 +0100
+From: Mark Brown <broonie@kernel.org>
+To: =?utf-8?B?UGF3ZcWC?= Anikiel <pan@semihalf.com>
+Subject: Re: [PATCH 0/9] Add Chameleon v3 ASoC audio
+Message-ID: <6d90ad41-bb2d-41a0-8a4a-922b78967a2e@sirena.org.uk>
+References: <20230414140203.707729-1-pan@semihalf.com>
 MIME-Version: 1.0
-From: Muni Sekhar <munisekharrms@gmail.com>
-Date: Fri, 14 Apr 2023 22:14:20 +0530
-Message-ID: 
- <CAHhAz+gCGi3i9c4KLt9V+RhQypn7RXrfMnH9LJCTty3K_QTGFQ@mail.gmail.com>
-Subject: ALSA: struct snd_pcm_hardware.formats
-To: alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Message-ID-Hash: 35C7CSOQ2T7QQCAHKC45NNXIBCZ63MPE
-X-Message-ID-Hash: 35C7CSOQ2T7QQCAHKC45NNXIBCZ63MPE
-X-MailFrom: munisekharrms@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6K3bg/ncOMgdX1Ax"
+Content-Disposition: inline
+In-Reply-To: <20230414140203.707729-1-pan@semihalf.com>
+X-Cookie: One Bell System - it works.
+Message-ID-Hash: V77AFZIT7BPMKNLD2KHXOZPPNQAPXUIE
+X-Message-ID-Hash: V77AFZIT7BPMKNLD2KHXOZPPNQAPXUIE
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, dinguyen@kernel.org,
+ lars@metafoo.de, nuno.sa@analog.com, upstream@semihalf.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/35C7CSOQ2T7QQCAHKC45NNXIBCZ63MPE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V77AFZIT7BPMKNLD2KHXOZPPNQAPXUIE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,14 +93,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi all,
 
-struct snd_pcm_hardware.formats (SNDRV_PCM_FMTBIT_S8,
-SNDRV_PCM_FMTBIT_S16_LE, SNDRV_PCM_FMTBIT_U16_LE,
-SNDRV_PCM_FMTBIT_S16_BE, etc.), are these sound card hardware
-capabilities or something that needs to be taken care of on the
-software (driver or userspace) side?
+--6K3bg/ncOMgdX1Ax
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Thanks,
-Sekhar
+On Fri, Apr 14, 2023 at 04:01:54PM +0200, Pawe=C5=82 Anikiel wrote:
+
+>  sound/soc/Makefile                            |   1 +
+>  sound/soc/chameleonv3/Kconfig                 |   7 +
+>  sound/soc/chameleonv3/Makefile                |   2 +
+>  sound/soc/chameleonv3/chv3-audio.c            | 111 ++++++
+>  sound/soc/chameleonv3/chv3-i2s.c              | 347 ++++++++++++++++++
+>  sound/soc/chameleonv3/chv3-it68051.c          |  41 +++
+
+Please at least make a directory for Google as a vendor, we don't want
+people adding directories for each individual product.  That said
+generally we add machine drivers in the directory for the relevant SoC
+family, is there any reason that pattern isn't followed here?
+
+--6K3bg/ncOMgdX1Ax
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQ5g4IACgkQJNaLcl1U
+h9Awagf/ddeh9NiL6xTm0jG7Plq85gP3Pyvhk2dVP91pSzF9F2Ji14MAlnMxtKdW
+I01PMKID+Zk7oMMvVWT6XwDfK6F6ScWBXR+uwqhtD2m+5Qz+srCzqKyZZpWevujg
+KSrw9av66SOmEHB8BYWK7PnhBGV27/0E8mxzHqaxWNyyVkJhgxhBakVda9ocacmY
+hBjUSiivVFpEV36uNZrn2N9ivcj8Ux5mVpNhFLF1BGnlMGLvYyZMcbfAUtkAm9AN
+rgduYeGNGttpn7p3/xjusIeboE0QZU/6JYfQ+tX6FTSm1QeklwL6e0G8hb8OzLQz
+OYG7LQgbQju5RMftb4EWn0bLI/4qsw==
+=rrTF
+-----END PGP SIGNATURE-----
+
+--6K3bg/ncOMgdX1Ax--
