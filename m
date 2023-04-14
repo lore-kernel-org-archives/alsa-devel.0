@@ -4,118 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91CEEC7619A
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Apr 2023 09:02:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92962C7619A
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Apr 2023 09:10:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2D3483B;
-	Sat, 15 Apr 2023 11:01:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2D3483B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E42A784B;
+	Sat, 15 Apr 2023 11:09:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E42A784B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681549327;
-	bh=4YBnptFvHeOM7ixwk3IjqTLGCQUio8m1i2E4+w7ktlw=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1681549840;
+	bh=WjziLwR8094O+ezF5oVnm2FP6AQC/z7eTp5YOrFH7gc=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OIiBBWSE2R8B21R9v990T/MKAEKrdFMqtCfRWzFqhPeaoQDYrVa+31CfaND6hSoeE
-	 pUvGZQI/7H4sz/wBJmAXuUdCSW1EqLmzmVHxVahRF+Mh/EteO7HWyplDQuGZNjpjAD
-	 PqO44J6XFHhDLvPZvEBRR6C7gjcG75nSPxSafVR0=
+	b=vdNenNUiMfR8geDvMTKs1sptJYfNZeONJncs0w9cS6dthYHGwz+MqI9CvX2yVggou
+	 LDQ22H09tti+FbbEcPr/qeHdWVbMG6f/U1ZqjTJi8Z/G/RDP/YZHRhOpboW8ALTd5m
+	 Ep0LXdQSWjHQz/RC2N4fxFecqq9eg0zqnMF47ic8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D29EF8032B;
-	Sat, 15 Apr 2023 11:01:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B9E9F8032B;
+	Sat, 15 Apr 2023 11:09:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 334F7F8032B; Sat, 15 Apr 2023 11:01:01 +0200 (CEST)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
- [IPv6:2a00:1450:4864:20::62b])
+	id 69742F8032B; Fri, 14 Apr 2023 12:15:49 +0200 (CEST)
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com
+ [IPv6:2607:f8b0:4864:20::736])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 40772F80149
-	for <alsa-devel@alsa-project.org>; Sat, 15 Apr 2023 11:00:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40772F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 46D13F80100
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 12:15:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46D13F80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Co0OwPVR
-Received: by mail-ej1-x62b.google.com with SMTP id
- a640c23a62f3a-94eff00bcdaso65222066b.1
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=SeoKkb7J
+Received: by mail-qk1-x736.google.com with SMTP id f11so12536899qka.5
         for <alsa-devel@alsa-project.org>;
- Sat, 15 Apr 2023 02:00:52 -0700 (PDT)
+ Fri, 14 Apr 2023 03:15:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1681549251; x=1684141251;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h7bWAyZyLD6uo7vF/WlVxj3C8Ki8eISz7a0rWcMvR1k=;
-        b=Co0OwPVRZSFCKAUtHmKZxfLEAl4+Yk9tRoSp0clTuJuTTsTWsesS7PWBTgdyTOlyEd
-         bvErnPDwam2MuQ/85GuljVZSjqxCU4lay98TPaSI6eh+3DbgqXhKiXdeP4hhJpLgBzPR
-         QONKjBWMsLwAiAUmhgHneXIT4yUvIfDtAd04MVj6qXuGPQUYtah+cHnfkZdJ8xwDwzWf
-         7Z9urp7g82zxPXKJlqXl+ZFL0g2kh8xhmkrijuXx0FCo30I0AJvnYWTlWadx5OQb7KT8
-         1nGYSyuKtZOANDAyIr4QKAl1B3jd6va4NY5Nb/G/jEvrtXDSn+wV122H06cH5GFbxNPp
-         XIDQ==
+        d=gmail.com; s=20221208; t=1681467340; x=1684059340;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ri5kJ04UwLWxpdY74GK6GyUwCSLOp/EIN9cup+Z99hI=;
+        b=SeoKkb7JbRJIICEys9uHNoHmWQvsIbVsB6c/sTLVkuO62nNcl1iX2DOt88Q8pgDDz+
+         NE4X6WbcRv87X+z59myBuZrx5luwfYGywmNuhLFpir0hKRd7EuOU0QyaxGviNCQiXITS
+         W19NOxGNLGHJ/aj4eRTd3UjKpH8KDzB9uEjhXlH6jFPVWQ+pv3JnlfGvZW3rVSEWKsIf
+         BAeOI4jXZFzmJnW6bno+6mOlVWrRmrM9W+OxO3NDIV8GFfyPYvVI53NFMAnIL7ENI66+
+         TFS0JYEii3AW9afEoJGVd1rgbXZqbkH0topXc5VEzWUcj+qL2+LTdIq8kZR4iY3bdp+g
+         FDGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681549251; x=1684141251;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h7bWAyZyLD6uo7vF/WlVxj3C8Ki8eISz7a0rWcMvR1k=;
-        b=ByzfiYC2FJ2FOzjJJbHYFsRVg0KaBFFo0sjNOpuXCTexQkVsnzSWMWOEuD7qsYoPGR
-         OSF2u4nGU72AJMU0tVNNyyY2eoLOSvoaUw3hbgmtxFD+KGUYqX7OkK+cfb0lE2iAg/rj
-         EaaOpy1Ur1zoNUcHp6SNxFR65B5KaakRO8BTa5wWBrDUL7q4aHaMCe8CmfHJ1DLyx7I2
-         uc59tKqWqLR6YbyDoHuodndSuBsPg98bteqxbnc5F3yl6g2OXUFODBMFbfkw/JxarXMF
-         lbEkhgT3k7fkxgSjEbDMsn1dxEe0cJYcgajtiVTs/4utd04jPSMrBnZOPHNT9v2cZ/jK
-         AM+A==
-X-Gm-Message-State: AAQBX9eT+45/wQvgnHjsOfUdNnpXURUUttnzusFYjVVpramkwyaW6M0d
-	5NzouP5vzo2QwtM17/EbsGb7NA==
+        d=1e100.net; s=20221208; t=1681467340; x=1684059340;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ri5kJ04UwLWxpdY74GK6GyUwCSLOp/EIN9cup+Z99hI=;
+        b=DxvGW9KXM6ZyPRBbOD8EqqQAaPzCx5mLqym4XYmuKbn5yKulf/mt4++DhYSL1K3OEp
+         tYWx2sHRfEDgnm2mgflAl04rZKpnsqHzqveB/4c24Ve/ZSQqjQ/LoGuVgjbE684Wiv6C
+         NTPSCi2SakCks0BpqRJdJGpkwVO7N3fdB8pE6Lih7ysjVY1/G5MpB5oyjTuATMsjdkeE
+         q3HmrFL40LVzMhJ/owMfSuxmEObx5g69qIp/0rbDNgD16fwhgfzKTGPoqUBcsB5c5epH
+         CFYxujDHJEM9CyGaI3+jB2CqnoDThhc/2VSO3ylzJB1BITS0LI2gaQnnMhAzGLHs3MXK
+         Ywmw==
+X-Gm-Message-State: AAQBX9coFQ3J23t5qOiiObiVkojNWxagdK5onTTOccvgTQfxzkWYcRs/
+	KXi0jRdLpFPkE+AQTO9vYg5B0+Bjk0Tegz3waC0=
 X-Google-Smtp-Source: 
- AKy350aEJnSqnbH8WH/aQ9lyPmdapGYw/EYooeirvjzag7l10B9FqEzScCXV7gADNUZ63773fFSs4A==
-X-Received: by 2002:a05:6402:1a2c:b0:506:7d14:984c with SMTP id
- be12-20020a0564021a2c00b005067d14984cmr6282723edb.19.1681549251217;
-        Sat, 15 Apr 2023 02:00:51 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:a3bf:4ed:6c53:2a36?
- ([2a02:810d:15c0:828:a3bf:4ed:6c53:2a36])
-        by smtp.gmail.com with ESMTPSA id
- wt10-20020a170906ee8a00b0094f225c0cd3sm421385ejb.86.2023.04.15.02.00.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Apr 2023 02:00:50 -0700 (PDT)
-Message-ID: <310e8979-de96-dda8-6c95-0e6033d8b403@linaro.org>
-Date: Sat, 15 Apr 2023 11:00:49 +0200
+ AKy350Ze6HD+pGQEaf/j1Gg9KSXcO/VVlTw0QNY2u7KioY1G3knFpab+BB5F/JRwR6hcImdoEgMDP94vF67NLpeGdK8=
+X-Received: by 2002:a05:620a:1229:b0:74a:aa62:8553 with SMTP id
+ v9-20020a05620a122900b0074aaa628553mr1006302qkj.6.1681467339939; Fri, 14 Apr
+ 2023 03:15:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH 7/7] ASoC: dt-bindings: mediatek,mt8188-afe: add audio
- properties
-Content-Language: en-US
-To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
- lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com,
- angelogioacchino.delregno@collabora.com
-References: <20230413104713.7174-1-trevor.wu@mediatek.com>
- <20230413104713.7174-8-trevor.wu@mediatek.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230413104713.7174-8-trevor.wu@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: JJFY3GIOZJFXU6WC3GVJZYRYAUKDSMST
-X-Message-ID-Hash: JJFY3GIOZJFXU6WC3GVJZYRYAUKDSMST
-X-MailFrom: krzysztof.kozlowski@linaro.org
+References: 
+ <CAHhAz+haVH-4Hgsz0PpTgUSW1pX4XxwxXwEd7nLVb0sFFwQwCg@mail.gmail.com>
+In-Reply-To: 
+ <CAHhAz+haVH-4Hgsz0PpTgUSW1pX4XxwxXwEd7nLVb0sFFwQwCg@mail.gmail.com>
+From: Luke Koch <lu.ale.koch@gmail.com>
+Date: Fri, 14 Apr 2023 12:15:29 +0200
+Message-ID: 
+ <CAPDUAqPVDi4TgAja92tMqMp6rGAyC-eabS_6+W0zThKfsZAxGA@mail.gmail.com>
+Subject: Re: ALSA: arecord : silennce recorded as 0x80
+To: Muni Sekhar <munisekharrms@gmail.com>
+X-MailFrom: lu.ale.koch@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 7S4CCU43TAJ2L2GU4GBQFULSLLCIOBTB
+X-Message-ID-Hash: 7S4CCU43TAJ2L2GU4GBQFULSLLCIOBTB
+X-Mailman-Approved-At: Sat, 15 Apr 2023 09:08:50 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.8
+CC: LKML <linux-kernel@vger.kernel.org>,
+ alsa-devel <alsa-devel@alsa-project.org>,
+ kernelnewbies <kernelnewbies@kernelnewbies.org>, linux-sound@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JJFY3GIOZJFXU6WC3GVJZYRYAUKDSMST/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7S4CCU43TAJ2L2GU4GBQFULSLLCIOBTB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,75 +112,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 13/04/2023 12:47, Trevor Wu wrote:
-> Assign top_a1sys_hp clock to 26M, and add apll1_d4 to clocks for switching
-> the parent of top_a1sys_hp dynamically
-> On the other hand, "mediatek,infracfg" is included for bus protection.
-> 
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-> ---
->  .../bindings/sound/mediatek,mt8188-afe.yaml    | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt8188-afe.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt8188-afe.yaml
-> index 82ccb32f08f2..03301d5082f3 100644
-> --- a/Documentation/devicetree/bindings/sound/mediatek,mt8188-afe.yaml
-> +++ b/Documentation/devicetree/bindings/sound/mediatek,mt8188-afe.yaml
-> @@ -29,6 +29,10 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/phandle
->      description: The phandle of the mediatek topckgen controller
->  
-> +  mediatek,infracfg:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of the mediatek infracfg controller
-> +
->    power-domains:
->      maxItems: 1
->  
-> @@ -37,6 +41,7 @@ properties:
->        - description: 26M clock
->        - description: audio pll1 clock
->        - description: audio pll2 clock
-> +      - description: audio pll1 divide 4
->        - description: clock divider for i2si1_mck
->        - description: clock divider for i2si2_mck
->        - description: clock divider for i2so1_mck
-> @@ -58,6 +63,7 @@ properties:
->        - const: clk26m
->        - const: apll1
->        - const: apll2
-> +      - const: apll1_d4
-
-Why do you add clocks in the middle? The order is strict, so you just
-broke all DTS.
-
->        - const: apll12_div0
->        - const: apll12_div1
->        - const: apll12_div2
-> @@ -74,6 +80,12 @@ properties:
->        - const: i2si2_m_sel
->        - const: adsp_audio_26m
->  
-> +  assigned-clocks:
-> +    maxItems: 1
-> +
-> +  assigned-clock-parents:
-> +    maxItems: 1
-
-Usually these two are not needed.
-
-> +
->    mediatek,etdm-in1-cowork-source:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description:
-> @@ -147,6 +159,8 @@ required:
->    - power-domains
->    - clocks
->    - clock-names
-> +  - assigned-clocks
-> +  - assigned-clock-parents
-
-Why making them required?
-Best regards,
-Krzysztof
-
+T24gVGh1LCBBcHIgMTMsIDIwMjMgYXQgMzo1MOKAr1BNIE11bmkgU2VraGFyIDxtdW5pc2VraGFy
+cm1zQGdtYWlsLmNvbT4gd3JvdGU6DQo+DQo+IEhpIGFsbCwNCj4NCj4gSSByZWNvcmRlZCB0aGUg
+c2lsZW5jZSBvbiB0aGUgZGVmYXVsdCBhdWRpbyBjYXJkIGJ5IHJ1bm5pbmcgImFyZWNvcmQNCj4g
+LWQgNSB0ZXN0Lndhdi4iDQo+DQo+IE9uY2UgaXQgZXhpdGVkLCBJIGNoZWNrZWQgdGhlIGNvbnRl
+bnRzIGJ5IHJ1bm5pbmcgImhleGR1bXAgdGVzdC53YXYsIg0KPiBhbmQgSSBzZWUgdGhhdCBzaWxl
+bmNlIGlzIHJlY29yZGVkIGFzIGEgc2VxdWVuY2Ugb2YgMHg4MCBpbnN0ZWFkIG9mDQo+IDB4MDAu
+DQo+DQo+IDAwMDAwMDAgNDk1MiA0NjQ2IDAwMjQgODAwMCA0MTU3IDQ1NTYgNmQ2NiAyMDc0DQo+
+IDAwMDAwMTAgMDAxMCAwMDAwIDAwMDEgMDAwMSAxZjQwIDAwMDAgMWY0MCAwMDAwDQo+IDAwMDAw
+MjAgMDAwMSAwMDA4IDYxNjQgNjE3NCAwMDAwIDgwMDAgODA4MCA4MDgwDQo+IDAwMDAwMzAgODA4
+MCA4MDgwIDgwODAgODA4MCA4MDgwIDgwODAgODA4MCA4MDgwDQo+IDAwMDAwNDAgODA4MCA4MDgw
+IDgwODAgODA4MCA4MDgwIDgwODAgODA4MCA4MDgwDQo+IC4uLg0KPg0KPiBXaGF0IG1pZ2h0IGJl
+IHRoZSByZWFzb24gZm9yIHNpbGVuY2UgYmVpbmcgcmVjb3JkZWQgYXMgMHg4MCBpbnN0ZWFkIG9m
+DQoweDA/DQo+DQo+DQo+IC0tDQo+IFRoYW5rcywNCj4gU2VraGFyDQoNClRoaXMgaXMgd2hhdCBJ
+IGZvdW5kIGFmdGVyIEdvb2dsaW5nIGEgYml0Og0KU2luY2UgeW91IGRpZG4ndCBzcGVjaWZ5IGEg
+Zm9ybWF0LCBhcmVjb3JkIGRlZmF1bHRzIHRvIDggYml0IGZvcm1hdCAoVTgpLg0KQmVpbmcgdW5z
+aWduZWQsIGEgbmVnYXRpdmUgdmFsdWUgZm9yIG1heGltdW0gbmVnYXRpdmUgYW1wbGl0dWRlIGlz
+DQppbXBvc3NpYmxlLiBUaGVyZWZvcmUgdGhlIHZhbHVlIGlzIGdpdmVuIGEgYmlhcyBvZiAxMjgs
+DQptYWtpbmcgMCB0aGUgbWF4aW11bSBuZWdhdGl2ZSBhbXBsaXR1ZGUsIDI1NSB0aGUgbWF4aW11
+bSBwb3NpdGl2ZSwgYW5kIDEyOA0KdGhlIGNlbnRlciBwb2ludCAob3Igc2lsZW5jZSkuDQoNCkJl
+c3QgUmVnYXJkcywNCkx1a2UNCg==
