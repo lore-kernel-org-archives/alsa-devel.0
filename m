@@ -4,90 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19785C77B6E
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 14:01:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1262FC77B72
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 14:27:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A475E7D;
-	Fri, 14 Apr 2023 16:00:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A475E7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19BBEE7A;
+	Fri, 14 Apr 2023 16:26:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19BBEE7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681480900;
-	bh=S7i6Gs+JAk/qaPFszrWhJXcNeFk0TTSrSOIADSNofYs=;
-	h=Date:Subject:From:To:References:In-Reply-To:CC:List-Id:
+	s=default; t=1681482437;
+	bh=r62Bg7taKN8ueg/SOljV3ygfYWsD/yfJ63Sah7gnkPQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qu4G5lAebGV0qF5dGmtFdK1HC2j7y20vYD3Zig0w5Xc/oRXkz/MX5XNhjXTj63F3l
-	 WmM5NE1btJYCv4KzNolkWSyov6pdEcZHx+cHEq4cvmjFjCqVcwGZMwB+VBjNIJovjW
-	 8Pp7KI0hvD/eb0ZjwB4MUfxUAHyVOuF0wVGUPCD0=
+	b=hxIp250gI9yaB34sD2PjM1HNCQM+Tr3nRLzhKYX/a7QXuMfd3YmMdy+xBEeAtRVkV
+	 jHH0Jl7a8rPv/xoiyEtBlOeTgeNZ1hLWAi1UFZL9+kQQOsXrKelFemxBLAdPRIhOWi
+	 IsLr24vJjz1+QHpEEr954AiEwMjGJNccRafu0MQA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 881FCF8032B;
-	Fri, 14 Apr 2023 16:00:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D725F8032B;
+	Fri, 14 Apr 2023 16:26:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5D372F8032B; Fri, 14 Apr 2023 16:00:22 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 625A8F8032B; Fri, 14 Apr 2023 16:26:00 +0200 (CEST)
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com
+ [IPv6:2607:f8b0:4864:20::1134])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 420BCF80149
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 16:00:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 420BCF80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id D6C93F80100
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 16:25:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6C93F80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qFB4hUdW
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5E7346484F;
-	Fri, 14 Apr 2023 14:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C82C4339B;
-	Fri, 14 Apr 2023 14:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1681480818;
-	bh=S7i6Gs+JAk/qaPFszrWhJXcNeFk0TTSrSOIADSNofYs=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=qFB4hUdWJsX2MLLbMJeTYhJ2rjoYP1+G1O/kolG4DK2dZrdSfwpDcYwyLvqWvPDeT
-	 31PIa0Y7SAd5rsfeuv2ywgGj16THvlirSBHyp4Uq9/8tync9ERhBKAcgHP2ig9Pcqk
-	 N/5ScrlAIgDANW+c/bbShTXz6t6PyusczgN9xdkXQwvrB2RWy275ukHq8rh3B6kjMC
-	 avfZZZyvUWElASXCSOlRYW5dpl8MfNU04oswmbm2AmtYhtWlQuICA4pI0RY5I0TSc3
-	 KWPJELyCNF1zsZH1DRqh6DH7VH3HYVxuhkKTKgNwSr6diY/JEidTpcbSObO0dz3wUT
-	 KEI9u/fJOgMEA==
-Message-ID: <bbbd3e4a-4d46-ee7e-cf90-f8626eb6e447@kernel.org>
-Date: Fri, 14 Apr 2023 16:00:13 +0200
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=NfzXTOro
+Received: by mail-yw1-x1134.google.com with SMTP id
+ 00721157ae682-54fa9da5e5bso147258047b3.1
+        for <alsa-devel@alsa-project.org>;
+ Fri, 14 Apr 2023 07:25:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681482354; x=1684074354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r62Bg7taKN8ueg/SOljV3ygfYWsD/yfJ63Sah7gnkPQ=;
+        b=NfzXTOron1qvqMumHJ8TbkBENXe0W8hViQyxOSbW5oiFrYwBM5Y1PvUiLuocP0FSju
+         T/ZspDaJcRa4CmndQUDdbcsp5buNAYI3giOj7fxUJYss5yQdhJp7XUK5lev34FvbBYo/
+         AP9pcycJDxMDEKZ5P/PBeXcVv8iIPLCYOVQQg/EmVescSCpbmzeV9oeKqjXnDMeUGrsM
+         ny9JSyRL39rWp3133GJtLcfXE4q/AGC+1ZpSJcN4wkxk2FwOvGHxRgVwBK1MUxVWKmV3
+         rz+7FkQvIzwWKlQ6vnSslruQgwY1wd+BgagHkS+H3rGhKCVxZgSZL7wTELmSJ8EAJkY0
+         b9tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681482354; x=1684074354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r62Bg7taKN8ueg/SOljV3ygfYWsD/yfJ63Sah7gnkPQ=;
+        b=J3zCSlJ1QOj+SUDGg3MnBzH7wc49+42VSYl9+g9K3KmQgoaRRq9gmHHiy6s8lz2GST
+         6dUidLyy01MDk37zpblOQrV0FeHBM2sE150/OE2lHoBLyx97Ajh9tv0jUD5NucblP+CP
+         8+FX/tiRj+NK/7JcmE0uiI2WzAFlZYiwJP40eqdeczU/YiQdZSoVpWuwGTt0d/pS9HgM
+         PixqCekyrMJPTmgLcG3FLBkrkDJBxp3gxznU3OHxEvsdBYDp37+zhlRaDbPd9ZSuIEdU
+         Dxx+N5c6ScbMZw4fWSDQgFXZQGYmHuhqFbeZC5xrUtusBRbKQMx5CLN+hqkG8+Zgfokn
+         rfbQ==
+X-Gm-Message-State: AAQBX9cAZB3fJ+DukbRl7b4vokvjOBtSvhyxQ7FC1Nm3GYBITHQ+3or1
+	fMYcRkUbby4GbLxObYtITBYXbQ0d95lg0Y1Ncsc=
+X-Google-Smtp-Source: 
+ AKy350bl4fFEJ+FQv7ax0cbWG0isQYHV1KwfJdd9yo2Es773geHkplzj7s0xPtYDYCmWURb4N/814xV6jEUFYsp4aHk=
+X-Received: by 2002:a81:eb14:0:b0:54f:b986:9c60 with SMTP id
+ n20-20020a81eb14000000b0054fb9869c60mr3688061ywm.7.1681482354504; Fri, 14 Apr
+ 2023 07:25:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: nau8825: Add delay control for
- input path
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-References: <20230414103941.39566-1-CTLIN0@nuvoton.com>
- <7826c2f8-3e8d-7786-4742-4b885b840cae@kernel.org>
- <4f854448-c643-4ce0-be3b-770e0f7c7814@sirena.org.uk>
- <82b74a2f-edab-908f-bc7a-2cac572cf3a9@kernel.org>
-In-Reply-To: <82b74a2f-edab-908f-bc7a-2cac572cf3a9@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: RW667OPHJCVE2X2ULFYNQWZK65LQNLLE
-X-Message-ID-Hash: RW667OPHJCVE2X2ULFYNQWZK65LQNLLE
-X-MailFrom: krzk@kernel.org
+References: 
+ <CAHhAz+haVH-4Hgsz0PpTgUSW1pX4XxwxXwEd7nLVb0sFFwQwCg@mail.gmail.com>
+ <CAPDUAqPVDi4TgAja92tMqMp6rGAyC-eabS_6+W0zThKfsZAxGA@mail.gmail.com>
+In-Reply-To: 
+ <CAPDUAqPVDi4TgAja92tMqMp6rGAyC-eabS_6+W0zThKfsZAxGA@mail.gmail.com>
+From: Muni Sekhar <munisekharrms@gmail.com>
+Date: Fri, 14 Apr 2023 19:55:43 +0530
+Message-ID: 
+ <CAHhAz+g-Mtz3xhnU9hDHG9DzBuBM_e9_4n0BSRpALRJcyLF0LQ@mail.gmail.com>
+Subject: Re: ALSA: arecord : silennce recorded as 0x80
+To: Luke Koch <lu.ale.koch@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: 3UJ73PTOLMFQPJXQY5TNQ63EFZ5LLQIM
+X-Message-ID-Hash: 3UJ73PTOLMFQPJXQY5TNQ63EFZ5LLQIM
+X-MailFrom: munisekharrms@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: David Lin <CTLIN0@nuvoton.com>, lgirdwood@gmail.com,
- alsa-devel@alsa-project.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com,
- SJLIN0@nuvoton.com, WTLI@nuvoton.com, ctlin0.linux@gmail.com
+CC: LKML <linux-kernel@vger.kernel.org>,
+ alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RW667OPHJCVE2X2ULFYNQWZK65LQNLLE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3UJ73PTOLMFQPJXQY5TNQ63EFZ5LLQIM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,36 +113,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 14/04/2023 15:58, Krzysztof Kozlowski wrote:
-> On 14/04/2023 15:46, Mark Brown wrote:
->> On Fri, Apr 14, 2023 at 02:34:19PM +0200, Krzysztof Kozlowski wrote:
->>> On 14/04/2023 12:39, David Lin wrote:
->>
->>>> +  - nuvoton,adc-delay-ms: Delay (in ms) to make input path stable and avoid pop noise. The
->>>> +      default value is 125 and range between 125 to 500 ms.
->>
->>> Convert the binding to DT Schema first.
->>
->> That seems disproportionate for such a trivial change.
-> 
-> What is the difference between:
-> 1. Adding 2 or 3 new properties to TXT file without converting the file
-> to DT Schema,
-> 
-> 2. Adding 1 property in 2022 Sep. Then adding one more property now.
-> Then adding another property in 3 months.
-> 
-> I don't see.
-> 
-> Every time the excuse is the same - it is just one property, so let's
-> add it. Since this is second property, after we started enforcing DT
-> schema, I don't think my request is disproportionate.
-> 
+On Fri, Apr 14, 2023 at 3:45=E2=80=AFPM Luke Koch <lu.ale.koch@gmail.com> w=
+rote:
+>
+>
+> On Thu, Apr 13, 2023 at 3:50=E2=80=AFPM Muni Sekhar <munisekharrms@gmail.=
+com> wrote:
+> >
+> > Hi all,
+> >
+> > I recorded the silence on the default audio card by running "arecord
+> > -d 5 test.wav."
+> >
+> > Once it exited, I checked the contents by running "hexdump test.wav,"
+> > and I see that silence is recorded as a sequence of 0x80 instead of
+> > 0x00.
+> >
+> > 0000000 4952 4646 0024 8000 4157 4556 6d66 2074
+> > 0000010 0010 0000 0001 0001 1f40 0000 1f40 0000
+> > 0000020 0001 0008 6164 6174 0000 8000 8080 8080
+> > 0000030 8080 8080 8080 8080 8080 8080 8080 8080
+> > 0000040 8080 8080 8080 8080 8080 8080 8080 8080
+> > ...
+> >
+> > What might be the reason for silence being recorded as 0x80 instead of =
+0x0?
+> >
+> >
+> > --
+> > Thanks,
+> > Sekhar
+>
+> This is what I found after Googling a bit:
+> Since you didn't specify a format, arecord defaults to 8 bit format (U8).
+> Being unsigned, a negative value for maximum negative amplitude is imposs=
+ible. Therefore the value is given a bias of 128,
+> making 0 the maximum negative amplitude, 255 the maximum positive, and 12=
+8 the center point (or silence).
+Thanks for the clarification.
+So I tried passing signed 8-bit format (S8), and then the arecord died
+immediately, as mentioned below.
 
-BTW, the change from September was also sent to mailing lists ignoring
-Devicetree entirely. This does not help here, because now it looks like
-a pattern.
+$ arecord -f S8 test.wav
+Recording WAVE 'test.wav' : Signed 8 bit, Rate 8000 Hz, Mono
+arecord: begin_wave:2481: Wave doesn't support S8 format...
 
-Best regards,
-Krzysztof
+For other format S16_LE, the arecord hangs for a few seconds and
+throws an I/O error.
 
+$ arecord -f S16_LE test.wav
+Recording WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
+arecord: pcm_read:2032: read error: Input/output error
+
+I am not sure why recording works only on the default format of U8.
+For other formats, the record either dies immediately or hangs for a
+timeout and then throws an I/O error. Any ideas about this behaviour?
+
+>
+> Best Regards,
+> Luke
+>
+>
+>
+
+
+--=20
+Thanks,
+Sekhar
