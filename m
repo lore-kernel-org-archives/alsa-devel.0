@@ -4,109 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0732BC7619A
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Apr 2023 09:13:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77FC8C77B71
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Apr 2023 09:17:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DE35A4C;
-	Sat, 15 Apr 2023 11:12:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DE35A4C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E74D9851;
+	Sat, 15 Apr 2023 11:17:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E74D9851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681550019;
-	bh=zbhTJ4LHDE6v6SbmQIEmQHpyuRwMYd8o/29e/XestB4=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=XL7QRvHaoF8m0kyLqSag7Gt23N9PlBR6aeJbWwRJ58dZAExw162lpss3qAK8q/c1u
-	 aedDBM8MKPet/30bOCM4llFNNT+t+YIvSP3I91ro8MzJBVWcZUFAhtJ2vM+IeG1ds8
-	 TXTplWkm1z+xfrjdpQ3PxGX1oF/Az63eIa1gIdJ0=
+	s=default; t=1681550273;
+	bh=veTxT9vD7zl9hGjf7g0YTSak2nq5SnihsbSusFkOwEs=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=EvgUQysiHxEU+j2ULlnEdMMg+Rhoxq+k53k7Ki2T48f/TKGau+F25jKsTIIXhhMCT
+	 EhNCFxVp+dkbwsBt9RudSYeNzGKZ0meTGxjYAf3LKD4kv3bRc6B35VPifwGChdc/MH
+	 DWI2iteSedSAg1W4+y4nMLIuao7NE4UfYy3s4vfo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1EE6F8058C;
-	Sat, 15 Apr 2023 11:09:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C871BF8032B;
+	Sat, 15 Apr 2023 11:16:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2735BF8032B; Sat, 15 Apr 2023 00:38:37 +0200 (CEST)
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com
- [IPv6:2607:f8b0:4864:20::430])
+	id 3009CF8032B; Sat, 15 Apr 2023 11:16:36 +0200 (CEST)
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
+ [IPv6:2a00:1450:4864:20::62f])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F3264F80100
-	for <alsa-devel@alsa-project.org>; Sat, 15 Apr 2023 00:38:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3264F80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id DB64BF80149
+	for <alsa-devel@alsa-project.org>; Sat, 15 Apr 2023 11:16:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB64BF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=UD6PxTID
-Received: by mail-pf1-x430.google.com with SMTP id
- d2e1a72fcca58-63b5465fb99so499108b3a.1
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=gTC2VAOA
+Received: by mail-ej1-x62f.google.com with SMTP id ud9so51353534ejc.7
         for <alsa-devel@alsa-project.org>;
- Fri, 14 Apr 2023 15:38:20 -0700 (PDT)
+ Sat, 15 Apr 2023 02:16:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681511897; x=1684103897;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rd3c9+mE7jlWzBM428gtRxGvixpDmdNW0Kf4A0MjSMA=;
-        b=UD6PxTIDCsE4J+rPmy8GMiFLpPCTQ1CQrkYgVjV06BcaKT43qjbC5n5gJx61EtyNeA
-         upOp6yo07/MGB5NM/tPJzODZ4XhxxNQhuAzaUMsj8GzDOXjuGMzz+QXi8Z7EkPKNkyY9
-         d03rndiEB/L/iCvqVZtlpdHyYkZD/i4JVlAKyPFKlcY/7ADVyft2KEfFHl1Kc48xiwsZ
-         PAZfyY0PSBBqgyCXHYYdHrhgSz6V9aL+m+cMIcg/62kfZV8bOhqns3r8LoEvysWoYTmC
-         IdWZXgnHo41uFI+k+OqGLr9NODetSYnIvUthbLcISBcGd802rit7avfxrjomgqLsyae7
-         Jfhg==
+        d=linaro.org; s=google; t=1681550191; x=1684142191;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ug2NJoEjqHGINDCh57IhGrA5Av2op4wiMxKQgC2t58c=;
+        b=gTC2VAOAMt0JAgxL72V+XYd7PM7WG/RujPbsXSC9vjpjxto1G4lgil5SHh1yhqivGh
+         XB11lrbgPZwKRMm0ndPOGiWPadzM4BTdK4az1LZ1gEav1Vxis6FeOKe6NOCADUDUZOie
+         pN9uweM9knWvTDFHajv1rX+wov/Ece6OB01aVt2Wmd24gKR91hR4ha79rlthMOMiXqX2
+         JlOrWiR5iH2JlgLEVBwik4IArASXgViIGxNPl/KQSNzp894LdgfY9kduEunb2E9MAmib
+         l1OI5WfzEGd0ZkYcS9NlY91IRbIkFOLgLvld9St/6Y/ozgv+quTUSSqMECfRIFUuQ4jA
+         U4pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681511897; x=1684103897;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rd3c9+mE7jlWzBM428gtRxGvixpDmdNW0Kf4A0MjSMA=;
-        b=XlPK7hLqgR5yEdBR62KkhQ2IO3Dz0OI0Sa4AraoKLio+j7eCrk4vNNQ9gCF/XGzwag
-         nn01dFzFABwE1olg0Cc+VXdFpp+dPBPOlVydsZL0+Ym2WHbjMP+0K+E/sGBMIaKlvnzT
-         fgYzIEIIFSeausPUDlf04+g8fx/ZLf3oNR5bDJZlWNRytBGa2Ekf1rQsmmL8qAiwuQZZ
-         iQaU0TDET1gTICEr2VJ0fMh8HFyBN0plXYQsF8q1IDG7hxxVIQL90hn+vG+CZAbz37U0
-         qFQ+eY0fyIOoztHRwiQtT2HS580pZcJHrQ2Ol4P0rrGEQ+A7XcHjx9F1W/DB6t9Y+x8U
-         GWpQ==
-X-Gm-Message-State: AAQBX9czzPA3GKjWfdS7WqU7v3SN0UeS0iJb8oT1wQCxUis92KicN32O
-	xVdAwdRFq3MpJPPzVzyIJtM=
+        d=1e100.net; s=20221208; t=1681550191; x=1684142191;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ug2NJoEjqHGINDCh57IhGrA5Av2op4wiMxKQgC2t58c=;
+        b=GOc/lM+2Su1FbhK2gSlNXBOA+Rh9uMuVCLuSMFAlFH1Qn9AaVzwVtbnivLbH5EHUIy
+         zRmMqgxzUjHm4vZjADj9/lWDIRDv3prUdhhHt1ceDcl6A2vowwBxNxPl2qbYRnLWQj53
+         FPw4GQdJoyFxo7DERxS/ZU2TNCp07wk1vxnQDGk1Cy4EjOxx4R8QiBw/NpV3dGLcrbdC
+         PNTY4y5Ss39OcTcnJ1cyFWDsv4KOwOU3WdO3xu5mHbMWBTkeDXIltrIuD7Zz14R0vCyt
+         DBamh9/+OIWtAtjz4xZnddCsX2WLH/iEWq6m8xjBs9Sh72jqEt1LEa7vkqhUjwvnd3dI
+         fhGQ==
+X-Gm-Message-State: AAQBX9dEtwhT6vuATB6k9RAqXte9+K+/2vUPCafOdgcMlzPQut72LP9n
+	2JgTzbbO70FL5k/lAX1OPPlhQPnG5w9renQKAFE=
 X-Google-Smtp-Source: 
- AKy350apIIoDRR+eXBw9W9c5rt3yXzw2WlFDTi4QTZvEVK8Chf3FqVrZrXgZCZFz+pq6B4PSfLQ46w==
-X-Received: by 2002:aa7:8891:0:b0:632:e512:1025 with SMTP id
- z17-20020aa78891000000b00632e5121025mr10789705pfe.33.1681511897077;
-        Fri, 14 Apr 2023 15:38:17 -0700 (PDT)
-Received: from localhost.localdomain ([2402:e280:218d:82:ae97:7cb6:b12a:54f5])
+ AKy350Y8+Qc6oXBx/IQ+MO8Kl1T172h9QalkKMqsO2ifw2MIg8hUr7uZskN7yBhOKS/sWk37OgqSVg==
+X-Received: by 2002:a17:906:38cc:b0:889:5686:486a with SMTP id
+ r12-20020a17090638cc00b008895686486amr1385723ejd.30.1681550191493;
+        Sat, 15 Apr 2023 02:16:31 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:a3bf:4ed:6c53:2a36?
+ ([2a02:810d:15c0:828:a3bf:4ed:6c53:2a36])
         by smtp.gmail.com with ESMTPSA id
- v26-20020aa7851a000000b00637b0c719c5sm3478084pfn.201.2023.04.14.15.38.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Apr 2023 15:38:16 -0700 (PDT)
-From: Saalim Quadri <danascape@gmail.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	daniel.baluta@nxp.com
-Subject: [PATCH] ASoC: dt-bindings: wm8753: Convert to dtschema
-Date: Fri, 14 Apr 2023 22:38:01 +0000
-Message-Id: <20230414223801.1106550-1-danascape@gmail.com>
-X-Mailer: git-send-email 2.40.0
+ h3-20020a170906530300b0093a0e5977e2sm3503998ejo.225.2023.04.15.02.16.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Apr 2023 02:16:31 -0700 (PDT)
+Message-ID: <5d629ff3-c5ae-bd00-e70d-8c0d58365ce3@linaro.org>
+Date: Sat, 15 Apr 2023 11:16:29 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: danascape@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH] ASoC: dt-bindings: wm8753: Convert to dtschema
+Content-Language: en-US
+To: Saalim Quadri <danascape@gmail.com>, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ daniel.baluta@nxp.com
+References: <20230414223801.1106550-1-danascape@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230414223801.1106550-1-danascape@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: NMGXDMI4EVMRAIWIDZKSXLRTTCG2NYRM
+X-Message-ID-Hash: NMGXDMI4EVMRAIWIDZKSXLRTTCG2NYRM
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: G4JXVOSFI7P2MEXES7PBBHPUHKSH42FP
-X-Message-ID-Hash: G4JXVOSFI7P2MEXES7PBBHPUHKSH42FP
-X-Mailman-Approved-At: Sat, 15 Apr 2023 09:09:07 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 CC: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Saalim Quadri <danascape@gmail.com>
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G4JXVOSFI7P2MEXES7PBBHPUHKSH42FP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NMGXDMI4EVMRAIWIDZKSXLRTTCG2NYRM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,130 +119,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert the WM8753 audio codec bindings to DT schema.
+On 15/04/2023 00:38, Saalim Quadri wrote:
+> Convert the WM8753 audio codec bindings to DT schema.
+> 
+> Signed-off-by: Saalim Quadri <danascape@gmail.com>
+> ---
+>  .../devicetree/bindings/sound/wlf,wm8753.yaml | 62 +++++++++++++++++++
+>  .../devicetree/bindings/sound/wm8753.txt      | 40 ------------
 
-Signed-off-by: Saalim Quadri <danascape@gmail.com>
----
- .../devicetree/bindings/sound/wlf,wm8753.yaml | 62 +++++++++++++++++++
- .../devicetree/bindings/sound/wm8753.txt      | 40 ------------
- 2 files changed, 62 insertions(+), 40 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8753.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/wm8753.txt
+Guys,
 
-diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8753.yaml b/Documentation/devicetree/bindings/sound/wlf,wm8753.yaml
-new file mode 100644
-index 000000000000..9eebe7d7f0b7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wlf,wm8753.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/wlf,wm8753.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: WM8753 audio CODEC
-+
-+description: |
-+  Pins on the device (for linking into audio routes):
-+      * LOUT1
-+      * LOUT2
-+      * ROUT1
-+      * ROUT2
-+      * MONO1
-+      * MONO2
-+      * OUT3
-+      * OUT4
-+      * LINE1
-+      * LINE2
-+      * RXP
-+      * RXN
-+      * ACIN
-+      * ACOP
-+      * MIC1N
-+      * MIC1
-+      * MIC2N
-+      * MIC2
-+      * Mic Bias
-+
-+maintainers:
-+  - patches@opensource.cirrus.com
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: wlf,wm8753
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        codec@1a {
-+            compatible = "wlf,wm8753";
-+            reg = <0x1a>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/wm8753.txt b/Documentation/devicetree/bindings/sound/wm8753.txt
-deleted file mode 100644
-index eca9e5a825a9..000000000000
---- a/Documentation/devicetree/bindings/sound/wm8753.txt
-+++ /dev/null
-@@ -1,40 +0,0 @@
--WM8753 audio CODEC
--
--This device supports both I2C and SPI (configured with pin strapping
--on the board).
--
--Required properties:
--
--  - compatible : "wlf,wm8753"
--
--  - reg : the I2C address of the device for I2C, the chip select
--          number for SPI.
--
--Pins on the device (for linking into audio routes):
--
--  * LOUT1
--  * LOUT2
--  * ROUT1
--  * ROUT2
--  * MONO1
--  * MONO2
--  * OUT3
--  * OUT4
--  * LINE1
--  * LINE2
--  * RXP
--  * RXN
--  * ACIN
--  * ACOP
--  * MIC1N
--  * MIC1
--  * MIC2N
--  * MIC2
--  * Mic Bias
--
--Example:
--
--wm8753: codec@1a {
--	compatible = "wlf,wm8753";
--	reg = <0x1a>;
--};
--- 
-2.40.0
+You choose unusual bindings to convert to DT schema. It is fine but
+honestly, less useful, with limited impact. This is an old, 12 year old
+binding without users. Maybe it would be even removed by now...
+
+I suggest converting ones which have a real impact - have users in DTS.
+Otherwise you will be putting quite a lot of effort for no real gains...
+because what is the difference between this binding being TXT and DT schema?
+
+>  2 files changed, 62 insertions(+), 40 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8753.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/sound/wm8753.txt
+> 
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
 
