@@ -4,97 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDDDEC77B71
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Apr 2023 18:39:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91CEEC7619A
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Apr 2023 09:02:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05D61E75;
-	Fri, 14 Apr 2023 20:39:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05D61E75
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2D3483B;
+	Sat, 15 Apr 2023 11:01:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2D3483B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681497590;
-	bh=1MqqJ5YcfcMqWaGniq4ziF4L1cIZOuli6OcnWa0jSNo=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1681549327;
+	bh=4YBnptFvHeOM7ixwk3IjqTLGCQUio8m1i2E4+w7ktlw=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=J2+ibhnG3wGp2fYNTzHqI0k+aPjgex7tP4ltD69UHcxi8Tw6xaeD2HjaDzTNi7zd8
-	 sbvAGuFc2pB19ziCFdZM8n+m1lyW6gioOu1zheYft2XAoHp2nvDZLtxgbD8Y7Iwhv+
-	 up1t7sWWv6slmS31qHfW2n0nwotAcqEEsfT13LeY=
+	b=OIiBBWSE2R8B21R9v990T/MKAEKrdFMqtCfRWzFqhPeaoQDYrVa+31CfaND6hSoeE
+	 pUvGZQI/7H4sz/wBJmAXuUdCSW1EqLmzmVHxVahRF+Mh/EteO7HWyplDQuGZNjpjAD
+	 PqO44J6XFHhDLvPZvEBRR6C7gjcG75nSPxSafVR0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69881F8049C;
-	Fri, 14 Apr 2023 20:38:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D29EF8032B;
+	Sat, 15 Apr 2023 11:01:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4CEEEF8025E; Fri, 14 Apr 2023 20:38:07 +0200 (CEST)
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com
- [209.85.167.173])
+	id 334F7F8032B; Sat, 15 Apr 2023 11:01:01 +0200 (CEST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
+ [IPv6:2a00:1450:4864:20::62b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CECD6F80149
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2023 20:37:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CECD6F80149
-Received: by mail-oi1-f173.google.com with SMTP id bp4so776050oib.11
+	by alsa1.perex.cz (Postfix) with ESMTPS id 40772F80149
+	for <alsa-devel@alsa-project.org>; Sat, 15 Apr 2023 11:00:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40772F80149
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=Co0OwPVR
+Received: by mail-ej1-x62b.google.com with SMTP id
+ a640c23a62f3a-94eff00bcdaso65222066b.1
         for <alsa-devel@alsa-project.org>;
- Fri, 14 Apr 2023 11:37:59 -0700 (PDT)
+ Sat, 15 Apr 2023 02:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1681549251; x=1684141251;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=h7bWAyZyLD6uo7vF/WlVxj3C8Ki8eISz7a0rWcMvR1k=;
+        b=Co0OwPVRZSFCKAUtHmKZxfLEAl4+Yk9tRoSp0clTuJuTTsTWsesS7PWBTgdyTOlyEd
+         bvErnPDwam2MuQ/85GuljVZSjqxCU4lay98TPaSI6eh+3DbgqXhKiXdeP4hhJpLgBzPR
+         QONKjBWMsLwAiAUmhgHneXIT4yUvIfDtAd04MVj6qXuGPQUYtah+cHnfkZdJ8xwDwzWf
+         7Z9urp7g82zxPXKJlqXl+ZFL0g2kh8xhmkrijuXx0FCo30I0AJvnYWTlWadx5OQb7KT8
+         1nGYSyuKtZOANDAyIr4QKAl1B3jd6va4NY5Nb/G/jEvrtXDSn+wV122H06cH5GFbxNPp
+         XIDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681497478; x=1684089478;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=M3HtHA0gVZkFMXo90iAJK1D4kK0Vnqrx23dVYZa9s6Q=;
-        b=c9ARXTWXtRn6oH1QEh/zubbdLKZAgxUj2RiZ6L8v5iSifWrcT59l4zexgvJb44r2Aw
-         G+paivJTVimykvwAwSGlVjx5SkMgZ6cJw7DJevk6DddlgfEVRaeDmXGe+tkfCedKmQ05
-         TBXIDneZabVGtRXl+xulG5f1Vwv65Mtuz6QpOuqivCpSM4X7zVJmP5+1itfAj3VGe8Hj
-         gWlkgRd51X8ysJXdNVb4dAGkqHnTvne84tQpXFVVrhJY5Q1ClOoA1yAfINkQRx0idZ1K
-         FTGTnZeRMVFWyOWjq2SBVM6rV8kknh1+h2n9mCoWigTFx+Dfi/8dsqfZeM0iwo2irVPn
-         70/g==
-X-Gm-Message-State: AAQBX9cE5J9Ltu0A0STXoVUoqe1HUbb2pyZivYKKgPN9i8E9ggTpC4HK
-	DbKHtyt++5pZKp5TLxxB1g==
+        d=1e100.net; s=20221208; t=1681549251; x=1684141251;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h7bWAyZyLD6uo7vF/WlVxj3C8Ki8eISz7a0rWcMvR1k=;
+        b=ByzfiYC2FJ2FOzjJJbHYFsRVg0KaBFFo0sjNOpuXCTexQkVsnzSWMWOEuD7qsYoPGR
+         OSF2u4nGU72AJMU0tVNNyyY2eoLOSvoaUw3hbgmtxFD+KGUYqX7OkK+cfb0lE2iAg/rj
+         EaaOpy1Ur1zoNUcHp6SNxFR65B5KaakRO8BTa5wWBrDUL7q4aHaMCe8CmfHJ1DLyx7I2
+         uc59tKqWqLR6YbyDoHuodndSuBsPg98bteqxbnc5F3yl6g2OXUFODBMFbfkw/JxarXMF
+         lbEkhgT3k7fkxgSjEbDMsn1dxEe0cJYcgajtiVTs/4utd04jPSMrBnZOPHNT9v2cZ/jK
+         AM+A==
+X-Gm-Message-State: AAQBX9eT+45/wQvgnHjsOfUdNnpXURUUttnzusFYjVVpramkwyaW6M0d
+	5NzouP5vzo2QwtM17/EbsGb7NA==
 X-Google-Smtp-Source: 
- AKy350aOPgK8kpqO4eMGv1waB/ROvTGlRtF8RlxNVHmhkcDxYzOjt+oaUAnaLIndFYo7Rze9I1Uajg==
-X-Received: by 2002:aca:190c:0:b0:388:f4de:1ed7 with SMTP id
- l12-20020aca190c000000b00388f4de1ed7mr3023405oii.1.1681497477774;
-        Fri, 14 Apr 2023 11:37:57 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107])
+ AKy350aEJnSqnbH8WH/aQ9lyPmdapGYw/EYooeirvjzag7l10B9FqEzScCXV7gADNUZ63773fFSs4A==
+X-Received: by 2002:a05:6402:1a2c:b0:506:7d14:984c with SMTP id
+ be12-20020a0564021a2c00b005067d14984cmr6282723edb.19.1681549251217;
+        Sat, 15 Apr 2023 02:00:51 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:a3bf:4ed:6c53:2a36?
+ ([2a02:810d:15c0:828:a3bf:4ed:6c53:2a36])
         by smtp.gmail.com with ESMTPSA id
- bg15-20020a056808178f00b003896f132821sm1937199oib.41.2023.04.14.11.37.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Apr 2023 11:37:57 -0700 (PDT)
-Received: (nullmailer pid 105415 invoked by uid 1000);
-	Fri, 14 Apr 2023 18:37:55 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+ wt10-20020a170906ee8a00b0094f225c0cd3sm421385ejb.86.2023.04.15.02.00.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Apr 2023 02:00:50 -0700 (PDT)
+Message-ID: <310e8979-de96-dda8-6c95-0e6033d8b403@linaro.org>
+Date: Sat, 15 Apr 2023 11:00:49 +0200
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?q?Pawe=C5=82_Anikiel?= <pan@semihalf.com>
-In-Reply-To: <20230414140203.707729-5-pan@semihalf.com>
-References: <20230414140203.707729-1-pan@semihalf.com>
- <20230414140203.707729-5-pan@semihalf.com>
-Message-Id: <168149743096.103906.17176550514603692086.robh@kernel.org>
-Subject: Re: [PATCH 4/9] dt-bindings: ASoC: Add it68051
-Date: Fri, 14 Apr 2023 13:37:55 -0500
-Message-ID-Hash: EWOFFVD2K5SRS2SOHMINP6YMEDYD24HQ
-X-Message-ID-Hash: EWOFFVD2K5SRS2SOHMINP6YMEDYD24HQ
-X-MailFrom: robherring2@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH 7/7] ASoC: dt-bindings: mediatek,mt8188-afe: add audio
+ properties
+Content-Language: en-US
+To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
+ lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com
+References: <20230413104713.7174-1-trevor.wu@mediatek.com>
+ <20230413104713.7174-8-trevor.wu@mediatek.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230413104713.7174-8-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: JJFY3GIOZJFXU6WC3GVJZYRYAUKDSMST
+X-Message-ID-Hash: JJFY3GIOZJFXU6WC3GVJZYRYAUKDSMST
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: upstream@semihalf.com, robh+dt@kernel.org, broonie@kernel.org,
- linux-kernel@vger.kernel.org, lars@metafoo.de, alsa-devel@alsa-project.org,
- krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
- nuno.sa@analog.com, tiwai@suse.com, lgirdwood@gmail.com, dinguyen@kernel.org
+CC: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EWOFFVD2K5SRS2SOHMINP6YMEDYD24HQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JJFY3GIOZJFXU6WC3GVJZYRYAUKDSMST/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,43 +124,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-On Fri, 14 Apr 2023 16:01:58 +0200, Paweł Anikiel wrote:
-> Add binding for it68051 device.
+On 13/04/2023 12:47, Trevor Wu wrote:
+> Assign top_a1sys_hp clock to 26M, and add apll1_d4 to clocks for switching
+> the parent of top_a1sys_hp dynamically
+> On the other hand, "mediatek,infracfg" is included for bus protection.
 > 
-> Signed-off-by: Paweł Anikiel <pan@semihalf.com>
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 > ---
->  .../bindings/sound/ite,it68051.yaml           | 23 +++++++++++++++++++
->  1 file changed, 23 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/ite,it68051.yaml
+>  .../bindings/sound/mediatek,mt8188-afe.yaml    | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt8188-afe.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt8188-afe.yaml
+> index 82ccb32f08f2..03301d5082f3 100644
+> --- a/Documentation/devicetree/bindings/sound/mediatek,mt8188-afe.yaml
+> +++ b/Documentation/devicetree/bindings/sound/mediatek,mt8188-afe.yaml
+> @@ -29,6 +29,10 @@ properties:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>      description: The phandle of the mediatek topckgen controller
+>  
+> +  mediatek,infracfg:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: The phandle of the mediatek infracfg controller
+> +
+>    power-domains:
+>      maxItems: 1
+>  
+> @@ -37,6 +41,7 @@ properties:
+>        - description: 26M clock
+>        - description: audio pll1 clock
+>        - description: audio pll2 clock
+> +      - description: audio pll1 divide 4
+>        - description: clock divider for i2si1_mck
+>        - description: clock divider for i2si2_mck
+>        - description: clock divider for i2so1_mck
+> @@ -58,6 +63,7 @@ properties:
+>        - const: clk26m
+>        - const: apll1
+>        - const: apll2
+> +      - const: apll1_d4
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Why do you add clocks in the middle? The order is strict, so you just
+broke all DTS.
 
-yamllint warnings/errors:
+>        - const: apll12_div0
+>        - const: apll12_div1
+>        - const: apll12_div2
+> @@ -74,6 +80,12 @@ properties:
+>        - const: i2si2_m_sel
+>        - const: adsp_audio_26m
+>  
+> +  assigned-clocks:
+> +    maxItems: 1
+> +
+> +  assigned-clock-parents:
+> +    maxItems: 1
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/ite,it68051.yaml: 'oneOf' conditional failed, one must be fixed:
-	'unevaluatedProperties' is a required property
-	'additionalProperties' is a required property
-	hint: Either unevaluatedProperties or additionalProperties must be present
-	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+Usually these two are not needed.
 
-doc reference errors (make refcheckdocs):
+> +
+>    mediatek,etdm-in1-cowork-source:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+>      description:
+> @@ -147,6 +159,8 @@ required:
+>    - power-domains
+>    - clocks
+>    - clock-names
+> +  - assigned-clocks
+> +  - assigned-clock-parents
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230414140203.707729-5-pan@semihalf.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Why making them required?
+Best regards,
+Krzysztof
 
