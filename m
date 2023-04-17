@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0C12C77B72
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Apr 2023 19:30:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 947C5C77B76
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Apr 2023 20:29:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A869E11;
-	Mon, 17 Apr 2023 21:29:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A869E11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CB1BBC0;
+	Mon, 17 Apr 2023 22:28:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CB1BBC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681759814;
-	bh=/SRLQYvRMDyytZR815x8uObk4ij3vjSpbDwjYtRJ6Js=;
+	s=default; t=1681763349;
+	bh=f5WmfpzL8IKLAgdbpNwv/8PyUKUYDvOrFroiYuwRsVg=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lNf3cO2Z8wwl+lKUVMeZOGbqaUVeoS9yPTQOdjsK/LAo7/Uj0PtybPXlKxq/J6FfU
-	 8oHwWA82a5F410WM4hk6aBgxxd9FNO+YepQtxKuhzowbRfJnHEetBsxxba39+eDl02
-	 eU0uzJk4f7rStRgYTXWMZUwtxPKiIYxayBfMrfWU=
+	b=H1N/LVZJyHpUmOVO8dSPv9a9McfvAesn5lRK2xwILjR2chdBEoTaBoUSdZL4u4RzN
+	 Jall2lsGmK+0MqK3RmR+Kx3vMnO6vPDKl/TVSzsQcdTz55y/5zbvKZImzGjpRhBw5M
+	 K6H+k1HCbSwU6VIKLNDRiEbBuzXbxQR+CEH6H+vg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFCDDF8052E;
-	Mon, 17 Apr 2023 21:28:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C8D8F800E2;
+	Mon, 17 Apr 2023 22:27:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A6A62F80266; Mon, 17 Apr 2023 21:28:22 +0200 (CEST)
+	id 54A06F80266; Mon, 17 Apr 2023 22:27:48 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 240EBF8025D
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2023 21:28:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 240EBF8025D
+	by alsa1.perex.cz (Postfix) with ESMTPS id B9794F8023A
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2023 22:27:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9794F8023A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=pqlm6Zv3
+ header.s=k20201202 header.b=Gf2wLhb+
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id DBE246298B;
-	Mon, 17 Apr 2023 19:28:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3867AC433A0;
-	Mon, 17 Apr 2023 19:28:09 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6F04F60BC3;
+	Mon, 17 Apr 2023 20:27:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04660C433D2;
+	Mon, 17 Apr 2023 20:27:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1681759691;
-	bh=/SRLQYvRMDyytZR815x8uObk4ij3vjSpbDwjYtRJ6Js=;
+	s=k20201202; t=1681763262;
+	bh=f5WmfpzL8IKLAgdbpNwv/8PyUKUYDvOrFroiYuwRsVg=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=pqlm6Zv3MX1oJijk0WnBcdFADz1loMhWE3y6bYZzlO8fz+tnETfJMPEvAZzTxskEp
-	 HVXTyblBVS8khf8puCLuNQ+d9GxHvSZI0KZafPi/Xw5MPKmsWN3ewxc7x+JB0Y5LJY
-	 TVp+9oeLFvxpaPEzBlA9Y8Wv4ZyL+YNgMx1okEpPp4nkak4AtEctMKdSULJnWx7ZKn
-	 vMLbBQbrA2rdXEv2fQBwj0uYO19TitKf0w7YHV8/g8YJZi3JIbf1JhcgzH65wTTV0L
-	 RoRrNY309oHVP2s0mFeRdAynix5F4AR80UNCZEPe5ebWNPmSKFeAcIRBB3BiigOvm8
-	 CTz9FDD7Iurlw==
+	b=Gf2wLhb+ale7Pra5hMLANyXZzrTRGIcwy5FNCGzsmxPpZLXC7Np0Ndu45JjgbFPLf
+	 f4dIS4xsCNstsPg/ua8zCRylp6htgrnlzHne0O5hvcwEaIOnjlK2KNGdembYXeaqyt
+	 n0oXoLQjJDVcCQ+8mxHxLhOitR3ItKEm4QX3xFbNaoh7GiTC9re2n2ww9x5c/HI9BV
+	 lUWtwD73Maj4RRdIsiZE9UdFDISvoQRSniWYIWT9PT2xOWHI1+p2vlTxGV7DM11hSj
+	 fX4X4N0spQR39CUb818wmPQoxthqdX+rV7y3qr+jxTDdwrzXm5V+iBW5556P3fyWEF
+	 VcBKFjxc69j+Q==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, daniel.baluta@nxp.com,
- Saalim Quadri <danascape@gmail.com>
-In-Reply-To: <20230414223801.1106550-1-danascape@gmail.com>
-References: <20230414223801.1106550-1-danascape@gmail.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: wm8753: Convert to dtschema
-Message-Id: <168175968893.1283403.17451659759711572272.b4-ty@kernel.org>
-Date: Mon, 17 Apr 2023 20:28:08 +0100
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20230414133753.653139-1-rf@opensource.cirrus.com>
+References: <20230414133753.653139-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH 0/5] ASoC: cs35l56: Code improvements
+Message-Id: <168176326169.1296984.12735339184719682836.b4-ty@kernel.org>
+Date: Mon, 17 Apr 2023 21:27:41 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-00303
-Message-ID-Hash: GGFA37SFAA7AY7NRMV2VMOHQKXWAKPOQ
-X-Message-ID-Hash: GGFA37SFAA7AY7NRMV2VMOHQKXWAKPOQ
+Message-ID-Hash: 7BKBRFSDXDD4QGCKJFQ73V6ZCS2HFDXK
+X-Message-ID-Hash: 7BKBRFSDXDD4QGCKJFQ73V6ZCS2HFDXK
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -75,14 +73,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GGFA37SFAA7AY7NRMV2VMOHQKXWAKPOQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7BKBRFSDXDD4QGCKJFQ73V6ZCS2HFDXK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,10 +89,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 14 Apr 2023 22:38:01 +0000, Saalim Quadri wrote:
-> Convert the WM8753 audio codec bindings to DT schema.
+On Fri, 14 Apr 2023 14:37:48 +0100, Richard Fitzgerald wrote:
+> Various code improvements. These remove redundant code and
+> clean up less-than-optimal original implementations.
 > 
+> Simon Trimmer (5):
+>   ASoC: cs35l56: Rework IRQ allocation
+>   ASoC: cs35l56: Allow a wider range for reset pulse width
+>   ASoC: cs35l56: Wait for init_complete in cs35l56_component_probe()
+>   ASoC: cs35l56: Remove redundant dsp_ready_completion
+>   ASoC: cs35l56: Don't return a value from cs35l56_remove()
 > 
+> [...]
 
 Applied to
 
@@ -102,8 +108,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: wm8753: Convert to dtschema
-      commit: 59de6c38d713bb16760cc2612a79bc373f79bc6b
+[1/5] ASoC: cs35l56: Rework IRQ allocation
+      commit: 7d72351a4ef6e1e763bccc24d43c44ffbe1a1555
+[2/5] ASoC: cs35l56: Allow a wider range for reset pulse width
+      commit: b82396122b028a07ce2977e3f33123d7ab526d91
+[3/5] ASoC: cs35l56: Wait for init_complete in cs35l56_component_probe()
+      commit: 440c2d38950f738d7a35d3d29533728e74586d54
+[4/5] ASoC: cs35l56: Remove redundant dsp_ready_completion
+      commit: 4be476830bf96c0095e4e1acdfc12081aa0fb165
+[5/5] ASoC: cs35l56: Don't return a value from cs35l56_remove()
+      commit: 9ed4c762e214a6592184d0dd65b6db86ad30e6d5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
