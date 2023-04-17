@@ -4,111 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFF2EC77B75
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Apr 2023 11:53:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0E24C6FD18
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Apr 2023 11:53:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7DA4E7E;
-	Tue, 18 Apr 2023 13:52:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7DA4E7E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F1AFE8A;
+	Tue, 18 Apr 2023 13:52:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F1AFE8A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681818792;
-	bh=ac4/gKT5b6/9noaaMeqV09+9MVanu6JqxbGBWbuNNtw=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=lE6JLsuAnS5o712U2oDu+W9OyvGCDi4apapnHXlZExeC/gMr5KFcuSfVHdp5MPys1
-	 p9zIDpqC6a02DxxVESqx3HkK+X0lIf8EJBI4HJITE8Yyep/0MKi+5jLbzMSK4K/3ie
-	 MvNVtjWrPRnS+orCd8pQKlOuWP7f9ontCFdOMmbo=
+	s=default; t=1681818798;
+	bh=0eVlo6jd0rQ5jcQF9g7wri9bN9+CZolErRabb7snJfc=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Zeu4/ieRQyBC9uB26c/lKAjPyAVGvNEX0dR+YQufV+K8eCCtDiiLnj+Fg5Hav4VbE
+	 Kjcfm00fYW3VAvwSKDpVnvGO9Y0rrtC4bFEpC2fjqM0gnEXhWzZ1T/u32HtpgFlb06
+	 DPn3MUBHce/RVsnGhjOpuH4j39y79Kalt0AfCkEg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C62C5F80510;
-	Tue, 18 Apr 2023 13:51:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83E09F80542;
+	Tue, 18 Apr 2023 13:51:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DE38F8032B; Sat, 15 Apr 2023 22:13:11 +0200 (CEST)
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com
- [IPv6:2607:f8b0:4864:20::430])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 68DE5F80266; Mon, 17 Apr 2023 15:33:02 +0200 (CEST)
+Received: from exchange.fintech.ru (e10edge.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DF5D4F800E5
-	for <alsa-devel@alsa-project.org>; Sat, 15 Apr 2023 22:13:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF5D4F800E5
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=pnICfcRM
-Received: by mail-pf1-x430.google.com with SMTP id
- d2e1a72fcca58-63b7588006cso429554b3a.3
-        for <alsa-devel@alsa-project.org>;
- Sat, 15 Apr 2023 13:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681589581; x=1684181581;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ac4/gKT5b6/9noaaMeqV09+9MVanu6JqxbGBWbuNNtw=;
-        b=pnICfcRMC5zJW6zd7L5SIzJmxGA0+FF4/T5vl51mB4zb0osPEA2/WFwZfE5RS0yBh/
-         GqA8se5FnzIbLPqtSA4LUi/hmtRI/nrqVdAJT+S4O7O6bK37IWv9ZBvgvse9C+YeVqEo
-         l4QAaVgFhRY1/i86dM1I7lZzC16Eqg7rrynnarRsP+OGvjEALlcoN7iBoBhoZz2WK8lx
-         5sYsguCOuUDIxrURqo1T7NOwh2eyAymmYVb0d/NiYgTN0l+QOiXaEYKLLqm/8pe8Y2zl
-         vnm2T22MolSYytmyUn+Mm8td5hi6yMYBRXyY5TNeYI9Zl3b3VmS1PGoLNDgl7iOAX0GJ
-         P+hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681589581; x=1684181581;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ac4/gKT5b6/9noaaMeqV09+9MVanu6JqxbGBWbuNNtw=;
-        b=F+p6X6mdZHSU8q7HoBQIGyRfhNp2tGv6+jbd5kOoXMl3tUK4WqwijlzCybw0/ezXp8
-         vXTBVMsXXQCRmQ8k2gicVCJGl0Ik6fEq5pNtILy1zNATzVBKio3rwLnJ6Sd+oOjkYoaY
-         VN44Iz1tMjx9/lqUhNxIvTMIT+MoVu9/cNLQj9nmqBYJq+Hul/DxG3aPk4DdzR9GSA8r
-         sIgjsHcwuRxAiEJ0qSwJtMpQ3aTAU5c4BqhX/e/m+BDseJAwaiiG/FX1IaGzle36kgQA
-         msU4Sr/AOP0jrcH2N3TSEX6J3KenH/D9IFjWxfxg6an5PJWK2YSSF6Rv+Jox7PLi9DEH
-         /tiw==
-X-Gm-Message-State: AAQBX9e04CS07Z8s0U5hpsWyDjDxTG7h2/pW5vcjfl9BSsWKu7uXI/F7
-	zMNQc7fJSh9urwRcdsqyPaU=
-X-Google-Smtp-Source: 
- AKy350aTASezSjdDMkmYoTpUTGQAoa9iIV+w98sIMwNqUN9M6lufnA0E4sPt38Ew7iNabsq/kmWLxg==
-X-Received: by 2002:a05:6a00:1a13:b0:63b:7954:9881 with SMTP id
- g19-20020a056a001a1300b0063b79549881mr6274176pfv.28.1681589580927;
-        Sat, 15 Apr 2023 13:13:00 -0700 (PDT)
-Received: from localhost.localdomain ([2402:e280:218d:82:ae97:7cb6:b12a:54f5])
-        by smtp.gmail.com with ESMTPSA id
- x24-20020a62fb18000000b0062de9ef6915sm4926228pfm.216.2023.04.15.13.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Apr 2023 13:12:59 -0700 (PDT)
-From: Saalim Quadri <danascape@gmail.com>
-To: krzysztof.kozlowski@linaro.org
-Subject: [PATCH] ASoC: dt-bindings: wm8753: Convert to dtschema
-Date: Sat, 15 Apr 2023 20:12:46 +0000
-Message-Id: <20230415201246.1200683-1-danascape@gmail.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <5d629ff3-c5ae-bd00-e70d-8c0d58365ce3@linaro.org>
-References: <5d629ff3-c5ae-bd00-e70d-8c0d58365ce3@linaro.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 831E8F8023A
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2023 15:32:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 831E8F8023A
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 17 Apr
+ 2023 16:32:46 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 17 Apr
+ 2023 16:32:46 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: Shengjiu Wang <shengjiu.wang@gmail.com>
+Subject: [PATCH] ASoC: fsl_asrc_dma: fix potential null-ptr-deref
+Date: Mon, 17 Apr 2023 06:32:42 -0700
+Message-ID: <20230417133242.53339-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MailFrom: danascape@gmail.com
+Content-Type: text/plain
+X-Originating-IP: [10.0.253.138]
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
+X-MailFrom: n.zhandarovich@fintech.ru
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: UZZXVKVRAZOTLOPM2LC2WFTXPIMRH76P
-X-Message-ID-Hash: UZZXVKVRAZOTLOPM2LC2WFTXPIMRH76P
-X-Mailman-Approved-At: Tue, 18 Apr 2023 11:51:29 +0000
-CC: alsa-devel@alsa-project.org, broonie@kernel.org, danascape@gmail.com,
- daniel.baluta@nxp.com, devicetree@vger.kernel.org,
- krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
- robh+dt@kernel.org
+Message-ID-Hash: 5I4LBYLHE7COEOENSLRE5PEMFK2ODS24
+X-Message-ID-Hash: 5I4LBYLHE7COEOENSLRE5PEMFK2ODS24
+X-Mailman-Approved-At: Tue, 18 Apr 2023 11:51:38 +0000
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
+ Natalia Petrova <n.petrova@fintech.ru>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UZZXVKVRAZOTLOPM2LC2WFTXPIMRH76P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5I4LBYLHE7COEOENSLRE5PEMFK2ODS24/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,21 +80,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> You choose unusual bindings to convert to DT schema. It is fine but
-> honestly, less useful, with limited impact. This is an old, 12 year old
-> binding without users. Maybe it would be even removed by now...
-> I suggest converting ones which have a real impact - have users in DTS.
-> Otherwise you will be putting quite a lot of effort for no real gains...
-> because what is the difference between this binding being TXT and DT schema?
+dma_request_slave_channel() may return NULL which will lead to
+NULL pointer dereference error in 'tmp_chan->private'.
 
-I am converting these bindings as part of my GSoC project where I need to convert
-as many files as possible during the given tenure, I am slowly trying to read files
-in other subsystems too and will push patches for other subsystems too.
-Is it fine?
+Correct this behaviour by, first, switching from deprecated function
+dma_request_slave_channel() to dma_request_chan(). Secondly, enable
+sanity check for the resuling value of dma_request_chan().
+Also, fix description that follows the enacted changes and that
+concerns the use of dma_request_slave_channel().
 
-About the part where you suggested to convert the txt into a single YAML, shall I
-continue working on them? As I can see Mark merged the previous 2 patches to linux-next
+Fixes: 706e2c881158 ("ASoC: fsl_asrc_dma: Reuse the dma channel if available in Back-End")
+Co-developed-by: Natalia Petrova <n.petrova@fintech.ru>
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+ sound/soc/fsl/fsl_asrc_dma.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-Kind Regards,
-
-Saalim
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index 3b81a465814a..05a7d1588d20 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -209,14 +209,19 @@ static int fsl_asrc_dma_hw_params(struct snd_soc_component *component,
+ 		be_chan = soc_component_to_pcm(component_be)->chan[substream->stream];
+ 		tmp_chan = be_chan;
+ 	}
+-	if (!tmp_chan)
+-		tmp_chan = dma_request_slave_channel(dev_be, tx ? "tx" : "rx");
++	if (!tmp_chan) {
++		tmp_chan = dma_request_chan(dev_be, tx ? "tx" : "rx");
++		if (IS_ERR(tmp_chan)) {
++			dev_err(dev, "failed to request DMA channel for Back-End\n");
++			return -EINVAL;
++		}
++	}
+ 
+ 	/*
+ 	 * An EDMA DEV_TO_DEV channel is fixed and bound with DMA event of each
+ 	 * peripheral, unlike SDMA channel that is allocated dynamically. So no
+ 	 * need to configure dma_request and dma_request2, but get dma_chan of
+-	 * Back-End device directly via dma_request_slave_channel.
++	 * Back-End device directly via dma_request_chan.
+ 	 */
+ 	if (!asrc->use_edma) {
+ 		/* Get DMA request of Back-End */
