@@ -4,78 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B6AEC77B70
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Apr 2023 14:16:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA744C77B76
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Apr 2023 14:16:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07BFFBC0;
-	Mon, 17 Apr 2023 16:15:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07BFFBC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78B15DF3;
+	Mon, 17 Apr 2023 16:16:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78B15DF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681740985;
-	bh=tYI9XY6ZSj8vDuP9ew3r8r85M7hkzrlK6IHH8D+MwSw=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=VvV4kK8NOSAC55y9Si3A0Ovayya3X9H8l/8GkXNIbdlq1NXNP7zeQ7oujD6E6iLLL
-	 Q/0KzXRXhI5WdCi68iaEjHpBKFmbQrINvBP1cUkWMA/KQkIxi733Inc5XFQsueJKX+
-	 IZ3hxo3IwuYjdTWE+eXwLDDeODpkPPcfQ9OdeR6E=
+	s=default; t=1681741010;
+	bh=ft0SiYRyQvLooirrWYeXmQFGpIOdf5+zsXqG908/Fe0=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=qSgYPPpvsxEyJcPF++FjTMMJ3kB8IbhSxqfgw1hCid5j4q3Dszt/RZn0glkTlyXth
+	 JYXHLF1FfPq7c49LO84qM1KEgwhyG16PR6xSilKOsz0jIZC4dkWiZdCTfc1emCVpu8
+	 PP0W3AQnd7i03vtZRB7OTBhNfzman8nXu/nGTjy0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40275F8049C;
-	Mon, 17 Apr 2023 16:15:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD888F80529;
+	Mon, 17 Apr 2023 16:15:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47EE6F804F2; Mon, 17 Apr 2023 16:15:04 +0200 (CEST)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
- [IPv6:2a00:1450:4864:20::62e])
+	id 2F0D7F8049C; Mon, 17 Apr 2023 16:15:08 +0200 (CEST)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
+ [IPv6:2a00:1450:4864:20::532])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1B333F80212
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2023 16:14:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B333F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id 957E6F8025D
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2023 16:15:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 957E6F8025D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=w/93HIzA
-Received: by mail-ej1-x62e.google.com with SMTP id u3so12521450ejj.12
+ header.s=google header.b=YATFDIf1
+Received: by mail-ed1-x532.google.com with SMTP id
+ 4fb4d7f45d1cf-5067736607fso3080458a12.0
         for <alsa-devel@alsa-project.org>;
- Mon, 17 Apr 2023 07:14:57 -0700 (PDT)
+ Mon, 17 Apr 2023 07:15:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1681740896; x=1684332896;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=l8OjZCSSC//phSuWYvfawiHJ89Dsp2AaxdfcVlgHVfA=;
-        b=w/93HIzAuP5t6l+IMz0tDo3YXGzXWUJfwpErdrbZ2jkDH3nOltQcKZOYn6MZ1Ylvl1
-         YLolZ3KjnWSSIntWx1g4yDPgdjiqT6I2zzmCX5KJQaQXaq7L1KeNKa/3w2mWAegaasjt
-         GWU8XrzdE0Pru49Zd1WhwPo+2oynrKKVG5jGGjYX7k30SB0aWL2mm0mc/6absdit0rpU
-         BBAP1E3hWtowRNEii0j1CYtHHW29bvRE0778vJ/k0HYCuNJqW5M39iKouODl141uyHqW
-         6pLzU7eyxgPEr7q/m3ltm80htp1o9qRxVwIM7gIQTCZ35T61WGr6juhm5kInRcEn1L7g
-         Lr1Q==
+        d=linaro.org; s=google; t=1681740899; x=1684332899;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QQmIdP3RJKa4pxnl8xRRCwok/HaLYslpm8yDZiO67M8=;
+        b=YATFDIf1tAx0aaKR/kVjChTDSUWOUhhDgFiTENafwW1rgezl7ILWfZWDw7oLDEc87Z
+         WAeF8koTDqiRrZERt0r5ffbpmiST9jLq98jNACPzcNl8xc9i1n6uTg9yHpYkniMzqqOb
+         aD+QzPlJ8NBVDHP02Frk2E6BEEKg2xV+qMvhMbWghNmVHZyfRwU4g23CMLjuDATcepUT
+         oOLNzDjPSi0ISjl6KGii894jUlFkCB/i10NRV2OYEUh90uc7zKQb+cGedzuwuJ9ExXrj
+         dlFdJzyayYN8rsX0TE55PsClsyyjgAHlMZx98V9EM2F2IC6D4G5Su4RsT0QStuq0wxfI
+         WGgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681740896; x=1684332896;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l8OjZCSSC//phSuWYvfawiHJ89Dsp2AaxdfcVlgHVfA=;
-        b=hFDrFXK+e9QeCp3uSa7hF1k6j5fiapRDTt8HG30GKyz8Krqx7zUntIDDsADVOzOaDT
-         4MhIejmXME6QY/Jg15vmWVeMqTupqDEYeNQJs+AIPwORS1Yhwf+3n11wf2ce+xxoSk1i
-         imeEtmX7b8Ti+JuLoTPTkqovL5vIofFXuW5dEee8OvOsm7Z4PBT4xPG2nBgOGqmEwJfa
-         5NC9XPUtud7m7FO1D8ikbe7iv9iLWOuItrD0DL030ozPmco2XlSAHjjBfoetTHimnx4x
-         Iko0XicPy7evk3pNhxe28sBcSJYt6bT0R4BDo00OggN+oAR0SJuZjoBFuoji80MjPHrV
-         rE3Q==
-X-Gm-Message-State: AAQBX9cVe0V1CifHlYWC+h8kA3JVgVQu5oQiS1c7CZVPsLi8fW7ye5ot
-	RHLfWcxU4iKjBCZbqkCli87usA==
+        d=1e100.net; s=20221208; t=1681740899; x=1684332899;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QQmIdP3RJKa4pxnl8xRRCwok/HaLYslpm8yDZiO67M8=;
+        b=KkU0REG++ku3pppKtnouub6XYQHDPQkjpALToGibg0jUX0lO3RHGPrWTHRVxbJ2LfH
+         EQ3mriCnSSFESXh4qdxCI/DoSpedcc95SYsduwhgO2/795aKXhMopc/mRSOmlB1yjpCD
+         Y0WSGXGTCYkKipu73Semu51zshB1oeaPNQpGv0yEhSJzUOnFXSpSRmdxowAA5n//k/C3
+         piilbrk11BBV24clm72EsuVTb5RCJYYM9TtUW/leEeo2OYo0xHrPAE3Wgv4Be0GpGqrz
+         YXM8jsOhagya2WdNy9P0vGO+n511h9LflsqXjQGeZvpy3Pg9ubZejTQvYSQUj1kjJWho
+         MLmw==
+X-Gm-Message-State: AAQBX9fAUWBjKZi9dZFu+T0lwEniR1rfC7IRxsv+s1YQTu1ccMYhB4+M
+	KAgIaGh1tm5EY6fNJ1lIHf5WVw==
 X-Google-Smtp-Source: 
- AKy350a2bmRei9A0qs2pgDzWdwVvj/XCBSxX7OL18aPrP8Z+ZGBhJJ5K8guxgj+yHghapBSOeIWGQg==
-X-Received: by 2002:a17:907:7e9c:b0:94f:335b:4da0 with SMTP id
- qb28-20020a1709077e9c00b0094f335b4da0mr6563124ejc.51.1681740895939;
-        Mon, 17 Apr 2023 07:14:55 -0700 (PDT)
+ AKy350bRPznj0J6IQHjCFui2MZsj2ItlqRKRcsBx6mlmVaNEguH3nVSNRhQE5soAROe85/63hO39ow==
+X-Received: by 2002:aa7:c90b:0:b0:506:7385:9653 with SMTP id
+ b11-20020aa7c90b000000b0050673859653mr13444306edt.39.1681740898824;
+        Mon, 17 Apr 2023 07:14:58 -0700 (PDT)
 Received: from krzk-bin.. ([2a02:810d:15c0:828:96aa:60eb:e021:6511])
         by smtp.gmail.com with ESMTPSA id
- q6-20020a056402040600b004f9e6495f94sm5832034edv.50.2023.04.17.07.14.54
+ q6-20020a056402040600b004f9e6495f94sm5832034edv.50.2023.04.17.07.14.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Apr 2023 07:14:55 -0700 (PDT)
+        Mon, 17 Apr 2023 07:14:58 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
@@ -85,14 +88,16 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Takashi Iwai <tiwai@suse.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] ASoC: codecs: wcd9335: Simplify with dev_err_probe
-Date: Mon, 17 Apr 2023 16:14:50 +0200
-Message-Id: <20230417141453.919158-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 3/4] ASoC: codecs: wcd934x: Simplify &pdev->dev in probe
+Date: Mon, 17 Apr 2023 16:14:52 +0200
+Message-Id: <20230417141453.919158-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230417141453.919158-1-krzysztof.kozlowski@linaro.org>
+References: <20230417141453.919158-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OZFHZG7MPDUJNZNDU44VK3T2UDMOYP6H
-X-Message-ID-Hash: OZFHZG7MPDUJNZNDU44VK3T2UDMOYP6H
+Message-ID-Hash: PHGS5CWLL66NIQZGLBWSXUO6FEQVANQT
+X-Message-ID-Hash: PHGS5CWLL66NIQZGLBWSXUO6FEQVANQT
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OZFHZG7MPDUJNZNDU44VK3T2UDMOYP6H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PHGS5CWLL66NIQZGLBWSXUO6FEQVANQT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,67 +120,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Code can be a bit simpler with dev_err_probe().
+The probe already stores pointer to &pdev->dev, so use it to make the
+code a bit easier to read.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/wcd9335.c | 27 +++++++++++----------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
+ sound/soc/codecs/wcd934x.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index d2548fdf9ae5..8bf3510a3ea3 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -5138,20 +5138,17 @@ static int wcd9335_irq_init(struct wcd9335_codec *wcd)
- 	 * INTR2 is a subset of first interrupt sources MAD, VBAT, and SVA
- 	 */
- 	wcd->intr1 = of_irq_get_byname(wcd->dev->of_node, "intr1");
--	if (wcd->intr1 < 0) {
--		if (wcd->intr1 != -EPROBE_DEFER)
--			dev_err(wcd->dev, "Unable to configure IRQ\n");
--
--		return wcd->intr1;
--	}
-+	if (wcd->intr1 < 0)
-+		return dev_err_probe(wcd->dev, wcd->intr1,
-+				     "Unable to configure IRQ\n");
+diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+index 56487ad2f048..c0d1fa36d841 100644
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -5892,12 +5892,12 @@ static int wcd934x_codec_parse_data(struct wcd934x_codec *wcd)
  
- 	ret = devm_regmap_add_irq_chip(wcd->dev, wcd->regmap, wcd->intr1,
- 				 IRQF_TRIGGER_HIGH, 0,
- 				 &wcd9335_regmap_irq1_chip, &wcd->irq_data);
- 	if (ret)
--		dev_err(wcd->dev, "Failed to register IRQ chip: %d\n", ret);
-+		return dev_err_probe(wcd->dev, ret, "Failed to register IRQ chip\n");
+ static int wcd934x_codec_probe(struct platform_device *pdev)
+ {
+-	struct wcd934x_ddata *data = dev_get_drvdata(pdev->dev.parent);
+-	struct wcd934x_codec *wcd;
+ 	struct device *dev = &pdev->dev;
++	struct wcd934x_ddata *data = dev_get_drvdata(dev->parent);
++	struct wcd934x_codec *wcd;
+ 	int ret, irq;
  
--	return ret;
-+	return 0;
- }
+-	wcd = devm_kzalloc(&pdev->dev, sizeof(*wcd), GFP_KERNEL);
++	wcd = devm_kzalloc(dev, sizeof(*wcd), GFP_KERNEL);
+ 	if (!wcd)
+ 		return -ENOMEM;
  
- static int wcd9335_slim_probe(struct slim_device *slim)
-@@ -5207,17 +5204,15 @@ static int wcd9335_slim_status(struct slim_device *sdev,
- 	slim_get_logical_addr(wcd->slim_ifc_dev);
- 
- 	wcd->regmap = regmap_init_slimbus(sdev, &wcd9335_regmap_config);
--	if (IS_ERR(wcd->regmap)) {
--		dev_err(dev, "Failed to allocate slim register map\n");
--		return PTR_ERR(wcd->regmap);
--	}
-+	if (IS_ERR(wcd->regmap))
-+		return dev_err_probe(dev, PTR_ERR(wcd->regmap),
-+				     "Failed to allocate slim register map\n");
- 
- 	wcd->if_regmap = regmap_init_slimbus(wcd->slim_ifc_dev,
- 						  &wcd9335_ifc_regmap_config);
--	if (IS_ERR(wcd->if_regmap)) {
--		dev_err(dev, "Failed to allocate ifc register map\n");
--		return PTR_ERR(wcd->if_regmap);
--	}
-+	if (IS_ERR(wcd->if_regmap))
-+		return dev_err_probe(dev, PTR_ERR(wcd->if_regmap),
-+				     "Failed to allocate ifc register map\n");
- 
- 	ret = wcd9335_bring_up(wcd);
- 	if (ret) {
 -- 
 2.34.1
 
