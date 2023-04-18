@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACB2CC77B78
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Apr 2023 16:23:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3014C6FD18
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Apr 2023 16:23:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26EC8E82;
-	Tue, 18 Apr 2023 18:22:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26EC8E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id DACEBE9F;
+	Tue, 18 Apr 2023 18:22:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DACEBE9F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681835005;
-	bh=sEurxhubJV3nON51IQZqLGOw26j1V6FgvthN0k69le8=;
+	s=default; t=1681835025;
+	bh=RKq+8OHiBrOyLAi6BWiPxp9ZIBhsklW6Kv+GwshIKDc=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=VdVx85vxSTFKLRrGyVfXpqkn/jqoaXvtAYrMK9wPEsht+00SeePHf/dR439RhWX89
-	 moMYd7MX/GR8Y06ePPl6EEjml3l7/yntZzTqmn4iPSOs5QlNEVmQmHgvl6dNyvtXyW
-	 TXpuqIEAe5/SM1rriimfShnmqv5gZdBdbbhojtxI=
+	b=iV8IUjDNZEC8l3Hn2jx5Sbyd1hZd8KucAJmXBv2RimAvf+TGvjNUiExxKppQnpGAb
+	 ECiT2bLCV+z1l9hN/qHjEGm0wchg0Ga/RpJ4Mj6EzCUvUe7pKvNKVwUWcZ6LRbM3tn
+	 R5DWVWzydaXCYZLa6UPNocgYNxrOmmafzNnwhm9E=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CBD3F8052E;
-	Tue, 18 Apr 2023 18:21:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C70FF80551;
+	Tue, 18 Apr 2023 18:21:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2E071F8019B; Tue, 18 Apr 2023 18:21:34 +0200 (CEST)
+	id B17D9F8019B; Tue, 18 Apr 2023 18:21:34 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 73637F80212
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2023 18:21:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73637F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id 749A1F80155
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2023 18:21:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 749A1F80155
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jfBEGMl5
+ header.s=k20201202 header.b=cCupsJ6z
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 52B0B63670;
-	Tue, 18 Apr 2023 16:21:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72A19C4339B;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2A49363527;
 	Tue, 18 Apr 2023 16:21:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49589C4339C;
+	Tue, 18 Apr 2023 16:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1681834889;
-	bh=sEurxhubJV3nON51IQZqLGOw26j1V6FgvthN0k69le8=;
+	s=k20201202; t=1681834887;
+	bh=RKq+8OHiBrOyLAi6BWiPxp9ZIBhsklW6Kv+GwshIKDc=;
 	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=jfBEGMl5amAy07pYzf66+W/0cbQfqJp+8j9IGzcAsovNiuHUmS7UZV4kZ1U6UHVPS
-	 qrhYixAKvS93OHrIjNL+Bykm2oytk0oCezCJNMxKw8BOT6sEq0JFblpYtAoNQQz82q
-	 fTWJ5gYVG3BAHnBgR2slYPgYkrcwNLbYWFGwIFXyOt4ReXUD7s2lDTdjh32L/CPOJb
-	 B/W+QIVxu1DA54PMzXHCoyAphlCpx+pd7cwMukS2z6y80iu+Hto/7+nsmXzONuKurT
-	 SNKJ3cKo52auL1Jzj+0c9Ki7dn79r2Qn2Avc7VzIlm9d9OwWzgq1BPLCmYBqKDyt9H
-	 LD8FRoAMqHnYQ==
+	b=cCupsJ6zwdXy+BDF9FUeePW5WTgEd+f/JSA+xOLP/v3zEPZbWFrKp3CxNQ5R7VOzo
+	 eVMlA5V7G44uUSDSPJVijCctaZ2H9UXIcn/cj8ghPrgrnfi/1OfVH9X4w8ZFPi4yBX
+	 egrZFUCo0IpsoM/BSt1LWWSywZ8wk9kacQWrosZ0ICKv451evk9LFMX/EZNHbeTsZE
+	 MSaWx4EoCTpSoBdbV41CzOP3h8Zijxi6v6Klsig/eBySGU4vs1x6XRJ/bGeiz4V+Nj
+	 bnwQTJKj1kClxmBLtioIVknGEkg3M8M/R5bqsw5eq6jIGPil+gaFMoyHxIB2Isoqxv
+	 J30pp/YXJt77w==
 From: Mark Brown <broonie@kernel.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230417141453.919158-1-krzysztof.kozlowski@linaro.org>
-References: <20230417141453.919158-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH 1/4] ASoC: codecs: wcd9335: Simplify with
+In-Reply-To: <20230418074630.8681-1-krzysztof.kozlowski@linaro.org>
+References: <20230418074630.8681-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH v2 1/4] ASoC: codecs: wcd9335: Simplify with
  dev_err_probe
-Message-Id: <168183488717.87933.2105607240342604934.b4-ty@kernel.org>
-Date: Tue, 18 Apr 2023 17:21:27 +0100
+Message-Id: <168183488500.87933.6599641233526402855.b4-ty@kernel.org>
+Date: Tue, 18 Apr 2023 17:21:25 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-00303
-Message-ID-Hash: ZSYJXSGY5VOBESZRK73QGKG3TLZ5U5X2
-X-Message-ID-Hash: ZSYJXSGY5VOBESZRK73QGKG3TLZ5U5X2
+Message-ID-Hash: YUIWD7M7PNQTQOPLC6BDRXN52O74LMGW
+X-Message-ID-Hash: YUIWD7M7PNQTQOPLC6BDRXN52O74LMGW
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZSYJXSGY5VOBESZRK73QGKG3TLZ5U5X2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YUIWD7M7PNQTQOPLC6BDRXN52O74LMGW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,8 +93,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 17 Apr 2023 16:14:50 +0200, Krzysztof Kozlowski wrote:
-> Code can be a bit simpler with dev_err_probe().
+On Tue, 18 Apr 2023 09:46:27 +0200, Krzysztof Kozlowski wrote:
+> Replace dev_err() in probe() path with dev_err_probe() to:
+> 1. Make code a bit simpler and easier to read,
+> 2. Do not print messages on deferred probe.
 > 
 > 
 
@@ -104,8 +106,12 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: codecs: wcd9335: Simplify with dev_err_probe
-      commit: 67380533d450000699848e292d20ec18d0321f0e
+[2/4] ASoC: codecs: wcd934x: Simplify with dev_err_probe
+      commit: fa92f4294283cc7d1f29151420be9e9336182518
+[3/4] ASoC: codecs: wcd934x: Simplify &pdev->dev in probe
+      commit: 92864de45c3e445419d1e99e3a409469a5f3ef57
+[4/4] ASoC: codecs: wcd938x: Simplify with dev_err_probe
+      commit: 60ba2fda5280528e70fa26b44e36d1530f6d1d7e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
