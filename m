@@ -4,86 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3FC6C6FD18
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Apr 2023 16:24:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53780C77B7D
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Apr 2023 16:27:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65C51E8A;
-	Tue, 18 Apr 2023 18:23:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65C51E8A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 422A5E84;
+	Tue, 18 Apr 2023 18:26:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 422A5E84
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681835049;
-	bh=4euNAmgm9FS8d6VwrBA6cQTwZjT2IJjY+8n8hbkSGpE=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1681835253;
+	bh=QZ4JzFP7rUGbI9Qp4WnBpRWdImLCng/fQeboSL5NIl0=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SrdDcrKTSRo8m2GyCSylNImewcX3eVpmV7VqCJamw3K8ov9kQ7nViSSZBacA3Ygop
-	 kA5MZx/aGGeTbA+twGuyRQsYLvhRBn8vWv6+YPMGHKrnNrP7Wahy+K6E61QGaeRj7O
-	 13F6p566hspON1JGouTkGXpG2DhUYs7m9uwTrr3Q=
+	b=A4GqJq1uCPleYTIgyoj5wfnWD3MW4LVlE8dxcB5Bb0co4EKs92oF6Z7RZR1rHzo1G
+	 fhDoptH5gSFmo/Lj0TW7l8nFIShXAWTEOdv5Jo+kTaIRue7p1tIZTtJ6rQo1wh1nfM
+	 JDwirF8RDbS3KhjI6Tg4vzGRTCRscUlPnSjhdyV8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 305A2F80558;
-	Tue, 18 Apr 2023 18:21:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01A1DF80155;
+	Tue, 18 Apr 2023 18:26:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93F1BF80155; Tue, 18 Apr 2023 18:21:35 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 6FAC1F80155; Tue, 18 Apr 2023 18:26:15 +0200 (CEST)
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com
+ [209.85.161.47])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4D3D8F800AC
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2023 18:21:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D3D8F800AC
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=e0WOScVP
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 6237D6151F;
-	Tue, 18 Apr 2023 16:21:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0379C433EF;
-	Tue, 18 Apr 2023 16:21:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1681834878;
-	bh=4euNAmgm9FS8d6VwrBA6cQTwZjT2IJjY+8n8hbkSGpE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=e0WOScVPcE7a0ZNf8vvYDaCDczzgU1XUYxV7eCcuZSE6L02OWa089SDr60QJLIo+a
-	 mNU7MB/1IHUXpK52zqG3n7Hv2txlxoOwQXXHS7wI5ZK8qJaxQTn3RtWjwWhPBSy5zN
-	 oCgWti4guTp22n9jfTNgC3PQ/opekhb6F6JjGZ+afAsoRWktKLcUwN5NVnyBIY/gqo
-	 IoXHgRcUFDl+ErJCMLfHI3Olpxa7HOnTZQiwUQUcjdLUcdXfyOB1vP7MT4i8V14RUM
-	 BNU5PxtdqNCDga6WGKtTTCPROeE3/cUPX/dwFSsnACc6r+cY6nRLvuAxJWNtrvyuyW
-	 ftHIHXE3DfLWg==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, daniel.baluta@gmail.com,
- Saalim Quadri <danascape@gmail.com>
-In-Reply-To: <20230417204323.137681-1-danascape@gmail.com>
-References: <20230417204323.137681-1-danascape@gmail.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: wm8728: Convert to dtschema
-Message-Id: <168183487655.87933.6597506413439051128.b4-ty@kernel.org>
-Date: Tue, 18 Apr 2023 17:21:16 +0100
+	by alsa1.perex.cz (Postfix) with ESMTPS id EF073F800F8
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2023 18:26:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF073F800F8
+Received: by mail-oo1-f47.google.com with SMTP id
+ 006d021491bc7-541af0d27d8so304198eaf.3
+        for <alsa-devel@alsa-project.org>;
+ Tue, 18 Apr 2023 09:26:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681835159; x=1684427159;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GALPTZ5rs1mIduJF7Jl53u7XfsfluO0jc0nwk+zxYao=;
+        b=l1JLFFl2+hq7OqTIhH5h7DHzvmDUe+fAOX8wZfgqtinJfk4W4sqqkHabW8njQu8H7x
+         kPPcqa6lkAKg3Dou8My2UrjvKTfsMdXsxfZekIQ1iGDCukQvlsOYco2+CvylYRBjO33n
+         T928kxQUePbwrSmtNFNbTx+FuojqzWBhrWmiivDsXgoHU+/rAUFRu22Xl1elUzuzEwZc
+         iJlRHsSTYyZKzWUXd+//YsfwVX6LJEUU8WBKPW0S9bAFEHpE8YUxaXlH+fqRYnXt+Nd1
+         ORgBIkArajkgs4l+i4tILqPl3r8eZaDLwUUVEZor87nmqceaizNHQpulWEPe99623p2r
+         h/Ng==
+X-Gm-Message-State: AAQBX9e0fnhvAphtb/LSHmwbh40SgQbwK7NCXkOGeaxaocu5eXCKn4h1
+	weUWHQayrJXxS63GrhLinA==
+X-Google-Smtp-Source: 
+ AKy350aqiwGvkm3PEtoK/oiOYt0ohBeRtozgRcDrXi5U4KbApLSinkvRa0UgAiJEnhzYkN4LUDI3oQ==
+X-Received: by 2002:a05:6871:149:b0:169:dcba:1ec9 with SMTP id
+ z9-20020a056871014900b00169dcba1ec9mr1623622oab.41.1681835158903;
+        Tue, 18 Apr 2023 09:25:58 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id
+ r204-20020a4a37d5000000b00541fbbbcd31sm1737771oor.5.2023.04.18.09.25.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Apr 2023 09:25:58 -0700 (PDT)
+Received: (nullmailer pid 1808654 invoked by uid 1000);
+	Tue, 18 Apr 2023 16:25:57 -0000
+Date: Tue, 18 Apr 2023 11:25:57 -0500
+From: Rob Herring <robh@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH] ALSA: Use of_property_read_bool() for boolean properties
+Message-ID: <20230418162557.GD1764573-robh@kernel.org>
+References: <20230310144734.1546587-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-00303
-Message-ID-Hash: Q53SXHHYELQORUD6TI2HL5Y5CGQT5OBO
-X-Message-ID-Hash: Q53SXHHYELQORUD6TI2HL5Y5CGQT5OBO
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230310144734.1546587-1-robh@kernel.org>
+Message-ID-Hash: 3XP7WFSENMOD2KHHKCZ4XY5E2FNHYOMU
+X-Message-ID-Hash: 3XP7WFSENMOD2KHHKCZ4XY5E2FNHYOMU
+X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+CC: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q53SXHHYELQORUD6TI2HL5Y5CGQT5OBO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3XP7WFSENMOD2KHHKCZ4XY5E2FNHYOMU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,36 +101,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 17 Apr 2023 20:43:23 +0000, Saalim Quadri wrote:
-> Convert the WM8728 audio CODEC bindings to DT schema
+On Fri, Mar 10, 2023 at 08:47:33AM -0600, Rob Herring wrote:
+> It is preferred to use typed property access functions (i.e.
+> of_property_read_<type> functions) rather than low-level
+> of_get_property/of_find_property functions for reading properties.
+> Convert reading boolean properties to to of_property_read_bool().
 > 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  sound/ppc/tumbler.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Ping!
+
 > 
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: dt-bindings: wm8728: Convert to dtschema
-      commit: 3da9d149eb9f51560163bb0c13a245fd0ba74c6e
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+> diff --git a/sound/ppc/tumbler.c b/sound/ppc/tumbler.c
+> index 6c882873b344..12f1e10db1c4 100644
+> --- a/sound/ppc/tumbler.c
+> +++ b/sound/ppc/tumbler.c
+> @@ -1361,7 +1361,7 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
+>  
+>  	for_each_child_of_node(chip->node, np) {
+>  		if (of_node_name_eq(np, "sound")) {
+> -			if (of_get_property(np, "has-anded-reset", NULL))
+> +			if (of_property_read_bool(np, "has-anded-reset"))
+>  				mix->anded_reset = 1;
+>  			if (of_property_present(np, "layout-id"))
+>  				mix->reset_on_sleep = 0;
+> -- 
+> 2.39.2
+> 
