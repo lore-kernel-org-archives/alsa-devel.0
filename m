@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 378C6C77B75
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Apr 2023 16:23:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACB2CC77B78
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Apr 2023 16:23:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92884E8C;
-	Tue, 18 Apr 2023 18:22:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92884E8C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26EC8E82;
+	Tue, 18 Apr 2023 18:22:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26EC8E82
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681834998;
-	bh=KYDGQ9LC4dPkxsMX1LMYuetVwQ+YdQq+9bWbGBBitMU=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=r8RE+wVcwzmJKXQhkNJa3p9oluo58Lx1/X2PdtHVCrCVdXNyNQ3bsve9v2Hdrze2M
-	 fIhzAKUiNteCB/djK5ynEJ6BLezex7HHVfRr+7u8spuV3XX0ON0C3PK0TrtvqNWA1l
-	 pquF7foOsOqA6ZSu68LApzXSautjYad4YHNfOe8g=
+	s=default; t=1681835005;
+	bh=sEurxhubJV3nON51IQZqLGOw26j1V6FgvthN0k69le8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=VdVx85vxSTFKLRrGyVfXpqkn/jqoaXvtAYrMK9wPEsht+00SeePHf/dR439RhWX89
+	 moMYd7MX/GR8Y06ePPl6EEjml3l7/yntZzTqmn4iPSOs5QlNEVmQmHgvl6dNyvtXyW
+	 TXpuqIEAe5/SM1rriimfShnmqv5gZdBdbbhojtxI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68269F804FC;
-	Tue, 18 Apr 2023 18:21:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CBD3F8052E;
+	Tue, 18 Apr 2023 18:21:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 28DBBF804FC; Tue, 18 Apr 2023 18:21:33 +0200 (CEST)
+	id 2E071F8019B; Tue, 18 Apr 2023 18:21:34 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C4D3F80149
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2023 18:21:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C4D3F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 73637F80212
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2023 18:21:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73637F80212
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=FAjdS1X1
+ header.s=k20201202 header.b=jfBEGMl5
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5C2306364E;
-	Tue, 18 Apr 2023 16:21:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEF6EC4339B;
-	Tue, 18 Apr 2023 16:21:21 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 52B0B63670;
+	Tue, 18 Apr 2023 16:21:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72A19C4339B;
+	Tue, 18 Apr 2023 16:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1681834884;
-	bh=KYDGQ9LC4dPkxsMX1LMYuetVwQ+YdQq+9bWbGBBitMU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=FAjdS1X12XnDLtdc2vxXiUiZEUSoRx5JQwgiqbIyXf5jNtZK+REYZ4mBKDmCmoQv7
-	 0KQmMicHUPbbSHyIqfCjadsugLbUtHK5hG6ze75e48XCs0hBYzs2vlQGEz/NeEI71e
-	 mZT5BYh4uh7RuG4gYtpS5A0risLPIElTJiDQsOi86KTj2r78ALN7wymPglJaVKblWW
-	 Axe0NQA1J4qRT6ZluipdMEvB9XEtGJrz16VypAWyMbgieK6a3kn+G0kgMMsh8ZWgl/
-	 yVAFnvVZfNg7/idwIYz55Oh9jLxw9/CRXRO+7yKAv+IAmnSPzBtEFjL4DTLRlbJAEx
-	 De1HdNSCQZeOA==
+	s=k20201202; t=1681834889;
+	bh=sEurxhubJV3nON51IQZqLGOw26j1V6FgvthN0k69le8=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=jfBEGMl5amAy07pYzf66+W/0cbQfqJp+8j9IGzcAsovNiuHUmS7UZV4kZ1U6UHVPS
+	 qrhYixAKvS93OHrIjNL+Bykm2oytk0oCezCJNMxKw8BOT6sEq0JFblpYtAoNQQz82q
+	 fTWJ5gYVG3BAHnBgR2slYPgYkrcwNLbYWFGwIFXyOt4ReXUD7s2lDTdjh32L/CPOJb
+	 B/W+QIVxu1DA54PMzXHCoyAphlCpx+pd7cwMukS2z6y80iu+Hto/7+nsmXzONuKurT
+	 SNKJ3cKo52auL1Jzj+0c9Ki7dn79r2Qn2Avc7VzIlm9d9OwWzgq1BPLCmYBqKDyt9H
+	 LD8FRoAMqHnYQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, nathan@kernel.org,
- ndesaulniers@google.com, CTLIN0@nuvoton.com, luca.ceresoli@bootlin.com,
- peda@axentia.se, javierm@redhat.com, u.kleine-koenig@pengutronix.de,
- ckeepax@opensource.cirrus.com, Tom Rix <trix@redhat.com>
-In-Reply-To: <20230418120955.3230705-1-trix@redhat.com>
-References: <20230418120955.3230705-1-trix@redhat.com>
-Subject: Re: [PATCH] ASoC: nau8825: fix bounds check for adc_delay
-Message-Id: <168183488148.87933.1461165483240440828.b4-ty@kernel.org>
-Date: Tue, 18 Apr 2023 17:21:21 +0100
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230417141453.919158-1-krzysztof.kozlowski@linaro.org>
+References: <20230417141453.919158-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH 1/4] ASoC: codecs: wcd9335: Simplify with
+ dev_err_probe
+Message-Id: <168183488717.87933.2105607240342604934.b4-ty@kernel.org>
+Date: Tue, 18 Apr 2023 17:21:27 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-00303
-Message-ID-Hash: PUYF3M7CFCVDGP23YRTPVE22ZRZFPCXP
-X-Message-ID-Hash: PUYF3M7CFCVDGP23YRTPVE22ZRZFPCXP
+Message-ID-Hash: ZSYJXSGY5VOBESZRK73QGKG3TLZ5U5X2
+X-Message-ID-Hash: ZSYJXSGY5VOBESZRK73QGKG3TLZ5U5X2
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -77,13 +79,12 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZSYJXSGY5VOBESZRK73QGKG3TLZ5U5X2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,16 +93,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 18 Apr 2023 08:09:55 -0400, Tom Rix wrote:
-> clang build reports
-> sound/soc/codecs/nau8825.c:2826:31: error: overlapping comparisons
->   always evaluate to false [-Werror,-Wtautological-overlap-compare]
->         if (nau8825->adc_delay < 125 && nau8825->adc_delay > 500)
->             ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+On Mon, 17 Apr 2023 16:14:50 +0200, Krzysztof Kozlowski wrote:
+> Code can be a bit simpler with dev_err_probe().
 > 
-> This is a bug, a logical-or should have been used.
 > 
-> [...]
 
 Applied to
 
@@ -109,8 +104,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: nau8825: fix bounds check for adc_delay
-      commit: 5f3d94eb7ae877430d9fe6a9aae7dcef6c3e5fea
+[1/4] ASoC: codecs: wcd9335: Simplify with dev_err_probe
+      commit: 67380533d450000699848e292d20ec18d0321f0e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
