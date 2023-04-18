@@ -4,95 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53780C77B7D
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Apr 2023 16:27:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86BB6C77B75
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Apr 2023 16:49:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 422A5E84;
-	Tue, 18 Apr 2023 18:26:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 422A5E84
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DF0BE83;
+	Tue, 18 Apr 2023 18:48:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DF0BE83
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681835253;
-	bh=QZ4JzFP7rUGbI9Qp4WnBpRWdImLCng/fQeboSL5NIl0=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1681836557;
+	bh=mv5aeyc9AF/wZVIT6x7Ib/pmfKZsMj/o3PD+5kYSdd8=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A4GqJq1uCPleYTIgyoj5wfnWD3MW4LVlE8dxcB5Bb0co4EKs92oF6Z7RZR1rHzo1G
-	 fhDoptH5gSFmo/Lj0TW7l8nFIShXAWTEOdv5Jo+kTaIRue7p1tIZTtJ6rQo1wh1nfM
-	 JDwirF8RDbS3KhjI6Tg4vzGRTCRscUlPnSjhdyV8=
+	b=SHAglNm/ObP2d7J13XoBbQPZkE1M0GDl/KVn9KwpLm7QrZWUH1vV9pTSVa+OAdJp9
+	 mLybdmm6w2M78YTmXjcy5yf8NclN4tcoLnNTsJLweXxfqjwh/90pLMsJ0AbURT7bjC
+	 g34IeMySpXx1mgEsD/DfLKzN/+3ahI4/n+iulaU8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01A1DF80155;
-	Tue, 18 Apr 2023 18:26:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0704DF800AC;
+	Tue, 18 Apr 2023 18:48:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6FAC1F80155; Tue, 18 Apr 2023 18:26:15 +0200 (CEST)
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com
- [209.85.161.47])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 0DE59F80155; Tue, 18 Apr 2023 18:47:58 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF073F800F8
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2023 18:26:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF073F800F8
-Received: by mail-oo1-f47.google.com with SMTP id
- 006d021491bc7-541af0d27d8so304198eaf.3
-        for <alsa-devel@alsa-project.org>;
- Tue, 18 Apr 2023 09:26:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681835159; x=1684427159;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GALPTZ5rs1mIduJF7Jl53u7XfsfluO0jc0nwk+zxYao=;
-        b=l1JLFFl2+hq7OqTIhH5h7DHzvmDUe+fAOX8wZfgqtinJfk4W4sqqkHabW8njQu8H7x
-         kPPcqa6lkAKg3Dou8My2UrjvKTfsMdXsxfZekIQ1iGDCukQvlsOYco2+CvylYRBjO33n
-         T928kxQUePbwrSmtNFNbTx+FuojqzWBhrWmiivDsXgoHU+/rAUFRu22Xl1elUzuzEwZc
-         iJlRHsSTYyZKzWUXd+//YsfwVX6LJEUU8WBKPW0S9bAFEHpE8YUxaXlH+fqRYnXt+Nd1
-         ORgBIkArajkgs4l+i4tILqPl3r8eZaDLwUUVEZor87nmqceaizNHQpulWEPe99623p2r
-         h/Ng==
-X-Gm-Message-State: AAQBX9e0fnhvAphtb/LSHmwbh40SgQbwK7NCXkOGeaxaocu5eXCKn4h1
-	weUWHQayrJXxS63GrhLinA==
-X-Google-Smtp-Source: 
- AKy350aqiwGvkm3PEtoK/oiOYt0ohBeRtozgRcDrXi5U4KbApLSinkvRa0UgAiJEnhzYkN4LUDI3oQ==
-X-Received: by 2002:a05:6871:149:b0:169:dcba:1ec9 with SMTP id
- z9-20020a056871014900b00169dcba1ec9mr1623622oab.41.1681835158903;
-        Tue, 18 Apr 2023 09:25:58 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id
- r204-20020a4a37d5000000b00541fbbbcd31sm1737771oor.5.2023.04.18.09.25.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Apr 2023 09:25:58 -0700 (PDT)
-Received: (nullmailer pid 1808654 invoked by uid 1000);
-	Tue, 18 Apr 2023 16:25:57 -0000
-Date: Tue, 18 Apr 2023 11:25:57 -0500
-From: Rob Herring <robh@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH] ALSA: Use of_property_read_bool() for boolean properties
-Message-ID: <20230418162557.GD1764573-robh@kernel.org>
-References: <20230310144734.1546587-1-robh@kernel.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id DF989F800F8
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2023 18:47:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF989F800F8
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=LeWkOIRp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1681836470; x=1713372470;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=mv5aeyc9AF/wZVIT6x7Ib/pmfKZsMj/o3PD+5kYSdd8=;
+  b=LeWkOIRpQCfgAGYiz08/mEwxh+jGa1eOCB9TukbCE9V5o/ElgV51FdWo
+   33eSxPXShdkknFxC+X45XZEpKZCuD7z12zTxKjf65SQSrVjfmLNiIxZRw
+   hzMJKB9Y/0iRDauPrJN2takG3wizeXx1zsiT3/SBh2r0jtPTc72UFdGPX
+   oh36RHAdQD+O2yzr2WsnPgyS7Ifv2PW8IPFLEv3KSjQxdqZI7qas8TURH
+   LUBebfKL7oxStCj9T0wZJWQteqRgtDFCRIBQQ0rdVRYGgQLhhVISInNfS
+   eUvir5W+gq0XnJh1Dp7obNbwWolV+/0QYoaTRWNgsyaxGJRfjpseCpq2L
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10684"; a="431510747"
+X-IronPort-AV: E=Sophos;i="5.99,207,1677571200";
+   d="scan'208";a="431510747"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Apr 2023 09:47:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10684"; a="780546182"
+X-IronPort-AV: E=Sophos;i="5.99,207,1677571200";
+   d="scan'208";a="780546182"
+Received: from rdfoulge-mobl.amr.corp.intel.com (HELO [10.209.38.230])
+ ([10.209.38.230])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Apr 2023 09:47:44 -0700
+Message-ID: <3e1b86fb-0a3f-6dce-b3b4-6ee3971fb61d@linux.intel.com>
+Date: Tue, 18 Apr 2023 10:45:53 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230310144734.1546587-1-robh@kernel.org>
-Message-ID-Hash: 3XP7WFSENMOD2KHHKCZ4XY5E2FNHYOMU
-X-Message-ID-Hash: 3XP7WFSENMOD2KHHKCZ4XY5E2FNHYOMU
-X-MailFrom: robherring2@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.10.0
+Subject: Re: [PATCH v2] soundwire: bus: Don't filter slave alerts
+To: Charles Keepax <ckeepax@opensource.cirrus.com>, vkoul@kernel.org
+References: <20230418140650.297279-1-ckeepax@opensource.cirrus.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230418140650.297279-1-ckeepax@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: RT6B2AGS2FFKS3XZJMZWB576GBFE6P4O
+X-Message-ID-Hash: RT6B2AGS2FFKS3XZJMZWB576GBFE6P4O
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+CC: yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3XP7WFSENMOD2KHHKCZ4XY5E2FNHYOMU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RT6B2AGS2FFKS3XZJMZWB576GBFE6P4O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,33 +102,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Mar 10, 2023 at 08:47:33AM -0600, Rob Herring wrote:
-> It is preferred to use typed property access functions (i.e.
-> of_property_read_<type> functions) rather than low-level
-> of_get_property/of_find_property functions for reading properties.
-> Convert reading boolean properties to to of_property_read_bool().
+
+
+On 4/18/23 09:06, Charles Keepax wrote:
+> It makes sense to have only a single point responsible for ensuring
+> that all currently pending IRQs are handled. The current code in
+> sdw_handle_slave_alerts confusingly splits this process in two.  This
+> code will loop until the asserted IRQs are cleared but it will only
+> handle IRQs that were already asserted when it was called. This
+> means the caller must also loop (either manually, or through its IRQ
+> mechanism) until the IRQs are all handled. It makes sense to either do
+> all the looping in sdw_handle_slave_alerts or do no looping there and
+> let the host controller repeatedly call it until things are handled.
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> There are realistically two sensible host controllers, those that
+> will generate an IRQ when the alert status changes and those
+> that will generate an IRQ continuously whilst the alert status
+> is high. The current code will work fine for the second of those
+> systems but not the first with out additional looping in the host
+> controller.  Removing the code that filters out new IRQs whilst
+> the handler is running enables both types of host controller to be
+> supported and simplifies the code. The code will still only loop up to
+> SDW_READ_INTR_CLEAR_RETRY times, so it shouldn't be possible for it to
+> get completely stuck handling IRQs forever, and if you are generating
+> IRQs faster than you can handle them you likely have bigger problems
+> anyway.
+> 
+> This fixes an issue on the Cadence SoundWire IP, which only generates
+> IRQs on an alert status change, where an alert which arrives whilst
+> another alert is being handled will never be handled and will block
+> all future alerts from being handled.
+> 
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Makes sense to me, thanks for the patch.
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
 > ---
->  sound/ppc/tumbler.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Ping!
-
 > 
-> diff --git a/sound/ppc/tumbler.c b/sound/ppc/tumbler.c
-> index 6c882873b344..12f1e10db1c4 100644
-> --- a/sound/ppc/tumbler.c
-> +++ b/sound/ppc/tumbler.c
-> @@ -1361,7 +1361,7 @@ int snd_pmac_tumbler_init(struct snd_pmac *chip)
+> Changes since v1:
+>  - Update commit message
+> 
+> Thanks,
+> Charles
+> 
+>  drivers/soundwire/bus.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index 1ea6a64f8c4a5..338f4f0b5d0cc 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -1588,7 +1588,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+>  	unsigned long port;
+>  	bool slave_notify;
+>  	u8 sdca_cascade = 0;
+> -	u8 buf, buf2[2], _buf, _buf2[2];
+> +	u8 buf, buf2[2];
+>  	bool parity_check;
+>  	bool parity_quirk;
 >  
->  	for_each_child_of_node(chip->node, np) {
->  		if (of_node_name_eq(np, "sound")) {
-> -			if (of_get_property(np, "has-anded-reset", NULL))
-> +			if (of_property_read_bool(np, "has-anded-reset"))
->  				mix->anded_reset = 1;
->  			if (of_property_present(np, "layout-id"))
->  				mix->reset_on_sleep = 0;
-> -- 
-> 2.39.2
-> 
+> @@ -1745,9 +1745,9 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+>  				"SDW_SCP_INT1 recheck read failed:%d\n", ret);
+>  			goto io_err;
+>  		}
+> -		_buf = ret;
+> +		buf = ret;
+>  
+> -		ret = sdw_nread_no_pm(slave, SDW_SCP_INTSTAT2, 2, _buf2);
+> +		ret = sdw_nread_no_pm(slave, SDW_SCP_INTSTAT2, 2, buf2);
+>  		if (ret < 0) {
+>  			dev_err(&slave->dev,
+>  				"SDW_SCP_INT2/3 recheck read failed:%d\n", ret);
+> @@ -1765,12 +1765,8 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+>  		}
+>  
+>  		/*
+> -		 * Make sure no interrupts are pending, but filter to limit loop
+> -		 * to interrupts identified in the first status read
+> +		 * Make sure no interrupts are pending
+>  		 */
+> -		buf &= _buf;
+> -		buf2[0] &= _buf2[0];
+> -		buf2[1] &= _buf2[1];
+>  		stat = buf || buf2[0] || buf2[1] || sdca_cascade;
+>  
+>  		/*
