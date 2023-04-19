@@ -4,136 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 129B1C77B72
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Apr 2023 10:22:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB7E5C77B72
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Apr 2023 10:33:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9392BEDD;
-	Thu, 20 Apr 2023 12:21:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9392BEDD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06E11EC6;
+	Thu, 20 Apr 2023 12:33:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06E11EC6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681986135;
-	bh=wVn/ZV/gYTPXC0lVtYQCR23MwgtHqeyx4d4XhzS54+8=;
-	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=ElFyXe1kW2ms0twxED6e5S/i4M01tqgqGVuMKd/sW9qnL/8+4fI8ML3YDR3jXosW0
-	 HOulCJXgtzbkMzVP6Yg1cK5j68k6lRZ+w3DIXSmsEyIi2TbHir+qsM4mOqYlbIOcTd
-	 IsPrWOZvsu11HbpzxjrdIUlXirFdNKI7m2BtRTm4=
+	s=default; t=1681986835;
+	bh=LzVwyrH1fnUDYxA2qvp8T1YEo/Qsswf2wH+BYssPEP8=;
+	h=From:Subject:Date:References:In-Reply-To:To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=OnHegkc39kBi1dUo+cr2gMtR4VWO/yYCVS1eCUvOrxv86cD1n+byLX3n+L3BkKlGc
+	 ReBP4Pu1q90X6CoHPiDix1IIKfsVRm2FHt85uUhDcXQgpZUS/0TLrkOiN0HDKemnA4
+	 OBiyVrDd4V6BxzCN+3rv/uMqeAirNfa/8iZ5M/ss=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95300F80155;
-	Thu, 20 Apr 2023 12:21:00 +0200 (CEST)
-To: <broonie@kernel.org>
-Subject: [PATCH] ASoC: cs35l56: Remove duplicate mbox log messages
-Date: Thu, 20 Apr 2023 11:20:43 +0100
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FHTRE3AACCI3ZZW7TPQS3AZFDR5VBT5O/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <168198605952.26.13645408104113633580@mailman-core.alsa-project.org>
-From: Richard Fitzgerald via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com, Simon Trimmer <simont@opensource.cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F1BFF80053;
+	Thu, 20 Apr 2023 12:32:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A47CF80155; Thu, 20 Apr 2023 12:20:56 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED shortcircuit=no autolearn=ham
-	autolearn_force=no version=3.4.6
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id A7584F80155; Wed, 19 Apr 2023 10:48:57 +0200 (CEST)
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4626DF800F8
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2023 12:20:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4626DF800F8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1EC37F80053
+	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2023 10:48:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EC37F80053
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=posfeQSJ
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33K6k6i2003201;
-	Thu, 20 Apr 2023 05:20:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=nJJCPXtIl/C6W952avjlhhnaG4LWw3Zy1vAZkrF7DVE=;
- b=posfeQSJ45pfCwFvSdJO495aeRAHsRvhhONuUrgs56ra9NjF+/SC7KpdF2MDCQCIfZhq
- N5pPTsvthNpeUFJMT1s/SVo9e6wcPIofB2rcDLyMWjLH5ScfQnGdbovx/bIKbZEl34vJ
- IPQvj5RxNneMEjqDo7ppC1WlZvbwArUcpG8W5TAYHvzWHwpO3KtcfU/qk+5QNwIa1hUe
- ph2Sb071UaArcF6/optPj7jIEE9xy8NpAJiut5zYULC+6B33fFhCu2ums9ILDhQRiqPH
- abGdt+nnHQyCTvlPmFOiiSTD0CB7ytrJteKDGbpJ2rfBRl+AdBHfZ+pC/QpyBPja4L6z hA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3pysb50sp2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 20 Apr 2023 05:20:45 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Thu, 20 Apr
- 2023 05:20:43 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Thu, 20 Apr 2023 05:20:43 -0500
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
- [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 79A3BB06;
-	Thu, 20 Apr 2023 10:20:43 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH] ASoC: cs35l56: Remove duplicate mbox log messages
-Date: Thu, 20 Apr 2023 11:20:43 +0100
-Message-ID: <20230420102043.1151830-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 6pTqnTm8T_0HTfbl5ajo1im30LO2lRZF
-X-Proofpoint-GUID: 6pTqnTm8T_0HTfbl5ajo1im30LO2lRZF
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: FHTRE3AACCI3ZZW7TPQS3AZFDR5VBT5O
-X-Message-ID-Hash: FHTRE3AACCI3ZZW7TPQS3AZFDR5VBT5O
-X-MailFrom: prvs=9474375794=rf@opensource.cirrus.com
+ unprotected) header.d=fastmail.com header.i=@fastmail.com header.a=rsa-sha256
+ header.s=fm3 header.b=q8szrX4P;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=messagingengine.com header.i=@messagingengine.com
+ header.a=rsa-sha256 header.s=fm3 header.b=TiCJm6rt
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.nyi.internal (Postfix) with ESMTP id 0B1CF5C009A;
+	Wed, 19 Apr 2023 04:48:52 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 19 Apr 2023 04:48:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+	1681894132; x=1681980532; bh=BvBEm4WkjkPuPnu8E2KTiwt7Qfg5cR+kwBs
+	6T1Qyed8=; b=q8szrX4Pj63FjUJqj9HciHg7ACXPzSnCqroQs0rsalpiX+c4PQF
+	uPf7d2jPJfI2KJWhqA537kno0WYp5ep0DvobvIpqct+eyEJDVOWqUWfDzcjLBYh6
+	X9D5S00kC6dLJSdKFvcaKPij9aELXRifMOzT/wgNQcKauC5gTLprkTu3x6F3bLPg
+	TIbV0FhLb4y60A/G8GZuJwcsialQZvEEzxKBAMnUl69R0ZYSp4lPT5VCyO8gzZSi
+	CH0srTeOZYlDXIC3K1C+Wn//5Ut2uBx28OA+VnYpAIxWEODpL3YMQhH92BUBr3s9
+	LbiLdACe2osQZv2KCpRVRay/6Fxe2jbQ7bQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1681894132; x=1681980532; bh=BvBEm4WkjkPuPnu8E2KTiwt7Qfg5cR+kwBs
+	6T1Qyed8=; b=TiCJm6rtXwtNktMdvtOASpY09t2R0QyconT6kQwB57OJo6wUsVu
+	mPBPH45HmoBkwcehh70r7BCF17qr904m4aZVsKbK3UrpKkMd1la3joYxpnvQGhOe
+	EOEFiN7zhtXs5ohbgS97fqfaK8MHMbImh8ZQb89LPie3h14fXVl5wrjSvXQmk4vS
+	5aUKJDwmRscWrr5e3y9Pz2uKZRglgAEfubdAgfS3kzvCdjOUervvPWJ6yNpiohwh
+	CgAoTURXgqR5jY+PpGRKdOLGntJ9QKnib5CHdCm26HWEsV1w015f4Gga57F0haBq
+	z99VpHUdGT+k87M7gHvkdCoN89ubm69J5Fg==
+X-ME-Sender: <xms:86o_ZCK2xcUynXWmKBTCGKCytx2M9P_HjSxi8kW-joJVkFRUC_9cDg>
+    <xme:86o_ZKI0H4I2MhxNzqRXsimEGwDNwXpDPs9v-HQNIcPr2TFzE_GZGDyJ0E1OI_xU9
+    CuMqhf6mwq4IXJUig>
+X-ME-Received: 
+ <xmr:86o_ZCtNS2mOXNDxl3ZrnNmEBn20gkFKrYgavcV4K5YQEn_qoMwObWqukgNFolcLP3FxPA>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgedvhedrfedttddgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpegtgffhggfufffkfhevjgfvofesth
+    hqmhdthhdtjeenucfhrhhomhepofgrrhhthihnucevohiguceotghogiihsehfrghsthhm
+    rghilhdrtghomheqnecuggftrfgrthhtvghrnhephffhveeujeefgfettdevfeffgfeuvd
+    ekhfdvhfelkedtudeihefghefhuefhgfehnecuffhomhgrihhnpehsohhunhgujedrtgho
+    mhdpghhithhhuhgsrdgtohhmpdhlihhnuhigrghuughiohdrohhrghdpghhithhlrggsrd
+    gtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+    tghogiihsehfrghsthhmrghilhdrtghomh
+X-ME-Proxy: <xmx:86o_ZHbp6y623-5XQ5SRN42KhE9LYYHA2mc7x2YZbrvtqw_WihBzng>
+    <xmx:86o_ZJYvPre2ysvmcHXoHuzoxFkkziilk7Y2LcTKku-WA-rW_bbFtg>
+    <xmx:86o_ZDCjaVeHEoo3bPsgc_ZXbltb6-U8vkuAu8nhaMCyrfa58JdedA>
+    <xmx:9Ko_ZIxtzrWj-L1QOfUtX9YLYgpQN1ZhsrBA4xAzjnjvSAUMwRHkLg>
+Feedback-ID: i475842f6:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 19 Apr 2023 04:48:51 -0400 (EDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Martyn Cox <coxy@fastmail.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [LAD] snd-firewire-ctl-services 0.1.0 released
+Date: Wed, 19 Apr 2023 09:48:40 +0100
+Message-Id: <6C7704D9-2D47-480A-A0B4-225F30DD3662@fastmail.com>
+References: <20230419084401.GA659018@workstation>
+In-Reply-To: <20230419084401.GA659018@workstation>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+X-Mailer: iPhone Mail (20B101)
+X-MailFrom: coxy@fastmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com, Simon Trimmer <simont@opensource.cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: MORCFRSYVV5KGO5SJOG2VQMUEABRXWRT
+X-Message-ID-Hash: MORCFRSYVV5KGO5SJOG2VQMUEABRXWRT
+X-Mailman-Approved-At: Thu, 20 Apr 2023 10:32:35 +0000
+CC: linux-audio-dev@lists.linuxaudio.org, alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FHTRE3AACCI3ZZW7TPQS3AZFDR5VBT5O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MORCFRSYVV5KGO5SJOG2VQMUEABRXWRT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,44 +127,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+This is great. Thank you Takashi.
 
-cs35l56_mbox_send() logs a warning when sending a mbox command fails so
-the callers can be simplified.
+M
+-
+https://sound7.com
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs35l56.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+> On 19 Apr 2023, at 09:44, Takashi Sakamoto <o-takashi@sakamocchi.jp> wrote=
+:
+>=20
+> =EF=BB=BFHi all,
+>=20
+> This is a short announcement about a new release of
+> snd-firewire-ctl-services project.
+>=20
+> After development for mostly three years[1], version 0.1.0 is released
+> today. If you have FireWire audio device and interests in ALSA support,
+> the release would be worth to check out.
+>=20
+> * https://github.com/alsa-project/snd-firewire-ctl-services/releases/tag/s=
+nd-firewire-ctl-services%2Fv0.1.0
+>=20
+> The project provides user space service programs to operate digital
+> signal processing function in devices supported by ALSA firewire stack.
+> If using such device, you can configure DSP functions such as the volumes
+> of device. For some device, effects such as dynamics and equalizers are
+> also configurable. Available devices are listed in README.rst of the
+> project.
+>=20
+> The service programs work as 'message broaker'. ALSA control applications
+> are available for end-user interface to communicate to the service
+> programs[2]. The device connected to IEEE 1394 bus is the peer. The
+> service programs receives messages from both ends, then translates and
+> convert the messages to send to the opposite end.
+>=20
+> Against your expectation, the project provides neither GUI programs nor
+> end-user interfaces. I know that the user experience is heavily on
+> look-and-feel on the GUI programs, while it is out of the aim of project.
+> I daily use quashctl in QasTools[3] and it is pretty good to me for such
+> ALSA control application.
+>=20
+> If encountering any issue, please file it to github repository[4]. README
+> should be helpful to new users.
+>=20
+> Thanks for your support and long patience to ALSA firewire stack.
+>=20
+> [1] https://lists.linuxaudio.org/hyperkitty/list/linux-audio-dev@lists.lin=
+uxaudio.org/thread/EX4FJ7IIRYM5EDRCYXFXFSABAKYZH3WZ/
+> [2] For TASCAM FireWire series, ALSA sequencer application is such end as
+>    well to operate control surface.
+> [3] https://gitlab.com/sebholt/qastools
+> [4] https://github.com/alsa-project/snd-firewire-ctl-services
+>=20
+>=20
+> Regards
+>=20
+> Takashi Sakamoto
+> _______________________________________________
+> Linux-audio-dev mailing list -- linux-audio-dev@lists.linuxaudio.org
+> To unsubscribe send an email to linux-audio-dev-leave@lists.linuxaudio.org=
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index c0a857cfb8cb..46762f7f1449 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -859,10 +859,8 @@ static void cs35l56_dsp_work(struct work_struct *work)
- 	}
- 
- 	ret = cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_SHUTDOWN);
--	if (ret) {
--		dev_dbg(cs35l56->dev, "%s: CS35L56_MBOX_CMD_SHUTDOWN ret %d\n", __func__, ret);
-+	if (ret)
- 		goto err;
--	}
- 
- 	if (cs35l56->rev < CS35L56_REVID_B0)
- 		reg = CS35L56_DSP1_PM_CUR_STATE_A1;
-@@ -1033,9 +1031,7 @@ int cs35l56_runtime_suspend(struct device *dev)
- 	 * Enable auto-hibernate. If it is woken by some other wake source
- 	 * it will automatically return to hibernate.
- 	 */
--	ret = cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_ALLOW_AUTO_HIBERNATE);
--	if (ret)
--		dev_warn(cs35l56->dev, "ALLOW_HIBERNATE failed: %d\n", ret);
-+	cs35l56_mbox_send(cs35l56, CS35L56_MBOX_CMD_ALLOW_AUTO_HIBERNATE);
- 
- 	/*
- 	 * Must enter cache-only first so there can't be any more register
--- 
-2.30.2
 
