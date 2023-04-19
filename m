@@ -4,73 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4161BC77B73
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Apr 2023 14:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18436C77B73
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Apr 2023 14:25:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7171FEBD;
-	Wed, 19 Apr 2023 16:24:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7171FEBD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E274FEC5;
+	Wed, 19 Apr 2023 16:24:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E274FEC5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681914290;
-	bh=hGLCHDWc9KqI/KLynLW2oZ7LkA2U31ZnlMwgjeHw/Us=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=NHUmw8FWNbKzM3FRzkClc98iXizecObnryGvAfUDSadJvC9YHbMsHPcvCy9hwr2FS
-	 Gn4ckAVwB4rMldgLJqNYZ3jl6b8NdocLe/UtTG8PVGsdmLsbcar6bS9CAdrsqHFP31
-	 4yrg6qScqprG1xEBFopFxxK/th4G1fWyQKZb8V1s=
+	s=default; t=1681914316;
+	bh=Y7NtdRvmYffAP0FrGkf+Pv8B5hj7E6uae/PQvl6MaS0=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ZPDfW887Ufpd33214RxSeVtc/EYzSZS4zm3uY4Vzju5/Ef37G1EOyQCQCHIpt2VAf
+	 V+AAnqvo747JEBYL2clNW7/9bEn/0HEYuS0ne+ouVDFzFlzt9P3gpNjn0Fxr2bsU/S
+	 soSR1RbeFK6amSRkBKKUUYhiFEj9l+TDMRWlBsK0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C179F80155;
-	Wed, 19 Apr 2023 16:23:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A29BDF80510;
+	Wed, 19 Apr 2023 16:23:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31F7AF8019B; Wed, 19 Apr 2023 16:23:31 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 1A013F80155; Wed, 19 Apr 2023 16:23:34 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E7E75F800D0
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2023 16:23:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7E75F800D0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8B828F800F8
+	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2023 16:23:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B828F800F8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Q0wHmR5y
+ header.s=k20201202 header.b=WZkty0bQ
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 61174614FB;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7454F63FC1;
+	Wed, 19 Apr 2023 14:23:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ADC8C4339C;
 	Wed, 19 Apr 2023 14:23:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2C06C4339B;
-	Wed, 19 Apr 2023 14:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1681914200;
-	bh=hGLCHDWc9KqI/KLynLW2oZ7LkA2U31ZnlMwgjeHw/Us=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=Q0wHmR5yZdj/zYEEC8ZE4V6Qb6n5jVpwDX7AwU5J+NOLsHXJAX3YhVihZKyLsqoRB
-	 1JxE+bqsb3Flzua2d7hHGI0vs6YeFlbRWkcZZmc4OugkxKW5RfMMzrjzl6l1XzugLd
-	 R2rcq+0ZAdbPumKZp2nHhlFer0HBFb6UoaW7dSsn4fvTYlI+JfhKEiGj0txSPEyY39
-	 6MV1FCdYZ6+DfDS9dEbLjET5YpiZhuimFU/9qI7nldcJOyB4dey95U43CtZEYtQptZ
-	 sJApFjBuxs7l3c6Yg4cW4vSWmiCiQ9R9eVbneFgcaGu0Zyq9HFZXv4aQgjGd+Er9v3
-	 FrWiF2mG11BDw==
+	s=k20201202; t=1681914203;
+	bh=Y7NtdRvmYffAP0FrGkf+Pv8B5hj7E6uae/PQvl6MaS0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=WZkty0bQqzMKfoyrRccbSKpbRiEzNS5m3vNdN9kjx4OK+ujf8Dr7zDBRIDEJX7l+A
+	 /oaqUG6MTOm2Cb3rB6COeQ69GRfdloleSwXfcmCkf5mLvVTqyXGlK0PoJLGmR9UayM
+	 R/TStqm3LXaUJoQ9NHiSPsVlhvt09qBj1cC/v6SEAirutEftAoikqibiLJPm/aO3Ph
+	 OCpz5Yt0apuLBnaqx2riz2GDI2PWh1rJvxYYR7QZuBBnecaJtS9HuDDdpCOGF9zyXk
+	 ZotnIDTRuRHkHr7lcJJPZl4fvZI49fsnsqA1KBKvAZdJOBaSdwYH6iCC0hBoydNMoY
+	 /zxpAsncbTrbQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, nicoleotsuka@gmail.com,
- Chancel Liu <chancel.liu@nxp.com>
-In-Reply-To: <20230418094259.4150771-1-chancel.liu@nxp.com>
-References: <20230418094259.4150771-1-chancel.liu@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Fix pins setting for i.MX8QM platform
-Message-Id: <168191419838.83860.13145358537748043922.b4-ty@kernel.org>
-Date: Wed, 19 Apr 2023 15:23:18 +0100
+To: Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+In-Reply-To: <20230417133242.53339-1-n.zhandarovich@fintech.ru>
+References: <20230417133242.53339-1-n.zhandarovich@fintech.ru>
+Subject: Re: [PATCH] ASoC: fsl_asrc_dma: fix potential null-ptr-deref
+Message-Id: <168191420102.83860.17076301173895914430.b4-ty@kernel.org>
+Date: Wed, 19 Apr 2023 15:23:21 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-00303
-Message-ID-Hash: SA4MK5YM4BT3YLJJF6TNVQ4MYVVKDEJH
-X-Message-ID-Hash: SA4MK5YM4BT3YLJJF6TNVQ4MYVVKDEJH
+Message-ID-Hash: GHZWZTI5AHCFMZTZEBCAJ5EN56GFBXI5
+X-Message-ID-Hash: GHZWZTI5AHCFMZTZEBCAJ5EN56GFBXI5
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -78,12 +74,17 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+CC: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org, Natalia Petrova <n.petrova@fintech.ru>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SA4MK5YM4BT3YLJJF6TNVQ4MYVVKDEJH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GHZWZTI5AHCFMZTZEBCAJ5EN56GFBXI5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,11 +93,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 18 Apr 2023 17:42:59 +0800, Chancel Liu wrote:
-> SAI on i.MX8QM platform supports the data lines up to 4. So the pins
-> setting should be corrected to 4.
+On Mon, 17 Apr 2023 06:32:42 -0700, Nikita Zhandarovich wrote:
+> dma_request_slave_channel() may return NULL which will lead to
+> NULL pointer dereference error in 'tmp_chan->private'.
 > 
+> Correct this behaviour by, first, switching from deprecated function
+> dma_request_slave_channel() to dma_request_chan(). Secondly, enable
+> sanity check for the resuling value of dma_request_chan().
+> Also, fix description that follows the enacted changes and that
+> concerns the use of dma_request_slave_channel().
 > 
+> [...]
 
 Applied to
 
@@ -104,8 +111,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_sai: Fix pins setting for i.MX8QM platform
-      commit: 238787157d83969e5149c8e99787d5d90e85fbe5
+[1/1] ASoC: fsl_asrc_dma: fix potential null-ptr-deref
+      commit: 86a24e99c97234f87d9f70b528a691150e145197
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
