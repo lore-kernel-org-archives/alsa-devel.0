@@ -4,95 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4FEDC6FD18
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Apr 2023 19:59:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1128C77B73
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Apr 2023 19:59:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88421EAC;
-	Wed, 19 Apr 2023 21:58:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88421EAC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D900EF03;
+	Wed, 19 Apr 2023 21:58:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D900EF03
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681934368;
-	bh=5f6r17BaOQbpLk3CSccJWvHfQtT62LGDiBh3Dw+H3R0=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1681934374;
+	bh=a6NaU5kg0RRe+MIkMHLjTM4S22BuexgJ9LpRMkbehO0=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uNO1HBSlCZNPjxYUii85Rbb9xspCh9S1NpxdA+36ZqtelgQY7aJi0pDztm9Drs6kc
-	 rmuj1OQIryTg0JMoqmq5FN9lCLRox57BqL6gDdT1JLDWwL2vjCk7VIU5iCBRXmU/4C
-	 Q9I2/lTrCfRdq033up6zmy8xPzsOzDllk2bUC+QI=
+	b=PRn6tBQMMsUm69SyXTC7NJ+YffXYejVtjx8QLFU6ZSTREj9qrdP++xmh5rftxU+jG
+	 yeXflH4ydEVZxa4aC4Qb96KbgDbI7Rq/d0PZ7epmY2IkGJi/SLw0tWk4dCcadtCiCL
+	 0eCDDDQinZeyVuGQSMfM3383XMT24b2appVUul2U=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A248BF8056F;
-	Wed, 19 Apr 2023 21:57:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5CFFAF800F8;
+	Wed, 19 Apr 2023 21:58:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3FF58F80510; Wed, 19 Apr 2023 21:57:06 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id D1C1CF80149; Wed, 19 Apr 2023 21:58:39 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DB23CF804FC
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2023 21:56:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB23CF804FC
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Uh+RYHKs
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681934168; x=1713470168;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=5f6r17BaOQbpLk3CSccJWvHfQtT62LGDiBh3Dw+H3R0=;
-  b=Uh+RYHKs/6flCnOsBiK6FA9FnvqbM6r9DO4NXmKl24gzaNyLvwvLNayD
-   zpx/Z8crmFWYsKFdsi8Bgc+cRZY0Ev+UpVR6sZQeMJJt59cnhCpqkxN7o
-   j4a836mhe5Y41qaZfXjs89cXMhzHLCcRiKXMpxZQlZfYAZjg5M6P0jYpu
-   w3AHrmGvlEQ3SVqc3P0TAHmDklt4xAL/1RLZisvLxg5S6hVWGjqI2fCVb
-   7yJQzrYoVLPR4RJI82A/f2RB8eugCy8ey+mVK+wM9sPiyAWbLuh6dtsBM
-   dR9/s9AzznqR0p0a7pIMmYzZiSwbGv5ReMmPMyYjoTdpxk9KkRZNDvDvL
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="373434401"
-X-IronPort-AV: E=Sophos;i="5.99,210,1677571200";
-   d="scan'208";a="373434401"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2023 12:56:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="815728111"
-X-IronPort-AV: E=Sophos;i="5.99,210,1677571200";
-   d="scan'208";a="815728111"
-Received: from gargicha-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.209.74.38])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2023 12:56:02 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 6/7] ASoC: Intel: sof_sdw: support different devices on the
- same sdw link
-Date: Wed, 19 Apr 2023 14:55:23 -0500
-Message-Id: <20230419195524.46995-7-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230419195524.46995-1-pierre-louis.bossart@linux.intel.com>
-References: <20230419195524.46995-1-pierre-louis.bossart@linux.intel.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id CC429F80149
+	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2023 21:58:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC429F80149
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ppDwR-0005x6-CV; Wed, 19 Apr 2023 21:58:11 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ppDwM-00CPGS-AB; Wed, 19 Apr 2023 21:58:06 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ppDwL-00Eat3-Ez; Wed, 19 Apr 2023 21:58:05 +0200
+Date: Wed, 19 Apr 2023 21:58:05 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8825: fix delay time range check
+Message-ID: <20230419195805.fpil775pw2wsrav4@pengutronix.de>
+References: <20230419114546.820921-1-arnd@kernel.org>
+ <c6bc42c6-4a98-4bb6-9639-acf4c2010b68@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ECRAOIDO3AZSLFYGPMNYFPEHQPMNZRYY
-X-Message-ID-Hash: ECRAOIDO3AZSLFYGPMNYFPEHQPMNZRYY
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="k7olzqvscnyzsee5"
+Content-Disposition: inline
+In-Reply-To: <c6bc42c6-4a98-4bb6-9639-acf4c2010b68@sirena.org.uk>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Message-ID-Hash: EJR7BY6MIYYMDCDGMXWTKYXA77HR6NPX
+X-Message-ID-Hash: EJR7BY6MIYYMDCDGMXWTKYXA77HR6NPX
+X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: tiwai@suse.de, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>
+CC: Arnd Bergmann <arnd@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, David Lin <CTLIN0@nuvoton.com>,
+ Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
+ Peter Rosin <peda@axentia.se>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ECRAOIDO3AZSLFYGPMNYFPEHQPMNZRYY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EJR7BY6MIYYMDCDGMXWTKYXA77HR6NPX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,262 +96,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-The existing code assumes all devices on the same soundwire link
-are the same devices. eg. all rt1316. This commit removes the
-assumption and supports different devices on the same soundwire link.
+--k7olzqvscnyzsee5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
----
- sound/soc/intel/boards/sof_sdw.c | 130 ++++++++++++++++++-------------
- 1 file changed, 77 insertions(+), 53 deletions(-)
+On Wed, Apr 19, 2023 at 12:48:52PM +0100, Mark Brown wrote:
+> On Wed, Apr 19, 2023 at 01:45:39PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >=20
+> > clang points out that the recently added range check is nonsensical:
+>=20
+> Someone already sent a patch for tihs.
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index e5729df4fd44..6a6c81df72bd 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -732,34 +732,36 @@ static int get_sdw_dailink_info(struct device *dev, const struct snd_soc_acpi_li
- 		int stream;
- 		u64 adr;
- 
--		adr = link->adr_d->adr;
--		codec_index = find_codec_info_part(adr);
--		if (codec_index < 0)
--			return codec_index;
-+		for (i = 0; i < link->num_adr; i++) {
-+			adr = link->adr_d[i].adr;
-+			codec_index = find_codec_info_part(adr);
-+			if (codec_index < 0)
-+				return codec_index;
- 
--		if (codec_info_list[codec_index].codec_type < _codec_type)
--			dev_warn(dev,
--				 "Unexpected address table ordering. Expected order: jack -> amp -> mic\n");
-+			if (codec_info_list[codec_index].codec_type < _codec_type)
-+				dev_warn(dev,
-+					 "Unexpected address table ordering. Expected order: jack -> amp -> mic\n");
- 
--		_codec_type = codec_info_list[codec_index].codec_type;
-+			_codec_type = codec_info_list[codec_index].codec_type;
- 
--		endpoint = link->adr_d->endpoints;
-+			endpoint = link->adr_d[i].endpoints;
- 
--		/* count DAI number for playback and capture */
--		for_each_pcm_streams(stream) {
--			if (!codec_info_list[codec_index].direction[stream])
--				continue;
-+			/* count DAI number for playback and capture */
-+			for_each_pcm_streams(stream) {
-+				if (!codec_info_list[codec_index].direction[stream])
-+					continue;
- 
--			(*sdw_cpu_dai_num)++;
-+				(*sdw_cpu_dai_num)++;
- 
--			/* count BE for each non-aggregated slave or group */
--			if (!endpoint->aggregated || no_aggregation ||
--			    !group_visited[endpoint->group_id])
--				(*sdw_be_num)++;
--		}
-+				/* count BE for each non-aggregated slave or group */
-+				if (!endpoint->aggregated || no_aggregation ||
-+				    !group_visited[endpoint->group_id])
-+					(*sdw_be_num)++;
-+			}
- 
--		if (endpoint->aggregated)
--			group_visited[endpoint->group_id] = true;
-+			if (endpoint->aggregated)
-+				group_visited[endpoint->group_id] = true;
-+		}
- 	}
- 
- 	return 0;
-@@ -829,17 +831,19 @@ static int create_codec_dai_name(struct device *dev,
- 				 int offset,
- 				 struct snd_soc_codec_conf *codec_conf,
- 				 int codec_count,
--				 int *codec_conf_index)
-+				 int *codec_conf_index,
-+				 int adr_index)
- {
-+	int _codec_index = -1;
- 	int i;
- 
- 	/* sanity check */
--	if (*codec_conf_index + link->num_adr > codec_count) {
-+	if (*codec_conf_index + link->num_adr - adr_index > codec_count) {
- 		dev_err(dev, "codec_conf: out-of-bounds access requested\n");
- 		return -EINVAL;
- 	}
- 
--	for (i = 0; i < link->num_adr; i++) {
-+	for (i = adr_index; i < link->num_adr; i++) {
- 		unsigned int sdw_version, unique_id, mfg_id;
- 		unsigned int link_id, part_id, class_id;
- 		int codec_index, comp_index;
-@@ -855,7 +859,7 @@ static int create_codec_dai_name(struct device *dev,
- 		part_id = SDW_PART_ID(adr);
- 		class_id = SDW_CLASS_ID(adr);
- 
--		comp_index = i + offset;
-+		comp_index = i - adr_index + offset;
- 		if (is_unique_device(link, sdw_version, mfg_id, part_id,
- 				     class_id, i)) {
- 			codec_str = "sdw:%01x:%04x:%04x:%02x";
-@@ -877,6 +881,11 @@ static int create_codec_dai_name(struct device *dev,
- 		codec_index = find_codec_info_part(adr);
- 		if (codec_index < 0)
- 			return codec_index;
-+		if (_codec_index != -1 && codec_index != _codec_index) {
-+			dev_dbg(dev, "Different devices on the same sdw link\n");
-+			break;
-+		}
-+		_codec_index = codec_index;
- 
- 		codec[comp_index].dai_name =
- 			codec_info_list[codec_index].dai_name;
-@@ -943,16 +952,16 @@ static int set_codec_init_func(struct snd_soc_card *card,
- static int get_slave_info(const struct snd_soc_acpi_link_adr *adr_link,
- 			  struct device *dev, int *cpu_dai_id, int *cpu_dai_num,
- 			  int *codec_num, unsigned int *group_id,
--			  bool *group_generated)
-+			  bool *group_generated, int adr_index)
- {
- 	const struct snd_soc_acpi_adr_device *adr_d;
- 	const struct snd_soc_acpi_link_adr *adr_next;
- 	bool no_aggregation;
- 	int index = 0;
-+	int i;
- 
- 	no_aggregation = sof_sdw_quirk & SOF_SDW_NO_AGGREGATION;
--	*codec_num = adr_link->num_adr;
--	adr_d = adr_link->adr_d;
-+	adr_d = &adr_link->adr_d[adr_index];
- 
- 	/* make sure the link mask has a single bit set */
- 	if (!is_power_of_2(adr_link->mask))
-@@ -968,6 +977,14 @@ static int get_slave_info(const struct snd_soc_acpi_link_adr *adr_link,
- 
- 	*group_id = adr_d->endpoints->group_id;
- 
-+	/* Count endpoints with the same group_id in the adr_link */
-+	*codec_num = 0;
-+	for (i = 0; i < adr_link->num_adr; i++) {
-+		if (adr_link->adr_d[i].endpoints->aggregated &&
-+		    adr_link->adr_d[i].endpoints->group_id == *group_id)
-+			(*codec_num)++;
-+	}
-+
- 	/* gather other link ID of slaves in the same group */
- 	for (adr_next = adr_link + 1; adr_next && adr_next->num_adr;
- 		adr_next++) {
-@@ -988,7 +1005,11 @@ static int get_slave_info(const struct snd_soc_acpi_link_adr *adr_link,
- 		}
- 
- 		cpu_dai_id[index++] = ffs(adr_next->mask) - 1;
--		*codec_num += adr_next->num_adr;
-+		for (i = 0; i < adr_next->num_adr; i++) {
-+			if (adr_next->adr_d[i].endpoints->aggregated &&
-+			    adr_next->adr_d[i].endpoints->group_id == *group_id)
-+				(*codec_num)++;
-+		}
- 	}
- 
- 	/*
-@@ -1011,7 +1032,8 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 			      struct snd_soc_codec_conf *codec_conf,
- 			      int codec_count, int *link_id,
- 			      int *codec_conf_index,
--			      bool *ignore_pch_dmic)
-+			      bool *ignore_pch_dmic,
-+			      int adr_index)
- {
- 	const struct snd_soc_acpi_link_adr *link_next;
- 	struct snd_soc_dai_link_component *codecs;
-@@ -1027,7 +1049,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 	int k;
- 
- 	ret = get_slave_info(link, dev, cpu_dai_id, &cpu_dai_num, &codec_num,
--			     &group_id, group_generated);
-+			     &group_id, group_generated, adr_index);
- 	if (ret)
- 		return ret;
- 
-@@ -1050,7 +1072,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 			continue;
- 
- 		ret = create_codec_dai_name(dev, link_next, codecs, codec_idx,
--					    codec_conf, codec_count, codec_conf_index);
-+					    codec_conf, codec_count, codec_conf_index, adr_index);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -1060,7 +1082,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 	}
- 
- 	/* find codec info to create BE DAI */
--	codec_index = find_codec_info_part(link->adr_d[0].adr);
-+	codec_index = find_codec_info_part(link->adr_d[adr_index].adr);
- 	if (codec_index < 0)
- 		return codec_index;
- 
-@@ -1303,29 +1325,31 @@ static int sof_card_dai_links_create(struct device *dev,
- 
- 	/* generate DAI links by each sdw link */
- 	for (; adr_link->num_adr; adr_link++) {
--		const struct snd_soc_acpi_endpoint *endpoint;
-+		for (i = 0; i < adr_link->num_adr; i++) {
-+			const struct snd_soc_acpi_endpoint *endpoint;
- 
--		endpoint = adr_link->adr_d->endpoints;
--		if (endpoint->aggregated && !endpoint->group_id) {
--			dev_err(dev, "invalid group id on link %x",
--				adr_link->mask);
--			continue;
--		}
-+			endpoint = adr_link->adr_d[i].endpoints;
-+			if (endpoint->aggregated && !endpoint->group_id) {
-+				dev_err(dev, "invalid group id on link %x",
-+					adr_link->mask);
-+				continue;
-+			}
- 
--		/* this group has been generated */
--		if (endpoint->aggregated &&
--		    group_generated[endpoint->group_id])
--			continue;
-+			/* this group has been generated */
-+			if (endpoint->aggregated &&
-+			    group_generated[endpoint->group_id])
-+				continue;
- 
--		ret = create_sdw_dailink(card, dev, &link_index, links, sdw_be_num,
--					 sdw_cpu_dai_num, cpus, adr_link,
--					 &cpu_id, group_generated,
--					 codec_conf, codec_conf_count,
--					 &be_id, &codec_conf_index,
--					 &ignore_pch_dmic);
--		if (ret < 0) {
--			dev_err(dev, "failed to create dai link %d", link_index);
--			return ret;
-+			ret = create_sdw_dailink(card, dev, &link_index, links, sdw_be_num,
-+						 sdw_cpu_dai_num, cpus, adr_link,
-+						 &cpu_id, group_generated,
-+						 codec_conf, codec_conf_count,
-+						 &be_id, &codec_conf_index,
-+						 &ignore_pch_dmic, i);
-+			if (ret < 0) {
-+				dev_err(dev, "failed to create dai link %d", link_index);
-+				return ret;
-+			}
- 		}
- 	}
- 
--- 
-2.37.2
+FTR: https://lore.kernel.org/r/20230418120955.3230705-1-trix@redhat.com
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--k7olzqvscnyzsee5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmRAR8wACgkQj4D7WH0S
+/k4TkQf/T0DEUGoTk9H/hfDu9v/xHFjLghN1ZIsuA02IHW/nDmfHyCGX1I51xV/d
+5zX4GHGk4AyO+qJ27KYo9K0Fj/TJKQEuR8cws86p8uqLztxDuRSLFhusRKpCjcpU
+33uann83bN3tSs3cvFUuRLt/bJ/Juc4SHKKWicYvraDRHnLCKgKTZwEQDBhBFa1f
+TfVZ7m1RnqSLvv4dpJ+I1IwMCVh7Q01wBM1EHSDDoit/OeyVlrkdQb13Ojz1sYs2
+yzhWzY+pEEY/X+1pHmsOZUO+IWHDnlQRf2AsqDhFbA3DEf1QTqb0SWZBZeIeffeE
+T7gPx9FOH5kgFoPxHly+IWO1SLLXLg==
+=SxS9
+-----END PGP SIGNATURE-----
+
+--k7olzqvscnyzsee5--
