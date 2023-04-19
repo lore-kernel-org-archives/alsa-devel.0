@@ -4,75 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8C9AC77B73
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Apr 2023 19:42:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A407C6FD18
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Apr 2023 19:43:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5C50EF5;
-	Wed, 19 Apr 2023 21:41:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5C50EF5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40393F01;
+	Wed, 19 Apr 2023 21:42:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40393F01
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681933365;
-	bh=JcVxaAhKXqeFKAlVJRAQobWmzWFhzzs06X9prc0qlTo=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=jjrC/rQ7qe8VCvk+bmc3VEkPJbQcnxG4rXGJFp927IARpUISBYW2/KaH9oGQs5xuB
-	 S2JQpS7hSFOjLU4xl7eJfPFnaFvz/pxbz2fnMzUaks/4joOGzuAri5RKGjiRtW1WQz
-	 9xYmKCjDqG4xVCs5tq+ohNYsL/8j98bC6wIu2Pm0=
+	s=default; t=1681933391;
+	bh=FiIvs2GJRoNgRkQ4E3hYGiS2X7wWBcm7oDuUes7XXc0=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=bGJmEJcnFu9Z6ADSC6vOC+MZSAIpg4YOdgcJOrFefYpH2VE67/VAHqdYCTA/AqRLY
+	 72oVM+TIllszWr9UFF54wQuYzqHJFUuNJQjgWDOSylbjt0lSCCUUts5dcPPhSUVg+Z
+	 gqLYUy5lLnOPwLXw2T1yLYRRZDNWS/MUJfmhxim0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56F1CF800D0;
-	Wed, 19 Apr 2023 21:41:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7DBFF80528;
+	Wed, 19 Apr 2023 21:41:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A291AF80212; Wed, 19 Apr 2023 21:41:25 +0200 (CEST)
+	id C3BD5F8019B; Wed, 19 Apr 2023 21:41:28 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8D9C4F80053
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2023 21:41:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D9C4F80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8FA5FF800D0
+	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2023 21:41:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FA5FF800D0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Cgo3Dz+e
+ header.s=Intel header.b=QAxQcGKU
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681933280; x=1713469280;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=JcVxaAhKXqeFKAlVJRAQobWmzWFhzzs06X9prc0qlTo=;
-  b=Cgo3Dz+e4CZ5S+Ejr2+Dn77xsbg65MqwxjNnL07p65BQbaTvSF/+4382
-   24j+fJ/sY5prcKAVQvKUN2CajysRNiCYZLsEMpAcSMhi04KxLzCeBwsAj
-   c/M/No2tsDWTsYzBPEDHg6f/aAZtFKb6oT4BrofttFtHj2qd1byZ0PD0W
-   GUjV47SM7mQylLgxyO5nf71bM3hb2HnmKjSQhzGW25fd2D1Iki3Od6j1x
-   diMbSNVpSowEyAwORmyI5BpZacIm0t00jzX8yzn35ivdvHEjsQPbbQMgk
-   UVpG7BshXVUI6giuYEuOeFJ/libz6iqab4IN9BS4FGJwm5haKMB1bDYgk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="431822098"
+  t=1681933282; x=1713469282;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=FiIvs2GJRoNgRkQ4E3hYGiS2X7wWBcm7oDuUes7XXc0=;
+  b=QAxQcGKUIDvAKju7jCm5maEYL6Io1+s5TeuK8LrQLZO78MEJl4bfki1z
+   URJPhtyAD5FVcVxzGNqOUinMKPDJbu8xZawXVy2Tx8o5ZV0yuQIJEALcS
+   Dsgodv6gCC+PmudSU3SzpR1oPoyzCcuaYaoY/0+84L6FGSUeU2lNBPMIg
+   1gqKSJSNqIqRTQodIHfhuGN/tNXCVI34GR58pXaR9FA3F5X5/n2VZTU5b
+   rwcATnk3z2InbNMfaKklaQidUr4F8aftzcUc05KtIWKJuKvXQZfty53YQ
+   FsGno5A72fWpStaOhCChc9WlbqVL4w31r4G+4KeQUR7+IULtoGebhgvdp
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="431822104"
 X-IronPort-AV: E=Sophos;i="5.99,210,1677571200";
-   d="scan'208";a="431822098"
+   d="scan'208";a="431822104"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2023 12:41:06 -0700
+ 19 Apr 2023 12:41:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="694191218"
+X-IronPort-AV: E=McAfee;i="6600,9927,10685"; a="694191220"
 X-IronPort-AV: E=Sophos;i="5.99,210,1677571200";
-   d="scan'208";a="694191218"
+   d="scan'208";a="694191220"
 Received: from gargicha-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.74.38])
   by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2023 12:41:06 -0700
+ 19 Apr 2023 12:41:07 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 0/2] ASoC: SOF: add no_reply IPC calls
-Date: Wed, 19 Apr 2023 14:40:55 -0500
-Message-Id: <20230419194057.42205-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 1/2] ASoC: SOF: ipc: Add no reply inline calls
+Date: Wed, 19 Apr 2023 14:40:56 -0500
+Message-Id: <20230419194057.42205-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230419194057.42205-1-pierre-louis.bossart@linux.intel.com>
+References: <20230419194057.42205-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DHAVP7YTTS2SBN3YKET26W4KA7WYUG2E
-X-Message-ID-Hash: DHAVP7YTTS2SBN3YKET26W4KA7WYUG2E
+Message-ID-Hash: 7W53VMMY7QZZ5MGFKIKKX2J4EBWRSZKD
+X-Message-ID-Hash: 7W53VMMY7QZZ5MGFKIKKX2J4EBWRSZKD
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,13 +84,17 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
 CC: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ Curtis Malainey <cujomalainey@chromium.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DHAVP7YTTS2SBN3YKET26W4KA7WYUG2E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7W53VMMY7QZZ5MGFKIKKX2J4EBWRSZKD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,31 +103,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Simplify IPC messages to avoid passing a reply structure that is not
-used later.
+From: Curtis Malainey <cujomalainey@chromium.org>
 
-Changes since v1: fixed rebase issue leading to allmodconfig
-compilation error
+95% of the calls inside SOF to TX an IPC don't care about a reply. Yet
+the previous commit cleaned up a bunch of replies that were being
+populated and then thrown away. This adds some functions so users who do
+not need replies don't feel obligated to provide the space to the API.
 
-Curtis Malainey (2):
-  ASoC: SOF: ipc: Add no reply inline calls
-  ASoC: SOF: Use no_reply calls for TX
+Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/sof/sof-client.h |  4 ++++
+ sound/soc/sof/sof-priv.h   | 10 ++++++++++
+ 2 files changed, 14 insertions(+)
 
- sound/soc/sof/compress.c                  |  8 ++----
- sound/soc/sof/intel/hda-loader.c          |  2 +-
- sound/soc/sof/ipc3-dtrace.c               | 12 +++------
- sound/soc/sof/ipc3-pcm.c                  |  6 ++---
- sound/soc/sof/ipc3-topology.c             | 33 +++++++----------------
- sound/soc/sof/ipc3.c                      | 12 +++------
- sound/soc/sof/ipc4-pcm.c                  |  6 ++---
- sound/soc/sof/ipc4-topology.c             | 10 +++----
- sound/soc/sof/sof-client-ipc-flood-test.c |  3 +--
- sound/soc/sof/sof-client-probes-ipc3.c    | 12 +++------
- sound/soc/sof/sof-client-probes-ipc4.c    |  4 +--
- sound/soc/sof/sof-client.h                |  4 +++
- sound/soc/sof/sof-priv.h                  | 10 +++++++
- 13 files changed, 51 insertions(+), 71 deletions(-)
-
+diff --git a/sound/soc/sof/sof-client.h b/sound/soc/sof/sof-client.h
+index 2589714eaa91..10571d1ea9a7 100644
+--- a/sound/soc/sof/sof-client.h
++++ b/sound/soc/sof/sof-client.h
+@@ -39,6 +39,10 @@ struct sof_client_dev {
+ 
+ int sof_client_ipc_tx_message(struct sof_client_dev *cdev, void *ipc_msg,
+ 			      void *reply_data, size_t reply_bytes);
++static inline int sof_client_ipc_tx_message_no_reply(struct sof_client_dev *cdev, void *ipc_msg)
++{
++	return sof_client_ipc_tx_message(cdev, ipc_msg, NULL, 0);
++}
+ int sof_client_ipc_set_get_data(struct sof_client_dev *cdev, void *ipc_msg,
+ 				bool set);
+ 
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 1170989bea57..cd4f6ac126ec 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -711,10 +711,20 @@ static inline void snd_sof_ipc_msgs_rx(struct snd_sof_dev *sdev)
+ }
+ int sof_ipc_tx_message(struct snd_sof_ipc *ipc, void *msg_data, size_t msg_bytes,
+ 		       void *reply_data, size_t reply_bytes);
++static inline int sof_ipc_tx_message_no_reply(struct snd_sof_ipc *ipc, void *msg_data,
++					      size_t msg_bytes)
++{
++	return sof_ipc_tx_message(ipc, msg_data, msg_bytes, NULL, 0);
++}
+ int sof_ipc_set_get_data(struct snd_sof_ipc *ipc, void *msg_data,
+ 			 size_t msg_bytes, bool set);
+ int sof_ipc_tx_message_no_pm(struct snd_sof_ipc *ipc, void *msg_data, size_t msg_bytes,
+ 			     void *reply_data, size_t reply_bytes);
++static inline int sof_ipc_tx_message_no_pm_no_reply(struct snd_sof_ipc *ipc, void *msg_data,
++						    size_t msg_bytes)
++{
++	return sof_ipc_tx_message_no_pm(ipc, msg_data, msg_bytes, NULL, 0);
++}
+ int sof_ipc_send_msg(struct snd_sof_dev *sdev, void *msg_data, size_t msg_bytes,
+ 		     size_t reply_bytes);
+ 
 -- 
 2.37.2
 
