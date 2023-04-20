@@ -4,45 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41684C77B7C
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Apr 2023 10:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A21D7C77B76
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Apr 2023 10:34:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEDD3ECB;
-	Thu, 20 Apr 2023 12:33:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEDD3ECB
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3A21EC5;
+	Thu, 20 Apr 2023 12:33:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3A21EC5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681986860;
-	bh=mM8kwZeup+Ii76yZcHfwfq3tvbZq8F7xNfnaCsUOamE=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=FsmQsAZ3BIcbOoKYQSuI/QE2jXIhfqxwoPPmtbMJDazrbiiNgdxrODucBoYhjIzdZ
-	 nLAVTVtdfoGJVHLxrmBvk+ORSh4IR3h6q09VVfgkNmqDp2f8w9ll6bH4JY9RE110e9
-	 G2Ivg96QdX6tQ7II1T93yAEe2sXMsV/D5/Fxr3VM=
+	s=default; t=1681986881;
+	bh=IeW/gBw4WQjG+YkQ9ff5Kf+pAShAKRcghmj0x3LxkcM=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=rmK0Tdb44GkoRQHWdatMjkfHHHDBHU1jxl01JRFQ4PsxtkH70YEhSaQ0Wycl/YC89
+	 n/9riI6yOJtDsPalPQmh2rlYqipu/6kyx7l1hl62bLKd2Z9CmBPuDZ2AKD0IBVG6Yu
+	 YB/RigwVGYMsieNP30EYIAYvBIc36HWvKOOzECmM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D708F80510;
-	Thu, 20 Apr 2023 12:33:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23A5AF80529;
+	Thu, 20 Apr 2023 12:33:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 159B5F80510; Thu, 20 Apr 2023 04:41:43 +0200 (CEST)
+	id 1A41AF80510; Thu, 20 Apr 2023 04:41:48 +0200 (CEST)
 Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
  [61.152.239.71])
 	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 44F0CF800F8
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2023 04:41:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44F0CF800F8
+	by alsa1.perex.cz (Postfix) with ESMTPS id C9149F80053
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2023 04:41:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9149F80053
 Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by fd01.gateway.ufhost.com (Postfix) with ESMTP id A620824DB89;
-	Thu, 20 Apr 2023 10:41:19 +0800 (CST)
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 52A0524E171;
+	Thu, 20 Apr 2023 10:41:22 +0800 (CST)
 Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
  (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 20 Apr
- 2023 10:41:19 +0800
+ 2023 10:41:22 +0800
 Received: from SD-Server.starfivetech.com (113.72.144.253) by
  EXMBX168.cuchost.com (172.16.6.78) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Thu, 20 Apr 2023 10:41:18 +0800
+ 15.0.1497.42; Thu, 20 Apr 2023 10:41:21 +0800
 From: Walker Chen <walker.chen@starfivetech.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Rob
  Herring" <robh+dt@kernel.org>, Krzysztof Kozlowski
@@ -50,10 +51,12 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Rob
 	<conor.dooley@microchip.com>, Emil Renner Berthing
 	<emil.renner.berthing@canonical.com>, Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>, Walker Chen <walker.chen@starfivetech.com>
-Subject: [PATCH v2 0/4] Add TDM audio on StarFive JH7110
-Date: Thu, 20 Apr 2023 10:41:14 +0800
-Message-ID: <20230420024118.22677-1-walker.chen@starfivetech.com>
+Subject: [PATCH v2 4/4] riscv: dts: starfive: add tdm node and sound card
+Date: Thu, 20 Apr 2023 10:41:18 +0800
+Message-ID: <20230420024118.22677-5-walker.chen@starfivetech.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230420024118.22677-1-walker.chen@starfivetech.com>
+References: <20230420024118.22677-1-walker.chen@starfivetech.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [113.72.144.253]
@@ -66,8 +69,8 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: SL2ITCTCX3BLDYQJFOENXV5F54YDCM2G
-X-Message-ID-Hash: SL2ITCTCX3BLDYQJFOENXV5F54YDCM2G
+Message-ID-Hash: TU56ZSVZDWVIZRW2KFOFDUCSAY7Z5QKZ
+X-Message-ID-Hash: TU56ZSVZDWVIZRW2KFOFDUCSAY7Z5QKZ
 X-Mailman-Approved-At: Thu, 20 Apr 2023 10:33:13 +0000
 CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
@@ -76,7 +79,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SL2ITCTCX3BLDYQJFOENXV5F54YDCM2G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TU56ZSVZDWVIZRW2KFOFDUCSAY7Z5QKZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,96 +88,187 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patchset adds TDM audio driver for the StarFive JH7110 SoC. The
-first patch adds device tree binding for TDM module. The second patch
-adds the item for JH7110 audio board to the dt-binding of StarFive
-SoC-based boards. The third patch adds tdm driver support for JH7110
-SoC. The last patch adds device node of tdm and sound card to JH7110 dts.
+Add the tdm controller node and sound card for the StarFive JH7110 SoC.
 
-The series has been tested on the VisionFive 2 board by plugging the
-raspberry pie audio board. 
-
-For more information of raspberry pie audio board, you can take a look
-at the following webpage:
-https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/
-
-The last patch should be applied after the following patchset:
-https://lore.kernel.org/all/20230411135558.44282-1-xingyu.wu@starfivetech.com/
-
-Changes since v1:
-- Rebased on Linux 6.3-rc4.
-- Added the dts file dedicated to describe audio card.
-- Added the item for JH7110 audio board to the dt-binding of StarFive
-  SoC-based boards.
-
+Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+Signed-off-by: Walker Chen <walker.chen@starfivetech.com>
 ---
-v1: https://lore.kernel.org/all/20230329153320.31390-1-walker.chen@starfivetech.com/
-
-Walker Chen (4):
-  dt-bindings: sound: Add TDM for StarFive JH7110
-  dt-bindings: riscv: Add item for StarFive JH7110 audio board
-  ASoC: starfive: Add JH7110 TDM driver
-  riscv: dts: starfive: add tdm node and sound card
-
- .../devicetree/bindings/riscv/starfive.yaml   |   1 +
- .../bindings/sound/starfive,jh7110-tdm.yaml   |  98 +++
- MAINTAINERS                                   |   6 +
- arch/riscv/boot/dts/starfive/Makefile         |   1 +
- .../starfive/jh7110-starfive-audio-card.dts   |  67 ++
- .../jh7110-starfive-visionfive-2.dtsi         |  40 ++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      |  21 +
- sound/soc/Kconfig                             |   1 +
- sound/soc/Makefile                            |   1 +
- sound/soc/starfive/Kconfig                    |  15 +
- sound/soc/starfive/Makefile                   |   2 +
- sound/soc/starfive/jh7110_tdm.c               | 579 ++++++++++++++++++
- sound/soc/starfive/jh7110_tdm.h               | 155 +++++
- 13 files changed, 987 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/starfive,jh7110-tdm.yaml
+ arch/riscv/boot/dts/starfive/Makefile         |  1 +
+ .../starfive/jh7110-starfive-audio-card.dts   | 67 +++++++++++++++++++
+ .../jh7110-starfive-visionfive-2.dtsi         | 40 +++++++++++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      | 21 ++++++
+ 4 files changed, 129 insertions(+)
  create mode 100644 arch/riscv/boot/dts/starfive/jh7110-starfive-audio-card.dts
- create mode 100644 sound/soc/starfive/Kconfig
- create mode 100644 sound/soc/starfive/Makefile
- create mode 100644 sound/soc/starfive/jh7110_tdm.c
- create mode 100644 sound/soc/starfive/jh7110_tdm.h
 
-
-base-commit: 197b6b60ae7bc51dd0814953c562833143b292aa
-prerequisite-patch-id: 30bec4dba6f250a6edd0c2cbab2ce09442e50e8a
-prerequisite-patch-id: bb939c0c7c26b08addfccd890f9d3974b6eaec53
-prerequisite-patch-id: 8a6f135bcabdad4a4bfb21f0c6a0ffd2bb57efe7
-prerequisite-patch-id: c2366f993a9d85e28c06d8d09f064dd5e8b29a61
-prerequisite-patch-id: 50d53a21f91f4087fc80b6f1f72864adfb0002b9
-prerequisite-patch-id: 0df3703af91c30f1ca2c47f5609012f2d7200028
-prerequisite-patch-id: 89f049f951e5acf75aab92541992f816fd0acc0d
-prerequisite-patch-id: 551fae54377090044c3612fca9740a9b359abdd2
-prerequisite-patch-id: c7fdf904f398d478f0ed6d57eb878982bc73329d
-prerequisite-patch-id: 1b2d0982b18da060c82134f05bf3ce16425bac8d
-prerequisite-patch-id: 090ba4b78d47bc19204916e76fdbc70021785388
-prerequisite-patch-id: a5d9e0f7d4f8163f566678894cf693015119f2d9
-prerequisite-patch-id: 4637a8fa2334a45fa6b64351f4e9e28d3e2d60d3
-prerequisite-patch-id: 32647ec60a3b614e1c59ec8e54cb511ae832c22f
-prerequisite-patch-id: aa06658ecf89c92d0dfdd6a4ba6d9e6e67532971
-prerequisite-patch-id: 1387a7e87b446329dfc21f3e575ceae7ebcf954c
-prerequisite-patch-id: 258ea5f9b8bf41b6981345dcc81795f25865d38f
-prerequisite-patch-id: 8b6f2c9660c0ac0ee4e73e4c21aca8e6b75e81b9
-prerequisite-patch-id: dbb0c0151b8bdf093e6ce79fd2fe3f60791a6e0b
-prerequisite-patch-id: 9007c8610fdcd387592475949864edde874c20a2
-prerequisite-patch-id: d57e95d31686772abc4c4d5aa1cadc344dc293cd
-prerequisite-patch-id: 9f911969d0a550648493952c99096d26e05d4d83
-prerequisite-patch-id: 2ddada18ab6ea5cd1da14212aaf59632f5203d40
-prerequisite-patch-id: 80042661ff6156ce577a72e9eb8c0b218b624829
-prerequisite-patch-id: 398744c61913c76a35754de867c4f820ca7a8d99
-prerequisite-patch-id: f59269382164b5d642a5e10443ca447f5caa595c
-prerequisite-patch-id: 1babe83d6bf999bad17584dc595480f9070a5369
-prerequisite-patch-id: 77be3d122d66df813f13088141ce27b21107a341
-prerequisite-patch-id: 9fbb7ad1dd258bb8ff5946c4a0e59de4bfd82a04
-prerequisite-patch-id: 6f6984916dffd0cc66aa733c9b6bd3a55495a50c
-prerequisite-patch-id: 39e1be2a3d1593577ab997f55f59367cba665aa7
-prerequisite-patch-id: 584c256c9acb52ee2773d0c81c3f4977fc18155a
-prerequisite-patch-id: b37ac15032973e1fcd918f157c82a0606775c9e9
-prerequisite-patch-id: 32deea16304859842af5c2151bc41d91cf6dfc9b
-prerequisite-patch-id: 20ac2450fb93b3f69f83fc720fd4800a95e618a6
-prerequisite-patch-id: 6abf359fa445f4104432ddee27044dfbfb128417
+diff --git a/arch/riscv/boot/dts/starfive/Makefile b/arch/riscv/boot/dts/starfive/Makefile
+index 170956846d49..cb22cb7f66b0 100644
+--- a/arch/riscv/boot/dts/starfive/Makefile
++++ b/arch/riscv/boot/dts/starfive/Makefile
+@@ -4,3 +4,4 @@ dtb-$(CONFIG_ARCH_STARFIVE) += jh7100-starfive-visionfive-v1.dtb
+ 
+ dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-v1.2a.dtb
+ dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-v1.3b.dtb
++dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-audio-card.dtb
+diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-audio-card.dts b/arch/riscv/boot/dts/starfive/jh7110-starfive-audio-card.dts
+new file mode 100644
+index 000000000000..967d9aa7d1e1
+--- /dev/null
++++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-audio-card.dts
+@@ -0,0 +1,67 @@
++// SPDX-License-Identifier: GPL-2.0 OR MIT
++/*
++ * Device Tree for JH7110 + Simple Audio Card
++ *
++ * Copyright (C) 2023 StarFive Technology Co., Ltd.
++ */
++
++/dts-v1/;
++#include "jh7110-starfive-visionfive-2-v1.3b.dts"
++
++/ {
++	model = "StarFive VisionFive 2 Audio Board";
++	compatible = "starfive,visionfive-2-audio", "starfive,jh7110";
++
++	wm8960_mclk: wm8960-mclk {
++		compatible = "fixed-clock";
++		clock-output-names = "wm8960_mclk";
++		#clock-cells = <0>;
++		clock-frequency = <24576000>;
++	};
++
++	sound {
++		compatible = "simple-audio-card";
++
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		simple-audio-card,name = "Starfive-TDM-Sound-Card";
++		simple-audio-card,widgets = "Microphone", "Mic Jack",
++					    "Line", "Line In",
++					    "Line", "Line Out",
++					    "Speaker", "Speaker",
++					    "Headphone", "Headphone Jack";
++		simple-audio-card,routing = "Headphone Jack", "HP_L",
++					    "Headphone Jack", "HP_R",
++					    "Speaker", "SPK_LP",
++					    "Speaker", "SPK_LN",
++					    "LINPUT1", "Mic Jack",
++					    "LINPUT3", "Mic Jack",
++					    "RINPUT1", "Mic Jack",
++					    "RINPUT2", "Mic Jack";
++
++		simple-audio-card,dai-link@0 {
++			reg = <0>;
++			format = "dsp_a";
++			bitclock-master = <&dailink_master>;
++			frame-master = <&dailink_master>;
++
++			cpu {
++				sound-dai = <&tdm>;
++			};
++			dailink_master: codec {
++				sound-dai = <&wm8960>;
++				clocks = <&wm8960_mclk>;
++			};
++		};
++	};
++};
++
++&i2c0 {
++	wm8960: codec@1a {
++		compatible = "wlf,wm8960";
++		reg = <0x1a>;
++		wlf,shared-lrclk;
++		#sound-dai-cells = <0>;
++	};
++};
+diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+index 1155b97b593d..19b5954ee72d 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+@@ -214,6 +214,40 @@
+ 			slew-rate = <0>;
+ 		};
+ 	};
++
++	tdm0_pins: tdm0-pins {
++		tdm0-pins-tx {
++			pinmux = <GPIOMUX(44, GPOUT_SYS_TDM_TXD,
++					      GPOEN_ENABLE,
++					      GPI_NONE)>;
++			bias-pull-up;
++			drive-strength = <2>;
++			input-disable;
++			input-schmitt-disable;
++			slew-rate = <0>;
++		};
++
++		tdm0-pins-rx {
++			pinmux = <GPIOMUX(61, GPOUT_HIGH,
++					      GPOEN_DISABLE,
++					      GPI_SYS_TDM_RXD)>;
++			input-enable;
++		};
++
++		tdm0-pins-sync {
++			pinmux = <GPIOMUX(63, GPOUT_HIGH,
++					      GPOEN_DISABLE,
++					      GPI_SYS_TDM_SYNC)>;
++			input-enable;
++		};
++
++		tdm0-pins-pcmclk {
++			pinmux = <GPIOMUX(38, GPOUT_HIGH,
++					      GPOEN_DISABLE,
++					      GPI_SYS_TDM_CLK)>;
++			input-enable;
++		};
++	};
+ };
+ 
+ &uart0 {
+@@ -221,3 +255,9 @@
+ 	pinctrl-0 = <&uart0_pins>;
+ 	status = "okay";
+ };
++
++&tdm {
++	pinctrl-names = "default";
++	pinctrl-0 = <&tdm0_pins>;
++	status = "okay";
++};
+diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+index 866313570a7e..cfda6fb0d91b 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+@@ -366,6 +366,27 @@
+ 			status = "disabled";
+ 		};
+ 
++		tdm: tdm@10090000 {
++			compatible = "starfive,jh7110-tdm";
++			reg = <0x0 0x10090000 0x0 0x1000>;
++			clocks = <&syscrg JH7110_SYSCLK_TDM_AHB>,
++				 <&syscrg JH7110_SYSCLK_TDM_APB>,
++				 <&syscrg JH7110_SYSCLK_TDM_INTERNAL>,
++				 <&syscrg JH7110_SYSCLK_TDM_TDM>,
++				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
++				 <&tdm_ext>;
++			clock-names = "tdm_ahb", "tdm_apb",
++				      "tdm_internal", "tdm",
++				      "mclk_inner", "tdm_ext";
++			resets = <&syscrg JH7110_SYSRST_TDM_AHB>,
++				 <&syscrg JH7110_SYSRST_TDM_APB>,
++				 <&syscrg JH7110_SYSRST_TDM_CORE>;
++			dmas = <&dma 20>, <&dma 21>;
++			dma-names = "rx","tx";
++			#sound-dai-cells = <0>;
++			status = "disabled";
++		};
++
+ 		stgcrg: clock-controller@10230000 {
+ 			compatible = "starfive,jh7110-stgcrg";
+ 			reg = <0x0 0x10230000 0x0 0x10000>;
 -- 
 2.17.1
 
