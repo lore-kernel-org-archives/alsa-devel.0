@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC9F6C77B72
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Apr 2023 11:06:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CCDCC77B76
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Apr 2023 11:06:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12193EA0;
-	Thu, 20 Apr 2023 13:05:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12193EA0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97FFAEDD;
+	Thu, 20 Apr 2023 13:05:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97FFAEDD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1681988774;
-	bh=w194uIv02dRzzmArfVp/aAraTo8Omr2YJqo7iox1U1M=;
+	s=default; t=1681988783;
+	bh=FxSpL+k7mWLJ/yG1GbUE51+sbJSmAkqDaYqGJUi2tiY=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QjLB9zBxRFDOUyTi8Jc4KG12cVqhNZts+BOXIlKnm94pkXRN2kHtSWorcpI5S1Ys/
-	 zur/qLO6L2Qry/yUZNLMMZQEIS24Kp2OCPXZ+2PhUHt23zZbqfzlZtM6Dvm12hWaZJ
-	 moi9aEP0v0M6yd5hZ6tFG+2PwN8EpGDW0Bms4HvM=
+	b=qDCwDQ4eWoxHxZnYmWVhGsyjk4fvdGHIr1LXXIEyrHX5n9GWvJ1bBPCg7NZxFX81f
+	 lw+5xrmGunEw6kXXA30v7ut5xTWbps4vd6PHg7zyaDnNLE/uQ5MWcGAl1+egvybfHR
+	 7K3ZF7rcA4JqKxdUIFHAVt1SprndO4JTct+/E6cI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23747F8057D;
-	Thu, 20 Apr 2023 13:02:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D9E0F805AA;
+	Thu, 20 Apr 2023 13:03:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 89C1EF805A9; Thu, 20 Apr 2023 13:02:56 +0200 (CEST)
+	id 8BFE7F805A9; Thu, 20 Apr 2023 13:02:58 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7DA65F8057D
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2023 13:02:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DA65F8057D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 19C42F8057D
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2023 13:02:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19C42F8057D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=puvf2zwO
+ header.s=k20201202 header.b=Pn7MpPoM
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 30C7764780;
-	Thu, 20 Apr 2023 11:02:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A8A2C433D2;
-	Thu, 20 Apr 2023 11:02:49 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id EE090647B4;
+	Thu, 20 Apr 2023 11:02:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CD7FC4339B;
+	Thu, 20 Apr 2023 11:02:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1681988572;
-	bh=w194uIv02dRzzmArfVp/aAraTo8Omr2YJqo7iox1U1M=;
+	s=k20201202; t=1681988574;
+	bh=FxSpL+k7mWLJ/yG1GbUE51+sbJSmAkqDaYqGJUi2tiY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=puvf2zwOfx/6bJvUogwM2/IkDtXytyTVDPpAk1MRni8EqNrUdV1rXa5AJhocDVy20
-	 GeiJXhm7aMkBO3XywQMHP8Cy1AU7cR73a8EKc1TR2NFDcTB4vNnfgYBMo4jqnqQnOK
-	 1X53kAfSyafuES0niKt2VPXTbkjWj3MtO9IojW50RGtNPqY26CtOgwu+4z77Umh0u+
-	 RIPqRZ8P2ktx1gXJmj1MNrv04MrzG7EoNklocPaRINexKlxOv6AjB6RqRETUQLSWfM
-	 ifRD43tddR9hblk5kwOELP10FuT9rI/jk+qw3X+ASFvbEdQ15fDumwfVvAFFclEVTE
-	 VeLbp+hr4ikvw==
+	b=Pn7MpPoMNANqjG+LlzCNnDHE36SoPBzNM0qQbj9axollLrIZoWzZIdCV4vAVh/yb8
+	 wSjr5Oi0wXdcNtBYxkdDXWdISpSMuK1IZLiTp0c3dOWyCdo7hSKFGwsR1+PnsN4gjx
+	 y+Didaz8eFgPSJ1FbniBf9V/wolDckHCRidusxk3cGwPqW0A5RN1Iaowq5Hs1v4q+l
+	 J+dyVG8dicdUKlZwL/HRjCghBjt2VBIF2OcRFkU6c7TfXd8q5akIWB9xpLnUHKxCZz
+	 yssqkR94tKEHTYbKH5da/VxcEZ7NEdSu1ZtqT/27KVcM4AtEOuYN4EvnwTW8urO93r
+	 twRPdr+6eWxEQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 07/15] ASoC: Intel: bytcr_rt5640: Add quirk for
- the Acer Iconia One 7 B1-750
-Date: Thu, 20 Apr 2023 07:02:21 -0400
-Message-Id: <20230420110231.505992-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 08/15] ASoC: da7213.c: add missing
+ pm_runtime_disable()
+Date: Thu, 20 Apr 2023 07:02:22 -0400
+Message-Id: <20230420110231.505992-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230420110231.505992-1-sashal@kernel.org>
 References: <20230420110231.505992-1-sashal@kernel.org>
@@ -68,8 +68,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: N33DWEZSJIYY7QS32NU437K2EMSQJF46
-X-Message-ID-Hash: N33DWEZSJIYY7QS32NU437K2EMSQJF46
+Message-ID-Hash: GHOZSTZMUI5WVVG3SCBVPFB2UE2E5N7M
+X-Message-ID-Hash: GHOZSTZMUI5WVVG3SCBVPFB2UE2E5N7M
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -77,22 +77,17 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Hans de Goede <hdegoede@redhat.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Sasha Levin <sashal@kernel.org>,
- cezary.rojewski@intel.com, liam.r.girdwood@linux.intel.com,
- peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- tiwai@suse.com, ckeepax@opensource.cirrus.com,
- amadeuszx.slawinski@linux.intel.com, oder_chiou@realtek.com,
- moisesmcardona@gmail.com, andriy.shevchenko@linux.intel.com,
- alsa-devel@alsa-project.org
+CC: Duy Nguyen <duy.nguyen.rh@renesas.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Khanh Le <khanh.le.xr@renesas.com>, Mark Brown <broonie@kernel.org>,
+ Sasha Levin <sashal@kernel.org>, support.opensource@diasemi.com,
+ lgirdwood@gmail.com, tiwai@suse.com, alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N33DWEZSJIYY7QS32NU437K2EMSQJF46/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GHOZSTZMUI5WVVG3SCBVPFB2UE2E5N7M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,48 +96,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Duy Nguyen <duy.nguyen.rh@renesas.com>
 
-[ Upstream commit e38c5e80c3d293a883c6f1d553f2146ec0bda35e ]
+[ Upstream commit 44378cd113e5f15bb0a89f5ac5a0e687b52feb90 ]
 
-The Acer Iconia One 7 B1-750 tablet mostly works fine with the defaults
-for an Bay Trail CR tablet. Except for the internal mic, instead of
-an analog mic on IN3 a digital mic on DMIC1 is uses.
+da7213.c is missing pm_runtime_disable(), thus we will get
+below error when rmmod -> insmod.
 
-Add a quirk with these settings for this tablet.
+	$ rmmod  snd-soc-da7213.ko
+	$ insmod snd-soc-da7213.ko
+	da7213 0-001a: Unbalanced pm_runtime_enable!"
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20230322145332.131525-1-hdegoede@redhat.com
+[Kuninori adjusted to latest upstream]
+
+Signed-off-by: Duy Nguyen <duy.nguyen.rh@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Khanh Le <khanh.le.xr@renesas.com>
+Link: https://lore.kernel.org/r/87mt3xg2tk.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/codecs/da7213.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 4f46f52c38e44..783c201259921 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -533,6 +533,18 @@ static int byt_rt5640_aif1_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 544ccbcfc8844..5678683c71bee 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1996,6 +1996,11 @@ static int da7213_i2c_probe(struct i2c_client *i2c)
+ 	return ret;
+ }
  
- /* Please keep this list alphabetically sorted */
- static const struct dmi_system_id byt_rt5640_quirk_table[] = {
-+	{	/* Acer Iconia One 7 B1-750 */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Insyde"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "VESPA2"),
-+		},
-+		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
-+					BYT_RT5640_JD_SRC_JD1_IN4P |
-+					BYT_RT5640_OVCD_TH_1500UA |
-+					BYT_RT5640_OVCD_SF_0P75 |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{	/* Acer Iconia Tab 8 W1-810 */
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Acer"),
++static void da7213_i2c_remove(struct i2c_client *i2c)
++{
++	pm_runtime_disable(&i2c->dev);
++}
++
+ static int __maybe_unused da7213_runtime_suspend(struct device *dev)
+ {
+ 	struct da7213_priv *da7213 = dev_get_drvdata(dev);
+@@ -2039,6 +2044,7 @@ static struct i2c_driver da7213_i2c_driver = {
+ 		.pm = &da7213_pm,
+ 	},
+ 	.probe_new	= da7213_i2c_probe,
++	.remove		= da7213_i2c_remove,
+ 	.id_table	= da7213_i2c_id,
+ };
+ 
 -- 
 2.39.2
 
