@@ -4,121 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18899C77B73
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Apr 2023 17:58:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75560C77B73
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Apr 2023 18:21:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D53EEB6;
-	Thu, 20 Apr 2023 19:57:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D53EEB6
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD870EBB;
+	Thu, 20 Apr 2023 20:20:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD870EBB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682013521;
-	bh=gP4DKlPbEa0MaAWjkMmrabZeSQC5xHqkgk3wat7fvVk=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1682014895;
+	bh=5XFSKTlGWTxFI19rXXuk4sccUdqF5R5vVCMDRvNeE6Q=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XJFU0FSCMW1MlnwiQbs/JRcanaym8so+NkuCdE0gJ1eNnDfLXm9ofIhpJqxnPi1jc
-	 qVKtCQS2DNzOQIpivuCo7XRfwGWrjQZateTftFXQmRjImMwj8V3Mo31mob3asloxFh
-	 e+/hw49U2DMR1NU4HXuSw2cdUI0gmLUEkgHr/WAs=
+	b=ASlxYq4WR3jWqEKi27UIKOXFMf3ZQyQb8IFmmN65K/Z+Sc8okJ8jZNllu5T86PydH
+	 Eh+Fcs8wCWXGiAn2WHCV2XOAegpslR4kehR7GCVgJZDGfHiI/Fr9mcJkVtB4BTCaGe
+	 JeXsxSeLNaeAv9U5XTHvU62bv9/sXcB2mo+7DAIQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF7B7F80155;
-	Thu, 20 Apr 2023 19:57:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24342F80155;
+	Thu, 20 Apr 2023 20:20:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92D54F80155; Thu, 20 Apr 2023 19:57:21 +0200 (CEST)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 64FD7F80155; Thu, 20 Apr 2023 20:20:17 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6DDD4F800AC
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2023 19:57:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DDD4F800AC
+	by alsa1.perex.cz (Postfix) with ESMTPS id 60287F800F8
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2023 20:20:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60287F800F8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=oqYAYTMF
-Received: by mail-ej1-x634.google.com with SMTP id vc20so8170058ejc.10
-        for <alsa-devel@alsa-project.org>;
- Thu, 20 Apr 2023 10:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1682013433; x=1684605433;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dAr/LIDlGatkoRn7/ee7RkK9qX5KXHUaiCQKcYx4heQ=;
-        b=oqYAYTMFxDORiQ4wijHNnpfbTMjjvGTX7+71JMGGnTHplTY+CZa/+qns7HaFROzvgI
-         uChGjaDR+IV2P2RGg9gjqdVSEftPOkUeLikUWuSexT90zN5MzJDY15yq9SkK0NDxbzqH
-         ZUzq0yQcf7UAHPdm8K0EoB6mAeBTusy15I3ZdiE9GFBZ95/+O4IHC5unQsqBmEhXuLsa
-         Pw4q3d7/Y6qh2QaGz3giYki6B6dYJ4/RRBcMm9DgXS84ldV771TzVQ2BhZYRtW9XT23+
-         uS5+W8RqsS4r7JuDp5E3yiP+bw25wTnrML1Hm2yDiOHUa6mDORENHZtx4/ON5odj8KPJ
-         bdbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682013433; x=1684605433;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dAr/LIDlGatkoRn7/ee7RkK9qX5KXHUaiCQKcYx4heQ=;
-        b=NihWLVaQADDF72E5NGls0Sqz6IQdwV6LfINhdTexuAbMiVG39TTOCD0KeBNEJYdRn9
-         sKqxwp+KXx8sDC7QloMW4gclDLa+oRJq1LOd7XPyNkMMewHsibSb98aPwoDJC7QHFpDp
-         fvk8wwOi6I8bSboX+Ngc0tQu0I66sleQENpeqJUd5r+RsDLBGf7vJ5cl58xggZt8z60n
-         b6CSibeR81UQfAMhCqVglw3T21It5vwSe5GB1Hdr3YUin3Oy10Em23x9jOYrYOs5b1aP
-         zjQlpANKug92yU0ZuCetROz8Zls5I4TbM2GAIeshQEhGvDTcdyF6wjKoNg0bSjAvQ+8o
-         O8xg==
-X-Gm-Message-State: AAQBX9dOJyht8Llmz88/miNRx7/wW1fu3t54y8XPC0UdCuc6VgEndyGM
-	O59GuatKq20rXtnJQLoeSvjQzw==
-X-Google-Smtp-Source: 
- AKy350bqZvE/WlssqOI0yjNdobQJVWq7CkZhGDtFN1P681JhE2lw9iuEvfuhP21LgvcKbpg72QxBdw==
-X-Received: by 2002:a17:906:fb16:b0:953:517a:8f1a with SMTP id
- lz22-20020a170906fb1600b00953517a8f1amr2236602ejb.58.1682013433347;
-        Thu, 20 Apr 2023 10:57:13 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:bcb8:77e6:8f45:4771?
- ([2a02:810d:15c0:828:bcb8:77e6:8f45:4771])
-        by smtp.gmail.com with ESMTPSA id
- hb8-20020a170906b88800b0094bb4c75695sm956766ejb.194.2023.04.20.10.57.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Apr 2023 10:57:12 -0700 (PDT)
-Message-ID: <41daab8e-e116-83b3-234f-ece43817a0f5@linaro.org>
-Date: Thu, 20 Apr 2023 19:57:11 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH 3/6] ASoC: codecs: wcd938x: Check for enumeration before
- using TX device
-Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=hXSDni+M
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9034464B2F;
+	Thu, 20 Apr 2023 18:20:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3E45C433EF;
+	Thu, 20 Apr 2023 18:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1682014808;
+	bh=5XFSKTlGWTxFI19rXXuk4sccUdqF5R5vVCMDRvNeE6Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hXSDni+ML7e8GD4VMSSG+NtvkzA74GSINSfWtjPOPnQw86s+isW8m3D3WHXZS8hNw
+	 V3485du/yMFHVrV16n53j595kRPpyA2Sm9yjxJ017TbTlzG75lyFUmeoEZJ81YYCOe
+	 LMyzVbSYp7Llyw9Wd5UZcJAu0oFZv2OOO5QtnEpHSyixKFiQeQ62s5jywBoSy2VTj7
+	 GEOWYPmkZ+QayKydWFMs1Ty3lyZNUvoZZvsL+XDqA9CnDdC8CkrtjAH98yEwndS/vO
+	 26Dg3zeRSL6VSjWN3H1w+/IsYp39ysZduFBm3+Wml+vdJevJH5pO8uX2jaTNwKFNra
+	 7LrsxWiLa9NXw==
+Date: Thu, 20 Apr 2023 19:19:59 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/6] ASoC: wcd938x: switch to using gpiod API
+Message-ID: <a1d797bc-609c-4cb5-a531-9f840f3cf2b7@sirena.org.uk>
 References: <20230420101617.142225-1-krzysztof.kozlowski@linaro.org>
- <20230420101617.142225-4-krzysztof.kozlowski@linaro.org>
- <dfe88b94-215b-a86f-60b4-25d2f9ea0e5f@linux.intel.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <dfe88b94-215b-a86f-60b4-25d2f9ea0e5f@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: V6VBO6YMS3WS222IAUH7KDPL47PW6PNT
-X-Message-ID-Hash: V6VBO6YMS3WS222IAUH7KDPL47PW6PNT
-X-MailFrom: krzysztof.kozlowski@linaro.org
+ <20230420101617.142225-2-krzysztof.kozlowski@linaro.org>
+ <6b355201-a957-4fca-a513-d5fa0742fb40@sirena.org.uk>
+ <fe6202ee-2552-8b5c-c2d5-f2f7042b901d@linaro.org>
+ <d746ee5f-283d-44ce-b72c-18c8955d38b1@sirena.org.uk>
+ <3eb0cbb4-f6d9-db8a-031e-92627e70f41e@linaro.org>
+ <9942c3a9-51d1-4161-8871-f6ec696cb4db@sirena.org.uk>
+ <94bbd608-a90b-605d-a61c-6d6769b60445@linaro.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="E1XQasTOF4jMIEw6"
+Content-Disposition: inline
+In-Reply-To: <94bbd608-a90b-605d-a61c-6d6769b60445@linaro.org>
+X-Cookie: Above all else -- sky.
+Message-ID-Hash: I7MZSUXKLNGJE34JTPWTFB664D7AA3ZJ
+X-Message-ID-Hash: I7MZSUXKLNGJE34JTPWTFB664D7AA3ZJ
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Patrick Lai <quic_plai@quicinc.com>
+CC: Vinod Koul <vkoul@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Patrick Lai <quic_plai@quicinc.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V6VBO6YMS3WS222IAUH7KDPL47PW6PNT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I7MZSUXKLNGJE34JTPWTFB664D7AA3ZJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,106 +105,92 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 20/04/2023 16:18, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 4/20/23 05:16, Krzysztof Kozlowski wrote:
->> Qualcomm WCD938x Soundwire codecs come as two Soundwire devices - TX
->> and RX - on two Soundwire buses.  In DTS they are represented as three
->> device nodes: Soundwire TX, Soundwire RX and the platform codec node
->> (binding to this driver).
->>
->> Probing (and Soundwire enumeration) of all devices can happen in any
->> order, but only the Soundwire TX WCD938x device is used for accessing
->> actual WCD938x registers.  It is possible that component bind() in the
->> platform driver will be called too early, before the Soundwire TX device
->> is fully enumerated.  This might work or might not, but we cannot handle
->> it correctly from the codec driver.  It's job for Soundwire master to
->> bring up devices in correct order.
-> 
-> That last sentence isn't aligned with the way enumeration works in
-> general for SoundWire.
 
-I was rather referring to driver point of view. The Qualcomm Soundwire
-should work, not expect devices to be powered off during their bind...
+--E1XQasTOF4jMIEw6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> The Manager starts the clock, usually after a bus reset, and waits for
-> Peripherals to signal their presence with Device0 Attached.
-> 
-> If multiple Peripherals are attached as Device0, the enumeration will
-> resolve conflicts at the hardware level, and the Manager *cannot*
-> control the order of enumeration; the order is defined by the values in
-> the devID registers, whichever Peripheral has the highest value in the
-> DevID registers wins the enumeration, and others have to back-off and be
-> enumerated later.
-> 
-> Probing and enumeration are also different concepts. The SoundWire
-> design allows for drivers to be probed even in the absence of any active
-> hardware. This was added on purpose so that the driver could e.g.
-> program a GPIO or talk to a power-management chip to allow SoundWire
-> devices to start interacting with the bus.
-> 
-> see also suggestion below...
-> 
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>
->> ---
->>
->> Cc: Patrick Lai <quic_plai@quicinc.com>
->> ---
->>  sound/soc/codecs/wcd938x.c | 11 +++++++++++
->>  1 file changed, 11 insertions(+)
->>
->> diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
->> index 212667a7249c..e8e07e120fa1 100644
->> --- a/sound/soc/codecs/wcd938x.c
->> +++ b/sound/soc/codecs/wcd938x.c
->> @@ -77,6 +77,8 @@
->>  #define WCD938X_MBHC_MOISTURE_RREF      R_24_KOHM
->>  #define WCD_MBHC_HS_V_MAX           1600
->>  
->> +#define WCD938X_ENUM_TIMEOUT_MS		500
->> +
->>  #define WCD938X_EAR_PA_GAIN_TLV(xname, reg, shift, max, invert, tlv_array) \
->>  {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
->>  	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
->> @@ -4425,6 +4427,15 @@ static int wcd938x_bind(struct device *dev)
->>  	wcd938x->sdw_priv[AIF1_PB]->slave_irq = wcd938x->virq;
->>  	wcd938x->sdw_priv[AIF1_CAP]->slave_irq = wcd938x->virq;
->>  
->> +	/*
->> +	 * Before any TX slave regmap usage, be sure the TX slave is actually
->> +	 * enumerated.
->> +	 */
-> 
-> ...
-> 
-> the alternative is to move regmap to be cache-only in the probe and
-> remove the cache-only property when the device is enumerated.
+On Thu, Apr 20, 2023 at 07:51:27PM +0200, Krzysztof Kozlowski wrote:
+> On 20/04/2023 18:28, Mark Brown wrote:
+> > On Thu, Apr 20, 2023 at 04:16:59PM +0200, Krzysztof Kozlowski wrote:
 
-The driver wants already to use the regmap in RW just few lines below in
-wcd938x_set_micbias_data().
+> >> Life of downstream. We all know the drill: merge your DTS or suffer. T=
+he
 
-I guess I could move this entire piece of code to other place...
+> > No, the DT is supposed to be an ABI. =20
 
-> 
-> That's a trick that's used for all resume cases in codecs in Intel
-> platforms, and we need to extend it for the startup cases as well.
+> No, the DT bindings are the ABI. We are supposed not to break
+> user-space, but out-of-tree users of drivers are not ABI by itself.
+> Bindings are. If out-of-tree users make mistakes in their DTS and do not
+> want to upstream it, it's their choice but it does not come for free.
 
-Can you point me to some specific piece of driver, so I could see how it
-is done? It might help me to prepare a better patch for this.
+This is absolutely not the case, users should be able to ship DTs
+without upstreaming them and run multiple operating systems on top of a
+single DT - ideally boards would ship with DTs in firmware and people
+would be able to install generic OSs onto them with just off the shelf
+install media.  This is even a thing that people have actually done,
+both non-FDT systems like SPARC and the PowerPC systems from Apple and a
+few FDT ones like Synquacer.
 
-> 
->> +	ret = wait_for_completion_timeout(&wcd938x->tx_sdw_dev->enumeration_complete,
->> +					  msecs_to_jiffies(WCD938X_ENUM_TIMEOUT_MS));
->> +	if (!ret)
->> +		dev_warn(dev, "Enumeration timeout in bind, possible failures in accessing registers\n");
->> +
->>  	ret = wcd938x_set_micbias_data(wcd938x);
->>  	if (ret < 0) {
->>  		dev_err(dev, "%s: bad micbias pdata\n", __func__);
+The enormous costs of DT would hardly be worth it if it were purely an
+in tree thing.
 
-Best regards,
-Krzysztof
+> > The point in having a domain
+> > specific language with a compiler is to allow device trees to be
+> > distributed independently of the kernel.
 
+> When it is written incorrectly - wrong flag used for GPIO - there is no
+> requirement to support it.
+
+If it worked was it ever really wrong (and note that the bindings may
+not always be super clear...)?  While there is a point at which things
+never worked, can be fixed and we don't need to care about it or where
+we know the userbase well enough to know there won't be any issue those
+shouldn't be the default and should generally be avoided.  Where there
+is a good reason to break compatibility it should be something we're
+actively deciding to do for a clear reason having considered the
+tradeoffs, not something that gets done on a whim without even
+mentioning it.
+
+> > It's not just this individual transition, it's the whole thing with
+> > encoding the polarity of the signal at all - it's a layer of abstraction
+> > that feels like it introduces at least as many problems as it solves,
+> > and requiring configuration on every single system integration doesn't
+> > feel like the right choice in general.
+
+> Choosing appropriate flag for GPIO in DTS is not difficult. It was
+> skipped because we rarely cared in the drivers, but it should have been
+> chosen correctly. The same about interrupt flags. We had many DTS for
+> many times marking all possible interrupts as IRQ_TYPE_NONE. Did it
+> matter for many drivers and setups? No, was perfectly "fine". Is it
+> correct from DTS point of view. Also no.
+
+There's no natural definition of "correct" here though - it's just
+picking something in a binding.  If someone for example flips the label
+on a signal from reset to enable (perhaps during review) that ends up
+changing active high to active low, and really I'm not sure how much
+we're really winning compared to just having code in the end consumer
+which just directly says what value it wants the physical signal to
+have.
+
+My point is not that we haven't defined things such that the user has to
+specify if something is active high or active low, it's that it feels
+like it's more trouble han it's worth.
+
+--E1XQasTOF4jMIEw6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRBgk8ACgkQJNaLcl1U
+h9B+Pgf+MdIbsZc3MSRgo0sDGINgmk7ZlFCYK9G4DzJWb/KN/hDgJqXx/d0NKSEB
+css44uv8VRbuEEGyVKvHcqkMyfjkof3REX6VXP05Z9EXJdnGCycYb5A6tynYHrlj
+/nYsDcTZUuUNsY+AOJHQ6941BJWKeR6YhBsY7bNQZdq1HCz7BkY88RoTBDlBrzPd
+jBX+Uxa1DBDdMvvsKDvsFde4948YwlvgQEQI63afOucmG4Apl+FWEb3jNaMDzwEA
+yX0CC5YxrshNo2KrIz3uVy/YapOh/MWGo5siOyu6M5RJqXo4KMhSCH5cVXcGXB3h
+UnSazFtwtnMjuBq0MpY7eaJd8bo1kw==
+=HNVO
+-----END PGP SIGNATURE-----
+
+--E1XQasTOF4jMIEw6--
