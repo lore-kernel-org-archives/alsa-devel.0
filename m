@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33C33C77B61
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 16:09:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A63E0C7618E
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 16:29:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACAE2E94;
-	Fri, 21 Apr 2023 18:08:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACAE2E94
+	by alsa0.perex.cz (Postfix) with ESMTPS id 995FFE94;
+	Fri, 21 Apr 2023 18:29:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 995FFE94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682093372;
-	bh=AQz/ygcuCJEP8Mt00swsFBF3E+MDJ4NXhhrFqWZoUcY=;
+	s=default; t=1682094590;
+	bh=RDh3ibkeEX9WJ3z8uDInIzSMLKeBvSvB1PdmOxrb/V8=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hFByY9khIZCrSoh+BIT0ORz58SEmXUFFj8prfQk01mGlkC/k9IaCVAFq6OYuviexF
-	 pxfVwWRndtWbJUeNwIVdC9o8ej1qXoXfWgcLjW3GOyAkfOLD6ob0+wVRwmCLyGd+0w
-	 gyYMSDIDmMP74kB7c3MvTMHAA6UG2w01rVbiIK3k=
+	b=g71bmbZ50dXuIKh6Ga+aD2oJdYhME1F4ThRdOC9wW4Tm+Cdl1Hnshh4505zj39INW
+	 5JxP/gA7j/gcBK1PLd6EwGidy/JAwWj8V7GegmE/i2xLf7pFa4XgtAiTVyDnyGC8/G
+	 EcupR038PT6y0rg985EoYc3Ie9+g/QkXKsnVPIcw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE76AF8056F;
-	Fri, 21 Apr 2023 18:06:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FA8CF80053;
+	Fri, 21 Apr 2023 18:28:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B02F4F80558; Fri, 21 Apr 2023 18:06:47 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id A0836F80155; Fri, 21 Apr 2023 18:28:30 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CF074F80053
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 18:06:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF074F80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id B50D1F80053
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 18:28:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B50D1F80053
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=BnH5+19G
+ header.s=k20201202 header.b=FwAJUAzq
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 523986518F;
-	Fri, 21 Apr 2023 16:06:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 859D5C4339B;
-	Fri, 21 Apr 2023 16:06:35 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0507A61B50;
+	Fri, 21 Apr 2023 16:28:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACE7AC433D2;
+	Fri, 21 Apr 2023 16:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1682093196;
-	bh=AQz/ygcuCJEP8Mt00swsFBF3E+MDJ4NXhhrFqWZoUcY=;
+	s=k20201202; t=1682094500;
+	bh=RDh3ibkeEX9WJ3z8uDInIzSMLKeBvSvB1PdmOxrb/V8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=BnH5+19Gczz1f2QWgEorzd7Bw9V8wzoTNPpzneaUJc16F8U5SxCq37d4p6a5CbCqZ
-	 ChEsqGP9BYCUgTfRRA+3uOqhieK+bfqquSzFg1q8uB7Ue8ffOI02+4TOGUrIxwMqws
-	 Gs0mwF2giYS1+gk9KM8TQ1axpfDBhl34nxXqdamcXYJAq/uSWnzXjhUIE3ueCtRDSj
-	 fgJQedEIePu2YcGIcWLRzsuBvFIJ7dwvovkR1BuYsI0KRInvcLljHFgmuj8Iz7lDuB
-	 6nu9mi21gDuow0RiBdFOmeAmhdZX9bT3beZDtOGXNnGnkH+Jm5ZFoEVnr76hY9BNDI
-	 HhINd5dfPFt4w==
+	b=FwAJUAzqLT3ASqkQCbFq1BdisobUvmulkuc6yiRaxQsxh8irOjfyE2lC4GqQWa2Ms
+	 /Eg0c9tigR/ClDuM9ztwe4M7Jfnjfocq0H1B2eR6Ok2UDDEIleBez5ImZKgU35BCYu
+	 8g9JBxHG4qyeD16usNiH+E4fIZsvrgcvLiCrX6UNkQl69putp08us87sOgaAktsy/9
+	 u45XuiQa2SHwvG63tMKBXelAO60LLDTAKfjU4jKboBbAjkbwSXFSRuS+D05WBsynaA
+	 u/9kdI+h+2vIHv/WbRRLfAGmny4FJj+nzTgl7tfZ8RmmvfYD/KpLLJFWaF/EZB03kb
+	 dKtiLznud87jg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230420114137.27613-1-peter.ujfalusi@linux.intel.com>
-References: <20230420114137.27613-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: SOF: pcm/Intel: Pause-resume improvements
- for IPC4
-Message-Id: <168209319527.108546.203024989311525283.b4-ty@kernel.org>
-Date: Fri, 21 Apr 2023 17:06:35 +0100
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87cz3yf631.wl-kuninori.morimoto.gx@renesas.com>
+References: <87cz3yf631.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [RFC][PATCH 0/4] ASoC: fsl: cleanup platform
+Message-Id: <168209449839.112331.12194273139778105613.b4-ty@kernel.org>
+Date: Fri, 21 Apr 2023 17:28:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-00e42
-Message-ID-Hash: T2PY6SYI2T5A4ZK5ZEJVKC6OAZXI2UZ6
-X-Message-ID-Hash: T2PY6SYI2T5A4ZK5ZEJVKC6OAZXI2UZ6
+Message-ID-Hash: JA77IUMGQE3PNVVLGQZEAOIMDBUVWW3R
+X-Message-ID-Hash: JA77IUMGQE3PNVVLGQZEAOIMDBUVWW3R
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -75,14 +73,16 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+CC: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T2PY6SYI2T5A4ZK5ZEJVKC6OAZXI2UZ6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JA77IUMGQE3PNVVLGQZEAOIMDBUVWW3R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,14 +91,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 20 Apr 2023 14:41:35 +0300, Peter Ujfalusi wrote:
-> last minute patch for correct the pasue/resume operation with IPC4.
+On Fri, 21 Apr 2023 00:10:32 +0000, Kuninori Morimoto wrote:
+> Cc Shengjiu
 > 
-> The issues are hardto reproduce and needs extended stress testing to be hit, in
-> which case the audio breaks due to DMA errors.
+> The driver which is using soc-generic-dmaengine-pcm is a little bit
+> difficult to notice about it, because it prepares own Component,
+> but shares same component->dev with CPU Component.
 > 
-> Regards,
-> Peter
+> Some fsl driver is using soc-generic-dmaengine-pcm as Platform Component.
 > 
 > [...]
 
@@ -108,10 +108,14 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: SOF: Intel: hda: Do not stop/start DMA during pause/release
-      commit: 3e94369729ea8a825cf8bf304bfb1749de62ebf4
-[2/2] ASoC: SOF: pcm: Add an option to skip platform trigger during stop
-      commit: 6d0a21dd95c349bbe3663a4870ff7e70ddc6c9b6
+[1/4] ASoC: fsl: imx-es8328: cleanup platform which is using Generic DMA
+      commit: d6e28695dcb6f653c7f2adf38021a5e934a6f416
+[2/4] ASoC: fsl: imx-spdif: cleanup platform which is using Generic DMA
+      commit: 2324bc107b0b3d2de351f35032dc5093cbb61493
+[3/4] ASoC: fsl: imx-audmix: cleanup platform which is using Generic DMA
+      commit: 3ce08f85133fc93278801aba3efb4548d3ef3ca0
+[4/4] ASoC: fsl: imx-audmix: remove dummy dai_link->platform
+      commit: dc801ea8ae37d54706e6f1cef140731ac5981c9c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
