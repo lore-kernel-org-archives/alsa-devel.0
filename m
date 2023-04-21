@@ -4,92 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79990C7618E
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 21:11:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4101C7618E
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 21:49:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3596EA7;
-	Fri, 21 Apr 2023 23:10:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3596EA7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 619E4EAE;
+	Fri, 21 Apr 2023 23:49:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 619E4EAE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682111473;
-	bh=RVERPZ9E3/KfeUrjNSBB64d1FKaCRd76R3MxDIY2ES4=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=LfIEC+lnrDRHyYNwFejIKKxxhRdkmUidn0W3tY7AbAtGo0iruvNyrBP2C+jZ9WmVw
-	 N2QiOHP34LywO8ugVR3Mu5R/YrNGg4cQHaMVoNpIvrny3Vb8q6tCvgWNXJrpn/3+fB
-	 su1S1cF2HCgZe1jTgUTxBHJJ22Xmo3pvF5kELZYQ=
+	s=default; t=1682113790;
+	bh=gOtMGFHovg6rXvDWIwomnUsw2vyCpivFkQBXQMSdFBU=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=qWJW/fpouADVYtDT0nPCHOeQrBd45NT3Bu0GqaA48bZWETkP7/k2exBCsIkr+4/W5
+	 WopQVwqKs9rmAhwa63r57NFcgFhRdeGGjJi8XG5JRstWFPSHdwef78TmA4Bv6MsCSe
+	 N/wjWJch6NYF6dI6j9Qydczpgq2cIg/JCbB/nRUE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F9E8F80155;
-	Fri, 21 Apr 2023 23:09:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 066F4F800D0;
+	Fri, 21 Apr 2023 23:48:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AEAD3F80155; Fri, 21 Apr 2023 23:09:53 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 00B55F80155; Fri, 21 Apr 2023 23:48:29 +0200 (CEST)
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com
+ [209.85.210.51])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 01360F800F8
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 23:09:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01360F800F8
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=XoZ3l4Mg
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E739B60E95;
-	Fri, 21 Apr 2023 21:09:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54102C433EF;
-	Fri, 21 Apr 2023 21:09:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1682111388;
-	bh=RVERPZ9E3/KfeUrjNSBB64d1FKaCRd76R3MxDIY2ES4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XoZ3l4Mg7IXJFTT8/jmZ89ZEVWwis+zPuTHwY+f6eR/mpz7nqC989fCKe/gvNcZcB
-	 rFgg/TK5RImC+SKAMQXoL9wAZthhSW2AtDTUSowEHLcZhw36bcv2V/uD9Ck1eePmnH
-	 di89SvUP+G/XLgccFKMWKeBrH30pDPSLnRdHYHCEFefBiKeq/U7zQebwQprrYA/Cyx
-	 +cWvIEDx5Ig0uDU6A3b4azipTa7tKpTsddLznMrsLn5kdxL8PRClGO6koDEy5mqYMi
-	 n2XROr4yVdMxj0AkxgyzOTkxoYOWVlWbBuWBt+GK5qzBLQzrOKUtDN0u+z0cOnW8rw
-	 b7irPUa+XFz/w==
-Date: Fri, 21 Apr 2023 22:09:41 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ASoC: max98088: make it selectable
-Message-ID: <0a9847d0-7bf2-4646-86f7-25ad4ebd9238@sirena.org.uk>
-References: <20230421200127.16234-1-fido_max@inbox.ru>
- <aa022833-2380-6a6f-6d7e-47b0098ae18d@linaro.org>
- <444ed682-9c5a-4d5b-8ba2-f1954c7719c5@sirena.org.uk>
- <03bcdcfd-3007-5124-428e-7be92d3aa8b2@linaro.org>
- <4bd2b8f9-0b1b-7494-7d55-ba646a6046f6@linaro.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 150E3F800F8
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 23:48:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 150E3F800F8
+Received: by mail-ot1-f51.google.com with SMTP id
+ 46e09a7af769-6a5f03551fdso2045048a34.0
+        for <alsa-devel@alsa-project.org>;
+ Fri, 21 Apr 2023 14:48:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682113700; x=1684705700;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DRyhlU6c3feVqq/s8FXw+A2ovCuk/nDpRc2zb7Wb02o=;
+        b=gTTK3hOqInZo+lybrg/Lqapvoo9rDrSzZBYQtb3qb8qlX+cN16xyARkFw0TpIaPW7A
+         FDUutvPZFKjaz+txsNlujIjY8T46yW3JTDKZWTmSUKA/fbx6gwESvIW3AIsjlHMdhi6Q
+         ewUNrtmWqGjM8VLmZpp1MgGYh+GTEW9MvXpO1+FWcAr/4wAWo6/Of8W0Xe9vw4vL9ZRc
+         u27MUvr614DSQrYhXdM1c1Uu9Cna5BZ9ewrCND7NNyv/2HBa9HRQMtPgfHoZxf39CkzN
+         djC8YE0mqtZGvWBO+uxrK9HVXoix0wN7PfjCloseFCb4l4Mtd6WNrAq07lp8br2QW1pU
+         amVg==
+X-Gm-Message-State: AAQBX9c29ZP8hHe+ov4c6WjPh9b2fO9Yh9ZKPwNmvQkoGILRNibYawVQ
+	Aw0G6m3Gc9UAei1FbNzRZQ==
+X-Google-Smtp-Source: 
+ AKy350aZUQfz+TT7Tkt8vP5BUlF8jQwcYin20eCbq0naZufUG8oi6julfm/UDVlx8BlcTVY1c1/c/Q==
+X-Received: by 2002:a05:6830:1698:b0:6a6:2f86:978d with SMTP id
+ k24-20020a056830169800b006a62f86978dmr2681665otr.12.1682113700088;
+        Fri, 21 Apr 2023 14:48:20 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id
+ dk10-20020a0568303b0a00b006a60606de62sm2128180otb.52.2023.04.21.14.48.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Apr 2023 14:48:19 -0700 (PDT)
+Received: (nullmailer pid 1812127 invoked by uid 1000);
+	Fri, 21 Apr 2023 21:48:18 -0000
+From: Rob Herring <robh@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>
+Subject: [PATCH] ASoC: dt-bindings: More dropping unneeded quotes
+Date: Fri, 21 Apr 2023 16:48:10 -0500
+Message-Id: <20230421214810.1811962-1-robh@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="L4GF9xQYKFLmwUL4"
-Content-Disposition: inline
-In-Reply-To: <4bd2b8f9-0b1b-7494-7d55-ba646a6046f6@linaro.org>
-X-Cookie: Hailing frequencies open, Captain.
-Message-ID-Hash: WKFUZH6CVKG5NP4H7IP5IVBXY2OO3KVV
-X-Message-ID-Hash: WKFUZH6CVKG5NP4H7IP5IVBXY2OO3KVV
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: N4V7RXSNLIWQJRYNS4ROXRG24AR576AU
+X-Message-ID-Hash: N4V7RXSNLIWQJRYNS4ROXRG24AR576AU
+X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Maxim Kochetkov <fido_max@inbox.ru>, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
- rf@opensource.cirrus.com, ckeepax@opensource.cirrus.com,
- shumingf@realtek.com, ryans.lee@analog.com, herve.codina@bootlin.com,
- wangweidong.a@awinic.com, ajye_huang@compal.corp-partner.google.com
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, patches@opensource.cirrus.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WKFUZH6CVKG5NP4H7IP5IVBXY2OO3KVV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N4V7RXSNLIWQJRYNS4ROXRG24AR576AU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,39 +106,142 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Another batch of dropping unneeded quotes on $id and $schema which were
+missed in the last round. Once all these are fixed, checking for this can
+be enabled in yamllint.
 
---L4GF9xQYKFLmwUL4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/sound/nvidia,tegra-audio-common.yaml  | 4 ++--
+ Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml   | 4 ++--
+ .../devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml    | 4 ++--
+ .../devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml     | 4 ++--
+ Documentation/devicetree/bindings/sound/tas2562.yaml          | 4 ++--
+ Documentation/devicetree/bindings/sound/tas2770.yaml          | 4 ++--
+ Documentation/devicetree/bindings/sound/tas27xx.yaml          | 4 ++--
+ Documentation/devicetree/bindings/sound/wlf,wm8903.yaml       | 4 ++--
+ 8 files changed, 16 insertions(+), 16 deletions(-)
 
-On Fri, Apr 21, 2023 at 10:57:31PM +0200, Krzysztof Kozlowski wrote:
-> On 21/04/2023 22:54, Krzysztof Kozlowski wrote:
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-common.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-common.yaml
+index 7c1e9895ce85..2588589ad62d 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-common.yaml
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-common.yaml
+@@ -1,8 +1,8 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: "http://devicetree.org/schemas/sound/nvidia,tegra-audio-common.yaml#"
+-$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++$id: http://devicetree.org/schemas/sound/nvidia,tegra-audio-common.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Common properties for NVIDIA Tegra audio complexes
+ 
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
+index cdbb4096fa44..9e5b30d9c6e6 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
+@@ -1,8 +1,8 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: "http://devicetree.org/schemas/sound/qcom,q6apm-dai.yaml#"
+-$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++$id: http://devicetree.org/schemas/sound/qcom,q6apm-dai.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Qualcomm Audio Process Manager Digital Audio Interfaces
+ 
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml
+index 1168410f6fbd..3552c44137ed 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml
+@@ -1,8 +1,8 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: "http://devicetree.org/schemas/sound/qcom,q6dsp-lpass-clocks.yaml#"
+-$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++$id: http://devicetree.org/schemas/sound/qcom,q6dsp-lpass-clocks.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Qualcomm DSP LPASS Clock Controller
+ 
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
+index 044e77718a1b..08c618e7e428 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
+@@ -1,8 +1,8 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: "http://devicetree.org/schemas/sound/qcom,q6dsp-lpass-ports.yaml#"
+-$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++$id: http://devicetree.org/schemas/sound/qcom,q6dsp-lpass-ports.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Qualcomm DSP LPASS(Low Power Audio SubSystem) Audio Ports
+ 
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.yaml b/Documentation/devicetree/bindings/sound/tas2562.yaml
+index a5bb561bfcfb..41489a3ac79f 100644
+--- a/Documentation/devicetree/bindings/sound/tas2562.yaml
++++ b/Documentation/devicetree/bindings/sound/tas2562.yaml
+@@ -2,8 +2,8 @@
+ # Copyright (C) 2019 Texas Instruments Incorporated
+ %YAML 1.2
+ ---
+-$id: "http://devicetree.org/schemas/sound/tas2562.yaml#"
+-$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++$id: http://devicetree.org/schemas/sound/tas2562.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Texas Instruments TAS2562 Smart PA
+ 
+diff --git a/Documentation/devicetree/bindings/sound/tas2770.yaml b/Documentation/devicetree/bindings/sound/tas2770.yaml
+index 26088adb9dc2..930bd111b072 100644
+--- a/Documentation/devicetree/bindings/sound/tas2770.yaml
++++ b/Documentation/devicetree/bindings/sound/tas2770.yaml
+@@ -2,8 +2,8 @@
+ # Copyright (C) 2019-20 Texas Instruments Incorporated
+ %YAML 1.2
+ ---
+-$id: "http://devicetree.org/schemas/sound/tas2770.yaml#"
+-$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++$id: http://devicetree.org/schemas/sound/tas2770.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Texas Instruments TAS2770 Smart PA
+ 
+diff --git a/Documentation/devicetree/bindings/sound/tas27xx.yaml b/Documentation/devicetree/bindings/sound/tas27xx.yaml
+index 8cba01316855..bda26b246634 100644
+--- a/Documentation/devicetree/bindings/sound/tas27xx.yaml
++++ b/Documentation/devicetree/bindings/sound/tas27xx.yaml
+@@ -2,8 +2,8 @@
+ # Copyright (C) 2020-2022 Texas Instruments Incorporated
+ %YAML 1.2
+ ---
+-$id: "http://devicetree.org/schemas/sound/tas27xx.yaml#"
+-$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++$id: http://devicetree.org/schemas/sound/tas27xx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Texas Instruments TAS2764/TAS2780 Smart PA
+ 
+diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8903.yaml b/Documentation/devicetree/bindings/sound/wlf,wm8903.yaml
+index 7105ed5fd6c7..4cfa66f62681 100644
+--- a/Documentation/devicetree/bindings/sound/wlf,wm8903.yaml
++++ b/Documentation/devicetree/bindings/sound/wlf,wm8903.yaml
+@@ -1,8 +1,8 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: "http://devicetree.org/schemas/sound/wlf,wm8903.yaml#"
+-$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++$id: http://devicetree.org/schemas/sound/wlf,wm8903.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: WM8903 audio codec
+ 
+-- 
+2.39.2
 
-> > This one so far is not used in any generic card, so I wonder...
-
-> I found one generic user - at least one board (Odroid XU) uses it with
-> generic simple audio card, so probably this makes sense.
-
-One can also imagine that someone who was contemplating building a board
-might upstream before the board was available as part of enablement.
-Since the audio signals tend to be brought out to expansion connectors
-you also often see the CODECs added on plugin modules, this would
-generally mean an overlay which isn't something that's upstreamable at
-the minute, things like the HiFiBerry boards for example.
-
---L4GF9xQYKFLmwUL4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRC+5UACgkQJNaLcl1U
-h9DeIwf/fms6GPXgYdiDX+2m75bDDYsE66u/SDD7BGwyrvrdlyLC7RJlBxxbdat5
-EoWFVuqDBcS9PH/TtslPV+uyPir9Fgm07TPlG1gwdq3V9IDJBfOf84ib5Hgr5Ix4
-BV/0/kN7pTzo9udxVRdmCmF+zFoSlU+qFY6ZngVGY2w2TWvF5ZTqzqgHxYmkmew/
-7QyeyZkSY7sYnT1QuVIdcNdt2y0mzxF4u00Z0ZtemW1op7LjHRZfuL088PuX4fUW
-uH07JZafAWnm+qoqN2GyYf2ALtWtM6m9OYH45CxpOY9r0qApILnY9b/NTXW5zbp0
-ERXiAz3x8xZPqbQbTpyszBYb9TrUNw==
-=Vc7N
------END PGP SIGNATURE-----
-
---L4GF9xQYKFLmwUL4--
