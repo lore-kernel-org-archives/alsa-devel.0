@@ -4,65 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24ED8C7618E
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 14:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25DDFC77B71
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 14:37:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC513E8F;
-	Fri, 21 Apr 2023 16:14:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC513E8F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A52DE94;
+	Fri, 21 Apr 2023 16:36:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A52DE94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682086538;
-	bh=x37UryjQicn40viHG0w3UFHBBwrnroKnUkFvCpQvnvw=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=p3LDmnFtLLODnV9P7Vk7wMGIkiW1jNeNCNRNAOCILipZWAZdN3Qk9XTn4k/pBNf/b
-	 aF8IrL119J5QC6TgxsrHrBmMk6e8WTqMjGIxjOoPcSHJArIinoPBtMXux73eCIFdLF
-	 kkLB9l5xmFcWn+UPuI3RO46xneKQasGHuKXcQ6e8=
+	s=default; t=1682087868;
+	bh=wqPxoZjkgefakv5jycqQflvRpQg/iHAnD3UY493SNkM=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=aa7SHnYmgwZfHPJWSDyoPfB6zfQjwkzmxi+5XqCFM/PB04QuYIl5aZ/ogx+7wfVhd
+	 6uquJqijSZQWyISanbchrY/UBHtUXJYWNPHJfrxF2wCSKFI+1w/eukSBlCjEr6mrTs
+	 dyAiq9eaKUn7z75I7eFVOzl8eUzhBV5a7MuFNWWU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA38EF805C2;
-	Fri, 21 Apr 2023 16:10:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 618D0F80053;
+	Fri, 21 Apr 2023 16:36:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B336F8057D; Fri, 21 Apr 2023 16:10:41 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 26084F80155; Fri, 21 Apr 2023 16:36:28 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CA25CF8053B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 16:10:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA25CF8053B
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 1FBF42425C;
-	Fri, 21 Apr 2023 10:10:07 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pprSg-Db0-00; Fri, 21 Apr 2023 16:10:06 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/7] ALSA: emu10k1: remove apparently pointless FPGA reads
-Date: Fri, 21 Apr 2023 16:10:04 +0200
-Message-Id: <20230421141006.1005539-5-oswald.buddenhagen@gmx.de>
-X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230421141006.1005539-1-oswald.buddenhagen@gmx.de>
-References: <20230421141006.1005539-1-oswald.buddenhagen@gmx.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3E90BF80053
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 16:36:20 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id CD67411CF;
+	Fri, 21 Apr 2023 16:36:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz CD67411CF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1682087779; bh=a6Xuzj0mzVgusYMWrNHY1xpGYof52mQVQODYGsO4lRA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qWrEQbizT+pW2+dXRlkapFNgq6kpbQ17TEq4V2XOqbslAga4A0dwxv63lSg+mY+FF
+	 EHRe0G3MITh9T5EK7CkwV8Yj0YBeJBcxhxReL4tD5fPxtE+ojraVfU9l8SJH3k1kQE
+	 L4ip7XJBE1uQaXZudjemWUpoG/osUuepTzASryuc=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Fri, 21 Apr 2023 16:36:16 +0200 (CEST)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Subject: [PATCH alsa-lib] pcm: hw: setup explicit silencing for snd_pcm_drain
+ by default
+Date: Fri, 21 Apr 2023 16:36:06 +0200
+Message-Id: <20230421143606.475100-1-perex@perex.cz>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KTACUU6S6OYSW4JEKVAW4OXHNADJDM3E
-X-Message-ID-Hash: KTACUU6S6OYSW4JEKVAW4OXHNADJDM3E
-X-MailFrom: ossi@kde.org
+Message-ID-Hash: GDPVE25JX7U5UQ2BYYN6OMDOBAOP76JQ
+X-Message-ID-Hash: GDPVE25JX7U5UQ2BYYN6OMDOBAOP76JQ
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Takashi Iwai <tiwai@suse.de>
+CC: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KTACUU6S6OYSW4JEKVAW4OXHNADJDM3E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GDPVE25JX7U5UQ2BYYN6OMDOBAOP76JQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -71,60 +83,179 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-These seem to be simply cargo-culted from the Windows driver's behavior.
-However, the original reason were presumably read-modify-write cycles,
-which we don't do.
+RFC: Patch for alsa-lib. Not tested. For a discussion.
 
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Some applications may not follow the period_size transfer blocks and
+also the driver developers may not follow the consequeces of the
+access beyond valid samples in the playback DMA buffer.
+
+To avoid clicks, fill a little silence at the end of the playback
+ring buffer when the snd_pcm_drain() is called.
+
+TODO:
+  - add SND_PCM_NO_DRAIN_SILENCE as a new flag for snd_pcm_open()
+  - make this behaviour configurable (plugin config)
+
+Cc: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 ---
- sound/pci/emu10k1/emu10k1_main.c | 7 -------
- 1 file changed, 7 deletions(-)
+ src/pcm/pcm.c       | 33 ++++++++++++++++++++-------------
+ src/pcm/pcm_hw.c    | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ src/pcm/pcm_local.h |  4 ++++
+ 3 files changed, 69 insertions(+), 13 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index f7908e5a6e0d..ac0c8865c76b 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -885,32 +885,26 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 	dev_info(emu->card->dev, "emu1010: Card options = 0x%x\n", reg);
- 	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
- 	dev_info(emu->card->dev, "emu1010: Card options = 0x%x\n", reg);
--	snd_emu1010_fpga_read(emu, EMU_HANA_OPTICAL_TYPE, &tmp);
- 	/* Optical -> ADAT I/O  */
- 	/* 0 : SPDIF
- 	 * 1 : ADAT
- 	 */
- 	emu->emu1010.optical_in = 1; /* IN_ADAT */
- 	emu->emu1010.optical_out = 1; /* IN_ADAT */
- 	tmp = 0;
- 	tmp = (emu->emu1010.optical_in ? EMU_HANA_OPTICAL_IN_ADAT : 0) |
- 		(emu->emu1010.optical_out ? EMU_HANA_OPTICAL_OUT_ADAT : 0);
- 	snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, tmp);
--	snd_emu1010_fpga_read(emu, EMU_HANA_ADC_PADS, &tmp);
- 	/* Set no attenuation on Audio Dock pads. */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_ADC_PADS, 0x00);
- 	emu->emu1010.adc_pads = 0x00;
--	snd_emu1010_fpga_read(emu, EMU_HANA_DOCK_MISC, &tmp);
- 	/* Unmute Audio dock DACs, Headphone source DAC-4. */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_MISC, 0x30);
- 	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, 0x12);
--	snd_emu1010_fpga_read(emu, EMU_HANA_DAC_PADS, &tmp);
- 	/* DAC PADs. */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_DAC_PADS, 0x0f);
- 	emu->emu1010.dac_pads = 0x0f;
--	snd_emu1010_fpga_read(emu, EMU_HANA_DOCK_MISC, &tmp);
- 	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_MISC, 0x30);
--	snd_emu1010_fpga_read(emu, EMU_HANA_SPDIF_MODE, &tmp);
- 	/* SPDIF Format. Set Consumer mode, 24bit, copy enable */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_SPDIF_MODE, 0x10);
- 	/* MIDI routing */
-@@ -1068,7 +1062,6 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c); /* Unknown */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19); /* MIDI Route */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c); /* Unknown */
--	snd_emu1010_fpga_read(emu, EMU_HANA_SPDIF_MODE, &tmp);
- 	snd_emu1010_fpga_write(emu, EMU_HANA_SPDIF_MODE, 0x10); /* SPDIF Format spdif  (or 0x11 for aes/ebu) */
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 2b966d44..88b13ed4 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -6167,6 +6167,25 @@ int snd_pcm_hw_params_get_min_align(const snd_pcm_hw_params_t *params, snd_pcm_u
+ 	return 0;
+ }
  
- #if 0
++#ifndef DOXYGEN
++void snd_pcm_sw_params_current_no_lock(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
++{
++	params->proto = SNDRV_PCM_VERSION;
++	params->tstamp_mode = pcm->tstamp_mode;
++	params->tstamp_type = pcm->tstamp_type;
++	params->period_step = pcm->period_step;
++	params->sleep_min = 0;
++	params->avail_min = pcm->avail_min;
++	sw_set_period_event(params, pcm->period_event);
++	params->xfer_align = 1;
++	params->start_threshold = pcm->start_threshold;
++	params->stop_threshold = pcm->stop_threshold;
++	params->silence_threshold = pcm->silence_threshold;
++	params->silence_size = pcm->silence_size;
++	params->boundary = pcm->boundary;
++}
++#endif
++
+ /**
+  * \brief Return current software configuration for a PCM
+  * \param pcm PCM handle
+@@ -6183,19 +6202,7 @@ int snd_pcm_sw_params_current(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
+ 		return -EIO;
+ 	}
+ 	__snd_pcm_lock(pcm); /* forced lock due to pcm field changes */
+-	params->proto = SNDRV_PCM_VERSION;
+-	params->tstamp_mode = pcm->tstamp_mode;
+-	params->tstamp_type = pcm->tstamp_type;
+-	params->period_step = pcm->period_step;
+-	params->sleep_min = 0;
+-	params->avail_min = pcm->avail_min;
+-	sw_set_period_event(params, pcm->period_event);
+-	params->xfer_align = 1;
+-	params->start_threshold = pcm->start_threshold;
+-	params->stop_threshold = pcm->stop_threshold;
+-	params->silence_threshold = pcm->silence_threshold;
+-	params->silence_size = pcm->silence_size;
+-	params->boundary = pcm->boundary;
++	snd_pcm_sw_params_current_no_lock(pcm, params);
+ 	__snd_pcm_unlock(pcm);
+ 	return 0;
+ }
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index daa3e1ff..4995b2cd 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -98,6 +98,8 @@ typedef struct {
+ 	bool mmap_control_fallbacked;
+ 	struct snd_pcm_sync_ptr *sync_ptr;
+ 
++	bool prepare_reset_sw_params;
++
+ 	int period_event;
+ 	snd_timer_t *period_timer;
+ 	struct pollfd period_timer_pfd;
+@@ -534,6 +536,7 @@ static int snd_pcm_hw_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t * params)
+ 		SYSMSG("SNDRV_PCM_IOCTL_SW_PARAMS failed (%i)", err);
+ 		goto out;
+ 	}
++	hw->prepare_reset_sw_params = false;
+ 	if ((snd_pcm_tstamp_type_t) params->tstamp_type != pcm->tstamp_type) {
+ 		if (hw->version < SNDRV_PROTOCOL_VERSION(2, 0, 12)) {
+ 			int on = (snd_pcm_tstamp_type_t) params->tstamp_type ==
+@@ -660,7 +663,18 @@ static int snd_pcm_hw_hwsync(snd_pcm_t *pcm)
+ static int snd_pcm_hw_prepare(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_hw_t *hw = pcm->private_data;
++	snd_pcm_sw_params_t sw_params;
+ 	int fd = hw->fd, err;
++
++	if (hw->prepare_reset_sw_params) {
++		snd_pcm_sw_params_current_no_lock(pcm, &sw_params);
++		if (ioctl(hw->fd, SNDRV_PCM_IOCTL_SW_PARAMS, sw_params) < 0) {
++			err = -errno;
++			SYSMSG("SNDRV_PCM_IOCTL_SW_PARAMS failed (%i)", err);
++			return err;
++		}
++		hw->prepare_reset_sw_params = false;
++	}
+ 	if (ioctl(fd, SNDRV_PCM_IOCTL_PREPARE) < 0) {
+ 		err = -errno;
+ 		SYSMSG("SNDRV_PCM_IOCTL_PREPARE failed (%i)", err);
+@@ -718,7 +732,38 @@ static int snd_pcm_hw_drop(snd_pcm_t *pcm)
+ static int snd_pcm_hw_drain(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_hw_t *hw = pcm->private_data;
++	snd_pcm_sw_params_t sw_params;
++	snd_pcm_uframes_t silence_size;
+ 	int err;
++
++	if (pcm->stream != SND_PCM_STREAM_PLAYBACK)
++		goto __skip_silence;
++	/* compute end silence size, align to period size + extra time */
++	snd_pcm_sw_params_current_no_lock(pcm, &sw_params);
++	if ((pcm->buffer_size % pcm->period_size) == 0) {
++		silence_size = pcm->period_size - (pcm->period_size % *pcm->appl.ptr);
++		if (silence_size == pcm->period_size)
++			silence_size = 0;
++	} else {
++		/* it not not easy to compute the period cross point
++		 * in this case because boundary is aligned only
++		 * to the buffer_size - use the full range (period)
++		 */
++		silence_size = pcm->period_size;
++	}
++	silence_size += pcm->rate / 10;	/* 1/10th of second */
++	if (sw_params.silence_size < silence_size) {
++		/* fill silence soon as possible (in the bellow ioctl) */
++		sw_params.silence_threshold = pcm->buffer_size;
++		sw_params.silence_size = silence_size;
++		if (ioctl(hw->fd, SNDRV_PCM_IOCTL_SW_PARAMS, sw_params) < 0) {
++			err = -errno;
++			SYSMSG("SNDRV_PCM_IOCTL_SW_PARAMS failed (%i)", err);
++			return err;
++		}
++		hw->prepare_reset_sw_params = true;
++	}
++__skip_silence:
+ 	if (ioctl(hw->fd, SNDRV_PCM_IOCTL_DRAIN) < 0) {
+ 		err = -errno;
+ 		SYSMSG("SNDRV_PCM_IOCTL_DRAIN failed (%i)", err);
+diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
+index ae0c44bf..4a859cd1 100644
+--- a/src/pcm/pcm_local.h
++++ b/src/pcm/pcm_local.h
+@@ -366,6 +366,8 @@ struct _snd_pcm {
+ 	snd1_pcm_hw_param_get_max
+ #define snd_pcm_hw_param_name		\
+ 	snd1_pcm_hw_param_name
++#define snd_pcm_sw_params_current_no_lock \
++	snd1_pcm_sw_params_current_no_lock
+ 
+ int snd_pcm_new(snd_pcm_t **pcmp, snd_pcm_type_t type, const char *name,
+ 		snd_pcm_stream_t stream, int mode);
+@@ -390,6 +392,8 @@ void snd_pcm_mmap_appl_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+ void snd_pcm_mmap_hw_backward(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+ void snd_pcm_mmap_hw_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+ 
++void snd_pcm_sw_params_current_no_lock(snd_pcm_t *pcm, snd_pcm_sw_params_t *params);
++
+ snd_pcm_sframes_t snd_pcm_mmap_writei(snd_pcm_t *pcm, const void *buffer, snd_pcm_uframes_t size);
+ snd_pcm_sframes_t snd_pcm_mmap_readi(snd_pcm_t *pcm, void *buffer, snd_pcm_uframes_t size);
+ snd_pcm_sframes_t snd_pcm_mmap_writen(snd_pcm_t *pcm, void **bufs, snd_pcm_uframes_t size);
 -- 
-2.40.0.152.g15d061e6df
+2.39.2
 
