@@ -4,52 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45B84C77B71
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 14:14:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AD2BC7618E
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 14:15:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E975ED1;
-	Fri, 21 Apr 2023 16:13:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E975ED1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 404C0ED0;
+	Fri, 21 Apr 2023 16:14:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 404C0ED0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682086488;
-	bh=qgCcG7k0SOR9XHiq6NvzGC2Co5hlk2T6pkVGoe8noEA=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=J2m3Hz0LVHfETtmnTBIAXkXxZgoxjTNOI+2B64As6yXxqqfBVOzNlJgaTamYPhHbM
-	 PCHO0JnUjjzFY2SLq57n09Kxz/qs9arKxDop6gr8r/NE/vksBEBBHqSaVTf0ANKgxO
-	 BW9admOc2TyE3/2DAOvs598hH07ycKH18fFSXu90=
+	s=default; t=1682086501;
+	bh=rgZhYc5YmGCZRsqOQcmp4jc9WKqqLKfotXoU4BPQBzE=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=JmOjK50JXYQ1mLs3+UtSIsdaqwuu0bYFB/5GgcnnzV7a9UnODrgpz/hIOIltDHyvW
+	 DCQ/bR4aGdWYL93bIKwuTNSKQ3gcZXfbOBa6jpU9O5RVW+os2HaWABFKD4iIvQaLod
+	 aaz0DfCAvfFAbpAPZwvYDxbz+RKdPdqQDNe4GZRI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3664FF805B2;
-	Fri, 21 Apr 2023 16:10:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA13AF805B6;
+	Fri, 21 Apr 2023 16:10:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 467B1F80567; Fri, 21 Apr 2023 16:10:37 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	id 66EA2F80570; Fri, 21 Apr 2023 16:10:38 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A7901F80053
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 16:10:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7901F80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id 93BD7F80534
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 16:10:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93BD7F80534
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 20F192425E;
+	by bluemchen.kde.org (Postfix) with ESMTP id 07B8224258;
 	Fri, 21 Apr 2023 10:10:07 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pprSg-Db6-00; Fri, 21 Apr 2023 16:10:06 +0200
+	id 1pprSg-Dac-00; Fri, 21 Apr 2023 16:10:06 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 6/7] ALSA: emu10k1: remove apparently pointless
- EMU_HANA_OPTION_CARDS reads
-Date: Fri, 21 Apr 2023 16:10:05 +0200
-Message-Id: <20230421141006.1005539-6-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 1/7] ALSA: emu10k1: properly assert E-MU FPGA access
+ constaints
+Date: Fri, 21 Apr 2023 16:10:00 +0200
+Message-Id: <20230421141006.1005539-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230421141006.1005539-1-oswald.buddenhagen@gmx.de>
-References: <20230421141006.1005539-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LEJSWR5NUVUZ2SPN4H4TRONP4E2KWFG7
-X-Message-ID-Hash: LEJSWR5NUVUZ2SPN4H4TRONP4E2KWFG7
+Message-ID-Hash: M6VM75SAC2YEY4R6DSEFOUB5YJVGQK6P
+X-Message-ID-Hash: M6VM75SAC2YEY4R6DSEFOUB5YJVGQK6P
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -63,7 +61,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LEJSWR5NUVUZ2SPN4H4TRONP4E2KWFG7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M6VM75SAC2YEY4R6DSEFOUB5YJVGQK6P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -72,49 +70,111 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-These seem to be another instance of cargo-culting from the Windows
-driver. It presumably queries the register to decide about the followup
-actions, but we don't do that.
+Assert the validity of the registers and values, as them being out of
+range would indicate an error in the driver. Consequently, don't bother
+returning error codes; they were ignored everywhere anyway.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emu10k1_main.c | 7 -------
- 1 file changed, 7 deletions(-)
+ include/sound/emu10k1.h |  6 +++---
+ sound/pci/emu10k1/io.c  | 36 +++++++++++++++++-------------------
+ 2 files changed, 20 insertions(+), 22 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index ac0c8865c76b..9d6a00bf6f2f 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -881,8 +881,6 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 	/* Enable 48Volt power to Audio Dock */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_PWR, EMU_HANA_DOCK_PWR_ON);
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index 39787fecc8d9..01e2e22689bd 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -1824,9 +1824,9 @@ unsigned int snd_emu10k1_ptr20_read(struct snd_emu10k1 * emu, unsigned int reg,
+ void snd_emu10k1_ptr20_write(struct snd_emu10k1 *emu, unsigned int reg, unsigned int chn, unsigned int data);
+ int snd_emu10k1_spi_write(struct snd_emu10k1 * emu, unsigned int data);
+ int snd_emu10k1_i2c_write(struct snd_emu10k1 *emu, u32 reg, u32 value);
+-int snd_emu1010_fpga_write(struct snd_emu10k1 * emu, u32 reg, u32 value);
+-int snd_emu1010_fpga_read(struct snd_emu10k1 * emu, u32 reg, u32 *value);
+-int snd_emu1010_fpga_link_dst_src_write(struct snd_emu10k1 * emu, u32 dst, u32 src);
++void snd_emu1010_fpga_write(struct snd_emu10k1 *emu, u32 reg, u32 value);
++void snd_emu1010_fpga_read(struct snd_emu10k1 *emu, u32 reg, u32 *value);
++void snd_emu1010_fpga_link_dst_src_write(struct snd_emu10k1 *emu, u32 dst, u32 src);
+ unsigned int snd_emu10k1_efx_read(struct snd_emu10k1 *emu, unsigned int pc);
+ void snd_emu10k1_intr_enable(struct snd_emu10k1 *emu, unsigned int intrenb);
+ void snd_emu10k1_intr_disable(struct snd_emu10k1 *emu, unsigned int intrenb);
+diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
+index e15092ce9848..35bc73d99d04 100644
+--- a/sound/pci/emu10k1/io.c
++++ b/sound/pci/emu10k1/io.c
+@@ -233,56 +233,54 @@ int snd_emu10k1_i2c_write(struct snd_emu10k1 *emu,
+ 	return err;
+ }
  
--	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
--	dev_info(emu->card->dev, "emu1010: Card options = 0x%x\n", reg);
- 	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
- 	dev_info(emu->card->dev, "emu1010: Card options = 0x%x\n", reg);
- 	/* Optical -> ADAT I/O  */
-@@ -916,8 +914,6 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 	/* IRQ Enable: All off */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_IRQ_ENABLE, 0x00);
+-int snd_emu1010_fpga_write(struct snd_emu10k1 * emu, u32 reg, u32 value)
++void snd_emu1010_fpga_write(struct snd_emu10k1 *emu, u32 reg, u32 value)
+ {
+ 	unsigned long flags;
  
--	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
--	dev_info(emu->card->dev, "emu1010: Card options3 = 0x%x\n", reg);
- 	/* Default WCLK set to 48kHz. */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, 0x00);
- 	/* Word Clock source, Internal 48kHz x1 */
-@@ -1053,11 +1049,8 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 		EMU_DST_ALICE_I2S2_RIGHT, EMU_SRC_DOCK_ADC3_RIGHT1);
- 	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x01); /* Unmute all */
- 
--	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &tmp);
+-	if (reg > 0x3f)
+-		return 1;
++	if (snd_BUG_ON(reg > 0x3f))
++		return;
+ 	reg += 0x40; /* 0x40 upwards are registers. */
+-	if (value > 0x3f) /* 0 to 0x3f are values */
+-		return 1;
++	if (snd_BUG_ON(value > 0x3f)) /* 0 to 0x3f are values */
++		return;
+ 	spin_lock_irqsave(&emu->emu_lock, flags);
+ 	outl(reg, emu->port + A_IOCFG);
+ 	udelay(10);
+ 	outl(reg | 0x80, emu->port + A_IOCFG);  /* High bit clocks the value into the fpga. */
+ 	udelay(10);
+ 	outl(value, emu->port + A_IOCFG);
+ 	udelay(10);
+ 	outl(value | 0x80 , emu->port + A_IOCFG);  /* High bit clocks the value into the fpga. */
+ 	spin_unlock_irqrestore(&emu->emu_lock, flags);
 -
- 	/* Initial boot complete. Now patches */
+-	return 0;
+ }
  
--	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &tmp);
- 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19); /* MIDI Route */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c); /* Unknown */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19); /* MIDI Route */
+-int snd_emu1010_fpga_read(struct snd_emu10k1 * emu, u32 reg, u32 *value)
++void snd_emu1010_fpga_read(struct snd_emu10k1 *emu, u32 reg, u32 *value)
+ {
+ 	unsigned long flags;
+-	if (reg > 0x3f)
+-		return 1;
++	if (snd_BUG_ON(reg > 0x3f))
++		return;
+ 	reg += 0x40; /* 0x40 upwards are registers. */
+ 	spin_lock_irqsave(&emu->emu_lock, flags);
+ 	outl(reg, emu->port + A_IOCFG);
+ 	udelay(10);
+ 	outl(reg | 0x80, emu->port + A_IOCFG);  /* High bit clocks the value into the fpga. */
+ 	udelay(10);
+ 	*value = ((inl(emu->port + A_IOCFG) >> 8) & 0x7f);
+ 	spin_unlock_irqrestore(&emu->emu_lock, flags);
+-
+-	return 0;
+ }
+ 
+ /* Each Destination has one and only one Source,
+  * but one Source can feed any number of Destinations simultaneously.
+  */
+-int snd_emu1010_fpga_link_dst_src_write(struct snd_emu10k1 * emu, u32 dst, u32 src)
++void snd_emu1010_fpga_link_dst_src_write(struct snd_emu10k1 *emu, u32 dst, u32 src)
+ {
+-	snd_emu1010_fpga_write(emu, 0x00, ((dst >> 8) & 0x3f) );
+-	snd_emu1010_fpga_write(emu, 0x01, (dst & 0x3f) );
+-	snd_emu1010_fpga_write(emu, 0x02, ((src >> 8) & 0x3f) );
+-	snd_emu1010_fpga_write(emu, 0x03, (src & 0x3f) );
+-
+-	return 0;
++	if (snd_BUG_ON(dst & ~0x71f))
++		return;
++	if (snd_BUG_ON(src & ~0x71f))
++		return;
++	snd_emu1010_fpga_write(emu, 0x00, dst >> 8);
++	snd_emu1010_fpga_write(emu, 0x01, dst & 0x1f);
++	snd_emu1010_fpga_write(emu, 0x02, src >> 8);
++	snd_emu1010_fpga_write(emu, 0x03, src & 0x1f);
+ }
+ 
+ void snd_emu10k1_intr_enable(struct snd_emu10k1 *emu, unsigned int intrenb)
 -- 
 2.40.0.152.g15d061e6df
 
