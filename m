@@ -4,63 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97C09C77B61
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 17:28:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18D25C77B76
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 18:38:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4685BE9A;
-	Fri, 21 Apr 2023 19:27:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4685BE9A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38896E9A;
+	Fri, 21 Apr 2023 20:37:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38896E9A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682098095;
-	bh=PbFfFwkMnJUw6YV5ZdUrc3aG1VlPNbn6FBzIqjVwzFM=;
+	s=default; t=1682102327;
+	bh=XHgRUHyKNu0+htCLZZtMcTbpZxjZtdt+CFfgbjNnfFQ=;
 	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=QQFBh3xsfk9u3ZKLClM89fUkhJ29LEkn2YKxV9AnN2a8T8GNaCFrFFCWMI7SF5pC/
-	 r9T2uWXk8KLmnn7zkQFMI5xe6PiFzoNvh7l/xAfMM3jm7QFMQ8cG0u3GYCJMC6Gbgq
-	 an3nIpFjPbNKan0rQ2aAeFOFsO658Y4b6k4cwI+0=
+	b=mmiSaZ/Drdc0jnzWgQQd4W/XCumLLZ67eMjmWl7m+4IAV0pbTTCTzLoFa2F1e70CR
+	 NkPatrvMZKXXc/Me6lbS/+2Vw4vUPfOp8zPO5DRVOA/YSj9yG/hMl2XhPkZ7xoX3w1
+	 HG039LxYHiwbxxlwr/z3R+5LiGFHBKj7oxwK/w9M=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42601F80510;
-	Fri, 21 Apr 2023 19:26:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAB5BF800D0;
+	Fri, 21 Apr 2023 20:37:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 950B5F80155; Fri, 21 Apr 2023 19:26:33 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id BAADFF80155; Fri, 21 Apr 2023 20:37:26 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 990DBF800F8
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 20:37:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 990DBF800F8
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
+ header.s=mimecast20190719 header.b=Mb4xWdy2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1682102237;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=6kIon2sBOGuwoV0LPLB2NcKpEuGgAeuHh/wbCjNk2G0=;
+	b=Mb4xWdy22Iuxmim8uqddtE2QQXRCLyGRs3rtmSbULYPvbFdurrdnvTPuQvEqsBGmUGZrkN
+	C1uIQMCEQRcoHTENaEWyV+I+FsUuVDGRCggcbrP1jsJtOvMOIEVdHCP4nyJSXrxJJIdEG3
+	IfoUaQoHXjk/CEahiIfd9gQbogkaHDI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-315-YhaAKqzDP2ql0CpjJdr6uA-1; Fri, 21 Apr 2023 14:37:16 -0400
+X-MC-Unique: YhaAKqzDP2ql0CpjJdr6uA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.3])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 692CAF80149
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 19:26:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 692CAF80149
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id D288B2409E;
-	Fri, 21 Apr 2023 13:26:23 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1ppuWd-Gci-00; Fri, 21 Apr 2023 19:26:23 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: emu10k1: minor optimizations
-Date: Fri, 21 Apr 2023 19:26:23 +0200
-Message-Id: <20230421172623.1017207-1-oswald.buddenhagen@gmx.de>
-X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EDA148996F1;
+	Fri, 21 Apr 2023 18:37:15 +0000 (UTC)
+Received: from shalem.redhat.com (unknown [10.39.192.29])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id BC6721121318;
+	Fri, 21 Apr 2023 18:37:14 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: Intel: soc-acpi-byt: Fix "WM510205" match no longer
+ working
+Date: Fri, 21 Apr 2023 20:37:14 +0200
+Message-Id: <20230421183714.35186-1-hdegoede@redhat.com>
 MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LKDNKASGAU27TDSZ2XKJ4E4EKFXNOGQR
-X-Message-ID-Hash: LKDNKASGAU27TDSZ2XKJ4E4EKFXNOGQR
-X-MailFrom: ossi@kde.org
+Content-Type: text/plain; charset="US-ASCII"; x-default=true
+Message-ID-Hash: DEDYBVNMYL3MO2KCS6AGICC665UMAYFJ
+X-Message-ID-Hash: DEDYBVNMYL3MO2KCS6AGICC665UMAYFJ
+X-MailFrom: hdegoede@redhat.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Takashi Iwai <tiwai@suse.de>
+CC: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LKDNKASGAU27TDSZ2XKJ4E4EKFXNOGQR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DEDYBVNMYL3MO2KCS6AGICC665UMAYFJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -69,88 +101,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-- In snd_emu10k1_look_for_ctl(), evaluate the cheap condition first
-- In _snd_emu10k1_{audigy_,}init_efx(), don't use expensive bit setting
-  loops to fill arrays
-- In snd_emu_proc_ptr_reg_read(), remove useless condition - iobase can
-  be only 0 or 0x20
+Commit 7e1d728a94ca ("ASoC: Intel: soc-acpi-byt: Add new WM5102 ACPI HID")
+added an extra HID to wm5102_comp_ids.codecs, but it forgot to bump
+wm5102_comp_ids.num_codecs, causing the last codec HID in the codecs list
+to no longer work.
 
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Bump wm5102_comp_ids.num_codecs to fix this.
+
+Fixes: 7e1d728a94ca ("ASoC: Intel: soc-acpi-byt: Add new WM5102 ACPI HID")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/pci/emu10k1/emufx.c   | 18 +++++++-----------
- sound/pci/emu10k1/emuproc.c |  5 +----
- 2 files changed, 8 insertions(+), 15 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-byt-match.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 6cf7c8b1de47..704f6564668e 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -641,8 +641,8 @@ snd_emu10k1_look_for_ctl(struct snd_emu10k1 *emu,
- 	list_for_each_entry(ctl, &emu->fx8010.gpr_ctl, list) {
- 		kcontrol = ctl->kcontrol;
- 		if (kcontrol->id.iface == id->iface &&
--		    !strcmp(kcontrol->id.name, id->name) &&
--		    kcontrol->id.index == id->index)
-+		    kcontrol->id.index == id->index &&
-+		    !strcmp(kcontrol->id.name, id->name))
- 			return ctl;
- 	}
- 	return NULL;
-@@ -1213,7 +1213,7 @@ static int snd_emu10k1_audigy_dsp_convert_32_to_2x16(
+diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+index db5a92b9875a..87c44f284971 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+@@ -124,7 +124,7 @@ static const struct snd_soc_acpi_codecs rt5640_comp_ids = {
+ };
  
- static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
- {
--	int err, i, z, gpr, nctl;
-+	int err, z, gpr, nctl;
- 	int bit_shifter16;
- 	const int playback = 10;
- 	const int capture = playback + (SND_EMU10K1_PLAYBACK_CHANNELS * 2); /* we reserve 10 voices */
-@@ -1245,12 +1245,10 @@ static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
- 	icode->code = icode->tram_addr_map + 256;
+ static const struct snd_soc_acpi_codecs wm5102_comp_ids = {
+-	.num_codecs = 2,
++	.num_codecs = 3,
+ 	.codecs = { "10WM5102", "WM510204", "WM510205"},
+ };
  
- 	/* clear free GPRs */
--	for (i = 0; i < 512; i++)
--		set_bit(i, icode->gpr_valid);
-+	memset(icode->gpr_valid, 0xff, sizeof(icode->gpr_valid));
- 		
- 	/* clear TRAM data & address lines */
--	for (i = 0; i < 256; i++)
--		set_bit(i, icode->tram_valid);
-+	memset(icode->tram_valid, 0xff, sizeof(icode->tram_valid));
- 
- 	strcpy(icode->name, "Audigy DSP code for ALSA");
- 	ptr = 0;
-@@ -1886,12 +1884,10 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
- 	icode->code = icode->tram_addr_map + 160;
- 	
- 	/* clear free GPRs */
--	for (i = 0; i < 256; i++)
--		set_bit(i, icode->gpr_valid);
-+	memset(icode->gpr_valid, 0xff, sizeof(icode->gpr_valid));
- 
- 	/* clear TRAM data & address lines */
--	for (i = 0; i < 160; i++)
--		set_bit(i, icode->tram_valid);
-+	memset(icode->tram_valid, 0xff, sizeof(icode->tram_valid));
- 
- 	strcpy(icode->name, "SB Live! FX8010 code for ALSA v1.2 by Jaroslav Kysela");
- 	ptr = 0; i = 0;
-diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
-index 6e20cca9c98f..bec72dc60a41 100644
---- a/sound/pci/emu10k1/emuproc.c
-+++ b/sound/pci/emu10k1/emuproc.c
-@@ -477,10 +477,7 @@ static void snd_emu_proc_ptr_reg_read(struct snd_info_entry *entry,
- 	for(i = offset; i < offset+length; i++) {
- 		snd_iprintf(buffer, "%02X: ",i);
- 		for (j = 0; j < voices; j++) {
--			if(iobase == 0)
--                		value = snd_ptr_read(emu, 0, i, j);
--			else
--                		value = snd_ptr_read(emu, 0x20, i, j);
-+			value = snd_ptr_read(emu, iobase, i, j);
- 			snd_iprintf(buffer, "%08lX ", value);
- 		}
- 		snd_iprintf(buffer, "\n");
 -- 
-2.40.0.152.g15d061e6df
+2.39.2
 
