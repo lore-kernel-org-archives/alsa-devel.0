@@ -4,53 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23A20C7618E
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 14:15:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24ED8C7618E
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 14:15:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E34ACEBC;
-	Fri, 21 Apr 2023 16:14:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E34ACEBC
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC513E8F;
+	Fri, 21 Apr 2023 16:14:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC513E8F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682086524;
-	bh=kQxQZWDLMvlFNVqP1Lm4JHZWBP/lx9EXiSo9qTKRSHE=;
+	s=default; t=1682086538;
+	bh=x37UryjQicn40viHG0w3UFHBBwrnroKnUkFvCpQvnvw=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pUUmMwGtMFYivilptnNbewQ8BYOl7/YeBasHHL76R1g0/BTvitR4qJNlbToaFLzzl
-	 9cquV0l6XZ5vBqIUTIOnddZo3tJ1Sq9Y6P9HvI/NWv8pl/Me29XhS5VHt48ehpcs3+
-	 wt/W4TuwXW9cn0b3sfQNqnJevLIFE4Pw4IaEaFeg=
+	b=p3LDmnFtLLODnV9P7Vk7wMGIkiW1jNeNCNRNAOCILipZWAZdN3Qk9XTn4k/pBNf/b
+	 aF8IrL119J5QC6TgxsrHrBmMk6e8WTqMjGIxjOoPcSHJArIinoPBtMXux73eCIFdLF
+	 kkLB9l5xmFcWn+UPuI3RO46xneKQasGHuKXcQ6e8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D9E1F805BE;
-	Fri, 21 Apr 2023 16:10:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA38EF805C2;
+	Fri, 21 Apr 2023 16:10:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B2DCBF8057A; Fri, 21 Apr 2023 16:10:39 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id 0B336F8057D; Fri, 21 Apr 2023 16:10:41 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 21D74F80529
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 16:10:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21D74F80529
+	by alsa1.perex.cz (Postfix) with ESMTPS id CA25CF8053B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 16:10:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA25CF8053B
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 250E42425F;
+	by bluemchen.kde.org (Postfix) with ESMTP id 1FBF42425C;
 	Fri, 21 Apr 2023 10:10:07 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pprSg-DbC-00; Fri, 21 Apr 2023 16:10:06 +0200
+	id 1pprSg-Db0-00; Fri, 21 Apr 2023 16:10:06 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 7/7] ALSA: emu10k1: remove remaining cruft from
- snd_emu10k1_emu1010_init()
-Date: Fri, 21 Apr 2023 16:10:06 +0200
-Message-Id: <20230421141006.1005539-7-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 5/7] ALSA: emu10k1: remove apparently pointless FPGA reads
+Date: Fri, 21 Apr 2023 16:10:04 +0200
+Message-Id: <20230421141006.1005539-5-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230421141006.1005539-1-oswald.buddenhagen@gmx.de>
 References: <20230421141006.1005539-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: PP3HKECPJVI3CIIASHK7SCAC5GJ36N2S
-X-Message-ID-Hash: PP3HKECPJVI3CIIASHK7SCAC5GJ36N2S
+Message-ID-Hash: KTACUU6S6OYSW4JEKVAW4OXHNADJDM3E
+X-Message-ID-Hash: KTACUU6S6OYSW4JEKVAW4OXHNADJDM3E
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -64,7 +62,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PP3HKECPJVI3CIIASHK7SCAC5GJ36N2S/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KTACUU6S6OYSW4JEKVAW4OXHNADJDM3E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -73,88 +71,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Various redundant FPGA writes which were presumably also cargo-culted
-from the Windows driver.
+These seem to be simply cargo-culted from the Windows driver's behavior.
+However, the original reason were presumably read-modify-write cycles,
+which we don't do.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emu10k1_main.c | 27 +--------------------------
- 1 file changed, 1 insertion(+), 26 deletions(-)
+ sound/pci/emu10k1/emu10k1_main.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
 diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 9d6a00bf6f2f..2f3e679e85a7 100644
+index f7908e5a6e0d..ac0c8865c76b 100644
 --- a/sound/pci/emu10k1/emu10k1_main.c
 +++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -889,31 +889,29 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
+@@ -885,32 +885,26 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
+ 	dev_info(emu->card->dev, "emu1010: Card options = 0x%x\n", reg);
+ 	snd_emu1010_fpga_read(emu, EMU_HANA_OPTION_CARDS, &reg);
+ 	dev_info(emu->card->dev, "emu1010: Card options = 0x%x\n", reg);
+-	snd_emu1010_fpga_read(emu, EMU_HANA_OPTICAL_TYPE, &tmp);
+ 	/* Optical -> ADAT I/O  */
+ 	/* 0 : SPDIF
+ 	 * 1 : ADAT
  	 */
  	emu->emu1010.optical_in = 1; /* IN_ADAT */
  	emu->emu1010.optical_out = 1; /* IN_ADAT */
--	tmp = 0;
+ 	tmp = 0;
  	tmp = (emu->emu1010.optical_in ? EMU_HANA_OPTICAL_IN_ADAT : 0) |
  		(emu->emu1010.optical_out ? EMU_HANA_OPTICAL_OUT_ADAT : 0);
  	snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, tmp);
+-	snd_emu1010_fpga_read(emu, EMU_HANA_ADC_PADS, &tmp);
  	/* Set no attenuation on Audio Dock pads. */
  	snd_emu1010_fpga_write(emu, EMU_HANA_ADC_PADS, 0x00);
  	emu->emu1010.adc_pads = 0x00;
+-	snd_emu1010_fpga_read(emu, EMU_HANA_DOCK_MISC, &tmp);
  	/* Unmute Audio dock DACs, Headphone source DAC-4. */
  	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_MISC, 0x30);
--	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, 0x12);
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, 0x12);
+-	snd_emu1010_fpga_read(emu, EMU_HANA_DAC_PADS, &tmp);
  	/* DAC PADs. */
  	snd_emu1010_fpga_write(emu, EMU_HANA_DAC_PADS, 0x0f);
  	emu->emu1010.dac_pads = 0x0f;
--	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_MISC, 0x30);
+-	snd_emu1010_fpga_read(emu, EMU_HANA_DOCK_MISC, &tmp);
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_MISC, 0x30);
+-	snd_emu1010_fpga_read(emu, EMU_HANA_SPDIF_MODE, &tmp);
  	/* SPDIF Format. Set Consumer mode, 24bit, copy enable */
  	snd_emu1010_fpga_write(emu, EMU_HANA_SPDIF_MODE, 0x10);
  	/* MIDI routing */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19);
- 	/* Unknown. */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c);
- 	/* IRQ Enable: All on */
- 	/* snd_emu1010_fpga_write(emu, 0x09, 0x0f ); */
- 	/* IRQ Enable: All off */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_IRQ_ENABLE, 0x00);
+@@ -1068,7 +1062,6 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c); /* Unknown */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19); /* MIDI Route */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c); /* Unknown */
+-	snd_emu1010_fpga_read(emu, EMU_HANA_SPDIF_MODE, &tmp);
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_SPDIF_MODE, 0x10); /* SPDIF Format spdif  (or 0x11 for aes/ebu) */
  
-+	emu->emu1010.internal_clock = 1; /* 48000 */
- 	/* Default WCLK set to 48kHz. */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, 0x00);
- 	/* Word Clock source, Internal 48kHz x1 */
-@@ -1049,14 +1047,6 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 		EMU_DST_ALICE_I2S2_RIGHT, EMU_SRC_DOCK_ADC3_RIGHT1);
- 	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x01); /* Unmute all */
- 
--	/* Initial boot complete. Now patches */
--
--	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19); /* MIDI Route */
--	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c); /* Unknown */
--	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19); /* MIDI Route */
--	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c); /* Unknown */
--	snd_emu1010_fpga_write(emu, EMU_HANA_SPDIF_MODE, 0x10); /* SPDIF Format spdif  (or 0x11 for aes/ebu) */
--
  #if 0
- 	snd_emu1010_fpga_link_dst_src_write(emu,
- 		EMU_DST_HAMOA_DAC_LEFT1, EMU_SRC_ALICE_EMU32B + 2); /* ALICE2 bus 0xa2 */
-@@ -1176,21 +1166,6 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 			EMU_DST_HANA_ADAT + 7, EMU_SRC_ALICE_EMU32A + 7);
- 		emu->emu1010.output_source[23] = 28;
- 	}
--	/* TEMP: Select SPDIF in/out */
--	/* snd_emu1010_fpga_write(emu, EMU_HANA_OPTICAL_TYPE, 0x0); */ /* Output spdif */
--
--	/* TEMP: Select 48kHz SPDIF out */
--	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x0); /* Mute all */
--	snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, 0x0); /* Default fallback clock 48kHz */
--	/* Word Clock source, Internal 48kHz x1 */
--	snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K);
--	/* snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK, EMU_HANA_WCLOCK_INT_48K | EMU_HANA_WCLOCK_4X); */
--	emu->emu1010.internal_clock = 1; /* 48000 */
--	snd_emu1010_fpga_write(emu, EMU_HANA_DOCK_LEDS_2, 0x12); /* Set LEDs on Audio Dock */
--	snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, 0x1); /* Unmute all */
--	/* snd_emu1010_fpga_write(emu, 0x7, 0x0); */ /* Mute all */
--	/* snd_emu1010_fpga_write(emu, 0x7, 0x1); */ /* Unmute all */
--	/* snd_emu1010_fpga_write(emu, 0xe, 0x12); */ /* Set LEDs on Audio Dock */
- 
- 	return 0;
- }
 -- 
 2.40.0.152.g15d061e6df
 
