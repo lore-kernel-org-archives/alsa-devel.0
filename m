@@ -4,52 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28905C77B71
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 14:13:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9C14C77B71
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Apr 2023 14:13:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 988FCE89;
-	Fri, 21 Apr 2023 16:12:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 988FCE89
+	by alsa0.perex.cz (Postfix) with ESMTPS id 698AEE9B;
+	Fri, 21 Apr 2023 16:12:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 698AEE9B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682086416;
-	bh=9pY+bUmV2PjU8bvWmpP04KZ/9mW7dz/iMN1bbvJFKjg=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=bkJwSLnFJlIIbfN9GlW2dz7PAB4/NQBiwh1yFwFSvCquq8izL3O/pf6gC9HK0/YWj
-	 JWHrYQNVaV9bbFI9Phjc5AQSzGA3kj/crimfR4+G9Ej7x71dOcp0Jdz47SMQHiKVQ+
-	 zYzTHMMXt18qpbCvb8HZTjX0Of9AR7WGG0LN7U9Q=
+	s=default; t=1682086426;
+	bh=OtlEK7o2jDl7lioBNIX36Xoy3H/KPbhK1KCHW/LOiWs=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=p/M+IhNk2d2INvvhGmhipB2KnWALPwef2ViBCI6yBTyFYf9ZNwn1GMII0c9blmCGi
+	 V7Plvj04wt4uG94e2KWq6weMj0sjBqpssxE1T4964i/d0rzXUvuxRSlC076QEshXDf
+	 yJLwkhGf2n44cP+J6jPO2JHBsyboV1lEPZBBgnrE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D48DBF8057A;
-	Fri, 21 Apr 2023 16:10:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 712E7F8057D;
+	Fri, 21 Apr 2023 16:10:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A6B02F80563; Fri, 21 Apr 2023 16:10:29 +0200 (CEST)
+	id BC2B6F80567; Fri, 21 Apr 2023 16:10:31 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 16A99F80510
+	by alsa1.perex.cz (Postfix) with ESMTPS id 20E2FF80528
 	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 16:10:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16A99F80510
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20E2FF80528
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 0FCC12425A;
-	Fri, 21 Apr 2023 10:10:07 -0400 (EDT)
+	by bluemchen.kde.org (Postfix) with ESMTP id D59A524257;
+	Fri, 21 Apr 2023 10:10:06 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pprSg-Dao-00; Fri, 21 Apr 2023 16:10:06 +0200
+	id 1pprSg-DaH-00; Fri, 21 Apr 2023 16:10:06 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/7] ALSA: emu10k1: fix snd_emu1010_fpga_read() input masking
- for rev2 cards
-Date: Fri, 21 Apr 2023 16:10:02 +0200
-Message-Id: <20230421141006.1005539-3-oswald.buddenhagen@gmx.de>
+Subject: [PATCH] ALSA: emu10k1: properly assert DSP init constraints
+Date: Fri, 21 Apr 2023 16:10:06 +0200
+Message-Id: <20230421141006.1005524-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230421141006.1005539-1-oswald.buddenhagen@gmx.de>
-References: <20230421141006.1005539-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HOPOUW4N4X4RJXIILXB3OCDTKNSVDUZT
-X-Message-ID-Hash: HOPOUW4N4X4RJXIILXB3OCDTKNSVDUZT
+Message-ID-Hash: KZHUV25QNON2SVXY45KXIJVK5T4K6R3H
+X-Message-ID-Hash: KZHUV25QNON2SVXY45KXIJVK5T4K6R3H
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -63,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HOPOUW4N4X4RJXIILXB3OCDTKNSVDUZT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KZHUV25QNON2SVXY45KXIJVK5T4K6R3H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -72,51 +68,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+If these are hit, we've already trashed kernel space. There is no
+recovery from that.
+
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- include/sound/emu10k1.h | 3 ++-
- sound/pci/emu10k1/io.c  | 5 ++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ sound/pci/emu10k1/emufx.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
 
-diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
-index d6c4c290ad1d..6867a042ebe2 100644
---- a/include/sound/emu10k1.h
-+++ b/include/sound/emu10k1.h
-@@ -252,7 +252,8 @@
- #define MUSTAT_ORDYN		0x40		/* 0 = MUDATA can accept a command or data	*/
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index 6cf7c8b1de47..f6f05219f7fc 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -1773,22 +1773,19 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 	 * ok, set up done..
+ 	 */
  
- #define A_GPIO			0x18		/* GPIO on Audigy card (16bits)			*/
--#define A_GPINPUT_MASK		0xff00
-+#define A_GPINPUT_MASK		0xff00		/* Alice/2 has 8 input pins			*/
-+#define A3_GPINPUT_MASK		0x3f00		/* ... while Tina/2 has only 6			*/
- #define A_GPOUTPUT_MASK		0x00ff
+-	if (gpr > tmp) {
+-		snd_BUG();
+-		err = -EIO;
+-		goto __err;
+-	}
++	BUG_ON(gpr > tmp);
++	BUG_ON(nctl > SND_EMU10K1_GPR_CONTROLS);
++
+ 	/* clear remaining instruction memory */
+ 	while (ptr < 0x400)
+ 		A_OP(icode, &ptr, 0x0f, 0xc0, 0xc0, 0xcf, 0xc0);
  
- // The GPIO port is used for I/O config on Sound Blasters;
-diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
-index f0134689c320..42b06f2e5552 100644
---- a/sound/pci/emu10k1/io.c
-+++ b/sound/pci/emu10k1/io.c
-@@ -255,16 +255,19 @@ void snd_emu1010_fpga_write(struct snd_emu10k1 *emu, u32 reg, u32 value)
+ 	icode->gpr_add_control_count = nctl;
+ 	icode->gpr_add_controls = controls;
+ 	emu->support_tlv = 1; /* support TLV */
+ 	err = snd_emu10k1_icode_poke(emu, icode, true);
+ 	emu->support_tlv = 0; /* clear again */
  
- void snd_emu1010_fpga_read(struct snd_emu10k1 *emu, u32 reg, u32 *value)
- {
-+	// The higest input pin is used as the designated interrupt trigger,
-+	// so it needs to be masked out.
-+	u32 mask = emu->card_capabilities->ca0108_chip ? 0x1f : 0x7f;
- 	unsigned long flags;
- 	if (snd_BUG_ON(reg > 0x3f))
- 		return;
- 	reg += 0x40; /* 0x40 upwards are registers. */
- 	spin_lock_irqsave(&emu->emu_lock, flags);
- 	outw(reg, emu->port + A_GPIO);
- 	udelay(10);
- 	outw(reg | 0x80, emu->port + A_GPIO);  /* High bit clocks the value into the fpga. */
- 	udelay(10);
--	*value = ((inw(emu->port + A_GPIO) >> 8) & 0x7f);
-+	*value = ((inw(emu->port + A_GPIO) >> 8) & mask);
- 	spin_unlock_irqrestore(&emu->emu_lock, flags);
- }
+-__err:
+ 	kfree(controls);
+ __err_ctrls:
+ 	kfree(icode->gpr_map);
+@@ -2391,16 +2388,8 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ 	}
+ 	    
  
+-	if (gpr > tmp) {
+-		snd_BUG();
+-		err = -EIO;
+-		goto __err;
+-	}
+-	if (i > SND_EMU10K1_GPR_CONTROLS) {
+-		snd_BUG();
+-		err = -EIO;
+-		goto __err;
+-	}
++	BUG_ON(gpr > tmp);
++	BUG_ON(i > SND_EMU10K1_GPR_CONTROLS);
+ 	
+ 	/* clear remaining instruction memory */
+ 	while (ptr < 0x200)
 -- 
 2.40.0.152.g15d061e6df
 
