@@ -4,50 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDD15C7618E
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Apr 2023 13:26:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A102C7618E
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Apr 2023 13:26:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 890CAED5;
-	Sat, 22 Apr 2023 15:25:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 890CAED5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C21BEDD;
+	Sat, 22 Apr 2023 15:25:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C21BEDD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682169985;
-	bh=xRwb7FQUMDi6LRWmsObsC12TuI4IoZaBAO9y04cg5js=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Yo333mlb9SaxNPI4pkgv7YKo4JCB06Eynjqibbv5LerJpMw2n9PDTYv2iywNxsO4P
-	 2P6AhtnlwtsaGI3XslwrmHyWEyw/YuQGvPHp6BWAxNQeCjcLFeQ+V/R3T5mAoLOuxL
-	 4PMO6wzuF27JwiEItCucHBfw+eyxRP6F5g8Wtvt8=
+	s=default; t=1682169991;
+	bh=koITwj9tn69VRkus+kZjzglCH4HFs3CC0UsaRAA8meA=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ggNEyXlEbvMW4cZuA4WR05Jg3Sosyl6roXtM0NGan/iTuc8QXpnUapvaikqJzfVSw
+	 2r/qX6a6o4f4L/K3Eu5iN+ey/hXLWpsM0PihqR1I6e1TQbiXR2FPrU8DShHNGyEuIB
+	 bzjNXG414ixCsr8SHewnrUvkM4BC+2xBhdObhM4c=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FE0AF80510;
-	Sat, 22 Apr 2023 15:24:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5F09F8052E;
+	Sat, 22 Apr 2023 15:24:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0361EF8019B; Sat, 22 Apr 2023 15:24:42 +0200 (CEST)
+	id 159E2F80155; Sat, 22 Apr 2023 15:24:43 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org
  [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DF582F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id D281EF800AC
 	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2023 15:24:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF582F80149
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D281EF800AC
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 98ADD241A9;
+	by bluemchen.kde.org (Postfix) with ESMTP id 9AD592420A;
 	Sat, 22 Apr 2023 09:24:30 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pqDE6-R66-00; Sat, 22 Apr 2023 15:24:30 +0200
+	id 1pqDE6-R6C-00; Sat, 22 Apr 2023 15:24:30 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 1/2] ALSA: emu10k1: remove unused `resume` parameter from
- snd_emu10k1_init()
-Date: Sat, 22 Apr 2023 15:24:29 +0200
-Message-Id: <20230422132430.1057468-1-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2 2/2] ALSA: emu10k1: remove unused
+ emu->pcm_playback_efx_substream field
+Date: Sat, 22 Apr 2023 15:24:30 +0200
+Message-Id: <20230422132430.1057468-2-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <20230422132430.1057468-1-oswald.buddenhagen@gmx.de>
+References: <20230422132430.1057468-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DVLGOIGKQP5PSPX7QZFKCDU2R6IHLFUH
-X-Message-ID-Hash: DVLGOIGKQP5PSPX7QZFKCDU2R6IHLFUH
+Message-ID-Hash: RW2JYR4FIII254CKBSPZDL6PA2T7MKY5
+X-Message-ID-Hash: RW2JYR4FIII254CKBSPZDL6PA2T7MKY5
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -61,7 +64,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DVLGOIGKQP5PSPX7QZFKCDU2R6IHLFUH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RW2JYR4FIII254CKBSPZDL6PA2T7MKY5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -70,48 +73,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This was unnecessarily added in commit 09668b441da ("emu10k1 - Add PM
-support").
+Amends historic commit 27ae958cf6 ("emu10k1 driver - add multichannel
+device hw:x,3 [2-8/8]").
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
 v2:
-- paste subject of referenced commit
+- paste subject of referenced commit and say that it's historic
 ---
- sound/pci/emu10k1/emu10k1_main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/sound/emu10k1.h    | 1 -
+ sound/pci/emu10k1/emupcm.c | 2 --
+ 2 files changed, 3 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 3880f359e688..cbfaa4bc70a2 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -140,7 +140,7 @@ static const unsigned int i2c_adc_init[][2] = {
- 	{ 0x15, ADC_MUX_2 },  /* ADC Mixer control. Mic for A2ZS Notebook */
- };
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index 39787fecc8d9..d7e49935376e 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -1764,7 +1764,6 @@ struct snd_emu10k1 {
+ 	struct snd_pcm_substream *pcm_capture_substream;
+ 	struct snd_pcm_substream *pcm_capture_mic_substream;
+ 	struct snd_pcm_substream *pcm_capture_efx_substream;
+-	struct snd_pcm_substream *pcm_playback_efx_substream;
  
--static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir, int resume)
-+static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir)
- {
- 	unsigned int silent_page;
- 	int ch;
-@@ -1975,7 +1975,7 @@ int snd_emu10k1_create(struct snd_card *card,
- 		emu->voices[idx].number = idx;
- 	}
+ 	struct snd_timer *timer;
  
--	err = snd_emu10k1_init(emu, enable_ir, 0);
-+	err = snd_emu10k1_init(emu, enable_ir);
- 	if (err < 0)
- 		return err;
- #ifdef CONFIG_PM_SLEEP
-@@ -2068,7 +2068,7 @@ void snd_emu10k1_resume_init(struct snd_emu10k1 *emu)
- 		snd_emu10k1_emu1010_init(emu);
- 	else
- 		snd_emu10k1_ptr_write(emu, AC97SLOT, 0, AC97SLOT_CNTR|AC97SLOT_LFE);
--	snd_emu10k1_init(emu, emu->enable_ir, 1);
-+	snd_emu10k1_init(emu, emu->enable_ir);
- }
- 
- void snd_emu10k1_resume_regs(struct snd_emu10k1 *emu)
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index 48af77ae8020..68334af64741 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -1091,8 +1091,6 @@ static int snd_emu10k1_efx_playback_open(struct snd_pcm_substream *substream)
+ 	epcm->type = PLAYBACK_EFX;
+ 	epcm->substream = substream;
+ 	
+-	emu->pcm_playback_efx_substream = substream;
+-
+ 	runtime->private_data = epcm;
+ 	runtime->private_free = snd_emu10k1_pcm_free_substream;
+ 	runtime->hw = snd_emu10k1_efx_playback;
 -- 
 2.40.0.152.g15d061e6df
 
