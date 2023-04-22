@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EC91C6FD18
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Apr 2023 12:17:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47042C7618E
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Apr 2023 13:26:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07DC2EC6;
-	Sat, 22 Apr 2023 14:16:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07DC2EC6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1729FECB;
+	Sat, 22 Apr 2023 15:25:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1729FECB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682165836;
-	bh=iKbKiJxyosGCV0+M8Ub17USXzi5eh2QK8mXCFpA2MeI=;
+	s=default; t=1682169959;
+	bh=4Yj9c9tNROo8n0O8yyzQMpPzf/t/QLuNIToNVtFZyiA=;
 	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qDKcze90yyXFiqJB8C/YP+UvoWmTnrVOeSLNeWjTm30F1cq2uoOAJ3NhvTN8vy3Bs
-	 3tJQNGu4EJbGai+ByYl0Hvm4S+VDsA1thhkyhHCUxQlMo4aEP1o+3iaHRqJC53cEns
-	 fYv7QUhP6cZBI3zBODa1xW8HLiKsD4FJrx8JNtQM=
+	b=bs964rPY0UDOX2C+EEHkvL1sRi/oERbt/KEsFoRofMvz1tkYkH8eKoPbD3x4Ykw3P
+	 2Vv6MyhD3giEUGns08snv736ZNfqJ9THZuuBkgtjd1ECPgbK3c56g7F3HQ1K3E8wLX
+	 Uqo0iu8Flko4uilKa64ZWaU3kD3nWddR/HxMWcgU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABF14F80155;
-	Sat, 22 Apr 2023 14:16:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA33CF80155;
+	Sat, 22 Apr 2023 15:24:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 64FB2F80155; Sat, 22 Apr 2023 14:15:27 +0200 (CEST)
+	id 34BF3F80212; Sat, 22 Apr 2023 15:24:40 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org
  [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0342FF80053
-	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2023 14:15:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0342FF80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id 094F8F80155
+	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2023 15:24:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 094F8F80155
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 6B2F523F58;
-	Sat, 22 Apr 2023 08:15:19 -0400 (EDT)
+	by bluemchen.kde.org (Postfix) with ESMTP id BB05D2420C;
+	Sat, 22 Apr 2023 09:24:30 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pqC99-Pt0-00; Sat, 22 Apr 2023 14:15:19 +0200
+	id 1pqDE6-R6R-00; Sat, 22 Apr 2023 15:24:30 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2] ALSA: emu10k1: minor optimizations
-Date: Sat, 22 Apr 2023 14:15:19 +0200
-Message-Id: <20230422121519.1052813-1-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2] ALSA: emu10k1: fix snd_emu1010_fpga_read() input masking
+ for rev2 cards
+Date: Sat, 22 Apr 2023 15:24:30 +0200
+Message-Id: <20230422132430.1057490-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: I5DTGTLSWXIYAQPKSWXKJW3SRJRYIFEX
-X-Message-ID-Hash: I5DTGTLSWXIYAQPKSWXKJW3SRJRYIFEX
+Message-ID-Hash: 332DHOQSARUJJX2DUN4X2OCPZMITMKJ6
+X-Message-ID-Hash: 332DHOQSARUJJX2DUN4X2OCPZMITMKJ6
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -60,7 +61,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I5DTGTLSWXIYAQPKSWXKJW3SRJRYIFEX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/332DHOQSARUJJX2DUN4X2OCPZMITMKJ6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -69,93 +70,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-- In snd_emu10k1_look_for_ctl(), evaluate the cheap condition first
-- In _snd_emu10k1_{audigy_,}init_efx(), don't use expensive bit setting
-  loops to fill arrays
-- In snd_emu_proc_ptr_reg_read(), remove useless condition - iobase can
-  be only 0 or 0x20
+Unlike the Alice2 chips used on 1st generation E-MU cards, the
+Tina/Tina2 chips used on the 2nd gen cards have only six GPIN pins,
+which means that we need to use a smaller mask. Failure to do so would
+falsify the read data if the FPGA tried to raise an IRQ right at that
+moment. This wasn't a problem so far, as we didn't actually enable FPGA
+IRQs, but that's going to change soon.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
 v2:
-- fix fill sizes for sblive by using the previous hard-coded numbers.
-  it might be a good idea to introduce constants for that, but that's
-  for another patch.
+- added description
 ---
- sound/pci/emu10k1/emufx.c   | 18 +++++++-----------
- sound/pci/emu10k1/emuproc.c |  5 +----
- 2 files changed, 8 insertions(+), 15 deletions(-)
+ include/sound/emu10k1.h | 3 ++-
+ sound/pci/emu10k1/io.c  | 5 ++++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 6cf7c8b1de47..66f450377888 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -641,8 +641,8 @@ snd_emu10k1_look_for_ctl(struct snd_emu10k1 *emu,
- 	list_for_each_entry(ctl, &emu->fx8010.gpr_ctl, list) {
- 		kcontrol = ctl->kcontrol;
- 		if (kcontrol->id.iface == id->iface &&
--		    !strcmp(kcontrol->id.name, id->name) &&
--		    kcontrol->id.index == id->index)
-+		    kcontrol->id.index == id->index &&
-+		    !strcmp(kcontrol->id.name, id->name))
- 			return ctl;
- 	}
- 	return NULL;
-@@ -1213,7 +1213,7 @@ static int snd_emu10k1_audigy_dsp_convert_32_to_2x16(
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index 89dbd2e93410..83130965c90a 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -252,7 +252,8 @@
+ #define MUSTAT_ORDYN		0x40		/* 0 = MUDATA can accept a command or data	*/
  
- static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
+ #define A_GPIO			0x18		/* GPIO on Audigy card (16bits)			*/
+-#define A_GPINPUT_MASK		0xff00
++#define A_GPINPUT_MASK		0xff00		/* Alice/2 has 8 input pins			*/
++#define A3_GPINPUT_MASK		0x3f00		/* ... while Tina/2 has only 6			*/
+ #define A_GPOUTPUT_MASK		0x00ff
+ 
+ // The GPIO port is used for I/O config on Sound Blasters;
+diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
+index f0134689c320..42b06f2e5552 100644
+--- a/sound/pci/emu10k1/io.c
++++ b/sound/pci/emu10k1/io.c
+@@ -255,16 +255,19 @@ void snd_emu1010_fpga_write(struct snd_emu10k1 *emu, u32 reg, u32 value)
+ 
+ void snd_emu1010_fpga_read(struct snd_emu10k1 *emu, u32 reg, u32 *value)
  {
--	int err, i, z, gpr, nctl;
-+	int err, z, gpr, nctl;
- 	int bit_shifter16;
- 	const int playback = 10;
- 	const int capture = playback + (SND_EMU10K1_PLAYBACK_CHANNELS * 2); /* we reserve 10 voices */
-@@ -1245,12 +1245,10 @@ static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
- 	icode->code = icode->tram_addr_map + 256;
++	// The higest input pin is used as the designated interrupt trigger,
++	// so it needs to be masked out.
++	u32 mask = emu->card_capabilities->ca0108_chip ? 0x1f : 0x7f;
+ 	unsigned long flags;
+ 	if (snd_BUG_ON(reg > 0x3f))
+ 		return;
+ 	reg += 0x40; /* 0x40 upwards are registers. */
+ 	spin_lock_irqsave(&emu->emu_lock, flags);
+ 	outw(reg, emu->port + A_GPIO);
+ 	udelay(10);
+ 	outw(reg | 0x80, emu->port + A_GPIO);  /* High bit clocks the value into the fpga. */
+ 	udelay(10);
+-	*value = ((inw(emu->port + A_GPIO) >> 8) & 0x7f);
++	*value = ((inw(emu->port + A_GPIO) >> 8) & mask);
+ 	spin_unlock_irqrestore(&emu->emu_lock, flags);
+ }
  
- 	/* clear free GPRs */
--	for (i = 0; i < 512; i++)
--		set_bit(i, icode->gpr_valid);
-+	memset(icode->gpr_valid, 0xff, 512 / 8);
- 		
- 	/* clear TRAM data & address lines */
--	for (i = 0; i < 256; i++)
--		set_bit(i, icode->tram_valid);
-+	memset(icode->tram_valid, 0xff, 256 / 8);
- 
- 	strcpy(icode->name, "Audigy DSP code for ALSA");
- 	ptr = 0;
-@@ -1886,12 +1884,10 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
- 	icode->code = icode->tram_addr_map + 160;
- 	
- 	/* clear free GPRs */
--	for (i = 0; i < 256; i++)
--		set_bit(i, icode->gpr_valid);
-+	memset(icode->gpr_valid, 0xff, 256 / 8);
- 
- 	/* clear TRAM data & address lines */
--	for (i = 0; i < 160; i++)
--		set_bit(i, icode->tram_valid);
-+	memset(icode->tram_valid, 0xff, 160 / 8);
- 
- 	strcpy(icode->name, "SB Live! FX8010 code for ALSA v1.2 by Jaroslav Kysela");
- 	ptr = 0; i = 0;
-diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
-index 6e20cca9c98f..bec72dc60a41 100644
---- a/sound/pci/emu10k1/emuproc.c
-+++ b/sound/pci/emu10k1/emuproc.c
-@@ -477,10 +477,7 @@ static void snd_emu_proc_ptr_reg_read(struct snd_info_entry *entry,
- 	for(i = offset; i < offset+length; i++) {
- 		snd_iprintf(buffer, "%02X: ",i);
- 		for (j = 0; j < voices; j++) {
--			if(iobase == 0)
--                		value = snd_ptr_read(emu, 0, i, j);
--			else
--                		value = snd_ptr_read(emu, 0x20, i, j);
-+			value = snd_ptr_read(emu, iobase, i, j);
- 			snd_iprintf(buffer, "%08lX ", value);
- 		}
- 		snd_iprintf(buffer, "\n");
 -- 
 2.40.0.152.g15d061e6df
 
