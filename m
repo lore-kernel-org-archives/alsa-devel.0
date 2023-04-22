@@ -4,135 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3FDDC6FD18
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Apr 2023 08:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77FB2C6FD18
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Apr 2023 10:09:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A33C7EDC;
-	Sat, 22 Apr 2023 10:50:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A33C7EDC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 757D3ECD;
+	Sat, 22 Apr 2023 12:08:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 757D3ECD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682153505;
-	bh=ajWZ1JUjxvwGo27iGRv5JGYJhihUlBjzsmPSrM5tXVM=;
-	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=JkgHi9EV/S3cOIadfmLiOlTpYolRUIt+pFDE7w3uBpnAKQvUPs8eVIznKEWJXsQyr
-	 Sy348ygsULlVxACdtsdcS6vvuUwo4UfeiF8TLCQpnvGcel0D5CiIs8TXceb4vzuFbr
-	 aqL++OOuxfbYRTfbv5PvrrIhaeFgpcISrdZPuJkg=
+	s=default; t=1682158144;
+	bh=rXOPslBoBlhZNGBdMmqogJrqQRhdnAyJxoeKsIsVOic=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=LGKVkOZuzM6L8cu+q1uESltRHUnbWUh9EJU0aE+A5xOQ+9CKIR3MdW01ZXJq6FwQa
+	 BqgE5C1/owsMxDy6t+AlNckvbHmPsT64K0cVCj5rDxLJHyZj2lBkc3I7+lD5ngsJMy
+	 xy3LACQBjCoB2Q1Az4KVyjGjsKHUccn6nx9qdwjc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BE45F80568;
-	Sat, 22 Apr 2023 10:49:26 +0200 (CEST)
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2] ASoC: max98090: make it selectable
-Date: Sat, 22 Apr 2023 00:19:50 +0300
-X-Mailman-Rule-Hits: nonmember-moderation
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-X-Mailman-Approved-At: Sat, 22 Apr 2023 08:49:21 +0000
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WVBXZ7FC3SO2A7QHH7TLEVGCR4BBTRZK/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <168215336482.26.10373282303419811922@mailman-core.alsa-project.org>
-From: Maxim Kochetkov via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Maxim Kochetkov <fido_max@inbox.ru>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com,
- krzysztof.kozlowski@linaro.org, pierre-louis.bossart@linux.intel.com,
- rf@opensource.cirrus.com, ckeepax@opensource.cirrus.com,
- shumingf@realtek.com, ryans.lee@analog.com, herve.codina@bootlin.com,
- wangweidong.a@awinic.com, ajye_huang@compal.corp-partner.google.com,
- Maxim Kochetkov <fido_max@inbox.ru>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id D5145F80155;
+	Sat, 22 Apr 2023 12:07:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 284EEF80155; Fri, 21 Apr 2023 23:19:57 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_HI,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED shortcircuit=no autolearn=ham autolearn_force=no
-	version=3.4.6
-Received: from smtpng3.i.mail.ru (smtpng3.i.mail.ru [94.100.177.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id C7FA1F80155; Sat, 22 Apr 2023 12:07:44 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D4A4BF80053
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2023 23:19:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4A4BF80053
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=inbox.ru header.i=@inbox.ru header.a=rsa-sha256
- header.s=mail4 header.b=bmkMasVa
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru;
- s=mail4;
-	h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc;
- bh=mkBPQpT2uDxwxYBa8lzR7tPgzhfW+0Cg4P9/VNOLqkU=;
-	t=1682111995;x=1682201995;
-	b=bmkMasVaFRHgLMRm68fucwVBzmH1nl71A/Bib7Ilbh6uHFd9huCC+jYZ8R+rMnmn15m4noC+5t/U+pXYxQ1WAFeT7ArH+6zGAcGIXCEY86n9GLQ8znDQArzmv/yB/QuXcPZYgMRjH47ps9wojYjVGI27lu5ft5xey70DG2uQyzksRNjIYSMiKqLDD/UwgfDw/Ft18V5lj+RuLaG0QuwS3N3E7QvGRrkt+hsOFwghaiA33gYZD3eRBl5NLa6kPktaSRO3gTfTU2mSbi8Bd7EFirLkT6TAXiswLcdpLEGb4DniMKJci+3e3CAbxRXV0papzopzxmvhXMJG0/i9QGtcMA==;
-Received: by smtpng3.m.smailru.net with esmtpa (envelope-from
- <fido_max@inbox.ru>)
-	id 1ppyAb-0007fo-6Q; Sat, 22 Apr 2023 00:19:53 +0300
-From: Maxim Kochetkov <fido_max@inbox.ru>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2] ASoC: max98090: make it selectable
-Date: Sat, 22 Apr 2023 00:19:50 +0300
-Message-Id: <20230421211950.20972-1-fido_max@inbox.ru>
-X-Mailer: git-send-email 2.39.2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 860A7F800AC
+	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2023 12:07:35 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 4A4FE11CF;
+	Sat, 22 Apr 2023 12:07:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 4A4FE11CF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1682158054; bh=d0r/rqFhIyFt1kVxaACSHWNwV0dxJ5RqZcz95TNwcmo=;
+	h=Date:Subject:To:References:Cc:From:In-Reply-To:From;
+	b=U6Jr/uDSYo7Gk9yrxE/EUBTk6ygUKWnJMJGQ+yiA1nLxzicv2O4iX9lnhN2cGrO8k
+	 HcFmBnf258E3k0g+tYU/LCHTfeQV5c4bmpRMapiwS0gGKTb/bfCVDScurW0yVpYqMo
+	 0esm9JcmpMBzJvKvIh8nbI1ik5OX6htB5Z5XRnF4=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Sat, 22 Apr 2023 12:07:32 +0200 (CEST)
+Message-ID: <42c32ed5-84f4-ad4f-c7b6-ae3a2ad89a8c@perex.cz>
+Date: Sat, 22 Apr 2023 12:07:31 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtpng3.m.smailru.net;
- auth=pass smtp.auth=fido_max@inbox.ru smtp.mailfrom=fido_max@inbox.ru
-X-Mailru-Src: smtp
-X-7564579A: B8F34718100C35BD
-X-77F55803: 
- 4F1203BC0FB41BD9D2463843EA06979D4923782C71F503BD5FD0CB5EA03BBE6C182A05F538085040897E8460EA5BFD48E58EBCDBA8257DB6C9035EBA01E2AAF0ED3A9DCD78103F7F
-X-7FA49CB5: 
- FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE75C385DEB91CEC222EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006375FE8AD9F0D2764EB8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8D31C4A7601E1FFD751569911C20E60E86F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE77A825AB47F0FC8649FA2833FD35BB23D9E625A9149C048EE599709FD55CB46A6CB629EEF1311BF91D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8BCD8DAA7A11EFD9E5A471835C12D1D977C4224003CC8364762BB6847A3DEAEFB0F43C7A68FF6260569E8FC8737B5C22494854413538E1713FE827F84554CEF50127C277FBC8AE2E8BA83251EDC214901ED5E8D9A59859A8B65D56369A3576CBA5089D37D7C0E48F6C5571747095F342E88FB05168BE4CE3AF
-X-C1DE0DAB: 
- 0D63561A33F958A57CAC927ECD9E36548924936084C36666DA065E124E547C8DF87CCE6106E1FC07E67D4AC08A07B9B06A1CB4668A9CA5FA9C5DF10A05D560A950611B66E3DA6D700B0A020F03D25A0997E3FB2386030E77
-X-C8649E89: 
- 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF076D43E4B70E59512F934BB212E1E1C5F18277E75E8C258795EA9BD1FBC1427442A4A3B3B141354EF42790DB0C4B6428CBC098EC20143AA0289735F80CBCFD6309F6894F2AE0026643082AE146A756F3
-X-D57D3AED: 
- 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojr0si6YxBz7SnpGaumsYvHw==
-X-Mailru-Sender: 
- 689FA8AB762F73933AF1F914F131DBF57B2B9E294042580675C1FDBA28D1CD9698CC072019C18A892CA7F8C7C9492E1F2F5E575105D0B01ADBE2EF17B331888EEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
-X-MailFrom: fido_max@inbox.ru
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: Request to configure libhinawa and hinawa-rs repositories
+Content-Language: en-US
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+References: <20230422005622.GA55854@workstation>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20230422005622.GA55854@workstation>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: GNTC2RS5JQZSCGDVPSAOHIBKAKRHHTAD
+X-Message-ID-Hash: GNTC2RS5JQZSCGDVPSAOHIBKAKRHHTAD
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: WVBXZ7FC3SO2A7QHH7TLEVGCR4BBTRZK
-X-Message-ID-Hash: WVBXZ7FC3SO2A7QHH7TLEVGCR4BBTRZK
-X-Mailman-Approved-At: Sat, 22 Apr 2023 08:49:21 +0000
-CC: lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com,
- krzysztof.kozlowski@linaro.org, pierre-louis.bossart@linux.intel.com,
- rf@opensource.cirrus.com, ckeepax@opensource.cirrus.com,
- shumingf@realtek.com, ryans.lee@analog.com, herve.codina@bootlin.com,
- wangweidong.a@awinic.com, ajye_huang@compal.corp-partner.google.com,
- Maxim Kochetkov <fido_max@inbox.ru>
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WVBXZ7FC3SO2A7QHH7TLEVGCR4BBTRZK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GNTC2RS5JQZSCGDVPSAOHIBKAKRHHTAD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -141,29 +88,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There is no way to select max98090 from menuconfig right now.
-Add a Kconfig menu description to allow building the driver standalone.
-It will allow this codec to be used by any other I2S master without
-adding extra sound card entry in Kconfig.
+On 22. 04. 23 2:56, Takashi Sakamoto wrote:
+> Hi Jaroslav,
+> 
+> Thanks for your administration in many repositories hosting on github.com.
+> 
+> I'd like you to change 'About' messages for the two repositories, since
+> I decide to host some repository in git.kernel.org.
+> 
+> * For libhinawa repository
+>    * 'Mirror of https://git.kernel.org/pub/scm/libs/ieee1394/libhinawa.git/
+>       for user support and continuous integration '
+> * For hinawa-rs repository
+>    * 'Mirror of https://git.kernel.org/pub/scm/libs/ieee1394/hinawa-rs.git/
+>       for user support and continuous integration '
 
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
----
- sound/soc/codecs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Takashi,
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 79d2362ad055..8020097d4e4c 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1090,7 +1090,7 @@ config SND_SOC_MAX98088
- 	depends on I2C
- 
- config SND_SOC_MAX98090
--	tristate
-+	tristate "Maxim MAX98090 CODEC"
- 	depends on I2C
- 
- config SND_SOC_MAX98095
+	the information was changed as requested.
+
+						Jaroslav
+
 -- 
-2.39.2
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 
