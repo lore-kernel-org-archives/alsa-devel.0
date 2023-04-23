@@ -4,68 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADB05C77B73
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Apr 2023 07:49:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D431EC77B76
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Apr 2023 08:23:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD9D5F26;
-	Sun, 23 Apr 2023 09:48:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD9D5F26
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17CDEF1A;
+	Sun, 23 Apr 2023 10:22:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17CDEF1A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682236180;
-	bh=5MC9i52X1tLXEqtNik1D8hEqIZbiSJMLq6OMwZidTMQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1682238227;
+	bh=V/CSPBHuNbEcq68v2J0hjgxkaIDcT/qj72+y5V8ZfmQ=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Yz3hhn7Uy+XKG+McANaex9MvPMOgIh6YG1E1+e6PzoXAG3sX3BTNifHuAzTpYgmST
-	 +XVxw5JbxSVLUDXLjXaeUGkPgBDtmyfpDYpXMTGBXRd5u2oCm3PN2AjVJpM2WLLnK4
-	 Oaiz71PejhQbYqPcWBm0vRx7aDcWqk1XYghfuVKc=
+	b=ihT554pVjtcIGHzeuu8GQHL34sSJzPeAcWg6Lg88gfg8IdohT4l6hft4sAOD2Jlct
+	 tTP6jLSLZPi4fJXTZH2cwsBnjmYCM/1Lu8ZKcNPEWXYr3QMXIh2GpMTISjUN6r0s9l
+	 PJVgE9I2onWxHYMO4JjH/skvB1hoPV2RlhjCZzbg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 248B1F80236;
-	Sun, 23 Apr 2023 09:48:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C05A1F80236;
+	Sun, 23 Apr 2023 10:22:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A7D5F80236; Sun, 23 Apr 2023 09:48:20 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 184F5F80236; Sun, 23 Apr 2023 10:22:28 +0200 (CEST)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
+ [IPv6:2a00:1450:4864:20::629])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8DE91F800F8
-	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2023 09:48:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DE91F800F8
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 1FC0524212;
-	Sun, 23 Apr 2023 03:48:15 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pqUSE-AiK-00; Sun, 23 Apr 2023 09:48:14 +0200
-Date: Sun, 23 Apr 2023 09:48:14 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 1/2] ALSA: emu10k1: fix SNDRV_EMU10K1_IOCTL_SINGLE_STEP
-Message-ID: <ZETivvAQCIDptxHi@ugly>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-	Jaroslav Kysela <perex@perex.cz>
-References: <20230422161021.1144004-1-oswald.buddenhagen@gmx.de>
- <871qkboxuo.wl-tiwai@suse.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C2FCF800AC
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2023 10:22:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C2FCF800AC
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=es8nQFUn
+Received: by mail-ej1-x629.google.com with SMTP id
+ a640c23a62f3a-95678d891d6so534636366b.1
+        for <alsa-devel@alsa-project.org>;
+ Sun, 23 Apr 2023 01:22:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1682238142; x=1684830142;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V/CSPBHuNbEcq68v2J0hjgxkaIDcT/qj72+y5V8ZfmQ=;
+        b=es8nQFUnq/i5pRQvnCLiKtMhcD2R+OXvkdJUap3gQnYNLL7jzhb04de5PZ+OhAbtPl
+         YEpsrFUc8xRCFlpKDvvYjZePMDZ+UKxTNtGhtVWtR6IKfl4ld/JC5/7reGEvqkfzm3kV
+         4BNOTQvccMZWpBkCH8QN7IA91qR1XMVZjVRssCV/gU+B3Ul1euI0Cuo6n+q/dmKzDF1c
+         YJHQ3A1Qtn/Yl9pNNdiBUff532id2GJIXS0X9N8hpEROJtPnMkNXaZ1nHhg3SUDPSug7
+         yZtEIH1OtfMH++0BmFDrE7EPNeQfauUwIcsNQCBlshqcVQpHWOZXMscTtA8vx0m7ms1W
+         2piw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682238142; x=1684830142;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V/CSPBHuNbEcq68v2J0hjgxkaIDcT/qj72+y5V8ZfmQ=;
+        b=lPfpAgwwhtZ9jkO1KeMbfxsoHot85JLkF46JmZt0jCi7nb4cWK2hksxvKJM2X0zFAG
+         akyYwkuC8hATdDqURHFrGYJcu+cIXOcjasPFPCOLQSjebt6PXVz6QCMNmGcHT8HQgxt2
+         nHEcI8uQPMWfga9R/dyQvZZNs7S1gxAQI/cEQkRzn6Vb8qUqTI/NH77PztlgPM46t895
+         77AgX4oW8dkF1ebRO2UulryRW2dc6er6pfL4pvWxQVUOBWP4Hz91qkLsvjQISE0P4gxh
+         0u/1FgGg8n7+qiLGaIKOoA3PE2japf6GH/6leIuLOoiQnovH7uzC47T+UlMlCNOlb/XW
+         q79Q==
+X-Gm-Message-State: AAQBX9csk5Ghy+M9lYBMBjfEE3cTe2J+s0LByPfYaj6tvc5DopAtAuCb
+	VPVX1j75OPaszJgrThlpUH+A2g==
+X-Google-Smtp-Source: 
+ AKy350ZF7I1MOnmb2xhLLqU4sxYXtjxDll7BK1+/KYDZlc1GRJg+/K93ZNDzJCpfDrtqSP3u9os2xg==
+X-Received: by 2002:a17:907:2118:b0:931:6921:bdb7 with SMTP id
+ qn24-20020a170907211800b009316921bdb7mr6586942ejb.60.1682238142141;
+        Sun, 23 Apr 2023 01:22:22 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:5d52:d466:d57f:118c?
+ ([2a02:810d:15c0:828:5d52:d466:d57f:118c])
+        by smtp.gmail.com with ESMTPSA id
+ mh26-20020a170906eb9a00b009591db787a1sm616457ejb.97.2023.04.23.01.22.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Apr 2023 01:22:21 -0700 (PDT)
+Message-ID: <0a2eca07-f266-164c-4a9f-f1000ae4efbc@linaro.org>
+Date: Sun, 23 Apr 2023 10:22:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <871qkboxuo.wl-tiwai@suse.de>
-Message-ID-Hash: PJEA627KX2N7K26QX7OBLT2BQD4P7LJB
-X-Message-ID-Hash: PJEA627KX2N7K26QX7OBLT2BQD4P7LJB
-X-MailFrom: ossi@kde.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v2] ASoC: max98090: make it selectable
+Content-Language: en-US
+To: Maxim Kochetkov <fido_max@inbox.ru>, alsa-devel@alsa-project.org
+References: <20230421211950.20972-1-fido_max@inbox.ru>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230421211950.20972-1-fido_max@inbox.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 2GFV2J5C652DY6BN44MBU3LRQUPPBQWB
+X-Message-ID-Hash: 2GFV2J5C652DY6BN44MBU3LRQUPPBQWB
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org
+CC: lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com, rf@opensource.cirrus.com,
+ ckeepax@opensource.cirrus.com, shumingf@realtek.com, ryans.lee@analog.com,
+ herve.codina@bootlin.com, wangweidong.a@awinic.com,
+ ajye_huang@compal.corp-partner.google.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PJEA627KX2N7K26QX7OBLT2BQD4P7LJB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2GFV2J5C652DY6BN44MBU3LRQUPPBQWB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -74,14 +121,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, Apr 23, 2023 at 09:34:55AM +0200, Takashi Iwai wrote:
->Although 0-day bot caught some build error, I couldn't reproduce it,
->so took as is.  Let's see whether it's broken at some config combo.
->
-undeclared logical dependency on the "fixup DSP defines" patch, i think.
+On 21/04/2023 23:19, Maxim Kochetkov wrote:
+> There is no way to select max98090 from menuconfig right now.
+> Add a Kconfig menu description to allow building the driver standalone.
+> It will allow this codec to be used by any other I2S master without
+> adding extra sound card entry in Kconfig.
 
-but even without that mistake the bot would croak, because i made my 
-tooling describe deps in a human-readable way rather than sha1 + 
-patch-ids. i guess i'll have to include both to make it bot-friendly ...
+For your sound card, you need extra sound card entry in Kconfig.
 
-regards
+Best regards,
+Krzysztof
+
