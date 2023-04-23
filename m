@@ -4,91 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57ABDC77B73
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Apr 2023 07:36:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E199BC77B76
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Apr 2023 07:36:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42702F25;
-	Sun, 23 Apr 2023 09:35:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42702F25
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA285F2B;
+	Sun, 23 Apr 2023 09:35:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA285F2B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682235379;
-	bh=E8BT+NmYofB3sbtmuM6azpnkWFSz+gcGqgr7KvhEKYw=;
+	s=default; t=1682235404;
+	bh=SieXuMz4fTKBo4vanFobPzB4JtKTApXvyKL2zlLZ90g=;
 	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EXzxpgQPfa1NHix2Ibvp3LZ3aPxZthzn1nQElM85UP+PdcGB0kXHFHK6+LgJFRp6s
-	 UZFfumKpQm63/s6cmeGLmEUj8XVuctKx8w0rw3BORd7EyhKy6uEF9DkkElozjOl/uu
-	 Iy39Zd/PsTECNxXUZ5ITdOoA2H9QPYMqgrdDEMdM=
+	b=c566RQFFXhZRNPM0XUgUhwg8jk4Et3+LkOUiauBLdzDxR9cTX9GH7I0XHSAG3xC1Y
+	 h3rXkjz2X6aOtkuLkD6zJgt3Zv0IWVsRaX8eIg+mKONoxPtSQ0YkMAWJvbO0sTjN0P
+	 M5EQJr4vsWpjEukkZc7sxVXUjNNRhwDNm3YfV1Nw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DD57F80236;
-	Sun, 23 Apr 2023 09:35:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03F31F8042F;
+	Sun, 23 Apr 2023 09:35:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47DD4F80236; Sun, 23 Apr 2023 09:34:59 +0200 (CEST)
+	id 2B27EF8052D; Sun, 23 Apr 2023 09:35:25 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E379CF80137
-	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2023 09:34:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E379CF80137
+	by alsa1.perex.cz (Postfix) with ESMTPS id 23994F8042F
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2023 09:35:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23994F8042F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=C6DGisLb;
+ header.s=susede2_rsa header.b=OSKBuhLu;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=He08ft8O
+ header.s=susede2_ed25519 header.b=q1JzWvMq
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5E0DD1F8B8;
-	Sun, 23 Apr 2023 07:34:56 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E417A1F8BD;
+	Sun, 23 Apr 2023 07:35:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1682235296;
+	t=1682235322;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=g0MrUeC2kJ1KumSvs3T5H6F5Q6lcEmYSpYhiKpRqEoE=;
-	b=C6DGisLbSIW90h70eRmjwEUShLxL3QdpOfsUgc9HhYpMmFErE+YYR92k0+VyIauGmcU67P
-	WVm0PTEaq3mxe1WNRoZAqk0a/osHZvGh7Ohn4o5PcjxVZ/XFLNfor6kBx2DFa++XtUG9sV
-	QfaAos1Jbkehx+hKWX3+ZBgY0GzGTrg=
+	bh=5EAsCBNuH0oht6CmwfDsFt6JORIDm7G/QknxML4kqCA=;
+	b=OSKBuhLuDsrABPf/FCBHgm9fCtQT4VHzAapNmgsnEvkV9DXmVZEsN7btJt9c1/5UOUSjFv
+	6iMAOG0qPFRxrH92IZ7jPNoXnECLgLbw2LnAqa+wO5875+7yb9WrhSlUB1PxpGnVV5KqD3
+	yIURUTyqMLU+JoG0A70ztd09AIFxjK8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1682235296;
+	s=susede2_ed25519; t=1682235322;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=g0MrUeC2kJ1KumSvs3T5H6F5Q6lcEmYSpYhiKpRqEoE=;
-	b=He08ft8Ot+GV2ZM6sWDQI5ROlY2EXbW3xLrsPsZp7v5va8juPZVD/gnY00HnzVnJgZFrJU
-	qPZNZ6FSLz0WJ6BA==
+	bh=5EAsCBNuH0oht6CmwfDsFt6JORIDm7G/QknxML4kqCA=;
+	b=q1JzWvMqRpZA6GygZ+RxVXhm4zHMkeAkL1vKzwGRFoXWJZuaPtmDf5gG86tDfRyouk9wyK
+	V5/LxI5CZ9yTRAAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3ECDC13498;
-	Sun, 23 Apr 2023 07:34:56 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C086013498;
+	Sun, 23 Apr 2023 07:35:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id UpWODqDfRGT3MgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Sun, 23 Apr 2023 07:34:56 +0000
-Date: Sun, 23 Apr 2023 09:34:55 +0200
-Message-ID: <871qkboxuo.wl-tiwai@suse.de>
+	id r/5BLrrfRGQoMwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sun, 23 Apr 2023 07:35:22 +0000
+Date: Sun, 23 Apr 2023 09:35:22 +0200
+Message-ID: <87zg6znj9h.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Subject: Re: [PATCH 1/2] ALSA: emu10k1: fix SNDRV_EMU10K1_IOCTL_SINGLE_STEP
-In-Reply-To: <20230422161021.1144004-1-oswald.buddenhagen@gmx.de>
-References: <20230422161021.1144004-1-oswald.buddenhagen@gmx.de>
+Subject: Re: [PATCH] ALSA: emu10k1: fix error handling in
+ snd_audigy_i2c_volume_put()
+In-Reply-To: <20230422161021.1144026-1-oswald.buddenhagen@gmx.de>
+References: <20230422161021.1144026-1-oswald.buddenhagen@gmx.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: UGKUE3I47W57FKTJM6YQJU3VESIKQJ25
-X-Message-ID-Hash: UGKUE3I47W57FKTJM6YQJU3VESIKQJ25
+Message-ID-Hash: IMRI6HCRJUU4BVPIMEJX3QEHW4ZXT2SD
+X-Message-ID-Hash: IMRI6HCRJUU4BVPIMEJX3QEHW4ZXT2SD
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UGKUE3I47W57FKTJM6YQJU3VESIKQJ25/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IMRI6HCRJUU4BVPIMEJX3QEHW4ZXT2SD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,23 +112,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 22 Apr 2023 18:10:20 +0200,
+On Sat, 22 Apr 2023 18:10:21 +0200,
 Oswald Buddenhagen wrote:
 > 
-> - Use correct address limit for Audigy
-> - Use the right constant to actually make a step on Audigy
-> - Don't store *_DBG_STEP and the address in emu->fx8010.dbg, as
->   otherwise unrelated operations would make steps, too
-> 
-> This is untested. as10k1 was never ported to Audigy anyway.
+> Check all inputs before changing anything, and return the right error
+> code in case of failure.
 > 
 > Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 
-Applied both patches now.
-Although 0-day bot caught some build error, I couldn't reproduce it,
-so took as is.  Let's see whether it's broken at some config combo.
+Applied now.  Thanks.
 
-
-thanks,
 
 Takashi
