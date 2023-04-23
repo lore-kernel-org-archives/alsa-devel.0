@@ -4,106 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92184C77B60
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Apr 2023 14:31:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1288EC6FD18
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Apr 2023 18:11:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 792CFF0E;
-	Sun, 23 Apr 2023 16:30:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 792CFF0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2006BE77;
+	Sun, 23 Apr 2023 20:10:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2006BE77
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682260298;
-	bh=rZM4uMFYmv6i77nrXW9ho4+CRjeRKmqWcK/ZJiDwP5s=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1682273491;
+	bh=gYCtTShPEDSAW/ELj3doqkVt24yJe3rNWxFYw6rbZmQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pePMdq/gfjFB/HtL6iusVD7fcUzNwqmihDSvwZN3YNR2GxsxMN7YFvYLV4/2cbDYf
-	 IthncaI5QzOZpgQhjraCkwE9Vb3Zq4pT+ev18VybQ2hx40zCbBqKDraWzoav/5UOoo
-	 mZsHAFsZbJDZtEy8l8ylFedwAuL5Z1BC2Ch/eNog=
+	b=BH9ZgToYXHWLc4YqG474aghmMvjJdgLyZ+t+JD3Nm0Kl6nR+zD+FYFaQg8L1UBkDZ
+	 JTcW7vuqN+x/YfkssWVnbd1Yr0TmZwwammAPm4NtLfyRRD52J4Gg1ARn0iBVcTU292
+	 zpeKzOZBWljHTyaRlg7QZ57C5NzOvSPdr024tPz0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0963EF80236;
-	Sun, 23 Apr 2023 16:30:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE991F80137;
+	Sun, 23 Apr 2023 20:10:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9DCFFF80236; Sun, 23 Apr 2023 16:30:17 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 359F2F8025F; Sun, 23 Apr 2023 20:10:11 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 86F1AF80137
-	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2023 16:30:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86F1AF80137
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=M1geHF1l;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=47ZdJDrS
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1A6671F8C8;
-	Sun, 23 Apr 2023 14:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1682260206;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3ZODwOgOj5HnKOQXzSnxjQoXRTlYWXn/6Pt7HYrPD00=;
-	b=M1geHF1lrM5Jp7D4e3IczNXtjA/IVLeO7wKZU4IxCRd/05oSU5Q86aRWKI82wsUhcaiSIE
-	gzquv8DtwsMZNYM6/wHLBigJML6lLppNFvjNnexz2vk2jjQigHL7PVGRyCSpI7GyqkvlQi
-	wXslNGRvTCKSO0J6XLunzM9t4jr64vE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1682260206;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3ZODwOgOj5HnKOQXzSnxjQoXRTlYWXn/6Pt7HYrPD00=;
-	b=47ZdJDrSFyXFStTW1NqndJGyFsbt1UBNXdzr1K3j49D51cHMzzjH9l3imF8FGbKsxsR02m
-	KiH0dYKHv4BewMAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2A4913498;
-	Sun, 23 Apr 2023 14:30:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id iv45Ou1ARWTxRQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Sun, 23 Apr 2023 14:30:05 +0000
-Date: Sun, 23 Apr 2023 16:30:05 +0200
-Message-ID: <87pm7uoemq.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Subject: Re: [PATCH 2/2] ALSA: emu10k1: use high-level I/O in set_filterQ()
-In-Reply-To: <ZETxmveuGo8cBqBI@ugly>
-References: <87y1mjnj8t.wl-tiwai@suse.de>
-	<878rejoya4.wl-tiwai@suse.de>
-	<ZETxmveuGo8cBqBI@ugly>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: 23DFKHYPS64V7KIKIC62ECL5YDZYOZER
-X-Message-ID-Hash: 23DFKHYPS64V7KIKIC62ECL5YDZYOZER
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id EE289F800AC
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2023 20:10:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE289F800AC
+Received: from ugly.fritz.box (localhost [127.0.0.1])
+	by bluemchen.kde.org (Postfix) with ESMTP id D716124251;
+	Sun, 23 Apr 2023 14:10:02 -0400 (EDT)
+Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
+	id 1pqe9y-ELp-00; Sun, 23 Apr 2023 20:10:02 +0200
+From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2 2/2] ALSA: emu10k1: use high-level I/O in set_filterQ()
+Date: Sun, 23 Apr 2023 20:10:02 +0200
+Message-Id: <20230423181002.1246793-2-oswald.buddenhagen@gmx.de>
+X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <20230423181002.1246793-1-oswald.buddenhagen@gmx.de>
+References: <20230423181002.1246793-1-oswald.buddenhagen@gmx.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: BX5ZD3RRV2ITMOQLXZOIU262ZON4UW7K
+X-Message-ID-Hash: BX5ZD3RRV2ITMOQLXZOIU262ZON4UW7K
+X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org
+CC: Takashi Iwai <tiwai@suse.de>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/23DFKHYPS64V7KIKIC62ECL5YDZYOZER/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,62 +70,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 23 Apr 2023 10:51:38 +0200,
-Oswald Buddenhagen wrote:
-> 
-> On Sun, Apr 23, 2023 at 09:25:39AM +0200, Takashi Iwai wrote:
-> > Again, you must have a bit more say here...
-> > For example, you didn't write why this change is needed.
-> > You thought it obvious?  No, readers don't know.
-> > 
-> it is obvious from the patch - the code becomes much shorter and more
-> legible.
+This makes the code shorter and more legible.
 
-It's not obvious unless you read the code changes.  Not obvious
-whether it's a code refactoring without any functional change, etc.
-Such info can be well put in the patch description.
+Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+---
+ include/sound/emu10k1.h              | 3 ++-
+ sound/pci/emu10k1/emu10k1_callback.c | 5 +----
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-> and someone who just reads the log/blame wouldn't care,
-> because it doesn't actually explain anything. but whatever.
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index 05a09826eef0..8fe80dcee71b 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -429,7 +429,8 @@
+ #define DSL_LOOPENDADDR		0x18000007
+ 
+ #define CCCA			0x08		/* Filter Q, interp. ROM, byte size, cur. addr register */
+-#define CCCA_RESONANCE		0xf0000000	/* Lowpass filter resonance (Q) height			*/
++#define CCCA_RESONANCE_MASK	0xf0000000	/* Lowpass filter resonance (Q) height			*/
++#define CCCA_RESONANCE		0x041c0008
+ #define CCCA_INTERPROM_MASK	0x0e000000	/* Selects passband of interpolation ROM		*/
+ 						/* 1 == full band, 7 == lowpass				*/
+ 						/* ROM 0 is used when pitch shifting downward or less	*/
+diff --git a/sound/pci/emu10k1/emu10k1_callback.c b/sound/pci/emu10k1/emu10k1_callback.c
+index 44f2a61c6be8..9455df18f7b2 100644
+--- a/sound/pci/emu10k1/emu10k1_callback.c
++++ b/sound/pci/emu10k1/emu10k1_callback.c
+@@ -532,8 +532,5 @@ set_fm2frq2(struct snd_emu10k1 *hw, struct snd_emux_voice *vp)
+ static void
+ set_filterQ(struct snd_emu10k1 *hw, struct snd_emux_voice *vp)
+ {
+-	unsigned int val;
+-	val = snd_emu10k1_ptr_read(hw, CCCA, vp->ch) & ~CCCA_RESONANCE;
+-	val |= (vp->reg.parm.filterQ << 28);
+-	snd_emu10k1_ptr_write(hw, CCCA, vp->ch, val);
++	snd_emu10k1_ptr_write(hw, CCCA_RESONANCE, vp->ch, vp->reg.parm.filterQ);
+ }
+-- 
+2.40.0.152.g15d061e6df
 
-Someone already cared.  See?
-
-> On Sun, Apr 23, 2023 at 09:35:46AM +0200, Takashi Iwai wrote:
-> > On Sat, 22 Apr 2023 18:10:20 +0200,
-> > Oswald Buddenhagen wrote:
-> >> 
-> >> ... and also use more pre-defined constants on the way (some of which
-> >> required adjustment).
-> >> 
-> >> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-> > 
-> > Applied this one, but skipped the patch 2.
-> > 
-> which is funny, because that commit message misses the obvious "why"
-> part as well - it just mentions an additional thing that is unique to
-> this patch.
-> 
-> so to be consistent, you should reject both patches and wait for an
-> update.
-
-Right, it was enough for me to reply the same thing again, so I wanted
-just to reduce the pile of XXXX.  I'd reject all at the next time :)
-
-> > BTW, it would be really better if we define some macro for the
-> > highlevel I/O definition.  It's cumbersome to decode and check
-> > manually at review whether the conversion is correct, and it's
-> > error-prone.
-> > 
-> yes, i considered that.
-> i also considered many more refactorings, and had to hold myself back -
-> there are enough nice-to-have patches in this series as-is.
-> i mean, 15 years ago it would have made sense to go crazy, but now the
-> hardware is a bit too obsolete to go much beyond what i actually need
-> for my project. i'm assuming some people outside the western sphere
-> are still using our scrap with linux, but we rarely hear from them, so
-> it's hard to know ...
-
-Yeah, that's a dilemma of maintaining the old legacy stuff.
-
-
-Takashi
