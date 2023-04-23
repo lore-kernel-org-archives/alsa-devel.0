@@ -4,122 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8C47C7618E
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Apr 2023 14:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F978C7618E
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Apr 2023 14:26:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E950F47;
-	Mon, 24 Apr 2023 16:12:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E950F47
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A946F3B;
+	Mon, 24 Apr 2023 16:25:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A946F3B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682345581;
-	bh=VhLC0RRb6TdlIZA0O3CiS5ujuOCTAxE2jPtc5kljAgc=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1682346397;
+	bh=XLMWVrIJOZP6Evmyhsr8TlNw/hIPAGjZlvm8N2UnyQg=;
+	h=From:To:Subject:Date:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=T1CS3dL2DGrOLh0Lc8KUtN/G/JlwbxQTotKS18sMTZKPcdYr3YjVkQZzlXDyQIWBf
-	 hfz6XorhQG87E5WPGwzx8iIGFMN8ZjjYwA1pgmqCf0rVeEhd6TSMIvmaZ2SqUD67Lh
-	 PVnXVSIKgXR54DgM3k32ly+IF6lCYOK8lXuCFGIM=
+	b=mibPprzq0FEprn8bwudHnZs3dVMf39gliPIkLJZNvh+U40y7OpowChyScYEToHf/4
+	 F3VR6V1PDrpKfRl7letQf8Ko2A/Rd436NVc9lYc3Ph5QJoiVcITRDMkA0g008Sfl/1
+	 +Sx8dgaaUmu8Nz0sckNlSsY5bD2NNbpakRFtt3Ok=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32607F8018A;
-	Mon, 24 Apr 2023 16:11:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C483EF8018A;
+	Mon, 24 Apr 2023 16:25:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 15C44F8018A; Mon, 24 Apr 2023 16:11:42 +0200 (CEST)
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
- [IPv6:2a00:1450:4864:20::630])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 17FB4F800AC
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2023 16:11:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17FB4F800AC
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=PG9T1fl4
-Received: by mail-ej1-x630.google.com with SMTP id
- a640c23a62f3a-94eee951c70so686230666b.3
-        for <alsa-devel@alsa-project.org>;
- Mon, 24 Apr 2023 07:11:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1682345492; x=1684937492;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cyOmFLO2JoBn3WUaKWXU8qyDvCA1T3Gwnz4RtedevIA=;
-        b=PG9T1fl49/momPqz7oKrvqcQovXddXgLi8MagEHArWynQva1DUuyjG6No0tW7MMAI2
-         /Lw8u9WhLibQy4jY8ZBNevD5UjjogZEjwFp9xa0m8DMAMcDojj0DmT9p5qS3ddu6YhVE
-         sagFfArUw5Rpww44UUQ67doQb3g/iq6mZDAfePFMQrpXH6cdk25Nv9e5MeNV3jjQWNgE
-         DiZkKWJyZYMDmMkhhhL7q1tjISXi9IvFiakQ4zOoVxl8IgpkhfqZ1IHZ/ECtK/bkgKkc
-         6Vtpr41OwTNkfZ6yElPpu7RDd0c0nwp7W7awTKnAtSRFqIFpAZa4WmKAFJvUOSTxutFT
-         2mJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682345492; x=1684937492;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cyOmFLO2JoBn3WUaKWXU8qyDvCA1T3Gwnz4RtedevIA=;
-        b=QnOnv0Dn+498dlgl6yiVUFvXUgJOcos6bagrSkO5TtKWyf48qubTOpw4R6DunM7NVT
-         7OAnsB6wVX2jmM5UqjKO12g7FCAHukMEjfQRUhX7r7AjftrNefjj5gMEeyhsv92vS34X
-         PnkKWBKW1V4uGDcAbNYbrtYXKXqtbWkejMsp5YcJ67WMHiY/40/a5ZEPPKp6PUtk7Tfe
-         qAC1CCgSJDhAkoStlZ/rxuNULy94BHplAPiEZ6mkq3qfv8KM4Td6og91AH/1b8zVvrN7
-         tdyLtLB/hOTMclDrfd+W3W37xxlx2v6UcASi3M0A1SO3bjoQMXiGNrZVPVRTtv8qHb45
-         76zQ==
-X-Gm-Message-State: AAQBX9eGXaPZ2vzx4bJ/a+0Llo5Vd/mpkwAMnczb/3BguboAGhJVdRGX
-	f5WCtInjclx082Q1a8z1He3cPQ==
-X-Google-Smtp-Source: 
- AKy350aBgtFZYTL1Ju0RY3cxLmt1xiSQKImJxRO9xYY9udVWu8lfE3sHZ3IJpLZ8MJK1oMZdRdr+KA==
-X-Received: by 2002:a17:907:9554:b0:957:272d:7b2c with SMTP id
- ex20-20020a170907955400b00957272d7b2cmr8890674ejc.41.1682345491717;
-        Mon, 24 Apr 2023 07:11:31 -0700 (PDT)
-Received: from [10.105.146.163] ([88.128.92.195])
-        by smtp.gmail.com with ESMTPSA id
- o9-20020a1709064f8900b0094f3b18044bsm5532222eju.218.2023.04.24.07.11.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Apr 2023 07:11:31 -0700 (PDT)
-Message-ID: <786adb30-1b5e-96d7-358b-0b4d3e89964c@linaro.org>
-Date: Mon, 24 Apr 2023 16:11:30 +0200
+	id 8DC4EF80236; Sun, 23 Apr 2023 11:15:53 +0200 (CEST)
+Received: from gfmail2.glenfly.com (unknown [113.31.180.36])
+	by alsa1.perex.cz (Postfix) with ESMTP id 3ADB8F800AC
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2023 11:15:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ADB8F800AC
+X-ASG-Debug-ID: 1682241334-196b961946128910001-UKjUFf
+Received: from GFSHEXCH02.glenfly.com (GFSHEXCH02.glenfly.com [10.5.250.52])
+ by gfmail2.glenfly.com with ESMTP id a6QeZDmcc0tmSHsG;
+ Sun, 23 Apr 2023 17:15:34 +0800 (CST)
+X-Barracuda-Envelope-From: ReaperLiOC@glenfly.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.5.250.52
+Received: from GFSHEXCH03.glenfly.com (10.5.250.53) by GFSHEXCH02.glenfly.com
+ (10.5.250.52) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Sun, 23 Apr
+ 2023 17:15:34 +0800
+Received: from GFSHEXCH03.glenfly.com ([fe80::1cb2:fbd4:8e34:2eb5]) by
+ GFSHEXCH03.glenfly.com ([fe80::1cb2:fbd4:8e34:2eb5%4]) with mapi id
+ 15.01.2507.023; Sun, 23 Apr 2023 17:15:57 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.5.250.52
+From: Reaper Li_OC <ReaperLiOC@glenfly.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: 
+ =?gb2312?B?tPC4tDogW7/JxNzKx8Csu/jTyrz+XSAgUmU6IFtQQVRDSF0gQUxTQTogaGRh?=
+ =?gb2312?B?OiBHbGVuZmx5OiBhZGQgSEQgQXVkaW8gUENJIElEcyBhbmQgSERNSSBDb2Rl?=
+ =?gb2312?Q?c_Vendor_IDs.?=
+Thread-Topic: 
+ =?gb2312?B?W7/JxNzKx8Csu/jTyrz+XSAgUmU6IFtQQVRDSF0gQUxTQTogaGRhOiBHbGVu?=
+ =?gb2312?B?Zmx5OiBhZGQgSEQgQXVkaW8gUENJIElEcyBhbmQgSERNSSBDb2RlYyBWZW5k?=
+ =?gb2312?Q?or_IDs.?=
+X-ASG-Orig-Subj: 
+ =?gb2312?B?tPC4tDogW7/JxNzKx8Csu/jTyrz+XSAgUmU6IFtQQVRDSF0gQUxTQTogaGRh?=
+ =?gb2312?B?OiBHbGVuZmx5OiBhZGQgSEQgQXVkaW8gUENJIElEcyBhbmQgSERNSSBDb2Rl?=
+ =?gb2312?Q?c_Vendor_IDs.?=
+Thread-Index: AQHZcc/EOyC6wNUtXUCwz+S5QTu9D68wSx6AgAH4F58=
+Date: Sun, 23 Apr 2023 09:15:57 +0000
+Message-ID: <c805ef8c3a384df8b7b8a189da8318dc@glenfly.com>
+References: 
+ <20230418083312.5208-1-reaperlioc@glenfly.com>,<87leip4j8q.wl-tiwai@suse.de>
+In-Reply-To: <87leip4j8q.wl-tiwai@suse.de>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.30.24.33]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v6 3/7] mfd: Add support for the Lantiq PEF2256 framer
-Content-Language: en-US
-To: Lee Jones <lee@kernel.org>
-References: <20230417171601.74656-1-herve.codina@bootlin.com>
- <20230417171601.74656-4-herve.codina@bootlin.com>
- <20230420123946.GB996918@google.com> <20230420151551.78c1288b@bootlin.com>
- <20230420134703.GC996918@google.com> <20230421092645.56127f11@bootlin.com>
- <20230421074558.GQ996918@google.com>
- <054a384b-b0ef-2697-4a70-09868694ec6d@linaro.org>
- <20230424095200.GC8035@google.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230424095200.GC8035@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: HWJFBN3OIKSRWTQKDFM4RQG5LC2VEGEV
-X-Message-ID-Hash: HWJFBN3OIKSRWTQKDFM4RQG5LC2VEGEV
-X-MailFrom: krzysztof.kozlowski@linaro.org
+X-Barracuda-Connect: GFSHEXCH02.glenfly.com[10.5.250.52]
+X-Barracuda-Start-Time: 1682241334
+X-Barracuda-URL: https://10.5.252.52:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at glenfly.com
+X-Barracuda-Scan-Msg-Size: 24023
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.5719 1.0000 0.7500
+X-Barracuda-Spam-Score: 0.75
+X-Barracuda-Spam-Status: No,
+ SCORE=0.75 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0
+ KILL_LEVEL=9.0 tests=HTML_MESSAGE
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.107810
+	Rule breakdown below
+	 pts rule name              description
+	---- ----------------------
+ --------------------------------------------------
+	0.00 HTML_MESSAGE           BODY: HTML included in message
+X-MailFrom: ReaperLiOC@glenfly.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: Herve Codina <herve.codina@bootlin.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: HX5Y522UWBHBFVQYVKI3ZKXKK36SKXE4
+X-Message-ID-Hash: HX5Y522UWBHBFVQYVKI3ZKXKK36SKXE4
+X-Mailman-Approved-At: Mon, 24 Apr 2023 14:25:16 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="gb2312"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.8
+CC: "tiwai@suse.com" <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "Jason Tao(SH-RD)" <JasonTao@glenfly.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HWJFBN3OIKSRWTQKDFM4RQG5LC2VEGEV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HX5Y522UWBHBFVQYVKI3ZKXKK36SKXE4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,106 +116,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 24/04/2023 11:52, Lee Jones wrote:
->>>>>>>>  include/linux/mfd/pef2256.h |  52 ++
->>>>>>>>  5 files changed, 1269 insertions(+)
->>>>>>>>  create mode 100644 drivers/mfd/pef2256-regs.h
->>>>>>>>  create mode 100644 drivers/mfd/pef2256.c
->>>>>>>>  create mode 100644 include/linux/mfd/pef2256.h    
->>>>>>>
->>>>>>> [...]
->>>>>>>   
->>>>>>>> +static int pef2256_add_audio_devices(struct pef2256 *pef2256)
->>>>>>>> +{
->>>>>>>> +	const char *compatible = "lantiq,pef2256-codec";
->>>>>>>> +	struct mfd_cell *audio_devs;
->>>>>>>> +	struct device_node *np;
->>>>>>>> +	unsigned int count = 0;
->>>>>>>> +	unsigned int i;
->>>>>>>> +	int ret;
->>>>>>>> +
->>>>>>>> +	for_each_available_child_of_node(pef2256->dev->of_node, np) {
->>>>>>>> +		if (of_device_is_compatible(np, compatible))
->>>>>>>> +			count++;
->>>>>>>> +	}    
->>>>>>>
->>>>>>> Converting Device Tree nodes into MFD cells to register with the
->>>>>>> Platform Device API is not a reasonable use-case of MFD.
->>>>>>>
->>>>>>> Have the CODEC driver match on "lantiq,pef2256-codec" and let it
->>>>>>> instantiate itself.  
->>>>>>
->>>>>> As the framer is going to used by several subsystem, I cannot instantiate
->>>>>> it in the specific ASoC subsystem.
->>>>>>   
->>>>>>>
->>>>>>> Your first version using of_platform_populate() was closer to the mark.  
->>>>>>
->>>>>> The issue was that I need MFD cells for the pinctrl part.  
->>>>>
->>>>> Why can't it be represented in DT?
->>>>
->>>> The pinctrl part has no specific compatible string.
->>>> Not sure that a compatible string for pinctrl can be accepted
->>>> as there is only one pinctrl subnode and no specific reg for this
->>>> subnode.
->>>>
->>>> The DT looks like this:
->>>>     framer@2000000 {
->>>>       compatible = "lantiq,pef2256";
->>>>       reg = <0x2000000 0x100>;
->>>>       ...
->>>>       pinctrl {
->>>>         pef2256_rpa_sypr: rpa-pins {
->>>>           pins = "RPA";
->>>>           function = "SYPR";
->>>>         };
->>>>       };
->>>>
->>>>       pef2256_codec0: codec-0 {
->>>>         compatible = "lantiq,pef2256-codec";
->>>>         #sound-dai-cells = <0>;
->>>>         sound-name-prefix = "PEF2256_0";
->>>>       };
->>>>     };
->>>>
->>>> Krzysztof, is it acceptable to have a compatible string in the pinctrl node ?
->>>
->>> Why wouldn't it be?
->>>
->>> $ git grep ".compatible" -- drivers/pinctrl/
->>>
->>>> In this case, it will looks like this:
->>>>     framer@2000000 {
->>>>       compatible = "lantiq,pef2256";
->>>>       reg = <0x2000000 0x100>;
->>>>       ...
->>>>       pinctrl {
->>>>         compatible = "lantiq,pef2256-pinctrl";
->>
->> If you do not have any resources, there is no point in having separate
->> compatible for separate device node.
-> 
-> That's a new rule.  Is that documented somewhere?  I'm sure we already
-> have device nodes for devices whom only operate on shared resources. 
-
-Let me clarify - no need for separate node for such case, when this is
-in general one device and it's sub-block does not look re-usable. For
-SoC blocks it is a bit different. For PMICs which pretty often re-use
-pieces between different devices, as well.
-
-But here there is not much benefit of separate device node for pinctrl.
-
-Whether rule is new? Dunno, depends, I saw it from reviews from Rob
-since long time, e.g.:
-https://lore.kernel.org/all/20220902172808.GB52527-robh@kernel.org/
-
-Maybe this is a bit different because of children - pinconf settings?
-But I would still look at this as:
-1. For a re-usable sub-block: separate device node and compatible is useful,
-2. Non-reusable but having a child node only to group children like pin
-configuration nodes: no need for compatible.
-
-Best regards,
-Krzysztof
-
+SGkNCg0KVGhhbmtzLCBJIHdpbGwgYWxzbyBzdWJtaXQgdG8gYWxzYS1kZXZlbCBNTCBhdCB0aGUg
+bmV4dCB0aW1lLg0KDQoNCkZvciB0aGUgbGlzdGVkIHF1ZXN0aW9uczoNCg0KDQo+IEBAIC0xNzQz
+LDYgKzE3NDUsOCBAQCBzdGF0aWMgaW50IGRlZmF1bHRfYmRsX3Bvc19hZGooc3RydWN0IGF6eCAq
+Y2hpcCkNCj4gICAgICAgIH0NCj4NCj4gICAgICAgIHN3aXRjaCAoY2hpcC0+ZHJpdmVyX3R5cGUp
+IHsNCj4gKyAgICAgY2FzZSBBWlhfRFJJVkVSX0dGSERNSToNCj4gKyAgICAgICAgICAgICByZXR1
+cm4gMTI4Ow0KDQoNCiBvdXIgY2hpcCBuZWVkIGluY3JlYXNlIHRoZSBiZGwgYXMgdGhlcmUgaXMg
+bGltaXRhdGlvbiBvbiBoYXJkd2FyZSwgb25jZSBoZGFjIGludGVycnVwdCBpbnRlcnZhbCBpcyB0
+b28gc2hvcnQsIHRoZSBhdWRpbyBkYXRhIG1heSBnZXQgbG9zdC4NCg0KPiBAQCAtMTg1OSw2ICsx
+ODYzLDkgQEAgc3RhdGljIGludCBhenhfZmlyc3RfaW5pdChzdHJ1Y3QgYXp4ICpjaGlwKQ0KPiAg
+ICAgICAgfQ0KPiAgI2VuZGlmDQo+DQo+ICsgICAgIGlmIChjaGlwLT5kcml2ZXJfdHlwZSA9PSBB
+WlhfRFJJVkVSX0dGSERNSSkNCj4gKyAgICAgICAgICAgICBidXMtPnBvbGxpbmdfbW9kZSA9IDE7
+DQoNCg0KT3VyIGNoaXAgaGFzIGludGVycnVwdCB1cG9uIHRoZSBDT1JCL1JJUkIgcmVzcG9uc2Us
+IHdoZW4gdGhlIGNvZGVjIGNvbXBsZXRlIHRoZSBjb21tYW5kLCBJdCBzZW5kcyBpbnRlcnJ1cHQg
+YW5kIHdyaXRlcyByZXNwb25zZSBlbnRyaWVzIHRvIG1lbW9yeSwgSG93ZXZlciBvbiBvdXIgaGFy
+ZHdhcmUsIHRoZSByZXNwb25zZSBlbnRyaWVzIHNvbWV0aW1lcyBhcmUgbm90IGFjdHVhbGx5IHN5
+bmNocm9uaXplZCB0byBtZW1vcnkgd2hlbiBkcml2ZXIgaGFuZGxlIHRoZSBoZGFjIGludGVycnVw
+dC4gSWYgdGhlIFJJUkIgc3RhdHVzIGlzIG5vdCB1cGRhdGVkIGluIHRoZSBoZGFjIGludGVycnVw
+dCBoYW5kbGVyLCBhenhfcmlyYl9nZXRfcmVzcG9uc2Uga2VlcHMgdHJ5aW5nIHRvIHJlY2VpdmUg
+YSByZXNwb25zZSAgZnJvbSByaXJiIHVudGlsIDFzIHRpbW91dCBiZWZvcmUgZW5hYmxpbmcgcG9s
+bGluZ19tb2RlLCBzb21lIGFwcHMgdHJlYXQgaXQgYXMgYW4gZXJyb3IuIFNvIGZvciBvdXIgaGFy
+ZHdhcmUsIG5lZWQgdG8gZW5hYmxlIHBvbGxpbmdfbW9kZSB0byBmaXggaXQuDQoNCj4gLS0tIGEv
+c291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMNCj4gKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9o
+ZG1pLmMNCj4gQEAgLTQ0ODksNiArNDQ4OSwxOCBAQCBzdGF0aWMgaW50IHBhdGNoX3ZpYV9oZG1p
+KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQ0KPiAgICAgICAgcmV0dXJuIHBhdGNoX3NpbXBsZV9o
+ZG1pKGNvZGVjLCBWSUFIRE1JX0NWVF9OSUQsIFZJQUhETUlfUElOX05JRCk7DQo+ICB9DQo+DQo+
+ICtzdGF0aWMgaW50IHBhdGNoX2dmX2hkbWkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpDQo+ICt7
+DQo+ICsgICAgIGludCBlcnI7DQo+ICsNCj4gKyAgICAgZXJyID0gcGF0Y2hfZ2VuZXJpY19oZG1p
+KGNvZGVjKTsNCj4gKyAgICAgaWYgKGVycikNCj4gKyAgICAgICAgICAgICByZXR1cm4gZXJyOw0K
+PiArDQo+ICsgICAgIGNvZGVjLT5ub19zdGlja3lfc3RyZWFtID0gMTsNCg0KDQpPbiBvdXIgY2hp
+cCwgdGhlcmUgYXJlIHR3byBjb2RlY3MuIHdoZW4gc3RyZWFtIHN3aXRjaCBmcm9tIG9uZSBjb2Rl
+YyB0byBhbm90aGVyIGNvZGVjLCBvdXIgaGFyZHdhcmUgbmVlZCBkcml2ZXIgdG8gZG8gYWN0dWFs
+IGNsZWFuLXVwcyBpbiBjb2RlY19jbGVhbnVwX3N0cmVhbSBmb3IgdGhlIGxpbmtlZCBjb2RlYywg
+b3RoZXJ3aXNlIGl0IGNhbid0IGNvbXBsZXRlIHN3aXRjaCBzdWNjZXNzZnVsbHkuDQoNCg0KDQpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0Kt6K8/sjLOiBUYWthc2hpIEl3YWkgPHRp
+d2FpQHN1c2UuZGU+DQq3osvNyrG85DogMjAyM8TqNNTCMTjI1SAxNzo0NDo1Mw0KytW8/sjLOiBS
+ZWFwZXIgTGlfT0MNCrOty806IHBlcmV4QHBlcmV4LmN6OyB0aXdhaUBzdXNlLmNvbTsgbGludXgt
+a2VybmVsQHZnZXIua2VybmVsLm9yZzsgSmFzb24gVGFvKFNILVJEKTsgYWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnDQrW98ziOiBbv8nE3MrHwKy7+NPKvP5dIFJlOiBbUEFUQ0hdIEFMU0E6IGhk
+YTogR2xlbmZseTogYWRkIEhEIEF1ZGlvIFBDSSBJRHMgYW5kIEhETUkgQ29kZWMgVmVuZG9yIElE
+cy4NCg0KT24gVHVlLCAxOCBBcHIgMjAyMyAxMDozMzoxMiArMDIwMCwNCnJlYXBlcmxpIHdyb3Rl
+Og0KPg0KPiBGcm9tOiBqYXNvbnRhbyA8amFzb250YW9AZ2xlbmZseS5jb20+DQo+DQo+IEFkZCBh
+IHNldCBvZiBIRCBBdWRpbyBQQ0kgSURTLCBhbmQgdGhlIEhETUkgY29kZWMgdmVuZG9yIElEcyBm
+b3INCj4gR2xlbmZseSBBcmlzZS4NCj4NCj4gU2lnbmVkLW9mZi1ieTogamFzb250YW8gPGphc29u
+dGFvQGdsZW5mbHkuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiByZWFwZXJsaSA8cmVhcGVybGlvY0Bn
+bGVuZmx5LmNvbT4NCg0KVGhlIHBhdGNoIGxvb2tzIE9LIG5vdywgYnV0IGNvdWxkIHlvdSBzdWJt
+aXQgdG8gYWxzYS1kZXZlbCBNTCBhdCB0aGUNCm5leHQgdGltZT8NCg0KQWJvdXQgZGV0YWlscyBp
+biB0aGUgcGF0Y2g6DQoNCj4gQEAgLTE3NDMsNiArMTc0NSw4IEBAIHN0YXRpYyBpbnQgZGVmYXVs
+dF9iZGxfcG9zX2FkaihzdHJ1Y3QgYXp4ICpjaGlwKQ0KPiAgICAgICAgfQ0KPg0KPiAgICAgICAg
+c3dpdGNoIChjaGlwLT5kcml2ZXJfdHlwZSkgew0KPiArICAgICBjYXNlIEFaWF9EUklWRVJfR0ZI
+RE1JOg0KPiArICAgICAgICAgICAgIHJldHVybiAxMjg7DQoNClNvIHRoaXMgbG9va3MgcHJldHR5
+IGhpZ2ggaW4gY29tcGFyaXNvbiB3aXRoIG90aGVyIGNoaXBzLg0KSXQgbWVhbnMgdGhhdCB0aGUg
+YWN0dWFsIHBvc2l0aW9uIGlzIG11Y2ggYmVoaW5kIHRoZSByZXBvcnRlZA0KcG9zaXRpb24uICBE
+dWUgdG8gYSBsYXJnZSBGSUZPPyAgT3Igd2hhdCByZWFzb24/DQoNCj4gQEAgLTE4NTksNiArMTg2
+Myw5IEBAIHN0YXRpYyBpbnQgYXp4X2ZpcnN0X2luaXQoc3RydWN0IGF6eCAqY2hpcCkNCj4gICAg
+ICAgIH0NCj4gICNlbmRpZg0KPg0KPiArICAgICBpZiAoY2hpcC0+ZHJpdmVyX3R5cGUgPT0gQVpY
+X0RSSVZFUl9HRkhETUkpDQo+ICsgICAgICAgICAgICAgYnVzLT5wb2xsaW5nX21vZGUgPSAxOw0K
+DQpUaGlzIGxvb2tzIG9kZCwgdG9vLiAgRG9lc24ndCB0aGUgaGFyZHdhcmUgZ2l2ZSBhbnkgaW50
+ZXJydXB0IGJhY2sNCnVwb24gdGhlIENPUkIvUklSQiByZXNwb25zZT8NCg0KPiAtLS0gYS9zb3Vu
+ZC9wY2kvaGRhL3BhdGNoX2hkbWkuYw0KPiArKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWku
+Yw0KPiBAQCAtNDQ4OSw2ICs0NDg5LDE4IEBAIHN0YXRpYyBpbnQgcGF0Y2hfdmlhX2hkbWkoc3Ry
+dWN0IGhkYV9jb2RlYyAqY29kZWMpDQo+ICAgICAgICByZXR1cm4gcGF0Y2hfc2ltcGxlX2hkbWko
+Y29kZWMsIFZJQUhETUlfQ1ZUX05JRCwgVklBSERNSV9QSU5fTklEKTsNCj4gIH0NCj4NCj4gK3N0
+YXRpYyBpbnQgcGF0Y2hfZ2ZfaGRtaShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykNCj4gK3sNCj4g
+KyAgICAgaW50IGVycjsNCj4gKw0KPiArICAgICBlcnIgPSBwYXRjaF9nZW5lcmljX2hkbWkoY29k
+ZWMpOw0KPiArICAgICBpZiAoZXJyKQ0KPiArICAgICAgICAgICAgIHJldHVybiBlcnI7DQo+ICsN
+Cj4gKyAgICAgY29kZWMtPm5vX3N0aWNreV9zdHJlYW0gPSAxOw0KDQpUaGlzIGhhY2sgaXMgbmVl
+ZGVkIGZvciB3aGF0IHJlYXNvbj8NCg0KDQp0aGFua3MsDQoNClRha2FzaGkNCg==
