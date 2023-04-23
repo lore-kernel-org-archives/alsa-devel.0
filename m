@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25061C77B73
-	for <alsa-devel@archiver.kernel.org>; Sun, 23 Apr 2023 07:29:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68D89C77B7E
+	for <alsa-devel@archiver.kernel.org>; Sun, 23 Apr 2023 07:29:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABEDEF24;
-	Sun, 23 Apr 2023 09:28:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABEDEF24
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9FABF22;
+	Sun, 23 Apr 2023 09:28:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9FABF22
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682234966;
-	bh=B2Bxgw0yNro3eG629ss62ZGSbVHmIOmuYPdZjeDlyg4=;
+	s=default; t=1682234970;
+	bh=KpCaLDjcApYCU3HON72RBVW9vKhq0A5OY8PkeNGNbkg=;
 	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=V13LyLWYYITNEE6doMYyUpqiwk73JiwgVK4Az8YW0JyqkdrTJuS6PikVWOP9z5foc
-	 gYysPqXfYW84j0mtL5Hh8F1TXvriQEIZzO+f4QNBJm+IeseL1W0BjiBosXQcxNN0Qc
-	 g5RSESk80poa/WCuVwDepdw9mKjubPHv50GdsrbU=
+	b=Rfmz8ZSEB+HCLZGRDW+0zyGx11k6svlX2dVZuWC/llkdW+kHHLB/WqD9XWEdd4LN4
+	 qKXq8LPsTe7CBi2B6dLSsubhdnzM2rKPGsBvb1GQusLKA2nXrq7AsMhiMOxNKyXmJI
+	 H0+LzhsRsH8VaHaAdS6vP3EIUvLDFS7mcQaIzWnI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83BC4F8052D;
-	Sun, 23 Apr 2023 09:27:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03442F8053B;
+	Sun, 23 Apr 2023 09:28:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31576F80236; Sun, 23 Apr 2023 09:26:56 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 0FA71F8053B; Sun, 23 Apr 2023 09:27:57 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7E66BF800F8
-	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2023 09:26:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E66BF800F8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 04E97F8052E
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2023 09:27:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04E97F8052E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=bm6CfZw9;
+ header.s=susede2_rsa header.b=GPcJnDK7;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=lz8M3K3o
+ header.s=susede2_ed25519 header.b=qcDwtBGW
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D5063219FE;
-	Sun, 23 Apr 2023 07:26:47 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1A95521A03;
+	Sun, 23 Apr 2023 07:27:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1682234807;
+	t=1682234873;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KWoyfofdu2lYQD7UEav9NKsHgoY6ZCvlE+Isruu6bY4=;
-	b=bm6CfZw9eFcU3B08sP3rQyw9OIwWrh4qMRhpanw/VuAwe7HR3DBO9bJYsq9UVvi0tNCO80
-	AetuMfCn2dq0ZIbxqnkOlsFm99Q8XIWccN1Sksl3xSF+EPnBUjI6MsMDSTWGrO2qzHfBHT
-	Jck/2e4SRNeiWb/5pjNyYcK4vAhQe5w=
+	bh=PL7RcjTgx90QpaAl8i1ppXR7lXCg71bL9A6d65hCJbY=;
+	b=GPcJnDK7sWL9nflCRo5ds4VFJsGPEge6qqprqFADg0/44k2Lj4ENjk18e9gNEaP0OrHTpD
+	HOpCZOr0OGIghpqwkKlzjVIzRqHPXL7BOzf4II6OCl/0mxL8M4QMoGvgMZKYNX5WN9pMl9
+	bEqh77gpcEDlig5m02s7Z+xrUsGpPL0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1682234807;
+	s=susede2_ed25519; t=1682234873;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KWoyfofdu2lYQD7UEav9NKsHgoY6ZCvlE+Isruu6bY4=;
-	b=lz8M3K3o2aJKjSTgxhSRPSVi0gZ5+hd7ph8AD8R21j5hlRpF4OOtdbeOfdDeAF/e5lmShn
-	lG55aWZ4o1fgWXAw==
+	bh=PL7RcjTgx90QpaAl8i1ppXR7lXCg71bL9A6d65hCJbY=;
+	b=qcDwtBGWhoCnX3GnV1jOR6QWK7rEaldk3UB22eV6ogC2LpH8rny931D1NFxveeywPvu/Di
+	jmPuA2SKoXKurHDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE6EF13498;
-	Sun, 23 Apr 2023 07:26:47 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F060913498;
+	Sun, 23 Apr 2023 07:27:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id MixuKbfdRGQSMAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Sun, 23 Apr 2023 07:26:47 +0000
-Date: Sun, 23 Apr 2023 09:26:47 +0200
-Message-ID: <877cu3oy88.wl-tiwai@suse.de>
+	id Lbq4OfjdRGRnMAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sun, 23 Apr 2023 07:27:52 +0000
+Date: Sun, 23 Apr 2023 09:27:52 +0200
+Message-ID: <875y9noy6f.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Subject: Re: [PATCH 7/7] ALSA: emu10k1: use more existing defines instead of
- open-coded numbers
-In-Reply-To: <20230422161021.1143903-8-oswald.buddenhagen@gmx.de>
+Subject: Re: [PATCH 0/7] ALSA: emu10k1: improvements mostly related to
+ #defines
+In-Reply-To: <20230422161021.1143903-1-oswald.buddenhagen@gmx.de>
 References: <20230422161021.1143903-1-oswald.buddenhagen@gmx.de>
-	<20230422161021.1143903-8-oswald.buddenhagen@gmx.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: WUM4IQCNUQSUEXV6ZW3U42OBVEJOQ4H3
-X-Message-ID-Hash: WUM4IQCNUQSUEXV6ZW3U42OBVEJOQ4H3
+Message-ID-Hash: ARLOQIC55ICFOJ6JHNZBL6DQDIQNXF45
+X-Message-ID-Hash: ARLOQIC55ICFOJ6JHNZBL6DQDIQNXF45
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WUM4IQCNUQSUEXV6ZW3U42OBVEJOQ4H3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ARLOQIC55ICFOJ6JHNZBL6DQDIQNXF45/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,19 +112,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 22 Apr 2023 18:10:21 +0200,
+On Sat, 22 Apr 2023 18:10:14 +0200,
 Oswald Buddenhagen wrote:
 > 
-> Using the *_MASK defines for "maximal value" is debatable. I got the
-> idea from FreeBSD, and it sorta makes sense to me.
+> Mostly adding, removing, and otherwise massaging numerous #defines and
+> code using them, and surrounding comments.
 > 
-> Some hunks look a bit incomplete, because code that is going to be
-> subsequently removed is not touched here.
-> 
-> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+> Oswald Buddenhagen (7):
+>   ALSA: emu10k1: comment updates
+>   ALSA: emu10k1: fix lineup of EMU_HANA_* defines
+>   ALSA: emu10k1: eliminate some unused defines
+>   ALSA: emu10k1: remove some bogus defines
+>   ALSA: emu10k1: pull in some register definitions from kX-project
+>   ALSA: emu10k1: fixup DSP defines
+>   ALSA: emu10k1: use more existing defines instead of open-coded numbers
 
-This patch actually broke the build due to A_I2S_CAPTURE_RATE, as
-0-day bot caught.  Any missing patch?
+Applied now partially from patches 1 to 6.  The patch 7 was skipped
+due to the compile error.
 
 
 thanks,
