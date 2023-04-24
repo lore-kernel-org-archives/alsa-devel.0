@@ -4,108 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33A9FC77B61
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Apr 2023 14:27:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39881C77B61
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Apr 2023 14:27:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE0A8F56;
-	Mon, 24 Apr 2023 16:26:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE0A8F56
+	by alsa0.perex.cz (Postfix) with ESMTPS id 356E6F63;
+	Mon, 24 Apr 2023 16:26:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 356E6F63
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682346423;
-	bh=RAfkNTzLlPf4ENdyPjhB8/TjCLvmKNuCxs3pU8m1NoQ=;
-	h=From:To:Subject:Date:References:In-Reply-To:CC:List-Id:
+	s=default; t=1682346429;
+	bh=eFlCU0Del0RTLEHmShM3wCEhfAT6JWSzmw4JDSAq5Ts=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AVQGwSrUU1ih5B8BItXYvqDxV0LvmgqYJSv4eLjl9cmFRpq6tipCLsYLozSVuVmfD
-	 qrZG8MJc0wmm6enZhocmVYfqYu7G/ZcdcaKEYjPoPO5HHGaqZVUUOH6Yf2gHMnydNa
-	 CN13iLdjxcLevGIeg4kA8yTiwS7vR6ThOkXs8sJY=
+	b=n/ruphgUMgzxMfMYRQ0aHDWjCAHEbneh03j0FA9PNMdCi6+aofIeFOaz5+a0ur2U9
+	 HNx5MtLHoJQNpnNwdv/r3xsPpt4B+3oSkL9ykpceKx5oj3oomtWs2CPx9nkqG85ih2
+	 hJjEqvrhnI2O8trlpzzNdrb8CWurB3J6+tVoE4aY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66638F8032B;
-	Mon, 24 Apr 2023 16:25:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08507F80529;
+	Mon, 24 Apr 2023 16:25:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B7CD3F80236; Sun, 23 Apr 2023 11:24:40 +0200 (CEST)
-Received: from gfmail1.glenfly.com (gfmail1.glenfly.com [113.31.180.35])
-	by alsa1.perex.cz (Postfix) with ESMTP id 005ADF800AC
-	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2023 11:24:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 005ADF800AC
-X-ASG-Debug-ID: 1682241870-196b4b1510128830001-UKjUFf
-Received: from GFSHEXCH03.glenfly.com (GFSHEXCH03.glenfly.com [10.5.250.53])
- by gfmail1.glenfly.com with ESMTP id q6eotvfgetRQy7sM;
- Sun, 23 Apr 2023 17:24:30 +0800 (CST)
-X-Barracuda-Envelope-From: ReaperLiOC@glenfly.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.5.250.53
-Received: from GFSHEXCH03.glenfly.com (10.5.250.53) by GFSHEXCH03.glenfly.com
- (10.5.250.53) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Sun, 23 Apr
- 2023 17:24:53 +0800
-Received: from GFSHEXCH03.glenfly.com ([fe80::1cb2:fbd4:8e34:2eb5]) by
- GFSHEXCH03.glenfly.com ([fe80::1cb2:fbd4:8e34:2eb5%4]) with mapi id
- 15.01.2507.023; Sun, 23 Apr 2023 17:24:53 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.5.250.53
-From: Reaper Li_OC <ReaperLiOC@glenfly.com>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: 
- =?gb2312?B?tPC4tDogW7/JxNzKx8Csu/jTyrz+XSAgUmU6IFtQQVRDSF0gQUxTQTogaGRh?=
- =?gb2312?B?OiBHbGVuZmx5OiBhZGQgSEQgQXVkaW8gUENJIElEcyBhbmQgSERNSSBDb2Rl?=
- =?gb2312?Q?c_Vendor_IDs.?=
-Thread-Topic: 
- =?gb2312?B?W7/JxNzKx8Csu/jTyrz+XSAgUmU6IFtQQVRDSF0gQUxTQTogaGRhOiBHbGVu?=
- =?gb2312?B?Zmx5OiBhZGQgSEQgQXVkaW8gUENJIElEcyBhbmQgSERNSSBDb2RlYyBWZW5k?=
- =?gb2312?Q?or_IDs.?=
-X-ASG-Orig-Subj: 
- =?gb2312?B?tPC4tDogW7/JxNzKx8Csu/jTyrz+XSAgUmU6IFtQQVRDSF0gQUxTQTogaGRh?=
- =?gb2312?B?OiBHbGVuZmx5OiBhZGQgSEQgQXVkaW8gUENJIElEcyBhbmQgSERNSSBDb2Rl?=
- =?gb2312?Q?c_Vendor_IDs.?=
-Thread-Index: AQHZcc/EOyC6wNUtXUCwz+S5QTu9D68wSx6AgAhbiBw=
-Date: Sun, 23 Apr 2023 09:24:53 +0000
-Message-ID: <a711bc855b7a4e95a78343f0347bad59@glenfly.com>
-References: 
- <20230418083312.5208-1-reaperlioc@glenfly.com>,<87leip4j8q.wl-tiwai@suse.de>
-In-Reply-To: <87leip4j8q.wl-tiwai@suse.de>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.30.24.33]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	id 9F1D6F8018A; Mon, 24 Apr 2023 05:22:02 +0200 (CEST)
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
+ [61.152.239.71])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id C915DF80104
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2023 05:21:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C915DF80104
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 1951B807B;
+	Mon, 24 Apr 2023 11:21:13 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 24 Apr
+ 2023 11:21:13 +0800
+Received: from [192.168.125.124] (113.72.145.137) by EXMBX168.cuchost.com
+ (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 24 Apr
+ 2023 11:21:12 +0800
+Message-ID: <607f3604-056c-6f3a-b154-0f298b870811@starfivetech.com>
+Date: Mon, 24 Apr 2023 11:21:11 +0800
 MIME-Version: 1.0
-X-Barracuda-Connect: GFSHEXCH03.glenfly.com[10.5.250.53]
-X-Barracuda-Start-Time: 1682241870
-X-Barracuda-URL: https://10.5.252.51:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at glenfly.com
-X-Barracuda-Scan-Msg-Size: 3828
-X-Barracuda-Bayes: SPAM GLOBAL 0.9944 1.0000 4.2773
-X-Barracuda-Spam-Score: 4.28
-X-Barracuda-Spam-Status: No,
- SCORE=4.28 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0
- KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.107811
-	Rule breakdown below
-	 pts rule name              description
-	---- ----------------------
- --------------------------------------------------
-X-MailFrom: ReaperLiOC@glenfly.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v2 4/4] riscv: dts: starfive: add tdm node and sound card
+To: Conor Dooley <conor@kernel.org>
+References: <20230420024118.22677-1-walker.chen@starfivetech.com>
+ <20230420024118.22677-5-walker.chen@starfivetech.com>
+ <20230421-dropper-upstage-200ae7e47092@spud>
+Content-Language: en-US
+From: Walker Chen <walker.chen@starfivetech.com>
+In-Reply-To: <20230421-dropper-upstage-200ae7e47092@spud>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [113.72.145.137]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+X-MailFrom: walker.chen@starfivetech.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: G4XIJCTO2FGEYTBLTXBUBL3YMMY6G63L
-X-Message-ID-Hash: G4XIJCTO2FGEYTBLTXBUBL3YMMY6G63L
-X-Mailman-Approved-At: Mon, 24 Apr 2023 14:25:21 +0000
-CC: "tiwai@suse.com" <tiwai@suse.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Jason Tao(SH-RD)" <JasonTao@glenfly.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Message-ID-Hash: Y6GVVMTY3QBRUC4DWH45THGL2SEMDDCX
+X-Message-ID-Hash: Y6GVVMTY3QBRUC4DWH45THGL2SEMDDCX
+X-Mailman-Approved-At: Mon, 24 Apr 2023 14:25:41 +0000
+CC: Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor.dooley@microchip.com>,
+ Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G4XIJCTO2FGEYTBLTXBUBL3YMMY6G63L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y6GVVMTY3QBRUC4DWH45THGL2SEMDDCX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,71 +93,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGkNCg0KVGhhbmtzLCBJIHdpbGwgYWxzbyBzdWJtaXQgdG8gYWxzYS1kZXZlbCBNTCBhdCB0aGUg
-bmV4dCB0aW1lLiANCg0KRm9yIHRoZSBsaXN0ZWQgcXVlc3Rpb25zOg0KDQo+IEBAIC0xNzQzLDYg
-KzE3NDUsOCBAQCBzdGF0aWMgaW50IGRlZmF1bHRfYmRsX3Bvc19hZGooc3RydWN0IGF6eCAqY2hp
-cCkNCj4gICAgICAgIH0NCj4gDQo+ICAgICAgICBzd2l0Y2ggKGNoaXAtPmRyaXZlcl90eXBlKSB7
-DQo+ICsgICAgIGNhc2UgQVpYX0RSSVZFUl9HRkhETUk6DQo+ICsgICAgICAgICAgICAgcmV0dXJu
-IDEyODsNCg0KIG91ciBjaGlwIG5lZWQgaW5jcmVhc2UgdGhlIGJkbCBhcyB0aGVyZSBpcyBsaW1p
-dGF0aW9uIG9uIGhhcmR3YXJlLCBvbmNlIGhkYWMgaW50ZXJydXB0IGludGVydmFsIGlzIHRvbyBz
-aG9ydCwgdGhlIGF1ZGlvIGRhdGEgbWF5IGdldCBsb3N0Lg0KDQo+IEBAIC0xODU5LDYgKzE4NjMs
-OSBAQCBzdGF0aWMgaW50IGF6eF9maXJzdF9pbml0KHN0cnVjdCBhenggKmNoaXApDQo+ICAgICAg
-ICB9DQo+ICAjZW5kaWYNCj4gDQo+ICsgICAgIGlmIChjaGlwLT5kcml2ZXJfdHlwZSA9PSBBWlhf
-RFJJVkVSX0dGSERNSSkNCj4gKyAgICAgICAgICAgICBidXMtPnBvbGxpbmdfbW9kZSA9IDE7DQog
-DQpPdXIgY2hpcCBoYXMgaW50ZXJydXB0IHVwb24gdGhlIENPUkIvUklSQiByZXNwb25zZSwgd2hl
-biB0aGUgY29kZWMgY29tcGxldGUgdGhlIGNvbW1hbmQsIEl0IHNlbmRzIGludGVycnVwdCBhbmQg
-d3JpdGVzIHJlc3BvbnNlIGVudHJpZXMgdG8gbWVtb3J5LCBIb3dldmVyIG9uIG91ciBoYXJkd2Fy
-ZSwgdGhlIHJlc3BvbnNlIGVudHJpZXMgc29tZXRpbWVzIGFyZSBub3QgYWN0dWFsbHkgc3luY2hy
-b25pemVkIHRvIG1lbW9yeSB3aGVuIGRyaXZlciBoYW5kbGUgdGhlIGhkYWMgaW50ZXJydXB0LiBJ
-ZiB0aGUgUklSQiBzdGF0dXMgaXMgbm90IHVwZGF0ZWQgaW4gdGhlIGhkYWMgaW50ZXJydXB0IGhh
-bmRsZXIsIGF6eF9yaXJiX2dldF9yZXNwb25zZSBrZWVwcyB0cnlpbmcgdG8gcmVjZWl2ZSBhIHJl
-c3BvbnNlICBmcm9tIHJpcmIgdW50aWwgMXMgdGltb3V0IGJlZm9yZSBlbmFibGluZyBwb2xsaW5n
-X21vZGUsIHNvbWUgYXBwcyB0cmVhdCBpdCBhcyBhbiBlcnJvci4gU28gZm9yIG91ciBoYXJkd2Fy
-ZSwgbmVlZCB0byBlbmFibGUgcG9sbGluZ19tb2RlIHRvIGZpeCBpdC4NCg0KPiAtLS0gYS9zb3Vu
-ZC9wY2kvaGRhL3BhdGNoX2hkbWkuYw0KPiArKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWku
-Yw0KPiBAQCAtNDQ4OSw2ICs0NDg5LDE4IEBAIHN0YXRpYyBpbnQgcGF0Y2hfdmlhX2hkbWkoc3Ry
-dWN0IGhkYV9jb2RlYyAqY29kZWMpDQo+ICAgICAgICByZXR1cm4gcGF0Y2hfc2ltcGxlX2hkbWko
-Y29kZWMsIFZJQUhETUlfQ1ZUX05JRCwgVklBSERNSV9QSU5fTklEKTsNCj4gIH0NCj4gDQo+ICtz
-dGF0aWMgaW50IHBhdGNoX2dmX2hkbWkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpDQo+ICt7DQo+
-ICsgICAgIGludCBlcnI7DQo+ICsNCj4gKyAgICAgZXJyID0gcGF0Y2hfZ2VuZXJpY19oZG1pKGNv
-ZGVjKTsNCj4gKyAgICAgaWYgKGVycikNCj4gKyAgICAgICAgICAgICByZXR1cm4gZXJyOw0KPiAr
-DQo+ICsgICAgIGNvZGVjLT5ub19zdGlja3lfc3RyZWFtID0gMTsNCg0KT24gb3VyIGNoaXAsIHRo
-ZXJlIGFyZSB0d28gY29kZWNzLiB3aGVuIHN0cmVhbSBzd2l0Y2ggZnJvbSBvbmUgY29kZWMgdG8g
-YW5vdGhlciBjb2RlYywgb3VyIGhhcmR3YXJlIG5lZWQgZHJpdmVyIHRvIGRvIGFjdHVhbCBjbGVh
-bi11cHMgaW4gY29kZWNfY2xlYW51cF9zdHJlYW0gZm9yIHRoZSBsaW5rZWQgY29kZWMsIG90aGVy
-d2lzZSBpdCBjYW4ndCBjb21wbGV0ZSBzd2l0Y2ggc3VjY2Vzc2Z1bGx5Lg0KDQpCZXN0IFJlZ2Fy
-ZHMsDQoNClJlYXBlckxpDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-DQq3orz+yMs6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4NCreiy83KsbzkOiAyMDIzxOo0
-1MIxOMjVIDE3OjQ0DQrK1bz+yMs6IFJlYXBlciBMaV9PQw0Ks63LzTogcGVyZXhAcGVyZXguY3o7
-IHRpd2FpQHN1c2UuY29tOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBKYXNvbiBUYW8o
-U0gtUkQpOyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcNCtb3zOI6IFu/ycTcysfArLv408q8
-/l0gIFJlOiBbUEFUQ0hdIEFMU0E6IGhkYTogR2xlbmZseTogYWRkIEhEIEF1ZGlvIFBDSSBJRHMg
-YW5kIEhETUkgQ29kZWMgVmVuZG9yIElEcy4NCg0KT24gVHVlLCAxOCBBcHIgMjAyMyAxMDozMzox
-MiArMDIwMCwNCnJlYXBlcmxpIHdyb3RlOg0KPg0KPiBGcm9tOiBqYXNvbnRhbyA8amFzb250YW9A
-Z2xlbmZseS5jb20+DQo+DQo+IEFkZCBhIHNldCBvZiBIRCBBdWRpbyBQQ0kgSURTLCBhbmQgdGhl
-IEhETUkgY29kZWMgdmVuZG9yIElEcyBmb3INCj4gR2xlbmZseSBBcmlzZS4NCj4NCj4gU2lnbmVk
-LW9mZi1ieTogamFzb250YW8gPGphc29udGFvQGdsZW5mbHkuY29tPg0KPiBTaWduZWQtb2ZmLWJ5
-OiByZWFwZXJsaSA8cmVhcGVybGlvY0BnbGVuZmx5LmNvbT4NCg0KVGhlIHBhdGNoIGxvb2tzIE9L
-IG5vdywgYnV0IGNvdWxkIHlvdSBzdWJtaXQgdG8gYWxzYS1kZXZlbCBNTCBhdCB0aGUNCm5leHQg
-dGltZT8NCg0KQWJvdXQgZGV0YWlscyBpbiB0aGUgcGF0Y2g6DQoNCj4gQEAgLTE3NDMsNiArMTc0
-NSw4IEBAIHN0YXRpYyBpbnQgZGVmYXVsdF9iZGxfcG9zX2FkaihzdHJ1Y3QgYXp4ICpjaGlwKQ0K
-PiAgICAgICB9DQo+DQo+ICAgICAgIHN3aXRjaCAoY2hpcC0+ZHJpdmVyX3R5cGUpIHsNCj4gKyAg
-ICAgY2FzZSBBWlhfRFJJVkVSX0dGSERNSToNCj4gKyAgICAgICAgICAgICByZXR1cm4gMTI4Ow0K
-DQpTbyB0aGlzIGxvb2tzIHByZXR0eSBoaWdoIGluIGNvbXBhcmlzb24gd2l0aCBvdGhlciBjaGlw
-cy4NCkl0IG1lYW5zIHRoYXQgdGhlIGFjdHVhbCBwb3NpdGlvbiBpcyBtdWNoIGJlaGluZCB0aGUg
-cmVwb3J0ZWQNCnBvc2l0aW9uLiAgRHVlIHRvIGEgbGFyZ2UgRklGTz8gIE9yIHdoYXQgcmVhc29u
-Pw0KDQo+IEBAIC0xODU5LDYgKzE4NjMsOSBAQCBzdGF0aWMgaW50IGF6eF9maXJzdF9pbml0KHN0
-cnVjdCBhenggKmNoaXApDQo+ICAgICAgIH0NCj4gICNlbmRpZg0KPg0KPiArICAgICBpZiAoY2hp
-cC0+ZHJpdmVyX3R5cGUgPT0gQVpYX0RSSVZFUl9HRkhETUkpDQo+ICsgICAgICAgICAgICAgYnVz
-LT5wb2xsaW5nX21vZGUgPSAxOw0KDQpUaGlzIGxvb2tzIG9kZCwgdG9vLiAgRG9lc24ndCB0aGUg
-aGFyZHdhcmUgZ2l2ZSBhbnkgaW50ZXJydXB0IGJhY2sNCnVwb24gdGhlIENPUkIvUklSQiByZXNw
-b25zZT8NCg0KPiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYw0KPiArKysgYi9zb3Vu
-ZC9wY2kvaGRhL3BhdGNoX2hkbWkuYw0KPiBAQCAtNDQ4OSw2ICs0NDg5LDE4IEBAIHN0YXRpYyBp
-bnQgcGF0Y2hfdmlhX2hkbWkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpDQo+ICAgICAgIHJldHVy
-biBwYXRjaF9zaW1wbGVfaGRtaShjb2RlYywgVklBSERNSV9DVlRfTklELCBWSUFIRE1JX1BJTl9O
-SUQpOw0KPiAgfQ0KPg0KPiArc3RhdGljIGludCBwYXRjaF9nZl9oZG1pKHN0cnVjdCBoZGFfY29k
-ZWMgKmNvZGVjKQ0KPiArew0KPiArICAgICBpbnQgZXJyOw0KPiArDQo+ICsgICAgIGVyciA9IHBh
-dGNoX2dlbmVyaWNfaGRtaShjb2RlYyk7DQo+ICsgICAgIGlmIChlcnIpDQo+ICsgICAgICAgICAg
-ICAgcmV0dXJuIGVycjsNCj4gKw0KPiArICAgICBjb2RlYy0+bm9fc3RpY2t5X3N0cmVhbSA9IDE7
-DQoNClRoaXMgaGFjayBpcyBuZWVkZWQgZm9yIHdoYXQgcmVhc29uPw0KDQoNCnRoYW5rcywNCg0K
-VGFrYXNoaQ0K
+
+
+On 2023/4/22 0:50, Conor Dooley wrote:
+> Hey Walker,
+> 
+> On Thu, Apr 20, 2023 at 10:41:18AM +0800, Walker Chen wrote:
+>> Add the tdm controller node and sound card for the StarFive JH7110 SoC.
+> 
+> Is this one of these waveshare things + a visionfive 2?
+> https://www.waveshare.com/wm8960-audio-hat.htm
+
+Hey Conor,
+I'm glad to receive your comments.
+
+Now we are using this board + VisionFive2 :
+https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/
+
+> 
+> I'm a bit lost as to why this needs a whole new board, should it not
+> just be an overlay that you can apply to the existing dts?
+> 
+> Taking this to an extreme, should I expect to see a new devicetree for
+> everything RPi hat that you decide to use with a VisionFive 2?
+
+For your response, I did some thinking. Because wm8960 codec is not integrated
+ on the VisionFive2 board, perhaps using overlay is a better way.
+
+> 
+> Also, it'd be nice to provide a Link: to where someone can find more
+> info on this combination of items. Google for "wm8960 visionfive 2"
+> gives me nothing, nor does "starfive audio card" etc.
+> 
+> Thanks,
+> Conor.
+> 
+>> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+>> Signed-off-by: Walker Chen <walker.chen@starfivetech.com>
+>> ---
+
+Best regards,
+Walker
+
+
+
