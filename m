@@ -4,109 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FB36C77B73
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 May 2023 06:37:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B650BC77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 May 2023 06:39:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFEF81743;
-	Mon,  1 May 2023 08:36:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFEF81743
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A56E1751;
+	Mon,  1 May 2023 08:38:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A56E1751
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682923018;
-	bh=3lXHzdSra6uan4PWKmapjOnZa9pz0WrDozpVhxxs8Hs=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1682923165;
+	bh=Qwb6xQXtIp9IK5K1XYNjKtQG2ZIwhMNhHPe94Eain8I=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TDVEIF8U4t7Lf1rA0RQFSOhgEXoyXT+1ls4aWZvelMZny7NmtIIX+jLl56gYBMZsl
-	 L7PNlhI8Iba7USUQ3aRuj3GXO5ImlkSESfaJvWOGwISP/KzBDDnA/WtieUF8F6Fm9V
-	 hd64IDOBs9ozCgpeCXn0UJXNaQxnj3hFr490C3fc=
+	b=rk8716qg4i6XlEdp3BIiTnD6qdr7Hw7X3nlrYFGn0lUcbrjnF74AcoaMHh4WamTJc
+	 2zqCQMHtXLleku0hv+wTAG78lZ8pZ4FzS8H6e4XIF5TTTrSzX/DG0GcAb3SMIfYm/1
+	 ebF3GgdqZKcVexTTZYlbQA/8JTRdJnmQo+U1KV5g=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28A44F8049E;
-	Mon,  1 May 2023 08:35:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29B6CF80114;
+	Mon,  1 May 2023 08:38:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0723F8049E; Mon,  1 May 2023 08:35:37 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 71372F8018A; Mon, 24 Apr 2023 20:32:49 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 952C1F80114
-	for <alsa-devel@alsa-project.org>; Mon,  1 May 2023 08:35:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 952C1F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 77729F80104
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2023 20:32:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77729F80104
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=ytkJAO25;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=boNZO4p+
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=AL1mQRPI
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E1539229E6;
-	Mon,  1 May 2023 06:35:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1682922929;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jsloYqMSEMOOvd9htC5rzaQAp9k29H8uw/y83LBBsac=;
-	b=ytkJAO25GaHYnbBjmO9wTkLbt5jg1ZEpzoILcskmMgxq4a/9ta7wQa9zBrymqJ6o5moI5E
-	xATYKSV8LPeTW2+8oXrJ3TUmtcflw4gU4Anah9wsVcBVhuciQoJbtoEJzmZBhLs0jzq2Zc
-	+HzdnLjSvJ8WW4GMdEAYFULdvK2nhMg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1682922929;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jsloYqMSEMOOvd9htC5rzaQAp9k29H8uw/y83LBBsac=;
-	b=boNZO4p+h7d+XXQvZ2fBQeyedj/Tqvoa9Q+NhopIMTirv1kMKqxLzefByt36Mwmk4LMM6w
-	z5+1m+2bEDKbHeBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B2AD813587;
-	Mon,  1 May 2023 06:35:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id WkW0KrFdT2S5VwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 01 May 2023 06:35:29 +0000
-Date: Mon, 01 May 2023 08:35:29 +0200
-Message-ID: <87r0s0pnim.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jeff Chua <jeff.chua.linux@gmail.com>
-Subject: Re: linux-6.4 alsa sound broken
-In-Reply-To: <ZE9B4avbDtIXOu4O@debian.me>
-References: 
- <CAAJw_ZsbTVd3Es373x_wTNDF7RknGhCD0r+NKUSwAO7HpLAkYA@mail.gmail.com>
-	<ZE9B4avbDtIXOu4O@debian.me>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: K5TEJTFDWTGKFF3NQ44KFYSBE7ZOQEWM
-X-Message-ID-Hash: K5TEJTFDWTGKFF3NQ44KFYSBE7ZOQEWM
-X-MailFrom: tiwai@suse.de
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D0F47620BD;
+	Mon, 24 Apr 2023 18:32:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6DC2C433EF;
+	Mon, 24 Apr 2023 18:32:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1682361155;
+	bh=Qwb6xQXtIp9IK5K1XYNjKtQG2ZIwhMNhHPe94Eain8I=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=AL1mQRPIK32zEIp1g3UTreatnys6JEiIOElV8WxQ0HCWYrYOh9FUa/pV+J28wkIb0
+	 kuYZuUJpavJkOZaHtCtWDI71bQfr8PqKub4qFn3x5yzC4y8fbdLxu7HbJwBzC+XQwm
+	 VrE7IOJkHHjP11gDLRWFy86EVLqVWwQrt/B4cpTsksi6B3BO3cBvv6mbtnfmE01ZgB
+	 TzxQElbzcDm36YDmuacquU8+DAzm2Bx6Sa8BvlgfPXGSzs47J+MRnxBY/ACBhDqqPE
+	 NaKy9ZqKj3mZAujGR2xqbrAlZIyDJXBbelkgz2XIH4N+SG2lVTYr08TXhvRv/t7uAi
+	 Q8Hr8qGO9TEdw==
+Message-ID: <679921ee-98d4-d6ef-5934-e009fd4b31fc@kernel.org>
+Date: Mon, 24 Apr 2023 13:32:28 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v3 29/65] clk: socfpga: gate: Add a determine_rate hook
+To: Maxime Ripard <maxime@cerno.tech>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ Max Filippov <jcmvbkbc@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ David Lechner <david@lechnology.com>, Sekhar Nori <nsekhar@ti.com>,
+ Abel Vesa <abelvesa@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Ulf Hansson
+ <ulf.hansson@linaro.org>, Linus Walleij <linus.walleij@linaro.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Alessandro Zummo <a.zummo@towertech.it>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>,
+ Orson Zhai <orsonzhai@gmail.com>, Baolin Wang
+ <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>
+References: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
+ <20221018-clk-range-checks-fixes-v3-29-9a1358472d52@cerno.tech>
+Content-Language: en-US
+From: Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <20221018-clk-range-checks-fixes-v3-29-9a1358472d52@cerno.tech>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: dinguyen@kernel.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: Bagas Sanjaya <bagasdotme@gmail.com>, lkml <linux-kernel@vger.kernel.org>,
- Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
- Linux ALSA Subsystem Development <alsa-devel@alsa-project.org>,
- Linux Regressions <regressions@lists.linux.dev>
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: DBNNT2DKFZR7QSQFV2RKIHBVL6WEEAE7
+X-Message-ID-Hash: DBNNT2DKFZR7QSQFV2RKIHBVL6WEEAE7
+X-Mailman-Approved-At: Mon, 01 May 2023 06:38:06 +0000
+CC: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-arm-kernel@lists.infradead.org, linux-actions@lists.infradead.org,
+ patches@opensource.cirrus.com, linux-stm32@st-md-mailman.stormreply.com,
+ linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+ linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-phy@lists.infradead.org, linux-rtc@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, alsa-devel@alsa-project.org,
+ linux-mips@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K5TEJTFDWTGKFF3NQ44KFYSBE7ZOQEWM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DBNNT2DKFZR7QSQFV2RKIHBVL6WEEAE7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,29 +133,66 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 01 May 2023 06:36:49 +0200,
-Bagas Sanjaya wrote:
+Hi Maxime,
+
+On 4/4/23 05:11, Maxime Ripard wrote:
+> The SoCFGPA gate clock implements a mux with a set_parent hook, but
+> doesn't provide a determine_rate implementation.
 > 
-> On Mon, May 01, 2023 at 11:59:12AM +0800, Jeff Chua wrote:
-> > Latest git pull from Linus's tree ... playing a simple sound file will
-> > resulted in a lot of echo.
-> > 
-> > Running on Lenovo X1 with ..
-> > 00:1f.3 Audio device: Intel Corporation Alder Lake PCH-P High
-> > Definition Audio Controller (rev 01)
-> > 
-> > I've bisected and reverted the following patch fixed the problem.
-> > 
-> > commit 9f656705c5faa18afb26d922cfc64f9fd103c38d
+> This is a bit odd, since set_parent() is there to, as its name implies,
+> change the parent of a clock. However, the most likely candidate to
+> trigger that parent change is a call to clk_set_rate(), with
+> determine_rate() figuring out which parent is the best suited for a
+> given rate.
 > 
-> Thanks for the regression report. However, where is your dmesg and/or ALSA log
-> when the regression occurs? What is the playback test file?
+> The other trigger would be a call to clk_set_parent(), but it's far less
+> used, and it doesn't look like there's any obvious user for that clock.
+> 
+> So, the set_parent hook is effectively unused, possibly because of an
+> oversight. However, it could also be an explicit decision by the
+> original author to avoid any reparenting but through an explicit call to
+> clk_set_parent().
+> 
+> The latter case would be equivalent to setting the flag
+> CLK_SET_RATE_NO_REPARENT, together with setting our determine_rate hook
+> to __clk_mux_determine_rate(). Indeed, if no determine_rate
+> implementation is provided, clk_round_rate() (through
+> clk_core_round_rate_nolock()) will call itself on the parent if
+> CLK_SET_RATE_PARENT is set, and will not change the clock rate
+> otherwise. __clk_mux_determine_rate() has the exact same behavior when
+> CLK_SET_RATE_NO_REPARENT is set.
+> 
+> And if it was an oversight, then we are at least explicit about our
+> behavior now and it can be further refined down the line.
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+>   drivers/clk/socfpga/clk-gate.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/socfpga/clk-gate.c b/drivers/clk/socfpga/clk-gate.c
+> index 32ccda960f28..cbba8462a09e 100644
+> --- a/drivers/clk/socfpga/clk-gate.c
+> +++ b/drivers/clk/socfpga/clk-gate.c
+> @@ -110,6 +110,7 @@ static unsigned long socfpga_clk_recalc_rate(struct clk_hw *hwclk,
+>   
+>   static struct clk_ops gateclk_ops = {
+>   	.recalc_rate = socfpga_clk_recalc_rate,
+> +	.determine_rate = __clk_mux_determine_rate,
+>   	.get_parent = socfpga_clk_get_parent,
+>   	.set_parent = socfpga_clk_set_parent,
+>   };
+> @@ -166,7 +167,7 @@ void __init socfpga_gate_init(struct device_node *node)
+>   
+>   	init.name = clk_name;
+>   	init.ops = ops;
+> -	init.flags = 0;
+> +	init.flags = CLK_SET_RATE_NO_REPARENT;
+>   
+>   	init.num_parents = of_clk_parent_fill(node, parent_name, SOCFPGA_MAX_PARENTS);
+>   	if (init.num_parents < 2) {
+> 
 
-Yes, in addition, which driver is used (provide the alsa-info.sh
-output at best), and which sound backend is used (pipewire, PA or
-dmix) with which application?
+This patch broke SoCFPGA boot serial port. The characters are mangled.
 
-
-thanks,
-
-Takashi
+Dinh
