@@ -4,90 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83823C77B61
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Apr 2023 09:37:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB9C0C7618E
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Apr 2023 09:54:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 048D2F2F;
-	Mon, 24 Apr 2023 11:36:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 048D2F2F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E978CF1B;
+	Mon, 24 Apr 2023 11:53:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E978CF1B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682329064;
-	bh=8uFIb1PMN45Z7opE1dsq7Xwj3K35xr7Q6EbFYzn1u4A=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1682330051;
+	bh=8nXbvKN3NVOq1MNMv2BKZhKpGyGFEU9KPwYeI4htA1M=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=k7kHJoZ6GbsfhyzgUgXdfz8L9GSqWhgn9N+HwHvAsxDfD3dI7TKZdCXj/bSATNepf
-	 W9NXIkhrqr7o7TSEoZglIcEke2fkU/P9s59mPRPMEfmt2wjIzYDNl68jkFNSuh5eP9
-	 ILSocuYQK29Tbs0823dXgeZtvpDqC7KhDqEpR80Y=
+	b=uUxjbYNsS+VjPvE5A1v6oB6V1QveCb6H0EPIQYORORoy1+pLEJpZnfNGXOpeabUjY
+	 HF2LVZcK7Of8ESp+EOpgg+xtafdFW9RNgsBXAobXftmwaNxVAS/i69G0NViEwcP3Kc
+	 I2EVLvU77rJBbMBtBXENmf1w52Qbt2TFrLm3BFN0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8F9DF8018A;
-	Mon, 24 Apr 2023 11:36:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4EA8F8018A;
+	Mon, 24 Apr 2023 11:52:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85AE7F80137; Mon, 24 Apr 2023 11:36:24 +0200 (CEST)
-Received: from forward501c.mail.yandex.net (forward501c.mail.yandex.net
- [178.154.239.209])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 383EEF8018A; Mon, 24 Apr 2023 11:52:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5912FF80137
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2023 11:36:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5912FF80137
+	by alsa1.perex.cz (Postfix) with ESMTPS id EBB36F800AC
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2023 11:52:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBB36F800AC
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=maquefel.me header.i=@maquefel.me header.a=rsa-sha256
- header.s=mail header.b=ajtf7pN1
-Received: from mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net
- (mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net
- [IPv6:2a02:6b8:c12:261e:0:640:2e3d:0])
-	by forward501c.mail.yandex.net (Yandex) with ESMTP id 148A25EE62;
-	Mon, 24 Apr 2023 12:36:18 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net
- (smtp/Yandex) with ESMTPSA id JZBb1pbWwKo0-6emUVMRt;
-	Mon, 24 Apr 2023 12:36:17 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
- t=1682328977;
-	bh=s+pdsEhaXejJ3ZUi+ppZ8/CkunFsOa248KpIzEwqhCw=;
-	h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=ajtf7pN1m7MbOx9L4P8H4r+Y82+evxwyLL7hp32bCAq4FIa+lb2I00PYCqXEWCGtx
-	 /uSrgSixLVbaOfevJiEDmrJ+vOA6s37wtIZwZ7WR6QsjwjXMoLjNk0rQgoinseBM0a
-	 X/bB9mW44MULXkAZlPUdOE1q93Pmqbt3HNy9qDQA=
-Authentication-Results: 
- mail-nwsmtp-smtp-production-main-39.myt.yp-c.yandex.net;
- dkim=pass header.i=@maquefel.me
-From: Nikita Shubin <nikita.shubin@maquefel.me>
-To: 
-Subject: [PATCH 43/43] ASoC: cirrus: edb93xx: Delete driver
-Date: Mon, 24 Apr 2023 15:34:59 +0300
-Message-Id: <20230424123522.18302-44-nikita.shubin@maquefel.me>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230424123522.18302-1-nikita.shubin@maquefel.me>
-References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=FYctiapf
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8EC0261700;
+	Mon, 24 Apr 2023 09:52:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B832C433EF;
+	Mon, 24 Apr 2023 09:52:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1682329963;
+	bh=8nXbvKN3NVOq1MNMv2BKZhKpGyGFEU9KPwYeI4htA1M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FYctiapfbLl+v3aiA7xN8Q4wOwyqvb4gdGU+zMHB9DiPq5oiH9iFm4VyDM/x8l0IK
+	 EWBqN4LKCvBxZwuR2nMMHJ8ILfNzMfHJDuCAeGEzHD/G5LYObnKm1Am3lKpnxGomp2
+	 b5P9cf7qS26wDU1OxGkEMc9OYD72iutYMkf88wEVbhxyJbkGwrbsO4O/hGrfdYNoud
+	 TrQmiiT3OvxjYCh9WWYnt6+gpqN2Wmb+QzMatz1LWVu3vnrPKEE8Jr4GWHhXf7J80/
+	 mRuKFKHa5U5Oj6sZGPwVQgJ6jOYJX+qkq6Le/M3nkmp1Bx5FufXOGoZbW/ZcRVvOr1
+	 O+kgUXnCW8oJQ==
+Date: Mon, 24 Apr 2023 10:52:00 +0100
+From: Lee Jones <lee@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v6 3/7] mfd: Add support for the Lantiq PEF2256 framer
+Message-ID: <20230424095200.GC8035@google.com>
+References: <20230417171601.74656-1-herve.codina@bootlin.com>
+ <20230417171601.74656-4-herve.codina@bootlin.com>
+ <20230420123946.GB996918@google.com>
+ <20230420151551.78c1288b@bootlin.com>
+ <20230420134703.GC996918@google.com>
+ <20230421092645.56127f11@bootlin.com>
+ <20230421074558.GQ996918@google.com>
+ <054a384b-b0ef-2697-4a70-09868694ec6d@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FVZBBV2MAC45RDTGC2QQPDHELJLB6B2S
-X-Message-ID-Hash: FVZBBV2MAC45RDTGC2QQPDHELJLB6B2S
-X-MailFrom: nikita.shubin@maquefel.me
+In-Reply-To: <054a384b-b0ef-2697-4a70-09868694ec6d@linaro.org>
+Message-ID-Hash: 4OBO3M5YJGOWWKABFUDWZ33OYFLLCCXQ
+X-Message-ID-Hash: 4OBO3M5YJGOWWKABFUDWZ33OYFLLCCXQ
+X-MailFrom: lee@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Arnd Bergmann <arnd@kernel.org>, Linus Walleij <linusw@kernel.org>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+CC: Herve Codina <herve.codina@bootlin.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FVZBBV2MAC45RDTGC2QQPDHELJLB6B2S/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4OBO3M5YJGOWWKABFUDWZ33OYFLLCCXQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,174 +102,140 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+On Fri, 21 Apr 2023, Krzysztof Kozlowski wrote:
 
-Can be replaced with "simple-audio-card" for the rates up to 50kHz, refer
-to commit "ARM: dts: ep93xx: Add EDB9302 DT".
+> On 21/04/2023 09:45, Lee Jones wrote:
+> > On Fri, 21 Apr 2023, Herve Codina wrote:
+> > 
+> >> Hi Lee, Krzysztof,
+> >>
+> >> On Thu, 20 Apr 2023 14:47:03 +0100
+> >> Lee Jones <lee@kernel.org> wrote:
+> >>
+> >>> On Thu, 20 Apr 2023, Herve Codina wrote:
+> >>>
+> >>>> On Thu, 20 Apr 2023 13:39:46 +0100
+> >>>> Lee Jones <lee@kernel.org> wrote:
+> >>>>   
+> >>>>> On Mon, 17 Apr 2023, Herve Codina wrote:
+> >>>>>   
+> >>>>>> The Lantiq PEF2256 is a framer and line interface component designed to
+> >>>>>> fulfill all required interfacing between an analog E1/T1/J1 line and the
+> >>>>>> digital PCM system highway/H.100 bus.
+> >>>>>>
+> >>>>>> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> >>>>>> ---
+> >>>>>>  drivers/mfd/Kconfig         |  16 +
+> >>>>>>  drivers/mfd/Makefile        |   1 +
+> >>>>>>  drivers/mfd/pef2256-regs.h  | 250 ++++++++++
+> >>>>>>  drivers/mfd/pef2256.c       | 950 ++++++++++++++++++++++++++++++++++++    
+> >>>>>
+> >>>>> 95% of this driver needs to be moved somewhere else.
+> >>>>>
+> >>>>> What is a Framer?  Perhaps sound/ is a good candidate?  
+> >>>>
+> >>>> The pef2256 framer is a device that transfers data to/from a TDM (time-slots
+> >>>> data) from/to quite old telecommunication lines (E1 in my case).
+> >>>> Several subsystem can set/get data to/from the TDM. Each device using their
+> >>>> own time-slots set.
+> >>>>
+> >>>> On my use-case, I have some audio consumer and a not yet upstreamed HDLC
+> >>>> consumer. Both of them uses the framer to know the E1 link state.
+> >>>> The framer needs to be initialized 'globally' and not by a specific consumer
+> >>>> as several consumers can use the framer.  
+> >>>
+> >>> I can't think of a good place for this.
+> >>>
+> >>> If all else fails, it's drivers/misc
+> >>>
+> >>>>>>  include/linux/mfd/pef2256.h |  52 ++
+> >>>>>>  5 files changed, 1269 insertions(+)
+> >>>>>>  create mode 100644 drivers/mfd/pef2256-regs.h
+> >>>>>>  create mode 100644 drivers/mfd/pef2256.c
+> >>>>>>  create mode 100644 include/linux/mfd/pef2256.h    
+> >>>>>
+> >>>>> [...]
+> >>>>>   
+> >>>>>> +static int pef2256_add_audio_devices(struct pef2256 *pef2256)
+> >>>>>> +{
+> >>>>>> +	const char *compatible = "lantiq,pef2256-codec";
+> >>>>>> +	struct mfd_cell *audio_devs;
+> >>>>>> +	struct device_node *np;
+> >>>>>> +	unsigned int count = 0;
+> >>>>>> +	unsigned int i;
+> >>>>>> +	int ret;
+> >>>>>> +
+> >>>>>> +	for_each_available_child_of_node(pef2256->dev->of_node, np) {
+> >>>>>> +		if (of_device_is_compatible(np, compatible))
+> >>>>>> +			count++;
+> >>>>>> +	}    
+> >>>>>
+> >>>>> Converting Device Tree nodes into MFD cells to register with the
+> >>>>> Platform Device API is not a reasonable use-case of MFD.
+> >>>>>
+> >>>>> Have the CODEC driver match on "lantiq,pef2256-codec" and let it
+> >>>>> instantiate itself.  
+> >>>>
+> >>>> As the framer is going to used by several subsystem, I cannot instantiate
+> >>>> it in the specific ASoC subsystem.
+> >>>>   
+> >>>>>
+> >>>>> Your first version using of_platform_populate() was closer to the mark.  
+> >>>>
+> >>>> The issue was that I need MFD cells for the pinctrl part.  
+> >>>
+> >>> Why can't it be represented in DT?
+> >>
+> >> The pinctrl part has no specific compatible string.
+> >> Not sure that a compatible string for pinctrl can be accepted
+> >> as there is only one pinctrl subnode and no specific reg for this
+> >> subnode.
+> >>
+> >> The DT looks like this:
+> >>     framer@2000000 {
+> >>       compatible = "lantiq,pef2256";
+> >>       reg = <0x2000000 0x100>;
+> >>       ...
+> >>       pinctrl {
+> >>         pef2256_rpa_sypr: rpa-pins {
+> >>           pins = "RPA";
+> >>           function = "SYPR";
+> >>         };
+> >>       };
+> >>
+> >>       pef2256_codec0: codec-0 {
+> >>         compatible = "lantiq,pef2256-codec";
+> >>         #sound-dai-cells = <0>;
+> >>         sound-name-prefix = "PEF2256_0";
+> >>       };
+> >>     };
+> >>
+> >> Krzysztof, is it acceptable to have a compatible string in the pinctrl node ?
+> > 
+> > Why wouldn't it be?
+> > 
+> > $ git grep ".compatible" -- drivers/pinctrl/
+> > 
+> >> In this case, it will looks like this:
+> >>     framer@2000000 {
+> >>       compatible = "lantiq,pef2256";
+> >>       reg = <0x2000000 0x100>;
+> >>       ...
+> >>       pinctrl {
+> >>         compatible = "lantiq,pef2256-pinctrl";
+> 
+> If you do not have any resources, there is no point in having separate
+> compatible for separate device node.
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
- sound/soc/cirrus/Kconfig   |   9 ---
- sound/soc/cirrus/Makefile  |   4 --
- sound/soc/cirrus/edb93xx.c | 119 -------------------------------------
- 3 files changed, 132 deletions(-)
- delete mode 100644 sound/soc/cirrus/edb93xx.c
+That's a new rule.  Is that documented somewhere?  I'm sure we already
+have device nodes for devices whom only operate on shared resources. 
 
-diff --git a/sound/soc/cirrus/Kconfig b/sound/soc/cirrus/Kconfig
-index 34870c2d0cba..a88b7d61b4c1 100644
---- a/sound/soc/cirrus/Kconfig
-+++ b/sound/soc/cirrus/Kconfig
-@@ -27,12 +27,3 @@ config SND_EP93XX_SOC_I2S_WATCHDOG
- 
- endif # if SND_EP93XX_SOC_I2S
- 
--config SND_EP93XX_SOC_EDB93XX
--	tristate "SoC Audio support for Cirrus Logic EDB93xx boards"
--	depends on SND_EP93XX_SOC && (MACH_EDB9301 || MACH_EDB9302 || MACH_EDB9302A || MACH_EDB9307A || MACH_EDB9315A)
--	select SND_EP93XX_SOC_I2S
--	select SND_SOC_CS4271_I2C if I2C
--	select SND_SOC_CS4271_SPI if SPI_MASTER
--	help
--	  Say Y or M here if you want to add support for I2S audio on the
--	  Cirrus Logic EDB93xx boards.
-diff --git a/sound/soc/cirrus/Makefile b/sound/soc/cirrus/Makefile
-index 19a86daad660..5916c03888cb 100644
---- a/sound/soc/cirrus/Makefile
-+++ b/sound/soc/cirrus/Makefile
-@@ -6,7 +6,3 @@ snd-soc-ep93xx-i2s-objs	 			:= ep93xx-i2s.o
- obj-$(CONFIG_SND_EP93XX_SOC)			+= snd-soc-ep93xx.o
- obj-$(CONFIG_SND_EP93XX_SOC_I2S)		+= snd-soc-ep93xx-i2s.o
- 
--# EP93XX Machine Support
--snd-soc-edb93xx-objs				:= edb93xx.o
--
--obj-$(CONFIG_SND_EP93XX_SOC_EDB93XX)		+= snd-soc-edb93xx.o
-diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
-deleted file mode 100644
-index 385290202912..000000000000
---- a/sound/soc/cirrus/edb93xx.c
-+++ /dev/null
-@@ -1,119 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * SoC audio for EDB93xx
-- *
-- * Copyright (c) 2010 Alexander Sverdlin <subaparts@yandex.ru>
-- *
-- * This driver support CS4271 codec being master or slave, working
-- * in control port mode, connected either via SPI or I2C.
-- * The data format accepted is I2S or left-justified.
-- * DAPM support not implemented.
-- */
--
--#include <linux/platform_device.h>
--#include <linux/gpio.h>
--#include <linux/module.h>
--#include <linux/soc/cirrus/ep93xx.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <asm/mach-types.h>
--
--static int edb93xx_hw_params(struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
--	int err;
--	unsigned int mclk_rate;
--	unsigned int rate = params_rate(params);
--
--	/*
--	 * According to CS4271 datasheet we use MCLK/LRCK=256 for
--	 * rates below 50kHz and 128 for higher sample rates
--	 */
--	if (rate < 50000)
--		mclk_rate = rate * 64 * 4;
--	else
--		mclk_rate = rate * 64 * 2;
--
--	err = snd_soc_dai_set_sysclk(codec_dai, 0, mclk_rate,
--				     SND_SOC_CLOCK_IN);
--	if (err)
--		return err;
--
--	return snd_soc_dai_set_sysclk(cpu_dai, 0, mclk_rate,
--				      SND_SOC_CLOCK_OUT);
--}
--
--static const struct snd_soc_ops edb93xx_ops = {
--	.hw_params	= edb93xx_hw_params,
--};
--
--SND_SOC_DAILINK_DEFS(hifi,
--	DAILINK_COMP_ARRAY(COMP_CPU("ep93xx-i2s")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("spi0.0", "cs4271-hifi")),
--	DAILINK_COMP_ARRAY(COMP_PLATFORM("ep93xx-i2s")));
--
--static struct snd_soc_dai_link edb93xx_dai = {
--	.name		= "CS4271",
--	.stream_name	= "CS4271 HiFi",
--	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--			  SND_SOC_DAIFMT_CBC_CFC,
--	.ops		= &edb93xx_ops,
--	SND_SOC_DAILINK_REG(hifi),
--};
--
--static struct snd_soc_card snd_soc_edb93xx = {
--	.name		= "EDB93XX",
--	.owner		= THIS_MODULE,
--	.dai_link	= &edb93xx_dai,
--	.num_links	= 1,
--};
--
--static int edb93xx_probe(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = &snd_soc_edb93xx;
--	int ret;
--
--	ret = ep93xx_i2s_acquire();
--	if (ret)
--		return ret;
--
--	card->dev = &pdev->dev;
--
--	ret = snd_soc_register_card(card);
--	if (ret) {
--		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
--			ret);
--		ep93xx_i2s_release();
--	}
--
--	return ret;
--}
--
--static int edb93xx_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	snd_soc_unregister_card(card);
--	ep93xx_i2s_release();
--
--	return 0;
--}
--
--static struct platform_driver edb93xx_driver = {
--	.driver		= {
--		.name	= "edb93xx-audio",
--	},
--	.probe		= edb93xx_probe,
--	.remove		= edb93xx_remove,
--};
--
--module_platform_driver(edb93xx_driver);
--
--MODULE_AUTHOR("Alexander Sverdlin <subaparts@yandex.ru>");
--MODULE_DESCRIPTION("ALSA SoC EDB93xx");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:edb93xx-audio");
+> Anyway this discussions should not be about DT. How Linux drivers are
+> implementing DT is not really a guide how to write DT. Since these
+> series were brought there were some DT decisions made based how you want
+> to write the driver. No, please don't. I also do not see any problems in
+> handling more-or-less complex driver structures without poking the DT.
+> We have already many such device families.
+
 -- 
-2.39.2
-
+Lee Jones [李琼斯]
