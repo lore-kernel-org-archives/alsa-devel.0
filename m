@@ -4,73 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 008AEC7618E
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Apr 2023 16:44:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F3FCC77B61
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Apr 2023 16:44:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46605F9C;
-	Mon, 24 Apr 2023 18:43:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46605F9C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96F45FA2;
+	Mon, 24 Apr 2023 18:43:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96F45FA2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682354653;
-	bh=W2mljrhDyi0TjhyfKA4bzziotNkJvHbnNApJePLVD18=;
+	s=default; t=1682354679;
+	bh=9Au3JNyAgw52Zk4E5F8PDi85xXM6ynTX7QFchRV56F0=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Sy+0Re8X0CnyIcbzxWE2x+TT2nARGQLFc9xIcJ5AutH2Sdbd8zxoS7/oi0JBWLYcC
-	 bKRAzZJC0//8CmP7Dac+2SKPQt3OSZiJLwPCsMv9SM98mLmoB4uwgiUDvpoBySDbbd
-	 l6rHy7tnPk2lATpCR3y+01WxCIJ7XIg3DR1WQewk=
+	b=Q1Nj2/i+xnwVnAVJZx5+fEsOLtp8U40a4xu/7062gwEeenAFvzbs6NGhGgdv3PwmC
+	 DChpA15KzGqE1Im//5ssTJ1VfDI0aKAqSP78ozxtqnfWSIDGNtKXLI5wgGYj1N84TC
+	 ppSOVRZRqRPRDa1S9eWx/1tCn8tG+annbRuG1u0Q=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92892F80137;
-	Mon, 24 Apr 2023 18:42:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3273F8032B;
+	Mon, 24 Apr 2023 18:42:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4BB29F80236; Mon, 24 Apr 2023 18:42:54 +0200 (CEST)
+	id 86853F8018A; Mon, 24 Apr 2023 18:42:56 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 07D89F80104
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2023 18:42:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07D89F80104
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1EAA0F80162
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2023 18:42:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EAA0F80162
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=WZnp9zxe
+ header.s=k20201202 header.b=fCXLDHR4
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 39C7D626F1;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7AB5161E56;
+	Mon, 24 Apr 2023 16:42:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3901EC433EF;
 	Mon, 24 Apr 2023 16:42:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67D68C4339B;
-	Mon, 24 Apr 2023 16:42:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1682354565;
-	bh=W2mljrhDyi0TjhyfKA4bzziotNkJvHbnNApJePLVD18=;
+	s=k20201202; t=1682354568;
+	bh=9Au3JNyAgw52Zk4E5F8PDi85xXM6ynTX7QFchRV56F0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=WZnp9zxeR241ec5nA8XyduEMDp4SDUbQ/cyRCT9t6UJVb0sS/9Cek3RDZHQvPuqbW
-	 Cs8HLc88f9PV4dtoilg42YFC5a9zys/4on9ghVktGc4kYf17uN1G4t+ZxpBNUwYH5k
-	 uU7HfdfA6lfPDuHqNglQEgqXf7dWxST6ytREfDTySc/aki9xNn2Lt1yMlAkZ561O6Q
-	 r3lmE5kz+K5yD02gRZMYJgCh+7xvD2/wtM62Tx1/O+6NlDYzZANh/s6vU1I0tc6iwX
-	 1j/pIDbxijCIPT8DxxDNubFkDFwWbu9fWKWzsZ9dsjOBavh+zgkldd3jnqWDFO0vb5
-	 TN2Mc0aL6LQ4w==
+	b=fCXLDHR4gGKOTQTd0BMOtgmV228SE4EzxnJvigMLz2xGWj3JpkNq+ALYdEvPOx7iO
+	 5h3XnmxndfU5m0GRDcXBQtWH9DhZTdS4Oaz3Nssh4sRZn930ZIld15ST6lqn2vG7zF
+	 BcM6bvx5TreMHjbBA8OaLN8becgXklClfTAPWlGn3WE3ThuDUgzRVTCELlPh40k0Nl
+	 dsKVY8kK/5oLSEhPPI9dKg7tOr94/fI+f1GlRMLkzZxa1Oy1Z4U6bteT0CJqjNZs1e
+	 D3YCn24olVj/8QsF8a6LicXUJmY/a5GHzjg92kolbbAcpeW7S88glORRhlKZBTjl6O
+	 gx9kS0sKiNyFg==
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230421183714.35186-1-hdegoede@redhat.com>
-References: <20230421183714.35186-1-hdegoede@redhat.com>
-Subject: Re: [PATCH] ASoC: Intel: soc-acpi-byt: Fix "WM510205" match no
- longer working
-Message-Id: <168235456414.139006.15008700677407548488.b4-ty@kernel.org>
-Date: Mon, 24 Apr 2023 17:42:44 +0100
+To: alsa-devel@alsa-project.org, Maxim Kochetkov <fido_max@inbox.ru>
+In-Reply-To: <20230421211950.20972-1-fido_max@inbox.ru>
+References: <20230421211950.20972-1-fido_max@inbox.ru>
+Subject: Re: [PATCH v2] ASoC: max98090: make it selectable
+Message-Id: <168235456595.139006.13916654169825783115.b4-ty@kernel.org>
+Date: Mon, 24 Apr 2023 17:42:45 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-00e42
-Message-ID-Hash: OMAFCEFRWGGGXC7JINN4DGVRJBPYXJLH
-X-Message-ID-Hash: OMAFCEFRWGGGXC7JINN4DGVRJBPYXJLH
+Message-ID-Hash: 6LM5AXMABRB23VUWV7MSIKXJHK5YFW2E
+X-Message-ID-Hash: 6LM5AXMABRB23VUWV7MSIKXJHK5YFW2E
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -78,13 +73,17 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org
+CC: lgirdwood@gmail.com, tiwai@suse.com, krzysztof.kozlowski@linaro.org,
+ pierre-louis.bossart@linux.intel.com, rf@opensource.cirrus.com,
+ ckeepax@opensource.cirrus.com, shumingf@realtek.com, ryans.lee@analog.com,
+ herve.codina@bootlin.com, wangweidong.a@awinic.com,
+ ajye_huang@compal.corp-partner.google.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OMAFCEFRWGGGXC7JINN4DGVRJBPYXJLH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6LM5AXMABRB23VUWV7MSIKXJHK5YFW2E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,15 +92,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 21 Apr 2023 20:37:14 +0200, Hans de Goede wrote:
-> Commit 7e1d728a94ca ("ASoC: Intel: soc-acpi-byt: Add new WM5102 ACPI HID")
-> added an extra HID to wm5102_comp_ids.codecs, but it forgot to bump
-> wm5102_comp_ids.num_codecs, causing the last codec HID in the codecs list
-> to no longer work.
+On Sat, 22 Apr 2023 00:19:50 +0300, Maxim Kochetkov wrote:
+> There is no way to select max98090 from menuconfig right now.
+> Add a Kconfig menu description to allow building the driver standalone.
+> It will allow this codec to be used by any other I2S master without
+> adding extra sound card entry in Kconfig.
 > 
-> Bump wm5102_comp_ids.num_codecs to fix this.
 > 
-> [...]
 
 Applied to
 
@@ -109,8 +106,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: soc-acpi-byt: Fix "WM510205" match no longer working
-      commit: c963e2ec095cb3f855890be53f56f5a6c6fbe371
+[1/1] ASoC: max98090: make it selectable
+      commit: 9e868ca1f269dec9f2062bb8de42b8a94773924e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
