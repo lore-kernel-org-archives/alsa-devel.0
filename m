@@ -4,126 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDEAEC77B61
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Apr 2023 01:19:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 735C3C77B61
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Apr 2023 02:25:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0152E1010;
-	Tue, 25 Apr 2023 03:18:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0152E1010
+	by alsa0.perex.cz (Postfix) with ESMTPS id D15AC1028;
+	Tue, 25 Apr 2023 04:24:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D15AC1028
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682385542;
-	bh=rhol3ohD5PY/5oEZdMs40T5ODSm+tGy7OSWAMxmjx/Y=;
-	h=Date:Subject:From:To:References:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=P6SBFlqw8lvkqXTem4Bn2rWIL8GrPjV5QVM9ix3nr3D8Y+8KCc6a/5OhVA3lMvt/I
-	 yfmicxb8A2/uVYQGj53zwkoH+GP1dII700gln3cOsKAA184hFJD4SUEvNuCJtKYDKX
-	 X2AajjM8PAg/eon12n3Xi7eu8SS63wiuZtmHFQ3c=
+	s=default; t=1682389499;
+	bh=Jyi1/JV5McqXGHI9E3S4DmkDYWfkrqZ0q1lria9OWQ0=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Uq8B6tHuBTi9JJNafwbcoCLKtR0ORcQ/UD0GF7cYU2o3Zir4IDjWuy3+48nYa/gaK
+	 8DEKDXwIz8LUsk9DgG90eHnQ5QDhzedkyLZpuaIHHqqPmGM6GU9CTIjS0ClIqsNa8n
+	 80MgegOFWJ99GwcIRZCp6CyVEhDyVTHRqWK1ib8M=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F81DF8018A;
-	Tue, 25 Apr 2023 03:17:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8EFD8F80236;
+	Tue, 25 Apr 2023 04:23:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5801AF8018A; Tue, 25 Apr 2023 03:17:43 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EDEA7F800F8
-	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2023 03:17:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDEA7F800F8
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=AnQnZy3x
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 33P17Zh9018261;
-	Tue, 25 Apr 2023 01:17:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=LERFdXcjVsFCSOZUAfrxaZzzvQVZ0km1XAFRXQ+kCQ0=;
- b=AnQnZy3xIwN8Ianz46csf3zMDVKU8wO+r3Me9Iho4hjOJ7WU0yzAI0DL6SxiY3tkfPkC
- cSni4Thg1hZtO3V6AulkxnGBuTyfp9gfWLX0z2JbtKNfbqb9+Eq3i2nGYSXGtipai4TA
- +E+R0SBrg5NDaOOaQpZ00KYo6QdIwmh0MKCTprKlgi0lQOVQYfYVBla76inxLi7OCEgy
- gH1HK1Myoo4wx2HUkwrfefMeDFZPtkGSHWSlU3mLkv7OUvB0p+5W8lU9AMvAeNQHlOrW
- K5i/wyGWpy2Ae796fmE8YHKycFvo2PO/bTfxwf0ReMoro6n32zSPK8S7FTcHQJgnHdpB LQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3q5ndpt2vj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 25 Apr 2023 01:17:30 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
- [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 33P1HTbl012769
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 25 Apr 2023 01:17:29 GMT
-Received: from [10.110.17.95] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42; Mon, 24 Apr
- 2023 18:17:26 -0700
-Message-ID: <579b6a18-624d-8071-e326-fc69028d3fc5@quicinc.com>
-Date: Mon, 24 Apr 2023 18:17:25 -0700
+	id EEF70F80236; Tue, 25 Apr 2023 04:23:40 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FB59F800F8
+	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2023 04:23:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FB59F800F8
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v3 01/28] xhci: Add support to allocate several
- interrupters
-Content-Language: en-US
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-To: Mathias Nyman <mathias.nyman@linux.intel.com>,
-        <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <broonie@kernel.org>, <lgirdwood@gmail.com>,
-        <krzysztof.kozlowski+dt@linaro.org>, <agross@kernel.org>,
-        <Thinh.Nguyen@synopsys.com>, <bgoswami@quicinc.com>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <gregkh@linuxfoundation.org>, <tiwai@suse.com>
-References: <20230308235751.495-1-quic_wcheng@quicinc.com>
- <20230308235751.495-2-quic_wcheng@quicinc.com>
- <a45ff335-0563-85c7-3b31-d6ca23a54a3f@linux.intel.com>
- <6024f762-6085-10cd-e73a-9031722b2334@quicinc.com>
-In-Reply-To: <6024f762-6085-10cd-e73a-9031722b2334@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-GUID: z0dwS-2-H847QR2W6V6IV0XIC_kqxSbN
-X-Proofpoint-ORIG-GUID: z0dwS-2-H847QR2W6V6IV0XIC_kqxSbN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-25_01,2023-04-21_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 suspectscore=0
- adultscore=0 phishscore=0 impostorscore=0 spamscore=0 mlxlogscore=999
- mlxscore=0 bulkscore=0 clxscore=1011 priorityscore=1501 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2303200000
- definitions=main-2304250008
-Message-ID-Hash: ZWEUNEOFWYPRFZPUQYXVCMY245FZK2J3
-X-Message-ID-Hash: ZWEUNEOFWYPRFZPUQYXVCMY245FZK2J3
-X-MailFrom: quic_wcheng@quicinc.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1682389414848679781-webhooks-bot@alsa-project.org>
+References: <1682389414848679781-webhooks-bot@alsa-project.org>
+Subject: Fix gigabyte z690i aorus ultra ALC-4080
+Message-Id: <20230425022340.EEF70F80236@alsa1.perex.cz>
+Date: Tue, 25 Apr 2023 04:23:40 +0200 (CEST)
+Message-ID-Hash: AXH56NSJLUPH2MJZJS2SGO6P73BPZZDZ
+X-Message-ID-Hash: AXH56NSJLUPH2MJZJS2SGO6P73BPZZDZ
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-usb@vger.kernel.org, quic_jackp@quicinc.com, quic_plai@quicinc.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZWEUNEOFWYPRFZPUQYXVCMY245FZK2J3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AXH56NSJLUPH2MJZJS2SGO6P73BPZZDZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,72 +64,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Mathias,
+alsa-project/alsa-ucm-conf pull request #307 was opened from jameson-reed:
 
-On 3/13/2023 1:08 PM, Wesley Cheng wrote:
-> Hi Mathias,
-> 
-> On 3/10/2023 7:07 AM, Mathias Nyman wrote:
->> On 9.3.2023 1.57, Wesley Cheng wrote:
->>> From: Mathias Nyman <mathias.nyman@linux.intel.com>
->>>
->>> Introduce xHCI APIs to allow for clients to allocate and free
->>> interrupters.  This allocates an array of interrupters, which is 
->>> based on
->>> the max_interrupters parameter.  The primary interrupter is set as the
->>> first entry in the array, and secondary interrupters following after.
->>>
->>
->> I'm thinking about changing this offloading xHCI API
->> xhci should be aware and keep track of which devices and endpoints that
->> are offloaded to avoid device getting offloaded twice, avoid xhci driver
->> from queuing anything itself for these, and act properly if the offloaded
->> device or entire host is removed.
->>
->> So first thing audio side would need to do do is register/create an
->> offload entry for the device using the API:
->>
->> struct xhci_sideband *xhci_sideband_register(struct usb_device *udev)
->>
->> (xHCI specs calls offload sideband)
->> Then endpoints and interrupters can be added and removed from this
->> offload entry
->>
->> I have some early thoughts written as non-compiling code in:
->>
->> git://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git 
->> feature_interrupters
->> https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters 
->>
->>
->> Let me know what you think about this.
->>
-> 
-> The concept/framework you built looks good to me.  Makes sense to have 
-> XHCI better maintain the offloading users.  One thing I would request is 
-> to move xhci-sideband.h to the include directory since the class driver 
-> levels would need to be able to reference the structure and APIs you've 
-> exposed.
-> 
-> I have yet to try it with our implementation, but I'll work on plugging 
-> it in and fix any issues I see along the way.
+Currently the board is not matched by the regex.
+Once matched the config still isn't valid.
+I've got it stable with the following changes, disabling spdif and line1 and updating Mic1PCM value.
 
-Sorry for the late reply on some of the efforts on adding your new 
-xhci-sideband driver.
+The front headphone and microphone jacks are working now, as is the rear audio out. That does leave 1 jack on the back I haven't had any luck with.
 
-I saw your comments with respect to building the SG table for rings with 
-multiple segments, ie stream xfer rings.  I had tried some things to 
-achieve the page links, but after reviewing some of the Linux memory 
-APIs, I'm not sure we can achieve it.  This is because we're not simply 
-relying on the direct DMA ops here to build the SG table.  In the IOMMU 
-mapped cases, it calls in iommu_dma_get_sgtable(), which has some 
-convoluted logic to build the sgt.
+There is no spdif on the board.
 
-Instead of allocating one sgt with multiple sgls (based on # of ring 
-segments), would it make sense to just build multiple sgts for each ring 
-segment?  The vendor class driver could still fetch the required memory 
-information to translate each sgt to a physical address and ring segment 
-linking can happen within the external DSP if it supports it.
-
-Thanks
-Wesley Cheng
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/307
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/307.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
