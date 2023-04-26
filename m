@@ -4,88 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14FB3C77B61
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 May 2023 06:45:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19BC8C77B61
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 May 2023 06:46:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8F9D17FD;
-	Mon,  1 May 2023 08:45:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8F9D17FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C96217EA;
+	Mon,  1 May 2023 08:45:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C96217EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682923556;
-	bh=PeyZTvE2qao9z3HUKls5t/zNMEefQNyhwIh3dGLQJIU=;
-	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
+	s=default; t=1682923573;
+	bh=dk6b/0HWYMRtfV9qMW3bV+XRoEDTJNDNRtBCLFI9nTo=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QnAdbRDMtq4K4/HsD+o+ULezqY1kycpLkMvPz2gyhMp09MwrKrLDgKnGQeuvlKTGg
-	 iQo7ZIXLWLyEQQY42hvpsNyu6v4IPXtF7iX15UXeyXGnpL61INHN9uRei/FmyQINQ8
-	 naEHbUEcMWkKdOq236T98TnBzffsslNar1WhgR1U=
+	b=jyyLdl/qdNjOAA6PpXUw1ymTnghCjv4hKNAKXhNl01g95ybPUpaV4xGX1EgEIXRC5
+	 C59ozUiBJ1VIA+ZwEYzftJ6HCTQV56FwcrCKB77pWfJMvsRtXp/rpgr3SYYE0xGjT8
+	 uskIHTKm1RyuvpZSimqRbzjeBcukVVQhIU1VELPs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87F3CF805C1;
-	Mon,  1 May 2023 08:40:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F391F805C5;
+	Mon,  1 May 2023 08:40:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 729D1F80236; Wed, 26 Apr 2023 22:57:17 +0200 (CEST)
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com
- [IPv6:2607:f8b0:4864:20::1129])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 4816DF80236; Wed, 26 Apr 2023 23:02:18 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 416EDF800AC
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2023 22:57:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 416EDF800AC
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9104EF800AC
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2023 23:02:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9104EF800AC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=S7XPiZYL
-Received: by mail-yw1-x1129.google.com with SMTP id
- 00721157ae682-54f9e41dfa7so59597057b3.3
-        for <alsa-devel@alsa-project.org>;
- Wed, 26 Apr 2023 13:57:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1682542626; x=1685134626;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PeyZTvE2qao9z3HUKls5t/zNMEefQNyhwIh3dGLQJIU=;
-        b=S7XPiZYLMIoR7xsU/wXB5RDbPa2jeVL9HKShuDxQCbIPu/HZMjrE5vuCAGbMYlqazO
-         y1LcAZt8Gr0//F1/TONPb1gUmNEYmGar/QoKFxFOncs74sFIH4TslUdsOtZh1zsnR/5h
-         MjAn8Vq7g4CP0HpEd+sApnPMI1MyyUkMtXAAht9vPhKX8jqYxTOmpwj2OF8/mdce/PhM
-         iJxCYgIAr2Xu32JtwJiVOXgSXyyR2zndz91oOwLfA+13RmpqY0isHhbzK5vwXYWnIi2Q
-         F/FsDok/XXYk+LPpnN440+QMQf1+yR7o5g0KsgEDw2LXStnLVy4hkb5Ez/bEknfUnKs+
-         H0aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682542626; x=1685134626;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PeyZTvE2qao9z3HUKls5t/zNMEefQNyhwIh3dGLQJIU=;
-        b=laW4JIPgLD19WxV65E8v/hN8wLwSDOb3d9S56LftJjuajW0rNYkyA2nPCmeo7l/Yvc
-         lGG+j7mAhvMHLjwHZrD7+b3HzQBQpar3Yb/3X+UdYPku5vjHdNDQnwPb6oZraIjxTdzN
-         3K4GSyUPUtDZkmFejbs1231PAbOpNBb6TFJT7cdTDnEiwIvt5U0oEy87lgTPWS8ndJwf
-         FozvuyO3bHjOMWP+8jnk/hJPbx68SSwa1I2aoz8sYhsONcJzQ7ajPpLKHzD0p0YkHKEB
-         8CgXhzGx3yx2AuSHhwa4d4/Zs1PbmBFX4nCzJf+67IdHQdrYgktcRcIMe53rX9jJy8zL
-         F5og==
-X-Gm-Message-State: AAQBX9c4pPjvNopSh38TxIwaVRtPAPVuWy4TDHBW2ST8zEGWqVwvkM17
-	9zdA8U62JyN0YUB4TqOUw8VpBYi+z7A1oIGkiWs72g==
-X-Google-Smtp-Source: 
- AKy350ajEJHyhyynqyOl0isjddMpiNdULElT/xAxUEM8cmGuE9kOk2QPH86dypmLR0gOJToVISGwrFvJLTDtak1EsDI=
-X-Received: by 2002:a0d:ea0d:0:b0:552:a2e2:684e with SMTP id
- t13-20020a0dea0d000000b00552a2e2684emr13680157ywe.52.1682542625695; Wed, 26
- Apr 2023 13:57:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
-In-Reply-To: <20230424123522.18302-1-nikita.shubin@maquefel.me>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 26 Apr 2023 22:56:53 +0200
-Message-ID: 
- <CACRpkdarANFQ7-p=-Pi_iuk6L=PfSLDsD3_w4dEVqarwXkEGMQ@mail.gmail.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=m0bRBe1j
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7993262F96;
+	Wed, 26 Apr 2023 21:02:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 647F8C433EF;
+	Wed, 26 Apr 2023 21:01:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1682542930;
+	bh=dk6b/0HWYMRtfV9qMW3bV+XRoEDTJNDNRtBCLFI9nTo=;
+	h=Date:From:To:List-Id:Cc:Subject:References:In-Reply-To:From;
+	b=m0bRBe1jhR57bR0mjtiETvtuaXuGZqananSYQclAwPRk5Bc05FEF38a7OlNCkunkp
+	 yBQP+THpgawS2bcxohkuSwA1g/yxRRDo/Qx/jwW9jGSbgdDd2RQtztsPcKxg48qS0N
+	 j6mGkleLmQ/76VhIaG6rJn3NmV0qI41BRuUaAE5s6mtt2/MaLPRoquZ1/JKyKslu3s
+	 tPojv3kgq6p2YBjq/CHaHu7SuJmdHGKRcbQfoSIGvDUgNcyZD8jh6xGRR+Np6u6lct
+	 KildN95xpHCBTi2hLfVM8v4kCW4OSWdy8i+40d+rdjxtE/WgplWyCwLKM9PSaQ0Lke
+	 h7s3jo1CsTstA==
+Date: Wed, 26 Apr 2023 22:01:52 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
 Subject: Re: [PATCH 00/43] ep93xx device tree conversion
-To: Nikita Shubin <nikita.shubin@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: linus.walleij@linaro.org
+Message-ID: <b5396ef5-3fed-4e98-8f37-a9cd4473bddc@sirena.org.uk>
+References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
+ <CACRpkdarANFQ7-p=-Pi_iuk6L=PfSLDsD3_w4dEVqarwXkEGMQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="I5GnqS13l10kVXrY"
+Content-Disposition: inline
+In-Reply-To: 
+ <CACRpkdarANFQ7-p=-Pi_iuk6L=PfSLDsD3_w4dEVqarwXkEGMQ@mail.gmail.com>
+X-Cookie: Drilling for oil is boring.
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,15 +76,16 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: 23X4UJWVJAKFAUETHUBFQOTRUZJ7MBCF
-X-Message-ID-Hash: 23X4UJWVJAKFAUETHUBFQOTRUZJ7MBCF
+Message-ID-Hash: BQUFBBONZI772QPHGJZUK3L4KZPAPLBC
+X-Message-ID-Hash: BQUFBBONZI772QPHGJZUK3L4KZPAPLBC
 X-Mailman-Approved-At: Mon, 01 May 2023 06:40:39 +0000
-CC: Arnd Bergmann <arnd@kernel.org>, Linus Walleij <linusw@kernel.org>,
+CC: Nikita Shubin <nikita.shubin@maquefel.me>,
+ Arnd Bergmann <arnd@kernel.org>, Linus Walleij <linusw@kernel.org>,
  Alexander Sverdlin <alexander.sverdlin@gmail.com>,
  "David S. Miller" <davem@davemloft.net>,
- =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+ Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
  "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
- =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
  Alessandro Zummo <a.zummo@towertech.it>,
  Alexander Gordeev <agordeev@linux.ibm.com>,
  Alexandre Belloni <alexandre.belloni@bootlin.com>,
@@ -124,7 +108,7 @@ CC: Arnd Bergmann <arnd@kernel.org>, Linus Walleij <linusw@kernel.org>,
  Le Moal <damien.lemoal@opensource.wdc.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Liang Yang <liang.yang@amlogic.com>,
  Lukasz Majewski <lukma@denx.de>, Lv Ruyi <lv.ruyi@zte.com.cn>,
- Mark Brown <broonie@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
+ Masahiro Yamada <masahiroy@kernel.org>,
  Michael Turquette <mturquette@baylibre.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Nathan Chancellor <nathan@kernel.org>,
@@ -154,7 +138,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/23X4UJWVJAKFAUETHUBFQOTRUZJ7MBCF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BQUFBBONZI772QPHGJZUK3L4KZPAPLBC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -163,27 +147,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Apr 24, 2023 at 11:35=E2=80=AFAM Nikita Shubin
-<nikita.shubin@maquefel.me> wrote:
 
-> This series aims to convert ep93xx from platform to full device tree supp=
-ort.
->
-> Tested on ts7250 64 RAM/128 MiB Nand flash, edb9302.
+--I5GnqS13l10kVXrY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Neat, I'd say let's merge this for 6.5 once the final rough edges are
-off. The DT bindings should be easy to fix.
+On Wed, Apr 26, 2023 at 10:56:53PM +0200, Linus Walleij wrote:
 
-This is a big patch set and the improvement to the ARM kernel it
-brings is great, so I am a bit worried about over-review stalling the
-merged. If there start to be nitpicky comments I would prefer that
-we merge it and let minor comments and "nice-to-haves" be
-addressed in-tree during the development cycle.
+> This is a big patch set and the improvement to the ARM kernel it
+> brings is great, so I am a bit worried about over-review stalling the
+> merged. If there start to be nitpicky comments I would prefer that
+> we merge it and let minor comments and "nice-to-haves" be
+> addressed in-tree during the development cycle.
 
-I encourage you to use b4 to manage the patch series if you
-have time to learn it, it could help you:
-https://people.kernel.org/monsieuricon/sending-a-kernel-patch-with-b4-part-=
-1
+I'm really not enthusiastic about the SPI bindings being merged as-is.
 
-Yours,
-Linus Walleij
+--I5GnqS13l10kVXrY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRJkT8ACgkQJNaLcl1U
+h9B3Igf/QHH4S59NGDBfaDSgwwIyuYlvgVyy/BCHVqFNcP2pjHcpj0GHo+WkpjVP
+wsDLG8hswF/nuh2Yy6i1bBVQ1ugfJUg7KkA+cj7Inagtdre2PIwXKkc8AiLH2c74
+u0aKy1ihWmdVW49iT4tEm6vq8ar/UPuxorRa8RwkkFaEzFdRbC9+c0d8ZY50FdCe
+erujumfY11ZfUuNVceFfDnEz9GKxjPo5w3uUE7KV9EwK6tPH20f8T9NdmH7FxtLi
+k2V0DxnDxZWpGsmYFDjOI4pUDGjDxZ+KJLKKE4mSz5n+SckkAHkGhwAJQnXjl3Ct
+6pcdgTLe0bfrxqlq1Hn6QWGqWMW7bw==
+=5CpS
+-----END PGP SIGNATURE-----
+
+--I5GnqS13l10kVXrY--
