@@ -4,48 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3982C77B60
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Apr 2023 10:01:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 817A0C77B60
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Apr 2023 10:02:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B1A112AB;
-	Fri, 28 Apr 2023 12:00:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B1A112AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 523D8129F;
+	Fri, 28 Apr 2023 12:01:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 523D8129F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682676098;
-	bh=z6Th2vrPzHemAnYUPIYWiwI1tA2Cf9wzTwGfKIUDKD0=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=EUk7ixsAxZRxViAr5n/oCUZ0yHEwtdnP11dDPScYdeKqVP4pn9awO1Za4cLxVFk2C
-	 kx4t/6oL2eeLgmhUTr6PT5EE7nek5oeLaHfxNF5QOIqatuQZcutrHJmd9rO08D7b0e
-	 RNIsNxPRDKFBnEfC06Ap1UVVZZxWOf3cFoc5e3ic=
+	s=default; t=1682676123;
+	bh=fFO5kH5ADL6Y6FzV9/mn+Q0e4H7P8xxXrtmBpg+PyT8=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=hfSFiJzDxggrMFF8KL8YzBiRfG1bacaLPkcPOiVEyHvx79AhJh112n8ZdRcmo70ba
+	 Pestp4e4H/pcxUqFse9TrjhYU9eeaaSpGVLQapQL0tYoKD4NhOmNBdEeBZVoNzYvs4
+	 teFOHXo2LSO4vkOOMuMea9z6ar2fyByEbvnLylno=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 413ECF8025F;
-	Fri, 28 Apr 2023 12:00:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B87B5F80551;
+	Fri, 28 Apr 2023 12:00:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DAE3F80548; Fri, 28 Apr 2023 12:00:11 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	id C016EF80544; Fri, 28 Apr 2023 12:00:12 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4C5C0F8025F
-	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2023 11:59:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C5C0F8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 37641F8049E
+	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2023 11:59:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37641F8049E
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 93419241FF;
+	by bluemchen.kde.org (Postfix) with ESMTP id C3F8A24211;
 	Fri, 28 Apr 2023 05:59:41 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1psKtB-9sW-00; Fri, 28 Apr 2023 11:59:41 +0200
+	id 1psKtB-9sx-00; Fri, 28 Apr 2023 11:59:41 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: emu10k1: macro-ize snd_emu10k1_ptr_{read,write}()
-Date: Fri, 28 Apr 2023 11:59:41 +0200
-Message-Id: <20230428095941.1706263-1-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 1/6] ALSA: emu10k1: remove pointless locks from timer code
+Date: Fri, 28 Apr 2023 11:59:36 +0200
+Message-Id: <20230428095941.1706278-2-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <20230428095941.1706278-1-oswald.buddenhagen@gmx.de>
+References: <20230428095941.1706278-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 2QWMJNV5VA2C7PIIGGYWQ6H3X3KIZEN2
-X-Message-ID-Hash: 2QWMJNV5VA2C7PIIGGYWQ6H3X3KIZEN2
+Message-ID-Hash: MVVLQVEIJQUTVBYOYVZMZUIQ3OXUHSZ7
+X-Message-ID-Hash: MVVLQVEIJQUTVBYOYVZMZUIQ3OXUHSZ7
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -59,7 +63,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2QWMJNV5VA2C7PIIGGYWQ6H3X3KIZEN2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MVVLQVEIJQUTVBYOYVZMZUIQ3OXUHSZ7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -68,305 +72,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The idea to encode the bitfield manipulation in the register address is
-quite clever, but it's somewhat wasteful to do these calculations at
-runtime, given that they are all constants. Change that.
+Contrary to its name, reg_lock locks the emu data structure, not the
+registers. As the functions access only data which is set once at card
+initialization, there is no point in locking it.
 
-The added bitfield manipulation macros will be used separately as well.
+Actually locking the registers would be pointless as well, as
+snd_emu10k1_intr_{en,dis}able() does its own locking, and TIMER is
+accessed only in this one place.
+
+Locking snd_emu10k1_timer_{start,stop}() against each other also
+wouldn't buy us anything; the functions interleaving their I/O accesses
+wouldn't introduce new problems.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- include/sound/emu10k1.h     |  29 ++++++++-
- sound/pci/emu10k1/emupcm.c  |  31 +++++-----
- sound/pci/emu10k1/emuproc.c |   4 +-
- sound/pci/emu10k1/io.c      | 116 +++++++++++++++++-------------------
- 4 files changed, 99 insertions(+), 81 deletions(-)
+ sound/pci/emu10k1/timer.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
-index 8fe80dcee71b..fd1fe49578ce 100644
---- a/include/sound/emu10k1.h
-+++ b/include/sound/emu10k1.h
-@@ -1773,8 +1773,33 @@ int snd_emu10k1_fx8010_tram_setup(struct snd_emu10k1 *emu, u32 size);
- int snd_emu10k1_done(struct snd_emu10k1 * emu);
+diff --git a/sound/pci/emu10k1/timer.c b/sound/pci/emu10k1/timer.c
+index 2435d3ba68f7..993663fef885 100644
+--- a/sound/pci/emu10k1/timer.c
++++ b/sound/pci/emu10k1/timer.c
+@@ -18,29 +18,23 @@
+ static int snd_emu10k1_timer_start(struct snd_timer *timer)
+ {
+ 	struct snd_emu10k1 *emu;
+-	unsigned long flags;
+ 	unsigned int delay;
  
- /* I/O functions */
--unsigned int snd_emu10k1_ptr_read(struct snd_emu10k1 * emu, unsigned int reg, unsigned int chn);
--void snd_emu10k1_ptr_write(struct snd_emu10k1 *emu, unsigned int reg, unsigned int chn, unsigned int data);
-+
-+#define REG_SHIFT(r) (((r) >> 16) & 0x1f)
-+#define REG_SIZE(r) (((r) >> 24) & 0x1f)
-+#define REG_MASK0(r) ((1U << REG_SIZE(r)) - 1U)
-+#define REG_MASK(r) (REG_MASK0(r) << REG_SHIFT(r))
-+#define REG_ADDR(r, v) ((((r) & 0xffff) << 16) | (v))
-+#define REG_VAL_GET(r, v) ((v & REG_MASK(r)) >> REG_SHIFT(r))
-+#define REG_VAL_PUT(r, v) ((v) << REG_SHIFT(r))
-+#define snd_emu10k1_ptr_read(emu, reg, voice) \
-+	({ \
-+		u32 data = snd_emu10k1_ptr_read_raw(emu, REG_ADDR(reg, voice)); \
-+		if (REG_SIZE(reg)) \
-+			data = REG_VAL_GET(reg, data); \
-+		data; \
-+	})
-+#define snd_emu10k1_ptr_write(emu, reg, voice, data) \
-+	do { \
-+		if (REG_SIZE(reg)) \
-+			snd_emu10k1_ptr_modify(emu, REG_ADDR(reg, voice), \
-+					       ~REG_MASK(reg), REG_VAL_PUT(reg, data)); \
-+		else \
-+			snd_emu10k1_ptr_write_raw(emu, REG_ADDR(reg, voice), data); \
-+	} while (0)
-+
-+u32 snd_emu10k1_ptr_read_raw(struct snd_emu10k1 *emu, u32 reg);
-+void snd_emu10k1_ptr_write_raw(struct snd_emu10k1 *emu, u32 reg, u32 data);
-+void snd_emu10k1_ptr_modify(struct snd_emu10k1 *emu, u32 reg, u32 and_mask, u32 or_mask);
- unsigned int snd_emu10k1_ptr20_read(struct snd_emu10k1 * emu, unsigned int reg, unsigned int chn);
- void snd_emu10k1_ptr20_write(struct snd_emu10k1 *emu, unsigned int reg, unsigned int chn, unsigned int data);
- int snd_emu10k1_spi_write(struct snd_emu10k1 * emu, unsigned int data);
-diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index b0c0ef342756..2baa7f01eb5b 100644
---- a/sound/pci/emu10k1/emupcm.c
-+++ b/sound/pci/emu10k1/emupcm.c
-@@ -528,7 +528,7 @@ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
- 	int idx;
- 
- 	/* zeroing the buffer size will stop capture */
--	snd_emu10k1_ptr_write(emu, epcm->capture_bs_reg, 0, 0);
-+	snd_emu10k1_ptr_write_raw(emu, epcm->capture_bs_reg, 0);
- 	switch (epcm->type) {
- 	case CAPTURE_AC97ADC:
- 		snd_emu10k1_ptr_write(emu, ADCCR, 0, 0);
-@@ -543,7 +543,7 @@ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
- 	default:
- 		break;
- 	}	
--	snd_emu10k1_ptr_write(emu, epcm->capture_ba_reg, 0, runtime->dma_addr);
-+	snd_emu10k1_ptr_write_raw(emu, epcm->capture_ba_reg, runtime->dma_addr);
- 	epcm->capture_bufsize = snd_pcm_lib_buffer_bytes(substream);
- 	epcm->capture_bs_val = 0;
- 	for (idx = 0; idx < 31; idx++) {
-@@ -771,16 +771,16 @@ static int snd_emu10k1_capture_trigger(struct snd_pcm_substream *substream,
- 		default:	
- 			break;
- 		}
--		snd_emu10k1_ptr_write(emu, epcm->capture_bs_reg, 0, epcm->capture_bs_val);
-+		snd_emu10k1_ptr_write_raw(emu, epcm->capture_bs_reg, epcm->capture_bs_val);
- 		epcm->running = 1;
- 		epcm->first_ptr = 1;
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 		epcm->running = 0;
- 		snd_emu10k1_intr_disable(emu, epcm->capture_inte);
- 		outl(epcm->capture_ipr, emu->port + IPR);
--		snd_emu10k1_ptr_write(emu, epcm->capture_bs_reg, 0, 0);
-+		snd_emu10k1_ptr_write_raw(emu, epcm->capture_bs_reg, 0);
- 		switch (epcm->type) {
- 		case CAPTURE_AC97ADC:
- 			snd_emu10k1_ptr_write(emu, ADCCR, 0, 0);
-@@ -812,7 +812,7 @@ static snd_pcm_uframes_t snd_emu10k1_playback_pointer(struct snd_pcm_substream *
- 
- 	if (!epcm->running)
- 		return 0;
--	ptr = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[0]->number) & 0x00ffffff;
-+	ptr = snd_emu10k1_ptr_read(emu, CCCA_CURRADDR, epcm->voices[0]->number);
- #if 0	/* Perex's code */
- 	ptr += runtime->buffer_size;
- 	ptr -= epcm->ccca_start_addr;
-@@ -899,7 +899,8 @@ static snd_pcm_uframes_t snd_emu10k1_capture_pointer(struct snd_pcm_substream *s
- 		udelay(50);	/* hack, it takes awhile until capture is started */
- 		epcm->first_ptr = 0;
- 	}
--	ptr = snd_emu10k1_ptr_read(emu, epcm->capture_idx_reg, 0) & 0x0000ffff;
-+	ptr = REG_VAL_GET(FXIDX_IDX,  // All *IDX_MASKs are assumed to be equal
-+			snd_emu10k1_ptr_read_raw(emu, epcm->capture_idx_reg));
- 	return bytes_to_frames(runtime, ptr);
+ 	emu = snd_timer_chip(timer);
+ 	delay = timer->sticks - 1;
+ 	if (delay < 5 ) /* minimum time is 5 ticks */
+ 		delay = 5;
+-	spin_lock_irqsave(&emu->reg_lock, flags);
+ 	snd_emu10k1_intr_enable(emu, INTE_INTERVALTIMERENB);
+ 	outw(delay & TIMER_RATE_MASK, emu->port + TIMER);
+-	spin_unlock_irqrestore(&emu->reg_lock, flags);
+ 	return 0;
  }
  
-@@ -1128,9 +1129,9 @@ static int snd_emu10k1_capture_open(struct snd_pcm_substream *substream)
- 	epcm->substream = substream;
- 	epcm->capture_ipr = IPR_ADCBUFFULL|IPR_ADCBUFHALFFULL;
- 	epcm->capture_inte = INTE_ADCBUFENABLE;
--	epcm->capture_ba_reg = ADCBA;
--	epcm->capture_bs_reg = ADCBS;
--	epcm->capture_idx_reg = emu->audigy ? A_ADCIDX : ADCIDX;
-+	epcm->capture_ba_reg = REG_ADDR(ADCBA, 0);
-+	epcm->capture_bs_reg = REG_ADDR(ADCBS, 0);
-+	epcm->capture_idx_reg = emu->audigy ? REG_ADDR(A_ADCIDX, 0) : REG_ADDR(ADCIDX, 0);
- 	runtime->private_data = epcm;
- 	runtime->private_free = snd_emu10k1_pcm_free_substream;
- 	runtime->hw = snd_emu10k1_capture;
-@@ -1164,9 +1165,9 @@ static int snd_emu10k1_capture_mic_open(struct snd_pcm_substream *substream)
- 	epcm->substream = substream;
- 	epcm->capture_ipr = IPR_MICBUFFULL|IPR_MICBUFHALFFULL;
- 	epcm->capture_inte = INTE_MICBUFENABLE;
--	epcm->capture_ba_reg = MICBA;
--	epcm->capture_bs_reg = MICBS;
--	epcm->capture_idx_reg = emu->audigy ? A_MICIDX : MICIDX;
-+	epcm->capture_ba_reg = REG_ADDR(MICBA, 0);
-+	epcm->capture_bs_reg = REG_ADDR(MICBS, 0);
-+	epcm->capture_idx_reg = emu->audigy ? REG_ADDR(A_MICIDX, 0) : REG_ADDR(MICIDX, 0);
- 	substream->runtime->private_data = epcm;
- 	substream->runtime->private_free = snd_emu10k1_pcm_free_substream;
- 	runtime->hw = snd_emu10k1_capture;
-@@ -1204,9 +1205,9 @@ static int snd_emu10k1_capture_efx_open(struct snd_pcm_substream *substream)
- 	epcm->substream = substream;
- 	epcm->capture_ipr = IPR_EFXBUFFULL|IPR_EFXBUFHALFFULL;
- 	epcm->capture_inte = INTE_EFXBUFENABLE;
--	epcm->capture_ba_reg = FXBA;
--	epcm->capture_bs_reg = FXBS;
--	epcm->capture_idx_reg = FXIDX;
-+	epcm->capture_ba_reg = REG_ADDR(FXBA, 0);
-+	epcm->capture_bs_reg = REG_ADDR(FXBS, 0);
-+	epcm->capture_idx_reg = REG_ADDR(FXIDX, 0);
- 	substream->runtime->private_data = epcm;
- 	substream->runtime->private_free = snd_emu10k1_pcm_free_substream;
- 	runtime->hw = snd_emu10k1_capture_efx;
-diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
-index bec72dc60a41..3a7f60d64c27 100644
---- a/sound/pci/emu10k1/emuproc.c
-+++ b/sound/pci/emu10k1/emuproc.c
-@@ -23,8 +23,8 @@
- static void snd_emu10k1_proc_spdif_status(struct snd_emu10k1 * emu,
- 					  struct snd_info_buffer *buffer,
- 					  char *title,
--					  int status_reg,
--					  int rate_reg)
-+					  u8 status_reg,
-+					  u8 rate_reg)
+ static int snd_emu10k1_timer_stop(struct snd_timer *timer)
  {
- 	static const char * const clkaccy[4] = { "1000ppm", "50ppm", "variable", "unknown" };
- 	static const int samplerate[16] = { 44100, 1, 48000, 32000, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
-index c60573f14ea8..373c633bd88b 100644
---- a/sound/pci/emu10k1/io.c
-+++ b/sound/pci/emu10k1/io.c
-@@ -18,72 +18,64 @@
- #include <linux/export.h>
- #include "p17v.h"
+ 	struct snd_emu10k1 *emu;
+-	unsigned long flags;
  
--unsigned int snd_emu10k1_ptr_read(struct snd_emu10k1 * emu, unsigned int reg, unsigned int chn)
-+static inline int check_ptr_reg(struct snd_emu10k1 *emu, u32 reg)
- {
--	unsigned long flags;
--	unsigned int regptr, val;
--	unsigned int mask;
--
--	mask = emu->audigy ? A_PTR_ADDRESS_MASK : PTR_ADDRESS_MASK;
--	regptr = ((reg << 16) & mask) | (chn & PTR_CHANNELNUM_MASK);
--
--	if (reg & 0xff000000) {
--		unsigned char size, offset;
--		
--		size = (reg >> 24) & 0x3f;
--		offset = (reg >> 16) & 0x1f;
--		mask = ((1 << size) - 1) << offset;
--		
--		spin_lock_irqsave(&emu->emu_lock, flags);
--		outl(regptr, emu->port + PTR);
--		val = inl(emu->port + DATA);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);
--		
--		return (val & mask) >> offset;
--	} else {
--		spin_lock_irqsave(&emu->emu_lock, flags);
--		outl(regptr, emu->port + PTR);
--		val = inl(emu->port + DATA);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);
--		return val;
--	}
--}
--
--EXPORT_SYMBOL(snd_emu10k1_ptr_read);
--
--void snd_emu10k1_ptr_write(struct snd_emu10k1 *emu, unsigned int reg, unsigned int chn, unsigned int data)
--{
--	unsigned int regptr;
--	unsigned long flags;
--	unsigned int mask;
--
- 	if (snd_BUG_ON(!emu))
--		return;
--	mask = emu->audigy ? A_PTR_ADDRESS_MASK : PTR_ADDRESS_MASK;
--	regptr = ((reg << 16) & mask) | (chn & PTR_CHANNELNUM_MASK);
--
--	if (reg & 0xff000000) {
--		unsigned char size, offset;
--
--		size = (reg >> 24) & 0x3f;
--		offset = (reg >> 16) & 0x1f;
--		mask = ((1 << size) - 1) << offset;
--		data = (data << offset) & mask;
--
--		spin_lock_irqsave(&emu->emu_lock, flags);
--		outl(regptr, emu->port + PTR);
--		data |= inl(emu->port + DATA) & ~mask;
--		outl(data, emu->port + DATA);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);		
--	} else {
--		spin_lock_irqsave(&emu->emu_lock, flags);
--		outl(regptr, emu->port + PTR);
--		outl(data, emu->port + DATA);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);
--	}
-+		return 0;
-+	if (snd_BUG_ON(reg & 0xffff0000 & (emu->audigy ? ~A_PTR_ADDRESS_MASK : ~PTR_ADDRESS_MASK)))
-+		return 0;
-+	if (snd_BUG_ON(reg & 0xffff & ~PTR_CHANNELNUM_MASK))
-+		return 0;
-+	return 1;
+ 	emu = snd_timer_chip(timer);
+-	spin_lock_irqsave(&emu->reg_lock, flags);
+ 	snd_emu10k1_intr_disable(emu, INTE_INTERVALTIMERENB);
+-	spin_unlock_irqrestore(&emu->reg_lock, flags);
+ 	return 0;
  }
  
--EXPORT_SYMBOL(snd_emu10k1_ptr_write);
-+unsigned int snd_emu10k1_ptr_read_raw(struct snd_emu10k1 *emu, u32 reg)
-+{
-+	unsigned long flags;
-+	u32 val;
-+
-+	if (!check_ptr_reg(emu, reg))
-+		return 0;
-+
-+	spin_lock_irqsave(&emu->emu_lock, flags);
-+	outl(reg, emu->port + PTR);
-+	val = inl(emu->port + DATA);
-+	spin_unlock_irqrestore(&emu->emu_lock, flags);
-+	return val;
-+}
-+
-+EXPORT_SYMBOL(snd_emu10k1_ptr_read_raw);
-+
-+void snd_emu10k1_ptr_write_raw(struct snd_emu10k1 *emu, u32 reg, u32 data)
-+{
-+	unsigned long flags;
-+
-+	if (!check_ptr_reg(emu, reg))
-+		return;
-+
-+	spin_lock_irqsave(&emu->emu_lock, flags);
-+	outl(reg, emu->port + PTR);
-+	outl(data, emu->port + DATA);
-+	spin_unlock_irqrestore(&emu->emu_lock, flags);
-+}
-+
-+EXPORT_SYMBOL(snd_emu10k1_ptr_write_raw);
-+
-+void snd_emu10k1_ptr_modify(struct snd_emu10k1 *emu, u32 reg, u32 and_mask, u32 or_mask)
-+{
-+	unsigned long flags;
-+
-+	if (!check_ptr_reg(emu, reg))
-+		return;
-+
-+	spin_lock_irqsave(&emu->emu_lock, flags);
-+	outl(reg, emu->port + PTR);
-+	or_mask |= inl(emu->port + DATA) & and_mask;
-+	outl(or_mask, emu->port + DATA);
-+	spin_unlock_irqrestore(&emu->emu_lock, flags);
-+}
-+
-+EXPORT_SYMBOL(snd_emu10k1_ptr_modify);
- 
- unsigned int snd_emu10k1_ptr20_read(struct snd_emu10k1 * emu, 
- 					  unsigned int reg, 
 -- 
 2.40.0.152.g15d061e6df
 
