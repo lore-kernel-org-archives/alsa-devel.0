@@ -4,106 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03BD6C77B61
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Apr 2023 09:27:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94BF6C77B61
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Apr 2023 10:00:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC1B81292;
-	Fri, 28 Apr 2023 11:26:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC1B81292
+	by alsa0.perex.cz (Postfix) with ESMTPS id B83E9129B;
+	Fri, 28 Apr 2023 11:59:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B83E9129B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682674033;
-	bh=RjYii7iihqguypeV1/iY1TQkHAdp6XDv/UaH1BOM0kU=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1682676045;
+	bh=zqMya/k3bt3PkjhuitumlXzefPBOtaLfHo39mVsed+0=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QxESiqPWFE53YeY49IWL1zqwarr77ZAuqs+SWiH6jyoRRuspSPhCsAhSZttMJEAE8
-	 s5orL6EpDy19IbJ5+yNac9b6+yEbzKp4ivgDo590878YiEuGfbmnsvImgx4Qvu3dCd
-	 6149OdI7Mf1q7MR3WCFRUoshaNlVq3ra1EBQWFCY=
+	b=MQJVgUA4Tte3hAx+DFB3hWlluFxZigGQe+GcBRSj9Gsg8+ZVVuRg+UQteUDRyVMaA
+	 d/2qzblAIFsD38vrgelbEZ6kYuN3q6chQMeFvaUG2MdfNF0OD3EBR/zDJb8xwLdznE
+	 eluGEyB/XIXwLcdhy93BsVRH1FzuiUbJN2SGLYEU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24BAAF8025E;
-	Fri, 28 Apr 2023 11:25:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CA30F80137;
+	Fri, 28 Apr 2023 11:59:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2965AF8025E; Fri, 28 Apr 2023 11:25:51 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 1E605F80533; Fri, 28 Apr 2023 11:59:50 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 54A8AF80137
-	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2023 11:25:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54A8AF80137
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=1TKv+usu;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Gy7/UKdp
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0305321ED0;
-	Fri, 28 Apr 2023 09:25:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1682673944;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5d6m9Bv5zVDYlpTvnDfz00mw5PZuWF8gfyo4Z6OqO+4=;
-	b=1TKv+usujy5pwtP8e7PdKOeljK9mj9eGrntlp4ukySfUe5mrlrklJ4yzNBf4gbD2ZqB1Hn
-	C1+rnOaEICT2aL4RJ+5xOrLkfgFPORH2LpllQBcHNffGjcInoQMqqTDOp2fWJVLLpyg3xx
-	tHmbJsRg+U3R5TBJ5uAjyycXNoHtn2c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1682673944;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5d6m9Bv5zVDYlpTvnDfz00mw5PZuWF8gfyo4Z6OqO+4=;
-	b=Gy7/UKdpjQm208WpHJvE18bHwxf2BjZj6PXt91pEBSf9EhLhI4OCOUQnw6Z2Yqn6Y3NnAP
-	cOUuqbuEDOLo5pAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D608F138FA;
-	Fri, 28 Apr 2023 09:25:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id gtpRMxeRS2SRFgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 28 Apr 2023 09:25:43 +0000
-Date: Fri, 28 Apr 2023 11:25:43 +0200
-Message-ID: <871qk4s6i0.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Subject: Re: [PATCH RESEND] ALSA: emu10k1: use more existing defines instead
- of open-coded numbers
-In-Reply-To: <20230428080732.1697695-1-oswald.buddenhagen@gmx.de>
-References: <20230428080732.1697695-1-oswald.buddenhagen@gmx.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: ARE5T4QQ42YWTCAUXXUJVR4KMVK3LEUH
-X-Message-ID-Hash: ARE5T4QQ42YWTCAUXXUJVR4KMVK3LEUH
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1C713F80137
+	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2023 11:59:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C713F80137
+Received: from ugly.fritz.box (localhost [127.0.0.1])
+	by bluemchen.kde.org (Postfix) with ESMTP id DB49A24247;
+	Fri, 28 Apr 2023 05:59:41 -0400 (EDT)
+Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
+	id 1psKtB-9tF-00; Fri, 28 Apr 2023 11:59:41 +0200
+From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 4/6] ALSA: emu10k1: fix locking in
+ snd_emu1010_fpga_link_dst_src_write()
+Date: Fri, 28 Apr 2023 11:59:39 +0200
+Message-Id: <20230428095941.1706278-5-oswald.buddenhagen@gmx.de>
+X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <20230428095941.1706278-1-oswald.buddenhagen@gmx.de>
+References: <20230428095941.1706278-1-oswald.buddenhagen@gmx.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: RGLENIMBK7UBGWWTHJQMIU2OSF5XYBTB
+X-Message-ID-Hash: RGLENIMBK7UBGWWTHJQMIU2OSF5XYBTB
+X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org
+CC: Takashi Iwai <tiwai@suse.de>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ARE5T4QQ42YWTCAUXXUJVR4KMVK3LEUH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RGLENIMBK7UBGWWTHJQMIU2OSF5XYBTB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,23 +72,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 28 Apr 2023 10:07:32 +0200,
-Oswald Buddenhagen wrote:
-> 
-> Using the *_MASK defines for "maximal value" is debatable. I got the
-> idea from FreeBSD, and it sorta makes sense to me.
-> 
-> Some hunks look a bit incomplete, because code that is going to be
-> subsequently removed is not touched here.
-> 
-> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+This is a multi-register operation, which must be locked in its
+entirety.
 
-> ---
-> this failed to build previously due to a missed logical dependency on
-> the "use high-level I/O functions also during init" patch. that patch
-> was applied meanwhile, so it's now safe to apply this one as well.
+Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+---
+ sound/pci/emu10k1/io.c | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
 
-Thanks, applied now.
+diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
+index cfb96a67aa35..aee84c3f9f37 100644
+--- a/sound/pci/emu10k1/io.c
++++ b/sound/pci/emu10k1/io.c
+@@ -233,23 +233,28 @@ int snd_emu10k1_i2c_write(struct snd_emu10k1 *emu,
+ 	return err;
+ }
+ 
+-void snd_emu1010_fpga_write(struct snd_emu10k1 *emu, u32 reg, u32 value)
++static void snd_emu1010_fpga_write_locked(struct snd_emu10k1 *emu, u32 reg, u32 value)
+ {
+-	unsigned long flags;
+-
+ 	if (snd_BUG_ON(reg > 0x3f))
+ 		return;
+ 	reg += 0x40; /* 0x40 upwards are registers. */
+ 	if (snd_BUG_ON(value > 0x3f)) /* 0 to 0x3f are values */
+ 		return;
+-	spin_lock_irqsave(&emu->emu_lock, flags);
+ 	outw(reg, emu->port + A_GPIO);
+ 	udelay(10);
+ 	outw(reg | 0x80, emu->port + A_GPIO);  /* High bit clocks the value into the fpga. */
+ 	udelay(10);
+ 	outw(value, emu->port + A_GPIO);
+ 	udelay(10);
+ 	outw(value | 0x80 , emu->port + A_GPIO);  /* High bit clocks the value into the fpga. */
++}
++
++void snd_emu1010_fpga_write(struct snd_emu10k1 *emu, u32 reg, u32 value)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&emu->emu_lock, flags);
++	snd_emu1010_fpga_write_locked(emu, reg, value);
+ 	spin_unlock_irqrestore(&emu->emu_lock, flags);
+ }
+ 
+@@ -276,14 +281,18 @@ void snd_emu1010_fpga_read(struct snd_emu10k1 *emu, u32 reg, u32 *value)
+  */
+ void snd_emu1010_fpga_link_dst_src_write(struct snd_emu10k1 *emu, u32 dst, u32 src)
+ {
++	unsigned long flags;
++
+ 	if (snd_BUG_ON(dst & ~0x71f))
+ 		return;
+ 	if (snd_BUG_ON(src & ~0x71f))
+ 		return;
+-	snd_emu1010_fpga_write(emu, EMU_HANA_DESTHI, dst >> 8);
+-	snd_emu1010_fpga_write(emu, EMU_HANA_DESTLO, dst & 0x1f);
+-	snd_emu1010_fpga_write(emu, EMU_HANA_SRCHI, src >> 8);
+-	snd_emu1010_fpga_write(emu, EMU_HANA_SRCLO, src & 0x1f);
++	spin_lock_irqsave(&emu->emu_lock, flags);
++	snd_emu1010_fpga_write_locked(emu, EMU_HANA_DESTHI, dst >> 8);
++	snd_emu1010_fpga_write_locked(emu, EMU_HANA_DESTLO, dst & 0x1f);
++	snd_emu1010_fpga_write_locked(emu, EMU_HANA_SRCHI, src >> 8);
++	snd_emu1010_fpga_write_locked(emu, EMU_HANA_SRCLO, src & 0x1f);
++	spin_unlock_irqrestore(&emu->emu_lock, flags);
+ }
+ 
+ void snd_emu10k1_intr_enable(struct snd_emu10k1 *emu, unsigned int intrenb)
+-- 
+2.40.0.152.g15d061e6df
 
-
-Takashi
