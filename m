@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51904C7EE23
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Apr 2023 20:57:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 907E8C77B60
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Apr 2023 21:32:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7E9F14BD;
-	Fri, 28 Apr 2023 22:56:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7E9F14BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E04D51367;
+	Fri, 28 Apr 2023 23:31:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E04D51367
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682715418;
-	bh=M3WRSBl8T3hQo63jKFrKrN/HmM24ihVYPuB8ZmUka38=;
+	s=default; t=1682717520;
+	bh=xUUJ+1Jc9ZfDJH3SUQv5GVAfCMPKDwuYhntS7dTkWco=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=fmKgGDK5nyh6d+nKjMITphuOwcVbfoSKpGRDvW+F0l81PECYxrfuuPtcYhy9ptui0
-	 PJQGtbESsTaWnxqwMMB2b40pFyBY2Hl2IzdUEjxvTcze2yldAhvzw6guPLgsXkMHve
-	 Ave0G3q21o1P07emLbxiKOSzWzTq7etkU/pCR8yM=
+	b=FhIYkEqfQ8LEyuBbhIYlA4lrwNJXuHBLCV2Wr7Hhnput9M9CR0tbLsD/4B8c+HSLL
+	 9pJv20vX+IW7s4oWwzorfLAOhgB8MsJx9tbTf+tqm+gxfUBDOQqhp7C6kWvusJbqKG
+	 2JsENvrr77ts1wP9IPj4qNSDEMysM6/yV4/CZCW4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65AD1F8025E;
-	Fri, 28 Apr 2023 22:55:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C949DF8025E;
+	Fri, 28 Apr 2023 23:30:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2860F8025E; Fri, 28 Apr 2023 22:55:37 +0200 (CEST)
+	id 549FAF8025E; Fri, 28 Apr 2023 23:30:38 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90ACDF80137
-	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2023 22:55:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90ACDF80137
+	by alsa1.perex.cz (Postfix) with ESMTP id A2E99F80137
+	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2023 23:30:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2E99F80137
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1682715332208844185-webhooks-bot@alsa-project.org>
-References: <1682715332208844185-webhooks-bot@alsa-project.org>
-Subject: in two compound `[`'s, replace '-a' with '] && ['
-Message-Id: <20230428205537.A2860F8025E@alsa1.perex.cz>
-Date: Fri, 28 Apr 2023 22:55:37 +0200 (CEST)
-Message-ID-Hash: 4WK7UJRTWVOQKZVDM7GPQ7AGRNRF4KTV
-X-Message-ID-Hash: 4WK7UJRTWVOQKZVDM7GPQ7AGRNRF4KTV
+In-Reply-To: <1682717433521668673-webhooks-bot@alsa-project.org>
+References: <1682717433521668673-webhooks-bot@alsa-project.org>
+Subject: in a compound `test` command, change '-o' to '||'
+Message-Id: <20230428213038.549FAF8025E@alsa1.perex.cz>
+Date: Fri, 28 Apr 2023 23:30:38 +0200 (CEST)
+Message-ID-Hash: QTKL5GNYMDOB5SM3ERWDDCSWQBEFTRTB
+X-Message-ID-Hash: QTKL5GNYMDOB5SM3ERWDDCSWQBEFTRTB
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -55,7 +55,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4WK7UJRTWVOQKZVDM7GPQ7AGRNRF4KTV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QTKL5GNYMDOB5SM3ERWDDCSWQBEFTRTB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -64,11 +64,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils pull request #201 was opened from wileyhy:
+alsa-project/alsa-utils pull request #202 was opened from wileyhy:
 
-Per shellcheck warnings.
-https://www.shellcheck.net/wiki/SC2166
+Per a shellcheck warning
+https://www.shellcheck.net/wiki/SC1139
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/201
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/201.patch
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/202
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/202.patch
 Repository URL: https://github.com/alsa-project/alsa-utils
