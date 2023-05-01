@@ -4,105 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 635F8C77B73
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 May 2023 07:03:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51F2EC77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 May 2023 12:26:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86B9D175C;
-	Mon,  1 May 2023 09:02:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86B9D175C
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB68317F7;
+	Mon,  1 May 2023 14:25:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB68317F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682924618;
-	bh=nKgG1imx9UreIxQdgBkBIGgTo5FCnsp7BxD7AGjwctc=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1682943991;
+	bh=qNUV2Q/055Bh9rey5/YloYxG5sM9TQYnQSSiRxHAvZo=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fFoZnQE1ywSIaUzEGYJnO906G1+d19TMVEdAu5l3v/rDwCl7SLuCefIx+nXt8EiEd
-	 1wI4moafYMNi9JbRdPnyeBUYF24Pr8X6j76Faidgb4M88UL4pJfD2sgliukufrD+5F
-	 wpjPDbRYNsuG3uiTT0wqcGx6viQN3Q8DA70Y4FDA=
+	b=juCm7D8vh5r8Ix6Ksr7gJwrOn01Q21Oc9CzKsPLzNvyWo7JB3NmY9dWL1H1qD9lm1
+	 9ZnwqfnVe/ELDacINRG6leCsC+kWw+KRmGhzqXodf0TtYTzjEkREd3MjedrK6B4iki
+	 0UfGEHv+CLJpWs5q7QieUWTqGoFatyJQIWMfvGZg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FF0FF8032B;
-	Mon,  1 May 2023 09:02:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BDF1F8049E;
+	Mon,  1 May 2023 14:25:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1B40F8032B; Mon,  1 May 2023 09:02:19 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id D126EF8049E; Mon,  1 May 2023 14:25:10 +0200 (CEST)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
+ [IPv6:2a00:1450:4864:20::632])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 13C1BF80114
-	for <alsa-devel@alsa-project.org>; Mon,  1 May 2023 09:02:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13C1BF80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 96C18F80137
+	for <alsa-devel@alsa-project.org>; Mon,  1 May 2023 14:24:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96C18F80137
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=aOOoF4vs;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=izE8NTdl
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 67480205DD;
-	Mon,  1 May 2023 07:02:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1682924537;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RVD+bDRUziRmcnlCJugyMwMeK+xLTveoOrOww/ccp3g=;
-	b=aOOoF4vsEsu4/OGqELhUcGizAwzeeEVQBZIaSnQG86wyL6D4eqbMiphop3NunysTBej+Sf
-	RdRduJFJSM5D39KQk0NfdOn0gtBiBz3GxEn6ndm2+c0afGHPoe5ov9Ydi0SV0iDloxc/Xn
-	8fqpsjMlApAwF2eMq0rG1KoeFXQ9tZQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1682924537;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RVD+bDRUziRmcnlCJugyMwMeK+xLTveoOrOww/ccp3g=;
-	b=izE8NTdlnKsbcWp7d7AGiqEzjAum4H6P7N3EsWZkcLmHmtoVG5XWyFH5xfKuEVsVlZ16fT
-	8U26T7n2HUWMi3CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4AED913580;
-	Mon,  1 May 2023 07:02:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id hRxgEfljT2SdYQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 01 May 2023 07:02:17 +0000
-Date: Mon, 01 May 2023 09:02:16 +0200
-Message-ID: <87mt2opm9z.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Ivan Orlov <ivan.orlov0322@gmail.com>
-Subject: Re: Question regarding ALSA modules parameters
-In-Reply-To: <26624923-3529-d161-ae62-7e5ece7b0e3f@gmail.com>
-References: <26624923-3529-d161-ae62-7e5ece7b0e3f@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: YUHRBC3UUGEWMUFJV5AJXCJ46I2QDGDL
-X-Message-ID-Hash: YUHRBC3UUGEWMUFJV5AJXCJ46I2QDGDL
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=Hlip1jLu
+Received: by mail-ej1-x632.google.com with SMTP id
+ a640c23a62f3a-9536df4b907so516633366b.0
+        for <alsa-devel@alsa-project.org>;
+ Mon, 01 May 2023 05:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1682943889; x=1685535889;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RKzpM4h8wbSRzBbkziOSPLDHVWbVSy6w2o35fUStiww=;
+        b=Hlip1jLuJkPpOwasZWpj+qVRWmUg81mLq0cS1ISIM7wchgnYqqBjAPqRLztNJbrM9P
+         YzHiD03MQEAbUfgH9mx6VH2CrxavMOc+fcvcB6/pFLPcvXs8nUWVTVm7XzBWuuZ1wnHr
+         2xc2iGzTLlrhWUdNLstcD+zeMWu7CdqMrkMTjqS2HHOPwJ6EDeV9H+En77ABKzTEZU/S
+         vfkdxTltQSNYMwa/JMZqAdYJJ9xiIbKC9lIAAo5bqEF58VoPE5NeVZnMeKtx9/SrZ1YY
+         +d1Er23sBz2PaDp6tuqf6gEBHWNbbCSxucYDFmWPD7fFoFlivFpGmE6XxT4g13mBCj8P
+         ZTkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682943889; x=1685535889;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RKzpM4h8wbSRzBbkziOSPLDHVWbVSy6w2o35fUStiww=;
+        b=P14637CQ9qOmII8OqHN41QHWlgpOz+g/eRwL8BUxeNkayKIcydbjYnru48Y7hpf5o/
+         KiSrwCONdEhQOHeqexCfZ4LMZIueURxiG0CAmmfxx87B02Pm1yXo1tEI1REmkcR0cL+j
+         pDWkPHK50S0J6ZoRy9WwuUr2ieti2D9UQcyjYWxkAuglxlKDsL/UDpIMB8tOZcqKBeVW
+         R+rOR4AYXShktR/JPV+354j0pC1q9iWO8LpeCwUG2cmDg8+lgQmEffHthz4Kn29tYF0R
+         RSacwMuwI6KwLf6U3b6FsRlJi9f3yeCxS+y2bP2twRvE6CkLto6+nLNMWP/mzuU28ccN
+         E2hw==
+X-Gm-Message-State: AC+VfDyxqgeeyWMygX7TJt+4qGQP7G9q6ZsDSRirfb9goepAxfpjmcCn
+	+jgciFs1nMv/Qn02JWCaI9qf4g==
+X-Google-Smtp-Source: 
+ ACHHUZ4FlOrN4CRmfvRpotVXsvoEVNRy+/4hGrFjzqd3Zv5af7i/23WIpnqYoFGNWkaetdVsjhBwUg==
+X-Received: by 2002:a17:907:94cc:b0:948:b9ea:3302 with SMTP id
+ dn12-20020a17090794cc00b00948b9ea3302mr12214611ejc.1.1682943889295;
+        Mon, 01 May 2023 05:24:49 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:637a:fd0c:58fd:9f00?
+ ([2a02:810d:15c0:828:637a:fd0c:58fd:9f00])
+        by smtp.gmail.com with ESMTPSA id
+ x10-20020a1709064bca00b0095334355a34sm14747521ejv.96.2023.05.01.05.24.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 May 2023 05:24:48 -0700 (PDT)
+Message-ID: <42fbf7ad-54db-0917-bb85-a1be9f99cc45@linaro.org>
+Date: Mon, 1 May 2023 14:24:47 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH 6/6] soundwire: qcom: do not probe devices before bus/link
+ init
+Content-Language: en-US
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org
+References: <20230420101617.142225-1-krzysztof.kozlowski@linaro.org>
+ <20230420101617.142225-7-krzysztof.kozlowski@linaro.org>
+ <28141433-2130-e278-0f59-d9ab507b9be3@linux.intel.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <28141433-2130-e278-0f59-d9ab507b9be3@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: SUZ56LRC2NARMQY7YTL6URTX6RL436UI
+X-Message-ID-Hash: SUZ56LRC2NARMQY7YTL6URTX6RL436UI
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org
+CC: Patrick Lai <quic_plai@quicinc.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YUHRBC3UUGEWMUFJV5AJXCJ46I2QDGDL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SUZ56LRC2NARMQY7YTL6URTX6RL436UI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,32 +128,323 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 29 Apr 2023 20:35:19 +0200,
-Ivan Orlov wrote:
+On 20/04/2023 23:37, Pierre-Louis Bossart wrote:
 > 
-> Hello!
 > 
-> I have a question about the typical ALSA driver parameters, and maybe
-> someone can answer me. Why it is necessary for ALSA module to have
-> "index", "id" and "enable" parameters? They are mentioned as required
-> in the "Writing an ALSA driver" and "Advanced Linux Sound Architecture
-> - Driver Configuration guide" articles and used in many ALSA drivers,
-> but for what purpose?
+> On 4/20/23 05:16, Krzysztof Kozlowski wrote:
+>> Soundwire devices are supposed to be kept in reset state (powered off)
+>> till their probe() or component bind() callbacks.  However if they are
+>> already powered on, then they might enumerate before the master
+>> initializes bus in qcom_swrm_init() leading to occasional errors like:
+> 
+> The problem statement is really hard to follow.
+> 
+> The peripheral can only be enumerated AFTER
+> a) the manager starts the bus clock and transmitting PING frames
+> b) the peripheral detects the sync words for 16 frames in a row.
+> c) the peripheral reports as Attached in the Device0 slot
+> 
+> That sequence holds whether the manager does the enumeration manually or
+> relies on hardware-assisted autoenumeration. This is what the spec requires.
+> 
+> So why can't the bus clock start be controlled by the manager driver,
+> and started once all required initializations are done?
+> 
+> I mean, there's got to be some sort of parent-child hierarchy with
+> manager first, peripheral(s) second, I don't get how these steps could
+> be inverted or race.
+> 
+>>   qcom-soundwire 6d30000.soundwire-controller: Qualcomm Soundwire controller v2.0.0 Registered
+>>   wcd938x_codec audio-codec: bound sdw:0:0217:010d:00:4 (ops wcd938x_sdw_component_ops)
+>>   wcd938x_codec audio-codec: bound sdw:0:0217:010d:00:3 (ops wcd938x_sdw_component_ops)
+>>   qcom-soundwire 6ad0000.soundwire-controller: swrm_wait_for_wr_fifo_avail err write overflow
+>>
+>> The problem primarily lies in Qualcomm Soundwire controller probe() sequence:
+>> 1. request_threaded_irq()
+>> 2. sdw_bus_master_add() - which will cause probe() and component bind()
+>>    of Soundwire devices, e.g. WCD938x codec drivers.  Device drivers
+>>    might already start accessing their registers.
+> 
+> not if the bus clock hasn't started...
+> 
+>> 3. qcom_swrm_init() - which initializes the link/bus and enables
+>>    interrupts.
+> 
+> if you can move the clock start in 3) then problem solved. Why can't
+> this be done?
 
-It's for either specifying the order of instances or controlling
-enable/disable of each one when there are multiple devices bound with
-the same driver.  One of typical use cases would be the HD-audio
-driver; there are many machines that have two HD-audio controllers,
-one for HDMI/DP audio and another for onboard analog.  In most cases,
-the second one (onboard analog) is the primary usage, and people would
-like to assign this as the first appearing card.  Then you can pass
-the option like "index=1,0" to swap the assignment slot.
+Responding to all your three responses:
+The clock is enabled in this 3. qcom_swrm_init(), so the old code to my
+knowledge is written exactly how you expect.
 
-Nowadays with the sound backend like PA or PW that supports dynamic
-configuration, it's little use, but that was a help for static
-configuration in the past.
+However even with stopped clock, the device enumerates at
+sdw_bus_master_add(), before anything is enabled.
 
+I also checked the reset values of these registers - clock is off after
+reset. Assuming of course I look at correct clock registers... but I
+have only one.
 
-HTH,
+> 
+>> Any access to device registers at (2) above, will fail because link/bus
+>> is not yet initialized.
+>>
+>> However the fix is not as simple as moving qcom_swrm_init() before
+>> sdw_bus_master_add(), because this will cause early interrupt of new
+>> slave attached.  The interrupt handler expects bus master (ctrl->bus.md)
+>> to be allocated, so this would lead to NULL pointer exception.
+>>
+>> Rework the init sequence and change the interrupt handler.  The correct
+>> sequence fixing accessing device registers before link init is now:
+>> 1. qcom_swrm_init()
+>> 2. request_threaded_irq()
+>> 3. sdw_bus_master_add()
+>> which still might cause early interrupts, if Soundwire devices are not
+>> in powered off state before their probe.  This early interrupt issue is
+> 
+> You'd need to clarify in which step the bus clock starts. In general,
+> you want to clock started last.
 
-Takashi
+Clock is enabled in qcom_swrm_init() step, but as I wrote above, it
+looks like it does not matter for enumeration.
+
+> 
+>> fixed by checking if bus master (ctrl->bus.md) was allocated and if not,
+>> scheduling delayed work for enumerating the slave device.  Since we
+>> actually can handle early interrupt now, drop IRQF_TRIGGER_RISING flag
+>> from the interrupt, because it is not really valid and driver should use
+>> flags provided by DTS.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>
+>> ---
+>>
+>> Change context depends on:
+>> https://lore.kernel.org/r/20230209131336.18252-3-srinivas.kandagatla@linaro.org
+>> https://lore.kernel.org/all/20230418095447.577001-1-krzysztof.kozlowski@linaro.org/
+>>
+>> Cc: Patrick Lai <quic_plai@quicinc.com>
+>> ---
+>>  drivers/soundwire/qcom.c | 89 ++++++++++++++++++++++++++++++++--------
+>>  1 file changed, 72 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+>> index 679990dc3cc4..802d939ce7aa 100644
+>> --- a/drivers/soundwire/qcom.c
+>> +++ b/drivers/soundwire/qcom.c
+>> @@ -19,6 +19,7 @@
+>>  #include <linux/slimbus.h>
+>>  #include <linux/soundwire/sdw.h>
+>>  #include <linux/soundwire/sdw_registers.h>
+>> +#include <linux/workqueue.h>
+>>  #include <sound/pcm_params.h>
+>>  #include <sound/soc.h>
+>>  #include "bus.h"
+>> @@ -187,6 +188,7 @@ struct qcom_swrm_ctrl {
+>>  #endif
+>>  	struct completion broadcast;
+>>  	struct completion enumeration;
+>> +	struct delayed_work new_slave_work;
+>>  	/* Port alloc/free lock */
+>>  	struct mutex port_lock;
+>>  	struct clk *hclk;
+>> @@ -606,6 +608,37 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
+>>  	return 0;
+>>  }
+>>  
+>> +static void qcom_swrm_new_slave(struct work_struct *work)
+>> +{
+>> +	struct qcom_swrm_ctrl *ctrl = container_of(work, struct qcom_swrm_ctrl,
+>> +						   new_slave_work.work);
+>> +
+>> +	/*
+>> +	 * All Soundwire slave deviecs are expected to be in reset state (powered down)
+>> +	 * during sdw_bus_master_add().  The slave device should be brougth
+> 
+> typo/grammar: brought out of reset
+
+ack
+
+> 
+>> +	 * from reset by its probe() or bind() function, as a result of
+>> +	 * sdw_bus_master_add().
+>> +	 * Add a simple check to avoid NULL pointer except on early interrupts.
+>> +	 * Note that if this condition happens, the slave device will not be
+>> +	 * enumerated. Its driver should be fixed.
+> 
+> ???
+> 
+> The codec driver is NEVER involved in enumeration.
+
+If the device stays in power down, only the driver bind can bring it on.
+enumeration won't happen when device is powered down, right?
+
+> 
+> The only thing a codec driver should do is provide a callback to be
+> notified of a status change for additional initialization, but the
+> enumeration can be done even in the absence of a codec driver.
+> 
+> The proof in the pudding is that you can 'blacklist' a codec driver and
+> bind it later, after the hardware is enumerated. You can even unbind a
+> codec driver and nothing bad will happen (we hardened that sequence last
+> year).
+> 
+> probe != enumeration != initialization for SoundWire codecs.
+> 
+> Probe and enumeration can happen in any order
+> Initialization can only happen after both probe and enumeration happened.
+
+I am speaking here about component_master_ops->bind() callback.
+> 
+>> +	 *
+>> +	 * smp_load_acquire() paired with sdw_master_device_add().
+>> +	 */
+>> +	if (!smp_load_acquire(&ctrl->bus.md)) {
+>> +		dev_err(ctrl->dev,
+>> +			"Got unexpected, early interrupt, device will not be enumerated\n");
+>> +		return;
+>> +	}
+>> +
+>> +	clk_prepare_enable(ctrl->hclk);
+>> +
+>> +	qcom_swrm_get_device_status(ctrl);
+>> +	qcom_swrm_enumerate(&ctrl->bus);
+>> +	sdw_handle_slave_status(&ctrl->bus, ctrl->status);
+>> +
+>> +	clk_disable_unprepare(ctrl->hclk);
+>> +};
+>> +
+>>  static irqreturn_t qcom_swrm_wake_irq_handler(int irq, void *dev_id)
+>>  {
+>>  	struct qcom_swrm_ctrl *ctrl = dev_id;
+>> @@ -668,9 +701,17 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+>>  					dev_dbg(ctrl->dev, "Slave status not changed %x\n",
+>>  						slave_status);
+>>  				} else {
+>> -					qcom_swrm_get_device_status(ctrl);
+>> -					qcom_swrm_enumerate(&ctrl->bus);
+>> -					sdw_handle_slave_status(&ctrl->bus, ctrl->status);
+>> +					unsigned long delay = 0;
+>> +
+>> +					/*
+>> +					 * See qcom_swrm_new_slave() for
+>> +					 * explanation. smp_load_acquire() paired
+>> +					 * with sdw_master_device_add().
+>> +					 */
+>> +					if (!smp_load_acquire(&ctrl->bus.md))
+>> +						delay = 10;
+>> +					schedule_delayed_work(&ctrl->new_slave_work,
+>> +							      delay);
+>>  				}
+>>  				break;
+>>  			case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
+>> @@ -780,6 +821,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+>>  
+>>  	ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
+>>  	/* Mask soundwire interrupts */
+>> +
+>>  	if (ctrl->version < SWRM_VERSION_2_0_0)
+>>  		ctrl->reg_write(ctrl, ctrl->reg_layout[SWRM_REG_INTERRUPT_MASK_ADDR],
+>>  				SWRM_INTERRUPT_STATUS_RMSK);
+>> @@ -1485,6 +1527,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>  	mutex_init(&ctrl->port_lock);
+>>  	init_completion(&ctrl->broadcast);
+>>  	init_completion(&ctrl->enumeration);
+>> +	INIT_DELAYED_WORK(&ctrl->new_slave_work, qcom_swrm_new_slave);
+>>  
+>>  	ctrl->bus.ops = &qcom_swrm_ops;
+>>  	ctrl->bus.port_ops = &qcom_swrm_port_ops;
+>> @@ -1514,9 +1557,10 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>  
+>>  	ctrl->reg_read(ctrl, SWRM_COMP_HW_VERSION, &ctrl->version);
+>>  
+>> +	qcom_swrm_init(ctrl);
+>> +
+>>  	ret = devm_request_threaded_irq(dev, ctrl->irq, NULL,
+>>  					qcom_swrm_irq_handler,
+>> -					IRQF_TRIGGER_RISING |
+>>  					IRQF_ONESHOT,
+>>  					"soundwire", ctrl);
+>>  	if (ret) {
+>> @@ -1524,18 +1568,6 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>  		goto err_clk;
+>>  	}
+>>  
+>> -	ctrl->wake_irq = of_irq_get(dev->of_node, 1);
+>> -	if (ctrl->wake_irq > 0) {
+>> -		ret = devm_request_threaded_irq(dev, ctrl->wake_irq, NULL,
+>> -						qcom_swrm_wake_irq_handler,
+>> -						IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+>> -						"swr_wake_irq", ctrl);
+>> -		if (ret) {
+>> -			dev_err(dev, "Failed to request soundwire wake irq\n");
+>> -			goto err_init;
+>> -		}
+>> -	}
+>> -
+>>  	pm_runtime_set_autosuspend_delay(dev, 3000);
+>>  	pm_runtime_use_autosuspend(dev);
+>>  	pm_runtime_mark_last_busy(dev);
+>> @@ -1549,7 +1581,18 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>>  		goto err_clk;
+>>  	}
+>>  
+>> -	qcom_swrm_init(ctrl);
+>> +	ctrl->wake_irq = of_irq_get(dev->of_node, 1);
+>> +	if (ctrl->wake_irq > 0) {
+>> +		ret = devm_request_threaded_irq(dev, ctrl->wake_irq, NULL,
+>> +						qcom_swrm_wake_irq_handler,
+>> +						IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+>> +						"swr_wake_irq", ctrl);
+>> +		if (ret) {
+>> +			dev_err(dev, "Failed to request soundwire wake irq\n");
+>> +			goto err_init;
+>> +		}
+>> +	}
+>> +
+>>  	wait_for_completion_timeout(&ctrl->enumeration,
+>>  				    msecs_to_jiffies(TIMEOUT_MS));
+>>  	ret = qcom_swrm_register_dais(ctrl);
+>> @@ -1589,6 +1632,18 @@ static int qcom_swrm_remove(struct platform_device *pdev)
+>>  {
+>>  	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(&pdev->dev);
+>>  
+>> +	/*
+>> +	 * Mask interrupts to be sure no delayed work can be scheduler after
+> 
+> typo/grammar: scheduled
+
+ack
+
+> 
+>> +	 * removing Soundwire bus master.
+>> +	 */
+>> +	if (ctrl->version < SWRM_VERSION_2_0_0)
+>> +		ctrl->reg_write(ctrl, ctrl->reg_layout[SWRM_REG_INTERRUPT_MASK_ADDR],
+>> +				0);
+>> +	if (ctrl->mmio)
+>> +		ctrl->reg_write(ctrl, ctrl->reg_layout[SWRM_REG_INTERRUPT_CPU_EN],
+>> +				0);
+>> +
+>> +	cancel_delayed_work_sync(&ctrl->new_slave_work);
+>>  	sdw_bus_master_delete(&ctrl->bus);
+>>  	clk_disable_unprepare(ctrl->hclk);
+> 
+> should the last two be inverted? Keeping a clock running while removing
+> stuff is asking for trouble.
+
+It is a reversed probe(), which is usually correct. Do you expect
+probe() like:
+
+	clk_enable
+	sdw_bus_master_add
+
+but remove() like:
+
+	clk_disable
+	sdw_bus_master_delete
+
+?
+
+Best regards,
+Krzysztof
+
