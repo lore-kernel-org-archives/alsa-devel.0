@@ -4,99 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A681C77B61
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 May 2023 14:03:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0FD9C77B61
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 May 2023 14:54:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8596C17E8;
-	Mon,  1 May 2023 16:02:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8596C17E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2FAF180D;
+	Mon,  1 May 2023 16:53:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2FAF180D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682949790;
-	bh=fInRQWGxctGVhRQ0CaJ96OQfLd21GfZ1Dr3xA0g9AUE=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1682952844;
+	bh=S+ZShRQbvpMxH2AZm9etCdlayQuFEO6/T5OdadTzXqA=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mr6y3GRcUEojvhtDUgppvnySc+XNgg7k4/lbhgunSexWRA87J0wKfyd/WQRbGaNQW
-	 mWWBb/vxNY6UHt2vEaUqA0gHV/hm+TN5qlTmBA2/gnhGf9jvXf6aVsZT36FtLV3itU
-	 gSGnVJZzObGZeuQHRL/V/sPn7pthWJW/Dl+O61ZI=
+	b=XunZ8UKKcDvvZp3ersr2csSk0AoQ9ifKBz1/IcAlm1fDn6P/zZTVZ34yVCp4IsQWW
+	 f47ZISfOaD5nKK5iN18dTBWQH61uGqJSh2Xn+dz9IDte4B67/oJnQHMv4bOxdyTMjj
+	 IxfdoRncy6auV3j1rfWVH4UXEfeYwlKtOZu4UBhQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24A54F80520;
-	Mon,  1 May 2023 16:01:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0434F8049E;
+	Mon,  1 May 2023 16:52:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 761C2F8049E; Mon,  1 May 2023 16:01:26 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 2E05BF8049E; Mon,  1 May 2023 16:52:44 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7EB3AF80087
-	for <alsa-devel@alsa-project.org>; Mon,  1 May 2023 16:01:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EB3AF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id AC5E0F80114
+	for <alsa-devel@alsa-project.org>; Mon,  1 May 2023 16:52:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC5E0F80114
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=gHy6IbyW
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1682949670; x=1714485670;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=fInRQWGxctGVhRQ0CaJ96OQfLd21GfZ1Dr3xA0g9AUE=;
-  b=gHy6IbyWgiXLxs5uuVPbAR2bGjDLqD+FRnrLqHkEhYMt5YqpIm2pWTmx
-   K+lgN1F3tQEDrSCG9poJFymQhpHPmzbFQTujTks/Nh6NG40AUaLqWtq0S
-   iUwGNOHp9x05LBPQmW7GtsLhPJfZvW2Mx71/lbeMFFJIkUExbAEev1vJ2
-   hu+AOcDRSl/NyKiyubRnwfVgBVL40saMtyoT0gfYa42ZDIsD//9ulUcy7
-   zQzIShKT3YjChXb/V8NrRAWwb9aWYxwO6nPgrWZXQLxzmSKzPUYWaYR1r
-   Az7MzXpksftcmQb2dOMCspEkwdAw1/+64LEA+SIfgdfNzVmWv1oXZAK10
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10697"; a="434464608"
-X-IronPort-AV: E=Sophos;i="5.99,241,1677571200";
-   d="scan'208";a="434464608"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 May 2023 07:00:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10697"; a="870186693"
-X-IronPort-AV: E=Sophos;i="5.99,241,1677571200";
-   d="scan'208";a="870186693"
-Received: from blele-mobl.amr.corp.intel.com (HELO [10.212.170.95])
- ([10.212.170.95])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 May 2023 07:00:59 -0700
-Message-ID: <c09e9c5e-ddb4-4f92-d573-04b8b2d42349@linux.intel.com>
-Date: Mon, 1 May 2023 08:19:16 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.10.0
-Subject: Re: [PATCH] ASoC: Intel: soc-acpi-cht: Add quirk for Nextbook Ares 8A
- tablet
-Content-Language: en-US
-To: Hans de Goede <hdegoede@redhat.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-References: <20230429104721.7176-1-hdegoede@redhat.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230429104721.7176-1-hdegoede@redhat.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=ed38KbJn;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=TWtKeMe4
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2ED0022803;
+	Mon,  1 May 2023 14:52:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1682952753;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xbQ+PGMN9hG1G30QUr276yLVsCOjGNqJegqC5F0YBj4=;
+	b=ed38KbJno5dmnTPK/oB8P588V07RuYKyB+rLGeyJdPy6gPtDNfL2nKFs/lnI9xcguF5tPX
+	DzWHaCR9ToQy0q9wkfu+rZ28tp45u5hNWv+cdjArOH3PdcQlZXa02sR5fwPFWGnKBxjP9m
+	NhNBQDo7Hctlv/a7mXIQ8aX2Mvw0Cx0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1682952753;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xbQ+PGMN9hG1G30QUr276yLVsCOjGNqJegqC5F0YBj4=;
+	b=TWtKeMe4UVJjAp1nFyqQEBnU9Ygr9axQ56TLQ01PQgabJqRmu/9ppyx+Jn099QJI44PIXv
+	fRDbsMITxa90pYDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F41C313587;
+	Mon,  1 May 2023 14:52:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id hPXOOjDST2RQEwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 01 May 2023 14:52:32 +0000
+Date: Mon, 01 May 2023 16:52:32 +0200
+Message-ID: <87fs8gp0i7.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jeff Chua <jeff.chua.linux@gmail.com>
+Subject: Re: linux-6.4 alsa sound broken
+In-Reply-To: 
+ <CAAJw_ZsDdiB=b2PZydQWF2fjSULit3NWE-Bf1icBEryN-GuqUw@mail.gmail.com>
+References: 
+ <CAAJw_ZsbTVd3Es373x_wTNDF7RknGhCD0r+NKUSwAO7HpLAkYA@mail.gmail.com>
+	<ZE9B4avbDtIXOu4O@debian.me>
+	<87r0s0pnim.wl-tiwai@suse.de>
+	<CAAJw_ZsDdiB=b2PZydQWF2fjSULit3NWE-Bf1icBEryN-GuqUw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: GOCMXKPEQHU7S6XTJAWEIEYPGB5YMLSJ
-X-Message-ID-Hash: GOCMXKPEQHU7S6XTJAWEIEYPGB5YMLSJ
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: OSKJXNU6ADPUWWCULWLZ7OX7YWV6X6GN
+X-Message-ID-Hash: OSKJXNU6ADPUWWCULWLZ7OX7YWV6X6GN
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org
+CC: Bagas Sanjaya <bagasdotme@gmail.com>, lkml <linux-kernel@vger.kernel.org>,
+ Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
+ Linux ALSA Subsystem Development <alsa-devel@alsa-project.org>,
+ Linux Regressions <regressions@lists.linux.dev>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GOCMXKPEQHU7S6XTJAWEIEYPGB5YMLSJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OSKJXNU6ADPUWWCULWLZ7OX7YWV6X6GN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,69 +121,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 4/29/23 05:47, Hans de Goede wrote:
-> The Nextbook Ares 8A tablet which has Android as factory OS, has a buggy
-> DSDT with both ESSX8316 and 10EC5651 ACPI devices.
+On Mon, 01 May 2023 15:16:35 +0200,
+Jeff Chua wrote:
 > 
-> This tablet actually uses an rt5651 codec, but the matching code ends up
-> picking the ESSX8316 device, add a quirk to ignote the ESSX8316 device
-> on this tablet.
+> On Mon, May 1, 2023 at 2:35 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > On Mon, 01 May 2023 06:36:49 +0200,
+> > Bagas Sanjaya wrote:
+> > >
+> > > On Mon, May 01, 2023 at 11:59:12AM +0800, Jeff Chua wrote:
+> > > > Latest git pull from Linus's tree ... playing a simple sound file will
+> > > > resulted in a lot of echo.
+> > > >
+> > > > Running on Lenovo X1 with ..
+> > > > 00:1f.3 Audio device: Intel Corporation Alder Lake PCH-P High
+> > > > Definition Audio Controller (rev 01)
+> > > >
+> > > > I've bisected and reverted the following patch fixed the problem.
+> > > >
+> > > > commit 9f656705c5faa18afb26d922cfc64f9fd103c38d
+> > >
+> > > Thanks for the regression report. However, where is your dmesg and/or ALSA log
+> > > when the regression occurs? What is the playback test file?
+> >
+> > Yes, in addition, which driver is used (provide the alsa-info.sh
+> > output at best), and which sound backend is used (pipewire, PA or
+> > dmix) with which application?
 > 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-
-It took me a while to understand the logic: the ES8316 device is ignored
-so the matching code keeps going until it finds the rt5651 later in the
-table
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->  .../intel/common/soc-acpi-intel-cht-match.c   | 26 +++++++++++++++++++
->  1 file changed, 26 insertions(+)
+> /proc/asound# cat cards devices hwdep pcm timers version
+>  0 [PCH            ]: HDA-Intel - HDA Intel PCH
+>                       HDA Intel PCH at 0x603e1c8000 irq 147
+>   1:        : sequencer
+>   2: [ 0- 0]: digital audio playback
+>   3: [ 0- 0]: digital audio capture
+>   4: [ 0- 3]: digital audio playback
+>   5: [ 0- 7]: digital audio playback
+>   6: [ 0- 8]: digital audio playback
+>   7: [ 0- 9]: digital audio playback
+>   8: [ 0- 0]: hardware dependent
+>   9: [ 0- 2]: hardware dependent
+>  10: [ 0]   : control
+>  33:        : timer
+> 00-00: HDA Codec 0
+> 00-02: HDA Codec 2
+> 00-00: ALC287 Analog : ALC287 Analog : playback 1 : capture 1
+> 00-03: HDMI 0 : HDMI 0 : playback 1
+> 00-07: HDMI 1 : HDMI 1 : playback 1
+> 00-08: HDMI 2 : HDMI 2 : playback 1
+> 00-09: HDMI 3 : HDMI 3 : playback 1
+> G0: system timer : 10000.000us (10000000 ticks)
+> G3: HR timer : 0.001us (1000000000 ticks)
+> P0-0-0: PCM playback 0-0-0 : SLAVE
+> P0-0-1: PCM capture 0-0-1 : SLAVE
+> P0-3-0: PCM playback 0-3-0 : SLAVE
+> P0-7-0: PCM playback 0-7-0 : SLAVE
+> P0-8-0: PCM playback 0-8-0 : SLAVE
+> P0-9-0: PCM playback 0-9-0 : SLAVE
+> Advanced Linux Sound Architecture Driver Version k6.3.0.
 > 
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-> index 6beb00858c33..cdcbf04b8832 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-> @@ -50,6 +50,31 @@ static struct snd_soc_acpi_mach *cht_quirk(void *arg)
->  		return mach;
->  }
->  
-> +/*
-> + * Some tablets with Android factory OS have buggy DSDTs with an ESSX8316 device
-> + * in the ACPI tables. While they are not using an ESS8316 codec. These DSDTs
-> + * also have an ACPI device for the correct codec, ignore the ESSX8316.
-> + */
-> +static const struct dmi_system_id cht_ess8316_not_present_table[] = {
-> +	{
-> +		/* Nextbook Ares 8A */
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "CherryTrail"),
-> +			DMI_MATCH(DMI_BIOS_VERSION, "M882"),
-> +		},
-> +	},
-> +	{ }
-> +};
-> +
-> +static struct snd_soc_acpi_mach *cht_ess8316_quirk(void *arg)
-> +{
-> +	if (dmi_check_system(cht_ess8316_not_present_table))
-> +		return NULL;
-> +
-> +	return arg;
-> +}
-> +
->  static const struct snd_soc_acpi_codecs rt5640_comp_ids = {
->  	.num_codecs = 2,
->  	.codecs = { "10EC5640", "10EC3276" },
-> @@ -113,6 +138,7 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
->  		.drv_name = "bytcht_es8316",
->  		.fw_filename = "intel/fw_sst_22a8.bin",
->  		.board = "bytcht_es8316",
-> +		.machine_quirk = cht_ess8316_quirk,
->  		.sof_tplg_filename = "sof-cht-es8316.tplg",
->  	},
->  	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
+> 
+> # test playing with ...
+> aplay /usr/share/sounds/alsa/Side_Right.wav
+> Playing WAVE '/usr/share/sounds/alsa/Side_Right.wav' : Signed 16 bit
+> Little Endian, Rate 48000 Hz, Mono
+>
+> I'll try to capture the sound ... it's seems to just repeating every
+> second until the last second. So, if you just play a "beep", its ok.
+
+There was no description about which sound backend is used.  Is it
+PulseAudio, pipewire or dmix/dsnoop?
+
+
+Takashi
