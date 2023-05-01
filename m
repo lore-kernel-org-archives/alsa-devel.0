@@ -4,108 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7FEAC77B78
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 06:52:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B13CBC77B78
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 06:53:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 890D013BA;
-	Wed,  3 May 2023 08:51:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 890D013BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 406B513C9;
+	Wed,  3 May 2023 08:52:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 406B513C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683096759;
-	bh=3DWypTfanWK/qdQ0GxwoEbmpms50gFuJC/Tblw7XYhw=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1683096780;
+	bh=lFaZElAvgT4ehzXQ7t93Y90b3dRbEsQ8an+3qVamsGw=;
+	h=From:Date:Subject:To:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=eyPN4qivIzrzHMokqS4zJBUCohX26dAn/DjxYAG5ESgB2OWuC8mdOTlv/V8UO5/zh
-	 K8P87CxRGyax0Vp9yXsr5Eryhnnm+fSrVDqIMaOyVaKaEgzJ0xGGsPmWgfiAIWi4qY
-	 IBwYEJmRRNBGMgPvXN5DfgtAZHpRKfNdhf9eWSpQ=
+	b=nQOpIowggtxjMPxdBYTgE+IDcKk/CC7VsJiIElka1IFpwksekEqFUg/HNY18zTUg+
+	 3ddFLkddmeLpPnBY2ASh67GujxN2gtboH8KiVuOeDPqUER5V38WVxsWo6BTCCQ6DfK
+	 FRQdjgan42wscYyYfD0CIQZtyeC6SiXnQo0MT5OY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDAF9F8052E;
-	Wed,  3 May 2023 08:50:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66026F80542;
+	Wed,  3 May 2023 08:51:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38FB6F8049E; Mon,  1 May 2023 12:16:46 +0200 (CEST)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
- [IPv6:2a00:1450:4864:20::62b])
+	id AEAF7F8049E; Mon,  1 May 2023 14:22:56 +0200 (CEST)
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
+ [IPv6:2a00:1450:4864:20::232])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 95109F80114
-	for <alsa-devel@alsa-project.org>; Mon,  1 May 2023 12:16:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95109F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2C72BF80114
+	for <alsa-devel@alsa-project.org>; Mon,  1 May 2023 14:22:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C72BF80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=sTjGdt9k
-Received: by mail-ej1-x62b.google.com with SMTP id
- a640c23a62f3a-94f161ee14fso78145866b.0
+ header.s=20221208 header.b=g8nItwcH
+Received: by mail-lj1-x232.google.com with SMTP id
+ 38308e7fff4ca-2a8bae45579so23030531fa.0
         for <alsa-devel@alsa-project.org>;
- Mon, 01 May 2023 03:16:39 -0700 (PDT)
+ Mon, 01 May 2023 05:22:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682936198; x=1685528198;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=93TBlzDzoT1wtp8An/95IHkU2ENlETSYZYDB2GGro8w=;
-        b=sTjGdt9kxizaGq0cMEqXozsjwqpOak96bF/ispjSAjjx4TKex54FFHoU/aAjHUsfg6
-         6pVl8lftP6u6eVu70MR+0R2D22wu+YgwMBnRranzfrwhmUAl1f5MKxdqUMivO8avT4Fe
-         J419B8HhXlx5Gmazxy5Wd16J7qFfwYvarFpEXnPSy3JDndmi3LjdH/9uEFv23Io3d+3G
-         9/2E++rzy5Q+mQNp7KOB1Lfriig1kocdJ7G9S8V/0QZdCbu/OJJloGXeMaAKr+gdIHTC
-         9toKT170vXKOMzu8kpTz9gz60c9lyPxabrdBXojpy1q6g6P6WAOJzkRd/ekRX7Z/IGZu
-         Sayw==
+        d=gmail.com; s=20221208; t=1682943763; x=1685535763;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jbWd5S9BikG1wPqugME+bXbNXYGwVFvvwPfUUs3p2E0=;
+        b=g8nItwcH94jzCWAFPhGfolWZhQuZ/19pQiqpfm+5MmpxQgU7bQrjbAQBSgLD8nIJjG
+         NlDr3sQVurlC71kcRG1W+tEKZtkd2tcTZZd8jjAepSmTntcGpFVXCSfMQPsaqfnBfP+d
+         mISF0JeqFdzM9/C7dMp22SK0WdwUKHtMj6NJR0ztl/BygxtamtSY/5UQv+5uZuyrzusz
+         B9r24vuX76n24nPTjZyArEZR8lcvknRAxGNCY+NnsgRov77+4rTnZRl4DWa6Ia0S+aQW
+         FZByMlmhmpdKPZEeR+RoJyJUMK5xvCVKHDAngNUn6oMqdY9AbBzg1Qgp/AYY8jO5nEPs
+         GHPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682936198; x=1685528198;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=93TBlzDzoT1wtp8An/95IHkU2ENlETSYZYDB2GGro8w=;
-        b=KyhvV+LZ3w2ct+3AtOuEp+b35Zx15L2sGSu3rfnCJsbRlxnHqJty76Fr3KajQKvEMe
-         YqQVn9kVSqCLPc2sUoUaW21d5Fg8XeBMKvvjApylXO1E+hblShwJvwdSl8++PNy3BAH8
-         iTGJrT5Ja14skdCmDCMH5aJt7iwnuT0S7Xtxog2Xpqv7tdF66guDPVWUvEmX23mWVhOn
-         NUwbjve80RfD2uNLKzfXohBql3SSyDdKMP/x7K0oFZc7lerSFIcOXtk+wUhMq4uUgqLI
-         0uyQ85JJz2tZaHetydlX7yLSp0c0DiOF+s5/Qqe3Evn3vYv8/qVHjfHEUfvw8tCdLDqF
-         05sw==
-X-Gm-Message-State: AC+VfDzxJJVQ+qpOKCjUJeEYE/jdxelMe/SCd3ahaVg06slx98A2e0o0
-	y0EmW6WH59raKtkmg8VtWEoQYq61jE7RPQ==
+        d=1e100.net; s=20221208; t=1682943763; x=1685535763;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jbWd5S9BikG1wPqugME+bXbNXYGwVFvvwPfUUs3p2E0=;
+        b=HggPkuM3kF474xCWB0vOlA1M4ZOVIF0YYbF2qmc6GqKbQ5yyIQKA1YqfHEQu5tkGV4
+         otHnh6SW1F36eZTj5MDUSG1oNoNTGBD7Oso347hPRJsxhfEwW0Lc7SU9z8i0PdnEKeOx
+         NW3TH5mnilJQh6oHvwNJPGxQk7lbGwE5+K6St6bqbA0ZGodboDd/R8rix958KU9S7QHS
+         KvAxCCcALiee1KREuk/W/lB8e3L/ezR1nAi+ETiCPHkii8ofgy8Cj73wquRJRJBoj5wA
+         UURFvnsw4qO+LTqLL9VM48SG7lTp6kP5yqnbeK60IM9aEa0ItCr03phxC4qO8H6TX02h
+         F6cw==
+X-Gm-Message-State: AC+VfDxtZRYMp+uIzR/8EWaPVt2R/7v8DNmdCrHGsNtBHX3JAxts2Ghd
+	9Z33ZwteymrBvXJK2RsHh/1YEAavpuqgttqHQGA=
 X-Google-Smtp-Source: 
- ACHHUZ5JCVLg6Vd1xQS7WcqurRX9+ZHoyD7a601rkTEbwcCPZpjAT/5x0iwRqtZAY7lHlu7F9o6owA==
-X-Received: by 2002:a17:906:5352:b0:94f:4ec3:f0e7 with SMTP id
- j18-20020a170906535200b0094f4ec3f0e7mr11395200ejo.2.1682936198106;
-        Mon, 01 May 2023 03:16:38 -0700 (PDT)
-Received: from ivan-B550MH.. ([37.252.94.55])
-        by smtp.gmail.com with ESMTPSA id
- gq18-20020a170906e25200b0094eeda0df09sm14749458ejb.179.2023.05.01.03.16.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 May 2023 03:16:37 -0700 (PDT)
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-To: perex@perex.cz,
-	tiwai@suse.com,
-	corbet@lwn.net
-Subject: [PATCH] ALSA: docs: Extend module parameters description
-Date: Mon,  1 May 2023 14:16:34 +0400
-Message-Id: <20230501101634.476297-1-ivan.orlov0322@gmail.com>
-X-Mailer: git-send-email 2.34.1
+ ACHHUZ7SzFrJgnyTvpM/r9s0TmiI0gzI4HhLTtNWCILLGdW7y4pZoMqk9fIrrNEdr4PdUaZYnYaSGrN83A3cOtTFYM0=
+X-Received: by 2002:a2e:9d0c:0:b0:2ab:19a0:667b with SMTP id
+ t12-20020a2e9d0c000000b002ab19a0667bmr3676751lji.0.1682943763216; Mon, 01 May
+ 2023 05:22:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: ivan.orlov0322@gmail.com
+From: =?UTF-8?B?SXN0dsOhbiBWw6FyYWRp?= <varadiista.1@gmail.com>
+Date: Mon, 1 May 2023 14:22:34 +0200
+Message-ID: 
+ <CACUCvsBu91Xx4qMOf8oiPod6-OMpnS6hp5MPbu52fFGSF9aSdA@mail.gmail.com>
+Subject: [PATCH] ACP6x audio: Add board quirk for ASUSTeK COMPUTER INC.
+ M3402RA
+To: linux-kernel@vger.kernel.org
+X-MailFrom: varadiista.1@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 7IN77UR73CXTJCRCZMT3NV26TSX422TG
-X-Message-ID-Hash: 7IN77UR73CXTJCRCZMT3NV26TSX422TG
-X-Mailman-Approved-At: Wed, 03 May 2023 06:50:50 +0000
-CC: Ivan Orlov <ivan.orlov0322@gmail.com>, alsa-devel@alsa-project.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- skhan@linuxfoundation.org, himadrispandya@gmail.com,
- linux-kernel-mentees@lists.linuxfoundation.org
+Message-ID-Hash: XWJCJA3XKN4HIIGDGYIG5WLPDFROUDIC
+X-Message-ID-Hash: XWJCJA3XKN4HIIGDGYIG5WLPDFROUDIC
+X-Mailman-Approved-At: Wed, 03 May 2023 06:51:16 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.8
+CC: alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7IN77UR73CXTJCRCZMT3NV26TSX422TG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XWJCJA3XKN4HIIGDGYIG5WLPDFROUDIC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,46 +106,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Common ALSA module parameters look a little bit confusing because of the
-description lacking, and it took me a while to understand the purpose of
-their existence. To figure it out I asked the question about them to the
-"alsa-devel" mailing list, and Takashi Iwai answered me with the text I
-appended to the ALSA documentation in this patch.
-
-These common module parameters aren't used a lot nowadays, but as I
-understand they are important for providing compatibility with some
-existing user-space apps. So in my opinion it is a good idea to document
-why we need them.
-
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
----
- Documentation/sound/alsa-configuration.rst | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/Documentation/sound/alsa-configuration.rst b/Documentation/sound/alsa-configuration.rst
-index af71c68f1e4e..829c672d9fe6 100644
---- a/Documentation/sound/alsa-configuration.rst
-+++ b/Documentation/sound/alsa-configuration.rst
-@@ -133,6 +133,19 @@ enable
-     enable card;
-     Default: enabled, for PCI and ISA PnP cards
- 
-+These options are used for either specifying the order of instances or
-+controlling enabling and disabling of each one of the devices if there
-+are multiple devices bound with the same driver. For example, there are
-+many machines which have two HD-audio controllers (one for HDMI/DP
-+audio and another for onboard analog). In most cases, the second one is
-+in primary usage, and people would like to assign it as the first
-+appearing card. They can do it by specifying "index=1,0" module
-+parameter, which will swap the assignment slots.
-+
-+Today, with the sound backend like PulseAudio and PipeWire which
-+supports dynamic configuration, it's of little use, but that was a
-+help for static configuration in the past.
-+
- Module snd-adlib
- ----------------
- 
--- 
-2.34.1
-
+RGVhciBMaW51eCBLZXJuZWwgRGV2ZWxvcGVycywNCg0KSSBob3BlIHRoaXMgZW1haWwgZmluZHMg
+eW91IHdlbGwuIEkgYW0gd3JpdGluZyB0byBzdWJtaXQgYSBwYXRjaCBmb3IgdGhlDQpBQ1A2eCBh
+dWRpbyBkcml2ZXIgaW4gdGhlIExpbnV4IGtlcm5lbCB0aGF0IGFkZHMgYSBib2FyZCBxdWlyayBm
+b3IgdGhlDQpBU1VTVGVLIENPTVBVVEVSIElOQy4gTTM0MDJSQS4NCg0KQWZ0ZXIgZXhwZXJpZW5j
+aW5nIGlzc3VlcyB3aXRoIHRoaXMgYm9hcmQgb24gbXkgTGludXggc3lzdGVtLCBJIHJlc2VhcmNo
+ZWQNCnRoZSBpc3N1ZSBhbmQgZm91bmQgdGhhdCBhZGRpbmcgdGhlIGZvbGxvd2luZyBjb2RlIHNu
+aXBwZXQgdG8gdGhlIGZpbGUNCnNvdW5kL3NvYy9hbWQveWMvYWNwNngtbWFjaC5jIHNob3VsZCBy
+ZXNvbHZlIHRoZSBpc3N1ZToNCg0Kew0KICAgIC5kcml2ZXJfZGF0YSA9ICZhY3A2eF9jYXJkLA0K
+ICAgIC5tYXRjaGVzID0gew0KICAgICAgICBETUlfTUFUQ0goRE1JX0JPQVJEX1ZFTkRPUiwgIkFT
+VVNUZUsgQ09NUFVURVIgSU5DLiIpLA0KICAgICAgICBETUlfTUFUQ0goRE1JX1BST0RVQ1RfTkFN
+RSwgIk0zNDAyUkEiKQ0KICAgIH0NCn0NCg0KQXMgc29tZW9uZSB3aXRoIG5vIGV4cGVyaWVuY2Ug
+d2l0aCB0aGUgTGludXgga2VybmVsLCBJIGFtIHN1Ym1pdHRpbmcgdGhpcw0KcGF0Y2ggaW4gdGhl
+IGhvcGVzIHRoYXQgaXQgd2lsbCBiZSBiZW5lZmljaWFsIHRvIGEgbGFyZ2VyIG51bWJlciBvZiB1
+c2Vycy4NCkkgaGF2ZSB0ZXN0ZWQgdGhpcyBwYXRjaCBvbiBteSBvd24gc3lzdGVtIGFuZCBjYW4g
+Y29uZmlybSB0aGF0IGl0IHJlc29sdmVzDQp0aGUgaXNzdWUuDQoNClBsZWFzZSBsZXQgbWUga25v
+dyBpZiB5b3UgaGF2ZSBhbnkgcXVlc3Rpb25zIG9yIHJlcXVpcmUgYW55IGFkZGl0aW9uYWwNCmlu
+Zm9ybWF0aW9uLg0KDQpUaGFuayB5b3UgZm9yIHlvdXIgaGFyZCB3b3JrIGFuZCBkZWRpY2F0aW9u
+IHRvIGltcHJvdmluZyB0aGUgTGludXgga2VybmVsLg0KDQpCZXN0IHJlZ2FyZHMsDQpTdGV2ZSBW
+w6FyYWRpDQo=
