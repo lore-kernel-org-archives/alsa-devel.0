@@ -4,100 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B13CBC77B78
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 06:53:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59633C7EE29
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 06:53:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 406B513C9;
-	Wed,  3 May 2023 08:52:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 406B513C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3857F13CA;
+	Wed,  3 May 2023 08:52:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3857F13CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683096780;
-	bh=lFaZElAvgT4ehzXQ7t93Y90b3dRbEsQ8an+3qVamsGw=;
-	h=From:Date:Subject:To:CC:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1683096800;
+	bh=Tb3Q47vszZMXikcBQCN5PRtR0dmzZf6eusUFaYz84pE=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=nQOpIowggtxjMPxdBYTgE+IDcKk/CC7VsJiIElka1IFpwksekEqFUg/HNY18zTUg+
-	 3ddFLkddmeLpPnBY2ASh67GujxN2gtboH8KiVuOeDPqUER5V38WVxsWo6BTCCQ6DfK
-	 FRQdjgan42wscYyYfD0CIQZtyeC6SiXnQo0MT5OY=
+	b=mkLgPlTJlSUPXBIvMV7WWl/bgsLoq4RDY8pYCvDUSGrYgFjtJVqiaH3kqWzrj/2em
+	 OtuoklGioMw7Ys63jcc9p/Yokq520EDtR+TYBaQ8KEU3CZSYnKoUxQMwyinl9rKuRL
+	 JrnpR8cbU7qxR9Kbe3v+cwJxcj5PI1AEGmNMQ8H0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66026F80542;
-	Wed,  3 May 2023 08:51:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEEB6F80551;
+	Wed,  3 May 2023 08:51:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AEAF7F8049E; Mon,  1 May 2023 14:22:56 +0200 (CEST)
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
- [IPv6:2a00:1450:4864:20::232])
+	id 117C1F8049E; Mon,  1 May 2023 14:25:14 +0200 (CEST)
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
+ [IPv6:2a00:1450:4864:20::12f])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C72BF80114
-	for <alsa-devel@alsa-project.org>; Mon,  1 May 2023 14:22:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C72BF80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id DD44EF80137
+	for <alsa-devel@alsa-project.org>; Mon,  1 May 2023 14:25:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD44EF80137
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=g8nItwcH
-Received: by mail-lj1-x232.google.com with SMTP id
- 38308e7fff4ca-2a8bae45579so23030531fa.0
+ header.s=20221208 header.b=bKBAY7S+
+Received: by mail-lf1-x12f.google.com with SMTP id
+ 2adb3069b0e04-4f00d41df22so22259684e87.1
         for <alsa-devel@alsa-project.org>;
- Mon, 01 May 2023 05:22:50 -0700 (PDT)
+ Mon, 01 May 2023 05:25:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682943763; x=1685535763;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jbWd5S9BikG1wPqugME+bXbNXYGwVFvvwPfUUs3p2E0=;
-        b=g8nItwcH94jzCWAFPhGfolWZhQuZ/19pQiqpfm+5MmpxQgU7bQrjbAQBSgLD8nIJjG
-         NlDr3sQVurlC71kcRG1W+tEKZtkd2tcTZZd8jjAepSmTntcGpFVXCSfMQPsaqfnBfP+d
-         mISF0JeqFdzM9/C7dMp22SK0WdwUKHtMj6NJR0ztl/BygxtamtSY/5UQv+5uZuyrzusz
-         B9r24vuX76n24nPTjZyArEZR8lcvknRAxGNCY+NnsgRov77+4rTnZRl4DWa6Ia0S+aQW
-         FZByMlmhmpdKPZEeR+RoJyJUMK5xvCVKHDAngNUn6oMqdY9AbBzg1Qgp/AYY8jO5nEPs
-         GHPg==
+        d=gmail.com; s=20221208; t=1682943910; x=1685535910;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uBgAWRhKxk6UEmdv5jE39t1viFb+AQUZD51sjKWSdNg=;
+        b=bKBAY7S+nLpXAksEeOFSTU5JckI+tpvAmFb79i4FpCXb/nfW0RtA6VPxu9wWpr2wav
+         QKwPsFDsrU/ErtG6DOvlkkKCz0HxMHav54WV+Da9KcXKu0DEMQQlgZGfW8+IJSVUzeWI
+         3bHa21ek2I0VTdpQOQP+Fjew/LaHGj5kqj3p15f/xwkp8+irpHWdONDqdeLEeXbu8ZFn
+         0cGUa7LO+q4wsN0Hs5mQQlF43KHAxyidAOthM4yAd55qrXNg6f1Ux0ol7gPFZvnMnHPp
+         YGp+Bx2NfcYhZaXqDJloXnvwa8vxjKyi21n8eWFPJdgrcOtTYn+D4c+RBNCxHXLae0f1
+         LcXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682943763; x=1685535763;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jbWd5S9BikG1wPqugME+bXbNXYGwVFvvwPfUUs3p2E0=;
-        b=HggPkuM3kF474xCWB0vOlA1M4ZOVIF0YYbF2qmc6GqKbQ5yyIQKA1YqfHEQu5tkGV4
-         otHnh6SW1F36eZTj5MDUSG1oNoNTGBD7Oso347hPRJsxhfEwW0Lc7SU9z8i0PdnEKeOx
-         NW3TH5mnilJQh6oHvwNJPGxQk7lbGwE5+K6St6bqbA0ZGodboDd/R8rix958KU9S7QHS
-         KvAxCCcALiee1KREuk/W/lB8e3L/ezR1nAi+ETiCPHkii8ofgy8Cj73wquRJRJBoj5wA
-         UURFvnsw4qO+LTqLL9VM48SG7lTp6kP5yqnbeK60IM9aEa0ItCr03phxC4qO8H6TX02h
-         F6cw==
-X-Gm-Message-State: AC+VfDxtZRYMp+uIzR/8EWaPVt2R/7v8DNmdCrHGsNtBHX3JAxts2Ghd
-	9Z33ZwteymrBvXJK2RsHh/1YEAavpuqgttqHQGA=
+        d=1e100.net; s=20221208; t=1682943910; x=1685535910;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uBgAWRhKxk6UEmdv5jE39t1viFb+AQUZD51sjKWSdNg=;
+        b=OLF8oROS+WSaEPI0G3UyLTq+A7Og6fHwddEnt2kncDIg9U3mRm0ja8c1oV0usAxjqf
+         ToghxAAQMCgS/qHsrQa0tdfW3UgdLhg9El7IE/3EZDWGE4h8uIAV6M/LfEmBBKp7HdG+
+         pkBbpo8pdAiWwH2H9ex2DpFAAYnLmHdq4fNMSa3BMTb65vqHntajAUENKOWJ0aPQns5V
+         5a9V6+0LzsFBWcLtrWDzCmmomvqFkJHNDPTbCzcKoTovOLDgp/vrZUEcI2vGBZ4IDUD8
+         3Lij3hicxorsR0ftCKODOE4qYlGU+0vlbYEgB1Pv81tDwslX5r1aoXVLsGrXfP+6VAaH
+         eDIw==
+X-Gm-Message-State: AC+VfDwiVhhBrnNJtCdCmqkBclk8gTnm7q7QjuKIsCpF8umuzzDEUzd4
+	BdRWrQpcUMyGZUBge3k0sTUpb2dKjf0iGUNu/5kKy0AUK0MC4g==
 X-Google-Smtp-Source: 
- ACHHUZ7SzFrJgnyTvpM/r9s0TmiI0gzI4HhLTtNWCILLGdW7y4pZoMqk9fIrrNEdr4PdUaZYnYaSGrN83A3cOtTFYM0=
-X-Received: by 2002:a2e:9d0c:0:b0:2ab:19a0:667b with SMTP id
- t12-20020a2e9d0c000000b002ab19a0667bmr3676751lji.0.1682943763216; Mon, 01 May
- 2023 05:22:43 -0700 (PDT)
+ ACHHUZ4WXqxiu2jyeRBMkvT2Icw3Ws5/gKr6U7LbrztNpxJEnCldkNKpNTqCTdy0jtpao9hWls3zxwpgMZJYirNkjNM=
+X-Received: by 2002:a05:651c:31c:b0:2a9:133e:dadb with SMTP id
+ a28-20020a05651c031c00b002a9133edadbmr4983415ljp.1.1682943909555; Mon, 01 May
+ 2023 05:25:09 -0700 (PDT)
 MIME-Version: 1.0
 From: =?UTF-8?B?SXN0dsOhbiBWw6FyYWRp?= <varadiista.1@gmail.com>
-Date: Mon, 1 May 2023 14:22:34 +0200
+Date: Mon, 1 May 2023 14:25:00 +0200
 Message-ID: 
- <CACUCvsBu91Xx4qMOf8oiPod6-OMpnS6hp5MPbu52fFGSF9aSdA@mail.gmail.com>
+ <CACUCvsBNhL96Leo8w5fj3mwNNXJmr_k3Op26ctj5c6dkfTmUUg@mail.gmail.com>
 Subject: [PATCH] ACP6x audio: Add board quirk for ASUSTeK COMPUTER INC.
  M3402RA
-To: linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-MailFrom: varadiista.1@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: XWJCJA3XKN4HIIGDGYIG5WLPDFROUDIC
-X-Message-ID-Hash: XWJCJA3XKN4HIIGDGYIG5WLPDFROUDIC
-X-Mailman-Approved-At: Wed, 03 May 2023 06:51:16 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.8
-CC: alsa-devel@alsa-project.org
+Message-ID-Hash: ALTEUZTJAAULOTF2X4NII3FS3PLI66JU
+X-Message-ID-Hash: ALTEUZTJAAULOTF2X4NII3FS3PLI66JU
+X-Mailman-Approved-At: Wed, 03 May 2023 06:51:19 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XWJCJA3XKN4HIIGDGYIG5WLPDFROUDIC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ALTEUZTJAAULOTF2X4NII3FS3PLI66JU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,22 +105,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-RGVhciBMaW51eCBLZXJuZWwgRGV2ZWxvcGVycywNCg0KSSBob3BlIHRoaXMgZW1haWwgZmluZHMg
-eW91IHdlbGwuIEkgYW0gd3JpdGluZyB0byBzdWJtaXQgYSBwYXRjaCBmb3IgdGhlDQpBQ1A2eCBh
-dWRpbyBkcml2ZXIgaW4gdGhlIExpbnV4IGtlcm5lbCB0aGF0IGFkZHMgYSBib2FyZCBxdWlyayBm
-b3IgdGhlDQpBU1VTVGVLIENPTVBVVEVSIElOQy4gTTM0MDJSQS4NCg0KQWZ0ZXIgZXhwZXJpZW5j
-aW5nIGlzc3VlcyB3aXRoIHRoaXMgYm9hcmQgb24gbXkgTGludXggc3lzdGVtLCBJIHJlc2VhcmNo
-ZWQNCnRoZSBpc3N1ZSBhbmQgZm91bmQgdGhhdCBhZGRpbmcgdGhlIGZvbGxvd2luZyBjb2RlIHNu
-aXBwZXQgdG8gdGhlIGZpbGUNCnNvdW5kL3NvYy9hbWQveWMvYWNwNngtbWFjaC5jIHNob3VsZCBy
-ZXNvbHZlIHRoZSBpc3N1ZToNCg0Kew0KICAgIC5kcml2ZXJfZGF0YSA9ICZhY3A2eF9jYXJkLA0K
-ICAgIC5tYXRjaGVzID0gew0KICAgICAgICBETUlfTUFUQ0goRE1JX0JPQVJEX1ZFTkRPUiwgIkFT
-VVNUZUsgQ09NUFVURVIgSU5DLiIpLA0KICAgICAgICBETUlfTUFUQ0goRE1JX1BST0RVQ1RfTkFN
-RSwgIk0zNDAyUkEiKQ0KICAgIH0NCn0NCg0KQXMgc29tZW9uZSB3aXRoIG5vIGV4cGVyaWVuY2Ug
-d2l0aCB0aGUgTGludXgga2VybmVsLCBJIGFtIHN1Ym1pdHRpbmcgdGhpcw0KcGF0Y2ggaW4gdGhl
-IGhvcGVzIHRoYXQgaXQgd2lsbCBiZSBiZW5lZmljaWFsIHRvIGEgbGFyZ2VyIG51bWJlciBvZiB1
-c2Vycy4NCkkgaGF2ZSB0ZXN0ZWQgdGhpcyBwYXRjaCBvbiBteSBvd24gc3lzdGVtIGFuZCBjYW4g
-Y29uZmlybSB0aGF0IGl0IHJlc29sdmVzDQp0aGUgaXNzdWUuDQoNClBsZWFzZSBsZXQgbWUga25v
-dyBpZiB5b3UgaGF2ZSBhbnkgcXVlc3Rpb25zIG9yIHJlcXVpcmUgYW55IGFkZGl0aW9uYWwNCmlu
-Zm9ybWF0aW9uLg0KDQpUaGFuayB5b3UgZm9yIHlvdXIgaGFyZCB3b3JrIGFuZCBkZWRpY2F0aW9u
-IHRvIGltcHJvdmluZyB0aGUgTGludXgga2VybmVsLg0KDQpCZXN0IHJlZ2FyZHMsDQpTdGV2ZSBW
-w6FyYWRpDQo=
+Dear Linux Kernel Developers,
+
+I hope this email finds you well. I am writing to submit a patch for
+the ACP6x audio driver in the Linux kernel that adds a board quirk for
+the ASUSTeK COMPUTER INC. M3402RA.
+
+After experiencing issues with this board on my Linux system, I
+researched the issue and found that adding the following code snippet
+to the file sound/soc/amd/yc/acp6x-mach.c should resolve the issue:
+
+{
+    .driver_data =3D &acp6x_card,
+    .matches =3D {
+        DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),
+        DMI_MATCH(DMI_PRODUCT_NAME, "M3402RA")
+    }
+}
+
+As someone with no experience with the Linux kernel, I am submitting
+this patch in the hopes that it will be beneficial to a larger number
+of users. I have tested this patch on my own system and can confirm
+that it resolves the issue.
+
+Please let me know if you have any questions or require any additional
+information.
+
+Thank you for your hard work and dedication to improving the Linux kernel.
+
+Best regards,
+Steve V=C3=A1radi
