@@ -4,107 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F1F9C77B61
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 May 2023 06:47:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 635F8C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 May 2023 07:03:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C74DF183A;
-	Mon,  1 May 2023 08:46:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C74DF183A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86B9D175C;
+	Mon,  1 May 2023 09:02:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86B9D175C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1682923645;
-	bh=WKMTHfHcLKFvphyemMTy+HdsFTXdXr3ManBpJdP3wyE=;
-	h=Date:To:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=BIR57jQfJ0LGlFNW+CbJNelWR7V4UyeGbhKYDLo5JP2K9YLsGwrmvUhMLRxuV/FGt
-	 D6fBdMc+yeKePu/deRNvVf/Hvu6m/SUMiCoIR70/dZWmodSV5dLYLnqCjy9PtjZuCD
-	 yjvA+rk2CmzgbHv5bOEEZXNoU/+b6HHp4DYqXD40=
+	s=default; t=1682924618;
+	bh=nKgG1imx9UreIxQdgBkBIGgTo5FCnsp7BxD7AGjwctc=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=fFoZnQE1ywSIaUzEGYJnO906G1+d19TMVEdAu5l3v/rDwCl7SLuCefIx+nXt8EiEd
+	 1wI4moafYMNi9JbRdPnyeBUYF24Pr8X6j76Faidgb4M88UL4pJfD2sgliukufrD+5F
+	 wpjPDbRYNsuG3uiTT0wqcGx6viQN3Q8DA70Y4FDA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F440F805D8;
-	Mon,  1 May 2023 08:41:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FF0FF8032B;
+	Mon,  1 May 2023 09:02:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B749CF8025E; Sat, 29 Apr 2023 20:35:28 +0200 (CEST)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
- [IPv6:2a00:1450:4864:20::52f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id C1B40F8032B; Mon,  1 May 2023 09:02:19 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C53FAF800F8
-	for <alsa-devel@alsa-project.org>; Sat, 29 Apr 2023 20:35:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C53FAF800F8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 13C1BF80114
+	for <alsa-devel@alsa-project.org>; Mon,  1 May 2023 09:02:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13C1BF80114
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=hLyp1pno
-Received: by mail-ed1-x52f.google.com with SMTP id
- 4fb4d7f45d1cf-5068638856dso175939a12.1
-        for <alsa-devel@alsa-project.org>;
- Sat, 29 Apr 2023 11:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682793320; x=1685385320;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z7rYf1pcppW1dmA7xaDDSnSaeClQyQafR/qDW52c/qc=;
-        b=hLyp1pnoyZeLi+1hDWThkpQhM8rmIOurvq8cVqWP0syV0AQcr07L90zi/CadfwMUFb
-         i+r74INt8A0p8GRvjpSKh2X61oRpUPMk662tXt5poPfkwyeZE6f26RIndywLYzPnG17y
-         wD902UJXSq5hdlcxe2WUeynrIBOyl6GQxdewbulvk38z8t2c0LH/HKMsRRP14mgmSRdP
-         1fAbC4U5XD9XPmk0i3SGrUGMRp32fR7S0VB9zuV1f4ZDUDCjLVEIpuvqT5FnEuEurH/8
-         UYP7tFtsTWKCT8YKyGF/2Cla6zGMFaTzrlNGntqATima/6zfEnxHIy1M7wK1hfrenTDS
-         r4fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682793320; x=1685385320;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Z7rYf1pcppW1dmA7xaDDSnSaeClQyQafR/qDW52c/qc=;
-        b=ey5NPouxw9fm2DmIje5kR9P5Gtqq5TejvPr3IqPvhXHJTPHTENeWOc6k2D7R+xyga3
-         BBkZZ+I9zWgkPtW8f/iemNDwt0bgC4Z+377gdOVIl5HSCK1PQVcGvszSMgOyLzS08Nbu
-         LOCKeJ88uPXRc6GAv0tz8wsf+r5LyuLt5I/SEavuIznXqcR4mGn549Jl0B94OCdnQVoe
-         M6vuyPkvZXkvC4xxx4R0araMSnYURVD7l1autaoQMnzn+mc1ceXsiGUqsm2b0mNNxQGn
-         Q32pKMum6VgbauR3Kf2RgmfFRqyf1ZKOMlIbPmOgkNY9KMus39JKhTdR/Oc3sNuNiViv
-         rAgQ==
-X-Gm-Message-State: AC+VfDyCI5CEo7vuZnssxWv0Z9lPZnBbD/qpyPqJqjOa/dnSm7MvBWLW
-	5ZKWlLtDds1eoNOqidUUV4gu86RL/XFsIQ==
-X-Google-Smtp-Source: 
- ACHHUZ67o1lpdCt1fLDfXpLlain1qoVxoZQGvqLGHObix2L14wQSd1dYsSPd2fHdTxRP6wSHEB1e6g==
-X-Received: by 2002:a05:6402:2788:b0:504:853a:85c0 with SMTP id
- b8-20020a056402278800b00504853a85c0mr8696220ede.0.1682793320537;
-        Sat, 29 Apr 2023 11:35:20 -0700 (PDT)
-Received: from [192.168.10.15] ([37.252.94.55])
-        by smtp.gmail.com with ESMTPSA id
- t22-20020a056402021600b00509d1c6dcefsm7815776edv.13.2023.04.29.11.35.19
-        for <alsa-devel@alsa-project.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 Apr 2023 11:35:20 -0700 (PDT)
-Message-ID: <26624923-3529-d161-ae62-7e5ece7b0e3f@gmail.com>
-Date: Sat, 29 Apr 2023 22:35:19 +0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Content-Language: en-US
-To: alsa-devel@alsa-project.org
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-Subject: Question regarding ALSA modules parameters
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: ivan.orlov0322@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=aOOoF4vs;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=izE8NTdl
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 67480205DD;
+	Mon,  1 May 2023 07:02:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1682924537;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RVD+bDRUziRmcnlCJugyMwMeK+xLTveoOrOww/ccp3g=;
+	b=aOOoF4vsEsu4/OGqELhUcGizAwzeeEVQBZIaSnQG86wyL6D4eqbMiphop3NunysTBej+Sf
+	RdRduJFJSM5D39KQk0NfdOn0gtBiBz3GxEn6ndm2+c0afGHPoe5ov9Ydi0SV0iDloxc/Xn
+	8fqpsjMlApAwF2eMq0rG1KoeFXQ9tZQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1682924537;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RVD+bDRUziRmcnlCJugyMwMeK+xLTveoOrOww/ccp3g=;
+	b=izE8NTdlnKsbcWp7d7AGiqEzjAum4H6P7N3EsWZkcLmHmtoVG5XWyFH5xfKuEVsVlZ16fT
+	8U26T7n2HUWMi3CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4AED913580;
+	Mon,  1 May 2023 07:02:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id hRxgEfljT2SdYQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 01 May 2023 07:02:17 +0000
+Date: Mon, 01 May 2023 09:02:16 +0200
+Message-ID: <87mt2opm9z.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Ivan Orlov <ivan.orlov0322@gmail.com>
+Subject: Re: Question regarding ALSA modules parameters
+In-Reply-To: <26624923-3529-d161-ae62-7e5ece7b0e3f@gmail.com>
+References: <26624923-3529-d161-ae62-7e5ece7b0e3f@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: YUHRBC3UUGEWMUFJV5AJXCJ46I2QDGDL
+X-Message-ID-Hash: YUHRBC3UUGEWMUFJV5AJXCJ46I2QDGDL
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: BQJE3IGN3YI23MLML6KBKEYRNYR73WON
-X-Message-ID-Hash: BQJE3IGN3YI23MLML6KBKEYRNYR73WON
-X-Mailman-Approved-At: Mon, 01 May 2023 06:41:34 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BQJE3IGN3YI23MLML6KBKEYRNYR73WON/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YUHRBC3UUGEWMUFJV5AJXCJ46I2QDGDL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,14 +111,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello!
+On Sat, 29 Apr 2023 20:35:19 +0200,
+Ivan Orlov wrote:
+> 
+> Hello!
+> 
+> I have a question about the typical ALSA driver parameters, and maybe
+> someone can answer me. Why it is necessary for ALSA module to have
+> "index", "id" and "enable" parameters? They are mentioned as required
+> in the "Writing an ALSA driver" and "Advanced Linux Sound Architecture
+> - Driver Configuration guide" articles and used in many ALSA drivers,
+> but for what purpose?
 
-I have a question about the typical ALSA driver parameters, and maybe 
-someone can answer me. Why it is necessary for ALSA module to have 
-"index", "id" and "enable" parameters? They are mentioned as required in 
-the "Writing an ALSA driver" and "Advanced Linux Sound Architecture - 
-Driver Configuration guide" articles and used in many ALSA drivers, but 
-for what purpose?
+It's for either specifying the order of instances or controlling
+enable/disable of each one when there are multiple devices bound with
+the same driver.  One of typical use cases would be the HD-audio
+driver; there are many machines that have two HD-audio controllers,
+one for HDMI/DP audio and another for onboard analog.  In most cases,
+the second one (onboard analog) is the primary usage, and people would
+like to assign this as the first appearing card.  Then you can pass
+the option like "index=1,0" to swap the assignment slot.
 
-Kind regards,
-Ivan Orlov.
+Nowadays with the sound backend like PA or PW that supports dynamic
+configuration, it's little use, but that was a help for static
+configuration in the past.
+
+
+HTH,
+
+Takashi
