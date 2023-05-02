@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 509CBC77B73
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 May 2023 11:53:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A81BC77B73
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 May 2023 11:53:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08DE91699;
-	Tue,  2 May 2023 13:52:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08DE91699
+	by alsa0.perex.cz (Postfix) with ESMTPS id D14661663;
+	Tue,  2 May 2023 13:52:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D14661663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683028381;
-	bh=a55i5xQCKVDhq49Hwsr9Hl1rbgYZ+SaMu7ysELZdFNY=;
+	s=default; t=1683028402;
+	bh=5TDJBGho7NuyI7LYiIBjLXEGotRwakyWWtTnk21Vgv8=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=hwTYj91QsT4qEo6ZaoO85ZB2WoXWcidXCTAbUmyn4DmjatV95zCwRZibiv5DmJjv0
-	 1Zme+8bYkCdVjAsK+gsWT1+yLMr9IeIFtZ0l6YRM9Fy6KOqUXEnrXfgPzQQAeIqas6
-	 uRluPiohsMc6de/top0qHOVOyW+a+hPjw899lmcY=
+	b=ARlDJzMqugyfk7oN7Ku65L2kj2J1eKXyKukGdzoJMNMsiSXOFnpzMwEiSLRMlFh+k
+	 2a1L73zoEVZn/B09rI2CDpnUUfWef6xjjHgYQkc2TSKZnz3x+ISzjnzaNOvG1SZcb/
+	 wYyEso2f60oA8AZh8TaRdMlWsY8SheOGCJxkwESM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E113CF80544;
-	Tue,  2 May 2023 13:51:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 692E2F80114;
+	Tue,  2 May 2023 13:51:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8D5FF80534; Tue,  2 May 2023 13:50:57 +0200 (CEST)
+	id 336DFF80551; Tue,  2 May 2023 13:51:27 +0200 (CEST)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C4C64F800EC
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2023 13:50:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id B2E28F80114
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2023 13:50:40 +0200 (CEST)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 2048511E2;
-	Tue,  2 May 2023 13:50:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 2048511E2
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id F18F411E2;
+	Tue,  2 May 2023 13:50:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz F18F411E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1683028247; bh=B2JnqXaCj+89DG6MIJGGwdqgmQDuDA13yykR1w13exw=;
+	t=1683028240; bh=Ebl8z2/5a0VHyBfxYsbeJHRJ4u/yYHRaSR7H8RSYqts=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZdEIcIwIdCBXCoYyrJv22l+stcfQXgnFvl964rZrY6SMNTVAfKjpCAyIvB9SZjNV/
-	 uPjWxHU4rWbMtmaF8CFq0GkpObbvB9B2sAjdxQRYoNGoRW9eelOYpbHkix6e2oNrpP
-	 KTPbVOVKnbZdxMB7UKHlrrZlbKX37IbqAygTEYo8=
+	b=3A2nMTN7Y0vWZHjh4YhHwoxUzFQL0HHaVuT7/Eexicxt0o2Th3/AMrH53W0i9AjyH
+	 WKA4MXZntubk8otIRKb/sOPFODujIPI/fOrFywavVWUy2XjTiORoWMunMQrZnGamy2
+	 KRa+akkC2HIJVh2Qt9d9y68lsrKHpCdscQIJO4zY=
 Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
@@ -50,20 +50,20 @@ Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
 	(No client certificate requested)
 	(Authenticated sender: perex)
 	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Tue,  2 May 2023 13:50:45 +0200 (CEST)
+	Tue,  2 May 2023 13:50:37 +0200 (CEST)
 From: Jaroslav Kysela <perex@perex.cz>
 To: ALSA development <alsa-devel@alsa-project.org>
-Subject: [PATCH alsa-lib 4/4] pcm: hw: introduce
- SNDRV_PCM_HW_PARAMS_DRAIN_SILENCE
-Date: Tue,  2 May 2023 13:50:10 +0200
-Message-Id: <20230502115010.986325-5-perex@perex.cz>
+Subject: [PATCH alsa-lib 1/4] pcm: hw: setup explicit silencing for
+ snd_pcm_drain by default
+Date: Tue,  2 May 2023 13:50:07 +0200
+Message-Id: <20230502115010.986325-2-perex@perex.cz>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230502115010.986325-1-perex@perex.cz>
 References: <20230502115010.986325-1-perex@perex.cz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZSWK6HDXP2CRRURSSEXFOMSEM3TFLMR2
-X-Message-ID-Hash: ZSWK6HDXP2CRRURSSEXFOMSEM3TFLMR2
+Message-ID-Hash: JXQ22QLOYFJDDBOTM3LHGV2J24KHN7IC
+X-Message-ID-Hash: JXQ22QLOYFJDDBOTM3LHGV2J24KHN7IC
 X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -76,7 +76,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZSWK6HDXP2CRRURSSEXFOMSEM3TFLMR2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JXQ22QLOYFJDDBOTM3LHGV2J24KHN7IC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,101 +85,176 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The application may not require to touch the sample stream
-for the drain operation at all. Handle this situation
-in alsa-lib.
+Some applications may not follow the period_size transfer blocks and
+also the driver developers may not follow the consequeces of the
+access beyond valid samples in the playback DMA buffer.
 
+To avoid clicks, fill a little silence at the end of the playback
+ring buffer when the snd_pcm_drain() is called.
+
+Related: https://lore.kernel.org/alsa-devel/20230420113324.877164-2-oswald.buddenhagen@gmx.de/
+Related: https://lore.kernel.org/alsa-devel/20230405201219.2197789-2-oswald.buddenhagen@gmx.de/
 Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 ---
- include/sound/uapi/asound.h |  3 +++
- src/pcm/pcm.c               | 32 ++++++++++++++++++++++++++++++++
- src/pcm/pcm_hw.c            |  3 ++-
- src/pcm/pcm_local.h         |  1 +
- 4 files changed, 38 insertions(+), 1 deletion(-)
+ src/pcm/pcm.c       | 33 ++++++++++++++++++-------------
+ src/pcm/pcm_hw.c    | 47 +++++++++++++++++++++++++++++++++++++++++++++
+ src/pcm/pcm_local.h |  4 ++++
+ 3 files changed, 71 insertions(+), 13 deletions(-)
 
-diff --git a/include/sound/uapi/asound.h b/include/sound/uapi/asound.h
-index 0b8834f2..f970179e 100644
---- a/include/sound/uapi/asound.h
-+++ b/include/sound/uapi/asound.h
-@@ -390,6 +390,9 @@ typedef int snd_pcm_hw_param_t;
- #define SNDRV_PCM_HW_PARAMS_NORESAMPLE	(1<<0)	/* avoid rate resampling */
- #define SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER	(1<<1)	/* export buffer */
- #define SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP	(1<<2)	/* disable period wakeups */
-+#define SNDRV_PCM_HW_PARAMS_NO_DRAIN_SILENCE	(1<<3)	/* supress drain with the filling
-+							 * of the silence samples
-+							 */
- 
- struct snd_interval {
- 	unsigned int min, max;
 diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 099d83ee..5872ee6f 100644
+index 2b966d44..88b13ed4 100644
 --- a/src/pcm/pcm.c
 +++ b/src/pcm/pcm.c
-@@ -4958,6 +4958,38 @@ int snd_pcm_hw_params_get_period_wakeup(snd_pcm_t *pcm, snd_pcm_hw_params_t *par
+@@ -6167,6 +6167,25 @@ int snd_pcm_hw_params_get_min_align(const snd_pcm_hw_params_t *params, snd_pcm_u
  	return 0;
  }
  
-+/**
-+ * \brief Restrict a configuration space to allow the drain with the filling of silence samples
-+ * \param pcm PCM handle
-+ * \param params Configuration space
-+ * \param val 0 = disable, 1 = enable (default) drain with the filling of silence samples
-+ * \return 0 otherwise a negative error code
-+ */
-+int snd_pcm_hw_params_set_drain_silence(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int val)
++#ifndef DOXYGEN
++void snd_pcm_sw_params_current_no_lock(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
 +{
-+	assert(pcm && params);
-+	if (val)
-+		params->flags &= ~SND_PCM_HW_PARAMS_NO_DRAIN_SILENCE;
-+	else
-+		params->flags |= SND_PCM_HW_PARAMS_NO_DRAIN_SILENCE;
-+	params->rmask = ~0;
-+	return snd_pcm_hw_refine(pcm, params);
++	params->proto = SNDRV_PCM_VERSION;
++	params->tstamp_mode = pcm->tstamp_mode;
++	params->tstamp_type = pcm->tstamp_type;
++	params->period_step = pcm->period_step;
++	params->sleep_min = 0;
++	params->avail_min = pcm->avail_min;
++	sw_set_period_event(params, pcm->period_event);
++	params->xfer_align = 1;
++	params->start_threshold = pcm->start_threshold;
++	params->stop_threshold = pcm->stop_threshold;
++	params->silence_threshold = pcm->silence_threshold;
++	params->silence_size = pcm->silence_size;
++	params->boundary = pcm->boundary;
 +}
-+
-+/**
-+ * \brief Extract drain with the filling of silence samples from a configuration space
-+ * \param pcm PCM handle
-+ * \param params Configuration space
-+ * \param val 0 = disable, 1 = enable
-+ * \return 0 otherwise a negative error code
-+ */
-+int snd_pcm_hw_params_get_drain_silence(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val)
-+{
-+	assert(pcm && params && val);
-+	*val = params->flags & SND_PCM_HW_PARAMS_NO_DRAIN_SILENCE ? 0 : 1;
-+	return 0;
-+}
++#endif
 +
  /**
-  * \brief Extract period time from a configuration space
-  * \param params Configuration space
+  * \brief Return current software configuration for a PCM
+  * \param pcm PCM handle
+@@ -6183,19 +6202,7 @@ int snd_pcm_sw_params_current(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
+ 		return -EIO;
+ 	}
+ 	__snd_pcm_lock(pcm); /* forced lock due to pcm field changes */
+-	params->proto = SNDRV_PCM_VERSION;
+-	params->tstamp_mode = pcm->tstamp_mode;
+-	params->tstamp_type = pcm->tstamp_type;
+-	params->period_step = pcm->period_step;
+-	params->sleep_min = 0;
+-	params->avail_min = pcm->avail_min;
+-	sw_set_period_event(params, pcm->period_event);
+-	params->xfer_align = 1;
+-	params->start_threshold = pcm->start_threshold;
+-	params->stop_threshold = pcm->stop_threshold;
+-	params->silence_threshold = pcm->silence_threshold;
+-	params->silence_size = pcm->silence_size;
+-	params->boundary = pcm->boundary;
++	snd_pcm_sw_params_current_no_lock(pcm, params);
+ 	__snd_pcm_unlock(pcm);
+ 	return 0;
+ }
 diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index ea0c2ef2..90d5d07a 100644
+index daa3e1ff..d8f32bd9 100644
 --- a/src/pcm/pcm_hw.c
 +++ b/src/pcm/pcm_hw.c
-@@ -399,7 +399,8 @@ static int snd_pcm_hw_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
- 	params->info &= ~0xf0000000;
- 	if (pcm->tstamp_type != SND_PCM_TSTAMP_TYPE_GETTIMEOFDAY)
- 		params->info |= SND_PCM_INFO_MONOTONIC;
--	hw->perfect_drain = !!(params->info & SND_PCM_INFO_PERFECT_DRAIN);
-+	hw->perfect_drain = !!(params->info & SND_PCM_INFO_PERFECT_DRAIN) ||
-+			    !!(params->flags & SND_PCM_HW_PARAMS_NO_DRAIN_SILENCE);
- 	return query_status_data(hw);
- }
+@@ -98,6 +98,8 @@ typedef struct {
+ 	bool mmap_control_fallbacked;
+ 	struct snd_pcm_sync_ptr *sync_ptr;
  
++	bool prepare_reset_sw_params;
++
+ 	int period_event;
+ 	snd_timer_t *period_timer;
+ 	struct pollfd period_timer_pfd;
+@@ -534,6 +536,7 @@ static int snd_pcm_hw_sw_params(snd_pcm_t *pcm, snd_pcm_sw_params_t * params)
+ 		SYSMSG("SNDRV_PCM_IOCTL_SW_PARAMS failed (%i)", err);
+ 		goto out;
+ 	}
++	hw->prepare_reset_sw_params = false;
+ 	if ((snd_pcm_tstamp_type_t) params->tstamp_type != pcm->tstamp_type) {
+ 		if (hw->version < SNDRV_PROTOCOL_VERSION(2, 0, 12)) {
+ 			int on = (snd_pcm_tstamp_type_t) params->tstamp_type ==
+@@ -660,7 +663,18 @@ static int snd_pcm_hw_hwsync(snd_pcm_t *pcm)
+ static int snd_pcm_hw_prepare(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_hw_t *hw = pcm->private_data;
++	snd_pcm_sw_params_t sw_params;
+ 	int fd = hw->fd, err;
++
++	if (hw->prepare_reset_sw_params) {
++		snd_pcm_sw_params_current_no_lock(pcm, &sw_params);
++		if (ioctl(hw->fd, SNDRV_PCM_IOCTL_SW_PARAMS, sw_params) < 0) {
++			err = -errno;
++			SYSMSG("SNDRV_PCM_IOCTL_SW_PARAMS failed (%i)", err);
++			return err;
++		}
++		hw->prepare_reset_sw_params = false;
++	}
+ 	if (ioctl(fd, SNDRV_PCM_IOCTL_PREPARE) < 0) {
+ 		err = -errno;
+ 		SYSMSG("SNDRV_PCM_IOCTL_PREPARE failed (%i)", err);
+@@ -718,7 +732,40 @@ static int snd_pcm_hw_drop(snd_pcm_t *pcm)
+ static int snd_pcm_hw_drain(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_hw_t *hw = pcm->private_data;
++	snd_pcm_sw_params_t sw_params;
++	snd_pcm_uframes_t silence_size;
+ 	int err;
++
++	if (pcm->stream != SND_PCM_STREAM_PLAYBACK)
++		goto __skip_silence;
++	/* compute end silence size, align to period size + extra time */
++	snd_pcm_sw_params_current_no_lock(pcm, &sw_params);
++	if ((pcm->boundary % pcm->period_size) == 0) {
++		silence_size = pcm->period_size - (*pcm->appl.ptr % pcm->period_size);
++		if (silence_size == pcm->period_size)
++			silence_size = 0;
++	} else {
++		/* it not not easy to compute the period cross point
++		 * in this case because period is not aligned to the boundary
++		 * - use the full range (one period) in this case
++		 */
++		silence_size = pcm->period_size;
++	}
++	silence_size += pcm->rate / 10;	/* 1/10th of second */
++	if (sw_params.silence_size < silence_size) {
++		/* fill the silence soon as possible (in the bellow ioctl
++		 * or the next period wake up)
++		 */
++		sw_params.silence_threshold = pcm->buffer_size;
++		sw_params.silence_size = silence_size;
++		if (ioctl(hw->fd, SNDRV_PCM_IOCTL_SW_PARAMS, &sw_params) < 0) {
++			err = -errno;
++			SYSMSG("SNDRV_PCM_IOCTL_SW_PARAMS failed (%i)", err);
++			return err;
++		}
++		hw->prepare_reset_sw_params = true;
++	}
++__skip_silence:
+ 	if (ioctl(hw->fd, SNDRV_PCM_IOCTL_DRAIN) < 0) {
+ 		err = -errno;
+ 		SYSMSG("SNDRV_PCM_IOCTL_DRAIN failed (%i)", err);
 diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
-index b039dda0..abea6654 100644
+index ae0c44bf..4a859cd1 100644
 --- a/src/pcm/pcm_local.h
 +++ b/src/pcm/pcm_local.h
-@@ -107,6 +107,7 @@
- #define SND_PCM_HW_PARAMS_NORESAMPLE SNDRV_PCM_HW_PARAMS_NORESAMPLE
- #define SND_PCM_HW_PARAMS_EXPORT_BUFFER SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER
- #define SND_PCM_HW_PARAMS_NO_PERIOD_WAKEUP SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP
-+#define SND_PCM_HW_PARAMS_NO_DRAIN_SILENCE SNDRV_PCM_HW_PARAMS_NO_DRAIN_SILENCE
+@@ -366,6 +366,8 @@ struct _snd_pcm {
+ 	snd1_pcm_hw_param_get_max
+ #define snd_pcm_hw_param_name		\
+ 	snd1_pcm_hw_param_name
++#define snd_pcm_sw_params_current_no_lock \
++	snd1_pcm_sw_params_current_no_lock
  
- #define SND_PCM_INFO_MONOTONIC	0x80000000
+ int snd_pcm_new(snd_pcm_t **pcmp, snd_pcm_type_t type, const char *name,
+ 		snd_pcm_stream_t stream, int mode);
+@@ -390,6 +392,8 @@ void snd_pcm_mmap_appl_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+ void snd_pcm_mmap_hw_backward(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
+ void snd_pcm_mmap_hw_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
  
++void snd_pcm_sw_params_current_no_lock(snd_pcm_t *pcm, snd_pcm_sw_params_t *params);
++
+ snd_pcm_sframes_t snd_pcm_mmap_writei(snd_pcm_t *pcm, const void *buffer, snd_pcm_uframes_t size);
+ snd_pcm_sframes_t snd_pcm_mmap_readi(snd_pcm_t *pcm, void *buffer, snd_pcm_uframes_t size);
+ snd_pcm_sframes_t snd_pcm_mmap_writen(snd_pcm_t *pcm, void **bufs, snd_pcm_uframes_t size);
 -- 
 2.39.2
 
