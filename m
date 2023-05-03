@@ -4,106 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4D00C77B7F
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 06:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1A01C77B7F
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 06:54:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B341913E3;
-	Wed,  3 May 2023 08:53:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B341913E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37BAC13F1;
+	Wed,  3 May 2023 08:53:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37BAC13F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683096856;
-	bh=FSylvD6oRhBBGdPyDnwBacI+tPOCLmvW0OfqA30Z/+E=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=UyK0w+TOsH0ncWkxljEkW7K7HsVvm/oQAVnhn195OZgvsiotsoczQZyBK9uN10uZj
-	 6Ft3fHNo62SZbinfxNz9ZaeBTgxvA3t8L98tWPO6eycftm3vq418ZhZuviMzdLxR67
-	 Rg5ufhPoBS4E3efCQJekjmH7v4cuH8HfrXtTvHIM=
+	s=default; t=1683096879;
+	bh=Ubuuf8ELpKldZXDSr7xGTRjyea3Jx6rPnRyRHy5aotA=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=vPAOCuMQTVYH2bHX195eK8FsT46jaTAgFTdWiNbveyMTkbHpbok9sj2mSQIF+hP7e
+	 fJWPuxT1ADFE4FtvPi0H9CmVEXzbOFrmMpjG9p4NSGl0rO+NG7d0U38Ka+8NKpAaSo
+	 4Qn708tgwz+1ytJcNiFwIgCTzUT8GJgv89hbdBsc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2DB5F804B1;
-	Wed,  3 May 2023 08:51:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46A23F805A9;
+	Wed,  3 May 2023 08:52:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D1E1F8049E; Tue,  2 May 2023 01:14:02 +0200 (CEST)
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com
- [IPv6:2607:f8b0:4864:20::f2d])
+	id DE133F8049E; Wed,  3 May 2023 07:43:17 +0200 (CEST)
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com
+ [IPv6:2607:f8b0:4864:20::e31])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3692EF80114
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2023 01:13:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3692EF80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 27F1FF80087
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2023 07:43:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27F1FF80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=dIKpfA3u
-Received: by mail-qv1-xf2d.google.com with SMTP id
- 6a1803df08f44-61b5a653df7so12703726d6.0
+ header.s=20221208 header.b=ERzOwCN8
+Received: by mail-vs1-xe31.google.com with SMTP id
+ ada2fe7eead31-430192c84a1so1766611137.1
         for <alsa-devel@alsa-project.org>;
- Mon, 01 May 2023 16:13:55 -0700 (PDT)
+ Tue, 02 May 2023 22:43:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682982834; x=1685574834;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gai0ALSwFWNu4dVILpSqC3jihApx19m036xQ8pT5cRc=;
-        b=dIKpfA3uFcoo9uCFn0G6Lx96JwdxhYB3VSkTKjvLjKEHic6uCnDdn1ODdVv4qb7fXe
-         1mVHYruvYGv2++K4ysQqNFCwxtnqqqz1EuzqAlqwwdJoaY7pp1ckebjyNEDeNaXyOy7V
-         fFkYycHyQssr/mXSa7MK9vm6ujCSoc3p+xEHtqZEMumw5+bbm7NMLULoLzUUDXcERhKi
-         fIEx6CJlLtieNfj5mHJpQDkqjile4Tc/ptGfbbTImH0bMNuBoAPmA8bjpGPMh+nzU2nP
-         0tFLg4+PFYts1pMiL55+FBPS9cCBZIpR9MK+UHRHIdTkahpXWPXLqjV9iKceDmy8nNVb
-         rbCg==
+        d=gmail.com; s=20221208; t=1683092586; x=1685684586;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rsAmWnHYdqf8PxIDTx7JVpNph88uEqYsba4Oi5M9pys=;
+        b=ERzOwCN8Snpnb6R6BMPDcCWmrygLOdCFBKCPjPfmNrRa9r/Bde491tD+EBUO98Pr0p
+         PcYay5OeQR1WNpFBwkdiaJIM3+7iqCOlKWMHHMJye7Atdu9Zb1AXDB2Npq44wRmcUwya
+         fT9UCI9jNpd5nzKnTAiA4RiZ5eQKjVAkYXREU/mWQP0b6z00COHDWedWjnAIFXF1mG2g
+         jVQTFpY3OSTck2RfgXgOJYWJFuIRizX2uecYY6kr6Rg/WxtYCl4mc669GUNBZa33AZM1
+         BV8zqOBEt5IvAUNRKH1DuV38cIW5jEK3tCOuqPoQYxu82LJovSQ7MCSld2eA2GwZEAMP
+         P8Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682982834; x=1685574834;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gai0ALSwFWNu4dVILpSqC3jihApx19m036xQ8pT5cRc=;
-        b=Sg1VksYcwxzlLmFzx9ec3n6h4lk1/m4rVFEyr87Em4DDkUCNXGm9bDTFGwkGI+qHEg
-         syG/wBRItS8SCvwbkweLvpWBtl13G3aiQT6/84iT2pgdP1btZ6F2Zb+9AAWtpU2zkvWi
-         eUvdc3BpFnRGtFgH6kkEy5raBg2MJ9LpmF+XRXBe7hG0+dAU2fespGsGBhcg1pygKlAa
-         5Z6KkMiUhPq2gRFQKkc7u8QMlu8dAQS/6MQZA0s7xd1wq6YS8fUxl/IKeQjOIpPaT6fu
-         0E4ziI3PgMy+25L07BtIZjL0FBIuW+sz+O9YVIxcMpOoG46gMiuPbMzYAgs0mGgkWCfX
-         Te4Q==
-X-Gm-Message-State: AC+VfDxrfIg1cY2BrSepo9Bl+aCU8s7ZNSTAHOvpyvu+/whwu2YeP2Yq
-	aLL3Iwu/5qqfgA4tUfEuAEI=
+        d=1e100.net; s=20221208; t=1683092586; x=1685684586;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rsAmWnHYdqf8PxIDTx7JVpNph88uEqYsba4Oi5M9pys=;
+        b=lGBFm705Xdd25tzrU1ksYBORekPhSAYlV1kQqCEdSv1R6chhnbqfzp86Wqqvieder0
+         dXkLyt5G4orKiaPOtiOXufcr2XbGn5QZb/7D2ATDf/SyAlvMmgSRR3oUyYMULDYsZh5d
+         fvb1yhk35SDm1WrsLgk5u7IML/uHMEMVLsNX6m9o976ewrEMs+FcX1GnJcOUyW/xdrvg
+         S6TtZsVdN372f4byLPMcR3Emc+u0C7AR83LwOnmiTkeWz+Y2EEV8bS4uJ9Z4CFkGRjFb
+         oPyz0MFIyXttE/8y+LA8R/0ULIAL/XT7draMOMdeuv+/baSxEEJuwjX7qLuZX+w/n8Yi
+         fBug==
+X-Gm-Message-State: AC+VfDwsC7jHgoNduMMKfjv1ZdF+5g4p0CnCgsSLUZ/+ot3sADW4UWIq
+	vp6pBPdvX9DgZnrvVDoxCGARHUlMXb77h8myk1g=
 X-Google-Smtp-Source: 
- ACHHUZ4na7lHJ4rk0S6AG4im+EHw94F0oFT/OjzFTVsLffyRnmcimwqkGynHMR7JjeV1iw9cyZ7X2w==
-X-Received: by 2002:a05:6214:29cb:b0:5ef:46a9:15d2 with SMTP id
- gh11-20020a05621429cb00b005ef46a915d2mr2062917qvb.7.1682982833889;
-        Mon, 01 May 2023 16:13:53 -0700 (PDT)
-Received: from localhost.localdomain (198-84-181-245.cpe.teksavvy.com.
- [198.84.181.245])
-        by smtp.gmail.com with ESMTPSA id
- d4-20020a05620a204400b0074e389245e6sm8420740qka.41.2023.05.01.16.13.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 May 2023 16:13:53 -0700 (PDT)
-From: Mark Asselstine <asselsm@gmail.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for ASUS UM3402YAR using CS35L41
-Date: Mon,  1 May 2023 19:13:46 -0400
-Message-Id: <20230501231346.54979-1-asselsm@gmail.com>
-X-Mailer: git-send-email 2.40.1
+ ACHHUZ7ykK9Pomy4WV89OB6bwk9/UoxMqZtNJrFwUkc6HainGydy65lfIkZPMMydRIzSTL7GURxd1oHI9zPRV9FHxyI=
+X-Received: by 2002:a67:fb11:0:b0:42e:38c1:8a54 with SMTP id
+ d17-20020a67fb11000000b0042e38c18a54mr942121vsr.0.1683092585868; Tue, 02 May
+ 2023 22:43:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: asselsm@gmail.com
+References: 
+ <CAAJw_ZsbTVd3Es373x_wTNDF7RknGhCD0r+NKUSwAO7HpLAkYA@mail.gmail.com>
+ <ZE9B4avbDtIXOu4O@debian.me> <87r0s0pnim.wl-tiwai@suse.de>
+ <CAAJw_ZsDdiB=b2PZydQWF2fjSULit3NWE-Bf1icBEryN-GuqUw@mail.gmail.com>
+ <87fs8gp0i7.wl-tiwai@suse.de>
+ <CAAJw_ZveoPfnBsSkHZqmLiVWATcOosR--6Ds4cdekdi=t1yV7A@mail.gmail.com>
+ <b449cbf6-8286-e22d-ca87-b1bc3dce29d7@gmail.com>
+In-Reply-To: <b449cbf6-8286-e22d-ca87-b1bc3dce29d7@gmail.com>
+From: Jeff Chua <jeff.chua.linux@gmail.com>
+Date: Wed, 3 May 2023 13:42:55 +0800
+Message-ID: 
+ <CAAJw_Zur2fz7FnO-qyzd_mSoCcroCREcvHKo8sOMrrMDGxXv2g@mail.gmail.com>
+Subject: Re: linux-6.4 alsa sound broken
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: jeff.chua.linux@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: XRFBCBPZMT6ORQE4SYUAV3PK62XIM44D
-X-Message-ID-Hash: XRFBCBPZMT6ORQE4SYUAV3PK62XIM44D
-X-Mailman-Approved-At: Wed, 03 May 2023 06:51:42 +0000
-CC: sbinding@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Message-ID-Hash: MJ7ZF2YY7VKGKVBI27HPCSQJAMRKLCQM
+X-Message-ID-Hash: MJ7ZF2YY7VKGKVBI27HPCSQJAMRKLCQM
+X-Mailman-Approved-At: Wed, 03 May 2023 06:51:59 +0000
+CC: Takashi Iwai <tiwai@suse.de>, lkml <linux-kernel@vger.kernel.org>,
+ Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
+ Linux ALSA Subsystem Development <alsa-devel@alsa-project.org>,
+ Linux Regressions <regressions@lists.linux.dev>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XRFBCBPZMT6ORQE4SYUAV3PK62XIM44D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MJ7ZF2YY7VKGKVBI27HPCSQJAMRKLCQM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,26 +118,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This Asus Zenbook laptop uses Realtek HDA codec combined with
-2xCS35L41 Amplifiers using I2C with External Boost.
+On Wed, May 3, 2023 at 12:40=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.com=
+> wrote:
+>
+> On 5/1/23 22:03, Jeff Chua wrote:
+> >> There was no description about which sound backend is used.  Is it
+> >> PulseAudio, pipewire or dmix/dsnoop?
+> >
+> > Just pure alsautils.
+> >
+> > arecord -D hw:1,0,0 -f S16_LE -r 48000 recorded.wav
+> > aplay -D hw:1,1,0 /local/share/sounds/alsa/Side_Right.wav
+> >
+> > [recorded.wav] attached.
+> > [Side_Right.wav] attached.
+> > aplay: version 1.2.8 by Jaroslav Kysela <perex@perex.cz>
+> > arecord: version 1.2.8 by Jaroslav Kysela <perex@perex.cz>
+> >
+> > alsautils, alsaplugins alsalibs all using latest git pull.
+>
+> Are you sure you build alsa tools straight from the git repo?
+> Can you also reproduce with latest stable version of these?
+> Otherwise it's anyone's guess due to moving parts...
 
-Signed-off-by: Mark Asselstine <asselsm@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f70d6a33421d..905acd66ea01 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9500,6 +9500,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
- 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
- 	SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", ALC294_FIXUP_ASUS_DUAL_SPK),
-+	SND_PCI_QUIRK(0x1043, 0x1683, "ASUS UM3402YAR", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x1043, 0x16b2, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1740, "ASUS UX430UA", ALC295_FIXUP_ASUS_DACS),
--- 
-2.40.1
+All cloned from ...
+https://github.com/alsa-project/alsa-lib.git
+https://github.com/alsa-project/alsa-utils.git
+https://github.com/alsa-project/alsa-plugins.git
 
+arecord is symbolic link to aplay.
+
+I just recompiled all the alsa-lib, utils and plugins, and retest and
+it's the same issue.
+
+GNU C Library (GNU libc) development release version 2.37.9000.
+gcc version 11.3.1 20230315 (GCC)
+binutils-2.40
+
+Linux kernel is ...
+commit 348551ddaf311c76b01cdcbaf61b6fef06a49144 (HEAD -> master,
+origin/master, origin/HEAD)
+Merge: 7df047b3f0aa b7badd752de0
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue May 2 15:40:41 2023 -0700
+
+
+Thanks,
+Jeff
