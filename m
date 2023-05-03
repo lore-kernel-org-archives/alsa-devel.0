@@ -4,28 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEF07C77B78
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 11:35:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FF3DC77B75
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 11:36:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59A76135D;
-	Wed,  3 May 2023 13:35:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59A76135D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 180B01373;
+	Wed,  3 May 2023 13:35:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 180B01373
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683113752;
-	bh=rT/nsxvOor/BBZeSGfaG63upIXX5Cpp2xIf+ZzMPC9o=;
-	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=O0aNBWSVNsGmAig39MNfyBfCtNAui6+WlCqr0OQoQprjUsxv6bWQ77qzqeO+cbuQd
-	 E7cDqxWfEAjJe5WhakI3XAZKzsNdCpkOU6PjnpWJHKM5+O4dYPMnBKSRHeKNRNjrtS
-	 HhdyddZjS1isWRpCjOVBHSfD8ZyOEg4tg3BOzNDQ=
+	s=default; t=1683113779;
+	bh=mpRZdqOvXIl5vS9j+X/rU8HMgH7/EmMZbnUr1Lx++Kw=;
+	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From:Reply-To:Cc:From;
+	b=GLLo5AGm6kqmFDETUmlclDnJb2dOru5mbTLIhy45DYAzeq6n7gMITnGbKnQpzwZ+9
+	 ysEZ6eNReBZ7/r+W8DTsIP8Ev4nmjDzIyTRRXUuLlXQ/dBokG4jbIhkML2FIfNxEja
+	 A7lVCDqYeJi4Pwc+xeZI9imdd9FETSo/otqL1gy4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 090F3F8051B;
-	Wed,  3 May 2023 13:34:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E600F8053B;
+	Wed,  3 May 2023 13:34:40 +0200 (CEST)
 To: lgirdwood@gmail.com
-Subject: [PATCH 0/5] ASoC: MediaTek MT8195/86 Cleanups
-Date: Wed,  3 May 2023 13:34:08 +0200
+Subject: [PATCH 2/5] ASoC: SOF: mediatek: mt8186: Use
+ snd_sof_ipc_process_reply() helper
+Date: Wed,  3 May 2023 13:34:10 +0200
+In-Reply-To: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
+References: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -37,7 +41,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SQNZGLVNHVPBJ5VNPVOWNYIO5JQG2CUC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MOIHR2GIQ6KAC3QQLQBSUK2OBW5PSIIF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -47,7 +51,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168311367500.26.5035588666989030191@mailman-core.alsa-project.org>
+ <168311367708.26.16358823200772921389@mailman-core.alsa-project.org>
 From: AngeloGioacchino Del Regno via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Cc: broonie@kernel.org, tiwai@suse.com, matthias.bgg@gmail.com,
@@ -65,7 +69,7 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 41CD8F80520; Wed,  3 May 2023 13:34:31 +0200 (CEST)
+	id 733DFF80520; Wed,  3 May 2023 13:34:33 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -75,16 +79,15 @@ X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 93947F800EC;
-	Wed,  3 May 2023 13:34:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93947F800EC
+	by alsa1.perex.cz (Postfix) with ESMTPS id C67E3F80137;
+	Wed,  3 May 2023 13:34:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C67E3F80137
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=FO9btotf
+ header.a=rsa-sha256 header.s=mail header.b=LJB0T/0i
 Received: from IcarusMOD.eternityproject.eu (unknown
  [IPv6:2001:b07:2ed:14ed:c5f8:7372:f042:90a2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -92,28 +95,31 @@ Received: from IcarusMOD.eternityproject.eu (unknown
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 2135C660309E;
-	Wed,  3 May 2023 12:34:19 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 797F266056CE;
+	Wed,  3 May 2023 12:34:22 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1683113660;
-	bh=D4GxHwRdyAouEXBmGeD9y+SB4oSmGvmMfyzdYBUTGVw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=FO9btotfEblnP/1DE5WqXhomqoU+yNbZ7N8+Nsy8eenwAs4MZzxIWUrXh0Y3w2RPu
-	 Vm0llArH4IEy3kOoR5TnPuBeZ2tbWl0qgeN8V2lNfK+Wl4DfkGmR17HAsTYGcrOfzQ
-	 8ALiaC5v8FzihTBzNFFK4YvsMoOf78DVujTY/nVRnxwprAUzlRA4nm+uuq2DMPttFu
-	 KPsHdcA0fWQkHdMWRFoxlI7eOdz5a0Vcv6cSBRO7oki1cZSscyoo2hDR78s8Pr2BPZ
-	 NKs72uI/0J2qEDl22rB4o39wM1rGZxWbj5Xq/fBRCVDOLLw74yO647543yvwaaEpNv
-	 KPPMyudnJeUMg==
+	s=mail; t=1683113663;
+	bh=L39f0aIGeOnQPRMtTubkebioIWUYydMxDfJeYgCV4k0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=LJB0T/0iHKJUrGdMcxKrOMKcwBeIRmFsrMfUR+fGgA+VlJT4FAhaa8QDVQSsfZzH1
+	 HmD6uIVi4pUAE9Crl0yTwgVPK7eFAqnf4f4RZcZ9tGQp6Ol3CprXYGZxOjSydK1amL
+	 unew7PpOHyq082BVucjyF89Ukx5JEiCDyQelNqF9GHhrLO/CXbbNOm28rWQvC924JM
+	 VvBBK2VAXHlek50LaoirqagFS+McddJfCHVgZH1/NBGiF979ZdIQv3rxRNfsjWAcl1
+	 46/w1s0Kx7odsvmZr8dlWqdCrBQHNnhOL8k0DhoWryOIRoH4kQHk4Ct4GZAZrH4iip
+	 pKOjoz3LpptjA==
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: lgirdwood@gmail.com
-Subject: [PATCH 0/5] ASoC: MediaTek MT8195/86 Cleanups
-Date: Wed,  3 May 2023 13:34:08 +0200
-Message-Id: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH 2/5] ASoC: SOF: mediatek: mt8186: Use
+ snd_sof_ipc_process_reply() helper
+Date: Wed,  3 May 2023 13:34:10 +0200
+Message-Id: <20230503113413.149235-3-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
+References: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SQNZGLVNHVPBJ5VNPVOWNYIO5JQG2CUC
-X-Message-ID-Hash: SQNZGLVNHVPBJ5VNPVOWNYIO5JQG2CUC
+Message-ID-Hash: MOIHR2GIQ6KAC3QQLQBSUK2OBW5PSIIF
+X-Message-ID-Hash: MOIHR2GIQ6KAC3QQLQBSUK2OBW5PSIIF
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -137,7 +143,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SQNZGLVNHVPBJ5VNPVOWNYIO5JQG2CUC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MOIHR2GIQ6KAC3QQLQBSUK2OBW5PSIIF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -146,22 +152,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This series performs some cleanups for mainly MT8195 and switches
-both MT8195 and MT8186's SOF driver to the snd_sof_ipc_process_reply()
-helper.
+Function mt8186_get_reply() performs practically the same operation
+as the common snd_sof_ipc_get_reply() helper: removing the custom
+function allows us to simply perform a call to the sof-priv helper
+snd_sof_ipc_process_reply(), simplifying and shortening this driver
+and getting all the benefits of using a common API.
 
-AngeloGioacchino Del Regno (5):
-  ASoC: SOF: mediatek: mt8195: Use snd_sof_ipc_process_reply() helper
-  ASoC: SOF: mediatek: mt8186: Use snd_sof_ipc_process_reply() helper
-  ASoC: mediatek: mt8195-afe-pcm: Simplify runtime PM during probe
-  ASoC: mediatek: mt8195-afe-pcm: Simplify with dev_err_probe()
-  ASoC: mediatek: mt8195-afe-pcm: Clean up unnecessary functions
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ sound/soc/sof/mediatek/mt8186/mt8186.c | 36 +-------------------------
+ 1 file changed, 1 insertion(+), 35 deletions(-)
 
- sound/soc/mediatek/mt8195/mt8195-afe-pcm.c | 99 ++++++++--------------
- sound/soc/sof/mediatek/mt8186/mt8186.c     | 36 +-------
- sound/soc/sof/mediatek/mt8195/mt8195.c     | 36 +-------
- 3 files changed, 36 insertions(+), 135 deletions(-)
-
+diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
+index 597cb4476acb..419913c8474d 100644
+--- a/sound/soc/sof/mediatek/mt8186/mt8186.c
++++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
+@@ -48,47 +48,13 @@ static int mt8186_send_msg(struct snd_sof_dev *sdev,
+ 	return mtk_adsp_ipc_send(priv->dsp_ipc, MTK_ADSP_IPC_REQ, MTK_ADSP_IPC_OP_REQ);
+ }
+ 
+-static void mt8186_get_reply(struct snd_sof_dev *sdev)
+-{
+-	struct snd_sof_ipc_msg *msg = sdev->msg;
+-	struct sof_ipc_reply reply;
+-	int ret = 0;
+-
+-	if (!msg) {
+-		dev_warn(sdev->dev, "unexpected ipc interrupt\n");
+-		return;
+-	}
+-
+-	/* get reply */
+-	sof_mailbox_read(sdev, sdev->host_box.offset, &reply, sizeof(reply));
+-	if (reply.error < 0) {
+-		memcpy(msg->reply_data, &reply, sizeof(reply));
+-		ret = reply.error;
+-	} else {
+-		/* reply has correct size? */
+-		if (reply.hdr.size != msg->reply_size) {
+-			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
+-				msg->reply_size, reply.hdr.size);
+-			ret = -EINVAL;
+-		}
+-
+-		/* read the message */
+-		if (msg->reply_size > 0)
+-			sof_mailbox_read(sdev, sdev->host_box.offset,
+-					 msg->reply_data, msg->reply_size);
+-	}
+-
+-	msg->reply_error = ret;
+-}
+-
+ static void mt8186_dsp_handle_reply(struct mtk_adsp_ipc *ipc)
+ {
+ 	struct adsp_priv *priv = mtk_adsp_ipc_get_data(ipc);
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&priv->sdev->ipc_lock, flags);
+-	mt8186_get_reply(priv->sdev);
+-	snd_sof_ipc_reply(priv->sdev, 0);
++	snd_sof_ipc_process_reply(priv->sdev, 0);
+ 	spin_unlock_irqrestore(&priv->sdev->ipc_lock, flags);
+ }
+ 
 -- 
 2.40.1
 
