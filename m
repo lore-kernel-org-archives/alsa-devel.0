@@ -4,83 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6453AC77B7F
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 16:04:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0947DC77B78
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 16:59:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9DBC12F2;
-	Wed,  3 May 2023 18:03:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9DBC12F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1475F12FB;
+	Wed,  3 May 2023 18:58:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1475F12FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683129864;
-	bh=8t4HL475nWT/RljPE8Mk56yYt2O+/Gw8AsM373qAXRo=;
+	s=default; t=1683133174;
+	bh=kO7/faBRypIieapfr1cyUkdtWOsYKOnH/qpu0PsViTY=;
 	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UKAsAvKIzX15HGIbl0DTB6fEDIULSC6NeRoMJT0HGHPTfv3sFyOF/qCl0jP44dlxn
-	 tZRbEQ5E70Cs2MWvdJgp1C4X/uL/0e84Y/sT0LKgHu0uP1ZUXuLJ1PCv6bZf4mFGMh
-	 r54EYw5Mitxo6lbrDIgq0wn4fJaW/AlWd2EFPu3I=
+	b=jSNv0xdTmeO2kHgLld6H1/rDYGnNKVPvU5fls/bM1N5IEugwh0eZS14obz0w97tR6
+	 x4RlZfrK1teLc6oddbCFGMPQNaLV19pDkjfpShYEpePIZpNONii9ga3ny68hhUbpsz
+	 6+dDfsr4Oq26j6gv03kjnnwA9ZCPFMDWpwoUUG0Y=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EEC54F80520;
-	Wed,  3 May 2023 18:02:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33737F8049E;
+	Wed,  3 May 2023 18:58:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E544FF80520; Wed,  3 May 2023 18:02:55 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 0726CF8049E; Wed,  3 May 2023 18:58:14 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CD850F80087
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2023 18:02:53 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id B1D7A11E9;
-	Wed,  3 May 2023 18:02:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz B1D7A11E9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1683129772; bh=7Mck9T3dpzvxMwM9VI0zZVSWjN9xl/qTD7ddWK+dcRI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Bl4KvhZX2u9KbRP/o9SQMEuEPyzZ6EFDQBf6riUPFgeAU+fKlBwAdrR9QgAzcMO9g
-	 jT8P5DZWbodCc+rUj3jPAoZGK7UXVcPVe4d7bOXndIpfCS+xFZH4ykpw+rRCon3DAf
-	 MqK3z2RzLKmwy/OYqNemb7GodWtiQAUF5yI/pD5w=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Wed,  3 May 2023 18:02:49 +0200 (CEST)
-Message-ID: <91e9739b-0767-ce2f-16c0-654b6d5e1ab2@perex.cz>
-Date: Wed, 3 May 2023 18:02:49 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id E27ECF80137
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2023 18:58:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E27ECF80137
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=FmrNeRk2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1683133089; x=1714669089;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=kO7/faBRypIieapfr1cyUkdtWOsYKOnH/qpu0PsViTY=;
+  b=FmrNeRk2STgP8HFK5hqC34pCGQe/+Tg7GgAzGtFU1cBlBQZ1ackNc+Cv
+   sdBRnDDpW9z3kNeefYCYK3IvM++AA/3UmldjLb+MXXAQAQXY+0wu2UDV5
+   Opv5SFlYKJuhKaltulyh/RO1q9QX86fI9QXNk4xwFIXjssArdm6TKlVmJ
+   tKfAZy4IQ7gdXCoIuN/8TE/aY4mNkdTfnj9BKNozCc+S+d8b31/NwHukI
+   8gWC5V9G/C7zzKJJeMBm/EXA7pMElxjZGArGsk3piaiwnIyTwmYQq3ter
+   FxPvG/WxChruBATPXTKlhrkB7wY7Xvas4vQeHN8fLqzAO0Ihj3QFOv6wJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10699"; a="435015872"
+X-IronPort-AV: E=Sophos;i="5.99,247,1677571200";
+   d="scan'208";a="435015872"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 May 2023 09:58:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10699"; a="766202179"
+X-IronPort-AV: E=Sophos;i="5.99,247,1677571200";
+   d="scan'208";a="766202179"
+Received: from jshields-mobl.amr.corp.intel.com (HELO [10.209.77.83])
+ ([10.209.77.83])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 May 2023 09:58:04 -0700
+Message-ID: <d98a8aa1-9e15-7cb4-3bbb-4d4cd437d636@linux.intel.com>
+Date: Wed, 3 May 2023 10:30:48 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH] pcm: remove duplicate SND_PCM_HW_PARAM_{FIRST,LAST}_*
- #defines
+ Firefox/102.0 Thunderbird/102.10.0
+Subject: Re: [PATCH v2] ASoC: codecs: wcd938x: fix accessing regmap on
+ unattached devices
 Content-Language: en-US
-To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
- alsa-devel@alsa-project.org
-References: <20230503155534.2121562-1-oswald.buddenhagen@gmx.de>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20230503155534.2121562-1-oswald.buddenhagen@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20230503144102.242240-1-krzysztof.kozlowski@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230503144102.242240-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: VA4S3D4EH7COFIH7PODN32NUZMFCDETI
-X-Message-ID-Hash: VA4S3D4EH7COFIH7PODN32NUZMFCDETI
-X-MailFrom: perex@perex.cz
+Message-ID-Hash: O7UFH2L4LSZ4CC623UUSDJIKAZVCEZO7
+X-Message-ID-Hash: O7UFH2L4LSZ4CC623UUSDJIKAZVCEZO7
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Takashi Iwai <tiwai@suse.de>
+CC: stable@vger.kernel.org, Patrick Lai <quic_plai@quicinc.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VA4S3D4EH7COFIH7PODN32NUZMFCDETI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O7UFH2L4LSZ4CC623UUSDJIKAZVCEZO7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -89,12 +105,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 03. 05. 23 17:55, Oswald Buddenhagen wrote:
-> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 
-Applied. Thanks.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+On 5/3/23 09:41, Krzysztof Kozlowski wrote:
+> The WCD938x comes with three devices on two Linux drivers:
+> 1. RX Soundwire device (wcd938x-sdw.c driver),
+> 2. TX Soundwire device, which is used to access devices via regmap (also
+>    wcd938x-sdw.c driver),
+> 3. platform device (wcd938x.c driver) - glue and component master,
+>    actually having most of the code using TX Soundwire device regmap.
+> 
+> When RX and TX Soundwire devices probe, the component master (platform
+> device) bind tries to write micbias configuration via TX Soundwire
+> regmap.  This might happen before TX Soundwire enumerates, so the regmap
+> access fails.  On Qualcomm SM8550 board with WCD9385:
+> 
+>   qcom-soundwire 6d30000.soundwire-controller: Qualcomm Soundwire controller v2.0.0 Registered
+>   wcd938x_codec audio-codec: bound sdw:0:0217:010d:00:4 (ops wcd938x_sdw_component_ops)
+>   wcd938x_codec audio-codec: bound sdw:0:0217:010d:00:3 (ops wcd938x_sdw_component_ops)
+>   qcom-soundwire 6ad0000.soundwire-controller: swrm_wait_for_wr_fifo_avail err write overflow
+> 
+> Fix the issue by:
+> 1. Moving the regmap creation from platform device to TX Soundwire
+>    device.  The regmap settings are moved as-is with one difference:
+>    making the wcd938x_regmap_config const.
+> 2. Using regmap in cache only mode till the actual TX Soundwire device
+>    enumerates and then sync the regmap cache.
+> 
+> Cc: <stable@vger.kernel.org> # v3.14+
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Cc: Patrick Lai <quic_plai@quicinc.com>
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> 
+> Changes since v1:
+> 1. Previous solution touched Soundwire. Rework it according to feedback.
+>    https://lore.kernel.org/all/20230420101617.142225-7-krzysztof.kozlowski@linaro.org/
+> 
+> Thank you Mark and Pierre-Louis for great hints and valuable feedback!
 
+LGTM, this was a very interesting thread to comment on.
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
