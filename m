@@ -4,120 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42ADBC77B78
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 04:42:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32889C77B7F
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 06:09:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE8ED1393;
-	Wed,  3 May 2023 06:41:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE8ED1393
+	by alsa0.perex.cz (Postfix) with ESMTPS id 696DB13AF;
+	Wed,  3 May 2023 08:08:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 696DB13AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683088928;
-	bh=ouAqqueiiGfX7m6JpXrrBiw4EvXj2cQvgigK9Y4iNMU=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1683094178;
+	bh=rpygUAOJVGA6Y69gAnNSn41NVl0YeniOYAEiYzPdRT8=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=puQQGnzMLNCi4IsYYL/6fF7dEzwXjFeuYFJZ/Oe5ESkdinVPFABvt1qF+p+Myfpbh
-	 /0gsHZil0DG6Q5ZQYZod6hyRbcMDceUw75S0DU5WaLq8CzJGFxPeglxhkAJpH4yRtw
-	 PM1hNut2imYr0tSz2+hY6LSp7/jo8aVCz2sqF5UM=
+	b=PfzVcivS6Kmwbg0VDcFFuXYUNG/MUC5zcYjeVum+MsrojlnRa5z/QcfdTur2fOkKn
+	 YJbcDpt+3JgOxn3h7Sy5amV7aozuJyBCG4TQs8C9V2R+LdIXumW/k006KlCMWF9/cQ
+	 jgiXMWPdi5HjMySAHDATY8ObDAu0a1i69icI7t2Y=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A316F8049E;
-	Wed,  3 May 2023 06:40:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D741F8049E;
+	Wed,  3 May 2023 08:08:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC058F8049E; Wed,  3 May 2023 06:40:30 +0200 (CEST)
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com
- [IPv6:2607:f8b0:4864:20::102a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id A3F02F8049E; Wed,  3 May 2023 08:06:59 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7C743F80137
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2023 06:40:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C743F80137
+	by alsa1.perex.cz (Postfix) with ESMTPS id B0A79F800EC
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2023 08:06:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0A79F800EC
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=AP6cSbQM
-Received: by mail-pj1-x102a.google.com with SMTP id
- 98e67ed59e1d1-24de3a8bfcfso3919632a91.1
-        for <alsa-devel@alsa-project.org>;
- Tue, 02 May 2023 21:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683088807; x=1685680807;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=77tiXpQ2HjbyMiGi98E0ovy9Ioj8cftg4GmqV7//X1I=;
-        b=AP6cSbQMwHS6YgLcCIuhbKJsz4vaRSY9hCqhPFEtm1HvvnSf0N2gxnGfZTtZNeb3fM
-         TZoK8iW8O8MRog34ymtley4D9V4uy5F6QwMBxbNoC6MOWj60ENUdFc9y3b2u/j6Y1tJz
-         hkHjUFD9D/tzIc6oyyld8M2eNwZryMU6ID3HCJ0OIFfHV+sxQAlh5dWP9F6FXA8pt9hW
-         qUU8Q1dvEAbAMjCbH6dYmU3dC00Dha/cZMaGdMtWi9pq7ekseqAWr/oQr/shKek35CZ2
-         OSNWdXu8oT2IHmDEP+wDrzo+sdwPvFSNLWzCvIF9/pr5vb/SXBHtJnwQNQuLNTNxfiFO
-         g40A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683088807; x=1685680807;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=77tiXpQ2HjbyMiGi98E0ovy9Ioj8cftg4GmqV7//X1I=;
-        b=RbicH52kjHT1WGXhAw0T3YOFQl5SHfAEsQ+kBQmk9r2nZ9D9ykpy1NAWOZmcT/hrpi
-         bBJbQRr4FWGRWYPeoy+xVTi2My2/b/6cmaE7JkxVeHYEvXol9r68QF6fDf3C8lkottDo
-         yyycIK1KkcW/mT58F/Z7O+sGt4fYgsdmUohNGd0wXyqVMHod19UiFvRYJ082bGSsCleu
-         JnXbPngwiLNNgx6BGRM8HCrRRtXtMjbI4cl/1ZQrAlLXPb4s2G7fkvsQQT/aawdknAKI
-         k+MlT0BYU9KLlvdXWBhJJWzqlSYGNveOcIV4wS95ubrhHuyNJhF9iNLhbT4n9/GzT7zU
-         F1zA==
-X-Gm-Message-State: AC+VfDzE+ibWE52Lgsa+cUDHTNVupHlEIV+U91bcN9lGJkRkBJu6UBbZ
-	b2hcWKlPXrzgV/iSzVHfaYk=
-X-Google-Smtp-Source: 
- ACHHUZ6FVFqaBqyy90CyPDYOpLziIFIxoEYbT12+sSR0gn8lbdxTMRS5XqCfds/MEuQG/S5rDPBXNw==
-X-Received: by 2002:a17:90b:4c46:b0:24d:ed1e:c2db with SMTP id
- np6-20020a17090b4c4600b0024ded1ec2dbmr11210942pjb.31.1683088806739;
-        Tue, 02 May 2023 21:40:06 -0700 (PDT)
-Received: from [192.168.43.80] (subs32-116-206-28-39.three.co.id.
- [116.206.28.39])
-        by smtp.gmail.com with ESMTPSA id
- h24-20020a17090a9c1800b00247735d1463sm2276107pjp.39.2023.05.02.21.40.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 May 2023 21:40:06 -0700 (PDT)
-Message-ID: <b449cbf6-8286-e22d-ca87-b1bc3dce29d7@gmail.com>
-Date: Wed, 3 May 2023 11:40:02 +0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: linux-6.4 alsa sound broken
-Content-Language: en-US
-To: Jeff Chua <jeff.chua.linux@gmail.com>, Takashi Iwai <tiwai@suse.de>
-References: 
- <CAAJw_ZsbTVd3Es373x_wTNDF7RknGhCD0r+NKUSwAO7HpLAkYA@mail.gmail.com>
- <ZE9B4avbDtIXOu4O@debian.me> <87r0s0pnim.wl-tiwai@suse.de>
- <CAAJw_ZsDdiB=b2PZydQWF2fjSULit3NWE-Bf1icBEryN-GuqUw@mail.gmail.com>
- <87fs8gp0i7.wl-tiwai@suse.de>
- <CAAJw_ZveoPfnBsSkHZqmLiVWATcOosR--6Ds4cdekdi=t1yV7A@mail.gmail.com>
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: 
- <CAAJw_ZveoPfnBsSkHZqmLiVWATcOosR--6Ds4cdekdi=t1yV7A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: M6OV4RK2XSVYYGFPEXJDFK7F4LHVKRUX
-X-Message-ID-Hash: M6OV4RK2XSVYYGFPEXJDFK7F4LHVKRUX
-X-MailFrom: bagasdotme@gmail.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=bgNahnK0;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=fogcCL2i
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 198E81FFD8;
+	Wed,  3 May 2023 06:06:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1683094012;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uJyauCRKA1OKuD2J2BLjbo+7WdRbLAPXODKeyqBieVA=;
+	b=bgNahnK0jIVhMQdwFI6wxSrA5z8mhlcU207HYujRgIwZ/+ar1qIoI8UvxTuEosCA81sM7D
+	Se2gi2Aoc7w9u/DS5aCq6YAhw1GRaRsG+q8v+c3BgYyJ7B5PcgjFI03H+3m+mxokRgmK5I
+	Q95bU+4Kf4ZkGpRvCJ40Xm8rjY1geh8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1683094012;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uJyauCRKA1OKuD2J2BLjbo+7WdRbLAPXODKeyqBieVA=;
+	b=fogcCL2iwIwnpNvbJwTouByyjpBdGNss0x0Jr1gUDCt833IsJdqiRIS7P19jTUTaV0V8Yr
+	lhQXN8IGLQ3P6lBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6DEC13584;
+	Wed,  3 May 2023 06:06:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id NyWKM/v5UWTiJQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 03 May 2023 06:06:51 +0000
+Date: Wed, 03 May 2023 08:06:51 +0200
+Message-ID: <87ildane2s.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Ivan Orlov <ivan.orlov0322@gmail.com>
+Subject: Re: [PATCH] ALSA: docs: Extend module parameters description
+In-Reply-To: <20230501101634.476297-1-ivan.orlov0322@gmail.com>
+References: <20230501101634.476297-1-ivan.orlov0322@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: NZB3YOEESKXFDPNGZWGLRFKL24ZYSFD7
+X-Message-ID-Hash: NZB3YOEESKXFDPNGZWGLRFKL24ZYSFD7
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: lkml <linux-kernel@vger.kernel.org>,
- Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
- Linux ALSA Subsystem Development <alsa-devel@alsa-project.org>,
- Linux Regressions <regressions@lists.linux.dev>
+CC: tiwai@suse.com, corbet@lwn.net, alsa-devel@alsa-project.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ skhan@linuxfoundation.org, himadrispandya@gmail.com,
+ linux-kernel-mentees@lists.linuxfoundation.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M6OV4RK2XSVYYGFPEXJDFK7F4LHVKRUX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NZB3YOEESKXFDPNGZWGLRFKL24ZYSFD7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,28 +113,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 5/1/23 22:03, Jeff Chua wrote:
->> There was no description about which sound backend is used.  Is it
->> PulseAudio, pipewire or dmix/dsnoop?
+On Mon, 01 May 2023 12:16:34 +0200,
+Ivan Orlov wrote:
 > 
-> Just pure alsautils.
+> Common ALSA module parameters look a little bit confusing because of the
+> description lacking, and it took me a while to understand the purpose of
+> their existence. To figure it out I asked the question about them to the
+> "alsa-devel" mailing list, and Takashi Iwai answered me with the text I
+> appended to the ALSA documentation in this patch.
 > 
-> arecord -D hw:1,0,0 -f S16_LE -r 48000 recorded.wav
-> aplay -D hw:1,1,0 /local/share/sounds/alsa/Side_Right.wav
+> These common module parameters aren't used a lot nowadays, but as I
+> understand they are important for providing compatibility with some
+> existing user-space apps. So in my opinion it is a good idea to document
+> why we need them.
 > 
-> [recorded.wav] attached.
-> [Side_Right.wav] attached.
-> aplay: version 1.2.8 by Jaroslav Kysela <perex@perex.cz>
-> arecord: version 1.2.8 by Jaroslav Kysela <perex@perex.cz>
-> 
-> alsautils, alsaplugins alsalibs all using latest git pull.
+> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
 
-Are you sure you build alsa tools straight from the git repo?
-Can you also reproduce with latest stable version of these?
-Otherwise it's anyone's guess due to moving parts...
+Thanks, applied.
 
-Thanks.
 
--- 
-An old man doll... just what I always wanted! - Clara
-
+Takashi
