@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 984A2C77B78
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 11:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E245DC7EE23
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 May 2023 11:37:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C69BC1386;
-	Wed,  3 May 2023 13:35:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C69BC1386
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABE791375;
+	Wed,  3 May 2023 13:36:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABE791375
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683113787;
-	bh=ksVhmg/TH0wYhcuXy3e7+Px9tXQi+dpTUj5Tuj11fj4=;
+	s=default; t=1683113828;
+	bh=Q8pMDSsF9Xq13eVyTUnJq6+q7ZON3uD2hqLFfrS3fNw=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=idDO4/k6POXCBwTJ0Uc2Eri4XFATRt7gTwYX8W0cRaq3JbsAKzmopD3Bfj9jmQtXK
-	 KLxyQ3NK4cyZ163gQYHJcQfOF3yg0ux279E65UvhLRmlQYrzsmg2mPIC3oSHpD85/8
-	 RDLoNvrwuTjw/MtVJ6/A/C4vvBS8D5RTazgML0i0=
+	b=RNptlMxR7tTHAUayee5BxoZgdrwA/f0Y/X5C/Ig/dlNYP2Kicvla8FKOuB3OmID+U
+	 iE7Fr5/iy0NoDS8+YMSBi8/jkMzR8Y0ro8gc3hmU06QvhUFlbZl8SQifjm3617tPVm
+	 XQrNKZi6kvhQQFR6G4XP5IUTiWHiFlTCujBeiWB4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 958ACF8055B;
-	Wed,  3 May 2023 13:34:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74578F800EC;
+	Wed,  3 May 2023 13:36:12 +0200 (CEST)
 To: lgirdwood@gmail.com
-Subject: [PATCH 1/5] ASoC: SOF: mediatek: mt8195: Use
- snd_sof_ipc_process_reply() helper
-Date: Wed,  3 May 2023 13:34:09 +0200
+Subject: [PATCH 3/5] ASoC: mediatek: mt8195-afe-pcm: Simplify runtime PM
+ during probe
+Date: Wed,  3 May 2023 13:34:11 +0200
 In-Reply-To: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
 References: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -41,7 +41,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ILWMZ6CLHYKH3HNSTGHJL72YPV46IGYU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JHZP7RB4FICY4XDD4OQJCVKDC5CUHX2S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -51,7 +51,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168311367885.26.3910180882971886527@mailman-core.alsa-project.org>
+ <168311377075.26.14919941665402646886@mailman-core.alsa-project.org>
 From: AngeloGioacchino Del Regno via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Cc: broonie@kernel.org, tiwai@suse.com, matthias.bgg@gmail.com,
@@ -69,7 +69,7 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 99861F8051B; Wed,  3 May 2023 13:34:34 +0200 (CEST)
+	id CE3D3F8051B; Wed,  3 May 2023 13:36:07 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -81,13 +81,13 @@ Received: from madras.collabora.co.uk (madras.collabora.co.uk
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4B5ACF8032B;
-	Wed,  3 May 2023 13:34:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B5ACF8032B
+	by alsa1.perex.cz (Postfix) with ESMTPS id EE8B1F804B1;
+	Wed,  3 May 2023 13:34:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE8B1F804B1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=RbCuGRvc
+ header.a=rsa-sha256 header.s=mail header.b=HSzFx8Gb
 Received: from IcarusMOD.eternityproject.eu (unknown
  [IPv6:2001:b07:2ed:14ed:c5f8:7372:f042:90a2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -95,31 +95,31 @@ Received: from IcarusMOD.eternityproject.eu (unknown
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id CBFE56603137;
-	Wed,  3 May 2023 12:34:20 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 2552766056D2;
+	Wed,  3 May 2023 12:34:24 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1683113662;
-	bh=Gj6A+un8r1QWElAagp5zDVAgfl0pGla/oA/vRjwfzxY=;
+	s=mail; t=1683113665;
+	bh=lJinXQ8uqP7CnqlUjGVARURr70ufEO+/YnYRE0JoVQw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RbCuGRvcGZM3gl/VcwXhnEvM3JsvydoH6TP/0t+ncFEZqbKdHKjJf73zqAPPzFGW2
-	 nJb6xnVZhrj48PS+tPMX0M9/acadRZOg8lcrb/+KJ2KBclN+dDP175/MdxII2Ymkjs
-	 9RdpRCYeJbB18jj6RE6+ylyJca9UCZaqh/PL7y4ELbMScGnjrVE+BR/z+Zk7aWMAfY
-	 rkzuXMboJZHL1Aza50FpNuMspCTVN8wPuNnh1At2iYvpH6Wm2tDlxuh1c1gd78rC66
-	 EvwCXq3sOiwfLU6HZ0utyT8V6/ntdsT6ZlsszEzNPo5KEf1zfUrm73nvvu0EPlRGPq
-	 qmjKZjSeVITmg==
+	b=HSzFx8GbrJ8qs8mBrbeP+h7EcY1pogSEhyzSPpiZVHTaiFRSXaGbp5P86Vt16B/07
+	 c7V+Xj5slpef3GSmiz/Pf9bnkDA025Mw3wy8GD8HVuedzDpHs1REkrHXWHXaQs8nYw
+	 /J5brCacAgQ3HeDaNVMLMDpgZ4lkPe+LCU+SB0SksECniQJvf0vdahY0Yx7//fAURU
+	 +GvoQmfEw4XOQawfFSXrCABO/+LpP1qxWI3y1jQiPDuCe0ey0iPu9Y/FJmCXAqzLTy
+	 oh2aaralDRQaWp++iEIUJHa+6Lm4w+kgiByyia77GGEm8NnOE4N083/yLbzxO3FkNI
+	 2+9iNKO5hHbrA==
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: lgirdwood@gmail.com
-Subject: [PATCH 1/5] ASoC: SOF: mediatek: mt8195: Use
- snd_sof_ipc_process_reply() helper
-Date: Wed,  3 May 2023 13:34:09 +0200
-Message-Id: <20230503113413.149235-2-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH 3/5] ASoC: mediatek: mt8195-afe-pcm: Simplify runtime PM
+ during probe
+Date: Wed,  3 May 2023 13:34:11 +0200
+Message-Id: <20230503113413.149235-4-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
 References: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ILWMZ6CLHYKH3HNSTGHJL72YPV46IGYU
-X-Message-ID-Hash: ILWMZ6CLHYKH3HNSTGHJL72YPV46IGYU
+Message-ID-Hash: JHZP7RB4FICY4XDD4OQJCVKDC5CUHX2S
+X-Message-ID-Hash: JHZP7RB4FICY4XDD4OQJCVKDC5CUHX2S
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -143,7 +143,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ILWMZ6CLHYKH3HNSTGHJL72YPV46IGYU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JHZP7RB4FICY4XDD4OQJCVKDC5CUHX2S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -152,70 +152,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Function mt8195_get_reply() performs practically the same operation
-as the common snd_sof_ipc_get_reply() helper: removing the custom
-function allows us to simply perform a call to the sof-priv helper
-snd_sof_ipc_process_reply(), simplifying and shortening this driver
-and getting all the benefits of using a common API.
+Use devm_pm_runtime_enable() and pm_runtime_resume_and_get() to
+to simplify the probe function.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- sound/soc/sof/mediatek/mt8195/mt8195.c | 36 +-------------------------
- 1 file changed, 1 insertion(+), 35 deletions(-)
+ sound/soc/mediatek/mt8195/mt8195-afe-pcm.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
-index 42bae574c87a..7d6a568556ea 100644
---- a/sound/soc/sof/mediatek/mt8195/mt8195.c
-+++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
-@@ -49,47 +49,13 @@ static int mt8195_send_msg(struct snd_sof_dev *sdev,
- 	return mtk_adsp_ipc_send(priv->dsp_ipc, MTK_ADSP_IPC_REQ, MTK_ADSP_IPC_OP_REQ);
- }
+diff --git a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
+index 9e45efeada55..a54c16e0aa05 100644
+--- a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
++++ b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
+@@ -3179,16 +3179,16 @@ static int mt8195_afe_pcm_dev_probe(struct platform_device *pdev)
  
--static void mt8195_get_reply(struct snd_sof_dev *sdev)
--{
--	struct snd_sof_ipc_msg *msg = sdev->msg;
--	struct sof_ipc_reply reply;
--	int ret = 0;
--
--	if (!msg) {
--		dev_warn(sdev->dev, "unexpected ipc interrupt\n");
--		return;
+ 	mt8195_afe_parse_of(afe, pdev->dev.of_node);
+ 
+-	pm_runtime_enable(dev);
+-	if (!pm_runtime_enabled(dev)) {
+-		ret = mt8195_afe_runtime_resume(dev);
+-		if (ret)
+-			return ret;
 -	}
 -
--	/* get reply */
--	sof_mailbox_read(sdev, sdev->host_box.offset, &reply, sizeof(reply));
--	if (reply.error < 0) {
--		memcpy(msg->reply_data, &reply, sizeof(reply));
--		ret = reply.error;
--	} else {
--		/* reply has correct size? */
--		if (reply.hdr.size != msg->reply_size) {
--			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
--				msg->reply_size, reply.hdr.size);
--			ret = -EINVAL;
--		}
--
--		/* read the message */
--		if (msg->reply_size > 0)
--			sof_mailbox_read(sdev, sdev->host_box.offset,
--					 msg->reply_data, msg->reply_size);
--	}
--
--	msg->reply_error = ret;
--}
--
- static void mt8195_dsp_handle_reply(struct mtk_adsp_ipc *ipc)
- {
- 	struct adsp_priv *priv = mtk_adsp_ipc_get_data(ipc);
- 	unsigned long flags;
+ 	/* enable clock for regcache get default value from hw */
+ 	afe_priv->pm_runtime_bypass_reg_ctl = true;
+-	pm_runtime_get_sync(dev);
++
++	ret = devm_pm_runtime_enable(dev);
++	if (ret)
++		return ret;
++
++	ret = pm_runtime_resume_and_get(dev);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to resume device\n");
  
- 	spin_lock_irqsave(&priv->sdev->ipc_lock, flags);
--	mt8195_get_reply(priv->sdev);
--	snd_sof_ipc_reply(priv->sdev, 0);
-+	snd_sof_ipc_process_reply(priv->sdev, 0);
- 	spin_unlock_irqrestore(&priv->sdev->ipc_lock, flags);
+ 	afe->regmap = devm_regmap_init_mmio(&pdev->dev, afe->base_addr,
+ 					    &mt8195_afe_regmap_config);
+@@ -3238,7 +3238,10 @@ static int mt8195_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ 	mt8195_afe_init_registers(afe);
+ 
+-	pm_runtime_put_sync(dev);
++	ret = pm_runtime_put_sync(dev);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to suspend device\n");
++
+ 	afe_priv->pm_runtime_bypass_reg_ctl = false;
+ 
+ 	regcache_cache_only(afe->regmap, true);
+@@ -3248,7 +3251,6 @@ static int mt8195_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ err_pm_put:
+ 	pm_runtime_put_sync(dev);
+-	pm_runtime_disable(dev);
+ 
+ 	return ret;
  }
- 
 -- 
 2.40.1
 
