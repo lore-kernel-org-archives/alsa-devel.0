@@ -4,39 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8977EC7619A
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Apr 2023 07:27:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A292C7EE21
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 May 2023 13:29:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57202DF8;
-	Wed,  5 Apr 2023 09:26:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57202DF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6B621920;
+	Thu,  4 May 2023 15:28:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6B621920
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680679620;
-	bh=a2Uu8UI8V0vvRA3hscoyzszAisM9xQQnRCyxHTEGNwM=;
-	h=Subject:From:To:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=OiW1NG43m5Smk/E+hcvMFLZXdD+bdj870qHZFxgHn5McXInxT064aR6LdgAr7qx/J
-	 LP8kRPEQxk1MtFrv2l9m8QDJFvU+q1B05WbsmvD/0PETMwjnwel9TZ1wFcuWqINB71
-	 kunV3rnC0jkNya/sey8XFq/AzPpKRoB7j8Rp9Hkc=
+	s=default; t=1683206982;
+	bh=XcVE/pRi6kObbPAThCQ+Wb5tM0evZSz4G6FVh9dyk/c=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=nwRIMSrQVMwVrGvu4XbSfoGRC2nCjO5Nla8UetfB2EVjqjhEK8zZPF7VdLgb1WpC7
+	 ePQytJo2Kk8otiGAR3hXNR1Q2x+P4X3x+9fikad3RnxziVOrkRlEEb+oPh6Sl/jkOI
+	 AAkRhUoJPTEccP4HJ01R+CQMFEWWBAXWyqvxSL0o=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 746E4F8059F;
-	Wed,  5 Apr 2023 09:20:53 +0200 (CEST)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Subject: [PATCH v3 36/65] clk: versatile: sp810: Add a determine_rate hook
-From: maxime@cerno.tech
-To: alsa-devel@alsa-project.org
-Message-ID: <20221018-clk-range-checks-fixes-v3-36-9a1358472d52@cerno.tech>
-X-Mailman-Approved-At: Wed, 05 Apr 2023 07:18:23 +0000
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C285F80529;
+	Thu,  4 May 2023 15:28:27 +0200 (CEST)
+Received: by alsa1.perex.cz (Postfix, from userid 50401)
+	id 6C97CF8052E; Thu,  4 May 2023 15:28:22 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 17D9DF80114
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2023 15:28:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17D9DF80114
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=ZiynAVbl;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=7mBUa6/K
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3BB391F86B;
+	Thu,  4 May 2023 13:28:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1683206891;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C+6W43a2fWkFOpCH2K4Q8mGyLV9K7KLBu/5DC2IFkR4=;
+	b=ZiynAVbl5fUk2pJ0Vd/0TWOB3g6nMBBnrlOclQL8JxgjZRpDmdaKMo8bYgHWfaLwabu+nG
+	pSKJyGBUfwebUgVxRqEVdIo33+EXsIugkQYy0C1tOMflrX0AQvOHKpVKJzT1I61YIlqpDJ
+	sgPR+5hmJW+QjCdgYyyAPo/jfzZniig=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1683206891;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C+6W43a2fWkFOpCH2K4Q8mGyLV9K7KLBu/5DC2IFkR4=;
+	b=7mBUa6/KX725KNCNPM4CWgRrVBQmBoAMH5z8KwEo0lAFEOdG5h4hZkl2RnP+xizCf4btBl
+	ImrC5QJQSiy4YuDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12A9713444;
+	Thu,  4 May 2023 13:28:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id HWAyA+uyU2SmXgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 04 May 2023 13:28:11 +0000
+Date: Thu, 04 May 2023 15:28:10 +0200
+Message-ID: <87cz3gkyz9.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Subject: Re: [PATCH] ALSA: pcm: fix snd_pcm_playback_silence() with
+ free-running mode
+In-Reply-To: <20230504130007.2208916-1-oswald.buddenhagen@gmx.de>
+References: <20230504130007.2208916-1-oswald.buddenhagen@gmx.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: MI5QFFPXC37VXED34ASMC5ADQLVX4PVZ
+X-Message-ID-Hash: MI5QFFPXC37VXED34ASMC5ADQLVX4PVZ
+X-MailFrom: tiwai@suse.de
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation;
+ header-match-alsa-devel.alsa-project.org-0;
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: alsa-devel@alsa-project.org, Jeff Chua <jeff.chua.linux@gmail.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/II6GH5PFGOI4PGHXA24BPTUJ7437KSW6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MI5QFFPXC37VXED34ASMC5ADQLVX4PVZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -45,5 +112,213 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The content of this message was lost. It was probably cross-posted to
-multiple lists and previously handled on another list.
+On Thu, 04 May 2023 15:00:07 +0200,
+Oswald Buddenhagen wrote:
+> 
+> Turns out that we cannot rely on the application pointer being updated
+> in top-up mode, as its primary purpose is to remain operational in
+> free-running mode as used by dmix.
+> 
+> So we logically revert some bits from commit 9f656705c5faa ("ALSA: pcm:
+> rewrite snd_pcm_playback_silence()"), but we retain the bug fixes and
+> try to make the code paths congruent.
+> 
+> Reported-by: Jeff Chua <jeff.chua.linux@gmail.com>
+> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+
+Honestly speaking, this is really hard to review.  As most of changes
+here are the revert of the previous commit, I'd rather like to get it
+reverted whole once, and re-apply the proper fix gradually.
+
+The auto-silence function is really messy and fragile, and we can't
+follow the code changes easily if the things go from left to right
+and return again.
+
+That said, don't mix the fix and the code refactoring and the revert
+into a pot, but let's separate them.
+
+Through a quick glance over the patch, my concern is how
+runtime->silence_start is handled.  In the older code, silence_start
+is the starting offset, while the offset in the current tree is
+silence_start + silence_filled.
+Is it really OK to reset the silence_start always when it's updated
+(in silent_size==boundary case) as in this patch?
+
+
+thanks,
+
+Takashi
+
+> ---
+>  sound/core/pcm_lib.c    | 82 +++++++++++++++++++++++++++--------------
+>  sound/core/pcm_local.h  |  3 +-
+>  sound/core/pcm_native.c |  6 +--
+>  3 files changed, 60 insertions(+), 31 deletions(-)
+> 
+> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+> index d21c73944efd..cd5f2ef14ab4 100644
+> --- a/sound/core/pcm_lib.c
+> +++ b/sound/core/pcm_lib.c
+> @@ -42,41 +42,69 @@ static int fill_silence_frames(struct snd_pcm_substream *substream,
+>   *
+>   * when runtime->silence_size >= runtime->boundary - fill processed area with silence immediately
+>   */
+> -void snd_pcm_playback_silence(struct snd_pcm_substream *substream)
+> +void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_uframes_t new_hw_ptr)
+>  {
+>  	struct snd_pcm_runtime *runtime = substream->runtime;
+> -	snd_pcm_uframes_t appl_ptr = READ_ONCE(runtime->control->appl_ptr);
+> -	snd_pcm_sframes_t added, hw_avail, frames;
+> +	snd_pcm_sframes_t hw_avail, frames;
+>  	snd_pcm_uframes_t noise_dist, ofs, transfer;
+>  	int err;
+>  
+> -	added = appl_ptr - runtime->silence_start;
+> -	if (added) {
+> -		if (added < 0)
+> -			added += runtime->boundary;
+> -		if (added < runtime->silence_filled)
+> -			runtime->silence_filled -= added;
+> -		else
+> -			runtime->silence_filled = 0;
+> -		runtime->silence_start = appl_ptr;
+> -	}
+> -
+> -	// This will "legitimately" turn negative on underrun, and will be mangled
+> -	// into a huge number by the boundary crossing handling. The initial state
+> -	// might also be not quite sane. The code below MUST account for these cases.
+> -	hw_avail = appl_ptr - runtime->status->hw_ptr;
+> -	if (hw_avail < 0)
+> -		hw_avail += runtime->boundary;
+> -
+> -	noise_dist = hw_avail + runtime->silence_filled;
+>  	if (runtime->silence_size < runtime->boundary) {
+> +		snd_pcm_uframes_t appl_ptr = READ_ONCE(runtime->control->appl_ptr);
+> +		snd_pcm_sframes_t added = appl_ptr - runtime->silence_start;
+> +		if (added) {
+> +			if (added < 0)
+> +				added += runtime->boundary;
+> +			if (added < runtime->silence_filled)
+> +				runtime->silence_filled -= added;
+> +			else
+> +				runtime->silence_filled = 0;
+> +			runtime->silence_start = appl_ptr;
+> +		}
+> +
+> +		if (new_hw_ptr == ULONG_MAX)  // initialization
+> +			new_hw_ptr = runtime->status->hw_ptr;
+> +		// This will "legitimately" turn negative on underrun, and will be mangled
+> +		// into a huge number by the boundary crossing handling. The initial state
+> +		// might also be not quite sane. The code below MUST account for these cases.
+> +		hw_avail = appl_ptr - new_hw_ptr;
+> +		if (hw_avail < 0)
+> +			hw_avail += runtime->boundary;
+> +
+> +		noise_dist = hw_avail + runtime->silence_filled;
+>  		frames = runtime->silence_threshold - noise_dist;
+>  		if (frames <= 0)
+>  			return;
+>  		if (frames > runtime->silence_size)
+>  			frames = runtime->silence_size;
+>  	} else {
+> -		frames = runtime->buffer_size - noise_dist;
+> +		// This filling mode aims at free-running mode (used for example by dmix),
+> +		// which doesn't update the application pointer.
+> +		snd_pcm_uframes_t hw_ptr = runtime->status->hw_ptr;
+> +		if (new_hw_ptr == ULONG_MAX) {  // initialization
+> +			// Usually, this is entered while stopped, before data is queued,
+> +			// so both pointers are expected to be zero.
+> +			hw_avail = runtime->control->appl_ptr - hw_ptr;
+> +			if (hw_avail < 0)
+> +				hw_avail += runtime->boundary;
+> +			// In free-running mode, appl_ptr will be zero even while running,
+> +			// so we end up with a huge number. There is no useful way to
+> +			// handle this, so we just clear the whole buffer.
+> +			runtime->silence_filled = hw_avail > runtime->buffer_size ? 0 : hw_avail;
+> +			runtime->silence_start = hw_ptr;
+> +		} else {
+> +			snd_pcm_sframes_t played = new_hw_ptr - hw_ptr;
+> +			if (played) {
+> +				if (played < 0)
+> +					played += runtime->boundary;
+> +				if (played < runtime->silence_filled)
+> +					runtime->silence_filled -= played;
+> +				else  // This may happen due to a reset.
+> +					runtime->silence_filled = 0;
+> +				runtime->silence_start = new_hw_ptr;
+> +			}
+> +		}
+> +		frames = runtime->buffer_size - runtime->silence_filled;
+>  		if (frames <= 0)
+>  			return;
+>  	}
+> @@ -425,6 +453,10 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+>  		return 0;
+>  	}
+>  
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+> +	    runtime->silence_size > 0)
+> +		snd_pcm_playback_silence(substream, new_hw_ptr);
+> +
+>  	if (in_interrupt) {
+>  		delta = new_hw_ptr - runtime->hw_ptr_interrupt;
+>  		if (delta < 0)
+> @@ -442,10 +474,6 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+>  		runtime->hw_ptr_wrap += runtime->boundary;
+>  	}
+>  
+> -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+> -	    runtime->silence_size > 0)
+> -		snd_pcm_playback_silence(substream);
+> -
+>  	update_audio_tstamp(substream, &curr_tstamp, &audio_tstamp);
+>  
+>  	return snd_pcm_update_state(substream, runtime);
+> diff --git a/sound/core/pcm_local.h b/sound/core/pcm_local.h
+> index 42fe3a4e9154..ecb21697ae3a 100644
+> --- a/sound/core/pcm_local.h
+> +++ b/sound/core/pcm_local.h
+> @@ -29,7 +29,8 @@ int snd_pcm_update_state(struct snd_pcm_substream *substream,
+>  			 struct snd_pcm_runtime *runtime);
+>  int snd_pcm_update_hw_ptr(struct snd_pcm_substream *substream);
+>  
+> -void snd_pcm_playback_silence(struct snd_pcm_substream *substream);
+> +void snd_pcm_playback_silence(struct snd_pcm_substream *substream,
+> +			      snd_pcm_uframes_t new_hw_ptr);
+>  
+>  static inline snd_pcm_uframes_t
+>  snd_pcm_avail(struct snd_pcm_substream *substream)
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index 3d0c4a5b701b..94185267a7b9 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -958,7 +958,7 @@ static int snd_pcm_sw_params(struct snd_pcm_substream *substream,
+>  	if (snd_pcm_running(substream)) {
+>  		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+>  		    runtime->silence_size > 0)
+> -			snd_pcm_playback_silence(substream);
+> +			snd_pcm_playback_silence(substream, ULONG_MAX);
+>  		err = snd_pcm_update_state(substream, runtime);
+>  	}
+>  	snd_pcm_stream_unlock_irq(substream);
+> @@ -1455,7 +1455,7 @@ static void snd_pcm_post_start(struct snd_pcm_substream *substream,
+>  	__snd_pcm_set_state(runtime, state);
+>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+>  	    runtime->silence_size > 0)
+> -		snd_pcm_playback_silence(substream);
+> +		snd_pcm_playback_silence(substream, ULONG_MAX);
+>  	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MSTART);
+>  }
+>  
+> @@ -1916,7 +1916,7 @@ static void snd_pcm_post_reset(struct snd_pcm_substream *substream,
+>  	runtime->control->appl_ptr = runtime->status->hw_ptr;
+>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+>  	    runtime->silence_size > 0)
+> -		snd_pcm_playback_silence(substream);
+> +		snd_pcm_playback_silence(substream, ULONG_MAX);
+>  	snd_pcm_stream_unlock_irq(substream);
+>  }
+>  
+> -- 
+> 2.40.0.152.g15d061e6df
+> 
