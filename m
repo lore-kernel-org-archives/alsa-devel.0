@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A91AC77B73
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 07:45:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ACF4C77B75
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 07:46:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBAFD12BE;
-	Mon,  8 May 2023 09:44:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBAFD12BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29E0812B6;
+	Mon,  8 May 2023 09:45:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29E0812B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683531943;
-	bh=b40Kk6ygL/6dN8P/x+3akpBi4xadkxrZDsPy/MKnihk=;
-	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1683531966;
+	bh=vx6dPJ36i9KsHe8ABEHNP0BP7x/22DWyM4bp7+N9vkc=;
+	h=Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=rRXEe0cWwhENpzskum4/r+GRViqurNn/0q/n11qj2cBJ4ScA6zybs7xFG5yB2yJdg
-	 PA9rD/vTNaAxQkE8ixESMs5pNQxmbkeGJXwtFUw4dqRYFuTLii0bEPPus46j3BHxV1
-	 gXbIhhtiAYnIwfFX3AjtkO4qe2bDQJNE/QhC84HM=
+	b=jjuk15P1YYJ03Mwa+1XUcmC9BNjhBseibeTWc5QepgRR9fp7avl8qpLAsYjM3jWFm
+	 G6/v9iT5VRHEP7lX0JgkGHYL0FHC8fLq5zwIdWrsE/DnzsD0/4GO/TfGHC16gvUpu4
+	 Ekl+GnHephmy0GSvV39A2HaSzNYQuWEB7H5mzlMc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07F4CF8014C;
-	Mon,  8 May 2023 09:44:34 +0200 (CEST)
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 1/2] ASoC: dwc: add optional reset support
-Date: Thu,  4 May 2023 10:16:17 +0300
+	by alsa1.perex.cz (Postfix) with ESMTP id 81EB8F80310;
+	Mon,  8 May 2023 09:44:55 +0200 (CEST)
+Date: Thu,  4 May 2023 17:21:42 +0800
+Subject: [PATCH] ASoC: soc-pcm: Fix and cleanup DPCM locking
+To: tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-X-Mailman-Approved-At: Mon, 08 May 2023 07:44:30 +0000
+X-Mailman-Approved-At: Mon, 08 May 2023 07:44:53 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6WBHYGGE6FWYKFSHT4IZBGXN56OTH7MB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UEMPFXJHIJEPL2H3FFFZOR3WJJ23WR5M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -46,88 +46,105 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
-Message-ID: <168353187320.26.35269573829590476@mailman-core.alsa-project.org>
-From: Maxim Kochetkov via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Maxim Kochetkov <fido_max@inbox.ru>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com,
- p.zabel@pengutronix.de, ckeepax@opensource.cirrus.com,
- u.kleine-koenig@pengutronix.de, nicolas.ferre@microchip.com,
- Maxim Kochetkov <fido_max@inbox.ru>
+Message-ID: 
+ <168353189472.26.5536575048002012231@mailman-core.alsa-project.org>
+From: yixuanjiang via Alsa-devel <alsa-devel@alsa-project.org>
+Reply-To: yixuanjiang <yixuanjiang@google.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.de>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, stable@vger.kernel.org
 Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A94AF804B1; Thu,  4 May 2023 09:16:41 +0200 (CEST)
+	id 1564CF8052D; Thu,  4 May 2023 11:23:12 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_HI,
-	RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	URIBL_BLOCKED shortcircuit=no autolearn=ham autolearn_force=no
-	version=3.4.6
-Received: from smtpng3.i.mail.ru (smtpng3.i.mail.ru [94.100.177.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+X-Spam-Status: No, score=-12.7 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+	SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL shortcircuit=no
+	autolearn=ham autolearn_force=no version=3.4.6
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
+ [IPv6:2607:f8b0:4864:20::b49])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2F7E6F800EC
-	for <alsa-devel@alsa-project.org>; Thu,  4 May 2023 09:16:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F7E6F800EC
+	by alsa1.perex.cz (Postfix) with ESMTPS id C8503F80520
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2023 11:22:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8503F80520
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=inbox.ru header.i=@inbox.ru header.a=rsa-sha256
- header.s=mail4 header.b=IeT+9ypG
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru;
- s=mail4;
-	h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc;
- bh=hKo0Mv5u8yOZd6F3jwlctKzLF0X+Iv4/yaslyz4Ip2M=;
-	t=1683184598;x=1683274598;
-	b=IeT+9ypG4BzqYdoWYlBDVXgwgUO83+80+0E7YztAyCacYz0UiJHxSbisNMtf/qr45Q7300k5taswrdRr6LbEjq/KY9bszIDeTvtFRTsL4Tmg2caJ0lLYOyHKo8QIA2Kjbm7JF/WMnvDlXYypceDmVcKkKO2I072d7elFLcMIde5fzRn0yW298z8mUtDmCyZ5uieEPg167plGMAhh+pCdb3wlMAURZNKPcIRD15ZE9BadrIsQruyZYSOy5WA1iOK7mrqADp3ta0gy+SETSkYrgKwDNWPzI7XLAB05LbqUP3yXtHJSa/xIDiiHG/rFmT1t6TtBFSL0QTDzuZggG9wewA==;
-Received: by smtpng3.m.smailru.net with esmtpa (envelope-from
- <fido_max@inbox.ru>)
-	id 1puTCY-0007k3-0L; Thu, 04 May 2023 10:16:30 +0300
-From: Maxim Kochetkov <fido_max@inbox.ru>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 1/2] ASoC: dwc: add optional reset support
-Date: Thu,  4 May 2023 10:16:17 +0300
-Message-Id: <20230504071618.52012-1-fido_max@inbox.ru>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtpng3.m.smailru.net;
- auth=pass smtp.auth=fido_max@inbox.ru smtp.mailfrom=fido_max@inbox.ru
-X-Mailru-Src: smtp
-X-7564579A: 78E4E2B564C1792B
-X-77F55803: 
- 4F1203BC0FB41BD9EB47717F7D295292E0516141E5D86376F2DFE8ECF2FCA72A182A05F53808504034A9434BA99DB5352780EB93A9FD84D94814A8A05414E6CC0D364D197ADC1A70
-X-7FA49CB5: 
- FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE789066434B85BF7C7EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006376AEB812070489DF38638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D849ACEA835D8E2583257C32809AED315D6F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE709B92020B71E24959FA2833FD35BB23D9E625A9149C048EE85C08DA1A1AB276ACB629EEF1311BF91D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8BAC2A732D1458794B389733CBF5DBD5E9B5C8C57E37DE458B9E9CE733340B9D5F3BBE47FD9DD3FB595F5C1EE8F4F765FC8C7ADC89C2F0B2A5E2021AF6380DFAD18AA50765F790063735872C767BF85DA227C277FBC8AE2E8BDAE3FA6833AEA0C275ECD9A6C639B01B4E70A05D1297E1BBCB5012B2E24CD356
-X-C1DE0DAB: 
- 0D63561A33F958A503439DE132D5218B2658D2C8601A3F543E15D5C58A09B520F87CCE6106E1FC07E67D4AC08A07B9B062B3BD3CC35DA5889C5DF10A05D560A950611B66E3DA6D700B0A020F03D25A092FFDA4F57982C5F4CB5012B2E24CD356
-X-C8649E89: 
- 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF07B5384B90BFA1E895DC25B431169CF5437927BBE18CB5AC602C074FBC6CF64449C71475D3C8093114EE98CD8E9D35FC436DDACEF6D4C3FDB5CF41F06F5DEB836E346BF9FA413E5543082AE146A756F3
-X-D57D3AED: 
- 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojtUGOBMG7VVMIApYSxRkWyw==
-X-Mailru-Sender: 
- 689FA8AB762F73933AF1F914F131DBF5234E1EED9E5D9F257AEAE2297C377E2D98CC072019C18A892CA7F8C7C9492E1F2F5E575105D0B01ADBE2EF17B331888EEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
-X-MailFrom: fido_max@inbox.ru
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20221208 header.b=vG7euVaw
+Received: by mail-yb1-xb49.google.com with SMTP id
+ 3f1490d57ef6-b9a7766d1f2so334787276.3
+        for <alsa-devel@alsa-project.org>;
+ Thu, 04 May 2023 02:22:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1683192174; x=1685784174;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jHuDeVQwq+SLO8mpsZeFy0esCdKvNG9damaRghoQ8Ck=;
+        b=vG7euVawjosD+ZyeS8G4vdsF4OPhOHZaX+xr418g2cNcdeJaHcWPV2xvOm/7xyRvCO
+         eMa5kcwhsjXhk5ESxJ6EgAougehijas2B/V8EXYI4mxIE7w/RCjc+jmB7SimGBV3aBQw
+         veFkuVZwLHQAefRWxTrfAvinilX2MAHyDEBpn8f+jcHM9GA7rTI5+yUSnjtHir615YPY
+         S919iC1y/YoFwLstMDfokQ36n2sZnJpEvyVqQS6OW2WsEhG24mcYYgdWN06MuH8sBHHq
+         eqpyfisGHiDGC/ZTkSkqEhbB4FwAAqafZfxdW0K060jyuQqK59sGNqba4BP6iuVMn9Bc
+         bFQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683192174; x=1685784174;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jHuDeVQwq+SLO8mpsZeFy0esCdKvNG9damaRghoQ8Ck=;
+        b=Wc1AB1XQdx4qUbM3LoTZnFL+6vJOfWbEcJDiD7w2/a5/ctd3r18FoUOOoSD4d/FJe7
+         Tr9IKyxvtReuawI/k4czF5AIntlFyZ1ZbAxDAtlt2v1KDbLnuW4UwVc3h4S8ADGcwDp1
+         KJ60doSSEf7LvuG0alwqfb8tTkjToV3xjBflznyXL6sUay2uNUQ48bZ757zQQpAdtsMn
+         a7cWoBzr5q5LWJPXF4CqKSlBk/4s4icTPn2TTA3LGmE9WRfqXTdJH2cJGAnW6TdcTC6G
+         kwPLV8+qFlErOSbk7gk87RAbv8ozZiPp7Q9SyJegMX1hfdP4c3h5Xfy7Q2jduTT0plLQ
+         rMfA==
+X-Gm-Message-State: AC+VfDzCUofjjbsrPTvg7JgkO6zCUayhPGTRIDh3C5oVleAwXOJIKFjC
+	KCWCFppRBaXutH4PmFLfxr0sOd9W1ybdBlrgKg==
+X-Google-Smtp-Source: 
+ ACHHUZ7Fqp/fwWEnCS+k4jfVNnwOa0YF7vE1Rjl6gARL+j26U4NBwMCfLAPT9nj7v6raS5vxylAUP5LKU7TuSiKvLQ==
+X-Received: from yixuanjiang.ntc.corp.google.com
+ ([2401:fa00:fc:202:770:8186:365d:f82])
+ (user=yixuanjiang job=sendgmr) by 2002:a05:6902:1003:b0:b8f:54f5:89ff with
+ SMTP id w3-20020a056902100300b00b8f54f589ffmr15315973ybt.11.1683192173847;
+ Thu, 04 May 2023 02:22:53 -0700 (PDT)
+Date: Thu,  4 May 2023 17:21:42 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.40.1.495.gc816e09b53d-goog
+Message-ID: <20230504092142.4190069-1-yixuanjiang@google.com>
+Subject: [PATCH] ASoC: soc-pcm: Fix and cleanup DPCM locking
+From: yixuanjiang <yixuanjiang@google.com>
+To: tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: 
+ 3bXlTZAsKCtYQAPM2FBA2F88GG8D6.4GE2DK2-56N6D2DK2-HJGB64L.GJ8@flex--yixuanjiang.bounces.google.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 6WBHYGGE6FWYKFSHT4IZBGXN56OTH7MB
-X-Message-ID-Hash: 6WBHYGGE6FWYKFSHT4IZBGXN56OTH7MB
-X-Mailman-Approved-At: Mon, 08 May 2023 07:44:30 +0000
-CC: lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com,
- p.zabel@pengutronix.de, ckeepax@opensource.cirrus.com,
- u.kleine-koenig@pengutronix.de, nicolas.ferre@microchip.com,
- Maxim Kochetkov <fido_max@inbox.ru>
+Message-ID-Hash: UEMPFXJHIJEPL2H3FFFZOR3WJJ23WR5M
+X-Message-ID-Hash: UEMPFXJHIJEPL2H3FFFZOR3WJJ23WR5M
+X-Mailman-Approved-At: Mon, 08 May 2023 07:44:53 +0000
+CC: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.de>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, stable@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6WBHYGGE6FWYKFSHT4IZBGXN56OTH7MB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UEMPFXJHIJEPL2H3FFFZOR3WJJ23WR5M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -136,112 +153,756 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some SoC may have resets for I2S subsystem. So add optional reset support.
+From: Takashi Iwai <tiwai@suse.de>
 
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
+The existing locking for DPCM has several issues
+a) a confusing mix of card->mutex and card->pcm_mutex.
+b) a dpcm_lock spinlock added inconsistently and on paths that could
+be recursively taken. The use of irqsave/irqrestore was also overkill.
+
+The suggested model is:
+
+1) The pcm_mutex is the top-most protection of BE links in the FE. The
+pcm_mutex is applied always on either the top PCM callbacks or the
+external call from DAPM, not taken in the internal functions.
+
+2) the FE stream lock is taken in higher levels before invoking
+dpcm_be_dai_trigger()
+
+3) when adding and deleting a BE, both the pcm_mutex and FE stream
+lock are taken.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+[clarification of commit message by plbossart]
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20211207173745.15850-4-pierre-louis.bossart@linux.intel.com
+Cc: stable@vger.kernel.org # 5.15.x
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/dwc/dwc-i2s.c | 27 +++++++++++++++++++++------
- sound/soc/dwc/local.h   |  1 +
- 2 files changed, 22 insertions(+), 6 deletions(-)
+ include/sound/soc.h  |   2 -
+ sound/soc/soc-core.c |   1 -
+ sound/soc/soc-pcm.c  | 229 ++++++++++++++++++++++++++++---------------
+ 3 files changed, 152 insertions(+), 80 deletions(-)
 
-diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-index acdf98b2ee9c..e2b2ba014a2e 100644
---- a/sound/soc/dwc/dwc-i2s.c
-+++ b/sound/soc/dwc/dwc-i2s.c
-@@ -17,6 +17,7 @@
- #include <linux/io.h>
- #include <linux/interrupt.h>
- #include <linux/module.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <linux/pm_runtime.h>
- #include <sound/designware_i2s.h>
-@@ -648,6 +649,14 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 	if (IS_ERR(dev->i2s_base))
- 		return PTR_ERR(dev->i2s_base);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 8e6dd8a257c5..5872a8864f3b 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -893,8 +893,6 @@ struct snd_soc_card {
+ 	struct mutex pcm_mutex;
+ 	enum snd_soc_pcm_subclass pcm_subclass;
  
-+	dev->reset = devm_reset_control_array_get_optional_shared(&pdev->dev);
-+	if (IS_ERR(dev->reset))
-+		return PTR_ERR(dev->reset);
+-	spinlock_t dpcm_lock;
+-
+ 	int (*probe)(struct snd_soc_card *card);
+ 	int (*late_probe)(struct snd_soc_card *card);
+ 	int (*remove)(struct snd_soc_card *card);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 1b1749b920f4..a5b3ee69fb88 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2339,7 +2339,6 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 	mutex_init(&card->mutex);
+ 	mutex_init(&card->dapm_mutex);
+ 	mutex_init(&card->pcm_mutex);
+-	spin_lock_init(&card->dpcm_lock);
+ 
+ 	return snd_soc_bind_card(card);
+ }
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 3b673477f621..07ad98934c7a 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -27,6 +27,31 @@
+ #include <sound/soc-link.h>
+ #include <sound/initval.h>
+ 
++static inline void snd_soc_dpcm_mutex_lock(struct snd_soc_pcm_runtime *rtd)
++{
++	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
++}
 +
-+	ret = reset_control_deassert(dev->reset);
-+	if (ret)
-+		return ret;
++static inline void snd_soc_dpcm_mutex_unlock(struct snd_soc_pcm_runtime *rtd)
++{
++	mutex_unlock(&rtd->card->pcm_mutex);
++}
 +
- 	dev->dev = &pdev->dev;
++#define snd_soc_dpcm_mutex_assert_held(rtd) \
++	lockdep_assert_held(&(rtd)->card->pcm_mutex)
++
++static inline void snd_soc_dpcm_stream_lock_irq(struct snd_soc_pcm_runtime *rtd,
++						int stream)
++{
++	snd_pcm_stream_lock_irq(snd_soc_dpcm_get_substream(rtd, stream));
++}
++
++static inline void snd_soc_dpcm_stream_unlock_irq(struct snd_soc_pcm_runtime *rtd,
++						  int stream)
++{
++	snd_pcm_stream_unlock_irq(snd_soc_dpcm_get_substream(rtd, stream));
++}
++
+ #define DPCM_MAX_BE_USERS	8
  
- 	irq = platform_get_irq_optional(pdev, 0);
-@@ -656,7 +665,7 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 				pdev->name, dev);
- 		if (ret < 0) {
- 			dev_err(&pdev->dev, "failed to request irq\n");
--			return ret;
-+			goto err_assert_reset;
- 		}
+ static inline const char *soc_cpu_dai_name(struct snd_soc_pcm_runtime *rtd)
+@@ -73,7 +98,6 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
+ 	struct snd_pcm_hw_params *params = &fe->dpcm[stream].hw_params;
+ 	struct snd_soc_dpcm *dpcm;
+ 	ssize_t offset = 0;
+-	unsigned long flags;
+ 
+ 	/* FE state */
+ 	offset += scnprintf(buf + offset, size - offset,
+@@ -101,7 +125,6 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
+ 		goto out;
  	}
  
-@@ -676,24 +685,27 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 		ret = dw_configure_dai_by_dt(dev, dw_i2s_dai, res);
+-	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 		params = &dpcm->hw_params;
+@@ -122,7 +145,6 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
+ 					   params_channels(params),
+ 					   params_rate(params));
  	}
- 	if (ret < 0)
--		return ret;
-+		goto err_assert_reset;
+-	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ out:
+ 	return offset;
+ }
+@@ -145,11 +167,13 @@ static ssize_t dpcm_state_read_file(struct file *file, char __user *user_buf,
+ 	if (!buf)
+ 		return -ENOMEM;
  
- 	if (dev->capability & DW_I2S_MASTER) {
- 		if (pdata) {
- 			dev->i2s_clk_cfg = pdata->i2s_clk_cfg;
- 			if (!dev->i2s_clk_cfg) {
- 				dev_err(&pdev->dev, "no clock configure method\n");
--				return -ENODEV;
-+				ret = -ENODEV;
-+				goto err_assert_reset;
- 			}
- 		}
- 		dev->clk = devm_clk_get(&pdev->dev, clk_id);
++	snd_soc_dpcm_mutex_lock(fe);
+ 	for_each_pcm_streams(stream)
+ 		if (snd_soc_dai_stream_valid(asoc_rtd_to_cpu(fe, 0), stream))
+ 			offset += dpcm_show_state(fe, stream,
+ 						  buf + offset,
+ 						  out_count - offset);
++	snd_soc_dpcm_mutex_unlock(fe);
  
--		if (IS_ERR(dev->clk))
--			return PTR_ERR(dev->clk);
-+		if (IS_ERR(dev->clk)) {
-+			ret = PTR_ERR(dev->clk);
-+			goto err_assert_reset;
-+		}
+ 	ret = simple_read_from_buffer(user_buf, count, ppos, buf, offset);
  
- 		ret = clk_prepare_enable(dev->clk);
- 		if (ret < 0)
--			return ret;
-+			goto err_assert_reset;
+@@ -221,14 +245,14 @@ static void dpcm_set_fe_update_state(struct snd_soc_pcm_runtime *fe,
+ 	struct snd_pcm_substream *substream =
+ 		snd_soc_dpcm_get_substream(fe, stream);
+ 
+-	snd_pcm_stream_lock_irq(substream);
++	snd_soc_dpcm_stream_lock_irq(fe, stream);
+ 	if (state == SND_SOC_DPCM_UPDATE_NO && fe->dpcm[stream].trigger_pending) {
+ 		dpcm_fe_dai_do_trigger(substream,
+ 				       fe->dpcm[stream].trigger_pending - 1);
+ 		fe->dpcm[stream].trigger_pending = 0;
  	}
+ 	fe->dpcm[stream].runtime_update = state;
+-	snd_pcm_stream_unlock_irq(substream);
++	snd_soc_dpcm_stream_unlock_irq(fe, stream);
+ }
  
- 	dev_set_drvdata(&pdev->dev, dev);
-@@ -727,6 +739,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
- err_clk_disable:
- 	if (dev->capability & DW_I2S_MASTER)
- 		clk_disable_unprepare(dev->clk);
-+err_assert_reset:
-+	reset_control_assert(dev->reset);
+ static void dpcm_set_be_update_state(struct snd_soc_pcm_runtime *be,
+@@ -256,7 +280,7 @@ void snd_soc_runtime_action(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_soc_dai *dai;
+ 	int i;
+ 
+-	lockdep_assert_held(&rtd->card->pcm_mutex);
++	snd_soc_dpcm_mutex_assert_held(rtd);
+ 
+ 	for_each_rtd_dais(rtd, i, dai)
+ 		snd_soc_dai_action(dai, stream, action);
+@@ -309,6 +333,8 @@ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
+ {
+ 	struct snd_soc_dpcm *dpcm;
+ 
++	snd_soc_dpcm_mutex_assert_held(fe);
++
+ 	for_each_dpcm_be(fe, dir, dpcm) {
+ 
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+@@ -646,14 +672,14 @@ static int soc_pcm_components_close(struct snd_pcm_substream *substream,
  	return ret;
  }
  
-@@ -737,6 +751,7 @@ static void dw_i2s_remove(struct platform_device *pdev)
- 	if (dev->capability & DW_I2S_MASTER)
- 		clk_disable_unprepare(dev->clk);
+-static int soc_pcm_clean(struct snd_pcm_substream *substream, int rollback)
++static int soc_pcm_clean(struct snd_soc_pcm_runtime *rtd,
++			 struct snd_pcm_substream *substream, int rollback)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_dai *dai;
+ 	int i;
  
-+	reset_control_assert(dev->reset);
- 	pm_runtime_disable(&pdev->dev);
+-	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
++	snd_soc_dpcm_mutex_assert_held(rtd);
+ 
+ 	if (!rollback)
+ 		snd_soc_runtime_deactivate(rtd, substream->stream);
+@@ -665,9 +691,6 @@ static int soc_pcm_clean(struct snd_pcm_substream *substream, int rollback)
+ 
+ 	soc_pcm_components_close(substream, rollback);
+ 
+-
+-	mutex_unlock(&rtd->card->pcm_mutex);
+-
+ 	snd_soc_pcm_component_pm_runtime_put(rtd, substream, rollback);
+ 
+ 	for_each_rtd_components(rtd, i, component)
+@@ -682,9 +705,21 @@ static int soc_pcm_clean(struct snd_pcm_substream *substream, int rollback)
+  * freed here. The cpu DAI, codec DAI, machine and components are also
+  * shutdown.
+  */
++static int __soc_pcm_close(struct snd_soc_pcm_runtime *rtd,
++			   struct snd_pcm_substream *substream)
++{
++	return soc_pcm_clean(rtd, substream, 0);
++}
++
++/* PCM close ops for non-DPCM streams */
+ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ {
+-	return soc_pcm_clean(substream, 0);
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++
++	snd_soc_dpcm_mutex_lock(rtd);
++	soc_pcm_clean(rtd, substream, 0);
++	snd_soc_dpcm_mutex_unlock(rtd);
++	return 0;
  }
  
-diff --git a/sound/soc/dwc/local.h b/sound/soc/dwc/local.h
-index 1c361eb6127e..d64bd4f8fd34 100644
---- a/sound/soc/dwc/local.h
-+++ b/sound/soc/dwc/local.h
-@@ -89,6 +89,7 @@ union dw_i2s_snd_dma_data {
- struct dw_i2s_dev {
- 	void __iomem *i2s_base;
- 	struct clk *clk;
-+	struct reset_control *reset;
- 	int active;
- 	unsigned int capability;
- 	unsigned int quirks;
+ static int soc_hw_sanity_check(struct snd_pcm_substream *substream)
+@@ -730,21 +765,21 @@ static int soc_hw_sanity_check(struct snd_pcm_substream *substream)
+  * then initialized and any private data can be allocated. This also calls
+  * startup for the cpu DAI, component, machine and codec DAI.
+  */
+-static int soc_pcm_open(struct snd_pcm_substream *substream)
++static int __soc_pcm_open(struct snd_soc_pcm_runtime *rtd,
++			  struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_dai *dai;
+ 	int i, ret = 0;
+ 
++	snd_soc_dpcm_mutex_assert_held(rtd);
++
+ 	for_each_rtd_components(rtd, i, component)
+ 		pinctrl_pm_select_default_state(component->dev);
+ 
+ 	ret = snd_soc_pcm_component_pm_runtime_get(rtd, substream);
+ 	if (ret < 0)
+-		goto pm_err;
+-
+-	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
++		goto err;
+ 
+ 	ret = soc_pcm_components_open(substream);
+ 	if (ret < 0)
+@@ -786,16 +821,26 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	snd_soc_runtime_activate(rtd, substream->stream);
+ 	ret = 0;
+ err:
+-	mutex_unlock(&rtd->card->pcm_mutex);
+-pm_err:
+ 	if (ret < 0) {
+-		soc_pcm_clean(substream, 1);
++		soc_pcm_clean(rtd, substream, 1);
+ 		dev_err(rtd->dev, "%s() failed (%d)", __func__, ret);
+ 	}
+ 
+ 	return ret;
+ }
+ 
++/* PCM open ops for non-DPCM streams */
++static int soc_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	int ret;
++
++	snd_soc_dpcm_mutex_lock(rtd);
++	ret = __soc_pcm_open(rtd, substream);
++	snd_soc_dpcm_mutex_unlock(rtd);
++	return ret;
++}
++
+ static void codec2codec_close_delayed_work(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	/*
+@@ -811,13 +856,13 @@ static void codec2codec_close_delayed_work(struct snd_soc_pcm_runtime *rtd)
+  * rate, etc.  This function is non atomic and can be called multiple times,
+  * it can refer to the runtime info.
+  */
+-static int soc_pcm_prepare(struct snd_pcm_substream *substream)
++static int __soc_pcm_prepare(struct snd_soc_pcm_runtime *rtd,
++			     struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *dai;
+ 	int i, ret = 0;
+ 
+-	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
++	snd_soc_dpcm_mutex_assert_held(rtd);
+ 
+ 	ret = snd_soc_link_prepare(substream);
+ 	if (ret < 0)
+@@ -845,14 +890,24 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ 		snd_soc_dai_digital_mute(dai, 0, substream->stream);
+ 
+ out:
+-	mutex_unlock(&rtd->card->pcm_mutex);
+-
+ 	if (ret < 0)
+ 		dev_err(rtd->dev, "ASoC: %s() failed (%d)\n", __func__, ret);
+ 
+ 	return ret;
+ }
+ 
++/* PCM prepare ops for non-DPCM streams */
++static int soc_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	int ret;
++
++	snd_soc_dpcm_mutex_lock(rtd);
++	ret = __soc_pcm_prepare(rtd, substream);
++	snd_soc_dpcm_mutex_unlock(rtd);
++	return ret;
++}
++
+ static void soc_pcm_codec_params_fixup(struct snd_pcm_hw_params *params,
+ 				       unsigned int mask)
+ {
+@@ -864,13 +919,13 @@ static void soc_pcm_codec_params_fixup(struct snd_pcm_hw_params *params,
+ 	interval->max = channels;
+ }
+ 
+-static int soc_pcm_hw_clean(struct snd_pcm_substream *substream, int rollback)
++static int soc_pcm_hw_clean(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_substream *substream, int rollback)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *dai;
+ 	int i;
+ 
+-	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
++	snd_soc_dpcm_mutex_assert_held(rtd);
+ 
+ 	/* clear the corresponding DAIs parameters when going to be inactive */
+ 	for_each_rtd_dais(rtd, i, dai) {
+@@ -900,16 +955,28 @@ static int soc_pcm_hw_clean(struct snd_pcm_substream *substream, int rollback)
+ 		snd_soc_dai_hw_free(dai, substream, rollback);
+ 	}
+ 
+-	mutex_unlock(&rtd->card->pcm_mutex);
+ 	return 0;
+ }
+ 
+ /*
+  * Frees resources allocated by hw_params, can be called multiple times
+  */
++static int __soc_pcm_hw_free(struct snd_soc_pcm_runtime *rtd,
++			     struct snd_pcm_substream *substream)
++{
++	return soc_pcm_hw_clean(rtd, substream, 0);
++}
++
++/* hw_free PCM ops for non-DPCM streams */
+ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ {
+-	return soc_pcm_hw_clean(substream, 0);
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	int ret;
++
++	snd_soc_dpcm_mutex_lock(rtd);
++	ret = __soc_pcm_hw_free(rtd, substream);
++	snd_soc_dpcm_mutex_unlock(rtd);
++	return ret;
+ }
+ 
+ /*
+@@ -917,15 +984,15 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+  * function can also be called multiple times and can allocate buffers
+  * (using snd_pcm_lib_* ). It's non-atomic.
+  */
+-static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+-				struct snd_pcm_hw_params *params)
++static int __soc_pcm_hw_params(struct snd_soc_pcm_runtime *rtd,
++			       struct snd_pcm_substream *substream,
++			       struct snd_pcm_hw_params *params)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *cpu_dai;
+ 	struct snd_soc_dai *codec_dai;
+ 	int i, ret = 0;
+ 
+-	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
++	snd_soc_dpcm_mutex_assert_held(rtd);
+ 
+ 	ret = soc_pcm_params_symmetry(substream, params);
+ 	if (ret)
+@@ -997,16 +1064,27 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	ret = snd_soc_pcm_component_hw_params(substream, params);
+ out:
+-	mutex_unlock(&rtd->card->pcm_mutex);
+-
+ 	if (ret < 0) {
+-		soc_pcm_hw_clean(substream, 1);
++		soc_pcm_hw_clean(rtd, substream, 1);
+ 		dev_err(rtd->dev, "ASoC: %s() failed (%d)\n", __func__, ret);
+ 	}
+ 
+ 	return ret;
+ }
+ 
++/* hw_params PCM ops for non-DPCM streams */
++static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	int ret;
++
++	snd_soc_dpcm_mutex_lock(rtd);
++	ret = __soc_pcm_hw_params(rtd, substream, params);
++	snd_soc_dpcm_mutex_unlock(rtd);
++	return ret;
++}
++
+ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+@@ -1124,7 +1202,8 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
+ 	struct snd_soc_dpcm *dpcm;
+-	unsigned long flags;
++
++	snd_soc_dpcm_mutex_assert_held(fe);
+ 
+ 	/* only add new dpcms */
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+@@ -1140,10 +1219,10 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+ 	dpcm->fe = fe;
+ 	be->dpcm[stream].runtime = fe->dpcm[stream].runtime;
+ 	dpcm->state = SND_SOC_DPCM_LINK_STATE_NEW;
+-	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++	snd_soc_dpcm_stream_lock_irq(fe, stream);
+ 	list_add(&dpcm->list_be, &fe->dpcm[stream].be_clients);
+ 	list_add(&dpcm->list_fe, &be->dpcm[stream].fe_clients);
+-	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++	snd_soc_dpcm_stream_unlock_irq(fe, stream);
+ 
+ 	dev_dbg(fe->dev, "connected new DPCM %s path %s %s %s\n",
+ 			stream ? "capture" : "playback",  fe->dai_link->name,
+@@ -1188,8 +1267,10 @@ static void dpcm_be_reparent(struct snd_soc_pcm_runtime *fe,
+ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
+ {
+ 	struct snd_soc_dpcm *dpcm, *d;
+-	unsigned long flags;
+ 
++	snd_soc_dpcm_mutex_assert_held(fe);
++
++	snd_soc_dpcm_stream_lock_irq(fe, stream);
+ 	for_each_dpcm_be_safe(fe, stream, dpcm, d) {
+ 		dev_dbg(fe->dev, "ASoC: BE %s disconnect check for %s\n",
+ 				stream ? "capture" : "playback",
+@@ -1207,12 +1288,11 @@ void dpcm_be_disconnect(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 		dpcm_remove_debugfs_state(dpcm);
+ 
+-		spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 		list_del(&dpcm->list_be);
+ 		list_del(&dpcm->list_fe);
+-		spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 		kfree(dpcm);
+ 	}
++	snd_soc_dpcm_stream_unlock_irq(fe, stream);
+ }
+ 
+ /* get BE for DAI widget and stream */
+@@ -1426,12 +1506,9 @@ int dpcm_process_paths(struct snd_soc_pcm_runtime *fe,
+ void dpcm_clear_pending_state(struct snd_soc_pcm_runtime *fe, int stream)
+ {
+ 	struct snd_soc_dpcm *dpcm;
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_be(fe, stream, dpcm)
+ 		dpcm_set_be_update_state(dpcm->be, stream, SND_SOC_DPCM_UPDATE_NO);
+-	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ }
+ 
+ void dpcm_be_dai_stop(struct snd_soc_pcm_runtime *fe, int stream,
+@@ -1467,12 +1544,12 @@ void dpcm_be_dai_stop(struct snd_soc_pcm_runtime *fe, int stream,
+ 				continue;
+ 
+ 			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE) {
+-				soc_pcm_hw_free(be_substream);
++				__soc_pcm_hw_free(be, be_substream);
+ 				be->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_FREE;
+ 			}
+ 		}
+ 
+-		soc_pcm_close(be_substream);
++		__soc_pcm_close(be, be_substream);
+ 		be_substream->runtime = NULL;
+ 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_CLOSE;
+ 	}
+@@ -1520,7 +1597,7 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 			stream ? "capture" : "playback", be->dai_link->name);
+ 
+ 		be_substream->runtime = be->dpcm[stream].runtime;
+-		err = soc_pcm_open(be_substream);
++		err = __soc_pcm_open(be, be_substream);
+ 		if (err < 0) {
+ 			be->dpcm[stream].users--;
+ 			if (be->dpcm[stream].users < 0)
+@@ -1764,7 +1841,7 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ 	dev_dbg(fe->dev, "ASoC: open FE %s\n", fe->dai_link->name);
+ 
+ 	/* start the DAI frontend */
+-	ret = soc_pcm_open(fe_substream);
++	ret = __soc_pcm_open(fe, fe_substream);
+ 	if (ret < 0)
+ 		goto unwind;
+ 
+@@ -1795,6 +1872,8 @@ static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
+ 	int stream = substream->stream;
+ 
++	snd_soc_dpcm_mutex_assert_held(fe);
++
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+ 	/* shutdown the BEs */
+@@ -1803,7 +1882,7 @@ static int dpcm_fe_dai_shutdown(struct snd_pcm_substream *substream)
+ 	dev_dbg(fe->dev, "ASoC: close FE %s\n", fe->dai_link->name);
+ 
+ 	/* now shutdown the frontend */
+-	soc_pcm_close(substream);
++	__soc_pcm_close(fe, substream);
+ 
+ 	/* run the stream stop event */
+ 	dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_STOP);
+@@ -1848,7 +1927,7 @@ void dpcm_be_dai_hw_free(struct snd_soc_pcm_runtime *fe, int stream)
+ 		dev_dbg(be->dev, "ASoC: hw_free BE %s\n",
+ 			be->dai_link->name);
+ 
+-		soc_pcm_hw_free(be_substream);
++		__soc_pcm_hw_free(be, be_substream);
+ 
+ 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_FREE;
+ 	}
+@@ -1859,13 +1938,13 @@ static int dpcm_fe_dai_hw_free(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
+ 	int stream = substream->stream;
+ 
+-	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
++	snd_soc_dpcm_mutex_lock(fe);
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+ 	dev_dbg(fe->dev, "ASoC: hw_free FE %s\n", fe->dai_link->name);
+ 
+ 	/* call hw_free on the frontend */
+-	soc_pcm_hw_free(substream);
++	soc_pcm_hw_clean(fe, substream, 0);
+ 
+ 	/* only hw_params backends that are either sinks or sources
+ 	 * to this frontend DAI */
+@@ -1874,7 +1953,7 @@ static int dpcm_fe_dai_hw_free(struct snd_pcm_substream *substream)
+ 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_FREE;
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 
+-	mutex_unlock(&fe->card->mutex);
++	snd_soc_dpcm_mutex_unlock(fe);
+ 	return 0;
+ }
+ 
+@@ -1918,7 +1997,7 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+ 		dev_dbg(be->dev, "ASoC: hw_params BE %s\n",
+ 			be->dai_link->name);
+ 
+-		ret = soc_pcm_hw_params(be_substream, &dpcm->hw_params);
++		ret = __soc_pcm_hw_params(be, be_substream, &dpcm->hw_params);
+ 		if (ret < 0)
+ 			goto unwind;
+ 
+@@ -1948,7 +2027,7 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
+ 		   (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP))
+ 			continue;
+ 
+-		soc_pcm_hw_free(be_substream);
++		__soc_pcm_hw_free(be, be_substream);
+ 	}
+ 
+ 	return ret;
+@@ -1960,7 +2039,7 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
+ 	int ret, stream = substream->stream;
+ 
+-	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
++	snd_soc_dpcm_mutex_lock(fe);
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_FE);
+ 
+ 	memcpy(&fe->dpcm[stream].hw_params, params,
+@@ -1974,7 +2053,7 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 			params_channels(params), params_format(params));
+ 
+ 	/* call hw_params on the frontend */
+-	ret = soc_pcm_hw_params(substream, params);
++	ret = __soc_pcm_hw_params(fe, substream, params);
+ 	if (ret < 0)
+ 		dpcm_be_dai_hw_free(fe, stream);
+ 	else
+@@ -1982,7 +2061,7 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 
+ out:
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+-	mutex_unlock(&fe->card->mutex);
++	snd_soc_dpcm_mutex_unlock(fe);
+ 
+ 	if (ret < 0)
+ 		dev_err(fe->dev, "ASoC: %s failed (%d)\n", __func__, ret);
+@@ -2253,7 +2332,7 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
+ 		dev_dbg(be->dev, "ASoC: prepare BE %s\n",
+ 			be->dai_link->name);
+ 
+-		ret = soc_pcm_prepare(be_substream);
++		ret = __soc_pcm_prepare(be, be_substream);
+ 		if (ret < 0)
+ 			break;
+ 
+@@ -2271,7 +2350,7 @@ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
+ 	int stream = substream->stream, ret = 0;
+ 
+-	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
++	snd_soc_dpcm_mutex_lock(fe);
+ 
+ 	dev_dbg(fe->dev, "ASoC: prepare FE %s\n", fe->dai_link->name);
+ 
+@@ -2290,7 +2369,7 @@ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
+ 		goto out;
+ 
+ 	/* call prepare on the frontend */
+-	ret = soc_pcm_prepare(substream);
++	ret = __soc_pcm_prepare(fe, substream);
+ 	if (ret < 0)
+ 		goto out;
+ 
+@@ -2298,7 +2377,7 @@ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
+ 
+ out:
+ 	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+-	mutex_unlock(&fe->card->mutex);
++	snd_soc_dpcm_mutex_unlock(fe);
+ 
+ 	if (ret < 0)
+ 		dev_err(fe->dev, "ASoC: %s() failed (%d)\n", __func__, ret);
+@@ -2349,7 +2428,6 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 	struct snd_soc_dpcm *dpcm;
+ 	enum snd_soc_dpcm_trigger trigger = fe->dai_link->trigger[stream];
+ 	int ret = 0;
+-	unsigned long flags;
+ 
+ 	dev_dbg(fe->dev, "ASoC: runtime %s open on FE %s\n",
+ 			stream ? "capture" : "playback", fe->dai_link->name);
+@@ -2418,7 +2496,6 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 	dpcm_be_dai_shutdown(fe, stream);
+ disconnect:
+ 	/* disconnect any pending BEs */
+-	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+ 
+@@ -2430,7 +2507,6 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 			be->dpcm[stream].state == SND_SOC_DPCM_STATE_NEW)
+ 				dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
+ 	}
+-	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 	if (ret < 0)
+ 		dev_err(fe->dev, "ASoC: %s() failed (%d)\n", __func__, ret);
+@@ -2505,7 +2581,7 @@ int snd_soc_dpcm_runtime_update(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *fe;
+ 	int ret = 0;
+ 
+-	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
++	mutex_lock_nested(&card->pcm_mutex, card->pcm_subclass);
+ 	/* shutdown all old paths first */
+ 	for_each_card_rtds(card, fe) {
+ 		ret = soc_dpcm_fe_runtime_update(fe, 0);
+@@ -2521,7 +2597,7 @@ int snd_soc_dpcm_runtime_update(struct snd_soc_card *card)
+ 	}
+ 
+ out:
+-	mutex_unlock(&card->mutex);
++	mutex_unlock(&card->pcm_mutex);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_runtime_update);
+@@ -2532,6 +2608,8 @@ static void dpcm_fe_dai_cleanup(struct snd_pcm_substream *fe_substream)
+ 	struct snd_soc_dpcm *dpcm;
+ 	int stream = fe_substream->stream;
+ 
++	snd_soc_dpcm_mutex_assert_held(fe);
++
+ 	/* mark FE's links ready to prune */
+ 	for_each_dpcm_be(fe, stream, dpcm)
+ 		dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
+@@ -2546,12 +2624,12 @@ static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(fe_substream);
+ 	int ret;
+ 
+-	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
++	snd_soc_dpcm_mutex_lock(fe);
+ 	ret = dpcm_fe_dai_shutdown(fe_substream);
+ 
+ 	dpcm_fe_dai_cleanup(fe_substream);
+ 
+-	mutex_unlock(&fe->card->mutex);
++	snd_soc_dpcm_mutex_unlock(fe);
+ 	return ret;
+ }
+ 
+@@ -2562,7 +2640,7 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+ 	int ret;
+ 	int stream = fe_substream->stream;
+ 
+-	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
++	snd_soc_dpcm_mutex_lock(fe);
+ 	fe->dpcm[stream].runtime = fe_substream->runtime;
+ 
+ 	ret = dpcm_path_get(fe, stream, &list);
+@@ -2579,7 +2657,7 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+ 	dpcm_clear_pending_state(fe, stream);
+ 	dpcm_path_put(&list);
+ open_end:
+-	mutex_unlock(&fe->card->mutex);
++	snd_soc_dpcm_mutex_unlock(fe);
+ 	return ret;
+ }
+ 
+@@ -2840,10 +2918,8 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
+ 	struct snd_soc_dpcm *dpcm;
+ 	int state;
+ 	int ret = 1;
+-	unsigned long flags;
+ 	int i;
+ 
+-	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_fe(be, stream, dpcm) {
+ 
+ 		if (dpcm->fe == fe)
+@@ -2857,7 +2933,6 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
+ 			}
+ 		}
+ 	}
+-	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 	/* it's safe to do this BE DAI */
+ 	return ret;
 -- 
-2.39.2
+2.40.1.495.gc816e09b53d-goog
 
