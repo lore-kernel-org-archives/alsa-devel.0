@@ -4,129 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F093FC7EE21
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 May 2023 06:30:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40CB2C7EE21
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 May 2023 13:34:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B23F51828;
-	Thu,  4 May 2023 08:29:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B23F51828
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2657212A;
+	Thu,  4 May 2023 15:34:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2657212A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683181819;
-	bh=O/zIV3475nB7FF5ef5MOqbZv5j46UUPZL6FV0EFvYgs=;
-	h=Resent-From:Resent-Date:Resent-To:From:To:Subject:Date:List-Id:
+	s=default; t=1683207293;
+	bh=smo1JqYgSJMtGsiFqlsvbdZt1OQLhJp1W1YOSN/udvs=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sRzko5iROFuKdbcZQ8jG6CPK2JsNU3YoWFwyAeQw7TTRb6jQQA33hy6+AQQkkDB1Q
-	 QGSLbKivRSq9FoMNurF2Vd3AUd+4VsGUTB51qt4QlaWJWxWF/DCRm24YNXo0i7//lv
-	 HjktT2ri9lxLUWjgRro4+z4+DWeZJkpyYta+voas=
+	b=EHo2ZuYP0rneCkg9Dn7/JgC2FHC+pm2xWTwXm2zwfdb1Rw74n6Ok5syZ5oGMdXfWM
+	 lGyDwpxkf+33SDWIJxCeA7OboMaib3pgzMbO9mClsSpF5d4LR60Qobh3eXZkZLN2/v
+	 D4tuTWGo17+Eq9RyHj6rvxKiddnjqTsnNea0UOCQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB636F8049E;
-	Thu,  4 May 2023 08:29:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5FEEF8052D;
+	Thu,  4 May 2023 15:33:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE660F8057C; Wed,  3 May 2023 13:35:22 +0200 (CEST)
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 1D831F8052D; Thu,  4 May 2023 15:33:35 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5ACC9F80579
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2023 13:35:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ACC9F80579
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qg3L4IXt
-Received: from zn.tnic (p5de8e8ea.dip0.t-ipconnect.de [93.232.232.234])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6233FF80520
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2023 15:33:06 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 2389011E7;
+	Thu,  4 May 2023 15:33:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 2389011E7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1683207186; bh=kS6Jj5U+tlswuHKtFdzR+EfR2jNQwjFKj2J/B70daiU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ex+kM2dhzP0GIXkKX4k1pA2qesGjzH0/YNZ3aqJkUHnsGFi6pavV7agswCDrkwma/
+	 FPPOm4ppWMvyLLG3elN8wTJGOIlnrOjGeO88qfOx9dvMQJF/XrYlG9tS+gJD5a1hdv
+	 NToB3YmLWi/lMo5yESJT7sNNKOdh1yKpOXTorhkA=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id
- C99901EC01A9
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2023 13:35:15 +0200 (CEST)
-Resent-From: Borislav Petkov <bp@alien8.de>
-Resent-Date: Wed, 3 May 2023 13:35:11 +0200
-Resent-Message-ID: <20230503113511.GBZFJG7xsObjEjrB91@fat_crate.local>
-Resent-To: alsa-devel@alsa-project.org
-Received: from deliver ([unix socket])
-	 by localhost (Cyrus v2.4.17-caldav-beta9-Debian-2.4.17+caldav~beta9-3) with
- LMTPA;
-	 Wed, 03 May 2023 13:25:13 +0200
-X-Sieve: CMU Sieve 2.4
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPS id 7B59C1EC01A9
-	for <bp@alien8.de>; Wed,  3 May 2023 13:25:13 +0200 (CEST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2552D62B3E
-	for <bp@alien8.de>; Wed,  3 May 2023 11:25:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8E211C4339E
-	for <bp@alien8.de>; Wed,  3 May 2023 11:25:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683113111;
-	bh=O/zIV3475nB7FF5ef5MOqbZv5j46UUPZL6FV0EFvYgs=;
-	h=From:To:Subject:Date:From;
-	b=qg3L4IXtkMohZX6o9i+uv2ET3lSfWQ/FMmoAlUEyu+kPqvoNvR3t5gGliDLcSBdTM
-	 NjJCNngg+qIfx3flQ5zfZRbMZCEngeXytNlUMrmP5MvAX2pSIQ02rMge/fIWKq4iY6
-	 hhaBAIAKvQlnb6Bps+nSg+fH0ClmPRAX3NZusm4fp4ljFx+Oh4z76RLVvYRF2KWzkD
-	 crJhYXhnXN8l0Rt39oU8xSGomtFqrtIZ1RBHfn4FdqdZey9De5HXCrJkmp9l4s/mC/
-	 xJWNfPzvX9qzSI/q2hWxZRYQ+C+tqNwZmo/emSM9yC00bc8sC2cahoBIFfGF6ETZJl
-	 t02UsV5SHy1XA==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix,
- from userid 48)
-	id 79945C43145; Wed,  3 May 2023 11:25:11 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: bp@alien8.de
-Subject: [Bug 217395] New: Internal Speakers do no work ALC245 HP envy x360
- 2-in-1 Laptop 13-bf0xxx
-Date: Wed, 03 May 2023 11:25:11 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo platform_x86_64@kernel-bugs.osdl.org
-X-Bugzilla-Product: Platform Specific/Hardware
-X-Bugzilla-Component: x86-64
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: sourabhsagar7601@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: platform_x86_64@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version rep_platform
- op_sys bug_status bug_severity priority component assigned_to reporter
- cf_regression attachments.created
-Message-ID: <bug-217395-6385@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Thu,  4 May 2023 15:33:02 +0200 (CEST)
+Message-ID: <c2e501b7-68bc-947b-645e-e425dcd20c65@perex.cz>
+Date: Thu, 4 May 2023 15:33:01 +0200
 MIME-Version: 1.0
-Authentication-Results: mail.skyhub.de;
-	dkim=pass header.d=kernel.org header.s=k20201202 header.b=qg3L4IXt;
-	dmarc=pass (policy=none) header.from=kernel.org;
-	spf=pass (mail.skyhub.de: domain of bugzilla-daemon@kernel.org designates
- 2604:1380:4641:c500::1 as permitted sender)
- smtp.mailfrom=bugzilla-daemon@kernel.org
-X-Spamd-Bar: ------
-X-MailFrom: bp@alien8.de
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [PATCH] ALSA: pcm: fix snd_pcm_playback_silence() with
+ free-running mode
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>,
+ Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+References: <20230504130007.2208916-1-oswald.buddenhagen@gmx.de>
+ <87cz3gkyz9.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <87cz3gkyz9.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: UMFVYCXEWP75AZUVOHXZXBVN7GWXZBEE
+X-Message-ID-Hash: UMFVYCXEWP75AZUVOHXZXBVN7GWXZBEE
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: QA6DANNS5JW53MTCDFAXLYBPVW5GIDHE
-X-Message-ID-Hash: QA6DANNS5JW53MTCDFAXLYBPVW5GIDHE
-X-Mailman-Approved-At: Thu, 04 May 2023 06:28:59 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: alsa-devel@alsa-project.org, Jeff Chua <jeff.chua.linux@gmail.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QA6DANNS5JW53MTCDFAXLYBPVW5GIDHE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UMFVYCXEWP75AZUVOHXZXBVN7GWXZBEE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,39 +91,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217395
+On 04. 05. 23 15:28, Takashi Iwai wrote:
+> On Thu, 04 May 2023 15:00:07 +0200,
+> Oswald Buddenhagen wrote:
+>>
+>> Turns out that we cannot rely on the application pointer being updated
+>> in top-up mode, as its primary purpose is to remain operational in
+>> free-running mode as used by dmix.
+>>
+>> So we logically revert some bits from commit 9f656705c5faa ("ALSA: pcm:
+>> rewrite snd_pcm_playback_silence()"), but we retain the bug fixes and
+>> try to make the code paths congruent.
+>>
+>> Reported-by: Jeff Chua <jeff.chua.linux@gmail.com>
+>> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+> 
+> Honestly speaking, this is really hard to review.  As most of changes
+> here are the revert of the previous commit, I'd rather like to get it
+> reverted whole once, and re-apply the proper fix gradually.
 
-            Bug ID: 217395
-           Summary: Internal Speakers do no work ALC245 HP envy x360
-                    2-in-1 Laptop 13-bf0xxx
-           Product: Platform Specific/Hardware
-           Version: 2.5
-          Hardware: All
-                OS: Linux
-            Status: NEW
-          Severity: normal
-          Priority: P3
-         Component: x86-64
-          Assignee: platform_x86_64@kernel-bugs.osdl.org
-          Reporter: sourabhsagar7601@gmail.com
-        Regression: No
+I fully agree here. Takashi, please, revert the broken patch right now. I 
+think that the review and improving the code may take some days.
 
-Created attachment 304206
-  --> https://bugzilla.kernel.org/attachment.cgi?id=3D304206&action=3Dedit
-Error logs from dmesg
+					Jaroslav
 
-I have tried both Vanilla kernel and distro kernel. Still no sound from spe=
-aker
-Attaching output of a) uname -a, b) inxi -Fxz, c) journalctl -k | grep -Ei
-"ALSA|HDA|sof[-]|HDMI|snd[_-]|sournd|hda.codec|hda.intel"
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 
-
-
-https://askubuntu.com/questions/1465753/ubuntu-23-04-no-speaker-sound-with-=
-realtek-alc245-on-hp-envy-laptop
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
