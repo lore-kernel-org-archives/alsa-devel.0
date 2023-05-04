@@ -4,105 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51865C77B75
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 07:39:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 321B2C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 07:45:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA74B12AC;
-	Mon,  8 May 2023 09:38:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA74B12AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 408E212AA;
+	Mon,  8 May 2023 09:44:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 408E212AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683531558;
-	bh=dqcjyt95OBvwQOiCr7l8ywoB7nvQzNhBGcaqzzJ6vk0=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=OU+vuOJsSf6tecaAKG22LeiTQ2XpUenCUjKID4ULVT0mDkBoNoadU+HBrz/KySQ+E
-	 cm7+qbo73I0FqUtDrV+qtqugmYmkbW1Qv9TBRGHG/kbP45+k4PmVHks951iW2tdZMx
-	 i/3ZVpXTnlxr1Rj1HGiSs1UNpgQjuek/5q/cuKoU=
+	s=default; t=1683531912;
+	bh=YPv1Q0rzhbwS6Owc8R5ePJZQX211Tf9J18pUNWZlWqc=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=jTiu9ssLYsmP4sRmwIkcny3m+6EmGFVtdK1Mj0EYJK74LGAFYAk2GcWQ1yZPtlDr7
+	 MWLnS6FVqU/u+b3u0brdV2a6n7eXLeSxTSh4Gff8DFmeXE6cPRk5I+TSn69Qu3KG8l
+	 9rnLHKZ0/J5lSxw2Gqwj5ByoeSzOuFUxRqfnamd8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38DFAF8032D;
-	Mon,  8 May 2023 09:38:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08A30F8032D;
+	Mon,  8 May 2023 09:43:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 15EF0F8032D; Mon,  8 May 2023 09:38:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 044DEF8049E; Thu,  4 May 2023 08:52:03 +0200 (CEST)
+Received: from hust.edu.cn (unknown [202.114.0.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 24D1BF80087
-	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 09:37:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24D1BF80087
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=mtarhdO3;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=5Kye1D0B
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C1E4821AC0;
-	Mon,  8 May 2023 07:37:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1683531476;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YqInM1342hBU+JGe1iQkO4roq6FUOaOXw8p0I5kqNRs=;
-	b=mtarhdO3ra1s5OiLWG+Ju19yqxd1rtL/boRsvziIuReE5Y5zcwq5enIqc20ObcGS+OcJaV
-	5gRGzfLkxNM/+cuyMoiSofLzsVzQrYChMJG97SzYWdpUB/MTBDDIVTd9qItO9SMZjXYThz
-	kp8V6jhHbDyVGb8TIWtvNj4uKUs+ARk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1683531476;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YqInM1342hBU+JGe1iQkO4roq6FUOaOXw8p0I5kqNRs=;
-	b=5Kye1D0ByhCf4HBc1zihGsjgV6frE9AoIIYmjc/zQbbkyvtE7SevX713PfNPefVVRQt+YK
-	PyNuxlYbKCpb4pAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94F2B1346B;
-	Mon,  8 May 2023 07:37:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id r38aI9SmWGRiOAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 08 May 2023 07:37:56 +0000
-Date: Mon, 08 May 2023 09:37:56 +0200
-Message-ID: <87y1lze0iz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: jack1989s@gmail.com
-Subject: Re: [PATCH] Sound:last.c: fix code syle trailing white space - modify
- printk()->netdev_dbg() - Possible unnecessary KERN_INFO removed
-In-Reply-To: <20230507130021.48112-1-jack1989s@gmail.com>
-References: <20230507130021.48112-1-jack1989s@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: RK6C4G6VWHJTNGOIF4DOFDHBVXHIVS57
-X-Message-ID-Hash: RK6C4G6VWHJTNGOIF4DOFDHBVXHIVS57
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id 23DC4F800EC
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2023 08:51:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23DC4F800EC
+Received: from dd-virtual-machine.localdomain ([183.202.113.128])
+	(user=u202112092@hust.edu.cn mech=LOGIN bits=0)
+	by mx1.hust.edu.cn  with ESMTP id 3446pF6h014815-3446pF6i014815
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
+	Thu, 4 May 2023 14:51:25 +0800
+From: Ruliang Lin <u202112092@hust.edu.cn>
+To: Daniel Mack <zonque@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Karsten Wiese <fzu@wemgehoertderstaat.de>
+Subject: [PATCH] sound: caiaq: input: Add error handling for unsupported input
+ methods in `snd_usb_caiaq_input_init`
+Date: Thu,  4 May 2023 14:50:53 +0800
+Message-Id: <20230504065054.3309-1-u202112092@hust.edu.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-FEAS-AUTH-USER: u202112092@hust.edu.cn
+X-MailFrom: u202112092@hust.edu.cn
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: XIH5U7KNERTSEDIKFVHZ4HXXXDT4WLEY
+X-Message-ID-Hash: XIH5U7KNERTSEDIKFVHZ4HXXXDT4WLEY
+X-Mailman-Approved-At: Mon, 08 May 2023 07:43:53 +0000
+CC: hust-os-kernel-patches@googlegroups.com,
+ Ruliang Lin <u202112092@hust.edu.cn>, Dongliang Mu <dzm91@hust.edu.cn>,
+ Daniel Mack <daniel@caiaq.org>, Jaroslav Kysela <perex@suse.cz>,
+ Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RK6C4G6VWHJTNGOIF4DOFDHBVXHIVS57/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XIH5U7KNERTSEDIKFVHZ4HXXXDT4WLEY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,63 +76,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 07 May 2023 15:00:21 +0200,
-jack1989s@gmail.com wrote:
-> 
-> From: Federico Di Lembo <jack1989s@gmail.com>
-> 
-> Fixing coding style.
-> 
-> Signed-off-by: Federico Di Lembo <jack1989s@gmail.com>
+Smatch complains that:
+snd_usb_caiaq_input_init() warn: missing error code 'ret'
 
-In general, we don't take a patch just for white space without any
-real need.  Please do a cleanup together with other real fix or
-enhancement patches.
+This patch adds a new case to handle the situation where the 
+device does not support any input methods in the 
+`snd_usb_caiaq_input_init` function. It returns an `-EINVAL` error code 
+to indicate that no input methods are supported on the device.
 
-Also, the use of netdev_dbg() doesn't make sense here at all; the code
-has nothing to do with the network.
+Fixes: 523f1dce3743 ("[ALSA] Add Native Instrument usb audio device support")
+Signed-off-by: Ruliang Lin <u202112092@hust.edu.cn>
+Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
+---
+The issue is found by static analyzer. The patched code has passed
+Smatch checker, but remains untested on real device.
+---
+ sound/usb/caiaq/input.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Last but not least, you change the printk level by the conversion
-silently.  It's really bad, please don't.  If you have to change the
-printk level, give the convincing explanation.
+diff --git a/sound/usb/caiaq/input.c b/sound/usb/caiaq/input.c
+index 1e2cf2f08eec..84f26dce7f5d 100644
+--- a/sound/usb/caiaq/input.c
++++ b/sound/usb/caiaq/input.c
+@@ -804,6 +804,7 @@ int snd_usb_caiaq_input_init(struct snd_usb_caiaqdev *cdev)
+ 
+ 	default:
+ 		/* no input methods supported on this device */
++		ret = -EINVAL;
+ 		goto exit_free_idev;
+ 	}
+ 
+-- 
+2.25.1
 
-
-thanks,
-
-Takashi
-
-
-> ---
->  sound/last.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/last.c b/sound/last.c
-> index f0bb98780e70..b8cfd6ded95d 100644
-> --- a/sound/last.c
-> +++ b/sound/last.c
-> @@ -11,18 +11,18 @@ static int __init alsa_sound_last_init(void)
->  {
->  	struct snd_card *card;
->  	int idx, ok = 0;
-> -	
-> -	printk(KERN_INFO "ALSA device list:\n");
-> +
-> +	netdev_dbg("ALSA device list:\n");
->  	for (idx = 0; idx < SNDRV_CARDS; idx++) {
->  		card = snd_card_ref(idx);
->  		if (card) {
-> -			printk(KERN_INFO "  #%i: %s\n", idx, card->longname);
-> +			netdev_dbg("  #%i: %s\n", idx, card->longname);
->  			snd_card_unref(card);
->  			ok++;
->  		}
->  	}
->  	if (ok == 0)
-> -		printk(KERN_INFO "  No soundcards found.\n");
-> +		netdev_dbg("  No soundcards found.\n");
->  	return 0;
->  }
->  
-> -- 
-> 2.34.1
-> 
