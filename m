@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8ADB5C77B7C
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 May 2023 07:04:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CDD8C77B7C
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 May 2023 07:05:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3541017EC;
-	Thu,  4 May 2023 09:03:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3541017EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id E992C1811;
+	Thu,  4 May 2023 09:04:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E992C1811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683183888;
-	bh=TvB5sPTNs+z8Npz00LDN7fax7oHiHIYQHN64fc07FX0=;
+	s=default; t=1683183914;
+	bh=qAFMAmHztRK4PLx5Yt/5IO1j/RWoWPa4vUVm1tTNKJU=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=n10Yc8CZ8dTbLuVkW3IHWlqwHqqpwWlQOV/4MDH/KapN2zkLULv1YDLrT8zR0xgjc
-	 qJMtQEJL1MB4cIT5VEcaE2TPBZZd1aRGUL/DTHXsdDVjMGo4aavB829sG5AEf1ZbJX
-	 LwCH1q5vOYhI5lfZWzZtZtGVRIeDVCYSu4GzMQ5w=
+	b=PAWXJuK4OZeJJL5RHbagAH/K1GS0pPBLf7hdmcLFXC3exgDl+oqbSZhx/FDQhYl1U
+	 /fc4D1sVdThMPMOMG//E90huG4D7v8stYs4yr8ZmbzFBPnuoSGNvsL5KBCtGPsB2aS
+	 tGck7KBWjR3iNBCAcdCqFahKsRWKC/AiABLuOlSs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E00E1F8049E;
-	Thu,  4 May 2023 09:03:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 714BEF804FE;
+	Thu,  4 May 2023 09:03:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9D8BFF8049E; Thu,  4 May 2023 09:03:28 +0200 (CEST)
+	id F269FF8049E; Thu,  4 May 2023 09:03:29 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id E644DF80137
-	for <alsa-devel@alsa-project.org>; Thu,  4 May 2023 09:03:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E644DF80137
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E120F800EC
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2023 09:03:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E120F800EC
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1683183800510438681-webhooks-bot@alsa-project.org>
-References: <1683183800510438681-webhooks-bot@alsa-project.org>
+In-Reply-To: <1683183808383171558-webhooks-bot@alsa-project.org>
+References: <1683183808383171558-webhooks-bot@alsa-project.org>
 Subject: alsalib assertion using plug+dmix
-Message-Id: <20230504070328.9D8BFF8049E@alsa1.perex.cz>
-Date: Thu,  4 May 2023 09:03:28 +0200 (CEST)
-Message-ID-Hash: E3OE6R6FZ3PN6HVO3SOIBJUCF36R7ZHG
-X-Message-ID-Hash: E3OE6R6FZ3PN6HVO3SOIBJUCF36R7ZHG
+Message-Id: <20230504070329.F269FF8049E@alsa1.perex.cz>
+Date: Thu,  4 May 2023 09:03:29 +0200 (CEST)
+Message-ID-Hash: N5GLTCTO4LP2ZGLEKO4IZAUVB6QDCFUO
+X-Message-ID-Hash: N5GLTCTO4LP2ZGLEKO4IZAUVB6QDCFUO
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -55,7 +55,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E3OE6R6FZ3PN6HVO3SOIBJUCF36R7ZHG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N5GLTCTO4LP2ZGLEKO4IZAUVB6QDCFUO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -64,7 +64,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #314 was edited from npitre:
+alsa-project/alsa-lib issue #314 was opened from npitre:
 
 The espeak program is crashing randomly here. I've been able to isolate 
 the issue in a small test program demonstrating the crash 100% of the time, 
