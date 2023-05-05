@@ -4,89 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C96BDC77B7C
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 13:01:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3617C77B7F
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 13:35:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DEED2CB5;
-	Fri,  5 May 2023 15:00:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DEED2CB5
+	by alsa0.perex.cz (Postfix) with ESMTPS id C73942CCD;
+	Fri,  5 May 2023 15:34:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C73942CCD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683291699;
-	bh=Q7plKiQLB2fe8xDuLSzFDJ3c2CvcwSmte3+xNw0KNHk=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=dP6tmyz2uk66c9tzHYG1oh0zYyMMKvHHKPZPDGoRbiPlnZUIKAL2PprvxmC3WHQVz
-	 BYHmOHL89Tnbl/JPwj9N1zCiq3Rd449J3vf+2IylpQd+5dFK2PfZhFawNnJJ36JvTs
-	 Wy6PNTRv9ahWeijsvyecsGvrUzv7QfU1iib6nSLE=
+	s=default; t=1683293711;
+	bh=mwqoQO38w+V3pgb84DrA2oJJEX0u9T37WvU9ldSdV+M=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=CE+6h7ru0omd5mBaBfPaHnncU1q4sHthwBepYoNFGC7iUJMtYUys3/Ww0wcEUGAji
+	 K/IjuwhsTHW7qoUQrOvTNKo0MYJT0yUP18S8xWjhGNzwKpEI6BPsTdOXwbASh0u7dL
+	 QMok4k9O64ylUONDsufgAFTDZFxDYA7RzIX5A4Pw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A43C3F8052D;
-	Fri,  5 May 2023 15:00:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBFE4F80087;
+	Fri,  5 May 2023 15:33:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB251F8052D; Fri,  5 May 2023 15:00:20 +0200 (CEST)
-Received: from smtp-relay-canonical-1.canonical.com
- (smtp-relay-canonical-1.canonical.com [185.125.188.121])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 008F3F8052D; Fri,  5 May 2023 15:33:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6FCC7F80087
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 15:00:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FCC7F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id A8F4CF80087
+	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 15:33:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8F4CF80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=canonical.com header.i=@canonical.com
- header.a=rsa-sha256 header.s=20210705 header.b=VmmdZsSY
-Received: from localhost.localdomain (unknown [10.101.196.174])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ng+1e5M4
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 1F09241FF9;
-	Fri,  5 May 2023 13:00:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1683291614;
-	bh=tj/QGQNbz6EyoFCEKhkJa41CXGI8IfJ0W1/aZihL5xc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=VmmdZsSYheN4I3KNspDPeCjlAZX4zkMTZHMJHXhtjErq2DA0enrtfsuYcPz5DoO2I
-	 DJZv0T/0EO3gebC29UOdKTCL5aduHEiUMtBXqxV+x7gjn8e+/YOCCkfNra5LCiecl2
-	 EPRQCmrg52uo7VNVmD1V/dNJ15Je5xcGWHVRong+2vTzw66RmVQNCne5BL0TMfGntD
-	 WWHqSbXwVwtijgHxy0ACecc4dsjt2yleGDlvoadxTW8V1XzdoP8qVnYzyna9sneTU3
-	 skVj9BlBYGqr1qxbkTY2EDudofWgR+sJV72NqsgwRSccjZFi3LRdYmwAHOENwQiDDV
-	 uE+ZEkVsaPvLA==
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-To: tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek: Fix mute and micmute LEDs for an HP laptop
-Date: Fri,  5 May 2023 14:59:23 +0200
-Message-Id: <20230505125925.543601-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.34.1
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2E30461435;
+	Fri,  5 May 2023 13:33:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F33AAC4339B;
+	Fri,  5 May 2023 13:33:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1683293616;
+	bh=mwqoQO38w+V3pgb84DrA2oJJEX0u9T37WvU9ldSdV+M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ng+1e5M4ix9INnlBoq6xpRPfZvWJDO4lyD6unpuFRTO61mNkFnTfR7GgVKYj/gZ9G
+	 /iEjTDtPIFg4DSy9QbK3mq50jCN2SO+ZXmeM7qIKIlabmJCzfvFckjphLcpjW4bEpm
+	 lsNPNlFjxbW8cZqcpMhfsaohGmg+qIRbdnw2RWa+Xi4BGtX3UFMJE/Ciz+3hKPv/vs
+	 3OviYPVgb7llrDfukvAi3348mZLVVw45hdcsUy1HoPWWBB1z7ak0Dk8amj62E4PuGT
+	 X/YxKUrghpijwJlqSAP+1wTJXzMcghIMRWI12FxLNWfWWhZwey6/IvswSk5+FedVqi
+	 6dQ8Q3OcfAZzg==
+Date: Fri, 5 May 2023 22:33:33 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Anup Sharma <anupnewsmail@gmail.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: rt1016: Convert to dtschema
+Message-ID: <ZFUFrWqOHVmzE+ut@finisterre.sirena.org.uk>
+References: <ZFUFAmBJXvkQAG7m@yoga>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CZSVYQE47BWM5BHLYLWKZEGG65NYSUC5
-X-Message-ID-Hash: CZSVYQE47BWM5BHLYLWKZEGG65NYSUC5
-X-MailFrom: kai.heng.feng@canonical.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="AyRtPdmLQG54+4Aa"
+Content-Disposition: inline
+In-Reply-To: <ZFUFAmBJXvkQAG7m@yoga>
+X-Cookie: Avoid contact with eyes.
+Message-ID-Hash: XAUHASTSHD3EUF2LNCVOWYPY5LZKZ4TB
+X-Message-ID-Hash: XAUHASTSHD3EUF2LNCVOWYPY5LZKZ4TB
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Stefan Binding <sbinding@opensource.cirrus.com>,
- Andy Chi <andy.chi@canonical.com>, Tim Crawford <tcrawford@system76.com>,
- Meng Tang <tangmeng@uniontech.com>, "Luke D. Jones" <luke@ljones.dev>,
- Philipp Jungkamp <p.jungkamp@gmx.net>,
- =?UTF-8?q?Kacper=20Michaj=C5=82ow?= <kasper93@gmail.com>,
- Gabriele Mazzotta <gabriele.mzt@gmail.com>,
- Yuchi Yang <yangyuchi66@gmail.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+CC: lgirdwood@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ oder_chiou@realtek.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CZSVYQE47BWM5BHLYLWKZEGG65NYSUC5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XAUHASTSHD3EUF2LNCVOWYPY5LZKZ4TB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,26 +93,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There's another laptop that needs the fixup to enable mute and micmute
-LEDs. So do it accordingly.
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+--AyRtPdmLQG54+4Aa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f70d6a33421d..afc562a8afbb 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9478,6 +9478,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8b8d, "HP", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8b8f, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8b92, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8b96, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8bf0, "HP", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
--- 
-2.34.1
+On Fri, May 05, 2023 at 07:00:42PM +0530, Anup Sharma wrote:
 
+> +maintainers:
+> +  - oder_chiou@realtek.com
+
+If you're nominating someone as the maintainer for a binding it's
+probably best to copy them on the patch so they're aware...
+
+--AyRtPdmLQG54+4Aa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRVBawACgkQJNaLcl1U
+h9AGbgf+PTsUzX2cym2JdhTl5yFGJj8rbfOCKPIS4ks0o52lfBdwu+gqXf1DiYie
+LcNNgDPmZZBoPTDDo/86bdVpIZDgBpkul4xNjDAxnIOi9Td4QmwNZ/dPW8yJa76S
+NltJATrzlEGS+eJyI+s2HDT8RrBV2Fi3kLBLEZ4m2wsqz5d3dGwMlqX1GPLytO1w
+cREcovpaCDnIc5mPxHRuOB8zPB1zqSJ9bY1xLjSKbM6k0Q8NhvZNtpDE44QrlYPi
+bO4Ip2mdkL9qCfThdtSiWpvRFdA14nXgeL5RRTTf5YaHw5xFxp9QdER1Q19aegLs
+WtItwmcXeMeowfbVSnathYByRMtl+w==
+=Puba
+-----END PGP SIGNATURE-----
+
+--AyRtPdmLQG54+4Aa--
