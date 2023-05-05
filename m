@@ -4,70 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE7CFC77B7C
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 18:57:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B84E9C77B75
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 20:40:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3C082D77;
-	Fri,  5 May 2023 20:56:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3C082D77
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32F462BAA;
+	Fri,  5 May 2023 22:39:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32F462BAA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683313069;
-	bh=jFJ9fdOXMaI+h4Qxuada1LJ7DWb3KFv0VfOoIqOCzQ0=;
+	s=default; t=1683319204;
+	bh=b3CE/V8TQenqSh7NE+inf/ijcS6yg1yHI0dvetaLrF0=;
 	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vc05jAEXbrfuxneUs0JzYTj8lf/jiLOuMro/jsU0tvRFZAcY3mJUpWUonQMlr7lVF
-	 JOtBmbyD3FEZcebR2RAA4QmRpZPTO0oyPfd9bryJD0kk2mJMh1ZkQ/8n3jEhX9I6w7
-	 zyXHeM6pccnOxWMWP3ZSF6jclHYY/DXr5adnB+5I=
+	b=Z485agjywEv4sNDRRyQbRnaScgST3I3h8vlgVhGaww1qqzS9t1Cf+MvXjq1prmGXB
+	 PWQVFgycrdlVj8WgUJ38bi9vRxzCi/BYEs7Lw+7EOJB5FxTxqWlGqNtvPGIOLNn+7y
+	 yVEVz5F2JAEUeRw9Bljo/XtkoAez/VO1yIgeBDcw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F790F80087;
-	Fri,  5 May 2023 20:56:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1587F8052D;
+	Fri,  5 May 2023 22:38:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11017F8052D; Fri,  5 May 2023 20:56:30 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 1E0D8F8052D; Fri,  5 May 2023 22:38:44 +0200 (CEST)
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com
+ [IPv6:2001:4860:4864:20::2f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 35766F804B1
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 20:56:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35766F804B1
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id EB9EB23E9C;
-	Fri,  5 May 2023 14:56:14 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pv0bG-mAC-00; Fri, 05 May 2023 20:56:14 +0200
-Date: Fri, 5 May 2023 20:56:14 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH alsa-lib 1/4] pcm: hw: setup explicit silencing for
- snd_pcm_drain by default
-Message-ID: <ZFVRTrJW07hSpjym@ugly>
-Mail-Followup-To: Jaroslav Kysela <perex@perex.cz>,
-	ALSA development <alsa-devel@alsa-project.org>
-References: <20230502115010.986325-1-perex@perex.cz>
- <20230502115010.986325-2-perex@perex.cz>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4FE68F80087;
+	Fri,  5 May 2023 22:38:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FE68F80087
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=goDdGu9k
+Received: by mail-oa1-x2f.google.com with SMTP id
+ 586e51a60fabf-192cd5579faso1914376fac.1;
+        Fri, 05 May 2023 13:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683319113; x=1685911113;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B/9Pv9GD3bRPuWx/fbnz86Vp95f4PmUu+4iR/1CRaf4=;
+        b=goDdGu9kDZj9vHqLSul8dj2tMHtYncgeFjDy4Ih9Co12xwlNk79SAXfabnV/I8BhCn
+         O2zpkxB39wUNVPS0PgV6zrD/TrqNWrMT9VIq2M2uh3fbb57YtQwC4X9n152CXKGl+UV6
+         CbEfdwzj31dcOxoMi6gGw+dSULaNODcJI0RpApLI0SRpFpRkuIsdmFBMvvpk4MAbgbvS
+         i7YyZQoSXUnVKij9t8p1Y098ZYYnQZCCfQ1DNT9v3VXC2D88LjoV1EVmKJeyjIxoocqS
+         qaPZg64lC05hh9mFUvLr5hyW/cjl53MDRDHjdtOVFAO201xj1LDm7xWdmAjSOodLdPCq
+         sDHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683319113; x=1685911113;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B/9Pv9GD3bRPuWx/fbnz86Vp95f4PmUu+4iR/1CRaf4=;
+        b=a1CnHnKVjDnjkDVFu2aUNF6GkJeIZAukqxmjsDgIS8T/SG/JRSICZDqxGPUH2qKhbL
+         SePfAVDdrvg92kgDlPJaccuUsebnjQQaRMgWgVFVY4Qmmc4eaMtNQn9g79WkBMuTENX1
+         6LeIweFizDZUAKkTZg57+I2devqG3irLlu8Qz0plbR4mLucIPSlLjLLMqCSdDADV9DFZ
+         Yqa4k/Jk8nd8e7WMlX7OjmuVROelKm6lexb5HC9fjxPCDN4t+3HEognWwCTR0tjVWn7v
+         Hnjko+4AdJWmVRgPGJkmIHPIqUOHVriCJIeCwcNBSk+wgaafCFZvSJxxMOfG/g9S1M7a
+         +xVQ==
+X-Gm-Message-State: AC+VfDzLJsG2HoMtevISu5z1nwjZAQ1d6BUFObxqofEjilUEi9/mRHn6
+	ws0MNWSYyBj5u/Ex/atz54Y=
+X-Google-Smtp-Source: 
+ ACHHUZ43KR0D/CnThPvLyRqYUzzs0Bu6roC8bV+8+jZlakhbyt50txdtmlCKtQTrvSPYxU/uICDKiQ==
+X-Received: by 2002:a05:6870:9571:b0:18b:2238:5abe with SMTP id
+ v49-20020a056870957100b0018b22385abemr1705929oal.9.1683319112962;
+        Fri, 05 May 2023 13:38:32 -0700 (PDT)
+Received: from geday ([2804:7f2:8006:8886:6ce0:2667:545a:2a1])
+        by smtp.gmail.com with ESMTPSA id
+ s4-20020a4ac804000000b005255e556399sm1381958ooq.43.2023.05.05.13.38.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 May 2023 13:38:32 -0700 (PDT)
+Date: Fri, 5 May 2023 17:38:28 -0300
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel@alsa-project.org: [PATCH 3/5] ASoC: mediatek:
+ mt8195-afe-pcm: Simplify runtime PM during probe]
+Message-ID: <ZFVpRKM5vxpWWaI9@geday>
+References: <ZFMF2cD3nPgpZOpa@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230502115010.986325-2-perex@perex.cz>
-Message-ID-Hash: M4A6NWGJ7IP436KHFCF24SMDBVGFGSEU
-X-Message-ID-Hash: M4A6NWGJ7IP436KHFCF24SMDBVGFGSEU
-X-MailFrom: ossi@kde.org
+In-Reply-To: <ZFMF2cD3nPgpZOpa@finisterre.sirena.org.uk>
+Message-ID-Hash: RVEYMSYHPROVSXEWTIWR2GXPFTZRA3XX
+X-Message-ID-Hash: RVEYMSYHPROVSXEWTIWR2GXPFTZRA3XX
+X-MailFrom: geraldogabriel@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: ALSA development <alsa-devel@alsa-project.org>
+CC: postmaster@alsa-project.org, sound-open-firmware-owner@alsa-project.org,
+ tiwai@suse.de, alsa-devel@alsa-project.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ sound-open-firmware@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M4A6NWGJ7IP436KHFCF24SMDBVGFGSEU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RVEYMSYHPROVSXEWTIWR2GXPFTZRA3XX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,112 +115,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, May 02, 2023 at 01:50:07PM +0200, Jaroslav Kysela wrote:
->--- a/src/pcm/pcm_hw.c
->+++ b/src/pcm/pcm_hw.c
->@@ -718,7 +732,40 @@ static int snd_pcm_hw_drop(snd_pcm_t *pcm)
-> static int snd_pcm_hw_drain(snd_pcm_t *pcm)
-> {
-> 	snd_pcm_hw_t *hw = pcm->private_data;
->+	snd_pcm_sw_params_t sw_params;
->+	snd_pcm_uframes_t silence_size;
-> 	int err;
->+
->+	if (pcm->stream != SND_PCM_STREAM_PLAYBACK)
->+		goto __skip_silence;
->+	/* compute end silence size, align to period size + extra time */
->+	snd_pcm_sw_params_current_no_lock(pcm, &sw_params);
->+	if ((pcm->boundary % pcm->period_size) == 0) {
->+		silence_size = pcm->period_size - (*pcm->appl.ptr % pcm->period_size);
->+		if (silence_size == pcm->period_size)
->+			silence_size = 0;
->+	} else {
->+		/* it not not easy to compute the period cross point
->+		 * in this case because period is not aligned to the boundary
->+		 * - use the full range (one period) in this case
->+		 */
->+		silence_size = pcm->period_size;
->+	}
->+	silence_size += pcm->rate / 10;	/* 1/10th of second */
->+	if (sw_params.silence_size < silence_size) {
->+		/* fill the silence soon as possible (in the bellow ioctl
->+		 * or the next period wake up)
->+		 */
->+		sw_params.silence_threshold = pcm->buffer_size;
->+		sw_params.silence_size = silence_size;
->
-i was reworking my kernel patch along these lines (it's easier to deploy 
-when the kernel is the only thing you're hacking on), and ran into this 
-behavior:
+On Thu, May 04, 2023 at 10:09:45AM +0900, Mark Brown wrote:
+> Hi,
+> 
+> Here's another mail (one of several in this series) that got completely
+> mangled by the alsa-project.org mailman to the point of unusability.  I
+> didn't see any response to my last mail about this, is there any news on
+> fixing mailman to not do this?  It's extremely disruptive to working
+> with lore.
 
-check thresholded silence fill, sil start 0, sil fill 0, app 66000
-now sil start 66000, sil fill 0
-noise dist 23997
-drain raw fill 0
-drain extended fill 4800
-frames 3
-filling 3 at 18000
-period elapsed
-check thresholded silence fill, sil start 66000, sil fill 3, app 66000
-now sil start 66000, sil fill 3
-noise dist 18000
-drain raw fill 0
-drain extended fill 4800
-frames 4800
-filling 4800 at 18003
-period elapsed
-check thresholded silence fill, sil start 66000, sil fill 4803, app 66000
-now sil start 66000, sil fill 4803
-noise dist 16800
-drain raw fill 0
-drain extended fill 4800
-frames 4800
-filling 1197 at 22803
-filling 3603 at 0
-period elapsed
-check thresholded silence fill, sil start 66000, sil fill 9603, app 66000
-now sil start 66000, sil fill 9603
-noise dist 15600
-drain raw fill 0
-drain extended fill 4800
-frames 4800
-filling 4800 at 3603
-period elapsed
-check thresholded silence fill, sil start 66000, sil fill 14403, app 66000
-now sil start 66000, sil fill 14403
-noise dist 6755399441055758400
+Hi Mark,
 
-what you're seeing is this: when the drain is issued, the buffer is 
-initially full, and after every played period some padding is added, 
-totalling way beyond what was intended.
-this doesn't break anything, but it's a bit inefficient, and just ugly.
+Are you complaining about the added headers in the message? Because the
+patch itself didn't look mangled from my side. From my understanding,
+Jaroslav had to start mangling mail addresses due to strict DMARC rules
+which make some servers reject the message from alsa-devel.
 
-this is a result of silence_threshold being the buffer size.
-and setting it to the silence_size of course doesn't work reliably when 
-that is smaller than the period size.
+Thanks,
+Geraldo Nascimento
 
-while pondering how to fix that, my thoughts returned to my yet unaired 
-gripe with the silencing parameters being anything but intuitive. would 
-you mind explaining why they are like that?
+> 
+> Thanks,
+> Mark
 
-why not interpret silence_size as the minimum number of playable samples 
-(that is, noise_dist in the kernel code) that must be maintained at all 
-times, and simply ignore silence_threshold?
-
-unless i'm missing something, this is exactly what one would want for 
-maintaining underrun resilience, which i think is the purpose of the 
-thresholded silence fill mode (at least my comment updates which claim 
-so were accepted).
-
-and doing that would "magically" fix your patch.
-
-can you think of any plausible use case that this would break?
-
-but i guess you'll be paranoid about backwards compat anyway, so an 
-alternative proposal would be using silence_threshold == ULONG_MAX to 
-trigger the new semantics. of course this would have the downside that 
-it wouldn't "magically" fix your code (and i suspect some other code as 
-well), and kernel version dependent behavior would have to be coded for 
-the (presumably) common usage.
-
-regards
