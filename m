@@ -4,72 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C307EC77B75
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 09:40:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A7F7C77B7D
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 09:58:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 745732C1D;
-	Fri,  5 May 2023 11:39:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 745732C1D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B755B2C2F;
+	Fri,  5 May 2023 11:57:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B755B2C2F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683279609;
-	bh=DJAvTomDQRxfFtYtmjsaVBoy4tYpNhpz+9/Uknh8I4Q=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1683280710;
+	bh=NmOEYx3xLwij3Qx+9Tkxg/Yz+nNw1DVj8H9wxxFPZyI=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Gi/8S/HHu/Xpo96BOXX/RIYnLGMyymO+3vwMqlKEXf29cC7bIGLb1yCCmosp0PQK2
-	 M5xD2sSCZ3ybxOjYftp/e7blgOVzehxuuAn6CLOqn2WAwWcflN564hlFfQYZLOFxt3
-	 k0zUIovxNqqV27kg21i1IKRia+xk2BUMB6A1BlrE=
+	b=SUaoub4c+AhWCwl8af6pTd48rROL8SaYOGkG56fge2LBxiQ11GkQ0lHI3JlmVHrjG
+	 DsLYVi/TWSAR1mGMEKCPiUQKvVnXubRZAA1DhAErM0GPb9tAOoeGsXRhnGQrjGHfAt
+	 stZESgl7punRBA/rzooeVlTTUAaR2Z+0QsB8Ow4M=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA20DF804B1;
-	Fri,  5 May 2023 11:38:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71010F8052D;
+	Fri,  5 May 2023 11:57:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C01C4F8052D; Fri,  5 May 2023 11:38:50 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 8E7D7F8052D; Fri,  5 May 2023 11:57:11 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D5F0EF804B1
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 11:38:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5F0EF804B1
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id BD85023E25;
-	Fri,  5 May 2023 05:38:45 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1purtl-Y23-00; Fri, 05 May 2023 11:38:45 +0200
-Date: Fri, 5 May 2023 11:38:45 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 1/5] ALSA: pcm: Revert "ALSA: pcm: rewrite
- snd_pcm_playback_silence()"
-Message-ID: <ZFTOpRduzMVakOGx@ugly>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	ALSA development <alsa-devel@alsa-project.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7C465F80520
+	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 11:57:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C465F80520
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=GPaDWZwl;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=tXyTCycP
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C577F1F8C1;
+	Fri,  5 May 2023 09:57:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1683280620;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mDGuywn6RQt+u2S5yCJ9o9CNhs33iQIe6+Q0HbQxMEY=;
+	b=GPaDWZwl9jHdOqRRGVmie5aeSb8/Zk19gglAD8Bz2enEUKKEZvSt2ELsgVOogLkj35VBmO
+	bcAhkBwfbtVo4A9LaBw5tQVhzFsOZ5hwb1WyGeub5mCBCE71q3tDOR3Grugy0zdhN9dS2m
+	2f9kjjIDwaDnCGtGqZ74KJNuXlI2X7Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1683280620;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mDGuywn6RQt+u2S5yCJ9o9CNhs33iQIe6+Q0HbQxMEY=;
+	b=tXyTCycPZ9VWNCzfmnooPE7wj5GdQ86bGIwjvjd7muJzi988LBUd47nEQbC7j4qd6Eg7Xy
+	zykZpXj/bOBPz4BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9B6DE13513;
+	Fri,  5 May 2023 09:57:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id u54GJezSVGTpaQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 05 May 2023 09:57:00 +0000
+Date: Fri, 05 May 2023 11:57:00 +0200
+Message-ID: <87y1m3hzir.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 3/5] ALSA: pcm: fix playback silence - correct the
+ incremental silencing
+In-Reply-To: <20230505073813.1219175-4-perex@perex.cz>
 References: <20230505073813.1219175-1-perex@perex.cz>
- <20230505073813.1219175-2-perex@perex.cz>
- <87zg6ji0pn.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <87zg6ji0pn.wl-tiwai@suse.de>
-Message-ID-Hash: O6XMKKHLRHVW37ST6O44CK7EWYMREF55
-X-Message-ID-Hash: O6XMKKHLRHVW37ST6O44CK7EWYMREF55
-X-MailFrom: ossi@kde.org
+	<20230505073813.1219175-4-perex@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: Q6VU4X4IYUX5MG7EQ3EA4GV3GD6N7JXZ
+X-Message-ID-Hash: Q6VU4X4IYUX5MG7EQ3EA4GV3GD6N7JXZ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: ALSA development <alsa-devel@alsa-project.org>
+CC: ALSA development <alsa-devel@alsa-project.org>,
+ Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
+ Jeff Chua <jeff.chua.linux@gmail.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O6XMKKHLRHVW37ST6O44CK7EWYMREF55/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q6VU4X4IYUX5MG7EQ3EA4GV3GD6N7JXZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -78,20 +115,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, May 05, 2023 at 11:31:16AM +0200, Takashi Iwai wrote:
->On Fri, 05 May 2023 09:38:09 +0200,
->Jaroslav Kysela wrote:
->> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
->
->Better to add Reported-by and the reference for the original thread
->reporting the regression,
->
-i'll post a slight rework of the series shortly, where i'll include 
-this.
+On Fri, 05 May 2023 09:38:11 +0200,
+Jaroslav Kysela wrote:
+> 
+> The incremental silencing was broken with the threshold mode. The silenced
+> area was smaller than expected in some cases. The updated area starts
+> at runtime->silence_start + runtime->silence_filled position not
+> only at runtime->silence_start in this mode.
+> 
+> Unify the runtime->silence_start use for all cases (threshold and top-up).
+> 
+> Suggested-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
-> as well as the Fixes tag.
->
-that seems pointless for a revert, as all the info is already included 
-anyway, no?
+While this change itself follows the original code, and is fine from
+the code-refactoring POV.
 
-regards
+But, the difficulty of the code (even after this patch) is that the
+filling behavior is completely different between the threshold and the
+fill-up modes, and we still try to use the similar code.
+When reconsidering what we actually need, you can notice that, in the
+fill-up mode, we don't have to keep tracking silence_start and
+silence_size at all.
+
+Namely, in the fill-up mode, what we need are:
+- at init, fill silence in the unused buffer:
+
+	ofs = runtime->control->appl_ptr % runtime->buffer_size;
+	frames = snd_pcm_playback_avail(runtime);
+	fill_silence_in_loop(ofs, frames);
+
+- at each incremental hw_ptr update, fill the area with silence:
+
+	ofs = runtime->status->hw_ptr % runtime->buffer_size;
+	frames = new_hw_ptr - runtime->status->hw_ptr;
+	if (frames < 0)
+		frames += runtime->boundary;
+	fill_silence_in_loop(ofs, frames);
+
+That's all, and far simpler than keeping silence_start and
+silence_filled.  (I really had hard time to understand why filling at
+silence_start + silence_filled in the incremental mode works
+correctly...)
+
+I might have overlooked something and there can be a bit more room for
+optimization, but the point is that unifying the code for two behavior
+isn't always good.  Treating separately can be sometimes easier.
+
+
+thanks,
+
+Takashi
