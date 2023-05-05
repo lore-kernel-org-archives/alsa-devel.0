@@ -4,109 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B84E9C77B75
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 20:40:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 753B8C77B75
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 20:57:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32F462BAA;
-	Fri,  5 May 2023 22:39:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32F462BAA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AA3E2C20;
+	Fri,  5 May 2023 22:56:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AA3E2C20
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683319204;
-	bh=b3CE/V8TQenqSh7NE+inf/ijcS6yg1yHI0dvetaLrF0=;
+	s=default; t=1683320246;
+	bh=+9j7y+mrM50h2VcOOaIbK0MFi52MZLnpfPgvvLPE6Fk=;
 	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Z485agjywEv4sNDRRyQbRnaScgST3I3h8vlgVhGaww1qqzS9t1Cf+MvXjq1prmGXB
-	 PWQVFgycrdlVj8WgUJ38bi9vRxzCi/BYEs7Lw+7EOJB5FxTxqWlGqNtvPGIOLNn+7y
-	 yVEVz5F2JAEUeRw9Bljo/XtkoAez/VO1yIgeBDcw=
+	b=AwmsabibushK0Cr+XfETpQqFlCThZvYbRlxRczaDv+Wc/L+jO3fDQPtJE64SeezTi
+	 6SoeimBdfHvJzPXLDwY7wijIN24ZCrGKzT6VJk580UGGZ9zzmmfsfjax3UnKGxCXed
+	 0KiDwWFNzm4i0JH1ox2HxDmB3h57syDFV5fNJxiQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1587F8052D;
-	Fri,  5 May 2023 22:38:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FEECF8052D;
+	Fri,  5 May 2023 22:56:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1E0D8F8052D; Fri,  5 May 2023 22:38:44 +0200 (CEST)
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com
- [IPv6:2001:4860:4864:20::2f])
+	id 0DE57F8052D; Fri,  5 May 2023 22:56:07 +0200 (CEST)
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com
+ [209.85.161.41])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4FE68F80087;
-	Fri,  5 May 2023 22:38:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FE68F80087
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=goDdGu9k
-Received: by mail-oa1-x2f.google.com with SMTP id
- 586e51a60fabf-192cd5579faso1914376fac.1;
-        Fri, 05 May 2023 13:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683319113; x=1685911113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=B/9Pv9GD3bRPuWx/fbnz86Vp95f4PmUu+4iR/1CRaf4=;
-        b=goDdGu9kDZj9vHqLSul8dj2tMHtYncgeFjDy4Ih9Co12xwlNk79SAXfabnV/I8BhCn
-         O2zpkxB39wUNVPS0PgV6zrD/TrqNWrMT9VIq2M2uh3fbb57YtQwC4X9n152CXKGl+UV6
-         CbEfdwzj31dcOxoMi6gGw+dSULaNODcJI0RpApLI0SRpFpRkuIsdmFBMvvpk4MAbgbvS
-         i7YyZQoSXUnVKij9t8p1Y098ZYYnQZCCfQ1DNT9v3VXC2D88LjoV1EVmKJeyjIxoocqS
-         qaPZg64lC05hh9mFUvLr5hyW/cjl53MDRDHjdtOVFAO201xj1LDm7xWdmAjSOodLdPCq
-         sDHw==
+	by alsa1.perex.cz (Postfix) with ESMTPS id C74E1F80087
+	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 22:56:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C74E1F80087
+Received: by mail-oo1-f41.google.com with SMTP id
+ 006d021491bc7-54c723db469so761970eaf.3
+        for <alsa-devel@alsa-project.org>;
+ Fri, 05 May 2023 13:56:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683319113; x=1685911113;
+        d=1e100.net; s=20221208; t=1683320159; x=1685912159;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B/9Pv9GD3bRPuWx/fbnz86Vp95f4PmUu+4iR/1CRaf4=;
-        b=a1CnHnKVjDnjkDVFu2aUNF6GkJeIZAukqxmjsDgIS8T/SG/JRSICZDqxGPUH2qKhbL
-         SePfAVDdrvg92kgDlPJaccuUsebnjQQaRMgWgVFVY4Qmmc4eaMtNQn9g79WkBMuTENX1
-         6LeIweFizDZUAKkTZg57+I2devqG3irLlu8Qz0plbR4mLucIPSlLjLLMqCSdDADV9DFZ
-         Yqa4k/Jk8nd8e7WMlX7OjmuVROelKm6lexb5HC9fjxPCDN4t+3HEognWwCTR0tjVWn7v
-         Hnjko+4AdJWmVRgPGJkmIHPIqUOHVriCJIeCwcNBSk+wgaafCFZvSJxxMOfG/g9S1M7a
-         +xVQ==
-X-Gm-Message-State: AC+VfDzLJsG2HoMtevISu5z1nwjZAQ1d6BUFObxqofEjilUEi9/mRHn6
-	ws0MNWSYyBj5u/Ex/atz54Y=
+        bh=VN+kd2EhqqLwkd1HP1gj/tCZ2l7tn4n5+N9NH0LIdNk=;
+        b=QewFE+hhDRxgnScP/ydoqTYpBhWwSAiAYOX1Ix0a2jKYt5EAUw7UbfOqQhlHQaLyII
+         9cT1d95u2FvtlsU2ZKHeA7WrfADj7Rp9fQ59O6napp9cZEgTPEfr0a7aWvHvZjPcazyL
+         SvJehd2Ms/Xmyc08gS+kRp/jlF18fTcFsRE6MfuOc7lDRC4TzWyQJUaRbjMU2klhvtC9
+         sYwgUJo2IIPvtQI/hrrdGX03ASwnhQcAljzj+GdWiXb1rtRUHBgGxnXEBU/dgcrXuv1k
+         Qcq2itDTbdf63mxQPQ7O6Gvj5acWbWYyhY4DQqfSehvoIytD36Dlj8UL6F/5YklSkCXB
+         ayCA==
+X-Gm-Message-State: AC+VfDzZJIu1rT8kzDjUCIhLbHxnvKa6pUJV7NTX3ZVgNX2iUMXOsURp
+	z6bJTt8aI9nHuVCmrj38TQ==
 X-Google-Smtp-Source: 
- ACHHUZ43KR0D/CnThPvLyRqYUzzs0Bu6roC8bV+8+jZlakhbyt50txdtmlCKtQTrvSPYxU/uICDKiQ==
-X-Received: by 2002:a05:6870:9571:b0:18b:2238:5abe with SMTP id
- v49-20020a056870957100b0018b22385abemr1705929oal.9.1683319112962;
-        Fri, 05 May 2023 13:38:32 -0700 (PDT)
-Received: from geday ([2804:7f2:8006:8886:6ce0:2667:545a:2a1])
+ ACHHUZ753eu5EI/LSk6iN0lvOVkNEoyddP53VCwh5WJqzbAvag6iNPXcKvC6W2TN9PHdEY3Uv6obYA==
+X-Received: by 2002:a05:6820:290:b0:547:6105:e096 with SMTP id
+ q16-20020a056820029000b005476105e096mr1349543ood.7.1683320159587;
+        Fri, 05 May 2023 13:55:59 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107])
         by smtp.gmail.com with ESMTPSA id
- s4-20020a4ac804000000b005255e556399sm1381958ooq.43.2023.05.05.13.38.29
+ h5-20020a9d6405000000b006a632c6af05sm1298506otl.54.2023.05.05.13.55.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 May 2023 13:38:32 -0700 (PDT)
-Date: Fri, 5 May 2023 17:38:28 -0300
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel@alsa-project.org: [PATCH 3/5] ASoC: mediatek:
- mt8195-afe-pcm: Simplify runtime PM during probe]
-Message-ID: <ZFVpRKM5vxpWWaI9@geday>
-References: <ZFMF2cD3nPgpZOpa@finisterre.sirena.org.uk>
+        Fri, 05 May 2023 13:55:58 -0700 (PDT)
+Received: (nullmailer pid 3548062 invoked by uid 1000);
+	Fri, 05 May 2023 20:55:58 -0000
+Date: Fri, 5 May 2023 15:55:58 -0500
+From: Rob Herring <robh@kernel.org>
+To: Anup Sharma <anupnewsmail@gmail.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: nau8540: Convert to dtschema
+Message-ID: <20230505205558.GA3544888-robh@kernel.org>
+References: <ZE9rK6mktPByvRRz@yoga>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZFMF2cD3nPgpZOpa@finisterre.sirena.org.uk>
-Message-ID-Hash: RVEYMSYHPROVSXEWTIWR2GXPFTZRA3XX
-X-Message-ID-Hash: RVEYMSYHPROVSXEWTIWR2GXPFTZRA3XX
-X-MailFrom: geraldogabriel@gmail.com
+In-Reply-To: <ZE9rK6mktPByvRRz@yoga>
+Message-ID-Hash: S6FUIFSY4HYGQA6K3IUCZ7JOOLQJY7W7
+X-Message-ID-Hash: S6FUIFSY4HYGQA6K3IUCZ7JOOLQJY7W7
+X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: postmaster@alsa-project.org, sound-open-firmware-owner@alsa-project.org,
- tiwai@suse.de, alsa-devel@alsa-project.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- sound-open-firmware@alsa-project.org
+CC: lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, KCHSU0@nuvoton.com, linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RVEYMSYHPROVSXEWTIWR2GXPFTZRA3XX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S6FUIFSY4HYGQA6K3IUCZ7JOOLQJY7W7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,26 +101,91 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, May 04, 2023 at 10:09:45AM +0900, Mark Brown wrote:
-> Hi,
+On Mon, May 01, 2023 at 01:02:59PM +0530, Anup Sharma wrote:
+> Convert the NAU8540 audio CODEC bindings to DT schema
 > 
-> Here's another mail (one of several in this series) that got completely
-> mangled by the alsa-project.org mailman to the point of unusability.  I
-> didn't see any response to my last mail about this, is there any news on
-> fixing mailman to not do this?  It's extremely disruptive to working
-> with lore.
-
-Hi Mark,
-
-Are you complaining about the added headers in the message? Because the
-patch itself didn't look mangled from my side. From my understanding,
-Jaroslav had to start mangling mail addresses due to strict DMARC rules
-which make some servers reject the message from alsa-devel.
-
-Thanks,
-Geraldo Nascimento
-
+> Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
+> ---
+>  .../devicetree/bindings/sound/nau8540.txt     | 16 --------
+>  .../bindings/sound/nuvoton,nau8540.yaml       | 40 +++++++++++++++++++
+>  2 files changed, 40 insertions(+), 16 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/nau8540.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8540.yaml
 > 
-> Thanks,
-> Mark
+> diff --git a/Documentation/devicetree/bindings/sound/nau8540.txt b/Documentation/devicetree/bindings/sound/nau8540.txt
+> deleted file mode 100644
+> index 307a76528320..000000000000
+> --- a/Documentation/devicetree/bindings/sound/nau8540.txt
+> +++ /dev/null
+> @@ -1,16 +0,0 @@
+> -NAU85L40 audio CODEC
+> -
+> -This device supports I2C only.
+> -
+> -Required properties:
+> -
+> -  - compatible : "nuvoton,nau8540"
+> -
+> -  - reg : the I2C address of the device.
+> -
+> -Example:
+> -
+> -codec: nau8540@1c {
+> -       compatible = "nuvoton,nau8540";
+> -       reg = <0x1c>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8540.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8540.yaml
+> new file mode 100644
+> index 000000000000..ac344e435a5c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8540.yaml
+> @@ -0,0 +1,40 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/nuvoton,nau8540.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Nuvoton Technology Corporation NAU85L40 Audio CODEC
+> +
+> +maintainers:
+> +  - KCHSU0@nuvoton.com, broonie@kernel.org
 
+Not the right format. It's one email per line/entry.
+
+It needs a name too and drop Mark. It's who knows the h/w, not who 
+applies patches.
+
+> +
+> +allOf:
+> +  - $ref: dai-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: nuvoton,nau8540
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#sound-dai-cells":
+> +    const: 0
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        codec@1c {
+> +            compatible = "nuvoton,nau8540";
+> +            reg = <0x1c>;
+> +        };
+> +    };
+> -- 
+> 2.34.1
+> 
