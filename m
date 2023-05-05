@@ -4,125 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D201C77B75
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 10:44:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4C76C77B75
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 10:46:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44B232C5B;
-	Fri,  5 May 2023 12:43:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44B232C5B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF9D02C61;
+	Fri,  5 May 2023 12:45:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF9D02C61
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683283462;
-	bh=lplHaKa0BrhHkdJWzvIm2c0q65+ElO9YHb3IoNwE+4I=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1683283575;
+	bh=hXnxx/cLPhjR+upjuT9hx+fuYJpNLskhTnN4dwo/CZk=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RNOzWZ9jQZK+6Ev3I4Vdc6vf7plXQqRtoTUad6udM84fnyj1p3fvV2eNVyJePsd23
-	 HjFCLPwFrQPpHR9rBKdms9k2hOhYrCnV78L+VCfIQ7yrIzhDi+/Fc6PuhdA5jWcVip
-	 sYitrGhf7HvJdG5YZA/OIGlMAXHTgPzHDna06pVU=
+	b=IO6u66VVwW4Os40nJBIb48M3h3mCAYlZmBVwUYam4rqwmMUdmFdFJ1pnN6isDkR6+
+	 VRok2ntfdeMfTd6NtXclfVXgimSRTyhttwYz5Ovpec40xdeHGEarL9jLngmYKbSZoG
+	 ODKibl3VQ2kC+TRDHjCCxA8vRIjxa53tX4z2CMAs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FCC1F80087;
-	Fri,  5 May 2023 12:43:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C785F80087;
+	Fri,  5 May 2023 12:45:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 202F6F8052D; Fri,  5 May 2023 12:43:03 +0200 (CEST)
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27])
+	id 91D05F8052D; Fri,  5 May 2023 12:44:56 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E932DF80087
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 12:42:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E932DF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 765BEF80087
+	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 12:44:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 765BEF80087
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kroah.com header.i=@kroah.com header.a=rsa-sha256
- header.s=fm3 header.b=Bz7cz1oU;
-	dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm3 header.b=RqXJnCqZ
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id 6CB9D5C030C;
-	Fri,  5 May 2023 06:42:51 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 05 May 2023 06:42:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm3; t=1683283371; x=1683369771; bh=RC
-	TWVk0KOAVQ/MkChme+8/6o8h9CkRTO4hkaOFGb8H8=; b=Bz7cz1oUuN9Ila0jCg
-	gsP4cAo3R88v0BuIlQw1Iuc/Jj6Cj7ZXE9Fshdcm/j3oLmC4sr5jhqeNzc9p244X
-	W0eLkFo/G1Z/ZC1YyMBGKM2xwor/lJ6H8k9vcz6KMSOTVXZLOjR00Wknyf7QcCl4
-	t5gzw0uAid9TThPkEfNxHiS7M76D6UYONrLWramwxBm68cGMXuUfPCtxj4lFJo0t
-	KbQ0QmzgnPxYW8n/mHyNyGdoCl/aruEtt4cKDmlmmmHtaJ1cjCqlraTijs710Tqr
-	Sgje05/RuvhRmmMjF4kqoX5QtwiucfxcpnBsylSWqUQ0CQtGD11Pp9I/aNTFn8sM
-	l4EA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1683283371; x=1683369771; bh=RCTWVk0KOAVQ/
-	MkChme+8/6o8h9CkRTO4hkaOFGb8H8=; b=RqXJnCqZQliMjqwLuDeWV6/a8f/8w
-	Ex08I0VVzwluGBAFMlMOsi04uS+XzUJB8SVqq4e1sNrsKX7sDjPKNHn2EQG1Eq9w
-	Es9fyZgT+upuxBCRw/feo+jcDAgeeSEZGJik2zalGiOKJTG2OIvVedodQl0F2hyX
-	yMGoHCwfnfFK3d6G5FZRWMTCD8PKSjz4vN69ycV6YrkDkEmiAIPJXsIlVIZZ78t/
-	D2nIYuUANhFurxcvLdV3MMts9Jz3LDeaIXkg2oLIFObfoPY2IjlU0m74402AUcPR
-	Fz2LeYE8LsBr6BJeQyAQP+H6H15fWfe/AVu0IM2T7gpL5nxc44wmnX7Gg==
-X-ME-Sender: <xms:q91UZEtqwzQfHlBVK8mMUtYYGXFHothsncvoO6cgnAUdoole3iQJTA>
-    <xme:q91UZBfAzVecWUB6Rspa9NELo2WaOtSeOhB5qNbzwcivY0AUXwfBfwWrtPrVtAoeg
-    Zbm_5Oe4BxegA>
-X-ME-Received: 
- <xmr:q91UZPzLwzvzEplPrtZlnBrpRDOJLLVFBJQ7pMqO9iSW1VMWy76AOfOKqHpS>
-X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedvhedrfeefvddgfeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
-    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:q91UZHOu1TTFc2_K8TvRiOMUtur5kvxN65ASjKvMFVXWiKq57x26Nw>
-    <xmx:q91UZE9d_kEYgYuEIa7CD_-TKyzu6wMDuBp6W-Nl0sczL7KMf1edgw>
-    <xmx:q91UZPVQ3ai0cckISVAcXEuDgeCcTwI4Hqo5bsVXEkqSVA_ETw6-fA>
-    <xmx:q91UZAuGKvyPNXUwWWOc0qPH82LmGpPhyNoID6R9ibALztDQ9XNsVQ>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 5 May 2023 06:42:49 -0400 (EDT)
-Date: Fri, 5 May 2023 19:42:44 +0900
-From: Greg KH <greg@kroah.com>
-To: yixuanjiang <yixuanjiang@google.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: Fix and cleanup DPCM locking
-Message-ID: <2023050534-errant-crusher-0379@gregkh>
-References: <20230504092142.4190069-1-yixuanjiang@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230504092142.4190069-1-yixuanjiang@google.com>
-Message-ID-Hash: DDW7Q3U3MD6YLJDPTON6XUTGEREP2HNH
-X-Message-ID-Hash: DDW7Q3U3MD6YLJDPTON6XUTGEREP2HNH
-X-MailFrom: greg@kroah.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=k4hDdDs5;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=eIGnJE4g
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 94B38222FD;
+	Fri,  5 May 2023 10:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1683283491;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Du9pJAbjweqduGEek3CyHDGDgJqpOWilNpuYN/EZhZM=;
+	b=k4hDdDs5CKJ2L09Or53xRr1FYBY4dfLZPL5++H8w0qSc5mhyQWmzGN8EqEXI9jYvj6JWYW
+	iagyQmNQGRXhQ9SvpakEmMdQUpA0+k70PtjYsKJv0815qf4YuJ/UCqf0BPsCsfWTOmXjYw
+	utpNd14+nL2vqTWFftX8wB7gAWbJMCk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1683283491;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Du9pJAbjweqduGEek3CyHDGDgJqpOWilNpuYN/EZhZM=;
+	b=eIGnJE4g9zAx7JFQg7RduvXW11RDKatpOeueBtTXzji+ctxJoGDini/kaEiIZTkJmAGouR
+	DlEskNZz6T2qGABQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 63A2D13513;
+	Fri,  5 May 2023 10:44:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id LuSOFyPeVGR1AgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 05 May 2023 10:44:51 +0000
+Date: Fri, 05 May 2023 12:44:50 +0200
+Message-ID: <87v8h7hxb1.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Subject: Re: [PATCH 1/5] ALSA: pcm: Revert "ALSA: pcm: rewrite
+ snd_pcm_playback_silence()"
+In-Reply-To: <ZFTOpRduzMVakOGx@ugly>
+References: <20230505073813.1219175-1-perex@perex.cz>
+	<20230505073813.1219175-2-perex@perex.cz>
+	<87zg6ji0pn.wl-tiwai@suse.de>
+	<ZFTOpRduzMVakOGx@ugly>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: 4VCJWNEOZLI2VIJ4QO3BZGBBBWTJ6UU2
+X-Message-ID-Hash: 4VCJWNEOZLI2VIJ4QO3BZGBBBWTJ6UU2
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, stable@vger.kernel.org
+CC: ALSA development <alsa-devel@alsa-project.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DDW7Q3U3MD6YLJDPTON6XUTGEREP2HNH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4VCJWNEOZLI2VIJ4QO3BZGBBBWTJ6UU2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,46 +115,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, May 04, 2023 at 05:21:42PM +0800, yixuanjiang wrote:
-> From: Takashi Iwai <tiwai@suse.de>
+On Fri, 05 May 2023 11:38:45 +0200,
+Oswald Buddenhagen wrote:
 > 
-> The existing locking for DPCM has several issues
-> a) a confusing mix of card->mutex and card->pcm_mutex.
-> b) a dpcm_lock spinlock added inconsistently and on paths that could
-> be recursively taken. The use of irqsave/irqrestore was also overkill.
+> On Fri, May 05, 2023 at 11:31:16AM +0200, Takashi Iwai wrote:
+> > On Fri, 05 May 2023 09:38:09 +0200,
+> > Jaroslav Kysela wrote:
+> >> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+> > 
+> > Better to add Reported-by and the reference for the original thread
+> > reporting the regression,
+> > 
+> i'll post a slight rework of the series shortly, where i'll include
+> this.
 > 
-> The suggested model is:
-> 
-> 1) The pcm_mutex is the top-most protection of BE links in the FE. The
-> pcm_mutex is applied always on either the top PCM callbacks or the
-> external call from DAPM, not taken in the internal functions.
-> 
-> 2) the FE stream lock is taken in higher levels before invoking
-> dpcm_be_dai_trigger()
-> 
-> 3) when adding and deleting a BE, both the pcm_mutex and FE stream
-> lock are taken.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> [clarification of commit message by plbossart]
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Link: https://lore.kernel.org/r/20211207173745.15850-4-pierre-louis.bossart@linux.intel.com
-> Cc: stable@vger.kernel.org # 5.15.x
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  include/sound/soc.h  |   2 -
->  sound/soc/soc-core.c |   1 -
->  sound/soc/soc-pcm.c  | 229 ++++++++++++++++++++++++++++---------------
->  3 files changed, 152 insertions(+), 80 deletions(-)
+> > as well as the Fixes tag.
+> > 
+> that seems pointless for a revert, as all the info is already included
+> anyway, no?
 
-<formletter>
+People tend to look at Fixes tag to judge whether the commit can fix
+something real or not.  For example, we (at SUSE) regularly check
+Fixes tag to pick up the missing fixing.
+In the case of a revert, it doesn't mean always a fix.  So it's not
+mandatory, but would be still helpful.
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
 
-</formletter>
+thanks,
+
+Takashi
