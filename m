@@ -4,91 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 837C3C77B75
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 09:24:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 928CFC77B75
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 May 2023 09:32:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E9292C17;
-	Fri,  5 May 2023 11:23:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E9292C17
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3B8B2C1C;
+	Fri,  5 May 2023 11:31:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3B8B2C1C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683278654;
-	bh=9vPhqtgz/qVGgFYbD9UbdKybwsBMkrteVksIhFTGdvg=;
+	s=default; t=1683279162;
+	bh=q54GUt1lCYkKR9+YmSM5Ie5t9NUwD/74LH4S2PquEhY=;
 	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kiZHzDbm2q8w0JyBQjTQCPfCIKRtuxKWmSAfxHenRkZBuN/520ooCSw/yrxfjRlOI
-	 CyoS0dEW+iMUD1MvzWd88T2mLr123qOZGYIR5EGfLVuUOvxmoyNdZ8T8ggcWP/OcRu
-	 hxewW+BPko9VOpBXQ6RGmaAfWFgXgkGVwEjwSNoc=
+	b=UVNiJ2r4kb84XcpewB1CEQFljZ+OAEYio4yfTnRsWKVVA1TczpjFA/jijLo87kv4Q
+	 k2pW7R2N31lmGBawbwOi+R6Ppnqg5UgF7oCv1JAsTtQkgqkxENpZ5K3xZ5H97OMjOr
+	 GH6FZj9YbPIRcMEm0WORI9mqjs2Ff7MuEyZ3vM3k=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DBB1F804B1;
-	Fri,  5 May 2023 11:22:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8D30F804B1;
+	Fri,  5 May 2023 11:31:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AEC7AF8052D; Fri,  5 May 2023 11:22:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id E0A83F8052D; Fri,  5 May 2023 11:31:22 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 69EDDF804B1
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 11:22:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69EDDF804B1
+	by alsa1.perex.cz (Postfix) with ESMTPS id E3896F804B1
+	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 11:31:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3896F804B1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=uJl43poX;
+ header.s=susede2_rsa header.b=SSfkhjz1;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ZyEZBGTh
+ header.s=susede2_ed25519 header.b=OBG3bHhU
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 50D391FD87;
-	Fri,  5 May 2023 09:22:49 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5DF4F2218E;
+	Fri,  5 May 2023 09:31:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1683278569;
+	t=1683279077;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/TQQLhq4X72z2eBC+8HjtOU55a4ahnELpSCvb9qoJ9c=;
-	b=uJl43poXTl+54MeX6KIx8rrAs9rK8MkIhDSuZzj0eUrgQekNKIi8KwnNphJUFRsGzGZPcp
-	Ok1ccuKszVIOfsd1qtY/upzUW/pvGcsZNfLoxyV70/h+yvqy+vMMQsM+v00vOtmWLq1OOq
-	JdcrrjsiCDNVnnPELS78vXxkwT9HSj4=
+	bh=s8j0OGgkE7eOUpox6xaEYAUhJAdohZ5OCFdGwZl62ic=;
+	b=SSfkhjz1ML1pJMR1IzDlVeWhPRBaeq6XLm94heG2Gjcu2PyTZcJcXUnHUK7yUEzW+2RIz7
+	sRz0h3nQHYYIe3ntPipEhKGnN2imbpiUcmh45M7ckIHIR6d6PshK9ysNtX/0h9gwqXvQ4h
+	eIZTdZAE+k3z64sGb20UGLUzf3PrX1E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1683278569;
+	s=susede2_ed25519; t=1683279077;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/TQQLhq4X72z2eBC+8HjtOU55a4ahnELpSCvb9qoJ9c=;
-	b=ZyEZBGThcd9g4vqHLp6Z98zVXzbuFxa0f4th56l21314m2O8bWt5DmZdLRmLNlioaRI/3l
-	PgaiTzr7kbhQPQBA==
+	bh=s8j0OGgkE7eOUpox6xaEYAUhJAdohZ5OCFdGwZl62ic=;
+	b=OBG3bHhU8eti4ZI8RriuEx7/ETRm5xNBKpzIt81GPyUfZNwhzHxczLi75oD/C8BKfFA8tq
+	sV/oaLh0luyTgMAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2843613488;
-	Fri,  5 May 2023 09:22:49 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 37B2413488;
+	Fri,  5 May 2023 09:31:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id btH7COnKVGQKWQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 05 May 2023 09:22:49 +0000
-Date: Fri, 05 May 2023 11:22:48 +0200
-Message-ID: <871qjvjfo7.wl-tiwai@suse.de>
+	id nDKUDOXMVGRNXQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 05 May 2023 09:31:17 +0000
+Date: Fri, 05 May 2023 11:31:16 +0200
+Message-ID: <87zg6ji0pn.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 0/5] rewrite snd_pcm_playback_silence() again
-In-Reply-To: <20230505073813.1219175-1-perex@perex.cz>
+Subject: Re: [PATCH 1/5] ALSA: pcm: Revert "ALSA: pcm: rewrite
+ snd_pcm_playback_silence()"
+In-Reply-To: <20230505073813.1219175-2-perex@perex.cz>
 References: <20230505073813.1219175-1-perex@perex.cz>
+	<20230505073813.1219175-2-perex@perex.cz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: FQ62Q7VYAXUYBY6MYZWWLCZDAJ3ISXWN
-X-Message-ID-Hash: FQ62Q7VYAXUYBY6MYZWWLCZDAJ3ISXWN
+Message-ID-Hash: W6UOSVRIJBXUZ3TZFCHARIJ3QOWW7GM7
+X-Message-ID-Hash: W6UOSVRIJBXUZ3TZFCHARIJ3QOWW7GM7
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FQ62Q7VYAXUYBY6MYZWWLCZDAJ3ISXWN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W6UOSVRIJBXUZ3TZFCHARIJ3QOWW7GM7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,34 +115,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 05 May 2023 09:38:08 +0200,
+On Fri, 05 May 2023 09:38:09 +0200,
 Jaroslav Kysela wrote:
 > 
-> This is a split of changes for both patches (the first with the missing
-> top-up mode + later fix with mixups) proposed by Oswald. The aim was to
-> pick only real code changes.
+> This reverts commit 9f656705c5faa18afb26d922cfc64f9fd103c38d.
 > 
-> Only the first two patches after revert fixes the current silencing issues.
-> The last two are just cleanups with the extra optimization in the last patch
-> moving the common code to a function.
+> There is a regression (the top-up mode). Unfortunately, the patch
+> provided from the author of this commit is not easy for the review.
 > 
-> Cc: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-> Cc: Jeff Chua <jeff.chua.linux@gmail.com>
+> Keep the update and new comments in headers.
 > 
-> Jaroslav Kysela (5):
->   ALSA: pcm: Revert "ALSA: pcm: rewrite snd_pcm_playback_silence()"
->   ALSA: pcm: fix playback silence - use the actual new_hw_ptr for the
->     threshold mode
->   ALSA: pcm: fix playback silence - correct the incremental silencing
->   ALSA: pcm: playback silence - remove extra code
->   ALSA: pcm: playback silence - move silence variables updates to
->     separate function
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
-Thanks, this makes it much easier to digest the whole changes!
+Better to add Reported-by and the reference for the original thread
+reporting the regression, as well as the Fixes tag.
 
-I watch out for a while whether any objection comes up, then apply
-patches in today -- or if we didn't reach to consensus, I'll pick up
-only the first revert patch for 6.4-rc1, at least.
+I can cook up it by myself, too.
 
 
 Takashi
