@@ -4,109 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FCC3C77B75
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 May 2023 05:58:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8BCDC7EE22
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 May 2023 07:13:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 734672BD7;
-	Sat,  6 May 2023 07:58:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 734672BD7
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA40E2B24;
+	Sat,  6 May 2023 09:12:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA40E2B24
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683352734;
-	bh=oovjI6jbdLa3skcz+AwUpdZypL6joV/hrW+m8eH0m2I=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1683357199;
+	bh=40PdCTLTcEJxLZ7g+1HtdAimxOwBFKF+OTi07ozBwGY=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=G6BibpD6CdDcuoB8bpGbyBytL2mg9Qr7q1PQ226Z60nEZWUXWlTjEhNpuLTlcEuxX
-	 r7XusJYS7blshlkei9UO5CH6WEtTjQPU9g/8GWoABNNog1BvcUVdxR8u4IhF7qJBKg
-	 G31yFCDmoGpoZ9CULbMsO40xCZPjyiIKK//e7wvA=
+	b=HM+PqMeBUj0F/p49mTc4bqaGPNBWyHfUPko3WRjWgJvmUJzTiLB16uN+4iogQM2Qe
+	 FqlxiPQL/LHtaUxcEe2tsAF3CdX796opQa31YtAh2/YNb+slVk1KrsIlZyiaR8kTe3
+	 30k49JHmY1mZIYHx073B+wzhasLUslI4RbjQAo3c=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 202A3F8053B;
-	Sat,  6 May 2023 07:57:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A0B0F80087;
+	Sat,  6 May 2023 09:12:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CEC0EF8053B; Sat,  6 May 2023 07:57:51 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 44B28F8052D; Sat,  6 May 2023 09:12:00 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F25EAF80533
-	for <alsa-devel@alsa-project.org>; Sat,  6 May 2023 07:57:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F25EAF80533
+	by alsa1.perex.cz (Postfix) with ESMTPS id 51FD2F80087
+	for <alsa-devel@alsa-project.org>; Sat,  6 May 2023 09:11:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51FD2F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=DZ3ZONca;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=DBb0IShc
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=a2a01UoO
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id F2EDA20B61;
-	Sat,  6 May 2023 05:57:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1683352667;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9i0SeTx8lIGtrzyO+u8rvIkHwihnziAaxcN8UqkZhFc=;
-	b=DZ3ZONcavrzajmpiiy4Xnow3NPEbLx5hDAbTEUaOKDf3dFrA2JdVXZrf5jfMgXeyqtZh2z
-	tI5xXsRNbLwzHwDAFMv4wT6KX8fMBOJ3+5dAqZwlQrn6zLU3goriXrit6T8QPeI/V9JOps
-	QGqoglH1TMNDsDQwFyy0WRSoelVp+oM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1683352667;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9i0SeTx8lIGtrzyO+u8rvIkHwihnziAaxcN8UqkZhFc=;
-	b=DBb0IShcR56G7dP/+K75zwoycxASgT0YrHfurBTFVaxbbXEOMwLVIPBm1uPTTN1OSFOqAJ
-	64pRhoFRCPA6yIDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB9D4134FB;
-	Sat,  6 May 2023 05:57:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id eP9hKFrsVWQAPgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Sat, 06 May 2023 05:57:46 +0000
-Date: Sat, 06 May 2023 07:57:46 +0200
-Message-ID: <87ttwqgfxh.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 1/3] ALSA: pcm: add snd_pcm_add_chmap_ctls_with_prefix
-In-Reply-To: <20230505165514.4666-2-srinivas.kandagatla@linaro.org>
-References: <20230505165514.4666-1-srinivas.kandagatla@linaro.org>
-	<20230505165514.4666-2-srinivas.kandagatla@linaro.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: BE4NG5O64V6VFY7RRBQ2ZYZ5M7ILWYDM
-X-Message-ID-Hash: BE4NG5O64V6VFY7RRBQ2ZYZ5M7ILWYDM
-X-MailFrom: tiwai@suse.de
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2B62661803;
+	Sat,  6 May 2023 07:11:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99D72C433D2;
+	Sat,  6 May 2023 07:11:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1683357109;
+	bh=40PdCTLTcEJxLZ7g+1HtdAimxOwBFKF+OTi07ozBwGY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=a2a01UoOnYcEjso0sVHUS9d64nG7PFQsMi2IPddxb4cOYtdsEjPCU2EBC/qgce22n
+	 r6+T2AcvTkiSyRyP9IdomDlDptQuCym400tub4KL0hrmND5Ik46aP1KTngmRCFas2w
+	 LzzctOBHMHwwOyUBOrbY2eyRFlfpx1ijEeUsvmas=
+Date: Sat, 6 May 2023 15:59:18 +0900
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: patch for 5.10.stable (sound/oss/dmasound)
+Message-ID: <2023050658-reburial-magenta-8bce@gregkh>
+References: <36efe6f3-009c-e849-f9d7-6a643edad8e0@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36efe6f3-009c-e849-f9d7-6a643edad8e0@infradead.org>
+Message-ID-Hash: YWXHNXHO232DXFALCZEYDHRPPQTSMZ5K
+X-Message-ID-Hash: YWXHNXHO232DXFALCZEYDHRPPQTSMZ5K
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
- ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- alsa-devel@alsa-project.org
+CC: stable <stable@vger.kernel.org>, Sasha Levin <sashal@kernel.org>,
+ Michal Marek <michal.lkml@markovi.net>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Takashi Iwai <tiwai@suse.com>, kernel test robot <lkp@intel.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BE4NG5O64V6VFY7RRBQ2ZYZ5M7ILWYDM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YWXHNXHO232DXFALCZEYDHRPPQTSMZ5K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,19 +87,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 05 May 2023 18:55:12 +0200,
-Srinivas Kandagatla wrote:
+On Fri, May 05, 2023 at 10:40:13PM -0700, Randy Dunlap wrote:
+> Please apply
 > 
-> On Qualcomm SoC which has multiple Display Port controllers, using
-> snd_pcm_add_chmap_ctls() to add chmap controls from every ASoC hdmi codec
-> instance for a give card fails while adding second instance as the control
-> with same name "Playback Channel Map" already exists from the first instance.
+> commit 9dd7c46346ca
+> Author: Randy Dunlap <rdunlap@infradead.org>
+> Date:   Tue Apr 5 16:41:18 2022 -0700
 > 
-> Fix this by adding a new api wrapper to pass ASoC component name prefix to
-> avoid such duplicate control naming.
+>     sound/oss/dmasound: fix build when drivers are mixed =y/=m
+> 
+> to the 5.10 stable tree. The kernel test robot <lkp@intel.com> reported a build
+> error on 5.10.y and this patch fixes the build error.
 
-It implies that you have conflicting PCM objects with the same PCM
-device number from the same card.  How can it be?
+Thanks, I've also added it to 5.15.y as you don't want to upgrade and
+have a regression.
 
+thanks,
 
-Takashi
+greg k-h
