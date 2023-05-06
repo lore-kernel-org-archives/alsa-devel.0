@@ -4,76 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28DDBC77B75
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 May 2023 17:17:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4121C77B73
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 May 2023 18:39:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC722182B;
-	Sat,  6 May 2023 19:16:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC722182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C37517EA;
+	Sat,  6 May 2023 20:38:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C37517EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683393451;
-	bh=uMcoI2DnS0NwiukUjF+ZiM2DidnKVWi9a0SbMENzikM=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=CHNJjqAACiGq21Jt8YvwXUpkyfRHpgZV0insVKAVivWuRkWo0JjofDRcXsTg9IwJM
-	 fj4S0uuscosesxh8QRJwdEcbu/MkMo66SXqUXsto+TreCISWFZZjEopGITVNies20T
-	 KDYqXGJzvhqW59AsU2UP68nQ4Gh1vSAZdG4UYe58=
+	s=default; t=1683398359;
+	bh=jmOmvlciVS9lLXw7W9YMfwOZGMztdo5ZzbPV416XytE=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=HmbhyaQUC4/R7Sq2OJpT+/OkjGwOBaF/kG+RzExO61h9T2ftul8jJg6xGHF3TCdxv
+	 oiiyPO8cVnu5Da8GYdEoIAJJ4IicaOZ3tf0izIMVtmYSlwPLPqtpyNG7WS7gjzBxCb
+	 us9YqpII01oeG9rWPeaVl7DB5Pm1MrJJNXE1y4DQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85146F8052D;
-	Sat,  6 May 2023 19:16:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2E4EF8052D;
+	Sat,  6 May 2023 20:38:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2ABA9F8052D; Sat,  6 May 2023 19:16:11 +0200 (CEST)
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.215])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B9B4F80087
-	for <alsa-devel@alsa-project.org>; Sat,  6 May 2023 19:16:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B9B4F80087
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256
- header.s=s110527 header.b=Fks/akAA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=XDbPr
-	foM+vd09SU0nLd9OpVWaVSYKPv82lGdDyy/2QU=; b=Fks/akAA1RFcj6Cav+w9B
-	aD1FFWv2XtV6mwY7eHa4AklfcWIh1C8p+eMax+1GWRN/WqgWCgEcymKAVtPtSaUZ
-	Ns72pw8ZiQZVsios5P/T1Ea0qdUa8BhU3pLzghZlGMIbrxvfsyqnluooirsVel+6
-	AspOFQnyU6/+OAkTtNvyuY=
-Received: from localhost.localdomain (unknown [111.43.134.127])
-	by zwqz-smtp-mta-g2-2 (Coremail) with SMTP id
- _____wAH_qFKi1ZkAC2QBA--.41346S2;
-	Sun, 07 May 2023 01:15:54 +0800 (CST)
-From: frshuov@163.com
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for ASUS GU603ZM
-Date: Sun,  7 May 2023 01:15:46 +0800
-Message-Id: <20230506171546.50815-1-frshuov@163.com>
-X-Mailer: git-send-email 2.40.1
+	id 45F83F8052D; Sat,  6 May 2023 20:37:59 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 35EB0F80087
+	for <alsa-devel@alsa-project.org>; Sat,  6 May 2023 20:37:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35EB0F80087
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wAH_qFKi1ZkAC2QBA--.41346S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtr1fZr18AF4fXFW5WFWDtwb_yoWkuFb_Ar
-	W3GFW5GF4UZwnrGFn3Grn5Ar4Iyrn8urZrXFyftFs8Jw4fKa109FnYkrnIkF1xXrW8ur15
-	G3yYyrWrtry5KjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRCyxi3UUUUU==
-X-Originating-IP: [111.43.134.127]
-X-CM-SenderInfo: xiuvx3lry6il2tof0z/1tbisQtnCWMr+EtimQAAsU
-Message-ID-Hash: UOLKBRCYG5LQAS3LNBBFPBTPUHE2YIJN
-X-Message-ID-Hash: UOLKBRCYG5LQAS3LNBBFPBTPUHE2YIJN
-X-MailFrom: frshuov@163.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1683398269587543726-webhooks-bot@alsa-project.org>
+References: <1683398269587543726-webhooks-bot@alsa-project.org>
+Subject: MSI MAG B650M Mortar Wifi Spdif input & output are reversed
+Message-Id: <20230506183759.45F83F8052D@alsa1.perex.cz>
+Date: Sat,  6 May 2023 20:37:59 +0200 (CEST)
+Message-ID-Hash: OGBYVHRT2ALEUYTNBCDWU3MIKTSPYV47
+X-Message-ID-Hash: OGBYVHRT2ALEUYTNBCDWU3MIKTSPYV47
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: tiwai@suse.de, stable@vger.kernel.org, Larry Chi <frshuov@163.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UOLKBRCYG5LQAS3LNBBFPBTPUHE2YIJN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OGBYVHRT2ALEUYTNBCDWU3MIKTSPYV47/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,28 +64,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Larry Chi <frshuov@163.com>
+alsa-project/alsa-ucm-conf issue #311 was opened from RenEH01:
 
-ASUS ROG Zephyrus M16 2022 GU603ZM (1043:1c62)
-added SND_PCI_QUIRK for speaker and headset-mic working properly
+Hi, I have a MSI MAG B650M Mortar Wifi. I have installed this UCM conf files which provided no sound. I further installed pauvcontrol and I found changing the USB Audio device under Configuration to Pro Audio and changing the output device under Output Devices to USB Audio Pro 2 allowed for sound. 
 
-Signed-off-by: Larry Chi <frshuov@163.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+When I select Digital Stereo (IEC958) Output under configuration I get no sound.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 172ffc2c332b..374a9755d19a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9522,6 +9522,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1b13, "Asus U41SV", ALC269_FIXUP_INV_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1bbd, "ASUS Z550MA", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x1c23, "Asus X55U", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-+    SND_PCI_QUIRK(0x1043, 0x1c62, "ASUS GU603ZM", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1c92, "ASUS ROG Strix G15", ALC285_FIXUP_ASUS_G533Z_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1d42, "ASUS Zephyrus G14 2022", ALC289_FIXUP_ASUS_GA401),
--- 
-2.40.1
+When I select Digital Stereo Duplex Duplex under configuration I get no sound, but there is sound under Input Devices. I believe this is reversed. I do not think this board has spdif input functionality at all. 
 
+A side effect of using Pro Audio 2 for output is that none of my multi channel tracks are downsampled for 2.0. I'm guessing this will be resolved if the above isssue is resolved. Would that be correct?
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/311
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
