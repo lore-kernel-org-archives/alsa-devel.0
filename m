@@ -4,113 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE01CC77B73
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 07:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0628C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 07:49:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26FD012AD;
-	Mon,  8 May 2023 09:48:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26FD012AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2556212C7;
+	Mon,  8 May 2023 09:48:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2556212C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683532140;
-	bh=tVYFuQcAAGwga6wxkcpWSfcpViEj4Phsj5nH2PnaDDk=;
-	h=From:Date:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1683532150;
+	bh=KldrlpBI2F8oTpkF86yvrtFX5sSLkBOo0z0bOg8b8Wg=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VUa25dxF6qi0y9WMchwZVtxuQOSn1dzGxcdAaNAE452srRqQACNYsG2vAu5dho455
-	 t4KQZ/bD4/pp6YAHg1QY4ue0psWVKLgBnEEuQn9g9d4dXFN4gewreJBeSjgwfn1xPb
-	 6LXCLEL0k3+ZQ+7MnsIQoP1x8DQZa87HMYTKGIyM=
+	b=VREwgxAKdeRA+xvev/wDevZaW51hxbTeBK31iv/6molfkgWMbsFK0adIaDlqPZYZA
+	 G8lhj1iwdtD6vLnccUTr50SkaLVRm0Zq2LcCNX/DhOn19Zk8+e6yQVltUYchJWscIk
+	 E9djRGMBvcjnqUwMzxDF3XG8VJbZ36uWIDBusrAE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A235F805C4;
-	Mon,  8 May 2023 09:45:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2328FF8053B;
+	Mon,  8 May 2023 09:45:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27C5CF8052D; Fri,  5 May 2023 15:38:37 +0200 (CEST)
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com
- [IPv6:2607:f8b0:4864:20::42a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 8E172F80534; Sat,  6 May 2023 11:01:38 +0200 (CEST)
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DAFEDF80087
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2023 15:38:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAFEDF80087
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=TBySTqTx
-Received: by mail-pf1-x42a.google.com with SMTP id
- d2e1a72fcca58-64395e2a715so1690891b3a.3
-        for <alsa-devel@alsa-project.org>;
- Fri, 05 May 2023 06:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683293912; x=1685885912;
-        h=in-reply-to:content-disposition:content-description:mime-version
-         :references:message-id:subject:cc:to:date:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Mz4evSv67hQPNV6oClHQJu53Y2013LybJpvcP/3rYWU=;
-        b=TBySTqTx6D329de6pIqxKPksV2SP41ErBZxOvFEAhZ5kQlqc0eJ5/NbmGyaT4gtAju
-         Oqxh0fnWWcFFq4pNWDjDgouY3OBBklA+9z1iUZUrpcoYjGmg6/KsH0CLeysDBpOMz/aU
-         5eqSMf9WIUB2NYcqtw+h0eYBE6qcZ9V2YJts8jZkI4LF6MmEfeE431yfjdpA25Cv6nyC
-         gXXvu3e/LRKDwx8589uKdf4AeEkU5fp7oLRV7FvTI8I1yMlgxjEKIlJ6Gmi4DESPBnFL
-         h/6e0zLmZoqPcL7VitXcgTUcex8Rsq9uzMEDyW7jgbljTJ3I9ja3MLMYKVXYoLSJ7Ley
-         uJNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683293912; x=1685885912;
-        h=in-reply-to:content-disposition:content-description:mime-version
-         :references:message-id:subject:cc:to:date:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Mz4evSv67hQPNV6oClHQJu53Y2013LybJpvcP/3rYWU=;
-        b=Ffk3BdMu0ylV5t87unmnf5OdIWbW0Mzlk43YOA6AwEfxi6mK14eDxNvZ9B5mJoYfKA
-         K/zUt/5aBKEc3KHjpbHXdbZ35otOhZ35Y/fVSdmmX8wrQ05JBCqWxhqM8EptT/thMIy9
-         XqukO2YRcUpoB+UPJIgrUyy2eZuGIlylTpv6+7kF3neLuGtC61Ff9FevXKo5QervtBKD
-         IN4h4eNJdWfeVS0FN5jvRVdrNBNnJQU3MEkXl2+Q/qw19Veom+8C5lc6uAwSh9ZStFOq
-         X5K6/ZOGphoWD5iR+pu2PN4xnGdurJNDZ8eTlWWIAD+3yf5TILAPTpKqomaHCy7CY4Kq
-         Ok2A==
-X-Gm-Message-State: AC+VfDxDVuofAUqzOCvmXHwLX0hOHif6Bvgc2aX9CI5F6jlPn09AnlCm
-	eTDZfqyoUyzba/Tdcu8Xv+o=
-X-Google-Smtp-Source: 
- ACHHUZ6jqvBp3DoOq6QbmnOZPC1jBE589QcBJHn3Ic731Vt39CAjAls8FFVH+ZQr5GZDp92TA0lpEg==
-X-Received: by 2002:a05:6a21:6704:b0:ef:ed72:779c with SMTP id
- wh4-20020a056a21670400b000efed72779cmr1761265pzb.8.1683293912071;
-        Fri, 05 May 2023 06:38:32 -0700 (PDT)
-Received: from yoga ([202.131.133.155])
-        by smtp.gmail.com with ESMTPSA id
- y2-20020a17090a6c8200b0024e135c2ea1sm5248770pjj.18.2023.05.05.06.38.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 May 2023 06:38:31 -0700 (PDT)
-From: Anup Sharma <anupnewsmail@gmail.com>
-X-Google-Original-From: Anup Sharma <AnupSharma>
-Date: Fri, 5 May 2023 19:08:26 +0530
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: rt1016: Convert to dtschema
-Message-ID: <ZFUG0vZG68hjZ0n9@yoga>
-References: <ZFUFAmBJXvkQAG7m@yoga>
- <ZFUFrWqOHVmzE+ut@finisterre.sirena.org.uk>
+	by alsa1.perex.cz (Postfix) with ESMTPS id C324FF80529
+	for <alsa-devel@alsa-project.org>; Sat,  6 May 2023 11:01:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C324FF80529
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id 985FE24E258;
+	Sat,  6 May 2023 17:01:19 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sat, 6 May
+ 2023 17:01:19 +0800
+Received: from SD-Server.starfivetech.com (183.27.98.219) by
+ EXMBX168.cuchost.com (172.16.6.78) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.42; Sat, 6 May 2023 17:01:18 +0800
+From: Walker Chen <walker.chen@starfivetech.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor.dooley@microchip.com>, Emil Renner Berthing
+	<emil.renner.berthing@canonical.com>, Walker Chen
+	<walker.chen@starfivetech.com>
+Subject: [PATCH v3 3/3] riscv: dts: starfive: add tdm node and sound card
+Date: Sat, 6 May 2023 17:01:16 +0800
+Message-ID: <20230506090116.9206-4-walker.chen@starfivetech.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230506090116.9206-1-walker.chen@starfivetech.com>
+References: <20230506090116.9206-1-walker.chen@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Description: evicetree@vger.kernel.org,
-Content-Disposition: inline
-In-Reply-To: <ZFUFrWqOHVmzE+ut@finisterre.sirena.org.uk>
-X-MailFrom: anupnewsmail@gmail.com
+Content-Type: text/plain
+X-Originating-IP: [183.27.98.219]
+X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+X-MailFrom: walker.chen@starfivetech.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: Y4E6LW4S3UJUYKFVVZODCXURLL7HW7SY
-X-Message-ID-Hash: Y4E6LW4S3UJUYKFVVZODCXURLL7HW7SY
-X-Mailman-Approved-At: Mon, 08 May 2023 07:45:13 +0000
-CC: lgirdwood@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- oder_chiou@realtek.com
+Message-ID-Hash: KFPZU22ZMSW2BS7E6TGSS75ASSJILEPC
+X-Message-ID-Hash: KFPZU22ZMSW2BS7E6TGSS75ASSJILEPC
+X-Mailman-Approved-At: Mon, 08 May 2023 07:45:54 +0000
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y4E6LW4S3UJUYKFVVZODCXURLL7HW7SY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KFPZU22ZMSW2BS7E6TGSS75ASSJILEPC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,15 +88,191 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, May 05, 2023 at 10:33:33PM +0900, Mark Brown wrote:
-> On Fri, May 05, 2023 at 07:00:42PM +0530, Anup Sharma wrote:
-> 
-> > +maintainers:
-> > +  - oder_chiou@realtek.com
-> 
-> If you're nominating someone as the maintainer for a binding it's
-> probably best to copy them on the patch so they're aware...
+Add the tdm controller node and sound card for the StarFive JH7110 SoC.
 
-Thank you, will keep that in mind. 
+Signed-off-by: Walker Chen <walker.chen@starfivetech.com>
+---
+ arch/riscv/boot/dts/starfive/Makefile         |  3 +
+ .../jh7110-starfive-visionfive-2-wm8960.dtso  | 70 +++++++++++++++++++
+ .../jh7110-starfive-visionfive-2.dtsi         | 40 +++++++++++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      | 21 ++++++
+ 4 files changed, 134 insertions(+)
+ create mode 100644 arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-wm8960.dtso
 
+diff --git a/arch/riscv/boot/dts/starfive/Makefile b/arch/riscv/boot/dts/starfive/Makefile
+index 170956846d49..644cc29b5be3 100644
+--- a/arch/riscv/boot/dts/starfive/Makefile
++++ b/arch/riscv/boot/dts/starfive/Makefile
+@@ -4,3 +4,6 @@ dtb-$(CONFIG_ARCH_STARFIVE) += jh7100-starfive-visionfive-v1.dtb
+ 
+ dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-v1.2a.dtb
+ dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-v1.3b.dtb
++
++jh7110-starfive-visionfive-2-wm8960-dtbs := jh7110-starfive-visionfive-2-v1.3b.dtb jh7110-starfive-visionfive-2-wm8960.dtbo
++dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-wm8960.dtb
+diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-wm8960.dtso b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-wm8960.dtso
+new file mode 100644
+index 000000000000..67897f000883
+--- /dev/null
++++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-wm8960.dtso
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: GPL-2.0 OR MIT
++/*
++ * Copyright (C) 2023 StarFive Technology Co., Ltd.
++ * Author: Walker Chen <walker.chen@starfivetech.com>
++ *
++ * Requires ReSpeaker 2-Mics Pi HAT plugged in 40-pin GPIO header.
++ */
++
++/dts-v1/;
++/plugin/;
++
++&{/} {
++	compatible = "starfive,visionfive-2-v1.3b", "starfive,jh7110";
++
++	wm8960_mclk: wm8960-mclk {
++		compatible = "fixed-clock";
++		clock-output-names = "wm8960_mclk";
++		#clock-cells = <0>;
++		clock-frequency = <24576000>;
++	};
++
++	sound {
++		compatible = "simple-audio-card";
++
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		simple-audio-card,name = "Starfive-TDM-Sound-Card";
++		simple-audio-card,widgets = "Microphone", "Mic Jack",
++					    "Line", "Line In",
++					    "Line", "Line Out",
++					    "Speaker", "Speaker",
++					    "Headphone", "Headphone Jack";
++		simple-audio-card,routing = "Headphone Jack", "HP_L",
++					    "Headphone Jack", "HP_R",
++					    "Speaker", "SPK_LP",
++					    "Speaker", "SPK_LN",
++					    "LINPUT1", "Mic Jack",
++					    "LINPUT3", "Mic Jack",
++					    "RINPUT1", "Mic Jack",
++					    "RINPUT2", "Mic Jack";
++
++		simple-audio-card,dai-link@0 {
++			reg = <0>;
++			format = "dsp_a";
++			bitclock-master = <&dailink_master>;
++			frame-master = <&dailink_master>;
++
++			cpu {
++				sound-dai = <&tdm>;
++			};
++			dailink_master: codec {
++				sound-dai = <&wm8960>;
++				clocks = <&wm8960_mclk>;
++			};
++		};
++	};
++};
++
++&i2c0 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	wm8960: codec@1a {
++		compatible = "wlf,wm8960";
++		reg = <0x1a>;
++		wlf,shared-lrclk;
++		#sound-dai-cells = <0>;
++	};
++};
+diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+index 1155b97b593d..19b5954ee72d 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+@@ -214,6 +214,40 @@
+ 			slew-rate = <0>;
+ 		};
+ 	};
++
++	tdm0_pins: tdm0-pins {
++		tdm0-pins-tx {
++			pinmux = <GPIOMUX(44, GPOUT_SYS_TDM_TXD,
++					      GPOEN_ENABLE,
++					      GPI_NONE)>;
++			bias-pull-up;
++			drive-strength = <2>;
++			input-disable;
++			input-schmitt-disable;
++			slew-rate = <0>;
++		};
++
++		tdm0-pins-rx {
++			pinmux = <GPIOMUX(61, GPOUT_HIGH,
++					      GPOEN_DISABLE,
++					      GPI_SYS_TDM_RXD)>;
++			input-enable;
++		};
++
++		tdm0-pins-sync {
++			pinmux = <GPIOMUX(63, GPOUT_HIGH,
++					      GPOEN_DISABLE,
++					      GPI_SYS_TDM_SYNC)>;
++			input-enable;
++		};
++
++		tdm0-pins-pcmclk {
++			pinmux = <GPIOMUX(38, GPOUT_HIGH,
++					      GPOEN_DISABLE,
++					      GPI_SYS_TDM_CLK)>;
++			input-enable;
++		};
++	};
+ };
+ 
+ &uart0 {
+@@ -221,3 +255,9 @@
+ 	pinctrl-0 = <&uart0_pins>;
+ 	status = "okay";
+ };
++
++&tdm {
++	pinctrl-names = "default";
++	pinctrl-0 = <&tdm0_pins>;
++	status = "okay";
++};
+diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+index 866313570a7e..cfda6fb0d91b 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+@@ -366,6 +366,27 @@
+ 			status = "disabled";
+ 		};
+ 
++		tdm: tdm@10090000 {
++			compatible = "starfive,jh7110-tdm";
++			reg = <0x0 0x10090000 0x0 0x1000>;
++			clocks = <&syscrg JH7110_SYSCLK_TDM_AHB>,
++				 <&syscrg JH7110_SYSCLK_TDM_APB>,
++				 <&syscrg JH7110_SYSCLK_TDM_INTERNAL>,
++				 <&syscrg JH7110_SYSCLK_TDM_TDM>,
++				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
++				 <&tdm_ext>;
++			clock-names = "tdm_ahb", "tdm_apb",
++				      "tdm_internal", "tdm",
++				      "mclk_inner", "tdm_ext";
++			resets = <&syscrg JH7110_SYSRST_TDM_AHB>,
++				 <&syscrg JH7110_SYSRST_TDM_APB>,
++				 <&syscrg JH7110_SYSRST_TDM_CORE>;
++			dmas = <&dma 20>, <&dma 21>;
++			dma-names = "rx","tx";
++			#sound-dai-cells = <0>;
++			status = "disabled";
++		};
++
+ 		stgcrg: clock-controller@10230000 {
+ 			compatible = "starfive,jh7110-stgcrg";
+ 			reg = <0x0 0x10230000 0x0 0x10000>;
+-- 
+2.17.1
 
