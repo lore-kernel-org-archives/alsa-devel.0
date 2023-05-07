@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E348C77B75
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 May 2023 00:37:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B25F5C7EE2C
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 May 2023 00:38:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1724A1FA4;
-	Sun,  7 May 2023 02:36:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1724A1FA4
+	by alsa0.perex.cz (Postfix) with ESMTPS id C40061811;
+	Sun,  7 May 2023 02:37:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C40061811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683419860;
-	bh=5CQOot99bgT3aKqeqRjlHZKZa9QDb3C9aFcoUOjABQI=;
+	s=default; t=1683419878;
+	bh=/MwxodUsnOCosigMHWlcCh9n43hKa0+brc5oZinDzj4=;
 	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=WhSuioD+joUshQfPFRl7e/mm7K7X65FXmhUAQglkQv/goTIEyfVV6+Fa4caDosz+m
-	 WAgs9icCd1/9fNpwVxs+Jskrs9CX3GhEvxWo36XnrwKbKY7Ikleo4DlOSm3p0Y3dnT
-	 QUxGc9r96SKFWUit+YcsWr9dx4yP2XPgbN4fZPM0=
+	b=hUSUzdzkUHuBOBMMjW5OpyBmdFWKJ/yL5Vm0MEGkewzIieq7l2Cm+lb6PwnF3ht3t
+	 Lv40lTW/6b4XGD0d+ozdO4cmSvVslfICAZ3Y7bp7kRZTGoYn+r3kwfDJ5+R86mU6Ea
+	 673UddHe2Kia5kaZ4l22g2RoUKN6dliQIXd9OTiI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28465F8053B;
-	Sun,  7 May 2023 02:35:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79FA8F80544;
+	Sun,  7 May 2023 02:36:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7A3BF8053B; Sun,  7 May 2023 02:35:51 +0200 (CEST)
+	id 3065BF80544; Sun,  7 May 2023 02:36:16 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 31987F804B1
-	for <alsa-devel@alsa-project.org>; Sun,  7 May 2023 02:35:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31987F804B1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8C200F80534
+	for <alsa-devel@alsa-project.org>; Sun,  7 May 2023 02:36:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C200F80534
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=pmP+K+Zl
+ header.s=k20201202 header.b=fuou76S+
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 22FD561546;
-	Sun,  7 May 2023 00:35:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A23B3C433EF;
-	Sun,  7 May 2023 00:35:47 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7DF8361542;
+	Sun,  7 May 2023 00:36:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC16DC433D2;
+	Sun,  7 May 2023 00:36:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683419748;
-	bh=5CQOot99bgT3aKqeqRjlHZKZa9QDb3C9aFcoUOjABQI=;
+	s=k20201202; t=1683419772;
+	bh=/MwxodUsnOCosigMHWlcCh9n43hKa0+brc5oZinDzj4=;
 	h=From:To:Cc:Subject:Date:From;
-	b=pmP+K+Zl2zSQa8N3v/YOa3Ez9iuO5V640bQTg+542dgj/tVczU+yYD8PvQJt93qbO
-	 7BeHMLckEWavAeeLT1EzRDxS/agA7y0wPzYIdPLCxPdt4gJa85IXRbV2Hg1MnwZRbQ
-	 yJ1ryX2kJgQXyv1Pr8GzzwdvkVFkK50zS+nDcaaEw72I474ALTEb09ztLCRmf6GcOI
-	 ywFnLST/flrNIm7/S9UeYVvzqhkVSw8MF6An5k/gFGHngLqpbWUQnIvyQcDwQ7u1q/
-	 iD2I5sX3GlTos6Va6FBttzWZ9LWe1UBW06QjXmANZgtlhqaYfeL/0URIVExCJPl3SL
-	 llAG0xc0Tyn9w==
+	b=fuou76S+V1mo9uGrsqCD/ROASRMNFZejmTgojM6gcjINExNwVphL5TQNB+PTupz9M
+	 0Ye3jMIFU0r9Y86iuHOJpAM6sB35VsjRA4yPfZMbycfcOydwPYRV5kIeOY0JkthvI0
+	 UdTYwqfQfgJntJnDMrWCjd23hFPs5lb7WMZuQ09O5odyfdmHxmn9RVlIwaREOiMMIn
+	 VT/1meneIzaTH+KuuQjR6yf2tjbT/oJnFRqCXZkb/QcNSsMMa2+xr3+gjm8n4mLXOB
+	 zGUP0gsgtmy3Q4I8UY0RgLHPBxuR2cIcSBMzAQSH0EZwKqB6wRhQQvc/xNj6U8F7sy
+	 9HdCdam3WJ9OA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 1/9] ASoC: jack: allow multiple interrupt per
- gpio
-Date: Sat,  6 May 2023 20:35:37 -0400
-Message-Id: <20230507003545.4078941-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 1/9] ASoC: jack: allow multiple interrupt per gpio
+Date: Sat,  6 May 2023 20:36:01 -0400
+Message-Id: <20230507003609.4079746-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: E47AI4LZ5QE3EUKIJNLE5UO43ETBZNFL
-X-Message-ID-Hash: E47AI4LZ5QE3EUKIJNLE5UO43ETBZNFL
+Message-ID-Hash: UQUV7EYBLVODREYWHOUOTOHU4DYFNYLE
+X-Message-ID-Hash: UQUV7EYBLVODREYWHOUOTOHU4DYFNYLE
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +80,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E47AI4LZ5QE3EUKIJNLE5UO43ETBZNFL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UQUV7EYBLVODREYWHOUOTOHU4DYFNYLE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,10 +105,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 0f1820f36b4d7..80ea4408e6ad6 100644
+index b5748dcd490f2..e83f9a2541cab 100644
 --- a/sound/soc/soc-jack.c
 +++ b/sound/soc/soc-jack.c
-@@ -368,6 +368,7 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+@@ -406,6 +406,7 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
  
  		ret = request_any_context_irq(gpiod_to_irq(gpios[i].desc),
  					      gpio_handler,
