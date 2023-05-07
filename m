@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93814C77B7D
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 May 2023 17:56:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2709C77B7C
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 May 2023 17:57:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E8F0148E;
-	Sun,  7 May 2023 19:56:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E8F0148E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E8C11494;
+	Sun,  7 May 2023 19:56:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E8C11494
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683482217;
-	bh=A0cJXkBsb3wg6289DL+K+OBfPVWW2fCNA5UoZ957Edg=;
+	s=default; t=1683482243;
+	bh=NftW72aG7EF1e8QXIijtMlzK3kG6ZNmJvbtW5mkAWH0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=MPF3T/IFdsiW68kGyIk54m7mD2qF1I2DzAFIQx3CUSGnWDJIRTzJyOvy2yhFAiWjJ
-	 aYWYxr0bwonh4qW3X0wLZQ/3tFPdybjL5nhHB30YdgCi9+PqYdM02MPaXQJIT4ObQz
-	 e2CzcV4FhZsLTWBilDf8wE7XArAN8HSQrDjFO1h4=
+	b=UDe+4fdYqfvtY9GJfO8p5t20RRl0st8OkcAkifuS+JbxFkQmj12vnucumlPdbJK6v
+	 oxryhipPYtCoe6hkkI+XWIfT1aRyo4/oMXYPUBkvjdOQCUMuCUN8D5GKeT2VvD5ciu
+	 AyhqXK1uKDNoxszfetEJWpZLfcJowwGHB1xi9fzA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1F1DF80087;
-	Sun,  7 May 2023 19:55:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A775F8053B;
+	Sun,  7 May 2023 19:55:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB961F8032D; Sun,  7 May 2023 19:55:38 +0200 (CEST)
+	id 75E9DF8053B; Sun,  7 May 2023 19:55:53 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F953F80217
-	for <alsa-devel@alsa-project.org>; Sun,  7 May 2023 19:55:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F953F80217
+	by alsa1.perex.cz (Postfix) with ESMTP id 1842FF8032D
+	for <alsa-devel@alsa-project.org>; Sun,  7 May 2023 19:55:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1842FF8032D
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1683482131199226856-webhooks-bot@alsa-project.org>
-References: <1683482131199226856-webhooks-bot@alsa-project.org>
+In-Reply-To: <1683482152080006838-webhooks-bot@alsa-project.org>
+References: <1683482152080006838-webhooks-bot@alsa-project.org>
 Subject: Bug: premature stringification in SND_DLSYM_BUILD_VERSION produces
  wrong results for alsa-plugins.
-Message-Id: <20230507175538.AB961F8032D@alsa1.perex.cz>
-Date: Sun,  7 May 2023 19:55:38 +0200 (CEST)
-Message-ID-Hash: L5JGFNDIKTMECDLP4DCWKPDHIGTX7IC6
-X-Message-ID-Hash: L5JGFNDIKTMECDLP4DCWKPDHIGTX7IC6
+Message-Id: <20230507175553.75E9DF8053B@alsa1.perex.cz>
+Date: Sun,  7 May 2023 19:55:53 +0200 (CEST)
+Message-ID-Hash: RGJG4UV3VFAHXRI5T3RNFUMJXIPVUQVJ
+X-Message-ID-Hash: RGJG4UV3VFAHXRI5T3RNFUMJXIPVUQVJ
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -56,7 +56,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L5JGFNDIKTMECDLP4DCWKPDHIGTX7IC6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RGJG4UV3VFAHXRI5T3RNFUMJXIPVUQVJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -65,9 +65,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #316 was opened from MIvanchev:
+alsa-project/alsa-lib issue #316 was edited from MIvanchev:
 
-The macro:
+[The macro](https://github.com/alsa-project/alsa-lib/blob/master/include/global.h#L80):
 
 ```
 #define SND_DLSYM_BUILD_VERSION(name, version) \
