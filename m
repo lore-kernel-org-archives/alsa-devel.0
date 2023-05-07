@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 063EBC77B75
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 May 2023 00:34:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0A32C7EE26
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 May 2023 00:34:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3A671849;
-	Sun,  7 May 2023 02:33:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3A671849
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82999180D;
+	Sun,  7 May 2023 02:33:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82999180D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683419650;
-	bh=40z2ZpojbXuP6tB3+OAoSZu6KHvjy/jbjRj5UZ9K8Nw=;
+	s=default; t=1683419671;
+	bh=ZhqomB73I32kP61xKVm31O65xmH95OhFb7cvG67S7Q4=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RjM7vHbvN9h10h+6/1Ihacf6viVXKxJPdAWJeSAqC6rPYXYCEcmbzjwkMOJC5a8+6
-	 IVd96zy/HJbW8nhwJ4Eao569rVbZ3yg7h3hNvrjg0Ryb2pvQZ4wSru8GEjeIRSzgfR
-	 Z6swdXLT/RjLq5JrULv6cQ9siPJfriOssqaKz09U=
+	b=rHTiZCQ9UXkTzQ+2L8bcRrXIJ11seo33eQ2MgtXTCIJ//iSk/wQyqB6KqkMZ8rhwO
+	 Tpu2pXJtRZavM6ueNP0e+q42V2r34V/SMHKMVPasFvjw00msHO9kCuOu1IMzt2ELgE
+	 gIghEPX0lQznj7zWGF89DGcIEdN0NDJ/gCrKy1Os=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6389CF80544;
-	Sun,  7 May 2023 02:33:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A353F80551;
+	Sun,  7 May 2023 02:33:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BBC39F80548; Sun,  7 May 2023 02:33:11 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id ED598F80544; Sun,  7 May 2023 02:33:14 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 25B9DF8053B
-	for <alsa-devel@alsa-project.org>; Sun,  7 May 2023 02:33:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25B9DF8053B
+	by alsa1.perex.cz (Postfix) with ESMTPS id BE764F80310
+	for <alsa-devel@alsa-project.org>; Sun,  7 May 2023 02:33:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE764F80310
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qjfVFoE4
+ header.s=k20201202 header.b=kY1jwuHh
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 0BB46614D3;
-	Sun,  7 May 2023 00:33:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09087C433D2;
-	Sun,  7 May 2023 00:33:02 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AE77B614D2;
+	Sun,  7 May 2023 00:33:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF9C6C433D2;
+	Sun,  7 May 2023 00:33:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683419584;
-	bh=40z2ZpojbXuP6tB3+OAoSZu6KHvjy/jbjRj5UZ9K8Nw=;
+	s=k20201202; t=1683419588;
+	bh=ZhqomB73I32kP61xKVm31O65xmH95OhFb7cvG67S7Q4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qjfVFoE4RPhkELOCVf9rbOFEKk19Q1zv2OSTY+qTucKOlD3IScSBpXO5y90EEysDY
-	 QinuuxuXsgPKr979gvP/OLKFgyqXF/s90xEgylJ01v1SNkhKf3qsTu7Vt98s+lPJGN
-	 tI6jepOTVZh1zk3RMla8sgleR81nINkxuAioAUNtPjoWP88XjQk3WqqZIi9f9GqWVZ
-	 2s3mDEbGZ9KOW3RefuY8zHDHL3Dci9PHKzcDPSI4HoPm24NUdjYJMRx+TKFbIQ2ATp
-	 y7awlCJR5SViFtzD3gXezxtigfY4IQ4eSY7kzu01enTJWJQpnzcHh0vCFpLDgrlvbB
-	 k1AMZBjE3vXFQ==
+	b=kY1jwuHhnVv3JmHFxOGeHnJbu8p0SMYXHdkiOX/84lK4avRHY4PWwjc6SDJivShkz
+	 pdwmi6CATAJKWdkR1Qq39qgqyrB5FtV4lEphjl4xtarpPpACqdK2Byf1Jbc6Xp6fs2
+	 /xBeuQ6GJPWFZAUxB/kZbzzrTlqin+0Hd0sX6afGtV9+9uWlkhNYG0Sv4lYHk7Sa4Z
+	 HtE34Dq/AzpLWvL22VOMggzcd6nkwCqAg4F+8j+DpaWiBHJBDXynYTd6X1aYRfSCDT
+	 OxhaF8XaA+CjD2YviEXxs4tTmpqmvFG51UuRIFtz5qfbosYDZHhHvCuKajx2srxTic
+	 laWAGEN8fKWdA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.2 06/20] ASoC: tegra: Support coupled mic-hp
- detection
-Date: Sat,  6 May 2023 20:32:21 -0400
-Message-Id: <20230507003237.4074305-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.2 07/20] ASoC: amd: yc: Add DMI entries to support
+ HP OMEN 16-n0xxx (8A42)
+Date: Sat,  6 May 2023 20:32:22 -0400
+Message-Id: <20230507003237.4074305-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230507003237.4074305-1-sashal@kernel.org>
 References: <20230507003237.4074305-1-sashal@kernel.org>
@@ -68,8 +67,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DRLY4CW7ZNEKF3JCACFCB37EPNLD34YA
-X-Message-ID-Hash: DRLY4CW7ZNEKF3JCACFCB37EPNLD34YA
+Message-ID-Hash: VXHC6H5HZK7FEZN2M4KICPVMMOL4C4GG
+X-Message-ID-Hash: VXHC6H5HZK7FEZN2M4KICPVMMOL4C4GG
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -77,17 +76,17 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Svyatoslav Ryhel <clamor95@gmail.com>, Mark Brown <broonie@kernel.org>,
+CC: Prajna Sariputra <putr4.s@gmail.com>, Mark Brown <broonie@kernel.org>,
  Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com, tiwai@suse.com,
- thierry.reding@gmail.com, jonathanh@nvidia.com, ion@agorria.com,
- jiapeng.chong@linux.alibaba.com, robh@kernel.org,
- alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org
+ mario.limonciello@amd.com, Syed.SabaKareem@amd.com, dukzcry@ya.ru,
+ fengwk94@gmail.com, lub.the.studio@gmail.com, xazrael@hotmail.com,
+ alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DRLY4CW7ZNEKF3JCACFCB37EPNLD34YA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VXHC6H5HZK7FEZN2M4KICPVMMOL4C4GG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,61 +95,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Svyatoslav Ryhel <clamor95@gmail.com>
+From: Prajna Sariputra <putr4.s@gmail.com>
 
-[ Upstream commit eb0b8481c2e03a5ae01f6bea60b42109bd12b6fe ]
+[ Upstream commit ee4281de4d60288b9c802bb0906061ec355ecef2 ]
 
-This quirk is used for cases when there is GPIO which detects
-any type of 3.5 Jack insertion and actual type of jack is defined
-by other GPIO. 3.5 Jack GPIO generates interrupt and MIC GPIO
-indicates type of Jack only if 3.5 Jack GPIO is active.
+This model requires an additional detection quirk to enable the internal microphone.
 
-Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
-Link: https://lore.kernel.org/r/20230308073502.5421-3-clamor95@gmail.com
+Signed-off-by: Prajna Sariputra <putr4.s@gmail.com>
+Link: https://lore.kernel.org/r/2283110.ElGaqSPkdT@n0067ax-linux62
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/tegra/tegra_asoc_machine.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
-index 78faa8bcae274..7b6d5d90c3a2d 100644
---- a/sound/soc/tegra/tegra_asoc_machine.c
-+++ b/sound/soc/tegra/tegra_asoc_machine.c
-@@ -51,6 +51,17 @@ static struct snd_soc_jack_gpio tegra_machine_headset_jack_gpio = {
- };
- 
- /* Mic Jack */
-+static int coupled_mic_hp_check(void *data)
-+{
-+	struct tegra_machine *machine = (struct tegra_machine *)data;
-+
-+	/* Detect mic insertion only if 3.5 jack is in */
-+	if (gpiod_get_value_cansleep(machine->gpiod_hp_det) &&
-+	    gpiod_get_value_cansleep(machine->gpiod_mic_det))
-+		return SND_JACK_MICROPHONE;
-+
-+	return 0;
-+}
- 
- static struct snd_soc_jack tegra_machine_mic_jack;
- 
-@@ -183,8 +194,15 @@ int tegra_asoc_machine_init(struct snd_soc_pcm_runtime *rtd)
- 			return err;
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 4a69ce702360c..ce6630318858e 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -262,6 +262,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "OMEN by HP Gaming Laptop 16z-n000"),
  		}
- 
-+		tegra_machine_mic_jack_gpio.data = machine;
- 		tegra_machine_mic_jack_gpio.desc = machine->gpiod_mic_det;
- 
-+		if (of_property_read_bool(card->dev->of_node,
-+					  "nvidia,coupled-mic-hp-det")) {
-+			tegra_machine_mic_jack_gpio.desc = machine->gpiod_hp_det;
-+			tegra_machine_mic_jack_gpio.jack_status_check = coupled_mic_hp_check;
-+		};
-+
- 		err = snd_soc_jack_add_gpios(&tegra_machine_mic_jack, 1,
- 					     &tegra_machine_mic_jack_gpio);
- 		if (err)
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
++			DMI_MATCH(DMI_BOARD_NAME, "8A42"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
 2.39.2
 
