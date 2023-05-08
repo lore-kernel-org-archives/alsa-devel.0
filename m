@@ -4,105 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EBD6C77B75
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 13:25:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91B4EC77B75
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 13:28:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4292B1231;
-	Mon,  8 May 2023 15:24:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4292B1231
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19234123B;
+	Mon,  8 May 2023 15:27:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19234123B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683552335;
-	bh=vK1cIzX5qfHeam9HmUz2m8nrGysBqCd2fTr6GZ7sOsM=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1683552508;
+	bh=PMWVR4rD/QmoXX+jrPywb+5su3hOBWmKSJB+XSMrYVY=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WwShBL+aWm0lpZjk2+JAMZIQBk7/nQgP4NjwEZAASoiYcGGgtmJMo8z6MtUKmu3IA
-	 3fppKaSbnsR5nnZ9QfxDkQCLadvF4u2N6/bj/tBHLaW6Qjd9bDJ2RG1YhI4QjX3qcw
-	 pNCn0Sr4yIjjaoj2E8czoOMtbPtbbtRLYWL7p4xo=
+	b=reCasADt0+iWQ7eB+pVliX9XWnQ6LRk9W2j3WVbPhciN1HspTJwkg8JJs6T6E+8sP
+	 JKMBGTa7plJD0cQT67+BXImauSGJQlPl92tflHjpocAmMKwR1e9ZSwCsROaB+dQOcZ
+	 SJci4tegLESDNtIMko5T6tIl4yUXu3BPtEo9A/J4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 186A1F80087;
-	Mon,  8 May 2023 15:24:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE2A1F8032D;
+	Mon,  8 May 2023 15:27:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66B00F8032D; Mon,  8 May 2023 15:24:15 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id E8385F804B1; Mon,  8 May 2023 15:27:08 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF2BDF8014C
-	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 15:24:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF2BDF8014C
+	by alsa1.perex.cz (Postfix) with ESMTPS id DCF3BF80087
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 15:27:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCF3BF80087
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=OzK7c4u+;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ynOeDDoh
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ElW8heWB
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0AEF01FEE2;
-	Mon,  8 May 2023 13:24:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1683552248;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5T18QIZW4sDdaGVRJF2dLBy39nmIoPoJB/qXR0i4utw=;
-	b=OzK7c4u+e4quSIo2SG0ZCtPZLNzhXUTsdv4WUbzgXgY4BHJXwsUvmVJIARzNmOTfA3T3ig
-	pQ148EI3b+CLNPq1VjGedFgBDK+LqF1z0RVu3pxyzyRAYj4mZvlvTgtuHT5vKSoId6rjSg
-	0zHjD4Z/fCfgEKVNU8uahkRddasjh5o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1683552248;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5T18QIZW4sDdaGVRJF2dLBy39nmIoPoJB/qXR0i4utw=;
-	b=ynOeDDohFMaHICXW8TfJOMZ48bnJNgSHb+3GoTDiuJp6xh7zTijx32tI96duRfWZev+Hju
-	5wr9WJQrh3kedSDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E082913499;
-	Mon,  8 May 2023 13:24:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id dQDoNff3WGR5aQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 08 May 2023 13:24:07 +0000
-Date: Mon, 08 May 2023 15:24:07 +0200
-Message-ID: <87r0rr6jns.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: uapi: pcm: control the filling of the silence
- samples for drain
-In-Reply-To: <20230502115536.986900-1-perex@perex.cz>
-References: <20230502115536.986900-1-perex@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: LIWE5PWXXZNKORMPCVWSQSXYVCIBFYB2
-X-Message-ID-Hash: LIWE5PWXXZNKORMPCVWSQSXYVCIBFYB2
-X-MailFrom: tiwai@suse.de
+	by dfw.source.kernel.org (Postfix) with ESMTPS id F22D163D29;
+	Mon,  8 May 2023 13:27:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBAB1C43445;
+	Mon,  8 May 2023 13:27:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1683552422;
+	bh=PMWVR4rD/QmoXX+jrPywb+5su3hOBWmKSJB+XSMrYVY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ElW8heWB4sHnD96i9l8XUac2XDrawmJFZEYgWZrw8eKqqURJlCyBer4fcVp8Wp6Ky
+	 hu0/LqrVuy2pbETnfnNHpqB87J/VtGCgWcSClbBI1Hp070mKbHkWLMv5ZGoj4J1zc4
+	 dvZyEb5hS+es7q8F1wtkp1drUoP/wLgUrIW53ES4PNHEZRn944Y5wKQOQlN2DXXxYj
+	 Z0ZB6/I85wiR/64ooDo9kMxRFPsj5qKoAmyR7vzXbxRnmbBItoggUH6wba2JnFA3oj
+	 SuV/9t8uoERVGNpC5RMmMprjewWILKHscJhonSbEjVduww1OGIASCS5mIJM2X183L0
+	 mmu+1NSXVwsww==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org, Tim Crawford <tcrawford@system76.com>
+In-Reply-To: <20230505161458.19676-1-tcrawford@system76.com>
+References: <20230505161458.19676-1-tcrawford@system76.com>
+Subject: Re: [PATCH] ASoC: amd: yc: Add DMI entry to support System76
+ Pangolin 12
+Message-Id: <168355242113.260078.3036428333196529547.b4-ty@kernel.org>
+Date: Mon, 08 May 2023 22:27:01 +0900
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-bfdf5
+Message-ID-Hash: MRSBPJHNXULNRUHOKIXOZEBHTLEAIIRD
+X-Message-ID-Hash: MRSBPJHNXULNRUHOKIXOZEBHTLEAIIRD
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: ALSA development <alsa-devel@alsa-project.org>
+CC: productdev@system76.com, Jeremy Soller <jeremy@system76.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LIWE5PWXXZNKORMPCVWSQSXYVCIBFYB2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MRSBPJHNXULNRUHOKIXOZEBHTLEAIIRD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,32 +89,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 02 May 2023 13:55:36 +0200,
-Jaroslav Kysela wrote:
+On Fri, 05 May 2023 10:14:58 -0600, Tim Crawford wrote:
+> Add pang12 quirk to enable the internal microphone.
 > 
-> Introduce SNDRV_PCM_INFO_PERFECT_DRAIN and SNDRV_PCM_HW_PARAMS_NO_DRAIN_SILENCE
-> flags to fully control the filling of the silence samples in the drain ioctl.
-> Actually, the configurable silencing is going to be implemented in the user
-> space [1], but drivers (hardware) may not require this operation. Those flags
-> do the bidirectional setup for this operation:
 > 
-> 1) driver may notify the presence of the perfect drain
-> 2) user space may not require the filling of the silence samples to inhibit clicks
-> 
-> If we decide to move this operation to the kernel space in future, the
-> SNDRV_PCM_INFO_PERFECT_DRAIN flag may handle this situation without
-> double "silence" processing (user + kernel space).
-> 
-> The ALSA API should be universal, so forcing the behaviour (modifying of
-> the ring buffer with any samples) for the drain operation is not ideal.
-> 
-> [1] https://lore.kernel.org/alsa-devel/20230502115010.986325-1-perex@perex.cz/
-> 
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
-Now applied to for-next branch (with a typo fix in the comment).
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-thanks,
+Thanks!
 
-Takashi
+[1/1] ASoC: amd: yc: Add DMI entry to support System76 Pangolin 12
+      commit: 7b9891ad25246b18b5ccc19518da7abc7763aa0a
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
