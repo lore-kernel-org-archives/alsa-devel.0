@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ADD3C7EE22
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 06:33:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCB09C7EE22
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 06:33:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A8A2107A;
-	Wed, 10 May 2023 08:32:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A8A2107A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3132F1046;
+	Wed, 10 May 2023 08:32:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3132F1046
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683700386;
-	bh=qSnF1P4BWo8KQP+htovtVu1p3wY9MF28zjK2Uj19sBw=;
+	s=default; t=1683700410;
+	bh=xUvh+PRl/XdMVBeVeCBd3bv7Ap8clPKGRiK9O1aBMR8=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=jYKUShwzb2ARVdyV13L5+YOv0RFcdaOoTaI0wgQFq0hjwCtczGjvJbWuhg/El2w0k
-	 0LmjsXl636zLHr54m5Oo094kInvjT8vjqjGl8mKrmVC7SMDk0TThsT3lTn+GkVw4RE
-	 Rm1rM2X3/2De+g688M16Dt1qFYcnv3UXSXbaxGM0=
+	b=HyodaMY8xnre4XJ6iv3B7IXR2vOZuLmYpwYk2wN/6jwVXCCJ6/YXEy5yKSyG8Icr1
+	 4t+GvWM4xIot92WY9duqzMFnbxPxbk1CIvmuJhLrSq6oLFZLGSsAYoUKPKaiy+Imba
+	 OlDU/db4jwpfk9E5C10DD+UrndV+SBuvtajHW9a4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F787F80553;
-	Wed, 10 May 2023 08:31:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F354F80557;
+	Wed, 10 May 2023 08:32:20 +0200 (CEST)
 To: alsa-devel@alsa-project.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH v2 5/7] ARM: dts: chameleonv3: Add mute gpio hog
-Date: Mon,  8 May 2023 13:30:35 +0200
+Subject: [PATCH v2 2/7] ASoC: Add Google Chameleon v3 codec driver
+Date: Mon,  8 May 2023 13:30:32 +0200
 In-Reply-To: <20230508113037.137627-1-pan@semihalf.com>
 References: <20230508113037.137627-1-pan@semihalf.com>
 X-Mailman-Rule-Hits: nonmember-moderation
@@ -38,13 +38,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-X-Mailman-Approved-At: Wed, 10 May 2023 06:30:55 +0000
+X-Mailman-Approved-At: Wed, 10 May 2023 06:32:16 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L32C7M6TMRRI7WD5DVBHRIB5PN3YOUWN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/25YO4ROYTGXA6B3PWLRU7EQIZBQT5KMR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -54,7 +54,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168370026056.26.18241623196612563601@mailman-core.alsa-project.org>
+ <168370033806.26.12147904079723720510@mailman-core.alsa-project.org>
 From: =?utf-8?q?Pawe=C5=82_Anikiel_via_Alsa-devel?=
  <alsa-devel@alsa-project.org>
 Reply-To: =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
@@ -66,75 +66,75 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C865BF8053B; Mon,  8 May 2023 13:31:07 +0200 (CEST)
+	id 7FFABF80551; Mon,  8 May 2023 13:31:10 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
 	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED shortcircuit=no autolearn=ham
 	autolearn_force=no version=3.4.6
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
- [IPv6:2a00:1450:4864:20::22d])
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
+ [IPv6:2a00:1450:4864:20::231])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8EF21F80534
-	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 13:31:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EF21F80534
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7AC34F80087
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 13:30:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AC34F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=semihalf.com header.i=@semihalf.com header.a=rsa-sha256
- header.s=google header.b=ubqJyPUX
-Received: by mail-lj1-x22d.google.com with SMTP id
- 38308e7fff4ca-2ac8cc8829fso32055781fa.3
+ header.s=google header.b=Q2+7zx5X
+Received: by mail-lj1-x231.google.com with SMTP id
+ 38308e7fff4ca-2ac81d2bfbcso47019981fa.3
         for <alsa-devel@alsa-project.org>;
- Mon, 08 May 2023 04:31:01 -0700 (PDT)
+ Mon, 08 May 2023 04:30:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1683545459; x=1686137459;
+        d=semihalf.com; s=google; t=1683545457; x=1686137457;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ago5W1TH3NtYlqnoMKL2QoZcqhImH0EhtanUKlx90+o=;
-        b=ubqJyPUXHkbI4WVG4p1/PBG73AtSJIpqB/ICYxMLF8yrq2pTPj0EmaTlq3zuCful4n
-         MFM9xrXSTPVnn4YflEdt3wvK4GTbpC3Xj2EeRLfcCKfyEtX4jXTwKMWNG/dQOLRvLFfp
-         xy7ky6fMUjmLdBl5TBiz+RqdJWePrLWSaJln1Hxes8TL6RxSTRfDpG1IDXsXe432PRZV
-         Wr1rxHAZ66XoVTFDYbgrOFkA+ohh52HMjDI8drQu8SZw4zGiKMZ0f41TAj4KT17K9ogG
-         HZ2jU4GPk/oRejiYUuBS9z13dOZXLx0o1MRT2uR8V+LhKeCy2kWDGNja1DvLGZJT0W7Q
-         E6FA==
+        bh=o2cwSVPDrISRaMS+TiPqbK95SQtfCrrQXRWy9POwydI=;
+        b=Q2+7zx5XBPX3Qle9Q5F5A+ArjF579cSfettt8OHLU3QE6XyugWzozq1wny9taFV8uN
+         7eMWkicsNrluXd//3cLjKPfUYIL0bxqmab+qgzL0c/S58nIQFU/rMk4VnOUQ+ppeC9HP
+         1JBMZwQGh7I2FyDmhvypzj2l8+4I7O+aDA4y2/O4kTn3QalHGaitRma6drTzEljdKlUP
+         EfBMVQeJIG5QID8hBfI3h+cvHTfyPSkYFBCykz+DsE7PjGB2m1wRabnKS54dzv4iHR3w
+         9TfmmfaVmglmCH6+MGtFyA5Fj7ucnOGzCcxnPEc9N5DeQUv8PmgYobPJzorgk7sZqL3W
+         tZ9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683545459; x=1686137459;
+        d=1e100.net; s=20221208; t=1683545457; x=1686137457;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ago5W1TH3NtYlqnoMKL2QoZcqhImH0EhtanUKlx90+o=;
-        b=HNS1AQKX630mIdFI45D/wGOrkSuCSQBK9DYoP7KyEnsXMLw6HD9vUdXvkIQrFS6nYX
-         k2yLuOG9Ndnz6Twl66HRtlOv28Qlq4/3J0QmRbSlUmRgYDZ3dCSGezKoPo9loBQl7RUG
-         uG/mh4h/fJNj5XBiP4Y2v37DFJg+B9stTJFY3xramlLpNlPyfVGhef5G+QPg7cBBI3xZ
-         1EbRRlN05WzEOvb9+GIrrWcDHCJ/piDgDra+VTI0j/lH6sW8nK9DPOslQCi1xaZZK8zb
-         VTpcDviwp8lC8K5UW1unJpXvtBtoA0QqijdMNH5F2uyqvc2YPu6TLbXB2q8TT+5StphY
-         B4nQ==
-X-Gm-Message-State: AC+VfDyaSZwF6AVups1eXt01iMtKTPRrhAGo3hhQpUA3Jvf9ivCj1LUw
-	FHtdwt/d2DM9DrsWmTwhzSeLxGI/A7lF6T3zDpQ=
+        bh=o2cwSVPDrISRaMS+TiPqbK95SQtfCrrQXRWy9POwydI=;
+        b=KYHKwQnaFTiu2ATbzE6kkoJ/NH9Kbvp6g9cPMYkLVRkaZUczDUKF8SG5uxOnYPmGxl
+         FQjPL0nUVYkDcwA3ghCFcdXFKY7+TbDJ4i9ypWb7JyyTBXzE/oJC5Q6eOYSfUing2OMu
+         YBY9DOJkSZNCNN3OtBzPi5HdscZU5PA3CNhGZK3HGkdcXn1D+jp7vXmS5L/Oxn1fZXDc
+         UvXUZlzuLZERkZ2aVDVcv7YQnLR/V+tiu56B91yEmPsgJPUvcyGZ6pHjA44E8U09YfM8
+         nKaypqd/8vtFAFAhsMZR8MSGSAxsDwH9guDol+zFDEZJoXk8RBG+9uY+Isjfuf24Vcb5
+         2F1g==
+X-Gm-Message-State: AC+VfDy8yEFkUPFmNEoR5kNZlhyQuJkAzPHUZ0WG5KhJnmOBr+zT/1Au
+	Fc9PwkgTR7N0z5x8mStcFY9w5ueUNv6JHDBW6Do=
 X-Google-Smtp-Source: 
- ACHHUZ6dznyxLhJT/VBoJN3aVEWWHkYoCuIWMKXSx1E6hT10TgdkNvC/r4/EbQWmrtsm3zZdT804Jw==
-X-Received: by 2002:a2e:9b08:0:b0:2a8:e480:a3c8 with SMTP id
- u8-20020a2e9b08000000b002a8e480a3c8mr2548687lji.44.1683545459588;
-        Mon, 08 May 2023 04:30:59 -0700 (PDT)
+ ACHHUZ6JsQ8xU/b2e4ZdMXFrq9+Cq/sYpLOJ81BdGrWzqI6ZiNx1yFtr5xGyQd0JPhRjQmMVMNJloA==
+X-Received: by 2002:a2e:99da:0:b0:2a7:6e85:e287 with SMTP id
+ l26-20020a2e99da000000b002a76e85e287mr3071975ljj.45.1683545456984;
+        Mon, 08 May 2023 04:30:56 -0700 (PDT)
 Received: from panikiel.office.semihalf.net ([83.142.187.84])
         by smtp.gmail.com with ESMTPSA id
- k8-20020a2e2408000000b002a8b9353338sm1144406ljk.117.2023.05.08.04.30.58
+ k8-20020a2e2408000000b002a8b9353338sm1144406ljk.117.2023.05.08.04.30.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 May 2023 04:30:59 -0700 (PDT)
+        Mon, 08 May 2023 04:30:56 -0700 (PDT)
 From: =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
 To: alsa-devel@alsa-project.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH v2 5/7] ARM: dts: chameleonv3: Add mute gpio hog
-Date: Mon,  8 May 2023 13:30:35 +0200
-Message-ID: <20230508113037.137627-6-pan@semihalf.com>
+Subject: [PATCH v2 2/7] ASoC: Add Google Chameleon v3 codec driver
+Date: Mon,  8 May 2023 13:30:32 +0200
+Message-ID: <20230508113037.137627-3-pan@semihalf.com>
 X-Mailer: git-send-email 2.40.1.521.gf1e218fcd8-goog
 In-Reply-To: <20230508113037.137627-1-pan@semihalf.com>
 References: <20230508113037.137627-1-pan@semihalf.com>
@@ -147,9 +147,9 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: L32C7M6TMRRI7WD5DVBHRIB5PN3YOUWN
-X-Message-ID-Hash: L32C7M6TMRRI7WD5DVBHRIB5PN3YOUWN
-X-Mailman-Approved-At: Wed, 10 May 2023 06:30:55 +0000
+Message-ID-Hash: 25YO4ROYTGXA6B3PWLRU7EQIZBQT5KMR
+X-Message-ID-Hash: 25YO4ROYTGXA6B3PWLRU7EQIZBQT5KMR
+X-Mailman-Approved-At: Wed, 10 May 2023 06:32:16 +0000
 CC: tiwai@suse.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
  dinguyen@kernel.org, lars@metafoo.de, nuno.sa@analog.com,
  upstream@semihalf.com, amstan@chromium.org,
@@ -159,7 +159,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L32C7M6TMRRI7WD5DVBHRIB5PN3YOUWN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/25YO4ROYTGXA6B3PWLRU7EQIZBQT5KMR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -168,30 +168,109 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add an output-high gpio hog for the mute pin.
+Add driver for the codec IP present on Google Chameleon v3
 
 Signed-off-by: Paweł Anikiel <pan@semihalf.com>
 ---
- arch/arm/boot/dts/socfpga_arria10_chameleonv3.dts | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/codecs/Kconfig      |  8 +++++++
+ sound/soc/codecs/Makefile     |  2 ++
+ sound/soc/codecs/chv3-codec.c | 41 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 51 insertions(+)
+ create mode 100644 sound/soc/codecs/chv3-codec.c
 
-diff --git a/arch/arm/boot/dts/socfpga_arria10_chameleonv3.dts b/arch/arm/boot/dts/socfpga_arria10_chameleonv3.dts
-index 422d00cd4c74..f0483ef46a36 100644
---- a/arch/arm/boot/dts/socfpga_arria10_chameleonv3.dts
-+++ b/arch/arm/boot/dts/socfpga_arria10_chameleonv3.dts
-@@ -69,6 +69,12 @@ u80: gpio@21 {
- 			"TP122",
- 			"TP123",
- 			"TP124";
-+
-+		mute {
-+			gpio-hog;
-+			gpios = <0 0>;
-+			output-high;
-+		};
- 	};
- };
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 79d2362ad055..f8f15e96ade5 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -57,6 +57,7 @@ config SND_SOC_ALL_CODECS
+ 	imply SND_SOC_AW88395
+ 	imply SND_SOC_BT_SCO
+ 	imply SND_SOC_BD28623
++	imply SND_SOC_CHV3_CODEC
+ 	imply SND_SOC_CQ0093VC
+ 	imply SND_SOC_CROS_EC_CODEC
+ 	imply SND_SOC_CS35L32
+@@ -643,6 +644,13 @@ config SND_SOC_BD28623
+ config SND_SOC_BT_SCO
+ 	tristate "Dummy BT SCO codec driver"
  
++config SND_SOC_CHV3_CODEC
++	tristate "Google Chameleon v3 codec driver"
++	help
++	  Enable support for the Google Chameleon v3 audio codec.
++	  This codec does not have a control interface, it always outputs
++	  8 channel S32_LE audio.
++
+ config SND_SOC_CPCAP
+ 	tristate "Motorola CPCAP codec"
+ 	depends on MFD_CPCAP || COMPILE_TEST
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 5cdbae88e6e3..8cee836f4831 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -51,6 +51,7 @@ snd-soc-aw88395-objs := aw88395/aw88395.o \
+ 			aw88395/aw88395_device.o
+ snd-soc-bd28623-objs := bd28623.o
+ snd-soc-bt-sco-objs := bt-sco.o
++snd-soc-chv3-codec-objs := chv3-codec.o
+ snd-soc-cpcap-objs := cpcap.o
+ snd-soc-cq93vc-objs := cq93vc.o
+ snd-soc-cros-ec-codec-objs := cros_ec_codec.o
+@@ -425,6 +426,7 @@ obj-$(CONFIG_SND_SOC_AW88395_LIB) += snd-soc-aw88395-lib.o
+ obj-$(CONFIG_SND_SOC_AW88395)	+=snd-soc-aw88395.o
+ obj-$(CONFIG_SND_SOC_BD28623)	+= snd-soc-bd28623.o
+ obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
++obj-$(CONFIG_SND_SOC_CHV3_CODEC) += snd-soc-chv3-codec.o
+ obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
+ obj-$(CONFIG_SND_SOC_CPCAP)	+= snd-soc-cpcap.o
+ obj-$(CONFIG_SND_SOC_CROS_EC_CODEC)	+= snd-soc-cros-ec-codec.o
+diff --git a/sound/soc/codecs/chv3-codec.c b/sound/soc/codecs/chv3-codec.c
+new file mode 100644
+index 000000000000..ab99effa6874
+--- /dev/null
++++ b/sound/soc/codecs/chv3-codec.c
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/module.h>
++#include <sound/soc.h>
++
++static struct snd_soc_dai_driver chv3_codec_dai = {
++	.name = "chv3-codec-hifi",
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 8,
++		.channels_max = 8,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
++		.formats = SNDRV_PCM_FMTBIT_S32_LE,
++	},
++};
++
++static const struct snd_soc_component_driver soc_component_dev_chv3_codec = {
++};
++
++static int chv3_codec_probe(struct platform_device *pdev)
++{
++	return devm_snd_soc_register_component(&pdev->dev,
++		&soc_component_dev_chv3_codec, &chv3_codec_dai, 1);
++}
++
++static const struct of_device_id chv3_codec_of_match[] = {
++	{ .compatible = "google,chv3-codec", },
++	{ }
++};
++
++static struct platform_driver chv3_codec_platform_driver = {
++	.driver = {
++		.name = "chv3-codec",
++		.of_match_table = chv3_codec_of_match,
++	},
++	.probe = chv3_codec_probe,
++};
++module_platform_driver(chv3_codec_platform_driver);
++
++MODULE_DESCRIPTION("ASoC Chameleon v3 codec driver");
++MODULE_AUTHOR("Pawel Anikiel <pan@semihalf.com>");
++MODULE_LICENSE("GPL");
 -- 
 2.40.1.521.gf1e218fcd8-goog
 
