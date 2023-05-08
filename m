@@ -4,69 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8793C77B7F
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 11:15:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9861BC77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 11:33:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C366C125A;
-	Mon,  8 May 2023 13:14:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C366C125A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7446311FF;
+	Mon,  8 May 2023 13:32:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7446311FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683544542;
-	bh=3fwhAIAirq3/mihv3IrV6TIQNHTUBnwvYpvvs2ANqBg=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1683545584;
+	bh=+0RE+7ZUlgN+Hud6gu9TQz4rBrwna8HXuIwEzINMsqw=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=a+pwz8IgLHKsACWUvxo8DTDDJtPD96QbxPX5n3Tfm9ZLXszhT0GZfVMjOUb6wc42r
-	 lHrWUp6cLDgX174PGkx0lyn56Yex2+1CUGYz7q3YiArWQSU9XGS+OxIzNTtn/c8jbt
-	 enWabezbkjGLp0hqTfaQfH5hLNwKzbZ42BAxzd74=
+	b=IP4dnzYV95DM523gA0A3nW+N2odgy4MFCXSKJfINtRBZHkA94Y1XLZnCuzAj4UdV1
+	 Gjcq68zlqjY9iBYW/NsojejO4qATqL6vH7jE46zdUgw/gyHlVHBO7ZldfjZXAMZOQq
+	 AL8FgOTT/1zMyBvdPrqhF9pc3uxjdY/xtPFTnBL8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82F0BF8032D;
-	Mon,  8 May 2023 13:14:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70BAFF804B1;
+	Mon,  8 May 2023 13:31:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A915F8032D; Mon,  8 May 2023 13:14:22 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id 434D2F804B1; Mon,  8 May 2023 13:31:46 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 10BB2F80087
-	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 13:14:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10BB2F80087
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 21F13241E3;
-	Mon,  8 May 2023 07:14:13 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pvyom-LTD-00; Mon, 08 May 2023 13:14:12 +0200
-Date: Mon, 8 May 2023 13:14:12 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] ALSA: emu10k1: macro-ize snd_emu10k1_ptr_{read,write}()
-Message-ID: <ZFjZhNtk/GWzHUiN@ugly>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-	Jaroslav Kysela <perex@perex.cz>
-References: <20230428095941.1706263-1-oswald.buddenhagen@gmx.de>
- <878rdzfg7a.wl-tiwai@suse.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id E6358F802E8
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 13:31:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6358F802E8
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=znYrjj8Y
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AE9DC63063;
+	Mon,  8 May 2023 11:31:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9806C433EF;
+	Mon,  8 May 2023 11:31:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1683545496;
+	bh=+0RE+7ZUlgN+Hud6gu9TQz4rBrwna8HXuIwEzINMsqw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=znYrjj8YCF6Y2lD7AmkXKYSERJnhCYQAQtHd0yNANJjhg4nubphj6Uxvy3gnPCQeW
+	 TU5dhmBCf/egk9QRFOPdUnXNbSJLcJVlqcPAJ4A2qp9LZq20FPstTG5zSdRFyH6LLN
+	 AToHswAULzxf0Qciks/RZcU73KbCr8ZMDFCUZnCE=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Subject: [PATCH 5.15 058/371] sound/oss/dmasound: fix build when drivers are
+ mixed =y/=m
+Date: Mon,  8 May 2023 11:44:19 +0200
+Message-Id: <20230508094814.380911635@linuxfoundation.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230508094811.912279944@linuxfoundation.org>
+References: <20230508094811.912279944@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <878rdzfg7a.wl-tiwai@suse.de>
-Message-ID-Hash: RWGCM2Z3ZFJFYWMJWHZF3CNKDVU2PYDW
-X-Message-ID-Hash: RWGCM2Z3ZFJFYWMJWHZF3CNKDVU2PYDW
-X-MailFrom: ossi@kde.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: 5NBY7QLO26P75ASBYKNURG2HEWCN3GGC
+X-Message-ID-Hash: 5NBY7QLO26P75ASBYKNURG2HEWCN3GGC
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, patches@lists.linux.dev,
+ Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Randy Dunlap <rdunlap@infradead.org>, kernel test robot <lkp@intel.com>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.de>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RWGCM2Z3ZFJFYWMJWHZF3CNKDVU2PYDW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5NBY7QLO26P75ASBYKNURG2HEWCN3GGC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -75,20 +92,166 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, May 08, 2023 at 09:14:01AM +0200, Takashi Iwai wrote:
->Must those be macros?
->
-yes. at least with the additional checks i've added in v2.
+From: Randy Dunlap <rdunlap@infradead.org>
 
->Not only that macro isn't really safe to use for obvious reasons,
->
-i don't see anything obviously bad. please be specific.
+commit 9dd7c46346ca4390f84a7ea9933005eb1b175c15 upstream.
 
->the expansion would cost significantly as they are called in many 
->places.
->
-after i fixed the calls with a non-const register in v2, the code size 
-increases by less than 400 bytes (with ~95 call sites). i'd say that's 
-negligible.
+When CONFIG_DMASOUND_ATARI=m and CONFIG_DMASOUND_Q40=y (or vice versa),
+dmasound_core.o can be built without dmasound_deinit() being defined,
+causing a build error:
 
-regards
+ERROR: modpost: "dmasound_deinit" [sound/oss/dmasound/dmasound_atari.ko] undefined!
+
+Modify dmasound_core.c and dmasound.h so that dmasound_deinit() is
+always available.
+
+The mixed modes (=y/=m) also mean that several variables and structs
+have to be declared in all cases.
+
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: lore.kernel.org/r/202204032138.EFT9qGEd-lkp@intel.com
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Link: https://lore.kernel.org/r/20220405234118.24830-1-rdunlap@infradead.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ sound/oss/dmasound/dmasound.h      |    6 ------
+ sound/oss/dmasound/dmasound_core.c |   24 +-----------------------
+ 2 files changed, 1 insertion(+), 29 deletions(-)
+
+--- a/sound/oss/dmasound/dmasound.h
++++ b/sound/oss/dmasound/dmasound.h
+@@ -88,11 +88,7 @@ static inline int ioctl_return(int __use
+      */
+ 
+ extern int dmasound_init(void);
+-#ifdef MODULE
+ extern void dmasound_deinit(void);
+-#else
+-#define dmasound_deinit()	do { } while (0)
+-#endif
+ 
+ /* description of the set-up applies to either hard or soft settings */
+ 
+@@ -114,9 +110,7 @@ typedef struct {
+     void *(*dma_alloc)(unsigned int, gfp_t);
+     void (*dma_free)(void *, unsigned int);
+     int (*irqinit)(void);
+-#ifdef MODULE
+     void (*irqcleanup)(void);
+-#endif
+     void (*init)(void);
+     void (*silence)(void);
+     int (*setFormat)(int);
+--- a/sound/oss/dmasound/dmasound_core.c
++++ b/sound/oss/dmasound/dmasound_core.c
+@@ -206,12 +206,10 @@ module_param(writeBufSize, int, 0);
+ 
+ MODULE_LICENSE("GPL");
+ 
+-#ifdef MODULE
+ static int sq_unit = -1;
+ static int mixer_unit = -1;
+ static int state_unit = -1;
+ static int irq_installed;
+-#endif /* MODULE */
+ 
+ /* control over who can modify resources shared between play/record */
+ static fmode_t shared_resource_owner;
+@@ -391,9 +389,6 @@ static const struct file_operations mixe
+ 
+ static void mixer_init(void)
+ {
+-#ifndef MODULE
+-	int mixer_unit;
+-#endif
+ 	mixer_unit = register_sound_mixer(&mixer_fops, -1);
+ 	if (mixer_unit < 0)
+ 		return;
+@@ -1171,9 +1166,6 @@ static const struct file_operations sq_f
+ static int sq_init(void)
+ {
+ 	const struct file_operations *fops = &sq_fops;
+-#ifndef MODULE
+-	int sq_unit;
+-#endif
+ 
+ 	sq_unit = register_sound_dsp(fops, -1);
+ 	if (sq_unit < 0) {
+@@ -1366,9 +1358,6 @@ static const struct file_operations stat
+ 
+ static int state_init(void)
+ {
+-#ifndef MODULE
+-	int state_unit;
+-#endif
+ 	state_unit = register_sound_special(&state_fops, SND_DEV_STATUS);
+ 	if (state_unit < 0)
+ 		return state_unit ;
+@@ -1386,10 +1375,9 @@ static int state_init(void)
+ int dmasound_init(void)
+ {
+ 	int res ;
+-#ifdef MODULE
++
+ 	if (irq_installed)
+ 		return -EBUSY;
+-#endif
+ 
+ 	/* Set up sound queue, /dev/audio and /dev/dsp. */
+ 
+@@ -1408,9 +1396,7 @@ int dmasound_init(void)
+ 		printk(KERN_ERR "DMA sound driver: Interrupt initialization failed\n");
+ 		return -ENODEV;
+ 	}
+-#ifdef MODULE
+ 	irq_installed = 1;
+-#endif
+ 
+ 	printk(KERN_INFO "%s DMA sound driver rev %03d installed\n",
+ 		dmasound.mach.name, (DMASOUND_CORE_REVISION<<4) +
+@@ -1424,8 +1410,6 @@ int dmasound_init(void)
+ 	return 0;
+ }
+ 
+-#ifdef MODULE
+-
+ void dmasound_deinit(void)
+ {
+ 	if (irq_installed) {
+@@ -1444,8 +1428,6 @@ void dmasound_deinit(void)
+ 		unregister_sound_dsp(sq_unit);
+ }
+ 
+-#else /* !MODULE */
+-
+ static int dmasound_setup(char *str)
+ {
+ 	int ints[6], size;
+@@ -1489,8 +1471,6 @@ static int dmasound_setup(char *str)
+ 
+ __setup("dmasound=", dmasound_setup);
+ 
+-#endif /* !MODULE */
+-
+     /*
+      *  Conversion tables
+      */
+@@ -1577,9 +1557,7 @@ char dmasound_alaw2dma8[] = {
+ 
+ EXPORT_SYMBOL(dmasound);
+ EXPORT_SYMBOL(dmasound_init);
+-#ifdef MODULE
+ EXPORT_SYMBOL(dmasound_deinit);
+-#endif
+ EXPORT_SYMBOL(dmasound_write_sq);
+ EXPORT_SYMBOL(dmasound_catchRadius);
+ #ifdef HAS_8BIT_TABLES
+
+
