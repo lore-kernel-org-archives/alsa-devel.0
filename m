@@ -4,81 +4,156 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4228FC77B7D
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 06:25:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DA21C77B7D
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 06:32:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 127A91055;
-	Wed, 10 May 2023 08:24:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 127A91055
+	by alsa0.perex.cz (Postfix) with ESMTPS id 376D41057;
+	Wed, 10 May 2023 08:31:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 376D41057
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683699926;
-	bh=YvntqD+xSilwTeLzXQlILPmUDbgtgKi5o+G/7xZhBoQ=;
-	h=Subject:From:In-Reply-To:Date:References:To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=DUSJoTngmc6W9TOO/K5aHas6WpBJmX3sNL1rRCtp6ubSSGX9SxRKse8TMp3mKGmrQ
-	 3J58g4yMPVjbCRDtYOS3OfDz4LwKyZbwP2tNUNiTN9mFkKXUazOgJoRaeT2D9eutb3
-	 p4qtOcVLMCs8bZzgt96EOF9883A17QCudEky2CpI=
+	s=default; t=1683700333;
+	bh=dBloFJhoaI9etuevx3RcZG3i5lC069MPcR3NIxpX0sM=;
+	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
+	b=UVXvOe9FxEDYhdrrCZ7U0JhtZEv2Or8TCsSfuzV+ofoaFweI2jXwQDcrnCasl2CQN
+	 fajAxM717UvvPCiY3/N/6S6oOa6geUECPqvPDdlcc419EqHMNrrreKsFUvzYj12EWR
+	 2QgVNVEwqXBOFZq9Wdwd6pCn7anMj2YgMEV4ydsw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80913F8032D;
-	Wed, 10 May 2023 08:24:09 +0200 (CEST)
-Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3DD89F8032D; Wed, 10 May 2023 08:23:39 +0200 (CEST)
-Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A778BF802E8
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 08:23:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A778BF802E8
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=cutebit.org header.i=@cutebit.org header.a=rsa-sha256
- header.s=mail header.b=PmPugz2x
-Content-Type: text/plain;
-	charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
-	t=1683699815; bh=qTralI+BjXkUYeKdpt1EKOYLurUZJUqEWnuIzQBEp7g=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To;
-	b=PmPugz2x90kQffxeCbG0qp9sZuQ50W491xv2ssNip1mGx5wefSNn7yw7IpH//9OjO
-	 YL6cgtQNHGKBncWB8bmKNeg+LGFJiXkZ9RgObhHFtyBEQiWdCBRggzCbS8EE1RmHkS
-	 /SoJHaiCoNMrqu+0713ZUsg4pWuun9aPZEIOy/sA=
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
-Subject: Re: [PATCH 2/2] ASoC: ssm3515: Add new amp driver
-From: =?utf-8?Q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
-In-Reply-To: <ZFr+e+bM86Rwj2LH@finisterre.sirena.org.uk>
-Date: Wed, 10 May 2023 08:23:34 +0200
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EA5B2980-917F-4F82-9302-F880B1B97ECD@cutebit.org>
-References: <20230509163828.86003-1-povik+lin@cutebit.org>
- <20230509163828.86003-2-povik+lin@cutebit.org>
- <ZFr+e+bM86Rwj2LH@finisterre.sirena.org.uk>
-To: Mark Brown <broonie@kernel.org>
-Message-ID-Hash: UOB6QPXED3NHNRIPTX45HNAP5F5NFYKK
-X-Message-ID-Hash: UOB6QPXED3NHNRIPTX45HNAP5F5NFYKK
-X-MailFrom: povik+lin@cutebit.org
+	by alsa1.perex.cz (Postfix) with ESMTP id 741E7F802E8;
+	Wed, 10 May 2023 08:30:56 +0200 (CEST)
+To: alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lgirdwood@gmail.com,
+	broonie@kernel.org
+Subject: [PATCH v2 0/7] Add Chameleon v3 ASoC audio
+Date: Mon,  8 May 2023 13:30:30 +0200
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Lars-Peter Clausen <lars@metafoo.de>,
- =?utf-8?Q?Nuno_S=C3=A1?= <nuno.sa@analog.com>, asahi@lists.linux.dev,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ header-match-alsa-devel.alsa-project.org-1
+X-Mailman-Approved-At: Wed, 10 May 2023 06:30:50 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UOB6QPXED3NHNRIPTX45HNAP5F5NFYKK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UVFG542LUC2PIG4W27NG4LRHYHOKKO2R/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+MIME-Version: 1.0
+Message-ID: 
+ <168370025444.26.1010294303910435639@mailman-core.alsa-project.org>
+From: =?utf-8?q?Pawe=C5=82_Anikiel_via_Alsa-devel?=
+ <alsa-devel@alsa-project.org>
+Reply-To: =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
+Cc: tiwai@suse.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ dinguyen@kernel.org, lars@metafoo.de, nuno.sa@analog.com,
+ upstream@semihalf.com, amstan@chromium.org,
+ =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+Received: by alsa1.perex.cz (Postfix, from userid 50401)
+	id 92593F8032D; Mon,  8 May 2023 13:30:58 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED shortcircuit=no autolearn=ham
+	autolearn_force=no version=3.4.6
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
+ [IPv6:2a00:1450:4864:20::12f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8CA64F802E8
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 13:30:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CA64F802E8
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=semihalf.com header.i=@semihalf.com header.a=rsa-sha256
+ header.s=google header.b=LaOiDwcc
+Received: by mail-lf1-x12f.google.com with SMTP id
+ 2adb3069b0e04-4ec8eca56cfso4909713e87.0
+        for <alsa-devel@alsa-project.org>;
+ Mon, 08 May 2023 04:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1683545449; x=1686137449;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QROZZg0NcOAM6TrC3FRfcXoXcgrBsF3nV9ljtkhqs/g=;
+        b=LaOiDwccr14aUQfXHiItTJRbSFtax2h3IM/zfRijGPvqXp3g1mZQ4/edBGu1qeOH9c
+         bRteSh1Kbcm6J1asHyYNUnVkn4CKd5EFUpzPeLXSQgOmWKIeXPFWqpXj5ajw7uU0lDqU
+         FrK1AKF+1igGV8vTA4QSP/eeY8c7bz5P8yKE7iChxrRITaG4FW0dGUkYfzA3XuINRfi0
+         ZUC7A1791bXIxS3Dj8UBL3KH+vHmg2lCXVKnDpBW0PYTiS3+gCZHggHzw3AJzWJOBAkD
+         8eCcP+NhlJPExY/TFpbYoU1K7sMTmHqX9AKf+9Cnn3yVUZISIzMz6lKI1Za/4+0jtF5K
+         oPcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683545449; x=1686137449;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QROZZg0NcOAM6TrC3FRfcXoXcgrBsF3nV9ljtkhqs/g=;
+        b=WHrgZpIZuEOAudpjdjwiktEWNLQ3CO3STtQoY9j586F+9z+K4Mf8wms5+5nAV/N8ZR
+         pshuhjzfJxtxP4y8N42xIjprwO8b4AO6ZdquF6lYkIKS32L+acQTtzun7131PQlslDcz
+         ZYQbi2jmI8XzA4IIn5vi8LhyYGC1bPNMzAQZHapzgfFZ/zSD64Yp3EW7URauLF18khFM
+         TYuMcazGhlsqIgGbCEUhKMyuJZmJhDWpoolaC+97Gk3+4CWXW42qmfSJ8BDstHJ/o+vB
+         6C5USh3NmHmIiucIFuRyGuKImqTtxijdqNU3M1KPbOJMxkeFbTzB4FIlNhqyMmcuY+Ql
+         nK0w==
+X-Gm-Message-State: AC+VfDzljReeC2Qm+yX8B0vwPAKGc/UhRaL8XYaMehc3KXClOfv6A1OW
+	CjCI/kzEmBxaqvo8hjLa2HJ9942vdJTFH3K4WwY=
+X-Google-Smtp-Source: 
+ ACHHUZ5wHrOKKIsHA8UkSMl1QDKxcEx3roo4s774AFuy6ZE50c0cAvreNxNsl+gGMfStFlUTxtls3g==
+X-Received: by 2002:a2e:918d:0:b0:2a8:b627:b92f with SMTP id
+ f13-20020a2e918d000000b002a8b627b92fmr2717307ljg.29.1683545449157;
+        Mon, 08 May 2023 04:30:49 -0700 (PDT)
+Received: from panikiel.office.semihalf.net ([83.142.187.84])
+        by smtp.gmail.com with ESMTPSA id
+ k8-20020a2e2408000000b002a8b9353338sm1144406ljk.117.2023.05.08.04.30.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 May 2023 04:30:48 -0700 (PDT)
+From: =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
+To: alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lgirdwood@gmail.com,
+	broonie@kernel.org
+Subject: [PATCH v2 0/7] Add Chameleon v3 ASoC audio
+Date: Mon,  8 May 2023 13:30:30 +0200
+Message-ID: <20230508113037.137627-1-pan@semihalf.com>
+X-Mailer: git-send-email 2.40.1.521.gf1e218fcd8-goog
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MailFrom: pan@semihalf.com
+X-Mailman-Rule-Hits: nonmember-moderation
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation;
+ header-match-alsa-devel.alsa-project.org-0;
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: UVFG542LUC2PIG4W27NG4LRHYHOKKO2R
+X-Message-ID-Hash: UVFG542LUC2PIG4W27NG4LRHYHOKKO2R
+X-Mailman-Approved-At: Wed, 10 May 2023 06:30:50 +0000
+CC: tiwai@suse.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ dinguyen@kernel.org, lars@metafoo.de, nuno.sa@analog.com,
+ upstream@semihalf.com, amstan@chromium.org,
+ =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
+X-Mailman-Version: 3.3.8
+Precedence: list
+List-Id: "Alsa-devel mailing list for ALSA developers -
+ http://www.alsa-project.org" <alsa-devel.alsa-project.org>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UVFG542LUC2PIG4W27NG4LRHYHOKKO2R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -87,58 +162,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The Google Chameleon v3 is a device made for testing audio and video
+paths of other devices. This patchset adds support for ASoC audio on
+this device. It has two audio sources: HDMI audio from the it68051 chip
+(RX only), and analog audio from the ssm2603 chip (RX and TX).
 
-> On 10. 5. 2023, at 4:16, Mark Brown <broonie@kernel.org> wrote:
->=20
-> On Tue, May 09, 2023 at 06:38:28PM +0200, Martin Povi=C5=A1er wrote:
->=20
->> +static int ssm3515_setup(struct snd_soc_component *component)
->> +{
->> +	struct ssm3515_data *data =3D
->> +			snd_soc_component_get_drvdata(component);
->> +	int ret;
->> +
->> +	ret =3D snd_soc_component_update_bits(component, SSM3515_GEC,
->> +			SSM3515_GEC_ANA_GAIN,
->> +			FIELD_PREP(SSM3515_GEC_ANA_GAIN, =
-data->ana_gain));
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	/* Start out muted */
->> +	ret =3D snd_soc_component_update_bits(component, SSM3515_DAC,
->> +			SSM3515_DAC_MUTE, SSM3515_DAC_MUTE);
->> +	if (ret < 0)
->> +		return ret;
->=20
-> Why are we not using the chip defaults here?  We use those for most
-> things as what's appropraite for one user might not be appropriate for
-> another and it's easier to agree to follow what the chip does than to
-> select things.  There's some exceptions like for zero cross options =
-but
-> not typically for gains and mutes.
+The patchset adds the ASoC platform and codec drivers, as well as some
+changes to the existing ssm2602 codec driver.
 
-This bit is controlled by the mute DAI op, where it is expected the
-component starts out muted. The datasheet promises pop-free experience
-if this bit is sequenced with the disablement of clocks, so it seems
-like a good fit for said op.
+v2 changes:
+  * Replace chv3-audio machine driver with simple-audio-card
+  * Use regmap_register_patch() in ssm2602 workaround
+  * Remove ssm2602 mute gpio patch, add a gpio hog instead
+  * Simplify hw_pointer logic in chv3-i2s
+  * Commit splits & other misc changes
 
->> +static int ssm3515_probe(struct snd_soc_component *component)
->> +{
->> +	struct ssm3515_data *data =3D
->> +			snd_soc_component_get_drvdata(component);
->> +	int ret;
->> +
->> +	ret =3D ssm3515_reset(component);
->> +	if (ret < 0)
->> +		return ret;
->> +	regmap_reinit_cache(data->regmap, &ssm3515_i2c_regmap);
->> +
->> +	return ssm3515_setup(component);
->> +}
->=20
-> We don't normally reset things on component probe, only on bus level
-> probe...
+Paweł Anikiel (7):
+  ASoC: Add Google Chameleon v3 i2s driver
+  ASoC: Add Google Chameleon v3 codec driver
+  ASoC: dt-bindings: Add Google Chameleon v3 i2s device
+  ASoC: dt-bindings: Add Google Chameleon v3 audio codec
+  ARM: dts: chameleonv3: Add mute gpio hog
+  ARM: dts: chameleonv3: Add Chameleon v3 audio
+  ASoC: ssm2602: Add workaround for playback distortions
 
-I don=E2=80=99t think I have a strong reason to do this.
+ .../bindings/sound/google,chv3-codec.yaml     |  31 ++
+ .../bindings/sound/google,chv3-i2s.yaml       |  44 +++
+ .../boot/dts/socfpga_arria10_chameleonv3.dts  |  62 ++++
+ sound/soc/Kconfig                             |   1 +
+ sound/soc/Makefile                            |   1 +
+ sound/soc/codecs/Kconfig                      |   8 +
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/chv3-codec.c                 |  41 +++
+ sound/soc/codecs/ssm2602.c                    |  15 +
+ sound/soc/google/Kconfig                      |   6 +
+ sound/soc/google/Makefile                     |   2 +
+ sound/soc/google/chv3-i2s.c                   | 338 ++++++++++++++++++
+ 12 files changed, 551 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/google,chv3-codec.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/google,chv3-i2s.yaml
+ create mode 100644 sound/soc/codecs/chv3-codec.c
+ create mode 100644 sound/soc/google/Kconfig
+ create mode 100644 sound/soc/google/Makefile
+ create mode 100644 sound/soc/google/chv3-i2s.c
+
+-- 
+2.40.1.521.gf1e218fcd8-goog
 
