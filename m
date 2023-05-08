@@ -4,91 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 987D5C77B75
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 07:35:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66AFFC77B7F
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 07:35:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A44212B8;
-	Mon,  8 May 2023 09:34:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A44212B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DD9A12C4;
+	Mon,  8 May 2023 09:34:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DD9A12C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683531324;
-	bh=iBD/inicE5OSbeLiIqQicBppLAV6vTbEgEFJ8lVOL/A=;
+	s=default; t=1683531330;
+	bh=KcuWIdj6t3zw2NYYaLXmg9wVoJrOneKkjTVsRs3FZxY=;
 	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A6TuybmfebLLhqOvkphTOLNbtYLNd5ljEwQM/0KHTikpgXo8E/KF6S1DZhN+W6kgX
-	 3oX6co8k4UqeYcBE8v2EQW4g9VYaPawq35IxU3+eDOIqVzrsRUIemIo5zHlD44cjSc
-	 xzN7OhW2ZtSeuV+vQAk1lyA/SUprmVgO93UCL+OI=
+	b=qgbVOXlX4xzXT8uavf+PSQADygyw9sig1jptiufzYDrNKp/dTEqYplWEDSWhGsQoX
+	 M9dvg2T2lGKBjfkbhFexv//QBlv0/HHR5tjX5D63x0Mzq1suU00KoXBFTHzdsQmW39
+	 HeiahP1uWuLvsnu8RhJf0BDKeJGMYbNaowbBEuIc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B457F8053B;
-	Mon,  8 May 2023 09:33:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F7C8F80557;
+	Mon,  8 May 2023 09:34:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9030F8053B; Mon,  8 May 2023 09:33:54 +0200 (CEST)
+	id A3D16F80557; Mon,  8 May 2023 09:34:12 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D83FF8052E
-	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 09:33:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D83FF8052E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8C703F80542
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 09:34:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C703F80542
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=RM+IIr2m;
+ header.s=susede2_rsa header.b=P9iz3kxO;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=1cMfDqpb
+ header.s=susede2_ed25519 header.b=U30xisjO
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1AF3E1F891;
-	Mon,  8 May 2023 07:33:48 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 320411FD9F;
+	Mon,  8 May 2023 07:34:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1683531228;
+	t=1683531249;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=n4WwyeSfpq5sAs08qWxANbJZn+6HDsbNxrTZjnjPSxQ=;
-	b=RM+IIr2mL7MClSyBYXevIiFcoDlfGZDiu7c/TxAo9Xe0gC9kIDS9mBF3VeP3nKtquoyivh
-	l4z1W2jqRBKunsgG7kTOJd3A1fxyl1I9EIIXafmK1MuEAr4s95U7gsC+CLRteoQtyulnLc
-	knQH4jmQ3+R9AVjwWEDMzvqqsuPIcfk=
+	bh=yZ3GmojiN6y4H+sZIxb/y+hSoYROV3o2L2lwC4zuTbg=;
+	b=P9iz3kxOlZLrM4KwXQUL7Id1emEG6XKFtvv2Z1FA/o1NdWv5GHpI/JzRDpmJo5zspHgu+v
+	lWBYgYTVRP2WCF9QNxgLCk/lFlF8S+Pey0UtpgvrWWVGjSVp/9FiHGDFJ5q1hiRVUMphXd
+	3w4FKMivc1yOskXriFv51c8AkbdmRo8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1683531228;
+	s=susede2_ed25519; t=1683531249;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=n4WwyeSfpq5sAs08qWxANbJZn+6HDsbNxrTZjnjPSxQ=;
-	b=1cMfDqpbhlqdP4M21VIi+TmRXj1AH8tCz2iOr+ESkz8vgWMe5lNGcwdexvqDaxFvZxjtDD
-	K9J5Wi9+aABSftDg==
+	bh=yZ3GmojiN6y4H+sZIxb/y+hSoYROV3o2L2lwC4zuTbg=;
+	b=U30xisjO4Sf4T+77rzgHlS71QLlBT49R3+PHEp6BDaTFeUQcgD7ieSsC1gyFG6b6DnRVYM
+	n/6Rir1CvKNWtVBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F06671346B;
-	Mon,  8 May 2023 07:33:47 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 11B751346B;
+	Mon,  8 May 2023 07:34:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id C4SLOdulWGS1NgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 08 May 2023 07:33:47 +0000
-Date: Mon, 08 May 2023 09:33:47 +0200
-Message-ID: <871qjrffac.wl-tiwai@suse.de>
+	id ATpvA/GlWGTMNgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 08 May 2023 07:34:09 +0000
+Date: Mon, 08 May 2023 09:34:08 +0200
+Message-ID: <87zg6fe0pb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Subject: Re: [PATCH 0/6] ALSA: emu10k1: Various improvements related to
- locking
-In-Reply-To: <20230428095941.1706278-1-oswald.buddenhagen@gmx.de>
-References: <20230428095941.1706278-1-oswald.buddenhagen@gmx.de>
+Subject: Re: [PATCH] ALSA: emu10k1: minor E-MU naming fixups
+In-Reply-To: <20230428095941.1706335-1-oswald.buddenhagen@gmx.de>
+References: <20230428095941.1706335-1-oswald.buddenhagen@gmx.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: UMCLHQJHFUDBUXJCN5VZLOZRHGTPKGDX
-X-Message-ID-Hash: UMCLHQJHFUDBUXJCN5VZLOZRHGTPKGDX
+Message-ID-Hash: 4BEATOOP34RDWN7F43RLH3LLTPPGGRFN
+X-Message-ID-Hash: 4BEATOOP34RDWN7F43RLH3LLTPPGGRFN
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UMCLHQJHFUDBUXJCN5VZLOZRHGTPKGDX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4BEATOOP34RDWN7F43RLH3LLTPPGGRFN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,23 +110,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 28 Apr 2023 11:59:35 +0200,
+On Fri, 28 Apr 2023 11:59:41 +0200,
 Oswald Buddenhagen wrote:
 > 
-> ---
+> - Fix mixer source port names. These will require some users to
+>   re-adjust their mixer settings, which seems acceptable:
+>   - The S/PDIF port is on the main 1010 card, not the 0202 daughter card
+>   - The 1616m CardBus card has all inputs on the dock, so there is
+>     no point in specifying it
+>   - Conversely, the 1010 card has "dispersed" inputs, so say where the
+>     ADAT port is, consistently with the S/PDIF port
+> - The 1616m CardBus card is actually named E-MU 02 (due to the headphone
+>   output jack it has)
+> - Fix capitalization of "E-MU"
 > 
-> This patch series needs to be applied on top of the patch titled "ALSA:
-> emu10k1: use more existing defines instead of open-coded numbers".
-> 
-> Oswald Buddenhagen (6):
->   ALSA: emu10k1: remove pointless locks from timer code
->   ALSA: emu10k1: remove pointless locks from /proc code
->   ALSA: emu10k1: use the right lock in snd_emu10k1_shared_spdif_put()
->   ALSA: emu10k1: fix locking in snd_emu1010_fpga_link_dst_src_write()
->   ALSA: core: update comment on snd_card.controls_rwsem
->   ALSA: emu10k1: remove now superfluous mixer locking
+> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 
-Applied all six patches now.
+Applied now.
 
 
 thanks,
