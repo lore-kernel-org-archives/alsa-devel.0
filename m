@@ -4,33 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EE55C77B7F
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 07:17:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EB58C77B7F
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 07:18:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5620912C5;
-	Mon,  8 May 2023 09:16:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5620912C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id C310712AC;
+	Mon,  8 May 2023 09:17:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C310712AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683530264;
-	bh=sSKQEB3LRIfKmDxtwWFdB9Kb32BF1ofjBnRGKuaTV2M=;
-	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From:Reply-To:Cc:From;
-	b=U/XZzRwE1gnufhaliXmyWNLgzquInUc2reHK5BiByZ+AbQYnwj9S+zAeYHbF+mhit
-	 91ZU2X5wMqzJxAE8E7rqasj2z/THJ3da2Vw55TCthuqVVNwh5mnFSRyfhFbB6vgA/Z
-	 zgQv2HFambEYKU25tBzLzcaybRNlDQ8ZWD1S6Q34=
+	s=default; t=1683530280;
+	bh=iuAtSUq5G5xS7fUIMc+V+VCORdw14kSzUA1lmsDFlj8=;
+	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
+	b=VpcBcIRDL9bNiNi7bDsltMvP2zlTccK88gjBj2bcZhNGY32C4RToqgTFsUdvPNyLn
+	 aq46/rODwgERR3VseUEhdzi1naPe/Ecog4xRyNE+q0wISXe+dlUSLsw12/9yukq1Jn
+	 HA2ugacxM/aris5fUxv0a0uyCH6fLZa5IQAPeUlc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E581AF80557;
-	Mon,  8 May 2023 09:16:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3666F8055C;
+	Mon,  8 May 2023 09:16:05 +0200 (CEST)
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
 	<perex@perex.cz>, <matthias.bgg@gmail.com>,
 	<angelogioacchino.delregno@collabora.com>
-Subject: [PATCH 3/4] ASoC: mediatek: mt6359: add mtkaif gpio setting
-Date: Mon, 8 May 2023 15:15:31 +0800
-In-Reply-To: <20230508071532.21665-1-trevor.wu@mediatek.com>
-References: <20230508071532.21665-1-trevor.wu@mediatek.com>
+Subject: [PATCH 0/4] ASoC: mt6359: kselftest fix and driver extension
+Date: Mon, 8 May 2023 15:15:28 +0800
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -42,7 +39,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BV5LWTQTKFWXEX7RKLLABMORPMM762TP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DQDVVANXQTE6KPUDWZ6AAG7PD2JQB3OR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -52,7 +49,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <168353016237.26.15203659559210406952@mailman-core.alsa-project.org>
+ <168353016454.26.13053897228618991445@mailman-core.alsa-project.org>
 From: Trevor Wu via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Trevor Wu <trevor.wu@mediatek.com>
 Cc: trevor.wu@mediatek.com, bicycle.tsai@mediatek.com,
@@ -63,68 +60,67 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3ADD5F80542; Mon,  8 May 2023 09:15:58 +0200 (CEST)
+	id C0E51F8053D; Mon,  8 May 2023 09:15:58 +0200 (CEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: *
-X-Spam-Status: No, score=1.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,RDNS_NONE,SPF_HELO_PASS,
-	T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY,URIBL_BLOCKED
-	shortcircuit=no autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H2,
+	RDNS_NONE,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+	UNPARSEABLE_RELAY,URIBL_BLOCKED shortcircuit=no autolearn=ham
+	autolearn_force=no version=3.4.6
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2BB1FF80310
+	by alsa1.perex.cz (Postfix) with ESMTPS id C7987F8032D
 	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 09:15:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BB1FF80310
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7987F8032D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=Vm8BMLmC
-X-UUID: 20860c82ed7011edb20a276fd37b9834-20230508
+ header.s=dk header.b=pJpJ0iXE
+X-UUID: 203f86eaed7011edb20a276fd37b9834-20230508
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=EUCXX3qywTmH1/iTn+Vhans2ufli5Vw7rjPGGMD4pM0=;
-	b=Vm8BMLmCyLlWtMy8f/EydN0jina2txEgJxgF8CKZElq0xTaFCQEnZzwZzBD/rNCR93e7EwD45g9kuGEcGZ4bsj26qGVULDnxXNE7IDwB06E8hhsAS/4kCqdIGcrREsCIdcJXXCA7pInGdpwrEiZMZyH7c8bYZcC5FthprtNgN30=;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
+ bh=Y1HnJqsO/WkMHXAXN/S1iWJu5d9vaTn7O2ZE737u36k=;
+	b=pJpJ0iXEDWMNBOaMO8oeMXuZZKSVHwQ9FYA9CU6H3UzrhwXGkQGhC0zEytMfNzYY+TZptj4mU3/83yz/yYTqip5/JsLfi7ks11ExwWlzmOFrs13yAacPDNB+aL40zK7IMEBLpArwuEhQk547gdziKI4kQ4+Ty9NBwV6KKkktIB8=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.23,REQID:8eeeef5d-0b02-47b7-a7ab-17d78e32d3bf,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:697ab71,CLOUDID:70921131-6935-4eab-a959-f84f8da15543,B
+X-CID-O-INFO: VERSION:1.1.23,REQID:919588bd-aa8d-4523-814e-cd707e4dc150,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:697ab71,CLOUDID:2a8f1ec0-e32c-4c97-918d-fbb3fc224d4e,B
 	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
 	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
-X-UUID: 20860c82ed7011edb20a276fd37b9834-20230508
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by
+X-UUID: 203f86eaed7011edb20a276fd37b9834-20230508
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
  mailgw02.mediatek.com
 	(envelope-from <trevor.wu@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 159626911; Mon, 08 May 2023 15:15:35 +0800
+	with ESMTP id 1821024758; Mon, 08 May 2023 15:15:35 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 8 May 2023 15:15:34 +0800
+ 15.2.1118.26; Mon, 8 May 2023 15:15:33 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 8 May 2023 15:15:34 +0800
+ 15.2.1118.26 via Frontend Transport; Mon, 8 May 2023 15:15:33 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
 	<perex@perex.cz>, <matthias.bgg@gmail.com>,
 	<angelogioacchino.delregno@collabora.com>
-Subject: [PATCH 3/4] ASoC: mediatek: mt6359: add mtkaif gpio setting
-Date: Mon, 8 May 2023 15:15:31 +0800
-Message-ID: <20230508071532.21665-4-trevor.wu@mediatek.com>
+Subject: [PATCH 0/4] ASoC: mt6359: kselftest fix and driver extension
+Date: Mon, 8 May 2023 15:15:28 +0800
+Message-ID: <20230508071532.21665-1-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230508071532.21665-1-trevor.wu@mediatek.com>
-References: <20230508071532.21665-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
-Message-ID-Hash: BV5LWTQTKFWXEX7RKLLABMORPMM762TP
-X-Message-ID-Hash: BV5LWTQTKFWXEX7RKLLABMORPMM762TP
+Message-ID-Hash: DQDVVANXQTE6KPUDWZ6AAG7PD2JQB3OR
+X-Message-ID-Hash: DQDVVANXQTE6KPUDWZ6AAG7PD2JQB3OR
 X-MailFrom: trevor.wu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -141,7 +137,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BV5LWTQTKFWXEX7RKLLABMORPMM762TP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DQDVVANXQTE6KPUDWZ6AAG7PD2JQB3OR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -150,48 +146,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add mtkaif gpio driving to increase signal strength and smt setting to
-prevent from overshooting.
+The patch series includes a kselftest fix and changes for extending
+driver capability to support more use cases.
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- sound/soc/codecs/mt6359.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Trevor Wu (4):
+  ASoC: mediatek: mt6359: add supply for MTKAIF
+  ASoC: mediatek: mt6359: fix kselftest error of playback gain
+  ASoC: mediatek: mt6359: add mtkaif gpio setting
+  ASoC: mediatek: mt6359: update route for lineout mux
 
-diff --git a/sound/soc/codecs/mt6359.c b/sound/soc/codecs/mt6359.c
-index 65e6d4d08b6a..a37ad61a8253 100644
---- a/sound/soc/codecs/mt6359.c
-+++ b/sound/soc/codecs/mt6359.c
-@@ -18,6 +18,20 @@
- 
- #include "mt6359.h"
- 
-+static void mt6359_set_gpio_smt(struct mt6359_priv *priv)
-+{
-+	/* set gpio SMT mode */
-+	regmap_update_bits(priv->regmap, MT6359_SMT_CON1, 0x3ff0, 0x3ff0);
-+}
-+
-+static void mt6359_set_gpio_driving(struct mt6359_priv *priv)
-+{
-+	/* 8:4mA(default), a:8mA, c:12mA, e:16mA */
-+	regmap_update_bits(priv->regmap, MT6359_DRV_CON2, 0xffff, 0x8888);
-+	regmap_update_bits(priv->regmap, MT6359_DRV_CON3, 0xffff, 0x8888);
-+	regmap_update_bits(priv->regmap, MT6359_DRV_CON4, 0x00ff, 0x88);
-+}
-+
- static void mt6359_set_playback_gpio(struct mt6359_priv *priv)
- {
- 	/* set gpio mosi mode, clk / data mosi */
-@@ -2745,6 +2759,8 @@ static int mt6359_codec_init_reg(struct snd_soc_component *cmpnt)
- 			   0x1 << RG_AUDLOLSCDISABLE_VAUDP32_SFT);
- 
- 	/* set gpio */
-+	mt6359_set_gpio_smt(priv);
-+	mt6359_set_gpio_driving(priv);
- 	mt6359_reset_playback_gpio(priv);
- 	mt6359_reset_capture_gpio(priv);
- 
+ sound/soc/codecs/mt6359.c | 152 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 137 insertions(+), 15 deletions(-)
+
 -- 
 2.18.0
 
