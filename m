@@ -4,117 +4,136 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73587C77B73
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 09:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E57FC77B7F
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 10:40:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72EC7129B;
-	Mon,  8 May 2023 11:33:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72EC7129B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E122122C;
+	Mon,  8 May 2023 12:39:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E122122C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683538457;
-	bh=BUiTF445WKprmiPoqtMo0Jeg0gLKQqKsT7/XgTQvkJc=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=viNGLwi4wDfYjQMuCkuuVUdlymp7SkIz+VBxjm8D4ejEpao/KAIlER0zxQwewangw
-	 QXcQjXukOtOfKs7jIF/4be+BYPncmClOSYbRHu+o0u9IZpE4zc1wLhlufwWi+rC8gd
-	 JGHiQanafCi1Hocr3uy1oTz1cZ/YE5553JtKX0VQ=
+	s=default; t=1683542436;
+	bh=nzYwOM4J+rUoG6e4vx4I1T40A9eqFOzlrLKgr1GlAus=;
+	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
+	b=Gtt9YG7KD2+HynGZPwGKQFuXTKDLY2QsxUKgl0tZCJ8AJZq0kCQX4OkfbDseDZpBu
+	 ahasm/sPySx+Z4QVJlegJrrH11FA9hwVJT7sXvMFRIJC5Xioi62ihHkbeGGZW4qjYn
+	 HvHp04Mxs/9x7LxIeTSsFnCrS0QBGi2j+g+wXIvQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D915F80087;
-	Mon,  8 May 2023 11:33:02 +0200 (CEST)
-Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95200F8032D; Mon,  8 May 2023 11:32:58 +0200 (CEST)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
- [IPv6:2a00:1450:4864:20::62a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 364CBF802E8
-	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 11:32:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 364CBF802E8
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=r8xKe2ue
-Received: by mail-ej1-x62a.google.com with SMTP id
- a640c23a62f3a-965fc25f009so479830666b.3
-        for <alsa-devel@alsa-project.org>;
- Mon, 08 May 2023 02:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1683538343; x=1686130343;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jaIOfIKT6cUzQnXA2pY8MBVw5AuuF4DUG96T6VN7SUU=;
-        b=r8xKe2ueE6qpZ5q7fx2Jr8j9y8jdvbEl/dJ9MSBywzTaJGn2c/IQr9fhngQwzv+eK8
-         3dKMmSF6g6nSseCp2P2WS3jBDXpqlFLuLSrkAk2YV+myVAs7Aqp/C43Spb3zAe+2Lbs5
-         Wt8RhC2uDN5NrFDxdf6XL5LnzmSxdtpnNvX1jDwngbIY5QuvpurFg0dPfQh7q2v8r7mP
-         tnlzEa9dQfEC9d6v+YdVnGvkRNA19kacCMnSAOKdGIxlmq9ZbzonSHap2R3pxlaEyAUN
-         vBvZyBx30LY5A2TJmL4fkoSn57rXbp1tm4YmcYLRoSxpUO0YYG3HCpauLVXCXCoH9thZ
-         J+UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683538343; x=1686130343;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jaIOfIKT6cUzQnXA2pY8MBVw5AuuF4DUG96T6VN7SUU=;
-        b=P/1wa7wpAUMswF5OFCLCqq9K1Qq6XdHktxUpNcVGyxEXcIoywaFzatEC0RSlNQHRa5
-         DzjOCQiSvzSxCJAWEYvYp60wPVjWZkJdxmcnWKjdgTMRX7l41pkGartg3FgQ0luplw5h
-         cQ/ZuRQETmY2Iy83FhWfJ0TGxxT2amtRd9OFXNtCiWcBTTn33D9rZpBi2Fmd2ZN/DeWt
-         85UUutiGxMzL8zgarWP3uDtGxJm3kWgd/M1Jh3nigxcYNMnrEhqWx2HUV4AB0o8jErsV
-         puWawZkVfXFD9nYxsX55oe/yVlMqV9i2vxUxA5J/4y7Fm0kr5Wry/4N/9+DvLRtT1tgd
-         f7Zg==
-X-Gm-Message-State: AC+VfDyCOuwhNZ4XD/LF7a4rNxNWkeLoRbemdO4PJlsmsirtyj3NH/o/
-	uCi5pETSrQhMD2kOPhxX4WJOZQ==
-X-Google-Smtp-Source: 
- ACHHUZ7wCYtUf+7LVo6j+oVxWM1xFUqc13NehBZU/lO5rS1cti0ZTm6SDm50E98ky0UvdHVluWukHQ==
-X-Received: by 2002:a17:907:1b24:b0:94e:5c28:1c19 with SMTP id
- mp36-20020a1709071b2400b0094e5c281c19mr9319621ejc.5.1683538343137;
-        Mon, 08 May 2023 02:32:23 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:50e0:ebdf:b755:b300?
- ([2a02:810d:15c0:828:50e0:ebdf:b755:b300])
-        by smtp.gmail.com with ESMTPSA id
- hw6-20020a170907a0c600b0096602a5ab25sm3629254ejc.92.2023.05.08.02.32.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 May 2023 02:32:22 -0700 (PDT)
-Message-ID: <228ebc9d-f70f-3f12-381f-1ef6f24f2f28@linaro.org>
-Date: Mon, 8 May 2023 11:32:21 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 2/5] ASoC: dt-bindings: Add tas2781 amplifier
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, Shenghao Ding <13916275206@139.com>
-References: <20230508054512.719-1-13916275206@139.com>
- <168352721271.213340.3578983696891383785.robh@kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <168352721271.213340.3578983696891383785.robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 5J36WJGHGV3HRXJBYGFTN2DWBJXKGR6H
-X-Message-ID-Hash: 5J36WJGHGV3HRXJBYGFTN2DWBJXKGR6H
-X-MailFrom: krzysztof.kozlowski@linaro.org
+	by alsa1.perex.cz (Postfix) with ESMTP id 368ACF80087;
+	Mon,  8 May 2023 12:39:21 +0200 (CEST)
+To: <vkoul@kernel.org>, <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] soundwire: intel: Make DEV_NUM_IDA_MIN a module param
+Date: Mon, 8 May 2023 11:39:01 +0100
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Ryan_Chu@wistron.com, navada@ti.com, gentuser@gmail.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, shenghao-ding@ti.com, Sam_Wu@wistron.com,
- lgirdwood@gmail.com, krzysztof.kozlowski+dt@linaro.org, x1077012@ti.com,
- broonie@kernel.org, kevin-lu@ti.com, devicetree@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, peeyush@ti.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5J36WJGHGV3HRXJBYGFTN2DWBJXKGR6H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JUZGCAQEYLLIKJQE372KSH5ACCQEAWYN/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+MIME-Version: 1.0
+Message-ID: 
+ <168354236012.26.18372481370341690989@mailman-core.alsa-project.org>
+From: Richard Fitzgerald via Alsa-devel <alsa-devel@alsa-project.org>
+Reply-To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com, Richard Fitzgerald <rf@opensource.cirrus.com>
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+Received: by alsa1.perex.cz (Postfix, from userid 50401)
+	id D17ADF8032D; Mon,  8 May 2023 12:39:15 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.8 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+	T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED shortcircuit=no autolearn=ham
+	autolearn_force=no version=3.4.6
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 80F27F8014C
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 12:39:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80F27F8014C
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=AP3UEY2x
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 3489EmkA028057;
+	Mon, 8 May 2023 05:39:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=GndCEdzK1snefdFRYVEkK8R4R1g8K0x/+ofecHZlDn4=;
+ b=AP3UEY2x4slF7flmnqfWGrDWKWt3hEX6gXgE0YteQ05jmVw3Y3AljJQzbzjUpArLXqfY
+ d8xMcma5cap0OCe4f9GuJjHUheFwZ0FJSknpCNjwbiq9CtC/g1g2LYuVS6JathPHubKp
+ eZ9Y8jAkMIGEIZxvhgbptTeOxh86XflN+u1bMYjCMGkX0ffBFpsNKxkkF2Mf80hJERMr
+ jOdV0Jy8xH3Y0Fwida6/LYYnvTwh870DehUgTwerTVXdUPQQ0x50FehX/qQQ2ZQlFm29
+ Y+93Dy+j6p8pLZDb8g6l1Q4wd83Vmj5aTjisr2xImqusZKe+mdY5luNmTgG+c+HtK3oe 8Q==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qdkaqt25u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 May 2023 05:39:05 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Mon, 8 May
+ 2023 05:39:04 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 8 May 2023 05:39:04 -0500
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
+ [198.61.64.221])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BD87B475;
+	Mon,  8 May 2023 10:39:03 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <vkoul@kernel.org>, <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] soundwire: intel: Make DEV_NUM_IDA_MIN a module param
+Date: Mon, 8 May 2023 11:39:01 +0100
+Message-ID: <20230508103901.7840-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 4RI7U7Hf5yYf6td2Ckif9-tZ5xmGGciR
+X-Proofpoint-GUID: 4RI7U7Hf5yYf6td2Ckif9-tZ5xmGGciR
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: JUZGCAQEYLLIKJQE372KSH5ACCQEAWYN
+X-Message-ID-Hash: JUZGCAQEYLLIKJQE372KSH5ACCQEAWYN
+X-MailFrom: prvs=0492ffa445=rf@opensource.cirrus.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation;
+ header-match-alsa-devel.alsa-project.org-0;
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com, Richard Fitzgerald <rf@opensource.cirrus.com>
+X-Mailman-Version: 3.3.8
+Precedence: list
+List-Id: "Alsa-devel mailing list for ALSA developers -
+ http://www.alsa-project.org" <alsa-devel.alsa-project.org>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JUZGCAQEYLLIKJQE372KSH5ACCQEAWYN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,49 +142,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 08/05/2023 08:26, Rob Herring wrote:
-> 
-> On Mon, 08 May 2023 13:45:12 +0800, Shenghao Ding wrote:
->> Create tas2781.yaml for tas2781 driver.
->>
->> Signed-off-by: Shenghao Ding <13916275206@139.com>
->>
->> ---
->> Changes in v7:
->>  - Submit together with tas2781 codec driver code
->>  - Add more detail description for ti,audio-slots
->>  - Keep consistent for "I2C"
->>  - remove reset-gpios description
->>  - For reg, express as constraints instead
->>  - remove unnecessary '|'
->>  Changes to be committed:
->> 	new file:   Documentation/devicetree/bindings/sound/ti,tas2781.yaml
->> ---
->>  .../devicetree/bindings/sound/ti,tas2781.yaml | 90 +++++++++++++++++++
->>  1 file changed, 90 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/sound/ti,tas2781.yaml
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/rockchip-isp1.example.dtb: camera@3c: port:endpoint:data-lanes: [[1]] is too short
-> 	From schema: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/i2c/ovti,ov2685.yaml
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/i2c/ovti,ov2685.example.dtb: camera-sensor@3c: port:endpoint:data-lanes: [[1]] is too short
-> 	From schema: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/i2c/ovti,ov2685.yaml
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-ep.example.dtb: pcie-ep@33800000: Unevaluated properties are not allowed ('assigned-clock-parents', 'assigned-clock-rates', 'assigned-clocks' were unexpected)
-> 	From schema: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-ep.yaml
-> 
-> doc reference errors (make refcheckdocs):
-> Documentation/usb/gadget_uvc.rst: Documentation/userspace-api/media/v4l/pixfmt-packed.yuv.rst
-> MAINTAINERS: Documentation/devicetree/bindings/pwm/pwm-apple.yaml
-> 
+Add a module param so that globally-unique peripheral ID
+allocation is only enabled if wanted.
 
-Ignore failures.
+The globally-unique IDs were introduced by
+commit c60561014257
+("soundwire: bus: allow device number to be unique at system level")
 
-Best regards,
-Krzysztof
+and
+commit 1f2dcf3a154a ("soundwire: intel: set dev_num_ida_min")
+
+Assigning globally-unique IDs limits the total number of
+peripherals in a system, and the above two commits limit to a
+maximum of 8 peripherals. We now have hardware with more than
+8 peripherals in total, so this limit is a problem. As the
+original commit says that it is only for debug it can be made
+optional.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/soundwire/intel_auxdevice.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/soundwire/intel_auxdevice.c b/drivers/soundwire/intel_auxdevice.c
+index b21e86084f7b..9ebbf652e47a 100644
+--- a/drivers/soundwire/intel_auxdevice.c
++++ b/drivers/soundwire/intel_auxdevice.c
+@@ -23,8 +23,13 @@
+ #include "intel.h"
+ #include "intel_auxdevice.h"
+ 
+-/* IDA min selected to avoid conflicts with HDaudio/iDISP SDI values */
+-#define INTEL_DEV_NUM_IDA_MIN           4
++/*
++ * sdw_dev_num_min: Set to non-zero to enable globally-unique peripheral IDs.
++ * The value is the minimum ID that will be allocated.
++ */
++static int intel_dev_num_ida_min;
++module_param_named(sdw_dev_num_min, intel_dev_num_ida_min, int, 0444);
++MODULE_PARM_DESC(sdw_dev_num_min, "SoundWire Intel Master min globally-unique ID (0 to disable)");
+ 
+ #define INTEL_MASTER_SUSPEND_DELAY_MS	3000
+ 
+@@ -148,7 +153,7 @@ static int intel_link_probe(struct auxiliary_device *auxdev,
+ 	cdns->msg_count = 0;
+ 
+ 	bus->link_id = auxdev->id;
+-	bus->dev_num_ida_min = INTEL_DEV_NUM_IDA_MIN;
++	bus->dev_num_ida_min = intel_dev_num_ida_min;
+ 	bus->clk_stop_timeout = 1;
+ 
+ 	sdw_cdns_probe(cdns);
+-- 
+2.30.2
 
