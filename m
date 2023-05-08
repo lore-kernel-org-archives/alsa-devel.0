@@ -4,91 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0F4EC77B7C
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 01:32:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71E5EC7EE24
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 May 2023 05:48:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE9B71376;
-	Mon,  8 May 2023 03:31:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE9B71376
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1309B12CA;
+	Mon,  8 May 2023 07:47:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1309B12CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683509528;
-	bh=71tKkv/u71avtNDi58s+M3G3sV9kmPvH9mDaj5alk/A=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=sL0RNsxpuJG7hH1lpAzsDgC7Eg8A4GTorrpEej8GhNkSFVz3YiNzOhZtofDD1HTMO
-	 ZrA/f15x/GKqpNAUgHvlL+1s49z9Z+Eo/d6R6YQr2HD36ZRtu9SApN0IdvhJu0+r8g
-	 t92lPkNY1mm/m7QX3FzVYu8deF/2gN9JPJwL0kic=
+	s=default; t=1683524928;
+	bh=Ewlchv5ELA+rTkCzwVYtwMexbSRx7eyZ+pIH9kFJSHg=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=RxjjxvqmdPtGMkbfgmg1XSLzlOTUddxHqERFUyw+vqbYb5XxnGwvuKpt9G1Q6mf6p
+	 y1L9GoqzbRzXxSGGqxSGaXh12bVuYEwpxjOwwUk+liBZkmUQ6UzL+oWUltjAl+15bq
+	 ijCb8TXZCandZxN+LtGKmNrCTsHo1mexaX8kePSs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64ED1F8032D;
-	Mon,  8 May 2023 03:30:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35505F8053B;
+	Mon,  8 May 2023 07:47:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D580CF8032D; Mon,  8 May 2023 03:30:46 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4A3EDF8014C
-	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 03:30:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A3EDF8014C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=IdvBvb3s
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id CEE55F8032D; Mon,  8 May 2023 07:45:37 +0200 (CEST)
+Received: from n169-113.mail.139.com (n169-113.mail.139.com [120.232.169.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id CBDEE61DD7;
-	Mon,  8 May 2023 01:30:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A72C2C4339B;
-	Mon,  8 May 2023 01:30:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683509437;
-	bh=71tKkv/u71avtNDi58s+M3G3sV9kmPvH9mDaj5alk/A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IdvBvb3sKdbaCJubt4senOcamv3ec20kFlVjpx22nVFzwX6sfJtAbNPbJk+dW6+nH
-	 0Ff+MRKmezq1AfMxuO3SMNsZKbFqghzjJAFuqA63SGFHxBpBs6XIbyQfxL5J9Srra9
-	 1QJgjwVAEB5OA/xVpqcLHpQP+nBGIjBjI23Jyda09T8QVv4GdvomrKqaldYS12SuIq
-	 6Ht+h0GwHpHGJ6YgUFx+OHs47oCAP6Vkc3HLLhZDbdme0t5Omrp8Av4x47VAG+Dhng
-	 n+Ex1plvYWG6XxOiR2l8+jZIyVHuj4Te7T2Yp8Kc5WV0hEWNBhyMp+H7YWtvMD3Rsw
-	 Y/6zf0NnRHtIA==
-Date: Mon, 8 May 2023 10:30:34 +0900
-From: Mark Brown <broonie@kernel.org>
-To: Walker Chen <walker.chen@starfivetech.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: sound: Add TDM for StarFive JH7110
-Message-ID: <ZFhQujhpbt/7yGGc@finisterre.sirena.org.uk>
-References: <20230506090116.9206-1-walker.chen@starfivetech.com>
- <20230506090116.9206-2-walker.chen@starfivetech.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 512F7F8014C
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2023 07:45:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 512F7F8014C
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM: 
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[117.136.79.133])
+	by rmsmtp-lg-appmail-35-12049 (RichMail) with SMTP id 2f1164588c6d06c-34318;
+	Mon, 08 May 2023 13:45:20 +0800 (CST)
+X-RM-TRANSID: 2f1164588c6d06c-34318
+From: Shenghao Ding <13916275206@139.com>
+To: broonie@kernel.org,
+	devicetree@vger.kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org,
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	pierre-louis.bossart@linux.intel.com
+Subject: [PATCH v2 2/5] ASoC: dt-bindings: Add tas2781 amplifier
+Date: Mon,  8 May 2023 13:45:12 +0800
+Message-Id: <20230508054512.719-1-13916275206@139.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qWpif/cLlKqgWzLh"
-Content-Disposition: inline
-In-Reply-To: <20230506090116.9206-2-walker.chen@starfivetech.com>
-X-Cookie: Avoid contact with eyes.
-Message-ID-Hash: GPVHFNISE7FIZB74LROS5G5SIA4PDWZP
-X-Message-ID-Hash: GPVHFNISE7FIZB74LROS5G5SIA4PDWZP
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: M5AGQT4FXXT7SCGZKYJKUXHBBX64CGNX
+X-Message-ID-Hash: M5AGQT4FXXT7SCGZKYJKUXHBBX64CGNX
+X-MailFrom: 13916275206@139.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor.dooley@microchip.com>,
- Emil Renner Berthing <emil.renner.berthing@canonical.com>,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+CC: kevin-lu@ti.com, shenghao-ding@ti.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, x1077012@ti.com, peeyush@ti.com, navada@ti.com,
+ gentuser@gmail.com, Ryan_Chu@wistron.com, Sam_Wu@wistron.com,
+ Shenghao Ding <13916275206@139.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GPVHFNISE7FIZB74LROS5G5SIA4PDWZP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M5AGQT4FXXT7SCGZKYJKUXHBBX64CGNX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,33 +79,122 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Create tas2781.yaml for tas2781 driver.
 
---qWpif/cLlKqgWzLh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Shenghao Ding <13916275206@139.com>
 
-On Sat, May 06, 2023 at 05:01:14PM +0800, Walker Chen wrote:
-> Add bindings to describe the TDM driver for the StarFive JH7110 SoC.
+---
+Changes in v7:
+ - Submit together with tas2781 codec driver code
+ - Add more detail description for ti,audio-slots
+ - Keep consistent for "I2C"
+ - remove reset-gpios description
+ - For reg, express as constraints instead
+ - remove unnecessary '|'
+ Changes to be committed:
+	new file:   Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+---
+ .../devicetree/bindings/sound/ti,tas2781.yaml | 90 +++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,tas2781.yaml
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+diff --git a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+new file mode 100644
+index 000000000000..96c2584855d4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+@@ -0,0 +1,90 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2022 - 2023 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/ti,tas2781.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments TAS2781 SmartAMP
++
++maintainers:
++  - Shenghao Ding <shenghao-ding@ti.com>
++
++description:
++  The TAS2781 is a mono, digital input Class-D audio amplifier
++  optimized for efficiently driving high peak power into small
++  loudspeakers. Integrated an on-chip DSP supports Texas Instruments
++  Smart Amp speaker protection algorithm. The integrated speaker
++  voltage and current sense provides for real time
++  monitoring of loudspeaker behavior.
++
++properties:
++  compatible:
++    enum:
++      - ti,tas2781
++
++  reg:
++    description: I2C address of the primary device.
++    items:
++      minimum: 0x38
++      maximum: 0x3f
++
++  reset-gpios:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  ti,audio-slots:
++    description:
++      Multiple tas2781s aggregate as one Audio Amp to support
++      multiple audio slots
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    maxItems: 4
++    items:
++      minimum: 0x38
++      maximum: 0x3f
++      description:
++        I2C address of the device for different audio slots,
++        useless in mono case.
++
++  ti,broadcast-addr:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Generic I2C address for all the tas2781 devices in
++      purpose of I2C broadcast during the multi-device
++      writes, useless in mono case.
++
++  '#sound-dai-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++   #include <dt-bindings/gpio/gpio.h>
++   i2c {
++     /* example with quad support, such as tablet or pad device */
++     #address-cells = <1>;
++     #size-cells = <0>;
++     quad: codec@38 {
++       compatible = "ti,tas2781";
++       reg = <0x38>;
++       #sound-dai-cells = <1>;
++       reset-gpios = < &gpio1 10 GPIO_ACTIVE_HIGH >;
++       interrupt-parent = <&gpio1>;
++       interrupts = <15>;
++       ti,audio-slots = < 0x38 /* Audio slot 0 */
++                          0x3a /* Audio slot 1 */
++                          0x39 /* Audio slot 2 */
++                          0x3b /* Audio slot 3 */
++                        >;
++       /* Generic I2C addr among all the tas2781 for i2c data broadcast */
++       ti,broadcast-addr = <0x40>;
++     };
++   };
++...
+-- 
+2.34.1
 
---qWpif/cLlKqgWzLh
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRYULkACgkQJNaLcl1U
-h9BS4Qf8CgZlP8jyB6NeLlBTyYs8KyQY4c35cBZLLJ+/fu2+EGGCptpPCtHXkrnx
-jPTC4V5et4pWy2E4Aqk5vHXKmsR/cvXdjXM1VrdRwculFef0xWwV29F6ru8WrW5J
-pQxXzgHn2PpZrdybJ4RFmABz9V9Pe9NotLtP5yxVCqHemsg09MZSmnqObikbqXi6
-eqXK/b5HAkCHQUEJyisSCY4Fcxz8XaIc1a0bP6+++bwFdnVN0zk6WS499QQWgXc8
-hZNcb1x6hXYav4LKZETl4xFYUHdopNIpL7cbdsvcyF8mRGI68qK84TFxTx9kXqS5
-9ZCLw0ZkIwMad6/JkDdSGqETIZ0R4g==
-=TbwX
------END PGP SIGNATURE-----
-
---qWpif/cLlKqgWzLh--
