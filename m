@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14F5DC77B7C
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 May 2023 06:40:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1D5EC77B75
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 May 2023 06:40:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 081A51139;
-	Tue,  9 May 2023 08:39:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 081A51139
+	by alsa0.perex.cz (Postfix) with ESMTPS id C17311142;
+	Tue,  9 May 2023 08:39:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C17311142
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683614424;
-	bh=IAMdtGKKwH/KUKXS7GYuDI1w8FJwv7aT7xc+dGUP2NY=;
+	s=default; t=1683614429;
+	bh=lAOoAECVpMoCOowjJYUiemBGQR7sN94PdRfyG4VySYE=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=N7OpRF2AdL/9xw89T2X5bVuRWiG6vGxmLI6ib9242O+/j2gQLiWxAOQjWBv11ZaiO
-	 7QhVst1eHUPFOlMazxcO+SdqtrLXTqd9wD4nDIIouPduPpZh2B56g0dK6Y/tml513q
-	 cJ7qjLAvHPyMarcp18UMaMlO66Gke9Sc3F2pVbsI=
+	b=JEc5EV9Uwz29Sb9zCG3gz9ifqyQYFmxMfgkNDclvgqyvRVYAJlAy7XSzi4bKaUVU3
+	 m5rFaufWnauoiOSLi2HO/aGnpIa7Pt2cpdgEOc39xWpmuJa7dKAoM9X9j2RZhsRbp5
+	 0e+iZ+9bS44fksfxCsU6EpSY8cSiGAMYCssZlYcA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52A78F8053D;
-	Tue,  9 May 2023 08:38:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83B7EF8052E;
+	Tue,  9 May 2023 08:39:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFC80F8053D; Tue,  9 May 2023 08:38:53 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id ADDCDF8053D; Tue,  9 May 2023 08:38:56 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9C050F80534
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2023 08:38:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C050F80534
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2E8A9F8052E;
+	Tue,  9 May 2023 08:38:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E8A9F8052E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=VcVTNKF/
+ header.s=k20201202 header.b=MGM6PYlC
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4568A62E92;
-	Tue,  9 May 2023 06:38:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1089AC4339B;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id F008B61325;
 	Tue,  9 May 2023 06:38:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 153E7C433D2;
+	Tue,  9 May 2023 06:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683614325;
-	bh=IAMdtGKKwH/KUKXS7GYuDI1w8FJwv7aT7xc+dGUP2NY=;
+	s=k20201202; t=1683614322;
+	bh=lAOoAECVpMoCOowjJYUiemBGQR7sN94PdRfyG4VySYE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=VcVTNKF/fYyvS9Cmu8OnehqUsrLd3f48TagD72YM1IhBFMXif/+fwzdRNbZHD72/H
-	 7QKEjNp/O3X3qDF+/Lcsrtw+9I400wUJWZDTpIvTg2ltlxWxSJ7dp8UqYUIsL6G6mW
-	 yeuHap1LAv0UF7b7rtrjDSFkD1PS9OkiucFv2bydlwyHx6cHG2WMoT91rpF17LSxG0
-	 zu/gmT3f4RYKLt1Or7/GNzigF5Sq1TBOSBSbB0G3clOpAky2zgv5hzLvUhRiagVHFE
-	 exS+buJg4szEOPZSWtzMbFpojZjfsqRN/6xoL54yoZj19kRDrALWFkRghg+idoT8sU
-	 9ShDGINPbneZA==
+	b=MGM6PYlCqDWUw1JwT+EFrLng4WmNtRpTlTldeioTgOdsoAHRl8NHJxzhT0itnxoAU
+	 AdUZ56frI9ZG09zhSS7qnRn77F9spA0Vv8wEgvQ1KE32SFQtQ9NVyZtkFyta6JtQ3b
+	 oFCYPs9C8EVpkObuk1cMyKu9hYxE+cSp1yVxliWFvT8AGRLXZwNRnAFuB2Zwvo7gRq
+	 /Z4V4LvyFOlWkiYJQM8g6rk+HtOsOcfFwBI+aV0MD1kwr33gUA1Oev1jnY29lyLYWr
+	 U/Pc4bvsqc79LRQAekTM+Uoq4Ch/+NwX17h9+wFAZMVMCpJP/cPderHYfnx/hqQlsv
+	 WOfrXKebn7VmA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Maxim Kochetkov <fido_max@inbox.ru>
-In-Reply-To: <20230504071618.52012-1-fido_max@inbox.ru>
-References: <20230504071618.52012-1-fido_max@inbox.ru>
-Subject: Re: [PATCH v2 1/2] ASoC: dwc: add optional reset support
-Message-Id: <168361432260.303059.17331052825183024613.b4-ty@kernel.org>
-Date: Tue, 09 May 2023 15:38:42 +0900
+To: lgirdwood@gmail.com,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
+References: <20230503113413.149235-1-angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH 0/5] ASoC: MediaTek MT8195/86 Cleanups
+Message-Id: <168361431059.303059.10248668166730992280.b4-ty@kernel.org>
+Date: Tue, 09 May 2023 15:38:30 +0900
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: QVO2GQYADASBQWPRSLYIMT43ANI34S33
-X-Message-ID-Hash: QVO2GQYADASBQWPRSLYIMT43ANI34S33
+Message-ID-Hash: J6ZS4AISEXNY5S7KUUJ4ZZYZTUMUSIN3
+X-Message-ID-Hash: J6ZS4AISEXNY5S7KUUJ4ZZYZTUMUSIN3
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,15 +74,22 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: lgirdwood@gmail.com, tiwai@suse.com, p.zabel@pengutronix.de,
- ckeepax@opensource.cirrus.com, u.kleine-koenig@pengutronix.de,
- nicolas.ferre@microchip.com
+CC: tiwai@suse.com, matthias.bgg@gmail.com,
+ pierre-louis.bossart@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com,
+ nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
+ chunxu.li@mediatek.com, tinghan.shen@mediatek.com, error27@gmail.com,
+ ribalda@chromium.org, yc.hung@mediatek.com, Allen-KH.Cheng@mediatek.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ sound-open-firmware@alsa-project.org, kernel@collabora.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QVO2GQYADASBQWPRSLYIMT43ANI34S33/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J6ZS4AISEXNY5S7KUUJ4ZZYZTUMUSIN3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,10 +98,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 04 May 2023 10:16:17 +0300, Maxim Kochetkov wrote:
-> Some SoC may have resets for I2S subsystem. So add optional reset support.
+On Wed, 03 May 2023 13:34:08 +0200, AngeloGioacchino Del Regno wrote:
+> This series performs some cleanups for mainly MT8195 and switches
+> both MT8195 and MT8186's SOF driver to the snd_sof_ipc_process_reply()
+> helper.
 > 
+> AngeloGioacchino Del Regno (5):
+>   ASoC: SOF: mediatek: mt8195: Use snd_sof_ipc_process_reply() helper
+>   ASoC: SOF: mediatek: mt8186: Use snd_sof_ipc_process_reply() helper
+>   ASoC: mediatek: mt8195-afe-pcm: Simplify runtime PM during probe
+>   ASoC: mediatek: mt8195-afe-pcm: Simplify with dev_err_probe()
+>   ASoC: mediatek: mt8195-afe-pcm: Clean up unnecessary functions
 > 
+> [...]
 
 Applied to
 
@@ -102,10 +118,16 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dwc: add optional reset support
-      commit: c00018cadfbf07b95d10b0e152c4edd7d5d19779
-[2/2] ASoC: dt-bindings: designware-i2s: add optional resets
-      commit: 12b99ec3b9b6349a38223cf4d13818cb5cbdcd46
+[1/5] ASoC: SOF: mediatek: mt8195: Use snd_sof_ipc_process_reply() helper
+      commit: 06ba8020287f43fc13962b158d8dec2689448a5a
+[2/5] ASoC: SOF: mediatek: mt8186: Use snd_sof_ipc_process_reply() helper
+      commit: 709f34b41ceffedec17d1150018cf62f8ea95842
+[3/5] ASoC: mediatek: mt8195-afe-pcm: Simplify runtime PM during probe
+      commit: 2ca0ec01d49c9c2742c2151ae94c94bdf36bb1b8
+[4/5] ASoC: mediatek: mt8195-afe-pcm: Simplify with dev_err_probe()
+      commit: 863da1c17616e45f1472370892b6c925cee27e24
+[5/5] ASoC: mediatek: mt8195-afe-pcm: Clean up unnecessary functions
+      commit: 686d041685639493a608bdcdb0d00551796721c9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
