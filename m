@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B46DC77B7C
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 May 2023 06:42:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29CA4C77B75
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 May 2023 06:47:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6483B113C;
-	Tue,  9 May 2023 08:41:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6483B113C
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF0151130;
+	Tue,  9 May 2023 08:47:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF0151130
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683614530;
-	bh=w22KuX01pMZbO/Eaa6JLtKePa21cyYmG8SwUr9hiNyw=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1683614876;
+	bh=wLct1GIrBzmusyn7tpdRRrCtoSUnA5Mtanl3erWwjsU=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=n3UdoaNtpJwpqTImdZuSMx2+cyjLoZruY+FIyz/NabvrdIqUOZRIBzwFRESfTrEzG
-	 0/mmwiAniddlj2i6mHKFx0Eq9mkzUrsNXOhc4cY6ZKk5Rrj7zp0r2dsFVKKmFpot9z
-	 bfpfNsZoLSo+nrdXZuHAtsmuqk1+0XynluhHHVkU=
+	b=WMxD3wO3PCqjr/A6PlUAMjXeRfwxQvAy9V0KLUP8qszIFDPcdUUzeVgk5Tuc4OlYA
+	 PoKx+9w06JGpO86QgnrRi5IRCPjsy2jv6N496SKtqWwyHyHB99B/NJP72EQzyg3w/N
+	 BrlCVlvTnBsZKQUbLAHlq8lbuZ2evVNfO5TVinvM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6B2EF80589;
-	Tue,  9 May 2023 08:39:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A55AEF8032D;
+	Tue,  9 May 2023 08:46:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D004FF8057F; Tue,  9 May 2023 08:39:11 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 71CBDF8032D; Tue,  9 May 2023 08:46:38 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9C728F80567
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2023 08:39:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C728F80567
+	by alsa1.perex.cz (Postfix) with ESMTPS id 31C58F8014C
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2023 08:46:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31C58F8014C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=IlTXY2aC
+ header.s=k20201202 header.b=KYGiL1hJ
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 670626445F;
-	Tue,  9 May 2023 06:39:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B629C433EF;
-	Tue,  9 May 2023 06:39:05 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6CFF2629FA;
+	Tue,  9 May 2023 06:46:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C032C433EF;
+	Tue,  9 May 2023 06:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683614348;
-	bh=w22KuX01pMZbO/Eaa6JLtKePa21cyYmG8SwUr9hiNyw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=IlTXY2aCEu3Kl2vnXKCZZeoatsDFBy1icDMudOcR8MwKfg8GF4CyU+J0ULOaggod6
-	 59qXgpp7PyhhHfp8MCeDCdflybDeEFgRSxfAADu1zRj82SmwmbUwi/xKLXGPhS5Ede
-	 aubQxRLVVoym0NzqSpINOLJqvKsgFQsEh/LItG5orBwMH2IyyiG7K+oWGctHrOseRl
-	 UD/i/G6Iqj3R4I7zRHKNHIM1I6s/YZnrnqht83bnf/CYkg/pqxf966b5wi6UuSdZ8X
-	 A5mesHEWClaSKcI/2OSv4KsK1BHEN8w2xoitPSCpe3hJ0BX3lAzlcudu8gQ8mneJI9
-	 gWVMjtPNm86Cw==
+	s=k20201202; t=1683614792;
+	bh=wLct1GIrBzmusyn7tpdRRrCtoSUnA5Mtanl3erWwjsU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KYGiL1hJTtkcNwiDVZihNcZxnZqffPgwVH4PXfAptpqKfALqiwqpjJd2HmZc3qA4w
+	 uOXIsmGdZCb/t30uRDlYRI5Ne1A6EzLwJsK5gUKaZSbWx+0KyQMDaENrugjjpLR4yz
+	 QFUZBJcAlRsiYWrGhcIKy67HxPqfyICxTEo5qwALXsWrsDDexcNk3m6jNyBTEnuG5m
+	 3IT92DXLBK4XxeIthvnKc3PMXhBzFQWVpxvociUUTGmxsKkloXoWeOFZYs1xH3TC0r
+	 X+pxnquOwpxU1rOQ38Cy9OquLiZzFyCI1SdiKwb+fyH/oDCPWJJ4FHag6WiC/H6v1T
+	 Khnpr8TxcP4Lg==
+Date: Tue, 9 May 2023 15:46:28 +0900
 From: Mark Brown <broonie@kernel.org>
-To: robh@kernel.org, Anup Sharma <anupnewsmail@gmail.com>
-In-Reply-To: <ZFYxWVdE9YkMKvXv@yoga>
-References: <ZFYxWVdE9YkMKvXv@yoga>
-Subject: Re: [PATCH v2] ASoC: dt-bindings: nau8540: Convert to dtschema
-Message-Id: <168361434507.303059.8363951498743127692.b4-ty@kernel.org>
-Date: Tue, 09 May 2023 15:39:05 +0900
+To: Ravulapati Vishnu Vardhan Rao <quic_visr@quicinc.com>
+Subject: Re: [PATCH] ASoC:codecs: lpass: Fix for KASAN use_after_free out of
+ bounds
+Message-ID: <ZFnsRJXEbajKxj3h@finisterre.sirena.org.uk>
+References: <20230509061321.10218-1-quic_visr@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: PXPJLLSSCCBJRIDXVYXRATJTQQIWIN2E
-X-Message-ID-Hash: PXPJLLSSCCBJRIDXVYXRATJTQQIWIN2E
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="POkgUCpmy5u6zSNw"
+Content-Disposition: inline
+In-Reply-To: <20230509061321.10218-1-quic_visr@quicinc.com>
+X-Cookie: Avoid contact with eyes.
+Message-ID-Hash: RMDHSZ3ZIB676SLNCZAFLOO5RBUTLLWB
+X-Message-ID-Hash: RMDHSZ3ZIB676SLNCZAFLOO5RBUTLLWB
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,14 +75,17 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, KCHSU0@nuvoton.com, linux-kernel@vger.kernel.org
+CC: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>,
+ "moderated list:QCOM AUDIO (ASoC) DRIVERS" <alsa-devel@alsa-project.org>,
+ open list <linux-kernel@vger.kernel.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PXPJLLSSCCBJRIDXVYXRATJTQQIWIN2E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RMDHSZ3ZIB676SLNCZAFLOO5RBUTLLWB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,42 +94,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 06 May 2023 16:22:09 +0530, Anup Sharma wrote:
-> Convert the NAU8540 audio CODEC bindings to DT schema
-> 
-> Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
-> 
-> Changes:
-> V1 -> V2: Adhere to the correct procedure by including the maintainer's name.
->           Drop Mark from maintainer.
-> 
-> [...]
 
-Applied to
+--POkgUCpmy5u6zSNw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Tue, May 09, 2023 at 11:43:21AM +0530, Ravulapati Vishnu Vardhan Rao wrote:
 
-Thanks!
+>  	val = ucontrol->value.enumerated.item[0];
+> +	if (val < 0 && val > 15) {
+> +		dev_err(component->dev, "Wrong value for DMIC configuration");
+> +		return -EINVAL;
+> +	}
 
-[1/1] ASoC: dt-bindings: nau8540: Convert to dtschema
-      commit: 0f0d70c2881f8c28e6d449349e057963a742f842
+This allows userspace to spam the system logs, no error should be
+printed for something like this which can be trivially triggered from
+userspace.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--POkgUCpmy5u6zSNw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRZ7EQACgkQJNaLcl1U
+h9DGcwf/cfo6G4f8hDzAGovnhM81PX6MSVusLCjspfaSjJvji4mpziG1QYfILtfZ
+vX6/VfNu7+S1899tLmMyvV3nvbho8qQ6NbuV1JXtpgcRtZn4sr8BDkS1oECDGXUc
+Ene58kkNvOOMHjwHR4Mm4MQJ/TY2mdoxBxesgj2qs6b8xvjbAVE+7In6FqzA8BuX
+mOuKyde/h/Hitgld6a45RHIlP/sOatN/+e5Zmu3xuDFS6YAqgS2vOtP4Y5gm5SGN
+ayZ+JNjsgQ7kYXEq6xB0fqSGhq6Cvja73Pq9FfNX2EqIATM/MIXBo6vTx5TAVHBb
+t5cW6F8Wo+zoKe1BGoVt0h6d54mWOQ==
+=ktQ6
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--POkgUCpmy5u6zSNw--
