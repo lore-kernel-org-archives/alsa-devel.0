@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EB8CC7EE22
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 May 2023 11:24:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34359C77B75
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 May 2023 11:24:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABBB8110F;
-	Tue,  9 May 2023 13:23:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABBB8110F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2CFD7110D;
+	Tue,  9 May 2023 13:24:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CFD7110D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683631442;
-	bh=p3igK2F0Obvq0sQvCxSIWvuf6hrjBZ2YClhXsMhtxBU=;
+	s=default; t=1683631495;
+	bh=6qGv9Lp4VCZSB2E4jMJFss2BiVBOpnJRbZ9tqnyrALE=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tnYf6RU3cn6gU4QGzyDZJ+EM443QGh+DZ/KxQSKF83kUqIl7Ckp29gGEUB7w3Anpb
-	 d5/45tVQt62KETVDlxZ0B4KfXxl8DOzc+7YQRg6BBU2epZRMwtVigMaS0qcrAcTIHy
-	 GPnoe/nFJnAawwWN0kE7PB12ExgQUDisSg4rMIrQ=
+	b=SeOfxVdMt7Mdg35rD12NJ/xS73wV7QyjDTI35isNpRBTPbPxDuq5mEKJ17hAw9ww+
+	 DlRBX6LH74vikTmwyVwwbK9swszncH5w+JTWxRfCm2X9yCe3hijZF29PWLW+HaBu6a
+	 3Cu7DJowAb/bzDnO+pkjuLpYfe2JEN0QknVHXhEg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30999F80551;
-	Tue,  9 May 2023 13:22:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C049BF80087;
+	Tue,  9 May 2023 13:24:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2B946F8032D; Tue,  9 May 2023 13:22:24 +0200 (CEST)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
+	id 4589FF8052E; Tue,  9 May 2023 13:24:01 +0200 (CEST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0A5D8F8032D
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2023 13:22:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A5D8F8032D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 116C0F804B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2023 13:22:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 116C0F804B1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=tIx4GmIH
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-3f417ea5252so22559985e9.0
+ header.s=google header.b=luRFiM+l
+Received: by mail-wm1-x335.google.com with SMTP id
+ 5b1f17b1804b1-3f4271185daso18742405e9.2
         for <alsa-devel@alsa-project.org>;
- Tue, 09 May 2023 04:22:09 -0700 (PDT)
+ Tue, 09 May 2023 04:22:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1683631328; x=1686223328;
+        d=linaro.org; s=google; t=1683631330; x=1686223330;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=al++n0DVfg3VdylUq3oOFq4+Oko5w2ns601WYiCwn8E=;
-        b=tIx4GmIHPAHHGRTvBQMxKMGkFfNbae8iWcw32mkYCUP40T8TV2YknHNbEPZM/tx0q0
-         Q8t4FZXHNjhTOCX65JaSqlQbdAlhB5vhcp6/tqrK5U367hb+fbnJNiR7gO7tqMRVCiQl
-         Mu9Wu3bdRA0PLbf2nIMuxMLQX6mXW0J48R8m5EKn2+D2hNeC9Zph8OPKeCuvuOm2CxvY
-         KzK3/2KfiZMn9j7rS72BF0+yNVyg4UMSvUolgxbf8jJXy9tm0OVlP2/rYoYGlw63/sIq
-         srLe8crGYdwBTppX2yX3io+ba4FgGI/O9lpXWoKkUa4ogayyPxQVPYscvGVPUylseTSE
-         +0Kw==
+        bh=AcBWMqISV9A++p9N6hrGlnxpBrh/70LXAdj4PNnNPmc=;
+        b=luRFiM+lwLaYpfKqQCsA8MqB1Xo7dII/IIjf7hfda8lgOOUgvIXxM33MgaNQ/w9hXp
+         jmfRRJ44qEo+8wuDrHHF3c3R5/H1Ki/0JuoT4qcuBOtGJNi6ckdtE85LonTGBHlN3g6L
+         H4ybapZugifO3/DicO3cPhAZau7qIpVu2WV2jCQ2D/Yel8rJCcd18o11y6zrJTk80N/9
+         hlrCrTBo6l6S7L6uTxcxm3L23hfYFBOtyKy/7FPkMfiXL+Do7vYrGyhrTo23DMzFG4aw
+         bH/z/vMhd/Fyd7xPioO6lAySztugfms415eQ3liDbhOrATrqUXpQriIfGQi2lm+XvlmG
+         V5MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683631328; x=1686223328;
+        d=1e100.net; s=20221208; t=1683631330; x=1686223330;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=al++n0DVfg3VdylUq3oOFq4+Oko5w2ns601WYiCwn8E=;
-        b=UuCMG2Gj5AzZjGfuEIFZ1p2+KQl+0SSR5OEOn3z/+wdtffSXGs5guuX9WJNV0vAXXb
-         WHwHVi2lTIWQ2ljrYMhW3Vpze6OcMmmHnHrdVdxlrtg/jNbmnWWHFW22oo7Tz5QZX9mc
-         Wf4qHG+dejQteCbmYh2l5KfAnxj4V3V6voa+g4ta6SDFo6ebXyEVcPm5Yo6Qj9pZH1gY
-         wRpeTIp2w4kGRx14WFnleuVSwwQVQdHiXYGBuUkPmB1tShyXA0Ds7RAmnYEOaCG6Cohp
-         GnkIUqnw/x542Ue+AlJnSIeEGbavq+ZJYjXQsmpaFUlIjLKRMFqh8gvrRyQxAIMBEJQF
-         3PKw==
-X-Gm-Message-State: AC+VfDzolOu//kjqulS7CMr9P3pfg62xF+CaH6f+852GBgqrsqGnLf6j
-	IYvXpPCGx36qvAzv4a5qI+ibNA==
+        bh=AcBWMqISV9A++p9N6hrGlnxpBrh/70LXAdj4PNnNPmc=;
+        b=B7Yy+I8QlI+dLbeehDtKH62CUsgwcmcuPU8+5ulPyCOw0iEutBItbmUfXfwTkW8Q41
+         /QDE3xZYQmNbZuUJnvwLaK0CKGF/AABrSGFIdK4s+os0bjNI6lJtknJpCO6rGR/9s9l4
+         qqoYHc/H7GSzygDleN4FMXfNQaJXhf5yr/2GyCxokqjeenufgbi5UezdYIObhj3NGKzK
+         +BL5nkFERZF/J2eTC3+vD0gLr44V/AJB7Oee6lmXuPFXHjgcNQb98Fodt0x+DcOSDrL3
+         oEXFRjTme2Bi16erIWJf5FMfippaIT0j2Id3Lmp9XIeRheN5TFQnTx3rpPCKwdOwkihx
+         S9kg==
+X-Gm-Message-State: AC+VfDxyyQHVANtc3tJbmjoS61dQG0KEtwlX7ZAfB6GB8jKOWOPqYwzc
+	cKjmfJq1zbfYL29RO2Fo5mjXaw==
 X-Google-Smtp-Source: 
- ACHHUZ4UVI7qziagntEO81orsO+cBpTUPBOgjtCI3vWHWbePwq1iQnLHJM+kRkeq6BdUdC3Le7DaGQ==
-X-Received: by 2002:a1c:f313:0:b0:3f3:468c:a780 with SMTP id
- q19-20020a1cf313000000b003f3468ca780mr9354601wmq.4.1683631327924;
-        Tue, 09 May 2023 04:22:07 -0700 (PDT)
+ ACHHUZ5L3YbTRGyJAJmeYwfPqVXKmMnuTCBjfdZ9dKyfAaB7LLt09gFRzDI2AHX1NfxyYzVXledfEQ==
+X-Received: by 2002:a1c:cc11:0:b0:3f4:86:33b with SMTP id
+ h17-20020a1ccc11000000b003f40086033bmr9020222wmb.26.1683631330578;
+        Tue, 09 May 2023 04:22:10 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- n2-20020a05600c294200b003f17eded97bsm19531072wmd.19.2023.05.09.04.22.06
+ n2-20020a05600c294200b003f17eded97bsm19531072wmd.19.2023.05.09.04.22.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 May 2023 04:22:07 -0700 (PDT)
+        Tue, 09 May 2023 04:22:09 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 2/4] ASoC: qcom: audioreach: add support for DISPLAY PORT SINK
- module
-Date: Tue,  9 May 2023 12:22:00 +0100
-Message-Id: <20230509112202.21471-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 4/4] ASoC: qcom: q6apm: add support to display ports in lpass
+ dais
+Date: Tue,  9 May 2023 12:22:02 +0100
+Message-Id: <20230509112202.21471-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230509112202.21471-1-srinivas.kandagatla@linaro.org>
 References: <20230509112202.21471-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: PHAVZ3XE4R625MSKPGGYETKW4ZZSFBQD
-X-Message-ID-Hash: PHAVZ3XE4R625MSKPGGYETKW4ZZSFBQD
+Message-ID-Hash: Q4B2MGFWJJNUOYQTQWD2UUVF4BALIQHW
+X-Message-ID-Hash: Q4B2MGFWJJNUOYQTQWD2UUVF4BALIQHW
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -108,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PHAVZ3XE4R625MSKPGGYETKW4ZZSFBQD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q4B2MGFWJJNUOYQTQWD2UUVF4BALIQHW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,151 +117,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add support for DISPLAY PORT SINK module and associated configuration.
+This patch adds support to q6apm lpass display port dais. This support
+is required to get DP audio on x13s.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/audioreach.c | 75 +++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/audioreach.h | 12 +++++
- 2 files changed, 87 insertions(+)
+ sound/soc/qcom/qdsp6/q6apm-lpass-dais.c | 39 +++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
-index 1e0c918eb576..8d9410dcbd45 100644
---- a/sound/soc/qcom/qdsp6/audioreach.c
-+++ b/sound/soc/qcom/qdsp6/audioreach.c
-@@ -196,6 +196,12 @@ struct apm_codec_dma_module_intf_cfg {
+diff --git a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
+index 420e8aa11f42..7ad604b80e25 100644
+--- a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
++++ b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
+@@ -11,6 +11,7 @@
+ #include <sound/soc.h>
+ #include <sound/pcm_params.h>
+ #include "q6dsp-lpass-ports.h"
++#include "q6dsp-common.h"
+ #include "audioreach.h"
+ #include "q6apm.h"
  
- #define APM_CDMA_INTF_CFG_PSIZE ALIGN(sizeof(struct apm_codec_dma_module_intf_cfg), 8)
- 
-+struct apm_display_port_module_intf_cfg {
-+	struct apm_module_param_data param_data;
-+	struct param_id_display_port_intf_cfg cfg;
-+} __packed;
-+#define APM_DP_INTF_CFG_PSIZE ALIGN(sizeof(struct apm_display_port_module_intf_cfg), 8)
-+
- static void *__audioreach_alloc_pkt(int payload_size, uint32_t opcode, uint32_t token,
- 				    uint32_t src_port, uint32_t dest_port, bool has_cmd_hdr)
- {
-@@ -582,6 +588,72 @@ int audioreach_graph_send_cmd_sync(struct q6apm_graph *graph, struct gpr_pkt *pk
+@@ -91,6 +92,36 @@ static int q6dma_set_channel_map(struct snd_soc_dai *dai,
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(audioreach_graph_send_cmd_sync);
  
-+static int audioreach_display_port_set_media_format(struct q6apm_graph *graph,
-+						    struct audioreach_module *module,
-+						    struct audioreach_module_config *cfg)
++static int q6hdmi_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
 +{
-+	struct apm_display_port_module_intf_cfg *intf_cfg;
-+	struct apm_module_frame_size_factor_cfg *fs_cfg;
-+	struct apm_module_param_data *param_data;
-+	struct apm_module_hw_ep_mf_cfg *hw_cfg;
-+	int ic_sz, ep_sz, fs_sz, dl_sz;
-+	int rc, payload_size;
-+	struct gpr_pkt *pkt;
-+	void *p;
++	struct q6apm_lpass_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	struct audioreach_module_config *cfg = &dai_data->module_config[dai->id];
++	int channels = params_channels(params);
++	int ret;
 +
-+	ic_sz = APM_DP_INTF_CFG_PSIZE;
-+	ep_sz = APM_HW_EP_CFG_PSIZE;
-+	fs_sz = APM_FS_CFG_PSIZE;
-+	dl_sz = 0;
++	cfg->bit_width = params_width(params);
++	cfg->sample_rate = params_rate(params);
++	cfg->num_channels = channels;
 +
-+	payload_size = ic_sz + ep_sz + fs_sz + dl_sz;
++	switch (dai->id) {
++	case DISPLAY_PORT_RX_0:
++		cfg->dp_idx = 0;
++		break;
++	case DISPLAY_PORT_RX_1 ... DISPLAY_PORT_RX_7:
++		cfg->dp_idx = dai->id - DISPLAY_PORT_RX_1 + 1;
++		break;
++	}
 +
-+	pkt = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
-+	if (IS_ERR(pkt))
-+		return PTR_ERR(pkt);
++	ret = q6dsp_get_channel_allocation(channels);
++	if (ret < 0)
++		return ret;
 +
-+	p = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
++	cfg->channel_allocation = ret;
 +
-+	hw_cfg = p;
-+	param_data = &hw_cfg->param_data;
-+	param_data->module_instance_id = module->instance_id;
-+	param_data->error_code = 0;
-+	param_data->param_id = PARAM_ID_HW_EP_MF_CFG;
-+	param_data->param_size = ep_sz - APM_MODULE_PARAM_DATA_SIZE;
-+
-+	hw_cfg->mf.sample_rate = cfg->sample_rate;
-+	hw_cfg->mf.bit_width = cfg->bit_width;
-+	hw_cfg->mf.num_channels = cfg->num_channels;
-+	hw_cfg->mf.data_format = module->data_format;
-+	p += ep_sz;
-+
-+	fs_cfg = p;
-+	param_data = &fs_cfg->param_data;
-+	param_data->module_instance_id = module->instance_id;
-+	param_data->error_code = 0;
-+	param_data->param_id = PARAM_ID_HW_EP_FRAME_SIZE_FACTOR;
-+	param_data->param_size = fs_sz - APM_MODULE_PARAM_DATA_SIZE;
-+	fs_cfg->frame_size_factor = 1;
-+	p += fs_sz;
-+
-+	intf_cfg = p;
-+	param_data = &intf_cfg->param_data;
-+	param_data->module_instance_id = module->instance_id;
-+	param_data->error_code = 0;
-+	param_data->param_id = PARAM_ID_DISPLAY_PORT_INTF_CFG;
-+	param_data->param_size = ic_sz - APM_MODULE_PARAM_DATA_SIZE;
-+
-+	intf_cfg->cfg.channel_allocation = cfg->channel_allocation;
-+	intf_cfg->cfg.mst_idx = 0;
-+	intf_cfg->cfg.dptx_idx = cfg->dp_idx;
-+
-+	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
-+
-+	kfree(pkt);
-+
-+	return rc;
++	return 0;
 +}
 +
- /* LPASS Codec DMA port Module Media Format Setup */
- static int audioreach_codec_dma_set_media_format(struct q6apm_graph *graph,
- 						 struct audioreach_module *module,
-@@ -1122,6 +1194,9 @@ int audioreach_set_media_format(struct q6apm_graph *graph, struct audioreach_mod
- 	case MODULE_ID_PCM_CNV:
- 		rc = audioreach_pcm_set_media_format(graph, module, cfg);
- 		break;
-+	case MODULE_ID_DISPLAY_PORT_SINK:
-+		rc = audioreach_display_port_set_media_format(graph, module, cfg);
-+		break;
- 	case MODULE_ID_I2S_SOURCE:
- 	case MODULE_ID_I2S_SINK:
- 		rc = audioreach_i2s_set_media_format(graph, module, cfg);
-diff --git a/sound/soc/qcom/qdsp6/audioreach.h b/sound/soc/qcom/qdsp6/audioreach.h
-index 1d1d47d47d40..3ebb81cd7cb0 100644
---- a/sound/soc/qcom/qdsp6/audioreach.h
-+++ b/sound/soc/qcom/qdsp6/audioreach.h
-@@ -22,6 +22,7 @@ struct q6apm_graph;
- #define MODULE_ID_I2S_SINK		0x0700100A
- #define MODULE_ID_I2S_SOURCE		0x0700100B
- #define MODULE_ID_DATA_LOGGING		0x0700101A
-+#define MODULE_ID_DISPLAY_PORT_SINK	0x07001069
- 
- #define APM_CMD_GET_SPF_STATE		0x01001021
- #define APM_CMD_RSP_GET_SPF_STATE	0x02001007
-@@ -444,6 +445,15 @@ struct param_id_i2s_intf_cfg {
- #define PORT_ID_I2S_OUPUT		1
- #define I2S_STACK_SIZE			2048
- 
-+#define PARAM_ID_DISPLAY_PORT_INTF_CFG		0x08001154
+ static int q6dma_hw_params(struct snd_pcm_substream *substream,
+ 			   struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+@@ -215,6 +246,13 @@ static const struct snd_soc_dai_ops q6i2s_ops = {
+ 	.shutdown	= q6apm_lpass_dai_shutdown,
+ 	.set_channel_map  = q6dma_set_channel_map,
+ 	.hw_params        = q6dma_hw_params,
++};
 +
-+struct param_id_display_port_intf_cfg {
-+	uint32_t channel_allocation;
-+	/* Multi-Steam Transport index */
-+	uint32_t mst_idx;
-+	uint32_t dptx_idx;
-+} __packed;
-+
- #define PARAM_ID_HW_EP_MF_CFG			0x08001017
- struct param_id_hw_ep_mf {
- 	uint32_t sample_rate;
-@@ -702,6 +712,8 @@ struct audioreach_module_config {
- 	u16	data_format;
- 	u16	num_channels;
- 	u16	active_channels_mask;
-+	u16	dp_idx;
-+	u32	channel_allocation;
- 	u32	sd_line_mask;
- 	int	fmt;
- 	u8 channel_map[AR_PCM_MAX_NUM_CHANNEL];
++static const struct snd_soc_dai_ops q6hdmi_ops = {
++	.prepare	= q6apm_lpass_dai_prepare,
++	.startup	= q6apm_lpass_dai_startup,
++	.shutdown	= q6apm_lpass_dai_shutdown,
++	.hw_params	= q6hdmi_hw_params,
+ 	.set_fmt	= q6i2s_set_fmt,
+ };
+ 
+@@ -242,6 +280,7 @@ static int q6apm_lpass_dai_dev_probe(struct platform_device *pdev)
+ 	memset(&cfg, 0, sizeof(cfg));
+ 	cfg.q6i2s_ops = &q6i2s_ops;
+ 	cfg.q6dma_ops = &q6dma_ops;
++	cfg.q6hdmi_ops = &q6hdmi_ops;
+ 	dais = q6dsp_audio_ports_set_config(dev, &cfg, &num_dais);
+ 
+ 	return devm_snd_soc_register_component(dev, &q6apm_lpass_dai_component, dais, num_dais);
 -- 
 2.21.0
 
