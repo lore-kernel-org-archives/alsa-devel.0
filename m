@@ -4,145 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3480C7EE22
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 03:59:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01C44C7EE22
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 04:00:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE3F3107A;
-	Wed, 10 May 2023 05:58:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE3F3107A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E36DC107B;
+	Wed, 10 May 2023 05:59:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E36DC107B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683691165;
-	bh=0rPoPwj5hl9ImDVmlO1wTG3WEN2ASi0wShJ70YhEdLw=;
-	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From:Reply-To:Cc:From;
-	b=lkYligljxW05L1OgbTMQUZxPb5IYcJn3ZzSlD7juLG8w7j6b0HKbFKTxKbMBcpNFB
-	 oDLsahGomqFDT+oruPEye+A4/uDeua1wF+AIYXMiwVMYB/gYPDFMQNssSKxF5Ynp/m
-	 Uip5ede0tlaimPxL1GAf14j7NW3zfSyjkpJQoO+8=
+	s=default; t=1683691200;
+	bh=uujRn4j1RtHVhR7k0wx6EUo8LiOT/vrCYC4+Kzuz6WQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=OCD/v6GsaDzVUW8/zfhvFasdt/FEyMLNYki/s70a/jzjwSuOy1PF/0WBqTQvLl1xT
+	 HTvYgmVnCt50NBUSfPtMDsxA3+e8rUdwfZn+yx+qIgJeSGa2Iecy5LxGmLfnaEnoKx
+	 hiOrgu0AAGNYXcc1taiTXZnPhZGCgbIqxGkcPSkM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C877F8057C;
-	Wed, 10 May 2023 05:57:18 +0200 (CEST)
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
-	<perex@perex.cz>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<matthias.bgg@gmail.com>, <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v4 5/9] ASoC: mediatek: mt8188: combine afe component
- registration
-Date: Wed, 10 May 2023 11:55:22 +0800
-In-Reply-To: <20230510035526.18137-1-trevor.wu@mediatek.com>
-References: <20230510035526.18137-1-trevor.wu@mediatek.com>
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AWKK6IS4NN4LGVMPJYCWIZTSGS3VMJ7G/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <168369103707.26.16483270503261063859@mailman-core.alsa-project.org>
-From: Trevor Wu via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Trevor Wu <trevor.wu@mediatek.com>
-Cc: trevor.wu@mediatek.com, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id 853DEF804B1;
+	Wed, 10 May 2023 05:59:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E3A99F80551; Wed, 10 May 2023 05:57:13 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H2,
-	RDNS_NONE,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-	UNPARSEABLE_RELAY,URIBL_BLOCKED shortcircuit=no autolearn=ham
-	autolearn_force=no version=3.4.6
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id C01B0F8032D; Wed, 10 May 2023 05:59:02 +0200 (CEST)
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com
+ [IPv6:2001:4860:4864:20::34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6F942F8052E
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 05:55:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F942F8052E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 574FFF802E8;
+	Wed, 10 May 2023 05:58:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 574FFF802E8
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=hdbRCgfh
-X-UUID: 8172b0beeee611ed9cb5633481061a41-20230510
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=iQxj2f8v6Hq2mM43K9p34deiZ+cOeCScETZMUSLPaL4=;
-	b=hdbRCgfhW2JZxzEkeqodgJ5IPBIlHzOdVnsWFsisVl+AA0q6rfbQujIQjEtBZVu9IoDrv0izqkByD6U9TL/WtjXqomJKJCfdv0jnZoUAcXV9VyfINo36Fj0bVL4tDfWiBFBrG/YTPfJDSTkFMVXlmGk1jYAJIWrxMOAuYdegzb4=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.24,REQID:6acb1ce6-a0e7-4efd-a9e9-0ef1c84326bf,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:178d4d4,CLOUDID:ac6758c0-e32c-4c97-918d-fbb3fc224d4e,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-UUID: 8172b0beeee611ed9cb5633481061a41-20230510
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by
- mailgw01.mediatek.com
-	(envelope-from <trevor.wu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1120389062; Wed, 10 May 2023 11:55:30 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 10 May 2023 11:55:28 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 10 May 2023 11:55:28 +0800
-From: Trevor Wu <trevor.wu@mediatek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
-	<perex@perex.cz>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<matthias.bgg@gmail.com>, <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v4 5/9] ASoC: mediatek: mt8188: combine afe component
- registration
-Date: Wed, 10 May 2023 11:55:22 +0800
-Message-ID: <20230510035526.18137-6-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230510035526.18137-1-trevor.wu@mediatek.com>
-References: <20230510035526.18137-1-trevor.wu@mediatek.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=HF2l7WQI
+Received: by mail-oa1-x34.google.com with SMTP id
+ 586e51a60fabf-1924ec320c5so5260766fac.1;
+        Tue, 09 May 2023 20:58:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683691135; x=1686283135;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xNsl/pNeSnMR5DQWhsPAvAhq9kalbjCKMPhOuDJ4s0g=;
+        b=HF2l7WQIlTYGpjWYRRBIGR8rOePFR65TP5KwRJGtcAAvx0AgXgKC2jmeWv10LHIbLx
+         SegfaYkwgPFYrDk+e+xu7HtS0w7YMA9FZglKGYQdc443qAvAmiqHm/xmUnGVx44BH1Sq
+         Gj3rCYcxUa24ITISnJ/G8aWM9XJsRsE6y/zNPsYEpVsx9g1yLzvn7xjjV8vifRrpOTeg
+         ClYWp4rsz3NO9LOr1qLSvXlPkS6h5ReE1vYoMLHHYbrz8xR+BVYkPz/V/ZszGyFcFgb7
+         1fe+J38jq6DNo2dTBsHnVZRVrW12dC/cekMj3I6rt9qEUsYqHcGr1TWZmiSgbPfBrhhs
+         7u+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683691135; x=1686283135;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xNsl/pNeSnMR5DQWhsPAvAhq9kalbjCKMPhOuDJ4s0g=;
+        b=ImURALfeMX+tEhMpBsWDNG+GQkKMwWRbMzMn9/ADz6//Krd4h6Aa+hGO5SGiPDN6Lw
+         KBAg1pwjTvbwNRdtSyCguG6G30C20vWJXQlw4k76ymWtE8U4AvFuZqdwYfaVVetCRWWc
+         OrCZmN9E2rQ+pnj/ZP+YBr9BrcBzpCBVftqVim8dp05e/9V2VyCchOIbirMQatkcHbIr
+         EndkhjXtXLgaGYYqvhci0y2H0P3eAIZqOjd15fuf8n49M1WnZqffbyje3yIgkrBhJlqL
+         UdUcs5x1QDqtOp9fe+jZKNyHl2caa1zMLWlP67Qod20QrZvSjI6j1welWW+5+eXhUInv
+         Wo4g==
+X-Gm-Message-State: AC+VfDwBUVPnjBjhZFu0gfw2v5V9se+dxiGzf+oOrTvPMBOhv40MFgAt
+	MMyHMm7rF2qbCZsb8uPASXk=
+X-Google-Smtp-Source: 
+ ACHHUZ5QwGkxKHAFYeUrK1k/LXRxYT5HlMQiIITBVatZN+1/DfxkYM1VE89egDUgyXUuAbiSQbavNA==
+X-Received: by 2002:a05:6870:1842:b0:180:1faa:7c1c with SMTP id
+ u2-20020a056870184200b001801faa7c1cmr9970706oaf.46.1683691135033;
+        Tue, 09 May 2023 20:58:55 -0700 (PDT)
+Received: from geday ([2804:7f2:8006:8886:6ce0:2667:545a:2a1])
+        by smtp.gmail.com with ESMTPSA id
+ v44-20020a056870956c00b00184591ae6d0sm6689469oal.26.2023.05.09.20.58.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 May 2023 20:58:54 -0700 (PDT)
+Date: Wed, 10 May 2023 00:58:58 -0300
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: DMARC (Was: Re: [alsa-devel@alsa-project.org: [PATCH 3/5] ASoC:
+ mediatek: mt8195-afe-pcm: Simplify runtime PM during probe])
+Message-ID: <ZFsWgnAQy5Y/rwyb@geday>
+References: <ZFMF2cD3nPgpZOpa@finisterre.sirena.org.uk>
+ <87o7n0mtv9.wl-tiwai@suse.de>
+ <87ednwmssr.wl-tiwai@suse.de>
+ <87wn1jdzuq.wl-tiwai@suse.de>
+ <e76c1395-5eb2-849e-120d-1b7389fc97c7@perex.cz>
+ <ZFoUaNKBkIgbW0rD@finisterre.sirena.org.uk>
+ <ff43dccf-ba6d-d7fa-352a-5d5a8c4b977f@perex.cz>
+ <ZFpaOVRc2E/CZBHI@finisterre.sirena.org.uk>
+ <10075912-5c0b-549f-58e1-1323683d250d@perex.cz>
+ <ZFr8B5UFx16sz7S0@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
-Message-ID-Hash: AWKK6IS4NN4LGVMPJYCWIZTSGS3VMJ7G
-X-Message-ID-Hash: AWKK6IS4NN4LGVMPJYCWIZTSGS3VMJ7G
-X-MailFrom: trevor.wu@mediatek.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZFr8B5UFx16sz7S0@finisterre.sirena.org.uk>
+Message-ID-Hash: 3FQDUESRCDWWPBAHWXRDEX7KNB6E3DKW
+X-Message-ID-Hash: 3FQDUESRCDWWPBAHWXRDEX7KNB6E3DKW
+X-MailFrom: geraldogabriel@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: trevor.wu@mediatek.com, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+CC: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ sound-open-firmware@alsa-project.org,
+ Konstantin Ryabitsev <konstantin@linuxfoundation.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AWKK6IS4NN4LGVMPJYCWIZTSGS3VMJ7G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3FQDUESRCDWWPBAHWXRDEX7KNB6E3DKW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,97 +124,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There is no benefit to separate two components for AFE, so DAI driver
-registration is moved to dev_snd_soc_register_component to merge these
-two components.
+On Wed, May 10, 2023 at 11:05:59AM +0900, Mark Brown wrote:
+> AFAICT the only other option is munging the From without enclosing the
+> message in a wrapper?  That's potentially marginally less harmful but
+> it's still going to break things badly enough that I'm not sure it's a
+> worthwhile improvement.
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- sound/soc/mediatek/mt8188/mt8188-afe-pcm.c | 37 ++--------------------
- 1 file changed, 2 insertions(+), 35 deletions(-)
+The readymade mitigations for DMARC in mailman 3 are
+"munge_from" and "wrap_message". The fact "wrap_message" messes
+around with signatures in mutt is definitely not a good sign,
+and "munge_from" will change the author's email and name from
+the perspective of git-am.
 
-diff --git a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-index e5f9373bed56..fecc891f892d 100644
---- a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-@@ -1898,10 +1898,6 @@ static const struct snd_kcontrol_new mt8188_memif_controls[] = {
- 			    MT8188_AFE_MEMIF_UL10),
- };
- 
--static const struct snd_soc_component_driver mt8188_afe_pcm_dai_component = {
--	.name = "mt8188-afe-pcm-dai",
--};
--
- static const struct mtk_base_memif_data memif_data[MT8188_AFE_MEMIF_NUM] = {
- 	[MT8188_AFE_MEMIF_DL2] = {
- 		.name = "DL2",
-@@ -3142,9 +3138,8 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
- 	struct mtk_base_afe *afe;
- 	struct mt8188_afe_private *afe_priv;
- 	struct device *dev;
--	int i, irq_id, ret;
--	struct snd_soc_component *component;
- 	struct reset_control *rstc;
-+	int i, irq_id, ret;
- 
- 	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(33));
- 	if (ret)
-@@ -3280,34 +3275,12 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
- 
- 	/* register component */
- 	ret = devm_snd_soc_register_component(dev, &mt8188_afe_component,
--					      NULL, 0);
-+					      afe->dai_drivers, afe->num_dai_drivers);
- 	if (ret) {
- 		dev_warn(dev, "err_platform\n");
- 		goto err_pm_put;
- 	}
- 
--	component = devm_kzalloc(&pdev->dev, sizeof(*component), GFP_KERNEL);
--	if (!component) {
--		ret = -ENOMEM;
--		goto err_pm_put;
--	}
--
--	ret = snd_soc_component_initialize(component,
--					   &mt8188_afe_pcm_dai_component,
--					   &pdev->dev);
--	if (ret)
--		goto err_pm_put;
--#ifdef CONFIG_DEBUG_FS
--	component->debugfs_prefix = "pcm";
--#endif
--	ret = snd_soc_add_component(component,
--				    afe->dai_drivers,
--				    afe->num_dai_drivers);
--	if (ret) {
--		dev_warn(dev, "err_add_component\n");
--		goto err_pm_put;
--	}
--
- 	mt8188_afe_init_registers(afe);
- 
- 	pm_runtime_put_sync(&pdev->dev);
-@@ -3323,11 +3296,6 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static void mt8188_afe_pcm_dev_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_component(&pdev->dev);
--}
--
- static const struct of_device_id mt8188_afe_pcm_dt_match[] = {
- 	{ .compatible = "mediatek,mt8188-afe", },
- 	{},
-@@ -3346,7 +3314,6 @@ static struct platform_driver mt8188_afe_pcm_driver = {
- 		   .pm = &mt8188_afe_pm_ops,
- 	},
- 	.probe = mt8188_afe_pcm_dev_probe,
--	.remove_new = mt8188_afe_pcm_dev_remove,
- };
- 
- module_platform_driver(mt8188_afe_pcm_driver);
--- 
-2.18.0
+The middle way could be to patch mailman 3 to "munge_from" while adding
+the correct "From:" as the first thing in the body of the message if it
+doesn't contain one already. This will make git-am pickup the correct
+author's details and it should be some simple logic.
 
+If Jaroslav is brave enough to maintain this supposed patch to mailman 3
+in case it doesn't get picked-up upstream by the FSF folks...
+
+I understand the maintainers needs must come first but it will be
+terrible to get the GMail bouncing behaviour again, I don't want to
+press the point since Jaroslav already made the speech I think it
+was needed.
+
+Thanks,
+Geraldo Nascimento
