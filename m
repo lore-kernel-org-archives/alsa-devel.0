@@ -4,110 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69E1BC77B7C
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 15:05:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7924EC77B7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 16:20:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 438A7107F;
-	Wed, 10 May 2023 17:04:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 438A7107F
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA84A107F;
+	Wed, 10 May 2023 18:20:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA84A107F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683731138;
-	bh=ht4Xp+j+Z/dsA3sLWnDQF8BKEuqV1FhA2y0sFH1RHBs=;
-	h=From:To:Subject:Date:References:In-Reply-To:CC:List-Id:
+	s=default; t=1683735652;
+	bh=rQhn3NwLPBBwHEi62lF5sP+tdL9nkrA5HSumQjyakjA=;
+	h=Date:To:References:From:Subject:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DxYCwG7L/GX+Jw7yvoDbUeLYdnoFC/D75QUM7nA0GdWk9IsXaWbk/rBS0Tt1ra6IZ
-	 5WHgzNTW30AXJHDsrwgNL/eWDO8CpNarMM1nEki4jXZgRfB5Ho2/N+mQpRbzz+UkTf
-	 WF4bjrg0pYJUOXIVKD9yfVk2rI3JM/g3HNixU798=
+	b=uB87WEls0IwKPQS665BTQd6OP3iGyMzNkuNlkhdKezfrw/Z4QXZRdKyNd5pH/HEW+
+	 tGmzREYi+Y2RspwJTPGXhGcBfdyVj5TYiopvhkfgKgLQEXgIqlHLTXMsKAImJgWpQV
+	 o7EHNJhjD7Q9X1m0V46OEpj3zkzT2BYklYRNhYfY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90E2EF8014C;
-	Wed, 10 May 2023 17:04:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE72BF8014C;
+	Wed, 10 May 2023 18:19:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3AA78F804B1; Wed, 10 May 2023 17:04:16 +0200 (CEST)
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 3BE76F8032D; Wed, 10 May 2023 18:19:31 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C28EAF8014C
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 17:03:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C28EAF8014C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=Hxwzvt/i
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 34AE3owP005955;
-	Wed, 10 May 2023 09:03:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1683727430;
-	bh=ht4Xp+j+Z/dsA3sLWnDQF8BKEuqV1FhA2y0sFH1RHBs=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To;
-	b=Hxwzvt/iw0sSmAU7M4sNJbgUfPhy2AveemU93VNCu11exmwR7wOvs18wCsOn/OTnl
-	 iIkCJqv+KFgfmltpvLXCQDu+VZ+GU8tWGM78xAE8nwLA2m7WEERdQbmAWvvJwXW5Sd
-	 BZ2WIPCt0yHAd0QsZAFhCxEParABCFHp0bnrhvQE=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 34AE3onK001992
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 10 May 2023 09:03:50 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
- May 2023 09:03:49 -0500
-Received: from DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c]) by
- DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c%18]) with mapi id
- 15.01.2507.023; Wed, 10 May 2023 09:03:49 -0500
-From: "Ding, Shenghao" <shenghao-ding@ti.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: RE: [EXTERNAL] Re: [PATCH v2 2/5] ASoC: dt-bindings: Add tas2781
- amplifier
-Thread-Topic: [EXTERNAL] Re: [PATCH v2 2/5] ASoC: dt-bindings: Add tas2781
- amplifier
-Thread-Index: AQHZgw2r46dnAmj+dEya5A38wB/fZK9Td3kQ
-Date: Wed, 10 May 2023 14:03:49 +0000
-Message-ID: <c088d7dce83a45168d0dc25fee4a9e35@ti.com>
-References: <20230508054512.719-1-13916275206@139.com>
- <ca9d45cf-8a84-4fbc-e1dd-c96eef36fe25@linaro.org>
-In-Reply-To: <ca9d45cf-8a84-4fbc-e1dd-c96eef36fe25@linaro.org>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.250.160.143]
-x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4AE4EF8014C;
+	Wed, 10 May 2023 18:19:22 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C564A11F7;
+	Wed, 10 May 2023 18:19:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C564A11F7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1683735561; bh=YJxXXmYujBSOFkyN+o12AQx4kabF5yyXLHiHkL2kR7k=;
+	h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
+	b=OwpEMGd5o3IBKCS4iWzQxeR7/sKFlzH0LMM22DiyvkNPaSy3/YcRblr9bzGhE19WA
+	 7Dcz6on54KV7x7Xhupc6o3VV/ZiQVlkL0JCU6C3zE7pVU1K+6de7uA58Avpdno39X3
+	 kSYdvsJ44mq79YCXfQfaak6zcXKVC9revTtv3QaA=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Wed, 10 May 2023 18:19:15 +0200 (CEST)
+Message-ID: <41443193-1c4a-bfea-f81c-e6658b7addee@perex.cz>
+Date: Wed, 10 May 2023 18:19:15 +0200
 MIME-Version: 1.0
-Message-ID-Hash: NU6DD2SCX2YIRV72UTBMRXUWRQCL7OZC
-X-Message-ID-Hash: NU6DD2SCX2YIRV72UTBMRXUWRQCL7OZC
-X-MailFrom: shenghao-ding@ti.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Content-Language: en-US
+To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+References: <ZFMF2cD3nPgpZOpa@finisterre.sirena.org.uk>
+ <87o7n0mtv9.wl-tiwai@suse.de> <87ednwmssr.wl-tiwai@suse.de>
+ <87wn1jdzuq.wl-tiwai@suse.de> <e76c1395-5eb2-849e-120d-1b7389fc97c7@perex.cz>
+ <ZFoUaNKBkIgbW0rD@finisterre.sirena.org.uk>
+ <ff43dccf-ba6d-d7fa-352a-5d5a8c4b977f@perex.cz>
+ <20230509-mug-private-mess-6a36d2@meerkat>
+ <31969101-c1cf-4956-6446-2243ccda0c65@perex.cz>
+ <20230510-robert-diane-joe-846d41@meerkat>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: DMARC (Was: Re: [alsa-devel@alsa-project.org: [PATCH 3/5] ASoC:
+ mediatek: mt8195-afe-pcm: Simplify runtime PM during probe])
+In-Reply-To: <20230510-robert-diane-joe-846d41@meerkat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: X7LXRMFDTM2RMGAW7FPE3MYXBNDVJTEB
+X-Message-ID-Hash: X7LXRMFDTM2RMGAW7FPE3MYXBNDVJTEB
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: "Lu, Kevin" <kevin-lu@ti.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Xu,
- Baojun" <x1077012@ti.com>, "Gupta, Peeyush" <peeyush@ti.com>,
- "Navada Kanyana, Mukund" <navada@ti.com>,
- "gentuser@gmail.com" <gentuser@gmail.com>,
- "Ryan_Chu@wistron.com" <Ryan_Chu@wistron.com>,
- "Sam_Wu@wistron.com" <Sam_Wu@wistron.com>,
- Shenghao Ding <13916275206@139.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>
+CC: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>,
+ alsa-devel@alsa-project.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ sound-open-firmware@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NU6DD2SCX2YIRV72UTBMRXUWRQCL7OZC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X7LXRMFDTM2RMGAW7FPE3MYXBNDVJTEB/>
 List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
@@ -115,86 +98,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-QW5zd2VywrcgZW1iZWRlZCANCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEty
-enlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dza2lAbGluYXJvLm9yZz4gDQpTZW50
-OiBXZWRuZXNkYXksIE1heSAxMCwgMjAyMyAzOjA0IFBNDQpUbzogU2hlbmdoYW8gRGluZyA8MTM5
-MTYyNzUyMDZAMTM5LmNvbT47IGJyb29uaWVAa2VybmVsLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtl
-cm5lbC5vcmc7IGtyenlzenRvZi5rb3psb3dza2krZHRAbGluYXJvLm9yZzsgcm9iaCtkdEBrZXJu
-ZWwub3JnOyBsZ2lyZHdvb2RAZ21haWwuY29tOyBwZXJleEBwZXJleC5jejsgcGllcnJlLWxvdWlz
-LmJvc3NhcnRAbGludXguaW50ZWwuY29tDQpDYzogTHUsIEtldmluIDxrZXZpbi1sdUB0aS5jb20+
-OyBEaW5nLCBTaGVuZ2hhbyA8c2hlbmdoYW8tZGluZ0B0aS5jb20+OyBhbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFh1LCBCYW9qdW4gPHgx
-MDc3MDEyQHRpLmNvbT47IEd1cHRhLCBQZWV5dXNoIDxwZWV5dXNoQHRpLmNvbT47IE5hdmFkYSBL
-YW55YW5hLCBNdWt1bmQgPG5hdmFkYUB0aS5jb20+OyBnZW50dXNlckBnbWFpbC5jb207IFJ5YW5f
-Q2h1QHdpc3Ryb24uY29tOyBTYW1fV3VAd2lzdHJvbi5jb20NClN1YmplY3Q6IFtFWFRFUk5BTF0g
-UmU6IFtQQVRDSCB2MiAyLzVdIEFTb0M6IGR0LWJpbmRpbmdzOiBBZGQgdGFzMjc4MSBhbXBsaWZp
-ZXINCg0KT24gMDgvMDUvMjAyMyAwNzo0NSwgU2hlbmdoYW8gRGluZyB3cm90ZToNCj4gQ3JlYXRl
-IHRhczI3ODEueWFtbCBmb3IgdGFzMjc4MSBkcml2ZXIuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBT
-aGVuZ2hhbyBEaW5nIDwxMzkxNjI3NTIwNkAxMzkuY29tPg0KPiANCj4gLS0tDQo+IENoYW5nZXMg
-aW4gdjc6DQoNCllvdXIgc3ViamVjdCBzYXlzIGl0IGlzIHYyIGFuZCBwcmV2aW91c2x5IGl0IHdh
-cyB2Ni4gTWFrZSBpdCBjb25zaXN0ZW50Lg0KW0RpbmddIHYyIGlzIHRoZSB2ZXJzaW9uIG5vIGZv
-ciBhbGwgb2YgdGhlIHBhdGhlcywgaW4gZWFjaCBwYXRjaCB0aGVyZSBpcyBzZXBhcmF0ZWQgIHZl
-cnNpb24sIHY3IGlzIHRoZSB2ZXJzaW9uIG51bWJlciBmb3IgeWFtbA0KPiAgLSBTdWJtaXQgdG9n
-ZXRoZXIgd2l0aCB0YXMyNzgxIGNvZGVjIGRyaXZlciBjb2RlDQoNCkZpeCB5b3VyIHBhdGNoc2V0
-IHRocmVhZGluZy4gSSBkb24ndCB0aGluayBpdCdzIHBvc3NpYmxlIHRvIGFwcGx5IHlvdXIgb25l
-Lg0KDQo+ICAtIEFkZCBtb3JlIGRldGFpbCBkZXNjcmlwdGlvbiBmb3IgdGksYXVkaW8tc2xvdHMN
-Cj4gIC0gS2VlcCBjb25zaXN0ZW50IGZvciAiSTJDIg0KPiAgLSByZW1vdmUgcmVzZXQtZ3Bpb3Mg
-ZGVzY3JpcHRpb24NCj4gIC0gRm9yIHJlZywgZXhwcmVzcyBhcyBjb25zdHJhaW50cyBpbnN0ZWFk
-DQo+ICAtIHJlbW92ZSB1bm5lY2Vzc2FyeSAnfCcNCj4gIENoYW5nZXMgdG8gYmUgY29tbWl0dGVk
-Og0KPiAJbmV3IGZpbGU6ICAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
-L3RpLHRhczI3ODEueWFtbA0KPiAtLS0NCj4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
-L3RpLHRhczI3ODEueWFtbCB8IDkwIA0KPiArKysrKysrKysrKysrKysrKysrDQo+ICAxIGZpbGUg
-Y2hhbmdlZCwgOTAgaW5zZXJ0aW9ucygrKQ0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IA0KPiBEb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvdGksdGFzMjc4MS55YW1sDQo+IA0K
-PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3Rp
-LHRhczI3ODEueWFtbCANCj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291
-bmQvdGksdGFzMjc4MS55YW1sDQo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAw
-MDAwMDAwMC4uOTZjMjU4NDg1NWQ0DQo+IC0tLSAvZGV2L251bGwNCj4gKysrIGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3RpLHRhczI3ODEueWFtbA0KPiBAQCAtMCww
-ICsxLDkwIEBADQo+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9S
-IEJTRC0yLUNsYXVzZSkgIyBDb3B5cmlnaHQgDQo+ICsoQykgMjAyMiAtIDIwMjMgVGV4YXMgSW5z
-dHJ1bWVudHMgSW5jb3Jwb3JhdGVkICVZQU1MIDEuMg0KPiArLS0tDQo+ICskaWQ6IGh0dHA6Ly9k
-ZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3NvdW5kL3RpLHRhczI3ODEueWFtbCMNCj4gKyRzY2hlbWE6
-IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KPiArDQo+ICt0
-aXRsZTogVGV4YXMgSW5zdHJ1bWVudHMgVEFTMjc4MSBTbWFydEFNUA0KPiArDQo+ICttYWludGFp
-bmVyczoNCj4gKyAgLSBTaGVuZ2hhbyBEaW5nIDxzaGVuZ2hhby1kaW5nQHRpLmNvbT4NCj4gKw0K
-PiArZGVzY3JpcHRpb246DQo+ICsgIFRoZSBUQVMyNzgxIGlzIGEgbW9ubywgZGlnaXRhbCBpbnB1
-dCBDbGFzcy1EIGF1ZGlvIGFtcGxpZmllcg0KPiArICBvcHRpbWl6ZWQgZm9yIGVmZmljaWVudGx5
-IGRyaXZpbmcgaGlnaCBwZWFrIHBvd2VyIGludG8gc21hbGwNCj4gKyAgbG91ZHNwZWFrZXJzLiBJ
-bnRlZ3JhdGVkIGFuIG9uLWNoaXAgRFNQIHN1cHBvcnRzIFRleGFzIEluc3RydW1lbnRzDQo+ICsg
-IFNtYXJ0IEFtcCBzcGVha2VyIHByb3RlY3Rpb24gYWxnb3JpdGhtLiBUaGUgaW50ZWdyYXRlZCBz
-cGVha2VyDQo+ICsgIHZvbHRhZ2UgYW5kIGN1cnJlbnQgc2Vuc2UgcHJvdmlkZXMgZm9yIHJlYWwg
-dGltZQ0KPiArICBtb25pdG9yaW5nIG9mIGxvdWRzcGVha2VyIGJlaGF2aW9yLg0KPiArDQoNCnlv
-dSBtaXNzIGFsbE9mIHdpdGggcmVmIHRvIHNhb3VuZC1kYWktY29tbW9uLg0KW0RpbmddIEFkZCBp
-dCBpbiBuZXh0IHBhdGNoDQo+ICtwcm9wZXJ0aWVzOg0KPiArICBjb21wYXRpYmxlOg0KPiArICAg
-IGVudW06DQo+ICsgICAgICAtIHRpLHRhczI3ODENCj4gKw0KPiArICByZWc6DQo+ICsgICAgZGVz
-Y3JpcHRpb246IEkyQyBhZGRyZXNzIG9mIHRoZSBwcmltYXJ5IGRldmljZS4NCj4gKyAgICBpdGVt
-czoNCj4gKyAgICAgIG1pbmltdW06IDB4MzgNCj4gKyAgICAgIG1heGltdW06IDB4M2YNCj4gKw0K
-PiArICByZXNldC1ncGlvczoNCj4gKyAgICBtYXhJdGVtczogMQ0KPiArDQo+ICsgIGludGVycnVw
-dHM6DQo+ICsgICAgbWF4SXRlbXM6IDENCj4gKw0KPiArICB0aSxhdWRpby1zbG90czoNCj4gKyAg
-ICBkZXNjcmlwdGlvbjoNCj4gKyAgICAgIE11bHRpcGxlIHRhczI3ODFzIGFnZ3JlZ2F0ZSBhcyBv
-bmUgQXVkaW8gQW1wIHRvIHN1cHBvcnQNCj4gKyAgICAgIG11bHRpcGxlIGF1ZGlvIHNsb3RzDQo+
-ICsgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyLWFycmF5
-DQo+ICsgICAgbWF4SXRlbXM6IDQNCg0KWW91IHNhaWQgeW91IGNhbiBoYXZlIGhlcmUgdHdvIGFk
-ZHJlc3Nlcy4gWW91IGRvbid0IGFsbG93IGl0LCB0ZXN0IGl0Lg0KDQpNaXNzaW5nIG1pbkl0ZW1z
-LCBidXQuLi4NCg0KPiArICAgIGl0ZW1zOg0KPiArICAgICAgbWluaW11bTogMHgzOA0KPiArICAg
-ICAgbWF4aW11bTogMHgzZg0KDQouLi4gU28gdGhlc2UgYXJlIGZpeGVkPyBObyBuZWVkIHRvIGVu
-Y29kZSB0aGVtIGluIHN1Y2ggY2FzZS4uLg0KDQphbmQgYW55d2F5IGFjdHVhbGx5IEkgYWdyZWUg
-d2l0aCBSb2IgaGVyZSAtIHRoZXNlIGFkZHJlc3NlcyBzaG91bGQgYmUgcHV0IGluIHJlZy4NCltE
-SU5HXSBpZiBhbGwgdGhlIHB1dCBpbiByZWcsIHRoZSBpMmNfcHJvYmUgd2lsbCBiZSBjYWxsZWQg
-c2V2ZXJhbCB0aW1lLiBUaGUgY29kZSBkb24gbm90IHdhbnQgdG8gcmVnaXN0ZXIgc2V2ZXJhbCBj
-b2RlY3MsIGJ1dCBvbmUgY29kZWMgaW5jbHVkaW5nIHNldmVyYWwgdGFzMjc4MXMuDQoNCj4gKyAg
-ICAgIGRlc2NyaXB0aW9uOg0KPiArICAgICAgICBJMkMgYWRkcmVzcyBvZiB0aGUgZGV2aWNlIGZv
-ciBkaWZmZXJlbnQgYXVkaW8gc2xvdHMsDQo+ICsgICAgICAgIHVzZWxlc3MgaW4gbW9ubyBjYXNl
-Lg0KPiArDQo+ICsgIHRpLGJyb2FkY2FzdC1hZGRyOg0KPiArICAgICRyZWY6IC9zY2hlbWFzL3R5
-cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMg0KPiArICAgIGRlc2NyaXB0aW9uOg0KPiArICAg
-ICAgR2VuZXJpYyBJMkMgYWRkcmVzcyBmb3IgYWxsIHRoZSB0YXMyNzgxIGRldmljZXMgaW4NCj4g
-KyAgICAgIHB1cnBvc2Ugb2YgSTJDIGJyb2FkY2FzdCBkdXJpbmcgdGhlIG11bHRpLWRldmljZQ0K
-PiArICAgICAgd3JpdGVzLCB1c2VsZXNzIGluIG1vbm8gY2FzZS4NCg0KUHJvYmFibHkgeW91IGNh
-biBmaWd1cmUgaXQgb3V0IGZyb20gcHJldmlvdXMgYWRkcmVzc2VzIGFuZCB0aGVyZSBpcyBubyBu
-ZWVkIGZvciB0aGlzIHByb3BlcnR5Lg0KW0RpbmddIHRoaXMgYWRkcmVzcyBpcyB0aGUgY29tbW9u
-IGFkZHJlc3MgZm9yIGFsbCB0aGUgdGFzMjc4MSwgaXQgY2FuIGJlIHVzZWQgZm9yIGRzcCBmaXJt
-d2FyZSBkb3dubG9hZGluZyB0byBhbGwgdGhlIHRhczI3ODFzIGluIHBhcmFsbGVsLCB3aGljaCBj
-YW4gc2F2ZSBtb3JlIGRvd25sb2FkaW5nIHRpbWUNCj4gKw0KPiArICAnI3NvdW5kLWRhaS1jZWxs
-cyc6DQo+ICsgICAgY29uc3Q6IDENCj4gKw0KPiArcmVxdWlyZWQ6DQo+ICsgIC0gY29tcGF0aWJs
-ZQ0KPiArICAtIHJlZw0KPiArDQoNCg0KQmVzdCByZWdhcmRzLA0KS3J6eXN6dG9mDQoNCg==
+On 10. 05. 23 17:34, Konstantin Ryabitsev wrote:
+
+> So, I'm just going to repeat this: operating a mailing list and remaining
+> DMARC compliant is perfectly possible, provided:
+> 
+> - the original message is DKIM-signed
+> - all existing headers are unmodified
+> - the message body is unmodified
+
+Example of e-mail which is rejected by google's mx servers:
+
+https://lore.kernel.org/alsa-devel/20230510142227.32945-1-vitalyr@opensource.cirrus.com/raw
+
+ From the postfix e-mail queue:
+
+https://gist.github.com/perexg/ac06eacd8b3a8f741ef5602ec748e0a8
+
+SMTP error:
+
+reason=host alt1.aspmx.l.google.com[142.251.9.27] said: 550-5.7.26 
+Unauthenticated email from cirrus.com is not accepted due to domain's 
+550-5.7.26 DMARC policy. Please contact the administrator of cirrus.com domain 
+550-5.7.26 if this was a legitimate mail. Please visit 550-5.7.26 
+https://support.google.com/mail/answer/2451690 to learn about the 450 4.7.26 
+DMARC initiative. mz11-20020a1709071b8b00b009665976cbddsi3525670ejc.170 - 
+gsmtp (in reply to end of DATA command)
+
+				Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+
