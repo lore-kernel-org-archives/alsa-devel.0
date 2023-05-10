@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1125C77B7C
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 17:41:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20853C77B7D
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 17:41:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CD8F1040;
-	Wed, 10 May 2023 19:40:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CD8F1040
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46910108B;
+	Wed, 10 May 2023 19:40:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46910108B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683740469;
-	bh=Raq1MzEee0aN0pTcn8K9yPRq7zhwSW6IbRJeN934U3I=;
+	s=default; t=1683740475;
+	bh=6vN1qjoLswKSnnAk8KEC4jI7iVIbvr4zLsn/t1JSnq0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XBKX1NERcMxbwtoxPfomufbF+QvNU9Byj1RrNGS1ThgSPvu1PW1m87uzk15u7M/N+
-	 ssO008kAaZZG2MezJBNkLc5o++5oLMCaDKHIA9u8rN+VgFXeg9a+u+fQdJlBdspM2d
-	 Gt7Hl/pBLa/5tRuZMxgR1L3pEqXIbwkW/1WkxhmA=
+	b=cFy1Nlu29+iQEweLnlO7kfvofllYSrWZ8ovVedw/Iy6sa0+S+1DqT2AFdI34rEF6p
+	 Cm9ZtWGykpVg0nVO4vELV/ymc0hSbgV/pycd7KDdxsj/9alxiSQi32I4ysd9Ihuv7m
+	 dWOPe4jAri0QbQ5blOtATuRIdKhkmq1pNOeZsk2c=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 719DEF8055A;
-	Wed, 10 May 2023 19:39:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2115CF80564;
+	Wed, 10 May 2023 19:39:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 322CBF80553; Wed, 10 May 2023 19:39:25 +0200 (CEST)
+	id 54BB1F80552; Wed, 10 May 2023 19:39:27 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org
  [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 28D08F8032D
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 19:39:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28D08F8032D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 57B91F802E8
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 19:39:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57B91F802E8
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 4469B24257;
+	by bluemchen.kde.org (Postfix) with ESMTP id 25BFA24172;
 	Wed, 10 May 2023 13:39:18 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pwnmX-tTm-00; Wed, 10 May 2023 19:39:17 +0200
+	id 1pwnmX-tSu-00; Wed, 10 May 2023 19:39:17 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 12/14] ALSA: emu10k1: skip mic capture PCM for cards without
- AC97 codec
-Date: Wed, 10 May 2023 19:39:15 +0200
-Message-Id: <20230510173917.3073107-13-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 03/14] ALSA: emu10k1: fix+optimize E-MU stereo capture DSP
+ code
+Date: Wed, 10 May 2023 19:39:06 +0200
+Message-Id: <20230510173917.3073107-4-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230510173917.3073107-1-oswald.buddenhagen@gmx.de>
 References: <20230510173917.3073107-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4WW5YBLRW6W5MOOPXDHX3AW5MHWWEAFA
-X-Message-ID-Hash: 4WW5YBLRW6W5MOOPXDHX3AW5MHWWEAFA
+Message-ID-Hash: 2CISBOQPI5ARS4RIWB2CHKR6W7TZGYXI
+X-Message-ID-Hash: 2CISBOQPI5ARS4RIWB2CHKR6W7TZGYXI
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -65,7 +65,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4WW5YBLRW6W5MOOPXDHX3AW5MHWWEAFA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2CISBOQPI5ARS4RIWB2CHKR6W7TZGYXI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -74,77 +74,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The microphone capture device is a feature of the AC97 codec, so its
-availability should be coupled to the presence of that codec.
+Presumably, JDC added the seemingly superfluous indirection over the
+temporary register because without it he'd get only zero readings.
+However, switching the X and Y operands (or using EMU32 as the A
+operand in the temporary load) works just fine. Presumably a DSP bug?
+
+The original code was also actually buggy, though: both channels used
+the left volume control.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-
 ---
+ sound/pci/emu10k1/emufx.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-This patch needs to be applied on top of the patch titled "ALSA:
-emu10k1: omit non-applicable mixer controls for E-MU cards".
----
- sound/pci/emu10k1/emu10k1.c |  8 +++++---
- sound/pci/emu10k1/emufx.c   | 26 ++++++++++++++------------
- 2 files changed, 19 insertions(+), 15 deletions(-)
-
-diff --git a/sound/pci/emu10k1/emu10k1.c b/sound/pci/emu10k1/emu10k1.c
-index b8163f26004a..0c97237af922 100644
---- a/sound/pci/emu10k1/emu10k1.c
-+++ b/sound/pci/emu10k1/emu10k1.c
-@@ -107,9 +107,11 @@ static int snd_card_emu10k1_probe(struct pci_dev *pci,
- 	err = snd_emu10k1_pcm(emu, 0);
- 	if (err < 0)
- 		return err;
--	err = snd_emu10k1_pcm_mic(emu, 1);
--	if (err < 0)
--		return err;
-+	if (emu->card_capabilities->ac97_chip) {
-+		err = snd_emu10k1_pcm_mic(emu, 1);
-+		if (err < 0)
-+			return err;
-+	}
- 	err = snd_emu10k1_pcm_efx(emu, 2);
- 	if (err < 0)
- 		return err;
 diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index cdce8475bd99..63e233130858 100644
+index eb40159a2eeb..795b2573fef4 100644
 --- a/sound/pci/emu10k1/emufx.c
 +++ b/sound/pci/emu10k1/emufx.c
-@@ -1380,19 +1380,21 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
- 		gpr_map[gpr + 2] = 0x00000000;
- 		gpr += 3;
- 	} else {
--		/* AC'97 Playback Volume - used only for mic (renamed later) */
--		A_ADD_VOLUME_IN(stereo_mix, gpr, A_EXTIN_AC97_L);
--		A_ADD_VOLUME_IN(stereo_mix+1, gpr+1, A_EXTIN_AC97_R);
--		snd_emu10k1_init_stereo_control(&controls[nctl++], "AMic Playback Volume", gpr, 0);
--		gpr += 2;
--		/* AC'97 Capture Volume - used only for mic */
--		A_ADD_VOLUME_IN(capture, gpr, A_EXTIN_AC97_L);
--		A_ADD_VOLUME_IN(capture+1, gpr+1, A_EXTIN_AC97_R);
--		snd_emu10k1_init_stereo_control(&controls[nctl++], "Mic Capture Volume", gpr, 0);
--		gpr += 2;
-+		if (emu->card_capabilities->ac97_chip) {
-+			/* AC'97 Playback Volume - used only for mic (renamed later) */
-+			A_ADD_VOLUME_IN(stereo_mix, gpr, A_EXTIN_AC97_L);
-+			A_ADD_VOLUME_IN(stereo_mix+1, gpr+1, A_EXTIN_AC97_R);
-+			snd_emu10k1_init_stereo_control(&controls[nctl++], "AMic Playback Volume", gpr, 0);
-+			gpr += 2;
-+			/* AC'97 Capture Volume - used only for mic */
-+			A_ADD_VOLUME_IN(capture, gpr, A_EXTIN_AC97_L);
-+			A_ADD_VOLUME_IN(capture+1, gpr+1, A_EXTIN_AC97_R);
-+			snd_emu10k1_init_stereo_control(&controls[nctl++], "Mic Capture Volume", gpr, 0);
-+			gpr += 2;
- 
--		/* mic capture buffer */
--		A_OP(icode, &ptr, iINTERP, A_EXTOUT(A_EXTOUT_MIC_CAP), A_EXTIN(A_EXTIN_AC97_L), A_C_40000000, A_EXTIN(A_EXTIN_AC97_R));
-+			/* mic capture buffer */
-+			A_OP(icode, &ptr, iINTERP, A_EXTOUT(A_EXTOUT_MIC_CAP), A_EXTIN(A_EXTIN_AC97_L), A_C_40000000, A_EXTIN(A_EXTIN_AC97_R));
-+		}
- 
- 		/* Audigy CD Playback Volume */
- 		A_ADD_VOLUME_IN(stereo_mix, gpr, A_EXTIN_SPDIF_CD_L);
+@@ -1324,11 +1324,9 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ 		/* EMU1010 DSP 0 and DSP 1 Capture */
+ 		// The 24 MSB hold the actual value. We implicitly discard the 16 LSB.
+ 		if (emu->card_capabilities->ca0108_chip) {
+-			/* Note:JCD:No longer bit shift lower 16bits to upper 16bits of 32bit value. */
+-			A_OP(icode, &ptr, iMACINT0, A_GPR(tmp), A_C_00000000, A3_EMU32IN(0x0), A_C_00000001);
+-			A_OP(icode, &ptr, iMAC0, A_GPR(capture+0), A_GPR(capture+0), A_GPR(gpr), A_GPR(tmp));
+-			A_OP(icode, &ptr, iMACINT0, A_GPR(tmp), A_C_00000000, A3_EMU32IN(0x1), A_C_00000001);
+-			A_OP(icode, &ptr, iMAC0, A_GPR(capture+1), A_GPR(capture+1), A_GPR(gpr), A_GPR(tmp));
++			// For unclear reasons, the EMU32IN cannot be the Y operand!
++			A_OP(icode, &ptr, iMAC0, A_GPR(capture+0), A_GPR(capture+0), A3_EMU32IN(0x0), A_GPR(gpr));
++			A_OP(icode, &ptr, iMAC0, A_GPR(capture+1), A_GPR(capture+1), A3_EMU32IN(0x1), A_GPR(gpr+1));
+ 		} else {
+ 			A_OP(icode, &ptr, iMAC0, A_GPR(capture+0), A_GPR(capture+0), A_GPR(gpr), A_P16VIN(0x0));
+ 			A_OP(icode, &ptr, iMAC0, A_GPR(capture+1), A_GPR(capture+1), A_GPR(gpr+1), A_P16VIN(0x1));
 -- 
 2.40.0.152.g15d061e6df
 
