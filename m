@@ -4,51 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22FD1C77B7D
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 17:38:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7E71C77B7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 17:40:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B1131013;
-	Wed, 10 May 2023 19:37:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B1131013
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3BDF1014;
+	Wed, 10 May 2023 19:39:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3BDF1014
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683740326;
-	bh=XXJr1tgoAPJbZ1oJ/P8rlLa1cbxLccGxHOSyvGO/sx0=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=n/PhBqBYKt5VSIXV3twsYlggF0epB9GuGPfPB+nIdItMJglt/11irNVS8aRUTfcQ+
-	 +aQA5f+u4Ka8N98MZS3SkAy2jw37byny0fPyCEoww+DcwOiEGa5s/eU4AvWttbI36J
-	 Bkk0k9YrQrdpGCKiIB/UKfZHIqeInKPhkXY2S8R0=
+	s=default; t=1683740444;
+	bh=VcfD+ZrVl9FHLlbLXLOsKfQGrdVbm5OgBHSE6sVGP3c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Ir1J+uUxURu+AHETPTyi6WOaDY1NUbspU6Mn5aZO4eSO6Y8hhfB6T5KQLYXsswBHW
+	 I9Ophx6fwZa6J24wtHIuTZFe/aI6lQQmKnkpzXW8XM92hKQV+TA+f4HqUCfz4JU4Rc
+	 CYOMxs32Fm+sLkLg+3NuR3eR5HQVnb0Ddymr5WGI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D48FBF8032D;
-	Wed, 10 May 2023 19:37:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD851F80552;
+	Wed, 10 May 2023 19:39:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 710FCF8032D; Wed, 10 May 2023 19:37:26 +0200 (CEST)
+	id 4E30FF8053B; Wed, 10 May 2023 19:39:23 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 90019F80087
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 19:37:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90019F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id EE550F802E8
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 19:39:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE550F802E8
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 777802008A;
-	Wed, 10 May 2023 13:37:22 -0400 (EDT)
+	by bluemchen.kde.org (Postfix) with ESMTP id 176AF240B5;
+	Wed, 10 May 2023 13:39:18 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pwnkg-tHc-00; Wed, 10 May 2023 19:37:22 +0200
+	id 1pwnmX-tSi-00; Wed, 10 May 2023 19:39:17 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH] ALSA: emu10k1: don't create regular S/PDIF controls for E-MU
- cards
-Date: Wed, 10 May 2023 19:37:22 +0200
-Message-Id: <20230510173722.3072439-1-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 01/14] ALSA: emu10k1: make tone control switch mono
+Date: Wed, 10 May 2023 19:39:04 +0200
+Message-Id: <20230510173917.3073107-2-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <20230510173917.3073107-1-oswald.buddenhagen@gmx.de>
+References: <20230510173917.3073107-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YL3IV37HSLTSLUIEMBYJXSZXGEOKTNJQ
-X-Message-ID-Hash: YL3IV37HSLTSLUIEMBYJXSZXGEOKTNJQ
+Message-ID-Hash: IOC7TICGN77I6NYZ5572QKAP47N62UHK
+X-Message-ID-Hash: IOC7TICGN77I6NYZ5572QKAP47N62UHK
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -61,7 +63,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YL3IV37HSLTSLUIEMBYJXSZXGEOKTNJQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IOC7TICGN77I6NYZ5572QKAP47N62UHK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -70,26 +72,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-These ports are unused on these cards.
+It controls the whole surround set, so stereo can't work. As a
+consequence, only the left channel was paid attention to.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emumixer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/emu10k1/emufx.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
-index 610700be1e37..48f0d3f8b8e7 100644
---- a/sound/pci/emu10k1/emumixer.c
-+++ b/sound/pci/emu10k1/emumixer.c
-@@ -2055,7 +2055,7 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
- 		mix->attn[0] = 0xffff;
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index 98785110ef63..6442028fe48a 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -1543,13 +1543,13 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
+ #undef TREBLE_GPR
+ 
+ 	for (z = 0; z < 8; z++) {
+-		A_SWITCH(icode, &ptr, tmp + 0, playback + SND_EMU10K1_PLAYBACK_CHANNELS + z, gpr + 0);
+-		A_SWITCH_NEG(icode, &ptr, tmp + 1, gpr + 0);
++		A_SWITCH(icode, &ptr, tmp + 0, playback + SND_EMU10K1_PLAYBACK_CHANNELS + z, gpr);
++		A_SWITCH_NEG(icode, &ptr, tmp + 1, gpr);
+ 		A_SWITCH(icode, &ptr, tmp + 1, playback + z, tmp + 1);
+ 		A_OP(icode, &ptr, iACC3, A_GPR(playback + SND_EMU10K1_PLAYBACK_CHANNELS + z), A_GPR(tmp + 0), A_GPR(tmp + 1), A_C_00000000);
  	}
- 	
--	if (! emu->card_capabilities->ecard) { /* FIXME: APS has these controls? */
-+	if (!emu->card_capabilities->ecard && !emu->card_capabilities->emu_model) {
- 		/* sb live! and audigy */
- 		kctl = snd_ctl_new1(&snd_emu10k1_spdif_mask_control, emu);
- 		if (!kctl)
+-	snd_emu10k1_init_stereo_onoff_control(controls + nctl++, "Tone Control - Switch", gpr, 0);
+-	gpr += 2;
++	snd_emu10k1_init_mono_onoff_control(controls + nctl++, "Tone Control - Switch", gpr, 0);
++	gpr++;
+ 
+ 	/* Master volume (will be renamed later) */
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(playback+0+SND_EMU10K1_PLAYBACK_CHANNELS), A_C_00000000, A_GPR(gpr), A_GPR(playback+0+SND_EMU10K1_PLAYBACK_CHANNELS));
+@@ -2263,13 +2263,13 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+ #undef TREBLE_GPR
+ 
+ 	for (z = 0; z < 6; z++) {
+-		SWITCH(icode, &ptr, tmp + 0, playback + SND_EMU10K1_PLAYBACK_CHANNELS + z, gpr + 0);
+-		SWITCH_NEG(icode, &ptr, tmp + 1, gpr + 0);
++		SWITCH(icode, &ptr, tmp + 0, playback + SND_EMU10K1_PLAYBACK_CHANNELS + z, gpr);
++		SWITCH_NEG(icode, &ptr, tmp + 1, gpr);
+ 		SWITCH(icode, &ptr, tmp + 1, playback + z, tmp + 1);
+ 		OP(icode, &ptr, iACC3, GPR(playback + SND_EMU10K1_PLAYBACK_CHANNELS + z), GPR(tmp + 0), GPR(tmp + 1), C_00000000);
+ 	}
+-	snd_emu10k1_init_stereo_onoff_control(controls + i++, "Tone Control - Switch", gpr, 0);
+-	gpr += 2;
++	snd_emu10k1_init_mono_onoff_control(controls + i++, "Tone Control - Switch", gpr, 0);
++	gpr++;
+ 
+ 	/*
+ 	 *  Process outputs
 -- 
 2.40.0.152.g15d061e6df
 
