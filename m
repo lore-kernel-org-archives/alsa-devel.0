@@ -4,78 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB6ABC77B7C
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 20:52:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25140C77B7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 20:52:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9833FFB;
-	Wed, 10 May 2023 22:51:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9833FFB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64D7BFFE;
+	Wed, 10 May 2023 22:51:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64D7BFFE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683751932;
-	bh=xKx/R8XJkJRLG03QGYpP8wHeGAmznaHWqdrhoCtth8Q=;
+	s=default; t=1683751954;
+	bh=zllB5VXpd+eWpeBlgpDYyxAKvxEVFy7Vku8yr9o/fNA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EyawCXDmNSrO1Ze2r4uST7sQ//PVZdfbUxO6mfPM0PlbtuDx4ZNouGujI9lF2Atp9
-	 EXNCTJ12rp7QLCnlw5DxI/4+vabrXQVa1YkZEj5uDsjv/0W323zmlIlrdp6b35kV2g
-	 RUvrNe8tZMFYMNZwEVXo21hCzmBGUY8OMbOmQBFI=
+	b=vFIQ1IrfRZQc42kQMg6WUYBX7/j5k5JkoDGIx81FzJDbJ8xVbP9Dw1wmi4iU4VpJ2
+	 sZ9LmCcwq6rdclc+/u1CHBdFYLF8Bxc6h5vf2YLyhalLx6AwhNom5AI1G+Si8QV3E8
+	 cVmC4ysiNBGbvDw45gZH1hHrRRltX6JnWqNBbjSc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1505F80578;
-	Wed, 10 May 2023 22:49:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E4C3F8057C;
+	Wed, 10 May 2023 22:50:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95352F8055C; Wed, 10 May 2023 22:49:48 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 52AE6F8057E; Wed, 10 May 2023 22:50:05 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7B6F4F80553
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 22:49:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B6F4F80553
+	by alsa1.perex.cz (Postfix) with ESMTPS id 50A94F80571
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 22:50:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50A94F80571
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=TPLTH58+
+ header.s=k20201202 header.b=qY59tETH
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id B258C6408F;
-	Wed, 10 May 2023 20:49:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64B0DC433D2;
-	Wed, 10 May 2023 20:49:44 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4191D64A3E;
+	Wed, 10 May 2023 20:50:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9CA4C4339E;
+	Wed, 10 May 2023 20:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683751784;
-	bh=xKx/R8XJkJRLG03QGYpP8wHeGAmznaHWqdrhoCtth8Q=;
+	s=k20201202; t=1683751802;
+	bh=zllB5VXpd+eWpeBlgpDYyxAKvxEVFy7Vku8yr9o/fNA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TPLTH58+285C1f08ONFC70q1BoPYNh2hfGhcStE1RU6VUAjCTK9aRZpkJgIOHtTa/
-	 AUk99c+0IZbiiPIxLrbjYlBSUF625D0XVgscqE2W7hoZR3fPYknSVs/Nel/u9dQBr9
-	 GELP/bnlasccwZfGtBmuyqIu0TfHy+5/XCSk9qlXs7Vv3g4rP3OeuhRwe1wpvqfFD0
-	 NFnUq0It5JxeC6Y+rrQBLhRz37ZCACJkPQmuhhLMasOk+6xLNv2RwjFRAEhIe5b61F
-	 ioNLh9CIb1Y40duxuTa/dQibATfcEbH2KHDK480i2NtHIfFG7oc1RaV+6qQAhB7PRE
-	 rpmtbvngFIFkQ==
+	b=qY59tETHe8EKiit/C1w7zEt84/5UpPuS3K6z/Rk63kZKUMt1s3HFlp+wbmlfTd4Tg
+	 O4n6SkhMyB+CsIxevr2Kd1Zw1a/dvsBdkuEce3n6UXydFAWt1yjByI4Gqkoa75+rQU
+	 ESCOfubJnyvDUb5lgRoKhXFSPBegYMuUi9VHRs5DkNZa1ER4IFY6O6cNCONIgFZXop
+	 uT4lq0VYJwjwEAclIXaoPYKT9laWE1ckUJsjfGe5+OQ1yRxjRcIPZjGkxomRfhU2+O
+	 CrseAuKAS2LxbQa2xKWPzz7OU9HYTyPdMuoLkYkDpAntluooiD2dvxCX+y4tS3vHi8
+	 rarM2xa/lKLhQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Vinod Koul <vkoul@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	agross@kernel.org,
+	andersson@kernel.org,
 	yung-chuan.liao@linux.intel.com,
+	linux-arm-msm@vger.kernel.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.2 5/9] soundwire: bus: Fix unbalanced
- pm_runtime_put() causing usage count underflow
-Date: Wed, 10 May 2023 16:49:22 -0400
-Message-Id: <20230510204926.104747-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 3/8] soundwire: qcom: gracefully handle too many
+ ports in DT
+Date: Wed, 10 May 2023 16:49:44 -0400
+Message-Id: <20230510204950.104873-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230510204926.104747-1-sashal@kernel.org>
-References: <20230510204926.104747-1-sashal@kernel.org>
+In-Reply-To: <20230510204950.104873-1-sashal@kernel.org>
+References: <20230510204950.104873-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6ZLVZUSCO3TMTKY6VDY4QCNT5FSPLDOW
-X-Message-ID-Hash: 6ZLVZUSCO3TMTKY6VDY4QCNT5FSPLDOW
+Message-ID-Hash: BARGH76WZGHLHQ3ZJ3DLSDICX5FD3UFA
+X-Message-ID-Hash: BARGH76WZGHLHQ3ZJ3DLSDICX5FD3UFA
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6ZLVZUSCO3TMTKY6VDY4QCNT5FSPLDOW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BARGH76WZGHLHQ3ZJ3DLSDICX5FD3UFA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,89 +100,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit e9537962519e88969f5f69cd0571eb4f6984403c ]
+[ Upstream commit 2367e0ecb498764e95cfda691ff0828f7d25f9a4 ]
 
-This reverts commit
-443a98e649b4 ("soundwire: bus: use pm_runtime_resume_and_get()")
+There are two issues related to the number of ports coming from
+Devicetree when exceeding in total QCOM_SDW_MAX_PORTS.  Both lead to
+incorrect memory accesses:
+1. With DTS having too big value of input or output ports, the driver,
+   when copying port parameters from local/stack arrays into 'pconfig'
+   array in 'struct qcom_swrm_ctrl', will iterate over their sizes.
 
-Change calls to pm_runtime_resume_and_get() back to pm_runtime_get_sync().
-This fixes a usage count underrun caused by doing a pm_runtime_put() even
-though pm_runtime_resume_and_get() returned an error.
+2. If DTS also has too many parameters for these ports (e.g.
+   qcom,ports-sinterval-low), the driver will overflow buffers on the
+   stack when reading these properties from DTS.
 
-The three affected functions ignore -EACCES error from trying to get
-pm_runtime, and carry on, including a put at the end of the function.
-But pm_runtime_resume_and_get() does not increment the usage count if it
-returns an error. So in the -EACCES case you must not call
-pm_runtime_put().
+Add a sanity check so incorrect DTS will not cause kernel memory
+corruption.
 
-The documentation for pm_runtime_get_sync() says:
- "Consider using pm_runtime_resume_and_get() ...  as this is likely to
- result in cleaner code."
-
-In this case I don't think it results in cleaner code because the
-pm_runtime_put() at the end of the function would have to be conditional on
-the return value from pm_runtime_resume_and_get() at the top of the
-function.
-
-pm_runtime_get_sync() doesn't have this problem because it always
-increments the count, so always needs a put. The code can just flow through
-and do the pm_runtime_put() unconditionally.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20230406134640.8582-1-rf@opensource.cirrus.com
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Link: https://lore.kernel.org/r/20230222144412.237832-2-krzysztof.kozlowski@linaro.org
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/bus.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ drivers/soundwire/qcom.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 76515c33e639e..4fd221d0cc818 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -571,9 +571,11 @@ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
- {
- 	int ret;
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index cee2b22231410..c535da166ca1d 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -1209,6 +1209,9 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
+ 	ctrl->num_dout_ports = val;
  
--	ret = pm_runtime_resume_and_get(&slave->dev);
--	if (ret < 0 && ret != -EACCES)
-+	ret = pm_runtime_get_sync(&slave->dev);
-+	if (ret < 0 && ret != -EACCES) {
-+		pm_runtime_put_noidle(&slave->dev);
- 		return ret;
-+	}
- 
- 	ret = sdw_nread_no_pm(slave, addr, count, val);
- 
-@@ -595,9 +597,11 @@ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
- {
- 	int ret;
- 
--	ret = pm_runtime_resume_and_get(&slave->dev);
--	if (ret < 0 && ret != -EACCES)
-+	ret = pm_runtime_get_sync(&slave->dev);
-+	if (ret < 0 && ret != -EACCES) {
-+		pm_runtime_put_noidle(&slave->dev);
- 		return ret;
-+	}
- 
- 	ret = sdw_nwrite_no_pm(slave, addr, count, val);
- 
-@@ -1565,9 +1569,10 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 
- 	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
- 
--	ret = pm_runtime_resume_and_get(&slave->dev);
-+	ret = pm_runtime_get_sync(&slave->dev);
- 	if (ret < 0 && ret != -EACCES) {
- 		dev_err(&slave->dev, "Failed to resume device: %d\n", ret);
-+		pm_runtime_put_noidle(&slave->dev);
- 		return ret;
- 	}
- 
+ 	nports = ctrl->num_dout_ports + ctrl->num_din_ports;
++	if (nports > QCOM_SDW_MAX_PORTS)
++		return -EINVAL;
++
+ 	/* Valid port numbers are from 1-14, so mask out port 0 explicitly */
+ 	set_bit(0, &ctrl->dout_port_mask);
+ 	set_bit(0, &ctrl->din_port_mask);
 -- 
 2.39.2
 
