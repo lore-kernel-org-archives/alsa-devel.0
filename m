@@ -4,81 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25140C77B7C
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 20:52:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A03A1C77B7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 20:52:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64D7BFFE;
-	Wed, 10 May 2023 22:51:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64D7BFFE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77ABDFE9;
+	Wed, 10 May 2023 22:52:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77ABDFE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683751954;
-	bh=zllB5VXpd+eWpeBlgpDYyxAKvxEVFy7Vku8yr9o/fNA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=vFIQ1IrfRZQc42kQMg6WUYBX7/j5k5JkoDGIx81FzJDbJ8xVbP9Dw1wmi4iU4VpJ2
-	 sZ9LmCcwq6rdclc+/u1CHBdFYLF8Bxc6h5vf2YLyhalLx6AwhNom5AI1G+Si8QV3E8
-	 cVmC4ysiNBGbvDw45gZH1hHrRRltX6JnWqNBbjSc=
+	s=default; t=1683751976;
+	bh=+CClwmlhhoXRV/flrOSGPQcZOJ5y9G17Co5fZemzFmM=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=QVCoESgDaz5SL5cgWyvjtEUCWs8y0Tv4y9VhQyqnpptaq5lJTnYl7pwF+6N2yxg/+
+	 EJo0BB+62s3zbg1v5dbybgHU4iFqStQlnxYLunIyfAi37EYD8yjHu7U9f1/5LuCgxa
+	 sr9eLw3aAI5tRwvDCDCOhmdFxs0uD54pk2po5WDg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E4C3F8057C;
-	Wed, 10 May 2023 22:50:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0ECB4F80580;
+	Wed, 10 May 2023 22:50:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 52AE6F8057E; Wed, 10 May 2023 22:50:05 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id E6420F8057D; Wed, 10 May 2023 22:50:05 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 50A94F80571
+	by alsa1.perex.cz (Postfix) with ESMTPS id AA9EDF8057A
 	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 22:50:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50A94F80571
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA9EDF8057A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qY59tETH
+ header.s=k20201202 header.b=EEtPhlga
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4191D64A3E;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6EB466498F;
 	Wed, 10 May 2023 20:50:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9CA4C4339E;
-	Wed, 10 May 2023 20:50:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDABDC43443;
+	Wed, 10 May 2023 20:50:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683751802;
-	bh=zllB5VXpd+eWpeBlgpDYyxAKvxEVFy7Vku8yr9o/fNA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qY59tETHe8EKiit/C1w7zEt84/5UpPuS3K6z/Rk63kZKUMt1s3HFlp+wbmlfTd4Tg
-	 O4n6SkhMyB+CsIxevr2Kd1Zw1a/dvsBdkuEce3n6UXydFAWt1yjByI4Gqkoa75+rQU
-	 ESCOfubJnyvDUb5lgRoKhXFSPBegYMuUi9VHRs5DkNZa1ER4IFY6O6cNCONIgFZXop
-	 uT4lq0VYJwjwEAclIXaoPYKT9laWE1ckUJsjfGe5+OQ1yRxjRcIPZjGkxomRfhU2+O
-	 CrseAuKAS2LxbQa2xKWPzz7OU9HYTyPdMuoLkYkDpAntluooiD2dvxCX+y4tS3vHi8
-	 rarM2xa/lKLhQ==
+	s=k20201202; t=1683751801;
+	bh=+CClwmlhhoXRV/flrOSGPQcZOJ5y9G17Co5fZemzFmM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=EEtPhlgaToDK0yfgIfJ/on05ZppLnc/SXedOBGaCk3cgNAAxnRGD9l7FvfmoufBjx
+	 4m5UEysYNglIzj9bXwsEVZgq7SY0eDryg2nMnCMSB5yK7PfHgYLpNZ8q1d01NyrcHZ
+	 knGKx4UbeQs78oIBsGAG95D4/TI7eJ+jy+D1DrfLsBbQso5YE6yzYsTLvdf+DU37qO
+	 NQkd6lCHKl8pKEj0cZWpEPz7KAPymXGQ9W22B7cdGwCfx0JkQWDtfY5y75lrJwxbrk
+	 JRDisi7tYm8MNtEndy5jzerNquYGpYAS12vIpmaMNZt4fj/EQ/fvEOAygmO6zMF09H
+	 CiWWDQQZ58uog==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
+Cc: Eugene Huang <eugene.huang99@gmail.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Vinod Koul <vkoul@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	agross@kernel.org,
-	andersson@kernel.org,
-	yung-chuan.liao@linux.intel.com,
-	linux-arm-msm@vger.kernel.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 3/8] soundwire: qcom: gracefully handle too many
- ports in DT
-Date: Wed, 10 May 2023 16:49:44 -0400
-Message-Id: <20230510204950.104873-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 1/8] soundwire: dmi-quirks: add remapping for
+ Intel 'Rooks County' NUC M15
+Date: Wed, 10 May 2023 16:49:42 -0400
+Message-Id: <20230510204950.104873-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230510204950.104873-1-sashal@kernel.org>
-References: <20230510204950.104873-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BARGH76WZGHLHQ3ZJ3DLSDICX5FD3UFA
-X-Message-ID-Hash: BARGH76WZGHLHQ3ZJ3DLSDICX5FD3UFA
+Message-ID-Hash: UKYC4QV54USEBGJVZTQ4PVDOCKVIGOR3
+X-Message-ID-Hash: UKYC4QV54USEBGJVZTQ4PVDOCKVIGOR3
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BARGH76WZGHLHQ3ZJ3DLSDICX5FD3UFA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UKYC4QV54USEBGJVZTQ4PVDOCKVIGOR3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,48 +96,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Eugene Huang <eugene.huang99@gmail.com>
 
-[ Upstream commit 2367e0ecb498764e95cfda691ff0828f7d25f9a4 ]
+[ Upstream commit 01b33e284ca28cc977bdcfb23be2c719f2139175 ]
 
-There are two issues related to the number of ports coming from
-Devicetree when exceeding in total QCOM_SDW_MAX_PORTS.  Both lead to
-incorrect memory accesses:
-1. With DTS having too big value of input or output ports, the driver,
-   when copying port parameters from local/stack arrays into 'pconfig'
-   array in 'struct qcom_swrm_ctrl', will iterate over their sizes.
+Same DSDT problem as the HP Omen 16-k0005TX, except rt1316 amp is on
+link2.
 
-2. If DTS also has too many parameters for these ports (e.g.
-   qcom,ports-sinterval-low), the driver will overflow buffers on the
-   stack when reading these properties from DTS.
-
-Add a sanity check so incorrect DTS will not cause kernel memory
-corruption.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Link: https://lore.kernel.org/r/20230222144412.237832-2-krzysztof.kozlowski@linaro.org
+Link: https://github.com/thesofproject/linux/issues/4088
+Signed-off-by: Eugene Huang <eugene.huang99@gmail.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20230314090618.498716-1-yung-chuan.liao@linux.intel.com
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/qcom.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/soundwire/dmi-quirks.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index cee2b22231410..c535da166ca1d 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -1209,6 +1209,9 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
- 	ctrl->num_dout_ports = val;
+diff --git a/drivers/soundwire/dmi-quirks.c b/drivers/soundwire/dmi-quirks.c
+index 7969881f126dc..58ea013fa918a 100644
+--- a/drivers/soundwire/dmi-quirks.c
++++ b/drivers/soundwire/dmi-quirks.c
+@@ -73,6 +73,23 @@ static const struct adr_remap hp_omen_16[] = {
+ 	{}
+ };
  
- 	nports = ctrl->num_dout_ports + ctrl->num_din_ports;
-+	if (nports > QCOM_SDW_MAX_PORTS)
-+		return -EINVAL;
++/*
++ * Intel NUC M15 LAPRC510 and LAPRC710
++ */
++static const struct adr_remap intel_rooks_county[] = {
++	/* rt711-sdca on link0 */
++	{
++		0x000020025d071100ull,
++		0x000030025d071101ull
++	},
++	/* rt1316-sdca on link2 */
++	{
++		0x000120025d071100ull,
++		0x000230025d131601ull
++	},
++	{}
++};
 +
- 	/* Valid port numbers are from 1-14, so mask out port 0 explicitly */
- 	set_bit(0, &ctrl->dout_port_mask);
- 	set_bit(0, &ctrl->din_port_mask);
+ static const struct dmi_system_id adr_remap_quirk_table[] = {
+ 	/* TGL devices */
+ 	{
+@@ -98,6 +115,14 @@ static const struct dmi_system_id adr_remap_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)intel_tgl_bios,
+ 	},
++	{
++		/* quirk used for NUC15 'Rooks County' LAPRC510 and LAPRC710 skews */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Intel(R) Client Systems"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "LAPRC"),
++		},
++		.driver_data = (void *)intel_rooks_county,
++	},
+ 	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
 -- 
 2.39.2
 
