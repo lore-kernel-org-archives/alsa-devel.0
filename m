@@ -4,53 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2BD9C77B7C
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 16:32:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C832C7EE22
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 16:56:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3975109F;
-	Wed, 10 May 2023 18:31:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3975109F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E46B1016;
+	Wed, 10 May 2023 18:55:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E46B1016
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683736342;
-	bh=1+EDvRnZqRM9CDPvvy5rJjN4BrYGjAPrdf5efgSiKp0=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1683737786;
+	bh=gdfDGCkAwLxnq7fj1R5C13I6V4pSD/DIKF1qCqMqIw8=;
+	h=Date:To:References:From:Subject:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rzQYkUyR+gXLrT1h8wZMLS15TgKbU8UJ/uVZm2w8752gozH7l2PZ9ImkkRz1R5IFg
-	 R5YULducFGP00vZPSmaoHJkvD0Hb/Yvlur4RHezbAYHvIm+zLmC3iTNjOYUgaFAMRo
-	 wFSLl5CM0FwRpwPJDiwya5GLabnYzzeuSRGLth4s=
+	b=g8HLDwJGexlTUgaVHQJ5q/UwHD9QqsrMs+HQNZO54PmSJCVIsMBm/IiZoZHbHdZaC
+	 0v08WzAbyx8fRJLhdMcfnmHeM3IsT7tQPiDwpmWQ2G2tgsOjIUXOZQsuEgr1Guc6ei
+	 nYMo8RPTh5eWd9Cyyf9aHyAOzgjk6qtz6R5gn0SQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68D4DF8053B;
-	Wed, 10 May 2023 18:31:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7014F8032D;
+	Wed, 10 May 2023 18:55:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 02C8CF80310; Wed, 10 May 2023 18:31:29 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 20DD0F8032D; Wed, 10 May 2023 18:55:06 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DDC8CF804B1
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 18:29:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDC8CF804B1
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 3DCF624172;
-	Wed, 10 May 2023 12:29:36 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pwmh5-r3O-00; Wed, 10 May 2023 18:29:35 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/4] ALSA: emu10k1: merge common paths in
- snd_emu10k1_ptr_{read,write}()
-Date: Wed, 10 May 2023 18:29:34 +0200
-Message-Id: <20230510162935.3063854-3-oswald.buddenhagen@gmx.de>
-X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230510162935.3063854-1-oswald.buddenhagen@gmx.de>
-References: <20230510162935.3063854-1-oswald.buddenhagen@gmx.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0BECCF80087
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 18:55:02 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8506511F7;
+	Wed, 10 May 2023 18:55:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 8506511F7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1683737701; bh=Xd+L7eTp5FVpb6D1pWVSz8ugqqmMP0C1GtW3qYGO8PM=;
+	h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
+	b=D7cL/gghe0MMR5G4Y867+CvSAqKMiL1P7AYtYpqwxRxilfmZPzQkF+qylrGX9uwTU
+	 qfyExSsYE8MUpeiYTFhdrNjWq62oPfHuDUEC9ya1S+0EybSCXK/adkkHl4fm0/fLFS
+	 lxQOujO7Zo0Kp7Cz1PfAHTcAaAKWTND73FB0+K50=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Wed, 10 May 2023 18:54:58 +0200 (CEST)
+Message-ID: <24e60af6-9585-289c-05e5-5b34370c6dba@perex.cz>
+Date: Wed, 10 May 2023 18:54:57 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OKGFVHRMN7GV4YFSGXDYR3M3UIZQ62LO
-X-Message-ID-Hash: OKGFVHRMN7GV4YFSGXDYR3M3UIZQ62LO
-X-MailFrom: ossi@kde.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Content-Language: en-US
+To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
+ alsa-devel@alsa-project.org
+References: <20230510162924.3063817-1-oswald.buddenhagen@gmx.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH v3] ALSA: pcm: auto-fill buffer with silence when draining
+ playback
+In-Reply-To: <20230510162924.3063817-1-oswald.buddenhagen@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 3CGXNVGL3H77UOSJVKFX63YAVTJ7YSVS
+X-Message-ID-Hash: 3CGXNVGL3H77UOSJVKFX63YAVTJ7YSVS
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -63,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OKGFVHRMN7GV4YFSGXDYR3M3UIZQ62LO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3CGXNVGL3H77UOSJVKFX63YAVTJ7YSVS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -72,64 +90,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Avoids some code duplication.
+On 10. 05. 23 18:29, Oswald Buddenhagen wrote:
+> Draining will always playback somewhat beyond the end of the filled
+> buffer. This would produce artifacts if the user did not set up the
+> auto-silencing machinery, which is an extremely easy mistake to make, as
+> the API strongly suggests convenient fire-and-forget semantics. This
+> patch makes it work out of the box.
+> 
+> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
----
- sound/pci/emu10k1/io.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+NAK. Already implemented in alsa-lib which is enough for the first 
+implementation. This patch also does not set the perfect drain flag nor 
+handles the silence suppression for the user space (double fill) [1].
 
-diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
-index ced69165d69a..2d6bbb77c961 100644
---- a/sound/pci/emu10k1/io.c
-+++ b/sound/pci/emu10k1/io.c
-@@ -40,24 +40,20 @@ unsigned int snd_emu10k1_ptr_read(struct snd_emu10k1 * emu, unsigned int reg, un
- 	if (!check_ptr_reg(emu, regptr))
- 		return 0;
- 
-+	spin_lock_irqsave(&emu->emu_lock, flags);
-+	outl(regptr, emu->port + PTR);
-+	val = inl(emu->port + DATA);
-+	spin_unlock_irqrestore(&emu->emu_lock, flags);
-+
- 	if (reg & 0xff000000) {
- 		unsigned char size, offset;
- 		
- 		size = (reg >> 24) & 0x3f;
- 		offset = (reg >> 16) & 0x1f;
- 		mask = ((1 << size) - 1) << offset;
- 		
--		spin_lock_irqsave(&emu->emu_lock, flags);
--		outl(regptr, emu->port + PTR);
--		val = inl(emu->port + DATA);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);
--		
- 		return (val & mask) >> offset;
- 	} else {
--		spin_lock_irqsave(&emu->emu_lock, flags);
--		outl(regptr, emu->port + PTR);
--		val = inl(emu->port + DATA);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);
- 		return val;
- 	}
- }
-@@ -88,14 +84,12 @@ void snd_emu10k1_ptr_write(struct snd_emu10k1 *emu, unsigned int reg, unsigned i
- 		spin_lock_irqsave(&emu->emu_lock, flags);
- 		outl(regptr, emu->port + PTR);
- 		data |= inl(emu->port + DATA) & ~mask;
--		outl(data, emu->port + DATA);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);		
- 	} else {
- 		spin_lock_irqsave(&emu->emu_lock, flags);
- 		outl(regptr, emu->port + PTR);
--		outl(data, emu->port + DATA);
--		spin_unlock_irqrestore(&emu->emu_lock, flags);
- 	}
-+	outl(data, emu->port + DATA);
-+	spin_unlock_irqrestore(&emu->emu_lock, flags);
- }
- 
- EXPORT_SYMBOL(snd_emu10k1_ptr_write);
+				Jaroslav
+
+[1] https://lore.kernel.org/alsa-devel/20230502115536.986900-1-perex@perex.cz/
+
 -- 
-2.40.0.152.g15d061e6df
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 
