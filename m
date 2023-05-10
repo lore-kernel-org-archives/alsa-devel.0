@@ -4,53 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 884A1C77B7C
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 17:43:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B12E3C77B7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 May 2023 17:43:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61C281019;
-	Wed, 10 May 2023 19:42:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61C281019
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97E701014;
+	Wed, 10 May 2023 19:42:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97E701014
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683740579;
-	bh=TX8chjd5ZiQQAgxN0xAkpRe/z+33Ym9AfIxXJyFgDl8=;
+	s=default; t=1683740596;
+	bh=VaseVVvAIjy6UfrsHwNDccuOs0g9omTa1JDulHP3lRw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CD0HThwCqA7d5n55oxUAMLdIXdrLpLHyHLbyM0CNlFFDlHp7fIQvuN44IMbjFDXGv
-	 pYCsLRjhON1rGGcoCzmK69kKvEHlNy/aixfXK8dTDwKPd5COXc5eyzEDK/HDlzc40t
-	 0ajP6/SWgZ/muPEO01sUumZX/CPoj1/3QYrDLy+Y=
+	b=qM6BV6jgIacT1X7xLaFNQVwFurU9oSBMc2Ml292KXzd0azao8izQbba3F+Y2xuVvr
+	 JyU8G/N13nBpJd4tzmKkGfi0l8dIsOmhFZ563woFXbm1QVzH+bqXDLdoKuXfvoBrul
+	 JaJtPyEl8ESWAAYVeF7V5tiKcxmHRlw6iDd4Ry5g=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8CBFF8058C;
-	Wed, 10 May 2023 19:39:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69522F805A8;
+	Wed, 10 May 2023 19:39:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 99CD9F8053B; Wed, 10 May 2023 19:39:38 +0200 (CEST)
+	id 03097F8052E; Wed, 10 May 2023 19:39:39 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 85AB5F804B1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8732BF80534
 	for <alsa-devel@alsa-project.org>; Wed, 10 May 2023 19:39:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85AB5F804B1
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8732BF80534
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 34FE924251;
+	by bluemchen.kde.org (Postfix) with ESMTP id 2BCBD2423B;
 	Wed, 10 May 2023 13:39:18 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pwnmX-tTO-00; Wed, 10 May 2023 19:39:17 +0200
+	id 1pwnmX-tT0-00; Wed, 10 May 2023 19:39:17 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 08/14] ALSA: emu10k1: polish audigy GPR allocation
-Date: Wed, 10 May 2023 19:39:11 +0200
-Message-Id: <20230510173917.3073107-9-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 04/14] ALSA: emu10k1: simplify
+ snd_emu10k1_audigy_dsp_convert_32_to_2x16()
+Date: Wed, 10 May 2023 19:39:07 +0200
+Message-Id: <20230510173917.3073107-5-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230510173917.3073107-1-oswald.buddenhagen@gmx.de>
 References: <20230510173917.3073107-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FM3D477YANZHVELPDCECIDYYII3XSRXD
-X-Message-ID-Hash: FM3D477YANZHVELPDCECIDYYII3XSRXD
+Message-ID-Hash: GSRFMVRMHGAPIQHYHI5WPETBG4Q5CQTM
+X-Message-ID-Hash: GSRFMVRMHGAPIQHYHI5WPETBG4Q5CQTM
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -63,7 +64,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FM3D477YANZHVELPDCECIDYYII3XSRXD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GSRFMVRMHGAPIQHYHI5WPETBG4Q5CQTM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -72,151 +73,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-- Pull ahead all fixed allocations, so we don't rely on the semi-
-  dynamic ones not crossing the arbitrarily determined limit
-- Use an enum for the fixed allocations
-- Stop arbitrarily wasting registers on unexplained "reservations"
-- Don't reserve two regs for the master volume control - it's mono
+Instead of spending lots of instructions on masking and transplanting
+the sign bit, sidestep the issue by replacing the last bit shift with
+a wrapping addition to self.
+
+Solution stolen from kX-project, after I pondered other ideas first.
+
+Also, the function really doesn't need to return a constant int value.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emufx.c | 68 +++++++++++++++++++++------------------
- 1 file changed, 36 insertions(+), 32 deletions(-)
+ sound/pci/emu10k1/emufx.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 5ae275d87c59..41805cf5bea1 100644
+index 795b2573fef4..8ba294138dfe 100644
 --- a/sound/pci/emu10k1/emufx.c
 +++ b/sound/pci/emu10k1/emufx.c
-@@ -1202,18 +1202,31 @@ static void snd_emu10k1_audigy_dsp_convert_32_to_2x16(
- 	A_OP(icode, ptr, iMAC3, reg_out, A_GPR(tmp), A_GPR(tmp), A_C_80000000);
+@@ -1184,20 +1184,22 @@ snd_emu10k1_init_stereo_onoff_control(struct snd_emu10k1_fx8010_control_gpr *ctl
+  * to 2 x 16-bit registers in Audigy - their values are read via DMA.
+  * Conversion is performed by Audigy DSP instructions of FX8010.
+  */
+-static int snd_emu10k1_audigy_dsp_convert_32_to_2x16(
++static void snd_emu10k1_audigy_dsp_convert_32_to_2x16(
+ 				struct snd_emu10k1_fx8010_code *icode,
+ 				u32 *ptr, int tmp, int bit_shifter16,
+ 				int reg_in, int reg_out)
+ {
+-	A_OP(icode, ptr, iACC3, A_GPR(tmp + 1), reg_in, A_C_00000000, A_C_00000000);
+-	A_OP(icode, ptr, iANDXOR, A_GPR(tmp), A_GPR(tmp + 1), A_GPR(bit_shifter16 - 1), A_C_00000000);
+-	A_OP(icode, ptr, iTSTNEG, A_GPR(tmp + 2), A_GPR(tmp), A_C_80000000, A_GPR(bit_shifter16 - 2));
+-	A_OP(icode, ptr, iANDXOR, A_GPR(tmp + 2), A_GPR(tmp + 2), A_C_80000000, A_C_00000000);
+-	A_OP(icode, ptr, iANDXOR, A_GPR(tmp), A_GPR(tmp), A_GPR(bit_shifter16 - 3), A_C_00000000);
+-	A_OP(icode, ptr, iMACINT0, A_GPR(tmp), A_C_00000000, A_GPR(tmp), A_C_00010000);
+-	A_OP(icode, ptr, iANDXOR, reg_out, A_GPR(tmp), A_C_ffffffff, A_GPR(tmp + 2));
+-	A_OP(icode, ptr, iACC3, reg_out + 1, A_GPR(tmp + 1), A_C_00000000, A_C_00000000);
+-	return 1;
++	// This leaves the low word in place, which is fine,
++	// as the low bits are completely ignored subsequently.
++	// reg_out[1] = reg_in
++	A_OP(icode, ptr, iACC3, reg_out + 1, reg_in, A_C_00000000, A_C_00000000);
++	// It is fine to read reg_in multiple times.
++	// tmp = reg_in << 15
++	A_OP(icode, ptr, iMACINT1, A_GPR(tmp), A_C_00000000, reg_in, A_GPR(bit_shifter16));
++	// Left-shift once more. This is a separate step, as the
++	// signed multiplication would clobber the MSB.
++	// reg_out[0] = tmp + ((tmp << 31) >> 31)
++	A_OP(icode, ptr, iMAC3, reg_out, A_GPR(tmp), A_GPR(tmp), A_C_80000000);
  }
  
-+#define ENUM_GPR(name, size) name, name ## _dummy = name + (size) - 1
-+
  /*
-  * initial DSP configuration for Audigy
-  */
- 
- static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
- {
--	int err, z, gpr, nctl;
--	int bit_shifter16;
--	const int playback = 10;
--	const int capture = playback + SND_EMU10K1_PLAYBACK_CHANNELS; /* we reserve 10 voices */
--	const int stereo_mix = capture + 2;
--	const int tmp = 0x88;
-+	int err, z, nctl;
-+	enum {
-+		ENUM_GPR(playback, SND_EMU10K1_PLAYBACK_CHANNELS),
-+		ENUM_GPR(stereo_mix, 2),
-+		ENUM_GPR(capture, 2),
-+		ENUM_GPR(bit_shifter16, 1),
-+		// The fixed allocation of these breaks the pattern, but why not.
-+		// Splitting these into left/right is questionable, as it will break
-+		// down for center/lfe. But it works for stereo/quadro, so whatever.
-+		ENUM_GPR(bass_gpr, 2 * 5),  // two sides, five coefficients
-+		ENUM_GPR(treble_gpr, 2 * 5),
-+		ENUM_GPR(bass_tmp, SND_EMU10K1_PLAYBACK_CHANNELS * 4),  // four delay stages
-+		ENUM_GPR(treble_tmp, SND_EMU10K1_PLAYBACK_CHANNELS * 4),
-+		ENUM_GPR(tmp, 3),
-+		num_static_gprs
-+	};
-+	int gpr = num_static_gprs;
- 	u32 ptr, ptr_skip;
- 	struct snd_emu10k1_fx8010_code *icode = NULL;
- 	struct snd_emu10k1_fx8010_control_gpr *controls = NULL, *ctl;
-@@ -1248,9 +1261,7 @@ static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
- 	strcpy(icode->name, "Audigy DSP code for ALSA");
+@@ -1247,10 +1249,8 @@ static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
  	ptr = 0;
  	nctl = 0;
--	gpr = stereo_mix + 10;
--	bit_shifter16 = gpr;
+ 	gpr = stereo_mix + 10;
+-	gpr_map[gpr++] = 0x00007fff;
 -	gpr_map[gpr++] = 0x00008000;
-+	gpr_map[bit_shifter16] = 0x00008000;
+-	gpr_map[gpr++] = 0x0000ffff;
+ 	bit_shifter16 = gpr;
++	gpr_map[gpr++] = 0x00008000;
  
  #if 1
  	/* PCM front Playback Volume (independent from stereo mix)
-@@ -1492,15 +1503,11 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
- 	ctl->max = 40;
- 	ctl->value[0] = ctl->value[1] = 20;
- 	ctl->translation = EMU10K1_GPR_TRANSLATION_TREBLE;
--
--#define BASS_GPR	0x8c
--#define TREBLE_GPR	0x96
--
- 	for (z = 0; z < 5; z++) {
- 		int j;
- 		for (j = 0; j < 2; j++) {
--			controls[nctl + 0].gpr[z * 2 + j] = BASS_GPR + z * 2 + j;
--			controls[nctl + 1].gpr[z * 2 + j] = TREBLE_GPR + z * 2 + j;
-+			controls[nctl + 0].gpr[z * 2 + j] = bass_gpr + z * 2 + j;
-+			controls[nctl + 1].gpr[z * 2 + j] = treble_gpr + z * 2 + j;
- 		}
- 	}
- 	nctl += 2;
-@@ -1513,40 +1520,37 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
- 	for (z = 0; z < 4; z++) {		/* front/rear/center-lfe/side */
- 		int j, k, l, d;
- 		for (j = 0; j < 2; j++) {	/* left/right */
--			k = 0xb0 + (z * 8) + (j * 4);
--			l = 0xe0 + (z * 8) + (j * 4);
-+			k = bass_tmp + (z * 8) + (j * 4);
-+			l = treble_tmp + (z * 8) + (j * 4);
- 			d = playback + z * 2 + j;
- 
--			A_OP(icode, &ptr, iMAC0, A_C_00000000, A_C_00000000, A_GPR(d), A_GPR(BASS_GPR + 0 + j));
--			A_OP(icode, &ptr, iMACMV, A_GPR(k+1), A_GPR(k), A_GPR(k+1), A_GPR(BASS_GPR + 4 + j));
--			A_OP(icode, &ptr, iMACMV, A_GPR(k), A_GPR(d), A_GPR(k), A_GPR(BASS_GPR + 2 + j));
--			A_OP(icode, &ptr, iMACMV, A_GPR(k+3), A_GPR(k+2), A_GPR(k+3), A_GPR(BASS_GPR + 8 + j));
--			A_OP(icode, &ptr, iMAC0, A_GPR(k+2), A_GPR_ACCU, A_GPR(k+2), A_GPR(BASS_GPR + 6 + j));
-+			A_OP(icode, &ptr, iMAC0, A_C_00000000, A_C_00000000, A_GPR(d), A_GPR(bass_gpr + 0 + j));
-+			A_OP(icode, &ptr, iMACMV, A_GPR(k+1), A_GPR(k), A_GPR(k+1), A_GPR(bass_gpr + 4 + j));
-+			A_OP(icode, &ptr, iMACMV, A_GPR(k), A_GPR(d), A_GPR(k), A_GPR(bass_gpr + 2 + j));
-+			A_OP(icode, &ptr, iMACMV, A_GPR(k+3), A_GPR(k+2), A_GPR(k+3), A_GPR(bass_gpr + 8 + j));
-+			A_OP(icode, &ptr, iMAC0, A_GPR(k+2), A_GPR_ACCU, A_GPR(k+2), A_GPR(bass_gpr + 6 + j));
- 			A_OP(icode, &ptr, iACC3, A_GPR(k+2), A_GPR(k+2), A_GPR(k+2), A_C_00000000);
- 
--			A_OP(icode, &ptr, iMAC0, A_C_00000000, A_C_00000000, A_GPR(k+2), A_GPR(TREBLE_GPR + 0 + j));
--			A_OP(icode, &ptr, iMACMV, A_GPR(l+1), A_GPR(l), A_GPR(l+1), A_GPR(TREBLE_GPR + 4 + j));
--			A_OP(icode, &ptr, iMACMV, A_GPR(l), A_GPR(k+2), A_GPR(l), A_GPR(TREBLE_GPR + 2 + j));
--			A_OP(icode, &ptr, iMACMV, A_GPR(l+3), A_GPR(l+2), A_GPR(l+3), A_GPR(TREBLE_GPR + 8 + j));
--			A_OP(icode, &ptr, iMAC0, A_GPR(l+2), A_GPR_ACCU, A_GPR(l+2), A_GPR(TREBLE_GPR + 6 + j));
-+			A_OP(icode, &ptr, iMAC0, A_C_00000000, A_C_00000000, A_GPR(k+2), A_GPR(treble_gpr + 0 + j));
-+			A_OP(icode, &ptr, iMACMV, A_GPR(l+1), A_GPR(l), A_GPR(l+1), A_GPR(treble_gpr + 4 + j));
-+			A_OP(icode, &ptr, iMACMV, A_GPR(l), A_GPR(k+2), A_GPR(l), A_GPR(treble_gpr + 2 + j));
-+			A_OP(icode, &ptr, iMACMV, A_GPR(l+3), A_GPR(l+2), A_GPR(l+3), A_GPR(treble_gpr + 8 + j));
-+			A_OP(icode, &ptr, iMAC0, A_GPR(l+2), A_GPR_ACCU, A_GPR(l+2), A_GPR(treble_gpr + 6 + j));
- 			A_OP(icode, &ptr, iMACINT0, A_GPR(l+2), A_C_00000000, A_GPR(l+2), A_C_00000010);
- 
- 			A_OP(icode, &ptr, iACC3, A_GPR(d), A_GPR(l+2), A_C_00000000, A_C_00000000);
- 
- 			if (z == 2)	/* center */
- 				break;
- 		}
- 	}
- 	gpr_map[gpr++] = ptr - ptr_skip;
- 
--#undef BASS_GPR
--#undef TREBLE_GPR
--
- 	/* Master volume (will be renamed later) */
- 	for (z = 0; z < 8; z++)
- 		A_OP(icode, &ptr, iMAC0, A_GPR(playback+z), A_C_00000000, A_GPR(gpr), A_GPR(playback+z));
- 	snd_emu10k1_init_mono_control(&controls[nctl++], "Wave Master Playback Volume", gpr, 0);
--	gpr += 2;
-+	gpr++;
- 
- 	/* analog speakers */
- 	A_PUT_STEREO_OUTPUT(A_EXTOUT_AFRONT_L, A_EXTOUT_AFRONT_R, playback);
-@@ -1668,7 +1672,7 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
- 	 * ok, set up done..
- 	 */
- 
--	BUG_ON(gpr > tmp);
-+	BUG_ON(gpr > 512);
- 	BUG_ON(nctl > SND_EMU10K1_GPR_CONTROLS);
- 
- 	/* clear remaining instruction memory */
 -- 
 2.40.0.152.g15d061e6df
 
