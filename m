@@ -4,82 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4506CC77B7C
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 May 2023 07:20:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEBE9C7EE22
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 May 2023 09:02:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D1E2F86;
-	Thu, 11 May 2023 09:19:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D1E2F86
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F06FF86;
+	Thu, 11 May 2023 11:01:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F06FF86
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683789644;
-	bh=1k9lf+myi/f5D7zOdphC/0fkA2IDPrai894As1HHIxE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1683795764;
+	bh=GJZMAzYXG3V/hbY+bDSaOz1GCyE2jdepbMC6wmGTfAA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mYy7rHDIp6LuqFHqyGH3vC5viOtnL0wM6gbhCN5KoEJxRBPsZpPx/BSQztydZmmIJ
-	 /OLlyX9D5YX+URC0On1HHwMhM8Hhd7ffCOcjIh2k1M4cU7/EaItWQUXvJEige5gvUc
-	 zq7oy2X9Ok4yp1HnqYF2aGteW8JKKyINcPcL1b9Q=
+	b=DNdgfHSbGPqh0u3pvOK98b8DvFxc0MnAKaIM0kTFGEBYMB5MLRd4/vSzIXo+gOa9F
+	 ApEo0G959VSI/FtlXMcNRR98BtUhUEUIahX2jEkoyldkJNO4b8bBAr2wDDGJdTplgi
+	 DmFkTa4OH+6yZBbfsxjDwK3lylJpA5XEw/xFgl3w=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0A31F8032D;
-	Thu, 11 May 2023 09:19:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFE50F800BF;
+	Thu, 11 May 2023 11:01:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 080C3F8032D; Thu, 11 May 2023 09:19:22 +0200 (CEST)
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::222])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 68102F8032D; Thu, 11 May 2023 11:01:23 +0200 (CEST)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
+ [IPv6:2a00:1450:4864:20::52b])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5036BF802E8
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2023 09:19:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5036BF802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 97005F800BF
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2023 11:01:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97005F800BF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=EV2PDAfz
-Received: (Authenticated sender: herve.codina@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 12BE34000C;
-	Thu, 11 May 2023 07:19:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1683789550;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yyHerlYHFamkJnQqL//Z3uWo0RLDtOmR22dPgo2ut2A=;
-	b=EV2PDAfzCs+eKt3zCjs+7X23c3yyFyjOHpCoyvuZs4X2JMo5r8O/5mQlblbTHepa+lbF7+
-	vJrcJzFR3lP2e/ZGRYMgqGZ121jtkG5YFFOprbRqkLMeUEms8DV1s6rxchCVYhYHkYk9M7
-	U0E2X/uofrc+FdIkpYHV9AMn9uFP3WmIPgw37MArWxuS45ZdpTlXiO2T+hQ47qXSZlahO9
-	ISKvoT/CyZbC5qvA8bO4pd08yK46bysM4peeRD0/Ceo81tzIBlZPHqVDsBHDSeneX4RdPY
-	nI6GfYOLp1C/ZGv9aV8Arf5mJO+m6AaOkTWVJLsZRYxuWxhxC7tXhiD68RqAaQ==
-Date: Thu, 11 May 2023 09:19:07 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring
- <robh@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Jonathan Cameron <jic23@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 1/4] dt-bindings: sound: Add simple-iio-aux
-Message-ID: <20230511091907.6794457b@bootlin.com>
-In-Reply-To: <ZFMzC7OBrcL9l5AH@finisterre.sirena.org.uk>
-References: <20230421124122.324820-1-herve.codina@bootlin.com>
-	<20230421124122.324820-2-herve.codina@bootlin.com>
-	<20230425173029.GA1967523-robh@kernel.org>
-	<20230426093621.3834e703@bootlin.com>
-	<5bcb2741-9212-f1aa-335b-6bc4b6fad448@linaro.org>
-	<ZFMzC7OBrcL9l5AH@finisterre.sirena.org.uk>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-redhat-linux-gnu)
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=cWCRSOdD
+Received: by mail-ed1-x52b.google.com with SMTP id
+ 4fb4d7f45d1cf-50bd37ca954so77119323a12.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 11 May 2023 02:01:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1683795674; x=1686387674;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0CisL2rUE4Hw6hlxlukZuowP2tixyFGxjkXdRANpN4o=;
+        b=cWCRSOdDgP46O6T1hMKoF/8U0aNMUK8Rt1UUXmAgisr+nnDt24sRYnhmXSx0YMLi83
+         Tv43KqVI7M8dGwOuXmp8wTGaoxcLPIwynVL4gr9HdgdeTAf+OQpE1waZuLzcsxy/sSFg
+         TU91PqWhPY7irbdfC+m/heDD7O5PtIBYYnFatINeBL0Qq6zYPgNdp5yYmK8wLPzMZMeD
+         t3E9QC3y6K9mud1kciwYf5qkS8vVkcXlbeRqutAixTGCkB532igmHdiKaoGRWdZCtOcM
+         3KQQhkOh1Qb5OKi4Ud7op4c9SDpIuOj3br7U2WB85Ik+qmGm2UoSKohftY7lDJ0zsRSl
+         D+/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683795674; x=1686387674;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0CisL2rUE4Hw6hlxlukZuowP2tixyFGxjkXdRANpN4o=;
+        b=iu7+PET08ZZpRwwWPbAIlkO4kT0vU6LGx5ZodlB6uonyYKzeBJHsAipZ/L7gRYJyTa
+         I8JsAKhgLgek/qvUzvaF+pe9lQo8sXbDZh3bSonb9+vpxgM+i8ELHsiXagIY7FKOdbYu
+         WdJwitPBqrn+HE+m2DHW5RjbG6JmkkXPs8+OjDmm94huX7B0ZyIPmksHvbQ4BbmkEHYw
+         A2xelUNlMD1OVi2BaTe2g28xTlTQpf5ai/oA76u0I4BkYZCiy7gxIHOLebdqUW2MfjRE
+         BaOR9LpzD7mXbWHwAWbr8Qgf8ume9hNUJOfY0UtYX2tj6mHj16EoWYDRvcrAxmdbblzb
+         9cdg==
+X-Gm-Message-State: AC+VfDzIzIs5fyeGiB3OT5i3oIcSjSvU8Axhr6qHY+QwEEq0MxW97+Hi
+	MiUJSr2wcjPRpJbX4zVklQQxzQ==
+X-Google-Smtp-Source: 
+ ACHHUZ6KOZWGlcRewxIzNr2yQQxjbZCIQpTw1t3mlu3ayU+bXuAyBCLXZ+Z5vsm6LCoN8NVEKftVCA==
+X-Received: by 2002:a17:907:da4:b0:966:4e4c:a36d with SMTP id
+ go36-20020a1709070da400b009664e4ca36dmr12121142ejc.20.1683795674367;
+        Thu, 11 May 2023 02:01:14 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:7e61:f14a:c3a4:809e?
+ ([2a02:810d:15c0:828:7e61:f14a:c3a4:809e])
+        by smtp.gmail.com with ESMTPSA id
+ w10-20020a170907270a00b00965e9a23f2bsm3679359ejk.134.2023.05.11.02.01.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 May 2023 02:01:13 -0700 (PDT)
+Message-ID: <1959eb8a-d55f-5f62-2b41-0e7ea41b27b2@linaro.org>
+Date: Thu, 11 May 2023 11:01:12 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [EXTERNAL] Re: [PATCH v2 2/5] ASoC: dt-bindings: Add tas2781
+ amplifier
+Content-Language: en-US
+To: "Ding, Shenghao" <shenghao-ding@ti.com>
+Cc: "Lu, Kevin" <kevin-lu@ti.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "Xu, Baojun" <x1077012@ti.com>, "Gupta, Peeyush" <peeyush@ti.com>,
+ "Navada Kanyana, Mukund" <navada@ti.com>,
+ "gentuser@gmail.com" <gentuser@gmail.com>,
+ "Ryan_Chu@wistron.com" <Ryan_Chu@wistron.com>,
+ "Sam_Wu@wistron.com" <Sam_Wu@wistron.com>,
+ Shenghao Ding <13916275206@139.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz"
+ <perex@perex.cz>,
+ "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>
+References: <20230508054512.719-1-13916275206@139.com>
+ <ca9d45cf-8a84-4fbc-e1dd-c96eef36fe25@linaro.org>
+ <c088d7dce83a45168d0dc25fee4a9e35@ti.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <c088d7dce83a45168d0dc25fee4a9e35@ti.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RQH4VSFRMAZS36SPWCZB5B4UQA2AOTTL
-X-Message-ID-Hash: RQH4VSFRMAZS36SPWCZB5B4UQA2AOTTL
-X-MailFrom: herve.codina@bootlin.com
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 4GKA7UBKHOV4XKCUTIL2LZXI2UAWB3R4
+X-Message-ID-Hash: 4GKA7UBKHOV4XKCUTIL2LZXI2UAWB3R4
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +126,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RQH4VSFRMAZS36SPWCZB5B4UQA2AOTTL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4GKA7UBKHOV4XKCUTIL2LZXI2UAWB3R4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,152 +135,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Rob, Krzysztof, Mark,
+On 10/05/2023 16:03, Ding, Shenghao wrote:
+> 
+>> +    items:
+>> +      minimum: 0x38
+>> +      maximum: 0x3f
+> 
+> ... So these are fixed? No need to encode them in such case...
+> 
+> and anyway actually I agree with Rob here - these addresses should be put in reg.
+> [DING] if all the put in reg, the i2c_probe will be called several time. The code don not want to register several codecs, but one codec including several tas2781s.
 
-On Thu, 4 May 2023 13:22:35 +0900
-Mark Brown <broonie@kernel.org> wrote:
+Eh? Why and what would call probe multiple times for one device? It's
+the first time I hear... I don't know, maybe Linux I2C has some
+specifics, but sounds surprising.
 
-> On Tue, May 02, 2023 at 09:26:32AM +0200, Krzysztof Kozlowski wrote:
-> > On 26/04/2023 09:36, Herve Codina wrote:  
-> > > Rob Herring <robh@kernel.org> wrote:  
-> > >> On Fri, Apr 21, 2023 at 02:41:19PM +0200, Herve Codina wrote:  
 > 
-> > >>> simple-iio-aux allows to consider these Industrial I/O devices as
-> > >>> auxliary audio devices.    
+>> +      description:
+>> +        I2C address of the device for different audio slots,
+>> +        useless in mono case.
+>> +
+>> +  ti,broadcast-addr:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    description:
+>> +      Generic I2C address for all the tas2781 devices in
+>> +      purpose of I2C broadcast during the multi-device
+>> +      writes, useless in mono case.
 > 
-> > >> What makes it simple? Any binding called simple or generic is a trigger 
-> > >> for me. Best to avoid those terms. :)  
-> 
-> > > I choose simple-iio-aux because some simple-* already exists.
-> > > For instance simple-audio-amplifier or simple-audio-mux.  
-> 
-> > > Do you prefer audio-iio-aux ?
-> > > Let me know if I should change.  
-> 
-> > It means that often what people call "simple" and "generic" works only
-> > for their specific case, because it is not really simple and generic.
-> > After some time the "simple" and "generic" becomes "complicated" and
-> > "huge". Conclusion: sometimes simple and generic bindings are bad idea
-> > and you should have something specific.  
-> 
-> > Your description in the binding also does not help to match it to
-> > specific, real device. Provide the examples, as Rob asked.  
-> 
-> I don't understand what you are looking for here.  IIO is a subsystem
-> which represents generic DACs and ADCs (along with other I/O things).
-> Audio devices also have DACs and ADCs, somewhat specialised for use in
-> audio but more limited by specs and interfaces than by anything
-> fundamental.  The goal here is to map DACs and ADCs described as IIO for
-> use in an audio context.
-> 
-> ADCs are devices that convert analog signals into digital values, DACs
-> are devices that convert digital values into analog signals.
-> 
-> > >> How do support multiple instances? Say you have 2 sound cards (or 1 
-> > >> sound card with multiple audio paths) each with different sets of IIO 
-> > >> channels associated with it. You'd need a link to each 'aux' node. Why 
-> > >> not just add io-channels to the sound card nodes directly? That's 
-> > >> already just a virtual, top-level container node grouping all the 
-> > >> components. I don't see why we need another virtual node grouping a 
-> > >> subset of them.  
-> 
-> > > I don't see what you mean.
-> > > I use a simple-audio-card and here is a full example using several
-> > > instances:  
-> 
-> > Just like Rob said: "You'd need a link to each 'aux' node"  
-> 
-> > and you did it...  
-> 
-> > So now the rest of Rob's answer:  
-> 
-> > "Why not just add io-channels to the sound card nodes directly? That's
-> > already just a virtual, top-level container node grouping all the
-> > components. I don't see why we need another virtual node grouping a
-> > subset of them."  
-> 
-> > Why do you need another node if it is not really representing a real,
-> > separate device?  
-> 
-> If nothing else I would expect it to be useful from a comprehensibility
-> point of view to bundle multiple IIO devices into a single multi-channel
-> audio stream, an individual IIO device is likely to only present a
-> single channel of data but it is common to group multiple channels of
-> audio data.
+> Probably you can figure it out from previous addresses and there is no need for this property.
+> [Ding] this address is the common address for all the tas2781, it can be used for dsp firmware downloading to all the tas2781s in parallel, which can save more downloading time
 
-I cannot simply add io-channels to the sound card directly. I need a node
-to set at least the sound-name-prefix property. Further more having a node
-and a related compatible string can be easier to maintain and add future
-evolution related to these "virtual" devices.
-
-As some subnodes are already defined for a sound card node, I propose to
-group these "virtual" audio devices node in a specific bundle node.
-This lead to the following example:
----- 8< ----
-    spi {
-        #address-cells = <1>;
-        #size-cells = <0>;
-	/* potentiometers present in an input amplifier design */
-        pot_in: potentiometer@0 {
-            compatible = "foo,xxx";
-            reg = <0>;
-            #io-channel-cells = <1>;
-        };
-	/* potentiometers present in an output amplifier design */
-	pot_out: potentiometer@1 {
-            compatible = "foo,xxx";
-            reg = <1>;
-            #io-channel-cells = <1>;
-        };
-	/* A codec */
-        codec: codec@2 {
-            compatible = "bar,yyy";
-            reg = <2>;
-            sound-name-prefix = "CODEC";
-        };
-
-    };
-
-    sound {
-        compatible = "simple-audio-card";
-        #address-cells = <1>;
-        #size-cells = <0>;
-        simple-audio-card,name = "My Sound Card";
-
-        simple-audio-card,aux-devs = <&amp_in>, <&amp_out>;
-        simple-audio-card,routing =
-            "CODEC IN0", "AMP_IN CH0 OUT",
-            "CODEC IN1", "AMP_IN CH1 OUT",
-            "AMP_OUT CH0 IN", "CODEC OUT0",
-            "AMP_OUT CH1 IN", "CODEC OUT1";
-
-        simple-audio-card,dai-link@0 {
-            ...
-        };
-
-        ...
-
-        /* A bundle for the additional devices */
-        simple-audio-card,additional-devs { 
-            amp_out: aux-out {
-                compatible = "audio-iio-aux";    /* Instead of "simple-iio-aux */
-                io-channels = <&pot_out 0>, <&pot_out 1>,
-                io-channel-names = "CH0", "CH1";
-                snd-control-invert-range = <1 1>;  /* Old 'invert' renamed */
-                sound-name-prefix = "AMP_OUT";
-            };
-
-            amp_in: aux-in {
-	       compatible = "audio-iio-aux";
-               io-channels = <&pot_in 0>, <&pot_in 1>;
-	       io-channel-names = "CH0", "CH1";
-	       sound-name-prefix = "AMP_IN";
-            };
-	};
-    };
----- 8< ----
-
-What do you think about this new binding ?
+So the answer is yes? Then please drop it... If not, say why it cannot
+be deducted from other addresses (e.g. last address + 1).
 
 Best regards,
-Hervé
+Krzysztof
+
