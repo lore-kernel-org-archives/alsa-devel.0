@@ -4,81 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5EBFC77B7C
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 May 2023 09:24:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06B7BC7EE22
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 May 2023 09:38:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF7141F0;
-	Thu, 11 May 2023 11:23:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF7141F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E2CD1E4;
+	Thu, 11 May 2023 11:37:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E2CD1E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683797068;
-	bh=ocQv8AcFxTbL62+jfcyQwX0OJyHxiyPjWf38hZ66OPk=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=jgLCurN2dDo9n7sQwoMgqGu+dM/sKylyQ3Hees/sAEcBVcK+Ok5tsVX9eCsHB7klD
-	 JkuffRt7RmMSjyDi5wcwQMIjkS8jYa9y3Q6gUR5LRH8PYX72ST2ezHZ31rRYHbLpyT
-	 d+5WnTodEM3JxeSt93KqScpXfFcMMi+4k9ifz2jI=
+	s=default; t=1683797923;
+	bh=nGXNCx3mX2qf5C8G133tq5Xx/YyzgfSRcCFmT8U5zjI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=V/0oHFyjEa5I7mhBX5Otd2Az3gANuOIZ+8P//z/sB0+YBo+Dh3zkZSiTRt3m5/5HT
+	 5tUYp4/pdhM4rZ11blPIftKYzlBRersyVbbqaE6ztWHJyC177Su3bmio8CZI533mEH
+	 kqHB4sU2nBtpWHrsp2rjcfG8X5doTMmVswrXSR1I=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1412F80587;
-	Thu, 11 May 2023 11:22:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBD6AF8032D;
+	Thu, 11 May 2023 11:37:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8B71F804B1; Thu, 11 May 2023 11:16:23 +0200 (CEST)
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
- [61.152.239.71])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	id E06C0F8032D; Thu, 11 May 2023 11:37:21 +0200 (CEST)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
+ [IPv6:2a00:1450:4864:20::635])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C5B82F800BF
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2023 11:16:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5B82F800BF
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 00222828D;
-	Thu, 11 May 2023 17:15:50 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 11 May
- 2023 17:15:51 +0800
-Received: from SD-Server.starfivetech.com (113.72.146.187) by
- EXMBX168.cuchost.com (172.16.6.78) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Thu, 11 May 2023 17:15:50 +0800
-From: Walker Chen <walker.chen@starfivetech.com>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-	Claudiu Beznea <Claudiu.Beznea@microchip.com>, Jaroslav Kysela
-	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor.dooley@microchip.com>, Emil Renner Berthing
-	<emil.renner.berthing@canonical.com>, Walker Chen
-	<walker.chen@starfivetech.com>
-CC: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-Subject: [PATCH v4 0/3] Add TDM audio on StarFive JH7110
-Date: Thu, 11 May 2023 17:15:46 +0800
-Message-ID: <20230511091549.28003-1-walker.chen@starfivetech.com>
-X-Mailer: git-send-email 2.17.1
+	by alsa1.perex.cz (Postfix) with ESMTPS id C5980F800BF
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2023 11:37:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5980F800BF
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=pfZeriXX
+Received: by mail-ej1-x635.google.com with SMTP id
+ a640c23a62f3a-96a5903758fso133379966b.1
+        for <alsa-devel@alsa-project.org>;
+ Thu, 11 May 2023 02:37:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1683797834; x=1686389834;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0TRjdhGheNLs8yioJ0et+AqnEpVQkoA539PlQCzm5lQ=;
+        b=pfZeriXXUl23v8ujioeEl7tU7lkqZg4uhs1cDv8ogmQ4nDTwj4f5BrsvbPAmGKE+ke
+         uizekmWLlrfLoIYnZXtWu8r4Bk27QGRAOcSQgIefdvzWF1drv5DcN/2bYjyBydovPbWz
+         TjkfKwbW/gTpYXSPT+otsiOxypWwGQga3lNVdpeqacOBNqeYH5UbRuhTFWNiQIebwHG0
+         lvonbYwuR9dng+4MBA+oIWqCQAuRk65DjpAJvOCJhHZn5+OdBySlrvFSb8sP/GVFmYUU
+         z6gh0CMcQZnO3DREanelq2x3pJSKKcQf/yAkbETAtg3Axm7UZNr78vG4FoaLf2W6JCHW
+         bHlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683797834; x=1686389834;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0TRjdhGheNLs8yioJ0et+AqnEpVQkoA539PlQCzm5lQ=;
+        b=U2W+OC6yqBUZ4dhfBcQIZYPaHDcHZ1/i4bDe4Vh1rTEnIeZmyfYuywj7f1dKBkudZH
+         nixXrsBeGztYt/DIYutFzjkUAPZ9mP3DedYTNpE5Uc43OLo3AmuIrZnhLzAi5vbzzOhv
+         clMaxHexB7jV+FDqIxFqAfpiaU0RTA7whjxrJuVbNNP06IpAqSpJ9pi3USQCvjI1TzCu
+         TPu/Ao/vcK70TRxwq/1FGyl8N2yq91Rda2VGEmXMPjv410J64fXAjioG0XR4cJnF73gU
+         DLYd04AcaoayARSuMv1X2cWcxFG+T/ipFpE+Le8zqWjUJ0exkftzqwql3NwYwNhmp03N
+         2agw==
+X-Gm-Message-State: AC+VfDz0Qz6cb9JxHeVYtMi/17kARI4Gx1nW8ktK/LX3mfzFysASE4yK
+	frHURRt/0LLFR5aHOHdGexnf3UUXzhm43TXY8kCN5g==
+X-Google-Smtp-Source: 
+ ACHHUZ4Hx4V319vc6VylXMO0Suff5DbHcFrowjRJuWGQieE5u6uGRJkXgthm4dY8KecLpl8JO8tKQQ==
+X-Received: by 2002:a17:907:9308:b0:965:b2c3:9575 with SMTP id
+ bu8-20020a170907930800b00965b2c39575mr16984246ejc.57.1683797833890;
+        Thu, 11 May 2023 02:37:13 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:7e61:f14a:c3a4:809e?
+ ([2a02:810d:15c0:828:7e61:f14a:c3a4:809e])
+        by smtp.gmail.com with ESMTPSA id
+ v9-20020a170906380900b0094e1344ddfdsm3712446ejc.34.2023.05.11.02.37.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 May 2023 02:37:13 -0700 (PDT)
+Message-ID: <ca2ed8e9-850a-56c5-e395-72e5861b9c71@linaro.org>
+Date: Thu, 11 May 2023 11:37:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [113.72.146.187]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-X-MailFrom: walker.chen@starfivetech.com
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 2/5] ASoC: dt-bindings: Add tas2781 amplifier
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: Shenghao Ding <13916275206@139.com>, devicetree@vger.kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+ perex@perex.cz, pierre-louis.bossart@linux.intel.com, kevin-lu@ti.com,
+ shenghao-ding@ti.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, x1077012@ti.com, peeyush@ti.com,
+ navada@ti.com, gentuser@gmail.com, Ryan_Chu@wistron.com, Sam_Wu@wistron.com
+References: <20230508054512.719-1-13916275206@139.com>
+ <ca9d45cf-8a84-4fbc-e1dd-c96eef36fe25@linaro.org>
+ <ZFyBzHWo3ORKAskX@finisterre.sirena.org.uk>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <ZFyBzHWo3ORKAskX@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: AHKTPWCVXIL3JAKSTCP57GOII4X45VZL
+X-Message-ID-Hash: AHKTPWCVXIL3JAKSTCP57GOII4X45VZL
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZN55B3EG2KB5HZKSFXXAJWWSA7367PN7
-X-Message-ID-Hash: ZN55B3EG2KB5HZKSFXXAJWWSA7367PN7
-X-Mailman-Approved-At: Thu, 11 May 2023 09:21:52 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZN55B3EG2KB5HZKSFXXAJWWSA7367PN7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AHKTPWCVXIL3JAKSTCP57GOII4X45VZL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -87,104 +124,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patchset adds TDM audio driver for the StarFive JH7110 SoC. The
-first patch adds device tree binding for TDM module. The second patch
-adds tdm driver support for JH7110 SoC. The last patch adds device tree
-node and pins configuration of tdm to JH7110 dts.
+On 11/05/2023 07:49, Mark Brown wrote:
+>> Missing minItems, but...
+> 
+>>> +    items:
+>>> +      minimum: 0x38
+>>> +      maximum: 0x3f
+> 
+>> ... So these are fixed? No need to encode them in such case...
+> 
+> I'm not sure I understand your concern here, there's up to 4 possible
+> values from 0x38-0x3f which has more than 4 possible values.
 
-The series has been tested on the VisionFive 2 board by plugging an
-audio expansion board. 
-
-For more information of audio expansion board, you can take a look
-at the following webpage:
-https://wiki.seeedstudio.com/ReSpeaker_2_Mics_Pi_HAT/
-
-Changes since v3:
-- Modified the subject of patch [1/3] to reflect which subsystem it is.
-- Use the set of functions with 'clk_bulk_' to get/enable/disable clocks. 
-- Dropped the overlay from patch [3/3].
-- Dropped the redundant macro 'CONFIG_PM' and 'CONFIG_PM_SLEEP' around
-  suspend() and resume().
-
-Changes since v2:
-- Use dt-overlay to describe sound card because need to plug the audio
-  expansion board into the VisionFive2 board.
-- Modified the coding style for driver.
-- Moved assignment of stop_dma_first to startup function of dai_driver.
-- Dropped some useless macro definition.
-- Use loops to get/enable/disable clocks. 
-
-Changes since v1:
-- Rebased on Linux 6.3-rc4.
-- Added the dts file dedicated to describe audio card.
-- Added the item for JH7110 audio board to the dt-binding of StarFive
-  SoC-based boards.
-
----
-v3: https://lore.kernel.org/all/20230506090116.9206-1-walker.chen@starfivetech.com/
-v2: https://lore.kernel.org/all/20230420024118.22677-1-walker.chen@starfivetech.com/
-v1: https://lore.kernel.org/all/20230329153320.31390-1-walker.chen@starfivetech.com/
-
-Walker Chen (3):
-  ASoC: dt-bindings: Add TDM controller bindings for StarFive JH7110
-  ASoC: starfive: Add JH7110 TDM driver
-  riscv: dts: starfive: add the node and pins configuration for tdm
-
- .../bindings/sound/starfive,jh7110-tdm.yaml   |  98 ++++
- MAINTAINERS                                   |   6 +
- .../jh7110-starfive-visionfive-2.dtsi         |  40 ++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      |  21 +
- sound/soc/Kconfig                             |   1 +
- sound/soc/Makefile                            |   1 +
- sound/soc/starfive/Kconfig                    |  15 +
- sound/soc/starfive/Makefile                   |   2 +
- sound/soc/starfive/jh7110_tdm.c               | 554 ++++++++++++++++++
- sound/soc/starfive/jh7110_tdm.h               | 138 +++++
- 10 files changed, 876 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/starfive,jh7110-tdm.yaml
- create mode 100644 sound/soc/starfive/Kconfig
- create mode 100644 sound/soc/starfive/Makefile
- create mode 100644 sound/soc/starfive/jh7110_tdm.c
- create mode 100644 sound/soc/starfive/jh7110_tdm.h
+Aren't the addresses going to be incremented by one (up to 8 of devices
+in total)?
 
 
-base-commit: 197b6b60ae7bc51dd0814953c562833143b292aa
-prerequisite-patch-id: 30bec4dba6f250a6edd0c2cbab2ce09442e50e8a
-prerequisite-patch-id: bb939c0c7c26b08addfccd890f9d3974b6eaec53
-prerequisite-patch-id: 8a6f135bcabdad4a4bfb21f0c6a0ffd2bb57efe7
-prerequisite-patch-id: c2366f993a9d85e28c06d8d09f064dd5e8b29a61
-prerequisite-patch-id: 50d53a21f91f4087fc80b6f1f72864adfb0002b9
-prerequisite-patch-id: 0df3703af91c30f1ca2c47f5609012f2d7200028
-prerequisite-patch-id: 89f049f951e5acf75aab92541992f816fd0acc0d
-prerequisite-patch-id: 551fae54377090044c3612fca9740a9b359abdd2
-prerequisite-patch-id: c7fdf904f398d478f0ed6d57eb878982bc73329d
-prerequisite-patch-id: 1b2d0982b18da060c82134f05bf3ce16425bac8d
-prerequisite-patch-id: 090ba4b78d47bc19204916e76fdbc70021785388
-prerequisite-patch-id: a5d9e0f7d4f8163f566678894cf693015119f2d9
-prerequisite-patch-id: 4637a8fa2334a45fa6b64351f4e9e28d3e2d60d3
-prerequisite-patch-id: 32647ec60a3b614e1c59ec8e54cb511ae832c22f
-prerequisite-patch-id: aa06658ecf89c92d0dfdd6a4ba6d9e6e67532971
-prerequisite-patch-id: 1387a7e87b446329dfc21f3e575ceae7ebcf954c
-prerequisite-patch-id: 258ea5f9b8bf41b6981345dcc81795f25865d38f
-prerequisite-patch-id: 8b6f2c9660c0ac0ee4e73e4c21aca8e6b75e81b9
-prerequisite-patch-id: dbb0c0151b8bdf093e6ce79fd2fe3f60791a6e0b
-prerequisite-patch-id: 9007c8610fdcd387592475949864edde874c20a2
-prerequisite-patch-id: d57e95d31686772abc4c4d5aa1cadc344dc293cd
-prerequisite-patch-id: 9f911969d0a550648493952c99096d26e05d4d83
-prerequisite-patch-id: 2ddada18ab6ea5cd1da14212aaf59632f5203d40
-prerequisite-patch-id: 80042661ff6156ce577a72e9eb8c0b218b624829
-prerequisite-patch-id: 398744c61913c76a35754de867c4f820ca7a8d99
-prerequisite-patch-id: f59269382164b5d642a5e10443ca447f5caa595c
-prerequisite-patch-id: 1babe83d6bf999bad17584dc595480f9070a5369
-prerequisite-patch-id: 77be3d122d66df813f13088141ce27b21107a341
-prerequisite-patch-id: 9fbb7ad1dd258bb8ff5946c4a0e59de4bfd82a04
-prerequisite-patch-id: 6f6984916dffd0cc66aa733c9b6bd3a55495a50c
-prerequisite-patch-id: 39e1be2a3d1593577ab997f55f59367cba665aa7
-prerequisite-patch-id: 584c256c9acb52ee2773d0c81c3f4977fc18155a
-prerequisite-patch-id: b37ac15032973e1fcd918f157c82a0606775c9e9
-prerequisite-patch-id: 32deea16304859842af5c2151bc41d91cf6dfc9b
-prerequisite-patch-id: 20ac2450fb93b3f69f83fc720fd4800a95e618a6
-prerequisite-patch-id: 6abf359fa445f4104432ddee27044dfbfb128417
--- 
-2.17.1
+Best regards,
+Krzysztof
 
