@@ -4,84 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55B76C77B7C
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 May 2023 06:00:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62E42C77B7C
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 May 2023 06:04:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E67FAF72;
-	Thu, 11 May 2023 07:59:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E67FAF72
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDFB5F6F;
+	Thu, 11 May 2023 08:03:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDFB5F6F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683784802;
-	bh=soCK8gejMescmZNHCMV4x4NxncM75Lx5avaqXwFOf4E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1683785051;
+	bh=L4Nnv6gPFOyuLFZDBZsL5VCSsSaGeg9xGtmV+5kvrYo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gTX253Z9VwXfjy5Ox+CAomLWtsWFjVOByI3kCVFoYdQyz95Oop4NS9/GqzSJubuD2
-	 miUyTzT+K2zEfgNhoMekyDJhf+NeUb2glchpCcX7bNe9ZDNgkDaeF/+SnKbjCE5IJ9
-	 xiacbUDsEJAyBdcoj1cih5wIxXu50wRuAh76pBzI=
+	b=pkoyqwkwr+58AqN4ZK4wID60VkWFuA5J8NYJnm0TCa3KWXmo1iLBUPwdzLD5YBpQn
+	 wkB6ozWyqH470cKihXzhAis27WrlbeSP7elKZjyrBMVZWlyB62w6xVYHmNcBGpRPl2
+	 pkQtQfZlg7/xINK+5d/Y9tj5sngBNrHMk1rth8Xc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D5EFF8032D;
-	Thu, 11 May 2023 07:58:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46FF6F8032D;
+	Thu, 11 May 2023 08:02:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7132F8032D; Thu, 11 May 2023 07:58:41 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 1FF8BF8032D; Thu, 11 May 2023 08:02:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 771CAF8014C;
-	Thu, 11 May 2023 07:58:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 771CAF8014C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 10E76F8014C
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2023 08:02:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10E76F8014C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rMyVPDX7
+ header.s=k20201202 header.b=VyqAQJHF
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 38DD363557;
-	Thu, 11 May 2023 05:58:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A95B8C433D2;
-	Thu, 11 May 2023 05:58:29 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8002A64AD1;
+	Thu, 11 May 2023 06:02:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 320E5C433D2;
+	Thu, 11 May 2023 06:02:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683784714;
-	bh=soCK8gejMescmZNHCMV4x4NxncM75Lx5avaqXwFOf4E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rMyVPDX7XDDeVQXajCEn51g2rqGzIKutVmxMHheTK0pXcrJF2ecQo5mL2bnBMHRSO
-	 RdEHy9nG12s4OjUI2WKEs5sAwqz0xhmNF9L7Hog6qpMo2ZY9qv7q6qo6Rev/dAlh5C
-	 g+3yhX+H5ppUL4N3ommYp0fBXO16HF9aLLfL+PeAsTawjTtCbpqH6Jo+0g5sfTmHME
-	 T6x111KJC2Ycra32uv+5ljZDhkKxhwUdARfTFd+R2PYG5dAdSR/4niiplHa6rZeVp2
-	 FyTSVYiuRUb3NyxHiBTmUTHewrTDVX3QF+IaM0kI5WkbSnPdB6q8kd4RHZsIb90tm1
-	 ZzYIqaLxJnApQ==
-Date: Thu, 11 May 2023 14:58:19 +0900
+	s=k20201202; t=1683784964;
+	bh=L4Nnv6gPFOyuLFZDBZsL5VCSsSaGeg9xGtmV+5kvrYo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=VyqAQJHFu2ZOa6qUeQpMH1Mij3SIUuel5M5juD/3iv6Fi4f3ZPTxuhUzsbHzwgYXp
+	 sdAHe2fn/srgdvZTlksC2EgyVJDPdRjkr6FQb/sJ0zBdsVZI6NqtS4mNd9SesYtwbV
+	 kYAP7xNLJfLWp2K7gHKdXxvZaGzo5ylVj+bU7B92cYN59jJSw0aD5hV8FYC9ItOH8W
+	 zkuu5idA/ma/R/8VlmhTYgeGRE0v4tJxjKRnOPXb7i0WPq3M49XdcQep4xP6KM6oTW
+	 kkB9oAcZkJfUp6qfaZTBtH8WVhZTjGzA5RAy3+E24SPb3NDi+SRMdCGDgbtvQsth7O
+	 ftLcsshj4LQ1w==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-	Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	sound-open-firmware@alsa-project.org
-Subject: Re: DMARC (Was: Re: [alsa-devel@alsa-project.org: [PATCH 3/5] ASoC:
- mediatek: mt8195-afe-pcm: Simplify runtime PM during probe])
-Message-ID: <ZFyD+1wTbohB98GV@finisterre.sirena.org.uk>
-References: <87wn1jdzuq.wl-tiwai@suse.de>
- <e76c1395-5eb2-849e-120d-1b7389fc97c7@perex.cz>
- <ZFoUaNKBkIgbW0rD@finisterre.sirena.org.uk>
- <ff43dccf-ba6d-d7fa-352a-5d5a8c4b977f@perex.cz>
- <20230509-mug-private-mess-6a36d2@meerkat>
- <31969101-c1cf-4956-6446-2243ccda0c65@perex.cz>
- <20230510-robert-diane-joe-846d41@meerkat>
- <41443193-1c4a-bfea-f81c-e6658b7addee@perex.cz>
- <20230510-raked-loft-bureau-1c87fb@meerkat>
- <ed0c96e3-386c-838b-2a21-b4a826222dad@perex.cz>
+To: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, tsbogend@alpha.franken.de, paul@crapouillou.net,
+ Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+In-Reply-To: <20230509124238.195191-1-aidanmacdonald.0x0@gmail.com>
+References: <20230509124238.195191-1-aidanmacdonald.0x0@gmail.com>
+Subject: Re: (subset) [PATCH v1 1/3] ASoC: jz4740-i2s: Add support for
+ X1000 SoC
+Message-Id: <168378495575.334814.10028126851566135486.b4-ty@kernel.org>
+Date: Thu, 11 May 2023 15:02:35 +0900
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lC7UCjZQ5GrLleFP"
-Content-Disposition: inline
-In-Reply-To: <ed0c96e3-386c-838b-2a21-b4a826222dad@perex.cz>
-X-Cookie: Avoid contact with eyes.
-Message-ID-Hash: CBN4DWXDCXZXZI6AP37DIIUVEB3GIVI7
-X-Message-ID-Hash: CBN4DWXDCXZXZI6AP37DIIUVEB3GIVI7
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-bfdf5
+Message-ID-Hash: LSTFIPS45VI5VWOJ2FVVJFDHNSNOIOWN
+X-Message-ID-Hash: LSTFIPS45VI5VWOJ2FVVJFDHNSNOIOWN
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CBN4DWXDCXZXZI6AP37DIIUVEB3GIVI7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LSTFIPS45VI5VWOJ2FVVJFDHNSNOIOWN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,40 +93,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Tue, 09 May 2023 13:42:36 +0100, Aidan MacDonald wrote:
+> The X1000's AIC is similar to the AIC found on other Ingenic SoCs.
+> It has symmetric playback/capture rates like the JZ4740, but more
+> flexible clocking when outputting the system or bit clocks.
+> 
+> 
 
---lC7UCjZQ5GrLleFP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Wed, May 10, 2023 at 08:38:03PM +0200, Jaroslav Kysela wrote:
-> On 10. 05. 23 18:43, Konstantin Ryabitsev wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> > Thank you for this example -- it plainly illustrates the problem, which is
-> > that Mailman 3 mangles messages.
+Thanks!
 
-> Whoops. It seems that mm3 guys knows about it:
+[1/3] ASoC: jz4740-i2s: Add support for X1000 SoC
+      commit: bb1b282da4be8af998de7b5a2c600af6ef01aa4f
+[2/3] ASoC: ingenic: Add compatible string for X1000 SoC
+      commit: d40b28d642d52e4687c73dd098fbd8ac8e2dc1d8
 
-> https://gitlab.com/mailman/mailman/-/merge_requests/1039
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> I tried to apply the noted workaround. Crossing fingers.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Thank you for your help.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-That's great - hopefully that resolves everything!
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---lC7UCjZQ5GrLleFP
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRcg/oACgkQJNaLcl1U
-h9CL6wf/cbpJSDuhurIPrj1a8PXK3sUiRabvCb0WiY7o89XJ/PVgv5Vo2gPEo9mQ
-yyifA259t4h4QN+GDV5wUZh3hPz0q7T8oBrM7hrq537oihy9nmuWanPabBil/ve5
-L7yzWDGLQCGo3SECjLlhvl/a9k9EWE7XIFXty/pD7Llx0Qe2ZjOnavy4mixNUNhg
-lUfTFmJMyQQHwCi6CH3M7xbUCyAeiOnNu19t4wtQqtDlpiwMYs7NNX5G6pXnYyk8
-UFVja0QuJwNAerpC/NGsohQBdTd/ozB3mHJiHVPQ/HConnCErRW94oycXOip+d5W
-5kB57hCxlHVDpTTeb4vGrLk3b6Vv/w==
-=DGiL
------END PGP SIGNATURE-----
-
---lC7UCjZQ5GrLleFP--
