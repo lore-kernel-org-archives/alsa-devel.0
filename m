@@ -4,136 +4,149 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E60EAC77B7C
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 May 2023 06:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8931BC7EE22
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 May 2023 06:45:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEAE8F91;
-	Thu, 11 May 2023 08:03:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEAE8F91
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3C54F7C;
+	Thu, 11 May 2023 08:44:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3C54F7C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683785077;
-	bh=ab8zpCraWRQK2aWKTLGLlDBVYV4HywcNfc6Jb271giY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1683787539;
+	bh=DopYvAjhgasmDSPdGb4KP4iiYXMNEUAvCJNX5KifN4I=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dlwGpDGQ02AyB4UtTsIGA9JPAtG5piaXDQpQJW8R6OKYzTZbIL/+PDmQRpEIhjAxp
-	 /QCcCjIEnoR5RvWq3jrvZwg4winQNJWv+41AKx0CZK5iYf8BN1B5vUun+NnhbS55gs
-	 SH/M0UfAKelXnjZ1sbd1/Fk4RWhU+F+Yxy8TMIEs=
+	b=BvWwsNx8led/4yTzOzC2iqGW071GB7KH++EXniSQZ3xMgXt6GdTglWxaiquJlrVTy
+	 DtgOzdwlEs8bMEJXx1qMApvp5UO1CPdI+vU474DulGn8RFurNUgaaBPsqzHRAW67ic
+	 tco+ng6qnUlRFD8KRJoJ7wY0x0DFpDrUCw185n+0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6319F8053B;
-	Thu, 11 May 2023 08:03:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11A8CF8032D;
+	Thu, 11 May 2023 08:44:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA645F8053B; Thu, 11 May 2023 08:02:59 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 467A3F8032D; Thu, 11 May 2023 05:22:01 +0200 (CEST)
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
+ [61.152.239.71])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE26BF804B1
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2023 08:02:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE26BF804B1
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=GeJyNjgH
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2BD1964AF4;
-	Thu, 11 May 2023 06:02:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A10FC433EF;
-	Thu, 11 May 2023 06:02:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683784974;
-	bh=ab8zpCraWRQK2aWKTLGLlDBVYV4HywcNfc6Jb271giY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=GeJyNjgHtviLcLtmLCHI1ZuGYJ50p64RnElp4xPJsIjRXpWvTb8ZpwLW3M8sLj7k+
-	 fcohTQNgGbJw73U1XwI9qsxKGLk8+Js3Cs1FPaPTwHHCtxn/syMQXkjZfjbfvfzl1Q
-	 behZIG/uinSPuftz2U3Si89BEP/NDWyN3O2AW2iSc+Q2flqx165SIp7ap+JzGbDRvF
-	 NpLbUaVKfh5hr6OMObnGZJSJwbFw/2QyBBtyI9ZAtCjgpmrPstygqed0OP3Rb+eFMj
-	 ZBr8tuUzYfDfabtb7wB/GS+2nWaBCiY6iT8uZ1Q3f+3w7+YPZxGbdaI1Gr6S/aT5uc
-	 IARs+mA9tddTQ==
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
- ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- alsa-devel@alsa-project.org
-In-Reply-To: <20230509112202.21471-1-srinivas.kandagatla@linaro.org>
-References: <20230509112202.21471-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 0/4] ASoC: qcom: add display port module support.
-Message-Id: <168378496820.334814.7836507648668066206.b4-ty@kernel.org>
-Date: Thu, 11 May 2023 15:02:48 +0900
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8B6BCF80217
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2023 05:21:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B6BCF80217
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id EB91682D4;
+	Thu, 11 May 2023 11:21:33 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 11 May
+ 2023 11:21:34 +0800
+Received: from [192.168.125.124] (113.72.146.187) by EXMBX168.cuchost.com
+ (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 11 May
+ 2023 11:21:33 +0800
+Message-ID: <ef13177a-2028-9fc9-628a-e3d287758207@starfivetech.com>
+Date: Thu, 11 May 2023 11:21:32 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH v3 3/3] riscv: dts: starfive: add tdm node and sound card
+To: Conor Dooley <conor@kernel.org>
+CC: Emil Renner Berthing <emil.renner.berthing@canonical.com>, Mark Brown
+	<broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela
+	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor.dooley@microchip.com>, <alsa-devel@alsa-project.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>
+References: <20230506090116.9206-1-walker.chen@starfivetech.com>
+ <20230506090116.9206-4-walker.chen@starfivetech.com>
+ <a0932e84-3813-bbbe-762d-948d75fbcd8a@starfivetech.com>
+ <20230509-overheat-pliable-00d60523637e@spud>
+ <CAJM55Z9AxMVw=ymfFBb=45nODq89O8dMebzRgo-XD0GKduDBYg@mail.gmail.com>
+ <f27b7ee7-f23a-35a2-3b82-71f50871dfcc@starfivetech.com>
+ <20230510-riveter-ridden-3f056251e623@spud>
+Content-Language: en-US
+From: Walker Chen <walker.chen@starfivetech.com>
+In-Reply-To: <20230510-riveter-ridden-3f056251e623@spud>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: YMHBHWQABL6KZHWBO4LXZGRVVYIHWCC2
-X-Message-ID-Hash: YMHBHWQABL6KZHWBO4LXZGRVVYIHWCC2
-X-MailFrom: broonie@kernel.org
+X-Originating-IP: [113.72.146.187]
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+X-MailFrom: walker.chen@starfivetech.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: HYMJSLC7TDHFQTWNIB3JXDB5YA6OGLWT
+X-Message-ID-Hash: HYMJSLC7TDHFQTWNIB3JXDB5YA6OGLWT
+X-Mailman-Approved-At: Thu, 11 May 2023 06:44:16 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YMHBHWQABL6KZHWBO4LXZGRVVYIHWCC2/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HYMJSLC7TDHFQTWNIB3JXDB5YA6OGLWT/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 09 May 2023 12:21:58 +0100, Srinivas Kandagatla wrote:
-> This patchset adds support to displayport on AudioReach.
-> Patches are tested on X13s with two display ports.
+
+On 2023/5/11 4:22, Conor Dooley wrote:
+> On Wed, May 10, 2023 at 05:21:21PM +0800, Walker Chen wrote:
+>> On 2023/5/10 16:33, Emil Renner Berthing wrote:
+>> > On Tue, 9 May 2023 at 20:05, Conor Dooley <conor@kernel.org> wrote:
+>> >>
+>> >> On Tue, May 09, 2023 at 08:52:48PM +0800, Walker Chen wrote:
+>> >> > Hi Conor/Emil,
+>> >> >
+>> >> > DT overlay is used to describe combinations of VF2 and hat.
+>> >> > Do you have any comments on this patch ?
+>> >>
+>> >> I seem to recall that he said at the linux-riscv sync-up call that we
+>> >> have* that he was not in favour of overlays for hats like this.
+>> >> I'll let him confirm that though, I might very well be misinterpreting or
+>> >> misremembering what he said.
+>> > 
+>> > What probably meant was that I didn't want a bunch of different device
+>> > trees for each combination board * hat. An overlay makes a lot more
+>> > sense. However, looking through the kernel tree there is a surprising
+>> > lack of overlays for hats committed already, so I suspect there is
+>> > some sort of policy around overlays already in place.
 > 
-> Srinivas Kandagatla (4):
->   ASoC: qcom: q6dsp-common: move channel allocation to common
->   ASoC: qcom: audioreach: add support for DISPLAY PORT SINK module
->   ASoC: qcom: q6dsp: add support to more display ports
->   ASoC: qcom: q6apm: add support to display ports in lpass dais
+>> About the specific usage of overlay for this board + hat, referenced to the following example in kernel:
+>> linux/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx-0x-imx219.dtso
+>> That board is connected with imx219 sensor via mipi_csi interface. That patch was accepted in 2022.
 > 
-> [...]
+> Hmm, so spoke to Emil again today about it. In the interest of being
+> fair, I did go looking at that particular board & looked through their
+> documentation for more information on why there are overlays.
+> They do actually sell the bits required to use the overlays, based on
+> what I saw in their datasheet for the board & wiki. That said, what is
+> done for one arm64 platform does not necessarily apply elsewhere ;)
+> 
+> I'm not against allowing in-tree overlays for hats/capes/daughter-boards
+> that come bundled with a board, but accepting ones for a hat that
+> someone decided to use theoretically has no limit! The "someone" in this
+> case might be a StarFive developer, but it could be any random one of
+> your customers next!
+> We've got to draw a line somewhere, so my answer to the overlay *in this
+> case* is a no. Sorry.
+> When you submit your next version, please drop the overlay from this
+> patch.
 
-Applied to
+I'm trying to understand what you mean. so the conclusion is that I need to drop the file
+ 'jh7110-starfive-visionfive-2-wm8960.dtso' from this patch.
+When I submit the next version, just keep the TDM node and the pins configuration for TDM in patch [3/3],
+need to drop the wm8960 stuff.
+Right ?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/4] ASoC: qcom: q6dsp-common: move channel allocation to common
-      commit: 4c2be53f411c25b569c8fe3f91d0acfc4c5b8392
-[2/4] ASoC: qcom: audioreach: add support for DISPLAY PORT SINK module
-      commit: a8ab65417d92803d15cc9aca461ecd9fdb3f2d81
-[3/4] ASoC: qcom: q6dsp: add support to more display ports
-      commit: 90848a2557fec0a6f1a35e58031a1f6f5e44e7d6
-[4/4] ASoC: qcom: q6apm: add support to display ports in lpass dais
-      commit: 2f6860e6133fca937d18b66faa32c460cef7ddad
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Best regards,
+Walker
