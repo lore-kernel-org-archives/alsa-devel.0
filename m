@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB28DC77B7C
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 May 2023 18:57:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6EC7C7EE22
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 May 2023 18:57:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF41B1E8;
-	Thu, 11 May 2023 20:56:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF41B1E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B27BF0;
+	Thu, 11 May 2023 20:57:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B27BF0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683831453;
-	bh=zfCHa7i9QyCFbh1cpkUjXaCW+hOJFm5MW/4bdohqefo=;
+	s=default; t=1683831472;
+	bh=DkitLX5tL4D4rIAR1mvc5FQJv/aacb25zLCPOng3ciU=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TrVQ3oENIjyMerregndN8Wr4D10pr7Ro1u/oPKTvivVFMepnG1/sPuf7hOTW2OKYd
-	 ynpVWuqDKkFmf2ci9vZYqbAinDQwmE5vVaE5YsXgLvSUlZ9t0tHfMh7MKAuE3I/+8W
-	 bm/y73nuOqdeVEfc3WayeCkOLAJv++wHftp6lH6Y=
+	b=df7lzis2dN1ApET5idHOWLZXr1idqq26EosE/jsRR3Q4EB5UNOhnCxUlg5wdzorvf
+	 YTSWqh8/ktKWEMrhaC6TqdA9tUjVFPGmFKY4pkPyJ9gV1chBZ9qC8pKqlbZOAO+m6S
+	 qt01TQZDLlc+w1gB94fqzHvqgw7Fecbw5C1/S3cY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6ECF6F805C8; Thu, 11 May 2023 20:54:51 +0200 (CEST)
+	id 218EEF805D7; Thu, 11 May 2023 20:54:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A50B2F805C5;
-	Thu, 11 May 2023 20:54:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2950F805CA;
+	Thu, 11 May 2023 20:54:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 41008F804B1; Thu, 11 May 2023 14:09:53 +0200 (CEST)
+	id A1315F8032D; Thu, 11 May 2023 14:10:33 +0200 (CEST)
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com
  [IPv6:2607:f8b0:4864:20::b49])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 49006F80310
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2023 14:09:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49006F80310
+	by alsa1.perex.cz (Postfix) with ESMTPS id 69D59F80217
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2023 14:09:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69D59F80217
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20221208 header.b=wS6sSkP9
+ header.s=20221208 header.b=Fm3IUSrI
 Received: by mail-yb1-xb49.google.com with SMTP id
- 3f1490d57ef6-ba2d0b391d3so10603807276.2
+ 3f1490d57ef6-b9a6f15287eso16715117276.1
         for <alsa-devel@alsa-project.org>;
- Thu, 11 May 2023 05:09:51 -0700 (PDT)
+ Thu, 11 May 2023 05:09:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683806984; x=1686398984;
+        d=google.com; s=20221208; t=1683806960; x=1686398960;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DFFdKRwDpDILumhyLuLJOTrk05DbXLc6wTGy62C/3Mw=;
-        b=wS6sSkP9YPrEQci5WRw3K0xUtOK5+0/bwAebx2k91pqCIj0EfYjinxZrDO4ajIZjGM
-         93t//KRpj0A5F6J4KjOlKV1y+Lm/ePEWG+KQn/cR4aakq3zES0kTJ5K9FNJ38y837AN0
-         zBdhJGmHaQva80CE20d2I7pxXjrPjUcICIIMWKC+WwF8uB15gtNLv/4ImBvcL36KXmeB
-         lqIS0virSRAaqSbuFnvycK3dKd0Kl7oqzEVb5PehKYMtdlLdGF42nsRcfsVhiU5qg+8j
-         RWNR0gNjin97dZ3upG8fYJP+RPue2YJLbFd3/VCnCJqCjLsUh1T1O2t+pQCpgrkHV8vM
-         z1/g==
+        bh=t2dsf61YMVY92FH7C3AkmJ5nwGxSUh4djoxlEJxPoZg=;
+        b=Fm3IUSrIO6dioGkB92APGdJb1osx2Ot5x0wCO0UEqBQxCBUdYRoNP0KTWyt0fb70Z0
+         0GZSXmqWDxptjteEYn/qpcdE3yJHtilD+khIiE1vi4zw/AqIe479LJ4+t3TRLfs0Hdrv
+         qbcjIG5lSktyPDi9KHlTeqCOUH7pHWTNq5r4ShzUSGY7NaUgc2zZwhMJSkbgwMMxOJSC
+         DqRXkK8qmW3F9pIsE4iFTRoojuExst1QgA6FCVanvZ9KBnCHcCJUbqqcmSE2bqSlddut
+         hxMPdslmmdXESjFTPjiGZ4FC5RgqE65456Ln6uVnae+wXDl01twwgL5I6yU553ow6I9w
+         eCbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683806984; x=1686398984;
+        d=1e100.net; s=20221208; t=1683806960; x=1686398960;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DFFdKRwDpDILumhyLuLJOTrk05DbXLc6wTGy62C/3Mw=;
-        b=FrIb21e6J/Kp8fyEaLNENzYu4f+DbIcRAcYWL9FJ/9euaMOzP4vtfiIMIafCCRYOMJ
-         GjkPxjOFV0p1PDzIEul+c7IvFgMyBfzDm1FFMBXo+iEsw58hZetxEd08KtCMMsvfmoRJ
-         x0M770AYjWl43O23h1B2456wtGOTM6aAR7+ddGMWuELv85zzGliJTV/IPIIs/ON9tex5
-         6WblA52O2yYSncstPSIunF89sIBD6hvr+Mo/SJ4p84/VJFaQP5Uf8u0LKqfqZa2ZNYuj
-         j/cDKwtk4znnGWjKHZXAm/jC/0Jf1q0t9H/I32O9eqZoygAenWyKPa5POk/zsOyQgtob
-         Gyaw==
-X-Gm-Message-State: AC+VfDw061Nc8AmyTgs/wG5X4oCFEXYfL5sF4CI3IurEcArX/2vkoMai
-	y8RczjirceOCVrDFm3ph7Omj7N6fMRZ0gN964w==
+        bh=t2dsf61YMVY92FH7C3AkmJ5nwGxSUh4djoxlEJxPoZg=;
+        b=Lc2NH7n5zxlcGMWwjBxRLaIihgBRXBujtkJ/ehKr7VjHUJ0AzsHtWwOVyFEzpfZgho
+         TW9yjtuAYdxv0dikvjM8DQEQRlACXMdSObd2XnecDNn4eNsugiNagEE9oz+haam5fWmZ
+         3anfevIyrS6hurBSjIMoGDM5alcJsyOFNaXFzmttTFUrB9iwJr4H1MXWiXmcoz29Abjx
+         oZn39ZdQMQohRWwTX1EnBJnN/XbPbqdUkOt6PNzXUJpwKkavIonOd7JI63uY/VeATdmi
+         My11AGhFnr4Dx/XGILcNd/8/sbt27yC79zLdNvLmEHu5U86Mb6pLYeQ5UWmXzIScevkP
+         zE6Q==
+X-Gm-Message-State: AC+VfDzPG46w3Wi4646gBJKm4YoOryOMUuFY+ZxcQjT79pKx8sN8JiCy
+	7jZRWd1TQYc1Rw9oFFOIF0CUZ02yGjCXqZlNjA==
 X-Google-Smtp-Source: 
- ACHHUZ6WNFGb++Bi1s3+Qljz7xPC8nDjrsTQIYeDWQxaajEyJ9TDJ4kJ1ngdN74pybDKr5utVuVJdeHDE4xVvgjKyw==
+ ACHHUZ6MK+BdZXJuYQp0xdPqOukDcGy3FtdWiMye4msSsyxhUqmlwxjZSZ+VYlg2JzBOa89RPQhW3k2qNI+UA5zS7w==
 X-Received: from yixuanjiang.ntc.corp.google.com
  ([2401:fa00:fc:202:6c9a:64c9:7e44:6b1d])
- (user=yixuanjiang job=sendgmr) by 2002:a25:6648:0:b0:b68:7a4a:5258 with SMTP
- id z8-20020a256648000000b00b687a4a5258mr12799183ybm.3.1683806984600; Thu, 11
- May 2023 05:09:44 -0700 (PDT)
-Date: Thu, 11 May 2023 20:08:41 +0800
+ (user=yixuanjiang job=sendgmr) by 2002:a05:6902:d2:b0:b9e:6fce:4f6d with SMTP
+ id i18-20020a05690200d200b00b9e6fce4f6dmr13046837ybs.2.1683806960728; Thu, 11
+ May 2023 05:09:20 -0700 (PDT)
+Date: Thu, 11 May 2023 20:08:37 +0800
 In-Reply-To: <20230511120841.2096524-1-yixuanjiang@google.com>
 Mime-Version: 1.0
 References: <20230511120841.2096524-1-yixuanjiang@google.com>
 X-Mailer: git-send-email 2.40.1.521.gf1e218fcd8-goog
-Message-ID: <20230511120841.2096524-7-yixuanjiang@google.com>
-Subject: [PATCH 6/6] ASoC: soc-pcm: fix BE handling of PAUSE_RELEASE
+Message-ID: <20230511120841.2096524-3-yixuanjiang@google.com>
+Subject: [PATCH 2/6] ASoC: soc-pcm: align BE 'atomicity' with that of the FE
 From: yixuanjiang <yixuanjiang@google.com>
 To: tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Bard Liao <bard.liao@intel.com>,
+ Takashi Iwai <tiwai@suse.de>,
 	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
@@ -95,21 +95,21 @@ Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
 	stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-MailFrom: 
- 3CNtcZAsKClsRBQN3GCB3G99HH9E7.5HF3EL3-67O7E3EL3-IKHC75M.HK9@flex--yixuanjiang.bounces.google.com
+ 38NpcZAsKCkM3n2zfsonfsllttlqj.htrfqxf-ij0jqfqxf-uwtojhy.twl@flex--yixuanjiang.bounces.google.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2HSLSXGWJY3PQQXW77N6ZHAQU4RXI7YC
-X-Message-ID-Hash: 2HSLSXGWJY3PQQXW77N6ZHAQU4RXI7YC
+Message-ID-Hash: YY6IRHZQBLUD624ZFMXJMW3EP6U4WM6Y
+X-Message-ID-Hash: YY6IRHZQBLUD624ZFMXJMW3EP6U4WM6Y
 X-Mailman-Approved-At: Thu, 11 May 2023 18:54:31 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2HSLSXGWJY3PQQXW77N6ZHAQU4RXI7YC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YY6IRHZQBLUD624ZFMXJMW3EP6U4WM6Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,76 +120,69 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 3aa1e96a2b95e2ece198f8dd01e96818971b84df ]
+[ Upstream commit bbf7d3b1c4f40eb02dd1dffb500ba00b0bff0303 ]
 
-A BE connected to more than one FE, e.g. in a mixer case, can go
-through the following transitions.
+Since the flow for DPCM is based on taking a lock for the FE first, we
+need to make sure during the connection between a BE and an FE that
+they both use the same 'atomicity', otherwise we may sleep in atomic
+context.
 
-play FE1    -> BE state is START
-pause FE1   -> BE state is PAUSED
-play FE2    -> BE state is START
-stop FE2    -> BE state is STOP (see note [1] below)
-release FE1 -> BE state is START
-stop FE1    -> BE state is STOP
+If the FE is nonatomic, this patch forces the BE to be nonatomic as
+well. That should have no negative impact since the BE 'inherits' the
+FE properties.
 
-play FE1    -> BE state is START
-pause FE1   -> BE state is PAUSED
-play FE2    -> BE state is START
-release FE1 -> BE state is START
-stop FE2    -> BE state is START
-stop FE1    -> BE state is STOP
+However, if the FE is atomic and the BE is not, then the configuration
+is flagged as invalid.
 
-play FE1    -> BE state is START
-play FE2    -> BE state is START (no change)
-pause FE1   -> BE state is START (no change)
-pause FE2   -> BE state is PAUSED
-release FE1 -> BE state is START
-release FE2 -> BE state is START (no change)
-stop FE1    -> BE state is START (no change)
-stop FE2    -> BE state is STOP
-
-The existing code for PAUSE_RELEASE only allows for the case where the
-BE is paused, which clearly would not work in the sequences above.
-
-Extend the allowed states to restart the BE when PAUSE_RELEASE is
-received, and increase the refcount if the BE is already in START.
-
-[1] the existing logic does not move the BE state back to PAUSED when
-the FE2 is stopped. This patch does not change the logic; it would be
-painful to keep a history of changes on the FE side, the state machine
-is already rather complicated with transitions based on the last BE
-state and the trigger type.
-
-Reported-by: Bard Liao <bard.liao@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+[ removed FE stream lock by tiwai ]
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20211207173745.15850-7-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20211207173745.15850-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Fixes: aa9ff6a4955f ("ASoC: soc-compress: Reposition and add pcm_mutex")
 Signed-off-by: Yixuan Jiang <yixuanjiang@google.com>
 Cc: stable@vger.kernel.org # 5.15+
 ---
- sound/soc/soc-pcm.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/soc-pcm.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index b6099d36518f5..6e589708b9338 100644
+index cffae9b7c2548..373f20bd14301 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2151,7 +2151,10 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
- 			break;
- 		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
-+			if (!be->dpcm[stream].be_start &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START) &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
-+			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
- 				goto next;
+@@ -1123,6 +1123,8 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
++	struct snd_pcm_substream *fe_substream;
++	struct snd_pcm_substream *be_substream;
+ 	struct snd_soc_dpcm *dpcm;
+ 	unsigned long flags;
  
- 			be->dpcm[stream].be_start++;
+@@ -1132,6 +1134,20 @@ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+ 			return 0;
+ 	}
+ 
++	fe_substream = snd_soc_dpcm_get_substream(fe, stream);
++	be_substream = snd_soc_dpcm_get_substream(be, stream);
++
++	if (!fe_substream->pcm->nonatomic && be_substream->pcm->nonatomic) {
++		dev_err(be->dev, "%s: FE is atomic but BE is nonatomic, invalid configuration\n",
++			__func__);
++		return -EINVAL;
++	}
++	if (fe_substream->pcm->nonatomic && !be_substream->pcm->nonatomic) {
++		dev_warn(be->dev, "%s: FE is nonatomic but BE is not, forcing BE as nonatomic\n",
++			 __func__);
++		be_substream->pcm->nonatomic = 1;
++	}
++
+ 	dpcm = kzalloc(sizeof(struct snd_soc_dpcm), GFP_ATOMIC);
+ 	if (!dpcm)
+ 		return -ENOMEM;
 -- 
 2.40.1.521.gf1e218fcd8-goog
 
