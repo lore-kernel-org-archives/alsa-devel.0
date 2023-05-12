@@ -4,105 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61FB8C77B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 11:35:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 016ACC77B7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 11:47:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6FFB1DD;
-	Fri, 12 May 2023 13:34:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6FFB1DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 308DC1DD;
+	Fri, 12 May 2023 13:46:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 308DC1DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683891303;
-	bh=8oqzxNUEvHyyO7yUglFOJxe/F3xZFvOLTlsHunD8tNg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=KI3oiruo1j5s8jMkHgyrUBXXtTSrWZc2exj/TJEV0Tsplz+0J3ci21H1fKaT43vHp
-	 AFYcUY6HVzm2kt7DDmAbzOCpZMYmRnHOnuSc0uBEjPd55GRz7oytL6IG1gyWDWmRk1
-	 H6cOOHDXTHp2gihFrEC1R44AB8WNvYa3bjaFmmR8=
+	s=default; t=1683892039;
+	bh=pe3FJEDN5yhlgWO9qxl+4rzfdblwTENuhY1tz6Vv120=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=SUp/5kAowhQuRTzgDMtEqhHFWVDYBBLln0AYoL/AHdS07QbsJsz4GgzLDcWsqWuL4
+	 IkPeE7ImH9y8zEQdLLPyjMlhg6ALppxKU2xZSXEC9hUOihRFzvruw40ezkqgavUDrc
+	 KRb1gz7ha+UAnHQwSwqNyvHsB/phjq6RLVpRqxi8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A78F6F8032D; Fri, 12 May 2023 13:33:51 +0200 (CEST)
+	id CDFA9F80542; Fri, 12 May 2023 13:46:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E8CBF8052E;
-	Fri, 12 May 2023 13:33:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BAB5F80534;
+	Fri, 12 May 2023 13:46:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D660F8052E; Fri, 12 May 2023 13:33:45 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 756FDF8052E; Fri, 12 May 2023 13:45:54 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4CB58F802E8
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 13:33:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CB58F802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 604DDF8014C
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 13:45:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 604DDF8014C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=pzyEw7aS;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=i9/kaNPB
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 382D022907;
-	Fri, 12 May 2023 11:33:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1683891215;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HhOr+/JJIVuPPec3yL4isMqUDcbJXrVINFuSYbhvhXM=;
-	b=pzyEw7aS5BfVIoodLLQSJn+Q/q4l6I6+zkzq4XZswaFv5nEVcm61ADo2DVdeXyWjWWATk1
-	ydrE+ecScrvtYUnkz+EmME+41GbJ8Nk42VreXwjFQO31wI1ET0llPsEMlIOlbxh+hx3ZFx
-	68z6f/WR766+PNW7BlM2aBFnLzQJrrg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1683891215;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HhOr+/JJIVuPPec3yL4isMqUDcbJXrVINFuSYbhvhXM=;
-	b=i9/kaNPBGfUF7TeiK5RktFkZ4oUcJvQd/eg1AbWBhExRlAqjUThP1kau2eI6Gaqppr77b4
-	zSRGQMoYrhMrvZDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16C9513499;
-	Fri, 12 May 2023 11:33:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id WfWTBA8kXmSAAwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 12 May 2023 11:33:35 +0000
-Date: Fri, 12 May 2023 13:33:34 +0200
-Message-ID: <87fs81ainl.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Amadeusz =?ISO-8859-2?Q?S=B3awi=F1ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: Re: HDA, power saving and recording
-In-Reply-To: <87ilcxaj3u.wl-tiwai@suse.de>
-References: <a7478636-af11-92ab-731c-9b13c582a70d@linux.intel.com>
-	<878rdwjs1s.wl-tiwai@suse.de>
-	<cceaeb53-06df-ced0-1f54-f5c0eb65f824@linux.intel.com>
-	<87jzxe5084.wl-tiwai@suse.de>
-	<41417b90-1881-0cbb-52e1-d63923dd8cd6@linux.intel.com>
-	<87ilcxaj3u.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-2
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=OFu1fEHU
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1683891946; x=1715427946;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pe3FJEDN5yhlgWO9qxl+4rzfdblwTENuhY1tz6Vv120=;
+  b=OFu1fEHUofrg9DkvmJLIkH+ajT6ZvvZr+uon89ozLDwytkn+A9YzSwyn
+   m+VtLfQay6OQwUQOaBhCNTzLc7GRVfCUQxtTRVR7qd3CtSpNXRr096puQ
+   wxP3AVmNneAsq8WAeOZEq/e/w93ksWOxehcnnKwKCgsYaB5vnmOS98FCs
+   gS2EzHscM3MPeu1DTzxuoRB6ehtYMRrpiKDb9nTucuKob3/opsWcusDfc
+   KALDJsxsF5/2bZEbosUU7Lz7UMBK0ZRS33VsJ9bjWuy988madOyD6g1kv
+   fsmjG/Oei/kw0Q19M52u3wkJMtEWlce65Bmt2J6FDFe1Dlalq5KTczPyo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10707"; a="340084868"
+X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
+   d="scan'208";a="340084868"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 May 2023 04:45:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10707"; a="733017148"
+X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
+   d="scan'208";a="733017148"
+Received: from nhanph1x-mobl.amr.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.249.38.84])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 May 2023 04:45:37 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	pierre-louis.bossart@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	yung-chuan.liao@linux.intel.com
+Subject: [PATCH] ASoC: SOF: topology: Fix logic for copying tuples
+Date: Fri, 12 May 2023 14:46:30 +0300
+Message-Id: <20230512114630.24439-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: POUG6GBGFU53ABPUIGQSGC27L2DXRDTR
-X-Message-ID-Hash: POUG6GBGFU53ABPUIGQSGC27L2DXRDTR
-X-MailFrom: tiwai@suse.de
+Message-ID-Hash: CAV62VJQRUQRIJ5EYOIG6XWXEWHJITLZ
+X-Message-ID-Hash: CAV62VJQRUQRIJ5EYOIG6XWXEWHJITLZ
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -114,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/POUG6GBGFU53ABPUIGQSGC27L2DXRDTR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CAV62VJQRUQRIJ5EYOIG6XWXEWHJITLZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,70 +102,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 12 May 2023 13:23:49 +0200,
-Takashi Iwai wrote:
-> 
-> On Thu, 11 May 2023 19:20:17 +0200,
-> Amadeusz S³awiñski wrote:
-> > 
-> > On 5/11/2023 5:58 PM, Takashi Iwai wrote:
-> > > On Thu, 11 May 2023 17:31:37 +0200,
-> > > Amadeusz S³awiñski wrote:
-> > >> 
-> > >> On 5/10/2023 2:21 PM, Takashi Iwai wrote:
-> > >>> On Tue, 09 May 2023 12:10:06 +0200,
-> > >>> Amadeusz S³awiñski wrote:
-> > >> Then capture stream starts and seems to assume that
-> > >> registers were already set, so it doesn't write them to hw.
-> > > 
-> > > ... it seems this didn't happen, and that's the inconsistency.
-> > > 
-> > > So the further question is:
-> > > At the point just before you start recording, is the codec in runtime
-> > > suspended?  Or it's running?
-> > > 
-> > > If it's runtime-suspended, snd_hda_regmap_sync() must be called from
-> > > alc269_resume() via runtime-resume, and this must write out the
-> > > cached values.  Then the bug can be along with that line.
-> > > 
-> > > Or if it's running, it means that the previous check of
-> > > snd_hdac_keep_power_up() was bogus (or racy).
-> > > 
-> > 
-> > Well, it is in... let's call it semi powered state. When snd_hda_intel
-> > driver is loaded with power_save=X option it sets timeout to X seconds
-> > and problem only happens when I start the stream before those X
-> > seconds pass and it runs first runtime suspend. After it suspends it
-> > then uses standard pm_runtime_resume and works correctly. That's why
-> > the pm_runtime_force_suspend(&codec->core.dev);  mentioned in first
-> > email in thread "fixes" the problem, as it forces it to be instantly
-> > suspended instead of waiting for timeout and then later normal
-> > resume-play/record-suspend flow can be followed.
-> 
-> Hm, then maybe it's a bad idea to rely on the usage count there.
-> Even if the usage is 0, the device can be still active, and the update
-> can be missed.
-> 
-> How about the patch like below?
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Scratch that, it returns a wrong value.
-A simpler version like below works instead?
+Topology could have more instances of the tokens being searched for than
+the number of sets that need to be copied. Stop copying token after the
+limit of number of token instances has been reached. This worked before
+only by chance as we had allocated more size for the tuples array than
+the number of actual tokens being parsed.
 
+Fixes: 7006d20e5e9d ("ASoC: SOF: Introduce IPC3 ops")
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: PÃ©ter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ sound/soc/sof/topology.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Takashi
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index d3d536b0a8f5..b80566570512 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -586,6 +586,10 @@ static int sof_copy_tuples(struct snd_sof_dev *sdev, struct snd_soc_tplg_vendor_
+ 				if (*num_copied_tuples == tuples_size)
+ 					return 0;
+ 			}
++
++			/* stop when we've found the required token instances */
++			if (found == num_tokens * token_instance_num)
++				return 0;
+ 		}
+ 
+ 		/* next array */
+-- 
+2.40.1
 
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -611,10 +611,9 @@ EXPORT_SYMBOL_GPL(snd_hdac_power_up_pm);
- int snd_hdac_keep_power_up(struct hdac_device *codec)
- {
- 	if (!atomic_inc_not_zero(&codec->in_pm)) {
--		int ret = pm_runtime_get_if_in_use(&codec->dev);
--		if (!ret)
-+		if (!pm_runtime_active(&codec->dev))
- 			return -1;
--		if (ret < 0)
-+		if (pm_runtime_get_sync(&codec->dev) < 0)
- 			return 0;
- 	}
- 	return 1;
