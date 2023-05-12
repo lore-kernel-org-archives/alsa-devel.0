@@ -4,99 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 263E5C77B7C
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 10:00:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DE1FC77B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 10:13:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3013811C;
-	Fri, 12 May 2023 12:00:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3013811C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CA4510E;
+	Fri, 12 May 2023 12:12:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CA4510E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683885656;
-	bh=JbNUPB4oSNCKDmk7Abo2VzGqSrdqOLl6WBvUfg4Ly88=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1683886387;
+	bh=lBNvZ/IXG6dHmWrwcxyPKxgwf2Ta/coLnCCGhcyQKdA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=heqXPR+/bFQl0Dh/r6D/gVxZd/BvQzfb4up2zDh3TrYCQDJUEgw1jSSGaU85TADEL
-	 ZKYj2OuwG8fw8aU5/PRNU4GEM/KpQqwuzAxaAfdTK2QiXroSOtpbBm2qw7LV4ybNie
-	 GHnWLbktRh+dJ9xYT9RSZwyZ2rhN0wAcJ7v3T3Xs=
+	b=u8NqJIEIqLzfY3y0Z6QvEgsmbCOK/4AaDwei4OMCIqj3NInL6c1/WUDAMteFC+4Ar
+	 3RBrsTk5s2SFuDwgB8ItOCAJmPD7x3Zu9j7uOP7cmAO48jzb4G2BNzUYFXjAARyJhG
+	 XhaR3/pLEg8EhU2BmMSXgf4Tc3cIh6VKrfLX6XW0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39E0AF8053D; Fri, 12 May 2023 12:00:02 +0200 (CEST)
+	id AE148F8052E; Fri, 12 May 2023 12:11:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F321F80087;
-	Fri, 12 May 2023 12:00:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B035F80534;
+	Fri, 12 May 2023 12:11:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04A37F8052E; Fri, 12 May 2023 11:59:58 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 08429F8052E; Fri, 12 May 2023 12:11:50 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4004EF802E8
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 11:59:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4004EF802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id B9534F80087;
+	Fri, 12 May 2023 12:11:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9534F80087
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=KbGnVdYH;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=4bC2roOA
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 79084204A2;
-	Fri, 12 May 2023 09:59:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1683885589;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z18hPfpjhOQ3bNlWRKK16HNv7/8D2OGUe1pMRkeDNBs=;
-	b=KbGnVdYHVQsJDuoTXd/T2R/kaWqEq0lzZN1BNn89ta7P75cnr1dOsa6aQI+fv75J8AmoON
-	ZHGHEB3JpqBBz6wUM5mywbaLgNHaNRLagLuVdbcbSNnwQYcVAfY67ttF+yKUPRGigI5c56
-	yOZ8z8PmwSE+LT+esRsZTSeJOaBnEAU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1683885589;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z18hPfpjhOQ3bNlWRKK16HNv7/8D2OGUe1pMRkeDNBs=;
-	b=4bC2roOAv6i3cnLh3WTBX6fhr5BNH2Wv8hcC/h2c1a+oZFqRkR57YNB3Fn1QMZpcblDlmA
-	NlNN5OVeGSj8e+BA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5740C13466;
-	Fri, 12 May 2023 09:59:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id wpAkFBUOXmQcUwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 12 May 2023 09:59:49 +0000
-Date: Fri, 12 May 2023 11:59:48 +0200
-Message-ID: <87o7mpamzv.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Cc: alsa-devel@alsa-project.org,
-	Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 07/14] ALSA: emu10k1: properly assert DSP init constraints
-In-Reply-To: <ZF4GAwocaGBJRidc@ugly>
-References: <20230510173917.3073107-1-oswald.buddenhagen@gmx.de>
-	<20230510173917.3073107-8-oswald.buddenhagen@gmx.de>
-	<87a5yaaum2.wl-tiwai@suse.de>
-	<ZF4GAwocaGBJRidc@ugly>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: WYQRCR6ICCDXQ2XXKI25X3YKQXVPQ7B2
-X-Message-ID-Hash: WYQRCR6ICCDXQ2XXKI25X3YKQXVPQ7B2
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=d2bkz1jI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1683886303; x=1715422303;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=lBNvZ/IXG6dHmWrwcxyPKxgwf2Ta/coLnCCGhcyQKdA=;
+  b=d2bkz1jI8kkAkYg5iVELc9rZHqwBcxTwauRchLvuu9KMdlt7bP2Cb+8x
+   H6IW6grP7YisoLiIKAKjBOx9mpKQx6IMVfCdfcVSRrRwZDb2u4z+b6MbL
+   +5Jgj+e2uY7nXgNvnNGyz6xDg5ON1WAMap/d5O7BwsBm1IDZGq00OtYnN
+   eBu7h/n1LSB2WsDFNo59l60+n+NrUJxReUz8VUE3O8d4vfouZzaj0cl7a
+   Yqjz9L7MbmSRAKpAuMipqEpQGIbcb9VpjK6z45FCeHvaPLBMGH9wHtIC6
+   IV46YhAp/kj//pyt6tMMhLTCioNngeK4h4aVvmcs7LYB+K4d3PYIkL/ht
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10707"; a="416386122"
+X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
+   d="scan'208";a="416386122"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 May 2023 03:11:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10707"; a="824308963"
+X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
+   d="scan'208";a="824308963"
+Received: from nhanph1x-mobl.amr.corp.intel.com (HELO [10.249.38.84])
+ ([10.249.38.84])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 May 2023 03:11:34 -0700
+Message-ID: <947a2a5d-5a63-6437-bfc3-a5c4841152c2@linux.intel.com>
+Date: Fri, 12 May 2023 13:12:28 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.10.1
+Subject: Re: [PATCH] ASoC: SOF: topology: Fix missing error code in
+ sof_route_load()
+Content-Language: en-US
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+ pierre-louis.bossart@linux.intel.com
+Cc: lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ daniel.baluta@nxp.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+References: <20230512025410.52832-1-jiapeng.chong@linux.alibaba.com>
+From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20230512025410.52832-1-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: ZSEDDB5ZUANJODXPYQ2IB7B66RKJK5DV
+X-Message-ID-Hash: ZSEDDB5ZUANJODXPYQ2IB7B66RKJK5DV
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WYQRCR6ICCDXQ2XXKI25X3YKQXVPQ7B2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZSEDDB5ZUANJODXPYQ2IB7B66RKJK5DV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,65 +108,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 12 May 2023 11:25:23 +0200,
-Oswald Buddenhagen wrote:
-> 
-> On Fri, May 12, 2023 at 09:15:17AM +0200, Takashi Iwai wrote:
-> > On Wed, 10 May 2023 19:39:10 +0200,
-> > Oswald Buddenhagen wrote:
-> >> 
-> >> If these are hit, we've already trashed kernel memory by writing past
-> >> the end of the allocated buffer. There is no recovery from that.
-> >> 
-> > Again, this is NAK.
-> 
-> > First of all, if we really do care the overflow
-> > seriously, we should check at each increment instead of after
-> > breakage.  It shouldn't be too difficult at all.
-> > 
-> not difficult, but pointless bloat.
-> 
-> > Second, using BUG_ON() like this case is an overkill.  It was clearly
-> > stated by Linus in the past a few times (although I can't find the
-> > source right now).
-> > 
-> you seem to have an irrational aversion against assertions, maybe
-> because linus likes to scream at people.
 
-Not because he's screaming but, it's because his opinion is correct
-regarding this.
 
-> relevant comments from linus were easy enough to find:
-> https://yarchive.net/comp/linux/BUG.html
-> https://lore.kernel.org/all/CA+55aFwyNTLuZgOWMTRuabWobF27ygskuxvFd-P0n-3UNT=0Og@mail.gmail.com/T/#u
-> 
-> and there is also the documentation on BUG() itself.
+On 12/05/2023 05:54, Jiapeng Chong wrote:
+> The error code is missing in this code scenario, add the error code
+> '-EINVAL' to the return value 'err'.
 >
-> i don't see anything in either of these that would imply that my use
-> of BUG_ON() is inappropriate. it catches a serious programming error,
-> is easy to prove correct (the scope is a single function), and the
-> only immediate effect is that it will crash the insmod process (though
-> i would expect possible followup effects due to the kernel memory
-> corruption, which is exactly why the assert is there). i have a hard
-> time thinking of a *more* appropriate use for BUG().
+> sound/soc/sof/topology.c:2060 sof_route_load() warn: missing error
+code 'ret'.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Robots don't necessarily understand code...
+The cases which this is aiming to fix are the cases when we ignore
+things, not failing.
 
-I can't agree here at all.  Sorry, but this is still NAK.
+Would it be possible to check the code and understand it before sending
+a patch?
 
-The reason why BUG_ON() is bad is that it cannot allow debugging
-easily.  It crashes and locks up, and you may not see what's going
-on.
+Nack.
 
-Do you want to catch and fix the bug?  Then put the check at more
-proper pint that prevents the real corruption.  the check is
-basically already too late -- it means that you might have already
-broken someone else's system.  If the size matters, it can be a
-conditional build with CONFIG_SND_DEBUG, for example.
-But simply replacing and putting BUG_ON() makes little sense.
-
-Of course, it's just my opinion, but I won't change my mind about it.
-So I'm not going to discuss about this further and waste time.
-
-
-thanks,
-
-Takashi
+> Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=4935
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  sound/soc/sof/topology.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+> index d3d536b0a8f5..3ca3a72f1805 100644
+> --- a/sound/soc/sof/topology.c
+> +++ b/sound/soc/sof/topology.c
+> @@ -2045,7 +2045,6 @@ static int sof_route_load(struct
+snd_soc_component *scomp, int index,
+>  	if (!source_swidget) {
+>  		dev_err(scomp->dev, "error: source %s not found\n",
+>  			route->source);
+> -		ret = -EINVAL;
+>  		goto err;
+>  	}
+>
+> @@ -2064,7 +2063,6 @@ static int sof_route_load(struct
+snd_soc_component *scomp, int index,
+>  	if (!sink_swidget) {
+>  		dev_err(scomp->dev, "error: sink %s not found\n",
+>  			route->sink);
+> -		ret = -EINVAL;
+>  		goto err;
+>  	}
+>
+> @@ -2087,6 +2085,8 @@ static int sof_route_load(struct
+snd_soc_component *scomp, int index,
+>  	return 0;
+>  err:
+>  	kfree(sroute);
+> +	ret = -EINVAL;
+> +
+>  	return ret;
+>  }
+>
+-- 
+Péter
