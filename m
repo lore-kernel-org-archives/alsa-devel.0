@@ -4,98 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2FEAC77B7F
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 08:20:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC1DCC77B7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 08:29:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D77E1D9;
-	Fri, 12 May 2023 10:19:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D77E1D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1F941E0;
+	Fri, 12 May 2023 10:28:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1F941E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683879617;
-	bh=gsxIknhruh4OfwGk39OcgGUAMGa0Zfu1HUlFnPiexmo=;
+	s=default; t=1683880189;
+	bh=Ivr46ufQqg3IjsJbLU9abXhSMNg2IXSXV2pT1zpELjA=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UOKzk+lYMIE52pxv2zaSyj2UqeJybI3QkIqBfO9/X5UXTDzxlTHUabCYVwv5pEL5Y
-	 tWdL1qe/Yg0HrF9Ww1hfR8DaiW9ES20TorIlznIc07zVCANwmLMnuRJBcoRIHrdzAk
-	 dzwgYXQ5M0y3JIU8t54jaJcuXXYqhFGTlOlxa62I=
+	b=u7W6+x2QZyTYdOr14OYlgtdOrYazxFt4v7vNHIAVz8j1e0sErlgm1aGVn/FphpKDn
+	 22FTx5due1EidFgy1n77qOl+xK3g7HcI0GCVLj6h2s0UDzweTucA8fzcKjGET4ThQy
+	 ynk11RnJ2J7NbhIoIABxHKtdwHQAmifrowOmwGeE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6EF3EF80087; Fri, 12 May 2023 10:19:01 +0200 (CEST)
+	id 854F4F80548; Fri, 12 May 2023 10:28:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 077B3F8052E;
-	Fri, 12 May 2023 10:19:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BE08F8052E;
+	Fri, 12 May 2023 10:28:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 70B19F8052E; Fri, 12 May 2023 10:18:58 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id B12EAF8052E; Fri, 12 May 2023 10:28:21 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9BE08F80087
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 10:18:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BE08F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9237BF802E8
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 10:28:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9237BF802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=KuhOTEmA;
+ header.s=susede2_rsa header.b=vzrdciWl;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=GkmGUlMA
+ header.s=susede2_ed25519 header.b=zDqffYIx
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1C6F020413;
-	Fri, 12 May 2023 08:18:55 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5262D22778;
+	Fri, 12 May 2023 08:28:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1683879535;
+	t=1683880095;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pHVVEhj71TC5ei0Y7OES5Dbgca5o5EL3xb2/itYcJ0Y=;
-	b=KuhOTEmAL4pz5kmY8i0dgeAn/rR9lsUkJRLIwH7Z+xh6Cst0lh9J071NEpB6OT8kASJubS
-	/fslgokY1Z9XkE3bVTSVTMlK0jbb4+D9FwYfBoFQ61Gz34bPWn/ED054hxuRnSTYIudPC5
-	Xdm2mFse4BgoxYwEDvm87+xfPxZ1bOY=
+	bh=3mGB+smqRhvtSbDmLxnlDyB2A5TVjgue/Be+0M57G18=;
+	b=vzrdciWlHcUwrcZ/A1T4r0g534r5DXoqdXQIyoU5ABYTdaijhOplVKBxSL2eozD29VkkTz
+	UVSGFcUY6TGlnj8OsCRTXwC4KTL0bg4x3axpAzpd2JBzxPthdd+UWPeCPOkSKEpdx3tiXl
+	5UoXNN6Ekxd7bnPLsi1RBFUrfipeFj0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1683879535;
+	s=susede2_ed25519; t=1683880095;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pHVVEhj71TC5ei0Y7OES5Dbgca5o5EL3xb2/itYcJ0Y=;
-	b=GkmGUlMAOQpLCF5jriMdUR0ztxRyVPlblX6Wsfh0YPl3BEijFIyDqug5qwTPwHQrnD8gx6
-	o+R7lduFXbQy6RAw==
+	bh=3mGB+smqRhvtSbDmLxnlDyB2A5TVjgue/Be+0M57G18=;
+	b=zDqffYIxuqv92sD98suDupfD/TSrdKv5llzrnsirLoupG1h+AcY7Uc5NJWTRs7GRpxY31I
+	b4Jk8gPM5GRXA8Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E21BB13466;
-	Fri, 12 May 2023 08:18:54 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 24B5E13466;
+	Fri, 12 May 2023 08:28:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id o2hNNm72XWTLHQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 12 May 2023 08:18:54 +0000
-Date: Fri, 12 May 2023 10:18:54 +0200
-Message-ID: <873542aro1.wl-tiwai@suse.de>
+	id gGggCJ/4XWTEIgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 12 May 2023 08:28:15 +0000
+Date: Fri, 12 May 2023 10:28:14 +0200
+Message-ID: <871qjmar8h.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Clemens Ladisch <clemens@ladisch.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ALSA: firewire-digi00x: prevent potential use after free
-In-Reply-To: <c224cbd5-d9e2-4cd4-9bcf-2138eb1d35c6@kili.mountain>
-References: <c224cbd5-d9e2-4cd4-9bcf-2138eb1d35c6@kili.mountain>
+To: nemesis@icequake.net
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] snd-hda-intel: Apply HP B&O top speaker profile to
+ Pavilion 15
+In-Reply-To: <ZF0mpcMz3ezP9KQw@icequake.net>
+References: <ZF0mpcMz3ezP9KQw@icequake.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: YSTUZMF7JUTPPNH23KQQWEX5GQJBRNUF
-X-Message-ID-Hash: YSTUZMF7JUTPPNH23KQQWEX5GQJBRNUF
+Message-ID-Hash: 2JG5PKJECB53RLV5KMKWGVEOIDEWZ7DJ
+X-Message-ID-Hash: 2JG5PKJECB53RLV5KMKWGVEOIDEWZ7DJ
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -108,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YSTUZMF7JUTPPNH23KQQWEX5GQJBRNUF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2JG5PKJECB53RLV5KMKWGVEOIDEWZ7DJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,17 +114,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 09 May 2023 11:07:11 +0200,
-Dan Carpenter wrote:
+On Thu, 11 May 2023 19:32:21 +0200,
+Ryan C. Underwood wrote:
 > 
-> This code was supposed to return an error code if init_stream()
-> failed, but it instead freed dg00x->rx_stream and returned success.
-> This potentially leads to a use after free.
 > 
-> Fixes: 9a08067ec318 ("ALSA: firewire-digi00x: support AMDTP domain")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> The Pavilion 15 line has B&O top speakers similar to the x360 and
+> applying the same profile produces good sound.  Without this, the
+> sound would be tinny and underpowered without either applying
+> model=alc295-hp-x360 or booting another OS first.
+> 
+> Signed-off-by: Ryan Underwood <nemesis@icequake.net>
 
-Thanks, applied now.
+The patch seems mangled by your mailer (spaces instead of tabs).
+I applied it manually as it's a trivial change.  But at the next time,
+please check your mailer setup.
 
+Also, please include all maintainers to Cc :)
+
+
+thanks,
 
 Takashi
