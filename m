@@ -4,95 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B73AC77B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 16:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E32C2C77B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 16:44:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80C22DF5;
-	Fri, 12 May 2023 18:35:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80C22DF5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36935DF6;
+	Fri, 12 May 2023 18:43:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36935DF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683909379;
-	bh=478mvwmsv9IeCMZb4/HmUb/CH/Ey2PB85AwyLXEFDQk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1683909846;
+	bh=j0HkD/gwk8BhLqwJwBVRBPKua9Kqw6Skf6SumRU1BYU=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=c1jWcSqLhhraX2GITH1kMeQvQaZaW8GtIiHUv+HQUPknQAlC0QU5RMDZUWspNaT6x
-	 77SJMJIutVjv5ixb/R2oaUI3jmSOG1f4HDRZd0pyO3G3M8y13oqj+1JPGUHuO2Xfg2
-	 alB1f0bnW8ZVokXo5fLWOnwxhFVtV0DI8pcY1Upg=
+	b=HrUMx5+VQwmrNErLehXorO7CXXmMO+zftzmFWKVdqYSo7diAu9PnhE2pEZAMNMii7
+	 MjVOMzz6Z1OuK/Mv1JPAGzyhiuI3N1V885L+54bUJxPvuhCCjvB5jOOIxs52OlxXAW
+	 7QFNMgPuCUVPMc6WueR/3mc+pocvoWqO4obzZmFU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 481E8F80544; Fri, 12 May 2023 18:35:22 +0200 (CEST)
+	id F4085F8053D; Fri, 12 May 2023 18:42:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A027BF80087;
-	Fri, 12 May 2023 18:35:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9AA92F8053D;
+	Fri, 12 May 2023 18:42:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 389EFF8032D; Fri, 12 May 2023 18:35:18 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+	id 0508FF8032D; Fri, 12 May 2023 18:42:44 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8D1D6F80087
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 18:35:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D1D6F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9DEA6F80087
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 18:42:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DEA6F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=AXwID8ZY
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683909310; x=1715445310;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=478mvwmsv9IeCMZb4/HmUb/CH/Ey2PB85AwyLXEFDQk=;
-  b=AXwID8ZYSoKJvnJWJcLiUkDAzWfyAXYslQjCSeWCDr7aOQx9zL7KorBr
-   lTzuBov1uUXsv+PfvJNvOu49qCSy8XLDcpckV4qJkoSTtxUgaRp4/+7SL
-   W3bV/Us4aSyogN+jKCetj5TJ6TlH5N8sbGst+VpUP7wDc+tQr9QKQlSyx
-   0A/vVPxaAxr5MZgGJRJWAIcsuIEa2SH6cJzseeiSlii1v9PHAGQ/fVDwr
-   9fgaTRmcpvDOygnQRxvoatmPcX7nGeEYN919vWA9VYZ/kNCK2sb+MGniy
-   Le7fvNR9gdaSi28rsCKGBS0I1iVKOM6jPPem6TgrVDn5O90RIOqE+FZxS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="331193617"
-X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
-   d="scan'208";a="331193617"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2023 09:35:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="1030146824"
-X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
-   d="scan'208";a="1030146824"
-Received: from winkelru-mobl.amr.corp.intel.com (HELO [10.212.144.249])
- ([10.212.144.249])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2023 09:35:03 -0700
-Message-ID: <5363c7b7-7a5b-490c-445b-fb7ccd693c63@linux.intel.com>
-Date: Fri, 12 May 2023 11:34:44 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.10.0
-Subject: Re: [PATCH 01/10] soundwire: bus: Allow SoundWire peripherals to
- register IRQ handlers
-Content-Language: en-US
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, tglx@linutronix.de,
- maz@kernel.org, linus.walleij@linaro.org, vkoul@kernel.org,
- lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
- sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, devicetree@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=E7pvxMu4
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 34C79TkL025224;
+	Fri, 12 May 2023 11:42:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=yhZyXr8lHG2UYQnMB5K/v8MOBZCb9ZrOdJC0YRmRGa8=;
+ b=E7pvxMu46+f0qJDoI0tbWmk1ppaoaZxPwNujd4EJ1fjmkq3wiJ1VuBahzVHA+HPv7P7T
+ 8qm3v/DlrDNQbQXvLYCBV3uvlYGPzR/GF7yZXfjZej5A6y+Cdc7fhmjfsxcqF0MsuSGx
+ 268U2NEZe61O33H77dy6hWMmIEI2CAXD2mYDWaea2Cn9dX0iWVVLjihqnwJbGn+ZvHFw
+ u4w1ePOkTA0NLasMz+YUxsO3GYJ51WiI27DYJxB2TL5Cykzdo4ni4JuYURsVPcZHRvjG
+ 879KQaoqoKuMLsyatT7CvUiu5tCjILTc0p/VECcyEVS4fueZdqinm0Gw4fcj1JCDbC6X 8Q==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qf7s46s1q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 May 2023 11:42:35 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Fri, 12 May
+ 2023 11:42:33 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Fri, 12 May 2023 11:42:33 -0500
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
+ [198.61.86.93])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8527911A8;
+	Fri, 12 May 2023 16:42:33 +0000 (UTC)
+Date: Fri, 12 May 2023 16:42:33 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Marc Zyngier <maz@kernel.org>
+CC: <broonie@kernel.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <tglx@linutronix.de>, <linus.walleij@linaro.org>, <vkoul@kernel.org>,
+        <lgirdwood@gmail.com>, <yung-chuan.liao@linux.intel.com>,
+        <sanyog.r.kale@intel.com>, <pierre-louis.bossart@linux.intel.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 07/10] irqchip/cs42l43: Add support for the cs42l43 IRQs
+Message-ID: <20230512164233.GN68926@ediswmail.ad.cirrus.com>
 References: <20230512122838.243002-1-ckeepax@opensource.cirrus.com>
- <20230512122838.243002-2-ckeepax@opensource.cirrus.com>
- <0471f085-14bf-c159-9b92-62983af6c19a@linux.intel.com>
- <20230512160224.GK68926@ediswmail.ad.cirrus.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230512160224.GK68926@ediswmail.ad.cirrus.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: FTUCD3ALBESQY3IIOUILYYNC5AUL5ZET
-X-Message-ID-Hash: FTUCD3ALBESQY3IIOUILYYNC5AUL5ZET
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+ <20230512122838.243002-8-ckeepax@opensource.cirrus.com>
+ <86o7mpmvqq.wl-maz@kernel.org>
+ <20230512153933.GH68926@ediswmail.ad.cirrus.com>
+ <86mt29mt2m.wl-maz@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <86mt29mt2m.wl-maz@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: MwewUnRTmgtD-wNGy1bTINuTAa_F_N5D
+X-Proofpoint-GUID: MwewUnRTmgtD-wNGy1bTINuTAa_F_N5D
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 22MCA2LZQK4TKLQZKJKAUE6XZDKQLJ2R
+X-Message-ID-Hash: 22MCA2LZQK4TKLQZKJKAUE6XZDKQLJ2R
+X-MailFrom: prvs=0496644b8b=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -104,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FTUCD3ALBESQY3IIOUILYYNC5AUL5ZET/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/22MCA2LZQK4TKLQZKJKAUE6XZDKQLJ2R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,41 +117,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 5/12/23 11:02, Charles Keepax wrote:
-> On Fri, May 12, 2023 at 08:45:51AM -0500, Pierre-Louis Bossart wrote:
->>> @@ -1711,6 +1739,9 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
->>>  				struct device *dev = &slave->dev;
->>>  				struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
->>>  
->>> +				if (slave->prop.use_domain_irq && slave->irq)
->>> +					handle_nested_irq(slave->irq);
->>> +
->>
->> I am a bit lost here, I can understand that alerts would be handled by a
->> dedicated handler, but here the code continues and will call the
->> existing interrupt_callback.
->>
->> Is this intentional? I wonder if there's a risk with two entities
->> dealing with the same event and programming the same registers.
->> Shouldn't there be some sort of 'either or' rule?
->>
+On Fri, May 12, 2023 at 05:07:45PM +0100, Marc Zyngier wrote:
+> On Fri, 12 May 2023 16:39:33 +0100,
+> Charles Keepax <ckeepax@opensource.cirrus.com> wrote:
+> > On Fri, May 12, 2023 at 04:10:05PM +0100, Marc Zyngier wrote:
+> > > On Fri, 12 May 2023 13:28:35 +0100,
+> > > Charles Keepax <ckeepax@opensource.cirrus.com> wrote:
+> > Is the objection here that regmap is making these calls for us,
+> > rather than them being hard coded into this driver?
 > 
-> I guess there is a risk of them "handling" the IRQ twice,
-> although it is hard to see why you would write the driver that
-> way. Also since they are sequencial the second would I guess
-> just see that no IRQs are pending.
+> That's one of the reasons. Look at the existing irqchip drivers: they
+> have nothing in common with yours. The regmap irqchip abstraction may
+> be convenient for what you are doing, but the result isn't really an
+> irqchip driver. It is something that is a small bit of a larger device
+> and not an interrupt controller driver on its own. The irqchip
+> subsystem is there for "first class" interrupt controllers.
 > 
-> The intention for calling both is that it facilitates using
-> the same IRQ handler for I2C and SoundWire. At least on the
-> Cirrus devices there are a bunch of chip specific registers
-> that need treated exactly the same on I2C and SoundWire, but
-> then a couple of extra registers that need handled in the
-> SoundWire case. This way the handling of those can be kept
-> completely in the SoundWire part of the code and not ifdef-ed
-> into the main IRQ path.
 
-Sounds good to me, but it's worth adding a comment and improving the
-commit message with design intent/rules since it's a common part in
-drivers/soundwire/
+Thank you this is helpful. This device has GPIOs that other
+devices might want to use for IRQs, so the chip is capable
+of providing IRQ services to other devices in the system not
+just itself. This is commonly used where external boosted
+amps have their IRQs hooked up to the CODEC.
+
+I guess if Mark doesn't mind I think the only internal bit of the
+device that uses the IRQs is the CODEC driver so I could move the
+IRQ handling in there, it does seem a little odd to me, but I
+guess I don't have any problems with it.
+
+> > Is the objection here the table mapping the register fields that
+> > are provided as an IRQ on the device?
+> 
+> I'm referring to this sort of construct:
+> 
+> +	CS42L43_IRQ_REG(HP_STARTUP_DONE,			MSM),
+> +	CS42L43_IRQ_REG(HP_SHUTDOWN_DONE,			MSM),
+> +	CS42L43_IRQ_REG(HSDET_DONE,				MSM),
+> +	CS42L43_IRQ_REG(TIPSENSE_UNPLUG_DB,			MSM),
+> +	CS42L43_IRQ_REG(TIPSENSE_PLUG_DB,			MSM),
+> +	CS42L43_IRQ_REG(RINGSENSE_UNPLUG_DB,			MSM),
+> +	CS42L43_IRQ_REG(RINGSENSE_PLUG_DB,			MSM),
+> +	CS42L43_IRQ_REG(TIPSENSE_UNPLUG_PDET,			MSM),
+> +	CS42L43_IRQ_REG(TIPSENSE_PLUG_PDET,			MSM),
+> +	CS42L43_IRQ_REG(RINGSENSE_UNPLUG_PDET,			MSM),
+> +	CS42L43_IRQ_REG(RINGSENSE_PLUG_PDET,			MSM),
+> 
+> Why isn't this described in firmware tables?
+
+So we probably could do that for device tree systems, but getting
+this into ACPI I think will be exceedingly difficult, and that is
+likely the primary market for the device.
+
+> Why doesn't it need to be
+> carried as part of the driver? Is "CLASS_D_AMP" something an interrupt
+> controller driver should care about?
+
+Ah ok so I think I am starting to understand, if I might
+paraphrase, your main objection here is that many of the IRQs are
+fixed purpose signals originating inside the chip itself, rather
+than external lines that can be hooked up for generic purposes.
+
+I guess most "first class" IRQ controllers have a lot more
+generic IRQs than they do fixed purpose ones. Where as we only
+have the 3 GPIOs as generic purpose IRQ lines.
+
+Thanks,
+Charles
