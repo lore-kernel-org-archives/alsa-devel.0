@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A8F0C7EE25
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 12:30:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F20CC77B7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 12:31:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8303C200;
-	Fri, 12 May 2023 14:29:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8303C200
+	by alsa0.perex.cz (Postfix) with ESMTPS id D861F846;
+	Fri, 12 May 2023 14:30:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D861F846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683894648;
-	bh=XnZOpeLg2jB3NqIeHz+EtsLIk4E/+O+21xYcvDQJ2tI=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=DDVoLYNOWpJchI/T2e+3TcosP/Xym95U3+d6SII3lhV8kV7M9f83D79gId4YBSpZ9
-	 YsE/8L0XmrkxiV9hDqYPj1f0jiRS1ZVEPykQO//FCsIoH7SYsFNoUVpA65i7ei0/iF
-	 tWcUmnE+tR9IJQoAs7O0TqP8lIyxgQp/PlMP1QXM=
+	s=default; t=1683894662;
+	bh=rZnLuWQLspM2R1RcG/iSbrvTK6IwOiH0i+DR+kDYgzA=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=CYskNnzMKI5XMcYgvH83hayjp1zPauZaYRx4Hnl3cgZt9gZt16C6PD9v6t9YKKrxp
+	 8wzHwOrhB9RrxxLEQw06zHgD2SoT8EHEKfolFd1EAO9xF6kW5Ia7vQmFHO8QBBVIzZ
+	 VT5hMUUy83wNaG1RGVeqmozhT36bsfsrKm3MZMn8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45C8BF8057A; Fri, 12 May 2023 14:29:11 +0200 (CEST)
+	id 81F1EF805A8; Fri, 12 May 2023 14:29:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E088FF80567;
-	Fri, 12 May 2023 14:29:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 253E1F80589;
+	Fri, 12 May 2023 14:29:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33ECDF80551; Fri, 12 May 2023 14:28:56 +0200 (CEST)
+	id 281C7F8057A; Fri, 12 May 2023 14:29:06 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4071BF8052E
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 14:28:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4071BF8052E
+	by alsa1.perex.cz (Postfix) with ESMTPS id A4E2CF80544
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 14:28:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4E2CF80544
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=Ap4aiG0a
+ header.s=PODMain02222019 header.b=GAo9EEBg
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34CCOUoo001858;
-	Fri, 12 May 2023 07:28:40 -0500
+ 34CCOUor001858;
+	Fri, 12 May 2023 07:28:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=hhGbqr5I8d1WarBJ8Z9M0P99KfkmGBTeVHbqv5amikE=;
- b=Ap4aiG0ah8RcwsjPABIbFRIg+kASR6fLmS8xzdDwefldHDuurFAMk4B5MfWBens19A7F
- XqsvNcGVbfOhOxcWYXKecIBFrSAgJO74wrYn38mIIYAqkA+X+UMxc03E8T/lEUpD8yhz
- HVs7zEEjJChOknZT4gTqALpDXKTALyzYgJpOoIrcvncv/aHU0brRHDfxiy+qK4D6xEtN
- /8J3fSPbHlZJTfGzFpEaAlAmujCaALpN9h42TVooNfelT5aaGs1vYsptfCKgDbU3KUrc
- TBhEdHiK2ZUazkqXvaa+9uON8sgTPRKUvfF8YuVAvSywjrOI919HQNSjPYsYwbkiTgeQ xQ==
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=raLUE1r/+MZGwXGgjOqNmbbdT+5cBvFrw6NX5OKkxec=;
+ b=GAo9EEBgVMuDcQMfR9hMzLBMQjN+GFpSUSGskbztVtCyd3fnJap6sDBvqBf3hdYPikY5
+ bwsXrWuLFR9//1s6en4g7tmANEEWx8WanpafL11YG42PkOlzTL2lBrn1UVOGRNhVQ3dt
+ C2wkvYjJTm+N6fGKcvUNUr6oaGmaoDFh+P6RNaqUZ895MwdDOp2O4T5yrxnI0e+NycWs
+ sqrw+9+iK9R/AGA13qLzmVfKyFOJ14SuVKYAPdnM97Gz+EOheM+3L7hm0G2nE8MlBTK+
+ POtKQCITXev37Cb8dKt+FkprdiGBoV8oI/iNeNgQWutaLJ+hM3KheOTLhjRpkvnowAnb Hw==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3qf7nb5dqx-1
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3qf7nb5dqx-4
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 May 2023 07:28:40 -0500
+	Fri, 12 May 2023 07:28:43 -0500
 Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Fri, 12 May
@@ -64,7 +65,7 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
  15.2.1118.26 via Frontend Transport; Fri, 12 May 2023 07:28:38 -0500
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 24FD345;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DC3E845;
 	Fri, 12 May 2023 12:28:38 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
@@ -76,18 +77,20 @@ CC: <lgirdwood@gmail.com>, <yung-chuan.liao@linux.intel.com>,
         <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
         <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 00/10] Add cs42l43 PC focused SoundWire CODEC
-Date: Fri, 12 May 2023 13:28:28 +0100
-Message-ID: <20230512122838.243002-1-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 07/10] irqchip/cs42l43: Add support for the cs42l43 IRQs
+Date: Fri, 12 May 2023 13:28:35 +0100
+Message-ID: <20230512122838.243002-8-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230512122838.243002-1-ckeepax@opensource.cirrus.com>
+References: <20230512122838.243002-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 8-OvAxXkBH6wUG2stbtfU7YbBv3HFIV3
-X-Proofpoint-GUID: 8-OvAxXkBH6wUG2stbtfU7YbBv3HFIV3
+X-Proofpoint-ORIG-GUID: Eor36xOpC61mpC-Gp0R8Hdn4XbpTUO8w
+X-Proofpoint-GUID: Eor36xOpC61mpC-Gp0R8Hdn4XbpTUO8w
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 63DFZXVJ2FJ7BAQKXOTYAR6C4W46YXAL
-X-Message-ID-Hash: 63DFZXVJ2FJ7BAQKXOTYAR6C4W46YXAL
+Message-ID-Hash: GGMHKP7HHYIWCAB3EXWMYDUFCZ4I3T3K
+X-Message-ID-Hash: GGMHKP7HHYIWCAB3EXWMYDUFCZ4I3T3K
 X-MailFrom: prvs=0496644b8b=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/63DFZXVJ2FJ7BAQKXOTYAR6C4W46YXAL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GGMHKP7HHYIWCAB3EXWMYDUFCZ4I3T3K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,86 +112,317 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch chain adds support for the Cirrus Logic cs42l43 PC focused
-SoundWire CODEC. Some supporting work is included in the chain,
-including adding an ASoC control notification helper function and
-adding support for IRQs generated by the in-band SoundWire alert
-mechanism.
+The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
+(Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
+for portable applications. It provides a high dynamic range, stereo
+DAC for headphone output, two integrated Class D amplifiers for
+loudspeakers, and two ADCs for wired headset microphone input or
+stereo line input. PDM inputs are provided for digital microphones.
 
-The chain is currently based of v6.4-rc1 because I am not 100% sure
-which tree we want to send everything through. The CODEC support
-has a build dependency on both the SoundWire change and the ASoC
-soc-component change.
+The IRQ chip provides IRQ functionality both to other parts of the
+cs42l43 device and to external devices that wish to use its IRQs.
 
-Thanks,
-Charles
-
-Charles Keepax (8):
-  ASoC: soc-component: Add notify control helper function
-  ASoC: ak4118: Update to use new component control notify helper
-  ASoC: wm_adsp: Update to use new component control notify helepr
-  dt-bindings: mfd: cirrus,cs42l43: Add initial DT binding
-  mfd: cs42l43: Add support for cs42l43 core driver
-  irqchip/cs42l43: Add support for the cs42l43 IRQs
-  pinctrl: cs42l43: Add support for the cs42l43
-  ASoC: cs42l43: Add support for the cs42l43
-
-Lucas Tanure (2):
-  soundwire: bus: Allow SoundWire peripherals to register IRQ handlers
-  spi: cs42l43: Add SPI controller support
-
- .../bindings/mfd/cirrus,cs42l43.yaml          |  212 ++
- MAINTAINERS                                   |    7 +
- drivers/irqchip/Kconfig                       |    9 +
- drivers/irqchip/Makefile                      |    1 +
- drivers/irqchip/irq-cs42l43.c                 |  170 ++
- drivers/mfd/Kconfig                           |   23 +
- drivers/mfd/Makefile                          |    3 +
- drivers/mfd/cs42l43-i2c.c                     |   86 +
- drivers/mfd/cs42l43-sdw.c                     |  210 ++
- drivers/mfd/cs42l43.c                         | 1044 ++++++++
- drivers/mfd/cs42l43.h                         |   23 +
- drivers/pinctrl/cirrus/Kconfig                |   11 +
- drivers/pinctrl/cirrus/Makefile               |    2 +
- drivers/pinctrl/cirrus/pinctrl-cs42l43.c      |  614 +++++
- drivers/soundwire/bus.c                       |   31 +
- drivers/soundwire/bus_type.c                  |   12 +
- drivers/spi/Kconfig                           |    7 +
- drivers/spi/Makefile                          |    1 +
- drivers/spi/spi-cs42l43.c                     |  287 +++
- include/linux/irqchip/cs42l43.h               |   61 +
- include/linux/mfd/cs42l43-regs.h              | 1172 +++++++++
- include/linux/mfd/cs42l43.h                   |   50 +
- include/linux/soundwire/sdw.h                 |    9 +
- include/sound/cs42l43.h                       |   84 +
- include/sound/soc-component.h                 |    4 +
- sound/soc/codecs/Kconfig                      |   16 +
- sound/soc/codecs/Makefile                     |    4 +
- sound/soc/codecs/ak4118.c                     |   11 +-
- sound/soc/codecs/cs42l43-jack.c               |  946 +++++++
- sound/soc/codecs/cs42l43-sdw.c                |   75 +
- sound/soc/codecs/cs42l43.c                    | 2270 +++++++++++++++++
- sound/soc/codecs/cs42l43.h                    |  117 +
- sound/soc/codecs/wm_adsp.c                    |   20 +-
- sound/soc/soc-component.c                     |   22 +
- 34 files changed, 7586 insertions(+), 28 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mfd/cirrus,cs42l43.yaml
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ MAINTAINERS                     |   2 +
+ drivers/irqchip/Kconfig         |   9 ++
+ drivers/irqchip/Makefile        |   1 +
+ drivers/irqchip/irq-cs42l43.c   | 170 ++++++++++++++++++++++++++++++++
+ include/linux/irqchip/cs42l43.h |  61 ++++++++++++
+ 5 files changed, 243 insertions(+)
  create mode 100644 drivers/irqchip/irq-cs42l43.c
- create mode 100644 drivers/mfd/cs42l43-i2c.c
- create mode 100644 drivers/mfd/cs42l43-sdw.c
- create mode 100644 drivers/mfd/cs42l43.c
- create mode 100644 drivers/mfd/cs42l43.h
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs42l43.c
- create mode 100644 drivers/spi/spi-cs42l43.c
  create mode 100644 include/linux/irqchip/cs42l43.h
- create mode 100644 include/linux/mfd/cs42l43-regs.h
- create mode 100644 include/linux/mfd/cs42l43.h
- create mode 100644 include/sound/cs42l43.h
- create mode 100644 sound/soc/codecs/cs42l43-jack.c
- create mode 100644 sound/soc/codecs/cs42l43-sdw.c
- create mode 100644 sound/soc/codecs/cs42l43.c
- create mode 100644 sound/soc/codecs/cs42l43.h
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8d2076941ff36..13945ee6cdcfe 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4928,8 +4928,10 @@ L:	patches@opensource.cirrus.com
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/mfd/cirrus,cs*
+ F:	Documentation/devicetree/bindings/sound/cirrus,cs*
++F:	drivers/irqchip/irq-cs42l43*
+ F:	drivers/mfd/cs42l43*
+ F:	include/dt-bindings/sound/cs*
++F:	include/linux/irqchip/cs42l43*
+ F:	include/linux/mfd/cs42l43*
+ F:	include/sound/cs*
+ F:	sound/pci/hda/cs*
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 09e422da482ff..05f58015749e3 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -138,6 +138,15 @@ config BRCMSTB_L2_IRQ
+ 	select GENERIC_IRQ_CHIP
+ 	select IRQ_DOMAIN
+ 
++config IRQ_CS42L43
++	tristate "Cirrus Logic CS42L43 IRQ Controller"
++	depends on MFD_CS42L43
++	select REGMAP_IRQ
++	help
++	  Select this to support the IRQ functions of the Cirrus Logic
++	  CS42L43 PC CODEC, note the IRQs are required for most other
++	  functions of the device.
++
+ config DAVINCI_CP_INTC
+ 	bool
+ 	select GENERIC_IRQ_CHIP
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index ffd945fe71aa2..d00330c1b0b95 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -66,6 +66,7 @@ obj-$(CONFIG_BCM6345_L1_IRQ)		+= irq-bcm6345-l1.o
+ obj-$(CONFIG_BCM7038_L1_IRQ)		+= irq-bcm7038-l1.o
+ obj-$(CONFIG_BCM7120_L2_IRQ)		+= irq-bcm7120-l2.o
+ obj-$(CONFIG_BRCMSTB_L2_IRQ)		+= irq-brcmstb-l2.o
++obj-$(CONFIG_IRQ_CS42L43)		+= irq-cs42l43.o
+ obj-$(CONFIG_KEYSTONE_IRQ)		+= irq-keystone.o
+ obj-$(CONFIG_MIPS_GIC)			+= irq-mips-gic.o
+ obj-$(CONFIG_ARCH_MEDIATEK)		+= irq-mtk-sysirq.o irq-mtk-cirq.o
+diff --git a/drivers/irqchip/irq-cs42l43.c b/drivers/irqchip/irq-cs42l43.c
+new file mode 100644
+index 0000000000000..fc55cbdc08647
+--- /dev/null
++++ b/drivers/irqchip/irq-cs42l43.c
+@@ -0,0 +1,170 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// CS42L43 IRQ driver
++//
++// Copyright (C) 2022-2023 Cirrus Logic, Inc. and
++//                         Cirrus Logic International Semiconductor Ltd.
++
++#include <linux/device.h>
++#include <linux/errno.h>
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/irqchip/cs42l43.h>
++#include <linux/mfd/cs42l43.h>
++#include <linux/mfd/cs42l43-regs.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/regmap.h>
++
++#define CS42L43_IRQ_OFFSET(reg) ((CS42L43_##reg##_INT) - CS42L43_DECIM_INT)
++
++#define CS42L43_IRQ_REG(name, reg) REGMAP_IRQ_REG(CS42L43_##name, \
++						  CS42L43_IRQ_OFFSET(reg), \
++						  CS42L43_##name##_INT_MASK)
++
++static const struct regmap_irq cs42l43_regmap_irqs[] = {
++	CS42L43_IRQ_REG(PLL_LOST_LOCK,				PLL),
++	CS42L43_IRQ_REG(PLL_READY,				PLL),
++
++	CS42L43_IRQ_REG(HP_STARTUP_DONE,			MSM),
++	CS42L43_IRQ_REG(HP_SHUTDOWN_DONE,			MSM),
++	CS42L43_IRQ_REG(HSDET_DONE,				MSM),
++	CS42L43_IRQ_REG(TIPSENSE_UNPLUG_DB,			MSM),
++	CS42L43_IRQ_REG(TIPSENSE_PLUG_DB,			MSM),
++	CS42L43_IRQ_REG(RINGSENSE_UNPLUG_DB,			MSM),
++	CS42L43_IRQ_REG(RINGSENSE_PLUG_DB,			MSM),
++	CS42L43_IRQ_REG(TIPSENSE_UNPLUG_PDET,			MSM),
++	CS42L43_IRQ_REG(TIPSENSE_PLUG_PDET,			MSM),
++	CS42L43_IRQ_REG(RINGSENSE_UNPLUG_PDET,			MSM),
++	CS42L43_IRQ_REG(RINGSENSE_PLUG_PDET,			MSM),
++
++	CS42L43_IRQ_REG(HS2_BIAS_SENSE,				ACC_DET),
++	CS42L43_IRQ_REG(HS1_BIAS_SENSE,				ACC_DET),
++	CS42L43_IRQ_REG(DC_DETECT1_FALSE,			ACC_DET),
++	CS42L43_IRQ_REG(DC_DETECT1_TRUE,			ACC_DET),
++	CS42L43_IRQ_REG(HSBIAS_CLAMPED,				ACC_DET),
++	CS42L43_IRQ_REG(HS3_4_BIAS_SENSE,			ACC_DET),
++
++	CS42L43_IRQ_REG(AMP2_CLK_STOP_FAULT,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP1_CLK_STOP_FAULT,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP2_VDDSPK_FAULT,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP1_VDDSPK_FAULT,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP2_SHUTDOWN_DONE,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP1_SHUTDOWN_DONE,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP2_STARTUP_DONE,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP1_STARTUP_DONE,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP2_THERM_SHDN,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP1_THERM_SHDN,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP2_THERM_WARN,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP1_THERM_WARN,			CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP2_SCDET,				CLASS_D_AMP),
++	CS42L43_IRQ_REG(AMP1_SCDET,				CLASS_D_AMP),
++
++	CS42L43_IRQ_REG(GPIO3_FALL,				GPIO),
++	CS42L43_IRQ_REG(GPIO3_RISE,				GPIO),
++	CS42L43_IRQ_REG(GPIO2_FALL,				GPIO),
++	CS42L43_IRQ_REG(GPIO2_RISE,				GPIO),
++	CS42L43_IRQ_REG(GPIO1_FALL,				GPIO),
++	CS42L43_IRQ_REG(GPIO1_RISE,				GPIO),
++
++	CS42L43_IRQ_REG(HP_ILIMIT,				HPOUT),
++	CS42L43_IRQ_REG(HP_LOADDET_DONE,			HPOUT),
++};
++
++static const struct regmap_irq_chip cs42l43_irq_chip = {
++	.name = "cs42l43",
++
++	.status_base = CS42L43_DECIM_INT,
++	.mask_base = CS42L43_DECIM_MASK,
++	.num_regs = 16,
++
++	.irqs = cs42l43_regmap_irqs,
++	.num_irqs = ARRAY_SIZE(cs42l43_regmap_irqs),
++
++	.runtime_pm = true,
++};
++
++struct cs42l43_irq {
++	struct device *dev;
++
++	struct regmap_irq_chip irq_chip;
++	struct regmap_irq_chip_data *irq_data;
++};
++
++static int cs42l43_irq_probe(struct platform_device *pdev)
++{
++	struct cs42l43 *cs42l43 = dev_get_drvdata(pdev->dev.parent);
++	struct cs42l43_irq *priv;
++	struct irq_data *irq_data;
++	unsigned long irq_flags;
++	int ret;
++
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->dev = &pdev->dev;
++	priv->irq_chip = cs42l43_irq_chip;
++	priv->irq_chip.irq_drv_data = priv;
++
++	irq_data = irq_get_irq_data(cs42l43->irq);
++	if (!irq_data) {
++		dev_err(priv->dev, "Invalid IRQ: %d\n", cs42l43->irq);
++		return -EINVAL;
++	}
++
++	irq_flags = irqd_get_trigger_type(irq_data);
++	switch (irq_flags) {
++	case IRQF_TRIGGER_LOW:
++	case IRQF_TRIGGER_HIGH:
++	case IRQF_TRIGGER_RISING:
++	case IRQF_TRIGGER_FALLING:
++		break;
++	case IRQ_TYPE_NONE:
++	default:
++		irq_flags = IRQF_TRIGGER_LOW;
++		break;
++	}
++
++	irq_flags |= IRQF_ONESHOT;
++
++	pm_runtime_enable(priv->dev);
++	pm_runtime_idle(priv->dev);
++
++	ret = devm_regmap_add_irq_chip(priv->dev, cs42l43->regmap,
++				       cs42l43->irq, irq_flags, 0,
++				       &priv->irq_chip, &priv->irq_data);
++	if (ret) {
++		dev_err(priv->dev, "Failed to add IRQ chip: %d\n", ret);
++		pm_runtime_disable(priv->dev);
++		return ret;
++	}
++
++	dev_dbg(priv->dev, "Configured IRQ %d with flags 0x%lx\n",
++		cs42l43->irq, irq_flags);
++
++	return 0;
++}
++
++static int cs42l43_irq_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++
++	return 0;
++}
++
++static struct platform_driver cs42l43_irq_driver = {
++	.driver = {
++		.name	= "cs42l43-irq",
++	},
++
++	.probe		= cs42l43_irq_probe,
++	.remove		= cs42l43_irq_remove,
++};
++module_platform_driver(cs42l43_irq_driver);
++
++MODULE_DESCRIPTION("CS42L43 IRQ Driver");
++MODULE_AUTHOR("Charles Keepax <ckeepax@opensource.cirrus.com>");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:cs42l43-irq");
+diff --git a/include/linux/irqchip/cs42l43.h b/include/linux/irqchip/cs42l43.h
+new file mode 100644
+index 0000000000000..99ce0dbc96a77
+--- /dev/null
++++ b/include/linux/irqchip/cs42l43.h
+@@ -0,0 +1,61 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * CS42L43 IRQ driver external data
++ *
++ * Copyright (C) 2022-2023 Cirrus Logic, Inc. and
++ *                         Cirrus Logic International Semiconductor Ltd.
++ */
++
++#ifndef CS42L43_IRQ_EXT_H
++#define CS42L43_IRQ_EXT_H
++
++enum cs42l43_irq_numbers {
++	CS42L43_PLL_LOST_LOCK,
++	CS42L43_PLL_READY,
++
++	CS42L43_HP_STARTUP_DONE,
++	CS42L43_HP_SHUTDOWN_DONE,
++	CS42L43_HSDET_DONE,
++	CS42L43_TIPSENSE_UNPLUG_DB,
++	CS42L43_TIPSENSE_PLUG_DB,
++	CS42L43_RINGSENSE_UNPLUG_DB,
++	CS42L43_RINGSENSE_PLUG_DB,
++	CS42L43_TIPSENSE_UNPLUG_PDET,
++	CS42L43_TIPSENSE_PLUG_PDET,
++	CS42L43_RINGSENSE_UNPLUG_PDET,
++	CS42L43_RINGSENSE_PLUG_PDET,
++
++	CS42L43_HS2_BIAS_SENSE,
++	CS42L43_HS1_BIAS_SENSE,
++	CS42L43_DC_DETECT1_FALSE,
++	CS42L43_DC_DETECT1_TRUE,
++	CS42L43_HSBIAS_CLAMPED,
++	CS42L43_HS3_4_BIAS_SENSE,
++
++	CS42L43_AMP2_CLK_STOP_FAULT,
++	CS42L43_AMP1_CLK_STOP_FAULT,
++	CS42L43_AMP2_VDDSPK_FAULT,
++	CS42L43_AMP1_VDDSPK_FAULT,
++	CS42L43_AMP2_SHUTDOWN_DONE,
++	CS42L43_AMP1_SHUTDOWN_DONE,
++	CS42L43_AMP2_STARTUP_DONE,
++	CS42L43_AMP1_STARTUP_DONE,
++	CS42L43_AMP2_THERM_SHDN,
++	CS42L43_AMP1_THERM_SHDN,
++	CS42L43_AMP2_THERM_WARN,
++	CS42L43_AMP1_THERM_WARN,
++	CS42L43_AMP2_SCDET,
++	CS42L43_AMP1_SCDET,
++
++	CS42L43_GPIO3_FALL,
++	CS42L43_GPIO3_RISE,
++	CS42L43_GPIO2_FALL,
++	CS42L43_GPIO2_RISE,
++	CS42L43_GPIO1_FALL,
++	CS42L43_GPIO1_RISE,
++
++	CS42L43_HP_ILIMIT,
++	CS42L43_HP_LOADDET_DONE,
++};
++
++#endif /* CS42L43_IRQ_EXT_H */
 -- 
 2.30.2
 
