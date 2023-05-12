@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B364C77B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 12:32:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E1B8C77B7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 12:32:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 320531E7;
-	Fri, 12 May 2023 14:31:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 320531E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35D111E2;
+	Fri, 12 May 2023 14:31:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35D111E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683894724;
-	bh=to1rC7Fu0H40hYeoBxSP95hgvty1DtC1jkoooK3nleA=;
+	s=default; t=1683894739;
+	bh=RmeSWHAxFNqkvEnzYjFnFEV/hkpcVBcgGt70pbBPgbQ=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Wi/WMSd3Ul0HreqVRp97u+Sz+7FDQx/H0K2t80YkHYD5+ey7Bs3yNnnyvdGTzOcPB
-	 a037DsGvOe4lKMJoJWqINCEpeFifDC5sLFMpMLizb82P/Et+Ep8BsKeP15x1zkzXQR
-	 4PO95Qk2UpdYNXyWprFPDCay2HbgvDxGqYMDmKZA=
+	b=kySOOJ/BKYq4mh6hBKwkqmRl6ErAMplqX/RnU3el8BlZnJvybh3NhPWLyZnUXAsi5
+	 WC0AE2sQV5AEoLrOIQ0YTFheUqxM19AsfZcbASESUFdo9Les25TujBAiYKmO8hIohq
+	 rJcdf+pGLnHtIX65lkqGYD3ht3PfUC2ZjGPJu83M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFDC1F805D3; Fri, 12 May 2023 14:29:36 +0200 (CEST)
+	id 26971F805E0; Fri, 12 May 2023 14:29:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09944F805C8;
-	Fri, 12 May 2023 14:29:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66A36F805D5;
+	Fri, 12 May 2023 14:29:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ACD64F805B5; Fri, 12 May 2023 14:29:28 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+	id 8B744F805BB; Fri, 12 May 2023 14:29:31 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D544FF80542
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 14:28:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D544FF80542
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5B6D7F80087
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 14:28:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B6D7F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=KlIhZMpR
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34CCOUos001858;
-	Fri, 12 May 2023 07:28:44 -0500
+ header.s=PODMain02222019 header.b=l8zhx9lB
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 34C5eUj9031128;
+	Fri, 12 May 2023 07:28:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=MGx4eUaVxTNxvKWUX/vY4Vu1QrON54xoiFztV1TPX+8=;
- b=KlIhZMpRzHisxpPyRqExtk3fU+EQhANAIrl4fAjbWhNPx9MQoBbkDfI4RsQJx13FGhVU
- GpWNzSxcJr6Jjw682LmLWtjIeDDxIlyle3Eu0DD1gkFyNtwmwStzRD19dqnvx3jSITz0
- z0yxRQK0BYHGqgdVchvZ3AdHNGpjDiX3Akbly3k3Ly3GYOzZnx/CZ91YwrrrWTmN3Xfg
- +k4GEaptRZh8NxE7w19AA4u1YKN9iv8w9q4VA06RP7kWSuaaGmD2DIjlhuvu6ByFQ6Vy
- ewkpQl5RsFq+xGKaH3LP08S6YvWiCZ3zq/wWuw+PPFouh/A4cSyk+1B/abKnCsh60frn pw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3qf7nb5dqx-5
+ bh=rYOv87YfO3csmgu3kUayX9fW+H2LxBm/K9Acaqpzo3s=;
+ b=l8zhx9lBRMlhYLMkyjv5GKGQAZcENksM+BXK8s+y6hLWGo6J00vK9bjb8EuLcjj46xDy
+ +EO0iJ3wzUwi7xVqG3q490T7+wMVB95kGoOHSK+/GB/oBDh8hvMcvnNkIqfuer5vQevz
+ m+kvk1c82tXacGrDaGxGpocjZaRln1sUOEGNCllTJHCs7GnSfURLWyc/tljnhniS0A3q
+ 7W0O074b3DCKMJzr7S2j67nEXwqaCLkU8IsQAlXXkCbmyokod8uP5KPhcaWC9k5n/BqM
+ lfLYE/7rrhhHEc+LCcNneIe6ZnMvhppraF7qG6ZexZ6E7A6FOPEnBrjVB0kzuuzJB8kv +A==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qf7s46b2x-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 May 2023 07:28:44 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Fri, 12 May 2023 07:28:41 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Fri, 12 May
- 2023 07:28:39 -0500
+ 2023 07:28:38 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 12 May 2023 07:28:39 -0500
+ 15.2.1118.26 via Frontend Transport; Fri, 12 May 2023 07:28:38 -0500
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 12CC915B4;
-	Fri, 12 May 2023 12:28:39 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8CFD011A8;
+	Fri, 12 May 2023 12:28:38 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
@@ -77,20 +77,21 @@ CC: <lgirdwood@gmail.com>, <yung-chuan.liao@linux.intel.com>,
         <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
         <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 09/10] spi: cs42l43: Add SPI controller support
-Date: Fri, 12 May 2023 13:28:37 +0100
-Message-ID: <20230512122838.243002-10-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 05/10] dt-bindings: mfd: cirrus,cs42l43: Add initial DT
+ binding
+Date: Fri, 12 May 2023 13:28:33 +0100
+Message-ID: <20230512122838.243002-6-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230512122838.243002-1-ckeepax@opensource.cirrus.com>
 References: <20230512122838.243002-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 90BCHgrTxoARai1VWpXIikn8oFJ3Srsv
-X-Proofpoint-GUID: 90BCHgrTxoARai1VWpXIikn8oFJ3Srsv
+X-Proofpoint-ORIG-GUID: FVIHSa9D22LNTL41FIv7qSndA1i2SjHf
+X-Proofpoint-GUID: FVIHSa9D22LNTL41FIv7qSndA1i2SjHf
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: JXI3GZW5AXS2GYVP222WDBNUOPUE6T4U
-X-Message-ID-Hash: JXI3GZW5AXS2GYVP222WDBNUOPUE6T4U
+Message-ID-Hash: KP6FMYN4KKEMU7XNWDMQ3YZ4IMFAKWI4
+X-Message-ID-Hash: KP6FMYN4KKEMU7XNWDMQ3YZ4IMFAKWI4
 X-MailFrom: prvs=0496644b8b=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JXI3GZW5AXS2GYVP222WDBNUOPUE6T4U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KP6FMYN4KKEMU7XNWDMQ3YZ4IMFAKWI4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,8 +113,6 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
-
 The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
 (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
 for portable applications. It provides a high dynamic range, stereo
@@ -121,355 +120,245 @@ DAC for headphone output, two integrated Class D amplifiers for
 loudspeakers, and two ADCs for wired headset microphone input or
 stereo line input. PDM inputs are provided for digital microphones.
 
-The SPI component incorporates a SPI controller interface for
-communication with other peripheral components.
+Add a YAML DT binding document for this device.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- MAINTAINERS               |   1 +
- drivers/spi/Kconfig       |   7 +
- drivers/spi/Makefile      |   1 +
- drivers/spi/spi-cs42l43.c | 287 ++++++++++++++++++++++++++++++++++++++
- 4 files changed, 296 insertions(+)
- create mode 100644 drivers/spi/spi-cs42l43.c
+ .../bindings/mfd/cirrus,cs42l43.yaml          | 212 ++++++++++++++++++
+ MAINTAINERS                                   |   1 +
+ 2 files changed, 213 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/cirrus,cs42l43.yaml
 
+diff --git a/Documentation/devicetree/bindings/mfd/cirrus,cs42l43.yaml b/Documentation/devicetree/bindings/mfd/cirrus,cs42l43.yaml
+new file mode 100644
+index 0000000000000..e1fd70e0a3467
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/cirrus,cs42l43.yaml
+@@ -0,0 +1,212 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/cirrus,cs42l43.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cirrus Logic CS42L43 Audio CODEC
++
++maintainers:
++  - patches@opensource.cirrus.com
++
++description: |
++  The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
++  (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
++  for portable applications. It provides a high dynamic range, stereo
++  DAC for headphone output, two integrated Class D amplifiers for
++  loudspeakers, and two ADCs for wired headset microphone input or
++  stereo line input. PDM inputs are provided for digital microphones.
++
++required:
++  - compatible
++  - reg
++  - VDD_P-supply
++  - VDD_A-supply
++  - VDD_D-supply
++  - VDD_IO-supply
++  - VDD_CP-supply
++
++additionalProperties: false
++
++properties:
++  compatible:
++    enum:
++      - cirrus,cs42l43
++
++  reg:
++    maxItems: 1
++
++  VDD_P-supply:
++    description:
++      Power supply for the high voltage interface.
++
++  VDD_A-supply:
++    description:
++      Power supply for internal analog circuits.
++
++  VDD_D-supply:
++    description:
++      Power supply for internal digital circuits.
++
++  VDD_IO-supply:
++    description:
++      Power supply for external interface and internal digital logic.
++
++  VDD_CP-supply:
++    description:
++      Power supply for the amplifier 3 and 4 charge pump.
++
++  VDD_AMP-supply:
++    description:
++      Power supply for amplifier 1 and 2.
++
++  reset-gpios:
++    maxItems: 1
++
++  gpio-controller: true
++
++  '#gpio-cells':
++    const: 2
++
++  gpio-ranges:
++    items:
++      - description: A phandle to the CODEC pinctrl node
++        minimum: 0
++      - const: 0
++      - const: 0
++      - const: 3
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    const: 2
++
++  interrupts:
++    maxItems: 1
++
++  '#sound-dai-cells':
++    const: 1
++
++  clocks:
++    items:
++      - description: Synchronous audio clock provided on mclk_in.
++
++  clock-names:
++    const: mclk
++
++  pinctrl:
++    type: object
++
++    allOf:
++      - $ref: "../pinctrl/pinctrl.yaml#"
++
++    properties:
++      pin-settings:
++        type: object
++
++        additionalProperties: false
++
++        patternProperties:
++          '-pins$':
++            type: object
++
++            allOf:
++              - $ref: "../pinctrl/pincfg-node.yaml#"
++              - $ref: "../pinctrl/pinmux-node.yaml#"
++
++            oneOf:
++              - required: [ groups ]
++              - required: [ pins ]
++
++            unevaluatedProperties: false
++
++            properties:
++              groups:
++                enum: [ gpio1, gpio2, gpio3, asp, pdmout2, pdmout1, i2c, spi ]
++
++              pins:
++                enum: [ gpio1, gpio2, gpio3,
++                        asp_dout, asp_fsync, asp_bclk,
++                        pdmout2_clk, pdmout2_data, pdmout1_clk, pdmout1_data,
++                        i2c_sda, i2c_scl,
++                        spi_miso, spi_sck, spi_ssb ]
++
++              function:
++                enum: [ gpio, spdif, irq, mic-shutter, spk-shutter ]
++
++              drive-strength:
++                description: Set drive strength in mA
++                enum: [ 1, 2, 4, 8, 9, 10, 12, 16 ]
++
++              input-debounce:
++                description: Set input debounce in uS
++                enum: [ 0, 85 ]
++
++  spi:
++    type: object
++
++    allOf:
++      - $ref: "../spi/spi-controller.yaml#"
++
++    unevaluatedProperties: false
++
++examples:
++  - |
++    i2c@e0004000 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        reg = <0xe0004000 0x1000>;
++
++        cs42l43: codec@1a {
++            compatible = "cirrus,cs42l43";
++            reg = <0x1a>;
++
++            VDD_P-supply = <&vdd5v0>;
++            VDD_D-supply = <&vdd1v8>;
++            VDD_A-supply = <&vdd1v8>;
++            VDD_IO-supply = <&vdd1v8>;
++            VDD_CP-supply = <&vdd1v8>;
++            VDD_AMP-supply = <&vdd5v0>;
++
++            reset-gpios = <&gpio 0>;
++
++            gpio-controller;
++            #gpio-cells = <2>;
++            gpio-ranges = <&cs42l43_pins 0 0 3>;
++
++            interrupt-controller;
++            #interrupt-cells = <2>;
++            interrupt-parent = <&gpio>;
++            interrupts = <56 8>;
++
++            #sound-dai-cells = <1>;
++
++            clocks = <&clks 0>;
++            clock-names = "mclk";
++
++            cs42l43_pins: pinctrl {
++                pinctrl-names = "default";
++                pinctrl-0 = <&pinsettings>;
++
++                pinsettings: pin-settings {
++                    shutter-pins {
++                        groups = "gpio3";
++                        function = "mic-shutter";
++                    };
++                };
++            };
++
++            spi {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                cs-gpios = <&cs42l43 1 0>;
++
++                sensor@0 {
++                    compatible = "bosch,bme680";
++                    reg = <0>;
++                    spi-max-frequency = <1400000>;
++                };
++            };
++        };
++    };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 2890f54f70afc..ca4aa5cc43b7d 100644
+index 7e0b87d5aa2e5..0db9f37eec258 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -4931,6 +4931,7 @@ F:	Documentation/devicetree/bindings/sound/cirrus,cs*
- F:	drivers/irqchip/irq-cs42l43*
- F:	drivers/mfd/cs42l43*
- F:	drivers/pinctrl/cirrus/pinctrl-cs42l43*
-+F:	drivers/spi/spi-cs42l43*
+@@ -4926,6 +4926,7 @@ M:	Richard Fitzgerald <rf@opensource.cirrus.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ L:	patches@opensource.cirrus.com
+ S:	Maintained
++F:	Documentation/devicetree/bindings/mfd/cirrus,cs*
+ F:	Documentation/devicetree/bindings/sound/cirrus,cs*
  F:	include/dt-bindings/sound/cs*
- F:	include/linux/irqchip/cs42l43*
- F:	include/linux/mfd/cs42l43*
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 3de2ebe8294aa..f6ce06de41051 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -281,6 +281,13 @@ config SPI_COLDFIRE_QSPI
- 	  This enables support for the Coldfire QSPI controller in master
- 	  mode.
- 
-+config SPI_CS42L43
-+	tristate "Cirrus Logic CS42L43 SPI controller"
-+	depends on MFD_CS42L43 && PINCTRL_CS42L43
-+	help
-+	  This enables support for the SPI controller inside the Cirrus Logic
-+	  CS42L43 audio codec.
-+
- config SPI_DAVINCI
- 	tristate "Texas Instruments DaVinci/DA8x/OMAP-L/AM1x SoC SPI controller"
- 	depends on ARCH_DAVINCI || ARCH_KEYSTONE || COMPILE_TEST
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 28c4817a8a74a..49937ea0d73d0 100644
---- a/drivers/spi/Makefile
-+++ b/drivers/spi/Makefile
-@@ -40,6 +40,7 @@ obj-$(CONFIG_SPI_CADENCE_QUADSPI)	+= spi-cadence-quadspi.o
- obj-$(CONFIG_SPI_CADENCE_XSPI)		+= spi-cadence-xspi.o
- obj-$(CONFIG_SPI_CLPS711X)		+= spi-clps711x.o
- obj-$(CONFIG_SPI_COLDFIRE_QSPI)		+= spi-coldfire-qspi.o
-+obj-$(CONFIG_SPI_CS42L43)		+= spi-cs42l43.o
- obj-$(CONFIG_SPI_DAVINCI)		+= spi-davinci.o
- obj-$(CONFIG_SPI_DLN2)			+= spi-dln2.o
- obj-$(CONFIG_SPI_DESIGNWARE)		+= spi-dw.o
-diff --git a/drivers/spi/spi-cs42l43.c b/drivers/spi/spi-cs42l43.c
-new file mode 100644
-index 0000000000000..f48999e1a74d9
---- /dev/null
-+++ b/drivers/spi/spi-cs42l43.c
-@@ -0,0 +1,287 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// CS42L43 SPI Controller Driver
-+//
-+// Copyright (C) 2022-2023 Cirrus Logic, Inc. and
-+//                         Cirrus Logic International Semiconductor Ltd.
-+
-+#include <linux/device.h>
-+#include <linux/errno.h>
-+#include <linux/mfd/cs42l43.h>
-+#include <linux/mfd/cs42l43-regs.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regmap.h>
-+#include <linux/spi/spi.h>
-+
-+#define CS42L43_FIFO_SIZE		16
-+#define CS42L43_SPI_ROOT_HZ		40000000
-+#define CS42L43_SPI_MAX_LENGTH		65532
-+
-+enum cs42l43_spi_cmd {
-+	CS42L43_WRITE,
-+	CS42L43_READ
-+};
-+
-+struct cs42l43_spi {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	struct spi_controller *ctlr;
-+};
-+
-+static unsigned int cs42l43_clock_divs[16] = {
-+	2, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30
-+};
-+
-+static int cs42l43_spi_tx(struct regmap *regmap, const u8 *buf, unsigned int len)
-+{
-+	const u8 *end = buf + len;
-+	u32 val;
-+	int ret;
-+
-+	while (buf < end) {
-+		const u8 *block = min_t(const u8 *, buf + CS42L43_FIFO_SIZE, end);
-+
-+		for (; buf < block - (sizeof(u32) - 1); buf += sizeof(u32))
-+			regmap_write(regmap, CS42L43_TX_DATA, *(const u32 *)buf);
-+
-+		if (buf < block) {
-+			unsigned int residue = end - buf;
-+
-+			memcpy(&val, buf, residue);
-+			regmap_write(regmap, CS42L43_TX_DATA, val);
-+			buf += residue;
-+		}
-+
-+		regmap_write(regmap, CS42L43_TRAN_CONFIG8, CS42L43_SPI_TX_DONE_MASK);
-+
-+		ret = regmap_read_poll_timeout(regmap, CS42L43_TRAN_STATUS1,
-+					       val, (val & CS42L43_SPI_TX_REQUEST_MASK),
-+					       1000, 5000);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs42l43_spi_rx(struct regmap *regmap, u8 *buf, unsigned int len)
-+{
-+	const u8 *end = buf + len;
-+	u32 val;
-+	int ret;
-+
-+	while (buf < end) {
-+		const u8 *block = min_t(const u8 *, buf + CS42L43_FIFO_SIZE, end);
-+
-+		ret = regmap_read_poll_timeout(regmap, CS42L43_TRAN_STATUS1,
-+					       val, (val & CS42L43_SPI_RX_REQUEST_MASK),
-+					       1000, 5000);
-+		if (ret)
-+			return ret;
-+
-+		for (; buf < block - (sizeof(u32) - 1); buf += sizeof(u32)) {
-+			ret = regmap_read(regmap, CS42L43_RX_DATA, (u32 *)buf);
-+			if (ret)
-+				return ret;
-+		}
-+
-+		if (buf < block) {
-+			unsigned int residue = end - buf;
-+
-+			ret = regmap_read(regmap, CS42L43_RX_DATA, &val);
-+			if (ret)
-+				return ret;
-+
-+			memcpy(buf, &val, residue);
-+			buf += residue;
-+		}
-+
-+		regmap_write(regmap, CS42L43_TRAN_CONFIG8, CS42L43_SPI_RX_DONE_MASK);
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs42l43_transfer_one(struct spi_controller *ctlr, struct spi_device *spi,
-+				struct spi_transfer *tfr)
-+{
-+	struct cs42l43_spi *priv = spi_controller_get_devdata(spi->controller);
-+	int i, ret = -EINVAL;
-+
-+	for (i = 0; i < ARRAY_SIZE(cs42l43_clock_divs); i++) {
-+		if (CS42L43_SPI_ROOT_HZ / cs42l43_clock_divs[i] <= tfr->speed_hz)
-+			break;
-+	}
-+
-+	if (i == ARRAY_SIZE(cs42l43_clock_divs))
-+		return -EINVAL;
-+
-+	regmap_write(priv->regmap, CS42L43_SPI_CLK_CONFIG1, i);
-+
-+	if (tfr->tx_buf) {
-+		regmap_write(priv->regmap, CS42L43_TRAN_CONFIG3, CS42L43_WRITE);
-+		regmap_write(priv->regmap, CS42L43_TRAN_CONFIG4, tfr->len - 1);
-+	} else if (tfr->rx_buf) {
-+		regmap_write(priv->regmap, CS42L43_TRAN_CONFIG3, CS42L43_READ);
-+		regmap_write(priv->regmap, CS42L43_TRAN_CONFIG5, tfr->len - 1);
-+	}
-+
-+	regmap_write(priv->regmap, CS42L43_TRAN_CONFIG1, CS42L43_SPI_START_MASK);
-+
-+	if (tfr->tx_buf)
-+		ret = cs42l43_spi_tx(priv->regmap, (const u8 *)tfr->tx_buf, tfr->len);
-+	else if (tfr->rx_buf)
-+		ret = cs42l43_spi_rx(priv->regmap, (u8 *)tfr->rx_buf, tfr->len);
-+
-+	return ret;
-+}
-+
-+static void cs42l43_set_cs(struct spi_device *spi, bool is_high)
-+{
-+	struct cs42l43_spi *priv = spi_controller_get_devdata(spi->controller);
-+
-+	if (spi->chip_select == 0)
-+		regmap_write(priv->regmap, CS42L43_SPI_CONFIG2, !is_high);
-+}
-+
-+static int cs42l43_prepare_message(struct spi_controller *ctlr, struct spi_message *msg)
-+{
-+	struct cs42l43_spi *priv = spi_controller_get_devdata(ctlr);
-+	struct spi_device *spi = msg->spi;
-+	unsigned int spi_config1 = 0;
-+
-+	/* select another internal CS, which doesn't exist, so CS 0 is not used */
-+	if (spi->cs_gpiod)
-+		spi_config1 |= 1 << CS42L43_SPI_SS_SEL_SHIFT;
-+	if (spi->mode & SPI_CPOL)
-+		spi_config1 |= CS42L43_SPI_CPOL_MASK;
-+	if (spi->mode & SPI_CPHA)
-+		spi_config1 |= CS42L43_SPI_CPHA_MASK;
-+	if (spi->mode & SPI_3WIRE)
-+		spi_config1 |= CS42L43_SPI_THREE_WIRE_MASK;
-+
-+	regmap_write(priv->regmap, CS42L43_SPI_CONFIG1, spi_config1);
-+
-+	return 0;
-+}
-+
-+static int cs42l43_prepare_transfer_hardware(struct spi_controller *ctlr)
-+{
-+	struct cs42l43_spi *priv = spi_controller_get_devdata(ctlr);
-+	int ret;
-+
-+	ret = regmap_write(priv->regmap, CS42L43_BLOCK_EN2, CS42L43_SPI_MSTR_EN_MASK);
-+	if (ret) {
-+		dev_err(priv->dev, "Failed to enable SPI controller: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs42l43_unprepare_transfer_hardware(struct spi_controller *ctlr)
-+{
-+	struct cs42l43_spi *priv = spi_controller_get_devdata(ctlr);
-+	int ret;
-+
-+	ret = regmap_write(priv->regmap, CS42L43_BLOCK_EN2, 0);
-+	if (ret) {
-+		dev_err(priv->dev, "Failed to disable SPI controller: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static size_t cs42l43_spi_max_length(struct spi_device *spi)
-+{
-+	return CS42L43_SPI_MAX_LENGTH;
-+}
-+
-+static int cs42l43_spi_probe(struct platform_device *pdev)
-+{
-+	struct cs42l43 *cs42l43 = dev_get_drvdata(pdev->dev.parent);
-+	struct cs42l43_spi *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->ctlr = devm_spi_alloc_master(&pdev->dev, sizeof(*priv->ctlr));
-+	if (!priv->ctlr)
-+		return -ENOMEM;
-+
-+	spi_controller_set_devdata(priv->ctlr, priv);
-+
-+	priv->dev = &pdev->dev;
-+	priv->regmap = cs42l43->regmap;
-+
-+	priv->ctlr->prepare_message = cs42l43_prepare_message;
-+	priv->ctlr->prepare_transfer_hardware = cs42l43_prepare_transfer_hardware;
-+	priv->ctlr->unprepare_transfer_hardware = cs42l43_unprepare_transfer_hardware;
-+	priv->ctlr->transfer_one = cs42l43_transfer_one;
-+	priv->ctlr->set_cs = cs42l43_set_cs;
-+	priv->ctlr->max_transfer_size = cs42l43_spi_max_length;
-+
-+	if (is_of_node(dev_fwnode(cs42l43->dev))) {
-+		priv->ctlr->dev.fwnode =
-+			fwnode_get_named_child_node(dev_fwnode(cs42l43->dev), "spi");
-+		priv->ctlr->dev.of_node = to_of_node(dev_fwnode(&priv->ctlr->dev));
-+	} else {
-+		priv->ctlr->dev.fwnode = dev_fwnode(priv->dev);
-+	}
-+
-+	priv->ctlr->mode_bits = SPI_3WIRE | SPI_CPHA | SPI_CPOL;
-+	priv->ctlr->flags = SPI_CONTROLLER_HALF_DUPLEX;
-+	priv->ctlr->bits_per_word_mask = SPI_BPW_MASK(8) | SPI_BPW_MASK(16) |
-+					 SPI_BPW_MASK(32);
-+	priv->ctlr->min_speed_hz = CS42L43_SPI_ROOT_HZ /
-+				   cs42l43_clock_divs[ARRAY_SIZE(cs42l43_clock_divs) - 1];
-+	priv->ctlr->max_speed_hz = CS42L43_SPI_ROOT_HZ / cs42l43_clock_divs[0];
-+	priv->ctlr->use_gpio_descriptors = true;
-+	priv->ctlr->auto_runtime_pm = true;
-+
-+	pm_runtime_enable(priv->dev);
-+	pm_runtime_idle(priv->dev);
-+
-+	regmap_write(priv->regmap, CS42L43_TRAN_CONFIG6, CS42L43_FIFO_SIZE - 1);
-+	regmap_write(priv->regmap, CS42L43_TRAN_CONFIG7, CS42L43_FIFO_SIZE - 1);
-+
-+	// Disable Watchdog timer and enable stall
-+	regmap_write(priv->regmap, CS42L43_SPI_CONFIG3, 0);
-+	regmap_write(priv->regmap, CS42L43_SPI_CONFIG4, CS42L43_SPI_STALL_ENA_MASK);
-+
-+	ret = devm_spi_register_controller(priv->dev, priv->ctlr);
-+	if (ret) {
-+		pm_runtime_disable(priv->dev);
-+		dev_err(priv->dev, "Failed to register SPI controller: %d\n", ret);
-+	}
-+
-+	return ret;
-+}
-+
-+static int cs42l43_spi_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver cs42l43_spi_driver = {
-+	.driver = {
-+		.name	= "cs42l43-spi",
-+	},
-+
-+	.probe		= cs42l43_spi_probe,
-+	.remove		= cs42l43_spi_remove,
-+};
-+module_platform_driver(cs42l43_spi_driver);
-+
-+MODULE_DESCRIPTION("CS42L43 SPI Driver");
-+MODULE_AUTHOR("Lucas Tanure <tanureal@opensource.cirrus.com>");
-+MODULE_AUTHOR("Maciej Strozek <mstrozek@opensource.cirrus.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:cs42l43-spi");
+ F:	include/sound/cs*
 -- 
 2.30.2
 
