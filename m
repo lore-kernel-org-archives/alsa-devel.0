@@ -4,79 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B5D0C77B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 04:22:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC5D5C77B7C
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 06:44:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD955DF6;
-	Fri, 12 May 2023 06:21:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD955DF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0EF21CE;
+	Fri, 12 May 2023 08:43:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0EF21CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683865321;
-	bh=4s4KOPxQfAXypy16Av6XmHSDrmy9tNN6WXw+g/9wnHQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=kvprogjeXOZ7ci+BY4fStlIV41UsEigiFWob4fZVpxCqIKTQfDM5EGcQlFTibyjjb
-	 K3ax3g8Oqh+FODv+OWgM3CcVv2qvpKUWu7ZPIzPJodPE6AcjOrS1JepHdDDPoJFNS0
-	 IL+SPR+RpxJPXM+08Ec1pdMj/AxlniKG8T1QQRfw=
+	s=default; t=1683873855;
+	bh=ieEJg8torSpPfmEqEpMqWZeWb2xldKWjqk95B0rn6hI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=PLpdttKBLVbJuPHLDGUWPPoP65I2SmZOWcEv5cUt9o4b+YGz1/Bcbh16UyXJqawds
+	 gHrWFXap+In6icS6l/sOi+p2W/9J2gOK2jlNwGzj/DFPsoU8DP6aVDc4+Nf/wPFZ7h
+	 /pg8NPGuliNR6haQDytTLX5tNOvtikSuzWppNfgI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8D007F8053D; Fri, 12 May 2023 06:21:11 +0200 (CEST)
+	id 34BC7F80544; Fri, 12 May 2023 08:43:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E744F80542;
-	Fri, 12 May 2023 06:21:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 724A1F802E8;
+	Fri, 12 May 2023 08:43:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A6E17F8052E; Fri, 12 May 2023 06:20:42 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 11A74F8052E; Fri, 12 May 2023 08:42:53 +0200 (CEST)
+Received: from out30-110.freemail.mail.aliyun.com
+ (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A22E4F8014C
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 06:19:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A22E4F8014C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=j3CJjGPp
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 355B264FAC;
-	Fri, 12 May 2023 04:19:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A43DC433D2;
-	Fri, 12 May 2023 04:19:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683865156;
-	bh=4s4KOPxQfAXypy16Av6XmHSDrmy9tNN6WXw+g/9wnHQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=j3CJjGPpWDT7Glm2BMa065FlUj70/0FGFOkIbhxL6k16GYWlytEatJxmvyWbcJrzU
-	 F9XcUagNSHPXr1ECnP+0eifccc409/rP2vsT4zzJ0Nmb1A0Co8sWuW+Zu0V4D0oLnL
-	 nzfHLgJWhFF/5cdTYBFvhj6h+C0a8ZTDH95aeKkPVh0qQXWCKhNz6WNHpOj+ypB0pb
-	 JMZUNZcfXTD1IXEzl2J86VIFeJYZZNulmCWb/3EVWTKCknxuqzc7Ilra4bsPvbii+P
-	 GV03buZNAG3LYnZu/wDqqSHJq4H6qMmxvgJXIEiuywQc8WLc7stcG2HzXT4aIEkfd1
-	 o+40KJIsjKidg==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Lars-Peter Clausen <lars@metafoo.de>,
- =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
- =?utf-8?q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
-Cc: asahi@lists.linux.dev, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230511150546.8499-1-povik+lin@cutebit.org>
-References: <20230511150546.8499-1-povik+lin@cutebit.org>
-Subject: Re: [PATCH v2 0/2] ASoC SSM3515 codec driver
-Message-Id: <168386515280.352974.12145582382045315561.b4-ty@kernel.org>
-Date: Fri, 12 May 2023 13:19:12 +0900
+	by alsa1.perex.cz (Postfix) with ESMTPS id 51936F8014C;
+	Fri, 12 May 2023 08:42:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51936F8014C
+X-Alimail-AntiSpam: 
+ AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0ViO.dao_1683873748;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com
+ fp:SMTPD_---0ViO.dao_1683873748)
+          by smtp.aliyun-inc.com;
+          Fri, 12 May 2023 14:42:35 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: pierre-louis.bossart@linux.intel.com
+Cc: lgirdwood@gmail.com,
+	peter.ujfalusi@linux.intel.com,
+	yung-chuan.liao@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	daniel.baluta@nxp.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	sound-open-firmware@alsa-project.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] ASoC: SOF: Simplify the calculation of variables
+Date: Fri, 12 May 2023 14:42:25 +0800
+Message-Id: <20230512064225.75358-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: WXG6X6OBT4S32PTMJUPB4OKLNDVNXJZK
-X-Message-ID-Hash: WXG6X6OBT4S32PTMJUPB4OKLNDVNXJZK
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: 3A3V2YSIUDRD4CXUROH47HODAWDV6HHS
+X-Message-ID-Hash: 3A3V2YSIUDRD4CXUROH47HODAWDV6HHS
+X-MailFrom: jiapeng.chong@linux.alibaba.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +78,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WXG6X6OBT4S32PTMJUPB4OKLNDVNXJZK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3A3V2YSIUDRD4CXUROH47HODAWDV6HHS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,43 +87,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 11 May 2023 17:05:44 +0200, Martin Povišer wrote:
-> Analog Devices SSM3515 is a simple speaker amp that Apple is
-> using in their 2021 iMacs, possibly elsewhere. This is a v2
-> of an ASoC driver for those, to be used with upcoming ASoC
-> support (in upstream kernels anyway) of those platforms.
-> 
-> Martin
-> 
-> [...]
+./sound/soc/sof/pcm.c:372:27-29: WARNING !A || A && B is equivalent to !A || B.
 
-Applied to
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=4938
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ sound/soc/sof/pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/2] ASoC: dt-bindings: Add adi,ssm3515 amp schema
-      commit: 51208a4d303b78642c5d5b35fb9ce963a84d21d0
-[2/2] ASoC: ssm3515: Add new amp driver
-      commit: 4ac690bbae02e26e36e133becd86babb657126ef
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 567db32173a8..d14e7fd2c2ee 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -369,7 +369,7 @@ static int sof_pcm_trigger(struct snd_soc_component *component,
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		/* invoke platform trigger to stop DMA even if pcm_ops isn't set or if it failed */
+-		if (!pcm_ops || (pcm_ops && !pcm_ops->platform_stop_during_hw_free))
++		if (!pcm_ops || !pcm_ops->platform_stop_during_hw_free)
+ 			snd_sof_pcm_platform_trigger(sdev, substream, cmd);
+ 		break;
+ 	default:
+-- 
+2.20.1.7.g153144c
 
