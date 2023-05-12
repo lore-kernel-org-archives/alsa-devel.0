@@ -4,84 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B3BEC77B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 16:46:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F225C77B7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 17:35:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 668A7203;
-	Fri, 12 May 2023 18:45:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 668A7203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B2B0E12;
+	Fri, 12 May 2023 19:34:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B2B0E12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683909988;
-	bh=R241F6k+VOJb7pk8aILqOWdHKe//PB0TzUO4/VM6H/Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=tToV3HxdH0xGokob09rUaAjBYtrqCyFa3oD/1EcJUwNrkUQbX1lmDisX4J58Tu9Ig
-	 Hfb3f/hCK5ztOvpjkS4/PmwwWDp2Hz8WbbpeEhQb1FbfFONbgFSUawp+KOC2Q5lauM
-	 ve9FzjUXrroufRZ0fJ/4ue/Ppoe71NqMcqP82wSs=
+	s=default; t=1683912911;
+	bh=a1wxKlMmYEANqLmSMQ5+lreFZbtQIKwBCJjiY+1qsUM=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=FbpeMekWlD+ctfSepm/4LZc0dgnpenb7bk6xPk4YJczv13Tb7Yuia5tHA5/Oc67pr
+	 /DKfxR7iEim51kXuqwgtQygy/Qt5hgqJPD2eaUwRXCho25w+Vsx1u4fFQ/vFAljhvr
+	 XiamZhG6AGgKPRK/hIdk3qbPBueR/EcqPEKGSxvA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31455F80542; Fri, 12 May 2023 18:45:38 +0200 (CEST)
+	id 247CAF8055B; Fri, 12 May 2023 19:33:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5BF7F8032D;
-	Fri, 12 May 2023 18:45:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 384D8F80549;
+	Fri, 12 May 2023 19:33:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34B00F8032D; Fri, 12 May 2023 18:45:34 +0200 (CEST)
-Received: from mail.icequake.net (64-251-151-187.fidnet.com [64.251.151.187])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C5FCFF80544; Fri, 12 May 2023 19:33:47 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D7F66F8014C
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 18:45:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7F66F8014C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F104F8014C
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 19:33:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F104F8014C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=icequake.net header.i=@icequake.net header.a=rsa-sha256
- header.s=mail-1 header.b=lpJgsGLP
-Received: from mail.icequake.net (aurora [127.0.0.1])
-	by mail.icequake.net (Postfix) with ESMTP id AEA5ED42C7;
-	Fri, 12 May 2023 11:45:24 -0500 (CDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icequake.net;
-	s=mail-1; t=1683909924; x=1684514724;
-	bh=KElXq4OwK+pk7AEPmliksFgajImN6q7NU4SHNUXF/eo=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:Subject:
-	 From:To:Date;
-	b=lpJgsGLPFwIBKIherzSSVrljhxr4lmLCVyCFL/RdTBDOnXTsXhqmC/QvlbxBuzQ8y
-	 tx9vdjcCu41zCb7RFunErSL6IHRcL12Se//sCC6sg4JiSGerkNxrQxkp6oqNUWORFl
-	 NkreIVAl2k+dJobTZ5ehv+QuHdGhh8kRiCLGo54Y=
-Received: from localhost (aurora [127.0.0.1])
-	by mail.icequake.net (Postfix) with ESMTP id 6FEC3D4319;
-	Fri, 12 May 2023 11:45:24 -0500 (CDT)
-X-Virus-Scanned: Debian amavisd-new at icequake.net
-Received: from mail.icequake.net ([127.0.0.1])
-	by localhost (aurora.icequake.net [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 30pky7ZJko4f; Fri, 12 May 2023 11:45:23 -0500 (CDT)
-Received: from localhost (rrcs-71-42-125-220.sw.biz.rr.com [71.42.125.220])
-	(Authenticated sender: nemesis@icequake.net)
-	by mail.icequake.net (Postfix) with ESMTPSA id 9B04ED42C7;
-	Fri, 12 May 2023 11:45:22 -0500 (CDT)
-Date: Fri, 12 May 2023 11:42:34 -0500
-From: "Ryan C. Underwood" <nemesis@icequake.net>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] snd-hda-intel: Apply HP B&O top speaker profile to
- Pavilion 15
-Message-ID: <ZF5seo0JPbcU7wij@icequake.net>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-	Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org
-References: <ZF0mpcMz3ezP9KQw@icequake.net>
- <871qjmar8h.wl-tiwai@suse.de>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Ik0dlxC+
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1683912821; x=1715448821;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=a1wxKlMmYEANqLmSMQ5+lreFZbtQIKwBCJjiY+1qsUM=;
+  b=Ik0dlxC+cEwIW/kSA0AI0l7CPRBFPtcwXgYdPDN3VfhgCytaO9ps/Xke
+   o+Ga46H6DcRDX5NvpjMsqtE+0XaXbGfABxB4600khZSPCYQyXLvvN2UD0
+   9HA9ojggIp44l2CnlhBm0CnDHmUPZfEr9WugolMFvaSCfFaKfhBVXCl5g
+   4rbtYZbBom/kGcolLiObr5FMQLNjXJ0D/o7YDIoZ0CmWeeY2dUVMX2d22
+   QnpkKLbnwu4Imv0LeRiu/37Ophuo7nw6UN5CfnHRW45nJovMP06cuOZv5
+   Xt2IyOHqDCyqP6NQoTZNnoWmoEjzI0VpIXijR8Ep29AJT1Oc7efLD6r8U
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="340164687"
+X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
+   d="scan'208";a="340164687"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 May 2023 10:33:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="1030160306"
+X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
+   d="scan'208";a="1030160306"
+Received: from winkelru-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.144.249])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 May 2023 10:33:13 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de,
+	broonie@kernel.org,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/8] ASoC: Intel: machine driver updates
+Date: Fri, 12 May 2023 12:32:57 -0500
+Message-Id: <20230512173305.65399-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="R89g+Ma61XKxmtYR"
-Content-Disposition: inline
-In-Reply-To: <871qjmar8h.wl-tiwai@suse.de>
-Message-ID-Hash: D2GM7SIIRLD2VUYX2NE64OPP542XSC3G
-X-Message-ID-Hash: D2GM7SIIRLD2VUYX2NE64OPP542XSC3G
-X-MailFrom: nemesis@icequake.net
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: ITFM6HN4GE3ONZ2XPZ5DYGY7V4KRW7NT
+X-Message-ID-Hash: ITFM6HN4GE3ONZ2XPZ5DYGY7V4KRW7NT
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -90,11 +86,10 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
-Reply-To: nemesis@icequake.net
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D2GM7SIIRLD2VUYX2NE64OPP542XSC3G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ITFM6HN4GE3ONZ2XPZ5DYGY7V4KRW7NT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,38 +98,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Several updates for RPL/MTL/LNL, and one fix for SoundWire TGL device.
 
---R89g+Ma61XKxmtYR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Bard Liao (3):
+  ASoC: Intel: sof_sdw: remove SOF_SDW_TGL_HDMI for MeteorLake devices
+  ASoC: Intel: sof_sdw: add quirk for MTL RVP
+  ASoC: Intel: sof_sdw: start set codec init function with an adr index
 
-On Fri, May 12, 2023 at 10:28:14AM +0200, Takashi Iwai wrote:
->=20
-> The patch seems mangled by your mailer (spaces instead of tabs).
-> I applied it manually as it's a trivial change.  But at the next time,
-> please check your mailer setup.
+Chao Song (1):
+  ASoC: Intel: soc-acpi: add support for MTL SDCA boards
 
-Sorry, I pasted to terminal from another system and that must have
-mangled it.
+Peter Ujfalusi (1):
+  ASoC: Intel: sof_sdw: add quirk for LNL RVP
 
-> Also, please include all maintainers to Cc :)
+Pierre-Louis Bossart (2):
+  ASoC: Intel: sof_sdw: add new mapping for HP Spectre x360
+  ASoC: Intel: soc-acpi: add tables for LunarLake
 
-Apologies for my ignorance, but what's the correct way to get "all
-maintainers" if not scripts/get_maintainer.pl, which you said produced
-too many cc's in the previous attempt?
+Terry Cheong (1):
+  ASoC: Intel: Add rpl_max98373_8825 driver
 
---=20
-Ryan C. Underwood, <nemesis@icequake.net>
+ include/sound/soc-acpi-intel-match.h          |  2 +
+ sound/soc/intel/boards/sof_nau8825.c          | 10 +++
+ sound/soc/intel/boards/sof_sdw.c              | 49 +++++++++++--
+ sound/soc/intel/common/Makefile               |  1 +
+ .../intel/common/soc-acpi-intel-lnl-match.c   | 72 +++++++++++++++++++
+ .../intel/common/soc-acpi-intel-mtl-match.c   | 57 +++++++++++++++
+ .../intel/common/soc-acpi-intel-rpl-match.c   | 12 ++++
+ 7 files changed, 197 insertions(+), 6 deletions(-)
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-lnl-match.c
 
---R89g+Ma61XKxmtYR
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.37.2
 
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSqqegowG2kcGXAAAMiiceeH7ruOQUCZF5sdwAKCRAiiceeH7ru
-OeccAJ41DD664qHQsDBkqYgGqbGR8A4ragCePqIccuv8uSeo8B7KLqnmxvdOb8E=
-=sLbV
------END PGP SIGNATURE-----
-
---R89g+Ma61XKxmtYR--
