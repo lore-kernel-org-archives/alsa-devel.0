@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A4A7C77B7F
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 17:49:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4F4FC77B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 17:49:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DA87E88;
-	Fri, 12 May 2023 19:48:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DA87E88
+	by alsa0.perex.cz (Postfix) with ESMTPS id AABCBE93;
+	Fri, 12 May 2023 19:48:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AABCBE93
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683913752;
-	bh=dt1NhGCq6KNz+7Q8rqjoCnEoN9cKfME3q2gb3EFAMLs=;
+	s=default; t=1683913768;
+	bh=kdPzUEGBiRONzOrtlvhSKrrsD3Yy1AgHk6Vy5KKO4L8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A8Nlw/NEsde961A/PI7Miz6Q8VB1+0rcGKzAE3NUQCnshWWl0785RLgXS7Q6yRzuf
-	 REW10S57CgxXD7GDnqJ104ILUhwfizDasGXkRfAasstOIaoG3Ee75qIGX6pxgTKkuc
-	 Sm5kIcmnQ1Ra453mIEcvVpyFUvkCZA/MrQrow6J8=
+	b=Lv8St3uBdNAmTfha5aN1MN3F1PjmBREldnN03oKWiMkUHzZeSFas75dU2qA9tZeZC
+	 hjtoYswFTvxsccJyCtWbUNYltFY9uLgH1HFXIPI7KbDfGZQe5M6b2U2OTpr5Z3LsFp
+	 BpUfOAQno8oOO6fl94ettbxLJQo6K99yrvOksZME=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 526EEF80553; Fri, 12 May 2023 19:48:05 +0200 (CEST)
+	id C653FF805A9; Fri, 12 May 2023 19:48:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB671F80578;
-	Fri, 12 May 2023 19:48:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62F26F80589;
+	Fri, 12 May 2023 19:48:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA354F80563; Fri, 12 May 2023 19:46:32 +0200 (CEST)
+	id 55FEBF8055C; Fri, 12 May 2023 19:46:33 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 61144F8053D
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 19:46:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61144F8053D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 10CB1F8053B
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 19:46:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10CB1F8053B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=UdFgc1tg
+ header.s=Intel header.b=VLNq4XAw
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683913588; x=1715449588;
+  t=1683913587; x=1715449587;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=dt1NhGCq6KNz+7Q8rqjoCnEoN9cKfME3q2gb3EFAMLs=;
-  b=UdFgc1tgd7N4gdDhQ4S0P+aVajxNBMrfBfJR6Oi4JNAAzlBmUo7UdH+9
-   8/smNyGH9rpt/ykf5vVFaS+7l+uDTAlvoPXdUxA9LEETZBYLibstQwmBk
-   JVEmpX5kaHhSTFFLYYw6NAK7AK4nYDN4khBlVzG3+JJkf4j0EVcMr8crI
-   CeH+Z65AcZeT7OL+DfZxLJG/Dl62C9urmi+aXnXCCJmDvLSa8oP1vO6eg
-   IWJZHSndDC64GkA0oDumtJwLsvy0nUA+wggaWEcgIIWHwjZOkN2N+4ycB
-   2eRyb+zvhvcaYr309ZDhgzccIUeoSHti89sVPz1Gng4dAFKd0QBbzlOnS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="349688080"
+  bh=kdPzUEGBiRONzOrtlvhSKrrsD3Yy1AgHk6Vy5KKO4L8=;
+  b=VLNq4XAwNL0Qjqp03Vo1SEqJkpuaI2N7HrzuFuJz/sqagYD1s69tq/YU
+   kI/wFuz9yM18mw2HLNiI5+UU5egdAidA7z+fP+fCwjuYhb5OsbCe4mz59
+   QGv4dslD4wY7zbg5NfSA/NXXi5MgdH0cEag0Hh0P8i08VW+4gd2PKH+/r
+   mK/FCFIE7yo50eFnAebeEEOa2H2Q2DqC4g93XgkFZMt2cgEYy9eosfYR8
+   c9BBYk3fTWn1B9AT5oxDj3jbqV27bteRSylbWBckrMcGI5pksD1pDkRC4
+   vNp7SkSaFT/7A5qEfaxu1l/8Uv7aL4glMidoCDy7QH0AVKVIzgKgkprT8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="349688061"
 X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
-   d="scan'208";a="349688080"
+   d="scan'208";a="349688061"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2023 10:46:25 -0700
+ 12 May 2023 10:46:22 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="812167807"
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="812167779"
 X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
-   d="scan'208";a="812167807"
+   d="scan'208";a="812167779"
 Received: from winkelru-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.144.249])
   by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2023 10:46:24 -0700
+ 12 May 2023 10:46:21 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -74,17 +74,16 @@ Cc: tiwai@suse.de,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Rander Wang <rander.wang@intel.com>,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [PATCH 6/6] ASoC: SOF: Intel: hda-mlink: add helper to program
- SoundWire PCMSyCM registers
-Date: Fri, 12 May 2023 12:46:11 -0500
-Message-Id: <20230512174611.84372-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/6] ASoC: SOF: Intel: hda-mlink: fix base_ptr computation
+Date: Fri, 12 May 2023 12:46:08 -0500
+Message-Id: <20230512174611.84372-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230512174611.84372-1-pierre-louis.bossart@linux.intel.com>
 References: <20230512174611.84372-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3S7ZTPGFHSRAU2EKROOMPDDWPPC4T3CE
-X-Message-ID-Hash: 3S7ZTPGFHSRAU2EKROOMPDDWPPC4T3CE
+Message-ID-Hash: HZT4ASXCE7IBNGGYLGRYIDOEEOAGHCIF
+X-Message-ID-Hash: HZT4ASXCE7IBNGGYLGRYIDOEEOAGHCIF
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3S7ZTPGFHSRAU2EKROOMPDDWPPC4T3CE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HZT4ASXCE7IBNGGYLGRYIDOEEOAGHCIF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,125 +105,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-These registers enable the HDaudio DMA hardware to split/merge data
-from different PDIs, possibly on different links.
+The base_ptr value needs to be derived from the remap_addr pointer,
+not the ml_addr. This base_ptr was used only in debug logs that were
+so far not contributed upstream so the issue was not detected. It
+needs to be fixed for SoundWire support on LunarLake.
 
-This capability exists for all types of HDaudio extended links, but
-for now is only required for SoundWire. In the SSP/DMIC case, the IP
-is programmed by the DSP firmware.
-
+Fixes: 17c9b6ec35c0 ("ASoC: SOF: Intel: hda-mlink: add structures to parse ALT links")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- include/sound/hda-mlink.h       | 10 +++++++
- sound/soc/sof/intel/hda-mlink.c | 50 +++++++++++++++++++++++++++++++++
- 2 files changed, 60 insertions(+)
+ sound/soc/sof/intel/hda-mlink.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/hda-mlink.h b/include/sound/hda-mlink.h
-index 5bfa8ae940e4..4f44f0bd5388 100644
---- a/include/sound/hda-mlink.h
-+++ b/include/sound/hda-mlink.h
-@@ -44,6 +44,9 @@ int hdac_bus_eml_sdw_power_down_unlocked(struct hdac_bus *bus, int sublink);
- 
- int hdac_bus_eml_sdw_set_lsdiid(struct hdac_bus *bus, int sublink, int dev_num);
- 
-+int hdac_bus_eml_sdw_map_stream_ch(struct hdac_bus *bus, int sublink, int y,
-+				   int channel_mask, int stream_id, int dir);
-+
- void hda_bus_ml_put_all(struct hdac_bus *bus);
- void hda_bus_ml_reset_losidv(struct hdac_bus *bus);
- int hda_bus_ml_resume(struct hdac_bus *bus);
-@@ -145,6 +148,13 @@ hdac_bus_eml_sdw_power_down_unlocked(struct hdac_bus *bus, int sublink) { return
- static inline int
- hdac_bus_eml_sdw_set_lsdiid(struct hdac_bus *bus, int sublink, int dev_num) { return 0; }
- 
-+static inline int
-+hdac_bus_eml_sdw_map_stream_ch(struct hdac_bus *bus, int sublink, int y,
-+			       int channel_mask, int stream_id, int dir)
-+{
-+	return 0;
-+}
-+
- static inline void hda_bus_ml_put_all(struct hdac_bus *bus) { }
- static inline void hda_bus_ml_reset_losidv(struct hdac_bus *bus) { }
- static inline int hda_bus_ml_resume(struct hdac_bus *bus) { return 0; }
 diff --git a/sound/soc/sof/intel/hda-mlink.c b/sound/soc/sof/intel/hda-mlink.c
-index 2d0c5d5914b1..b7cbf66badf5 100644
+index cfa43d93cbd0..7f5d0ea4abeb 100644
 --- a/sound/soc/sof/intel/hda-mlink.c
 +++ b/sound/soc/sof/intel/hda-mlink.c
-@@ -73,6 +73,7 @@ struct hdac_ext2_link {
- #define AZX_REG_SDW_SHIM_OFFSET				0x0
- #define AZX_REG_SDW_IP_OFFSET				0x100
- #define AZX_REG_SDW_VS_SHIM_OFFSET			0x6000
-+#define AZX_REG_SDW_SHIM_PCMSyCM(y)			(0x16 + 0x4 * (y))
+@@ -96,7 +96,7 @@ struct hdac_ext2_link {
+  */
  
- /* only one instance supported */
- #define AZX_REG_INTEL_DMIC_SHIM_OFFSET			0x0
-@@ -340,6 +341,21 @@ static void hdaml_link_set_lsdiid(u32 __iomem *lsdiid, int dev_num)
- 	writel(val, lsdiid);
- }
- 
-+static void hdaml_shim_map_stream_ch(u16 __iomem *pcmsycm, int lchan, int hchan,
-+				     int stream_id, int dir)
-+{
-+	u16 val;
-+
-+	val = readw(pcmsycm);
-+
-+	u16p_replace_bits(&val, lchan, GENMASK(3, 0));
-+	u16p_replace_bits(&val, hchan, GENMASK(7, 4));
-+	u16p_replace_bits(&val, stream_id, GENMASK(13, 8));
-+	u16p_replace_bits(&val, dir, BIT(15));
-+
-+	writew(val, pcmsycm);
-+}
-+
- static void hdaml_lctl_offload_enable(u32 __iomem *lctl, bool enable)
+ static int hdaml_lnk_enum(struct device *dev, struct hdac_ext2_link *h2link,
+-			  void __iomem *ml_addr, int link_idx)
++			  void __iomem *remap_addr, void __iomem *ml_addr, int link_idx)
  {
- 	u32 val = readl(lctl);
-@@ -756,6 +772,40 @@ int hdac_bus_eml_sdw_set_lsdiid(struct hdac_bus *bus, int sublink, int dev_num)
- 	return 0;
- } EXPORT_SYMBOL_NS(hdac_bus_eml_sdw_set_lsdiid, SND_SOC_SOF_HDA_MLINK);
+ 	struct hdac_ext_link *hlink = &h2link->hext_link;
+ 	u32 base_offset;
+@@ -136,7 +136,7 @@ static int hdaml_lnk_enum(struct device *dev, struct hdac_ext2_link *h2link,
+ 	h2link->elid = FIELD_GET(AZX_REG_ML_LEPTR_ID, h2link->leptr);
  
-+/*
-+ * the 'y' parameter comes from the PCMSyCM hardware register naming. 'y' refers to the
-+ * PDI index, i.e. the FIFO used for RX or TX
-+ */
-+int hdac_bus_eml_sdw_map_stream_ch(struct hdac_bus *bus, int sublink, int y,
-+				   int channel_mask, int stream_id, int dir)
-+{
-+	struct hdac_ext2_link *h2link;
-+	u16 __iomem *pcmsycm;
-+	u16 val;
-+
-+	h2link = find_ext2_link(bus, true, AZX_REG_ML_LEPTR_ID_SDW);
-+	if (!h2link)
-+		return -ENODEV;
-+
-+	pcmsycm = h2link->base_ptr + h2link->shim_offset +
-+		h2link->instance_offset * sublink +
-+		AZX_REG_SDW_SHIM_PCMSyCM(y);
-+
-+	mutex_lock(&h2link->eml_lock);
-+
-+	hdaml_shim_map_stream_ch(pcmsycm, 0, hweight32(channel_mask),
-+				 stream_id, dir);
-+
-+	mutex_unlock(&h2link->eml_lock);
-+
-+	val = readw(pcmsycm);
-+
-+	dev_dbg(bus->dev, "channel_mask %#x stream_id %d dir %d pcmscm %#x\n",
-+		channel_mask, stream_id, dir, val);
-+
-+	return 0;
-+} EXPORT_SYMBOL_NS(hdac_bus_eml_sdw_map_stream_ch, SND_SOC_SOF_HDA_MLINK);
-+
- void hda_bus_ml_put_all(struct hdac_bus *bus)
- {
- 	struct hdac_ext_link *hlink;
+ 	base_offset = FIELD_GET(AZX_REG_ML_LEPTR_PTR, h2link->leptr);
+-	h2link->base_ptr = hlink->ml_addr + base_offset;
++	h2link->base_ptr = remap_addr + base_offset;
+ 
+ 	switch (h2link->elid) {
+ 	case AZX_REG_ML_LEPTR_ID_SDW:
+@@ -369,7 +369,7 @@ static int hda_ml_alloc_h2link(struct hdac_bus *bus, int index)
+ 	hlink->bus = bus;
+ 	hlink->ml_addr = bus->mlcap + AZX_ML_BASE + (AZX_ML_INTERVAL * index);
+ 
+-	ret = hdaml_lnk_enum(bus->dev, h2link, hlink->ml_addr, index);
++	ret = hdaml_lnk_enum(bus->dev, h2link, bus->remap_addr, hlink->ml_addr, index);
+ 	if (ret < 0) {
+ 		kfree(h2link);
+ 		return ret;
 -- 
 2.37.2
 
