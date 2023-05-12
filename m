@@ -4,89 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C1AAC77B7C
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 18:21:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FF1BC77B7C
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 19:04:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E6CDEC1;
-	Fri, 12 May 2023 20:20:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E6CDEC1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96B96EAF;
+	Fri, 12 May 2023 21:03:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96B96EAF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683915686;
-	bh=EtXzLwzMdxRwbRgZD3mCOwT233lqZFKd7wEqPtTJ/l4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1683918278;
+	bh=4YFJUj5gXssy7gs8iKyXUlUTPpWbGN/9UmJPKOvGXds=;
+	h=From:Date:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=p92IJXs0LXcEq5mKD3ZYXbO6enQ3F4qE8BhQW/1zypm2FGSTJk1ci14sbgUlzIUog
-	 v8WP+wFzhzyVARbLzBgj8Ul+l4QScmHt4hKpuyMCIFFYxTmH++h0Mv3Q1XX4xWn8Rz
-	 XeMtomvvWddOuSBrfEQ2SQ+kXCTmTm+UzPSfUvAU=
+	b=ImRbC1vsktmMc7WBmDd3oNEODTG7MxCTRHK4LBRZA+ysfbCMODc4/q+WWy6L4El2K
+	 kbHdw6V519/Pp2tnQZ4+yL29YmymR/bAqZ8LVUyDMobI0fr3Wh+yBAE7t8cedHToQF
+	 2CiMUnCO1SOINf9Y2ZCGWy1rz0M8gOtENdzUYFhk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01815F805EB; Fri, 12 May 2023 20:18:08 +0200 (CEST)
+	id A0AD7F80544; Fri, 12 May 2023 21:03:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C11FCF805E7;
-	Fri, 12 May 2023 20:18:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF90FF8053B;
+	Fri, 12 May 2023 21:03:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9DBF0F805AB; Fri, 12 May 2023 20:17:57 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id C5C4EF8052E; Fri, 12 May 2023 21:03:17 +0200 (CEST)
+Received: from fgw22-7.mail.saunalahti.fi (fgw22-7.mail.saunalahti.fi
+ [62.142.5.83])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CEF83F8032D
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 20:17:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEF83F8032D
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=N5rG0b1x
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683915465; x=1715451465;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=EtXzLwzMdxRwbRgZD3mCOwT233lqZFKd7wEqPtTJ/l4=;
-  b=N5rG0b1xvCjJL4eEBUw246jBYJ7bSzJPfXdU3bUmfPbkZm5VSdDZfFJj
-   ouQeOIMitlDA/gohDYKvQTCvETwI6EWiewB3exLO1Vb7aMztbIAFkDm78
-   RaizXWhkVpOl/VSdmdBq6Ptlt1Bbo9kfUKa4jnd4tBLLwkUDLpfW6K2e9
-   vtev1knAIQcNmJpjhlTqgJpSJ+wncRY65211skwGxygbreFZ07tPvtm99
-   2NCirmwEEWybBWLNskHQf/Y9MczoyOxfiuoLPwf5Jt99CiIkXxzsiUPzM
-   cXx01JqxINs0zmCe83/Lfq08UHXzb30iIuNG9zXZ+lkSIaAbVw7muS+cG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="331223235"
-X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
-   d="scan'208";a="331223235"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2023 11:17:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="769895101"
-X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
-   d="scan'208";a="769895101"
-Received: from winkelru-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.144.249])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2023 11:17:21 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de,
-	broonie@kernel.org,
-	vkoul@kernel.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 8/9] ASoC: SOF: Intel: hda-dai: use HDA_LINK instead of
- HDA_AUDIO_CODEC
-Date: Fri, 12 May 2023 13:17:01 -0500
-Message-Id: <20230512181702.117483-9-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230512181702.117483-1-pierre-louis.bossart@linux.intel.com>
-References: <20230512181702.117483-1-pierre-louis.bossart@linux.intel.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id CA4CCF80087
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 21:03:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA4CCF80087
+Received: from localhost (88-113-26-95.elisa-laajakaista.fi [88.113.26.95])
+	by fgw22.mail.saunalahti.fi (Halon) with ESMTP
+	id a2075948-f0f7-11ed-a9de-005056bdf889;
+	Fri, 12 May 2023 22:03:09 +0300 (EEST)
+From: andy.shevchenko@gmail.com
+Date: Fri, 12 May 2023 22:03:08 +0300
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	tglx@linutronix.de, maz@kernel.org, linus.walleij@linaro.org,
+	vkoul@kernel.org, lgirdwood@gmail.com,
+	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/10] spi: cs42l43: Add SPI controller support
+Message-ID: <ZF6NbHVD4ay2S83R@surfacebook>
+References: <20230512122838.243002-1-ckeepax@opensource.cirrus.com>
+ <20230512122838.243002-10-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: L2P2YNOTK7QJCDAPEIKCWL5SCZYUKD2Y
-X-Message-ID-Hash: L2P2YNOTK7QJCDAPEIKCWL5SCZYUKD2Y
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230512122838.243002-10-ckeepax@opensource.cirrus.com>
+Message-ID-Hash: DM6UII5TTJPO5DIFWUY4JJ6IBWI5XWTP
+X-Message-ID-Hash: DM6UII5TTJPO5DIFWUY4JJ6IBWI5XWTP
+X-MailFrom: andy.shevchenko@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -98,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L2P2YNOTK7QJCDAPEIKCWL5SCZYUKD2Y/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DM6UII5TTJPO5DIFWUY4JJ6IBWI5XWTP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,82 +84,129 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-For LunarLake support, we will have to use HDAudio DMA-based DAIs even
-for SSP/DMIC/SoundWire. That's completely different to the
-HDA_AUDIO_CODEC, the DAI ops deal with DMA configuration and that can
-happen in the absence of any HDAudio codec.
+Fri, May 12, 2023 at 01:28:37PM +0100, Charles Keepax kirjoitti:
+> From: Lucas Tanure <tanureal@opensource.cirrus.com>
+> 
+> The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
+> (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
+> for portable applications. It provides a high dynamic range, stereo
+> DAC for headphone output, two integrated Class D amplifiers for
+> loudspeakers, and two ADCs for wired headset microphone input or
+> stereo line input. PDM inputs are provided for digital microphones.
+> 
+> The SPI component incorporates a SPI controller interface for
+> communication with other peripheral components.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/sof/intel/hda-dai-ops.c | 4 ++--
- sound/soc/sof/intel/hda-dai.c     | 8 ++++++--
- 2 files changed, 8 insertions(+), 4 deletions(-)
+...
 
-diff --git a/sound/soc/sof/intel/hda-dai-ops.c b/sound/soc/sof/intel/hda-dai-ops.c
-index 4b39cecacd68..d711351137f2 100644
---- a/sound/soc/sof/intel/hda-dai-ops.c
-+++ b/sound/soc/sof/intel/hda-dai-ops.c
-@@ -16,7 +16,7 @@
- #include "hda.h"
- 
- /* These ops are only applicable for the HDA DAI's in their current form */
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_LINK)
- /*
-  * This function checks if the host dma channel corresponding
-  * to the link DMA stream_tag argument is assigned to one
-@@ -350,7 +350,7 @@ static const struct hda_dai_widget_dma_ops hda_dspless_dma_ops = {
- const struct hda_dai_widget_dma_ops *
- hda_select_dai_widget_ops(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- {
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_LINK)
- 	struct snd_sof_dai *sdai;
- 
- 	if (sdev->dspless_mode_selected)
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 729f750fe746..09d8ee98581d 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -61,7 +61,7 @@ int hda_dai_config(struct snd_soc_dapm_widget *w, unsigned int flags,
- 	return 0;
- }
- 
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_LINK)
- 
- static struct snd_sof_dev *dai_to_sdev(struct snd_pcm_substream *substream,
- 				       struct snd_soc_dai *cpu_dai)
-@@ -319,6 +319,8 @@ static int __maybe_unused hda_dai_trigger(struct snd_pcm_substream *substream, i
- 	return 0;
- }
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-+
- static int hda_dai_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-@@ -334,6 +336,8 @@ static const struct snd_soc_dai_ops hda_dai_ops = {
- 	.prepare = hda_dai_prepare,
- };
- 
-+#endif
-+
- static int hda_dai_suspend(struct hdac_bus *bus)
- {
- 	struct snd_soc_pcm_runtime *rtd;
-@@ -582,7 +586,7 @@ int hda_dsp_dais_suspend(struct snd_sof_dev *sdev)
- 	 * Since the component suspend is called last, we can trap this corner case
- 	 * and force the DAIs to release their resources.
- 	 */
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_LINK)
- 	int ret;
- 
- 	ret = hda_dai_suspend(sof_to_bus(sdev));
+> +#define CS42L43_SPI_ROOT_HZ		40000000
+
+HZ_PER_MHZ?
+
+...
+
+> +		const u8 *block = min_t(const u8 *, buf + CS42L43_FIFO_SIZE, end);
+
+Wouldn't min() work?
+
+...
+
+> +		for (; buf < block - (sizeof(u32) - 1); buf += sizeof(u32))
+> +			regmap_write(regmap, CS42L43_TX_DATA, *(const u32 *)buf);
+
+This casting might be potentially wrong taking alignment into consideration.
+Perhaps you need get_unaligned(). Also here the return value isn't checked,
+while in the read it is.
+
+...
+
+> +		const u8 *block = min_t(const u8 *, buf + CS42L43_FIFO_SIZE, end);
+
+min() ?
+
+...
+
+> +		for (; buf < block - (sizeof(u32) - 1); buf += sizeof(u32)) {
+> +			ret = regmap_read(regmap, CS42L43_RX_DATA, (u32 *)buf);
+
+put_unaligned() ?
+
+> +			if (ret)
+> +				return ret;
+> +		}
+
+...
+
+> +static int cs42l43_prepare_transfer_hardware(struct spi_controller *ctlr)
+> +{
+> +	struct cs42l43_spi *priv = spi_controller_get_devdata(ctlr);
+> +	int ret;
+> +
+> +	ret = regmap_write(priv->regmap, CS42L43_BLOCK_EN2, CS42L43_SPI_MSTR_EN_MASK);
+> +	if (ret) {
+> +		dev_err(priv->dev, "Failed to enable SPI controller: %d\n", ret);
+
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+
+	return ret; ?
+
+> +}
+> +
+> +static int cs42l43_unprepare_transfer_hardware(struct spi_controller *ctlr)
+> +{
+> +	struct cs42l43_spi *priv = spi_controller_get_devdata(ctlr);
+> +	int ret;
+> +
+> +	ret = regmap_write(priv->regmap, CS42L43_BLOCK_EN2, 0);
+> +	if (ret) {
+> +		dev_err(priv->dev, "Failed to disable SPI controller: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+
+Ditto.
+
+> +}
+
+...
+
+> +	if (is_of_node(dev_fwnode(cs42l43->dev))) {
+> +		priv->ctlr->dev.fwnode =
+> +			fwnode_get_named_child_node(dev_fwnode(cs42l43->dev), "spi");
+> +		priv->ctlr->dev.of_node = to_of_node(dev_fwnode(&priv->ctlr->dev));
+> +	} else {
+> +		priv->ctlr->dev.fwnode = dev_fwnode(priv->dev);
+> +	}
+
+Can you use device_set_node() once you have an fwnode that needs to be passed?
+
+...
+
+> +	priv->ctlr->mode_bits = SPI_3WIRE | SPI_CPHA | SPI_CPOL;
+
+SPI_MODE_X_MASK
+
+...
+
+> +static struct platform_driver cs42l43_spi_driver = {
+> +	.driver = {
+> +		.name	= "cs42l43-spi",
+> +	},
+
+> +
+
+Unneeded blank line.
+
+> +	.probe		= cs42l43_spi_probe,
+> +	.remove		= cs42l43_spi_remove,
+> +};
+
 -- 
-2.37.2
+With Best Regards,
+Andy Shevchenko
+
 
