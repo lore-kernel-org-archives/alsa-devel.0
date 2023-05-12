@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32A2CC7EE26
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 18:21:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84198C77B7C
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 18:21:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BD5CE9F;
-	Fri, 12 May 2023 20:20:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BD5CE9F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85547EBE;
+	Fri, 12 May 2023 20:20:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85547EBE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683915663;
-	bh=ye9jusbayFAN6BeKWnMrN/yfoHmOtz2V7Wbp+pSA61A=;
+	s=default; t=1683915670;
+	bh=akOz3a5d3O+q+dKd9QYnOfikOKhBsr355TSnY2hpehE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=K86ISmsrUy373/yTh4AWzrYWzfS7AmKOGEVh6a65eBuN35dRJi3oLUwBGzkW1Pbfz
-	 RyIThaYrz8V/H4QO4gNaEPHDlwe2cILqA6L2EMyVm2he5PKTzMj5fc5NQti5GAoMPE
-	 n0vubkkWqdLjjdXomWurcVFIp5+GCXDtzizFk3XQ=
+	b=fPPBg4i2D7q7tIeq0w0c/LHn0X6KGKv/Sq7kov1FHdJNl0344DSgdncCFRNRn3FI/
+	 jiyabxIcXDyxf7N6At9EOs2KJ/pXB0DTMQOfyFq1usTzXYjiJbywMDZ8PENnekBwqS
+	 FeOWRjSKF0DtRTtbvTnEI+2elhULd19JSTQFcacU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D06EBF805D2; Fri, 12 May 2023 20:18:04 +0200 (CEST)
+	id BCDC1F805D5; Fri, 12 May 2023 20:18:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EC4FF805BA;
-	Fri, 12 May 2023 20:18:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BFDFF805E1;
+	Fri, 12 May 2023 20:18:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A9A9F80587; Fri, 12 May 2023 20:17:54 +0200 (CEST)
+	id 49E08F8059F; Fri, 12 May 2023 20:17:55 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E9766F8053B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 932EFF802E8
 	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 20:17:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9766F8053B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 932EFF802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=kH4XByKr
+ header.s=Intel header.b=HkyImDvu
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1683915463; x=1715451463;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ye9jusbayFAN6BeKWnMrN/yfoHmOtz2V7Wbp+pSA61A=;
-  b=kH4XByKrpjriIseJloPleBlo0mJN8QQ4BWab8e31VCzGfMZ57VNFqkbP
-   VNGN60sRu0fv54PGY+VlXDjnaJ0Xu6nphIpG9v3mk2pn9ZJZjH3haIAcD
-   tvB/EpbSxxmVznttErHswC8YBHbyHUS8nbGmu5lUGa2+VEhrXEE5NHK8E
-   NLekUbi91euYVwAcwx3lvGYw8PonP+tapXkxVGRMJlhpic0FK4LOvbt4h
-   i7iPE05mBauCVNtBOh4lO3L/dSlc3q7ZdLuWObk02ky7ESgWyDm8sCyHp
-   mb5hCGhd6rEUbt1j2jt3C5yup/ao7cPBiF/W/5TVh/GDa4rWDQlyCp2lt
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="331223222"
+  bh=akOz3a5d3O+q+dKd9QYnOfikOKhBsr355TSnY2hpehE=;
+  b=HkyImDvuhjpAStJsr3qlJnjD4PplfnMwisFEB/aWstsOP5/E4PBYwDyR
+   fxvJ1ktOWrSCIbhV/YCAqPaMYTa6A4MxopyEbiv/KWw9O5Tl/mxGIFuud
+   8qQbMMX87TdASNPlE0ldWKkt/E+kpgewV46cdT5lKXgTopuK6BQh504xi
+   vL/oP6DHOT1dP/NBbtZ/cuRYly+eWY4byzvBjOafY89gin21Dz3ER8DCi
+   15PsJhuPFHU7prB2WaZfEl/uSm4hTVB15WUu+mjK+KoZ+HSNO9dsDj1q3
+   ZNdhjHjTdZJgFUo6GbtREEtfIJv8R1pjvGT6Nxczoe/CX/juRI15nBlrw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="331223217"
 X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
-   d="scan'208";a="331223222"
+   d="scan'208";a="331223217"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  12 May 2023 11:17:19 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="769895088"
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="769895082"
 X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
-   d="scan'208";a="769895088"
+   d="scan'208";a="769895082"
 Received: from winkelru-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.144.249])
   by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2023 11:17:19 -0700
+ 12 May 2023 11:17:18 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -74,17 +74,18 @@ Cc: tiwai@suse.de,
 	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
 	Rander Wang <rander.wang@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 6/9] ASoC: SOF: Intel: hda-dai: move hda_dai_prepare() code
-Date: Fri, 12 May 2023 13:16:59 -0500
-Message-Id: <20230512181702.117483-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 5/9] ASoC: SOF: Intel: Kconfig: move selection of
+ PROBE_WORK_QUEUE
+Date: Fri, 12 May 2023 13:16:58 -0500
+Message-Id: <20230512181702.117483-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230512181702.117483-1-pierre-louis.bossart@linux.intel.com>
 References: <20230512181702.117483-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: WH4SICZNRCHFOHXGRD3QBT7TY3LXE2VY
-X-Message-ID-Hash: WH4SICZNRCHFOHXGRD3QBT7TY3LXE2VY
+Message-ID-Hash: FDGTE5CSJILRVI5A4773Y4HIUC2OKI6A
+X-Message-ID-Hash: FDGTE5CSJILRVI5A4773Y4HIUC2OKI6A
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WH4SICZNRCHFOHXGRD3QBT7TY3LXE2VY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FDGTE5CSJILRVI5A4773Y4HIUC2OKI6A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,51 +107,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Before we change the Kconfig support, move code around. No
-functionality change with this commit in isolation.
+The probe workqueue is only needed if we have a Display Audio codec.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/sof/intel/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 7e71cce7f531..cdd842288811 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -259,14 +259,6 @@ static int hda_dai_hw_params(struct snd_pcm_substream *substream,
- 	return hda_dai_config(w, flags, &data);
- }
- 
--static int hda_dai_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	int stream = substream->stream;
--
--	return hda_dai_hw_params(substream, &rtd->dpcm[stream].hw_params, dai);
--}
--
- /*
-  * In contrast to IPC3, the dai trigger in IPC4 mixes pipeline state changes
-  * (over IPC channel) and DMA state change (direct host register changes).
-@@ -325,6 +317,14 @@ static int hda_dai_trigger(struct snd_pcm_substream *substream, int cmd, struct
- 	return 0;
- }
- 
-+static int hda_dai_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	int stream = substream->stream;
-+
-+	return hda_dai_hw_params(substream, &rtd->dpcm[stream].hw_params, dai);
-+}
-+
- static const struct snd_soc_dai_ops hda_dai_ops = {
- 	.hw_params = hda_dai_hw_params,
- 	.hw_free = hda_dai_hw_free,
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index f4eeacf1f281..88529a6cb20d 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -285,7 +285,6 @@ if SND_SOC_SOF_HDA_COMMON
+ config SND_SOC_SOF_HDA_LINK
+ 	bool "SOF support for HDA Links(HDA/HDMI)"
+ 	depends on SND_SOC_SOF_NOCODEC_SUPPORT=n
+-	select SND_SOC_SOF_PROBE_WORK_QUEUE
+ 	help
+ 	  This adds support for HDA links(HDA/HDMI) with Sound Open Firmware
+ 	  for Intel(R) platforms.
+@@ -295,6 +294,7 @@ config SND_SOC_SOF_HDA_LINK
+ config SND_SOC_SOF_HDA_AUDIO_CODEC
+ 	bool "SOF support for HDAudio codecs"
+ 	depends on SND_SOC_SOF_HDA_LINK
++	select SND_SOC_SOF_PROBE_WORK_QUEUE
+ 	help
+ 	  This adds support for HDAudio codecs with Sound Open Firmware
+ 	  for Intel(R) platforms.
 -- 
 2.37.2
 
