@@ -4,85 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01C54C77B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 17:48:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B6E1C77B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 17:48:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF5A3E89;
-	Fri, 12 May 2023 19:47:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF5A3E89
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55045E7A;
+	Fri, 12 May 2023 19:47:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55045E7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683913690;
-	bh=NXWEW2uL0MZdzPaFwT9g5wKRsXZ6EYOMBJswLRp4reE=;
+	s=default; t=1683913700;
+	bh=G5gbNgfeg4XZDB9YlQebK9EWfdde2xq8U1cJ5PdQ4XY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HG3qTEi8Ip2ww1TLEmX4Xa6OO0lravmszIJEByC/9oCOyiXtI42WvzJybJ0N2B1fJ
-	 8erj7uQQseJLQQZyocVnAK/tQ/f6+vBClvWKlOtzq7LrQvjJoYh/GY+eKq+yXrQYGK
-	 Oc/1KyGxJR6Jtq+GUXtzydEoOjWDMC3m7zC3t+0k=
+	b=hFh3M+rWOLrLa3EslgFwsNEJdVJ8U+JUffz6O/2MZT5gL6QibCiu3Od82E49jlo6C
+	 NhVbovavZLl12imLgEr5vPJhWaE6Kx+GdIyfgSoG6nWDWbLNZSLntBk22jVeBBb6HU
+	 pzZg7vHfW1mbFFmVhMhrAccAYBj/BnklddXZfjcM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E8DA9F80534; Fri, 12 May 2023 19:46:32 +0200 (CEST)
+	id 1351FF80564; Fri, 12 May 2023 19:46:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 202C0F8055A;
-	Fri, 12 May 2023 19:46:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F14DF80564;
+	Fri, 12 May 2023 19:46:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1982F80542; Fri, 12 May 2023 19:46:27 +0200 (CEST)
+	id 5747FF8014C; Fri, 12 May 2023 19:46:29 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 84749F802E8
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 19:46:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84749F802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7C441F8032D
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 19:46:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C441F8032D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XM4deN7m
+ header.s=Intel header.b=Clk6Q+UW
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1683913584; x=1715449584;
+  t=1683913586; x=1715449586;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=NXWEW2uL0MZdzPaFwT9g5wKRsXZ6EYOMBJswLRp4reE=;
-  b=XM4deN7mEMDusm7iMtqfvzTPNISodULJdDSojRqAA/E91AV6Dz6o+IKR
-   jkL9Ix9TffbZyL391npctt/SrN86gzZlf7UsVT9O0exqeTyONUaC/gV6K
-   s3yaYN0md0gY8gz6LOzPDVX5yiYLtaV4fKW7DIsN4WGzBeaiTC7Cc2DBy
-   pSWo1Tf0XqR+NV+ali779W7Om8lJUgH/hBgtDTEBH2zRAnkpAuJ+FMw3K
-   qpZw7Noaas7O/SXFY76S+QK5VdDybCi8hU6BEHXPo58zwrSuFfUrA69K4
-   pMNwJguK8pBUA3Md0nQ2Moa1wwuQ1VjMmjwFvzQkAolYFTFiqH27nW5QB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="349688046"
+  bh=G5gbNgfeg4XZDB9YlQebK9EWfdde2xq8U1cJ5PdQ4XY=;
+  b=Clk6Q+UWw0ESsUvxLhFqP29UFGembgpACS1deySm0t6WWHk5+8OfALQM
+   b4/srXa8nq5z3Yal4KFz/Dqf3JR+YLEMUeXD6ki07DnjMj/0IEJOCJ2fl
+   qBKIdv1kDoITBRduVO6sxhjaesJApeYvfDe8CFpusK1XTYw6/JqeaZcnd
+   Wy1IPnVx0COW1fP04GSCEhOOTX7X0uBtgynO/zMcNm01WUgDiBCDAchxQ
+   qpmxOWSzkBAlUxQnghmb+NojKJDEfKP92Hq774Q5sC5w4HQj5Nj08NDAx
+   XbTTtX6KGxKx2CwIbZZqGXC7K9O6FOR0Yp5WJ9cCO6Ih9Ba0aMb3bflan
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="349688067"
 X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
-   d="scan'208";a="349688046"
+   d="scan'208";a="349688067"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2023 10:46:20 -0700
+ 12 May 2023 10:46:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="812167745"
+X-IronPort-AV: E=McAfee;i="6600,9927,10708"; a="812167791"
 X-IronPort-AV: E=Sophos;i="5.99,269,1677571200";
-   d="scan'208";a="812167745"
+   d="scan'208";a="812167791"
 Received: from winkelru-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.144.249])
   by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2023 10:46:19 -0700
+ 12 May 2023 10:46:22 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
 	vkoul@kernel.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 1/6] ASoC: SOF: Intel: hda-mlink: fix sublink refcounting
-Date: Fri, 12 May 2023 12:46:06 -0500
-Message-Id: <20230512174611.84372-2-pierre-louis.bossart@linux.intel.com>
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Rander Wang <rander.wang@intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 4/6] ASoC: SOF: Intel: hda-mlink: use 'ml_addr' parameter
+ consistently
+Date: Fri, 12 May 2023 12:46:09 -0500
+Message-Id: <20230512174611.84372-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230512174611.84372-1-pierre-louis.bossart@linux.intel.com>
 References: <20230512174611.84372-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: T2ZNESELO4VDMYIEDSKAEPQE2GTKVDBB
-X-Message-ID-Hash: T2ZNESELO4VDMYIEDSKAEPQE2GTKVDBB
+Message-ID-Hash: EH3UYBVNCKYLGR7XEC5IWCW2ZCRUOI4Z
+X-Message-ID-Hash: EH3UYBVNCKYLGR7XEC5IWCW2ZCRUOI4Z
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T2ZNESELO4VDMYIEDSKAEPQE2GTKVDBB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EH3UYBVNCKYLGR7XEC5IWCW2ZCRUOI4Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,86 +106,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In hindsight it was a very bad idea to use the same refcount for
-Extended and 'legacy' HDaudio multi-links. The existing solution only
-powers-up the first sublink, which causes SoundWire and SSP tests to
-fail when more than one DAI is used concurrently. Solving this problem
-requires per-sublink refcounting, as suggested in this patch.
-
-The existing refcounting remains for 'legacy' HdAudio links, mainly to
-avoid changing the obscure programming sequence in
-snd_hdac_ext_bus_link_put().
+We mix the use of hlink->ml_addr and the 'ml_addr' parameter. It's the
+same thing, let's align on using the parameter.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-mlink.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+ sound/soc/sof/intel/hda-mlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/sof/intel/hda-mlink.c b/sound/soc/sof/intel/hda-mlink.c
-index 775582ab7494..6d0145c30afe 100644
+index 7f5d0ea4abeb..c540b1d75451 100644
 --- a/sound/soc/sof/intel/hda-mlink.c
 +++ b/sound/soc/sof/intel/hda-mlink.c
-@@ -19,6 +19,9 @@
+@@ -131,7 +131,7 @@ static int hdaml_lnk_enum(struct device *dev, struct hdac_ext2_link *h2link,
+ 		link_idx, h2link->slcount);
  
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_MLINK)
+ 	/* find IP ID and offsets */
+-	h2link->leptr = readl(hlink->ml_addr + AZX_REG_ML_LEPTR);
++	h2link->leptr = readl(ml_addr + AZX_REG_ML_LEPTR);
  
-+/* worst-case number of sublinks is used for sublink refcount array allocation only */
-+#define HDAML_MAX_SUBLINKS (AZX_ML_LCTL_CPA_SHIFT - AZX_ML_LCTL_SPA_SHIFT)
-+
- /**
-  * struct hdac_ext2_link - HDAudio extended+alternate link
-  *
-@@ -33,6 +36,7 @@
-  * @leptr:		extended link pointer
-  * @eml_lock:		mutual exclusion to access shared registers e.g. CPA/SPA bits
-  * in LCTL register
-+ * @sublink_ref_count:	array of refcounts, required to power-manage sublinks independently
-  * @base_ptr:		pointer to shim/ip/shim_vs space
-  * @instance_offset:	offset between each of @slcount instances managed by link
-  * @shim_offset:	offset to SHIM register base
-@@ -53,6 +57,7 @@ struct hdac_ext2_link {
- 	u32 leptr;
+ 	h2link->elid = FIELD_GET(AZX_REG_ML_LEPTR_ID, h2link->leptr);
  
- 	struct mutex eml_lock; /* prevent concurrent access to e.g. CPA/SPA */
-+	int sublink_ref_count[HDAML_MAX_SUBLINKS];
- 
- 	/* internal values computed from LCAP contents */
- 	void __iomem *base_ptr;
-@@ -641,8 +646,13 @@ static int hdac_bus_eml_power_up_base(struct hdac_bus *bus, bool alt, int elid,
- 	if (eml_lock)
- 		mutex_lock(&h2link->eml_lock);
- 
--	if (++hlink->ref_count > 1)
--		goto skip_init;
-+	if (!alt) {
-+		if (++hlink->ref_count > 1)
-+			goto skip_init;
-+	} else {
-+		if (++h2link->sublink_ref_count[sublink] > 1)
-+			goto skip_init;
-+	}
- 
- 	ret = hdaml_link_init(hlink->ml_addr + AZX_REG_ML_LCTL, sublink);
- 
-@@ -684,9 +694,13 @@ static int hdac_bus_eml_power_down_base(struct hdac_bus *bus, bool alt, int elid
- 	if (eml_lock)
- 		mutex_lock(&h2link->eml_lock);
- 
--	if (--hlink->ref_count > 0)
--		goto skip_shutdown;
--
-+	if (!alt) {
-+		if (--hlink->ref_count > 0)
-+			goto skip_shutdown;
-+	} else {
-+		if (--h2link->sublink_ref_count[sublink] > 0)
-+			goto skip_shutdown;
-+	}
- 	ret = hdaml_link_shutdown(hlink->ml_addr + AZX_REG_ML_LCTL, sublink);
- 
- skip_shutdown:
 -- 
 2.37.2
 
