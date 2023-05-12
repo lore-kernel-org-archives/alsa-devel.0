@@ -4,69 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC5D5C77B7C
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 06:44:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55412C77B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 May 2023 06:58:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0EF21CE;
-	Fri, 12 May 2023 08:43:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0EF21CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74A0711C;
+	Fri, 12 May 2023 08:58:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74A0711C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1683873855;
-	bh=ieEJg8torSpPfmEqEpMqWZeWb2xldKWjqk95B0rn6hI=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=PLpdttKBLVbJuPHLDGUWPPoP65I2SmZOWcEv5cUt9o4b+YGz1/Bcbh16UyXJqawds
-	 gHrWFXap+In6icS6l/sOi+p2W/9J2gOK2jlNwGzj/DFPsoU8DP6aVDc4+Nf/wPFZ7h
-	 /pg8NPGuliNR6haQDytTLX5tNOvtikSuzWppNfgI=
+	s=default; t=1683874733;
+	bh=RozI6j6Ph6ZEue1vpTnBWMeD83jBbK3IXoA9KPnIgBo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=hwKRmvOhSzJ9AaeSyVoNq6mLpvHpkuEBDr8zKQ0TpAPwbzpsvn4sDsD3BgI0gPj4E
+	 RfXAIX07m0gEX/IT6Qw/vAUi+mckQB6IH8zJ7igICdAGVj04UXFWrY9rWU8Eesr12j
+	 Fm8uydr7TiXewFNVzJl0YieGA8Lp/roGH6Ify55o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34BC7F80544; Fri, 12 May 2023 08:43:01 +0200 (CEST)
+	id DB310F80534; Fri, 12 May 2023 08:57:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 724A1F802E8;
-	Fri, 12 May 2023 08:43:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A46ECF8053D;
+	Fri, 12 May 2023 08:57:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11A74F8052E; Fri, 12 May 2023 08:42:53 +0200 (CEST)
-Received: from out30-110.freemail.mail.aliyun.com
- (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+	id A7C5CF8052E; Fri, 12 May 2023 08:57:31 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 51936F8014C;
-	Fri, 12 May 2023 08:42:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51936F8014C
-X-Alimail-AntiSpam: 
- AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0ViO.dao_1683873748;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com
- fp:SMTPD_---0ViO.dao_1683873748)
-          by smtp.aliyun-inc.com;
-          Fri, 12 May 2023 14:42:35 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: pierre-louis.bossart@linux.intel.com
-Cc: lgirdwood@gmail.com,
-	peter.ujfalusi@linux.intel.com,
-	yung-chuan.liao@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	daniel.baluta@nxp.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	sound-open-firmware@alsa-project.org,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] ASoC: SOF: Simplify the calculation of variables
-Date: Fri, 12 May 2023 14:42:25 +0800
-Message-Id: <20230512064225.75358-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3A3V2YSIUDRD4CXUROH47HODAWDV6HHS
-X-Message-ID-Hash: 3A3V2YSIUDRD4CXUROH47HODAWDV6HHS
-X-MailFrom: jiapeng.chong@linux.alibaba.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id BF12CF802E8
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2023 08:57:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF12CF802E8
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=jNYRWHxZ;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=XATz2LUa
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 86E3B203AD;
+	Fri, 12 May 2023 06:57:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1683874642;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7SjoVf0X+XqT6ZCCXaCMjWsipHNd75ZR+h+EGxqTGEY=;
+	b=jNYRWHxZqsXYJ9QBpb3Cy4cvJkSuV+wUSGtGWL9o2sjOoP/i7uWhkuIb41vfDMneOPZpE4
+	lasNU5vqljrh5y7QbNSLaf+e5WQmMPtf336Gkl4eljPMm0KW8+1mubjfV6wP8DHFEJzPDj
+	Tvu3PhryUU88FR6mN8T1ZAivy3ZsawI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1683874642;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7SjoVf0X+XqT6ZCCXaCMjWsipHNd75ZR+h+EGxqTGEY=;
+	b=XATz2LUarmjSJbA0Vk7X1QaG74wRYffEwyNKJFUn/F3xu6JD2xAAzQiWLsSwCfemHrb/3p
+	Wv4NKp26lgoVMQDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 57CC613499;
+	Fri, 12 May 2023 06:57:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id T2VyFFLjXWQYdQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 12 May 2023 06:57:22 +0000
+Date: Fri, 12 May 2023 08:57:21 +0200
+Message-ID: <87cz36avfy.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Cc: alsa-devel@alsa-project.org,
+	Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 1/4] ALSA: emu10k1: automate encoding of sub-register
+ definitions
+In-Reply-To: <20230510162935.3063854-1-oswald.buddenhagen@gmx.de>
+References: <20230510162935.3063854-1-oswald.buddenhagen@gmx.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: YEWN2EWLY7QPCNUFM26NPZHQXQFGHT75
+X-Message-ID-Hash: YEWN2EWLY7QPCNUFM26NPZHQXQFGHT75
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -78,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3A3V2YSIUDRD4CXUROH47HODAWDV6HHS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YEWN2EWLY7QPCNUFM26NPZHQXQFGHT75/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -87,28 +114,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-./sound/soc/sof/pcm.c:372:27-29: WARNING !A || A && B is equivalent to !A || B.
+On Wed, 10 May 2023 18:29:32 +0200,
+Oswald Buddenhagen wrote:
+> 
+> The idea to encode the bitfield manipulation in the register address is
+> quite clever, but doing that by hand is ugly and error-prone. So derive
+> it automatically from the mask instead.
+> 
+> Macros cannot #define other macros, so we now declare enums instead.
+> 
+> This also adds macros for decoding the register definitions. These will
+> be used by later commits.
+> 
+> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+> ---
+>  include/sound/emu10k1.h | 113 ++++++++++++++++++----------------------
+>  1 file changed, 50 insertions(+), 63 deletions(-)
+> 
+> diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+> index 8fe80dcee71b..f4e05a2897e8 100644
+> --- a/include/sound/emu10k1.h
+> +++ b/include/sound/emu10k1.h
+> @@ -38,6 +38,22 @@
+>  
+>  #define IP_TO_CP(ip) ((ip == 0) ? 0 : (((0x00001000uL | (ip & 0x00000FFFL)) << (((ip >> 12) & 0x000FL) + 4)) & 0xFFFF0000uL))
+>  
+> +#define SUB_REG_NC(reg, field, mask) \
+> +	enum { \
+> +		field ## _MASK = mask, \
+> +		field = reg | \
+> +			(__builtin_ctz(mask) << 16) | \
+> +			(__builtin_popcount(mask) << 24), \
+> +	};
+> +#define SUB_REG(reg, field, mask) SUB_REG_NC(reg, reg ## _ ## field, mask)
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=4938
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- sound/soc/sof/pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This macro needs some more comments.  It's a good opportunity to
+explain what's the real raw register and what's the sub(?) register,
+and which one is used for which helper, etc.
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 567db32173a8..d14e7fd2c2ee 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -369,7 +369,7 @@ static int sof_pcm_trigger(struct snd_soc_component *component,
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		/* invoke platform trigger to stop DMA even if pcm_ops isn't set or if it failed */
--		if (!pcm_ops || (pcm_ops && !pcm_ops->platform_stop_during_hw_free))
-+		if (!pcm_ops || !pcm_ops->platform_stop_during_hw_free)
- 			snd_sof_pcm_platform_trigger(sdev, substream, cmd);
- 		break;
- 	default:
--- 
-2.20.1.7.g153144c
 
+thanks,
+
+Takashi
