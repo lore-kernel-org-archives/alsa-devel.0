@@ -4,117 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B091CC77B7D
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 12:05:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13E62C77B7D
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 12:27:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E26321EC;
-	Mon, 15 May 2023 14:04:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E26321EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9332C1EF;
+	Mon, 15 May 2023 14:26:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9332C1EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684152341;
-	bh=OhHr5iN6fyqws8qv2NSSeMrZzOrbUKkW+DJiBBQxbMI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=lSysNbK5yvlccmb15SzbJQzfJP4CNMWlFe3aF1G/GcbYvyCEoaHtVC5t+/nte1NQB
-	 UQaCPPL90b6pRk0oSpRDst9h6HVNkDyE6taZF3iAYY4Fq0KgndDQRdBx5JsNkMsORW
-	 hmebLwF9KFVYsHzMyuZmQNe9hGh/X26ybCz5ry7Q=
+	s=default; t=1684153639;
+	bh=bPKHJLxt6Wpo1+Kxpf04rXqb1UT97XW7pOUFS/DkcJI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=o2djIQmSSqflbD2k2InqfPN1v+e0t9pz7z1udVRmqXAB+ZdId892dx97iwORxcvib
+	 ezRlOF9upeqs/4M6hn2tUgnzDJWWyFhw2pnA+5xHdIeavkV6qNx/ZPqBYbqlwc9jwe
+	 F6/KK6UiZ6Shxbhe6QtTcO/se7dL9OGCgcTBsoeE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6345CF80542; Mon, 15 May 2023 14:04:25 +0200 (CEST)
+	id BA621F80549; Mon, 15 May 2023 14:26:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5C50F8024E;
-	Mon, 15 May 2023 14:04:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E381F8016D;
+	Mon, 15 May 2023 14:26:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8CBA9F80272; Mon, 15 May 2023 14:04:18 +0200 (CEST)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
- [IPv6:2a00:1450:4864:20::62b])
+	id BBB6AF8053B; Sat, 13 May 2023 22:21:25 +0200 (CEST)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
+ [IPv6:2a00:1450:4864:20::532])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 446ACF8016D
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 14:04:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 446ACF8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id E0749F8014C
+	for <alsa-devel@alsa-project.org>; Sat, 13 May 2023 22:21:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0749F8014C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=ByoRjCzb
-Received: by mail-ej1-x62b.google.com with SMTP id
- a640c23a62f3a-94a342f7c4cso2311274966b.0
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=SZ4hSMKs
+Received: by mail-ed1-x532.google.com with SMTP id
+ 4fb4d7f45d1cf-5068638856dso2583025a12.1
         for <alsa-devel@alsa-project.org>;
- Mon, 15 May 2023 05:04:09 -0700 (PDT)
+ Sat, 13 May 2023 13:21:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1684152247; x=1686744247;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2/nlan8NsKQaqVLCr51QfC/hNbeFSNTXRRDAB3FVPas=;
-        b=ByoRjCzbZlDhT1T9pjQEYxr54YRw44V8aNUv9jfd5JCNP8tHSMuToNR/AON5XhQOmw
-         N40Kl/3OLlocsZ4d9J6Kn7vUs9/ZVehfyNn5RyuY8fBOdTbsM6OSE/tm9Oh9hYZtBT1A
-         rbxBFvkvqcGnMKja3ynsVt20EiEKi2YE3+SrV5OGR6t4lHveWTtmgAksr7JO7ceasrTJ
-         7F0woxS2bnN2EVU8rslQE62j9dDrwpLpurk01imY+qvNvqiVHXgGrSyPClPx0u1yOMoF
-         NfSX/hzAgDXlfsmrgFfUiFNX7jDD7okvDYvv7hfnpJlVhIhrQmhb8hVm3+ifeZLht279
-         fJxg==
+        d=gmail.com; s=20221208; t=1684009269; x=1686601269;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pI0vsmpY7mdUr70LiqqOXYMCiqJ/xh4FarR28VDA3tQ=;
+        b=SZ4hSMKsHGaXlLqSku8AD4/x/CeRqwaHcZPywriobqnvKyvivb450tjcJFRpNAplQx
+         ZKkGZ6Lqjt/vAKFOsFwm9bznpX59kYJB6YzxqyLmF5awylrSTXjZzSNgfXJjPvc7nS9/
+         Kt8p97wvKXfucnIIbQdPjEIUb6iV22hbEdFAOT28HuG72UtKb6En97RAbmd5O3EukoaG
+         7dkx5q5T+1oOG8ScWGsZWtox3HC/dF2y7dRLPHjx1zqEy2pNE8tzJLlzGXQYeazEgq1e
+         9WHh9jcz4vQj0NmgmyF2cUfhfD758KbgJ/Tguy+OXnpKQiDz3MxnRz6AmAuSvO833RON
+         I3Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684152247; x=1686744247;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2/nlan8NsKQaqVLCr51QfC/hNbeFSNTXRRDAB3FVPas=;
-        b=NDC4LwBSI096OBaE+7LnPOcSR6pm0c738N6GqYKFhvHcoEQb1vqpKWt/t2R9aYGi8/
-         nkn+TQww+0BO7pDeRZpZgpNVPREZoSB5MParlb1hEDriatOy99bIQjGtgHul6WGCU1Nq
-         ubPTeIUl8y4Oo6HyT1/F3fovwXc02omdN/TH9TK+FF+bQmNkjXUzSZ/MIO30O+foz5eq
-         p321bKmIUcm9Yod4u2+vD8lwOs1MxOK5lIabAv4B+ZkAIHaiuI6u/rWgztyftqUoILc0
-         ZnrNKRCFer/meqZ0+4immqMxm1xsPQViM5LWxI9YMjheaaSFakZLi3fNUabElEtJVqm2
-         ZLTQ==
-X-Gm-Message-State: AC+VfDyEmbccYi2O0dGg72nAXxFteODaphrIUKMd+xVBGkO5udUvPm+J
-	dWS4P2Ipjynw8H0YSm/jRnxfyg==
+        d=1e100.net; s=20221208; t=1684009269; x=1686601269;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pI0vsmpY7mdUr70LiqqOXYMCiqJ/xh4FarR28VDA3tQ=;
+        b=FyaFGTkPPWY1ZCo8cqYUzjYo0e7bW6AGGpl4MZBwcAuJzatWhlgLfwtF8EeawQRvy4
+         Pnex1VdOTC08jXxHwYkii396ayS1WWSp0LRfPPWsPcdDUBggRg+/hsuRJz+FqTj2CIkE
+         EAqYup7eIW62zsiEaFWiWCBKUexKKmuWvKc+1Ouiv3Y5QeU9kN+xkwvVDTR6fbjP2vXn
+         EGIrRuz8yD2EpZLd2DuFgc+5cfGGdOhTGKpjYsquuv8M1H2RtstRcF/ajv2wL6ro8Dyz
+         92NTlgEAmGVy6XV1sA8AD0E911xbt33gJqQZkLT0470gXF54i95tF0Ci4oFyFb3DcV0e
+         M7jg==
+X-Gm-Message-State: AC+VfDwTW3cfrLOv0uFN0z4sInl8e/ecbASvD0eTlU3zefL+0ipf/5ve
+	oXr6rhnW8MPmhyDCaH91eWU=
 X-Google-Smtp-Source: 
- ACHHUZ4whC+e3qGJCrdvneIaAmKdoHpgCsOxbqCTyf91AW/nF0/VvKIN+NibbQBny50EjV05s6mA/g==
-X-Received: by 2002:a17:906:974b:b0:957:943e:7416 with SMTP id
- o11-20020a170906974b00b00957943e7416mr34190677ejy.15.1684152247320;
-        Mon, 15 May 2023 05:04:07 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:6470:25b8:7c2d:1992?
- ([2a02:810d:15c0:828:6470:25b8:7c2d:1992])
+ ACHHUZ625/aVC/WnxBwyH6Dh1+EYRSKpvxQlGTanFoaRhbxtj1LMDThxQmKD1kACZ7pmrqVwVNpu8g==
+X-Received: by 2002:a05:6402:27cd:b0:50c:79f:c693 with SMTP id
+ c13-20020a05640227cd00b0050c079fc693mr26358719ede.1.1684009269048;
+        Sat, 13 May 2023 13:21:09 -0700 (PDT)
+Received: from ivan-B550MH.. ([37.252.94.55])
         by smtp.gmail.com with ESMTPSA id
- k10-20020a1709067aca00b0096a1ba4e0d1sm7811245ejo.32.2023.05.15.05.03.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 May 2023 05:04:02 -0700 (PDT)
-Message-ID: <e8d7e008-db27-9ac5-6728-d3f7a19c10c9@linaro.org>
-Date: Mon, 15 May 2023 14:03:56 +0200
+ d14-20020a50fb0e000000b0050bc6d0e880sm5109637edq.61.2023.05.13.13.21.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 May 2023 13:21:08 -0700 (PDT)
+From: Ivan Orlov <ivan.orlov0322@gmail.com>
+To: corbet@lwn.net,
+	akpm@linux-foundation.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	broonie@kernel.org,
+	skhan@linuxfoundation.org
+Cc: Ivan Orlov <ivan.orlov0322@gmail.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-kselftest@vger.kernel.org,
+	gregkh@linuxfoundation.org,
+	himadrispandya@gmail.com,
+	linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH 1/3] docs: admin-guide: add valsa driver documentation
+Date: Sun, 14 May 2023 00:20:35 +0400
+Message-Id: <20230513202037.158777-1-ivan.orlov0322@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 3/3] ASoC: dt-bindings: Add ESS ES9218P codec
-Content-Language: en-US
-To: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org
-Cc: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230515074021.31257-1-aidanmacdonald.0x0@gmail.com>
- <20230515074021.31257-3-aidanmacdonald.0x0@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230515074021.31257-3-aidanmacdonald.0x0@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: KRJRA5YCUJ54PNKD6Z24JG7NHHQMTCSD
-X-Message-ID-Hash: KRJRA5YCUJ54PNKD6Z24JG7NHHQMTCSD
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+X-MailFrom: ivan.orlov0322@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: ZMAACJ3YWAFZUMIWD3KCXKJHN3WQT4FW
+X-Message-ID-Hash: ZMAACJ3YWAFZUMIWD3KCXKJHN3WQT4FW
+X-Mailman-Approved-At: Mon, 15 May 2023 12:26:00 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KRJRA5YCUJ54PNKD6Z24JG7NHHQMTCSD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZMAACJ3YWAFZUMIWD3KCXKJHN3WQT4FW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,19 +123,177 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 15/05/2023 09:40, Aidan MacDonald wrote:
-> Device tree bindings for the ESS ES9218P codec, which uses an
-> I2C control interface.
-> 
-> Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-> ---
-> 
-> Notes:
->     v1->v2
+Add documentation for the new Virtual ALSA driver. It covers all possible
+usage cases: errors and delay injections, random and pattern-based data
+generation, playback and ioctl redefinition functionalities testing.
 
+We have a lot of different virtual media drivers, which can be used for
+testing of the userspace applications and media subsystem middle layer.
+However, all of them are aimed at testing the video functionality and
+simulating the video devices. For audio devices we have only snd-dummy
+module, which is good in simulating the correct behavior of an ALSA device.
+I decided to write a tool, which would help to test the userspace ALSA
+programs (and the PCM middle layer as well) under unusual circumstances
+to figure out how they would behave. So I came up with this Virtual ALSA
+Driver.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+This new Virtual ALSA Driver has several features which can be useful
+during the userspace ALSA applications testing/fuzzing, or testing/fuzzing
+of the PCM middle layer. Not all of them can be implemented using the
+existing virtual drivers (like dummy or loopback). Here is what can this
+driver do:
 
-Best regards,
-Krzysztof
+- Simulate both capture and playback processes
+- Check the playback stream for containing the looped pattern
+- Generate random or pattern-based capture data
+- Inject delays into the playback and capturing processes
+- Inject errors during the PCM callbacks
+
+Also, this driver can check the playback stream for containing the
+predefined pattern, which is used in the corresponding selftest to check
+the PCM middle layer data transferring functionality. Additionally, this
+driver redefines the default RESET ioctl, and the selftest covers this PCM
+API functionality as well.
+
+Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+---
+ Documentation/admin-guide/index.rst |   1 +
+ Documentation/admin-guide/valsa.rst | 114 ++++++++++++++++++++++++++++
+ 2 files changed, 115 insertions(+)
+ create mode 100644 Documentation/admin-guide/valsa.rst
+
+diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
+index 43ea35613dfc..328cc59275a1 100644
+--- a/Documentation/admin-guide/index.rst
++++ b/Documentation/admin-guide/index.rst
+@@ -131,6 +131,7 @@ configure specific aspects of kernel behavior to your liking.
+    thunderbolt
+    ufs
+    unicode
++   valsa
+    vga-softcursor
+    video-output
+    xfs
+diff --git a/Documentation/admin-guide/valsa.rst b/Documentation/admin-guide/valsa.rst
+new file mode 100644
+index 000000000000..64ffc130fb4c
+--- /dev/null
++++ b/Documentation/admin-guide/valsa.rst
+@@ -0,0 +1,114 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++The Virtual ALSA Driver
++=======================
++
++The Virtual ALSA Driver emulates a generic ALSA device, and can be used for
++testing/fuzzing of the userspace ALSA applications, as well as for testing/fuzzing of
++the ALSA middle layer. Additionally, it can be used for simulating hard to reproduce
++problems with PCM devices.
++
++What can this driver do?
++~~~~~~~~~~~~~~~~~~~~~~~~
++
++At this moment the driver can do the following things:
++	* Simulate both capture and playback processes
++	* Generate random or pattern-based capturing data
++	* Inject delays into the playback and capturing processes
++	* Inject errors during the PCM callbacks
++
++Also, this driver can check the playback stream for containing the
++predefined pattern, which is used in the corresponding selftest (alsa/valsa-test.sh)
++to check the PCM middle layer data transferring functionality. Additionally, this
++driver redefines the default RESET ioctl, and the selftest covers this PCM
++API functionality as well.
++
++Configuration
++-------------
++
++The driver has several parameters besides the common ALSA module parameters:
++
++	* fill_mode (bool) - Buffer fill mode (see below)
++	* inject_delay (int)
++	* inject_hwpars_err (bool)
++	* inject_prepare_err (bool)
++	* inject_trigger_err (bool)
++
++
++Capture Data Generation
++-----------------------
++
++The driver has two modes of data generation: the first (0 in the fill_mode parameter)
++means random data generation, the second (1 in the fill_mode) - pattern-based
++data generation. Let's look at the second mode.
++
++First of all, you may want to specify the pattern for data generation. You can do it
++by writing the pattern to the debugfs file (/sys/kernel/debug/valsa/fill_pattern).
++Like that:
++
++.. code-block:: bash
++
++	echo -n mycoolpattern > /sys/kernel/debug/valsa/fill_pattern
++
++After this, every capture action performed on the 'valsa' device will return
++'mycoolpatternmycoolpatternmycoolpatternmy...' in the capturing buffer.
++
++The pattern itself can be up to 4096 bytes long.
++
++Delay injection
++---------------
++
++The driver has 'inject_delay' parameter, which has very self-descriptive name and
++can be used for time delay/speedup simulations. The parameter has integer type, and
++it means the delay added between module's internal timer ticks.
++
++If the 'inject_delay' value is positive, the buffer will be filled slower, if it is
++negative - faster. You can try it yourself by starting a recording in any
++audiorecording application (like Audacity) and selecting the 'valsa' device as a
++source.
++
++This parameter can be also used for generating a huge amount of sound data in a very
++short period of time (with the negative 'inject_delay' value).
++
++Errors injection
++----------------
++
++This module can be used for injecting errors into the PCM communication process. This
++action can help you to figure out how the userspace ALSA program behaves under unusual
++circumstances.
++
++For example, you can make all 'hw_params' PCM callback calls return EBUSY error by
++writing '1' to the 'inject_hwpars_err' module parameter:
++
++.. code-block:: bash
++
++	echo 1 > /sys/module/snd_valsa/parameters/inject_hwpars_err
++
++Errors can be injected into the following PCM callbacks:
++
++	* hw_params (EBUSY)
++	* prepare (EINVAL)
++	* trigger (EINVAL)
++
++
++Playback test
++-------------
++
++This driver can be also used for the playback functionality testing - every time you
++write the playback data to the 'valsa' PCM device and close it, the driver checks the
++buffer for containing the looped pattern (which is specified in the fill_pattern
++debugfs file). If the playback buffer content represents the looped pattern, 'pc_test'
++debugfs entry is set into '1'. Otherwise, the driver sets it to '0'.
++
++ioctl redefinition test
++-----------------------
++
++The driver redefines the 'reset' ioctl, which is default for all PCM devices. To test
++this functionality, we can trigger the reset ioctl and check the 'ioctl_test' debugfs
++entry:
++
++.. code-block:: bash
++
++	cat /sys/kernel/debug/valsa/ioctl_test
++
++If the ioctl is triggered successfully, this file will contain '1', and '0' otherwise.
+-- 
+2.34.1
 
