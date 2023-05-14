@@ -4,100 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27128C7EE22
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 May 2023 21:50:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E825AC77B7F
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 May 2023 22:54:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E00F720C;
-	Sun, 14 May 2023 23:49:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E00F720C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BC103E7;
+	Mon, 15 May 2023 00:53:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BC103E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684101004;
-	bh=PWS4TpfZlOhTIxXTsS/8L8tTmkyCNNzadQJxOAHhYC4=;
-	h=In-Reply-To:References:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=f6sZyzfH8+14cmbazQneXQ3UsXBJ+4plfPgpd6itTgx0882zmV6Ei2AF1L5cHq0ZN
-	 7tJ7T/ewitJuaU2b/pM1BBH8cUy08GaVAlo5ByuAyZpm9xWh7vUf29rSPYTakVzHi8
-	 27/dvCWmZTncq1zSxRqMCXM1NMXqzMunm45eip78=
+	s=default; t=1684104853;
+	bh=QReEtWq0pxtlD3V9RRBZLxn5G9GJU4OFedYY+8TN6jg=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=OaZaAXwriSKG8nS2lGxDtbDoc/B4XAHeXuL3CitN70NbyLPFDLm/5fwG+7pSJlKFo
+	 xWeP6OJHoA2freLuY347S/EstFA8kEkXgJlTCYNqkWKnDNSWQVD0Xt5HskvWCOYec4
+	 I163D92t3Aag6YpnKaGHZAjOJ8rDrEPaQlR6oY3Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6FC05F80544; Sun, 14 May 2023 23:49:11 +0200 (CEST)
+	id 9C2CAF80548; Mon, 15 May 2023 00:53:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D85C2F80272;
-	Sun, 14 May 2023 23:49:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16504F80272;
+	Mon, 15 May 2023 00:53:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DAFDF80272; Sun, 14 May 2023 23:49:05 +0200 (CEST)
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com
- [IPv6:2001:4860:4864:20::2c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id C6843F80272; Mon, 15 May 2023 00:53:10 +0200 (CEST)
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C7DE9F80087
-	for <alsa-devel@alsa-project.org>; Sun, 14 May 2023 23:48:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7DE9F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1BBCAF8016D
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 00:53:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BBCAF8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=hYdHKKdX
-Received: by mail-oa1-x2c.google.com with SMTP id
- 586e51a60fabf-1929818d7faso68391965fac.0
-        for <alsa-devel@alsa-project.org>;
- Sun, 14 May 2023 14:48:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684100936; x=1686692936;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+YSwxrTT+iU4nSpQgtLDKahRgqIhzOMeGqncPjkpZTg=;
-        b=hYdHKKdX2RYa4x9ty/w4iogkjqezTON6VzTtJjNueIu2cz5mwNKmoeGuaqQZ/9VacL
-         C3KZSi0dGjItj6Zj0LQCEj3kzz71476E6w/M+RYsJjJM3WkE3X2c0t2uL6hPCXhAOOwd
-         8edFaolNO0OQOpu1wyrCmx629wHHVDlN9nJTCvglMXXzM00ewEuJYLzzZTzqHkkIrgQs
-         hQTKF0Lr7qYAqJLZHW/SdEuwAPl2rq4lrw0QkxyI8LH30DPP3FVppXRoDBIoL9Pda+7Q
-         qT5zabqxAixQKww1EZYkSCgI7bS55yAdq2+jiQ0f2JCHF1AySnEim0GaCYNuqA+81Qx+
-         QcAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684100936; x=1686692936;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+YSwxrTT+iU4nSpQgtLDKahRgqIhzOMeGqncPjkpZTg=;
-        b=d9sLuUrb4lDf0D31nQ+GrCseyK8wD1yEOHBlWsG2eC8twXgHHEP3/NH47SeYT3OWAT
-         yHTi7VeDqE0LhOdrY2Up0sQJe6MeCMCDL2s6cAO0KQ1pjr/Msx9ESHhKc3vAKEJ1V72+
-         o60FenPEhttVNULA9F+xxQXXmMwEs2d+xznrpwQ4N8BNnGPOzGdB1jOaD+gbuBcjWO7Y
-         XZtkTqFirxw/qShoyCbWCCV7tSI17KQ+FPtN+a2eTIPjktzmSkQkaaQIFsRqL5sBYbmQ
-         L14oLKyyM+OP2WQh7KxChUY9do98JEfkKbFmZqulhR/iB73ABX3qgU6n+MJr/RdUlahw
-         46jg==
-X-Gm-Message-State: AC+VfDzo+g5sb+YWeylc9CIxG6DbWCrIBeAGSKACQs1AB6oDywpcahbQ
-	CxSuLhXBQBd0NiTRcDoxsU6CPX5dZsH7WzgAFAg=
-X-Google-Smtp-Source: 
- ACHHUZ5Bl/zfWA5BfJII4hmR/DLH/R8Bf5RQV/baYNil5TbACMlFyKXPD/pDIJVfTB4ubaaqoWUA8jRI81+hmtDwfhA=
-X-Received: by 2002:a4a:7644:0:b0:552:3a25:1d26 with SMTP id
- w4-20020a4a7644000000b005523a251d26mr5191973ooe.0.1684100936546; Sun, 14 May
- 2023 14:48:56 -0700 (PDT)
+ unprotected) header.d=denx.de header.i=@denx.de header.a=rsa-sha256
+ header.s=phobos-20191101 header.b=thXosdtW
+Received: from tr.lan (ip-86-49-120-218.bb.vodafone.cz [86.49.120.218])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: marex@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id C315182721;
+	Mon, 15 May 2023 00:53:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1684104781;
+	bh=8278qfdJLJmGtt8Qh8DdNJl3+DEkpTOnmYeoRqtPpVE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=thXosdtWLiUzrK6qj/LqkEC3wkbR24ZbBjpH3YWkVXwG7TA8/7uABBHglju9AwABM
+	 +vK3Ya24/Fe0vBLUGWm11OVT7rSSXLZRudleUMDnBfUQJjSAB/EDye/3eYJzG6fj/I
+	 qyNSRV74bV6a79+yN5l0qR/Qqvtl0edRTtDY68Vz82+fl9gb1k7q+Q0m3TCEf5txnu
+	 Fn2lSVRMIp0KZIcJJu0dzo5oxCuX8Ss6pIAjckJGyT2h0tt8v3d7TGVgfx5peKvuvN
+	 1WruRPAJMVl+DzCE9rPSUEaE4UBP4FImVbDDEocwP6YWUeqrFeOpP7XhXpNc6wJRoB
+	 C5cd5x0ziYJIw==
+From: Marek Vasut <marex@denx.de>
+To: devicetree@vger.kernel.org
+Cc: Marek Vasut <marex@denx.de>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: dt-bindings: ssm2518: Convert to dtschema
+Date: Mon, 15 May 2023 00:52:43 +0200
+Message-Id: <20230514225243.777504-1-marex@denx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Received: by 2002:a05:6358:7201:b0:111:8854:cdcf with HTTP; Sun, 14 May 2023
- 14:48:55 -0700 (PDT)
-In-Reply-To: <87cz338ix4.wl-tiwai@suse.de>
-References: <bug-217440-225600@https.bugzilla.kernel.org/>
- <CABpewhE4REgn9RJZduuEU6Z_ijXNeQWnrxO1tg70Gkw=F8qNYg@mail.gmail.com>
- <ZGB0cVVI7OgaJU6t@debian.me>
- <CABpewhGJE7-k52j8L2kJ2zKupgp3Ma+LdZazzzV4w1Bgihp7nw@mail.gmail.com>
- <87cz338ix4.wl-tiwai@suse.de>
-From: "Joseph C. Sible" <josephcsible@gmail.com>
-Date: Sun, 14 May 2023 17:48:55 -0400
-Message-ID: 
- <CABpewhF01AK4cFPbwYVvKR9yWaO7o-ZE-2+MZjYSUF0BKUdYvw@mail.gmail.com>
-Subject: Re: Fwd: [Bug 217440] New: ALC236 audio disappears from HP 15z-fc000
- on warm boot
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Bagas Sanjaya <bagasdotme@gmail.com>, regressions@lists.linux.dev,
- kailang@realtek.com,
-	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-Message-ID-Hash: BOHTJEVAJ7TX7APKQYH4MMMUKOADX6C7
-X-Message-ID-Hash: BOHTJEVAJ7TX7APKQYH4MMMUKOADX6C7
-X-MailFrom: josephcsible@gmail.com
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+Message-ID-Hash: IR5LIENSPXWSMVNDDSUV72LEV2L22S7P
+X-Message-ID-Hash: IR5LIENSPXWSMVNDDSUV72LEV2L22S7P
+X-MailFrom: marex@denx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BOHTJEVAJ7TX7APKQYH4MMMUKOADX6C7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IR5LIENSPXWSMVNDDSUV72LEV2L22S7P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,30 +96,104 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 5/14/23, Takashi Iwai wrote:
-> The patch changes two places (the change in alc_shutup_pins() and
-> alc256_shutup()), and I guess the latter is the culprit.  Could you
-> verify that only reverting the latter fixes the problem?
+Convert the ADI SSM2518 audio CODEC bindings to DT schema.
 
-Yes, only reverting the latter fixes the problem. I just tried a
-kernel consisting of 6.3.2 plus the below change, and it works fine:
+Signed-off-by: Marek Vasut <marex@denx.de>
+---
+Cc: Conor Dooley <conor+dt@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: devicetree@vger.kernel.org
+---
+ .../bindings/sound/adi,ssm2518.yaml           | 47 +++++++++++++++++++
+ .../devicetree/bindings/sound/ssm2518.txt     | 20 --------
+ 2 files changed, 47 insertions(+), 20 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,ssm2518.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/ssm2518.txt
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3638,8 +3638,7 @@ static void alc256_shutup(struct hda_codec *codec)
-        /* If disable 3k pulldown control for alc257, the Mic
-detection will not work correctly
-         * when booting with headset plugged. So skip setting it for
-the codec alc257
-         */
--       if (codec->core.vendor_id != 0x10ec0236 &&
--           codec->core.vendor_id != 0x10ec0257)
-+       if (codec->core.vendor_id != 0x10ec0257)
-                alc_update_coef_idx(codec, 0x46, 0, 3 << 12);
+diff --git a/Documentation/devicetree/bindings/sound/adi,ssm2518.yaml b/Documentation/devicetree/bindings/sound/adi,ssm2518.yaml
+new file mode 100644
+index 0000000000000..f3f32540779c6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/adi,ssm2518.yaml
+@@ -0,0 +1,47 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/adi,ssm2518.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices SSM2518 audio amplifier
++
++maintainers:
++  - Lars-Peter Clausen <lars@metafoo.de>
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: adi,ssm2518
++
++  reg:
++    maxItems: 1
++    description: |
++       I2C address of the device. This will either be 0x34 (ADDR pin low)
++       or 0x35 (ADDR pin high)
++
++  gpios:
++    maxItems: 1
++    description: |
++       GPIO connected to the nSD pin. If the property is not present
++       it is assumed that the nSD pin is hardwired to always on.
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++   i2c {
++     #address-cells = <1>;
++     #size-cells = <0>;
++     codec@34 {
++       compatible = "adi,ssm2518";
++       reg = <0x34>;
++       gpios = <&gpio 5 0>;
++     };
++   };
+diff --git a/Documentation/devicetree/bindings/sound/ssm2518.txt b/Documentation/devicetree/bindings/sound/ssm2518.txt
+deleted file mode 100644
+index 59381a778c797..0000000000000
+--- a/Documentation/devicetree/bindings/sound/ssm2518.txt
++++ /dev/null
+@@ -1,20 +0,0 @@
+-SSM2518 audio amplifier
+-
+-This device supports I2C only.
+-
+-Required properties:
+-  - compatible : Must be "adi,ssm2518"
+-  - reg : the I2C address of the device. This will either be 0x34 (ADDR pin low)
+-	or 0x35 (ADDR pin high)
+-
+-Optional properties:
+-  - gpios : GPIO connected to the nSD pin. If the property is not present it is
+-	        assumed that the nSD pin is hardwired to always on.
+-
+-Example:
+-
+-	ssm2518: ssm2518@34 {
+-		compatible = "adi,ssm2518";
+-		reg = <0x34>;
+-		gpios = <&gpio 5 0>;
+-	};
+-- 
+2.39.2
 
-        if (!spec->no_shutup_pins)
-
-
-Regards,
-
-Joseph C. Sible
