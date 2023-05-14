@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF35DC77B7D
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 May 2023 17:07:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22988C77B7D
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 May 2023 17:07:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68106AE9;
-	Sun, 14 May 2023 19:06:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68106AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33E1DE80;
+	Sun, 14 May 2023 19:07:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33E1DE80
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684084067;
-	bh=Ml8RvSoG8RY5NYP1enxWgGwRhCRhNEdi3JpsxHP1neE=;
+	s=default; t=1684084076;
+	bh=5Hp+6f5juogVnMNXKRg9wSHPtKKbRdab2j0U//lcrKI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JWws3/7j5O8v5EOfIgNEO3m7KvM2CiwTX9XFiVSFUSvpts6pZ96yfmfVd45uxRfjt
-	 PDPBr2W9Tdxg22uwxBN+W2uXRfz06FR3jS9bS031iFU3QuGvjI++fz+Yqy4qMmTgsp
-	 snB7DEjuibYi4QObQr31WC1ra/S3esbg7KSP7qZ4=
+	b=qoceBciWxnt5yCcJyTz7rnil80sP+BcqZKJEkG9hWz6ULgPI7qiFCFktpvWCPeUQT
+	 FCFRJ5oNd4vbwU7uiaKFVq+mNwNmO+/ATvmsfivNu4y3TZEp7RMtYOAf/JLNe/aELW
+	 Vmn8GoN24NQaApblqLAD71Teas7fd70HfFPQ/chI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71663F8057D; Sun, 14 May 2023 19:05:05 +0200 (CEST)
+	id C801BF80588; Sun, 14 May 2023 19:05:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1259EF80567;
-	Sun, 14 May 2023 19:05:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F3F5F805A0;
+	Sun, 14 May 2023 19:05:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39B43F80272; Sun, 14 May 2023 19:05:01 +0200 (CEST)
+	id 5CE5FF80272; Sun, 14 May 2023 19:05:02 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org
  [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EC34BF80542
-	for <alsa-devel@alsa-project.org>; Sun, 14 May 2023 19:03:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC34BF80542
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5CACFF80431
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2023 19:03:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CACFF80431
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id A808024283;
+	by bluemchen.kde.org (Postfix) with ESMTP id 66CFD2424B;
 	Sun, 14 May 2023 13:03:23 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pyF7z-Ink-00; Sun, 14 May 2023 19:03:23 +0200
+	id 1pyF7z-In6-00; Sun, 14 May 2023 19:03:23 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v2 3/7] ALSA: emu10k1: validate min/max values of translated
- controls
-Date: Sun, 14 May 2023 19:03:19 +0200
-Message-Id: <20230514170323.3408834-4-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2 4/4] ALSA: emu10k1: optimize mask calculation in
+ snd_emu10k1_ptr_read()
+Date: Sun, 14 May 2023 19:03:23 +0200
+Message-Id: <20230514170323.3408798-4-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230514170323.3408834-1-oswald.buddenhagen@gmx.de>
-References: <20230514170323.3408834-1-oswald.buddenhagen@gmx.de>
+In-Reply-To: <20230514170323.3408798-1-oswald.buddenhagen@gmx.de>
+References: <20230514170323.3408798-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KH5I5UVWHKT6QE3RWNA4OPSJKWD4NGDX
-X-Message-ID-Hash: KH5I5UVWHKT6QE3RWNA4OPSJKWD4NGDX
+Message-ID-Hash: TQLQ4SIIAHCRYPPXETGQ5NOUFHVFWKPK
+X-Message-ID-Hash: TQLQ4SIIAHCRYPPXETGQ5NOUFHVFWKPK
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -67,7 +67,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KH5I5UVWHKT6QE3RWNA4OPSJKWD4NGDX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TQLQ4SIIAHCRYPPXETGQ5NOUFHVFWKPK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,57 +76,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-User space could pass arbitrary ranges, which were uncritically
-accepted. This could lead to table lookups out of range.
-
-I don't think that this is a security issue, as it only allowed someone
-with CAP_SYS_ADMIN to crash the kernel, but still.
-
-Setting an invalid translation mode will also be rejected now. That did
-no harm, but it's still better to detect errors.
+Unlike in snd_emu10k1_ptr_write(), we don't need to keep the value's
+bits in place, so we can save one shift.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emufx.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ sound/pci/emu10k1/io.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index fbc1bfc122fc..796e24b6f01a 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -769,6 +769,32 @@ static int snd_emu10k1_verify_controls(struct snd_emu10k1 *emu,
- 			err = -EINVAL;
- 			goto __error;
- 		}
-+		switch (gctl->translation) {
-+		case EMU10K1_GPR_TRANSLATION_NONE:
-+			break;
-+		case EMU10K1_GPR_TRANSLATION_TABLE100:
-+			if (gctl->min != 0 || gctl->max != 100) {
-+				err = -EINVAL;
-+				goto __error;
-+			}
-+			break;
-+		case EMU10K1_GPR_TRANSLATION_BASS:
-+		case EMU10K1_GPR_TRANSLATION_TREBLE:
-+			if (gctl->min != 0 || gctl->max != 40) {
-+				err = -EINVAL;
-+				goto __error;
-+			}
-+			break;
-+		case EMU10K1_GPR_TRANSLATION_ONOFF:
-+			if (gctl->min != 0 || gctl->max != 1) {
-+				err = -EINVAL;
-+				goto __error;
-+			}
-+			break;
-+		default:
-+			err = -EINVAL;
-+			goto __error;
-+		}
+diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
+index 2d6bbb77c961..59b0f4d08c6b 100644
+--- a/sound/pci/emu10k1/io.c
++++ b/sound/pci/emu10k1/io.c
+@@ -50,9 +50,9 @@ unsigned int snd_emu10k1_ptr_read(struct snd_emu10k1 * emu, unsigned int reg, un
+ 		
+ 		size = (reg >> 24) & 0x3f;
+ 		offset = (reg >> 16) & 0x1f;
+-		mask = ((1 << size) - 1) << offset;
++		mask = (1 << size) - 1;
+ 		
+-		return (val & mask) >> offset;
++		return (val >> offset) & mask;
+ 	} else {
+ 		return val;
  	}
- 	for (i = 0; i < icode->gpr_list_control_count; i++) {
- 	     	/* FIXME: we need to check the WRITE access */
 -- 
 2.40.0.152.g15d061e6df
 
