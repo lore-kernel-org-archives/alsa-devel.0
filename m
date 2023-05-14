@@ -4,57 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1A85C77B7D
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 May 2023 17:06:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E93BC77B7D
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 May 2023 17:06:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 34D8C857;
-	Sun, 14 May 2023 19:05:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34D8C857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D2BC839;
+	Sun, 14 May 2023 19:05:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D2BC839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684083971;
-	bh=oXpQ4WfwquReDKjvzil7Z5Nnn2H9ozlnb4oqpj+N2xg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=QNWoUJ+n6IhCTHCjzv+hjRiiRnNsH9MrXpabibpuTOZf70Hnwh7oox7sxlwfwSvVr
-	 8XmyHVz6CQdH6kP9Q4vdyruZvoTZ9wFxpA2NW7lRMvR6fF4eUMyTB2bk3EuDX50D4p
-	 1ua3nfXc3sk9GNlh2CGdvXxC838CUzhA3ZHJBiSM=
+	s=default; t=1684083977;
+	bh=5mPzimPIgNDyvA9zSyXnKvp/XF1jGoSLOGcKvuFeKR0=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=nBqMnQEzPWfPPDGGL7lf/irWWdqZFHuTLMXS8lkuGZz3qbWY62aCbwgYsLLQMgr73
+	 tJ9wCtTcn8CXYMIgV+4Od4dfve1+pEu5Q0+LYdviFtcd+xaEOH00j+5UyYAFLeXP/u
+	 q4eUyYPvzr3ba5C9/c6U+M/I9TaLgbjkIuE7tl00=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E630F805B0; Sun, 14 May 2023 19:03:56 +0200 (CEST)
+	id 3034BF805BB; Sun, 14 May 2023 19:03:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3907F80549;
-	Sun, 14 May 2023 19:03:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BBEEF805BE;
+	Sun, 14 May 2023 19:03:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B5ADF805B2; Sun, 14 May 2023 19:03:51 +0200 (CEST)
+	id 9FA76F805B0; Sun, 14 May 2023 19:03:54 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org
  [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 258BBF80549
-	for <alsa-devel@alsa-project.org>; Sun, 14 May 2023 19:03:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 258BBF80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id 05347F802E8
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2023 19:03:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05347F802E8
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id A908024287;
+	by bluemchen.kde.org (Postfix) with ESMTP id 5FCB523F68;
 	Sun, 14 May 2023 13:03:23 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pyF7z-Inw-00; Sun, 14 May 2023 19:03:23 +0200
+	id 1pyF7z-Imo-00; Sun, 14 May 2023 19:03:23 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v2 5/7] ALSA: emu10k1: skip mic capture PCM for cards without
- AC97 codec
-Date: Sun, 14 May 2023 19:03:21 +0200
-Message-Id: <20230514170323.3408834-6-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2 1/4] ALSA: emu10k1: automate encoding of sub-register
+ definitions
+Date: Sun, 14 May 2023 19:03:20 +0200
+Message-Id: <20230514170323.3408798-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230514170323.3408834-1-oswald.buddenhagen@gmx.de>
-References: <20230514170323.3408834-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MZWMC4DXQWI35S6X7XBSB4XSFUYJSOQY
-X-Message-ID-Hash: MZWMC4DXQWI35S6X7XBSB4XSFUYJSOQY
+Message-ID-Hash: EPWOHMCFAFS57C5VBL5TLOVXWBHX3UJ2
+X-Message-ID-Hash: EPWOHMCFAFS57C5VBL5TLOVXWBHX3UJ2
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -67,7 +64,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MZWMC4DXQWI35S6X7XBSB4XSFUYJSOQY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EPWOHMCFAFS57C5VBL5TLOVXWBHX3UJ2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,72 +73,253 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The microphone capture device is a feature of the AC97 codec, so its
-availability should be coupled to the presence of that codec.
+The idea to encode the bitfield manipulation in the register address is
+quite clever, but doing that by hand is ugly and error-prone. So derive
+it automatically from the mask instead.
+
+Macros cannot #define other macros, so we now declare enums instead.
+
+This also adds macros for decoding the register definitions. These will
+be used by later commits.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emu10k1.c |  8 +++++---
- sound/pci/emu10k1/emufx.c   | 26 ++++++++++++++------------
- 2 files changed, 19 insertions(+), 15 deletions(-)
+v2: added comments
+---
+ include/sound/emu10k1.h | 123 ++++++++++++++++++++--------------------
+ 1 file changed, 60 insertions(+), 63 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1.c b/sound/pci/emu10k1/emu10k1.c
-index b8163f26004a..0c97237af922 100644
---- a/sound/pci/emu10k1/emu10k1.c
-+++ b/sound/pci/emu10k1/emu10k1.c
-@@ -107,9 +107,11 @@ static int snd_card_emu10k1_probe(struct pci_dev *pci,
- 	err = snd_emu10k1_pcm(emu, 0);
- 	if (err < 0)
- 		return err;
--	err = snd_emu10k1_pcm_mic(emu, 1);
--	if (err < 0)
--		return err;
-+	if (emu->card_capabilities->ac97_chip) {
-+		err = snd_emu10k1_pcm_mic(emu, 1);
-+		if (err < 0)
-+			return err;
-+	}
- 	err = snd_emu10k1_pcm_efx(emu, 2);
- 	if (err < 0)
- 		return err;
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 8c171bbaf02c..9c9ffba7e591 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -1380,19 +1380,21 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
- 		gpr_map[gpr + 2] = 0x00000000;
- 		gpr += 3;
- 	} else {
--		/* AC'97 Playback Volume - used only for mic (renamed later) */
--		A_ADD_VOLUME_IN(stereo_mix, gpr, A_EXTIN_AC97_L);
--		A_ADD_VOLUME_IN(stereo_mix+1, gpr+1, A_EXTIN_AC97_R);
--		snd_emu10k1_init_stereo_control(&controls[nctl++], "AMic Playback Volume", gpr, 0);
--		gpr += 2;
--		/* AC'97 Capture Volume - used only for mic */
--		A_ADD_VOLUME_IN(capture, gpr, A_EXTIN_AC97_L);
--		A_ADD_VOLUME_IN(capture+1, gpr+1, A_EXTIN_AC97_R);
--		snd_emu10k1_init_stereo_control(&controls[nctl++], "Mic Capture Volume", gpr, 0);
--		gpr += 2;
-+		if (emu->card_capabilities->ac97_chip) {
-+			/* AC'97 Playback Volume - used only for mic (renamed later) */
-+			A_ADD_VOLUME_IN(stereo_mix, gpr, A_EXTIN_AC97_L);
-+			A_ADD_VOLUME_IN(stereo_mix+1, gpr+1, A_EXTIN_AC97_R);
-+			snd_emu10k1_init_stereo_control(&controls[nctl++], "AMic Playback Volume", gpr, 0);
-+			gpr += 2;
-+			/* AC'97 Capture Volume - used only for mic */
-+			A_ADD_VOLUME_IN(capture, gpr, A_EXTIN_AC97_L);
-+			A_ADD_VOLUME_IN(capture+1, gpr+1, A_EXTIN_AC97_R);
-+			snd_emu10k1_init_stereo_control(&controls[nctl++], "Mic Capture Volume", gpr, 0);
-+			gpr += 2;
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index 7129b9249eb3..e9b1729ade60 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -38,6 +38,32 @@
  
--		/* mic capture buffer */
--		A_OP(icode, &ptr, iINTERP, A_EXTOUT(A_EXTOUT_MIC_CAP), A_EXTIN(A_EXTIN_AC97_L), A_C_40000000, A_EXTIN(A_EXTIN_AC97_R));
-+			/* mic capture buffer */
-+			A_OP(icode, &ptr, iINTERP, A_EXTOUT(A_EXTOUT_MIC_CAP), A_EXTIN(A_EXTIN_AC97_L), A_C_40000000, A_EXTIN(A_EXTIN_AC97_R));
-+		}
+ #define IP_TO_CP(ip) ((ip == 0) ? 0 : (((0x00001000uL | (ip & 0x00000FFFL)) << (((ip >> 12) & 0x000FL) + 4)) & 0xFFFF0000uL))
  
- 		/* Audigy CD Playback Volume */
- 		A_ADD_VOLUME_IN(stereo_mix, gpr, A_EXTIN_SPDIF_CD_L);
++// This is used to define hardware bit-fields (sub-registers) by combining
++// the bit shift and count with the actual register address. The passed
++// mask must represent a single run of adjacent bits.
++// The non-concatenating (_NC) variant should be used directly only for
++// sub-registers that do not follow the <register>_<field> naming pattern.
++#define SUB_REG_NC(reg, field, mask) \
++	enum { \
++		field ## _MASK = mask, \
++		field = reg | \
++			(__builtin_ctz(mask) << 16) | \
++			(__builtin_popcount(mask) << 24), \
++	};
++#define SUB_REG(reg, field, mask) SUB_REG_NC(reg, reg ## _ ## field, mask)
++
++// Macros for manipulating values of bit-fields declared using the above macros.
++// Best used with constant register addresses, as otherwise quite some code is
++// generated. The actual register read/write functions handle combined addresses
++// automatically, so use of these macros conveys no advantage when accessing a
++// single sub-register at a time.
++#define REG_SHIFT(r) (((r) >> 16) & 0x1f)
++#define REG_SIZE(r) (((r) >> 24) & 0x1f)
++#define REG_MASK0(r) ((1U << REG_SIZE(r)) - 1U)
++#define REG_MASK(r) (REG_MASK0(r) << REG_SHIFT(r))
++#define REG_VAL_GET(r, v) ((v & REG_MASK(r)) >> REG_SHIFT(r))
++#define REG_VAL_PUT(r, v) ((v) << REG_SHIFT(r))
++
+ // Audigy specify registers are prefixed with 'A_'
+ 
+ /************************************************************************************************/
+@@ -148,12 +174,10 @@
+ #define INTE_MIDIRXENABLE	0x00000001	/* Enable MIDI receive-buffer-empty interrupts	*/
+ 
+ #define WC			0x10		/* Wall Clock register				*/
+-#define WC_SAMPLECOUNTER_MASK	0x03FFFFC0	/* Sample periods elapsed since reset		*/
+-#define WC_SAMPLECOUNTER	0x14060010
+-#define WC_CURRENTCHANNEL_MASK	0x0000003F	/* Channel [0..63] currently being serviced	*/
++SUB_REG(WC, SAMPLECOUNTER,	0x03FFFFC0)	/* Sample periods elapsed since reset		*/
++SUB_REG(WC, CURRENTCHANNEL,	0x0000003F)	/* Channel [0..63] currently being serviced	*/
+ 						/* NOTE: Each channel takes 1/64th of a sample	*/
+ 						/* period to be serviced.			*/
+-#define WC_CURRENTCHANNEL	0x06000010
+ 
+ #define HCFG			0x14		/* Hardware config register			*/
+ 						/* NOTE: There is no reason to use the legacy	*/
+@@ -225,9 +249,8 @@
+ 						/* async audio source  				*/
+ #define HCFG_LOCKSOUNDCACHE	0x00000008	/* 1 = Cancel bustmaster accesses to soundcache */
+ 						/* NOTE: This should generally never be used.  	*/
+-#define HCFG_LOCKTANKCACHE_MASK	0x00000004	/* 1 = Cancel bustmaster accesses to tankcache	*/
++SUB_REG(HCFG, LOCKTANKCACHE,	0x00000004)	/* 1 = Cancel bustmaster accesses to tankcache	*/
+ 						/* NOTE: This should generally never be used.  	*/
+-#define HCFG_LOCKTANKCACHE	0x01020014
+ #define HCFG_MUTEBUTTONENABLE	0x00000002	/* 1 = Master mute button sets AUDIOENABLE = 0.	*/
+ 						/* NOTE: This is a 'cheap' way to implement a	*/
+ 						/* master mute function on the mute button, and	*/
+@@ -382,55 +405,38 @@
+ //   which the current registers "swerve" gradually.
+ 
+ #define CPF			0x00		/* Current pitch and fraction register			*/
+-#define CPF_CURRENTPITCH_MASK	0xffff0000	/* Current pitch (linear, 0x4000 == unity pitch shift) 	*/
+-#define CPF_CURRENTPITCH	0x10100000
++SUB_REG(CPF, CURRENTPITCH,	0xffff0000)	/* Current pitch (linear, 0x4000 == unity pitch shift) 	*/
+ #define CPF_STEREO_MASK		0x00008000	/* 1 = Even channel interleave, odd channel locked	*/
+ #define CPF_STOP_MASK		0x00004000	/* 1 = Current pitch forced to 0			*/
+ #define CPF_FRACADDRESS_MASK	0x00003fff	/* Linear fractional address of the current channel	*/
+ 
+ #define PTRX			0x01		/* Pitch target and send A/B amounts register		*/
+-#define PTRX_PITCHTARGET_MASK	0xffff0000	/* Pitch target of specified channel			*/
+-#define PTRX_PITCHTARGET	0x10100001
+-#define PTRX_FXSENDAMOUNT_A_MASK 0x0000ff00	/* Linear level of channel output sent to FX send bus A	*/
+-#define PTRX_FXSENDAMOUNT_A	0x08080001
+-#define PTRX_FXSENDAMOUNT_B_MASK 0x000000ff	/* Linear level of channel output sent to FX send bus B	*/
+-#define PTRX_FXSENDAMOUNT_B	0x08000001
++SUB_REG(PTRX, PITCHTARGET,	0xffff0000)	/* Pitch target of specified channel			*/
++SUB_REG(PTRX, FXSENDAMOUNT_A,	0x0000ff00)	/* Linear level of channel output sent to FX send bus A	*/
++SUB_REG(PTRX, FXSENDAMOUNT_B,	0x000000ff)	/* Linear level of channel output sent to FX send bus B	*/
+ 
+ #define CVCF			0x02		/* Current volume and filter cutoff register		*/
+-#define CVCF_CURRENTVOL_MASK	0xffff0000	/* Current linear volume of specified channel		*/
+-#define CVCF_CURRENTVOL		0x10100002
+-#define CVCF_CURRENTFILTER_MASK	0x0000ffff	/* Current filter cutoff frequency of specified channel	*/
+-#define CVCF_CURRENTFILTER	0x10000002
++SUB_REG(CVCF, CURRENTVOL,	0xffff0000)	/* Current linear volume of specified channel		*/
++SUB_REG(CVCF, CURRENTFILTER,	0x0000ffff)	/* Current filter cutoff frequency of specified channel	*/
+ 
+ #define VTFT			0x03		/* Volume target and filter cutoff target register	*/
+-#define VTFT_VOLUMETARGET_MASK	0xffff0000	/* Volume target of specified channel			*/
+-#define VTFT_VOLUMETARGET	0x10100003
+-#define VTFT_FILTERTARGET_MASK	0x0000ffff	/* Filter cutoff target of specified channel		*/
+-#define VTFT_FILTERTARGET	0x10000003
++SUB_REG(VTFT, VOLUMETARGET,	0xffff0000)	/* Volume target of specified channel			*/
++SUB_REG(VTFT, FILTERTARGET,	0x0000ffff)	/* Filter cutoff target of specified channel		*/
+ 
+ #define Z1			0x05		/* Filter delay memory 1 register			*/
+ 
+ #define Z2			0x04		/* Filter delay memory 2 register			*/
+ 
+ #define PSST			0x06		/* Send C amount and loop start address register	*/
+-#define PSST_FXSENDAMOUNT_C_MASK 0xff000000	/* Linear level of channel output sent to FX send bus C	*/
+-
+-#define PSST_FXSENDAMOUNT_C	0x08180006
+-
+-#define PSST_LOOPSTARTADDR_MASK	0x00ffffff	/* Loop start address of the specified channel		*/
+-#define PSST_LOOPSTARTADDR	0x18000006
++SUB_REG(PSST, FXSENDAMOUNT_C,	0xff000000)	/* Linear level of channel output sent to FX send bus C	*/
++SUB_REG(PSST, LOOPSTARTADDR,	0x00ffffff)	/* Loop start address of the specified channel		*/
+ 
+ #define DSL			0x07		/* Send D amount and loop end address register	*/
+-#define DSL_FXSENDAMOUNT_D_MASK	0xff000000	/* Linear level of channel output sent to FX send bus D	*/
+-
+-#define DSL_FXSENDAMOUNT_D	0x08180007
+-
+-#define DSL_LOOPENDADDR_MASK	0x00ffffff	/* Loop end address of the specified channel		*/
+-#define DSL_LOOPENDADDR		0x18000007
++SUB_REG(DSL, FXSENDAMOUNT_D,	0xff000000)	/* Linear level of channel output sent to FX send bus D	*/
++SUB_REG(DSL, LOOPENDADDR,	0x00ffffff)	/* Loop end address of the specified channel		*/
+ 
+ #define CCCA			0x08		/* Filter Q, interp. ROM, byte size, cur. addr register */
+-#define CCCA_RESONANCE_MASK	0xf0000000	/* Lowpass filter resonance (Q) height			*/
+-#define CCCA_RESONANCE		0x041c0008
++SUB_REG(CCCA, RESONANCE,	0xf0000000)	/* Lowpass filter resonance (Q) height			*/
+ #define CCCA_INTERPROM_MASK	0x0e000000	/* Selects passband of interpolation ROM		*/
+ 						/* 1 == full band, 7 == lowpass				*/
+ 						/* ROM 0 is used when pitch shifting downward or less	*/
+@@ -447,27 +453,24 @@
+ #define CCCA_INTERPROM_7	0x0e000000	/* Select interpolation ROM 7				*/
+ #define CCCA_8BITSELECT		0x01000000	/* 1 = Sound memory for this channel uses 8-bit samples	*/
+ 						/* 8-bit samples are unsigned, 16-bit ones signed	*/
+-#define CCCA_CURRADDR_MASK	0x00ffffff	/* Current address of the selected channel		*/
+-#define CCCA_CURRADDR		0x18000008
++SUB_REG(CCCA, CURRADDR,		0x00ffffff)	/* Current address of the selected channel		*/
+ 
+ #define CCR			0x09		/* Cache control register				*/
+-#define CCR_CACHEINVALIDSIZE	0x07190009
+-#define CCR_CACHEINVALIDSIZE_MASK 0xfe000000	/* Number of invalid samples before the read address	*/
++SUB_REG(CCR, CACHEINVALIDSIZE,	0xfe000000)	/* Number of invalid samples before the read address	*/
+ #define CCR_CACHELOOPFLAG	0x01000000	/* 1 = Cache has a loop service pending			*/
+ #define CCR_INTERLEAVEDSAMPLES	0x00800000	/* 1 = A cache service will fetch interleaved samples	*/
+ 						/* Auto-set from CPF_STEREO_MASK			*/
+ #define CCR_WORDSIZEDSAMPLES	0x00400000	/* 1 = A cache service will fetch word sized samples	*/
+ 						/* Auto-set from CCCA_8BITSELECT			*/
+-#define CCR_READADDRESS		0x06100009
+-#define CCR_READADDRESS_MASK	0x003f0000	/* Next cached sample to play				*/
+-#define CCR_LOOPINVALSIZE	0x0000fe00	/* Number of invalid samples in cache prior to loop	*/
++SUB_REG(CCR, READADDRESS,	0x003f0000)	/* Next cached sample to play				*/
++SUB_REG(CCR, LOOPINVALSIZE,	0x0000fe00)	/* Number of invalid samples in cache prior to loop	*/
+ 						/* NOTE: This is valid only if CACHELOOPFLAG is set	*/
+ #define CCR_LOOPFLAG		0x00000100	/* Set for a single sample period when a loop occurs	*/
+-#define CCR_CACHELOOPADDRHI	0x000000ff	/* CLP_LOOPSTARTADDR's hi byte if CACHELOOPFLAG is set	*/
++SUB_REG(CCR, CACHELOOPADDRHI,	0x000000ff)	/* CLP_LOOPSTARTADDR's hi byte if CACHELOOPFLAG is set	*/
+ 
+ #define CLP			0x0a		/* Cache loop register (valid if CCR_CACHELOOPFLAG = 1) */
+ 						/* NOTE: This register is normally not used		*/
+-#define CLP_CACHELOOPADDR	0x0000ffff	/* Cache loop address low word				*/
++SUB_REG(CLP, CACHELOOPADDR,	0x0000ffff)	/* Cache loop address low word				*/
+ 
+ #define FXRT			0x0b		/* Effects send routing register			*/
+ 						/* NOTE: It is illegal to assign the same routing to	*/
+@@ -537,20 +540,17 @@
+ #define IP_UNITY		0x0000e000	/* Unity pitch shift					*/
+ 
+ #define IFATN			0x19		/* Initial filter cutoff and attenuation register	*/
+-#define IFATN_FILTERCUTOFF_MASK	0x0000ff00	/* Initial filter cutoff frequency in exponential units	*/
++SUB_REG(IFATN, FILTERCUTOFF,	0x0000ff00)	/* Initial filter cutoff frequency in exponential units	*/
+ 						/* 6 most significant bits are semitones		*/
+ 						/* 2 least significant bits are fractions		*/
+-#define IFATN_FILTERCUTOFF	0x08080019
+-#define IFATN_ATTENUATION_MASK	0x000000ff	/* Initial attenuation in 0.375dB steps			*/
+-#define IFATN_ATTENUATION	0x08000019
++SUB_REG(IFATN, ATTENUATION,	0x000000ff)	/* Initial attenuation in 0.375dB steps			*/
+ 
+ #define PEFE			0x1a		/* Pitch envelope and filter envelope amount register	*/
+-#define PEFE_PITCHAMOUNT_MASK	0x0000ff00	/* Pitch envlope amount					*/
++SUB_REG(PEFE, PITCHAMOUNT,	0x0000ff00)	/* Pitch envlope amount					*/
+ 						/* Signed 2's complement, +/- one octave peak extremes	*/
+-#define PEFE_PITCHAMOUNT	0x0808001a
+-#define PEFE_FILTERAMOUNT_MASK	0x000000ff	/* Filter envlope amount				*/
++SUB_REG(PEFE, FILTERAMOUNT,	0x000000ff)	/* Filter envlope amount				*/
+ 						/* Signed 2's complement, +/- six octaves peak extremes */
+-#define PEFE_FILTERAMOUNT	0x0800001a
++
+ 
+ #define FMMOD			0x1b		/* Vibrato/filter modulation from LFO register		*/
+ #define FMMOD_MODVIBRATO	0x0000ff00	/* Vibrato LFO modulation depth				*/
+@@ -793,22 +793,19 @@
+ #define SRCS_SPDIFRATE_96	0x00080000
+ 
+ #define MICIDX                  0x63            /* Microphone recording buffer index register   */
+-#define MICIDX_MASK             0x0000ffff      /* 16-bit value                                 */
+-#define MICIDX_IDX		0x10000063
++SUB_REG(MICIDX, IDX,		0x0000ffff)
+ 
+ #define ADCIDX			0x64		/* ADC recording buffer index register		*/
+-#define ADCIDX_MASK		0x0000ffff	/* 16 bit index field				*/
+-#define ADCIDX_IDX		0x10000064
++SUB_REG(ADCIDX, IDX,		0x0000ffff)
+ 
+ #define A_ADCIDX		0x63
+-#define A_ADCIDX_IDX		0x10000063
++SUB_REG(A_ADCIDX, IDX,		0x0000ffff)
+ 
+ #define A_MICIDX		0x64
+-#define A_MICIDX_IDX		0x10000064
++SUB_REG(A_MICIDX, IDX,		0x0000ffff)
+ 
+ #define FXIDX			0x65		/* FX recording buffer index register		*/
+-#define FXIDX_MASK		0x0000ffff	/* 16-bit value					*/
+-#define FXIDX_IDX		0x10000065
++SUB_REG(FXIDX, IDX,		0x0000ffff)
+ 
+ /* The 32-bit HLIEx and HLIPx registers all have one bit per channel control/status      		*/
+ #define HLIEL			0x66		/* Channel half loop interrupt enable low register	*/
+@@ -852,8 +849,8 @@
+ #define A_SPDIF_44100		0x00000080
+ #define A_SPDIF_MUTED		0x000000c0
+ 
+-#define A_I2S_CAPTURE_RATE_MASK	0x00000e00	/* This sets the capture PCM rate, but it is    */
+-#define A_I2S_CAPTURE_RATE	0x03090076	/* unclear if this sets the ADC rate as well.	*/
++SUB_REG_NC(A_EHC, A_I2S_CAPTURE_RATE, 0x00000e00)  /* This sets the capture PCM rate, but it is  */
++						   /* unclear if this sets the ADC rate as well. */
+ #define A_I2S_CAPTURE_48000	0x0
+ #define A_I2S_CAPTURE_192000	0x1
+ #define A_I2S_CAPTURE_96000	0x2
 -- 
 2.40.0.152.g15d061e6df
 
