@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21D3EC77B75
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 10:36:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3149AC77B7D
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 10:36:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94E9D1E3;
-	Mon, 15 May 2023 12:35:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94E9D1E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F179839;
+	Mon, 15 May 2023 12:35:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F179839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684146959;
-	bh=oL6qalyGFoa9GuJZlqijKIJLe/oytodmibNdW7yCUdo=;
+	s=default; t=1684146968;
+	bh=XaCcsrZC1fu18z47oMCaGJLl9zQRZDNwSvV8kwO4fS4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KT7R8v7MWgBIdXlPbdrvAVg/4x4SmL78nPrKsCwbLzsxSjhZfAnJPo+7uFAoZda1O
-	 t6olIRIer+/U0O+cQ+UtNujt62CiVc7Vb7DafaDvPguUvhQTKzrwJX05osmdWrSagj
-	 DiA/cY18yfhVO5RfEeF2pvJoYm2altHCaodLfSTs=
+	b=oyWFfF6CqtNtxaxUrTRrdBoBVstsJvj/CZl49ocpm53wtpYLc4bQ/hbrWVR+HT0/N
+	 WWYcw5L2/9AJ91VT/Jm2kYXNXEym5burkAlRuLA+OOcoIbxT9+L8V1HIlOXM+8DRdX
+	 flW1QNzdmDFoaALMOid7PYtLlGPCXcu9LrPF8jgw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D17F5F805D5; Mon, 15 May 2023 12:33:26 +0200 (CEST)
+	id 5A5E4F805D6; Mon, 15 May 2023 12:33:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B99AF805C1;
-	Mon, 15 May 2023 12:33:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 621BDF805D6;
+	Mon, 15 May 2023 12:33:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03332F8057D; Mon, 15 May 2023 12:33:07 +0200 (CEST)
+	id D7F6DF8058C; Mon, 15 May 2023 12:33:08 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B900DF80272
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 12:32:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B900DF80272
+	by alsa1.perex.cz (Postfix) with ESMTPS id DCDC2F80570
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 12:33:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCDC2F80570
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=AF4WCa8B
+ header.s=Intel header.b=PD7jafD5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684146777; x=1715682777;
+  t=1684146785; x=1715682785;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=oL6qalyGFoa9GuJZlqijKIJLe/oytodmibNdW7yCUdo=;
-  b=AF4WCa8B+p68i7e2JOurorjwY1+/bNv0+NEjDQe6PjsAWjgyrNcjg8Bv
-   xts7geWjt1Z1ae76qk8mxkjByG3mnNHSkWc+03hyTPFFCOxCD2KdkwzO+
-   Jiu+NM5GTYOB06LllMBLVskUoj8+BxDcZd8kjYGRG5NjVtYsWAobO5l5T
-   tpJM8Evt/Y9dPk2H9HNy1n0vat3+gdP5xpUvLYW7UfVejcvsm/GqRvxEQ
-   G0PZ4p86//Tfp81JV5+C3S08nB+Jn7usTO+s7l7F5fX3L4mYFW0T+KjJE
-   NJaUqWGqtiBXVRVqFtITyR0LRNbbg9FaGJYde79xeCpz4zY7W6E29hPQK
+  bh=XaCcsrZC1fu18z47oMCaGJLl9zQRZDNwSvV8kwO4fS4=;
+  b=PD7jafD5AGndovokuOQfF52jRvg9UQmzj22Xhr145LEKjGCR4Gv6N93W
+   8LOF5OUdOHYqIPZqZRnJr9NpIgZBlgzIvBxgYI59+Ytrjf8yORE68MJOG
+   8jL8XWOIpBNpPCQtM0rZUPyFjD7B/1M9bLmmHmgDuYeY4ijK5nJ0ajXlw
+   ZwD2AejC0RmNbSOuGPzZNUCZvwGIjbf6aYRcwZw4hXPyQWJh9tZXDn+5u
+   Zhq80s63DevKuMUcyTV6xTwJnwJlHs2gS22czLzyThfzPLUSpv/rE6KY9
+   FzKuVSHpsirXLDsG++s/zbgGA1OLDiEHKtmU/WLQO45GRfFpiLSQgfBpd
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="351200386"
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="351200422"
 X-IronPort-AV: E=Sophos;i="5.99,276,1677571200";
-   d="scan'208";a="351200386"
+   d="scan'208";a="351200422"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2023 03:32:55 -0700
+ 15 May 2023 03:33:02 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="694967674"
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="694967719"
 X-IronPort-AV: E=Sophos;i="5.99,276,1677571200";
-   d="scan'208";a="694967674"
+   d="scan'208";a="694967719"
 Received: from lpilolli-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.48.230])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2023 03:32:52 -0700
+ 15 May 2023 03:33:00 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -73,17 +73,17 @@ Cc: alsa-devel@alsa-project.org,
 	ranjani.sridharan@linux.intel.com,
 	kai.vehmanen@linux.intel.com,
 	yung-chuan.liao@linux.intel.com
-Subject: [PATCH 5/9] ASoC: SOF: ipc4-topology: Handle output format special
- case
-Date: Mon, 15 May 2023 13:33:32 +0300
-Message-Id: <20230515103336.16132-6-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 8/9] ASoC: SOF: ipc4-topology: New helper to check if all
+ output formats are the same
+Date: Mon, 15 May 2023 13:33:35 +0300
+Message-Id: <20230515103336.16132-9-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230515103336.16132-1-peter.ujfalusi@linux.intel.com>
 References: <20230515103336.16132-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NNDUFS64JKUNT7CZVRBHKB45DXAFYCR7
-X-Message-ID-Hash: NNDUFS64JKUNT7CZVRBHKB45DXAFYCR7
+Message-ID-Hash: TQB53SPHNYMERGN7EACBP7LLK6EL62BY
+X-Message-ID-Hash: TQB53SPHNYMERGN7EACBP7LLK6EL62BY
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NNDUFS64JKUNT7CZVRBHKB45DXAFYCR7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TQB53SPHNYMERGN7EACBP7LLK6EL62BY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,122 +107,92 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-The current topologies have input/output formats in pairs and even
-though there are multiple output formats, they are all the same. Handle
-this case as if there were only one format in topology. Also, add a check
-for the number of output formats and reports errors where applicable.
+Add a helper function to check if all formats are identical.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/ipc4-topology.c | 55 +++++++++++++++++++++++++++++++----
- 1 file changed, 50 insertions(+), 5 deletions(-)
+ sound/soc/sof/ipc4-topology.c | 53 ++++++++++++++++++++---------------
+ 1 file changed, 31 insertions(+), 22 deletions(-)
 
 diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index a079dd8eb7e1..f3a6e739e800 100644
+index 7f5400612bf8..723e72d2d325 100644
 --- a/sound/soc/sof/ipc4-topology.c
 +++ b/sound/soc/sof/ipc4-topology.c
-@@ -1033,10 +1033,37 @@ static int sof_ipc4_init_output_audio_fmt(struct snd_sof_dev *sdev,
- 					  struct sof_ipc4_available_audio_format *available_fmt,
- 					  int input_audio_format_index)
- {
-+	struct sof_ipc4_audio_format *out_fmt;
-+	u32 out_rate, out_channels, out_valid_bits;
-+	bool single_format = true;
- 	int i;
+@@ -1028,6 +1028,34 @@ static int sof_ipc4_update_hw_params(struct snd_sof_dev *sdev, struct snd_pcm_hw
+ 	return 0;
+ }
  
--	/* pick the only available output format */
--	if (available_fmt->num_output_formats == 1)
-+	if (!available_fmt->num_output_formats)
-+		return -EINVAL;
++static bool sof_ipc4_is_single_format(struct snd_sof_dev *sdev,
++				      struct sof_ipc4_pin_format *pin_fmts, u32 pin_fmts_size)
++{
++	struct sof_ipc4_audio_format *fmt;
++	u32 rate, channels, valid_bits;
++	int i;
 +
-+	out_fmt = &available_fmt->output_pin_fmts[0].audio_fmt;
-+	out_rate = out_fmt->sampling_frequency;
-+	out_channels = SOF_IPC4_AUDIO_FORMAT_CFG_CHANNELS_COUNT(out_fmt->fmt_cfg);
-+	out_valid_bits = SOF_IPC4_AUDIO_FORMAT_CFG_V_BIT_DEPTH(out_fmt->fmt_cfg);
++	fmt = &pin_fmts[0].audio_fmt;
++	rate = fmt->sampling_frequency;
++	channels = SOF_IPC4_AUDIO_FORMAT_CFG_CHANNELS_COUNT(fmt->fmt_cfg);
++	valid_bits = SOF_IPC4_AUDIO_FORMAT_CFG_V_BIT_DEPTH(fmt->fmt_cfg);
 +
 +	/* check if all output formats in topology are the same */
-+	for (i = 1; i < available_fmt->num_output_formats; i++) {
-+		u32 _out_rate, _out_channels, _out_valid_bits;
++	for (i = 1; i < pin_fmts_size; i++) {
++		u32 _rate, _channels, _valid_bits;
 +
-+		out_fmt = &available_fmt->output_pin_fmts[i].audio_fmt;
-+		_out_rate = out_fmt->sampling_frequency;
-+		_out_channels = SOF_IPC4_AUDIO_FORMAT_CFG_CHANNELS_COUNT(out_fmt->fmt_cfg);
-+		_out_valid_bits = SOF_IPC4_AUDIO_FORMAT_CFG_V_BIT_DEPTH(out_fmt->fmt_cfg);
++		fmt = &pin_fmts[i].audio_fmt;
++		_rate = fmt->sampling_frequency;
++		_channels = SOF_IPC4_AUDIO_FORMAT_CFG_CHANNELS_COUNT(fmt->fmt_cfg);
++		_valid_bits = SOF_IPC4_AUDIO_FORMAT_CFG_V_BIT_DEPTH(fmt->fmt_cfg);
 +
-+		if (_out_rate != out_rate || _out_channels != out_channels ||
-+		    _out_valid_bits != out_valid_bits) {
-+			single_format = false;
-+			break;
-+		}
++		if (_rate != rate || _channels != channels || _valid_bits != valid_bits)
++			return false;
 +	}
 +
-+	/* pick the first format if there's only one available or if all formats are the same */
-+	if (single_format)
- 		i = 0;
- 	else
- 		i = input_audio_format_index;
-@@ -1522,6 +1549,11 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
++	return true;
++}
++
+ static int sof_ipc4_init_output_audio_fmt(struct snd_sof_dev *sdev,
+ 					  struct sof_ipc4_base_module_cfg *base_config,
+ 					  struct sof_ipc4_available_audio_format *available_fmt,
+@@ -1035,33 +1063,14 @@ static int sof_ipc4_init_output_audio_fmt(struct snd_sof_dev *sdev,
+ 					  u32 out_ref_valid_bits)
+ {
+ 	struct sof_ipc4_audio_format *out_fmt;
+-	u32 out_rate, out_channels, out_valid_bits;
+-	bool single_format = true;
++	bool single_format;
+ 	int i;
  
- 	output_fmt_index = sof_ipc4_init_output_audio_fmt(sdev, &copier_data->base_config,
- 							  available_fmt, ret);
-+	if (output_fmt_index < 0) {
-+		dev_err(sdev->dev, "No output formats in topology for copier %s",
-+			swidget->widget->name);
-+		return output_fmt_index;
-+	}
+ 	if (!available_fmt->num_output_formats)
+ 		return -EINVAL;
  
- 	/*
- 	 * Set the output format. Current topology defines pin 0 input and output formats in pairs.
-@@ -1700,7 +1732,11 @@ static int sof_ipc4_prepare_gain_module(struct snd_sof_widget *swidget,
- 	if (ret < 0)
- 		return ret;
+-	out_fmt = &available_fmt->output_pin_fmts[0].audio_fmt;
+-	out_rate = out_fmt->sampling_frequency;
+-	out_channels = SOF_IPC4_AUDIO_FORMAT_CFG_CHANNELS_COUNT(out_fmt->fmt_cfg);
+-	out_valid_bits = SOF_IPC4_AUDIO_FORMAT_CFG_V_BIT_DEPTH(out_fmt->fmt_cfg);
+-
+-	/* check if all output formats in topology are the same */
+-	for (i = 1; i < available_fmt->num_output_formats; i++) {
+-		u32 _out_rate, _out_channels, _out_valid_bits;
+-
+-		out_fmt = &available_fmt->output_pin_fmts[i].audio_fmt;
+-		_out_rate = out_fmt->sampling_frequency;
+-		_out_channels = SOF_IPC4_AUDIO_FORMAT_CFG_CHANNELS_COUNT(out_fmt->fmt_cfg);
+-		_out_valid_bits = SOF_IPC4_AUDIO_FORMAT_CFG_V_BIT_DEPTH(out_fmt->fmt_cfg);
+-
+-		if (_out_rate != out_rate || _out_channels != out_channels ||
+-		    _out_valid_bits != out_valid_bits) {
+-			single_format = false;
+-			break;
+-		}
+-	}
++	single_format = sof_ipc4_is_single_format(sdev, available_fmt->output_pin_fmts,
++						  available_fmt->num_output_formats);
  
--	sof_ipc4_init_output_audio_fmt(sdev, &gain->base_config, available_fmt, ret);
-+	ret = sof_ipc4_init_output_audio_fmt(sdev, &gain->base_config, available_fmt, ret);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "No output formats for %s", swidget->widget->name);
-+		return ret;
-+	}
- 
- 	/* update pipeline memory usage */
- 	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &gain->base_config);
-@@ -1726,7 +1762,11 @@ static int sof_ipc4_prepare_mixer_module(struct snd_sof_widget *swidget,
- 	if (ret < 0)
- 		return ret;
- 
--	sof_ipc4_init_output_audio_fmt(sdev, &mixer->base_config, available_fmt, ret);
-+	ret = sof_ipc4_init_output_audio_fmt(sdev, &mixer->base_config, available_fmt, ret);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "No output formats for %s", swidget->widget->name);
-+		return ret;
-+	}
- 
- 	/* update pipeline memory usage */
- 	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &mixer->base_config);
-@@ -1753,7 +1793,11 @@ static int sof_ipc4_prepare_src_module(struct snd_sof_widget *swidget,
- 	if (ret < 0)
- 		return ret;
- 
--	sof_ipc4_init_output_audio_fmt(sdev, &src->base_config, available_fmt, ret);
-+	ret = sof_ipc4_init_output_audio_fmt(sdev, &src->base_config, available_fmt, ret);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "No output formats for %s", swidget->widget->name);
-+		return ret;
-+	}
- 
- 	/* update pipeline memory usage */
- 	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &src->base_config);
-@@ -1864,6 +1908,7 @@ static int sof_ipc4_prepare_process_module(struct snd_sof_widget *swidget,
- 	if (ret < 0)
- 		return ret;
- 
-+	/* No need to check the return value. Some processing modules do not have output pins */
- 	output_fmt_index = sof_ipc4_init_output_audio_fmt(sdev, &process->base_config,
- 							  available_fmt, ret);
- 
+ 	/* pick the first format if there's only one available or if all formats are the same */
+ 	if (single_format) {
 -- 
 2.40.1
 
