@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 992A0C77B7D
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 06:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 599AAC77B7D
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 06:58:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88907E11;
-	Mon, 15 May 2023 08:57:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88907E11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4398CE8D;
+	Mon, 15 May 2023 08:57:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4398CE8D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684133887;
-	bh=QYZAt1KxA3N+7/ATQML8jtFQmvmyxEPDPbTILteD9jY=;
+	s=default; t=1684133897;
+	bh=8qoVMqaRyRfqkzBoyYI1vRz26d5h32BGobLS43A08RI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Hl+Cb1tKO2crTyTs4vQPYySgDa33Xvqv1NSXyxmN16HroyiHjimziOmCHOve/tPYi
-	 hd6yKYLmNYtz8TJtfaT3uCy2cvLeLnLUUV0XRK2a6p2kPRa7Tl6jIYMmPU8dfKEfvP
-	 Agt/ZvmgHvnmL78G/Ex2l/ACA1/ILl+KHxT6VP4U=
+	b=nf/IXeuIxF2xwU+B6PcNZw8Pr5Q2ELzWUwJ3qk42nsz6DlIQmNvl/sVkdIZ0M6bQv
+	 vf/ErZyStHAcvnHi0BfuR4AlK1zKiWNkmQ+Gg3IIc3CiEmHRotME1FL0s/v7nfW2sV
+	 bYOb8yKy9J0lRC/H2aZsXvqY/ulMyw+BCyUCg8hc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADCE1F8068C; Mon, 15 May 2023 08:51:44 +0200 (CEST)
+	id 8D10CF80580; Mon, 15 May 2023 08:52:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50AF2F80686;
-	Mon, 15 May 2023 08:51:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F201FF80571;
+	Mon, 15 May 2023 08:52:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EFF5BF8061E; Mon, 15 May 2023 08:51:26 +0200 (CEST)
+	id 258F5F8055A; Mon, 15 May 2023 08:52:05 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 463E3F80614
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 08:51:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 463E3F80614
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0A4EBF802E8
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 08:50:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A4EBF802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VvceZB4y
+ header.s=Intel header.b=P7/SATY2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684133484; x=1715669484;
+  t=1684133432; x=1715669432;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=QYZAt1KxA3N+7/ATQML8jtFQmvmyxEPDPbTILteD9jY=;
-  b=VvceZB4y+SrmMXuIZYD8FGWGdm947sB8QCK4Kqag7MS3zXYbCml40UGq
-   8RylNqzIqIGNeTz5ttc1G6gD8S0gfvrOGx4Fd5CyWL8DFxtH6B6JSqYzG
-   fcl4by4MWW2A1ikz95tamx1pnWdIqnzVd3VS93ByUubJ2Tm9qJzCoZUx8
-   LqRaaShwUj8FuzlqgYcljWd6YtZkevuMhU4Be/eZMNI9evw56Gg++culB
-   nzRFffma9jL02xVTJFFXxeNj0AObNJpnKQ/21ZAa7x6xgvQGI5IH5lCHp
-   DPobh+NGrwpQE0ChQY5lC+MrBHfUrqv/1Vj0mAYbeiAy69SM1ZI7r4Sxr
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="349966588"
+  bh=8qoVMqaRyRfqkzBoyYI1vRz26d5h32BGobLS43A08RI=;
+  b=P7/SATY2iWA4aJByxxKXC1DNtuMd7RXBMs/0aWlznFtlDFUPCW1aFWIW
+   D2zm0uBg+0szkqih4B1yOicm90uuIvOkGVEbVN5ZrVVkI4+3fE0wTlcFF
+   ZfKQic/fRLzKVewx6Oan8gMSUvH+iAyHUOitvnt1KYt5Wvz7PuwEcx8uS
+   tQJwW3tbWDXWZbENYsBJ1QC893kOYr+oH+bfQnIxirFHcQ3cBxua3lMYs
+   SnhEc+WTMQuVUC13dVAcurGkkjMui7SgY9EvTu/CxMD8Z0omsROp+LeM+
+   C3Tmh8Q4BCpHJzhQHqAgF0cUSL/r+O0RVbUGewxEc9F56o4jYdZ+v3gJe
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="349966290"
 X-IronPort-AV: E=Sophos;i="5.99,275,1677571200";
-   d="scan'208";a="349966588"
+   d="scan'208";a="349966290"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 May 2023 23:51:22 -0700
+ 14 May 2023 23:50:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="694908807"
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="694908603"
 X-IronPort-AV: E=Sophos;i="5.99,275,1677571200";
-   d="scan'208";a="694908807"
+   d="scan'208";a="694908603"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 May 2023 23:51:20 -0700
+ 14 May 2023 23:50:26 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org,
@@ -73,16 +73,18 @@ Cc: linux-kernel@vger.kernel.org,
 	vinod.koul@linaro.org,
 	pierre-louis.bossart@linux.intel.com,
 	bard.liao@intel.com
-Subject: [PATCH v2 26/26] soundwire: intel: use substream for .free callback
-Date: Mon, 15 May 2023 15:10:42 +0800
-Message-Id: <20230515071042.2038-27-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 03/26] soundwire: intel_ace2x: add empty new ops for
+ LunarLake
+Date: Mon, 15 May 2023 15:10:19 +0800
+Message-Id: <20230515071042.2038-4-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230515071042.2038-1-yung-chuan.liao@linux.intel.com>
 References: <20230515071042.2038-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NHFCEJQKMCFGXLUGCLGCA3NW5GZIANBQ
-X-Message-ID-Hash: NHFCEJQKMCFGXLUGCLGCA3NW5GZIANBQ
+Message-ID-Hash: WOWON2L6JPNDQ76TJE3NU5JTN3XB6WZD
+X-Message-ID-Hash: WOWON2L6JPNDQ76TJE3NU5JTN3XB6WZD
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NHFCEJQKMCFGXLUGCLGCA3NW5GZIANBQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WOWON2L6JPNDQ76TJE3NU5JTN3XB6WZD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,31 +108,74 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The interface is not needed for IPC3 but will be needed for
-ACE2.x+IPC4 combinations, with the substream information passed as a
-parameter.
+The register map and programming sequences for the ACE2.x IP are
+completely different and need to be abstracted with a different set of
+callbacks.
+
+This initial patch adds a new file, follow-up patches will add each
+required callback.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- include/linux/soundwire/sdw_intel.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soundwire/Makefile          |  2 +-
+ drivers/soundwire/intel_ace2x.c     | 19 +++++++++++++++++++
+ include/linux/soundwire/sdw_intel.h |  1 +
+ 3 files changed, 21 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/soundwire/intel_ace2x.c
 
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index 925566ff4272..5d612c9b6362 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -24,7 +24,7 @@ soundwire-cadence-y := cadence_master.o
+ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
+ 
+ #Intel driver
+-soundwire-intel-y :=	intel.o intel_auxdevice.o intel_init.o dmi-quirks.o \
++soundwire-intel-y :=	intel.o  intel_ace2x.o intel_auxdevice.o intel_init.o dmi-quirks.o \
+ 			intel_bus_common.o
+ obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
+ 
+diff --git a/drivers/soundwire/intel_ace2x.c b/drivers/soundwire/intel_ace2x.c
+new file mode 100644
+index 000000000000..623e4fd7db91
+--- /dev/null
++++ b/drivers/soundwire/intel_ace2x.c
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++// Copyright(c) 2023 Intel Corporation. All rights reserved.
++
++/*
++ * Soundwire Intel ops for LunarLake
++ */
++
++#include <linux/acpi.h>
++#include <linux/device.h>
++#include <linux/soundwire/sdw_registers.h>
++#include <linux/soundwire/sdw.h>
++#include <linux/soundwire/sdw_intel.h>
++#include "cadence_master.h"
++#include "bus.h"
++#include "intel.h"
++
++const struct sdw_intel_hw_ops sdw_intel_lnl_hw_ops = {
++};
++EXPORT_SYMBOL_NS(sdw_intel_lnl_hw_ops, SOUNDWIRE_INTEL);
 diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 9bd6885ee34d..11fc88fb0d78 100644
+index 8e6183e029fa..66687e83a94f 100644
 --- a/include/linux/soundwire/sdw_intel.h
 +++ b/include/linux/soundwire/sdw_intel.h
-@@ -195,7 +195,7 @@ struct sdw_intel_stream_params_data {
-  * firmware.
-  */
- struct sdw_intel_stream_free_data {
--	int stream;
-+	struct snd_pcm_substream *substream;
- 	struct snd_soc_dai *dai;
- 	int link_id;
+@@ -419,5 +419,6 @@ struct sdw_intel_hw_ops {
  };
+ 
+ extern const struct sdw_intel_hw_ops sdw_intel_cnl_hw_ops;
++extern const struct sdw_intel_hw_ops sdw_intel_lnl_hw_ops;
+ 
+ #endif
 -- 
 2.25.1
 
