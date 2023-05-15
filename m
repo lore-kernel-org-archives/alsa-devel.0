@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55379C77B75
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 06:58:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF412C77B75
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 06:58:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75504E97;
-	Mon, 15 May 2023 08:57:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75504E97
+	by alsa0.perex.cz (Postfix) with ESMTPS id 677CBE9B;
+	Mon, 15 May 2023 08:57:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 677CBE9B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684133909;
-	bh=nQ5bs2pm3yyJqyCctssYUsybKhCJPd02FInwiNQFhys=;
+	s=default; t=1684133926;
+	bh=jzpdfZmzNrU6pw0ISN0oU8vFcN6tRPXs+SPemPddfJg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HmJs8v2TPDXy7n28TY0LcV8qmhoXWGGAMpf8N8cjerWcTh0cyOKqGAonvGIoXS7oX
-	 s4D5sHZBYSwkNlOnAoaOR4PBkjvUawQj63/ocTXJT/25QaFXf9NHeKOyu/ektpTb6Y
-	 YkYWegNIaPtkKJLoPcktVFQrXlM8ctL8FmbDq+BI=
+	b=qAW5eW3AaYQjOUSW9jw+q2x9+ClGX6PM53N7S6yK7W12QU6PQQ/oihrS1J/S4/hBU
+	 vio98oFjIMgw/pMQZ9lex6e8fto5MiSnVIBQJZpldPxYNzVIKoKTxfIu1cIHAfvmSt
+	 oPlaGN0wjHXA6HSy3uzVfzAl5A9WFsenffc25b1Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 52453F80691; Mon, 15 May 2023 08:52:11 +0200 (CEST)
+	id E7358F80697; Mon, 15 May 2023 08:52:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDD3BF8056F;
-	Mon, 15 May 2023 08:52:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 877A4F8068E;
+	Mon, 15 May 2023 08:52:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB6A3F80553; Mon, 15 May 2023 08:52:05 +0200 (CEST)
+	id E0549F80553; Mon, 15 May 2023 08:52:07 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0E1A5F80571
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 08:50:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E1A5F80571
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1225DF8025A
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 08:50:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1225DF8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=IEkLbfNx
+ header.s=Intel header.b=QK5xfd/t
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684133442; x=1715669442;
+  t=1684133435; x=1715669435;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=nQ5bs2pm3yyJqyCctssYUsybKhCJPd02FInwiNQFhys=;
-  b=IEkLbfNxsqxDYPNiVQG6B7Ax8A7qhWIL02t4483K+4ErI51kGgOZNA3j
-   HVXl/mQd/MvChNKmOJ8YU80eXMIIiznBxqajTzlayit4Ry4eTTEkccYr2
-   w0tr2St1fcYc1xL41UMyw+fW+G7noLsEMhap8ryBLq77Z5r6nBLvHEKIH
-   GOxvatyuNkxrwS8PpNAhrIb6dQITmH5HzRxDCHi+mEq1TMI+S0vAYjlOf
-   ZRRmSKxpTGG0TTqBZUE5Mxy+vbUMmPwAfTMMp3gzArQqYiPyz78l6YFho
-   t0l8ZJtthzuzdSfPKyvrBqn8CC+Y/Tj+I2UnDvdpe/4suq5UtFuCcDxTp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="349966346"
+  bh=jzpdfZmzNrU6pw0ISN0oU8vFcN6tRPXs+SPemPddfJg=;
+  b=QK5xfd/ttdNifiM+q5UI1z1bET1e931n4l3i7BOwqXZWoSOOICN7qhtE
+   yLLJBBUnc5YHOAy/5PKt5pg+GB8qJ7c7p7GwpEAuMmNQG5KdSLL5WmPC0
+   S16wo2Jv1pOS3O6u5Psui1QSyaQGNtOqSZhZ/PhjaB+Ip1v2brt7p0nwe
+   w7maGgGWa4QM8trfooLLPpeKYoKGdmPwi0PrAASql4DFsc1qCidcATcrG
+   GXpua6IH1u5X0Pfxzt7tFjOz4cSJRk00jfbctrdLghwLYB/O/KKxYnlz1
+   mPTgyMB4EYL4k5o5bK4qvoE8jIuh0HO4AtGkBwvWxtozEMpVEKytVEfYu
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="349966310"
 X-IronPort-AV: E=Sophos;i="5.99,275,1677571200";
-   d="scan'208";a="349966346"
+   d="scan'208";a="349966310"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 May 2023 23:50:40 -0700
+ 14 May 2023 23:50:33 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="694908651"
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="694908629"
 X-IronPort-AV: E=Sophos;i="5.99,275,1677571200";
-   d="scan'208";a="694908651"
+   d="scan'208";a="694908629"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 May 2023 23:50:38 -0700
+ 14 May 2023 23:50:31 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org,
@@ -73,18 +73,17 @@ Cc: linux-kernel@vger.kernel.org,
 	vinod.koul@linaro.org,
 	pierre-louis.bossart@linux.intel.com,
 	bard.liao@intel.com
-Subject: [PATCH v2 08/26] ASoC: SOF: Intel: hda: retrieve SoundWire eml_lock
- and pass pointer
-Date: Mon, 15 May 2023 15:10:24 +0800
-Message-Id: <20230515071042.2038-9-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 05/26] soundwire: intel/cadence: set ip_offset at run-time
+Date: Mon, 15 May 2023 15:10:21 +0800
+Message-Id: <20230515071042.2038-6-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230515071042.2038-1-yung-chuan.liao@linux.intel.com>
 References: <20230515071042.2038-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: Y4YGN5JSQTZNISFA6J7Q3EKFV7U7SF7K
-X-Message-ID-Hash: Y4YGN5JSQTZNISFA6J7Q3EKFV7U7SF7K
+Message-ID-Hash: 65S6GH6IQ6EMKID7OVPFDXFZHASXJFLK
+X-Message-ID-Hash: 65S6GH6IQ6EMKID7OVPFDXFZHASXJFLK
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y4YGN5JSQTZNISFA6J7Q3EKFV7U7SF7K/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/65S6GH6IQ6EMKID7OVPFDXFZHASXJFLK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,39 +107,86 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Use new helper and interface to make sure the HDaudio and SoundWire
-parts use the same mutex when accessing shared registers.
+Select relevant ip-offset depending on hardware version. This offset
+is used to access MCP_ or IP_MCP_ registers with a fixed offset.
+
+For existing platforms, the offset is exactly zero. Starting with
+LunarLake, the offset is 0x4000.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Acked-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/soundwire/cadence_master.h  | 2 ++
+ drivers/soundwire/intel.h           | 2 ++
+ drivers/soundwire/intel_auxdevice.c | 1 +
+ drivers/soundwire/intel_init.c      | 2 ++
+ 4 files changed, 7 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 4d48f4018617..388e41057172 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -175,6 +175,15 @@ static int hda_sdw_probe(struct snd_sof_dev *sdev)
- 		res.alh_base = hdev->desc->sdw_alh_base;
- 		res.ext = false;
- 	} else {
-+		/*
-+		 * retrieve eml_lock needed to protect shared registers
-+		 * in the HDaudio multi-link areas
-+		 */
-+		res.eml_lock = hdac_bus_eml_get_mutex(sof_to_bus(sdev), true,
-+						      AZX_REG_ML_LEPTR_ID_SDW);
-+		if (!res.eml_lock)
-+			return -ENODEV;
+diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+index 27c56274217f..86a450b1cbda 100644
+--- a/drivers/soundwire/cadence_master.h
++++ b/drivers/soundwire/cadence_master.h
+@@ -14,6 +14,8 @@
+  */
+ #define CDNS_MCP_IP_MAX_CMD_LEN		32
+ 
++#define SDW_CADENCE_MCP_IP_OFFSET	0x4000
 +
- 		res.mmio_base = sdev->bar[HDA_DSP_HDA_BAR];
- 		/*
- 		 * the SHIM and SoundWire register offsets are link-specific
+ /**
+  * struct sdw_cdns_pdi: PDI (Physical Data Interface) instance
+  *
+diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+index 51aa42a5a824..1b23292bb8be 100644
+--- a/drivers/soundwire/intel.h
++++ b/drivers/soundwire/intel.h
+@@ -10,6 +10,7 @@
+  * @hw_ops: platform-specific ops
+  * @mmio_base: mmio base of SoundWire registers
+  * @registers: Link IO registers base
++ * @ip_offset: offset for MCP_IP registers
+  * @shim: Audio shim pointer
+  * @shim_vs: Audio vendor-specific shim pointer
+  * @alh: ALH (Audio Link Hub) pointer
+@@ -28,6 +29,7 @@ struct sdw_intel_link_res {
+ 
+ 	void __iomem *mmio_base; /* not strictly needed, useful for debug */
+ 	void __iomem *registers;
++	u32 ip_offset;
+ 	void __iomem *shim;
+ 	void __iomem *shim_vs;
+ 	void __iomem *alh;
+diff --git a/drivers/soundwire/intel_auxdevice.c b/drivers/soundwire/intel_auxdevice.c
+index b21e86084f7b..fcdf4f2d60e3 100644
+--- a/drivers/soundwire/intel_auxdevice.c
++++ b/drivers/soundwire/intel_auxdevice.c
+@@ -144,6 +144,7 @@ static int intel_link_probe(struct auxiliary_device *auxdev,
+ 	sdw->link_res = &ldev->link_res;
+ 	cdns->dev = dev;
+ 	cdns->registers = sdw->link_res->registers;
++	cdns->ip_offset = sdw->link_res->ip_offset;
+ 	cdns->instance = sdw->instance;
+ 	cdns->msg_count = 0;
+ 
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index e0023af9e0e1..43d339c6bcee 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -66,10 +66,12 @@ static struct sdw_intel_link_dev *intel_link_dev_register(struct sdw_intel_res *
+ 	if (!res->ext) {
+ 		link->registers = res->mmio_base + SDW_LINK_BASE
+ 			+ (SDW_LINK_SIZE * link_id);
++		link->ip_offset = 0;
+ 		link->shim = res->mmio_base + res->shim_base;
+ 		link->alh = res->mmio_base + res->alh_base;
+ 	} else {
+ 		link->registers = res->mmio_base + SDW_IP_BASE(link_id);
++		link->ip_offset = SDW_CADENCE_MCP_IP_OFFSET;
+ 		link->shim = res->mmio_base +  SDW_SHIM2_GENERIC_BASE(link_id);
+ 		link->shim_vs = res->mmio_base + SDW_SHIM2_VS_BASE(link_id);
+ 	}
 -- 
 2.25.1
 
