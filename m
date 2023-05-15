@@ -4,74 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08DCBC77B75
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 11:13:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0721CC77B75
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 11:20:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4675826;
-	Mon, 15 May 2023 13:12:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4675826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C4DF1DA;
+	Mon, 15 May 2023 13:20:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C4DF1DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684149183;
-	bh=Dvh9tI9Xl3uzM2jJ1Xep2xAC6Nc/oaoWIoRatlpPUfE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=eZkE3l1dl2+iFjJEZgGcIuH7u8N5An52v+1ClSq3YK4Su3T11aK59rQmrcNWQ9cqi
-	 sWtPnEJkFBuoMtcJDBhPkoX4tDnys1EuuXFbA/ab0gPppSM2fBideAqE4Gk/2gkIp6
-	 QGMDpD/XS/cAG0EieHcYUFjUEYXY1ggkbPbn/0sY=
+	s=default; t=1684149651;
+	bh=ZmG4CJXhh8qhB6E4BV1o3CRPwnngoUpKTKqWWRCHuho=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=QaRWL8LngDovUcx32wLy9wCj1fS2P8314ljAQmlJR0Ut1EZe730IF4RAVnnyOl6M0
+	 MgR/ffc0EKmiQyZCque0cifsAkius97Sx9SUuJWgiz5ouYj7zNV9CQwE8DKvLIzWm0
+	 DUlbaJUWZaglvWmiubFzRX/qDTNVJssRItk0Zpeo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 41D00F805D7; Mon, 15 May 2023 13:10:08 +0200 (CEST)
+	id 93CF0F80544; Mon, 15 May 2023 13:19:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D704F805D4;
-	Mon, 15 May 2023 13:10:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 123A1F8053D;
+	Mon, 15 May 2023 13:19:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B68A2F805AE; Mon, 15 May 2023 13:09:58 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9B7BDF8057B
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 13:09:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B7BDF8057B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=a8nilyUv
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id 01C42F80272; Mon, 15 May 2023 13:19:35 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 8CD676227B;
-	Mon, 15 May 2023 11:09:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF4E8C433EF;
-	Mon, 15 May 2023 11:09:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684148988;
-	bh=Dvh9tI9Xl3uzM2jJ1Xep2xAC6Nc/oaoWIoRatlpPUfE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=a8nilyUvosgWLYfZFkc00NkLieMjNhu0fdDIXucxn4MZjLLAzSkjY1MBHmVls528O
-	 bw6Pce54LlBfFJAtCnN6qzksCr3wFKj/3oZ/ywXCiqaCO7nHsusv/WiVh8JvYafmmD
-	 DfU+MMGLUhJKxzSYoXkTKSZxZvTI4RhZDRbY5mIoJihG4/+vs0XRV98R40a+GtxgFu
-	 hnpSrES89Jv9zT9M0F8B6M+v0m4jxQ5WFOhUydaz7YqMQPkl0/9nfJBNK8md5Wm2eG
-	 9UQf7g95XLVOmRgDpyJepSyBEVy+SWZBGrabXMQ/10uG6HIMTQpYUz1poUyV0sO1Mi
-	 EOGwUz7HfoPNg==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com, Simon Trimmer <simont@opensource.cirrus.com>
-In-Reply-To: <20230512144237.739000-1-rf@opensource.cirrus.com>
-References: <20230512144237.739000-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: cs35l56: Prevent unbalanced pm_runtime in
- dsp_work() on SoundWire
-Message-Id: <168414898656.394037.4680314609233066357.b4-ty@kernel.org>
-Date: Mon, 15 May 2023 20:09:46 +0900
+	by alsa1.perex.cz (Postfix) with ESMTPS id 49AADF8016D
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 13:19:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49AADF8016D
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=XWDUaKUX
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1684149573; x=1715685573;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZmG4CJXhh8qhB6E4BV1o3CRPwnngoUpKTKqWWRCHuho=;
+  b=XWDUaKUXxH5NM+a9K8ErWw5H3UcFvxjckgs83xJy/bGtwA+UKUkOpvD0
+   GRXBklptOO4HwkBx1LF97ovG8wjZFrUqOUdiYBWV8i+oEJzLah8ZzX3sc
+   SfSNiu1Ua/fgUmFDl6H3rAKa2F0JuvAoQVEndPV69XEs14s1xV95PW/He
+   Qq6cbJCGMOQdCINlDGJSfR6gQGud25kpe2YdEUfRdFQoVvawoS6ePgJ20
+   r+Q4HprPgyGKVO+Y0dPHBdV3dVjTEqybLhRmXEGxeZz7nurYtZiQAYAtD
+   szmkhr8PDTeFW8oxIDglh65KgbMtFUFhvg9toJKgsR6dOOVP11DqTsFsn
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="379336174"
+X-IronPort-AV: E=Sophos;i="5.99,276,1677571200";
+   d="scan'208";a="379336174"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 May 2023 04:19:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="875142094"
+X-IronPort-AV: E=Sophos;i="5.99,276,1677571200";
+   d="scan'208";a="875142094"
+Received: from lpilolli-mobl.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.48.230])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 May 2023 04:19:27 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	pierre-louis.bossart@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	yung-chuan.liao@linux.intel.com
+Subject: [PATCH 0/2] ASoC: SOF: Intel/ipc4: Do not reset BE DAI pipeline
+ during stop/suspend
+Date: Mon, 15 May 2023 14:20:20 +0300
+Message-Id: <20230515112022.30297-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: NZ4KM3F6QQB53WEC5R3SZC5KSMYOSCAP
-X-Message-ID-Hash: NZ4KM3F6QQB53WEC5R3SZC5KSMYOSCAP
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: LZUDQB7PDYPGB4Q6JYMYNNP3SYPGXLGW
+X-Message-ID-Hash: LZUDQB7PDYPGB4Q6JYMYNNP3SYPGXLGW
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NZ4KM3F6QQB53WEC5R3SZC5KSMYOSCAP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LZUDQB7PDYPGB4Q6JYMYNNP3SYPGXLGW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,41 +102,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 12 May 2023 15:42:37 +0100, Richard Fitzgerald wrote:
-> Flush the SoundWire interrupt handler work instead of cancelling it.
-> 
-> When a SoundWire interrupt is triggered the pm_runtime is held
-> until the work has completed. It's therefore unsafe to cancel
-> the work, it must be flushed.
-> 
-> 
-> [...]
+Hi,
 
-Applied to
+Do not reset pipelines during the stop/suspend triggers in the BE DAI
+ops as the BE DAI pipeline needs to be left in the PAUSED state. It should
+only be reset during hw_free. This simplification is already done for
+the FE pipelines and the DAI trigger only toggles the states between
+PAUSED and RUNNING.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Regards
+Peter
+---
+Ranjani Sridharan (2):
+  ASoC: SOF: Intel: hda-dai-ops: Split the get_hext_stream() op for IPC4
+  ASoC: SOF: ipc4-pcm: reset all pipelines during FE DAI hw_free
 
-Thanks!
+ sound/soc/sof/intel/hda-dai-ops.c | 69 +++++++++++++++++++++++--------
+ sound/soc/sof/ipc4-pcm.c          |  4 +-
+ sound/soc/sof/ipc4-topology.c     |  1 -
+ 3 files changed, 53 insertions(+), 21 deletions(-)
 
-[1/1] ASoC: cs35l56: Prevent unbalanced pm_runtime in dsp_work() on SoundWire
-      commit: 17082e09b94cfe60bf39088f3d37c1f10e6c5928
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+2.40.1
 
