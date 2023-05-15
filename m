@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5033CC77B75
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 06:57:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 992A0C77B7D
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 06:58:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6626BE0F;
-	Mon, 15 May 2023 08:56:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6626BE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88907E11;
+	Mon, 15 May 2023 08:57:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88907E11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684133869;
-	bh=7HU4GkkFBUz3CDwO3kK4aBa3k7/H20TmG32LVN6IOSQ=;
+	s=default; t=1684133887;
+	bh=QYZAt1KxA3N+7/ATQML8jtFQmvmyxEPDPbTILteD9jY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qfXyL353THLX34813FpiSF0Vdja5HK9bX5a2rAJi0hPA5qOKtDu/hq4/ovQbjRcQi
-	 Cjf11OpWL2kSGnOLVSQOuocptXzNunBC89xrI7JkPQwV4SKPeJA9L6dBU80H4C8tEB
-	 /OEpFWTiJeg/m2Zn7vItPoWHr4NgBE1FKMY9/GWc=
+	b=Hl+Cb1tKO2crTyTs4vQPYySgDa33Xvqv1NSXyxmN16HroyiHjimziOmCHOve/tPYi
+	 hd6yKYLmNYtz8TJtfaT3uCy2cvLeLnLUUV0XRK2a6p2kPRa7Tl6jIYMmPU8dfKEfvP
+	 Agt/ZvmgHvnmL78G/Ex2l/ACA1/ILl+KHxT6VP4U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35F56F8067E; Mon, 15 May 2023 08:51:42 +0200 (CEST)
+	id ADCE1F8068C; Mon, 15 May 2023 08:51:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2F26F8067E;
-	Mon, 15 May 2023 08:51:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50AF2F80686;
+	Mon, 15 May 2023 08:51:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A1E3AF80633; Mon, 15 May 2023 08:51:26 +0200 (CEST)
+	id EFF5BF8061E; Mon, 15 May 2023 08:51:26 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 072D6F80611
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 08:51:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 072D6F80611
+	by alsa1.perex.cz (Postfix) with ESMTPS id 463E3F80614
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 08:51:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 463E3F80614
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=K76icFZB
+ header.s=Intel header.b=VvceZB4y
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684133482; x=1715669482;
+  t=1684133484; x=1715669484;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7HU4GkkFBUz3CDwO3kK4aBa3k7/H20TmG32LVN6IOSQ=;
-  b=K76icFZBa6Q1/kfbxBfdV+khGZKV8MdQdhfYf05bUQ5VOqdY3gdmqJAJ
-   UC130pBbjFjvtSPfyJmt7FCxysAlg5J6ZlQxmezxGz7I7mH/gdRVf1C7Z
-   3FMgcTUgkPcoMbPS7VJ3pDoEVIhdqp6UEYrCrfjM3ih1DmVa3zsc0ZQDV
-   K6cAUbdWSIB/FaEKAVVtOpvL7NJVW3//A5IdUp6g68u5VVbZQ/3UwyxoO
-   2qHl1eULoPm5iCnvJjtAFkiMA66nEIH269+iXsezPqgfW5wrrhNaLqGKl
-   25mrnyKbglHm97Gm61VLdLLorArfsdaS9XwGldrzj7p09qn0aatR+r4Ho
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="349966575"
+  bh=QYZAt1KxA3N+7/ATQML8jtFQmvmyxEPDPbTILteD9jY=;
+  b=VvceZB4y+SrmMXuIZYD8FGWGdm947sB8QCK4Kqag7MS3zXYbCml40UGq
+   8RylNqzIqIGNeTz5ttc1G6gD8S0gfvrOGx4Fd5CyWL8DFxtH6B6JSqYzG
+   fcl4by4MWW2A1ikz95tamx1pnWdIqnzVd3VS93ByUubJ2Tm9qJzCoZUx8
+   LqRaaShwUj8FuzlqgYcljWd6YtZkevuMhU4Be/eZMNI9evw56Gg++culB
+   nzRFffma9jL02xVTJFFXxeNj0AObNJpnKQ/21ZAa7x6xgvQGI5IH5lCHp
+   DPobh+NGrwpQE0ChQY5lC+MrBHfUrqv/1Vj0mAYbeiAy69SM1ZI7r4Sxr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="349966588"
 X-IronPort-AV: E=Sophos;i="5.99,275,1677571200";
-   d="scan'208";a="349966575"
+   d="scan'208";a="349966588"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 May 2023 23:51:20 -0700
+ 14 May 2023 23:51:22 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="694908802"
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="694908807"
 X-IronPort-AV: E=Sophos;i="5.99,275,1677571200";
-   d="scan'208";a="694908802"
+   d="scan'208";a="694908807"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 May 2023 23:51:18 -0700
+ 14 May 2023 23:51:20 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org,
@@ -73,17 +73,16 @@ Cc: linux-kernel@vger.kernel.org,
 	vinod.koul@linaro.org,
 	pierre-louis.bossart@linux.intel.com,
 	bard.liao@intel.com
-Subject: [PATCH v2 25/26] soundwire: intel: remove .free callback
- implementation
-Date: Mon, 15 May 2023 15:10:41 +0800
-Message-Id: <20230515071042.2038-26-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 26/26] soundwire: intel: use substream for .free callback
+Date: Mon, 15 May 2023 15:10:42 +0800
+Message-Id: <20230515071042.2038-27-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230515071042.2038-1-yung-chuan.liao@linux.intel.com>
 References: <20230515071042.2038-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DQ5PEQXXMRXK32WYYNTSWG5AYPBY3CT2
-X-Message-ID-Hash: DQ5PEQXXMRXK32WYYNTSWG5AYPBY3CT2
+Message-ID-Hash: NHFCEJQKMCFGXLUGCLGCA3NW5GZIANBQ
+X-Message-ID-Hash: NHFCEJQKMCFGXLUGCLGCA3NW5GZIANBQ
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DQ5PEQXXMRXK32WYYNTSWG5AYPBY3CT2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NHFCEJQKMCFGXLUGCLGCA3NW5GZIANBQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,109 +106,31 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The interface is not needed for IPC3 solution but will be needed with
-an updated parameter list for ACE2.x+IPC4 combinations.
+The interface is not needed for IPC3 but will be needed for
+ACE2.x+IPC4 combinations, with the substream information passed as a
+parameter.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 37 +------------------------------------
- 1 file changed, 1 insertion(+), 36 deletions(-)
+ include/linux/soundwire/sdw_intel.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 15cecd2e062d..f52167aa48db 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -663,25 +663,6 @@ static int intel_params_stream(struct sdw_intel *sdw,
- 	return -EIO;
- }
- 
--static int intel_free_stream(struct sdw_intel *sdw,
--			     int stream,
--			     struct snd_soc_dai *dai,
--			     int link_id)
--{
--	struct sdw_intel_link_res *res = sdw->link_res;
--	struct sdw_intel_stream_free_data free_data;
--
--	free_data.stream = stream; /* direction */
--	free_data.dai = dai;
--	free_data.link_id = link_id;
--
--	if (res->ops && res->ops->free_stream && res->dev)
--		return res->ops->free_stream(res->dev,
--					     &free_data);
--
--	return 0;
--}
--
- /*
-  * DAI routines
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 9bd6885ee34d..11fc88fb0d78 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -195,7 +195,7 @@ struct sdw_intel_stream_params_data {
+  * firmware.
   */
-@@ -817,7 +798,6 @@ static int
- intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
- 	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
--	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_cdns_dai_runtime *dai_runtime;
- 	int ret;
- 
-@@ -838,12 +818,6 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- 		return ret;
- 	}
- 
--	ret = intel_free_stream(sdw, substream->stream, dai, sdw->instance);
--	if (ret < 0) {
--		dev_err(dai->dev, "intel_free_stream: failed %d\n", ret);
--		return ret;
--	}
--
- 	dai_runtime->pdi = NULL;
- 
- 	return 0;
-@@ -871,7 +845,6 @@ static void *intel_get_sdw_stream(struct snd_soc_dai *dai,
- static int intel_trigger(struct snd_pcm_substream *substream, int cmd, struct snd_soc_dai *dai)
- {
- 	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
--	struct sdw_intel *sdw = cdns_to_intel(cdns);
- 	struct sdw_cdns_dai_runtime *dai_runtime;
- 	int ret = 0;
- 
-@@ -894,7 +867,6 @@ static int intel_trigger(struct snd_pcm_substream *substream, int cmd, struct sn
- 
- 		dai_runtime->suspended = true;
- 
--		ret = intel_free_stream(sdw, substream->stream, dai, sdw->instance);
- 		break;
- 
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-@@ -940,9 +912,7 @@ static int intel_component_dais_suspend(struct snd_soc_component *component)
- 	 */
- 	for_each_component_dais(component, dai) {
- 		struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
--		struct sdw_intel *sdw = cdns_to_intel(cdns);
- 		struct sdw_cdns_dai_runtime *dai_runtime;
--		int ret;
- 
- 		dai_runtime = cdns->dai_runtime_array[dai->id];
- 
-@@ -952,13 +922,8 @@ static int intel_component_dais_suspend(struct snd_soc_component *component)
- 		if (dai_runtime->suspended)
- 			continue;
- 
--		if (dai_runtime->paused) {
-+		if (dai_runtime->paused)
- 			dai_runtime->suspended = true;
--
--			ret = intel_free_stream(sdw, dai_runtime->direction, dai, sdw->instance);
--			if (ret < 0)
--				return ret;
--		}
- 	}
- 
- 	return 0;
+ struct sdw_intel_stream_free_data {
+-	int stream;
++	struct snd_pcm_substream *substream;
+ 	struct snd_soc_dai *dai;
+ 	int link_id;
+ };
 -- 
 2.25.1
 
