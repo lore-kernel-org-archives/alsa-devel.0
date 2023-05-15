@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECF46C77B75
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 11:12:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08DCBC77B75
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 11:13:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76C081DA;
-	Mon, 15 May 2023 13:11:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76C081DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4675826;
+	Mon, 15 May 2023 13:12:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4675826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684149165;
-	bh=p0nhVFjvB9qqIfxtKaQ1sz7UN86csj7sPmTqD+GtZfY=;
+	s=default; t=1684149183;
+	bh=Dvh9tI9Xl3uzM2jJ1Xep2xAC6Nc/oaoWIoRatlpPUfE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TnaT/TGj9BN47/ZrPZHJgou9dsHlCBpiWe4dnzmiYUwqxmH68/4vr4drUJLStWDlO
-	 ccE1HyXe6Gdv0skuu0KImFogbk5Kh5Nm+4NuuyIx2Yh0K+GGtXpXUOaEdns2iMeWb1
-	 olIp9uxEl0zoUUj/NdYjKty2HFzeGsWZiyBAZUFU=
+	b=eZkE3l1dl2+iFjJEZgGcIuH7u8N5An52v+1ClSq3YK4Su3T11aK59rQmrcNWQ9cqi
+	 sWtPnEJkFBuoMtcJDBhPkoX4tDnys1EuuXFbA/ab0gPppSM2fBideAqE4Gk/2gkIp6
+	 QGMDpD/XS/cAG0EieHcYUFjUEYXY1ggkbPbn/0sY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0ECCF805C3; Mon, 15 May 2023 13:10:06 +0200 (CEST)
+	id 41D00F805D7; Mon, 15 May 2023 13:10:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1A5FF805B3;
-	Mon, 15 May 2023 13:10:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D704F805D4;
+	Mon, 15 May 2023 13:10:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9719AF8057C; Mon, 15 May 2023 13:09:52 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id B68A2F805AE; Mon, 15 May 2023 13:09:58 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6185EF8016D
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 13:09:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6185EF8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9B7BDF8057B
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 13:09:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B7BDF8057B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=igqi8Nen
+ header.s=k20201202 header.b=a8nilyUv
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3B976615FE;
-	Mon, 15 May 2023 11:09:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FE68C433EF;
-	Mon, 15 May 2023 11:09:41 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8CD676227B;
+	Mon, 15 May 2023 11:09:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF4E8C433EF;
+	Mon, 15 May 2023 11:09:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684148982;
-	bh=p0nhVFjvB9qqIfxtKaQ1sz7UN86csj7sPmTqD+GtZfY=;
+	s=k20201202; t=1684148988;
+	bh=Dvh9tI9Xl3uzM2jJ1Xep2xAC6Nc/oaoWIoRatlpPUfE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=igqi8Nen0pC29oAUKc0DsUVuj0Ksaz9E1kv2dB4Nwf/Zhgr1+dOKnvWXhAl8kW1Fm
-	 z79ou4FM2cHEDIEGqBPYjPRxZvs6sG45BaowFRwwJ9QZBtk/g3vmbgjqnq4XWv+nJR
-	 W32TaFmhJu51v5jnKVi/HF0sQcMAWpgzvfVSDBYa0V6W91pNJozl+btxUaBOYcQv5R
-	 C0sAjkwL5pYXy4xLA8SIFF8O2qJEvQ+SWL0FsrR+l3sLO70r4IlpED7oRQHX7gxjLM
-	 cEMHzk4Vv2QBlw+xPv/6RIZnBIao9jytIMz/bG1+/G8QIZjZDf4w6FhNtbK8bivlWi
-	 8uCs/LXrJaRHQ==
+	b=a8nilyUvosgWLYfZFkc00NkLieMjNhu0fdDIXucxn4MZjLLAzSkjY1MBHmVls528O
+	 bw6Pce54LlBfFJAtCnN6qzksCr3wFKj/3oZ/ywXCiqaCO7nHsusv/WiVh8JvYafmmD
+	 DfU+MMGLUhJKxzSYoXkTKSZxZvTI4RhZDRbY5mIoJihG4/+vs0XRV98R40a+GtxgFu
+	 hnpSrES89Jv9zT9M0F8B6M+v0m4jxQ5WFOhUydaz7YqMQPkl0/9nfJBNK8md5Wm2eG
+	 9UQf7g95XLVOmRgDpyJepSyBEVy+SWZBGrabXMQ/10uG6HIMTQpYUz1poUyV0sO1Mi
+	 EOGwUz7HfoPNg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- daniel.baluta@nxp.com
-In-Reply-To: <20230512103315.8921-1-peter.ujfalusi@linux.intel.com>
-References: <20230512103315.8921-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: SOF: Various runtime pm fixes, improvements
-Message-Id: <168414898109.394037.2967681837025779257.b4-ty@kernel.org>
-Date: Mon, 15 May 2023 20:09:41 +0900
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com, Simon Trimmer <simont@opensource.cirrus.com>
+In-Reply-To: <20230512144237.739000-1-rf@opensource.cirrus.com>
+References: <20230512144237.739000-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs35l56: Prevent unbalanced pm_runtime in
+ dsp_work() on SoundWire
+Message-Id: <168414898656.394037.4680314609233066357.b4-ty@kernel.org>
+Date: Mon, 15 May 2023 20:09:46 +0900
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: 2M4SS3J7XLEW4VBJNBAHJ7DXI4KKOEWU
-X-Message-ID-Hash: 2M4SS3J7XLEW4VBJNBAHJ7DXI4KKOEWU
+Message-ID-Hash: NZ4KM3F6QQB53WEC5R3SZC5KSMYOSCAP
+X-Message-ID-Hash: NZ4KM3F6QQB53WEC5R3SZC5KSMYOSCAP
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2M4SS3J7XLEW4VBJNBAHJ7DXI4KKOEWU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NZ4KM3F6QQB53WEC5R3SZC5KSMYOSCAP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,12 +92,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 12 May 2023 13:33:12 +0300, Peter Ujfalusi wrote:
-> Three patch to correct error path PM runtime handling in few places.
+On Fri, 12 May 2023 15:42:37 +0100, Richard Fitzgerald wrote:
+> Flush the SoundWire interrupt handler work instead of cancelling it.
 > 
-> Regards,
-> Peter
+> When a SoundWire interrupt is triggered the pm_runtime is held
+> until the work has completed. It's therefore unsafe to cancel
+> the work, it must be flushed.
 > 
+> 
+> [...]
 
 Applied to
 
@@ -106,12 +108,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: SOF: debug: conditionally bump runtime_pm counter on exceptions
-      commit: 3de975862f985f1c9e225a0d13aa3d501373f7c3
-[2/3] ASoC: SOF: pcm: fix pm_runtime imbalance in error handling
-      commit: da0fe8fd515a471d373acc3682bfb5522cca4d55
-[3/3] ASoC: SOF: sof-client-probes: fix pm_runtime imbalance in error handling
-      commit: bc424273c74c1565c459c8f2a6ed95caee368d0a
+[1/1] ASoC: cs35l56: Prevent unbalanced pm_runtime in dsp_work() on SoundWire
+      commit: 17082e09b94cfe60bf39088f3d37c1f10e6c5928
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
