@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D616BC77B7D
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 11:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECF46C77B75
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 11:12:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEE9A839;
-	Mon, 15 May 2023 13:11:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEE9A839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76C081DA;
+	Mon, 15 May 2023 13:11:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76C081DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684149147;
-	bh=AzqOmQc7OrwPNPM/ssnco453fybt0WCECRc/Pyq/wu0=;
+	s=default; t=1684149165;
+	bh=p0nhVFjvB9qqIfxtKaQ1sz7UN86csj7sPmTqD+GtZfY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VJ4QU5ntcTib5iD5qeCT61TY7g8Kvvqaw5Npy2SzOtOfYsVOokOWtvFoYV2D71Gah
-	 CsC3EkLYWF/SzWpSwX10OcolHDLvkphVZNsGwZXK3/735LvfP233WUPMIvdbIRt9yb
-	 k1O1Qzpe7X6LnvNNOm7Wrin1MgPj9hH1YpOoJkWE=
+	b=TnaT/TGj9BN47/ZrPZHJgou9dsHlCBpiWe4dnzmiYUwqxmH68/4vr4drUJLStWDlO
+	 ccE1HyXe6Gdv0skuu0KImFogbk5Kh5Nm+4NuuyIx2Yh0K+GGtXpXUOaEdns2iMeWb1
+	 olIp9uxEl0zoUUj/NdYjKty2HFzeGsWZiyBAZUFU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E1238F805B1; Mon, 15 May 2023 13:10:01 +0200 (CEST)
+	id C0ECCF805C3; Mon, 15 May 2023 13:10:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28CD9F8057B;
-	Mon, 15 May 2023 13:10:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1A5FF805B3;
+	Mon, 15 May 2023 13:10:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53E96F80568; Mon, 15 May 2023 13:09:51 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 9719AF8057C; Mon, 15 May 2023 13:09:52 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 23558F80431
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 13:09:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23558F80431
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6185EF8016D
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 13:09:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6185EF8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=LB03kSID
+ header.s=k20201202 header.b=igqi8Nen
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 1300D6229C;
-	Mon, 15 May 2023 11:09:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76926C433D2;
-	Mon, 15 May 2023 11:09:45 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3B976615FE;
+	Mon, 15 May 2023 11:09:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FE68C433EF;
+	Mon, 15 May 2023 11:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684148986;
-	bh=AzqOmQc7OrwPNPM/ssnco453fybt0WCECRc/Pyq/wu0=;
+	s=k20201202; t=1684148982;
+	bh=p0nhVFjvB9qqIfxtKaQ1sz7UN86csj7sPmTqD+GtZfY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=LB03kSIDbU5zCmAqtLnCcGqTE1YXvzkj9MSUdYA0qHhOAfityGb7oI8oPH412R67d
-	 Ks5SEV7MYOkjwEIET6zHeE9YRRW8QmzChbrysCVJ7hJSJBh6JHMMhLaZKo6Od+VG1o
-	 bxchNBsaQg2YMEYuCiugpcL4rOjWEirjtHbyoloSuIXYRx4JEiNauacN7t3Xj72YiC
-	 WQI4Ccfk47XWi7M8aa8amEvjCB+IKKU3D+Z5izH/5PiY+9OTwXMOf0obhc08u2Bxb9
-	 06fvUUm+WdL66JKwMPOuB/N9R3OeTQszOV5UsiJNKOq+U3AGUGHp+xugFUItwYNAax
-	 kZUKlPuifOupA==
+	b=igqi8Nen0pC29oAUKc0DsUVuj0Ksaz9E1kv2dB4Nwf/Zhgr1+dOKnvWXhAl8kW1Fm
+	 z79ou4FM2cHEDIEGqBPYjPRxZvs6sG45BaowFRwwJ9QZBtk/g3vmbgjqnq4XWv+nJR
+	 W32TaFmhJu51v5jnKVi/HF0sQcMAWpgzvfVSDBYa0V6W91pNJozl+btxUaBOYcQv5R
+	 C0sAjkwL5pYXy4xLA8SIFF8O2qJEvQ+SWL0FsrR+l3sLO70r4IlpED7oRQHX7gxjLM
+	 cEMHzk4Vv2QBlw+xPv/6RIZnBIao9jytIMz/bG1+/G8QIZjZDf4w6FhNtbK8bivlWi
+	 8uCs/LXrJaRHQ==
 From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com,
- Lucas Tanure <tanureal@opensource.cirrus.com>
-In-Reply-To: <20230512154503.741718-1-rf@opensource.cirrus.com>
-References: <20230512154503.741718-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH RESEND] MAINTAINERS: Remove self from Cirrus Codec
- drivers
-Message-Id: <168414898513.394037.16270681416045014663.b4-ty@kernel.org>
-Date: Mon, 15 May 2023 20:09:45 +0900
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ daniel.baluta@nxp.com
+In-Reply-To: <20230512103315.8921-1-peter.ujfalusi@linux.intel.com>
+References: <20230512103315.8921-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: SOF: Various runtime pm fixes, improvements
+Message-Id: <168414898109.394037.2967681837025779257.b4-ty@kernel.org>
+Date: Mon, 15 May 2023 20:09:41 +0900
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: WRAOHSOSWNNGNHKU6GEG5FIODTSFOZ2H
-X-Message-ID-Hash: WRAOHSOSWNNGNHKU6GEG5FIODTSFOZ2H
+Message-ID-Hash: 2M4SS3J7XLEW4VBJNBAHJ7DXI4KKOEWU
+X-Message-ID-Hash: 2M4SS3J7XLEW4VBJNBAHJ7DXI4KKOEWU
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WRAOHSOSWNNGNHKU6GEG5FIODTSFOZ2H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2M4SS3J7XLEW4VBJNBAHJ7DXI4KKOEWU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,11 +93,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 12 May 2023 16:45:03 +0100, Richard Fitzgerald wrote:
-> I'm leaving Cirrus Logic, and will no longer have access to
-> hardware and documentation necessary to be effective in a
-> maintainership role.
+On Fri, 12 May 2023 13:33:12 +0300, Peter Ujfalusi wrote:
+> Three patch to correct error path PM runtime handling in few places.
 > 
+> Regards,
+> Peter
 > 
 
 Applied to
@@ -106,8 +106,12 @@ Applied to
 
 Thanks!
 
-[1/1] MAINTAINERS: Remove self from Cirrus Codec drivers
-      commit: dc60b67d259ea63196dcd0400dd43ba062e2e097
+[1/3] ASoC: SOF: debug: conditionally bump runtime_pm counter on exceptions
+      commit: 3de975862f985f1c9e225a0d13aa3d501373f7c3
+[2/3] ASoC: SOF: pcm: fix pm_runtime imbalance in error handling
+      commit: da0fe8fd515a471d373acc3682bfb5522cca4d55
+[3/3] ASoC: SOF: sof-client-probes: fix pm_runtime imbalance in error handling
+      commit: bc424273c74c1565c459c8f2a6ed95caee368d0a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
