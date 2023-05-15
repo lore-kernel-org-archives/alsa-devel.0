@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC85DC77B7D
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 06:52:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E301FC77B7D
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 06:53:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF878A4C;
-	Mon, 15 May 2023 08:51:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF878A4C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56F60846;
+	Mon, 15 May 2023 08:52:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56F60846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684133563;
-	bh=kmDbCUIES+5ZVKXI71LGbR/AUG9G2hwf5/ixjyhOExs=;
+	s=default; t=1684133592;
+	bh=xKsOmGgpfRTaoYi/C0Rex9lD4JYFMvLzVqkjtEvqo9k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HjqgDJnnD8ubWdoU5ukyaBMz2qIMmoD6VoSB+a/8IvLqmnJi7+AqPEKxaoV9M38YA
-	 7yrhdA1hjybVCQYfwEi9Vd3+oUClIlIML+bL5+HC/wJ75JnPPRzGCxHjn/j0JG4LF0
-	 Cf4QwOjemk4R4koHeevAmWJC3EsjdN6fskS8BMRQ=
+	b=ciFAdPKW95VS5zgEMe7MIjAPYynsjYZzIacblb4XdwYOjWDJ02XDloaPKQqOsfEE6
+	 gbMBkZdkRet8uQ+gpOk0R/y+iHOGrvKEfUAhB6L5U1wYJVZ7LFGwmJaXm6HjjK/PRk
+	 GUH0Ud604peeBkk2z4H+wkxrvOpZe1bjiqEtHONA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33525F8057D; Mon, 15 May 2023 08:50:48 +0200 (CEST)
+	id 28D38F805AE; Mon, 15 May 2023 08:50:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68DC7F805A1;
-	Mon, 15 May 2023 08:50:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 187B2F805B0;
+	Mon, 15 May 2023 08:50:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9D11CF8057D; Mon, 15 May 2023 08:50:43 +0200 (CEST)
+	id 64133F8057F; Mon, 15 May 2023 08:50:45 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 01B56F8016A
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 08:50:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01B56F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id CA0E9F8055A
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 08:50:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA0E9F8055A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Wai/HEVF
+ header.s=Intel header.b=WnGorUAQ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684133434; x=1715669434;
+  t=1684133441; x=1715669441;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=kmDbCUIES+5ZVKXI71LGbR/AUG9G2hwf5/ixjyhOExs=;
-  b=Wai/HEVFmn+EKaZ4oaeb6ItZ19cavmBfXNGVT+Dw1oOkjPFnfoI1s/+6
-   crTfwB4j/cU7NES82jPK7buZn6HCHNMFoEsIr9cvnuWGCsi4h6oL3KwTp
-   rCYzibjRKsS6gGj5/uPpVmzx/z4/QLNjys1El3d8RoghIzxpyLgCyiGda
-   pm1lB+COJnZCvBgYQe49uG9rbqJOzN3PP7uzdpW/D4DU6jb3GrRP5yLZd
-   Qb+IcS50A/f5wp8g4hyP2BUTEDwlutzSGCvQs/EybStatK5nFiesB2AM4
-   zhBUvN7EM30G3bcbcbIwzXxGjbU5MDHvzY9pzpEpasvws3Ox6K6eDIQMM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="349966302"
+  bh=xKsOmGgpfRTaoYi/C0Rex9lD4JYFMvLzVqkjtEvqo9k=;
+  b=WnGorUAQOVju36hgGrEz99QAHXpIZyFFjnmBQ9XyPuqEc5Sj6c9Z/7Xd
+   n0Mghzi6UoWoQ3phv/sKrJAIdJlaBa7igqYXGOuOo+K5oM1h5NLVAXLMO
+   5RTtnwCuefVWQyXLKVB0CYiKgtjmx1GeHJ9XsrSV0JUNY/NvIbNQXPZX9
+   co6NEHP6jwYNfv1HQ27IgxEuVTm8Ve+ZIWn734301kJMlbcHQD9kDNx63
+   CGAOI0R+0oQ4XjmfuK6VMwX5uvss5dHQIUGZmO0C3avR4nJ5VIkDmZGr8
+   6uWEmgJOPVnq6lDV8BIwF71Wb8EZwIBZsBneIR/azNQfE75qSZK9e8thv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="349966333"
 X-IronPort-AV: E=Sophos;i="5.99,275,1677571200";
-   d="scan'208";a="349966302"
+   d="scan'208";a="349966333"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 May 2023 23:50:31 -0700
+ 14 May 2023 23:50:38 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="694908617"
+X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="694908641"
 X-IronPort-AV: E=Sophos;i="5.99,275,1677571200";
-   d="scan'208";a="694908617"
+   d="scan'208";a="694908641"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 May 2023 23:50:28 -0700
+ 14 May 2023 23:50:35 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org,
@@ -73,17 +73,18 @@ Cc: linux-kernel@vger.kernel.org,
 	vinod.koul@linaro.org,
 	pierre-louis.bossart@linux.intel.com,
 	bard.liao@intel.com
-Subject: [PATCH v2 04/26] soundwire/ASOC: Intel: update offsets for LunarLake
-Date: Mon, 15 May 2023 15:10:20 +0800
-Message-Id: <20230515071042.2038-5-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 07/26] soundwire: intel: add eml_lock in the interface for
+ new platforms
+Date: Mon, 15 May 2023 15:10:23 +0800
+Message-Id: <20230515071042.2038-8-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230515071042.2038-1-yung-chuan.liao@linux.intel.com>
 References: <20230515071042.2038-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SDILNPAF33JKBXA7P6AOXZB6NLKMF4RE
-X-Message-ID-Hash: SDILNPAF33JKBXA7P6AOXZB6NLKMF4RE
+Message-ID-Hash: CXJWIZ6HTJZRM7CO7HYQRMEQ3S7TRV32
+X-Message-ID-Hash: CXJWIZ6HTJZRM7CO7HYQRMEQ3S7TRV32
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SDILNPAF33JKBXA7P6AOXZB6NLKMF4RE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CXJWIZ6HTJZRM7CO7HYQRMEQ3S7TRV32/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,126 +108,50 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The previous settings are not applicable, use a flag to determine what
-the register layout is.
+In existing Intel/SoundWire systems, all the SoundWire configuration
+is 'self-contained', with the 'shim_lock' mutex used to protect access
+to shared registers in multi-link configurations.
+
+With the move of part of the SoundWire registers to the HDaudio
+multi-link structure, we need a unified lock. The hda-mlink
+implementation provides an 'eml_lock' that is used to protect shared
+registers such as LCTL and LSYNC, we can pass it to the SoundWire
+side. There is no issue with possible dangling pointers since the
+SoundWire auxiliary devices are children of the PCI device, so the
+'eml_lock' cannot be removed while the SoundWire side is in use.
+
+This patch only adds the interface for now.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Acked-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/soundwire/intel.h           |  2 ++
- drivers/soundwire/intel_init.c      | 14 ++++++++++----
- include/linux/soundwire/sdw_intel.h |  2 ++
- sound/soc/sof/intel/hda.c           | 21 +++++++++++++++++----
- 4 files changed, 31 insertions(+), 8 deletions(-)
+ include/linux/soundwire/sdw_intel.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index 09d479f2c77b..51aa42a5a824 100644
---- a/drivers/soundwire/intel.h
-+++ b/drivers/soundwire/intel.h
-@@ -11,6 +11,7 @@
-  * @mmio_base: mmio base of SoundWire registers
-  * @registers: Link IO registers base
-  * @shim: Audio shim pointer
-+ * @shim_vs: Audio vendor-specific shim pointer
-  * @alh: ALH (Audio Link Hub) pointer
-  * @irq: Interrupt line
-  * @ops: Shim callback ops
-@@ -28,6 +29,7 @@ struct sdw_intel_link_res {
- 	void __iomem *mmio_base; /* not strictly needed, useful for debug */
- 	void __iomem *registers;
- 	void __iomem *shim;
-+	void __iomem *shim_vs;
- 	void __iomem *alh;
- 	int irq;
- 	const struct sdw_intel_ops *ops;
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index cbe56b993c6c..e0023af9e0e1 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -63,10 +63,16 @@ static struct sdw_intel_link_dev *intel_link_dev_register(struct sdw_intel_res *
- 	link = &ldev->link_res;
- 	link->hw_ops = res->hw_ops;
- 	link->mmio_base = res->mmio_base;
--	link->registers = res->mmio_base + SDW_LINK_BASE
--		+ (SDW_LINK_SIZE * link_id);
--	link->shim = res->mmio_base + res->shim_base;
--	link->alh = res->mmio_base + res->alh_base;
-+	if (!res->ext) {
-+		link->registers = res->mmio_base + SDW_LINK_BASE
-+			+ (SDW_LINK_SIZE * link_id);
-+		link->shim = res->mmio_base + res->shim_base;
-+		link->alh = res->mmio_base + res->alh_base;
-+	} else {
-+		link->registers = res->mmio_base + SDW_IP_BASE(link_id);
-+		link->shim = res->mmio_base +  SDW_SHIM2_GENERIC_BASE(link_id);
-+		link->shim_vs = res->mmio_base + SDW_SHIM2_VS_BASE(link_id);
-+	}
- 
- 	link->ops = res->ops;
- 	link->dev = res->dev;
 diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 66687e83a94f..88eb5bf98140 100644
+index c4281aa06e2e..bafc6f2554b0 100644
 --- a/include/linux/soundwire/sdw_intel.h
 +++ b/include/linux/soundwire/sdw_intel.h
-@@ -323,6 +323,7 @@ struct sdw_intel_ctx {
-  * DSP driver. The quirks are common for all links for now.
-  * @shim_base: sdw shim base.
+@@ -327,6 +327,8 @@ struct sdw_intel_ctx {
   * @alh_base: sdw alh base.
-+ * @ext: extended HDaudio link support
+  * @ext: extended HDaudio link support
+  * @hbus: hdac_bus pointer, needed for power management
++ * @eml_lock: mutex protecting shared registers in the HDaudio multi-link
++ * space
   */
  struct sdw_intel_res {
  	const struct sdw_intel_hw_ops *hw_ops;
-@@ -337,6 +338,7 @@ struct sdw_intel_res {
- 	u32 clock_stop_quirks;
- 	u32 shim_base;
+@@ -343,6 +345,7 @@ struct sdw_intel_res {
  	u32 alh_base;
-+	bool ext;
+ 	bool ext;
+ 	struct hdac_bus *hbus;
++	struct mutex *eml_lock;
  };
  
  /*
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 3153e21f100a..793baf60c78b 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -158,6 +158,7 @@ static int hda_sdw_acpi_scan(struct snd_sof_dev *sdev)
- 
- static int hda_sdw_probe(struct snd_sof_dev *sdev)
- {
-+	const struct sof_intel_dsp_desc *chip;
- 	struct sof_intel_hda_dev *hdev;
- 	struct sdw_intel_res res;
- 	void *sdw;
-@@ -166,10 +167,22 @@ static int hda_sdw_probe(struct snd_sof_dev *sdev)
- 
- 	memset(&res, 0, sizeof(res));
- 
--	res.hw_ops = &sdw_intel_cnl_hw_ops;
--	res.mmio_base = sdev->bar[HDA_DSP_BAR];
--	res.shim_base = hdev->desc->sdw_shim_base;
--	res.alh_base = hdev->desc->sdw_alh_base;
-+	chip = get_chip_info(sdev->pdata);
-+	if (chip->hw_ip_version < SOF_INTEL_ACE_2_0) {
-+		res.mmio_base = sdev->bar[HDA_DSP_BAR];
-+		res.hw_ops = &sdw_intel_cnl_hw_ops;
-+		res.shim_base = hdev->desc->sdw_shim_base;
-+		res.alh_base = hdev->desc->sdw_alh_base;
-+		res.ext = false;
-+	} else {
-+		res.mmio_base = sdev->bar[HDA_DSP_HDA_BAR];
-+		/*
-+		 * the SHIM and SoundWire register offsets are link-specific
-+		 * and will be determined when adding auxiliary devices
-+		 */
-+		res.hw_ops = &sdw_intel_lnl_hw_ops;
-+		res.ext = true;
-+	}
- 	res.irq = sdev->ipc_irq;
- 	res.handle = hdev->info.handle;
- 	res.parent = sdev->dev;
 -- 
 2.25.1
 
