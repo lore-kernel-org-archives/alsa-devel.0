@@ -4,93 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 781D1C7EE23
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 11:21:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 355F7C77B75
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 11:22:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5356883E;
-	Mon, 15 May 2023 13:20:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5356883E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1435391;
+	Mon, 15 May 2023 13:21:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1435391
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684149702;
-	bh=dEDfYcEDQeuMe4sfkygwgrk6rmDllZJtdpRxKV6do7I=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1684149723;
+	bh=T9fUIZM//OsaJoszK2rbswFzc+I4mXJQ/XmvdRAp4Ho=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RV3B4dzQvXYk57YsyoMpzGkPKIeQWh54ngFmdYs+pXKraCTjW2oHKE/tlC7WqQ4EC
-	 PVH+kt4tqdLgcwtMnvd3D+lwF8uVP55+eAZBiDXYsMchLzQbv4YsZFPK9Ou1FVqrFP
-	 BEMaJYZy2CFt24CB4VmrKNH4syFiejVmKmW9CVpo=
+	b=E+plvIVZFzrNM7i8u1TL6SYLpVA19Sopd0S0kxpvYckKHdv66xG613uVlYWt2Stc8
+	 ae6989uYhKmzUpf08pq73cgVdXXrJrRfYZGAtfmJDrC6HuEpHxhdmo+rqEaLfeSq6A
+	 bouMvLvAGE4xBcQ5K8LwB7+KjUQcZFgVH0ov7SOs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26126F805AB; Mon, 15 May 2023 13:19:49 +0200 (CEST)
+	id E3A13F80552; Mon, 15 May 2023 13:21:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95DB7F8058C;
-	Mon, 15 May 2023 13:19:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7792BF80542;
+	Mon, 15 May 2023 13:21:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C04DF80563; Mon, 15 May 2023 13:19:43 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 3A639F802E8; Mon, 15 May 2023 13:21:06 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B63CEF8016D
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 13:19:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B63CEF8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2932FF8016A
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 13:21:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2932FF8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=RDtajWsM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684149576; x=1715685576;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=dEDfYcEDQeuMe4sfkygwgrk6rmDllZJtdpRxKV6do7I=;
-  b=RDtajWsMES9Gq5Rsz0/xwTUiaovhjBNcHHOoqQ7yR9XWiSon7OGTwy0U
-   kPLNTXJI+umr80TDBk519DCK/Vq2TtUmcnmLczHnsqcEZdSR+f2Hl/x7O
-   chM2YFktDKJFTf/IKHoxkGXwdCtQ4UQHeE+Dl2Ies2CjkuMBQGjph3CfM
-   s8kH8GJUeL457BNzBfOCQbkCP/csB/4A3lIBSYR9VrgC43TU+H2FZIFY/
-   CuMNRi/Ov+f/M2h5gmWfU7N/DV0Kgt4nnx4Hf4VIGnkYw2l+/Wa7joCPH
-   w7uT6LYMzpUBpiaZWSgTXacR6Ak0PTDSqhoogrvAG3hUUOvH5R5j7bfiR
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="335715996"
-X-IronPort-AV: E=Sophos;i="5.99,276,1677571200";
-   d="scan'208";a="335715996"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2023 04:19:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10710"; a="1030874837"
-X-IronPort-AV: E=Sophos;i="5.99,276,1677571200";
-   d="scan'208";a="1030874837"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144])
- ([10.99.16.144])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 May 2023 04:19:31 -0700
-Message-ID: <98943bc1-c56c-45aa-06d2-80c618d0585c@linux.intel.com>
-Date: Mon, 15 May 2023 13:19:29 +0200
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=lxnqPdLb
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9A50C622B1;
+	Mon, 15 May 2023 11:21:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71A59C433D2;
+	Mon, 15 May 2023 11:21:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684149662;
+	bh=T9fUIZM//OsaJoszK2rbswFzc+I4mXJQ/XmvdRAp4Ho=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lxnqPdLb3m/VqY4ug2kVgU5qZqloUDQHQVPZeluUdr8l3mjkkvoXSaXdxIToBfBtO
+	 Fz8kuh86bJ+B77su2sh0jtfsfCjMgOvg5Z3tLhC6AC2NcrthHURs5hmszzoiqM7f58
+	 kao6P7OhvBtH7deZIW92FOwbCSM99Xyl2dCFlMJOFJ8hJsDoxrZkv90EQfKZEQJUNT
+	 xkpyJiAAMy66g/HsIgDDEvPMdPQHP3AzjjkU3FxZJZIFUzv1rJNMaKZHZJwhY99BnM
+	 fClP+I7y5JGSE+N0ybTcTlCnDS73tXDdg2Vg5outqNhUp+U5xGsR2aXB1ftLLPLTrH
+	 V0ReRNOs0Ouiw==
+Date: Mon, 15 May 2023 20:20:59 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Conor Dooley <conor.dooley@microchip.com>
+Cc: Walker Chen <walker.chen@starfivetech.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 3/3] riscv: dts: starfive: add the node and pins
+ configuration for tdm
+Message-ID: <ZGIVm6LHMpIylvAC@finisterre.sirena.org.uk>
+References: <20230511091549.28003-1-walker.chen@starfivetech.com>
+ <20230511091549.28003-4-walker.chen@starfivetech.com>
+ <cd7803a2-38a0-c498-467f-1ef802645527@starfivetech.com>
+ <20230515-dragonish-diffuser-48a1c6f4c8ae@wendy>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: HDA, power saving and recording
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <a7478636-af11-92ab-731c-9b13c582a70d@linux.intel.com>
- <878rdwjs1s.wl-tiwai@suse.de>
- <cceaeb53-06df-ced0-1f54-f5c0eb65f824@linux.intel.com>
- <87jzxe5084.wl-tiwai@suse.de>
- <41417b90-1881-0cbb-52e1-d63923dd8cd6@linux.intel.com>
- <87ilcxaj3u.wl-tiwai@suse.de> <87fs81ainl.wl-tiwai@suse.de>
- <7915b40e-a65a-479d-5a2b-062ee3cb432b@linux.intel.com>
- <87bkipag9z.wl-tiwai@suse.de>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <87bkipag9z.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 5QW4O5NNEM63JKCKBEDL7A3PMYHDWOGR
-X-Message-ID-Hash: 5QW4O5NNEM63JKCKBEDL7A3PMYHDWOGR
-X-MailFrom: amadeuszx.slawinski@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mqP7O91n5Vmg09iP"
+Content-Disposition: inline
+In-Reply-To: <20230515-dragonish-diffuser-48a1c6f4c8ae@wendy>
+X-Cookie: Avoid contact with eyes.
+Message-ID-Hash: PM7RAN3GAYPK4NZDKZ7MQZG5Y333JAU2
+X-Message-ID-Hash: PM7RAN3GAYPK4NZDKZ7MQZG5Y333JAU2
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5QW4O5NNEM63JKCKBEDL7A3PMYHDWOGR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PM7RAN3GAYPK4NZDKZ7MQZG5Y333JAU2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,125 +104,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 5/12/2023 2:24 PM, Takashi Iwai wrote:
-> On Fri, 12 May 2023 14:00:54 +0200,
-> Amadeusz Sławiński wrote:
->>
->> On 5/12/2023 1:33 PM, Takashi Iwai wrote:
->>> On Fri, 12 May 2023 13:23:49 +0200,
->>> Takashi Iwai wrote:
->>>>
->>>> On Thu, 11 May 2023 19:20:17 +0200,
->>>> Amadeusz Sławiński wrote:
->>>>>
->>>>> On 5/11/2023 5:58 PM, Takashi Iwai wrote:
->>>>>> On Thu, 11 May 2023 17:31:37 +0200,
->>>>>> Amadeusz Sławiński wrote:
->>>>>>>
->>>>>>> On 5/10/2023 2:21 PM, Takashi Iwai wrote:
->>>>>>>> On Tue, 09 May 2023 12:10:06 +0200,
->>>>>>>> Amadeusz Sławiński wrote:
->>>>>>> Then capture stream starts and seems to assume that
->>>>>>> registers were already set, so it doesn't write them to hw.
->>>>>>
->>>>>> ... it seems this didn't happen, and that's the inconsistency.
->>>>>>
->>>>>> So the further question is:
->>>>>> At the point just before you start recording, is the codec in runtime
->>>>>> suspended?  Or it's running?
->>>>>>
->>>>>> If it's runtime-suspended, snd_hda_regmap_sync() must be called from
->>>>>> alc269_resume() via runtime-resume, and this must write out the
->>>>>> cached values.  Then the bug can be along with that line.
->>>>>>
->>>>>> Or if it's running, it means that the previous check of
->>>>>> snd_hdac_keep_power_up() was bogus (or racy).
->>>>>>
->>>>>
->>>>> Well, it is in... let's call it semi powered state. When snd_hda_intel
->>>>> driver is loaded with power_save=X option it sets timeout to X seconds
->>>>> and problem only happens when I start the stream before those X
->>>>> seconds pass and it runs first runtime suspend. After it suspends it
->>>>> then uses standard pm_runtime_resume and works correctly. That's why
->>>>> the pm_runtime_force_suspend(&codec->core.dev);  mentioned in first
->>>>> email in thread "fixes" the problem, as it forces it to be instantly
->>>>> suspended instead of waiting for timeout and then later normal
->>>>> resume-play/record-suspend flow can be followed.
->>>>
->>>> Hm, then maybe it's a bad idea to rely on the usage count there.
->>>> Even if the usage is 0, the device can be still active, and the update
->>>> can be missed.
->>>>
->>>> How about the patch like below?
->>>
->>> Scratch that, it returns a wrong value.
->>> A simpler version like below works instead?
->>>
->>
->> Yes it was broken, arecord didn't even start capturing ;)
->>
->>>
->>> Takashi
->>>
->>> --- a/sound/hda/hdac_device.c
->>> +++ b/sound/hda/hdac_device.c
->>> @@ -611,10 +611,9 @@ EXPORT_SYMBOL_GPL(snd_hdac_power_up_pm);
->>>    int snd_hdac_keep_power_up(struct hdac_device *codec)
->>>    {
->>>    	if (!atomic_inc_not_zero(&codec->in_pm)) {
->>> -		int ret = pm_runtime_get_if_in_use(&codec->dev);
->>> -		if (!ret)
->>> +		if (!pm_runtime_active(&codec->dev))
->>>    			return -1;
->>> -		if (ret < 0)
->>> +		if (pm_runtime_get_sync(&codec->dev) < 0)
->>>    			return 0;
->>>    	}
->>>    	return 1;
->>
->>
->> This one seems to work, as in I'm able to record before first suspend
->> hits. However device stays in D0 when no stream is running...
->> # cat /sys/devices/pci0000\:00/0000\:00\:0e.0/power_state
->> D0
-> 
-> OK, one step forward.  The previous change was bad in anyway, as we
-> shouldn't sync there at all.
-> 
-> So, the problem becomes clearer now: it's in the lazy update mechanism
-> that misses the case that has to be written.
-> 
-> Scratch the previous one again, and could you try the following one
-> instead?
-> 
-> 
-> Takashi
-> 
-> --- a/sound/hda/hdac_regmap.c
-> +++ b/sound/hda/hdac_regmap.c
-> @@ -293,8 +293,17 @@ static int hda_reg_write(void *context, unsigned int reg, unsigned int val)
->   
->   	if (verb != AC_VERB_SET_POWER_STATE) {
->   		pm_lock = codec_pm_lock(codec);
-> -		if (pm_lock < 0)
-> -			return codec->lazy_cache ? 0 : -EAGAIN;
-> +		if (pm_lock < 0) {
-> +			/* skip the actual write if it's in lazy-update mode
-> +			 * and only if the device is actually suspended;
-> +			 * the usage count can be zero at transition phase
-> +			 * (either suspending/resuming or auto-suspend sleep)
-> +			 */
-> +			if (codec->lazy_cache &&
-> +			    pm_runtime_suspended(&codec->dev))
-> +				return 0;
-> +			return -EAGAIN;
-> +		}
->   	}
->   
->   	if (is_stereo_amp_verb(reg)) {
-> 
 
-With this one we are back to same behavior as without it. When capture 
-is started before first suspend it records silence. After waiting for 
-timeout and suspend it records correctly.
+--mqP7O91n5Vmg09iP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Mon, May 15, 2023 at 09:58:12AM +0100, Conor Dooley wrote:
+
+> It's only been 4 days chief, of which 2 were the weekend, you don't need
+> to bump it yet! You'd be better off asking one of your co-workers to
+
+4 days, 2 of which were the weekend and 4 of which I was on holiday...
+
+--mqP7O91n5Vmg09iP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRiFZoACgkQJNaLcl1U
+h9A3UQf+Pl3EGxms+J3grtXRzBY+ejt6SgLQdSTJw9Uqz7Fwgfsw7oQ+yPWHDHp1
+mXYCBFBWzfWWVh+Q9ogUF7GFDGMM9GmzU2ywgbDvmrxKBugimlXWbEArFWNi9vdr
+qNsA4VX1rXD7qkkDptHDxoHuhcIsef6Rc3SGhCjByAeom+lEgOrPLmLOSxO+Fuh5
+SemO/Tlac48KtG2L+oNRrQW3EVA8buAkkilgRmPpXOBQpJRinJNy/Lfc7KSCqk1U
+MT4BpMeIS0kugU0brTvopy7W8+VuZhuflVhGOn9DWiKPJLz1Dt59TpKcdE9ABGVV
+KcFKmBwEaJacIJQ8yKhiiEakuLImFw==
+=6jDZ
+-----END PGP SIGNATURE-----
+
+--mqP7O91n5Vmg09iP--
