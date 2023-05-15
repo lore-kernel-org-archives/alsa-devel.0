@@ -4,48 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0966BC77B75
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 16:32:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31B8BC77B7D
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 17:36:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 758B482B;
-	Mon, 15 May 2023 18:31:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 758B482B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A373822;
+	Mon, 15 May 2023 19:36:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A373822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684168349;
-	bh=FigWM7qTafS0jo3B7gAp+bngpr6xZE2zFdtA53dQiaI=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=K52al83YctSV3ULi3QgzcA7mPIFYEp2CXlevwVehyATM22ey1dVEsqWH8/VFmzX7H
-	 3X0n2e0xXr7Uwv+1WoEeztIC4igaXudiYBm02J5dJ4q5vRDVHNKIqG5Da/TljaJ27f
-	 Zeb3jaSti0gn7vA44Ay0lD8gartZSvq3AICwFs/8=
+	s=default; t=1684172214;
+	bh=qG3t6hDwXvIDoNWas+q3ijmmtyRvzXYKHav44WDZj9w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Ovq0enq8IGkAUAVm6EPcAMdZdN4uVJIt/lgFYmJMrCyTnoMwG3SD4Wr33vwLOl34N
+	 w6sNExiKd2BtF+/JI7Eq5/vIVb/olAO+DPg4Jcqpsg3AWgEh1g0C5iyuUYtlGajFXz
+	 8rn+1+dNNgu4j/BJxJpM8THKmgNBxSDg3A3GDmIY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59A94F8055B; Mon, 15 May 2023 18:31:20 +0200 (CEST)
+	id 7F4B7F80549; Mon, 15 May 2023 19:35:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06CBCF80544;
-	Mon, 15 May 2023 18:31:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07CAFF80431;
+	Mon, 15 May 2023 19:35:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51DF5F80272; Mon, 15 May 2023 18:31:16 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81429F8053D
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 18:31:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81429F8053D
+	id E5A10F80272; Mon, 15 May 2023 19:35:35 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id DD83BF8016A
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 19:35:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD83BF8016A
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=YlQRs5nY
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id E57EE62DD2;
+	Mon, 15 May 2023 17:35:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F671C4339B;
+	Mon, 15 May 2023 17:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1684172120;
+	bh=qG3t6hDwXvIDoNWas+q3ijmmtyRvzXYKHav44WDZj9w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YlQRs5nY3tc8qqGMKAnoEbKTxzv9H9J10FZsbcsRKO0ycpKe0A7tm4Pwxyb/mv0Bw
+	 exKPvo/dcc90G16VdrPWgI/v+hJzPrRGaZIVkWW2zvNMdjOZ3gsisAO2stWBq3+HRU
+	 GTICCUnv++7NAha5uAA53Nyh6/pSCiBWlvHYFPrg=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Arnd Bergmann <arnd@arndb.de>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	kernel test robot <lkp@intel.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 051/381] sound/oss/dmasound: fix build when drivers are
+ mixed =y/=m
+Date: Mon, 15 May 2023 18:25:02 +0200
+Message-Id: <20230515161739.138348227@linuxfoundation.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230515161736.775969473@linuxfoundation.org>
+References: <20230515161736.775969473@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1684168273981478691-webhooks-bot@alsa-project.org>
-References: <1684168273981478691-webhooks-bot@alsa-project.org>
-Subject: alsactl: fix compilation when building in a subdir
-Message-Id: <20230515163116.51DF5F80272@alsa1.perex.cz>
-Date: Mon, 15 May 2023 18:31:16 +0200 (CEST)
-Message-ID-Hash: 3C3FJQDOFLAVCPI5YLE4YGPQB3VB32PL
-X-Message-ID-Hash: 3C3FJQDOFLAVCPI5YLE4YGPQB3VB32PL
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: YYDKFHHZBRM6FSWX4YY4ECKU33U7AE5P
+X-Message-ID-Hash: YYDKFHHZBRM6FSWX4YY4ECKU33U7AE5P
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3C3FJQDOFLAVCPI5YLE4YGPQB3VB32PL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YYDKFHHZBRM6FSWX4YY4ECKU33U7AE5P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,22 +99,166 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils pull request #213 was opened from heitbaum:
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Fixes: 613372d
-Fixes: cff2d1c
-Fixes: #212
+commit 9dd7c46346ca4390f84a7ea9933005eb1b175c15 upstream.
 
-Compile errors when building in a subdir:
-```
-alsactl/alsactl.c:33:10: fatal error: os_compat.h: No such file or directory
-   33 | #include "os_compat.h"
-      |          ^~~~~~~~~~~~~
-alsactl/lock.c:34:10: fatal error: os_compat.h: No such file or directory
-   34 | #include "os_compat.h"
-      |          ^~~~~~~~~~~~~
-```
+When CONFIG_DMASOUND_ATARI=m and CONFIG_DMASOUND_Q40=y (or vice versa),
+dmasound_core.o can be built without dmasound_deinit() being defined,
+causing a build error:
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/213
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/213.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+ERROR: modpost: "dmasound_deinit" [sound/oss/dmasound/dmasound_atari.ko] undefined!
+
+Modify dmasound_core.c and dmasound.h so that dmasound_deinit() is
+always available.
+
+The mixed modes (=y/=m) also mean that several variables and structs
+have to be declared in all cases.
+
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: lore.kernel.org/r/202204032138.EFT9qGEd-lkp@intel.com
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Link: https://lore.kernel.org/r/20220405234118.24830-1-rdunlap@infradead.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ sound/oss/dmasound/dmasound.h      |    6 ------
+ sound/oss/dmasound/dmasound_core.c |   24 +-----------------------
+ 2 files changed, 1 insertion(+), 29 deletions(-)
+
+--- a/sound/oss/dmasound/dmasound.h
++++ b/sound/oss/dmasound/dmasound.h
+@@ -88,11 +88,7 @@ static inline int ioctl_return(int __use
+      */
+ 
+ extern int dmasound_init(void);
+-#ifdef MODULE
+ extern void dmasound_deinit(void);
+-#else
+-#define dmasound_deinit()	do { } while (0)
+-#endif
+ 
+ /* description of the set-up applies to either hard or soft settings */
+ 
+@@ -114,9 +110,7 @@ typedef struct {
+     void *(*dma_alloc)(unsigned int, gfp_t);
+     void (*dma_free)(void *, unsigned int);
+     int (*irqinit)(void);
+-#ifdef MODULE
+     void (*irqcleanup)(void);
+-#endif
+     void (*init)(void);
+     void (*silence)(void);
+     int (*setFormat)(int);
+--- a/sound/oss/dmasound/dmasound_core.c
++++ b/sound/oss/dmasound/dmasound_core.c
+@@ -206,12 +206,10 @@ module_param(writeBufSize, int, 0);
+ 
+ MODULE_LICENSE("GPL");
+ 
+-#ifdef MODULE
+ static int sq_unit = -1;
+ static int mixer_unit = -1;
+ static int state_unit = -1;
+ static int irq_installed;
+-#endif /* MODULE */
+ 
+ /* control over who can modify resources shared between play/record */
+ static fmode_t shared_resource_owner;
+@@ -391,9 +389,6 @@ static const struct file_operations mixe
+ 
+ static void mixer_init(void)
+ {
+-#ifndef MODULE
+-	int mixer_unit;
+-#endif
+ 	mixer_unit = register_sound_mixer(&mixer_fops, -1);
+ 	if (mixer_unit < 0)
+ 		return;
+@@ -1176,9 +1171,6 @@ static const struct file_operations sq_f
+ static int sq_init(void)
+ {
+ 	const struct file_operations *fops = &sq_fops;
+-#ifndef MODULE
+-	int sq_unit;
+-#endif
+ 
+ 	sq_unit = register_sound_dsp(fops, -1);
+ 	if (sq_unit < 0) {
+@@ -1380,9 +1372,6 @@ static const struct file_operations stat
+ 
+ static int state_init(void)
+ {
+-#ifndef MODULE
+-	int state_unit;
+-#endif
+ 	state_unit = register_sound_special(&state_fops, SND_DEV_STATUS);
+ 	if (state_unit < 0)
+ 		return state_unit ;
+@@ -1400,10 +1389,9 @@ static int state_init(void)
+ int dmasound_init(void)
+ {
+ 	int res ;
+-#ifdef MODULE
++
+ 	if (irq_installed)
+ 		return -EBUSY;
+-#endif
+ 
+ 	/* Set up sound queue, /dev/audio and /dev/dsp. */
+ 
+@@ -1422,9 +1410,7 @@ int dmasound_init(void)
+ 		printk(KERN_ERR "DMA sound driver: Interrupt initialization failed\n");
+ 		return -ENODEV;
+ 	}
+-#ifdef MODULE
+ 	irq_installed = 1;
+-#endif
+ 
+ 	printk(KERN_INFO "%s DMA sound driver rev %03d installed\n",
+ 		dmasound.mach.name, (DMASOUND_CORE_REVISION<<4) +
+@@ -1438,8 +1424,6 @@ int dmasound_init(void)
+ 	return 0;
+ }
+ 
+-#ifdef MODULE
+-
+ void dmasound_deinit(void)
+ {
+ 	if (irq_installed) {
+@@ -1458,8 +1442,6 @@ void dmasound_deinit(void)
+ 		unregister_sound_dsp(sq_unit);
+ }
+ 
+-#else /* !MODULE */
+-
+ static int dmasound_setup(char *str)
+ {
+ 	int ints[6], size;
+@@ -1503,8 +1485,6 @@ static int dmasound_setup(char *str)
+ 
+ __setup("dmasound=", dmasound_setup);
+ 
+-#endif /* !MODULE */
+-
+     /*
+      *  Conversion tables
+      */
+@@ -1591,9 +1571,7 @@ char dmasound_alaw2dma8[] = {
+ 
+ EXPORT_SYMBOL(dmasound);
+ EXPORT_SYMBOL(dmasound_init);
+-#ifdef MODULE
+ EXPORT_SYMBOL(dmasound_deinit);
+-#endif
+ EXPORT_SYMBOL(dmasound_write_sq);
+ EXPORT_SYMBOL(dmasound_catchRadius);
+ #ifdef HAS_8BIT_TABLES
+
+
