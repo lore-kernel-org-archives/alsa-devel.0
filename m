@@ -4,74 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EF10C77B7D
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 11:11:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57176C77B7D
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 May 2023 11:11:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4FBF826;
-	Mon, 15 May 2023 13:10:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4FBF826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21C6E83A;
+	Mon, 15 May 2023 13:10:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21C6E83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684149089;
-	bh=TY313p2eRvk9cM1fJkdAFqjEmiykwdPkT6pqIfpqw+E=;
+	s=default; t=1684149097;
+	bh=lwjgziLcEsIzBPxxZ1N8abCwzxvPGfURke6CIpHvtww=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cXoWq2ktlt71BX6ifqjlSDmqhr0fER9nSop8mD/0PcESDyrBehR++r6kJsAVR8iH7
-	 thhdqPUt+jTJmZ5w/lvdqeDY7IuK0WlkZ+f6A8Q7T9zS5ccmkZsmaYE+5DMOA2vaOF
-	 xCG3fL663FsCHJYLqeys5+F8h4MqVmu8Oxuby/j8=
+	b=UJL+fa8U1aHyfFcCwAbLbOY4t42CEzKUVdSPO81SF+RnCucKKoNUF1a/6u8Qv5piN
+	 qP84bCT+e8LMSAT1tmqMchN3t0AAtCafw48bi0zUIZQT5QtHMKGryn6nzmQ6hpFu9F
+	 tRkeF2H5P043jxoaAM9ieFMBWJ7nFxXyhpYSv/oE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF2EBF80553; Mon, 15 May 2023 13:09:50 +0200 (CEST)
+	id 6FABEF8056F; Mon, 15 May 2023 13:09:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B354F80553;
-	Mon, 15 May 2023 13:09:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9789F8056F;
+	Mon, 15 May 2023 13:09:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D2D04F80431; Mon, 15 May 2023 13:09:44 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 8C0B2F80431; Mon, 15 May 2023 13:09:46 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A948AF8025A
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 13:09:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A948AF8025A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C066F8016A
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2023 13:09:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C066F8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=gspIvraU
+ header.s=k20201202 header.b=YuNMzPkb
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 04E1862267;
-	Mon, 15 May 2023 11:09:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35177C433D2;
-	Mon, 15 May 2023 11:09:38 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6CCD6615FE;
+	Mon, 15 May 2023 11:09:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D76DBC433EF;
+	Mon, 15 May 2023 11:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684148979;
-	bh=TY313p2eRvk9cM1fJkdAFqjEmiykwdPkT6pqIfpqw+E=;
+	s=k20201202; t=1684148975;
+	bh=lwjgziLcEsIzBPxxZ1N8abCwzxvPGfURke6CIpHvtww=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=gspIvraUhGgBNQgdfFrWlKPzJ10TXG9KeOPWReYUlrbXSgAV1U86xpjlMjTimjvMH
-	 22tWbHbWh4WAsjeM6/o1m9PpWPHwKuUH7ARcux1nbFhYCPxXwtUprBp7DuSH0hSNjK
-	 I2EQFwJXK5E3Ye+aDEIbxkFaF0bd2XeiGqyT56am6UpyqOzH6rkdvI16/fgosPRVxF
-	 wsYLNLzi80HcLuvz20OizGkMMz7uL/cx5o6d2fpoOBt3HtdF+hNTgL6p8TGKMsIit5
-	 C4JVUyYXDqLyB0ssAIhUaAqQOtRSux9yzcHDKtPorWWUCkZbbIa2qxztPW+mveQH8+
-	 xOgIyytrhNT8w==
+	b=YuNMzPkbzr28+j0Zo8hTdy3k5Ja8MNwey/47bnhvvp39UClQ1RjDBJwvXkB3vK9jb
+	 +FrQrprKO/3/gtG3k7KoorIUtPuMv/luFfVAxrafGmthNLmIDUmKqGIwaWAF/SATn7
+	 DUPtBx9KtK8L5f05ze+WfcJA40mLLtEa0+X7KAE9GVOmHT9xQx0WirJgS7VZdHM5uq
+	 aUYxWWdb6FD/9QlHZvIIlvG1pSS56OmLLhdZCQq7WLyl7x3Fmp4DsRcDBQPu39Lhk2
+	 KcJG5M1oISFsZBpcXsU/H4ckjQ8TmGFpIf/eLrVmvTEARafIxwNF6EanGDG9HGgYmS
+	 i3fXELO7XL3mg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- yung-chuan.liao@linux.intel.com
-In-Reply-To: <20230512114630.24439-1-peter.ujfalusi@linux.intel.com>
-References: <20230512114630.24439-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: topology: Fix logic for copying tuples
-Message-Id: <168414897784.394037.9909991751543751270.b4-ty@kernel.org>
-Date: Mon, 15 May 2023 20:09:37 +0900
+To: linux-samsung-soc@vger.kernel.org,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>, Arnd Bergmann <arnd@arndb.de>,
+ Olof Johansson <olof@lixom.net>
+In-Reply-To: <20230513090228.4340-1-krzysztof.kozlowski@linaro.org>
+References: <20230513090228.4340-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: MAINTAINERS: drop Krzysztof Kozlowski from
+ Samsung audio
+Message-Id: <168414897357.394037.3389766402303422512.b4-ty@kernel.org>
+Date: Mon, 15 May 2023 20:09:33 +0900
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: B4Q5DWQKI634QQWKGZZRV2DYH7ELR2TW
-X-Message-ID-Hash: B4Q5DWQKI634QQWKGZZRV2DYH7ELR2TW
+Message-ID-Hash: R4IIBSA34OFD4GUVQS542FR657C3AD7W
+X-Message-ID-Hash: R4IIBSA34OFD4GUVQS542FR657C3AD7W
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B4Q5DWQKI634QQWKGZZRV2DYH7ELR2TW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R4IIBSA34OFD4GUVQS542FR657C3AD7W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,15 +97,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 12 May 2023 14:46:30 +0300, Peter Ujfalusi wrote:
-> Topology could have more instances of the tokens being searched for than
-> the number of sets that need to be copied. Stop copying token after the
-> limit of number of token instances has been reached. This worked before
-> only by chance as we had allocated more size for the tuples array than
-> the number of actual tokens being parsed.
+On Sat, 13 May 2023 11:02:28 +0200, Krzysztof Kozlowski wrote:
+> Remove Krzysztof Kozlowski from maintainer of Samsung SoC Audio drivers
+> and change the status to maintenance (no one is reality being paid for
+> looking at this).
 > 
 > 
-> [...]
 
 Applied to
 
@@ -109,8 +110,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: topology: Fix logic for copying tuples
-      commit: 41c5305cc3d827d2ea686533777a285176ae01a0
+[1/1] ASoC: MAINTAINERS: drop Krzysztof Kozlowski from Samsung audio
+      commit: 647b5f5fdcbaba6f6fd8db69508fcbeb1fdfc2a6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
