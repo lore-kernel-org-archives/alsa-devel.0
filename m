@@ -4,57 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1292C77B7F
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 09:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45951C77B7F
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 09:39:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3ECE825;
-	Tue, 16 May 2023 11:38:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3ECE825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E2981DF;
+	Tue, 16 May 2023 11:38:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E2981DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684229939;
-	bh=O+w6coujstOtG72Lusd2JiP98ttE9kcVovx7dscbtz0=;
+	s=default; t=1684229957;
+	bh=y9Zvpv+r5INf8aHvJfs52xjAw6Rp4osofBWkuMDkqRE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RARvhCBjB2ESqEyI2z7Neaj8qYWUFR55G2S2ih7SX4jbvT62SzAIfwNcQ7nnZzT27
-	 ssYDUXqGdlKLdKTpWLNkpiQ2EbVvDmgB3hEwVVfFgZXxUo/dtLmy+ggC29hZBrj4pb
-	 j2GKgidX9oVuAT0rC8PdG7ZYA3nR8p2pKaHkX/Io=
+	b=I7bGC18TaIrZBGqFBInXszi0w0f/1fjgKZAZH7X8gShsB/LwJRJuxEps7qVeVNGt9
+	 Q8nJq1d1vNVyGwN89/O3bhbE3LYQdHUmv5zne2YOkRn/++lEdbVYfoGF4jrqkewSan
+	 le58qplbwhc/U+N+LAnGWH62Gn2R1bh4a2hw+gY8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 98692F805BB; Tue, 16 May 2023 11:36:42 +0200 (CEST)
+	id 5BC2DF805CA; Tue, 16 May 2023 11:36:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC80DF805BD;
-	Tue, 16 May 2023 11:36:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83A8BF805C8;
+	Tue, 16 May 2023 11:36:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8EB96F80579; Tue, 16 May 2023 11:36:35 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id EC961F805B0; Tue, 16 May 2023 11:36:38 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1041FF80548
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 11:36:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1041FF80548
+	by alsa1.perex.cz (Postfix) with ESMTPS id 242EDF80549
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 11:36:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 242EDF80549
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 20DC524297;
+	by bluemchen.kde.org (Postfix) with ESMTP id 1563324291;
 	Tue, 16 May 2023 05:36:13 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pyr6K-q19-00; Tue, 16 May 2023 11:36:12 +0200
+	id 1pyr6K-q0r-00; Tue, 16 May 2023 11:36:12 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 04/10] ALSA: emu10k1: un-hardcode E-MU mixer control callbacks
- somewhat
-Date: Tue, 16 May 2023 11:36:06 +0200
-Message-Id: <20230516093612.3536508-5-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 01/10] ALSA: emu10k1: make some initializer arrays less
+ wasteful
+Date: Tue, 16 May 2023 11:36:03 +0200
+Message-Id: <20230516093612.3536508-2-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230516093612.3536508-1-oswald.buddenhagen@gmx.de>
 References: <20230516093612.3536508-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XKLQGVLUTXFEID5MRKT6H6NLMYMQBQQP
-X-Message-ID-Hash: XKLQGVLUTXFEID5MRKT6H6NLMYMQBQQP
+Message-ID-Hash: ZZDWEYHBHDLF77XQPVGRMSIMWWA7SGZH
+X-Message-ID-Hash: ZZDWEYHBHDLF77XQPVGRMSIMWWA7SGZH
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -67,7 +66,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XKLQGVLUTXFEID5MRKT6H6NLMYMQBQQP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZZDWEYHBHDLF77XQPVGRMSIMWWA7SGZH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,230 +75,111 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Instead of hard-coding the card-specific arrays and their sizes in each
-function, use a more data-driven approach.
-
-As a drive-by, also hide the unavailable I2S input destinations on the
-1616 cardbus card.
-
-Also as a drive-by, use more assignments at variable declaration for
-brevity. This also removes the pointless masking of kctl.private_value.
+- Use bit fields in struct snd_emu_chip_details
+- Use shorts in the E-MU routing register arrays
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emumixer.c | 155 +++++++++++++++++++++++------------
- 1 file changed, 101 insertions(+), 54 deletions(-)
+ include/sound/emu10k1.h      | 36 ++++++++++++++++++------------------
+ sound/pci/emu10k1/emumixer.c | 10 +++++-----
+ 2 files changed, 23 insertions(+), 23 deletions(-)
 
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index 7bcb1a2d779a..990ea66a828a 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -1601,24 +1601,24 @@ struct snd_emu_chip_details {
+ 	u32 device;
+ 	u32 subsystem;
+ 	unsigned char revision;
+-	unsigned char emu10k1_chip; /* Original SB Live. Not SB Live 24bit. */
+-				    /* Redundant with emu10k2_chip being unset. */
+-	unsigned char emu10k2_chip; /* Audigy 1 or Audigy 2. */
+-	unsigned char ca0102_chip;  /* Audigy 1 or Audigy 2. Not SB Audigy 2 Value. */
+-				    /* Redundant with ca0108_chip being unset. */
+-	unsigned char ca0108_chip;  /* Audigy 2 Value */
+-	unsigned char ca_cardbus_chip; /* Audigy 2 ZS Notebook */
+-	unsigned char ca0151_chip;  /* P16V */
+-	unsigned char spk71;        /* Has 7.1 speakers */
+-	unsigned char sblive51;	    /* SBLive! 5.1 - extout 0x11 -> center, 0x12 -> lfe */
+-	unsigned char spdif_bug;    /* Has Spdif phasing bug */
+-	unsigned char ac97_chip;    /* Has an AC97 chip: 1 = mandatory, 2 = optional */
+-	unsigned char ecard;        /* APS EEPROM */
+-	unsigned char emu_model;     /* EMU model type */
+-	unsigned char spi_dac;      /* SPI interface for DAC; requires ca0108_chip */
+-	unsigned char i2c_adc;      /* I2C interface for ADC; requires ca0108_chip */
+-	unsigned char adc_1361t;    /* Use Philips 1361T ADC */
+-	unsigned char invert_shared_spdif; /* analog/digital switch inverted */
++	unsigned char emu_model;	/* EMU model type */
++	unsigned int emu10k1_chip:1;	/* Original SB Live. Not SB Live 24bit. */
++					/* Redundant with emu10k2_chip being unset. */
++	unsigned int emu10k2_chip:1;	/* Audigy 1 or Audigy 2. */
++	unsigned int ca0102_chip:1;	/* Audigy 1 or Audigy 2. Not SB Audigy 2 Value. */
++					/* Redundant with ca0108_chip being unset. */
++	unsigned int ca0108_chip:1;	/* Audigy 2 Value */
++	unsigned int ca_cardbus_chip:1;	/* Audigy 2 ZS Notebook */
++	unsigned int ca0151_chip:1;	/* P16V */
++	unsigned int spk71:1;		/* Has 7.1 speakers */
++	unsigned int sblive51:1;	/* SBLive! 5.1 - extout 0x11 -> center, 0x12 -> lfe */
++	unsigned int spdif_bug:1;	/* Has Spdif phasing bug */
++	unsigned int ac97_chip:2;	/* Has an AC97 chip: 1 = mandatory, 2 = optional */
++	unsigned int ecard:1;		/* APS EEPROM */
++	unsigned int spi_dac:1;		/* SPI interface for DAC; requires ca0108_chip */
++	unsigned int i2c_adc:1;		/* I2C interface for ADC; requires ca0108_chip */
++	unsigned int adc_1361t:1;	/* Use Philips 1361T ADC */
++	unsigned int invert_shared_spdif:1;  /* analog/digital switch inverted */
+ 	const char *driver;
+ 	const char *name;
+ 	const char *id;		/* for backward compatibility - can be NULL if not needed */
 diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
-index 8d4b7c30d931..1a606695eda7 100644
+index 9fa4bc845116..92bada196f54 100644
 --- a/sound/pci/emu10k1/emumixer.c
 +++ b/sound/pci/emu10k1/emumixer.c
-@@ -311,61 +311,114 @@ static const unsigned short emu1010_input_dst[] = {
+@@ -180,7 +180,7 @@ static const char * const emu1616_src_texts[] = {
+ /*
+  * List of data sources available for each destination
+  */
+-static const unsigned int emu1010_src_regs[] = {
++static const unsigned short emu1010_src_regs[] = {
+ 	EMU_SRC_SILENCE,/* 0 */
+ 	EMU_SRC_DOCK_MIC_A1, /* 1 */
+ 	EMU_SRC_DOCK_MIC_B1, /* 2 */
+@@ -237,7 +237,7 @@ static const unsigned int emu1010_src_regs[] = {
  };
- static_assert(ARRAY_SIZE(emu1010_input_dst) == ARRAY_SIZE(emu1010_input_texts));
  
-+struct snd_emu1010_routing_info {
-+	const char * const *src_texts;
-+	const unsigned short *src_regs;
-+	const unsigned short *out_regs;
-+	const unsigned short *in_regs;
-+	unsigned n_srcs;
-+	unsigned n_outs;
-+	unsigned n_ins;
-+};
-+
-+const struct snd_emu1010_routing_info emu1010_routing_info[] = {
-+	{
-+		.src_regs = emu1010_src_regs,
-+		.src_texts = emu1010_src_texts,
-+		.n_srcs = ARRAY_SIZE(emu1010_src_texts),
-+
-+		.out_regs = emu1010_output_dst,
-+		.n_outs = ARRAY_SIZE(emu1010_output_dst),
-+
-+		.in_regs = emu1010_input_dst,
-+		.n_ins = ARRAY_SIZE(emu1010_input_dst),
-+	},
-+	{
-+		/* 1616(m) cardbus */
-+		.src_regs = emu1616_src_regs,
-+		.src_texts = emu1616_src_texts,
-+		.n_srcs = ARRAY_SIZE(emu1616_src_texts),
-+
-+		.out_regs = emu1616_output_dst,
-+		.n_outs = ARRAY_SIZE(emu1616_output_dst),
-+
-+		.in_regs = emu1010_input_dst,
-+		.n_ins = ARRAY_SIZE(emu1010_input_dst) - 6,
-+	},
-+};
-+
-+static unsigned emu1010_idx(struct snd_emu10k1 *emu)
-+{
-+	if (emu->card_capabilities->emu_model == EMU_MODEL_EMU1616)
-+		return 1;
-+	else
-+		return 0;
-+}
-+
-+static void snd_emu1010_output_source_apply(struct snd_emu10k1 *emu,
-+					    int channel, int src)
-+{
-+	const struct snd_emu1010_routing_info *emu_ri =
-+		&emu1010_routing_info[emu1010_idx(emu)];
-+
-+	snd_emu1010_fpga_link_dst_src_write(emu,
-+		emu_ri->out_regs[channel], emu_ri->src_regs[src]);
-+}
-+
-+static void snd_emu1010_input_source_apply(struct snd_emu10k1 *emu,
-+					   int channel, int src)
-+{
-+	const struct snd_emu1010_routing_info *emu_ri =
-+		&emu1010_routing_info[emu1010_idx(emu)];
-+
-+	snd_emu1010_fpga_link_dst_src_write(emu,
-+		emu_ri->in_regs[channel], emu_ri->src_regs[src]);
-+}
-+
- static int snd_emu1010_input_output_source_info(struct snd_kcontrol *kcontrol,
- 						struct snd_ctl_elem_info *uinfo)
- {
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
-+	const struct snd_emu1010_routing_info *emu_ri =
-+		&emu1010_routing_info[emu1010_idx(emu)];
+ /* 1616(m) cardbus */
+-static const unsigned int emu1616_src_regs[] = {
++static const unsigned short emu1616_src_regs[] = {
+ 	EMU_SRC_SILENCE,
+ 	EMU_SRC_DOCK_MIC_A1,
+ 	EMU_SRC_DOCK_MIC_B1,
+@@ -293,7 +293,7 @@ static const unsigned int emu1616_src_regs[] = {
+  * Data destinations - physical EMU outputs.
+  * Each destination has an enum mixer control to choose a data source
+  */
+-static const unsigned int emu1010_output_dst[] = {
++static const unsigned short emu1010_output_dst[] = {
+ 	EMU_DST_DOCK_DAC1_LEFT1, /* 0 */
+ 	EMU_DST_DOCK_DAC1_RIGHT1, /* 1 */
+ 	EMU_DST_DOCK_DAC2_LEFT1, /* 2 */
+@@ -321,7 +321,7 @@ static const unsigned int emu1010_output_dst[] = {
+ };
  
--	if (emu->card_capabilities->emu_model == EMU_MODEL_EMU1616)
--		return snd_ctl_enum_info(uinfo, 1, 49, emu1616_src_texts);
--	else
--		return snd_ctl_enum_info(uinfo, 1, 53, emu1010_src_texts);
-+	return snd_ctl_enum_info(uinfo, 1, emu_ri->n_srcs, emu_ri->src_texts);
- }
- 
- static int snd_emu1010_output_source_get(struct snd_kcontrol *kcontrol,
-                                  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
--	unsigned int channel;
-+	const struct snd_emu1010_routing_info *emu_ri =
-+		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned channel = kcontrol->private_value;
- 
--	channel = (kcontrol->private_value) & 0xff;
--	/* Limit: emu1010_output_dst, emu->emu1010.output_source */
--	if (channel >= 24 ||
--	    (emu->card_capabilities->emu_model == EMU_MODEL_EMU1616 &&
--	     channel >= 18))
-+	if (channel >= emu_ri->n_outs)
- 		return -EINVAL;
- 	ucontrol->value.enumerated.item[0] = emu->emu1010.output_source[channel];
- 	return 0;
- }
- 
- static int snd_emu1010_output_source_put(struct snd_kcontrol *kcontrol,
-                                  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
--	unsigned int val;
--	unsigned int channel;
-+	const struct snd_emu1010_routing_info *emu_ri =
-+		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned val = ucontrol->value.enumerated.item[0];
-+	unsigned channel = kcontrol->private_value;
-+	int change;
- 
--	val = ucontrol->value.enumerated.item[0];
--	if (val >= 53 ||
--	    (emu->card_capabilities->emu_model == EMU_MODEL_EMU1616 &&
--	     val >= 49))
-+	if (val >= emu_ri->n_srcs)
- 		return -EINVAL;
--	channel = (kcontrol->private_value) & 0xff;
--	/* Limit: emu1010_output_dst, emu->emu1010.output_source */
--	if (channel >= 24 ||
--	    (emu->card_capabilities->emu_model == EMU_MODEL_EMU1616 &&
--	     channel >= 18))
-+	if (channel >= emu_ri->n_outs)
- 		return -EINVAL;
--	if (emu->emu1010.output_source[channel] == val)
--		return 0;
--	emu->emu1010.output_source[channel] = val;
--	if (emu->card_capabilities->emu_model == EMU_MODEL_EMU1616)
--		snd_emu1010_fpga_link_dst_src_write(emu,
--			emu1616_output_dst[channel], emu1616_src_regs[val]);
--	else
--		snd_emu1010_fpga_link_dst_src_write(emu,
--			emu1010_output_dst[channel], emu1010_src_regs[val]);
--	return 1;
-+	change = (emu->emu1010.output_source[channel] != val);
-+	if (change) {
-+		emu->emu1010.output_source[channel] = val;
-+		snd_emu1010_output_source_apply(emu, channel, val);
-+	}
-+	return change;
- }
- 
- static const struct snd_kcontrol_new emu1010_output_source_ctl = {
-@@ -380,42 +433,36 @@ static int snd_emu1010_input_source_get(struct snd_kcontrol *kcontrol,
-                                  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
--	unsigned int channel;
-+	const struct snd_emu1010_routing_info *emu_ri =
-+		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned channel = kcontrol->private_value;
- 
--	channel = (kcontrol->private_value) & 0xff;
--	/* Limit: emu1010_input_dst, emu->emu1010.input_source */
--	if (channel >= 22)
-+	if (channel >= emu_ri->n_ins)
- 		return -EINVAL;
- 	ucontrol->value.enumerated.item[0] = emu->emu1010.input_source[channel];
- 	return 0;
- }
- 
- static int snd_emu1010_input_source_put(struct snd_kcontrol *kcontrol,
-                                  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
--	unsigned int val;
--	unsigned int channel;
-+	const struct snd_emu1010_routing_info *emu_ri =
-+		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned val = ucontrol->value.enumerated.item[0];
-+	unsigned channel = kcontrol->private_value;
-+	int change;
- 
--	val = ucontrol->value.enumerated.item[0];
--	if (val >= 53 ||
--	    (emu->card_capabilities->emu_model == EMU_MODEL_EMU1616 &&
--	     val >= 49))
-+	if (val >= emu_ri->n_srcs)
- 		return -EINVAL;
--	channel = (kcontrol->private_value) & 0xff;
--	/* Limit: emu1010_input_dst, emu->emu1010.input_source */
--	if (channel >= 22)
-+	if (channel >= emu_ri->n_ins)
- 		return -EINVAL;
--	if (emu->emu1010.input_source[channel] == val)
--		return 0;
--	emu->emu1010.input_source[channel] = val;
--	if (emu->card_capabilities->emu_model == EMU_MODEL_EMU1616)
--		snd_emu1010_fpga_link_dst_src_write(emu,
--			emu1010_input_dst[channel], emu1616_src_regs[val]);
--	else
--		snd_emu1010_fpga_link_dst_src_write(emu,
--			emu1010_input_dst[channel], emu1010_src_regs[val]);
--	return 1;
-+	change = (emu->emu1010.input_source[channel] != val);
-+	if (change) {
-+		emu->emu1010.input_source[channel] = val;
-+		snd_emu1010_input_source_apply(emu, channel, val);
-+	}
-+	return change;
- }
- 
- static const struct snd_kcontrol_new emu1010_input_source_ctl = {
+ /* 1616(m) cardbus */
+-static const unsigned int emu1616_output_dst[] = {
++static const unsigned short emu1616_output_dst[] = {
+ 	EMU_DST_DOCK_DAC1_LEFT1,
+ 	EMU_DST_DOCK_DAC1_RIGHT1,
+ 	EMU_DST_DOCK_DAC2_LEFT1,
+@@ -347,7 +347,7 @@ static const unsigned int emu1616_output_dst[] = {
+  *   capture (EMU32 + I2S links)
+  * Each destination has an enum mixer control to choose a data source
+  */
+-static const unsigned int emu1010_input_dst[] = {
++static const unsigned short emu1010_input_dst[] = {
+ 	EMU_DST_ALICE2_EMU32_0,
+ 	EMU_DST_ALICE2_EMU32_1,
+ 	EMU_DST_ALICE2_EMU32_2,
 -- 
 2.40.0.152.g15d061e6df
 
