@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0536C77B7A
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 09:38:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73188C77B7A
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 09:38:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF8D3207;
-	Tue, 16 May 2023 11:37:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF8D3207
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CD7F7F4;
+	Tue, 16 May 2023 11:37:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CD7F7F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684229915;
-	bh=2jmqXbxvcnNxUfQtXoZD9KLQ6O+GdxAkKC5UAdgs79k=;
+	s=default; t=1684229920;
+	bh=Ab7b2aE+4/bPoWZgUzUZmhtvq0/+Q1dhRt9tQ/P1ox8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XDWWEkqtU35lnbx4Z6fDe3vJU67O/6Z5dedLKaetqUIOZNkdX/MxkTbNi0DFKqoAx
-	 8lMfuHWJgxGTNWwRT4llCCN+ZFkHJtTL4VaDWedUQxrlU9NOI06p61buxsW2UW0n5S
-	 Zb5kEds96mHf8RX9Xak15nacFeUw2tdK5I2y8fKE=
+	b=G9sqvBg2OknFNf5DchYO+20kcTXr8GDR4xPJFyiKiqb+XtYza4CGVnKwZl69i4WK3
+	 p9BlCcW8qa/Fb7FACNXAmr5j18oCf6hFg8tURveA+eFE2kst7kAEu8w3GElPgP33K8
+	 ElsZEd+Bupnpjk7K+gZ1hmu97ex0DishboAFbYNI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9838F805AE; Tue, 16 May 2023 11:36:38 +0200 (CEST)
+	id B1BBCF805B6; Tue, 16 May 2023 11:36:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EA38F805A8;
-	Tue, 16 May 2023 11:36:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6E55F805B0;
+	Tue, 16 May 2023 11:36:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26D82F80579; Tue, 16 May 2023 11:36:30 +0200 (CEST)
+	id 9D430F8025A; Tue, 16 May 2023 11:36:32 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org
  [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3651FF802E8
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 11:36:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3651FF802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id C7170F8053D
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 11:36:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7170F8053D
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id DA9BF2428D;
+	by bluemchen.kde.org (Postfix) with ESMTP id DD50B2428F;
 	Tue, 16 May 2023 05:36:12 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pyr6K-q0A-00; Tue, 16 May 2023 11:36:12 +0200
+	id 1pyr6K-q0M-00; Tue, 16 May 2023 11:36:12 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 4/6] ALSA: emu10k1: rewire {en,dis}abling interrupts for PCM
- playback
-Date: Tue, 16 May 2023 11:36:10 +0200
-Message-Id: <20230516093612.3536451-5-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 6/6] ALSA: emu10k1: factor out
+ snd_emu10k1_compose_audigy_sendamounts()
+Date: Tue, 16 May 2023 11:36:12 +0200
+Message-Id: <20230516093612.3536451-7-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230516093612.3536451-1-oswald.buddenhagen@gmx.de>
 References: <20230516093612.3536451-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IA64CMM3WHNY3PXNB6XVUMGAVXOC3MX4
-X-Message-ID-Hash: IA64CMM3WHNY3PXNB6XVUMGAVXOC3MX4
+Message-ID-Hash: DAU6QSAEQZQUORIMOIUZDJFVYEO3OWDN
+X-Message-ID-Hash: DAU6QSAEQZQUORIMOIUZDJFVYEO3OWDN
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -67,138 +67,72 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IA64CMM3WHNY3PXNB6XVUMGAVXOC3MX4/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DAU6QSAEQZQUORIMOIUZDJFVYEO3OWDN/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We now enable ints even before triggering, and disable them only after
-stopping - otherwise there is a race condition we may plausibly run into
-when we pause/resume near the end of the buffer.
-
-Updating the epcm->running flag is moved the same way, as it affects the
-*_pointer() functions, which are called by the interrupt handler.
-
-Also, factor these out to own functions, for clarity.
-
-For multi-channel, the extra voice is now triggered after all regular
-voices - we wouldn't want to receive an int before all channels have
-passed the period boundary.
+Saves a bit of code duplication.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emupcm.c | 45 ++++++++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 16 deletions(-)
+ include/sound/emu10k1.h      | 3 +++
+ sound/pci/emu10k1/emumixer.c | 7 ++-----
+ sound/pci/emu10k1/emupcm.c   | 5 +----
+ 3 files changed, 6 insertions(+), 9 deletions(-)
 
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index 5c1e5b123362..456af84735a8 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -1501,6 +1501,9 @@ struct snd_emu10k1_pcm_mixer {
+ #define snd_emu10k1_compose_audigy_fxrt2(route) \
+ ((unsigned int)route[4] | ((unsigned int)route[5] << 8) | ((unsigned int)route[6] << 16) | ((unsigned int)route[7] << 24))
+ 
++#define snd_emu10k1_compose_audigy_sendamounts(vol) \
++(((unsigned int)vol[4] << 24) | ((unsigned int)vol[5] << 16) | ((unsigned int)vol[6] << 8) | (unsigned int)vol[7])
++
+ struct snd_emu10k1_memblk {
+ 	struct snd_util_memblk mem;
+ 	/* private part */
+diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
+index e067a4066cda..1ebf161d410e 100644
+--- a/sound/pci/emu10k1/emumixer.c
++++ b/sound/pci/emu10k1/emumixer.c
+@@ -1196,11 +1196,8 @@ static void update_emu10k1_send_volume(struct snd_emu10k1 *emu, int voice, unsig
+ 	snd_emu10k1_ptr_write(emu, PSST_FXSENDAMOUNT_C, voice, volume[2]);
+ 	snd_emu10k1_ptr_write(emu, DSL_FXSENDAMOUNT_D, voice, volume[3]);
+ 	if (emu->audigy) {
+-		unsigned int val = ((unsigned int)volume[4] << 24) |
+-			((unsigned int)volume[5] << 16) |
+-			((unsigned int)volume[6] << 8) |
+-			(unsigned int)volume[7];
+-		snd_emu10k1_ptr_write(emu, A_SENDAMOUNTS, voice, val);
++		snd_emu10k1_ptr_write(emu, A_SENDAMOUNTS, voice,
++				      snd_emu10k1_compose_audigy_sendamounts(volume));
+ 	}
+ }
+ 
 diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index 2b6f5d2bbb3e..7b0ab4e02cfd 100644
+index 4ade0ef2cd1b..d669f93d8930 100644
 --- a/sound/pci/emu10k1/emupcm.c
 +++ b/sound/pci/emu10k1/emupcm.c
-@@ -605,7 +605,9 @@ static void snd_emu10k1_playback_prepare_voice(struct snd_emu10k1 *emu, struct s
- 	snd_emu10k1_ptr_write(emu, CVCF, voice, vattn | CVCF_CURRENTFILTER_MASK);
- }	
- 
--static void snd_emu10k1_playback_trigger_voice(struct snd_emu10k1 *emu, struct snd_emu10k1_voice *evoice, int master, int extra)
-+static void snd_emu10k1_playback_trigger_voice(struct snd_emu10k1 *emu,
-+					       struct snd_emu10k1_voice *evoice,
-+					       int master)
- {
- 	struct snd_pcm_substream *substream;
- 	struct snd_pcm_runtime *runtime;
-@@ -624,24 +626,36 @@ static void snd_emu10k1_playback_trigger_voice(struct snd_emu10k1 *emu, struct s
- 	snd_emu10k1_ptr_write(emu, PTRX_PITCHTARGET, voice, pitch_target);
- 	if (master || evoice->epcm->type == PLAYBACK_EFX)
- 		snd_emu10k1_ptr_write(emu, CPF_CURRENTPITCH, voice, pitch_target);
--	if (extra)
--		snd_emu10k1_voice_intr_enable(emu, voice);
- }
- 
--static void snd_emu10k1_playback_stop_voice(struct snd_emu10k1 *emu, struct snd_emu10k1_voice *evoice)
-+static void snd_emu10k1_playback_stop_voice(struct snd_emu10k1 *emu,
-+					    struct snd_emu10k1_voice *evoice)
- {
- 	unsigned int voice;
- 
- 	if (evoice == NULL)
- 		return;
- 	voice = evoice->number;
--	snd_emu10k1_voice_intr_disable(emu, voice);
- 	snd_emu10k1_ptr_write(emu, PTRX_PITCHTARGET, voice, 0);
- 	snd_emu10k1_ptr_write(emu, CPF_CURRENTPITCH, voice, 0);
- 	snd_emu10k1_ptr_write(emu, VTFT, voice, VTFT_FILTERTARGET_MASK);
- 	snd_emu10k1_ptr_write(emu, CVCF, voice, CVCF_CURRENTFILTER_MASK);
- }
- 
-+static void snd_emu10k1_playback_set_running(struct snd_emu10k1 *emu,
-+					     struct snd_emu10k1_pcm *epcm)
-+{
-+	epcm->running = 1;
-+	snd_emu10k1_voice_intr_enable(emu, epcm->extra->number);
-+}
-+
-+static void snd_emu10k1_playback_set_stopped(struct snd_emu10k1 *emu,
-+					      struct snd_emu10k1_pcm *epcm)
-+{
-+	snd_emu10k1_voice_intr_disable(emu, epcm->extra->number);
-+	epcm->running = 0;
-+}
-+
- static inline void snd_emu10k1_playback_mangle_extra(struct snd_emu10k1 *emu,
- 		struct snd_emu10k1_pcm *epcm,
- 		struct snd_pcm_substream *substream,
-@@ -687,18 +701,18 @@ static int snd_emu10k1_playback_trigger(struct snd_pcm_substream *substream,
- 		snd_emu10k1_playback_prepare_voice(emu, epcm->voices[0], 1, mix);
- 		snd_emu10k1_playback_prepare_voice(emu, epcm->voices[1], 0, mix);
- 		snd_emu10k1_playback_prepare_voice(emu, epcm->extra, 1, NULL);
--		snd_emu10k1_playback_trigger_voice(emu, epcm->voices[0], 1, 0);
--		snd_emu10k1_playback_trigger_voice(emu, epcm->voices[1], 0, 0);
--		snd_emu10k1_playback_trigger_voice(emu, epcm->extra, 1, 1);
--		epcm->running = 1;
-+		snd_emu10k1_playback_set_running(emu, epcm);
-+		snd_emu10k1_playback_trigger_voice(emu, epcm->voices[0], 1);
-+		snd_emu10k1_playback_trigger_voice(emu, epcm->voices[1], 0);
-+		snd_emu10k1_playback_trigger_voice(emu, epcm->extra, 1);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--		epcm->running = 0;
- 		snd_emu10k1_playback_stop_voice(emu, epcm->voices[0]);
- 		snd_emu10k1_playback_stop_voice(emu, epcm->voices[1]);
- 		snd_emu10k1_playback_stop_voice(emu, epcm->extra);
-+		snd_emu10k1_playback_set_stopped(emu, epcm);
- 		break;
- 	default:
- 		result = -EINVAL;
-@@ -836,20 +850,19 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
- 		for (i = 1; i < NUM_EFX_PLAYBACK; i++)
- 			snd_emu10k1_playback_prepare_voice(emu, epcm->voices[i], 0,
- 							   &emu->efx_pcm_mixer[i]);
--		snd_emu10k1_playback_trigger_voice(emu, epcm->voices[0], 0, 0);
--		snd_emu10k1_playback_trigger_voice(emu, epcm->extra, 1, 1);
--		for (i = 1; i < NUM_EFX_PLAYBACK; i++)
--			snd_emu10k1_playback_trigger_voice(emu, epcm->voices[i], 0, 0);
--		epcm->running = 1;
-+		snd_emu10k1_playback_set_running(emu, epcm);
-+		for (i = 0; i < NUM_EFX_PLAYBACK; i++)
-+			snd_emu10k1_playback_trigger_voice(emu, epcm->voices[i], 0);
-+		snd_emu10k1_playback_trigger_voice(emu, epcm->extra, 1);
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		epcm->running = 0;
- 		for (i = 0; i < NUM_EFX_PLAYBACK; i++) {	
- 			snd_emu10k1_playback_stop_voice(emu, epcm->voices[i]);
- 		}
- 		snd_emu10k1_playback_stop_voice(emu, epcm->extra);
-+		snd_emu10k1_playback_set_stopped(emu, epcm);
- 		break;
- 	default:
- 		result = -EINVAL;
+@@ -316,10 +316,7 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1 *emu,
+ 		snd_emu10k1_ptr_write(emu, A_FXRT2, voice,
+ 				      snd_emu10k1_compose_audigy_fxrt2(send_routing));
+ 		snd_emu10k1_ptr_write(emu, A_SENDAMOUNTS, voice,
+-				      ((unsigned int)send_amount[4] << 24) |
+-				      ((unsigned int)send_amount[5] << 16) |
+-				      ((unsigned int)send_amount[6] << 8) |
+-				      (unsigned int)send_amount[7]);
++				      snd_emu10k1_compose_audigy_sendamounts(send_amount));
+ 	} else
+ 		snd_emu10k1_ptr_write(emu, FXRT, voice,
+ 				      snd_emu10k1_compose_send_routing(send_routing));
 -- 
 2.40.0.152.g15d061e6df
 
