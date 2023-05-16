@@ -4,91 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D3EFC77B7A
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 15:45:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E604C77B7A
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 16:11:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20D111E7;
-	Tue, 16 May 2023 17:45:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20D111E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 687E4F0;
+	Tue, 16 May 2023 18:10:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 687E4F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684251956;
-	bh=FTnmhbzvHNs6LvKEIpBUOQXPObXKmLKsrl6rnqnEWkY=;
+	s=default; t=1684253490;
+	bh=RmtrBftA6Jii02U1bLnNPPw7WL9QhyOM6HwfikBjMZs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=khE423KkxvuZz5q9x4WPWVSVDwuavsg7/FqgpLckjDE09s5QEiRzJ3KzFPVF8ItCX
-	 jQSNKPXNX/n3vlxCAUyPwrEhtqe7tswaHRYfCYRwPKDgRHkt+T2A1wFZXxTA190xZQ
-	 k0ervgFOOaxCX4YzE84ipoYktii8oQyrXkqkEp3s=
+	b=jxf6NnRVWeM83yoMm0FQnEqXQ/DSTCnviar7mV8rI72RzLVbuacvSa2XGhzqyRUjU
+	 6RZ2NumY3XZ/r+iBgKFQn0+dzN3TL5E50Eig4OOqpjHeNhX3DxZSXGr+xESzqcia4N
+	 vJ8Ko9mt8WQjVqCnOL0s8XrGhxFMN5TcDB5i6QP4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 41E72F8057B; Tue, 16 May 2023 17:44:13 +0200 (CEST)
+	id BE0D7F80087; Tue, 16 May 2023 18:10:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A102BF80570;
-	Tue, 16 May 2023 17:44:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42AEEF80087;
+	Tue, 16 May 2023 18:10:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 337A2F802E8; Tue, 16 May 2023 17:44:08 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 02373F80272; Tue, 16 May 2023 18:10:08 +0200 (CEST)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
+ [IPv6:2a00:1450:4864:20::632])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE5D6F80272
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 17:43:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE5D6F80272
+	by alsa1.perex.cz (Postfix) with ESMTPS id 11987F8016A
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 18:10:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11987F8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VGREghk1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684251838; x=1715787838;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FTnmhbzvHNs6LvKEIpBUOQXPObXKmLKsrl6rnqnEWkY=;
-  b=VGREghk1LK1w1WqztrdZ5L3m/envvf/rA2LanrKGqHG1oT6+BBHmNJJF
-   xS0bU5JCIUhHjgiFRiTlBSw45HwHCa57BZKIfdQszTLJwr/K99MGH6Z+t
-   DRTWy+yVBTwPhHKH8YhQGzNOYUK9xRyXCeGlbs5j2wiPdnSmXJbWHywlE
-   JdIyau7aZlAW9WY8z0flN4anSHMu3GU4+WJEySWn8pNu+7nC128TjtKCR
-   p48IAZ42WUEe3imx9E9bklyOoVsPbDbZSVnUjsS8ppEv1IB3odWv4fCIL
-   0TGWPFyhQHR6xI2rnZw/10ZmWxRCl/q1WNK/dLBsWMi1YEAhWP/kRhnSV
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10712"; a="379694342"
-X-IronPort-AV: E=Sophos;i="5.99,278,1677571200";
-   d="scan'208";a="379694342"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 May 2023 08:43:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10712"; a="701391902"
-X-IronPort-AV: E=Sophos;i="5.99,278,1677571200";
-   d="scan'208";a="701391902"
-Received: from aboonloe-mobl.amr.corp.intel.com (HELO [10.212.186.99])
- ([10.212.186.99])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 May 2023 08:43:42 -0700
-Message-ID: <b8ad1f03-686a-7f2f-baea-b63b12c19df9@linux.intel.com>
-Date: Tue, 16 May 2023 09:40:36 -0500
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=jqfmezc+
+Received: by mail-ej1-x632.google.com with SMTP id
+ a640c23a62f3a-965e93f915aso2572627966b.2
+        for <alsa-devel@alsa-project.org>;
+ Tue, 16 May 2023 09:10:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1684253402; x=1686845402;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MXN9fC68+0wOwoUgN35mdkv/ToBeX0eP1GANhqJ616g=;
+        b=jqfmezc+iDuiL4+8rcw0FLasJ7cFfDAZwrNmiOdNKwXYGyN4f3pviQBrfwZ6n8w1os
+         eAgW61Oetq+gQnl+qln0X+SZvogfP/Gwnp3ygALuRXi6KiJK5rtdlPU8xVetofXKhYHz
+         8G0jg/9LvWFNuiXY2SFqWJHoG+S3ZWmIZ6UdQXiC4rif8xvI6/LwwLhLkDkL68cXIiIs
+         JedLKOK4v0JhelSF9VIYo20VOiLpUkSeH/cmgpjSktR6xg/VZQc9ExcMnzLPJiYDi6DY
+         yFrX+ouiUcFnzcl8iAmZEzfT7SWAGLnh8ewQjVbpMIUkzDjTvZ7fxlPVK4nLMWp6zzVM
+         xKJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684253402; x=1686845402;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MXN9fC68+0wOwoUgN35mdkv/ToBeX0eP1GANhqJ616g=;
+        b=R7fp939QoxvmEWppO2updLDAHjGdfCWO78OoB870UGe/PwOSSdpHqisB0QcFWEA6HB
+         hvnl5sm9UY8jwQVVVaHAZH8u+FFF+L26yG7NI7gPj0k5CuaVy9TTSR6NUGFRMeDQ1tA3
+         CC79AYYMloOxU78C7/1zZhnt9x7V+buUWaYAsEeU4AlNsQZDUo/syUGswJou1WXecBTr
+         EzCcfoZndHY29c53KWNmcf1gIq7VDf4smhWimd72crQVA7FWrzNks+qcETkHksNrhk0V
+         c9xt1QuuR2YbV7S0FKa8dcQQMTB3Q2mARR7WBe3uiCyvXW1tvBhhTO4PBbHYd9+BkxJ2
+         +r2w==
+X-Gm-Message-State: AC+VfDxNrysxPCa2m8DpITHae9sl93exJIXz85nw1tr6D1zssiZ3Vw04
+	TZlB9tufiNLmHJ6zJv5uTp2M5A==
+X-Google-Smtp-Source: 
+ ACHHUZ6bPH/QwuPvuWQmbb+0AoyFih81eO5OGQQ8+edrJxwWAeWmGVztoB1iBsg6nVRrxFd1f16Qwg==
+X-Received: by 2002:a17:907:94c3:b0:969:e7da:fca0 with SMTP id
+ dn3-20020a17090794c300b00969e7dafca0mr26907708ejc.8.1684253402008;
+        Tue, 16 May 2023 09:10:02 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:77d1:16a1:abe1:84fc?
+ ([2a02:810d:15c0:828:77d1:16a1:abe1:84fc])
+        by smtp.gmail.com with ESMTPSA id
+ hz20-20020a1709072cf400b0094f4d2d81d9sm11021871ejc.94.2023.05.16.09.10.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 May 2023 09:10:01 -0700 (PDT)
+Message-ID: <e2819075-c41f-716b-023f-fb1ad13a3466@linaro.org>
+Date: Tue, 16 May 2023 18:10:00 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.10.0
-Subject: Re: [PATCH 3/9] ASoC: amd: ps: add soundwire dma driver
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] ASoC: dt-bindings: nau8315: Convert to dtschema
 Content-Language: en-US
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, --to=broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com, Mastan.Katragadda@amd.com,
- Arungopal.kondaveeti@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- open list <linux-kernel@vger.kernel.org>
-References: <20230516103543.2515097-1-Vijendar.Mukunda@amd.com>
- <20230516103543.2515097-4-Vijendar.Mukunda@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230516103543.2515097-4-Vijendar.Mukunda@amd.com>
+To: David Lin <CTLIN0@nuvoton.com>, broonie@kernel.org
+Cc: lgirdwood@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com,
+ WTLI@nuvoton.com, SJLIN0@nuvoton.com, ctlin0.linux@gmail.com
+References: <20230516054944.1081808-1-CTLIN0@nuvoton.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230516054944.1081808-1-CTLIN0@nuvoton.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: GP6OZ37IULUZEQOLWNCDF7FQ3QLXSIDB
-X-Message-ID-Hash: GP6OZ37IULUZEQOLWNCDF7FQ3QLXSIDB
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Message-ID-Hash: LP6CC4V6I3HOBMQVPYECIH6S7OAZ6J46
+X-Message-ID-Hash: LP6CC4V6I3HOBMQVPYECIH6S7OAZ6J46
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GP6OZ37IULUZEQOLWNCDF7FQ3QLXSIDB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LP6CC4V6I3HOBMQVPYECIH6S7OAZ6J46/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,113 +122,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 5/16/23 05:35, Vijendar Mukunda wrote:
-> Soundwire DMA platform driver binds to the platform device created by
-> ACP PCI device. Soundwire DMA driver registers ALSA DMA component
-> with ASoC framework.
+On 16/05/2023 07:49, David Lin wrote:
+> Convert the NAU8315 audio CODEC bindings to DT schema.
 > 
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> Signed-off-by: David Lin <CTLIN0@nuvoton.com>
 > ---
->  sound/soc/amd/ps/acp63.h      |  5 +++
->  sound/soc/amd/ps/ps-sdw-dma.c | 71 +++++++++++++++++++++++++++++++++++
->  2 files changed, 76 insertions(+)
->  create mode 100644 sound/soc/amd/ps/ps-sdw-dma.c
-> 
-> diff --git a/sound/soc/amd/ps/acp63.h b/sound/soc/amd/ps/acp63.h
-> index faf7be4d77c2..f86c60cd1565 100644
-> --- a/sound/soc/amd/ps/acp63.h
-> +++ b/sound/soc/amd/ps/acp63.h
-> @@ -111,6 +111,11 @@ struct pdm_dev_data {
->  	struct snd_pcm_substream *capture_stream;
->  };
->  
-> +struct sdw_dma_dev_data {
-> +	void __iomem *acp_base;
-> +	struct mutex *acp_lock; /* used to protect acp common register access */
-> +};
-> +
->  /**
->   * struct acp63_dev_data - acp pci driver context
->   * @acp63_base: acp mmio base
-> diff --git a/sound/soc/amd/ps/ps-sdw-dma.c b/sound/soc/amd/ps/ps-sdw-dma.c
-> new file mode 100644
-> index 000000000000..0d0889842413
-> --- /dev/null
-> +++ b/sound/soc/amd/ps/ps-sdw-dma.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * AMD ALSA SoC Pink Sardine Soundwire DMA Driver
-> + *
-> + * Copyright 2023 Advanced Micro Devices, Inc.
-> + */
-> +
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +#include <sound/soc-dai.h>
-> +#include "acp63.h"
-> +
-> +#define DRV_NAME "amd_ps_sdw_dma"
-> +
-> +static const struct snd_soc_component_driver acp63_sdw_component = {
-> +	.name		= DRV_NAME,
-> +};
-> +
-> +static int acp63_sdw_platform_probe(struct platform_device *pdev)
-> +{
-> +	struct resource *res;
-> +	struct sdw_dma_dev_data *sdw_data;
-> +	int status;
-> +
-> +	if (!pdev->dev.platform_data) {
-> +		dev_err(&pdev->dev, "platform_data not retrieved\n");
-> +		return -ENODEV;
-> +	}
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	sdw_data = devm_kzalloc(&pdev->dev, sizeof(*sdw_data), GFP_KERNEL);
-> +	if (!sdw_data)
-> +		return -ENOMEM;
-> +
-> +	sdw_data->acp_base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
-> +	if (!sdw_data->acp_base)
-> +		return -ENOMEM;
-> +
-> +	sdw_data->acp_lock = pdev->dev.platform_data;
-> +	dev_set_drvdata(&pdev->dev, sdw_data);
-> +	status = devm_snd_soc_register_component(&pdev->dev,
-> +						 &acp63_sdw_component,
-> +						 NULL, 0);
-> +	if (status) {
-> +		dev_err(&pdev->dev, "Fail to register sdw dma component\n");
-> +		return -ENODEV;
 
-return status;
 
-> +	}
-> +	return 0;
-> +}
+> +allOf:
+> +  - $ref: dai-common.yaml#
 > +
-> +static struct platform_driver acp63_sdw_dma_driver = {
-> +	.probe = acp63_sdw_platform_probe,
-> +	.driver = {
-> +		.name = "amd_ps_sdw_dma",
-> +	},
-> +};
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nuvoton,nau8315
+> +      - nuvoton,nau8318
 > +
-> +module_platform_driver(acp63_sdw_dma_driver);
+> +  '#sound-dai-cells':
+> +    const: 0
 > +
-> +MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
-> +MODULE_DESCRIPTION("AMD ACP6.3 PS SDW DMA Driver");
-> +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:" DRV_NAME);
+> +  enable-gpios:
+> +    maxItems: 1
+> +    description:
+> +      GPIO specifier for the chip's device enable input(EN) pin.
+> +      If this option is not specified then driver does not manage
+> +      the pin state (e.g. chip is always on).
+
+The only thing driver is doing is to toggle this pin. If it is missing
+the entire driver is noop, thus above comment is a bit funny. It
+probably should be mandatory pin. But I see it was there since beginning
+so ok.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
