@@ -4,55 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18918C77B7F
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 09:41:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB2FCC77B7F
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 09:41:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B0D61CE;
-	Tue, 16 May 2023 11:40:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B0D61CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8662174C;
+	Tue, 16 May 2023 11:40:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8662174C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684230092;
-	bh=5eUwfx0tOHHmaQEq4NJ69d6MMlXx54PagM7Ba1Z7nFs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=HG8qeZ7WbJOuQ/DaZou/sbEDCyP3bRhDCnbMuz/OoU9PgcN/L9nQogfS8p4RR6+2o
-	 44fFBuABXW4xcSPzkFVlweydPQBwbruk0FupMmXnSRThiwjd7KYC8SIHoVl3uaCG8I
-	 03Sad7iswJWrvYubeK+nBBt/gikylqLm5XnszQjQ=
+	s=default; t=1684230109;
+	bh=KVWNJw1/kc+/sJF3rkbSWT6NHRnoMIJp3lr8NGyJdqE=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=rtJOEBDEZaGjy/7ciHGV56huG7/cFOmz5yaiUOKQwBkE/Nsv/9xOknZ5iNZBn8Arb
+	 kjkoLJpyvrxEVneVe5PufJ/VnDdhpxMkPYU2TD9vOcK/7CeUCGrX73GDwEzL2LYrZ+
+	 5uKNgkVPLkpcMlx/9g7ANtb9fiu+BA4XtzJWW2Cc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22EBBF8061A; Tue, 16 May 2023 11:37:15 +0200 (CEST)
+	id 770FAF80571; Tue, 16 May 2023 11:37:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3988DF8061A;
-	Tue, 16 May 2023 11:37:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12CB6F80548;
+	Tue, 16 May 2023 11:37:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80FC4F805FB; Tue, 16 May 2023 11:37:03 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	id 911BCF8059F; Tue, 16 May 2023 11:37:29 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B76FDF8016A
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 11:36:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B76FDF8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id DDB6AF80542
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 11:36:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDB6AF80542
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 3B0B82429E;
+	by bluemchen.kde.org (Postfix) with ESMTP id 1579224293;
 	Tue, 16 May 2023 05:36:13 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pyr6K-q1j-00; Tue, 16 May 2023 11:36:12 +0200
+	id 1pyr6K-q0l-00; Tue, 16 May 2023 11:36:12 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 10/10] ALSA: emu10k1: make struct snd_emu1010 less wasteful
-Date: Tue, 16 May 2023 11:36:12 +0200
-Message-Id: <20230516093612.3536508-11-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 00/10] ALSA: emu10k1: improvements mostly to the I/O routing
+ mixers for E-MU cards
+Date: Tue, 16 May 2023 11:36:02 +0200
+Message-Id: <20230516093612.3536508-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230516093612.3536508-1-oswald.buddenhagen@gmx.de>
-References: <20230516093612.3536508-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4WGVP4ZKQIIXF554VGPRNU5HY2ZX2ARH
-X-Message-ID-Hash: 4WGVP4ZKQIIXF554VGPRNU5HY2ZX2ARH
+Message-ID-Hash: WOH6YKFRTYNPYZPCW6NLX2ZFF2NMBZI7
+X-Message-ID-Hash: WOH6YKFRTYNPYZPCW6NLX2ZFF2NMBZI7
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -65,7 +64,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4WGVP4ZKQIIXF554VGPRNU5HY2ZX2ARH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WOH6YKFRTYNPYZPCW6NLX2ZFF2NMBZI7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -74,80 +73,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Shrink the {in,out}put_source arrays and their data type to what is
-actually necessary.
 
-To be still on the safe side, add some static asserts.
+Oswald Buddenhagen (10):
+  ALSA: emu10k1: make some initializer arrays less wasteful
+  ALSA: emu10k1: compactize E-MU routing source arrays
+  ALSA: emu10k1: make mixer control mass creation less wasteful
+  ALSA: emu10k1: un-hardcode E-MU mixer control callbacks somewhat
+  ALSA: emu10k1: fix return value of snd_emu1010_dac_pads_put()
+  ALSA: emu10k1: make E-MU I/O routing init data-driven
+  ALSA: emu10k1: make E-MU mixer control creation more data-driven
+  ALSA: emu10k1: improve mixer controls for E-MU 1010 rev2 card
+  ALSA: emu10k1: add explicit support for E-MU 0404
+  ALSA: emu10k1: make struct snd_emu1010 less wasteful
 
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
----
- include/sound/emu10k1.h      | 7 +++++--
- sound/pci/emu10k1/emumixer.c | 5 +++++
- 2 files changed, 10 insertions(+), 2 deletions(-)
+ include/sound/emu10k1.h          |   47 +-
+ sound/pci/emu10k1/emu10k1_main.c |  268 +------
+ sound/pci/emu10k1/emumixer.c     | 1242 +++++++++++++++++-------------
+ sound/pci/emu10k1/emuproc.c      |   18 +-
+ 4 files changed, 759 insertions(+), 816 deletions(-)
 
-diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
-index c6f1d17a797f..c9fbf76b7719 100644
---- a/include/sound/emu10k1.h
-+++ b/include/sound/emu10k1.h
-@@ -1626,9 +1626,12 @@ struct snd_emu_chip_details {
- 	const char *id;		/* for backward compatibility - can be NULL if not needed */
- };
- 
-+#define NUM_OUTPUT_DESTS 28
-+#define NUM_INPUT_DESTS 22
-+
- struct snd_emu1010 {
--	unsigned int output_source[64];
--	unsigned int input_source[64];
-+	unsigned char output_source[NUM_OUTPUT_DESTS];
-+	unsigned char input_source[NUM_INPUT_DESTS];
- 	unsigned int adc_pads; /* bit mask */
- 	unsigned int dac_pads; /* bit mask */
- 	unsigned int internal_clock; /* 44100 or 48000 */
-diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
-index 16970bb0012b..9318888b524d 100644
---- a/sound/pci/emu10k1/emumixer.c
-+++ b/sound/pci/emu10k1/emumixer.c
-@@ -273,6 +273,7 @@ static const char * const emu1010_output_texts[] = {
- 	LR_CTLS("1010 SPDIF"),
- 	ADAT_CTLS("1010 "),
- };
-+static_assert(ARRAY_SIZE(emu1010_output_texts) <= NUM_OUTPUT_DESTS);
- 
- static const unsigned short emu1010_output_dst[] = {
- 	LR_REGS(EMU_DST_DOCK_DAC1),
-@@ -313,6 +314,7 @@ static const char * const snd_emu1010b_output_texts[] = {
- 	LR_CTLS("1010 SPDIF"),
- 	ADAT_CTLS("1010 "),
- };
-+static_assert(ARRAY_SIZE(snd_emu1010b_output_texts) <= NUM_OUTPUT_DESTS);
- 
- static const unsigned short emu1010b_output_dst[] = {
- 	LR_REGS(EMU_DST_DOCK_DAC1),
-@@ -349,6 +351,7 @@ static const char * const snd_emu1616_output_texts[] = {
- 	ADAT_CTLS("Dock "),
- 	LR_CTLS("Mana DAC"),
- };
-+static_assert(ARRAY_SIZE(snd_emu1616_output_texts) <= NUM_OUTPUT_DESTS);
- 
- static const unsigned short emu1616_output_dst[] = {
- 	LR_REGS(EMU_DST_DOCK_DAC1),
-@@ -377,6 +380,7 @@ static const char * const snd_emu0404_output_texts[] = {
- 	LR_CTLS("DAC"),
- 	LR_CTLS("SPDIF"),
- };
-+static_assert(ARRAY_SIZE(snd_emu0404_output_texts) <= NUM_OUTPUT_DESTS);
- 
- static const unsigned short emu0404_output_dst[] = {
- 	LR_REGS(EMU_DST_HAMOA_DAC),
-@@ -421,6 +425,7 @@ static const char * const emu1010_input_texts[] = {
- 	"DSP 14 Capture Enum",
- 	"DSP 15 Capture Enum",
- };
-+static_assert(ARRAY_SIZE(emu1010_input_texts) <= NUM_INPUT_DESTS);
- 
- static const unsigned short emu1010_input_dst[] = {
- 	EMU_DST_ALICE2_EMU32_0,
 -- 
 2.40.0.152.g15d061e6df
 
