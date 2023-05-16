@@ -4,57 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC5B8C77B7F
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 09:41:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18918C77B7F
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 09:41:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C95FC827;
-	Tue, 16 May 2023 11:40:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C95FC827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B0D61CE;
+	Tue, 16 May 2023 11:40:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B0D61CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684230067;
-	bh=feeJ6IDYRSyrOx32tPsHuCqh8d4DGxNlKEcmKiWJmsY=;
+	s=default; t=1684230092;
+	bh=5eUwfx0tOHHmaQEq4NJ69d6MMlXx54PagM7Ba1Z7nFs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qfLYrZk+xnEh7IWVnWGGGogKGCqGdSkyQvB7MpO44ZL9R8h+8c4Gs+jLjKhh0gveC
-	 TWEFqz4j68RlG0H6rHpLdgTz2Z6Dl/zF2KBg5EZgajEqacpniz5I5WfkPWQTqH+4fd
-	 hTozh8CosxQTGhoIbZjIVoLkCLaQiTOkJVT0WMrA=
+	b=HG8qeZ7WbJOuQ/DaZou/sbEDCyP3bRhDCnbMuz/OoU9PgcN/L9nQogfS8p4RR6+2o
+	 44fFBuABXW4xcSPzkFVlweydPQBwbruk0FupMmXnSRThiwjd7KYC8SIHoVl3uaCG8I
+	 03Sad7iswJWrvYubeK+nBBt/gikylqLm5XnszQjQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3189AF80609; Tue, 16 May 2023 11:37:11 +0200 (CEST)
+	id 22EBBF8061A; Tue, 16 May 2023 11:37:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CA7DF8060A;
-	Tue, 16 May 2023 11:37:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3988DF8061A;
+	Tue, 16 May 2023 11:37:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE66DF805F4; Tue, 16 May 2023 11:37:01 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id 80FC4F805FB; Tue, 16 May 2023 11:37:03 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 04940F8055A
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 11:36:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04940F8055A
+	by alsa1.perex.cz (Postfix) with ESMTPS id B76FDF8016A
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 11:36:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B76FDF8016A
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 350B92429B;
+	by bluemchen.kde.org (Postfix) with ESMTP id 3B0B82429E;
 	Tue, 16 May 2023 05:36:13 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pyr6K-q1X-00; Tue, 16 May 2023 11:36:12 +0200
+	id 1pyr6K-q1j-00; Tue, 16 May 2023 11:36:12 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 08/10] ALSA: emu10k1: improve mixer controls for E-MU 1010
- rev2 card
-Date: Tue, 16 May 2023 11:36:10 +0200
-Message-Id: <20230516093612.3536508-9-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 10/10] ALSA: emu10k1: make struct snd_emu1010 less wasteful
+Date: Tue, 16 May 2023 11:36:12 +0200
+Message-Id: <20230516093612.3536508-11-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230516093612.3536508-1-oswald.buddenhagen@gmx.de>
 References: <20230516093612.3536508-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7N36MCUKS7TZOVJVEBLARRUH5TXHNSTZ
-X-Message-ID-Hash: 7N36MCUKS7TZOVJVEBLARRUH5TXHNSTZ
+Message-ID-Hash: 4WGVP4ZKQIIXF554VGPRNU5HY2ZX2ARH
+X-Message-ID-Hash: 4WGVP4ZKQIIXF554VGPRNU5HY2ZX2ARH
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -67,7 +65,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7N36MCUKS7TZOVJVEBLARRUH5TXHNSTZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4WGVP4ZKQIIXF554VGPRNU5HY2ZX2ARH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,195 +74,80 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This card has rather different inputs/outputs due to switching from the
-AudioDock to the MicroDock.
+Shrink the {in,out}put_source arrays and their data type to what is
+actually necessary.
+
+To be still on the safe side, add some static asserts.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emumixer.c | 106 +++++++++++++++++++++++++++++++++--
- 1 file changed, 100 insertions(+), 6 deletions(-)
+ include/sound/emu10k1.h      | 7 +++++--
+ sound/pci/emu10k1/emumixer.c | 5 +++++
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index c6f1d17a797f..c9fbf76b7719 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -1626,9 +1626,12 @@ struct snd_emu_chip_details {
+ 	const char *id;		/* for backward compatibility - can be NULL if not needed */
+ };
+ 
++#define NUM_OUTPUT_DESTS 28
++#define NUM_INPUT_DESTS 22
++
+ struct snd_emu1010 {
+-	unsigned int output_source[64];
+-	unsigned int input_source[64];
++	unsigned char output_source[NUM_OUTPUT_DESTS];
++	unsigned char input_source[NUM_INPUT_DESTS];
+ 	unsigned int adc_pads; /* bit mask */
+ 	unsigned int dac_pads; /* bit mask */
+ 	unsigned int internal_clock; /* 44100 or 48000 */
 diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
-index 9a59e439a533..395c2b2d96dd 100644
+index 16970bb0012b..9318888b524d 100644
 --- a/sound/pci/emu10k1/emumixer.c
 +++ b/sound/pci/emu10k1/emumixer.c
-@@ -172,6 +172,38 @@ static const unsigned short emu1010_src_regs[] = {
+@@ -273,6 +273,7 @@ static const char * const emu1010_output_texts[] = {
+ 	LR_CTLS("1010 SPDIF"),
+ 	ADAT_CTLS("1010 "),
  };
- static_assert(ARRAY_SIZE(emu1010_src_regs) == ARRAY_SIZE(emu1010_src_texts));
++static_assert(ARRAY_SIZE(emu1010_output_texts) <= NUM_OUTPUT_DESTS);
  
-+/* 1010 rev2 */
-+
-+#define EMU1010b_COMMON_TEXTS \
-+	"Silence", \
-+	PAIR_TEXTS("Dock Mic", "A", "B"), \
-+	LR_TEXTS("Dock ADC1"), \
-+	LR_TEXTS("Dock ADC2"), \
-+	LR_TEXTS("0202 ADC"), \
-+	LR_TEXTS("Dock SPDIF"), \
-+	LR_TEXTS("1010 SPDIF"), \
-+	ADAT_TEXTS("Dock "), \
-+	ADAT_TEXTS("1010 ")
-+
-+static const char * const emu1010b_src_texts[] = {
-+	EMU1010b_COMMON_TEXTS,
-+	DSP_TEXTS,
-+};
-+
-+static const unsigned short emu1010b_src_regs[] = {
-+	EMU_SRC_SILENCE,
-+	PAIR_REGS(EMU_SRC_DOCK_MIC, _A, _B),
-+	LR_REGS(EMU_SRC_DOCK_ADC1),
-+	LR_REGS(EMU_SRC_DOCK_ADC2),
-+	LR_REGS(EMU_SRC_HAMOA_ADC),
-+	LR_REGS(EMU_SRC_MDOCK_SPDIF),
-+	LR_REGS(EMU_SRC_HANA_SPDIF),
-+	ADAT_REGS(EMU_SRC_MDOCK_ADAT),
-+	ADAT_REGS(EMU_SRC_HANA_ADAT),
-+	EMU32_SRC_REGS,
-+};
-+static_assert(ARRAY_SIZE(emu1010b_src_regs) == ARRAY_SIZE(emu1010b_src_texts));
-+
- /* 1616(m) cardbus */
- 
- #define EMU1616_COMMON_TEXTS \
-@@ -245,6 +277,44 @@ static const unsigned short emu1010_output_dflt[] = {
+ static const unsigned short emu1010_output_dst[] = {
+ 	LR_REGS(EMU_DST_DOCK_DAC1),
+@@ -313,6 +314,7 @@ static const char * const snd_emu1010b_output_texts[] = {
+ 	LR_CTLS("1010 SPDIF"),
+ 	ADAT_CTLS("1010 "),
  };
- static_assert(ARRAY_SIZE(emu1010_output_dflt) == ARRAY_SIZE(emu1010_output_dst));
++static_assert(ARRAY_SIZE(snd_emu1010b_output_texts) <= NUM_OUTPUT_DESTS);
  
-+/* 1010 rev2 */
-+
-+static const char * const snd_emu1010b_output_texts[] = {
-+	LR_CTLS("Dock DAC1"),
-+	LR_CTLS("Dock DAC2"),
-+	LR_CTLS("Dock DAC3"),
-+	LR_CTLS("Dock SPDIF"),
-+	ADAT_CTLS("Dock "),
-+	LR_CTLS("0202 DAC"),
-+	LR_CTLS("1010 SPDIF"),
-+	ADAT_CTLS("1010 "),
-+};
-+
-+static const unsigned short emu1010b_output_dst[] = {
-+	LR_REGS(EMU_DST_DOCK_DAC1),
-+	LR_REGS(EMU_DST_DOCK_DAC2),
-+	LR_REGS(EMU_DST_DOCK_DAC3),
-+	LR_REGS(EMU_DST_MDOCK_SPDIF),
-+	ADAT_REGS(EMU_DST_MDOCK_ADAT),
-+	LR_REGS(EMU_DST_HAMOA_DAC),
-+	LR_REGS(EMU_DST_HANA_SPDIF),
-+	ADAT_REGS(EMU_DST_HANA_ADAT),
-+};
-+static_assert(ARRAY_SIZE(emu1010b_output_dst) == ARRAY_SIZE(snd_emu1010b_output_texts));
-+
-+static const unsigned short emu1010b_output_dflt[] = {
-+	EMU_SRC_ALICE_EMU32A+0, EMU_SRC_ALICE_EMU32A+1,
-+	EMU_SRC_ALICE_EMU32A+2, EMU_SRC_ALICE_EMU32A+3,
-+	EMU_SRC_ALICE_EMU32A+4, EMU_SRC_ALICE_EMU32A+5,
-+	EMU_SRC_ALICE_EMU32A+0, EMU_SRC_ALICE_EMU32A+1,
-+	EMU_SRC_ALICE_EMU32A+0, EMU_SRC_ALICE_EMU32A+1, EMU_SRC_ALICE_EMU32A+2, EMU_SRC_ALICE_EMU32A+3,
-+	EMU_SRC_ALICE_EMU32A+4, EMU_SRC_ALICE_EMU32A+5, EMU_SRC_ALICE_EMU32A+6, EMU_SRC_ALICE_EMU32A+7,
-+	EMU_SRC_ALICE_EMU32A+0, EMU_SRC_ALICE_EMU32A+1,
-+	EMU_SRC_ALICE_EMU32A+0, EMU_SRC_ALICE_EMU32A+1,
-+	EMU_SRC_ALICE_EMU32A+0, EMU_SRC_ALICE_EMU32A+1, EMU_SRC_ALICE_EMU32A+2, EMU_SRC_ALICE_EMU32A+3,
-+	EMU_SRC_ALICE_EMU32A+4, EMU_SRC_ALICE_EMU32A+5, EMU_SRC_ALICE_EMU32A+6, EMU_SRC_ALICE_EMU32A+7,
-+};
-+
- /* 1616(m) cardbus */
- 
- static const char * const snd_emu1616_output_texts[] = {
-@@ -394,6 +464,21 @@ const struct snd_emu1010_routing_info emu1010_routing_info[] = {
- 		.in_regs = emu1010_input_dst,
- 		.n_ins = ARRAY_SIZE(emu1010_input_dst),
- 	},
-+	{
-+		/* rev2 1010 */
-+		.src_regs = emu1010b_src_regs,
-+		.src_texts = emu1010b_src_texts,
-+		.n_srcs = ARRAY_SIZE(emu1010b_src_texts),
-+
-+		.out_dflts = emu1010b_output_dflt,
-+		.out_regs = emu1010b_output_dst,
-+		.out_texts = snd_emu1010b_output_texts,
-+		.n_outs = ARRAY_SIZE(emu1010b_output_dst),
-+
-+		.in_dflts = emu1010_input_dflt,
-+		.in_regs = emu1010_input_dst,
-+		.n_ins = ARRAY_SIZE(emu1010_input_dst) - 6,
-+	},
- 	{
- 		/* 1616(m) cardbus */
- 		.src_regs = emu1616_src_regs,
-@@ -414,6 +499,8 @@ const struct snd_emu1010_routing_info emu1010_routing_info[] = {
- static unsigned emu1010_idx(struct snd_emu10k1 *emu)
- {
- 	if (emu->card_capabilities->emu_model == EMU_MODEL_EMU1616)
-+		return 2;
-+	else if (emu->card_capabilities->emu_model == EMU_MODEL_EMU1010B)
- 		return 1;
- 	else
- 		return 0;
-@@ -576,17 +663,17 @@ static int add_emu1010_source_mixers(struct snd_emu10k1 *emu)
- 
- 
- static const char * const snd_emu1010_adc_pads[] = {
-+	"ADC1 14dB PAD 0202 Capture Switch",
- 	"ADC1 14dB PAD Audio Dock Capture Switch",
- 	"ADC2 14dB PAD Audio Dock Capture Switch",
- 	"ADC3 14dB PAD Audio Dock Capture Switch",
--	"ADC1 14dB PAD 0202 Capture Switch",
+ static const unsigned short emu1010b_output_dst[] = {
+ 	LR_REGS(EMU_DST_DOCK_DAC1),
+@@ -349,6 +351,7 @@ static const char * const snd_emu1616_output_texts[] = {
+ 	ADAT_CTLS("Dock "),
+ 	LR_CTLS("Mana DAC"),
  };
++static_assert(ARRAY_SIZE(snd_emu1616_output_texts) <= NUM_OUTPUT_DESTS);
  
- static const unsigned short snd_emu1010_adc_pad_regs[] = {
-+	EMU_HANA_0202_ADC_PAD1,
- 	EMU_HANA_DOCK_ADC_PAD1,
- 	EMU_HANA_DOCK_ADC_PAD2,
- 	EMU_HANA_DOCK_ADC_PAD3,
--	EMU_HANA_0202_ADC_PAD1,
+ static const unsigned short emu1616_output_dst[] = {
+ 	LR_REGS(EMU_DST_DOCK_DAC1),
+@@ -377,6 +380,7 @@ static const char * const snd_emu0404_output_texts[] = {
+ 	LR_CTLS("DAC"),
+ 	LR_CTLS("SPDIF"),
  };
++static_assert(ARRAY_SIZE(snd_emu0404_output_texts) <= NUM_OUTPUT_DESTS);
  
- #define snd_emu1010_adc_pads_info	snd_ctl_boolean_mono_info
-@@ -629,19 +716,19 @@ static const struct snd_kcontrol_new emu1010_adc_pads_ctl = {
- 
- 
- static const char * const snd_emu1010_dac_pads[] = {
-+	"DAC1 0202 14dB PAD Playback Switch",
- 	"DAC1 Audio Dock 14dB PAD Playback Switch",
- 	"DAC2 Audio Dock 14dB PAD Playback Switch",
- 	"DAC3 Audio Dock 14dB PAD Playback Switch",
- 	"DAC4 Audio Dock 14dB PAD Playback Switch",
--	"DAC1 0202 14dB PAD Playback Switch",
+ static const unsigned short emu0404_output_dst[] = {
+ 	LR_REGS(EMU_DST_HAMOA_DAC),
+@@ -421,6 +425,7 @@ static const char * const emu1010_input_texts[] = {
+ 	"DSP 14 Capture Enum",
+ 	"DSP 15 Capture Enum",
  };
++static_assert(ARRAY_SIZE(emu1010_input_texts) <= NUM_INPUT_DESTS);
  
- static const unsigned short snd_emu1010_dac_regs[] = {
-+	EMU_HANA_0202_DAC_PAD1,
- 	EMU_HANA_DOCK_DAC_PAD1,
- 	EMU_HANA_DOCK_DAC_PAD2,
- 	EMU_HANA_DOCK_DAC_PAD3,
- 	EMU_HANA_DOCK_DAC_PAD4,
--	EMU_HANA_0202_DAC_PAD1,
- };
- 
- #define snd_emu1010_dac_pads_info	snd_ctl_boolean_mono_info
-@@ -700,10 +787,17 @@ const struct snd_emu1010_pads_info emu1010_pads_info[] = {
- 		.n_dac_ctls = ARRAY_SIZE(snd_emu1010_dac_pads),
- 	},
- 	{
--		/* 1616(m) cardbus */
-+		/* rev2 1010 */
- 		.adc_ctls = snd_emu1010_adc_pads,
--		.n_adc_ctls = ARRAY_SIZE(snd_emu1010_adc_pads) - 2,
-+		.n_adc_ctls = ARRAY_SIZE(snd_emu1010_adc_pads) - 1,
- 		.dac_ctls = snd_emu1010_dac_pads,
-+		.n_dac_ctls = ARRAY_SIZE(snd_emu1010_dac_pads) - 1,
-+	},
-+	{
-+		/* 1616(m) cardbus */
-+		.adc_ctls = snd_emu1010_adc_pads + 1,
-+		.n_adc_ctls = ARRAY_SIZE(snd_emu1010_adc_pads) - 2,
-+		.dac_ctls = snd_emu1010_dac_pads + 1,
- 		.n_dac_ctls = ARRAY_SIZE(snd_emu1010_dac_pads) - 2,
- 	},
- };
+ static const unsigned short emu1010_input_dst[] = {
+ 	EMU_DST_ALICE2_EMU32_0,
 -- 
 2.40.0.152.g15d061e6df
 
