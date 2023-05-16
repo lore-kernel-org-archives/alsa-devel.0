@@ -4,81 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0F2EC77B7F
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 06:20:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93E02C77B7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 06:21:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC1107F8;
-	Fri, 19 May 2023 08:20:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC1107F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id F160F6C1;
+	Fri, 19 May 2023 08:20:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F160F6C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684477250;
-	bh=2bpG6hw05THOjov4DsFWMkybqhsq/QOtVLqvX7Jtm2g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Dcc8KiFr+fdhidA1et6erDJdBc47yQmY0TRHRDL/6Yed5xjFMpB4jNqxmieGf5Xz6
-	 RjCzuZR5Zs5dsDAqE8VvGoY71UCVgqpuCA7GOPD1h7YU+cleGJuhR9wE/dqm1ogpJI
-	 f/UquQ7UGbyt1s+FIiMuYkjMz3vRBgEfSocC3BOc=
+	s=default; t=1684477279;
+	bh=UtJNXG/5n+FfQpI/dyVNYU6DpzRT/EpOcfgeHFLYTIc=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=r1ZwIhm2yCOvekjpa4rS5nt2f9kCsYAQULUoICqZN1hYaigN0HlMrqHfYlx445Nza
+	 9LTLgIXCd5crjdf0GPnS2jNoIRHL3kN6MjrSGhZQxeAVZsHDlt2rviUi5a3xpCXRr9
+	 gUDKprUT2J5wDE3NiePO1zQwwGcfm3q/ff0KQvy0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CEB52F8057F; Fri, 19 May 2023 08:18:39 +0200 (CEST)
+	id 8697BF805B4; Fri, 19 May 2023 08:18:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48C9BF80589;
-	Fri, 19 May 2023 08:18:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E0E5F805BA;
+	Fri, 19 May 2023 08:18:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CE81BF80272; Tue, 16 May 2023 18:50:03 +0200 (CEST)
-Received: from 7of9.schinagl.nl (7of9.schinagl.nl [185.238.129.13])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 373B2F80272; Wed, 17 May 2023 00:37:18 +0200 (CEST)
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com
+ [IPv6:2607:f8b0:4864:20::52f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6C4EAF8016A
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 18:49:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C4EAF8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id C2541F8024E
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 00:37:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2541F8024E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=schinagl.nl header.i=@schinagl.nl header.a=rsa-sha256
- header.s=7of9 header.b=qtRPYUij
-Received: from [10.2.12.48] (unknown [10.2.12.48])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by 7of9.schinagl.nl (Postfix) with ESMTPSA id BDECE18CC1CE;
-	Tue, 16 May 2023 18:49:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=schinagl.nl; s=7of9;
-	t=1684255795; bh=2bpG6hw05THOjov4DsFWMkybqhsq/QOtVLqvX7Jtm2g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=qtRPYUijGXGqZfwBoFins0+grlC0+ZbSjktqpC0AZGgTJVvmN+JLVg1sSWquXOl4Y
-	 oIIN/wuTvc/Ala3vtd2ITK77vCLkEbeQapLNUcbcFRCxLcdKQSjFt9BK55N40RaVjp
-	 X1o7l0B3uo7FOy5MqC7AToJ8n+tY0eV8Z22HOyqU=
-Message-ID: <6afd694e-8810-8197-3dd0-831daf2130f3@schinagl.nl>
-Date: Tue, 16 May 2023 18:49:55 +0200
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=ska/yoAS
+Received: by mail-pg1-x52f.google.com with SMTP id
+ 41be03b00d2f7-52c6f8ba7e3so13605813a12.3
+        for <alsa-devel@alsa-project.org>;
+ Tue, 16 May 2023 15:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684276627; x=1686868627;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MJGpY/NrMrg0JPSvmjgjr2tdaUCxwO0LhI4q74mpwfE=;
+        b=ska/yoAStgLqoC6IkwvPhKPiq7vXwb59GUYHSaIf8DtpCSLlwOU2aYHAo0+P+Re1AN
+         XdEGGSOwLUK9aJJ/qgqkhxfk/cCLHHy7RUBItrWoWClEskoawObzfeLdKUN5Ac8lE/74
+         oTUOI8oscxXl8UCiwBmd0lVKStdoA3jxLWruQWGw3hmlT5YuNOKTVVQsIs1EIJZtMAIE
+         su0MNU7RgNu5h4ImCfRd5HyTfFfr9jHslAQH9PFLzLN66JbAPR7PvWbJqodEwo6jm/5X
+         p0YETctd9o3jsJTE5IEk9C9Qsvx1JcAM6GX8NYjDQn+/Zka0fAk+xtBRLGRqHv0NAm1i
+         ndTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684276627; x=1686868627;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MJGpY/NrMrg0JPSvmjgjr2tdaUCxwO0LhI4q74mpwfE=;
+        b=W17ICtMFSdHRa8JtYJLEMX6xVH90a97A+tPvPhDDOBnzOjXuwjvLe/5jmNvNejRLKn
+         eKyuD2rqeHMelVySCIJLpYQRJraFm5HOhrIVK71kEDVTSiN7iayFmavXM4de/REALbHq
+         A15Ow9hVod68c+tM2j7egKe1USzosEfIh9qlwheyT+xnE5mwcPyCaSh8FDi6D/RUoaLq
+         NEDlLVFNdRyf+cWXmck9f5XWdtJSWFBI/cwxcau1gmobz0CsIryb7yaiZI1SpKjudRx1
+         h0hKCQuU31AbzZcvMhOkgo2rbwClsAxOt56beeZyIQsPd44vRRJVCqUVXygHExxVh8A4
+         IR5w==
+X-Gm-Message-State: AC+VfDz5ALfqhxIIUU5CKRfNj7WZspppqUWIM+2qWEkH5LFKBbUVfND2
+	XooPvlpy6hysAqkgHtOugxY=
+X-Google-Smtp-Source: 
+ ACHHUZ4UgpIFYQ3VqL6Zs6iIB+uR3kp7qBDoMHFkDx/rQyJ5l2jMSu8mNXq5xOPBWr7JyPCo88kaVA==
+X-Received: by 2002:a05:6a20:7f9d:b0:105:66a1:5d05 with SMTP id
+ d29-20020a056a207f9d00b0010566a15d05mr15148395pzj.55.1684276627209;
+        Tue, 16 May 2023 15:37:07 -0700 (PDT)
+Received: from ubuntu777.domain.name (36-228-97-28.dynamic-ip.hinet.net.
+ [36.228.97.28])
+        by smtp.gmail.com with ESMTPSA id
+ b20-20020aa78714000000b0062dbafced27sm11961983pfo.27.2023.05.16.15.37.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 May 2023 15:37:06 -0700 (PDT)
+From: Min-Hua Chen <minhuadotchen@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>
+Cc: Min-Hua Chen <minhuadotchen@gmail.com>,
+	alsa-devel@alsa-project.org,
+	linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: tegra: tegra210_adx: fix snd_pcm_format_t type
+Date: Wed, 17 May 2023 06:36:59 +0800
+Message-Id: <20230516223700.185569-1-minhuadotchen@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: snd_hda_codec_cirrus kernel oops
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
-References: <64d95eb0-dbdb-cff8-a8b1-988dc22b24cd@schinagl.nl>
- <87zg69appu.wl-tiwai@suse.de>
-Content-Language: nl, en-US
-From: Olliver Schinagl <oliver@schinagl.nl>
-In-Reply-To: <87zg69appu.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: oliver@schinagl.nl
+Content-Transfer-Encoding: 8bit
+X-MailFrom: minhuadotchen@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: GSIKYIDOJZZCFUNPV5TAH3PNEBOJ2WVY
-X-Message-ID-Hash: GSIKYIDOJZZCFUNPV5TAH3PNEBOJ2WVY
-X-Mailman-Approved-At: Fri, 19 May 2023 06:16:21 +0000
+Message-ID-Hash: 5LFRQ7TBBTCJESECO5ADLKFS2YINR7X6
+X-Message-ID-Hash: 5LFRQ7TBBTCJESECO5ADLKFS2YINR7X6
+X-Mailman-Approved-At: Fri, 19 May 2023 06:16:22 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GSIKYIDOJZZCFUNPV5TAH3PNEBOJ2WVY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5LFRQ7TBBTCJESECO5ADLKFS2YINR7X6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -87,77 +120,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hey Takashi,
+use snd_pcm_format_t instead of unsigned int to fix
+the following sparse warnings:
 
->> [   90.497004] CPU: 3 PID: 343 Comm: modprobe Not tainted
->> 6.3.1-arch2-1 #1 4c16b0b90f71a940c7f1bb2eb00cdd9db2a83452
->> [   90.497008] Hardware name: Apple
->> Inc. MacBookPro12,1/Mac-E43C1C25D4880AD6, BIOS 481.0.0.0.0 01/12/2023
->> [   90.497010] RIP: 0010:get_line_out_pfx+0x2dd/0x3e0
->> [snd_hda_codec_generic]
-> 
-> Can you try to decode which line does it hit?
-This was the arch 'vendor' kernel, so not easily? I could have tried 
-though I suppose :)
+sound/soc/tegra/tegra210_adx.c:125:14: sparse: warning: restricted snd_pcm_format_t degrades to integer
+sound/soc/tegra/tegra210_adx.c:128:14: sparse: warning: restricted snd_pcm_format_t degrades to integer
+sound/soc/tegra/tegra210_adx.c:131:14: sparse: warning: restricted snd_pcm_format_t degrades to integer
 
-Instead, I just applied your patch and tried that instead.
+Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
+---
+ sound/soc/tegra/tegra210_adx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Also, as a blind shot, does the patch below work around the bug?
-[   16.593760] 0x000000000000-0x000000800000 : "BIOS"
-[   16.603877] snd_hda_codec_cirrus hdaudioC1D0: autoconfig for CS4208: 
-line_outs=5 (0x11/0x12/0x13/0x14/0x1d) type:speaker
-[   16.603885] snd_hda_codec_cirrus hdaudioC1D0:    speaker_outs=0 
-(0x0/0x0/0x0/0x0/0x0)
-[   16.603888] snd_hda_codec_cirrus hdaudioC1D0:    hp_outs=1 
-(0x10/0x0/0x0/0x0/0x0)
-[   16.603890] snd_hda_codec_cirrus hdaudioC1D0:    mono: mono_out=0x0
-[   16.603892] snd_hda_codec_cirrus hdaudioC1D0:    dig-out=0x1e/0x21
-[   16.603894] snd_hda_codec_cirrus hdaudioC1D0:    inputs:
-[   16.603895] snd_hda_codec_cirrus hdaudioC1D0:      Internal Mic=0x16
-[   16.603897] snd_hda_codec_cirrus hdaudioC1D0:      Internal Mic=0x15
-[   16.603899] snd_hda_codec_cirrus hdaudioC1D0:      Mic=0x18
-[   16.603900] snd_hda_codec_cirrus hdaudioC1D0:      Internal Mic=0x19
-[   16.603902] snd_hda_codec_cirrus hdaudioC1D0:      Internal Mic=0x1a
-[   16.603904] snd_hda_codec_cirrus hdaudioC1D0:      Internal Mic=0x1b
-[   16.603919] snd_hda_codec_cirrus hdaudioC1D0:      Internal Mic=0x1c
-[   16.603921] snd_hda_codec_cirrus hdaudioC1D0:      Line=0x17
-[   16.603922] snd_hda_codec_cirrus hdaudioC1D0:    dig-in=0x22
-[   16.605152] snd_hda_codec_cirrus hdaudioC1D0: Too many channels in 
-get_line_out_pfx: 4
-[   16.605215] snd_hda_codec_cirrus hdaudioC1D0: Too many channels in 
-get_line_out_pfx: 4
+diff --git a/sound/soc/tegra/tegra210_adx.c b/sound/soc/tegra/tegra210_adx.c
+index 41117c1d61fb..bd0b10c70c4c 100644
+--- a/sound/soc/tegra/tegra210_adx.c
++++ b/sound/soc/tegra/tegra210_adx.c
+@@ -109,7 +109,7 @@ static int __maybe_unused tegra210_adx_runtime_resume(struct device *dev)
+ 
+ static int tegra210_adx_set_audio_cif(struct snd_soc_dai *dai,
+ 				      unsigned int channels,
+-				      unsigned int format,
++				      snd_pcm_format_t format,
+ 				      unsigned int reg)
+ {
+ 	struct tegra210_adx *adx = snd_soc_dai_get_drvdata(dai);
+-- 
+2.34.1
 
-the good thing, you fixed the oops; the bad thing, it's no working, but 
-hopefully this helps you gain more insight?
-
-Olliver
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> -- 8< --
-> --- a/sound/pci/hda/hda_generic.c
-> +++ b/sound/pci/hda/hda_generic.c
-> @@ -1182,7 +1182,7 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
->   
->   	/* multi-io channels */
->   	if (ch >= cfg->line_outs)
-> -		return channel_name[ch];
-> +		goto fixed_names;
->   
->   	switch (cfg->line_out_type) {
->   	case AUTO_PIN_SPEAKER_OUT:
-> @@ -1234,8 +1234,9 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
->   	if (cfg->line_outs == 1 && !spec->multi_ios)
->   		return "Line Out";
->   
-> + fixed_names:
->   	if (ch >= ARRAY_SIZE(channel_name)) {
-> -		snd_BUG();
-> +		codec_err(codec, "Too many channels in %s: %d\n", __func__, ch);
->   		return "PCM";
->   	}
->   
