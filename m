@@ -4,56 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBB11C77B7A
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 08:40:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D680EC77B7A
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 08:53:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C1E0820;
-	Tue, 16 May 2023 10:40:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C1E0820
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDDB4825;
+	Tue, 16 May 2023 10:52:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDDB4825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684226457;
-	bh=+ojXbLsKu7Z1jJDl9vKOzG228kGizJ2knQUihDwRXn4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=aWZpEdRZxyLMe91hkIjNYbBNW30WHKZchYSS7ynfwgA3VE/oxudreXlbbmkkAztSW
-	 s1eHZb3xcM4BlVo53/BYXGVO5A/u60YT+esaG8FrANMlgvZ9KJZKsYbwjVQW0njUbO
-	 gZDxOx9DB6aW5f3J3rFt6mUM4ZfpkYjdtNiXR1Is=
+	s=default; t=1684227219;
+	bh=5i87WjgwyMiViOIMguz296sht10SHl9HYvunIq8Fdz4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=AjYshcJ1uYHk3gH1xgVa8Z2Kdvsw1qiOCjraVijMYtuckuOUfnblrnxeATeN1IzSR
+	 0CdkrQLrOffXKONcR4o7N1dCFrG27/tyv+5wqx7Y01YJIGcJsdkzN190TVVNM8dfMw
+	 887pHCYRIvxq4fLTRBwTT1Ngju0trmXdpExIE0Aw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8A8D4F80548; Tue, 16 May 2023 10:39:42 +0200 (CEST)
+	id 5C34EF80544; Tue, 16 May 2023 10:52:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A24C1F80272;
-	Tue, 16 May 2023 10:39:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A8ECF8016A;
+	Tue, 16 May 2023 10:52:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A845EF80272; Tue, 16 May 2023 10:39:35 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	id D2E47F80272; Tue, 16 May 2023 10:52:16 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 72A9CF80087
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 10:39:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72A9CF80087
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id B95B523FEE;
-	Tue, 16 May 2023 04:39:29 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pyqDR-oy3-00; Tue, 16 May 2023 10:39:29 +0200
-Date: Tue, 16 May 2023 10:39:29 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2 0/7] ALSA: emu10k1: various improvements to the
- DSP-based mixer code
-Message-ID: <ZGNBQUZTLrq0689G@ugly>
-Mail-Followup-To: tiwai@suse.de, alsa-devel@alsa-project.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <877ct9pdeb.wl-tiwai@suse.de>
-Message-ID-Hash: KSBI7URK6DVJYE4X7HE2GBOR2OOKZIIV
-X-Message-ID-Hash: KSBI7URK6DVJYE4X7HE2GBOR2OOKZIIV
-X-MailFrom: ossi@kde.org
+	by alsa1.perex.cz (Postfix) with ESMTPS id CCA14F8025A
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 10:52:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCA14F8025A
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=QLNhcuAE
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3843C62A33;
+	Tue, 16 May 2023 08:52:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90387C433D2;
+	Tue, 16 May 2023 08:51:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684227119;
+	bh=5i87WjgwyMiViOIMguz296sht10SHl9HYvunIq8Fdz4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QLNhcuAENyPWj8HBP1xQi92yQxaGrmxituQp8obI3cx7BjaPVB9+qsvvsvlI4Nqgf
+	 u9K1wOfF+YfKEf4fhK3iI5ee+6qgGb8I9l8eonvaN4PeSuzlq+BzFeB/NuzdKw45tc
+	 fn5rSwzJFYbqRvRD2T0Bike6LbN5JyhXXNm+dD+kZ3XAydlEsduQ9US8S7kqe35Cmi
+	 nOjb9Wew+jxCiWaQv9ICqZTPNKMpaXCUsqk/2ytILmk5a7V6VPJtoIPI+sZblVbsoS
+	 l7YSO3KKqTC7c5miN190ZnZXEcXB6xx43fCS6g99KF/COv9tKlP9rtCkDbmUVtCR1M
+	 pCyqIxfYS9kmA==
+Received: from sofa.misterjones.org ([185.219.108.64]
+ helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1pyqPV-00FTKi-5E;
+	Tue, 16 May 2023 09:51:57 +0100
+Date: Tue, 16 May 2023 09:51:56 +0100
+Message-ID: <86h6scmzf7.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Lee Jones <lee@kernel.org>
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>,
+	broonie@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	tglx@linutronix.de,
+	linus.walleij@linaro.org,
+	vkoul@kernel.org,
+	lgirdwood@gmail.com,
+	yung-chuan.liao@linux.intel.com,
+	sanyog.r.kale@intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com,
+	devicetree@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/10] irqchip/cs42l43: Add support for the cs42l43 IRQs
+In-Reply-To: <20230515112554.GA10825@google.com>
+References: <20230512122838.243002-1-ckeepax@opensource.cirrus.com>
+	<20230512122838.243002-8-ckeepax@opensource.cirrus.com>
+	<86o7mpmvqq.wl-maz@kernel.org>
+	<20230512153933.GH68926@ediswmail.ad.cirrus.com>
+	<86mt29mt2m.wl-maz@kernel.org>
+	<20230515112554.GA10825@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: lee@kernel.org, ckeepax@opensource.cirrus.com,
+ broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, tglx@linutronix.de, linus.walleij@linaro.org,
+ vkoul@kernel.org, lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
+ sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org);
+ SAEximRunCond expanded to false
+Message-ID-Hash: UQATWOW2L4GT4KC245K2PO7ZT2H4PHKK
+X-Message-ID-Hash: UQATWOW2L4GT4KC245K2PO7ZT2H4PHKK
+X-MailFrom: maz@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -65,7 +124,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KSBI7URK6DVJYE4X7HE2GBOR2OOKZIIV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UQATWOW2L4GT4KC245K2PO7ZT2H4PHKK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -74,9 +133,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> Applied all seven patches now.  Thanks.
->
-the last patch ("enable bit-exact playback, part 2: voice attenuation") 
-seems to have got lost.
+On Mon, 15 May 2023 12:25:54 +0100,
+Lee Jones <lee@kernel.org> wrote:
+> 
+> On Fri, 12 May 2023, Marc Zyngier wrote:
+> 
+> > On Fri, 12 May 2023 16:39:33 +0100,
+> > Charles Keepax <ckeepax@opensource.cirrus.com> wrote:
+> > > 
+> > > On Fri, May 12, 2023 at 04:10:05PM +0100, Marc Zyngier wrote:
+> > > > On Fri, 12 May 2023 13:28:35 +0100,
+> > > > Charles Keepax <ckeepax@opensource.cirrus.com> wrote:
+> > > > > 
+> > > > > The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
+> > > > > (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
+> > > > > for portable applications. It provides a high dynamic range, stereo
+> > > > > DAC for headphone output, two integrated Class D amplifiers for
+> > > > > loudspeakers, and two ADCs for wired headset microphone input or
+> > > > > stereo line input. PDM inputs are provided for digital microphones.
+> > > > > 
+> > > > > The IRQ chip provides IRQ functionality both to other parts of the
+> > > > > cs42l43 device and to external devices that wish to use its IRQs.
+> > > > 
+> > > > Sorry, but this isn't much of an interrupt controller driver. A modern
+> > > > interrupt controller driver is firmware-driven (DT or ACPI, pick your
+> > > > poison), uses irq domains, and uses the irqchip API.
+> > > > 
+> > > 
+> > > Apologies but I really need a little help clarifying the issues
+> > > here. I am totally happy to fix things up but might need a couple
+> > > pointers.
+> > > 
+> > > 1) uses the irqchip API / uses irq domains
+> > > 
+> > > The driver does use both the irqchip API and domains, what
+> > > part of the IRQ API are we not using that we should be?
+> > > 
+> > > The driver registers an irq domain using
+> > > irq_domain_create_linear.  It requests its parent IRQ using
+> > > request_threaded_irq. It passes IRQs onto the devices requesting
+> > > IRQs from it using handle_nested_irq and irq_find_mapping.
+> > > 
+> > > Is the objection here that regmap is making these calls for us,
+> > > rather than them being hard coded into this driver?
+> > 
+> > That's one of the reasons. Look at the existing irqchip drivers: they
+> > have nothing in common with yours. The regmap irqchip abstraction may
+> > be convenient for what you are doing, but the result isn't really an
+> > irqchip driver. It is something that is a small bit of a larger device
+> > and not an interrupt controller driver on its own. The irqchip
+> > subsystem is there for "first class" interrupt controllers.
+> 
+> I'm not aware of another subsystem that deals with !IRQChip level IRQ
+> controllers.  Where do simple or "second class" interrupt controllers
+> go?
 
-regards
+This isn't an interrupt controller. This is internal signalling, local
+to a single component that has been artificially broken into discrete
+bits, including an interrupt controller. The only *real* interrupts
+here are the GPIOs.
+
+I'm happy to see an interrupt controller for the GPIOs. But the rest
+is just internal muck that doesn't really belong here. Where should it
+go? Together with the rest of the stuff that manages the block as a
+whole. Which looks like the MFD subsystem to me.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
