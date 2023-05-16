@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F072BC77B7A
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 10:44:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 137CCC77B75
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 May 2023 10:44:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 763551CE;
-	Tue, 16 May 2023 12:43:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 763551CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10DDC1F9;
+	Tue, 16 May 2023 12:44:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10DDC1F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684233863;
-	bh=cZqK/bDTueXYfCVOZdDBi7llsOr0ZkU7iipfO881oFM=;
+	s=default; t=1684233894;
+	bh=NXUZflYhYyl4hwcckS+vt2bJ45lfyRqXNoF5h38hTD0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Wm71UC+8SfAtEzxFX7Bk3IcCFZfpX+okVLUyCGvkYniJ/hzM3Ux/rID6yrUhSo7Ev
-	 7r16Bk7TOtQTlAZm3rshGcfX0jhpPTKilwm4qIs3HufcaJ2tbVCmBCDPgfZu5HVmhx
-	 hSfI+krRzwO6WRBc1TW8fOcxjTRfOBWLd+6RHOBQ=
+	b=MOtN5iTploUE1bpvQWFft8H0GfBuBhV68dREsVP8h/RZd1KZ3X1snT6Fh4TJNK6HB
+	 lTB6fqVjWnQF7kMVyq7tixy47NBnG5RA7BGKO23ItecRlNCDn+ciGa7RYO+0U8KJ0f
+	 qxg+E+G6iV+tB/BLpBR/pTEov7npq6ouB/NQJimc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8922BF80272; Tue, 16 May 2023 12:43:11 +0200 (CEST)
+	id 0B3C9F8055A; Tue, 16 May 2023 12:43:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01A8BF80087;
-	Tue, 16 May 2023 12:43:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCF01F80564;
+	Tue, 16 May 2023 12:43:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37A94F80272; Tue, 16 May 2023 12:43:07 +0200 (CEST)
+	id 2F210F8055A; Tue, 16 May 2023 12:43:44 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46BE4F80087
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 12:42:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46BE4F80087
+	by alsa1.perex.cz (Postfix) with ESMTP id B4912F80544
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2023 12:43:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4912F80544
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1684233779714470863-webhooks-bot@alsa-project.org>
-References: <1684233779714470863-webhooks-bot@alsa-project.org>
+In-Reply-To: <1684233822692463398-webhooks-bot@alsa-project.org>
+References: <1684233822692463398-webhooks-bot@alsa-project.org>
 Subject: Apple USB-C dongle cannot output 44100hz
-Message-Id: <20230516104307.37A94F80272@alsa1.perex.cz>
-Date: Tue, 16 May 2023 12:43:07 +0200 (CEST)
-Message-ID-Hash: CCXQ2DRMUT4QAGMNTVI37YAKXJROJ6P3
-X-Message-ID-Hash: CCXQ2DRMUT4QAGMNTVI37YAKXJROJ6P3
+Message-Id: <20230516104344.2F210F8055A@alsa1.perex.cz>
+Date: Tue, 16 May 2023 12:43:44 +0200 (CEST)
+Message-ID-Hash: XQWQJBQVZWQHNRYLAHFRKQTS7E3TEOYM
+X-Message-ID-Hash: XQWQJBQVZWQHNRYLAHFRKQTS7E3TEOYM
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CCXQ2DRMUT4QAGMNTVI37YAKXJROJ6P3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XQWQJBQVZWQHNRYLAHFRKQTS7E3TEOYM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,12 +66,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #322 was opened from tw-hx:
+alsa-project/alsa-lib issue #322 was edited from tw-hx:
 
 I have the same issue as outlined here, with an A2049 Apple USB-C to 3.5mm dongle:
 https://github.com/mikebrady/shairport-sync/issues/1504
 
-Running Arch Linux with kernel 6.3.1-arch2-1, alsa-lib 1.2.9-1. Pipewire reports that the output is locked to 48000hz when it should be switching to 41000hz, and ALSA reports that this is the only detected supported rate:
+Running Arch Linux with kernel 6.3.1-arch2-1, alsa-lib 1.2.9-1. Pipewire reports that the output is locked to 48000hz when it should be switching to 44100hz, and ALSA reports that this is the only detected supported rate:
 
 ```
 $ cat /proc/asound/card0/stream0
