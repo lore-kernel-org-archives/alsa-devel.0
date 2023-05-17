@@ -4,95 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DEC8C77B7A
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 14:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F657C77B75
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 14:26:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 608131F6;
-	Wed, 17 May 2023 16:12:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 608131F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 326941FE;
+	Wed, 17 May 2023 16:25:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 326941FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684332819;
-	bh=pzFo4Z6t1V727ENInzSFlGTCw9zVEOcwoyprjyInogA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1684333598;
+	bh=1Dhwlac21N7ey15bOhy39Z0+Sh+RslIFzrW1eG0d8Dc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=stnVYvwb9hXbLhYIZWeMvE7aHyXaj5IZqobP40nJVcS9EZX6NgksULwh6zz+yhmMi
-	 Mzmk9ZTKBV+iCsbGHVlJUuqbu+1scY2QM7eVcYuv9bmVhVaWS6ROCL2a5o4eSH5lAe
-	 Ksi0bK98/eyQpy5CHhdprzKtLi2liv3dakYqSPJ4=
+	b=stvj/xuc7tKKObcklXbBPrShRJvLrPi3heglHUtbze6xOJAP2ad+4nj/fgjF9vpbG
+	 iHoQw39pK3Z9iJdYKWhs1VX48ZxBiXN0M7hWi7fKstsCSC9kE5tYuBC5U0qf8zRtI1
+	 d5wCdHELwillGcICIvZP9Y+79w/5U709BJtXnxDU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92A59F80580; Wed, 17 May 2023 16:11:58 +0200 (CEST)
+	id E425CF8025A; Wed, 17 May 2023 16:25:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15702F8057E;
-	Wed, 17 May 2023 16:11:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91A3AF80544;
+	Wed, 17 May 2023 16:25:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5EBB5F80563; Wed, 17 May 2023 16:11:53 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 0D50FF80272; Wed, 17 May 2023 16:25:17 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AF675F80272
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 16:11:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF675F80272
+	by alsa1.perex.cz (Postfix) with ESMTPS id 384ACF8016A
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 16:25:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 384ACF8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VUtyAiXN
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684332705; x=1715868705;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=pzFo4Z6t1V727ENInzSFlGTCw9zVEOcwoyprjyInogA=;
-  b=VUtyAiXNYV8QBOifaGXqKu7wyvgXFqCIU6BHBsCrGCIEpllxV08WWCup
-   +c+KwNG649sx1DdsuHI9zpRP0137XNReAhttuEpYbP5Lp7im0fKI66XXG
-   RqowDzXjoK6LmW9X8b6xGV8E+YXyUzspPmEH4vi5EecqLrA+0N0kIPUps
-   ckQt84YtyyjexeNnvKkJwWXW9XbVd+EcspsGJbkwtEiHju5Wc0b3zj9JH
-   JS410kp+VBwdXLAJFhRkRW1Vjokt+lhYNXxSQ581QH7J/XOREPGipMF4L
-   a7vmPgg3NP6yZMXk2bhZ7od+h5wW6bBZN9cCoqsuOvjDE6un4jHuIu+mQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="349273422"
-X-IronPort-AV: E=Sophos;i="5.99,282,1677571200";
-   d="scan'208";a="349273422"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 May 2023 07:11:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="734709684"
-X-IronPort-AV: E=Sophos;i="5.99,282,1677571200";
-   d="scan'208";a="734709684"
-Received: from rdealba-mobl.amr.corp.intel.com (HELO [10.209.16.101])
- ([10.209.16.101])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 May 2023 07:11:41 -0700
-Message-ID: <0714fa41-b77d-6735-2abb-17d93c41ca51@linux.intel.com>
-Date: Wed, 17 May 2023 08:36:37 -0500
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=i0C4K8am
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8E0E763D7B;
+	Wed, 17 May 2023 14:25:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92E1EC433D2;
+	Wed, 17 May 2023 14:25:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684333510;
+	bh=1Dhwlac21N7ey15bOhy39Z0+Sh+RslIFzrW1eG0d8Dc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=i0C4K8amXrs4WpK0bt4cyjr3Zoz1ySv2+y+FKIS8z/UKEcYSo+pbMGiGsIb6Hcru2
+	 KZfYnis/IKZlbnXk8n8F1kTLDggJNXQjUC+IiFi4C/8+XLLCT3aqwZYNLthxUcaK/e
+	 tFnj77Ht25StijnoYLVWd9ilTEywf7QThhbFvWTZj2jaXQydVNqFFkC5LvEC6G3byX
+	 qL91uNa5lVPwPquhQHREw4Qe1yCYjBXwUl3kN13gEeeR9jEKNoVAlz8DM5WQIYGgbh
+	 la2mPUWaWRAQc8Amz6P8kn4jMX6kH7dMwV3Mmdm7CebANznOtQ+oYliUFWeyY/kEIC
+	 Mou9zngaVJJWw==
+Date: Wed, 17 May 2023 23:25:06 +0900
+From: Mark Brown <broonie@kernel.org>
+To: AS50 CTLin0 <ctlin0@nuvoton.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	lgirdwood@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org, YHCHuang@nuvoton.com,
+	KCHSU0@nuvoton.com, WTLI@nuvoton.com, SJLIN0@nuvoton.com,
+	ctlin0.linux@gmail.com
+Subject: Re: [PATCH] ASoC: dt-bindings: nau8315: Convert to dtschema
+Message-ID: <ZGTjwpR4ZKKtXy4m@finisterre.sirena.org.uk>
+References: <20230516054944.1081808-1-CTLIN0@nuvoton.com>
+ <e2819075-c41f-716b-023f-fb1ad13a3466@linaro.org>
+ <cbeabc50-35f7-70ee-5165-8a785513b1fc@nuvoton.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.10.0
-Subject: Re: [PATCH 2/9] ASoC: amd: ps: handle soundwire interrupts in acp pci
- driver
-Content-Language: en-US
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>,
- Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com, Mastan.Katragadda@amd.com,
- Arungopal.kondaveeti@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- open list <linux-kernel@vger.kernel.org>
-References: <20230516103543.2515097-1-Vijendar.Mukunda@amd.com>
- <20230516103543.2515097-3-Vijendar.Mukunda@amd.com>
- <bc58e1b1-8bce-3894-f840-57dd2d802932@linux.intel.com>
- <fea77516-72ab-afa1-2336-ae9174e7bd7f@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <fea77516-72ab-afa1-2336-ae9174e7bd7f@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6A4EZBEONKG6CAU5AFVYVSI4OWRGHW44
-X-Message-ID-Hash: 6A4EZBEONKG6CAU5AFVYVSI4OWRGHW44
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="x2XVQy2HSnCc2cWo"
+Content-Disposition: inline
+In-Reply-To: <cbeabc50-35f7-70ee-5165-8a785513b1fc@nuvoton.com>
+X-Cookie: Avoid contact with eyes.
+Message-ID-Hash: XORIHXLVB7MOJ5WGVONPVDNPJPCS22HZ
+X-Message-ID-Hash: XORIHXLVB7MOJ5WGVONPVDNPJPCS22HZ
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -104,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6A4EZBEONKG6CAU5AFVYVSI4OWRGHW44/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XORIHXLVB7MOJ5WGVONPVDNPJPCS22HZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,32 +100,34 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
->>> +	if (ext_intr_stat & BIT(ACP_ERROR_IRQ_MASK)) {
->>> +		writel(BIT(ACP_ERROR_IRQ_MASK), adata->acp63_base + ACP_EXTERNAL_INTR_STAT);
->>> +		writel(0, adata->acp63_base + ACP_SW0_I2S_ERROR_REASON);
->>> +		writel(0, adata->acp63_base + ACP_SW1_I2S_ERROR_REASON);
->>> +		writel(0, adata->acp63_base + ACP_ERROR_STATUS);
->>> +		irq_flag = 1;
->> it's not clear what this does? Looks like just filtering out interrupts
->> without doing anything about the interrupt source?
-> When ACP error interrupt is raised, As per our design, ACP IRQ handler will clear
-> the error interrupt by clearing ACP_ERROR_IRQ bit in ACP_EXTERNAL_INTR_STAT.
-> 
-> To know the error source reason, we need to read the ACP_ERROR_STATUS,
-> ACP_SW0_I2S_ERROR_REASON, ACP_SW1_I2S_ERROR_REASON registers.
-> After reading the Error registers, we need to clear these registers.
-> Currently, we haven't added read register operations for error reason registers.
-> This is for debugging purpose only.
-> 
-> In Current context, we refer ACP_SW0_I2S_ERROR_REASON  register to know errors like
-> Sound Wire Bus clash detections, Command and Response Errors, BRA mode errors,
-> FIFO underflow/overflow errors detected for SoundWire Manager -0 instance.
-> Similarly, ACP_SW1_I2S_ERROR_REASON register referred to know errors detected for
-> SoundWire Manager instance - 1.
+--x2XVQy2HSnCc2cWo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If you didn't add the code to deal with the errors, a comment would be
-welcome to clarify that the interrupts are cleared without looking for
-the root cause.
+On Wed, May 17, 2023 at 11:28:46AM +0800, AS50 CTLin0 wrote:
+> On 5/17/2023 12:10 AM, Krzysztof Kozlowski wrote:
 
-It's hard when reviewing code to understand if there's a miss or
-something that's intentionally omitted or to be added later.
+> > The only thing driver is doing is to toggle this pin. If it is missing
+> > the entire driver is noop, thus above comment is a bit funny. It
+> > probably should be mandatory pin. But I see it was there since beginning
+> > so ok.
+
+No, it's not just that - the driver also describes the supported formats
+and rates to the subsystem so we can constrain the DAI appropraitely.
+
+--x2XVQy2HSnCc2cWo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRk478ACgkQJNaLcl1U
+h9CtjQf/U8+HjwzklTu3T4CIP10H9Oh9JrvIuqh5nk+6nXZxz75nPZg+2ugCBUoN
+6W2nhN0DRI6rPf88jFJ/OO0qS6d0Vvf2l3FeXKconU2I71gifGtQxt+hvCsODqkI
+00wulEv+2MNNAec1HyeDLYoF2ezD1s1ZjsKtryhbt3DAWVzXN8X2lExxWpzG2a9b
+6onuu0zVLGlGgYw0BeIE+KhpIzqaRuk9ogJnGxqUlhlnanJXvHfJR75dWEGOPW6m
+6Hf5TqeNZa8xn2d2El3o748/umwUxoimn5/qioGA2S02c7V2ExHW7YICu883ief5
+a0DjxBswhr/PJh5rPX9Hi34ZhZJliA==
+=594/
+-----END PGP SIGNATURE-----
+
+--x2XVQy2HSnCc2cWo--
