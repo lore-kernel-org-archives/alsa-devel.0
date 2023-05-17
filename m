@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 916BBC77B7D
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 14:52:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3126C77B7D
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 14:52:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FE1A20C;
-	Wed, 17 May 2023 16:51:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FE1A20C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D768A1F9;
+	Wed, 17 May 2023 16:51:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D768A1F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684335139;
-	bh=Olfg9mZnTWLqAx9RmY3HRQw50RoYRgYNWDShY4kMfSo=;
+	s=default; t=1684335156;
+	bh=8I67luAksBCL72+meHCMN8MBL7RhGxwexXQRG0RpqDQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=shJes5s93Ib0PSlH1Ijrql7oyApMuEzNeQ3VuwLbrHUPGCIUmTrcmMpNQ/TsAoa63
-	 +NzJZHllSm+zaRrsB/CSdlPgFiaC+XYDWGBIATfeeImyXQv+eZMxK+6eYi9MUx04Hv
-	 q8vN2OcYbELRifH2mGYwtbvoskQMXJTylSndPw74=
+	b=B3PFf4rx0mg8x0zFjybjxl5LLGUXiMaZKAFdCGQTK9/WVnZCR2eDTlgW7dm5FwtIy
+	 CBdoftBv2xWHbg7KU5yFMYjKjXVpsH9Th7/YC41w+pIAXHVwveGBcemwHTWPqhQDG3
+	 q1cQe1vwpdWzch3xUoUpB0/Itk/pbU7zw14T+7Oc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7CE4F8025A; Wed, 17 May 2023 16:50:58 +0200 (CEST)
+	id DE82DF8057E; Wed, 17 May 2023 16:51:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4ABC0F80564;
-	Wed, 17 May 2023 16:50:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B24EF8057D;
+	Wed, 17 May 2023 16:51:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9A3AFF80272; Wed, 17 May 2023 16:50:52 +0200 (CEST)
+	id 0D930F80552; Wed, 17 May 2023 16:50:57 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BB725F8016D
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 16:50:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB725F8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 149A2F80549
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 16:50:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 149A2F80549
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=c6bRaEkv
+ header.s=k20201202 header.b=qUWfDk+i
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 6DF3D64813;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B9EBF64813;
+	Wed, 17 May 2023 14:50:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BEF2C433EF;
 	Wed, 17 May 2023 14:50:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6ABAC4339C;
-	Wed, 17 May 2023 14:50:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684335048;
-	bh=Olfg9mZnTWLqAx9RmY3HRQw50RoYRgYNWDShY4kMfSo=;
+	s=k20201202; t=1684335052;
+	bh=8I67luAksBCL72+meHCMN8MBL7RhGxwexXQRG0RpqDQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=c6bRaEkvwJEEKkgkZtUueJG/jIJU2n8UYA6tHXaXSbLK2mR38uPCLL/DpP0ShYnba
-	 73DghKlY/OzDuSmcrzAXc3a/p0LpfhkWfU7z5EOJYoKLZn/vZAdiCRBstLMrkd+bw2
-	 5PrLbw3+9EPzEGuxbRXWnMYj14lSuQabaP9TAcWaLNem3zblnmeIHBGiLvTgNetQ5o
-	 9lN8yxRqRPpA9EtMmyKQVHGcZvt24fpO2iFMEFm/L6byP8xY/+qW2OsJ6sXMPiYVLk
-	 /sHIJSJNF/dlc3KUMCfunlnI4V9CRYfLVc74n+r3cYbbydnh66ETMYPUYqIfhd34vC
-	 YVs/x0DUa8Amg==
+	b=qUWfDk+i2yXv7J9MhJbZBLjKRMGgL6whFTdU7YNAeRKAslCwfkZ0uu36FniV0PGoD
+	 2LKSjRxPljASyj1bfOozDGNrgsmGFwvlyb+oNv+iS70fjlEQpU5bHGYPhFnCGYyhLi
+	 4kPl91ugCsgauLB+ix/5ci9SbDnPcBlIWgpkRFH2fLouplPEw/XHzzF2JrbR6wHZJ9
+	 pOsDGy28GRzma75ffQTQgY/6M40lmW3vDnbWlNhIwgDq1tQkZaqIWJ2X0vLbWZgUdq
+	 2mgFU/rPyj0yOY9sL5N7JTrNmMqzNGIPq1NI/0JMI3axFH6bqQb8ZI1VyM6xHzvKQq
+	 hHxS0voC+lQRw==
 From: Mark Brown <broonie@kernel.org>
-To: David Lin <CTLIN0@nuvoton.com>
-Cc: lgirdwood@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com,
- WTLI@nuvoton.com, SJLIN0@nuvoton.com, ctlin0.linux@gmail.com
-In-Reply-To: <20230516054944.1081808-1-CTLIN0@nuvoton.com>
-References: <20230516054944.1081808-1-CTLIN0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: nau8315: Convert to dtschema
-Message-Id: <168433504550.453649.7898584089373655080.b4-ty@kernel.org>
-Date: Wed, 17 May 2023 23:50:45 +0900
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Min-Hua Chen <minhuadotchen@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20230516223700.185569-1-minhuadotchen@gmail.com>
+References: <20230516223700.185569-1-minhuadotchen@gmail.com>
+Subject: Re: [PATCH] ASoC: tegra: tegra210_adx: fix snd_pcm_format_t type
+Message-Id: <168433504910.453649.10010887587375335670.b4-ty@kernel.org>
+Date: Wed, 17 May 2023 23:50:49 +0900
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: HTSEHHVKN4ODURTL4IJUOHWYDZRMYCBU
-X-Message-ID-Hash: HTSEHHVKN4ODURTL4IJUOHWYDZRMYCBU
+Message-ID-Hash: 3HKBRJVVT2U2SN26M63PR2BS7VV6UK33
+X-Message-ID-Hash: 3HKBRJVVT2U2SN26M63PR2BS7VV6UK33
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HTSEHHVKN4ODURTL4IJUOHWYDZRMYCBU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3HKBRJVVT2U2SN26M63PR2BS7VV6UK33/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,10 +94,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 16 May 2023 13:49:45 +0800, David Lin wrote:
-> Convert the NAU8315 audio CODEC bindings to DT schema.
+On Wed, 17 May 2023 06:36:59 +0800, Min-Hua Chen wrote:
+> use snd_pcm_format_t instead of unsigned int to fix
+> the following sparse warnings:
 > 
+> sound/soc/tegra/tegra210_adx.c:125:14: sparse: warning: restricted snd_pcm_format_t degrades to integer
+> sound/soc/tegra/tegra210_adx.c:128:14: sparse: warning: restricted snd_pcm_format_t degrades to integer
+> sound/soc/tegra/tegra210_adx.c:131:14: sparse: warning: restricted snd_pcm_format_t degrades to integer
 > 
+> [...]
 
 Applied to
 
@@ -104,8 +110,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: nau8315: Convert to dtschema
-      commit: 268777caf0dd8d3c852cccb949ae73b7ea7b2f5e
+[1/1] ASoC: tegra: tegra210_adx: fix snd_pcm_format_t type
+      commit: 35f8a9d87ca4f920526e6063df570490b41295fc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
