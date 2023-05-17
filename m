@@ -4,56 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5ADF1C7EE2A
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 17:46:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7CDFC77B75
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 18:59:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 128206C0;
-	Wed, 17 May 2023 19:45:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 128206C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 108951F7;
+	Wed, 17 May 2023 20:58:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 108951F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684345604;
-	bh=6nrCUrK/zzsQKS+Bb0KbIKVSAqgcpK0MkZO8oThv2F0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Z0UE6yC3lDp8N72KyIitccCtCsWzl50T4d+r1rQnWOZ5gisA5F3E5L1MMlnyS91cH
-	 j35BG4RSZXY+zfu6bD+k2gqJWMJQc8uHuahtWpLCGBQibYTDgXIJThMhni/oBS0Twy
-	 fyOVQPM+H2nOjOvEM4vvvXbBISwLCEXKWKNlr1t8=
+	s=default; t=1684349969;
+	bh=jOk1c4tiyuSQMndwEWHnBNmOarSoysE6cRmgExFB+90=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=WpuyAaDn2XpB8n2fiZ7cv43yOQV5YWjgi3plAh6LxtoW3dU64nSdXXZl6WfdBKYHA
+	 WOu4yrZnkj3xrDZ/pk4z3POscETOfzBU8ArlJesVEzijZal/cdEqo2hYZBMAT7TRik
+	 cFESJrnoD7lHgSX8sGIvH60/+d/G0cCeJDXWqak8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 015BEF805E8; Wed, 17 May 2023 19:43:40 +0200 (CEST)
+	id 78BA8F8016A; Wed, 17 May 2023 20:58:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27655F805E3;
-	Wed, 17 May 2023 19:43:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00F99F8016D;
+	Wed, 17 May 2023 20:58:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4BE07F805B3; Wed, 17 May 2023 19:43:28 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id A8D00F80272; Wed, 17 May 2023 20:58:04 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 295D0F80548
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 19:43:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 295D0F80548
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id B61D52421F;
-	Wed, 17 May 2023 13:42:56 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pzLAu-LNn-00; Wed, 17 May 2023 19:42:56 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 74A1BF8016A
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 20:57:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74A1BF8016A
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=VsDt7DhP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1684349877; x=1715885877;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jOk1c4tiyuSQMndwEWHnBNmOarSoysE6cRmgExFB+90=;
+  b=VsDt7DhP3+LxyMbZU9SM+4FsNIclLJFBQgKf/661f62l4sqsozn5Uq07
+   NjoM0MZbJ/qDz0g+kctIFju2Db/ebgJW5W2N/bPeCevlAIsUVAsOdOf5u
+   R253XHVX/P0R2K2vCi1g548GrlL/XcQMZptwkfuRDl9WIOh1vzrAY0DTx
+   9EhuDZAqsvD/8iP5IH/JH7XHqQFJ+qXTzjGpWyV3mz3yPKvhLiagWu3KC
+   ZUQCRpBSeW11ved/JBYX5YFLT3FR4+FCU2bJrIgPxhQvT+HxI0ebqzU00
+   a8aFd5ijOhESDYhnlpXkU61/6PElSNNGP6y6wwpbfCzF8scKef+1AkL+x
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="331462913"
+X-IronPort-AV: E=Sophos;i="5.99,283,1677571200";
+   d="scan'208";a="331462913"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 May 2023 11:57:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="766873973"
+X-IronPort-AV: E=Sophos;i="5.99,283,1677571200";
+   d="scan'208";a="766873973"
+Received: from pgopdahl-mobl1.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.209.16.196])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 May 2023 11:57:50 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 8/9] ALSA: emu10k1: refactor PCM playback cache filling
-Date: Wed, 17 May 2023 19:42:55 +0200
-Message-Id: <20230517174256.3657060-8-oswald.buddenhagen@gmx.de>
-X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230517174256.3657060-1-oswald.buddenhagen@gmx.de>
-References: <20230517174256.3657060-1-oswald.buddenhagen@gmx.de>
+Cc: tiwai@suse.de,
+	broonie@kernel.org,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: soc-pcm: test if a BE can be prepared
+Date: Wed, 17 May 2023 13:57:31 -0500
+Message-Id: <20230517185731.487124-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: N2GDFG2LWMJNAJQXBNEZVZOK5DW6J3R2
-X-Message-ID-Hash: N2GDFG2LWMJNAJQXBNEZVZOK5DW6J3R2
-X-MailFrom: ossi@kde.org
+Message-ID-Hash: LGBIZW3VWNNBZGLUSFGZZ3L672OFCJRX
+X-Message-ID-Hash: LGBIZW3VWNNBZGLUSFGZZ3L672OFCJRX
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -65,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N2GDFG2LWMJNAJQXBNEZVZOK5DW6J3R2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LGBIZW3VWNNBZGLUSFGZZ3L672OFCJRX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -74,84 +101,86 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Rename snd_emu10k1_playback_invalidate_cache() to the more apt
-snd_emu10k1_playback_fill_cache(), and factor out
-snd_emu10k1_playback_prepare_voices(), which calls the former for all
-channels.
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+In the BE hw_params configuration, the existing code checks if any of the
+existing FEs are prepared, running, paused or suspended - and skips the
+configuration in those cases. This allows multiple calls of hw_params
+which the ALSA state machine supports.
+
+This check is not handled for the prepare stage, which can lead to the
+same BE being prepared multiple times. This patch adds a check similar to
+that of the hw_params, with the main difference being that the suspended
+state is allowed: the ALSA state machine allows a transition from
+suspended to prepared with hw_params skipped.
+
+This problem was detected on Intel IPC4/SoundWire devices, where the BE
+dailink .prepare stage is used to configure the SoundWire stream with a
+bank switch. Multiple .prepare calls lead to conflicts with the .trigger
+operation with IPC4 configurations. This problem was not detected earlier
+on Intel devices, HDaudio BE dailinks detect that the link is already
+prepared and skip the configuration, and for IPC3 devices there is no BE
+trigger.
+
+Link: https://github.com/thesofproject/sof/issues/7596
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/emu10k1/emupcm.c | 33 +++++++++++++++++++++------------
- 1 file changed, 21 insertions(+), 12 deletions(-)
+ include/sound/soc-dpcm.h |  4 ++++
+ sound/soc/soc-pcm.c      | 20 ++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index 7924d185cf92..2af210961a87 100644
---- a/sound/pci/emu10k1/emupcm.c
-+++ b/sound/pci/emu10k1/emupcm.c
-@@ -510,16 +510,12 @@ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
- 	return 0;
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index 4d6ac7699833..ebd24753dd00 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -122,6 +122,10 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream);
+ 
++/* can this BE perform prepare */
++int snd_soc_dpcm_can_be_prepared(struct snd_soc_pcm_runtime *fe,
++				 struct snd_soc_pcm_runtime *be, int stream);
++
+ /* is the current PCM operation for this FE ? */
+ int snd_soc_dpcm_fe_can_update(struct snd_soc_pcm_runtime *fe, int stream);
+ 
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index adb69d7820a8..4fb1ac8e1c4a 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2405,6 +2405,9 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
+ 		if (!snd_soc_dpcm_be_can_update(fe, be, stream))
+ 			continue;
+ 
++		if (!snd_soc_dpcm_can_be_prepared(fe, be, stream))
++			continue;
++
+ 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
+ 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
+ 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND) &&
+@@ -3042,3 +3045,20 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
  }
- 
--static void snd_emu10k1_playback_invalidate_cache(struct snd_emu10k1 *emu,
--						  struct snd_emu10k1_voice *evoice,
--						  bool w_16, bool stereo)
-+static void snd_emu10k1_playback_fill_cache(struct snd_emu10k1 *emu,
-+					    unsigned voice,
-+					    u32 sample, bool stereo)
- {
--	unsigned voice, sample;
- 	u32 ccr;
- 
--	voice = evoice->number;
--	sample = w_16 ? 0 : 0x80808080;
--
- 	// We assume that the cache is resting at this point (i.e.,
- 	// CCR_CACHEINVALIDSIZE is very small).
- 
-@@ -538,6 +534,22 @@ static void snd_emu10k1_playback_invalidate_cache(struct snd_emu10k1 *emu,
- 	snd_emu10k1_ptr_write(emu, CCR, voice, ccr);
- }
- 
-+static void snd_emu10k1_playback_prepare_voices(struct snd_emu10k1 *emu,
-+						struct snd_emu10k1_pcm *epcm,
-+						bool w_16, bool stereo,
-+						int channels)
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
++
++/*
++ * We can only prepare a BE DAI if any of it's FE are not prepared,
++ * running or paused for the specified stream direction.
++ */
++int snd_soc_dpcm_can_be_prepared(struct snd_soc_pcm_runtime *fe,
++				 struct snd_soc_pcm_runtime *be, int stream)
 +{
-+	u32 sample = w_16 ? 0 : 0x80808080;
++	const enum snd_soc_dpcm_state state[] = {
++		SND_SOC_DPCM_STATE_START,
++		SND_SOC_DPCM_STATE_PAUSED,
++		SND_SOC_DPCM_STATE_PREPARE,
++	};
 +
-+	for (int i = 0; i < channels; i++) {
-+		unsigned voice = epcm->voices[i]->number;
-+		snd_emu10k1_playback_fill_cache(emu, voice, sample, stereo);
-+	}
-+
-+	// It takes a moment until the cache fills complete,
-+	// but the unmuting takes long enough for that.
++	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
 +}
-+
- static void snd_emu10k1_playback_commit_volume(struct snd_emu10k1 *emu,
- 					       struct snd_emu10k1_voice *evoice,
- 					       unsigned int vattn)
-@@ -631,7 +643,7 @@ static int snd_emu10k1_playback_trigger(struct snd_pcm_substream *substream,
- 	spin_lock(&emu->reg_lock);
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[0], w_16, stereo);
-+		snd_emu10k1_playback_prepare_voices(emu, epcm, w_16, stereo, 1);
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-@@ -773,10 +785,7 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
- 	spin_lock(&emu->reg_lock);
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		/* prepare voices */
--		for (i = 0; i < NUM_EFX_PLAYBACK; i++) {	
--			snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[i], true, false);
--		}
-+		snd_emu10k1_playback_prepare_voices(emu, epcm, true, false, NUM_EFX_PLAYBACK);
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
++EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_prepared);
 -- 
-2.40.0.152.g15d061e6df
+2.37.2
 
