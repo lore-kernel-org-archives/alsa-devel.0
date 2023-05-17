@@ -4,106 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7D10C77B7D
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 14:02:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8178C7EE23
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 14:04:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0DE81FA;
-	Wed, 17 May 2023 16:01:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0DE81FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E12D1FA;
+	Wed, 17 May 2023 16:03:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E12D1FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684332129;
-	bh=QSLvyHDFbuTCOMWabgg4p1boZD4SUQXeyN7f5N6tsjc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=UKpasCDDNpGw6FleSlEfgnCmMNWaBqwFr3egkmVoAZBCwCkqG6R5eum4OOr+q0qyG
-	 +wWb8ZR0Xacunvo9OtEyW86TqteVY8OjXkFPGhySvUCIGiY1nau2dNgiEpVy3Z1bV/
-	 XFRYU+qamwUmvl7VYs6rSfy8dY9VaKpeNOMPgjN4=
+	s=default; t=1684332278;
+	bh=h5W1Z4o9LHPa8lHetePmYyMus46bU3T+L4qAbUkqj2U=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=P6bltZgT5yP/1Qq9SKZZevzugdLZjlDprl328aKjcIDR3GNwbOBneyJC/VhmuBNfP
+	 tesrCHRIrPaGq9Xkou1hzDqdfrtqrwfi7G533GudTPM8KbtFmo3lcKDYddgQKEPooE
+	 8S8EUcBNClYfMntnh63FB36Rxo0PjmNGQYYUaUGo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7E398F80542; Wed, 17 May 2023 16:00:50 +0200 (CEST)
+	id 5950FF80551; Wed, 17 May 2023 16:03:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E63A0F8016A;
-	Wed, 17 May 2023 16:00:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9C73F8024E;
+	Wed, 17 May 2023 16:03:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7488FF80272; Wed, 17 May 2023 16:00:44 +0200 (CEST)
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com
- [IPv6:2607:f8b0:4864:20::f2f])
+	id DE45AF8016A; Wed, 17 May 2023 16:03:15 +0200 (CEST)
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com
+ [IPv6:2607:f8b0:4864:20::b2c])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D41A3F8024E
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 16:00:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D41A3F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id B8D3FF8016A
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 16:03:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8D3FF8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=f79+NO3W
-Received: by mail-qv1-xf2f.google.com with SMTP id
- 6a1803df08f44-6238386eb9cso6545306d6.1
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=HdfqFplY
+Received: by mail-yb1-xb2c.google.com with SMTP id
+ 3f1490d57ef6-ba86ea269e0so703822276.1
         for <alsa-devel@alsa-project.org>;
- Wed, 17 May 2023 07:00:29 -0700 (PDT)
+ Wed, 17 May 2023 07:03:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684332028; x=1686924028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kF/bfVMkR2h3+gHlTD2VrM3fzaZfhgR5R+8jewhi4kQ=;
-        b=f79+NO3WafffxprPEUX+MpIWRo6r4PqFlcXxubPrc5PoTBP656Fn9Mcm7a2mwB5G7C
-         w5UPPUw1EMxkhtW6Zv4TXzVfEg5MZrMiduqd66tOriGLtyCimkn9S3lGxNBnKtYQM3+G
-         +pwFiCW5l91dJjXzmS0TzXb2KtnyyCo685VDetUFEshUciT7yPMPbB68DIrs3wtHC3VG
-         3wG3jdPdkaBHkOdGh7NDRnIsj4vwiuqnHYsMfDz++4ij673rakRNl8aEW4I9PSMiTuUD
-         5l/IqeFpNgqz7FYStFzg/tpoDw+DOHF0/ExUT2Fn/t9nV0oF9qRRSmsogt3yNtf+S7/o
-         M0+Q==
+        d=linaro.org; s=google; t=1684332180; x=1686924180;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=EnN81p2MeWO9EzOWTpebA/OMy7HtWZHmn+rKTFE9OqM=;
+        b=HdfqFplYz7Qf9SanlMHtPvfRuEa8h8QgTs2pp24EwWfK02ZbEs06WnBq6Vi4ke8ALC
+         Nu+AHv2FBCR+drvv6EuN666Wt/A5Vbd6xAnLElWstD7ALkee9Q05qV8GX5uhw6uhuuZi
+         B4fBFopzSA1bGTqnA8XRDAxwWETprDKa4PpCCT/WD6+4Bu6UwY3NM5coNv8rZ1teGyAo
+         voZ/fh6D1yfhCuJd5IlTu2kLKijc9Fwju3/gVrSdGdQfY85CWAkIoYQEgmPlOrQ6VZkk
+         +AlktRzrpxoJa4kYyVQXkjwIJz1JbkoFm0dNwWSFMhfmf1JmMhZ34uqN+PWcYHxpY9Wj
+         y2MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684332028; x=1686924028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kF/bfVMkR2h3+gHlTD2VrM3fzaZfhgR5R+8jewhi4kQ=;
-        b=SjyFO8WdRJGY6gkqW9EMF+kd4jwDJYkfMgjokBizQ+8N2Q3Iaqr/Q8gFyKJcevhwiN
-         CQY3kxaCKciG70yrj6AJBFjgJiEnLpiOPwZKbC2cDHBbdpWuQOG5Q/c6jov55bMT+t3J
-         oGg9dog7fgLPqdH4npTFm00aXdKBYTiFczzLCcMWuf1ESyMbw8LETGMQWnCZM/0Up9yS
-         tbrTdgVQ1HyF/56JPAdv5EoH3RSj4zHpxn4FLGjBHlxwfVIhpWpbigklqZVVnIVWAc3N
-         fdPAMsDUUcgMmn8DFkgEQ+i+eVahZrAeoQu8t0URmOj+wWIqYl89y2wAT60tkcinb8bK
-         IWFg==
-X-Gm-Message-State: AC+VfDyXUQY9QO6duGz9PFrZ7Q7pl0hyU3ns8/yms7BIhK+ECQ/bZOfs
-	oiC7rs3XmhlxBV+2SCNDaz7MS0bftAW80vc/mGs=
+        d=1e100.net; s=20221208; t=1684332180; x=1686924180;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EnN81p2MeWO9EzOWTpebA/OMy7HtWZHmn+rKTFE9OqM=;
+        b=XA8bDuXjClFbiMTtaIKzzo51UGuyiJCjCRAHtkgxHxW29ngueG75ogHI7VkXpvD6HP
+         uGNrMqvGuZUZ7ZVjKuXow2xp7ZNBVqXmrczAwYM5JH1hz/GUsAi+PCRNuczHtiPK+dTX
+         pbA+o3bfDsJba7CkBM5AUwrJxDbcmhhmipi6JnEMVBhqg0fsZwwnW0eYgwW1o22GqPJm
+         Wat0eTcYmURzEf3GMX51hdI+C52B5Gmunnu/O8kpaxcSBrCLibtbmclhmg9yTkk8CiwW
+         qDUCQYf9Zt6krQB8uotUlqbpNJKRJQk3BzYNiFd43ouzShYUytdDkA2mDSAWtVgW+nuK
+         ZA/A==
+X-Gm-Message-State: AC+VfDxbn/U61+4bzPppIBAHEXZo+SktYHcYOZXI+0dqBwfqSmY5AGkv
+	baB7Lh1CxOVz9YBBt5TERpQuCr7m+p7hXBN8lO5cqQ==
 X-Google-Smtp-Source: 
- ACHHUZ5dgDWb+fDdj9ateE9Q5/4olnyjZM5M0pe72NMZbgcEFxb1cJTJVSxAul4O+5JAir2aZNO7h0ejLa3/duMEZP8=
-X-Received: by 2002:a05:6214:d03:b0:623:46d8:535 with SMTP id
- 3-20020a0562140d0300b0062346d80535mr24128643qvh.34.1684332026063; Wed, 17 May
- 2023 07:00:26 -0700 (PDT)
+ ACHHUZ5ebL6rGP7D45jjjmqs/3K8SRxUe+aFYYf5yNPLUOHysTYfhtudOs1R+FMLsNcRKZaBP9DtvPGuDCjBp+f73xA=
+X-Received: by 2002:a05:7500:e568:b0:106:ad71:fc05 with SMTP id
+ rh40-20020a057500e56800b00106ad71fc05mr43929gab.73.1684332180208; Wed, 17 May
+ 2023 07:03:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230512122838.243002-1-ckeepax@opensource.cirrus.com>
- <20230512122838.243002-9-ckeepax@opensource.cirrus.com>
- <ZF6RMqElYZVMpWRt@surfacebook>
- <20230515101350.GS68926@ediswmail.ad.cirrus.com>
- <CAHp75Vcizrucc-2KFdFNeHNrxCzz4GwX1OzZYyjPH7P9RgnKYQ@mail.gmail.com>
- <20230517101301.GV68926@ediswmail.ad.cirrus.com>
-In-Reply-To: <20230517101301.GV68926@ediswmail.ad.cirrus.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 17 May 2023 16:59:50 +0300
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 17 May 2023 19:32:48 +0530
 Message-ID: 
- <CAHp75VchpbiYcd2yaP1WTjX17P0hg3qON5JGAXu08aDVw6Ydkw@mail.gmail.com>
-Subject: Re: [PATCH 08/10] pinctrl: cs42l43: Add support for the cs42l43
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, tglx@linutronix.de,
-	maz@kernel.org, linus.walleij@linaro.org, vkoul@kernel.org,
-	lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
- sanyog.r.kale@intel.com,
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
+ <CA+G9fYsShNP=LALHdMd-Btx3PBtO_CjyBNgpStr9fPGXNbRvdg@mail.gmail.com>
+Subject: next: gcc-8-ppc6xx_defconfig: ERROR: modpost: "__divdi3"
+ [sound/pci/emu10k1/snd-emu10k1.ko] undefined!
+To: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+	Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+	lkft-triage@lists.linaro.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Arnd Bergmann <arnd@arndb.de>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+ Anders Roxell <anders.roxell@linaro.org>,
+	Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: KPJTBGQEE2VEQH2QG7RCJWI3Y64CY5CZ
-X-Message-ID-Hash: KPJTBGQEE2VEQH2QG7RCJWI3Y64CY5CZ
-X-MailFrom: andy.shevchenko@gmail.com
+Message-ID-Hash: 3JTYTQXJCX5DVNYVSZPNYHBV7IJSNZIB
+X-Message-ID-Hash: 3JTYTQXJCX5DVNYVSZPNYHBV7IJSNZIB
+X-MailFrom: naresh.kamboju@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -115,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KPJTBGQEE2VEQH2QG7RCJWI3Y64CY5CZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3JTYTQXJCX5DVNYVSZPNYHBV7IJSNZIB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,103 +115,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, May 17, 2023 at 1:13=E2=80=AFPM Charles Keepax
-<ckeepax@opensource.cirrus.com> wrote:
-> On Tue, May 16, 2023 at 10:03:45PM +0300, Andy Shevchenko wrote:
-> > On Mon, May 15, 2023 at 1:13=E2=80=AFPM Charles Keepax
-> > <ckeepax@opensource.cirrus.com> wrote:
-> > > On Fri, May 12, 2023 at 10:19:14PM +0300, andy.shevchenko@gmail.com w=
-rote:
-> > > > Fri, May 12, 2023 at 01:28:36PM +0100, Charles Keepax kirjoitti:
-> > > > > +   if (!of_property_read_bool(dev_of_node(cs42l43->dev), "gpio-r=
-anges")) {
-> > > > > +           ret =3D gpiochip_add_pin_range(&priv->gpio_chip, priv=
-->gpio_chip.label,
-> > > > > +                                        0, 0, CS42L43_NUM_GPIOS)=
-;
-> > > > > +           if (ret) {
-> > > > > +                   dev_err(priv->dev, "Failed to add GPIO pin ra=
-nge: %d\n", ret);
-> > > > > +                   goto err_pm;
-> > > > > +           }
-> > > > > +   }
-> > > >
-> > > > Besides the fact that we have a callback for this, why GPIO library=
- can't
-> > > > handle this for you already?
-> > >
-> > > Apologies but I am not quite sure I follow you, in the device
-> > > tree case this will be handled by the GPIO library. But for ACPI
-> > > this information does not exist so has to be called manually, the
-> > > library does not necessarily know which values to call with,
-> > > although admittedly our case is trivial but not all are.
-> >
-> > Why can't the firmware provide this information? _DSD() is a part of
-> > ACPI v5.1 IIRC.
->
-> I am very very far from confident we can guarantee that will be
-> present in the ACPI. The ACPI is typically made for and by the
-> Windows side.
+Linux next powerpc gcc-8 build failed on Linux next 20230516 and 20230517.
+ - build/gcc-8-ppc6xx_defconfig
 
-Why? You may insist firmware vendors / OEMs to use that as a
-requirement to the platforms that would like to use your chip. The
-_DSD() is part of the specification, I don't see how the above can be
-an argument.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-The times when ACPI =3D=3D Windows are quite behind.
+Build log:
+====
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/1/build \
+  ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- \
+  'CC=sccache powerpc64le-linux-gnu-gcc' \
+  'HOSTCC=sccache gcc'
 
-> > Although it might require moving some code from gpiolib-of.c to
-> > gpiolib.c with replacing OF APIs with agnostic ones.
->
-> I really think if we want to start doing things that way on ACPI
-> platforms someone with a little more clout than us needs to start
-> doing it first. If Intel or someone was doing it that way it
-> might give us a little more levelage to push it as being the
-> "correct" way to do it.
+ERROR: modpost: "__divdi3" [sound/pci/emu10k1/snd-emu10k1.ko] undefined!
+ERROR: modpost: "__udivdi3" [sound/pci/emu10k1/snd-emu10k1.ko] undefined!
+make[2]: *** [/builds/linux/scripts/Makefile.modpost:136:
+Module.symvers] Error 1
+make[2]: Target '__modpost' not remade because of errors.
+make[1]: *** [/builds/linux/Makefile:1978: modpost] Error 2
 
-So, we have the meta-acpi [1] project which contains dozens of
-examples on how ACPI DSD is being used for real devices, besides some
-documentation in the Linux kernel.
 
-> I will switch to the callback, but really don't think we can rely
-> on this being in DSD yet.
+links,
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230517/testrun/17031706/suite/build/test/gcc-8-ppc6xx_defconfig/log
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230517/testrun/17031706/suite/build/test/gcc-8-ppc6xx_defconfig/history/
 
-Why not?
+Steps to reproduce:
+=======
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+# Original tuxmake command with fragments listed below.
 
-...
+ tuxmake --runtime podman --target-arch powerpc --toolchain gcc-8
+--kconfig ppc6xx_defconfig
 
-> > > I had missed there are now devm_pm_runtime calls,
 
-Btw, even if there is no such API one can always call
-devm_add_action() / devm_add_action_or_reset() to open code such a
-call.
-
-> > > I will switch
-> > > to that. But I would like to understand the wrong order, remove
-> > > will be called before the devm bits are destroyed and it seems
-> > > reasonable to disable the pm_runtime before destroying the
-> > > pinctrl device. What exactly would run in the wrong order here?
-> >
-> > At the ->remove() stage after this call an IRQ can be fired (or on SMP
-> > systems any other APIs can be called), for example. So, would it be a
-> > problem to service it with PM disabled?
-> >
-> > But in any case the shuffling ordering like this is prone to subtle
-> > bugs. I prefer to have strict ordering if there is nothing preventing
-> > from doing that way.
->
-> Yeah happy enough to use devm_ here, just didn't know it existed
-> and wanted to better understand your concerns as I was having
-> difficulty seeing the issue.
-
-Ah, you are welcome!
-
-...
-
-[1]: https://github.com/westeri/meta-acpi/tree/master/recipes-bsp/acpi-tabl=
-es/samples
-(mostly under edison/ folder)
-
---=20
-With Best Regards,
-Andy Shevchenko
+--
+Linaro LKFT
+https://lkft.linaro.org
