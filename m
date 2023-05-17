@@ -4,96 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE5E6C77B7F
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 06:22:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BD32C77B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 06:22:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D9A4206;
-	Fri, 19 May 2023 08:21:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D9A4206
+	by alsa0.perex.cz (Postfix) with ESMTPS id 824D6847;
+	Fri, 19 May 2023 08:21:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 824D6847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684477337;
-	bh=prvzinuFOY4cUz5izRoMAd55xReB5icUb0I0Jlc2QH4=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=fxLmoGrcOiAbsGrcc0Z1ri0k1fXKrJNAzOUtQSUpY/C1KNdh70//oiDXWqe/qhAAO
-	 WirR6xl3a+3Aaq/PktC+2IwvkiJm/zFX779iUTpMWYbxx3HgV4uq8ro2DZ2iFE8aj5
-	 obbJ9NxeACO5OGzmEyVr3wT4Zej44ctOcLoO0vW8=
+	s=default; t=1684477352;
+	bh=XFc1kvTwrjfT59McvY6Cp5Ba6PHLMeThg7tbf3U5QGg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=tFWPNQu3zG+yI47it0qti3Kh/Mg83OHom86dPZgmcHBVEUAFoXV0HZK/DkvYqJO4i
+	 lbhnXPBK0XjpZWG43Ww3B7aRWi3v91pU3rB714bQ4FD2SPBYnNOVqcIvGP6v51SZep
+	 E5pX6FSqPnAfzdeLAln55CGHK6FDiNqGE9JdV1Gs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0FE4AF805E1; Fri, 19 May 2023 08:18:42 +0200 (CEST)
+	id 95E3BF805FE; Fri, 19 May 2023 08:18:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E63ECF805D6;
-	Fri, 19 May 2023 08:18:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D63FF805F6;
+	Fri, 19 May 2023 08:18:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01BC1F80272; Wed, 17 May 2023 15:01:38 +0200 (CEST)
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com
- [IPv6:2607:f8b0:4864:20::631])
+	id 3A17DF80272; Thu, 18 May 2023 01:42:28 +0200 (CEST)
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com
+ [IPv6:2607:f8b0:4864:20::62d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 71926F8016A
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 15:01:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71926F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2DF3DF80087
+	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 01:42:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DF3DF80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=seZjxxtm
-Received: by mail-pl1-x631.google.com with SMTP id
- d9443c01a7336-1ae4d1d35e6so6753185ad.0
+ header.s=20221208 header.b=QBIL4Gf6
+Received: by mail-pl1-x62d.google.com with SMTP id
+ d9443c01a7336-1adc913094aso14438035ad.0
         for <alsa-devel@alsa-project.org>;
- Wed, 17 May 2023 06:01:33 -0700 (PDT)
+ Wed, 17 May 2023 16:42:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684328491; x=1686920491;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8eTr+kmtQOMistU8xT35doPKpqXFH7Y2/6qZfkliXQY=;
-        b=seZjxxtmfTvReRahRdu8pf3VrMApAAYx3KRJlLrsfNCfVrBh3Ch/ftGO+CE6/3KLJp
-         Bo+LVzN0mozW5ReZfrmPbMVxhZnaZCHKVoKA5wbnhZ5xxWJKLD4flaFyL7f6gIQaPi8o
-         um5/OP1FIsg1tDn755f1ssscGWmiz9rkBrmNJ4B02SClqX+Bf9ASCj/BC4xLVFkdET61
-         68STZpPXYoP4BLEfp9buTukZCcc++pU+vUPAviVNc7nteXmVSBKhfIgAficiCBRq0B3d
-         gCjKU+8ZtpTD3vmREkn1iMaJed3iVbNRonpxLitDZ8Pfsw2XTNySnhlgsrpZOQYmJVt7
-         mH9A==
+        d=gmail.com; s=20221208; t=1684366939; x=1686958939;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R+PtovZvYqYzb6rdBWxcjpXWIgQA2DVctfW2duNZpLU=;
+        b=QBIL4Gf66xC10MSiEmh/Y4/q+KGXN+g/irHWvDJkTkhDXGyl+AqoRywOth7u5X70A5
+         I0meNKmbC6dcrd9TCXaQHUvei/hP1hjW1EDsMBWjo1Zjh1GLzRpBGMI3ytV/qsG83S4V
+         rI+RW0v7vVKGMEfP06f6Q7U4WcJUj+AA4kiMTNVPfS6WM6e+qoQo+evXBvOGptcRPgpB
+         ZknVgpst9Yvy8VFsJdB8s6QNfYDTOHQNwMolKhp4Q40CpS44SF2sHhj8mL1KZzp+3Jol
+         Rc3nQ7C2S+L2TIgZeNYOQaTw7XD3hnFbER/nNdBgHFROyxjgbWYWpnGbRABCLH7KqAOo
+         KmPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684328491; x=1686920491;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8eTr+kmtQOMistU8xT35doPKpqXFH7Y2/6qZfkliXQY=;
-        b=AK5eB//gr5aakXZDlL8HB9cyuL5a4twitTwVdCMYy6scVY/Iq7bZ5VhCbCPO+nYYCc
-         6OPWazmb+kPP4izQFsx6FS0cpbSKomJzoRKhsuTCem8zn5wp9cZCdXqRfv/sFFBS5GDp
-         HdNF2OCTfzmLztnFl0X7sppPf+qf/bW7XDgw2cFQwkr/5QpnX5dMMifhOMSfY8+/y+dL
-         Xr2Oa5TEvc3XTje4QMsXn9elwHm/pDeOIRtJw+3d5BYOE8D3l4YRRedMnYz6OxyROPxm
-         DOva4HxWoqBaAAfotO9OEJcjrwoCVcRcboKYb6ATPlUvNUrWZFbir7iSHQKBvzq9a9El
-         +5vg==
-X-Gm-Message-State: AC+VfDzH9Xg1G4L4RzMHoTFcLMx43gmaFTSzQdgyeLc53u+Rlnlt47VV
-	BJZq4QxAIL6Ztl4b0HSPCMk=
+        d=1e100.net; s=20221208; t=1684366939; x=1686958939;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R+PtovZvYqYzb6rdBWxcjpXWIgQA2DVctfW2duNZpLU=;
+        b=JKZ0/KHjdOd/UJor30uh3T1FHA3l+nG48tNepaeZ59FjeaWnqng78V8E2Yj5EYWsy/
+         g4FJmTjY4ivXHw2WUqpxZF9f9/wTXEIZ6/6Lp0/uONecSgkwvye9Uj1xZOiR+W5mnqsi
+         Nor8yBGxVASJptWC5ssYj50xohB08IfqIz2mfC30n4Vn3Y5WTgUxf60CDMJTERFu9EPR
+         0baVIyA+tT5p3AX8kWVTPOY5KJRr8yiTY4PPzpoW+aKuIxW2UapYx/ZbUE/Z4O7GMGiu
+         jZExFHxgOKRxY8WGmCDY96P8Jzptl4tRrWU+biB2slS+xOQUWrT7HEog5OiTG3LOyL+J
+         34JA==
+X-Gm-Message-State: AC+VfDxDjuExsqXwYlPSd2C6mkAo5g7inrhxRoH2//ZV+Y+MZq3SN+AR
+	aUFK2b2YBpb4cBRP3XHbW3Q=
 X-Google-Smtp-Source: 
- ACHHUZ5CKkul94ZbhzG2mkSjbyrZSmL0AOKkrjBht/hCEzVCEhAObHX1vt6n10u0bWU1x65HrPd6Kw==
-X-Received: by 2002:a17:902:b7cc:b0:1ac:3ddf:2299 with SMTP id
- v12-20020a170902b7cc00b001ac3ddf2299mr41063963plz.44.1684328489446;
-        Wed, 17 May 2023 06:01:29 -0700 (PDT)
+ ACHHUZ4if+bS6cRA7xGN6UZkvohloZYh/vkcXS7IWJhQFkuA1C25/lc3mdgoLXr6uU8qmCMsbhvjKQ==
+X-Received: by 2002:a17:903:2606:b0:1ac:727b:3a60 with SMTP id
+ jd6-20020a170903260600b001ac727b3a60mr574456plb.4.1684366939443;
+        Wed, 17 May 2023 16:42:19 -0700 (PDT)
 Received: from ubuntu777.domain.name (36-228-97-28.dynamic-ip.hinet.net.
  [36.228.97.28])
         by smtp.gmail.com with ESMTPSA id
- h7-20020a170902f7c700b001a1d41d1b8asm1725178plw.194.2023.05.17.06.01.27
+ a9-20020a170902900900b001a2104d706fsm1059809plp.225.2023.05.17.16.42.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 May 2023 06:01:29 -0700 (PDT)
+        Wed, 17 May 2023 16:42:19 -0700 (PDT)
 From: Min-Hua Chen <minhuadotchen@gmail.com>
-To: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: Min-Hua Chen <minhuadotchen@gmail.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: ti: Use pcm_for_each_format() macro for PCM format
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	lgirdwood@gmail.com,
+	linux-kernel@vger.kernel.org,
+	minhuadotchen@gmail.com,
+	perex@perex.cz,
+	peter.ujfalusi@gmail.com,
+	tiwai@suse.com
+Subject: Re: [PATCH] ALSA: ti: Use pcm_for_each_format() macro for PCM format
  iteration
-Date: Wed, 17 May 2023 21:01:22 +0800
-Message-Id: <20230517130124.26033-1-minhuadotchen@gmail.com>
+Date: Thu, 18 May 2023 07:42:15 +0800
+Message-Id: <20230517234215.3520-1-minhuadotchen@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZGTltcv6hSlJWLnh@finisterre.sirena.org.uk>
+References: <ZGTltcv6hSlJWLnh@finisterre.sirena.org.uk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: minhuadotchen@gmail.com
@@ -102,15 +106,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DFSTBJYUJX3LLSSQ47FI5RLABC2I3SUA
-X-Message-ID-Hash: DFSTBJYUJX3LLSSQ47FI5RLABC2I3SUA
-X-Mailman-Approved-At: Fri, 19 May 2023 06:16:23 +0000
+Message-ID-Hash: ZPYRWIFYKRPYG47ABJY53DVZA2IQJKL7
+X-Message-ID-Hash: ZPYRWIFYKRPYG47ABJY53DVZA2IQJKL7
+X-Mailman-Approved-At: Fri, 19 May 2023 06:16:34 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DFSTBJYUJX3LLSSQ47FI5RLABC2I3SUA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZPYRWIFYKRPYG47ABJY53DVZA2IQJKL7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,92 +123,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use pcm_for_each_format for the PCM format iteration and fix the
-following sparse warnings.
+Hi Mark,
 
-sound/soc/ti/davinci-mcasp.c:1336:26: sparse: warning: restricted snd_pcm_format_t degrades to integer
-sound/soc/ti/davinci-mcasp.c:1358:26: sparse: warning: restricted snd_pcm_format_t degrades to integer
-sound/soc/ti/davinci-mcasp.c:1438:26: sparse: warning: restricted snd_pcm_format_t degrades to integer
+>On Wed, May 17, 2023 at 09:01:22PM +0800, Min-Hua Chen wrote:
+>> Use pcm_for_each_format for the PCM format iteration and fix the
+>> following sparse warnings.
+>
+>Please submit patches using subject lines reflecting the style for the
+>subsystem, this makes it easier for people to identify relevant patches.
+>Look at what existing commits in the area you're changing are doing and
+>make sure your subject lines visually resemble what they're doing.
 
-No functional changes.
+Thanks for your comment. I think the subject should be changed to: 
+"ASoC: ti: davinci-mcasp: Use pcm_for_each_format() macro".
 
-Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
----
- sound/soc/ti/davinci-mcasp.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+>There's no need to resubmit to fix this alone.
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index c0892be2992b..172fea764a31 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -1328,15 +1328,16 @@ static int davinci_mcasp_hw_rule_slot_width(struct snd_pcm_hw_params *params,
- 	struct davinci_mcasp_ruledata *rd = rule->private;
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
- 	struct snd_mask nfmt;
--	int i, slot_width;
-+	int slot_width;
-+	snd_pcm_format_t i;
- 
- 	snd_mask_none(&nfmt);
- 	slot_width = rd->mcasp->slot_width;
- 
--	for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
--		if (snd_mask_test(fmt, i)) {
-+	pcm_for_each_format(i) {
-+		if (snd_mask_test_format(fmt, i)) {
- 			if (snd_pcm_format_width(i) <= slot_width) {
--				snd_mask_set(&nfmt, i);
-+				snd_mask_set_format(&nfmt, i);
- 			}
- 		}
- 	}
-@@ -1350,15 +1351,16 @@ static int davinci_mcasp_hw_rule_format_width(struct snd_pcm_hw_params *params,
- 	struct davinci_mcasp_ruledata *rd = rule->private;
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
- 	struct snd_mask nfmt;
--	int i, format_width;
-+	int format_width;
-+	snd_pcm_format_t i;
- 
- 	snd_mask_none(&nfmt);
- 	format_width = rd->mcasp->max_format_width;
- 
--	for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
--		if (snd_mask_test(fmt, i)) {
-+	pcm_for_each_format(i) {
-+		if (snd_mask_test_format(fmt, i)) {
- 			if (snd_pcm_format_width(i) == format_width) {
--				snd_mask_set(&nfmt, i);
-+				snd_mask_set_format(&nfmt, i);
- 			}
- 		}
- 	}
-@@ -1431,12 +1433,13 @@ static int davinci_mcasp_hw_rule_format(struct snd_pcm_hw_params *params,
- 	struct snd_mask nfmt;
- 	int rate = params_rate(params);
- 	int slots = rd->mcasp->tdm_slots;
--	int i, count = 0;
-+	int count = 0;
-+	snd_pcm_format_t i;
- 
- 	snd_mask_none(&nfmt);
- 
--	for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
--		if (snd_mask_test(fmt, i)) {
-+	pcm_for_each_format(i) {
-+		if (snd_mask_test_format(fmt, i)) {
- 			uint sbits = snd_pcm_format_width(i);
- 			unsigned int sysclk_freq;
- 			int ppm;
-@@ -1454,7 +1457,7 @@ static int davinci_mcasp_hw_rule_format(struct snd_pcm_hw_params *params,
- 							 sbits * slots * rate,
- 							 false);
- 			if (abs(ppm) < DAVINCI_MAX_RATE_ERROR_PPM) {
--				snd_mask_set(&nfmt, i);
-+				snd_mask_set_format(&nfmt, i);
- 				count++;
- 			}
- 		}
--- 
-2.34.1
+thanks
 
+cheers,
+Min-Hua
