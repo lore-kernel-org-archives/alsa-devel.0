@@ -4,76 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3126C77B7D
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 14:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A2CDC77B75
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 14:53:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D768A1F9;
-	Wed, 17 May 2023 16:51:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D768A1F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05119F0;
+	Wed, 17 May 2023 16:52:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05119F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684335156;
-	bh=8I67luAksBCL72+meHCMN8MBL7RhGxwexXQRG0RpqDQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1684335226;
+	bh=Y7jj05tgRxAbTtw9dsePslTLlnRhYIfUGFg4wNBSue4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=B3PFf4rx0mg8x0zFjybjxl5LLGUXiMaZKAFdCGQTK9/WVnZCR2eDTlgW7dm5FwtIy
-	 CBdoftBv2xWHbg7KU5yFMYjKjXVpsH9Th7/YC41w+pIAXHVwveGBcemwHTWPqhQDG3
-	 q1cQe1vwpdWzch3xUoUpB0/Itk/pbU7zw14T+7Oc=
+	b=aqz+L9Og1mgFmntaR5UKZwlfme5VxTsHwEWydpkmeAAX0VSiKo/jJL8KVwVKR93I4
+	 gy73Za892SHr0WsGjOXuUsEfP49OaeDh3neVMOvRdqALz/lqT8RhQ0yoRHKCjZI0y/
+	 ykKqKifdcYTMVuUVgxBgEf1uUEIJcdDgbrw+sgiw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DE82DF8057E; Wed, 17 May 2023 16:51:00 +0200 (CEST)
+	id B4F54F8025A; Wed, 17 May 2023 16:52:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B24EF8057D;
-	Wed, 17 May 2023 16:51:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55689F8016A;
+	Wed, 17 May 2023 16:52:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0D930F80552; Wed, 17 May 2023 16:50:57 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 91366F80272; Wed, 17 May 2023 16:52:50 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 149A2F80549
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 16:50:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 149A2F80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1A33EF8016D
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 16:52:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A33EF8016D
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qUWfDk+i
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=EOU7OH8L;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=BI+oP8+m
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id B9EBF64813;
-	Wed, 17 May 2023 14:50:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BEF2C433EF;
-	Wed, 17 May 2023 14:50:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684335052;
-	bh=8I67luAksBCL72+meHCMN8MBL7RhGxwexXQRG0RpqDQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=qUWfDk+i2yXv7J9MhJbZBLjKRMGgL6whFTdU7YNAeRKAslCwfkZ0uu36FniV0PGoD
-	 2LKSjRxPljASyj1bfOozDGNrgsmGFwvlyb+oNv+iS70fjlEQpU5bHGYPhFnCGYyhLi
-	 4kPl91ugCsgauLB+ix/5ci9SbDnPcBlIWgpkRFH2fLouplPEw/XHzzF2JrbR6wHZJ9
-	 pOsDGy28GRzma75ffQTQgY/6M40lmW3vDnbWlNhIwgDq1tQkZaqIWJ2X0vLbWZgUdq
-	 2mgFU/rPyj0yOY9sL5N7JTrNmMqzNGIPq1NI/0JMI3axFH6bqQb8ZI1VyM6xHzvKQq
-	 hHxS0voC+lQRw==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Min-Hua Chen <minhuadotchen@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20230516223700.185569-1-minhuadotchen@gmail.com>
-References: <20230516223700.185569-1-minhuadotchen@gmail.com>
-Subject: Re: [PATCH] ASoC: tegra: tegra210_adx: fix snd_pcm_format_t type
-Message-Id: <168433504910.453649.10010887587375335670.b4-ty@kernel.org>
-Date: Wed, 17 May 2023 23:50:49 +0900
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: 3HKBRJVVT2U2SN26M63PR2BS7VV6UK33
-X-Message-ID-Hash: 3HKBRJVVT2U2SN26M63PR2BS7VV6UK33
-X-MailFrom: broonie@kernel.org
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7D8742244C;
+	Wed, 17 May 2023 14:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1684335164;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=q8IRi/NjL0rProIFyhA/kIwvypfToFP0aQRapg2mPR8=;
+	b=EOU7OH8LDqhWLgau/5s4+xp65uPaROkQIYJRojkFSxJIgkG0jdsRJ2OUaBgr2LXNI4j8kD
+	lz/eMfs6wl+7wIcjI8Av94gZKjJOUIFezkHYz0aaP1FdIbGYGFzFpa20EI5NdhDY2IlUPl
+	wO1shFhL02STMLgQVb7X/koNerwhsHw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1684335164;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=q8IRi/NjL0rProIFyhA/kIwvypfToFP0aQRapg2mPR8=;
+	b=BI+oP8+mKfOYkiFGj6DRxjgRI2D7sIt9tOr2vc1orNf9EEcLZ44SeBYPZD+YN+73QOGtyC
+	hRwTsQVNOPzjUMCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5F97513358;
+	Wed, 17 May 2023 14:52:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id S1wrFjzqZGT2cgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 17 May 2023 14:52:44 +0000
+Date: Wed, 17 May 2023 16:52:43 +0200
+Message-ID: <87jzx7103o.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Amadeusz =?ISO-8859-2?Q?S=B3awi=F1ski?=
+ <amadeuszx.slawinski@linux.intel.com>,	"alsa-devel@alsa-project.org"
+ <alsa-devel@alsa-project.org>
+Subject: Re: HDA, power saving and recording
+In-Reply-To: <4cc5cd11-e1c4-1ff2-ec66-328a00b5703f@intel.com>
+References: <a7478636-af11-92ab-731c-9b13c582a70d@linux.intel.com>
+	<878rdwjs1s.wl-tiwai@suse.de>
+	<cceaeb53-06df-ced0-1f54-f5c0eb65f824@linux.intel.com>
+	<87jzxe5084.wl-tiwai@suse.de>
+	<41417b90-1881-0cbb-52e1-d63923dd8cd6@linux.intel.com>
+	<87ilcxaj3u.wl-tiwai@suse.de>
+	<87fs81ainl.wl-tiwai@suse.de>
+	<7915b40e-a65a-479d-5a2b-062ee3cb432b@linux.intel.com>
+	<87bkipag9z.wl-tiwai@suse.de>
+	<98943bc1-c56c-45aa-06d2-80c618d0585c@linux.intel.com>
+	<878rdplpci.wl-tiwai@suse.de>
+	<63790c96-215b-bc8c-3ad6-7acbe487d85a@linux.intel.com>
+	<87cz31pq2d.wl-tiwai@suse.de>
+	<4cc5cd11-e1c4-1ff2-ec66-328a00b5703f@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: H4LWU2PB3VEU2XJKJH6KCAQYPGEK2ZYQ
+X-Message-ID-Hash: H4LWU2PB3VEU2XJKJH6KCAQYPGEK2ZYQ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3HKBRJVVT2U2SN26M63PR2BS7VV6UK33/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H4LWU2PB3VEU2XJKJH6KCAQYPGEK2ZYQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,41 +131,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 17 May 2023 06:36:59 +0800, Min-Hua Chen wrote:
-> use snd_pcm_format_t instead of unsigned int to fix
-> the following sparse warnings:
+On Wed, 17 May 2023 15:15:13 +0200,
+Cezary Rojewski wrote:
 > 
-> sound/soc/tegra/tegra210_adx.c:125:14: sparse: warning: restricted snd_pcm_format_t degrades to integer
-> sound/soc/tegra/tegra210_adx.c:128:14: sparse: warning: restricted snd_pcm_format_t degrades to integer
-> sound/soc/tegra/tegra210_adx.c:131:14: sparse: warning: restricted snd_pcm_format_t degrades to integer
+> On 2023-05-15 5:33 PM, Takashi Iwai wrote:
+> > On Mon, 15 May 2023 16:49:48 +0200,
+> > Amadeusz S³awiñski wrote:
 > 
-> [...]
+> ...
+> 
+> >> I think there are two problems:
+> >> 
+> >> 1. After probe codec is powered down
+> >> (https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/pci/hda/hda_codec.c#n833),
+> >> even though according to power management it is still running
+> > 
+> > I guess it's in the auto-suspend state, so it's still not suspended
+> > but the device itself is active, while the usage count is 0.
+> > 
+> > That's fine, and I thought my second patch handling it.  That is, if
+> > the usage count is 0 and the device is not suspended, it should return
+> > -EAGAIN and make the caller retry with the full power up.
+> > The code path is with CALL_RUN_FUNC() macro in hdac_regmap.c, and with
+> > -EAGAIN return value, it tries snd_hdac_power_up_pm() and call the
+> > function again.
+> > 
+> >> 2. When stream is started before first suspend, resume function
+> >> doesn't run and it is a function which syncs cached registers. By
+> >> resume function I mean
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/pci/hda/hda_codec.c#n2899
+> >> which calls snd_hda_regmap_sync() or through in case of the platform I
+> >> test it on codec->patch_ops.resume(codec) -> alc269_resume, which also
+> >> calls snd_hda_regmap_sync().
+> > 
+> > It's also expected, per se.  Since it's been not suspended, it assumes
+> > that the value got already written, and no resume is needed.
+> 
+> 
+> After reading this conversation few times I came to conclusion that
+> codec device should be kept up as long as its runtime_status=0
+> (RPM_ACTIVE), regardless if usage_count is 0 or not. Basically, in
+> autosuspend case usage_count and runtime_status for the device are
+> both 0 so, if we are not ignoring the former by calling
+> pm_runtime_get_if_in_use() then we end up caching the writes during
+> the autosuspend period - period when the device is no longer used but
+> there is still some time left before it's suspended.
+> 
+> 
+> --- a/sound/hda/hdac_device.c
+> +++ b/sound/hda/hdac_device.c
+> @@ -611,7 +611,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_power_up_pm);
+>  int snd_hdac_keep_power_up(struct hdac_device *codec)
+>  {
+>         if (!atomic_inc_not_zero(&codec->in_pm)) {
+> -               int ret = pm_runtime_get_if_in_use(&codec->dev);
+> +               int ret = pm_runtime_get_if_active(&codec->dev, true);
+>                 if (!ret)
+>                         return -1;
+>                 if (ret < 0)
+> 
+> 
+> Results for the above look good.
 
-Applied to
+OK, this seems to be a workaround.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+I took a deeper look at the issue now, and noticed that it's a messy
+problem.
 
-Thanks!
+The check with pm_runtime_get_if_in_use() itself isn't wrong, but it
+needs the exceptional handling.
 
-[1/1] ASoC: tegra: tegra210_adx: fix snd_pcm_format_t type
-      commit: 35f8a9d87ca4f920526e6063df570490b41295fc
+In addition to that, however, we need to work around the case where
+the register gets updated twice with -EAGAIN handling; at the first
+update, the regcache gets updated while the actual write gives an
+error.  Then at the second update, it checks only the cache and 
+believes as if it's been already written, and the write is skipped.
+This was what Amadeusz experienced with my previous patch.
+So, we need to paper over those two.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+OTOH, if we replace the primary check with
+pm_runtime_get_if_active(true), this makes the things *mostly*
+working, too.  This increases the usage count forcibly when the device
+is active, and we'll continue to write the register.
+The caveat is that the auto-suspend timer is still ticking in this
+case.  But, this won't be a big problem, as the timer callback does
+check the state and cancel itself if the device is actually in use.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+So, I guess we should go for pm_runtime_get_if_in_use().
+But please give it more tests.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+thanks,
 
-Thanks,
-Mark
-
+Takashi
