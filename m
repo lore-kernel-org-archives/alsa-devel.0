@@ -4,56 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EFE8C77B75
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 17:45:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 683F7C77B7D
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 17:45:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5044C825;
-	Wed, 17 May 2023 19:44:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5044C825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29312209;
+	Wed, 17 May 2023 19:44:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29312209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684345503;
-	bh=K5QhMFJxWCIY8ZIFVOBKXLZ4rtC6rPvyfl8as4cA9nw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Zf/PgRReEjysseybff0wdsqr4aWnEnHmb+YS+e1XP0eleA3ZaNW3MACC/EonU+Ro/
-	 1shgsU5qPW+ub7uvT912+qIQIihkOH7HvinyjY2UxsawXvTc9Egn/8/MEX/fiM4RMy
-	 NpLWhTJlIu1y2skVG8lvFjC635+mf2fXBBcQH+O0=
+	s=default; t=1684345524;
+	bh=aGnHnskLlcWca+SxZEU2Ik44jp9UIWQN1NiTrnde0Cc=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=XbBmH9tJcpCSztzURhk5PWFrqtQU08Z13/oxm50Bil8j9Pi6g/hqP8+UsTTcjB8tr
+	 srkYFSe0Vd1X74qtk5Y6XsfkjTnzzt2lSQJjY6lAoCjIKnF2yDXRAm2WtdAY8ERmHA
+	 gIVfj9qg93BkyBV00rff6rW7t/F/N739AXGHW414=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9ACFBF80589; Wed, 17 May 2023 19:43:22 +0200 (CEST)
+	id 864CAF805AD; Wed, 17 May 2023 19:43:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E73C1F80587;
-	Wed, 17 May 2023 19:43:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 026D1F8057E;
+	Wed, 17 May 2023 19:43:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E5F6F80570; Wed, 17 May 2023 19:43:17 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	id BE201F80570; Wed, 17 May 2023 19:43:17 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81DE2F8016D
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 19:43:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81DE2F8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3967CF802E8
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 19:43:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3967CF802E8
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id B63C324244;
+	by bluemchen.kde.org (Postfix) with ESMTP id 9C31C23FEE;
 	Wed, 17 May 2023 13:42:56 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pzLAu-LNh-00; Wed, 17 May 2023 19:42:56 +0200
+	id 1pzLAu-LN7-00; Wed, 17 May 2023 19:42:56 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 7/9] ALSA: emu10k1: improve API of low-level voice
- manipulation functions
-Date: Wed, 17 May 2023 19:42:54 +0200
-Message-Id: <20230517174256.3657060-7-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 1/9] ALSA: emu10k1: pass frame instead of byte addresses
+Date: Wed, 17 May 2023 19:42:48 +0200
+Message-Id: <20230517174256.3657060-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230517174256.3657060-1-oswald.buddenhagen@gmx.de>
-References: <20230517174256.3657060-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JJM7KGJNK3WIVRZRG3ZQU2OKIK62Z4PR
-X-Message-ID-Hash: JJM7KGJNK3WIVRZRG3ZQU2OKIK62Z4PR
+Message-ID-Hash: TQ4CPPB2BN54U3OZ6ZXEWOUM5POVWNVG
+X-Message-ID-Hash: TQ4CPPB2BN54U3OZ6ZXEWOUM5POVWNVG
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -66,7 +63,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JJM7KGJNK3WIVRZRG3ZQU2OKIK62Z4PR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TQ4CPPB2BN54U3OZ6ZXEWOUM5POVWNVG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -75,190 +72,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Originally, there was a 1:1 relationship between the PCM streams' and
-the low-level voices' parameters. The addition of multi-channel playback
-partially invalidated that, but didn't introduce proper layering, so
-things kept working only by virtue of the multi-channel device never
-having two channels (yet). The upcoming addition of 32-bit playback
-would complete upending the relationships.
-
-So this patch detaches the low-level parameters from the high-level
-ones: we pass pre-calculated bit width and stereo flags to the low-level
-manipulation functions instead of calculating them in-place from the
-stream parameters.
+... to snd_emu10k1_pcm_init_voice(). This makes the code arguably less
+convoluted.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emupcm.c | 50 +++++++++++++++++---------------------
- 1 file changed, 22 insertions(+), 28 deletions(-)
+ sound/pci/emu10k1/emupcm.c | 31 +++++++++----------------------
+ 1 file changed, 9 insertions(+), 22 deletions(-)
 
 diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index 5226f0978408..7924d185cf92 100644
+index d669f93d8930..9f151a0a7756 100644
 --- a/sound/pci/emu10k1/emupcm.c
 +++ b/sound/pci/emu10k1/emupcm.c
-@@ -239,22 +239,21 @@ static unsigned int emu10k1_select_interprom(unsigned int pitch_target)
- static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1 *emu,
- 				       int master, int extra,
- 				       struct snd_emu10k1_voice *evoice,
-+				       bool w_16, bool stereo,
- 				       unsigned int start_addr,
- 				       unsigned int end_addr,
- 				       struct snd_emu10k1_pcm_mixer *mix)
- {
- 	struct snd_pcm_substream *substream = evoice->epcm->substream;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	unsigned int silent_page, tmp;
--	int voice, stereo, w_16;
-+	int voice;
- 	unsigned char send_amount[8];
- 	unsigned char send_routing[8];
- 	unsigned long flags;
- 	unsigned int pitch_target;
+@@ -270,15 +270,6 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1 *emu,
+ 	stereo = runtime->channels == 2;
+ 	w_16 = snd_pcm_format_width(runtime->format) == 16;
  
- 	voice = evoice->number;
--	stereo = runtime->channels == 2;
--	w_16 = snd_pcm_format_width(runtime->format) == 16;
- 
+-	if (!extra && stereo) {
+-		start_addr >>= 1;
+-		end_addr >>= 1;
+-	}
+-	if (w_16) {
+-		start_addr >>= 1;
+-		end_addr >>= 1;
+-	}
+-
  	spin_lock_irqsave(&emu->reg_lock, flags);
  
-@@ -273,7 +272,7 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1 *emu,
- 	if (master) {
- 		evoice->epcm->ccca_start_addr = start_addr + 64 - 3;
- 	}
--	if (stereo && !extra) {
-+	if (stereo) {
- 		// Not really necessary for the slave, but it doesn't hurt
- 		snd_emu10k1_ptr_write(emu, CPF, voice, CPF_STEREO_MASK);
- 	} else {
-@@ -399,15 +398,15 @@ static int snd_emu10k1_playback_prepare(struct snd_pcm_substream *substream)
- 
- 	start_addr = epcm->start_addr >> w_16;
- 	end_addr = start_addr + runtime->period_size;
--	snd_emu10k1_pcm_init_voice(emu, 1, 1, epcm->extra,
-+	snd_emu10k1_pcm_init_voice(emu, 1, 1, epcm->extra, w_16, false,
- 				   start_addr, end_addr, NULL);
- 	start_addr >>= stereo;
- 	end_addr = start_addr + runtime->buffer_size;
--	snd_emu10k1_pcm_init_voice(emu, 1, 0, epcm->voices[0],
-+	snd_emu10k1_pcm_init_voice(emu, 1, 0, epcm->voices[0], w_16, stereo,
- 				   start_addr, end_addr,
- 				   &emu->pcm_mixer[substream->number]);
- 	if (epcm->voices[1])
--		snd_emu10k1_pcm_init_voice(emu, 0, 0, epcm->voices[1],
-+		snd_emu10k1_pcm_init_voice(emu, 0, 0, epcm->voices[1], w_16, true,
- 					   start_addr, end_addr,
- 					   &emu->pcm_mixer[substream->number]);
- 	return 0;
-@@ -426,17 +425,17 @@ static int snd_emu10k1_efx_playback_prepare(struct snd_pcm_substream *substream)
- 
- 	channel_size = runtime->buffer_size;
- 
--	snd_emu10k1_pcm_init_voice(emu, 1, 1, epcm->extra,
-+	snd_emu10k1_pcm_init_voice(emu, 1, 1, epcm->extra, true, false,
- 				   start_addr, start_addr + (channel_size / 2), NULL);
- 
- 	/* only difference with the master voice is we use it for the pointer */
--	snd_emu10k1_pcm_init_voice(emu, 1, 0, epcm->voices[0],
-+	snd_emu10k1_pcm_init_voice(emu, 1, 0, epcm->voices[0], true, false,
- 				   start_addr, start_addr + channel_size,
- 				   &emu->efx_pcm_mixer[0]);
- 
- 	start_addr += channel_size;
- 	for (i = 1; i < NUM_EFX_PLAYBACK; i++) {
--		snd_emu10k1_pcm_init_voice(emu, 0, 0, epcm->voices[i],
-+		snd_emu10k1_pcm_init_voice(emu, 0, 0, epcm->voices[i], true, false,
- 					   start_addr, start_addr + channel_size,
- 					   &emu->efx_pcm_mixer[i]);
- 		start_addr += channel_size;
-@@ -512,16 +511,14 @@ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
- }
- 
- static void snd_emu10k1_playback_invalidate_cache(struct snd_emu10k1 *emu,
--						  struct snd_emu10k1_voice *evoice)
-+						  struct snd_emu10k1_voice *evoice,
-+						  bool w_16, bool stereo)
- {
--	struct snd_pcm_runtime *runtime;
--	unsigned voice, stereo, sample;
-+	unsigned voice, sample;
- 	u32 ccr;
- 
--	runtime = evoice->epcm->substream->runtime;
- 	voice = evoice->number;
--	stereo = (runtime->channels == 2);
--	sample = snd_pcm_format_width(runtime->format) == 16 ? 0 : 0x80808080;
-+	sample = w_16 ? 0 : 0x80808080;
- 
- 	// We assume that the cache is resting at this point (i.e.,
- 	// CCR_CACHEINVALIDSIZE is very small).
-@@ -551,20 +548,15 @@ static void snd_emu10k1_playback_commit_volume(struct snd_emu10k1 *emu,
- 
- static void snd_emu10k1_playback_unmute_voice(struct snd_emu10k1 *emu,
- 					      struct snd_emu10k1_voice *evoice,
--					      bool master,
-+					      bool stereo, bool master,
- 					      struct snd_emu10k1_pcm_mixer *mix)
- {
--	struct snd_pcm_substream *substream;
--	struct snd_pcm_runtime *runtime;
- 	unsigned int vattn;
- 	unsigned int tmp;
- 
- 	if (evoice == NULL)	/* skip second voice for mono */
- 		return;
--	substream = evoice->epcm->substream;
--	runtime = substream->runtime;
--
--	tmp = runtime->channels == 2 ? (master ? 1 : 2) : 0;
-+	tmp = stereo ? (master ? 1 : 2) : 0;
- 	vattn = mix->attn[tmp] << 16;
- 	snd_emu10k1_playback_commit_volume(emu, evoice, vattn);
- }	
-@@ -627,23 +619,25 @@ static int snd_emu10k1_playback_trigger(struct snd_pcm_substream *substream,
+ 	/* volume parameters */
+@@ -424,19 +415,16 @@ static int snd_emu10k1_playback_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
  	struct snd_pcm_runtime *runtime = substream->runtime;
  	struct snd_emu10k1_pcm *epcm = runtime->private_data;
- 	struct snd_emu10k1_pcm_mixer *mix;
 +	bool w_16 = snd_pcm_format_width(runtime->format) == 16;
 +	bool stereo = runtime->channels == 2;
- 	int result = 0;
+ 	unsigned int start_addr, end_addr;
  
- 	/*
- 	dev_dbg(emu->card->dev,
- 		"trigger - emu10k1 = 0x%x, cmd = %i, pointer = %i\n",
- 	       (int)emu, cmd, substream->ops->pointer(substream))
- 	*/
- 	spin_lock(&emu->reg_lock);
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[0]);
-+		snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[0], w_16, stereo);
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 		mix = &emu->pcm_mixer[substream->number];
--		snd_emu10k1_playback_unmute_voice(emu, epcm->voices[0], true, mix);
--		snd_emu10k1_playback_unmute_voice(emu, epcm->voices[1], false, mix);
-+		snd_emu10k1_playback_unmute_voice(emu, epcm->voices[0], stereo, true, mix);
-+		snd_emu10k1_playback_unmute_voice(emu, epcm->voices[1], stereo, false, mix);
- 		snd_emu10k1_playback_set_running(emu, epcm);
- 		snd_emu10k1_playback_trigger_voice(emu, epcm->voices[0]);
- 		snd_emu10k1_playback_trigger_voice(emu, epcm->extra);
-@@ -781,13 +775,13 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_START:
- 		/* prepare voices */
- 		for (i = 0; i < NUM_EFX_PLAYBACK; i++) {	
--			snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[i]);
-+			snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[i], true, false);
- 		}
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 		for (i = 0; i < NUM_EFX_PLAYBACK; i++)
--			snd_emu10k1_playback_unmute_voice(emu, epcm->voices[i], false,
-+			snd_emu10k1_playback_unmute_voice(emu, epcm->voices[i], false, true,
- 							  &emu->efx_pcm_mixer[i]);
+-	start_addr = epcm->start_addr;
+-	end_addr = snd_pcm_lib_period_bytes(substream);
+-	if (runtime->channels == 2) {
+-		start_addr >>= 1;
+-		end_addr >>= 1;
+-	}
+-	end_addr += start_addr;
++	start_addr = epcm->start_addr >> w_16;
++	end_addr = start_addr + runtime->period_size;
+ 	snd_emu10k1_pcm_init_voice(emu, 1, 1, epcm->extra,
+ 				   start_addr, end_addr, NULL);
+-	start_addr = epcm->start_addr;
+-	end_addr = epcm->start_addr + snd_pcm_lib_buffer_bytes(substream);
++	start_addr >>= stereo;
++	end_addr = start_addr + runtime->buffer_size;
+ 	snd_emu10k1_pcm_init_voice(emu, 1, 0, epcm->voices[0],
+ 				   start_addr, end_addr,
+ 				   &emu->pcm_mixer[substream->number]);
+@@ -452,14 +440,13 @@ static int snd_emu10k1_efx_playback_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_emu10k1_pcm *epcm = runtime->private_data;
+-	unsigned int start_addr, end_addr;
++	unsigned int start_addr;
+ 	unsigned int channel_size;
+ 	int i;
  
- 		snd_emu10k1_playback_set_running(emu, epcm);
+-	start_addr = epcm->start_addr;
+-	end_addr = epcm->start_addr + snd_pcm_lib_buffer_bytes(substream);
++	start_addr = epcm->start_addr >> 1;  // 16-bit voices
+ 
+-	channel_size = ( end_addr - start_addr ) / NUM_EFX_PLAYBACK;
++	channel_size = runtime->buffer_size;
+ 
+ 	snd_emu10k1_pcm_init_voice(emu, 1, 1, epcm->extra,
+ 				   start_addr, start_addr + (channel_size / 2), NULL);
 -- 
 2.40.0.152.g15d061e6df
 
