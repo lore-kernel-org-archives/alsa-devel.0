@@ -4,87 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5CC4C77B7A
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 14:32:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0901C77B7A
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 14:35:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 620BE1FA;
-	Wed, 17 May 2023 16:31:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 620BE1FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43461200;
+	Wed, 17 May 2023 16:34:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43461200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684333944;
-	bh=m6Os9B2ed6cigaZgyvST3zp5sKK8MZYV/M/roj0u/iI=;
+	s=default; t=1684334102;
+	bh=lZlozox2TKd3Pi5uB7YU/mPz21ri7N1Rt/7jWjUQzv4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sOYtJFT6X2v5TQzjwuMdU/MTG3f0KVN5ffLb+lsZr4F7gF9AwceTLD56xAeX6CI3g
-	 5YElTP+b1ZB0EhRs9AuRtj5niMSOemoIRr88gckYgilpEgJl9qNfogRK9XUmck1GCh
-	 s4L/wZc8GyU8D8ZyBG7ZZVfjP9GggmKcLzXtP4Yw=
+	b=KwPRoIh0lyCQbTUhburd6FqwAv2XYy+MP0oAivjxtDyHsQseDhT/cMZ5im9Cg1EyL
+	 URTUqWv3kbnGo15XhhSRf7RdgVo2QwjoDZpXYMkeiIvGDf9+Avzte0ZFW5V2TLnm17
+	 x7CvazUeqbgzcYa8n2UKvWeiBHAUGR0tJGnwqa4s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4F191F8016A; Wed, 17 May 2023 16:31:06 +0200 (CEST)
+	id 24DB7F80548; Wed, 17 May 2023 16:33:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D45B9F8016A;
-	Wed, 17 May 2023 16:31:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96CCAF8016A;
+	Wed, 17 May 2023 16:33:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B118EF80272; Wed, 17 May 2023 16:31:01 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 87E78F80272; Wed, 17 May 2023 16:33:33 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 801C5F8016A
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 16:30:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 801C5F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id E87FBF8016A
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 16:33:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E87FBF8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=RP/qhpzf
+ header.s=k20201202 header.b=uiIZYJ81
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id DFCF564518;
-	Wed, 17 May 2023 14:30:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94DB4C433EF;
-	Wed, 17 May 2023 14:30:54 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 46ECA63B72;
+	Wed, 17 May 2023 14:33:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C3EC433D2;
+	Wed, 17 May 2023 14:33:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684333855;
-	bh=m6Os9B2ed6cigaZgyvST3zp5sKK8MZYV/M/roj0u/iI=;
+	s=k20201202; t=1684334008;
+	bh=lZlozox2TKd3Pi5uB7YU/mPz21ri7N1Rt/7jWjUQzv4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RP/qhpzfg0S6E2//ryq4SNYkedqo/IWGritLtCDNhEgQHZtNfcDiCVK4yp7Jqokur
-	 eZpH0XvtuStZo6aqN+hogrkZ3ILJCcOls7Tl7kcazXTdN/ubmWTgkH9rUIxhuJjz0a
-	 UBgRVYr3p3w4zT8k+AcySzysNtLfh0Ceap+08PWvRWxYluu8VbpOvpNhKHhNDfUioF
-	 rrqhnzZsSp2amH1YpoV2Nc23APNXZN5+MCglArTtOdsxNja8I8s1oVOpVnIceiFQHi
-	 IQUQqLLdXnY2QrLuYg7Pr0y8sIk+L8FCFGHO8OffGQbzXK7BD5WOF8JDk69EcP2T9I
-	 dLsa58uJTvBGA==
-Date: Wed, 17 May 2023 23:30:52 +0900
+	b=uiIZYJ817uW4PLCcd7yFMqmJfwX74+UHeGVwDFVcWE1vlEcBb5fFx/snNM5JqRM6z
+	 RJnNeOngRjjz0iYsGmyPZsMQp01YLq1RZxDRZRXDgQ3FxKP6f8occTIyiehm39dkkN
+	 9OqmgFMGXRKs4wKRKVWBDr3CP/U1z8V/ENSuPiSi7jngSYkAHIU2kxJSCuxOS/yBjs
+	 gSCNvEUUsCa9JD29BUAHiGuAa0PvMKECodNuuHP/+kcLumXumTsR1/pXgWdVPyM5dh
+	 66u/usNk+nCNkBh8509NtEA5xTQA7CmIaiKhxATcBi2vxUfnmxi/uKjWw86OhVh1Z2
+	 Z5UeefiLSYKhw==
+Date: Wed, 17 May 2023 23:33:25 +0900
 From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, lee@kernel.org,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, tglx@linutronix.de, maz@kernel.org,
-	linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com,
-	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/10] pinctrl: cs42l43: Add support for the cs42l43
-Message-ID: <ZGTlHMRl/ifaQmiN@finisterre.sirena.org.uk>
-References: <20230512122838.243002-1-ckeepax@opensource.cirrus.com>
- <20230512122838.243002-9-ckeepax@opensource.cirrus.com>
- <ZF6RMqElYZVMpWRt@surfacebook>
- <20230515101350.GS68926@ediswmail.ad.cirrus.com>
- <CAHp75Vcizrucc-2KFdFNeHNrxCzz4GwX1OzZYyjPH7P9RgnKYQ@mail.gmail.com>
- <20230517101301.GV68926@ediswmail.ad.cirrus.com>
- <CAHp75VchpbiYcd2yaP1WTjX17P0hg3qON5JGAXu08aDVw6Ydkw@mail.gmail.com>
+To: Min-Hua Chen <minhuadotchen@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: ti: Use pcm_for_each_format() macro for PCM format
+ iteration
+Message-ID: <ZGTltcv6hSlJWLnh@finisterre.sirena.org.uk>
+References: <20230517130124.26033-1-minhuadotchen@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Ov0voJhDONNyMty6"
+	protocol="application/pgp-signature"; boundary="G35u4VcyFhkbCsYq"
 Content-Disposition: inline
-In-Reply-To: 
- <CAHp75VchpbiYcd2yaP1WTjX17P0hg3qON5JGAXu08aDVw6Ydkw@mail.gmail.com>
+In-Reply-To: <20230517130124.26033-1-minhuadotchen@gmail.com>
 X-Cookie: Avoid contact with eyes.
-Message-ID-Hash: S6V2GJK73N5YQN5H2YOQJVM2IGRC7HBF
-X-Message-ID-Hash: S6V2GJK73N5YQN5H2YOQJVM2IGRC7HBF
+Message-ID-Hash: DCPRHCRIUEIT4AAE7TTRCYVAFX3JFY2N
+X-Message-ID-Hash: DCPRHCRIUEIT4AAE7TTRCYVAFX3JFY2N
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S6V2GJK73N5YQN5H2YOQJVM2IGRC7HBF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DCPRHCRIUEIT4AAE7TTRCYVAFX3JFY2N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,43 +97,33 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---Ov0voJhDONNyMty6
-Content-Type: text/plain; charset=utf-8
+--G35u4VcyFhkbCsYq
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 17, 2023 at 04:59:50PM +0300, Andy Shevchenko wrote:
-> On Wed, May 17, 2023 at 1:13=E2=80=AFPM Charles Keepax
+On Wed, May 17, 2023 at 09:01:22PM +0800, Min-Hua Chen wrote:
+> Use pcm_for_each_format for the PCM format iteration and fix the
+> following sparse warnings.
 
-> > I am very very far from confident we can guarantee that will be
-> > present in the ACPI. The ACPI is typically made for and by the
-> > Windows side.
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-> Why? You may insist firmware vendors / OEMs to use that as a
-> requirement to the platforms that would like to use your chip. The
-> _DSD() is part of the specification, I don't see how the above can be
-> an argument.
-
-> The times when ACPI =3D=3D Windows are quite behind.
-
-Nobody is going to loose a sale over something like that, especially
-when it's just not idiomatic.  It's very unlikely to even be worth the
-effort of educating customers who don't care what DSD is when there's no
-ecosystem push for it, it'd just make you look difficult and weird.
-
---Ov0voJhDONNyMty6
+--G35u4VcyFhkbCsYq
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRk5RsACgkQJNaLcl1U
-h9DaIggAgmCuOSFXfbUoH1Su2DcLeh0wIfTqcONVi5GSZAbHyuk9dy5MrNYj7nfa
-BcKuolLtwCe4MMP4zB5zLMSydCTOL6J4vPUUcGrQgOl0jUHkF+k/G292o5wyf3B5
-346PTZPODQloCnkBdi+vjpx+7XLYki/f4sjbTFZ0i4AeKblgvmROpqBpk7e0oWRa
-phVv/QMLjXuxIi+wmCuR8MfiBA3G+V4nhHFpiOQ7tJynbOXwEqwf+Pap/bT1l/pp
-q/SLuiz+4SqQLPP/OWZNMDzVLpDfFfHHumuKTS6jztcZ2+EkDjI/NSESl85fkee0
-b4R9RbjgMmuLqwnWKrgLotCs+oO0pg==
-=aZyT
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRk5bUACgkQJNaLcl1U
+h9DiEwf+PGLlxQD5Edw3Vrf62gqgoqEjF17o2fW0TdtmVylZm44Sc+PpdL4NWq4D
+A4AykbttTA8qOGZv9FHU+Ye9w0N5V+arjTfnUyjYjO1D46jmJchSyybXs6UCijtH
+aivFbChteCm4nr5bz7iZzutwJqJhKVSJbosNQA4fMfQCOkTeL4/3mGhX8iAT0jDI
+wUB7x8JnNI9M+Q0OJqhP995zM+vSBsxzIENa8Tf/Jinxd7PZJNzpF6ErNCIocufQ
+FwUc7e9dHYrqs+6NHQkED+8TbrbVmv9ik3BN/StZY17JlRLIoGAjIPl8uwrhzD3C
+ua0DMQEe3/YFrPoKPHD2kfpdsMHizA==
+=Yb+h
 -----END PGP SIGNATURE-----
 
---Ov0voJhDONNyMty6--
+--G35u4VcyFhkbCsYq--
