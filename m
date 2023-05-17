@@ -4,94 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0EF0C77B7F
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 11:55:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6949CC77B7F
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 11:55:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BF07F0;
-	Wed, 17 May 2023 13:54:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BF07F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B66582A;
+	Wed, 17 May 2023 13:54:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B66582A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684324514;
-	bh=WvTvI4Dm1DjoqEaSGJdLMZI+O+kaZmw+Ac1bt72m2Ck=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1684324518;
+	bh=Oz1+XIA+Tu5g8JfG9yTKx716ef2j09dwG3Nq0+Ip6z8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tk2kJxJ944/XfTx4WjXrZBO6UVX4VxnF/15WqCvFdoRr6Vl23+V4kPB6Y9NuS2PZq
-	 YtumVHErh5OYQm04v5StfJzpbjo8XICJeCUc68w0y1ZZk+7Q8MOrEMrMelfZ6YRHdh
-	 2Q1GdFT4ceDaeLayiybP7JuP94WlJeHZc3E6R97M=
+	b=o0CAZ7JfMvUOHkflhn1G+5c7o4IKdBX1apLW3DJ5HLcOlUyPMyVTZ/mk1P96f5WXF
+	 1j3qupUHye5xwGzLT55xaAlRDq3cJTMxpr1uF8H4DgIRqH89mW9x+iyB923XFcrY8Q
+	 RM5ZJWT2S3NKMtAQLy+UHFNM2vnUSvuxYCANSjLw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADA3FF805B2; Wed, 17 May 2023 13:52:55 +0200 (CEST)
+	id 7025BF80272; Wed, 17 May 2023 13:54:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA5A6F805A8;
-	Wed, 17 May 2023 13:52:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F228EF80544;
+	Wed, 17 May 2023 13:54:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D610DF80552; Wed, 17 May 2023 13:52:43 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	id 20A07F80272; Wed, 17 May 2023 13:54:20 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9A9A9F802E8
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 13:52:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A9A9F802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 68B57F8016D
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 13:54:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68B57F8016D
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=iiIwG5y1
-X-UUID: 48604eeef4a911edb20a276fd37b9834-20230517
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=EUCXX3qywTmH1/iTn+Vhans2ufli5Vw7rjPGGMD4pM0=;
-	b=iiIwG5y1fQM/wo/UR4SD81cMILUd+ZDD6rhc9+pA52HrPUXIErd6zhrs7+mJTRqA1FcRMeQnTMwy8GIZJtK3AFsDdH2PC4eOsgSnT7YCz+zgqm1zlGotjuYV0443fyAaoHC9pQRwaxmZ/l4H2abj5lHf4u1JQEo3zDmMF5cvkAo=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.25,REQID:341178e7-a829-4762-9531-ce3da29a6fd5,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:90
-X-CID-INFO: VERSION:1.1.25,REQID:341178e7-a829-4762-9531-ce3da29a6fd5,IP:0,URL
-	:0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTIO
-	N:quarantine,TS:90
-X-CID-META: VersionHash:d5b0ae3,CLOUDID:e4ca1e6c-2f20-4998-991c-3b78627e4938,B
-	ulkID:230517195224OD070BA2,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
-	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-	,OSI:0,OSA:0,AV:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-UUID: 48604eeef4a911edb20a276fd37b9834-20230517
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by
- mailgw02.mediatek.com
-	(envelope-from <trevor.wu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1759731671; Wed, 17 May 2023 19:52:21 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 17 May 2023 19:52:20 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 17 May 2023 19:52:20 +0800
-From: Trevor Wu <trevor.wu@mediatek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
-	<perex@perex.cz>, <matthias.bgg@gmail.com>,
-	<angelogioacchino.delregno@collabora.com>
-CC: <trevor.wu@mediatek.com>, <bicycle.tsai@mediatek.com>,
-	<ting-fang.hou@mediatek.com>, <alsa-devel@alsa-project.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [RESEND 3/4] ASoC: mediatek: mt6359: add mtkaif gpio setting
-Date: Wed, 17 May 2023 19:52:18 +0800
-Message-ID: <20230517115219.532-4-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230517115219.532-1-trevor.wu@mediatek.com>
-References: <20230517115219.532-1-trevor.wu@mediatek.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=It8Oq9iY
+Received: from [IPV6:2001:b07:2ed:14ed:a962:cd4d:a84:1eab] (unknown
+ [IPv6:2001:b07:2ed:14ed:a962:cd4d:a84:1eab])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id EE2116605909;
+	Wed, 17 May 2023 12:54:14 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1684324455;
+	bh=Oz1+XIA+Tu5g8JfG9yTKx716ef2j09dwG3Nq0+Ip6z8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=It8Oq9iYKr5mHR65+J23asb3mBtgRcnKPLI7zeLsUMF/OrIN7zdffv1ut+1rFlvLL
+	 6MIHkEUgStlOENPDAlIHfzeRxLbO6mOUPeHk8dDwAezY7x0/J4aJyZ8G0ueqz/UVkv
+	 JUHSVt6c6Yo1G+Z12LeBnglbaQvRS3qQzpcMSEkTT3k4wQvq76b4G2HJ1dm8bFJsjp
+	 Mx3iPiZfjDm7VJQPYkIMREhNeBMUPzhDWSsAvM9oi6F/sXHqkhc7IgNuBQTvjR/wsT
+	 HN7Xsh361x4RL9dTKxViQSFNHNp6B/aWTS3tBBmQvp/uNf7PI3s+gMHsLmwBG5l6BB
+	 dqLf06n+bxgnQ==
+Message-ID: <8b76c893-e7bc-7a99-b86d-74e3378f9b4e@collabora.com>
+Date: Wed, 17 May 2023 13:54:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
-Message-ID-Hash: RMAK24JCLKRBKE3IV36RPDQQE6VERPN4
-X-Message-ID-Hash: RMAK24JCLKRBKE3IV36RPDQQE6VERPN4
-X-MailFrom: trevor.wu@mediatek.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH 4/5] ASoC: mediatek: mt8188-mt6359: support new board with
+ nau88255
+Content-Language: en-US
+To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
+ lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20230517111534.32630-1-trevor.wu@mediatek.com>
+ <20230517111534.32630-5-trevor.wu@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230517111534.32630-5-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: L2NVQHIJWTK7VWEAKGGZE33OYJXGLNOY
+X-Message-ID-Hash: L2NVQHIJWTK7VWEAKGGZE33OYJXGLNOY
+X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RMAK24JCLKRBKE3IV36RPDQQE6VERPN4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L2NVQHIJWTK7VWEAKGGZE33OYJXGLNOY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,48 +102,104 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add mtkaif gpio driving to increase signal strength and smt setting to
-prevent from overshooting.
+Il 17/05/23 13:15, Trevor Wu ha scritto:
+> This patch adds multiple i2s codecs support including NAU88L25,
+> MAX98390, and the dumb amp like NAU8318 usage. In addition, dmic-codec
+> is also added to skip the beginning pop noise.
+> 
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> ---
+>   sound/soc/mediatek/Kconfig                |   4 +
+>   sound/soc/mediatek/mt8188/mt8188-mt6359.c | 267 +++++++++++++++++++++-
+>   2 files changed, 270 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+> index 4baac72677d9..4ea012342b52 100644
+> --- a/sound/soc/mediatek/Kconfig
+> +++ b/sound/soc/mediatek/Kconfig
+> @@ -225,6 +225,10 @@ config SND_SOC_MT8188_MT6359
+>   	depends on SND_SOC_MT8188 && MTK_PMIC_WRAP
+>   	select SND_SOC_MT6359
+>   	select SND_SOC_HDMI_CODEC
+> +	select SND_SOC_DMIC
+> +	select SND_SOC_MAX98390
+> +	select SND_SOC_NAU8315
+> +	select SND_SOC_NAU8825
+>   	help
+>   	  This adds support for ASoC machine driver for MediaTek MT8188
+>   	  boards with the MT6359 and other I2S audio codecs.
+> diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+> index 6c3f36e2fffd..15fce2741f01 100644
+> --- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+> +++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+> @@ -6,6 +6,7 @@
+>    * Author: Trevor Wu <trevor.wu@mediatek.com>
+>    */
+>   
+> +#include <linux/input.h>
+>   #include <linux/module.h>
+>   #include <linux/of_device.h>
+>   #include <linux/pm_runtime.h>
+> @@ -13,10 +14,25 @@
+>   #include <sound/pcm_params.h>
+>   #include <sound/soc.h>
+>   #include "mt8188-afe-common.h"
+> +#include "../../codecs/nau8825.h"
+>   #include "../../codecs/mt6359.h"
+>   #include "../common/mtk-afe-platform-driver.h"
+>   #include "../common/mtk-soundcard-driver.h"
+>   
+> +/*
+> + * Maxim MAX98390
+> + */
+> +#define MAX98390_CODEC_DAI     "max98390-aif1"
+> +#define MAX98390_DEV0_NAME     "max98390.0-0038" /* rear right */
+> +#define MAX98390_DEV1_NAME     "max98390.0-0039" /* rear left */
+> +#define MAX98390_DEV2_NAME     "max98390.0-003a" /* front right */
+> +#define MAX98390_DEV3_NAME     "max98390.0-003b" /* front left */
+> +
+> +/*
+> + * Nau88l25
+> + */
+> +#define NAU8825_CODEC_DAI  "nau8825-hifi"
+> +
+>   /* FE */
+>   SND_SOC_DAILINK_DEFS(playback2,
+>   		     DAILINK_COMP_ARRAY(COMP_CPU("DL2")),
+> @@ -143,12 +159,15 @@ SND_SOC_DAILINK_DEFS(pcm1,
+>   SND_SOC_DAILINK_DEFS(ul_src,
+>   		     DAILINK_COMP_ARRAY(COMP_CPU("UL_SRC")),
+>   		     DAILINK_COMP_ARRAY(COMP_CODEC("mt6359-sound",
+> -						   "mt6359-snd-codec-aif1")),
+> +						   "mt6359-snd-codec-aif1"),
+> +					COMP_CODEC("dmic-codec",
+> +						   "dmic-hifi")),
+>   		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
+>   
+>   struct mt8188_mt6359_priv {
+>   	struct snd_soc_jack dp_jack;
+>   	struct snd_soc_jack hdmi_jack;
+> +	struct snd_soc_jack headset_jack;
+>   };
+>   
+>   static struct snd_soc_jack_pin mt8188_hdmi_jack_pins[] = {
+> @@ -165,11 +184,50 @@ static struct snd_soc_jack_pin mt8188_dp_jack_pins[] = {
+>   	},
+>   };
+>   
+> +static struct snd_soc_jack_pin nau8825_jack_pins[] = {
+> +	{
+> +		.pin    = "Headphone",
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- sound/soc/codecs/mt6359.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+One Intel driver using NAU8825 declares this as
 
-diff --git a/sound/soc/codecs/mt6359.c b/sound/soc/codecs/mt6359.c
-index 65e6d4d08b6a..a37ad61a8253 100644
---- a/sound/soc/codecs/mt6359.c
-+++ b/sound/soc/codecs/mt6359.c
-@@ -18,6 +18,20 @@
- 
- #include "mt6359.h"
- 
-+static void mt6359_set_gpio_smt(struct mt6359_priv *priv)
-+{
-+	/* set gpio SMT mode */
-+	regmap_update_bits(priv->regmap, MT6359_SMT_CON1, 0x3ff0, 0x3ff0);
-+}
-+
-+static void mt6359_set_gpio_driving(struct mt6359_priv *priv)
-+{
-+	/* 8:4mA(default), a:8mA, c:12mA, e:16mA */
-+	regmap_update_bits(priv->regmap, MT6359_DRV_CON2, 0xffff, 0x8888);
-+	regmap_update_bits(priv->regmap, MT6359_DRV_CON3, 0xffff, 0x8888);
-+	regmap_update_bits(priv->regmap, MT6359_DRV_CON4, 0x00ff, 0x88);
-+}
-+
- static void mt6359_set_playback_gpio(struct mt6359_priv *priv)
- {
- 	/* set gpio mosi mode, clk / data mosi */
-@@ -2745,6 +2759,8 @@ static int mt6359_codec_init_reg(struct snd_soc_component *cmpnt)
- 			   0x1 << RG_AUDLOLSCDISABLE_VAUDP32_SFT);
- 
- 	/* set gpio */
-+	mt6359_set_gpio_smt(priv);
-+	mt6359_set_gpio_driving(priv);
- 	mt6359_reset_playback_gpio(priv);
- 	mt6359_reset_capture_gpio(priv);
- 
--- 
-2.18.0
+		.pin	= "Headphone Jack",
+
+can we please use the same name, so that we're able to eventually share the
+same configuration in the userspace?
+
+For reference, please check intel/avs/boards/nau8825.c
+
+Thanks,
+Angelo
 
