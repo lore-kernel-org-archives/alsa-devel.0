@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87EDEC77B75
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 11:20:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D11CDC77B75
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 11:20:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7362282A;
-	Wed, 17 May 2023 13:19:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7362282A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF51A1F4;
+	Wed, 17 May 2023 13:20:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF51A1F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684322429;
-	bh=5A+u31d9cvQOefS+rAXPmsmb/kUKAXdw4oQfS5rt5+Y=;
+	s=default; t=1684322452;
+	bh=IakYSP4Uh17qdBtq00fNOlaLb30g+Dofuda+Er60KeY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mH3AOMI7J2P/InB8A7EHe0tiYbcXzBi1tCvDgpzSU5WKbM24StmBfB4WTzbCB5SG1
-	 whOxPlmEF7jF8lBJ7v4q29LRWuA/M4p6MFBwW+0MyPqIHrwWSJmV49+HxFVzJtidO7
-	 QcD9Obir6hhmyVC07NZJaRhsPppmlCK0W5C9papY=
+	b=mVMdOMIBNWJovYm+bKX+FfdvLM3WM2uyWGIfO57C+ciRsDDXrtJFk2iQcOS8Lz7G6
+	 jQ8XjZvugvuPjWhHn0LKP+0bgObgCAmG17kiiz8jFKa9UGwV/itV5OcsXy01/5xD9R
+	 SCmMG0PsrkDY5JtKGPUDJTxPZzbQEt3u9v0FeV/U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CA1B3F80588; Wed, 17 May 2023 13:17:08 +0200 (CEST)
+	id 7B88FF805AB; Wed, 17 May 2023 13:17:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1EE7BF802E8;
-	Wed, 17 May 2023 13:17:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08532F805AB;
+	Wed, 17 May 2023 13:17:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DF814F80272; Wed, 17 May 2023 13:17:01 +0200 (CEST)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
- [IPv6:2a00:1450:4864:20::52f])
+	id 9F81AF8025A; Wed, 17 May 2023 13:17:02 +0200 (CEST)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1AAC7F8025A
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 13:14:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AAC7F8025A
+	by alsa1.perex.cz (Postfix) with ESMTPS id EF19BF8053D
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 13:14:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF19BF8053D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=AzaZ4guz
-Received: by mail-ed1-x52f.google.com with SMTP id
- 4fb4d7f45d1cf-510b56724caso8456530a12.1
+ header.s=google header.b=hIdANJjD
+Received: by mail-ej1-x631.google.com with SMTP id
+ a640c23a62f3a-965cc5170bdso94618266b.2
         for <alsa-devel@alsa-project.org>;
- Wed, 17 May 2023 04:14:43 -0700 (PDT)
+ Wed, 17 May 2023 04:14:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1684322082; x=1686914082;
+        d=linaro.org; s=google; t=1684322085; x=1686914085;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HEOOEjR671HfmOXPgQqMUHzrdAM2unOi/T1lUcVo2j0=;
-        b=AzaZ4guzFC7mjzLyKRvNGAUkMMT+3Wa2whIOYVnJeD+QyZ8EBww+DnbNc8pW9F8KvM
-         RoEO4BMABU8T3j9OJeY7RXkgrFJO88Qc3bpF9ewu6lRPm01+JjTV7QXpBSOJo38+G8bp
-         apympiZR1cjbuuKJFlidTumihU9/KGAQLnnSaSrQSiGNyPYssn1XKliSaqWAnHV21pwQ
-         atF8ps54PE8dNWH2cPVxYzif9k97D77l9URcXuo+ehsuiyRzh0F5C97ifI6JIyvQj6w5
-         SyOurd9nCf0A2D4c4Zw5WLOYPJ79xD5KufmjXXKv+Vzwwnbe+w/A0c4Ay9Jig7OrVISB
-         VBTg==
+        bh=orOtZCSMdy0LOUQiF3GDNtFNR/PCT+bEnkKVYg6k6GY=;
+        b=hIdANJjDwebuLejzh1gdqt+267DcEVSuEXFFfZttIJwmQVKZZhGt5sC81zWStiXcRj
+         VkXD93TUaA6p5/xnMn+t1KsA2k9XWbfzDLmphIbNyQCMePhqmJwZ0QIctyh5cwm8q4wy
+         jpGo6s5Hd6p6eKRAO0ltyCLM8otD/mS7+HaUb4FFNTthYyMbM30oBOfYkgfq+MXolgz5
+         OrfMgBCLybw5ytMdkTg+It68qT+icGoIHEi0KynM6uNo5zrHoHcKNS540jcbGu4+XgBj
+         KS6QniH0sv0gGfn4aAtNBHezfiPEI5b6LpAL/hI7ksQoRcMW9Z2nBnGJkQPfI8i5ovSr
+         ydYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684322082; x=1686914082;
+        d=1e100.net; s=20221208; t=1684322085; x=1686914085;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HEOOEjR671HfmOXPgQqMUHzrdAM2unOi/T1lUcVo2j0=;
-        b=MuZnpa1HlzXEKZfktd4WVPLr1bz0DHAUS77om3VytiNZ88p5R3w6LgZgUwRhDZ+ouF
-         ghLBzC1gUdyqAPBakq472TP8/YL+QvgOW6Ns4EsG6IN80jSb9hP8EGd14OIBSPXqQ4dS
-         LQS1tGZFt4/HGJrmb1tIylMYthBAH5kvNbMJz8K9cb7RWsDnQf2VuCFrIu3XPwlBRvOw
-         oCiMSRQd0JuKUovIZW8sgSD3hYy2D94LlYNEkH1TgzxEFT8Zc5k8kGCytsrkYZKVZG2s
-         lYB3WxL0+Yhp/uY+ff7T5puEHytsZ1CPl3K36sC+n0tFtoHnROsoGUHiT92GeuPNJ1TU
-         wnMg==
-X-Gm-Message-State: AC+VfDyZl+p+xDQXw0aY9bFLBTS4fRX2A81k6u41ff7SKhbJrCOEVYPm
-	tXNLjjHiiZWF4Sa8msOXF6iU+w==
+        bh=orOtZCSMdy0LOUQiF3GDNtFNR/PCT+bEnkKVYg6k6GY=;
+        b=ADYQctc6rHvZtiYTA8rNZNPGekH3AgfdD7EEEt0V0j6IKBv01fy8CFS3PI2EaydaKj
+         8J9gibSuNaHZDy+FGCvIA2Q0g2RDkBOv4Sxtyk72Mzc3aN34v2hhpeG+1J/DnbPNxZvV
+         EHxZNUsGtQFmGB7WoE+6zF/aRUwsoxU729plGawPJ8/kRR4K7ykqMGnPtMoE/ui4JX5E
+         nsGq2YgB+tVR9Mr7/9N2dtB1UfKx5TvAMA6pb+GqakAlD4/oQR048k8XwmAGTfO4eIOL
+         uCuI1Yszy2Jh5mF0XUPPTh+5Lkkj7Ep1Gs1wjkFD1vh1tG7fWMWkjbgUVBflCv4rYoDo
+         xOLA==
+X-Gm-Message-State: AC+VfDxrXlaV99vYgm705Wt5i204Q/OST3/hvkeY1tyEh/pLxdaWRBYD
+	5Z1+B3CbbNWemniegwm8kpGYKw==
 X-Google-Smtp-Source: 
- ACHHUZ59bqvno6jHhPiAuS2Tvt4ztbcI9pGqM5YYNJMWeveZwz+QiRkdhrj2byFPUKW1FIM+Mx3+Tw==
-X-Received: by 2002:a17:907:3e21:b0:94f:2020:b5dd with SMTP id
- hp33-20020a1709073e2100b0094f2020b5ddmr1773127ejc.24.1684322082024;
-        Wed, 17 May 2023 04:14:42 -0700 (PDT)
+ ACHHUZ59InEiEFagluPob/jRCVm/OnOiFjG4/CRAJ+B+r/pybagONxCqHhmhRqrqagLoPDquLlcEYA==
+X-Received: by 2002:a17:907:7e86:b0:969:b2e2:4f3b with SMTP id
+ qb6-20020a1709077e8600b00969b2e24f3bmr31186355ejc.51.1684322085181;
+        Wed, 17 May 2023 04:14:45 -0700 (PDT)
 Received: from krzk-bin.. ([2a02:810d:15c0:828:c9ff:4c84:dd21:568d])
         by smtp.gmail.com with ESMTPSA id
- ml18-20020a170906cc1200b0094f124a37c4sm12326880ejb.18.2023.05.17.04.14.41
+ ml18-20020a170906cc1200b0094f124a37c4sm12326880ejb.18.2023.05.17.04.14.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 May 2023 04:14:41 -0700 (PDT)
+        Wed, 17 May 2023 04:14:44 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Oder Chiou <oder_chiou@realtek.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -90,17 +90,17 @@ To: Oder Chiou <oder_chiou@realtek.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 04/12] ASoC: codecs: rt5682: do not store status in state
+Subject: [PATCH 07/12] ASoC: codecs: rt711: do not store status in state
  container
-Date: Wed, 17 May 2023 13:14:08 +0200
-Message-Id: <20230517111416.424420-4-krzysztof.kozlowski@linaro.org>
+Date: Wed, 17 May 2023 13:14:11 +0200
+Message-Id: <20230517111416.424420-7-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230517111416.424420-1-krzysztof.kozlowski@linaro.org>
 References: <20230517111416.424420-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: U2EAF2IVTVLF4UM24LGOS2HJFHM5Z3PC
-X-Message-ID-Hash: U2EAF2IVTVLF4UM24LGOS2HJFHM5Z3PC
+Message-ID-Hash: QFH4IIPZDYX7RNLL6H56SWG5L6RLTEGR
+X-Message-ID-Hash: QFH4IIPZDYX7RNLL6H56SWG5L6RLTEGR
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -113,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U2EAF2IVTVLF4UM24LGOS2HJFHM5Z3PC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QFH4IIPZDYX7RNLL6H56SWG5L6RLTEGR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,40 +127,40 @@ state container but it never uses it later.  Simplify the code a bit.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/rt5682-sdw.c | 5 +----
- sound/soc/codecs/rt5682.h     | 1 -
+ sound/soc/codecs/rt711-sdw.c | 5 +----
+ sound/soc/codecs/rt711.h     | 1 -
  2 files changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
-index 6e3b5c5eced1..67404f45389f 100644
---- a/sound/soc/codecs/rt5682-sdw.c
-+++ b/sound/soc/codecs/rt5682-sdw.c
-@@ -500,9 +500,6 @@ static int rt5682_update_status(struct sdw_slave *slave,
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index 4fe68bcf2a7c..b8ed3c6236d8 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -319,9 +319,6 @@ static int rt711_update_status(struct sdw_slave *slave,
  {
- 	struct rt5682_priv *rt5682 = dev_get_drvdata(&slave->dev);
+ 	struct rt711_priv *rt711 = dev_get_drvdata(&slave->dev);
  
 -	/* Update the status */
--	rt5682->status = status;
+-	rt711->status = status;
 -
  	if (status == SDW_SLAVE_UNATTACHED)
- 		rt5682->hw_init = false;
+ 		rt711->hw_init = false;
  
-@@ -510,7 +507,7 @@ static int rt5682_update_status(struct sdw_slave *slave,
+@@ -329,7 +326,7 @@ static int rt711_update_status(struct sdw_slave *slave,
  	 * Perform initialization only if slave status is present and
  	 * hw_init flag is false
  	 */
--	if (rt5682->hw_init || rt5682->status != SDW_SLAVE_ATTACHED)
-+	if (rt5682->hw_init || status != SDW_SLAVE_ATTACHED)
+-	if (rt711->hw_init || rt711->status != SDW_SLAVE_ATTACHED)
++	if (rt711->hw_init || status != SDW_SLAVE_ATTACHED)
  		return 0;
  
  	/* perform I/O transfers required for Slave initialization */
-diff --git a/sound/soc/codecs/rt5682.h b/sound/soc/codecs/rt5682.h
-index d568c6993c33..301d1817f8f1 100644
---- a/sound/soc/codecs/rt5682.h
-+++ b/sound/soc/codecs/rt5682.h
-@@ -1440,7 +1440,6 @@ struct rt5682_priv {
- 	bool disable_irq;
- 	struct mutex calibrate_mutex;
+diff --git a/sound/soc/codecs/rt711.h b/sound/soc/codecs/rt711.h
+index b31351f11df9..491e357191f9 100644
+--- a/sound/soc/codecs/rt711.h
++++ b/sound/soc/codecs/rt711.h
+@@ -15,7 +15,6 @@ struct  rt711_priv {
+ 	struct regmap *sdw_regmap;
+ 	struct snd_soc_component *component;
  	struct sdw_slave *slave;
 -	enum sdw_slave_status status;
  	struct sdw_bus_params params;
