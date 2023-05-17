@@ -4,104 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D11CDC77B75
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 11:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A26B6C7EE23
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 11:33:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF51A1F4;
-	Wed, 17 May 2023 13:20:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF51A1F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0078201;
+	Wed, 17 May 2023 13:32:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0078201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684322452;
-	bh=IakYSP4Uh17qdBtq00fNOlaLb30g+Dofuda+Er60KeY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1684323186;
+	bh=L2mTlsU8VTc247vwq0FkEbhJOgBaKoelge6UNY1Jq28=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mVMdOMIBNWJovYm+bKX+FfdvLM3WM2uyWGIfO57C+ciRsDDXrtJFk2iQcOS8Lz7G6
-	 jQ8XjZvugvuPjWhHn0LKP+0bgObgCAmG17kiiz8jFKa9UGwV/itV5OcsXy01/5xD9R
-	 SCmMG0PsrkDY5JtKGPUDJTxPZzbQEt3u9v0FeV/U=
+	b=Ka10tAAtogJD7UuQumaFPm9XFz5hFe2JbZKOHVDWvtln567T2FNxZ4237Gaq9ldJX
+	 Ij4oy/ZdGNdiLped66cfHx4/yLWXPb05rmdg3nG5R+acwf3CvEkZRbBU/WRfuEXmew
+	 mcHnHQBQVLA7NVvxvFKOOCfm6GGZxqbf/KGI/0AQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B88FF805AB; Wed, 17 May 2023 13:17:12 +0200 (CEST)
+	id 000DCF80272; Wed, 17 May 2023 13:31:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08532F805AB;
-	Wed, 17 May 2023 13:17:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 568C6F8016D;
+	Wed, 17 May 2023 13:31:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F81AF8025A; Wed, 17 May 2023 13:17:02 +0200 (CEST)
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
- [IPv6:2a00:1450:4864:20::631])
+	id 3E890F80272; Wed, 17 May 2023 13:31:41 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2504BF8016D
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 13:31:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2504BF8016D
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=dhFlWVbr
+Received: from [IPV6:2001:b07:2ed:14ed:a962:cd4d:a84:1eab] (unknown
+ [IPv6:2001:b07:2ed:14ed:a962:cd4d:a84:1eab])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF19BF8053D
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 13:14:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF19BF8053D
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=hIdANJjD
-Received: by mail-ej1-x631.google.com with SMTP id
- a640c23a62f3a-965cc5170bdso94618266b.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 17 May 2023 04:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1684322085; x=1686914085;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=orOtZCSMdy0LOUQiF3GDNtFNR/PCT+bEnkKVYg6k6GY=;
-        b=hIdANJjDwebuLejzh1gdqt+267DcEVSuEXFFfZttIJwmQVKZZhGt5sC81zWStiXcRj
-         VkXD93TUaA6p5/xnMn+t1KsA2k9XWbfzDLmphIbNyQCMePhqmJwZ0QIctyh5cwm8q4wy
-         jpGo6s5Hd6p6eKRAO0ltyCLM8otD/mS7+HaUb4FFNTthYyMbM30oBOfYkgfq+MXolgz5
-         OrfMgBCLybw5ytMdkTg+It68qT+icGoIHEi0KynM6uNo5zrHoHcKNS540jcbGu4+XgBj
-         KS6QniH0sv0gGfn4aAtNBHezfiPEI5b6LpAL/hI7ksQoRcMW9Z2nBnGJkQPfI8i5ovSr
-         ydYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684322085; x=1686914085;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=orOtZCSMdy0LOUQiF3GDNtFNR/PCT+bEnkKVYg6k6GY=;
-        b=ADYQctc6rHvZtiYTA8rNZNPGekH3AgfdD7EEEt0V0j6IKBv01fy8CFS3PI2EaydaKj
-         8J9gibSuNaHZDy+FGCvIA2Q0g2RDkBOv4Sxtyk72Mzc3aN34v2hhpeG+1J/DnbPNxZvV
-         EHxZNUsGtQFmGB7WoE+6zF/aRUwsoxU729plGawPJ8/kRR4K7ykqMGnPtMoE/ui4JX5E
-         nsGq2YgB+tVR9Mr7/9N2dtB1UfKx5TvAMA6pb+GqakAlD4/oQR048k8XwmAGTfO4eIOL
-         uCuI1Yszy2Jh5mF0XUPPTh+5Lkkj7Ep1Gs1wjkFD1vh1tG7fWMWkjbgUVBflCv4rYoDo
-         xOLA==
-X-Gm-Message-State: AC+VfDxrXlaV99vYgm705Wt5i204Q/OST3/hvkeY1tyEh/pLxdaWRBYD
-	5Z1+B3CbbNWemniegwm8kpGYKw==
-X-Google-Smtp-Source: 
- ACHHUZ59InEiEFagluPob/jRCVm/OnOiFjG4/CRAJ+B+r/pybagONxCqHhmhRqrqagLoPDquLlcEYA==
-X-Received: by 2002:a17:907:7e86:b0:969:b2e2:4f3b with SMTP id
- qb6-20020a1709077e8600b00969b2e24f3bmr31186355ejc.51.1684322085181;
-        Wed, 17 May 2023 04:14:45 -0700 (PDT)
-Received: from krzk-bin.. ([2a02:810d:15c0:828:c9ff:4c84:dd21:568d])
-        by smtp.gmail.com with ESMTPSA id
- ml18-20020a170906cc1200b0094f124a37c4sm12326880ejb.18.2023.05.17.04.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 May 2023 04:14:44 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Oder Chiou <oder_chiou@realtek.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 07/12] ASoC: codecs: rt711: do not store status in state
- container
-Date: Wed, 17 May 2023 13:14:11 +0200
-Message-Id: <20230517111416.424420-7-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230517111416.424420-1-krzysztof.kozlowski@linaro.org>
-References: <20230517111416.424420-1-krzysztof.kozlowski@linaro.org>
+	(Authenticated sender: kholk11)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id E3754660563D;
+	Wed, 17 May 2023 12:31:33 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1684323094;
+	bh=L2mTlsU8VTc247vwq0FkEbhJOgBaKoelge6UNY1Jq28=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dhFlWVbrsUUAUCO8oux7TvXYQVVNG8o7CgMnfFb9gVXKBxIuqSvsNyjv5gSAUIl8d
+	 wg8O1k+IuiplGKJOsUHlIBMUot1ztw1WVetcQPD9PSAzRZWZTqflbOGbvwPdTeGTyK
+	 4520iQ01nOUn9j3LLQnt18vv5nioXx26f2eC1DZDBmATH2/6NZ8My2yRS3QMVwNlCm
+	 CBDdNSHIXOxAZBM6Vnx3C+p+7pvrQwhCHZXl1INby6jQntYFO2mrLPfWstzmvsz9mv
+	 jk0tYFxkkyzUwqewsjTM6ZiQl10RWVcd63+ssb84QDgT55fHFp+C5m6F4iyljaTLmo
+	 S8WNE20MwI0nA==
+Message-ID: <154497b3-f5c7-45d6-edd5-729642b80be5@collabora.com>
+Date: Wed, 17 May 2023 13:31:30 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QFH4IIPZDYX7RNLL6H56SWG5L6RLTEGR
-X-Message-ID-Hash: QFH4IIPZDYX7RNLL6H56SWG5L6RLTEGR
-X-MailFrom: krzysztof.kozlowski@linaro.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH 2/5] ASoC: mediatek: mt8188-mt6359: register hdmi/dp jack
+ pins
+To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
+ lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20230517111534.32630-1-trevor.wu@mediatek.com>
+ <20230517111534.32630-3-trevor.wu@mediatek.com>
+Content-Language: en-US
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230517111534.32630-3-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: XDGDBGVXRPOLOTTFQXDNKSJVVXKTXGA5
+X-Message-ID-Hash: XDGDBGVXRPOLOTTFQXDNKSJVVXKTXGA5
+X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -113,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QFH4IIPZDYX7RNLL6H56SWG5L6RLTEGR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XDGDBGVXRPOLOTTFQXDNKSJVVXKTXGA5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,50 +104,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Driver in its update status callback stores Soundwire device status in
-state container but it never uses it later.  Simplify the code a bit.
+Il 17/05/23 13:15, Trevor Wu ha scritto:
+> Some userspace applications need jack control events, so register hdmi
+> and dp jack pins to activate jack control events.
+> 
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> ---
+>   sound/soc/mediatek/mt8188/mt8188-mt6359.c | 27 +++++++++++++++++++----
+>   1 file changed, 23 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+> index 833bc362dad2..6c3f36e2fffd 100644
+> --- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+> +++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+> @@ -151,6 +151,20 @@ struct mt8188_mt6359_priv {
+>   	struct snd_soc_jack hdmi_jack;
+>   };
+>   
+> +static struct snd_soc_jack_pin mt8188_hdmi_jack_pins[] = {
+> +	{
+> +		.pin = "HDMI",
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/codecs/rt711-sdw.c | 5 +----
- sound/soc/codecs/rt711.h     | 1 -
- 2 files changed, 1 insertion(+), 5 deletions(-)
+"HDMI Jack" is more consistent with the snd_soc_jack_new_pins() call performed
+later.
 
-diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
-index 4fe68bcf2a7c..b8ed3c6236d8 100644
---- a/sound/soc/codecs/rt711-sdw.c
-+++ b/sound/soc/codecs/rt711-sdw.c
-@@ -319,9 +319,6 @@ static int rt711_update_status(struct sdw_slave *slave,
- {
- 	struct rt711_priv *rt711 = dev_get_drvdata(&slave->dev);
- 
--	/* Update the status */
--	rt711->status = status;
--
- 	if (status == SDW_SLAVE_UNATTACHED)
- 		rt711->hw_init = false;
- 
-@@ -329,7 +326,7 @@ static int rt711_update_status(struct sdw_slave *slave,
- 	 * Perform initialization only if slave status is present and
- 	 * hw_init flag is false
- 	 */
--	if (rt711->hw_init || rt711->status != SDW_SLAVE_ATTACHED)
-+	if (rt711->hw_init || status != SDW_SLAVE_ATTACHED)
- 		return 0;
- 
- 	/* perform I/O transfers required for Slave initialization */
-diff --git a/sound/soc/codecs/rt711.h b/sound/soc/codecs/rt711.h
-index b31351f11df9..491e357191f9 100644
---- a/sound/soc/codecs/rt711.h
-+++ b/sound/soc/codecs/rt711.h
-@@ -15,7 +15,6 @@ struct  rt711_priv {
- 	struct regmap *sdw_regmap;
- 	struct snd_soc_component *component;
- 	struct sdw_slave *slave;
--	enum sdw_slave_status status;
- 	struct sdw_bus_params params;
- 	bool hw_init;
- 	bool first_hw_init;
--- 
-2.34.1
+> +		.mask = SND_JACK_LINEOUT,
+> +	},
+> +};
+> +
+> +static struct snd_soc_jack_pin mt8188_dp_jack_pins[] = {
+> +	{
+> +		.pin = "DP",
+
+Same here: "DP Jack"
+
+> +		.mask = SND_JACK_LINEOUT,
+> +	},
+> +};
+> +
+
+Regards,
+Angelo
 
