@@ -4,56 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 680BEC77B7A
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 16:49:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 025DEC77B7D
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 May 2023 16:50:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75B851F9;
-	Wed, 17 May 2023 18:48:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75B851F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11CF61F7;
+	Wed, 17 May 2023 18:50:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11CF61F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684342170;
-	bh=3mw4TOHRsHNVhB+SpDswWQLglIolQXbk0/2M/kawfdc=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=H6qqCUVOAG/YomvspBdX2RXSIUzePyLT58IWigQj0vYiTkGZ94FrtlbEt0zs9y1vJ
-	 QkUzNhgD1I62TQx7wV8VPTL8hiNrfulpMA///xu0dTvCkXvGiv1ZoJcR/c+h0ykW1o
-	 jv3vyO69K0zkGtsIZDgZPvxVYWtJKmGcWAh7wvgQ=
+	s=default; t=1684342256;
+	bh=KS6uI5RGH1xHM6b9lrfHL7GS8cXP0VR3O3NP1UIgCzg=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=rdm3Cw0QI36/dobhKVeDDR8UCDBpIh7ra2dFCYX7VKUzq0x1ajxJWn/ZJQTWHq785
+	 kiEy0FWM4/JdY0Njaxmd+T/mpKlEr/p2AJCBEI5+gojEYlz+CMbR2srWTtL56Ile7i
+	 7Bm+crTzIWwhmO4Uz2HUPehBJgtznX0nGipxJPcI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2387AF8016A; Wed, 17 May 2023 18:48:12 +0200 (CEST)
+	id A8153F80549; Wed, 17 May 2023 18:50:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7B87F80272;
-	Wed, 17 May 2023 18:48:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7135F802E8;
+	Wed, 17 May 2023 18:50:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DB6A1F80272; Wed, 17 May 2023 18:48:07 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id D153FF802E8; Wed, 17 May 2023 18:49:59 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AD666F8016A
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 18:48:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD666F8016A
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 9382723E25;
-	Wed, 17 May 2023 12:48:00 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pzKJk-JiO-00; Wed, 17 May 2023 18:48:00 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: [PATCH] ALSA: emu10k1: remove runtime 64-bit divisions
-Date: Wed, 17 May 2023 18:48:00 +0200
-Message-Id: <20230517164800.3650699-1-oswald.buddenhagen@gmx.de>
-X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+	by alsa1.perex.cz (Postfix) with ESMTPS id 98223F8016D
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2023 18:49:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98223F8016D
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=B/ksu3tT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1684342198; x=1715878198;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=KS6uI5RGH1xHM6b9lrfHL7GS8cXP0VR3O3NP1UIgCzg=;
+  b=B/ksu3tTMwohDTVaVdWVIatwC6jQebuM7YoMdnbpqRATvUDlgXXKS5xZ
+   XzlF//2XF6mE1bN6F/8+wsT7bBdFZCKzB5nh9s21uKFYGc+pTkn8fNdZM
+   z7Yq0Gz8rhceoqqU6fuyB5DGbK3eIduUG/G2AaE7HxMk+/N6SkQf9LZKU
+   ZglV+a5YhmACXoo7P4AwC2FgVVz+te1p2VNtiTBXt4s5f1W+JllmBi+3n
+   6xHpUaQmOyEnmwtV7+/lKWg4pDqG7OuVjHBHbA48MS24tyuxpjoCVFWMe
+   sflpbMvp5CgnxSbeRDUL43iQ0KkM8rkiBwnaXW+ViwkRGF4V+2Q3voB0T
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="350649322"
+X-IronPort-AV: E=Sophos;i="5.99,282,1677571200";
+   d="scan'208";a="350649322"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 May 2023 09:48:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="734764313"
+X-IronPort-AV: E=Sophos;i="5.99,282,1677571200";
+   d="scan'208";a="734764313"
+Received: from pgopdahl-mobl1.amr.corp.intel.com (HELO [10.209.16.196])
+ ([10.209.16.196])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 May 2023 09:48:47 -0700
+Message-ID: <7638419f-7df1-a31a-e68e-1c315f57cabf@linux.intel.com>
+Date: Wed, 17 May 2023 11:45:09 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: J3HQL7GVKVYLURLQRU7TVGGNWX63VZ6H
-X-Message-ID-Hash: J3HQL7GVKVYLURLQRU7TVGGNWX63VZ6H
-X-MailFrom: ossi@kde.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.10.0
+Subject: Re: [PATCH] soundwire: qcom: add proper error paths in
+ qcom_swrm_startup()
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20230517163736.997553-1-krzysztof.kozlowski@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230517163736.997553-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: K7EHFSL3UTOHNK6BHI6SIHCR3HDTJDTM
+X-Message-ID-Hash: K7EHFSL3UTOHNK6BHI6SIHCR3HDTJDTM
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -65,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J3HQL7GVKVYLURLQRU7TVGGNWX63VZ6H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K7EHFSL3UTOHNK6BHI6SIHCR3HDTJDTM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -74,90 +107,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-32-bit platforms don't like these. As we're actually dealing with
-constants, factor out the calculations and pass them in as additional
-arguments. To keep the call sites clean, wrap the actual functions in
-macros which generate the arguments.
 
-Fixes: bb5ceb43b7bf ("ALSA: emu10k1: fix non-zero mixer control defaults in highres mode")
-Fixes: 1298bc978afb ("ALSA: emu10k1: enable bit-exact playback, part 1: DSP attenuation")
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 
----
+On 5/17/23 11:37, Krzysztof Kozlowski wrote:
+> Reverse actions in qcom_swrm_startup() error paths to avoid leaking
+> stream memory and keeping runtime PM unbalanced.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
----
- sound/pci/emu10k1/emufx.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index f64b2b4eb348..e9855d37fa5c 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -1144,50 +1144,56 @@ static int snd_emu10k1_ipcm_peek(struct snd_emu10k1 *emu,
- #define SND_EMU10K1_PLAYBACK_CHANNELS	8
- #define SND_EMU10K1_CAPTURE_CHANNELS	4
- 
-+#define HR_VAL(v) ((v) * 0x80000000LL / 100 - 1)
-+
- static void
--snd_emu10k1_init_mono_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
--			       const char *name, int gpr, int defval)
-+snd_emu10k1_init_mono_control2(struct snd_emu10k1_fx8010_control_gpr *ctl,
-+			       const char *name, int gpr, int defval, int defval_hr)
- {
- 	ctl->id.iface = (__force int)SNDRV_CTL_ELEM_IFACE_MIXER;
- 	strcpy(ctl->id.name, name);
- 	ctl->vcount = ctl->count = 1;
- 	if (high_res_gpr_volume) {
- 		ctl->min = -1;
- 		ctl->max = 0x7fffffff;
- 		ctl->tlv = snd_emu10k1_db_linear;
- 		ctl->translation = EMU10K1_GPR_TRANSLATION_NEGATE;
--		defval = defval * 0x80000000LL / 100 - 1;
-+		defval = defval_hr;
- 	} else {
- 		ctl->min = 0;
- 		ctl->max = 100;
- 		ctl->tlv = snd_emu10k1_db_scale1;
- 		ctl->translation = EMU10K1_GPR_TRANSLATION_NEG_TABLE100;
- 	}
- 	ctl->gpr[0] = gpr + 0; ctl->value[0] = defval;
- }
-+#define snd_emu10k1_init_mono_control(ctl, name, gpr, defval) \
-+	snd_emu10k1_init_mono_control2(ctl, name, gpr, defval, HR_VAL(defval))
- 
- static void
--snd_emu10k1_init_stereo_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
--				 const char *name, int gpr, int defval)
-+snd_emu10k1_init_stereo_control2(struct snd_emu10k1_fx8010_control_gpr *ctl,
-+				 const char *name, int gpr, int defval, int defval_hr)
- {
- 	ctl->id.iface = (__force int)SNDRV_CTL_ELEM_IFACE_MIXER;
- 	strcpy(ctl->id.name, name);
- 	ctl->vcount = ctl->count = 2;
- 	if (high_res_gpr_volume) {
- 		ctl->min = -1;
- 		ctl->max = 0x7fffffff;
- 		ctl->tlv = snd_emu10k1_db_linear;
- 		ctl->translation = EMU10K1_GPR_TRANSLATION_NEGATE;
--		defval = defval * 0x80000000LL / 100 - 1;
-+		defval = defval_hr;
- 	} else {
- 		ctl->min = 0;
- 		ctl->max = 100;
- 		ctl->tlv = snd_emu10k1_db_scale1;
- 		ctl->translation = EMU10K1_GPR_TRANSLATION_NEG_TABLE100;
- 	}
- 	ctl->gpr[0] = gpr + 0; ctl->value[0] = defval;
- 	ctl->gpr[1] = gpr + 1; ctl->value[1] = defval;
- }
-+#define snd_emu10k1_init_stereo_control(ctl, name, gpr, defval) \
-+	snd_emu10k1_init_stereo_control2(ctl, name, gpr, defval, HR_VAL(defval))
- 
- static void
- snd_emu10k1_init_mono_onoff_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
--- 
-2.40.0.152.g15d061e6df
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
