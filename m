@@ -4,97 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE94BC7EE22
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 11:05:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB2FCC77B7D
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 11:09:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4BC11FC;
-	Thu, 18 May 2023 13:05:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4BC11FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDC58209;
+	Thu, 18 May 2023 13:08:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDC58209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684407953;
-	bh=U5jgYxcB0iZpZDBDPKlyZ1viAYoyB9RL4QgkmvZHiRk=;
+	s=default; t=1684408170;
+	bh=Hj+e/Q0H4+NIWDO6gUTs6FMEHjkD5wW+0Q40dOdA+x4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=b7P5UnOGrh5lLUzjiEcjZn82eWMp1svz9AXgEw5fiTHVGAid4m9aTeCBB/jXVZpns
-	 fLNWn1sTdjolHPipA75EmaFtTdywUNL/g4JglhZv/F7b5E3quL4gqoM5ONrR7pBQB4
-	 tF3N/uJavJrIXD/hMBW+2TvbdPsDhqO5l18qyEMg=
+	b=QKOUc5D9Imiz9lUQ1LAzlTVN5ssbIFOrIlqSSx/5XTeBiduM9jffcU7hGnErTTnSX
+	 y3PlS8F7Cp7vBnNW0qAAv3Iv533H7yLaq8ljxwsfWq9yuLVdHqzHa7d9v0XafeuqCd
+	 RCT8iGepHSASmCPApM6c1NT8+r96/fJCPcmv1q8I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 55E57F80542; Thu, 18 May 2023 13:04:35 +0200 (CEST)
+	id 8BB52F80548; Thu, 18 May 2023 13:08:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CF32F80431;
-	Thu, 18 May 2023 13:04:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC745F80087;
+	Thu, 18 May 2023 13:08:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DFEAAF8025A; Thu, 18 May 2023 13:04:31 +0200 (CEST)
+	id BBADCF8025A; Thu, 18 May 2023 13:08:10 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 75CB3F8016A
-	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 13:04:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75CB3F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id A772BF8016A
+	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 13:08:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A772BF8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=GVn2gqeB;
+ header.s=susede2_rsa header.b=i99dCtaC;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=r9eFqMmi
+ header.s=susede2_ed25519 header.b=6JgNMv5U
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6F6471F854;
-	Thu, 18 May 2023 11:04:23 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3E8C61FD73;
+	Thu, 18 May 2023 11:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684407863;
+	t=1684408083;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AmUYU+LP3RR+gv5Br3rYSPCDpR28+Jmdp1jSSOEoBz8=;
-	b=GVn2gqeBhhj4eLfbRRCOg0pxCIvh5f4QvzutqQQQXqzCk6cFqyBQalDsjIThs1lufWuM0E
-	nlunxBpMjGyrFqFWNqVb6fi1jxriDUyM/mKp03R6HHmaHiPbui1mDKM8DJZZEl0Vxn8RT4
-	qoePv1y7lypdE1yZSl4Kjk0gRfgYs+o=
+	bh=HK6GqE6Pf80s9CBBhqtMZT8GbZ3Uqar9PE8SIvIkfO4=;
+	b=i99dCtaC8sLVH+rX7ZDZiW2v31TN2x/h11LUhrpgEtuuqD7bq9SBYmCvWj1DB/N2GMhA9D
+	eH5pRjfZ0HjBoJemhbAX4DUjbVDff2FcyYQnIjP3pak84JUrnHcuxcJFsF807AdJP2iWrp
+	Dw4Lnn4hu/XSfnf19Suc5vxXKgTp05k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684407863;
+	s=susede2_ed25519; t=1684408083;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AmUYU+LP3RR+gv5Br3rYSPCDpR28+Jmdp1jSSOEoBz8=;
-	b=r9eFqMmiAp1bB69AuYx7QOTouKf9tJe9kXH1OhBuv6yWwxoOZUK1RsQFo/PGjOPbV9szGI
-	n6ueZQZkbjc2X+Aw==
+	bh=HK6GqE6Pf80s9CBBhqtMZT8GbZ3Uqar9PE8SIvIkfO4=;
+	b=6JgNMv5Uckg5ayZJAfqugk7/zFa20yFoFGyRoL3VH7T5qQkhwQ2mBlY/EmpKkpVZW4E6SW
+	rlNao4ZiGk8ZnCAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3EBD11390B;
-	Thu, 18 May 2023 11:04:23 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1EA0A138F5;
+	Thu, 18 May 2023 11:08:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id GLYzDTcGZmRBAgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 18 May 2023 11:04:23 +0000
-Date: Thu, 18 May 2023 13:04:22 +0200
-Message-ID: <87mt21zyrt.wl-tiwai@suse.de>
+	id EocDBhMHZmT6AwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 18 May 2023 11:08:03 +0000
+Date: Thu, 18 May 2023 13:08:02 +0200
+Message-ID: <87lehlzylp.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 Cc: alsa-devel@alsa-project.org,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v2 9/9] ALSA: emu10k1: fix PCM playback buffer size
- constraints
-In-Reply-To: <ZGXv3O1aCuDTrVz3@ugly>
-References: <20230518092224.3696958-1-oswald.buddenhagen@gmx.de>
-	<20230518092224.3696958-9-oswald.buddenhagen@gmx.de>
-	<ZGXv3O1aCuDTrVz3@ugly>
+Subject: Re: [PATCH 1/4] ALSA: emu10k1: simplify interrupt handler, part 1
+In-Reply-To: <20230518093047.3697887-1-oswald.buddenhagen@gmx.de>
+References: <20230518093047.3697887-1-oswald.buddenhagen@gmx.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: HMQE2SS2EYVJHLVWEP7MTW4DNLSZ5QUI
-X-Message-ID-Hash: HMQE2SS2EYVJHLVWEP7MTW4DNLSZ5QUI
+Message-ID-Hash: GHHZPAC54ROCJQNRJMVP52LJFADH4Q22
+X-Message-ID-Hash: GHHZPAC54ROCJQNRJMVP52LJFADH4Q22
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HMQE2SS2EYVJHLVWEP7MTW4DNLSZ5QUI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GHHZPAC54ROCJQNRJMVP52LJFADH4Q22/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,16 +113,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 18 May 2023 11:29:00 +0200,
+On Thu, 18 May 2023 11:30:44 +0200,
 Oswald Buddenhagen wrote:
 > 
-> sorry for the "flood", i forgot to adjust the declaration of the
-> series in my tool. you can ignore the other patches; they didn't
-> change from what you already applied.
+> IPR_CHANNELNUMBERMASK cannot be non-zero when IPR_CHANNELLOOP is unset,
+> so join marking them as handled.
+> This logically reverts part of commit f453e20d8a0 ("ALSA update
+> 0.9.3a"), which made the inverse change with no explanation.
+> 
+> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 
-Don't worry, now I applied this one.
+Applied all four patches now.  Thanks.
 
-
-Thanks!
 
 Takashi
