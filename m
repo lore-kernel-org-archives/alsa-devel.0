@@ -4,104 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D543C77B7D
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 07:32:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81EE6C7EE23
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 07:37:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5381D847;
-	Thu, 18 May 2023 09:31:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5381D847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C973207;
+	Thu, 18 May 2023 09:37:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C973207
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684395168;
-	bh=xYxu2C2nbnCatdsx3U2EwKp8dc9IRWJAjK8i3LnwSfk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1684395472;
+	bh=aqtetW2bil/iQDeUQEmtH4Atb7R4jzFfT5IiCdg1mqk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=i8QSgd2ApnO40SJzMAyeJIQ6P4Eg5VIuUOVOKxKiDCxyj5jDzG4aPpFnJnvlgvJyO
-	 6/B5elmP+KhXU6hzlOEO4E4pdg9Oqy7yRWfAb6Y7pLG5V1lEzNe7cGasy2CWqg9Vpx
-	 3tm/e2D6Hmmc7c4AyyvbaGrpvqCOOYPFtD+6lUec=
+	b=WeV6RDd2ckBNUBtyKC73tIn+y2f69Jm7+w3/5DUybZxCCpqhbJHddL3WHV9s63YvS
+	 kWMSxoETdVHex3QfF2cFbljkugx5iihKf74gTIYfqRMwsawH8eJ4HcaJg6XXgiMP+U
+	 qg1fofclMR8yaCcbpJKTUbmg+Klr9SGshgUHygY4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB371F8060A; Thu, 18 May 2023 09:28:53 +0200 (CEST)
+	id 5ECE0F8016D; Thu, 18 May 2023 09:36:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1337F80601;
-	Thu, 18 May 2023 09:28:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0EF2F80542;
+	Thu, 18 May 2023 09:36:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DDB9F805B3; Thu, 18 May 2023 09:28:33 +0200 (CEST)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
- [IPv6:2a00:1450:4864:20::62c])
+	id E992DF80272; Thu, 18 May 2023 09:36:35 +0200 (CEST)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
+ [IPv6:2a00:1450:4864:20::636])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C0140F80551
-	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 09:28:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0140F80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id AE31DF8016D
+	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 09:36:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE31DF8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=SY4zlhD/
-Received: by mail-ej1-x62c.google.com with SMTP id
- a640c23a62f3a-94a342f7c4cso318871666b.0
+ header.s=google header.b=QzEJZhz7
+Received: by mail-ej1-x636.google.com with SMTP id
+ a640c23a62f3a-94a342f7c4cso320190566b.0
         for <alsa-devel@alsa-project.org>;
- Thu, 18 May 2023 00:28:11 -0700 (PDT)
+ Thu, 18 May 2023 00:36:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1684394890; x=1686986890;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XVXk2J0zDtxw+0Qou5QUMtzlXSrHNQ48trwuAxglr6Q=;
-        b=SY4zlhD/Ae3NqKWMgCYMmnInKUuz8aaW8w1LrZj140mUYU5ssSsPDI2EaABgQV9yap
-         Ernl5l+MQeuF813vs5dgtI3WN3/XEiNudVVFA0hkaEZ04MQ1bZCxFSWxvUdn6kImX9+V
-         IgVBEGaTPpfiGrTgAqGxD32MVO3InaXImAWE2u9wbz7HoXqOsm+0equhQfc5EpKrAtEO
-         stmHcBuSxYTR4GnFSv0T6INTHLSjpLcWbXQOs/KvYprUoPnIioiimgAKeyhBOhy+brFc
-         tR0btKWih37xTmEtBAEVCjy5nGMy4zD622zLbnzNYpyK4K6T85rxfEQtxaaLr7X45K6F
-         9nGw==
+        d=linaro.org; s=google; t=1684395388; x=1686987388;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ste+hA3hVZg/wcPWyWKj67qIkpodPoS4fVaLQiPlcds=;
+        b=QzEJZhz79HlFdtViq9eqLPahBfKlyYWEPsxmRT26/MAU5o3QQIjH8Rq1P+lhoJtFTo
+         K7aGW6ybsrTfEAlzUo7FNjomb8FGMjKQTQIpClTc4kN0zaXiQqqPOCI2trT/LieP5sdm
+         mX/nJel5naiIN/6j4qOqyOgxkONRJ1RmkgvxAUIJ8CQBc48TKaxztvuWmoKHDxZ0cGY1
+         UB10jhv4eOMwfPdwhfwR+6z6SRyI8qNHBzHQYJUvvlkhkegcjP6rlK2HLglrdc9QEZgr
+         h5+66G87iwjuqGnsiH73SRiEFVg6Dtgp2m3+PY4hKiOvWfzdF5Tni6RKCBc2fBYrxeh8
+         VGsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684394890; x=1686986890;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XVXk2J0zDtxw+0Qou5QUMtzlXSrHNQ48trwuAxglr6Q=;
-        b=fQGvGhX+wYEXrua+9Bux548J4iwcwFE1oyGdbRDP+oK4+5LdPPMySP0vz9stotl9Yn
-         eoRfRljRyaId2q1KUstYjhugjyadPlokarjJL4V2h50x2x7NFjvId6I084sXwIB6WOKO
-         +jWXlBWr/RD62Tyr+8cdxyWlkIII3h/ETBDL0h+QA7hfIIubBMjDextVRB2bpP4qH1YQ
-         Rll7yq4xeFIBFTHB8Ks8xe9B1PyJuOCwIICey+AWnQsmIu9/C3BeJbxYZ33cF2Xcu0nv
-         7u6N0STpVZnaM5lu+VCN5hZIL989q6ovh6PNwghcgcIZveAExo68xwLZwqOMDw8xqQDI
-         Smrg==
-X-Gm-Message-State: AC+VfDxnYf8V48hmml0xyQkkIUC5JqpVVhFWAoFUC6JIQWvJj+SmIFxL
-	ayEdGZ9vPWdYhIYVru1iOfR0vQ==
+        d=1e100.net; s=20221208; t=1684395388; x=1686987388;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ste+hA3hVZg/wcPWyWKj67qIkpodPoS4fVaLQiPlcds=;
+        b=YyGa0aoj4VeEb0DxawDZpmPZySniyO6WvtMILZX2cd94HNMofGYA5WWh5qx1fNpn6S
+         7nsqV0EsXnOIOzYQjRZH9Swnab5wiWoGs9/Nx7HuwqWnJVCrhhMNqebpkBrvLShIJ5dy
+         /0OHP99RX5UJzqaUp6R9NrF+mcfqGqXDc5FxK2Ja1rlou+ju4KwbjGcmqdgKIBu0QpKx
+         Z7y1i6yp1KGKwVaD//MmAmMhoMiPMw4zzbW9OK7ZXbn6PvKSNSaw1nW4wT1o1GK4xztG
+         RBLAhNqBn+Y0LVll+KXMCkpHVgjTSB65393DDXv4sn240/GW6ebMDp/XTtHaVzC3r5zL
+         Srzg==
+X-Gm-Message-State: AC+VfDzxTHLr8s5VY4kswSAY9fJyzCsEtHvOB75qUab9PT3Cnh52xknW
+	4uZttx6yaIksGK1tHkat/4zQGA==
 X-Google-Smtp-Source: 
- ACHHUZ641f7zdyr1VGHoaOYeHSFCkkKsFuebd6A4/URfBSRepYIOCVjPIppyj2S59eXBj/0kOl+6sw==
-X-Received: by 2002:a17:907:80e:b0:94e:9a73:1637 with SMTP id
- wv14-20020a170907080e00b0094e9a731637mr36831708ejb.75.1684394889884;
-        Thu, 18 May 2023 00:28:09 -0700 (PDT)
-Received: from krzk-bin.. ([2a02:810d:15c0:828:a2b:c408:5834:f48e])
+ ACHHUZ7Vh4OMaRUBvmALYQnHYbI1fQ7eSxuoQNeQi0X2/Sih20ahC1IIfU/tohj31CS190ZY2Niurg==
+X-Received: by 2002:a17:906:ef0d:b0:94e:e9c1:1932 with SMTP id
+ f13-20020a170906ef0d00b0094ee9c11932mr42996168ejs.43.1684395388608;
+        Thu, 18 May 2023 00:36:28 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:a2b:c408:5834:f48e?
+ ([2a02:810d:15c0:828:a2b:c408:5834:f48e])
         by smtp.gmail.com with ESMTPSA id
- g17-20020a17090669d100b00965aee5be9asm594241ejs.170.2023.05.18.00.28.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 May 2023 00:28:09 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Oder Chiou <oder_chiou@realtek.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RESEND PATCH 11/12] ASoC: codecs: rt715: do not store status in
- state container
-Date: Thu, 18 May 2023 09:27:52 +0200
-Message-Id: <20230518072753.7361-12-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230518072753.7361-1-krzysztof.kozlowski@linaro.org>
-References: <20230518072753.7361-1-krzysztof.kozlowski@linaro.org>
+ l7-20020a170906938700b00947ed087a2csm593598ejx.154.2023.05.18.00.36.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 May 2023 00:36:28 -0700 (PDT)
+Message-ID: <d1a04735-d80d-d1d8-01fe-d6772d50b43b@linaro.org>
+Date: Thu, 18 May 2023 09:36:26 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 5/5] ASoC: dt-bindings: mediatek,mt8188-mt6359: update
+ properties
+Content-Language: en-US
+To: =?UTF-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>, "tiwai@suse.com"
+ <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "perex@perex.cz" <perex@perex.cz>,
+ "angelogioacchino.delregno@collabora.com"
+ <angelogioacchino.delregno@collabora.com>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <20230517111534.32630-1-trevor.wu@mediatek.com>
+ <20230517111534.32630-6-trevor.wu@mediatek.com>
+ <9359c081-cd36-3e5b-a113-7600b4ba435e@linaro.org>
+ <d207670232288181171473d47536173a7aa47c75.camel@mediatek.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <d207670232288181171473d47536173a7aa47c75.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UJBDATE7L4SBU5RCU6S7WPLRLFV6RAMU
-X-Message-ID-Hash: UJBDATE7L4SBU5RCU6S7WPLRLFV6RAMU
+Message-ID-Hash: SIBSY3WE2I37DGGG5XZW6GKW4HYOEABT
+X-Message-ID-Hash: SIBSY3WE2I37DGGG5XZW6GKW4HYOEABT
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -114,7 +128,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UJBDATE7L4SBU5RCU6S7WPLRLFV6RAMU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SIBSY3WE2I37DGGG5XZW6GKW4HYOEABT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,47 +137,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Driver in its update status callback stores Soundwire device status in
-state container but it never uses it later.  Simplify the code a bit.
+On 18/05/2023 04:37, Trevor Wu (吳文良) wrote:
+> On Wed, 2023-05-17 at 16:43 +0200, Krzysztof Kozlowski wrote:
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>
+>>
+>> On 17/05/2023 13:15, Trevor Wu wrote:
+>>> Add compatible string "mediatek,mt8188-nau8825" to support new
+>>> board
+>>> with nau8825 codec.
+>>
+>> Subject: everything can be update of properties. Rephrase to focus on
+>> actual change, e.g. on adding NAU8825.
+>>
+> OK. I will rename the topic in v2.
+> 
+>>>
+>>> ADDA_BE is used to connect to mt6359. For the machine, it must be
+>>> fixed to the same codec and configured on the machine driver.
+>>> Remove
+>>> ADDA_BE from items of link-name.
+>>
+>> I don't understand the justification for this. If this is not a
+>> correct
+>> link name for MT6359 setup, then it should be removed in its own
+>> patch.
+>> If this is removed because of adding NAU8825, then why does it affect
+>> MT6359?
+>>
+> 
+> In the patch series, [PATCH 1/5] divides ADDA_BE into UL_SRC_BE and
+> DL_SRC_BE. I was going to replace the link name, but I found it
+> shouldn't be configured for the machine, because mt6359 is the only
+> codec for ADDA_BE and it's hardcoded in the machine driver. As a
+> result, I decided to remove it.
+> 
+> I will separate it from the patch, and put the new patch after [PATCH
+> 1/5].
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/rt715-sdw.c | 4 +---
- sound/soc/codecs/rt715.h     | 1 -
- 2 files changed, 1 insertion(+), 4 deletions(-)
+Yes, please.
 
-diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
-index 5ffe9a00dfd8..6db87442b783 100644
---- a/sound/soc/codecs/rt715-sdw.c
-+++ b/sound/soc/codecs/rt715-sdw.c
-@@ -417,13 +417,11 @@ static int rt715_update_status(struct sdw_slave *slave,
- {
- 	struct rt715_priv *rt715 = dev_get_drvdata(&slave->dev);
- 
--	/* Update the status */
--	rt715->status = status;
- 	/*
- 	 * Perform initialization only if slave status is present and
- 	 * hw_init flag is false
- 	 */
--	if (rt715->hw_init || rt715->status != SDW_SLAVE_ATTACHED)
-+	if (rt715->hw_init || status != SDW_SLAVE_ATTACHED)
- 		return 0;
- 
- 	/* perform I/O transfers required for Slave initialization */
-diff --git a/sound/soc/codecs/rt715.h b/sound/soc/codecs/rt715.h
-index 17a8d041c1c3..12a0ae656d09 100644
---- a/sound/soc/codecs/rt715.h
-+++ b/sound/soc/codecs/rt715.h
-@@ -18,7 +18,6 @@ struct rt715_priv {
- 	int dbg_nid;
- 	int dbg_vid;
- 	int dbg_payload;
--	enum sdw_slave_status status;
- 	struct sdw_bus_params params;
- 	bool hw_init;
- 	bool first_hw_init;
--- 
-2.34.1
+Best regards,
+Krzysztof
 
