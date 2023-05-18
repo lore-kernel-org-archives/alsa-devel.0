@@ -4,55 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA2CFC77B7D
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 09:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC19CC7EE2C
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 09:32:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D300201;
-	Thu, 18 May 2023 11:31:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D300201
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4C63208;
+	Thu, 18 May 2023 11:31:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4C63208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684402333;
-	bh=71FQ8uMWqXwR4whOfPL5ACsTxATZROJwqc5lo7Fn7Ng=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=tkieD6fxigKQLxlMEU3t/INkxKshpkbOIfcZwwwP3H25c3VdRYAVNoypKiGMirVDA
-	 08ir0Fxv1Sswe4SzHaPyO8lQw98dtx+eaQ2Ef8q2bxcakI4vbvE/9ne6YkTS7l3icy
-	 QfjukNj0158OVfgDYrUdw3EBp0FeX/noEf0p15ik=
+	s=default; t=1684402355;
+	bh=AS1mSY/a4gpcWTr/6QIZmiODhEwWUaWnn6fAX4mE86E=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=luxqPe4bf+4zSvUP69+Dlf1KReHugWLKzRcSSVqFc8SyNBEhJzmbALAqwu2G/oJca
+	 E+pDr/RaprjYJBagu5HfeXgSmBq+2jXrEihi+eCaJgjoO0P43vtjHYa7ZKS4OOQ6/F
+	 EA535Hdizow4w4UTUG07G9bZo9xG/QGVMNEoPDJo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79965F80549; Thu, 18 May 2023 11:30:55 +0200 (CEST)
+	id 69296F80553; Thu, 18 May 2023 11:30:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B55D5F8053D;
-	Thu, 18 May 2023 11:30:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4E18F8055B;
+	Thu, 18 May 2023 11:30:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F296F8053D; Thu, 18 May 2023 11:30:51 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	id 8FE55F80431; Thu, 18 May 2023 11:30:52 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 91C72F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id A3FEDF80272
 	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 11:30:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91C72F80087
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3FEDF80272
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 74895241CA;
+	by bluemchen.kde.org (Postfix) with ESMTP id 6F8C223E25;
 	Thu, 18 May 2023 05:30:47 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pzZyB-Vzj-00; Thu, 18 May 2023 11:30:47 +0200
+	id 1pzZyB-VzX-00; Thu, 18 May 2023 11:30:47 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 3/4] ALSA: emu10k1: simplify interrupt handler, part 3
-Date: Thu, 18 May 2023 11:30:46 +0200
-Message-Id: <20230518093047.3697887-3-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 1/4] ALSA: emu10k1: simplify interrupt handler, part 1
+Date: Thu, 18 May 2023 11:30:44 +0200
+Message-Id: <20230518093047.3697887-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230518093047.3697887-1-oswald.buddenhagen@gmx.de>
-References: <20230518093047.3697887-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LF7XUCI3UM7Y2QSV7FT63HCP6IVY37CA
-X-Message-ID-Hash: LF7XUCI3UM7Y2QSV7FT63HCP6IVY37CA
+Message-ID-Hash: 6C4XK6LFYHJGLU7KGHQFFNODDTD6CGEX
+X-Message-ID-Hash: 6C4XK6LFYHJGLU7KGHQFFNODDTD6CGEX
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -65,7 +63,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LF7XUCI3UM7Y2QSV7FT63HCP6IVY37CA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6C4XK6LFYHJGLU7KGHQFFNODDTD6CGEX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -74,49 +72,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Handle the "timeout" (actually the retry counter) such that it's more
-obvious and causes less cost in the normal case.
+IPR_CHANNELNUMBERMASK cannot be non-zero when IPR_CHANNELLOOP is unset,
+so join marking them as handled.
+This logically reverts part of commit f453e20d8a0 ("ALSA update
+0.9.3a"), which made the inverse change with no explanation.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/irq.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/pci/emu10k1/irq.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/pci/emu10k1/irq.c b/sound/pci/emu10k1/irq.c
-index 312511300053..7dc803aaa850 100644
+index dfb44e5e69a7..0cb89bd8c16b 100644
 --- a/sound/pci/emu10k1/irq.c
 +++ b/sound/pci/emu10k1/irq.c
-@@ -22,15 +22,18 @@ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id)
- 	int handled = 0;
- 	int timeout = 0;
- 
--	while (((status = inl(emu->port + IPR)) != 0) && (timeout < 1000)) {
--		timeout++;
--		orig_status = status;
-+	while ((status = inl(emu->port + IPR)) != 0) {
- 		handled = 1;
- 		if ((status & 0xffffffff) == 0xffffffff) {
- 			dev_info(emu->card->dev,
- 				 "Suspected sound card removal\n");
- 			break;
+@@ -79,9 +79,8 @@ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id)
+ 				val >>= 1;
+ 				pvoice++;
+ 			}
+-			status &= ~IPR_CHANNELLOOP;
++			status &= ~(IPR_CHANNELLOOP | IPR_CHANNELNUMBERMASK);
  		}
-+		if (++timeout == 1000) {
-+			dev_info(emu->card->dev, "emu10k1 irq routine failure\n");
-+			break;
-+		}
-+		orig_status = status;
- 		if (status & IPR_PCIERROR) {
- 			dev_err(emu->card->dev, "interrupt: PCI error\n");
- 			snd_emu10k1_intr_disable(emu, INTE_PCIERRORENABLE);
-@@ -151,8 +154,6 @@ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id)
- 		}
- 		outl(orig_status, emu->port + IPR); /* ack all */
- 	}
--	if (timeout == 1000)
--		dev_info(emu->card->dev, "emu10k1 irq routine failure\n");
- 
- 	return IRQ_RETVAL(handled);
- }
+-		status &= ~IPR_CHANNELNUMBERMASK;
+ 		if (status & (IPR_ADCBUFFULL|IPR_ADCBUFHALFFULL)) {
+ 			if (emu->capture_interrupt)
+ 				emu->capture_interrupt(emu, status);
 -- 
 2.40.0.152.g15d061e6df
 
