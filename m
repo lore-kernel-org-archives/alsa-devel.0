@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 731A9C7EE23
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 14:11:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A19BFC77B7A
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 14:11:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 276F66C1;
-	Thu, 18 May 2023 16:10:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 276F66C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA5CC201;
+	Thu, 18 May 2023 16:10:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA5CC201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684419099;
-	bh=xEhHDleqFO5sfvGT61hehxPPS+iZ6hhUf6oqBwaekIo=;
+	s=default; t=1684419108;
+	bh=XChIAK5QBHytsi+G5ppn3Rn1hmAovJliB0T4FrrbfCU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jgc3kXDkKVIz9C4JuXJfFHvBR5c+NCZqCVheAY0mEUd3l6VeCt6JpOv5HEpwCSGqS
-	 zDwMWtFxOGR6Ip8CHWZ/+HW5QKnsbABFv1l6XX53hzpje8sO0geOgjIZZNT+BVC0wR
-	 GPAFTprgR6cRk4WLKf+6+Dj1kmCAf8+cxN+94ENw=
+	b=QxskHZlyrg3qk7MBcd6A/XZx2TiFMPzqo95JGjmVM/2Bhq6b2jaJqjf3Zun7gQlFq
+	 R8wpvK+gtprzQdabfxML21nO/IL4sZPzlf2XSRhVc+Bj0tQmIHEwntLj5aKxNUqeCV
+	 7qe+zX3zLHjL2Th2P3/VCa7iPYhUMa0+FmICEC+g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68BA5F80564; Thu, 18 May 2023 16:10:01 +0200 (CEST)
+	id D7035F8057D; Thu, 18 May 2023 16:10:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE750F8025A;
-	Thu, 18 May 2023 16:10:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E85F3F80568;
+	Thu, 18 May 2023 16:10:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F2D3F80548; Thu, 18 May 2023 16:09:54 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id 7AEBBF80544; Thu, 18 May 2023 16:09:56 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 936A9F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 48765F8016D
 	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 16:09:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 936A9F8016A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48765F8016D
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 8FADF240DB;
+	by bluemchen.kde.org (Postfix) with ESMTP id 933F4240F9;
 	Thu, 18 May 2023 10:09:47 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pzeKB-d9k-00; Thu, 18 May 2023 16:09:47 +0200
+	id 1pzeKB-d9q-00; Thu, 18 May 2023 16:09:47 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 5/7] ALSA: emu10k1: centralize freeing PCM voices
-Date: Thu, 18 May 2023 16:09:45 +0200
-Message-Id: <20230518140947.3725394-6-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 6/7] ALSA: emu10k1: make snd_emu10k1_voice_alloc() assign
+ voices' epcm
+Date: Thu, 18 May 2023 16:09:46 +0200
+Message-Id: <20230518140947.3725394-7-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230518140947.3725394-1-oswald.buddenhagen@gmx.de>
 References: <20230518140947.3725394-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZQLU75EIQKDYBKVMSPVWM7QWSW2WC7OL
-X-Message-ID-Hash: ZQLU75EIQKDYBKVMSPVWM7QWSW2WC7OL
+Message-ID-Hash: ZPJZ3UDWCDMQVQONFFGZ5WIZY4UPVA5Y
+X-Message-ID-Hash: ZPJZ3UDWCDMQVQONFFGZ5WIZY4UPVA5Y
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -66,7 +66,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZQLU75EIQKDYBKVMSPVWM7QWSW2WC7OL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZPJZ3UDWCDMQVQONFFGZ5WIZY4UPVA5Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -75,83 +75,131 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The voice allocator clearly knows about the field (it resets it), so
+it's more consistent (and leads to less duplicated code) to have the
+constructor take it as a parameter.
+
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emupcm.c | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+ include/sound/emu10k1.h              | 3 ++-
+ sound/pci/emu10k1/emu10k1_callback.c | 2 +-
+ sound/pci/emu10k1/emupcm.c           | 7 ++-----
+ sound/pci/emu10k1/voice.c            | 7 ++++---
+ 4 files changed, 9 insertions(+), 10 deletions(-)
 
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index 6ec2079534d4..42959ba9c9f4 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -1848,7 +1848,8 @@ int snd_emu10k1_synth_copy_from_user(struct snd_emu10k1 *emu, struct snd_util_me
+ int snd_emu10k1_memblk_map(struct snd_emu10k1 *emu, struct snd_emu10k1_memblk *blk);
+ 
+ /* voice allocation */
+-int snd_emu10k1_voice_alloc(struct snd_emu10k1 *emu, int type, int pair, struct snd_emu10k1_voice **rvoice);
++int snd_emu10k1_voice_alloc(struct snd_emu10k1 *emu, int type, int pair,
++			    struct snd_emu10k1_pcm *epcm, struct snd_emu10k1_voice **rvoice);
+ int snd_emu10k1_voice_free(struct snd_emu10k1 *emu, struct snd_emu10k1_voice *pvoice);
+ 
+ /* MIDI uart */
+diff --git a/sound/pci/emu10k1/emu10k1_callback.c b/sound/pci/emu10k1/emu10k1_callback.c
+index d70ca1f50705..e256d3c22ee4 100644
+--- a/sound/pci/emu10k1/emu10k1_callback.c
++++ b/sound/pci/emu10k1/emu10k1_callback.c
+@@ -282,7 +282,7 @@ get_voice(struct snd_emux *emu, struct snd_emux_port *port)
+ 			if (vp->ch < 0) {
+ 				/* allocate a voice */
+ 				struct snd_emu10k1_voice *hwvoice;
+-				if (snd_emu10k1_voice_alloc(hw, EMU10K1_SYNTH, 1, &hwvoice) < 0 || hwvoice == NULL)
++				if (snd_emu10k1_voice_alloc(hw, EMU10K1_SYNTH, 1, NULL, &hwvoice) < 0 || hwvoice == NULL)
+ 					continue;
+ 				vp->ch = hwvoice->number;
+ 				emu->num_voices++;
 diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index c4696c127028..63e085aa65fe 100644
+index 63e085aa65fe..8bf0a4d8aaf1 100644
 --- a/sound/pci/emu10k1/emupcm.c
 +++ b/sound/pci/emu10k1/emupcm.c
-@@ -76,16 +76,22 @@ static void snd_emu10k1_pcm_efx_interrupt(struct snd_emu10k1 *emu,
- 	snd_pcm_period_elapsed(emu->pcm_capture_efx_substream);
- }	 
- 
--static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm * epcm, int voices)
-+static void snd_emu10k1_pcm_free_voices(struct snd_emu10k1_pcm *epcm)
- {
--	int err, i;
--
--	for (i = 0; i < ARRAY_SIZE(epcm->voices); i++) {
-+	for (unsigned i = 0; i < ARRAY_SIZE(epcm->voices); i++) {
- 		if (epcm->voices[i]) {
- 			snd_emu10k1_voice_free(epcm->emu, epcm->voices[i]);
- 			epcm->voices[i] = NULL;
- 		}
- 	}
-+}
-+
-+static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm * epcm, int voices)
-+{
-+	int err, i;
-+
-+	snd_emu10k1_pcm_free_voices(epcm);
-+
+@@ -95,36 +95,33 @@ static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm * epcm, int voic
  	err = snd_emu10k1_voice_alloc(epcm->emu,
  				      epcm->type == PLAYBACK_EMUVOICE ? EMU10K1_PCM : EMU10K1_EFX,
  				      voices,
-@@ -115,15 +121,13 @@ static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm * epcm, int voic
+-				      &epcm->voices[0]);
++				      epcm, &epcm->voices[0]);
+ 	
+ 	if (err < 0)
+ 		return err;
+-	epcm->voices[0]->epcm = epcm;
+ 	if (voices > 1) {
+ 		for (i = 1; i < voices; i++) {
+ 			epcm->voices[i] = &epcm->emu->voices[(epcm->voices[0]->number + i) % NUM_G];
+-			epcm->voices[i]->epcm = epcm;
+ 		}
+ 	}
+ 	if (epcm->extra == NULL) {
+ 		// The hardware supports only (half-)loop interrupts, so to support an
+ 		// arbitrary number of periods per buffer, we use an extra voice with a
+ 		// period-sized loop as the interrupt source. Additionally, the interrupt
+ 		// timing of the hardware is "suboptimal" and needs some compensation.
+ 		err = snd_emu10k1_voice_alloc(epcm->emu,
+ 					      epcm->type == PLAYBACK_EMUVOICE ? EMU10K1_PCM_IRQ : EMU10K1_EFX_IRQ,
+ 					      1,
+-					      &epcm->extra);
++					      epcm, &epcm->extra);
+ 		if (err < 0) {
+ 			/*
+ 			dev_dbg(emu->card->dev, "pcm_channel_alloc: "
  			       "failed extra: voices=%d, frame=%d\n",
  			       voices, frame);
  			*/
--			for (i = 0; i < voices; i++) {
--				snd_emu10k1_voice_free(epcm->emu, epcm->voices[i]);
--				epcm->voices[i] = NULL;
--			}
-+			snd_emu10k1_pcm_free_voices(epcm);
+ 			snd_emu10k1_pcm_free_voices(epcm);
  			return err;
  		}
- 		epcm->extra->epcm = epcm;
+-		epcm->extra->epcm = epcm;
  		epcm->extra->interrupt = snd_emu10k1_pcm_interrupt;
  	}
-+
+ 
+diff --git a/sound/pci/emu10k1/voice.c b/sound/pci/emu10k1/voice.c
+index 25e78fc188bf..6c58e3bd14f7 100644
+--- a/sound/pci/emu10k1/voice.c
++++ b/sound/pci/emu10k1/voice.c
+@@ -32,7 +32,7 @@
+  */
+ 
+ static int voice_alloc(struct snd_emu10k1 *emu, int type, int number,
+-		       struct snd_emu10k1_voice **rvoice)
++		       struct snd_emu10k1_pcm *epcm, struct snd_emu10k1_voice **rvoice)
+ {
+ 	struct snd_emu10k1_voice *voice;
+ 	int i, j, k, first_voice, last_voice, skip;
+@@ -79,6 +79,7 @@ static int voice_alloc(struct snd_emu10k1 *emu, int type, int number,
+ 		       voice->number, idx-first_voice+1, number);
+ 		*/
+ 		voice->use = type;
++		voice->epcm = epcm;
+ 	}
+ 	*rvoice = &emu->voices[first_voice];
  	return 0;
+@@ -95,19 +96,19 @@ static void voice_free(struct snd_emu10k1 *emu,
  }
  
-@@ -342,21 +346,15 @@ static int snd_emu10k1_playback_hw_free(struct snd_pcm_substream *substream)
- 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_emu10k1_pcm *epcm;
--	int i;
+ int snd_emu10k1_voice_alloc(struct snd_emu10k1 *emu, int type, int number,
+-			    struct snd_emu10k1_voice **rvoice)
++			    struct snd_emu10k1_pcm *epcm, struct snd_emu10k1_voice **rvoice)
+ {
+ 	unsigned long flags;
+ 	int result;
  
- 	if (runtime->private_data == NULL)
- 		return 0;
- 	epcm = runtime->private_data;
- 	if (epcm->extra) {
- 		snd_emu10k1_voice_free(epcm->emu, epcm->extra);
- 		epcm->extra = NULL;
- 	}
--	for (i = 0; i < NUM_EFX_PLAYBACK; i++) {
--		if (epcm->voices[i]) {
--			snd_emu10k1_voice_free(epcm->emu, epcm->voices[i]);
--			epcm->voices[i] = NULL;
--		}
--	}
-+	snd_emu10k1_pcm_free_voices(epcm);
- 	if (epcm->memblk) {
- 		snd_emu10k1_free_pages(emu, epcm->memblk);
- 		epcm->memblk = NULL;
+ 	if (snd_BUG_ON(!rvoice))
+ 		return -EINVAL;
+ 	if (snd_BUG_ON(!number))
+ 		return -EINVAL;
+ 
+ 	spin_lock_irqsave(&emu->voice_lock, flags);
+ 	for (;;) {
+-		result = voice_alloc(emu, type, number, rvoice);
++		result = voice_alloc(emu, type, number, epcm, rvoice);
+ 		if (result == 0 || type == EMU10K1_SYNTH)
+ 			break;
+ 
 -- 
 2.40.0.152.g15d061e6df
 
