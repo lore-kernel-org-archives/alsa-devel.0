@@ -4,55 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA3A1C77B7D
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 09:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B50EC77B7A
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 09:30:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA47B820;
-	Thu, 18 May 2023 11:25:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA47B820
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4E2A200;
+	Thu, 18 May 2023 11:29:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4E2A200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684401966;
-	bh=y2WOMC+rzXR/nN7J8ytzEFuagUTKfB7Fo0d1Cq3hVyM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1684402223;
+	bh=7kad5S8DbQwZW8oqySsplT++egGUiZY6pu8oDgI2kDE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JfOXPF0FJxaQZ6+P0r8nygNEgHGWu5ouVzi/GGqAgROfWkyXGJcezrdByMOOB18ph
-	 jupmK4fzWCaSckseRYeIjMOwzkbDMD6QHYIri4UmOwAPTWO1wNoS4e+XsuvjolLyIu
-	 CmkdIFG8D/8VsdIS6Bpeiud5VcVkBK62230JZi3g=
+	b=BZau8mI6HnCSrIs2o7jV7+xJjjMqx2Y2XVyh/nrdAwLBGEejmN091LpKBg0h0s9lZ
+	 YPHSwDmOJYYepsRWZeFSF3yPrDDQuPJMoj35Hve5vwSZVzfpDoFs9wqzsrEtf7XnID
+	 n+PtZzoKS8GAzgbhC5k/agGIW8urOKk/jKASz+GI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2E323F805E9; Thu, 18 May 2023 11:23:04 +0200 (CEST)
+	id 844E3F802E8; Thu, 18 May 2023 11:29:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85E89F805E5;
-	Thu, 18 May 2023 11:23:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E08DFF80272;
+	Thu, 18 May 2023 11:29:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2972BF80544; Thu, 18 May 2023 11:22:48 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	id 67121F80272; Thu, 18 May 2023 11:29:07 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 28429F80544
-	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 11:22:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28429F80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2623FF80087
+	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 11:29:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2623FF80087
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 99F402421A;
-	Thu, 18 May 2023 05:22:24 -0400 (EDT)
+	by bluemchen.kde.org (Postfix) with ESMTP id D1EC1241CA;
+	Thu, 18 May 2023 05:29:00 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pzZq4-VlD-00; Thu, 18 May 2023 11:22:24 +0200
+	id 1pzZwS-VxF-00; Thu, 18 May 2023 11:29:00 +0200
+Date: Thu, 18 May 2023 11:29:00 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>,
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH v2 9/9] ALSA: emu10k1: fix PCM playback buffer size
+ constraints
+Message-ID: <ZGXv3O1aCuDTrVz3@ugly>
+Mail-Followup-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v2 7/9] ALSA: emu10k1: refactor PCM playback cache filling
-Date: Thu, 18 May 2023 11:22:22 +0200
-Message-Id: <20230518092224.3696958-7-oswald.buddenhagen@gmx.de>
-X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230518092224.3696958-1-oswald.buddenhagen@gmx.de>
 References: <20230518092224.3696958-1-oswald.buddenhagen@gmx.de>
+ <20230518092224.3696958-9-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VHTTV45R5R26YHK6JFPUFNB7SCWYLWJH
-X-Message-ID-Hash: VHTTV45R5R26YHK6JFPUFNB7SCWYLWJH
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230518092224.3696958-9-oswald.buddenhagen@gmx.de>
+Message-ID-Hash: VBYDBMOZDLU35N3OHIAHJW4PK54KWLIT
+X-Message-ID-Hash: VBYDBMOZDLU35N3OHIAHJW4PK54KWLIT
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -65,7 +69,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VHTTV45R5R26YHK6JFPUFNB7SCWYLWJH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VBYDBMOZDLU35N3OHIAHJW4PK54KWLIT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -74,84 +78,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Rename snd_emu10k1_playback_invalidate_cache() to the more apt
-snd_emu10k1_playback_fill_cache(), and factor out
-snd_emu10k1_playback_prepare_voices(), which calls the former for all
-channels.
+sorry for the "flood", i forgot to adjust the declaration of the series 
+in my tool. you can ignore the other patches; they didn't change from 
+what you already applied.
 
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
----
- sound/pci/emu10k1/emupcm.c | 33 +++++++++++++++++++++------------
- 1 file changed, 21 insertions(+), 12 deletions(-)
-
-diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index bbe054be2448..063918397a5f 100644
---- a/sound/pci/emu10k1/emupcm.c
-+++ b/sound/pci/emu10k1/emupcm.c
-@@ -511,16 +511,12 @@ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static void snd_emu10k1_playback_invalidate_cache(struct snd_emu10k1 *emu,
--						  struct snd_emu10k1_voice *evoice,
--						  bool w_16, bool stereo)
-+static void snd_emu10k1_playback_fill_cache(struct snd_emu10k1 *emu,
-+					    unsigned voice,
-+					    u32 sample, bool stereo)
- {
--	unsigned voice, sample;
- 	u32 ccr;
- 
--	voice = evoice->number;
--	sample = w_16 ? 0 : 0x80808080;
--
- 	// We assume that the cache is resting at this point (i.e.,
- 	// CCR_CACHEINVALIDSIZE is very small).
- 
-@@ -539,6 +535,22 @@ static void snd_emu10k1_playback_invalidate_cache(struct snd_emu10k1 *emu,
- 	snd_emu10k1_ptr_write(emu, CCR, voice, ccr);
- }
- 
-+static void snd_emu10k1_playback_prepare_voices(struct snd_emu10k1 *emu,
-+						struct snd_emu10k1_pcm *epcm,
-+						bool w_16, bool stereo,
-+						int channels)
-+{
-+	u32 sample = w_16 ? 0 : 0x80808080;
-+
-+	for (int i = 0; i < channels; i++) {
-+		unsigned voice = epcm->voices[i]->number;
-+		snd_emu10k1_playback_fill_cache(emu, voice, sample, stereo);
-+	}
-+
-+	// It takes a moment until the cache fills complete,
-+	// but the unmuting takes long enough for that.
-+}
-+
- static void snd_emu10k1_playback_commit_volume(struct snd_emu10k1 *emu,
- 					       struct snd_emu10k1_voice *evoice,
- 					       unsigned int vattn)
-@@ -632,7 +644,7 @@ static int snd_emu10k1_playback_trigger(struct snd_pcm_substream *substream,
- 	spin_lock(&emu->reg_lock);
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[0], w_16, stereo);
-+		snd_emu10k1_playback_prepare_voices(emu, epcm, w_16, stereo, 1);
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-@@ -774,10 +786,7 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
- 	spin_lock(&emu->reg_lock);
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		/* prepare voices */
--		for (i = 0; i < NUM_EFX_PLAYBACK; i++) {	
--			snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[i], true, false);
--		}
-+		snd_emu10k1_playback_prepare_voices(emu, epcm, true, false, NUM_EFX_PLAYBACK);
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
--- 
-2.40.0.152.g15d061e6df
-
+regards
