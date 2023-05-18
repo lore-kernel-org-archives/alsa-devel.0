@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F945C7EE23
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 07:32:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D543C77B7D
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 07:32:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 04E47820;
-	Thu, 18 May 2023 09:31:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04E47820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5381D847;
+	Thu, 18 May 2023 09:31:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5381D847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684395160;
-	bh=Iqyby5VEg0SeiuVu7tvN9a01i2rhmWAoC4yPy1hiHpo=;
+	s=default; t=1684395168;
+	bh=xYxu2C2nbnCatdsx3U2EwKp8dc9IRWJAjK8i3LnwSfk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S5Y2kGS68cVjwSyg+eXc/fTbZJv7tZizx/f0B8ozKj4QoJxNW8Grvn04/erXTmzs2
-	 YAl3g0NFBcbLYArLbwR8Y4PmcTD3RMZ7zT/IwKTc1v1+FJTiVD3mhZ4VjaMGlE/cAy
-	 FimZankIMknXU842VUN5c7oD6cILL10lcuwtGMc0=
+	b=i8QSgd2ApnO40SJzMAyeJIQ6P4Eg5VIuUOVOKxKiDCxyj5jDzG4aPpFnJnvlgvJyO
+	 6/B5elmP+KhXU6hzlOEO4E4pdg9Oqy7yRWfAb6Y7pLG5V1lEzNe7cGasy2CWqg9Vpx
+	 3tm/e2D6Hmmc7c4AyyvbaGrpvqCOOYPFtD+6lUec=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 911B4F80603; Thu, 18 May 2023 09:28:49 +0200 (CEST)
+	id CB371F8060A; Thu, 18 May 2023 09:28:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0885CF805FF;
-	Thu, 18 May 2023 09:28:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1337F80601;
+	Thu, 18 May 2023 09:28:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68136F805AC; Thu, 18 May 2023 09:28:33 +0200 (CEST)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
+	id 0DDB9F805B3; Thu, 18 May 2023 09:28:33 +0200 (CEST)
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
+ [IPv6:2a00:1450:4864:20::62c])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 263D3F80548
-	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 09:28:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 263D3F80548
+	by alsa1.perex.cz (Postfix) with ESMTPS id C0140F80551
+	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 09:28:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0140F80551
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=fGc0R2lA
-Received: by mail-ej1-x633.google.com with SMTP id
- a640c23a62f3a-965b5f3b9ffso177822266b.0
+ header.s=google header.b=SY4zlhD/
+Received: by mail-ej1-x62c.google.com with SMTP id
+ a640c23a62f3a-94a342f7c4cso318871666b.0
         for <alsa-devel@alsa-project.org>;
- Thu, 18 May 2023 00:28:08 -0700 (PDT)
+ Thu, 18 May 2023 00:28:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1684394886; x=1686986886;
+        d=linaro.org; s=google; t=1684394890; x=1686986890;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YAnyusDSWoWYoHl8ExRyZExxONPzTQENQiwitAy+Yow=;
-        b=fGc0R2lAtf83BfVI6TvwcDj2bdZJTVJZqt4QHboCsxtKA0NQJfBqJqUxxJDCmQfDql
-         VSahfgrHD3mnGLxahg7xk8X1YbExxhcUrrUW5INaUyBgR74rNCJBZqO9i0Sc93LZeXlF
-         V8YFqCJzT/ulYdMA/4oqonmaURd3fn96NaHWKQkzNHj3o+Y+Yovm01/Is22QDfnv2Xxv
-         +mxn/yVHYCknBOQFhLTivV5OP7w8wUsSB7npWly5VaKDSsoSIIKF+sK2JnVpJfhudJ0f
-         55/vf049iXJOBbjzw+10+Xsfwj/gP5WpRR8lOyYqV0q++J2sJGDarPcLSHPr3S3epPbk
-         CBsw==
+        bh=XVXk2J0zDtxw+0Qou5QUMtzlXSrHNQ48trwuAxglr6Q=;
+        b=SY4zlhD/Ae3NqKWMgCYMmnInKUuz8aaW8w1LrZj140mUYU5ssSsPDI2EaABgQV9yap
+         Ernl5l+MQeuF813vs5dgtI3WN3/XEiNudVVFA0hkaEZ04MQ1bZCxFSWxvUdn6kImX9+V
+         IgVBEGaTPpfiGrTgAqGxD32MVO3InaXImAWE2u9wbz7HoXqOsm+0equhQfc5EpKrAtEO
+         stmHcBuSxYTR4GnFSv0T6INTHLSjpLcWbXQOs/KvYprUoPnIioiimgAKeyhBOhy+brFc
+         tR0btKWih37xTmEtBAEVCjy5nGMy4zD622zLbnzNYpyK4K6T85rxfEQtxaaLr7X45K6F
+         9nGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684394886; x=1686986886;
+        d=1e100.net; s=20221208; t=1684394890; x=1686986890;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YAnyusDSWoWYoHl8ExRyZExxONPzTQENQiwitAy+Yow=;
-        b=STbDNHjMY1RK3+m/18cbdRpsy/hP4X6LHpvAV5mOOi9m1fhUDrrjsrtGwkTwX3DBqw
-         lbv/ObWLCL6tNoW6OaZIYJY6tvPy+cokTLulQ9yiJyTa4FsYYNpruHI7VEO0kM1sV9Kf
-         RQMsJOesYBUsiBeSECV8VO4lfDAyFq9cdaMTbqQlagEMLbcyALUgtZE42OrbF/c/r9In
-         ncD27vlnQLmpnoZf6t4fAqSWFVSJVgHAtjO0J+YVGpARJCsPos2NDe0RKAGlS6vfAf8c
-         135s1Sh1ZttHA2WJ/fHok3tscEWn3Ns0+wrKrc7/0DGT0e8OXnecNm1Qb9/9zoOBJVNX
-         0RjA==
-X-Gm-Message-State: AC+VfDyXxxBsKFocCQPn3vA+6BVVUf/8zOQENNIsqJ3V4axl/ddQ2wD5
-	HHopQ0kDOAaK23WwZxBYxGi+6w==
+        bh=XVXk2J0zDtxw+0Qou5QUMtzlXSrHNQ48trwuAxglr6Q=;
+        b=fQGvGhX+wYEXrua+9Bux548J4iwcwFE1oyGdbRDP+oK4+5LdPPMySP0vz9stotl9Yn
+         eoRfRljRyaId2q1KUstYjhugjyadPlokarjJL4V2h50x2x7NFjvId6I084sXwIB6WOKO
+         +jWXlBWr/RD62Tyr+8cdxyWlkIII3h/ETBDL0h+QA7hfIIubBMjDextVRB2bpP4qH1YQ
+         Rll7yq4xeFIBFTHB8Ks8xe9B1PyJuOCwIICey+AWnQsmIu9/C3BeJbxYZ33cF2Xcu0nv
+         7u6N0STpVZnaM5lu+VCN5hZIL989q6ovh6PNwghcgcIZveAExo68xwLZwqOMDw8xqQDI
+         Smrg==
+X-Gm-Message-State: AC+VfDxnYf8V48hmml0xyQkkIUC5JqpVVhFWAoFUC6JIQWvJj+SmIFxL
+	ayEdGZ9vPWdYhIYVru1iOfR0vQ==
 X-Google-Smtp-Source: 
- ACHHUZ7A6J5q3lKRmQdoRE77X3+XkJxZpq6vCwemsAeRMtFaxdKJGUtSy7k0o4X3f46sQBZJ573Usw==
-X-Received: by 2002:a17:907:96a1:b0:94f:236b:9e3a with SMTP id
- hd33-20020a17090796a100b0094f236b9e3amr4762971ejc.3.1684394886350;
-        Thu, 18 May 2023 00:28:06 -0700 (PDT)
+ ACHHUZ641f7zdyr1VGHoaOYeHSFCkkKsFuebd6A4/URfBSRepYIOCVjPIppyj2S59eXBj/0kOl+6sw==
+X-Received: by 2002:a17:907:80e:b0:94e:9a73:1637 with SMTP id
+ wv14-20020a170907080e00b0094e9a731637mr36831708ejb.75.1684394889884;
+        Thu, 18 May 2023 00:28:09 -0700 (PDT)
 Received: from krzk-bin.. ([2a02:810d:15c0:828:a2b:c408:5834:f48e])
         by smtp.gmail.com with ESMTPSA id
- g17-20020a17090669d100b00965aee5be9asm594241ejs.170.2023.05.18.00.28.05
+ g17-20020a17090669d100b00965aee5be9asm594241ejs.170.2023.05.18.00.28.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 May 2023 00:28:05 -0700 (PDT)
+        Thu, 18 May 2023 00:28:09 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Oder Chiou <oder_chiou@realtek.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -91,17 +91,17 @@ To: Oder Chiou <oder_chiou@realtek.com>,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RESEND PATCH 08/12] ASoC: codecs: rt712-sdca-dmic: do not store
- status in state container
-Date: Thu, 18 May 2023 09:27:49 +0200
-Message-Id: <20230518072753.7361-9-krzysztof.kozlowski@linaro.org>
+Subject: [RESEND PATCH 11/12] ASoC: codecs: rt715: do not store status in
+ state container
+Date: Thu, 18 May 2023 09:27:52 +0200
+Message-Id: <20230518072753.7361-12-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230518072753.7361-1-krzysztof.kozlowski@linaro.org>
 References: <20230518072753.7361-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7JNZMDQ72OXUZO4EDWYRSNUCDXOYMQCN
-X-Message-ID-Hash: 7JNZMDQ72OXUZO4EDWYRSNUCDXOYMQCN
+Message-ID-Hash: UJBDATE7L4SBU5RCU6S7WPLRLFV6RAMU
+X-Message-ID-Hash: UJBDATE7L4SBU5RCU6S7WPLRLFV6RAMU
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -114,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7JNZMDQ72OXUZO4EDWYRSNUCDXOYMQCN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UJBDATE7L4SBU5RCU6S7WPLRLFV6RAMU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,41 +129,37 @@ state container but it never uses it later.  Simplify the code a bit.
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/rt712-sdca-dmic.c | 5 +----
- sound/soc/codecs/rt712-sdca-dmic.h | 1 -
- 2 files changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/codecs/rt715-sdw.c | 4 +---
+ sound/soc/codecs/rt715.h     | 1 -
+ 2 files changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt712-sdca-dmic.c b/sound/soc/codecs/rt712-sdca-dmic.c
-index 09807b6d6353..847198e6c07e 100644
---- a/sound/soc/codecs/rt712-sdca-dmic.c
-+++ b/sound/soc/codecs/rt712-sdca-dmic.c
-@@ -803,9 +803,6 @@ static int rt712_sdca_dmic_update_status(struct sdw_slave *slave,
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index 5ffe9a00dfd8..6db87442b783 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -417,13 +417,11 @@ static int rt715_update_status(struct sdw_slave *slave,
  {
- 	struct rt712_sdca_dmic_priv *rt712 = dev_get_drvdata(&slave->dev);
+ 	struct rt715_priv *rt715 = dev_get_drvdata(&slave->dev);
  
 -	/* Update the status */
--	rt712->status = status;
--
- 	if (status == SDW_SLAVE_UNATTACHED)
- 		rt712->hw_init = false;
- 
-@@ -813,7 +810,7 @@ static int rt712_sdca_dmic_update_status(struct sdw_slave *slave,
+-	rt715->status = status;
+ 	/*
  	 * Perform initialization only if slave status is present and
  	 * hw_init flag is false
  	 */
--	if (rt712->hw_init || rt712->status != SDW_SLAVE_ATTACHED)
-+	if (rt712->hw_init || status != SDW_SLAVE_ATTACHED)
+-	if (rt715->hw_init || rt715->status != SDW_SLAVE_ATTACHED)
++	if (rt715->hw_init || status != SDW_SLAVE_ATTACHED)
  		return 0;
  
  	/* perform I/O transfers required for Slave initialization */
-diff --git a/sound/soc/codecs/rt712-sdca-dmic.h b/sound/soc/codecs/rt712-sdca-dmic.h
-index 74c29677c251..110154e74efe 100644
---- a/sound/soc/codecs/rt712-sdca-dmic.h
-+++ b/sound/soc/codecs/rt712-sdca-dmic.h
-@@ -16,7 +16,6 @@ struct  rt712_sdca_dmic_priv {
- 	struct regmap *mbq_regmap;
- 	struct snd_soc_component *component;
- 	struct sdw_slave *slave;
+diff --git a/sound/soc/codecs/rt715.h b/sound/soc/codecs/rt715.h
+index 17a8d041c1c3..12a0ae656d09 100644
+--- a/sound/soc/codecs/rt715.h
++++ b/sound/soc/codecs/rt715.h
+@@ -18,7 +18,6 @@ struct rt715_priv {
+ 	int dbg_nid;
+ 	int dbg_vid;
+ 	int dbg_payload;
 -	enum sdw_slave_status status;
  	struct sdw_bus_params params;
  	bool hw_init;
