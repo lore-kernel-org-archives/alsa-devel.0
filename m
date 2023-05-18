@@ -4,57 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 901C0C77B7D
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 09:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 217AEC77B7A
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 09:24:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3ED6C201;
-	Thu, 18 May 2023 11:22:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ED6C201
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11F9B1FE;
+	Thu, 18 May 2023 11:23:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11F9B1FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684401818;
-	bh=2etLEtgvIJ2TjIR3wXWC/6365d0yR+BIGVcAVMSgjig=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=lJ4lCDbQGPEDyZ161Dv2f/N7x8pyH8yMGgSGuea7x+71E3g/z3SWxYKRy4lU5MYdM
-	 cTQMXN/FThe+dgi7ZQlTlF4CB15pLctHsaFVH+HzKD1d4JOfSELSu2Qm/zlOndc8sG
-	 rzynooo9lKsh3XhYVh1sBu1fmRehcd6hIKwSjFgw=
+	s=default; t=1684401860;
+	bh=aGnHnskLlcWca+SxZEU2Ik44jp9UIWQN1NiTrnde0Cc=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=dCUWrTam2C6MEi26/h53qorsxlz0Yvz8VIrZzqMeic4xP1bhO3G89rHbw5lAWvkti
+	 rmpWSC6cL1Rd93wmerWxDe5RwSUcgCyT3SLdkBL6pULEdP3SZdfYnaDcBX8KHdhj+t
+	 jETOMp97xugjKHWpe+TQICjNsYXEoKgHWP3Ktygc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ED91AF80558; Thu, 18 May 2023 11:22:38 +0200 (CEST)
+	id 13C09F80551; Thu, 18 May 2023 11:22:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2ADC9F80551;
-	Thu, 18 May 2023 11:22:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 419C6F80551;
+	Thu, 18 May 2023 11:22:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2FDC2F80551; Thu, 18 May 2023 11:22:34 +0200 (CEST)
+	id 34DDCF80549; Thu, 18 May 2023 11:22:35 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org
  [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8F108F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id A72B1F8025A
 	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 11:22:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F108F8016A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A72B1F8025A
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 852AD24208;
+	by bluemchen.kde.org (Postfix) with ESMTP id 7CF4523E25;
 	Thu, 18 May 2023 05:22:24 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pzZq4-Vkv-00; Thu, 18 May 2023 11:22:24 +0200
+	id 1pzZq4-Vkd-00; Thu, 18 May 2023 11:22:24 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v2 4/9] ALSA: emu10k1: skip pointless cache setup for extra
- voices
-Date: Thu, 18 May 2023 11:22:19 +0200
-Message-Id: <20230518092224.3696958-4-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2 1/9] ALSA: emu10k1: pass frame instead of byte addresses
+Date: Thu, 18 May 2023 11:22:16 +0200
+Message-Id: <20230518092224.3696958-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230518092224.3696958-1-oswald.buddenhagen@gmx.de>
-References: <20230518092224.3696958-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: B7F2UG74PHNDTIXGA6U3OVIQIXE5E32Q
-X-Message-ID-Hash: B7F2UG74PHNDTIXGA6U3OVIQIXE5E32Q
+Message-ID-Hash: B72S6T3CNMEENTCBW25Y2XXDAAACZ7XX
+X-Message-ID-Hash: B72S6T3CNMEENTCBW25Y2XXDAAACZ7XX
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -67,7 +63,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B7F2UG74PHNDTIXGA6U3OVIQIXE5E32Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B72S6T3CNMEENTCBW25Y2XXDAAACZ7XX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,58 +72,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Given that the data is going to be ignored anyway, and that the cache
-does not influence interrupt timing (which is the purpose of the extra
-voices), it's pointless to pre-fill the cache.
+... to snd_emu10k1_pcm_init_voice(). This makes the code arguably less
+convoluted.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emupcm.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ sound/pci/emu10k1/emupcm.c | 31 +++++++++----------------------
+ 1 file changed, 9 insertions(+), 22 deletions(-)
 
 diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index 16e7d0ff97a4..a6c4f1895a08 100644
+index d669f93d8930..9f151a0a7756 100644
 --- a/sound/pci/emu10k1/emupcm.c
 +++ b/sound/pci/emu10k1/emupcm.c
-@@ -528,14 +528,15 @@ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
- 	return 0;
- }
+@@ -270,15 +270,6 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1 *emu,
+ 	stereo = runtime->channels == 2;
+ 	w_16 = snd_pcm_format_width(runtime->format) == 16;
  
--static void snd_emu10k1_playback_invalidate_cache(struct snd_emu10k1 *emu, int extra, struct snd_emu10k1_voice *evoice)
-+static void snd_emu10k1_playback_invalidate_cache(struct snd_emu10k1 *emu,
-+						  struct snd_emu10k1_voice *evoice)
- {
- 	struct snd_pcm_runtime *runtime;
- 	unsigned int voice, stereo, i, ccis, cra = 64, cs, sample;
+-	if (!extra && stereo) {
+-		start_addr >>= 1;
+-		end_addr >>= 1;
+-	}
+-	if (w_16) {
+-		start_addr >>= 1;
+-		end_addr >>= 1;
+-	}
+-
+ 	spin_lock_irqsave(&emu->reg_lock, flags);
  
- 	runtime = evoice->epcm->substream->runtime;
- 	voice = evoice->number;
--	stereo = (!extra && runtime->channels == 2);
-+	stereo = (runtime->channels == 2);
- 	sample = snd_pcm_format_width(runtime->format) == 16 ? 0 : 0x80808080;
- 	ccis = emu10k1_ccis(stereo, sample == 0);
- 	/* set cs to 2 * number of cache registers beside the invalidated */
-@@ -658,8 +659,7 @@ static int snd_emu10k1_playback_trigger(struct snd_pcm_substream *substream,
- 	spin_lock(&emu->reg_lock);
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		snd_emu10k1_playback_invalidate_cache(emu, 1, epcm->extra);	/* do we need this? */
--		snd_emu10k1_playback_invalidate_cache(emu, 0, epcm->voices[0]);
-+		snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[0]);
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-@@ -803,9 +803,8 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_START:
- 		/* prepare voices */
- 		for (i = 0; i < NUM_EFX_PLAYBACK; i++) {	
--			snd_emu10k1_playback_invalidate_cache(emu, 0, epcm->voices[i]);
-+			snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[i]);
- 		}
--		snd_emu10k1_playback_invalidate_cache(emu, 1, epcm->extra);
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	/* volume parameters */
+@@ -424,19 +415,16 @@ static int snd_emu10k1_playback_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_emu10k1_pcm *epcm = runtime->private_data;
++	bool w_16 = snd_pcm_format_width(runtime->format) == 16;
++	bool stereo = runtime->channels == 2;
+ 	unsigned int start_addr, end_addr;
+ 
+-	start_addr = epcm->start_addr;
+-	end_addr = snd_pcm_lib_period_bytes(substream);
+-	if (runtime->channels == 2) {
+-		start_addr >>= 1;
+-		end_addr >>= 1;
+-	}
+-	end_addr += start_addr;
++	start_addr = epcm->start_addr >> w_16;
++	end_addr = start_addr + runtime->period_size;
+ 	snd_emu10k1_pcm_init_voice(emu, 1, 1, epcm->extra,
+ 				   start_addr, end_addr, NULL);
+-	start_addr = epcm->start_addr;
+-	end_addr = epcm->start_addr + snd_pcm_lib_buffer_bytes(substream);
++	start_addr >>= stereo;
++	end_addr = start_addr + runtime->buffer_size;
+ 	snd_emu10k1_pcm_init_voice(emu, 1, 0, epcm->voices[0],
+ 				   start_addr, end_addr,
+ 				   &emu->pcm_mixer[substream->number]);
+@@ -452,14 +440,13 @@ static int snd_emu10k1_efx_playback_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_emu10k1_pcm *epcm = runtime->private_data;
+-	unsigned int start_addr, end_addr;
++	unsigned int start_addr;
+ 	unsigned int channel_size;
+ 	int i;
+ 
+-	start_addr = epcm->start_addr;
+-	end_addr = epcm->start_addr + snd_pcm_lib_buffer_bytes(substream);
++	start_addr = epcm->start_addr >> 1;  // 16-bit voices
+ 
+-	channel_size = ( end_addr - start_addr ) / NUM_EFX_PLAYBACK;
++	channel_size = runtime->buffer_size;
+ 
+ 	snd_emu10k1_pcm_init_voice(emu, 1, 1, epcm->extra,
+ 				   start_addr, start_addr + (channel_size / 2), NULL);
 -- 
 2.40.0.152.g15d061e6df
 
