@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A75D5C77B75
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 02:22:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9236AC77B7A
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 May 2023 02:23:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B908825;
-	Thu, 18 May 2023 04:21:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B908825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F7296C0;
+	Thu, 18 May 2023 04:22:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F7296C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684376558;
-	bh=sNFf0anZ290+Br3dbHkevwq9kWheG2VgMEYEnF9HzNg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=E2C+qTRWOe/HMiuxBVLFtHLWHcbD8QdJHs3pTyHMY2AxLxRBbpg3ua9haxJyybd2y
-	 CAWChadrCssLeMX0YhFdLMaz5G7J0+fF3epXIdA3Wnrfy0B13tvy9Dr0WUtQq/MFLC
-	 /t/AaTeU8EGupEMeD2C8eAuCZASLVm2rjOl6ZdyE=
+	s=default; t=1684376585;
+	bh=5R52rMefrg7AC6InG7PmqTlOvY+GWOInNf87oqgcKqM=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=IpSqNA59nh3mbfFw7LlZ70W7RpSCpR+qsIQflQ4xR+CfZ3MJdWwGaeySjPUHkS2Zv
+	 9AZMcI7pBNgAg7GF88cqLhVaA3nUI8GCW96BXXjwxj6l/SBBhLSejdrMBZPAqXHeC1
+	 sIuqsgUtub44ajGHHARANtNQsXuJZwTp++lkHw9Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93E67F80588; Thu, 18 May 2023 04:21:02 +0200 (CEST)
+	id 2CC6AF8016D; Thu, 18 May 2023 04:22:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7045F8059F;
-	Thu, 18 May 2023 04:21:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB467F8016D;
+	Thu, 18 May 2023 04:22:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51F15F80549; Thu, 18 May 2023 04:20:56 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+	id 11A6CF802E8; Thu, 18 May 2023 04:22:01 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E8718F80272
-	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 04:20:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8718F80272
+	by alsa1.perex.cz (Postfix) with ESMTPS id BFA22F8025A
+	for <alsa-devel@alsa-project.org>; Thu, 18 May 2023 04:21:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFA22F8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=fRbj1WiB
+ header.s=Intel header.b=lDTFwXMj
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684376445; x=1715912445;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=sNFf0anZ290+Br3dbHkevwq9kWheG2VgMEYEnF9HzNg=;
-  b=fRbj1WiBJMacSKh9ZpiBsTxpq2HzkNdIleyJz+gjQgG+HgVRNHrYmbW6
-   u4JSxjSI4Lg/7w+fvtNw0Sh5GVeBwnLGYuwS+yVDMY2NxVc7ipVu7+XU2
-   FSapHQdxqnujHhx3zRjJg7Dp9XWWkKC2sDXBjkNzPIQWtdoeStwUHpZIj
-   hHyhJcmCX0zEAEV/foIp0s8X+WLCaEdQqms3XFtjm5URxdCHB1ie49lAe
-   n0d43dpcaZVmoXQmQbP36s9u//JE5TS7TwNH1BiwlKkomXKRqHDgTtCXl
-   yc/DkjBVdWW0+zxXVm7fUNSn2E/QlqBs3yLtOh5d51tSPX8LI28LJqwEY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="336504766"
+  t=1684376517; x=1715912517;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5R52rMefrg7AC6InG7PmqTlOvY+GWOInNf87oqgcKqM=;
+  b=lDTFwXMjOvbmPcAcZUxxX6Zmsx4rcNEL6pXerSrmKWC+Ho9cM2gTiiAe
+   zaJYlesjU2K0FRd8QGEFJZupSNBHc2tMv3qXOTD5AHMoTSp3axLZipg+9
+   NYKBudA8PU3PlD5y+IduulPbgRrEOtkrav2ov7r8weBSsMLWo5510Pxup
+   K/xuSMYzJmhdCCpppWHMuJTMrxWg0e6fLIeptnT8wPbqihwrSjS7EkeM/
+   IofiTyHJ1vYXr0yqj2en+U67xxtBspy3DJaiHIz//xLA4EOozHRu+6tmS
+   9xaWIKIJJogo5BUNfF4ADXQSPU7e1pbYpoX3j8BiR0JLusNnVOacs7pTl
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="341339096"
 X-IronPort-AV: E=Sophos;i="5.99,284,1677571200";
-   d="scan'208";a="336504766"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 May 2023 19:20:34 -0700
+   d="scan'208";a="341339096"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 May 2023 19:21:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="826195213"
-X-IronPort-AV: E=Sophos;i="5.99,284,1677571200";
-   d="scan'208";a="826195213"
+X-IronPort-AV: E=McAfee;i="6600,9927,10713"; a="876255299"
+X-IronPort-AV: E=Sophos;i="5.99,283,1677571200";
+   d="scan'208";a="876255299"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 May 2023 19:20:33 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 May 2023 19:21:26 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
@@ -71,16 +70,14 @@ Cc: vinod.koul@linaro.org,
 	linux-kernel@vger.kernel.org,
 	pierre-louis.bossart@linux.intel.com,
 	bard.liao@intel.com
-Subject: [PATCH 1/3] soundwire: intel_bus_common: enable interrupts last
-Date: Thu, 18 May 2023 10:41:17 +0800
-Message-Id: <20230518024119.164160-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH] soundwire: intel_bus_common: update error log
+Date: Thu, 18 May 2023 10:42:15 +0800
+Message-Id: <20230518024215.164281-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230518024119.164160-1-yung-chuan.liao@linux.intel.com>
-References: <20230518024119.164160-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MEGXQMCHBC2URMUKPBDGLJFUVJ73T4S4
-X-Message-ID-Hash: MEGXQMCHBC2URMUKPBDGLJFUVJ73T4S4
+Message-ID-Hash: 2IXE7IOBUOUEGB2OPXENBB7MCHWYBFH7
+X-Message-ID-Hash: 2IXE7IOBUOUEGB2OPXENBB7MCHWYBFH7
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,9 +90,8 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MEGXQMCHBC2URMUKPBDGLJFUVJ73T4S4/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2IXE7IOBUOUEGB2OPXENBB7MCHWYBFH7/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -104,155 +100,31 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-It's not clear why we enabled interrupts in the Cadence IP first. The
-logical programming sequence should be to first start the bus, and
-only second to enable the interrupts.
+We use __func__ in all calls of sdw_cdns_check_self_clearing_bits(),
+except in one case. Likely an editing miss when the code was
+refactored.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel_bus_common.c | 61 +++++++++++++---------------
- 1 file changed, 28 insertions(+), 33 deletions(-)
+ drivers/soundwire/intel_bus_common.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/soundwire/intel_bus_common.c b/drivers/soundwire/intel_bus_common.c
-index f180e3bea989..901d4f5736c1 100644
+index be0c93106fc8..e5ac3cc7cb79 100644
 --- a/drivers/soundwire/intel_bus_common.c
 +++ b/drivers/soundwire/intel_bus_common.c
-@@ -16,12 +16,6 @@ int intel_start_bus(struct sdw_intel *sdw)
- 	struct sdw_bus *bus = &cdns->bus;
- 	int ret;
- 
--	ret = sdw_cdns_enable_interrupt(cdns, true);
--	if (ret < 0) {
--		dev_err(dev, "%s: cannot enable interrupts: %d\n", __func__, ret);
--		return ret;
--	}
--
- 	/*
- 	 * follow recommended programming flows to avoid timeouts when
- 	 * gsync is enabled
-@@ -32,30 +26,33 @@ int intel_start_bus(struct sdw_intel *sdw)
- 	ret = sdw_cdns_init(cdns);
- 	if (ret < 0) {
- 		dev_err(dev, "%s: unable to initialize Cadence IP: %d\n", __func__, ret);
--		goto err_interrupt;
-+		return ret;
- 	}
- 
- 	ret = sdw_cdns_exit_reset(cdns);
- 	if (ret < 0) {
- 		dev_err(dev, "%s: unable to exit bus reset sequence: %d\n", __func__, ret);
--		goto err_interrupt;
-+		return ret;
- 	}
- 
- 	if (bus->multi_link) {
- 		ret = sdw_intel_sync_go(sdw);
- 		if (ret < 0) {
- 			dev_err(dev, "%s: sync go failed: %d\n", __func__, ret);
--			goto err_interrupt;
-+			return ret;
- 		}
- 	}
-+
-+	ret = sdw_cdns_enable_interrupt(cdns, true);
-+	if (ret < 0) {
-+		dev_err(dev, "%s: cannot enable interrupts: %d\n", __func__, ret);
-+		return ret;
-+	}
-+
- 	sdw_cdns_check_self_clearing_bits(cdns, __func__,
- 					  true, INTEL_MASTER_RESET_ITERATIONS);
- 
- 	return 0;
--
--err_interrupt:
--	sdw_cdns_enable_interrupt(cdns, false);
--	return ret;
- }
- 
- int intel_start_bus_after_reset(struct sdw_intel *sdw)
-@@ -86,12 +83,6 @@ int intel_start_bus_after_reset(struct sdw_intel *sdw)
- 		status = SDW_UNATTACH_REQUEST_MASTER_RESET;
- 		sdw_clear_slave_status(bus, status);
- 
--		ret = sdw_cdns_enable_interrupt(cdns, true);
--		if (ret < 0) {
--			dev_err(dev, "cannot enable interrupts during resume\n");
--			return ret;
--		}
--
- 		/*
- 		 * follow recommended programming flows to avoid
- 		 * timeouts when gsync is enabled
-@@ -115,31 +106,36 @@ int intel_start_bus_after_reset(struct sdw_intel *sdw)
- 	ret = sdw_cdns_clock_restart(cdns, !clock_stop0);
- 	if (ret < 0) {
- 		dev_err(dev, "unable to restart clock during resume\n");
--		goto err_interrupt;
-+		if (!clock_stop0)
-+			sdw_cdns_enable_interrupt(cdns, false);
-+		return ret;
- 	}
- 
- 	if (!clock_stop0) {
- 		ret = sdw_cdns_exit_reset(cdns);
- 		if (ret < 0) {
- 			dev_err(dev, "unable to exit bus reset sequence during resume\n");
--			goto err_interrupt;
-+			return ret;
- 		}
- 
- 		if (bus->multi_link) {
- 			ret = sdw_intel_sync_go(sdw);
- 			if (ret < 0) {
- 				dev_err(sdw->cdns.dev, "sync go failed during resume\n");
--				goto err_interrupt;
-+				return ret;
- 			}
- 		}
-+
-+		ret = sdw_cdns_enable_interrupt(cdns, true);
-+		if (ret < 0) {
-+			dev_err(dev, "cannot enable interrupts during resume\n");
-+			return ret;
-+		}
-+
- 	}
- 	sdw_cdns_check_self_clearing_bits(cdns, __func__, true, INTEL_MASTER_RESET_ITERATIONS);
- 
- 	return 0;
--
--err_interrupt:
--	sdw_cdns_enable_interrupt(cdns, false);
--	return ret;
- }
- 
- void intel_check_clock_stop(struct sdw_intel *sdw)
-@@ -158,16 +154,15 @@ int intel_start_bus_after_clock_stop(struct sdw_intel *sdw)
- 	struct sdw_cdns *cdns = &sdw->cdns;
- 	int ret;
- 
--	ret = sdw_cdns_enable_interrupt(cdns, true);
--	if (ret < 0) {
--		dev_err(dev, "%s: cannot enable interrupts: %d\n", __func__, ret);
--		return ret;
--	}
--
- 	ret = sdw_cdns_clock_restart(cdns, false);
- 	if (ret < 0) {
- 		dev_err(dev, "%s: unable to restart clock: %d\n", __func__, ret);
--		sdw_cdns_enable_interrupt(cdns, false);
-+		return ret;
-+	}
-+
-+	ret = sdw_cdns_enable_interrupt(cdns, true);
-+	if (ret < 0) {
-+		dev_err(dev, "%s: cannot enable interrupts: %d\n", __func__, ret);
+@@ -182,8 +182,7 @@ int intel_start_bus_after_clock_stop(struct sdw_intel *sdw)
  		return ret;
  	}
  
+-	sdw_cdns_check_self_clearing_bits(cdns, "intel_resume_runtime no_quirks",
+-					  true, INTEL_MASTER_RESET_ITERATIONS);
++	sdw_cdns_check_self_clearing_bits(cdns, __func__, true, INTEL_MASTER_RESET_ITERATIONS);
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
