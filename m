@@ -4,95 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEB28C77B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09631C7EE23
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:40:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2EAA201;
-	Fri, 19 May 2023 11:39:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2EAA201
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF7ABDEB;
+	Fri, 19 May 2023 11:40:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF7ABDEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684489248;
-	bh=eB5HvgmowJ8rEADtxT6gb9cl1UnyhD5MRqW3dVqiLIw=;
+	s=default; t=1684489255;
+	bh=8Ovlw/zmw1487Upal37ZnkK8uHVSrxYD93xS8XyZepg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SzZ9d6G4ZSRmojU9er2vuTclmY3DKMTHpPYtCSGoIzVkYiW1B61kQOo2yLtGG1BaN
-	 tF4nSrwe+N6xG+OcEZViwhIEDCLzBDkXh2fxJ4KXEPctQGlg2JQGe+QA9ZRWGZJI4H
-	 wi19dzcgRSUOiQQ2MjADmTBAXp5G0889WMdC130c=
+	b=gLAPOWKLaM0cDidOA41TShM5/6u+/deSc9WwGykSARk8tsnzc/Puh/rNJPpNA8vri
+	 jMbYfxBJQ6+EgK48hkRpn8XLqqAyr/hPoYH4+YvS2StxcjC1vtkPh3u5wZC+XFWqGU
+	 0afhXfg7mBjXBovsH2XqPRlHWZZqhMPBILa0rUlI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E7D64F806D7; Fri, 19 May 2023 11:33:19 +0200 (CEST)
+	id 71E9BF806DC; Fri, 19 May 2023 11:33:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60773F806D2;
-	Fri, 19 May 2023 11:33:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09B04F806D2;
+	Fri, 19 May 2023 11:33:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 90BAAF80563; Fri, 19 May 2023 11:32:34 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 4F225F8055B; Fri, 19 May 2023 11:32:35 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9E0DFF8053D
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E0DFF8053D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 48ACDF805AF
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48ACDF805AF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=XB83j4sN;
+ header.s=susede2_rsa header.b=vebHVlZF;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=U4fjFlJ+
+ header.s=susede2_ed25519 header.b=yYsKtuG/
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6B7821FE3D;
-	Fri, 19 May 2023 09:31:49 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F1F901FE55;
+	Fri, 19 May 2023 09:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684488709;
+	t=1684488707;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=m0pVfq6sNaLWGs1NhfDxkThlWmah49s+lQatdtQJWY0=;
-	b=XB83j4sNPcLj0M7skNKQzLK2YJN/Txv66EBqm5xh1N567e/lc/hm3OiT29bzFc6gR5zkhe
-	hs8mfn+yZ2BzL5Hiv/Ib7AU3ShhEP2IoRSUYZXPxqGT16KdifAGHZaG1VuRnMl+8IZdfNG
-	z5pzVqx2hQ8R6dxNrUL+P0/tWvHA6q4=
+	bh=LcWrJIWY+/p8LoxWXI8z182Rbib3A1gSwftREo4N5Mk=;
+	b=vebHVlZFlC74SCyeyoy5hwzLUXIEjKjwSTN7NskAek7ww1BrHyNxePPknLZjiKqNCVXc/9
+	4MsOa64PLipYnCZH9xLP3dTBj5WWPIMqccI6qV9f1UDhw+n7a7hhSuq1T6NEuHzX1hvhBR
+	jBjoMYosThgeKMdui2txo9+RfZRRhG4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684488709;
+	s=susede2_ed25519; t=1684488707;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=m0pVfq6sNaLWGs1NhfDxkThlWmah49s+lQatdtQJWY0=;
-	b=U4fjFlJ+mfR0Dnv/Cbz6M/tHJ2DbcL0bhnAqeB/Xu0acvV0T3eCEgPtEYszxvdXXNgWqJK
-	KncSMOz9VCp1EbBg==
+	bh=LcWrJIWY+/p8LoxWXI8z182Rbib3A1gSwftREo4N5Mk=;
+	b=yYsKtuG/vVdxF0SJ5y+EubC4QF+BSmaTQX68JRhIMEp8UpHnmC3lSLiFJF1ErUwuvnGCGX
+	xmJnvGtA2T7AU/CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 424FB13A12;
-	Fri, 19 May 2023 09:31:49 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C49D713A12;
+	Fri, 19 May 2023 09:31:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id QCAaDQVCZ2RXJAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:49 +0000
+	id wGL0LgNCZ2RXJAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:47 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 32/36] ALSA: seq: ump: Create UMP Endpoint port for broadcast
-Date: Fri, 19 May 2023 11:31:10 +0200
-Message-Id: <20230519093114.28813-33-tiwai@suse.de>
+Subject: [PATCH 30/36] ALSA: seq: Allow suppressing UMP conversions
+Date: Fri, 19 May 2023 11:31:08 +0200
+Message-Id: <20230519093114.28813-31-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230519093114.28813-1-tiwai@suse.de>
 References: <20230519093114.28813-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HY73DLE5GGJK6VLBCJSFMTMW6FJMJZOV
-X-Message-ID-Hash: HY73DLE5GGJK6VLBCJSFMTMW6FJMJZOV
+Message-ID-Hash: GGZQH4LJ6W57EEVGTQTTTQ2CPECL5KMY
+X-Message-ID-Hash: GGZQH4LJ6W57EEVGTQTTTQ2CPECL5KMY
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HY73DLE5GGJK6VLBCJSFMTMW6FJMJZOV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GGZQH4LJ6W57EEVGTQTTTQ2CPECL5KMY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,101 +115,84 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Create a sequencer port for broadcasting the all group inputs at the
-port number 0.  This corresponds to a UMP Endpoint connection;
-application can read all UMP events from this port no matter which
-group the UMP packet belongs to.
-
-Unlike seq ports for other UMP groups, a UMP Endpoint port has no
-SND_SEQ_PORT_TYPE_MIDI_GENERIC bit, so that it won't be treated as a
-normal MIDI 1.0 device from legacy applications.
-
-The port is named as "MIDI 2.0" to align with representations on other
-operation systems.
+A sequencer client like seq_dummy rather doesn't want to convert UMP
+events but receives / sends as is.  Add a new event filter flag to
+suppress the automatic UMP conversion and applies accordingly.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/seq_ump_client.c | 60 +++++++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+ include/uapi/sound/asequencer.h |  1 +
+ sound/core/seq/seq_clientmgr.c  | 18 ++++++++++--------
+ sound/core/seq/seq_dummy.c      |  8 ++++++++
+ 3 files changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/sound/core/seq/seq_ump_client.c b/sound/core/seq/seq_ump_client.c
-index 8d360655ff5d..600b061ac8c3 100644
---- a/sound/core/seq/seq_ump_client.c
-+++ b/sound/core/seq/seq_ump_client.c
-@@ -290,6 +290,62 @@ static void update_group_attrs(struct seq_ump_client *client)
- 	}
- }
+diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
+index 2470eaa5edc5..c4632bd9d3a0 100644
+--- a/include/uapi/sound/asequencer.h
++++ b/include/uapi/sound/asequencer.h
+@@ -347,6 +347,7 @@ typedef int __bitwise snd_seq_client_type_t;
+ #define SNDRV_SEQ_FILTER_BROADCAST	(1U<<0)	/* accept broadcast messages */
+ #define SNDRV_SEQ_FILTER_MULTICAST	(1U<<1)	/* accept multicast messages */
+ #define SNDRV_SEQ_FILTER_BOUNCE		(1U<<2)	/* accept bounce event in error */
++#define SNDRV_SEQ_FILTER_NO_CONVERT	(1U<<30) /* don't convert UMP events */
+ #define SNDRV_SEQ_FILTER_USE_EVENT	(1U<<31)	/* use event filter */
  
-+/* create a UMP Endpoint port */
-+static int create_ump_endpoint_port(struct seq_ump_client *client)
-+{
-+	struct snd_seq_port_info *port;
-+	struct snd_seq_port_callback pcallbacks;
-+	unsigned int rawmidi_info = client->ump->core.info_flags;
-+	int err;
-+
-+	port = kzalloc(sizeof(*port), GFP_KERNEL);
-+	if (!port)
-+		return -ENOMEM;
-+
-+	port->addr.client = client->seq_client;
-+	port->addr.port = 0; /* fixed */
-+	port->flags = SNDRV_SEQ_PORT_FLG_GIVEN_PORT;
-+	port->capability = SNDRV_SEQ_PORT_CAP_UMP_ENDPOINT;
-+	if (rawmidi_info & SNDRV_RAWMIDI_INFO_INPUT) {
-+		port->capability |= SNDRV_SEQ_PORT_CAP_READ |
-+			SNDRV_SEQ_PORT_CAP_SYNC_READ |
-+			SNDRV_SEQ_PORT_CAP_SUBS_READ;
-+		port->direction |= SNDRV_SEQ_PORT_DIR_INPUT;
-+	}
-+	if (rawmidi_info & SNDRV_RAWMIDI_INFO_OUTPUT) {
-+		port->capability |= SNDRV_SEQ_PORT_CAP_WRITE |
-+			SNDRV_SEQ_PORT_CAP_SYNC_WRITE |
-+			SNDRV_SEQ_PORT_CAP_SUBS_WRITE;
-+		port->direction |= SNDRV_SEQ_PORT_DIR_OUTPUT;
-+	}
-+	if (rawmidi_info & SNDRV_RAWMIDI_INFO_DUPLEX)
-+		port->capability |= SNDRV_SEQ_PORT_CAP_DUPLEX;
-+	port->ump_group = 0; /* no associated group, no conversion */
-+	port->type = SNDRV_SEQ_PORT_TYPE_MIDI_UMP |
-+		SNDRV_SEQ_PORT_TYPE_HARDWARE |
-+		SNDRV_SEQ_PORT_TYPE_PORT;
-+	port->midi_channels = 16;
-+	strcpy(port->name, "MIDI 2.0");
-+	memset(&pcallbacks, 0, sizeof(pcallbacks));
-+	pcallbacks.owner = THIS_MODULE;
-+	pcallbacks.private_data = client;
-+	if (rawmidi_info & SNDRV_RAWMIDI_INFO_INPUT) {
-+		pcallbacks.subscribe = seq_ump_subscribe;
-+		pcallbacks.unsubscribe = seq_ump_unsubscribe;
-+	}
-+	if (rawmidi_info & SNDRV_RAWMIDI_INFO_OUTPUT) {
-+		pcallbacks.use = seq_ump_use;
-+		pcallbacks.unuse = seq_ump_unuse;
-+		pcallbacks.event_input = seq_ump_process_event;
-+	}
-+	port->kernel = &pcallbacks;
-+	err = snd_seq_kernel_client_ctl(client->seq_client,
-+					SNDRV_SEQ_IOCTL_CREATE_PORT,
-+					port);
-+	kfree(port);
-+	return err;
-+}
-+
- /* release the client resources */
- static void seq_ump_client_free(struct seq_ump_client *client)
+ struct snd_seq_client_info {
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 07b090f76b5f..3b1adcb1ccdd 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -671,14 +671,16 @@ static int snd_seq_deliver_single_event(struct snd_seq_client *client,
+ 					  dest_port->time_real);
+ 
+ #if IS_ENABLED(CONFIG_SND_SEQ_UMP)
+-	if (snd_seq_ev_is_ump(event)) {
+-		result = snd_seq_deliver_from_ump(client, dest, dest_port,
+-						  event, atomic, hop);
+-		goto __skip;
+-	} else if (snd_seq_client_is_ump(dest)) {
+-		result = snd_seq_deliver_to_ump(client, dest, dest_port,
+-						event, atomic, hop);
+-		goto __skip;
++	if (!(dest->filter & SNDRV_SEQ_FILTER_NO_CONVERT)) {
++		if (snd_seq_ev_is_ump(event)) {
++			result = snd_seq_deliver_from_ump(client, dest, dest_port,
++							  event, atomic, hop);
++			goto __skip;
++		} else if (snd_seq_client_is_ump(dest)) {
++			result = snd_seq_deliver_to_ump(client, dest, dest_port,
++							event, atomic, hop);
++			goto __skip;
++		}
+ 	}
+ #endif /* CONFIG_SND_SEQ_UMP */
+ 
+diff --git a/sound/core/seq/seq_dummy.c b/sound/core/seq/seq_dummy.c
+index 2e8844ee32ed..9308194b2d9a 100644
+--- a/sound/core/seq/seq_dummy.c
++++ b/sound/core/seq/seq_dummy.c
+@@ -152,6 +152,7 @@ static int __init
+ register_client(void)
  {
-@@ -353,6 +409,10 @@ static int snd_seq_ump_probe(struct device *_dev)
- 			goto error;
- 	}
+ 	struct snd_seq_dummy_port *rec1, *rec2;
++	struct snd_seq_client *client;
+ 	int i;
  
-+	err = create_ump_endpoint_port(client);
-+	if (err < 0)
-+		goto error;
+ 	if (ports < 1) {
+@@ -165,6 +166,13 @@ register_client(void)
+ 	if (my_client < 0)
+ 		return my_client;
+ 
++	/* don't convert events but just pass-through */
++	client = snd_seq_kernel_client_get(my_client);
++	if (!client)
++		return -EINVAL;
++	client->filter = SNDRV_SEQ_FILTER_NO_CONVERT;
++	snd_seq_kernel_client_put(client);
 +
- 	ump->seq_client = client;
- 	ump->seq_ops = &seq_ump_ops;
- 	return 0;
+ 	/* create ports */
+ 	for (i = 0; i < ports; i++) {
+ 		rec1 = create_port(i, 0);
 -- 
 2.35.3
 
