@@ -4,95 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57AEBC77B7A
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:35:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC874C77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:36:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B64DA209;
-	Fri, 19 May 2023 11:35:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B64DA209
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05A34823;
+	Fri, 19 May 2023 11:35:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05A34823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684488950;
-	bh=wcw2bRITruL7WjbOaaOUcslKLV5r/3JkYJy1X2ElDo0=;
+	s=default; t=1684488967;
+	bh=hfjUv81QQTE5DjVpNzmSDXn7TvNgCaBIwwsIoSj2u+Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uHydd6eiiR/jDfHdDkMzeTY0aM5IfsV/AFrnn/bRSo0mcU9/kmpzYGmLEkK/WMngl
-	 Gu+id9KMrs07HJl+dG9xhbRdfH6EriMjX7/IZrB0ZFSZR7ku49NgXvisf1TlxY5bJA
-	 BxjJtwUInfnDd4uHW6bzX5FFmJuyaXWlUxDvisgs=
+	b=Xu5sEpqB2AQNHuhe03G0QsVDmAAMpIcGUeVUqVMYlb5/kkd8e0DGuQ1vbSQ5Z1dSG
+	 KaiYN+1AWXdeIqwXHGcil+l2Yhf6LaHCdSaPwd3cLx1TRoIxkjfZlq5wt0ch+DXymk
+	 5Izn4GMnrBGDy5m/16K7Yzi6/93v2PV6nYDrNp1g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5AB3EF8060E; Fri, 19 May 2023 11:32:19 +0200 (CEST)
+	id B34E8F8061A; Fri, 19 May 2023 11:32:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E65EF8060E;
-	Fri, 19 May 2023 11:32:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74B04F8061A;
+	Fri, 19 May 2023 11:32:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E760EF805EC; Fri, 19 May 2023 11:32:03 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id E728EF805FD; Fri, 19 May 2023 11:32:06 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 21715F80544
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21715F80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id D22E3F80087
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D22E3F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=FmlJNNfY;
+ header.s=susede2_rsa header.b=wv5fTnm9;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=LUSLb31X
+ header.s=susede2_ed25519 header.b=BwY9MHgr
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8F23E222C0;
-	Fri, 19 May 2023 09:31:31 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6FDCC222C0;
+	Fri, 19 May 2023 09:31:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684488691;
+	t=1684488697;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OwtRmtaO+evEp/VGqR6LX2MNapsZZo1UBDF8zvnPgE8=;
-	b=FmlJNNfYzWeODN0bv8bOb4DFiLqV67HIMFUjKvRpYxKzgZ58tvdNq3DEBw7CYxkwTQpDwC
-	lhfFN6F3OX08dHsMm11xwNPsUoMpmPTs0Df4VPlsIuA1nvybeJyjznM1LqnmRDq13Dwk54
-	82vBDHW2bwFus7Xs9xDUsiKULeFMgi8=
+	bh=gu95+vhJb4byJpofgBTgCe0R4znWS6u9/iDDJxd97Mg=;
+	b=wv5fTnm9Sgsw67b3MdtDQbjhsVodampP3SRcAV1fjIA6g+Da3oBP6PC/gssp9SZsRTIb2M
+	sut8njPuzxCUp3JdbeYdeRy4tbQdG8SKayV1ueAvAMKpYW1EA27xjMbkUTXZZh9St0r0+S
+	sqrgSsNq/wcFnAAatpfrIaSUdKyfKjU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684488691;
+	s=susede2_ed25519; t=1684488697;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OwtRmtaO+evEp/VGqR6LX2MNapsZZo1UBDF8zvnPgE8=;
-	b=LUSLb31XO5cEcjY+wLWsws1zms7j55Rnv0ps2L+k5Bg9l6vp0KzkmQiQ5BTZCULuSDsmNm
-	G8rvAevNAvL60mCg==
+	bh=gu95+vhJb4byJpofgBTgCe0R4znWS6u9/iDDJxd97Mg=;
+	b=BwY9MHgrZps6lvLzq6PhwD0IAgBlEzeLCvEFLVo0N169XYqlxCYSQ2B3nbuxoeMsTweZLM
+	H7RvMBW8FCoRWTDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 615CF13A12;
-	Fri, 19 May 2023 09:31:31 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4A8FC13A12;
+	Fri, 19 May 2023 09:31:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id yJYMF/NBZ2RXJAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:31 +0000
+	id OOJREflBZ2RXJAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:37 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 03/36] ALSA: rawmidi: UMP support
-Date: Fri, 19 May 2023 11:30:41 +0200
-Message-Id: <20230519093114.28813-4-tiwai@suse.de>
+Subject: [PATCH 12/36] ALSA: ump: Redirect rawmidi substream access via own
+ helpers
+Date: Fri, 19 May 2023 11:30:50 +0200
+Message-Id: <20230519093114.28813-13-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230519093114.28813-1-tiwai@suse.de>
 References: <20230519093114.28813-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 36TTSYKXWQIKTDI42HLFJ4THLP4ZXA2O
-X-Message-ID-Hash: 36TTSYKXWQIKTDI42HLFJ4THLP4ZXA2O
+Message-ID-Hash: Y3ALCNJBHIZZQH2YUKGDLN5T7T55IRPH
+X-Message-ID-Hash: Y3ALCNJBHIZZQH2YUKGDLN5T7T55IRPH
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,8 +106,7 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/36TTSYKXWQIKTDI42HLFJ4THLP4ZXA2O/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,898 +115,383 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch adds the support helpers for UMP (Universal MIDI Packet) in
-ALSA core.
+This is a code refactoring for abstracting the rawmidi access to the
+UMP's own helpers.  It's a preliminary work for the later code
+refactoring of the UMP layer.
 
-The basic design is that a rawmidi instance is assigned to each UMP
-Endpoint.  A UMP Endpoint provides a UMP stream, typically
-bidirectional (but can be also uni-directional, too), which may hold
-up to 16 UMP Groups, where each UMP (input/output) Group corresponds
-to the traditional MIDI I/O Endpoint.
-
-Additionally, the ALSA UMP abstraction provides the multiple UMP
-Blocks that can be assigned to each UMP Endpoint.  A UMP Block is a
-metadata to hold the UMP Group clusters, and can represent the
-functions assigned to each UMP Group.  A typical implementation of UMP
-Block is the Group Terminal Blocks of USB MIDI 2.0 specification.
-
-For distinguishing from the legacy byte-stream MIDI device, a new
-device "umpC*D*" will be created, instead of the standard (MIDI 1.0)
-devices "midiC*D*".  The UMP instance can be identified by the new
-rawmidi info bit SNDRV_RAWMIDI_INFO_UMP, too.
-
-A UMP rawmidi device reads/writes only in 4-bytes words alignment,
-stored in CPU native endianness.
-
-The transmit and receive functions take care of the input/out data
-alignment, and may return zero or aligned size, and the params ioctl
-may return -EINVAL when the given input/output buffer size isn't
-aligned.
-
-A few new UMP-specific ioctls are added for obtaining the new UMP
-endpoint and block information.
-
-As of this commit, no ALSA sequencer instance is attached to UMP
-devices yet.  They will be supported by later patches.
-
-Along with those changes, the protocol version for rawmidi is bumped
-to 2.0.3.
+Until now, we access to the rawmidi substream directly from the
+driver via rawmidi access helpers, but after this change, the driver
+is supposed to access via the newly introduced snd_ump_ops and
+receive/transmit via snd_ump_receive() and snd_ump_transmit() helpers.
+As of this commit, those are merely wrappers for the rawmidi
+substream, and no much function change is seen here.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/rawmidi.h     |   8 ++
- include/sound/ump.h         | 118 ++++++++++++++++++
- include/uapi/sound/asound.h |  57 ++++++++-
- sound/core/Kconfig          |   4 +
- sound/core/Makefile         |   2 +
- sound/core/rawmidi.c        | 155 ++++++++++++++++--------
- sound/core/rawmidi_compat.c |   4 +
- sound/core/ump.c            | 231 ++++++++++++++++++++++++++++++++++++
- 8 files changed, 530 insertions(+), 49 deletions(-)
- create mode 100644 include/sound/ump.h
- create mode 100644 sound/core/ump.c
+ include/sound/ump.h |  14 ++++++
+ sound/core/ump.c    | 111 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/midi2.c   |  71 ++++++++++------------------
+ 3 files changed, 149 insertions(+), 47 deletions(-)
 
-diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
-index a53cd063412c..4d8fa8ca0127 100644
---- a/include/sound/rawmidi.h
-+++ b/include/sound/rawmidi.h
-@@ -64,6 +64,7 @@ struct snd_rawmidi_runtime {
- 	size_t avail_min;	/* min avail for wakeup */
- 	size_t avail;		/* max used buffer for wakeup */
- 	size_t xruns;		/* over/underruns counter */
-+	size_t align;		/* alignment (0 = byte stream, 3 = UMP) */
- 	int buffer_ref;		/* buffer reference count */
- 	/* misc */
- 	wait_queue_head_t sleep;
-@@ -149,6 +150,13 @@ int snd_rawmidi_new(struct snd_card *card, char *id, int device,
- void snd_rawmidi_set_ops(struct snd_rawmidi *rmidi, int stream,
- 			 const struct snd_rawmidi_ops *ops);
- 
-+/* internal */
-+int snd_rawmidi_init(struct snd_rawmidi *rmidi,
-+		     struct snd_card *card, char *id, int device,
-+		     int output_count, int input_count,
-+		     unsigned int info_flags);
-+int snd_rawmidi_free(struct snd_rawmidi *rmidi);
-+
- /* callbacks */
- 
- int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
 diff --git a/include/sound/ump.h b/include/sound/ump.h
-new file mode 100644
-index 000000000000..8a3ac97cd1d3
---- /dev/null
+index 8a3ac97cd1d3..6f786b462f16 100644
+--- a/include/sound/ump.h
 +++ b/include/sound/ump.h
-@@ -0,0 +1,118 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Universal MIDI Packet (UMP) Support
-+ */
-+#ifndef __SOUND_UMP_H
-+#define __SOUND_UMP_H
-+
-+#include <sound/rawmidi.h>
-+
-+struct snd_ump_endpoint;
-+struct snd_ump_block;
-+
-+struct snd_ump_endpoint {
-+	struct snd_rawmidi core;	/* raw UMP access */
-+
-+	struct snd_ump_endpoint_info info;
-+
-+	void *private_data;
-+	void (*private_free)(struct snd_ump_endpoint *ump);
-+
-+	struct list_head block_list;	/* list of snd_ump_block objects */
-+};
-+
-+struct snd_ump_block {
-+	struct snd_ump_block_info info;
-+	struct snd_ump_endpoint *ump;
-+
-+	void *private_data;
-+	void (*private_free)(struct snd_ump_block *blk);
-+
-+	struct list_head list;
-+};
-+
-+#define rawmidi_to_ump(rmidi)	container_of(rmidi, struct snd_ump_endpoint, core)
-+
-+int snd_ump_endpoint_new(struct snd_card *card, char *id, int device,
-+			 int output, int input,
-+			 struct snd_ump_endpoint **ump_ret);
-+int snd_ump_block_new(struct snd_ump_endpoint *ump, unsigned int blk,
-+		      unsigned int direction, unsigned int first_group,
-+		      unsigned int num_groups, struct snd_ump_block **blk_ret);
-+
-+/*
-+ * Some definitions for UMP
-+ */
-+
-+/* MIDI 2.0 Message Type */
-+enum {
-+	UMP_MSG_TYPE_UTILITY			= 0x00,
-+	UMP_MSG_TYPE_SYSTEM			= 0x01,
-+	UMP_MSG_TYPE_MIDI1_CHANNEL_VOICE	= 0x02,
-+	UMP_MSG_TYPE_DATA			= 0x03,
-+	UMP_MSG_TYPE_MIDI2_CHANNEL_VOICE	= 0x04,
-+	UMP_MSG_TYPE_EXTENDED_DATA		= 0x05,
-+};
-+
-+/* MIDI 2.0 SysEx / Data Status; same values for both 7-bit and 8-bit SysEx */
-+enum {
-+	UMP_SYSEX_STATUS_SINGLE			= 0,
-+	UMP_SYSEX_STATUS_START			= 1,
-+	UMP_SYSEX_STATUS_CONTINUE		= 2,
-+	UMP_SYSEX_STATUS_END			= 3,
-+};
-+
-+/*
-+ * Helpers for retrieving / filling bits from UMP
-+ */
-+/* get the message type (4bit) from a UMP packet (header) */
-+static inline unsigned char ump_message_type(u32 data)
-+{
-+	return data >> 28;
-+}
-+
-+/* get the group number (0-based, 4bit) from a UMP packet (header) */
-+static inline unsigned char ump_message_group(u32 data)
-+{
-+	return (data >> 24) & 0x0f;
-+}
-+
-+/* get the MIDI status code (4bit) from a UMP packet (header) */
-+static inline unsigned char ump_message_status_code(u32 data)
-+{
-+	return (data >> 20) & 0x0f;
-+}
-+
-+/* get the MIDI channel number (0-based, 4bit) from a UMP packet (header) */
-+static inline unsigned char ump_message_channel(u32 data)
-+{
-+	return (data >> 16) & 0x0f;
-+}
-+
-+/* get the MIDI status + channel combo byte (8bit) from a UMP packet (header) */
-+static inline unsigned char ump_message_status_channel(u32 data)
-+{
-+	return (data >> 16) & 0xff;
-+}
-+
-+/* compose a UMP packet (header) from type, group and status values */
-+static inline u32 ump_compose(unsigned char type, unsigned char group,
-+			      unsigned char status, unsigned char channel)
-+{
-+	return ((u32)type << 28) | ((u32)group << 24) | ((u32)status << 20) |
-+		((u32)channel << 16);
-+}
-+
-+/* get SysEx message status (for both 7 and 8bits) from a UMP packet (header) */
-+static inline unsigned char ump_sysex_message_status(u32 data)
-+{
-+	return (data >> 20) & 0xf;
-+}
-+
-+/* get SysEx message length (for both 7 and 8bits) from a UMP packet (header) */
-+static inline unsigned char ump_sysex_message_length(u32 data)
-+{
-+	return (data >> 16) & 0xf;
-+}
-+
-+#endif /* __SOUND_UMP_H */
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 0aa955aa8246..b001df4b335e 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -708,7 +708,7 @@ enum {
-  *  Raw MIDI section - /dev/snd/midi??
-  */
+@@ -9,18 +9,30 @@
  
--#define SNDRV_RAWMIDI_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 2)
-+#define SNDRV_RAWMIDI_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 3)
+ struct snd_ump_endpoint;
+ struct snd_ump_block;
++struct snd_ump_ops;
  
- enum {
- 	SNDRV_RAWMIDI_STREAM_OUTPUT = 0,
-@@ -719,6 +719,7 @@ enum {
- #define SNDRV_RAWMIDI_INFO_OUTPUT		0x00000001
- #define SNDRV_RAWMIDI_INFO_INPUT		0x00000002
- #define SNDRV_RAWMIDI_INFO_DUPLEX		0x00000004
-+#define SNDRV_RAWMIDI_INFO_UMP			0x00000008
+ struct snd_ump_endpoint {
+ 	struct snd_rawmidi core;	/* raw UMP access */
  
- struct snd_rawmidi_info {
- 	unsigned int device;		/* RO/WR (control): device number */
-@@ -779,6 +780,57 @@ struct snd_rawmidi_status {
+ 	struct snd_ump_endpoint_info info;
+ 
++	const struct snd_ump_ops *ops;	/* UMP ops set by the driver */
++	struct snd_rawmidi_substream *substreams[2];	/* opened substreams */
++
+ 	void *private_data;
+ 	void (*private_free)(struct snd_ump_endpoint *ump);
+ 
+ 	struct list_head block_list;	/* list of snd_ump_block objects */
  };
- #endif
  
-+/* UMP EP Protocol / JRTS capability bits */
-+#define SNDRV_UMP_EP_INFO_PROTO_MIDI_MASK	0x0300
-+#define SNDRV_UMP_EP_INFO_PROTO_MIDI1		0x0100 /* MIDI 1.0 */
-+#define SNDRV_UMP_EP_INFO_PROTO_MIDI2		0x0200 /* MIDI 2.0 */
-+#define SNDRV_UMP_EP_INFO_PROTO_JRTS_MASK	0x0003
-+#define SNDRV_UMP_EP_INFO_PROTO_JRTS_TX		0x0001 /* JRTS Transmit */
-+#define SNDRV_UMP_EP_INFO_PROTO_JRTS_RX		0x0002 /* JRTS Receive */
++/* ops filled by UMP drivers */
++struct snd_ump_ops {
++	int (*open)(struct snd_ump_endpoint *ump, int dir);
++	void (*close)(struct snd_ump_endpoint *ump, int dir);
++	void (*trigger)(struct snd_ump_endpoint *ump, int dir, int up);
++	void (*drain)(struct snd_ump_endpoint *ump, int dir);
++};
 +
-+/* UMP Endpoint information */
-+struct snd_ump_endpoint_info {
-+	int card;			/* card number */
-+	int device;			/* device number */
-+	unsigned int flags;		/* additional info */
-+	unsigned int protocol_caps;	/* protocol capabilities */
-+	unsigned int protocol;		/* current protocol */
-+	unsigned int num_blocks;	/* # of function blocks */
-+	unsigned short version;		/* UMP major/minor version */
-+	unsigned short padding[7];
-+	unsigned char name[128];	/* endpoint name string */
-+	unsigned char product_id[128];	/* unique product id string */
-+	unsigned char reserved[32];
-+} __packed;
-+
-+/* UMP direction */
-+#define SNDRV_UMP_DIR_INPUT		0x01
-+#define SNDRV_UMP_DIR_OUTPUT		0x02
-+#define SNDRV_UMP_DIR_BIDIRECTION	0x03
-+
-+/* UMP block info flags */
-+#define SNDRV_UMP_BLOCK_IS_MIDI1	(1U << 0) /* MIDI 1.0 port w/o restrict */
-+#define SNDRV_UMP_BLOCK_IS_LOWSPEED	(1U << 1) /* 31.25Kbps B/W MIDI1 port */
-+
-+/* UMP groups and blocks */
-+#define SNDRV_UMP_MAX_GROUPS		16
-+#define SNDRV_UMP_MAX_BLOCKS		32
-+
-+/* UMP Block information */
-+struct snd_ump_block_info {
-+	int card;			/* card number */
-+	int device;			/* device number */
-+	unsigned char block_id;		/* block ID (R/W) */
-+	unsigned char direction;	/* UMP direction */
-+	unsigned char active;		/* Activeness */
-+	unsigned char first_group;	/* first group ID */
-+	unsigned char num_groups;	/* number of groups */
-+	unsigned char padding[3];
-+	unsigned int flags;		/* various info flags */
-+	unsigned char name[128];	/* block name string */
-+	unsigned char reserved[32];
-+} __packed;
-+
- #define SNDRV_RAWMIDI_IOCTL_PVERSION	_IOR('W', 0x00, int)
- #define SNDRV_RAWMIDI_IOCTL_INFO	_IOR('W', 0x01, struct snd_rawmidi_info)
- #define SNDRV_RAWMIDI_IOCTL_USER_PVERSION _IOW('W', 0x02, int)
-@@ -786,6 +838,9 @@ struct snd_rawmidi_status {
- #define SNDRV_RAWMIDI_IOCTL_STATUS	_IOWR('W', 0x20, struct snd_rawmidi_status)
- #define SNDRV_RAWMIDI_IOCTL_DROP	_IOW('W', 0x30, int)
- #define SNDRV_RAWMIDI_IOCTL_DRAIN	_IOW('W', 0x31, int)
-+/* Additional ioctls for UMP rawmidi devices */
-+#define SNDRV_UMP_IOCTL_ENDPOINT_INFO	_IOR('W', 0x40, struct snd_ump_endpoint_info)
-+#define SNDRV_UMP_IOCTL_BLOCK_INFO	_IOR('W', 0x41, struct snd_ump_block_info)
+ struct snd_ump_block {
+ 	struct snd_ump_block_info info;
+ 	struct snd_ump_endpoint *ump;
+@@ -39,6 +51,8 @@ int snd_ump_endpoint_new(struct snd_card *card, char *id, int device,
+ int snd_ump_block_new(struct snd_ump_endpoint *ump, unsigned int blk,
+ 		      unsigned int direction, unsigned int first_group,
+ 		      unsigned int num_groups, struct snd_ump_block **blk_ret);
++int snd_ump_receive(struct snd_ump_endpoint *ump, const u32 *buffer, int count);
++int snd_ump_transmit(struct snd_ump_endpoint *ump, u32 *buffer, int count);
  
  /*
-  *  Timer section - /dev/snd/timer
-diff --git a/sound/core/Kconfig b/sound/core/Kconfig
-index 12990d9a4dff..eb1c6c930de9 100644
---- a/sound/core/Kconfig
-+++ b/sound/core/Kconfig
-@@ -26,6 +26,10 @@ config SND_RAWMIDI
- 	tristate
- 	select SND_SEQ_DEVICE if SND_SEQUENCER != n
- 
-+config SND_UMP
-+	tristate
-+	select SND_RAWMIDI
-+
- config SND_COMPRESS_OFFLOAD
- 	tristate
- 
-diff --git a/sound/core/Makefile b/sound/core/Makefile
-index 2762f03d9b7b..562a05edbc50 100644
---- a/sound/core/Makefile
-+++ b/sound/core/Makefile
-@@ -28,6 +28,7 @@ snd-pcm-dmaengine-objs := pcm_dmaengine.o
- 
- snd-ctl-led-objs  := control_led.o
- snd-rawmidi-objs  := rawmidi.o
-+snd-ump-objs      := ump.o
- snd-timer-objs    := timer.o
- snd-hrtimer-objs  := hrtimer.o
- snd-rtctimer-objs := rtctimer.o
-@@ -45,6 +46,7 @@ obj-$(CONFIG_SND_PCM)		+= snd-pcm.o
- obj-$(CONFIG_SND_DMAENGINE_PCM)	+= snd-pcm-dmaengine.o
- obj-$(CONFIG_SND_SEQ_DEVICE)	+= snd-seq-device.o
- obj-$(CONFIG_SND_RAWMIDI)	+= snd-rawmidi.o
-+obj-$(CONFIG_SND_UMP)		+= snd-ump.o
- 
- obj-$(CONFIG_SND_OSSEMUL)	+= oss/
- obj-$(CONFIG_SND_SEQUENCER)	+= seq/
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index 1415f559b5d0..ef478fcacb42 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -21,6 +21,7 @@
- #include <sound/control.h>
- #include <sound/minors.h>
- #include <sound/initval.h>
-+#include <sound/ump.h>
- 
- MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
- MODULE_DESCRIPTION("Midlevel RawMidi code for ALSA.");
-@@ -35,7 +36,6 @@ module_param_array(amidi_map, int, NULL, 0444);
- MODULE_PARM_DESC(amidi_map, "Raw MIDI device number assigned to 2nd OSS device.");
- #endif /* CONFIG_SND_OSSEMUL */
- 
--static int snd_rawmidi_free(struct snd_rawmidi *rmidi);
- static int snd_rawmidi_dev_free(struct snd_device *device);
- static int snd_rawmidi_dev_register(struct snd_device *device);
- static int snd_rawmidi_dev_disconnect(struct snd_device *device);
-@@ -73,6 +73,9 @@ struct snd_rawmidi_status64 {
- 
- #define SNDRV_RAWMIDI_IOCTL_STATUS64	_IOWR('W', 0x20, struct snd_rawmidi_status64)
- 
-+#define rawmidi_is_ump(rmidi) \
-+	(IS_ENABLED(CONFIG_SND_UMP) && ((rmidi)->info_flags & SNDRV_RAWMIDI_INFO_UMP))
-+
- static struct snd_rawmidi *snd_rawmidi_search(struct snd_card *card, int device)
- {
- 	struct snd_rawmidi *rawmidi;
-@@ -181,9 +184,23 @@ static int snd_rawmidi_runtime_create(struct snd_rawmidi_substream *substream)
- 	}
- 	runtime->appl_ptr = runtime->hw_ptr = 0;
- 	substream->runtime = runtime;
-+	if (rawmidi_is_ump(substream->rmidi))
-+		runtime->align = 3;
- 	return 0;
- }
- 
-+/* get the current alignment (either 0 or 3) */
-+static inline int get_align(struct snd_rawmidi_runtime *runtime)
-+{
-+	if (IS_ENABLED(CONFIG_SND_UMP))
-+		return runtime->align;
-+	else
-+		return 0;
-+}
-+
-+/* get the trimmed size with the current alignment */
-+#define get_aligned_size(runtime, size) ((size) & ~get_align(runtime))
-+
- static int snd_rawmidi_runtime_free(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_rawmidi_runtime *runtime = substream->runtime;
-@@ -721,6 +738,8 @@ static int resize_runtime_buffer(struct snd_rawmidi_substream *substream,
- 		return -EINVAL;
- 	if (params->avail_min < 1 || params->avail_min > params->buffer_size)
- 		return -EINVAL;
-+	if (params->buffer_size & get_align(runtime))
-+		return -EINVAL;
- 	if (params->buffer_size != runtime->buffer_size) {
- 		newbuf = kvzalloc(params->buffer_size, GFP_KERNEL);
- 		if (!newbuf)
-@@ -1045,12 +1064,13 @@ static int receive_with_tstamp_framing(struct snd_rawmidi_substream *substream,
- 	struct snd_rawmidi_framing_tstamp frame = { .tv_sec = tstamp->tv_sec, .tv_nsec = tstamp->tv_nsec };
- 	int orig_count = src_count;
- 	int frame_size = sizeof(struct snd_rawmidi_framing_tstamp);
-+	int align = get_align(runtime);
- 
- 	BUILD_BUG_ON(frame_size != 0x20);
- 	if (snd_BUG_ON((runtime->hw_ptr & 0x1f) != 0))
- 		return -EINVAL;
- 
--	while (src_count > 0) {
-+	while (src_count > align) {
- 		if ((int)(runtime->buffer_size - runtime->avail) < frame_size) {
- 			runtime->xruns += src_count;
- 			break;
-@@ -1058,7 +1078,9 @@ static int receive_with_tstamp_framing(struct snd_rawmidi_substream *substream,
- 		if (src_count >= SNDRV_RAWMIDI_FRAMING_DATA_LENGTH)
- 			frame.length = SNDRV_RAWMIDI_FRAMING_DATA_LENGTH;
- 		else {
--			frame.length = src_count;
-+			frame.length = get_aligned_size(runtime, src_count);
-+			if (!frame.length)
-+				break;
- 			memset(frame.data, 0, SNDRV_RAWMIDI_FRAMING_DATA_LENGTH);
- 		}
- 		memcpy(frame.data, buffer, frame.length);
-@@ -1122,6 +1144,10 @@ int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
- 		goto unlock;
- 	}
- 
-+	count = get_aligned_size(runtime, count);
-+	if (!count)
-+		goto unlock;
-+
- 	if (substream->framing == SNDRV_RAWMIDI_MODE_FRAMING_TSTAMP) {
- 		result = receive_with_tstamp_framing(substream, buffer, count, &ts64);
- 	} else if (count == 1) {	/* special case, faster code */
-@@ -1141,6 +1167,9 @@ int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
- 			count1 = count;
- 		if (count1 > (int)(runtime->buffer_size - runtime->avail))
- 			count1 = runtime->buffer_size - runtime->avail;
-+		count1 = get_aligned_size(runtime, count1);
-+		if (!count1)
-+			goto unlock;
- 		memcpy(runtime->buffer + runtime->hw_ptr, buffer, count1);
- 		runtime->hw_ptr += count1;
- 		runtime->hw_ptr %= runtime->buffer_size;
-@@ -1341,12 +1370,18 @@ static int __snd_rawmidi_transmit_peek(struct snd_rawmidi_substream *substream,
- 			count1 = count;
- 		if (count1 > (int)(runtime->buffer_size - runtime->avail))
- 			count1 = runtime->buffer_size - runtime->avail;
-+		count1 = get_aligned_size(runtime, count1);
-+		if (!count1)
-+			goto __skip;
- 		memcpy(buffer, runtime->buffer + runtime->hw_ptr, count1);
- 		count -= count1;
- 		result += count1;
- 		if (count > 0) {
- 			if (count > (int)(runtime->buffer_size - runtime->avail - count1))
- 				count = runtime->buffer_size - runtime->avail - count1;
-+			count = get_aligned_size(runtime, count);
-+			if (!count)
-+				goto __skip;
- 			memcpy(buffer + count1, runtime->buffer, count);
- 			result += count;
- 		}
-@@ -1403,6 +1438,7 @@ static int __snd_rawmidi_transmit_ack(struct snd_rawmidi_substream *substream,
- 		return -EINVAL;
- 	}
- 	snd_BUG_ON(runtime->avail + count > runtime->buffer_size);
-+	count = get_aligned_size(runtime, count);
- 	runtime->hw_ptr += count;
- 	runtime->hw_ptr %= runtime->buffer_size;
- 	runtime->avail += count;
-@@ -1689,6 +1725,9 @@ static void snd_rawmidi_proc_info_read(struct snd_info_entry *entry,
- 
- 	rmidi = entry->private_data;
- 	snd_iprintf(buffer, "%s\n\n", rmidi->name);
-+	if (IS_ENABLED(CONFIG_SND_UMP))
-+		snd_iprintf(buffer, "Type: %s\n",
-+			    rawmidi_is_ump(rmidi) ? "UMP" : "Legacy");
- 	mutex_lock(&rmidi->open_mutex);
- 	if (rmidi->info_flags & SNDRV_RAWMIDI_INFO_OUTPUT) {
- 		list_for_each_entry(substream,
-@@ -1799,6 +1838,56 @@ static void release_rawmidi_device(struct device *dev)
- 	kfree(container_of(dev, struct snd_rawmidi, dev));
- }
- 
-+/* used for both rawmidi and ump */
-+int snd_rawmidi_init(struct snd_rawmidi *rmidi,
-+		     struct snd_card *card, char *id, int device,
-+		     int output_count, int input_count,
-+		     unsigned int info_flags)
-+{
-+	int err;
-+	static const struct snd_device_ops ops = {
-+		.dev_free = snd_rawmidi_dev_free,
-+		.dev_register = snd_rawmidi_dev_register,
-+		.dev_disconnect = snd_rawmidi_dev_disconnect,
-+	};
-+
-+	rmidi->card = card;
-+	rmidi->device = device;
-+	mutex_init(&rmidi->open_mutex);
-+	init_waitqueue_head(&rmidi->open_wait);
-+	INIT_LIST_HEAD(&rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT].substreams);
-+	INIT_LIST_HEAD(&rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT].substreams);
-+	rmidi->info_flags = info_flags;
-+
-+	if (id != NULL)
-+		strscpy(rmidi->id, id, sizeof(rmidi->id));
-+
-+	snd_device_initialize(&rmidi->dev, card);
-+	rmidi->dev.release = release_rawmidi_device;
-+	if (rawmidi_is_ump(rmidi))
-+		dev_set_name(&rmidi->dev, "umpC%iD%i", card->number, device);
-+	else
-+		dev_set_name(&rmidi->dev, "midiC%iD%i", card->number, device);
-+
-+	err = snd_rawmidi_alloc_substreams(rmidi,
-+					   &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT],
-+					   SNDRV_RAWMIDI_STREAM_INPUT,
-+					   input_count);
-+	if (err < 0)
-+		return err;
-+	err = snd_rawmidi_alloc_substreams(rmidi,
-+					   &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT],
-+					   SNDRV_RAWMIDI_STREAM_OUTPUT,
-+					   output_count);
-+	if (err < 0)
-+		return err;
-+	err = snd_device_new(card, SNDRV_DEV_RAWMIDI, rmidi, &ops);
-+	if (err < 0)
-+		return err;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_rawmidi_init);
-+
- /**
-  * snd_rawmidi_new - create a rawmidi instance
-  * @card: the card instance
-@@ -1819,56 +1908,21 @@ int snd_rawmidi_new(struct snd_card *card, char *id, int device,
- {
- 	struct snd_rawmidi *rmidi;
- 	int err;
--	static const struct snd_device_ops ops = {
--		.dev_free = snd_rawmidi_dev_free,
--		.dev_register = snd_rawmidi_dev_register,
--		.dev_disconnect = snd_rawmidi_dev_disconnect,
--	};
- 
--	if (snd_BUG_ON(!card))
--		return -ENXIO;
- 	if (rrawmidi)
- 		*rrawmidi = NULL;
- 	rmidi = kzalloc(sizeof(*rmidi), GFP_KERNEL);
- 	if (!rmidi)
- 		return -ENOMEM;
--	rmidi->card = card;
--	rmidi->device = device;
--	mutex_init(&rmidi->open_mutex);
--	init_waitqueue_head(&rmidi->open_wait);
--	INIT_LIST_HEAD(&rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT].substreams);
--	INIT_LIST_HEAD(&rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT].substreams);
--
--	if (id != NULL)
--		strscpy(rmidi->id, id, sizeof(rmidi->id));
--
--	snd_device_initialize(&rmidi->dev, card);
--	rmidi->dev.release = release_rawmidi_device;
--	dev_set_name(&rmidi->dev, "midiC%iD%i", card->number, device);
--
--	err = snd_rawmidi_alloc_substreams(rmidi,
--					   &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT],
--					   SNDRV_RAWMIDI_STREAM_INPUT,
--					   input_count);
--	if (err < 0)
--		goto error;
--	err = snd_rawmidi_alloc_substreams(rmidi,
--					   &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT],
--					   SNDRV_RAWMIDI_STREAM_OUTPUT,
--					   output_count);
--	if (err < 0)
--		goto error;
--	err = snd_device_new(card, SNDRV_DEV_RAWMIDI, rmidi, &ops);
--	if (err < 0)
--		goto error;
--
-+	err = snd_rawmidi_init(rmidi, card, id, device,
-+			       output_count, input_count, 0);
-+	if (err < 0) {
-+		snd_rawmidi_free(rmidi);
-+		return err;
-+	}
- 	if (rrawmidi)
- 		*rrawmidi = rmidi;
- 	return 0;
--
-- error:
--	snd_rawmidi_free(rmidi);
--	return err;
- }
- EXPORT_SYMBOL(snd_rawmidi_new);
- 
-@@ -1883,7 +1937,8 @@ static void snd_rawmidi_free_substreams(struct snd_rawmidi_str *stream)
- 	}
- }
- 
--static int snd_rawmidi_free(struct snd_rawmidi *rmidi)
-+/* called from ump.c, too */
-+int snd_rawmidi_free(struct snd_rawmidi *rmidi)
- {
- 	if (!rmidi)
- 		return 0;
-@@ -1900,6 +1955,7 @@ static int snd_rawmidi_free(struct snd_rawmidi *rmidi)
- 	put_device(&rmidi->dev);
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(snd_rawmidi_free);
- 
- static int snd_rawmidi_dev_free(struct snd_device *device)
- {
-@@ -1950,7 +2006,8 @@ static int snd_rawmidi_dev_register(struct snd_device *device)
- 	}
- #ifdef CONFIG_SND_OSSEMUL
- 	rmidi->ossreg = 0;
--	if ((int)rmidi->device == midi_map[rmidi->card->number]) {
-+	if (!rawmidi_is_ump(rmidi) &&
-+	    (int)rmidi->device == midi_map[rmidi->card->number]) {
- 		if (snd_register_oss_device(SNDRV_OSS_DEVICE_TYPE_MIDI,
- 					    rmidi->card, 0, &snd_rawmidi_f_ops,
- 					    rmidi) < 0) {
-@@ -1964,7 +2021,8 @@ static int snd_rawmidi_dev_register(struct snd_device *device)
- #endif
- 		}
- 	}
--	if ((int)rmidi->device == amidi_map[rmidi->card->number]) {
-+	if (!rawmidi_is_ump(rmidi) &&
-+	    (int)rmidi->device == amidi_map[rmidi->card->number]) {
- 		if (snd_register_oss_device(SNDRV_OSS_DEVICE_TYPE_MIDI,
- 					    rmidi->card, 1, &snd_rawmidi_f_ops,
- 					    rmidi) < 0) {
-@@ -1988,7 +2046,8 @@ static int snd_rawmidi_dev_register(struct snd_device *device)
- 	}
- 	rmidi->proc_entry = entry;
- #if IS_ENABLED(CONFIG_SND_SEQUENCER)
--	if (!rmidi->ops || !rmidi->ops->dev_register) { /* own registration mechanism */
-+	/* no own registration mechanism? */
-+	if (!rmidi->ops || !rmidi->ops->dev_register) {
- 		if (snd_seq_device_new(rmidi->card, rmidi->device, SNDRV_SEQ_DEV_ID_MIDISYNTH, 0, &rmidi->seq_dev) >= 0) {
- 			rmidi->seq_dev->private_data = rmidi;
- 			rmidi->seq_dev->private_free = snd_rawmidi_dev_seq_free;
-diff --git a/sound/core/rawmidi_compat.c b/sound/core/rawmidi_compat.c
-index 68a93443583c..b81b30d82f88 100644
---- a/sound/core/rawmidi_compat.c
-+++ b/sound/core/rawmidi_compat.c
-@@ -111,6 +111,10 @@ static long snd_rawmidi_ioctl_compat(struct file *file, unsigned int cmd, unsign
- 	case SNDRV_RAWMIDI_IOCTL_INFO:
- 	case SNDRV_RAWMIDI_IOCTL_DROP:
- 	case SNDRV_RAWMIDI_IOCTL_DRAIN:
-+#if IS_ENABLED(CONFIG_SND_UMP)
-+	case SNDRV_UMP_IOCTL_ENDPOINT_INFO:
-+	case SNDRV_UMP_IOCTL_BLOCK_INFO:
-+#endif
- 		return snd_rawmidi_ioctl(file, cmd, (unsigned long)argp);
- 	case SNDRV_RAWMIDI_IOCTL_PARAMS32:
- 		return snd_rawmidi_ioctl_params_compat(rfile, argp);
+  * Some definitions for UMP
 diff --git a/sound/core/ump.c b/sound/core/ump.c
-new file mode 100644
-index 000000000000..b49720e2e206
---- /dev/null
+index 59cf564eb9fe..0d5ca95cd007 100644
+--- a/sound/core/ump.c
 +++ b/sound/core/ump.c
-@@ -0,0 +1,231 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Universal MIDI Packet (UMP) support
-+ */
-+
-+#include <linux/list.h>
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/export.h>
-+#include <linux/mm.h>
-+#include <sound/core.h>
-+#include <sound/rawmidi.h>
-+#include <sound/ump.h>
-+
-+#define ump_err(ump, fmt, args...)	dev_err(&(ump)->core.dev, fmt, ##args)
-+#define ump_warn(ump, fmt, args...)	dev_warn(&(ump)->core.dev, fmt, ##args)
-+#define ump_info(ump, fmt, args...)	dev_info(&(ump)->core.dev, fmt, ##args)
-+#define ump_dbg(ump, fmt, args...)	dev_dbg(&(ump)->core.dev, fmt, ##args)
-+
-+static int snd_ump_dev_register(struct snd_rawmidi *rmidi);
-+static int snd_ump_dev_unregister(struct snd_rawmidi *rmidi);
-+static long snd_ump_ioctl(struct snd_rawmidi_file *rfile, unsigned int cmd,
-+			  void __user *argp);
-+
-+static const struct snd_rawmidi_global_ops snd_ump_rawmidi_ops = {
-+	.dev_register = snd_ump_dev_register,
-+	.dev_unregister = snd_ump_dev_unregister,
-+	.ioctl = snd_ump_ioctl,
+@@ -23,6 +23,11 @@ static long snd_ump_ioctl(struct snd_rawmidi_file *rfile, unsigned int cmd,
+ 			  void __user *argp);
+ static void snd_ump_proc_read(struct snd_info_entry *entry,
+ 			      struct snd_info_buffer *buffer);
++static int snd_ump_rawmidi_open(struct snd_rawmidi_substream *substream);
++static int snd_ump_rawmidi_close(struct snd_rawmidi_substream *substream);
++static void snd_ump_rawmidi_trigger(struct snd_rawmidi_substream *substream,
++				    int up);
++static void snd_ump_rawmidi_drain(struct snd_rawmidi_substream *substream);
+ 
+ static const struct snd_rawmidi_global_ops snd_ump_rawmidi_ops = {
+ 	.dev_register = snd_ump_dev_register,
+@@ -31,6 +36,19 @@ static const struct snd_rawmidi_global_ops snd_ump_rawmidi_ops = {
+ 	.proc_read = snd_ump_proc_read,
+ };
+ 
++static const struct snd_rawmidi_ops snd_ump_rawmidi_input_ops = {
++	.open = snd_ump_rawmidi_open,
++	.close = snd_ump_rawmidi_close,
++	.trigger = snd_ump_rawmidi_trigger,
 +};
 +
-+static void snd_ump_endpoint_free(struct snd_rawmidi *rmidi)
-+{
-+	struct snd_ump_endpoint *ump = rawmidi_to_ump(rmidi);
-+	struct snd_ump_block *fb;
++static const struct snd_rawmidi_ops snd_ump_rawmidi_output_ops = {
++	.open = snd_ump_rawmidi_open,
++	.close = snd_ump_rawmidi_close,
++	.trigger = snd_ump_rawmidi_trigger,
++	.drain = snd_ump_rawmidi_drain,
++};
 +
-+	while (!list_empty(&ump->block_list)) {
-+		fb = list_first_entry(&ump->block_list, struct snd_ump_block,
-+				      list);
-+		list_del(&fb->list);
-+		if (fb->private_free)
-+			fb->private_free(fb);
-+		kfree(fb);
-+	}
-+
-+	if (ump->private_free)
-+		ump->private_free(ump);
-+}
-+
-+/**
-+ * snd_ump_endpoint_new - create a UMP Endpoint object
-+ * @card: the card instance
-+ * @id: the id string for rawmidi
-+ * @device: the device index for rawmidi
-+ * @output: 1 for enabling output
-+ * @input: 1 for enabling input
-+ * @ump_ret: the pointer to store the new UMP instance
-+ *
-+ * Creates a new UMP Endpoint object. A UMP Endpoint is tied with one rawmidi
-+ * instance with one input and/or one output rawmidi stream (either uni-
-+ * or bi-directional). A UMP Endpoint may contain one or multiple UMP Blocks
-+ * that consist of one or multiple UMP Groups.
-+ *
-+ * Use snd_rawmidi_set_ops() to set the operators to the new instance.
-+ * Unlike snd_rawmidi_new(), this function sets up the info_flags by itself
-+ * depending on the given @output and @input.
-+ *
-+ * The device has SNDRV_RAWMIDI_INFO_UMP flag set and a different device
-+ * file ("umpCxDx") than a standard MIDI 1.x device ("midiCxDx") is
-+ * created.
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
+ static void snd_ump_endpoint_free(struct snd_rawmidi *rmidi)
+ {
+ 	struct snd_ump_endpoint *ump = rawmidi_to_ump(rmidi);
+@@ -104,6 +122,12 @@ int snd_ump_endpoint_new(struct snd_card *card, char *id, int device,
+ 
+ 	ump->core.private_free = snd_ump_endpoint_free;
+ 	ump->core.ops = &snd_ump_rawmidi_ops;
++	if (input)
++		snd_rawmidi_set_ops(&ump->core, SNDRV_RAWMIDI_STREAM_INPUT,
++				    &snd_ump_rawmidi_input_ops);
++	if (output)
++		snd_rawmidi_set_ops(&ump->core, SNDRV_RAWMIDI_STREAM_OUTPUT,
++				    &snd_ump_rawmidi_output_ops);
+ 
+ 	ump_dbg(ump, "Created a UMP EP #%d (%s)\n", device, id);
+ 	*ump_ret = ump;
+@@ -137,6 +161,93 @@ snd_ump_get_block(struct snd_ump_endpoint *ump, unsigned char id)
+ 	return NULL;
+ }
+ 
++/*
++ * rawmidi ops for UMP endpoint
 + */
-+int snd_ump_endpoint_new(struct snd_card *card, char *id, int device,
-+			 int output, int input,
-+			 struct snd_ump_endpoint **ump_ret)
++static int snd_ump_rawmidi_open(struct snd_rawmidi_substream *substream)
 +{
-+	unsigned int info_flags = SNDRV_RAWMIDI_INFO_UMP;
-+	struct snd_ump_endpoint *ump;
++	struct snd_ump_endpoint *ump = rawmidi_to_ump(substream->rmidi);
++	int dir = substream->stream;
 +	int err;
 +
-+	if (input)
-+		info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+	if (output)
-+		info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+	if (input && output)
-+		info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
-+
-+	ump = kzalloc(sizeof(*ump), GFP_KERNEL);
-+	if (!ump)
-+		return -ENOMEM;
-+	INIT_LIST_HEAD(&ump->block_list);
-+	err = snd_rawmidi_init(&ump->core, card, id, device,
-+			       output, input, info_flags);
-+	if (err < 0) {
-+		snd_rawmidi_free(&ump->core);
++	if (ump->substreams[dir])
++		return -EBUSY;
++	err = ump->ops->open(ump, dir);
++	if (err < 0)
 +		return err;
-+	}
-+
-+	ump->info.card = card->number;
-+	ump->info.device = device;
-+
-+	ump->core.private_free = snd_ump_endpoint_free;
-+	ump->core.ops = &snd_ump_rawmidi_ops;
-+
-+	ump_dbg(ump, "Created a UMP EP #%d (%s)\n", device, id);
-+	*ump_ret = ump;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_ump_endpoint_new);
-+
-+/*
-+ * Device register / unregister hooks;
-+ *  do nothing, placeholders for avoiding the default rawmidi handling
-+ */
-+static int snd_ump_dev_register(struct snd_rawmidi *rmidi)
-+{
++	ump->substreams[dir] = substream;
 +	return 0;
 +}
 +
-+static int snd_ump_dev_unregister(struct snd_rawmidi *rmidi)
++static int snd_ump_rawmidi_close(struct snd_rawmidi_substream *substream)
 +{
++	struct snd_ump_endpoint *ump = rawmidi_to_ump(substream->rmidi);
++	int dir = substream->stream;
++
++	ump->substreams[dir] = NULL;
++	ump->ops->close(ump, dir);
 +	return 0;
 +}
 +
-+static struct snd_ump_block *
-+snd_ump_get_block(struct snd_ump_endpoint *ump, unsigned char id)
++static void snd_ump_rawmidi_trigger(struct snd_rawmidi_substream *substream,
++				    int up)
 +{
-+	struct snd_ump_block *fb;
++	struct snd_ump_endpoint *ump = rawmidi_to_ump(substream->rmidi);
++	int dir = substream->stream;
 +
-+	list_for_each_entry(fb, &ump->block_list, list) {
-+		if (fb->info.block_id == id)
-+			return fb;
-+	}
-+	return NULL;
++	ump->ops->trigger(ump, dir, up);
++}
++
++static void snd_ump_rawmidi_drain(struct snd_rawmidi_substream *substream)
++{
++	struct snd_ump_endpoint *ump = rawmidi_to_ump(substream->rmidi);
++
++	if (ump->ops->drain)
++		ump->ops->drain(ump, SNDRV_RAWMIDI_STREAM_OUTPUT);
 +}
 +
 +/**
-+ * snd_ump_block_new - Create a UMP block
-+ * @ump: UMP object
-+ * @blk: block ID number to create
-+ * @direction: direction (in/out/bidirection)
-+ * @first_group: the first group ID (0-based)
-+ * @num_groups: the number of groups in this block
-+ * @blk_ret: the pointer to store the resultant block object
++ * snd_ump_receive - transfer UMP packets from the device
++ * @ump: the UMP endpoint
++ * @buffer: the buffer pointer to transfer
++ * @count: byte size to transfer
++ *
++ * Called from the driver to submit the received UMP packets from the device
++ * to user-space.  It's essentially a wrapper of rawmidi_receive().
++ * The data to receive is in CPU-native endianness.
 + */
-+int snd_ump_block_new(struct snd_ump_endpoint *ump, unsigned int blk,
-+		      unsigned int direction, unsigned int first_group,
-+		      unsigned int num_groups, struct snd_ump_block **blk_ret)
++int snd_ump_receive(struct snd_ump_endpoint *ump, const u32 *buffer, int count)
 +{
-+	struct snd_ump_block *fb, *p;
++	struct snd_rawmidi_substream *substream =
++		ump->substreams[SNDRV_RAWMIDI_STREAM_INPUT];
 +
-+	if (blk < 0 || blk >= SNDRV_UMP_MAX_BLOCKS)
-+		return -EINVAL;
-+
-+	if (snd_ump_get_block(ump, blk))
-+		return -EBUSY;
-+
-+	fb = kzalloc(sizeof(*fb), GFP_KERNEL);
-+	if (!fb)
-+		return -ENOMEM;
-+
-+	fb->ump = ump;
-+	fb->info.card = ump->info.card;
-+	fb->info.device = ump->info.device;
-+	fb->info.block_id = blk;
-+	if (blk >= ump->info.num_blocks)
-+		ump->info.num_blocks = blk + 1;
-+	fb->info.direction = direction;
-+	fb->info.active = 1;
-+	fb->info.first_group = first_group;
-+	fb->info.num_groups = num_groups;
-+	/* fill the default name, may be overwritten to a better name */
-+	snprintf(fb->info.name, sizeof(fb->info.name), "Group %d-%d",
-+		 first_group + 1, first_group + num_groups);
-+
-+	/* put the entry in the ordered list */
-+	list_for_each_entry(p, &ump->block_list, list) {
-+		if (p->info.block_id > blk) {
-+			list_add_tail(&fb->list, &p->list);
-+			goto added;
-+		}
-+	}
-+	list_add_tail(&fb->list, &ump->block_list);
-+
-+ added:
-+	ump_dbg(ump, "Created a UMP Block #%d (%s)\n", blk, fb->info.name);
-+	*blk_ret = fb;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_ump_block_new);
-+
-+static int snd_ump_ioctl_block(struct snd_ump_endpoint *ump,
-+			       struct snd_ump_block_info __user *argp)
-+{
-+	struct snd_ump_block *fb;
-+	unsigned char id;
-+
-+	if (get_user(id, &argp->block_id))
-+		return -EFAULT;
-+	fb = snd_ump_get_block(ump, id);
-+	if (!fb)
-+		return -ENOENT;
-+	if (copy_to_user(argp, &fb->info, sizeof(fb->info)))
-+		return -EFAULT;
-+	return 0;
-+}
-+
-+/*
-+ * Handle UMP-specific ioctls; called from snd_rawmidi_ioctl()
-+ */
-+static long snd_ump_ioctl(struct snd_rawmidi_file *rfile, unsigned int cmd,
-+			  void __user *argp)
-+{
-+	struct snd_rawmidi *rmidi = rfile->rmidi;
-+	struct snd_ump_endpoint *ump = rawmidi_to_ump(rmidi);
-+
-+	switch (cmd) {
-+	case SNDRV_UMP_IOCTL_ENDPOINT_INFO:
-+		if (copy_to_user(argp, &ump->info, sizeof(ump->info)))
-+			return -EFAULT;
++	if (!substream)
 +		return 0;
-+	case SNDRV_UMP_IOCTL_BLOCK_INFO:
-+		return snd_ump_ioctl_block(ump, argp);
-+	default:
-+		ump_dbg(ump, "rawmidi: unknown command = 0x%x\n", cmd);
-+		return -ENOTTY;
-+	}
++	return snd_rawmidi_receive(substream, (const char *)buffer, count);
 +}
++EXPORT_SYMBOL_GPL(snd_ump_receive);
 +
-+MODULE_DESCRIPTION("Universal MIDI Packet (UMP) Core Driver");
-+MODULE_LICENSE("GPL");
++/**
++ * snd_ump_transmit - transmit UMP packets
++ * @ump: the UMP endpoint
++ * @buffer: the buffer pointer to transfer
++ * @count: byte size to transfer
++ *
++ * Called from the driver to obtain the UMP packets from user-space to the
++ * device.  It's essentially a wrapper of rawmidi_transmit().
++ * The data to transmit is in CPU-native endianness.
++ */
++int snd_ump_transmit(struct snd_ump_endpoint *ump, u32 *buffer, int count)
++{
++	struct snd_rawmidi_substream *substream =
++		ump->substreams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++
++	if (!substream)
++		return -ENODEV;
++	return snd_rawmidi_transmit(substream, (char *)buffer, count);
++}
++EXPORT_SYMBOL_GPL(snd_ump_transmit);
++
+ /**
+  * snd_ump_block_new - Create a UMP block
+  * @ump: UMP object
+diff --git a/sound/usb/midi2.c b/sound/usb/midi2.c
+index 886fd85fcd80..3502a4b7fa41 100644
+--- a/sound/usb/midi2.c
++++ b/sound/usb/midi2.c
+@@ -52,7 +52,8 @@ struct snd_usb_midi2_endpoint {
+ 	struct usb_device *dev;
+ 	const struct usb_ms20_endpoint_descriptor *ms_ep; /* reference to EP descriptor */
+ 	struct snd_usb_midi2_endpoint *pair;	/* bidirectional pair EP */
+-	struct snd_usb_midi2_ump *rmidi;	/* assigned UMP EP */
++	struct snd_usb_midi2_ump *rmidi;	/* assigned UMP EP pair */
++	struct snd_ump_endpoint *ump;		/* assigned UMP EP */
+ 	int direction;			/* direction (STR_IN/OUT) */
+ 	unsigned int endpoint;		/* EP number */
+ 	unsigned int pipe;		/* URB pipe */
+@@ -133,12 +134,8 @@ static int prepare_output_urb(struct snd_usb_midi2_endpoint *ep,
+ {
+ 	int count;
+ 
+-	if (ep->substream)
+-		count = snd_rawmidi_transmit(ep->substream,
+-					     urb->transfer_buffer,
+-					     ep->packets);
+-	else
+-		count = -ENODEV;
++	count = snd_ump_transmit(ep->ump, urb->transfer_buffer,
++				 ep->packets);
+ 	if (count < 0) {
+ 		dev_dbg(&ep->dev->dev, "rawmidi transmit error %d\n", count);
+ 		return count;
+@@ -197,9 +194,9 @@ static void input_urb_complete(struct urb *urb)
+ 	len &= ~3; /* align UMP */
+ 	if (len > ep->packets)
+ 		len = ep->packets;
+-	if (len > 0 && ep->substream) {
++	if (len > 0) {
+ 		le32_to_cpu_array((u32 *)urb->transfer_buffer, len >> 2);
+-		snd_rawmidi_receive(ep->substream, urb->transfer_buffer, len);
++		snd_ump_receive(ep->ump, (u32 *)urb->transfer_buffer, len);
+ 	}
+  dequeue:
+ 	set_bit(ctx->index, &ep->urb_free);
+@@ -330,68 +327,58 @@ static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
+ }
+ 
+ static struct snd_usb_midi2_endpoint *
+-substream_to_endpoint(struct snd_rawmidi_substream *substream)
++ump_to_endpoint(struct snd_ump_endpoint *ump, int dir)
+ {
+-	struct snd_ump_endpoint *ump = rawmidi_to_ump(substream->rmidi);
+ 	struct snd_usb_midi2_ump *rmidi = ump->private_data;
+ 
+-	return rmidi->eps[substream->stream];
++	return rmidi->eps[dir];
+ }
+ 
+-/* rawmidi open callback */
+-static int snd_usb_midi_v2_open(struct snd_rawmidi_substream *substream)
++/* ump open callback */
++static int snd_usb_midi_v2_open(struct snd_ump_endpoint *ump, int dir)
+ {
+-	struct snd_usb_midi2_endpoint *ep = substream_to_endpoint(substream);
++	struct snd_usb_midi2_endpoint *ep = ump_to_endpoint(ump, dir);
+ 	int err = 0;
+ 
+ 	if (!ep || !ep->endpoint)
+ 		return -ENODEV;
+ 	if (ep->disconnected)
+ 		return -EIO;
+-	if (ep->substream)
+-		return -EBUSY;
+ 	if (ep->direction == STR_OUT) {
+ 		err = alloc_midi_urbs(ep);
+ 		if (err)
+ 			return err;
+ 	}
+-	spin_lock_irq(&ep->lock);
+-	ep->substream = substream;
+-	spin_unlock_irq(&ep->lock);
+ 	return 0;
+ }
+ 
+-/* rawmidi close callback */
+-static int snd_usb_midi_v2_close(struct snd_rawmidi_substream *substream)
++/* ump close callback */
++static void snd_usb_midi_v2_close(struct snd_ump_endpoint *ump, int dir)
+ {
+-	struct snd_usb_midi2_endpoint *ep = substream_to_endpoint(substream);
++	struct snd_usb_midi2_endpoint *ep = ump_to_endpoint(ump, dir);
+ 
+-	spin_lock_irq(&ep->lock);
+-	ep->substream = NULL;
+-	spin_unlock_irq(&ep->lock);
+ 	if (ep->direction == STR_OUT) {
+ 		kill_midi_urbs(ep, false);
+ 		drain_urb_queue(ep);
+ 		free_midi_urbs(ep);
+ 	}
+-	return 0;
+ }
+ 
+-/* rawmidi trigger callback */
+-static void snd_usb_midi_v2_trigger(struct snd_rawmidi_substream *substream,
++/* ump trigger callback */
++static void snd_usb_midi_v2_trigger(struct snd_ump_endpoint *ump, int dir,
+ 				    int up)
+ {
+-	struct snd_usb_midi2_endpoint *ep = substream_to_endpoint(substream);
++	struct snd_usb_midi2_endpoint *ep = ump_to_endpoint(ump, dir);
+ 
+ 	atomic_set(&ep->running, up);
+ 	if (up && ep->direction == STR_OUT && !ep->disconnected)
+ 		submit_io_urbs(ep);
+ }
+ 
+-/* rawmidi drain callback */
+-static void snd_usb_midi_v2_drain(struct snd_rawmidi_substream *substream)
++/* ump drain callback */
++static void snd_usb_midi_v2_drain(struct snd_ump_endpoint *ump, int dir)
+ {
+-	struct snd_usb_midi2_endpoint *ep = substream_to_endpoint(substream);
++	struct snd_usb_midi2_endpoint *ep = ump_to_endpoint(ump, dir);
+ 
+ 	drain_urb_queue(ep);
+ }
+@@ -426,19 +413,13 @@ static int start_input_streams(struct snd_usb_midi2_interface *umidi)
+ 	return err;
+ }
+ 
+-static const struct snd_rawmidi_ops output_ops = {
++static const struct snd_ump_ops snd_usb_midi_v2_ump_ops = {
+ 	.open = snd_usb_midi_v2_open,
+ 	.close = snd_usb_midi_v2_close,
+ 	.trigger = snd_usb_midi_v2_trigger,
+ 	.drain = snd_usb_midi_v2_drain,
+ };
+ 
+-static const struct snd_rawmidi_ops input_ops = {
+-	.open = snd_usb_midi_v2_open,
+-	.close = snd_usb_midi_v2_close,
+-	.trigger = snd_usb_midi_v2_trigger,
+-};
+-
+ /* create a USB MIDI 2.0 endpoint object */
+ static int create_midi2_endpoint(struct snd_usb_midi2_interface *umidi,
+ 				 struct usb_host_endpoint *hostep,
+@@ -729,23 +710,19 @@ static int create_midi2_ump(struct snd_usb_midi2_interface *umidi,
+ 	umidi->chip->num_rawmidis++;
+ 
+ 	ump->private_data = rmidi;
+-
+-	if (input)
+-		snd_rawmidi_set_ops(&ump->core, SNDRV_RAWMIDI_STREAM_INPUT,
+-				    &input_ops);
+-	if (output)
+-		snd_rawmidi_set_ops(&ump->core, SNDRV_RAWMIDI_STREAM_OUTPUT,
+-				    &output_ops);
++	ump->ops = &snd_usb_midi_v2_ump_ops;
+ 
+ 	rmidi->eps[STR_IN] = ep_in;
+ 	rmidi->eps[STR_OUT] = ep_out;
+ 	if (ep_in) {
+ 		ep_in->pair = ep_out;
+ 		ep_in->rmidi = rmidi;
++		ep_in->ump = ump;
+ 	}
+ 	if (ep_out) {
+ 		ep_out->pair = ep_in;
+ 		ep_out->rmidi = rmidi;
++		ep_out->ump = ump;
+ 	}
+ 
+ 	list_add_tail(&rmidi->list, &umidi->rawmidi_list);
 -- 
 2.35.3
 
