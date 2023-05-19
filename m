@@ -4,97 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DD33C77B7A
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:34:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3C73C77B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:34:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9B98741;
-	Fri, 19 May 2023 11:33:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9B98741
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AC6C1EF;
+	Fri, 19 May 2023 11:33:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AC6C1EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684488861;
-	bh=vEQzrHo6VJEGfm5go/CkT90A0NC+14ni3kSvGMI7QN0=;
+	s=default; t=1684488884;
+	bh=ZfTlLAVnGSwkj6BU4oRkA+tnDMYpSqg9SDJQWYAkpsA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KUk08czH56/odkh5Wrpud6hCMugC/iFaGIpIG+wCVsQSOl549lrflbKo4oIDlRgEW
-	 P+hQo4flDDR689n2ecstEYHEmiuStlaXOm6kclhoU7Et/7PcPUemryLVKrE8ET4CMn
-	 u4mJRd8ywSxgsnTC8tZKUAS74vlg8TJF4qQ8ShfA=
+	b=KEiuAsPJfqDdsOPjaMfTT1SfzECKprV5X1nbhCa897vxlTU/e7g/uwwZFl6+61RlQ
+	 8hNBheX7KO9qJGs4kxLhsi3IF+ppc6tNEsY2JcSoaukV0TJh0f6E6d1KgDFU+x0bqC
+	 tQnni9qcEhEAi5+nM5cFu6z1Dn+oLVUHuLT0D2SA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B034F805E4; Fri, 19 May 2023 11:32:00 +0200 (CEST)
+	id 297AEF805F3; Fri, 19 May 2023 11:32:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE4EBF805D7;
-	Fri, 19 May 2023 11:31:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E2EBF805EC;
+	Fri, 19 May 2023 11:32:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 90FDAF805C0; Fri, 19 May 2023 11:31:50 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 9E950F805D3; Fri, 19 May 2023 11:31:54 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7CB53F8053D
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CB53F8053D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7B416F802E8
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B416F802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=ACI44F4l;
+ header.s=susede2_rsa header.b=WRDCCo36;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Q5wt7OjM
+ header.s=susede2_ed25519 header.b=tkG7mf5i
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2DFE01FE32;
-	Fri, 19 May 2023 09:31:34 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DC44522245;
+	Fri, 19 May 2023 09:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684488694;
+	t=1684488692;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ugcbMtUVSg/JEQCF/ffdQbD74DRPki/gHVZsQRV0nYo=;
-	b=ACI44F4lJ7x6KsD3jha2MvlCilQFDWrPPRA0ln6EcFVdt5gMSIggfV8sn9OU8nv/vkLn07
-	7oZdMXU/GmTGdJN7BycrJVqfy4Zbl1nUGBMct6RGsdZD6xZzIsgezzpBlZR5q1JvkjCbkl
-	BY7uY3IQE9ou0mGegyJxWOy+mawxfeM=
+	bh=KD7YWnTseeCmA9/lya6NWkpOQmQLFXmWvXorlxRfe6w=;
+	b=WRDCCo36I4iDKLAgXoNH5PuAPqoaG8l0FqCAE2wTTJ8L10KtFtlDnJgSyhLxU0wNc0W2Sg
+	NLW14shDBFdTV63YM5gCRGDEqwoNsHqYImhOiTFI8AheZ6lMfHThaKmuzPL7DhNehynRuw
+	eGKE3QWqkCNt5ljHRSTtDsOqr5XAEBY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684488694;
+	s=susede2_ed25519; t=1684488692;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ugcbMtUVSg/JEQCF/ffdQbD74DRPki/gHVZsQRV0nYo=;
-	b=Q5wt7OjMrkaLKqvvdlMbacT6kqY0pCj41ewRYNrLs05nEVM+wnqRcKxQg6LAG2sDnXTNQM
-	ZoS6KuuhpyuYpKBQ==
+	bh=KD7YWnTseeCmA9/lya6NWkpOQmQLFXmWvXorlxRfe6w=;
+	b=tkG7mf5ijUz+TFJU7byaqKn9OfYKhAEdOj3pAX97buMhFQOcJqP0IoDt15t5o2FC/519/L
+	5CKF6LgoQ4XwQEBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B84913A12;
-	Fri, 19 May 2023 09:31:34 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B1CBD13A12;
+	Fri, 19 May 2023 09:31:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 6GEOAvZBZ2RXJAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:34 +0000
+	id eGiQKvRBZ2RXJAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:32 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org
-Subject: [PATCH 07/36] ALSA: usb-audio: Define USB MIDI 2.0 specs
-Date: Fri, 19 May 2023 11:30:45 +0200
-Message-Id: <20230519093114.28813-8-tiwai@suse.de>
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH 05/36] ALSA: ump: Additional proc output
+Date: Fri, 19 May 2023 11:30:43 +0200
+Message-Id: <20230519093114.28813-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230519093114.28813-1-tiwai@suse.de>
 References: <20230519093114.28813-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KAEW6F4DFEL2KMOTBPYIFGMXZBPS7P6H
-X-Message-ID-Hash: KAEW6F4DFEL2KMOTBPYIFGMXZBPS7P6H
+Message-ID-Hash: N7DB5TVRVIDS5OAF2IWYJ4HH3BKGR3GC
+X-Message-ID-Hash: N7DB5TVRVIDS5OAF2IWYJ4HH3BKGR3GC
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KAEW6F4DFEL2KMOTBPYIFGMXZBPS7P6H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N7DB5TVRVIDS5OAF2IWYJ4HH3BKGR3GC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,120 +114,125 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Define new structs and constants from USB MIDI 2.0 specification,
-to be used in the upcoming MIDI 2.0 support in USB-audio driver.
+UMP devices may have more interesting information than the traditional
+rawmidi.  Extend the rawmidi_global_ops to allow the optional proc
+info output and show some more bits in the proc file for UMP.
 
-A new class-specific endpoint descriptor and group terminal block
-descriptors are defined.
+Note that the "Groups" field shows the first and the last UMP Groups,
+and both numbers are 1-based (i.e. the first group is 1).
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: <linux-usb@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/linux/usb/midi-v2.h | 94 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
- create mode 100644 include/linux/usb/midi-v2.h
+ include/sound/rawmidi.h |  3 +++
+ sound/core/rawmidi.c    |  2 ++
+ sound/core/ump.c        | 49 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 54 insertions(+)
 
-diff --git a/include/linux/usb/midi-v2.h b/include/linux/usb/midi-v2.h
-new file mode 100644
-index 000000000000..ebbffcae0417
---- /dev/null
-+++ b/include/linux/usb/midi-v2.h
-@@ -0,0 +1,94 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * <linux/usb/midi-v2.h> -- USB MIDI 2.0 definitions.
-+ */
+diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
+index 4d8fa8ca0127..96d5ab0056df 100644
+--- a/include/sound/rawmidi.h
++++ b/include/sound/rawmidi.h
+@@ -18,6 +18,7 @@
+ #if IS_ENABLED(CONFIG_SND_SEQUENCER)
+ #include <sound/seq_device.h>
+ #endif
++#include <sound/info.h>
+ 
+ /*
+  *  Raw MIDI interface
+@@ -50,6 +51,8 @@ struct snd_rawmidi_global_ops {
+ 			      struct snd_seq_port_info *info);
+ 	long (*ioctl)(struct snd_rawmidi_file *rfile, unsigned int cmd,
+ 		      void __user *argp);
++	void (*proc_read)(struct snd_info_entry *entry,
++			  struct snd_info_buffer *buf);
+ };
+ 
+ struct snd_rawmidi_runtime {
+diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+index 88595f54be79..d49e307f62e8 100644
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -1743,6 +1743,8 @@ static void snd_rawmidi_proc_info_read(struct snd_info_entry *entry,
+ 	if (IS_ENABLED(CONFIG_SND_UMP))
+ 		snd_iprintf(buffer, "Type: %s\n",
+ 			    rawmidi_is_ump(rmidi) ? "UMP" : "Legacy");
++	if (rmidi->ops->proc_read)
++		rmidi->ops->proc_read(entry, buffer);
+ 	mutex_lock(&rmidi->open_mutex);
+ 	if (rmidi->info_flags & SNDRV_RAWMIDI_INFO_OUTPUT) {
+ 		list_for_each_entry(substream,
+diff --git a/sound/core/ump.c b/sound/core/ump.c
+index b49720e2e206..59cf564eb9fe 100644
+--- a/sound/core/ump.c
++++ b/sound/core/ump.c
+@@ -21,11 +21,14 @@ static int snd_ump_dev_register(struct snd_rawmidi *rmidi);
+ static int snd_ump_dev_unregister(struct snd_rawmidi *rmidi);
+ static long snd_ump_ioctl(struct snd_rawmidi_file *rfile, unsigned int cmd,
+ 			  void __user *argp);
++static void snd_ump_proc_read(struct snd_info_entry *entry,
++			      struct snd_info_buffer *buffer);
+ 
+ static const struct snd_rawmidi_global_ops snd_ump_rawmidi_ops = {
+ 	.dev_register = snd_ump_dev_register,
+ 	.dev_unregister = snd_ump_dev_unregister,
+ 	.ioctl = snd_ump_ioctl,
++	.proc_read = snd_ump_proc_read,
+ };
+ 
+ static void snd_ump_endpoint_free(struct snd_rawmidi *rmidi)
+@@ -227,5 +230,51 @@ static long snd_ump_ioctl(struct snd_rawmidi_file *rfile, unsigned int cmd,
+ 	}
+ }
+ 
++static const char *ump_direction_string(int dir)
++{
++	switch (dir) {
++	case SNDRV_UMP_DIR_INPUT:
++		return "input";
++	case SNDRV_UMP_DIR_OUTPUT:
++		return "output";
++	case SNDRV_UMP_DIR_BIDIRECTION:
++		return "bidirection";
++	default:
++		return "unknown";
++	}
++}
 +
-+#ifndef __LINUX_USB_MIDI_V2_H
-+#define __LINUX_USB_MIDI_V2_H
++/* Additional proc file output */
++static void snd_ump_proc_read(struct snd_info_entry *entry,
++			      struct snd_info_buffer *buffer)
++{
++	struct snd_rawmidi *rmidi = entry->private_data;
++	struct snd_ump_endpoint *ump = rawmidi_to_ump(rmidi);
++	struct snd_ump_block *fb;
 +
-+#include <linux/types.h>
-+#include <linux/usb/midi.h>
++	snd_iprintf(buffer, "EP Name: %s\n", ump->info.name);
++	snd_iprintf(buffer, "EP Product ID: %s\n", ump->info.product_id);
++	snd_iprintf(buffer, "UMP Version: 0x%04x\n", ump->info.version);
++	snd_iprintf(buffer, "Protocol Caps: 0x%08x\n", ump->info.protocol_caps);
++	snd_iprintf(buffer, "Protocol: 0x%08x\n", ump->info.protocol);
++	snd_iprintf(buffer, "Num Blocks: %d\n\n", ump->info.num_blocks);
 +
-+/* A.1 MS Class-Specific Interface Descriptor Types */
-+#define USB_DT_CS_GR_TRM_BLOCK	0x26
++	list_for_each_entry(fb, &ump->block_list, list) {
++		snd_iprintf(buffer, "Block %d (%s)\n", fb->info.block_id,
++			    fb->info.name);
++		snd_iprintf(buffer, "  Direction: %s\n",
++			    ump_direction_string(fb->info.direction));
++		snd_iprintf(buffer, "  Active: %s\n",
++			    fb->info.active ? "Yes" : "No");
++		snd_iprintf(buffer, "  Groups: %d-%d\n",
++			    fb->info.first_group + 1,
++			    fb->info.first_group + fb->info.num_groups);
++		snd_iprintf(buffer, "  Is MIDI1: %s%s\n",
++			    (fb->info.flags & SNDRV_UMP_BLOCK_IS_MIDI1) ? "Yes" : "No",
++			    (fb->info.flags & SNDRV_UMP_BLOCK_IS_LOWSPEED) ? " (Low Speed)" : "");
++		snd_iprintf(buffer, "\n");
++	}
++}
 +
-+/* A.1 MS Class-Specific Interface Descriptor Subtypes */
-+/* same as MIDI 1.0 */
-+
-+/* A.2 MS Class-Specific Endpoint Descriptor Subtypes */
-+#define USB_MS_GENERAL_2_0	0x02
-+
-+/* A.3 MS Class-Specific Group Terminal Block Descriptor Subtypes */
-+#define USB_MS_GR_TRM_BLOCK_UNDEFINED	0x00
-+#define USB_MS_GR_TRM_BLOCK_HEADER	0x01
-+#define USB_MS_GR_TRM_BLOCK		0x02
-+
-+/* A.4 MS Interface Header MIDIStreaming Class Revision */
-+#define USB_MS_REV_MIDI_1_0		0x0100
-+#define USB_MS_REV_MIDI_2_0		0x0200
-+
-+/* A.5 MS MIDI IN and OUT Jack Types */
-+/* same as MIDI 1.0 */
-+
-+/* A.6 Group Terminal Block Types */
-+#define USB_MS_GR_TRM_BLOCK_TYPE_BIDIRECTIONAL	0x00
-+#define USB_MS_GR_TRM_BLOCK_TYPE_INPUT_ONLY	0x01
-+#define USB_MS_GR_TRM_BLOCK_TYPE_OUTPUT_ONLY	0x02
-+
-+/* A.7 Group Terminal Default MIDI Protocol */
-+#define USB_MS_MIDI_PROTO_UNKNOWN	0x00 /* Unknown (Use MIDI-CI) */
-+#define USB_MS_MIDI_PROTO_1_0_64	0x01 /* MIDI 1.0, UMP up to 64bits */
-+#define USB_MS_MIDI_PROTO_1_0_64_JRTS	0x02 /* MIDI 1.0, UMP up to 64bits, Jitter Reduction Timestamps */
-+#define USB_MS_MIDI_PROTO_1_0_128	0x03 /* MIDI 1.0, UMP up to 128bits */
-+#define USB_MS_MIDI_PROTO_1_0_128_JRTS	0x04 /* MIDI 1.0, UMP up to 128bits, Jitter Reduction Timestamps */
-+#define USB_MS_MIDI_PROTO_2_0		0x11 /* MIDI 2.0 */
-+#define USB_MS_MIDI_PROTO_2_0_JRTS	0x12 /* MIDI 2.0, Jitter Reduction Timestamps */
-+
-+/* 5.2.2.1 Class-Specific MS Interface Header Descriptor */
-+/* Same as MIDI 1.0, use struct usb_ms_header_descriptor */
-+
-+/* 5.3.2 Class-Specific MIDI Streaming Data Endpoint Descriptor */
-+struct usb_ms20_endpoint_descriptor {
-+	__u8  bLength;			/* 4+n */
-+	__u8  bDescriptorType;		/* USB_DT_CS_ENDPOINT */
-+	__u8  bDescriptorSubtype;	/* USB_MS_GENERAL_2_0 */
-+	__u8  bNumGrpTrmBlock;		/* Number of Group Terminal Blocks: n */
-+	__u8  baAssoGrpTrmBlkID[];	/* ID of the Group Terminal Blocks [n] */
-+} __packed;
-+
-+#define USB_DT_MS20_ENDPOINT_SIZE(n)	(4 + (n))
-+
-+/* As above, but more useful for defining your own descriptors: */
-+#define DECLARE_USB_MS20_ENDPOINT_DESCRIPTOR(n)			\
-+struct usb_ms20_endpoint_descriptor_##n {			\
-+	__u8  bLength;						\
-+	__u8  bDescriptorType;					\
-+	__u8  bDescriptorSubtype;				\
-+	__u8  bNumGrpTrmBlock;					\
-+	__u8  baAssoGrpTrmBlkID[n];				\
-+} __packed
-+
-+/* 5.4.1 Class-Specific Group Terminal Block Header Descriptor */
-+struct usb_ms20_gr_trm_block_header_descriptor {
-+	__u8  bLength;			/* 5 */
-+	__u8  bDescriptorType;		/* USB_DT_CS_GR_TRM_BLOCK */
-+	__u8  bDescriptorSubtype;	/* USB_MS_GR_TRM_BLOCK_HEADER */
-+	__u16 wTotalLength;		/* Total number of bytes */
-+} __packed;
-+
-+/* 5.4.2.1 Group Terminal Block Descriptor */
-+struct usb_ms20_gr_trm_block_descriptor {
-+	__u8  bLength;			/* 13 */
-+	__u8  bDescriptorType;		/* USB_DT_CS_GR_TRM_BLOCK */
-+	__u8  bDescriptorSubtype;	/* USB_MS_GR_TRM_BLOCK */
-+	__u8  bGrpTrmBlkID;		/* ID of this Group Terminal Block */
-+	__u8  bGrpTrmBlkType;		/* Group Terminal Block Type */
-+	__u8  nGroupTrm;		/* The first member Group Terminal in this block */
-+	__u8  nNumGroupTrm;		/* Number of member Group Terminals spanned */
-+	__u8  iBlockItem;		/* String ID of Block item */
-+	__u8  bMIDIProtocol;		/* Default MIDI protocol */
-+	__u16 wMaxInputBandwidth;	/* Max input bandwidth capability in 4kB/s */
-+	__u16 wMaxOutputBandwidth;	/* Max output bandwidth capability in 4kB/s */
-+} __packed;
-+
-+#endif /* __LINUX_USB_MIDI_V2_H */
+ MODULE_DESCRIPTION("Universal MIDI Packet (UMP) Core Driver");
+ MODULE_LICENSE("GPL");
 -- 
 2.35.3
 
