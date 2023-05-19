@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0586CC77B7A
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 11:55:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2749C77B7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 11:56:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E57D200;
-	Fri, 19 May 2023 13:55:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E57D200
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32F046C1;
+	Fri, 19 May 2023 13:55:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32F046C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684497357;
-	bh=A8K2XBww0D1RGauwWboUB5sBHSTpiKch0bvCIXJ0u+s=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=eJtjtvh2w38kaBTctpVM+e4zqkdXjOrNRkEmPJ2QfNqBGBI7wFX7utRBDxAqKpZnJ
-	 gVcLfspGnnYr+HjDoYyQV3djUXOf69ciNMKCZqg6EDYRKTJTuWseiWbsOdDFfY7QY4
-	 kt6P2QYw776a9gqehbu+wS/pvMhV0iVGRttpKTps=
+	s=default; t=1684497408;
+	bh=lobxPCKWfcsY0E/0K7qViyiItbMxfZAYDogS+Iul9ZM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=qs61P/N7C5J8oSyZkyFLGZtMbSm8vycqAOaIGkT/mLuPvmEBj6U/9t0TOg1eD45Jw
+	 hie0ST6sjjEGTTk8lirky8nV4Rl8tr1LzEyzzrYZ2k0tHoQMXppu4tOdilNmHv9zXv
+	 VK5yORtnOGFOMKBTi7mlbWZhSaiY7OSXONV/wWhI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C8BCF80551; Fri, 19 May 2023 13:55:07 +0200 (CEST)
+	id 8A24BF8016D; Fri, 19 May 2023 13:55:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99D07F8025A;
-	Fri, 19 May 2023 13:55:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5734F8055C;
+	Fri, 19 May 2023 13:55:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 77FBFF80087; Fri, 19 May 2023 13:55:02 +0200 (CEST)
+	id 5FC2BF8053D; Fri, 19 May 2023 13:55:04 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 33BE9F80087
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 13:54:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33BE9F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 33B34F80272
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 13:55:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33B34F80272
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=JpCJfnvt
+ header.s=Intel header.b=PUIq200n
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684497299; x=1716033299;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=A8K2XBww0D1RGauwWboUB5sBHSTpiKch0bvCIXJ0u+s=;
-  b=JpCJfnvtmZmvdsU5nQ1B0CkOczthg4H038ph0E9Z0+Bg9KcGKsMoHD+f
-   OZAD+aEAmvStvTzaL9hnK5/3k20lkJS0B6o0J/v1p3ibA8WhM37EF9anH
-   ulzL45+j++dAvWq+GLWwfKdVRxSNob9grRSJwscIe9YvE3I4aLk+SEOhj
-   mwDghVbfvnvTpzjJteyCV5B4J29kTiunmnskeZxvXQS/j2mDHfmxqqSCa
-   X8fQ2C4uvzMucg91iDW3zGULaWfPOQiwrdSX6p1BX0VTPgqw1iBHJGrmc
-   IM0Uy0yVwGu4eDJCPWAd3NEDjEgzb9y8ARA8o1m4luxSbH7bo6n6up9Fr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="336946010"
+  t=1684497301; x=1716033301;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=lobxPCKWfcsY0E/0K7qViyiItbMxfZAYDogS+Iul9ZM=;
+  b=PUIq200nWpUuB6CidUX/14tKi1rnabjKz5W9c0Za5aAVQOGzvAZ/XcZF
+   Z83EMsaE/D9Y9/p8gQHrsphUUG2orKc6ctk10HDvmJEJS3+3LrxI7ehFQ
+   a0TPCHPNhy+LyG3OrFKdzsff5kt27ZPl6FHyU1D91yq6+sf6fwkwRpwl2
+   JewzpIGiorX9d+m4NHX9/Z9B5IpwKgfdKr398pCMRCXoNBT06uv7SL4Us
+   N9G2XjeKhna/t4KeEz741cWva27oLt9D9wB4aPFE+ZtxQ5S1OzEphYWKc
+   vnqCvKNbliuBvdehSrmfly9aPeJ61YvORv3mpnX/2V0wH33Sqj2vQ3QIJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="336946034"
 X-IronPort-AV: E=Sophos;i="6.00,176,1681196400";
-   d="scan'208";a="336946010"
+   d="scan'208";a="336946034"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 May 2023 04:54:53 -0700
+ 19 May 2023 04:54:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="705593773"
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="705593802"
 X-IronPort-AV: E=Sophos;i="6.00,176,1681196400";
-   d="scan'208";a="705593773"
+   d="scan'208";a="705593802"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by fmsmga007.fm.intel.com with ESMTP; 19 May 2023 04:54:51 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 19 May 2023 04:54:56 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -73,15 +74,17 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	alsa-devel@alsa-project.org,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 0/5] ASoC: topology: Clean up error messages handling
-Date: Fri, 19 May 2023 21:56:06 +0200
-Message-Id: <20230519195611.4068853-1-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 2/5] ASoC: topology: Remove redundant logs
+Date: Fri, 19 May 2023 21:56:08 +0200
+Message-Id: <20230519195611.4068853-3-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230519195611.4068853-1-amadeuszx.slawinski@linux.intel.com>
+References: <20230519195611.4068853-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GXNEFZ74FN4F7VIPJRJITGXIYG4KP3DP
-X-Message-ID-Hash: GXNEFZ74FN4F7VIPJRJITGXIYG4KP3DP
+Message-ID-Hash: PDOHZCGLUSZQ2NRG2NZQ2ZXVG25LXPVC
+X-Message-ID-Hash: PDOHZCGLUSZQ2NRG2NZQ2ZXVG25LXPVC
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,30 +97,62 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GXNEFZ74FN4F7VIPJRJITGXIYG4KP3DP/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PDOHZCGLUSZQ2NRG2NZQ2ZXVG25LXPVC/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Series of patches cleaning up error messages when loading topology. In
-few places instead of logging in place of failure message is logged in
-caller. Additionally there are places where both caller and failing
-function log error, leading to unnecessary logs. Clean all of the above
-up.
+soc_tplg_add_kcontrol() logs all the failures in detail already.
 
-Amadeusz Sławiński (5):
-  ASoC: topology: Log control load errors in soc_tplg_control_load()
-  ASoC: topology: Remove redundant logs
-  ASoC: topology: Do not split message string on multiple lines
-  ASoC: topology: Remove redundant log
-  ASoC: topology: Remove redundant log
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ sound/soc/soc-topology.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
- sound/soc/soc-topology.c | 63 ++++++++++++----------------------------
- 1 file changed, 19 insertions(+), 44 deletions(-)
-
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 242abbd875fa..b5c47b3c63ab 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -700,10 +700,8 @@ static int soc_tplg_dbytes_create(struct soc_tplg *tplg, size_t size)
+ 
+ 	/* register control here */
+ 	ret = soc_tplg_add_kcontrol(tplg, &kc, &sbe->dobj.control.kcontrol);
+-	if (ret < 0) {
+-		dev_err(tplg->dev, "ASoC: failed to add %s\n", be->hdr.name);
++	if (ret < 0)
+ 		goto err;
+-	}
+ 
+ 	list_add(&sbe->dobj.list, &tplg->comp->dobj_list);
+ 
+@@ -783,10 +781,8 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, size_t size)
+ 
+ 	/* register control here */
+ 	ret = soc_tplg_add_kcontrol(tplg, &kc, &sm->dobj.control.kcontrol);
+-	if (ret < 0) {
+-		dev_err(tplg->dev, "ASoC: failed to add %s\n", mc->hdr.name);
++	if (ret < 0)
+ 		goto err;
+-	}
+ 
+ 	list_add(&sm->dobj.list, &tplg->comp->dobj_list);
+ 
+@@ -950,10 +946,8 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, size_t size)
+ 
+ 	/* register control here */
+ 	ret = soc_tplg_add_kcontrol(tplg, &kc, &se->dobj.control.kcontrol);
+-	if (ret < 0) {
+-		dev_err(tplg->dev, "ASoC: could not add kcontrol %s\n", ec->hdr.name);
++	if (ret < 0)
+ 		goto err;
+-	}
+ 
+ 	list_add(&se->dobj.list, &tplg->comp->dobj_list);
+ 
 -- 
 2.34.1
 
