@@ -4,95 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E32A0C77B7A
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 054E4C77B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:33:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1D8B7F1;
-	Fri, 19 May 2023 11:32:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1D8B7F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18CD33E8;
+	Fri, 19 May 2023 11:33:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18CD33E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684488812;
-	bh=Sf9FvMiP8L6tWbFHNml8oAJ2F/TjV23LaU7q1tlrWyg=;
+	s=default; t=1684488833;
+	bh=MIu2LVGfRc4CuyQhqDI2q2lD/1XkIJ7qQld12QKA19o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CMrj60EXgQucwyd1X5c4YQx2+x92sia0knwP4KmMkeIWbrqBa4hjqG3Zp4uBnlRbq
-	 UAtnsUamcRkTczPiztKKawqJyVijygvZa2ynz8N+H/Df3i5Dlbaoi98CBwGj0+i0F9
-	 O81mV6a3qK8aKWnpOyl7MvhLRL8GeNcE3mYjX7H8=
+	b=tvhj9WqdIH0A9kwCHAh+rsPTQUe2zhorX6vWfBPNMPjoX+e4fyRUFiHF5958l7YaT
+	 cSZTzV4Zu2GafeCz3AiGRRRfiMPzcOkBFIb4/8C2bUa72EN0p001OKKpSiuRS3hekq
+	 lIG0pGqhn0q4zjeDs3MWAbunqxYsUyH+bYs6N/Dw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D49D5F805BA; Fri, 19 May 2023 11:31:50 +0200 (CEST)
+	id 98B44F805D2; Fri, 19 May 2023 11:31:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3827EF805AE;
-	Fri, 19 May 2023 11:31:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEC91F805C4;
+	Fri, 19 May 2023 11:31:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C2AFF8057C; Fri, 19 May 2023 11:31:43 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 510CDF8057E; Fri, 19 May 2023 11:31:45 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E4855F80431
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4855F80431
+	by alsa1.perex.cz (Postfix) with ESMTPS id 70F2FF8024E
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70F2FF8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=010Z4dR8;
+ header.s=susede2_rsa header.b=lqHWSIdl;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=vfTrElv0
+ header.s=susede2_ed25519 header.b=chulj10a
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 79970222AD;
-	Fri, 19 May 2023 09:31:33 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3A50E222CF;
+	Fri, 19 May 2023 09:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684488693;
+	t=1684488692;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ll/2d540Z78VxthKEG5YG2svlhy25Sgr67hqVjDbpbw=;
-	b=010Z4dR8alfZjOeQTL3TpeVs8UxbGqiczktAQv9vxE/wuR1f2mR7QvYIC4Pm7XlYmyVjsa
-	jSl3Dll+X3FRuAkg7hMZ5TcdGM2SpoooVQjP64MWnNVukrSp6W8wVIUcYFTw3tgIszhTT3
-	zJneURHI5qOxZPoPaaOBIfzD8ZC7ils=
+	bh=JrvZBp3duWzOF/YKdFpWaRkynnXU2qOujSPsuLV9yfY=;
+	b=lqHWSIdl/8hQndJ+5qg94TmjWd5gN6NM+ArmNHBw0UHF1SSmqlp9BeUY6h2TJQqEUQzoF0
+	NwL/nfm7fq/ZBYX2HTZlgw6HfxJ2XCD99PBF0f2U+aNlyaAuLhSXPHNlHZ5+kp+Zo8diB3
+	WQhLj44eMwdbmUmE8dZ2xQNSy2ByR0Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684488693;
+	s=susede2_ed25519; t=1684488692;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ll/2d540Z78VxthKEG5YG2svlhy25Sgr67hqVjDbpbw=;
-	b=vfTrElv0WCZ1aZkS1CWiKEuSq+NdenBgMfwZiU6oYfREKIL6KNSy97gRNGOGDYmFO0onWk
-	LEfB+PKVS1TFOMAw==
+	bh=JrvZBp3duWzOF/YKdFpWaRkynnXU2qOujSPsuLV9yfY=;
+	b=chulj10akq9lW2XPP+dGPLfacHRdue/4BSCyNM7gXSoO43HyVw/MQCJWusChrDnmxu5Fz8
+	jMH+nM7mUmw/XXCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D92613A12;
-	Fri, 19 May 2023 09:31:33 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CBC813A12;
+	Fri, 19 May 2023 09:31:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id YPUMFvVBZ2RXJAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:33 +0000
+	id CGAtBvRBZ2RXJAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:32 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 06/36] ALSA: usb-audio: Manage number of rawmidis globally
-Date: Fri, 19 May 2023 11:30:44 +0200
-Message-Id: <20230519093114.28813-7-tiwai@suse.de>
+Subject: [PATCH 04/36] ALSA: rawmidi: Skip UMP devices at
+ SNDRV_CTL_IOCTL_RAWMIDI_NEXT_DEVICE
+Date: Fri, 19 May 2023 11:30:42 +0200
+Message-Id: <20230519093114.28813-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230519093114.28813-1-tiwai@suse.de>
 References: <20230519093114.28813-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YLQNYKGILUHBGJ7KJTC7MHKIWEFWOYYP
-X-Message-ID-Hash: YLQNYKGILUHBGJ7KJTC7MHKIWEFWOYYP
+Message-ID-Hash: ILGSWCT6X7UGBYW6TG4C4RJDTBDCT3BG
+X-Message-ID-Hash: ILGSWCT6X7UGBYW6TG4C4RJDTBDCT3BG
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,8 +106,7 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YLQNYKGILUHBGJ7KJTC7MHKIWEFWOYYP/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,119 +115,108 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We're going to create rawmidi objects for MIDI 2.0 in a different code
-from the current code for USB-MIDI 1.0.  As a preliminary work, this
-patch adds the number of rawmidi objects to keep globally in a
-USB-audio card instance, so that it can be referred from both MIDI 1.0
-and 2.0 code.
+Applications may look for rawmidi devices with the ioctl
+SNDRV_CTL_IOCTL_RAWMIDI_NEXT_DEVICE.  Returning a UMP device from this
+ioctl may confuse the existing applications that support only the
+legacy rawmidi.
+
+This patch changes the code to skip the UMP devices from the lookup
+for avoiding the confusion, and introduces a new ioctl to look for the
+UMP devices instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/card.c     | 5 +++--
- sound/usb/midi.c     | 7 ++++++-
- sound/usb/midi.h     | 5 +++--
- sound/usb/quirks.c   | 5 +++--
- sound/usb/usbaudio.h | 1 +
- 5 files changed, 16 insertions(+), 7 deletions(-)
+ include/uapi/sound/asound.h |  1 +
+ sound/core/rawmidi.c        | 57 +++++++++++++++++++++++--------------
+ 2 files changed, 37 insertions(+), 21 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index f6e99ced8068..bd051e634516 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -179,8 +179,9 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
- 	     altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC) &&
- 	    altsd->bInterfaceSubClass == USB_SUBCLASS_MIDISTREAMING) {
- 		int err = __snd_usbmidi_create(chip->card, iface,
--					     &chip->midi_list, NULL,
--					     chip->usb_id);
-+					       &chip->midi_list, NULL,
-+					       chip->usb_id,
-+					       &chip->num_rawmidis);
- 		if (err < 0) {
- 			dev_err(&dev->dev,
- 				"%u:%d: cannot create sequencer device\n",
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index 2839f6b6f09b..6b0993258e03 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -2461,7 +2461,8 @@ int __snd_usbmidi_create(struct snd_card *card,
- 			 struct usb_interface *iface,
- 			 struct list_head *midi_list,
- 			 const struct snd_usb_audio_quirk *quirk,
--			 unsigned int usb_id)
-+			 unsigned int usb_id,
-+			 unsigned int *num_rawmidis)
- {
- 	struct snd_usb_midi *umidi;
- 	struct snd_usb_midi_endpoint_info endpoints[MIDI_MAX_ENDPOINTS];
-@@ -2476,6 +2477,8 @@ int __snd_usbmidi_create(struct snd_card *card,
- 	umidi->iface = iface;
- 	umidi->quirk = quirk;
- 	umidi->usb_protocol_ops = &snd_usbmidi_standard_ops;
-+	if (num_rawmidis)
-+		umidi->next_midi_device = *num_rawmidis;
- 	spin_lock_init(&umidi->disc_lock);
- 	init_rwsem(&umidi->disc_rwsem);
- 	mutex_init(&umidi->mutex);
-@@ -2595,6 +2598,8 @@ int __snd_usbmidi_create(struct snd_card *card,
- 	usb_autopm_get_interface_no_resume(umidi->iface);
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index b001df4b335e..74bd2c297741 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -1177,6 +1177,7 @@ struct snd_ctl_tlv {
+ #define SNDRV_CTL_IOCTL_RAWMIDI_NEXT_DEVICE _IOWR('U', 0x40, int)
+ #define SNDRV_CTL_IOCTL_RAWMIDI_INFO	_IOWR('U', 0x41, struct snd_rawmidi_info)
+ #define SNDRV_CTL_IOCTL_RAWMIDI_PREFER_SUBDEVICE _IOW('U', 0x42, int)
++#define SNDRV_CTL_IOCTL_UMP_NEXT_DEVICE	_IOWR('U', 0x43, int)
+ #define SNDRV_CTL_IOCTL_POWER		_IOWR('U', 0xd0, int)
+ #define SNDRV_CTL_IOCTL_POWER_STATE	_IOR('U', 0xd1, int)
  
- 	list_add_tail(&umidi->list, midi_list);
-+	if (num_rawmidis)
-+		*num_rawmidis = umidi->next_midi_device;
- 	return 0;
- 
- free_midi:
-diff --git a/sound/usb/midi.h b/sound/usb/midi.h
-index 3f153195c841..2100f1486b03 100644
---- a/sound/usb/midi.h
-+++ b/sound/usb/midi.h
-@@ -46,14 +46,15 @@ int __snd_usbmidi_create(struct snd_card *card,
- 			 struct usb_interface *iface,
- 			 struct list_head *midi_list,
- 			 const struct snd_usb_audio_quirk *quirk,
--			 unsigned int usb_id);
-+			 unsigned int usb_id,
-+			 unsigned int *num_rawmidis);
- 
- static inline int snd_usbmidi_create(struct snd_card *card,
- 		       struct usb_interface *iface,
- 		       struct list_head *midi_list,
- 		       const struct snd_usb_audio_quirk *quirk)
- {
--	return __snd_usbmidi_create(card, iface, midi_list, quirk, 0);
-+	return __snd_usbmidi_create(card, iface, midi_list, quirk, 0, NULL);
+diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+index ef478fcacb42..88595f54be79 100644
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -1011,6 +1011,37 @@ static long snd_rawmidi_ioctl(struct file *file, unsigned int cmd, unsigned long
+ 	return -ENOTTY;
  }
  
- void snd_usbmidi_input_stop(struct list_head *p);
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 3ecd1ba7fd4b..1cabe4cc019f 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -436,8 +436,9 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
- 			chip->usb_id == USB_ID(0x0582, 0x002b)
- 			? &ua700_quirk : &uaxx_quirk;
- 		return __snd_usbmidi_create(chip->card, iface,
--					  &chip->midi_list, quirk,
--					  chip->usb_id);
-+					    &chip->midi_list, quirk,
-+					    chip->usb_id,
-+					    &chip->num_rawmidis);
- 	}
++/* ioctl to find the next device; either legacy or UMP depending on @find_ump */
++static int snd_rawmidi_next_device(struct snd_card *card, int __user *argp,
++				   bool find_ump)
++
++{
++	struct snd_rawmidi *rmidi;
++	int device;
++	bool is_ump;
++
++	if (get_user(device, argp))
++		return -EFAULT;
++	if (device >= SNDRV_RAWMIDI_DEVICES) /* next device is -1 */
++		device = SNDRV_RAWMIDI_DEVICES - 1;
++	mutex_lock(&register_mutex);
++	device = device < 0 ? 0 : device + 1;
++	for (; device < SNDRV_RAWMIDI_DEVICES; device++) {
++		rmidi = snd_rawmidi_search(card, device);
++		if (!rmidi)
++			continue;
++		is_ump = rawmidi_is_ump(rmidi);
++		if (find_ump == is_ump)
++			break;
++	}
++	if (device == SNDRV_RAWMIDI_DEVICES)
++		device = -1;
++	mutex_unlock(&register_mutex);
++	if (put_user(device, argp))
++		return -EFAULT;
++	return 0;
++}
++
+ static int snd_rawmidi_control_ioctl(struct snd_card *card,
+ 				     struct snd_ctl_file *control,
+ 				     unsigned int cmd,
+@@ -1020,27 +1051,11 @@ static int snd_rawmidi_control_ioctl(struct snd_card *card,
  
- 	if (altsd->bNumEndpoints != 1)
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 38a85b2c9a73..b1fa0a377866 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -49,6 +49,7 @@ struct snd_usb_audio {
- 	struct list_head clock_ref_list; /* list of clock refcounts */
- 	int pcm_devs;
- 
-+	unsigned int num_rawmidis;	/* number of created rawmidi devices */
- 	struct list_head midi_list;	/* list of midi interfaces */
- 
- 	struct list_head mixer_list;	/* list of mixer interfaces */
+ 	switch (cmd) {
+ 	case SNDRV_CTL_IOCTL_RAWMIDI_NEXT_DEVICE:
+-	{
+-		int device;
+-
+-		if (get_user(device, (int __user *)argp))
+-			return -EFAULT;
+-		if (device >= SNDRV_RAWMIDI_DEVICES) /* next device is -1 */
+-			device = SNDRV_RAWMIDI_DEVICES - 1;
+-		mutex_lock(&register_mutex);
+-		device = device < 0 ? 0 : device + 1;
+-		while (device < SNDRV_RAWMIDI_DEVICES) {
+-			if (snd_rawmidi_search(card, device))
+-				break;
+-			device++;
+-		}
+-		if (device == SNDRV_RAWMIDI_DEVICES)
+-			device = -1;
+-		mutex_unlock(&register_mutex);
+-		if (put_user(device, (int __user *)argp))
+-			return -EFAULT;
+-		return 0;
+-	}
++		return snd_rawmidi_next_device(card, argp, false);
++#if IS_ENABLED(CONFIG_SND_UMP)
++	case SNDRV_CTL_IOCTL_UMP_NEXT_DEVICE:
++		return snd_rawmidi_next_device(card, argp, true);
++#endif
+ 	case SNDRV_CTL_IOCTL_RAWMIDI_PREFER_SUBDEVICE:
+ 	{
+ 		int val;
 -- 
 2.35.3
 
