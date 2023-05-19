@@ -4,95 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51D20C7EE23
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:39:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00650C77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:39:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54B6C200;
-	Fri, 19 May 2023 11:38:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54B6C200
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E79FF0;
+	Fri, 19 May 2023 11:38:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E79FF0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684489169;
-	bh=udRAB3fr5M17Vf1nqST+oKj0yBsiwq+HTr3SHy+5wtI=;
+	s=default; t=1684489180;
+	bh=qhDh6vveq9c2NORGgcBprPI7LvgZUd/WEMtL9l+s4X0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=X2Lr41tf5lMLjW4Sfed0LqiaFseKHQEZKfs+4cKoX471sJnuUGQ9jcxd9vlUeIGn6
-	 s4s5pCAJ6Q1eRZi4FMCkLmRuo3emp4f6dQgKVQuaNLRChyj0SrtSIAphHnHUBtU7J5
-	 9hJD0XJn+Vab1ZBguecmVQIciJrSls7sz1B6wZyo=
+	b=DS77VUZz88sckYxS/YFPRsZjGH6DM2/rOfwf4a8y82JCC88UrA6YOr32sd6xaosRB
+	 gQwFGgXygP2mYVn7yEMBMc38zQHEj8dEcKxbBtvZZMINDp4b55qr/aKqz1za2t2q5Y
+	 RaSmrj103qQ+9VFdXF80ex1TEQg18kGPM8zExI0c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0D69DF806A7; Fri, 19 May 2023 11:33:06 +0200 (CEST)
+	id 5053CF806AC; Fri, 19 May 2023 11:33:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24DEBF8069E;
-	Fri, 19 May 2023 11:33:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FB5BF806AD;
+	Fri, 19 May 2023 11:33:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85284F80612; Fri, 19 May 2023 11:32:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 75A5CF80618; Fri, 19 May 2023 11:32:25 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 59EFBF8057B
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59EFBF8057B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 45070F8024E
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45070F8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=W3C6C6OG;
+ header.s=susede2_rsa header.b=T2VSxCbo;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=sMn72hTd
+ header.s=susede2_ed25519 header.b=vCTVRHEH
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 22B0722245;
-	Fri, 19 May 2023 09:31:43 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E20DD2223A;
+	Fri, 19 May 2023 09:31:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684488703;
+	t=1684488704;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XcYWfCebI4c2wHjl2VTt/v++678oQs8qU/FjGxpuSm4=;
-	b=W3C6C6OG5DriJnuaTCyomVC3SHuvO6pJhZua9PXCvkf9TCrwUghZsas80WNInQ/UdWZ6gZ
-	Dl0WY5bcDa7/iJN6IwCxDAUVRS5rZd6PB5L6/b6M3XaRTDB65NL3TQv/XWHUzHdrcj3SaL
-	fF1kQOMWSWMhN1i3lOFnUi+K10wUU5M=
+	bh=V3ak395N/SRLOhFT0C22KXLk1FA6ueXIUq+htVssWMU=;
+	b=T2VSxCbojTNSYhQjMxHEcqSNKvz2ewEH9BfHGZblaEi6wXScREZZklWmLaDHvfplU/AfhQ
+	ZcBazuC5HOV2aAUbof+lb54+AcOnxObUuTa5bowQVgtO5sNO7LU5JIQ/HUWlbCyALO6mdl
+	P9YgcckpcWHig8yrP7//cIKqDjPd638=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684488703;
+	s=susede2_ed25519; t=1684488704;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XcYWfCebI4c2wHjl2VTt/v++678oQs8qU/FjGxpuSm4=;
-	b=sMn72hTdvb7ZFG7r7IREHwUPk5KvgFKSUYeWzHEmUKmRu+DsIrAmZ40TLfzuXYSxDKQvua
-	y19tf5JNmqYvhMAw==
+	bh=V3ak395N/SRLOhFT0C22KXLk1FA6ueXIUq+htVssWMU=;
+	b=vCTVRHEH6U+WiXo8W9MaEdb8VwrPfoeG1N+lx/tieqXfUZrPsjhsKlYYC4kP+t35CMFmZ/
+	oSGTKz8UjwUpB2CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ECF3413A12;
-	Fri, 19 May 2023 09:31:42 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B2FF913A12;
+	Fri, 19 May 2023 09:31:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id gIEBOf5BZ2RXJAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:42 +0000
+	id GNCrKgBCZ2RXJAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:44 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 22/36] ALSA: seq: Prohibit creating ports with special numbers
-Date: Fri, 19 May 2023 11:31:00 +0200
-Message-Id: <20230519093114.28813-23-tiwai@suse.de>
+Subject: [PATCH 25/36] ALSA: seq: Add port inactive flag
+Date: Fri, 19 May 2023 11:31:03 +0200
+Message-Id: <20230519093114.28813-26-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230519093114.28813-1-tiwai@suse.de>
 References: <20230519093114.28813-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TXFFGCQ2YDAMSAHQ7TC6OMW4ZSD7PQY2
-X-Message-ID-Hash: TXFFGCQ2YDAMSAHQ7TC6OMW4ZSD7PQY2
+Message-ID-Hash: ONCH3OB5YLX75EJR7OMGRSLUVCMFL5B6
+X-Message-ID-Hash: ONCH3OB5YLX75EJR7OMGRSLUVCMFL5B6
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TXFFGCQ2YDAMSAHQ7TC6OMW4ZSD7PQY2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ONCH3OB5YLX75EJR7OMGRSLUVCMFL5B6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,27 +115,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some port numbers are special, such as 254 for subscribers and 255 for
-broadcast.  Return error if application tries to create such a port.
+This extends the ALSA sequencer port capability bit to indicate the
+"inactive" flag.  When this flag is set, the port is essentially
+invisible, and doesn't appear in the port query ioctls, while the
+direct access and the connection to this port are still allowed.  The
+active/inactive state can be flipped dynamically, so that it can be
+visible at any time later.
+
+This feature is introduced basically for UMP; some UMP Groups in a UMP
+Block may be unassigned, hence those are practically invisible.  On
+ALSA sequencer, the corresponding sequencer ports will get this new
+"inactive" flag to indicate the invisible state.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/seq_clientmgr.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/uapi/sound/asequencer.h | 1 +
+ sound/core/seq/seq_clientmgr.c  | 2 ++
+ sound/core/seq/seq_ports.c      | 4 ++++
+ 3 files changed, 7 insertions(+)
 
+diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
+index b87950cbfb79..c6ca6609790b 100644
+--- a/include/uapi/sound/asequencer.h
++++ b/include/uapi/sound/asequencer.h
+@@ -427,6 +427,7 @@ struct snd_seq_remove_events {
+ #define SNDRV_SEQ_PORT_CAP_SUBS_READ	(1<<5)	/* allow read subscription */
+ #define SNDRV_SEQ_PORT_CAP_SUBS_WRITE	(1<<6)	/* allow write subscription */
+ #define SNDRV_SEQ_PORT_CAP_NO_EXPORT	(1<<7)	/* routing not allowed */
++#define SNDRV_SEQ_PORT_CAP_INACTIVE	(1<<8)	/* inactive port */
+ 
+ 	/* port type */
+ #define SNDRV_SEQ_PORT_TYPE_SPECIFIC	(1<<0)	/* hardware specific */
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 2dac8c3355fd..0f26f20596d7 100644
+index 801d5eee21eb..6508ce63f761 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1206,6 +1206,8 @@ static int snd_seq_ioctl_create_port(struct snd_seq_client *client, void *arg)
- 		port_idx = info->addr.port;
- 	else
- 		port_idx = -1;
-+	if (port_idx >= SNDRV_SEQ_ADDRESS_UNKNOWN)
-+		return -EINVAL;
- 	err = snd_seq_create_port(client, port_idx, &port);
- 	if (err < 0)
- 		return err;
+@@ -2416,6 +2416,8 @@ static void snd_seq_info_dump_ports(struct snd_info_buffer *buffer,
+ 
+ 	mutex_lock(&client->ports_mutex);
+ 	list_for_each_entry(p, &client->ports_list_head, list) {
++		if (p->capability & SNDRV_SEQ_PORT_CAP_INACTIVE)
++			continue;
+ 		snd_iprintf(buffer, "  Port %3d : \"%s\" (%c%c%c%c)\n",
+ 			    p->addr.port, p->name,
+ 			    FLAG_PERM_RD(p->capability),
+diff --git a/sound/core/seq/seq_ports.c b/sound/core/seq/seq_ports.c
+index 188262b04b72..842ea3fb2800 100644
+--- a/sound/core/seq/seq_ports.c
++++ b/sound/core/seq/seq_ports.c
+@@ -69,11 +69,15 @@ struct snd_seq_client_port *snd_seq_port_query_nearest(struct snd_seq_client *cl
+ {
+ 	int num;
+ 	struct snd_seq_client_port *port, *found;
++	bool check_inactive = (pinfo->capability & SNDRV_SEQ_PORT_CAP_INACTIVE);
+ 
+ 	num = pinfo->addr.port;
+ 	found = NULL;
+ 	read_lock(&client->ports_lock);
+ 	list_for_each_entry(port, &client->ports_list_head, list) {
++		if ((port->capability & SNDRV_SEQ_PORT_CAP_INACTIVE) &&
++		    !check_inactive)
++			continue; /* skip inactive ports */
+ 		if (port->addr.port < num)
+ 			continue;
+ 		if (port->addr.port == num) {
 -- 
 2.35.3
 
