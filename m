@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A031AC77B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 12:19:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18ED8C7EE23
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 12:19:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70496207;
-	Fri, 19 May 2023 14:18:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70496207
+	by alsa0.perex.cz (Postfix) with ESMTPS id 063633E7;
+	Fri, 19 May 2023 14:18:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 063633E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684498744;
-	bh=Qqs5W2fPQCWiJGucM67Bf5zbjwSe1FCt+SIU27aMxq0=;
+	s=default; t=1684498766;
+	bh=0mIwdJ2aflRied2pLi3obeU4WZxE26KjNZiOeSb7G4g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nsKsYo3RpOIeVx8LxwhpvkmwzxEek7EnNi0yhyppLkkMm1xaFvc/jp936Occ0WvST
-	 9lrNCrKwy6H+8lma3Zd53nN3cMHneQLOK6RRpW5dVDfab9uZghI9ASoYTB1cSwttnD
-	 wAnDaxv34ejo1xjK6+6S+auvtgpOLgsDSu5nWD2o=
+	b=IkaW9w+O6CPi8qrIh11THdiDJW0c62c3U6pJm2RNPrrIvMsDM5eJZhYXq/r+iOXDg
+	 VAbLcH5WEWGWFHMDIkmydzl+j2DwsFK0D/TpSoLqrSqgJOsLVt4kI8u0hgX+djai95
+	 0lGaxSdsqJz+9iwKqOnTRCHAk9/tMbRTWsU3mCKI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14278F805C5; Fri, 19 May 2023 14:16:20 +0200 (CEST)
+	id 690CDF805C6; Fri, 19 May 2023 14:16:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 757F8F805AE;
-	Fri, 19 May 2023 14:16:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BF40F805CA;
+	Fri, 19 May 2023 14:16:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 190CCF8056F; Fri, 19 May 2023 14:16:10 +0200 (CEST)
+	id 9C5C7F8057C; Fri, 19 May 2023 14:16:11 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 897B2F8025A
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 14:16:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 897B2F8025A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 04979F802E8
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 14:16:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04979F802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=YNFwnhiC
+ header.s=Intel header.b=OxEOCbvN
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684498563; x=1716034563;
+  t=1684498567; x=1716034567;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Qqs5W2fPQCWiJGucM67Bf5zbjwSe1FCt+SIU27aMxq0=;
-  b=YNFwnhiC39uzlFM20qFMkqMxc+AK0VkgmVNVzYBxAx9RIpLQh8Jcr26Q
-   ThXCUGbpwdRcg1qbTfHEqD+QcinTySTa0gNG9uk4zH5Hy0vNiFvX+Eys6
-   h54ApOAdXuKiEPQuX0Kv8J3GK8kzy2B7VJSI/GUEtyqU98rBPY3NKFJmg
-   5Zu/TWJvAgHiw2W8CBD1MzjSntlB7eIueRmLmg82hth1y/Jw2C8MWUpmi
-   hbN4RSyOMlfsrf3tDas97faC/RUGUTKD7B3zjbrKK2qeUE2/Cc6vq1hsl
-   grzdH4OdBl/m/s64LJeH2Xuuf7oklU1zg53u5SexIqR5TXs4jSVgr/9Mz
+  bh=0mIwdJ2aflRied2pLi3obeU4WZxE26KjNZiOeSb7G4g=;
+  b=OxEOCbvNbaGkQvR3uX9tsnDyxNYrb3DxBTQKn194XvJ9V84cThTyIrow
+   QeM3b+cVOPprL9GtVdyAZu7CmfiDo+yA06T4Ri3/zB1YzvbLElP72kvz3
+   EFUv95rAYIxKIGX8KYiHhOMuvCDAOy/NJCTJe3t7cIIbGq5APyrzvFXd/
+   UvW8erd6/DLFVHbDxyH3gG0r1pW5hwlL6VqGaKTwSksXY/A8GMDsqGxKq
+   ehfOwnPTkAHSx86T7sRqCHR+HRf2KEaKZUonehkaVmsBqWJXo/D/vt1Pl
+   3fBGvcxaTr+KfJOapWZBT2dhE3urrSeqC66TBUvSOhfT8KT3Z0dTFPQrU
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="355584449"
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="355584468"
 X-IronPort-AV: E=Sophos;i="6.00,176,1681196400";
-   d="scan'208";a="355584449"
+   d="scan'208";a="355584468"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 May 2023 05:16:02 -0700
+ 19 May 2023 05:16:05 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="733283687"
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="733283712"
 X-IronPort-AV: E=Sophos;i="6.00,176,1681196400";
-   d="scan'208";a="733283687"
+   d="scan'208";a="733283712"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orsmga008.jf.intel.com with ESMTP; 19 May 2023 05:16:00 -0700
+  by orsmga008.jf.intel.com with ESMTP; 19 May 2023 05:16:03 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -72,17 +72,17 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	alsa-devel@alsa-project.org,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 5/7] ASoC: Intel: avs: Account for UID of ACPI device
-Date: Fri, 19 May 2023 22:17:09 +0200
-Message-Id: <20230519201711.4073845-6-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 7/7] ASoC: Intel: avs: Add missing checks on FE startup
+Date: Fri, 19 May 2023 22:17:11 +0200
+Message-Id: <20230519201711.4073845-8-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230519201711.4073845-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230519201711.4073845-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7FOA6ZNDEZX2MSMUNAOTB5C5BVUT45HU
-X-Message-ID-Hash: 7FOA6ZNDEZX2MSMUNAOTB5C5BVUT45HU
+Message-ID-Hash: L23FY5NT5ZWNVJDMFSJCEBEAVSSU6OHX
+X-Message-ID-Hash: L23FY5NT5ZWNVJDMFSJCEBEAVSSU6OHX
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7FOA6ZNDEZX2MSMUNAOTB5C5BVUT45HU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L23FY5NT5ZWNVJDMFSJCEBEAVSSU6OHX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,46 +104,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+Constraint functions have return values, they should be checked for
+potential errors.
 
-Configurations with multiple codecs attached to the platform are
-supported but only if each from the set is different. Add new field
-representing the 'Unique ID' so that codecs that share Vendor and Part
-IDs can be differentiated and thus enabling support for such
-configurations.
-
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- include/sound/soc-acpi.h              | 1 +
- sound/soc/intel/avs/board_selection.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/intel/avs/pcm.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index b38fd25c5729..528279056b3a 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -170,6 +170,7 @@ struct snd_soc_acpi_link_adr {
- /* Descriptor for SST ASoC machine driver */
- struct snd_soc_acpi_mach {
- 	u8 id[ACPI_ID_LEN];
-+	const char *uid;
- 	const struct snd_soc_acpi_codecs *comp_ids;
- 	const u32 link_mask;
- 	const struct snd_soc_acpi_link_adr *links;
-diff --git a/sound/soc/intel/avs/board_selection.c b/sound/soc/intel/avs/board_selection.c
-index b2823c2107f7..60f8fb0bff95 100644
---- a/sound/soc/intel/avs/board_selection.c
-+++ b/sound/soc/intel/avs/board_selection.c
-@@ -443,7 +443,7 @@ static int avs_register_i2s_boards(struct avs_dev *adev)
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index 31c032a0f7e4..1fbb2c2fadb5 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -468,21 +468,34 @@ static int avs_dai_fe_startup(struct snd_pcm_substream *substream, struct snd_so
+ 
+ 	host_stream = snd_hdac_ext_stream_assign(bus, substream, HDAC_EXT_STREAM_TYPE_HOST);
+ 	if (!host_stream) {
+-		kfree(data);
+-		return -EBUSY;
++		ret = -EBUSY;
++		goto err;
  	}
  
- 	for (mach = boards->machs; mach->id[0]; mach++) {
--		if (!acpi_dev_present(mach->id, NULL, -1))
-+		if (!acpi_dev_present(mach->id, mach->uid, -1))
- 			continue;
+ 	data->host_stream = host_stream;
+-	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
++	ret = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0)
++		goto err;
++
+ 	/* avoid wrap-around with wall-clock */
+-	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_TIME, 20, 178000000);
+-	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hw_rates);
++	ret = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_TIME, 20, 178000000);
++	if (ret < 0)
++		goto err;
++
++	ret = snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hw_rates);
++	if (ret < 0)
++		goto err;
++
+ 	snd_pcm_set_sync(substream);
  
- 		if (mach->machine_quirk)
+ 	dev_dbg(dai->dev, "%s fe STARTUP tag %d str %p",
+ 		__func__, hdac_stream(host_stream)->stream_tag, substream);
+ 
+ 	return 0;
++
++err:
++	kfree(data);
++	return ret;
+ }
+ 
+ static void avs_dai_fe_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
 -- 
 2.34.1
 
