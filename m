@@ -4,60 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A72D8C77B7A
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 11:54:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0586CC77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 11:55:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 749E4200;
-	Fri, 19 May 2023 13:53:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 749E4200
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E57D200;
+	Fri, 19 May 2023 13:55:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E57D200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684497244;
-	bh=wnJhg8z7HFde6eo8TCu9ohc+8eccx/x1BkjtM89lELE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ee89M2cfjbB+70o9Af+iSEOnXBlikJyfr74N2kwFQR25s5KgJeorBmf5F1lNoC1C9
-	 9mEI0dsQZuAp8pR70KiKWHIob5eSh/lHZXnZ/ObvaM+w+3FbnLlPbAII8odg8fuZF1
-	 qZlMs03PxCBdtPflo6ootC9z4Eq8BhXQZo5SO0SU=
+	s=default; t=1684497357;
+	bh=A8K2XBww0D1RGauwWboUB5sBHSTpiKch0bvCIXJ0u+s=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=eJtjtvh2w38kaBTctpVM+e4zqkdXjOrNRkEmPJ2QfNqBGBI7wFX7utRBDxAqKpZnJ
+	 gVcLfspGnnYr+HjDoYyQV3djUXOf69ciNMKCZqg6EDYRKTJTuWseiWbsOdDFfY7QY4
+	 kt6P2QYw776a9gqehbu+wS/pvMhV0iVGRttpKTps=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1DCFF802E8; Fri, 19 May 2023 13:53:13 +0200 (CEST)
+	id 3C8BCF80551; Fri, 19 May 2023 13:55:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73054F80272;
-	Fri, 19 May 2023 13:53:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99D07F8025A;
+	Fri, 19 May 2023 13:55:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27BB3F80272; Fri, 19 May 2023 13:53:08 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 77FBFF80087; Fri, 19 May 2023 13:55:02 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9C384F8016D
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 13:53:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C384F8016D
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 8B89223F0B;
-	Fri, 19 May 2023 07:53:01 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pzyfN-q2U-00; Fri, 19 May 2023 13:53:01 +0200
-Date: Fri, 19 May 2023 13:53:01 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 5/7] ALSA: emu10k1: centralize freeing PCM voices
-Message-ID: <ZGdjHROPsjZ9QpUe@ugly>
-References: <20230518140947.3725394-1-oswald.buddenhagen@gmx.de>
- <20230518140947.3725394-6-oswald.buddenhagen@gmx.de>
- <87ttw9hesg.wl-tiwai@suse.de>
- <ZGdSzPTMbdRr/FhV@ugly>
- <87a5y01t1b.wl-tiwai@suse.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 33BE9F80087
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 13:54:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33BE9F80087
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=JpCJfnvt
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1684497299; x=1716033299;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=A8K2XBww0D1RGauwWboUB5sBHSTpiKch0bvCIXJ0u+s=;
+  b=JpCJfnvtmZmvdsU5nQ1B0CkOczthg4H038ph0E9Z0+Bg9KcGKsMoHD+f
+   OZAD+aEAmvStvTzaL9hnK5/3k20lkJS0B6o0J/v1p3ibA8WhM37EF9anH
+   ulzL45+j++dAvWq+GLWwfKdVRxSNob9grRSJwscIe9YvE3I4aLk+SEOhj
+   mwDghVbfvnvTpzjJteyCV5B4J29kTiunmnskeZxvXQS/j2mDHfmxqqSCa
+   X8fQ2C4uvzMucg91iDW3zGULaWfPOQiwrdSX6p1BX0VTPgqw1iBHJGrmc
+   IM0Uy0yVwGu4eDJCPWAd3NEDjEgzb9y8ARA8o1m4luxSbH7bo6n6up9Fr
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="336946010"
+X-IronPort-AV: E=Sophos;i="6.00,176,1681196400";
+   d="scan'208";a="336946010"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 May 2023 04:54:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="705593773"
+X-IronPort-AV: E=Sophos;i="6.00,176,1681196400";
+   d="scan'208";a="705593773"
+Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
+  by fmsmga007.fm.intel.com with ESMTP; 19 May 2023 04:54:51 -0700
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Takashi Iwai <tiwai@suse.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	alsa-devel@alsa-project.org,
+	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 0/5] ASoC: topology: Clean up error messages handling
+Date: Fri, 19 May 2023 21:56:06 +0200
+Message-Id: <20230519195611.4068853-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <87a5y01t1b.wl-tiwai@suse.de>
-Message-ID-Hash: BXCUG6UIIQLIGHMR4FB4TQ72C2ZB53YZ
-X-Message-ID-Hash: BXCUG6UIIQLIGHMR4FB4TQ72C2ZB53YZ
-X-MailFrom: ossi@kde.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: GXNEFZ74FN4F7VIPJRJITGXIYG4KP3DP
+X-Message-ID-Hash: GXNEFZ74FN4F7VIPJRJITGXIYG4KP3DP
+X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -69,40 +94,30 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BXCUG6UIIQLIGHMR4FB4TQ72C2ZB53YZ/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GXNEFZ74FN4F7VIPJRJITGXIYG4KP3DP/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, May 19, 2023 at 01:04:32PM +0200, Takashi Iwai wrote:
->On Fri, 19 May 2023 12:43:24 +0200,
->Oswald Buddenhagen wrote:
->> 
->> On Thu, May 18, 2023 at 04:53:19PM +0200, Takashi Iwai wrote:
->> > On Thu, 18 May 2023 16:09:45 +0200,
->> > Oswald Buddenhagen wrote:
->> >> -static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm * epcm, int voices)
->> >> +static void snd_emu10k1_pcm_free_voices(struct snd_emu10k1_pcm *epcm)
->> >>  {
->> >> -	int err, i;
->> >> -
->> >> -	for (i = 0; i < ARRAY_SIZE(epcm->voices); i++) {
->> >> +	for (unsigned i = 0; i < ARRAY_SIZE(epcm->voices); i++) {
->> > 
->I'm not super-strict about it, but
+Series of patches cleaning up error messages when loading topology. In
+few places instead of logging in place of failure message is logged in
+caller. Additionally there are places where both caller and failing
+function log error, leading to unnecessary logs. Clean all of the above
+up.
 
->as checkpatch complaints,
->
-it doesn't, so from that side it's settled. it's really just about the 
-alsa-local policy.
+Amadeusz Sławiński (5):
+  ASoC: topology: Log control load errors in soc_tplg_control_load()
+  ASoC: topology: Remove redundant logs
+  ASoC: topology: Do not split message string on multiple lines
+  ASoC: topology: Remove redundant log
+  ASoC: topology: Remove redundant log
 
-what it actually *does* complain about is the use of bare "unsigned". i 
-don't like the excessively verbose "unsigned int", so i'll switch my 
-uses over to "uint", which already has some use in alsa. ok?
+ sound/soc/soc-topology.c | 63 ++++++++++++----------------------------
+ 1 file changed, 19 insertions(+), 44 deletions(-)
 
-regards,
-ossi
+-- 
+2.34.1
+
