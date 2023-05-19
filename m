@@ -4,96 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA175C77B7A
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:38:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AF0DC77B75
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 09:39:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EAE382B;
-	Fri, 19 May 2023 11:38:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EAE382B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2E26A4D;
+	Fri, 19 May 2023 11:38:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2E26A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684489132;
-	bh=YBfjH6uHSMTanJEXk6hEDpCx3Sv0QAFNdmt4KcYO+So=;
+	s=default; t=1684489148;
+	bh=w18sbtJIkHXjCL1PTOBz/9PGh/ThhdG1HlXbcrwEmUc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qiQzKN6KZDwEG+vgl+sU+7rqLcNwRjm9zrXXymWKPEIVl3lOBTwJPqVep5EMbcVF5
-	 ZDhPgKWS3MoNTBYgL9dphrEgtlW6g4qc5qE3FcogApHJUPpCWzhSmRyk4Tc22pdTJ4
-	 goJ7hRN+47/1+A7wAJw9Yj92n5bgDA69oupiCwmM=
+	b=TtHnDDSbZLCLIJmEuHlncIXGonAVcdoV7qEKSJL65jKMbtkZOKovOgSbnP3iTnBUm
+	 Cass3MK4XcjEKrAqJsNQ8hQ6k80SzQjLols4gGBBtxY9r/NKrzAE6Ya8sF9i/4bcnL
+	 /pg4m90GKKACU2qh0ISdHvKrICgANLO1ggy9rAJI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 50FD8F80693; Fri, 19 May 2023 11:33:00 +0200 (CEST)
+	id 0250AF8069C; Fri, 19 May 2023 11:33:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82EC9F8068F;
-	Fri, 19 May 2023 11:32:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44F62F8068C;
+	Fri, 19 May 2023 11:33:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 19F49F80615; Fri, 19 May 2023 11:32:21 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 24723F80614; Fri, 19 May 2023 11:32:22 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A7046F80570
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7046F80570
+	by alsa1.perex.cz (Postfix) with ESMTPS id E8A2EF8057C
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 11:31:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8A2EF8057C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=QNm8rZ2P;
+ header.s=susede2_rsa header.b=puVqaIdp;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=qKZIgBBQ
+ header.s=susede2_ed25519 header.b=IAp+Cs3h
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5B1A31FE4C;
-	Fri, 19 May 2023 09:31:41 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BDD7E222AD;
+	Fri, 19 May 2023 09:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684488701;
+	t=1684488703;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hNu4INTiqZysz/iiZYgdyxnQy+P+Ne7nzIkpF9dq+QA=;
-	b=QNm8rZ2Pb2sVW+oXMxUN0zkeUxnsHsb4veMvsJ+sRkxqhs6ieSOVHdG77nJ/drepofz3vA
-	erXwIzpYQfhlif/m7iThJ7erF0YuI8H8k/9dyBMwGU7lWlalV+Fz6DNaF21SJJ0f7FOK4J
-	eAqS2KJ+dltqg19J+Ojys3Y5bPpbt58=
+	bh=s9zSH66PKLZSek1+f7HTHKq9RrcGGPrH4bCfODwVZUA=;
+	b=puVqaIdpkndJ4oA4wXhPx+DOkqA8RV+EXSSWdoay/mdCcqlJeEuRKSNA1caza+fTvRgCRB
+	vH4iXTYSYSQruGVuMLKvjxUYgcZLaFYP3UdrNI9KklvbYSBf52OfHSPi11AaERrweKTRDe
+	C+Ef1vh8yFVDUNyz+/gp61uuyuth5Qo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684488701;
+	s=susede2_ed25519; t=1684488703;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hNu4INTiqZysz/iiZYgdyxnQy+P+Ne7nzIkpF9dq+QA=;
-	b=qKZIgBBQ0i7DDYYHZUyouzgSD0vT4UC0l6ivaBfDbcAXuDlp3+5g53ehPT8c422V8w1hxW
-	3P6suyuvuAk8rzAA==
+	bh=s9zSH66PKLZSek1+f7HTHKq9RrcGGPrH4bCfODwVZUA=;
+	b=IAp+Cs3hGxBko9eYTQtT+Szcb6c5FYciTjzlMnvMueuHu9yNp1VLNrwZ1mpNsfWIU51s+r
+	sRDCu9l0QZNF2ADg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 34CFD13A12;
-	Fri, 19 May 2023 09:31:41 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9928A13A12;
+	Fri, 19 May 2023 09:31:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id IE3NC/1BZ2RXJAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:41 +0000
+	id KGCAJP9BZ2RXJAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 09:31:43 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 19/36] ALSA: seq: Drop dead code for the old broadcast support
-Date: Fri, 19 May 2023 11:30:57 +0200
-Message-Id: <20230519093114.28813-20-tiwai@suse.de>
+Subject: [PATCH 23/36] ALSA: seq: Introduce SNDRV_SEQ_IOCTL_USER_PVERSION
+ ioctl
+Date: Fri, 19 May 2023 11:31:01 +0200
+Message-Id: <20230519093114.28813-24-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230519093114.28813-1-tiwai@suse.de>
 References: <20230519093114.28813-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OAUIURU4CA4JLZJSV52RIC45URXMHBQH
-X-Message-ID-Hash: OAUIURU4CA4JLZJSV52RIC45URXMHBQH
+Message-ID-Hash: 2WQFALCNNVTRSNK4FA4WXQF2EN2VXNQI
+X-Message-ID-Hash: 2WQFALCNNVTRSNK4FA4WXQF2EN2VXNQI
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,152 +107,99 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OAUIURU4CA4JLZJSV52RIC45URXMHBQH/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2WQFALCNNVTRSNK4FA4WXQF2EN2VXNQI/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The broadcast and multicast supports have been never enabled.
-Let's drop the dead code.
+For the future extension of ALSA sequencer ABI, introduce a new ioctl
+SNDRV_SEQ_IOCTL_USER_PVERSION.  This is similar like the ioctls used
+in PCM and other interfaces, for an application to specify its
+supporting ABI version.
+
+The use of this ioctl will be mandatory for the upcoming UMP support.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/seq_clientmgr.c | 105 +--------------------------------
- 1 file changed, 1 insertion(+), 104 deletions(-)
+ include/uapi/sound/asequencer.h | 1 +
+ sound/core/seq/seq_clientmgr.c  | 8 ++++++++
+ sound/core/seq/seq_clientmgr.h  | 1 +
+ sound/core/seq/seq_compat.c     | 1 +
+ 4 files changed, 11 insertions(+)
 
+diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
+index 00d2703e8fca..4a3c5a718bae 100644
+--- a/include/uapi/sound/asequencer.h
++++ b/include/uapi/sound/asequencer.h
+@@ -561,6 +561,7 @@ struct snd_seq_query_subs {
+ #define SNDRV_SEQ_IOCTL_CLIENT_ID	_IOR ('S', 0x01, int)
+ #define SNDRV_SEQ_IOCTL_SYSTEM_INFO	_IOWR('S', 0x02, struct snd_seq_system_info)
+ #define SNDRV_SEQ_IOCTL_RUNNING_MODE	_IOWR('S', 0x03, struct snd_seq_running_info)
++#define SNDRV_SEQ_IOCTL_USER_PVERSION	_IOW('S', 0x04, int)
+ 
+ #define SNDRV_SEQ_IOCTL_GET_CLIENT_INFO	_IOWR('S', 0x10, struct snd_seq_client_info)
+ #define SNDRV_SEQ_IOCTL_SET_CLIENT_INFO	_IOW ('S', 0x11, struct snd_seq_client_info)
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 98e8032a32e2..019af1343325 100644
+index 0f26f20596d7..89a8d14df83b 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -711,93 +711,6 @@ static int deliver_to_subscribers(struct snd_seq_client *client,
- 	return (result < 0) ? result : num_ev;
+@@ -1056,6 +1056,12 @@ static int snd_seq_ioctl_pversion(struct snd_seq_client *client, void *arg)
+ 	return 0;
  }
  
--
--#ifdef SUPPORT_BROADCAST 
--/*
-- * broadcast to all ports:
-- */
--static int port_broadcast_event(struct snd_seq_client *client,
--				struct snd_seq_event *event,
--				int atomic, int hop)
--{
--	int num_ev = 0, err, result = 0;
--	struct snd_seq_client *dest_client;
--	struct snd_seq_client_port *port;
--
--	dest_client = get_event_dest_client(event, SNDRV_SEQ_FILTER_BROADCAST);
--	if (dest_client == NULL)
--		return 0; /* no matching destination */
--
--	read_lock(&dest_client->ports_lock);
--	list_for_each_entry(port, &dest_client->ports_list_head, list) {
--		event->dest.port = port->addr.port;
--		/* pass NULL as source client to avoid error bounce */
--		err = snd_seq_deliver_single_event(NULL, event,
--						   SNDRV_SEQ_FILTER_BROADCAST,
--						   atomic, hop);
--		if (err < 0) {
--			/* save first error that occurs and continue */
--			if (!result)
--				result = err;
--			continue;
--		}
--		num_ev++;
--	}
--	read_unlock(&dest_client->ports_lock);
--	snd_seq_client_unlock(dest_client);
--	event->dest.port = SNDRV_SEQ_ADDRESS_BROADCAST; /* restore */
--	return (result < 0) ? result : num_ev;
--}
--
--/*
-- * send the event to all clients:
-- * if destination port is also ADDRESS_BROADCAST, deliver to all ports.
-- */
--static int broadcast_event(struct snd_seq_client *client,
--			   struct snd_seq_event *event, int atomic, int hop)
--{
--	int err, result = 0, num_ev = 0;
--	int dest;
--	struct snd_seq_addr addr;
--
--	addr = event->dest; /* save */
--
--	for (dest = 0; dest < SNDRV_SEQ_MAX_CLIENTS; dest++) {
--		/* don't send to itself */
--		if (dest == client->number)
--			continue;
--		event->dest.client = dest;
--		event->dest.port = addr.port;
--		if (addr.port == SNDRV_SEQ_ADDRESS_BROADCAST)
--			err = port_broadcast_event(client, event, atomic, hop);
--		else
--			/* pass NULL as source client to avoid error bounce */
--			err = snd_seq_deliver_single_event(NULL, event,
--							   SNDRV_SEQ_FILTER_BROADCAST,
--							   atomic, hop);
--		if (err < 0) {
--			/* save first error that occurs and continue */
--			if (!result)
--				result = err;
--			continue;
--		}
--		num_ev += err;
--	}
--	event->dest = addr; /* restore */
--	return (result < 0) ? result : num_ev;
--}
--
--
--/* multicast - not supported yet */
--static int multicast_event(struct snd_seq_client *client, struct snd_seq_event *event,
--			   int atomic, int hop)
--{
--	pr_debug("ALSA: seq: multicast not supported yet.\n");
--	return 0; /* ignored */
--}
--#endif /* SUPPORT_BROADCAST */
--
--
- /* deliver an event to the destination port(s).
-  * if the event is to subscribers or broadcast, the event is dispatched
-  * to multiple targets.
-@@ -826,15 +739,6 @@ static int snd_seq_deliver_event(struct snd_seq_client *client, struct snd_seq_e
- 	if (event->queue == SNDRV_SEQ_ADDRESS_SUBSCRIBERS ||
- 	    event->dest.client == SNDRV_SEQ_ADDRESS_SUBSCRIBERS)
- 		result = deliver_to_subscribers(client, event, atomic, hop);
--#ifdef SUPPORT_BROADCAST
--	else if (event->queue == SNDRV_SEQ_ADDRESS_BROADCAST ||
--		 event->dest.client == SNDRV_SEQ_ADDRESS_BROADCAST)
--		result = broadcast_event(client, event, atomic, hop);
--	else if (event->dest.client >= SNDRV_SEQ_MAX_CLIENTS)
--		result = multicast_event(client, event, atomic, hop);
--	else if (event->dest.port == SNDRV_SEQ_ADDRESS_BROADCAST)
--		result = port_broadcast_event(client, event, atomic, hop);
--#endif
- 	else
- 		result = snd_seq_deliver_single_event(client, event, 0, atomic, hop);
++static int snd_seq_ioctl_user_pversion(struct snd_seq_client *client, void *arg)
++{
++	client->user_pversion = *(unsigned int *)arg;
++	return 0;
++}
++
+ static int snd_seq_ioctl_client_id(struct snd_seq_client *client, void *arg)
+ {
+ 	int *client_id = arg;
+@@ -1985,6 +1991,7 @@ static const struct ioctl_handler {
+ 	int (*func)(struct snd_seq_client *client, void *arg);
+ } ioctl_handlers[] = {
+ 	{ SNDRV_SEQ_IOCTL_PVERSION, snd_seq_ioctl_pversion },
++	{ SNDRV_SEQ_IOCTL_USER_PVERSION, snd_seq_ioctl_user_pversion },
+ 	{ SNDRV_SEQ_IOCTL_CLIENT_ID, snd_seq_ioctl_client_id },
+ 	{ SNDRV_SEQ_IOCTL_SYSTEM_INFO, snd_seq_ioctl_system_info },
+ 	{ SNDRV_SEQ_IOCTL_RUNNING_MODE, snd_seq_ioctl_running_mode },
+@@ -2125,6 +2132,7 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
+ 	client->accept_input = 1;
+ 	client->accept_output = 1;
+ 	client->data.kernel.card = card;
++	client->user_pversion = SNDRV_SEQ_VERSION;
+ 		
+ 	va_start(args, name_fmt);
+ 	vsnprintf(client->name, sizeof(client->name), name_fmt, args);
+diff --git a/sound/core/seq/seq_clientmgr.h b/sound/core/seq/seq_clientmgr.h
+index f05704e45ab4..abe0ceadf3da 100644
+--- a/sound/core/seq/seq_clientmgr.h
++++ b/sound/core/seq/seq_clientmgr.h
+@@ -35,6 +35,7 @@ struct snd_seq_client {
+ 	snd_seq_client_type_t type;
+ 	unsigned int accept_input: 1,
+ 		accept_output: 1;
++	unsigned int user_pversion;
+ 	char name[64];		/* client name */
+ 	int number;		/* client number */
+ 	unsigned int filter;	/* filter flags */
+diff --git a/sound/core/seq/seq_compat.c b/sound/core/seq/seq_compat.c
+index 54723566ce24..c0ce6236dc7f 100644
+--- a/sound/core/seq/seq_compat.c
++++ b/sound/core/seq/seq_compat.c
+@@ -81,6 +81,7 @@ static long snd_seq_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
  
-@@ -936,14 +840,7 @@ static int snd_seq_client_enqueue_event(struct snd_seq_client *client,
- 	if (event->queue == SNDRV_SEQ_ADDRESS_SUBSCRIBERS) {
- 		event->dest.client = SNDRV_SEQ_ADDRESS_SUBSCRIBERS;
- 		event->queue = SNDRV_SEQ_QUEUE_DIRECT;
--	} else
--#ifdef SUPPORT_BROADCAST
--		if (event->queue == SNDRV_SEQ_ADDRESS_BROADCAST) {
--			event->dest.client = SNDRV_SEQ_ADDRESS_BROADCAST;
--			event->queue = SNDRV_SEQ_QUEUE_DIRECT;
--		}
--#endif
--	if (event->dest.client == SNDRV_SEQ_ADDRESS_SUBSCRIBERS) {
-+	} else if (event->dest.client == SNDRV_SEQ_ADDRESS_SUBSCRIBERS) {
- 		/* check presence of source port */
- 		struct snd_seq_client_port *src_port = snd_seq_port_use_ptr(client, event->source.port);
- 		if (src_port == NULL)
+ 	switch (cmd) {
+ 	case SNDRV_SEQ_IOCTL_PVERSION:
++	case SNDRV_SEQ_IOCTL_USER_PVERSION:
+ 	case SNDRV_SEQ_IOCTL_CLIENT_ID:
+ 	case SNDRV_SEQ_IOCTL_SYSTEM_INFO:
+ 	case SNDRV_SEQ_IOCTL_GET_CLIENT_INFO:
 -- 
 2.35.3
 
