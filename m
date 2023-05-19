@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F41DC77B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 12:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB71BC77B7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 12:18:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86B66201;
-	Fri, 19 May 2023 14:17:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86B66201
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6C6E827;
+	Fri, 19 May 2023 14:17:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6C6E827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684498678;
-	bh=xKs0sKOFC8whl/yuyULPst15ZR2QkGZqx+W9OFp2gFY=;
+	s=default; t=1684498694;
+	bh=dKM8/qjifAr/pAHw/mTEzaJ2EgQi1hYiS+/J/CVx7xs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WnIyy1bacbF454lFJpNn7SM4HlDar+qd0Gtmz8MuF4Wi4qASZ+9x3ln5+S0Lod+SJ
-	 jUxC8TSQdzcVpyHqNVohfnXSLv1RWxanyfKDOYUQ4Df/6Sbz9ADSrmcgPl9kzQANVG
-	 KbBoh3wpt8q/ip2TOSts3CHWjhPetMCRx0q3R33E=
+	b=RyVNm99Zh5q+E7ADA1BHvITeHoDiAF26r9ZR5Y1SOwBE+GFq7w5u9nQFwzO0Nlho6
+	 CqrNwUCyVKvR8aDrtNRHtv7DJy0AmNfiJ3WaKmDXZPk/RRXmdftAwkaHM2N6ZJssLg
+	 Oz2UgW9Q3ruxgAXC1k1oGrL228b0F+XJu0/OUtZo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1C984F8056F; Fri, 19 May 2023 14:16:11 +0200 (CEST)
+	id C7FA6F80579; Fri, 19 May 2023 14:16:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81F04F8056F;
-	Fri, 19 May 2023 14:16:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63050F80579;
+	Fri, 19 May 2023 14:16:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40020F80542; Fri, 19 May 2023 14:16:04 +0200 (CEST)
+	id 95AA5F80558; Fri, 19 May 2023 14:16:05 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C97E8F80272
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 14:15:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C97E8F80272
+	by alsa1.perex.cz (Postfix) with ESMTPS id 297B7F80087
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 14:16:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 297B7F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=IJyshSvG
+ header.s=Intel header.b=eucra285
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684498561; x=1716034561;
+  t=1684498562; x=1716034562;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=xKs0sKOFC8whl/yuyULPst15ZR2QkGZqx+W9OFp2gFY=;
-  b=IJyshSvGH/QHSQ9R1Hos+DAf+xq+JwbecKEoWp7nJovR/jZ9mPW5S7Ge
-   ccRO2UHaiIF42RqCShPygXZtcFPWk3JgEmOicSyU1mbw0Kf1tkrJcVe0B
-   54wR/yspKOzvxT1v6iFyTNt5BS/FwzkCq9bEhkbZv6FUoSZw5vYcjlcXz
-   XHORZYGUcRCBgedkYRIh+DK0m6TvPxatqw7f46F9fp2f2kaIRSgSlRyeG
-   c8WxYtR1xwQT1STfybvGmszNi0B3i9ck4wNajcayIushmXRuZZD0usDZX
-   YjXdpA5Gb1yKymLe5NHSnDR5Editqvn3f6ev74yfNsOD0jyCT8iA+Yzdc
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="355584409"
+  bh=dKM8/qjifAr/pAHw/mTEzaJ2EgQi1hYiS+/J/CVx7xs=;
+  b=eucra285IlK0q15+NyFqP/PETPqK+BFloncHPhnF3RuDwkCml8MvWNZD
+   u+DnmnMKqgv78UOfha9bE8RUtm7wuMnl23UAVFsCompPYgTeT3HcaYrtl
+   dYf/WTxpORqzg+Mmuk6tEWqFvF1rqDnI1HGoURRbFb0LQc0Xvzpmm1yYU
+   Af5IPEUU69i+52H1rHz2wucFqZh9NQnvTyeJkyl+vsNKEWnrgVJWYOPQ+
+   YBat8AKsoL9dQTylorsU9JwHWPeikjZOkJ1kemawmrH2GNSbFNjTTbnkS
+   Ho7fg4hlQEirtencKzheeBQCzAF5ElEBvbJSjJzzp53sjTxvJsywNFfKT
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="355584427"
 X-IronPort-AV: E=Sophos;i="6.00,176,1681196400";
-   d="scan'208";a="355584409"
+   d="scan'208";a="355584427"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 May 2023 05:15:55 -0700
+ 19 May 2023 05:15:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="733283658"
+X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="733283671"
 X-IronPort-AV: E=Sophos;i="6.00,176,1681196400";
-   d="scan'208";a="733283658"
+   d="scan'208";a="733283671"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orsmga008.jf.intel.com with ESMTP; 19 May 2023 05:15:53 -0700
+  by orsmga008.jf.intel.com with ESMTP; 19 May 2023 05:15:57 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -72,17 +72,17 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	alsa-devel@alsa-project.org,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 1/7] ASoC: Intel: avs: Fix module lookup
-Date: Fri, 19 May 2023 22:17:05 +0200
-Message-Id: <20230519201711.4073845-2-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 3/7] ASoC: Intel: Skylake: Fix declaration of enum skl_ch_cfg
+Date: Fri, 19 May 2023 22:17:07 +0200
+Message-Id: <20230519201711.4073845-4-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230519201711.4073845-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230519201711.4073845-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KWKGA3CDASFKCZLDC2V2ROA3ERYTY4LA
-X-Message-ID-Hash: KWKGA3CDASFKCZLDC2V2ROA3ERYTY4LA
+Message-ID-Hash: 26DMUJ7QJASAA2AXAT33YIUQQTGQXZVZ
+X-Message-ID-Hash: 26DMUJ7QJASAA2AXAT33YIUQQTGQXZVZ
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KWKGA3CDASFKCZLDC2V2ROA3ERYTY4LA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/26DMUJ7QJASAA2AXAT33YIUQQTGQXZVZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,73 +104,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When changing value of kcontrol, FW module to which data should be send
-needs to be found. Currently it is done in improper way, fix it. Change
-function name to indicate that it looks only for volume module.
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-This allows to change volume during runtime, instead of only changing
-init value.
+Constant 'C4_CHANNEL' does not exist on the firmware side. Value 0xC is
+reserved for 'C7_1' instead.
 
-Fixes: be2b81b519d7 ("ASoC: Intel: avs: Parse control tuples")
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Fixes: 04afbbbb1cba ("ASoC: Intel: Skylake: Update the topology interface structure")
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/avs/control.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ include/uapi/sound/skl-tplg-interface.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/avs/control.c b/sound/soc/intel/avs/control.c
-index a8b14b784f8a..3dfa2e9816db 100644
---- a/sound/soc/intel/avs/control.c
-+++ b/sound/soc/intel/avs/control.c
-@@ -21,17 +21,25 @@ static struct avs_dev *avs_get_kcontrol_adev(struct snd_kcontrol *kcontrol)
- 	return to_avs_dev(w->dapm->component->dev);
- }
+diff --git a/include/uapi/sound/skl-tplg-interface.h b/include/uapi/sound/skl-tplg-interface.h
+index f29899b179a6..4bf9c4f9add8 100644
+--- a/include/uapi/sound/skl-tplg-interface.h
++++ b/include/uapi/sound/skl-tplg-interface.h
+@@ -66,7 +66,8 @@ enum skl_ch_cfg {
+ 	SKL_CH_CFG_DUAL_MONO = 9,
+ 	SKL_CH_CFG_I2S_DUAL_STEREO_0 = 10,
+ 	SKL_CH_CFG_I2S_DUAL_STEREO_1 = 11,
+-	SKL_CH_CFG_4_CHANNEL = 12,
++	SKL_CH_CFG_7_1 = 12,
++	SKL_CH_CFG_4_CHANNEL = SKL_CH_CFG_7_1,
+ 	SKL_CH_CFG_INVALID
+ };
  
--static struct avs_path_module *avs_get_kcontrol_module(struct avs_dev *adev, u32 id)
-+static struct avs_path_module *avs_get_volume_module(struct avs_dev *adev, u32 id)
- {
- 	struct avs_path *path;
- 	struct avs_path_pipeline *ppl;
- 	struct avs_path_module *mod;
- 
--	list_for_each_entry(path, &adev->path_list, node)
--		list_for_each_entry(ppl, &path->ppl_list, node)
--			list_for_each_entry(mod, &ppl->mod_list, node)
--				if (mod->template->ctl_id && mod->template->ctl_id == id)
-+	spin_lock(&adev->path_list_lock);
-+	list_for_each_entry(path, &adev->path_list, node) {
-+		list_for_each_entry(ppl, &path->ppl_list, node) {
-+			list_for_each_entry(mod, &ppl->mod_list, node) {
-+				if (guid_equal(&mod->template->cfg_ext->type, &AVS_PEAKVOL_MOD_UUID)
-+				    && mod->template->ctl_id == id) {
-+					spin_unlock(&adev->path_list_lock);
- 					return mod;
-+				}
-+			}
-+		}
-+	}
-+	spin_unlock(&adev->path_list_lock);
- 
- 	return NULL;
- }
-@@ -49,7 +57,7 @@ int avs_control_volume_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_va
- 	/* prevent access to modules while path is being constructed */
- 	mutex_lock(&adev->path_mutex);
- 
--	active_module = avs_get_kcontrol_module(adev, ctl_data->id);
-+	active_module = avs_get_volume_module(adev, ctl_data->id);
- 	if (active_module) {
- 		ret = avs_ipc_peakvol_get_volume(adev, active_module->module_id,
- 						 active_module->instance_id, &dspvols,
-@@ -89,7 +97,7 @@ int avs_control_volume_put(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_va
- 		changed = 1;
- 	}
- 
--	active_module = avs_get_kcontrol_module(adev, ctl_data->id);
-+	active_module = avs_get_volume_module(adev, ctl_data->id);
- 	if (active_module) {
- 		dspvol.channel_id = AVS_ALL_CHANNELS_MASK;
- 		dspvol.target_volume = *volume;
 -- 
 2.34.1
 
