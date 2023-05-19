@@ -4,86 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18ED8C7EE23
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 12:19:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC3F2C77B7F
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 12:24:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 063633E7;
-	Fri, 19 May 2023 14:18:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 063633E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51D9D201;
+	Fri, 19 May 2023 14:23:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51D9D201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684498766;
-	bh=0mIwdJ2aflRied2pLi3obeU4WZxE26KjNZiOeSb7G4g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1684499043;
+	bh=BoOQaMg+i9QhInKjFsym4V6rREMwxSEcBjzJOOgPecM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=IkaW9w+O6CPi8qrIh11THdiDJW0c62c3U6pJm2RNPrrIvMsDM5eJZhYXq/r+iOXDg
-	 VAbLcH5WEWGWFHMDIkmydzl+j2DwsFK0D/TpSoLqrSqgJOsLVt4kI8u0hgX+djai95
-	 0lGaxSdsqJz+9iwKqOnTRCHAk9/tMbRTWsU3mCKI=
+	b=q309SuPv/Yzz44sLCUXLDQEEHVMTBSfN2SQloFa5Blc8GBnwlCi3VXHOH3qO6kduD
+	 3Y2waI5v56hSfON6etYX1hAj+k/X9jkHacY+ilYnErZ4BbB6VKDamSO4htl3wzs/4X
+	 2KXuAxh1k3jRXo4JtbTCpJW9xjc9hoCzUOBYRitY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 690CDF805C6; Fri, 19 May 2023 14:16:23 +0200 (CEST)
+	id B9BECF802E8; Fri, 19 May 2023 14:22:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BF40F805CA;
-	Fri, 19 May 2023 14:16:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D75BF80272;
+	Fri, 19 May 2023 14:22:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9C5C7F8057C; Fri, 19 May 2023 14:16:11 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id A4120F80272; Fri, 19 May 2023 14:22:41 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 04979F802E8
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 14:16:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04979F802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id E5854F8016D
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 14:22:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5854F8016D
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=OxEOCbvN
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684498567; x=1716034567;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0mIwdJ2aflRied2pLi3obeU4WZxE26KjNZiOeSb7G4g=;
-  b=OxEOCbvNbaGkQvR3uX9tsnDyxNYrb3DxBTQKn194XvJ9V84cThTyIrow
-   QeM3b+cVOPprL9GtVdyAZu7CmfiDo+yA06T4Ri3/zB1YzvbLElP72kvz3
-   EFUv95rAYIxKIGX8KYiHhOMuvCDAOy/NJCTJe3t7cIIbGq5APyrzvFXd/
-   UvW8erd6/DLFVHbDxyH3gG0r1pW5hwlL6VqGaKTwSksXY/A8GMDsqGxKq
-   ehfOwnPTkAHSx86T7sRqCHR+HRf2KEaKZUonehkaVmsBqWJXo/D/vt1Pl
-   3fBGvcxaTr+KfJOapWZBT2dhE3urrSeqC66TBUvSOhfT8KT3Z0dTFPQrU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="355584468"
-X-IronPort-AV: E=Sophos;i="6.00,176,1681196400";
-   d="scan'208";a="355584468"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 May 2023 05:16:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10714"; a="733283712"
-X-IronPort-AV: E=Sophos;i="6.00,176,1681196400";
-   d="scan'208";a="733283712"
-Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orsmga008.jf.intel.com with ESMTP; 19 May 2023 05:16:03 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
-	Takashi Iwai <tiwai@suse.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	alsa-devel@alsa-project.org,
-	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 7/7] ASoC: Intel: avs: Add missing checks on FE startup
-Date: Fri, 19 May 2023 22:17:11 +0200
-Message-Id: <20230519201711.4073845-8-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230519201711.4073845-1-amadeuszx.slawinski@linux.intel.com>
-References: <20230519201711.4073845-1-amadeuszx.slawinski@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: L23FY5NT5ZWNVJDMFSJCEBEAVSSU6OHX
-X-Message-ID-Hash: L23FY5NT5ZWNVJDMFSJCEBEAVSSU6OHX
-X-MailFrom: amadeuszx.slawinski@linux.intel.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=ozSjPyUT;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=mu1/dYY6
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 73B721F8B0;
+	Fri, 19 May 2023 12:22:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1684498958;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UnSDDnNAIAIkoAwDBj8SXBWEBNbyBr2nim5cfFIELO0=;
+	b=ozSjPyUTZ66QSFN0cSa7LeHPTedgAYVHBGCVtIisxHOI/+dCRtkdrsEu/F1ssD3d/d2z0y
+	lHa1gZEKI+s2BAuDcWDvGGnn9TR8/O8kHVMb+sQM1/lkTiF+mpVRRU9U8v9S/EeayHlK/N
+	j9BmueLda8HReM5NB+gfw2r1aUeA+0k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1684498958;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UnSDDnNAIAIkoAwDBj8SXBWEBNbyBr2nim5cfFIELO0=;
+	b=mu1/dYY6r9cRtZZ+SxhExhaP0sLP/eUWBs3ezzeELIP+J6RRcD1WRVGvR/6L5Kv4Zo/iKO
+	jsMHXZjVBqJMRIDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23C6413A12;
+	Fri, 19 May 2023 12:22:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id +mh0AQ5qZ2QJawAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 19 May 2023 12:22:38 +0000
+Date: Fri, 19 May 2023 14:22:37 +0200
+Message-ID: <875y8o1pf6.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Cc: alsa-devel@alsa-project.org,
+	Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 5/7] ALSA: emu10k1: centralize freeing PCM voices
+In-Reply-To: <ZGdjHROPsjZ9QpUe@ugly>
+References: <20230518140947.3725394-1-oswald.buddenhagen@gmx.de>
+	<20230518140947.3725394-6-oswald.buddenhagen@gmx.de>
+	<87ttw9hesg.wl-tiwai@suse.de>
+	<ZGdSzPTMbdRr/FhV@ugly>
+	<87a5y01t1b.wl-tiwai@suse.de>
+	<ZGdjHROPsjZ9QpUe@ugly>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: FDTVGL52CNQ2MPPN3IFGKPYGIXOF5D2D
+X-Message-ID-Hash: FDTVGL52CNQ2MPPN3IFGKPYGIXOF5D2D
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L23FY5NT5ZWNVJDMFSJCEBEAVSSU6OHX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FDTVGL52CNQ2MPPN3IFGKPYGIXOF5D2D/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,59 +118,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Constraint functions have return values, they should be checked for
-potential errors.
+On Fri, 19 May 2023 13:53:01 +0200,
+Oswald Buddenhagen wrote:
+> 
+> On Fri, May 19, 2023 at 01:04:32PM +0200, Takashi Iwai wrote:
+> > On Fri, 19 May 2023 12:43:24 +0200,
+> > Oswald Buddenhagen wrote:
+> >> 
+> >> On Thu, May 18, 2023 at 04:53:19PM +0200, Takashi Iwai wrote:
+> >> > On Thu, 18 May 2023 16:09:45 +0200,
+> >> > Oswald Buddenhagen wrote:
+> >> >> -static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm * epcm, int voices)
+> >> >> +static void snd_emu10k1_pcm_free_voices(struct snd_emu10k1_pcm *epcm)
+> >> >>  {
+> >> >> -	int err, i;
+> >> >> -
+> >> >> -	for (i = 0; i < ARRAY_SIZE(epcm->voices); i++) {
+> >> >> +	for (unsigned i = 0; i < ARRAY_SIZE(epcm->voices); i++) {
+> >> > 
+> > I'm not super-strict about it, but
+> 
+> > as checkpatch complaints,
+> > 
+> it doesn't, so from that side it's settled. it's really just about the
+> alsa-local policy.
+> 
+> what it actually *does* complain about is the use of bare
+> "unsigned".
 
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- sound/soc/intel/avs/pcm.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+Ah that's OK, then.
 
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index 31c032a0f7e4..1fbb2c2fadb5 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -468,21 +468,34 @@ static int avs_dai_fe_startup(struct snd_pcm_substream *substream, struct snd_so
- 
- 	host_stream = snd_hdac_ext_stream_assign(bus, substream, HDAC_EXT_STREAM_TYPE_HOST);
- 	if (!host_stream) {
--		kfree(data);
--		return -EBUSY;
-+		ret = -EBUSY;
-+		goto err;
- 	}
- 
- 	data->host_stream = host_stream;
--	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
-+	ret = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
-+	if (ret < 0)
-+		goto err;
-+
- 	/* avoid wrap-around with wall-clock */
--	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_TIME, 20, 178000000);
--	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hw_rates);
-+	ret = snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_TIME, 20, 178000000);
-+	if (ret < 0)
-+		goto err;
-+
-+	ret = snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hw_rates);
-+	if (ret < 0)
-+		goto err;
-+
- 	snd_pcm_set_sync(substream);
- 
- 	dev_dbg(dai->dev, "%s fe STARTUP tag %d str %p",
- 		__func__, hdac_stream(host_stream)->stream_tag, substream);
- 
- 	return 0;
-+
-+err:
-+	kfree(data);
-+	return ret;
- }
- 
- static void avs_dai_fe_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
--- 
-2.34.1
+> i don't like the excessively verbose "unsigned int", so
+> i'll switch my uses over to "uint", which already has some use in
+> alsa. ok?
 
+I don't mind much about the use of unsigned without int.  Or it could
+be a simple int there, as that's nothing but a counter that is used
+locally that can't over 31bit.
+
+But the patch description could be still improved.
+
+
+thanks,
+
+Takashi
