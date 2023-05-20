@@ -4,94 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 804C7C77B7D
-	for <alsa-devel@archiver.kernel.org>; Sat, 20 May 2023 07:10:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABBDEC77B7D
+	for <alsa-devel@archiver.kernel.org>; Sat, 20 May 2023 08:04:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D577D828;
-	Sat, 20 May 2023 09:09:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D577D828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55D466C0;
+	Sat, 20 May 2023 10:03:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55D466C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684566601;
-	bh=NxSiUWCClPE6FOHgmhvLq9UswJT93RsbEk2w6BlWz6Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=RNT/fSr/36SKYb4q+5SDExUg9Qn88h7WaZtyuMWxrp/O4I7P6cABZsUtIG9CWFxFW
-	 vOvp1GYNy/+sXIamWnswPQihgTGvs6bfbfBjaChwDXGrA3z5dTFD7e7dICTso1PXcF
-	 kVf3c46nvTfZfgPkMDsq2J18K7RBvVRmhJOiXpcg=
+	s=default; t=1684569863;
+	bh=7++HRKLZoY20CUz8KBwftjhcXwHWEPruDg1vbOrCM5c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Bdghn131qpD4tqK57zxs/S5n069TGcAG4rwnf98iCRQceYpMo8wnQrs1u17nm4fhf
+	 k9f3+92gRDN17FmWastGDpDRzN9SnN+G3drceVS8cvFyvZOZnRb55lMqSaaV1Q8JAq
+	 bSEdb+q0+59L19ldFDr6Ugvh1VUR/6rg42q/vtJ8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B995F80580; Sat, 20 May 2023 09:08:01 +0200 (CEST)
+	id 92C8AF80272; Sat, 20 May 2023 10:03:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 832BAF80580;
-	Sat, 20 May 2023 09:08:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3704EF8016D;
+	Sat, 20 May 2023 10:03:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AA939F80567; Sat, 20 May 2023 09:07:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 19793F80272; Sat, 20 May 2023 10:03:04 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 03784F8016A
-	for <alsa-devel@alsa-project.org>; Sat, 20 May 2023 09:07:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03784F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id BB882F8016D
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2023 10:02:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB882F8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=qTV66kA7;
+ header.s=susede2_rsa header.b=MLFKHk7t;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=N1ZNCbT4
+ header.s=susede2_ed25519 header.b=XUH7ouRN
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CA7411FE3F;
-	Sat, 20 May 2023 07:07:43 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 28E5E220FA;
+	Sat, 20 May 2023 08:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684566463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	t=1684569768;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nTRWhH+7Eaa22PZpsKS0R+NBeYTa6L4FPvhAgcjfX6E=;
-	b=qTV66kA7NE3Ze2sIcaW0XKmyxA6S407o0qw3n0z4v2M2V8Nzqz/IQUhbMt+gfA4wxfNHzk
-	1Hip/vEJU+jyCMlacrMGsC6W1s80Vhm/DntubhurJFPcl/Yd8+wNsiT/zIDsyq8P2R44sk
-	dp6QC6HjDJRHSyRohhrI7OTQqFEyVRg=
+	bh=6gTWkXUpkruRCLRRG0oZe0W3ZCW9vuUDKYJYeRpiB9w=;
+	b=MLFKHk7tFfQjT/YAaE+/zAaFMd+09oooT8+HHvl5vnxDHOdrVl07hNeu33o4JU86c3DJrX
+	G7wmm0RSlEuLWQm3MZjM5lIPnqwL45CEkPApDWLk9d9VoiBM217EJa0mStHjJsb6RAQqg6
+	cTNhyCxMc9zuI9Fz829TPEgg6kdfWNI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684566463;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=susede2_ed25519; t=1684569768;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nTRWhH+7Eaa22PZpsKS0R+NBeYTa6L4FPvhAgcjfX6E=;
-	b=N1ZNCbT4hCZkASk9aY0d6CT5FZiGDhToIguLWK0FEwRoiS59XrsWmvRZbYXtNiEyz2J7qQ
-	uKOQztToLBNNyvBQ==
+	bh=6gTWkXUpkruRCLRRG0oZe0W3ZCW9vuUDKYJYeRpiB9w=;
+	b=XUH7ouRN4/7BMnJmpBPp6ssNlrvkcVW5TBRfYT2lXTF4DOklKKcMlMOOep4oDLB4N3xVAA
+	+3CuiPEi5TBBUIDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC420134F5;
-	Sat, 20 May 2023 07:07:43 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CBEA1358F;
+	Sat, 20 May 2023 08:02:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id cCIXKb9xaGRrHgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Sat, 20 May 2023 07:07:43 +0000
+	id Cug0Aqh+aGTYMgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sat, 20 May 2023 08:02:48 +0000
+Date: Sat, 20 May 2023 10:02:47 +0200
+Message-ID: <87lehjzazc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-utils 2/3] aconnect: Add UMP support
-Date: Sat, 20 May 2023 09:07:37 +0200
-Message-Id: <20230520070738.8382-3-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230520070738.8382-1-tiwai@suse.de>
-References: <20230520070738.8382-1-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: PNBWMBTXNHKP3SLZB7BB6J4K66Q2N2WD
-X-Message-ID-Hash: PNBWMBTXNHKP3SLZB7BB6J4K66Q2N2WD
+To: Olliver Schinagl <oliver@schinagl.nl>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: snd_hda_codec_cirrus kernel oops
+In-Reply-To: <f421a23b-498f-9075-068b-3f0b2077427d@schinagl.nl>
+References: <64d95eb0-dbdb-cff8-a8b1-988dc22b24cd@schinagl.nl>
+	<87zg69appu.wl-tiwai@suse.de>
+	<6afd694e-8810-8197-3dd0-831daf2130f3@schinagl.nl>
+	<87bkikdt66.wl-tiwai@suse.de>
+	<d6e3b9ea-f98f-6404-e1ee-6973d68b64c1@schinagl.nl>
+	<87y1llhfzq.wl-tiwai@suse.de>
+	<f96b9b82-8bfe-ad98-c7d8-b6d7ac401961@schinagl.nl>
+	<87pm6w23s7.wl-tiwai@suse.de>
+	<f421a23b-498f-9075-068b-3f0b2077427d@schinagl.nl>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: VPW5QCHX64SKEDFP4RJRF6KYWW7DSF5W
+X-Message-ID-Hash: VPW5QCHX64SKEDFP4RJRF6KYWW7DSF5W
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PNBWMBTXNHKP3SLZB7BB6J4K66Q2N2WD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VPW5QCHX64SKEDFP4RJRF6KYWW7DSF5W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,203 +120,167 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch extends the aconnect program for supporting UMP.
-Now the verbose output can show the UMP client version.
+On Fri, 19 May 2023 18:53:16 +0200,
+Olliver Schinagl wrote:
+> 
+> Hey Takashi,
+> 
+> On 19-05-2023 09:12, Takashi Iwai wrote:
+> > On Thu, 18 May 2023 17:11:53 +0200,
+> > Olliver Schinagl wrote:
+> >> 
+> >> Hey Takashi,
+> >> 
+> >> On 18-05-2023 16:27, Takashi Iwai wrote:
+> >>> On Thu, 18 May 2023 16:24:02 +0200,
+> >>> Olliver Schinagl wrote:
+> >>>> 
+> >>>> Hey Takashi,
+> >>>> 
+> >>>> I've applied the patch you've listed below. Is there some 'fool-proof'
+> >>>> way to produce _any_ output however? I've stopped pulse/pipe audio,
+> >>>> and only use aplay + alsamixer. Back to basics as they say. For aplay,
+> >>>> I use -D sysdefault:CARD=PCH (which was listed as a cirrus card with
+> >>>> -L).
+> >>>> 
+> >>>> Alsamixer was used to ensure all volumes are open.
+> >>>> 
+> >>>> Without anything running, I was able to use hdajackretask to apply
+> >>>> settings. But then, what to put. I get that I have to figure out, what
+> >>>> is routed where (i'll try to find the schematic for the macbook pro
+> >>>> 12,1), but hence my question, is there some way to produce something?
+> >>>> In hdajackretask I've enabled all pins, overriden them all, and set
+> >>>> them all to the same configuration. 'Internal, internal, speaker,
+> >>>> other-analog, green, not-present, 1, front'. I figured, by setting up
+> >>>> verything to the internal speaker, I must get sound out of something,
+> >>>> but alas.
+> >>>> 
+> >>>> I also have a Macbook pro from 1 or 2 generations earlier, 11,2 afaik,
+> >>>> where the sound still does work. I've used the same config
+> >>>> hdajackretask showed was in use there, but (obviously?) that didn't
+> >>>> work.
+> >>>> 
+> >>>> So I'm a bit grasping at straws. Trying _every_ combination is a bit much?
+> >>> 
+> >>> It's the hard part.  I'd try to copy the pin config of the existing
+> >>> models at first, then try shooting one pin by one if it doesn't work.
+> >> 
+> >> Ok, so no easy way :) I did try copying things, but didn't get sound either.
+> >> 
+> >> I did find the schematics for the 2013 and 2014 models of the macbook;
+> >> no luck yet on the 2015 (mine). But all 3 have the same model number
+> >> (A1502), and looking at the schematic (not even sure if it is just a
+> >> new revision, or actually for the different boards) they seem more or
+> >> less identical. Especially on the audio part. The nice thing is it
+> >> tells me what pins things are connected to :) But again, might not be
+> >> a perfect match to my board (crosses fingers).
+> >> 
+> >> What is interesting, the schematics [0] actually list the HDA configuration.
+> >> 
+> >> CODEC OUTPUT SIGNAL PATHS
+> >> 
+> >> FUNCTION   VOLUME    CONVERTER  PIN COMPLEX  MUTE CONTROL
+> >> 
+> >> HP/HS OUT  0x02 (2)  0x02 (2)   0x10 (16)    N/A
+> >> TWEETERS   0x03 (3)  0x03 (3)   0x12 (18)    CODEC GPIO0
+> >> SUB        0x04 (4)  0x04 (4)   0x13 (19)    CODEC GPIO0
+> >> SPDIF OUT  N/A       0x0e (14)  0x21 (33)    N/A
+> >> 
+> >> DMIC 1               0x09 (9)   0x1c (18)
+> >> DMIC 2               0x09 (9)   0x1c (18)
+> >> 
+> >> HEADSET MIC          0x07 (7)   0x18 (24)
+> >> 
+> >> OTHER CODEC GPIO LINES
+> >> LEFT SPEAKER ID      GPIO2 INPUT             HIGH = FG, LOW = MERRY
+> >> RIGHT SPEAKER ID     GPIO3 INPUT             HIGH = FG, LOW = MERRY
+> >> DFET CONTROL         GPIO4 OUTPUT            HIGH = DFETs OPEN
+> >> 
+> >> Granted, that should yield the same infomration I can copy from the
+> >> other one, but I'm trying to understand what this would mean. Function
+> >> is obvious, aswell as the pin-complex, it's what hdajackretasks calls
+> >> pin ID. But the rest is a bit iffy. E.g. what would the volume column
+> >> indicate? What about the 'converter'? And the GPIO's? Are the's GPIO's
+> >> of the codec? Maybe my confusion mostly comes as I'm not sure how to
+> >> relate those fields to hdajackretask.
+> > 
+> > It's a good information.
+> > It corresponds to spec->gpio_eapd_speaker, and GPIO2 would be the bit
+> > 0x04, GPIO3 would be 0x08, so it should be set to 0x0c.  The headphone
+> > has no GPIO assignment, so spec->gpio_eapd_headphone=0.
+> > 
+> > But subwoofers seem to have the GPIO controls as well, and the gpio
+> > bit 0x01 should be set.  For that, we'll need to modify cs_automute()
+> > function.  But let's investigate this later.
+> > 
+> > FWIW, the GPIO bits can be flipped on the fly, too.  Use hda-verb for
+> > setting SET_GPIO_MASK, SET_GPIO_DIRECTION and SET_GPIO_DATA.
+> 
+> Thanks for that explanation! Great news. I don't know how; but I
+> managed to 'fix' the bios. Strange yeah. I wanted to create an uefi
+> boot image as that's something arch's mkinitcpio appearantly
+> supports. So I used efiboomgr to add an additional entry.
+> 
+> After a reboot, I regained the apple logo at boot (which was gone for
+> ages), but also the boot chime returned. And for sure, in Linux also
+> sound is working again normally. I have no idea how or why this works,
+> but it does.
+> 
+> For reference, this is what 6.3.x now shows:
+> 
+> [   15.642288] snd_hda_codec_cirrus hdaudioC1D0: autoconfig for
+> CS4208: line_outs=2 (0x12/0x13/0x0/0x0/0x0) type:speaker
+> [   15.642296] snd_hda_codec_cirrus hdaudioC1D0:    speaker_outs=0
+> (0x0/0x0/0x0/0x0/0x0)
+> [   15.642299] snd_hda_codec_cirrus hdaudioC1D0:    hp_outs=1
+> (0x10/0x0/0x0/0x0/0x0)
+> [   15.642301] snd_hda_codec_cirrus hdaudioC1D0:    mono: mono_out=0x0
+> [   15.642303] snd_hda_codec_cirrus hdaudioC1D0:    dig-out=0x21/0x0
+> [   15.642305] snd_hda_codec_cirrus hdaudioC1D0:    inputs:
+> [   15.642307] snd_hda_codec_cirrus hdaudioC1D0:      Internal Mic=0x1c
+> [   15.642309] snd_hda_codec_cirrus hdaudioC1D0:      Mic=0x18
+> [   15.735257] snd_hda_intel 0000:00:03.0: bound 0000:00:02.0 (ops
+> i915_audio_component_bind_ops [i915])
+> 
+> And hdajackretask (without unconnected pins):
+> Pin ID: 0x10 [Green Headphone]
+> Jack; External; Headphone; Combination;
+> Green; Present; 2; Front;
+> 
+> Pin ID: 0x12 [Internal Speaker]
+> <blank>; Internal; Speaker; Unknown;
+> Unknown; Not present; 1; Back;
+> 
+> Pin ID: 0x13 [Internal Speaker]
+> <blank>; Internal; Speaker; Unknown;
+> Unknown; Not present; 1; Back;
+> 
+> Pin ID: 0x18 [Pink Mic]
+> Jack; External; Microphone; Combination;
+> Pink; Present; 4; Front;
+> 
+> Pin ID: 0x1c [Internal Mic]
+> <blank>; Internal; Microphone; Other Digital;
+> Unknown; Not present; <blank>; Front
+> 
+> Pin ID: 0x21 [White SPDIF Out]
+> Jack; External; SPIDF Out; Combination;
+> White; Present; 3; Front;
+> 
+> The blank connectivity options are a bit off, as is the blank channel
+> group on the internal mic.
+> 
+> So curious on those ...
+> 
+> Anyway, leaving this here for any future in case it is needed again.
 
-Also, a new option -a is added to control the behavior whether to show
-the all ports including the inactive ports or not.  As default, only
-the active ports are shown, but UMP clients allow to hide some ports
-as inactive.
+Good to hear that you managed to recover BIOS.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- seq/aconnect/aconnect.1 |  3 ++
- seq/aconnect/aconnect.c | 91 +++++++++++++++++++++++++++++++++--------
- 2 files changed, 78 insertions(+), 16 deletions(-)
+Could you give alsa-info.sh output from the working state?  Run the
+script with --no-upload option and attach the output.  This will help
+in future if it gets broken again :)
 
-diff --git a/seq/aconnect/aconnect.1 b/seq/aconnect/aconnect.1
-index 2050187a3362..5c015196f19c 100644
---- a/seq/aconnect/aconnect.1
-+++ b/seq/aconnect/aconnect.1
-@@ -120,6 +120,9 @@ List existing output (writable) ports.
- This option is exclusive to
- .B \-i.
- .TP
-+.B \-a, \-\-all
-+List inactive ports, too.
-+.TP
- .B \-l, \-\-list
- List the current connection status.  The connected and connecting ports
- from/to each port are listed together.
-diff --git a/seq/aconnect/aconnect.c b/seq/aconnect/aconnect.c
-index 85a7770156aa..582b454c2c22 100644
---- a/seq/aconnect/aconnect.c
-+++ b/seq/aconnect/aconnect.c
-@@ -29,6 +29,13 @@
- #include "aconfig.h"
- #include "gettext.h"
- 
-+#ifdef SND_SEQ_PORT_CAP_INACTIVE
-+#define HANDLE_SHOW_ALL
-+static int show_all;
-+#else
-+#define show_all 0
-+#endif
-+
- static void error_handler(const char *file, int line, const char *function, int err, const char *fmt, ...)
- {
- 	va_list arg;
-@@ -60,6 +67,9 @@ static void usage(void)
- 	printf(_("   aconnect -i|-o [-options]\n"));
- 	printf(_("     -i,--input          list input (readable) ports\n"));
- 	printf(_("     -o,--output         list output (writable) ports\n"));
-+#ifdef HANDLE_SHOW_ALL
-+	printf(_("     -a,--all            show inactive ports, too\n"));
-+#endif
- 	printf(_("     -l,--list           list current connections of each port\n"));
- 	printf(_(" * Remove all exported connections\n"));
- 	printf(_("     -x, --removeall\n"));
-@@ -72,25 +82,38 @@ static void usage(void)
- #define LIST_INPUT	1
- #define LIST_OUTPUT	2
- 
--#define perm_ok(pinfo,bits) ((snd_seq_port_info_get_capability(pinfo) & (bits)) == (bits))
-+#define perm_ok(cap,bits) (((cap) & (bits)) == (bits))
-+
-+#ifdef SND_SEQ_PORT_DIR_INPUT
-+static int check_direction(snd_seq_port_info_t *pinfo, int bit)
-+{
-+	int dir = snd_seq_port_info_get_direction(pinfo);
-+	return !dir || (dir & bit);
-+}
-+#else
-+#define check_direction(x, y)	1
-+#endif
- 
- static int check_permission(snd_seq_port_info_t *pinfo, int perm)
- {
--	if (perm) {
--		if (perm & LIST_INPUT) {
--			if (perm_ok(pinfo, SND_SEQ_PORT_CAP_READ|SND_SEQ_PORT_CAP_SUBS_READ))
--				goto __ok;
--		}
--		if (perm & LIST_OUTPUT) {
--			if (perm_ok(pinfo, SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE))
--				goto __ok;
--		}
-+	int cap = snd_seq_port_info_get_capability(pinfo);
-+
-+	if (cap & SND_SEQ_PORT_CAP_NO_EXPORT)
- 		return 0;
-+
-+	if (!perm)
-+		return 1;
-+	if (perm & LIST_INPUT) {
-+		if (perm_ok(cap, SND_SEQ_PORT_CAP_READ|SND_SEQ_PORT_CAP_SUBS_READ) &&
-+		    check_direction(pinfo, SND_SEQ_PORT_DIR_INPUT))
-+			return 1;
- 	}
-- __ok:
--	if (snd_seq_port_info_get_capability(pinfo) & SND_SEQ_PORT_CAP_NO_EXPORT)
--		return 0;
--	return 1;
-+	if (perm & LIST_OUTPUT) {
-+		if (perm_ok(cap, SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE) &&
-+		    check_direction(pinfo, SND_SEQ_PORT_DIR_OUTPUT))
-+			return 1;
-+	}
-+	return 0;
- }
- 
- /*
-@@ -151,12 +174,20 @@ static void do_search_port(snd_seq_t *seq, int perm, action_func_t do_action)
- 		/* reset query info */
- 		snd_seq_port_info_set_client(pinfo, snd_seq_client_info_get_client(cinfo));
- 		snd_seq_port_info_set_port(pinfo, -1);
-+#ifdef HANDLE_SHOW_ALL
-+		if (show_all)
-+			snd_seq_port_info_set_capability(pinfo, SND_SEQ_PORT_CAP_INACTIVE);
-+#endif
- 		count = 0;
- 		while (snd_seq_query_next_port(seq, pinfo) >= 0) {
- 			if (check_permission(pinfo, perm)) {
- 				do_action(seq, cinfo, pinfo, count);
- 				count++;
- 			}
-+#ifdef HANDLE_SHOW_ALL
-+			if (show_all)
-+				snd_seq_port_info_set_capability(pinfo, SND_SEQ_PORT_CAP_INACTIVE);
-+#endif
- 		}
- 	}
- }
-@@ -173,7 +204,20 @@ static void print_port(snd_seq_t *seq, snd_seq_client_info_t *cinfo,
- 		       snd_seq_client_info_get_name(cinfo),
- 		       (snd_seq_client_info_get_type(cinfo) == SND_SEQ_USER_CLIENT ?
- 			_("user") : _("kernel")));
--
-+#ifdef HAVE_SEQ_CLIENT_INFO_GET_MIDI_VERSION
-+		switch (snd_seq_client_info_get_midi_version(cinfo)) {
-+		case SND_SEQ_CLIENT_UMP_MIDI_1_0:
-+			printf(",UMP-MIDI1");
-+			break;
-+		case SND_SEQ_CLIENT_UMP_MIDI_2_0:
-+			printf(",UMP-MIDI2");
-+			break;
-+		}
-+#endif
-+#ifdef HANDLE_SHOW_ALL
-+		if (snd_seq_port_info_get_capability(pinfo) & SND_SEQ_PORT_CAP_INACTIVE)
-+			printf(",INACTIVE");
-+#endif
- #ifdef HAVE_SEQ_CLIENT_INFO_GET_CARD
- 		card = snd_seq_client_info_get_card(cinfo);
- #endif
-@@ -251,6 +295,12 @@ enum {
- 	SUBSCRIBE, UNSUBSCRIBE, LIST, REMOVE_ALL
- };
- 
-+#ifdef HANDLE_SHOW_ALL
-+#define ACONNECT_OPTS "dior:t:elxa"
-+#else
-+#define ACONNECT_OPTS "dior:t:elx"
-+#endif
-+
- static const struct option long_option[] = {
- 	{"disconnect", 0, NULL, 'd'},
- 	{"input", 0, NULL, 'i'},
-@@ -260,6 +310,9 @@ static const struct option long_option[] = {
- 	{"exclusive", 0, NULL, 'e'},
- 	{"list", 0, NULL, 'l'},
- 	{"removeall", 0, NULL, 'x'},
-+#ifdef HANDLE_SHOW_ALL
-+	{"all", 0, NULL, 'a'},
-+#endif
- 	{NULL, 0, NULL, 0},
- };
- 
-@@ -280,7 +333,7 @@ int main(int argc, char **argv)
- 	textdomain(PACKAGE);
- #endif
- 
--	while ((c = getopt_long(argc, argv, "dior:t:elx", long_option, NULL)) != -1) {
-+	while ((c = getopt_long(argc, argv, ACONNECT_OPTS, long_option, NULL)) != -1) {
- 		switch (c) {
- 		case 'd':
- 			command = UNSUBSCRIBE;
-@@ -313,6 +366,12 @@ int main(int argc, char **argv)
- 		case 'x':
- 			command = REMOVE_ALL;
- 			break;
-+#ifdef HANDLE_SHOW_ALL
-+		case 'a':
-+			command = LIST;
-+			show_all = 1;
-+			break;
-+#endif
- 		default:
- 			usage();
- 			exit(1);
--- 
-2.35.3
 
+thanks,
+
+Takashi
