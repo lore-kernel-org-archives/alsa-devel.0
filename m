@@ -4,71 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA15FC77B75
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 May 2023 20:55:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 681D5C77B7F
+	for <alsa-devel@archiver.kernel.org>; Sat, 20 May 2023 07:03:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D112D208;
-	Fri, 19 May 2023 22:54:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D112D208
+	by alsa0.perex.cz (Postfix) with ESMTPS id 952813E7;
+	Sat, 20 May 2023 09:02:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 952813E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684529709;
-	bh=XMfD+fHTTCvtfUV7h2YoT8hriPxayi7IPm7YdA35a9s=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Z7TvK3CRieaOj0UXTqFendM3sf4mZc7THmmJxHurLatG3khc6sAMHuxLRY2eVomN3
-	 LuLCNOjkd5nPHldSTcjppKp5y0taHinFBp94CMokZGdXBqgPKcqoL3RVsZE+uVOkbO
-	 NUWlFj9fjMF/7ymTTOxGjHHj/VXXc+2sSZyRHIdU=
+	s=default; t=1684566209;
+	bh=yvQbYHMdYYD58E7u6Rw+COilYfr6yB5XntHX5xoAz+E=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=tdOWJ7CeS+ZKa83AKMejxeC6PtGWcpQF3V4SCbWhNYE/vm6IpoDWlYAFzQ6UWZH8y
+	 zOFjVPrEys+vRwaRA++7p260Usu9+1u8ZUmKIJirH+XSgzIriqocJGcNPj0O4Igwet
+	 5iWt5zccfv2TeBQVNAQj58IjK5dWkL+/ian4W+Us=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AC728F80087; Fri, 19 May 2023 22:54:12 +0200 (CEST)
+	id 87044F80552; Sat, 20 May 2023 09:02:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B601F80272;
-	Fri, 19 May 2023 22:54:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13779F80272;
+	Sat, 20 May 2023 09:02:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5372DF80272; Fri, 19 May 2023 22:54:08 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 798E2F80551; Sat, 20 May 2023 09:00:36 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 22B83F80087
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2023 22:53:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22B83F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 24C9AF80087
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2023 09:00:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24C9AF80087
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=sBinAhr5
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=ODfRP6Nq;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=GAHtawJY
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 24E9B65A4A;
-	Fri, 19 May 2023 20:53:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE0E7C433D2;
-	Fri, 19 May 2023 20:53:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684529636;
-	bh=XMfD+fHTTCvtfUV7h2YoT8hriPxayi7IPm7YdA35a9s=;
-	h=Date:From:To:Cc:Subject:From;
-	b=sBinAhr5gyilwc61wdhuktUwh92ixozkWmdVaCSMyCebtMWVvmdYuyWVPTV8gIDMK
-	 o9IQGwO8DD5G0a00xR5wFUnOoMhq16LAhNwTENB5pFTdkyuyouivAMcMV65KDYqUV/
-	 D34aHq1VRxT2angV5Ea99jtXFwMHR8AMi9/dyDFVAMosZRAoaavRQIKJGtgkY1GLRp
-	 bvlB+slkUym0LGY4ATTGL1YYaQrVrIojTicPFth27D3C8CVNyVdCqjdECWwCUxwDuD
-	 E/aDoFGHHCQTt3Pb7Uq4fc5R5KO4vLGWi+H67WVF0PlZSxJg34zVzX1tFLJxPPW4u0
-	 Bdd5IHnVaQpNg==
-Date: Fri, 19 May 2023 14:54:46 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH v2][next] ALSA: mixart: Replace one-element arrays with
- simple object declarations
-Message-ID: <ZGfiFjcL8+r3mayq@work>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 85CB122039;
+	Sat, 20 May 2023 07:00:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1684566025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lv8lzvPi2AwYV+W+LyidROa3ulPVQZs2GlpTau91ivU=;
+	b=ODfRP6NqB13bO7i+g8T6PdN2nymQyVgsnKgNihFYg5CqeQtulIJWTUZ1JYFOjmEe519Te5
+	Y3qXrToxXwIts7tv2LopMdyaR9wk/TgXJafechvk/YTuUnUIseeC2AWDsrBkmPRChWt+pG
+	OEUHhtrjQyDr2IiRD1yCbQNekBTD+3U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1684566025;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lv8lzvPi2AwYV+W+LyidROa3ulPVQZs2GlpTau91ivU=;
+	b=GAHtawJY2kcUAwKHgCKwgvW21Y7ZeJxlXg84LMIHGTWE5G3cVIDfhS/4qP3NF/dQgBtT+O
+	073OpJoLrJDskSDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BD97139F5;
+	Sat, 20 May 2023 07:00:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id cMiFGQlwaGTwGwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sat, 20 May 2023 07:00:25 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH alsa-lib 1/8] uapi: Update rawmidi API to 2.0.3
+Date: Sat, 20 May 2023 09:00:14 +0200
+Message-Id: <20230520070021.1301-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230520070021.1301-1-tiwai@suse.de>
+References: <20230520070021.1301-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Message-ID-Hash: PETZ5G2UJNDD7MH4UEYJDJWBXKIL2QHM
-X-Message-ID-Hash: PETZ5G2UJNDD7MH4UEYJDJWBXKIL2QHM
-X-MailFrom: gustavoars@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: DBXD57IBXU76TT7PE264ZYN5YQMM7OQR
+X-Message-ID-Hash: DBXD57IBXU76TT7PE264ZYN5YQMM7OQR
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -80,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PETZ5G2UJNDD7MH4UEYJDJWBXKIL2QHM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DBXD57IBXU76TT7PE264ZYN5YQMM7OQR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -89,122 +113,112 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-One-element arrays are deprecated, and we are replacing them with flexible
-array members instead. However, in this case it seems those one-element
-arrays have never actually been used as fake flexible arrays.
+Copied from the kernel uapi header for rawmidi API.
+A few new structs and constants for UMP are defined in addition to a
+few new ioctls.
 
-See this code that dates from Linux-2.6.12-rc2 initial git repository build
-(commit 1da177e4c3f4 ("Linux-2.6.12-rc2")):
-
-sound/pci/mixart/mixart_core.h:
- 215 struct mixart_stream_state_req
- 216 {
- 217         u32                 delayed;
- 218         u64                 scheduler;
- 219         u32                 reserved4np[3];
- 220         u32                 stream_count;  /* set to 1 for instance */
- 221         struct mixart_flow_info  stream_info;   /* could be an array[stream_count] */
- 222 } __attribute__((packed));
-
-sound/pci/mixart/mixart.c:
- 388
- 389         memset(&stream_state_req, 0, sizeof(stream_state_req));
- 390         stream_state_req.stream_count = 1;
- 391         stream_state_req.stream_info.stream_desc.uid_pipe = stream->pipe->group_uid;
- 392         stream_state_req.stream_info.stream_desc.stream_idx = stream->substream->number;
- 393
-
-So, taking the code above as example, replace multiple one-element
-arrays with simple object declarations, and refactor the rest of the
-code, accordingly.
-
-This helps with the ongoing efforts to tighten the FORTIFY_SOURCE
-routines on memcpy() and help us make progress towards globally
-enabling -fstrict-flex-arrays=3 [1].
-
-This results in no differences in binary output.
-
-Link: https://github.com/KSPP/linux/issues/79
-Link: https://github.com/KSPP/linux/issues/296
-Link: https://gcc.gnu.org/pipermail/gcc-patches/2022-October/602902.html [1]
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
-Changes in v2:
- - Keep the code comments (by Takashi Iwai) and explicitly mention that
-   the objects could be arrays, in theory.
+ include/sound/uapi/asound.h | 58 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 57 insertions(+), 1 deletion(-)
 
-v1:
- - Link: https://lore.kernel.org/linux-hardening/ZGVlcpuvx1rSOMP8@work/
-
- sound/pci/mixart/mixart.c      | 8 ++++----
- sound/pci/mixart/mixart_core.h | 7 +++----
- 2 files changed, 7 insertions(+), 8 deletions(-)
-
-diff --git a/sound/pci/mixart/mixart.c b/sound/pci/mixart/mixart.c
-index 1b078b789604..7ceaf6a7a77e 100644
---- a/sound/pci/mixart/mixart.c
-+++ b/sound/pci/mixart/mixart.c
-@@ -98,7 +98,7 @@ static int mixart_set_pipe_state(struct mixart_mgr *mgr,
+diff --git a/include/sound/uapi/asound.h b/include/sound/uapi/asound.h
+index 62a0364fc3cd..a09089814c7b 100644
+--- a/include/sound/uapi/asound.h
++++ b/include/sound/uapi/asound.h
+@@ -706,7 +706,7 @@ enum {
+  *  Raw MIDI section - /dev/snd/midi??
+  */
  
- 	memset(&group_state, 0, sizeof(group_state));
- 	group_state.pipe_count = 1;
--	group_state.pipe_uid[0] = pipe->group_uid;
-+	group_state.pipe_uid = pipe->group_uid;
+-#define SNDRV_RAWMIDI_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 2)
++#define SNDRV_RAWMIDI_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 3)
  
- 	if(start)
- 		request.message_id = MSG_STREAM_START_STREAM_GRP_PACKET;
-@@ -185,7 +185,7 @@ static int mixart_set_clock(struct mixart_mgr *mgr,
- 	clock_properties.clock_mode = CM_STANDALONE;
- 	clock_properties.frequency = rate;
- 	clock_properties.nb_callers = 1; /* only one entry in uid_caller ! */
--	clock_properties.uid_caller[0] = pipe->group_uid;
-+	clock_properties.uid_caller = pipe->group_uid;
+ enum {
+ 	SNDRV_RAWMIDI_STREAM_OUTPUT = 0,
+@@ -717,6 +717,7 @@ enum {
+ #define SNDRV_RAWMIDI_INFO_OUTPUT		0x00000001
+ #define SNDRV_RAWMIDI_INFO_INPUT		0x00000002
+ #define SNDRV_RAWMIDI_INFO_DUPLEX		0x00000004
++#define SNDRV_RAWMIDI_INFO_UMP			0x00000008
  
- 	dev_dbg(&mgr->pci->dev, "mixart_set_clock to %d kHz\n", rate);
+ struct snd_rawmidi_info {
+ 	unsigned int device;		/* RO/WR (control): device number */
+@@ -775,6 +776,57 @@ struct snd_rawmidi_status {
+ 	unsigned char reserved[16];	/* reserved for future use */
+ };
  
-@@ -565,8 +565,8 @@ static int mixart_set_format(struct mixart_stream *stream, snd_pcm_format_t form
++/* UMP EP Protocol / JRTS capability bits */
++#define SNDRV_UMP_EP_INFO_PROTO_MIDI_MASK	0x0300
++#define SNDRV_UMP_EP_INFO_PROTO_MIDI1		0x0100 /* MIDI 1.0 */
++#define SNDRV_UMP_EP_INFO_PROTO_MIDI2		0x0200 /* MIDI 2.0 */
++#define SNDRV_UMP_EP_INFO_PROTO_JRTS_MASK	0x0003
++#define SNDRV_UMP_EP_INFO_PROTO_JRTS_TX		0x0001 /* JRTS Transmit */
++#define SNDRV_UMP_EP_INFO_PROTO_JRTS_RX		0x0002 /* JRTS Receive */
++
++/* UMP Endpoint information */
++struct snd_ump_endpoint_info {
++	int card;			/* card number */
++	int device;			/* device number */
++	unsigned int flags;		/* additional info */
++	unsigned int protocol_caps;	/* protocol capabilities */
++	unsigned int protocol;		/* current protocol */
++	unsigned int num_blocks;	/* # of function blocks */
++	unsigned short version;		/* UMP major/minor version */
++	unsigned short padding[7];
++	unsigned char name[128];	/* endpoint name string */
++	unsigned char product_id[128];	/* unique product id string */
++	unsigned char reserved[32];
++} __packed;
++
++/* UMP direction */
++#define SNDRV_UMP_DIR_INPUT		0x01
++#define SNDRV_UMP_DIR_OUTPUT		0x02
++#define SNDRV_UMP_DIR_BIDIRECTION	0x03
++
++/* UMP block info flags */
++#define SNDRV_UMP_BLOCK_IS_MIDI1	(1U << 0) /* MIDI 1.0 port w/o restrict */
++#define SNDRV_UMP_BLOCK_IS_LOWSPEED	(1U << 1) /* 31.25Kbps B/W MIDI1 port */
++
++/* UMP groups and blocks */
++#define SNDRV_UMP_MAX_GROUPS		16
++#define SNDRV_UMP_MAX_BLOCKS		32
++
++/* UMP Block information */
++struct snd_ump_block_info {
++	int card;			/* card number */
++	int device;			/* device number */
++	unsigned char block_id;		/* block ID (R/W) */
++	unsigned char direction;	/* UMP direction */
++	unsigned char active;		/* Activeness */
++	unsigned char first_group;	/* first group ID */
++	unsigned char num_groups;	/* number of groups */
++	unsigned char padding[3];
++	unsigned int flags;		/* various info flags */
++	unsigned char name[128];	/* block name string */
++	unsigned char reserved[32];
++} __packed;
++
+ #define SNDRV_RAWMIDI_IOCTL_PVERSION	_IOR('W', 0x00, int)
+ #define SNDRV_RAWMIDI_IOCTL_INFO	_IOR('W', 0x01, struct snd_rawmidi_info)
+ #define SNDRV_RAWMIDI_IOCTL_USER_PVERSION _IOW('W', 0x02, int)
+@@ -782,6 +834,9 @@ struct snd_rawmidi_status {
+ #define SNDRV_RAWMIDI_IOCTL_STATUS	_IOWR('W', 0x20, struct snd_rawmidi_status)
+ #define SNDRV_RAWMIDI_IOCTL_DROP	_IOW('W', 0x30, int)
+ #define SNDRV_RAWMIDI_IOCTL_DRAIN	_IOW('W', 0x31, int)
++/* Additional ioctls for UMP rawmidi devices */
++#define SNDRV_UMP_IOCTL_ENDPOINT_INFO	_IOR('W', 0x40, struct snd_ump_endpoint_info)
++#define SNDRV_UMP_IOCTL_BLOCK_INFO	_IOR('W', 0x41, struct snd_ump_block_info)
  
- 	stream_param.pipe_count = 1;      /* set to 1 */
- 	stream_param.stream_count = 1;    /* set to 1 */
--	stream_param.stream_desc[0].uid_pipe = stream->pipe->group_uid;
--	stream_param.stream_desc[0].stream_idx = stream->substream->number;
-+	stream_param.stream_desc.uid_pipe = stream->pipe->group_uid;
-+	stream_param.stream_desc.stream_idx = stream->substream->number;
- 
- 	request.message_id = MSG_STREAM_SET_INPUT_STAGE_PARAM;
- 	request.uid = (struct mixart_uid){0,0};
-diff --git a/sound/pci/mixart/mixart_core.h b/sound/pci/mixart/mixart_core.h
-index 2f0e29ed5d63..d39233e0e070 100644
---- a/sound/pci/mixart/mixart_core.h
-+++ b/sound/pci/mixart/mixart_core.h
-@@ -231,7 +231,7 @@ struct mixart_group_state_req
- 	u64           scheduler;
- 	u32           reserved4np[2];
- 	u32           pipe_count;    /* set to 1 for instance */
--	struct mixart_uid  pipe_uid[1];   /* could be an array[pipe_count] */
-+	struct mixart_uid  pipe_uid; /* could be an array[pipe_count], in theory */
- } __attribute__((packed));
- 
- struct mixart_group_state_resp
-@@ -314,7 +314,7 @@ struct mixart_clock_properties
- 	u32 format;
- 	u32 board_mask;
- 	u32 nb_callers; /* set to 1 (see below) */
--	struct mixart_uid uid_caller[1];
-+	struct mixart_uid uid_caller;
- } __attribute__((packed));
- 
- struct mixart_clock_properties_resp
-@@ -401,8 +401,7 @@ struct mixart_stream_param_desc
- 	u32 reserved4np[3];
- 	u32 pipe_count;                           /* set to 1 (array size !) */
- 	u32 stream_count;                         /* set to 1 (array size !) */
--	struct mixart_txx_stream_desc stream_desc[1];  /* only one stream per command, but this could be an array */
--
-+	struct mixart_txx_stream_desc stream_desc; /* only one stream per command, but this could be an array, in theory */
- } __attribute__((packed));
- 
+ /*
+  *  Timer section - /dev/snd/timer
+@@ -1114,6 +1169,7 @@ struct snd_ctl_tlv {
+ #define SNDRV_CTL_IOCTL_RAWMIDI_NEXT_DEVICE _IOWR('U', 0x40, int)
+ #define SNDRV_CTL_IOCTL_RAWMIDI_INFO	_IOWR('U', 0x41, struct snd_rawmidi_info)
+ #define SNDRV_CTL_IOCTL_RAWMIDI_PREFER_SUBDEVICE _IOW('U', 0x42, int)
++#define SNDRV_CTL_IOCTL_UMP_NEXT_DEVICE	_IOWR('U', 0x43, int)
+ #define SNDRV_CTL_IOCTL_POWER		_IOWR('U', 0xd0, int)
+ #define SNDRV_CTL_IOCTL_POWER_STATE	_IOR('U', 0xd1, int)
  
 -- 
-2.34.1
+2.35.3
 
