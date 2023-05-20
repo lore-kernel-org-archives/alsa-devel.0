@@ -4,101 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABBDEC77B7D
-	for <alsa-devel@archiver.kernel.org>; Sat, 20 May 2023 08:04:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E74ABC77B7F
+	for <alsa-devel@archiver.kernel.org>; Sat, 20 May 2023 08:16:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55D466C0;
-	Sat, 20 May 2023 10:03:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55D466C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1EE93828;
+	Sat, 20 May 2023 10:15:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EE93828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684569863;
-	bh=7++HRKLZoY20CUz8KBwftjhcXwHWEPruDg1vbOrCM5c=;
+	s=default; t=1684570578;
+	bh=rRIFxTUZ6S3q0lSxGhHjbSyTlSqppBgWtruKB685xOY=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Bdghn131qpD4tqK57zxs/S5n069TGcAG4rwnf98iCRQceYpMo8wnQrs1u17nm4fhf
-	 k9f3+92gRDN17FmWastGDpDRzN9SnN+G3drceVS8cvFyvZOZnRb55lMqSaaV1Q8JAq
-	 bSEdb+q0+59L19ldFDr6Ugvh1VUR/6rg42q/vtJ8=
+	b=tJqVIzQ3s1x+ZV3uY9cNUXMWUR0SitT3u6S62KOP7Xki6t0wrMczQlcilMvUeQES5
+	 CnV3liHqHmtKHnC2Iv+q6reGxG9xTflqaH3Fr3xMIn4Iyw0UDh7WR+r5YCwT1hh4Qk
+	 th9ueMEHWtk3vPfB/rwK/FUQSZTyxOoHyXRVvNxA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92C8AF80272; Sat, 20 May 2023 10:03:10 +0200 (CEST)
+	id B0636F80272; Sat, 20 May 2023 10:15:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3704EF8016D;
-	Sat, 20 May 2023 10:03:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F20EF80272;
+	Sat, 20 May 2023 10:15:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 19793F80272; Sat, 20 May 2023 10:03:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 737E7F80272; Sat, 20 May 2023 10:15:00 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BB882F8016D
-	for <alsa-devel@alsa-project.org>; Sat, 20 May 2023 10:02:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB882F8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id ECEACF8016D
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2023 10:14:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECEACF8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=MLFKHk7t;
+ header.s=susede2_rsa header.b=IoG/z5mT;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=XUH7ouRN
+ header.s=susede2_ed25519 header.b=eWrQdHoa
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 28E5E220FA;
-	Sat, 20 May 2023 08:02:48 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1668C21E9A;
+	Sat, 20 May 2023 08:14:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684569768;
+	t=1684570492;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6gTWkXUpkruRCLRRG0oZe0W3ZCW9vuUDKYJYeRpiB9w=;
-	b=MLFKHk7tFfQjT/YAaE+/zAaFMd+09oooT8+HHvl5vnxDHOdrVl07hNeu33o4JU86c3DJrX
-	G7wmm0RSlEuLWQm3MZjM5lIPnqwL45CEkPApDWLk9d9VoiBM217EJa0mStHjJsb6RAQqg6
-	cTNhyCxMc9zuI9Fz829TPEgg6kdfWNI=
+	bh=iPRJUtW+RTZfRnJcov7RdMbBJjkESZBBD8yCDMtMyjA=;
+	b=IoG/z5mTs7/tLu8Z/Q+PHgbP/rGU6ZqhF2olFtnpD/aMTRp02I6HgkM1vb/y3p8LWRN8Y+
+	HdZPjr91x0oY6+srErH2ksNdtI0KsFDJkTxiZ5ZaabQT7S/ap087Wfc4JQru+X+RdEFiE4
+	qXqORgzZGSiMdhq/0Nz89m/cl2A6omw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684569768;
+	s=susede2_ed25519; t=1684570492;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6gTWkXUpkruRCLRRG0oZe0W3ZCW9vuUDKYJYeRpiB9w=;
-	b=XUH7ouRN4/7BMnJmpBPp6ssNlrvkcVW5TBRfYT2lXTF4DOklKKcMlMOOep4oDLB4N3xVAA
-	+3CuiPEi5TBBUIDA==
+	bh=iPRJUtW+RTZfRnJcov7RdMbBJjkESZBBD8yCDMtMyjA=;
+	b=eWrQdHoakkgClDGanexpYZrIo7ihL85dMq0+r4uDcJuxO6ltJxNid9UmzYp17Fg4Z/jgHb
+	sG0ge3kHq17G4KCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CBEA1358F;
-	Sat, 20 May 2023 08:02:48 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE4B41358F;
+	Sat, 20 May 2023 08:14:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id Cug0Aqh+aGTYMgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Sat, 20 May 2023 08:02:48 +0000
-Date: Sat, 20 May 2023 10:02:47 +0200
-Message-ID: <87lehjzazc.wl-tiwai@suse.de>
+	id PturKXuBaGQHNwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sat, 20 May 2023 08:14:51 +0000
+Date: Sat, 20 May 2023 10:14:51 +0200
+Message-ID: <87jzx3zaf8.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Olliver Schinagl <oliver@schinagl.nl>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: snd_hda_codec_cirrus kernel oops
-In-Reply-To: <f421a23b-498f-9075-068b-3f0b2077427d@schinagl.nl>
-References: <64d95eb0-dbdb-cff8-a8b1-988dc22b24cd@schinagl.nl>
-	<87zg69appu.wl-tiwai@suse.de>
-	<6afd694e-8810-8197-3dd0-831daf2130f3@schinagl.nl>
-	<87bkikdt66.wl-tiwai@suse.de>
-	<d6e3b9ea-f98f-6404-e1ee-6973d68b64c1@schinagl.nl>
-	<87y1llhfzq.wl-tiwai@suse.de>
-	<f96b9b82-8bfe-ad98-c7d8-b6d7ac401961@schinagl.nl>
-	<87pm6w23s7.wl-tiwai@suse.de>
-	<f421a23b-498f-9075-068b-3f0b2077427d@schinagl.nl>
+To: Luke Jones <luke@ljones.dev>
+Cc: linux-kernel@vger.kernel.org,
+	tiwai@suse.com,
+	sbinding@opensource.cirrus.com,
+	perex@perex.cz,
+	tangmeng@uniontech.com,
+	andy.chi@canonical.com,
+	p.jungkamp@gmx.net,
+	kasper93@gmail.com,
+	yangyuchi66@gmail.com,
+	armas@codux.tech,
+	ealex95@gmail.com,
+	james.schulman@cirrus.com,
+	david.rhodes@cirrus.com,
+	tanureal@opensource.cirrus.com,
+	rf@opensource.cirrus.com,
+	patches@opensource.cirrus.com,
+	alsa-devel@alsa-project.org
+Subject: Re: CSC3551 and devices missing related _DSD bits
+In-Reply-To: <1991650.PYKUYFuaPT@fedora>
+References: <1991650.PYKUYFuaPT@fedora>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: VPW5QCHX64SKEDFP4RJRF6KYWW7DSF5W
-X-Message-ID-Hash: VPW5QCHX64SKEDFP4RJRF6KYWW7DSF5W
+Message-ID-Hash: WYL7YFAWX7V3FU5F4T37Q75S2HAJLAV6
+X-Message-ID-Hash: WYL7YFAWX7V3FU5F4T37Q75S2HAJLAV6
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -111,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VPW5QCHX64SKEDFP4RJRF6KYWW7DSF5W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WYL7YFAWX7V3FU5F4T37Q75S2HAJLAV6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,165 +129,103 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 19 May 2023 18:53:16 +0200,
-Olliver Schinagl wrote:
+On Fri, 19 May 2023 00:26:22 +0200,
+Luke Jones wrote:
 > 
-> Hey Takashi,
+> Hi Takashi (and all others),
 > 
-> On 19-05-2023 09:12, Takashi Iwai wrote:
-> > On Thu, 18 May 2023 17:11:53 +0200,
-> > Olliver Schinagl wrote:
-> >> 
-> >> Hey Takashi,
-> >> 
-> >> On 18-05-2023 16:27, Takashi Iwai wrote:
-> >>> On Thu, 18 May 2023 16:24:02 +0200,
-> >>> Olliver Schinagl wrote:
-> >>>> 
-> >>>> Hey Takashi,
-> >>>> 
-> >>>> I've applied the patch you've listed below. Is there some 'fool-proof'
-> >>>> way to produce _any_ output however? I've stopped pulse/pipe audio,
-> >>>> and only use aplay + alsamixer. Back to basics as they say. For aplay,
-> >>>> I use -D sysdefault:CARD=PCH (which was listed as a cirrus card with
-> >>>> -L).
-> >>>> 
-> >>>> Alsamixer was used to ensure all volumes are open.
-> >>>> 
-> >>>> Without anything running, I was able to use hdajackretask to apply
-> >>>> settings. But then, what to put. I get that I have to figure out, what
-> >>>> is routed where (i'll try to find the schematic for the macbook pro
-> >>>> 12,1), but hence my question, is there some way to produce something?
-> >>>> In hdajackretask I've enabled all pins, overriden them all, and set
-> >>>> them all to the same configuration. 'Internal, internal, speaker,
-> >>>> other-analog, green, not-present, 1, front'. I figured, by setting up
-> >>>> verything to the internal speaker, I must get sound out of something,
-> >>>> but alas.
-> >>>> 
-> >>>> I also have a Macbook pro from 1 or 2 generations earlier, 11,2 afaik,
-> >>>> where the sound still does work. I've used the same config
-> >>>> hdajackretask showed was in use there, but (obviously?) that didn't
-> >>>> work.
-> >>>> 
-> >>>> So I'm a bit grasping at straws. Trying _every_ combination is a bit much?
-> >>> 
-> >>> It's the hard part.  I'd try to copy the pin config of the existing
-> >>> models at first, then try shooting one pin by one if it doesn't work.
-> >> 
-> >> Ok, so no easy way :) I did try copying things, but didn't get sound either.
-> >> 
-> >> I did find the schematics for the 2013 and 2014 models of the macbook;
-> >> no luck yet on the 2015 (mine). But all 3 have the same model number
-> >> (A1502), and looking at the schematic (not even sure if it is just a
-> >> new revision, or actually for the different boards) they seem more or
-> >> less identical. Especially on the audio part. The nice thing is it
-> >> tells me what pins things are connected to :) But again, might not be
-> >> a perfect match to my board (crosses fingers).
-> >> 
-> >> What is interesting, the schematics [0] actually list the HDA configuration.
-> >> 
-> >> CODEC OUTPUT SIGNAL PATHS
-> >> 
-> >> FUNCTION   VOLUME    CONVERTER  PIN COMPLEX  MUTE CONTROL
-> >> 
-> >> HP/HS OUT  0x02 (2)  0x02 (2)   0x10 (16)    N/A
-> >> TWEETERS   0x03 (3)  0x03 (3)   0x12 (18)    CODEC GPIO0
-> >> SUB        0x04 (4)  0x04 (4)   0x13 (19)    CODEC GPIO0
-> >> SPDIF OUT  N/A       0x0e (14)  0x21 (33)    N/A
-> >> 
-> >> DMIC 1               0x09 (9)   0x1c (18)
-> >> DMIC 2               0x09 (9)   0x1c (18)
-> >> 
-> >> HEADSET MIC          0x07 (7)   0x18 (24)
-> >> 
-> >> OTHER CODEC GPIO LINES
-> >> LEFT SPEAKER ID      GPIO2 INPUT             HIGH = FG, LOW = MERRY
-> >> RIGHT SPEAKER ID     GPIO3 INPUT             HIGH = FG, LOW = MERRY
-> >> DFET CONTROL         GPIO4 OUTPUT            HIGH = DFETs OPEN
-> >> 
-> >> Granted, that should yield the same infomration I can copy from the
-> >> other one, but I'm trying to understand what this would mean. Function
-> >> is obvious, aswell as the pin-complex, it's what hdajackretasks calls
-> >> pin ID. But the rest is a bit iffy. E.g. what would the volume column
-> >> indicate? What about the 'converter'? And the GPIO's? Are the's GPIO's
-> >> of the codec? Maybe my confusion mostly comes as I'm not sure how to
-> >> relate those fields to hdajackretask.
-> > 
-> > It's a good information.
-> > It corresponds to spec->gpio_eapd_speaker, and GPIO2 would be the bit
-> > 0x04, GPIO3 would be 0x08, so it should be set to 0x0c.  The headphone
-> > has no GPIO assignment, so spec->gpio_eapd_headphone=0.
-> > 
-> > But subwoofers seem to have the GPIO controls as well, and the gpio
-> > bit 0x01 should be set.  For that, we'll need to modify cs_automute()
-> > function.  But let's investigate this later.
-> > 
-> > FWIW, the GPIO bits can be flipped on the fly, too.  Use hda-verb for
-> > setting SET_GPIO_MASK, SET_GPIO_DIRECTION and SET_GPIO_DATA.
+> We're beginning to encounter more and more laptops from ASUS in the ROG range 
+> where the bass speakers are connected to a cirrus amp, and the driver for 
+> cirrus is unable to pick this up due to being missing a _DSD section in the 
+> ACPI (SSDT). I've emailed engineers at ASUS I have contact with about this but 
+> it is unlikely that we will see corrections for each and every model + variant 
+> they have. The models we have seen so far are:
+> - GX650P
+> - GU604V
+> - GA402X
+> And there have been numerous forum postings in various places with the exact 
+> same issue for other models from ASUS that are not in the ROG group I deal 
+> with - oh and also some Lenovo and HP devices also.
 > 
-> Thanks for that explanation! Great news. I don't know how; but I
-> managed to 'fix' the bios. Strange yeah. I wanted to create an uefi
-> boot image as that's something arch's mkinitcpio appearantly
-> supports. So I used efiboomgr to add an additional entry.
+> Some of the logs are:
 > 
-> After a reboot, I regained the apple logo at boot (which was gone for
-> ages), but also the boot chime returned. And for sure, in Linux also
-> sound is working again normally. I have no idea how or why this works,
-> but it does.
+> [    5.542312] Serial bus multi instantiate pseudo device driver CSC3551:00: 
+> Instantiated 2 I2C devices.
+> [    5.717261] cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: Error: ACPI _DSD 
+> Properties are missing for HID CSC3551.
+> [    5.717269] cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: error -EINVAL: 
+> Platform not supported
+> [    5.717286] cs35l41-hda: probe of i2c-CSC3551:00-cs35l41-hda.0 failed with 
+> error -22
+> [    5.717734] cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: Error: ACPI _DSD 
+> Properties are missing for HID CSC3551.
+> [    5.717737] cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: error -EINVAL: 
+> Platform not supported
+> [    5.717750] cs35l41-hda: probe of i2c-CSC3551:00-cs35l41-hda.1 failed with 
+> error -22
 > 
-> For reference, this is what 6.3.x now shows:
+> and:
 > 
-> [   15.642288] snd_hda_codec_cirrus hdaudioC1D0: autoconfig for
-> CS4208: line_outs=2 (0x12/0x13/0x0/0x0/0x0) type:speaker
-> [   15.642296] snd_hda_codec_cirrus hdaudioC1D0:    speaker_outs=0
-> (0x0/0x0/0x0/0x0/0x0)
-> [   15.642299] snd_hda_codec_cirrus hdaudioC1D0:    hp_outs=1
-> (0x10/0x0/0x0/0x0/0x0)
-> [   15.642301] snd_hda_codec_cirrus hdaudioC1D0:    mono: mono_out=0x0
-> [   15.642303] snd_hda_codec_cirrus hdaudioC1D0:    dig-out=0x21/0x0
-> [   15.642305] snd_hda_codec_cirrus hdaudioC1D0:    inputs:
-> [   15.642307] snd_hda_codec_cirrus hdaudioC1D0:      Internal Mic=0x1c
-> [   15.642309] snd_hda_codec_cirrus hdaudioC1D0:      Mic=0x18
-> [   15.735257] snd_hda_intel 0000:00:03.0: bound 0000:00:02.0 (ops
-> i915_audio_component_bind_ops [i915])
+> [    3.343851] cs35l41-hda spi1-CSC3551:00-cs35l41-hda.0: Error: ACPI _DSD 
+> Properties are missing for HID CSC3551.
+> [    3.343854] cs35l41-hda spi1-CSC3551:00-cs35l41-hda.0: error -EINVAL: 
+> Platform not supported
+> [    3.343855] cs35l41-hda: probe of spi1-CSC3551:00-cs35l41-hda.0 failed with 
+> error -22
+> [    3.345544] cs35l41-hda spi1-CSC3551:00-cs35l41-hda.1: Error: ACPI _DSD 
+> Properties are missing for HID CSC3551.
+> [    3.345546] cs35l41-hda spi1-CSC3551:00-cs35l41-hda.1: error -EINVAL: 
+> Platform not supported
+> [    3.345548] cs35l41-hda: probe of spi1-CSC3551:00-cs35l41-hda.1 failed with 
+> error -22
 > 
-> And hdajackretask (without unconnected pins):
-> Pin ID: 0x10 [Green Headphone]
-> Jack; External; Headphone; Combination;
-> Green; Present; 2; Front;
+> So there are SPI connected, and I2C connected.
 > 
-> Pin ID: 0x12 [Internal Speaker]
-> <blank>; Internal; Speaker; Unknown;
-> Unknown; Not present; 1; Back;
+> Alex has already submitted the related patch_realtek work for the GU604V and 
+> no doubt there will be some follow up patches from myself or others for the 
+> other models. Alex has attempted to patch the Cirrus related parts in kernel 
+> direct with:
+> 1. https://github.com/bno1/linux-xanmod-gu604/blob/acpi-hack/
+> patch03_gu604v_speaker_acpi_hack.patch
+> 2. https://github.com/bno1/linux-xanmod-gu604/blob/acpi-hack/
+> patch04_gu604v_spi_cs_gpio_hack.patch
+> both of these patches have been tested and working for over a week.
 > 
-> Pin ID: 0x13 [Internal Speaker]
-> <blank>; Internal; Speaker; Unknown;
-> Unknown; Not present; 1; Back;
+> >From what I see the patch04_gu604v_spi_cs_gpio_hack patch needs to shift to 
+> the cirrus driver sound/pci/hda/cs35l41_hda.c, and that driver must now have a 
+> quirk table - unless we can somehow add the cirrus related bits to the realtek 
+> code? I've personally not played with this beyond keeping an eye on it all and 
+> am reluctant to begin work on a solution until I've had some input on the 
+> direction it should take.
 > 
-> Pin ID: 0x18 [Pink Mic]
-> Jack; External; Microphone; Combination;
-> Pink; Present; 4; Front;
+> In any case, this is not an isolated issue and we could benefit from putting 
+> in place some quirk or similar to accommodate for laptops where the vendor for 
+> some reason does not include the _DSD parts for use with the cirrus driver. 
+> The trend is looking so far like this practice will continue regardless of the 
+> vendor.
 > 
-> Pin ID: 0x1c [Internal Mic]
-> <blank>; Internal; Microphone; Other Digital;
-> Unknown; Not present; <blank>; Front
-> 
-> Pin ID: 0x21 [White SPDIF Out]
-> Jack; External; SPIDF Out; Combination;
-> White; Present; 3; Front;
-> 
-> The blank connectivity options are a bit off, as is the blank channel
-> group on the internal mic.
-> 
-> So curious on those ...
-> 
-> Anyway, leaving this here for any future in case it is needed again.
+> Known reports:
+> - https://bugzilla.kernel.org/show_bug.cgi?id=216194
+> - https://www.spinics.net/lists/alsa-devel/msg146434.html
+> - https://gist.github.com/lamperez/862763881c0e1c812392b5574727f6ff
+> - https://forums.linuxmint.com/viewtopic.php?t=392762
+> - https://h30434.www3.hp.com/t5/Notebook-Operating-System-and-Recovery/Envy-x360-2022-13-b0074TU-Audio-not-working-in-Linux-Fedora/td-p/8644641
 
-Good to hear that you managed to recover BIOS.
+The problem is that this can really easily blow up your machine if
+some incorrect bit is applied.  And more easily applicable, more
+chance to break by novice users, simply by believing what a chat bot
+speaks :)
+That's the very reason why this kind of change should be via ACPI
+table officially set up by the vendor.  That said, the question is
+only who and how can be responsible for this kind of change.  It's
+no technical issue, per se.
 
-Could you give alsa-info.sh output from the working state?  Run the
-script with --no-upload option and attach the output.  This will help
-in future if it gets broken again :)
+If BIOS can't be updated, at least, the configuration change has to be
+confirmed by ASUS people.  If ASUS still ignores the inquires and
+requests, we may put the quirk but with a bit fat warning (and maybe
+complaints to ASUS) to be shown in the log as a very last resort.
+
+Let's see what happens.
 
 
 thanks,
