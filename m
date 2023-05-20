@@ -4,93 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F6E9C77B7A
-	for <alsa-devel@archiver.kernel.org>; Sat, 20 May 2023 07:04:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9F0CC77B7F
+	for <alsa-devel@archiver.kernel.org>; Sat, 20 May 2023 07:04:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A849820;
-	Sat, 20 May 2023 09:03:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A849820
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEDEC741;
+	Sat, 20 May 2023 09:03:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEDEC741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684566260;
-	bh=I8gpMvWlH3OKVLXmeJtrV/2sgDBCwMYDQ1hKpWCuAbc=;
+	s=default; t=1684566269;
+	bh=7g5lgg8K6ULr4rCfFJMUM9g1W70gZv1L9Jtq0z+f3xA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=suGPkowWpZ9KoxQAosP/JPVX5tY3h/O8GUufb8d16HO/AnL+nrc1UQhD6f61JsMEN
-	 4teWoJwJGJoo/WwaBbUS+7/m2+gQMcBq+XMcEjUaiox0QXthSd4swJgMBxvv5ws9aW
-	 btYJB7WCm/gexE0yFFs89rW8jsaTzUZ5+qNNcnOo=
+	b=k9dMiiaxvTyTzD81fMFhamGRzcQ2ni7IsLMnCOln/mceAJyiNciabaxCVi2WSKabg
+	 Bp1+E8girlqZSZBshnWlVlpy7MNbIprpUFfXyNItivoPrX6gH+P3gKuzo6hzadUKwH
+	 MMED9FtiT6+WmW7rXHLeb7kLYg8ULQTeB7FG030E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7E2C7F80568; Sat, 20 May 2023 09:02:39 +0200 (CEST)
+	id A406AF80544; Sat, 20 May 2023 09:02:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EC17F80567;
-	Sat, 20 May 2023 09:02:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6154BF802E8;
+	Sat, 20 May 2023 09:02:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7A31F80548; Sat, 20 May 2023 09:00:50 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id B9112F80549; Sat, 20 May 2023 09:00:40 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9A98FF8053D
-	for <alsa-devel@alsa-project.org>; Sat, 20 May 2023 09:00:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A98FF8053D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3E5AEF8025A
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2023 09:00:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E5AEF8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=qdRrpym4;
+ header.s=susede2_rsa header.b=vUIpOhkx;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=GMvjEz7S
+ header.s=susede2_ed25519 header.b=XGeiQVvq
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 49585220C9;
-	Sat, 20 May 2023 07:00:26 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AEA511FD6C;
+	Sat, 20 May 2023 07:00:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684566026; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1684566025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sTt0DxRtIddr9JNNnFKqgFbm1+90y+GMnDDHmAmodPY=;
-	b=qdRrpym4W6YYd2YDrxAb+qK31iNnlRJVdtkPczbbgo//dutJZJFWdLpSs3/Jb9AwgUoitn
-	HQCNrNKIogpXIYAhBb/ANUsyKM1LztOGi+BOHc1CkdD6A16/9pnaJUrTRtE5mt9fsfToTW
-	AkSYGZIqsfThMnM1jh8UMcJBYbqU1bY=
+	bh=1GqwfBOie39jVzprd95QeelYmlNjzR/oK6v665L/0rc=;
+	b=vUIpOhkxGWV6O7mdocsZJRzaYywGwPSMjwpAb+B50Hjv6nnealdEVOeVXgG8SePJmH55uE
+	wzzC73dESrsCcxdfBeetiIlFokSZMC51RzZtoXP45wTUTrkla+Ywk/pRIbV0TIMu1gZp3s
+	4RSKrHPrYlGwQibsQTTxN0MEZ9jHl0Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684566026;
+	s=susede2_ed25519; t=1684566025;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sTt0DxRtIddr9JNNnFKqgFbm1+90y+GMnDDHmAmodPY=;
-	b=GMvjEz7SW9Ru/2N+zN+Jaefyn1guTikZsVlzR9/6VOgmRZRaJYN5yGET+EjmeTzA6eT+vx
-	170oiUBOzhniicDA==
+	bh=1GqwfBOie39jVzprd95QeelYmlNjzR/oK6v665L/0rc=;
+	b=XGeiQVvqg+lo4Cvkwd68SMuCSviTo+WyK0b7n09d3PVdf+qdOfbCBbXpBanquMZAHGQSRC
+	FtxHXOZ5h+FjLiDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D7AC139F5;
-	Sat, 20 May 2023 07:00:26 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A09E134F5;
+	Sat, 20 May 2023 07:00:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id CAROCgpwaGTwGwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Sat, 20 May 2023 07:00:26 +0000
+	id CPLGIAlwaGTwGwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sat, 20 May 2023 07:00:25 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib 6/8] ump: Add helpers for handling SysEx data
-Date: Sat, 20 May 2023 09:00:19 +0200
-Message-Id: <20230520070021.1301-7-tiwai@suse.de>
+Subject: [PATCH alsa-lib 2/8] rawmidi: Add UMP ioctl support
+Date: Sat, 20 May 2023 09:00:15 +0200
+Message-Id: <20230520070021.1301-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230520070021.1301-1-tiwai@suse.de>
 References: <20230520070021.1301-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BKCXWJXK5ATM7OGQ7PEIAIYABXFXJZBI
-X-Message-ID-Hash: BKCXWJXK5ATM7OGQ7PEIAIYABXFXJZBI
+Message-ID-Hash: UXCKXHWFUM4IY5LEZRA47NWV33RO6IGC
+X-Message-ID-Hash: UXCKXHWFUM4IY5LEZRA47NWV33RO6IGC
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BKCXWJXK5ATM7OGQ7PEIAIYABXFXJZBI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UXCKXHWFUM4IY5LEZRA47NWV33RO6IGC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,153 +113,108 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Yet a few more helpers for handling SysEx data with UMP packets.
+Just implement internal callbacks for two new ioctls for UMP
+(ump_endpoint_info and ump_block_info).  No public API functions are
+added yet here.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/ump_msg.h | 27 +++++++++++++++
- src/rawmidi/ump.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 113 insertions(+)
+ src/rawmidi/rawmidi.c       | 19 +++++++++++++++++++
+ src/rawmidi/rawmidi_hw.c    | 26 +++++++++++++++++++++++++-
+ src/rawmidi/rawmidi_local.h |  5 +++++
+ 3 files changed, 49 insertions(+), 1 deletion(-)
 
-diff --git a/include/ump_msg.h b/include/ump_msg.h
-index 1b7f70667054..4ccce546f8d5 100644
---- a/include/ump_msg.h
-+++ b/include/ump_msg.h
-@@ -500,6 +500,14 @@ enum {
- 	SND_UMP_MSG_RESET		= 0xff,
+diff --git a/src/rawmidi/rawmidi.c b/src/rawmidi/rawmidi.c
+index 570e06755456..8dca9312c6d9 100644
+--- a/src/rawmidi/rawmidi.c
++++ b/src/rawmidi/rawmidi.c
+@@ -1120,3 +1120,22 @@ ssize_t snd_rawmidi_tread(snd_rawmidi_t *rawmidi, struct timespec *tstamp, void
+ 		return -ENOTSUP;
+ 	return (rawmidi->ops->tread)(rawmidi, tstamp, buffer, size);
+ }
++
++#ifndef DOXYGEN
++/*
++ * internal API functions for obtaining UMP info from rawmidi instance
++ */
++int _snd_rawmidi_ump_endpoint_info(snd_rawmidi_t *rmidi, void *info)
++{
++	if (!rmidi->ops->ump_endpoint_info)
++		return -ENXIO;
++	return rmidi->ops->ump_endpoint_info(rmidi, info);
++}
++
++int _snd_rawmidi_ump_block_info(snd_rawmidi_t *rmidi, void *info)
++{
++	if (!rmidi->ops->ump_block_info)
++		return -ENXIO;
++	return rmidi->ops->ump_block_info(rmidi, info);
++}
++#endif /* DOXYGEN */
+diff --git a/src/rawmidi/rawmidi_hw.c b/src/rawmidi/rawmidi_hw.c
+index e5bb3ee3b31c..69e5e02f1d6a 100644
+--- a/src/rawmidi/rawmidi_hw.c
++++ b/src/rawmidi/rawmidi_hw.c
+@@ -272,6 +272,28 @@ static ssize_t snd_rawmidi_hw_tread(snd_rawmidi_t *rmidi, struct timespec *tstam
+ 	return ret + result;
+ }
+ 
++static int snd_rawmidi_hw_ump_endpoint_info(snd_rawmidi_t *rmidi, void *buf)
++{
++	snd_rawmidi_hw_t *hw = rmidi->private_data;
++
++	if (rmidi->version < SNDRV_PROTOCOL_VERSION(2, 0, 3))
++		return -ENXIO;
++	if (ioctl(hw->fd, SNDRV_UMP_IOCTL_ENDPOINT_INFO, buf) < 0)
++		return -errno;
++	return 0;
++}
++
++static int snd_rawmidi_hw_ump_block_info(snd_rawmidi_t *rmidi, void *buf)
++{
++	snd_rawmidi_hw_t *hw = rmidi->private_data;
++
++	if (rmidi->version < SNDRV_PROTOCOL_VERSION(2, 0, 3))
++		return -ENXIO;
++	if (ioctl(hw->fd, SNDRV_UMP_IOCTL_BLOCK_INFO, buf) < 0)
++		return -errno;
++	return 0;
++}
++
+ static const snd_rawmidi_ops_t snd_rawmidi_hw_ops = {
+ 	.close = snd_rawmidi_hw_close,
+ 	.nonblock = snd_rawmidi_hw_nonblock,
+@@ -282,7 +304,9 @@ static const snd_rawmidi_ops_t snd_rawmidi_hw_ops = {
+ 	.drain = snd_rawmidi_hw_drain,
+ 	.write = snd_rawmidi_hw_write,
+ 	.read = snd_rawmidi_hw_read,
+-	.tread = snd_rawmidi_hw_tread
++	.tread = snd_rawmidi_hw_tread,
++	.ump_endpoint_info = snd_rawmidi_hw_ump_endpoint_info,
++	.ump_block_info = snd_rawmidi_hw_ump_block_info,
  };
  
-+/** MIDI 2.0 SysEx / Data Status; same values for both 7-bit and 8-bit SysEx */
-+enum {
-+	SND_UMP_SYSEX_STATUS_SINGLE	= 0,
-+	SND_UMP_SYSEX_STATUS_START	= 1,
-+	SND_UMP_SYSEX_STATUS_CONTINUE	= 2,
-+	SND_UMP_SYSEX_STATUS_END	= 3,
-+};
-+
- /**
-  * \brief get UMP status (4bit) from 32bit UMP message header
-  */
-@@ -564,6 +572,25 @@ static inline uint8_t snd_ump_msg_group(const uint32_t *ump)
- 	return snd_ump_msg_hdr_group(*ump);
- }
  
-+/**
-+ * \brief get UMP sysex message status
-+ */
-+static inline uint8_t snd_ump_sysex_msg_status(const uint32_t *ump)
-+{
-+	return (*ump >> 20) & 0xf;
-+}
+diff --git a/src/rawmidi/rawmidi_local.h b/src/rawmidi/rawmidi_local.h
+index 4a88e7e4a5ba..7025542f6774 100644
+--- a/src/rawmidi/rawmidi_local.h
++++ b/src/rawmidi/rawmidi_local.h
+@@ -35,6 +35,8 @@ typedef struct {
+ 	ssize_t (*write)(snd_rawmidi_t *rawmidi, const void *buffer, size_t size);
+ 	ssize_t (*read)(snd_rawmidi_t *rawmidi, void *buffer, size_t size);
+ 	ssize_t (*tread)(snd_rawmidi_t *rawmidi, struct timespec *tstamp, void *buffer, size_t size);
++	int (*ump_endpoint_info)(snd_rawmidi_t *rmidi, void *buf);
++	int (*ump_block_info)(snd_rawmidi_t *rmidi, void *buf);
+ } snd_rawmidi_ops_t;
+ 
+ struct _snd_rawmidi {
+@@ -62,3 +64,6 @@ int snd_rawmidi_virtual_open(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp,
+ 			     int merge, int mode);
+ 
+ #define snd_rawmidi_conf_generic_id(id)	_snd_conf_generic_id(id)
 +
-+/**
-+ * \brief get UMP sysex message length
-+ */
-+static inline uint8_t snd_ump_sysex_msg_length(const uint32_t *ump)
-+{
-+	return (*ump >> 16) & 0xf;
-+}
-+
-+int snd_ump_msg_sysex_expand(const uint32_t *ump, uint8_t *buf, size_t maxlen,
-+			     size_t *filled);
-+
- #ifdef __cplusplus
- }
- #endif
-diff --git a/src/rawmidi/ump.c b/src/rawmidi/ump.c
-index 5da79459f618..2482884f2661 100644
---- a/src/rawmidi/ump.c
-+++ b/src/rawmidi/ump.c
-@@ -614,3 +614,89 @@ int snd_ump_block_info(snd_ump_t *ump, snd_ump_block_info_t *info)
- {
- 	return _snd_rawmidi_ump_block_info(ump->rawmidi, info);
- }
-+
-+/*
-+ * UMP sysex helpers
-+ */
-+static int expand_sysex_data(const uint32_t *data, uint8_t *buf,
-+			     size_t maxlen, unsigned char bytes, int offset)
-+{
-+	int size = 0;
-+
-+	for (; bytes; bytes--, size++) {
-+		if (!maxlen)
-+			break;
-+		buf[size] = (*data >> offset) & 0x7f;
-+		if (!offset) {
-+			offset = 24;
-+			data++;
-+		} else {
-+			offset -= 8;
-+		}
-+	}
-+
-+	return size;
-+}
-+
-+static int expand_sysex7(const uint32_t *ump, uint8_t *buf, size_t maxlen,
-+			 size_t *filled)
-+{
-+	unsigned char status;
-+	unsigned char bytes;
-+
-+	*filled = 0;
-+	if (!maxlen)
-+		return 0;
-+
-+	status = snd_ump_sysex_msg_status(ump);
-+	bytes = snd_ump_sysex_msg_length(ump);
-+	if (bytes > 6)
-+		return 0; // invalid - skip
-+
-+	*filled = expand_sysex_data(ump, buf, maxlen, bytes, 8);
-+	return (status == SND_UMP_SYSEX_STATUS_SINGLE ||
-+		status == SND_UMP_SYSEX_STATUS_END);
-+}
-+
-+static int expand_sysex8(const uint32_t *ump, uint8_t *buf, size_t maxlen,
-+			  size_t *filled)
-+{
-+	unsigned char status;
-+	unsigned char bytes;
-+
-+	*filled = 0;
-+	if (!maxlen)
-+		return 0;
-+
-+	status = snd_ump_sysex_msg_status(ump);
-+	if (status > SND_UMP_SYSEX_STATUS_END)
-+		return 0; // unsupported, skip
-+	bytes = snd_ump_sysex_msg_length(ump);
-+	if (!bytes || bytes > 14)
-+		return 0; // skip
-+
-+	*filled = expand_sysex_data(ump, buf, maxlen, bytes - 1, 0);
-+	return (status == SND_UMP_SYSEX_STATUS_SINGLE ||
-+		status == SND_UMP_SYSEX_STATUS_END);
-+}
-+
-+/**
-+ * \brief fill sysex byte from a UMP packet
-+ * \param ump UMP packet pointer
-+ * \param buf buffer point to fill sysex bytes
-+ * \param maxlen max buffer size in bytes
-+ * \param filled the size of filled sysex bytes on the buffer
-+ * \return 1 if the sysex finished, otherwise 0
-+ */
-+int snd_ump_msg_sysex_expand(const uint32_t *ump, uint8_t *buf, size_t maxlen,
-+			     size_t *filled)
-+{
-+	switch (snd_ump_msg_type(ump)) {
-+	case SND_UMP_MSG_TYPE_DATA:
-+		return expand_sysex7(ump, buf, maxlen, filled);
-+	case SND_UMP_MSG_TYPE_EXTENDED_DATA:
-+		return expand_sysex8(ump, buf, maxlen, filled);
-+	default:
-+		return -EINVAL;
-+	}
-+}
++int _snd_rawmidi_ump_endpoint_info(snd_rawmidi_t *rmidi, void *info);
++int _snd_rawmidi_ump_block_info(snd_rawmidi_t *rmidi, void *info);
 -- 
 2.35.3
 
