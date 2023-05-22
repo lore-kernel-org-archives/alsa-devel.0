@@ -4,82 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B959C77B73
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 15:05:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 517FBC77B73
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 15:05:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78A65846;
-	Mon, 22 May 2023 17:04:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78A65846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08861886;
+	Mon, 22 May 2023 17:04:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08861886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684767904;
-	bh=Cb7wYsL4GyXP/HGoxz6KSl4qGY9mIiX9Yg7CdwhMpu4=;
+	s=default; t=1684767918;
+	bh=hlZb/BcL2ZGEAgC342RcyW00zLOd6SfQlB7LY02Pazc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZHV9e7NPtMFEHBhllHxecmfVfJvqcAZNueq8rYovmqGaz2m+DxUEFLW5OUpG8lhII
-	 nH2ibcfK20TMVSA1Rjpgf7a/ndpWfk8LHaI4pXG/+JwZAe2MhCh8UdOLAgg/8nGuTQ
-	 9yA102wgGKVEeHqMWiG1K1Hx7cCMl8YgPvuMNgYI=
+	b=YWxJDC67cz/8yu+JWKhVa8jCaKK1S3HaSXf+f8JPTrVCrdZO6+NFIeBnTrwcAvts0
+	 JJBYISP76czOnjeUJ1Wyzx2UeN9QtHHGuXvnKKjH2inUY3IBvqLSklt85Ym6iSchll
+	 GjnX/GD7LY81guEamQ8dee+BfpEuBIgnAeKN9mdc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5FA13F805D3; Mon, 22 May 2023 17:02:11 +0200 (CEST)
+	id 1F03CF805E4; Mon, 22 May 2023 17:02:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9EA4F805D2;
-	Mon, 22 May 2023 17:02:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 986EAF805D2;
+	Mon, 22 May 2023 17:02:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B2903F805AE; Mon, 22 May 2023 17:01:59 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 4AF13F805AF; Mon, 22 May 2023 17:02:01 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E8656F80549
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 17:01:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8656F80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id EBF17F80549
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 17:01:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBF17F80549
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fROP6QjY
+ header.s=k20201202 header.b=fBYDK/VP
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id B8645623C4;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D3983623D2;
+	Mon, 22 May 2023 15:01:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A20F6C4339C;
 	Mon, 22 May 2023 15:01:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7AFFC433D2;
-	Mon, 22 May 2023 15:01:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684767715;
-	bh=Cb7wYsL4GyXP/HGoxz6KSl4qGY9mIiX9Yg7CdwhMpu4=;
+	s=k20201202; t=1684767717;
+	bh=hlZb/BcL2ZGEAgC342RcyW00zLOd6SfQlB7LY02Pazc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=fROP6QjYw1cwPrTFMPPa52tHByCRAnAEYRJKYY/vLIZKUtsKCM8abpK46pBkHFgJu
-	 V19r5mGgnv288GhjqNer5i+YZVov8RrPjn4Uj8HIS+c9cHE/PRTbCzZEz1AFLJXUPI
-	 gy4i0ddWfVyErmnVB1L8Vgx7P3qJY4N/SV9TJ5c7eiF37I6WHHwBEtYHOBV3lVGQ1v
-	 WiI9AItD9+w5zZpV0yVSNzVbWx+NwIAyJCyfwnp+r/zMlPNPgIQv77tJFUltMjZBJa
-	 lWh4dwXhkC7qVpEy1Bf4rNYoW60hPhehkP5Y0GT/SJE5APF5VCWlARCJx3+pPG6Jfm
-	 p2hfVEskU2NKw==
+	b=fBYDK/VPEZYhjWLSZPqkAqfOdR+jeTQ71/52z1/kLFXbdegenn3u/pHS83nbqrIfy
+	 TKkeJIoRizqKQ5PuZy5/QOJutJwP8bJ3+2T6+mREQvdHgoi5T2MLTTlRRc8pmilO/L
+	 nPuAoytudjsvm2Uys1tza03C1RbYD9NDLovH0+m2GEWJoCgIhZTo40MGTmLOJVeVtJ
+	 7oH7KsXZmf9oYBIfaInnOxxdVGiMnh5rcl1WNhmkofyYxMzfvPtKRBOC3qcc5xknZ+
+	 wXu4zm9JVejw7/dneR4iT6GGtZ5lGUw87TZFstJdtOaMcaz+oNailAX5qep161S/bd
+	 EU/BD463hKvWg==
 From: Mark Brown <broonie@kernel.org>
-To: Olivier Moysan <olivier.moysan@foss.st.com>,
- Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org
-In-Reply-To: 
- <f7987f18dadf77bfa09969fd4c82d5a0f4e4e3b7.1684594838.git.christophe.jaillet@wanadoo.fr>
-References: 
- <f7987f18dadf77bfa09969fd4c82d5a0f4e4e3b7.1684594838.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: stm32: sai: Use the devm_clk_get_optional()
- helper
-Message-Id: <168476771240.849172.17021857411511988497.b4-ty@kernel.org>
-Date: Mon, 22 May 2023 16:01:52 +0100
+To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ David Epping <david.epping@missinglinkelectronics.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20230519110545.GA18663@nucnuc.mle>
+References: <20230519110545.GA18663@nucnuc.mle>
+Subject: Re: [PATCH] ASoC: dt-bindings: tlv320aic32x4: Fix supply names
+Message-Id: <168476771538.849172.7248234647913395680.b4-ty@kernel.org>
+Date: Mon, 22 May 2023 16:01:55 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: WB4RLKHIXZM26SKDTLLOIU436423FSPG
-X-Message-ID-Hash: WB4RLKHIXZM26SKDTLLOIU436423FSPG
+Message-ID-Hash: 5NGCBXTQOY6G2SQD5V3FCJWFW7R7U3KQ
+X-Message-ID-Hash: 5NGCBXTQOY6G2SQD5V3FCJWFW7R7U3KQ
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WB4RLKHIXZM26SKDTLLOIU436423FSPG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5NGCBXTQOY6G2SQD5V3FCJWFW7R7U3KQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,9 +94,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 20 May 2023 17:00:50 +0200, Christophe JAILLET wrote:
-> Use devm_clk_get_optional() instead of hand writing it.
-> This saves some LoC and improves the semantic.
+On Fri, 19 May 2023 13:05:53 +0200, David Epping wrote:
+> The term "-supply" is a suffix to regulator names.
 > 
 > 
 
@@ -113,8 +105,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: stm32: sai: Use the devm_clk_get_optional() helper
-      commit: 374628fb668e50b42fe81f2a63af616182415bcd
+[1/1] ASoC: dt-bindings: tlv320aic32x4: Fix supply names
+      commit: 3a2e3fa795052b42da013931bc2e451bcecf4f0c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
