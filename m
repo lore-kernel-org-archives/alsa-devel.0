@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 494BDC7EE26
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 07:38:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0475C7EE26
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 07:45:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23C5F826;
-	Mon, 22 May 2023 09:38:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23C5F826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49F7A1EC;
+	Mon, 22 May 2023 09:44:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49F7A1EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684741135;
-	bh=r+D0LoO3OBzZyDcIR0n6doPoTsumuZSiI5ReopPKfJs=;
+	s=default; t=1684741501;
+	bh=nmkyKer55l3i0+JDZNyDHG3PAu4nDZWOiZ4rOIUwdug=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=P+HS7ENSKQMbS4gK4YeZmS6eOYhGv1DP5SZYGos6jqUKjGTQqPhpDJI3qCYImZ6Pr
-	 +0DRcD+6TPTL3sG9S4E0uOGjIiv2vg0vESZzZciH1Yl6mlqV5O114bcNbDmowu+/yb
-	 K2ZqhUxblFT+QALBjwypNWfVeoX6HCukePEmM/bI=
+	b=a3rLyjsc/Tk+zEs28LlGmQuvMS6OUnAmckQ9HzUDwPngZ3HgM8Y2xtW+X7ruHmc2p
+	 xyMloip8JR643y/V/4rw9lYxLx29FjReGR3kUKNtpdSNITFAtpY9tg/fZPsn1KQKav
+	 /9HhoYVrpis6YbdO/UQ9IN4GNOzi/ULbvu6XoJmc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A70FBF80548; Mon, 22 May 2023 09:37:35 +0200 (CEST)
+	id CB8C9F8016A; Mon, 22 May 2023 09:43:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5DBCDF80425;
-	Mon, 22 May 2023 09:37:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F32FF8016A;
+	Mon, 22 May 2023 09:43:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 70D0DF8024E; Mon, 22 May 2023 09:37:31 +0200 (CEST)
+	id 20514F8024E; Mon, 22 May 2023 09:43:39 +0200 (CEST)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6327CF8016A
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 09:37:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id BD74FF80053
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 09:43:36 +0200 (CEST)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id D57911E35;
-	Mon, 22 May 2023 09:37:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz D57911E35
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 9B8D61E35;
+	Mon, 22 May 2023 09:43:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 9B8D61E35
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1684741047; bh=WXUxN0Oty+KpPH71yuXUhk/+jOpLzc0EOlwQw5uqh2c=;
+	t=1684741415; bh=JKZbsYpYXwdD5bI8dIC6ZR15F7m3Z09nuwMP9rUxUE0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bIiw70pGmBuWkgHtnM3WXrxzR4PaAv5hjv0gTtZIFlVltlS5mWL2J0Ugl5mcVPvML
-	 8ZAQFhLw9bgt2lVnIi1M+NV9LctC7SZkEmdHJf5XTCNilex5gL++Kg97mwRqaDX8/g
-	 A+i2DZUmRlAE8q6LUFHunj95WAsALdDWzK0QCeKM=
+	b=uvnrS2TBCKZ1oZCgwQn/9yDPpopHvQ9PXxMB21ldN1nKwAWNetH6amYV/JMgSo3Oz
+	 WJUgPDZ6IwLdFCZxLiqju+7cYUaN+ONNJe0Jl+f9by6aMrhrgZkjuS/G5RrcFOaZN3
+	 cmbiW94EKCg0sTKPlSFTfLCYK7pN3nfkHgjoYpBk=
 Received: from [192.168.100.98] (unknown [192.168.100.98])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
 	(Authenticated sender: perex)
 	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Mon, 22 May 2023 09:37:25 +0200 (CEST)
-Message-ID: <a1d74b51-c699-62e4-1c24-8eee05598a4f@perex.cz>
-Date: Mon, 22 May 2023 09:37:25 +0200
+	Mon, 22 May 2023 09:43:33 +0200 (CEST)
+Message-ID: <dccd87be-9607-95fe-f3c1-eac0db2c19b9@perex.cz>
+Date: Mon, 22 May 2023 09:43:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.9.1
-Subject: Re: [PATCH 26/36] ALSA: seq: Support MIDI 2.0 UMP Endpoint port
+Subject: Re: [PATCH 27/36] ALSA: seq: Add port direction to snd_seq_port_info
 Content-Language: en-US
 To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 References: <20230519093114.28813-1-tiwai@suse.de>
- <20230519093114.28813-27-tiwai@suse.de>
+ <20230519093114.28813-28-tiwai@suse.de>
 From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20230519093114.28813-27-tiwai@suse.de>
+In-Reply-To: <20230519093114.28813-28-tiwai@suse.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: NYNM5KPHWKKCJ3AYV7N3V3A6B7C4OUZP
-X-Message-ID-Hash: NYNM5KPHWKKCJ3AYV7N3V3A6B7C4OUZP
+Message-ID-Hash: NUHRA3FCNLE5BPLQIP7SLK7YHLNHMEV3
+X-Message-ID-Hash: NUHRA3FCNLE5BPLQIP7SLK7YHLNHMEV3
 X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NYNM5KPHWKKCJ3AYV7N3V3A6B7C4OUZP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NUHRA3FCNLE5BPLQIP7SLK7YHLNHMEV3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,15 +91,16 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 19. 05. 23 11:31, Takashi Iwai wrote:
-> This is an extension to ALSA sequencer infrastructure to support the
-> MIDI 2.0 UMP Endpoint port.  It's a "catch-all" port that is supposed
-> to be present for each UMP Endpoint.  When this port is read via
-> subscription, it sends any events from all ports (UMP Groups) found in
-> the same client.
+> Add a new field "direction" to snd_seq_port_info for allowing a client
+> to tell the expected direction of the port access.  A port might still
+> allow subscriptions for read/write (e.g. for MIDI-CI) even if the
+> primary usage of the port is a single direction (either input or
+> output only).  This new "direction" field can help to indicate such
+> cases.
 > 
-> A UMP Endpoint port can be created with the new capability bit
-> SNDRV_SEQ_PORT_CAP_UMP_ENDPOINT.  Although the port assignment isn't
-> strictly defined, it should be the port number 0.
+> When the direction is unspecified at creating a port and the port has
+> either read or write capability, the corresponding direction bits are
+> set automatically as default.
 > 
 > Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
