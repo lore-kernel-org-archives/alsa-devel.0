@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 271B4C77B73
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 10:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07C81C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 10:14:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E0BA83A;
-	Mon, 22 May 2023 12:13:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E0BA83A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54CEF1EF;
+	Mon, 22 May 2023 12:13:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54CEF1EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684750456;
-	bh=gu+eRRLBq7aMAlpE2mqbyY40m0PwMmVEEluUXfRSgfk=;
+	s=default; t=1684750470;
+	bh=ewcncT2m0VO0+SKUdS9pzJ+unQtswt+sqIIwdK+SF8s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=X1ECmJno13S3SE3UWKLdna1v4mSh+gRB0IvlUT4xSPB2mhtqjIKlaWcU85/Kz7Fyd
-	 OyFuWxISRjERvF+LshtGaQindDaE5h2l1wc9pI7dxAc3E9w6qWGX1wRI1sGlb1rdmZ
-	 C6IFRsNQoSOXoaLHBz+2PBouud7kVnA9O5Va3bsc=
+	b=dW0o7VJ2NhvCbm+a/bV/cvU0cjIM8vrHPHyhGYKKgY0HGmmXyNH+MaLL4tk8jb4fa
+	 SDqhM+XXfw/5xlofOqZTnSdzhO2ndGh0io8XKjEOMPY9u2xHEDtzrWy20aNFiKDh3x
+	 jk29Tn/ZJbuYlquC+781XXjvy2fL9RzE11GASdgs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B663F80563; Mon, 22 May 2023 12:12:39 +0200 (CEST)
+	id 16D96F8057C; Mon, 22 May 2023 12:12:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCB17F80563;
-	Mon, 22 May 2023 12:12:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1860F80568;
+	Mon, 22 May 2023 12:12:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AC9BBF80542; Mon, 22 May 2023 12:12:32 +0200 (CEST)
+	id 0462FF80425; Mon, 22 May 2023 12:12:34 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BEEC5F80249
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 12:12:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEEC5F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5B9C5F8026A
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 12:12:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B9C5F8026A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=jIPAZlKI
+ header.s=Intel header.b=Bi85g47Q
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684750342; x=1716286342;
+  t=1684750345; x=1716286345;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=gu+eRRLBq7aMAlpE2mqbyY40m0PwMmVEEluUXfRSgfk=;
-  b=jIPAZlKIVMbArfpAGpiKaW+5xpklTjy08XhlVHXYFf/DXj8LV2ACd+cF
-   yijpdTDPup002ofxeBNtWKuLrkUm0p5mQr69quiThpa+1LmSEMFhk0OeQ
-   LOiNyLj96ggdZ1fmr4pLP9aMbQ88cXLOUZTYgPZ+YDIEHW1GWXuY58E90
-   gzWaSSUeYqnH7LwewiTByqWvRFdlBmXa6AcwZzp05OLAniz0F8lxVeC7y
-   q8nItsi8rPpehWhMP68hI8JgNdgti5monzqLghOwJTfaS5ohps9g6VRrG
-   My2Pfcuc//KY6eJZiSoHm0Vs2cmlARoTwUauW9+z/xLSQ8NlX2AhRpYCF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10717"; a="350390654"
+  bh=ewcncT2m0VO0+SKUdS9pzJ+unQtswt+sqIIwdK+SF8s=;
+  b=Bi85g47QmJp61AO4sMsxBqYWMX+siPsIMJQTlddTX2gFvQWvOjFBM1LZ
+   4qX3CkqQCQJdVWOdwczFz0P9oonQ8Uk7064Gpw7KsFBIvTYXVjcar0VGN
+   RqmXJYJ+ViXFr+lvKBSXAHClDu7dives1hwMIwq7eI+eYZjV5C+L1L16j
+   9hzLw1XrhZI/FtMGYuFbtYl1A4A5fKDRmljCuceUdeDCRzTJA3I+UTzJM
+   4RanHS3LlkQUhJ2F5G8Ch5h7SyWB9qkmzeHSbZ+UO+AuqeaNrNgVPR7Hz
+   bGLTXlpeBjJk3INGwLLwFY4QiXogUH3TbjcGxmvAeM9hUJz2p444ijEsg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10717"; a="350390670"
 X-IronPort-AV: E=Sophos;i="6.00,184,1681196400";
-   d="scan'208";a="350390654"
+   d="scan'208";a="350390670"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 May 2023 03:12:19 -0700
+ 22 May 2023 03:12:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10717"; a="736365226"
+X-IronPort-AV: E=McAfee;i="6600,9927,10717"; a="736365231"
 X-IronPort-AV: E=Sophos;i="6.00,184,1681196400";
-   d="scan'208";a="736365226"
+   d="scan'208";a="736365231"
 Received: from bbattach-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.220.157])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 May 2023 03:12:17 -0700
+ 22 May 2023 03:12:21 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -72,17 +72,17 @@ Cc: alsa-devel@alsa-project.org,
 	pierre-louis.bossart@linux.intel.com,
 	ranjani.sridharan@linux.intel.com,
 	kai.vehmanen@linux.intel.com
-Subject: [PATCH 1/5] ASoC: SOF: ipc4-loader: Drop unused bss_size from struct
- sof_ipc4_fw_module
-Date: Mon, 22 May 2023 13:13:09 +0300
-Message-Id: <20230522101313.12519-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 3/5] ASoC: SOF: ipc4-topology: Rename
+ sof_ipc4_update_pipeline_mem_usage() to be generic
+Date: Mon, 22 May 2023 13:13:11 +0300
+Message-Id: <20230522101313.12519-4-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230522101313.12519-1-peter.ujfalusi@linux.intel.com>
 References: <20230522101313.12519-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IITOOCJBPTXEFDCQHCZUNTQFYMKXAUJV
-X-Message-ID-Hash: IITOOCJBPTXEFDCQHCZUNTQFYMKXAUJV
+Message-ID-Hash: ABXI7CMB6IHW4ATDACDQSG4OHLLDCJV2
+X-Message-ID-Hash: ABXI7CMB6IHW4ATDACDQSG4OHLLDCJV2
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IITOOCJBPTXEFDCQHCZUNTQFYMKXAUJV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ABXI7CMB6IHW4ATDACDQSG4OHLLDCJV2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,57 +104,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The bss_size is only set, but not used by the code, remove it.
+Rename sof_ipc4_update_pipeline_mem_usage() to
+sof_ipc4_update_resource_usage() in order to be re-usable for generic
+resource storage, calculation of a module, like CPC adjustment.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc4-loader.c | 6 +-----
- sound/soc/sof/ipc4-priv.h   | 2 --
- 2 files changed, 1 insertion(+), 7 deletions(-)
+ sound/soc/sof/ipc4-topology.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sof/ipc4-loader.c b/sound/soc/sof/ipc4-loader.c
-index 1321acc402fd..bb215d33d455 100644
---- a/sound/soc/sof/ipc4-loader.c
-+++ b/sound/soc/sof/ipc4-loader.c
-@@ -112,16 +112,12 @@ static ssize_t sof_ipc4_fw_parse_ext_man(struct snd_sof_dev *sdev,
- 				return -EINVAL;
- 			}
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index dce2f8f7f518..547b3a935931 100644
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -936,8 +936,8 @@ static void sof_ipc4_widget_free_comp_process(struct snd_sof_widget *swidget)
+ }
  
--			/* a module's config is always the same size */
--			fw_module->bss_size = fm_config[fm_entry->cfg_offset].is_bytes;
+ static void
+-sof_ipc4_update_pipeline_mem_usage(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget,
+-				   struct sof_ipc4_base_module_cfg *base_config)
++sof_ipc4_update_resource_usage(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget,
++			       struct sof_ipc4_base_module_cfg *base_config)
+ {
+ 	struct sof_ipc4_fw_module *fw_module = swidget->module_info;
+ 	struct snd_sof_widget *pipe_widget;
+@@ -1711,7 +1711,7 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
+ 		       *data, copier_data->gtw_cfg.config_length * 4);
  
- 			dev_dbg(sdev->dev,
- 				"module %s: UUID %pUL cfg_count: %u, bss_size: %#x\n",
- 				fm_entry->name, &fm_entry->uuid, fm_entry->cfg_count,
--				fw_module->bss_size);
-+				fm_config[fm_entry->cfg_offset].is_bytes);
- 		} else {
--			fw_module->bss_size = 0;
--
- 			dev_dbg(sdev->dev, "module %s: UUID %pUL\n", fm_entry->name,
- 				&fm_entry->uuid);
- 		}
-diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
-index f461b8c70df3..546e52746276 100644
---- a/sound/soc/sof/ipc4-priv.h
-+++ b/sound/soc/sof/ipc4-priv.h
-@@ -29,13 +29,11 @@ enum sof_ipc4_mtrace_type {
-  * struct sof_ipc4_fw_module - IPC4 module info
-  * @sof_man4_module: Module info
-  * @m_ida: Module instance identifier
-- * @bss_size: Module object size
-  * @private: Module private data
-  */
- struct sof_ipc4_fw_module {
- 	struct sof_man4_module man4_module_entry;
- 	struct ida m_ida;
--	u32 bss_size;
- 	void *private;
- };
+ 	/* update pipeline memory usage */
+-	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &copier_data->base_config);
++	sof_ipc4_update_resource_usage(sdev, swidget, &copier_data->base_config);
  
+ 	return 0;
+ }
+@@ -1748,7 +1748,7 @@ static int sof_ipc4_prepare_gain_module(struct snd_sof_widget *swidget,
+ 	}
+ 
+ 	/* update pipeline memory usage */
+-	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &gain->base_config);
++	sof_ipc4_update_resource_usage(sdev, swidget, &gain->base_config);
+ 
+ 	return 0;
+ }
+@@ -1785,7 +1785,7 @@ static int sof_ipc4_prepare_mixer_module(struct snd_sof_widget *swidget,
+ 	}
+ 
+ 	/* update pipeline memory usage */
+-	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &mixer->base_config);
++	sof_ipc4_update_resource_usage(sdev, swidget, &mixer->base_config);
+ 
+ 	return 0;
+ }
+@@ -1822,7 +1822,7 @@ static int sof_ipc4_prepare_src_module(struct snd_sof_widget *swidget,
+ 	}
+ 
+ 	/* update pipeline memory usage */
+-	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &src->base_config);
++	sof_ipc4_update_resource_usage(sdev, swidget, &src->base_config);
+ 
+ 	/* update pipeline_params for sink widgets */
+ 	rate = hw_param_interval(pipeline_params, SNDRV_PCM_HW_PARAM_RATE);
+@@ -1959,7 +1959,7 @@ static int sof_ipc4_prepare_process_module(struct snd_sof_widget *swidget,
+ 	}
+ 
+ 	/* update pipeline memory usage */
+-	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &process->base_config);
++	sof_ipc4_update_resource_usage(sdev, swidget, &process->base_config);
+ 
+ 	/* ipc_config_data is composed of the base_config followed by an optional extension */
+ 	memcpy(cfg, &process->base_config, sizeof(struct sof_ipc4_base_module_cfg));
 -- 
 2.40.1
 
