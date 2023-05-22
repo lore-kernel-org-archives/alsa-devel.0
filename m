@@ -4,90 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2F8EC7EE23
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 18:35:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F7C4C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 19:02:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4895B950;
-	Mon, 22 May 2023 20:34:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4895B950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A407822;
+	Mon, 22 May 2023 21:01:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A407822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684780505;
-	bh=m2u1Fynpu0Q6HiRGvTPXsGDwoeAMSJbQ90gprxvwMVE=;
+	s=default; t=1684782169;
+	bh=qGC8daj78Jk8a3rYuhuY8wFNCfgvdjaJYpyjQG0HJkU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=I82v/7asGY0y4Ukwl0TTPFWfl/jNV7ncnN4J5vFN5IdsHv7W8QronNjyksRgGOBCO
-	 k1elQfErtEDhXObgZhGmcPPGpIHyizUeRaBWCSc9FKIttNL7aLgtBCLuLQKftEf2yW
-	 jQvTixc22KCLdwqWiiGjOQstK0lckaEy3VsXee60=
+	b=UC4KHZa6Rp84Ncu7G1Xs6qjAHusogaPz6aUS8gUssxbPYhJnjnqeE9D8247ALvWGe
+	 NedIMx8xgmzqy30Kd5954bZPo4m4+I+6JrWBP1a/E1lKe0QBb36fquVOIqTX60mSvB
+	 qqvlscuExXkS3v7KH55bGfuwiXwkQqw9CyOi+Xjw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D2BB8F805AA; Mon, 22 May 2023 20:33:33 +0200 (CEST)
+	id 89318F8024E; Mon, 22 May 2023 21:01:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 753E0F805AA;
-	Mon, 22 May 2023 20:33:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DEABF8053D;
+	Mon, 22 May 2023 21:01:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38F85F80557; Mon, 22 May 2023 20:33:28 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 6CBFDF8024E; Mon, 22 May 2023 21:01:45 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9893CF80425
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 20:32:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9893CF80425
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=DONIhgCA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684780334; x=1716316334;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=m2u1Fynpu0Q6HiRGvTPXsGDwoeAMSJbQ90gprxvwMVE=;
-  b=DONIhgCAfUwq1tPO8Y8p31auec35lzY4ZBh1bDNdw5hxHA3r7E4XsTGT
-   oRMWGwdu0szhnOc+hP2zU0J7MUljLpUvQ8bBNBuZf7m+nLRmlrrqq4BjW
-   S3nqrNPnGre9aeAdtjmxFwHTsUgatGj47zX1CcyvM0zK1MiiMWTZwon/2
-   qv3Fyy80kaIkdo1S3ap5h+rRLV7sJBbzhwd9DOV7B2Cb9nk2aUPpFigk6
-   /W/Jr6RqXP7XdDBFjTpDTA6ZtcpfcbVICWWwdpuwSn5DSy4/FkbDoXEhB
-   xRgBJYlxA6V3EXYMGgAVc8Z5s0tI43n64mSZgkoOYPZszIPHaaH+qRu8s
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10718"; a="356235154"
-X-IronPort-AV: E=Sophos;i="6.00,184,1681196400";
-   d="scan'208";a="356235154"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 May 2023 11:31:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10718"; a="697740840"
-X-IronPort-AV: E=Sophos;i="6.00,184,1681196400";
-   d="scan'208";a="697740840"
-Received: from ljgreene-mobl.amr.corp.intel.com (HELO [10.209.124.121])
- ([10.209.124.121])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 May 2023 11:31:48 -0700
-Message-ID: <42774a4f-ae1e-7d25-6b01-67f5af8400a4@linux.intel.com>
-Date: Mon, 22 May 2023 11:39:49 -0500
+	by alsa1.perex.cz (Postfix) with ESMTPS id 761F1F80086
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 21:01:43 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 2BA481E2D;
+	Mon, 22 May 2023 21:01:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 2BA481E2D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1684782102; bh=t1obIzdB1YHyiAfSHlI2gjp/nRm8NmmeUVbX6hSBZ7c=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=aCPkS/Z+P7s3W5/9BiFSHySCnKQWeryuaa5HeIlbgkrHcuGkN9nNqqvEz5W9dpYkl
+	 BZwjm4632sV7GbyTD79TAD5D0ZW4jgvlcXV1l1xApzr7BCzS4j+0h/RYZhOKVQXycx
+	 ij6ILt69fZxL7dQa2bfH3MGtvYOYbrC1Hld4RCig=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Mon, 22 May 2023 21:01:40 +0200 (CEST)
+Message-ID: <caa57e43-7c47-5644-918b-65d0493fd996@perex.cz>
+Date: Mon, 22 May 2023 21:01:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [PATCH V2 4/9] ASoC: amd: ps: add SoundWire dma driver dma ops
+ Thunderbird/102.9.1
+Subject: Re: [PATCH 03/36] ALSA: rawmidi: UMP support
 Content-Language: en-US
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com, Mastan.Katragadda@amd.com,
- Arungopal.kondaveeti@amd.com, mario.limonciello@amd.com,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
- open list <linux-kernel@vger.kernel.org>
-References: <20230522133122.166841-1-Vijendar.Mukunda@amd.com>
- <20230522133122.166841-5-Vijendar.Mukunda@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230522133122.166841-5-Vijendar.Mukunda@amd.com>
-Content-Type: text/plain; charset=UTF-8
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+References: <20230519093114.28813-1-tiwai@suse.de>
+ <20230519093114.28813-4-tiwai@suse.de>
+ <d22c2686-9b36-40b7-f284-17e8b78a04ac@perex.cz> <87mt1wygoz.wl-tiwai@suse.de>
+ <6736e86b-f6bb-fc6f-ebc2-cb0c5f1d36fb@perex.cz> <87ilcky83k.wl-tiwai@suse.de>
+ <877ct0y2iu.wl-tiwai@suse.de> <87y1lggwup.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <87y1lggwup.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: O3J4LPWI5YHA2RZ5GSMJM4FF3WD6NSL5
-X-Message-ID-Hash: O3J4LPWI5YHA2RZ5GSMJM4FF3WD6NSL5
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Message-ID-Hash: THAGTABWBYH3HEPNU7BGGOJPY75AJJY7
+X-Message-ID-Hash: THAGTABWBYH3HEPNU7BGGOJPY75AJJY7
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,65 +85,129 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O3J4LPWI5YHA2RZ5GSMJM4FF3WD6NSL5/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/THAGTABWBYH3HEPNU7BGGOJPY75AJJY7/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 22. 05. 23 18:22, Takashi Iwai wrote:
+> On Mon, 22 May 2023 14:27:37 +0200,
+> Takashi Iwai wrote:
+>>
+>> On Mon, 22 May 2023 12:27:11 +0200,
+>> Takashi Iwai wrote:
+>>>
+>>> On Mon, 22 May 2023 10:08:24 +0200,
+>>> Jaroslav Kysela wrote:
+>>>>
+>>>> On 22. 05. 23 9:21, Takashi Iwai wrote:
+>>>>> On Mon, 22 May 2023 08:34:20 +0200,
+>>>>> Jaroslav Kysela wrote:
+>>>>>>
+>>>>>> On 19. 05. 23 11:30, Takashi Iwai wrote:
+>>>>>>> This patch adds the support helpers for UMP (Universal MIDI Packet) in
+>>>>>>> ALSA core.
+>>>>>>>
+>>>>>>> The basic design is that a rawmidi instance is assigned to each UMP
+>>>>>>> Endpoint.  A UMP Endpoint provides a UMP stream, typically
+>>>>>>> bidirectional (but can be also uni-directional, too), which may hold
+>>>>>>> up to 16 UMP Groups, where each UMP (input/output) Group corresponds
+>>>>>>> to the traditional MIDI I/O Endpoint.
+>>>>>>>
+>>>>>>> Additionally, the ALSA UMP abstraction provides the multiple UMP
+>>>>>>> Blocks that can be assigned to each UMP Endpoint.  A UMP Block is a
+>>>>>>> metadata to hold the UMP Group clusters, and can represent the
+>>>>>>> functions assigned to each UMP Group.  A typical implementation of UMP
+>>>>>>> Block is the Group Terminal Blocks of USB MIDI 2.0 specification.
+>>>>>>>
+>>>>>>> For distinguishing from the legacy byte-stream MIDI device, a new
+>>>>>>> device "umpC*D*" will be created, instead of the standard (MIDI 1.0)
+>>>>>>> devices "midiC*D*".  The UMP instance can be identified by the new
+>>>>>>> rawmidi info bit SNDRV_RAWMIDI_INFO_UMP, too.
+>>>>>>>
+>>>>>>> A UMP rawmidi device reads/writes only in 4-bytes words alignment,
+>>>>>>> stored in CPU native endianness.
+>>>>>>>
+>>>>>>> The transmit and receive functions take care of the input/out data
+>>>>>>> alignment, and may return zero or aligned size, and the params ioctl
+>>>>>>> may return -EINVAL when the given input/output buffer size isn't
+>>>>>>> aligned.
+>>>>>>>
+>>>>>>> A few new UMP-specific ioctls are added for obtaining the new UMP
+>>>>>>> endpoint and block information.
+>>>>>>>
+>>>>>>> As of this commit, no ALSA sequencer instance is attached to UMP
+>>>>>>> devices yet.  They will be supported by later patches.
+>>>>>>>
+>>>>>>> Along with those changes, the protocol version for rawmidi is bumped
+>>>>>>> to 2.0.3.
+>>>>>>>
+>>>>>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>>>>>
+>>>>>> Reviewed-by: Jaroslav Kysela
+>>>>>>
+>>>>>> except:
+>>>>>>
+>>>>>>> +/* UMP Endpoint information */
+>>>>>>> +struct snd_ump_endpoint_info {
+>>>>>>> +	int card;			/* card number */
+>>>>>>> +	int device;			/* device number */
+>>>>>>
+>>>>>> I suspect that those two fields were added to enumerate devices in the
+>>>>>> control API. But this extension seems to be missing in your
+>>>>>> patches. There is only SNDRV_CTL_IOCTL_UMP_NEXT_DEVICE
+>>>>>> implemented. Otherwise those two fields are not useful.
+>>>>>
+>>>>> The SNDRV_CTL_IOCTL_UMP_NEXT_DEVICE is looping over rawmidi, and
+>>>>> snd_rawmidi_info is provided for (kernel) UMP implementation.
+>>>>
+>>>> Right. My point was that an application may be able to evaluate the
+>>>> other UMP specific information from those new structures before the
+>>>> rawmidi device is opened. So the CTL API extension may make sense.
+>>>
+>>> Point taken, and indeed it might make more sense to change the ioctl
+>>> for looking at snd_ump_endpoint_info.  Will try to cook with it.
+>>
+>> FWIW, below is the patch to add two new ioctls for UMP EP/block
+>> inquiries.  It's together with a slight change of ioctl callback.
+>> Will be included in v2 patch set I'll submit later.
+>>
+>> The latest patches are found in topic/midi20 branch of sound git
+>> tree.
+> 
+> There was a typo.  The corrected version below.
+> 
+> 
+> Takashi
+> 
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: ump: Add ioctls to inquiry UMP EP and Block info via
+>   control API
+> 
+> It'd be convenient to have ioctls to inquiry the UMP Endpoint and UMP
+> Block information directly via the control API without opening the
+> rawmidi interface, just like SNDRV_CTL_IOCTL_RAWMIDI_INFO.
+> 
+> This patch extends the rawmidi ioctl handler to support those; new
+> ioctls, SNDRV_CTL_IOCTL_UMP_ENDPOINT_INFO and
+> SNDRV_CTL_IOCTL_UMP_BLOCK_INFO, return the snd_ump_endpoint and
+> snd_ump_block data that is specified by the device field,
+> respectively.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-> +union acp_sdw_dma_count {
-> +	struct {
-> +	u32 low;
-> +	u32 high;
-> +	} bcount;
+Thanks. It looks good.
 
-indentation seems off?
+Suggested-by: Jaroslav Kysela <perex@perex.cz>
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 
-> +	u64 bytescount;
-> +};
-> +
-> +struct sdw_dma_ring_buf_reg {
-> +	u32 reg_dma_size;
-> +	u32 reg_fifo_addr;
-> +	u32 reg_fifo_size;
-> +	u32 reg_ring_buf_size;
-> +	u32 reg_ring_buf_addr;
-> +	u32 water_mark_size_reg;
-> +	u32 pos_low_reg;
-> +	u32 pos_high_reg;
->  };
->\
-> +static void acp63_config_dma(struct acp_sdw_dma_stream *stream, void __iomem *acp_base,
-> +			     u32 stream_id)
-> +{
-> +	u16 page_idx;
-> +	u32 low, high, val;
-> +	u32 sdw_dma_pte_offset;
-> +	dma_addr_t addr;
-> +
-> +	addr = stream->dma_addr;
-> +	sdw_dma_pte_offset = SDW_PTE_OFFSET(stream->instance);
-> +	val = sdw_dma_pte_offset + (stream_id * 256);
+					Jaroslav
 
-what is this 256 magic value? use a defined or << 8 ?
-> +
-> +	/* Group Enable */
-> +	writel(ACP_SDW_SRAM_PTE_OFFSET | BIT(31), acp_base + ACPAXI2AXI_ATU_BASE_ADDR_GRP_2);
-> +	writel(PAGE_SIZE_4K_ENABLE, acp_base + ACPAXI2AXI_ATU_PAGE_SIZE_GRP_2);
-> +	for (page_idx = 0; page_idx < stream->num_pages; page_idx++) {
-> +		/* Load the low address of page int ACP SRAM through SRBM */
-> +		low = lower_32_bits(addr);
-> +		high = upper_32_bits(addr);
-> +
-> +		writel(low, acp_base + ACP_SCRATCH_REG_0 + val);
-> +		high |= BIT(31);
-> +		writel(high, acp_base + ACP_SCRATCH_REG_0 + val + 4);
-> +		val += 8;
-> +		addr += PAGE_SIZE;
-> +	}
-> +	writel(0x1, acp_base + ACPAXI2AXI_ATU_CTRL);
-> +}
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+
