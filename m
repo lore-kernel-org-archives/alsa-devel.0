@@ -4,58 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49A91C77B73
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 15:04:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D295C7EE23
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 15:04:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C84184A;
-	Mon, 22 May 2023 17:03:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C84184A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A58B0826;
+	Mon, 22 May 2023 17:03:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A58B0826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684767867;
-	bh=FFjp9TlBTb9pZ6Q8XbdWktID7xpqUqBNNGV6hRLdV9Q=;
+	s=default; t=1684767883;
+	bh=ZzCrfWXY7FxJ0s2FjGH0TL7QTy+9v4JSvkeEVCTndqw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BeBt6o1FTvqJL234lVo9I50uUI4MndTPhohfHayr/yr04cy6KyUpcOWnDwe5FWu7E
-	 8iZY+2ON0pEcOuC8CSskgZR0eNenyGy+YboqVGn6/MjW4sBMWp1XSkzARVAeh3aiOl
-	 ETLl4JomZTIUEBMN8f6V5v/y005esMkj9Z0AZ/ng=
+	b=EVdYuARxgW8y1j3lNW4XA4962a1bK5GSVaJf21VlK6ifGc5EJCpvoU1/dVU1Egje3
+	 X7HtLpho3I7xwQWGtBDi0HoTAv5ohAas7hOHEmuIhCfAV6MilC9OZRJo/oOavCewtp
+	 kPW+2PM4M4MmRXIgboP2rTE3TMy8DDPuJ/BhUwME=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F986F805B6; Mon, 22 May 2023 17:02:02 +0200 (CEST)
+	id 3D42FF805C3; Mon, 22 May 2023 17:02:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38FFFF805B2;
-	Mon, 22 May 2023 17:02:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3CBFF805BE;
+	Mon, 22 May 2023 17:02:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A26CBF8057B; Mon, 22 May 2023 17:01:54 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id CCF88F8058C; Mon, 22 May 2023 17:01:56 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2A4EDF80549
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 17:01:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A4EDF80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id DF199F80549
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 17:01:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF199F80549
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ghmuTwgI
+ header.s=k20201202 header.b=tfgobSaI
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id AFD5661ACC;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id BF9BE623CA;
+	Mon, 22 May 2023 15:01:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FD9DC433EF;
 	Mon, 22 May 2023 15:01:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83FB5C433D2;
-	Mon, 22 May 2023 15:01:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684767710;
-	bh=FFjp9TlBTb9pZ6Q8XbdWktID7xpqUqBNNGV6hRLdV9Q=;
+	s=k20201202; t=1684767712;
+	bh=ZzCrfWXY7FxJ0s2FjGH0TL7QTy+9v4JSvkeEVCTndqw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ghmuTwgIiZv74F1eDiHQ5tZDEgWJE8W8AEPC/A6QpZHk0rZ4gvIYtfJXByOMLobWG
-	 MdbfimjGjHHZn9iBOSOkloEoJ/DnRib7ngA4HK9yzE5FVxoE4CoMiOyGD60BHbfFx4
-	 aqi7ZEbRcyZG3OyGjDId25UZS25Req3+FtMasAtdpaBqWx1ImDb3+WZn9LvBWpcJaR
-	 a/q3LViHxMx7YdWxiypdobic9Hqh14NoiAo7SX2yPCqlpp0GJWiS1gX0rOfJA6aNla
-	 3mfCLaVOCM1rjHBehdpLx5naPikrpg1A1zetUN7iygVReotvcWx5qbM06srQu8tuLu
-	 eR4yg8nWfdewg==
+	b=tfgobSaIOSHpTwW0PLhFpvBjgFoEtYOui1gIFUGOc/WebAOEty04B4Tdk4Iuphk4K
+	 /5n/jOVqHJnqaSgXAqUZrZBdzj+ElKXzzMUuSSZIMdo4Ib3YdvDYA4lNlhzQ0p1Bbe
+	 O3yO8fN8gg4QSCPNtOnoFe7WfzRVpJR2HPNVR4cycPhhgk63UOMmv4Piv3I+ASwP4e
+	 GAcRV/BQUzsKDJuOWn4sUH8l+LnO7JhxPPxmrDPJdOaE1a4UaibOOUaxFNCCGjm0pX
+	 8zYLZUMen7s6P8T3Y1zxXIP+0IVBwRXVHmXnNoNzqHdOze/wnMBSXL2rG8fs/Fn0zA
+	 AlreJyxRfioVA==
 From: Mark Brown <broonie@kernel.org>
 To: Oder Chiou <oder_chiou@realtek.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
@@ -64,18 +63,18 @@ To: Oder Chiou <oder_chiou@realtek.com>,
 Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
  alsa-devel@alsa-project.org
 In-Reply-To: 
- <5b44b2fddd8973e949e4ae2132971b147cfd1ec1.1684594544.git.christophe.jaillet@wanadoo.fr>
+ <f538c24ad7b1926478347a03b5b7f0432e195e3b.1684594691.git.christophe.jaillet@wanadoo.fr>
 References: 
- <5b44b2fddd8973e949e4ae2132971b147cfd1ec1.1684594544.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: rt5659: Use the devm_clk_get_optional() helper
-Message-Id: <168476770826.849172.16102240174611371988.b4-ty@kernel.org>
-Date: Mon, 22 May 2023 16:01:48 +0100
+ <f538c24ad7b1926478347a03b5b7f0432e195e3b.1684594691.git.christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] ASoC: rt5682s: Use the devm_clk_get_optional() helper
+Message-Id: <168476771031.849172.218735201462158916.b4-ty@kernel.org>
+Date: Mon, 22 May 2023 16:01:50 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: RQR5V2OJC32P7FLX53MBAOWT3DU3SMUR
-X-Message-ID-Hash: RQR5V2OJC32P7FLX53MBAOWT3DU3SMUR
+Message-ID-Hash: K7NK4XCP3KRRIFWSLNNV5HFEE3ARIDFK
+X-Message-ID-Hash: K7NK4XCP3KRRIFWSLNNV5HFEE3ARIDFK
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RQR5V2OJC32P7FLX53MBAOWT3DU3SMUR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K7NK4XCP3KRRIFWSLNNV5HFEE3ARIDFK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,7 +96,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 20 May 2023 16:56:00 +0200, Christophe JAILLET wrote:
+On Sat, 20 May 2023 16:58:24 +0200, Christophe JAILLET wrote:
 > Use devm_clk_get_optional() instead of hand writing it.
 > This saves some LoC and improves the semantic.
 > 
@@ -109,8 +108,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5659: Use the devm_clk_get_optional() helper
-      commit: f364eb563164f52dcc42ea265a66510c6f15f829
+[1/1] ASoC: rt5682s: Use the devm_clk_get_optional() helper
+      commit: 17cf9faeba463d24e7c497ff8137a8c8414644dc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
