@@ -4,72 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CA36C77B75
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 07:05:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D52AC77B73
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 07:06:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5A0AA827;
-	Mon, 22 May 2023 09:04:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A0AA827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F406839;
+	Mon, 22 May 2023 09:05:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F406839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684739143;
-	bh=TqUG0FK8qGMbaNIyV5E++56j6N9AKykZoY/Hd90hsc0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1684739172;
+	bh=UItKLKHgM89xl87cs44Lu61NwpXMwtkkkndT7gH52iA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qu/09xthr5l0Cyxfjzn7H+wzslZF7p1tgD+HgqsCvajrTJT9HbTWRR7k8KAyeXMXx
-	 QZPoeT2f8zpZ4x7+7RklrjZ/a6A1wTETUFQEMP2SqJC7xxTrSy34zxFkYKez5mYTNy
-	 txe6Q4bNNcJZ+Xu+7krl90H8OTgw6t71SCXVTJRk=
+	b=l2WndXVkl/6hbP3f/enKidddRm1tdgxgeRuM5DdQBGUI/lbHDZQ2QjaEcCI7tJvsI
+	 b0A2WassbllMJ9EmePuNr6YTz2bNUX+FmPnUPIoOPHy/JtEOkztZeXwLl7pYrYvNHn
+	 9Abutth0gEHd4xAcrc3kHcZTGkOKhcfuIlj0Gq8Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 971C2F80425; Mon, 22 May 2023 09:04:31 +0200 (CEST)
+	id 05E49F80557; Mon, 22 May 2023 09:04:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B96FF80053;
-	Mon, 22 May 2023 09:04:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EF24F80553;
+	Mon, 22 May 2023 09:04:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F7AFF8024E; Mon, 22 May 2023 09:04:28 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	id 62681F80551; Mon, 22 May 2023 09:04:53 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 76F52F8016A
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 09:04:24 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 0EC711E3B;
-	Mon, 22 May 2023 09:04:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 0EC711E3B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1684739064; bh=zMETBuI/FPBhFP7wAgyvOyWifuikxarQs6Ue8ljDg0s=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=LPNlsCl2mjczOLEt/jg6D5qAXzNoQt6/6lpx5W8bVESkU3/XnqF6B1uovSCzWNSEs
-	 FOP4Y3KCA5NqO26L2Tq3l5jNvlCOw/0F49x1xcRsGI0C0qhMtTuWSpKnIVnjRC8Wtq
-	 TdRXu3u7zHIobvFeZvBQB5K6gi0Hxnvk7CXo+jbk=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	by alsa1.perex.cz (Postfix) with ESMTPS id D66E1F8053D
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 09:04:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D66E1F8053D
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=m8mFh7rV;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=wKJi2w6Q
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Mon, 22 May 2023 09:04:21 +0200 (CEST)
-Message-ID: <6d73a671-df77-57f8-bf76-50ab34c4e91b@perex.cz>
-Date: Mon, 22 May 2023 09:04:21 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH 16/36] ALSA: seq: Clear padded bytes at expanding events
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4FBFB1FDAF;
+	Mon, 22 May 2023 07:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1684739089;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HzP08yr2STd9M3i/4e8AImcadwOtNga9ZNeKAGeZpKc=;
+	b=m8mFh7rVX4O89tnz4v1FBjk2hbnTNkquLHR01TZS8vDEYDAPjJSkNwr9mFYVJZCLYK1A7A
+	FmJP87NdWNQrzjUgZSsBA1o18pnPj2SEvomlIBEnkc01l6Vw2RyPXYIlbCeo1xzMxFFUPb
+	gN1/fsQvpxgK4VvGErxrXjEMaO0Og54=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1684739089;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HzP08yr2STd9M3i/4e8AImcadwOtNga9ZNeKAGeZpKc=;
+	b=wKJi2w6Q7o7KVjOKwpqQ3mMlV5a0p7aSIYEx7YH6RCz11vPcxWBtqlstlPTJVtaXutTYd2
+	BvBqMvW+viB3ENDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3393B13336;
+	Mon, 22 May 2023 07:04:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 3t6fCxEUa2SGJgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 22 May 2023 07:04:49 +0000
+Date: Mon, 22 May 2023 09:04:48 +0200
+Message-ID: <87pm6syhgv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
 Cc: alsa-devel@alsa-project.org
+Subject: Re: [PATCH 04/36] ALSA: rawmidi: Skip UMP devices at
+ SNDRV_CTL_IOCTL_RAWMIDI_NEXT_DEVICE
+In-Reply-To: <13f9ddd3-6720-3c77-8bd9-7b21c1fb2d22@perex.cz>
 References: <20230519093114.28813-1-tiwai@suse.de>
- <20230519093114.28813-17-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20230519093114.28813-17-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: H5JT3LYIQ5MPZSFJIEDXOTE6EF6PDURR
-X-Message-ID-Hash: H5JT3LYIQ5MPZSFJIEDXOTE6EF6PDURR
-X-MailFrom: perex@perex.cz
+	<20230519093114.28813-5-tiwai@suse.de>
+	<13f9ddd3-6720-3c77-8bd9-7b21c1fb2d22@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: SJSMQMYSL4AFOI4GXS3EECVLLTU5J2KS
+X-Message-ID-Hash: SJSMQMYSL4AFOI4GXS3EECVLLTU5J2KS
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -81,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H5JT3LYIQ5MPZSFJIEDXOTE6EF6PDURR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SJSMQMYSL4AFOI4GXS3EECVLLTU5J2KS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,15 +115,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 19. 05. 23 11:30, Takashi Iwai wrote:
-> There can be a small memory hole that may not be cleared at expanding
-> an event with the variable length type.  Make sure to clear it.
+On Mon, 22 May 2023 08:36:16 +0200,
+Jaroslav Kysela wrote:
 > 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> On 19. 05. 23 11:30, Takashi Iwai wrote:
+> > Applications may look for rawmidi devices with the ioctl
+> > SNDRV_CTL_IOCTL_RAWMIDI_NEXT_DEVICE.  Returning a UMP device from this
+> > ioctl may confuse the existing applications that support only the
+> > legacy rawmidi.
+> > 
+> > This patch changes the code to skip the UMP devices from the lookup
+> > for avoiding the confusion, and introduces a new ioctl to look for the
+> > UMP devices instead.
+> 
+> Missing bump of the control API protocol version ?
 
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Yes, I'll add it in v2.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 
+> Otherwise:
+> 
+> Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 
+
+thanks,
+
+Takashi
