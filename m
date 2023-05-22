@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B62F9C77B75
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 18:33:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE3EEC77B75
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 May 2023 18:34:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7228620C;
-	Mon, 22 May 2023 20:32:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7228620C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A051182C;
+	Mon, 22 May 2023 20:33:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A051182C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684780421;
-	bh=XMcOvcpn2XNfm3D+yAL/mRJvyTj4QDvdy7DS505FDp0=;
+	s=default; t=1684780444;
+	bh=jzpM+84lYGuOxGL+MOpq8OzByxwYQNI9oyqWXqcupKU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=m+RD9PnEDW58GTjUWOvLwrhq2FqymcMPOrTg/fsm+0s4UfzMEmPWxeuFFHRs5YXYb
-	 oWfDZaL40hGuAXDTh86RKQ06sm7qa1ESur2gH2kcDYqOkoVMRfP5V6s2PkKly7sIav
-	 ldOXVGqq2ZNN8PxaLn3x4JrDoAujkd4cmwamSozs=
+	b=i/yzq7aYAzsT29knkOY0cgyZ5x8bfjGkAl9Ua5J2UNiqX3JV3QSfh3cb1bDYf5b7H
+	 cSm5i4bfwLs33HSIEEKaLWnjKoUN1a1SOsS6OJrcQJgyNkFcJeob0l8SD18ccBZbeD
+	 lHtnEbvugemVUYdlkJHEeXOFUYbT8Wrll4PbJS8Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1650EF8055A; Mon, 22 May 2023 20:32:23 +0200 (CEST)
+	id 4884BF80570; Mon, 22 May 2023 20:32:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A6C2F80542;
-	Mon, 22 May 2023 20:32:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07F42F80558;
+	Mon, 22 May 2023 20:32:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 939ABF80544; Mon, 22 May 2023 20:32:17 +0200 (CEST)
+	id B5AEBF80542; Mon, 22 May 2023 20:32:21 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C386BF80053
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 20:32:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C386BF80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6E924F80086
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2023 20:32:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E924F80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=eWzemtD/
+ header.s=Intel header.b=QuKTm3Zh
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684780330; x=1716316330;
+  t=1684780332; x=1716316332;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=XMcOvcpn2XNfm3D+yAL/mRJvyTj4QDvdy7DS505FDp0=;
-  b=eWzemtD/5DiJXrJHALfOxF0GN4+Dldk9YOAV0mdGhdBJqlGRpzxgcaVg
-   iqoaNP7bfdELMLErtIp0rkB059PTRLYVQfNfZNTE/3SmBDA0ILun7ubhg
-   ukeDam21d/5MEILOBmcYn56TL+w21cdK/jBm3IQB+B0Gg5o8eG0X78s/5
-   UbCD2ptSBfC0ao0V/2RzdKT5ennMV67bImJqmYIu7vtRNa7Cm/a8Nbbyn
-   CC8h8RMvyIEgRPYOBXwuZVdU4Hk6iAn5ycOAUhH4LuPBRRiNNR/fCSacz
-   JBadiIeij/S1kCyDB2Cg0Fw0hZOq73aMXXE0uDJUAqdA+h9xwNBRNPkSS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10718"; a="356235092"
+  bh=jzpM+84lYGuOxGL+MOpq8OzByxwYQNI9oyqWXqcupKU=;
+  b=QuKTm3Zht8B42ekVFiYFUZueXuuvlqG7fh3kFhscExW/ih9qoCm809dD
+   0VGQSPRvYFPt2HyS2wC0H2Q7G4Hw+tXgX2NlVNoSZSs68HiuJ7/TzcBwF
+   BhSVSGIB5tJcqmMwRXYqoaKpadrhEh6BllEmD228AAZTveTSK1q+KDwfO
+   BBYRwRkjSyBY4Gz7UStEIpob1rKQTtDdxsBBDfIxxZ4IaUTzzht958Vmq
+   cU68YoTPpEZeJh3e7sKgSGkZ98XCw9l+Qb9GYWv4qQ3S1FgbOhfbTbTOz
+   SDhMLhx8U5sCjyAWN4Ov+XNVGeO/oUNGktOna4EwOSyKBzJIkyvwrOhGk
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10718"; a="356235140"
 X-IronPort-AV: E=Sophos;i="6.00,184,1681196400";
-   d="scan'208";a="356235092"
+   d="scan'208";a="356235140"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 May 2023 11:31:45 -0700
+ 22 May 2023 11:31:47 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10718"; a="697740832"
+X-IronPort-AV: E=McAfee;i="6600,9927,10718"; a="697740836"
 X-IronPort-AV: E=Sophos;i="6.00,184,1681196400";
-   d="scan'208";a="697740832"
+   d="scan'208";a="697740836"
 Received: from ljgreene-mobl.amr.corp.intel.com (HELO [10.209.124.121])
  ([10.209.124.121])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 May 2023 11:31:43 -0700
-Message-ID: <1d73963a-de26-a147-6ccb-e5c8c65f579b@linux.intel.com>
-Date: Mon, 22 May 2023 11:16:41 -0500
+ 22 May 2023 11:31:46 -0700
+Message-ID: <0bf45d6e-72bc-d31a-fec5-b52859b8dcae@linux.intel.com>
+Date: Mon, 22 May 2023 11:34:09 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [PATCH V2 1/9] ASoC: amd: ps: create platform devices based on
- acp config
+Subject: Re: [PATCH V2 3/9] ASoC: amd: ps: add SoundWire dma driver
 Content-Language: en-US
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
@@ -81,13 +80,13 @@ Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
  Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
  open list <linux-kernel@vger.kernel.org>
 References: <20230522133122.166841-1-Vijendar.Mukunda@amd.com>
- <20230522133122.166841-2-Vijendar.Mukunda@amd.com>
+ <20230522133122.166841-4-Vijendar.Mukunda@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230522133122.166841-2-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20230522133122.166841-4-Vijendar.Mukunda@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: YMV7PPYMCMVDP3IOPDDBQBIDXLSOHUUV
-X-Message-ID-Hash: YMV7PPYMCMVDP3IOPDDBQBIDXLSOHUUV
+Message-ID-Hash: MVV6MAHA7UOXAY73IP4CHD4HJ56GBCWZ
+X-Message-ID-Hash: MVV6MAHA7UOXAY73IP4CHD4HJ56GBCWZ
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YMV7PPYMCMVDP3IOPDDBQBIDXLSOHUUV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MVV6MAHA7UOXAY73IP4CHD4HJ56GBCWZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,186 +109,129 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-> +static int sdw_amd_scan_controller(struct device *dev)
+
+On 5/22/23 08:31, Vijendar Mukunda wrote:
+> SoundWire DMA platform driver binds to the platform device created by
+> ACP PCI device. SoundWire DMA driver registers ALSA DMA component
+> with ASoC framework.
+> 
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> ---
+>  sound/soc/amd/ps/acp63.h      |  5 +++
+>  sound/soc/amd/ps/ps-sdw-dma.c | 70 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 75 insertions(+)
+>  create mode 100644 sound/soc/amd/ps/ps-sdw-dma.c
+> 
+> diff --git a/sound/soc/amd/ps/acp63.h b/sound/soc/amd/ps/acp63.h
+> index d296059be4f0..eec58da7ec8b 100644
+> --- a/sound/soc/amd/ps/acp63.h
+> +++ b/sound/soc/amd/ps/acp63.h
+> @@ -148,6 +148,11 @@ struct pdm_dev_data {
+>  	struct snd_pcm_substream *capture_stream;
+>  };
+>  
+> +struct sdw_dma_dev_data {
+> +	void __iomem *acp_base;
+> +	struct mutex *acp_lock; /* used to protect acp common register access */
+> +};
+> +
+>  /**
+>   * struct acp63_dev_data - acp pci driver context
+>   * @acp63_base: acp mmio base
+> diff --git a/sound/soc/amd/ps/ps-sdw-dma.c b/sound/soc/amd/ps/ps-sdw-dma.c
+> new file mode 100644
+> index 000000000000..f41849fd035c
+> --- /dev/null
+> +++ b/sound/soc/amd/ps/ps-sdw-dma.c
+> @@ -0,0 +1,70 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * AMD ALSA SoC Pink Sardine SoundWire DMA Driver
+> + *
+> + * Copyright 2023 Advanced Micro Devices, Inc.
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +#include <sound/soc-dai.h>
+> +#include "acp63.h"
+> +
+> +#define DRV_NAME "amd_ps_sdw_dma"
+> +
+> +static const struct snd_soc_component_driver acp63_sdw_component = {
+> +	.name		= DRV_NAME,
+> +};
+> +
+> +static int acp63_sdw_platform_probe(struct platform_device *pdev)
 > +{
-> +	struct acp63_dev_data *acp_data;
-> +	struct fwnode_handle *link;
-> +	char name[32];
-> +	u32 sdw_manager_bitmap;
-> +	u8 count = 0;
-> +	u32 acp_sdw_power_mode = 0;
-> +	int index;
-> +	int ret;
+> +	struct resource *res;
+> +	struct sdw_dma_dev_data *sdw_data;
+> +	int status;
 > +
-> +	acp_data = dev_get_drvdata(dev);
-> +	acp_data->acp_reset = true;
-> +	/* Found controller, find links supported */
-> +	ret = fwnode_property_read_u32_array((acp_data->sdw_fw_node), "mipi-sdw-manager-list",
-> +					     &sdw_manager_bitmap, 1);
-> +
-> +	if (ret) {
-> +		dev_err(dev, "Failed to read mipi-sdw-manager-list: %d\n", ret);
-> +		return -EINVAL;
+> +	if (!pdev->dev.platform_data) {
+> +		dev_err(&pdev->dev, "platform_data not retrieved\n");
+> +		return -ENODEV;
 > +	}
-> +	count = hweight32(sdw_manager_bitmap);
-> +	/* Check count is within bounds */
-> +	if (count > AMD_SDW_MAX_MANAGERS) {
-> +		dev_err(dev, "Manager count %d exceeds max %d\n", count, AMD_SDW_MAX_MANAGERS);
-> +		return -EINVAL;
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
+> +		return -ENODEV;
 > +	}
 > +
-> +	if (!count) {
-> +		dev_dbg(dev, "No SoundWire Managers detected\n");
-> +		return -EINVAL;
-> +	}
-> +	dev_dbg(dev, "ACPI reports %d SoundWire Manager devices\n", count);
-> +	acp_data->sdw_manager_count = count;
-> +	for (index = 0; index < count; index++) {
-> +		snprintf(name, sizeof(name), "mipi-sdw-link-%d-subproperties", index);
-> +		link = fwnode_get_named_child_node(acp_data->sdw_fw_node, name);
-> +		if (!link) {
-> +			dev_err(dev, "Manager node %s not found\n", name);
-> +			return -EIO;
-> +		}
+> +	sdw_data = devm_kzalloc(&pdev->dev, sizeof(*sdw_data), GFP_KERNEL);
+> +	if (!sdw_data)
+> +		return -ENOMEM;
 > +
-> +		fwnode_property_read_u32(link, "amd-sdw-power-mode",
-> +					 &acp_sdw_power_mode);
+> +	sdw_data->acp_base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+> +	if (!sdw_data->acp_base)
+> +		return -ENOMEM;
+> +
+> +	sdw_data->acp_lock = pdev->dev.platform_data;
 
-What happens if this property is not found or doesn't exist?
+so you are sharing the same lock between parent and child platform device?
 
-acp_sdw_power_mode is zero, so....
+Does this work? IIRC the platform_data is copied, you do not point
+directly to the initial data provided by the parent. We had issues with
+SoundWire when we used platform devices, with the 'wrong' pointer used.
 
+The documentation does make mention of a copy....
 
-> +		/*
-> +		 * when SoundWire configuration is selected from acp pin config,
-> +		 * based on manager instances count, acp init/de-init sequence should be
-> +		 * executed as part of PM ops only when Bus reset is applied for the active
-> +		 * SoundWire manager instances.
-> +		 */
-> +		if (acp_sdw_power_mode != AMD_SDW_POWER_OFF_MODE)
-> +			acp_data->acp_reset = false;
-
-... here this branch is taken.
-
-Is this intentional?
-
-> +	}
-> +	return 0;
+/**
+ * platform_device_add_data - add platform-specific data to a platform
+device
+ * @pdev: platform device allocated by platform_device_alloc to add
+resources to
+ * @data: platform specific data for this platform device
+ * @size: size of platform specific data
+ *
+ * Add a copy of platform specific data to the platform device's
+ * platform_data pointer.  The memory associated with the platform data
+ * will be freed when the platform device is released.
+ */
+> +	dev_set_drvdata(&pdev->dev, sdw_data);
+> +	status = devm_snd_soc_register_component(&pdev->dev,
+> +						 &acp63_sdw_component,
+> +						 NULL, 0);
+> +	if (status)
+> +		dev_err(&pdev->dev, "Fail to register sdw dma component\n");
+> +
+> +	return status;
 > +}
 > +
-> +static int get_acp63_device_config(u32 config, struct pci_dev *pci, struct acp63_dev_data *acp_data)
->  {
->  	struct acpi_device *dmic_dev;
-> +	struct acpi_device *sdw_dev;
->  	const union acpi_object *obj;
->  	bool is_dmic_dev = false;
-
-useless init
-
-> +	bool is_sdw_dev = false;
-
-and useless init as well...
-
-> +	int ret;
->  
->  	dmic_dev = acpi_find_child_device(ACPI_COMPANION(&pci->dev), ACP63_DMIC_ADDR, 0);
->  	if (dmic_dev) {
-> +		/* is_dmic_dev flag will be set when ACP PDM controller device exists */
->  		if (!acpi_dev_get_property(dmic_dev, "acp-audio-device-type",
->  					   ACPI_TYPE_INTEGER, &obj) &&
->  					   obj->integer.value == ACP_DMIC_DEV)
->  			is_dmic_dev = true;
->  	}
->  
-> +	sdw_dev = acpi_find_child_device(ACPI_COMPANION(&pci->dev), ACP63_SDW_ADDR, 0);
-> +	if (sdw_dev) {
-> +		acp_data->sdw_fw_node = acpi_fwnode_handle(sdw_dev);
-> +		ret = sdw_amd_scan_controller(&pci->dev);
-> +		/* is_sdw_dev flag will be set when SoundWire Manager device exists */
-> +		if (!ret)
-> +			is_sdw_dev = true;
-
-sdw_amd_scan_controller() can return -EINVAL, how is this handled?
-Shouldn't you stop execution and return here in the < 0 case?
-
-> +	}
+> +static struct platform_driver acp63_sdw_dma_driver = {
+> +	.probe = acp63_sdw_platform_probe,
+> +	.driver = {
+> +		.name = "amd_ps_sdw_dma",
+> +	},
+> +};
 > +
-> +	dev_dbg(&pci->dev, "Audio Mode %d\n", config);
->  	switch (config) {
-> -	case ACP_CONFIG_0:
-> -	case ACP_CONFIG_1:
-> +	case ACP_CONFIG_4:
-> +	case ACP_CONFIG_5:
-> +	case ACP_CONFIG_10:
-> +	case ACP_CONFIG_11:
-> +		if (is_dmic_dev) {
-> +			acp_data->pdev_mask = ACP63_PDM_DEV_MASK;
-> +			acp_data->pdev_count = ACP63_PDM_MODE_DEVS;
-> +		}
-> +		break;
->  	case ACP_CONFIG_2:
->  	case ACP_CONFIG_3:
-> -	case ACP_CONFIG_9:
-> -	case ACP_CONFIG_15:
-> -		dev_dbg(&pci->dev, "Audio Mode %d\n", config);
-> +		if (is_sdw_dev) {
-> +			switch (acp_data->sdw_manager_count) {
-> +			case 1:
-> +				acp_data->pdev_mask = ACP63_SDW_DEV_MASK;
-> +				acp_data->pdev_count = ACP63_SDW0_MODE_DEVS;
-> +				break;
-> +			case 2:
-> +				acp_data->pdev_mask = ACP63_SDW_DEV_MASK;
-> +				acp_data->pdev_count = ACP63_SDW0_SDW1_MODE_DEVS;
-> +				break;
-> +			default:
-> +				return -EINVAL;
-> +			}
-> +		}
->  		break;
-> -	default:
-> -		if (is_dmic_dev) {
-> +	case ACP_CONFIG_6:
-> +	case ACP_CONFIG_7:
-> +	case ACP_CONFIG_12:
-> +	case ACP_CONFIG_8:
-> +	case ACP_CONFIG_13:
-> +	case ACP_CONFIG_14:
-> +		if (is_dmic_dev && is_sdw_dev) {
-> +			switch (acp_data->sdw_manager_count) {
-> +			case 1:
-> +				acp_data->pdev_mask = ACP63_SDW_PDM_DEV_MASK;
-> +				acp_data->pdev_count = ACP63_SDW0_PDM_MODE_DEVS;
-> +				break;
-> +			case 2:
-> +				acp_data->pdev_mask = ACP63_SDW_PDM_DEV_MASK;
-> +				acp_data->pdev_count = ACP63_SDW0_SDW1_PDM_MODE_DEVS;
-> +				break;
-> +			default:
-> +				return -EINVAL;
-> +			}
-> +		} else if (is_dmic_dev) {
->  			acp_data->pdev_mask = ACP63_PDM_DEV_MASK;
->  			acp_data->pdev_count = ACP63_PDM_MODE_DEVS;
-> +		} else if (is_sdw_dev) {
-> +			switch (acp_data->sdw_manager_count) {
-> +			case 1:
-> +				acp_data->pdev_mask = ACP63_SDW_DEV_MASK;
-> +				acp_data->pdev_count = ACP63_SDW0_MODE_DEVS;
-> +				break;
-> +			case 2:
-> +				acp_data->pdev_mask = ACP63_SDW_DEV_MASK;
-> +				acp_data->pdev_count = ACP63_SDW0_SDW1_MODE_DEVS;
-> +				break;
-> +			default:
-> +				return -EINVAL;
-> +			}
->  		}
->  		break;
-> +	default:
-> +		break;
->  	}
-> +	return 0;
->  }
-
->  		dev_err(&pci->dev, "ACP platform devices creation failed\n");
+> +module_platform_driver(acp63_sdw_dma_driver);
+> +
+> +MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
+> +MODULE_DESCRIPTION("AMD ACP6.3 PS SDW DMA Driver");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:" DRV_NAME);
