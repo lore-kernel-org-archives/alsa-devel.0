@@ -4,68 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E898BC77B75
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 03:00:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0527C7EE23
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 03:01:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E6DE3E7;
-	Tue, 23 May 2023 05:00:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E6DE3E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id C52FB1FA;
+	Tue, 23 May 2023 05:00:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C52FB1FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684810852;
-	bh=b/lLY5Pj6+tSz0XHsQ04eGbzJqUkoDnGHY154JTxIOU=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=FeM+yU2olM/9f61A5mCjVIa88VwColuQexpKakQHqvE1c6voeUnkuZ6U6Gde0c4P5
-	 WLBs85fMYsmbs5bbu9Qp6dOsKgrmj8xkTIyTRTvoMq/hrgbCJZ6jY1r41uB1mt8see
-	 jEsXj1fTW/nSj3vKYCqIVv0+l/nLzs99NURhucrQ=
+	s=default; t=1684810881;
+	bh=0HEs16xaxefBaw6M7lccR4krkH/V6b2nOb5GtyQ3U74=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ojNV/qS6X59yOYbSm+8XwiOmtRIlg+vXIcEzXueMnVxuzM7VpDY2xclTRmollQN48
+	 Hn7BDC/1PTJ6woupo7hU1o3lsx3lnByXTklrPpBzmxV5W2WpfyDv2Va0ZAYsEEE0LC
+	 DvQvk02G2eHYyZBFcMhyGwpnNTfB66Y5YbWSDens=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C082F8016A; Tue, 23 May 2023 05:00:01 +0200 (CEST)
+	id AF4CEF80551; Tue, 23 May 2023 05:00:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91D7AF80544;
-	Tue, 23 May 2023 05:00:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB196F8055B;
+	Tue, 23 May 2023 05:00:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11492F80425; Tue, 23 May 2023 04:59:53 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	id 4D4BCF8026A; Tue, 23 May 2023 04:59:53 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 14BB0F80086;
-	Tue, 23 May 2023 04:59:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14BB0F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2A7A0F80249;
+	Tue, 23 May 2023 04:59:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A7A0F80249
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=ucqPg5Hg
-X-UUID: d8e97a88f91511edb20a276fd37b9834-20230523
+ header.s=dk header.b=IwvoBkKR
+X-UUID: d98338daf91511ed9cb5633481061a41-20230523
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
-	h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
- bh=EYHLzjnloppL/snrvVTR+FnWYr8UbSrI+Iea2UuIhIo=;
-	b=ucqPg5HgTGvKiYzk/BKhGQKklo9zf3qZPMp1YqwrOVkpeUqQnuZvJZ//hbGnXD3IAKyHFl1xbIFqzKTT5pLa3IH3d84oqYHT5Qzio6CKFyBIZtjbAWonTAXMu38jG5hB7UX7ur2Ya7O9PJOC8JpMcJ1DC5OAcATOrZUh0K92aoE=;
+	h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=7HMIGvCD+aOZDLrsQizWYm0Y51qXJCJHHQPRwoRRYCE=;
+	b=IwvoBkKROHuUjH27ma0DRPV0Kaxe+ZAmwCmXdROojFrtoLYH+LjAbf6RTXxALdOBPzfPFGGHEgzijb99igv+nUyX17AakW82i7EnN+AzO8Et0CRvbX35ZYhSW83wplcTChXUz/IuViLVBGCjSXwIS7QIYWVtOXxqQzV4psSR1tc=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.25,REQID:0e76c8dd-c45e-4c90-9854-64531279d230,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:95
-X-CID-INFO: VERSION:1.1.25,REQID:0e76c8dd-c45e-4c90-9854-64531279d230,IP:0,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
-	:quarantine,TS:95
-X-CID-META: VersionHash:d5b0ae3,CLOUDID:eca3b4c1-e32c-4c97-918d-fbb3fc224d4e,B
-	ulkID:230523105937NXVLJJ9E,BulkQuantity:0,Recheck:0,SF:28|17|19|48|38|29,T
-	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-	,OSI:0,OSA:0,AV:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-UUID: d8e97a88f91511edb20a276fd37b9834-20230523
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
- mailgw02.mediatek.com
+X-CID-O-INFO: VERSION:1.1.25,REQID:3800f729-4111-47a5-90b5-fd0899450448,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:d5b0ae3,CLOUDID:464b083c-de1e-4348-bc35-c96f92f1dcbb,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-UUID: d98338daf91511ed9cb5633481061a41-20230523
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by
+ mailgw01.mediatek.com
 	(envelope-from <trevor.wu@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1172653722; Tue, 23 May 2023 10:59:34 +0800
+	with ESMTP id 1336574284; Tue, 23 May 2023 10:59:35 +0800
 Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.26; Tue, 23 May 2023 10:59:34 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
@@ -82,16 +79,18 @@ CC: <trevor.wu@mediatek.com>, <yc.hung@mediatek.com>,
 	<tinghan.shen@mediatek.com>, <sound-open-firmware@alsa-project.org>,
 	<alsa-devel@alsa-project.org>, <linux-mediatek@lists.infradead.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 0/2] ASoC: SOF: add mt8188 audio support
-Date: Tue, 23 May 2023 10:59:31 +0800
-Message-ID: <20230523025933.30494-1-trevor.wu@mediatek.com>
+Subject: [PATCH v2 2/2] ASoC: SOF: mediatek: add adsp debug dump
+Date: Tue, 23 May 2023 10:59:33 +0800
+Message-ID: <20230523025933.30494-3-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230523025933.30494-1-trevor.wu@mediatek.com>
+References: <20230523025933.30494-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 X-MTK: N
-Message-ID-Hash: VUNPDGGPDA35SBS5KQXXGTRKRG4QNV2A
-X-Message-ID-Hash: VUNPDGGPDA35SBS5KQXXGTRKRG4QNV2A
+Message-ID-Hash: PKCVWWT5KGFJARUOEM6HGH6BZ7U7Q6HK
+X-Message-ID-Hash: PKCVWWT5KGFJARUOEM6HGH6BZ7U7Q6HK
 X-MailFrom: trevor.wu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,30 +102,72 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VUNPDGGPDA35SBS5KQXXGTRKRG4QNV2A/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+Archived-At: <>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This series adds mt8188 audio support and dbg_dump callback for
-mt8186 and mt8188.
+Add mt8188 and mt8186 .dbg_dump callback to print some information when
+DSP panic occurs.
 
-Changes since v1:
-  - fix typo
-  - adopt reviewer's suggestion
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ sound/soc/sof/mediatek/mt8186/mt8186.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-Trevor Wu (2):
-  ASoC: SOF: mediatek: add mt8188 audio support
-  ASoC: SOF: mediatek: add adsp debug dump
-
- sound/soc/sof/mediatek/mt8186/mt8186.c | 83 +++++++++++++++++++++++++-
- 1 file changed, 82 insertions(+), 1 deletion(-)
-
+diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
+index cc91c2928fb6..3e0ea0e109e2 100644
+--- a/sound/soc/sof/mediatek/mt8186/mt8186.c
++++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
+@@ -24,6 +24,7 @@
+ #include "../../sof-of-dev.h"
+ #include "../../sof-audio.h"
+ #include "../adsp_helper.h"
++#include "../mtk-adsp-common.h"
+ #include "mt8186.h"
+ #include "mt8186-clk.h"
+ 
+@@ -473,6 +474,26 @@ static snd_pcm_uframes_t mt8186_pcm_pointer(struct snd_sof_dev *sdev,
+ 	return pos;
+ }
+ 
++static void mt8186_adsp_dump(struct snd_sof_dev *sdev, u32 flags)
++{
++	u32 dbg_pc, dbg_data, dbg_inst, dbg_ls0stat, dbg_status, faultinfo;
++
++	/* dump debug registers */
++	dbg_pc = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PDEBUGPC);
++	dbg_data = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PDEBUGDATA);
++	dbg_inst = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PDEBUGINST);
++	dbg_ls0stat = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PDEBUGLS0STAT);
++	dbg_status = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PDEBUGSTATUS);
++	faultinfo = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PFAULTINFO);
++
++	dev_info(sdev->dev, "adsp dump : pc %#x, data %#x, dbg_inst %#x,",
++		 dbg_pc, dbg_data, dbg_inst);
++	dev_info(sdev->dev, "ls0stat %#x, status %#x, faultinfo %#x",
++		 dbg_ls0stat, dbg_status, faultinfo);
++
++	mtk_adsp_dump(sdev, flags);
++}
++
+ static struct snd_soc_dai_driver mt8186_dai[] = {
+ {
+ 	.name = "SOF_DL1",
+@@ -555,6 +576,7 @@ static struct snd_sof_dsp_ops sof_mt8186_ops = {
+ 	.num_drv	= ARRAY_SIZE(mt8186_dai),
+ 
+ 	/* Debug information */
++	.dbg_dump = mt8186_adsp_dump,
+ 	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
+ 
+ 	/* PM */
 -- 
 2.18.0
 
