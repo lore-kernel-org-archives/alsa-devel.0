@@ -4,73 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06CA8C77B73
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 02:21:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64F7BC7EE26
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 02:22:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B2A7828;
-	Tue, 23 May 2023 04:21:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B2A7828
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA61E836;
+	Tue, 23 May 2023 04:21:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA61E836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684808510;
-	bh=BTGwRxyLOBYxJGCDProBkT4hXRakTYypQVVbSNXa1PQ=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=eX15fvobSkMGgDGqs9Eoq3RQoIL8tcPGa30KjvguxE3koDRbth8VHFb8YImsdoucs
-	 yPVQCPvM/zqS1h5I6r8Y8LSvgC6hmKS+WBgrID+GsFFWyjUFuwhjBbyU/Y/un6pYz6
-	 u09enAqbcZNM3tI9RFrW0GKBaoQSVGxZiZfDRHzQ=
+	s=default; t=1684808517;
+	bh=ATU0Vh4jFhM2jzFRd1vyw7ANMaOkhaMV4ArnBh5oHgA=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=dreZDAdIXTVIEHJwZoxwNCntAfEXrg280X4lodxHuA1AnUJNXD+oNu3Q0n8j0jrNB
+	 Vo+Gdwh8h9upG9UDMtQmlOdEozzZDk2btQpfkG/b79q/JEtShncm38U/udbQoCVD0x
+	 62pBGqYdWaimtm0Owmkp+aFRHbLaYSC5oLanTD/k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44EEBF8055B; Tue, 23 May 2023 04:20:09 +0200 (CEST)
+	id D2945F80570; Tue, 23 May 2023 04:20:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E1B5F80542;
-	Tue, 23 May 2023 04:20:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 504CBF80578;
+	Tue, 23 May 2023 04:20:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0B2DF80548; Tue, 23 May 2023 04:20:02 +0200 (CEST)
+	id 4F545F80544; Tue, 23 May 2023 04:20:05 +0200 (CEST)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6EB81F8024E
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 04:19:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EB81F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id DF481F80542
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 04:19:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF481F80542
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=lQb5KlcK
-X-UUID: 42da1610f91011edb20a276fd37b9834-20230523
+ header.s=dk header.b=Yd+i+f4H
+X-UUID: 42f44828f91011edb20a276fd37b9834-20230523
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
- bh=4SVZPGbhJ5N66g97GSvBiW6bzWBET5n9wyQ0lreUVes=;
-	b=lQb5KlcKkNTw1HA2ZswPkVQN1DhwNRAjiYNo8CEdX8M+Uw0sWeCPCVQoPleSp0T47LUEfCj0Q4kP3ENmR6W0dQHG3+MDqtnpV7q1l+INT/E8kvZqPTzhOCE+OaWetVn45Mcc60f6J85WoenuIl6xR3oIFyN+87p6GUWKoTlH/gI=;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=Sfj8k51ecj9c8HcMdn1rWW9Isz6l/fhmsTFfGJOkg14=;
+	b=Yd+i+f4Hgxz/fdLK0sqAjM9lX+BOi3pAyFMqxZb3w289ZW9fhd0sCATu7/qSO/ZHrw5tQklz5u+fyrD21fZZSz1oeWMxOPbLtL40g2gP9yD2InpwKa0aRnFRvlI877+ncj6nrPaNryWN+2vyLgU6qtBk/h46yIG/7/4Oi5qgihk=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.25,REQID:7b9db993-9cfc-42b6-b40c-5ba5cfa44ecc,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:95
-X-CID-INFO: VERSION:1.1.25,REQID:7b9db993-9cfc-42b6-b40c-5ba5cfa44ecc,IP:0,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
-	:quarantine,TS:95
-X-CID-META: VersionHash:d5b0ae3,CLOUDID:76ceab6c-2f20-4998-991c-3b78627e4938,B
-	ulkID:230523101937JAP1O262,BulkQuantity:0,Recheck:0,SF:28|17|19|48|38|29,T
-	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-	,OSI:0,OSA:0,AV:0
+X-CID-O-INFO: VERSION:1.1.25,REQID:e9674a28-d928-45f2-833d-a5b02ef10f71,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:d5b0ae3,CLOUDID:8420b3c1-e32c-4c97-918d-fbb3fc224d4e,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
-X-UUID: 42da1610f91011edb20a276fd37b9834-20230523
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by
+X-UUID: 42f44828f91011edb20a276fd37b9834-20230523
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by
  mailgw02.mediatek.com
 	(envelope-from <trevor.wu@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1724671407; Tue, 23 May 2023 10:19:35 +0800
+	with ESMTP id 1332634918; Tue, 23 May 2023 10:19:35 +0800
 Received: from mtkmbs11n1.mediatek.inc (172.21.101.186) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 23 May 2023 10:19:34 +0800
+ 15.2.1118.26; Tue, 23 May 2023 10:19:35 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 23 May 2023 10:19:34 +0800
+ 15.2.1118.26 via Frontend Transport; Tue, 23 May 2023 10:19:35 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
 	<perex@perex.cz>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
@@ -79,15 +76,18 @@ To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
 CC: <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
 	<linux-mediatek@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH v2 0/7] ASoC: mt8188: add new board support
-Date: Tue, 23 May 2023 10:19:25 +0800
-Message-ID: <20230523021933.3422-1-trevor.wu@mediatek.com>
+Subject: [PATCH v2 7/7] ASoC: dt-bindings: mediatek,mt8188-mt6359: add NAU8825
+ support
+Date: Tue, 23 May 2023 10:19:32 +0800
+Message-ID: <20230523021933.3422-8-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230523021933.3422-1-trevor.wu@mediatek.com>
+References: <20230523021933.3422-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
-Message-ID-Hash: OVRY75DOVRZDQVPFA22DBUD6TLI7SE4R
-X-Message-ID-Hash: OVRY75DOVRZDQVPFA22DBUD6TLI7SE4R
+Message-ID-Hash: 2YZKBVINZ3HE7CBPBF5MGGIGCT7VEZQ4
+X-Message-ID-Hash: 2YZKBVINZ3HE7CBPBF5MGGIGCT7VEZQ4
 X-MailFrom: trevor.wu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,50 +100,84 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OVRY75DOVRZDQVPFA22DBUD6TLI7SE4R/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2YZKBVINZ3HE7CBPBF5MGGIGCT7VEZQ4/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In the series, we extend the capability of mt8188-mt6359 driver.
+Add compatible string "mediatek,mt8188-nau8825" to support new board
+with nau8825 codec.
 
-The following changes are included.
-1. Divide ADDA BE dai into two dais for SOF.
-2. Register hdmi/dp jack pins.
-3. dai_fmt can be configured from device tree.
-4. Add some I2S codecs support.
+Introduce two properties "dai-format" and "mediatek,clk-provider" under
+dai-link subnode to configure dai-link parameters via dts.
 
-In addition, new compatible string "mediatek,mt8188-nau8825" is
-included for a new board support.
+"codec" property is removed from required property of dai-link subnode.
+For co-clock case, it's possible two dai-links should be configured to
+the same dai format, but only one cpu dai is bound with codec.
 
-Changes since v1:
-  - add "Headphone Jack" for Nau8825
-  - separate binding patch 2 from patch 6, and rename the subject
-  - clean up debugfs for freed widget
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+---
+ .../sound/mediatek,mt8188-mt6359.yaml         | 26 ++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
-Trevor Wu (7):
-  ASoC: mediatek: mt8188: separate ADDA playback dai from capture dai
-  ASoC: dt-bindings: mediatek,mt8188-mt6359: remove ADDA_BE from
-    link-name
-  ASoC: mediatek: mt8188-mt6359: register hdmi/dp jack pins
-  ASoC: mediatek: common: soundcard driver add dai_fmt support
-  ASoC: soc-dapm.c: clean up debugfs for freed widget
-  ASoC: mediatek: mt8188-mt6359: support new board with nau88255
-  ASoC: dt-bindings: mediatek,mt8188-mt6359: add NAU8825 support
-
- .../sound/mediatek,mt8188-mt6359.yaml         |  27 +-
- sound/soc/mediatek/Kconfig                    |   4 +
- .../mediatek/common/mtk-soundcard-driver.c    |  49 ++-
- sound/soc/mediatek/mt8188/mt8188-afe-common.h |   3 +-
- sound/soc/mediatek/mt8188/mt8188-dai-adda.c   |  73 ++--
- sound/soc/mediatek/mt8188/mt8188-mt6359.c     | 389 +++++++++++++++++-
- sound/soc/soc-dapm.c                          |  16 +
- 7 files changed, 507 insertions(+), 54 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml
+index 3d2c01b693be..05e532b5d50a 100644
+--- a/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml
++++ b/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml
+@@ -11,7 +11,9 @@ maintainers:
+ 
+ properties:
+   compatible:
+-    const: mediatek,mt8188-mt6359-evb
++    enum:
++      - mediatek,mt8188-mt6359-evb
++      - mediatek,mt8188-nau8825
+ 
+   model:
+     $ref: /schemas/types.yaml#/definitions/string
+@@ -61,11 +63,28 @@ patternProperties:
+         required:
+           - sound-dai
+ 
++      dai-format:
++        description: audio format.
++        items:
++          enum:
++            - i2s
++            - right_j
++            - left_j
++            - dsp_a
++            - dsp_b
++
++      mediatek,clk-provider:
++        $ref: /schemas/types.yaml#/definitions/string
++        description: Indicates dai-link clock master.
++        items:
++          enum:
++            - cpu
++            - codec
++
+     additionalProperties: false
+ 
+     required:
+       - link-name
+-      - codec
+ 
+ additionalProperties: false
+ 
+@@ -86,7 +105,8 @@ examples:
+             "AIN1", "Headset Mic";
+         dai-link-0 {
+             link-name = "ETDM3_OUT_BE";
+-
++            dai-format = "i2s";
++            mediatek,clk-provider = "cpu";
+             codec {
+                 sound-dai = <&hdmi0>;
+             };
 -- 
 2.18.0
 
