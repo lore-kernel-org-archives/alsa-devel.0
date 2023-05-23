@@ -4,94 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A178FC7EE23
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 12:15:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8DA9C7EE23
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 12:23:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D579206;
-	Wed, 24 May 2023 14:14:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D579206
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA44F204;
+	Wed, 24 May 2023 14:22:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA44F204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684930545;
-	bh=GH+T/4ut3F+ypQ+oU25lkhU8zRPVP2RXaC9znGB+kXQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1684930985;
+	bh=CdI8UptnoM5KuWydseAgUXjxjkq7j4ckxFa8GUWu6m8=;
+	h=From:Date:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Bx3nMwi3pMRCn1ftgcN5S5gqsC6OUo2m9xv1FYtsl1qdAmQf0z1WnBVIIOYsCY6kP
-	 6E9Otk9OAXfLUX7o3Bq9naM/NbDhh2F2A4grXSYw6Auxw+KssJFBEMEe/YMYMDRIqj
-	 1549WtgOiqcI5d/DE+yo5e+QsUlLNIhQONsEaXRY=
+	b=CXX/ZFEDaU+GQqWgInrXZLHWuBKO8J610Fe+JXUNGObX/S6918CW03HTx9y00K5kq
+	 WPXf5fHe9APNrg6uxKddb/Mg9SjYQR3SRSiSWUVOeKUdgisxVkj4nGp+y7csvmQAzB
+	 4oPZGQNDReknRs+jxs3fhqmjK6MqTJPonUgToWQA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8915F80249; Wed, 24 May 2023 14:14:26 +0200 (CEST)
+	id 57F83F80542; Wed, 24 May 2023 14:21:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B736F80249;
-	Wed, 24 May 2023 14:14:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1686EF80425;
+	Wed, 24 May 2023 14:21:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63ECFF80249; Wed, 24 May 2023 14:14:22 +0200 (CEST)
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
- [217.70.183.199])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 65725F8024E; Tue, 23 May 2023 14:48:46 +0200 (CEST)
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com
+ [IPv6:2607:f8b0:4864:20::102c])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3D2C7F80086
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 14:14:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D2C7F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id E5AECF8016A
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 14:48:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5AECF8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=PD2zGS7V
-Received: (Authenticated sender: herve.codina@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 11A0CFF814;
-	Wed, 24 May 2023 12:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1684930455;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WGhKGOeeQ5Auujw7usU7+enotiHVhoYjEj7//E+Utu0=;
-	b=PD2zGS7Vle6F3VIeArgHoQYFFY32gQQSjXDofYUypw57c33BOV7vaP2lBWfdnJTZ55V+8X
-	U7tOiQjse0fmxwNTbWXqNmZ7f2c9epmNUX85oXqL+EjUhQNjZe7YFNHKGfsheneSVnV9lc
-	7IcFO7ZwDvFgwSrZTH6ymcoVIz9JB5L2Qa4xutbXMvyMwBlwbix5arl8bzu0hd6JCDVEnG
-	iS95qVSSGUN6s+ETrne3A6gAPcnTc7T0olZS6/5Ae6t8ww2q1crog8irzWdWca5bc9q7wa
-	opstLKM6IEp+kM6kK6Vt/oJYm0o8o/0PZDiUgeEtaQzkcS3Xp8Yrf9Xjc2HG1A==
-Date: Wed, 24 May 2023 14:14:11 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 9/9] ASoC: simple-card: Handle additional devices
-Message-ID: <20230524141411.28765782@bootlin.com>
-In-Reply-To: <87mt1u7fql.wl-kuninori.morimoto.gx@renesas.com>
-References: <20230523151223.109551-1-herve.codina@bootlin.com>
-	<20230523151223.109551-10-herve.codina@bootlin.com>
-	<87mt1u7fql.wl-kuninori.morimoto.gx@renesas.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-redhat-linux-gnu)
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=L01Yxi54
+Received: by mail-pj1-x102c.google.com with SMTP id
+ 98e67ed59e1d1-25376483f66so3582196a91.0
+        for <alsa-devel@alsa-project.org>;
+ Tue, 23 May 2023 05:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684846118; x=1687438118;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=M+luJcpnDqm+8+ya6draBWUeu0r+QunqXQzG/ngCVWE=;
+        b=L01Yxi54Oo6q+9Bjt3sEn3NMpYld/wO3CBq2BdI95nhVavzMbfrHIOmKTmh7TP5PLy
+         rX4bVJB7xaLYk29lSa/XK+Hv/50UcCHKto6d3cjCRyOcY9DbtAF/3gOmiRzwMgWgS99o
+         Yyqpl1jiFYyeEf5FKK6qmg85v0uUui/14PuAVZBDqupxtWYN/PinMMyqkEAcWoaxqeRg
+         UcNmFEZRuOtrw/7aQ5P2AGzhGwp7HmB/S8m1x/Bsvsh5i3gIPJxDSGyZkjKmYFgy4Ep6
+         NL0BXI+4s8rDbyCTPsSUdYPe/7W5hxP6e5XtqYK8G6rzuUJww0kzLF1u5+OBHKcWb9xU
+         FW4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684846118; x=1687438118;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M+luJcpnDqm+8+ya6draBWUeu0r+QunqXQzG/ngCVWE=;
+        b=ZWawV4+oJOiKX5IAKXGrtbjnqEsGXlVL7dKgz+uPwzBz7QEV7DtcsDUmCPEnWmwpSs
+         4ZW6FgIADqdLFyFlY1xB/WaquMKylEsEdJTjfwDW/os0HZJM3J8II2Pt3zPa9pWNEtW0
+         dxobD8Fhf5dgpiq9z0fQLQKiXrsGfb0uul8T8mblbFbYxwzEG/Vn6OqsxgHzPH0pA/7T
+         Dji9OLUc4fa8lONuaq3gmgJmPhRZQrxCEih33Izg0bBPdfuH9o/9Vh8241B2wafE6MPK
+         uC4rQCNwkvN76krmhxbXJh33o5Z5MaLw9kYahZ9OQxToQ/nUjtS4GjSewnjGlQmbES/r
+         BW9A==
+X-Gm-Message-State: AC+VfDx3DjDS4kw6saSAz0+/QmuQMDYypCighKDe5JEZA40941l6h5vi
+	+VPNNJlOwOtikB2M8k/kUzQ=
+X-Google-Smtp-Source: 
+ ACHHUZ5dFsCRzWBgAhyoG3sD+YVv98rtQyBuK1AwpbLs/ugAraGkuzXE8ahejEHSa8TTw0rWmvd49A==
+X-Received: by 2002:a17:90a:5d06:b0:255:6133:f561 with SMTP id
+ s6-20020a17090a5d0600b002556133f561mr6328538pji.10.1684846118045;
+        Tue, 23 May 2023 05:48:38 -0700 (PDT)
+Received: from yoga ([2400:1f00:13:49e0:15f7:15f4:3a2b:204c])
+        by smtp.gmail.com with ESMTPSA id
+ q31-20020a17090a1b2200b002508f0ac3edsm8077936pjq.53.2023.05.23.05.48.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 May 2023 05:48:37 -0700 (PDT)
+From: Anup Sharma <anupnewsmail@gmail.com>
+X-Google-Original-From: Anup Sharma <AnupSharma>
+Date: Tue, 23 May 2023 18:18:30 +0530
+To: Mark Brown <broonie@kernel.org>
+Cc: Anup Sharma <anupnewsmail@gmail.com>, lgirdwood@gmail.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, oder_chiou@realtek.com
+Subject: Re: [PATCH] ASoC: dt-bindings: rt1016: Convert to dtschema
+Message-ID: <ZGy2Hpo4MvmMw4v+@yoga>
+References: <ZFUFAmBJXvkQAG7m@yoga>
+ <ZFUFrWqOHVmzE+ut@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: F75WMBAF5K2Y72X765AW6QAROECIQLI4
-X-Message-ID-Hash: F75WMBAF5K2Y72X765AW6QAROECIQLI4
-X-MailFrom: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZFUFrWqOHVmzE+ut@finisterre.sirena.org.uk>
+X-MailFrom: anupnewsmail@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: EBKEMTDJ3ELIEEB6SOSGL724W2KZRLLW
+X-Message-ID-Hash: EBKEMTDJ3ELIEEB6SOSGL724W2KZRLLW
+X-Mailman-Approved-At: Wed, 24 May 2023 12:21:36 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F75WMBAF5K2Y72X765AW6QAROECIQLI4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EBKEMTDJ3ELIEEB6SOSGL724W2KZRLLW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,123 +119,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Kuninori,
-
-On Wed, 24 May 2023 00:08:50 +0000
-Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
-
-> Hi
+On Fri, May 05, 2023 at 10:33:33PM +0900, Mark Brown wrote:
+> On Fri, May 05, 2023 at 07:00:42PM +0530, Anup Sharma wrote:
 > 
-> > An additional-devs subnode can be present in the simple-card top node.
-> > This subnode is used to declared some "virtual" additional devices.
-> > 
-> > Create related devices from this subnode and avoid this subnode presence
-> > to interfere with the already supported subnodes analysis.
-> > 
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > ---  
+> > +maintainers:
+> > +  - oder_chiou@realtek.com
 > 
-> simple-card is used in many boards, but is old.
-> Adding new feature on audio-graph-card/audio-graph-card2 instead of simple-card
-> is my ideal, but it is OK.
-> 
-> simple-card is possible to handle multiple DAI links by using
-> "dai-link" node on 1 Sound Card. see
-> 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/sound/simple-card.yaml?h=v6.4-rc3#n294
-> 
-> Is this "additional-devs" available only one per 1 Card ?
-> If it is possible to use 1 additional-devs per 1 DAI link, I think this patch want to
-> care "dai-link".
-> Or adding temporally NOTE or FIXME message like /* NOTE: it doesn't support dai-link so far */
-> is good idea.
+> If you're nominating someone as the maintainer for a binding it's
+> probably best to copy them on the patch so they're aware...
 
-As you said on your other mail 1 "additional-devs" per 1 Card.
-And further more, I think that "additional-devs" has nothing to do with
-DAI link.
-These additional devices are really related to the the Card itself and
-not DAI links.
+Hi Mark,
 
-simple_populate_aux() needs to be called once per Card.
+Do I need to send the v2 by copying oder_chiou@realtek.com into the
+patch?
 
-> 
-> >  static int asoc_simple_probe(struct platform_device *pdev)
-> >  {
-> >  	struct asoc_simple_priv *priv;
-> > @@ -688,6 +731,11 @@ static int asoc_simple_probe(struct platform_device *pdev)
-> >  		return ret;
-> >  
-> >  	if (np && of_device_is_available(np)) {
-> > +		ret = simple_populate_aux(priv);
-> > +		if (ret < 0) {
-> > +			dev_err_probe(dev, ret, "populate aux error\n");
-> > +			goto err;
-> > +		}
-> >  
-> >  		ret = simple_parse_of(priv, li);
-> >  		if (ret < 0) {
-> > -- 
-> > 2.40.1
-> >   
-> 
-> Calling simple_populate_aux() before calling simple_parse_of() is possible,
-> but looks strange for me.
-> see below
-> 
-> > diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-> > index 5a5e4ecd0f61..4992ab433d6a 100644
-> > --- a/sound/soc/generic/simple-card.c
-> > +++ b/sound/soc/generic/simple-card.c  
-> (snip)
-> > @@ -359,6 +360,8 @@ static int __simple_for_each_link(struct asoc_simple_priv *priv,
-> >  		is_top = 1;
-> >  	}
-> >  
-> > +	add_devs = of_get_child_by_name(top, PREFIX "additional-devs");  
-> 
-> I think better position to call simple_populate_aux() is here.
-> But __simple_for_each_link() will be called multiple times for CPU and for Codec.
-> So maybe you want to calling it under CPU turn.
-> 
-> 	 /* NOTE: it doesn't support dai-link so far */
-> 	add_devs = of_get_child_by_name(top, PREFIX "additional-devs");
-> 	if (add_devs && li->cpu) {
-> 		ret = simple_populate_aux(priv);
-> 		...
-> 	}
+I saw you already added him. 
 
-So, IMHO, calling simple_populate_aux() from __simple_for_each_link() is
-not correct as it has nothing to do with DAI links and must be call once
-per Card.
-
-simple_populate_aux() could be called by simple_parse_of() itself or after
-simple_parse_of() call.
-
-I would prefer calling it before snd_soc_of_parse_aux_devs() because
-this function parses aux-devs phandles and these phandles can refer an
-auxiliary device present in the additional-devs node.
-
-The current code has no issue with this but some evolution can lead to
-EPROBE_DEFER if the device related to the phandle was not probed.
-If simple_populate_aux() is called after snd_soc_of_parse_aux_devs(),
-an EPROBE_DEFER related to the missing probe() call has no chance to
-be resolved.
-
-Tell be what you prefer:
-  a) Call before simple_parse_of() (no changes)
-or
-  b) Call at the very beginning of simple_parse_of()
-or
-  c) Other suggestion ...
-
-
-Thanks a lot for your review.
-Best regards,
-Hervé
-
-> 
-> Thank you for your help !!
-> 
-> Best regards
-> ---
-> Kuninori Morimoto
+Regards, 
+Anup Sharma
