@@ -4,54 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15C39C7EE26
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 15:14:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF7A3C77B75
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 15:14:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1CA96C0;
-	Tue, 23 May 2023 17:13:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1CA96C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FC16826;
+	Tue, 23 May 2023 17:13:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FC16826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684854865;
-	bh=fTYqDpnPeDecn81aQqoaXRxxGGYnBNI/2bFaRrPz8f4=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=SHgh31Y0xBh3L0xekJdba9aCMwC2F1z8zGfUyfjn3aM15a/rtfWPbZsf1yFZuPJtF
-	 k7y4xvGFsK7cF9tL1/y4BfULtab3kkFfqdJzxL3aic3hQjHzLOkLevuuktBEaofVOh
-	 DvyCFtXVsxf1sbP2hzXbtmHhjjA/OsAEIhrHOwNY=
+	s=default; t=1684854867;
+	bh=cvt4qSEMq/xa7Zrcpq+YtTKXlgndf6d5qkmGg4fmBF8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=CDGgya9a8Uy6QNwjRgu//aIOxpZnjsPP8wuZU5/MeA4wHtaES3PwpOtF/ITmzh358
+	 HBESALG+qGvB12otD+xBuWbvoL7dDD8BxNTfy4bm248N4cVTPXculBPXzwUJVpVTXl
+	 xbSbxVFjQU6Gldo2QtZ5tPIrjlQTmr80PP7UWyi0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B197F8055C; Tue, 23 May 2023 17:12:45 +0200 (CEST)
+	id 6D031F80570; Tue, 23 May 2023 17:12:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 354E4F80553;
-	Tue, 23 May 2023 17:12:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B4E8F80563;
+	Tue, 23 May 2023 17:12:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C70E5F8024E; Tue, 23 May 2023 17:12:41 +0200 (CEST)
+	id D8929F80553; Tue, 23 May 2023 17:12:44 +0200 (CEST)
 Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net
- [217.70.183.198])
+ [IPv6:2001:4b98:dc4:8::226])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BD28DF800DF
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 17:12:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD28DF800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id B1368F800DF
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 17:12:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1368F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=TSmhYRr+
+ header.s=gm1 header.b=EvezOhAv
 Received: (Authenticated sender: herve.codina@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPA id 6D690C000C;
-	Tue, 23 May 2023 15:12:25 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPA id 85B0DC0008;
+	Tue, 23 May 2023 15:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1684854749;
+	t=1684854759;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=44LW4D+dEQ4642r5zsLapFoXq9b1JcRYCd7i3HkCKYM=;
-	b=TSmhYRr+lsHjhiKF/pnRF7qFR3c7YLwMNGErcOAdJzgvH65cnroU6fGyh0hzPo2ZdfE7GJ
-	a9Vxf9vSpCPRBXGZ3tVcWomX++WuAl3nWH2mlbzQkWwpAFDucsO6MdvD6mmTHSVIH6d6G+
-	+af87BadCTLNfjxOVFgIOuAZgZaW1o/58W3oAFaTrXIf44iHdcF+KfoD8pEpeUfP3fqDTs
-	9O5aoRFqE5I3MsxGhM4LF7k/aKCWyLuDWjXr61zR546f5Lww8WaHpWrL0TRfhjmXBWyGG3
-	4zLenMx4cSwu7xhw3zyD4KErAPRtf7NSjpwtb04vjHBhO6mOA7H4skh+JpDWfw==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5N9NSA3ycLJUSucfBk1k0lUH03RfOeo/UXNYngARjpo=;
+	b=EvezOhAvwI6QLfONUptzen99rqPE2gcCja9TLNST4YCqrBJe1hw2Csg90Nenr/O7S/mpKL
+	ezDdg89iS2+2OjRf8OwzWRWlmmXsLO4mQBRl8CDdVM4i+zEHSu8n4Y5sNoDP78LA6fCj3k
+	9DufT16RrzkROIA/bwVHFm8tZ85m7SKPF+MpoE+5Ah8Kek0l277HVdwFPIG1rR1j2g77W1
+	ZTHJX/b3OW0fnXF28gDgm3+m2YZLAUT0YtmlNWGTPk8ghEbgVcP+Ls4U+Xz6M4LiPPt61Q
+	IQp30rqwgpAs5Z3W17X4wneSKsUKYfZwqVcknT2cDx9W38kp0iRCay0Gen5/EQ==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -70,15 +72,17 @@ Cc: alsa-devel@alsa-project.org,
 	linux-iio@vger.kernel.org,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2 0/9] Add support for IIO devices in ASoC
-Date: Tue, 23 May 2023 17:12:14 +0200
-Message-Id: <20230523151223.109551-1-herve.codina@bootlin.com>
+Subject: [PATCH v2 2/9] ASoC: dt-bindings: simple-card: Add additional-devs
+ subnode
+Date: Tue, 23 May 2023 17:12:16 +0200
+Message-Id: <20230523151223.109551-3-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230523151223.109551-1-herve.codina@bootlin.com>
+References: <20230523151223.109551-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 33Z3OBEZOJ5EN3E7PI5Q73XEVRA7U63A
-X-Message-ID-Hash: 33Z3OBEZOJ5EN3E7PI5Q73XEVRA7U63A
+Message-ID-Hash: J3O5OEOGI6Z4J2NHAT2XSIPTCFNESYVD
+X-Message-ID-Hash: J3O5OEOGI6Z4J2NHAT2XSIPTCFNESYVD
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/33Z3OBEZOJ5EN3E7PI5Q73XEVRA7U63A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J3O5OEOGI6Z4J2NHAT2XSIPTCFNESYVD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,98 +104,97 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Several weeks ago, I sent a series [1] for adding a potentiometer as an
-auxiliary device in ASoC. The feedback was that the potentiometer should
-be directly handled in IIO (as other potentiometers) and something more
-generic should be present in ASoC in order to have a binding to import
-some IIO devices into sound cards.
+The additional-devs subnode allows to declared some virtual devices
+as sound card children.
+These virtual devices can then be used by the sound card and so be
+present in the audio path.
 
-The series related to the IIO potentiometer device is already under
-review [2].
+The first virtual device supported is the audio IIO auxiliary device
+in order to support an IIO device as an audio auxiliary device.
 
-This series introduces audio-iio-aux. Its goal is to offer the binding
-between IIO and ASoC.
-It exposes attached IIO devices as ASoC auxiliary devices and allows to
-control them through mixer controls.
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+---
+ .../bindings/sound/simple-card.yaml           | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-On my system, the IIO device is a potentiometer and it is present in an
-amplifier design present in the audio path.
-
-Compare to the previous iteration
-  https://lore.kernel.org/linux-kernel/20230421124122.324820-1-herve.codina@bootlin.com/
-This v2 series mainly:
- - updates the binding using a simple-card subnode and handles this new
-   subnode in the simple-card driver.
- - Improves existing IIO code and documentation.
- - Renames simple-iio-aux to audio-iio-aux and fixes the driver itself.
-
-Best regards,
-Hervé
-
-[1] https://lore.kernel.org/linux-kernel/20230203111422.142479-1-herve.codina@bootlin.com/
-[2] https://lore.kernel.org/linux-kernel/20230421085245.302169-1-herve.codina@bootlin.com/
-
-Changes v1 -> v2
-  - Patch 1
-    Rename simple-iio-aux to audio-iio-aux
-    Rename invert to snd-control-invert-range
-    Remove the /schemas/iio/iio-consumer.yaml reference
-    Remove the unneeded '|' after description
-
-  - Patch 2 (new in v2)
-    Introduce the simple-audio-card additional-devs subnode
-
-  - Patch 3 (new in v2)
-    Check err before switch() in iio_channel_read_max()
-
-  - Patch 4 (new in v2)
-    Fix raw reads and raw writes documentation
-
-  - Patch 5 (patch 2 in v1)
-    Check err before switch() in iio_channel_read_min()
-    Fix documentation
-
-  - Patch 6 (path 3 in v1)
-    No changes
-
-  - Patch 7 (patch 4 in v1)
-    Rename simple-iio-aux to audio-iio-aux
-    Rename invert to snd-control-invert-range
-    Remove the mask usage from audio_iio_aux_{get,put}_volsw helpers
-    Use directly PTR_ERR() in dev_err_probe() parameter
-    Remove the '!!' construction
-    Remove of_match_ptr()
-
-  - Patch 8 (new in v2)
-    Add a missing of_node_put() in the simple-card driver
-
-  - Patch 9 (new in v2)
-    Handle additional-devs in the simple-card driver
-
-Herve Codina (9):
-  ASoC: dt-bindings: Add audio-iio-aux
-  ASoC: dt-bindings: simple-card: Add additional-devs subnode
-  iio: inkern: Check error explicitly in iio_channel_read_max()
-  iio: consumer.h: Fix raw values documentation notes
-  iio: inkern: Add a helper to query an available minimum raw value
-  ASoC: soc-dapm.h: Add a helper to build a DAPM widget dynamically
-  ASoC: codecs: Add support for the generic IIO auxiliary devices
-  ASoC: simple-card: Add missing of_node_put() in case of error
-  ASoC: simple-card: Handle additional devices
-
- .../bindings/sound/audio-iio-aux.yaml         |  64 ++++
- .../bindings/sound/simple-card.yaml           |  53 +++
- drivers/iio/inkern.c                          |  75 ++++-
- include/linux/iio/consumer.h                  |  37 ++-
- include/sound/soc-dapm.h                      |  12 +-
- sound/soc/codecs/Kconfig                      |  12 +
- sound/soc/codecs/Makefile                     |   2 +
- sound/soc/codecs/audio-iio-aux.c              | 302 ++++++++++++++++++
- sound/soc/generic/simple-card.c               |  53 ++-
- 9 files changed, 596 insertions(+), 14 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/audio-iio-aux.yaml
- create mode 100644 sound/soc/codecs/audio-iio-aux.c
-
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.yaml b/Documentation/devicetree/bindings/sound/simple-card.yaml
+index b05e05c81cc4..59ac2d1d1ccf 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.yaml
++++ b/Documentation/devicetree/bindings/sound/simple-card.yaml
+@@ -148,6 +148,15 @@ definitions:
+     required:
+       - sound-dai
+ 
++  additional-devs:
++    type: object
++    description:
++      Additional devices used by the simple audio card.
++    patternProperties:
++      '^iio-aux(-.+)?$':
++        type: object
++        $ref: audio-iio-aux.yaml#
++
+ properties:
+   compatible:
+     contains:
+@@ -187,6 +196,8 @@ properties:
+     $ref: "#/definitions/mclk-fs"
+   simple-audio-card,aux-devs:
+     $ref: "#/definitions/aux-devs"
++  simple-audio-card,additional-devs:
++    $ref: "#/definitions/additional-devs"
+   simple-audio-card,convert-rate:
+     $ref: "#/definitions/convert-rate"
+   simple-audio-card,convert-channels:
+@@ -359,6 +370,48 @@ examples:
+         };
+     };
+ 
++# --------------------
++# route audio to/from a codec through an amplifier
++# designed with a potentiometer driven by IIO:
++# --------------------
++  - |
++    sound {
++        compatible = "simple-audio-card";
++
++        simple-audio-card,aux-devs = <&amp_in>, <&amp_out>;
++        simple-audio-card,routing =
++            "CODEC LEFTIN", "AMP_IN LEFT OUT",
++            "CODEC RIGHTIN", "AMP_IN RIGHT OUT",
++            "AMP_OUT LEFT IN", "CODEC LEFTOUT",
++            "AMP_OUT RIGHT IN", "CODEC RIGHTOUT";
++
++        simple-audio-card,additional-devs {
++            amp_out: iio-aux-out {
++                compatible = "audio-iio-aux";
++                io-channels = <&pot_out 0>, <&pot_out 1>;
++                io-channel-names = "LEFT", "RIGHT";
++                snd-control-invert-range = <1 1>;
++                sound-name-prefix = "AMP_OUT";
++            };
++
++            amp_in: iio_aux-in {
++                compatible = "audio-iio-aux";
++                io-channels = <&pot_in 0>, <&pot_in 1>;
++                io-channel-names = "LEFT", "RIGHT";
++                sound-name-prefix = "AMP_IN";
++            };
++        };
++
++        simple-audio-card,cpu {
++            sound-dai = <&cpu>;
++        };
++
++        simple-audio-card,codec {
++            sound-dai = <&codec>;
++            clocks = <&clocks>;
++        };
++    };
++
+ # --------------------
+ # Sampling Rate Conversion
+ # --------------------
 -- 
 2.40.1
 
