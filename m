@@ -4,93 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31D8FC7EE23
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 12:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A674C7EE26
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 12:24:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39CF66C0;
-	Tue, 23 May 2023 14:23:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39CF66C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09EA2825;
+	Tue, 23 May 2023 14:23:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09EA2825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684844682;
-	bh=7g5lgg8K6ULr4rCfFJMUM9g1W70gZv1L9Jtq0z+f3xA=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=ATQ+sTWV31na62sSGpuy7muF8TDh6rfN26nK2pE//j+Nd+NPxyY1G/v9/HUd+jcSv
-	 5zD2fmfihijrfHe1pBb9+hu7Upvmho/0l4UeX0Kx81NDIuNch4Q5KSBWutm4lP/H1Q
-	 xMJxzN4KtxgLwXon3LM7Z3N6gCRhtu1G0699MFQA=
+	s=default; t=1684844689;
+	bh=naIFsSKQEWeVJJEqx2nCQ3Obxl0Y9kvp83iZ4nGS+kg=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=rMCAHd3SrucXcCCXEsRhXjaHp63zCuzSYOmJrQsGL322W6QShkecDiTYJp6rtXS74
+	 9/17A75MgDN86V8nR/JBdT43x7qZQRASGs8jAvXuKNdLeA7MlNMq/fV7TN/hCeU8ts
+	 +CwjTxS6giQXUpoOM8prSn3ccATIuuKj24TsuHSs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B005CF80568; Tue, 23 May 2023 14:23:04 +0200 (CEST)
+	id 6CF82F8057F; Tue, 23 May 2023 14:23:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F126F8055B;
-	Tue, 23 May 2023 14:23:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAEC1F8057D;
+	Tue, 23 May 2023 14:23:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 98CF3F80552; Tue, 23 May 2023 14:23:00 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 9B1B0F80564; Tue, 23 May 2023 14:23:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AB3B7F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id DEE11F80086
 	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 14:22:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB3B7F80249
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEE11F80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=sLng8hpL;
+ header.s=susede2_rsa header.b=boLIumyf;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=tjf3kukG
+ header.s=susede2_ed25519 header.b=3/Adkr9c
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4A70222A34;
-	Tue, 23 May 2023 12:22:54 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E021720573;
+	Tue, 23 May 2023 12:22:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684844574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1684844573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1GqwfBOie39jVzprd95QeelYmlNjzR/oK6v665L/0rc=;
-	b=sLng8hpLOTaHmI2gUnABnmk0BkUDSqxUTkVGxObrr2XknLLtrGmgj8+mXxzh+aXLJcVOvQ
-	3WDIAOBFoJYam5kU0esq4tpmifSLO/cYnyRulGQVX4xam7AuHZ0iDpVTaugRc7+1246shV
-	UO//h/aAUC6fdzwRDN/0H87ylwIBEEI=
+  content-transfer-encoding:content-transfer-encoding;
+	bh=vwUwxYbYRvTL7W+lGrQWtIevQiXoUiYE3RZ+smK8ZlU=;
+	b=boLIumyfWonAdPL0s3A2mlC+w2HOe7hECAUI3f2pSaMQRy6/b6kVYRVPrssrio9lgxnB+g
+	IOlaqYAHFpsAYpW09knSK/BYd+g3umyMdc4Uf04nwu8KEC5ssuRID9Dm07hncvu1xZFm2r
+	jzdbzB0LuuyxOaAa3w4Ks3sJoMUhdM0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684844574;
+	s=susede2_ed25519; t=1684844573;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1GqwfBOie39jVzprd95QeelYmlNjzR/oK6v665L/0rc=;
-	b=tjf3kukG2jj3HLbgMXSGNRUVEzGgnnAfcdZKEu6++ibH5fQeEGZptsPcgNi2KdgQHzuwhY
-	VYBW+IZr7Po8p3Cg==
+  content-transfer-encoding:content-transfer-encoding;
+	bh=vwUwxYbYRvTL7W+lGrQWtIevQiXoUiYE3RZ+smK8ZlU=;
+	b=3/Adkr9chkSf893/2m8PczGWfVQdq1FPSJ9LwQMTfwlyx5Ucb1oGwlX5f9IeZ9Ke/d+4ZN
+	E6HlwmK6apDxgCCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E72813588;
-	Tue, 23 May 2023 12:22:54 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C3AE913588;
+	Tue, 23 May 2023 12:22:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id KNiLCh6wbGQNKAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 23 May 2023 12:22:54 +0000
+	id 2oGxLh2wbGQNKAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 23 May 2023 12:22:53 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib v2 03/10] rawmidi: Add UMP ioctl support
-Date: Tue, 23 May 2023 14:22:40 +0200
-Message-Id: <20230523122247.11744-4-tiwai@suse.de>
+Subject: [PATCH alsa-lib v2 00/10] Add MIDI 2.0 support
+Date: Tue, 23 May 2023 14:22:37 +0200
+Message-Id: <20230523122247.11744-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230523122247.11744-1-tiwai@suse.de>
-References: <20230523122247.11744-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HICO7ILHUPHGR7DCLF4K42ADPSRJ3S67
-X-Message-ID-Hash: HICO7ILHUPHGR7DCLF4K42ADPSRJ3S67
+Message-ID-Hash: TTV7JDWVXHCCLNDKPMJNPTQWDQY3TI7B
+X-Message-ID-Hash: TTV7JDWVXHCCLNDKPMJNPTQWDQY3TI7B
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HICO7ILHUPHGR7DCLF4K42ADPSRJ3S67/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TTV7JDWVXHCCLNDKPMJNPTQWDQY3TI7B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,108 +108,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Just implement internal callbacks for two new ioctls for UMP
-(ump_endpoint_info and ump_block_info).  No public API functions are
-added yet here.
+This is a revised series of patches for alsa-lib to add the support of
+MIDI 2.0 features.  Since v1 [*], two more control API helpers to obtain
+UMP EP / block info are added and the CTL protocol version is bumped.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- src/rawmidi/rawmidi.c       | 19 +++++++++++++++++++
- src/rawmidi/rawmidi_hw.c    | 26 +++++++++++++++++++++++++-
- src/rawmidi/rawmidi_local.h |  5 +++++
- 3 files changed, 49 insertions(+), 1 deletion(-)
 
-diff --git a/src/rawmidi/rawmidi.c b/src/rawmidi/rawmidi.c
-index 570e06755456..8dca9312c6d9 100644
---- a/src/rawmidi/rawmidi.c
-+++ b/src/rawmidi/rawmidi.c
-@@ -1120,3 +1120,22 @@ ssize_t snd_rawmidi_tread(snd_rawmidi_t *rawmidi, struct timespec *tstamp, void
- 		return -ENOTSUP;
- 	return (rawmidi->ops->tread)(rawmidi, tstamp, buffer, size);
- }
-+
-+#ifndef DOXYGEN
-+/*
-+ * internal API functions for obtaining UMP info from rawmidi instance
-+ */
-+int _snd_rawmidi_ump_endpoint_info(snd_rawmidi_t *rmidi, void *info)
-+{
-+	if (!rmidi->ops->ump_endpoint_info)
-+		return -ENXIO;
-+	return rmidi->ops->ump_endpoint_info(rmidi, info);
-+}
-+
-+int _snd_rawmidi_ump_block_info(snd_rawmidi_t *rmidi, void *info)
-+{
-+	if (!rmidi->ops->ump_block_info)
-+		return -ENXIO;
-+	return rmidi->ops->ump_block_info(rmidi, info);
-+}
-+#endif /* DOXYGEN */
-diff --git a/src/rawmidi/rawmidi_hw.c b/src/rawmidi/rawmidi_hw.c
-index e5bb3ee3b31c..69e5e02f1d6a 100644
---- a/src/rawmidi/rawmidi_hw.c
-+++ b/src/rawmidi/rawmidi_hw.c
-@@ -272,6 +272,28 @@ static ssize_t snd_rawmidi_hw_tread(snd_rawmidi_t *rmidi, struct timespec *tstam
- 	return ret + result;
- }
- 
-+static int snd_rawmidi_hw_ump_endpoint_info(snd_rawmidi_t *rmidi, void *buf)
-+{
-+	snd_rawmidi_hw_t *hw = rmidi->private_data;
-+
-+	if (rmidi->version < SNDRV_PROTOCOL_VERSION(2, 0, 3))
-+		return -ENXIO;
-+	if (ioctl(hw->fd, SNDRV_UMP_IOCTL_ENDPOINT_INFO, buf) < 0)
-+		return -errno;
-+	return 0;
-+}
-+
-+static int snd_rawmidi_hw_ump_block_info(snd_rawmidi_t *rmidi, void *buf)
-+{
-+	snd_rawmidi_hw_t *hw = rmidi->private_data;
-+
-+	if (rmidi->version < SNDRV_PROTOCOL_VERSION(2, 0, 3))
-+		return -ENXIO;
-+	if (ioctl(hw->fd, SNDRV_UMP_IOCTL_BLOCK_INFO, buf) < 0)
-+		return -errno;
-+	return 0;
-+}
-+
- static const snd_rawmidi_ops_t snd_rawmidi_hw_ops = {
- 	.close = snd_rawmidi_hw_close,
- 	.nonblock = snd_rawmidi_hw_nonblock,
-@@ -282,7 +304,9 @@ static const snd_rawmidi_ops_t snd_rawmidi_hw_ops = {
- 	.drain = snd_rawmidi_hw_drain,
- 	.write = snd_rawmidi_hw_write,
- 	.read = snd_rawmidi_hw_read,
--	.tread = snd_rawmidi_hw_tread
-+	.tread = snd_rawmidi_hw_tread,
-+	.ump_endpoint_info = snd_rawmidi_hw_ump_endpoint_info,
-+	.ump_block_info = snd_rawmidi_hw_ump_block_info,
- };
- 
- 
-diff --git a/src/rawmidi/rawmidi_local.h b/src/rawmidi/rawmidi_local.h
-index 4a88e7e4a5ba..7025542f6774 100644
---- a/src/rawmidi/rawmidi_local.h
-+++ b/src/rawmidi/rawmidi_local.h
-@@ -35,6 +35,8 @@ typedef struct {
- 	ssize_t (*write)(snd_rawmidi_t *rawmidi, const void *buffer, size_t size);
- 	ssize_t (*read)(snd_rawmidi_t *rawmidi, void *buffer, size_t size);
- 	ssize_t (*tread)(snd_rawmidi_t *rawmidi, struct timespec *tstamp, void *buffer, size_t size);
-+	int (*ump_endpoint_info)(snd_rawmidi_t *rmidi, void *buf);
-+	int (*ump_block_info)(snd_rawmidi_t *rmidi, void *buf);
- } snd_rawmidi_ops_t;
- 
- struct _snd_rawmidi {
-@@ -62,3 +64,6 @@ int snd_rawmidi_virtual_open(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp,
- 			     int merge, int mode);
- 
- #define snd_rawmidi_conf_generic_id(id)	_snd_conf_generic_id(id)
-+
-+int _snd_rawmidi_ump_endpoint_info(snd_rawmidi_t *rmidi, void *info);
-+int _snd_rawmidi_ump_block_info(snd_rawmidi_t *rmidi, void *info);
+Takashi
+
+[*] http://lore.kernel.org/r/20230520070021.1301-1-tiwai@suse.de
+
+===
+
+Takashi Iwai (10):
+  uapi: Update rawmidi API to 2.0.3
+  uapi: Update control API to 2.0.9
+  rawmidi: Add UMP ioctl support
+  ump: Add initial support
+  control: Add UMP device query support
+  control: Add UMP Endpoint and Block info query support
+  ump: Add helpers to parse / set UMP packet data
+  ump: Add helpers for handling SysEx data
+  uapi: Update asequencer.h definitions for 1.0.3
+  seq: Add UMP support
+
+ configure.ac                    |   1 +
+ include/Makefile.am             |   2 +-
+ include/control.h               |   3 +
+ include/local.h                 |   5 +
+ include/rawmidi.h               |   3 +
+ include/seq.h                   |  44 ++
+ include/seq_event.h             |  42 +-
+ include/seqmid.h                |  24 ++
+ include/sound/uapi/asequencer.h |  91 ++++-
+ include/sound/uapi/asound.h     |  62 ++-
+ include/ump.h                   | 119 ++++++
+ include/ump_msg.h               | 598 +++++++++++++++++++++++++++
+ src/Versions.in                 |  26 ++
+ src/control/control.c           |  38 ++
+ src/control/control_hw.c        |  29 ++
+ src/control/control_local.h     |   3 +
+ src/rawmidi/Makefile.am         |   5 +-
+ src/rawmidi/rawmidi.c           |  19 +
+ src/rawmidi/rawmidi_hw.c        |  36 +-
+ src/rawmidi/rawmidi_local.h     |   7 +
+ src/rawmidi/ump.c               | 702 ++++++++++++++++++++++++++++++++
+ src/rawmidi/ump_local.h         |  10 +
+ src/seq/seq.c                   | 410 +++++++++++++++++--
+ src/seq/seq_hw.c                |  72 +++-
+ src/seq/seq_local.h             |   6 +-
+ src/seq/seqmid.c                |  38 ++
+ 26 files changed, 2316 insertions(+), 79 deletions(-)
+ create mode 100644 include/ump.h
+ create mode 100644 include/ump_msg.h
+ create mode 100644 src/rawmidi/ump.c
+ create mode 100644 src/rawmidi/ump_local.h
+
 -- 
 2.35.3
 
