@@ -4,88 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A35DC7EE23
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 15:02:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6744C7EE26
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 15:14:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5BF274C;
-	Tue, 23 May 2023 17:01:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5BF274C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 311A3208;
+	Tue, 23 May 2023 17:13:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 311A3208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684854124;
-	bh=SJG8pNz16g+uS5f4lfIw55vzqhqNY51+DK0nTErnOFE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1684854843;
+	bh=omyK8EMZFIuk2H2NcLRfSrI/todecGtoc2EXB60MIrs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=c0ntdAjWfS6RY0Xt2/r13Arr1lmgrui/nyIyXHT89JAkNP4iLst8+SZIVZhfx4S0e
-	 SNvgtPo2i32pVaHBUFju/zcF+G3hREICSs2q8adpU96DdlBVAqfk0Te3AJrEU5ENb1
-	 pmz9aU4eiS2O+cOXsrF/8O8VMOc84alsk+JnzlCw=
+	b=TPzwArumM0d+tOZEMIUUpBd3QsvwNWvLBsZmD4uCtn9HpgFWZb2fG97YTtXU+4ptJ
+	 HSzdu+s/Ko7Kmb126ARURIPa5Fcy8FcW5Ijr2JsUxdFj408SKU4+s2WQp/m2TVrxqn
+	 TyMK3A17pbDeLWZj+74FVwtPzkwx5fGTykNcwitc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9841BF8055C; Tue, 23 May 2023 17:00:23 +0200 (CEST)
+	id 3EF5FF80544; Tue, 23 May 2023 17:12:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8070CF80542;
-	Tue, 23 May 2023 17:00:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9DA9F8026A;
+	Tue, 23 May 2023 17:12:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92B72F8024E; Tue, 23 May 2023 17:00:17 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 3867FF8026A; Tue, 23 May 2023 17:12:39 +0200 (CEST)
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net
+ [217.70.183.198])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 204D5F80249;
-	Tue, 23 May 2023 17:00:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 204D5F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 40B58F80086
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 17:12:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40B58F80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=XFiiZRY7
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E14CE60B5F;
-	Tue, 23 May 2023 15:00:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A697CC4339B;
-	Tue, 23 May 2023 15:00:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684854009;
-	bh=SJG8pNz16g+uS5f4lfIw55vzqhqNY51+DK0nTErnOFE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=XFiiZRY71/IPZWJm0AG+8snf83HhwVo9AVIJbulXokRZ7z6Kp/FN6IJyDmeFINlUD
-	 vPn0QsGrVte7o27sXs09iRPh47mZeAxYiS7vhr3MY2olA0TSARE1FODQ+LjTk7bK0L
-	 +0AXB0c2D4dDKTthvCVCPYkQWr1SPmK5eWWoMLikJf9LrB+V5xVq63LHxofJincs0w
-	 TVgS8o6oobnl2EynRHK6qIgwIsv3m1jykq7wmE1BDTr94xI/X1cWCjrh+EhtFtHQEG
-	 qBk4CUyOG0b9xV67Qu3vTiIPijnDry/x+RLglnhgR2yOxm26QLFdCkc/63CPzOjo0b
-	 rfTw1x+X2QlgQ==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Cc: vsujithkumar.reddy@amd.com, Vijendar.Mukunda@amd.com,
- Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
- akondave@amd.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS"
- <sound-open-firmware@alsa-project.org>,
- open list <linux-kernel@vger.kernel.org>
-In-Reply-To: <20230523072009.2379198-1-venkataprasad.potturu@amd.com>
-References: <20230523072009.2379198-1-venkataprasad.potturu@amd.com>
-Subject: Re: [PATCH] ASoC: SOF: amd: Add pci revision id check
-Message-Id: <168485400339.197206.2399071297846045748.b4-ty@kernel.org>
-Date: Tue, 23 May 2023 16:00:03 +0100
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=lWPvq8cH
+Received: (Authenticated sender: herve.codina@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPA id 43971C0002;
+	Tue, 23 May 2023 15:12:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1684854751;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GyTXVmL/5teIh8xuYTUUi3ltQcCGVDf6AcEbfADS6og=;
+	b=lWPvq8cHwMHdAVLda4Fk0kYQp99VhMod7NzwHN7h56uzv3+/D0DlZbDz13zNPwM2YrzGCd
+	OtRfdXy/i4wOdaa6ba+WNUEAuFl9vAZ1Pe4xzCgsOBnWQKGu7uESCYVfm0DyEF8/7ELdGf
+	tlRHgkS3twGReZMKIDkZLvLssgthcUV3phHWcU0gTfeek7p2DVaVJjFOcaaVQzpKazHq1U
+	sOVJ3/gP1i/mOimYgjbGMqJB6pWCiQkyKxmyB98bChgTXQnW4StIpZ3Mlxp6Hv/Q7MipUZ
+	8xuXSd1oGp8rjcWTT4Nj0FajGz9JkgIri0PP+quO25k8G/bMyJAD0+O4P/fo6w==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-iio@vger.kernel.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v2 1/9] ASoC: dt-bindings: Add audio-iio-aux
+Date: Tue, 23 May 2023 17:12:15 +0200
+Message-Id: <20230523151223.109551-2-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230523151223.109551-1-herve.codina@bootlin.com>
+References: <20230523151223.109551-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: VUE3GI2LLBAIAPDVL6DMERJDWBYBO2JX
-X-Message-ID-Hash: VUE3GI2LLBAIAPDVL6DMERJDWBYBO2JX
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: FG75ZL6G56TTKGVZCERLJCA6WAQOSKGF
+X-Message-ID-Hash: FG75ZL6G56TTKGVZCERLJCA6WAQOSKGF
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VUE3GI2LLBAIAPDVL6DMERJDWBYBO2JX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FG75ZL6G56TTKGVZCERLJCA6WAQOSKGF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,36 +103,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 23 May 2023 12:50:01 +0530, Venkata Prasad Potturu wrote:
-> Add pci revision id check for renoir and rembrandt platforms.
-> 
-> 
+Industrial I/O devices can be present in the audio path.
+These devices needs to be viewed as audio components in order to be
+fully integrated in the audio path.
 
-Applied to
+audio-iio-aux allows to consider these Industrial I/O devices as
+auxliary audio devices.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+---
+ .../bindings/sound/audio-iio-aux.yaml         | 64 +++++++++++++++++++
+ 1 file changed, 64 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/audio-iio-aux.yaml
 
-Thanks!
-
-[1/1] ASoC: SOF: amd: Add pci revision id check
-      commit: 1d4a84632b90d88316986b05bcdfe715399a33db
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/Documentation/devicetree/bindings/sound/audio-iio-aux.yaml b/Documentation/devicetree/bindings/sound/audio-iio-aux.yaml
+new file mode 100644
+index 000000000000..d3cc1ea4a175
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/audio-iio-aux.yaml
+@@ -0,0 +1,64 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/audio-iio-aux.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Audio IIO auxiliary
++
++maintainers:
++  - Herve Codina <herve.codina@bootlin.com>
++
++description:
++  Auxiliary device based on Industrial I/O device channels
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: audio-iio-aux
++
++  io-channels:
++    description:
++      Industrial I/O device channels used
++
++  io-channel-names:
++    description:
++      Industrial I/O channel names related to io-channels.
++      These names are used to provides sound controls, widgets and routes names.
++
++  snd-control-invert-range:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: |
++      A list of 0/1 flags defining whether or not the related channel is
++      inverted
++    items:
++      enum: [0, 1]
++      default: 0
++      description: |
++        Invert the sound control value compared to the IIO channel raw value.
++          - 1: The related sound control value is inverted meaning that the
++               minimum sound control value correspond to the maximum IIO channel
++               raw value and the maximum sound control value correspond to the
++               minimum IIO channel raw value.
++          - 0: The related sound control value is not inverted meaning that the
++               minimum (resp maximum) sound control value correspond to the
++               minimum (resp maximum) IIO channel raw value.
++
++required:
++  - compatible
++  - io-channels
++  - io-channel-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    iio-aux {
++        compatible = "audio-iio-aux";
++        io-channels = <&iio 0>, <&iio 1>, <&iio 2>, <&iio 3>;
++        io-channel-names = "CH0", "CH1", "CH2", "CH3";
++        /* Invert CH1 and CH2 */
++        snd-control-invert-range = <0 1 1 0>;
++    };
+-- 
+2.40.1
 
