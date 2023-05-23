@@ -4,111 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5720C7EE26
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 21:41:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32302C7EE23
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 21:45:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C11D836;
-	Tue, 23 May 2023 23:40:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C11D836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A4A0209;
+	Tue, 23 May 2023 23:44:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A4A0209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684878098;
-	bh=VMXq1YKghvhXQUykCI5CUDnBZnr74qjPhj6vWnSYobw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1684878336;
+	bh=aMl8XSo6MAGNcouj2r0VodRBmRxEH/7FWMSr7kUooIk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A25v8bxNw9jzIdiKHIGh53cBnGn943EmPRaFEL3cTFIQvVyYKEq6qJASY4NrRDDmx
-	 hFpKIAimpb+EdsSbbXRR4Zrt+9LeDJcPrTHYnSem+dzm7kpGujvAWmz0Xr6U8WGfiJ
-	 ZhfCTCsksCqN+kC5gc8iWFGiVylFkA70bDIRou8U=
+	b=BIkPAkjIiCb8dYd5hgb4BridC7lS+6ZfK0jJV5yCHSC16MsjoKXzsbeFMaoxbFkvt
+	 i0bnKjwixG7CDlROoTq4n4YfGQbAD2f7BwS8ZewwX5kzOo3sp80YQTopU9/2Tb/uKJ
+	 U4xys7FnGwAFxqJH/Uq4tFaTJGNbe+NWWpgax+X8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82DD5F805C8; Tue, 23 May 2023 23:39:21 +0200 (CEST)
+	id E867FF80249; Tue, 23 May 2023 23:44:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 184E6F805BD;
-	Tue, 23 May 2023 23:39:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CAB4F800DF;
+	Tue, 23 May 2023 23:44:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14F58F805AA; Tue, 23 May 2023 23:39:16 +0200 (CEST)
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com
- [IPv6:2001:4860:4864:20::2e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C40F6F8026A; Tue, 23 May 2023 23:44:11 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ED10BF80425
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 23:38:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED10BF80425
+	by alsa1.perex.cz (Postfix) with ESMTPS id C2FB9F800DF
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 23:44:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2FB9F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=ikhR7QD/
-Received: by mail-oa1-x2e.google.com with SMTP id
- 586e51a60fabf-19a308a045aso149857fac.0
-        for <alsa-devel@alsa-project.org>;
- Tue, 23 May 2023 14:38:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684877915; x=1687469915;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ix+1iyVwvq5YDYEbZ/aFgQhyfZBXx0DvBnZd+gR5Wcw=;
-        b=ikhR7QD/PWZ9AYHLbDesyyyoL21t6ku6E+41m6IIb3rJAyTZa4y97wt1OdHqmM/ThV
-         dQNCAVfTtqpH/ur0Wb+768h9L/sIAADrlZX3mccXAGngeKayrYtjU9zNcfWOQ6C+Rrah
-         2BQ4Q1uqiJKhlh5ISf7UUQjMpS46akCCq8YUceSJVYEj/GTljoX7zPSE/Ecw85KHwTJX
-         ElFjA9JBheP0pXhfqpRKOro/LgIxsgBYO0Wqq2l2aFP4eT/ukIy0Q/3GYBg4rVWfruF3
-         wFnd6DlYtg0KKBb+J7/iIO3oxGX3S57WsL4Gl4Oz0tWMop4ljmmrYDPZREebi80HEV6Z
-         DPUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684877915; x=1687469915;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ix+1iyVwvq5YDYEbZ/aFgQhyfZBXx0DvBnZd+gR5Wcw=;
-        b=YhU4jQ7B9wJMkXQux8qTRBPjxXk0AhkXRQXue7CrA0CTwzhHF20pJv61ms2UqNVsBy
-         EMlKes+BUa7+PxrQ1CLdd7IWbKuHq3pN530FE78nXD9afWH3ByYfxmYOdlRR2S8zKgkX
-         34y9ibrhkkLAPZbWnU6x5/HqPiYkvbtoQ7VMULYiLq2Sb6kUBIH2LguS7VQ4ZIix4t+w
-         jclPV0U81XdTkKqizQIL6eOqe/ARF4BjHgM3nP1pensRWGWChC/tplBjumLKu1KlzFRZ
-         u1Nw0YoPUDe25AsP0Q0/Hp7t051fhuOXaftVpgNuzpEjVbo3WDQcGnFNt9if4o/W9yCx
-         jITw==
-X-Gm-Message-State: AC+VfDxBxo/p3bl1mKlWr/zd/gtSju13t0zhW2ibwInQ2/YFS04HjGRD
-	BKlfDTl2UYqbzJ/q9WzXIpc=
-X-Google-Smtp-Source: 
- ACHHUZ5MneObFTHYZ+sAb7c/LwLONHBsL0zmQRw5S21Rr5FCtGfmJRScWF1vi/l6oY18WrpSERHDSQ==
-X-Received: by 2002:a05:6808:4293:b0:397:fc20:385 with SMTP id
- dq19-20020a056808429300b00397fc200385mr4226191oib.28.1684877915719;
-        Tue, 23 May 2023 14:38:35 -0700 (PDT)
-Received: from localhost.localdomain ([75.28.21.198])
-        by smtp.gmail.com with ESMTPSA id
- y83-20020acae156000000b0037832f60518sm4442359oig.14.2023.05.23.14.38.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 May 2023 14:38:35 -0700 (PDT)
-From: Chris Morgan <macroalpha82@gmail.com>
-To: linux-rockchip@lists.infradead.org
-Cc: alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	zyw@rock-chips.com,
-	sebastian.reichel@collabora.com,
-	andyshrk@163.com,
-	jagan@amarulasolutions.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	lgirdwood@gmail.com,
-	heiko@sntech.de,
-	conor+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	robh+dt@kernel.org,
-	Chris Morgan <macromorgan@hotmail.com>
-Subject: [PATCH 5/6] dt-bindings: arm: rockchip: Add Indiedroid Nova
-Date: Tue, 23 May 2023 16:38:24 -0500
-Message-Id: <20230523213825.120077-6-macroalpha82@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230523213825.120077-1-macroalpha82@gmail.com>
-References: <20230523213825.120077-1-macroalpha82@gmail.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=tjSA5U+N
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id DCB99625BD;
+	Tue, 23 May 2023 21:44:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D798FC433D2;
+	Tue, 23 May 2023 21:44:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684878245;
+	bh=aMl8XSo6MAGNcouj2r0VodRBmRxEH/7FWMSr7kUooIk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=tjSA5U+NoSiz6ZoJmbQJK45dwGsdDMEhNmzvUZaejH8oRc2vJlqaDRTZUflFch0rd
+	 DnWr9fz+bio2zkQHI3MY1gpw+qbTpkQ2rgcPF5c5F5AfaBBbQiaU0jny6DtFW7Z/KO
+	 nQQvwBCemNOgUPPwpBu6VLMnCTjllEH/TKAhxGbkDSrWfJTFpeu8zuKVEMJg1tcrAo
+	 U9JqoAbRAITAfxrmx7AhMdVY1ocNyav7ZhgVyaSDg8VgIJDQCSWFokDkvahFvNgWdu
+	 U/xYu/ULg5ZsaJQN0i+MuiKcIr9kgucz0bPYjNNxUqzZxs7gpu5eehmGBlrikH/AjJ
+	 q/AfUqIMRvTsw==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz,
+ matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+ Trevor Wu <trevor.wu@mediatek.com>
+Cc: bicycle.tsai@mediatek.com, ting-fang.hou@mediatek.com,
+ alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230508071532.21665-1-trevor.wu@mediatek.com>
+References: <20230508071532.21665-1-trevor.wu@mediatek.com>
+Subject: Re: [PATCH 0/4] ASoC: mt6359: kselftest fix and driver extension
+Message-Id: <168487824257.297010.16948141699377522681.b4-ty@kernel.org>
+Date: Tue, 23 May 2023 22:44:02 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: T4NTRHKYHAOJLBRWEIPYG7P6P2RB4KVH
-X-Message-ID-Hash: T4NTRHKYHAOJLBRWEIPYG7P6P2RB4KVH
-X-MailFrom: macroalpha82@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-bfdf5
+Message-ID-Hash: Z5543WGLFOUMS4BIJYPYAHD6T6KSKS4M
+X-Message-ID-Hash: Z5543WGLFOUMS4BIJYPYAHD6T6KSKS4M
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -120,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T4NTRHKYHAOJLBRWEIPYG7P6P2RB4KVH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z5543WGLFOUMS4BIJYPYAHD6T6KSKS4M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,31 +94,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Chris Morgan <macromorgan@hotmail.com>
+On Mon, 08 May 2023 15:15:28 +0800, Trevor Wu wrote:
+> The patch series includes a kselftest fix and changes for extending
+> driver capability to support more use cases.
+> 
+> Trevor Wu (4):
+>   ASoC: mediatek: mt6359: add supply for MTKAIF
+>   ASoC: mediatek: mt6359: fix kselftest error of playback gain
+>   ASoC: mediatek: mt6359: add mtkaif gpio setting
+>   ASoC: mediatek: mt6359: update route for lineout mux
+> 
+> [...]
 
-Add Indiedroid Nova, an rk3588s based single board computer.
+Applied to
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
----
- Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-index ec141c937b8b..3c5a204bcd81 100644
---- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-+++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-@@ -542,6 +542,11 @@ properties:
-               - khadas,edge-v
-           - const: rockchip,rk3399
- 
-+      - description: Indiedroid Nova SBC
-+        items:
-+          - const: indiedroid,nova
-+          - const: rockchip,rk3588s
-+
-       - description: Khadas Edge2 series boards
-         items:
-           - const: khadas,edge2
--- 
-2.34.1
+Thanks!
+
+[1/4] ASoC: mediatek: mt6359: add supply for MTKAIF
+      commit: 1a3eb4bb9826fd317358113ca048ed60184c6442
+[2/4] ASoC: mediatek: mt6359: fix kselftest error of playback gain
+      commit: acd4d219798769a6c1080bcfa7953e165dd8d681
+[3/4] ASoC: mediatek: mt6359: add mtkaif gpio setting
+      commit: 24f398e74ba0a53bc95421f7eb139f4dc0207bb2
+[4/4] ASoC: mediatek: mt6359: update route for lineout mux
+      commit: 104ce27bcbfb204001a300498aa192235bd0836f
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
