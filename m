@@ -4,74 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B51C5C77B75
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 19:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FC9AC7EE26
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 20:08:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF6FE82A;
-	Tue, 23 May 2023 21:51:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF6FE82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id F02F0200;
+	Tue, 23 May 2023 22:07:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F02F0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684871551;
-	bh=9+/3lsALs3L56R8aQKa8M9JamjNMX8YuPwChz3lxgVg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1684872488;
+	bh=K3UiwY24tEVNWGgDQxMgRG+jerONTyHwOvrNvJEOkRQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VauPzuHcrZUjP0cjlkCphTeK3hjT3ZJP/Lp3T5BzIYZnJYSKVTjiBUa4dtGoisxMD
-	 v0qDMS/HeKV5ZFLBh5WH2TBm0S2yNjVMtdzlUEOwlLE3Dp0hq2K/Yc6I0bDjHJLzBp
-	 TrKTtyN8XRPofhgtyVm9HF7P+AJquW1Oh3h/6BXw=
+	b=uBbpjs2KdpH7a/z0iNBmmy0I6M0c99HLcONYjvwi30HGBleln0gTjVeH8//HHwO4X
+	 VmXb+F6uSl5WLqcRJJvZ1xQxgTJNSYQqSlhzQnAoy2yAFz/to0uXJnDNbo46la67XX
+	 KurGWiv23xeiwkp8gLlNuUBm1PvK+TfwlaagN+SA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D22DF805AD; Tue, 23 May 2023 21:50:34 +0200 (CEST)
+	id 15DC6F80557; Tue, 23 May 2023 22:07:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EC9FF805AD;
-	Tue, 23 May 2023 21:50:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD266F80549;
+	Tue, 23 May 2023 22:07:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB72EF8057B; Tue, 23 May 2023 21:50:28 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id D9427F80542; Tue, 23 May 2023 22:07:13 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 77F9FF80567
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 21:50:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77F9FF80567
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=AsqHbrWI
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 6832A6260D;
-	Tue, 23 May 2023 19:50:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A673C433EF;
-	Tue, 23 May 2023 19:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684871423;
-	bh=9+/3lsALs3L56R8aQKa8M9JamjNMX8YuPwChz3lxgVg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=AsqHbrWIXVmYWQmAZYHAaXyp13srB2hfS/m7CCzj8aZltN835xVx5diDSvA+R0++D
-	 ninmiPO9GrmjP0HW1hz2/nHr+yGXzX2NbeAX6VG2J7bztS4JHgaOe+M89zSS8P4N6F
-	 Ao2tIMcuziGYJ2CxwJIw+SNK9Pg3yzS4ELUSkZE0NUD+a1E3pXI1NNfm3hwjZ3Jl9C
-	 pJd9YiWHP1GjkpWPu1AqPCDqIBGb5efzmND/GC8ZsnbscZhVMOd8KY52fuZ/yq6h8H
-	 DiPCtbEWfyAVsD6cJoC6WvImsgz2bXt0Eu4iBfroffahPGQm/BVWdUZUfo9Ol9/seW
-	 EoH/GvPXE3vYQ==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- rander.wang@intel.com
-In-Reply-To: <20230523103217.20412-1-peter.ujfalusi@linux.intel.com>
-References: <20230523103217.20412-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: SOF: Intel: mtl: Enable multicore support
-Message-Id: <168487142215.278276.6191766858062306959.b4-ty@kernel.org>
-Date: Tue, 23 May 2023 20:50:22 +0100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 15C40F80249
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 22:07:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15C40F80249
+Received: from ugly.fritz.box (localhost [127.0.0.1])
+	by bluemchen.kde.org (Postfix) with ESMTP id 0E33A24152;
+	Tue, 23 May 2023 16:07:10 -0400 (EDT)
+Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
+	id 1q1YHl-zP7-00; Tue, 23 May 2023 22:07:09 +0200
+From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH 1/3] ALSA: emu10k1: don't limit multi-channel playback to two
+ periods
+Date: Tue, 23 May 2023 22:07:07 +0200
+Message-Id: <20230523200709.236023-2-oswald.buddenhagen@gmx.de>
+X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <20230523200709.236023-1-oswald.buddenhagen@gmx.de>
+References: <20230523200709.236023-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: GCI5RBPQ5QKHRQ4XJS7DQNDERMCXFK4F
-X-Message-ID-Hash: GCI5RBPQ5QKHRQ4XJS7DQNDERMCXFK4F
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: HKUE7PUVMVPOIRNGSMFZ6LEBZMDISLC7
+X-Message-ID-Hash: HKUE7PUVMVPOIRNGSMFZ6LEBZMDISLC7
+X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +67,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GCI5RBPQ5QKHRQ4XJS7DQNDERMCXFK4F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HKUE7PUVMVPOIRNGSMFZ6LEBZMDISLC7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,44 +76,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 23 May 2023 13:32:14 +0300, Peter Ujfalusi wrote:
-> The following series will enable multicore support on MTL platforms similarly
-> to other Intel platforms.
-> 
-> The TGL patch is included to simplify the core_put implementation.
-> 
-> Multicore support can be enabled by updated topologies, with current set of
-> tplg files this series is not introducing any runtime change.
-> 
-> [...]
+For unclear reasons, the extra voice was set up with half the buffer
+size instead of the period size. Commit 27ae958cf6 ("emu10k1 driver -
+add multichannel device hw:x,3 [2-8/8]") mentions half-loop interrupts,
+so maybe this was an artifact of an earlier iteration of the patch.
 
-Applied to
+While at it, also fix periods_min of the regular playback - one period
+makes just no sense.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+---
+ sound/pci/emu10k1/emupcm.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Thanks!
-
-[2/3] ASoC: SOF: Intel: mtl: add core_get & put support on MeterLake platforms
-      commit: c6d15567a4d5dd51ecccc332d514c6dc21bce652
-[3/3] ASoC: SOF: Intel: tgl: unify core_put on IPC3 & IPC4 path
-      commit: 1b167ba8a20152041d3af0c0cbbfd710f1e93e4b
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index 0572dfb80943..2764e7867b33 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -429,15 +429,16 @@ static int snd_emu10k1_efx_playback_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_emu10k1_pcm *epcm = runtime->private_data;
+ 	unsigned int start_addr;
+-	unsigned int channel_size;
++	unsigned int extra_size, channel_size;
+ 	int i;
+ 
+ 	start_addr = epcm->start_addr >> 1;  // 16-bit voices
+ 
++	extra_size = runtime->period_size;
+ 	channel_size = runtime->buffer_size;
+ 
+ 	snd_emu10k1_pcm_init_extra_voice(emu, epcm->extra, true,
+-					 start_addr, start_addr + (channel_size / 2));
++					 start_addr, start_addr + extra_size);
+ 
+ 	epcm->ccca_start_addr = start_addr;
+ 	for (i = 0; i < NUM_EFX_PLAYBACK; i++) {
+@@ -465,7 +466,7 @@ static const struct snd_pcm_hardware snd_emu10k1_efx_playback =
+ 	.buffer_bytes_max =	(128*1024),
+ 	.period_bytes_max =	(128*1024),
+ 	.periods_min =		2,
+-	.periods_max =		2,
++	.periods_max =		1024,
+ 	.fifo_size =		0,
+ };
+ 
+@@ -925,7 +926,7 @@ static const struct snd_pcm_hardware snd_emu10k1_playback =
+ 	.channels_max =		2,
+ 	.buffer_bytes_max =	(128*1024),
+ 	.period_bytes_max =	(128*1024),
+-	.periods_min =		1,
++	.periods_min =		2,
+ 	.periods_max =		1024,
+ 	.fifo_size =		0,
+ };
+-- 
+2.40.0.152.g15d061e6df
 
