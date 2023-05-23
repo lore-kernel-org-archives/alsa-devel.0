@@ -4,92 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4547C77B75
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 18:27:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3B98C7EE26
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 18:27:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A97EA84A;
-	Tue, 23 May 2023 20:26:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A97EA84A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEB8C826;
+	Tue, 23 May 2023 20:26:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEB8C826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684866454;
-	bh=ix13VAl7dfaEjHEjOpNS6mBHoH/Qpd2+FxMGVb01JO4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1684866462;
+	bh=84usJSpGpBI3Z1x+GJuKV/qWu0n30FukNBqyQZYcTnM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OXMWnHC4yVJ5vqHknYAf+vlXl4y7oHwI/fdPvxL+on3BlKI40eyzBgWwRVEDdD3HL
-	 px6DfFRaYf2Gm+LGCkWNYJKrzinBipY1LSomU7kQ/rbuSurK0LK/YxtSwiHOtTdhxW
-	 lc+UVy4TCLJC9jUZbgueqPeOZP2tKzNIN2QqydFI=
+	b=pLRcgbEryJBWRJaKUOE7uxHyuHgBQ3Swvw2bJfojMgwaYULWrejM5nkAYjMh3FIuH
+	 DbXbTxT6XK3GUYNMmUAkIEOl3QboODefvIO3NBkgwYFODpDBGDs863ORTM/Z4pkdu0
+	 APWq87NEPorwH2gmlBSIORWZms3FHoiY93u7X2ec=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94F44F8058C; Tue, 23 May 2023 20:25:12 +0200 (CEST)
+	id EBBA6F805AD; Tue, 23 May 2023 20:26:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23A23F805AD;
-	Tue, 23 May 2023 20:25:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 974D3F80542;
+	Tue, 23 May 2023 20:26:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73ECDF80567; Tue, 23 May 2023 20:25:06 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 8A74AF80542; Tue, 23 May 2023 20:26:02 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3AB76F8026A
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 20:24:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AB76F8026A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 66083F8024E
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 20:25:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66083F8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=TXAAWCJ/
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1684866297; x=1716402297;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ix13VAl7dfaEjHEjOpNS6mBHoH/Qpd2+FxMGVb01JO4=;
-  b=TXAAWCJ/+3F3KQjxmshNc7vIuIe+OQFV3giSvygWuf6RRMWCy03QHdp5
-   +1zACqqdgmuTuVCWDGWckZpen4JfIusiFQI+wK2EubhSFFJC4cKL/LUd4
-   p67Uk1e4ppZW5L10sB0qdKK5l7MLdck3fbuhoYqgbiMb/jlayI6pZ12Z8
-   1H8qzN7hU10HtQH/cpLLM9X3Rv4IilnRZZlizgg4DiAGz6RTNRmOPfxyU
-   QlzEhCRBuhTmwPN0VnFQVLm4iDlZIN387JqXqQ8YyMGA7/HjtepB+1aSG
-   YM7hNzG5YmWH/Re7STMCrRsDMEbZz2OhHAvm/dDTtfU9P0F9E49XS+dEH
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10719"; a="342786242"
-X-IronPort-AV: E=Sophos;i="6.00,187,1681196400";
-   d="scan'208";a="342786242"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 May 2023 11:24:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10719"; a="736974294"
-X-IronPort-AV: E=Sophos;i="6.00,187,1681196400";
-   d="scan'208";a="736974294"
-Received: from srusakov-mobl.amr.corp.intel.com (HELO [10.209.35.87])
- ([10.209.35.87])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 May 2023 11:24:36 -0700
-Message-ID: <904f47b6-46f4-039c-2019-4ee60ac6d9da@linux.intel.com>
-Date: Tue, 23 May 2023 09:48:03 -0500
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=e0rcMVWw
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id DC3EA61172;
+	Tue, 23 May 2023 18:25:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65FA3C4339B;
+	Tue, 23 May 2023 18:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684866356;
+	bh=84usJSpGpBI3Z1x+GJuKV/qWu0n30FukNBqyQZYcTnM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e0rcMVWwbJRUDv3Um5Xnvj3WqCjt+Mr9kgb1/f+nNfZTjEeKRbKoj4GIoGWTlf8H5
+	 JuAAp+iIaQ0kmMaWbvhMVI5c1hcAH7u0HJXQl9iU/8rSA69avpEnUEThrJZ1jRQAlq
+	 reJMs03Xg0tBpZMYRB/66Ds2w88vFKinR1Lvp75moTFXIIc90XNwQpGU8FIjV04Fw8
+	 p2HjbbVaqQJ8rr5P9C/M6otjPhuHbUStXJjwonISLMamsAZMY4bhevw6Pczvzrj1Vh
+	 SZfVgi+t0nCIpiI4gGdyrm8W5hvgggGndQFAC+y2MEqoGPUKAshp8q9gXd7SOExFLn
+	 HV8weKmzxe3SA==
+Date: Tue, 23 May 2023 19:25:51 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Maxim Kochetkov <fido_max@inbox.ru>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] ASoC: dwc: move DMA init to snd_soc_dai_driver
+ probe()
+Message-ID: <bff15efe-2234-40dd-ba48-622148f8f869@sirena.org.uk>
+References: <20230512110343.66664-1-fido_max@inbox.ru>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [PATCH V2 3/9] ASoC: amd: ps: add SoundWire dma driver
-Content-Language: en-US
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com, Mastan.Katragadda@amd.com,
- Arungopal.kondaveeti@amd.com, mario.limonciello@amd.com,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
- open list <linux-kernel@vger.kernel.org>
-References: <20230522133122.166841-1-Vijendar.Mukunda@amd.com>
- <20230522133122.166841-4-Vijendar.Mukunda@amd.com>
- <0bf45d6e-72bc-d31a-fec5-b52859b8dcae@linux.intel.com>
- <129df804-a05e-47a6-cfa3-cc36282955d1@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <129df804-a05e-47a6-cfa3-cc36282955d1@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: NOO4JTGQQPBB43GKK2F7YNC6ARBDFETX
-X-Message-ID-Hash: NOO4JTGQQPBB43GKK2F7YNC6ARBDFETX
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="/wIEsaftd97g4Bi6"
+Content-Disposition: inline
+In-Reply-To: <20230512110343.66664-1-fido_max@inbox.ru>
+X-Cookie: Beware of low-flying butterflies.
+Message-ID-Hash: MQNFQBC46YSBIYPXWEKAFSKUDN75C3MD
+X-Message-ID-Hash: MQNFQBC46YSBIYPXWEKAFSKUDN75C3MD
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NOO4JTGQQPBB43GKK2F7YNC6ARBDFETX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MQNFQBC46YSBIYPXWEKAFSKUDN75C3MD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,123 +98,35 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
+--/wIEsaftd97g4Bi6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Fri, May 12, 2023 at 02:03:42PM +0300, Maxim Kochetkov wrote:
+> When using DMA mode we are facing with Oops:
+> [  396.458157] Unable to handle kernel access to user memory without uaccess routines at virtual address 000000000000000c
+> [  396.469374] Oops [#1]
 
->>> +struct sdw_dma_dev_data {
->>> +	void __iomem *acp_base;
->>> +	struct mutex *acp_lock; /* used to protect acp common register access */
->>> +};
->>> +
->>>  /**
->>>   * struct acp63_dev_data - acp pci driver context
->>>   * @acp63_base: acp mmio base
->>> diff --git a/sound/soc/amd/ps/ps-sdw-dma.c b/sound/soc/amd/ps/ps-sdw-dma.c
->>> new file mode 100644
->>> index 000000000000..f41849fd035c
->>> --- /dev/null
->>> +++ b/sound/soc/amd/ps/ps-sdw-dma.c
->>> @@ -0,0 +1,70 @@
->>> +// SPDX-License-Identifier: GPL-2.0+
->>> +/*
->>> + * AMD ALSA SoC Pink Sardine SoundWire DMA Driver
->>> + *
->>> + * Copyright 2023 Advanced Micro Devices, Inc.
->>> + */
->>> +
->>> +#include <linux/err.h>
->>> +#include <linux/io.h>
->>> +#include <linux/module.h>
->>> +#include <linux/platform_device.h>
->>> +#include <sound/pcm_params.h>
->>> +#include <sound/soc.h>
->>> +#include <sound/soc-dai.h>
->>> +#include "acp63.h"
->>> +
->>> +#define DRV_NAME "amd_ps_sdw_dma"
->>> +
->>> +static const struct snd_soc_component_driver acp63_sdw_component = {
->>> +	.name		= DRV_NAME,
->>> +};
->>> +
->>> +static int acp63_sdw_platform_probe(struct platform_device *pdev)
->>> +{
->>> +	struct resource *res;
->>> +	struct sdw_dma_dev_data *sdw_data;
->>> +	int status;
->>> +
->>> +	if (!pdev->dev.platform_data) {
->>> +		dev_err(&pdev->dev, "platform_data not retrieved\n");
->>> +		return -ENODEV;
->>> +	}
->>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>> +	if (!res) {
->>> +		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
->>> +		return -ENODEV;
->>> +	}
->>> +
->>> +	sdw_data = devm_kzalloc(&pdev->dev, sizeof(*sdw_data), GFP_KERNEL);
->>> +	if (!sdw_data)
->>> +		return -ENOMEM;
->>> +
->>> +	sdw_data->acp_base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
->>> +	if (!sdw_data->acp_base)
->>> +		return -ENOMEM;
->>> +
->>> +	sdw_data->acp_lock = pdev->dev.platform_data;
->> so you are sharing the same lock between parent and child platform device?
-> Initially, we thought of sharing the same lock between parent and child
-> platform devices. Later we have observed, mutex hang issues observed.
+Please think hard before including complete backtraces in upstream
+reports, they are very large and contain almost no useful information
+relative to their size so often obscure the relevant content in your
+message. If part of the backtrace is usefully illustrative (it often is
+for search engines if nothing else) then it's usually better to pull out
+the relevant sections.
 
-If the goal is a global lock, then the platform data should contain a
-pointer to the lock. We used this for Intel, see .e.g. the shim_mask in
-drivers/soundwire/intel_init.c, where the same pointer is used by all
-children.
+--/wIEsaftd97g4Bi6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> We have avoided critical section code and removed acp_lock from
-> ACP SoundWire DMA driver while accessing ACP common registers.
-> We will remove mutex lock from ACP SoundWire DMA driver code.
->> Does this work? IIRC the platform_data is copied, you do not point
->> directly to the initial data provided by the parent. We had issues with
->> SoundWire when we used platform devices, with the 'wrong' pointer used.
-> Till now, we haven't observed mutex hang issues due to
-> ACP PDM driver mutex lock changes.
-> Agreed. We will remove the mutex code from ACP PDM driver as
-> well and we will refactor code.
-> In SoundWire manager driver, we are sharing the same copy for two
-> manager instances. We haven't observed any issue.
+-----BEGIN PGP SIGNATURE-----
 
-What's the benefit of passing this lock as platform_data, if the goal is
-to perform mutual exclusion between the two manager instances? Why not
-just create the lock as part of the SoundWire probe?
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRtBS4ACgkQJNaLcl1U
+h9BV2Af/YCikO3HWyyALlDKIAdamItXVN5sLIyRESGSHgnY0mJDLx1esF6J8kwqt
+cgTLZ8amlgBl5WZ9u2LDNU+b5ppISah4xbhyS8IoOYAFIJVEngfxM/VHDNQGAyL7
+2dYWg5D45U1Lb55YAUeEWfmLrXX0nI7piQZv1aeZAdvy81ZBaBk0bF/IgPNWr0uz
+sKa+6a3+mRPNjU5JDMlAndudNiA8J72a7yXFO3aiLvJoWhU6EIRderm5Em/R8cmi
+ChAqNaMW4B3w994TlP5nzcwvrwGxDdW7bs26xpIVCzC1yAT4yrGIrrSx/dN8+KCX
+Lx37403VVBojsk4HIhCgyaKDMM9YzQ==
+=mo+1
+-----END PGP SIGNATURE-----
 
-If there was no need for a lock, then please remove it :-)
-
-If it's needed, please describe what it protects, which agents rely on
-it and how the lock is shared.
-
->>
->> The documentation does make mention of a copy....
->>
->> /**
->>  * platform_device_add_data - add platform-specific data to a platform
->> device
->>  * @pdev: platform device allocated by platform_device_alloc to add
->> resources to
->>  * @data: platform specific data for this platform device
->>  * @size: size of platform specific data
->>  *
->>  * Add a copy of platform specific data to the platform device's
->>  * platform_data pointer.  The memory associated with the platform data
->>  * will be freed when the platform device is released.
->>  */
->>> +	dev_set_drvdata(&pdev->dev, sdw_data);
->>> +	status = devm_snd_soc_register_component(&pdev->dev,
->>> +						 &acp63_sdw_component,
->>> +						 NULL, 0);
->>> +	if (status)
->>> +		dev_err(&pdev->dev, "Fail to register sdw dma component\n");
->>> +
->>> +	return status;
->>> +}
-
+--/wIEsaftd97g4Bi6--
