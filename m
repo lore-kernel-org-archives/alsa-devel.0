@@ -4,54 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74C95C7EE26
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 20:10:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39B01C7EE23
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 20:41:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A163847;
-	Tue, 23 May 2023 22:09:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A163847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F701207;
+	Tue, 23 May 2023 22:40:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F701207
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684872642;
-	bh=LSeTmt4D4HxqY7on+/B2lGzsdaKF6ymdlrTaLv1WD6k=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=gwIuTCEMaBhy/HTMLiBrMMCRIEdPlu4c3ef0T1xa2VPXSO1a+xOCkM5NpZXwMPLlf
-	 OBH3d+FG1zkHhrbfrvZF2KKCKRICG6r7LfgGqlDGkKcBCwgwRPVLVh4I+Bx++obEf7
-	 /7+uFeC6BdXJWM28tD0jKWgyVR8KE8giW6HUkI60=
+	s=default; t=1684874463;
+	bh=2PLqWR+i15J+SV534O/7WQhY4Oxjwkyn8L/Dppp68zc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=KAndJUazA71yQX3z65HXy3IlvJXTgMBqP7Z6IbHIi5bLBkOa3Y6jzglLCQgrC5HpG
+	 8k/QliCSaHBXwWifggl7hFs/fpaDYBYqFHC1xyjh+rovDHnedWH/yH17gCmWWCy7Q3
+	 kWKbCjVb8uU0lec4iAY4y+T1ObKPe0ZYmM6TGZ6Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35A55F805E1; Tue, 23 May 2023 22:07:44 +0200 (CEST)
+	id A7490F80548; Tue, 23 May 2023 22:39:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61B2EF805C8;
-	Tue, 23 May 2023 22:07:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D2BBF8024E;
+	Tue, 23 May 2023 22:39:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D936EF805B4; Tue, 23 May 2023 22:07:36 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id 5B827F8024E; Tue, 23 May 2023 22:39:38 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A6E24F80425
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 22:07:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6E24F80425
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 3E20F241F5;
-	Tue, 23 May 2023 16:07:10 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1q1YHl-zPc-00; Tue, 23 May 2023 22:07:09 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 0/4] ALSA: emu10k1: capture-related improvements
-Date: Tue, 23 May 2023 22:07:05 +0200
-Message-Id: <20230523200709.236059-1-oswald.buddenhagen@gmx.de>
-X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5DF38F800DF
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 22:39:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DF38F800DF
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=SST6f6Ct
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3621561CD9;
+	Tue, 23 May 2023 20:39:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61ECCC4339C;
+	Tue, 23 May 2023 20:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1684874367;
+	bh=2PLqWR+i15J+SV534O/7WQhY4Oxjwkyn8L/Dppp68zc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=SST6f6Cta/7ajLms92C3ZvmWJnOkt2aYPPMhshGPYM8CoEtjsDFeRlNAX6243gW0L
+	 IHA64M0/oXPGYlp5JifRs0InO/RAOqAuQw9eLaWkGRCzB1mf5QL1J8I6Rp4QUcwulS
+	 qYcpm62yJCMS5Ylzl0z6Uum026RMSIwbWgQKK3f+9HGwtXP4oSh8dgkN/FvWBz6IMC
+	 g4WNTcf5Miw/w83klKCbS8JMbu/FqvhyoNEepejm65jMsO7YItISUWDQWwnlDX/GUL
+	 LfwDn/Xt/O/K4QNJUvaSeqX37BWdkJfewte+0IpY/AJXRFI9TgtJ3G1EEYxUwpgKb/
+	 DotQ5K7EOeI/w==
+From: Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com
+In-Reply-To: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
+References: <20230414152552.574502-1-sbinding@opensource.cirrus.com>
+Subject: Re: (subset) [PATCH v1 0/4] Fixes and cleanup for CS35L41 HDA
+Message-Id: <168487436612.287432.3938851801782775444.b4-ty@kernel.org>
+Date: Tue, 23 May 2023 21:39:26 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6HLJ6QXNV5GSC55EZAGJSGYGTM3JNMFA
-X-Message-ID-Hash: 6HLJ6QXNV5GSC55EZAGJSGYGTM3JNMFA
-X-MailFrom: ossi@kde.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-bfdf5
+Message-ID-Hash: 2YSCYVDB7IE7IUFK6IJWEFSNARY3EGEM
+X-Message-ID-Hash: 2YSCYVDB7IE7IUFK6IJWEFSNARY3EGEM
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -63,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6HLJ6QXNV5GSC55EZAGJSGYGTM3JNMFA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2YSCYVDB7IE7IUFK6IJWEFSNARY3EGEM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -72,16 +93,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Fri, 14 Apr 2023 16:25:48 +0100, Stefan Binding wrote:
+> Several minor issues were found during additional testing and
+> static analysis. These patches fix these minor issues.
+> 
+> Stefan Binding (4):
+>   ALSA: hda: cs35l41: Clean up Firmware Load Controls
+>   ALSA: hda: cs35l41: Fix endian conversions
+>   ALSA: cs35l41: Fix default regmap values for some registers
+>   ALSA: hda/realtek: Delete cs35l41 component master during free
+> 
+> [...]
 
-Oswald Buddenhagen (4):
-  ALSA: emu10k1: fix capture buffer size confusion
-  ALSA: emu10k1: fix support for 24 kHz capture
-  ALSA: emu10k1: don't restrict capture channel count to powers of two
-  ALSA: emu10k1: fix multi-channel capture config for E-MU cards
+Applied to
 
- sound/pci/emu10k1/emupcm.c | 122 +++++++++++++++++++------------------
- 1 file changed, 62 insertions(+), 60 deletions(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
--- 
-2.40.0.152.g15d061e6df
+Thanks!
+
+[3/4] ALSA: cs35l41: Fix default regmap values for some registers
+      commit: e2d035f5a7d597bbabc268e236ec6c0408c4af0e
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
