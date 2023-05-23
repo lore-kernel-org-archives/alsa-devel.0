@@ -4,97 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDFD5C7EE23
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 07:59:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3873C7EE26
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 07:59:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83AAEA4D;
-	Tue, 23 May 2023 09:58:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83AAEA4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EF95825;
+	Tue, 23 May 2023 09:58:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EF95825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684828747;
-	bh=HycIzlhBmKg2OrIiBtsrD93dBY3/VKEMnjylPoxL0DQ=;
+	s=default; t=1684828777;
+	bh=Q7XChJ81USTG6I1MONPEPJD6E97CLOOIs2e4XH0YjnA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WBlekubUPXovYCZkMAhhIVdjRY849TpeAkJWgsRF43whYAgr77FtsEzdOc6m727Nd
-	 EviGANQwpYxWXRTZDtkIZgKPT/5zZUrI3XWrDJdth2DROdmlW5jHlzplB4x6WnBPo8
-	 o2Bmv/QhS78LH+mttNYs/DLQp0pjk5kR88g7E2QI=
+	b=aZ4+CDwvhsFjxJ20h9WhVEh33Avv9Chd53WA0aLw3Tz2zj7ntGG7EROIp8pvtonj8
+	 0NONyCc8Agc1MpFQ8PsEyu/xA4F+20tyilVdjxEmCbj3xoVMZ0CUOgSr9JVWQytIbZ
+	 8++iNF0in6KacFgWFtYvTGnCUPmPOQdxhBbw+ut8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17064F8063A; Tue, 23 May 2023 09:55:08 +0200 (CEST)
+	id C8908F80642; Tue, 23 May 2023 09:55:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6A8DF80636;
-	Tue, 23 May 2023 09:55:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B75FF8063D;
+	Tue, 23 May 2023 09:55:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4A886F80624; Tue, 23 May 2023 09:54:59 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 1FD72F80624; Tue, 23 May 2023 09:55:00 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E1C16F8055B
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 09:54:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1C16F8055B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8B699F8055C
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 09:54:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B699F8055C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=XH6OPh1/;
+ header.s=susede2_rsa header.b=z3Y44aRl;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=hqpuVHha
+ header.s=susede2_ed25519 header.b=21+OBiQx
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BD4132040E;
-	Tue, 23 May 2023 07:54:07 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 39B9D2040F;
+	Tue, 23 May 2023 07:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684828447;
+	t=1684828448;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3QYHzLsbn2lpr2akas3+UD3Ro0HbP/pTE0k8rJDQSZY=;
-	b=XH6OPh1/8l601VL4QEe9KcM0UukyxU8GDgO8ThQPl9l/VilscRZCNqZtCl5sZVSV9yvpev
-	lFGBxz9QlfOLqCGN2SEYRSWSI/w5Bry1lyJQBm7TAoZDC0queV2v7mna8MzEOk/SB04Vw5
-	idfb09diPpFISDmZNjhoD6w1EMv+QgE=
+	bh=y2o6vAzyvCPRZAh3qVpJkQiDsJRDhW9KZ1VjQNePS50=;
+	b=z3Y44aRlV4mYA4B7ea1B/gUOtaUvgKz7qtVU4lAp3KohD1iA1jBhm9xsrWolAX2xjX/pTc
+	kDvn69jdbchOjqEFrHAXvBTYWU+Q+UOtbHiPWAr+2tjxs6x0tKgeQkAXu1RjkK73MFCKJO
+	TZjpcZoW5L+oILANixNkv6IdnJ3MIYQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684828447;
+	s=susede2_ed25519; t=1684828448;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3QYHzLsbn2lpr2akas3+UD3Ro0HbP/pTE0k8rJDQSZY=;
-	b=hqpuVHhamcbJEVopAg9z6Ffv5KticZFXHt8jsEawbZd9xTx2G4BPAAH33fQONl3T/1fBzI
-	krjrybFsK5rWe2AQ==
+	bh=y2o6vAzyvCPRZAh3qVpJkQiDsJRDhW9KZ1VjQNePS50=;
+	b=21+OBiQxTDs5Qa3HfTXcDDS8/Il/54WP7Gav2H8dItEnAv4/bMOJlSe/te9NxwOYz70ZMZ
+	JlFuQtVvXRj3aLDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 66D0013588;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 03AD913588;
 	Tue, 23 May 2023 07:54:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id aAlBFh9xbGT4KgAAMHmgww
+	id AJQmOx9xbGT4KgAAMHmgww
 	(envelope-from <tiwai@suse.de>); Tue, 23 May 2023 07:54:07 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH v2 16/37] ALSA: usb-audio: Inform inconsistent protocols in
- GTBs
-Date: Tue, 23 May 2023 09:53:37 +0200
-Message-Id: <20230523075358.9672-17-tiwai@suse.de>
+Subject: [PATCH v2 18/37] ALSA: seq: Add snd_seq_expand_var_event_at() helper
+Date: Tue, 23 May 2023 09:53:39 +0200
+Message-Id: <20230523075358.9672-19-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230523075358.9672-1-tiwai@suse.de>
 References: <20230523075358.9672-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HMOSEXJD626OOCMPT5EIHGORRG4AHFV2
-X-Message-ID-Hash: HMOSEXJD626OOCMPT5EIHGORRG4AHFV2
+Message-ID-Hash: K4OWB37FNPKRUWG6BJO5DWSB3BPT5N4Y
+X-Message-ID-Hash: K4OWB37FNPKRUWG6BJO5DWSB3BPT5N4Y
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HMOSEXJD626OOCMPT5EIHGORRG4AHFV2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K4OWB37FNPKRUWG6BJO5DWSB3BPT5N4Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,74 +114,180 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When parsing Group Terminal Blocks, we overwrote the preferred
-protocol and the protocol capabilities silently from the last parsed
-GTB.  This patch adds the information print indicating the unexpected
-overrides instead of silent action.
+Create a new variant of snd_seq_expand_var_event() for expanding the
+data starting from the given byte offset.  It'll be used by the new
+UMP sequencer code later.
 
 Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/midi2.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+ include/sound/seq_kernel.h  |  2 +
+ sound/core/seq/seq_memory.c | 86 +++++++++++++++++++++++++++++--------
+ 2 files changed, 69 insertions(+), 19 deletions(-)
 
-diff --git a/sound/usb/midi2.c b/sound/usb/midi2.c
-index f3fba8b07cb3..341783418a6a 100644
---- a/sound/usb/midi2.c
-+++ b/sound/usb/midi2.c
-@@ -581,6 +581,7 @@ static int parse_group_terminal_block(struct snd_usb_midi2_ump *rmidi,
- 				      const struct usb_ms20_gr_trm_block_descriptor *desc)
+diff --git a/include/sound/seq_kernel.h b/include/sound/seq_kernel.h
+index 658911926f3a..527e7f8ad661 100644
+--- a/include/sound/seq_kernel.h
++++ b/include/sound/seq_kernel.h
+@@ -70,6 +70,8 @@ int snd_seq_kernel_client_ctl(int client, unsigned int cmd, void *arg);
+ typedef int (*snd_seq_dump_func_t)(void *ptr, void *buf, int count);
+ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char *buf,
+ 			     int in_kernel, int size_aligned);
++int snd_seq_expand_var_event_at(const struct snd_seq_event *event, int count,
++				char *buf, int offset);
+ int snd_seq_dump_var_event(const struct snd_seq_event *event,
+ 			   snd_seq_dump_func_t func, void *private_data);
+ 
+diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
+index c8d26bce69ff..a8d2db439f86 100644
+--- a/sound/core/seq/seq_memory.c
++++ b/sound/core/seq/seq_memory.c
+@@ -63,8 +63,9 @@ static int get_var_len(const struct snd_seq_event *event)
+ 	return event->data.ext.len & ~SNDRV_SEQ_EXT_MASK;
+ }
+ 
+-int snd_seq_dump_var_event(const struct snd_seq_event *event,
+-			   snd_seq_dump_func_t func, void *private_data)
++static int dump_var_event(const struct snd_seq_event *event,
++			  snd_seq_dump_func_t func, void *private_data,
++			  int offset, int maxlen)
  {
- 	struct snd_ump_endpoint *ump = rmidi->ump;
-+	unsigned int protocol, protocol_caps;
- 
- 	/* set default protocol */
- 	switch (desc->bMIDIProtocol) {
-@@ -588,24 +589,40 @@ static int parse_group_terminal_block(struct snd_usb_midi2_ump *rmidi,
- 	case USB_MS_MIDI_PROTO_1_0_64_JRTS:
- 	case USB_MS_MIDI_PROTO_1_0_128:
- 	case USB_MS_MIDI_PROTO_1_0_128_JRTS:
--		ump->info.protocol = SNDRV_UMP_EP_INFO_PROTO_MIDI1;
-+		protocol = SNDRV_UMP_EP_INFO_PROTO_MIDI1;
- 		break;
- 	case USB_MS_MIDI_PROTO_2_0:
- 	case USB_MS_MIDI_PROTO_2_0_JRTS:
--		ump->info.protocol = SNDRV_UMP_EP_INFO_PROTO_MIDI2;
-+		protocol = SNDRV_UMP_EP_INFO_PROTO_MIDI2;
- 		break;
-+	default:
+ 	int len, err;
+ 	struct snd_seq_event_cell *cell;
+@@ -72,10 +73,16 @@ int snd_seq_dump_var_event(const struct snd_seq_event *event,
+ 	len = get_var_len(event);
+ 	if (len <= 0)
+ 		return len;
++	if (len <= offset)
 +		return 0;
- 	}
++	if (maxlen && len > offset + maxlen)
++		len = offset + maxlen;
  
--	ump->info.protocol_caps = ump->info.protocol;
-+	if (ump->info.protocol && ump->info.protocol != protocol)
-+		usb_audio_info(rmidi->umidi->chip,
-+			       "Overriding preferred MIDI protocol in GTB %d: %x -> %x\n",
-+			       rmidi->usb_block_id, ump->info.protocol,
-+			       protocol);
-+	ump->info.protocol = protocol;
-+
-+	protocol_caps = protocol;
- 	switch (desc->bMIDIProtocol) {
- 	case USB_MS_MIDI_PROTO_1_0_64_JRTS:
- 	case USB_MS_MIDI_PROTO_1_0_128_JRTS:
- 	case USB_MS_MIDI_PROTO_2_0_JRTS:
--		ump->info.protocol_caps |= SNDRV_UMP_EP_INFO_PROTO_JRTS_TX |
-+		protocol_caps |= SNDRV_UMP_EP_INFO_PROTO_JRTS_TX |
- 			SNDRV_UMP_EP_INFO_PROTO_JRTS_RX;
- 		break;
+ 	if (event->data.ext.len & SNDRV_SEQ_EXT_USRPTR) {
+ 		char buf[32];
+ 		char __user *curptr = (char __force __user *)event->data.ext.ptr;
++		curptr += offset;
++		len -= offset;
+ 		while (len > 0) {
+ 			int size = sizeof(buf);
+ 			if (len < size)
+@@ -91,20 +98,35 @@ int snd_seq_dump_var_event(const struct snd_seq_event *event,
+ 		return 0;
  	}
+ 	if (!(event->data.ext.len & SNDRV_SEQ_EXT_CHAINED))
+-		return func(private_data, event->data.ext.ptr, len);
++		return func(private_data, event->data.ext.ptr + offset,
++			    len - offset);
  
-+	if (ump->info.protocol_caps && ump->info.protocol_caps != protocol_caps)
-+		usb_audio_info(rmidi->umidi->chip,
-+			       "Overriding MIDI protocol caps in GTB %d: %x -> %x\n",
-+			       rmidi->usb_block_id, ump->info.protocol_caps,
-+			       protocol_caps);
-+	ump->info.protocol_caps = protocol_caps;
+ 	cell = (struct snd_seq_event_cell *)event->data.ext.ptr;
+ 	for (; len > 0 && cell; cell = cell->next) {
+ 		int size = sizeof(struct snd_seq_event);
++		char *curptr = (char *)&cell->event;
 +
++		if (offset >= size) {
++			offset -= size;
++			len -= size;
++			continue;
++		}
+ 		if (len < size)
+ 			size = len;
+-		err = func(private_data, &cell->event, size);
++		err = func(private_data, curptr + offset, size - offset);
+ 		if (err < 0)
+ 			return err;
++		offset = 0;
+ 		len -= size;
+ 	}
+ 	return 0;
+ }
++
++int snd_seq_dump_var_event(const struct snd_seq_event *event,
++			   snd_seq_dump_func_t func, void *private_data)
++{
++	return dump_var_event(event, func, private_data, 0, 0);
++}
+ EXPORT_SYMBOL(snd_seq_dump_var_event);
+ 
+ 
+@@ -132,11 +154,27 @@ static int seq_copy_in_user(void *ptr, void *src, int size)
  	return 0;
  }
  
++static int expand_var_event(const struct snd_seq_event *event,
++			    int offset, int size, char *buf, bool in_kernel)
++{
++	if (event->data.ext.len & SNDRV_SEQ_EXT_USRPTR) {
++		if (! in_kernel)
++			return -EINVAL;
++		if (copy_from_user(buf,
++				   (char __force __user *)event->data.ext.ptr + offset,
++				   size))
++			return -EFAULT;
++		return 0;
++	}
++	return dump_var_event(event,
++			     in_kernel ? seq_copy_in_kernel : seq_copy_in_user,
++			     &buf, offset, size);
++}
++
+ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char *buf,
+ 			     int in_kernel, int size_aligned)
+ {
+-	int len, newlen;
+-	int err;
++	int len, newlen, err;
+ 
+ 	len = get_var_len(event);
+ 	if (len < 0)
+@@ -146,25 +184,35 @@ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char
+ 		newlen = roundup(len, size_aligned);
+ 	if (count < newlen)
+ 		return -EAGAIN;
+-
+-	if (event->data.ext.len & SNDRV_SEQ_EXT_USRPTR) {
+-		if (! in_kernel)
+-			return -EINVAL;
+-		if (copy_from_user(buf, (void __force __user *)event->data.ext.ptr, len))
+-			return -EFAULT;
+-	} else {
+-		err = snd_seq_dump_var_event(event,
+-					     in_kernel ? seq_copy_in_kernel : seq_copy_in_user,
+-					     &buf);
+-		if (err < 0)
+-			return err;
+-	}
++	err = expand_var_event(event, 0, len, buf, in_kernel);
++	if (err < 0)
++		return err;
+ 	if (len != newlen)
+ 		memset(buf + len, 0, newlen - len);
+ 	return newlen;
+ }
+ EXPORT_SYMBOL(snd_seq_expand_var_event);
+ 
++int snd_seq_expand_var_event_at(const struct snd_seq_event *event, int count,
++				char *buf, int offset)
++{
++	int len, err;
++
++	len = get_var_len(event);
++	if (len < 0)
++		return len;
++	if (len <= offset)
++		return 0;
++	len -= offset;
++	if (len > count)
++		len = count;
++	err = expand_var_event(event, offset, count, buf, true);
++	if (err < 0)
++		return err;
++	return len;
++}
++EXPORT_SYMBOL_GPL(snd_seq_expand_var_event_at);
++
+ /*
+  * release this cell, free extended data if available
+  */
 -- 
 2.35.3
 
