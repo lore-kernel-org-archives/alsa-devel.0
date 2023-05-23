@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D50FAC7EE23
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 08:02:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36C62C77B75
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 08:03:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1F7EE8B;
-	Tue, 23 May 2023 10:01:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1F7EE8B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F640E93;
+	Tue, 23 May 2023 10:02:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F640E93
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684828970;
-	bh=3LBIN3zcB6VwvRAluB9TkgdZXXsJzIaOzy75wWtw+w0=;
+	s=default; t=1684828982;
+	bh=Ki4uXyYFEdPwZ+pO6NImaRzFRg85z5WjAUMNnO541L4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GZe01VgeC8RsJlec3E7dfU7CO/4xbooDP7saTTWhHybpOawK2Rnme+nmURxVup5K6
-	 nXNbcAvUtjPJ4KD7WVf1QwJFUKoUVxBu4SukfQiCvPD1equyKoJhEfJ2Dl/HkvwtvN
-	 iiwCxhownSuPYIBi7TSH/A6/Vmbtr6E1lc625qUM=
+	b=GjDdSs55UMqoJdiKTRCCFPy+cEe2mJccScd8ywgAzt9gapqVUW8lbsHURlItN660q
+	 jHMua4HxOxj1FEYqF71TOmJbPiESonelegpQ0r9NP8vxDIyNqGBxa1CeGGlFn+6z3v
+	 Xc1DTtkM7Xiq4O94S3N1qCT1qcHobkqdd793ttl8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5BEABF806CC; Tue, 23 May 2023 09:55:55 +0200 (CEST)
+	id 4445AF806C3; Tue, 23 May 2023 09:56:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DF6CF806C3;
-	Tue, 23 May 2023 09:55:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C5C7F806CD;
+	Tue, 23 May 2023 09:56:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF117F805D5; Tue, 23 May 2023 09:55:44 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 3CA0FF806BD; Tue, 23 May 2023 09:55:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E9D17F8057C
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 09:54:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9D17F8057C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5D2EDF8057E
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 09:54:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D2EDF8057E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=OJbhg0gr;
+ header.s=susede2_rsa header.b=mRxkbmG/;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=GgQ9Qw03
+ header.s=susede2_ed25519 header.b=czbkBmd6
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9901420418;
-	Tue, 23 May 2023 07:54:11 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 26BF921AC4;
+	Tue, 23 May 2023 07:54:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684828451;
+	t=1684828452;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lRp9BJ0To4Td1JK6hwMrmaWH6yhNyvMGR6X7ycsOazY=;
-	b=OJbhg0grmXsJLPef5Tz0XNUgaquOYoomIOjweABtDNAij0jVmk8x1GgrAp80XuhyKmLNNj
-	RQMErTYmWKLMA/RdH2H1Yxknt45YzJ4P6y5daj1kcHxXD4S8tDjxU2fZ06R2CxhYhzZy+F
-	Vxka26w+fFIsbXo0X/BL1aiA2AGVFUY=
+	bh=HaXvJ3FZXx/ZZA9swPFXqNVogZH19QDVyoLkE+uk0Ns=;
+	b=mRxkbmG/Z0dZ732M8et4jZfMolajmPk2Ii++Uem+2RXV4a1+m3JqJzNG1Gbe6eUJjTR5Yj
+	g7mEXTxZBO5UGTcbEL2fYeNMqhZLpIgd/ZDq6TnjXGdvpxSrJVVSCXMmEeUUEZlUg2lP4a
+	mBacI1fPn2/9GTWeAuePRcXMZxbpbGo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684828451;
+	s=susede2_ed25519; t=1684828452;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lRp9BJ0To4Td1JK6hwMrmaWH6yhNyvMGR6X7ycsOazY=;
-	b=GgQ9Qw03zUj+xubfT9yTHejUrB03fdkxpIuF8mrIuUqsY+yZcqM1pnXsNMdOmjryh5HchO
-	5YoLdaSVz7f5fVAQ==
+	bh=HaXvJ3FZXx/ZZA9swPFXqNVogZH19QDVyoLkE+uk0Ns=;
+	b=czbkBmd6ZjenlUqYv3CkbPTklYdOsG3+bT7bsd8lp/FjLY0Me9Dfo5iQagVEtMtNivxlSk
+	QKRM6w4b/cbg3TAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2822713A1A;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C599F13A1A;
 	Tue, 23 May 2023 07:54:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id AId7ByNxbGT4KgAAMHmgww
+	id YO6MLiNxbGT4KgAAMHmgww
 	(envelope-from <tiwai@suse.de>); Tue, 23 May 2023 07:54:11 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH v2 30/37] ALSA: seq: Automatic conversion of UMP events
-Date: Tue, 23 May 2023 09:53:51 +0200
-Message-Id: <20230523075358.9672-31-tiwai@suse.de>
+Subject: [PATCH v2 32/37] ALSA: seq: Bind UMP device
+Date: Tue, 23 May 2023 09:53:53 +0200
+Message-Id: <20230523075358.9672-33-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230523075358.9672-1-tiwai@suse.de>
 References: <20230523075358.9672-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 5P4WXVJKZTW74XRZIMPWEOFQTVIAV5WD
-X-Message-ID-Hash: 5P4WXVJKZTW74XRZIMPWEOFQTVIAV5WD
+Message-ID-Hash: WHHAW6DG7GATOB3KXDXEDCIDSNMZWNV6
+X-Message-ID-Hash: WHHAW6DG7GATOB3KXDXEDCIDSNMZWNV6
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5P4WXVJKZTW74XRZIMPWEOFQTVIAV5WD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WHHAW6DG7GATOB3KXDXEDCIDSNMZWNV6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,1425 +114,600 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch enables the automatic conversion of UMP events from/to the
-legacy ALSA sequencer MIDI events.  Also, as UMP itself has two
-different modes (MIDI 1.0 and MIDI 2.0), yet another converters
-between them are needed, too.  Namely, we have conversions between the
-legacy and UMP like:
-  - seq legacy event -> seq UMP MIDI 1.0 event
-  - seq legacy event -> seq UMP MIDI 2.0 event
-  - seq UMP MIDI 1.0 event -> seq legacy event
-  - seq UMP MIDI 2.0 event -> seq legacy event
+This patch introduces a new ALSA sequencer client for the kernel UMP
+object, snd-seq-ump-client.  It's a UMP version of snd-seq-midi
+driver, while this driver creates a sequencer client per UMP endpoint
+which contains (fixed) 16 ports.
 
-and the conversions between UMP MIDI 1.0 and 2.0 clients like:
-  - seq UMP MIDI 1.0 event -> seq UMP MIDI 2.0 event
-  - seq UMP MIDI 2.0 event -> seq UMP MIDI 1.0 event
+The UMP rawmidi device is opened in APPEND mode for output, so that
+multiple sequencer clients can share the same UMP endpoint, as well as
+the legacy UMP rawmidi devices that are opened in APPEND mode, too.
+For input, on the other hand, the incoming data is processed on the
+fly in the dedicated hook, hence it doesn't open a rawmidi device.
 
-The translation is per best-effort; some MIDI 2.0 specific events are
-ignored when translated to MIDI 1.0.
+The UMP packet group is updated upon delivery depending on the target
+sequencer port (which corresponds to the actual UMP group).
+
+Each sequencer port sets a new port type bit,
+SNDRV_SEQ_PORT_TYPE_MIDI_UMP, in addition to the other standard
+types for MIDI.
 
 Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/Kconfig           |    2 +
- sound/core/seq/Makefile          |    1 +
- sound/core/seq/seq_clientmgr.c   |   50 +-
- sound/core/seq/seq_clientmgr.h   |   15 +
- sound/core/seq/seq_ports.h       |   15 +
- sound/core/seq/seq_ump_convert.c | 1190 ++++++++++++++++++++++++++++++
- sound/core/seq/seq_ump_convert.h |   22 +
- 7 files changed, 1280 insertions(+), 15 deletions(-)
- create mode 100644 sound/core/seq/seq_ump_convert.c
- create mode 100644 sound/core/seq/seq_ump_convert.h
+ include/sound/seq_device.h      |   1 +
+ include/sound/ump.h             |  15 +-
+ include/uapi/sound/asequencer.h |   1 +
+ sound/core/seq/Kconfig          |   5 +
+ sound/core/seq/Makefile         |   2 +
+ sound/core/seq/seq_ump_client.c | 389 ++++++++++++++++++++++++++++++++
+ sound/core/ump.c                |  28 ++-
+ 7 files changed, 439 insertions(+), 2 deletions(-)
+ create mode 100644 sound/core/seq/seq_ump_client.c
 
+diff --git a/include/sound/seq_device.h b/include/sound/seq_device.h
+index 8899affe9155..dead74b022f4 100644
+--- a/include/sound/seq_device.h
++++ b/include/sound/seq_device.h
+@@ -78,5 +78,6 @@ void snd_seq_driver_unregister(struct snd_seq_driver *drv);
+  */
+ #define SNDRV_SEQ_DEV_ID_MIDISYNTH	"seq-midi"
+ #define SNDRV_SEQ_DEV_ID_OPL3		"opl3-synth"
++#define SNDRV_SEQ_DEV_ID_UMP		"seq-ump-client"
+ 
+ #endif /* __SOUND_SEQ_DEVICE_H */
+diff --git a/include/sound/ump.h b/include/sound/ump.h
+index 45f4c9b673b5..e4fdf7cccf12 100644
+--- a/include/sound/ump.h
++++ b/include/sound/ump.h
+@@ -11,6 +11,7 @@ struct snd_ump_endpoint;
+ struct snd_ump_block;
+ struct snd_ump_ops;
+ struct ump_cvt_to_ump;
++struct snd_seq_ump_ops;
+ 
+ struct snd_ump_endpoint {
+ 	struct snd_rawmidi core;	/* raw UMP access */
+@@ -30,9 +31,9 @@ struct snd_ump_endpoint {
+ 	int input_buf_head;
+ 	int input_pending;
+ 
+-#if IS_ENABLED(CONFIG_SND_UMP_LEGACY_RAWMIDI)
+ 	struct mutex open_mutex;
+ 
++#if IS_ENABLED(CONFIG_SND_UMP_LEGACY_RAWMIDI)
+ 	spinlock_t legacy_locks[2];
+ 	struct snd_rawmidi *legacy_rmidi;
+ 	struct snd_rawmidi_substream *legacy_substreams[2][SNDRV_UMP_MAX_GROUPS];
+@@ -42,6 +43,12 @@ struct snd_ump_endpoint {
+ 	struct snd_rawmidi_file legacy_out_rfile;
+ 	struct ump_cvt_to_ump *out_cvts;
+ #endif
++
++#if IS_ENABLED(CONFIG_SND_SEQUENCER)
++	struct snd_seq_device *seq_dev;
++	const struct snd_seq_ump_ops *seq_ops;
++	void *seq_client;
++#endif
+ };
+ 
+ /* ops filled by UMP drivers */
+@@ -52,6 +59,12 @@ struct snd_ump_ops {
+ 	void (*drain)(struct snd_ump_endpoint *ump, int dir);
+ };
+ 
++/* ops filled by sequencer binding */
++struct snd_seq_ump_ops {
++	void (*input_receive)(struct snd_ump_endpoint *ump,
++			      const u32 *data, int words);
++};
++
+ struct snd_ump_block {
+ 	struct snd_ump_block_info info;
+ 	struct snd_ump_endpoint *ump;
+diff --git a/include/uapi/sound/asequencer.h b/include/uapi/sound/asequencer.h
+index c4632bd9d3a0..3fa6b17aa7a2 100644
+--- a/include/uapi/sound/asequencer.h
++++ b/include/uapi/sound/asequencer.h
+@@ -439,6 +439,7 @@ struct snd_seq_remove_events {
+ #define SNDRV_SEQ_PORT_TYPE_MIDI_XG	(1<<4)	/* XG compatible device */
+ #define SNDRV_SEQ_PORT_TYPE_MIDI_MT32	(1<<5)	/* MT-32 compatible device */
+ #define SNDRV_SEQ_PORT_TYPE_MIDI_GM2	(1<<6)	/* General MIDI 2 compatible device */
++#define SNDRV_SEQ_PORT_TYPE_MIDI_UMP	(1<<7)	/* UMP */
+ 
+ /* other standards...*/
+ #define SNDRV_SEQ_PORT_TYPE_SYNTH	(1<<10)	/* Synth device (no MIDI compatible - direct wavetable) */
 diff --git a/sound/core/seq/Kconfig b/sound/core/seq/Kconfig
-index c69d8beb09fa..f8336134153e 100644
+index f8336134153e..c14981daf943 100644
 --- a/sound/core/seq/Kconfig
 +++ b/sound/core/seq/Kconfig
-@@ -66,5 +66,7 @@ config SND_SEQ_UMP
+@@ -62,6 +62,7 @@ config SND_SEQ_VIRMIDI
+ 
+ config SND_SEQ_UMP
+ 	bool "Support for UMP events"
++	default y if SND_SEQ_UMP_CLIENT
+ 	help
  	  Say Y here to enable the support for handling UMP (Universal MIDI
  	  Packet) events via ALSA sequencer infrastructure, which is an
- 	  essential feature for enabling MIDI 2.0 support.
-+	  It includes the automatic conversion of ALSA sequencer events
-+	  among legacy and UMP clients.
+@@ -69,4 +70,8 @@ config SND_SEQ_UMP
+ 	  It includes the automatic conversion of ALSA sequencer events
+ 	  among legacy and UMP clients.
  
++config SND_SEQ_UMP_CLIENT
++	tristate
++	def_tristate SND_UMP
++
  endif # SND_SEQUENCER
 diff --git a/sound/core/seq/Makefile b/sound/core/seq/Makefile
-index 3a2177a7e50c..ba264a695643 100644
+index ba264a695643..990eec7c83ad 100644
 --- a/sound/core/seq/Makefile
 +++ b/sound/core/seq/Makefile
-@@ -8,6 +8,7 @@ snd-seq-objs := seq.o seq_lock.o seq_clientmgr.o seq_memory.o seq_queue.o \
-                 seq_fifo.o seq_prioq.o seq_timer.o \
-                 seq_system.o seq_ports.o
- snd-seq-$(CONFIG_SND_PROC_FS) += seq_info.o
-+snd-seq-$(CONFIG_SND_SEQ_UMP) += seq_ump_convert.o
- snd-seq-midi-objs := seq_midi.o
- snd-seq-midi-emul-objs := seq_midi_emul.o
+@@ -14,12 +14,14 @@ snd-seq-midi-emul-objs := seq_midi_emul.o
  snd-seq-midi-event-objs := seq_midi_event.o
-diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 33aa6c5c5c9e..07b090f76b5f 100644
---- a/sound/core/seq/seq_clientmgr.c
-+++ b/sound/core/seq/seq_clientmgr.c
-@@ -20,6 +20,7 @@
- #include "seq_timer.h"
- #include "seq_info.h"
- #include "seq_system.h"
-+#include "seq_ump_convert.h"
- #include <sound/seq_device.h>
- #ifdef CONFIG_COMPAT
- #include <linux/compat.h>
-@@ -612,6 +613,27 @@ static int update_timestamp_of_queue(struct snd_seq_event *event,
- 	return 1;
- }
+ snd-seq-dummy-objs := seq_dummy.o
+ snd-seq-virmidi-objs := seq_virmidi.o
++snd-seq-ump-client-objs := seq_ump_client.o
  
-+/* deliver a single event; called from below and UMP converter */
-+int __snd_seq_deliver_single_event(struct snd_seq_client *dest,
-+				   struct snd_seq_client_port *dest_port,
-+				   struct snd_seq_event *event,
-+				   int atomic, int hop)
-+{
-+	switch (dest->type) {
-+	case USER_CLIENT:
-+		if (!dest->data.user.fifo)
-+			return 0;
-+		return snd_seq_fifo_event_in(dest->data.user.fifo, event);
-+	case KERNEL_CLIENT:
-+		if (!dest_port->event_input)
-+			return 0;
-+		return dest_port->event_input(event,
-+					      snd_seq_ev_is_direct(event),
-+					      dest_port->private_data,
-+					      atomic, hop);
-+	}
-+	return 0;
-+}
+ obj-$(CONFIG_SND_SEQUENCER) += snd-seq.o
+ obj-$(CONFIG_SND_SEQUENCER_OSS) += oss/
  
- /*
-  * deliver an event to the specified destination.
-@@ -648,22 +670,20 @@ static int snd_seq_deliver_single_event(struct snd_seq_client *client,
- 		update_timestamp_of_queue(event, dest_port->time_queue,
- 					  dest_port->time_real);
- 
--	switch (dest->type) {
--	case USER_CLIENT:
--		if (dest->data.user.fifo)
--			result = snd_seq_fifo_event_in(dest->data.user.fifo, event);
--		break;
--
--	case KERNEL_CLIENT:
--		if (dest_port->event_input == NULL)
--			break;
--		result = dest_port->event_input(event, direct,
--						dest_port->private_data,
--						atomic, hop);
--		break;
--	default:
--		break;
-+#if IS_ENABLED(CONFIG_SND_SEQ_UMP)
-+	if (snd_seq_ev_is_ump(event)) {
-+		result = snd_seq_deliver_from_ump(client, dest, dest_port,
-+						  event, atomic, hop);
-+		goto __skip;
-+	} else if (snd_seq_client_is_ump(dest)) {
-+		result = snd_seq_deliver_to_ump(client, dest, dest_port,
-+						event, atomic, hop);
-+		goto __skip;
- 	}
-+#endif /* CONFIG_SND_SEQ_UMP */
-+
-+	result = __snd_seq_deliver_single_event(dest, dest_port, event,
-+						atomic, hop);
- 
-   __skip:
- 	if (dest_port)
-diff --git a/sound/core/seq/seq_clientmgr.h b/sound/core/seq/seq_clientmgr.h
-index bb973d36ce78..97762892ffab 100644
---- a/sound/core/seq/seq_clientmgr.h
-+++ b/sound/core/seq/seq_clientmgr.h
-@@ -85,6 +85,11 @@ int snd_seq_kernel_client_write_poll(int clientid, struct file *file, poll_table
- int snd_seq_client_notify_subscription(int client, int port,
- 				       struct snd_seq_port_subscribe *info, int evtype);
- 
-+int __snd_seq_deliver_single_event(struct snd_seq_client *dest,
-+				   struct snd_seq_client_port *dest_port,
-+				   struct snd_seq_event *event,
-+				   int atomic, int hop);
-+
- /* only for OSS sequencer */
- bool snd_seq_client_ioctl_lock(int clientid);
- void snd_seq_client_ioctl_unlock(int clientid);
-@@ -95,4 +100,14 @@ extern int seq_client_load[15];
- struct snd_seq_client *snd_seq_kernel_client_get(int client);
- void snd_seq_kernel_client_put(struct snd_seq_client *cptr);
- 
-+static inline bool snd_seq_client_is_ump(struct snd_seq_client *c)
-+{
-+	return c->midi_version != SNDRV_SEQ_CLIENT_LEGACY_MIDI;
-+}
-+
-+static inline bool snd_seq_client_is_midi2(struct snd_seq_client *c)
-+{
-+	return c->midi_version == SNDRV_SEQ_CLIENT_UMP_MIDI_2_0;
-+}
-+
- #endif
-diff --git a/sound/core/seq/seq_ports.h b/sound/core/seq/seq_ports.h
-index c6c138edceab..b111382f697a 100644
---- a/sound/core/seq/seq_ports.h
-+++ b/sound/core/seq/seq_ports.h
-@@ -42,6 +42,17 @@ struct snd_seq_port_subs_info {
- 	int (*close)(void *private_data, struct snd_seq_port_subscribe *info);
- };
- 
-+/* context for converting from legacy control event to UMP packet */
-+struct snd_seq_ump_midi2_bank {
-+	bool rpn_set;
-+	bool nrpn_set;
-+	bool bank_set;
-+	unsigned char cc_rpn_msb, cc_rpn_lsb;
-+	unsigned char cc_nrpn_msb, cc_nrpn_lsb;
-+	unsigned char cc_data_msb, cc_data_lsb;
-+	unsigned char cc_bank_msb, cc_bank_lsb;
-+};
-+
- struct snd_seq_client_port {
- 
- 	struct snd_seq_addr addr;	/* client/port number */
-@@ -75,6 +86,10 @@ struct snd_seq_client_port {
- 	/* UMP direction and group */
- 	unsigned char direction;
- 	unsigned char ump_group;
-+
-+#if IS_ENABLED(CONFIG_SND_SEQ_UMP)
-+	struct snd_seq_ump_midi2_bank midi2_bank[16]; /* per channel */
-+#endif
- };
- 
- struct snd_seq_client;
-diff --git a/sound/core/seq/seq_ump_convert.c b/sound/core/seq/seq_ump_convert.c
+ obj-$(CONFIG_SND_SEQ_DUMMY) += snd-seq-dummy.o
+ obj-$(CONFIG_SND_SEQ_MIDI) += snd-seq-midi.o
++obj-$(CONFIG_SND_SEQ_UMP_CLIENT) += snd-seq-ump-client.o
+ obj-$(CONFIG_SND_SEQ_MIDI_EMUL) += snd-seq-midi-emul.o
+ obj-$(CONFIG_SND_SEQ_MIDI_EVENT) += snd-seq-midi-event.o
+ obj-$(CONFIG_SND_SEQ_VIRMIDI) += snd-seq-virmidi.o
+diff --git a/sound/core/seq/seq_ump_client.c b/sound/core/seq/seq_ump_client.c
 new file mode 100644
-index 000000000000..433fe842947e
+index 000000000000..8d360655ff5d
 --- /dev/null
-+++ b/sound/core/seq/seq_ump_convert.c
-@@ -0,0 +1,1190 @@
++++ b/sound/core/seq/seq_ump_client.c
+@@ -0,0 +1,389 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * ALSA sequencer event conversion between UMP and legacy clients
-+ */
++/* ALSA sequencer binding for UMP device */
 +
 +#include <linux/init.h>
++#include <linux/slab.h>
 +#include <linux/errno.h>
++#include <linux/mutex.h>
 +#include <linux/string.h>
++#include <linux/module.h>
++#include <asm/byteorder.h>
 +#include <sound/core.h>
 +#include <sound/ump.h>
-+#include <sound/ump_msg.h>
-+#include "seq_ump_convert.h"
++#include <sound/seq_kernel.h>
++#include <sound/seq_device.h>
++#include "seq_clientmgr.h"
 +
-+/*
-+ * Upgrade / downgrade value bits
++struct seq_ump_client;
++struct seq_ump_group;
++
++enum {
++	STR_IN = SNDRV_RAWMIDI_STREAM_INPUT,
++	STR_OUT = SNDRV_RAWMIDI_STREAM_OUTPUT
++};
++
++/* object per UMP group; corresponding to a sequencer port */
++struct seq_ump_group {
++	int group;			/* group index (0-based) */
++	unsigned int dir_bits;		/* directions */
++	bool active;			/* activeness */
++	char name[64];			/* seq port name */
++};
++
++/* context for UMP input parsing, per EP */
++struct seq_ump_input_buffer {
++	unsigned char len;		/* total length in words */
++	unsigned char pending;		/* pending words */
++	unsigned char type;		/* parsed UMP packet type */
++	unsigned char group;		/* parsed UMP packet group */
++	u32 buf[4];			/* incoming UMP packet */
++};
++
++/* sequencer client, per UMP EP (rawmidi) */
++struct seq_ump_client {
++	struct snd_ump_endpoint *ump;	/* assigned endpoint */
++	int seq_client;			/* sequencer client id */
++	int opened[2];			/* current opens for each direction */
++	struct snd_rawmidi_file out_rfile; /* rawmidi for output */
++	struct seq_ump_input_buffer input; /* input parser context */
++	struct seq_ump_group groups[SNDRV_UMP_MAX_GROUPS]; /* table of groups */
++};
++
++/* number of 32bit words for each UMP message type */
++static unsigned char ump_packet_words[0x10] = {
++	1, 1, 1, 2, 2, 4, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4
++};
++
++/* conversion between UMP group and seq port;
++ * assume the port number is equal with UMP group number (1-based)
 + */
-+static u8 downscale_32_to_7bit(u32 src)
++static unsigned char ump_group_to_seq_port(unsigned char group)
 +{
-+	return src >> 25;
++	return group + 1;
 +}
 +
-+static u16 downscale_32_to_14bit(u32 src)
++/* process the incoming rawmidi stream */
++static void seq_ump_input_receive(struct snd_ump_endpoint *ump,
++				  const u32 *val, int words)
 +{
-+	return src >> 18;
++	struct seq_ump_client *client = ump->seq_client;
++	struct snd_seq_ump_event ev = {};
++
++	if (!client->opened[STR_IN])
++		return;
++
++	ev.source.port = ump_group_to_seq_port(ump_message_group(*val));
++	ev.dest.client = SNDRV_SEQ_ADDRESS_SUBSCRIBERS;
++	ev.flags = SNDRV_SEQ_EVENT_UMP;
++	memcpy(ev.ump, val, words << 2);
++	snd_seq_kernel_client_dispatch(client->seq_client,
++				       (struct snd_seq_event *)&ev,
++				       true, 0);
 +}
 +
-+static u8 downscale_16_to_7bit(u16 src)
++/* process an input sequencer event; only deal with UMP types */
++static int seq_ump_process_event(struct snd_seq_event *ev, int direct,
++				 void *private_data, int atomic, int hop)
 +{
-+	return src >> 9;
-+}
++	struct seq_ump_client *client = private_data;
++	struct snd_rawmidi_substream *substream;
++	struct snd_seq_ump_event *ump_ev;
++	unsigned char type;
++	int len;
 +
-+static u16 upscale_7_to_16bit(u8 src)
-+{
-+	u16 val, repeat;
-+
-+	val = (u16)src << 9;
-+	if (src <= 0x40)
-+		return val;
-+	repeat = src & 0x3f;
-+	return val | (repeat << 3) | (repeat >> 3);
-+}
-+
-+static u32 upscale_7_to_32bit(u8 src)
-+{
-+	u32 val, repeat;
-+
-+	val = src << 25;
-+	if (src <= 0x40)
-+		return val;
-+	repeat = src & 0x3f;
-+	return val | (repeat << 19) | (repeat << 13) |
-+		(repeat << 7) | (repeat << 1) | (repeat >> 5);
-+}
-+
-+static u32 upscale_14_to_32bit(u16 src)
-+{
-+	u32 val, repeat;
-+
-+	val = src << 18;
-+	if (src <= 0x2000)
-+		return val;
-+	repeat = src & 0x1fff;
-+	return val | (repeat << 5) | (repeat >> 8);
-+}
-+
-+static unsigned char get_ump_group(struct snd_seq_client_port *port)
-+{
-+	return port->ump_group ? (port->ump_group - 1) : 0;
-+}
-+
-+/* create a UMP header */
-+#define make_raw_ump(port, type) \
-+	ump_compose(type, get_ump_group(port), 0, 0)
-+
-+/*
-+ * UMP -> MIDI1 sequencer event
-+ */
-+
-+/* MIDI 1.0 CVM */
-+
-+/* encode note event */
-+static void ump_midi1_to_note_ev(const union snd_ump_midi1_msg *val,
-+				 struct snd_seq_event *ev)
-+{
-+	ev->data.note.channel = val->note.channel;
-+	ev->data.note.note = val->note.note;
-+	ev->data.note.velocity = val->note.velocity;
-+}
-+
-+/* encode one parameter controls */
-+static void ump_midi1_to_ctrl_ev(const union snd_ump_midi1_msg *val,
-+				 struct snd_seq_event *ev)
-+{
-+	ev->data.control.channel = val->caf.channel;
-+	ev->data.control.value = val->caf.data;
-+}
-+
-+/* encode pitch wheel change */
-+static void ump_midi1_to_pitchbend_ev(const union snd_ump_midi1_msg *val,
-+				      struct snd_seq_event *ev)
-+{
-+	ev->data.control.channel = val->pb.channel;
-+	ev->data.control.value = (val->pb.data_msb << 7) | val->pb.data_lsb;
-+	ev->data.control.value -= 8192;
-+}
-+
-+/* encode midi control change */
-+static void ump_midi1_to_cc_ev(const union snd_ump_midi1_msg *val,
-+			       struct snd_seq_event *ev)
-+{
-+	ev->data.control.channel = val->cc.channel;
-+	ev->data.control.param = val->cc.index;
-+	ev->data.control.value = val->cc.data;
-+}
-+
-+/* Encoding MIDI 1.0 UMP packet */
-+struct seq_ump_midi1_to_ev {
-+	int seq_type;
-+	void (*encode)(const union snd_ump_midi1_msg *val, struct snd_seq_event *ev);
-+};
-+
-+/* Encoders for MIDI1 status 0x80-0xe0 */
-+static struct seq_ump_midi1_to_ev midi1_msg_encoders[] = {
-+	{SNDRV_SEQ_EVENT_NOTEOFF,	ump_midi1_to_note_ev},	/* 0x80 */
-+	{SNDRV_SEQ_EVENT_NOTEON,	ump_midi1_to_note_ev},	/* 0x90 */
-+	{SNDRV_SEQ_EVENT_KEYPRESS,	ump_midi1_to_note_ev},	/* 0xa0 */
-+	{SNDRV_SEQ_EVENT_CONTROLLER,	ump_midi1_to_cc_ev},	/* 0xb0 */
-+	{SNDRV_SEQ_EVENT_PGMCHANGE,	ump_midi1_to_ctrl_ev},	/* 0xc0 */
-+	{SNDRV_SEQ_EVENT_CHANPRESS,	ump_midi1_to_ctrl_ev},	/* 0xd0 */
-+	{SNDRV_SEQ_EVENT_PITCHBEND,	ump_midi1_to_pitchbend_ev}, /* 0xe0 */
-+};
-+
-+static int cvt_ump_midi1_to_event(const union snd_ump_midi1_msg *val,
-+				  struct snd_seq_event *ev)
-+{
-+	unsigned char status = val->note.status;
-+
-+	if (status < 0x8 || status > 0xe)
-+		return 0; /* invalid - skip */
-+	status -= 8;
-+	ev->type = midi1_msg_encoders[status].seq_type;
-+	ev->flags = SNDRV_SEQ_EVENT_LENGTH_FIXED;
-+	midi1_msg_encoders[status].encode(val, ev);
-+	return 1;
-+}
-+
-+/* MIDI System message */
-+
-+/* encode one parameter value*/
-+static void ump_system_to_one_param_ev(const union snd_ump_midi1_msg *val,
-+				       struct snd_seq_event *ev)
-+{
-+	ev->data.control.value = val->system.parm1;
-+}
-+
-+/* encode song position */
-+static void ump_system_to_songpos_ev(const union snd_ump_midi1_msg *val,
-+				     struct snd_seq_event *ev)
-+{
-+	ev->data.control.value = (val->system.parm1 << 7) | val->system.parm2;
-+}
-+
-+/* Encoders for 0xf0 - 0xff */
-+static struct seq_ump_midi1_to_ev system_msg_encoders[] = {
-+	{SNDRV_SEQ_EVENT_NONE,		NULL},	 /* 0xf0 */
-+	{SNDRV_SEQ_EVENT_QFRAME,	ump_system_to_one_param_ev}, /* 0xf1 */
-+	{SNDRV_SEQ_EVENT_SONGPOS,	ump_system_to_songpos_ev}, /* 0xf2 */
-+	{SNDRV_SEQ_EVENT_SONGSEL,	ump_system_to_one_param_ev}, /* 0xf3 */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL}, /* 0xf4 */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL}, /* 0xf5 */
-+	{SNDRV_SEQ_EVENT_TUNE_REQUEST,	NULL}, /* 0xf6 */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL}, /* 0xf7 */
-+	{SNDRV_SEQ_EVENT_CLOCK,		NULL}, /* 0xf8 */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL}, /* 0xf9 */
-+	{SNDRV_SEQ_EVENT_START,		NULL}, /* 0xfa */
-+	{SNDRV_SEQ_EVENT_CONTINUE,	NULL}, /* 0xfb */
-+	{SNDRV_SEQ_EVENT_STOP,		NULL}, /* 0xfc */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL}, /* 0xfd */
-+	{SNDRV_SEQ_EVENT_SENSING,	NULL}, /* 0xfe */
-+	{SNDRV_SEQ_EVENT_RESET,		NULL}, /* 0xff */
-+};
-+
-+static int cvt_ump_system_to_event(const union snd_ump_midi1_msg *val,
-+				   struct snd_seq_event *ev)
-+{
-+	unsigned char status = val->system.status;
-+
-+	if ((status & 0xf0) != UMP_MIDI1_MSG_REALTIME)
-+		return 0; /* invalid status - skip */
-+	status &= 0x0f;
-+	ev->type = system_msg_encoders[status].seq_type;
-+	ev->flags = SNDRV_SEQ_EVENT_LENGTH_FIXED;
-+	if (ev->type == SNDRV_SEQ_EVENT_NONE)
-+		return 0;
-+	if (system_msg_encoders[status].encode)
-+		system_msg_encoders[status].encode(val, ev);
-+	return 1;
-+}
-+
-+/* MIDI 2.0 CVM */
-+
-+/* encode note event */
-+static int ump_midi2_to_note_ev(const union snd_ump_midi2_msg *val,
-+				struct snd_seq_event *ev)
-+{
-+	ev->data.note.channel = val->note.channel;
-+	ev->data.note.note = val->note.note;
-+	ev->data.note.velocity = downscale_16_to_7bit(val->note.velocity);
-+	/* correct note-on velocity 0 to 1;
-+	 * it's no longer equivalent as not-off for MIDI 2.0
-+	 */
-+	if (ev->type == SNDRV_SEQ_EVENT_NOTEON &&
-+	    !ev->data.note.velocity)
-+		ev->data.note.velocity = 1;
-+	return 1;
-+}
-+
-+/* encode pitch wheel change */
-+static int ump_midi2_to_pitchbend_ev(const union snd_ump_midi2_msg *val,
-+				     struct snd_seq_event *ev)
-+{
-+	ev->data.control.channel = val->pb.channel;
-+	ev->data.control.value = downscale_32_to_14bit(val->pb.data);
-+	ev->data.control.value -= 8192;
-+	return 1;
-+}
-+
-+/* encode midi control change */
-+static int ump_midi2_to_cc_ev(const union snd_ump_midi2_msg *val,
-+			      struct snd_seq_event *ev)
-+{
-+	ev->data.control.channel = val->cc.channel;
-+	ev->data.control.param = val->cc.index;
-+	ev->data.control.value = downscale_32_to_7bit(val->cc.data);
-+	return 1;
-+}
-+
-+/* encode midi program change */
-+static int ump_midi2_to_pgm_ev(const union snd_ump_midi2_msg *val,
-+			       struct snd_seq_event *ev)
-+{
-+	int size = 1;
-+
-+	ev->data.control.channel = val->pg.channel;
-+	if (val->pg.bank_valid) {
-+		ev->type = SNDRV_SEQ_EVENT_CONTROL14;
-+		ev->data.control.param = UMP_CC_BANK_SELECT;
-+		ev->data.control.value = (val->pg.bank_msb << 7) | val->pg.bank_lsb;
-+		ev[1] = ev[0];
-+		ev++;
-+		ev->type = SNDRV_SEQ_EVENT_PGMCHANGE;
-+		size = 2;
-+	}
-+	ev->data.control.value = val->pg.program;
-+	return size;
-+}
-+
-+/* encode one parameter controls */
-+static int ump_midi2_to_ctrl_ev(const union snd_ump_midi2_msg *val,
-+				struct snd_seq_event *ev)
-+{
-+	ev->data.control.channel = val->caf.channel;
-+	ev->data.control.value = downscale_32_to_7bit(val->caf.data);
-+	return 1;
-+}
-+
-+/* encode RPN/NRPN */
-+static int ump_midi2_to_rpn_ev(const union snd_ump_midi2_msg *val,
-+			       struct snd_seq_event *ev)
-+{
-+	ev->data.control.channel = val->rpn.channel;
-+	ev->data.control.param = (val->rpn.bank << 7) | val->rpn.index;
-+	ev->data.control.value = downscale_32_to_14bit(val->rpn.data);
-+	return 1;
-+}
-+
-+/* Encoding MIDI 2.0 UMP Packet */
-+struct seq_ump_midi2_to_ev {
-+	int seq_type;
-+	int (*encode)(const union snd_ump_midi2_msg *val, struct snd_seq_event *ev);
-+};
-+
-+/* Encoders for MIDI2 status 0x00-0xf0 */
-+static struct seq_ump_midi2_to_ev midi2_msg_encoders[] = {
-+	{SNDRV_SEQ_EVENT_NONE,		NULL},			/* 0x00 */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL},			/* 0x10 */
-+	{SNDRV_SEQ_EVENT_REGPARAM,	ump_midi2_to_rpn_ev},	/* 0x20 */
-+	{SNDRV_SEQ_EVENT_NONREGPARAM,	ump_midi2_to_rpn_ev},	/* 0x30 */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL},			/* 0x40 */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL},			/* 0x50 */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL},			/* 0x60 */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL},			/* 0x70 */
-+	{SNDRV_SEQ_EVENT_NOTEOFF,	ump_midi2_to_note_ev},	/* 0x80 */
-+	{SNDRV_SEQ_EVENT_NOTEON,	ump_midi2_to_note_ev},	/* 0x90 */
-+	{SNDRV_SEQ_EVENT_KEYPRESS,	ump_midi2_to_note_ev},	/* 0xa0 */
-+	{SNDRV_SEQ_EVENT_CONTROLLER,	ump_midi2_to_cc_ev},	/* 0xb0 */
-+	{SNDRV_SEQ_EVENT_PGMCHANGE,	ump_midi2_to_pgm_ev},	/* 0xc0 */
-+	{SNDRV_SEQ_EVENT_CHANPRESS,	ump_midi2_to_ctrl_ev},	/* 0xd0 */
-+	{SNDRV_SEQ_EVENT_PITCHBEND,	ump_midi2_to_pitchbend_ev}, /* 0xe0 */
-+	{SNDRV_SEQ_EVENT_NONE,		NULL},			/* 0xf0 */
-+};
-+
-+static int cvt_ump_midi2_to_event(const union snd_ump_midi2_msg *val,
-+				  struct snd_seq_event *ev)
-+{
-+	unsigned char status = val->note.status;
-+
-+	ev->type = midi2_msg_encoders[status].seq_type;
-+	if (ev->type == SNDRV_SEQ_EVENT_NONE)
-+		return 0; /* skip */
-+	ev->flags = SNDRV_SEQ_EVENT_LENGTH_FIXED;
-+	return midi2_msg_encoders[status].encode(val, ev);
-+}
-+
-+/* parse and compose for a sysex var-length event */
-+static int cvt_ump_sysex7_to_event(const u32 *data, unsigned char *buf,
-+				   struct snd_seq_event *ev)
-+{
-+	unsigned char status;
-+	unsigned char bytes;
-+	u32 val;
-+	int size = 0;
-+
-+	val = data[0];
-+	status = ump_sysex_message_status(val);
-+	bytes = ump_sysex_message_length(val);
-+	if (bytes > 6)
-+		return 0; // skip
-+
-+	if (status == UMP_SYSEX_STATUS_SINGLE ||
-+	    status == UMP_SYSEX_STATUS_START) {
-+		buf[0] = UMP_MIDI1_MSG_SYSEX_START;
-+		size = 1;
-+	}
-+
-+	if (bytes > 0)
-+		buf[size++] = (val >> 8) & 0x7f;
-+	if (bytes > 1)
-+		buf[size++] = val & 0x7f;
-+	val = data[1];
-+	if (bytes > 2)
-+		buf[size++] = (val >> 24) & 0x7f;
-+	if (bytes > 3)
-+		buf[size++] = (val >> 16) & 0x7f;
-+	if (bytes > 4)
-+		buf[size++] = (val >> 8) & 0x7f;
-+	if (bytes > 5)
-+		buf[size++] = val & 0x7f;
-+
-+	if (status == UMP_SYSEX_STATUS_SINGLE ||
-+	    status == UMP_SYSEX_STATUS_END)
-+		buf[size++] = UMP_MIDI1_MSG_SYSEX_END;
-+
-+	ev->type = SNDRV_SEQ_EVENT_SYSEX;
-+	ev->flags = SNDRV_SEQ_EVENT_LENGTH_VARIABLE;
-+	ev->data.ext.len = size;
-+	ev->data.ext.ptr = buf;
-+	return 1;
-+}
-+
-+/* convert UMP packet from MIDI 1.0 to MIDI 2.0 and deliver it */
-+static int cvt_ump_midi1_to_midi2(struct snd_seq_client *dest,
-+				  struct snd_seq_client_port *dest_port,
-+				  struct snd_seq_event *__event,
-+				  int atomic, int hop)
-+{
-+	struct snd_seq_ump_event *event = (struct snd_seq_ump_event *)__event;
-+	struct snd_seq_ump_event ev_cvt;
-+	const union snd_ump_midi1_msg *midi1 = (const union snd_ump_midi1_msg *)event->ump;
-+	union snd_ump_midi2_msg *midi2 = (union snd_ump_midi2_msg *)ev_cvt.ump;
-+
-+	ev_cvt = *event;
-+	memset(&ev_cvt.ump, 0, sizeof(ev_cvt.ump));
-+
-+	midi2->note.type = UMP_MSG_TYPE_MIDI2_CHANNEL_VOICE;
-+	midi2->note.group = midi1->note.group;
-+	midi2->note.status = midi1->note.status;
-+	midi2->note.channel = midi1->note.channel;
-+	switch (midi1->note.status) {
-+	case UMP_MSG_STATUS_NOTE_ON:
-+	case UMP_MSG_STATUS_NOTE_OFF:
-+		midi2->note.note = midi1->note.note;
-+		midi2->note.velocity = upscale_7_to_16bit(midi1->note.velocity);
-+		break;
-+	case UMP_MSG_STATUS_POLY_PRESSURE:
-+		midi2->paf.note = midi1->paf.note;
-+		midi2->paf.data = upscale_7_to_32bit(midi1->paf.data);
-+		break;
-+	case UMP_MSG_STATUS_CC:
-+		midi2->cc.index = midi1->cc.index;
-+		midi2->cc.data = upscale_7_to_32bit(midi1->cc.data);
-+		break;
-+	case UMP_MSG_STATUS_PROGRAM:
-+		midi2->pg.program = midi1->pg.program;
-+		break;
-+	case UMP_MSG_STATUS_CHANNEL_PRESSURE:
-+		midi2->caf.data = upscale_7_to_32bit(midi1->caf.data);
-+		break;
-+	case UMP_MSG_STATUS_PITCH_BEND:
-+		midi2->pb.data = upscale_14_to_32bit((midi1->pb.data_msb << 7) |
-+						     midi1->pb.data_lsb);
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return __snd_seq_deliver_single_event(dest, dest_port,
-+					      (struct snd_seq_event *)&ev_cvt,
-+					      atomic, hop);
-+}
-+
-+/* convert UMP packet from MIDI 2.0 to MIDI 1.0 and deliver it */
-+static int cvt_ump_midi2_to_midi1(struct snd_seq_client *dest,
-+				  struct snd_seq_client_port *dest_port,
-+				  struct snd_seq_event *__event,
-+				  int atomic, int hop)
-+{
-+	struct snd_seq_ump_event *event = (struct snd_seq_ump_event *)__event;
-+	struct snd_seq_ump_event ev_cvt;
-+	union snd_ump_midi1_msg *midi1 = (union snd_ump_midi1_msg *)ev_cvt.ump;
-+	const union snd_ump_midi2_msg *midi2 = (const union snd_ump_midi2_msg *)event->ump;
-+	u16 v;
-+
-+	ev_cvt = *event;
-+	memset(&ev_cvt.ump, 0, sizeof(ev_cvt.ump));
-+
-+	midi1->note.type = UMP_MSG_TYPE_MIDI1_CHANNEL_VOICE;
-+	midi1->note.group = midi2->note.group;
-+	midi1->note.status = midi2->note.status;
-+	midi1->note.channel = midi2->note.channel;
-+	switch (midi2->note.status << 4) {
-+	case UMP_MSG_STATUS_NOTE_ON:
-+	case UMP_MSG_STATUS_NOTE_OFF:
-+		midi1->note.note = midi2->note.note;
-+		midi1->note.velocity = downscale_16_to_7bit(midi2->note.velocity);
-+		break;
-+	case UMP_MSG_STATUS_POLY_PRESSURE:
-+		midi1->paf.note = midi2->paf.note;
-+		midi1->paf.data = downscale_32_to_7bit(midi2->paf.data);
-+		break;
-+	case UMP_MSG_STATUS_CC:
-+		midi1->cc.index = midi2->cc.index;
-+		midi1->cc.data = downscale_32_to_7bit(midi2->cc.data);
-+		break;
-+	case UMP_MSG_STATUS_PROGRAM:
-+		midi1->pg.program = midi2->pg.program;
-+		break;
-+	case UMP_MSG_STATUS_CHANNEL_PRESSURE:
-+		midi1->caf.data = downscale_32_to_7bit(midi2->caf.data);
-+		break;
-+	case UMP_MSG_STATUS_PITCH_BEND:
-+		v = downscale_32_to_14bit(midi2->pb.data);
-+		midi1->pb.data_msb = v >> 7;
-+		midi1->pb.data_lsb = v & 0x7f;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return __snd_seq_deliver_single_event(dest, dest_port,
-+					      (struct snd_seq_event *)&ev_cvt,
-+					      atomic, hop);
-+}
-+
-+/* convert UMP to a legacy ALSA seq event and deliver it */
-+static int cvt_ump_to_any(struct snd_seq_client *dest,
-+			  struct snd_seq_client_port *dest_port,
-+			  struct snd_seq_event *event,
-+			  unsigned char type,
-+			  int atomic, int hop)
-+{
-+	struct snd_seq_event ev_cvt[2]; /* up to two events */
-+	struct snd_seq_ump_event *ump_ev = (struct snd_seq_ump_event *)event;
-+	/* use the second event as a temp buffer for saving stack usage */
-+	unsigned char *sysex_buf = (unsigned char *)(ev_cvt + 1);
-+	unsigned char flags = event->flags & ~SNDRV_SEQ_EVENT_UMP;
-+	int i, len, err;
-+
-+	ev_cvt[0] = ev_cvt[1] = *event;
-+	ev_cvt[0].flags = flags;
-+	ev_cvt[1].flags = flags;
-+	switch (type) {
-+	case UMP_MSG_TYPE_SYSTEM:
-+		len = cvt_ump_system_to_event((union snd_ump_midi1_msg *)ump_ev->ump,
-+					      ev_cvt);
-+		break;
-+	case UMP_MSG_TYPE_MIDI1_CHANNEL_VOICE:
-+		len = cvt_ump_midi1_to_event((union snd_ump_midi1_msg *)ump_ev->ump,
-+					     ev_cvt);
-+		break;
-+	case UMP_MSG_TYPE_MIDI2_CHANNEL_VOICE:
-+		len = cvt_ump_midi2_to_event((union snd_ump_midi2_msg *)ump_ev->ump,
-+					     ev_cvt);
-+		break;
-+	case UMP_MSG_TYPE_DATA:
-+		len = cvt_ump_sysex7_to_event(ump_ev->ump, sysex_buf, ev_cvt);
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	for (i = 0; i < len; i++) {
-+		err = __snd_seq_deliver_single_event(dest, dest_port,
-+						     &ev_cvt[i], atomic, hop);
-+		if (err < 0)
-+			return err;
-+	}
-+
++	substream = client->out_rfile.output;
++	if (!substream)
++		return -ENODEV;
++	if (!snd_seq_ev_is_ump(ev))
++		return 0; /* invalid event, skip */
++	ump_ev = (struct snd_seq_ump_event *)ev;
++	type = ump_message_type(ump_ev->ump[0]);
++	len = ump_packet_words[type];
++	if (len > 4)
++		return 0; // invalid - skip
++	snd_rawmidi_kernel_write(substream, ev->data.raw8.d, len << 2);
 +	return 0;
 +}
 +
-+/* Replace UMP group field with the destination and deliver */
-+static int deliver_with_group_convert(struct snd_seq_client *dest,
-+				      struct snd_seq_client_port *dest_port,
-+				      struct snd_seq_ump_event *ump_ev,
-+				      int atomic, int hop)
++/* open the rawmidi */
++static int seq_ump_client_open(struct seq_ump_client *client, int dir)
 +{
-+	struct snd_seq_ump_event ev = *ump_ev;
++	struct snd_ump_endpoint *ump = client->ump;
++	int err = 0;
 +
-+	/* rewrite the group to the destination port */
-+	ev.ump[0] &= ~(0xfU << 24);
-+	/* fill with the new group; the dest_port->ump_group field is 1-based */
-+	ev.ump[0] |= ((dest_port->ump_group - 1) << 24);
-+
-+	return __snd_seq_deliver_single_event(dest, dest_port,
-+					      (struct snd_seq_event *)&ev,
-+					      atomic, hop);
++	mutex_lock(&ump->open_mutex);
++	if (dir == STR_OUT && !client->opened[dir]) {
++		err = snd_rawmidi_kernel_open(&ump->core, 0,
++					      SNDRV_RAWMIDI_LFLG_OUTPUT |
++					      SNDRV_RAWMIDI_LFLG_APPEND,
++					      &client->out_rfile);
++		if (err < 0)
++			goto unlock;
++	}
++	client->opened[dir]++;
++ unlock:
++	mutex_unlock(&ump->open_mutex);
++	return err;
 +}
 +
-+/* Convert from UMP packet and deliver */
-+int snd_seq_deliver_from_ump(struct snd_seq_client *source,
-+			     struct snd_seq_client *dest,
-+			     struct snd_seq_client_port *dest_port,
-+			     struct snd_seq_event *event,
-+			     int atomic, int hop)
++/* close the rawmidi */
++static int seq_ump_client_close(struct seq_ump_client *client, int dir)
 +{
-+	struct snd_seq_ump_event *ump_ev = (struct snd_seq_ump_event *)event;
-+	unsigned char type;
++	struct snd_ump_endpoint *ump = client->ump;
 +
-+	if (snd_seq_ev_is_variable(event))
-+		return 0; // skip, no variable event for UMP, so far
-+	type = ump_message_type(ump_ev->ump[0]);
++	mutex_lock(&ump->open_mutex);
++	if (!--client->opened[dir])
++		if (dir == STR_OUT)
++			snd_rawmidi_kernel_release(&client->out_rfile);
++	mutex_unlock(&ump->open_mutex);
++	return 0;
++}
 +
-+	if (snd_seq_client_is_ump(dest)) {
-+		if (snd_seq_client_is_midi2(dest) &&
-+		    type == UMP_MSG_TYPE_MIDI1_CHANNEL_VOICE)
-+			return cvt_ump_midi1_to_midi2(dest, dest_port,
-+						      event, atomic, hop);
-+		else if (!snd_seq_client_is_midi2(dest) &&
-+			 type == UMP_MSG_TYPE_MIDI2_CHANNEL_VOICE)
-+			return cvt_ump_midi2_to_midi1(dest, dest_port,
-+						      event, atomic, hop);
-+		/* non-EP port and different group is set? */
-+		if (dest_port->ump_group &&
-+		    ump_message_group(*ump_ev->ump) + 1 != dest_port->ump_group)
-+			return deliver_with_group_convert(dest, dest_port,
-+							  ump_ev, atomic, hop);
-+		/* copy as-is */
-+		return __snd_seq_deliver_single_event(dest, dest_port,
-+						      event, atomic, hop);
++/* sequencer subscription ops for each client */
++static int seq_ump_subscribe(void *pdata, struct snd_seq_port_subscribe *info)
++{
++	struct seq_ump_client *client = pdata;
++
++	return seq_ump_client_open(client, STR_IN);
++}
++
++static int seq_ump_unsubscribe(void *pdata, struct snd_seq_port_subscribe *info)
++{
++	struct seq_ump_client *client = pdata;
++
++	return seq_ump_client_close(client, STR_IN);
++}
++
++static int seq_ump_use(void *pdata, struct snd_seq_port_subscribe *info)
++{
++	struct seq_ump_client *client = pdata;
++
++	return seq_ump_client_open(client, STR_OUT);
++}
++
++static int seq_ump_unuse(void *pdata, struct snd_seq_port_subscribe *info)
++{
++	struct seq_ump_client *client = pdata;
++
++	return seq_ump_client_close(client, STR_OUT);
++}
++
++/* fill port_info from the given UMP EP and group info */
++static void fill_port_info(struct snd_seq_port_info *port,
++			   struct seq_ump_client *client,
++			   struct seq_ump_group *group)
++{
++	unsigned int rawmidi_info = client->ump->core.info_flags;
++
++	port->addr.client = client->seq_client;
++	port->addr.port = ump_group_to_seq_port(group->group);
++	port->capability = 0;
++	if (rawmidi_info & SNDRV_RAWMIDI_INFO_OUTPUT)
++		port->capability |= SNDRV_SEQ_PORT_CAP_WRITE |
++			SNDRV_SEQ_PORT_CAP_SYNC_WRITE |
++			SNDRV_SEQ_PORT_CAP_SUBS_WRITE;
++	if (rawmidi_info & SNDRV_RAWMIDI_INFO_INPUT)
++		port->capability |= SNDRV_SEQ_PORT_CAP_READ |
++			SNDRV_SEQ_PORT_CAP_SYNC_READ |
++			SNDRV_SEQ_PORT_CAP_SUBS_READ;
++	if (rawmidi_info & SNDRV_RAWMIDI_INFO_DUPLEX)
++		port->capability |= SNDRV_SEQ_PORT_CAP_DUPLEX;
++	if (group->dir_bits & (1 << STR_IN))
++		port->direction |= SNDRV_SEQ_PORT_DIR_INPUT;
++	if (group->dir_bits & (1 << STR_OUT))
++		port->direction |= SNDRV_SEQ_PORT_DIR_OUTPUT;
++	port->ump_group = group->group + 1;
++	if (!group->active)
++		port->capability |= SNDRV_SEQ_PORT_CAP_INACTIVE;
++	port->type = SNDRV_SEQ_PORT_TYPE_MIDI_GENERIC |
++		SNDRV_SEQ_PORT_TYPE_MIDI_UMP |
++		SNDRV_SEQ_PORT_TYPE_HARDWARE |
++		SNDRV_SEQ_PORT_TYPE_PORT;
++	port->midi_channels = 16;
++	if (*group->name)
++		snprintf(port->name, sizeof(port->name), "Group %d (%s)",
++			 group->group + 1, group->name);
++	else
++		sprintf(port->name, "Group %d", group->group + 1);
++}
++
++/* create a new sequencer port per UMP group */
++static int seq_ump_group_init(struct seq_ump_client *client, int group_index)
++{
++	struct seq_ump_group *group = &client->groups[group_index];
++	struct snd_seq_port_info *port;
++	struct snd_seq_port_callback pcallbacks;
++	int err;
++
++	port = kzalloc(sizeof(*port), GFP_KERNEL);
++	if (!port) {
++		err = -ENOMEM;
++		goto error;
 +	}
 +
-+	return cvt_ump_to_any(dest, dest_port, event, type, atomic, hop);
++	fill_port_info(port, client, group);
++	port->flags = SNDRV_SEQ_PORT_FLG_GIVEN_PORT;
++	memset(&pcallbacks, 0, sizeof(pcallbacks));
++	pcallbacks.owner = THIS_MODULE;
++	pcallbacks.private_data = client;
++	pcallbacks.subscribe = seq_ump_subscribe;
++	pcallbacks.unsubscribe = seq_ump_unsubscribe;
++	pcallbacks.use = seq_ump_use;
++	pcallbacks.unuse = seq_ump_unuse;
++	pcallbacks.event_input = seq_ump_process_event;
++	port->kernel = &pcallbacks;
++	err = snd_seq_kernel_client_ctl(client->seq_client,
++					SNDRV_SEQ_IOCTL_CREATE_PORT,
++					port);
++ error:
++	kfree(port);
++	return err;
 +}
 +
-+/*
-+ * MIDI1 sequencer event -> UMP conversion
-+ */
-+
-+/* Conversion to UMP MIDI 1.0 */
-+
-+/* convert note on/off event to MIDI 1.0 UMP */
-+static int note_ev_to_ump_midi1(const struct snd_seq_event *event,
-+				struct snd_seq_client_port *dest_port,
-+				union snd_ump_midi1_msg *data,
-+				unsigned char status)
++/* update dir_bits and active flag for all groups in the client */
++static void update_group_attrs(struct seq_ump_client *client)
 +{
-+	if (!event->data.note.velocity)
-+		status = UMP_MSG_STATUS_NOTE_OFF;
-+	data->note.status = status;
-+	data->note.channel = event->data.note.channel & 0x0f;
-+	data->note.velocity = event->data.note.velocity & 0x7f;
-+	data->note.note = event->data.note.note & 0x7f;
-+	return 1;
-+}
-+
-+/* convert CC event to MIDI 1.0 UMP */
-+static int cc_ev_to_ump_midi1(const struct snd_seq_event *event,
-+			      struct snd_seq_client_port *dest_port,
-+			      union snd_ump_midi1_msg *data,
-+			      unsigned char status)
-+{
-+	data->cc.status = status;
-+	data->cc.channel = event->data.control.channel & 0x0f;
-+	data->cc.index = event->data.control.param;
-+	data->cc.data = event->data.control.value;
-+	return 1;
-+}
-+
-+/* convert one-parameter control event to MIDI 1.0 UMP */
-+static int ctrl_ev_to_ump_midi1(const struct snd_seq_event *event,
-+				struct snd_seq_client_port *dest_port,
-+				union snd_ump_midi1_msg *data,
-+				unsigned char status)
-+{
-+	data->caf.status = status;
-+	data->caf.channel = event->data.control.channel & 0x0f;
-+	data->caf.data = event->data.control.value & 0x7f;
-+	return 1;
-+}
-+
-+/* convert pitchbend event to MIDI 1.0 UMP */
-+static int pitchbend_ev_to_ump_midi1(const struct snd_seq_event *event,
-+				     struct snd_seq_client_port *dest_port,
-+				     union snd_ump_midi1_msg *data,
-+				     unsigned char status)
-+{
-+	int val = event->data.control.value + 8192;
-+
-+	val = clamp(val, 0, 0x3fff);
-+	data->pb.status = status;
-+	data->pb.channel = event->data.control.channel & 0x0f;
-+	data->pb.data_msb = (val >> 7) & 0x7f;
-+	data->pb.data_lsb = val & 0x7f;
-+	return 1;
-+}
-+
-+/* convert 14bit control event to MIDI 1.0 UMP; split to two events */
-+static int ctrl14_ev_to_ump_midi1(const struct snd_seq_event *event,
-+				  struct snd_seq_client_port *dest_port,
-+				  union snd_ump_midi1_msg *data,
-+				  unsigned char status)
-+{
-+	data->cc.status = UMP_MSG_STATUS_CC;
-+	data->cc.channel = event->data.control.channel & 0x0f;
-+	data->cc.index = event->data.control.param & 0x7f;
-+	if (event->data.control.param < 0x20) {
-+		data->cc.data = (event->data.control.value >> 7) & 0x7f;
-+		data[1] = data[0];
-+		data[1].cc.index = event->data.control.param | 0x20;
-+		data[1].cc.data = event->data.control.value & 0x7f;
-+		return 2;
-+	}
-+
-+	data->cc.data = event->data.control.value & 0x7f;
-+	return 1;
-+}
-+
-+/* convert RPN/NRPN event to MIDI 1.0 UMP; split to four events */
-+static int rpn_ev_to_ump_midi1(const struct snd_seq_event *event,
-+			       struct snd_seq_client_port *dest_port,
-+			       union snd_ump_midi1_msg *data,
-+			       unsigned char status)
-+{
-+	bool is_rpn = (status == UMP_MSG_STATUS_RPN);
-+
-+	data->cc.status = UMP_MSG_STATUS_CC;
-+	data->cc.channel = event->data.control.channel & 0x0f;
-+	data[1] = data[2] = data[3] = data[0];
-+
-+	data[0].cc.index = is_rpn ? UMP_CC_RPN_MSB : UMP_CC_NRPN_MSB;
-+	data[0].cc.data = (event->data.control.param >> 7) & 0x7f;
-+	data[1].cc.index = is_rpn ? UMP_CC_RPN_LSB : UMP_CC_NRPN_LSB;
-+	data[1].cc.data = event->data.control.param & 0x7f;
-+	data[2].cc.index = UMP_CC_DATA;
-+	data[2].cc.data = (event->data.control.value >> 7) & 0x7f;
-+	data[3].cc.index = UMP_CC_DATA_LSB;
-+	data[3].cc.data = event->data.control.value & 0x7f;
-+	return 4;
-+}
-+
-+/* convert system / RT message to UMP */
-+static int system_ev_to_ump_midi1(const struct snd_seq_event *event,
-+				  struct snd_seq_client_port *dest_port,
-+				  union snd_ump_midi1_msg *data,
-+				  unsigned char status)
-+{
-+	data->system.status = status;
-+	return 1;
-+}
-+
-+/* convert system / RT message with 1 parameter to UMP */
-+static int system_1p_ev_to_ump_midi1(const struct snd_seq_event *event,
-+				     struct snd_seq_client_port *dest_port,
-+				     union snd_ump_midi1_msg *data,
-+				     unsigned char status)
-+{
-+	data->system.status = status;
-+	data->system.parm1 = event->data.control.value & 0x7f;
-+	return 1;
-+}
-+
-+/* convert system / RT message with two parameters to UMP */
-+static int system_2p_ev_to_ump_midi1(const struct snd_seq_event *event,
-+				     struct snd_seq_client_port *dest_port,
-+				     union snd_ump_midi1_msg *data,
-+				     unsigned char status)
-+{
-+	data->system.status = status;
-+	data->system.parm1 = (event->data.control.value >> 7) & 0x7f;
-+	data->system.parm1 = event->data.control.value & 0x7f;
-+	return 1;
-+}
-+
-+/* Conversion to UMP MIDI 2.0 */
-+
-+/* convert note on/off event to MIDI 2.0 UMP */
-+static int note_ev_to_ump_midi2(const struct snd_seq_event *event,
-+				struct snd_seq_client_port *dest_port,
-+				union snd_ump_midi2_msg *data,
-+				unsigned char status)
-+{
-+	if (!event->data.note.velocity)
-+		status = UMP_MSG_STATUS_NOTE_OFF;
-+	data->note.status = status;
-+	data->note.channel = event->data.note.channel & 0x0f;
-+	data->note.note = event->data.note.note & 0x7f;
-+	data->note.velocity = upscale_7_to_16bit(event->data.note.velocity & 0x7f);
-+	return 1;
-+}
-+
-+/* convert PAF event to MIDI 2.0 UMP */
-+static int paf_ev_to_ump_midi2(const struct snd_seq_event *event,
-+			       struct snd_seq_client_port *dest_port,
-+			       union snd_ump_midi2_msg *data,
-+			       unsigned char status)
-+{
-+	data->paf.status = status;
-+	data->paf.channel = event->data.note.channel & 0x0f;
-+	data->paf.note = event->data.note.note & 0x7f;
-+	data->paf.data = upscale_7_to_32bit(event->data.note.velocity & 0x7f);
-+	return 1;
-+}
-+
-+/* set up the MIDI2 RPN/NRPN packet data from the parsed info */
-+static void fill_rpn(struct snd_seq_ump_midi2_bank *cc,
-+		     union snd_ump_midi2_msg *data)
-+{
-+	if (cc->rpn_set) {
-+		data->rpn.status = UMP_MSG_STATUS_RPN;
-+		data->rpn.bank = cc->cc_rpn_msb;
-+		data->rpn.index = cc->cc_rpn_lsb;
-+		cc->rpn_set = 0;
-+		cc->cc_rpn_msb = cc->cc_rpn_lsb = 0;
-+	} else {
-+		data->rpn.status = UMP_MSG_STATUS_NRPN;
-+		data->rpn.bank = cc->cc_nrpn_msb;
-+		data->rpn.index = cc->cc_nrpn_lsb;
-+		cc->nrpn_set = 0;
-+		cc->cc_nrpn_msb = cc->cc_nrpn_lsb = 0;
-+	}
-+	data->rpn.data = upscale_14_to_32bit((cc->cc_data_msb << 7) |
-+					     cc->cc_data_lsb);
-+	cc->cc_data_msb = cc->cc_data_lsb = 0;
-+}
-+
-+/* convert CC event to MIDI 2.0 UMP */
-+static int cc_ev_to_ump_midi2(const struct snd_seq_event *event,
-+			      struct snd_seq_client_port *dest_port,
-+			      union snd_ump_midi2_msg *data,
-+			      unsigned char status)
-+{
-+	unsigned char channel = event->data.control.channel & 0x0f;
-+	unsigned char index = event->data.control.param & 0x7f;
-+	unsigned char val = event->data.control.value & 0x7f;
-+	struct snd_seq_ump_midi2_bank *cc = &dest_port->midi2_bank[channel];
-+
-+	/* process special CC's (bank/rpn/nrpn) */
-+	switch (index) {
-+	case UMP_CC_RPN_MSB:
-+		cc->rpn_set = 1;
-+		cc->cc_rpn_msb = val;
-+		return 0; // skip
-+	case UMP_CC_RPN_LSB:
-+		cc->rpn_set = 1;
-+		cc->cc_rpn_lsb = val;
-+		return 0; // skip
-+	case UMP_CC_NRPN_MSB:
-+		cc->nrpn_set = 1;
-+		cc->cc_nrpn_msb = val;
-+		return 0; // skip
-+	case UMP_CC_NRPN_LSB:
-+		cc->nrpn_set = 1;
-+		cc->cc_nrpn_lsb = val;
-+		return 0; // skip
-+	case UMP_CC_DATA:
-+		cc->cc_data_msb = val;
-+		return 0; // skip
-+	case UMP_CC_BANK_SELECT:
-+		cc->bank_set = 1;
-+		cc->cc_bank_msb = val;
-+		return 0; // skip
-+	case UMP_CC_BANK_SELECT_LSB:
-+		cc->bank_set = 1;
-+		cc->cc_bank_lsb = val;
-+		return 0; // skip
-+	case UMP_CC_DATA_LSB:
-+		cc->cc_data_lsb = val;
-+		if (!(cc->rpn_set || cc->nrpn_set))
-+			return 0; // skip
-+		fill_rpn(cc, data);
-+		return 1;
-+	}
-+
-+	data->cc.status = status;
-+	data->cc.channel = channel;
-+	data->cc.index = index;
-+	data->cc.data = upscale_7_to_32bit(event->data.control.value & 0x7f);
-+	return 1;
-+}
-+
-+/* convert one-parameter control event to MIDI 2.0 UMP */
-+static int ctrl_ev_to_ump_midi2(const struct snd_seq_event *event,
-+				struct snd_seq_client_port *dest_port,
-+				union snd_ump_midi2_msg *data,
-+				unsigned char status)
-+{
-+	data->caf.status = status;
-+	data->caf.channel = event->data.control.channel & 0x0f;
-+	data->caf.data = upscale_7_to_32bit(event->data.control.value & 0x7f);
-+	return 1;
-+}
-+
-+/* convert program change event to MIDI 2.0 UMP */
-+static int pgm_ev_to_ump_midi2(const struct snd_seq_event *event,
-+			       struct snd_seq_client_port *dest_port,
-+			       union snd_ump_midi2_msg *data,
-+			       unsigned char status)
-+{
-+	unsigned char channel = event->data.control.channel & 0x0f;
-+	struct snd_seq_ump_midi2_bank *cc = &dest_port->midi2_bank[channel];
-+
-+	data->pg.status = status;
-+	data->pg.channel = channel;
-+	data->pg.program = event->data.control.value & 0x7f;
-+	if (cc->bank_set) {
-+		data->pg.bank_valid = 1;
-+		data->pg.bank_msb = cc->cc_bank_msb;
-+		data->pg.bank_lsb = cc->cc_bank_lsb;
-+		cc->bank_set = 0;
-+		cc->cc_bank_msb = cc->cc_bank_lsb = 0;
-+	}
-+	return 1;
-+}
-+
-+/* convert pitchbend event to MIDI 2.0 UMP */
-+static int pitchbend_ev_to_ump_midi2(const struct snd_seq_event *event,
-+				     struct snd_seq_client_port *dest_port,
-+				     union snd_ump_midi2_msg *data,
-+				     unsigned char status)
-+{
-+	int val = event->data.control.value + 8192;
-+
-+	val = clamp(val, 0, 0x3fff);
-+	data->pb.status = status;
-+	data->pb.channel = event->data.control.channel & 0x0f;
-+	data->pb.data = upscale_14_to_32bit(val);
-+	return 1;
-+}
-+
-+/* convert 14bit control event to MIDI 2.0 UMP; split to two events */
-+static int ctrl14_ev_to_ump_midi2(const struct snd_seq_event *event,
-+				  struct snd_seq_client_port *dest_port,
-+				  union snd_ump_midi2_msg *data,
-+				  unsigned char status)
-+{
-+	unsigned char channel = event->data.control.channel & 0x0f;
-+	unsigned char index = event->data.control.param & 0x7f;
-+	struct snd_seq_ump_midi2_bank *cc = &dest_port->midi2_bank[channel];
-+	unsigned char msb, lsb;
-+
-+	msb = (event->data.control.value >> 7) & 0x7f;
-+	lsb = event->data.control.value & 0x7f;
-+	/* process special CC's (bank/rpn/nrpn) */
-+	switch (index) {
-+	case UMP_CC_BANK_SELECT:
-+		cc->cc_bank_msb = msb;
-+		fallthrough;
-+	case UMP_CC_BANK_SELECT_LSB:
-+		cc->bank_set = 1;
-+		cc->cc_bank_lsb = lsb;
-+		return 0; // skip
-+	case UMP_CC_RPN_MSB:
-+		cc->cc_rpn_msb = msb;
-+		fallthrough;
-+	case UMP_CC_RPN_LSB:
-+		cc->rpn_set = 1;
-+		cc->cc_rpn_lsb = lsb;
-+		return 0; // skip
-+	case UMP_CC_NRPN_MSB:
-+		cc->cc_nrpn_msb = msb;
-+		fallthrough;
-+	case UMP_CC_NRPN_LSB:
-+		cc->nrpn_set = 1;
-+		cc->cc_nrpn_lsb = lsb;
-+		return 0; // skip
-+	case UMP_CC_DATA:
-+		cc->cc_data_msb = msb;
-+		fallthrough;
-+	case UMP_CC_DATA_LSB:
-+		cc->cc_data_lsb = lsb;
-+		if (!(cc->rpn_set || cc->nrpn_set))
-+			return 0; // skip
-+		fill_rpn(cc, data);
-+		return 1;
-+	}
-+
-+	data->cc.status = UMP_MSG_STATUS_CC;
-+	data->cc.channel = channel;
-+	data->cc.index = index;
-+	if (event->data.control.param < 0x20) {
-+		data->cc.data = upscale_7_to_32bit(msb);
-+		data[1] = data[0];
-+		data[1].cc.index = event->data.control.param | 0x20;
-+		data[1].cc.data = upscale_7_to_32bit(lsb);
-+		return 2;
-+	}
-+
-+	data->cc.data = upscale_7_to_32bit(lsb);
-+	return 1;
-+}
-+
-+/* convert RPN/NRPN event to MIDI 2.0 UMP */
-+static int rpn_ev_to_ump_midi2(const struct snd_seq_event *event,
-+			       struct snd_seq_client_port *dest_port,
-+			       union snd_ump_midi2_msg *data,
-+			       unsigned char status)
-+{
-+	data->rpn.status = status;
-+	data->rpn.channel = event->data.control.channel;
-+	data->rpn.bank = (event->data.control.param >> 7) & 0x7f;
-+	data->rpn.index = event->data.control.param & 0x7f;
-+	data->rpn.data = upscale_14_to_32bit(event->data.control.value & 0x3fff);
-+	return 1;
-+}
-+
-+/* convert system / RT message to UMP */
-+static int system_ev_to_ump_midi2(const struct snd_seq_event *event,
-+				  struct snd_seq_client_port *dest_port,
-+				  union snd_ump_midi2_msg *data,
-+				  unsigned char status)
-+{
-+	return system_ev_to_ump_midi1(event, dest_port,
-+				      (union snd_ump_midi1_msg *)data,
-+				      status);
-+}
-+
-+/* convert system / RT message with 1 parameter to UMP */
-+static int system_1p_ev_to_ump_midi2(const struct snd_seq_event *event,
-+				     struct snd_seq_client_port *dest_port,
-+				     union snd_ump_midi2_msg *data,
-+				     unsigned char status)
-+{
-+	return system_1p_ev_to_ump_midi1(event, dest_port,
-+					 (union snd_ump_midi1_msg *)data,
-+					 status);
-+}
-+
-+/* convert system / RT message with two parameters to UMP */
-+static int system_2p_ev_to_ump_midi2(const struct snd_seq_event *event,
-+				     struct snd_seq_client_port *dest_port,
-+				     union snd_ump_midi2_msg *data,
-+				     unsigned char status)
-+{
-+	return system_1p_ev_to_ump_midi1(event, dest_port,
-+					 (union snd_ump_midi1_msg *)data,
-+					 status);
-+}
-+
-+struct seq_ev_to_ump {
-+	int seq_type;
-+	unsigned char status;
-+	int (*midi1_encode)(const struct snd_seq_event *event,
-+			    struct snd_seq_client_port *dest_port,
-+			    union snd_ump_midi1_msg *data,
-+			    unsigned char status);
-+	int (*midi2_encode)(const struct snd_seq_event *event,
-+			    struct snd_seq_client_port *dest_port,
-+			    union snd_ump_midi2_msg *data,
-+			    unsigned char status);
-+};
-+
-+static const struct seq_ev_to_ump seq_ev_ump_encoders[] = {
-+	{ SNDRV_SEQ_EVENT_NOTEON, UMP_MSG_STATUS_NOTE_ON,
-+	  note_ev_to_ump_midi1, note_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_NOTEOFF, UMP_MSG_STATUS_NOTE_OFF,
-+	  note_ev_to_ump_midi1, note_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_KEYPRESS, UMP_MSG_STATUS_POLY_PRESSURE,
-+	  note_ev_to_ump_midi1, paf_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_CONTROLLER, UMP_MSG_STATUS_CC,
-+	  cc_ev_to_ump_midi1, cc_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_PGMCHANGE, UMP_MSG_STATUS_PROGRAM,
-+	  ctrl_ev_to_ump_midi1, pgm_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_CHANPRESS, UMP_MSG_STATUS_CHANNEL_PRESSURE,
-+	  ctrl_ev_to_ump_midi1, ctrl_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_PITCHBEND, UMP_MSG_STATUS_PITCH_BEND,
-+	  pitchbend_ev_to_ump_midi1, pitchbend_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_CONTROL14, 0,
-+	  ctrl14_ev_to_ump_midi1, ctrl14_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_NONREGPARAM, UMP_MSG_STATUS_NRPN,
-+	  rpn_ev_to_ump_midi1, rpn_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_REGPARAM, UMP_MSG_STATUS_RPN,
-+	  rpn_ev_to_ump_midi1, rpn_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_QFRAME, UMP_SYSTEM_STATUS_MIDI_TIME_CODE,
-+	  system_1p_ev_to_ump_midi1, system_1p_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_SONGPOS, UMP_SYSTEM_STATUS_SONG_POSITION,
-+	  system_2p_ev_to_ump_midi1, system_2p_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_SONGSEL, UMP_SYSTEM_STATUS_SONG_SELECT,
-+	  system_1p_ev_to_ump_midi1, system_1p_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_TUNE_REQUEST, UMP_SYSTEM_STATUS_TUNE_REQUEST,
-+	  system_ev_to_ump_midi1, system_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_CLOCK, UMP_SYSTEM_STATUS_TIMING_CLOCK,
-+	  system_ev_to_ump_midi1, system_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_START, UMP_SYSTEM_STATUS_START,
-+	  system_ev_to_ump_midi1, system_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_CONTINUE, UMP_SYSTEM_STATUS_CONTINUE,
-+	  system_ev_to_ump_midi1, system_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_STOP, UMP_SYSTEM_STATUS_STOP,
-+	  system_ev_to_ump_midi1, system_ev_to_ump_midi2 },
-+	{ SNDRV_SEQ_EVENT_SENSING, UMP_SYSTEM_STATUS_ACTIVE_SENSING,
-+	  system_ev_to_ump_midi1, system_ev_to_ump_midi2 },
-+};
-+
-+static const struct seq_ev_to_ump *find_ump_encoder(int type)
-+{
++	struct snd_ump_block *fb;
++	struct seq_ump_group *group;
 +	int i;
 +
-+	for (i = 0; i < ARRAY_SIZE(seq_ev_ump_encoders); i++)
-+		if (seq_ev_ump_encoders[i].seq_type == type)
-+			return &seq_ev_ump_encoders[i];
-+
-+	return NULL;
-+}
-+
-+static void setup_ump_event(struct snd_seq_ump_event *dest,
-+			    const struct snd_seq_event *src)
-+{
-+	memcpy(dest, src, sizeof(*src));
-+	dest->type = 0;
-+	dest->flags |= SNDRV_SEQ_EVENT_UMP;
-+	dest->flags &= ~SNDRV_SEQ_EVENT_LENGTH_MASK;
-+	memset(dest->ump, 0, sizeof(dest->ump));
-+}
-+
-+/* Convert ALSA seq event to UMP MIDI 1.0 and deliver it */
-+static int cvt_to_ump_midi1(struct snd_seq_client *dest,
-+			    struct snd_seq_client_port *dest_port,
-+			    struct snd_seq_event *event,
-+			    int atomic, int hop)
-+{
-+	const struct seq_ev_to_ump *encoder;
-+	struct snd_seq_ump_event ev_cvt;
-+	union snd_ump_midi1_msg data[4];
-+	int i, n, err;
-+
-+	encoder = find_ump_encoder(event->type);
-+	if (!encoder)
-+		return __snd_seq_deliver_single_event(dest, dest_port,
-+						      event, atomic, hop);
-+
-+	data->raw = make_raw_ump(dest_port, UMP_MSG_TYPE_MIDI1_CHANNEL_VOICE);
-+	n = encoder->midi1_encode(event, dest_port, data, encoder->status);
-+	if (!n)
-+		return 0;
-+
-+	setup_ump_event(&ev_cvt, event);
-+	for (i = 0; i < n; i++) {
-+		ev_cvt.ump[0] = data[i].raw;
-+		err = __snd_seq_deliver_single_event(dest, dest_port,
-+						     (struct snd_seq_event *)&ev_cvt,
-+						     atomic, hop);
-+		if (err < 0)
-+			return err;
++	for (i = 0; i < SNDRV_UMP_MAX_GROUPS; i++) {
++		group = &client->groups[i];
++		*group->name = 0;
++		group->dir_bits = 0;
++		group->active = 0;
++		group->group = i;
 +	}
 +
-+	return 0;
-+}
-+
-+/* Convert ALSA seq event to UMP MIDI 2.0 and deliver it */
-+static int cvt_to_ump_midi2(struct snd_seq_client *dest,
-+			    struct snd_seq_client_port *dest_port,
-+			    struct snd_seq_event *event,
-+			    int atomic, int hop)
-+{
-+	const struct seq_ev_to_ump *encoder;
-+	struct snd_seq_ump_event ev_cvt;
-+	union snd_ump_midi2_msg data[2];
-+	int i, n, err;
-+
-+	encoder = find_ump_encoder(event->type);
-+	if (!encoder)
-+		return __snd_seq_deliver_single_event(dest, dest_port,
-+						      event, atomic, hop);
-+
-+	data->raw[0] = make_raw_ump(dest_port, UMP_MSG_TYPE_MIDI2_CHANNEL_VOICE);
-+	data->raw[1] = 0;
-+	n = encoder->midi2_encode(event, dest_port, data, encoder->status);
-+	if (!n)
-+		return 0;
-+
-+	setup_ump_event(&ev_cvt, event);
-+	for (i = 0; i < n; i++) {
-+		memcpy(ev_cvt.ump, &data[i], sizeof(data[i]));
-+		err = __snd_seq_deliver_single_event(dest, dest_port,
-+						     (struct snd_seq_event *)&ev_cvt,
-+						     atomic, hop);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+/* Fill up a sysex7 UMP from the byte stream */
-+static void fill_sysex7_ump(struct snd_seq_client_port *dest_port,
-+			    u32 *val, u8 status, u8 *buf, int len)
-+{
-+	memset(val, 0, 8);
-+	memcpy((u8 *)val + 2, buf, len);
-+#ifdef __LITTLE_ENDIAN
-+	swab32_array(val, 2);
-+#endif
-+	val[0] |= ump_compose(UMP_MSG_TYPE_DATA, get_ump_group(dest_port),
-+			      status, len);
-+}
-+
-+/* Convert sysex var event to UMP sysex7 packets and deliver them */
-+static int cvt_sysex_to_ump(struct snd_seq_client *dest,
-+			    struct snd_seq_client_port *dest_port,
-+			    struct snd_seq_event *event,
-+			    int atomic, int hop)
-+{
-+	struct snd_seq_ump_event ev_cvt;
-+	unsigned char status;
-+	u8 buf[6], *xbuf;
-+	int offset = 0;
-+	int len, err;
-+
-+	if (!snd_seq_ev_is_variable(event))
-+		return 0;
-+
-+	setup_ump_event(&ev_cvt, event);
-+	for (;;) {
-+		len = snd_seq_expand_var_event_at(event, sizeof(buf), buf, offset);
-+		if (len <= 0)
++	list_for_each_entry(fb, &client->ump->block_list, list) {
++		if (fb->info.first_group < 0 ||
++		    fb->info.first_group + fb->info.num_groups > SNDRV_UMP_MAX_GROUPS)
 +			break;
-+		if (WARN_ON(len > 6))
-+			break;
-+		offset += len;
-+		xbuf = buf;
-+		if (*xbuf == UMP_MIDI1_MSG_SYSEX_START) {
-+			status = UMP_SYSEX_STATUS_START;
-+			xbuf++;
-+			len--;
-+			if (len > 0 && xbuf[len - 1] == UMP_MIDI1_MSG_SYSEX_END) {
-+				status = UMP_SYSEX_STATUS_SINGLE;
-+				len--;
++		group = &client->groups[fb->info.first_group];
++		for (i = 0; i < fb->info.num_groups; i++, group++) {
++			if (fb->info.active)
++				group->active = 1;
++			switch (fb->info.direction) {
++			case SNDRV_UMP_DIR_INPUT:
++				group->dir_bits |= (1 << STR_IN);
++				break;
++			case SNDRV_UMP_DIR_OUTPUT:
++				group->dir_bits |= (1 << STR_OUT);
++				break;
++			case SNDRV_UMP_DIR_BIDIRECTION:
++				group->dir_bits |= (1 << STR_OUT) | (1 << STR_IN);
++				break;
 +			}
-+		} else {
-+			if (xbuf[len - 1] == UMP_MIDI1_MSG_SYSEX_END) {
-+				status = UMP_SYSEX_STATUS_END;
-+				len--;
++			if (!*fb->info.name)
++				continue;
++			if (!*group->name) {
++				/* store the first matching name */
++				strscpy(group->name, fb->info.name,
++					sizeof(group->name));
 +			} else {
-+				status = UMP_SYSEX_STATUS_CONTINUE;
++				/* when overlapping, concat names */
++				strlcat(group->name, ", ", sizeof(group->name));
++				strlcat(group->name, fb->info.name,
++					sizeof(group->name));
 +			}
 +		}
-+		fill_sysex7_ump(dest_port, ev_cvt.ump, status, xbuf, len);
-+		err = __snd_seq_deliver_single_event(dest, dest_port,
-+						     (struct snd_seq_event *)&ev_cvt,
-+						     atomic, hop);
-+		if (err < 0)
-+			return err;
 +	}
++}
++
++/* release the client resources */
++static void seq_ump_client_free(struct seq_ump_client *client)
++{
++	if (client->seq_client >= 0)
++		snd_seq_delete_kernel_client(client->seq_client);
++
++	client->ump->seq_ops = NULL;
++	client->ump->seq_client = NULL;
++
++	kfree(client);
++}
++
++/* update the MIDI version for the given client */
++static void setup_client_midi_version(struct seq_ump_client *client)
++{
++	struct snd_seq_client *cptr;
++
++	cptr = snd_seq_kernel_client_get(client->seq_client);
++	if (!cptr)
++		return;
++	if (client->ump->info.protocol & SNDRV_UMP_EP_INFO_PROTO_MIDI2)
++		cptr->midi_version = SNDRV_SEQ_CLIENT_UMP_MIDI_2_0;
++	else
++		cptr->midi_version = SNDRV_SEQ_CLIENT_UMP_MIDI_1_0;
++	snd_seq_kernel_client_put(cptr);
++}
++
++static const struct snd_seq_ump_ops seq_ump_ops = {
++	.input_receive = seq_ump_input_receive,
++};
++
++/* create a sequencer client and ports for the given UMP endpoint */
++static int snd_seq_ump_probe(struct device *_dev)
++{
++	struct snd_seq_device *dev = to_seq_dev(_dev);
++	struct snd_ump_endpoint *ump = dev->private_data;
++	struct snd_card *card = dev->card;
++	struct seq_ump_client *client;
++	int p, err;
++
++	client = kzalloc(sizeof(*client), GFP_KERNEL);
++	if (!client)
++		return -ENOMEM;
++
++	client->ump = ump;
++
++	client->seq_client =
++		snd_seq_create_kernel_client(card, ump->core.device,
++					     ump->core.name);
++	if (client->seq_client < 0) {
++		err = client->seq_client;
++		goto error;
++	}
++
++	setup_client_midi_version(client);
++	update_group_attrs(client);
++
++	for (p = 0; p < SNDRV_UMP_MAX_GROUPS; p++) {
++		err = seq_ump_group_init(client, p);
++		if (err < 0)
++			goto error;
++	}
++
++	ump->seq_client = client;
++	ump->seq_ops = &seq_ump_ops;
++	return 0;
++
++ error:
++	seq_ump_client_free(client);
++	return err;
++}
++
++/* remove a sequencer client */
++static int snd_seq_ump_remove(struct device *_dev)
++{
++	struct snd_seq_device *dev = to_seq_dev(_dev);
++	struct snd_ump_endpoint *ump = dev->private_data;
++
++	if (ump->seq_client)
++		seq_ump_client_free(ump->seq_client);
 +	return 0;
 +}
 +
-+/* Convert to UMP packet and deliver */
-+int snd_seq_deliver_to_ump(struct snd_seq_client *source,
-+			   struct snd_seq_client *dest,
-+			   struct snd_seq_client_port *dest_port,
-+			   struct snd_seq_event *event,
-+			   int atomic, int hop)
++static struct snd_seq_driver seq_ump_driver = {
++	.driver = {
++		.name = KBUILD_MODNAME,
++		.probe = snd_seq_ump_probe,
++		.remove = snd_seq_ump_remove,
++	},
++	.id = SNDRV_SEQ_DEV_ID_UMP,
++	.argsize = 0,
++};
++
++module_snd_seq_driver(seq_ump_driver);
++
++MODULE_DESCRIPTION("ALSA sequencer client for UMP rawmidi");
++MODULE_LICENSE("GPL");
+diff --git a/sound/core/ump.c b/sound/core/ump.c
+index cbe704b5d90d..69993cad6772 100644
+--- a/sound/core/ump.c
++++ b/sound/core/ump.c
+@@ -132,8 +132,8 @@ int snd_ump_endpoint_new(struct snd_card *card, char *id, int device,
+ 	if (!ump)
+ 		return -ENOMEM;
+ 	INIT_LIST_HEAD(&ump->block_list);
+-#if IS_ENABLED(CONFIG_SND_UMP_LEGACY_RAWMIDI)
+ 	mutex_init(&ump->open_mutex);
++#if IS_ENABLED(CONFIG_SND_UMP_LEGACY_RAWMIDI)
+ 	spin_lock_init(&ump->legacy_locks[0]);
+ 	spin_lock_init(&ump->legacy_locks[1]);
+ #endif
+@@ -166,8 +166,30 @@ EXPORT_SYMBOL_GPL(snd_ump_endpoint_new);
+  * Device register / unregister hooks;
+  *  do nothing, placeholders for avoiding the default rawmidi handling
+  */
++
++#if IS_ENABLED(CONFIG_SND_SEQUENCER)
++static void snd_ump_dev_seq_free(struct snd_seq_device *device)
 +{
-+	if (event->type == SNDRV_SEQ_EVENT_SYSEX)
-+		return cvt_sysex_to_ump(dest, dest_port, event, atomic, hop);
-+	else if (snd_seq_client_is_midi2(dest))
-+		return cvt_to_ump_midi2(dest, dest_port, event, atomic, hop);
-+	else
-+		return cvt_to_ump_midi1(dest, dest_port, event, atomic, hop);
++	struct snd_ump_endpoint *ump = device->private_data;
++
++	ump->seq_dev = NULL;
 +}
-diff --git a/sound/core/seq/seq_ump_convert.h b/sound/core/seq/seq_ump_convert.h
-new file mode 100644
-index 000000000000..6c146d803280
---- /dev/null
-+++ b/sound/core/seq/seq_ump_convert.h
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * ALSA sequencer event conversion between UMP and legacy clients
-+ */
-+#ifndef __SEQ_UMP_CONVERT_H
-+#define __SEQ_UMP_CONVERT_H
++#endif
 +
-+#include "seq_clientmgr.h"
-+#include "seq_ports.h"
+ static int snd_ump_dev_register(struct snd_rawmidi *rmidi)
+ {
++#if IS_ENABLED(CONFIG_SND_SEQUENCER)
++	struct snd_ump_endpoint *ump = rawmidi_to_ump(rmidi);
++	int err;
 +
-+int snd_seq_deliver_from_ump(struct snd_seq_client *source,
-+			     struct snd_seq_client *dest,
-+			     struct snd_seq_client_port *dest_port,
-+			     struct snd_seq_event *event,
-+			     int atomic, int hop);
-+int snd_seq_deliver_to_ump(struct snd_seq_client *source,
-+			   struct snd_seq_client *dest,
-+			   struct snd_seq_client_port *dest_port,
-+			   struct snd_seq_event *event,
-+			   int atomic, int hop);
-+
-+#endif /* __SEQ_UMP_CONVERT_H */
++	err = snd_seq_device_new(ump->core.card, ump->core.device,
++				 SNDRV_SEQ_DEV_ID_UMP, 0, &ump->seq_dev);
++	if (err < 0)
++		return err;
++	ump->seq_dev->private_data = ump;
++	ump->seq_dev->private_free = snd_ump_dev_seq_free;
++	snd_device_register(ump->core.card, ump->seq_dev);
++#endif
+ 	return 0;
+ }
+ 
+@@ -280,6 +302,10 @@ int snd_ump_receive(struct snd_ump_endpoint *ump, const u32 *buffer, int count)
+ 		n = snd_ump_receive_ump_val(ump, *p++);
+ 		if (!n)
+ 			continue;
++#if IS_ENABLED(CONFIG_SND_SEQUENCER)
++		if (ump->seq_ops)
++			ump->seq_ops->input_receive(ump, ump->input_buf, n);
++#endif
+ 		process_legacy_input(ump, ump->input_buf, n);
+ 	}
+ 
 -- 
 2.35.3
 
