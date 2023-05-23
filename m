@@ -4,96 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3ED05C7EE26
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 12:15:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E180C7EE26
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 May 2023 12:24:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C402207;
-	Tue, 23 May 2023 14:14:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C402207
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2361820C;
+	Tue, 23 May 2023 14:23:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2361820C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684844146;
-	bh=7FeD2RyQ1g00VxcOX7LrLGGBzrn0OPpxWML0RgE0+IQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=s9Ttdz/25P0FAM4QsOtOgvbA/1QfDKBd9I9vJHbtK4JFPTT3FOK6/4TyhIZBUy8qL
-	 jnS4U1JPQ1i0xkJNWIviP/i02TtOVJIt3Sm9dDmaQJPTRZ5v7WtgsZmbGQ2Wge1ftf
-	 VtRLzy7sQli5VEkOP44UylBqWE6BlVR3zYSC9sVc=
+	s=default; t=1684844666;
+	bh=FFTV97KGwlzyZT7eZUaMnRLOwkX3bb0oBudnDcRbf30=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=tGn+Ue1/69GNvOb0FwQtvsscQCKeUMkHFMckT/doZ7icE4P+AF4nO2M0hutp4tpwU
+	 C7Mz2P1X3H95WnV5h9rS6L6agH8YXECrMFB7NVHy7tn2I1Xy0ZzDs2nsXAf0+VUFh2
+	 oTXwv0i7wMWwCPDCwkqqmW/QLyaYkkDMNF7kk4hQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 290A3F80548; Tue, 23 May 2023 14:14:27 +0200 (CEST)
+	id 49C18F80553; Tue, 23 May 2023 14:23:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C881CF8016A;
-	Tue, 23 May 2023 14:14:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0B19F80552;
+	Tue, 23 May 2023 14:23:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 50BF6F8024E; Tue, 23 May 2023 14:14:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
+	id EBF28F80553; Tue, 23 May 2023 14:22:57 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 71A10F80086
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 14:14:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71A10F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 976FFF8016A
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2023 14:22:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 976FFF8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=QxIi/AfH;
+ header.s=susede2_rsa header.b=gjvqb+em;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=q0xsqeXx
+ header.s=susede2_ed25519 header.b=MMBEzgIU
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BE77521D4A;
-	Tue, 23 May 2023 12:14:19 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2A78622A32;
+	Tue, 23 May 2023 12:22:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1684844059;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	t=1684844574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QhGksKBmuFG2bHuvKcHfggpgUZUfcnYJwEeQ8u7h4Ig=;
-	b=QxIi/AfHvAZqJEnsZ9BJA3YaVhrpZzYTeE4Se2JdHT8S6gEyV8m3TBo1U6OMxYHBYeAoE9
-	S+UxN5pfokT2QQNeRSDHByuwkSxqC27Evp3nljrdA8VsTZgP+/jtVzV1F/Vb5f/BysvVGl
-	b/l1qnuQyxXHMNqL/B9oc2TAx6jNZp4=
+	bh=62pj/mPtBE9uzih/1y6PBxRI1aKgGvmc6jZMFMDUQP0=;
+	b=gjvqb+emvtRLu2bQgEVQ0+8TRwi4aduTUzonPHy3Fp+rRg/R6lePw74PyGWEGC+u1t755S
+	E3JyK9SwgaFazOJMytaLW438gPumHmLrRVI6agiMdgort/jYXoA/UtzYmvo84Jy2kEzpyh
+	mv2KtGYtbbWWSngqB+v8/p0Um1XJemc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684844059;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=susede2_ed25519; t=1684844574;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QhGksKBmuFG2bHuvKcHfggpgUZUfcnYJwEeQ8u7h4Ig=;
-	b=q0xsqeXxDNYw8z7hoE423hn0KCru+BhBlcGDKWMWizbt1dtbLYQ9QBCCA/NoD1w9xwbcgs
-	N1Osa1V7zVNZhtBw==
+	bh=62pj/mPtBE9uzih/1y6PBxRI1aKgGvmc6jZMFMDUQP0=;
+	b=MMBEzgIUV2cB5mkq4KD9hVVkTP/45JLZ8HZOJDeb6//3yr4XhzKQuyka/TMeoNNZs6gNaY
+	ilMtAveYTQgB9pBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 900CF13588;
-	Tue, 23 May 2023 12:14:19 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0FB3A13588;
+	Tue, 23 May 2023 12:22:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id TUhGIhuubGTCIwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 23 May 2023 12:14:19 +0000
-Date: Tue, 23 May 2023 14:14:19 +0200
-Message-ID: <87wn0zfdno.wl-tiwai@suse.de>
+	id wAKVAh6wbGQNKAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 23 May 2023 12:22:54 +0000
 From: Takashi Iwai <tiwai@suse.de>
-To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Cc: alsa-devel@alsa-project.org,
-	Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 1/2] ALSA: emu10k1: introduce higher-level voice
- manipulation functions
-In-Reply-To: <20230523104612.198884-1-oswald.buddenhagen@gmx.de>
-References: <20230523104612.198884-1-oswald.buddenhagen@gmx.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: HCNUAJW3CJK3SX3E6ZNIMCIIALVZ5AW6
-X-Message-ID-Hash: HCNUAJW3CJK3SX3E6ZNIMCIIALVZ5AW6
+To: alsa-devel@alsa-project.org
+Subject: [PATCH alsa-lib v2 02/10] uapi: Update control API to 2.0.9
+Date: Tue, 23 May 2023 14:22:39 +0200
+Message-Id: <20230523122247.11744-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230523122247.11744-1-tiwai@suse.de>
+References: <20230523122247.11744-1-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: KTJAW6HHD4EYK5TD76TEW7ALZVK5Z7XC
+X-Message-ID-Hash: KTJAW6HHD4EYK5TD76TEW7ALZVK5Z7XC
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HCNUAJW3CJK3SX3E6ZNIMCIIALVZ5AW6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KTJAW6HHD4EYK5TD76TEW7ALZVK5Z7XC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,16 +112,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 23 May 2023 12:46:11 +0200,
-Oswald Buddenhagen wrote:
-> 
-> This adds snd_emu10k1_pcm_init_{voices,extra_voice}() and
-> snd_emu10k1_playback_{un,}mute_voices() to slightly abstract by voice
-> function and potential stereo property.
-> 
-> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Copied from the kernel uapi header for control API.
+A few new ioctls have been added for the support of UMP next device
+and inquiries of UMP Endpoint and Block info.
 
-Applied both patches now.  Thanks.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/uapi/asound.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/include/sound/uapi/asound.h b/include/sound/uapi/asound.h
+index cf11a6b73e2d..80cd57e968e5 100644
+--- a/include/sound/uapi/asound.h
++++ b/include/sound/uapi/asound.h
+@@ -1008,7 +1008,7 @@ struct snd_timer_tread {
+  *                                                                          *
+  ****************************************************************************/
+ 
+-#define SNDRV_CTL_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 8)
++#define SNDRV_CTL_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 9)
+ 
+ struct snd_ctl_card_info {
+ 	int card;			/* card number */
+@@ -1169,6 +1169,9 @@ struct snd_ctl_tlv {
+ #define SNDRV_CTL_IOCTL_RAWMIDI_NEXT_DEVICE _IOWR('U', 0x40, int)
+ #define SNDRV_CTL_IOCTL_RAWMIDI_INFO	_IOWR('U', 0x41, struct snd_rawmidi_info)
+ #define SNDRV_CTL_IOCTL_RAWMIDI_PREFER_SUBDEVICE _IOW('U', 0x42, int)
++#define SNDRV_CTL_IOCTL_UMP_NEXT_DEVICE	_IOWR('U', 0x43, int)
++#define SNDRV_CTL_IOCTL_UMP_ENDPOINT_INFO _IOWR('U', 0x44, struct snd_ump_endpoint_info)
++#define SNDRV_CTL_IOCTL_UMP_BLOCK_INFO	_IOWR('U', 0x45, struct snd_ump_block_info)
+ #define SNDRV_CTL_IOCTL_POWER		_IOWR('U', 0xd0, int)
+ #define SNDRV_CTL_IOCTL_POWER_STATE	_IOR('U', 0xd1, int)
+ 
+-- 
+2.35.3
 
-Takashi
