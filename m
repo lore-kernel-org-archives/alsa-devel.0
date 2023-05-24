@@ -4,121 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12281C77B7A
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:45:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD874C77B73
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:45:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E0F285D;
-	Fri, 26 May 2023 13:44:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E0F285D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38077208;
+	Fri, 26 May 2023 13:44:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38077208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685101500;
-	bh=ZZPUoTjP7xJRGJghpgqLe6RGGtJMbVGg7u/LyeuxrSE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=j3+YbvkW3omo24G3e2/y4qULXPxNybt5Q0DAOv+BfHNuanCoKBhT3QiSGMaQ0Aj2N
-	 kGtfkVBgrAkWaND8rWrL9takz3Sb2K15tg/sEZdhjuIlIFsMo0IEdURtoa4pP0OYxt
-	 /5RUWE9/OBp949Xt1dUJcHSMjsBU8g8RcvDHNZmk=
+	s=default; t=1685101516;
+	bh=yLzaJ3BZwmUfDHcCkUlzajM4xei2/G1Dqqs+yKtQYnw=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=SHjfVkTgq64u444YXvY8LtnRME1S4BcXTUoqt1PkAasTtDJQIOaCwRMNfQKNlGj8n
+	 obMDGIMYKDJKK6PTIYbrQkCXDc+YxSjQTQFyLgkAZWlIvrwHvQLKNZtqTdxqfth4co
+	 f22UUKggTZaa2Rq4F8JT5waD/gLKOJtD2FAZElvg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A92DAF805B2; Fri, 26 May 2023 13:42:33 +0200 (CEST)
+	id 216FBF805C0; Fri, 26 May 2023 13:42:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16421F805B4;
-	Fri, 26 May 2023 13:42:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8CDFF805C0;
+	Fri, 26 May 2023 13:42:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F0ECF805C9; Wed, 24 May 2023 17:52:02 +0200 (CEST)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 7E431F80249; Wed, 24 May 2023 21:16:54 +0200 (CEST)
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D432CF805C6
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 17:51:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D432CF805C6
+	by alsa1.perex.cz (Postfix) with ESMTPS id C4104F80007
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 21:16:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4104F80007
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=baylibre-com.20221208.gappssmtp.com
- header.i=@baylibre-com.20221208.gappssmtp.com header.a=rsa-sha256
- header.s=20221208 header.b=r9Xqu5ND
-Received: by mail-wm1-x32c.google.com with SMTP id
- 5b1f17b1804b1-3f61530506aso7702575e9.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 24 May 2023 08:51:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1684943509;
- x=1687535509;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h8geeXEOb1JFpSL51yP1LqtEfxAQbaVotjCJur5zhD4=;
-        b=r9Xqu5ND0Bk5xdzrVcEKYQlFpEEChNge6LbIG0g17WQIR6Y6FlFTjj1VLIptKxk12Q
-         yq45EGDPQw9rNHr+jipV1YSj4asgJuaRjeVL0NZhwSDk/F7WDrzxEpDXrSSJyrZb0/M3
-         zBXKIn/cV0bBTAFnJDnUkCCcwvue3vKTmsqLCYu0uVu4CEJS93Dy/yQ+lZNpqtjw/llJ
-         /i6QJwMZfnhn0BXjS9g7SEYSgcIwM6tYnNKca4sWH8rz2seGcHobfGaMYO1qrYroAdGx
-         05BznJ1hGxFw4jfQNNWBm56IewOjSboZXbEWkM4NBUXJGppz8/FOt58lkiEa84eE4ux7
-         4f7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684943509; x=1687535509;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h8geeXEOb1JFpSL51yP1LqtEfxAQbaVotjCJur5zhD4=;
-        b=Hnk1FNvgqVzzwzk5KV3TDQEcWMF9hOjuMHgAyFzg//exQZiEIrTUQkrGBndDic1cgK
-         UZ+63Si4C1fq2DIOlp/fY/npXrOYqftPC2kGD1l7Ot+oQMMXs+GX3udIeoi1+RoH298b
-         /moscEIVWuamq/BqlE495hoaLMoDRanaq475rW6lz3+LeoNRhMJhMTTFSR2IsVIFEcIm
-         EE7dnvINf8xSOAqGr9aV5FmKdfFqGiLjgsW9P9F6vinh0P7D0r2ETtVwfwkhoXwoynrr
-         ADeHW9Td1zZth7TFcgc0OXxP+zo5XJ13NawURifau+PsIXeUk16Fm45W+bANf+lyNgmk
-         QF1Q==
-X-Gm-Message-State: AC+VfDzPD8+VE7UVnsTFyxRw1qYPAVXJ9YyXqGLKb7NRaBXTbHr1ul66
-	yDXywShmT1WeslFnO7YeHYYdDQ==
-X-Google-Smtp-Source: 
- ACHHUZ5sgxsCI/lVRvjZNq+J7kPDx+SvOmaq/8wjAiMQ785YfC+h5iFAEtyNc1gq4Kqqj6aQ7yTjgQ==
-X-Received: by 2002:a7b:cb91:0:b0:3f6:45d:28a1 with SMTP id
- m17-20020a7bcb91000000b003f6045d28a1mr219488wmi.14.1684943508981;
-        Wed, 24 May 2023 08:51:48 -0700 (PDT)
-Received: from [192.168.1.172] (158.22.5.93.rev.sfr.net. [93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id
- z26-20020a05600c221a00b003f60101074dsm2721773wml.33.2023.05.24.08.51.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 May 2023 08:51:48 -0700 (PDT)
-Message-ID: <dcd5050b-8459-e7cc-b5ad-eb435aba6e84@baylibre.com>
-Date: Wed, 24 May 2023 17:51:46 +0200
+ unprotected) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.a=rsa-sha256
+ header.s=mail header.b=FwExTAdr;
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr
+ header.a=rsa-sha256 header.s=mail header.b=u7TmgFJs
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id E38276019E;
+	Wed, 24 May 2023 21:16:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1684955806; bh=yLzaJ3BZwmUfDHcCkUlzajM4xei2/G1Dqqs+yKtQYnw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FwExTAdritu5OMXZ1qimA82muaBvAAZZP9XBYSiUddU0pu0CSSAIeiku1fL1gF1y3
+	 8EK/gCCmyEga+zgVCB2NfEgYdD64pQDj59fti+yQBcsDDYQLU8nQEglkyaQnbSzcUB
+	 ALVYZpu9C7Vo6WTt+2w3JEtwox0IcKUhmk9HkARI4u7JB161oEorrGKgAw2kq+YNc5
+	 O3Z8JwiY8ZQ7TAcxQk1ciBtRiUqn1Vjj2mcXeeW6ddyQk08RwQJRL/4jE1VgeD/aQB
+	 6u9Cu0Np+gUO0Xt+ua81WcpoY3xdu0SqTmKbI3ekVyqYPYGZhPjaKPEi6UIOdHlEiz
+	 WFePpPOkjoy4Q==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id GjDZ7k-lC9gp; Wed, 24 May 2023 21:16:44 +0200 (CEST)
+Received: from defiant.. (unknown [77.237.113.62])
+	by domac.alu.hr (Postfix) with ESMTPSA id 4223F601A1;
+	Wed, 24 May 2023 21:16:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1684955804; bh=yLzaJ3BZwmUfDHcCkUlzajM4xei2/G1Dqqs+yKtQYnw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=u7TmgFJs2EolMF9HnPBHEVBeNWJMWTMs5t+225/p8LX5Dt/IADJxHsgO4k6VH5Tn/
+	 OS+4VGrPeIma2C3Mj+3T4iXihBQZBoH/HsXG4Y7pg0bx8NSzwxwGQorHiK3MrvyeyK
+	 x+r6AxPcZ6ZbZh/ZgTBJdTradXznD0Rbrdy0rYsb3c0FdJpw5sRF9Hr38zx1E6FEYb
+	 gryy52wn3nADaEkPq61+RoqBtc35H6bmGeGHejPcFnECNZOiMxLlcQx7F5C571z3zq
+	 7N/RPnI1YMbTo4GzTs2pr83GpzeflkEcYideSpWU4lzhWwSHu/uMOvSpayLDEoLnfu
+	 RXjxMeYZJMXzA==
+From: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+To: Takashi Iwai <tiwai@suse.de>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	alsa-devel@alsa-project.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Subject: [PATCH v1 1/1] selftests: alsa: pcm-test: Fix compiler warnings about
+ the format
+Date: Wed, 24 May 2023 21:15:29 +0200
+Message-Id: <20230524191528.13203-1-mirsad.todorovac@alu.unizg.hr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 6/7] ASoC: mediatek: mt8188-mt6359: support new board
- with nau88255
-Content-Language: en-US
-To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
- lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20230523021933.3422-1-trevor.wu@mediatek.com>
- <20230523021933.3422-7-trevor.wu@mediatek.com>
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230523021933.3422-7-trevor.wu@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: amergnat@baylibre.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MailFrom: mirsad.todorovac@alu.unizg.hr
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: QKC4Q3WCB6XA6TPALVEMFBENGXHYJY4E
-X-Message-ID-Hash: QKC4Q3WCB6XA6TPALVEMFBENGXHYJY4E
-X-Mailman-Approved-At: Fri, 26 May 2023 11:42:20 +0000
+Message-ID-Hash: 6OGF3KV7N567GMGPAPIEPINTUYBHL2G7
+X-Message-ID-Hash: 6OGF3KV7N567GMGPAPIEPINTUYBHL2G7
+X-Mailman-Approved-At: Fri, 26 May 2023 11:42:30 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QKC4Q3WCB6XA6TPALVEMFBENGXHYJY4E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6OGF3KV7N567GMGPAPIEPINTUYBHL2G7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,90 +110,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 23/05/2023 04:19, Trevor Wu wrote:
->   	card_data = (struct mt8188_card_data *)of_device_get_match_data(&pdev->dev);
-> @@ -776,9 +1066,38 @@ static int mt8188_mt6359_dev_probe(struct platform_device *pdev)
->   				dai_link->init = mt8188_mt6359_init;
->   				init_mt6359 = true;
->   			}
-> +		} else if (strcmp(dai_link->name, "ETDM1_OUT_BE") == 0 ||
-> +			   strcmp(dai_link->name, "ETDM2_OUT_BE") == 0 ||
-> +			   strcmp(dai_link->name, "ETDM1_IN_BE") == 0 ||
-> +			   strcmp(dai_link->name, "ETDM2_IN_BE") == 0) {
-> +			if (!strcmp(dai_link->codecs->dai_name, MAX98390_CODEC_DAI)) {
-> +				dai_link->ops = &mt8188_max98390_ops;
-> +				if (init_max98390)
-> +					continue;
+GCC 11.3.0 issues warnings in this module about wrong sizes of format
+specifiers:
 
-I prefer that you do like your patch [PATCH v2 1/7] to be consistent
-and easy to read.
+pcm-test.c: In function ‘test_pcm_time’:
+pcm-test.c:384:68: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 5 \
+				has type ‘unsigned int’ [-Wformat=]
+  384 |                 snprintf(msg, sizeof(msg), "rate mismatch %ld != %ld", rate, rrate);
+pcm-test.c:455:53: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has \
+				type ‘long int’ [-Wformat=]
+  455 |                                          "expected %d, wrote %li", rate, frames);
+pcm-test.c:462:53: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has \
+				type ‘long int’ [-Wformat=]
+  462 |                                          "expected %d, wrote %li", rate, frames);
+pcm-test.c:467:53: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has \
+				type ‘long int’ [-Wformat=]
+  467 |                                          "expected %d, wrote %li", rate, frames);
 
-+			if (!init_mt6359) {
-+				dai_link->init = mt8188_mt6359_init;
-+				init_mt6359 = true;
-+			}
+Simple fix according to compiler's suggestion removed the warnings.
 
-> +
-> +				dai_link->init = mt8188_max98390_codec_init;
-> +				init_max98390 = true;
-> +			} else if (!strcmp(dai_link->codecs->dai_name, NAU8825_CODEC_DAI)) {
-> +				dai_link->ops = &mt8188_nau8825_ops;
-> +				if (init_nau8825)
-> +					continue;
+Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+---
+ tools/testing/selftests/alsa/pcm-test.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-ditto
-
-> +
-> +				dai_link->init = mt8188_nau8825_codec_init;
-> +				dai_link->exit = mt8188_nau8825_codec_exit;
-> +				init_nau8825 = true;
-> +			} else {
-> +				if (strcmp(dai_link->codecs->dai_name, "snd-soc-dummy-dai")) {
-
-Shouldn't be with a NOT operator ("!") ?
-+ if (!strcmp(dai_link->codecs->dai_name, "snd-soc-dummy-dai")) {
-
-
-> +					if (init_dumb)
-> +						continue;
-
-ditto
-
-> +
-> +					dai_link->init = mt8188_dumb_amp_init;
-> +					init_dumb = true;
-> +				}
-> +			}
->   		}
->   	}
->   
-> +	priv->private_data = card_data;
->   	snd_soc_card_set_drvdata(card, priv);
->   
->   	ret = devm_snd_soc_register_card(&pdev->dev, card);
-> @@ -795,11 +1114,20 @@ static struct mt8188_card_data mt8188_evb_card = {
->   	.name = "mt8188_mt6359",
->   };
->   
-> +static struct mt8188_card_data mt8188_nau8825_card = {
-> +	.name = "mt8188_nau8825",
-> +	.quirk = NAU8825_HS_PRESENT,
-> +};
-> +
->   static const struct of_device_id mt8188_mt6359_dt_match[] = {
->   	{
->   		.compatible = "mediatek,mt8188-mt6359-evb",
->   		.data = &mt8188_evb_card,
->   	},
-> +	{
-> +		.compatible = "mediatek,mt8188-nau8825",
-> +		.data = &mt8188_nau8825_card,
-> +	},
->   	{},
->   };
->   MODULE_DEVICE_TABLE(of, mt8188_mt6359_dt_match);
-
+diff --git a/tools/testing/selftests/alsa/pcm-test.c b/tools/testing/selftests/alsa/pcm-test.c
+index 3e390fe67eb9..b7eef32addb4 100644
+--- a/tools/testing/selftests/alsa/pcm-test.c
++++ b/tools/testing/selftests/alsa/pcm-test.c
+@@ -381,7 +381,7 @@ static void test_pcm_time(struct pcm_data *data, enum test_class class,
+ 		goto __close;
+ 	}
+ 	if (rrate != rate) {
+-		snprintf(msg, sizeof(msg), "rate mismatch %ld != %ld", rate, rrate);
++		snprintf(msg, sizeof(msg), "rate mismatch %ld != %d", rate, rrate);
+ 		goto __close;
+ 	}
+ 	rperiod_size = period_size;
+@@ -447,24 +447,24 @@ static void test_pcm_time(struct pcm_data *data, enum test_class class,
+ 			frames = snd_pcm_writei(handle, samples, rate);
+ 			if (frames < 0) {
+ 				snprintf(msg, sizeof(msg),
+-					 "Write failed: expected %d, wrote %li", rate, frames);
++					 "Write failed: expected %ld, wrote %li", rate, frames);
+ 				goto __close;
+ 			}
+ 			if (frames < rate) {
+ 				snprintf(msg, sizeof(msg),
+-					 "expected %d, wrote %li", rate, frames);
++					 "expected %ld, wrote %li", rate, frames);
+ 				goto __close;
+ 			}
+ 		} else {
+ 			frames = snd_pcm_readi(handle, samples, rate);
+ 			if (frames < 0) {
+ 				snprintf(msg, sizeof(msg),
+-					 "expected %d, wrote %li", rate, frames);
++					 "expected %ld, wrote %li", rate, frames);
+ 				goto __close;
+ 			}
+ 			if (frames < rate) {
+ 				snprintf(msg, sizeof(msg),
+-					 "expected %d, wrote %li", rate, frames);
++					 "expected %ld, wrote %li", rate, frames);
+ 				goto __close;
+ 			}
+ 		}
 -- 
-Regards,
-Alexandre
+2.34.1
 
