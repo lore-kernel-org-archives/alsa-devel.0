@@ -4,87 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44E4AC7EE23
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 12:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4128FC7EE23
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 12:27:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00D233E7;
-	Wed, 24 May 2023 14:23:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00D233E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4592E208;
+	Wed, 24 May 2023 14:26:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4592E208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684931061;
-	bh=OY/naGkjqjzlphaVJfpoNSmq9t9o3CLQbg2CqAjD9Rg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=EVHrMFTT1+z5n9UsCPLMklKLRWB8U8IRnGOaQwCt+KD0b3ywjScBioE7mQAqMuFqg
-	 rWg9nQxxYrKg++yaus0fXYT+d7peqIs8LQuVGrfJcR1UgSVTISDdhCqOkbJJL0/SpU
-	 M2Bs/VV3OnLWXziSJShHEZJhjAEI7ZiLH3OMd1YY=
+	s=default; t=1684931256;
+	bh=RdCSMoK1jz8qKQqoWQWNfqMg7FRlQSEw16KR+ZpeTHc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=KmmlKARyRvMO1pwW6+BNbpdSuk4w6zORwLpZKZc/bnR4MXXrnnXxnIlk6hAHQONBS
+	 u/WN+fcCMgwJxDZsa66g8rmHWTFcgDNWNIrqQhEkUS0gQYFFjC0de7XyPBJgMyiKeD
+	 PwmCTdQGGS13A+MN/viB78IqK11NyeuG8pAlVPyw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB586F80544; Wed, 24 May 2023 14:22:41 +0200 (CEST)
+	id 1754FF8026A; Wed, 24 May 2023 14:26:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 330C8F80553;
-	Wed, 24 May 2023 14:22:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B537BF8026A;
+	Wed, 24 May 2023 14:26:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7032F80249; Wed, 24 May 2023 13:38:05 +0200 (CEST)
-Received: from smtp-relay-canonical-0.canonical.com
- (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+	id 61AA0F8016A; Wed, 24 May 2023 14:24:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 854F8F80053
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 13:38:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 854F8F80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4D401F8026A
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 14:23:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D401F8026A
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=canonical.com header.i=@canonical.com
- header.a=rsa-sha256 header.s=20210705 header.b=SPhKXur9
-Received: from binli-ThinkPad-P17-Gen-1.. (unknown [103.229.218.199])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=1kySVWl3;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=V6WqKmS0
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id B1E943F323;
-	Wed, 24 May 2023 11:37:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1684928280;
-	bh=2jDYAyIQzR5LVpCJdbESJ5E/R1qgz1TuJsk+SSd1oFc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=SPhKXur9CnyyHsd2Ke8nhTj2sAK8pioz4xCxoxDlYUAcevPF5j5JoYRXi2cbXoJxY
-	 0ZH+Ucf/w2FayA1ji3QIBtnSmTaE2lgifFISZo+BTQLDIYRebiEWSauRqVCOQTboCe
-	 4ZgnauPyzsMTu5BOwRF/h8Ouc1QSgNa73W3HlYv4Mwl61xh8YsWh+f7K4E8eY4jBp6
-	 8TbRsC+TXXuAS1DSZi/Lj1I4BmPlXhCpGVIMgzLtZpqMZIesX3Fh7SZ0P9LU32C+dV
-	 At5Ut5kkuZ1FcQKOmz8nYP1Yk8JY5G3QsRuSu4OY7qEIMxcKlp/95S5i2BwCNZ2hI3
-	 nnSCLaMjEShjA==
-From: Bin Li <bin.li@canonical.com>
-To: tiwai@suse.com
-Cc: libin.charles@gmail.com,
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4BEF9220DF;
+	Wed, 24 May 2023 12:23:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1684931015;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H/nWbKe3Z8+xQ9At2iUlyT7hyUtbqXWl1JfLw+THLpc=;
+	b=1kySVWl3pYeX0D5VqMD88/SAUJxePvgmJOgC/QpIHA2klMg7lnofyAbW5rhrNwm0KFg/2E
+	C/vRjZv5iwwWylmSFJcKUn+f/8nH/NL0SuF4+yHQD1EgCwcvNR4DH2+noPt1Id+cS7Yijd
+	L/SYcKUDSi3H0mvYkXrGp7Gdu+Azfrg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1684931015;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H/nWbKe3Z8+xQ9At2iUlyT7hyUtbqXWl1JfLw+THLpc=;
+	b=V6WqKmS0GWD7/be54InL00gUEMWUaQx2rSNKozDm+mtBPbfl6Ve6U1NOeLRtw+qstefz6v
+	vleWDMJFKMsjgaBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0EC4713425;
+	Wed, 24 May 2023 12:23:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id skSIAscBbmRrZAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 24 May 2023 12:23:35 +0000
+Date: Wed, 24 May 2023 14:23:34 +0200
+Message-ID: <871qj5ex4p.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Bin Li <bin.li@canonical.com>
+Cc: tiwai@suse.com,
+	libin.charles@gmail.com,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	hui.wang@canonical.com,
 	kailang@realtek.com
-Subject: [PATCH] ALSA: hda/realtek: Enable headset onLenovo M70/M90
-Date: Wed, 24 May 2023 19:37:55 +0800
-Message-Id: <20230524113755.1346928-1-bin.li@canonical.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: bin.li@canonical.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable headset onLenovo M70/M90
+In-Reply-To: <20230524113755.1346928-1-bin.li@canonical.com>
+References: <20230524113755.1346928-1-bin.li@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: 7DLQVUKCCJEBRAGDPG3WX767P7K4YP7F
+X-Message-ID-Hash: 7DLQVUKCCJEBRAGDPG3WX767P7K4YP7F
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: WA5VU4SFGAMDK5JEBH6Z3GNWXEGF5WJ3
-X-Message-ID-Hash: WA5VU4SFGAMDK5JEBH6Z3GNWXEGF5WJ3
-X-Mailman-Approved-At: Wed, 24 May 2023 12:22:37 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WA5VU4SFGAMDK5JEBH6Z3GNWXEGF5WJ3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7DLQVUKCCJEBRAGDPG3WX767P7K4YP7F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,28 +118,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Lenovo M70/M90 Gen4 are equipped with ALC897, and they need
-ALC897_FIXUP_HEADSET_MIC_PIN quirk to make its headset mic work.
-The previous quirk for M70/M90 is for Gen3.
+On Wed, 24 May 2023 13:37:55 +0200,
+Bin Li wrote:
+> 
+> Lenovo M70/M90 Gen4 are equipped with ALC897, and they need
+> ALC897_FIXUP_HEADSET_MIC_PIN quirk to make its headset mic work.
+> The previous quirk for M70/M90 is for Gen3.
+> 
+> Signed-off-by: Bin Li <bin.li@canonical.com>
 
-Signed-off-by: Bin Li <bin.li@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks, applied now.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a7e4765eff80..7b5f194513c7 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -11719,6 +11719,8 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x32cb, "Lenovo ThinkCentre M70", ALC897_FIXUP_HEADSET_MIC_PIN),
- 	SND_PCI_QUIRK(0x17aa, 0x32cf, "Lenovo ThinkCentre M950", ALC897_FIXUP_HEADSET_MIC_PIN),
- 	SND_PCI_QUIRK(0x17aa, 0x32f7, "Lenovo ThinkCentre M90", ALC897_FIXUP_HEADSET_MIC_PIN),
-+	SND_PCI_QUIRK(0x17aa, 0x3321, "Lenovo ThinkCentre M70 Gen4", ALC897_FIXUP_HEADSET_MIC_PIN),
-+	SND_PCI_QUIRK(0x17aa, 0x331b, "Lenovo ThinkCentre M90 Gen4", ALC897_FIXUP_HEADSET_MIC_PIN),
- 	SND_PCI_QUIRK(0x17aa, 0x3742, "Lenovo TianYi510Pro-14IOB", ALC897_FIXUP_HEADSET_MIC_PIN2),
- 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo Ideapad Y550P", ALC662_FIXUP_IDEAPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
--- 
-2.34.1
 
+Takashi
