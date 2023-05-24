@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC794C7EE23
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 12:00:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1329BC77B73
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 12:00:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DAACC1E8;
-	Wed, 24 May 2023 13:59:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAACC1E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 165B8828;
+	Wed, 24 May 2023 13:59:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 165B8828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684929609;
-	bh=/B0vdMufjSzg+kWpfRvse4iAzkRz1UKFhqFiVIC2l3g=;
+	s=default; t=1684929632;
+	bh=UMiHL7ethwa+018lGBl2r8MGW4Lj2YlyfJiTZIjuQVk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YO1WRc7Y0ayHqmn7VSvcBzBowbSWTTlnDTAgWaKytPvOXNUJbHWiUbq5mBXb4vdsg
-	 XMHfEgxQrfvt/w0clJbsoZvKeZRf/PHVdn+DT43TUwUR/Y6d9THr0xpx1Smoz28R0y
-	 meI/kUeFmGho/Hse4zyI2nVo/rObcLXR/Apr/Xbk=
+	b=EZGtTVh7U2ZW79GB6AkFo2W7HK436WKYF9LjPlejUsJ6vXFYbWS7IfdOeVJs0/Wfr
+	 C2k9Dnp22d1FNMErAO1kzBgYuphmKNmL4A8MvzxDMs4TiLP2npmH3IbFjROKFytAsJ
+	 boxrtGBl79KZgEEAREeZVPYXq77uFJ3ZmW3STI0E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CA460F80544; Wed, 24 May 2023 13:58:50 +0200 (CEST)
+	id A4DF6F80563; Wed, 24 May 2023 13:58:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24FFEF80053;
-	Wed, 24 May 2023 13:58:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18A79F80425;
+	Wed, 24 May 2023 13:58:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78796F8026A; Wed, 24 May 2023 13:58:46 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id EA01FF8024E; Wed, 24 May 2023 13:58:47 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 14618F80053
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 13:58:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14618F80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1E751F8016A
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 13:58:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E751F8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=MqhflI3G
+ header.s=k20201202 header.b=O5mHpTzt
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id BD2D6632A4;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AC60C63200;
+	Wed, 24 May 2023 11:58:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE6BEC4339C;
 	Wed, 24 May 2023 11:58:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4478FC433EF;
-	Wed, 24 May 2023 11:58:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684929520;
-	bh=/B0vdMufjSzg+kWpfRvse4iAzkRz1UKFhqFiVIC2l3g=;
+	s=k20201202; t=1684929522;
+	bh=UMiHL7ethwa+018lGBl2r8MGW4Lj2YlyfJiTZIjuQVk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=MqhflI3Gwts1TEZhQ9dRco3qCqLLYolvjSx+5bt9qY3IxV9KmhdfIkiMcyR3atk4U
-	 +8EbZbat46iKnI2t9WIpFyBhnaj5oC6FFdbzaSlq8jj1oZFX2vMwYXBIB+eLy4XLBO
-	 ScZzjaIjqJBOZkHeMpxlRQI3ypqu4Le1NBUiZaxC4CHanI+xwMUk/6Q7quV4kcbWFD
-	 5bCypJgj7hTWQd9lXQtmFNXlhvYuucDfhb3u8MNMQlZPuTcxuupJEY9Pue8S94uQS5
-	 WHK7FyQwDF+ldm7tBAJAVg6gKR682aDqjhDYTnFoJNmafur9YKu2EexS2599PW95eV
-	 +Qv61NgH2FADA==
+	b=O5mHpTzthzLsO1nX1RVg8URiT3Q4rvVlypW+BB2EbR+YMZZb21twVFEs3RLysTiXg
+	 C/Tjba7bl/AohPlk2PYE16mrg8HTXO/fvOHXEnDIZmy4JUPlCHJykZSlu4gG/qdFK/
+	 Xbf1RXA+0D8xmiRYDDSAL2Qm9rvvKpMw0Firp3WBFRll1YGDDWj4TvqHL1gNDrRU5W
+	 NSU+2xfupwMNlruwnXdsWRU5q1ceHdr5uO1uaWKQ+Q/nxU2dMryLUkGjxEbRhvFpUO
+	 2SjD04QvlDT7h/AMm5iS9tWNSs2Up6WvwxV143q6CXAkFTMv5/mCay90lJ8oXAl/CP
+	 HaSoaj8zGt2xA==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <20230523-regcache-maple-sync-lock-v1-1-530e4d68dfab@kernel.org>
-References: <20230523-regcache-maple-sync-lock-v1-1-530e4d68dfab@kernel.org>
-Subject: Re: [PATCH] regmap: maple: Drop the RCU read lock while syncing
- registers
-Message-Id: <168492951899.55912.11663734518532161454.b4-ty@kernel.org>
-Date: Wed, 24 May 2023 12:58:38 +0100
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: gregkh@linuxfoundation.org, rafael@kernel.org,
+ ckeepax@opensource.cirrus.com, tanureal@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20230523154747.5429-1-srinivas.kandagatla@linaro.org>
+References: <20230523154747.5429-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] regmap: sdw: check for invalid multi-register writes
+ config
+Message-Id: <168492952043.55912.13195955442624432460.b4-ty@kernel.org>
+Date: Wed, 24 May 2023 12:58:40 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: NW3IGZYBNUOOPXMJGAQ2S6RXCQZFXGQR
-X-Message-ID-Hash: NW3IGZYBNUOOPXMJGAQ2S6RXCQZFXGQR
+Message-ID-Hash: 624SBH6KY6TN2236CY336LN4OBNLNPHK
+X-Message-ID-Hash: 624SBH6KY6TN2236CY336LN4OBNLNPHK
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,8 +83,7 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NW3IGZYBNUOOPXMJGAQ2S6RXCQZFXGQR/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,13 +92,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 23 May 2023 23:18:19 +0100, Mark Brown wrote:
-> Unfortunately the maple tree requires us to explicitly lock it so we need
-> to take the RCU read lock while iterating. When syncing this means that we
-> end up trying to write out register values while holding the RCU read lock
-> which triggers lockdep issues since that is an atomic context but most
-> buses can't be used in atomic context. Pause the iteration and drop the
-> lock for each register we check to avoid this.
+On Tue, 23 May 2023 16:47:47 +0100, Srinivas Kandagatla wrote:
+> SoundWire code as it is only supports Bulk register writes and
+> it does not support multi-register writes.
+> 
+> Any drivers that set can_multi_write and use regmap_multi_reg_write() will
+> easily endup with programming the hardware incorrectly without any errors.
+> 
+> So, add this check in bus code to be able to validate the drivers config.
 > 
 > [...]
 
@@ -109,8 +109,8 @@ Applied to
 
 Thanks!
 
-[1/1] regmap: maple: Drop the RCU read lock while syncing registers
-      commit: 0cc6578048e0980d254aee345130cced4912f723
+[1/1] regmap: sdw: check for invalid multi-register writes config
+      commit: 95856d1f3c223c015780fffb8373a827fc4efd2e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
