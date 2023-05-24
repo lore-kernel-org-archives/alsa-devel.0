@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95B0CC77B73
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:44:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12281C77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:45:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 827861FE;
-	Fri, 26 May 2023 13:44:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 827861FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E0F285D;
+	Fri, 26 May 2023 13:44:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E0F285D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685101493;
-	bh=/AfAIE4Ql/57xCIxjfHauivPMdY/7NJsGBlHU7vHuP8=;
+	s=default; t=1685101500;
+	bh=ZZPUoTjP7xJRGJghpgqLe6RGGtJMbVGg7u/LyeuxrSE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nDlaQckC88ub9f1JqNuWFWHsOAmbxDTkjb/w187ItsTC7gekWeSvZeoJJCg+1tjWw
-	 IFNErL7vS/sfwbhBPbIEMiw3kG4RiDy6N7+jdYh/RObcVBRoDNd0yVPEHtoslTaZtD
-	 hPMOrB7pAEm5VEkrBzl/lTIPsHCeEZAfogIgv6j8=
+	b=j3+YbvkW3omo24G3e2/y4qULXPxNybt5Q0DAOv+BfHNuanCoKBhT3QiSGMaQ0Aj2N
+	 kGtfkVBgrAkWaND8rWrL9takz3Sb2K15tg/sEZdhjuIlIFsMo0IEdURtoa4pP0OYxt
+	 /5RUWE9/OBp949Xt1dUJcHSMjsBU8g8RcvDHNZmk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6FB74F805B3; Fri, 26 May 2023 13:42:31 +0200 (CEST)
+	id A92DAF805B2; Fri, 26 May 2023 13:42:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2039F805AA;
-	Fri, 26 May 2023 13:42:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16421F805B4;
+	Fri, 26 May 2023 13:42:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 246F3F80580; Wed, 24 May 2023 16:51:14 +0200 (CEST)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
+	id 6F0ECF805C9; Wed, 24 May 2023 17:52:02 +0200 (CEST)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8C05FF8057B
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 16:51:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C05FF8057B
+	by alsa1.perex.cz (Postfix) with ESMTPS id D432CF805C6
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 17:51:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D432CF805C6
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=baylibre-com.20221208.gappssmtp.com
  header.i=@baylibre-com.20221208.gappssmtp.com header.a=rsa-sha256
- header.s=20221208 header.b=YT+4PyG2
-Received: by mail-wm1-x333.google.com with SMTP id
- 5b1f17b1804b1-3f603d4bc5bso12385155e9.3
+ header.s=20221208 header.b=r9Xqu5ND
+Received: by mail-wm1-x32c.google.com with SMTP id
+ 5b1f17b1804b1-3f61530506aso7702575e9.1
         for <alsa-devel@alsa-project.org>;
- Wed, 24 May 2023 07:51:11 -0700 (PDT)
+ Wed, 24 May 2023 08:51:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1684939869;
- x=1687531869;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1684943509;
+ x=1687535509;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=d2DZMvMkI+V5RMAcXCANfBiGO0oQRS/4+8XHUn3qgoQ=;
-        b=YT+4PyG2PpzfKSBHI8via/8/85UUkYBO2UQIpGyWv6Za+qBrjWJtqy48/7FF0kjuXS
-         RMowXnKeB9ZUFdWVc02eXhlevD7TG5KMShelI1AdHdYOdM2/focKmgSgHkJTQVl1hH1E
-         583D9fVRRW7QNbiEQsBi1u+lVIRB+0IiP8nSx5Q3NGOOjOE1p4Fv3Gdxj9zcGgldrsN0
-         v+Owz0hzn7fVsVQl/QfZp38PHyTcyN9qsiWdkr2Z04AyMtXOSKDIvDODXJyyQKKt5bJ7
-         Q8rffHMfEiZe4LyTr8tGRM0t/YtOcfIAT3wI0MsdXaO+QrL6w6KCtyeSFa3/ARp0/w+i
-         fPMg==
+        bh=h8geeXEOb1JFpSL51yP1LqtEfxAQbaVotjCJur5zhD4=;
+        b=r9Xqu5ND0Bk5xdzrVcEKYQlFpEEChNge6LbIG0g17WQIR6Y6FlFTjj1VLIptKxk12Q
+         yq45EGDPQw9rNHr+jipV1YSj4asgJuaRjeVL0NZhwSDk/F7WDrzxEpDXrSSJyrZb0/M3
+         zBXKIn/cV0bBTAFnJDnUkCCcwvue3vKTmsqLCYu0uVu4CEJS93Dy/yQ+lZNpqtjw/llJ
+         /i6QJwMZfnhn0BXjS9g7SEYSgcIwM6tYnNKca4sWH8rz2seGcHobfGaMYO1qrYroAdGx
+         05BznJ1hGxFw4jfQNNWBm56IewOjSboZXbEWkM4NBUXJGppz8/FOt58lkiEa84eE4ux7
+         4f7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684939869; x=1687531869;
+        d=1e100.net; s=20221208; t=1684943509; x=1687535509;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d2DZMvMkI+V5RMAcXCANfBiGO0oQRS/4+8XHUn3qgoQ=;
-        b=Pg7d7uDjPXgbyukm8vdmw6MPX4hTdtAP0Ib3iR0dBoS0N9RRtDkhYNufvH4JVYj+d8
-         /nEs8E06n7eUy0PCjg/L5ZFO46pazDnSjEtHajcWPbjhMdIam1dRSO+njko6JAeoOEyt
-         Squ8l7XsojEk5611zuT3Tt3VTbZC22O7QlNHnPkq2tsm/EhXy5fCQIE1ccqbzwPiHsx6
-         +UL81DSLTRKHK2u44bF8UFeQVYMFsVRoPW9pL/v/gPXtOPtFpHb7e2hZix6T2jdNhFb8
-         FSJsaoOfYYuGd7p8qiWBoBIWQtDdTQjDTTF6U2G3P7LMlIYMDE8LpqS4vbWQfXU2bBew
-         YjHA==
-X-Gm-Message-State: AC+VfDy90YArK4Lf7P+3jnncK7TRhj62dWhAxbPiVWnRvX7kuVM8LMlD
-	NvKDIE1fBRFrPB7p+1GMn4lVyg==
+        bh=h8geeXEOb1JFpSL51yP1LqtEfxAQbaVotjCJur5zhD4=;
+        b=Hnk1FNvgqVzzwzk5KV3TDQEcWMF9hOjuMHgAyFzg//exQZiEIrTUQkrGBndDic1cgK
+         UZ+63Si4C1fq2DIOlp/fY/npXrOYqftPC2kGD1l7Ot+oQMMXs+GX3udIeoi1+RoH298b
+         /moscEIVWuamq/BqlE495hoaLMoDRanaq475rW6lz3+LeoNRhMJhMTTFSR2IsVIFEcIm
+         EE7dnvINf8xSOAqGr9aV5FmKdfFqGiLjgsW9P9F6vinh0P7D0r2ETtVwfwkhoXwoynrr
+         ADeHW9Td1zZth7TFcgc0OXxP+zo5XJ13NawURifau+PsIXeUk16Fm45W+bANf+lyNgmk
+         QF1Q==
+X-Gm-Message-State: AC+VfDzPD8+VE7UVnsTFyxRw1qYPAVXJ9YyXqGLKb7NRaBXTbHr1ul66
+	yDXywShmT1WeslFnO7YeHYYdDQ==
 X-Google-Smtp-Source: 
- ACHHUZ5wWAGNXmRoeycTsyYGzAOS1ytBUa6At8n0AYB/K3UfJLVFRhbZwiqycV6JUKARY/EvMGybsA==
-X-Received: by 2002:a7b:c40a:0:b0:3f1:72fb:461a with SMTP id
- k10-20020a7bc40a000000b003f172fb461amr86103wmi.2.1684939869319;
-        Wed, 24 May 2023 07:51:09 -0700 (PDT)
+ ACHHUZ5sgxsCI/lVRvjZNq+J7kPDx+SvOmaq/8wjAiMQ785YfC+h5iFAEtyNc1gq4Kqqj6aQ7yTjgQ==
+X-Received: by 2002:a7b:cb91:0:b0:3f6:45d:28a1 with SMTP id
+ m17-20020a7bcb91000000b003f6045d28a1mr219488wmi.14.1684943508981;
+        Wed, 24 May 2023 08:51:48 -0700 (PDT)
 Received: from [192.168.1.172] (158.22.5.93.rev.sfr.net. [93.5.22.158])
         by smtp.gmail.com with ESMTPSA id
- x26-20020a05600c21da00b003f423f5b659sm2675744wmj.10.2023.05.24.07.51.08
+ z26-20020a05600c221a00b003f60101074dsm2721773wml.33.2023.05.24.08.51.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 May 2023 07:51:08 -0700 (PDT)
-Message-ID: <e13c2670-4877-7e75-aaa2-623f4ed927c0@baylibre.com>
-Date: Wed, 24 May 2023 16:51:07 +0200
+        Wed, 24 May 2023 08:51:48 -0700 (PDT)
+Message-ID: <dcd5050b-8459-e7cc-b5ad-eb435aba6e84@baylibre.com>
+Date: Wed, 24 May 2023 17:51:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH v2 5/7] ASoC: soc-dapm.c: clean up debugfs for freed
- widget
+Subject: Re: [PATCH v2 6/7] ASoC: mediatek: mt8188-mt6359: support new board
+ with nau88255
 Content-Language: en-US
 To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
  lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
@@ -99,9 +99,9 @@ Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  devicetree@vger.kernel.org
 References: <20230523021933.3422-1-trevor.wu@mediatek.com>
- <20230523021933.3422-6-trevor.wu@mediatek.com>
+ <20230523021933.3422-7-trevor.wu@mediatek.com>
 From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230523021933.3422-6-trevor.wu@mediatek.com>
+In-Reply-To: <20230523021933.3422-7-trevor.wu@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-MailFrom: amergnat@baylibre.com
@@ -110,15 +110,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: J663KQKZGTBNKONI5AT3K7C2JERBNAMI
-X-Message-ID-Hash: J663KQKZGTBNKONI5AT3K7C2JERBNAMI
+Message-ID-Hash: QKC4Q3WCB6XA6TPALVEMFBENGXHYJY4E
+X-Message-ID-Hash: QKC4Q3WCB6XA6TPALVEMFBENGXHYJY4E
 X-Mailman-Approved-At: Fri, 26 May 2023 11:42:20 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J663KQKZGTBNKONI5AT3K7C2JERBNAMI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QKC4Q3WCB6XA6TPALVEMFBENGXHYJY4E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,19 +128,87 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 23/05/2023 04:19, Trevor Wu wrote:
-> When a widget is added to dapm via snd_soc_dapm_new_widgets,
-> dapm_debugfs_add_widget is also called to create a corresponding debugfs
-> file. However, when a widget is freed by snd_soc_dapm_free_widget, the
-> corresponding debugfs is not cleared. As a result, the freed widget is
-> still seen in the dapm directory.
-> 
-> This patch adds dapm_debugfs_free_widget to free the debugfs of a
-> specified widget, and it's called at snd_soc_dapm_free_widget to clean
-> up the debugfs for freed widget.
-> 
-> Signed-off-by: Trevor Wu<trevor.wu@mediatek.com>
+>   	card_data = (struct mt8188_card_data *)of_device_get_match_data(&pdev->dev);
+> @@ -776,9 +1066,38 @@ static int mt8188_mt6359_dev_probe(struct platform_device *pdev)
+>   				dai_link->init = mt8188_mt6359_init;
+>   				init_mt6359 = true;
+>   			}
+> +		} else if (strcmp(dai_link->name, "ETDM1_OUT_BE") == 0 ||
+> +			   strcmp(dai_link->name, "ETDM2_OUT_BE") == 0 ||
+> +			   strcmp(dai_link->name, "ETDM1_IN_BE") == 0 ||
+> +			   strcmp(dai_link->name, "ETDM2_IN_BE") == 0) {
+> +			if (!strcmp(dai_link->codecs->dai_name, MAX98390_CODEC_DAI)) {
+> +				dai_link->ops = &mt8188_max98390_ops;
+> +				if (init_max98390)
+> +					continue;
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+I prefer that you do like your patch [PATCH v2 1/7] to be consistent
+and easy to read.
+
++			if (!init_mt6359) {
++				dai_link->init = mt8188_mt6359_init;
++				init_mt6359 = true;
++			}
+
+> +
+> +				dai_link->init = mt8188_max98390_codec_init;
+> +				init_max98390 = true;
+> +			} else if (!strcmp(dai_link->codecs->dai_name, NAU8825_CODEC_DAI)) {
+> +				dai_link->ops = &mt8188_nau8825_ops;
+> +				if (init_nau8825)
+> +					continue;
+
+ditto
+
+> +
+> +				dai_link->init = mt8188_nau8825_codec_init;
+> +				dai_link->exit = mt8188_nau8825_codec_exit;
+> +				init_nau8825 = true;
+> +			} else {
+> +				if (strcmp(dai_link->codecs->dai_name, "snd-soc-dummy-dai")) {
+
+Shouldn't be with a NOT operator ("!") ?
++ if (!strcmp(dai_link->codecs->dai_name, "snd-soc-dummy-dai")) {
+
+
+> +					if (init_dumb)
+> +						continue;
+
+ditto
+
+> +
+> +					dai_link->init = mt8188_dumb_amp_init;
+> +					init_dumb = true;
+> +				}
+> +			}
+>   		}
+>   	}
+>   
+> +	priv->private_data = card_data;
+>   	snd_soc_card_set_drvdata(card, priv);
+>   
+>   	ret = devm_snd_soc_register_card(&pdev->dev, card);
+> @@ -795,11 +1114,20 @@ static struct mt8188_card_data mt8188_evb_card = {
+>   	.name = "mt8188_mt6359",
+>   };
+>   
+> +static struct mt8188_card_data mt8188_nau8825_card = {
+> +	.name = "mt8188_nau8825",
+> +	.quirk = NAU8825_HS_PRESENT,
+> +};
+> +
+>   static const struct of_device_id mt8188_mt6359_dt_match[] = {
+>   	{
+>   		.compatible = "mediatek,mt8188-mt6359-evb",
+>   		.data = &mt8188_evb_card,
+>   	},
+> +	{
+> +		.compatible = "mediatek,mt8188-nau8825",
+> +		.data = &mt8188_nau8825_card,
+> +	},
+>   	{},
+>   };
+>   MODULE_DEVICE_TABLE(of, mt8188_mt6359_dt_match);
 
 -- 
 Regards,
