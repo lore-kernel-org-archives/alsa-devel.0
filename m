@@ -4,95 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F4BDC77B7A
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 07:03:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D459CC77B7A
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 07:31:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0B33204;
-	Wed, 24 May 2023 09:03:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0B33204
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2D7A206;
+	Wed, 24 May 2023 09:30:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2D7A206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684911830;
-	bh=zCRFtkH7bPNa39Z6/m7BHIonnXuqSgubEymKwE92YsU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=u2iAdNMI9vh292eGO5i+hDu73YNIbkh/JeIIzby4802vd2q+3/mHRRd3KpIryInDs
-	 71H9y7GBnfOgBx062ThP306Lrj5Qrl9uOOpgDg5czKwBNt40x7qO59hJk1ocmUX7z7
-	 wPpX+YIeSTNKbKlNAKtrOOjti8LkZg11pRucT0mI=
+	s=default; t=1684913465;
+	bh=EFonjWLZe4T9ALKbn/e7Pa3SoYcl5LPMz9pzDTmCeig=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=gWw/kIJyftd+TNPYiljX+HeeP71LyVVrEZCkOSnQ2wDNBBROITD9TCQYm5kEaMITs
+	 5I2vpLiCzGDuMwtODaHNCBlzVqVcOF4RGeAwJlMt9jxFhj0DguOv6eDce/u9BsNRrL
+	 Luw6qLWNf2pJCgU0Uvu7vEiL8WrM99XUe6PmRTLM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7DE3EF80544; Wed, 24 May 2023 09:03:00 +0200 (CEST)
+	id DB8E0F8024E; Wed, 24 May 2023 09:29:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 164ABF80425;
-	Wed, 24 May 2023 09:03:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81C77F8024E;
+	Wed, 24 May 2023 09:29:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0D3FDF8024E; Wed, 24 May 2023 09:02:55 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4A6A5F8016A
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 09:02:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A6A5F8016A
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=ZKnsWX47;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=zH339UZB
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 462582251B;
-	Wed, 24 May 2023 07:02:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1684911771;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6TKjFmc4Jlwc9DLNn2W8eFIoSlib2AaOc15JUHyiX2k=;
-	b=ZKnsWX47STAjPAF9u/aQvaor/d7iHwCGGWtSl1tzm2i17EcF9TQrwtU8CfbXLhJcp8QNO3
-	pVmkYIr8pU5CH+PoChM+V3zbOqp55qnO/3x4RJJgxFPwOj0k2fIVoJktHOzU0nFeMntKyJ
-	GS77ZHDojFi1ULYqnrhbmGB5SZE0vSM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1684911771;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6TKjFmc4Jlwc9DLNn2W8eFIoSlib2AaOc15JUHyiX2k=;
-	b=zH339UZB1vs3DM6KRjBtVbPsfqHSMCPIESSe/1GGO/CQGDTZlLuFGoy4pTGc2jCETrz4Dt
-	OTPbFB1u30QzpLBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D33D133E6;
-	Wed, 24 May 2023 07:02:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id f44PCpu2bWTBMgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 24 May 2023 07:02:51 +0000
-Date: Wed, 24 May 2023 09:02:50 +0200
-Message-ID: <874jo2fbz9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [PATCH RFC] ALSA: control: Avoid nested locks at notification
-In-Reply-To: <4a442399-9d92-0632-2354-8e31962c0728@perex.cz>
-References: <20230523155244.12347-1-tiwai@suse.de>
-	<4a442399-9d92-0632-2354-8e31962c0728@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: YKCYJC4M5GJXYSUUEEXA4I5NZCAITULS
-X-Message-ID-Hash: YKCYJC4M5GJXYSUUEEXA4I5NZCAITULS
-X-MailFrom: tiwai@suse.de
+	id DD2D1F8024E; Wed, 24 May 2023 09:29:41 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 720CAF80086
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 09:29:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 720CAF80086
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1684913378855393648-webhooks-bot@alsa-project.org>
+References: <1684913378855393648-webhooks-bot@alsa-project.org>
+Subject: ucm2: Rockchip: Add UCM support for ES8316 on Rock 5B
+Message-Id: <20230524072941.DD2D1F8024E@alsa1.perex.cz>
+Date: Wed, 24 May 2023 09:29:41 +0200 (CEST)
+Message-ID-Hash: 4OMW7F3YQZM3SQT4UZDASDKTSQ35DWXX
+X-Message-ID-Hash: 4OMW7F3YQZM3SQT4UZDASDKTSQ35DWXX
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -104,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YKCYJC4M5GJXYSUUEEXA4I5NZCAITULS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4OMW7F3YQZM3SQT4UZDASDKTSQ35DWXX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,57 +66,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 23 May 2023 18:53:11 +0200,
-Jaroslav Kysela wrote:
-> 
-> On 23. 05. 23 17:52, Takashi Iwai wrote:
-> > The new control layer stuff introduced the nested rwsem for managing
-> > the list of registered control layer ops.  Since then, a global
-> > snd_ctl_layer_rwsem is always read at each time a control notification
-> > is sent via snd_ctl_notify*() in a nested matter inside the card's
-> > controls_rwsem lock.  This also required a bit complicated way of the
-> > lock at snd_ctl_activate_id() and snd_ctl_elem_write() with the
-> > downgrade of rwsem.
-> > 
-> > This patch is an attempt to simplify the handling of ctl layer ops.
-> > Now, instead of traversing the global linked list, we keep a local
-> > list of lops in each card instance.  This reduces the need of the
-> > global snd_ctl_layer_rwsem lock at snd_ctl_notify*() invocation.
-> > And, since the nested lock is avoided in most places, we can also
-> > avoid the rwsem downgrade hack in the above, too.
-> > 
-> > Since the local list entry is created dynamically,
-> > snd_ctl_register_layer() may return an error, and the caller needs to
-> > check the return value.
-> 
-> I'm not convinced about this transition. What about to move the layer
-> notifications to a workqueue to reorder the controls_rwsem locking
-> (kctl access) ?
+alsa-project/alsa-ucm-conf pull request #316 was opened from cristicc:
 
-It'll need allocation of each new notify event, no?
+Add UCM configuration for the RK3588 SoC based Rock 5B board to enable the analog audio support provided by the Everest Semi ES8316 codec.
 
-IMO, keeping the list of ops in each card instance may have a room for
-more possible improvement.  The current patch chains always all lops
-in the card's lops_list, but when the register callback returns a
-certain error code for the uninteresting lops, we can skip chaining
-it.  Then the unnecessary hook invocation at each notification can be
-avoided.
-
-> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > ---
-> > 
-> > I noticed the nested lock while looking at the pending bug report
-> 
-> From the log or code ?
-
-The code.
-
-And, control_led.c has also a global mutex lock that is applied for
-almost all code paths.  If the hook is called from all cards, this
-should be optimized as well.  (OTOH, if it's called only from one
-bound card, it won't matter much.)
-
-
-thanks,
-
-Takashi
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/316
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/316.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
