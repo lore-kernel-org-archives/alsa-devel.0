@@ -4,91 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66961C77B73
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 14:00:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A622C77B7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 16:30:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29221204;
-	Wed, 24 May 2023 15:59:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29221204
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E7CA200;
+	Wed, 24 May 2023 18:29:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E7CA200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684936837;
-	bh=s7ODysrVL6L25XbJNWIyvhMKDv3+c3+iRnPs03vFH0Y=;
+	s=default; t=1684945811;
+	bh=zZqKJV2qK50N87o/S9GT3M0DMlyTsSOyAlZ7RRTvFPk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JuQoZ7Io3DB3qpF22s2ywOQ/HzdRR6rFlUy+XkTZbornYxXhlYSOYgYOVCkHhtlCD
-	 EA44TlxTGgnsvsgIg4xRaQfZyFP1K/wQqgeSGsr4eeuGDj9Ak51pnraIs/h2Rb54nJ
-	 Oda9HpRnoPOtHgBXbtzOTFZBS3fFXhYyfqVyDxcA=
+	b=hFHwx4IC+yj/TJDms8RTwLKetuQwxqZMCDmtMAQ5jPtYZQTl+8JXhRCII/NmNFNxb
+	 MFS0JHx/GNRI+5G04kn5kYOWT+YJnBjCsgyLOGyxdYD+3bkmmJNrzPmQsVVFlEi2ib
+	 PfMVEhw/OiJI+gsYAZiXkmS6BY64YG7Ll97PhITU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8FEAAF8024E; Wed, 24 May 2023 15:59:17 +0200 (CEST)
+	id 50CADF805D8; Wed, 24 May 2023 18:13:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44180F8024E;
-	Wed, 24 May 2023 15:59:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D80DF805D6;
+	Wed, 24 May 2023 18:13:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 08956F8024E; Wed, 24 May 2023 15:59:14 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 323A6F805D9; Wed, 24 May 2023 18:13:00 +0200 (CEST)
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com
+ [IPv6:2001:4860:4864:20::35])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6CCD6F80053
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 15:59:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CCD6F80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id E6EC9F805D7
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 18:12:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6EC9F805D7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=mmWZFX7H
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3C41C63271;
-	Wed, 24 May 2023 13:59:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A495FC433EF;
-	Wed, 24 May 2023 13:59:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1684936747;
-	bh=s7ODysrVL6L25XbJNWIyvhMKDv3+c3+iRnPs03vFH0Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mmWZFX7HB0sxfLupokaobr2jrqyYPq0DZgrCcu2R6nUQFf9ffaN084zM4/1xiSeVm
-	 gXH12b5GYmNFRNA1/1IlCBJs86tUMLo0lICqSR5IRNojIPMCVI+eZ0v4GgpobS0yYm
-	 rHS9s6pkdv7ixVaaRZ1vWzFT2K8v/rNNQkCwH8Y4d3wrsU/Np5VDiTjjnTPgjKdZw3
-	 UW/h9e6LruZqhj0j4WVuk7b5QBfvCtxzlW6ti3ZZzu0ThBWXRQgpf0+Fidb9jZMFN7
-	 HXZHZEzac7d0B9L6e8HZ0zvhNh4/6qSYGv2ShZ1Q7Qn6f+w2igm6XYeyP8Dnw3hr5y
-	 62HFi1m5D58hA==
-Date: Wed, 24 May 2023 14:59:00 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Zhu Ning <zhuning0077@gmail.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	David Yang <yangxiaohua@everest-semi.com>,
-	Daniel Drake <drake@endlessm.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org, kernel@collabora.com
-Subject: Re: [PATCH 1/3] ASoC: es8316: Increment max value for ALC Capture
- Target Volume control
-Message-ID: <01fd1a9f-56c7-4864-bb2b-8b004284c8cc@sirena.org.uk>
-References: <20230524074156.147387-1-cristian.ciocaltea@collabora.com>
- <20230524074156.147387-2-cristian.ciocaltea@collabora.com>
- <5dbcbf84-602a-44de-ad99-268d4d5b4b2f@sirena.org.uk>
- <cfa23203-1626-440b-ec27-efe56cb297d2@collabora.com>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=BXQc/vB2
+Received: by mail-oa1-x35.google.com with SMTP id
+ 586e51a60fabf-1962e7284baso371487fac.3
+        for <alsa-devel@alsa-project.org>;
+ Wed, 24 May 2023 09:12:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684944772; x=1687536772;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=d2krvbmUqOnT4KV8ff+7HqiCvnexQ6qfpMeD5hBBKDI=;
+        b=BXQc/vB2/r9Dq425nCPgq9QmObSBwPsi5anYqf70r7oyC2C1g6fTPoPoi9p2iSrWSm
+         c9D/8N8/y21hqTJf1gOpXyYMdQes2dCzj59IGxkfyYh8LBDkXHDQAxrvv7vH8mJHkvJw
+         yGtmuS42uE0ofz1TYDAIU+jb/hfkVvbpCBPFqtsOCPYzgNy8/L1AGiqZK6RB9p5zpb9z
+         lPJxI73lFmeaf+4ZuSTk8xD6mS8czma8D89H23EPnv6jYzfBiFZ2bIgEz8XBJ6W/yCp5
+         8tbMO1HjL4HxIFk1o3J9og0WW5tl985SvZV0UI2jO57IL0lUKOHuzKC3HZi5WqQgwGtp
+         G+CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684944772; x=1687536772;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d2krvbmUqOnT4KV8ff+7HqiCvnexQ6qfpMeD5hBBKDI=;
+        b=iRZfemUub/cM2wbJEa20Ai5669gFFxOriaUyV5KuQWYrY8GQIn2ZOU2vqatq+nu5KI
+         BBddakBmx6ZZadSOtgwtRwIXcIEguJV0Wd25icc0H49B8OkXzn5b0RQONJekxP32lDx8
+         T0g8lGCQQE85+AdP/z30gIRrIn1XpTJN2VAAglbbouXn043xhjMFttPcqUzAI7PuAIKN
+         2Jl02HUgLWJ6nZkBdzEYFzQ1rANe14BgNaUZIMF4wMKbdcog2yK3VFWwYedGHdCjKgzI
+         3xVPvVyjDUjA/lnHlYLrGRuhjt11Qk+cmnVZJn1nVSg8NgZyfYKhE4hzhMJBp5d/EemE
+         t2ZQ==
+X-Gm-Message-State: AC+VfDzoELZn2ZzZDRWPCs4dO2jGB8PMQjeENcvrPGUi9mR7hg492TwK
+	N2qJivx277pninb/6FWUjBM=
+X-Google-Smtp-Source: 
+ ACHHUZ7Lso2poEP7KecW3pW1g3gvJHrRqlkMvpmtiMnveNZ9VYZhCemAUJ0Zdx5qdJxt5oBJVxxi4Q==
+X-Received: by 2002:a05:6870:93d5:b0:195:fe38:3b60 with SMTP id
+ c21-20020a05687093d500b00195fe383b60mr161544oal.25.1684944772365;
+        Wed, 24 May 2023 09:12:52 -0700 (PDT)
+Received: from neuromancer. ([75.28.21.198])
+        by smtp.gmail.com with ESMTPSA id
+ u1-20020a05687036c100b0019ea8771fb0sm82550oak.13.2023.05.24.09.12.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 May 2023 09:12:52 -0700 (PDT)
+Message-ID: <646e3784.050a0220.71431.07f7@mx.google.com>
+X-Google-Original-Message-ID: <ZG43gSO+UYAi6bv+@neuromancer.>
+Date: Wed, 24 May 2023 11:12:49 -0500
+From: Chris Morgan <macroalpha82@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org, zyw@rock-chips.com,
+	sebastian.reichel@collabora.com, andyshrk@163.com,
+	jagan@amarulasolutions.com, perex@perex.cz, tiwai@suse.com,
+	lgirdwood@gmail.com, heiko@sntech.de, conor+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+	Chris Morgan <macromorgan@hotmail.com>
+Subject: Re: [PATCH 1/6] ASoC: es8328: Enabling support for 12Mhz sysclk
+References: <20230523213825.120077-1-macroalpha82@gmail.com>
+ <20230523213825.120077-2-macroalpha82@gmail.com>
+ <f5b780ac-e079-4c24-9dfc-05aee52deb9c@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5dAsb6A5aa1oi1XV"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cfa23203-1626-440b-ec27-efe56cb297d2@collabora.com>
-X-Cookie: You will be divorced within a year.
-Message-ID-Hash: JWQIAE35TZTB3YHW7XIED6TMBRCW5TOZ
-X-Message-ID-Hash: JWQIAE35TZTB3YHW7XIED6TMBRCW5TOZ
-X-MailFrom: broonie@kernel.org
+In-Reply-To: <f5b780ac-e079-4c24-9dfc-05aee52deb9c@sirena.org.uk>
+Message-ID-Hash: KT4LVBOFDOJYMT3CCSXW4JWJ74NQM5OC
+X-Message-ID-Hash: KT4LVBOFDOJYMT3CCSXW4JWJ74NQM5OC
+X-MailFrom: macroalpha82@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JWQIAE35TZTB3YHW7XIED6TMBRCW5TOZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KT4LVBOFDOJYMT3CCSXW4JWJ74NQM5OC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,42 +123,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Wed, May 24, 2023 at 12:57:02PM +0100, Mark Brown wrote:
+> On Tue, May 23, 2023 at 04:38:20PM -0500, Chris Morgan wrote:
+> 
+> > +static unsigned int ratios_12000[] = {
+> > +	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000,
+> > +	48000, 88235, 96000,
+> > +};
+> > +
+> > +static struct snd_pcm_hw_constraint_list constraints_12000 = {
+> > +	.count = ARRAY_SIZE(ratios_12000),
+> > +	.list = ratios_12000,
+> > +};
+> 
+> ...
+> 
+> > +	case 12000000:
+> > +		es8328->sysclk_constraints = &constraints_12000;
+> > +		es8328->mclk_ratios = ratios_12000;
+> 
+> The other constraints have separate rates and ratios, with wildly
+> different values between the two - the ratio (I'm guessing a clock
+> divider) being written to a 5 bit field which obviously can't contain
+> the actual sample rate.
 
---5dAsb6A5aa1oi1XV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A bit over my head here, I saw this patch from the Rockchip BSP kernel
+branch and tested it on my mainline kernel. Long story short the clock
+for the mclk is 12000000. I see that there are similar issues for the
+ES8316 on the Rock 5B, so I will probably just wait for a proper fix
+there and then implement something similar here.
 
-On Wed, May 24, 2023 at 04:49:37PM +0300, Cristian Ciocaltea wrote:
-> On 5/24/23 13:30, Mark Brown wrote:
-
-> > Presumably you can check the effects of changing the value?  It seems
-> > plausible that what's written in the code might be accurate and the
-> > higher values might actually change the gain but it'd be better to
-> > check.
-
-> I haven't noticed a (measurable) change in gain when switching between
-> 10 and 11, but my testing equipment is also not that great. Will try to
-> improve the tests accuracy.
-
-I'd expect it should be really obvious with a scope if you've got one?
-Testing with something consistent like a sine wave (eg, from
-speaker-test) should also make a 1.5dB difference noticable enough to
-check if there's at least a volume change by ear even if you can't
-specifically quantify it.
-
---5dAsb6A5aa1oi1XV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmRuGCMACgkQJNaLcl1U
-h9AcDwf/Wi9oFO/zCuXcdQUi3Vp+Eyy46hZtVdxgIqdFlbsWoBoIYtHoKUyolbCe
-KOrPtIARsf6WybwRtIymagviHxnu8jh8Abk+18Ns5ZxdYQ9Tj4VZTGXq1qodDEg6
-XKlZ4Dm4g1vetWmf2ZE8zGRXKaJX3jMoa2Gz7TyiT9e6qf9yOiAHuYbf9c2t0BAA
-CkZRrB+I8UVh0/G49kg7ApiN8W07RHEDYW0QaeMO49auGg+75ptD46316gJvAvVQ
-QbYIH+YDmjxtv6pT9ZuXxBBRE2nVyeW/O/qPEK96ahLIPU9RZyjo3uE03+XeVYj/
-hejkDQyW1odVohfhGZJFDVP7oeMzcQ==
-=9KPI
------END PGP SIGNATURE-----
-
---5dAsb6A5aa1oi1XV--
+Thank you.
