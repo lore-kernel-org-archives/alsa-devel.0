@@ -4,125 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A2A2C7EE23
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:37:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61CC3C7EE23
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:43:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F9E1850;
-	Fri, 26 May 2023 13:36:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F9E1850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2486A208;
+	Fri, 26 May 2023 13:42:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2486A208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685101039;
-	bh=QRRgK5ld1oWz1a8rNroYopRDOm2mpuB+uIk9TTaCKA0=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1685101420;
+	bh=L5HsWOJhf4uuyE/s+4e2prnAL4YmHAOjyIg8rlSb5iw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=K2bY6uk5GmEkNpRHB5NK+xs2prDMacOAxapNOTpsgoDEsE1Az4OsQow0HEvKBkllQ
-	 dVfmgvhNfBC9rTHjCtJQPFtzAZdZfpzYn8U8hopuxgH1wxi2/43BFdYyhNCEpJRlTe
-	 a9CJDErnjH40XgMw0TuvyywJ1jHP3iw2HvIo2430=
+	b=iXnctaeov1WqfMqdPKQ/HZjngoo8i0Bt36W8WzsH/qnRgq8aozvQ68VPAnTVdAjzG
+	 fIDPkQr61sptFvyKGWb1KpvWUoBOEPdSIpMCLj55U3EcLrIq9JiHvyhGa79yjG7Xyw
+	 JwC6llBqyJ9byTcyA018yWImqSFJWzhF2zsyFTe0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82724F805DA; Fri, 26 May 2023 13:34:24 +0200 (CEST)
+	id 20EE0F80544; Fri, 26 May 2023 13:42:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16EE9F805D5;
-	Fri, 26 May 2023 13:34:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E0CFF80249;
+	Fri, 26 May 2023 13:42:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB021F805C8; Fri, 26 May 2023 13:34:19 +0200 (CEST)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 8B510F8024E; Wed, 24 May 2023 15:28:55 +0200 (CEST)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 92264F805C7
-	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 13:34:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92264F805C7
+	by alsa1.perex.cz (Postfix) with ESMTPS id 08019F8016A
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 15:28:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08019F8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=F0J2/uIi
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34Q8bru7017114;
-	Fri, 26 May 2023 11:34:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=4l04U8ScpSzOar6vhPfePpeMKhfTNryVB8CWo9BK0eo=;
- b=F0J2/uIido0DhTXcIbliuI0v2dUbwNakSUwkC5RtA8sF3xHeE7j5ZtvwsmH5re6D2vDa
- 6GTYyfuzkWxFhLDD08YB3fjol1fFvP8IMBJHjvhbKTZARuDbNTC0ySoBnBYBlRTd4dFO
- 6JmjzRTQ8GqJ6ZaUJ5/rgntNmopRvSFVlKWEY1/xfDVO5FOVU7BToHgoH2TnvhK+egeN
- hgxum7/IDdXRx0YBoTyxO4yM5ll1pFMFSn8rChZOwK+SH3AM3yVtfgodJ1NovMyBbNWX
- i2+SUWbTf1n+3L8PBlRQvZwSacuPOY2epV9b32r9h4T4EXrU8CKNUut4vzmubuaqyNvh QQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3qtp4wgrq2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 May 2023 11:34:15 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
- [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 34QBYE0D021597
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 May 2023 11:34:14 GMT
-Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.42; Fri, 26 May 2023 04:34:08 -0700
-From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-To: <krzysztof.kozlowski+dt@linaro.org>, <vkoul@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_rohkumar@quicinc.com>, <srinivas.kandagatla@linaro.org>,
-        <dianders@chromium.org>, <swboyd@chromium.org>,
-        <judyhsiao@chromium.org>, <alsa-devel@alsa-project.org>,
-        <quic_rjendra@quicinc.com>, <konrad.dybcio@somainline.org>,
-        <mka@chromium.org>, <quic_visr@quicinc.com>
-CC: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>,
-        Mohammad Rafi Shaik
-	<quic_mohs@quicinc.com>
-Subject: [PATCH v6 8/8] arm64: dts: qcom: sc7280: Add qcom,adsp-pil-mode
- property in clock nodes
-Date: Fri, 26 May 2023 17:02:58 +0530
-Message-ID: <20230526113258.1467276-9-quic_mohs@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230526113258.1467276-1-quic_mohs@quicinc.com>
-References: <20230526113258.1467276-1-quic_mohs@quicinc.com>
+ unprotected) header.d=baylibre-com.20221208.gappssmtp.com
+ header.i=@baylibre-com.20221208.gappssmtp.com header.a=rsa-sha256
+ header.s=20221208 header.b=RRpnCjpj
+Received: by mail-wr1-x42d.google.com with SMTP id
+ ffacd0b85a97d-3095557dd99so800954f8f.1
+        for <alsa-devel@alsa-project.org>;
+ Wed, 24 May 2023 06:28:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1684934921;
+ x=1687526921;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dpaEDaEMiz0twNyfrOrBugRFe4goGloP1Qpqk47QwlA=;
+        b=RRpnCjpjHBTwE/i8foXECp1howHpUJB08S3RDHVRKvOK+eeAwsKC3x39tLqwNhysca
+         cI/sZp9eC0H8WA5MnMR3Wck3kwLEVf86vv/q5HMBHGSWy4KCGj8fcAyYih8bFlYz+sdD
+         pxEo14qjxYnXZIROoJUVb/epU2pySWQZPM/UhVVhdK+inP5pxhiZDg0rcJ8490MDOf2D
+         lFZHi9cri7PBUqx0937e80otPcYbB6cxD6Aov9gHkFGDb0QFamRLyqrj2Ycmk3UH1NrR
+         hoc4lFkin632699KFRBucYZo/CD34eAaRYyFXiPx/o7vUmZC9N/i30ORAGH8AuOAj9jx
+         oGnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684934921; x=1687526921;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dpaEDaEMiz0twNyfrOrBugRFe4goGloP1Qpqk47QwlA=;
+        b=VC6ycPeJaiOQUXhBdWE0N0li1rwNgxuunK2vQj5h1CplRQWCBu2GGBJrjWbKN4/762
+         MYFyAoasLzEsJqrQC2bCCYfV7gyZNesP121i8aq9HYhIIcO4UdgrizIQdFOSIBuFJAdo
+         rZcUNvOsBMnJT0A0xF6hlC6UZF5BWrBOCIpKj27qG/lDqo/AcJIMiv3bC8XISeKxkyvn
+         ydcKD5Myh5UrDmFYT5fTeFab6RRW0s2ErdKUjk/ttxqqts1cPZI5Fkz7rOENtC/EV9eN
+         1Svpal9D/lWGMHYr8Byf/wUbFSAbMqM4PdzbeCRmGKqQVFMOnheDdK5Tnjee9/nbRjig
+         2+pw==
+X-Gm-Message-State: AC+VfDwXS+Bzm+v6CCrzdfKnlRSEUjb3kHOLsb5/NRFuzSYF6xv5ECbH
+	VWRSH16ksMtmtW9SbBZp7QYEWw==
+X-Google-Smtp-Source: 
+ ACHHUZ5UxTF7Ty4Ha1qHIPwkF1euAKvGxSLopaZQrr7mrvaQchq5F7/btnqI5+pGB6je42At5/7vFA==
+X-Received: by 2002:adf:ff90:0:b0:309:ccad:b2fb with SMTP id
+ j16-20020adfff90000000b00309ccadb2fbmr10813993wrr.5.1684934920688;
+        Wed, 24 May 2023 06:28:40 -0700 (PDT)
+Received: from [192.168.1.172] (158.22.5.93.rev.sfr.net. [93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id
+ j3-20020a5d4483000000b003062b57ffd1sm14483595wrq.50.2023.05.24.06.28.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 May 2023 06:28:39 -0700 (PDT)
+Message-ID: <56b892cd-977e-5b24-55f0-df25e187308b@baylibre.com>
+Date: Wed, 24 May 2023 15:28:38 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 2/7] ASoC: dt-bindings: mediatek,mt8188-mt6359: remove
+ ADDA_BE from link-name
+Content-Language: en-US
+To: =?UTF-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>, "tiwai@suse.com"
+ <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "perex@perex.cz" <perex@perex.cz>,
+ "angelogioacchino.delregno@collabora.com"
+ <angelogioacchino.delregno@collabora.com>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <20230523021933.3422-1-trevor.wu@mediatek.com>
+ <20230523021933.3422-3-trevor.wu@mediatek.com>
+ <cb69dbab-0966-8ecb-d9b9-017f430fd7ea@baylibre.com>
+ <b9eecdf886b6496131e51e1e2f49536c782c3b67.camel@mediatek.com>
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <b9eecdf886b6496131e51e1e2f49536c782c3b67.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-GUID: N6zYUlCqEDRjeKEMw-tKWic8NGv_jo4h
-X-Proofpoint-ORIG-GUID: N6zYUlCqEDRjeKEMw-tKWic8NGv_jo4h
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-05-26_01,2023-05-25_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501
- spamscore=0 phishscore=0 adultscore=0 clxscore=1015 suspectscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2304280000 definitions=main-2305260098
-Message-ID-Hash: HAKQSDO7EA2SAIPKRVHY3U3KA2VHWR5B
-X-Message-ID-Hash: HAKQSDO7EA2SAIPKRVHY3U3KA2VHWR5B
-X-MailFrom: quic_mohs@quicinc.com
+X-MailFrom: amergnat@baylibre.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 3K7PFLOHW2AP32TVNV2FXTHBFBAGTHT2
+X-Message-ID-Hash: 3K7PFLOHW2AP32TVNV2FXTHBFBAGTHT2
+X-Mailman-Approved-At: Fri, 26 May 2023 11:42:18 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HAKQSDO7EA2SAIPKRVHY3U3KA2VHWR5B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3K7PFLOHW2AP32TVNV2FXTHBFBAGTHT2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,48 +138,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+On 24/05/2023 04:25, Trevor Wu (吳文良) wrote:
+> On Tue, 2023-05-23 at 18:26 +0200, Alexandre Mergnat wrote:
+>> On 23/05/2023 04:19, Trevor Wu wrote:
+>>> ADDA_BE is used to connect to mt6359. For machine mt8188-mt6359,
+>>> codec
+>>> for ADDA_BE must be mt6359 which are configured on the machine
+>>> driver.
+>>> Besides, ADDA_BE is divided into two dais, UL_SRC_BE and DL_SRC_BE.
+>>> As a result, remove ADDA_BE from items of link-name.
+>>>
+>>> Signed-off-by: Trevor Wu<trevor.wu@mediatek.com>
+>>
+>> I don't understand how "DL_SRC_BE" and "UL_SRC_BE" links are done.
+>> Why these dais don't replace "ADDA_BE" in this binding ?
+>>
+>> Regards,
+>> Alexandre
+>>
+> 
+> Hi Alexandre,
+> 
+> Because the sound card is mt8188-mt6359, the codec for these two links
+> must be mt6359. Thus, I specifiy the codec in machine driver directly.
+> If the codec is changed, there will be a new sound card and binding
+> file. In conclusion, the codec won't be updated via dts, and that's why
+> I don't just replace ADDA_BE in this binding.
+> 
+> Do you suggest me add some information in the commit message?
 
-Add "qcom,adsp-pil-mode" property in clock nodes for herobrine
-crd revision 3 board specific device tree.
-This is to register clocks conditionally by differentiating ADSP
-based platforms and legacy path platforms.
-Also disable lpass_core clock, as it is creating conflict
-with ADSP clocks and it is not required for ADSP based platforms.
+No it's fine, I'm just trying to understand.
 
-Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
----
- .../qcom/sc7280-herobrine-audioreach-wcd9385.dtsi    | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+When you say "I specifiy the codec in machine driver directly", you
+are talking about this change ?
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi b/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi
-index c02ca393378f..876a29178d46 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi
-@@ -197,6 +197,14 @@ q6prmcc: clock-controller {
- 	};
- };
- 
-+&lpass_aon {
-+	qcom,adsp-pil-mode;
-+};
-+
-+&lpass_core {
-+	status = "disabled";
-+};
-+
- &lpass_rx_macro {
- 	/delete-property/ power-domains;
- 	/delete-property/ power-domain-names;
-@@ -239,3 +247,7 @@ &lpass_va_macro {
- 
- 	status = "okay";
- };
-+
-+&lpasscc {
-+	qcom,adsp-pil-mode;
-+};
++		} else if (strcmp(dai_link->name, "DL_SRC_BE") == 0 ||
++			   strcmp(dai_link->name, "UL_SRC_BE") == 0) {
++			if (!init_mt6359) {
++				dai_link->init = mt8188_mt6359_init;
+
+I'm asking because the equivalent was done here:
+
+-	[DAI_LINK_ADDA_BE] = {
+-		.name = "ADDA_BE",
++	[DAI_LINK_DL_SRC_BE] = {
++		.name = "DL_SRC_BE",
+  		.no_pcm = 1,
+  		.dpcm_playback = 1,
+-		.dpcm_capture = 1,
+-		.init = mt8188_mt6359_init,
+-		SND_SOC_DAILINK_REG(adda),
++		SND_SOC_DAILINK_REG(dl_src),
+
+So I'm wondering why "ADDA_BE" & "DPTX_BE" & "ETDM3_OUT_BE" are in the 
+enum list of the binding since the codec is already specified in
+machine driver too. I probably miss something but I don't know what.
+
 -- 
-2.25.1
+Regards,
+Alexandre
 
