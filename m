@@ -4,100 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95C6AC77B73
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 16:30:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 891EDC7EE2D
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 May 2023 16:30:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63088209;
-	Wed, 24 May 2023 18:29:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63088209
+	by alsa0.perex.cz (Postfix) with ESMTPS id 404A23E7;
+	Wed, 24 May 2023 18:29:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 404A23E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684945813;
-	bh=iyKrp7I82f3wYzsbQR/1Jeu1cFgJoa6hSbBVeuarAhw=;
-	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=YYT6QnQCdZKqGP/Es5FYp22nLt9N4bRobmwXkEmZonDSeb9mt7PzezStvE0GlKaKH
-	 tC5w4lP6wIURpWHRWJtRuzPt6dU5FYT2L8A/PQCFdC5MYzj5ZgFM9Q3cwBrZZ1P1Gu
-	 WJjtY3gWj1Y3GoOF+/+pIzMhVk9C2hFQDtSaikuY=
+	s=default; t=1684945830;
+	bh=Wxs1efodNwmO3noHNtr7WWYtJ8HcJA1UDpCYCdf4Nss=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=gAqoQtUvUeHk9SYPdqUyQMzSfMaEDbbTAHj13Kd8ZNSrqDapCt4eiSxJghtg/h9u/
+	 dVdTOP9Lk6GAdGDgBhawUfN23Y5gts1OcBnzYcc9AUbuEka172BVOXLWAUs6N7zH0n
+	 TMv+ScSYM3c3HNamSvOT5N/MIhYsUmDfhwWYqveE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 891B4F805B6; Wed, 24 May 2023 17:50:35 +0200 (CEST)
+	id 68E11F805E7; Wed, 24 May 2023 18:21:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C46D0F805B6;
-	Wed, 24 May 2023 17:50:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8217F805E7;
+	Wed, 24 May 2023 18:21:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8276F805B6; Wed, 24 May 2023 17:50:30 +0200 (CEST)
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
- [IPv6:2a00:1450:4864:20::236])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 53976F805E8; Wed, 24 May 2023 18:21:53 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 29526F8057A
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 17:50:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29526F8057A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 94E68F805E5
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 18:21:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94E68F805E5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=rJ/SaWyw
-Received: by mail-lj1-x236.google.com with SMTP id
- 38308e7fff4ca-2af305114d4so2343811fa.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 24 May 2023 08:50:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684943427; x=1687535427;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wQX2CVmSr7DgptZsjqZI/naPAO/w0sxY4PIlV5EtZyE=;
-        b=rJ/SaWywkypPgDXARIDn7Grh1q/ZQeNb9pV3HTZiLeDd0W98DATkQKurgeXicTL0Wh
-         GtZlZnNexxJJygfcciig7fg/kDS6yGuMimO+64xke0bU/xI3CctxwSIPZcZ8vV21KwVP
-         3J/HGM/8dfmPPmW4yeRwaTc+Hp9WzVaX+ySCEwvH97dZLId88zb7MEujqwvx7i1t1xO7
-         srkIHk+tZYmVZHn8eVblOrB2JaBAw2BOGPfGHw0hDBM78xNKimhDGg9gIAQZaIQ6rN1B
-         wxgjcIhqb9xfDRK5ZeTrHrFa6LVqcEtewBg27iERNkRr+NBoFHSbLzHPP2ADPsxLxuOn
-         KURQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684943427; x=1687535427;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wQX2CVmSr7DgptZsjqZI/naPAO/w0sxY4PIlV5EtZyE=;
-        b=WHw/tEyw6LLQ6b/skiFfcTnuoL/t7p1upMpPsSrKnJM2l+iPoNuvbsacWJgaaYoVtf
-         vBaOf82XHQegM+3lbdVeVbmiVcyZHbTI993i8cv61ft1+E3f0T2QBBksYa8kaYCwm/up
-         UD4fCdCb4ZTycdPCskz0Ur3wansLNLfik7NomQRQWX1UVPgJEW7Mn5Mz9TE1WtNrg10m
-         DaLa1zPjCbxYS+QzRZMZvxNjXIE75nHNx4EyWvoAZusVjRJcjjJ8szwNYIXhvDQ9+I6k
-         Mn9i/wqlWWH5it8ltWK3ciJwulV4VS0lkkytV1ZnM+SfVbzB5Mj4tmd12GoCOBL06V7M
-         dDvA==
-X-Gm-Message-State: AC+VfDw12jjKRI8ghFkjzqgll1j+uEMsHm3acejQoA6f3516K/OHucD+
-	AC6bzbi6PgbgmNRQtMl4jyTMvJlSCvlQvCnvpnasCVAm
-X-Google-Smtp-Source: 
- ACHHUZ6pqLqFYZTwrt/9U3mhBqWyGabwDebjRvMF+vWNA2B7ZvjpP5VUyLjG9SxclpuvuZQb4WSGnl1VtTDLQUhqzEo=
-X-Received: by 2002:a2e:8e29:0:b0:2b0:361f:80e1 with SMTP id
- r9-20020a2e8e29000000b002b0361f80e1mr1855520ljk.4.1684943426628; Wed, 24 May
- 2023 08:50:26 -0700 (PDT)
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=eF/3Z0kU
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1684945308; x=1716481308;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Wxs1efodNwmO3noHNtr7WWYtJ8HcJA1UDpCYCdf4Nss=;
+  b=eF/3Z0kUWbfKJVz0oNLAeB5tT/Oj03TspIPOwCEgHg0cvxvhQrDhPwyh
+   uDJ699I1e8QaYMEGRjgv3QJzuzgXBDNXK0RKSHt0bLwEsE769inDeSsHl
+   dOpQSZ5+XdfoxjCBBdP195fqRmsCOFuo7I3bnFAYM+Yw/BkeeXDWlZl7x
+   2LRAoT9No+RA/dpyTTGyyfM0itK/V1WReO79AprfaJNUsZuajbk4Z37BI
+   9mY4BLfc04TmMrxfKkO1WujpkNlQVY7it7bpV2vu1yFNcOHtQyOlQ88Xo
+   7nIDhTK86vMkg32pCU0pAP89jqtbwV9lUPXdjCANaophjuaCUpD0bX8R9
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10720"; a="352464787"
+X-IronPort-AV: E=Sophos;i="6.00,189,1681196400";
+   d="scan'208";a="352464787"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 May 2023 09:19:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10720"; a="681956950"
+X-IronPort-AV: E=Sophos;i="6.00,189,1681196400";
+   d="scan'208";a="681956950"
+Received: from ychen94-mobl1.amr.corp.intel.com (HELO [10.212.132.213])
+ ([10.212.132.213])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 May 2023 09:19:27 -0700
+Message-ID: <734986f7-18be-7392-17ec-cf64bf0f7b34@linux.intel.com>
+Date: Wed, 24 May 2023 11:19:26 -0500
 MIME-Version: 1.0
-From: Juan DCG <juandcg314@gmail.com>
-Date: Wed, 24 May 2023 17:50:15 +0200
-Message-ID: 
- <CABQt6FjF1gY-W7EsEww64-Y2ujNuf0iSC5ZigcSFtmzGhYu=Jg@mail.gmail.com>
-Subject: unsuscribe
-To: alsa-devel@alsa-project.org
-Message-ID-Hash: PPLRFCXZ5ROJXVEU2EOM6SCCR4WET7PK
-X-Message-ID-Hash: PPLRFCXZ5ROJXVEU2EOM6SCCR4WET7PK
-X-MailFrom: juandcg314@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+Subject: Re: [PATCH] ASoC: cs35l45: Relicense to GPL only
+To: Charles Keepax <ckeepax@opensource.cirrus.com>, broonie@kernel.org,
+ u.kleine-koenig@pengutronix.de
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com
+References: <20230510092534.3919120-1-ckeepax@opensource.cirrus.com>
+ <20230524090556.GC68926@ediswmail.ad.cirrus.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230524090556.GC68926@ediswmail.ad.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 72BD5FOJ6LO3FODNMZH75VRRKTIC4575
+X-Message-ID-Hash: 72BD5FOJ6LO3FODNMZH75VRRKTIC4575
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.8
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PPLRFCXZ5ROJXVEU2EOM6SCCR4WET7PK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/72BD5FOJ6LO3FODNMZH75VRRKTIC4575/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,4 +104,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-DQo=
+
+
+On 5/24/23 04:05, Charles Keepax wrote:
+> On Wed, May 10, 2023 at 10:25:34AM +0100, Charles Keepax wrote:
+>> Cirrus never intended to upstream dual licensed code, convert to
+>> GPL only.
+>>
+>> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+>> ---
+>>
+>> Apologies for this but this was never our intention and I believe that
+>> it can be a little legally involved maintaining dual licensed kernel code.
+>> Fortunately not that many people outside of Cirrus have contributed to
+>> the files in question. I have CCed everyone who has contributed both
+>> internally and externally.
+> 
+> Pierre, Uwe,
+> 
+> Apologies for chasing but it would be really helpful to get an
+> ack for this one, we need the approval of everyone who
+> contributed to fix the licensing issue.
+
+Sorry, I missed that you were asking me...
+
+My only contribution is a two-character change in a header file to make
+cppcheck happy.
+
+-int cs35l45_apply_patch(struct cs35l45_private *cs43l45);
++int cs35l45_apply_patch(struct cs35l45_private *cs35l45);
+
+I double-checked with Intel legal to be sure, and there's no issue with
+removing the BSD3 license.
+
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+
+
