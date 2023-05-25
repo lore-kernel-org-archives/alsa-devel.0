@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EAE0C7EE29
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 13:40:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA4A7C7EE2F
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 13:40:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88AB7209;
-	Thu, 25 May 2023 15:39:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88AB7209
+	by alsa0.perex.cz (Postfix) with ESMTPS id 948A6820;
+	Thu, 25 May 2023 15:39:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 948A6820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685022020;
-	bh=a5qsMrLqbibtEwSf7GDKiy/BSeLwXY3k/n6FTIgjUsU=;
+	s=default; t=1685022047;
+	bh=8t4KIzZIlw9ChbpF1oe4CON4OVHVpP/2/UwMGrIiRKk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vbR4woTfrQHIdUaPqRdeBTbGizuu+VCvbWvXq49n2+LVjj0xK9ZhLExzX/t8FlVE0
-	 emoeb9XUIxPTLHisD1eaaGLMJ+MHhjXdS2mz11UBZ4RBkYzJxGV/U2zJ4bDFefJuLs
-	 mdJjXXv001Ea2N4n0j2aHAYQX4kZ0y3vMchkwG4s=
+	b=SmQKwqcdVvBulGqjsRIeGvV+V7ZZP2VU28JDURl8ZkDXksqmrf9//hNCcay7jFuc5
+	 Dpe+//qWxUrGWCOQzEtBaMqPWRg6wH6ODgSgySP4zp5yAsuFvCn5fK38geMY9Qonmc
+	 4+TtgUHvJZRgO+viPHfzhFpyt/72Dufr2OlvbsFE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 437C6F80053; Thu, 25 May 2023 15:39:06 +0200 (CEST)
+	id 7335EF80563; Thu, 25 May 2023 15:39:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8786F800DF;
-	Thu, 25 May 2023 15:39:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32471F80557;
+	Thu, 25 May 2023 15:39:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3450F8053D; Thu, 25 May 2023 15:39:00 +0200 (CEST)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+	id 264BCF80425; Thu, 25 May 2023 15:39:02 +0200 (CEST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D24C3F80053
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 15:38:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D24C3F80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id 051C0F800DF
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 15:38:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 051C0F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=X916qYIO
-Received: by mail-wm1-x329.google.com with SMTP id
- 5b1f17b1804b1-3f6a6b9c079so4627885e9.1
+ header.s=google header.b=X1Hw6Xzq
+Received: by mail-wr1-x42e.google.com with SMTP id
+ ffacd0b85a97d-30957dd7640so1456889f8f.3
         for <alsa-devel@alsa-project.org>;
- Thu, 25 May 2023 06:38:50 -0700 (PDT)
+ Thu, 25 May 2023 06:38:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1685021929; x=1687613929;
+        d=linaro.org; s=google; t=1685021927; x=1687613927;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UyuLCEhn8GX5O7IyV3OsDqUmT5UuCj/vH6uAj7jFQ0U=;
-        b=X916qYIOlP2m32ZpnG9P9ll3mYMCDzS1HhJHfPkU9SptQ4EpmpeTWxXEcu+VwpK4BH
-         xmw5QJwQWqHyAfxhuO3CQ/nTD85vSeKKEC7fgPHvpuLh4DlrHIS7akh/A9XFK8cM1CJY
-         g/JzfCtgU4HjHgPvbJbEUYinHXKsn7j+Z7rWF2N8NBCS1rq7RoiCHRBPwvd2gdvsTrn+
-         Jfc5mi30sITqFdL79WFHe/SUO+2C+zHQyYxiuUhJl9tQbelV9htUipV/IMB35fCTaa+w
-         DQ30OxUemA2kjVyQhUwP6sW6G5L7RcNgS5XfGN6xUhaKdnhzaWsnyh2PPpJ4oq7nujoS
-         KLDQ==
+        bh=3GVjrhO4+wX67tAd5gKWT8UX+KnLSIyA9RaY+rGVUm8=;
+        b=X1Hw6XzqT2tCaEFAbBeyu2o+ljfzQPvtuTFskLmVPUAkg/4BkcJV8Zd6VaLsby29Gg
+         vMDO16B7GXss94RdI/jUOvLfpkyHTCixhDSG+fvY5UT3CvijIF8j9RqwWAWaHgSzN+Tv
+         HON9LXdlJsqIxG7l5Hmuq4m//jDrI++PiFLuHvdsbL5hjsRJ2UceFXWZ+077bluACqAq
+         jh/fE4iwx5s5zAeh4bdbuGw15gcnYAeDlvHA4IgUpOz5IgW6EZZF0snzJR0d4MLxIMhx
+         Fb7X4++8GSf7phrVGaBFNWP/7tAp8UzF4F5GHbdaGSHjCNGMpatzDStjoDJiVO22qBQ7
+         cKJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685021929; x=1687613929;
+        d=1e100.net; s=20221208; t=1685021927; x=1687613927;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UyuLCEhn8GX5O7IyV3OsDqUmT5UuCj/vH6uAj7jFQ0U=;
-        b=METN+JMoJahhfEu/4KlnNj1HxCdYmtMHCob8H+NPP+CuCzqTAmgEOLMrd05g/6R/rJ
-         Az4Zp6zbRWPze76Vg19tcudGtw5DXnUw98pk5aM6vrYtjbclzYwPLoKVGr8jFrk4ZD6T
-         UpHsItlWk5gUrY2jBlQKE+IxY3B7OsTRvXgxGxcv3jjgWjiLesmfCOb8l0qSJ9PhJjqK
-         ovMfcyNz/YC2YUv1l4UElm/nS3nMVi9v3Ty5TvEbRvNcy+tPUiZQNncemmRaSS/vEFcD
-         IHSTItRqck7ni0ElW14fRlHgVFCNLYshCN9Bwbm5F87NDvL+cOtuhBv6ECrcxESt8Ztt
-         Y7UA==
-X-Gm-Message-State: AC+VfDymNDIiShu8VSlqg23PnrCA8f7XU1ELMuZM8difIZi60Sab6D/g
-	P/pG6IIoklq8I7km5Em/1A6U7Q==
+        bh=3GVjrhO4+wX67tAd5gKWT8UX+KnLSIyA9RaY+rGVUm8=;
+        b=Q6TsnQzFjsrROFZu+EVGLgTmv2JaCzceITFp9rNXNx1vcnBenoDyVPCFs56CIp3UUE
+         uKR4Yqg6ThxbwV18gHzcD5+pKOJjDEZ+kPqb3Kus9P8PWIR02xsLq9qMSVoAKK3f89uz
+         sl61kaMuEmByWRKINLIuZQIjEvOSVBYGcFhcFsk/4Cb2CXMFD5SmHCwAV+lVM5D7rlTe
+         P5ksCMj3zXfxtac/rM4u+f6RsyNv0oQmCvhi3XhE/TpSfyUVV99X5yg0NaxCzY3V8hGY
+         bOlP7hkdUFB8dY0QrPQGEcFJXluZHPgr7gnIrgQfhZEqu4Bd9DI2ayHXz9oSP9Az6Wdi
+         /1bg==
+X-Gm-Message-State: AC+VfDwefMhQWPy3KJtD/chysfdzV+zCLQHwzlQZG+qEM5Qzl+/+LJMI
+	JzYyGY45MTxeVwhQYWdkuAOpMFISSPK/BV/Mo64=
 X-Google-Smtp-Source: 
- ACHHUZ4bTttKZxh7vwGsOqquSDQW3VpZNQJ26RqX4KKyHaCGAIXJhw0NoJTiFO4JjCyEAnFfONBeSg==
-X-Received: by 2002:adf:f251:0:b0:306:31e0:958 with SMTP id
- b17-20020adff251000000b0030631e00958mr2346226wrp.15.1685021928828;
-        Thu, 25 May 2023 06:38:48 -0700 (PDT)
+ ACHHUZ6Lu2fKZX/yZXuoFi3bejKut7TLYsvIETK97sRG+Lg3mxkQOniLqXLg/UUGGJm7TtAtx6mDdw==
+X-Received: by 2002:a5d:4526:0:b0:306:36ef:2e3b with SMTP id
+ j6-20020a5d4526000000b0030636ef2e3bmr2078354wra.70.1685021927652;
+        Thu, 25 May 2023 06:38:47 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- z17-20020a5d6551000000b00301a351a8d6sm1803641wrv.84.2023.05.25.06.38.47
+ z17-20020a5d6551000000b00301a351a8d6sm1803641wrv.84.2023.05.25.06.38.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 May 2023 06:38:48 -0700 (PDT)
+        Thu, 25 May 2023 06:38:47 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: vkoul@kernel.org
 Cc: andersson@kernel.org,
@@ -91,17 +91,16 @@ Cc: andersson@kernel.org,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 2/4] soundwire: qcom: wait for fifo to be empty before
- suspend
-Date: Thu, 25 May 2023 14:38:10 +0100
-Message-Id: <20230525133812.30841-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 1/4] soundwire: qcom: update status correctly with mask
+Date: Thu, 25 May 2023 14:38:09 +0100
+Message-Id: <20230525133812.30841-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230525133812.30841-1-srinivas.kandagatla@linaro.org>
 References: <20230525133812.30841-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7WAVLBZRIY2TCSWMEPXT6VEUVLIQP5F4
-X-Message-ID-Hash: 7WAVLBZRIY2TCSWMEPXT6VEUVLIQP5F4
+Message-ID-Hash: SV4GMRINQ5JAAZP2DV7J52MZNOYAUKFP
+X-Message-ID-Hash: SV4GMRINQ5JAAZP2DV7J52MZNOYAUKFP
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -114,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7WAVLBZRIY2TCSWMEPXT6VEUVLIQP5F4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SV4GMRINQ5JAAZP2DV7J52MZNOYAUKFP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,75 +122,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Wait for Fifo to be empty before going to suspend or before bank
-switch happens. Just to make sure that all the reads/writes are done.
+SoundWire device status can be incorrectly updated without
+proper mask, fix this by adding a mask before updating the status.
 
+Fixes: c7d49c76d1d5 ("soundwire: qcom: add support to new interrupts")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soundwire/qcom.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/soundwire/qcom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 9440787e924b..adf025194a31 100644
+index aad5942e5980..9440787e924b 100644
 --- a/drivers/soundwire/qcom.c
 +++ b/drivers/soundwire/qcom.c
-@@ -404,6 +404,32 @@ static int swrm_wait_for_wr_fifo_avail(struct qcom_swrm_ctrl *ctrl)
- 	return 0;
- }
+@@ -515,7 +515,7 @@ static int qcom_swrm_get_alert_slave_dev_num(struct qcom_swrm_ctrl *ctrl)
+ 		status = (val >> (dev_num * SWRM_MCP_SLV_STATUS_SZ));
  
-+static bool swrm_wait_for_wr_fifo_done(struct qcom_swrm_ctrl *ctrl)
-+{
-+	u32 fifo_outstanding_cmds, value;
-+	int fifo_retry_count = SWR_OVERFLOW_RETRY_COUNT;
-+
-+	/* Check for fifo overflow during write */
-+	ctrl->reg_read(ctrl, ctrl->reg_layout[SWRM_REG_CMD_FIFO_STATUS], &value);
-+	fifo_outstanding_cmds = FIELD_GET(SWRM_WR_CMD_FIFO_CNT_MASK, value);
-+
-+	if (fifo_outstanding_cmds) {
-+		while (fifo_retry_count) {
-+			usleep_range(500, 510);
-+			ctrl->reg_read(ctrl, ctrl->reg_layout[SWRM_REG_CMD_FIFO_STATUS], &value);
-+			fifo_outstanding_cmds = FIELD_GET(SWRM_WR_CMD_FIFO_CNT_MASK, value);
-+			fifo_retry_count--;
-+			if (fifo_outstanding_cmds == 0)
-+				return true;
-+		}
-+	} else {
-+		return true;
-+	}
-+
-+
-+	return false;
-+}
-+
- static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *ctrl, u8 cmd_data,
- 				     u8 dev_addr, u16 reg_addr)
- {
-@@ -434,6 +460,7 @@ static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *ctrl, u8 cmd_data,
- 		usleep_range(150, 155);
- 
- 	if (cmd_id == SWR_BROADCAST_CMD_ID) {
-+		swrm_wait_for_wr_fifo_done(ctrl);
- 		/*
- 		 * sleep for 10ms for MSM soundwire variant to allow broadcast
- 		 * command to complete.
-@@ -1230,6 +1257,7 @@ static void qcom_swrm_shutdown(struct snd_pcm_substream *substream,
- {
- 	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dai->dev);
- 
-+	swrm_wait_for_wr_fifo_done(ctrl);
- 	sdw_release_stream(ctrl->sruntime[dai->id]);
- 	ctrl->sruntime[dai->id] = NULL;
- 	pm_runtime_mark_last_busy(ctrl->dev);
-@@ -1688,6 +1716,7 @@ static int __maybe_unused swrm_runtime_suspend(struct device *dev)
- 	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
- 	int ret;
- 
-+	swrm_wait_for_wr_fifo_done(ctrl);
- 	if (!ctrl->clock_stop_not_supported) {
- 		/* Mask bus clash interrupt */
- 		ctrl->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
+ 		if ((status & SWRM_MCP_SLV_STATUS_MASK) == SDW_SLAVE_ALERT) {
+-			ctrl->status[dev_num] = status;
++			ctrl->status[dev_num] = status & SWRM_MCP_SLV_STATUS_MASK;
+ 			return dev_num;
+ 		}
+ 	}
 -- 
 2.21.0
 
