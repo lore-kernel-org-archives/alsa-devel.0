@@ -4,110 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7EDDC77B7E
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 12:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EAE0C7EE29
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 13:40:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4E1E206;
-	Thu, 25 May 2023 14:54:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4E1E206
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88AB7209;
+	Thu, 25 May 2023 15:39:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88AB7209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685019315;
-	bh=bBqGtYVgCnS1CciZqfD3OH5Ui83KyWnhgnpcFAjQyJU=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
+	s=default; t=1685022020;
+	bh=a5qsMrLqbibtEwSf7GDKiy/BSeLwXY3k/n6FTIgjUsU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=o10uaaQpDp53mUuhHf8m5/pf01iSnruVDELWjhjkAIII71T2Cfn6bFDxTw6xHurW7
-	 b8gYdePKN79mOFFsZ6qEx94jdPqKg9Rxh4zqbcb7aSbLr5cebKJI4znGUfeO1AMCCz
-	 ThLM7uDjy/Sy9UTxQASWJZQw+FM2xoPY19zQ4ajQ=
+	b=vbR4woTfrQHIdUaPqRdeBTbGizuu+VCvbWvXq49n2+LVjj0xK9ZhLExzX/t8FlVE0
+	 emoeb9XUIxPTLHisD1eaaGLMJ+MHhjXdS2mz11UBZ4RBkYzJxGV/U2zJ4bDFefJuLs
+	 mdJjXXv001Ea2N4n0j2aHAYQX4kZ0y3vMchkwG4s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22AEDF80053; Thu, 25 May 2023 14:53:57 +0200 (CEST)
+	id 437C6F80053; Thu, 25 May 2023 15:39:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACB26F8024E;
-	Thu, 25 May 2023 14:53:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8786F800DF;
+	Thu, 25 May 2023 15:39:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C991EF800DF; Thu, 25 May 2023 14:53:52 +0200 (CEST)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id C3450F8053D; Thu, 25 May 2023 15:39:00 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3F013F80053
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 14:53:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F013F80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id D24C3F80053
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 15:38:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D24C3F80053
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=odMtc5Dx
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 34PCrdrO005723;
-	Thu, 25 May 2023 07:53:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1685019219;
-	bh=6ks66yZV5gcEqGgIUg5LbU7F3LbUrto/eH+llPvKqdE=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To;
-	b=odMtc5DxIo5ppR5sgJNi9JAWEZ+rLNZAW34GpZlVlUYWm6vKgKu6d5yls9aahr3c9
-	 7B052k0opU+ux7gLR7y6FMOfnoymvm2lxsciC+qhwgoQeqJQrLX9EFD1OWvGzEQNCr
-	 qblLB1Ax/1ulfnVB23Iou4TYWBL2WE0/UhXDRGlM=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 34PCrd5O123006
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 25 May 2023 07:53:39 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
- May 2023 07:53:39 -0500
-Received: from DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c]) by
- DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c%18]) with mapi id
- 15.01.2507.023; Thu, 25 May 2023 07:53:39 -0500
-From: "Ding, Shenghao" <shenghao-ding@ti.com>
-To: Takashi Iwai <tiwai@suse.de>
-CC: Shenghao Ding <13916275206@139.com>,
-        "broonie@kernel.org"
-	<broonie@kernel.org>,
-        "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org"
-	<krzysztof.kozlowski+dt@linaro.org>,
-        "robh+dt@kernel.org"
-	<robh+dt@kernel.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "pierre-louis.bossart@linux.intel.com"
-	<pierre-louis.bossart@linux.intel.com>,
-        "Lu, Kevin" <kevin-lu@ti.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Xu, Baojun"
-	<x1077012@ti.com>, "Gupta, Peeyush" <peeyush@ti.com>,
-        "Navada Kanyana,
- Mukund" <navada@ti.com>,
-        "gentuser@gmail.com" <gentuser@gmail.com>,
-        "Ryan_Chu@wistron.com" <Ryan_Chu@wistron.com>,
-        "Sam_Wu@wistron.com"
-	<Sam_Wu@wistron.com>
-Subject: RE: [EXTERNAL] Re: [PATCH v3 4/5] ALSA: hda/tas2781: Add tas2781 HDA
- driver
-Thread-Topic: [EXTERNAL] Re: [PATCH v3 4/5] ALSA: hda/tas2781: Add tas2781 HDA
- driver
-Thread-Index: AQHZi7qiFX/KEOnLRkSXJDizgQHnya9nuCRggABbjACAAuPwoA==
-Date: Thu, 25 May 2023 12:53:38 +0000
-Message-ID: <0102db2e22dc472091a586bb73b467d9@ti.com>
-References: <20230519080227.20224-1-13916275206@139.com>
-	<871qjayuvv.wl-tiwai@suse.de>	<9daf95da47b540329aa9fbbd2df5e504@ti.com>
- <87353ngtp1.wl-tiwai@suse.de>
-In-Reply-To: <87353ngtp1.wl-tiwai@suse.de>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.250.162.66]
-x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=X916qYIO
+Received: by mail-wm1-x329.google.com with SMTP id
+ 5b1f17b1804b1-3f6a6b9c079so4627885e9.1
+        for <alsa-devel@alsa-project.org>;
+ Thu, 25 May 2023 06:38:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1685021929; x=1687613929;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UyuLCEhn8GX5O7IyV3OsDqUmT5UuCj/vH6uAj7jFQ0U=;
+        b=X916qYIOlP2m32ZpnG9P9ll3mYMCDzS1HhJHfPkU9SptQ4EpmpeTWxXEcu+VwpK4BH
+         xmw5QJwQWqHyAfxhuO3CQ/nTD85vSeKKEC7fgPHvpuLh4DlrHIS7akh/A9XFK8cM1CJY
+         g/JzfCtgU4HjHgPvbJbEUYinHXKsn7j+Z7rWF2N8NBCS1rq7RoiCHRBPwvd2gdvsTrn+
+         Jfc5mi30sITqFdL79WFHe/SUO+2C+zHQyYxiuUhJl9tQbelV9htUipV/IMB35fCTaa+w
+         DQ30OxUemA2kjVyQhUwP6sW6G5L7RcNgS5XfGN6xUhaKdnhzaWsnyh2PPpJ4oq7nujoS
+         KLDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685021929; x=1687613929;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UyuLCEhn8GX5O7IyV3OsDqUmT5UuCj/vH6uAj7jFQ0U=;
+        b=METN+JMoJahhfEu/4KlnNj1HxCdYmtMHCob8H+NPP+CuCzqTAmgEOLMrd05g/6R/rJ
+         Az4Zp6zbRWPze76Vg19tcudGtw5DXnUw98pk5aM6vrYtjbclzYwPLoKVGr8jFrk4ZD6T
+         UpHsItlWk5gUrY2jBlQKE+IxY3B7OsTRvXgxGxcv3jjgWjiLesmfCOb8l0qSJ9PhJjqK
+         ovMfcyNz/YC2YUv1l4UElm/nS3nMVi9v3Ty5TvEbRvNcy+tPUiZQNncemmRaSS/vEFcD
+         IHSTItRqck7ni0ElW14fRlHgVFCNLYshCN9Bwbm5F87NDvL+cOtuhBv6ECrcxESt8Ztt
+         Y7UA==
+X-Gm-Message-State: AC+VfDymNDIiShu8VSlqg23PnrCA8f7XU1ELMuZM8difIZi60Sab6D/g
+	P/pG6IIoklq8I7km5Em/1A6U7Q==
+X-Google-Smtp-Source: 
+ ACHHUZ4bTttKZxh7vwGsOqquSDQW3VpZNQJ26RqX4KKyHaCGAIXJhw0NoJTiFO4JjCyEAnFfONBeSg==
+X-Received: by 2002:adf:f251:0:b0:306:31e0:958 with SMTP id
+ b17-20020adff251000000b0030631e00958mr2346226wrp.15.1685021928828;
+        Thu, 25 May 2023 06:38:48 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id
+ z17-20020a5d6551000000b00301a351a8d6sm1803641wrv.84.2023.05.25.06.38.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 May 2023 06:38:48 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: vkoul@kernel.org
+Cc: andersson@kernel.org,
+	yung-chuan.liao@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	sanyog.r.kale@intel.com,
+	linux-arm-msm@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 2/4] soundwire: qcom: wait for fifo to be empty before
+ suspend
+Date: Thu, 25 May 2023 14:38:10 +0100
+Message-Id: <20230525133812.30841-3-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20230525133812.30841-1-srinivas.kandagatla@linaro.org>
+References: <20230525133812.30841-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Message-ID-Hash: FUPLAWMS74YDRESAHMEHNRWVHH3NVDTD
-X-Message-ID-Hash: FUPLAWMS74YDRESAHMEHNRWVHH3NVDTD
-X-MailFrom: shenghao-ding@ti.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: 7WAVLBZRIY2TCSWMEPXT6VEUVLIQP5F4
+X-Message-ID-Hash: 7WAVLBZRIY2TCSWMEPXT6VEUVLIQP5F4
+X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -119,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FUPLAWMS74YDRESAHMEHNRWVHH3NVDTD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7WAVLBZRIY2TCSWMEPXT6VEUVLIQP5F4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,88 +123,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Wait for Fifo to be empty before going to suspend or before bank
+switch happens. Just to make sure that all the reads/writes are done.
 
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/soundwire/qcom.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-> -----Original Message-----
-> From: Takashi Iwai <tiwai@suse.de>
-> Sent: Tuesday, May 23, 2023 7:43 PM
-> To: Ding, Shenghao <shenghao-ding@ti.com>
-> Cc: Shenghao Ding <13916275206@139.com>; broonie@kernel.org;
-> devicetree@vger.kernel.org; krzysztof.kozlowski+dt@linaro.org;
-> robh+dt@kernel.org; lgirdwood@gmail.com; perex@perex.cz; pierre-
-> louis.bossart@linux.intel.com; Lu, Kevin <kevin-lu@ti.com>; alsa-
-> devel@alsa-project.org; linux-kernel@vger.kernel.org; Xu, Baojun
-> <x1077012@ti.com>; Gupta, Peeyush <peeyush@ti.com>; Navada Kanyana,
-> Mukund <navada@ti.com>; gentuser@gmail.com; Ryan_Chu@wistron.com;
-> Sam_Wu@wistron.com
-> Subject: Re: [EXTERNAL] Re: [PATCH v3 4/5] ALSA: hda/tas2781: Add tas2781
-> HDA driver
->=20
-> On Tue, 23 May 2023 13:22:03 +0200,
-> Ding, Shenghao wrote:
-> >
-> > > +	[ALC287_FIXUP_TAS2781_I2C_2] =3D {
-> > > +		.type =3D HDA_FIXUP_FUNC,
-> > > +		.v.func =3D tas2781_fixup_i2c,
-> > > +		.chained =3D true,
-> > > +		.chain_id =3D ALC269_FIXUP_THINKPAD_ACPI,
-> > > +	},
-> > > +	[ALC287_FIXUP_TAS2781_I2C_4] =3D {
-> > > +		.type =3D HDA_FIXUP_FUNC,
-> > > +		.v.func =3D tas2781_fixup_i2c,
-> > > +		.chained =3D true,
-> > > +		.chain_id =3D ALC269_FIXUP_THINKPAD_ACPI,
-> > > +	},
-> >
-> > What's a difference between *_2 and *_4?
-> > Combine them into ALC287_FIXUP_TAS2781_I2C
->=20
-> Hm, so there is no difference in stereo and quad speakers?
-Yes, our firmware defines the stereo or quad speaker
->=20
-> > > +static int tas2781_save_calibration(struct tasdevice_priv
-> > > +*tas_priv) {
-> > > +	efi_guid_t efi_guid =3D EFI_GUID(0x02f9af02, 0x7734, 0x4233, 0xb4,
-> 0x3d,
-> > > +		0x93, 0xfe, 0x5a, 0xa3, 0x5d, 0xb3);
-> > > +	static efi_char16_t efi_name[] =3D L"CALI_DATA";
-> > > +	struct hda_codec *codec =3D tas_priv->codec;
-> > > +	unsigned int subid =3D codec->core.subsystem_id & 0xFFFF;
-> > > +	struct tm *tm =3D &tas_priv->tm;
-> > > +	unsigned int attr, crc;
-> > > +	unsigned int *tmp_val;
-> > > +	efi_status_t status;
-> > > +	int ret =3D 0;
-> > > +
-> > > +	//Lenovo devices
-> > > +	if ((subid =3D=3D 0x387d) || (subid =3D=3D 0x387e) || (subid =3D=3D=
- 0x3881)
-> > > +		|| (subid =3D=3D 0x3884) || (subid =3D=3D 0x3886) || (subid =3D=3D=
- 0x38a7)
-> > > +		|| (subid =3D=3D 0x38a8) || (subid =3D=3D 0x38ba) || (subid =3D=3D
-> 0x38bb)
-> > > +		|| (subid =3D=3D 0x38be) || (subid =3D=3D 0x38bf) || (subid =3D=3D=
- 0x38c3)
-> > > +		|| (subid =3D=3D 0x38cb) || (subid =3D=3D 0x38cd))
-> > > +		efi_guid =3D EFI_GUID(0x1f52d2a1, 0xbb3a, 0x457d, 0xbc, 0x09,
-> > > +			0x43, 0xa3, 0xf4, 0x31, 0x0a, 0x92);
-> >
-> > Here can be a problem: the device ID is embedded here, and it's hard to
-> find out.  You'd better to make it some quirk flag that is set in a commo=
-n
-> place and check the flag here instead of checking ID at each place.
-> >
-> > Do you have example of the solution? I found some quirk flag is static =
-in
-> the patch_realtek.c, can't be accessed outside that file.
->=20
-> You may store some values in struct hda_component, I suppose?
-I will try it.
->=20
-> BTW, please try to fix your mailer to do citation more correctly...
-accept
->=20
->=20
-> thanks,
->=20
-> Takashi
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 9440787e924b..adf025194a31 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -404,6 +404,32 @@ static int swrm_wait_for_wr_fifo_avail(struct qcom_swrm_ctrl *ctrl)
+ 	return 0;
+ }
+ 
++static bool swrm_wait_for_wr_fifo_done(struct qcom_swrm_ctrl *ctrl)
++{
++	u32 fifo_outstanding_cmds, value;
++	int fifo_retry_count = SWR_OVERFLOW_RETRY_COUNT;
++
++	/* Check for fifo overflow during write */
++	ctrl->reg_read(ctrl, ctrl->reg_layout[SWRM_REG_CMD_FIFO_STATUS], &value);
++	fifo_outstanding_cmds = FIELD_GET(SWRM_WR_CMD_FIFO_CNT_MASK, value);
++
++	if (fifo_outstanding_cmds) {
++		while (fifo_retry_count) {
++			usleep_range(500, 510);
++			ctrl->reg_read(ctrl, ctrl->reg_layout[SWRM_REG_CMD_FIFO_STATUS], &value);
++			fifo_outstanding_cmds = FIELD_GET(SWRM_WR_CMD_FIFO_CNT_MASK, value);
++			fifo_retry_count--;
++			if (fifo_outstanding_cmds == 0)
++				return true;
++		}
++	} else {
++		return true;
++	}
++
++
++	return false;
++}
++
+ static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *ctrl, u8 cmd_data,
+ 				     u8 dev_addr, u16 reg_addr)
+ {
+@@ -434,6 +460,7 @@ static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *ctrl, u8 cmd_data,
+ 		usleep_range(150, 155);
+ 
+ 	if (cmd_id == SWR_BROADCAST_CMD_ID) {
++		swrm_wait_for_wr_fifo_done(ctrl);
+ 		/*
+ 		 * sleep for 10ms for MSM soundwire variant to allow broadcast
+ 		 * command to complete.
+@@ -1230,6 +1257,7 @@ static void qcom_swrm_shutdown(struct snd_pcm_substream *substream,
+ {
+ 	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dai->dev);
+ 
++	swrm_wait_for_wr_fifo_done(ctrl);
+ 	sdw_release_stream(ctrl->sruntime[dai->id]);
+ 	ctrl->sruntime[dai->id] = NULL;
+ 	pm_runtime_mark_last_busy(ctrl->dev);
+@@ -1688,6 +1716,7 @@ static int __maybe_unused swrm_runtime_suspend(struct device *dev)
+ 	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
+ 	int ret;
+ 
++	swrm_wait_for_wr_fifo_done(ctrl);
+ 	if (!ctrl->clock_stop_not_supported) {
+ 		/* Mask bus clash interrupt */
+ 		ctrl->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
+-- 
+2.21.0
+
