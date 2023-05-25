@@ -4,77 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12FDFC7EE29
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 18:36:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D072C7EE29
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 18:37:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B411A83A;
-	Thu, 25 May 2023 20:35:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B411A83A
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDC1E839;
+	Thu, 25 May 2023 20:36:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDC1E839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685039794;
-	bh=9ifQ7dhO9nVieclCl710GA67oMuMIARBDij0rO5gZc4=;
+	s=default; t=1685039820;
+	bh=IkGBsXi3C4HEnccIyBaIOzBJS5i014sdapMrMLHbqrQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hwo1bjUrGGhAahFg2F9tOQX8nsada1pqMCtafOyBSc1uITk8tRAQEmxcOyNA5Mmw2
-	 xssu3iic9DH9G7Hb/WpyoMcdXFueg4PLl7DwLfaHinUALVt4KfLIzil7d7ta4utF7T
-	 tQ0ohlDQr8aTwk7T4Vh9j3/TMnt7w4GNbywr5Fb8=
+	b=t2z9fE3BnV9NVtMN6RTEXvz0x8racPRPXDwNNrdRLv46n0SV9EQIP9kpC0YOAMf71
+	 Y9s7TTh6zu1b0s3sQr3Y8f5qMSgEtxTTPSZ5mCDSKGn8SOCKBQC4J6guC0eDWFEnul
+	 hY9wH4a8zy9fmH42q0fU3Z+IiXQA+9MZhHZNXn0s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68E2AF805CB; Thu, 25 May 2023 20:34:25 +0200 (CEST)
+	id 9AE1FF80551; Thu, 25 May 2023 20:35:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E47C8F805C5;
-	Thu, 25 May 2023 20:34:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A879F8024E;
+	Thu, 25 May 2023 20:35:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C71D5F805C1; Thu, 25 May 2023 20:34:15 +0200 (CEST)
+	id 509BCF8024E; Thu, 25 May 2023 20:35:50 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3E35AF80249;
-	Thu, 25 May 2023 20:34:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E35AF80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7D7C9F80007
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 20:35:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D7C9F80007
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=LKrl2y1t
+ header.s=k20201202 header.b=oX18NGoG
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id CAA75648AA;
-	Thu, 25 May 2023 18:34:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA55CC4339C;
-	Thu, 25 May 2023 18:34:03 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4D0AC648ED;
+	Thu, 25 May 2023 18:35:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6741C4339B;
+	Thu, 25 May 2023 18:35:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685039645;
-	bh=9ifQ7dhO9nVieclCl710GA67oMuMIARBDij0rO5gZc4=;
+	s=k20201202; t=1685039746;
+	bh=IkGBsXi3C4HEnccIyBaIOzBJS5i014sdapMrMLHbqrQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LKrl2y1t7KzCTWDWmj2DMB9asedpM4rZxAhqSAGfQicPJWe7uQ+2VutlCxunljbR7
-	 4g+K6D2GzSZPJ6iHv6B8NqeVXbVEjb+BJL2q15S+oISFlp/BFCvAoKiDocsHJ+pD5Y
-	 bPKhz2NecLTm/BzIK/aO4ZXgUW73s5THdKhtToOW7hf56+5SRnS419Cp6if//gJ/px
-	 hWZ7AcRcYsyC9lAoLEYWNCu/59szM1cIR4ULw8H9K9xQFf3RcV3crCGp0wOshebNi+
-	 LOI2uYRfXLSo20AH4VWlNrKv2lcU3ju/N67+ngtGjQyHXo3qzzF1e3wSLArXeSeIFM
-	 U0ooEflCnlY6Q==
+	b=oX18NGoGwKRubN4m86agItHaYWeY3rZA29OLTGvGyfCrm4vSjlHL1x0w/C4VyWZ9l
+	 +vl+B6OZcyKwsqEpDcvz8/qmeHJdgdY8LautzJW3GM1UzTq9SDetjdVX5lsc7LbkzX
+	 gzZXeqhdv0NgjyBGH2tmf1Fc4odZO5J+1CJRiPByUjEIIL6jWVVQAFGmp0gipfdtYK
+	 egSHXgdWSkGPagRdzgiJh0OSokI4WO+ZriQ+HOrRvZjuiojiw1r+Yry8UlJXA75rnM
+	 iuH8RQ9FlQfdb8wcNguf47Jvn+f/dfhs4nXfNbZgynfhWHHoAVXFUtOSWfVUdX4E1A
+	 EcQgCRuX+YNMw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	peter.ujfalusi@linux.intel.com,
-	yung-chuan.liao@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	daniel.baluta@nxp.com,
-	broonie@kernel.org,
 	perex@perex.cz,
 	tiwai@suse.com,
-	sound-open-firmware@alsa-project.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.3 33/67] ASoC: SOF: sof-client-probes: fix
- pm_runtime imbalance in error handling
-Date: Thu, 25 May 2023 14:31:10 -0400
-Message-Id: <20230525183144.1717540-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.3 59/67] ALSA: oss: avoid missing-prototype warnings
+Date: Thu, 25 May 2023 14:31:36 -0400
+Message-Id: <20230525183144.1717540-59-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230525183144.1717540-1-sashal@kernel.org>
 References: <20230525183144.1717540-1-sashal@kernel.org>
@@ -82,8 +75,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DZBL2DV4H2RCWI3VLIEUIUQ4DLFS64WR
-X-Message-ID-Hash: DZBL2DV4H2RCWI3VLIEUIUQ4DLFS64WR
+Message-ID-Hash: BZTPGKOAAJWFZKQ77G6RZURCAH2FYL4A
+X-Message-ID-Hash: BZTPGKOAAJWFZKQ77G6RZURCAH2FYL4A
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DZBL2DV4H2RCWI3VLIEUIUQ4DLFS64WR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BZTPGKOAAJWFZKQ77G6RZURCAH2FYL4A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,56 +98,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit bc424273c74c1565c459c8f2a6ed95caee368d0a ]
+[ Upstream commit 040b5a046a9e18098580d3ccd029e2318fca7859 ]
 
-When an error occurs, we need to make sure the device can pm_runtime
-suspend instead of keeping it active.
+Two functions are defined and used in pcm_oss.c but also optionally
+used from io.c, with an optional prototype. If CONFIG_SND_PCM_OSS_PLUGINS
+is disabled, this causes a warning as the functions are not static
+and have no prototype:
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com
-Link: https://lore.kernel.org/r/20230512103315.8921-4-peter.ujfalusi@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org
+sound/core/oss/pcm_oss.c:1235:19: error: no previous prototype for 'snd_pcm_oss_write3' [-Werror=missing-prototypes]
+sound/core/oss/pcm_oss.c:1266:19: error: no previous prototype for 'snd_pcm_oss_read3' [-Werror=missing-prototypes]
+
+Avoid this by making the prototypes unconditional.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20230516195046.550584-2-arnd@kernel.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/sof-client-probes.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/core/oss/pcm_plugin.h | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sof/sof-client-probes.c b/sound/soc/sof/sof-client-probes.c
-index fff126808bc04..8d9e9d5f40e45 100644
---- a/sound/soc/sof/sof-client-probes.c
-+++ b/sound/soc/sof/sof-client-probes.c
-@@ -218,12 +218,7 @@ static ssize_t sof_probes_dfs_points_read(struct file *file, char __user *to,
+diff --git a/sound/core/oss/pcm_plugin.h b/sound/core/oss/pcm_plugin.h
+index 46e273bd4a786..50a6b50f5db4c 100644
+--- a/sound/core/oss/pcm_plugin.h
++++ b/sound/core/oss/pcm_plugin.h
+@@ -141,6 +141,14 @@ int snd_pcm_area_copy(const struct snd_pcm_channel_area *src_channel,
  
- 	ret = ipc->points_info(cdev, &desc, &num_desc);
- 	if (ret < 0)
--		goto exit;
+ void *snd_pcm_plug_buf_alloc(struct snd_pcm_substream *plug, snd_pcm_uframes_t size);
+ void snd_pcm_plug_buf_unlock(struct snd_pcm_substream *plug, void *ptr);
++#else
++
++static inline snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *handle, snd_pcm_uframes_t drv_size) { return drv_size; }
++static inline snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *handle, snd_pcm_uframes_t clt_size) { return clt_size; }
++static inline int snd_pcm_plug_slave_format(int format, const struct snd_mask *format_mask) { return format; }
++
++#endif
++
+ snd_pcm_sframes_t snd_pcm_oss_write3(struct snd_pcm_substream *substream,
+ 				     const char *ptr, snd_pcm_uframes_t size,
+ 				     int in_kernel);
+@@ -151,14 +159,6 @@ snd_pcm_sframes_t snd_pcm_oss_writev3(struct snd_pcm_substream *substream,
+ snd_pcm_sframes_t snd_pcm_oss_readv3(struct snd_pcm_substream *substream,
+ 				     void **bufs, snd_pcm_uframes_t frames);
+ 
+-#else
 -
--	pm_runtime_mark_last_busy(dev);
--	err = pm_runtime_put_autosuspend(dev);
--	if (err < 0)
--		dev_err_ratelimited(dev, "debugfs read failed to idle %d\n", err);
-+		goto pm_error;
- 
- 	for (i = 0; i < num_desc; i++) {
- 		offset = strlen(buf);
-@@ -241,6 +236,13 @@ static ssize_t sof_probes_dfs_points_read(struct file *file, char __user *to,
- 	ret = simple_read_from_buffer(to, count, ppos, buf, strlen(buf));
- 
- 	kfree(desc);
-+
-+pm_error:
-+	pm_runtime_mark_last_busy(dev);
-+	err = pm_runtime_put_autosuspend(dev);
-+	if (err < 0)
-+		dev_err_ratelimited(dev, "debugfs read failed to idle %d\n", err);
-+
- exit:
- 	kfree(buf);
- 	return ret;
+-static inline snd_pcm_sframes_t snd_pcm_plug_client_size(struct snd_pcm_substream *handle, snd_pcm_uframes_t drv_size) { return drv_size; }
+-static inline snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *handle, snd_pcm_uframes_t clt_size) { return clt_size; }
+-static inline int snd_pcm_plug_slave_format(int format, const struct snd_mask *format_mask) { return format; }
+-
+-#endif
+-
+ #ifdef PLUGIN_DEBUG
+ #define pdprintf(fmt, args...) printk(KERN_DEBUG "plugin: " fmt, ##args)
+ #else
 -- 
 2.39.2
 
