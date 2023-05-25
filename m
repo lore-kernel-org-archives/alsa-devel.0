@@ -4,83 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5F01C7EE29
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 18:37:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 189D3C7EE2F
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 18:38:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C67C7844;
-	Thu, 25 May 2023 20:36:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C67C7844
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF8EC86E;
+	Thu, 25 May 2023 20:37:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF8EC86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685039867;
-	bh=TQ11Nxh2OcO48SMDrGUoUDr9OLdFd43bQOf6sBAJnKo=;
+	s=default; t=1685039882;
+	bh=Ki4cMz1lLwGiIiiCwi2lRMtlNdqGc8g9KIvY00HYzDU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VnLRRquRmxP0UPNNg+wft8L7XQ3oRQJ4pYNJBP/MO6aWogBTPkTfcLFupDYZ9BrBe
-	 /W7hxxpXr18RrBvmVQziCQMT5H6o6Lb9/X1vq6HKDJVjJo5z2tg0n38pMU0tuaS0yG
-	 a5mvtQ34Pe+L2Yp9xko2osBgfa+jMa53FQqwVkvQ=
+	b=nh1BiG8MyO6RGaZGK5dgemT9nU1x9k4himDwdCSDslf+85audbAugn9v1VkexgmHV
+	 4BoGeN3d5Vl39IVh+KShJjRASbdU180ycVDqtskt9AwkRzSM+WfZz9Sa/GpMihQeXK
+	 e6BzfOkNPkhwJXodD9y1ZWTnnX904+87RlSxZ3nM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C9C37F80579; Thu, 25 May 2023 20:36:26 +0200 (CEST)
+	id 91F55F80570; Thu, 25 May 2023 20:36:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 708A2F80579;
-	Thu, 25 May 2023 20:36:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48359F80552;
+	Thu, 25 May 2023 20:36:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ED483F80563; Thu, 25 May 2023 20:36:22 +0200 (CEST)
+	id 79124F80552; Thu, 25 May 2023 20:36:49 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 52311F80249
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 20:36:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52311F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id B3624F80007
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 20:36:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3624F80007
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=iw33W8jE
+ header.s=k20201202 header.b=H3/y/bn8
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3F8FF6490E;
-	Thu, 25 May 2023 18:36:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F29F9C4339B;
-	Thu, 25 May 2023 18:36:18 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 895696491B;
+	Thu, 25 May 2023 18:36:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC09DC433D2;
+	Thu, 25 May 2023 18:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685039780;
-	bh=TQ11Nxh2OcO48SMDrGUoUDr9OLdFd43bQOf6sBAJnKo=;
+	s=k20201202; t=1685039806;
+	bh=Ki4cMz1lLwGiIiiCwi2lRMtlNdqGc8g9KIvY00HYzDU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iw33W8jEQA5JmcqmlGypc4W9exG4eJHZcDjW7lmHN3lIN8vyBaY+hZlXI2JVkSDTx
-	 MzvX9YTz/qYkQDIAXiyaQeLkFU/ZNbJ2/BnhZm5ESjPX/XOuiNFWjTDEmHfh4sRJ57
-	 EG0qopa/bQqElqTHJXivlk6t0Fy0nRFfbdFamy8Bkm8BfmKfxT4Vhbg+5zCfUasCe6
-	 HvWDbibdGClBv0ZUvia5a4u6DeIaN2kCnVMJIvhT3HZ7AX330lqQhNYUfXliu8/pDh
-	 XSScN6i9ySC+wzJ0ClJgXRQqxwE09wEdz3sFjLWUyiWvNiSaqdXWRPhjBgxLzYozup
-	 zzHSk70Glunjw==
+	b=H3/y/bn87XDxfuoCFFfVeddvuGhqf4MkxXu2j0+EMMaKjN17hclJbDMcy8TQuRY2/
+	 ix4bsDRkfcOspiLk9T1JnAlvwVnF0ESjPod7r0C2YT/7NMolaViVfdL6auhtclcm9y
+	 5ZuVQd4UOVykbCA/ktrcR0KfxBWr0jQHDc6VqIUax1upqO0Pro5pGqyqem7u9DVbyS
+	 4XuItmxFO/sxaRFQyLO8EmqNeHI9D5EBsqV76OIQSL2rbE1kWNazR94h4kJJEQW1YE
+	 hTUmOemG5JvpA2Zr6OFbVmYwWIxUhHl9JUZARoLEZO9Ppykp40ZHN2RO/eFBDr3TfX
+	 UfUHJ/2AzSXMA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Maxim Kochetkov <fido_max@inbox.ru>,
+Cc: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
 	Sasha Levin <sashal@kernel.org>,
 	lgirdwood@gmail.com,
 	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	ckeepax@opensource.cirrus.com,
-	u.kleine-koenig@pengutronix.de,
-	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 04/57] ASoC: dwc: limit the number of overrun
- messages
-Date: Thu, 25 May 2023 14:35:14 -0400
-Message-Id: <20230525183607.1793983-4-sashal@kernel.org>
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	afd@ti.com,
+	shifu0704@thundersoft.com,
+	shenghao-ding@ti.com,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 08/57] ASoC: dt-bindings: Adjust #sound-dai-cells
+ on TI's single-DAI codecs
+Date: Thu, 25 May 2023 14:35:18 -0400
+Message-Id: <20230525183607.1793983-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230525183607.1793983-1-sashal@kernel.org>
 References: <20230525183607.1793983-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: WQHPIQJBWEQQHYPXS3XVGXFYFK7GJRAC
-X-Message-ID-Hash: WQHPIQJBWEQQHYPXS3XVGXFYFK7GJRAC
+Message-ID-Hash: JYCPVRJQX5PVB25MNQV7N5J4R2NUAQHQ
+X-Message-ID-Hash: JYCPVRJQX5PVB25MNQV7N5J4R2NUAQHQ
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQHPIQJBWEQQHYPXS3XVGXFYFK7GJRAC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JYCPVRJQX5PVB25MNQV7N5J4R2NUAQHQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,42 +106,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Maxim Kochetkov <fido_max@inbox.ru>
+From: Martin Povišer <povik+lin@cutebit.org>
 
-[ Upstream commit ab6ecfbf40fccf74b6ec2ba7ed6dd2fc024c3af2 ]
+[ Upstream commit efb2bfd7b3d210c479b9361c176d7426e5eb8663 ]
 
-On slow CPU (FPGA/QEMU emulated) printing overrun messages from
-interrupt handler to uart console may leads to more overrun errors.
-So use dev_err_ratelimited to limit the number of error messages.
+A bunch of TI's codecs have binding schemas which force #sound-dai-cells
+to one despite those codecs only having a single DAI. Allow for bindings
+with zero DAI cells and deprecate the former non-zero value.
 
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru
-Link: https://lore.kernel.org/r/20230505062820.21840-1-fido_max@inbox.ru
+Signed-off-by: Martin Povišer <povik+lin@cutebit.org
+Link: https://lore.kernel.org/r/20230509153412.62847-1-povik+lin@cutebit.org
 Signed-off-by: Mark Brown <broonie@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/dwc/dwc-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/sound/tas2562.yaml | 6 ++++--
+ Documentation/devicetree/bindings/sound/tas2770.yaml | 6 ++++--
+ Documentation/devicetree/bindings/sound/tas27xx.yaml | 6 ++++--
+ 3 files changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-index 7f7dd07c63b2f..3496301582b22 100644
---- a/sound/soc/dwc/dwc-i2s.c
-+++ b/sound/soc/dwc/dwc-i2s.c
-@@ -132,13 +132,13 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev_id)
+diff --git a/Documentation/devicetree/bindings/sound/tas2562.yaml b/Documentation/devicetree/bindings/sound/tas2562.yaml
+index 30f6b029ac085..cb519a4b6e710 100644
+--- a/Documentation/devicetree/bindings/sound/tas2562.yaml
++++ b/Documentation/devicetree/bindings/sound/tas2562.yaml
+@@ -52,7 +52,9 @@ properties:
+     description: TDM TX current sense time slot.
  
- 		/* Error Handling: TX */
- 		if (isr[i] & ISR_TXFO) {
--			dev_err(dev->dev, "TX overrun (ch_id=%d)\n", i);
-+			dev_err_ratelimited(dev->dev, "TX overrun (ch_id=%d)\n", i);
- 			irq_valid = true;
- 		}
+   '#sound-dai-cells':
+-    const: 1
++    # The codec has a single DAI, the #sound-dai-cells=<1>; case is left in for backward
++    # compatibility but is deprecated.
++    enum: [0, 1]
  
- 		/* Error Handling: TX */
- 		if (isr[i] & ISR_RXFO) {
--			dev_err(dev->dev, "RX overrun (ch_id=%d)\n", i);
-+			dev_err_ratelimited(dev->dev, "RX overrun (ch_id=%d)\n", i);
- 			irq_valid = true;
- 		}
- 	}
+ required:
+   - compatible
+@@ -69,7 +71,7 @@ examples:
+      codec: codec@4c {
+        compatible = "ti,tas2562";
+        reg = <0x4c>;
+-       #sound-dai-cells = <1>;
++       #sound-dai-cells = <0>;
+        interrupt-parent = <&gpio1>;
+        interrupts = <14>;
+        shutdown-gpios = <&gpio1 15 0>;
+diff --git a/Documentation/devicetree/bindings/sound/tas2770.yaml b/Documentation/devicetree/bindings/sound/tas2770.yaml
+index bc90e72bf7cf9..1859fbe1cdf17 100644
+--- a/Documentation/devicetree/bindings/sound/tas2770.yaml
++++ b/Documentation/devicetree/bindings/sound/tas2770.yaml
+@@ -54,7 +54,9 @@ properties:
+       - 1 # Falling edge
+ 
+   '#sound-dai-cells':
+-    const: 1
++    # The codec has a single DAI, the #sound-dai-cells=<1>; case is left in for backward
++    # compatibility but is deprecated.
++    enum: [0, 1]
+ 
+ required:
+   - compatible
+@@ -71,7 +73,7 @@ examples:
+      codec: codec@41 {
+        compatible = "ti,tas2770";
+        reg = <0x41>;
+-       #sound-dai-cells = <1>;
++       #sound-dai-cells = <0>;
+        interrupt-parent = <&gpio1>;
+        interrupts = <14>;
+        reset-gpio = <&gpio1 15 0>;
+diff --git a/Documentation/devicetree/bindings/sound/tas27xx.yaml b/Documentation/devicetree/bindings/sound/tas27xx.yaml
+index 66a0df8850ea6..079cb6f8d4474 100644
+--- a/Documentation/devicetree/bindings/sound/tas27xx.yaml
++++ b/Documentation/devicetree/bindings/sound/tas27xx.yaml
+@@ -47,7 +47,9 @@ properties:
+     description: TDM TX voltage sense time slot.
+ 
+   '#sound-dai-cells':
+-    const: 1
++    # The codec has a single DAI, the #sound-dai-cells=<1>; case is left in for backward
++    # compatibility but is deprecated.
++    enum: [0, 1]
+ 
+ required:
+   - compatible
+@@ -64,7 +66,7 @@ examples:
+      codec: codec@38 {
+        compatible = "ti,tas2764";
+        reg = <0x38>;
+-       #sound-dai-cells = <1>;
++       #sound-dai-cells = <0>;
+        interrupt-parent = <&gpio1>;
+        interrupts = <14>;
+        reset-gpios = <&gpio1 15 0>;
 -- 
 2.39.2
 
