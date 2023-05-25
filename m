@@ -4,87 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BCB1C7EE2D
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 16:28:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75E2DC77B7A
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 16:28:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93A67208;
-	Thu, 25 May 2023 18:27:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93A67208
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED26D822;
+	Thu, 25 May 2023 18:27:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED26D822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685032084;
-	bh=qMVDbGPqje9bK5/6L4M068WHXwpN/xzZ8F/nRhBHw0o=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=WycEyO8e15ERJ7h7gIpAwPtbYjvjJ6aLYQ/Dy3CAKDjEC0sNqaFE3YsC0tqrriO7i
-	 9T47eEobTA+rciR4fuIS4R7zqGSd/TaYoYWNIqDITrAHuO08GjOv4hW7rsmceZ8fvJ
-	 lKiJj7E3tw99AgnbEDty1uj9YMJdDx/zvdX9nCb4=
+	s=default; t=1685032100;
+	bh=ONWQa8cWysHEtWPFrzxbMbKtGz7ErKredODfCjRsdeU=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=R9WNZshej5EqxvEq8AwTGo5+TKGvfl+J0cq02X3EDGDKnKDlc9TQhFReQLahzTKk1
+	 0Z2atdWEp/FTKU+b7KZNDchgN80ARkXADvJRTiC7mChmagqFaMpMGYdWR6UN6EPPcW
+	 DQvMIeNBkJmZAY42ALINOSCG5051eNaxCaXm7CjE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DFDF9F80558; Thu, 25 May 2023 18:26:38 +0200 (CEST)
+	id F2B34F80249; Thu, 25 May 2023 18:26:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E4A8F80557;
-	Thu, 25 May 2023 18:26:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51CC7F80568;
+	Thu, 25 May 2023 18:26:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C59D8F80557; Thu, 25 May 2023 18:26:33 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+	id A521BF80568; Thu, 25 May 2023 18:26:42 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 89E3AF800DF
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 18:26:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89E3AF800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3D826F80249
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 18:26:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D826F80249
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=ob09asmR
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34PEDsKd007206;
-	Thu, 25 May 2023 11:26:24 -0500
+ header.s=PODMain02222019 header.b=H2HcaXeb
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 34PEEWVC026032;
+	Thu, 25 May 2023 11:26:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=C+T9AdQHTyKPLCfGUavCqh8ysrmUdzqZXnPiTNqPsGs=;
- b=ob09asmRQy4okE/4HkihIz9be7c24JdvzHhM4U6fWNYDh/WAupQpDUp5pYbTtrhzINvz
- e47B1iZ048v3xPTfcnFAioouLfLqBSirJcesnOAY5bmHKYpC7lcBedHWAIx5qwKjNfSd
- r7K4JRjuWARaZIuP6u2V6TAadfOKY3sFN9G10zfMeWSmD0MTImmlycJrSKhIL2/FLJfq
- 2zIEaWGSOi5y8rhFu1fAyrlzODUFMCBQwiPjKW+sSENgJ7NetjfY4r4ARkjtpoTEBoDL
- /z4AYV5vPunjxmT0JxSbIj9sSJL0zPiuF7W97QkvDIWGzhj2irHPjjbr3llcVOp3/8iV 6g==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3qsde8j0yh-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=ppg0+PZKB7EwgPPkxrUAWwZqi0ulP9/yIwPqN9AKEy0=;
+ b=H2HcaXebvLNM17AvxCaoQRrEKi46taUxUN1IEGC2NoPmHHy41PgfJV2WPuUA4Wxa1yLT
+ XmQddxLY0wBdfgiQEV20JkJjrkGTqr5BR0H+SL9uLf9nfNPYjsdAIKYmchzlcGg0bvGT
+ 283mCrmGBEtqJFxBSXFGTRi5KVFxWGDNMhjSuHvNE9JCGv3PDf+l3yt9PWWOoFTJZO/T
+ qBFn5rGjpkqcZ5I/f2dQhBJJgUjNH7bKQiXt/shlb6qoIsht75XWNqmlMhC+l0Z3BybB
+ lagAAf4ecafpilCT49WZyDMMOgbtk51CsFjSlaSF8ANfmolH99mo+imzTRKFWde16Qxv 3Q==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm74vu-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 May 2023 11:26:24 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 25 May 2023 11:26:26 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Thu, 25 May
- 2023 11:26:22 -0500
+ 2023 11:26:24 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 25 May 2023 11:26:22 -0500
+ 15.2.1118.26 via Frontend Transport; Thu, 25 May 2023 11:26:24 -0500
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.65.166])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1805A11D4;
-	Thu, 25 May 2023 16:26:22 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C47F915B4;
+	Thu, 25 May 2023 16:26:23 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <tiwai@suse.com>, <broonie@kernel.org>, <perex@perex.cz>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH v2 00/12] ALSA: hda: Adding support for CS35L56 on HDA systems
-Date: Thu, 25 May 2023 17:26:06 +0100
-Message-ID: <20230525162618.20146-1-rf@opensource.cirrus.com>
+        Simon Trimmer
+	<simont@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v2 04/12] ASoC: cs35l56: Move utility functions to shared file
+Date: Thu, 25 May 2023 17:26:10 +0100
+Message-ID: <20230525162618.20146-5-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230525162618.20146-1-rf@opensource.cirrus.com>
+References: <20230525162618.20146-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: pZgHlPgAosz1ZHhc11e-jhpuVJDPpy8c
-X-Proofpoint-GUID: pZgHlPgAosz1ZHhc11e-jhpuVJDPpy8c
+X-Proofpoint-ORIG-GUID: AV6od07nYkAt-Drf3FfeUorK6PNaeJHT
+X-Proofpoint-GUID: AV6od07nYkAt-Drf3FfeUorK6PNaeJHT
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: SBQ2MAZBQ5FTTUS3POWY56MIH2K7AAJ6
-X-Message-ID-Hash: SBQ2MAZBQ5FTTUS3POWY56MIH2K7AAJ6
+Message-ID-Hash: FQDCVMF4JTXW56UON6KP6MF6XPEOM4ZG
+X-Message-ID-Hash: FQDCVMF4JTXW56UON6KP6MF6XPEOM4ZG
 X-MailFrom: prvs=050971c6a2=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SBQ2MAZBQ5FTTUS3POWY56MIH2K7AAJ6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FQDCVMF4JTXW56UON6KP6MF6XPEOM4ZG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,65 +110,492 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This set of patches adds support for using the CS35L56 boosted smart
-amplifier on HDA systems. In these systems the CS35L56 audio is
-routed through a HDA-to-I2S bridge codec.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-This doesn't include the changes to the Realtek driver to actually hook
-up the CS35L56 driver, because we don't yet have the QUIRK IDs to
-associate it with. But we want to publish the driver now so that it is
-available for bringing up hardware with the CS35L56.
+Move the cs35l56 utility functions into the shared file so they are
+available for use in HDA.
 
-The first 9 patches are moving code out of the ASoC driver and into the
-shared library so that it can be shared with the HDA driver.
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/cs35l56.h           |   7 +
+ sound/soc/codecs/cs35l56-shared.c | 208 ++++++++++++++++++++++++++++++
+ sound/soc/codecs/cs35l56.c        | 203 -----------------------------
+ 3 files changed, 215 insertions(+), 203 deletions(-)
 
-Patch #10 fixes missing #includes in the HDA headers so that the CS35L56
-driver doesn't have to #include headers that it doesn't use.
-
-Finally, #11 and #12 actually add the support for CS35L56 on HDA.
-
-CHANGES SINCE V1
-Squash the fix for passing the correct pointer to cs35l56_irq() into
-patch #1, where the pointer change to cs35l56_irq() was made.
-
-Richard Fitzgerald (4):
-  ASoC: cs35l56: Move runtime suspend/resume to shared library
-  ASoC: cs35l56: Move cs_dsp init into shared library
-  ASoC: cs35l56: Move part of cs35l56_init() to shared library
-  ALSA: hda: Fix missing header dependencies
-
-Simon Trimmer (8):
-  ASoC: cs35l56: Move shared data into a common data structure
-  ASoC: cs35l56: Make cs35l56_system_reset() code more generic
-  ASoC: cs35l56: Convert utility functions to use common data structure
-  ASoC: cs35l56: Move utility functions to shared file
-  ASoC: cs35l56: Make common function for control port wait
-  ASoC: cs35l56: Make a common function to shutdown the DSP
-  ALSA: hda: Add mute_hook to hda_component
-  ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier
-
- include/sound/cs35l56.h           |  29 +-
- sound/pci/hda/Kconfig             |  31 +
- sound/pci/hda/Makefile            |   6 +
- sound/pci/hda/cs35l56_hda.c       | 995 ++++++++++++++++++++++++++++++
- sound/pci/hda/cs35l56_hda.h       |  48 ++
- sound/pci/hda/cs35l56_hda_i2c.c   |  69 +++
- sound/pci/hda/cs35l56_hda_spi.c   |  68 ++
- sound/pci/hda/hda_auto_parser.h   |   2 +
- sound/pci/hda/hda_component.h     |   1 +
- sound/pci/hda/hda_generic.h       |   3 +
- sound/soc/codecs/cs35l56-i2c.c    |  14 +-
- sound/soc/codecs/cs35l56-sdw.c    |  72 +--
- sound/soc/codecs/cs35l56-shared.c | 459 +++++++++++++-
- sound/soc/codecs/cs35l56-spi.c    |  10 +-
- sound/soc/codecs/cs35l56.c        | 648 ++++---------------
- sound/soc/codecs/cs35l56.h        |  15 +-
- 16 files changed, 1878 insertions(+), 592 deletions(-)
- create mode 100644 sound/pci/hda/cs35l56_hda.c
- create mode 100644 sound/pci/hda/cs35l56_hda.h
- create mode 100644 sound/pci/hda/cs35l56_hda_i2c.c
- create mode 100644 sound/pci/hda/cs35l56_hda_spi.c
-
+diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
+index 3a029c6621c9..4d270eb23473 100644
+--- a/include/sound/cs35l56.h
++++ b/include/sound/cs35l56.h
+@@ -274,6 +274,13 @@ extern const char * const cs35l56_tx_input_texts[CS35L56_NUM_INPUT_SRC];
+ extern const unsigned int cs35l56_tx_input_values[CS35L56_NUM_INPUT_SRC];
+ 
+ void cs35l56_reread_firmware_registers(struct cs35l56_base *cs35l56_base);
++int cs35l56_mbox_send(struct cs35l56_base *cs35l56_base, unsigned int command);
++int cs35l56_wait_for_firmware_boot(struct cs35l56_base *cs35l56_base);
++void cs35l56_wait_min_reset_pulse(void);
++void cs35l56_system_reset(struct cs35l56_base *cs35l56_base, bool is_soundwire);
++int cs35l56_irq_request(struct cs35l56_base *cs35l56_base, int irq);
++irqreturn_t cs35l56_irq(int irq, void *data);
++int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base);
+ int cs35l56_get_bclk_freq_id(unsigned int freq);
+ void cs35l56_fill_supply_names(struct regulator_bulk_data *data);
+ 
+diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+index 0cbaf8c7b05a..93cd898dbab6 100644
+--- a/sound/soc/codecs/cs35l56-shared.c
++++ b/sound/soc/codecs/cs35l56-shared.c
+@@ -200,6 +200,214 @@ void cs35l56_reread_firmware_registers(struct cs35l56_base *cs35l56_base)
+ }
+ EXPORT_SYMBOL_NS_GPL(cs35l56_reread_firmware_registers, SND_SOC_CS35L56_SHARED);
+ 
++int cs35l56_mbox_send(struct cs35l56_base *cs35l56_base, unsigned int command)
++{
++	unsigned int val;
++	int ret;
++
++	regmap_write(cs35l56_base->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1, command);
++	ret = regmap_read_poll_timeout(cs35l56_base->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
++				       val, (val == 0),
++				       CS35L56_MBOX_POLL_US, CS35L56_MBOX_TIMEOUT_US);
++	if (ret) {
++		dev_warn(cs35l56_base->dev, "MBOX command %#x failed: %d\n", command, ret);
++		return ret;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_NS_GPL(cs35l56_mbox_send, SND_SOC_CS35L56_SHARED);
++
++int cs35l56_wait_for_firmware_boot(struct cs35l56_base *cs35l56_base)
++{
++	unsigned int reg;
++	unsigned int val;
++	int ret;
++
++	if (cs35l56_base->rev < CS35L56_REVID_B0)
++		reg = CS35L56_DSP1_HALO_STATE_A1;
++	else
++		reg = CS35L56_DSP1_HALO_STATE;
++
++	ret = regmap_read_poll_timeout(cs35l56_base->regmap, reg,
++				       val,
++				       (val < 0xFFFF) && (val >= CS35L56_HALO_STATE_BOOT_DONE),
++				       CS35L56_HALO_STATE_POLL_US,
++				       CS35L56_HALO_STATE_TIMEOUT_US);
++
++	if ((ret < 0) && (ret != -ETIMEDOUT)) {
++		dev_err(cs35l56_base->dev, "Failed to read HALO_STATE: %d\n", ret);
++		return ret;
++	}
++
++	if ((ret == -ETIMEDOUT) || (val != CS35L56_HALO_STATE_BOOT_DONE)) {
++		dev_err(cs35l56_base->dev, "Firmware boot fail: HALO_STATE=%#x\n", val);
++		return -EIO;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_NS_GPL(cs35l56_wait_for_firmware_boot, SND_SOC_CS35L56_SHARED);
++
++void cs35l56_wait_min_reset_pulse(void)
++{
++	/* Satisfy minimum reset pulse width spec */
++	usleep_range(CS35L56_RESET_PULSE_MIN_US, 2 * CS35L56_RESET_PULSE_MIN_US);
++}
++EXPORT_SYMBOL_NS_GPL(cs35l56_wait_min_reset_pulse, SND_SOC_CS35L56_SHARED);
++
++static const struct reg_sequence cs35l56_system_reset_seq[] = {
++	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_SYSTEM_RESET),
++};
++
++void cs35l56_system_reset(struct cs35l56_base *cs35l56_base, bool is_soundwire)
++{
++	/*
++	 * Must enter cache-only first so there can't be any more register
++	 * accesses other than the controlled system reset sequence below.
++	 */
++	regcache_cache_only(cs35l56_base->regmap, true);
++	regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
++					cs35l56_system_reset_seq,
++					ARRAY_SIZE(cs35l56_system_reset_seq));
++
++	/* On SoundWire the registers won't be accessible until it re-enumerates. */
++	if (is_soundwire)
++		return;
++
++	usleep_range(CS35L56_CONTROL_PORT_READY_US, CS35L56_CONTROL_PORT_READY_US + 400);
++	regcache_cache_only(cs35l56_base->regmap, false);
++}
++EXPORT_SYMBOL_NS_GPL(cs35l56_system_reset, SND_SOC_CS35L56_SHARED);
++
++int cs35l56_irq_request(struct cs35l56_base *cs35l56_base, int irq)
++{
++	int ret;
++
++	if (!irq)
++		return 0;
++
++	ret = devm_request_threaded_irq(cs35l56_base->dev, irq, NULL, cs35l56_irq,
++					IRQF_ONESHOT | IRQF_SHARED | IRQF_TRIGGER_LOW,
++					"cs35l56", cs35l56_base);
++	if (!ret)
++		cs35l56_base->irq = irq;
++	else
++		dev_err(cs35l56_base->dev, "Failed to get IRQ: %d\n", ret);
++
++	return ret;
++}
++EXPORT_SYMBOL_NS_GPL(cs35l56_irq_request, SND_SOC_CS35L56_SHARED);
++
++irqreturn_t cs35l56_irq(int irq, void *data)
++{
++	struct cs35l56_base *cs35l56_base = data;
++	unsigned int status1 = 0, status8 = 0, status20 = 0;
++	unsigned int mask1, mask8, mask20;
++	unsigned int val;
++	int rv;
++
++	irqreturn_t ret = IRQ_NONE;
++
++	if (!cs35l56_base->init_done)
++		return IRQ_NONE;
++
++	mutex_lock(&cs35l56_base->irq_lock);
++
++	rv = pm_runtime_resume_and_get(cs35l56_base->dev);
++	if (rv < 0) {
++		dev_err(cs35l56_base->dev, "irq: failed to get pm_runtime: %d\n", rv);
++		goto err_unlock;
++	}
++
++	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_STATUS, &val);
++	if ((val & CS35L56_IRQ1_STS_MASK) == 0) {
++		dev_dbg(cs35l56_base->dev, "Spurious IRQ: no pending interrupt\n");
++		goto err;
++	}
++
++	/* Ack interrupts */
++	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_EINT_1, &status1);
++	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_MASK_1, &mask1);
++	status1 &= ~mask1;
++	regmap_write(cs35l56_base->regmap, CS35L56_IRQ1_EINT_1, status1);
++
++	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_EINT_8, &status8);
++	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_MASK_8, &mask8);
++	status8 &= ~mask8;
++	regmap_write(cs35l56_base->regmap, CS35L56_IRQ1_EINT_8, status8);
++
++	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_EINT_20, &status20);
++	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_MASK_20, &mask20);
++	status20 &= ~mask20;
++	/* We don't want EINT20 but they default to unmasked: force mask */
++	regmap_write(cs35l56_base->regmap, CS35L56_IRQ1_MASK_20, 0xffffffff);
++
++	dev_dbg(cs35l56_base->dev, "%s: %#x %#x\n", __func__, status1, status8);
++
++	/* Check to see if unmasked bits are active */
++	if (!status1 && !status8 && !status20)
++		goto err;
++
++	if (status1 & CS35L56_AMP_SHORT_ERR_EINT1_MASK)
++		dev_crit(cs35l56_base->dev, "Amp short error\n");
++
++	if (status8 & CS35L56_TEMP_ERR_EINT1_MASK)
++		dev_crit(cs35l56_base->dev, "Overtemp error\n");
++
++	ret = IRQ_HANDLED;
++
++err:
++	pm_runtime_put(cs35l56_base->dev);
++err_unlock:
++	mutex_unlock(&cs35l56_base->irq_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_NS_GPL(cs35l56_irq, SND_SOC_CS35L56_SHARED);
++
++int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base)
++{
++	unsigned int val;
++	int ret;
++
++	/* Nothing to re-patch if we haven't done any patching yet. */
++	if (!cs35l56_base->fw_patched)
++		return false;
++
++	/*
++	 * If we have control of RESET we will have asserted it so the firmware
++	 * will need re-patching.
++	 */
++	if (cs35l56_base->reset_gpio)
++		return true;
++
++	/*
++	 * In secure mode FIRMWARE_MISSING is cleared by the BIOS loader so
++	 * can't be used here to test for memory retention.
++	 * Assume that tuning must be re-loaded.
++	 */
++	if (cs35l56_base->secured)
++		return true;
++
++	ret = pm_runtime_resume_and_get(cs35l56_base->dev);
++	if (ret) {
++		dev_err(cs35l56_base->dev, "Failed to runtime_get: %d\n", ret);
++		return ret;
++	}
++
++	ret = regmap_read(cs35l56_base->regmap, CS35L56_PROTECTION_STATUS, &val);
++	if (ret)
++		dev_err(cs35l56_base->dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
++	else
++		ret = !!(val & CS35L56_FIRMWARE_MISSING);
++
++	pm_runtime_put_autosuspend(cs35l56_base->dev);
++
++	return ret;
++}
++EXPORT_SYMBOL_NS_GPL(cs35l56_is_fw_reload_needed, SND_SOC_CS35L56_SHARED);
++
+ const struct cs_dsp_region cs35l56_dsp1_regions[] = {
+ 	{ .type = WMFW_HALO_PM_PACKED,	.base = CS35L56_DSP1_PMEM_0 },
+ 	{ .type = WMFW_HALO_XM_PACKED,	.base = CS35L56_DSP1_XMEM_PACKED_0 },
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index 48e856583477..c1c7b7e408c3 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -34,23 +34,6 @@
+ static int cs35l56_dsp_event(struct snd_soc_dapm_widget *w,
+ 			     struct snd_kcontrol *kcontrol, int event);
+ 
+-static int cs35l56_mbox_send(struct cs35l56_base *cs35l56_base, unsigned int command)
+-{
+-	unsigned int val;
+-	int ret;
+-
+-	regmap_write(cs35l56_base->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1, command);
+-	ret = regmap_read_poll_timeout(cs35l56_base->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
+-				       val, (val == 0),
+-				       CS35L56_MBOX_POLL_US, CS35L56_MBOX_TIMEOUT_US);
+-	if (ret) {
+-		dev_warn(cs35l56_base->dev, "MBOX command %#x failed: %d\n", command, ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+ static void cs35l56_wait_dsp_ready(struct cs35l56_private *cs35l56)
+ {
+ 	/* Wait for patching to complete */
+@@ -315,92 +298,6 @@ static int cs35l56_dsp_event(struct snd_soc_dapm_widget *w,
+ 	return wm_adsp_event(w, kcontrol, event);
+ }
+ 
+-irqreturn_t cs35l56_irq(int irq, void *data)
+-{
+-	struct cs35l56_base *cs35l56_base = data;
+-	unsigned int status1 = 0, status8 = 0, status20 = 0;
+-	unsigned int mask1, mask8, mask20;
+-	unsigned int val;
+-	int rv;
+-
+-	irqreturn_t ret = IRQ_NONE;
+-
+-	if (!cs35l56_base->init_done)
+-		return IRQ_NONE;
+-
+-	mutex_lock(&cs35l56_base->irq_lock);
+-
+-	rv = pm_runtime_resume_and_get(cs35l56_base->dev);
+-	if (rv < 0) {
+-		dev_err(cs35l56_base->dev, "irq: failed to get pm_runtime: %d\n", rv);
+-		goto err_unlock;
+-	}
+-
+-	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_STATUS, &val);
+-	if ((val & CS35L56_IRQ1_STS_MASK) == 0) {
+-		dev_dbg(cs35l56_base->dev, "Spurious IRQ: no pending interrupt\n");
+-		goto err;
+-	}
+-
+-	/* Ack interrupts */
+-	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_EINT_1, &status1);
+-	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_MASK_1, &mask1);
+-	status1 &= ~mask1;
+-	regmap_write(cs35l56_base->regmap, CS35L56_IRQ1_EINT_1, status1);
+-
+-	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_EINT_8, &status8);
+-	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_MASK_8, &mask8);
+-	status8 &= ~mask8;
+-	regmap_write(cs35l56_base->regmap, CS35L56_IRQ1_EINT_8, status8);
+-
+-	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_EINT_20, &status20);
+-	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_MASK_20, &mask20);
+-	status20 &= ~mask20;
+-	/* We don't want EINT20 but they default to unmasked: force mask */
+-	regmap_write(cs35l56_base->regmap, CS35L56_IRQ1_MASK_20, 0xffffffff);
+-
+-	dev_dbg(cs35l56_base->dev, "%s: %#x %#x\n", __func__, status1, status8);
+-
+-	/* Check to see if unmasked bits are active */
+-	if (!status1 && !status8 && !status20)
+-		goto err;
+-
+-	if (status1 & CS35L56_AMP_SHORT_ERR_EINT1_MASK)
+-		dev_crit(cs35l56_base->dev, "Amp short error\n");
+-
+-	if (status8 & CS35L56_TEMP_ERR_EINT1_MASK)
+-		dev_crit(cs35l56_base->dev, "Overtemp error\n");
+-
+-	ret = IRQ_HANDLED;
+-
+-err:
+-	pm_runtime_put(cs35l56_base->dev);
+-err_unlock:
+-	mutex_unlock(&cs35l56_base->irq_lock);
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL_NS_GPL(cs35l56_irq, SND_SOC_CS35L56_CORE);
+-
+-int cs35l56_irq_request(struct cs35l56_base *cs35l56_base, int irq)
+-{
+-	int ret;
+-
+-	if (!irq)
+-		return 0;
+-
+-	ret = devm_request_threaded_irq(cs35l56_base->dev, irq, NULL, cs35l56_irq,
+-					IRQF_ONESHOT | IRQF_SHARED | IRQF_TRIGGER_LOW,
+-					"cs35l56", cs35l56_base);
+-	if (!ret)
+-		cs35l56_base->irq = irq;
+-	else
+-		dev_err(cs35l56_base->dev, "Failed to get IRQ: %d\n", ret);
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL_NS_GPL(cs35l56_irq_request, SND_SOC_CS35L56_CORE);
+-
+ static int cs35l56_asp_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ {
+ 	struct cs35l56_private *cs35l56 = snd_soc_component_get_drvdata(codec_dai->component);
+@@ -765,65 +662,6 @@ static struct snd_soc_dai_driver cs35l56_dai[] = {
+ 	}
+ };
+ 
+-static int cs35l56_wait_for_firmware_boot(struct cs35l56_base *cs35l56_base)
+-{
+-	unsigned int reg;
+-	unsigned int val;
+-	int ret;
+-
+-	if (cs35l56_base->rev < CS35L56_REVID_B0)
+-		reg = CS35L56_DSP1_HALO_STATE_A1;
+-	else
+-		reg = CS35L56_DSP1_HALO_STATE;
+-
+-	ret = regmap_read_poll_timeout(cs35l56_base->regmap, reg,
+-				       val,
+-				       (val < 0xFFFF) && (val >= CS35L56_HALO_STATE_BOOT_DONE),
+-				       CS35L56_HALO_STATE_POLL_US,
+-				       CS35L56_HALO_STATE_TIMEOUT_US);
+-
+-	if ((ret < 0) && (ret != -ETIMEDOUT)) {
+-		dev_err(cs35l56_base->dev, "Failed to read HALO_STATE: %d\n", ret);
+-		return ret;
+-	}
+-
+-	if ((ret == -ETIMEDOUT) || (val != CS35L56_HALO_STATE_BOOT_DONE)) {
+-		dev_err(cs35l56_base->dev, "Firmware boot fail: HALO_STATE=%#x\n", val);
+-		return -EIO;
+-	}
+-
+-	return 0;
+-}
+-
+-static inline void cs35l56_wait_min_reset_pulse(void)
+-{
+-	/* Satisfy minimum reset pulse width spec */
+-	usleep_range(CS35L56_RESET_PULSE_MIN_US, 2 * CS35L56_RESET_PULSE_MIN_US);
+-}
+-
+-static const struct reg_sequence cs35l56_system_reset_seq[] = {
+-	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_SYSTEM_RESET),
+-};
+-
+-static void cs35l56_system_reset(struct cs35l56_base *cs35l56_base, bool is_soundwire)
+-{
+-	/*
+-	 * Must enter cache-only first so there can't be any more register
+-	 * accesses other than the controlled system reset sequence below.
+-	 */
+-	regcache_cache_only(cs35l56_base->regmap, true);
+-	regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
+-					cs35l56_system_reset_seq,
+-					ARRAY_SIZE(cs35l56_system_reset_seq));
+-
+-	/* On SoundWire the registers won't be accessible until it re-enumerates. */
+-	if (is_soundwire)
+-		return;
+-
+-	usleep_range(CS35L56_CONTROL_PORT_READY_US, CS35L56_CONTROL_PORT_READY_US + 400);
+-	regcache_cache_only(cs35l56_base->regmap, false);
+-}
+-
+ static void cs35l56_secure_patch(struct cs35l56_private *cs35l56)
+ {
+ 	int ret;
+@@ -1140,47 +978,6 @@ int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56)
+ }
+ EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_CORE);
+ 
+-static int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base)
+-{
+-	unsigned int val;
+-	int ret;
+-
+-	/* Nothing to re-patch if we haven't done any patching yet. */
+-	if (!cs35l56_base->fw_patched)
+-		return false;
+-
+-	/*
+-	 * If we have control of RESET we will have asserted it so the firmware
+-	 * will need re-patching.
+-	 */
+-	if (cs35l56_base->reset_gpio)
+-		return true;
+-
+-	/*
+-	 * In secure mode FIRMWARE_MISSING is cleared by the BIOS loader so
+-	 * can't be used here to test for memory retention.
+-	 * Assume that tuning must be re-loaded.
+-	 */
+-	if (cs35l56_base->secured)
+-		return true;
+-
+-	ret = pm_runtime_resume_and_get(cs35l56_base->dev);
+-	if (ret) {
+-		dev_err(cs35l56_base->dev, "Failed to runtime_get: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = regmap_read(cs35l56_base->regmap, CS35L56_PROTECTION_STATUS, &val);
+-	if (ret)
+-		dev_err(cs35l56_base->dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
+-	else
+-		ret = !!(val & CS35L56_FIRMWARE_MISSING);
+-
+-	pm_runtime_put_autosuspend(cs35l56_base->dev);
+-
+-	return ret;
+-}
+-
+ int cs35l56_system_suspend(struct device *dev)
+ {
+ 	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
 -- 
 2.30.2
 
