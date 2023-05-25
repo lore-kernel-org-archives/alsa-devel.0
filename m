@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF1CBC7EE29
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 15:10:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D5F8C77B7E
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 15:10:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C724F1FC;
-	Thu, 25 May 2023 17:09:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C724F1FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29D2874C;
+	Thu, 25 May 2023 17:09:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29D2874C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685027423;
-	bh=16YHkaRO/ypOuzNLGOkApUYTHwnPOD+HQGOE+/Yc4C8=;
+	s=default; t=1685027433;
+	bh=dwmrLOcHTarwGa8TdIHKJY+KrzzP/L1YpM7ojlSVAj8=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lqRgieNWZtLtF4yBRzsgCW2U77vG40I7uF/+rctRAurki9vLEFAYBIfqXnbCb97mK
-	 Iaa69MEw+SohrcE/BPxpaGj9yn/WrHO9ou9uV6io3HjPzNH3mxAWeh8gTjZrB4Dyfe
-	 +K9G4OsXHsk/YutcgZeNxZSafkQT6PjJ+oiMGG0U=
+	b=MEmOH03CX5XArD8oZ0o43N9p12BHnYn6q/TDNh1+5flbR5v06UH7aRcXCAnazfelN
+	 DOEwxd1jqATim4tPygnBvubSrXhA38Eq0w6+6AnR/puQnNBvKt+KvRZrqaCsp4ZBZW
+	 nhMhVQSOrOWDyning6KbT3RVnMhCQIPN55v+DmuI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7F76F805BA; Thu, 25 May 2023 17:07:53 +0200 (CEST)
+	id D8AE6F805D2; Thu, 25 May 2023 17:07:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDAC2F805C4;
-	Thu, 25 May 2023 17:07:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3776F805D2;
+	Thu, 25 May 2023 17:07:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10E8AF80542; Thu, 25 May 2023 17:07:39 +0200 (CEST)
+	id 02558F805A0; Thu, 25 May 2023 17:07:41 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B9096F80544
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 17:07:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9096F80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id 89B2FF8026A
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 17:07:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89B2FF8026A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=L4ImnF6j
+ header.s=PODMain02222019 header.b=epxDMbK1
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34PEE1Bv025343;
-	Thu, 25 May 2023 10:07:09 -0500
+ 34PEE1BJ025344;
+	Thu, 25 May 2023 10:07:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=KBIQkBTpPs9dMkt+aC+6iuTHRtDG89mSTGRvAWzKXRU=;
- b=L4ImnF6j3P+RjrPTNwSsBAO8KZnux+JrtF990BsFFTFcWShKDNiMFo5zacvFLMrcoUCr
- J4M5+581U905r0MqkUBOu08EPTvaHq3A7+jS1ZyYwFr9T/ODxvgP6D86WSaLkG8GWf65
- iVeD4wjEnNIctr1AmKlRRBRnM4gWEf0ViBSpSQOiAFHrWRikCQsYLfHj9LFKPUsUZ4sW
- m/WskQryjvSJ4LScRfUCkB6vbncz0YgaY4UBiggFcwPr4nM2EgdLR4whEGoawz/qVlV0
- iIXpAJjMxuawRa483NFhiNaTBTwr8dcOmf/Vd4C19AOsXb3aROzVNU4JuhEA16gbbbk0 yg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm70m4-5
+ bh=uKYzq/D3zt7bRv8BxAmrdUM7w25ZiebnATzlkyzSXQI=;
+ b=epxDMbK16aFoxr2pHRoDeq2N796Dm7yYuUpj1C6WzPDg1JgZZPd0pyhMsxDThif75/SN
+ JtrDq0gsgmMnwig4BDc6wioDTvvteo4oYhgSGuQ/oO8IOGMnTTP06mVzIP29ogTVj5oa
+ 7TCbhbdxfw/jroMb5nAAwAfAd8aKFZ+nZihUrNva4jO7J4Za/GG/0WOtD6B62FE2aoLy
+ LjHSO80vbzTeg4ITU7w4RUISazuiX08zvjndZ6Nu0Ot/Sbcxnc8okbHFKIQevBo53jj1
+ SqU2GkbHdxjcGNyK6wLzUuCxJQazv/mZUXsmASDgVjTg3no/x6GLEy6t3PX+SstYE94T RA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm70m7-5
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 May 2023 10:07:08 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 25 May 2023 10:07:07 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Thu, 25 May
- 2023 10:07:05 -0500
+ 2023 10:07:04 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Thu, 25 May 2023 10:07:05 -0500
+ Transport; Thu, 25 May 2023 10:07:04 -0500
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.65.166])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 86FA515B7;
-	Thu, 25 May 2023 15:07:05 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5104111D4;
+	Thu, 25 May 2023 15:07:04 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <tiwai@suse.com>, <broonie@kernel.org>, <perex@perex.cz>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
         Richard Fitzgerald
 	<rf@opensource.cirrus.com>
-Subject: [PATCH 11/13] ALSA: hda: Fix missing header dependencies
-Date: Thu, 25 May 2023 16:06:57 +0100
-Message-ID: <20230525150659.25409-12-rf@opensource.cirrus.com>
+Subject: [PATCH 08/13] ASoC: cs35l56: Pass correct pointer to cs35l56_irq()
+Date: Thu, 25 May 2023 16:06:54 +0100
+Message-ID: <20230525150659.25409-9-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230525150659.25409-1-rf@opensource.cirrus.com>
 References: <20230525150659.25409-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: DSk6jIDbkwD673WbeKhFJ6el818P3339
-X-Proofpoint-GUID: DSk6jIDbkwD673WbeKhFJ6el818P3339
+X-Proofpoint-ORIG-GUID: 5gdkB_Q5s2h0VWW4y0BMmtD463Dq6uyk
+X-Proofpoint-GUID: 5gdkB_Q5s2h0VWW4y0BMmtD463Dq6uyk
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: PD46POO6QQ2APPK3CDV74NSAJIPQXJMY
-X-Message-ID-Hash: PD46POO6QQ2APPK3CDV74NSAJIPQXJMY
+Message-ID-Hash: N2SQYIED73Y44XJKBETZQ6YNZSRVBHI6
+X-Message-ID-Hash: N2SQYIED73Y44XJKBETZQ6YNZSRVBHI6
 X-MailFrom: prvs=050971c6a2=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,56 +100,36 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PD46POO6QQ2APPK3CDV74NSAJIPQXJMY/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N2SQYIED73Y44XJKBETZQ6YNZSRVBHI6/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add #includes of dependencies into hda_auto_parser.h and hda_generic.h
-
-hda_auto_parser.h uses definitions in hda_local.h.
-
-hda_generic.h uses definitions in hda_local.h and hda_auto_parser.h.
-It also references struct hda_jack_callback, but only as a pointer.
-This has been forward-declared so hda_jack.h only needs to be
-included in source that actually uses it.
+cs35l56_irq() was changed to take a cs35l56_base* but the code
+in cs35l56-sdw was still passing it a cs35l56_private*.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/pci/hda/hda_auto_parser.h | 2 ++
- sound/pci/hda/hda_generic.h     | 3 +++
- 2 files changed, 5 insertions(+)
+ sound/soc/codecs/cs35l56-sdw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_auto_parser.h b/sound/pci/hda/hda_auto_parser.h
-index df63d66af1ab..579b11beac71 100644
---- a/sound/pci/hda/hda_auto_parser.h
-+++ b/sound/pci/hda/hda_auto_parser.h
-@@ -8,6 +8,8 @@
- #ifndef __SOUND_HDA_AUTO_PARSER_H
- #define __SOUND_HDA_AUTO_PARSER_H
+diff --git a/sound/soc/codecs/cs35l56-sdw.c b/sound/soc/codecs/cs35l56-sdw.c
+index 09d255cc7652..b433266b7844 100644
+--- a/sound/soc/codecs/cs35l56-sdw.c
++++ b/sound/soc/codecs/cs35l56-sdw.c
+@@ -230,7 +230,7 @@ static void cs35l56_sdw_irq_work(struct work_struct *work)
+ 						       struct cs35l56_private,
+ 						       sdw_irq_work);
  
-+#include "hda_local.h"
-+
- /*
-  * Helper for automatic pin configuration
-  */
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 34eba40cc6e6..a8eea8367629 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -9,6 +9,9 @@
- #define __SOUND_HDA_GENERIC_H
+-	cs35l56_irq(-1, cs35l56);
++	cs35l56_irq(-1, &cs35l56->base);
  
- #include <linux/leds.h>
-+#include "hda_auto_parser.h"
-+
-+struct hda_jack_callback;
- 
- /* table entry for multi-io paths */
- struct hda_multi_io {
+ 	/* unmask interrupts */
+ 	if (!cs35l56->sdw_irq_no_unmask)
 -- 
 2.30.2
 
