@@ -4,151 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C54AC77B7E
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 05:15:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C60B2C77B7A
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 08:31:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA27A83B;
-	Thu, 25 May 2023 07:14:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA27A83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DB5A1E4;
+	Thu, 25 May 2023 10:30:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DB5A1E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1684991726;
-	bh=Rx5d8Pvw9AyS2EiR8xcCtaHIRGKDwd4DeDXnRtzXP0o=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:List-Id:
+	s=default; t=1685003506;
+	bh=Fn8NgvJqj1KC/mby+9lw7DFvcbqnPv3J/V/JEbRylHU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Pet6hQ96wPIqC5WdevJgGRQKEOvNBmk0oJuf0HhHzl3tCSGr+j/AcDGRUpNFy8Y5w
-	 KzvGCnxZbY3s1yqkcPkA3blf4v29Ue+OrTZjQn30oewnOQcVIIe/Q841vjFi9fTCBg
-	 AKQ0K/6IU7XtIBEdYOOsUVIrEE/yH3eWckvqh+II=
+	b=TVF/aDsNHQ5pvmeNcfVtUxyI0Du7uplGNTQ5mCxfpJbZbEpmFH9WjP5ZC0Z6wz7dr
+	 EN1UP9KUOQL4lKbMm/PG8HWjxhONYbPSCHEnEw7NSVpepL+hUP5swrdSbP1gUg8Umd
+	 WyYoVYRnFKoyI2JEEY6T5J+aEASr+XUS8BEVtnZE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44FE4F80544; Thu, 25 May 2023 01:48:49 +0200 (CEST)
+	id 73472F80425; Thu, 25 May 2023 10:30:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9104EF80249;
-	Thu, 25 May 2023 01:48:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B055EF80249;
+	Thu, 25 May 2023 10:30:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DA2DF80249; Thu, 25 May 2023 01:48:43 +0200 (CEST)
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com
- (mail-os0jpn01on20728.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:700c::728])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id CDF21F80249; Thu, 25 May 2023 10:29:18 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 70707F80007
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 01:48:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70707F80007
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6881EF800DF
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 10:29:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6881EF800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=renesas.com header.i=@renesas.com header.a=rsa-sha256
- header.s=selector1 header.b=VBZeFfXu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DbJSAUGsdfiT+GFOTmDMZCUzFZ1qA14VTLRXeNEPX8wdUX/2Ph3STWB0xFZtWxvph1rVvIul8nrILgv7B4h1zPXA6RYS7SoTMHgYUv87bWB5XgVzNU8fDyap1suF2IuXExVNKrZGGtr5tfhWoFvs3AvDTOhZMCan0a7AksNIoIGzI5OwvC/DhOFNXkL9sB/AqRZ/RoHH+i5rxvE+womSWTz+YB9d+wRA+GqtDGekzigcD9xHQq7lVa3zzVZcEkH5PQ5PE82DYMpCrOtc0a9gbbjMbsdzeTe4uGvWq0wQhmGIX/iTDM4gKEZgD2AQHmaykGr9nT1/ukS5PQ0aePC+DQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FSL3Vj7fabb4XthWSqD0UYF6qOLdUIfkPkGgqPJSJY0=;
- b=W0o+WZJBk29/piLmnK9qIY1hTxDa1lfHyf6SwDJ4o+u3SQUk35K5WuLnI6NW+Dg9TZib0eLoXiUAuP1p/rFdBKFrd2o1ZaUwoZ1hlsEOw6SJQ1pLgR0kOSmBLzaNAPBIV/BJ4Ij//RMZQ2k5r9hezQqoZ8zfpkaVRLbWIyu2VKkhlF37TDNLyj6Q3PQ60joNmzeWtP+xhd3PWeMOmPztzpaDz4UAlBc/S3YXkaUGgfhjfuPIfITsDgNJA3CqCM41Po2/FCxMSO5mRbhe2XQXeOyZrOLk8hdBu4j6RMebOfIy5Ts+QisHrot7yGiRGiZwfegHBkat8kJ3wyF9xx4zxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FSL3Vj7fabb4XthWSqD0UYF6qOLdUIfkPkGgqPJSJY0=;
- b=VBZeFfXuRzuchBJjC7LRUav4EyGhVn4HNtEi+b9iH26EPxfTzelSC2woGXJ7GL29AEjY8Ac6F59zdemxy8k3mpWvnoEa/d4p43c6tgGlvjmk4EMxRcjTEe7m+ZqN+Ohdz/97sRt2t2vNY++E/MZKuEbq2QqKQl1hVhlB7PnGuH8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-Received: from TYCPR01MB8440.jpnprd01.prod.outlook.com (2603:1096:400:15d::5)
- by OS3PR01MB9623.jpnprd01.prod.outlook.com (2603:1096:604:1c8::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.16; Wed, 24 May
- 2023 23:48:26 +0000
-Received: from TYCPR01MB8440.jpnprd01.prod.outlook.com
- ([fe80::6c36:5ff9:24c9:e4f7]) by TYCPR01MB8440.jpnprd01.prod.outlook.com
- ([fe80::6c36:5ff9:24c9:e4f7%6]) with mapi id 15.20.6433.016; Wed, 24 May 2023
- 23:48:24 +0000
-Message-ID: <87wn0xguk9.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Amadeusz <amadeuszx.slawinski@linux.intel.com>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 08/20] ASoC: soc-pcm.c: cleanup soc_get_playback_capture()
-In-Reply-To: <ab3f0c0a-62fd-a468-b3cf-0e4b59bac6ae@linux.intel.com>
-References: <87353uqjiu.wl-kuninori.morimoto.gx@renesas.com>
-	<87r0rep4we.wl-kuninori.morimoto.gx@renesas.com>
-	<2e84d6f3-902f-d6f3-0084-ddfbd61ffa1f@linux.intel.com>
-	<87lehh2db4.wl-kuninori.morimoto.gx@renesas.com>
-	<8f977a29-14c2-a160-5eea-10fce6a73742@linux.intel.com>
-	<87wn10ncyi.wl-kuninori.morimoto.gx@renesas.com>
-	<ab3f0c0a-62fd-a468-b3cf-0e4b59bac6ae@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 Emacs/27.1 Mule/6.0
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=a8iy/tJs;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=CkA5Xks4
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 540A81F890;
+	Thu, 25 May 2023 08:29:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1685003350;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8fZiQFElqJdXLdgPPGanRTiB1x221Q3vu1zvFvnjky0=;
+	b=a8iy/tJsvOXd3Gxi+S11+hN9RqS14GxTJ4E6trbIKXxb61GiWFd4pgQ2tgMht+QcsY6dpj
+	LpD9/Sfcwz0X9xAPgauKPoojQt4RKXO0HcIytWPA/l7qMvhCWEcFwqd9PKft/Rd1K8jZFU
+	zWkRcX51OEAcrcSrMhOUxgqedRwCpXU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1685003350;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8fZiQFElqJdXLdgPPGanRTiB1x221Q3vu1zvFvnjky0=;
+	b=CkA5Xks4DEkN4J185U5V+miaB9C3ghAc7FIUvneMrkOZgyLKyOT2J6pFYBaA3JnkG5eE5Q
+	C4x7XN9ylHB4j+CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3306713356;
+	Thu, 25 May 2023 08:29:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id DgDkClYcb2Q3OgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 25 May 2023 08:29:10 +0000
+Date: Thu, 25 May 2023 10:29:09 +0200
+Message-ID: <87bki8ddbe.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [bug report] ALSA: ump: Add legacy raw MIDI support
+In-Reply-To: <4683198a-84f6-4238-9e87-c70667d84523@kili.mountain>
+References: <4683198a-84f6-4238-9e87-c70667d84523@kili.mountain>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 24 May 2023 23:48:24 +0000
-X-ClientProxiedBy: TYCP286CA0280.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:3c9::8) To TYCPR01MB8440.jpnprd01.prod.outlook.com
- (2603:1096:400:15d::5)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYCPR01MB8440:EE_|OS3PR01MB9623:EE_
-X-MS-Office365-Filtering-Correlation-Id: 076eab04-ff95-4a87-2f4d-08db5cb15d09
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	j/9SLZ1gBYv0IKXPAB2l/j2sC1RCDRkkV9cY07otaZydH30Hp+BW5oRD5UYIXJnlBbbGtOmKD9K/zRZmFKwALdRMUHW7e0NLRdeu0IvKylLw3jm5uQ5G/YzPMBKA4/DRwYjdCGxaHFq95toEYvEHKcAjXjPqCiXYohdP9C3ByTWuIAAXqtH5jYew+RKVbEtEbti4bPEQnu+v9LgtQxG37LjbjQTc2mRZcG7cdYWRlVFANmLYeyXiwVOgSuZjpW4JiER+s68Dx+ANcGKZquFaiKjG4kWWFzlqr9GAonRHwcD45ddJnm2/ofLfI95zoipb5v3oCQq5HOZOkpFDyrmhQSZ75KXunxSr4+GhPHDoqlUiu7mdxYyKN1YRwXYvB5IqMCMqZjCjRQupGuHvSYpXGi98TpvQrgHpKo0U6eKiIkLT78Z0RSTF2DViFSf2CzgUfoQR0orEBCxGFZ7QH9wIwcB2DxOa06ZcFKjHTHqa4blTTZIfn+Or/jIhIDlnzq34KPWAe05Ywon5T6adaTNCQ+S76ZmA/m6AyXRWcGFlkbRSYBPoHJ3TJLX1jIN4AROKI/LczAREZm71zhkTl8gyhcWlRYhS2x2rt7XuCpa9eucFs3mm6MBX2r/G5DZ/aHau
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB8440.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39860400002)(366004)(396003)(136003)(451199021)(54906003)(478600001)(6512007)(6506007)(26005)(4326008)(66946007)(66556008)(66476007)(6916009)(316002)(52116002)(6486002)(41300700001)(8936002)(8676002)(5660300002)(2616005)(86362001)(83380400001)(36756003)(38100700002)(38350700002)(2906002)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?WXOI2HBnx8UondK5yaOfvGifF2BFL76L6D1V2HeSJJVp4jpICBdIk6OmKtfU?=
- =?us-ascii?Q?d5IeBGgNwedc2ZL5m235LSAplW+7o6bvge+eMq4/HuMSCz7+JqYYD/5o+J9M?=
- =?us-ascii?Q?V3gmJPcJcf/jhNeizy0B1LC/xx1PrIgBq8h8TLMDAwP5rBYaMNQQcx1XsAL9?=
- =?us-ascii?Q?X0DoheLloLS9n/PnpE0+WtbMG2X/Uh7GLkDSDg2LpxT9fQUaCLg4wYACPfo3?=
- =?us-ascii?Q?hLa4cfBIAaraPChgLEmoDlU7UPx0vC/B2WqKOXDyCOAoA5l74XRCw1ZqcI/A?=
- =?us-ascii?Q?iHPHR3EZePPVTa+uHEPumvUCni9D1p/HTgCTc63eyS4Z6w/LERmAoPTVIGTn?=
- =?us-ascii?Q?PQ5JKeNo6CDCVX+61GsH6K+V3PhPkxLiZ5npnJikDfD4CY1GWHFeyzj+SAR6?=
- =?us-ascii?Q?gjOER0Tb/cFZP/epzuLZqYLe6It2KjQj8a8CR4s3cCjQkYCbHzagC92Z2c9o?=
- =?us-ascii?Q?znT3toORP3yGj/hAt3fDms9JgxsCEvDny96CstBE6W6h3lAShtvC8+Du5BxQ?=
- =?us-ascii?Q?9MLU0GKjodJDxr93UwyleXcwhSK1smikqWDpjDvlRDPdf2glRynKu6zc5U/O?=
- =?us-ascii?Q?Eirmq/QMFYXoIRLzDeqMD+rF+oqXhUIACpILuH3q1zJya0AjUTmxH2SMDsTP?=
- =?us-ascii?Q?8oxvHFnEaqMdxmQ0KrTrGHqxke6wpV7B3RHJstozmchZMYyfeMiXkCWiXjj7?=
- =?us-ascii?Q?CysIitXyUsrVMTWAmxGjI/3ERdL/VgV+Msgd+EkK6JXJdkHkAUDaxNZQ8RQE?=
- =?us-ascii?Q?EkYHUBlMbYoHynFGyB1o9a0kE4kIxI5qXpfxne2hwPYMOAz41m6n7UqgBorW?=
- =?us-ascii?Q?hXkfA3psof7cyNA4N680zeXz3q1F9bQZXpxDddOaUlZjvH/IYaaoM1VpA97m?=
- =?us-ascii?Q?xnFain6W9hNYK+fLBg2OOk24Zubf98DaXkVD05BC3EQDUdabu33/klGNSD/i?=
- =?us-ascii?Q?dfFeGO6NTZBmXi93wQ+niLVdDhdn1CBJ6xjtgtoWPPDbR7gu6WAJWmNPiq5z?=
- =?us-ascii?Q?XdrEp9AjCChopNqSr2APjKoqfyKv+ZkMkYIMVtSt4wGfoCXV1RNcSTXOHGYD?=
- =?us-ascii?Q?yWisafifJJ3eiotGmHr5k/uUapc95SFtzkFD/w04PsG6CSAz4tC6bftxhp8C?=
- =?us-ascii?Q?1hMXLYRA2U7GXN3QMdtl15HsI/0y1s7iWVD0GiilqKby6Fd0Ewn0jUGYGb8H?=
- =?us-ascii?Q?Huyrj+mbsKY62/Mh7cUkxD8BB8hFljIkNP4xSz2hzvJiYKjzI50T/8rhZZcG?=
- =?us-ascii?Q?ztXLMhBtSCqKuWY2vKWNevwIepRfCjQs9Kh7sGv5um8Z/k9TOlVaWc6CD7VG?=
- =?us-ascii?Q?nfxOm80R9sTdzv19O0IBnAUkYFkcU4+rNAGxsa51cOkZRcAu4mbQzC1Fbzma?=
- =?us-ascii?Q?skWdynllHsroNdje0xg2pq7A8IQO1LKCsms316J6ev5yF9JfiaStKYyaj61S?=
- =?us-ascii?Q?XRxVokgIRxPkpZAwVyomo7p91xlhM3XcriLMco8KJWBXWyAcjsYSJaVJke95?=
- =?us-ascii?Q?VoxOApkcSII8x/xokjrHBChPSZ0HbjABFkayLVrvjg0Dje2lM0PsZWIqDVAX?=
- =?us-ascii?Q?aLCUkVU7R8V8IrMT2c7lQtApehfFyfsF5T5el4Ubq0XJzb3RnymiuZvUKXa7?=
- =?us-ascii?Q?jaW9BDwB+TRbJirY2ayjEf4=3D?=
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 076eab04-ff95-4a87-2f4d-08db5cb15d09
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB8440.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2023 23:48:24.6436
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- Kk8Cef2HJLerY7nY6hbjOZQR0NM/vOx1PamIgWd3TwERIdOYevVJpmnejd/2mkdknltXieSFPlG0fec2CNeVXuYYrRP2dhAXqEVyASUCVRPRZ+dhzwlSj4H7nhJn09Kr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB9623
-Message-ID-Hash: SV646E3IVJVXEYGPDEJ2CCD2MGENLTUS
-X-Message-ID-Hash: SV646E3IVJVXEYGPDEJ2CCD2MGENLTUS
-X-MailFrom: kuninori.morimoto.gx@renesas.com
+Message-ID-Hash: 4ZER4IXD6QVHFVVUF3T6QHZA3HM7NOHN
+X-Message-ID-Hash: 4ZER4IXD6QVHFVVUF3T6QHZA3HM7NOHN
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -160,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SV646E3IVJVXEYGPDEJ2CCD2MGENLTUS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4ZER4IXD6QVHFVVUF3T6QHZA3HM7NOHN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -169,52 +112,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Thu, 25 May 2023 09:57:47 +0200,
+Dan Carpenter wrote:
+> 
+> Hello Takashi Iwai,
+> 
+> The patch 0b5288f5fe63: "ALSA: ump: Add legacy raw MIDI support" from
+> May 23, 2023, leads to the following Smatch static checker warning:
+> 
+> 	sound/core/ump_convert.c:343 cvt_legacy_cmd_to_ump()
+> 	warn: duplicate check 'buf[2]' (previous on line 333)
+> 
+> sound/core/ump_convert.c
+>     305 static int cvt_legacy_cmd_to_ump(struct snd_ump_endpoint *ump,
+>     306                                  struct ump_cvt_to_ump *cvt,
+>     307                                  unsigned char group, u32 *data,
+>     308                                  unsigned char bytes)
+>     309 {
+>     310         const unsigned char *buf = cvt->buf;
+>     311         struct ump_cvt_to_ump_bank *cc;
+>     312         union snd_ump_midi2_msg *midi2 = (union snd_ump_midi2_msg *)data;
+>     313         unsigned char status, channel;
+>     314 
+>     315         BUILD_BUG_ON(sizeof(union snd_ump_midi1_msg) != 4);
+>     316         BUILD_BUG_ON(sizeof(union snd_ump_midi2_msg) != 8);
+>     317 
+>     318         /* for MIDI 1.0 UMP, it's easy, just pack it into UMP */
+>     319         if (ump->info.protocol & SNDRV_UMP_EP_INFO_PROTO_MIDI1) {
+>     320                 data[0] = ump_compose(UMP_MSG_TYPE_MIDI1_CHANNEL_VOICE,
+>     321                                       group, 0, buf[0]);
+>     322                 data[0] |= buf[1] << 8;
+>     323                 if (bytes > 2)
+>     324                         data[0] |= buf[2];
+>     325                 return 4;
+>     326         }
+>     327 
+>     328         status = *buf >> 4;
+>     329         channel = *buf & 0x0f;
+>     330         cc = &cvt->bank[channel];
+>     331 
+>     332         /* special handling: treat note-on with 0 velocity as note-off */
+>     333         if (status == UMP_MSG_STATUS_NOTE_ON && !buf[2])
+>     334                 status = UMP_MSG_STATUS_NOTE_OFF;
+> 
+> This if statment
+> 
+>     335 
+>     336         /* initialize the packet */
+>     337         data[0] = ump_compose(UMP_MSG_TYPE_MIDI2_CHANNEL_VOICE,
+>     338                               group, status, channel);
+>     339         data[1] = 0;
+>     340 
+>     341         switch (status) {
+>     342         case UMP_MSG_STATUS_NOTE_ON:
+> --> 343                 if (!buf[2])
+>     344                         status = UMP_MSG_STATUS_NOTE_OFF;
+> 
+> and this one are the same.  One could be deleted.
 
-Hi Amadeusz
-Cc Mark
+Correct.  I'll submit a fix patch.
 
-Thank you for debuging/checking.
 
-> > I noticed that before the patch, it checks dummy DAI only for no_pcm ca=
-se.
-> > But after appling the patch, it will check both CPU and Codec
-> > valid (X)/(Y)/(Z).
-(snip)
-> sorry for small delay, I've debugged the issue. Seems like one less=20
-> critical problem is in ASoC HDA codec, which blocks HDA and HDMI probing=
-=20
-> altogether in our driver, something like this should fix this:
-(snip)
-> @@ -341,6 +341,8 @@ static const struct snd_soc_dapm_widget=20
-> hda_dapm_widgets[] =3D {
->   static struct snd_soc_dai_driver card_binder_dai =3D {
->          .id =3D -1,
->          .name =3D "codec-probing-DAI",
-> +       .capture.channels_min =3D 1,
-> +       .playback.channels_min =3D 1,
->   };
-(snip)
-> and it works for testing purposes, but as commented in code, those=20
-> fields are initialized later (in hdmi_pcm_open()), which apparently in=20
-> case of ASoC binding is too late. Likely those assignments need to be=20
-> moved earlier.
->=20
-> Another thing that should probably be done is some kind of look through=20
-> ASoC codec files to make sure that they all define channels_min=20
-> properly, otherwise there may be more unexpected failures.
+Thanks!
 
-Hmm...
-
->From logic point of view, I think we need to check all validation.
-But from compatible point of view, we want to skip validation check
-for BE Codec...
-Especially, quick hack solution (=3D adding channels_min in many place)
-might case other bug I guess.
-
-OK, let's skip BE Codec in v2 for now.
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
+Takashi
