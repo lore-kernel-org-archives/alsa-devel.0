@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67D55C77B7E
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 15:09:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8895C7EE29
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 15:10:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A7A3207;
-	Thu, 25 May 2023 17:09:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A7A3207
+	by alsa0.perex.cz (Postfix) with ESMTPS id 372AB84D;
+	Thu, 25 May 2023 17:09:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 372AB84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685027396;
-	bh=aqebFsmDmx4jfHxU6zTSJSp184Mma4SpQoXwJJGDPog=;
+	s=default; t=1685027404;
+	bh=rf8+TH9mOV/CknRRHQF9/Dy+yHx75uIq6s7cNdnrJU0=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EWq5Vy0tHEsMkLOjtv2v5TWmahbvK8uhqrCOgUrWWvz5XawVRe/CiqXPwXYGjhbmh
-	 u6P1z9FEu1rGbDJ5HGfF3FMtLjRlSfk1BBC9i57rG0w8jViDsyACJ9IlcD82JBXT9a
-	 6AY8UJr8atikEWT6AWwkhpCpS95tpUgtvNOK9gwE=
+	b=DRC9RbcjnujbF2XQ9DLrJlq718Q+kcWbzBftM53MjxWbN8CGl9zQWy73OPAs4C2V5
+	 QLxb75oK6AtejgiaJnE84DXawPPMNl0jTxcbuOqLPfBQV02q4TWr/aPRPDR0MTBBPx
+	 gdSG2Lunn0DQ8g1hoomtUpE9Efl1HGhrn4gG5eIw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3A9C3F805B3; Thu, 25 May 2023 17:07:49 +0200 (CEST)
+	id 218ADF805C2; Thu, 25 May 2023 17:07:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82B21F805AF;
-	Thu, 25 May 2023 17:07:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F3C8F805B2;
+	Thu, 25 May 2023 17:07:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA487F80579; Thu, 25 May 2023 17:07:35 +0200 (CEST)
+	id F2DE7F80542; Thu, 25 May 2023 17:07:37 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87BC1F80542
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 17:07:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87BC1F80542
+	by alsa1.perex.cz (Postfix) with ESMTPS id 00CB2F8024E
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 17:07:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00CB2F8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=WWQsyPPM
+ header.s=PODMain02222019 header.b=G2d/4qW+
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34PEE1BL025344;
-	Thu, 25 May 2023 10:07:09 -0500
+ 34PEE1BF025344;
+	Thu, 25 May 2023 10:07:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=GheyWD2YM9hIkGQrE/smKi5nAcZH4drrcmeHoqKozr4=;
- b=WWQsyPPM8tOIGZxf6VPEPReTrOGxzFYX6p+kTjZKlAqR1mdk8qt4HnCtGnZHeU/fUP3S
- SIWey0pGMIv/wiWLnAlJOFPH/S7RAx75SK0Y9RQ5d1KMUAqCzzMGu3Xluiy+eIjBCUSO
- Kk9qwM5sNeL82yGBASymHjONZ91kEE2AnCdclV8anzJePVG64kne347Oo9O7gOOmesrY
- 0YKC/++v5j9r50ozbCupSASAVovf/AGmnR4bfVi4fe+j9wjkjtSaaGDxzU/ByvBnbhOz
- 8v8NlWF/gOwpm8W7r/28WmXN33y+QkXcsO69Z4ZQyUF2ZF7sYpxN7PDfXCXyRcBtlEo7 uQ==
+ bh=4066OmlgR6CGnPEQXICe/2yZT+5D98Kq/PddSEJSVfo=;
+ b=G2d/4qW+ByLMuHHZNI8L/gkDpaxfYeQ+89k4AgZwW4pQVX/fUWS6rB6J2wOtPdqb3JY5
+ o73qCchU4E/rDUYuCyJ8lj9y3Um3wthKPFZvuzgEvbdtHymipwl3T6k6eQ/aPNYJVlMS
+ pS3F0H+cTvi7s0Ld22CVzMEoC67ZdYHll68CAa5NLbNMwyqZBLxcllR78DWMasWrRfGC
+ zITGAEPAOKOCaIRQBvQmbmZ5A2VF5aKm5eACmZDmp4FPfYgHEluGbOw+LKuRabpVeqb3
+ RPgi3yKJ6ZImYJ9G4fzPcRGlzCJOmueJIbiCHVHeuDqQRdrh74EkmjLEtgKqhqoGJ6/t Cw==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm70m7-7
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm70m7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 May 2023 10:07:09 -0500
+	Thu, 25 May 2023 10:07:04 -0500
 Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Thu, 25 May
- 2023 10:07:05 -0500
+ 2023 10:07:02 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Thu, 25 May 2023 10:07:05 -0500
+ Transport; Thu, 25 May 2023 10:07:02 -0500
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.65.166])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2311945;
-	Thu, 25 May 2023 15:07:05 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4E94145;
+	Thu, 25 May 2023 15:07:02 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <tiwai@suse.com>, <broonie@kernel.org>, <perex@perex.cz>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
@@ -75,21 +75,21 @@ CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         Simon Trimmer
 	<simont@opensource.cirrus.com>,
         Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 10/13] ASoC: cs35l56: Make a common function to shutdown the
- DSP
-Date: Thu, 25 May 2023 16:06:56 +0100
-Message-ID: <20230525150659.25409-11-rf@opensource.cirrus.com>
+Subject: [PATCH 03/13] ASoC: cs35l56: Convert utility functions to use common
+ data structure
+Date: Thu, 25 May 2023 16:06:49 +0100
+Message-ID: <20230525150659.25409-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230525150659.25409-1-rf@opensource.cirrus.com>
 References: <20230525150659.25409-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: RfuNayyFBwBP4CgUqn1CPGiCAHc5ouRp
-X-Proofpoint-GUID: RfuNayyFBwBP4CgUqn1CPGiCAHc5ouRp
+X-Proofpoint-ORIG-GUID: hGPgXKmn1hdbPnXJ-46SISnOx_i7IXTq
+X-Proofpoint-GUID: hGPgXKmn1hdbPnXJ-46SISnOx_i7IXTq
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 3JXQFCJUINM533PGTRG7X2RRZPXXPOUA
-X-Message-ID-Hash: 3JXQFCJUINM533PGTRG7X2RRZPXXPOUA
+Message-ID-Hash: 7GTOUDQKULW6OQJTQI672JP6BMTSY47O
+X-Message-ID-Hash: 7GTOUDQKULW6OQJTQI672JP6BMTSY47O
 X-MailFrom: prvs=050971c6a2=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3JXQFCJUINM533PGTRG7X2RRZPXXPOUA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7GTOUDQKULW6OQJTQI672JP6BMTSY47O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,105 +113,125 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Simon Trimmer <simont@opensource.cirrus.com>
 
-Move issuing of a CS35L56_MBOX_CMD_SHUTDOWN command and then waiting for
-the DSP to reach CS35L56_HALO_STATE_SHUTDOWN in the register appropriate
-for the hardware revision into a common function.
+Use the new cs35l56_base struct for utility functions.
 
 Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- include/sound/cs35l56.h           |  1 +
- sound/soc/codecs/cs35l56-shared.c | 26 ++++++++++++++++++++++++++
- sound/soc/codecs/cs35l56.c        | 17 +----------------
- 3 files changed, 28 insertions(+), 16 deletions(-)
+ sound/soc/codecs/cs35l56.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
-index ae9e8f55962a..5b32aa7468cb 100644
---- a/include/sound/cs35l56.h
-+++ b/include/sound/cs35l56.h
-@@ -274,6 +274,7 @@ extern const unsigned int cs35l56_tx_input_values[CS35L56_NUM_INPUT_SRC];
- 
- void cs35l56_reread_firmware_registers(struct cs35l56_base *cs35l56_base);
- int cs35l56_mbox_send(struct cs35l56_base *cs35l56_base, unsigned int command);
-+int cs35l56_firmware_shutdown(struct cs35l56_base *cs35l56_base);
- int cs35l56_wait_for_firmware_boot(struct cs35l56_base *cs35l56_base);
- void cs35l56_wait_control_port_ready(void);
- void cs35l56_wait_min_reset_pulse(void);
-diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
-index 7e02d023338c..95ef71c7b8f1 100644
---- a/sound/soc/codecs/cs35l56-shared.c
-+++ b/sound/soc/codecs/cs35l56-shared.c
-@@ -218,6 +218,32 @@ int cs35l56_mbox_send(struct cs35l56_base *cs35l56_base, unsigned int command)
- }
- EXPORT_SYMBOL_NS_GPL(cs35l56_mbox_send, SND_SOC_CS35L56_SHARED);
- 
-+int cs35l56_firmware_shutdown(struct cs35l56_base *cs35l56_base)
-+{
-+	int ret;
-+	unsigned int reg;
-+	unsigned int val;
-+
-+	ret = cs35l56_mbox_send(cs35l56_base, CS35L56_MBOX_CMD_SHUTDOWN);
-+	if (ret)
-+		return ret;
-+
-+	if (cs35l56_base->rev < CS35L56_REVID_B0)
-+		reg = CS35L56_DSP1_PM_CUR_STATE_A1;
-+	else
-+		reg = CS35L56_DSP1_PM_CUR_STATE;
-+
-+	ret = regmap_read_poll_timeout(cs35l56_base->regmap,  reg,
-+				       val, (val == CS35L56_HALO_STATE_SHUTDOWN),
-+				       CS35L56_HALO_STATE_POLL_US,
-+				       CS35L56_HALO_STATE_TIMEOUT_US);
-+	if (ret < 0)
-+		dev_err(cs35l56_base->dev, "Failed to poll PM_CUR_STATE to 1 is %d (ret %d)\n",
-+			val, ret);
-+	return ret;
-+}
-+EXPORT_SYMBOL_NS_GPL(cs35l56_firmware_shutdown, SND_SOC_CS35L56_SHARED);
-+
- int cs35l56_wait_for_firmware_boot(struct cs35l56_base *cs35l56_base)
- {
- 	unsigned int reg;
 diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index f472bde6d21a..dbe9134ae09a 100644
+index 76cc9110d4e0..48e856583477 100644
 --- a/sound/soc/codecs/cs35l56.c
 +++ b/sound/soc/codecs/cs35l56.c
-@@ -676,8 +676,6 @@ static void cs35l56_secure_patch(struct cs35l56_private *cs35l56)
+@@ -805,14 +805,14 @@ static const struct reg_sequence cs35l56_system_reset_seq[] = {
+ 	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_SYSTEM_RESET),
+ };
  
- static void cs35l56_patch(struct cs35l56_private *cs35l56)
+-static void cs35l56_system_reset(struct cs35l56_private *cs35l56, bool is_soundwire)
++static void cs35l56_system_reset(struct cs35l56_base *cs35l56_base, bool is_soundwire)
  {
--	unsigned int reg;
--	unsigned int val;
+ 	/*
+ 	 * Must enter cache-only first so there can't be any more register
+ 	 * accesses other than the controlled system reset sequence below.
+ 	 */
+-	regcache_cache_only(cs35l56->base.regmap, true);
+-	regmap_multi_reg_write_bypassed(cs35l56->base.regmap,
++	regcache_cache_only(cs35l56_base->regmap, true);
++	regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
+ 					cs35l56_system_reset_seq,
+ 					ARRAY_SIZE(cs35l56_system_reset_seq));
+ 
+@@ -821,7 +821,7 @@ static void cs35l56_system_reset(struct cs35l56_private *cs35l56, bool is_soundw
+ 		return;
+ 
+ 	usleep_range(CS35L56_CONTROL_PORT_READY_US, CS35L56_CONTROL_PORT_READY_US + 400);
+-	regcache_cache_only(cs35l56->base.regmap, false);
++	regcache_cache_only(cs35l56_base->regmap, false);
+ }
+ 
+ static void cs35l56_secure_patch(struct cs35l56_private *cs35l56)
+@@ -885,7 +885,7 @@ static void cs35l56_patch(struct cs35l56_private *cs35l56)
+ 	init_completion(&cs35l56->init_completion);
+ 
+ 	cs35l56->soft_resetting = true;
+-	cs35l56_system_reset(cs35l56, !!cs35l56->sdw_peripheral);
++	cs35l56_system_reset(&cs35l56->base, !!cs35l56->sdw_peripheral);
+ 
+ 	if (cs35l56->sdw_peripheral) {
+ 		/*
+@@ -1140,20 +1140,20 @@ int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56)
+ }
+ EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_CORE);
+ 
+-static int cs35l56_is_fw_reload_needed(struct cs35l56_private *cs35l56)
++static int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base)
+ {
+ 	unsigned int val;
  	int ret;
  
+ 	/* Nothing to re-patch if we haven't done any patching yet. */
+-	if (!cs35l56->base.fw_patched)
++	if (!cs35l56_base->fw_patched)
+ 		return false;
+ 
  	/*
-@@ -694,23 +692,10 @@ static void cs35l56_patch(struct cs35l56_private *cs35l56)
- 		flush_work(&cs35l56->sdw_irq_work);
+ 	 * If we have control of RESET we will have asserted it so the firmware
+ 	 * will need re-patching.
+ 	 */
+-	if (cs35l56->base.reset_gpio)
++	if (cs35l56_base->reset_gpio)
+ 		return true;
+ 
+ 	/*
+@@ -1161,22 +1161,22 @@ static int cs35l56_is_fw_reload_needed(struct cs35l56_private *cs35l56)
+ 	 * can't be used here to test for memory retention.
+ 	 * Assume that tuning must be re-loaded.
+ 	 */
+-	if (cs35l56->base.secured)
++	if (cs35l56_base->secured)
+ 		return true;
+ 
+-	ret = pm_runtime_resume_and_get(cs35l56->base.dev);
++	ret = pm_runtime_resume_and_get(cs35l56_base->dev);
+ 	if (ret) {
+-		dev_err(cs35l56->base.dev, "Failed to runtime_get: %d\n", ret);
++		dev_err(cs35l56_base->dev, "Failed to runtime_get: %d\n", ret);
+ 		return ret;
  	}
  
--	ret = cs35l56_mbox_send(&cs35l56->base, CS35L56_MBOX_CMD_SHUTDOWN);
-+	ret = cs35l56_firmware_shutdown(&cs35l56->base);
+-	ret = regmap_read(cs35l56->base.regmap, CS35L56_PROTECTION_STATUS, &val);
++	ret = regmap_read(cs35l56_base->regmap, CS35L56_PROTECTION_STATUS, &val);
  	if (ret)
- 		goto err;
+-		dev_err(cs35l56->base.dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
++		dev_err(cs35l56_base->dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
+ 	else
+ 		ret = !!(val & CS35L56_FIRMWARE_MISSING);
  
--	if (cs35l56->base.rev < CS35L56_REVID_B0)
--		reg = CS35L56_DSP1_PM_CUR_STATE_A1;
--	else
--		reg = CS35L56_DSP1_PM_CUR_STATE;
--
--	ret = regmap_read_poll_timeout(cs35l56->base.regmap, reg,
--				       val, (val == CS35L56_HALO_STATE_SHUTDOWN),
--				       CS35L56_HALO_STATE_POLL_US,
--				       CS35L56_HALO_STATE_TIMEOUT_US);
--	if (ret < 0)
--		dev_err(cs35l56->base.dev, "Failed to poll PM_CUR_STATE to 1 is %d (ret %d)\n",
--			val, ret);
--
- 	/* Use wm_adsp to load and apply the firmware patch and coefficient files */
- 	ret = wm_adsp_power_up(&cs35l56->dsp);
- 	if (ret) {
+-	pm_runtime_put_autosuspend(cs35l56->base.dev);
++	pm_runtime_put_autosuspend(cs35l56_base->dev);
+ 
+ 	return ret;
+ }
+@@ -1305,7 +1305,7 @@ int cs35l56_system_resume(struct device *dev)
+ 	if (!cs35l56->component)
+ 		return 0;
+ 
+-	ret = cs35l56_is_fw_reload_needed(cs35l56);
++	ret = cs35l56_is_fw_reload_needed(&cs35l56->base);
+ 	dev_dbg(cs35l56->base.dev, "fw_reload_needed: %d\n", ret);
+ 	if (ret < 1)
+ 		return ret;
+@@ -1550,7 +1550,7 @@ int cs35l56_init(struct cs35l56_private *cs35l56)
+ 	if (!cs35l56->base.reset_gpio) {
+ 		dev_dbg(cs35l56->base.dev, "No reset gpio: using soft reset\n");
+ 		cs35l56->soft_resetting = true;
+-		cs35l56_system_reset(cs35l56, !!cs35l56->sdw_peripheral);
++		cs35l56_system_reset(&cs35l56->base, !!cs35l56->sdw_peripheral);
+ 		if (cs35l56->sdw_peripheral) {
+ 			/* Keep alive while we wait for re-enumeration */
+ 			pm_runtime_get_noresume(cs35l56->base.dev);
 -- 
 2.30.2
 
