@@ -4,79 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9605C77B7A
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 18:35:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E721C7EE2C
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 18:35:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A387082A;
-	Thu, 25 May 2023 20:34:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A387082A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47FA83E8;
+	Thu, 25 May 2023 20:34:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47FA83E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685039717;
-	bh=192nmSMNqq78aoq5WG289hVIu7yTHWbqPFwrYJrXVXg=;
+	s=default; t=1685039743;
+	bh=mfi9pA8TtpQSlQKzzbalZaPXkKkmtsGD+l1SjdXJ0yA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SHhZVk6LMBrd9n4F/SAGigF63yp/TuJClmZyQfrRIOQjCQ0k9uHIgc6JZoUv5j5ai
-	 a34qyl5gFd8a1QZnITpRS5KS3Z3PgpGCmYIyh0POYLe5EOgwuFjFIHee7ahck5/KUv
-	 fRHPTWJHoG/2HlTGT31EuwT8E92Z5F+qQmb/GtNo=
+	b=KA8GMJs6YVGKiEhmBrhROzhKio17Ldg2Xgg/ZW84wjt31OEwyuT89xfGhagycOORo
+	 Oz8RVrKYp7JmFwjtbzhJyCsQY3djzvanqaPsxpMF4X541GKz1/pfyfpzWB2HKjdq/7
+	 td4otclbGxPBR0OAwsJSmeIC1DeZ4gItXeL2z20g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADF9DF805BF; Thu, 25 May 2023 20:33:14 +0200 (CEST)
+	id D02B8F80553; Thu, 25 May 2023 20:34:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6AB0EF805B6;
-	Thu, 25 May 2023 20:33:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0BAEAF80553;
+	Thu, 25 May 2023 20:34:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF58BF8055C; Thu, 25 May 2023 20:33:10 +0200 (CEST)
+	id 14636F80544; Thu, 25 May 2023 20:34:07 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E24CFF805AB
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 20:33:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E24CFF805AB
+	by alsa1.perex.cz (Postfix) with ESMTPS id DE4B0F80007;
+	Thu, 25 May 2023 20:34:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE4B0F80007
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=K6W1WJqx
+ header.s=k20201202 header.b=jMmhHDXj
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4FBE5648A2;
-	Thu, 25 May 2023 18:33:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14CF9C4339C;
-	Thu, 25 May 2023 18:32:57 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D0A2E60BA8;
+	Thu, 25 May 2023 18:34:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFCD1C43446;
+	Thu, 25 May 2023 18:33:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685039579;
-	bh=192nmSMNqq78aoq5WG289hVIu7yTHWbqPFwrYJrXVXg=;
+	s=k20201202; t=1685039641;
+	bh=mfi9pA8TtpQSlQKzzbalZaPXkKkmtsGD+l1SjdXJ0yA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K6W1WJqx1Dg8KioOQHpz54HWPZ9Fx7gbQ935Qjw/ZZqJ/QUXO7JV+gomGAncOSxmS
-	 dbO1mNi+Cd2Lzp4JRfbcIVEyW0hrILpx9pO2MVzvkUpXR1DymHGBd3tjPNwg7uwWi+
-	 jrqgsGqKtHkfK0F5rEoUBa8yMtfgiLHfpvtDgg/Wu53a5nRSqKLH6hnz8eOWsaGXXR
-	 uxskmejH28Y/Q+pe90LkGn5CtxPOrr6ur1bVkNzppYawXcgk+uyeS+O5wCREAwwFox
-	 9eJ5tMEHjWpAuUC6kRmZkYPWCxvPSHQEo4FrC9YNYc9xfo1w/nA+wUyeCPG3/EN5Ob
-	 QpAwg3UzU+ejQ==
+	b=jMmhHDXjlkRpJASzSF9KjbU/al7RDFy/oyrMSzeH1lXy5Kta8j08ftqGGluFT3xiw
+	 4bMz1s7XsoNB5qunFzwSiLF7PFzc58qGSGC488/gbO/gCDVna6b3JNuIotmQzle4/a
+	 5DvPMTwLufzddSPZQT58eX+a09KYKL9l61nJIIIHWJjOOEEyBWvx4c4KZcv4AHe1m4
+	 093WFaYrXtq8QFoO6Lx5Ex0+T5My4Y2D9HyhId4uPZDh4r42/5xqXO0m2GHlhIT9ge
+	 K4nazGzymsbPEr7m+Wh6wcaIODFsrSJpk4DfYnIwpIiwXQe+bjCsEUOxRALnSEWR1V
+	 a8cDifdUxrw8g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexandru Sorodoc <ealex95@gmail.com>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	Sasha Levin <sashal@kernel.org>,
+	lgirdwood@gmail.com,
+	peter.ujfalusi@linux.intel.com,
+	yung-chuan.liao@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	daniel.baluta@nxp.com,
+	broonie@kernel.org,
 	perex@perex.cz,
 	tiwai@suse.com,
-	tcrawford@system76.com,
-	sbinding@opensource.cirrus.com,
-	andy.chi@canonical.com,
-	luke@ljones.dev,
-	tangmeng@uniontech.com,
-	p.jungkamp@gmx.net,
-	kasper93@gmail.com,
-	yangyuchi66@gmail.com,
-	yangyingliang@huawei.com,
+	sound-open-firmware@alsa-project.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.3 13/67] ALSA: hda/realtek: Add quirks for ASUS
- GU604V and GU603V
-Date: Thu, 25 May 2023 14:30:50 -0400
-Message-Id: <20230525183144.1717540-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.3 31/67] ASoC: SOF: debug: conditionally bump
+ runtime_pm counter on exceptions
+Date: Thu, 25 May 2023 14:31:08 -0400
+Message-Id: <20230525183144.1717540-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230525183144.1717540-1-sashal@kernel.org>
 References: <20230525183144.1717540-1-sashal@kernel.org>
@@ -84,8 +81,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3HZJCUTEQXAF75D4QFUKIG24RIUBV542
-X-Message-ID-Hash: 3HZJCUTEQXAF75D4QFUKIG24RIUBV542
+Message-ID-Hash: BTBYHCE6LTI2G7KMJQTF5WCGV4ILW6NV
+X-Message-ID-Hash: BTBYHCE6LTI2G7KMJQTF5WCGV4ILW6NV
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3HZJCUTEQXAF75D4QFUKIG24RIUBV542/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BTBYHCE6LTI2G7KMJQTF5WCGV4ILW6NV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,76 +104,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Alexandru Sorodoc <ealex95@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 4b963ae1df6426f0e51de64133d379d9bde50c48 ]
+[ Upstream commit 3de975862f985f1c9e225a0d13aa3d501373f7c3 ]
 
-These models use 2 CS35L41 amplifiers using SPI for down-facing
-speakers.
+When a firmware IPC error happens during a pm_runtime suspend, we
+ignore the error and suspend anyways. However, the code
+unconditionally increases the runtime_pm counter. This results in a
+confusing configuration where the code will suspend, resume but never
+suspend again due to the use of pm_runtime_get_noresume().
 
-alc285_fixup_speaker2_to_dac1 is needed to fix volume control of the
-down-facing speakers.
+The intent of the counter increase was to prevent entry in D3, but if
+that transition to D3 is already started it cannot be stopped. In
+addition, there's no point in that case in trying to prevent anything,
+the firmware error is handled and the next resume will re-initialize
+the firmware completely.
 
-Pin configs are needed to enable headset mic detection.
+This patch changes the logic to prevent suspend when the device is
+pm_runtime active and has a use_count > 0.
 
-Note that these models lack the ACPI _DSD properties needed to
-initialize the amplifiers. They can be added during boot to get working
-sound out of the speakers:
-  https://gist.github.com/lamperez/862763881c0e1c812392b5574727f6ff
-
-Signed-off-by: Alexandru Sorodoc <ealex95@gmail.com>
-Link: https://lore.kernel.org/r/20230511161510.315170-1-ealex95@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com
+Link: https://lore.kernel.org/r/20230512103315.8921-2-peter.ujfalusi@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ sound/soc/sof/debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 172ffc2c332b7..543e0adde3faf 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7063,6 +7063,8 @@ enum {
- 	ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC295_FIXUP_DISABLE_DAC3,
- 	ALC285_FIXUP_SPEAKER2_TO_DAC1,
-+	ALC285_FIXUP_ASUS_SPEAKER2_TO_DAC1,
-+	ALC285_FIXUP_ASUS_HEADSET_MIC,
- 	ALC280_FIXUP_HP_HEADSET_MIC,
- 	ALC221_FIXUP_HP_FRONT_MIC,
- 	ALC292_FIXUP_TPT460,
-@@ -8033,6 +8035,22 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI
- 	},
-+	[ALC285_FIXUP_ASUS_SPEAKER2_TO_DAC1] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc285_fixup_speaker2_to_dac1,
-+		.chained = true,
-+		.chain_id = ALC245_FIXUP_CS35L41_SPI_2
-+	},
-+	[ALC285_FIXUP_ASUS_HEADSET_MIC] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x03a11050 },
-+			{ 0x1b, 0x03a11c30 },
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC285_FIXUP_ASUS_SPEAKER2_TO_DAC1
-+	},
- 	[ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -9500,6 +9518,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1313, "Asus K42JZ", ALC269VB_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x13b0, "ASUS Z550SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
-+	SND_PCI_QUIRK(0x1043, 0x1473, "ASUS GU604V", ALC285_FIXUP_ASUS_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1043, 0x1483, "ASUS GU603V", ALC285_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
- 	SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", ALC294_FIXUP_ASUS_DUAL_SPK),
- 	SND_PCI_QUIRK(0x1043, 0x1683, "ASUS UM3402YAR", ALC287_FIXUP_CS35L41_I2C_2),
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+index ade0507328af4..5042312b1b98d 100644
+--- a/sound/soc/sof/debug.c
++++ b/sound/soc/sof/debug.c
+@@ -437,8 +437,8 @@ void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev, const char *msg)
+ 		/* should we prevent DSP entering D3 ? */
+ 		if (!sdev->ipc_dump_printed)
+ 			dev_info(sdev->dev,
+-				 "preventing DSP entering D3 state to preserve context\n");
+-		pm_runtime_get_noresume(sdev->dev);
++				 "Attempting to prevent DSP from entering D3 state to preserve context\n");
++		pm_runtime_get_if_in_use(sdev->dev);
+ 	}
+ 
+ 	/* dump vital information to the logs */
 -- 
 2.39.2
 
