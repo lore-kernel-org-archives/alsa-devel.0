@@ -4,91 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90DEDC7EE29
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 15:11:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88AD7C7EE29
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 15:11:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A6C9823;
-	Thu, 25 May 2023 17:10:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A6C9823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3502A1E7;
+	Thu, 25 May 2023 17:10:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3502A1E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685027474;
-	bh=6ndoGLXc9Wabm0gj8oKsn2BHSvsrVATQX3AbQvss/vI=;
+	s=default; t=1685027483;
+	bh=oRaAFmBKHRyn1bIcRH+s652KPKEftS+ZMMf0+U5T6v4=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iyRm/pTOdLK0Bb71y1S/GnPfyTjYXBm9DHqPmnSwTvD++pyMnp9HWm7/XoBvKCQO4
-	 gEU/5NSMTMiRhz84QMtypnR6ymH7QDYICMYfhkgI4Wexzmd/ZWgQKJlDWfCmLCnZVy
-	 GQRK+EfSgky0xW46rl0now2/NdW2g0N26YZoz4Lk=
+	b=phncJh9wbPXApdvyoq+sqwlemgbQIvaWJDia5XKti9x9NKMsRM5y4g7ie9lX9kqs4
+	 fzR7d8usW27DbevFD7tIacdiX+7nHWyLzq9cVD9+MGt8uRvX7iOZ23iZeKsVYM7ojf
+	 GBS1DsciOwt0VH8b04V5MaDqY2MKsDMaNY4FkIS0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94370F805EF; Thu, 25 May 2023 17:08:02 +0200 (CEST)
+	id 74A82F805F7; Thu, 25 May 2023 17:08:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2530F805ED;
-	Thu, 25 May 2023 17:08:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 863FDF805F6;
+	Thu, 25 May 2023 17:08:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC9EEF8016A; Thu, 25 May 2023 17:07:44 +0200 (CEST)
+	id EF258F805A1; Thu, 25 May 2023 17:07:44 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4DF08F8016A
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 17:07:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DF08F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id D9113F80552
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 17:07:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9113F80552
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=p5d4V2Rm
+ header.s=PODMain02222019 header.b=QwvgbQ1o
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34PEE1BH025344;
+ 34PEE1Bs025343;
 	Thu, 25 May 2023 10:07:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=YTFWU+MhIORTvxxidwK1NyZQlYDjXyonRb28HJ1jWEo=;
- b=p5d4V2Rm6DkzOAx/sp7YqniUj1fo943ZxdY0MQisA2W7b6bgPnks8lGYyzb5p3QJ/rJf
- EyTa1Ftg3+BVDcfajTLjBXDRuh0X2McEr9I9e6liubtSTNq8tEZXFEqt7F97NmSsVuIU
- fmIp8lvNER4dYjMqcHoWcB+GFe9osN72ITG2Q6pIbF1Buk8H0Ap827i5mRkr2eQzGlna
- Dex5u2CYnAnym3tmSGfNskwsqbr1/0UrV/lGDZiaV6ekYLVOe3CcOaqIL6oTo19TUN8f
- xJ9m/o6cXmunWk3WbOokj2VSsWWdOExWt0ZJkdOxtq2AH1bs5OxH7IhMfIZrICiN67Eu qw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm70m7-3
+ bh=zSkleEFb1sYYKGX1TRaMv5H+zoDafqbPYbhdjt5L+FM=;
+ b=QwvgbQ1oFcDyeXIpe+06/55UFx3wQtEfdWP6ictmYTlKxq3UuTRF3dpNMytbmzKHakDk
+ zuTNPqihuiVsPh2Qojj9rlyWPrxrk28ybX5apej5MX3IADvi/lTXOJRcX21HTfc6ZugP
+ M4X84YPbRFPyBJWLUH8dxeHXZ8MK2Mep3c+LqKmYo+/XH2w+nGf+D2l1vdE2RZ72vN3W
+ kJsC5MxRytECxkp/n9t85vpYsQ4N4kdrofLiL8psDkkm+DSyGX9aL9EgZI4RQHCuV3Le
+ hzQRElKB2QfneLiKBKno0lY6xX9M7E4CGZgRvFRBnF4dBlBFX2Mm/RGCr/PLFzulf59d ng==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm70m4-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 May 2023 10:07:06 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 25 May 2023 10:07:05 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Thu, 25 May
- 2023 10:07:03 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 25 May 2023 10:07:03 -0500
+ 2023 10:07:02 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Thu, 25 May 2023 10:07:02 -0500
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.65.166])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 260B015B4;
-	Thu, 25 May 2023 15:07:03 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DB59A11D4;
+	Thu, 25 May 2023 15:07:01 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <tiwai@suse.com>, <broonie@kernel.org>, <perex@perex.cz>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH 05/13] ASoC: cs35l56: Move runtime suspend/resume to shared
- library
-Date: Thu, 25 May 2023 16:06:51 +0100
-Message-ID: <20230525150659.25409-6-rf@opensource.cirrus.com>
+        Simon Trimmer
+	<simont@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 02/13] ASoC: cs35l56: Make cs35l56_system_reset() code more
+ generic
+Date: Thu, 25 May 2023 16:06:48 +0100
+Message-ID: <20230525150659.25409-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230525150659.25409-1-rf@opensource.cirrus.com>
 References: <20230525150659.25409-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 6Ue6YrMAH2QxjrErGvGGc8tXD-n3GX8m
-X-Proofpoint-GUID: 6Ue6YrMAH2QxjrErGvGGc8tXD-n3GX8m
+X-Proofpoint-ORIG-GUID: CDhFn8BLYtuBr7JRV5k3m0-jXuw2os5f
+X-Proofpoint-GUID: CDhFn8BLYtuBr7JRV5k3m0-jXuw2os5f
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: LVEZ6CISL73MAPODAP4G764XAQ5N6S4O
-X-Message-ID-Hash: LVEZ6CISL73MAPODAP4G764XAQ5N6S4O
+Message-ID-Hash: 5BYRLVYFJZGTZPGMPX2EAUO2QE7W4NXN
+X-Message-ID-Hash: 5BYRLVYFJZGTZPGMPX2EAUO2QE7W4NXN
 X-MailFrom: prvs=050971c6a2=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LVEZ6CISL73MAPODAP4G764XAQ5N6S4O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5BYRLVYFJZGTZPGMPX2EAUO2QE7W4NXN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,346 +111,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The majority of runtime_suspend and runtime_resume handling
-doesn't have anything specific to the ASoC driver, so can be
-shared by the HDA driver. Move this code into the shared
-library.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
+The function can be more easily reused in HDA if the tracking of whether
+a soft reset is being performed and whether the device is connected to a
+SoundWire bus is moved out of the function.
+
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- include/sound/cs35l56.h           |   2 +
- sound/soc/codecs/cs35l56-sdw.c    |   4 +-
- sound/soc/codecs/cs35l56-shared.c | 118 +++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l56.c        | 120 +-----------------------------
- sound/soc/codecs/cs35l56.h        |   2 -
- 5 files changed, 126 insertions(+), 120 deletions(-)
+ sound/soc/codecs/cs35l56.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
-index 4d270eb23473..4a885c2321c1 100644
---- a/include/sound/cs35l56.h
-+++ b/include/sound/cs35l56.h
-@@ -281,6 +281,8 @@ void cs35l56_system_reset(struct cs35l56_base *cs35l56_base, bool is_soundwire);
- int cs35l56_irq_request(struct cs35l56_base *cs35l56_base, int irq);
- irqreturn_t cs35l56_irq(int irq, void *data);
- int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base);
-+int cs35l56_runtime_suspend_common(struct cs35l56_base *cs35l56_base);
-+int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_soundwire);
- int cs35l56_get_bclk_freq_id(unsigned int freq);
- void cs35l56_fill_supply_names(struct regulator_bulk_data *data);
- 
-diff --git a/sound/soc/codecs/cs35l56-sdw.c b/sound/soc/codecs/cs35l56-sdw.c
-index e6c9e8bce22c..09d255cc7652 100644
---- a/sound/soc/codecs/cs35l56-sdw.c
-+++ b/sound/soc/codecs/cs35l56-sdw.c
-@@ -424,7 +424,7 @@ static int __maybe_unused cs35l56_sdw_runtime_suspend(struct device *dev)
- 	if (!cs35l56->base.init_done)
- 		return 0;
- 
--	return cs35l56_runtime_suspend(dev);
-+	return cs35l56_runtime_suspend_common(&cs35l56->base);
- }
- 
- static int __maybe_unused cs35l56_sdw_runtime_resume(struct device *dev)
-@@ -441,7 +441,7 @@ static int __maybe_unused cs35l56_sdw_runtime_resume(struct device *dev)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = cs35l56_runtime_resume_common(cs35l56);
-+	ret = cs35l56_runtime_resume_common(&cs35l56->base, true);
- 	if (ret)
- 		return ret;
- 
-diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
-index 93cd898dbab6..194fa08e1cc2 100644
---- a/sound/soc/codecs/cs35l56-shared.c
-+++ b/sound/soc/codecs/cs35l56-shared.c
-@@ -408,6 +408,124 @@ int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base)
- }
- EXPORT_SYMBOL_NS_GPL(cs35l56_is_fw_reload_needed, SND_SOC_CS35L56_SHARED);
- 
-+static const struct reg_sequence cs35l56_hibernate_seq[] = {
-+	/* This must be the last register access */
-+	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_HIBERNATE_NOW),
-+};
-+
-+static const struct reg_sequence cs35l56_hibernate_wake_seq[] = {
-+	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_WAKEUP),
-+};
-+
-+int cs35l56_runtime_suspend_common(struct cs35l56_base *cs35l56_base)
-+{
-+	unsigned int val;
-+	int ret;
-+
-+	if (!cs35l56_base->init_done)
-+		return 0;
-+
-+	/* Firmware must have entered a power-save state */
-+	ret = regmap_read_poll_timeout(cs35l56_base->regmap,
-+				       CS35L56_TRANSDUCER_ACTUAL_PS,
-+				       val, (val >= CS35L56_PS3),
-+				       CS35L56_PS3_POLL_US,
-+				       CS35L56_PS3_TIMEOUT_US);
-+	if (ret)
-+		dev_warn(cs35l56_base->dev, "PS3 wait failed: %d\n", ret);
-+
-+	/* Clear BOOT_DONE so it can be used to detect a reboot */
-+	regmap_write(cs35l56_base->regmap, CS35L56_IRQ1_EINT_4, CS35L56_OTP_BOOT_DONE_MASK);
-+
-+	if (!cs35l56_base->can_hibernate) {
-+		regcache_cache_only(cs35l56_base->regmap, true);
-+		dev_dbg(cs35l56_base->dev, "Suspended: no hibernate");
-+
-+		return 0;
-+	}
-+
-+	/*
-+	 * Enable auto-hibernate. If it is woken by some other wake source
-+	 * it will automatically return to hibernate.
-+	 */
-+	cs35l56_mbox_send(cs35l56_base, CS35L56_MBOX_CMD_ALLOW_AUTO_HIBERNATE);
-+
-+	/*
-+	 * Must enter cache-only first so there can't be any more register
-+	 * accesses other than the controlled hibernate sequence below.
-+	 */
-+	regcache_cache_only(cs35l56_base->regmap, true);
-+
-+	regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
-+					cs35l56_hibernate_seq,
-+					ARRAY_SIZE(cs35l56_hibernate_seq));
-+
-+	dev_dbg(cs35l56_base->dev, "Suspended: hibernate");
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_suspend_common, SND_SOC_CS35L56_SHARED);
-+
-+int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_soundwire)
-+{
-+	unsigned int val;
-+	int ret;
-+
-+	if (!cs35l56_base->init_done)
-+		return 0;
-+
-+	if (!cs35l56_base->can_hibernate)
-+		goto out_sync;
-+
-+	if (!is_soundwire) {
-+		/*
-+		 * Dummy transaction to trigger I2C/SPI auto-wake. This will NAK on I2C.
-+		 * Must be done before releasing cache-only.
-+		 */
-+		regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
-+						cs35l56_hibernate_wake_seq,
-+						ARRAY_SIZE(cs35l56_hibernate_wake_seq));
-+
-+		usleep_range(CS35L56_CONTROL_PORT_READY_US,
-+			     CS35L56_CONTROL_PORT_READY_US + 400);
-+	}
-+
-+out_sync:
-+	regcache_cache_only(cs35l56_base->regmap, false);
-+
-+	ret = cs35l56_wait_for_firmware_boot(cs35l56_base);
-+	if (ret) {
-+		dev_err(cs35l56_base->dev, "Hibernate wake failed: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = cs35l56_mbox_send(cs35l56_base, CS35L56_MBOX_CMD_PREVENT_AUTO_HIBERNATE);
-+	if (ret)
-+		goto err;
-+
-+	/* BOOT_DONE will be 1 if the amp reset */
-+	regmap_read(cs35l56_base->regmap, CS35L56_IRQ1_EINT_4, &val);
-+	if (val & CS35L56_OTP_BOOT_DONE_MASK) {
-+		dev_dbg(cs35l56_base->dev, "Registers reset in suspend\n");
-+		regcache_mark_dirty(cs35l56_base->regmap);
-+	}
-+
-+	regcache_sync(cs35l56_base->regmap);
-+
-+	dev_dbg(cs35l56_base->dev, "Resumed");
-+
-+	return 0;
-+
-+err:
-+	regmap_write(cs35l56_base->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
-+		     CS35L56_MBOX_CMD_HIBERNATE_NOW);
-+
-+	regcache_cache_only(cs35l56_base->regmap, true);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_SHARED);
-+
- const struct cs_dsp_region cs35l56_dsp1_regions[] = {
- 	{ .type = WMFW_HALO_PM_PACKED,	.base = CS35L56_DSP1_PMEM_0 },
- 	{ .type = WMFW_HALO_XM_PACKED,	.base = CS35L56_DSP1_XMEM_PACKED_0 },
 diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index c1c7b7e408c3..ce8142249f05 100644
+index 4d41c4b040a4..76cc9110d4e0 100644
 --- a/sound/soc/codecs/cs35l56.c
 +++ b/sound/soc/codecs/cs35l56.c
-@@ -852,132 +852,20 @@ static const struct snd_soc_component_driver soc_component_dev_cs35l56 = {
- 	.suspend_bias_off = 1, /* see cs35l56_system_resume() */
+@@ -805,10 +805,8 @@ static const struct reg_sequence cs35l56_system_reset_seq[] = {
+ 	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_SYSTEM_RESET),
  };
  
--static const struct reg_sequence cs35l56_hibernate_seq[] = {
--	/* This must be the last register access */
--	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_HIBERNATE_NOW),
--};
--
--static const struct reg_sequence cs35l56_hibernate_wake_seq[] = {
--	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_WAKEUP),
--};
--
--int cs35l56_runtime_suspend(struct device *dev)
-+static int __maybe_unused cs35l56_runtime_suspend_i2c_spi(struct device *dev)
+-static void cs35l56_system_reset(struct cs35l56_private *cs35l56)
++static void cs35l56_system_reset(struct cs35l56_private *cs35l56, bool is_soundwire)
  {
- 	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
--	unsigned int val;
--	int ret;
+-	cs35l56->soft_resetting = true;
+-
+ 	/*
+ 	 * Must enter cache-only first so there can't be any more register
+ 	 * accesses other than the controlled system reset sequence below.
+@@ -819,7 +817,7 @@ static void cs35l56_system_reset(struct cs35l56_private *cs35l56)
+ 					ARRAY_SIZE(cs35l56_system_reset_seq));
  
--	if (!cs35l56->base.init_done)
--		return 0;
--
--	/* Firmware must have entered a power-save state */
--	ret = regmap_read_poll_timeout(cs35l56->base.regmap,
--				       CS35L56_TRANSDUCER_ACTUAL_PS,
--				       val, (val >= CS35L56_PS3),
--				       CS35L56_PS3_POLL_US,
--				       CS35L56_PS3_TIMEOUT_US);
--	if (ret)
--		dev_warn(cs35l56->base.dev, "PS3 wait failed: %d\n", ret);
--
--	/* Clear BOOT_DONE so it can be used to detect a reboot */
--	regmap_write(cs35l56->base.regmap, CS35L56_IRQ1_EINT_4, CS35L56_OTP_BOOT_DONE_MASK);
--
--	if (!cs35l56->base.can_hibernate) {
--		regcache_cache_only(cs35l56->base.regmap, true);
--		dev_dbg(dev, "Suspended: no hibernate");
--
--		return 0;
--	}
--
--	/*
--	 * Enable auto-hibernate. If it is woken by some other wake source
--	 * it will automatically return to hibernate.
--	 */
--	cs35l56_mbox_send(&cs35l56->base, CS35L56_MBOX_CMD_ALLOW_AUTO_HIBERNATE);
--
--	/*
--	 * Must enter cache-only first so there can't be any more register
--	 * accesses other than the controlled hibernate sequence below.
--	 */
--	regcache_cache_only(cs35l56->base.regmap, true);
--
--	regmap_multi_reg_write_bypassed(cs35l56->base.regmap,
--					cs35l56_hibernate_seq,
--					ARRAY_SIZE(cs35l56_hibernate_seq));
--
--	dev_dbg(dev, "Suspended: hibernate");
--
--	return 0;
-+	return cs35l56_runtime_suspend_common(&cs35l56->base);
- }
--EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_suspend, SND_SOC_CS35L56_CORE);
+ 	/* On SoundWire the registers won't be accessible until it re-enumerates. */
+-	if (cs35l56->sdw_peripheral)
++	if (is_soundwire)
+ 		return;
  
- static int __maybe_unused cs35l56_runtime_resume_i2c_spi(struct device *dev)
- {
- 	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
+ 	usleep_range(CS35L56_CONTROL_PORT_READY_US, CS35L56_CONTROL_PORT_READY_US + 400);
+@@ -886,7 +884,8 @@ static void cs35l56_patch(struct cs35l56_private *cs35l56)
  
--	if (!cs35l56->base.init_done)
--		return 0;
--
--	return cs35l56_runtime_resume_common(cs35l56);
-+	return cs35l56_runtime_resume_common(&cs35l56->base, false);
- }
+ 	init_completion(&cs35l56->init_completion);
  
--int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56)
--{
--	unsigned int val;
--	int ret;
--
--	if (!cs35l56->base.can_hibernate)
--		goto out_sync;
--
--	if (!cs35l56->sdw_peripheral) {
--		/*
--		 * Dummy transaction to trigger I2C/SPI auto-wake. This will NAK on I2C.
--		 * Must be done before releasing cache-only.
--		 */
--		regmap_multi_reg_write_bypassed(cs35l56->base.regmap,
--						cs35l56_hibernate_wake_seq,
--						ARRAY_SIZE(cs35l56_hibernate_wake_seq));
--
--		usleep_range(CS35L56_CONTROL_PORT_READY_US,
--			     CS35L56_CONTROL_PORT_READY_US + 400);
--	}
--
--out_sync:
--	regcache_cache_only(cs35l56->base.regmap, false);
--
--	ret = cs35l56_wait_for_firmware_boot(&cs35l56->base);
--	if (ret) {
--		dev_err(cs35l56->base.dev, "Hibernate wake failed: %d\n", ret);
--		goto err;
--	}
--
--	ret = cs35l56_mbox_send(&cs35l56->base, CS35L56_MBOX_CMD_PREVENT_AUTO_HIBERNATE);
--	if (ret)
--		goto err;
--
--	/* BOOT_DONE will be 1 if the amp reset */
--	regmap_read(cs35l56->base.regmap, CS35L56_IRQ1_EINT_4, &val);
--	if (val & CS35L56_OTP_BOOT_DONE_MASK) {
--		dev_dbg(cs35l56->base.dev, "Registers reset in suspend\n");
--		regcache_mark_dirty(cs35l56->base.regmap);
--	}
--
--	regcache_sync(cs35l56->base.regmap);
--
--	dev_dbg(cs35l56->base.dev, "Resumed");
--
--	return 0;
--
--err:
--	regmap_write(cs35l56->base.regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
--		     CS35L56_MBOX_CMD_HIBERNATE_NOW);
--
--	regcache_cache_only(cs35l56->base.regmap, true);
--
--	return ret;
--}
--EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_CORE);
--
- int cs35l56_system_suspend(struct device *dev)
- {
- 	struct cs35l56_private *cs35l56 = dev_get_drvdata(dev);
-@@ -1416,7 +1304,7 @@ void cs35l56_remove(struct cs35l56_private *cs35l56)
- EXPORT_SYMBOL_NS_GPL(cs35l56_remove, SND_SOC_CS35L56_CORE);
+-	cs35l56_system_reset(cs35l56);
++	cs35l56->soft_resetting = true;
++	cs35l56_system_reset(cs35l56, !!cs35l56->sdw_peripheral);
  
- const struct dev_pm_ops cs35l56_pm_ops_i2c_spi = {
--	SET_RUNTIME_PM_OPS(cs35l56_runtime_suspend, cs35l56_runtime_resume_i2c_spi, NULL)
-+	SET_RUNTIME_PM_OPS(cs35l56_runtime_suspend_i2c_spi, cs35l56_runtime_resume_i2c_spi, NULL)
- 	SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend, cs35l56_system_resume)
- 	LATE_SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend_late, cs35l56_system_resume_early)
- 	NOIRQ_SYSTEM_SLEEP_PM_OPS(cs35l56_system_suspend_no_irq, cs35l56_system_resume_no_irq)
-diff --git a/sound/soc/codecs/cs35l56.h b/sound/soc/codecs/cs35l56.h
-index f39f8fa9e37e..8159c3e217d9 100644
---- a/sound/soc/codecs/cs35l56.h
-+++ b/sound/soc/codecs/cs35l56.h
-@@ -55,8 +55,6 @@ struct cs35l56_private {
+ 	if (cs35l56->sdw_peripheral) {
+ 		/*
+@@ -1550,7 +1549,8 @@ int cs35l56_init(struct cs35l56_private *cs35l56)
  
- extern const struct dev_pm_ops cs35l56_pm_ops_i2c_spi;
- 
--int cs35l56_runtime_suspend(struct device *dev);
--int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56);
- int cs35l56_system_suspend(struct device *dev);
- int cs35l56_system_suspend_late(struct device *dev);
- int cs35l56_system_suspend_no_irq(struct device *dev);
+ 	if (!cs35l56->base.reset_gpio) {
+ 		dev_dbg(cs35l56->base.dev, "No reset gpio: using soft reset\n");
+-		cs35l56_system_reset(cs35l56);
++		cs35l56->soft_resetting = true;
++		cs35l56_system_reset(cs35l56, !!cs35l56->sdw_peripheral);
+ 		if (cs35l56->sdw_peripheral) {
+ 			/* Keep alive while we wait for re-enumeration */
+ 			pm_runtime_get_noresume(cs35l56->base.dev);
 -- 
 2.30.2
 
