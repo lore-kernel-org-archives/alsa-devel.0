@@ -4,92 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8895C7EE29
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 15:10:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF1CBC7EE29
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 15:10:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 372AB84D;
-	Thu, 25 May 2023 17:09:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 372AB84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C724F1FC;
+	Thu, 25 May 2023 17:09:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C724F1FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685027404;
-	bh=rf8+TH9mOV/CknRRHQF9/Dy+yHx75uIq6s7cNdnrJU0=;
+	s=default; t=1685027423;
+	bh=16YHkaRO/ypOuzNLGOkApUYTHwnPOD+HQGOE+/Yc4C8=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DRC9RbcjnujbF2XQ9DLrJlq718Q+kcWbzBftM53MjxWbN8CGl9zQWy73OPAs4C2V5
-	 QLxb75oK6AtejgiaJnE84DXawPPMNl0jTxcbuOqLPfBQV02q4TWr/aPRPDR0MTBBPx
-	 gdSG2Lunn0DQ8g1hoomtUpE9Efl1HGhrn4gG5eIw=
+	b=lqRgieNWZtLtF4yBRzsgCW2U77vG40I7uF/+rctRAurki9vLEFAYBIfqXnbCb97mK
+	 Iaa69MEw+SohrcE/BPxpaGj9yn/WrHO9ou9uV6io3HjPzNH3mxAWeh8gTjZrB4Dyfe
+	 +K9G4OsXHsk/YutcgZeNxZSafkQT6PjJ+oiMGG0U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 218ADF805C2; Thu, 25 May 2023 17:07:51 +0200 (CEST)
+	id C7F76F805BA; Thu, 25 May 2023 17:07:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F3C8F805B2;
-	Thu, 25 May 2023 17:07:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDAC2F805C4;
+	Thu, 25 May 2023 17:07:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F2DE7F80542; Thu, 25 May 2023 17:07:37 +0200 (CEST)
+	id 10E8AF80542; Thu, 25 May 2023 17:07:39 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 00CB2F8024E
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 17:07:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00CB2F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id B9096F80544
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 17:07:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9096F80544
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=G2d/4qW+
+ header.s=PODMain02222019 header.b=L4ImnF6j
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34PEE1BF025344;
-	Thu, 25 May 2023 10:07:04 -0500
+ 34PEE1Bv025343;
+	Thu, 25 May 2023 10:07:09 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=4066OmlgR6CGnPEQXICe/2yZT+5D98Kq/PddSEJSVfo=;
- b=G2d/4qW+ByLMuHHZNI8L/gkDpaxfYeQ+89k4AgZwW4pQVX/fUWS6rB6J2wOtPdqb3JY5
- o73qCchU4E/rDUYuCyJ8lj9y3Um3wthKPFZvuzgEvbdtHymipwl3T6k6eQ/aPNYJVlMS
- pS3F0H+cTvi7s0Ld22CVzMEoC67ZdYHll68CAa5NLbNMwyqZBLxcllR78DWMasWrRfGC
- zITGAEPAOKOCaIRQBvQmbmZ5A2VF5aKm5eACmZDmp4FPfYgHEluGbOw+LKuRabpVeqb3
- RPgi3yKJ6ZImYJ9G4fzPcRGlzCJOmueJIbiCHVHeuDqQRdrh74EkmjLEtgKqhqoGJ6/t Cw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm70m7-1
+ bh=KBIQkBTpPs9dMkt+aC+6iuTHRtDG89mSTGRvAWzKXRU=;
+ b=L4ImnF6j3P+RjrPTNwSsBAO8KZnux+JrtF990BsFFTFcWShKDNiMFo5zacvFLMrcoUCr
+ J4M5+581U905r0MqkUBOu08EPTvaHq3A7+jS1ZyYwFr9T/ODxvgP6D86WSaLkG8GWf65
+ iVeD4wjEnNIctr1AmKlRRBRnM4gWEf0ViBSpSQOiAFHrWRikCQsYLfHj9LFKPUsUZ4sW
+ m/WskQryjvSJ4LScRfUCkB6vbncz0YgaY4UBiggFcwPr4nM2EgdLR4whEGoawz/qVlV0
+ iIXpAJjMxuawRa483NFhiNaTBTwr8dcOmf/Vd4C19AOsXb3aROzVNU4JuhEA16gbbbk0 yg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm70m4-5
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 May 2023 10:07:04 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 25 May 2023 10:07:08 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Thu, 25 May
- 2023 10:07:02 -0500
+ 2023 10:07:05 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Thu, 25 May 2023 10:07:02 -0500
+ Transport; Thu, 25 May 2023 10:07:05 -0500
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.65.166])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4E94145;
-	Thu, 25 May 2023 15:07:02 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 86FA515B7;
+	Thu, 25 May 2023 15:07:05 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <tiwai@suse.com>, <broonie@kernel.org>, <perex@perex.cz>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
-        Simon Trimmer
-	<simont@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 03/13] ASoC: cs35l56: Convert utility functions to use common
- data structure
-Date: Thu, 25 May 2023 16:06:49 +0100
-Message-ID: <20230525150659.25409-4-rf@opensource.cirrus.com>
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>
+Subject: [PATCH 11/13] ALSA: hda: Fix missing header dependencies
+Date: Thu, 25 May 2023 16:06:57 +0100
+Message-ID: <20230525150659.25409-12-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230525150659.25409-1-rf@opensource.cirrus.com>
 References: <20230525150659.25409-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: hGPgXKmn1hdbPnXJ-46SISnOx_i7IXTq
-X-Proofpoint-GUID: hGPgXKmn1hdbPnXJ-46SISnOx_i7IXTq
+X-Proofpoint-ORIG-GUID: DSk6jIDbkwD673WbeKhFJ6el818P3339
+X-Proofpoint-GUID: DSk6jIDbkwD673WbeKhFJ6el818P3339
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 7GTOUDQKULW6OQJTQI672JP6BMTSY47O
-X-Message-ID-Hash: 7GTOUDQKULW6OQJTQI672JP6BMTSY47O
+Message-ID-Hash: PD46POO6QQ2APPK3CDV74NSAJIPQXJMY
+X-Message-ID-Hash: PD46POO6QQ2APPK3CDV74NSAJIPQXJMY
 X-MailFrom: prvs=050971c6a2=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,136 +100,56 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7GTOUDQKULW6OQJTQI672JP6BMTSY47O/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PD46POO6QQ2APPK3CDV74NSAJIPQXJMY/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+Add #includes of dependencies into hda_auto_parser.h and hda_generic.h
 
-Use the new cs35l56_base struct for utility functions.
+hda_auto_parser.h uses definitions in hda_local.h.
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+hda_generic.h uses definitions in hda_local.h and hda_auto_parser.h.
+It also references struct hda_jack_callback, but only as a pointer.
+This has been forward-declared so hda_jack.h only needs to be
+included in source that actually uses it.
+
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l56.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ sound/pci/hda/hda_auto_parser.h | 2 ++
+ sound/pci/hda/hda_generic.h     | 3 +++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 76cc9110d4e0..48e856583477 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -805,14 +805,14 @@ static const struct reg_sequence cs35l56_system_reset_seq[] = {
- 	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_SYSTEM_RESET),
- };
+diff --git a/sound/pci/hda/hda_auto_parser.h b/sound/pci/hda/hda_auto_parser.h
+index df63d66af1ab..579b11beac71 100644
+--- a/sound/pci/hda/hda_auto_parser.h
++++ b/sound/pci/hda/hda_auto_parser.h
+@@ -8,6 +8,8 @@
+ #ifndef __SOUND_HDA_AUTO_PARSER_H
+ #define __SOUND_HDA_AUTO_PARSER_H
  
--static void cs35l56_system_reset(struct cs35l56_private *cs35l56, bool is_soundwire)
-+static void cs35l56_system_reset(struct cs35l56_base *cs35l56_base, bool is_soundwire)
- {
- 	/*
- 	 * Must enter cache-only first so there can't be any more register
- 	 * accesses other than the controlled system reset sequence below.
- 	 */
--	regcache_cache_only(cs35l56->base.regmap, true);
--	regmap_multi_reg_write_bypassed(cs35l56->base.regmap,
-+	regcache_cache_only(cs35l56_base->regmap, true);
-+	regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
- 					cs35l56_system_reset_seq,
- 					ARRAY_SIZE(cs35l56_system_reset_seq));
++#include "hda_local.h"
++
+ /*
+  * Helper for automatic pin configuration
+  */
+diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+index 34eba40cc6e6..a8eea8367629 100644
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -9,6 +9,9 @@
+ #define __SOUND_HDA_GENERIC_H
  
-@@ -821,7 +821,7 @@ static void cs35l56_system_reset(struct cs35l56_private *cs35l56, bool is_soundw
- 		return;
+ #include <linux/leds.h>
++#include "hda_auto_parser.h"
++
++struct hda_jack_callback;
  
- 	usleep_range(CS35L56_CONTROL_PORT_READY_US, CS35L56_CONTROL_PORT_READY_US + 400);
--	regcache_cache_only(cs35l56->base.regmap, false);
-+	regcache_cache_only(cs35l56_base->regmap, false);
- }
- 
- static void cs35l56_secure_patch(struct cs35l56_private *cs35l56)
-@@ -885,7 +885,7 @@ static void cs35l56_patch(struct cs35l56_private *cs35l56)
- 	init_completion(&cs35l56->init_completion);
- 
- 	cs35l56->soft_resetting = true;
--	cs35l56_system_reset(cs35l56, !!cs35l56->sdw_peripheral);
-+	cs35l56_system_reset(&cs35l56->base, !!cs35l56->sdw_peripheral);
- 
- 	if (cs35l56->sdw_peripheral) {
- 		/*
-@@ -1140,20 +1140,20 @@ int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56)
- }
- EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_CORE);
- 
--static int cs35l56_is_fw_reload_needed(struct cs35l56_private *cs35l56)
-+static int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base)
- {
- 	unsigned int val;
- 	int ret;
- 
- 	/* Nothing to re-patch if we haven't done any patching yet. */
--	if (!cs35l56->base.fw_patched)
-+	if (!cs35l56_base->fw_patched)
- 		return false;
- 
- 	/*
- 	 * If we have control of RESET we will have asserted it so the firmware
- 	 * will need re-patching.
- 	 */
--	if (cs35l56->base.reset_gpio)
-+	if (cs35l56_base->reset_gpio)
- 		return true;
- 
- 	/*
-@@ -1161,22 +1161,22 @@ static int cs35l56_is_fw_reload_needed(struct cs35l56_private *cs35l56)
- 	 * can't be used here to test for memory retention.
- 	 * Assume that tuning must be re-loaded.
- 	 */
--	if (cs35l56->base.secured)
-+	if (cs35l56_base->secured)
- 		return true;
- 
--	ret = pm_runtime_resume_and_get(cs35l56->base.dev);
-+	ret = pm_runtime_resume_and_get(cs35l56_base->dev);
- 	if (ret) {
--		dev_err(cs35l56->base.dev, "Failed to runtime_get: %d\n", ret);
-+		dev_err(cs35l56_base->dev, "Failed to runtime_get: %d\n", ret);
- 		return ret;
- 	}
- 
--	ret = regmap_read(cs35l56->base.regmap, CS35L56_PROTECTION_STATUS, &val);
-+	ret = regmap_read(cs35l56_base->regmap, CS35L56_PROTECTION_STATUS, &val);
- 	if (ret)
--		dev_err(cs35l56->base.dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
-+		dev_err(cs35l56_base->dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
- 	else
- 		ret = !!(val & CS35L56_FIRMWARE_MISSING);
- 
--	pm_runtime_put_autosuspend(cs35l56->base.dev);
-+	pm_runtime_put_autosuspend(cs35l56_base->dev);
- 
- 	return ret;
- }
-@@ -1305,7 +1305,7 @@ int cs35l56_system_resume(struct device *dev)
- 	if (!cs35l56->component)
- 		return 0;
- 
--	ret = cs35l56_is_fw_reload_needed(cs35l56);
-+	ret = cs35l56_is_fw_reload_needed(&cs35l56->base);
- 	dev_dbg(cs35l56->base.dev, "fw_reload_needed: %d\n", ret);
- 	if (ret < 1)
- 		return ret;
-@@ -1550,7 +1550,7 @@ int cs35l56_init(struct cs35l56_private *cs35l56)
- 	if (!cs35l56->base.reset_gpio) {
- 		dev_dbg(cs35l56->base.dev, "No reset gpio: using soft reset\n");
- 		cs35l56->soft_resetting = true;
--		cs35l56_system_reset(cs35l56, !!cs35l56->sdw_peripheral);
-+		cs35l56_system_reset(&cs35l56->base, !!cs35l56->sdw_peripheral);
- 		if (cs35l56->sdw_peripheral) {
- 			/* Keep alive while we wait for re-enumeration */
- 			pm_runtime_get_noresume(cs35l56->base.dev);
+ /* table entry for multi-io paths */
+ struct hda_multi_io {
 -- 
 2.30.2
 
