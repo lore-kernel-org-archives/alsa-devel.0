@@ -4,104 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD874C77B73
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:45:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DC23C77B73
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:45:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38077208;
-	Fri, 26 May 2023 13:44:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38077208
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8952C3E7;
+	Fri, 26 May 2023 13:44:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8952C3E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685101516;
-	bh=yLzaJ3BZwmUfDHcCkUlzajM4xei2/G1Dqqs+yKtQYnw=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=SHjfVkTgq64u444YXvY8LtnRME1S4BcXTUoqt1PkAasTtDJQIOaCwRMNfQKNlGj8n
-	 obMDGIMYKDJKK6PTIYbrQkCXDc+YxSjQTQFyLgkAZWlIvrwHvQLKNZtqTdxqfth4co
-	 f22UUKggTZaa2Rq4F8JT5waD/gLKOJtD2FAZElvg=
+	s=default; t=1685101537;
+	bh=LXMshhf6p5CyAni+n/xsn+3YK1xI6FxP0YV6843y0eg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=oqWryp8PpW+RjfbzCBYR6r+uoW5xjT48p/AOO1nrPOWiGMsEcJtQOEuNsVUu+HIWf
+	 xsKZweXmHU1qkOS0r2uTxpd6Rjuo0+3nFJiJlYCgGTsk/kWVnOLQhz4WX12QrCaqww
+	 cJIYq2Q0Yww/r5UP+cYshZoKS2AnDB70Hqm/1Dbg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 216FBF805C0; Fri, 26 May 2023 13:42:36 +0200 (CEST)
+	id 0EB7BF8024E; Fri, 26 May 2023 13:43:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8CDFF805C0;
-	Fri, 26 May 2023 13:42:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59999F80542;
+	Fri, 26 May 2023 13:43:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7E431F80249; Wed, 24 May 2023 21:16:54 +0200 (CEST)
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 9E0A7F80249; Thu, 25 May 2023 09:47:59 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C4104F80007
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2023 21:16:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4104F80007
+	by alsa1.perex.cz (Postfix) with ESMTPS id E11C2F80053
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 09:47:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E11C2F80053
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.a=rsa-sha256
- header.s=mail header.b=FwExTAdr;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr
- header.a=rsa-sha256 header.s=mail header.b=u7TmgFJs
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id E38276019E;
-	Wed, 24 May 2023 21:16:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1684955806; bh=yLzaJ3BZwmUfDHcCkUlzajM4xei2/G1Dqqs+yKtQYnw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=FwExTAdritu5OMXZ1qimA82muaBvAAZZP9XBYSiUddU0pu0CSSAIeiku1fL1gF1y3
-	 8EK/gCCmyEga+zgVCB2NfEgYdD64pQDj59fti+yQBcsDDYQLU8nQEglkyaQnbSzcUB
-	 ALVYZpu9C7Vo6WTt+2w3JEtwox0IcKUhmk9HkARI4u7JB161oEorrGKgAw2kq+YNc5
-	 O3Z8JwiY8ZQ7TAcxQk1ciBtRiUqn1Vjj2mcXeeW6ddyQk08RwQJRL/4jE1VgeD/aQB
-	 6u9Cu0Np+gUO0Xt+ua81WcpoY3xdu0SqTmKbI3ekVyqYPYGZhPjaKPEi6UIOdHlEiz
-	 WFePpPOkjoy4Q==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id GjDZ7k-lC9gp; Wed, 24 May 2023 21:16:44 +0200 (CEST)
-Received: from defiant.. (unknown [77.237.113.62])
-	by domac.alu.hr (Postfix) with ESMTPSA id 4223F601A1;
-	Wed, 24 May 2023 21:16:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1684955804; bh=yLzaJ3BZwmUfDHcCkUlzajM4xei2/G1Dqqs+yKtQYnw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=u7TmgFJs2EolMF9HnPBHEVBeNWJMWTMs5t+225/p8LX5Dt/IADJxHsgO4k6VH5Tn/
-	 OS+4VGrPeIma2C3Mj+3T4iXihBQZBoH/HsXG4Y7pg0bx8NSzwxwGQorHiK3MrvyeyK
-	 x+r6AxPcZ6ZbZh/ZgTBJdTradXznD0Rbrdy0rYsb3c0FdJpw5sRF9Hr38zx1E6FEYb
-	 gryy52wn3nADaEkPq61+RoqBtc35H6bmGeGHejPcFnECNZOiMxLlcQx7F5C571z3zq
-	 7N/RPnI1YMbTo4GzTs2pr83GpzeflkEcYideSpWU4lzhWwSHu/uMOvSpayLDEoLnfu
-	 RXjxMeYZJMXzA==
-From: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-To: Takashi Iwai <tiwai@suse.de>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	alsa-devel@alsa-project.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Subject: [PATCH v1 1/1] selftests: alsa: pcm-test: Fix compiler warnings about
- the format
-Date: Wed, 24 May 2023 21:15:29 +0200
-Message-Id: <20230524191528.13203-1-mirsad.todorovac@alu.unizg.hr>
-X-Mailer: git-send-email 2.34.1
+ unprotected) header.d=baylibre-com.20221208.gappssmtp.com
+ header.i=@baylibre-com.20221208.gappssmtp.com header.a=rsa-sha256
+ header.s=20221208 header.b=rW+A5drP
+Received: by mail-wr1-x42a.google.com with SMTP id
+ ffacd0b85a97d-30a8dc89c33so1150631f8f.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 25 May 2023 00:47:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1685000871;
+ x=1687592871;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fcLFKdljz2fiStodXESMDNQYgizAqnQkUT6+nLHI9TA=;
+        b=rW+A5drPpxlDosR1QnN36uQbJ+vg4/JAcj3McscTxl4BrSuG230tTNQ6lGPLYSTBb2
+         b1EI9uT365qlOx/3HOBMCcgcZLOHgVModK2CNJ2NNuUXBOA5OSbVyKhTuPc6gZc5m2R9
+         KWyYUr2py60xp7DC0uph1JRNCBgIhmxiMor83jtTe1Zg8FqWxjWBsZGPP5rFcluJknm6
+         yKR3iKy4oQVi99y5pmcciB7uPaHeSBsg1Ax8cS4vlZpg/6KWEFzAp6FGiFpC/K6wTUZr
+         UVc2cwk0susO/KuGGOxmDrr9AdYNvbSk+NIojYjvRsQIlT9ZHoG+BsT/FVmV3leKs06R
+         5j+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685000871; x=1687592871;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fcLFKdljz2fiStodXESMDNQYgizAqnQkUT6+nLHI9TA=;
+        b=Pek9WDk/rIMtY7YxqlrFPdkJEErIi7JGlZ4qbqh6QuG9YQaBmz/3iV0Io0m0g8w85K
+         1/3tNC3HY8j6hRkGFpmMjgEK8s1wgBzQttveM9LwJxwFOWkbMoET/XBSXFkRaC8iOFY9
+         R+N/RRSHXD0sl5tpBoCxPBjYe5pIgEbRWwUtiCi48dEktqCDiGYplPkxbjrP+n6FC1FX
+         jngeldrwhfDOHRCTV9B0VIXRSCbj+F8vP4zWIIq7adAVclXSYgB3ghvN10Kg3lGaV3Vo
+         1XhUnQtYSWxqZGjIcEE79CeFYtdRGiDI7pgTC06ad9NZ+cSFKokrgJCdeFZlVueOZjZP
+         6Pmg==
+X-Gm-Message-State: AC+VfDzJ4puVqYS5ACQgEZyMrkX1fIp5rF4CJBst0Kjb5qM6FNjpx75i
+	ILFT0XLLrz7FJMC6VpAZL3ZZjQ==
+X-Google-Smtp-Source: 
+ ACHHUZ6SH1r1MOCn+3v3GA/f3B2MqPZXYArpnDjwNsMgFCF0uvGGxxkbTEsVmHOxpp+hbXqn3x6pBA==
+X-Received: by 2002:a5d:4407:0:b0:309:41d8:eec4 with SMTP id
+ z7-20020a5d4407000000b0030941d8eec4mr1531311wrq.39.1685000870784;
+        Thu, 25 May 2023 00:47:50 -0700 (PDT)
+Received: from [192.168.1.172] (158.22.5.93.rev.sfr.net. [93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id
+ y1-20020adffa41000000b003062d815fa6sm814858wrr.85.2023.05.25.00.47.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 May 2023 00:47:49 -0700 (PDT)
+Message-ID: <774022a4-8cc8-9fe8-145d-a51be5abf951@baylibre.com>
+Date: Thu, 25 May 2023 09:47:47 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 6/7] ASoC: mediatek: mt8188-mt6359: support new board
+ with nau88255
+Content-Language: en-US
+To: =?UTF-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>, "tiwai@suse.com"
+ <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "perex@perex.cz" <perex@perex.cz>,
+ "angelogioacchino.delregno@collabora.com"
+ <angelogioacchino.delregno@collabora.com>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <20230523021933.3422-1-trevor.wu@mediatek.com>
+ <20230523021933.3422-7-trevor.wu@mediatek.com>
+ <dcd5050b-8459-e7cc-b5ad-eb435aba6e84@baylibre.com>
+ <d7ecf746a3db31cad53d068acff6dd1746644a58.camel@mediatek.com>
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <d7ecf746a3db31cad53d068acff6dd1746644a58.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-MailFrom: mirsad.todorovac@alu.unizg.hr
+X-MailFrom: amergnat@baylibre.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 6OGF3KV7N567GMGPAPIEPINTUYBHL2G7
-X-Message-ID-Hash: 6OGF3KV7N567GMGPAPIEPINTUYBHL2G7
-X-Mailman-Approved-At: Fri, 26 May 2023 11:42:30 +0000
+Message-ID-Hash: HQIWOCW4NKXZDM3KTPON544K3LNQSZAJ
+X-Message-ID-Hash: HQIWOCW4NKXZDM3KTPON544K3LNQSZAJ
+X-Mailman-Approved-At: Fri, 26 May 2023 11:43:42 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6OGF3KV7N567GMGPAPIEPINTUYBHL2G7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HQIWOCW4NKXZDM3KTPON544K3LNQSZAJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,72 +138,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-GCC 11.3.0 issues warnings in this module about wrong sizes of format
-specifiers:
+On 25/05/2023 05:44, Trevor Wu (吳文良) wrote:
+> On Wed, 2023-05-24 at 17:51 +0200, Alexandre Mergnat wrote:
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>
+>>
+>> On 23/05/2023 04:19, Trevor Wu wrote:
+>>>        card_data = (struct mt8188_card_data
+>>> *)of_device_get_match_data(&pdev->dev);
+>>> @@ -776,9 +1066,38 @@ static int mt8188_mt6359_dev_probe(struct
+>>> platform_device *pdev)
+>>>                                dai_link->init = mt8188_mt6359_init;
+>>>                                init_mt6359 = true;
+>>>                        }
+>>> +             } else if (strcmp(dai_link->name, "ETDM1_OUT_BE") ==
+>>> 0 ||
+>>> +                        strcmp(dai_link->name, "ETDM2_OUT_BE") ==
+>>> 0 ||
+>>> +                        strcmp(dai_link->name, "ETDM1_IN_BE") == 0
+>>> ||
+>>> +                        strcmp(dai_link->name, "ETDM2_IN_BE") ==
+>>> 0) {
+>>> +                     if (!strcmp(dai_link->codecs->dai_name,
+>>> MAX98390_CODEC_DAI)) {
+>>> +                             dai_link->ops = &mt8188_max98390_ops;
+>>> +                             if (init_max98390)
+>>> +                                     continue;
+>>
+>> I prefer that you do like your patch [PATCH v2 1/7] to be consistent
+>> and easy to read.
+> 
+> OK, I will unify the style in v3.
+> 
+>>
+>> +                       if (!init_mt6359) {
+>> +                               dai_link->init = mt8188_mt6359_init;
+>> +                               init_mt6359 = true;
+>> +                       }
+>>
+>>> +
+>>> +                             dai_link->init =
+>>> mt8188_max98390_codec_init;
+>>> +                             init_max98390 = true;
+>>> +                     } else if (!strcmp(dai_link->codecs-
+>>>> dai_name, NAU8825_CODEC_DAI)) {
+>>> +                             dai_link->ops = &mt8188_nau8825_ops;
+>>> +                             if (init_nau8825)
+>>> +                                     continue;
+>>
+>> ditto
+>>
+>>> +
+>>> +                             dai_link->init =
+>>> mt8188_nau8825_codec_init;
+>>> +                             dai_link->exit =
+>>> mt8188_nau8825_codec_exit;
+>>> +                             init_nau8825 = true;
+>>> +                     } else {
+>>> +                             if (strcmp(dai_link->codecs-
+>>>> dai_name, "snd-soc-dummy-dai")) {
+>>
+>> Shouldn't be with a NOT operator ("!") ?
+>> + if (!strcmp(dai_link->codecs->dai_name, "snd-soc-dummy-dai")) {
+>>
+> 
+> strcmp returns 0 when the contents of both strings are equal. The
+> default codec name is "snd-soc-dummy-dai". When the codec is specified
+> from dts, the return value of strcmp will be non-zero and this is the
+> case I want to assign init function. Therefore, it doesn't require a
+> NOT operator here.
 
-pcm-test.c: In function ‘test_pcm_time’:
-pcm-test.c:384:68: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 5 \
-				has type ‘unsigned int’ [-Wformat=]
-  384 |                 snprintf(msg, sizeof(msg), "rate mismatch %ld != %ld", rate, rrate);
-pcm-test.c:455:53: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has \
-				type ‘long int’ [-Wformat=]
-  455 |                                          "expected %d, wrote %li", rate, frames);
-pcm-test.c:462:53: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has \
-				type ‘long int’ [-Wformat=]
-  462 |                                          "expected %d, wrote %li", rate, frames);
-pcm-test.c:467:53: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has \
-				type ‘long int’ [-Wformat=]
-  467 |                                          "expected %d, wrote %li", rate, frames);
+Ok, I thought "mt8188_dumb_amp_init" was for "snd-soc-dummy-dai".
+It's fine for me.
 
-Simple fix according to compiler's suggestion removed the warnings.
-
-Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
----
- tools/testing/selftests/alsa/pcm-test.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/alsa/pcm-test.c b/tools/testing/selftests/alsa/pcm-test.c
-index 3e390fe67eb9..b7eef32addb4 100644
---- a/tools/testing/selftests/alsa/pcm-test.c
-+++ b/tools/testing/selftests/alsa/pcm-test.c
-@@ -381,7 +381,7 @@ static void test_pcm_time(struct pcm_data *data, enum test_class class,
- 		goto __close;
- 	}
- 	if (rrate != rate) {
--		snprintf(msg, sizeof(msg), "rate mismatch %ld != %ld", rate, rrate);
-+		snprintf(msg, sizeof(msg), "rate mismatch %ld != %d", rate, rrate);
- 		goto __close;
- 	}
- 	rperiod_size = period_size;
-@@ -447,24 +447,24 @@ static void test_pcm_time(struct pcm_data *data, enum test_class class,
- 			frames = snd_pcm_writei(handle, samples, rate);
- 			if (frames < 0) {
- 				snprintf(msg, sizeof(msg),
--					 "Write failed: expected %d, wrote %li", rate, frames);
-+					 "Write failed: expected %ld, wrote %li", rate, frames);
- 				goto __close;
- 			}
- 			if (frames < rate) {
- 				snprintf(msg, sizeof(msg),
--					 "expected %d, wrote %li", rate, frames);
-+					 "expected %ld, wrote %li", rate, frames);
- 				goto __close;
- 			}
- 		} else {
- 			frames = snd_pcm_readi(handle, samples, rate);
- 			if (frames < 0) {
- 				snprintf(msg, sizeof(msg),
--					 "expected %d, wrote %li", rate, frames);
-+					 "expected %ld, wrote %li", rate, frames);
- 				goto __close;
- 			}
- 			if (frames < rate) {
- 				snprintf(msg, sizeof(msg),
--					 "expected %d, wrote %li", rate, frames);
-+					 "expected %ld, wrote %li", rate, frames);
- 				goto __close;
- 			}
- 		}
 -- 
-2.34.1
+Regards,
+Alexandre
 
