@@ -4,92 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBB23C77B7A
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 16:29:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 790CEC77B7A
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 16:29:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5EF673E8;
-	Thu, 25 May 2023 18:28:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EF673E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C7A81E4;
+	Thu, 25 May 2023 18:29:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C7A81E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685032183;
-	bh=moK5e4bfKuvbWIKCxqCnAKXWulDDEb4SfkpyjDKd0os=;
+	s=default; t=1685032190;
+	bh=16YHkaRO/ypOuzNLGOkApUYTHwnPOD+HQGOE+/Yc4C8=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ghpujp7hb8sVoUsZ/q7Bah64S5MWXavVNwOxGtZfGCj3/EhOVhYU0KhKPy6orsfL6
-	 l1k891eMZTpQGuUNR7XLRSjF3EYEhNen3b6LSeQpMXNQ7OgD04zWNPAvLHbtcu0awk
-	 92BXKFcAfJZm5dV5IPiGJ+3J9Zcj6b4Cr9UDyQxk=
+	b=BYzgqUbAy/zyqwvZRCwy19AGW1Il6NA60aEt0HCocIcJ7dPKea5kGKiAltPJ4y5wK
+	 WhnPZa4qdEb2a5rQyy7Uw+yaheRGtp82Uk0QfBmyl9sjZXlLOpPQDJ1lsPadbab+ll
+	 H79R7agGwUvjPAvlJW/HnYp6x9BoM7dEOx6ODvZM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03746F805CA; Thu, 25 May 2023 18:27:09 +0200 (CEST)
+	id D0228F805E1; Thu, 25 May 2023 18:27:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36727F805C0;
-	Thu, 25 May 2023 18:27:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E985F805D9;
+	Thu, 25 May 2023 18:27:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C47FF80580; Thu, 25 May 2023 18:26:58 +0200 (CEST)
+	id 47E1FF805A8; Thu, 25 May 2023 18:26:59 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6F9B8F80544
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 18:26:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F9B8F80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id 109BBF80548
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 18:26:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 109BBF80548
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=L0UQ2Ij+
+ header.s=PODMain02222019 header.b=Oclw2NAZ
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34PEEWVE026032;
-	Thu, 25 May 2023 11:26:27 -0500
+ 34PEEWVH026032;
+	Thu, 25 May 2023 11:26:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=ZtRVanoa2UL9fx2mOjgnx7Kor2SKPiAisybX4sOubCs=;
- b=L0UQ2Ij+MgTxL/eRr6Wu+FpIiVGjB/Frukhrmd8GAdVoiYUW51OCHIfo+SZoZcgYyyMg
- PX3P6AHdl88ms1T+kJ3SOAA/7UwVvjOhjJj8tKQuTQ4zMgX3F+5TdoCNN7cBWhjSSPKW
- Bfxu4D+62pCZLyd075Lk75VIqS3RcHAyoj0mzevg/yegr0cOYhamKVR2jgwTbVFmej20
- mmOTBbcuoFKRFYC/ANU2OtgnFS+3Tkv+Atbf71H3fxZYZWHrK3LvXLQ4QDac8esaZsOa
- +g/BKGEBYa/zRfSCv2pUdbE+0KfJzxTtFHTxUcdL4umvz2YEEMiOKpLG5ZyEwUEOid8R mg==
+ bh=KBIQkBTpPs9dMkt+aC+6iuTHRtDG89mSTGRvAWzKXRU=;
+ b=Oclw2NAZXXUiCJfKNIV19UrQQpswNtoIDmeFp8wSjmP1bsxyWgdvogvDdQw97+TL5oYf
+ TJg/seUMb15snu13rQJ5J8g6qX7PqOkU1P7tHDmc7/ohosxltjv+lZMXarRxokz2rWCF
+ bmDs78tGCAuXvY1SIoOQXGO6NySk5XJKdSD+Zs6ls05L2z1dweP1dUjJR8dBUjlOTY4Y
+ ilhFb3QeqFZoTUJNjXdOHI7ZS7XP0JHSQ7NBxhBUbuHnVNY6bsWTaFWGZB7xBOZJUzch
+ nKQaSW8YSoOjQNKnXMd7sDJ+C35WmRvk5ItsP3pIDD49vNufkAFpM2IOZIlvSsPkmHog GA==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm74vu-4
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm74vu-6
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 May 2023 11:26:27 -0500
+	Thu, 25 May 2023 11:26:29 -0500
 Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Thu, 25 May
- 2023 11:26:25 -0500
+ 2023 11:26:26 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 25 May 2023 11:26:25 -0500
+ 15.2.1118.26 via Frontend Transport; Thu, 25 May 2023 11:26:26 -0500
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.65.166])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 50A0511D4;
-	Thu, 25 May 2023 16:26:25 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 31C7A15B4;
+	Thu, 25 May 2023 16:26:26 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <tiwai@suse.com>, <broonie@kernel.org>, <perex@perex.cz>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
-        Simon Trimmer
-	<simont@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH v2 08/12] ASoC: cs35l56: Make common function for control port
- wait
-Date: Thu, 25 May 2023 17:26:14 +0100
-Message-ID: <20230525162618.20146-9-rf@opensource.cirrus.com>
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>
+Subject: [PATCH v2 10/12] ALSA: hda: Fix missing header dependencies
+Date: Thu, 25 May 2023 17:26:16 +0100
+Message-ID: <20230525162618.20146-11-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230525162618.20146-1-rf@opensource.cirrus.com>
 References: <20230525162618.20146-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: t6vh7dXuvme4RVfdPJW_XKQP7DFIUpHM
-X-Proofpoint-GUID: t6vh7dXuvme4RVfdPJW_XKQP7DFIUpHM
+X-Proofpoint-ORIG-GUID: Jc-rxdRs1c5xknnnMscMdzsei9B7Z2EM
+X-Proofpoint-GUID: Jc-rxdRs1c5xknnnMscMdzsei9B7Z2EM
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: BFRS323SXM3BPNAPRWNGGRR4O4G63DFS
-X-Message-ID-Hash: BFRS323SXM3BPNAPRWNGGRR4O4G63DFS
+Message-ID-Hash: 55PYAGXD2PLMMBXI3OHVROOLPEUQZZDR
+X-Message-ID-Hash: 55PYAGXD2PLMMBXI3OHVROOLPEUQZZDR
 X-MailFrom: prvs=050971c6a2=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +99,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/55PYAGXD2PLMMBXI3OHVROOLPEUQZZDR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,79 +109,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+Add #includes of dependencies into hda_auto_parser.h and hda_generic.h
 
-Move the waits for CS35L56_CONTROL_PORT_READY_US into a common
-function, and also allow a wider range of allowed wait times.
+hda_auto_parser.h uses definitions in hda_local.h.
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+hda_generic.h uses definitions in hda_local.h and hda_auto_parser.h.
+It also references struct hda_jack_callback, but only as a pointer.
+This has been forward-declared so hda_jack.h only needs to be
+included in source that actually uses it.
+
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Acked-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/cs35l56.h           |  1 +
- sound/soc/codecs/cs35l56-shared.c | 16 ++++++++++------
- 2 files changed, 11 insertions(+), 6 deletions(-)
+ sound/pci/hda/hda_auto_parser.h | 2 ++
+ sound/pci/hda/hda_generic.h     | 3 +++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
-index 489a61f84325..ae9e8f55962a 100644
---- a/include/sound/cs35l56.h
-+++ b/include/sound/cs35l56.h
-@@ -275,6 +275,7 @@ extern const unsigned int cs35l56_tx_input_values[CS35L56_NUM_INPUT_SRC];
- void cs35l56_reread_firmware_registers(struct cs35l56_base *cs35l56_base);
- int cs35l56_mbox_send(struct cs35l56_base *cs35l56_base, unsigned int command);
- int cs35l56_wait_for_firmware_boot(struct cs35l56_base *cs35l56_base);
-+void cs35l56_wait_control_port_ready(void);
- void cs35l56_wait_min_reset_pulse(void);
- void cs35l56_system_reset(struct cs35l56_base *cs35l56_base, bool is_soundwire);
- int cs35l56_irq_request(struct cs35l56_base *cs35l56_base, int irq);
-diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
-index e3b935bd9037..7e02d023338c 100644
---- a/sound/soc/codecs/cs35l56-shared.c
-+++ b/sound/soc/codecs/cs35l56-shared.c
-@@ -249,6 +249,13 @@ int cs35l56_wait_for_firmware_boot(struct cs35l56_base *cs35l56_base)
- }
- EXPORT_SYMBOL_NS_GPL(cs35l56_wait_for_firmware_boot, SND_SOC_CS35L56_SHARED);
+diff --git a/sound/pci/hda/hda_auto_parser.h b/sound/pci/hda/hda_auto_parser.h
+index df63d66af1ab..579b11beac71 100644
+--- a/sound/pci/hda/hda_auto_parser.h
++++ b/sound/pci/hda/hda_auto_parser.h
+@@ -8,6 +8,8 @@
+ #ifndef __SOUND_HDA_AUTO_PARSER_H
+ #define __SOUND_HDA_AUTO_PARSER_H
  
-+void cs35l56_wait_control_port_ready(void)
-+{
-+	/* Wait for control port to be ready (datasheet tIRS). */
-+	usleep_range(CS35L56_CONTROL_PORT_READY_US, 2 * CS35L56_CONTROL_PORT_READY_US);
-+}
-+EXPORT_SYMBOL_NS_GPL(cs35l56_wait_control_port_ready, SND_SOC_CS35L56_SHARED);
++#include "hda_local.h"
 +
- void cs35l56_wait_min_reset_pulse(void)
- {
- 	/* Satisfy minimum reset pulse width spec */
-@@ -275,7 +282,7 @@ void cs35l56_system_reset(struct cs35l56_base *cs35l56_base, bool is_soundwire)
- 	if (is_soundwire)
- 		return;
+ /*
+  * Helper for automatic pin configuration
+  */
+diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
+index 34eba40cc6e6..a8eea8367629 100644
+--- a/sound/pci/hda/hda_generic.h
++++ b/sound/pci/hda/hda_generic.h
+@@ -9,6 +9,9 @@
+ #define __SOUND_HDA_GENERIC_H
  
--	usleep_range(CS35L56_CONTROL_PORT_READY_US, CS35L56_CONTROL_PORT_READY_US + 400);
-+	cs35l56_wait_control_port_ready();
- 	regcache_cache_only(cs35l56_base->regmap, false);
- }
- EXPORT_SYMBOL_NS_GPL(cs35l56_system_reset, SND_SOC_CS35L56_SHARED);
-@@ -486,8 +493,7 @@ int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_sou
- 						cs35l56_hibernate_wake_seq,
- 						ARRAY_SIZE(cs35l56_hibernate_wake_seq));
+ #include <linux/leds.h>
++#include "hda_auto_parser.h"
++
++struct hda_jack_callback;
  
--		usleep_range(CS35L56_CONTROL_PORT_READY_US,
--			     CS35L56_CONTROL_PORT_READY_US + 400);
-+		cs35l56_wait_control_port_ready();
- 	}
- 
- out_sync:
-@@ -561,9 +567,7 @@ int cs35l56_hw_init(struct cs35l56_base *cs35l56_base)
- 	if (!cs35l56_base->reset_gpio)
- 		regmap_read(cs35l56_base->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1, &devid);
- 
--	/* Wait for control port to be ready (datasheet tIRS). */
--	usleep_range(CS35L56_CONTROL_PORT_READY_US,
--		     CS35L56_CONTROL_PORT_READY_US + 400);
-+	cs35l56_wait_control_port_ready();
- 
- 	/*
- 	 * The HALO_STATE register is in different locations on Ax and B0
+ /* table entry for multi-io paths */
+ struct hda_multi_io {
 -- 
 2.30.2
 
