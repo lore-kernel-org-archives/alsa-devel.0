@@ -4,98 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B3C5C7EE29
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 18:37:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65618C7EE29
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 18:37:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F2B80823;
-	Thu, 25 May 2023 20:36:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2B80823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48F4B1FC;
+	Thu, 25 May 2023 20:36:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48F4B1FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685039834;
-	bh=t/ms0pwOAuDnl9IxrHsVJUCzq/i6WgFJfupJsy3w7/E=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1685039851;
+	bh=30LUA668h7VdTQuEqajPXaMTBzrCOVJwFLuPF9LjHBo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=egPZqWNJzJNQOFPScV3DHLOzFn6iDB/j5mR+rSu3xJQ1IkyFLAX4qwomCadiexVyS
-	 fs/mTl08+WkrftTvkX2m1imkQOC/ApEYw1jpp13hbJX8ABftnIEGIEWdXOg+ihZ+8O
-	 azMmemTCyI1g8KDIDNgAM0VZNKdTHcA3A5/PhToY=
+	b=AOrz5/GrAY2J00sml2P4zArqaYlYICJTPjR8be4yMvw6uxP0Rh75EbqG5uPnjcEbZ
+	 tv7zySw5JJ3TvWaahK8laGInVOrj1YiGepe3zTN2xz/4e/6iMuCeGsO/SVKPxxAsSO
+	 4eDr2/a4/KJMZD7JDGQIhylIWOndlUjsdjaBMc00=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D2BDFF80557; Thu, 25 May 2023 20:36:02 +0200 (CEST)
+	id 676EDF8024E; Thu, 25 May 2023 20:36:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88B98F80549;
-	Thu, 25 May 2023 20:36:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07663F8055C;
+	Thu, 25 May 2023 20:36:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD92EF80552; Thu, 25 May 2023 20:35:58 +0200 (CEST)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
- [IPv6:2a00:1450:4864:20::632])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D155DF8055C; Thu, 25 May 2023 20:36:19 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 34A04F800DF
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 20:35:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34A04F800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 41A99F80249
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 20:36:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41A99F80249
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=g9JfbEY9
-Received: by mail-ej1-x632.google.com with SMTP id
- a640c23a62f3a-96f50e26b8bso171815666b.2
-        for <alsa-devel@alsa-project.org>;
- Thu, 25 May 2023 11:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685039753; x=1687631753;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7LfxAZR8t52u4AO1SI5kqvS9LLBpQSJuHQCFUX9OzGQ=;
-        b=g9JfbEY9bxh9EFIPrAmrY+rOfrj+WxxnuJ/cu8Dy8jgAuxdkF7fJ2GQ1kUODnVFDDz
-         +hBd/VU0QaeUH2K+JB3vk6q2kH+7eqi54cjsOTvNUgE5r+nXS3C6PV2JrI6tjglNMGAP
-         h/52M9XN3BDzkpN0nx83F6MNLOM075WaOwoUQGDGM7nsbMETbyvN+F9OJ45JlObjkAoB
-         VlsoaCqwUJr1ckApxtYKGoKag0/TgNw/iB25yH2nu1Y7nHljvljytaCKr5NSJ0pMBcGT
-         QlO0NXoj8ryYtS/Hk5r5LLvG0XWLQeHITLweEidUZmOz49K4Ax6Fy5RV+mBaYxZzNg7S
-         Y7mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685039753; x=1687631753;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7LfxAZR8t52u4AO1SI5kqvS9LLBpQSJuHQCFUX9OzGQ=;
-        b=fI3Vqn2DTV9TPO/e3dENgQhcsl/uYe7LXEvmAie2o9dYQDRUOe8mE28xa8+QbnTvyo
-         IJKySnHmenZZI0JEmTccX1OEdHUseVEw18zrz8EnfkV41F3DNJK/sv0bXL6zC8PhSEhm
-         2EVM9xjvyK8pev47CIN2Gu8avULoZGf8JeYGclJzF330q4qX5ncMXW8cNlYPxpKfaINU
-         oY5qguJeK6dLO5Gr/7vCe3gnhsarC3bldjTR8w0oILY/OAKO+9Ru0a7JcghHX4FUn/c0
-         CQ8JGBzoXXNrMk7JkmRYG4Q/LsQJPkiwZhMlvJT8AFbONpZChfcUA3P5H1XfTJmJ/Io/
-         O0kg==
-X-Gm-Message-State: AC+VfDyfCYlxHoF7Y/1j6YNyqnjEvH5uc/q3ELRUGdzkO4h5Tm7Ak7B5
-	k74L4JD5sX2oMAwu1Mv1rbjrVWvwbDBwlo92SBo=
-X-Google-Smtp-Source: 
- ACHHUZ6HhImvycIW5y9vQ9Fb6/lTe4cNBTqpqgaXHCHK9T60sVxAPi6KnVa8R196FbkpqvqTomfV6C0HgBOSM2p6AwU=
-X-Received: by 2002:a17:906:6a0c:b0:96f:3e35:748a with SMTP id
- qw12-20020a1709066a0c00b0096f3e35748amr3072640ejc.6.1685039753202; Thu, 25
- May 2023 11:35:53 -0700 (PDT)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=IuUfepG1
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B419564902;
+	Thu, 25 May 2023 18:36:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0167AC433D2;
+	Thu, 25 May 2023 18:36:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685039776;
+	bh=30LUA668h7VdTQuEqajPXaMTBzrCOVJwFLuPF9LjHBo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=IuUfepG12olIeB2lzTa7tGatEJi2UUccya/fNmL6b7wPDQUpg8G4y9Hf2JbXY4d8y
+	 +f0jF+dsHPW+gis9zOKYcdy6VGdcYs6c8IyQbPYS/469rUlnQ65pDeIGt3NgM7FXeG
+	 NDG31+D6N0bqLwxkmfu2gw6BwZusxHn3Sv+C/tKWdFgnLWE24VinD/PEWjWhhGPJoN
+	 BDxin0Fugq0IHAu62DjMoR+dCtYLKtYWuW0Z9/U9Xm/goUlbqHmNu3ls3gT52zjSup
+	 1qNqYHHSL+UaLp8jMSc7hSMWlFU3S4bRQcsXbT86/0ZpARTIln9GHNM+KEzFGqe9og
+	 NaRHElROTzQKw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Jeremy Soller <jeremy@system76.com>,
+	Sasha Levin <sashal@kernel.org>,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	mario.limonciello@amd.com,
+	Syed.SabaKareem@amd.com,
+	xazrael@hotmail.com,
+	alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.1 03/57] ASoC: amd: yc: Add DMI entry to support
+ System76 Pangolin 12
+Date: Thu, 25 May 2023 14:35:13 -0400
+Message-Id: <20230525183607.1793983-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230525183607.1793983-1-sashal@kernel.org>
+References: <20230525183607.1793983-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20230525122837.649627-1-daniel.baluta@oss.nxp.com>
- <69c2b7cd-f211-47ef-b42a-609ee792de11@sirena.org.uk>
-In-Reply-To: <69c2b7cd-f211-47ef-b42a-609ee792de11@sirena.org.uk>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Thu, 25 May 2023 21:35:40 +0300
-Message-ID: 
- <CAEnQRZAseAmOHLBsBQuW+SqEFbT-pbrjpUiPhSuv8Ww2VoJf_w@mail.gmail.com>
-Subject: Re: [PATCH v2] ASoC: SOF: imx: Add OF machine descriptors for i.MX
- platforms
-To: Mark Brown <broonie@kernel.org>
-Cc: Daniel Baluta <daniel.baluta@oss.nxp.com>, alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
-	yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
-	kai.vehmanen@linux.intel.com, linux-imx@nxp.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: ZAER6GKO3BZCPDKYTX42UBN2BKFAVKAL
-X-Message-ID-Hash: ZAER6GKO3BZCPDKYTX42UBN2BKFAVKAL
-X-MailFrom: daniel.baluta@gmail.com
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: D6JDE7CPOXXIVVQTE5EIFW542PZZ6P3I
+X-Message-ID-Hash: D6JDE7CPOXXIVVQTE5EIFW542PZZ6P3I
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -107,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZAER6GKO3BZCPDKYTX42UBN2BKFAVKAL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D6JDE7CPOXXIVVQTE5EIFW542PZZ6P3I/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,29 +103,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, May 25, 2023 at 8:07=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
-te:
->
-> On Thu, May 25, 2023 at 03:28:37PM +0300, Daniel Baluta wrote:
->
-> > +static struct snd_sof_of_mach sof_imx8_machs[] =3D {
-> > +     {
-> > +             .compatible =3D "fsl,imx8qxp",
-> > +             .drv_name =3D "asoc-simple-card",
-> > +             .sof_tplg_filename =3D "sof-imx8.tplg",
-> > +     },
-> > +     {
-> > +             .compatible =3D "fsl,imx8qm",
-> > +             .drv_name =3D "asoc-simple-card",
-> > +             .sof_tplg_filename =3D "sof-imx8.tplg",
-> > +     },
-> > +     {}
->
-> It seems a bit sad to be adding simple-card rather than audio-graph-card
-> at this point - is there some great reason for this?
+From: Jeremy Soller <jeremy@system76.com>
 
-This is what we used so far and it works pretty well for us.
+[ Upstream commit 7b9891ad25246b18b5ccc19518da7abc7763aa0a ]
 
-Is there a plan to deprecate simple-card? And switch to audio-graph-card?
+Add pang12 quirk to enable the internal microphone.
 
-We could have a look at this if this is the correct direction.
+Signed-off-by: Jeremy Soller <jeremy@system76.com
+Signed-off-by: Tim Crawford <tcrawford@system76.com
+Link: https://lore.kernel.org/r/20230505161458.19676-1-tcrawford@system76.com
+Signed-off-by: Mark Brown <broonie@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 0acdf0156f075..b844f321d139e 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -276,6 +276,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "8A22"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "System76"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "pang12"),
++		}
++	},
+ 	{}
+ };
+ 
+-- 
+2.39.2
+
