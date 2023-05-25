@@ -4,100 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EE0FC77B7A
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 13:41:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEF14C77B7A
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 May 2023 13:58:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C9FB1FC;
-	Thu, 25 May 2023 15:40:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C9FB1FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF67E4E;
+	Thu, 25 May 2023 15:57:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF67E4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685022083;
-	bh=ZbyvfxbGwDwR86SXFgtZlx5RBhhQFDIKCVY7yyo/Nb0=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=IPs2PqiBmmuLDKy5kx/Mja3ubeNUzQCMUzaLrVeFRDR1INQBwc0/Ch0F0Pzcuwy8i
-	 IPrjER27rcFcE4Rli2QVDEiqOPOZAtXgaXlo5mJC7aiONeHfJS5kv9DkKQc9pNVqkr
-	 L0Mg6rNXQW9LlCMBnTMtBWbAqaPEg9SdtXP8xd6M=
+	s=default; t=1685023116;
+	bh=hIMk49WSAntmRpXZ3LWtOaRO3o9HO9ckAcwplUfZNbA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=oQ1vAznt9nu8aAZvVB3/x3J4iCk1YfvAVL77YLjaLHxfXp/8YFY3eSq0AY5QxZBj/
+	 f+Lj3Y5F8LnAmdK5I/aCd6VVYjhao3V0PV4zDBpAGD+/UfTu/1mvhAxRkHqdh+tqpt
+	 wbFDNOjRfzCNttgNQy6QJWJi1ITpjV1Ogf47g0ws=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5FB16F805AC; Thu, 25 May 2023 15:39:33 +0200 (CEST)
+	id 48A5CF800DF; Thu, 25 May 2023 15:57:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9739FF80588;
-	Thu, 25 May 2023 15:39:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11D26F80053;
+	Thu, 25 May 2023 15:57:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A0691F80552; Thu, 25 May 2023 15:39:25 +0200 (CEST)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
+	id C734DF80249; Thu, 25 May 2023 15:57:13 +0200 (CEST)
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com
+ [IPv6:2607:f8b0:4864:20::112f])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2EC1BF8024E
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 15:38:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EC1BF8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id BB944F800DF
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2023 15:57:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB944F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Weef7AvC
-Received: by mail-wr1-x42f.google.com with SMTP id
- ffacd0b85a97d-30a95ec7744so2085479f8f.3
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=TTAz3FOg
+Received: by mail-yw1-x112f.google.com with SMTP id
+ 00721157ae682-55db055b412so8453437b3.0
         for <alsa-devel@alsa-project.org>;
- Thu, 25 May 2023 06:38:48 -0700 (PDT)
+ Thu, 25 May 2023 06:57:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1685021926; x=1687613926;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SErRfOq2zkA3FjIAS2Y61xvXXIJ9zVGPM+NkpQH62Dk=;
-        b=Weef7AvCPpj7mh5qe30JYSMSv+gJ7DQyy/0hL3O1RtI3sM9NpNNtTrrH5fr3Eb8UA4
-         uJSMt2R2c5T5F2aTRU3J308IiaRjvjTJ1wTgp6LRORvhlx+36nONPR6yRRnu7hUkjuL5
-         iOqa2+cBt+p3ArnN8tRdXC/B4b7e3rrUQR/ovDdYVND+xufTNrzdIvsPfuDWcIVri2gB
-         /jwC7S+n7g2aP3Lmc2pWC4G3G5hVlm5GFqSUcyd7nBfciDL6GOd4j8SjG3JBCYSh2iGg
-         w0WFOJ4569ugVlpOUqXTZBM2HtWmYAelfzKIg/teOPEXbnKzoT7XBsUEGAk3SH5HzgHk
-         7pZw==
+        d=gmail.com; s=20221208; t=1685023027; x=1687615027;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=XDo5JGpMh+sfqhz2XW6FMxspF0XjVpH9YEGVgGeMjUw=;
+        b=TTAz3FOgo7dOFNI7aoiwX/0ljg5lz0wR0gFOezPqt9E1Ubrz1VqGe6aviRVmBjQGxY
+         mXF1M4aX7QL2DpYmXW1TLEnGsA82U73NiD17Sw4DpyLEEwxDd2CN8/TSuyiebDJmdOph
+         9lipSq39yElmxJTXAJncx/josTWvpCiYdKGmBZImHlwizI4ySjj7iYIFLn4+gNqcXAzs
+         5TtwqWH0jseD8nGeXTCwlMNZ9CzR5pQTY1ZGIT8VvzV0c28G2BmAPDp9CEHdDsMMBy8T
+         pKHknHW4hdN5A5n6z4//aTrHaniwuIvHJsTye3wn20Oy2P21nWwS90GzEUC3GRbupZ6U
+         sOEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685021926; x=1687613926;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SErRfOq2zkA3FjIAS2Y61xvXXIJ9zVGPM+NkpQH62Dk=;
-        b=WcXbtikr4O1fd8S67wYLcHDzqC4eZhudjy2HKdBDhcai/sllen1wmUUMc86TWk5jmO
-         UmjiSoflmkMVYxt1yhBGWz2J/d+Zjlb4H2Yzkco5JyaViTqdPwdksU3f0zU4PruIVvB/
-         UqOVJNObItE+WEB/FIxADp0sgr9jbB2SJ62gM0IIcsShXyLz9Z/HA5vERfkDMjSJK/z+
-         42iLRJWjNTxC8Sjuc29BFIdLZ8c7tvzqHK/NNVwGo3w1Ec5pXcGtmA14Yg5550Pc/VB/
-         UlEj32b24JFwja6RSA0/ZRB/nGFrBvbNbikCJG6HNBVXJ2LLSuT0zsCETtxoxGuw2ovZ
-         xdXQ==
-X-Gm-Message-State: AC+VfDzYc96mh0YRjqneqc3sW2tGoyWO63kAll//7LX1pIVEc09mDixi
-	oqMi+ZVEPAhf3su/vdODf/KB3w==
+        d=1e100.net; s=20221208; t=1685023027; x=1687615027;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XDo5JGpMh+sfqhz2XW6FMxspF0XjVpH9YEGVgGeMjUw=;
+        b=SKQXel+siKX2kYc3bR3O8Q/Sg6v48/zC33vieHERKb5zkK/lvhCCxRv7PAgw0RK6dJ
+         k2ZHqYtNsK1hFGD4v43nbTAdte/zZtFGgZnxLRArPzlIQxzthunOt7g+5hrCO09oKef7
+         XQPs9vIg1l24wXYlRhQGlsAXan8UV75wa5uELPA374eSzCx71HQg7X6bnVrK59TOukpB
+         PehXa+G/FF+jC8+FbZyKJx8elB0zJmoxRC0jGgs8HpsEdxX3HzUWTpp4p8+xTApX4rG8
+         izY+aJ63lKVtANm81/2+c9EShmXGPeaI9FWU3wfzi7uZ6SvRxd9AAyj8ZnjuoJknxKnz
+         Mmbw==
+X-Gm-Message-State: AC+VfDwg6JTtQdCvrY/OJ/DTJYGwSZSaJKJSOAwIiJRRQZMJj+lbdB4Z
+	lzEY1f1+OgeOW4+5sw94UBE=
 X-Google-Smtp-Source: 
- ACHHUZ4uHJMe3BdseysmijmVyN/Ttxo7RLQkKvYe/bEff1EjOtNqYdCjAhJkNcoKSOE+FzGCphTf9w==
-X-Received: by 2002:a5d:58d6:0:b0:307:9194:9a94 with SMTP id
- o22-20020a5d58d6000000b0030791949a94mr2917781wrf.17.1685021926217;
-        Thu, 25 May 2023 06:38:46 -0700 (PDT)
-Received: from localhost.localdomain ([5.133.47.210])
+ ACHHUZ5FiUL0rUUkvwykB8kqe+2IeLANHjnUXgIdMT6rP0bdidLHdnLmRMsDhL1wP2uFZ72SwMPzNw==
+X-Received: by 2002:a81:4ec7:0:b0:561:987e:27a with SMTP id
+ c190-20020a814ec7000000b00561987e027amr3756808ywb.10.1685023027566;
+        Thu, 25 May 2023 06:57:07 -0700 (PDT)
+Received: from neuromancer. ([75.28.21.198])
         by smtp.gmail.com with ESMTPSA id
- z17-20020a5d6551000000b00301a351a8d6sm1803641wrv.84.2023.05.25.06.38.44
+ c184-20020a0df3c1000000b00555df877a4csm371333ywf.102.2023.05.25.06.57.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 May 2023 06:38:45 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: vkoul@kernel.org
-Cc: andersson@kernel.org,
-	yung-chuan.liao@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com,
-	sanyog.r.kale@intel.com,
-	linux-arm-msm@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 0/4] soundwire: qcom: stablity fixes
-Date: Thu, 25 May 2023 14:38:08 +0100
-Message-Id: <20230525133812.30841-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+        Thu, 25 May 2023 06:57:07 -0700 (PDT)
+Message-ID: <646f6933.0d0a0220.e2a16.15a9@mx.google.com>
+X-Google-Original-Message-ID: <ZG9pMemLwjqAuaWz@neuromancer.>
+Date: Thu, 25 May 2023 08:57:05 -0500
+From: Chris Morgan <macroalpha82@gmail.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org, zyw@rock-chips.com,
+	sebastian.reichel@collabora.com, andyshrk@163.com,
+	jagan@amarulasolutions.com, broonie@kernel.org, perex@perex.cz,
+	tiwai@suse.com, lgirdwood@gmail.com, heiko@sntech.de,
+	conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org, Chris Morgan <macromorgan@hotmail.com>
+Subject: Re: [PATCH 4/6] dt-bindings: vendor-prefixes: add Indiedroid
+References: <20230523213825.120077-1-macroalpha82@gmail.com>
+ <20230523213825.120077-5-macroalpha82@gmail.com>
+ <20230524-extrovert-unhidden-35e289c28bc4@spud>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: J7IKF62K64WQWNAREBSBI7CP4YA4LNXJ
-X-Message-ID-Hash: J7IKF62K64WQWNAREBSBI7CP4YA4LNXJ
-X-MailFrom: srinivas.kandagatla@linaro.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230524-extrovert-unhidden-35e289c28bc4@spud>
+Message-ID-Hash: WZAUSFPZFQ54QJLZIHCRE42NB4LJE6DT
+X-Message-ID-Hash: WZAUSFPZFQ54QJLZIHCRE42NB4LJE6DT
+X-MailFrom: macroalpha82@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J7IKF62K64WQWNAREBSBI7CP4YA4LNXJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WZAUSFPZFQ54QJLZIHCRE42NB4LJE6DT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,32 +123,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-During x13s audio testing we hit few corner cases due to issues
-in codec drivers and some obvious code bugs.
+On Wed, May 24, 2023 at 09:30:03PM +0100, Conor Dooley wrote:
+> On Tue, May 23, 2023 at 04:38:23PM -0500, Chris Morgan wrote:
+> > From: Chris Morgan <macromorgan@hotmail.com>
+> > 
+> > Indiedroid is a sub-brand of Ameridroid for their line of single board
+> > computers.
+> > https://indiedroid.us/
+> > 
+> > Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > index 82d39ab0231b..632662be6e65 100644
+> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > @@ -655,6 +655,8 @@ patternProperties:
+> >      description: Iron Device Corporation
+> >    "^isee,.*":
+> >      description: ISEE 2007 S.L.
+> > +  "^indiedroid,.*":
+> > +    description: Indiedroid
+> 
+> Can you add this in alphabetical order please?
 
-Here are the fixes for those issues, mostly the issues are around
-devices loosing the sync in between runtime pm suspend resume path.
+D'oh. Simple mistake, sorry. I'll fix it in V2.
 
-With codec fixes along with these fixes, audio on x13s is pretty stable.
+Thank you.
 
-Thanks,
-Srini
+> 
+> Thanks,
+> Conor.
+> 
+> >    "^isil,.*":
+> >      description: Intersil
+> >    "^issi,.*":
+> > -- 
+> > 2.34.1
+> > 
 
-Changes since v1:
-	- dropped runtime pm changes patch as unable to reproduced it anymore
-	- fixed clk stop flag as suggested by Pierre
-	- rebased on top of linux-next
-
-Srinivas Kandagatla (4):
-  soundwire: qcom: update status correctly with mask
-  soundwire: qcom: wait for fifo to be empty before suspend
-  soundwire: qcom: add software workaround for bus clash interrupt
-    assertion
-  soundwire: qcom: set clk stop need reset flag at runtime
-
- drivers/soundwire/qcom.c | 100 ++++++++++++++++++++++++++-------------
- 1 file changed, 68 insertions(+), 32 deletions(-)
-
--- 
-2.21.0
 
