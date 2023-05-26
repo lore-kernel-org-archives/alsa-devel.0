@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06ED4C77B7C
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 09:35:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43435C77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 09:36:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7E691FE;
-	Fri, 26 May 2023 11:34:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7E691FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9C8482C;
+	Fri, 26 May 2023 11:35:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9C8482C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685093743;
-	bh=65tOch2Y6MXqyQdtfM7ZDxaNN//CkTWoNHMobAWexQA=;
+	s=default; t=1685093759;
+	bh=ATU0Vh4jFhM2jzFRd1vyw7ANMaOkhaMV4ArnBh5oHgA=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BqJFAmJ2a6vxQUC2h0zl+g1/9wYQOB5bK2wJfHmC4sDhCy+C4Shg0O5OE5Kgg5vj8
-	 otXu5nxzUaI+YZIacuQ2Qp8Jk/mnP5402IIQYHmslVQ28WkAik3O41RYh/Wllh2ubq
-	 OzFoI8RylbkwNH4sXkUKE20A1tPjVgxGxzHiZJRQ=
+	b=uZAlWXn+ASx7HAaFBw7eswZR002Vm3rU15AKjHlzd2QzAfRnQLrXuVo/X1cBr9esr
+	 WypHvi4p7AyE3DB1TgWjVVU1bMmJEcWnfSi6Dms++XiJvXhk+Wy1GZNEg5XFH+C16C
+	 G1zJWFSpwjYxpH1RZ+AkUM/EX5WaP6SRDPjbKYm0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34ED2F80563; Fri, 26 May 2023 11:33:58 +0200 (CEST)
+	id DA836F80589; Fri, 26 May 2023 11:33:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEAEDF80564;
-	Fri, 26 May 2023 11:33:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62248F80579;
+	Fri, 26 May 2023 11:33:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 96139F80542; Fri, 26 May 2023 11:32:19 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	id E6CF3F8024E; Fri, 26 May 2023 11:32:20 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B4113F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2099BF8026A
 	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 11:32:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4113F80249
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2099BF8026A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=U3H0e6V/
-X-UUID: 2685717cfba811edb20a276fd37b9834-20230526
+ header.s=dk header.b=PMtNN8f0
+X-UUID: 26e546ecfba811ed9cb5633481061a41-20230526
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
 	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=6L+uHBH+GT44LFZu9z47mQWC0nQz60GKwD8yOpDVV1M=;
-	b=U3H0e6V//cNH3j0GBvsvbdOT4Rh0CsCGOCQDSVDYFwXskADzhLoavtn3RPvYKppi5RQVnLD8Ydvs23Y0DrCiVIP88Fu3HN71resKWkfSkHoHZl2VgWuPX/cX7PBoJ/LYYgC6QPKV2biB3XKCyNSjN+qdKfgm6PK33qOVV/jOLMo=;
+ bh=Sfj8k51ecj9c8HcMdn1rWW9Isz6l/fhmsTFfGJOkg14=;
+	b=PMtNN8f0I02IMJxHiXNLipLef9S7DJVtDHY6A5lQK+x87YD97DcFieM8KB6YP1r62mfIJB1KGmvpX1vCSuhgKBXe0RexEXEqr8XmlNT5OmvZHPDnglCblgF5iaXeRbNyE0X9eH2t0xKVLvo8osWI0PRTzHOngqik33MHJl1/7NE=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.25,REQID:736b3c7c-babb-4d7c-87e8-b62da33b603d,IP:0,U
+X-CID-O-INFO: VERSION:1.1.25,REQID:041766f6-5b00-4a11-990b-cd20b25686e9,IP:0,U
 	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
 	release,TS:0
-X-CID-META: VersionHash:d5b0ae3,CLOUDID:890e1a6d-2f20-4998-991c-3b78627e4938,B
+X-CID-META: VersionHash:d5b0ae3,CLOUDID:fc0a753c-de1e-4348-bc35-c96f92f1dcbb,B
 	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
 	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
-X-UUID: 2685717cfba811edb20a276fd37b9834-20230526
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
- mailgw02.mediatek.com
+X-UUID: 26e546ecfba811ed9cb5633481061a41-20230526
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by
+ mailgw01.mediatek.com
 	(envelope-from <trevor.wu@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 2012086621; Fri, 26 May 2023 17:31:53 +0800
+	with ESMTP id 702197121; Fri, 26 May 2023 17:31:54 +0800
 Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 26 May 2023 17:31:52 +0800
+ 15.2.1118.26; Fri, 26 May 2023 17:31:53 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 26 May 2023 17:31:52 +0800
+ 15.2.1118.26 via Frontend Transport; Fri, 26 May 2023 17:31:53 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
 	<perex@perex.cz>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
@@ -77,18 +77,18 @@ CC: <trevor.wu@mediatek.com>, <amergnat@baylibre.com>,
 	<alsa-devel@alsa-project.org>, <linux-mediatek@lists.infradead.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<devicetree@vger.kernel.org>
-Subject: [PATCH v3 4/7] ASoC: mediatek: common: soundcard driver add dai_fmt
+Subject: [PATCH v3 7/7] ASoC: dt-bindings: mediatek,mt8188-mt6359: add NAU8825
  support
-Date: Fri, 26 May 2023 17:31:47 +0800
-Message-ID: <20230526093150.22923-5-trevor.wu@mediatek.com>
+Date: Fri, 26 May 2023 17:31:50 +0800
+Message-ID: <20230526093150.22923-8-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20230526093150.22923-1-trevor.wu@mediatek.com>
 References: <20230526093150.22923-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
-Message-ID-Hash: BVEHQFH3L7CMNU3J6NK2SVP73XFQWYNW
-X-Message-ID-Hash: BVEHQFH3L7CMNU3J6NK2SVP73XFQWYNW
+Message-ID-Hash: JWE6WCPKXKH7S4I5TOVSOTTYOYI64AW5
+X-Message-ID-Hash: JWE6WCPKXKH7S4I5TOVSOTTYOYI64AW5
 X-MailFrom: trevor.wu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,8 +100,7 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BVEHQFH3L7CMNU3J6NK2SVP73XFQWYNW/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,100 +109,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There are two changes included in the patch.
+Add compatible string "mediatek,mt8188-nau8825" to support new board
+with nau8825 codec.
 
-First, add set_dailink_daifmt() function, so dai_fmt can be updated by
-the configuration in dai-link sub node.
+Introduce two properties "dai-format" and "mediatek,clk-provider" under
+dai-link subnode to configure dai-link parameters via dts.
 
-Second, remove codec phandle from required property in dai-link sub node.
-For example, user possibly needs to update dai-format for all etdm
-co-clock dai-links, but codec doesn't need to be specified in capture
-dai-link for a speaker amp.
+"codec" property is removed from required property of dai-link subnode.
+For co-clock case, it's possible two dai-links should be configured to
+the same dai format, but only one cpu dai is bound with codec.
 
 Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 ---
- .../mediatek/common/mtk-soundcard-driver.c    | 53 ++++++++++++++++++-
- 1 file changed, 51 insertions(+), 2 deletions(-)
+ .../sound/mediatek,mt8188-mt6359.yaml         | 26 ++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/mediatek/common/mtk-soundcard-driver.c b/sound/soc/mediatek/common/mtk-soundcard-driver.c
-index 738093451ccb..a58e1e3674de 100644
---- a/sound/soc/mediatek/common/mtk-soundcard-driver.c
-+++ b/sound/soc/mediatek/common/mtk-soundcard-driver.c
-@@ -21,8 +21,10 @@ static int set_card_codec_info(struct snd_soc_card *card,
- 	int ret;
+diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml
+index 3d2c01b693be..05e532b5d50a 100644
+--- a/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml
++++ b/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml
+@@ -11,7 +11,9 @@ maintainers:
  
- 	codec_node = of_get_child_by_name(sub_node, "codec");
--	if (!codec_node)
--		return -EINVAL;
-+	if (!codec_node) {
-+		dev_dbg(dev, "%s no specified codec\n", dai_link->name);
-+		return 0;
-+	}
+ properties:
+   compatible:
+-    const: mediatek,mt8188-mt6359-evb
++    enum:
++      - mediatek,mt8188-mt6359-evb
++      - mediatek,mt8188-nau8825
  
- 	/* set card codec info */
- 	ret = snd_soc_of_get_dai_link_codecs(dev, codec_node, dai_link);
-@@ -36,6 +38,47 @@ static int set_card_codec_info(struct snd_soc_card *card,
- 	return 0;
- }
+   model:
+     $ref: /schemas/types.yaml#/definitions/string
+@@ -61,11 +63,28 @@ patternProperties:
+         required:
+           - sound-dai
  
-+static int set_dailink_daifmt(struct snd_soc_card *card,
-+			      struct device_node *sub_node,
-+			      struct snd_soc_dai_link *dai_link)
-+{
-+	unsigned int daifmt;
-+	const char *str;
-+	int ret;
-+	struct {
-+		char *name;
-+		unsigned int val;
-+	} of_clk_table[] = {
-+		{ "cpu",	SND_SOC_DAIFMT_CBC_CFC },
-+		{ "codec",	SND_SOC_DAIFMT_CBP_CFP },
-+	};
++      dai-format:
++        description: audio format.
++        items:
++          enum:
++            - i2s
++            - right_j
++            - left_j
++            - dsp_a
++            - dsp_b
 +
-+	daifmt = snd_soc_daifmt_parse_format(sub_node, NULL);
-+	if (daifmt) {
-+		dai_link->dai_fmt &= SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK;
-+		dai_link->dai_fmt |= daifmt;
-+	}
++      mediatek,clk-provider:
++        $ref: /schemas/types.yaml#/definitions/string
++        description: Indicates dai-link clock master.
++        items:
++          enum:
++            - cpu
++            - codec
 +
-+	/*
-+	 * check "mediatek,clk-provider = xxx"
-+	 * SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK area
-+	 */
-+	ret = of_property_read_string(sub_node, "mediatek,clk-provider", &str);
-+	if (ret == 0) {
-+		int i;
-+
-+		for (i = 0; i < ARRAY_SIZE(of_clk_table); i++) {
-+			if (strcmp(str, of_clk_table[i].name) == 0) {
-+				dai_link->dai_fmt &= ~SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK;
-+				dai_link->dai_fmt |= of_clk_table[i].val;
-+				break;
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- int parse_dai_link_info(struct snd_soc_card *card)
- {
- 	struct device *dev = card->dev;
-@@ -67,6 +110,12 @@ int parse_dai_link_info(struct snd_soc_card *card)
- 			of_node_put(sub_node);
- 			return ret;
- 		}
-+
-+		ret = set_dailink_daifmt(card, sub_node, dai_link);
-+		if (ret < 0) {
-+			of_node_put(sub_node);
-+			return ret;
-+		}
- 	}
+     additionalProperties: false
  
- 	return 0;
+     required:
+       - link-name
+-      - codec
+ 
+ additionalProperties: false
+ 
+@@ -86,7 +105,8 @@ examples:
+             "AIN1", "Headset Mic";
+         dai-link-0 {
+             link-name = "ETDM3_OUT_BE";
+-
++            dai-format = "i2s";
++            mediatek,clk-provider = "cpu";
+             codec {
+                 sound-dai = <&hdmi0>;
+             };
 -- 
 2.18.0
 
