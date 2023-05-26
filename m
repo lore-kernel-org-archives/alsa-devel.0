@@ -4,106 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD13DC77B7A
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:46:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6F9AC77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 12:22:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3D0F207;
-	Fri, 26 May 2023 13:45:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3D0F207
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3638D206;
+	Fri, 26 May 2023 14:21:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3638D206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685101600;
-	bh=zR5R4Vq2IPo/VBXevYp0LVZprsPbhZ/CqyLh4yhc+1s=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=uIaxOwa2sMlTNm4ZSzNzT2xM+VI2VFvDcyiP3mDV9eddXHt1W6pKH0I2YgNDgPmLy
-	 S7XMNqEiEdaGiJMT3C7oQOk7gpvdShkNgRI4kYKq8NmbtMynhNxvrhKnaVtVAM8EBJ
-	 +sbKJ1Mo+eK2/lsJuPdbxX0c8IX9oKOZPiSof2qA=
+	s=default; t=1685103719;
+	bh=pbT6QZPKSb7UcVvwwWshDYnGp5RYLW0NMCNyheXhWKs=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=HUt0gpw856gpbRWX0ZLHzvjwZepjAjwfjn08nvanMMhXLxudF8EFHh3jzm4xis8X1
+	 X0MOYOv7CPWVytaxtoBr/1+SLNvKurQcaH/3XDwxfXmrFuvF4fTtjOp/RqTTmEIa/Q
+	 lLs9IDGClzDn/o0rwgAVTLuQaZNprLGGnTyL+EbA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 466C5F805E6; Fri, 26 May 2023 13:43:56 +0200 (CEST)
+	id CE0FAF80086; Fri, 26 May 2023 14:20:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BA3DF805E5;
-	Fri, 26 May 2023 13:43:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C690F80249;
+	Fri, 26 May 2023 14:20:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0BEB1F80249; Fri, 26 May 2023 09:05:16 +0200 (CEST)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 92468F80249; Fri, 26 May 2023 14:20:41 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC5A5F80086
-	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 09:05:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC5A5F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id BA2E4F8001F
+	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 14:20:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA2E4F8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=YSrKeg5w
-Received: by mail-wr1-x431.google.com with SMTP id
- ffacd0b85a97d-3090d3e9c92so308486f8f.2
-        for <alsa-devel@alsa-project.org>;
- Fri, 26 May 2023 00:05:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1685084701; x=1687676701;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AEB3j9Hm4cFEq/IWrgb9Zt9idZi6mpH7UvBj/2wltyE=;
-        b=YSrKeg5whAJDn0g5cVRpfV7wR1PzZGXcMZUAkUVutOyRE/1794U3lHibYoa0McpWoc
-         TyCSwKXjmrBMXeKGb02wLVSvpUFQMW/UnYQ6CABaoywBxUOVXLabFwzkcU+NOsp/SIWd
-         l+eWzr9ypgocfjfcdFESwzQIJRUlpzPoVnZ5Gd49eqdmQrAKMlphMRoJX9on8MIZZirA
-         rHZFKlcExktHHZ0g0W0TWDUN8BSEag9b3cVUwpo6Vnuc7PhvCeazcYNfGuwY535KFj56
-         E5vVVCkKT4IkK6fTlwPNEkZ/EKHSwMVXN8mD9bW93VTKIofeHKcJT4/Fl0bqk0GXSd2f
-         xM8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685084701; x=1687676701;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AEB3j9Hm4cFEq/IWrgb9Zt9idZi6mpH7UvBj/2wltyE=;
-        b=e6ZeWeFukLSKDqq/xltqeKLaTRU8thGMifJIsKIRgXfD//CqOym6h9bGj9hul3oBRA
-         IeNIpDke6tDw78JMpaTe9AMQXqiPeliMC/CQimwlfQB2XEyH6lp7e0i8WFhl9PgyJv77
-         +deXWNvmPY+58tK3BF8kF6gB7MIzG4LzkcBtphIzAedC47Eda8GwiRd7f2svRedVN8f/
-         NG3I0kkzpNt2FHfhNGZjzrNB7x9FCnaabxEIXCs+V9ZZ4+B/tSLZUGPK0bmXsTARtkZ4
-         2co4gTdjtWxYELRkvuXKkeonJRAt3oJjolIXSr7pNx3g4O50G6/OWMdeb7ur5W65BeRT
-         Vplg==
-X-Gm-Message-State: AC+VfDzQTUyHPFjB23pN9G0XBj9DwR9KMX+e9tr9CrBqyqSuxfNQz3mV
-	ng46EuQbJXLrqUiqVHY4lQZKxg==
-X-Google-Smtp-Source: 
- ACHHUZ436Ll/zuj+aPZ58CU5j/t4v3v5iYkysrtJQ7kI4HwVs1SAf0wTOXQ6UMRhdRD5DYbfC7pd8g==
-X-Received: by 2002:adf:cd8e:0:b0:306:3ec8:289d with SMTP id
- q14-20020adfcd8e000000b003063ec8289dmr689173wrj.46.1685084701478;
-        Fri, 26 May 2023 00:05:01 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id
- f17-20020a5d5691000000b0030497b3224bsm4017317wrv.64.2023.05.26.00.04.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 May 2023 00:05:00 -0700 (PDT)
-Date: Fri, 26 May 2023 10:04:56 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Takashi Iwai <tiwai@suse.de>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-	alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
-Subject: [tiwai-sound:topic/midi20 25/40] sound/core/seq/seq_clientmgr.c:482
- snd_seq_read() error: copy_to_user() '&cell->event' too small (28 vs 32)
-Message-ID: <53743044-5b66-43ab-9675-db0eeed69736@kili.mountain>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=d4TNlwFu
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 34QBYFLH030993;
+	Fri, 26 May 2023 07:20:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=8FRvUnxeEwWZA99tu0bOyIubM9mJTTwebRYyDDCDp1M=;
+ b=d4TNlwFuHIF7v+/nQZCuH+xjWv7fnu4l2ynjznlpiJpCjLp//a+w9st69/po+suYGOBr
+ 1tBsUSS1cfykLtxbSannu7qDCXTVIXXBRaefxe4C7SDcW9D3rm8v5m191bF+72zAeIae
+ EOv4x96FQMufJqyLW4m86O+fgcVFj1rC0rt8UPLxFvqgF02S7ZdsQRHvD7huPSKZq7IC
+ iXlMZkT1CskFhZBBTMRbm5Qa3fZsc91Ugx2/fzrfBD2Oa3Zprc+tYi6xdollPVx/rMCH
+ FbOe0pNeVsOc9ZjF233FQeDeYorN6jcS57z/sYUbVwXjcyQPkdlB3f5UF4xiM+vBH9M5 Kg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3qptmm8d5c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 26 May 2023 07:20:34 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Fri, 26 May
+ 2023 07:20:32 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 26 May 2023 07:20:32 -0500
+Received: from [198.61.65.166] (EDIN4L06LR3.ad.cirrus.com [198.61.65.166])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5F4F2B38;
+	Fri, 26 May 2023 12:20:32 +0000 (UTC)
+Message-ID: <7c5f776d-bf17-ea3d-a4ee-3ac54194a215@opensource.cirrus.com>
+Date: Fri, 26 May 2023 13:20:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-MailFrom: dan.carpenter@linaro.org
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 13/13] ALSA: hda/cs35l56: Add driver for Cirrus Logic
+ CS35L56 amplifier
+Content-Language: en-US
+To: <Claudiu.Beznea@microchip.com>, <tiwai@suse.com>, <broonie@kernel.org>,
+        <perex@perex.cz>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>, <simont@opensource.cirrus.com>
+References: <20230525150659.25409-1-rf@opensource.cirrus.com>
+ <20230525150659.25409-14-rf@opensource.cirrus.com>
+ <6ff4235d-f8d0-3c3f-cc67-18aadee2afbc@microchip.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <6ff4235d-f8d0-3c3f-cc67-18aadee2afbc@microchip.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: RWDcGByEdYWf6UE-LrUN2hVXgR0W9kqc
+X-Proofpoint-GUID: RWDcGByEdYWf6UE-LrUN2hVXgR0W9kqc
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: KQARUIMYOU3FGGKXPGYYL2V4574GEDB4
+X-Message-ID-Hash: KQARUIMYOU3FGGKXPGYYL2V4574GEDB4
+X-MailFrom: prvs=0510bc6290=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 7ZNQ5AHEW3GO3FBDZ3DST2JACALR2OZ4
-X-Message-ID-Hash: 7ZNQ5AHEW3GO3FBDZ3DST2JACALR2OZ4
-X-Mailman-Approved-At: Fri, 26 May 2023 11:43:42 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7ZNQ5AHEW3GO3FBDZ3DST2JACALR2OZ4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KQARUIMYOU3FGGKXPGYYL2V4574GEDB4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,128 +112,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git topic/midi20
-head:   77700b81bd0e47d89d50eb4b3f2f323492f79998
-commit: 46397622a3fa8372b8fda0f04b33d16923b03b1b [25/40] ALSA: seq: Add UMP support
-config: i386-randconfig-m021-20230525 (https://download.01.org/0day-ci/archive/20230526/202305261415.NY0vapZK-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+On 26/5/23 05:40, Claudiu.Beznea@microchip.com wrote:
+> On 25.05.2023 18:06, Richard Fitzgerald wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> From: Simon Trimmer <simont@opensource.cirrus.com>
+>>
+>> Add a driver for the Cirrus Logic CS35L56 amplifier. This uses the same
+>> component binding API as the CS35L41 driver. This is not a standalone
+>> HDA device; it provides control of the CS35L56 for systems that use a
+>> combination of an HDA codec and CS35L56 amplifiers with audio routed
+>> through the HDA codec.
+>>
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <error27@gmail.com>
-| Closes: https://lore.kernel.org/r/202305261415.NY0vapZK-lkp@intel.com/
+<SNIP>
 
-smatch warnings:
-sound/core/seq/seq_clientmgr.c:482 snd_seq_read() error: copy_to_user() '&cell->event' too small (28 vs 32)
+>> +
+>> +       cs35l56->base.reset_gpio = devm_gpiod_get_index_optional(cs35l56->base.dev,
+>> +                                                                "reset",
+>> +                                                                cs35l56->index,
+>> +                                                                GPIOD_OUT_LOW);
+>> +       if (IS_ERR(cs35l56->base.reset_gpio)) {
+> 
+> devm_gpiod_get_index_optional() can also return NULL.
+> 
 
-vim +482 sound/core/seq/seq_clientmgr.c
+Yes, that is expected. It's optional. It's not an error.
+In that case cs35l56->base.reset_gpio will already be NULL.
 
-c7e0b5bf9fff1b Takashi Iwai    2005-11-17  407  static ssize_t snd_seq_read(struct file *file, char __user *buf, size_t count,
-c7e0b5bf9fff1b Takashi Iwai    2005-11-17  408  			    loff_t *offset)
-^1da177e4c3f41 Linus Torvalds  2005-04-16  409  {
-c7e0b5bf9fff1b Takashi Iwai    2005-11-17  410  	struct snd_seq_client *client = file->private_data;
-c7e0b5bf9fff1b Takashi Iwai    2005-11-17  411  	struct snd_seq_fifo *fifo;
-46397622a3fa83 Takashi Iwai    2023-05-23  412  	size_t aligned_size;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  413  	int err;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  414  	long result = 0;
-c7e0b5bf9fff1b Takashi Iwai    2005-11-17  415  	struct snd_seq_event_cell *cell;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  416  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  417  	if (!(snd_seq_file_flags(file) & SNDRV_SEQ_LFLG_INPUT))
-^1da177e4c3f41 Linus Torvalds  2005-04-16  418  		return -ENXIO;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  419  
-96d4f267e40f95 Linus Torvalds  2019-01-03  420  	if (!access_ok(buf, count))
-^1da177e4c3f41 Linus Torvalds  2005-04-16  421  		return -EFAULT;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  422  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  423  	/* check client structures are in place */
-7eaa943c8ed8e9 Takashi Iwai    2008-08-08  424  	if (snd_BUG_ON(!client))
-7eaa943c8ed8e9 Takashi Iwai    2008-08-08  425  		return -ENXIO;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  426  
-f9a6bb841f7370 Takashi Iwai    2021-06-08  427  	if (!client->accept_input)
-f9a6bb841f7370 Takashi Iwai    2021-06-08  428  		return -ENXIO;
-f9a6bb841f7370 Takashi Iwai    2021-06-08  429  	fifo = client->data.user.fifo;
-f9a6bb841f7370 Takashi Iwai    2021-06-08  430  	if (!fifo)
-^1da177e4c3f41 Linus Torvalds  2005-04-16  431  		return -ENXIO;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  432  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  433  	if (atomic_read(&fifo->overflow) > 0) {
-^1da177e4c3f41 Linus Torvalds  2005-04-16  434  		/* buffer overflow is detected */
-^1da177e4c3f41 Linus Torvalds  2005-04-16  435  		snd_seq_fifo_clear(fifo);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  436  		/* return error code */
-^1da177e4c3f41 Linus Torvalds  2005-04-16  437  		return -ENOSPC;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  438  	}
-^1da177e4c3f41 Linus Torvalds  2005-04-16  439  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  440  	cell = NULL;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  441  	err = 0;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  442  	snd_seq_fifo_lock(fifo);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  443  
-46397622a3fa83 Takashi Iwai    2023-05-23  444  	if (client->midi_version > 0)
-46397622a3fa83 Takashi Iwai    2023-05-23  445  		aligned_size = sizeof(struct snd_seq_ump_event);
-46397622a3fa83 Takashi Iwai    2023-05-23  446  	else
-46397622a3fa83 Takashi Iwai    2023-05-23  447  		aligned_size = sizeof(struct snd_seq_event);
-46397622a3fa83 Takashi Iwai    2023-05-23  448  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  449  	/* while data available in queue */
-46397622a3fa83 Takashi Iwai    2023-05-23  450  	while (count >= aligned_size) {
-^1da177e4c3f41 Linus Torvalds  2005-04-16  451  		int nonblock;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  452  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  453  		nonblock = (file->f_flags & O_NONBLOCK) || result > 0;
-f9a6bb841f7370 Takashi Iwai    2021-06-08  454  		err = snd_seq_fifo_cell_out(fifo, &cell, nonblock);
-f9a6bb841f7370 Takashi Iwai    2021-06-08  455  		if (err < 0)
-^1da177e4c3f41 Linus Torvalds  2005-04-16  456  			break;
-46397622a3fa83 Takashi Iwai    2023-05-23  457  		if (!event_is_compatible(client, &cell->event)) {
-46397622a3fa83 Takashi Iwai    2023-05-23  458  			snd_seq_cell_free(cell);
-46397622a3fa83 Takashi Iwai    2023-05-23  459  			cell = NULL;
-46397622a3fa83 Takashi Iwai    2023-05-23  460  			continue;
-46397622a3fa83 Takashi Iwai    2023-05-23  461  		}
-^1da177e4c3f41 Linus Torvalds  2005-04-16  462  		if (snd_seq_ev_is_variable(&cell->event)) {
-
-Smatch isn't clever enough to know that if snd_seq_ev_is_variable()
-is false that means client->midi_version is zero.
-
-46397622a3fa83 Takashi Iwai    2023-05-23  463  			struct snd_seq_ump_event tmpev;
-46397622a3fa83 Takashi Iwai    2023-05-23  464  
-46397622a3fa83 Takashi Iwai    2023-05-23  465  			memcpy(&tmpev, &cell->event, aligned_size);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  466  			tmpev.data.ext.len &= ~SNDRV_SEQ_EXT_MASK;
-46397622a3fa83 Takashi Iwai    2023-05-23  467  			if (copy_to_user(buf, &tmpev, aligned_size)) {
-^1da177e4c3f41 Linus Torvalds  2005-04-16  468  				err = -EFAULT;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  469  				break;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  470  			}
-46397622a3fa83 Takashi Iwai    2023-05-23  471  			count -= aligned_size;
-46397622a3fa83 Takashi Iwai    2023-05-23  472  			buf += aligned_size;
-4d23359b7ec8b0 Clemens Ladisch 2005-09-05  473  			err = snd_seq_expand_var_event(&cell->event, count,
-4d23359b7ec8b0 Clemens Ladisch 2005-09-05  474  						       (char __force *)buf, 0,
-46397622a3fa83 Takashi Iwai    2023-05-23  475  						       aligned_size);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  476  			if (err < 0)
-^1da177e4c3f41 Linus Torvalds  2005-04-16  477  				break;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  478  			result += err;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  479  			count -= err;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  480  			buf += err;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  481  		} else {
-46397622a3fa83 Takashi Iwai    2023-05-23 @482  			if (copy_to_user(buf, &cell->event, aligned_size)) {
-
-So smatch complains that this might be a read overflow.
-
-^1da177e4c3f41 Linus Torvalds  2005-04-16  483  				err = -EFAULT;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  484  				break;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  485  			}
-46397622a3fa83 Takashi Iwai    2023-05-23  486  			count -= aligned_size;
-46397622a3fa83 Takashi Iwai    2023-05-23  487  			buf += aligned_size;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  488  		}
-^1da177e4c3f41 Linus Torvalds  2005-04-16  489  		snd_seq_cell_free(cell);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  490  		cell = NULL; /* to be sure */
-46397622a3fa83 Takashi Iwai    2023-05-23  491  		result += aligned_size;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  492  	}
-^1da177e4c3f41 Linus Torvalds  2005-04-16  493  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  494  	if (err < 0) {
-^1da177e4c3f41 Linus Torvalds  2005-04-16  495  		if (cell)
-^1da177e4c3f41 Linus Torvalds  2005-04-16  496  			snd_seq_fifo_cell_putback(fifo, cell);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  497  		if (err == -EAGAIN && result > 0)
-^1da177e4c3f41 Linus Torvalds  2005-04-16  498  			err = 0;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  499  	}
-^1da177e4c3f41 Linus Torvalds  2005-04-16  500  	snd_seq_fifo_unlock(fifo);
-^1da177e4c3f41 Linus Torvalds  2005-04-16  501  
-^1da177e4c3f41 Linus Torvalds  2005-04-16  502  	return (err < 0) ? err : result;
-^1da177e4c3f41 Linus Torvalds  2005-04-16  503  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+>> +               ret = PTR_ERR(cs35l56->base.reset_gpio);
+>> +
+>> +               /*
+>> +                * If RESET is shared the first amp to probe will grab the reset
+>> +                * line and reset all the amps
+>> +                */
+>> +               if (ret != -EBUSY)
+>> +                       return dev_err_probe(cs35l56->base.dev, ret, "Failed to get reset GPIO\n");
+>> +
+>> +               dev_info(cs35l56->base.dev, "Reset GPIO busy, assume shared reset\n");
+>> +               cs35l56->base.reset_gpio = NULL;
+>> +       }
+>> +
+>> +       return 0;
+>> +
+>> +err:
+>> +       dev_err(cs35l56->base.dev, "Failed property %s: %d\n", property, ret);
+>> +
+>> +       return ret;
+>> +}
