@@ -4,86 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 952A4C7EE2A
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:04:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 575AEC77B7E
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:04:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90691868;
-	Thu,  1 Jun 2023 18:03:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90691868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3506174C;
+	Thu,  1 Jun 2023 18:04:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3506174C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685635475;
-	bh=HhBberAYxVfcDJ4z346VNlvlQ0xdEouBvZIdW0NLNPY=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1685635491;
+	bh=TirXeNXcSGysUY1U4xKNK2JClyX6eQNssWqvDCuEisI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rz2usxRoPTCToepXh2A3jXvuzLvsepE4KbYj+h4VSg5qGd+n1AWkglHFOuvcZwwMs
-	 TjN4MtMjhVDZWeoiZG6BbDzxdjXMDdWQ5BgE4zMUTW2K4+sIdQbj4eUHzkFloqomCe
-	 YddZ2GpK8H/wHqqxouuohxX6y5jmSHWAGYlt/8Z8=
+	b=tI+qZxtT+cr4Ng06wnRbVS1AS+FGcSx47jxojVTgOL4bD9tZFAiJunQr6mWKuKR4x
+	 k50ylseAoyshtD+vpbLCK3sczHIlODaQ6mPVKXt/kEyjkObXLynLPcC5XmxzLJ1tWA
+	 6zynZsEfNiD/x/aFDA/fdYzZYWQlHkU7rAchOuDw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9D911F80587; Thu,  1 Jun 2023 18:02:35 +0200 (CEST)
+	id 09AD3F8058C; Thu,  1 Jun 2023 18:02:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14EE0F8057C;
-	Thu,  1 Jun 2023 18:02:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DC73F805A8;
+	Thu,  1 Jun 2023 18:02:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3371AF80249; Fri, 26 May 2023 16:54:47 +0200 (CEST)
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
- [61.152.239.71])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	id D421DF80249; Fri, 26 May 2023 21:25:12 +0200 (CEST)
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 22C1AF80053
-	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 16:54:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22C1AF80053
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 93D5F7FC9;
-	Fri, 26 May 2023 22:54:05 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 26 May
- 2023 22:54:05 +0800
-Received: from SD-Server.starfivetech.com (183.27.98.143) by
- EXMBX168.cuchost.com (172.16.6.78) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Fri, 26 May 2023 22:54:04 +0800
-From: Walker Chen <walker.chen@starfivetech.com>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-	Claudiu Beznea <Claudiu.Beznea@microchip.com>, Jaroslav Kysela
-	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor.dooley@microchip.com>, Emil Renner Berthing
-	<emil.renner.berthing@canonical.com>, Hal Feng <hal.feng@starfivetech.com>,
-	Walker Chen <walker.chen@starfivetech.com>
-CC: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-Subject: [PATCH v5 2/3] ASoC: starfive: Add JH7110 TDM driver
-Date: Fri, 26 May 2023 22:54:01 +0800
-Message-ID: <20230526145402.450-3-walker.chen@starfivetech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230526145402.450-1-walker.chen@starfivetech.com>
-References: <20230526145402.450-1-walker.chen@starfivetech.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0B22F80053
+	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 21:25:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0B22F80053
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.a=rsa-sha256
+ header.s=mail header.b=xs9isNSu;
+	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr
+ header.a=rsa-sha256 header.s=mail header.b=0lmiMCYu
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id 28AC360204;
+	Fri, 26 May 2023 21:25:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1685129104; bh=TirXeNXcSGysUY1U4xKNK2JClyX6eQNssWqvDCuEisI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=xs9isNSuXwNC3VD26JSpsggNq7hTq8uqKje9Olf9r6lM3aAps7x85uuB9nBfAB9B7
+	 t1uoB10GnW38VwABiY1vUhgB9IRWMlWgD/Gu+vjcMnLrTO0u0hiUEEgx7hm2p9JK36
+	 fbwDHrKBGPGuFRcCabwDOVyg498bdu9lia/5qCZmi/g/Nyj+gcmYgyj0CLsQnkLgo6
+	 XYHxbiSjFpw7ElgbjbNOqsYfPM4M7XFD8nZ7Iq0ZF9zd7k/+hJu3d3gvcYWds52tK0
+	 C9z3svxc/VW3c1jy7nR2dm4gouDBMiUic6ZWrcVBu5mC6tVx0ppawIVN6TMggzDGR+
+	 vYfE1X62Y+7SA==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id F9xZedwACIwM; Fri, 26 May 2023 21:25:02 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [77.237.113.62])
+	by domac.alu.hr (Postfix) with ESMTPSA id 9403D60203;
+	Fri, 26 May 2023 21:25:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+	t=1685129102; bh=TirXeNXcSGysUY1U4xKNK2JClyX6eQNssWqvDCuEisI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=0lmiMCYu2YDUtravjkwoTBqXhgjbhmCZsWkhQe5smuIlPTvCelwf02jGYMRDdvpyI
+	 VE5fd4LY0kxYQjYEUcvLLfVjdDQ+Q2CCnMQ9sheuyVaerVrb0nr91Fi1HYxuDZTmQE
+	 maCzKbWIx0O/1kY/YdMqhyE9hOaqLdeeC7EfT2VrEEman1n3RLjncTUTVebu1Fm37X
+	 BoMqq8KJ2D9KtN1BRVMDAxO1YQkmLrrx8vfDKEqTFCs4gtord8s0EsDfCTJpibbio5
+	 sECRViI+RRsQIjRQtjbJAW5bHH8562yQzxMxI/D2AFE8JkKUB84bDlpuMOa8cQ+Dvx
+	 U+ZQZJVks0g5g==
+Message-ID: <00be4091-0119-c9dd-c632-079d2943c5ca@alu.unizg.hr>
+Date: Fri, 26 May 2023 21:25:01 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [183.27.98.143]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-X-MailFrom: walker.chen@starfivetech.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v1 1/1] selftests: alsa: pcm-test: Fix compiler warnings
+ about the format
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
+ alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Shuah Khan <shuah@kernel.org>
+References: <20230524191528.13203-1-mirsad.todorovac@alu.unizg.hr>
+ <9c82296b-4682-49e7-8302-bd678135f1b4@sirena.org.uk>
+From: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <9c82296b-4682-49e7-8302-bd678135f1b4@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: mirsad.todorovac@alu.unizg.hr
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: M42QZ2OY5VWYQVZBPI2GKUIYKOI6QUC5
-X-Message-ID-Hash: M42QZ2OY5VWYQVZBPI2GKUIYKOI6QUC5
+Message-ID-Hash: VAPWUBNNI35YVK2SBRS54BJGICBNRLKR
+X-Message-ID-Hash: VAPWUBNNI35YVK2SBRS54BJGICBNRLKR
 X-Mailman-Approved-At: Thu, 01 Jun 2023 16:02:26 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M42QZ2OY5VWYQVZBPI2GKUIYKOI6QUC5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VAPWUBNNI35YVK2SBRS54BJGICBNRLKR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,776 +112,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add tdm driver support for the StarFive JH7110 SoC.
 
-Signed-off-by: Walker Chen <walker.chen@starfivetech.com>
----
- MAINTAINERS                     |   6 +
- sound/soc/Kconfig               |   1 +
- sound/soc/Makefile              |   1 +
- sound/soc/starfive/Kconfig      |  15 +
- sound/soc/starfive/Makefile     |   2 +
- sound/soc/starfive/jh7110_tdm.c | 679 ++++++++++++++++++++++++++++++++
- 6 files changed, 704 insertions(+)
- create mode 100644 sound/soc/starfive/Kconfig
- create mode 100644 sound/soc/starfive/Makefile
- create mode 100644 sound/soc/starfive/jh7110_tdm.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2a0496448b7f..00478d07a9f4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20132,6 +20132,12 @@ F:	Documentation/devicetree/bindings/power/starfive*
- F:	drivers/soc/starfive/jh71xx_pmu.c
- F:	include/dt-bindings/power/starfive,jh7110-pmu.h
- 
-+STARFIVE JH7110 TDM DRIVER
-+M:	Walker Chen <walker.chen@starfivetech.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/starfive,jh7110-tdm.yaml
-+F:	sound/soc/starfive/jh7110_tdm.c
-+
- STARFIVE SOC DRIVERS
- M:	Conor Dooley <conor@kernel.org>
- S:	Maintained
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 848fbae26c3b..8d1d9401ecf2 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -91,6 +91,7 @@ source "sound/soc/sh/Kconfig"
- source "sound/soc/sof/Kconfig"
- source "sound/soc/spear/Kconfig"
- source "sound/soc/sprd/Kconfig"
-+source "sound/soc/starfive/Kconfig"
- source "sound/soc/sti/Kconfig"
- source "sound/soc/stm/Kconfig"
- source "sound/soc/sunxi/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 507eaed1d6a1..65aeb4ef4068 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -59,6 +59,7 @@ obj-$(CONFIG_SND_SOC)	+= sh/
- obj-$(CONFIG_SND_SOC)	+= sof/
- obj-$(CONFIG_SND_SOC)	+= spear/
- obj-$(CONFIG_SND_SOC)	+= sprd/
-+obj-$(CONFIG_SND_SOC)	+= starfive/
- obj-$(CONFIG_SND_SOC)	+= sti/
- obj-$(CONFIG_SND_SOC)	+= stm/
- obj-$(CONFIG_SND_SOC)	+= sunxi/
-diff --git a/sound/soc/starfive/Kconfig b/sound/soc/starfive/Kconfig
-new file mode 100644
-index 000000000000..fafb681f8c0a
---- /dev/null
-+++ b/sound/soc/starfive/Kconfig
-@@ -0,0 +1,15 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config SND_SOC_STARFIVE
-+	tristate "Audio support for StarFive SoC"
-+	depends on COMPILE_TEST || ARCH_STARFIVE
-+	help
-+	  Say Y or M if you want to add support for codecs attached to
-+	  the Starfive SoCs' Audio interfaces. You will also need to
-+	  select the audio interfaces to support below.
-+
-+config SND_SOC_JH7110_TDM
-+	tristate "JH7110 TDM device driver"
-+	depends on HAVE_CLK && SND_SOC_STARFIVE
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	help
-+	  Say Y or M if you want to add support for StarFive TDM driver.
-diff --git a/sound/soc/starfive/Makefile b/sound/soc/starfive/Makefile
-new file mode 100644
-index 000000000000..f7d960211d72
---- /dev/null
-+++ b/sound/soc/starfive/Makefile
-@@ -0,0 +1,2 @@
-+# StarFive Platform Support
-+obj-$(CONFIG_SND_SOC_JH7110_TDM) += jh7110_tdm.o
-diff --git a/sound/soc/starfive/jh7110_tdm.c b/sound/soc/starfive/jh7110_tdm.c
-new file mode 100644
-index 000000000000..973b910d2d3e
---- /dev/null
-+++ b/sound/soc/starfive/jh7110_tdm.c
-@@ -0,0 +1,679 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * jh7110_tdm.c -- StarFive JH7110 TDM driver
-+ *
-+ * Copyright (C) 2023 StarFive Technology Co., Ltd.
-+ *
-+ * Author: Walker Chen <walker.chen@starfivetech.com>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/device.h>
-+#include <linux/dmaengine.h>
-+#include <linux/module.h>
-+#include <linux/of_irq.h>
-+#include <linux/of_platform.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regmap.h>
-+#include <linux/reset.h>
-+#include <linux/types.h>
-+#include <sound/dmaengine_pcm.h>
-+#include <sound/initval.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+
-+#define TDM_PCMGBCR			0x00
-+	#define PCMGBCR_MASK		0x1e
-+	#define PCMGBCR_ENABLE		BIT(0)
-+	#define PCMGBCR_TRITXEN		BIT(4)
-+	#define CLKPOL_BIT		5
-+	#define TRITXEN_BIT		4
-+	#define ELM_BIT			3
-+	#define SYNCM_BIT		2
-+	#define MS_BIT			1
-+#define TDM_PCMTXCR			0x04
-+	#define PCMTXCR_TXEN		BIT(0)
-+	#define IFL_BIT			11
-+	#define WL_BIT			8
-+	#define SSCALE_BIT		4
-+	#define SL_BIT			2
-+	#define LRJ_BIT			1
-+#define TDM_PCMRXCR			0x08
-+	#define PCMRXCR_RXEN		BIT(0)
-+	#define PCMRXCR_RXSL_MASK	0xc
-+	#define PCMRXCR_RXSL_16BIT	0x4
-+	#define PCMRXCR_RXSL_32BIT	0x8
-+	#define PCMRXCR_SCALE_MASK	0xf0
-+	#define PCMRXCR_SCALE_1CH	0x10
-+#define TDM_PCMDIV			0x0c
-+
-+#define JH7110_TDM_FIFO			0x170c0000
-+#define JH7110_TDM_FIFO_DEPTH		32
-+
-+enum TDM_MASTER_SLAVE_MODE {
-+	TDM_AS_MASTER = 0,
-+	TDM_AS_SLAVE,
-+};
-+
-+enum TDM_CLKPOL {
-+	/* tx raising and rx falling */
-+	TDM_TX_RASING_RX_FALLING = 0,
-+	/* tx falling and rx raising */
-+	TDM_TX_FALLING_RX_RASING,
-+};
-+
-+enum TDM_ELM {
-+	/* only work while SYNCM=0 */
-+	TDM_ELM_LATE = 0,
-+	TDM_ELM_EARLY,
-+};
-+
-+enum TDM_SYNCM {
-+	/* short frame sync */
-+	TDM_SYNCM_SHORT = 0,
-+	/* long frame sync */
-+	TDM_SYNCM_LONG,
-+};
-+
-+enum TDM_IFL {
-+	/* FIFO to send or received : half-1/2, Quarter-1/4 */
-+	TDM_FIFO_HALF = 0,
-+	TDM_FIFO_QUARTER,
-+};
-+
-+enum TDM_WL {
-+	/* send or received word length */
-+	TDM_8BIT_WORD_LEN = 0,
-+	TDM_16BIT_WORD_LEN,
-+	TDM_20BIT_WORD_LEN,
-+	TDM_24BIT_WORD_LEN,
-+	TDM_32BIT_WORD_LEN,
-+};
-+
-+enum TDM_SL {
-+	/* send or received slot length */
-+	TDM_8BIT_SLOT_LEN = 0,
-+	TDM_16BIT_SLOT_LEN,
-+	TDM_32BIT_SLOT_LEN,
-+};
-+
-+enum TDM_LRJ {
-+	/* left-justify or right-justify */
-+	TDM_RIGHT_JUSTIFY = 0,
-+	TDM_LEFT_JUSTIFT,
-+};
-+
-+struct tdm_chan_cfg {
-+	enum TDM_IFL ifl;
-+	enum TDM_WL  wl;
-+	unsigned char sscale;
-+	enum TDM_SL  sl;
-+	enum TDM_LRJ lrj;
-+	unsigned char enable;
-+};
-+
-+struct jh7110_tdm_dev {
-+	void __iomem *tdm_base;
-+	struct device *dev;
-+	struct clk_bulk_data clks[6];
-+	struct reset_control *resets;
-+
-+	enum TDM_CLKPOL clkpolity;
-+	enum TDM_ELM	elm;
-+	enum TDM_SYNCM	syncm;
-+	enum TDM_MASTER_SLAVE_MODE ms_mode;
-+
-+	struct tdm_chan_cfg tx;
-+	struct tdm_chan_cfg rx;
-+
-+	u16 syncdiv;
-+	u32 samplerate;
-+	u32 pcmclk;
-+
-+	/* data related to DMA transfers b/w tdm and DMAC */
-+	struct snd_dmaengine_dai_dma_data play_dma_data;
-+	struct snd_dmaengine_dai_dma_data capture_dma_data;
-+	u32 saved_pcmgbcr;
-+	u32 saved_pcmtxcr;
-+	u32 saved_pcmrxcr;
-+	u32 saved_pcmdiv;
-+};
-+
-+static inline u32 jh7110_tdm_readl(struct jh7110_tdm_dev *tdm, u16 reg)
-+{
-+	return readl_relaxed(tdm->tdm_base + reg);
-+}
-+
-+static inline void jh7110_tdm_writel(struct jh7110_tdm_dev *tdm, u16 reg, u32 val)
-+{
-+	writel_relaxed(val, tdm->tdm_base + reg);
-+}
-+
-+static void jh7110_tdm_save_context(struct jh7110_tdm_dev *tdm,
-+				    struct snd_pcm_substream *substream)
-+{
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		tdm->saved_pcmtxcr = jh7110_tdm_readl(tdm, TDM_PCMTXCR);
-+	else
-+		tdm->saved_pcmrxcr = jh7110_tdm_readl(tdm, TDM_PCMRXCR);
-+}
-+
-+static void jh7110_tdm_start(struct jh7110_tdm_dev *tdm,
-+			     struct snd_pcm_substream *substream)
-+{
-+	u32 data;
-+
-+	data = jh7110_tdm_readl(tdm, TDM_PCMGBCR);
-+	jh7110_tdm_writel(tdm, TDM_PCMGBCR, data | PCMGBCR_ENABLE);
-+
-+	/* restore context */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		jh7110_tdm_writel(tdm, TDM_PCMTXCR, tdm->saved_pcmtxcr | PCMTXCR_TXEN);
-+	else
-+		jh7110_tdm_writel(tdm, TDM_PCMRXCR, tdm->saved_pcmrxcr | PCMRXCR_RXEN);
-+}
-+
-+static void jh7110_tdm_stop(struct jh7110_tdm_dev *tdm,
-+			    struct snd_pcm_substream *substream)
-+{
-+	unsigned int val;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		val = jh7110_tdm_readl(tdm, TDM_PCMTXCR);
-+		val &= ~PCMTXCR_TXEN;
-+		jh7110_tdm_writel(tdm, TDM_PCMTXCR, val);
-+	} else {
-+		val = jh7110_tdm_readl(tdm, TDM_PCMRXCR);
-+		val &= ~PCMRXCR_RXEN;
-+		jh7110_tdm_writel(tdm, TDM_PCMRXCR, val);
-+	}
-+}
-+
-+static int jh7110_tdm_syncdiv(struct jh7110_tdm_dev *tdm)
-+{
-+	u32 sl, sscale, syncdiv;
-+
-+	if (tdm->rx.sl >= tdm->tx.sl)
-+		sl = tdm->rx.sl;
-+	else
-+		sl = tdm->tx.sl;
-+
-+	if (tdm->rx.sscale >= tdm->tx.sscale)
-+		sscale = tdm->rx.sscale;
-+	else
-+		sscale = tdm->tx.sscale;
-+
-+	syncdiv = tdm->pcmclk / tdm->samplerate - 1;
-+
-+	if ((syncdiv + 1) < (sl * sscale)) {
-+		dev_err(tdm->dev, "Failed to set syncdiv!\n");
-+		return -EINVAL;
-+	}
-+
-+	if (tdm->syncm == TDM_SYNCM_LONG &&
-+	    (tdm->rx.sscale <= 1 || tdm->tx.sscale <= 1) &&
-+	    ((syncdiv + 1) <= sl)) {
-+		dev_err(tdm->dev, "Wrong syncdiv! It must be (syncdiv+1) > max[tx.sl, rx.sl]\n");
-+		return -EINVAL;
-+	}
-+
-+	jh7110_tdm_writel(tdm, TDM_PCMDIV, syncdiv);
-+	return 0;
-+}
-+
-+static int jh7110_tdm_config(struct jh7110_tdm_dev *tdm,
-+			     struct snd_pcm_substream *substream)
-+{
-+	u32 datarx, datatx;
-+	int ret;
-+
-+	ret = jh7110_tdm_syncdiv(tdm);
-+	if (ret)
-+		return ret;
-+
-+	datarx = (tdm->rx.ifl << IFL_BIT) |
-+		  (tdm->rx.wl << WL_BIT) |
-+		  (tdm->rx.sscale << SSCALE_BIT) |
-+		  (tdm->rx.sl << SL_BIT) |
-+		  (tdm->rx.lrj << LRJ_BIT);
-+
-+	datatx = (tdm->tx.ifl << IFL_BIT) |
-+		  (tdm->tx.wl << WL_BIT) |
-+		  (tdm->tx.sscale << SSCALE_BIT) |
-+		  (tdm->tx.sl << SL_BIT) |
-+		  (tdm->tx.lrj << LRJ_BIT);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		jh7110_tdm_writel(tdm, TDM_PCMTXCR, datatx);
-+	else
-+		jh7110_tdm_writel(tdm, TDM_PCMRXCR, datarx);
-+
-+	return 0;
-+}
-+
-+static void jh7110_tdm_clk_disable(struct jh7110_tdm_dev *tdm)
-+{
-+	clk_bulk_disable_unprepare(ARRAY_SIZE(tdm->clks), tdm->clks);
-+}
-+
-+static int jh7110_tdm_clk_enable(struct jh7110_tdm_dev *tdm)
-+{
-+	int ret;
-+
-+	ret = clk_bulk_prepare_enable(ARRAY_SIZE(tdm->clks), tdm->clks);
-+	if (ret) {
-+		dev_err(tdm->dev, "Failed to enable tdm clocks\n");
-+		return ret;
-+	}
-+
-+	ret = reset_control_deassert(tdm->resets);
-+	if (ret) {
-+		dev_err(tdm->dev, "Failed to deassert tdm resets\n");
-+		goto dis_tdm_clk;
-+	}
-+
-+	/* select tdm_ext clock as the clock source for tdm */
-+	ret = clk_set_parent(tdm->clks[5].clk, tdm->clks[4].clk);
-+	if (ret) {
-+		dev_err(tdm->dev, "Can't set extern clock source for clk_tdm\n");
-+		goto dis_tdm_clk;
-+	}
-+
-+	return 0;
-+
-+dis_tdm_clk:
-+	clk_bulk_disable_unprepare(ARRAY_SIZE(tdm->clks), tdm->clks);
-+
-+	return ret;
-+}
-+
-+static int jh7110_tdm_runtime_suspend(struct device *dev)
-+{
-+	struct jh7110_tdm_dev *tdm = dev_get_drvdata(dev);
-+
-+	jh7110_tdm_clk_disable(tdm);
-+	return 0;
-+}
-+
-+static int jh7110_tdm_runtime_resume(struct device *dev)
-+{
-+	struct jh7110_tdm_dev *tdm = dev_get_drvdata(dev);
-+
-+	return jh7110_tdm_clk_enable(tdm);
-+}
-+
-+static int jh7110_tdm_system_suspend(struct device *dev)
-+{
-+	struct jh7110_tdm_dev *tdm = dev_get_drvdata(dev);
-+
-+	/* save context */
-+	tdm->saved_pcmgbcr = jh7110_tdm_readl(tdm, TDM_PCMGBCR);
-+	tdm->saved_pcmdiv = jh7110_tdm_readl(tdm, TDM_PCMDIV);
-+
-+	return pm_runtime_force_suspend(dev);
-+}
-+
-+static int jh7110_tdm_system_resume(struct device *dev)
-+{
-+	struct jh7110_tdm_dev *tdm = dev_get_drvdata(dev);
-+
-+	/* restore context */
-+	jh7110_tdm_writel(tdm, TDM_PCMGBCR, tdm->saved_pcmgbcr);
-+	jh7110_tdm_writel(tdm, TDM_PCMDIV, tdm->saved_pcmdiv);
-+
-+	return pm_runtime_force_resume(dev);
-+}
-+
-+static const struct snd_soc_component_driver jh7110_tdm_component = {
-+	.name = "jh7110-tdm",
-+};
-+
-+static int jh7110_tdm_startup(struct snd_pcm_substream *substream,
-+			      struct snd_soc_dai *cpu_dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct snd_soc_dai_link *dai_link = rtd->dai_link;
-+
-+	dai_link->stop_dma_first = 1;
-+
-+	return 0;
-+}
-+
-+static int jh7110_tdm_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params,
-+				struct snd_soc_dai *dai)
-+{
-+	struct jh7110_tdm_dev *tdm = snd_soc_dai_get_drvdata(dai);
-+	int chan_wl, chan_sl, chan_nr;
-+	unsigned int data_width;
-+	unsigned int dma_bus_width;
-+	struct snd_dmaengine_dai_dma_data *dma_data = NULL;
-+	int ret;
-+
-+	data_width = params_width(params);
-+
-+	tdm->samplerate = params_rate(params);
-+	tdm->pcmclk = params_channels(params) * tdm->samplerate * data_width;
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		chan_wl = TDM_16BIT_WORD_LEN;
-+		chan_sl = TDM_16BIT_SLOT_LEN;
-+		dma_bus_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+		break;
-+
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		chan_wl = TDM_32BIT_WORD_LEN;
-+		chan_sl = TDM_32BIT_SLOT_LEN;
-+		dma_bus_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		break;
-+
-+	default:
-+		dev_err(tdm->dev, "tdm: unsupported PCM fmt");
-+		return -EINVAL;
-+	}
-+
-+	chan_nr = params_channels(params);
-+	switch (chan_nr) {
-+	case 1:
-+	case 2:
-+	case 4:
-+	case 6:
-+	case 8:
-+		break;
-+	default:
-+		dev_err(tdm->dev, "channel not supported\n");
-+		return -EINVAL;
-+	}
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		tdm->tx.wl = chan_wl;
-+		tdm->tx.sl = chan_sl;
-+		tdm->tx.sscale = chan_nr;
-+		tdm->play_dma_data.addr_width = dma_bus_width;
-+		dma_data = &tdm->play_dma_data;
-+	} else {
-+		tdm->rx.wl = chan_wl;
-+		tdm->rx.sl = chan_sl;
-+		tdm->rx.sscale = chan_nr;
-+		tdm->capture_dma_data.addr_width = dma_bus_width;
-+		dma_data = &tdm->capture_dma_data;
-+	}
-+
-+	snd_soc_dai_set_dma_data(dai, substream, dma_data);
-+
-+	ret = jh7110_tdm_config(tdm, substream);
-+	if (ret)
-+		return ret;
-+
-+	jh7110_tdm_save_context(tdm, substream);
-+	return 0;
-+}
-+
-+static int jh7110_tdm_trigger(struct snd_pcm_substream *substream,
-+			      int cmd, struct snd_soc_dai *dai)
-+{
-+	struct jh7110_tdm_dev *tdm = snd_soc_dai_get_drvdata(dai);
-+	int ret = 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		jh7110_tdm_start(tdm, substream);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		jh7110_tdm_stop(tdm, substream);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int jh7110_tdm_set_dai_fmt(struct snd_soc_dai *cpu_dai,
-+				  unsigned int fmt)
-+{
-+	struct jh7110_tdm_dev *tdm = snd_soc_dai_get_drvdata(cpu_dai);
-+	unsigned int gbcr;
-+
-+	/* set master/slave audio interface */
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BP_FP:
-+		/* cpu is master */
-+		tdm->ms_mode = TDM_AS_MASTER;
-+		break;
-+	case SND_SOC_DAIFMT_BC_FC:
-+		/* codec is master */
-+		tdm->ms_mode = TDM_AS_SLAVE;
-+		break;
-+	case SND_SOC_DAIFMT_BC_FP:
-+	case SND_SOC_DAIFMT_BP_FC:
-+		return -EINVAL;
-+	default:
-+		dev_dbg(tdm->dev, "dwc : Invalid clock provider format\n");
-+		return -EINVAL;
-+	}
-+
-+	gbcr = (tdm->clkpolity << CLKPOL_BIT) |
-+		(tdm->elm << ELM_BIT) |
-+		(tdm->syncm << SYNCM_BIT) |
-+		(tdm->ms_mode << MS_BIT);
-+	jh7110_tdm_writel(tdm, TDM_PCMGBCR, gbcr);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops jh7110_tdm_dai_ops = {
-+	.startup	= jh7110_tdm_startup,
-+	.hw_params	= jh7110_tdm_hw_params,
-+	.trigger	= jh7110_tdm_trigger,
-+	.set_fmt	= jh7110_tdm_set_dai_fmt,
-+};
-+
-+static int jh7110_tdm_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct jh7110_tdm_dev *tdm = snd_soc_dai_get_drvdata(dai);
-+
-+	snd_soc_dai_init_dma_data(dai, &tdm->play_dma_data, &tdm->capture_dma_data);
-+	snd_soc_dai_set_drvdata(dai, tdm);
-+	return 0;
-+}
-+
-+#define JH7110_TDM_RATES	SNDRV_PCM_RATE_8000_48000
-+
-+#define JH7110_TDM_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
-+				 SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static struct snd_soc_dai_driver jh7110_tdm_dai = {
-+	.name = "sf_tdm",
-+	.id = 0,
-+	.playback = {
-+		.stream_name    = "Playback",
-+		.channels_min   = 1,
-+		.channels_max   = 8,
-+		.rates          = JH7110_TDM_RATES,
-+		.formats        = JH7110_TDM_FORMATS,
-+	},
-+	.capture = {
-+		.stream_name    = "Capture",
-+		.channels_min   = 1,
-+		.channels_max   = 8,
-+		.rates          = JH7110_TDM_RATES,
-+		.formats        = JH7110_TDM_FORMATS,
-+	},
-+	.ops = &jh7110_tdm_dai_ops,
-+	.probe = jh7110_tdm_dai_probe,
-+	.symmetric_rate = 1,
-+};
-+
-+static const struct snd_pcm_hardware jh7110_pcm_hardware = {
-+	.info			= (SNDRV_PCM_INFO_MMAP		|
-+				   SNDRV_PCM_INFO_MMAP_VALID	|
-+				   SNDRV_PCM_INFO_PAUSE		|
-+				   SNDRV_PCM_INFO_RESUME	|
-+				   SNDRV_PCM_INFO_INTERLEAVED	|
-+				   SNDRV_PCM_INFO_BLOCK_TRANSFER),
-+	.buffer_bytes_max	= 192512,
-+	.period_bytes_min	= 4096,
-+	.period_bytes_max	= 32768,
-+	.periods_min		= 1,
-+	.periods_max		= 48,
-+	.fifo_size		= 16,
-+};
-+
-+static const struct snd_dmaengine_pcm_config jh7110_dmaengine_pcm_config = {
-+	.pcm_hardware = &jh7110_pcm_hardware,
-+	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-+	.prealloc_buffer_size = 192512,
-+};
-+
-+static void jh7110_tdm_init_params(struct jh7110_tdm_dev *tdm)
-+{
-+	tdm->clkpolity = TDM_TX_RASING_RX_FALLING;
-+	tdm->elm = TDM_ELM_LATE;
-+	tdm->syncm = TDM_SYNCM_SHORT;
-+
-+	tdm->rx.ifl = TDM_FIFO_HALF;
-+	tdm->tx.ifl = TDM_FIFO_HALF;
-+	tdm->rx.wl = TDM_16BIT_WORD_LEN;
-+	tdm->tx.wl = TDM_16BIT_WORD_LEN;
-+	tdm->rx.sscale = 2;
-+	tdm->tx.sscale = 2;
-+	tdm->rx.lrj = TDM_LEFT_JUSTIFT;
-+	tdm->tx.lrj = TDM_LEFT_JUSTIFT;
-+
-+	tdm->play_dma_data.addr = JH7110_TDM_FIFO;
-+	tdm->play_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+	tdm->play_dma_data.fifo_size = JH7110_TDM_FIFO_DEPTH / 2;
-+	tdm->play_dma_data.maxburst = 16;
-+
-+	tdm->capture_dma_data.addr = JH7110_TDM_FIFO;
-+	tdm->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+	tdm->capture_dma_data.fifo_size = JH7110_TDM_FIFO_DEPTH / 2;
-+	tdm->capture_dma_data.maxburst = 8;
-+}
-+
-+static int jh7110_tdm_clk_reset_get(struct platform_device *pdev,
-+				    struct jh7110_tdm_dev *tdm)
-+{
-+	int ret;
-+
-+	tdm->clks[0].id = "mclk_inner";
-+	tdm->clks[1].id = "tdm_ahb";
-+	tdm->clks[2].id = "tdm_apb";
-+	tdm->clks[3].id = "tdm_internal";
-+	tdm->clks[4].id = "tdm_ext";
-+	tdm->clks[5].id = "tdm";
-+
-+	ret = devm_clk_bulk_get(&pdev->dev, ARRAY_SIZE(tdm->clks), tdm->clks);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to get tdm clocks\n");
-+		return ret;
-+	}
-+
-+	tdm->resets = devm_reset_control_array_get_exclusive(&pdev->dev);
-+	if (IS_ERR_OR_NULL(tdm->resets)) {
-+		ret = PTR_ERR(tdm->resets);
-+		dev_err(&pdev->dev, "Failed to get tdm resets");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int jh7110_tdm_probe(struct platform_device *pdev)
-+{
-+	struct jh7110_tdm_dev *tdm;
-+	int ret;
-+
-+	tdm = devm_kzalloc(&pdev->dev, sizeof(*tdm), GFP_KERNEL);
-+	if (!tdm)
-+		return -ENOMEM;
-+
-+	tdm->tdm_base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(tdm->tdm_base))
-+		return PTR_ERR(tdm->tdm_base);
-+
-+	tdm->dev = &pdev->dev;
-+
-+	ret = jh7110_tdm_clk_reset_get(pdev, tdm);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to enable audio-tdm clock\n");
-+		return ret;
-+	}
-+
-+	jh7110_tdm_init_params(tdm);
-+
-+	dev_set_drvdata(&pdev->dev, tdm);
-+	ret = devm_snd_soc_register_component(&pdev->dev, &jh7110_tdm_component,
-+					      &jh7110_tdm_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to register dai\n");
-+		return ret;
-+	}
-+
-+	ret = devm_snd_dmaengine_pcm_register(&pdev->dev,
-+					      &jh7110_dmaengine_pcm_config,
-+					      SND_DMAENGINE_PCM_FLAG_COMPAT);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Could not register pcm: %d\n", ret);
-+		return ret;
-+	}
-+
-+	pm_runtime_enable(&pdev->dev);
-+	if (!pm_runtime_enabled(&pdev->dev)) {
-+		ret = jh7110_tdm_runtime_resume(&pdev->dev);
-+		if (ret)
-+			goto err_pm_disable;
-+	}
-+
-+	return 0;
-+
-+err_pm_disable:
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return ret;
-+}
-+
-+static int jh7110_tdm_dev_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+	return 0;
-+}
-+
-+static const struct of_device_id jh7110_tdm_of_match[] = {
-+	{ .compatible = "starfive,jh7110-tdm", },
-+	{}
-+};
-+
-+MODULE_DEVICE_TABLE(of, jh7110_tdm_of_match);
-+
-+static const struct dev_pm_ops jh7110_tdm_pm_ops = {
-+	RUNTIME_PM_OPS(jh7110_tdm_runtime_suspend,
-+		       jh7110_tdm_runtime_resume, NULL)
-+	SYSTEM_SLEEP_PM_OPS(jh7110_tdm_system_suspend,
-+			    jh7110_tdm_system_resume)
-+};
-+
-+static struct platform_driver jh7110_tdm_driver = {
-+	.driver = {
-+		.name = "jh7110-tdm",
-+		.of_match_table = jh7110_tdm_of_match,
-+		.pm = pm_ptr(&jh7110_tdm_pm_ops),
-+	},
-+	.probe = jh7110_tdm_probe,
-+	.remove = jh7110_tdm_dev_remove,
-+};
-+module_platform_driver(jh7110_tdm_driver);
-+
-+MODULE_DESCRIPTION("StarFive JH7110 TDM ASoC Driver");
-+MODULE_AUTHOR("Walker Chen <walker.chen@starfivetech.com>");
-+MODULE_LICENSE("GPL");
--- 
-2.17.1
+On 5/25/23 11:22, Mark Brown wrote:
+> On Wed, May 24, 2023 at 09:15:29PM +0200, Mirsad Goran Todorovac wrote:
+>> GCC 11.3.0 issues warnings in this module about wrong sizes of format
+>> specifiers:
+> 
+> Reviewed-by: Mark Brown <broonie@kernel.org>
 
+Thanks,
+Mirsad
