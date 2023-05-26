@@ -4,99 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A25EC77B73
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 13:08:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D568C77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 15:00:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1605F206;
-	Fri, 26 May 2023 15:07:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1605F206
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64E91204;
+	Fri, 26 May 2023 16:59:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64E91204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685106526;
-	bh=RP5Lcie9GFyo6wcsBm9zSgbiEyhA44pVruzbzhxJZDg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1685113245;
+	bh=cHXQsRBB4P+jMA86kR8YTWRhF2qenOQye1YWW0o++mM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=is450UlcEZ3peozZ7ZS95TZ8tAyPMYDdFeDpkQ/vElJ0MyUdwU9q7705OV561g8r2
-	 FfuavxB/2ZFBZ3S0/3eR7XvGxe8B/KfM9QdEH9gQXMD61WAoe/5F+dQAtLNcioz6fd
-	 9cnm0bEOk79f3ftsJHdSTQKtxNT/rDtaw/yKM8Q4=
+	b=FrtIxXbnGN6WmCABj0RvU+95u99R8KOc9m+aDMeJk6vXbbh/Ks3t0PTsHXwYtQQvJ
+	 J7txRplgDEHIvPCygF2h/9MaAU/RJ4+tY01egN2GsfgOwLw1C/4r8IQnlW397rNqec
+	 aRNzamt9XqxL/a3Cu/mz1TD8VmAceEFUHLckJgYQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2B41F80053; Fri, 26 May 2023 15:07:27 +0200 (CEST)
+	id 820F9F80053; Fri, 26 May 2023 16:59:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B7CEF80249;
-	Fri, 26 May 2023 15:07:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20256F80249;
+	Fri, 26 May 2023 16:59:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7201BF80249; Fri, 26 May 2023 15:07:23 +0200 (CEST)
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net
- [217.70.183.198])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 88F5DF80249; Fri, 26 May 2023 16:59:22 +0200 (CEST)
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com
+ [IPv6:2607:f8b0:4864:20::c33])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0630CF80086
-	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 15:07:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0630CF80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 07DBAF80086
+	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 16:59:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07DBAF80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=WzpM75Se
-X-GND-Sasl: herve.codina@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1685106427;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o2J4eEM5RXIP4b+rP/8OD/qqkXSOa3635HqS8iL6gx8=;
-	b=WzpM75Segot68BM+UMKk6uK+WErmwQKY5qyywJZSqXmF+qnTvlpGH35vAa9h6Epog44iG/
-	8m1dH5Q9VTLZDgmDqYDwqMSyVaz2/u207HwBoHuT73nEXYAJ4D8u8GYiggK/yL2S0zGp4/
-	eYTZfGcvi/nIiAZw0Z10Jl7DaDCgVn9OSz8rJo0x2Cy8sxYsd5P1qCBfE71+EpcLqw1yDX
-	8Aq8tv2ynvm6CqTfdEso1ZVd8z4Om265ppGvsYMflNGj3LPY+2GfQVp84xmsqqB9sMFJDK
-	m30UQ6DP6OGGxrRwcWiy/xP7+Qj3CVvuyNkOm0aisl+ob4Kzmj4ibxfoF0R76w==
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9E9B2C0006;
-	Fri, 26 May 2023 13:07:03 +0000 (UTC)
-Date: Fri, 26 May 2023 15:07:02 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 9/9] ASoC: simple-card: Handle additional devices
-Message-ID: <20230526150702.2555143c@bootlin.com>
-In-Reply-To: <87v8ghgtyu.wl-kuninori.morimoto.gx@renesas.com>
-References: <20230523151223.109551-1-herve.codina@bootlin.com>
-	<20230523151223.109551-10-herve.codina@bootlin.com>
-	<87mt1u7fql.wl-kuninori.morimoto.gx@renesas.com>
-	<20230524141411.28765782@bootlin.com>
-	<87v8ghgtyu.wl-kuninori.morimoto.gx@renesas.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-redhat-linux-gnu)
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=dbKW0dWs
+Received: by mail-oo1-xc33.google.com with SMTP id
+ 006d021491bc7-5563fe88b09so582273eaf.0
+        for <alsa-devel@alsa-project.org>;
+ Fri, 26 May 2023 07:59:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685113155; x=1687705155;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cHXQsRBB4P+jMA86kR8YTWRhF2qenOQye1YWW0o++mM=;
+        b=dbKW0dWsBI6hTbayeVlK1pBhSWE/+CpLxm6jRPmZ2lcfyZlXVGR/VQl8cChhHsTMXg
+         /maVUeIS8DO4pw5R2mgmRPbrZ1ieflOB3n5yoXek81ZnoRaFdBJVgrTmtQ0TfKsBZUzV
+         Fo+tYcCrteK5XAFNeiKAD4ZUW8iy/2Ylywn0h/Z9nfnIrPsEtag9PFsLNCJKm6xa6rxq
+         FcXSEFQTSDpRrY+N7Ywr5+OqIt3etH6oFYIJ8f1Xw1mlUnTv3gULBUFoepNktm3Yjfu+
+         8/e7Pd3sMDR/eb7JVMxmKBBzvjJbwoBPjVvkNfDBW9KRS1+vI+SNGbHwy9vikp+ZaQH7
+         HrmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685113155; x=1687705155;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cHXQsRBB4P+jMA86kR8YTWRhF2qenOQye1YWW0o++mM=;
+        b=XHjaCnx1B0GVGHDb/HqtebfSq+Kw/Y0tkmsACsWTYxLwwFoWsiRthWWyLMjm5rgeWy
+         6JpgoPWGD8c2kw7dvobcgYjX/Zr/5Fsg/up1c7zA6Cc7SideLHfHqBcnLA5iwS/BVdSc
+         1RTNQfB5xZn9lXJk7CfJI1vVtevxF9ueEwSZCUbsNMMZ+zW6syrgDOkKQQNyfwJp+ogo
+         45Nl+7eXeKjNvxuUcZr9RuhivJyqVTthvXUbSZ1ILoolLTw1gGZNA2FSC0UyOE3s/yHk
+         2IghrUeCBI0oOki9QAE3iBMZBzbFTT47pf/JOtlKoUkMAtASHwHG+zef6xpsgOvoYIZw
+         dXXg==
+X-Gm-Message-State: AC+VfDxzCpqzBZSNZtlSV8NZTA35BSrzzLS5f6OB2NlJn+GEria+Wig5
+	KPbMR3y0yOkIlq4aBRydU6tKDgMz+lFTVk9zqGY=
+X-Google-Smtp-Source: 
+ ACHHUZ5hFkRx+eYlzH26Y1mYbn6oJmGbtPXs318ZiuHvNg5sS1pgRLxzLBtfQHuHu0K2dUxPIvOpcZnOHWPbsVqr7GU=
+X-Received: by 2002:a05:6808:1151:b0:398:7db6:7ee3 with SMTP id
+ u17-20020a056808115100b003987db67ee3mr1523416oiu.19.1685113154864; Fri, 26
+ May 2023 07:59:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JBXUFVOSFWUPMMOJBH5A635QC7C6BM62
-X-Message-ID-Hash: JBXUFVOSFWUPMMOJBH5A635QC7C6BM62
-X-MailFrom: herve.codina@bootlin.com
+References: <bug-217440-225600@https.bugzilla.kernel.org/>
+ <CABpewhE4REgn9RJZduuEU6Z_ijXNeQWnrxO1tg70Gkw=F8qNYg@mail.gmail.com>
+ <ZGB0cVVI7OgaJU6t@debian.me>
+ <CABpewhGJE7-k52j8L2kJ2zKupgp3Ma+LdZazzzV4w1Bgihp7nw@mail.gmail.com>
+ <87cz338ix4.wl-tiwai@suse.de>
+ <CABpewhF01AK4cFPbwYVvKR9yWaO7o-ZE-2+MZjYSUF0BKUdYvw@mail.gmail.com>
+ <874jodlnmi.wl-tiwai@suse.de> <415d4bc84aa74c74af913048f28b42a9@realtek.com>
+ <87fs7mdofi.wl-tiwai@suse.de> <7da2fdfdae614b1c98deda6e11ca34eb@realtek.com>
+ <87353kd8b9.wl-tiwai@suse.de> <1170325957764b4cbd7cd3639575f285@realtek.com>
+In-Reply-To: <1170325957764b4cbd7cd3639575f285@realtek.com>
+From: "Joseph C. Sible" <josephcsible@gmail.com>
+Date: Fri, 26 May 2023 10:58:58 -0400
+Message-ID: 
+ <CABpewhGBakDSBLKZ1cr2=OMspuu3qyYwZrsXUggQ3vt8gsD88A@mail.gmail.com>
+Subject: Re: Fwd: [Bug 217440] New: ALC236 audio disappears from HP 15z-fc000
+ on warm boot
+To: Kailang <kailang@realtek.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Bagas Sanjaya <bagasdotme@gmail.com>,
+	"regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+ "perex@perex.cz" <perex@perex.cz>,
+	"tiwai@suse.com" <tiwai@suse.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: 6JZE2GFZHSNVVF2UUZ4TDALLXMQXNNGX
+X-Message-ID-Hash: 6JZE2GFZHSNVVF2UUZ4TDALLXMQXNNGX
+X-MailFrom: josephcsible@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,98 +115,25 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JBXUFVOSFWUPMMOJBH5A635QC7C6BM62/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6JZE2GFZHSNVVF2UUZ4TDALLXMQXNNGX/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 25 May 2023 00:01:14 +0000
-Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
+On Fri, May 26, 2023 at 4:09=E2=80=AFAM Kailang <kailang@realtek.com> wrote=
+:
+> Hi Joseph,
+>
+> Could you test it with below model name?
+> =3D=3D> alc-chrome-book
 
-> Hi Herve
-> 
-> Thank you for your reply.
-> 
-> > So, IMHO, calling simple_populate_aux() from __simple_for_each_link() is
-> > not correct as it has nothing to do with DAI links and must be call once
-> > per Card.  
-> 
-> My biggest concern is that this code is calling same code multiple times.
-> It is easy to forget such thing when updating in this kind of code.
-> We don't forget / take mistake if these are merged.
-> But we have such code everywhere ;) this is just my concern, not a big deal.
-> 
-> 	static int __simple_for_each_link (...)
-> 	{
-> 		...
-> =>		add_devs = of_get_child_by_name(top, PREFIX "additional-devs");  
-> 		...
-> 	}
-> 
-> 	static int simple_populate_aux(...)
-> 	{
-> 		...
-> =>		node = of_get_child_by_name(dev->of_node, PREFIX "additional-devs");  
-> 		...
-> 	}
-> 
+Yes, manually overriding the model name to "alc-chrome-book" makes it
+work properly even on an unmodified 6.3.4 kernel.
 
-Well, of_get_child_by_name() is called twice to retrieve the additional-devs
-node but for very different reason.
+Thanks,
 
-In __simple_for_each_link() to filter out the node as it has nothing to do with a DAI.
-In simple_populate_aux() to take care of the devices declared in the node.
-
-I am not sure that we should avoid that.
-It will lead to a more complex code and flags just to avoid this call.
-
-Not sure that it will be better.
-__simple_for_each_link() is called multiple times and is supposed to look at links.
-To avoid the of_get_child_by_name() filter-out call, __simple_for_each_link()
-will look at link *and* populate devices calling simple_populate_aux().
-And to do that correctly it will use a flag to be sure that simple_populate_aux()
-was called only once.
-
-
-In order to avoid some kind of duplication (at least the node name):
-
-	static struct device_node *simple_of_get_add_devs(struct device_node *node)
-	{
-		return of_get_child_by_name(node, PREFIX "additional-devs");
-	}
-
-	static int __simple_for_each_link (...)
-	{
-		...
-=>		add_devs = simple_of_get_add_devs(top);  
-		...
-	}
-
-	static int simple_populate_aux(...)
-	{
-		...
-=>		node = simple_of_get_add_devs(dev->of_node);  
-		...
-	}
-
-
-Does it look better ?
-
-Best regards,
-Hervé
-
-> Thank you for your help !!
-> 
-> Best regards
-> ---
-> Kuninori Morimoto
-
-
-
--- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Joseph C. Sible
