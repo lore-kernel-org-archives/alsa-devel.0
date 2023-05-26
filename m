@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1503C7EE23
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:37:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A2A2C7EE23
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 11:37:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE8776C0;
-	Fri, 26 May 2023 13:36:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE8776C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F9E1850;
+	Fri, 26 May 2023 13:36:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F9E1850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685101031;
-	bh=i+A1c7sTN7tccE3azVerCNLADNy0DE6Rphd7d7XW9EE=;
+	s=default; t=1685101039;
+	bh=QRRgK5ld1oWz1a8rNroYopRDOm2mpuB+uIk9TTaCKA0=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Osff272JczM16xY3YvChhIZaOwsMkSoSqF3oQkkqoWy14IFf2i/MW2eIElTZ9Otug
-	 tokh5hhKzUGuVUGPY+GNkUuhaIMflmArVaQ11t+DYmWA2NUlPgLWbHcff2PxPmyog+
-	 oRGl1ov2YhIFcrReLU3taE6KZwyudOm3CIc+URcI=
+	b=K2bY6uk5GmEkNpRHB5NK+xs2prDMacOAxapNOTpsgoDEsE1Az4OsQow0HEvKBkllQ
+	 dVfmgvhNfBC9rTHjCtJQPFtzAZdZfpzYn8U8hopuxgH1wxi2/43BFdYyhNCEpJRlTe
+	 a9CJDErnjH40XgMw0TuvyywJ1jHP3iw2HvIo2430=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30C0CF805C3; Fri, 26 May 2023 13:34:22 +0200 (CEST)
+	id 82724F805DA; Fri, 26 May 2023 13:34:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93400F805C3;
-	Fri, 26 May 2023 13:34:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16EE9F805D5;
+	Fri, 26 May 2023 13:34:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1B1C7F805C9; Fri, 26 May 2023 13:34:19 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id EB021F805C8; Fri, 26 May 2023 13:34:19 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 38205F80589
-	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 13:34:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38205F80589
+	by alsa1.perex.cz (Postfix) with ESMTPS id 92264F805C7
+	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 13:34:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92264F805C7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=bTkVwnEK
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=F0J2/uIi
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34QAn7PR023720;
-	Fri, 26 May 2023 11:34:13 GMT
+ 34Q8bru7017114;
+	Fri, 26 May 2023 11:34:15 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=+6wyrHYzVCKvqGjSOWtc9jd37WJGXs0UO6DvFprA+4w=;
- b=bTkVwnEKWCasKotmbtal/8dHkya8hqGRhK8XlXPrAZfNq/7wrOv3RYN4VrJzJ32gLLXE
- i/dXdJjh1ZNFXyHX02DP5PQ2/6MCZBC+qTtxDtPbLpz87AvXJlFGXBg4d7MfIE8BiY4m
- IfITfLUNYIZhXeYnPt5wl3Gvg98CekVg5Fw0ysOt+8X8hEdUMO8awOMctUBnQMItlg2w
- sPfbdVczTv0UUZAT6II+U86l9VrZrJtIaFj5LfAVP7+eSgsUgEY9GmyZQGYWpy0Rk5s9
- RCllxk27fJXDFmYsZ2YF8mO4fAf/fJvLMkpti49CabD0N24yKzRDVbwU3+ytpR/hr98s 8A==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=4l04U8ScpSzOar6vhPfePpeMKhfTNryVB8CWo9BK0eo=;
+ b=F0J2/uIido0DhTXcIbliuI0v2dUbwNakSUwkC5RtA8sF3xHeE7j5ZtvwsmH5re6D2vDa
+ 6GTYyfuzkWxFhLDD08YB3fjol1fFvP8IMBJHjvhbKTZARuDbNTC0ySoBnBYBlRTd4dFO
+ 6JmjzRTQ8GqJ6ZaUJ5/rgntNmopRvSFVlKWEY1/xfDVO5FOVU7BToHgoH2TnvhK+egeN
+ hgxum7/IDdXRx0YBoTyxO4yM5ll1pFMFSn8rChZOwK+SH3AM3yVtfgodJ1NovMyBbNWX
+ i2+SUWbTf1n+3L8PBlRQvZwSacuPOY2epV9b32r9h4T4EXrU8CKNUut4vzmubuaqyNvh QQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3qt5uftsw1-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3qtp4wgrq2-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 May 2023 11:34:13 +0000
+	Fri, 26 May 2023 11:34:15 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 34QBXitV016397
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 34QBYE0D021597
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 May 2023 11:33:44 GMT
+	Fri, 26 May 2023 11:34:14 GMT
 Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.42; Fri, 26 May 2023 04:33:38 -0700
+ 15.2.986.42; Fri, 26 May 2023 04:34:08 -0700
 From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 To: <krzysztof.kozlowski+dt@linaro.org>, <vkoul@kernel.org>,
         <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
@@ -80,12 +80,11 @@ To: <krzysztof.kozlowski+dt@linaro.org>, <vkoul@kernel.org>,
         <mka@chromium.org>, <quic_visr@quicinc.com>
 CC: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>,
         Mohammad Rafi Shaik
-	<quic_mohs@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v6 3/8] arm64: dts: qcom: sc7280: Extract audio nodes from
- common idp dtsi file
-Date: Fri, 26 May 2023 17:02:53 +0530
-Message-ID: <20230526113258.1467276-4-quic_mohs@quicinc.com>
+	<quic_mohs@quicinc.com>
+Subject: [PATCH v6 8/8] arm64: dts: qcom: sc7280: Add qcom,adsp-pil-mode
+ property in clock nodes
+Date: Fri, 26 May 2023 17:02:58 +0530
+Message-ID: <20230526113258.1467276-9-quic_mohs@quicinc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230526113258.1467276-1-quic_mohs@quicinc.com>
 References: <20230526113258.1467276-1-quic_mohs@quicinc.com>
@@ -98,19 +97,19 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: YG9tBl5jwQ9-UGV4g1G3irwEMzmG18br
-X-Proofpoint-GUID: YG9tBl5jwQ9-UGV4g1G3irwEMzmG18br
+X-Proofpoint-GUID: N6zYUlCqEDRjeKEMw-tKWic8NGv_jo4h
+X-Proofpoint-ORIG-GUID: N6zYUlCqEDRjeKEMw-tKWic8NGv_jo4h
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
  definitions=2023-05-26_01,2023-05-25_03,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 clxscore=1015
- adultscore=0 priorityscore=1501 mlxlogscore=999 spamscore=0 bulkscore=0
- impostorscore=0 phishscore=0 mlxscore=0 suspectscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2304280000
- definitions=main-2305260099
-Message-ID-Hash: MIZCQZSDI5AQXYLZHIYEV34R2I2SFGHC
-X-Message-ID-Hash: MIZCQZSDI5AQXYLZHIYEV34R2I2SFGHC
+ priorityscore=1501
+ spamscore=0 phishscore=0 adultscore=0 clxscore=1015 suspectscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2304280000 definitions=main-2305260098
+Message-ID-Hash: HAKQSDO7EA2SAIPKRVHY3U3KA2VHWR5B
+X-Message-ID-Hash: HAKQSDO7EA2SAIPKRVHY3U3KA2VHWR5B
 X-MailFrom: quic_mohs@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -123,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MIZCQZSDI5AQXYLZHIYEV34R2I2SFGHC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HAKQSDO7EA2SAIPKRVHY3U3KA2VHWR5B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,312 +133,46 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 
-Split common idp dtsi file into audio specific dtsi and common
-idp dtsi file.
-
-It is required to isolate idp and crd-rev3 platform device tree nodes
-and convert crd-rev3 platform device tree nodes into audioreach specific
-device tree nodes.
+Add "qcom,adsp-pil-mode" property in clock nodes for herobrine
+crd revision 3 board specific device tree.
+This is to register clocks conditionally by differentiating ADSP
+based platforms and legacy path platforms.
+Also disable lpass_core clock, as it is creating conflict
+with ADSP clocks and it is not required for ADSP based platforms.
 
 Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../arm64/boot/dts/qcom/sc7280-audio-idp.dtsi | 131 ++++++++++++++++++
- arch/arm64/boot/dts/qcom/sc7280-crd-r3.dts    |   1 +
- arch/arm64/boot/dts/qcom/sc7280-idp.dtsi      | 122 ----------------
- 3 files changed, 132 insertions(+), 122 deletions(-)
- create mode 100644 arch/arm64/boot/dts/qcom/sc7280-audio-idp.dtsi
+ .../qcom/sc7280-herobrine-audioreach-wcd9385.dtsi    | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-audio-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-audio-idp.dtsi
-new file mode 100644
-index 000000000000..994a13325477
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7280-audio-idp.dtsi
-@@ -0,0 +1,131 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * sc7280 Audio IDP board device tree source (common between SKU1 and SKU2)
-+ *
-+ * Copyright (c) 2022, The Linux Foundation. All rights reserved.
-+ */
-+
-+/{
-+	/* BOARD-SPECIFIC TOP LEVEL NODES */
-+	sound: sound {
-+		compatible = "google,sc7280-herobrine";
-+		model = "sc7280-wcd938x-max98360a-1mic";
-+
-+		audio-routing =
-+			"IN1_HPHL", "HPHL_OUT",
-+			"IN2_HPHR", "HPHR_OUT",
-+			"AMIC1", "MIC BIAS1",
-+			"AMIC2", "MIC BIAS2",
-+			"VA DMIC0", "MIC BIAS3",
-+			"VA DMIC1", "MIC BIAS3",
-+			"VA DMIC2", "MIC BIAS1",
-+			"VA DMIC3", "MIC BIAS1",
-+			"TX SWR_ADC0", "ADC1_OUTPUT",
-+			"TX SWR_ADC1", "ADC2_OUTPUT",
-+			"TX SWR_ADC2", "ADC3_OUTPUT",
-+			"TX SWR_DMIC0", "DMIC1_OUTPUT",
-+			"TX SWR_DMIC1", "DMIC2_OUTPUT",
-+			"TX SWR_DMIC2", "DMIC3_OUTPUT",
-+			"TX SWR_DMIC3", "DMIC4_OUTPUT",
-+			"TX SWR_DMIC4", "DMIC5_OUTPUT",
-+			"TX SWR_DMIC5", "DMIC6_OUTPUT",
-+			"TX SWR_DMIC6", "DMIC7_OUTPUT",
-+			"TX SWR_DMIC7", "DMIC8_OUTPUT";
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		dai-link@0 {
-+			link-name = "MAX98360A";
-+			reg = <0>;
-+
-+			cpu {
-+				sound-dai = <&lpass_cpu MI2S_SECONDARY>;
-+			};
-+
-+			codec {
-+				sound-dai = <&max98360a>;
-+			};
-+		};
-+
-+		dai-link@1 {
-+			link-name = "DisplayPort";
-+			reg = <1>;
-+
-+			cpu {
-+				sound-dai = <&lpass_cpu LPASS_DP_RX>;
-+			};
-+
-+			codec {
-+				sound-dai = <&mdss_dp>;
-+			};
-+		};
-+
-+		dai-link@2 {
-+			link-name = "WCD9385 Playback";
-+			reg = <2>;
-+
-+			cpu {
-+				sound-dai = <&lpass_cpu LPASS_CDC_DMA_RX0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&wcd9385 0>, <&swr0 0>, <&lpass_rx_macro 0>;
-+			};
-+		};
-+
-+		dai-link@3 {
-+			link-name = "WCD9385 Capture";
-+			reg = <3>;
-+
-+			cpu {
-+				sound-dai = <&lpass_cpu LPASS_CDC_DMA_TX3>;
-+			};
-+
-+			codec {
-+				sound-dai = <&wcd9385 1>, <&swr1 0>, <&lpass_tx_macro 0>;
-+			};
-+		};
-+
-+		dai-link@4 {
-+			link-name = "DMIC";
-+			reg = <4>;
-+
-+			cpu {
-+				sound-dai = <&lpass_cpu LPASS_CDC_DMA_VA_TX0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&lpass_va_macro 0>;
-+			};
-+		};
-+	};
-+};
-+
-+&lpass_cpu {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mi2s1_data0>, <&mi2s1_sclk>, <&mi2s1_ws>;
-+
-+	dai-link@1 {
-+		reg = <MI2S_SECONDARY>;
-+		qcom,playback-sd-lines = <0>;
-+	};
-+
-+	dai-link@5 {
-+		reg = <LPASS_DP_RX>;
-+	};
-+
-+	dai-link@6 {
-+		reg = <LPASS_CDC_DMA_RX0>;
-+	};
-+
-+	dai-link@19 {
-+		reg = <LPASS_CDC_DMA_TX3>;
-+	};
-+
-+	dai-link@25 {
-+		reg = <LPASS_CDC_DMA_VA_TX0>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-crd-r3.dts b/arch/arm64/boot/dts/qcom/sc7280-crd-r3.dts
-index afae7f46b050..15f7f26b80cd 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-crd-r3.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-crd-r3.dts
-@@ -8,6 +8,7 @@
- /dts-v1/;
- 
- #include "sc7280-idp.dtsi"
-+#include "sc7280-audio-idp.dtsi"
- #include "sc7280-idp-ec-h1.dtsi"
- 
- / {
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-index c6dc200c00ce..c09ee1b93511 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-@@ -87,100 +87,6 @@ nvme_3v3_regulator: nvme-3v3-regulator {
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&nvme_pwren>;
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi b/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi
+index c02ca393378f..876a29178d46 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi
+@@ -197,6 +197,14 @@ q6prmcc: clock-controller {
  	};
--
--	sound: sound {
--		compatible = "google,sc7280-herobrine";
--		model = "sc7280-wcd938x-max98360a-1mic";
--
--		audio-routing =
--			"IN1_HPHL", "HPHL_OUT",
--			"IN2_HPHR", "HPHR_OUT",
--			"AMIC1", "MIC BIAS1",
--			"AMIC2", "MIC BIAS2",
--			"VA DMIC0", "MIC BIAS3",
--			"VA DMIC1", "MIC BIAS3",
--			"VA DMIC2", "MIC BIAS1",
--			"VA DMIC3", "MIC BIAS1",
--			"TX SWR_ADC0", "ADC1_OUTPUT",
--			"TX SWR_ADC1", "ADC2_OUTPUT",
--			"TX SWR_ADC2", "ADC3_OUTPUT",
--			"TX SWR_DMIC0", "DMIC1_OUTPUT",
--			"TX SWR_DMIC1", "DMIC2_OUTPUT",
--			"TX SWR_DMIC2", "DMIC3_OUTPUT",
--			"TX SWR_DMIC3", "DMIC4_OUTPUT",
--			"TX SWR_DMIC4", "DMIC5_OUTPUT",
--			"TX SWR_DMIC5", "DMIC6_OUTPUT",
--			"TX SWR_DMIC6", "DMIC7_OUTPUT",
--			"TX SWR_DMIC7", "DMIC8_OUTPUT";
--
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		dai-link@0 {
--			link-name = "MAX98360A";
--			reg = <0>;
--
--			cpu {
--				sound-dai = <&lpass_cpu MI2S_SECONDARY>;
--			};
--
--			codec {
--				sound-dai = <&max98360a>;
--			};
--		};
--
--		dai-link@1 {
--			link-name = "DisplayPort";
--			reg = <1>;
--
--			cpu {
--				sound-dai = <&lpass_cpu LPASS_DP_RX>;
--			};
--
--			codec {
--				sound-dai = <&mdss_dp>;
--			};
--		};
--
--		dai-link@2 {
--			link-name = "WCD9385 Playback";
--			reg = <2>;
--
--			cpu {
--				sound-dai = <&lpass_cpu LPASS_CDC_DMA_RX0>;
--			};
--
--			codec {
--				sound-dai = <&wcd9385 0>, <&swr0 0>, <&lpass_rx_macro 0>;
--			};
--		};
--
--		dai-link@3 {
--			link-name = "WCD9385 Capture";
--			reg = <3>;
--
--			cpu {
--				sound-dai = <&lpass_cpu LPASS_CDC_DMA_TX3>;
--			};
--
--			codec {
--				sound-dai = <&wcd9385 1>, <&swr1 0>, <&lpass_tx_macro 0>;
--			};
--		};
--
--		dai-link@4 {
--			link-name = "DMIC";
--			reg = <4>;
--
--			cpu {
--				sound-dai = <&lpass_cpu LPASS_CDC_DMA_VA_TX0>;
--			};
--
--			codec {
--				sound-dai = <&lpass_va_macro 0>;
--			};
--		};
--	};
  };
  
- &apps_rsc {
-@@ -373,34 +279,6 @@ &gpi_dma1 {
- 	status = "okay";
- };
- 
--&lpass_cpu {
--	status = "okay";
--
--	pinctrl-names = "default";
--	pinctrl-0 = <&mi2s1_data0>, <&mi2s1_sclk>, <&mi2s1_ws>;
--
--	dai-link@1 {
--		reg = <MI2S_SECONDARY>;
--		qcom,playback-sd-lines = <0>;
--	};
--
--	dai-link@5 {
--		reg = <LPASS_DP_RX>;
--	};
--
--	dai-link@6 {
--		reg = <LPASS_CDC_DMA_RX0>;
--	};
--
--	dai-link@19 {
--		reg = <LPASS_CDC_DMA_TX3>;
--	};
--
--	dai-link@25 {
--		reg = <LPASS_CDC_DMA_VA_TX0>;
--	};
--};
--
++&lpass_aon {
++	qcom,adsp-pil-mode;
++};
++
++&lpass_core {
++	status = "disabled";
++};
++
  &lpass_rx_macro {
+ 	/delete-property/ power-domains;
+ 	/delete-property/ power-domain-names;
+@@ -239,3 +247,7 @@ &lpass_va_macro {
+ 
  	status = "okay";
  };
++
++&lpasscc {
++	qcom,adsp-pil-mode;
++};
 -- 
 2.25.1
 
