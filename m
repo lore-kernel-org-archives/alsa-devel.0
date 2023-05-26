@@ -4,81 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79390C77B73
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 16:33:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1DA5C77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 18:13:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8EB90204;
-	Fri, 26 May 2023 18:32:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EB90204
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2F18207;
+	Fri, 26 May 2023 20:12:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2F18207
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685118784;
-	bh=Wq0/459LQgCKzVhcExDaJx/IJL140NV8zMyWDCNAyys=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1685124812;
+	bh=5Vp0v9CQLgFPufyyf5L+TVgF51WKnOgrP8cqPyMHWyw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AleG5mCJ2yiEqhYu6Up9kX0m0WAvhTGSdXpA77JSDfOUFgmBFhjXitSTjAXQ45Mtj
-	 Fc5dwbyUKUk++7EnVa1yRSr4L/vVgOIK55n0l5iX0InV4W8YfeKhXfRQZ4X0msvure
-	 d6WrGBKjl9xR4HDrmiAvgGEdpWyPNEI2G3Q9TuoM=
+	b=KPmP8ZP41icRNqFGDO8NFKDnZs7BVrrvp953wZztjIYTTWLJbhbY7RMRJyfABJSPO
+	 QAaKsR6dHj2rSweXWQSAx5GaJB4VZKfEvSi/zDQvkNR0HTnKwRYFFeuoi4pAEyXXOt
+	 pwuWz+SpkZ3VNL1EQgJzrjQHnaU+5su5XQDsv9Zg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69FE2F80425; Fri, 26 May 2023 18:31:46 +0200 (CEST)
+	id 665F5F80249; Fri, 26 May 2023 20:12:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E63BDF8001F;
-	Fri, 26 May 2023 18:31:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91BB6F80249;
+	Fri, 26 May 2023 20:12:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 377ABF80249; Fri, 26 May 2023 18:31:42 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 48EE2F80249; Fri, 26 May 2023 20:12:05 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CE1F2F80086
-	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 18:31:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE1F2F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id E87E7F8001F
+	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 20:11:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E87E7F8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=f1r9Ylp/
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=PNXyJBIa
+Received: from [192.168.1.90] (unknown [188.27.34.213])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A4D4261BE3;
-	Fri, 26 May 2023 16:31:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17DDDC433EF;
-	Fri, 26 May 2023 16:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685118692;
-	bh=Wq0/459LQgCKzVhcExDaJx/IJL140NV8zMyWDCNAyys=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=f1r9Ylp/MR+OP2Sk4wuk7qHMZzP4Ue+joIbVxlbgeoOUK3uSWgTxSDZQwfjMH5BqG
-	 NPFkPym1ileruoiqQGom0c06wRigc9BiVHTwfmIuGPtpcV/J4fg3MER8vjiHYcERqb
-	 egGzxHV39ivyE5TkZUTvthj53xkFedsMZxMykl1lr8Wwbjr7yQCIQx11jc5UeVDw+Y
-	 5H+9fMWwWJid6t5Ysv++9DGxBf14aZhprJceyKZUeIW32T7QO0W4F79dS/ExXF7B2q
-	 1uqAHAlYqJZlsE/MvYl9Xp5dJvDbsB3tvlW+kHOF3JmJxp5bdqYJLno/7gqE1yEFAV
-	 jdEePgv98pBzQ==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Herve Codina <herve.codina@bootlin.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-In-Reply-To: <20230523151223.109551-1-herve.codina@bootlin.com>
-References: <20230523151223.109551-1-herve.codina@bootlin.com>
-Subject: Re: (subset) [PATCH v2 0/9] Add support for IIO devices in ASoC
-Message-Id: <168511868876.36455.2854477201745113664.b4-ty@kernel.org>
-Date: Fri, 26 May 2023 17:31:28 +0100
+	(Authenticated sender: cristicc)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id D2CE16602338;
+	Fri, 26 May 2023 19:11:52 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1685124713;
+	bh=5Vp0v9CQLgFPufyyf5L+TVgF51WKnOgrP8cqPyMHWyw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PNXyJBIaI3wNOlNxvKig3Nns9gBXhDCdLGhkEmjiFdPPoMO4CmGS3ZXP6elNmMnSM
+	 FBmzApVAKsvs1x8/kOWvEXfa5KNUYMmPh/PufmYGe+VGUA9yxNsQtPsV5kC4euP6vL
+	 JMMSZa5ZaG2pye7g1wfIkffFAc4gvY/ts10Zso449C/OgpFh4TZHtQdXCQL31GIcsN
+	 50CnWrHV2YdS7H5H6fYSRLTBjQGpJkgnc0h+iXMQS7RXZEcgLq7R5OXFWL1S2Bcbu2
+	 0GTxa09nFJwItjotmi3xjGeDYkA6ckvWew7739V2zIcjbj+PM5EeW7wvKzNXVnbPKp
+	 bqB/KdMupOOuQ==
+Message-ID: <3c6b67a4-4892-0057-3dfc-65ed6c7ebc37@collabora.com>
+Date: Fri, 26 May 2023 21:11:49 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 1/3] ASoC: es8316: Increment max value for ALC Capture
+ Target Volume control
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Zhu Ning <zhuning0077@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ David Yang <yangxiaohua@everest-semi.com>, Daniel Drake
+ <drake@endlessm.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ kernel@collabora.com
+References: <20230524074156.147387-1-cristian.ciocaltea@collabora.com>
+ <20230524074156.147387-2-cristian.ciocaltea@collabora.com>
+ <5dbcbf84-602a-44de-ad99-268d4d5b4b2f@sirena.org.uk>
+ <cfa23203-1626-440b-ec27-efe56cb297d2@collabora.com>
+ <01fd1a9f-56c7-4864-bb2b-8b004284c8cc@sirena.org.uk>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <01fd1a9f-56c7-4864-bb2b-8b004284c8cc@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: 4UUBJZRXBOCDK5HQAIRAFIEKNIQNP3J3
-X-Message-ID-Hash: 4UUBJZRXBOCDK5HQAIRAFIEKNIQNP3J3
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: MUKIXP5XLBADE4S4G4PJNQDXIAPZWQDR
+X-Message-ID-Hash: MUKIXP5XLBADE4S4G4PJNQDXIAPZWQDR
+X-MailFrom: cristian.ciocaltea@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -90,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4UUBJZRXBOCDK5HQAIRAFIEKNIQNP3J3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MUKIXP5XLBADE4S4G4PJNQDXIAPZWQDR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,43 +113,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 23 May 2023 17:12:14 +0200, Herve Codina wrote:
-> Several weeks ago, I sent a series [1] for adding a potentiometer as an
-> auxiliary device in ASoC. The feedback was that the potentiometer should
-> be directly handled in IIO (as other potentiometers) and something more
-> generic should be present in ASoC in order to have a binding to import
-> some IIO devices into sound cards.
+On 5/24/23 16:59, Mark Brown wrote:
+> On Wed, May 24, 2023 at 04:49:37PM +0300, Cristian Ciocaltea wrote:
+>> On 5/24/23 13:30, Mark Brown wrote:
 > 
-> The series related to the IIO potentiometer device is already under
-> review [2].
+>>> Presumably you can check the effects of changing the value?  It seems
+>>> plausible that what's written in the code might be accurate and the
+>>> higher values might actually change the gain but it'd be better to
+>>> check.
 > 
-> [...]
+>> I haven't noticed a (measurable) change in gain when switching between
+>> 10 and 11, but my testing equipment is also not that great. Will try to
+>> improve the tests accuracy.
+> 
+> I'd expect it should be really obvious with a scope if you've got one?
+> Testing with something consistent like a sine wave (eg, from
+> speaker-test) should also make a 1.5dB difference noticable enough to
+> check if there's at least a volume change by ear even if you can't
+> specifically quantify it.
 
-Applied to
+Luckily arecord & aplay provide VU meter support (via -V,
+--vumeter=TYPE'), so I could easily verify this without using any
+additional tools:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+ Volume  |  VU meter
+---------+----------
+-6.0 dB  |  30-31 %
+-4.5 dB  |  35-36 %
+-3.0 dB  |  42-43 %
+-1.5 dB  |  50-51 %
+-0.0 dB  |  50-51 %
 
-Thanks!
+So it seems the specs are correct, and the problem is the hardware default.
 
-[8/9] ASoC: simple-card: Add missing of_node_put() in case of error
-      commit: 8938f75a5e35c597a647c28984a0304da7a33d63
+Is there a better approach to handle this than extending the volume range?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Regards,
+Cristian
