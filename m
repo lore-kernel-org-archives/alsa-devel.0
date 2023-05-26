@@ -4,92 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4556C77B7A
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 12:31:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3338BC77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 12:31:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B684D828;
-	Fri, 26 May 2023 14:30:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B684D828
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF53A85D;
+	Fri, 26 May 2023 14:31:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF53A85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685104291;
-	bh=Y1Aib6AOTMcfXYONCuVc+TjfCC7y0l1ZnrGBfqcD0zc=;
+	s=default; t=1685104314;
+	bh=FkP44Ov3hIpeBROBQ0pAyJcc7IcCuDm3FRVj3fObKAs=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XAZt4cmL6Ou3iCIYHciITc6yZyp3R0xB4FNd4c5TvWfKKQj9YdBEVelHgTyvsZZnJ
-	 y+EXCcoo6uurqAMhCrQ/dxE4CnV6iSJL9il1ifPb0Kmu1t5ODUe62Vm4sWASq7NZ1d
-	 H13xzuax08cRYcYwjk8McBY+SXvK8MFL2xtYxVKg=
+	b=Hmb2E4SSsgBQxaeKdd6GSKthSFms8J8bywWBVkuKXtZOoDt7T+jUgGo/rcJ+evEne
+	 lRV6bJ87wsIqwE5KyrlwQmiZayTsq0DIe/KXE7kmnXhNY7AK89Kq48xqLrBT2zNWP0
+	 r6/Y/YzRNgkAgMP/FLxfZDQI4VanQfWFE9Q+ooJc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0BCDBF805B5; Fri, 26 May 2023 14:29:28 +0200 (CEST)
+	id 5F02EF805C5; Fri, 26 May 2023 14:29:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B100F80588;
-	Fri, 26 May 2023 14:29:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABA14F805C6;
+	Fri, 26 May 2023 14:29:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6011AF80587; Fri, 26 May 2023 14:29:21 +0200 (CEST)
+	id 91BD6F805A8; Fri, 26 May 2023 14:29:23 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2F070F80542
-	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 14:29:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F070F80542
+	by alsa1.perex.cz (Postfix) with ESMTPS id E6C2FF8026A
+	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 14:29:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6C2FF8026A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=SqaypTwr
+ header.s=PODMain02222019 header.b=RgwaUL//
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34QC2vwX003125;
-	Fri, 26 May 2023 07:29:01 -0500
+ 34QC2vwV003125;
+	Fri, 26 May 2023 07:28:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=bFYPw6wLCSpL41YWCAF1soDlcwsIVO5BLl0PUe5WOmc=;
- b=SqaypTwrxLH7UjzdyQn7NBU9izss7LhWFXEgbuyNY13WRyXOlPbwMEJZQIj4f0I/J7Id
- Az/DB9nYvWEKOFaPa8Gu9DGFF/9nvIliM0PiYUU8Dj9UvHWS0hJP3o6YytT7EK+ujxkJ
- QzaoU7PGsxY5YVoNkLnvaDdGXoz7ScbOLlCzQCGrER9KYUtGnB9277zLuRlztcm9EOxO
- 4begONxRHnAcTp7UDhU8lAOSNTxShPXepse5WABxE+MWQP7wXgQSXfqoBuGLCbW0iEXW
- BB6nzjCJndpo48npIBTGgg8nBAzJqOJaRyWgOe0fG+moFC2p9in9rYFBbWeBGH5Xy/DS Lw==
+ bh=CXq9mbKlLBRisrpUyaThKs1+eOHnWJtaVQ0ZDo/2FOQ=;
+ b=RgwaUL//bwxgf1BlB3Q/W8Mb23+/323+Xyxj3hbZT0bUBVx4946B2JLA4Wcu/KZMJCao
+ 1bWrbC0QDWslpoasSBeVFPxMKMmAzk6yqsDOsNIEg2+Lmr3jzYrJd7wOFopcHH160Osg
+ unYj81tGDXerLG1hpG17H7vg+h7Zr0sVc582o10NTmEFgONPZ+kxM1elKl7M4Ikmtv+Q
+ JFBe7Lbm2qEdgolQOg3P5DmhTbPx5wFyhawCrWLocTVSTHDsD+a1gokoOm+L7L9WY1+W
+ HFAwYESVVqNoy1vvrbEnJPoOQlh3MREYAARWhGGQVDnhADoMryN6A/BWeU6j60c4sHPk 3A==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3qsde8k66w-5
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3qsde8k66w-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 May 2023 07:29:00 -0500
+	Fri, 26 May 2023 07:28:59 -0500
 Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Fri, 26 May
- 2023 07:28:57 -0500
+ 2023 07:28:56 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Fri, 26 May 2023 07:28:57 -0500
+ Transport; Fri, 26 May 2023 07:28:56 -0500
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.65.166])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DB69BB38;
-	Fri, 26 May 2023 12:28:57 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BE3D711A8;
+	Fri, 26 May 2023 12:28:56 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <tiwai@suse.com>, <broonie@kernel.org>, <perex@perex.cz>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
-        Simon Trimmer
-	<simont@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH v3 09/12] ASoC: cs35l56: Make a common function to shutdown
- the DSP
-Date: Fri, 26 May 2023 13:28:49 +0100
-Message-ID: <20230526122852.4552-10-rf@opensource.cirrus.com>
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>
+Subject: [PATCH v3 06/12] ASoC: cs35l56: Move cs_dsp init into shared library
+Date: Fri, 26 May 2023 13:28:46 +0100
+Message-ID: <20230526122852.4552-7-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230526122852.4552-1-rf@opensource.cirrus.com>
 References: <20230526122852.4552-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: OLakzikK8_v39V_hT5T3t97ZqPvBDzNU
-X-Proofpoint-GUID: OLakzikK8_v39V_hT5T3t97ZqPvBDzNU
+X-Proofpoint-ORIG-GUID: -5uoPgngUNFtAR9g4A-opnvCgiOIovCL
+X-Proofpoint-GUID: -5uoPgngUNFtAR9g4A-opnvCgiOIovCL
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: EQKU43T6ZUC6BFGLDJF3PTUJ4JEXOSUV
-X-Message-ID-Hash: EQKU43T6ZUC6BFGLDJF3PTUJ4JEXOSUV
+Message-ID-Hash: RFLAXJR52RMF3MLZCENIYL5LK4IJW257
+X-Message-ID-Hash: RFLAXJR52RMF3MLZCENIYL5LK4IJW257
 X-MailFrom: prvs=0510bc6290=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EQKU43T6ZUC6BFGLDJF3PTUJ4JEXOSUV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RFLAXJR52RMF3MLZCENIYL5LK4IJW257/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,108 +109,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+Move the code that initialized the struct cs_dsp members
+into the shared library so that the HDA driver can use it.
 
-Move issuing of a CS35L56_MBOX_CMD_SHUTDOWN command and then waiting for
-the DSP to reach CS35L56_HALO_STATE_SHUTDOWN in the register appropriate
-for the hardware revision into a common function.
-
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Acked-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/cs35l56.h           |  1 +
- sound/soc/codecs/cs35l56-shared.c | 26 ++++++++++++++++++++++++++
- sound/soc/codecs/cs35l56.c        | 17 +----------------
- 3 files changed, 28 insertions(+), 16 deletions(-)
+ include/sound/cs35l56.h           |  2 +-
+ sound/soc/codecs/cs35l56-shared.c | 18 ++++++++++++++++--
+ sound/soc/codecs/cs35l56.c        | 11 +----------
+ 3 files changed, 18 insertions(+), 13 deletions(-)
 
 diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
-index ae9e8f55962a..5b32aa7468cb 100644
+index 4a885c2321c1..e97c7ccfc051 100644
 --- a/include/sound/cs35l56.h
 +++ b/include/sound/cs35l56.h
-@@ -274,6 +274,7 @@ extern const unsigned int cs35l56_tx_input_values[CS35L56_NUM_INPUT_SRC];
+@@ -269,7 +269,6 @@ extern struct regmap_config cs35l56_regmap_i2c;
+ extern struct regmap_config cs35l56_regmap_spi;
+ extern struct regmap_config cs35l56_regmap_sdw;
  
- void cs35l56_reread_firmware_registers(struct cs35l56_base *cs35l56_base);
- int cs35l56_mbox_send(struct cs35l56_base *cs35l56_base, unsigned int command);
-+int cs35l56_firmware_shutdown(struct cs35l56_base *cs35l56_base);
- int cs35l56_wait_for_firmware_boot(struct cs35l56_base *cs35l56_base);
- void cs35l56_wait_control_port_ready(void);
- void cs35l56_wait_min_reset_pulse(void);
+-extern const struct cs_dsp_region cs35l56_dsp1_regions[CS35L56_NUM_DSP_REGIONS];
+ extern const char * const cs35l56_tx_input_texts[CS35L56_NUM_INPUT_SRC];
+ extern const unsigned int cs35l56_tx_input_values[CS35L56_NUM_INPUT_SRC];
+ 
+@@ -283,6 +282,7 @@ irqreturn_t cs35l56_irq(int irq, void *data);
+ int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base);
+ int cs35l56_runtime_suspend_common(struct cs35l56_base *cs35l56_base);
+ int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_soundwire);
++void cs35l56_init_cs_dsp(struct cs35l56_base *cs35l56_base, struct cs_dsp *cs_dsp);
+ int cs35l56_get_bclk_freq_id(unsigned int freq);
+ void cs35l56_fill_supply_names(struct regulator_bulk_data *data);
+ 
 diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
-index 7e02d023338c..95ef71c7b8f1 100644
+index 194fa08e1cc2..82e5edef1b3f 100644
 --- a/sound/soc/codecs/cs35l56-shared.c
 +++ b/sound/soc/codecs/cs35l56-shared.c
-@@ -218,6 +218,32 @@ int cs35l56_mbox_send(struct cs35l56_base *cs35l56_base, unsigned int command)
+@@ -526,14 +526,28 @@ int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_sou
  }
- EXPORT_SYMBOL_NS_GPL(cs35l56_mbox_send, SND_SOC_CS35L56_SHARED);
+ EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_SHARED);
  
-+int cs35l56_firmware_shutdown(struct cs35l56_base *cs35l56_base)
+-const struct cs_dsp_region cs35l56_dsp1_regions[] = {
++static const struct cs_dsp_region cs35l56_dsp1_regions[] = {
+ 	{ .type = WMFW_HALO_PM_PACKED,	.base = CS35L56_DSP1_PMEM_0 },
+ 	{ .type = WMFW_HALO_XM_PACKED,	.base = CS35L56_DSP1_XMEM_PACKED_0 },
+ 	{ .type = WMFW_HALO_YM_PACKED,	.base = CS35L56_DSP1_YMEM_PACKED_0 },
+ 	{ .type = WMFW_ADSP2_XM,	.base = CS35L56_DSP1_XMEM_UNPACKED24_0 },
+ 	{ .type = WMFW_ADSP2_YM,	.base = CS35L56_DSP1_YMEM_UNPACKED24_0 },
+ };
+-EXPORT_SYMBOL_NS_GPL(cs35l56_dsp1_regions, SND_SOC_CS35L56_SHARED);
++
++void cs35l56_init_cs_dsp(struct cs35l56_base *cs35l56_base, struct cs_dsp *cs_dsp)
 +{
-+	int ret;
-+	unsigned int reg;
-+	unsigned int val;
-+
-+	ret = cs35l56_mbox_send(cs35l56_base, CS35L56_MBOX_CMD_SHUTDOWN);
-+	if (ret)
-+		return ret;
-+
-+	if (cs35l56_base->rev < CS35L56_REVID_B0)
-+		reg = CS35L56_DSP1_PM_CUR_STATE_A1;
-+	else
-+		reg = CS35L56_DSP1_PM_CUR_STATE;
-+
-+	ret = regmap_read_poll_timeout(cs35l56_base->regmap,  reg,
-+				       val, (val == CS35L56_HALO_STATE_SHUTDOWN),
-+				       CS35L56_HALO_STATE_POLL_US,
-+				       CS35L56_HALO_STATE_TIMEOUT_US);
-+	if (ret < 0)
-+		dev_err(cs35l56_base->dev, "Failed to poll PM_CUR_STATE to 1 is %d (ret %d)\n",
-+			val, ret);
-+	return ret;
++	cs_dsp->num = 1;
++	cs_dsp->type = WMFW_HALO;
++	cs_dsp->rev = 0;
++	cs_dsp->dev = cs35l56_base->dev;
++	cs_dsp->regmap = cs35l56_base->regmap;
++	cs_dsp->base = CS35L56_DSP1_CORE_BASE;
++	cs_dsp->base_sysinfo = CS35L56_DSP1_SYS_INFO_ID;
++	cs_dsp->mem = cs35l56_dsp1_regions;
++	cs_dsp->num_mems = ARRAY_SIZE(cs35l56_dsp1_regions);
++	cs_dsp->no_core_startstop = true;
 +}
-+EXPORT_SYMBOL_NS_GPL(cs35l56_firmware_shutdown, SND_SOC_CS35L56_SHARED);
-+
- int cs35l56_wait_for_firmware_boot(struct cs35l56_base *cs35l56_base)
- {
- 	unsigned int reg;
++EXPORT_SYMBOL_NS_GPL(cs35l56_init_cs_dsp, SND_SOC_CS35L56_SHARED);
+ 
+ static const u32 cs35l56_bclk_valid_for_pll_freq_table[] = {
+ 	[0x0C] = 128000,
 diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index f472bde6d21a..dbe9134ae09a 100644
+index ce8142249f05..8b9b5822d515 100644
 --- a/sound/soc/codecs/cs35l56.c
 +++ b/sound/soc/codecs/cs35l56.c
-@@ -676,8 +676,6 @@ static void cs35l56_secure_patch(struct cs35l56_private *cs35l56)
+@@ -1019,18 +1019,9 @@ static int cs35l56_dsp_init(struct cs35l56_private *cs35l56)
+ 	INIT_WORK(&cs35l56->dsp_work, cs35l56_dsp_work);
  
- static void cs35l56_patch(struct cs35l56_private *cs35l56)
- {
--	unsigned int reg;
--	unsigned int val;
- 	int ret;
+ 	dsp = &cs35l56->dsp;
++	cs35l56_init_cs_dsp(&cs35l56->base, &dsp->cs_dsp);
+ 	dsp->part = "cs35l56";
+-	dsp->cs_dsp.num = 1;
+-	dsp->cs_dsp.type = WMFW_HALO;
+-	dsp->cs_dsp.rev = 0;
+ 	dsp->fw = 12;
+-	dsp->cs_dsp.dev = cs35l56->base.dev;
+-	dsp->cs_dsp.regmap = cs35l56->base.regmap;
+-	dsp->cs_dsp.base = CS35L56_DSP1_CORE_BASE;
+-	dsp->cs_dsp.base_sysinfo = CS35L56_DSP1_SYS_INFO_ID;
+-	dsp->cs_dsp.mem = cs35l56_dsp1_regions;
+-	dsp->cs_dsp.num_mems = ARRAY_SIZE(cs35l56_dsp1_regions);
+-	dsp->cs_dsp.no_core_startstop = true;
+ 	dsp->wmfw_optional = true;
  
- 	/*
-@@ -694,23 +692,10 @@ static void cs35l56_patch(struct cs35l56_private *cs35l56)
- 		flush_work(&cs35l56->sdw_irq_work);
- 	}
- 
--	ret = cs35l56_mbox_send(&cs35l56->base, CS35L56_MBOX_CMD_SHUTDOWN);
-+	ret = cs35l56_firmware_shutdown(&cs35l56->base);
- 	if (ret)
- 		goto err;
- 
--	if (cs35l56->base.rev < CS35L56_REVID_B0)
--		reg = CS35L56_DSP1_PM_CUR_STATE_A1;
--	else
--		reg = CS35L56_DSP1_PM_CUR_STATE;
--
--	ret = regmap_read_poll_timeout(cs35l56->base.regmap, reg,
--				       val, (val == CS35L56_HALO_STATE_SHUTDOWN),
--				       CS35L56_HALO_STATE_POLL_US,
--				       CS35L56_HALO_STATE_TIMEOUT_US);
--	if (ret < 0)
--		dev_err(cs35l56->base.dev, "Failed to poll PM_CUR_STATE to 1 is %d (ret %d)\n",
--			val, ret);
--
- 	/* Use wm_adsp to load and apply the firmware patch and coefficient files */
- 	ret = wm_adsp_power_up(&cs35l56->dsp);
- 	if (ret) {
+ 	dev_dbg(cs35l56->base.dev, "DSP system name: '%s'\n", dsp->system_name);
 -- 
 2.30.2
 
