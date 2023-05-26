@@ -4,53 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE933C77B7C
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 10:19:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68136C77B7C
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 May 2023 10:19:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89A94827;
-	Fri, 26 May 2023 12:18:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89A94827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33B333E7;
+	Fri, 26 May 2023 12:18:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33B333E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685096381;
-	bh=is9iqdGnFYokUrQg6z1zqIAOIFX4cSxtTRc4F+mlH5s=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=gnBLHItc+CNY1/ahuOIbLEnPeP2+ey6alMvBhFVxxVaJnyzjsl9o855anJyeOJ/73
-	 jGkjIpmnmZjmwnSJ2TCZF41unluotCuk+jLptygztuPcgRhqGXg64Sc+6J3Qte+4tO
-	 97Q3qZVfTFaOpKcBcIzrlPpoxAGRfbyWU6P0QVBY=
+	s=default; t=1685096389;
+	bh=QlRLOdgYfZ6Y8egnoQxzwhSK6HB/vH4WcD1bWiT6d9E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=pkV/eIjV1sMO7QbPOdFkG9zYvRClGm64YdPy19G0LvDuvI8GdrA1IQvusnPd52qPO
+	 a+QrDi8Ye3XI08nPrd2HJMrjKon00VohPH3KfRJ5qpft/yy5AoUzhkvsPVq4m+RHoa
+	 9i2aXnNOWDo8vjopKXy0aVOFLHP3zKl4RnLh9ppg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9D705F805A0; Fri, 26 May 2023 12:17:21 +0200 (CEST)
+	id CC2FBF805B4; Fri, 26 May 2023 12:17:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 367C6F805A8;
-	Fri, 26 May 2023 12:17:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68F2BF805AF;
+	Fri, 26 May 2023 12:17:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C4C8F80568; Fri, 26 May 2023 12:17:14 +0200 (CEST)
+	id CAA82F80563; Fri, 26 May 2023 12:17:14 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60175F80548
-	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 12:17:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60175F80548
+	by alsa1.perex.cz (Postfix) with ESMTPS id 99084F80567
+	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 12:17:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99084F80567
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id BF13220010;
+	by bluemchen.kde.org (Postfix) with ESMTP id C14E8241B4;
 	Fri, 26 May 2023 06:16:59 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1q2UVH-pwG-00; Fri, 26 May 2023 12:16:59 +0200
+	id 1q2UVH-pwM-00; Fri, 26 May 2023 12:16:59 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 0/6] ALSA: emu10k1: improvements related to the driver's
- procfs
-Date: Fri, 26 May 2023 12:16:53 +0200
-Message-Id: <20230526101659.437969-1-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 1/6] ALSA: emu10k1: hide absent 2nd pointer-offset register
+ set from /proc
+Date: Fri, 26 May 2023 12:16:54 +0200
+Message-Id: <20230526101659.437969-2-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <20230526101659.437969-1-oswald.buddenhagen@gmx.de>
+References: <20230526101659.437969-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LVNR2SNFFVLDJBLTQSZYBAMOLEWBQNJC
-X-Message-ID-Hash: LVNR2SNFFVLDJBLTQSZYBAMOLEWBQNJC
+Message-ID-Hash: QWVZG3G4UJ3AUCT64OL7LQSJNEWXXDRZ
+X-Message-ID-Hash: QWVZG3G4UJ3AUCT64OL7LQSJNEWXXDRZ
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -63,7 +66,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LVNR2SNFFVLDJBLTQSZYBAMOLEWBQNJC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QWVZG3G4UJ3AUCT64OL7LQSJNEWXXDRZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -72,23 +75,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-FIXME: the last commit is still being tested; something appears fishy.
+The 2nd register set belongs to the P16V chip (or embedded P17V module),
+so there is nothing to show when no such part is present. Gen2 E-MU
+cards have a P17V, but it's entirely unused, so we hide it there as
+well.
 
-Oswald Buddenhagen (6):
-  ALSA: emu10k1: hide absent 2nd pointer-offset register set from /proc
-  ALSA: emu10k1: fix writing 1st pointer-offset register set through
-    /proc
-  ALSA: emu10k1: actually disassemble DSP instructions in /proc
-  ALSA: emu10k1: include FX send amounts in /proc output
-  ALSA: emu10k1: make E-MU FPGA register dump in /proc more useful
-  ALSA: emu10k1: vastly improve usefulness of info in /proc
+Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+---
+ sound/pci/emu10k1/emuproc.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
- include/sound/emu10k1.h     |  11 +
- sound/pci/emu10k1/emufx.c   |  87 ++++---
- sound/pci/emu10k1/emuproc.c | 440 ++++++++++++++++++++++--------------
- sound/pci/emu10k1/io.c      |  28 ++-
- 4 files changed, 362 insertions(+), 204 deletions(-)
-
+diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
+index 89ea3adff322..6cf4a7e16b1d 100644
+--- a/sound/pci/emu10k1/emuproc.c
++++ b/sound/pci/emu10k1/emuproc.c
+@@ -561,15 +561,19 @@ int snd_emu10k1_proc_init(struct snd_emu10k1 *emu)
+ 	snd_card_rw_proc_new(emu->card, "ptr_regs00b", emu,
+ 			     snd_emu_proc_ptr_reg_read00b,
+ 			     snd_emu_proc_ptr_reg_write00);
+-	snd_card_rw_proc_new(emu->card, "ptr_regs20a", emu,
+-			     snd_emu_proc_ptr_reg_read20a,
+-			     snd_emu_proc_ptr_reg_write20);
+-	snd_card_rw_proc_new(emu->card, "ptr_regs20b", emu,
+-			     snd_emu_proc_ptr_reg_read20b,
+-			     snd_emu_proc_ptr_reg_write20);
+-	snd_card_rw_proc_new(emu->card, "ptr_regs20c", emu,
+-			     snd_emu_proc_ptr_reg_read20c,
+-			     snd_emu_proc_ptr_reg_write20);
++	if (!emu->card_capabilities->emu_model &&
++	    (emu->card_capabilities->ca0151_chip || emu->card_capabilities->ca0108_chip)) {
++		snd_card_rw_proc_new(emu->card, "ptr_regs20a", emu,
++				     snd_emu_proc_ptr_reg_read20a,
++				     snd_emu_proc_ptr_reg_write20);
++		snd_card_rw_proc_new(emu->card, "ptr_regs20b", emu,
++				     snd_emu_proc_ptr_reg_read20b,
++				     snd_emu_proc_ptr_reg_write20);
++		if (emu->card_capabilities->ca0108_chip)
++			snd_card_rw_proc_new(emu->card, "ptr_regs20c", emu,
++					     snd_emu_proc_ptr_reg_read20c,
++					     snd_emu_proc_ptr_reg_write20);
++	}
+ #endif
+ 	
+ 	snd_card_ro_proc_new(emu->card, "emu10k1", emu, snd_emu10k1_proc_read);
 -- 
 2.40.0.152.g15d061e6df
 
