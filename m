@@ -4,73 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98368C7EE2C
-	for <alsa-devel@archiver.kernel.org>; Sat, 27 May 2023 10:42:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EF42C77B73
+	for <alsa-devel@archiver.kernel.org>; Sat, 27 May 2023 10:42:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 797BD820;
-	Sat, 27 May 2023 12:41:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 797BD820
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE3531F6;
+	Sat, 27 May 2023 12:41:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE3531F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685184136;
-	bh=3ENny4TLjAP6BGM/oHhGNzefJxUwL+iQcwwURQ1DS0E=;
+	s=default; t=1685184149;
+	bh=8Isxwih0uAr3zq1l6ccw91UiAglHni0Ws5Oq5epCgug=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A26g5F6k6IGeotm5P5cVEu24KZT75E1chAQjoD7eaR7vvgEC7QuVQw7+p1911aUl8
-	 ZRgWI3KdNYg5X4zAayKhcns+wVDV+b7r3vtfEpuJL4B8nrAiBkasDGAnvMFB9p495B
-	 fSd2LhI8dO/Eo6T4UTAEIn1AHYPOqv9Jd/68k6JM=
+	b=eusYHuf2nF/03GfjJeK1aPCBbbqW/vQ8uY9uyJuJwG1B4gVntp4DOFvOzaEUoP5m3
+	 2FPx0Ld5lRYc1096mbQ4Ta7Msv1bshpvMYF2bTrFkayNmR03OLv3WEU+he+M3xzMdh
+	 yHhK38MW/Hfge/j8Pj0eqk/dnkVBJc50Ifh3Roks=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C54AF80552; Sat, 27 May 2023 12:40:37 +0200 (CEST)
+	id 3017CF80563; Sat, 27 May 2023 12:40:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C9CCF80552;
-	Sat, 27 May 2023 12:40:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC113F80564;
+	Sat, 27 May 2023 12:40:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1FD21F80549; Sat, 27 May 2023 12:39:06 +0200 (CEST)
+	id 92B3AF80564; Sat, 27 May 2023 12:40:39 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 771E4F80544
-	for <alsa-devel@alsa-project.org>; Sat, 27 May 2023 12:39:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 771E4F80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id 20B43F800DF
+	for <alsa-devel@alsa-project.org>; Sat, 27 May 2023 12:40:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20B43F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jPqBWun2
+ header.s=k20201202 header.b=P63HBa+p
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D5DD360BC8;
-	Sat, 27 May 2023 10:38:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD647C433D2;
-	Sat, 27 May 2023 10:38:58 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id CA3336118D;
+	Sat, 27 May 2023 10:40:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABE54C433EF;
+	Sat, 27 May 2023 10:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685183939;
-	bh=3ENny4TLjAP6BGM/oHhGNzefJxUwL+iQcwwURQ1DS0E=;
+	s=k20201202; t=1685184007;
+	bh=8Isxwih0uAr3zq1l6ccw91UiAglHni0Ws5Oq5epCgug=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jPqBWun2jt1uDOsPLMUyWY1ve5naJCAfB7AwNdGcZ30zRQ5zxCpPRUG1N0e2UwusN
-	 d1nms3MgE83xe42z+IhTSmHgdKmh6AG7MgZnne3AhmJtpfvaFOa3XpmZypEzVVVB/b
-	 1e7js1lGGCmUN/9dRMLzaTpHdaVsF1kLAFFnbfhbGRpaXVLA+n0Tf6Fhdsa4Lf427D
-	 16K4N+WYt3x6VIZK+HdRCs4A74WjMgwyAtXGY/xAdjhpVl5aGqqC60UcpweiN18kZq
-	 nTA7HZLDFw69frvGso96Jw/ACc6Orw4RtA0pFR0rK8CtN7UX9BzQDJ1ENj8MHf2T4U
-	 K7DZpuE2PQxLg==
-Date: Sat, 27 May 2023 16:08:55 +0530
+	b=P63HBa+pLzOSxeK2Gt8+V/G29qLAkj0FIWwT177wpeWTv2OkzRyq32e76VRWeslf7
+	 LxMq6VtYf5JWwZzcUWcLr0hL77u/wVniZPbPIzh8qMo/GWBvRWWPqWcXRHVcMgib+G
+	 FdpWXzXw5uTUTbMTgVZXyAX70wF31rqXNZyxyoFq9aTxR8/PJ7Mf+kb1GxTLcCCWlm
+	 /DTFbLtGTRNV2TIOzh+MPk1bpb6fndhXhBPsRHIpjiZBUCO9i8lk35F1hAueFDmzfi
+	 kMA/NMtPksWOifI65yHktvH0phKq3UPmmM/GDy7jmLIm7MXvcSLiIphUad1ipofu2G
+	 eDUPMnTeGTOPg==
+Date: Sat, 27 May 2023 16:10:03 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
-Subject: Re: [PATCH] soundwire: intel: read AC timing control register before
- updating it
-Message-ID: <ZHHdvx4cDFIiX27s@matsya>
-References: <20230515081301.12921-1-yung-chuan.liao@linux.intel.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] soundwire: qcom: drop unused struct
+ qcom_swrm_ctrl members
+Message-ID: <ZHHeA7TU3YQS5Bib@matsya>
+References: <20230515132000.399745-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230515081301.12921-1-yung-chuan.liao@linux.intel.com>
-Message-ID-Hash: CIR5PPI4O7NBBOX2GA7WCI5YXFMD4TR6
-X-Message-ID-Hash: CIR5PPI4O7NBBOX2GA7WCI5YXFMD4TR6
+In-Reply-To: <20230515132000.399745-1-krzysztof.kozlowski@linaro.org>
+Message-ID-Hash: JA7UADYDISXQ2PUQQDNLLCA6N2RGIHKP
+X-Message-ID-Hash: JA7UADYDISXQ2PUQQDNLLCA6N2RGIHKP
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,32 +88,16 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CIR5PPI4O7NBBOX2GA7WCI5YXFMD4TR6/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JA7UADYDISXQ2PUQQDNLLCA6N2RGIHKP/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 15-05-23, 16:13, Bard Liao wrote:
-> From: Chao Song <chao.song@linux.intel.com>
-> 
-> Start from ACE1.x, DOAISE is added to AC timing control
-> register bit 5, it combines with DOAIS to get effective
-> timing, and has the default value 1.
-> 
-> The current code fills DOAIS, DACTQE and DODS bits to a
-> variable initialized to zero, and updates the variable
-> to AC timing control register. With this operation, We
-> change DOAISE to 0, and force a much more aggressive
-> timing. The timing is even unable to form a working
-> waveform on SDA pin on Meteorlake.
-> 
-> This patch uses read-modify-write operation for the AC
-> timing control register access, thus makes sure those
-> bits not supposed and intended to change are not touched.
+On 15-05-23, 15:20, Krzysztof Kozlowski wrote:
+> Drop unused members from the driver state container: struct qcom_swrm_ctrl.
 
 Applied, thanks
 
