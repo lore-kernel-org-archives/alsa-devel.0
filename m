@@ -4,106 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 575AEC77B7E
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0244EC77B7E
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:05:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3506174C;
-	Thu,  1 Jun 2023 18:04:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3506174C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7595D828;
+	Thu,  1 Jun 2023 18:04:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7595D828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685635491;
-	bh=TirXeNXcSGysUY1U4xKNK2JClyX6eQNssWqvDCuEisI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=tI+qZxtT+cr4Ng06wnRbVS1AS+FGcSx47jxojVTgOL4bD9tZFAiJunQr6mWKuKR4x
-	 k50ylseAoyshtD+vpbLCK3sczHIlODaQ6mPVKXt/kEyjkObXLynLPcC5XmxzLJ1tWA
-	 6zynZsEfNiD/x/aFDA/fdYzZYWQlHkU7rAchOuDw=
+	s=default; t=1685635508;
+	bh=47U77481J8R45xXOIvay+70BtesXIQ5aQ4HfME31dZw=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=AGkd8c6zyRc1EbO4WxyYlF2zHH76+IaltC9tIg8R3l82ehSHNnWjRSC6d9RrDQOeY
+	 BvP7KA69X9oQyV62/MRIPR33IouOdVY6Po+TOduiDXBD1NqgcOgX2Oe4b4gY/CfXk6
+	 9vJlJ9H7aWK7tgq7bX7971JQiTZ5K2lfpnQF466s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 09AD3F8058C; Thu,  1 Jun 2023 18:02:38 +0200 (CEST)
+	id 94D35F805BE; Thu,  1 Jun 2023 18:02:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DC73F805A8;
-	Thu,  1 Jun 2023 18:02:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23B9EF805AE;
+	Thu,  1 Jun 2023 18:02:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D421DF80249; Fri, 26 May 2023 21:25:12 +0200 (CEST)
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D0DE5F80249; Sat, 27 May 2023 21:28:34 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0B22F80053
-	for <alsa-devel@alsa-project.org>; Fri, 26 May 2023 21:25:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0B22F80053
+	by alsa1.perex.cz (Postfix) with ESMTPS id 328FDF8001F
+	for <alsa-devel@alsa-project.org>; Sat, 27 May 2023 21:28:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 328FDF8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=alu.unizg.hr header.i=@alu.unizg.hr header.a=rsa-sha256
- header.s=mail header.b=xs9isNSu;
-	dkim=pass (2048-bit key) header.d=alu.unizg.hr header.i=@alu.unizg.hr
- header.a=rsa-sha256 header.s=mail header.b=0lmiMCYu
-Received: from localhost (localhost [127.0.0.1])
-	by domac.alu.hr (Postfix) with ESMTP id 28AC360204;
-	Fri, 26 May 2023 21:25:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1685129104; bh=TirXeNXcSGysUY1U4xKNK2JClyX6eQNssWqvDCuEisI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=xs9isNSuXwNC3VD26JSpsggNq7hTq8uqKje9Olf9r6lM3aAps7x85uuB9nBfAB9B7
-	 t1uoB10GnW38VwABiY1vUhgB9IRWMlWgD/Gu+vjcMnLrTO0u0hiUEEgx7hm2p9JK36
-	 fbwDHrKBGPGuFRcCabwDOVyg498bdu9lia/5qCZmi/g/Nyj+gcmYgyj0CLsQnkLgo6
-	 XYHxbiSjFpw7ElgbjbNOqsYfPM4M7XFD8nZ7Iq0ZF9zd7k/+hJu3d3gvcYWds52tK0
-	 C9z3svxc/VW3c1jy7nR2dm4gouDBMiUic6ZWrcVBu5mC6tVx0ppawIVN6TMggzDGR+
-	 vYfE1X62Y+7SA==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id F9xZedwACIwM; Fri, 26 May 2023 21:25:02 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [77.237.113.62])
-	by domac.alu.hr (Postfix) with ESMTPSA id 9403D60203;
-	Fri, 26 May 2023 21:25:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-	t=1685129102; bh=TirXeNXcSGysUY1U4xKNK2JClyX6eQNssWqvDCuEisI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=0lmiMCYu2YDUtravjkwoTBqXhgjbhmCZsWkhQe5smuIlPTvCelwf02jGYMRDdvpyI
-	 VE5fd4LY0kxYQjYEUcvLLfVjdDQ+Q2CCnMQ9sheuyVaerVrb0nr91Fi1HYxuDZTmQE
-	 maCzKbWIx0O/1kY/YdMqhyE9hOaqLdeeC7EfT2VrEEman1n3RLjncTUTVebu1Fm37X
-	 BoMqq8KJ2D9KtN1BRVMDAxO1YQkmLrrx8vfDKEqTFCs4gtord8s0EsDfCTJpibbio5
-	 sECRViI+RRsQIjRQtjbJAW5bHH8562yQzxMxI/D2AFE8JkKUB84bDlpuMOa8cQ+Dvx
-	 U+ZQZJVks0g5g==
-Message-ID: <00be4091-0119-c9dd-c632-079d2943c5ca@alu.unizg.hr>
-Date: Fri, 26 May 2023 21:25:01 +0200
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=iGIh//w1
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 63E6360D33;
+	Sat, 27 May 2023 19:28:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B184CC433D2;
+	Sat, 27 May 2023 19:28:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685215699;
+	bh=47U77481J8R45xXOIvay+70BtesXIQ5aQ4HfME31dZw=;
+	h=Date:From:To:In-Reply-To:References:Subject:From;
+	b=iGIh//w1R0aZbi6rkc8qZritYorqCU5chD0p5r/4uyFSRoECVlXCsdnhUcbLwdXDL
+	 WGh67k0fcNYUJSVFII2t1HF1ZjwlynBKywpt5ghxPnBds+aW98VlaYih7JZgP5MmmV
+	 zu3NLXtpLf5QxuCJohSIwJjuFhzUgp1WCb/E6QJ6Ftsi9yUTDfWUbqsjIw6WbXbPKq
+	 cF2U9ZRt8Q6US9zOc8szJSdJbyaXAqLxQD9YFscLOlVB0rxj3wgmXRqLsb8m8NpBe5
+	 RlAwVO6TK5IirXWpeeCuYcRGVdaovv7DRTK1RSf//ScqVCzDruiptudSp3ZR/9KwFA
+	 f6cdSNdJN+92g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org
+ (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id
+ 8C086C4166F;
+	Sat, 27 May 2023 19:28:19 +0000 (UTC)
+Date: Sat, 27 May 2023 19:28:18 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v1 1/1] selftests: alsa: pcm-test: Fix compiler warnings
- about the format
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
- alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Shuah Khan <shuah@kernel.org>
-References: <20230524191528.13203-1-mirsad.todorovac@alu.unizg.hr>
- <9c82296b-4682-49e7-8302-bd678135f1b4@sirena.org.uk>
-From: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <9c82296b-4682-49e7-8302-bd678135f1b4@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-MailFrom: mirsad.todorovac@alu.unizg.hr
+From: "Kernel.org Bugbot" <bugbot@kernel.org>
+To: bugs@lists.linux.dev, tiwai@suse.com, alsa-devel@alsa-project.org,
+ perex@perex.cz
+Message-ID: <20230527-b216392c2-2360e52d040f@bugzilla.kernel.org>
+In-Reply-To: <20230331-b216392c1-7a8e13d80aac@bugzilla.kernel.org>
+References: <20230331-b216392c1-7a8e13d80aac@bugzilla.kernel.org>
+Subject: Re: Asus ROG Zephyrus GX701L sound problem
+X-Bugzilla-Product: Linux
+X-Bugzilla-Component: Kernel
+X-Mailer: peebz 0.1
+X-MailFrom: bugbot@kernel.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: VAPWUBNNI35YVK2SBRS54BJGICBNRLKR
-X-Message-ID-Hash: VAPWUBNNI35YVK2SBRS54BJGICBNRLKR
+Message-ID-Hash: 4FESBZKRI5CWE57SCVJDLGVIKPXIHPYG
+X-Message-ID-Hash: 4FESBZKRI5CWE57SCVJDLGVIKPXIHPYG
 X-Mailman-Approved-At: Thu, 01 Jun 2023 16:02:26 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VAPWUBNNI35YVK2SBRS54BJGICBNRLKR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4FESBZKRI5CWE57SCVJDLGVIKPXIHPYG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,14 +97,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+mpagano writes via Kernel.org Bugzilla:
 
+(In reply to Ivan from comment #1)
+> Any news?
 
-On 5/25/23 11:22, Mark Brown wrote:
-> On Wed, May 24, 2023 at 09:15:29PM +0200, Mirsad Goran Todorovac wrote:
->> GCC 11.3.0 issues warnings in this module about wrong sizes of format
->> specifiers:
-> 
-> Reviewed-by: Mark Brown <broonie@kernel.org>
+There at least an acknowledgement of the growing problem and a statement that it's being worked on.
 
-Thanks,
-Mirsad
+https://lore.kernel.org/lkml/1991650.PYKUYFuaPT@fedora/
+
+View: https://bugzilla.kernel.org/show_bug.cgi?id=216392#c2
+You can reply to this message to join the discussion.
+-- 
+Deet-doot-dot, I am a bot.
+Kernel.org Bugzilla (peebz 0.1)
+
