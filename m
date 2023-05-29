@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 792D9C77B7A
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 May 2023 05:23:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C810DC7EE23
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 May 2023 05:24:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AAD1207;
-	Mon, 29 May 2023 07:22:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AAD1207
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87B66828;
+	Mon, 29 May 2023 07:23:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87B66828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685337828;
-	bh=OxGM0AKBIx1XvIlUi5jL9Y/t0Cuh7kuMddjsyZ2j52M=;
+	s=default; t=1685337880;
+	bh=ndRWXQzxO1TqHUmrmU3vFMlwQAoNr+yislTsYdJ1l8Q=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=e5OXwIrI2g56kfG8boGjpgqHJm3uD874yyuH1LsujKNXyoY2mjOxhRZ4/9wWijQr3
-	 Em0ffBCLYwcTCSu7pHddeXa575E8M7TX/WuHZDi3QeOff1HZE2JoIIvdr56eUnt4eN
-	 mt44MBcopw0NX+U3dx/uveIBwK5UrPFP2+yErI5k=
+	b=vYaOEVIyKEUEd3xP/RiBk4llxJLKWIllwJbKSYbucyp7kZeWNqY4Pzuj0k7sHGUWz
+	 026mnyn0xtX1NBuqrCSdYA4mwDeXNJjX6EwtgWHAHJFM9V7DMBdEpyzBTTOb7rFrx/
+	 Fh+/kbOwlL3srpGT+hkmD3Q5w4Q5ESHYgMJTUddE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2888DF80544; Mon, 29 May 2023 07:22:56 +0200 (CEST)
+	id CF1A7F8055A; Mon, 29 May 2023 07:23:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2F89F8042F;
-	Mon, 29 May 2023 07:22:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47103F80552;
+	Mon, 29 May 2023 07:23:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7AE93F8042F; Mon, 29 May 2023 07:14:49 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 5C7B0F80510; Mon, 29 May 2023 07:16:05 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 73FB0F80086
-	for <alsa-devel@alsa-project.org>; Mon, 29 May 2023 07:14:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73FB0F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 53287F80086
+	for <alsa-devel@alsa-project.org>; Mon, 29 May 2023 07:16:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53287F80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Y8io3SHg
+ header.s=k20201202 header.b=CAGUJf01
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2526E62192;
-	Mon, 29 May 2023 05:13:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA324C433EF;
-	Mon, 29 May 2023 05:13:57 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id DCDE761130;
+	Mon, 29 May 2023 05:16:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC863C433D2;
+	Mon, 29 May 2023 05:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685337238;
-	bh=OxGM0AKBIx1XvIlUi5jL9Y/t0Cuh7kuMddjsyZ2j52M=;
+	s=k20201202; t=1685337360;
+	bh=ndRWXQzxO1TqHUmrmU3vFMlwQAoNr+yislTsYdJ1l8Q=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y8io3SHganogAgrD8ffbKmawDWKacV9I4vjf0B2uUTRup5dH5a7GA2OmxpTI0K2Ez
-	 +avXfFu6Q+2bdI26UlqWnM3JBo9LCTyJ2tbSIIqC/RH+95QUQK2IC7Fysk9xaVJgLD
-	 eVDTFYssWJskm7XgA1NCGlLMxYew5FvpYd+SNM7JROjFnZcPLzSaGP/46X8r0IhVSz
-	 a+6ocY8eWpvb9MsGZW8ZvnxMm9FYbzMs5XCyq7yRHaZmEnFlPMRXk92vutHYPWVzae
-	 jBAsca0UBWe37K8T2b9/u1brcqyxYrT0oETt2CuNd9Jwjb1DiITnNXY6XYjySXtE88
-	 zhEPlDMnP+Aew==
-Date: Mon, 29 May 2023 10:43:54 +0530
+	b=CAGUJf01nAVHhzzT2a9QncHZwdEbwKD0lb6fQMLBsSGbPlggal8TF50Dt4OHTCkb5
+	 Q4Mm105vamL3cX418ZnmoR301+t/4/oCk97npaX+mfjo4+IWTBPTp0ohwH+2caYNAw
+	 h529n65tFgXHOtAL7cFZ4EL5YOF36o4go6uUm+qc9Ki0ADXkqKiWa2sShK+gDP7LhC
+	 web6d8LmEX+wjcGiW/6PBwxsg5pVMLe8Iab/ze5OuxslZemcybeiu2W6G1cIznR4nL
+	 XUAMZoIOzVpheUZXCNWeL0TqBR6hGFnJGvLaRervT66YpPgpiSbue12RzdOv8ibglY
+	 bDt7V8KLVlHIQ==
+Date: Mon, 29 May 2023 10:45:56 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: andersson@kernel.org, yung-chuan.liao@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-	linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] soundwire: qcom: stablity fixes
-Message-ID: <ZHQ0kosUz15P8jo+@matsya>
-References: <20230525133812.30841-1-srinivas.kandagatla@linaro.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH] soundwire: intel_bus_common: update error log
+Message-ID: <ZHQ1DHv8HxSWMpiJ@matsya>
+References: <20230518024215.164281-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230525133812.30841-1-srinivas.kandagatla@linaro.org>
-Message-ID-Hash: EFL7IPHTUFN24XPA4632SXFMEE2CIYNT
-X-Message-ID-Hash: EFL7IPHTUFN24XPA4632SXFMEE2CIYNT
+In-Reply-To: <20230518024215.164281-1-yung-chuan.liao@linux.intel.com>
+Message-ID-Hash: AEY2QUT3527CZ4BPF2AZU6SLSERCWSSJ
+X-Message-ID-Hash: AEY2QUT3527CZ4BPF2AZU6SLSERCWSSJ
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EFL7IPHTUFN24XPA4632SXFMEE2CIYNT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AEY2QUT3527CZ4BPF2AZU6SLSERCWSSJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,12 +90,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 25-05-23, 14:38, Srinivas Kandagatla wrote:
-> During x13s audio testing we hit few corner cases due to issues
-> in codec drivers and some obvious code bugs.
+On 18-05-23, 10:42, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> Here are the fixes for those issues, mostly the issues are around
-> devices loosing the sync in between runtime pm suspend resume path.
+> We use __func__ in all calls of sdw_cdns_check_self_clearing_bits(),
+> except in one case. Likely an editing miss when the code was
+> refactored.
 
 Applied, thanks
 
