@@ -4,75 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75E12C77B7A
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 May 2023 05:24:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4C85C77B7A
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 May 2023 05:27:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29CCE822;
-	Mon, 29 May 2023 07:23:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29CCE822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D6D43E;
+	Mon, 29 May 2023 07:26:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D6D43E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685337879;
-	bh=bZrJR9eBZpEMvilsKjHNV6J5FAm7R9AgAJ1MoHFjfvM=;
+	s=default; t=1685338034;
+	bh=sh4pubmyXVQLpGpgSZtDf5EnBuwgelN/Cctaod7zKn8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=k3ofMBzuw+QJ5u2j/wI80GBHa2RNgOVT5QEPWgV2hDzz/4U2bl/T6gRjb1vYHmU7x
-	 C3n1M7gDcwnaEC6WauUogIWChFEfltEgjG2uw/cnwA2h98g214bYaJ0bu6n8qnihcK
-	 CiIdm+jACZNwb7CbBNejy8kuEsQIIoPdUeL7zwkQ=
+	b=IBQRoy743KoySjrJh/qRqVAobW8X5GtDSO5zc3d8iruUD+KqIvuWgJrvzcAX8IVf4
+	 1HNmbzZEZFtUk3j5W3g6GnxnbWnu/r/pwpE9ValdQ7USd814NhOc/U/d2CHTnlJVeX
+	 6rRvxB+cmdSL6gX18IpGPD8JoUFSolHrqlTnLTZs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1DEB0F80510; Mon, 29 May 2023 07:23:07 +0200 (CEST)
+	id 7921DF80542; Mon, 29 May 2023 07:25:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0909F80510;
-	Mon, 29 May 2023 07:23:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D4ECF80549;
+	Mon, 29 May 2023 07:25:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C52D0F804FC; Mon, 29 May 2023 07:15:10 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 15709F8042F; Mon, 29 May 2023 07:17:52 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 57BFCF8016B
-	for <alsa-devel@alsa-project.org>; Mon, 29 May 2023 07:15:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57BFCF8016B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6734BF80086
+	for <alsa-devel@alsa-project.org>; Mon, 29 May 2023 07:17:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6734BF80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=AUsn6FBy
+ header.s=k20201202 header.b=eDX6G8p5
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 124FC61130;
-	Mon, 29 May 2023 05:15:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1A11C433EF;
-	Mon, 29 May 2023 05:15:02 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9E2D462192;
+	Mon, 29 May 2023 05:17:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7509FC433EF;
+	Mon, 29 May 2023 05:17:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685337303;
-	bh=bZrJR9eBZpEMvilsKjHNV6J5FAm7R9AgAJ1MoHFjfvM=;
+	s=k20201202; t=1685337467;
+	bh=sh4pubmyXVQLpGpgSZtDf5EnBuwgelN/Cctaod7zKn8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AUsn6FByhLWpN6LG0gcdV63wHkhPRbJ85V5XnNUlE2zHGYBrmtceo6aS4lMXVsWAr
-	 AEZPqobHNkNk2EPhLRS5qT4P8N3UK988O0PD4Iam8LVFMyMHL05a/gQqE79aTRxAQE
-	 O9A5NyfTr9eG0+Pj1jkoyWUV6KeAdLUJvXUraFni9LV3oX+WVSIMeki+Dkh8D1qqRu
-	 h/Z4vyoKYWcok8F+KBKVlnPM/61NRV1ysMauY9/KrolreAvsaCaLpjE6nRHeRXir83
-	 oLcgFQi/FSlgXEuwPK+/PMZvUObeR2XMYHSXA4aNLz4PWj+gF/xSIlYBKalxse20rT
-	 yA/OwJ//ysOiw==
-Date: Mon, 29 May 2023 10:44:59 +0530
+	b=eDX6G8p5IMAxh9JNKJUTvjXXlZdDtt9rXD8EDRgXuys/cs4Ps6eSzdiqeWbzIDw8h
+	 J2wwDJiZmHoMohiLRGsX9OuSSDLgQYZbLjs1rTWlRb8InhXoKoA7aFyrniVCssJ3IN
+	 2d10V1UIL4FH+9iza8dG6brjwUR2uSeG6zJVYV04/0oZkj4p80tCl8VbqeVSPDWSrU
+	 fvncktEUxQe22ek/0bS13uaxLs920Z8S5IQSdmPRGSPaNm4YqvLdDM4umg4B6Zvr6/
+	 O/31nfQ4ii0wUx8WkmyeLrUa95vUn6osd+PacSLXXBSl8B0rqDjaWvQHXUZTWFar/W
+	 KVGR0aSpB9Xmg==
+Date: Mon, 29 May 2023 10:47:42 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org,
-	kernel@pengutronix.de
-Subject: Re: [PATCH] soundwire: amd: Improve error message in remove callback
-Message-ID: <ZHQ00/M3LnKCWu4O@matsya>
-References: <20230518200823.249795-1-u.kleine-koenig@pengutronix.de>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH 0/3] soundwire: improve bus reset
+Message-ID: <ZHQ1dmvFgifSU6X5@matsya>
+References: <20230518024119.164160-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230518200823.249795-1-u.kleine-koenig@pengutronix.de>
-Message-ID-Hash: RKQ4KNCTVNUUVM6HYGSLDIM77YJZNGRV
-X-Message-ID-Hash: RKQ4KNCTVNUUVM6HYGSLDIM77YJZNGRV
+In-Reply-To: <20230518024119.164160-1-yung-chuan.liao@linux.intel.com>
+Message-ID-Hash: IKMNLNG7CDETUROBPPHG47XSFXLQVN3L
+X-Message-ID-Hash: IKMNLNG7CDETUROBPPHG47XSFXLQVN3L
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RKQ4KNCTVNUUVM6HYGSLDIM77YJZNGRV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IKMNLNG7CDETUROBPPHG47XSFXLQVN3L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,20 +90,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 18-05-23, 22:08, Uwe Kleine-König wrote:
-> Returning an error code in the remove callback yields to an error
-> message
-> 
-> 	remove callback returned a non-zero value. This will be ignored.
-> 
-> After that the device is removed anyhow. Improve the error message to at
-> least say what the actual problem is. While touching that code, convert
-> the driver to the .remove_new() callback which returns no value with the
-> same effect as returning zero in a .remove() callback.
-> 
-> As the return value is ignored by the core the only effect of this patch
-> is to improve the error message. (And the motivating effect is that
-> there is one less driver using .remove().)
+On 18-05-23, 10:41, Bard Liao wrote:
+> Improve bus reset sequence by updating programing sequence.
 
 Applied, thanks
 
