@@ -4,90 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B3D4C7EE2F
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 15:29:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1BD7C7EE23
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 16:33:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 293FD6C0;
-	Tue, 30 May 2023 17:28:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 293FD6C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7ADB1DC;
+	Tue, 30 May 2023 18:32:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7ADB1DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685460554;
-	bh=8BxywSvHnPG6BT/p33+cdoPFkXs4EGrvXJk3u8OY6NM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1685464425;
+	bh=2pvX4QGEsmlyGliLYQpywm7bs43IcnoElyDYvs9X10g=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mpGwTIFACrtL5Yatrtm4k6bNwCKHwjD76/blqO4kL68nHifUoc0B3oMn9iLRWYYMa
-	 DKsEw35s3JD+oVsPOERoF8RA8o5E4gdMWi8IjXwXAlsoqo27TFoJVwCbRbfDHgUjjH
-	 4pugMCkPmCtkCLW/ZvAw3KfNFYJuhBheO0Fn56SM=
+	b=G2HAXkQGvsIWA1wCnaz+JH6mi0bZ7hykC+D82ovfCI98VLSO20hMo16nG2HjBvqO8
+	 PfUtzlSxalMemjX3sP22Akk+FqvEnnb+zXRwYqu3PxLAVV+tll33X4yDBM6yC2VhFN
+	 2+l5oiuMxo4MTFtSZfF7l+uZRsSfXWZ73MzjIWlE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11FBBF80544; Tue, 30 May 2023 17:27:52 +0200 (CEST)
+	id 2CF47F8026A; Tue, 30 May 2023 18:32:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FE7AF80149;
-	Tue, 30 May 2023 17:27:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABD9DF8026A;
+	Tue, 30 May 2023 18:32:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 21EEAF8042F; Tue, 30 May 2023 17:27:47 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id 3541FF804FC; Tue, 30 May 2023 18:32:50 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C4D42F8016B
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 17:27:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4D42F8016B
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1q41Fd-0000cs-KF; Tue, 30 May 2023 17:27:09 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1q41FZ-003uHM-R0; Tue, 30 May 2023 17:27:05 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1q41FY-009Xf3-TU; Tue, 30 May 2023 17:27:04 +0200
-Date: Tue, 30 May 2023 17:27:04 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Mark Brown <broonie@kernel.org>, Dipen Patel <dipenp@nvidia.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Dilip Kota <eswara.kota@linux.intel.com>,
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
-	linux-rtc@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-spi@vger.kernel.org, timestamp@lists.linux.dev,
-	linux-watchdog@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: Re: [PATCH 0/7] dt-bindings: restrict node name suffixes
-Message-ID: <20230530152704.tbflnepnioupnkmv@pengutronix.de>
-References: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id A5B08F800DF
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 18:32:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5B08F800DF
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=H2DhVF1D
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0B40362A1C;
+	Tue, 30 May 2023 16:32:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B64D3C433D2;
+	Tue, 30 May 2023 16:32:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685464357;
+	bh=2pvX4QGEsmlyGliLYQpywm7bs43IcnoElyDYvs9X10g=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=H2DhVF1Dit4JQZNyvnfenJy804ebmU0fa87f0uSElWZjaXyPsm7XuAUZTzjs1/Pjb
+	 vCVm0jYgsuujMXblluel+gSQfN2KS7WIQKQKQBbU3fcsZuqpjyeCuvLEOvKBI1kEy7
+	 4oSBkT9voZgv04vDX8Snum9pci14Im4RtHgvuY1SPl4xEeBUINhyVURU9h7++nNNrT
+	 zPQ/Vc8vrbWwO0XQm9WuVdgZzdyNZGsfe1vzsf41zKvA7KapNctvWDHo21XWYv333O
+	 7NU4vJH/4CdJy2mc6U5N9D8JlbZw3nsOPZnYknWFUxH8LsQJ6zBXXi2YQz9NksGkfJ
+	 w5nP1Anb+9viw==
+From: Mark Brown <broonie@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+ Mastan.Katragadda@amd.com, Arungopal.kondaveeti@amd.com,
+ mario.limonciello@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ open list <linux-kernel@vger.kernel.org>
+In-Reply-To: <20230525113000.1290758-1-Vijendar.Mukunda@amd.com>
+References: <20230525113000.1290758-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH] ASoC: amd: ps: fix for acp_lock access in pdm driver
+Message-Id: <168546435447.570240.2693613153905931649.b4-ty@kernel.org>
+Date: Tue, 30 May 2023 17:32:34 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qbppmt5ki4y3pwo5"
-Content-Disposition: inline
-In-Reply-To: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: OX6TBAWRGIMFVW4DVKET7DQ5BQPJ7SFW
-X-Message-ID-Hash: OX6TBAWRGIMFVW4DVKET7DQ5BQPJ7SFW
-X-MailFrom: ukl@pengutronix.de
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-bfdf5
+Message-ID-Hash: 3DKO6QYAY7S3XWFWHJLTM7BX36JONZUV
+X-Message-ID-Hash: 3DKO6QYAY7S3XWFWHJLTM7BX36JONZUV
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OX6TBAWRGIMFVW4DVKET7DQ5BQPJ7SFW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3DKO6QYAY7S3XWFWHJLTM7BX36JONZUV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,46 +97,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Thu, 25 May 2023 16:59:55 +0530, Vijendar Mukunda wrote:
+> Sending the mutex address(acp_lock) as platform
+> data during ACP PDM platform driver register sequence,
+> its creating copy of the platform data.
+> Referencing this platform data in ACP PDM driver results
+> incorrect reference to the common lock usage.
+> 
+> Instead of directly passing the lock address as platform
+> data, retrieve it from parent driver data structure
+> and use the same lock reference in ACP PDM driver.
+> 
+> [...]
 
---qbppmt5ki4y3pwo5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-Hello,
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-On Tue, May 30, 2023 at 04:48:44PM +0200, Krzysztof Kozlowski wrote:
-> Hi,
->=20
-> Tree-wide cleanup of DTS node name suffixes "-N", e.g. "pwm-5", so we all=
-ow
-> only decimal numbers.  In few cases narrow the pattern to also disallow
-> multiple suffixes, e.g. "pwm-5-5".
->=20
-> No dependencies, can be applied by individual subsystems.
+Thanks!
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+[1/1] ASoC: amd: ps: fix for acp_lock access in pdm driver
+      commit: b6b5c6426efe27cbd954409a50604d99c79bd42b
 
-Thanks
-Uwe
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---qbppmt5ki4y3pwo5
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmR2FcgACgkQj4D7WH0S
-/k6mKggAlnEVcB4qInHpsUcVID/g9Si5ycFYWHV3Ur9fkw4/flTJsQ0+OPpooZXI
-dpvQ7Kl9QZycIs6FZtMyK5Pgi6npW15XG8hL7k+NZq1YUw0qNt6vxH8UqSSUjIdY
-to0v66ItQ5jvqJxskCqXG5nE4c39BB6kQmV0LmVqovwRxYEc3GvRqZgOF5RBVvfY
-/WGbC2DUwy+zYVyBuAEP9D57J/iJKGXd3Axujy4SwzEJfcdq38axsICip6LF2J3I
-goisJHcTFiyiw0ATcuvUafLQDXJUta6y3tmq/SKEjej6z5Iu1p2w3iH6SZ/FTeJx
-GHPzrrwL7MzOXnIV9L0w6WsAOJBKtg==
-=/tKH
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---qbppmt5ki4y3pwo5--
