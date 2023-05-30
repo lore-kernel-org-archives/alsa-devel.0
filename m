@@ -4,74 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A53F9C77B7A
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 16:34:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 261C6C7EE23
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 17:12:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D57A6C0;
-	Tue, 30 May 2023 18:33:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D57A6C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CC8B3E8;
+	Tue, 30 May 2023 19:11:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CC8B3E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685464476;
-	bh=DNwpD4OplMyhLT5dVEs1KQZfjWEPePdvQ4W++l8K88Q=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1685466768;
+	bh=N6T7E2wPg+ksFvC4zTDbs7YVrQwcgW2P2fcGeKZjY20=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DpYCaB1S480VOvC/Z6aMaOtAS03cwBvX8gV49pVtGoNo0xZ39NNy4s19rv/K/jg8a
-	 X83Zxw4jLl1N36JjUQrxA/X6MH+paNsCDtPlWIAxMscFXSAQiNHOvYQTNl5OPOu2MZ
-	 ml950+K+v5jn/bxskfUYax9B5r2MiTvRM6K7SIfM=
+	b=PdXAbScSBG6xcNRhvU7rEWy5jsvpBBiLG4kinFui/9H4xYY4dk4rx3h/HgRx1FnZn
+	 oQkfn6TF750FVHrbvZiGQWqanF4vajZp/FmiS+gPTp3O1jZhDdr92Jl868b03Jvm67
+	 Wvts0hmIxKBkjpI8Wj1w+FDCye3q3M4nlw4m1x/I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62232F80549; Tue, 30 May 2023 18:32:56 +0200 (CEST)
+	id F33E6F80528; Tue, 30 May 2023 19:11:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1597CF80551;
-	Tue, 30 May 2023 18:32:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69AE1F800DF;
+	Tue, 30 May 2023 19:11:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB47EF8042F; Tue, 30 May 2023 18:32:51 +0200 (CEST)
+	id 7408BF8042F; Tue, 30 May 2023 19:11:43 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3D89DF8026A
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 18:32:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D89DF8026A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 586D9F8016B
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 19:11:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 586D9F8016B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=unghP9Aa
+ header.s=k20201202 header.b=CFXovLHe
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id BA44E6168A;
-	Tue, 30 May 2023 16:32:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 655A4C433EF;
-	Tue, 30 May 2023 16:32:32 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 65E9761403;
+	Tue, 30 May 2023 17:11:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4A19C4339C;
+	Tue, 30 May 2023 17:11:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685464354;
-	bh=DNwpD4OplMyhLT5dVEs1KQZfjWEPePdvQ4W++l8K88Q=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=unghP9Aa+yOD5ZyOgg8us62DMte4l0C4kSMmmBtINXTl/dDjrpor651IDOYP9EfYx
-	 tSjUbw7QfpfpiL0jNaePVOVp/cEj8RvgqfoKGix6TX/jGQXMnNh5jGTU+mmYlnHMQw
-	 q7sQ04YDtAMGH9ETN24VD6065D63GNTbxJeV/6VyOyrXooTabjzYwIsYxsmcPhwPj2
-	 GvE6P3rKmThzhI8l9H1Tvp9DyW0aRDN+JGmTj6ppsgEbtJwgBtm/5phAT9ZqtZKgXY
-	 6fgbUfW1Kao7sZEhHNnnpof0Vns6gyE5yJ9lcJcjabs4RQBHAiJRGMkfU5vCXezOAQ
-	 ZGf1jvZoJ7ozQ==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, drosdeck <edson.drosdeck@gmail.com>
-Cc: perex@perex.cz, tiwai@suse.com, ckeepax@opensource.cirrus.com,
- savagecin@gmail.com, SJLIN0@nuvoton.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20230529181911.632851-1-edson.drosdeck@gmail.com>
-References: <20230529181911.632851-1-edson.drosdeck@gmail.com>
-Subject: Re: [PATCH] ASoC: nau8824: Add quirk to active-high jack-detect
-Message-Id: <168546435213.570240.2930478439187494724.b4-ty@kernel.org>
-Date: Tue, 30 May 2023 17:32:32 +0100
+	s=k20201202; t=1685466673;
+	bh=N6T7E2wPg+ksFvC4zTDbs7YVrQwcgW2P2fcGeKZjY20=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CFXovLHe2oCMksV5jMa1XRicI4ibzn2nGkPyGMPtRnC/y08Yp1GJGpfGxkDMnPjUD
+	 qZYV3T982TxPaZJbNLbkVlsLxnwdoXIr1gMYRSbBBtmyb38QYNiI0vOaHqIPHSYlny
+	 f7aHQpTFYKWKABhjocGyZKtjbwZx021cztTm/1LP472sZoPdfbJIF+fQowxr3luvtO
+	 vFKZWc7TtHmcGsP8e7FivPGzTjYgomj+DAEhRquGGK4SNsoZI20AB0mYJmViyDGojr
+	 OgochEVNk8ky0h6j2vMHGI169NU7lgIPPHKOPvuG8aH5roBKLrYsul0Y30Tl0lzs3E
+	 vdCGDlBy+9FxQ==
+Date: Tue, 30 May 2023 18:11:06 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Mark Brown <broonie@kernel.org>, Dipen Patel <dipenp@nvidia.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Dilip Kota <eswara.kota@linux.intel.com>,
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+	linux-rtc@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-spi@vger.kernel.org, timestamp@lists.linux.dev,
+	linux-watchdog@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>
+Subject: Re: [PATCH 0/7] dt-bindings: restrict node name suffixes
+Message-ID: <20230530-banister-luxurious-d33a5d289749@spud>
+References: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: JDOR4QLFSXQXKIOR2IMQB3V4QD3JAMHC
-X-Message-ID-Hash: JDOR4QLFSXQXKIOR2IMQB3V4QD3JAMHC
-X-MailFrom: broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="3drXRST+roPPVcQt"
+Content-Disposition: inline
+In-Reply-To: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
+Message-ID-Hash: 7Z64YEQ6LXHYU5YFOTAEWKNDNS45I7Q4
+X-Message-ID-Hash: 7Z64YEQ6LXHYU5YFOTAEWKNDNS45I7Q4
+X-MailFrom: conor@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JDOR4QLFSXQXKIOR2IMQB3V4QD3JAMHC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7Z64YEQ6LXHYU5YFOTAEWKNDNS45I7Q4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,38 +109,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 29 May 2023 15:19:11 -0300, drosdeck wrote:
-> Add  entries for Positivo laptops: CW14Q01P, K1424G, N14ZP74G to the
-> DMI table, so that  active-high jack-detect will work properly on
-> these laptops.
-> 
-> 
 
-Applied to
+--3drXRST+roPPVcQt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Tue, May 30, 2023 at 04:48:44PM +0200, Krzysztof Kozlowski wrote:
+> Hi,
+>=20
+> Tree-wide cleanup of DTS node name suffixes "-N", e.g. "pwm-5", so we all=
+ow
+> only decimal numbers.  In few cases narrow the pattern to also disallow
+> multiple suffixes, e.g. "pwm-5-5".
 
-Thanks!
-
-[1/1] ASoC: nau8824: Add quirk to active-high jack-detect
-      commit: e384dba03e3294ce7ea69e4da558e9bf8f0e8946
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I figure there'll be quite a bit of stuff to fix up afterwards?
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
 Thanks,
-Mark
+Conor.
 
+>=20
+> No dependencies, can be applied by individual subsystems.
+>=20
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+>=20
+> Link: https://lore.kernel.org/all/20221127182232.GA128974-robh@kernel.org/
+>=20
+> Best regards,
+> Krzysztof
+>=20
+> Krzysztof Kozlowski (7):
+>   dt-bindings: phy: intel,combo-phy: restrict node name suffixes
+>   dt-bindings: pwm: restrict node name suffixes
+>   dt-bindings: rtc: restrict node name suffixes
+>   dt-bindings: slimbus: restrict node name suffixes
+>   spi: dt-bindings: restrict node name suffixes
+>   dt-bindings: timestamp: restrict node name suffixes
+>   dt-bindings: watchdog: restrict node name suffixes
+>=20
+>  Documentation/devicetree/bindings/phy/intel,combo-phy.yaml    | 2 +-
+>  Documentation/devicetree/bindings/pwm/pwm.yaml                | 2 +-
+>  Documentation/devicetree/bindings/rtc/rtc.yaml                | 2 +-
+>  Documentation/devicetree/bindings/slimbus/slimbus.yaml        | 2 +-
+>  Documentation/devicetree/bindings/spi/spi-controller.yaml     | 2 +-
+>  .../bindings/timestamp/hardware-timestamps-common.yaml        | 2 +-
+>  Documentation/devicetree/bindings/watchdog/watchdog.yaml      | 4 ++--
+>  7 files changed, 8 insertions(+), 8 deletions(-)
+>=20
+> --=20
+> 2.34.1
+>=20
+
+--3drXRST+roPPVcQt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZHYuKgAKCRB4tDGHoIJi
+0nXKAQDamcvDwarCjeG65qUN+fBYxaI+//cyJEQB1SuuBpUTGgEAy0ivPKjui6wX
+d/shbUIhWWfohF1w8yRNuYfQATp+AAQ=
+=EmEg
+-----END PGP SIGNATURE-----
+
+--3drXRST+roPPVcQt--
