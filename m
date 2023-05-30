@@ -4,91 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97745C7EE24
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 18:30:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14371C77B7A
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 18:44:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 523B06C0;
-	Tue, 30 May 2023 20:29:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 523B06C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D2036C0;
+	Tue, 30 May 2023 20:43:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D2036C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685471429;
-	bh=EKx6VTVPtif3VopxDUTsogjb7XDS6ckoH87zFUChkRk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=kbp/DfCuI1sh9C9utfvel/oWBx85j9/nq7jsZTxxXSLyjqQzC7rWnDMiOMatajoHf
-	 fVkeSYaYEYUXE6mYxauQM58D2Jh2MPCCrx7oVFhUICnsEK3O8KAVUz53ekqUKZ8UBa
-	 AVpH5ZCw+8nWcbJNtl2X3mW3zOFSsJlTBf2QB7Q0=
+	s=default; t=1685472242;
+	bh=LgSg4owZSvMyFoyGKVeq7DxaMlXRO5RO9pxF1LTTkQY=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=VBo1o0o3i+5GzpgrWMFHlqul3ahv8LnhXtKtVuhHgqiKASh54etYE0RLEisIGMcbs
+	 +lcKpnOT0N7DNEoebYXOBTk1ISVlvM89lPYZ607OiMwBKZE6E27PmI8D73P1OcmrPq
+	 RkW4tiJiOJhQNamRLWEnm00MYx4IBEwTGv7+R0Ok=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47CA9F80149; Tue, 30 May 2023 20:29:09 +0200 (CEST)
+	id D6EBEF80149; Tue, 30 May 2023 20:42:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB6EEF80149;
-	Tue, 30 May 2023 20:29:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 527FEF800DF;
+	Tue, 30 May 2023 20:42:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4C62F8026A; Tue, 30 May 2023 20:29:03 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E382EF80149
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 20:28:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E382EF80149
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=gNq/ZsXD
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C3595616FB;
-	Tue, 30 May 2023 18:28:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07BBCC4339E;
-	Tue, 30 May 2023 18:28:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685471327;
-	bh=EKx6VTVPtif3VopxDUTsogjb7XDS6ckoH87zFUChkRk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=gNq/ZsXDpV3i7lAAIj9wedxoaIHRiPa8GeMA8KY+BCc+AtgakCixsCrcHU8v2kD2S
-	 qjnXa48y6IVO/aLnDPRCGY3kpkEcBd0FFnj/Q3kjZNZ0xk88kLveBEI0YD/Kp1h0pv
-	 wqPhDhAOt3KWFaOqSJcfgF8JBgPb8c5uMWp6U3Xrt7eRhVp9yhDenqNBPb0QvBwIpb
-	 gyzSzCAYGhIEHZu9lj61HTMaAyZxD1CClcEgLnZnW8fT6ECmvgfC7/PZYbL1KVFZ4v
-	 uJkNEAot6nXMpDrNfwQgTKt/eHJTPJdb3HZtlkh3yVLR3bETuF72j3SQtRz5ujEj/a
-	 wwctPjUFDTKeA==
-From: Mark Brown <broonie@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Dipen Patel <dipenp@nvidia.com>, Wim Van Sebroeck <wim@linux-watchdog.org>,
- Guenter Roeck <linux@roeck-us.net>,
- Dilip Kota <eswara.kota@linux.intel.com>, linux-phy@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
- timestamp@lists.linux.dev, linux-watchdog@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Tony Lindgren <tony@atomide.com>,
- Oleksij Rempel <linux@rempel-privat.de>
-In-Reply-To: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
-References: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH 0/7] dt-bindings: restrict node name suffixes
-Message-Id: <168547131548.1034788.34188090441869561.b4-ty@kernel.org>
-Date: Tue, 30 May 2023 19:28:35 +0100
-MIME-Version: 1.0
+	id 921E5F8026A; Tue, 30 May 2023 20:42:32 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 16990F80149
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 20:42:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16990F80149
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: YOEKHH65FQUBZSR7AT7PHBNWXST7R4BB
-X-Message-ID-Hash: YOEKHH65FQUBZSR7AT7PHBNWXST7R4BB
-X-MailFrom: broonie@kernel.org
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1685472145595734358-webhooks-bot@alsa-project.org>
+References: <1685472145595734358-webhooks-bot@alsa-project.org>
+Subject: speaker-test: allow controlling how long the noise is heard by the
+ user
+Message-Id: <20230530184232.921E5F8026A@alsa1.perex.cz>
+Date: Tue, 30 May 2023 20:42:32 +0200 (CEST)
+Message-ID-Hash: IGPSVDLISABBGQTQ566WWEDDM5G665N6
+X-Message-ID-Hash: IGPSVDLISABBGQTQ566WWEDDM5G665N6
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YOEKHH65FQUBZSR7AT7PHBNWXST7R4BB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IGPSVDLISABBGQTQ566WWEDDM5G665N6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,43 +67,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 30 May 2023 16:48:44 +0200, Krzysztof Kozlowski wrote:
-> Tree-wide cleanup of DTS node name suffixes "-N", e.g. "pwm-5", so we allow
-> only decimal numbers.  In few cases narrow the pattern to also disallow
-> multiple suffixes, e.g. "pwm-5-5".
-> 
-> No dependencies, can be applied by individual subsystems.
-> 
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[5/7] spi: dt-bindings: restrict node name suffixes
-      commit: c4fb6880edc15866a530c7b8f2698ae65f80cfab
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+YWxzYS1wcm9qZWN0L2Fsc2EtdXRpbHMgaXNzdWUgIzIxOSB3YXMgb3BlbmVkIGZyb20gamlkYW5u
+aToKCiQgc3BlYWtlci10ZXN0IC0tbmxvb3BzIDENCm1ha2VzIGEgcGluayBub2lzZSBmb3IgYWJv
+dXQgb25lIHNlY29uZC4NCg0KT24gdGhlIG1hbiBwYWdlIG1lbnRpb24gaG93IHRvIG1ha2UgdGhp
+cyBpbnRvIHNheSBhIGhhbGYgc2Vjb25kLA0KYXMgc29tZSB1c2VycyB3b3VsZCBsaWtlIHRvIGxp
+c3RlbiB0byBzaG9ydGVyIHRlc3Qgc291bmRzLA0KYW5kIG5vIG1hdHRlciBpZiB0aGUgdXNlciBk
+b2VzDQpgYGANCiQgc3BlYWtlci10ZXN0IC0tZGV2aWNlIGhkbWk6SERNSSAtYyAyIC0tbmxvb3Bz
+IDEgLS1wZXJpb2QgNQ0KJCBzcGVha2VyLXRlc3QgLS1kZXZpY2UgaGRtaTpIRE1JIC1jIDIgLS1u
+bG9vcHMgMSAtLXBlcmlvZCA1MA0KJCBzcGVha2VyLXRlc3QgLS1kZXZpY2UgaGRtaTpIRE1JIC1j
+IDIgLS1ubG9vcHMgMSAtLXBlcmlvZCA1MDANCiQgc3BlYWtlci10ZXN0IC0tZGV2aWNlIGhkbWk6
+SERNSSAtYyAyIC0tbmxvb3BzIDEgLS1wZXJpb2QgNTAwMA0KYGBgDQp3aGF0IHRoZSB1c2VyIGhl
+YXJzIGlzIGV4YWN0bHkgdGhlIHNhbWUsIHRoZXJlZm9yZSAtLXBlcmlvZCBpcyBub3Qgd2hhdA0K
+Y29udHJvbHMgdGhpcyBpdGVtLg0KDQpJIGFtIHNheWluZyB0aGF0IHNvbWUgdXNlcnMgY2FuIGNv
+bmZpcm0gdGhlaXIgc3BlYWtlcnMgd29yayB3aXRob3V0DQpsaXN0aW5nIHRvIGEgZnVsbCBzZWNv
+bmQgb2YgcGluayBub2lzZSwgYW5kIHRodXMgd291bGQgbGlrZSBhIHdheSB0bw0KbGlzdGVuIHRv
+IGEgc2hvcnRlciBsZW5ndGguDQoNCkFzIGZhciBhcw0KYGBgDQoNCiAgICAgICAtYiB8IC0tYnVm
+ZmVyIFRJTUUNCiAgICAgICAgICAgICAgVXNlIGJ1ZmZlciBzaXplIG9mIFRJTUUgbWljcm9zZWNv
+bmRzLiAgV2hlbiAwIGlzIGdpdmVuLCB1c2UgIHRoZQ0KICAgICAgICAgICAgICBtYXhpbWFsIGJ1
+ZmZlciBzaXplLiAgVGhlIGRlZmF1bHQgdmFsdWUgaXMgMC4NCg0KICAgICAgIC1wIHwgLS1wZXJp
+b2QgVElNRQ0KICAgICAgICAgICAgICBVc2UgIHBlcmlvZCBzaXplIG9mIFRJTUUgbWljcm9zZWNv
+bmRzLiAgV2hlbiAwIGlzIGdpdmVuLCB0aGUgcGXigJANCiAgICAgICAgICAgICAgcmlvZHMgZ2l2
+ZW4gYnkgLVAgb3B0aW9uIGlzIHVzZWQuICBUaGUgZGVmYXVsdCB2YWx1ZSBpcyAwLg0KYGBgDQph
+cmUgY29uY2VybmVkLCB0aGV5IG11c3QgYmUgZG9jdW1lbnRpbmcgc29tZXRoaW5nIGNvbXBsZXRl
+bHkgZGlmZmVyZW50Lg0KDQpEZWJpYW4NClBhY2thZ2U6IGFsc2EtdXRpbHMgICAgICAgICAgICAg
+ICAgICAgICAgDQpWZXJzaW9uOiAxLjIuOC0xCgpJc3N1ZSBVUkwgICAgIDogaHR0cHM6Ly9naXRo
+dWIuY29tL2Fsc2EtcHJvamVjdC9hbHNhLXV0aWxzL2lzc3Vlcy8yMTkKUmVwb3NpdG9yeSBVUkw6
+IGh0dHBzOi8vZ2l0aHViLmNvbS9hbHNhLXByb2plY3QvYWxzYS11dGlscwo=
