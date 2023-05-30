@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A248C77B7A
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 14:51:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3793C77B73
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 14:51:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10AB2839;
-	Tue, 30 May 2023 16:50:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10AB2839
+	by alsa0.perex.cz (Postfix) with ESMTPS id D63B8843;
+	Tue, 30 May 2023 16:50:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D63B8843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685458258;
-	bh=z8IyfgIUAkZ0pQWWA/rjiNvjJfBljcBK5q0duiB8SEY=;
+	s=default; t=1685458270;
+	bh=ufCpkVtdb3I3R8Ch7MerIiSSX7q2/RKx4+JEgcmr3+4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CKlih50edUgEXuV9hxJ3YuPnrbkrhRxHYMl5KRdZZQPTVycLFBSVj6lJIg9kKnb0z
-	 M7T/Noz3GGSLfy7tuwAUAdUHIbp5D9vbDbd3ENeiuKk+axpP6GcG+qn7MzO9pDFt2U
-	 ubLDcEAjMPK2f3B+5fd1XP2yvoG+S2KSiqWlJ6OE=
+	b=c8v4py/lL8kFGkarK0X8ZMbpur1g71tDHaBM+eZh3pxg1JVHRUyt0aekU95jvTXbM
+	 S9s0azcTFe2uh9oLC9Ik78AGXReHeZpTKfZEzlbVzZaNDyeJgXjSPLTy3ri6V0NO+a
+	 dGRhKjRRIaWxuUt7TteZ/c08IXYzb9iBRPojCbio=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49D6CF80578; Tue, 30 May 2023 16:49:13 +0200 (CEST)
+	id 48F4AF8057C; Tue, 30 May 2023 16:49:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88127F80567;
-	Tue, 30 May 2023 16:49:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29367F8057C;
+	Tue, 30 May 2023 16:49:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EE9B3F80552; Tue, 30 May 2023 16:49:07 +0200 (CEST)
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
- [IPv6:2a00:1450:4864:20::229])
+	id EF58BF80544; Tue, 30 May 2023 16:49:08 +0200 (CEST)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
+ [IPv6:2a00:1450:4864:20::231])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5DAC7F80149
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 16:49:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DAC7F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id CEE9FF80551
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 16:49:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEE9FF80551
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=q76h1ZEy
-Received: by mail-lj1-x229.google.com with SMTP id
- 38308e7fff4ca-2afb2874e83so48819591fa.0
+ header.s=google header.b=cNmu0nPg
+Received: by mail-lj1-x231.google.com with SMTP id
+ 38308e7fff4ca-2af24ee004dso47021401fa.0
         for <alsa-devel@alsa-project.org>;
- Tue, 30 May 2023 07:49:01 -0700 (PDT)
+ Tue, 30 May 2023 07:49:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1685458139; x=1688050139;
+        d=linaro.org; s=google; t=1685458145; x=1688050145;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hlemkSAZzL/U9gKFtrjPiWNMuzaH3xd08e53mEnq57M=;
-        b=q76h1ZEyA3kflY8T+tAg6eEkOHLYK0YZTFqFbCCKF2K9iyLput/pxGqmVSlGXhqv7P
-         WnAHGN3sBVvANR/w6I/EN92qOLxT7kfA+TYRrbMeQfQ5Ix17P62ma2yKm6N1X7n7zy6a
-         9nl5jWppRRrsIKlusdV7Z4xtzwxXfCbcQGTgabenNUfaXkr6pbTiAq/s44M2sqhPwN5Y
-         aF2N5hQt6Q2QJHKpFbTR/tFqhDOls0J+/KD33Q68HF2m1O8GZk0L7u6CimkvrwEvNDi8
-         9vyiJE+L61MBUJCGSp7RCegRZ1TxnfE/0ySvZZCeQAKuFtx+4L45fUMJd/FEseCp9LT+
-         MzUw==
+        bh=IYFfkWfA3QoQgVvoKYaWNHgXlyKDc3MLd+zuCLSKJyA=;
+        b=cNmu0nPgKOyLJPsM0EDcisLnunATo7htMuua8fjjb2dhKb/bdEMfj0asRSzmGsuh7P
+         44j7Vq1bzp6YWznZJLTZKq9bX9Z3Y91EY6efqTnbDcYlS+17WXOfAJyDYBBeO0P2PLpY
+         Ew5/3U+6ptw6SD59IJt1h2M8GgCyLrFIuSdA0ZRwApWRnnHYfCd3qwfbTFeLjA8jUcob
+         zagphslihs9ef2gj/4YWtdblbVQEHcZE+ZmFnDSeLxgPfiZfYLR2qh68RjdNaRYaKsgo
+         ydoZ+VXgm0D+DG+h+FoHCLSaTTFTZyv5Wjgaee+3q2hGOMaZfSi14hWdrFXBSP52xi4+
+         P6YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685458139; x=1688050139;
+        d=1e100.net; s=20221208; t=1685458145; x=1688050145;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hlemkSAZzL/U9gKFtrjPiWNMuzaH3xd08e53mEnq57M=;
-        b=O13dQLTmXEx6eacrVokt8m3C/kfRacDfSy2y5oBCXT+Vf11KwYKrMKKW5TG7TQa4g+
-         582Io81cOau+7HD0tTd0LUkHPCUV/VIwj4ttplTxV1jDe2ztp28wjkYdtZxKTrHUIRIU
-         2n8YB7XLaw41meTfqEUfQ4XwEnVoF6Nk81UWzpuhil3skgcvKO+7bovq67iZ0L135Qw4
-         iIT4HCFovZ1mbykkbkHekrGnbMnalu5BfTJC+PFn/Yc4I5zTEj92E+rORGPZ0i66+oCj
-         3Gr49TkRAOasi4bIPoxgO9aIH76Kz5a336Phyf1D187WikuCjSnh9VLVDF/yMFzyG4f5
-         /mtA==
-X-Gm-Message-State: AC+VfDw0josRqURUsr0mZP7fNSM4Q+0bvuL4cgK9TgzqYYYVZRuY9AyU
-	U7T3Ij0UsZAYYdrJU9v9w9rb9g==
+        bh=IYFfkWfA3QoQgVvoKYaWNHgXlyKDc3MLd+zuCLSKJyA=;
+        b=cTcN+XrrnBQwhHlUeh+LSie3cdtYSlVTa9UI8Wk0wzZ1IOTvC2OqxgUJbBCDogN62q
+         c2OJdk2qwPNW52fJ/5f+d/LT4qAUZke8+xHhAs01pmmdgMu+BjGFGgmDnT3lcEsAwWko
+         659J5xXlUa4aZlWHjGl8kdmKCoBEnnkkhbjNnJxPBgkyD2SqsdLKTikAl+dv3b37DvnQ
+         3P/yVjajaERP0ENZEMDWr6acaEeb205KiuTgdGr0kM8cCKvrIHZFRz7fsXR2dCTJklz5
+         KAjI3mrbpHQOE2uImrIFdvDe7bLpvsgeD77BZvY0Ssj/kYT5Mx7RlYLFnU98jw46yOhO
+         4hQg==
+X-Gm-Message-State: AC+VfDxU+wUMrS/4/hODzcKP8U43kos0R/hT1clhRRp0PVZl02IvEqsZ
+	vM7Gq4TnsJDvhSLKQX5z3/aWDA==
 X-Google-Smtp-Source: 
- ACHHUZ75iw6ri2Ado2xzCbkAC1E3tQDvSOkgKFSnxjKffw7eTsxcgM6foIzrYPzzNhulhzOltIlCVg==
-X-Received: by 2002:a2e:6a17:0:b0:2ac:b63e:94a6 with SMTP id
- f23-20020a2e6a17000000b002acb63e94a6mr966165ljc.21.1685458139198;
-        Tue, 30 May 2023 07:48:59 -0700 (PDT)
+ ACHHUZ5jvz5LnAumNP/2xr9PcMdbMsGITdxeArnebJmxulNAPz1T+umYnd5f3D0F0Ae9rFUUNWklSw==
+X-Received: by 2002:a05:651c:87:b0:2af:1fd4:9011 with SMTP id
+ 7-20020a05651c008700b002af1fd49011mr906793ljq.34.1685458144944;
+        Tue, 30 May 2023 07:49:04 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.199.204])
         by smtp.gmail.com with ESMTPSA id
- q21-20020aa7cc15000000b00514b2717ec6sm631283edt.28.2023.05.30.07.48.56
+ q21-20020aa7cc15000000b00514b2717ec6sm631283edt.28.2023.05.30.07.49.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 May 2023 07:48:58 -0700 (PDT)
+        Tue, 30 May 2023 07:49:04 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Vinod Koul <vkoul@kernel.org>,
 	Kishon Vijay Abraham I <kishon@kernel.org>,
@@ -110,17 +110,16 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Rob Herring <robh@kernel.org>,
 	Tony Lindgren <tony@atomide.com>,
 	Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH 1/7] dt-bindings: phy: intel,combo-phy: restrict node name
- suffixes
-Date: Tue, 30 May 2023 16:48:45 +0200
-Message-Id: <20230530144851.92059-2-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 3/7] dt-bindings: rtc: restrict node name suffixes
+Date: Tue, 30 May 2023 16:48:47 +0200
+Message-Id: <20230530144851.92059-4-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
 References: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GVAEFDS6JA2NZDCE3JGG6VYPFISUE5GZ
-X-Message-ID-Hash: GVAEFDS6JA2NZDCE3JGG6VYPFISUE5GZ
+Message-ID-Hash: 6M3FH5DVW6SVEDR4XQW5M2UTKTUX6AEN
+X-Message-ID-Hash: 6M3FH5DVW6SVEDR4XQW5M2UTKTUX6AEN
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -133,7 +132,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GVAEFDS6JA2NZDCE3JGG6VYPFISUE5GZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6M3FH5DVW6SVEDR4XQW5M2UTKTUX6AEN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -155,22 +154,22 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: Tony Lindgren <tony@atomide.com>
 Cc: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- Documentation/devicetree/bindings/phy/intel,combo-phy.yaml | 2 +-
+ Documentation/devicetree/bindings/rtc/rtc.yaml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/phy/intel,combo-phy.yaml b/Documentation/devicetree/bindings/phy/intel,combo-phy.yaml
-index 5d54b0a0e873..7dd6a4d94b48 100644
---- a/Documentation/devicetree/bindings/phy/intel,combo-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/intel,combo-phy.yaml
+diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
+index c6fff5486fe6..efb66df82782 100644
+--- a/Documentation/devicetree/bindings/rtc/rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
 @@ -15,7 +15,7 @@ description: |
  
  properties:
    $nodename:
--    pattern: "combophy(@.*|-[0-9a-f])*$"
-+    pattern: "combophy(@.*|-([0-9]|[1-9][0-9]+))?$"
+-    pattern: "^rtc(@.*|-[0-9a-f])*$"
++    pattern: "^rtc(@.*|-([0-9]|[1-9][0-9]+))?$"
  
-   compatible:
-     items:
+   aux-voltage-chargeable:
+     $ref: /schemas/types.yaml#/definitions/uint32
 -- 
 2.34.1
 
