@@ -4,91 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55AA4C7EE23
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 12:24:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C01D3C7EE23
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 12:52:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A3DE82A;
-	Tue, 30 May 2023 14:24:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A3DE82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A58713E8;
+	Tue, 30 May 2023 14:51:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A58713E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685449496;
-	bh=uG6y9GxC/xdE8+nhLeSQsxvSYVWp0O2yGaYt0QIFX6w=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1685451143;
+	bh=S8/dWJuux1RYTYBU7rMJYTS9dpjGvybm16LdgF8WUxI=;
+	h=Date:To:Cc:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=RCP+48inak8Faa9Re2ml/U163qW86Jbxcxe7CSpxznA5InWFR/QbxgG/FW7u+2MQf
-	 3MSwr0gGVFjDGCm7d4BXN9X/dKwvxxDPET5bXQk6M1vG2c/B1b6OuhUUyXZ2+dag+p
-	 s0oR56SEM942srcYzANxX7Gy/kK12elWsSKSeAUI=
+	b=OKXyb34Ip8QxwEP0Q5kI5u9jMDvi66jqkjCwmrKxTj4ZcukOHSp5dIqvfmwrWL0xr
+	 gOXHR1UUETd6eIU9FknckCqhuyvnyChxSsHHrXJxwPX6tT307cp7BPmcNf7TK46ivd
+	 ratHZnVT5faHCoqbHybb/hZ2xki9HHg2NofZaUhU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DAA39F8055B; Tue, 30 May 2023 14:24:05 +0200 (CEST)
+	id 186A3F804FC; Tue, 30 May 2023 14:51:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AB87F800DF;
-	Tue, 30 May 2023 14:24:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A0E0F800DF;
+	Tue, 30 May 2023 14:51:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F819F80553; Tue, 30 May 2023 14:24:02 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id A87C1F8042F; Tue, 30 May 2023 14:50:59 +0200 (CEST)
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com
+ [IPv6:2607:f8b0:4864:20::62b])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9C5E6F80510
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 14:21:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C5E6F80510
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5FC39F80149
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 14:50:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FC39F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=UA3y3BVM
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34UBAOkI020617;
-	Tue, 30 May 2023 07:21:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=2GgFwvas2rFXV4McY7VMK9G2VCTdQUXyqwVMLSgXHI8=;
- b=UA3y3BVM/HgEl3CvdA4HZc2gbM8jFUqQi/CiHcc0ZFNZhofB6Z4XmmYumWJtz5foHWTt
- BKrnlyvQbPQwV5iz49jSEfT+Q9i1f2500/Suca2P+00WIbeZjJ0Dzpa8hPZSWja6uaSP
- vv897JhneMBD31sFIKQ6pEQESlXwvsyW0HPzsJw6dO+VKSrVTxMi5mvOedE7Z2DvSEhB
- ZeGNwSx6Hz1zgd3SWFhxnvog33uNSUBqSlXOCaudeplmUzw2v+7JIs98VR5oUkt6AOCu
- nCi8gwPIvN09qcOjof8KSdWRBYp2Z/y93qrDEo8qe6Nk3Z8ej3UupkGWAp4dvPEb9IKm IA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3quf90u2t5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 May 2023 07:21:14 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 30 May
- 2023 13:21:12 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Tue, 30 May 2023 13:21:12 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 840C745;
-	Tue, 30 May 2023 12:21:12 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>, <lee@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <linus.walleij@linaro.org>,
-        <vkoul@kernel.org>
-CC: <robh+dt@kernel.org>, <conor+dt@kernel.org>, <lgirdwood@gmail.com>,
-        <yung-chuan.liao@linux.intel.com>, <sanyog.r.kale@intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <devicetree@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 0/6] Add cs42l43 PC focused SoundWire CODEC
-Date: Tue, 30 May 2023 13:21:06 +0100
-Message-ID: <20230530122112.1314458-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=OdjPG1DS
+Received: by mail-pl1-x62b.google.com with SMTP id
+ d9443c01a7336-1b011cffe7fso28571525ad.1
+        for <alsa-devel@alsa-project.org>;
+ Tue, 30 May 2023 05:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685451046; x=1688043046;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=42TjERYpl34ezVm6gTZ6MgxR9jYfte5EhPsCPBAMTK8=;
+        b=OdjPG1DSwHjTLkO4frX1ZQ9iHRRuMfJuphaUqBbNt/DbI1cEa2eOe3sXkQpEg3Lqfa
+         xT3KMZQHiL4WbaJHNUMnwJOVvbANilzfSAWdJfvegrzvElBB89TRQd/Ny42kxH7lwRvW
+         7XcJdBvsHZyXU80G7WTcS+HBEYsox3v68rE7/CF7YFG5SURtH4XhHC8fZLyGN1Qg1885
+         AKB/Fse2eNWjS+I1vDsDjoc9B9S4+pdNjUqEp8f1AVKGZwuRrovA9PZsVHewsKJ3jGj/
+         HJI9/4CTmKwVtCHxy1/NqgCWslJDcrjBZAO5zPIy6ZfdxeTlNuV90wGCyd6CMWAhVk+R
+         7rAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685451046; x=1688043046;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=42TjERYpl34ezVm6gTZ6MgxR9jYfte5EhPsCPBAMTK8=;
+        b=bI6Etd1TAmckBx6fvHO/pECpDcW2d/OxQxzMjY9rxnsALtGNLmZo6Z25zhnDOjTt0D
+         vlO5NdtLqZUJNrkBzsxPbI4UZhR0/tlkLm3gq4p5IvKdA/Z85NoW5/auwqINnl2UDJ7Q
+         pcaU5qP7OfdoOMhROlBYjFoSDcHRK21PBz4t4HrprOEyK9iGO/K5LFng39c0gVtz9nND
+         8lebAM9SxevRhsHIfxeNeIKBBLS5vERntBHzb/5r7uKOVhislCliKuowwLVFKZMt6+0G
+         vcqgU6eNlmeqI3aEvVGik9qUx6ApFFUKed9NGmAPNd+9L2vlXNxCM3cHNJkrPEp5f6ZB
+         gA4g==
+X-Gm-Message-State: AC+VfDyprC1JQF/PWY2ZXYZO5rdGgZTZVAqcAzpeJCWXw/gzjDlK3yee
+	08C7xb0DYa2YeHOCAa//038=
+X-Google-Smtp-Source: 
+ ACHHUZ48xTw2/AxpJYUFWYho6qBeQsi813yiiCGQz8Au8VSU5pflTs59kBiSuqjTi50nCTVoXF4NZw==
+X-Received: by 2002:a17:902:8504:b0:1a5:dfd:d167 with SMTP id
+ bj4-20020a170902850400b001a50dfdd167mr2056892plb.8.1685451046491;
+        Tue, 30 May 2023 05:50:46 -0700 (PDT)
+Received: from [192.168.43.80] (subs02-180-214-232-12.three.co.id.
+ [180.214.232.12])
+        by smtp.gmail.com with ESMTPSA id
+ ik29-20020a170902ab1d00b001b0218651a6sm7093717plb.178.2023.05.30.05.50.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 May 2023 05:50:45 -0700 (PDT)
+Message-ID: <dbb825e9-f92b-6c17-c1d7-b7e6cfb9b474@gmail.com>
+Date: Tue, 30 May 2023 19:50:41 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: mDDcEAkFiQSYVCUwRek4aYj5J8slS2_p
-X-Proofpoint-ORIG-GUID: mDDcEAkFiQSYVCUwRek4aYj5J8slS2_p
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: BCKMKCOFSBEGFSCOWS6PU5VMLBOCOYJM
-X-Message-ID-Hash: BCKMKCOFSBEGFSCOWS6PU5VMLBOCOYJM
-X-MailFrom: prvs=1514aa1fe0=ckeepax@opensource.cirrus.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Content-Language: en-US
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Regressions <regressions@lists.linux.dev>,
+ Linux ALSA Subsystem Development <alsa-devel@alsa-project.org>,
+ Linux USB <linux-usb@vger.kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Apple USB-C 3.5mm dongle cannot output 41000hz
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: YPDXFQBHELHXI4TTSLKBKL52PM7RPJYH
+X-Message-ID-Hash: YPDXFQBHELHXI4TTSLKBKL52PM7RPJYH
+X-MailFrom: bagasdotme@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BCKMKCOFSBEGFSCOWS6PU5VMLBOCOYJM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YPDXFQBHELHXI4TTSLKBKL52PM7RPJYH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,69 +120,80 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch chain adds support for the Cirrus Logic cs42l43 PC focused
-SoundWire CODEC. The chain is currently based of Lee's for-mfd-next
-branch.
+Hi,
 
-Change notes are included with each patch, most of the changes are
-trivial, the notable ones are moving the IRQs out of irqchip and into
-the MFD, and moving the DT binding to sound.
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-Thanks,
-Charles
+> Overview:
+> With an A2049 Apple USB-C to 3.5mm DAC dongle, I have the same issue as outlined in this link: ALSA won't detect 44100Hz as an available sample rate:
+> https://github.com/mikebrady/shairport-sync/issues/1504
+> 
+> 
+> Steps to Reproduce:
+> Play a 44.1Khz audio file.
+> 
+> 
+> Actual Results:
+> Pipewire reports that the output is locked to 48000hz, and ALSA reports that this is the only detected supported rate:
+> 
+> $ cat /proc/asound/card0/stream0
+> Playback:
+>   Status: Running
+>     Interface = 1
+>     Altset = 1
+>     Packet Size = 288
+>     Momentary freq = 48000 Hz (0x30.0000)
+>   Interface 1
+>     Altset 1
+>     Format: S24_3LE
+>     Channels: 2
+>     Endpoint: 0x02 (2 OUT) (SYNC)
+>     Rates: 48000 - 48000 (continuous)
+>     Bits: 0
+>     Channel map: FL FR
+>   Interface 1
+>     Altset 2
+>     Format: S16_LE
+>     Channels: 2
+>     Endpoint: 0x02 (2 OUT) (SYNC)
+>     Rates: 48000 - 48000 (continuous)
+>     Bits: 0
+>     Channel map: FL FR
+> 
+> 
+> Expected Result:
+> It should be switching between 44100-48000hz, the only two rates it supports.
+> 
+> 
+> Build Date and Hardware:
+> Running Arch Linux with kernel 6.3.4-arch1-1, alsa-lib 1.2.9-1.
+> AMD Ryzen 3600 on a MSI B450M Mortar Max motherboard
+> 
+> 
+> Additional Information:
+> It seems like a regression between Linux 4.x and 5.x, and halfway through the above thread the user "quantonian" added the device to the ALSA quirks table and has posted a patch:
+> 
+> https://github.com/mikebrady/shairport-sync/issues/1504#issuecomment-1193355701
+> 
+> Thanks if this can be fixed in the kernel. The dongle in question is US $9:
+> https://www.apple.com/shop/product/MU7E2AM/A/usb-c-to-35-mm-headphone-jack-adapter
 
-Charles Keepax (4):
-  dt-bindings: mfd: cirrus,cs42l43: Add initial DT binding
-  mfd: cs42l43: Add support for cs42l43 core driver
-  pinctrl: cs42l43: Add support for the cs42l43
-  ASoC: cs42l43: Add support for the cs42l43
+See bugzilla for the full thread.
 
-Lucas Tanure (2):
-  soundwire: bus: Allow SoundWire peripherals to register IRQ handlers
-  spi: cs42l43: Add SPI controller support
+Unfortunately, the reporter said that he can only run kernel as
+old as 5.6, as older than that, he experiences unrelated GPU crashes,
+so he can't bisect this regression.
 
- .../bindings/sound/cirrus,cs42l43.yaml        |  320 +++
- MAINTAINERS                                   |    5 +
- drivers/mfd/Kconfig                           |   23 +
- drivers/mfd/Makefile                          |    3 +
- drivers/mfd/cs42l43-i2c.c                     |   86 +
- drivers/mfd/cs42l43-sdw.c                     |  213 ++
- drivers/mfd/cs42l43.c                         | 1141 +++++++++
- drivers/mfd/cs42l43.h                         |   23 +
- drivers/pinctrl/cirrus/Kconfig                |   11 +
- drivers/pinctrl/cirrus/Makefile               |    2 +
- drivers/pinctrl/cirrus/pinctrl-cs42l43.c      |  609 +++++
- drivers/soundwire/bus.c                       |   31 +
- drivers/soundwire/bus_type.c                  |   12 +
- drivers/spi/Kconfig                           |    7 +
- drivers/spi/Makefile                          |    1 +
- drivers/spi/spi-cs42l43.c                     |  279 ++
- include/linux/mfd/cs42l43-regs.h              | 1172 +++++++++
- include/linux/mfd/cs42l43.h                   |  102 +
- include/linux/soundwire/sdw.h                 |    9 +
- include/sound/cs42l43.h                       |   17 +
- sound/soc/codecs/Kconfig                      |   16 +
- sound/soc/codecs/Makefile                     |    4 +
- sound/soc/codecs/cs42l43-jack.c               |  951 +++++++
- sound/soc/codecs/cs42l43-sdw.c                |   75 +
- sound/soc/codecs/cs42l43.c                    | 2275 +++++++++++++++++
- sound/soc/codecs/cs42l43.h                    |  126 +
- 26 files changed, 7513 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
- create mode 100644 drivers/mfd/cs42l43-i2c.c
- create mode 100644 drivers/mfd/cs42l43-sdw.c
- create mode 100644 drivers/mfd/cs42l43.c
- create mode 100644 drivers/mfd/cs42l43.h
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs42l43.c
- create mode 100644 drivers/spi/spi-cs42l43.c
- create mode 100644 include/linux/mfd/cs42l43-regs.h
- create mode 100644 include/linux/mfd/cs42l43.h
- create mode 100644 include/sound/cs42l43.h
- create mode 100644 sound/soc/codecs/cs42l43-jack.c
- create mode 100644 sound/soc/codecs/cs42l43-sdw.c
- create mode 100644 sound/soc/codecs/cs42l43.c
- create mode 100644 sound/soc/codecs/cs42l43.h
+Anyway, I'm adding it to regzbot:
+
+#regzbot introduced: v4.19..v5.10 https://bugzilla.kernel.org/show_bug.cgi?id=217501
+#regzbot title: 44100hz is mistaken as 48000hz on Apple Headphone Jack Adapter
+#regzbot link: https://github.com/mikebrady/shairport-sync/issues/1504
+#regzbot link: https://www.audiosciencereview.com/forum/index.php?threads/review-apple-vs-google-usb-c-headphone-adapters.5541/page-32
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217501
 
 -- 
-2.30.2
-
+An old man doll... just what I always wanted! - Clara
