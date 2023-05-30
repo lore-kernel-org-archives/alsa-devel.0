@@ -4,93 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4ACBBC7EE23
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 11:38:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89F1CC7EE23
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 12:22:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FD331DD;
-	Tue, 30 May 2023 13:37:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FD331DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20F0974C;
+	Tue, 30 May 2023 14:22:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20F0974C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685446693;
-	bh=iXCnSpqvku5TBvKgY0SIrL7G7nudm6YESXMmzmXUbU8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1685449375;
+	bh=6Uv1D6eaOsPdD127DbE63CAIfpZAzTg7p5rKY5wx77c=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lnFH+jcfTXHDDK3q65KOF4DUSPbFFEdJXrw0uJX+LEsH6LjGtpNMR8OKEUxawqrK4
-	 7bobYmtTpmHU3JSY/Vk/JwLDUuIwIYukD5NJ8ck2EAGpOLv8ljjKwA50R0oIpEoy4y
-	 KNLrh+Fl+I8d3uupT+211haLaPqVpjO33W9oVE7s=
+	b=vCpnnUfnT34HQMtLAWGpYje5DfEFLoOq08FQzj9y1wLkgtn4lrz3dMWAhtc62KSs9
+	 GlwF2CJhOjitXndz0JNDW5hdCNGh+kdu3HjfIpfPDcCUCVMPjNK7tFjz5u+itJtc8y
+	 31PGdCuksWUnnTGqzRNAISwA5ZEWnPrvLeLOHO9Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7DF8DF8053D; Tue, 30 May 2023 13:37:16 +0200 (CEST)
+	id 6EC3EF80548; Tue, 30 May 2023 14:21:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECA9DF8042F;
-	Tue, 30 May 2023 13:37:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87941F80544;
+	Tue, 30 May 2023 14:21:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22BFAF8042F; Tue, 30 May 2023 13:37:11 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 49643F80149
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 13:36:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49643F80149
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=GTcik89a
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id 125C0F80544; Tue, 30 May 2023 14:21:33 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2A20B62260;
-	Tue, 30 May 2023 11:36:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72E40C433EF;
-	Tue, 30 May 2023 11:36:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685446607;
-	bh=iXCnSpqvku5TBvKgY0SIrL7G7nudm6YESXMmzmXUbU8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GTcik89aH1GnRIFAEfVubBgatbsO1FId7GW/IRBcONL4z03EgtErF/yMgEsdsRQZA
-	 WCHlU8TMmnjd2fEuOhJP9psrh5ZK3tq2H6sMZS5IVwsn1cqklw6knLDGF83906Mm3b
-	 hV5DxEd/3g6UpXojZxw/xkh8dNMZdKcCeAjcLFEoV9tByq24DlBt/giTfLEVxcNORk
-	 +Qo1KszQrpQG/fQhf174Ns/NlDzklyZLJezgBL+lEPX2RUnFo+Me7vUnP+oFyZDPKR
-	 OCKfgjykoQy0fVdFmIdVZnNXgw/jZnRwyh7edoQyrn5XMt4KWCxJjHjmLUinu0zfBs
-	 ZUMkezRxrGs2A==
-Date: Tue, 30 May 2023 12:36:40 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Zhu Ning <zhuning0077@gmail.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	David Yang <yangxiaohua@everest-semi.com>,
-	Daniel Drake <drake@endlessm.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org, kernel@collabora.com
-Subject: Re: [PATCH 1/3] ASoC: es8316: Increment max value for ALC Capture
- Target Volume control
-Message-ID: <4a3f54a3-2cbd-4a22-9742-9ba60e78643b@sirena.org.uk>
-References: <20230524074156.147387-1-cristian.ciocaltea@collabora.com>
- <20230524074156.147387-2-cristian.ciocaltea@collabora.com>
- <5dbcbf84-602a-44de-ad99-268d4d5b4b2f@sirena.org.uk>
- <cfa23203-1626-440b-ec27-efe56cb297d2@collabora.com>
- <01fd1a9f-56c7-4864-bb2b-8b004284c8cc@sirena.org.uk>
- <3c6b67a4-4892-0057-3dfc-65ed6c7ebc37@collabora.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id B88AEF8026A
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 14:21:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B88AEF8026A
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=GRod/P2L
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 34U5rw8s022993;
+	Tue, 30 May 2023 07:21:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=eckNdlJorGmcPDVrRDLs3hiZi8xTbQczG2lnRxvamjA=;
+ b=GRod/P2LXbNFoskDH/RiolmbFGdhwBJrYnqXiszucPNXQaiqaZ8vSC0n9Xabij9enrlp
+ KAScu+wx5bShPFuvL6NW4ziLh9WgdAoosbc6ss8pznEAYsu2w/mCyfLBLuG8s4/zyl0o
+ U72UIgNvJsLd2mOYuUjQ1VFmBgQ6nWCv+gnQ/GQma5l4IYm+1SViq4a7W63zISGzfnCh
+ HJa9dPofUP3ygkUxfML8juyxkc9MiXWvYk/coYTJUpQCm7lss2h3RIKo4gCNJAStWvYa
+ /ecg9ka1CmXsklc+lc2Guri5e076VTcMO8+Gs+4ILIfvYENkplRuazXj54gEzn6+eOKV LA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3que9mu7xx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 30 May 2023 07:21:14 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 30 May
+ 2023 13:21:12 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Tue, 30 May 2023 13:21:12 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 970A0475;
+	Tue, 30 May 2023 12:21:12 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>, <lee@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <linus.walleij@linaro.org>,
+        <vkoul@kernel.org>
+CC: <robh+dt@kernel.org>, <conor+dt@kernel.org>, <lgirdwood@gmail.com>,
+        <yung-chuan.liao@linux.intel.com>, <sanyog.r.kale@intel.com>,
+        <pierre-louis.bossart@linux.intel.com>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <devicetree@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 1/6] soundwire: bus: Allow SoundWire peripherals to
+ register IRQ handlers
+Date: Tue, 30 May 2023 13:21:07 +0100
+Message-ID: <20230530122112.1314458-2-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230530122112.1314458-1-ckeepax@opensource.cirrus.com>
+References: <20230530122112.1314458-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="d7bOgmCsIJ4exiLW"
-Content-Disposition: inline
-In-Reply-To: <3c6b67a4-4892-0057-3dfc-65ed6c7ebc37@collabora.com>
-X-Cookie: I've read SEVEN MILLION books!!
-Message-ID-Hash: X7EFIM3HGBLSMNNQLE4VWC2ZHI5IRWFN
-X-Message-ID-Hash: X7EFIM3HGBLSMNNQLE4VWC2ZHI5IRWFN
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: lnI2GqhO0145Cv4cQw4OryIdYzBziI4v
+X-Proofpoint-ORIG-GUID: lnI2GqhO0145Cv4cQw4OryIdYzBziI4v
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 2U2MF3MFIVT5N3OEEYAYYR66JHJBLZ5N
+X-Message-ID-Hash: 2U2MF3MFIVT5N3OEEYAYYR66JHJBLZ5N
+X-MailFrom: prvs=1514aa1fe0=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X7EFIM3HGBLSMNNQLE4VWC2ZHI5IRWFN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2U2MF3MFIVT5N3OEEYAYYR66JHJBLZ5N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,38 +113,201 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
---d7bOgmCsIJ4exiLW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Currently the in-band alerts for SoundWire peripherals can only
+be communicated to the driver through the interrupt_callback
+function. This however is slightly inconvient for devices that wish to
+share IRQ handling code between SoundWire and I2C/SPI, the later would
+normally register an IRQ handler with the IRQ subsystem. However there
+is no reason the SoundWire in-band IRQs can not also be communicated
+as an actual IRQ to the driver.
 
-On Fri, May 26, 2023 at 09:11:49PM +0300, Cristian Ciocaltea wrote:
+Add support for SoundWire peripherals to register a normal IRQ handler
+to receive SoundWire in-band alerts, allowing code to be shared across
+control buses. Note that we allow users to use both the
+interrupt_callback and the IRQ handler, this is useful for devices which
+must clear additional chip specific SoundWire registers that are not a
+part of the normal IRQ flow, or the SoundWire specification.
 
-> -1.5 dB  |  50-51 %
-> -0.0 dB  |  50-51 %
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
 
-> So it seems the specs are correct, and the problem is the hardware default.
+Changes since v1:
+ - Update commit message
 
-> Is there a better approach to handle this than extending the volume range?
+Thanks,
+Charles
 
-The other option would be to change the value in the register during
-probe to one that's in range, that wouldn't stop any existing saved
-settings from generating errors but would mean there wouldn't be any new
-ones.  Either approach is probably fine.
+ drivers/soundwire/bus.c       | 31 +++++++++++++++++++++++++++++++
+ drivers/soundwire/bus_type.c  | 12 ++++++++++++
+ include/linux/soundwire/sdw.h |  9 +++++++++
+ 3 files changed, 52 insertions(+)
 
---d7bOgmCsIJ4exiLW
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 1ea6a64f8c4a5..30cd03757aafe 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -3,6 +3,7 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/delay.h>
++#include <linux/irq.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/soundwire/sdw_registers.h>
+@@ -25,6 +26,23 @@ static int sdw_get_id(struct sdw_bus *bus)
+ 	return 0;
+ }
+ 
++static int sdw_irq_map(struct irq_domain *h, unsigned int virq,
++		       irq_hw_number_t hw)
++{
++	struct sdw_bus *bus = h->host_data;
++
++	irq_set_chip_data(virq, bus);
++	irq_set_chip(virq, &bus->irq_chip);
++	irq_set_nested_thread(virq, 1);
++	irq_set_noprobe(virq);
++
++	return 0;
++}
++
++static const struct irq_domain_ops sdw_domain_ops = {
++	.map	= sdw_irq_map,
++};
++
+ /**
+  * sdw_bus_master_add() - add a bus Master instance
+  * @bus: bus instance
+@@ -142,6 +160,13 @@ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
+ 	bus->params.curr_bank = SDW_BANK0;
+ 	bus->params.next_bank = SDW_BANK1;
+ 
++	bus->irq_chip.name = dev_name(bus->dev);
++	bus->domain = irq_domain_add_linear(NULL, SDW_MAX_DEVICES, &sdw_domain_ops, bus);
++	if (!bus->domain) {
++		dev_err(bus->dev, "Failed to add IRQ domain\n");
++		return -EINVAL;
++	}
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(sdw_bus_master_add);
+@@ -178,6 +203,9 @@ static int sdw_delete_slave(struct device *dev, void *data)
+ void sdw_bus_master_delete(struct sdw_bus *bus)
+ {
+ 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
++
++	irq_domain_remove(bus->domain);
++
+ 	sdw_master_device_del(bus);
+ 
+ 	sdw_bus_debugfs_exit(bus);
+@@ -1711,6 +1739,9 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 				struct device *dev = &slave->dev;
+ 				struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
+ 
++				if (slave->prop.use_domain_irq && slave->irq)
++					handle_nested_irq(slave->irq);
++
+ 				if (drv->ops && drv->ops->interrupt_callback) {
+ 					slave_intr.sdca_cascade = sdca_cascade;
+ 					slave_intr.control_port = clear;
+diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+index 1f43ee848eac8..fafbc284e82da 100644
+--- a/drivers/soundwire/bus_type.c
++++ b/drivers/soundwire/bus_type.c
+@@ -122,6 +122,12 @@ static int sdw_drv_probe(struct device *dev)
+ 	if (drv->ops && drv->ops->read_prop)
+ 		drv->ops->read_prop(slave);
+ 
++	if (slave->prop.use_domain_irq) {
++		slave->irq = irq_create_mapping(slave->bus->domain, slave->dev_num);
++		if (!slave->irq)
++			dev_warn(dev, "Failed to map IRQ\n");
++	}
++
+ 	/* init the sysfs as we have properties now */
+ 	ret = sdw_slave_sysfs_init(slave);
+ 	if (ret < 0)
+@@ -166,7 +172,13 @@ static int sdw_drv_remove(struct device *dev)
+ 	int ret = 0;
+ 
+ 	mutex_lock(&slave->sdw_dev_lock);
++
+ 	slave->probed = false;
++
++	if (slave->prop.use_domain_irq)
++		irq_dispose_mapping(irq_find_mapping(slave->bus->domain,
++						     slave->dev_num));
++
+ 	mutex_unlock(&slave->sdw_dev_lock);
+ 
+ 	if (drv->remove)
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index ef645de13ae93..c3ab5e5f9cfa4 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -5,6 +5,8 @@
+ #define __SOUNDWIRE_H
+ 
+ #include <linux/bug.h>
++#include <linux/irq.h>
++#include <linux/irqdomain.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/bitfield.h>
+ 
+@@ -369,6 +371,7 @@ struct sdw_dpn_prop {
+  * @clock_reg_supported: the Peripheral implements the clock base and scale
+  * registers introduced with the SoundWire 1.2 specification. SDCA devices
+  * do not need to set this boolean property as the registers are required.
++ * @use_domain_irq: call actual IRQ handler on slave, as well as callback
+  */
+ struct sdw_slave_prop {
+ 	u32 mipi_revision;
+@@ -393,6 +396,7 @@ struct sdw_slave_prop {
+ 	u8 scp_int1_mask;
+ 	u32 quirks;
+ 	bool clock_reg_supported;
++	bool use_domain_irq;
+ };
+ 
+ #define SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY	BIT(0)
+@@ -640,6 +644,7 @@ struct sdw_slave_ops {
+  * struct sdw_slave - SoundWire Slave
+  * @id: MIPI device ID
+  * @dev: Linux device
++ * @irq: IRQ number
+  * @status: Status reported by the Slave
+  * @bus: Bus handle
+  * @prop: Slave properties
+@@ -669,6 +674,7 @@ struct sdw_slave_ops {
+ struct sdw_slave {
+ 	struct sdw_slave_id id;
+ 	struct device dev;
++	int irq;
+ 	enum sdw_slave_status status;
+ 	struct sdw_bus *bus;
+ 	struct sdw_slave_prop prop;
+@@ -883,6 +889,7 @@ struct sdw_master_ops {
+  * is used to compute and program bus bandwidth, clock, frame shape,
+  * transport and port parameters
+  * @debugfs: Bus debugfs
++ * @domain: IRQ domain
+  * @defer_msg: Defer message
+  * @clk_stop_timeout: Clock stop timeout computed
+  * @bank_switch_timeout: Bank switch timeout computed
+@@ -916,6 +923,8 @@ struct sdw_bus {
+ #ifdef CONFIG_DEBUG_FS
+ 	struct dentry *debugfs;
+ #endif
++	struct irq_chip irq_chip;
++	struct irq_domain *domain;
+ 	struct sdw_defer defer_msg;
+ 	unsigned int clk_stop_timeout;
+ 	u32 bank_switch_timeout;
+-- 
+2.30.2
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmR138cACgkQJNaLcl1U
-h9AZDQf8CRVQJfTeFq5Qw9fVO1/pJlyLSgRpJGmTNzHtJqiQWeIHUvhUdQk308MA
-F8c9ONRYZYqB1lr26oNF0MWRJYI8BQJC35xYxLiK2EyKYLvyiK7K9JekQybKdzpk
-o4fAXlKCjlMHBqVF9ivHEBUjMyM2aZrLc7D0DSX2N+VhVP9evvNNNyccAKxGUE91
-7UDcJARuzCs1ENlzyaJKrZxiGDKbVapt6KMcnz7evtqAQpKgjfdDYOoKWyZcRSAp
-5yQjcYk7+XfGkn8KddHjGbgAV6ZJ9BKcZfJ4PwwMm9iJhoVTONpUBPn6UQMb4PN0
-PmKgoDkU7j2X/W+b/zWraTxZvy6O/g==
-=buze
------END PGP SIGNATURE-----
-
---d7bOgmCsIJ4exiLW--
