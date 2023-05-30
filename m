@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC14CC77B7A
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 14:50:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C807AC77B73
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 14:50:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA2DD6C0;
-	Tue, 30 May 2023 16:49:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA2DD6C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A689825;
+	Tue, 30 May 2023 16:49:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A689825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685458227;
-	bh=GcAuHZEcow9hik/LJK+VDfxCnFXDFSi+9NN8y44Dsfo=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=OOob39iMVZuTkHM0LOSmD1S+JkB18vSMpkhPGvszBzlOsNwaR6R6kXKoqT0VePZK9
-	 yLltvceULLeADmd1GG3OWHXLHZ4rdax/g56iKZzVepVWhqMfb199PUndyy3INN650M
-	 D/filnH7F5S4jmHv0N9VWKwvKsb155rIAdZPZmOQ=
+	s=default; t=1685458248;
+	bh=j/IwbDRaepMrMOQFT9B9+fFUql09Bl+xwSEhRUNGtkU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ep3XV0iNEIeJO0yCnXxmkjN/oah7T9sZMyvzSAl9IKQnNUkxOhpZTschJ/d0c9bKp
+	 SEWL6bF+Y/SqAVv0UIiB7RBGuVusAn0zErS64DDKUXvDsz/a532Q1C5fsSA5A/e69Z
+	 AesXpEGiBtqQ53JmdPpCivdKD5drk+ksyPU0rAqE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFAFAF8016B; Tue, 30 May 2023 16:49:07 +0200 (CEST)
+	id 583D3F8055C; Tue, 30 May 2023 16:49:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22D2DF8016B;
-	Tue, 30 May 2023 16:49:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE2B9F804FC;
+	Tue, 30 May 2023 16:49:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27415F804FC; Tue, 30 May 2023 16:49:04 +0200 (CEST)
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
- [IPv6:2a00:1450:4864:20::52e])
+	id 77D8AF804FC; Tue, 30 May 2023 16:49:06 +0200 (CEST)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
+ [IPv6:2a00:1450:4864:20::630])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0289F8016B
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 16:48:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0289F8016B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0750BF8026A
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 16:49:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0750BF8026A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=q6DaxHgq
-Received: by mail-ed1-x52e.google.com with SMTP id
- 4fb4d7f45d1cf-51458187be1so8039204a12.2
+ header.s=google header.b=cYj/0Udv
+Received: by mail-ej1-x630.google.com with SMTP id
+ a640c23a62f3a-96fbe7fbdd4so838603866b.3
         for <alsa-devel@alsa-project.org>;
- Tue, 30 May 2023 07:48:58 -0700 (PDT)
+ Tue, 30 May 2023 07:49:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1685458136; x=1688050136;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iV7Orb1i2HT8c6ntLQeDsScnfo8QsjoWIKrRpD+mlDM=;
-        b=q6DaxHgqELE2tu8Q1AxgIsCDpH+TNAJJHJp6Q7g8/Fkd/88Tk4TUy/ri0mT4Ktg5Mo
-         8loUDrV8rgOV4A6XNocbQ8st6LPKLPsCoM9M7NfuJiiPgFmWodAuWDMcEhGTqfI+4Tzf
-         71FhpeXfe33npOU4xXk8C/+4upzoWtXD+5OuR9V4CwEY+McHM/HpsrVpr/f2HM5wwk11
-         q6ItDg0BTxwcfJWB6uZBQGx+4pwaP2uzwuVXxHf91dLVKqsCTNfh3dg7BgyEkITCyOjh
-         IHl3EJehb7WHjyFD+D9eQjjetOZhYahUl2+MIzDnN4ovGk7najQrxWq/MU940DgRFDiZ
-         Y5Vg==
+        d=linaro.org; s=google; t=1685458142; x=1688050142;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sC1DLYYtBIULk7ShCQFp6sqNI5K0yrBz0U0PM92RpVI=;
+        b=cYj/0UdvnrYRxLWE30Pag0dMjBlnkPhq9SfEVLhSh0h7wesZCsN7ZQbFx9LGd0w0o6
+         p/1LFcwMRXMEa89KQvnwZokxdlcPl1Q6M5yAc7YujbUYgQ+x1MrzbImjdinSrwy2+AC2
+         Odd/VANoBeApcDTBI50o53gAvId28G2cGWCrdZcual2NYoPCgjUgOD3Zi/HCVDNkJF3e
+         fC4YwBfzsEOmebe+lJL+K0fUTmIILgzkJdJ+9zQAivS7vBtvmSy5iDWTeVZUT3qxMhsI
+         ikFqfe7TYZpvhPUiLdoS3ycpGKRL3nP0wOHGf2c76lHh2YHavqCNPWaeAEPAv4Klr0Nb
+         DG7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685458136; x=1688050136;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iV7Orb1i2HT8c6ntLQeDsScnfo8QsjoWIKrRpD+mlDM=;
-        b=aKL7RaVGJ/SeRpw+O+j+odrM3YH4moCb0OqPUbaATipmBljh6DQxvxWbv6B1YnAagc
-         alcyqzQpmGXDT1T4tMbVBCWXRw41QGQ3cs9iPQ6YPbJy7Rqj4DKNaKsDHXWgbf4s8qCG
-         AOLf2WpbQ5u0FFy2nSx7kw7kbylaz/QWI0O/51SbVl/anGSuerg28DuMkjA3RULW1h9O
-         93XbcZbKa5+XeWskJnwJhu+fwdtLUytm61xaV9u7ZrituiiSuddavVMlg1xclBCnWr++
-         KvApTiBKNmpMtznQ8B68ajDLpa2FDNMA5jQLGe0RzadyaR51ZuK3Tg77b384Hyhxkjb0
-         N/TA==
-X-Gm-Message-State: AC+VfDz/wdnravsEa5PDBv+BBNEXnviPygm8cQQ+hFjigIMxgS1xpMTT
-	0n5PoHup73mgF6WvpkUGOYjN6A==
+        d=1e100.net; s=20221208; t=1685458142; x=1688050142;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sC1DLYYtBIULk7ShCQFp6sqNI5K0yrBz0U0PM92RpVI=;
+        b=I9ntq5KWbV34Bq/+Dw8mmzBf9bGSfFYTqjtnn98xo0pmQuk0bWmOmJ4nOV0rtOVGgi
+         kGcLY/9FN/mVzEwLOF4z/rzwMjdmuzZVhmjE+CVn1fcebn21BayJRqZPFtmAYXS3eFlJ
+         S+BBM2mtrKXF0UgX2C2vt23Iq/sKsfpjaC64tv4T5q8AFX+ljDYMCyq/tToUHi+fNs11
+         PmIZxbiY1Zp4tYdkys1sLqfaC5zCsDhc4V8Q8GMABUyrzIRXXpHBMXnBfnPNzXjBCQah
+         7luK+ecqlbczcwx5GTqyTcV0JLpX+RL09cKbzMtH17KMImajHpKa7dakPcbb0T96K9uO
+         Saxg==
+X-Gm-Message-State: AC+VfDy/9JU+87BaRx+LyrKQ0HUicPUWEwq1Cd8LWTf97SoBiqKhx9b+
+	KSDckKivE7jVdYO0mXSQobUbBw==
 X-Google-Smtp-Source: 
- ACHHUZ57600gdJ8fZghoBNthDb/ZJ2da044/ygwaZp54+5w2nAm+4l+5lOMfpN+gAlzBZIyE3wXFJQ==
-X-Received: by 2002:aa7:d9c4:0:b0:50d:fcfb:861b with SMTP id
- v4-20020aa7d9c4000000b0050dfcfb861bmr1926404eds.0.1685458136376;
-        Tue, 30 May 2023 07:48:56 -0700 (PDT)
+ ACHHUZ5ekV/qA/jutZ5TY0nfdJ3IfVJCe2ml8+qjE57PgMROisWg3g5xJPBlz+bFlKz96buQX6Bymg==
+X-Received: by 2002:a17:906:9b88:b0:970:925:6563 with SMTP id
+ dd8-20020a1709069b8800b0097009256563mr2507516ejc.8.1685458142210;
+        Tue, 30 May 2023 07:49:02 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.199.204])
         by smtp.gmail.com with ESMTPSA id
- q21-20020aa7cc15000000b00514b2717ec6sm631283edt.28.2023.05.30.07.48.53
+ q21-20020aa7cc15000000b00514b2717ec6sm631283edt.28.2023.05.30.07.48.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 May 2023 07:48:55 -0700 (PDT)
+        Tue, 30 May 2023 07:49:01 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Vinod Koul <vkoul@kernel.org>,
 	Kishon Vijay Abraham I <kishon@kernel.org>,
@@ -105,16 +107,19 @@ To: Vinod Koul <vkoul@kernel.org>,
 	timestamp@lists.linux.dev,
 	linux-watchdog@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Rob Herring <robh@kernel.org>,
 	Tony Lindgren <tony@atomide.com>,
 	Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH 0/7] dt-bindings: restrict node name suffixes
-Date: Tue, 30 May 2023 16:48:44 +0200
-Message-Id: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/7] dt-bindings: pwm: restrict node name suffixes
+Date: Tue, 30 May 2023 16:48:46 +0200
+Message-Id: <20230530144851.92059-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
+References: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YMXIFMVGA5XQWWRAJDCKFIHQS4YE7PON
-X-Message-ID-Hash: YMXIFMVGA5XQWWRAJDCKFIHQS4YE7PON
+Message-ID-Hash: I2QIBAO42IJDQK53JW5IX37IGLGHK4ZK
+X-Message-ID-Hash: I2QIBAO42IJDQK53JW5IX37IGLGHK4ZK
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -127,49 +132,43 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YMXIFMVGA5XQWWRAJDCKFIHQS4YE7PON/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I2QIBAO42IJDQK53JW5IX37IGLGHK4ZK/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+Make the pattern matching node names a bit stricter to improve DTS
+consistency.  The pattern is restricted to:
+1. Only one unit address or one -N suffix,
+2. -N suffixes to decimal numbers.
 
-Tree-wide cleanup of DTS node name suffixes "-N", e.g. "pwm-5", so we allow
-only decimal numbers.  In few cases narrow the pattern to also disallow
-multiple suffixes, e.g. "pwm-5-5".
+Suggested-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-No dependencies, can be applied by individual subsystems.
+---
 
 Cc: Tony Lindgren <tony@atomide.com>
 Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ Documentation/devicetree/bindings/pwm/pwm.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Link: https://lore.kernel.org/all/20221127182232.GA128974-robh@kernel.org/
-
-Best regards,
-Krzysztof
-
-Krzysztof Kozlowski (7):
-  dt-bindings: phy: intel,combo-phy: restrict node name suffixes
-  dt-bindings: pwm: restrict node name suffixes
-  dt-bindings: rtc: restrict node name suffixes
-  dt-bindings: slimbus: restrict node name suffixes
-  spi: dt-bindings: restrict node name suffixes
-  dt-bindings: timestamp: restrict node name suffixes
-  dt-bindings: watchdog: restrict node name suffixes
-
- Documentation/devicetree/bindings/phy/intel,combo-phy.yaml    | 2 +-
- Documentation/devicetree/bindings/pwm/pwm.yaml                | 2 +-
- Documentation/devicetree/bindings/rtc/rtc.yaml                | 2 +-
- Documentation/devicetree/bindings/slimbus/slimbus.yaml        | 2 +-
- Documentation/devicetree/bindings/spi/spi-controller.yaml     | 2 +-
- .../bindings/timestamp/hardware-timestamps-common.yaml        | 2 +-
- Documentation/devicetree/bindings/watchdog/watchdog.yaml      | 4 ++--
- 7 files changed, 8 insertions(+), 8 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/pwm/pwm.yaml b/Documentation/devicetree/bindings/pwm/pwm.yaml
+index 3c01f85029e5..abd9fa873354 100644
+--- a/Documentation/devicetree/bindings/pwm/pwm.yaml
++++ b/Documentation/devicetree/bindings/pwm/pwm.yaml
+@@ -13,7 +13,7 @@ select: false
+ 
+ properties:
+   $nodename:
+-    pattern: "^pwm(@.*|-[0-9a-f])*$"
++    pattern: "^pwm(@.*|-([0-9]|[1-9][0-9]+))?$"
+ 
+   "#pwm-cells":
+     description:
 -- 
 2.34.1
 
