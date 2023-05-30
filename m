@@ -4,93 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B01CAC7EE23
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 18:14:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97745C7EE24
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 18:30:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B68B82C;
-	Tue, 30 May 2023 20:13:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B68B82C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 523B06C0;
+	Tue, 30 May 2023 20:29:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 523B06C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685470444;
-	bh=sMhuZ+7skk9Nz8F8CqkKKe/JQIPAguLL7MXGBbO2Dt8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1685471429;
+	bh=EKx6VTVPtif3VopxDUTsogjb7XDS6ckoH87zFUChkRk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=L1qxomn+TF+BBKCQ/1bh9yGZIFOKOysTngaggaaH2MX7tUt7EOHHLXyZd8MiPTeFH
-	 FrLg2Ex/kaBJSg9wIJtHK4HMpkNe/nuQtMzAIo8Aj4P8LUy4XVsnsGqRvyNCE+33fm
-	 gaLEjfpv3GTQ2EDH4qVZ4SJVmTisHk4bwmDML87M=
+	b=kbp/DfCuI1sh9C9utfvel/oWBx85j9/nq7jsZTxxXSLyjqQzC7rWnDMiOMatajoHf
+	 fVkeSYaYEYUXE6mYxauQM58D2Jh2MPCCrx7oVFhUICnsEK3O8KAVUz53ekqUKZ8UBa
+	 AVpH5ZCw+8nWcbJNtl2X3mW3zOFSsJlTBf2QB7Q0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 91E75F805A0; Tue, 30 May 2023 20:12:08 +0200 (CEST)
+	id 47CA9F80149; Tue, 30 May 2023 20:29:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 146AFF80587;
-	Tue, 30 May 2023 20:12:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB6EEF80149;
+	Tue, 30 May 2023 20:29:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A07B0F80553; Tue, 30 May 2023 20:12:02 +0200 (CEST)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id E4C62F8026A; Tue, 30 May 2023 20:29:03 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4B23FF800DF
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 20:11:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B23FF800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id E382EF80149
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 20:28:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E382EF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=jSeuSeX3
-Received: from localhost (unknown [188.27.34.213])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=gNq/ZsXD
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 312836605840;
-	Tue, 30 May 2023 19:11:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1685470310;
-	bh=sMhuZ+7skk9Nz8F8CqkKKe/JQIPAguLL7MXGBbO2Dt8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jSeuSeX3vb9uNFXqB5SBwWMN/i7ouAXBywLxiMCsC7i+7SUEN9TsHC+eJ331EeZ6p
-	 FQc2qNLPcePsPRIsRr7JxQ2KhT7Zo7xILISvaPxW2pkuA8kkEsUfHgrRk6DfmX6W8K
-	 xlwJwrNcAujY06uE1+n2TrzSyFs95Cz6kXxkGlfxLFW1BrFxGV1yLonTBQIHR5lAfh
-	 Nk1+djddCn+ffS8paqMobLyhoGEohaOYxQ/IQC7ZK++2BlVtcKopJDS3eHDItAaUwU
-	 8NCXUzcM81o5Z18Z938O0rIAZJWIHrYLmEn6Qy7ZkgrnHwHJYhp6UKBMY//7wR3Tvt
-	 Dm5BhJH4Sa8Zg==
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Zhu Ning <zhuning0077@gmail.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	David Yang <yangxiaohua@everest-semi.com>,
-	Daniel Drake <drake@endlessm.com>
-Cc: devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	kernel@collabora.com
-Subject: [PATCH v2 2/3] ASoC: es8316: Do not set rate constraints for
- unsupported MCLKs
-Date: Tue, 30 May 2023 21:11:39 +0300
-Message-Id: <20230530181140.483936-3-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230530181140.483936-1-cristian.ciocaltea@collabora.com>
-References: <20230530181140.483936-1-cristian.ciocaltea@collabora.com>
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C3595616FB;
+	Tue, 30 May 2023 18:28:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07BBCC4339E;
+	Tue, 30 May 2023 18:28:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685471327;
+	bh=EKx6VTVPtif3VopxDUTsogjb7XDS6ckoH87zFUChkRk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=gNq/ZsXDpV3i7lAAIj9wedxoaIHRiPa8GeMA8KY+BCc+AtgakCixsCrcHU8v2kD2S
+	 qjnXa48y6IVO/aLnDPRCGY3kpkEcBd0FFnj/Q3kjZNZ0xk88kLveBEI0YD/Kp1h0pv
+	 wqPhDhAOt3KWFaOqSJcfgF8JBgPb8c5uMWp6U3Xrt7eRhVp9yhDenqNBPb0QvBwIpb
+	 gyzSzCAYGhIEHZu9lj61HTMaAyZxD1CClcEgLnZnW8fT6ECmvgfC7/PZYbL1KVFZ4v
+	 uJkNEAot6nXMpDrNfwQgTKt/eHJTPJdb3HZtlkh3yVLR3bETuF72j3SQtRz5ujEj/a
+	 wwctPjUFDTKeA==
+From: Mark Brown <broonie@kernel.org>
+To: Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Dipen Patel <dipenp@nvidia.com>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>,
+ Dilip Kota <eswara.kota@linux.intel.com>, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
+ timestamp@lists.linux.dev, linux-watchdog@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Tony Lindgren <tony@atomide.com>,
+ Oleksij Rempel <linux@rempel-privat.de>
+In-Reply-To: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
+References: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH 0/7] dt-bindings: restrict node name suffixes
+Message-Id: <168547131548.1034788.34188090441869561.b4-ty@kernel.org>
+Date: Tue, 30 May 2023 19:28:35 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6XJ5L7MALWARNVQEJYTWFPTBBESWB747
-X-Message-ID-Hash: 6XJ5L7MALWARNVQEJYTWFPTBBESWB747
-X-MailFrom: cristian.ciocaltea@collabora.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-bfdf5
+Message-ID-Hash: YOEKHH65FQUBZSR7AT7PHBNWXST7R4BB
+X-Message-ID-Hash: YOEKHH65FQUBZSR7AT7PHBNWXST7R4BB
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,90 +99,53 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
-List-Archive: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YOEKHH65FQUBZSR7AT7PHBNWXST7R4BB/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When using the codec through the generic audio graph card, there are at
-least two calls of es8316_set_dai_sysclk(), with the effect of limiting
-the allowed sample rates according to the MCLK/LRCK ratios supported by
-the codec:
+On Tue, 30 May 2023 16:48:44 +0200, Krzysztof Kozlowski wrote:
+> Tree-wide cleanup of DTS node name suffixes "-N", e.g. "pwm-5", so we allow
+> only decimal numbers.  In few cases narrow the pattern to also disallow
+> multiple suffixes, e.g. "pwm-5-5".
+> 
+> No dependencies, can be applied by individual subsystems.
+> 
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+> 
+> [...]
 
-1. During audio card setup, to set the initial MCLK - see
-   asoc_simple_init_dai().
+Applied to
 
-2. Before opening a stream, to update MCLK, according to the stream
-   sample rate and the multiplication factor - see
-   asoc_simple_hw_params().
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-In some cases the initial MCLK might be set to a frequency that doesn't
-match any of the supported ratios, e.g. 12287999 instead of 12288000,
-which is only 1 Hz below the supported clock, as that is what the
-hardware reports. This creates an empty list of rate constraints, which
-is further passed to snd_pcm_hw_constraint_list() via
-es8316_pcm_startup(), and causes the following error on the very first
-access of the sound card:
+Thanks!
 
-  $ speaker-test -D hw:Analog,0 -F S16_LE -c 2 -t wav
-  Broken configuration for playback: no configurations available: Invalid argument
-  Setting of hwparams failed: Invalid argument
+[5/7] spi: dt-bindings: restrict node name suffixes
+      commit: c4fb6880edc15866a530c7b8f2698ae65f80cfab
 
-Note that all subsequent retries succeed thanks to the updated MCLK set
-at point 2 above, which uses a computed frequency value instead of a
-reading from the hardware registers. Normally this would have mitigated
-the issue, but es8316_pcm_startup() executes before the 2nd call to
-es8316_set_dai_sysclk(), hence it cannot make use of the updated
-constraints.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Since es8316_pcm_hw_params() performs anyway a final validation of MCLK
-against the stream sample rate and the supported MCLK/LRCK ratios, fix
-the issue by ensuring that sysclk_constraints list is only set when at
-least one supported sample rate is autodetected by the codec.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Fixes: b8b88b70875a ("ASoC: add es8316 codec driver")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
----
- sound/soc/codecs/es8316.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 8f0625b45b7c..069f1ce1cd50 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -369,13 +369,11 @@ static int es8316_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	int count = 0;
- 
- 	es8316->sysclk = freq;
-+	es8316->sysclk_constraints.list = NULL;
-+	es8316->sysclk_constraints.count = 0;
- 
--	if (freq == 0) {
--		es8316->sysclk_constraints.list = NULL;
--		es8316->sysclk_constraints.count = 0;
--
-+	if (freq == 0)
- 		return 0;
--	}
- 
- 	ret = clk_set_rate(es8316->mclk, freq);
- 	if (ret)
-@@ -391,8 +389,10 @@ static int es8316_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 			es8316->allowed_rates[count++] = freq / ratio;
- 	}
- 
--	es8316->sysclk_constraints.list = es8316->allowed_rates;
--	es8316->sysclk_constraints.count = count;
-+	if (count) {
-+		es8316->sysclk_constraints.list = es8316->allowed_rates;
-+		es8316->sysclk_constraints.count = count;
-+	}
- 
- 	return 0;
- }
--- 
-2.40.1
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
