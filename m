@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 476B5C7EE23
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 18:13:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE99DC7EE24
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 18:13:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47D24826;
-	Tue, 30 May 2023 20:12:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47D24826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64B1E839;
+	Tue, 30 May 2023 20:12:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64B1E839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685470416;
-	bh=F2WISEdJDdqbi/subGvFRxrlvnOqEMvj4xCyofd4JJw=;
+	s=default; t=1685470419;
+	bh=iHcb9BFc/X1bbxtUKpaxg5GTnEgeVVJ1yraooXSIn1k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EHB3BZdHvVu+BVyx/rxfXiz2oUdSLmhdIlBr6HejJLzFAZrMDa8BdJqg1oFhqbOMI
-	 Y23GRHhiZcqn1f7ieO6PPCd16LKQChwqwsJTjbkRMjTBqwUXvj92hqewi7mrI3aFJk
-	 UgeXwf0c6mtY72rC6WjWOLLgWfl+IN2A67Vleu/k=
+	b=KU4A0kzemikoXXGMA+2BRtXlkchuzAgiOxZIZZMonkwQw12mju9cmGEPF6iop+Gqc
+	 GPZuH3LZsXbDdF6j9aB+75xo+ZIL8xo+9PJ6diLF8SxhWNO6eZ/OfsGOd5AjEm5l4R
+	 asgPSXpTEyxy3lEapDuWDNSsc7jGGeLcVICbhM2c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8538AF8055C; Tue, 30 May 2023 20:12:03 +0200 (CEST)
+	id 96C2DF8055A; Tue, 30 May 2023 20:12:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4FC1F80553;
-	Tue, 30 May 2023 20:12:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 174E0F8055A;
+	Tue, 30 May 2023 20:12:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1BC22F80553; Tue, 30 May 2023 20:11:58 +0200 (CEST)
+	id 85F07F80552; Tue, 30 May 2023 20:12:00 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B5270F80149
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 20:11:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5270F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 38F98F80551
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 20:11:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38F98F80551
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=LHqWuTzy
+ header.a=rsa-sha256 header.s=mail header.b=kVgtbEN3
 Received: from localhost (unknown [188.27.34.213])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id A042266020E9;
-	Tue, 30 May 2023 19:11:46 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 3512C6606E76;
+	Tue, 30 May 2023 19:11:53 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1685470306;
-	bh=F2WISEdJDdqbi/subGvFRxrlvnOqEMvj4xCyofd4JJw=;
+	s=mail; t=1685470313;
+	bh=iHcb9BFc/X1bbxtUKpaxg5GTnEgeVVJ1yraooXSIn1k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LHqWuTzyJ+iZL4px+c0McrZeAZo5V/8SEsdRUnEDNaHGJa8TEc3wVqGzeZwvF5ipK
-	 68iUw/BsxVqgf93wU+kFq5byKRfONvK9Amn+DLhEdXzidzpcwM0/OHh5FJou0GuX0c
-	 ZYB+pj1/xeDXN42WdslVR+DN9dffjezfGwPfxG16fjCaA4+TYGA65lgqcuRD3khopa
-	 tnxtxyNPecIS3195Cafks9/nt8EGVSBC2goADkAp0SG9CkFP+/HNAY6iMEoWPLqak0
-	 jO5DEi0u51S+8Tx//GNNC3UANWQzPyojETJpXRR2GeWWlsk/cwZwd6WtGXo5HAvoe9
-	 VgB2lSdY2cZRg==
+	b=kVgtbEN3hqRjjWYAhVn3DNUVrLbzogAUD3ZcQ6srLv0f6+cM8SjLXGVgwHRq751qy
+	 AgUnx+6VWIYyHU8oLQ5/WBDwbY/Z8sGpfUwOCuKp/2LH5EYVhEsRfBDh/X4tvdhXAK
+	 FCABiS0A1FDOV/C7rJMrx8UdWqQvf6fPQeJI94xn6D091IxAsBvJYBFq5LLbo97eY5
+	 f4csibbvqoXLChNyuFKbc/4iblvSsZhz+hY5RBjlTyE9Nil/Xz4qxaa47CLjFASdfv
+	 xwM3QLj7S02aaP9MQ2X2T057l51nlM6kDQeyq0HtRfZJg5ovfDqT05zaL07SIavHbt
+	 Oeov1kSSDiI/Q==
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -79,17 +79,17 @@ Cc: devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	kernel@collabora.com
-Subject: [PATCH v2 1/3] ASoC: es8316: Increment max value for ALC Capture
- Target Volume control
-Date: Tue, 30 May 2023 21:11:38 +0300
-Message-Id: <20230530181140.483936-2-cristian.ciocaltea@collabora.com>
+Subject: [PATCH v2 3/3] arm64: dts: rockchip: Assign ES8316 MCLK rate on
+ rk3588-rock-5b
+Date: Tue, 30 May 2023 21:11:40 +0300
+Message-Id: <20230530181140.483936-4-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230530181140.483936-1-cristian.ciocaltea@collabora.com>
 References: <20230530181140.483936-1-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FKKK3AJBRGJZSOHSJQCVRFGZNBDDVGN5
-X-Message-ID-Hash: FKKK3AJBRGJZSOHSJQCVRFGZNBDDVGN5
+Message-ID-Hash: IJTE6M5GDMUDQWI2M3VTRM7CID3EUAQE
+X-Message-ID-Hash: IJTE6M5GDMUDQWI2M3VTRM7CID3EUAQE
 X-MailFrom: cristian.ciocaltea@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FKKK3AJBRGJZSOHSJQCVRFGZNBDDVGN5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IJTE6M5GDMUDQWI2M3VTRM7CID3EUAQE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,81 +111,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The following error occurs when trying to restore a previously saved
-ALSA mixer state (tested on a Rock 5B board):
+The I2S0_8CH_MCLKOUT clock rate on Rock 5B board defaults to 12 MHz and
+it is used to provide the master clock (MCLK) for the ES8316 audio
+codec.
 
-  $ alsactl --no-ucm -f /tmp/asound.state store hw:Analog
-  $ alsactl --no-ucm -I -f /tmp/asound.state restore hw:Analog
-  alsactl: set_control:1475: Cannot write control '2:0:0:ALC Capture Target Volume:0' : Invalid argument
+On sound card initialization, this limits the allowed sample rates
+according to the MCLK/LRCK ratios supported by the codec, which results
+in the following non-standard rates: 15625, 30000, 31250, 46875.
 
-According to ES8316 datasheet, the register at address 0x2B, which is
-related to the above mixer control, contains by default the value 0xB0.
-Considering the corresponding ALC target bits (ALCLVL) are 7:4, the
-control is initialized with 11, which is one step above the maximum
-value allowed by the driver:
+Hence, the very first access of the sound card fails:
 
- ALCLVL | dB gain
- -------+--------
-  0000  |  -16.5
-  0001  |  -15.0
-  0010  |  -13.5
-  ....  |  .....
-  0111  |   -6.0
-  1000  |   -4.5
-  1001  |   -3.0
-  1010  |   -1.5
-  ....  |  .....
-  1111  |   -1.5
+  Broken configuration for playback: no configurations available: Invalid argument
+  Setting of hwparams failed: Invalid argument
 
-The tests performed using the VU meter feature (--vumeter=TYPE) of
-arecord/aplay confirm the specs are correct and there is no measured
-gain if the 1011-1111 range would have been mapped to 0 dB:
+However, all subsequent attempts will succeed, as the audio graph card
+will request a correct clock frequency, based on the stream sample rate
+and the multiplication factor.
 
- dB gain | VU meter %
- --------+-----------
-   -6.0  |  30-31
-   -4.5  |  35-36
-   -3.0  |  42-43
-   -1.5  |  50-51
-    0.0  |  50-51
+Assign MCLK to 12.288 MHz, which allows the codec to advertise most of
+the standard sample rates.
 
-Increment the max value allowed for ALC Capture Target Volume control,
-so that it matches the hardware default.  Additionally, update the
-related TLV to prevent an artificial extension of the dB gain range.
-
-Fixes: b8b88b70875a ("ASoC: add es8316 codec driver")
+Fixes: 55529fe3f32d ("arm64: dts: rockchip: Add rk3588-rock-5b analog audio")
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- sound/soc/codecs/es8316.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 9e033fb320a0..8f0625b45b7c 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -52,7 +52,12 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(dac_vol_tlv, -9600, 50, 1);
- static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(adc_vol_tlv, -9600, 50, 1);
- static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_max_gain_tlv, -650, 150, 0);
- static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_min_gain_tlv, -1200, 150, 0);
--static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(alc_target_tlv, -1650, 150, 0);
-+
-+static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(alc_target_tlv,
-+	0, 10, TLV_DB_SCALE_ITEM(-1650, 150, 0),
-+	11, 11, TLV_DB_SCALE_ITEM(-150, 0, 0),
-+);
-+
- static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(hpmixer_gain_tlv,
- 	0, 4, TLV_DB_SCALE_ITEM(-1200, 150, 0),
- 	8, 11, TLV_DB_SCALE_ITEM(-450, 150, 0),
-@@ -115,7 +120,7 @@ static const struct snd_kcontrol_new es8316_snd_controls[] = {
- 		       alc_max_gain_tlv),
- 	SOC_SINGLE_TLV("ALC Capture Min Volume", ES8316_ADC_ALC2, 0, 28, 0,
- 		       alc_min_gain_tlv),
--	SOC_SINGLE_TLV("ALC Capture Target Volume", ES8316_ADC_ALC3, 4, 10, 0,
-+	SOC_SINGLE_TLV("ALC Capture Target Volume", ES8316_ADC_ALC3, 4, 11, 0,
- 		       alc_target_tlv),
- 	SOC_SINGLE("ALC Capture Hold Time", ES8316_ADC_ALC3, 0, 10, 0),
- 	SOC_SINGLE("ALC Capture Decay Time", ES8316_ADC_ALC4, 4, 10, 0),
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+index 3e4aee8f70c1..30cdd366813f 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+@@ -133,6 +133,8 @@ es8316: audio-codec@11 {
+ 		reg = <0x11>;
+ 		clocks = <&cru I2S0_8CH_MCLKOUT>;
+ 		clock-names = "mclk";
++		assigned-clocks = <&cru I2S0_8CH_MCLKOUT>;
++		assigned-clock-rates = <12288000>;
+ 		#sound-dai-cells = <0>;
+ 
+ 		port {
 -- 
 2.40.1
 
