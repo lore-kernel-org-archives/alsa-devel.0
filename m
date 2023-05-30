@@ -4,121 +4,161 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07CD2C77B7E
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:05:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02EE8C7EE2A
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:05:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E9DE846;
-	Thu,  1 Jun 2023 18:04:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E9DE846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FD0D6C1;
+	Thu,  1 Jun 2023 18:04:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FD0D6C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685635527;
-	bh=nUoECVLRxlk5PhzKkg4dDm1t4lvHXNbI3fI46dOaoDU=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ZvSfMl34JJSW7cNh7oaKeY2w8w4xbvmHfO3tgX4sYNz5DYw3fy9Ys3GZ/GS0hyN3d
-	 lNmYERkFMEKbQAEqPGY2hTNz9lkG5Bc6Q1pbAbCQJA2e+fzwXuUN6Iu9+hdJICnDdA
-	 /MpATcaGYnlsIGY8v/IwkV9RwllZV9k9iJsj1/iA=
+	s=default; t=1685635544;
+	bh=/VhYLbLvu0xDQluYtDvuWOtTgBHaYG0/oSK0dCR6dsI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=nzIIiwdz+2Gyg7tse+7foWNqxWlVQ3HcepkT9GpeLmkE1EuIREkYAjNCA+oP7AdxP
+	 bcp4A+NObscrqcbuI1ArSZQf0qg5/PwfRg66jiXEhVtxmsVzK0OmUuC39E5PEzxDk3
+	 ThDn2E+YLhVo0ZSH9MwCYOuzCfqWc2OfM395QvqY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 08FBAF805C4; Thu,  1 Jun 2023 18:02:44 +0200 (CEST)
+	id B9787F805D4; Thu,  1 Jun 2023 18:02:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 393A9F805C5;
-	Thu,  1 Jun 2023 18:02:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38DAEF805D3;
+	Thu,  1 Jun 2023 18:02:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5EF03F8042F; Sun, 28 May 2023 02:03:02 +0200 (CEST)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 9EFB0F80528; Tue, 30 May 2023 09:27:17 +0200 (CEST)
+Received: from APC01-SG2-obe.outbound.protection.outlook.com
+ (mail-sgaapc01on20708.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:feab::708])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 68D36F80086
-	for <alsa-devel@alsa-project.org>; Sun, 28 May 2023 02:02:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68D36F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 149BDF80552;
+	Tue, 30 May 2023 09:27:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 149BDF80552
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=codux-tech.20221208.gappssmtp.com
- header.i=@codux-tech.20221208.gappssmtp.com header.a=rsa-sha256
- header.s=20221208 header.b=5QJYWg6l
-Received: by mail-ej1-x634.google.com with SMTP id
- a640c23a62f3a-96f683e8855so292159466b.2
-        for <alsa-devel@alsa-project.org>;
- Sat, 27 May 2023 17:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=codux-tech.20221208.gappssmtp.com; s=20221208; t=1685232168;
- x=1687824168;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=pn96ezoRd+kD6OC2feIeXuvQ04GPTaNsZwk75x3SKpA=;
-        b=5QJYWg6lkvic6q8CB3VDg5QlHMs3aRaVAulnB6hctcs+bVGJvYvdEyopC1GnvCF2fa
-         9dd3n6DcNkZPFcM0ro2T2KBUKhG1AN4kBxnAmyKmZviVuzietWMtudvjDdDskkFHyh4I
-         bJbTHn5JLK7OgefSEcWi7LT1+XHkqcbBdyWGpX1lVvh03iSxBtSu7tSf+oYQs5/+W803
-         Hsl/4canGASw3Gs3k8OOl2YPnkRELRO39VX4o9p+tguEkBGob5ic88Y1EZs+Grj13dUO
-         ugcn2clfa0Ql1XK+L54rYulum9tYKjCdKBKIWvWk0EJFPQSJ90lVf7UonOPECXDTbYom
-         yjeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685232168; x=1687824168;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pn96ezoRd+kD6OC2feIeXuvQ04GPTaNsZwk75x3SKpA=;
-        b=HX0irlOoQXfPDlpnoTqyYMnoTbE9g/6d/ajKa5jutY3mk7cBgUDgi96KePd8Ttzzlu
-         2Us1zhpyjwJTJmb0h9eNCYmamJAwPFEV9XfZAgTbwQcGVcjwYwl9cmMGnk322wwVmacr
-         +ltUDS9eznnE3BD3TssvnHyz2d/cBsYHkVeaAUTxGfeKhbKda8sCcmYc4koIAvcfEfKg
-         0kVdbj7PKe1minTwwRyXkf29GDxpISf8UiUdPz6586K5iacFFb7tZLcChHM2SEy4xAun
-         1ReVFqQbcsf+NXHEoBUHr0/pRCL9Z24K9d4vjORz3SorL94QGznqXGbBsLNaiP13fkY6
-         A11A==
-X-Gm-Message-State: AC+VfDzNNUTvymM+BTO6nltIVkuAcrGcQn/cUVOMIB1XsIkDu+II6Zn5
-	eA/9i8XuXY2cd76Hwoi2j8LhhQ==
-X-Google-Smtp-Source: 
- ACHHUZ5k4uUZCxIXm/MMV4I1In8fofzlnJRv4MR9ALBC0GRjigS0SQxp5kgZOaiqb2oUqPwnDPD8FQ==
-X-Received: by 2002:a17:907:a08a:b0:973:943e:f715 with SMTP id
- hu10-20020a170907a08a00b00973943ef715mr6025607ejc.41.1685232168665;
-        Sat, 27 May 2023 17:02:48 -0700 (PDT)
-Received: from deepblue.zlan.intra (wan.zappel.net. [90.187.13.225])
-        by smtp.gmail.com with ESMTPSA id
- a9-20020a170906244900b0096629607bb2sm3979325ejb.98.2023.05.27.17.02.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 May 2023 17:02:48 -0700 (PDT)
-Message-ID: <12102f7419c5e44cd2133aa769e25dbd16f4e0c9.camel@codux.tech>
-Subject: Re: CSC3551 and devices missing related _DSD bits
-From: Armas Spann <armas@codux.tech>
-To: Luke Jones <luke@ljones.dev>, Stuart Henderson
-	 <stuarth@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.com,
-	sbinding@opensource.cirrus.com, perex@perex.cz, tangmeng@uniontech.com,
-	andy.chi@canonical.com, p.jungkamp@gmx.net, kasper93@gmail.com,
-	yangyuchi66@gmail.com, ealex95@gmail.com, james.schulman@cirrus.com,
-	david.rhodes@cirrus.com, tanureal@opensource.cirrus.com,
-	rf@opensource.cirrus.com, patches@opensource.cirrus.com,
-	alsa-devel@alsa-project.org
-Date: Sun, 28 May 2023 02:02:46 +0200
-In-Reply-To: <19d69a5da8f1d4017ac14ed87f927ab82278073d.camel@ljones.dev>
-References: <1991650.PYKUYFuaPT@fedora> <87jzx3zaf8.wl-tiwai@suse.de>
-	 <b4c202b2-ab29-e2aa-b141-0c967b2c1645@opensource.cirrus.com>
-	 <19d69a5da8f1d4017ac14ed87f927ab82278073d.camel@ljones.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.1 
+ unprotected) header.d=vivo.com header.i=@vivo.com header.a=rsa-sha256
+ header.s=selector2 header.b=ok5zg+yH
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GR370He9LUpAZ+C49OkvP6ujKKGTrOYaGKaAO68biXwRhWi62Bu/VSegSSRyjaKZ+0QOuKgOn+N/VqMF+xJ5Cb6D+3pBXnjIcFhQ8z6waa/muNk3D+8lR88FSc9D6WqjAfHK9UQGdKkPKm/UEXV0FKw2ODF/NNP/6XwqkUhIEQI+QJn9oCiFXiBamwiNewTkmiXtq3gyMH7ei3sfSdz+LSuT80eBLoNL8Cnt0QFbj320Vv120tRaSecBa6Fy7Pr1TlJXXyuFdWoEOWmPgQE/+ZXsCJhpPHg2Tk3pyUzwhqB+3grAfp2rVhrwwshunfgwuQ4njYfFBdX96ywsXsqTrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uOrbsqZE2NtiZFd3LXLoXD3PLTMmCfCXoLJozvzxiX8=;
+ b=aLDFv1KSQvBcDfx18CN7E9MNgDj055Y977zOwYUNdyED0PwZSkSLpXbStqZ10izxcrLQaFunwsOhvO8JYIYjf5BBR4FoH2h4AzpDhUNB09InDEdU5M7gJnmzCn9qBIMHewEvc/TTWKVH23f+oVTHSdkOj/TAGw8OasaWUzNGxZBxa3YF51hPSLpImM3VawrjYkDTOL8qIWZs1r9zoo1Awr4yTLHdhwik+12BSRh6k0/Z3MNlzDtQTV1D7qHeRRjKQNM1I0IuVbEuYESE9IuGOfyP/vDI5MjqYmmG+9r4X/WDdrLOTEATpzUbXoUqAjBjc3Idrh7YJNkA2E4l6cOjPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uOrbsqZE2NtiZFd3LXLoXD3PLTMmCfCXoLJozvzxiX8=;
+ b=ok5zg+yHwfD6dWPumGx6kX3DPC0Bc9fhuic77KskX7mzILUixZCuCAznVK6hU81D+AI/c4kWx7ZBZdWU8n9s9y+yvRMR1ijy+AqE/lUsIb7/H7JLIgMwQ+YPZ+B20vXjVXtb+9WyMkglEEGUgtWfezSf199+hRoyoTMNYDaJhDJnWG2B5fas7/Z5HQWsc3ZcPe3BJN/awATCWuR9jbIdPa0ddn0CplYoOoWsfxSkd8+ogi6nef5FiZsFtgZyRArCIEmK2xjBmEVouSPbW+E5hGmkQ33SCtymyTrppZVBTEiC69/DC3SoIrgoIZMGVCsfYy4kSd7JwT+NibKG/v74ZQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from TYZPR06MB6697.apcprd06.prod.outlook.com (2603:1096:400:451::6)
+ by TYZPR06MB4205.apcprd06.prod.outlook.com (2603:1096:400:2e::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.22; Tue, 30 May
+ 2023 07:27:00 +0000
+Received: from TYZPR06MB6697.apcprd06.prod.outlook.com
+ ([fe80::f652:a96b:482:409e]) by TYZPR06MB6697.apcprd06.prod.outlook.com
+ ([fe80::f652:a96b:482:409e%5]) with mapi id 15.20.6433.018; Tue, 30 May 2023
+ 07:27:00 +0000
+From: Lu Hongfei <luhongfei@vivo.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	sound-open-firmware@alsa-project.org (moderated list:SOUND - SOUND OPEN
+ FIRMWARE (SOF) DRIVERS),
+	alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO
+ POWER MANAGEM...),
+	linux-kernel@vger.kernel.org (open list)
+Cc: opensource.kernel@vivo.com,
+	luhongfei@vivo.com
+Subject: [PATCH] sound: Fix incorrect calculation of object size by sizeof
+Date: Tue, 30 May 2023 15:26:48 +0800
+Message-Id: <20230530072648.13998-1-luhongfei@vivo.com>
+X-Mailer: git-send-email 2.39.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYXPR01CA0052.jpnprd01.prod.outlook.com
+ (2603:1096:403:a::22) To TYZPR06MB6697.apcprd06.prod.outlook.com
+ (2603:1096:400:451::6)
 MIME-Version: 1.0
-X-MailFrom: armas@codux.tech
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZPR06MB6697:EE_|TYZPR06MB4205:EE_
+X-MS-Office365-Filtering-Correlation-Id: f40ae8b6-a380-4ac1-3320-08db60df4151
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	Wk9XLz5EXIMUaO+tr6FAFl435dg0WaIkeTk0gsbLt2+yY0fdcEcBqXzOWLVeLDfW+jwTSRPuWWUuM1911NMeFo57mCozD0Vi51dJJKgXpP3BzReHmVVsopzuL+F8U2vpikAXpgDZd/lWmASJbVC4ToS9yauKQYgDH62X8Gk1AW044zMQOPw3k6ohbP7nRB9+L9V/p7o7Y32cgnvduRuPQhXclErxkGb+Klt+tHhu+P/XDU1ubRSMKcFCgugzzdhN7kPO/pbuV+DY4h3ZD4/W6hQNTZzOfYXaStrpCA+JBz5jPPuIwlViI2OqnwhbABRTvVanBIbn9HJrkyO0aMCINT9JIqT3oIC86G8OQPg0HufkZq4HnVz7uVEG8+TgD57Ks7LKzp0v+8OqZHyRmFxLBDRWEC0MHWjd61o5uaIl3HDWDxC9r5SKTjfblWF6UOjik7mT2uq5Q3QHaNK3Lz6TkmTy0MEHuR4MLhK2aUraqDAHhj2D9wlXquwTK0M3ciX2FRv7hMY2JPC6InHxEqo281gKWOeQftZ6fzuldpJYyuXdJqFWxKH5V6GsHeVv+IWK5g69sOY0rSliMRf/TMCx92l5GdCLehGJ2ldg9xw80drpEHpEWLcsNppd3Qlw8a0U
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB6697.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(366004)(376002)(396003)(136003)(39850400004)(451199021)(478600001)(110136005)(5660300002)(7416002)(4744005)(8936002)(8676002)(2906002)(86362001)(36756003)(4326008)(66556008)(66946007)(66476007)(316002)(921005)(38100700002)(38350700002)(41300700001)(2616005)(107886003)(186003)(6512007)(26005)(1076003)(6506007)(6486002)(52116002)(6666004)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?q+kW9mJJ9GrXsj4igNeSrlSt9SJmFAM7BGcFc8IHcFo1uThXmnWYe0emtr1+?=
+ =?us-ascii?Q?DYT1icqq3SdT+U+CiuCsaMKtTQTTZ2l1FQrj7voZrtZ9EHe0T3pLuqzVpwV/?=
+ =?us-ascii?Q?gemH5SLTNFwmhTWNlPPnY+eLnFFfbgLw6CsvaagDThFtIQAbGbjz6yuAqRJg?=
+ =?us-ascii?Q?Qm0Fs+jINQnZlbTAJ1WqowbZXVyhdoq/6tD2rLTuNgZ1rtc8866UdO8t3Iu6?=
+ =?us-ascii?Q?+JVOlcVHKeEsP2NKdAEUpb96iVU3kwvr23gtrQ76zJ1L81TdQliKAjPzGVKd?=
+ =?us-ascii?Q?2YHLgv3BJwr8OdUmROMEBbJ+UsXJSEiNMp7EcIwgicHMeZuVq8vEwCF8cdgx?=
+ =?us-ascii?Q?OWu8Fr30BKMgjHKeoWor4DsIE80tp4ndNGDjOMDbTOo21mOr1cVYOUlYYiLn?=
+ =?us-ascii?Q?hYnXsQT4mSJR1PLhSmp9MxVJ0Uj8m1cfBPxHu5xu9Oeq3IHTdvyoZlsv4Z3Z?=
+ =?us-ascii?Q?DA9rkR3r/MiZBK/7rNIQS7J0uL0s1Q9VYXqovaAEAVDEcLUnfeGzyqXmVG/L?=
+ =?us-ascii?Q?gutvw3P3JOUHWgf/1ZO4DZlTgMp5PZsohnvoEX+ac/9dv1g3h3LlodR+jnl+?=
+ =?us-ascii?Q?GeqO1AIoXTCpoRO9Ovp34ktQ7o6bjYkNf/yBw84Lr8m/+0mLdHXHkb9sh/Zy?=
+ =?us-ascii?Q?x41olwHTKD+PeSKeQLjfUsa1jqRb+kCGWl2m0J2Zgvy9gwLPp3j9OFIrE+vW?=
+ =?us-ascii?Q?3WAquKN2Nwj4YH1wlyovfPTxcWlj2sNk3crIrs7Gyz72tZpjlDtLSh5EgpAk?=
+ =?us-ascii?Q?Zn6GGHQLIYpanWRwllLRUN+lURSSDe7UMD5gRE5kO3JfweXj3USrb47Lu3dH?=
+ =?us-ascii?Q?6Xe6yTTylS2TvMHvYh3CrNOAUpUt5fWLnIPdExS52SnEXI1mSIztyxvA9yh9?=
+ =?us-ascii?Q?z7EzH7sIQ2y+HtL+4F/v0QBb9ovEp1QPgLhxoWP89jAlfBXucdsLe1JoENyD?=
+ =?us-ascii?Q?0ydLlwD3e3wRSPgBhBv43/DkKLcuEJwKWBlcUPOc4s+ts2jsxmGtvyyppX4m?=
+ =?us-ascii?Q?cyUoik7OEqfEyLEp5UkctuHjy9AgoyyZirXOTlK+e0mcmZsACY8YRPSVuQnY?=
+ =?us-ascii?Q?wWQK9h3/0Td9WVHgGfkXsvmBNmPNmht/NENrB2fuAmGtUu7jNkaNhJ8edz7r?=
+ =?us-ascii?Q?klemASawMV8XTIVclpCGktcrzsDkNtTQjLstu+J7Y7woCkib/5preKPKGBQa?=
+ =?us-ascii?Q?dGa17D+Fhejl01/MYPs9ZC8CBREhJkdkMiZW6L9A6KW/hBmomzKELyeeKokJ?=
+ =?us-ascii?Q?VF/Xs76tunjhu1Lr7R4qTwzhh3eCT79ZXq0d0brqVNkIrYHhrQwOmsaSDW2Y?=
+ =?us-ascii?Q?LgZDg+vyp2EPBNAgfHMyCr7LzsvFWVG9BdqpolPEzpWlCtdIm/3knag5ffst?=
+ =?us-ascii?Q?GwUE2FsvQn7clQCrJSYw9GmwJCpIkF+LEw/YyLqYFcd0vTIolNN6Pmi+r6sw?=
+ =?us-ascii?Q?C+sEXDSEnlV+5Mb6IuDKVkk6fP3jEPrwwA2kk0xUPqUMcbZSLgx8GGkFGIVP?=
+ =?us-ascii?Q?pAzrBhj+YTgjPUk13DLMfVC1TqdrSoujdvZdJt9jkdDpKtckWd7pANgrzWIb?=
+ =?us-ascii?Q?saTAM2OY8JlwLHcpWr0b0IXcMCRqZqxel2SzN0GM?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ f40ae8b6-a380-4ac1-3320-08db60df4151
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB6697.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 May 2023 07:26:59.8249
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ 1hH75LlhprBj4n9rNx0LlJ+Ij1bo0c8ACmGwNYu4mvbpZ5BqzLjYbvpWtFa+126GjD2UZb4viQfz9yDzzU+3/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB4205
+X-MailFrom: luhongfei@vivo.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IJI6C6BOXW7LA4GPCFDEGANDCZKQ2WUR
-X-Message-ID-Hash: IJI6C6BOXW7LA4GPCFDEGANDCZKQ2WUR
+Message-ID-Hash: X5QXWJ3J4MNSA7NY73DEBCQC3HXJPYF2
+X-Message-ID-Hash: X5QXWJ3J4MNSA7NY73DEBCQC3HXJPYF2
 X-Mailman-Approved-At: Thu, 01 Jun 2023 16:02:26 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IJI6C6BOXW7LA4GPCFDEGANDCZKQ2WUR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X5QXWJ3J4MNSA7NY73DEBCQC3HXJPYF2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,107 +167,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Takashi, Hi Stuart (and of course, all others in here),
+What we need to calculate is the size of the object, not the size of the
+pointer. This patch can fix this error.
 
-would you mind to evaluate this small (pseudo-)patch to be harmless?=20
-(concerning the blow-up theory the first answer in this converstion)
+Signed-off-by: Lu Hongfei <luhongfei@vivo.com>
+---
+ sound/soc/sof/ipc4-topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ mode change 100644 => 100755 sound/soc/sof/ipc4-topology.c
 
-I won't push it upstream right now but I want to know if this patch
-might be harmfull. I'm owning a GA402XY myself and we digged out that
-the initial setting of the cr3551 can be done via:
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index 5abe616a2054..29b6dede53b0
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -220,7 +220,7 @@ static int sof_ipc4_get_audio_fmt(struct snd_soc_component *scomp,
+ 
+ 	ret = sof_update_ipc_object(scomp, available_fmt,
+ 				    SOF_AUDIO_FMT_NUM_TOKENS, swidget->tuples,
+-				    swidget->num_tuples, sizeof(available_fmt), 1);
++				    swidget->num_tuples, sizeof(*available_fmt), 1);
+ 	if (ret) {
+ 		dev_err(scomp->dev, "Failed to parse audio format token count\n");
+ 		return ret;
+-- 
+2.39.0
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 75020edd39e7..eaa06751bd48 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -1243,6 +1243,12 @@ static int cs35l41_no_acpi_dsd(struct
-cs35l41_hda *cs35l41, struct device *physd
- 		hw_cfg->bst_type =3D CS35L41_EXT_BOOST;
- 		hw_cfg->gpio1.func =3D CS35l41_VSPK_SWITCH;
- 		hw_cfg->gpio1.valid =3D true;
-+	} else if (strncmp(hid, "CSC3551", 7) =3D=3D 0 && strcmp(cs35l41-
->acpi_subsystem_id, "10431463") =3D=3D 0) {
-+		// TESTING - (Hook for GA402X)
-+		dev_warn(cs35l41->dev, "Warning: ASUS didn't provide
-the needed ACPI _DSD properties for GA402X series, using defaults..");
-+		hw_cfg->bst_type =3D CS35L41_EXT_BOOST;
-+		hw_cfg->gpio1.func =3D CS35l41_VSPK_SWITCH;
-+		hw_cfg->gpio1.valid =3D true;
- 	} else {
- 		/*
- 		 * Note: CLSA010(0/1) are special cases which use a
-slightly different design.
-
---
-
-Which for our devices(GA402XY) enables the DAC to be used (it's still
-quiet, as we don't know/set the right limits for boost/ind/cap at the
-moment).
-
-The above will be called in our HDA_Quirk
-(sound/pci/hda/patch_realtek.c)
-
-```pseudo
-	[ALC285_FIXUP_ASUS_GA402XY] =3D {
-		.type =3D HDA_FIXUP_FUNC,
-		.v.func =3D cs35l41_fixup_i2c_two,
-		// ....
-	},
-```
-
-The cs3551 init be loaded by the above quirk wich is bound to and
-checks its ID internally again(acpi_subsystem_id):
-
-```pseudo
-SND_PCI_QUIRK(0x1043, 0x1463, "Asus Zephyrus G14 2023",
-ALC285_FIXUP_ASUS_GA402XY),
-```
-
-
-Many thanks in advance!
-
-Best regards
-Armas
-
-
-On Thu, 2023-05-25 at 09:30 +1200, Luke Jones wrote:
-> On Wed, 2023-05-24 at 17:36 +0100, Stuart Henderson wrote:
-> >=20
-> > > The problem is that this can really easily blow up your machine
-> > > if
-> > > some incorrect bit is applied.=C2=A0 And more easily applicable, more
-> > > chance to break by novice users, simply by believing what a chat
-> > > bot
-> > > speaks :)
-> > > That's the very reason why this kind of change should be via ACPI
-> > > table officially set up by the vendor.=C2=A0 That said, the question
-> > > is
-> > > only who and how can be responsible for this kind of change.=C2=A0
-> > > It's
-> > > no technical issue, per se.
-> > >=20
-> > > If BIOS can't be updated, at least, the configuration change has
-> > > to
-> > > be
-> > > confirmed by ASUS people.=C2=A0 If ASUS still ignores the inquires an=
-d
-> > > requests, we may put the quirk but with a bit fat warning (and
-> > > maybe
-> > > complaints to ASUS) to be shown in the log as a very last resort.
-> > >=20
-> > > Let's see what happens.
-> >=20
-> > Thanks Takashi.
-> >=20
-> > Just a note to say we're not ignoring this and are investigating
-> > the=20
-> > best way to support released laptops with ACPI incompatible with
-> > Linux.=C2=A0=20
-> > We're hoping this is going to be less of an issue going forward.=C2=A0
-> > Please=20
-> > bear with us while we look into this.
-> >=20
->=20
-> This is great news, thank you Stuart. If you need testing done at all
-> on a wide range please reach out to me and I will enlist the help of
-> those with the affected laptops I mentioned.
