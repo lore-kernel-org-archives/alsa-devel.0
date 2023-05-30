@@ -4,77 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7143EC7EE23
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 17:42:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C8BBC7EE23
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 17:42:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E16836C0;
-	Tue, 30 May 2023 19:41:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E16836C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02A7E822;
+	Tue, 30 May 2023 19:41:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02A7E822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685468524;
-	bh=Z6D/5uzYpSL70zHtKS1o/zAljvJP+MVPP/cIfYT7yO0=;
+	s=default; t=1685468545;
+	bh=3w78bON1nlLndTYQBkqJdw+vPRGsIhPOJ5x5/f8khPw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dusw7JckucX13Ehugcebk2GxQvA6moS+ja8pi2lU4IbiaIml0aWicrm7argA/F2rH
-	 m9e45g5D/l9gTy7m9sJ2nkLQLeVF+rTCYRm7khB9i1iK4/+16hYk2krBni16/DrR8J
-	 Yzfs1eDUKpo3dtGiqsfhPJK7HV31EKCmSi3D8TBs=
+	b=lDgU6hNX+HSIIM3CX0Qg5tXMKthpuLg+aq94PBAzI1zIG++uYq4PmSoLMg8Q8eCZI
+	 WNyXyCbXTFrMYVGvU33lu1xluKKeSpZyeGCnfFc5cYeMUK/01ZK1iBspSkpoGxYSyj
+	 uhhORlm2g9vPjJr97V+/UN9ShFqvnQfOPFlrSzgI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B2C65F8053D; Tue, 30 May 2023 19:40:43 +0200 (CEST)
+	id 0D97AF800DF; Tue, 30 May 2023 19:40:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23285F80528;
-	Tue, 30 May 2023 19:40:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA330F800DF;
+	Tue, 30 May 2023 19:40:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7B55F8042F; Tue, 30 May 2023 19:40:38 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 3D61DF80552; Tue, 30 May 2023 19:40:46 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5CC5DF8016B
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 19:40:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CC5DF8016B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 25421F8016B
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 19:40:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25421F8016B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=JQLSs2d/
+ header.s=k20201202 header.b=mnDJkRzO
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C1FB06290A;
-	Tue, 30 May 2023 17:40:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CCDEC4339B;
-	Tue, 30 May 2023 17:40:25 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3FAB262D5F;
+	Tue, 30 May 2023 17:40:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA268C433D2;
+	Tue, 30 May 2023 17:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685468428;
-	bh=Z6D/5uzYpSL70zHtKS1o/zAljvJP+MVPP/cIfYT7yO0=;
+	s=k20201202; t=1685468436;
+	bh=3w78bON1nlLndTYQBkqJdw+vPRGsIhPOJ5x5/f8khPw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=JQLSs2d/iWlceF7dw4Q9zQVSkH4EeyTsiPJfLlcqU7iMj0FmSS1wVGVyzMnFPpcWy
-	 JyamttMKEK5LiTrCCyMW+68+YK6jlTQdtLLpBKu6gF4MWbC23aY/xPKBZ5ydBkZVHX
-	 0ckJ9xjRKA4Fh9WTvnNy2TcDgWGgp9ox2jZuU2bwD+8nbIp9C04uaMnwZJKx3foAQR
-	 TjfyhLc3Sc+GN7L1DY5EjRcHUZBawW7S2v7q22KMDJnp+sXu0BSSBPqJxlHZzYfdeQ
-	 /+5MHeu0yvBYDp7fsEvv+UrfnLkKkPILnQJdMGQoKO88qwjBb646Ep1kQ6K7wkmx+l
-	 596V4Ry1LBuZA==
+	b=mnDJkRzOdr20zkHipq3EaPa8w3A5BC3y9DHzSkIwv0M/mi+G2VqLnV3nsM7syYwT2
+	 0juJ7hR1mRXPconWpgZ+0r2m930oE8YOv/5YZkO3maoDhrPscOjIwr6yi6C2P6ChxC
+	 bV1DsBbXjZMdaT2b2EEGJZ8AdmYVDJ3fXHiOyfJkO+f6gBRg6rA9XxUmPMwXGbjR6a
+	 oK3EUD3OFyYzi9HeB1VkaTEMR2OYvraPiWLP1oa+pqB4ZG6/12wbcYLTKNpKiwdStY
+	 2y2mfzbHY61dfay/CmQBA65RYiNZTWoMTjNAf/7b4z9iLILZm9Br1/2t+DHjM7rFTw
+	 xoZuXgKQLKAxA==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Cc: vsujithkumar.reddy@amd.com, Vijendar.Mukunda@amd.com,
- Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
- akondave@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- open list <linux-kernel@vger.kernel.org>
-In-Reply-To: <20230530110802.674939-1-venkataprasad.potturu@amd.com>
-References: <20230530110802.674939-1-venkataprasad.potturu@amd.com>
-Subject: Re: [PATCH] ASoC: amd: vangogh: Add check for acp config flags in
- vangogh platform
-Message-Id: <168546842506.690777.17939601844913832559.b4-ty@kernel.org>
-Date: Tue, 30 May 2023 18:40:25 +0100
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20230526204149.456068-1-pierre-louis.bossart@linux.intel.com>
+References: <20230526204149.456068-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: topology: allow for partial dailink
+ stream_name match
+Message-Id: <168546843541.690777.13510507677430208531.b4-ty@kernel.org>
+Date: Tue, 30 May 2023 18:40:35 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: QGRGSB4UGNANKWWAQQE6K2U6FXC7T4CG
-X-Message-ID-Hash: QGRGSB4UGNANKWWAQQE6K2U6FXC7T4CG
+Message-ID-Hash: HRA5BJRBHMET3HIP34C7LPPJ5YRBGAIV
+X-Message-ID-Hash: HRA5BJRBHMET3HIP34C7LPPJ5YRBGAIV
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,21 +84,24 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QGRGSB4UGNANKWWAQQE6K2U6FXC7T4CG/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HRA5BJRBHMET3HIP34C7LPPJ5YRBGAIV/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 30 May 2023 16:37:58 +0530, Venkata Prasad Potturu wrote:
-> We have SOF and generic ACP support enabled for Vangogh platform
-> on some machines. Since we have same PCI id used for probing,
-> add check for machine configuration flag to avoid conflict with
-> newer pci drivers. Such machine flag has been initialized via
-> dmi match on few Vangogh based machines. If no flag is
-> specified probe and register older platform device.
+On Fri, 26 May 2023 15:41:46 -0500, Pierre-Louis Bossart wrote:
+> The topology file and the machine driver rely on common definitions
+> for the dailink stream_name.  To avoid any backwards-compatibility
+> problems, the machine driver stream names are set in stone and cannot
+> be modified.
+> 
+> This is problematic when we try to name some of the topology widgets
+> after the stream_name, since the widget name is limited to 44
+> characters
 > 
 > [...]
 
@@ -111,8 +111,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: vangogh: Add check for acp config flags in vangogh platform
-      commit: e89f45edb747ed88e97a5771dd6d3dd1eb517873
+[1/3] ASoC: topology: Allow partial matching when finding DAI link
+      commit: e018e0b346706d0a0d7d7f884f3850cc0903abc2
+[2/3] ASoC: SOF: topology: Use partial match for connecting DAI link and DAI widget
+      commit: fe88788779fc30a4117dc2f9db4b50182679bb67
+[3/3] ASoC: SOF: Intel: HDA: Limit the number of dai drivers for nocodec mode
+      commit: 0f7b6a433097808e7f3e82f837ccc1353f070e4a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
