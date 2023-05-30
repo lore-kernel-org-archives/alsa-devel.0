@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89F1CC7EE23
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 12:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86AC7C77B7A
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 12:23:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20F0974C;
-	Tue, 30 May 2023 14:22:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20F0974C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A74583B;
+	Tue, 30 May 2023 14:22:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A74583B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685449375;
-	bh=6Uv1D6eaOsPdD127DbE63CAIfpZAzTg7p5rKY5wx77c=;
+	s=default; t=1685449388;
+	bh=qoen/dp8uandXl2ydwBEkcAkN0ch2aN2rnhtMOtDa3I=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vCpnnUfnT34HQMtLAWGpYje5DfEFLoOq08FQzj9y1wLkgtn4lrz3dMWAhtc62KSs9
-	 GlwF2CJhOjitXndz0JNDW5hdCNGh+kdu3HjfIpfPDcCUCVMPjNK7tFjz5u+itJtc8y
-	 31PGdCuksWUnnTGqzRNAISwA5ZEWnPrvLeLOHO9Q=
+	b=GsAdGB7kPBL5gsYDfF1aKwP1i/8y/bNxXYNKO1PZKy1SCdoVoq6mmLzRMs+bK9rsF
+	 Ty1eyrBA15GFy5MZ5cxO3fED8cQygxfemhU/tpuk6wH2fccd2JgvmY5qnvd+yprDIH
+	 JGlG6fXa3SFV3vZXFdFooNcLLpcUHorrBv+tVUeE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6EC3EF80548; Tue, 30 May 2023 14:21:40 +0200 (CEST)
+	id 62E3FF80568; Tue, 30 May 2023 14:21:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87941F80544;
-	Tue, 30 May 2023 14:21:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2B1DF80567;
+	Tue, 30 May 2023 14:21:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 125C0F80544; Tue, 30 May 2023 14:21:33 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id C49C7F8055B; Tue, 30 May 2023 14:21:42 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B88AEF8026A
-	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 14:21:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B88AEF8026A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2DCE5F800DF
+	for <alsa-devel@alsa-project.org>; Tue, 30 May 2023 14:21:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DCE5F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=GRod/P2L
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34U5rw8s022993;
-	Tue, 30 May 2023 07:21:14 -0500
+ header.s=PODMain02222019 header.b=dThZuWuA
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 34UBAOkM020617;
+	Tue, 30 May 2023 07:21:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=eckNdlJorGmcPDVrRDLs3hiZi8xTbQczG2lnRxvamjA=;
- b=GRod/P2LXbNFoskDH/RiolmbFGdhwBJrYnqXiszucPNXQaiqaZ8vSC0n9Xabij9enrlp
- KAScu+wx5bShPFuvL6NW4ziLh9WgdAoosbc6ss8pznEAYsu2w/mCyfLBLuG8s4/zyl0o
- U72UIgNvJsLd2mOYuUjQ1VFmBgQ6nWCv+gnQ/GQma5l4IYm+1SViq4a7W63zISGzfnCh
- HJa9dPofUP3ygkUxfML8juyxkc9MiXWvYk/coYTJUpQCm7lss2h3RIKo4gCNJAStWvYa
- /ecg9ka1CmXsklc+lc2Guri5e076VTcMO8+Gs+4ILIfvYENkplRuazXj54gEzn6+eOKV LA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3que9mu7xx-1
+ bh=mKYscSx2kI9wZprUbyv28IR9Y+XP2aA4NdJ210wujvY=;
+ b=dThZuWuAsHc9Abxd2Ud0CO+RdbczWxwaUkPUbvjwMkTxCEJDdOfmBrpKuy5gUfPW8QT1
+ 332ybJp84OBZsRkPGcrJZf2bOKn5Fm6LDCJITcmKDJ1mEuFb8k2NDDhSl1XxfSECLEfC
+ uxN8dJfdBP/cP2E8GGzYg5N2D4N/wpx1g7AvRY37tjD+/JQTo1w80or4WQPjezH9G8kG
+ a6CCyxq1vNNeqX3Og4b4BJx4hGDWKOdzCa3NaEyVV6qweXv6w22vLmTkRD/r4sZ2btF1
+ h4e23VUK3MI6lY0X+eS8zS+WlNteUrBIPgSTnInoH4ErGlSYMcxPO1Wa42/QnQLI/bKk oA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3quf90u2t5-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 30 May 2023 07:21:14 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+	Tue, 30 May 2023 07:21:17 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 30 May
- 2023 13:21:12 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Tue, 30 May 2023 13:21:12 +0100
+ 2023 13:21:13 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 30 May 2023 13:21:13 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 970A0475;
-	Tue, 30 May 2023 12:21:12 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 035BD475;
+	Tue, 30 May 2023 12:21:13 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>, <lee@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <linus.walleij@linaro.org>,
@@ -77,21 +77,20 @@ CC: <robh+dt@kernel.org>, <conor+dt@kernel.org>, <lgirdwood@gmail.com>,
         <patches@opensource.cirrus.com>, <devicetree@vger.kernel.org>,
         <linux-gpio@vger.kernel.org>, <linux-spi@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 1/6] soundwire: bus: Allow SoundWire peripherals to
- register IRQ handlers
-Date: Tue, 30 May 2023 13:21:07 +0100
-Message-ID: <20230530122112.1314458-2-ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2 5/6] spi: cs42l43: Add SPI controller support
+Date: Tue, 30 May 2023 13:21:11 +0100
+Message-ID: <20230530122112.1314458-6-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230530122112.1314458-1-ckeepax@opensource.cirrus.com>
 References: <20230530122112.1314458-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: lnI2GqhO0145Cv4cQw4OryIdYzBziI4v
-X-Proofpoint-ORIG-GUID: lnI2GqhO0145Cv4cQw4OryIdYzBziI4v
+X-Proofpoint-GUID: XNG6w8MVofoWd97-GJSQoX7jREFa7vOh
+X-Proofpoint-ORIG-GUID: XNG6w8MVofoWd97-GJSQoX7jREFa7vOh
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 2U2MF3MFIVT5N3OEEYAYYR66JHJBLZ5N
-X-Message-ID-Hash: 2U2MF3MFIVT5N3OEEYAYYR66JHJBLZ5N
+Message-ID-Hash: E65JYWIRDWVLIG4WJNQFFEPPHWY7YPBW
+X-Message-ID-Hash: E65JYWIRDWVLIG4WJNQFFEPPHWY7YPBW
 X-MailFrom: prvs=1514aa1fe0=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2U2MF3MFIVT5N3OEEYAYYR66JHJBLZ5N/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E65JYWIRDWVLIG4WJNQFFEPPHWY7YPBW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,199 +114,367 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
-Currently the in-band alerts for SoundWire peripherals can only
-be communicated to the driver through the interrupt_callback
-function. This however is slightly inconvient for devices that wish to
-share IRQ handling code between SoundWire and I2C/SPI, the later would
-normally register an IRQ handler with the IRQ subsystem. However there
-is no reason the SoundWire in-band IRQs can not also be communicated
-as an actual IRQ to the driver.
+The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
+(Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
+for portable applications. It provides a high dynamic range, stereo
+DAC for headphone output, two integrated Class D amplifiers for
+loudspeakers, and two ADCs for wired headset microphone input or
+stereo line input. PDM inputs are provided for digital microphones.
 
-Add support for SoundWire peripherals to register a normal IRQ handler
-to receive SoundWire in-band alerts, allowing code to be shared across
-control buses. Note that we allow users to use both the
-interrupt_callback and the IRQ handler, this is useful for devices which
-must clear additional chip specific SoundWire registers that are not a
-part of the normal IRQ flow, or the SoundWire specification.
+The SPI component incorporates a SPI controller interface for
+communication with other peripheral components.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
 
 Changes since v1:
- - Update commit message
+ - Use HZ_PER_MHZ
+ - Return ret in un/prepare_transfer_hardware
+ - Use SPI_MODE_X_MASK
+ - Use devm_pm_runtime_enable
+ - Switch to using a platform_device_id table
+ - Use device_set_node
+ - Use min rather than min_t, and updating some consts to make it work
 
 Thanks,
 Charles
 
- drivers/soundwire/bus.c       | 31 +++++++++++++++++++++++++++++++
- drivers/soundwire/bus_type.c  | 12 ++++++++++++
- include/linux/soundwire/sdw.h |  9 +++++++++
- 3 files changed, 52 insertions(+)
+ MAINTAINERS               |   1 +
+ drivers/spi/Kconfig       |   7 +
+ drivers/spi/Makefile      |   1 +
+ drivers/spi/spi-cs42l43.c | 279 ++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 288 insertions(+)
+ create mode 100644 drivers/spi/spi-cs42l43.c
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 1ea6a64f8c4a5..30cd03757aafe 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -3,6 +3,7 @@
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ed26f63087342..a30dfbeb4f57a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4930,6 +4930,7 @@ F:	Documentation/devicetree/bindings/mfd/cirrus,cs*
+ F:	Documentation/devicetree/bindings/sound/cirrus,cs*
+ F:	drivers/mfd/cs42l43*
+ F:	drivers/pinctrl/cirrus/pinctrl-cs42l43*
++F:	drivers/spi/spi-cs42l43*
+ F:	include/dt-bindings/sound/cs*
+ F:	include/linux/mfd/cs42l43*
+ F:	include/sound/cs*
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 3de2ebe8294aa..f6ce06de41051 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -281,6 +281,13 @@ config SPI_COLDFIRE_QSPI
+ 	  This enables support for the Coldfire QSPI controller in master
+ 	  mode.
  
- #include <linux/acpi.h>
- #include <linux/delay.h>
-+#include <linux/irq.h>
- #include <linux/mod_devicetable.h>
- #include <linux/pm_runtime.h>
- #include <linux/soundwire/sdw_registers.h>
-@@ -25,6 +26,23 @@ static int sdw_get_id(struct sdw_bus *bus)
- 	return 0;
- }
- 
-+static int sdw_irq_map(struct irq_domain *h, unsigned int virq,
-+		       irq_hw_number_t hw)
-+{
-+	struct sdw_bus *bus = h->host_data;
++config SPI_CS42L43
++	tristate "Cirrus Logic CS42L43 SPI controller"
++	depends on MFD_CS42L43 && PINCTRL_CS42L43
++	help
++	  This enables support for the SPI controller inside the Cirrus Logic
++	  CS42L43 audio codec.
 +
-+	irq_set_chip_data(virq, bus);
-+	irq_set_chip(virq, &bus->irq_chip);
-+	irq_set_nested_thread(virq, 1);
-+	irq_set_noprobe(virq);
+ config SPI_DAVINCI
+ 	tristate "Texas Instruments DaVinci/DA8x/OMAP-L/AM1x SoC SPI controller"
+ 	depends on ARCH_DAVINCI || ARCH_KEYSTONE || COMPILE_TEST
+diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+index 28c4817a8a74a..49937ea0d73d0 100644
+--- a/drivers/spi/Makefile
++++ b/drivers/spi/Makefile
+@@ -40,6 +40,7 @@ obj-$(CONFIG_SPI_CADENCE_QUADSPI)	+= spi-cadence-quadspi.o
+ obj-$(CONFIG_SPI_CADENCE_XSPI)		+= spi-cadence-xspi.o
+ obj-$(CONFIG_SPI_CLPS711X)		+= spi-clps711x.o
+ obj-$(CONFIG_SPI_COLDFIRE_QSPI)		+= spi-coldfire-qspi.o
++obj-$(CONFIG_SPI_CS42L43)		+= spi-cs42l43.o
+ obj-$(CONFIG_SPI_DAVINCI)		+= spi-davinci.o
+ obj-$(CONFIG_SPI_DLN2)			+= spi-dln2.o
+ obj-$(CONFIG_SPI_DESIGNWARE)		+= spi-dw.o
+diff --git a/drivers/spi/spi-cs42l43.c b/drivers/spi/spi-cs42l43.c
+new file mode 100644
+index 0000000000000..5f86f4feb22c8
+--- /dev/null
++++ b/drivers/spi/spi-cs42l43.c
+@@ -0,0 +1,279 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// CS42L43 SPI Controller Driver
++//
++// Copyright (C) 2022-2023 Cirrus Logic, Inc. and
++//                         Cirrus Logic International Semiconductor Ltd.
++
++#include <linux/device.h>
++#include <linux/errno.h>
++#include <linux/mfd/cs42l43.h>
++#include <linux/mfd/cs42l43-regs.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/regmap.h>
++#include <linux/spi/spi.h>
++#include <linux/units.h>
++
++#define CS42L43_FIFO_SIZE		16
++#define CS42L43_SPI_ROOT_HZ		(4 * HZ_PER_MHZ)
++#define CS42L43_SPI_MAX_LENGTH		65532
++
++enum cs42l43_spi_cmd {
++	CS42L43_WRITE,
++	CS42L43_READ
++};
++
++struct cs42l43_spi {
++	struct device *dev;
++	struct regmap *regmap;
++	struct spi_controller *ctlr;
++};
++
++static unsigned int cs42l43_clock_divs[16] = {
++	2, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30
++};
++
++static int cs42l43_spi_tx(struct regmap *regmap, const u8 *buf, unsigned int len)
++{
++	const u8 *end = buf + len;
++	u32 val;
++	int ret;
++
++	while (buf < end) {
++		const u8 *block = min(buf + CS42L43_FIFO_SIZE, end);
++
++		for (; buf < block - (sizeof(u32) - 1); buf += sizeof(u32))
++			regmap_write(regmap, CS42L43_TX_DATA, *(const u32 *)buf);
++
++		if (buf < block) {
++			unsigned int residue = end - buf;
++
++			memcpy(&val, buf, residue);
++			regmap_write(regmap, CS42L43_TX_DATA, val);
++			buf += residue;
++		}
++
++		regmap_write(regmap, CS42L43_TRAN_CONFIG8, CS42L43_SPI_TX_DONE_MASK);
++
++		ret = regmap_read_poll_timeout(regmap, CS42L43_TRAN_STATUS1,
++					       val, (val & CS42L43_SPI_TX_REQUEST_MASK),
++					       1000, 5000);
++		if (ret)
++			return ret;
++	}
 +
 +	return 0;
 +}
 +
-+static const struct irq_domain_ops sdw_domain_ops = {
-+	.map	= sdw_irq_map,
-+};
++static int cs42l43_spi_rx(struct regmap *regmap, u8 *buf, unsigned int len)
++{
++	u8 *end = buf + len;
++	u32 val;
++	int ret;
 +
- /**
-  * sdw_bus_master_add() - add a bus Master instance
-  * @bus: bus instance
-@@ -142,6 +160,13 @@ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
- 	bus->params.curr_bank = SDW_BANK0;
- 	bus->params.next_bank = SDW_BANK1;
- 
-+	bus->irq_chip.name = dev_name(bus->dev);
-+	bus->domain = irq_domain_add_linear(NULL, SDW_MAX_DEVICES, &sdw_domain_ops, bus);
-+	if (!bus->domain) {
-+		dev_err(bus->dev, "Failed to add IRQ domain\n");
++	while (buf < end) {
++		const u8 *block = min(buf + CS42L43_FIFO_SIZE, end);
++
++		ret = regmap_read_poll_timeout(regmap, CS42L43_TRAN_STATUS1,
++					       val, (val & CS42L43_SPI_RX_REQUEST_MASK),
++					       1000, 5000);
++		if (ret)
++			return ret;
++
++		for (; buf < block - (sizeof(u32) - 1); buf += sizeof(u32)) {
++			ret = regmap_read(regmap, CS42L43_RX_DATA, (u32 *)buf);
++			if (ret)
++				return ret;
++		}
++
++		if (buf < block) {
++			unsigned int residue = end - buf;
++
++			ret = regmap_read(regmap, CS42L43_RX_DATA, &val);
++			if (ret)
++				return ret;
++
++			memcpy(buf, &val, residue);
++			buf += residue;
++		}
++
++		regmap_write(regmap, CS42L43_TRAN_CONFIG8, CS42L43_SPI_RX_DONE_MASK);
++	}
++
++	return 0;
++}
++
++static int cs42l43_transfer_one(struct spi_controller *ctlr, struct spi_device *spi,
++				struct spi_transfer *tfr)
++{
++	struct cs42l43_spi *priv = spi_controller_get_devdata(spi->controller);
++	int i, ret = -EINVAL;
++
++	for (i = 0; i < ARRAY_SIZE(cs42l43_clock_divs); i++) {
++		if (CS42L43_SPI_ROOT_HZ / cs42l43_clock_divs[i] <= tfr->speed_hz)
++			break;
++	}
++
++	if (i == ARRAY_SIZE(cs42l43_clock_divs))
 +		return -EINVAL;
++
++	regmap_write(priv->regmap, CS42L43_SPI_CLK_CONFIG1, i);
++
++	if (tfr->tx_buf) {
++		regmap_write(priv->regmap, CS42L43_TRAN_CONFIG3, CS42L43_WRITE);
++		regmap_write(priv->regmap, CS42L43_TRAN_CONFIG4, tfr->len - 1);
++	} else if (tfr->rx_buf) {
++		regmap_write(priv->regmap, CS42L43_TRAN_CONFIG3, CS42L43_READ);
++		regmap_write(priv->regmap, CS42L43_TRAN_CONFIG5, tfr->len - 1);
 +	}
 +
- 	return 0;
- }
- EXPORT_SYMBOL(sdw_bus_master_add);
-@@ -178,6 +203,9 @@ static int sdw_delete_slave(struct device *dev, void *data)
- void sdw_bus_master_delete(struct sdw_bus *bus)
- {
- 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
++	regmap_write(priv->regmap, CS42L43_TRAN_CONFIG1, CS42L43_SPI_START_MASK);
 +
-+	irq_domain_remove(bus->domain);
++	if (tfr->tx_buf)
++		ret = cs42l43_spi_tx(priv->regmap, (const u8 *)tfr->tx_buf, tfr->len);
++	else if (tfr->rx_buf)
++		ret = cs42l43_spi_rx(priv->regmap, (u8 *)tfr->rx_buf, tfr->len);
 +
- 	sdw_master_device_del(bus);
- 
- 	sdw_bus_debugfs_exit(bus);
-@@ -1711,6 +1739,9 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 				struct device *dev = &slave->dev;
- 				struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
- 
-+				if (slave->prop.use_domain_irq && slave->irq)
-+					handle_nested_irq(slave->irq);
++	return ret;
++}
 +
- 				if (drv->ops && drv->ops->interrupt_callback) {
- 					slave_intr.sdca_cascade = sdca_cascade;
- 					slave_intr.control_port = clear;
-diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index 1f43ee848eac8..fafbc284e82da 100644
---- a/drivers/soundwire/bus_type.c
-+++ b/drivers/soundwire/bus_type.c
-@@ -122,6 +122,12 @@ static int sdw_drv_probe(struct device *dev)
- 	if (drv->ops && drv->ops->read_prop)
- 		drv->ops->read_prop(slave);
- 
-+	if (slave->prop.use_domain_irq) {
-+		slave->irq = irq_create_mapping(slave->bus->domain, slave->dev_num);
-+		if (!slave->irq)
-+			dev_warn(dev, "Failed to map IRQ\n");
++static void cs42l43_set_cs(struct spi_device *spi, bool is_high)
++{
++	struct cs42l43_spi *priv = spi_controller_get_devdata(spi->controller);
++
++	if (spi->chip_select == 0)
++		regmap_write(priv->regmap, CS42L43_SPI_CONFIG2, !is_high);
++}
++
++static int cs42l43_prepare_message(struct spi_controller *ctlr, struct spi_message *msg)
++{
++	struct cs42l43_spi *priv = spi_controller_get_devdata(ctlr);
++	struct spi_device *spi = msg->spi;
++	unsigned int spi_config1 = 0;
++
++	/* select another internal CS, which doesn't exist, so CS 0 is not used */
++	if (spi->cs_gpiod)
++		spi_config1 |= 1 << CS42L43_SPI_SS_SEL_SHIFT;
++	if (spi->mode & SPI_CPOL)
++		spi_config1 |= CS42L43_SPI_CPOL_MASK;
++	if (spi->mode & SPI_CPHA)
++		spi_config1 |= CS42L43_SPI_CPHA_MASK;
++	if (spi->mode & SPI_3WIRE)
++		spi_config1 |= CS42L43_SPI_THREE_WIRE_MASK;
++
++	regmap_write(priv->regmap, CS42L43_SPI_CONFIG1, spi_config1);
++
++	return 0;
++}
++
++static int cs42l43_prepare_transfer_hardware(struct spi_controller *ctlr)
++{
++	struct cs42l43_spi *priv = spi_controller_get_devdata(ctlr);
++	int ret;
++
++	ret = regmap_write(priv->regmap, CS42L43_BLOCK_EN2, CS42L43_SPI_MSTR_EN_MASK);
++	if (ret)
++		dev_err(priv->dev, "Failed to enable SPI controller: %d\n", ret);
++
++	return ret;
++}
++
++static int cs42l43_unprepare_transfer_hardware(struct spi_controller *ctlr)
++{
++	struct cs42l43_spi *priv = spi_controller_get_devdata(ctlr);
++	int ret;
++
++	ret = regmap_write(priv->regmap, CS42L43_BLOCK_EN2, 0);
++	if (ret)
++		dev_err(priv->dev, "Failed to disable SPI controller: %d\n", ret);
++
++	return ret;
++}
++
++static size_t cs42l43_spi_max_length(struct spi_device *spi)
++{
++	return CS42L43_SPI_MAX_LENGTH;
++}
++
++static int cs42l43_spi_probe(struct platform_device *pdev)
++{
++	struct cs42l43 *cs42l43 = dev_get_drvdata(pdev->dev.parent);
++	struct cs42l43_spi *priv;
++	struct fwnode_handle *fwnode = dev_fwnode(cs42l43->dev);
++	int ret;
++
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->ctlr = devm_spi_alloc_master(&pdev->dev, sizeof(*priv->ctlr));
++	if (!priv->ctlr)
++		return -ENOMEM;
++
++	spi_controller_set_devdata(priv->ctlr, priv);
++
++	priv->dev = &pdev->dev;
++	priv->regmap = cs42l43->regmap;
++
++	priv->ctlr->prepare_message = cs42l43_prepare_message;
++	priv->ctlr->prepare_transfer_hardware = cs42l43_prepare_transfer_hardware;
++	priv->ctlr->unprepare_transfer_hardware = cs42l43_unprepare_transfer_hardware;
++	priv->ctlr->transfer_one = cs42l43_transfer_one;
++	priv->ctlr->set_cs = cs42l43_set_cs;
++	priv->ctlr->max_transfer_size = cs42l43_spi_max_length;
++
++	if (is_of_node(fwnode))
++		fwnode = fwnode_get_named_child_node(fwnode, "spi");
++
++	device_set_node(&priv->ctlr->dev, fwnode);
++
++	priv->ctlr->mode_bits = SPI_3WIRE | SPI_MODE_X_MASK;
++	priv->ctlr->flags = SPI_CONTROLLER_HALF_DUPLEX;
++	priv->ctlr->bits_per_word_mask = SPI_BPW_MASK(8) | SPI_BPW_MASK(16) |
++					 SPI_BPW_MASK(32);
++	priv->ctlr->min_speed_hz = CS42L43_SPI_ROOT_HZ /
++				   cs42l43_clock_divs[ARRAY_SIZE(cs42l43_clock_divs) - 1];
++	priv->ctlr->max_speed_hz = CS42L43_SPI_ROOT_HZ / cs42l43_clock_divs[0];
++	priv->ctlr->use_gpio_descriptors = true;
++	priv->ctlr->auto_runtime_pm = true;
++
++	devm_pm_runtime_enable(priv->dev);
++	pm_runtime_idle(priv->dev);
++
++	regmap_write(priv->regmap, CS42L43_TRAN_CONFIG6, CS42L43_FIFO_SIZE - 1);
++	regmap_write(priv->regmap, CS42L43_TRAN_CONFIG7, CS42L43_FIFO_SIZE - 1);
++
++	// Disable Watchdog timer and enable stall
++	regmap_write(priv->regmap, CS42L43_SPI_CONFIG3, 0);
++	regmap_write(priv->regmap, CS42L43_SPI_CONFIG4, CS42L43_SPI_STALL_ENA_MASK);
++
++	ret = devm_spi_register_controller(priv->dev, priv->ctlr);
++	if (ret) {
++		pm_runtime_disable(priv->dev);
++		dev_err(priv->dev, "Failed to register SPI controller: %d\n", ret);
 +	}
 +
- 	/* init the sysfs as we have properties now */
- 	ret = sdw_slave_sysfs_init(slave);
- 	if (ret < 0)
-@@ -166,7 +172,13 @@ static int sdw_drv_remove(struct device *dev)
- 	int ret = 0;
- 
- 	mutex_lock(&slave->sdw_dev_lock);
++	return ret;
++}
 +
- 	slave->probed = false;
++static const struct platform_device_id cs42l43_spi_id_table[] = {
++	{ "cs42l43-spi", },
++	{}
++};
++MODULE_DEVICE_TABLE(platform, cs42l43_spi_id_table);
 +
-+	if (slave->prop.use_domain_irq)
-+		irq_dispose_mapping(irq_find_mapping(slave->bus->domain,
-+						     slave->dev_num));
++static struct platform_driver cs42l43_spi_driver = {
++	.driver = {
++		.name	= "cs42l43-spi",
++	},
++	.probe		= cs42l43_spi_probe,
++	.id_table	= cs42l43_spi_id_table,
++};
++module_platform_driver(cs42l43_spi_driver);
 +
- 	mutex_unlock(&slave->sdw_dev_lock);
- 
- 	if (drv->remove)
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index ef645de13ae93..c3ab5e5f9cfa4 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -5,6 +5,8 @@
- #define __SOUNDWIRE_H
- 
- #include <linux/bug.h>
-+#include <linux/irq.h>
-+#include <linux/irqdomain.h>
- #include <linux/mod_devicetable.h>
- #include <linux/bitfield.h>
- 
-@@ -369,6 +371,7 @@ struct sdw_dpn_prop {
-  * @clock_reg_supported: the Peripheral implements the clock base and scale
-  * registers introduced with the SoundWire 1.2 specification. SDCA devices
-  * do not need to set this boolean property as the registers are required.
-+ * @use_domain_irq: call actual IRQ handler on slave, as well as callback
-  */
- struct sdw_slave_prop {
- 	u32 mipi_revision;
-@@ -393,6 +396,7 @@ struct sdw_slave_prop {
- 	u8 scp_int1_mask;
- 	u32 quirks;
- 	bool clock_reg_supported;
-+	bool use_domain_irq;
- };
- 
- #define SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY	BIT(0)
-@@ -640,6 +644,7 @@ struct sdw_slave_ops {
-  * struct sdw_slave - SoundWire Slave
-  * @id: MIPI device ID
-  * @dev: Linux device
-+ * @irq: IRQ number
-  * @status: Status reported by the Slave
-  * @bus: Bus handle
-  * @prop: Slave properties
-@@ -669,6 +674,7 @@ struct sdw_slave_ops {
- struct sdw_slave {
- 	struct sdw_slave_id id;
- 	struct device dev;
-+	int irq;
- 	enum sdw_slave_status status;
- 	struct sdw_bus *bus;
- 	struct sdw_slave_prop prop;
-@@ -883,6 +889,7 @@ struct sdw_master_ops {
-  * is used to compute and program bus bandwidth, clock, frame shape,
-  * transport and port parameters
-  * @debugfs: Bus debugfs
-+ * @domain: IRQ domain
-  * @defer_msg: Defer message
-  * @clk_stop_timeout: Clock stop timeout computed
-  * @bank_switch_timeout: Bank switch timeout computed
-@@ -916,6 +923,8 @@ struct sdw_bus {
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs;
- #endif
-+	struct irq_chip irq_chip;
-+	struct irq_domain *domain;
- 	struct sdw_defer defer_msg;
- 	unsigned int clk_stop_timeout;
- 	u32 bank_switch_timeout;
++MODULE_DESCRIPTION("CS42L43 SPI Driver");
++MODULE_AUTHOR("Lucas Tanure <tanureal@opensource.cirrus.com>");
++MODULE_AUTHOR("Maciej Strozek <mstrozek@opensource.cirrus.com>");
++MODULE_LICENSE("GPL");
 -- 
 2.30.2
 
