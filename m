@@ -4,109 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1C94C77B73
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 09:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41D2BC77B73
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 09:10:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C57E53E7;
-	Wed, 31 May 2023 11:02:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C57E53E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 159026C1;
+	Wed, 31 May 2023 11:09:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 159026C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685523813;
-	bh=SG+CLTihm03WjcTg8TDRR+BfoZOm46xRTVR6N1+z2pc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1685524210;
+	bh=GQ/VJcarSHovY/ujid2ITkfjTPNyiMNOre1H2BQDjl0=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BRb4CCs2UcxunqLcCBetJoCrWEkx6uPyPU1Mq8aBYh3RpGuNL1xDFwVoyFEsPjtaM
-	 lP7Q0OzxJiDk8ZfmdN7yANXlA5+ju7FTZdmbhP3B1E+Q0TuPs8yukCNHK/wtc4CKa1
-	 aQoDbaMwWOCRG0O8skhazYFr5exN/XmG8m9+up58=
+	b=gbbFF56gAm0dMj+WkKFXXS/tbsIKxvIYZp4W0hH+dgdsRNsnkdsZ3AXyPOjff97Sg
+	 YcNVeXKGvM0pjg3iti2q4s+5wLLfwrTSpy+nisRZQi3e+uYDKuyalJVugula79oPKK
+	 X/ESg10+vcK7g6zaiK9fG451hEIgiolYggz9ZHwk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88BBEF8053D; Wed, 31 May 2023 11:02:40 +0200 (CEST)
+	id A3CE7F8042F; Wed, 31 May 2023 11:09:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E97B1F8042F;
-	Wed, 31 May 2023 11:02:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C04BF800DF;
+	Wed, 31 May 2023 11:09:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3A965F8042F; Wed, 31 May 2023 11:02:37 +0200 (CEST)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D7CE9F8042F; Wed, 31 May 2023 11:09:08 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 84457F80149
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 11:02:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84457F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 30870F80149
+	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 11:08:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30870F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=hl/FuLnQ
-Received: by mail-ej1-x634.google.com with SMTP id
- a640c23a62f3a-96f850b32caso1022158666b.3
-        for <alsa-devel@alsa-project.org>;
- Wed, 31 May 2023 02:02:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1685523747; x=1688115747;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eLGOgCTdN9b0I3RzLK+qTsPeSIXwIOR+lUiYzHLyqkA=;
-        b=hl/FuLnQZIjxtgYC0n4FAzTYUV3krumKQ/xsy+UH7E/f3dgqeMgPN/5AWK3SEAbCIr
-         FI5o6PsmvyimDsqt5v5W0X8JCTWp4IIqZ8x4bJAK1WuGUur4LrMbrSLlB4RyvOnzIWpj
-         UnB3gYbhh4tVYaSM44gFg9i9Vmw/5b+wvnLAVnsq+U/bFznueJbE05QomY6GoS+Thfyi
-         92yxam3PqKLAhtN2FkiFthHuejjWHvOd2bLzYlJhwaQRKPfYLKleciRdi3ZkGUkRYYwx
-         li9VHUt3YJlo2ixD5iK57yOeNvKQ5dkacN1nQ4J0gD5U8MxsmtBUBfgxsazERnuF8oTC
-         IkKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685523747; x=1688115747;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eLGOgCTdN9b0I3RzLK+qTsPeSIXwIOR+lUiYzHLyqkA=;
-        b=al8wb6dRapLTLhKxs4zCksOIPyA9QKoB1fZ4DGpbIux+8R5EkffzJ79PxEfOu8MN/+
-         gVtjxNiyP0dB058fl6h/bgvIn3+NiboDZrhID2tHQfUj5NpXi/CF3CZn+mYH/9pqv+0+
-         iDrTlFVtTMD0I+j+sJsznm/ebL7G0OwgYJj4vCqcR9WQcrRvGU+1YXSwn+0psaU46ygv
-         uAZ2iUc8pLnGhygKmH8FUa92s3TQrfVgDzJbLwhM/GCu1K7DLjAXxtYl/cwu9cJnoTZL
-         UifH71thpe12ZgakI1BADgKCD3UT6DuN7KaYvOcD5sorp0Dn3Lw5gaReh37jQYXl/VwY
-         wmOA==
-X-Gm-Message-State: AC+VfDx8W60SvBwLVZrRArxorc790KyoWi+n7f2AOvHKPrLD726YjfOo
-	wPaBdNxPQglCV3nrqQkRLiNQDg==
-X-Google-Smtp-Source: 
- ACHHUZ6y49DNKKcWtbOKQ31f6lJ93szs/HfhYKInuhEAs8m2uleiHDoOT2aH1n4H9RrcakuD5WjtOg==
-X-Received: by 2002:a17:907:7da5:b0:966:4d75:4a44 with SMTP id
- oz37-20020a1709077da500b009664d754a44mr4305321ejc.24.1685523747328;
-        Wed, 31 May 2023 02:02:27 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.199.204])
-        by smtp.gmail.com with ESMTPSA id
- b13-20020a1709065e4d00b00965e9b435dfsm8560598eju.65.2023.05.31.02.02.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 May 2023 02:02:26 -0700 (PDT)
-Message-ID: <eef819db-4de3-06fe-8fe6-b0fe87ab5d84@linaro.org>
-Date: Wed, 31 May 2023 11:02:24 +0200
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=FjeZPEVH
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 34V6NtW0031925;
+	Wed, 31 May 2023 04:08:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=zveEV9JuSBFs9WdDnNH2gJhjslm13ItkavaeTEwiuV4=;
+ b=FjeZPEVHau0oSJWYBUHUIv9HmdXGOLeuQiCyS+eIUZuyOoGrwCwAOVR/zDGnQCgmrF8F
+ pCqAA6KDVEpQoQhx3Nv1P143QUxexuipPRAFrOfveE1k0exsEm+2KmC+KjKntQ70ILI/
+ 0YFOcUPRwS5aRbEf+tXB73GyULr+lHpSVnC8Z1pE9fBwEv1VdddopgZCITwffZcvvtZu
+ 5D3/5ff+cZYp1Ea3R9EbSm25bQUghGA3+QApTaNNxXfotn/IQKwglQuNBy3qkmv32DDZ
+ 1XjPj5TmaBAinOpO4nrSMPEHN29g6xb44SQkNhdbhFn+v5YR7Dj2LKC+J01n8Lg0LGts Tg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3que9mvgsu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 31 May 2023 04:08:38 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Wed, 31 May
+ 2023 10:08:36 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 31 May 2023 10:08:36 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
+ [198.61.86.93])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7FDA711C6;
+	Wed, 31 May 2023 09:08:36 +0000 (UTC)
+Date: Wed, 31 May 2023 09:08:36 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Lizhe <sensor1010@163.com>
+CC: <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
+        <tanureal@opensource.cirrus.com>, <rf@opensource.cirrus.com>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] dirvers/gpio: remove redundant reset gpio suffix
+Message-ID: <20230531090836.GI68926@ediswmail.ad.cirrus.com>
+References: <20230530163210.4324-1-sensor1010@163.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 2/6] dt-bindings: sound: cirrus,cs42l43: Add initial DT
- binding
-Content-Language: en-US
-To: Charles Keepax <ckeepax@opensource.cirrus.com>, broonie@kernel.org,
- lee@kernel.org, krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org,
- vkoul@kernel.org
-Cc: robh+dt@kernel.org, conor+dt@kernel.org, lgirdwood@gmail.com,
- yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
- pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, devicetree@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230530122112.1314458-1-ckeepax@opensource.cirrus.com>
- <20230530122112.1314458-3-ckeepax@opensource.cirrus.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230530122112.1314458-3-ckeepax@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: EFSPGDRT5MDNM56HUIRSFZ5B5WK2DYY4
-X-Message-ID-Hash: EFSPGDRT5MDNM56HUIRSFZ5B5WK2DYY4
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230530163210.4324-1-sensor1010@163.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: wwW61hLRNjV4K2LKGqteHli3JUbDQg54
+X-Proofpoint-ORIG-GUID: wwW61hLRNjV4K2LKGqteHli3JUbDQg54
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 2AUYUELCYAFHUC2GRT5IW5U5BNWYRBFM
+X-Message-ID-Hash: 2AUYUELCYAFHUC2GRT5IW5U5BNWYRBFM
+X-MailFrom: prvs=151547ecba=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -118,198 +101,22 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EFSPGDRT5MDNM56HUIRSFZ5B5WK2DYY4/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2AUYUELCYAFHUC2GRT5IW5U5BNWYRBFM/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 30/05/2023 14:21, Charles Keepax wrote:
-> The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
-> (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
-> for portable applications. It provides a high dynamic range, stereo
-> DAC for headphone output, two integrated Class D amplifiers for
-> loudspeakers, and two ADCs for wired headset microphone input or
-> stereo line input. PDM inputs are provided for digital microphones.
+On Wed, May 31, 2023 at 12:32:10AM +0800, Lizhe wrote:
+> no need to add the suffix "gpio" or "gpios" after "reset", as they will
+> be automatically added, see of_find_gpio().
 > 
-> Add a YAML DT binding document for this device.
-> 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Thank you for your patch. There is something to discuss/improve.
+Patch itself looks fine, but the subject line should really be
+ASoC: cs35l34: ... rather than gpio.
 
-
-> +  clocks:
-> +    items:
-> +      - description: Synchronous audio clock provided on mclk_in.
-> +
-> +  clock-names:
-> +    const: mclk
-> +
-> +  cirrus,bias-low:
-> +    type: boolean
-> +    description:
-> +      Select a 1.8V headset micbias rather than 2.8V.
-> +
-> +  cirrus,bias-sense-ua:
-
-"ua" looks like microamp. If so, microamp instead:
-https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/property-units.yaml
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Current at which the headset micbias sense clamp will engage, 0 to
-> +      disable.
-> +    enum: [ 0, 14, 23, 41, 50, 60, 68, 86, 95 ]
-> +    default: 0
-> +
-> +  cirrus,bias-ramp-ms:
-> +    description:
-> +      Time in milliseconds the hardware allows for the headset micbias to
-> +      ramp up.
-> +    enum: [ 10, 40, 90, 170 ]
-> +    default: 170
-> +
-> +  cirrus,detect-us:
-> +    description:
-> +      Time in microseconds the type detection will run for. Long values will
-> +      cause more audible effects, but give more accurate detection.
-> +    enum: [ 20, 100, 1000, 10000, 50000, 75000, 100000, 200000 ]
-> +    default: 10000
-> +
-> +  cirrus,button-automute:
-> +    type: boolean
-> +    description:
-> +      Enable the hardware automuting of decimator 1 when a headset button is
-> +      pressed.
-> +
-> +  cirrus,buttons-ohms:
-> +    description:
-> +      Impedance in Ohms for each headset button, these should be listed in
-> +      ascending order.
-> +    minItems: 1
-> +    maxItems: 6
-> +
-> +  cirrus,tip-debounce-ms:
-> +    description:
-> +      Software debounce on tip sense triggering in milliseconds.
-> +    default: 0
-> +
-> +  cirrus,tip-invert:
-> +    type: boolean
-> +    description:
-> +      Indicates tip detect polarity, inverted implies open-circuit whilst the
-> +      jack is inserted.
-> +
-> +  cirrus,tip-disable-pullup:
-> +    type: boolean
-> +    description:
-> +      Indicates if the internal pullup on the tip detect should be disabled.
-> +
-> +  cirrus,tip-fall-db-ms:
-> +    description:
-> +      Time in milliseconds a falling edge on the tip detect should be hardware
-> +      debounced for. Note the falling edge is considered after the invert.
-> +    enum: [ 0, 125, 250, 500, 750, 1000, 1250, 1500 ]
-> +    default: 500
-> +
-> +  cirrus,tip-rise-db-ms:
-> +    description:
-> +      Time in milliseconds a rising edge on the tip detect should be hardware
-> +      debounced for. Note the rising edge is considered after the invert.
-> +    enum: [ 0, 125, 250, 500, 750, 1000, 1250, 1500 ]
-> +    default: 500
-> +
-> +  cirrus,use-ring-sense:
-> +    type: boolean
-> +    description:
-> +      Indicates if the ring sense should be used.
-> +
-> +  cirrus,ring-invert:
-> +    type: boolean
-> +    description:
-> +      Indicates ring detect polarity, inverted implies open-circuit whilst the
-> +      jack is inserted.
-> +
-> +  cirrus,ring-disable-pullup:
-> +    type: boolean
-> +    description:
-> +      Indicates if the internal pullup on the ring detect should be disabled.
-> +
-> +  cirrus,ring-fall-db-ms:
-> +    description:
-> +      Time in milliseconds a falling edge on the ring detect should be hardware
-> +      debounced for. Note the falling edge is considered after the invert.
-> +    enum: [ 0, 125, 250, 500, 750, 1000, 1250, 1500 ]
-> +    default: 500
-> +
-> +  cirrus,ring-rise-db-ms:
-> +    description:
-> +      Time in milliseconds a rising edge on the ring detect should be hardware
-> +      debounced for. Note the rising edge is considered after the invert.
-> +    enum: [ 0, 125, 250, 500, 750, 1000, 1250, 1500 ]
-> +    default: 500
-> +
-> +  pinctrl:
-> +    type: object
-> +
-> +    allOf:
-
-Drop allOf, just "$ref: ......"
-
-> +      - $ref: /schemas/pinctrl/pinctrl.yaml#
-> +
-> +    additionalProperties: false
-
-Also drop blank lines between these three above.
-
-> +
-> +    properties:
-> +      gpio-controller: true
-> +
-> +      '#gpio-cells':
-> +        const: 2
-> +
-> +      gpio-ranges:
-> +        items:
-> +          - description: A phandle to the CODEC pinctrl node
-> +            minimum: 0
-> +          - const: 0
-> +          - const: 0
-> +          - const: 3
-> +
-> +    patternProperties:
-> +      "-state$":
-
-Use consistent quotes, either " or ' everywhere
-
-> +        oneOf:
-> +          - $ref: "#/$defs/cirrus-cs42l43-state"
-> +          - patternProperties:
-> +              "-pins$":
-> +                $ref: "#/$defs/cirrus-cs42l43-state"
-> +            additionalProperties: false
-> +
-> +  spi:
-> +    type: object
-> +
-> +    allOf:
-> +      - $ref: /schemas/spi/spi-controller.yaml#
-> +
-> +    unevaluatedProperties: false
-
-Same comments here.
-
-> +
-> +$defs:
-> +  cirrus-cs42l43-state:
-> +    type: object
-> +
-
-
-
-Best regards,
-Krzysztof
-
+Thanks,
+Charles
