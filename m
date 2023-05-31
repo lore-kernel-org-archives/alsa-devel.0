@@ -4,73 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40024C7EE2F
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 13:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B68CBC7EE23
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 13:44:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BB7A828;
-	Wed, 31 May 2023 15:43:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BB7A828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 204D586E;
+	Wed, 31 May 2023 15:43:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 204D586E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685540658;
-	bh=RCHWS+o1hDInbDlH2a1xOIWLzTL1qLvXYRuq+jY8uqE=;
+	s=default; t=1685540666;
+	bh=3Xbn1EwYG9/PxX2YVlraKEV2YsIoSvlFZ4SYwZJrrFE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JfLGBl+M/fltOi5EsYL7JJJCnwmWRmnshrdrwyKUBrD0DbgwS8cfFoeBVkukdMXCI
-	 NvQs3M9m+WELI9sWKc8vV1Xww4IUg3saZ11ixzVByHt6LC75K+AKBL8/t8xkpG4uOE
-	 d4rirdfE2TgW6bzb2EW1wqIH9NYy15X0jieC5VKE=
+	b=Xb8eSUasC5L8UKVNco5Jgb8nEfOMi+0laGpeQFmuai2FxF+JP3BzyWkTDPpuDS4Le
+	 Bc1l5MwdoXSvFuW0gKUY9wF8t/bqQ0R3OyE8qtZbBjSZY97CEp26MMyNkB5AWMPGjf
+	 MUxTJB+ck8scCAq29TrhNpUpuAXhOILi5Bq6xMpY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 24B4CF80557; Wed, 31 May 2023 15:42:33 +0200 (CEST)
+	id 0AC91F80548; Wed, 31 May 2023 15:42:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD5A3F80557;
-	Wed, 31 May 2023 15:42:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EBCDF80548;
+	Wed, 31 May 2023 15:42:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A5C35F80557; Wed, 31 May 2023 15:42:29 +0200 (CEST)
+	id E9CD7F80587; Wed, 31 May 2023 15:42:35 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C48C0F80528
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 15:42:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C48C0F80528
+	by alsa1.perex.cz (Postfix) with ESMTPS id A90AEF80548
+	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 15:42:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A90AEF80548
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=trr04afc
+ header.s=k20201202 header.b=N5hfTX1P
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id ADE6063B5A;
-	Wed, 31 May 2023 13:42:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A977C4339C;
-	Wed, 31 May 2023 13:42:25 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 81F9963B49;
+	Wed, 31 May 2023 13:42:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 037BAC433D2;
+	Wed, 31 May 2023 13:42:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685540546;
-	bh=RCHWS+o1hDInbDlH2a1xOIWLzTL1qLvXYRuq+jY8uqE=;
+	s=k20201202; t=1685540552;
+	bh=3Xbn1EwYG9/PxX2YVlraKEV2YsIoSvlFZ4SYwZJrrFE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=trr04afcP5u6M1N2bvuo8uB1Ao5YdLX3TJIDzydzTkA+AY7z8ZSvWI+CTmyD1lNXj
-	 9NaMCxvMtHxzogVJS302JzCHeisiyPbSo0skwb/C7Sq/k5ZyHGgvrI8s0Kuofeymyz
-	 +9FjvZnqGflVUltM96zk11wTZ86sJt2XP26s8/wdYpEz0Wf0gORZsH49tt7AkoDEBA
-	 N33e4c6qWup8R/Dh1WDoka04OTjsrspWSKNxueW3hck2Ioq7vo6w7RfnBRWxAtthbP
-	 pe/VoylsXQx1lpDPwPz5gTa9EhmNxAbDLrerJBUTWZQpOhxxMu4MKlvQm5/sxq8clG
-	 QmQaj+Y9q5HHA==
+	b=N5hfTX1PnILEvaqRidWkKB1qGkrZ/yCEeWDggBRa/UYg/diPTnlLawf1tHqUwds/4
+	 RNVuiVz+4pmKOIsZ1PUgkgmaz7F1+TQ1Fksy1TN7xUFjsgedTNpBLyzZ+P6FvqlQrG
+	 Y/dCb9bTCOUmctJtNzCHJ/Jh0iLuS03+t6Nv60bCBP9sUrv5W2fZ7qd0uK40J4VSpX
+	 MQbKc7NZkh2FkeCLbMN+4FdH+retYE31P7XASvok+VmwHe3pMrdGQIfeZlzq0NljwV
+	 yMAb5ayUGfndPmlLSfIGEkcxLVppW0Rf6COe6qFhTBXGanwmEA01EpQwRrmD8BWzjT
+	 w1/hlaiO/Smsg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Ravulapati Vishnu Vardhan Rao <quic_visr@quicinc.com>,
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	srinivas.kandagatla@linaro.org,
-	bgoswami@quicinc.com,
 	lgirdwood@gmail.com,
 	broonie@kernel.org,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 14/33] ASoC: lpass: Fix for KASAN use_after_free
- out of bounds
-Date: Wed, 31 May 2023 09:41:40 -0400
-Message-Id: <20230531134159.3383703-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 18/33] ASoC: soc-pcm: test if a BE can be prepared
+Date: Wed, 31 May 2023 09:41:44 -0400
+Message-Id: <20230531134159.3383703-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531134159.3383703-1-sashal@kernel.org>
 References: <20230531134159.3383703-1-sashal@kernel.org>
@@ -78,8 +75,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: P4LMW5TUVBOAARR7ADWLEWHSQWYCULJH
-X-Message-ID-Hash: P4LMW5TUVBOAARR7ADWLEWHSQWYCULJH
+Message-ID-Hash: URGQZDPZFCSFPA3W5ZHEOV55W3AIQC3J
+X-Message-ID-Hash: URGQZDPZFCSFPA3W5ZHEOV55W3AIQC3J
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P4LMW5TUVBOAARR7ADWLEWHSQWYCULJH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/URGQZDPZFCSFPA3W5ZHEOV55W3AIQC3J/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,70 +98,91 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Ravulapati Vishnu Vardhan Rao <quic_visr@quicinc.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-[ Upstream commit 75e5fab7db0cecb6e16b22c34608f0b40a4c7cd1 ]
+[ Upstream commit e123036be377ddf628226a7c6d4f9af5efd113d3 ]
 
-When we run syzkaller we get below Out of Bounds error.
+In the BE hw_params configuration, the existing code checks if any of the
+existing FEs are prepared, running, paused or suspended - and skips the
+configuration in those cases. This allows multiple calls of hw_params
+which the ALSA state machine supports.
 
-"KASAN: slab-out-of-bounds Read in regcache_flat_read"
+This check is not handled for the prepare stage, which can lead to the
+same BE being prepared multiple times. This patch adds a check similar to
+that of the hw_params, with the main difference being that the suspended
+state is allowed: the ALSA state machine allows a transition from
+suspended to prepared with hw_params skipped.
 
-Below is the backtrace of the issue:
+This problem was detected on Intel IPC4/SoundWire devices, where the BE
+dailink .prepare stage is used to configure the SoundWire stream with a
+bank switch. Multiple .prepare calls lead to conflicts with the .trigger
+operation with IPC4 configurations. This problem was not detected earlier
+on Intel devices, HDaudio BE dailinks detect that the link is already
+prepared and skip the configuration, and for IPC3 devices there is no BE
+trigger.
 
-BUG: KASAN: slab-out-of-bounds in regcache_flat_read+0x10c/0x110
-Read of size 4 at addr ffffff8088fbf714 by task syz-executor.4/14144
-CPU: 6 PID: 14144 Comm: syz-executor.4 Tainted: G        W
-Hardware name: Qualcomm Technologies, Inc. sc7280 CRD platform (rev5+) (DT)
-Call trace:
-dump_backtrace+0x0/0x4ec
-show_stack+0x34/0x50
-dump_stack_lvl+0xdc/0x11c
-print_address_description+0x30/0x2d8
-kasan_report+0x178/0x1e4
-__asan_report_load4_noabort+0x44/0x50
-regcache_flat_read+0x10c/0x110
-regcache_read+0xf8/0x5a0
-_regmap_read+0x45c/0x86c
-_regmap_update_bits+0x128/0x290
-regmap_update_bits_base+0xc0/0x15c
-snd_soc_component_update_bits+0xa8/0x22c
-snd_soc_component_write_field+0x68/0xd4
-tx_macro_put_dec_enum+0x1d0/0x268
-snd_ctl_elem_write+0x288/0x474
-
-By Error checking and checking valid values issue gets rectifies.
-
-Signed-off-by: Ravulapati Vishnu Vardhan Rao <quic_visr@quicinc.com
-Link: https://lore.kernel.org/r/20230511112532.16106-1-quic_visr@quicinc.com
+Link: https://github.com/thesofproject/sof/issues/7596
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20230517185731.487124-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/lpass-tx-macro.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/sound/soc-dpcm.h |  4 ++++
+ sound/soc/soc-pcm.c      | 20 ++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
-index d1d9d8d2df2d2..9f59518005a5f 100644
---- a/sound/soc/codecs/lpass-tx-macro.c
-+++ b/sound/soc/codecs/lpass-tx-macro.c
-@@ -745,6 +745,8 @@ static int tx_macro_put_dec_enum(struct snd_kcontrol *kcontrol,
- 	struct tx_macro *tx = snd_soc_component_get_drvdata(component);
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index 5b689c663290f..27a5642f07cda 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -125,6 +125,10 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream);
  
- 	val = ucontrol->value.enumerated.item[0];
-+	if (val >= e->items)
-+		return -EINVAL;
++/* can this BE perform prepare */
++int snd_soc_dpcm_can_be_prepared(struct snd_soc_pcm_runtime *fe,
++				 struct snd_soc_pcm_runtime *be, int stream);
++
+ /* is the current PCM operation for this FE ? */
+ int snd_soc_dpcm_fe_can_update(struct snd_soc_pcm_runtime *fe, int stream);
  
- 	switch (e->reg) {
- 	case CDC_TX_INP_MUX_ADC_MUX0_CFG0:
-@@ -771,6 +773,9 @@ static int tx_macro_put_dec_enum(struct snd_kcontrol *kcontrol,
- 	case CDC_TX_INP_MUX_ADC_MUX7_CFG0:
- 		mic_sel_reg = CDC_TX7_TX_PATH_CFG0;
- 		break;
-+	default:
-+		dev_err(component->dev, "Error in configuration!!\n");
-+		return -EINVAL;
- 	}
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 7a486ca9633c1..f3964060a0447 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2403,6 +2403,9 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
+ 		if (!snd_soc_dpcm_be_can_update(fe, be, stream))
+ 			continue;
  
- 	if (val != 0) {
++		if (!snd_soc_dpcm_can_be_prepared(fe, be, stream))
++			continue;
++
+ 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_PARAMS) &&
+ 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_STOP) &&
+ 		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND) &&
+@@ -3043,3 +3046,20 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
++
++/*
++ * We can only prepare a BE DAI if any of it's FE are not prepared,
++ * running or paused for the specified stream direction.
++ */
++int snd_soc_dpcm_can_be_prepared(struct snd_soc_pcm_runtime *fe,
++				 struct snd_soc_pcm_runtime *be, int stream)
++{
++	const enum snd_soc_dpcm_state state[] = {
++		SND_SOC_DPCM_STATE_START,
++		SND_SOC_DPCM_STATE_PAUSED,
++		SND_SOC_DPCM_STATE_PREPARE,
++	};
++
++	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
++}
++EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_prepared);
 -- 
 2.39.2
 
