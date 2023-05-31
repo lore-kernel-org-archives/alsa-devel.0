@@ -4,91 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7867AC77B7A
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:08:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D655C7EE23
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:08:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF6E0E82;
-	Thu,  1 Jun 2023 18:07:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF6E0E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84C5F6C0;
+	Thu,  1 Jun 2023 18:08:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84C5F6C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685635721;
-	bh=DmfKfAw6OWSTDBhMHGCC3yNzPph540FY0Qc904L0H7A=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=W3UfH9VOZxtyEfsM9lB5/wRgkfY6t3+uwA6sJQ3zL1UwOVcIx9FjUzmGr3mYTKdgB
-	 RSgdkAA9z16s+KQVVbECTRoFvhKGPRgGQQzry7UdCTq6WoLaGjcLMaM2Iu5aAyhTZY
-	 r2WdMj7m2l7XWyNEW8wxLlKZ0UG0NrcdB3VW/Qwk=
+	s=default; t=1685635732;
+	bh=P+9hI9xdrea80rabX7D1ujMrgUvukLbSTS6tFpqvvjU=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=lZjfXyRUgNu4XhKoMC51uTE6rulTfOcxMiiuZNVPWTyn4Adtc+RR0nULCu5ON5LYR
+	 1Fkq+TS2a7VYIWZlP9TwXZbDe1p91+xQHRPVDk31YFXGg0Uzh9EHUeyfs6Vp3QCgOO
+	 HZDBQn0naLr29BvH44UXH2xNOlkACbLp2CSTAD64=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C36CF80656; Thu,  1 Jun 2023 18:03:22 +0200 (CEST)
+	id 9FBEAF80674; Thu,  1 Jun 2023 18:03:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7FA43F8063E;
-	Thu,  1 Jun 2023 18:03:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1401DF80671;
+	Thu,  1 Jun 2023 18:03:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40331F8042F; Wed, 31 May 2023 08:43:05 +0200 (CEST)
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
- [61.152.239.71])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	id 89A46F8042F; Wed, 31 May 2023 11:07:24 +0200 (CEST)
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com
+ [IPv6:2607:f8b0:4864:20::32e])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7F0DCF80149
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 08:42:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F0DCF80149
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 8398024DDBE;
-	Wed, 31 May 2023 14:42:51 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 31 May
- 2023 14:42:51 +0800
-Received: from [192.168.125.80] (113.72.147.198) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 31 May
- 2023 14:42:50 +0800
-Message-ID: <0308ad78-5aec-f51f-41d1-40364d87ddc3@starfivetech.com>
-Date: Wed, 31 May 2023 14:42:49 +0800
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3FB26F80149
+	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 11:07:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FB26F80149
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=Uw4hPKMx
+Received: by mail-ot1-x32e.google.com with SMTP id
+ 46e09a7af769-6af6df7f93aso4084486a34.0
+        for <alsa-devel@alsa-project.org>;
+ Wed, 31 May 2023 02:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685524026; x=1688116026;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=t6dEyi6AGYaP28foBidULwGN56hxXAodGv+YU14GBEY=;
+        b=Uw4hPKMxgez7mchEcYKo2y8YNzmXe8VJrzDMRFmvOcvtS6wh0PgWgayIJVwxET1vlk
+         7ULG5OXofFnYxHNWiaQJV49vwveRMHMf9bj0NcVR0fgQyAHhZEX/u3zZlQqjSTi1IUz0
+         QEu6Ig7uAEqBqqzuEUSbsK1JhX1DuYL1Uh1OOroB2VTPP64BwMtt+WpOX1hduzhNY3El
+         iywApcDy8g1tUf+RXWKh35a1oNIp1c3HTsYywr5MbC6z1xnqqiU3LqC6WBfGgM/z1bze
+         NnQG9NZ6/7XNCdbk2hdRMlFITQI05hUBCHRZu8fiB6dE+NxfMKKJmBwS6+IfB/Wdv8Fg
+         vIfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685524026; x=1688116026;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t6dEyi6AGYaP28foBidULwGN56hxXAodGv+YU14GBEY=;
+        b=YRCMl3MQcdwrErYg9zDcCIVQz6H78QrOS0A0moSlwUOXwM0tO+xFDQlLBp7YwJGDyB
+         JDd9V/bh3iSP1xWfaAX0QR2Nt0zfKS+Q+mTwN5wV8SLdMnRTFkXjwIv4m3/HwCtVbEcR
+         P6ZAdKY3T42x5LGSgLkQNMPNslQYoNegN3LLHZNBlQgZYv6eXiFa8uIkrJVXt1dTe1oi
+         82wpk3mMnznY+3mgFHt8QqiYl5UkReizQDLOvKPNno8bWS6U33V9UR1upPutXb4wgrqF
+         ZjGjxJvwC3MJbRZkUfPEFyFIpW6v7EyGhRw9wtqs1uPEF2QmSalrdSeGbiHb8PaYlBNT
+         rZOQ==
+X-Gm-Message-State: AC+VfDx7YVGpwGIaIFL36RZ0ebdT2XzNj17kigOZUOYrVpLERxP0p0WA
+	n99UjnDNzoyX/2gCHHCMNvo=
+X-Google-Smtp-Source: 
+ ACHHUZ50Ep+NjfhDZ1k3WX0bHLfzzHFO4lgKhgkjrkRCIYpFGYnhJOuLPi1i7e5c6mzo5U7tQ5ty1Q==
+X-Received: by 2002:a05:6358:5290:b0:123:2b2e:529d with SMTP id
+ g16-20020a056358529000b001232b2e529dmr1948123rwa.6.1685524026360;
+        Wed, 31 May 2023 02:07:06 -0700 (PDT)
+Received: from localhost.localdomain ([2406:e003:15d1:ec00::6e2])
+        by smtp.gmail.com with ESMTPSA id
+ 23-20020aa79157000000b0064fff9f540csm2104824pfi.164.2023.05.31.02.07.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 May 2023 02:07:05 -0700 (PDT)
+From: Sicong Jiang <kevin.jiangsc@gmail.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Cc: kevin.jiangsc@gmail.com
+Subject: [PATCH] ASoC: amd: yc: Add Thinkpad Neo14 to quirks list for acp6x
+Date: Wed, 31 May 2023 21:06:35 +1200
+Message-Id: <20230531090635.89565-1-kevin.jiangsc@gmail.com>
+X-Mailer: git-send-email 2.38.0.83.gd420dda057
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH v5 3/3] riscv: dts: starfive: add the node and pins
- configuration for tdm
-Content-Language: en-US
-To: Walker Chen <walker.chen@starfivetech.com>, Mark Brown
-	<broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Claudiu Beznea
-	<Claudiu.Beznea@microchip.com>, Jaroslav Kysela <perex@perex.cz>, "Takashi
- Iwai" <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	"Emil Renner Berthing" <emil.renner.berthing@canonical.com>
-CC: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-References: <20230526145402.450-1-walker.chen@starfivetech.com>
- <20230526145402.450-4-walker.chen@starfivetech.com>
- <dbb7ca72-fb21-6cc4-0f10-0f17818689db@starfivetech.com>
- <ed0a36ff-c497-9bb3-05d2-ea93285f4d1d@starfivetech.com>
-From: Hal Feng <hal.feng@starfivetech.com>
-In-Reply-To: <ed0a36ff-c497-9bb3-05d2-ea93285f4d1d@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.147.198]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-X-MailFrom: hal.feng@starfivetech.com
+Content-Transfer-Encoding: 8bit
+X-MailFrom: kevin.jiangsc@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IYPQBOXIY4C4LP3J7PODTJDWBC7HA7UY
-X-Message-ID-Hash: IYPQBOXIY4C4LP3J7PODTJDWBC7HA7UY
-X-Mailman-Approved-At: Thu, 01 Jun 2023 16:02:28 +0000
+Message-ID-Hash: LHILG75SG4ES5FI5UTQ4GJOLMU2EO5PE
+X-Message-ID-Hash: LHILG75SG4ES5FI5UTQ4GJOLMU2EO5PE
+X-Mailman-Approved-At: Thu, 01 Jun 2023 16:02:29 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IYPQBOXIY4C4LP3J7PODTJDWBC7HA7UY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LHILG75SG4ES5FI5UTQ4GJOLMU2EO5PE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,97 +116,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 31 May 2023 14:30:19 +0800, Walker Chen wrote:
-> On 2023/5/31 14:23, Hal Feng wrote:
->> On Fri, 26 May 2023 22:54:02 +0800, Walker Chen wrote:
->>> Add the tdm controller node and pins configuration of tdm for the
->>> StarFive JH7110 SoC.
->>> 
->>> Signed-off-by: Walker Chen <walker.chen@starfivetech.com>
->>> ---
->>>  .../jh7110-starfive-visionfive-2.dtsi         | 40 +++++++++++++++++++
->>>  arch/riscv/boot/dts/starfive/jh7110.dtsi      | 21 ++++++++++
->>>  2 files changed, 61 insertions(+)
->>> 
->>> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
->>> index 1155b97b593d..19b5954ee72d 100644
->>> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
->>> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
->>> @@ -214,6 +214,40 @@
->>>  			slew-rate = <0>;
->>>  		};
->>>  	};
->>> +
->>> +	tdm0_pins: tdm0-pins {
->>> +		tdm0-pins-tx {
->> 
->> Use consistent naming, so
->> 
->> 	tdm_pins: tdm-0 {
->> 		tx-pins {
->> 
->>> +			pinmux = <GPIOMUX(44, GPOUT_SYS_TDM_TXD,
->>> +					      GPOEN_ENABLE,
->>> +					      GPI_NONE)>;
->>> +			bias-pull-up;
->>> +			drive-strength = <2>;
->>> +			input-disable;
->>> +			input-schmitt-disable;
->>> +			slew-rate = <0>;
->>> +		};
->>> +
->>> +		tdm0-pins-rx {
->> 
->> 		rx-pins {
->> 
->>> +			pinmux = <GPIOMUX(61, GPOUT_HIGH,
->>> +					      GPOEN_DISABLE,
->>> +					      GPI_SYS_TDM_RXD)>;
->>> +			input-enable;
->>> +		};
->>> +
->>> +		tdm0-pins-sync {
->> 
->> 		sync-pins {
->> 
->>> +			pinmux = <GPIOMUX(63, GPOUT_HIGH,
->>> +					      GPOEN_DISABLE,
->>> +					      GPI_SYS_TDM_SYNC)>;
->>> +			input-enable;
->>> +		};
->>> +
->>> +		tdm0-pins-pcmclk {
->> 
->> 		pcmclk-pins {
->> 
->>> +			pinmux = <GPIOMUX(38, GPOUT_HIGH,
->>> +					      GPOEN_DISABLE,
->>> +					      GPI_SYS_TDM_CLK)>;
->>> +			input-enable;
->>> +		};
->>> +	};
->>>  };
->>>  
->>>  &uart0 {
->>> @@ -221,3 +255,9 @@
->>>  	pinctrl-0 = <&uart0_pins>;
->>>  	status = "okay";
->>>  };
->>> +
->>> +&tdm {
->>> +	pinctrl-names = "default";
->>> +	pinctrl-0 = <&tdm0_pins>;
->> 
->> 	pinctrl-0 = <&tdm_pins>;
->> 
->> Best regards,
->> Hal
-> 
-> OK, I'll update these node's name in the next submit.
-> Thanks.
+Thinkpad Neo14 Ryzen Edition uses Ryzen 6800H processor, and adding to
+quirks list for acp6x will enable internal mic.
 
-With that fixed,
-Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+Signed-off-by: Sicong Jiang <kevin.jiangsc@gmail.com>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Best regards,
-Hal
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 4406a5def..246299a17 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -171,6 +171,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21CL"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21EF"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+-- 
+2.38.0.83.gd420dda057
+
