@@ -4,78 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4101FC77B7A
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 May 2023 23:40:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99EB9C77B7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 03:17:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DECF53E8;
-	Wed, 31 May 2023 01:39:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DECF53E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CF6B6C0;
+	Wed, 31 May 2023 05:16:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CF6B6C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685490038;
-	bh=wMbSULp1qXoUAUR+MhIroVMheFEsFiuS0aP/2wVWc5Q=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=MwwDiqe3RcdflnLdkcQNmkYrlQjIC81eUkvTB2FddyeYERc62NOUbwW32warIIfLe
-	 G5ndCxeqiOITeDinGSwZ76+f7bqq7IEh5CyDIJ6c+5lyoYikzkFt6Aek62sosKZ90y
-	 DMFCOQjbmAmb9AmmJsdvxA/lI31taqJALY7dJR1E=
+	s=default; t=1685503039;
+	bh=/VL76X1WW1uKCaAq0pPGpA4itNI1rlmGDz9p+rE4p1w=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=pCgXG1yETiNKHeqxGWKhToDrNd40FgzUrtOCeVBfdnJvBVYNGYF9j9ifL2Lq2yxYY
+	 qmDXTyYplH1AnKucz1lrEj5FpMlRyqhK1ZkXTEYp1u4yWTabmn2vmRYnzRWmRYaRg+
+	 sBD5lOiuJUglVN7s8vETgA9nQFj8GpaOjMPg24Mg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4A577F8026A; Wed, 31 May 2023 01:39:20 +0200 (CEST)
+	id BB625F80510; Wed, 31 May 2023 05:15:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D962EF8042F;
-	Wed, 31 May 2023 01:39:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D3A6F80528;
+	Wed, 31 May 2023 05:15:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 911CCF8042F; Wed, 31 May 2023 01:39:14 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:3::133])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 80BD5F8053D; Wed, 31 May 2023 05:15:49 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0F63DF800DF
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 01:39:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F63DF800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id EDE90F800DF
+	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 05:15:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDE90F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=infradead.org header.i=@infradead.org
- header.a=rsa-sha256 header.s=bombadil.20210309 header.b=fvcRwGGO
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=1Dw3EGfLZhFfy3+wVtWlL1NBwMICEGnt2pRJcPI4ppc=; b=fvcRwGGOaprOoxX4TJWrFse6e1
-	eoOnh5Rd2CCbsl8XoPZzPp99q95sd/oH8XyWBxgUoaZw3ca/YmpXf7A4NUCAsICkiVq9d8DWNElHw
-	hfGh5noP4xw7VhxbYtmPCZCjj58qK5PmbmS5Yn2EZoM3VUcFqYrA+gKrMMIby6G7m88gnAG3zIw+h
-	LyI/ybyTq2BuQM1VqaRDT6YXKE2oDGvtVjWZhmJzdbXkBha6mcRJm2V3P/zf9SYtT/vIWmbUcE6tF
-	ebHpJ+B+eGhOVyonYQBokmQZd/ABlFNyG2DlzrYTUTFR9FPOk1hCeaA2eldGt1RQOm9S8aycKQlel
-	6aIUMNog==;
-Received: from [2601:1c2:980:9ec0::2764]
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q48vX-00FUrv-08;
-	Tue, 30 May 2023 23:38:55 +0000
-Message-ID: <71922379-ee3d-9d6d-33dd-edcf8ef7508e@infradead.org>
-Date: Tue, 30 May 2023 16:38:54 -0700
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=YlPN2cbO
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1685502940; x=1717038940;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/VL76X1WW1uKCaAq0pPGpA4itNI1rlmGDz9p+rE4p1w=;
+  b=YlPN2cbO7BW+NK1h2bg+05KJhGqOYVqcAclQqBAADcd9+0tbKmJofcNh
+   CA8ZVcjH/KjblWqFqF64ybHHznqUPo/ZESMXlxD2Dptc1Q6c3zCc+a+Hy
+   8r99FnKejBNH36Xy4y3QD0fCJrYuns41U2rGLrgFssdgZvtLfH916ln5D
+   mRtoy8+d/7TjiNhw7o6/oX+r6qbA4FOjOxnhNgfBQy52jAN7YAshb/Au9
+   FNdT3zR1dM/bhODbMS/SQotgjd0PGeCD/5Y6edOFaO/rgTyhTbwzab6Hm
+   Jtf3WJqcDt2qfo5VrjSkDnVlG0vLAqmjI7WR96VOlCw8fFatm9rD3AbnP
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10726"; a="357507645"
+X-IronPort-AV: E=Sophos;i="6.00,205,1681196400";
+   d="scan'208";a="357507645"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 May 2023 20:15:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10726"; a="739769457"
+X-IronPort-AV: E=Sophos;i="6.00,205,1681196400";
+   d="scan'208";a="739769457"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 May 2023 20:15:32 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Cc: vinod.koul@linaro.org,
+	linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com,
+	bard.liao@intel.com
+Subject: [PATCH 0/4] soundwire: allow for more than 8 devices,
+ keep IDA for wake-capable devices
+Date: Wed, 31 May 2023 11:37:32 +0800
+Message-Id: <20230531033736.792464-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 RESEND] ASoC: fsl MPC52xx drivers require PPC_BESTCOMM
-Content-Language: en-US
-To: linux-kernel@vger.kernel.org
-Cc: Grant Likely <grant.likely@secretlab.ca>, Mark Brown
- <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-References: <20230521225702.1608-1-rdunlap@infradead.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230521225702.1608-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: XSR63NX4G36DKCOS7RUJDVJOQUYN5RUD
-X-Message-ID-Hash: XSR63NX4G36DKCOS7RUJDVJOQUYN5RUD
-X-MailFrom: rdunlap@infradead.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: PKBXWQRGOMZIP5IEKJUI2FGUYIVJPBUD
+X-Message-ID-Hash: PKBXWQRGOMZIP5IEKJUI2FGUYIVJPBUD
+X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XSR63NX4G36DKCOS7RUJDVJOQUYN5RUD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PKBXWQRGOMZIP5IEKJUI2FGUYIVJPBUD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,68 +100,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello maintainers,
+This series suggests a hybrid strategy for device number allocation, where
+only wake-capable devices use a system-unique Device Number which will be
+used on LunarLake to handle wake-ups using the HDaudio WAKEEN and WAKESTS.
 
-I am still seeing these build errors on linux-next-20230530.
+Pierre-Louis Bossart (4):
+  soundwire: add enum to control device number allocation
+  soundwire: introduce SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY
+  soundwire: extend parameters of new_peripheral_assigned() callback
+  soundwire: intel_auxdevice: use SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY
 
-Is there a problem with the patch?
-Thanks.
-
-On 5/21/23 15:57, Randy Dunlap wrote:
-> Both SND_MPC52xx_SOC_PCM030 and SND_MPC52xx_SOC_EFIKA select
-> SND_SOC_MPC5200_AC97. The latter symbol depends on PPC_BESTCOMM,
-> so the 2 former symbols should also depend on PPC_BESTCOMM since
-> "select" does not follow any dependency chains.
-> 
-> This prevents a kconfig warning and build errors:
-> 
-> WARNING: unmet direct dependencies detected for SND_SOC_MPC5200_AC97
->   Depends on [n]: SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_MPC52xx [=y] && PPC_BESTCOMM [=n]
->   Selected by [m]:
->   - SND_MPC52xx_SOC_PCM030 [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_MPC5200_SIMPLE [=y]
->   - SND_MPC52xx_SOC_EFIKA [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_EFIKA [=y]
-> 
-> ERROR: modpost: "mpc5200_audio_dma_destroy" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
-> ERROR: modpost: "mpc5200_audio_dma_create" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
-> 
-> Fixes: 40d9ec14e7e1 ("ASoC: remove BROKEN from Efika and pcm030 fabric drivers")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Grant Likely <grant.likely@secretlab.ca>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Shengjiu Wang <shengjiu.wang@gmail.com>
-> Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> ---
-> v2: use correct email address for Mark Brown.
-> 
->  sound/soc/fsl/Kconfig |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff -- a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-> --- a/sound/soc/fsl/Kconfig
-> +++ b/sound/soc/fsl/Kconfig
-> @@ -243,7 +243,7 @@ config SND_SOC_MPC5200_AC97
->  
->  config SND_MPC52xx_SOC_PCM030
->  	tristate "SoC AC97 Audio support for Phytec pcm030 and WM9712"
-> -	depends on PPC_MPC5200_SIMPLE
-> +	depends on PPC_MPC5200_SIMPLE && PPC_BESTCOMM
->  	select SND_SOC_MPC5200_AC97
->  	select SND_SOC_WM9712
->  	help
-> @@ -252,7 +252,7 @@ config SND_MPC52xx_SOC_PCM030
->  
->  config SND_MPC52xx_SOC_EFIKA
->  	tristate "SoC AC97 Audio support for bbplan Efika and STAC9766"
-> -	depends on PPC_EFIKA
-> +	depends on PPC_EFIKA && PPC_BESTCOMM
->  	select SND_SOC_MPC5200_AC97
->  	select SND_SOC_STAC9766
->  	help
+ drivers/soundwire/bus.c             | 28 ++++++++++++++++++++++------
+ drivers/soundwire/intel_auxdevice.c | 26 ++++++++++++++++++++++----
+ include/linux/soundwire/sdw.h       | 24 ++++++++++++++++++++++--
+ 3 files changed, 66 insertions(+), 12 deletions(-)
 
 -- 
-~Randy
+2.25.1
+
