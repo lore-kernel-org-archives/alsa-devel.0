@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F32D7C77B73
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 04:28:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAA64C77B7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 04:29:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A179D847;
-	Wed, 31 May 2023 06:27:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A179D847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 912C6825;
+	Wed, 31 May 2023 06:28:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 912C6825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685507323;
+	s=default; t=1685507341;
 	bh=qmRXYGD0mhseTNmINgzwmaol7nmCWZI9opBKvOnEGUs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=W+13OhC5nYKRnykuUYdd1zjXDWbXl1gwMt+sdr5NPOUVuMpxuQp3Gnij+qjscl2f7
-	 9WFg1FgK9OQp4R7DMjXL1FyTL3mOWaOhQTGMmQbgKuVO4C2QSE8OGfDnv6Nl/JZH/S
-	 GYk124Gu6jxEvMLvxauYXyw+CVI8aM9r5W9NL5IU=
+	b=Mq/cmmoBBK04wlJhQI03aPK5ANAivNB7kRG3Rs1dtJWyZHGMzE6MuSBY/+r64i3t+
+	 VjQ/QgJd24+9kXU4eN0Y/QO1sf6oIHaDiuCPtgAnVWkO7QDmLAHwfakoTD/x4rWjn+
+	 3T3752qNwnd8MIEnGJxZ8MuxX2bfDhF9ouz7xZmU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 84151F80580; Wed, 31 May 2023 06:26:56 +0200 (CEST)
+	id B9036F8058C; Wed, 31 May 2023 06:27:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32D23F80580;
-	Wed, 31 May 2023 06:26:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC760F8058C;
+	Wed, 31 May 2023 06:27:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5AD4F80548; Wed, 31 May 2023 06:26:39 +0200 (CEST)
+	id 51555F805A9; Wed, 31 May 2023 06:27:00 +0200 (CEST)
 Received: from muru.com (muru.com [72.249.23.125])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3D76F80149
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 06:26:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3D76F80149
+	by alsa1.perex.cz (Postfix) with ESMTP id 99C54F80579
+	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 06:26:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99C54F80579
 Received: from localhost (localhost [127.0.0.1])
-	by muru.com (Postfix) with ESMTPS id B8AD78167;
-	Wed, 31 May 2023 04:26:35 +0000 (UTC)
-Date: Wed, 31 May 2023 07:26:34 +0300
+	by muru.com (Postfix) with ESMTPS id 2A1808167;
+	Wed, 31 May 2023 04:26:51 +0000 (UTC)
+Date: Wed, 31 May 2023 07:26:49 +0300
 From: Tony Lindgren <tony@atomide.com>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: Vinod Koul <vkoul@kernel.org>,
@@ -58,16 +58,16 @@ Cc: Vinod Koul <vkoul@kernel.org>,
 	linux-spi@vger.kernel.org, timestamp@lists.linux.dev,
 	linux-watchdog@vger.kernel.org, Rob Herring <robh@kernel.org>,
 	Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: Re: [PATCH 6/7] dt-bindings: timestamp: restrict node name suffixes
-Message-ID: <20230531042634.GM14287@atomide.com>
+Subject: Re: [PATCH 7/7] dt-bindings: watchdog: restrict node name suffixes
+Message-ID: <20230531042649.GN14287@atomide.com>
 References: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
- <20230530144851.92059-7-krzysztof.kozlowski@linaro.org>
+ <20230530144851.92059-8-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230530144851.92059-7-krzysztof.kozlowski@linaro.org>
-Message-ID-Hash: PGZVEYUWSVTHIIDDZEEBN7HQNMQNS63X
-X-Message-ID-Hash: PGZVEYUWSVTHIIDDZEEBN7HQNMQNS63X
+In-Reply-To: <20230530144851.92059-8-krzysztof.kozlowski@linaro.org>
+Message-ID-Hash: HYICCV2RZLHPH2P5DWKDIGBWA7NVS6FW
+X-Message-ID-Hash: HYICCV2RZLHPH2P5DWKDIGBWA7NVS6FW
 X-MailFrom: tony@atomide.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -80,7 +80,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PGZVEYUWSVTHIIDDZEEBN7HQNMQNS63X/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HYICCV2RZLHPH2P5DWKDIGBWA7NVS6FW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
