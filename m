@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E0A6C7EE2A
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:06:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87C46C77B7E
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:07:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5EE55950;
-	Thu,  1 Jun 2023 18:05:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EE55950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A0A2AEA;
+	Thu,  1 Jun 2023 18:06:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A0A2AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685635609;
-	bh=da+HS8VFwZ9u+z3Fi6D8GmiJnxCibJGjMuer21VyJsA=;
+	s=default; t=1685635625;
+	bh=8nRoXaWFPu77bkgKjYBYyRvVKjsXJr8vMJcTsgsvIvc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QHRKaRdn+WzN0zUsNElKYCNvnnvrAXM40mpN+On7qMLkTy0jxIo+ri6cGh0pGXwlT
-	 TSuvsoqU4Vs5uc77poHYO2O11kb2JI3YC84P8T4gtVBZLM4scJ6vqsz4gVwrVoUQmb
-	 BoCoDw3N98HXJ1W03Vhw9Rw14/RkSOM//vXfnb8I=
+	b=THE4ROcr50SAOmJQS3Od1KGoisx8fChunBMVilRPUBBrwipX7IscdPVPaLP7EbsIJ
+	 eja0Qx4A9+hiZQxM/kvo9YCfLnynNemgBq+zKDJmZd3XtFAYYJJiuI0RfKxLsIKoUB
+	 qP1tK7VI5T6W7mO279oVVx8xRFSBHgig1+0N0LTM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF053F805FC; Thu,  1 Jun 2023 18:02:58 +0200 (CEST)
+	id 10BF0F805FF; Thu,  1 Jun 2023 18:03:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31735F805F4;
-	Thu,  1 Jun 2023 18:02:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B4C2F80606;
+	Thu,  1 Jun 2023 18:03:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9463CF804FC; Wed, 31 May 2023 05:21:52 +0200 (CEST)
+	id 0E9FDF804FC; Wed, 31 May 2023 05:21:53 +0200 (CEST)
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by alsa1.perex.cz (Postfix) with ESMTP id EEE7FF8042F
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 05:21:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEE7FF8042F
+	by alsa1.perex.cz (Postfix) with ESMTP id ADB62F80510
+	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 05:21:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADB62F80510
 Received: from loongson.cn (unknown [223.106.25.146])
-	by gateway (Coremail) with SMTP id _____8CxjOtFvXZk09MCAA--.3134S3;
-	Wed, 31 May 2023 11:21:41 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8Axm+pGvXZk3dMCAA--.1895S3;
+	Wed, 31 May 2023 11:21:42 +0800 (CST)
 Received: from localhost.localdomain (unknown [223.106.25.146])
 	by localhost.localdomain (Coremail) with SMTP id
- AQAAf8Cx77M_vXZkqrWBAA--.14943S4;
-	Wed, 31 May 2023 11:21:40 +0800 (CST)
+ AQAAf8Cx77M_vXZkqrWBAA--.14943S6;
+	Wed, 31 May 2023 11:21:42 +0800 (CST)
 From: Yanteng Si <siyanteng@loongson.cn>
 To: tiwai@suse.com
 Cc: Yanteng Si <siyanteng@loongson.cn>,
@@ -48,49 +48,49 @@ Cc: Yanteng Si <siyanteng@loongson.cn>,
 	loongarch@lists.linux.dev,
 	loongson-kernel@lists.loongnix.cn,
 	Yingkun Meng <mengyingkun@loongson.cn>
-Subject: [PATCH 2/4] ALSA: hda: Using polling mode for loongson controller by
- default
-Date: Wed, 31 May 2023 11:21:32 +0800
+Subject: [PATCH 4/4] ALSA: hda/intel: Workaround for WALLCLK register for
+ loongson controller
+Date: Wed, 31 May 2023 11:21:34 +0800
 Message-Id: 
- <ad85194e2da2118ff49f127ffd74727e298a3ea5.1685501806.git.siyanteng@loongson.cn>
+ <608f104f2ad373d60b39f876793c63f265dda8dc.1685501806.git.siyanteng@loongson.cn>
 X-Mailer: git-send-email 2.31.4
 In-Reply-To: <cover.1685501806.git.siyanteng@loongson.cn>
 References: <cover.1685501806.git.siyanteng@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Cx77M_vXZkqrWBAA--.14943S4
+X-CM-TRANSID: AQAAf8Cx77M_vXZkqrWBAA--.14943S6
 X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
-X-Coremail-Antispam: 1Uk129KBjvJXoW7ArWkuF15ur45GryfKw4fAFb_yoW8ArWDpF
-	15u348KF4xtw1Yvr4qgFWUKr13ta97JF12krWI934DAw1I9343X34vyr10yFW0yrZ2gr43
-	Z397t34xJay5ZaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-	qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-	b28YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
-	1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-	wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-	x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1l
-	e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4xG64xvF2
-	IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v26r4j6F4U
-	McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2
-	IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-	6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-	AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-	s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-	0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j8CztUUUUU=
+X-Coremail-Antispam: 1Uk129KBjvdXoWruFy8ury7XFWxAw17ZFW5Jrb_yoWfAFgEgr
+	sFvrykWa45Jrs3Kr1furnrXr45ta4kAFWxWrs7tr47Ja93KFWFq34kurnxCFyxuw18XFn0
+	krnFqr1F9r1rKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8wcxFpf9Il3svdxBIdaVrn0
+	xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY
+	87kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3w
+	AFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK
+	6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7
+	xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS
+	0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc02F40EFcxC0V
+	AKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1l
+	Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s
+	026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+	JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+	v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
+	j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
+	W8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU84xRDUUUUU==
 X-MailFrom: siyanteng@loongson.cn
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: TU4UWKRJF7LVSL2C3MDGQ4VU3URBYERA
-X-Message-ID-Hash: TU4UWKRJF7LVSL2C3MDGQ4VU3URBYERA
+Message-ID-Hash: WAOKKF7IVYRM6XDASJ2SOMDARAXOOFBD
+X-Message-ID-Hash: WAOKKF7IVYRM6XDASJ2SOMDARAXOOFBD
 X-Mailman-Approved-At: Thu, 01 Jun 2023 16:02:27 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TU4UWKRJF7LVSL2C3MDGQ4VU3URBYERA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WAOKKF7IVYRM6XDASJ2SOMDARAXOOFBD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,49 +99,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On loongson controller, RIRBSTS.RINTFL cannot be cleared,
-azx_interrupt() is called all the time. We disable RIRB
-interrupt, and use polling mode by default.
+On loongson controller, the value of WALLCLK register
+is always 0, which is meaningless, so we return directly.
 
 Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
 Signed-off-by: Yingkun Meng <mengyingkun@loongson.cn>
 ---
- sound/hda/hdac_controller.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_intel.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 3c7af6558249..dbaa19cb8162 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -10,6 +10,7 @@
- #include <sound/hdaudio.h>
- #include <sound/hda_register.h>
- #include "local.h"
-+#include "../pci/hda/hda_controller.h"
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index f28806b3e308..6df9ec999e88 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -655,6 +655,9 @@ static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
+ 	unsigned int pos;
+ 	snd_pcm_uframes_t hwptr, target;
  
- /* clear CORB read pointer properly */
- static void azx_clear_corbrp(struct hdac_bus *bus)
-@@ -42,6 +43,8 @@ static void azx_clear_corbrp(struct hdac_bus *bus)
-  */
- void snd_hdac_bus_init_cmd_io(struct hdac_bus *bus)
- {
-+	struct azx *chip = bus_to_azx(bus);
-+
- 	WARN_ON_ONCE(!bus->rb.area);
- 
- 	spin_lock_irq(&bus->reg_lock);
-@@ -79,7 +82,10 @@ void snd_hdac_bus_init_cmd_io(struct hdac_bus *bus)
- 	/* set N=1, get RIRB response interrupt for new entry */
- 	snd_hdac_chip_writew(bus, RINTCNT, 1);
- 	/* enable rirb dma and response irq */
--	snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN | AZX_RBCTL_IRQ_EN);
 +	if (chip->driver_caps & AZX_DCAPS_LOONGSON_WORKAROUND)
-+		snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN);
-+	else
-+		snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN | AZX_RBCTL_IRQ_EN);
- 	/* Accept unsolicited responses */
- 	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, AZX_GCTL_UNSOL);
- 	spin_unlock_irq(&bus->reg_lock);
++		return 1;
++
+ 	wallclk = azx_readl(chip, WALLCLK) - azx_dev->core.start_wallclk;
+ 	if (wallclk < (azx_dev->core.period_wallclk * 2) / 3)
+ 		return -1;	/* bogus (too early) interrupt */
 -- 
 2.31.4
 
