@@ -4,90 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D0F2C77B7A
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 13:44:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9EFFC77B7A
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 13:45:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47C9186F;
-	Wed, 31 May 2023 15:43:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47C9186F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3DF3822;
+	Wed, 31 May 2023 15:44:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3DF3822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685540687;
-	bh=WMsEmoBN7Jqx8OgNmYtXkh6lIUqdZCMyiuLG4MgDS5k=;
+	s=default; t=1685540708;
+	bh=3oHX6kZ+MMX2KYiMsfklMP9Awa185FLNHSRbAuPbN4A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nHJukE8KWC7FHYWdyyYZQpeYgwrpxKvKfr9vCp8YTID04QTaQAOxemPVAUAMmpXmV
-	 l2xHi+ma3XRK5xy9pedxQ5RQEiU9Ua8604Lsp1t6Z5EbfdStLGLcB7kXMoDbI9ea08
-	 EbySWtoFtkEGaRmb6ADwNX38x9jmV88OTUXbvMmA=
+	b=Zz006Viyth/0myH0tAPoFeItjGJI5QrWeYuxfHLzBED6gvtLv+KjbPcGVGDxQCsYG
+	 DdJ7xqNfVDhk4s9usT/VzHo7eX1jB2/hUDNWO+3spSzMyF6jbYAg5HBxPTv4NGpm0v
+	 ujyt9tBbdZdob5mzC1tTYU2W0favE1gVCluTqWD4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32F87F8057F; Wed, 31 May 2023 15:42:47 +0200 (CEST)
+	id C716BF805B2; Wed, 31 May 2023 15:43:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A93ECF8055B;
-	Wed, 31 May 2023 15:42:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35110F80542;
+	Wed, 31 May 2023 15:43:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74870F805C0; Wed, 31 May 2023 15:42:43 +0200 (CEST)
+	id 8DA3BF80580; Wed, 31 May 2023 15:43:13 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B1FABF8057F
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 15:42:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1FABF8057F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6EC3EF80563
+	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 15:43:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EC3EF80563
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=AJORz37N
+ header.s=k20201202 header.b=LgTInfvm
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 7326A63B65;
-	Wed, 31 May 2023 13:42:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 925CFC4339B;
-	Wed, 31 May 2023 13:42:38 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 403C763B00;
+	Wed, 31 May 2023 13:43:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BCADC433A1;
+	Wed, 31 May 2023 13:43:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685540560;
-	bh=WMsEmoBN7Jqx8OgNmYtXkh6lIUqdZCMyiuLG4MgDS5k=;
+	s=k20201202; t=1685540581;
+	bh=3oHX6kZ+MMX2KYiMsfklMP9Awa185FLNHSRbAuPbN4A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AJORz37Nh92xc7++EWH9T5lpR3ezkzNmJ92yd6MIwGU6iiWOM7R4QFHUcMXzuydXU
-	 Ei4abGA6Vo/qxPzjFv5sNzlgng2jPHJmbbNcgcWhPcvA7lu+FIzxMvmcXIooqdixPL
-	 b2lj5kiMJKhs86pEO98CfzpamAEczynx3Lo3TfalBlV9Ebfz52FtKjbE0lOM5qjWT/
-	 XzhRYyyeo4FAcfcBcC+0onOYakKm/t+SOmIqRBT/Be91jlfXZWdUIIeN3Y9BxIoaGe
-	 CpFhEUYvajr8I1JSYuMJ7YuoXLY6IUDWO3n3iJ3MUSHqNsOAArDPmOAaxpEa6pY/zS
-	 vpl1g8GcsIfSg==
+	b=LgTInfvmTgzgDvuCv0IAuH4Z4MxfcR7T7aNxVqr1y9owaQlY/42D+qtwgSABV/slX
+	 ozz9CrTDU3mDo3ZE73/CCUK3aQZbIPWg8AvwftKZqUtR8nzHOaHmKzElAA+CKXcP2m
+	 9IyFOrTfGwt8lmUIQPp7f0tdzlkq8qIvb20PAAX8165aoFxumDjVxpfwBWlMffkU+s
+	 fxEKlB3pxXzmFpHkN8oARknvo/B/wESJO0QrNR653xect3nErKR2ssfpSi1p7pZQtn
+	 GMFIfXaTEUknp7+P0rHX8+NUC/mIAdg5VDHDNYFjwhX5ag2behNBoQczBHjkkKdQ9L
+	 gcwU3voMRoV8Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
-	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
+Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	james.schulman@cirrus.com,
+	david.rhodes@cirrus.com,
+	rf@opensource.cirrus.com,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	pierre-louis.bossart@linux.intel.com,
-	peter.ujfalusi@linux.intel.com,
-	yung-chuan.liao@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	ahplka19@gmail.com,
-	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 20/33] ASoC: Intel: avs: Account for UID of ACPI
- device
-Date: Wed, 31 May 2023 09:41:46 -0400
-Message-Id: <20230531134159.3383703-20-sashal@kernel.org>
+	alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com
+Subject: [PATCH AUTOSEL 6.1 28/33] ASoC: cs35l41: Fix default regmap values
+ for some registers
+Date: Wed, 31 May 2023 09:41:54 -0400
+Message-Id: <20230531134159.3383703-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531134159.3383703-1-sashal@kernel.org>
 References: <20230531134159.3383703-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: X7P7X5HH5GNKBNS3LKQX6CQVQOZPDTZI
-X-Message-ID-Hash: X7P7X5HH5GNKBNS3LKQX6CQVQOZPDTZI
+Message-ID-Hash: MQYZ3MUMTWV2U6L463BEY4WCH6BEBL6J
+X-Message-ID-Hash: MQYZ3MUMTWV2U6L463BEY4WCH6BEBL6J
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X7P7X5HH5GNKBNS3LKQX6CQVQOZPDTZI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MQYZ3MUMTWV2U6L463BEY4WCH6BEBL6J/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,51 +104,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-[ Upstream commit 836855100b87b4dd7a82546131779dc255c18b67 ]
+[ Upstream commit e2d035f5a7d597bbabc268e236ec6c0408c4af0e ]
 
-Configurations with multiple codecs attached to the platform are
-supported but only if each from the set is different. Add new field
-representing the 'Unique ID' so that codecs that share Vendor and Part
-IDs can be differentiated and thus enabling support for such
-configurations.
+Several values do not match the defaults of CS35L41, fix them.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Link: https://lore.kernel.org/r/20230519201711.4073845-6-amadeuszx.slawinski@linux.intel.com
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20230414152552.574502-4-sbinding@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/soc-acpi.h              | 1 +
- sound/soc/intel/avs/board_selection.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs35l41-lib.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index b38fd25c57295..528279056b3ab 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -170,6 +170,7 @@ struct snd_soc_acpi_link_adr {
- /* Descriptor for SST ASoC machine driver */
- struct snd_soc_acpi_mach {
- 	u8 id[ACPI_ID_LEN];
-+	const char *uid;
- 	const struct snd_soc_acpi_codecs *comp_ids;
- 	const u32 link_mask;
- 	const struct snd_soc_acpi_link_adr *links;
-diff --git a/sound/soc/intel/avs/board_selection.c b/sound/soc/intel/avs/board_selection.c
-index 87f9c18be238d..87353b4b0cd73 100644
---- a/sound/soc/intel/avs/board_selection.c
-+++ b/sound/soc/intel/avs/board_selection.c
-@@ -394,7 +394,7 @@ static int avs_register_i2s_boards(struct avs_dev *adev)
- 	}
- 
- 	for (mach = boards->machs; mach->id[0]; mach++) {
--		if (!acpi_dev_present(mach->id, NULL, -1))
-+		if (!acpi_dev_present(mach->id, mach->uid, -1))
- 			continue;
- 
- 		if (mach->machine_quirk)
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index 04be71435491e..c2c56e5608094 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -46,7 +46,7 @@ static const struct reg_default cs35l41_reg[] = {
+ 	{ CS35L41_DSP1_RX5_SRC,			0x00000020 },
+ 	{ CS35L41_DSP1_RX6_SRC,			0x00000021 },
+ 	{ CS35L41_DSP1_RX7_SRC,			0x0000003A },
+-	{ CS35L41_DSP1_RX8_SRC,			0x00000001 },
++	{ CS35L41_DSP1_RX8_SRC,			0x0000003B },
+ 	{ CS35L41_NGATE1_SRC,			0x00000008 },
+ 	{ CS35L41_NGATE2_SRC,			0x00000009 },
+ 	{ CS35L41_AMP_DIG_VOL_CTRL,		0x00008000 },
+@@ -58,8 +58,8 @@ static const struct reg_default cs35l41_reg[] = {
+ 	{ CS35L41_IRQ1_MASK2,			0xFFFFFFFF },
+ 	{ CS35L41_IRQ1_MASK3,			0xFFFF87FF },
+ 	{ CS35L41_IRQ1_MASK4,			0xFEFFFFFF },
+-	{ CS35L41_GPIO1_CTRL1,			0xE1000001 },
+-	{ CS35L41_GPIO2_CTRL1,			0xE1000001 },
++	{ CS35L41_GPIO1_CTRL1,			0x81000001 },
++	{ CS35L41_GPIO2_CTRL1,			0x81000001 },
+ 	{ CS35L41_MIXER_NGATE_CFG,		0x00000000 },
+ 	{ CS35L41_MIXER_NGATE_CH1_CFG,		0x00000303 },
+ 	{ CS35L41_MIXER_NGATE_CH2_CFG,		0x00000303 },
 -- 
 2.39.2
 
