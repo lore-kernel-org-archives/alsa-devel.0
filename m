@@ -4,88 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5539AC77B7A
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 17:04:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55360C77B7A
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 23:49:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41C636C0;
-	Wed, 31 May 2023 19:03:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41C636C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A1DE3E8;
+	Thu,  1 Jun 2023 01:48:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A1DE3E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685552649;
-	bh=eTMkJZ2jFX+MQ1BzohM+ybX4v9ni1yWEsK5XkEuKV28=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qx6CYBf+BJqQwmJnSrTdpcLW2se/sRpn/pTUMIgcsu4sU7MTiAnVzWIz5niBP7o5y
-	 YdMhfNOSTIZXTw5JA3/BkQA8DJ7tfCgXHsIG+RKPlPMiTpFRpbuMZ4g5aDIZewVB65
-	 VCTGH7JXtZSn5jYiDJBNsTBIt+qYjfoP9MKv0XfA=
+	s=default; t=1685576986;
+	bh=zJnYNHg0UBsGBGhBv4w3bQNd1d66q5ErMdkp6yaxMbE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=cGXXsiAz1EeDf9wLJLi2IdeuyaTbTJJBLB7zB3R8w7ef/BwUxgISDlgqmjNK566dJ
+	 3RnGVGQ2cPF3QL/KLLyQx+7RpDwBx+5vDRvwcuAhjGSgH7LFFMZejF2Uu0kVSBbTrT
+	 n9/4cCYUovEwdwGonVFLyAHQgYzMoZppNhmnC96c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 697B1F80548; Wed, 31 May 2023 19:02:45 +0200 (CEST)
+	id 647B1F80132; Thu,  1 Jun 2023 01:48:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06719F8042F;
-	Wed, 31 May 2023 19:02:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3F53F80149;
+	Thu,  1 Jun 2023 01:48:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45F4EF8042F; Wed, 31 May 2023 19:02:40 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 64B86F8016B; Thu,  1 Jun 2023 01:48:22 +0200 (CEST)
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com
+ [IPv6:2607:f8b0:4864:20::136])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 54564F800DF
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 19:02:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54564F800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id B99E6F800C8
+	for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2023 01:48:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B99E6F800C8
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=UP0ZGQZ9
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 34VGt5lG014447;
-	Wed, 31 May 2023 12:02:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=Q+bH1la1wWK9pGjCcwcHQ8LiJYhGaZp0HJpX1acTJyE=;
- b=UP0ZGQZ9fbFajE9OwZD4yhv2nHQUyRYunLvdXtjhUxQDzIfyY8ZAF+2hq6mT8XPrTNH/
- HWNi7xIEEPVK26/Dk/fKgVKTvluBe3Vz/n1sjFnfp4BfZespNfp+3qXnTfLXv+lCYtTv
- M3V8zaIAKcpiP/pdsgnb7aVDnm5KekrqLlwKqVBH1wdoemsfcTo3OmJDsLBvH3vhzlLP
- XWku8Jsxs9gGC+nfOPWceXZvAvJtL3ZVQWu9S46vK3eaDtfyRxo6elzWwNgh1+Q+l55+
- 7t7l4y1mHgxk2DZWJvt0z8libeG0NyoIY+63tWg6QDf6ZGGlnj/JDew8YCSEwzB6KpJs jA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3quf90vquq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 31 May 2023 12:02:00 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Wed, 31 May
- 2023 18:01:58 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 31 May 2023 18:01:58 +0100
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
- [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A9EEB45;
-	Wed, 31 May 2023 17:01:58 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH] firmware: cs_dsp: Log that a bin file was loaded
-Date: Wed, 31 May 2023 18:01:58 +0100
-Message-ID: <20230531170158.2744700-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+	dkim=pass (1024-bit key,
+ unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
+ header.s=google header.b=K9vtiLja
+Received: by mail-il1-x136.google.com with SMTP id
+ e9e14a558f8ab-33b0cae115bso772335ab.3
+        for <alsa-devel@alsa-project.org>;
+ Wed, 31 May 2023 16:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1685576890; x=1688168890;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ssi9hji3ougqZcnJfZaYXLr+1zSSxDjh3rVcPrdEtNo=;
+        b=K9vtiLjauLAheH/706FVQchuFhyZnP5Lrpl3x/r/LZcYoWfDbldHhY6Pg0wiMMk34L
+         FiVrxU1jrZsvA7ha/w7YHVnx6HTokPSvdzsfrMud0L8sX1SK/5Hp03BJU/trjdNGhSop
+         PVg4MEQrq4sWRneZnpmf1yFpKHEHWQg7aCf8g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685576890; x=1688168890;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ssi9hji3ougqZcnJfZaYXLr+1zSSxDjh3rVcPrdEtNo=;
+        b=RS82IrmQPiWtWdqG+LkBDJ30OgqdXlGuN8s2CY36d68dFerfH2IjQLMZVSZt/D/CbS
+         wZ5pOrfKemHbuf1eb6/hLbEUkzEIxTY++U6Le7E61XfyFhMoY6i5JMXM3edsnfsLUcUe
+         6qlEE7lxgLRyKc7RkaDVdjbIBtO7DBsmrg21EKVEzPomnFAWMuscn1aIADT6QLCiYPmA
+         kqeCETDQL7zjTNkog+iL3nK1NWi/eyBjhbZtMUNhx9BM4ObVHkglBHIKqBE6KIF7mUN4
+         kx+XCcZkOqZbDpd5Xewd+o8SNYC7T0x899crGpWuxZysJFNZJAcSenrFuwKACssFHZdT
+         FE/g==
+X-Gm-Message-State: AC+VfDxJ8s8xKQyfK/lMhXLDJp2omJbGzs1Wz4tR+KH1OP1Eku+7ueUM
+	VlfeLYNoTNJkH1qaAQe3T5bQRpOIRoKwtx401qo=
+X-Google-Smtp-Source: 
+ ACHHUZ5l6bDJ8U+Z6Tmus2ASo+rC5lrdMQE7c+djoMWnCcoZCCdZ5BoJ1l4E2p6TBOpYXToj5Ti+sQ==
+X-Received: by 2002:a92:d4c7:0:b0:33c:68aa:7c3b with SMTP id
+ o7-20020a92d4c7000000b0033c68aa7c3bmr2388105ilm.25.1685576889738;
+        Wed, 31 May 2023 16:48:09 -0700 (PDT)
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com.
+ [209.85.166.181])
+        by smtp.gmail.com with ESMTPSA id
+ f6-20020a056e0204c600b0033bc3a3ea39sm1227538ils.70.2023.05.31.16.48.08
+        for <alsa-devel@alsa-project.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 May 2023 16:48:08 -0700 (PDT)
+Received: by mail-il1-f181.google.com with SMTP id
+ e9e14a558f8ab-33b7f217dd0so61695ab.0
+        for <alsa-devel@alsa-project.org>;
+ Wed, 31 May 2023 16:48:08 -0700 (PDT)
+X-Received: by 2002:a05:6e02:1786:b0:33b:3bf4:9f42 with SMTP id
+ y6-20020a056e02178600b0033b3bf49f42mr32601ilu.19.1685576888336; Wed, 31 May
+ 2023 16:48:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 0qvnEfe6ssnlN3bUqX0tHfH3rHOW3NDt
-X-Proofpoint-ORIG-GUID: 0qvnEfe6ssnlN3bUqX0tHfH3rHOW3NDt
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: R76ITUV3B7QJLQQ33GNNTDYTHREKKFHF
-X-Message-ID-Hash: R76ITUV3B7QJLQQ33GNNTDYTHREKKFHF
-X-MailFrom: prvs=15158edab9=rf@opensource.cirrus.com
+References: <20230530072514.22001-1-trevor.wu@mediatek.com>
+ <20230530072514.22001-2-trevor.wu@mediatek.com>
+In-Reply-To: <20230530072514.22001-2-trevor.wu@mediatek.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Wed, 31 May 2023 16:47:56 -0700
+X-Gmail-Original-Message-ID: 
+ <CAD=FV=X1JURLwZHraNwSMT7vwLNRNw7h0MmpbeWnr1yht6-3VA@mail.gmail.com>
+Message-ID: 
+ <CAD=FV=X1JURLwZHraNwSMT7vwLNRNw7h0MmpbeWnr1yht6-3VA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: mediatek: mt8188: fix use-after-free in driver
+ remove path
+To: Trevor Wu <trevor.wu@mediatek.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz,
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+	alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: FP76BGYB7SAQZHP6DHRQZELA23E6P4FT
+X-Message-ID-Hash: FP76BGYB7SAQZHP6DHRQZELA23E6P4FT
+X-MailFrom: dianders@chromium.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R76ITUV3B7QJLQQ33GNNTDYTHREKKFHF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FP76BGYB7SAQZHP6DHRQZELA23E6P4FT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,35 +129,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Change the message at the start of bin file loading from
-cs_dsp_dbg() to cs_dsp_info() so that there is confirmation
-in the kernel log that a bin file was loaded, and the name
-of the file.
+Hi,
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- drivers/firmware/cirrus/cs_dsp.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On Tue, May 30, 2023 at 12:25=E2=80=AFAM Trevor Wu <trevor.wu@mediatek.com>=
+ wrote:
+>
+> diff --git a/sound/soc/mediatek/mt8188/mt8188-audsys-clk.c b/sound/soc/me=
+diatek/mt8188/mt8188-audsys-clk.c
+> index be1c53bf4729..05d6f9d78e10 100644
+> --- a/sound/soc/mediatek/mt8188/mt8188-audsys-clk.c
+> +++ b/sound/soc/mediatek/mt8188/mt8188-audsys-clk.c
+> @@ -138,6 +138,29 @@ static const struct afe_gate aud_clks[CLK_AUD_NR_CLK=
+] =3D {
+>         GATE_AUD6(CLK_AUD_GASRC11, "aud_gasrc11", "top_asm_h", 11),
+>  };
+>
+> +static void mt8188_audsys_clk_unregister(void *data)
+> +{
+> +       struct mtk_base_afe *afe =3D (struct mtk_base_afe *)data;
 
-diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-index e4ccfb6a8fa5..d7e46a57ecf9 100644
---- a/drivers/firmware/cirrus/cs_dsp.c
-+++ b/drivers/firmware/cirrus/cs_dsp.c
-@@ -2059,10 +2059,10 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
- 		goto out_fw;
- 	}
- 
--	cs_dsp_dbg(dsp, "%s: v%d.%d.%d\n", file,
--		   (le32_to_cpu(hdr->ver) >> 16) & 0xff,
--		   (le32_to_cpu(hdr->ver) >>  8) & 0xff,
--		   le32_to_cpu(hdr->ver) & 0xff);
-+	cs_dsp_info(dsp, "%s: v%d.%d.%d\n", file,
-+		    (le32_to_cpu(hdr->ver) >> 16) & 0xff,
-+		    (le32_to_cpu(hdr->ver) >>  8) & 0xff,
-+		    le32_to_cpu(hdr->ver) & 0xff);
- 
- 	pos = le32_to_cpu(hdr->len);
- 
--- 
-2.30.2
+The above cast is unnecessary since the compiler lets you assign from
+a "void *" to another pointer without a cast. Unnecessary casts are
+considered harmful because they suspend the compiler's ability to do
+type checking. Other than that, this looks good. Sorry for not
+noticing that the same problem affected more than just the driver I
+fixed previously.
 
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
