@@ -4,85 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B45DC77B73
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 03:18:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1228AC77B7C
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 04:27:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63056206;
-	Wed, 31 May 2023 05:17:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63056206
+	by alsa0.perex.cz (Postfix) with ESMTPS id F15E53E8;
+	Wed, 31 May 2023 06:26:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F15E53E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685503111;
-	bh=ZpdxB1tn4u4OhUdxszyZlKy/CjHo5nh+Kt7t5DnOqAw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1685507245;
+	bh=2Cy++RRLrd9coFA3wjSdCTqgevD05wP9G5fbCcNwuec=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=oU8wzAnnXvLM92cAsM/QCZ/5BV6Yh9rxplck+fYm/HTxAsXiV40482KrM4QTKW23e
-	 VIaM1VIYmJ/64wu+812LOEzTOxTDrVQvFTOzG5c3u22rA0XsvW6lIms017GiBiVnH7
-	 PgY6JasVLu6CK/sIdLx1YER9TTkeVYNW2n7EyBVY=
+	b=KBDHi2/YTtgrNyYdJ0deJ3zcZpOYJKNZ1I08Gybch/OpMKp424PbEbwpPvIGK41r3
+	 FyYxPrK9zMU90mupspRLND69hWG8tQfgVprqd/w6K9cY/XikJWR2T4g5YpXpQtUb/f
+	 Ux3wgohka3dJR+CsGpAlGbct86vf8K9eKXEvjooU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 156BDF8042F; Wed, 31 May 2023 05:17:39 +0200 (CEST)
+	id 7C9A1F8026A; Wed, 31 May 2023 06:26:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88A98F804FC;
-	Wed, 31 May 2023 05:17:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1510F8042F;
+	Wed, 31 May 2023 06:26:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2311FF800DF; Wed, 31 May 2023 05:17:35 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0056AF804FC
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 05:15:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0056AF804FC
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=EzUtO3cO
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685502945; x=1717038945;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZpdxB1tn4u4OhUdxszyZlKy/CjHo5nh+Kt7t5DnOqAw=;
-  b=EzUtO3cO/PTpOEEpNFJtt8ZjQZfpuWGxmS9YYKH0jDLbA1Xx+hvZs/oW
-   EQ3VFKUXY2RGJzxsBnT/7627pWLBEQl1LIvwLwTmvGCapdvZy1K/AHQHW
-   7Ohjd74TM42YChWOwYdSXeP/j0k4dOstoFCFsLAcVEaJPDDhfxxNvICnD
-   HFUXpNp3TRaLmok6gWN8a9l4YVRX/dmKSOAI2N6CwboqLN9kJIdEI7/7C
-   J2PYktr4gbBaS5zwiHiVvRzi/mc56tYp7WfpuABE1U4xe3HbahSiPfbcn
-   /55hM4hqg9yGDo5G5CeCuAK6Aj+ovGubjO1d7m0o3XD2pFm4TIfqJPu9j
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10726"; a="357507684"
-X-IronPort-AV: E=Sophos;i="6.00,205,1681196400";
-   d="scan'208";a="357507684"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 May 2023 20:15:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10726"; a="739769540"
-X-IronPort-AV: E=Sophos;i="6.00,205,1681196400";
-   d="scan'208";a="739769540"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 May 2023 20:15:40 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Cc: vinod.koul@linaro.org,
-	linux-kernel@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	bard.liao@intel.com
-Subject: [PATCH 4/4] soundwire: intel_auxdevice: use
- SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY
-Date: Wed, 31 May 2023 11:37:36 +0800
-Message-Id: <20230531033736.792464-5-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230531033736.792464-1-yung-chuan.liao@linux.intel.com>
-References: <20230531033736.792464-1-yung-chuan.liao@linux.intel.com>
+	id 5B6DCF8042F; Wed, 31 May 2023 06:25:43 +0200 (CEST)
+Received: from muru.com (muru.com [72.249.23.125])
+	by alsa1.perex.cz (Postfix) with ESMTP id 16251F80149
+	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 06:25:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16251F80149
+Received: from localhost (localhost [127.0.0.1])
+	by muru.com (Postfix) with ESMTPS id F19638164;
+	Wed, 31 May 2023 04:25:33 +0000 (UTC)
+Date: Wed, 31 May 2023 07:25:32 +0300
+From: Tony Lindgren <tony@atomide.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Mark Brown <broonie@kernel.org>, Dipen Patel <dipenp@nvidia.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Dilip Kota <eswara.kota@linux.intel.com>,
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+	linux-rtc@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-spi@vger.kernel.org, timestamp@lists.linux.dev,
+	linux-watchdog@vger.kernel.org, Rob Herring <robh@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>
+Subject: Re: [PATCH 2/7] dt-bindings: pwm: restrict node name suffixes
+Message-ID: <20230531042532.GI14287@atomide.com>
+References: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
+ <20230530144851.92059-3-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YS5GAL3T2ADQ2KUGAAP5TWXKTYC7VH32
-X-Message-ID-Hash: YS5GAL3T2ADQ2KUGAAP5TWXKTYC7VH32
-X-MailFrom: yung-chuan.liao@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230530144851.92059-3-krzysztof.kozlowski@linaro.org>
+Message-ID-Hash: DUQIEINZTVNM4YOPFNOXJA57LQ6V25T7
+X-Message-ID-Hash: DUQIEINZTVNM4YOPFNOXJA57LQ6V25T7
+X-MailFrom: tony@atomide.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -94,7 +80,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YS5GAL3T2ADQ2KUGAAP5TWXKTYC7VH32/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DUQIEINZTVNM4YOPFNOXJA57LQ6V25T7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,87 +89,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+* Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> [230530 14:49]:
+> Make the pattern matching node names a bit stricter to improve DTS
+> consistency.  The pattern is restricted to:
+> 1. Only one unit address or one -N suffix,
+> 2. -N suffixes to decimal numbers.
+> 
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Change the allocation strategy on Intel platforms to use Device Numbers
-
-[1..5]: unconstrained allocation with bus-specific Device Numbers,
-typically for amplifiers.
-
-[6..11]: IDA-based system-unique Device Number to be used for
-wake-capable devices such as jack codecs or microphone codecs.
-
-These values were chosen based on the typical maximum number of
-devices per link given electrical/PHY limitations. This configuration
-will e.g. allow for 8 amplifiers on 2 links, and additional devices on
-the remaining links.
-
-Example on Dell SDCA device with jack codec, two amplifiers and one
-microphone codec: only the jack codec relies on the IDA, others use
-the same Device Number 1 on separate links.
-
-rt711-sdca sdw:0:025d:0711:01: signaling enumeration completion for Slave 6
-rt1316-sdca sdw:1:025d:1316:01: signaling enumeration completion for Slave 1
-rt1316-sdca sdw:2:025d:1316:01: signaling enumeration completion for Slave 1
-rt715-sdca sdw:3:025d:0714:01: signaling enumeration completion for Slave 1
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel_auxdevice.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/soundwire/intel_auxdevice.c b/drivers/soundwire/intel_auxdevice.c
-index c1df6f014e6b..917edc75ddfb 100644
---- a/drivers/soundwire/intel_auxdevice.c
-+++ b/drivers/soundwire/intel_auxdevice.c
-@@ -23,8 +23,12 @@
- #include "intel.h"
- #include "intel_auxdevice.h"
- 
--/* IDA min selected to avoid conflicts with HDaudio/iDISP SDI values */
--#define INTEL_DEV_NUM_IDA_MIN           4
-+/*
-+ * IDA min selected to allow for 5 unconstrained devices per link,
-+ * and 6 system-unique Device Numbers for wake-capable devices.
-+ */
-+
-+#define INTEL_DEV_NUM_IDA_MIN           6
- 
- #define INTEL_MASTER_SUSPEND_DELAY_MS	3000
- 
-@@ -66,9 +70,20 @@ static void generic_new_peripheral_assigned(struct sdw_bus *bus,
- {
- 	struct sdw_cdns *cdns = bus_to_cdns(bus);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+	int min_dev = 1;
-+	int max_dev = SDW_MAX_DEVICES;
-+
-+	if (bus->dev_num_alloc == SDW_DEV_NUM_ALLOC_IDA) {
-+		min_dev = INTEL_DEV_NUM_IDA_MIN;
-+	} else if (bus->dev_num_alloc == SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY) {
-+		if (slave->prop.wake_capable)
-+			min_dev = INTEL_DEV_NUM_IDA_MIN;
-+		else
-+			max_dev = INTEL_DEV_NUM_IDA_MIN - 1;
-+	}
- 
- 	/* paranoia check, this should never happen */
--	if (dev_num < INTEL_DEV_NUM_IDA_MIN || dev_num > SDW_MAX_DEVICES)  {
-+	if (dev_num < min_dev || dev_num > max_dev)  {
- 		dev_err(bus->dev, "%s: invalid dev_num %d\n", __func__, dev_num);
- 		return;
- 	}
-@@ -167,7 +182,7 @@ static int intel_link_probe(struct auxiliary_device *auxdev,
- 	cdns->msg_count = 0;
- 
- 	bus->link_id = auxdev->id;
--	bus->dev_num_alloc = SDW_DEV_NUM_ALLOC_IDA;
-+	bus->dev_num_alloc = SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY;
- 	bus->dev_num_ida_min = INTEL_DEV_NUM_IDA_MIN;
- 	bus->clk_stop_timeout = 1;
- 
--- 
-2.25.1
-
+Reviewed-by: Tony Lindgren <tony@atomide.com>
