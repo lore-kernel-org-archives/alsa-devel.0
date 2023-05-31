@@ -4,84 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7F1EC7EE23
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 13:47:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D49AC77B73
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 May 2023 14:11:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B670886;
-	Wed, 31 May 2023 15:46:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B670886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DB233E7;
+	Wed, 31 May 2023 16:10:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DB233E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685540820;
-	bh=yTvGYZKMtbvpn8hx6xbK+us0fWAKex22JtEMAQuudeg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1685542280;
+	bh=COvLxJSIJQjSGRqPcEGFj/GxjU9hRnSbOAexV4oC0tk=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ELFAV5Da3GeTczkkkc+VY3uyAjudCfL+e1ApZg8PFoPkruKwfjFA/bUF6vNe52jN2
-	 BWMTY5g8WsWTIyY179zlaWuYLTQ+Jv+gomvia0Hj72/rvoTSqZXELGrS3hK0zz0qPd
-	 vGhRlmq93bd1SlbQ5X4BxesP7T36af5gDYFCY5VM=
+	b=Ohg9sp5pksuQgG/47exDIRqjRraNp61L6LuxNu0Wxc34vSjKOPOOS37tX8uBOVgU9
+	 EWdopxON4xVg5c34l3uF3UJVlKgXTWTMSeMKo3zwuzoq+Y74CotJkDlh8p/VafA9GL
+	 ufpdgW6ydwuWIH6snxRRbRnkWJu4vJFoQWmqecg0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CAD37F805A9; Wed, 31 May 2023 15:44:58 +0200 (CEST)
+	id 8ADE6F804FC; Wed, 31 May 2023 16:10:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EA68F8057F;
-	Wed, 31 May 2023 15:44:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E564FF80528;
+	Wed, 31 May 2023 16:10:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D573F8057F; Wed, 31 May 2023 15:44:53 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 91839F800DF
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 15:44:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91839F800DF
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=r3HUR8rL
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id 74A1AF80510; Wed, 31 May 2023 16:09:55 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 7B5BC63B94;
-	Wed, 31 May 2023 13:44:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACF8BC433EF;
-	Wed, 31 May 2023 13:44:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685540689;
-	bh=yTvGYZKMtbvpn8hx6xbK+us0fWAKex22JtEMAQuudeg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=r3HUR8rLjtw3wXWgMsLk/DMMVlIz7Y9PcAjNLLkBS4X0Ax+FS2KxzXAg+XOT8gXTi
-	 hPYstT3I6N2x64tZL/Ky1BNrfeIOgNbbFUXG35kH9IFuBiAb17O5ot7ntal0X6caeu
-	 3EwNo+CbCfrH51PJiubizq1lOdnzMAJYyBadZu8xsnW/fscPyjNfS87iNahJuLzbI7
-	 MkapNaLssC8WyqyWjCH9cTyeyT1mLrt/Na9jqu0VoBwO0CjgqNLBOH6H7jtbv7Yr3E
-	 xJ1N7UpDHEs5EUXmNErq3irGTqP5+jZl34nPwxnkRkpsOfjeqDX4oMBPoUL4FycRZn
-	 w7xdKO8JDeVnw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Maxim Kochetkov <fido_max@inbox.ru>,
-	Mark Brown <broonie@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	ckeepax@opensource.cirrus.com,
-	u.kleine-koenig@pengutronix.de,
-	nicolas.ferre@microchip.com,
-	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 19/21] ASoC: dwc: move DMA init to
- snd_soc_dai_driver probe()
-Date: Wed, 31 May 2023 09:44:12 -0400
-Message-Id: <20230531134415.3384458-19-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230531134415.3384458-1-sashal@kernel.org>
-References: <20230531134415.3384458-1-sashal@kernel.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 457F1F8026A
+	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 16:09:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 457F1F8026A
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
+ header.s=selector1 header.b=h/UvMzYe
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 34VACNig011761;
+	Wed, 31 May 2023 16:09:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=selector1;
+ bh=Hbce7M506YQ/kUlqn8Nb764OuFLwoHqXqxGYsRsP5aQ=;
+ b=h/UvMzYevTgsgj2AM/CuzlotEVh/h20a6LKtknq714l/FVdtMydBQyjMA+xcVtLCp4l9
+ OB0hb9Rpx5rbeZsHr7f/mEeyVnvuCinRBXTM0h8jFcQVBU0G4i2avjeORFRg5DOy3dEK
+ ndpPqYzaItZj6el9LIiA8XRWYm6S9PeQMNBv6vLqDSr6uNHtbfPfMHPrjhfsRad6xvgi
+ EwqJpW2cMBCQ9gLLWTXiv+QLr37Pi/ZQdHbER/G5OtzicRaVZb4kt4sUvRkwbxdmJu5C
+ RLs0Y6x9I1wg54XCtOWn8FbEYgUqMKpqok60eM6kE6uK4hrXyGRhe+T0Zfo0GDZVOgJi cg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3qvsnp008a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 31 May 2023 16:09:50 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B7C11100034;
+	Wed, 31 May 2023 16:09:49 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AFB6424B8AE;
+	Wed, 31 May 2023 16:09:49 +0200 (CEST)
+Received: from localhost (10.252.16.99) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 31 May
+ 2023 16:09:49 +0200
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+To: Olivier Moysan <olivier.moysan@foss.st.com>,
+        Arnaud Pouliquen
+	<arnaud.pouliquen@foss.st.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark
+ Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre
+ Torgue <alexandre.torgue@foss.st.com>
+CC: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/3] ASoC: dt-bindings: stm32: document audio of graph port
+ for i2s
+Date: Wed, 31 May 2023 16:09:10 +0200
+Message-ID: <20230531140912.819373-2-olivier.moysan@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230531140912.819373-1-olivier.moysan@foss.st.com>
+References: <20230531140912.819373-1-olivier.moysan@foss.st.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NBCNIM2IZIAM4TGCYCOQ3AIKQTZXWGY7
-X-Message-ID-Hash: NBCNIM2IZIAM4TGCYCOQ3AIKQTZXWGY7
-X-MailFrom: sashal@kernel.org
+Content-Type: text/plain
+X-Originating-IP: [10.252.16.99]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-05-31_08,2023-05-31_03,2023-05-22_02
+Message-ID-Hash: 5GTPINTGVTRO5KEZTUP4RHHUYX7KPBLV
+X-Message-ID-Hash: 5GTPINTGVTRO5KEZTUP4RHHUYX7KPBLV
+X-MailFrom: prvs=451568473a=olivier.moysan@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NBCNIM2IZIAM4TGCYCOQ3AIKQTZXWGY7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5GTPINTGVTRO5KEZTUP4RHHUYX7KPBLV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,144 +123,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Maxim Kochetkov <fido_max@inbox.ru>
+When linking the STM32 I2S to another DAI component, according
+to audio graph cards bindings, an OF graph port property is expected
+in the node. Document the port property.
 
-[ Upstream commit 011a8719d6105dcb48077ea7a6a88ac019d4aa50 ]
-
-When using DMA mode we are facing with Oops:
-[  396.458157] Unable to handle kernel access to user memory without uaccess routines at virtual address 000000000000000c
-[  396.469374] Oops [#1]
-[  396.471839] Modules linked in:
-[  396.475144] CPU: 0 PID: 114 Comm: arecord Not tainted 6.0.0-00164-g9a8eccdaf2be-dirty #68
-[  396.483619] Hardware name: YMP ELCT FPGA (DT)
-[  396.488156] epc : dmaengine_pcm_open+0x1d2/0x342
-[  396.493227]  ra : dmaengine_pcm_open+0x1d2/0x342
-[  396.498140] epc : ffffffff807fe346 ra : ffffffff807fe346 sp : ffffffc804e138f0
-[  396.505602]  gp : ffffffff817bf730 tp : ffffffd8042c8ac0 t0 : 6500000000000000
-[  396.513045]  t1 : 0000000000000064 t2 : 656e69676e65616d s0 : ffffffc804e13990
-[  396.520477]  s1 : ffffffd801b86a18 a0 : 0000000000000026 a1 : ffffffff816920f8
-[  396.527897]  a2 : 0000000000000010 a3 : fffffffffffffffe a4 : 0000000000000000
-[  396.535319]  a5 : 0000000000000000 a6 : ffffffd801b87040 a7 : 0000000000000038
-[  396.542740]  s2 : ffffffd801b94a00 s3 : 0000000000000000 s4 : ffffffd80427f5e8
-[  396.550153]  s5 : ffffffd80427f5e8 s6 : ffffffd801b44410 s7 : fffffffffffffff5
-[  396.557569]  s8 : 0000000000000800 s9 : 0000000000000001 s10: ffffffff8066d254
-[  396.564978]  s11: ffffffd8059cf768 t3 : ffffffff817d5577 t4 : ffffffff817d5577
-[  396.572391]  t5 : ffffffff817d5578 t6 : ffffffc804e136e8
-[  396.577876] status: 0000000200000120 badaddr: 000000000000000c cause: 000000000000000d
-[  396.586007] [<ffffffff806839f4>] snd_soc_component_open+0x1a/0x68
-[  396.592439] [<ffffffff807fdd62>] __soc_pcm_open+0xf0/0x502
-[  396.598217] [<ffffffff80685d86>] soc_pcm_open+0x2e/0x4e
-[  396.603741] [<ffffffff8066cea4>] snd_pcm_open_substream+0x442/0x68e
-[  396.610313] [<ffffffff8066d1ea>] snd_pcm_open+0xfa/0x212
-[  396.615868] [<ffffffff8066d39c>] snd_pcm_capture_open+0x3a/0x60
-[  396.622048] [<ffffffff8065b35a>] snd_open+0xa8/0x17a
-[  396.627421] [<ffffffff801ae036>] chrdev_open+0xa0/0x218
-[  396.632893] [<ffffffff801a5a28>] do_dentry_open+0x17c/0x2a6
-[  396.638713] [<ffffffff801a6d9a>] vfs_open+0x1e/0x26
-[  396.643850] [<ffffffff801b8544>] path_openat+0x96e/0xc96
-[  396.649518] [<ffffffff801b9390>] do_filp_open+0x7c/0xf6
-[  396.655034] [<ffffffff801a6ff2>] do_sys_openat2+0x8a/0x11e
-[  396.660765] [<ffffffff801a735a>] sys_openat+0x50/0x7c
-[  396.666068] [<ffffffff80003aca>] ret_from_syscall+0x0/0x2
-[  396.674964] ---[ end trace 0000000000000000 ]---
-
-It happens because of play_dma_data/capture_dma_data pointers are NULL.
-Current implementation assigns these pointers at snd_soc_dai_driver
-startup() callback and reset them back to NULL at shutdown(). But
-soc_pcm_open() sequence uses DMA pointers in dmaengine_pcm_open()
-before snd_soc_dai_driver startup().
-Most generic DMA capable I2S drivers use snd_soc_dai_driver probe()
-callback to init DMA pointers only once at probe. So move DMA init
-to dw_i2s_dai_probe and drop shutdown() and startup() callbacks.
-
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
-Link: https://lore.kernel.org/r/20230512110343.66664-1-fido_max@inbox.ru
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
 ---
- sound/soc/dwc/dwc-i2s.c | 41 +++++++++--------------------------------
- 1 file changed, 9 insertions(+), 32 deletions(-)
+ Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-index 36da0f01571a1..3e14fac6666e9 100644
---- a/sound/soc/dwc/dwc-i2s.c
-+++ b/sound/soc/dwc/dwc-i2s.c
-@@ -183,30 +183,6 @@ static void i2s_stop(struct dw_i2s_dev *dev,
- 	}
- }
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+index a040d4d31412..3bc917a45802 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+@@ -61,6 +61,10 @@ properties:
+     description: Configure the I2S device as MCLK clock provider.
+     const: 0
  
--static int dw_i2s_startup(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *cpu_dai)
--{
--	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
--	union dw_i2s_snd_dma_data *dma_data = NULL;
--
--	if (!(dev->capability & DWC_I2S_RECORD) &&
--			(substream->stream == SNDRV_PCM_STREAM_CAPTURE))
--		return -EINVAL;
--
--	if (!(dev->capability & DWC_I2S_PLAY) &&
--			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK))
--		return -EINVAL;
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dma_data = &dev->play_dma_data;
--	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--		dma_data = &dev->capture_dma_data;
--
--	snd_soc_dai_set_dma_data(cpu_dai, substream, (void *)dma_data);
--
--	return 0;
--}
--
- static void dw_i2s_config(struct dw_i2s_dev *dev, int stream)
- {
- 	u32 ch_reg;
-@@ -305,12 +281,6 @@ static int dw_i2s_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static void dw_i2s_shutdown(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	snd_soc_dai_set_dma_data(dai, substream, NULL);
--}
--
- static int dw_i2s_prepare(struct snd_pcm_substream *substream,
- 			  struct snd_soc_dai *dai)
- {
-@@ -382,8 +352,6 @@ static int dw_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- }
- 
- static const struct snd_soc_dai_ops dw_i2s_dai_ops = {
--	.startup	= dw_i2s_startup,
--	.shutdown	= dw_i2s_shutdown,
- 	.hw_params	= dw_i2s_hw_params,
- 	.prepare	= dw_i2s_prepare,
- 	.trigger	= dw_i2s_trigger,
-@@ -624,6 +592,14 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
- 
- }
- 
-+static int dw_i2s_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
++  port:
++    $ref: audio-graph-port.yaml#
++    unevaluatedProperties: false
 +
-+	snd_soc_dai_init_dma_data(dai, &dev->play_dma_data, &dev->capture_dma_data);
-+	return 0;
-+}
-+
- static int dw_i2s_probe(struct platform_device *pdev)
- {
- 	const struct i2s_platform_data *pdata = pdev->dev.platform_data;
-@@ -642,6 +618,7 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	dw_i2s_dai->ops = &dw_i2s_dai_ops;
-+	dw_i2s_dai->probe = dw_i2s_dai_probe;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	dev->i2s_base = devm_ioremap_resource(&pdev->dev, res);
+ required:
+   - compatible
+   - "#sound-dai-cells"
 -- 
-2.39.2
+2.25.1
 
