@@ -4,86 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE35CC77B7E
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 14:50:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30AD8C77B7E
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 15:46:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1398206;
-	Thu,  1 Jun 2023 16:49:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1398206
+	by alsa0.perex.cz (Postfix) with ESMTPS id EFDEE20C;
+	Thu,  1 Jun 2023 17:45:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFDEE20C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685631000;
-	bh=ZjMPPnkOsUyvdtnWla3A8bZAJ3Ehv3zALg3Ikocts4A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1685634359;
+	bh=6wfuvEex59Ok6T5gRrkfMoK/HR47V0aNeFPlA0QEhM8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=o69pkPovNxk+Czi9oTuPW0LtZi0PWgiIPuAVfPDQT5qYXvYU2/oIChUa36XkARVXR
-	 Qb2kL+Zb78jkyjZMCPoBY4qkRVqyKVz2MYJ+gNxEAbzfaF1y63F5YoegRuKEXVtMOy
-	 rofmJ6I8cU2lKYGPyhJGT2O8u5KEysJFfy2J3H+k=
+	b=BeOIp5zMATOsLsy5mfwcYMyfJ5o8OeE0kc2gqexxDeMm0NYA6GDWkcIBIHx6ymbdY
+	 Cs4QaKgqCLvzAOr3qfmYgftImbtLQeyEbHnTUpQubsFp+tsC6cziES6393aCJEAVEL
+	 K6V89jqC9fQwBcqLzcwlXwn0mym++4Tt27TV8z9k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 99B57F80149; Thu,  1 Jun 2023 16:48:42 +0200 (CEST)
+	id B242BF80132; Thu,  1 Jun 2023 17:44:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D02EF80149;
-	Thu,  1 Jun 2023 16:48:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2176F80494;
+	Thu,  1 Jun 2023 17:44:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60654F800C8; Thu,  1 Jun 2023 16:48:38 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 37644F80199; Thu,  1 Jun 2023 17:44:36 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AE1A2F800C1
-	for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2023 16:48:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE1A2F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id BFFA7F800ED
+	for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2023 17:44:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFFA7F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=gtumXcQ3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685630914; x=1717166914;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ZjMPPnkOsUyvdtnWla3A8bZAJ3Ehv3zALg3Ikocts4A=;
-  b=gtumXcQ3Fczzz187/XtbzczeBqEQkA2Zk3snFmsG8PU6Tc/ZQEY+3JXh
-   dVZY/U8loDEVJ6yoE6QN7NlWhJjb/dtcjB00MdeTNj5wslsNHCzArdUq4
-   vPzkHaBJCun9jOVUhK7534Lj+THpD7wcx27az4ZfAL4o/V5RNUFk8AAHZ
-   lobZLWD5912AXZ3xOhXy1B1RqjfzyWhkSZ4udJH25VrNz2BhfgJO1U8sW
-   GRUPPpfg6cmPwD2M4FTCRQt0WEPhMaR1Ys6QVi9qLnGIG7uZ0oPfPzAUG
-   OWqw+FScGLHs1qevqdDQTnF0WVM3JYp+juv8Z1MKoejmeE4Ct8FHi4PXt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="358871437"
-X-IronPort-AV: E=Sophos;i="6.00,210,1681196400";
-   d="scan'208";a="358871437"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jun 2023 07:48:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="881634867"
-X-IronPort-AV: E=Sophos;i="6.00,210,1681196400";
-   d="scan'208";a="881634867"
-Received: from gjayacha-mobl1.amr.corp.intel.com (HELO [10.209.41.36])
- ([10.209.41.36])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jun 2023 07:48:04 -0700
-Message-ID: <18ec3299-56a6-2156-c856-55754fd8fa54@linux.intel.com>
-Date: Thu, 1 Jun 2023 09:08:29 -0500
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ZqvvUnO/
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C4F2C640E6;
+	Thu,  1 Jun 2023 15:44:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C6FAC433EF;
+	Thu,  1 Jun 2023 15:44:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685634268;
+	bh=6wfuvEex59Ok6T5gRrkfMoK/HR47V0aNeFPlA0QEhM8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ZqvvUnO/0qfrMMhnw3xdHydTy+Y8BJRfv87V1KJ9TvwRrbOBm1vH4kx+bc/BXg0S4
+	 eR9mepejozTdE7nmqzwznxeTOrt32CR96/BljyQbeZlkZ7aEwBcxmcJ6ZN92DtCBXH
+	 GcVer9bs2bPDkAYjZsn6weI9nRIkxj2kAS0cZU8Mrmi8kNfPZz9mWnjL/0WsZTQBnS
+	 cGNKH0v+cCrodvUzd5XAiMLz4XBDCDta6EmixY2D4MsR8U+jysWux25USD2YV37sN+
+	 E/Pvpq4mNP9RoEVjJJmiT6jVUTETmwrcKGFrfXOX+Jsgum6Juz8ibk3AN/PiftsDtx
+	 H1ZIZuRUAxaQA==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz,
+ matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+ Trevor Wu <trevor.wu@mediatek.com>
+Cc: dianders@chromium.org, alsa-devel@alsa-project.org,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20230601033318.10408-1-trevor.wu@mediatek.com>
+References: <20230601033318.10408-1-trevor.wu@mediatek.com>
+Subject: Re: [PATCH v2 0/2] ASoC: mediatek: fix use-after-free in driver
+ remove path
+Message-Id: <168563426581.132600.16426299018571667864.b4-ty@kernel.org>
+Date: Thu, 01 Jun 2023 16:44:25 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [PATCH] ASoC: cs35l56: Remove NULL check from
- cs35l56_sdw_dai_set_stream()
-To: Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com
-References: <20230601124907.3128170-1-rf@opensource.cirrus.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230601124907.3128170-1-rf@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: PINB2GBDJGRQRM4FSRUBE337JURHUZUJ
-X-Message-ID-Hash: PINB2GBDJGRQRM4FSRUBE337JURHUZUJ
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-Mailer: b4 0.13-dev-bfdf5
+Message-ID-Hash: 66QFUGQBD4OR7YAGUBWUOAVWOV5G4JXE
+X-Message-ID-Hash: 66QFUGQBD4OR7YAGUBWUOAVWOV5G4JXE
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PINB2GBDJGRQRM4FSRUBE337JURHUZUJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/66QFUGQBD4OR7YAGUBWUOAVWOV5G4JXE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,34 +95,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 6/1/23 07:49, Richard Fitzgerald wrote:
-> The dma pointer must be set to the passed stream pointer, even
-> if that pointer is NULL.
+On Thu, 01 Jun 2023 11:33:16 +0800, Trevor Wu wrote:
+> These patches concern modifications made in mt8186[1]. The clock
+> unregistration mechanism used in mt8188 and mt8195 is similar with
+> mt8186, resulting in the same problem existing within the driver.
+> Therefore, the solution has also been applied to these two platforms.
 > 
-> Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-
-Yep, good catch, this is what we have for other codecs.
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->  sound/soc/codecs/cs35l56.c | 3 ---
->  1 file changed, 3 deletions(-)
+> [1] https://lore.kernel.org/all/20230511092437.1.I31cceffc8c45bb1af16eb613e197b3df92cdc19e@changeid/
 > 
-> diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-> index 3c07bd1e959e..c03f9d3c9a13 100644
-> --- a/sound/soc/codecs/cs35l56.c
-> +++ b/sound/soc/codecs/cs35l56.c
-> @@ -704,9 +704,6 @@ static int cs35l56_sdw_dai_hw_free(struct snd_pcm_substream *substream,
->  static int cs35l56_sdw_dai_set_stream(struct snd_soc_dai *dai,
->  				      void *sdw_stream, int direction)
->  {
-> -	if (!sdw_stream)
-> -		return 0;
-> -
->  	snd_soc_dai_dma_data_set(dai, direction, sdw_stream);
->  
->  	return 0;
+> [...]
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/2] ASoC: mediatek: mt8188: fix use-after-free in driver remove path
+      commit: fd67a7a1a22ce47fcbc094c4b6e164c34c652cbe
+[2/2] ASoC: mediatek: mt8195: fix use-after-free in driver remove path
+      commit: dc93f0dcb436dfd24a06c5b3c0f4c5cd9296e8e5
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
