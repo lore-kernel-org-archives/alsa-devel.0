@@ -4,110 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D655C7EE23
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:08:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A855CC7EE23
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 16:09:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84C5F6C0;
-	Thu,  1 Jun 2023 18:08:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84C5F6C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6369FE88;
+	Thu,  1 Jun 2023 18:08:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6369FE88
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685635732;
-	bh=P+9hI9xdrea80rabX7D1ujMrgUvukLbSTS6tFpqvvjU=;
+	s=default; t=1685635750;
+	bh=UfhZhOXBfpbswvju9MvnULOpchY0GmEU1WX0cS8gqec=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=lZjfXyRUgNu4XhKoMC51uTE6rulTfOcxMiiuZNVPWTyn4Adtc+RR0nULCu5ON5LYR
-	 1Fkq+TS2a7VYIWZlP9TwXZbDe1p91+xQHRPVDk31YFXGg0Uzh9EHUeyfs6Vp3QCgOO
-	 HZDBQn0naLr29BvH44UXH2xNOlkACbLp2CSTAD64=
+	b=HoGdl9DNkb9FgtWXhtT0qcacjNH9nuOFgXi7AAuUgXF9hQ9IGbM6ZFLKYL+2wAMui
+	 kBgr79s/HGtqcqs3V2buVwQP4FIjvQIgtRgswG1Zt1j8y8Q3JOCvLDJxCEZqJOl/wB
+	 EXFEdQ1m7utIHbYelZvxv+WJPbxtIz3C3lyY66Mo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9FBEAF80674; Thu,  1 Jun 2023 18:03:24 +0200 (CEST)
+	id 925ADF8067E; Thu,  1 Jun 2023 18:03:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1401DF80671;
-	Thu,  1 Jun 2023 18:03:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77CCAF80679;
+	Thu,  1 Jun 2023 18:03:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 89A46F8042F; Wed, 31 May 2023 11:07:24 +0200 (CEST)
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com
- [IPv6:2607:f8b0:4864:20::32e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id B88A1F80149; Thu,  1 Jun 2023 07:36:54 +0200 (CEST)
+Received: from forward103c.mail.yandex.net (forward103c.mail.yandex.net
+ [IPv6:2a02:6b8:c03:500:1:45:d181:d103])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3FB26F80149
-	for <alsa-devel@alsa-project.org>; Wed, 31 May 2023 11:07:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FB26F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7E676F800C1
+	for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2023 07:36:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E676F800C1
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=Uw4hPKMx
-Received: by mail-ot1-x32e.google.com with SMTP id
- 46e09a7af769-6af6df7f93aso4084486a34.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 31 May 2023 02:07:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685524026; x=1688116026;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t6dEyi6AGYaP28foBidULwGN56hxXAodGv+YU14GBEY=;
-        b=Uw4hPKMxgez7mchEcYKo2y8YNzmXe8VJrzDMRFmvOcvtS6wh0PgWgayIJVwxET1vlk
-         7ULG5OXofFnYxHNWiaQJV49vwveRMHMf9bj0NcVR0fgQyAHhZEX/u3zZlQqjSTi1IUz0
-         QEu6Ig7uAEqBqqzuEUSbsK1JhX1DuYL1Uh1OOroB2VTPP64BwMtt+WpOX1hduzhNY3El
-         iywApcDy8g1tUf+RXWKh35a1oNIp1c3HTsYywr5MbC6z1xnqqiU3LqC6WBfGgM/z1bze
-         NnQG9NZ6/7XNCdbk2hdRMlFITQI05hUBCHRZu8fiB6dE+NxfMKKJmBwS6+IfB/Wdv8Fg
-         vIfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685524026; x=1688116026;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t6dEyi6AGYaP28foBidULwGN56hxXAodGv+YU14GBEY=;
-        b=YRCMl3MQcdwrErYg9zDcCIVQz6H78QrOS0A0moSlwUOXwM0tO+xFDQlLBp7YwJGDyB
-         JDd9V/bh3iSP1xWfaAX0QR2Nt0zfKS+Q+mTwN5wV8SLdMnRTFkXjwIv4m3/HwCtVbEcR
-         P6ZAdKY3T42x5LGSgLkQNMPNslQYoNegN3LLHZNBlQgZYv6eXiFa8uIkrJVXt1dTe1oi
-         82wpk3mMnznY+3mgFHt8QqiYl5UkReizQDLOvKPNno8bWS6U33V9UR1upPutXb4wgrqF
-         ZjGjxJvwC3MJbRZkUfPEFyFIpW6v7EyGhRw9wtqs1uPEF2QmSalrdSeGbiHb8PaYlBNT
-         rZOQ==
-X-Gm-Message-State: AC+VfDx7YVGpwGIaIFL36RZ0ebdT2XzNj17kigOZUOYrVpLERxP0p0WA
-	n99UjnDNzoyX/2gCHHCMNvo=
-X-Google-Smtp-Source: 
- ACHHUZ50Ep+NjfhDZ1k3WX0bHLfzzHFO4lgKhgkjrkRCIYpFGYnhJOuLPi1i7e5c6mzo5U7tQ5ty1Q==
-X-Received: by 2002:a05:6358:5290:b0:123:2b2e:529d with SMTP id
- g16-20020a056358529000b001232b2e529dmr1948123rwa.6.1685524026360;
-        Wed, 31 May 2023 02:07:06 -0700 (PDT)
-Received: from localhost.localdomain ([2406:e003:15d1:ec00::6e2])
-        by smtp.gmail.com with ESMTPSA id
- 23-20020aa79157000000b0064fff9f540csm2104824pfi.164.2023.05.31.02.07.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 May 2023 02:07:05 -0700 (PDT)
-From: Sicong Jiang <kevin.jiangsc@gmail.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
+	dkim=pass (1024-bit key,
+ unprotected) header.d=maquefel.me header.i=@maquefel.me header.a=rsa-sha256
+ header.s=mail header.b=o7eo6GHX
+Received: from mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net
+ (mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net
+ [IPv6:2a02:6b8:c14:c83:0:640:84f9:0])
+	by forward103c.mail.yandex.net (Yandex) with ESMTP id 876CE60034;
+	Thu,  1 Jun 2023 08:36:31 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net
+ (smtp/Yandex) with ESMTPSA id OaGNfZvWv8c0-rplx70Eu;
+	Thu, 01 Jun 2023 08:36:29 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
+ t=1685597789;
+	bh=rKQamNImlHihihpCtMqa3NY6MH0zfAt9r9tz/gnwKhU=;
+	h=Message-Id:Date:Cc:Subject:To:From;
+	b=o7eo6GHX+CIkTm9XpERfV5KmgewSkfhAGjpH+qged8wI9HIvSeQK6CKQsunVh2WIS
+	 3darRHyfPqrLqK1akxKMExkio1no9yS55iTd0E1JNR6uK3ykW0XZNimKJxx1Xo0JfL
+	 qtH6YU9ygcZbO9L8bdSh8KaLkTD+keRMb44jcTrM=
+Authentication-Results: 
+ mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net;
+ dkim=pass header.i=@maquefel.me
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+To: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Christophe Kerello <christophe.kerello@foss.st.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Hartley Sweeten <hsweeten@visionengravers.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>,
+	Jean Delvare <jdelvare@suse.de>,
+	Joel Stanley <joel@jms.id.au>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	=?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Le Moal <dlemoal@kernel.org>,
+	Liang Yang <liang.yang@amlogic.com>,
+	Mark Brown <broonie@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Nikita Shubin <nikita.shubin@maquefel.me>,
+	Richard Weinberger <richard@nod.at>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Walker Chen <walker.chen@starfivetech.com>,
+	Yinbo Zhu <zhuyinbo@loongson.cn>
+Cc: Michael Peters <mpeters@embeddedTS.com>,
+	Kris Bahnsen <kris@embeddedTS.com>,
 	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Cc: kevin.jiangsc@gmail.com
-Subject: [PATCH] ASoC: amd: yc: Add Thinkpad Neo14 to quirks list for acp6x
-Date: Wed, 31 May 2023 21:06:35 +1200
-Message-Id: <20230531090635.89565-1-kevin.jiangsc@gmail.com>
-X-Mailer: git-send-email 2.38.0.83.gd420dda057
+	devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-clk@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-ide@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-pm@vger.kernel.org,
+	linux-pwm@vger.kernel.org,
+	linux-rtc@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	linux-watchdog@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH v1 00/43] ep93xx device tree conversion
+Date: Thu,  1 Jun 2023 08:33:51 +0300
+Message-Id: <20230601053546.9574-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.37.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-MailFrom: kevin.jiangsc@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-MailFrom: nikita.shubin@maquefel.me
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: LHILG75SG4ES5FI5UTQ4GJOLMU2EO5PE
-X-Message-ID-Hash: LHILG75SG4ES5FI5UTQ4GJOLMU2EO5PE
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: DDPI4ICSOENKNUM6RLOB35RRDZGFNJPW
+X-Message-ID-Hash: DDPI4ICSOENKNUM6RLOB35RRDZGFNJPW
 X-Mailman-Approved-At: Thu, 01 Jun 2023 16:02:29 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LHILG75SG4ES5FI5UTQ4GJOLMU2EO5PE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DDPI4ICSOENKNUM6RLOB35RRDZGFNJPW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,32 +148,235 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Thinkpad Neo14 Ryzen Edition uses Ryzen 6800H processor, and adding to
-quirks list for acp6x will enable internal mic.
+This series aims to convert ep93xx from platform to full device tree support.
 
-Signed-off-by: Sicong Jiang <kevin.jiangsc@gmail.com>
----
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Alexander, Kris - there are some significant changes in clk and pinctrl so can i ask you to tests all once again.
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index 4406a5def..246299a17 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -171,6 +171,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "21CL"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "21EF"),
-+		}
-+	},
- 	{
- 		.driver_data = &acp6x_card,
- 		.matches = {
+So i am not applying:
+
+Tested-by: Michael Peters <mpeters@embeddedTS.com>
+Reviewed-by: Kris Bahnsen <kris@embeddedTS.com>
+
+Tags yet.
+
+Major changes from v0 to v1:
+
+- I totally forgot to include dts bindings for USB, they are working, including in this version
+- retinkered ep93xx keypad, the stange thing about it that it always used zeroed 
+  platform data from the very beginning - my first impulse was to remove it entirely, espesially 
+  it's ep9307+ variant, which Alexander and me doesn't have
+- major YAML bindings overhaul according to Krzysztof comments
+- nand helper converted to LEGACY nand controller
+- cleanup clk
+- cleanup pinctrl
+
+Sorry if i missed something, first time handling such a big (at least for me) chunk of patches.
+
+Next version should be much faster spin.
+
+Alexandre Belloni:
+ st,m48t86 is totally trivial, but it has 2 regs instead of one, so dt_binding_check doesn't allow it in trivial.yaml,
+ regs should be increased to "maxItems: 2"
+
+Miquel Raynal:
+ Currently made it LEGACY as a more easier way for now, as this series will merge - it will be much 
+ easier to cleanup the rest one by one, i hope it's ok.
+ 
+Stephen Boyd:
+ Majory of issues fixed, but:
+     - removing dma from init section requires converting it from half dt/platform monstrosity 
+       into fully dt compatible
+     - i would like to have ep93xx_clk_data and ep93xx_map global for now - they can be removed 
+       once dma subsys_initcall removed
+
+Andrew Lunn:
+  I've tinkered with the preferred way, however this involves turning on
+     - CONFIG_PHYLIB
+     - CONFIG_MDIO_DEVICE
+
+  And maybe CONFIG_MICREL_PHY (at least for me, unless i can use some
+  common phy driver) which implies a kernel size increase - which is
+  undesirable for us.
+  
+  Can we slip by getting phyid directly from device tree in ep93xx_eth ?
+
+Link: https://lore.kernel.org/all/20230424123522.18302-1-nikita.shubin@maquefel.me/
+  
+Cc: kris@embeddedTS.com
+
+Alexander Sverdlin (3):
+  ARM: dts: ep93xx: Add I2S and AC97 nodes
+  ARM: dts: ep93xx: Add EDB9302 DT
+  ASoC: cirrus: edb93xx: Delete driver
+
+Nikita Shubin (40):
+  gpio: ep93xx: split device in multiple
+  dt-bindings: soc: Add Cirrus EP93xx
+  soc: Add SoC driver for Cirrus ep93xx
+  dt-bindings: clock: Add Cirrus EP93xx
+  clk: ep93xx: add DT support for Cirrus EP93xx
+  dt-bindings: pinctrl: Add Cirrus EP93xx
+  pinctrl: add a Cirrus ep93xx SoC pin controller
+  dt-bindings: timers: Add Cirrus EP93xx
+  clocksource: ep93xx: Add driver for Cirrus Logic EP93xx
+  dt-bindings: rtc: Add Cirrus EP93xx
+  rtc: ep93xx: add DT support for Cirrus EP93xx
+  dt-bindings: watchdog: Add Cirrus EP93x
+  watchdog: ep93xx: add DT support for Cirrus EP93xx
+  power: reset: Add a driver for the ep93xx reset
+  dt-bindings: pwm: Add Cirrus EP93xx
+  pwm: ep93xx: add DT support for Cirrus EP93xx
+  dt-bindings: spi: Add Cirrus EP93xx
+  spi: ep93xx: add DT support for Cirrus EP93xx
+  dt-bindings: net: Add Cirrus EP93xx
+  net: cirrus: add DT support for Cirrus EP93xx
+  dt-bindings: dma: Add Cirrus EP93xx
+  dma: cirrus: add DT support for Cirrus EP93xx
+  dt-bindings: mtd: Add ts7250 nand-controller
+  mtd: nand: add support for ts72xx
+  dt-bindings: ata: Add Cirrus EP93xx
+  pata: cirrus: add DT support for Cirrus EP93xx
+  dt-bindings: input: Add Cirrus EP93xx keypad
+  input: keypad: ep93xx: add DT support for Cirrus EP93xx
+  dt-bindings: rtc: Add ST M48T86
+  rtc: m48t86: add DT support for m48t86
+  dt-bindings: wdt: Add ts72xx
+  wdt: ts72xx: add DT support for ts72xx
+  dt-bindings: gpio: Add Cirrus EP93xx
+  gpio: ep93xx: add DT support for gpio-ep93xx
+  ARM: dts: add device tree for ep93xx Soc
+  ARM: ep93xx: DT for the Cirrus ep93xx SoC platforms
+  pwm: ep93xx: drop legacy pinctrl
+  pata: cirrus: drop legacy pinctrl
+  ARM: ep93xx: delete all boardfiles
+  ARM: ep93xx: soc: drop defines
+
+ .../devicetree/bindings/arm/ep93xx.yaml       |  107 ++
+ .../bindings/ata/cirrus,ep9312-pata.yaml      |   44 +
+ .../bindings/clock/cirrus,ep9301.yaml         |   64 +
+ .../bindings/dma/cirrus,ep9301-dma-m2m.yaml   |   72 +
+ .../bindings/dma/cirrus,ep9301-dma-m2p.yaml   |  124 ++
+ .../devicetree/bindings/gpio/gpio-ep9301.yaml |  154 ++
+ .../bindings/input/cirrus,ep9307-keypad.yaml  |   86 +
+ .../bindings/mtd/technologic,nand.yaml        |   47 +
+ .../bindings/net/cirrus,ep9301-eth.yaml       |   61 +
+ .../pinctrl/cirrus,ep9301-pinctrl.yaml        |   66 +
+ .../bindings/pwm/cirrus,ep9301-pwm.yaml       |   48 +
+ .../bindings/rtc/cirrus,ep9301-rtc.yaml       |   40 +
+ .../bindings/rtc/st,m48t86-rtc.yaml           |   38 +
+ .../devicetree/bindings/spi/spi-ep9301.yaml   |   69 +
+ .../bindings/timer/cirrus,ep9301-timer.yaml   |   49 +
+ .../bindings/watchdog/cirrus,ep9301-wdt.yaml  |   46 +
+ .../watchdog/technologic,ts7200-wdt.yaml      |   46 +
+ arch/arm/Makefile                             |    1 -
+ arch/arm/boot/dts/Makefile                    |    1 +
+ arch/arm/boot/dts/ep93xx-bk3.dts              |  119 ++
+ arch/arm/boot/dts/ep93xx-edb9302.dts          |  160 ++
+ arch/arm/boot/dts/ep93xx-ts7250.dts           |  132 ++
+ arch/arm/boot/dts/ep93xx.dtsi                 |  477 +++++
+ arch/arm/mach-ep93xx/Kconfig                  |   20 +-
+ arch/arm/mach-ep93xx/Makefile                 |   11 -
+ arch/arm/mach-ep93xx/clock.c                  |  733 --------
+ arch/arm/mach-ep93xx/core.c                   | 1017 ----------
+ arch/arm/mach-ep93xx/dma.c                    |  114 --
+ arch/arm/mach-ep93xx/edb93xx.c                |  344 ----
+ arch/arm/mach-ep93xx/ep93xx-regs.h            |   38 -
+ arch/arm/mach-ep93xx/gpio-ep93xx.h            |  111 --
+ arch/arm/mach-ep93xx/hardware.h               |   25 -
+ arch/arm/mach-ep93xx/irqs.h                   |   76 -
+ arch/arm/mach-ep93xx/platform.h               |   42 -
+ arch/arm/mach-ep93xx/soc.h                    |  212 ---
+ arch/arm/mach-ep93xx/ts72xx.c                 |  422 -----
+ arch/arm/mach-ep93xx/ts72xx.h                 |   94 -
+ arch/arm/mach-ep93xx/vision_ep9307.c          |  311 ---
+ drivers/ata/pata_ep93xx.c                     |   33 +-
+ drivers/clk/Kconfig                           |    8 +
+ drivers/clk/Makefile                          |    1 +
+ drivers/clk/clk-ep93xx.c                      |  850 +++++++++
+ drivers/clocksource/Kconfig                   |   11 +
+ drivers/clocksource/Makefile                  |    1 +
+ .../clocksource}/timer-ep93xx.c               |  141 +-
+ drivers/dma/ep93xx_dma.c                      |  136 +-
+ drivers/gpio/gpio-ep93xx.c                    |  329 ++--
+ drivers/input/keyboard/ep93xx_keypad.c        |   78 +-
+ drivers/mtd/nand/raw/Kconfig                  |    7 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ .../nand/raw/technologic-nand-controller.c    |  151 ++
+ drivers/net/ethernet/cirrus/ep93xx_eth.c      |   67 +-
+ drivers/pinctrl/Kconfig                       |    7 +
+ drivers/pinctrl/Makefile                      |    1 +
+ drivers/pinctrl/pinctrl-ep93xx.c              | 1672 +++++++++++++++++
+ drivers/power/reset/Kconfig                   |   10 +
+ drivers/power/reset/Makefile                  |    1 +
+ drivers/power/reset/ep93xx-restart.c          |   65 +
+ drivers/pwm/pwm-ep93xx.c                      |   26 +-
+ drivers/rtc/rtc-ep93xx.c                      |    8 +
+ drivers/rtc/rtc-m48t86.c                      |    8 +
+ drivers/soc/Kconfig                           |    1 +
+ drivers/soc/Makefile                          |    1 +
+ drivers/soc/cirrus/Kconfig                    |   11 +
+ drivers/soc/cirrus/Makefile                   |    2 +
+ drivers/soc/cirrus/soc-ep93xx.c               |  134 ++
+ drivers/spi/spi-ep93xx.c                      |   31 +-
+ drivers/watchdog/ep93xx_wdt.c                 |    8 +
+ drivers/watchdog/ts72xx_wdt.c                 |    8 +
+ .../dt-bindings/clock/cirrus,ep93xx-clock.h   |   53 +
+ include/linux/platform_data/dma-ep93xx.h      |    3 +
+ include/linux/platform_data/eth-ep93xx.h      |   10 -
+ include/linux/platform_data/keypad-ep93xx.h   |   32 -
+ include/linux/soc/cirrus/ep93xx.h             |   40 +-
+ sound/soc/cirrus/Kconfig                      |    9 -
+ sound/soc/cirrus/Makefile                     |    4 -
+ sound/soc/cirrus/edb93xx.c                    |  117 --
+ 77 files changed, 5575 insertions(+), 4122 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/ep93xx.yaml
+ create mode 100644 Documentation/devicetree/bindings/ata/cirrus,ep9312-pata.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/cirrus,ep9301.yaml
+ create mode 100644 Documentation/devicetree/bindings/dma/cirrus,ep9301-dma-m2m.yaml
+ create mode 100644 Documentation/devicetree/bindings/dma/cirrus,ep9301-dma-m2p.yaml
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-ep9301.yaml
+ create mode 100644 Documentation/devicetree/bindings/input/cirrus,ep9307-keypad.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/technologic,nand.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/cirrus,ep9301-eth.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml
+ create mode 100644 Documentation/devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml
+ create mode 100644 Documentation/devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml
+ create mode 100644 Documentation/devicetree/bindings/rtc/st,m48t86-rtc.yaml
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-ep9301.yaml
+ create mode 100644 Documentation/devicetree/bindings/timer/cirrus,ep9301-timer.yaml
+ create mode 100644 Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml
+ create mode 100644 Documentation/devicetree/bindings/watchdog/technologic,ts7200-wdt.yaml
+ create mode 100644 arch/arm/boot/dts/ep93xx-bk3.dts
+ create mode 100644 arch/arm/boot/dts/ep93xx-edb9302.dts
+ create mode 100644 arch/arm/boot/dts/ep93xx-ts7250.dts
+ create mode 100644 arch/arm/boot/dts/ep93xx.dtsi
+ delete mode 100644 arch/arm/mach-ep93xx/Makefile
+ delete mode 100644 arch/arm/mach-ep93xx/clock.c
+ delete mode 100644 arch/arm/mach-ep93xx/core.c
+ delete mode 100644 arch/arm/mach-ep93xx/dma.c
+ delete mode 100644 arch/arm/mach-ep93xx/edb93xx.c
+ delete mode 100644 arch/arm/mach-ep93xx/ep93xx-regs.h
+ delete mode 100644 arch/arm/mach-ep93xx/gpio-ep93xx.h
+ delete mode 100644 arch/arm/mach-ep93xx/hardware.h
+ delete mode 100644 arch/arm/mach-ep93xx/irqs.h
+ delete mode 100644 arch/arm/mach-ep93xx/platform.h
+ delete mode 100644 arch/arm/mach-ep93xx/soc.h
+ delete mode 100644 arch/arm/mach-ep93xx/ts72xx.c
+ delete mode 100644 arch/arm/mach-ep93xx/ts72xx.h
+ delete mode 100644 arch/arm/mach-ep93xx/vision_ep9307.c
+ create mode 100644 drivers/clk/clk-ep93xx.c
+ rename {arch/arm/mach-ep93xx => drivers/clocksource}/timer-ep93xx.c (52%)
+ create mode 100644 drivers/mtd/nand/raw/technologic-nand-controller.c
+ create mode 100644 drivers/pinctrl/pinctrl-ep93xx.c
+ create mode 100644 drivers/power/reset/ep93xx-restart.c
+ create mode 100644 drivers/soc/cirrus/Kconfig
+ create mode 100644 drivers/soc/cirrus/Makefile
+ create mode 100644 drivers/soc/cirrus/soc-ep93xx.c
+ create mode 100644 include/dt-bindings/clock/cirrus,ep93xx-clock.h
+ delete mode 100644 include/linux/platform_data/eth-ep93xx.h
+ delete mode 100644 include/linux/platform_data/keypad-ep93xx.h
+ delete mode 100644 sound/soc/cirrus/edb93xx.c
+
 -- 
-2.38.0.83.gd420dda057
+2.37.4
 
