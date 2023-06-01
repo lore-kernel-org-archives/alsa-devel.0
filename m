@@ -4,87 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00D90C7EE2A
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 15:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BE03C7EE23
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 15:49:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C12EB3E7;
-	Thu,  1 Jun 2023 17:48:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C12EB3E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22D7D825;
+	Thu,  1 Jun 2023 17:48:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22D7D825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685634540;
-	bh=RhfQq2ZICNyoSA5BISQxTSJkm5Pr+JL8ffrAHxFwAkE=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=B36EuZ7BKKpKiZyCle8oVK9hPkQW19rPn+oDuIRbdOPxwb1Iow3mre90YCn4dEw4G
-	 d2I+52TwMDbW9H8azg6qVZgmXmAb5FASC/Iw89Hekqxnb7Cdt71FiZYdi50qIDQYJ7
-	 +WVSJCFXbY2Av4LxduZrtXaPxATh2FCBrSVMQ8j4=
+	s=default; t=1685634564;
+	bh=zfeQx1YSOIoV2GYUzFD8b8bx8O9QGliU9wLrDoXcLtk=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=XNqWhM7c642WwxWbQgjJXBpixLxS8fzB8kOx7QUXKm2fMuDBREqNU3C0bEMucx9k6
+	 As/cmcqccviSoY0UkQuVSItmqnVnUykW/g4FTwhPMR4PPtdQYpNcePnMJsLkDZdshA
+	 ynLY19dgeb1ZwEJTsduxNRG3utbGqUlg/ieJqW1s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF3ADF80548; Thu,  1 Jun 2023 17:47:43 +0200 (CEST)
+	id B51F5F80570; Thu,  1 Jun 2023 17:47:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 328A4F80549;
-	Thu,  1 Jun 2023 17:47:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A00DF80571;
+	Thu,  1 Jun 2023 17:47:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D8D5F804DA; Thu,  1 Jun 2023 17:47:38 +0200 (CEST)
+	id 99102F804DA; Thu,  1 Jun 2023 17:47:39 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B15BCF80132
+	by alsa1.perex.cz (Postfix) with ESMTPS id DEEDBF80149
 	for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2023 17:47:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B15BCF80132
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEEDBF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=SR1x4xhp
+ header.s=PODMain02222019 header.b=oE5IygyS
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 3515TBgv016524;
-	Thu, 1 Jun 2023 10:47:33 -0500
+ 3515TBgw016524;
+	Thu, 1 Jun 2023 10:47:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=bdWsE9aVcmlFMt82dUiPp2zt+xLfnmMuI7ekR9LlaWs=;
- b=SR1x4xhpDx3tVuwOtdtGYIT5lFVZp22J1/KKtHmwPNXQO7rX+i7GgMcdavKZGjRuk27W
- ephmVJys/HsnkC8vqEnmC3i3Yckd1p2MoY3b/FAhFVxlFp2NnVp+ow5izI7h16s+GSo0
- 0DoNIr5IPAUjWv4CuW38NCl1zQAhmwizPODq87ZBUV6r8KZpeCzDqv/2PKi/PSztiJ8n
- VLEf/We9fLXrnGWlLflYk7hjpYttIwZOQX9SCD3DXk88UNTwpfV6KB4yF2+pYNnOXGou
- bVjiWHSFs9kwF7Wk2JTSEshk1PsFKSODrZ6R5w9HNRqYMh/Fl+zPwmKSsU4ECRoVBplP FA==
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=WTpmV2BBoL8BWcYE51UQSNiOyWXZfAiUEby6Lgb82UU=;
+ b=oE5IygySCns4pFk1giE5bWUNItMjjV8qKekGAkdEwGgPYfaZaQMgT+Yuf6mIwxQv0Os7
+ Dv5ydJOVI7TlCzcZIWhygfeExwrBqe9A/ewDi07cydC89JFwBt5IHpBMadUCkmSq1Yh4
+ 1uCqS2WDe6K2mvIkrZfjni+aO/hKqz/feudlgQCHij81NmdyO527KAabS5BhNrIoSqFu
+ nJe64PW7HNuKEh2NVv18yay5AAr1B5VV8n5JJlW1MXaskiPBPKuvXoEMGQM9wMNNt/eE
+ AKPUobm40gPabv5iU0fCcIvKigDs3JqpoMLZ3k1LK16X2F/fKrb2XMXLzqVvM4f7lGb1 bQ==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3que9mxjyq-1
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3que9mxjyq-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 01 Jun 2023 10:47:32 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+	Thu, 01 Jun 2023 10:47:33 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Thu, 1 Jun
  2023 16:47:31 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Thu, 1 Jun 2023 16:47:31 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 1 Jun 2023 16:47:31 +0100
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 38F0F468;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 71BF0468;
 	Thu,  1 Jun 2023 15:47:31 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <tiwai@suse.com>, <perex@perex.cz>, <broonie@kernel.org>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH v4 00/12] ALSA: hda: Adding support for CS35L56 on HDA systems
-Date: Thu, 1 Jun 2023 16:47:19 +0100
-Message-ID: <20230601154731.3210572-1-rf@opensource.cirrus.com>
+        Simon Trimmer
+	<simont@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v4 03/12] ASoC: cs35l56: Convert utility functions to use
+ common data structure
+Date: Thu, 1 Jun 2023 16:47:22 +0100
+Message-ID: <20230601154731.3210572-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230601154731.3210572-1-rf@opensource.cirrus.com>
+References: <20230601154731.3210572-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: q69MXZHl7QbP0KtaKI9fm4YYM2UcAGtl
-X-Proofpoint-ORIG-GUID: q69MXZHl7QbP0KtaKI9fm4YYM2UcAGtl
+X-Proofpoint-GUID: NRJsf2KJeFTRfV-s7x16CIntBi-IbXr8
+X-Proofpoint-ORIG-GUID: NRJsf2KJeFTRfV-s7x16CIntBi-IbXr8
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: YFKXQEIQUGWCWMQ6ZKLIKSD7BYVKPPQ6
-X-Message-ID-Hash: YFKXQEIQUGWCWMQ6ZKLIKSD7BYVKPPQ6
+Message-ID-Hash: AK26EJSWEIJG37M3L4QTTLTUEURPVGVZ
+X-Message-ID-Hash: AK26EJSWEIJG37M3L4QTTLTUEURPVGVZ
 X-MailFrom: prvs=151698faa0=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YFKXQEIQUGWCWMQ6ZKLIKSD7BYVKPPQ6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AK26EJSWEIJG37M3L4QTTLTUEURPVGVZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,70 +111,128 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This set of patches adds support for using the CS35L56 boosted smart
-amplifier on HDA systems. In these systems the CS35L56 audio is
-routed through a HDA-to-I2S bridge codec.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-This doesn't include the changes to the Realtek driver to actually hook
-up the CS35L56 driver, because we don't yet have the QUIRK IDs to
-associate it with. But we want to publish the driver now so that it is
-available for bringing up hardware with the CS35L56.
+Use the new cs35l56_base struct for utility functions.
 
-The first 9 patches are moving code out of the ASoC driver and into the
-shared library so that it can be shared with the HDA driver.
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cs35l56.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-Patch #10 fixes missing #includes in the HDA headers so that the CS35L56
-driver doesn't have to #include headers that it doesn't use.
-
-Finally, #11 and #12 actually add the support for CS35L56 on HDA.
-
-CHANGES SINCE V3
-Patch 01:
-- Fix double-free of IRQ caused by passing wrong cookie to devm_irq_free()
-Patch 12:
-- Fix memory leak of struct firmware object and firmware name strings.
-- Find and open firmware files before taking the irq_lock mutex and pm_runtime.
-- Don't bother executing the firmware loading code if no firmware files were
-  found.
-
-Richard Fitzgerald (4):
-  ASoC: cs35l56: Move runtime suspend/resume to shared library
-  ASoC: cs35l56: Move cs_dsp init into shared library
-  ASoC: cs35l56: Move part of cs35l56_init() to shared library
-  ALSA: hda: Fix missing header dependencies
-
-Simon Trimmer (8):
-  ASoC: cs35l56: Move shared data into a common data structure
-  ASoC: cs35l56: Make cs35l56_system_reset() code more generic
-  ASoC: cs35l56: Convert utility functions to use common data structure
-  ASoC: cs35l56: Move utility functions to shared file
-  ASoC: cs35l56: Make common function for control port wait
-  ASoC: cs35l56: Make a common function to shutdown the DSP
-  ALSA: hda: Add mute_hook to hda_component
-  ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier
-
- include/sound/cs35l56.h           |   29 +-
- sound/pci/hda/Kconfig             |   31 +
- sound/pci/hda/Makefile            |    6 +
- sound/pci/hda/cs35l56_hda.c       | 1010 +++++++++++++++++++++++++++++
- sound/pci/hda/cs35l56_hda.h       |   48 ++
- sound/pci/hda/cs35l56_hda_i2c.c   |   69 ++
- sound/pci/hda/cs35l56_hda_spi.c   |   68 ++
- sound/pci/hda/hda_auto_parser.h   |    2 +
- sound/pci/hda/hda_component.h     |    1 +
- sound/pci/hda/hda_generic.h       |    3 +
- sound/soc/codecs/cs35l56-i2c.c    |   14 +-
- sound/soc/codecs/cs35l56-sdw.c    |   72 +-
- sound/soc/codecs/cs35l56-shared.c |  459 ++++++++++++-
- sound/soc/codecs/cs35l56-spi.c    |   10 +-
- sound/soc/codecs/cs35l56.c        |  648 ++++--------------
- sound/soc/codecs/cs35l56.h        |   15 +-
- 16 files changed, 1893 insertions(+), 592 deletions(-)
- create mode 100644 sound/pci/hda/cs35l56_hda.c
- create mode 100644 sound/pci/hda/cs35l56_hda.h
- create mode 100644 sound/pci/hda/cs35l56_hda_i2c.c
- create mode 100644 sound/pci/hda/cs35l56_hda_spi.c
-
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index 983b0c005b37..c686cbbd7453 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -802,14 +802,14 @@ static const struct reg_sequence cs35l56_system_reset_seq[] = {
+ 	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_SYSTEM_RESET),
+ };
+ 
+-static void cs35l56_system_reset(struct cs35l56_private *cs35l56, bool is_soundwire)
++static void cs35l56_system_reset(struct cs35l56_base *cs35l56_base, bool is_soundwire)
+ {
+ 	/*
+ 	 * Must enter cache-only first so there can't be any more register
+ 	 * accesses other than the controlled system reset sequence below.
+ 	 */
+-	regcache_cache_only(cs35l56->base.regmap, true);
+-	regmap_multi_reg_write_bypassed(cs35l56->base.regmap,
++	regcache_cache_only(cs35l56_base->regmap, true);
++	regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
+ 					cs35l56_system_reset_seq,
+ 					ARRAY_SIZE(cs35l56_system_reset_seq));
+ 
+@@ -818,7 +818,7 @@ static void cs35l56_system_reset(struct cs35l56_private *cs35l56, bool is_soundw
+ 		return;
+ 
+ 	usleep_range(CS35L56_CONTROL_PORT_READY_US, CS35L56_CONTROL_PORT_READY_US + 400);
+-	regcache_cache_only(cs35l56->base.regmap, false);
++	regcache_cache_only(cs35l56_base->regmap, false);
+ }
+ 
+ static void cs35l56_secure_patch(struct cs35l56_private *cs35l56)
+@@ -882,7 +882,7 @@ static void cs35l56_patch(struct cs35l56_private *cs35l56)
+ 	init_completion(&cs35l56->init_completion);
+ 
+ 	cs35l56->soft_resetting = true;
+-	cs35l56_system_reset(cs35l56, !!cs35l56->sdw_peripheral);
++	cs35l56_system_reset(&cs35l56->base, !!cs35l56->sdw_peripheral);
+ 
+ 	if (cs35l56->sdw_peripheral) {
+ 		/*
+@@ -1137,20 +1137,20 @@ int cs35l56_runtime_resume_common(struct cs35l56_private *cs35l56)
+ }
+ EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_CORE);
+ 
+-static int cs35l56_is_fw_reload_needed(struct cs35l56_private *cs35l56)
++static int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base)
+ {
+ 	unsigned int val;
+ 	int ret;
+ 
+ 	/* Nothing to re-patch if we haven't done any patching yet. */
+-	if (!cs35l56->base.fw_patched)
++	if (!cs35l56_base->fw_patched)
+ 		return false;
+ 
+ 	/*
+ 	 * If we have control of RESET we will have asserted it so the firmware
+ 	 * will need re-patching.
+ 	 */
+-	if (cs35l56->base.reset_gpio)
++	if (cs35l56_base->reset_gpio)
+ 		return true;
+ 
+ 	/*
+@@ -1158,22 +1158,22 @@ static int cs35l56_is_fw_reload_needed(struct cs35l56_private *cs35l56)
+ 	 * can't be used here to test for memory retention.
+ 	 * Assume that tuning must be re-loaded.
+ 	 */
+-	if (cs35l56->base.secured)
++	if (cs35l56_base->secured)
+ 		return true;
+ 
+-	ret = pm_runtime_resume_and_get(cs35l56->base.dev);
++	ret = pm_runtime_resume_and_get(cs35l56_base->dev);
+ 	if (ret) {
+-		dev_err(cs35l56->base.dev, "Failed to runtime_get: %d\n", ret);
++		dev_err(cs35l56_base->dev, "Failed to runtime_get: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = regmap_read(cs35l56->base.regmap, CS35L56_PROTECTION_STATUS, &val);
++	ret = regmap_read(cs35l56_base->regmap, CS35L56_PROTECTION_STATUS, &val);
+ 	if (ret)
+-		dev_err(cs35l56->base.dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
++		dev_err(cs35l56_base->dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
+ 	else
+ 		ret = !!(val & CS35L56_FIRMWARE_MISSING);
+ 
+-	pm_runtime_put_autosuspend(cs35l56->base.dev);
++	pm_runtime_put_autosuspend(cs35l56_base->dev);
+ 
+ 	return ret;
+ }
+@@ -1302,7 +1302,7 @@ int cs35l56_system_resume(struct device *dev)
+ 	if (!cs35l56->component)
+ 		return 0;
+ 
+-	ret = cs35l56_is_fw_reload_needed(cs35l56);
++	ret = cs35l56_is_fw_reload_needed(&cs35l56->base);
+ 	dev_dbg(cs35l56->base.dev, "fw_reload_needed: %d\n", ret);
+ 	if (ret < 1)
+ 		return ret;
+@@ -1547,7 +1547,7 @@ int cs35l56_init(struct cs35l56_private *cs35l56)
+ 	if (!cs35l56->base.reset_gpio) {
+ 		dev_dbg(cs35l56->base.dev, "No reset gpio: using soft reset\n");
+ 		cs35l56->soft_resetting = true;
+-		cs35l56_system_reset(cs35l56, !!cs35l56->sdw_peripheral);
++		cs35l56_system_reset(&cs35l56->base, !!cs35l56->sdw_peripheral);
+ 		if (cs35l56->sdw_peripheral) {
+ 			/* Keep alive while we wait for re-enumeration */
+ 			pm_runtime_get_noresume(cs35l56->base.dev);
 -- 
 2.30.2
 
