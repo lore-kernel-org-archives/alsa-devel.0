@@ -4,158 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3436C7EE23
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 14:29:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE35CC77B7E
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 14:50:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDF5920C;
-	Thu,  1 Jun 2023 16:28:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDF5920C
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1398206;
+	Thu,  1 Jun 2023 16:49:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1398206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685629783;
-	bh=uSCq8PHvcWRXeuKYSQaTjuluATQLsLYEUggCXbJj3PY=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
+	s=default; t=1685631000;
+	bh=ZjMPPnkOsUyvdtnWla3A8bZAJ3Ehv3zALg3Ikocts4A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Dy2ni8x1cTZJq8uiM1jGKpY+x7Lg7MMgugZSwLb2y6U4FkJN5IWXRE0RGorXURuxP
-	 MyXpdjRoGnpUEcQEL629JxvVRw2jueDYSwWn3WEo7dCdZG0C95AE4IDSBNotNBePYn
-	 4QujjDw9KEYjmw6DiC1c/367CtChRHKO4fSL5oYA=
+	b=o69pkPovNxk+Czi9oTuPW0LtZi0PWgiIPuAVfPDQT5qYXvYU2/oIChUa36XkARVXR
+	 Qb2kL+Zb78jkyjZMCPoBY4qkRVqyKVz2MYJ+gNxEAbzfaF1y63F5YoegRuKEXVtMOy
+	 rofmJ6I8cU2lKYGPyhJGT2O8u5KEysJFfy2J3H+k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D54B0F800C8; Thu,  1 Jun 2023 16:28:26 +0200 (CEST)
+	id 99B57F80149; Thu,  1 Jun 2023 16:48:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CEFBF80149;
-	Thu,  1 Jun 2023 16:28:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D02EF80149;
+	Thu,  1 Jun 2023 16:48:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB885F80149; Thu,  1 Jun 2023 16:28:18 +0200 (CEST)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on20620.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe59::620])
+	id 60654F800C8; Thu,  1 Jun 2023 16:48:38 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DCA03F800ED
-	for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2023 16:28:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCA03F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id AE1A2F800C1
+	for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2023 16:48:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE1A2F800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=infinera.com header.i=@infinera.com header.a=rsa-sha256
- header.s=selector1 header.b=B+UJeuB0
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D6k+JODIpEnPwBnjev+1Gs4rjXvuGBeF7a6A+hE95DzkrR+wH+DjgwHwod/H6MwwiZ7idba1zlwqaorNjouD2YIx9H6+3kFH16mCFf1/wgQofYL+3f9dFGFjpm7BtxRRzRk9Kn9LhEXbi3TkZBv4pkxGjkZtrdXrrCbVim0Jvp8dkBgJRYT6EkwCxNRDGtzDbb1BVLa4ebiQ3/+2U7vSYUdlqQ8ESvZjmJyYe9l4sm3H2ZsajAM6KuIvbf3h25DAi22vn5FTxyHxuL0Wln9IflWbdCQnnfFgPzXUzb8W9bZ71EPdMvHp0Z3p9S77FFWEK5vGXVqi3zbrfWi3aq0usg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uSCq8PHvcWRXeuKYSQaTjuluATQLsLYEUggCXbJj3PY=;
- b=afgTMRX1/D+jTa0IppJOuRL2Vo4ypqWAYJKp0Xrfxpn2hf8t9g0FaG2eUdXOF9qbkmAH1477yWLJ6UQETDZks/4ATctLpiYndwCVeK4wdk5zHps7Rsw/x1VqfZ4co9kBJReoTm9pAUN9xT48I6Wzi49WyuduDEFUKNwsOXueADoeK62tp89Xj+TIJZSzZqgC4yMVLe+fY/jmC272GUQybFSeGVxnMLowE+eSfSdK3zg2UhHXx9244uZTITTS/KxXxTaJMMuvDW9/RuuQfSZUK7pDNyBO+nNt2gTZBBdjJl5FnY3kjjZ4ZoH644jvNx626tPUH+DPSxXLoLXTEjk94A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
- dkim=pass header.d=infinera.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uSCq8PHvcWRXeuKYSQaTjuluATQLsLYEUggCXbJj3PY=;
- b=B+UJeuB0pBiCZnLdfVj17OcH/ewARnHni7hZ4JOVOy85TO+6q5gCj/lwIUt9Vv/H11nRQ+7WwB05y+2pXVccj4E+Yq8eJ6Xum+yblyDpTAC9WFke3noV4oW0eJUbSPcYYOWjeMD+uLJElI67oQyRi+iRO2cl8MpY21JpXDpvmuIXvA9rzgUBJThnEFx4H72WQYLGremgHbBohzLliH3+mUqS10esbW8GC7MAkifIGo3x+NuA6JjyA9WnJTHFfddTXQH8OoT2stqOKp7ODx1Ne6iXGx/7NKHMNcHwYUKBCxnnc7HPZY5f5W/yyoSMY92Z3097iNsWJEkLG4lf03ggzw==
-Received: from PH0PR10MB4615.namprd10.prod.outlook.com (2603:10b6:510:36::24)
- by IA1PR10MB7538.namprd10.prod.outlook.com (2603:10b6:208:44b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.24; Thu, 1 Jun
- 2023 14:28:06 +0000
-Received: from PH0PR10MB4615.namprd10.prod.outlook.com
- ([fe80::f01a:585:8d6:3d3c]) by PH0PR10MB4615.namprd10.prod.outlook.com
- ([fe80::f01a:585:8d6:3d3c%6]) with mapi id 15.20.6455.020; Thu, 1 Jun 2023
- 14:28:05 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"perex@perex.cz" <perex@perex.cz>, "michael@ralston.id.au"
-	<michael@ralston.id.au>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC: "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix "cannot set freq 48000 to ep 0x3"
- msgs
-Thread-Topic: [PATCH] ALSA: usb-audio: Fix "cannot set freq 48000 to ep 0x3"
- msgs
-Thread-Index: AQHZlIqVywGBgPuStUSeT/ugy2IRmK92AXUA
-Date: Thu, 1 Jun 2023 14:28:05 +0000
-Message-ID: <202bbbc0f51522e8545783c4c5577d12a8e2d56d.camel@infinera.com>
-References: <20230601131116.1014250-1-joakim.tjernlund@infinera.com>
-In-Reply-To: <20230601131116.1014250-1-joakim.tjernlund@infinera.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=infinera.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR10MB4615:EE_|IA1PR10MB7538:EE_
-x-ms-office365-filtering-correlation-id: 1112e550-d6a9-49e8-40d9-08db62ac6a2c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- vWAXPoVX1PWY0bRzgxY8br82xVJ/+TnATo3wVnPjVyHUHPEb2whP++L7Y2REi9qaSDs0BsAw7AJ8gCTZnrXOsmpStzmBB5BoJL5tguleb4thCyjF4iCI2YX0k1dgvwYIBQN5lIhUUojWj+Oyh8MKUvGxsgHESI5anUOQ9lamhJGPCc+fxSWyvUaq8U5Q2xOgI7FPe/QB8a/6sOu1uyvWdsafpvn9J625G7PwKB3E+D/TOKRQ+Le+Pir/887/dY1dHK1eUQZwc0gieRGpUTrgiITIUO44/66ikuwYffRbTDw/Q7/dAKeIpIPKUME7ml/oy0t7qd5TcGZmKE1on0clRYEiVciDj3luH93JNrWgVT5mntI0QXX+0X7LDgcJumJnf3QH4GIO76QKdDzM9zvOMFbIPu+5euBMOqnVY6whZ26zwJh/RwryjUJ8aauAKjOXwaUSbAP8lWwqH4WirkK+tRyFGbWoz1epdF8qL3p64Z6JinojFXB7efo67bnGyUF4bIIq8UUnTKHzmDuAAcQFi1qJ5NT+RwtJDejazVEiDFXZ598mdQxsGKCebyL1GeLKF0z4VaDpxZVUPai9rQ8F8Z+pfPVMRmmMTikQelsS28dJpnofaCmFAxUlNPvATa1Y
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4615.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(39860400002)(376002)(366004)(396003)(451199021)(186003)(38070700005)(66946007)(66476007)(66446008)(91956017)(64756008)(76116006)(66556008)(4326008)(36756003)(2616005)(6512007)(83380400001)(86362001)(2906002)(6506007)(8936002)(8676002)(5660300002)(38100700002)(6486002)(478600001)(41300700001)(122000001)(71200400001)(316002)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?cmRWb3gzTFJBRGFEVThnMkNacjJtbTVnTjYzMmxKRUQ4NGR1aVN4RnEwMFVh?=
- =?utf-8?B?SXJqVXp4STl3M2x4NGpkM0grNi9qRXE3L0NoMytPbERuZUZNNlRQVWNqL2VP?=
- =?utf-8?B?WEptMUd3QkJ2bS9HRXZxbjJUQU54TWdXaTRZeXpubW5IbnVzUkdoU3dFM2RV?=
- =?utf-8?B?eklOK1BxOHFHVGZJaWFuTHhjaXUxQXhuWUQxRS9seDNaREpvaE8xNk9RbGVG?=
- =?utf-8?B?dUxtNVI4Z0EyN0tBSEVEZzQxUCs5VitzbUlCT1VnQjJwTitoMVc1WjlUU0d2?=
- =?utf-8?B?eEZGNDdKbXBncHBmL3Zab3NPckpEc3ZIL2dtTTdTVXFBK3dGanBTY040OEtP?=
- =?utf-8?B?V25qUGtBc1RSUitQbzZ4cmhKQ2hjU29oZlc5QWxsV1ZXUEF1YmdTOGZXVGRr?=
- =?utf-8?B?ZUZrMSt4RG94R0p3MDhMQzlpZWd0TzVsQmltMjV3NUpnZnFoVmtOTFVWZm5m?=
- =?utf-8?B?dUNIUWs3cGFJdU54bk1PbXdmODlQUWxTdWxLYXc1VXNQb1l6NVp1UVQvWEhC?=
- =?utf-8?B?ZlVuNXFzcDNHblZaOFVTUmJITTN0NDVWTTE1K2JiMmNlME5YVSt6VGJpK3JY?=
- =?utf-8?B?dDBjRVZvRExocWNyRTM2elh3YzlJT1ZUelVENWxjWTNNTEJNRWh5eURWZkwz?=
- =?utf-8?B?NDBlN3VCQWlnekRQK1AzZmZpeUE2MFlGMW15V0VGYThZUE9TK3BXUHJBWnBO?=
- =?utf-8?B?MGZoMTBsR3g0aDNLakh0d25ORXZRYnN0ZXdPVzQ5T0s0d0toakh3V1NZNllO?=
- =?utf-8?B?RExyZWlWSk85a25TdFFqNktUeWtHeWFYRDRzem9kZXVnMDNrNEtQQnBRcjNG?=
- =?utf-8?B?S01kRDcxWmoreE90elRDV0h1czBveXFYTVhRREtQS3ZxUG4reHhsZjJ4SDh0?=
- =?utf-8?B?Zk8xakJCNkxBKzdWcFZnZTFQdlBNVFFaY0hqMGJSaXpBYkI4dXB4QnB4aWpl?=
- =?utf-8?B?T1JpWVl2K2d6V0ZOYS9TUmc4TGxnb01KUUo5bUNQT0NaN0hJZXZLZHViSjJw?=
- =?utf-8?B?Y0pvR1RzQkV2VURsQmI4VmdZcXFORDliRm9MS2k2WVJxV0hOOElKaDhxeWdG?=
- =?utf-8?B?a05NTGYvKzVIajlZWDFrSG9wZ3BkSUo1RkdZK1dvRmlrdlp0blhGcjZOMkRo?=
- =?utf-8?B?OExMaElDNVhJcGFQUUVES1pZQjllWjhoM0JpOC9HaERmNTd1a3h3ckY4b01y?=
- =?utf-8?B?dXpqNjJNNE9wVmxaVTI1cGZGaVdXNHFSMTFnVmFKaUM0aFpINllmdndubkUv?=
- =?utf-8?B?b3l5M24vZFFOUkhCckxNakZlS1prOXZERWlkT2xBN2FvNmE5aGQ1V0tjUWJn?=
- =?utf-8?B?QUFOdytZVkp4WFZiNHlmd2NUb1lodTk3disrWEpzcHp5QkZKTk9ZdHM2aVRn?=
- =?utf-8?B?T1oxSG9PT0lzRDRZcW9PTTFTUEV0WVd3czlGc1k1ZUQ2ejV6N0o3dVlCUDY1?=
- =?utf-8?B?Q2FFT1QvdEQ4bitaQytVQVByU0xNaXoxTnZIWVNRN0ZhUUFQSUE5Z1E2Y0xQ?=
- =?utf-8?B?YzQxdHB4SHRKaHJQUmdWR2tlVHZGcEFhSXh6bCtZUzJycFJ4Wk8yNWIyblAz?=
- =?utf-8?B?dnZuTjV4ZVZOSS81eTNUOFNqdjVMRUJlMlFKZzRrWERSdG5XWm9meVpqWkdI?=
- =?utf-8?B?WmE3YThZVXRlWUI4Q0V3a0lUVC85T0d3UnpIUFdHNmRuQnN2bnpONTBYdUlj?=
- =?utf-8?B?S2tFZ0FNMUw3ZS9CeEFlSDFEY3BuUXZWZmQ4T01xWnhBN1phRjlhelMrOVBh?=
- =?utf-8?B?djhUaUR1Q1ZzZ05TSDFZd3pEMmRkRk9CSDlYY2NhNitjUlliWGVzOVRueU9Q?=
- =?utf-8?B?TkNHTG9FamZRWWorc1lkNThWVlp4aHBuZTJlR2hLSkVIMnRrdzhkYWg2VDgr?=
- =?utf-8?B?ZkQ1M3ViaUtPeThYZTVRZTFhZ0YzWTFnZ0NYQ3VGeExuQkVBVjBYQVREZHVL?=
- =?utf-8?B?dSswUDNmZmRmbjBhMVhpOFBlTExUR0l0M3NWbVB2c3BjekwzQXROamlNdFkx?=
- =?utf-8?B?NDZwMXZScVNjSDNGcnplL2FRU0lsaHl1eW5nNnkyOWJjVVM0NnlVRTNPYUFK?=
- =?utf-8?B?dWExN2owajNON1prc1dSU1R1dlRTL050WG16c0NPd00wR0tobW9sbUhjNmoz?=
- =?utf-8?B?UDUxZ2prYkI1UHpkWHN6YUkwUzlPTVBBdmZ3eFNkbVhRTDhFNGRwS0wvN1hz?=
- =?utf-8?Q?b9dGHr6YN8VLmIcu6qONzm5GsSwGL0+JQPGtreQH966X?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <04BF16871710AB4792CDAFB6D0B339B7@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=gtumXcQ3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1685630914; x=1717166914;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ZjMPPnkOsUyvdtnWla3A8bZAJ3Ehv3zALg3Ikocts4A=;
+  b=gtumXcQ3Fczzz187/XtbzczeBqEQkA2Zk3snFmsG8PU6Tc/ZQEY+3JXh
+   dVZY/U8loDEVJ6yoE6QN7NlWhJjb/dtcjB00MdeTNj5wslsNHCzArdUq4
+   vPzkHaBJCun9jOVUhK7534Lj+THpD7wcx27az4ZfAL4o/V5RNUFk8AAHZ
+   lobZLWD5912AXZ3xOhXy1B1RqjfzyWhkSZ4udJH25VrNz2BhfgJO1U8sW
+   GRUPPpfg6cmPwD2M4FTCRQt0WEPhMaR1Ys6QVi9qLnGIG7uZ0oPfPzAUG
+   OWqw+FScGLHs1qevqdDQTnF0WVM3JYp+juv8Z1MKoejmeE4Ct8FHi4PXt
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="358871437"
+X-IronPort-AV: E=Sophos;i="6.00,210,1681196400";
+   d="scan'208";a="358871437"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Jun 2023 07:48:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10728"; a="881634867"
+X-IronPort-AV: E=Sophos;i="6.00,210,1681196400";
+   d="scan'208";a="881634867"
+Received: from gjayacha-mobl1.amr.corp.intel.com (HELO [10.209.41.36])
+ ([10.209.41.36])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Jun 2023 07:48:04 -0700
+Message-ID: <18ec3299-56a6-2156-c856-55754fd8fa54@linux.intel.com>
+Date: Thu, 1 Jun 2023 09:08:29 -0500
 MIME-Version: 1.0
-X-OriginatorOrg: infinera.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4615.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 1112e550-d6a9-49e8-40d9-08db62ac6a2c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jun 2023 14:28:05.8040
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 
- 3P+uqPzoMPca8iAyz0OEmyI4cwe9f7DiGCfnEq+wVrn/+ZhG+FwhjHY8Lakg3VWseXCyovRUhYYcij6MigWkTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB7538
-Message-ID-Hash: IDOZSD64CMKAQ5QC5OBEN5XNKT5S6LJU
-X-Message-ID-Hash: IDOZSD64CMKAQ5QC5OBEN5XNKT5S6LJU
-X-MailFrom: Joakim.Tjernlund@infinera.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+Subject: Re: [PATCH] ASoC: cs35l56: Remove NULL check from
+ cs35l56_sdw_dai_set_stream()
+To: Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com
+References: <20230601124907.3128170-1-rf@opensource.cirrus.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230601124907.3128170-1-rf@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: PINB2GBDJGRQRM4FSRUBE337JURHUZUJ
+X-Message-ID-Hash: PINB2GBDJGRQRM4FSRUBE337JURHUZUJ
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -167,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IDOZSD64CMKAQ5QC5OBEN5XNKT5S6LJU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PINB2GBDJGRQRM4FSRUBE337JURHUZUJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -176,26 +104,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-QWRkaW5nIE1pY2hhZWwgUmFsc3RvbiA8bWljaGFlbEByYWxzdG9uLmlkLmF1Pg0KDQpIZSBkaWQg
-aGF2ZSBwcm9ibGVtcyB3aXRoIGhpcyBiZWhyaW5nZXIgVU1DNDA0SEQgZGV2aWNlIHdoZW4gdGhp
-cyB3aG9sZSBzZXEuIHdhcyByZW1vdmVkLg0KUmFsc3RvbiwgY2FuIHlvdSB0cnkgaWYgdGhlIGJl
-bG93IGNoYW5nZSBhZmZlY3RzIHlvdXIgZGV2aWNlPw0KDQogSm9ja2UNCg0KT24gVGh1LCAyMDIz
-LTA2LTAxIGF0IDE1OjExICswMjAwLCBKb2FraW0gVGplcm5sdW5kIHdyb3RlOg0KPiBPbiBzb21l
-IFVTQiBzcGVha2VyIGRldmljZXMoSmFicmEvTG9naXRlY2gpIHdlIHNlZSBhYm92ZSBlcnJvcg0K
-PiBtc2cgd2hlbiBjb25uZWN0aW5nIGRldmljZSB0byBjb21wdXRlciBhbmQga2VybmVsIGlzIHBy
-b2JpbmcgdGhlIGRldmljZS4NCj4gDQo+IE1vdmluZyB0aGUgc25kX3VzYl9pbml0X3NhbXBsZV9y
-YXRlKCkgdG8gYWZ0ZXIgdXNiX3NldF9pbnRlcmZhY2UoKSBtYWtlcw0KPiB0aGUgZXJyb3IgZ28g
-YXdheS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEpvYWtpbSBUamVybmx1bmQgPGpvYWtpbS50amVy
-bmx1bmRAaW5maW5lcmEuY29tPg0KPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZw0KPiAtLS0N
-Cj4gIHNvdW5kL3VzYi9zdHJlYW0uYyB8IDIgKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
-dGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9zdHJl
-YW0uYyBiL3NvdW5kL3VzYi9zdHJlYW0uYw0KPiBpbmRleCBmMTBmNGU2ZDNmYjguLmQ5YWM4NjYz
-YTQ4YiAxMDA2NDQNCj4gLS0tIGEvc291bmQvdXNiL3N0cmVhbS5jDQo+ICsrKyBiL3NvdW5kL3Vz
-Yi9zdHJlYW0uYw0KPiBAQCAtMTIyNiw4ICsxMjI2LDggQEAgc3RhdGljIGludCBfX3NuZF91c2Jf
-cGFyc2VfYXVkaW9faW50ZXJmYWNlKHN0cnVjdCBzbmRfdXNiX2F1ZGlvICpjaGlwLA0KPiAgCQkv
-KiB0cnkgdG8gc2V0IHRoZSBpbnRlcmZhY2UuLi4gKi8NCj4gIAkJdXNiX3NldF9pbnRlcmZhY2Uo
-Y2hpcC0+ZGV2LCBpZmFjZV9ubywgMCk7DQo+ICAJCXNuZF91c2JfaW5pdF9waXRjaChjaGlwLCBm
-cCk7DQo+IC0JCXNuZF91c2JfaW5pdF9zYW1wbGVfcmF0ZShjaGlwLCBmcCwgZnAtPnJhdGVfbWF4
-KTsNCj4gIAkJdXNiX3NldF9pbnRlcmZhY2UoY2hpcC0+ZGV2LCBpZmFjZV9ubywgYWx0bm8pOw0K
-PiArCQlzbmRfdXNiX2luaXRfc2FtcGxlX3JhdGUoY2hpcCwgZnAsIGZwLT5yYXRlX21heCk7DQo+
-ICAJfQ0KPiAgCXJldHVybiAwOw0KPiAgfQ0KDQo=
+
+
+On 6/1/23 07:49, Richard Fitzgerald wrote:
+> The dma pointer must be set to the passed stream pointer, even
+> if that pointer is NULL.
+> 
+> Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+
+Yep, good catch, this is what we have for other codecs.
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> ---
+>  sound/soc/codecs/cs35l56.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+> index 3c07bd1e959e..c03f9d3c9a13 100644
+> --- a/sound/soc/codecs/cs35l56.c
+> +++ b/sound/soc/codecs/cs35l56.c
+> @@ -704,9 +704,6 @@ static int cs35l56_sdw_dai_hw_free(struct snd_pcm_substream *substream,
+>  static int cs35l56_sdw_dai_set_stream(struct snd_soc_dai *dai,
+>  				      void *sdw_stream, int direction)
+>  {
+> -	if (!sdw_stream)
+> -		return 0;
+> -
+>  	snd_soc_dai_dma_data_set(dai, direction, sdw_stream);
+>  
+>  	return 0;
