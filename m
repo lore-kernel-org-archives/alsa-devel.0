@@ -4,94 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A297C77B7E
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 03:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74ACBC77B7A
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Jun 2023 05:49:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A4AD828;
-	Thu,  1 Jun 2023 05:50:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A4AD828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D41D6C1;
+	Thu,  1 Jun 2023 07:48:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D41D6C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685591495;
-	bh=DO4tatzFAqzfFslQFzQZHi+xvgIGakjLgRzqgJyzUnY=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1685598542;
+	bh=YGckBOL2d6raSDmmRpl84Jwsx0mI5lrpb5umsy+YvnU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=t3O6rCmvHtgkkoicEBzo4AlMN+YrcUA8dyXGZGt9EeSpSuvn9+ZZtbIK0gP+4rfcM
-	 9UknCoC1TwfgQKbfOx5PfyK1s7f5plfUFF+ZECyrQjRt7JCAdKfsQWjazf3WpAnsM/
-	 +2ZGxpYJ3VDNi34X7JXErMvp8X3m53wLwyqWAvpg=
+	b=DCAxpmeI04O6SsGnPHU5CIKigUZ7qDE/T2hTVvAYlRo8NtJU2TPNpblutt1pE9YSj
+	 re9QLwVhHFJQhrrwqCnuvcKmJpmJxXfhBH3QB7ax9WGCD3+WLD+IccoBD0laIrWcPN
+	 MDpQ/yTKTy6py7AT854QrIiu7gjMeY4JjA+Nvnlc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F258F8047D; Thu,  1 Jun 2023 05:50:13 +0200 (CEST)
+	id 47441F8047D; Thu,  1 Jun 2023 07:47:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5592F80552;
-	Thu,  1 Jun 2023 05:50:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D95CFF80149;
+	Thu,  1 Jun 2023 07:47:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62F9CF80149; Thu,  1 Jun 2023 05:50:06 +0200 (CEST)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	id 65FF5F80149; Thu,  1 Jun 2023 07:47:00 +0200 (CEST)
+Received: from forward102a.mail.yandex.net (forward102a.mail.yandex.net
+ [178.154.239.85])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6C026F80132;
-	Thu,  1 Jun 2023 05:49:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C026F80132
+	by alsa1.perex.cz (Postfix) with ESMTPS id 94A3FF800C8
+	for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2023 07:46:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94A3FF800C8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=QA3HobOW
-X-UUID: 575520c8002f11ee9cb5633481061a41-20230601
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=mediatek.com; s=dk;
-	h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=82M3XZFSVg9xu9Y/PLltQ3G+pMTb3GNjE949LCJUeY0=;
-	b=QA3HobOWL2rNdr6WpwTVrw8KCIKg8T6UaaFILcEeQScTXD7X0NlPb7yjQN22IOAMzTg1UPLTh2heeK5sefPacO+RBru1+QE2q+iHaji7wKbKWAYctOoQBrgI4ikCkaoXzZTG+2fkCD44UzW2bHwBcRnXhSqo9B7mOi+7T/UpJl4=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.25,REQID:972d4016-f061-4aa0-b4f1-80db7756f79d,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:d5b0ae3,CLOUDID:0a68043d-de1e-4348-bc35-c96f92f1dcbb,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-UUID: 575520c8002f11ee9cb5633481061a41-20230601
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by
- mailgw01.mediatek.com
-	(envelope-from <trevor.wu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1452015385; Thu, 01 Jun 2023 11:49:42 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 1 Jun 2023 11:49:41 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 1 Jun 2023 11:49:41 +0800
-From: Trevor Wu <trevor.wu@mediatek.com>
-To: <pierre-louis.bossart@linux.intel.com>, <peter.ujfalusi@linux.intel.com>,
-	<yung-chuan.liao@linux.intel.com>, <ranjani.sridharan@linux.intel.com>,
-	<kai.vehmanen@linux.intel.com>, <daniel.baluta@nxp.com>,
-	<broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
-	<perex@perex.cz>, <matthias.bgg@gmail.com>,
-	<angelogioacchino.delregno@collabora.com>
-CC: <trevor.wu@mediatek.com>, <yc.hung@mediatek.com>,
-	<tinghan.shen@mediatek.com>, <sound-open-firmware@alsa-project.org>,
-	<alsa-devel@alsa-project.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 1/1] ASoC: SOF: mediatek: add adsp debug dump
-Date: Thu, 1 Jun 2023 11:49:39 +0800
-Message-ID: <20230601034939.15802-2-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230601034939.15802-1-trevor.wu@mediatek.com>
-References: <20230601034939.15802-1-trevor.wu@mediatek.com>
+ unprotected) header.d=maquefel.me header.i=@maquefel.me header.a=rsa-sha256
+ header.s=mail header.b=GjqqQSIV
+Received: from mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net
+ (mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net
+ [IPv6:2a02:6b8:c1f:5e51:0:640:23ee:0])
+	by forward102a.mail.yandex.net (Yandex) with ESMTP id 4484946C8B;
+	Thu,  1 Jun 2023 08:46:48 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net
+ (smtp/Yandex) with ESMTPSA id pjGDMhnDduQ0-xZDGLeYg;
+	Thu, 01 Jun 2023 08:46:47 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail;
+ t=1685598407;
+	bh=zzn32xd7cKMN+KlXGuogowDTuSb0Y+02JH0jZARTi/s=;
+	h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
+	b=GjqqQSIV9i90L3YcZxswj74Sa2lVJxvDcb5mRg55QLhkOVwgY320ZcN21RCP4qrRg
+	 OSu6Ndze8T8erqwOQ1s/SzbIZ9gRq4uLSgnivk5/uMlNBnYvNCkwf17qDItEl8Ho6+
+	 8FyC+ozCEy5jrq8x2en2C9d+vTEfxv93qMNpa6Lg=
+Authentication-Results: 
+ mail-nwsmtp-smtp-production-main-51.vla.yp-c.yandex.net;
+ dkim=pass header.i=@maquefel.me
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+To: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Nikita Shubin <nikita.shubin@maquefel.me>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Michael Peters <mpeters@embeddedTS.com>,
+	Kris Bahnsen <kris@embeddedTS.com>,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: [PATCH v1 43/43] ASoC: cirrus: edb93xx: Delete driver
+Date: Thu,  1 Jun 2023 08:45:48 +0300
+Message-Id: <20230601054549.10843-25-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.37.4
+In-Reply-To: <20230424123522.18302-1-nikita.shubin@maquefel.me>
+References: <20230424123522.18302-1-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-MTK: N
-Message-ID-Hash: NSA7Y6MCIUQZKZEED3OIKBWIM5VJYEJU
-X-Message-ID-Hash: NSA7Y6MCIUQZKZEED3OIKBWIM5VJYEJU
-X-MailFrom: trevor.wu@mediatek.com
+Message-ID-Hash: TFX5RA343TWFPO3K43R5ZXTVCBJPLSZZ
+X-Message-ID-Hash: TFX5RA343TWFPO3K43R5ZXTVCBJPLSZZ
+X-MailFrom: nikita.shubin@maquefel.me
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NSA7Y6MCIUQZKZEED3OIKBWIM5VJYEJU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TFX5RA343TWFPO3K43R5ZXTVCBJPLSZZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,81 +106,172 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add mt8188 and mt8186 .dbg_dump callback to print some information when
-DSP panic occurs.
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Can be replaced with "simple-audio-card" for the rates up to 50kHz, refer
+to commit "ARM: dts: ep93xx: Add EDB9302 DT".
+
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- sound/soc/sof/mediatek/mt8186/mt8186.c | 22 ++++++++++++++++++++++
- sound/soc/sof/mediatek/mt8186/mt8186.h |  5 +++++
- 2 files changed, 27 insertions(+)
+ sound/soc/cirrus/Kconfig   |   9 ---
+ sound/soc/cirrus/Makefile  |   4 --
+ sound/soc/cirrus/edb93xx.c | 117 -------------------------------------
+ 3 files changed, 130 deletions(-)
+ delete mode 100644 sound/soc/cirrus/edb93xx.c
 
-diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
-index cc91c2928fb6..3e0ea0e109e2 100644
---- a/sound/soc/sof/mediatek/mt8186/mt8186.c
-+++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
-@@ -24,6 +24,7 @@
- #include "../../sof-of-dev.h"
- #include "../../sof-audio.h"
- #include "../adsp_helper.h"
-+#include "../mtk-adsp-common.h"
- #include "mt8186.h"
- #include "mt8186-clk.h"
+diff --git a/sound/soc/cirrus/Kconfig b/sound/soc/cirrus/Kconfig
+index 38a83c4dcc2d..97def4e53fbc 100644
+--- a/sound/soc/cirrus/Kconfig
++++ b/sound/soc/cirrus/Kconfig
+@@ -31,12 +31,3 @@ config SND_EP93XX_SOC_I2S_WATCHDOG
  
-@@ -473,6 +474,26 @@ static snd_pcm_uframes_t mt8186_pcm_pointer(struct snd_sof_dev *sdev,
- 	return pos;
- }
+ endif # if SND_EP93XX_SOC_I2S
  
-+static void mt8186_adsp_dump(struct snd_sof_dev *sdev, u32 flags)
-+{
-+	u32 dbg_pc, dbg_data, dbg_inst, dbg_ls0stat, dbg_status, faultinfo;
-+
-+	/* dump debug registers */
-+	dbg_pc = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PDEBUGPC);
-+	dbg_data = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PDEBUGDATA);
-+	dbg_inst = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PDEBUGINST);
-+	dbg_ls0stat = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PDEBUGLS0STAT);
-+	dbg_status = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PDEBUGSTATUS);
-+	faultinfo = snd_sof_dsp_read(sdev, DSP_REG_BAR, DSP_PFAULTINFO);
-+
-+	dev_info(sdev->dev, "adsp dump : pc %#x, data %#x, dbg_inst %#x,",
-+		 dbg_pc, dbg_data, dbg_inst);
-+	dev_info(sdev->dev, "ls0stat %#x, status %#x, faultinfo %#x",
-+		 dbg_ls0stat, dbg_status, faultinfo);
-+
-+	mtk_adsp_dump(sdev, flags);
-+}
-+
- static struct snd_soc_dai_driver mt8186_dai[] = {
- {
- 	.name = "SOF_DL1",
-@@ -555,6 +576,7 @@ static struct snd_sof_dsp_ops sof_mt8186_ops = {
- 	.num_drv	= ARRAY_SIZE(mt8186_dai),
+-config SND_EP93XX_SOC_EDB93XX
+-	tristate "SoC Audio support for Cirrus Logic EDB93xx boards"
+-	depends on SND_EP93XX_SOC && (MACH_EDB9301 || MACH_EDB9302 || MACH_EDB9302A || MACH_EDB9307A || MACH_EDB9315A)
+-	select SND_EP93XX_SOC_I2S
+-	select SND_SOC_CS4271_I2C if I2C
+-	select SND_SOC_CS4271_SPI if SPI_MASTER
+-	help
+-	  Say Y or M here if you want to add support for I2S audio on the
+-	  Cirrus Logic EDB93xx boards.
+diff --git a/sound/soc/cirrus/Makefile b/sound/soc/cirrus/Makefile
+index 19a86daad660..5916c03888cb 100644
+--- a/sound/soc/cirrus/Makefile
++++ b/sound/soc/cirrus/Makefile
+@@ -6,7 +6,3 @@ snd-soc-ep93xx-i2s-objs	 			:= ep93xx-i2s.o
+ obj-$(CONFIG_SND_EP93XX_SOC)			+= snd-soc-ep93xx.o
+ obj-$(CONFIG_SND_EP93XX_SOC_I2S)		+= snd-soc-ep93xx-i2s.o
  
- 	/* Debug information */
-+	.dbg_dump = mt8186_adsp_dump,
- 	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
- 
- 	/* PM */
-diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.h b/sound/soc/sof/mediatek/mt8186/mt8186.h
-index 5b521c60b4e3..91323f492a1e 100644
---- a/sound/soc/sof/mediatek/mt8186/mt8186.h
-+++ b/sound/soc/sof/mediatek/mt8186/mt8186.h
-@@ -38,6 +38,11 @@ struct snd_sof_dev;
- #define DSP_MBOX3_IRQ_EN		BIT(3)
- #define DSP_MBOX4_IRQ_EN		BIT(4)
- #define DSP_PDEBUGPC			0x013C
-+#define DSP_PDEBUGDATA			0x0140
-+#define DSP_PDEBUGINST			0x0144
-+#define DSP_PDEBUGLS0STAT		0x0148
-+#define DSP_PDEBUGSTATUS		0x014C
-+#define DSP_PFAULTINFO			0x0150
- #define ADSP_CK_EN			0x1000
- #define CORE_CLK_EN			BIT(0)
- #define COREDBG_EN			BIT(1)
+-# EP93XX Machine Support
+-snd-soc-edb93xx-objs				:= edb93xx.o
+-
+-obj-$(CONFIG_SND_EP93XX_SOC_EDB93XX)		+= snd-soc-edb93xx.o
+diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
+deleted file mode 100644
+index f49caab21a25..000000000000
+--- a/sound/soc/cirrus/edb93xx.c
++++ /dev/null
+@@ -1,117 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * SoC audio for EDB93xx
+- *
+- * Copyright (c) 2010 Alexander Sverdlin <subaparts@yandex.ru>
+- *
+- * This driver support CS4271 codec being master or slave, working
+- * in control port mode, connected either via SPI or I2C.
+- * The data format accepted is I2S or left-justified.
+- * DAPM support not implemented.
+- */
+-
+-#include <linux/platform_device.h>
+-#include <linux/gpio.h>
+-#include <linux/module.h>
+-#include <linux/soc/cirrus/ep93xx.h>
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/soc.h>
+-#include <asm/mach-types.h>
+-
+-static int edb93xx_hw_params(struct snd_pcm_substream *substream,
+-			     struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+-	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+-	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+-	int err;
+-	unsigned int mclk_rate;
+-	unsigned int rate = params_rate(params);
+-
+-	/*
+-	 * According to CS4271 datasheet we use MCLK/LRCK=256 for
+-	 * rates below 50kHz and 128 for higher sample rates
+-	 */
+-	if (rate < 50000)
+-		mclk_rate = rate * 64 * 4;
+-	else
+-		mclk_rate = rate * 64 * 2;
+-
+-	err = snd_soc_dai_set_sysclk(codec_dai, 0, mclk_rate,
+-				     SND_SOC_CLOCK_IN);
+-	if (err)
+-		return err;
+-
+-	return snd_soc_dai_set_sysclk(cpu_dai, 0, mclk_rate,
+-				      SND_SOC_CLOCK_OUT);
+-}
+-
+-static const struct snd_soc_ops edb93xx_ops = {
+-	.hw_params	= edb93xx_hw_params,
+-};
+-
+-SND_SOC_DAILINK_DEFS(hifi,
+-	DAILINK_COMP_ARRAY(COMP_CPU("ep93xx-i2s")),
+-	DAILINK_COMP_ARRAY(COMP_CODEC("spi0.0", "cs4271-hifi")),
+-	DAILINK_COMP_ARRAY(COMP_PLATFORM("ep93xx-i2s")));
+-
+-static struct snd_soc_dai_link edb93xx_dai = {
+-	.name		= "CS4271",
+-	.stream_name	= "CS4271 HiFi",
+-	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+-			  SND_SOC_DAIFMT_CBC_CFC,
+-	.ops		= &edb93xx_ops,
+-	SND_SOC_DAILINK_REG(hifi),
+-};
+-
+-static struct snd_soc_card snd_soc_edb93xx = {
+-	.name		= "EDB93XX",
+-	.owner		= THIS_MODULE,
+-	.dai_link	= &edb93xx_dai,
+-	.num_links	= 1,
+-};
+-
+-static int edb93xx_probe(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = &snd_soc_edb93xx;
+-	int ret;
+-
+-	ret = ep93xx_i2s_acquire();
+-	if (ret)
+-		return ret;
+-
+-	card->dev = &pdev->dev;
+-
+-	ret = snd_soc_register_card(card);
+-	if (ret) {
+-		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+-			ret);
+-		ep93xx_i2s_release();
+-	}
+-
+-	return ret;
+-}
+-
+-static void edb93xx_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-
+-	snd_soc_unregister_card(card);
+-	ep93xx_i2s_release();
+-}
+-
+-static struct platform_driver edb93xx_driver = {
+-	.driver		= {
+-		.name	= "edb93xx-audio",
+-	},
+-	.probe		= edb93xx_probe,
+-	.remove_new	= edb93xx_remove,
+-};
+-
+-module_platform_driver(edb93xx_driver);
+-
+-MODULE_AUTHOR("Alexander Sverdlin <subaparts@yandex.ru>");
+-MODULE_DESCRIPTION("ALSA SoC EDB93xx");
+-MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:edb93xx-audio");
 -- 
-2.18.0
+2.37.4
 
