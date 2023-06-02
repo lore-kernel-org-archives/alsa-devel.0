@@ -4,118 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7AA9C77B73
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 13:44:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52730C7EE24
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 13:54:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CA596C1;
-	Mon,  5 Jun 2023 15:43:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CA596C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id C02A8822;
+	Mon,  5 Jun 2023 15:53:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C02A8822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685972648;
-	bh=hPUHeN677i8Ur+K2rytfDCT+Mci9uS4opeJWtFaCMsI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=X45H8ZDVYIVTRprbfzLdGy+ReKiWU9Kkucm+gIH3yDLVuQ3nK6vmGb6DUAG0UEkwG
-	 K5ihOV/nrWCio4IienO/POZhPfoqbkP2SOrgKcS9uxQ+ELCq7A7Kzs42yiZ9UJvUzK
-	 Lz7anBSlQLvqTDEICOGD/o3nHKV48Dzyc8T/s3a8=
+	s=default; t=1685973239;
+	bh=gRsU/q1A3MaJhGNG7ZrfpA8gsrLwCMAkTNR5+WZY19I=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ZKxuAyWuGWkMIcvLfoGogzJYHQRDx5BP3vJpIibBDRYjKYAa2ADspnd95h5yGXs79
+	 JrRKF5wTpzeTsiC6ok5dMN4Us9XpJnqQ1na5dTOx674+RbmtRXhhyF0v2eZGdID4Td
+	 hqpAwqfayV7dvd5Vbq6mUHRWMsNua0IHU7wkWQJI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6FFEF80130; Mon,  5 Jun 2023 15:43:17 +0200 (CEST)
+	id 64F6EF80199; Mon,  5 Jun 2023 15:52:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B75DF80199;
-	Mon,  5 Jun 2023 15:43:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1DC1F80199;
+	Mon,  5 Jun 2023 15:52:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 46681F80199; Mon,  5 Jun 2023 15:43:13 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id D9C9AF8016B; Fri,  2 Jun 2023 11:03:49 +0200 (CEST)
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
+ [IPv6:2a00:1450:4864:20::62c])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 16CF9F80155
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 15:43:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16CF9F80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id 18568F800ED
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 11:03:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18568F800ED
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=cnVfBFXi;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=1Zqw9BAU
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E97081FE6E;
-	Mon,  5 Jun 2023 13:43:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1685972584;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DRKm7O+HgSR55AAbKOdib+1LRmlh1hA+3NtduQerOLY=;
-	b=cnVfBFXi3YM+Wa8DaRZ/TueqMy/AyaY3F/LyYpenA+7DNR+uoymrc4MMOWLxi8uMW4K6Uc
-	mg0yFYZ9rJkxX4rcKN2VGbq1OvoGJCPJizBZn1BMNKO/8koLRrH3KRTRij7mUPEL+JgQkz
-	v52Yi5vjUkGTiiTGAnaRXiVOLGYn5Eo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1685972584;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DRKm7O+HgSR55AAbKOdib+1LRmlh1hA+3NtduQerOLY=;
-	b=1Zqw9BAUK3ZkaB5twVNZYJbYm8BBBW79E71nAr885te/h73lKAIqq39ZBrduWtNp/yLEAI
-	vDiO03NqB/ol1hDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B4A4F139C7;
-	Mon,  5 Jun 2023 13:43:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id D7EgK2jmfWQnOwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 05 Jun 2023 13:43:04 +0000
-Date: Mon, 05 Jun 2023 15:43:04 +0200
-Message-ID: <877csihvo7.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: "stable@vger.kernel.org" <stable@vger.kernel.org>,
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"perex@perex.cz"
-	<perex@perex.cz>,
-	"michael@ralston.id.au" <michael@ralston.id.au>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"tiwai@suse.com" <tiwai@suse.com>,
-	"alsa-devel@alsa-project.org"
-	<alsa-devel@alsa-project.org>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix "cannot set freq 48000 to ep 0x3"
- msgs
-In-Reply-To: <892df5be364e29f776ac8db2dd9e928de5a2f2a4.camel@infinera.com>
-References: <20230601131116.1014250-1-joakim.tjernlund@infinera.com>
-	<202bbbc0f51522e8545783c4c5577d12a8e2d56d.camel@infinera.com>
-	<87pm6aicin.wl-tiwai@suse.de>
-	<892df5be364e29f776ac8db2dd9e928de5a2f2a4.camel@infinera.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: DSSPSJWKLEOER6OG7H56IWU7OQUSSWTL
-X-Message-ID-Hash: DSSPSJWKLEOER6OG7H56IWU7OQUSSWTL
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=pqrs.dk header.i=@pqrs.dk header.a=rsa-sha256
+ header.s=google header.b=KC3pRTXt
+Received: by mail-ej1-x62c.google.com with SMTP id
+ a640c23a62f3a-9707313e32eso276131466b.2
+        for <alsa-devel@alsa-project.org>;
+ Fri, 02 Jun 2023 02:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pqrs.dk; s=google; t=1685696623; x=1688288623;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4z0aWs+76DsOLK1ZdUfTJiO33aieMzJYwE+Vw+aqL5o=;
+        b=KC3pRTXttgRIUpt/J5diupn1SqWtaBkgdDbiDRQ9CHSU5XfIvtNfmd13SWzWayo0BX
+         HUdX9gDctfwufnP09F5pk6O9FrRX9CPNX0VquDeoRD3xBs+lbLQULNZy2P5SHbu5QOp+
+         vVWx2jGeYcbasf0SzGdw2+wev5PColDikoe8BxdKye8N6UOHmNUWu7zWwkWKnIls/aWz
+         uOrgsS3LVLZ9/5YpqWY1MowwGZxt0EEyS3xhHdy3nQFyEAXAyfxIn4DNEmt8hJ80Qqmv
+         Ih3npZIPQS+r5V3KrJ7tu7rOGu3425u8cI7pePSUbWQAZABx4ktAkyKBM4nbWPA7g8oT
+         dnKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685696623; x=1688288623;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4z0aWs+76DsOLK1ZdUfTJiO33aieMzJYwE+Vw+aqL5o=;
+        b=gnBW6ddSVamdW7KV9PVZkmevhszTf/9hl6VFDI878AmrgkUOwywWX60jnFrqe9cwcE
+         vXRYABo/0oDrQUrGej7YaHgJJLN7mh/lRQHcECy+F6M4E5mewSS0/owb3mzbqTkNQfHD
+         eWxCziX89tHok8MbY3CbMQ2Cv28m0tCOM/IE9lKO0GyseNdjrBJ4vrw6sbPQyX8bp/kC
+         y8rb02TrevrzwiGu4WbAjVbFnLdFS3Z1GCE9sLOh6wxbGKqH68TV65enWV62uMqkKMI8
+         EESY0J34cicyoUbKrAWg+rDMayzfyVBQn8O0tJhPh9C37/Qm74f3iCC5E5VFzMnRgt+I
+         fodA==
+X-Gm-Message-State: AC+VfDzUZG7exe8DoYB98bqWqTyH1cCzXqmWPQVwAGT1Zl5T7+546DoX
+	U9QJBRIUX7Z0gqzEFjQRvvTcVQ==
+X-Google-Smtp-Source: 
+ ACHHUZ5CDb7hi9sRLxSyOLWk2zLbnISHdDPJk09PJ3HtrxN665G3O5E6naqR5vu6cmuvrQV4abNDig==
+X-Received: by 2002:a17:907:8a11:b0:93e:fa12:aa1a with SMTP id
+ sc17-20020a1709078a1100b0093efa12aa1amr11368431ejc.1.1685696623017;
+        Fri, 02 Jun 2023 02:03:43 -0700 (PDT)
+Received: from localhost.localdomain (80.71.142.18.ipv4.parknet.dk.
+ [80.71.142.18])
+        by smtp.gmail.com with ESMTPSA id
+ w23-20020a170906385700b009707fa1c316sm488031ejc.213.2023.06.02.02.03.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jun 2023 02:03:42 -0700 (PDT)
+From: =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alvin@pqrs.dk>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] ASoC: support dai-links with symmetric clock roles
+Date: Fri,  2 Jun 2023 11:03:17 +0200
+Message-Id: <20230602090322.1876359-1-alvin@pqrs.dk>
+X-Mailer: git-send-email 2.40.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MailFrom: alvin@pqrs.dk
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: UNPBL63SYQRKSHJDG7R3Q7VCND7FFUJL
+X-Message-ID-Hash: UNPBL63SYQRKSHJDG7R3Q7VCND7FFUJL
+X-Mailman-Approved-At: Mon, 05 Jun 2023 13:52:39 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DSSPSJWKLEOER6OG7H56IWU7OQUSSWTL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UNPBL63SYQRKSHJDG7R3Q7VCND7FFUJL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,82 +123,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 05 Jun 2023 15:21:51 +0200,
-Joakim Tjernlund wrote:
-> 
-> On Mon, 2023-06-05 at 09:39 +0200, Takashi Iwai wrote:
-> > On Thu, 01 Jun 2023 16:28:05 +0200,
-> > Joakim Tjernlund wrote:
-> > > 
-> > > Adding Michael Ralston <michael@ralston.id.au>
-> > > 
-> > > He did have problems with his behringer UMC404HD device when this whole seq. was removed.
-> > > Ralston, can you try if the below change affects your device?
-> > 
-> > Sorry for the late reaction, as I've been off in the last weeks.
-> 
-> NP.
-> 
-> > 
-> > The code sequence there seems pretty sensitive, and swapping or
-> > dropping the call might break things easily on certain devices,
-> > unfortunately.  So, I guess we can't take the patch as is.  If any, we
-> > need to fiddle the call order depending on the device quirk or such.
-> > I guess we may try to fit with the existing quirk flag.  Let me check
-> > it later.
-> 
-> yes, this is tricky. To me it look like this code will always set 48000 sample rate and
-> not all devices support that on all EPs.
-> Maybe one can get away with not setting sample rate at all? Just guessing though.
+From: Alvin Šipraga <alsi@bang-olufsen.dk>
 
-I guess it should work without setting the rate explicitly, but as
-already mentioned, some devices (firmware) might need it.  Who knows.
+Currently the ASoC core always assumes that one end of a dai-link is a 
+clock provider and the other a consumer. This series adds support for
+configuring dai-links where both ends are actually clock consumers.
 
-The vendors apparently test only with Windows and/or MacOS, and
-issuing unexpected commands (or missing the expected command) can
-screw up firmware...
+Alvin Šipraga (4):
+  ASoC: dt-bindings: document new symmetric-clock-role flag
+  ASoC: core: add support for dai-links with symmetric clock roles
+  ASoC: audio-graph-card2: parse symmetric-clock-roles property
+  ASoC: simple-card: parse symmetric-clock-roles property
 
+ .../devicetree/bindings/sound/simple-card.yaml        | 11 +++++++++++
+ include/sound/soc.h                                   |  3 +++
+ sound/soc/generic/audio-graph-card2.c                 |  7 ++++++-
+ sound/soc/generic/simple-card.c                       |  4 ++++
+ sound/soc/soc-core.c                                  |  4 +++-
+ 5 files changed, 27 insertions(+), 2 deletions(-)
 
-Takashi
+-- 
+2.40.0
 
-> 
->  Jocke
-> 
-> > 
-> > 
-> > thanks,
-> > 
-> > Takashi
-> > 
-> > 
-> > >  Jocke
-> > > 
-> > > On Thu, 2023-06-01 at 15:11 +0200, Joakim Tjernlund wrote:
-> > > > On some USB speaker devices(Jabra/Logitech) we see above error
-> > > > msg when connecting device to computer and kernel is probing the device.
-> > > > 
-> > > > Moving the snd_usb_init_sample_rate() to after usb_set_interface() makes
-> > > > the error go away.
-> > > > 
-> > > > Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-> > > > Cc: stable@vger.kernel.org
-> > > > ---
-> > > >  sound/usb/stream.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-> > > > index f10f4e6d3fb8..d9ac8663a48b 100644
-> > > > --- a/sound/usb/stream.c
-> > > > +++ b/sound/usb/stream.c
-> > > > @@ -1226,8 +1226,8 @@ static int __snd_usb_parse_audio_interface(struct snd_usb_audio *chip,
-> > > >  		/* try to set the interface... */
-> > > >  		usb_set_interface(chip->dev, iface_no, 0);
-> > > >  		snd_usb_init_pitch(chip, fp);
-> > > > -		snd_usb_init_sample_rate(chip, fp, fp->rate_max);
-> > > >  		usb_set_interface(chip->dev, iface_no, altno);
-> > > > +		snd_usb_init_sample_rate(chip, fp, fp->rate_max);
-> > > >  	}
-> > > >  	return 0;
-> > > >  }
-> > > 
-> 
