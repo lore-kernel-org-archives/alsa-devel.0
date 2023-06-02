@@ -4,85 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7BB6C7EE29
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 20:29:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B99CC7EE24
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 20:29:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 412186C0;
-	Fri,  2 Jun 2023 22:28:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 412186C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 972C285D;
+	Fri,  2 Jun 2023 22:28:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 972C285D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685737741;
-	bh=quZSwOoWsI1bIB7jN2UkhVsUsNQJFkwhgR6VBehmE3g=;
+	s=default; t=1685737752;
+	bh=aP0XQqDpFQ05QGlxfQ8OGNlcy+7JxQvcw5KcWL+kiUA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mWYiCfP7KbY8dgdjk0SqM/YPpNrLkjWMHqbjpe/8+Lbo+PG5BnZcmfEFLUvM+oofd
-	 GFAudMbPIVEVXhD54LuEsHWQl0+l4FMcvcpYz63JJQ1ls0pRbN1HH8Wq9TOWfD6Ed9
-	 e7FsI2BV5qyw+Q5D+uHAR6aVZlROTmjxxRksv4Ns=
+	b=XxsBig9rFD8eOBshcdp7H1sxcZALdpKHrwtWALFOR/kj46fQCru7ASEMznlc1R5uv
+	 WXxCKrasHVZt56LDzA9o7InEhvw74OBRwoGcbxMKklluH8eg57iIGwxI91MSpG22h0
+	 Agj5UIkb3rtdBFhpBFYE7pEGtUOgo54mzAgZ67IY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59C5CF80571; Fri,  2 Jun 2023 22:24:17 +0200 (CEST)
+	id E391DF8063A; Fri,  2 Jun 2023 22:24:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D3B5F805B1;
-	Fri,  2 Jun 2023 22:24:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1C4CF80631;
+	Fri,  2 Jun 2023 22:24:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 87CD3F80601; Fri,  2 Jun 2023 22:23:56 +0200 (CEST)
+	id 8D722F8060A; Fri,  2 Jun 2023 22:23:58 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 777C8F8055A
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 22:23:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 777C8F8055A
+	by alsa1.perex.cz (Postfix) with ESMTPS id AF293F8055C
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 22:23:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF293F8055C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=IxdkeD6F
+ header.s=Intel header.b=M6LJZkVs
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685737394; x=1717273394;
+  t=1685737395; x=1717273395;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=quZSwOoWsI1bIB7jN2UkhVsUsNQJFkwhgR6VBehmE3g=;
-  b=IxdkeD6F/pOWsiA+s48+kwncjJ50X64iFkBf6zRTyq8QWWsdzh2l/LtW
-   L5Kjl7cp0RdqtGPXV3/rBUa5HX0EG8z1xm7qBO3mmbrxDi9f7khjfThr2
-   3beJjdTDd41BP+SHiVGX7BsznIiMgiblU69n09xF1En8YukFyeM6JIjBw
-   lf7v595JcolnU0+z16k2KfZGEs1RdvV6vBKXqXdyfS4w6CiWQQSUTa7W6
-   I+rWjNp8yQFbiuQX7bTQ5gB9vl1jedHzKlv6CJe+Gm6QpGXOaCTU9Fm40
-   xdLcHlDWRzfUSkdU1NOAGIfhxin0zXZQg1iIcw25Y9Y86NE1EQ3rVoJJx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="354811287"
+  bh=aP0XQqDpFQ05QGlxfQ8OGNlcy+7JxQvcw5KcWL+kiUA=;
+  b=M6LJZkVspvGDcJKOw/fqqSy/QiHLkTJzCW48K5n/HtZzXy47Yz2WmBIU
+   dwXuH+4cfoiIPc7AA4mHfCEREaA6DC2nKlxw4zAZbRNmNL2NYogoKk9nc
+   Y12/79lVbbpZ+Su5r57E7QBArfPb+kI5QNyQ01Qw9i55A2/XKHbGvODYw
+   9K2zi9OQyMy6IzwMYo07eiYrxVnUicU1kFQG8aGCqwiUfGEzffkEH3G5p
+   0nR5SrCf4l53uyfOC77aWI2Em/zPHZf9zW+U9HZdV8cE/j4reSV2hWvyc
+   PkFjp2A3lIDX48Vc9nzYjPHFfKQHFcGQiKfTtJJNbruN8ttHw4L/leLzN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="354811314"
 X-IronPort-AV: E=Sophos;i="6.00,214,1681196400";
-   d="scan'208";a="354811287"
+   d="scan'208";a="354811314"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jun 2023 13:22:59 -0700
+ 02 Jun 2023 13:23:01 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="773020034"
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="773020041"
 X-IronPort-AV: E=Sophos;i="6.00,214,1681196400";
-   d="scan'208";a="773020034"
+   d="scan'208";a="773020041"
 Received: from clatorre-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.190.110])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jun 2023 13:22:58 -0700
+ 02 Jun 2023 13:23:00 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
-	Balamurugan C <balamurugan.c@intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Terry Cheong <htcheong@chromium.org>,
+	Curtis Malainey <cujomalainey@chromium.org>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 19/28] ASoC: Intel: ADL: Enable HDMI-In capture feature
- support for non-I2S codec boards.
-Date: Fri,  2 Jun 2023 15:22:16 -0500
-Message-Id: <20230602202225.249209-20-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 22/28] ASoC: Intel: Add rpl_rt1019_rt5682 driver
+Date: Fri,  2 Jun 2023 15:22:19 -0500
+Message-Id: <20230602202225.249209-23-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230602202225.249209-1-pierre-louis.bossart@linux.intel.com>
 References: <20230602202225.249209-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LJR3YC4Z4XHSRTVYPJMFTKLDBPTYHTHF
-X-Message-ID-Hash: LJR3YC4Z4XHSRTVYPJMFTKLDBPTYHTHF
+Message-ID-Hash: BBTFVVR7AD2Z7RQCM7OYOBVLOFW574MM
+X-Message-ID-Hash: BBTFVVR7AD2Z7RQCM7OYOBVLOFW574MM
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +93,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BBTFVVR7AD2Z7RQCM7OYOBVLOFW574MM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,56 +103,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Balamurugan C <balamurugan.c@intel.com>
+From: Terry Cheong <htcheong@chromium.org>
 
-Adding HDMI-In capture support for the products doesn't have onboard
-I2S codec.but need to support HDMI-In capture via I2S and audio playback
-through HDMI/DP monitor.
+Boards were using this in older kernels before adl and rpl ids were
+split. Add this back to maintain support.
 
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Balamurugan C <balamurugan.c@intel.com>
+Reviewed-by: Curtis Malainey <cujomalainey@chromium.org>
+Signed-off-by: Terry Cheong <htcheong@chromium.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_ssp_amp.c              | 9 +++++++++
- sound/soc/intel/common/soc-acpi-intel-adl-match.c | 5 +++++
- 2 files changed, 14 insertions(+)
+ sound/soc/intel/boards/sof_rt5682.c               | 11 +++++++++++
+ sound/soc/intel/common/soc-acpi-intel-rpl-match.c | 12 ++++++++++++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_ssp_amp.c b/sound/soc/intel/boards/sof_ssp_amp.c
-index b33f720b3e6d..56fa0c196daf 100644
---- a/sound/soc/intel/boards/sof_ssp_amp.c
-+++ b/sound/soc/intel/boards/sof_ssp_amp.c
-@@ -463,6 +463,15 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_SSP_BT_OFFLOAD_PRESENT |
- 					SOF_CS35L41_SPEAKER_AMP_PRESENT),
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 7f4783592668..86bbc1fea6ff 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -1119,6 +1119,17 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_BT_OFFLOAD_SSP(2) |
+ 					SOF_SSP_BT_OFFLOAD_PRESENT),
  	},
 +	{
-+		.name = "adl_lt6911_hdmi_ssp",
-+		.driver_data = (kernel_ulong_t)(SOF_NO_OF_HDMI_CAPTURE_SSP(2) |
-+					SOF_HDMI_CAPTURE_1_SSP(0) |
-+					SOF_HDMI_CAPTURE_2_SSP(2) |
-+					SOF_SSP_HDMI_CAPTURE_PRESENT |
-+					SOF_NO_OF_HDMI_PLAYBACK(3) |
-+					SOF_HDMI_PLAYBACK_PRESENT),
++		.name = "rpl_rt1019_rt5682",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_RT1019_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(1) |
++					SOF_RT5682_NUM_HDMIDEV(4) |
++					SOF_BT_OFFLOAD_SSP(2) |
++					SOF_SSP_BT_OFFLOAD_PRESENT),
 +	},
- 	{ }
+ 	{
+ 		.name = "mtl_mx98357_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+index 4dc9ba70f481..302a08018572 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+@@ -332,6 +332,11 @@ static const struct snd_soc_acpi_codecs rpl_max98373_amp = {
+ 	.codecs = {"MX98373"}
  };
- MODULE_DEVICE_TABLE(platform, board_ids);
-diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-index ac18a6c83a4e..3ecbeaecdc63 100644
---- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-@@ -601,6 +601,11 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
- 					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
+ 
++static const struct snd_soc_acpi_codecs rpl_rt1019p_amp = {
++	.num_codecs = 1,
++	.codecs = {"RTL1019"}
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
+ 	{
+ 		.comp_ids = &rpl_rt5682_hp,
+@@ -347,6 +352,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
+ 		.quirk_data = &rpl_max98373_amp,
+ 		.sof_tplg_filename = "sof-rpl-max98373-nau8825.tplg",
  	},
 +	{
-+		.id = "INTC10B0",
-+		.drv_name = "adl_lt6911_hdmi_ssp",
-+		.sof_tplg_filename = "sof-adl-nocodec-hdmi-ssp02.tplg"
++		.comp_ids = &rpl_rt5682_hp,
++		.drv_name = "rpl_rt1019_rt5682",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &rpl_rt1019p_amp,
++		.sof_tplg_filename = "sof-rpl-rt1019-rt5682.tplg",
 +	},
  	{},
  };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_adl_machines);
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_rpl_machines);
 -- 
 2.37.2
 
