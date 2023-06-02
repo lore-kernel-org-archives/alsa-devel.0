@@ -4,91 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DABFCC7EE24
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 08:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71635C7EE2C
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 10:13:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03F8920C;
-	Fri,  2 Jun 2023 10:41:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03F8920C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A3DE206;
+	Fri,  2 Jun 2023 12:12:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A3DE206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685695316;
-	bh=kWWbDmaNDYKkmbZIbYZWA0s/rYZpNtl0eZpJsh6DakE=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1685700802;
+	bh=5q724d80yzjXybMNjeFjCgYTyneJDsnnaB+bJ4675+4=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UTuczQGc9/AyNhzBUmQulIL3b6tmz+bclCr64Mjlm9TWA6cLyxtWvliDeGKneufkd
-	 6+xXT0vOiGD8iUexyNIrtkSXDit2Vedp7Ua+VH7/0MhXi6pgfZtQHp02MBpsn8Lbo3
-	 82tsd7YVBEXUt6nHLLKtfR9P7EZj3ebEYwN8DZ4s=
+	b=hU6T5H3ZS3m4HiKu/0eYqQpkULw45NmoUCpJ9U8MWyn9yWA15dxjmMc4We8QbMuoJ
+	 TJGt69tdbHSrawdoLOj7pFDl9312MDHy7rETS2Aps57b39E8wWBer8Ix2nwBkOvQTj
+	 /eCfCBJLyyC37cbT7oMY9P7DMUVkATt/hf8R+ivo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D687F80149; Fri,  2 Jun 2023 10:40:40 +0200 (CEST)
+	id 03902F80544; Fri,  2 Jun 2023 12:12:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9392F8016B;
-	Fri,  2 Jun 2023 10:40:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4CC22F8047D;
+	Fri,  2 Jun 2023 12:12:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 22B2EF80149; Fri,  2 Jun 2023 10:40:36 +0200 (CEST)
+	id 45422F80199; Fri,  2 Jun 2023 12:12:00 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4CFC6F800C1
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 10:40:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CFC6F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id DFF6DF800ED
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 12:11:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFF6DF800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=X1TcL9ZZ
+ header.s=PODMain02222019 header.b=NwA0aBf3
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 3526wiZD012031;
-	Fri, 2 Jun 2023 03:40:30 -0500
+ 3529pNL6008786;
+	Fri, 2 Jun 2023 05:11:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=w1yToQ4xYtRWD93hY3+RgYhmhFxNDQN6QX6WBdFeg9I=;
- b=X1TcL9ZZ0xw6K+GbJHWrxLNu8ELMBgSBhbAWVuv6fHSzUnD/voJn4imIpTECK3O7fIW4
- pxGRNCUWYypgBFff0c3UelcawYusjMen+s4ph08Gc+vI83QfirjKDGMNTGhEkZEl9m9Q
- E582mEFDwfAH4WlGbf44yKxvTj1c+f4dDPYCZDfZv0L7HI7jwQ3YcgZo98MT1gNxVuKV
- V+jbIh1VXPLOq8eVyqINJMWsJXljbQHFijrwqPiQ4t1VXtf8PQtgZWRyZg2Y8rKfTDuo
- zUi6pMajVwSXNvWJKFjLfVajemQvHm353uLJe0UyWTaYlQ6Nf9TBfpIBwQ0tirP7Yqm0 KQ==
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=ekNDg+VFCiYjY12i1sso3YR2oeivSEZ1eM5g+XhkXVk=;
+ b=NwA0aBf3TP7NpVjiw0EJV/RbeZGd/UWQBsdeOCVAoHm2dIV1bdvQGWLFpj+QmDsv0Elx
+ rm7ePWFnD3/nRGRpNgikcS0BhQZIlcMXnHS3FDqc4gtTrps94rGMRjRgGGwICe+05tHb
+ BjBzgzZlugbEjjnvPNZxdwUu4YKS+fVjp1am948cd5MhcRFRhDZeCBV5dxpPSd7JVyDQ
+ atsunAqrrWB9YkOsNBU1/qkfUguMiuYm+y0o2IGzChlwAD1MGnLhe2b3rJDI7nIXB70x
+ dn9S5y/4EOVRrAACMbbOuapNl5Eh2NO4w8zzqwnQt6+CgvFzDOTR5kJwMhAVk7105suK fg==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3quf90y5tj-1
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3quf90y83v-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Jun 2023 03:40:30 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+	Fri, 02 Jun 2023 05:11:44 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Fri, 2 Jun
- 2023 09:40:28 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Fri, 2 Jun 2023 09:40:28 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0573311AA;
-	Fri,  2 Jun 2023 08:40:28 +0000 (UTC)
-Date: Fri, 2 Jun 2023 08:40:28 +0000
+ 2023 11:11:40 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 2 Jun 2023 11:11:40 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D662E15A4;
+	Fri,  2 Jun 2023 10:11:40 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-CC: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
+To: <vkoul@kernel.org>
+CC: <yung-chuan.liao@linux.intel.com>, <pierre-louis.bossart@linux.intel.com>,
         <sanyog.r.kale@intel.com>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: Re: [PATCH 3/4] soundwire: stream: Remove unnecessary gotos
-Message-ID: <20230602084028.GL68926@ediswmail.ad.cirrus.com>
-References: <20230601161622.1808135-1-ckeepax@opensource.cirrus.com>
- <20230601161622.1808135-3-ckeepax@opensource.cirrus.com>
- <40d09b30-3323-f438-0f12-bc322ee389e9@linux.intel.com>
+Subject: [PATCH v2 5/5] soundwire: stream: Remove unnecessary gotos
+Date: Fri, 2 Jun 2023 11:11:40 +0100
+Message-ID: <20230602101140.2040141-5-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230602101140.2040141-1-ckeepax@opensource.cirrus.com>
+References: <20230602101140.2040141-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <40d09b30-3323-f438-0f12-bc322ee389e9@linux.intel.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: sQvX313UjsnuWXd-PJKU6jNIu23NB9DA
-X-Proofpoint-ORIG-GUID: sQvX313UjsnuWXd-PJKU6jNIu23NB9DA
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: uhKsbTLYac5TE4X8JYzcO27_iefRGppW
+X-Proofpoint-ORIG-GUID: uhKsbTLYac5TE4X8JYzcO27_iefRGppW
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: NGALCIVTQHZKOUT5E26QUO77XFBOKAFO
-X-Message-ID-Hash: NGALCIVTQHZKOUT5E26QUO77XFBOKAFO
+Message-ID-Hash: PN3UPL4OH3GD2P2ZZKUOKR3O3Y65Q6ZG
+X-Message-ID-Hash: PN3UPL4OH3GD2P2ZZKUOKR3O3Y65Q6ZG
 X-MailFrom: prvs=1517dd3c90=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGALCIVTQHZKOUT5E26QUO77XFBOKAFO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PN3UPL4OH3GD2P2ZZKUOKR3O3Y65Q6ZG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,29 +107,198 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, Jun 01, 2023 at 11:37:33AM -0500, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 6/1/23 11:16, Charles Keepax wrote:
-> > There is a lot of code using gotos to skip small sections of code, this
-> > is a fairly dubious use of a goto, especially when the level of
-> > intentation is really low. Most of this code doesn't even breach 80
-> > characters when naively shifted over.
-> > 
-> > Simplify the code a bit, by replacing these unnecessary gotos with
-> > simple ifs.
-> 
-> it's probably ok but far from simple to review with the inverted states
-> for variables. I don't have the time and energy to revisit this...
-> 
-> I would err on the side of if it ain't broke don't fix it here.
-> 
+There is a lot of code using gotos to skip small sections of code, this
+is a fairly dubious use of a goto, especially when the level of
+intentation is really low. Most of this code doesn't even breach 80
+characters when naively shifted over.
 
-The current code is pretty oddly written, as you say it does work
-through. I will try splitting the patch into separate patches for
-inverting the varible and dropping the goto's. That should make
-review slightly easier and both changes make the code clearer in
-their own right anyway.
+Simplify the code a bit, by replacing these unnecessary gotos with
+simple ifs.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+
+Changes since v1:
+ - Split out the inversion of the alloc_*_rt logic
+
+Worth noting this patch has no functional corrections it is just a
+stylistic change, so as Pierre said on v1 we could just leave things
+as is. Personally, I would prefer to merge it though, whilst the diff
+is a little more of a pain to review (hopefully eased somewhat by
+splitting out the alloc_*_rt logic into a separate patch), the
+resulting code reads much nicer and the code will be read a lot more
+times than this patch will be.
 
 Thanks,
 Charles
+
+ drivers/soundwire/stream.c | 124 +++++++++++++++++--------------------
+ 1 file changed, 56 insertions(+), 68 deletions(-)
+
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index df5600a80c174..93baca08a0dea 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -1355,25 +1355,23 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream,
+ 			return -EINVAL;
+ 		}
+ 
+-		if (!update_params)
+-			goto program_params;
+-
+-		/* Increment cumulative bus bandwidth */
+-		/* TODO: Update this during Device-Device support */
+-		bus->params.bandwidth += m_rt->stream->params.rate *
+-			m_rt->ch_count * m_rt->stream->params.bps;
+-
+-		/* Compute params */
+-		if (bus->compute_params) {
+-			ret = bus->compute_params(bus);
+-			if (ret < 0) {
+-				dev_err(bus->dev, "Compute params failed: %d\n",
+-					ret);
+-				goto restore_params;
++		if (update_params) {
++			/* Increment cumulative bus bandwidth */
++			/* TODO: Update this during Device-Device support */
++			bus->params.bandwidth += m_rt->stream->params.rate *
++				m_rt->ch_count * m_rt->stream->params.bps;
++
++			/* Compute params */
++			if (bus->compute_params) {
++				ret = bus->compute_params(bus);
++				if (ret < 0) {
++					dev_err(bus->dev, "Compute params failed: %d\n",
++						ret);
++					goto restore_params;
++				}
+ 			}
+ 		}
+ 
+-program_params:
+ 		/* Program params */
+ 		ret = sdw_program_params(bus, true);
+ 		if (ret < 0) {
+@@ -1876,30 +1874,25 @@ int sdw_stream_add_master(struct sdw_bus *bus,
+ 	 * it first), if so skip allocation and go to configuration
+ 	 */
+ 	m_rt = sdw_master_rt_find(bus, stream);
+-	if (m_rt)
+-		goto skip_alloc_master_rt;
+-
+-	m_rt = sdw_master_rt_alloc(bus, stream);
+ 	if (!m_rt) {
+-		dev_err(bus->dev, "%s: Master runtime alloc failed for stream:%s\n",
+-			__func__, stream->name);
+-		ret = -ENOMEM;
+-		goto unlock;
+-	}
+-
+-	alloc_master_rt = true;
+-skip_alloc_master_rt:
+-
+-	if (sdw_master_port_allocated(m_rt))
+-		goto skip_alloc_master_port;
++		m_rt = sdw_master_rt_alloc(bus, stream);
++		if (!m_rt) {
++			dev_err(bus->dev, "%s: Master runtime alloc failed for stream:%s\n",
++				__func__, stream->name);
++			ret = -ENOMEM;
++			goto unlock;
++		}
+ 
+-	ret = sdw_master_port_alloc(m_rt, num_ports);
+-	if (ret)
+-		goto alloc_error;
++		alloc_master_rt = true;
++	}
+ 
+-	stream->m_rt_count++;
++	if (!sdw_master_port_allocated(m_rt)) {
++		ret = sdw_master_port_alloc(m_rt, num_ports);
++		if (ret)
++			goto alloc_error;
+ 
+-skip_alloc_master_port:
++		stream->m_rt_count++;
++	}
+ 
+ 	ret = sdw_master_rt_config(m_rt, stream_config);
+ 	if (ret < 0)
+@@ -1992,46 +1985,41 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
+ 	 * and go to configuration
+ 	 */
+ 	m_rt = sdw_master_rt_find(slave->bus, stream);
+-	if (m_rt)
+-		goto skip_alloc_master_rt;
+-
+-	/*
+-	 * If this API is invoked by Slave first then m_rt is not valid.
+-	 * So, allocate m_rt and add Slave to it.
+-	 */
+-	m_rt = sdw_master_rt_alloc(slave->bus, stream);
+ 	if (!m_rt) {
+-		dev_err(&slave->dev, "%s: Master runtime alloc failed for stream:%s\n",
+-			__func__, stream->name);
+-		ret = -ENOMEM;
+-		goto unlock;
+-	}
++		/*
++		 * If this API is invoked by Slave first then m_rt is not valid.
++		 * So, allocate m_rt and add Slave to it.
++		 */
++		m_rt = sdw_master_rt_alloc(slave->bus, stream);
++		if (!m_rt) {
++			dev_err(&slave->dev, "%s: Master runtime alloc failed for stream:%s\n",
++				__func__, stream->name);
++			ret = -ENOMEM;
++			goto unlock;
++		}
+ 
+-	alloc_master_rt = true;
++		alloc_master_rt = true;
++	}
+ 
+-skip_alloc_master_rt:
+ 	s_rt = sdw_slave_rt_find(slave, stream);
+-	if (s_rt)
+-		goto skip_alloc_slave_rt;
+-
+-	s_rt = sdw_slave_rt_alloc(slave, m_rt);
+ 	if (!s_rt) {
+-		dev_err(&slave->dev, "Slave runtime alloc failed for stream:%s\n", stream->name);
+-		ret = -ENOMEM;
+-		goto alloc_error;
+-	}
+-
+-	alloc_slave_rt = true;
++		s_rt = sdw_slave_rt_alloc(slave, m_rt);
++		if (!s_rt) {
++			dev_err(&slave->dev, "Slave runtime alloc failed for stream:%s\n",
++				stream->name);
++			ret = -ENOMEM;
++			goto alloc_error;
++		}
+ 
+-skip_alloc_slave_rt:
+-	if (sdw_slave_port_allocated(s_rt))
+-		goto skip_port_alloc;
++		alloc_slave_rt = true;
++	}
+ 
+-	ret = sdw_slave_port_alloc(slave, s_rt, num_ports);
+-	if (ret)
+-		goto alloc_error;
++	if (!sdw_slave_port_allocated(s_rt)) {
++		ret = sdw_slave_port_alloc(slave, s_rt, num_ports);
++		if (ret)
++			goto alloc_error;
++	}
+ 
+-skip_port_alloc:
+ 	ret =  sdw_master_rt_config(m_rt, stream_config);
+ 	if (ret)
+ 		goto unlock;
+-- 
+2.30.2
+
