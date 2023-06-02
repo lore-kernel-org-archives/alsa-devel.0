@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E530C7EE24
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 20:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0D17C7EE29
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 20:31:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9F32AE9;
-	Fri,  2 Jun 2023 22:30:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9F32AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id AECD9852;
+	Fri,  2 Jun 2023 22:30:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AECD9852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685737863;
-	bh=MmA8UYKfGmHsVSLb7enDaQEXS1iXeL+huBcS5VzUCp0=;
+	s=default; t=1685737882;
+	bh=yWDb3PTVtNifPI3I7lBZwI++TdKsSrNta+K3hlEdSIw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pXRk0wGMpQyrqtqdJNW7JNBjHgR7/YmwX3Jhy8wzV0C0Kv6vMhJR35U4fs4Ss+39S
-	 8Py+xnIxyGr5EaFzQVg/RE4/txpBxG1nBj4QDCWOP9U1x3ErkBMZyDyEWac5W3e6Oy
-	 xcnBbWoc7ASzLvtkjTE9NWESTEY4+oDuWJaO7534=
+	b=lm8gQG5G6zsNPnYwOMdLqn6E/Lf04qdaZkA4A4Idf0gixqWC7Mai1qYQUTPfeaHr9
+	 poTfSRz2kRfp/pspRYGxXzAMP+KmajvoepbZ/PX46wNznxqoOWWI4TxaemILLeS4nR
+	 EIKU6EcXVM7yK+7jEUWWIfFBuAS7uFqTsi7izUX0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 230E3F806A9; Fri,  2 Jun 2023 22:24:41 +0200 (CEST)
+	id A4DE3F806AB; Fri,  2 Jun 2023 22:24:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3B4DF806A6;
-	Fri,  2 Jun 2023 22:24:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E829F806AD;
+	Fri,  2 Jun 2023 22:24:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5817FF8062F; Fri,  2 Jun 2023 22:24:12 +0200 (CEST)
+	id 4FF86F80634; Fri,  2 Jun 2023 22:24:13 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0E3EFF8056F
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 22:23:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E3EFF8056F
+	by alsa1.perex.cz (Postfix) with ESMTPS id DAF51F80580
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 22:23:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAF51F80580
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=BkJWclVm
+ header.s=Intel header.b=iB+1eVb7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685737398; x=1717273398;
+  t=1685737400; x=1717273400;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=MmA8UYKfGmHsVSLb7enDaQEXS1iXeL+huBcS5VzUCp0=;
-  b=BkJWclVmuwo2AkiftTkziONUPTwOHNsjoepRorXlxLQyWHS5auALXBBj
-   Eosykvl9sFsMNytnjHFVuAQ/p5vz5dvqYMm8U4RodfVarPYjqC2FIwOzv
-   z9PnAru/DMHaa+BjdNTRwavt0+V7VgiV8+RLEu4s47Bh+/f++tBxb3cBr
-   A5ehDbocwyLxEl+gIe8NsmVzFxjEbO52JsRrg/+ZWGt7Nk7xLoqmeHZYu
-   RKBcRQzRPBTYyh/gYOmCgXQ0Ouy+dG617nWUiU+zIy96F3qsxfE2LdPvi
-   BkYE0U5XDBEnpIZbR/J0F7qe7/7JCVOZnUb7cJKzPuWriov6R13o5DXFk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="354811343"
+  bh=yWDb3PTVtNifPI3I7lBZwI++TdKsSrNta+K3hlEdSIw=;
+  b=iB+1eVb7sDjlBpfyUODtU1RZ/wIj+QxyacTTBIR79bw8Np0ka+HrZRDn
+   zIm/WJXbJuU7Evu6hFf0bhkHtXdLW8M1XZK5kN7FEJKLMK4HDmArmLqxr
+   QKazha+rgz+GIlgaVlrkI4NIcvqArc6ZYl2wlNmFdHWf8te4oAV9JkoW4
+   xxf5sxbUDQIOOMjd6YFflGsxP7dm294H8gd4fKowRGMj536gH429CwLR6
+   9jUp3CPcgTYcjNMp6rsD/9fokVdOigwvkTNkS6qd7FlvxEmf3V6ugyuuD
+   E9A+Z4X26aZW352OglJh0DsXgmxL6YvPzjZAXF9K40ToN5E0c/taynL8A
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="354811361"
 X-IronPort-AV: E=Sophos;i="6.00,214,1681196400";
-   d="scan'208";a="354811343"
+   d="scan'208";a="354811361"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jun 2023 13:23:05 -0700
+ 02 Jun 2023 13:23:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="773020058"
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="773020065"
 X-IronPort-AV: E=Sophos;i="6.00,214,1681196400";
-   d="scan'208";a="773020058"
+   d="scan'208";a="773020065"
 Received: from clatorre-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.190.110])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jun 2023 13:23:04 -0700
+ 02 Jun 2023 13:23:06 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -74,16 +74,17 @@ Cc: tiwai@suse.de,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Yong Zhi <yong.zhi@intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 26/28] ASoC: Intel: sof_sdw: Add support for MAX98363 codec
-Date: Fri,  2 Jun 2023 15:22:23 -0500
-Message-Id: <20230602202225.249209-27-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 28/28] ASoC: Intel: soc-acpi: add Rex CS42l42 and MAX98363
+ SoundWire entries
+Date: Fri,  2 Jun 2023 15:22:25 -0500
+Message-Id: <20230602202225.249209-29-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230602202225.249209-1-pierre-louis.bossart@linux.intel.com>
 References: <20230602202225.249209-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: L4Q7CHELNCQLWKZ4SCGWQLZAFYOJL5YG
-X-Message-ID-Hash: L4Q7CHELNCQLWKZ4SCGWQLZAFYOJL5YG
+Message-ID-Hash: Z73BW5W5ZL5TQUAA54H7M2N7GT2DQSGU
+X-Message-ID-Hash: Z73BW5W5ZL5TQUAA54H7M2N7GT2DQSGU
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L4Q7CHELNCQLWKZ4SCGWQLZAFYOJL5YG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z73BW5W5ZL5TQUAA54H7M2N7GT2DQSGU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,8 +108,10 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Uday M Bhat <uday.m.bhat@intel.com>
 
-Add support for MAX98363 soundwire codec. Update build
-configuration to include this codec.
+Add support to the following daughter card for rex:
+
+SDW0: CS42l42 Headset
+SDW2: MX98363 Speaker
 
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
@@ -116,71 +119,72 @@ Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 Signed-off-by: Uday M Bhat <uday.m.bhat@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/Kconfig         |  1 +
- sound/soc/intel/boards/sof_sdw.c       | 13 +++++++++++++
- sound/soc/intel/boards/sof_sdw_maxim.c |  6 ++++++
- 3 files changed, 20 insertions(+)
+ .../intel/common/soc-acpi-intel-mtl-match.c   | 45 +++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 799a51f23b84..f472f603ab75 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -662,6 +662,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
- 	depends on SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES || COMPILE_TEST
- 	depends on SOUNDWIRE
-+	select SND_SOC_MAX98363
- 	select SND_SOC_MAX98373_I2C
- 	select SND_SOC_MAX98373_SDW
- 	select SND_SOC_RT700_SDW
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 04d050eac00d..6caf598c7aeb 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -810,6 +810,19 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		},
- 		.dai_num = 1,
+diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+index 2c2bece6cd77..3d5cf8867926 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+@@ -220,6 +220,45 @@ static const struct snd_soc_acpi_link_adr mtl_3_in_1_sdca[] = {
+ 	{}
+ };
+ 
++static const struct snd_soc_acpi_adr_device mx8363_2_adr[] = {
++	{
++		.adr = 0x000230019F836300ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_l_endpoint,
++		.name_prefix = "Left"
++	},
++	{
++		.adr = 0x000231019F836300ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_r_endpoint,
++		.name_prefix = "Right"
++	}
++};
++
++static const struct snd_soc_acpi_adr_device cs42l42_0_adr[] = {
++	{
++		.adr = 0x00001001FA424200ull,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "cs42l42"
++	}
++};
++
++static const struct snd_soc_acpi_link_adr cs42l42_link0_max98363_link2[] = {
++	/* Expected order: jack -> amp */
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(cs42l42_0_adr),
++		.adr_d = cs42l42_0_adr,
++	},
++	{
++		.mask = BIT(2),
++		.num_adr = ARRAY_SIZE(mx8363_2_adr),
++		.adr_d = mx8363_2_adr,
++	},
++	{}
++};
++
+ /* this table is used when there is no I2S codec present */
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_sdw_machines[] = {
+ 	/* mockup tests need to be first */
+@@ -265,6 +304,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-mtl-sdw-rt5682-l2-max98373-l0.tplg",
  	},
 +	{
-+		.part_id = 0x8363,
-+		.dais = {
-+			{
-+				.direction = {true, false},
-+				.dai_name = "max98363-aif1",
-+				.dai_type = SOF_SDW_DAI_TYPE_AMP,
-+				.dailink = {SDW_AMP_OUT_DAI_ID, SDW_UNUSED_DAI_ID},
-+				.init = sof_sdw_maxim_init,
-+			},
-+		},
-+		.dai_num = 1,
++		.link_mask = BIT(0) | BIT(2),
++		.links = cs42l42_link0_max98363_link2,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-mtl-sdw-cs42l42-l0-max98363-l2.tplg",
 +	},
- 	{
- 		.part_id = 0x5682,
- 		.dais = {
-diff --git a/sound/soc/intel/boards/sof_sdw_maxim.c b/sound/soc/intel/boards/sof_sdw_maxim.c
-index 3cc47ae98c5e..8d40a83ad98e 100644
---- a/sound/soc/intel/boards/sof_sdw_maxim.c
-+++ b/sound/soc/intel/boards/sof_sdw_maxim.c
-@@ -14,6 +14,7 @@
- #include "sof_maxim_common.h"
- 
- static int maxim_part_id;
-+#define SOF_SDW_PART_ID_MAX98363 0x8363
- #define SOF_SDW_PART_ID_MAX98373 0x8373
- 
- static const struct snd_soc_dapm_widget maxim_widgets[] = {
-@@ -148,6 +149,11 @@ int sof_sdw_maxim_init(struct snd_soc_card *card,
- 
- 	maxim_part_id = info->part_id;
- 	switch (maxim_part_id) {
-+	case SOF_SDW_PART_ID_MAX98363:
-+		/* Default ops are set in function init_dai_link.
-+		 * called as part of function create_sdw_dailink
-+		 */
-+		break;
- 	case SOF_SDW_PART_ID_MAX98373:
- 		info->codec_card_late_probe = mx8373_sdw_late_probe;
- 		dai_links->ops = &max_98373_sdw_ops;
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_mtl_sdw_machines);
 -- 
 2.37.2
 
