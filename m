@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C375C7EE24
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 12:46:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA191C77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 15:32:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F7C720C;
-	Fri,  2 Jun 2023 14:45:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F7C720C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6CCE208;
+	Fri,  2 Jun 2023 17:32:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6CCE208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685709982;
-	bh=McQIwyw8ISVxlP2qAhRRv+FXFr6OUy8H+OaWYCPsDmw=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=CCMwlAhWx5UKqzeLFV1ub+muCPWNLkj27Mw1xCR6pSPMHheRN2CHAFyO2V5oHe+EJ
-	 hvgCHsQtCbWz5bOX3ydPBQSDenzHy2v26kr3ysbmyYzMI/6u7LQo2K1Hp4ZHfM6yfv
-	 oefi2UXvnUzpXyvFFD27U8X67nrHEKu6DzW005yU=
+	s=default; t=1685719974;
+	bh=5QXIHa2W0ELGorikCysfBGEGd/J7lBLGTLPblBeY30Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=DBYjqUEwoo9UrmSdQyh2NjGNLjST7JoeMAeV47iUnsQ6CB38HKJ1BhMkXg8EoDlss
+	 BkHzMS2Rgy036JO+SEsdhttZevd60I4tFgDDV8jbjMWVSH+J7eNsuMumzwgqrCdna1
+	 OV1U+5vSO4D2S0gGPXw9e4EJ+lDWjkKSxroPEUj4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0EFCF804DA; Fri,  2 Jun 2023 14:45:05 +0200 (CEST)
+	id 1C2B3F80149; Fri,  2 Jun 2023 17:32:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A5F8F80199;
-	Fri,  2 Jun 2023 14:45:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0663F80149;
+	Fri,  2 Jun 2023 17:32:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32D15F80149; Fri,  2 Jun 2023 14:45:01 +0200 (CEST)
+	id 45988F80149; Fri,  2 Jun 2023 17:31:58 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 221D3F800ED
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 14:44:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 221D3F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1DB7EF800BD
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 17:31:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DB7EF800BD
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=btkguOVO
+ header.s=k20201202 header.b=Vb2XAcBW
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E6622616D1;
-	Fri,  2 Jun 2023 12:44:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9B06C433EF;
-	Fri,  2 Jun 2023 12:44:51 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4131561538;
+	Fri,  2 Jun 2023 15:31:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1B75C433D2;
+	Fri,  2 Jun 2023 15:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685709894;
-	bh=McQIwyw8ISVxlP2qAhRRv+FXFr6OUy8H+OaWYCPsDmw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=btkguOVOSVVPudv8jF3nxyiecgErSnv3Ek3cBd2OZRehnzwYHjkFDCnTr+w8sGyCz
-	 H1xkmzQyBLIRldZ6KpcqCmPfjJflOMM8irt6dCHLu4fdPczqi0g7XoJOPk7ovRKMm/
-	 ksEyW5zQbizKPTy29woFmDgYx8DAkhh6z+Nywo/ifUCv+0ljwKgtSWvUlUTGV+CqBL
-	 GgEie5i2XMC4/CdwQK0Xa2OzPh4f+CvSqqPExN7o4+XHE3g7CaNOQILkVpeR8RJiNf
-	 lo57kd/rOPMs2OWB69nx3oXT9PhX+mrLOgSkazGl8gwO9k+YsbEhIsaOGjaM+UnwVA
-	 oqmVgrtx6hjLg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-	Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: amd: vangogh: select CONFIG_SND_AMD_ACP_CONFIG
-Date: Fri,  2 Jun 2023 14:44:39 +0200
-Message-Id: <20230602124447.863476-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=k20201202; t=1685719908;
+	bh=5QXIHa2W0ELGorikCysfBGEGd/J7lBLGTLPblBeY30Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Vb2XAcBW6R8rsoLSgPysLHzSyG2/r9HJktponYdAS4KVzAZL0ww8czuWolrFaBxLX
+	 kdWLV9B5WgnaHsEJAcxjMxDm/nfX52zzbuikEgQr6fzyzlIZO9dgF0mz8UZQaRTlOK
+	 ncqcW+e9v7sbfaqDPpZmIFwJp2YEJcrgOXwMuK/DnGxuMBOVekuYiQv0SfBk6FTgj3
+	 tDCCieysXNlawy6I11I/iyqq4j6fdIjrV0YL99QU+jlSqfbiDGBpx2GsJFCcgaJmBg
+	 +YTjtg8T2FmjkvNuz1UwlZJVFsLudrKYmg+XmrZQg059dPtn60Ziq1lmiDWCNbKrC5
+	 2LgcGmC8/qRJg==
+Date: Fri, 2 Jun 2023 16:31:44 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 00/21] ASoC: replace dpcm_playback/capture to
+ playback/capture_only
+Message-ID: <5fa212c1-26a4-4449-9f90-631b91fa8ccc@sirena.org.uk>
+References: <87ttw1gqgn.wl-kuninori.morimoto.gx@renesas.com>
+ <ff4586eb-4363-2592-97f7-d2fa8bbdee8a@linux.intel.com>
+ <875y8fx5fy.wl-kuninori.morimoto.gx@renesas.com>
+ <87mt1ihhm3.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YCZLSMIO57V2SYT2XKRBQAX56QGLKHEN
-X-Message-ID-Hash: YCZLSMIO57V2SYT2XKRBQAX56QGLKHEN
-X-MailFrom: arnd@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="HxIgFDngicBbunuL"
+Content-Disposition: inline
+In-Reply-To: <87mt1ihhm3.wl-kuninori.morimoto.gx@renesas.com>
+X-Cookie: War is an equal opportunity destroyer.
+Message-ID-Hash: YNF2KGA4POAB3MJ5NQNKVYOGS4AM7BFK
+X-Message-ID-Hash: YNF2KGA4POAB3MJ5NQNKVYOGS4AM7BFK
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YCZLSMIO57V2SYT2XKRBQAX56QGLKHEN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YNF2KGA4POAB3MJ5NQNKVYOGS4AM7BFK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,32 +97,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-The vangogh driver just gained a link time dependency that now causes
-randconfig builds to fail:
+--HxIgFDngicBbunuL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-x86_64-linux-ld: sound/soc/amd/vangogh/pci-acp5x.o: in function `snd_acp5x_probe':
-pci-acp5x.c:(.text+0xbb): undefined reference to `snd_amd_acp_find_config'
+On Thu, Jun 01, 2023 at 11:45:31PM +0000, Kuninori Morimoto wrote:
 
-Fixes: e89f45edb747e ("ASoC: amd: vangogh: Add check for acp config flags in vangogh platform")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/amd/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+> In case of CPU:Codec =3D 1:N, and if its validation were
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 08e42082f5e96..e724cb3c70b74 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -81,6 +81,7 @@ config SND_SOC_AMD_VANGOGH_MACH
- 	tristate "AMD Vangogh support for NAU8821 CS35L41"
- 	select SND_SOC_NAU8821
- 	select SND_SOC_CS35L41_SPI
-+	select SND_AMD_ACP_CONFIG
- 	depends on SND_SOC_AMD_ACP5x && I2C && SPI_MASTER
- 	help
- 	  This option enables machine driver for Vangogh platform
--- 
-2.39.2
+> 	CPU   : OK
+>=20
+> 	Codec : OK
+> 	Codec : NG
+> 	...
 
+> Current soc_get_playback_capture() will have has_playback/capture =3D 1
+> evan though one of Codec was NG.
+> I think it should be error, but am I right ?
+
+I guess the question here is if anything is relying on being able to
+play/capture to the other CODECs when one of them is bad for some
+reason.  I'd need to spend some time digging into it to refresh my
+memory, I do recall some systems where the TDM has a mix of things on it
+(eg, HDMI and analog outputs).
+
+--HxIgFDngicBbunuL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmR6C18ACgkQJNaLcl1U
+h9AfRAf+K8zdiuwf61DLyIr/+4cCKWDqF6EVnOn/laMIndd9quQEH0D+ngeHrwYj
+4sLNxiA2UmzYhoxsBPRVJpwEEWV/+rTrhFKhFbhAWFK7Z2n/QvkSZIZRqNQoyNhA
+UVaCUiyB96QRZaoebQ7rSlRnSEcxJRh0ai5YGnu2zqUr3wp0uUefz1adciGu1S/q
+k9rqBcOMiUzZz6M6DE+8oZpLaLEHxWezMVWlBJYGXqnPAaGPZk2iAnXL66LDB8Di
+KgjtiHNCZd9ZSqVKgaC7r8eknhz4buNoMX+eaZPufRABsOEVk0WeyjfagSEBaBc+
+EkJ5LNC1pnyi4TTzmtg1Rrb4As5Tmw==
+=Wo5O
+-----END PGP SIGNATURE-----
+
+--HxIgFDngicBbunuL--
