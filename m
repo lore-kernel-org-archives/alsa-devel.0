@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E493CC7EE24
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 20:25:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07254C7EE29
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 20:26:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29048844;
-	Fri,  2 Jun 2023 22:25:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29048844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2759C84A;
+	Fri,  2 Jun 2023 22:25:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2759C84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685737552;
-	bh=7SpuRL88Ge5Wmw5fQKOQcK4WDEuoB2ng3nJoxOzyRoI=;
+	s=default; t=1685737561;
+	bh=2YZ04moTsJmeoTiAF/tct/la9JlLVMwD3YOUVOAkf9A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gJaIOdRGrnm+jCsD4A9JJPDz1p1NRC2OtSMrR5djrtzRnhlrW+ieovVfglgenoMCh
-	 kB6OF3Ek5hWg8yDZnZ8FWmght8bDyChRzdemL9059r1Fdb/Lp/49oEQeTX5gq7hH3P
-	 UCRAbSDYCBph5Ksr73lQtoOiMBE2AtN6dq48yIIc=
+	b=OzYXxHwDX7cTJRN51XMdn3w4qA6KDkOpNf4Ae4+uhKr27txKD2BPwgialVhd8SOMd
+	 FieuT5KJQHx7EL+QkGJN3/Rw10oJDCwb2jnQvlpWk/H63KBH9LoPCPPKX29hSzvq8i
+	 9k5ATxjVM8cejDzMTBIE9KpQTyHGi5tzyovzwYiI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69135F805D6; Fri,  2 Jun 2023 22:23:36 +0200 (CEST)
+	id 790B6F805E2; Fri,  2 Jun 2023 22:23:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89327F805C7;
-	Fri,  2 Jun 2023 22:23:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33F93F805D9;
+	Fri,  2 Jun 2023 22:23:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85A55F805BA; Fri,  2 Jun 2023 22:23:30 +0200 (CEST)
+	id 961B1F8047D; Fri,  2 Jun 2023 22:23:30 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0599DF8047D
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 22:23:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0599DF8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id C5325F804DA
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 22:23:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5325F804DA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=KGPO0bNq
+ header.s=Intel header.b=bU6SJyJc
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685737388; x=1717273388;
+  t=1685737390; x=1717273390;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7SpuRL88Ge5Wmw5fQKOQcK4WDEuoB2ng3nJoxOzyRoI=;
-  b=KGPO0bNqjOPy9eJDa1HpO4x36CQAEt4K/T/pcXRc1MSWPJotVI76Hsq/
-   ae3sTrV+Kwc/oViiESxq1kciLOvwgxEyy6Ng1lfhRz3p3STcDyqGNTxoS
-   K0w7mMJMoy6AJ92xmzZiq+75gi+H+XYGJUuyS2oZeBS8DcCSSLD5qBoG9
-   /ETq1TvuuqktdYawGDF7jy3o2oy5RNc4m1iym9ar5D0DT9PjwkdOu/Ex9
-   XFeYcZdi+K2LBRxCuUMrTFZiDzCPmH5cpoo3Cm4/dqamdsbe0hB6bKNV5
-   /99Euj34EULvyWyiozY2DHgzrKE+9ZiJZgTaBPVw/OQ0E5KfKZTEsZD9+
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="354811209"
+  bh=2YZ04moTsJmeoTiAF/tct/la9JlLVMwD3YOUVOAkf9A=;
+  b=bU6SJyJc1zUySfUQKw+ZklKH6jG9buftHRbRS4X2Z3wW8fhJjwCJO+z5
+   G9acNBSyLmCVhORl6DRMLGAZPcFvx5AF4dsb31EaU+GWlddYFNL0zP7QO
+   AMF6T7ZenSGBszbdDcnJU33kx9Y7tcWdn585MnEO+IB/dzfQOUTwKuOzD
+   8kinvUGa6ls2NqcYRfQlR7SzQMq+K1PY/4Ug3N/Cgpr9qncm17WJdXuhI
+   t15/FzEe9SD42M4jjGUx1t8KnFAC31FUa73BTDr6WBk9ofy/XGjWtPp5Q
+   cJ14rF4/WT4vNM+q7neGdgCEwUN91Pvv2+Gf4Rh9P/vZz6AhcJBX7nXSi
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="354811230"
 X-IronPort-AV: E=Sophos;i="6.00,214,1681196400";
-   d="scan'208";a="354811209"
+   d="scan'208";a="354811230"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jun 2023 13:22:46 -0700
+ 02 Jun 2023 13:22:50 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="773020009"
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="773020014"
 X-IronPort-AV: E=Sophos;i="6.00,214,1681196400";
-   d="scan'208";a="773020009"
+   d="scan'208";a="773020014"
 Received: from clatorre-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.190.110])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jun 2023 13:22:45 -0700
+ 02 Jun 2023 13:22:49 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 04/28] ASoC: Intel: sof_sdw: add codec_info pointer
-Date: Fri,  2 Jun 2023 15:22:01 -0500
-Message-Id: <20230602202225.249209-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 08/28] ASoC: Intel: sof_sdw: rename SOF_RT711_JDSRC to
+ SOF_JACK_JDSRC
+Date: Fri,  2 Jun 2023 15:22:05 -0500
+Message-Id: <20230602202225.249209-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230602202225.249209-1-pierre-louis.bossart@linux.intel.com>
 References: <20230602202225.249209-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OXJAGAZXWUWSF4R7AK44R3V6OTHNYASI
-X-Message-ID-Hash: OXJAGAZXWUWSF4R7AK44R3V6OTHNYASI
+Message-ID-Hash: PXIGOZ7XLOCELKXN7E76WXDDS2TASS5G
+X-Message-ID-Hash: PXIGOZ7XLOCELKXN7E76WXDDS2TASS5G
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OXJAGAZXWUWSF4R7AK44R3V6OTHNYASI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PXIGOZ7XLOCELKXN7E76WXDDS2TASS5G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,86 +105,89 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-codec_info_list[codec_index] is used multiple times in the
-create_sdw_dailink() function. Adding a codec_info pointer to shorten
-the code. This is a preparation for the following up patches.
-No function changed.
+Jack Detection source can be applied to all jacks, not only rt711.
+No function changes.
 
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c            | 4 ++--
+ sound/soc/intel/boards/sof_sdw_common.h     | 2 +-
+ sound/soc/intel/boards/sof_sdw_rt711.c      | 4 ++--
+ sound/soc/intel/boards/sof_sdw_rt711_sdca.c | 6 +++---
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 1df489c7e2bd..b197c2920e80 100644
+index 8405c3231448..d925e3005394 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -872,6 +872,7 @@ static int get_sdw_dailink_info(struct device *dev, const struct snd_soc_acpi_li
+@@ -24,9 +24,9 @@ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
  
- 	for (link = links; link->num_adr; link++) {
- 		const struct snd_soc_acpi_endpoint *endpoint;
-+		struct sof_sdw_codec_info *codec_info;
- 		int codec_index;
- 		int stream;
- 		u64 adr;
-@@ -881,12 +882,13 @@ static int get_sdw_dailink_info(struct device *dev, const struct snd_soc_acpi_li
- 			codec_index = find_codec_info_part(adr);
- 			if (codec_index < 0)
- 				return codec_index;
-+			codec_info = &codec_info_list[codec_index];
- 
- 			endpoint = link->adr_d[i].endpoints;
- 
- 			/* count DAI number for playback and capture */
- 			for_each_pcm_streams(stream) {
--				if (!codec_info_list[codec_index].dais[0].direction[stream])
-+				if (!codec_info->dais[0].direction[stream])
- 					continue;
- 
- 				(*sdw_cpu_dai_num)++;
-@@ -1184,6 +1186,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
+ static void log_quirks(struct device *dev)
  {
- 	const struct snd_soc_acpi_link_adr *link_next;
- 	struct snd_soc_dai_link_component *codecs;
-+	struct sof_sdw_codec_info *codec_info;
- 	int cpu_dai_id[SDW_MAX_CPU_DAIS];
- 	int cpu_dai_num, cpu_dai_index;
- 	unsigned int group_id;
-@@ -1232,8 +1235,9 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 	codec_index = find_codec_info_part(link->adr_d[adr_index].adr);
- 	if (codec_index < 0)
- 		return codec_index;
-+	codec_info = &codec_info_list[codec_index];
+-	if (SOF_RT711_JDSRC(sof_sdw_quirk))
++	if (SOF_JACK_JDSRC(sof_sdw_quirk))
+ 		dev_dbg(dev, "quirk realtek,jack-detect-source %ld\n",
+-			SOF_RT711_JDSRC(sof_sdw_quirk));
++			SOF_JACK_JDSRC(sof_sdw_quirk));
+ 	if (sof_sdw_quirk & SOF_SDW_FOUR_SPK)
+ 		dev_dbg(dev, "quirk SOF_SDW_FOUR_SPK enabled\n");
+ 	if (sof_sdw_quirk & SOF_SDW_TGL_HDMI)
+diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
+index 65b3f6eee924..9640fd6dbd12 100644
+--- a/sound/soc/intel/boards/sof_sdw_common.h
++++ b/sound/soc/intel/boards/sof_sdw_common.h
+@@ -41,7 +41,7 @@ enum {
+ 	SOF_I2S_SSP5 = BIT(5),
+ };
  
--	if (codec_info_list[codec_index].ignore_pch_dmic)
-+	if (codec_info->ignore_pch_dmic)
- 		*ignore_pch_dmic = true;
+-#define SOF_RT711_JDSRC(quirk)		((quirk) & GENMASK(3, 0))
++#define SOF_JACK_JDSRC(quirk)		((quirk) & GENMASK(3, 0))
+ #define SOF_SDW_FOUR_SPK		BIT(4)
+ #define SOF_SDW_TGL_HDMI		BIT(5)
+ #define SOF_SDW_PCH_DMIC		BIT(6)
+diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
+index 8291967f23f3..2b05e2a707de 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt711.c
++++ b/sound/soc/intel/boards/sof_sdw_rt711.c
+@@ -27,9 +27,9 @@ static int rt711_add_codec_device_props(struct device *sdw_dev)
+ 	struct fwnode_handle *fwnode;
+ 	int ret;
  
- 	cpu_dai_index = *cpu_id;
-@@ -1247,10 +1251,10 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 			"SDW%d-Capture-%s",
- 		};
+-	if (!SOF_RT711_JDSRC(sof_sdw_quirk))
++	if (!SOF_JACK_JDSRC(sof_sdw_quirk))
+ 		return 0;
+-	props[0] = PROPERTY_ENTRY_U32("realtek,jd-src", SOF_RT711_JDSRC(sof_sdw_quirk));
++	props[0] = PROPERTY_ENTRY_U32("realtek,jd-src", SOF_JACK_JDSRC(sof_sdw_quirk));
  
--		if (!codec_info_list[codec_index].dais[0].direction[stream])
-+		if (!codec_info->dais[0].direction[stream])
- 			continue;
+ 	fwnode = fwnode_create_software_node(props, NULL);
+ 	if (IS_ERR(fwnode))
+diff --git a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
+index cf8b9793fe0e..a9ae0aa5ce0a 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
++++ b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
+@@ -27,10 +27,10 @@ static int rt711_sdca_add_codec_device_props(struct device *sdw_dev)
+ 	struct fwnode_handle *fwnode;
+ 	int ret;
  
--		*link_id = codec_info_list[codec_index].dais[0].dailink[stream];
-+		*link_id = codec_info->dais[0].dailink[stream];
- 		if (*link_id < 0) {
- 			dev_err(dev, "Invalid dailink id %d\n", *link_id);
- 			return -EINVAL;
-@@ -1260,7 +1264,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 		if (append_codec_type) {
- 			name = devm_kasprintf(dev, GFP_KERNEL,
- 					      sdw_stream_name[stream + 2], cpu_dai_id[0],
--					      type_strings[codec_info_list[codec_index].codec_type]);
-+					      type_strings[codec_info->codec_type]);
- 		} else {
- 			name = devm_kasprintf(dev, GFP_KERNEL,
- 					      sdw_stream_name[stream], cpu_dai_id[0]);
+-	if (!SOF_RT711_JDSRC(sof_sdw_quirk))
++	if (!SOF_JACK_JDSRC(sof_sdw_quirk))
+ 		return 0;
+ 
+-	props[0] = PROPERTY_ENTRY_U32("realtek,jd-src", SOF_RT711_JDSRC(sof_sdw_quirk));
++	props[0] = PROPERTY_ENTRY_U32("realtek,jd-src", SOF_JACK_JDSRC(sof_sdw_quirk));
+ 
+ 	fwnode = fwnode_create_software_node(props, NULL);
+ 	if (IS_ERR(fwnode))
+@@ -143,7 +143,7 @@ int sof_sdw_rt711_sdca_exit(struct snd_soc_card *card, struct snd_soc_dai_link *
+ 	if (!ctx->headset_codec_dev)
+ 		return 0;
+ 
+-	if (!SOF_RT711_JDSRC(sof_sdw_quirk))
++	if (!SOF_JACK_JDSRC(sof_sdw_quirk))
+ 		return 0;
+ 
+ 	device_remove_software_node(ctx->headset_codec_dev);
 -- 
 2.37.2
 
