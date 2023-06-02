@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02CCBC7EE29
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 20:28:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03FFDC7EE29
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 20:28:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6CBB86E;
-	Fri,  2 Jun 2023 22:27:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6CBB86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6AF9826;
+	Fri,  2 Jun 2023 22:27:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6AF9826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685737699;
-	bh=x11QVuYK+u0pkN91FphTj6BIhUi+uCETtdcFBMfBWls=;
+	s=default; t=1685737718;
+	bh=yzdbsRMevvjJYm+E0v2dcGet06G7mPsFfNglCgBakhU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tXFKMRDrWfez2CqLvOPXQAPMdUsX6qVsSifp/kX37IfkGf1fgLfMidFMO3QD9FKlu
-	 NNevtoEk4RGMs6S5c3/g5mPx/uxiyWo4MRNxA46Ms7PngqnT0rsmYyOpuFHieZ/SRF
-	 FdAZV2lJ9ATX57ZRaozwLJBwPhyytLz2Yn1HYkms=
+	b=YtbiY/2k/Pwgs09VlJ18/1/CBa4hpKgDz6CDjjO6TRQM3Wz4NzxjZyBNLQQy5aj/D
+	 7dRow3IkUVEyq7QDrxdekOGS2o+XkU3xbEmIS3KBhywTVM53vJ/ekQLjbU9Zhm8un9
+	 aILieP0avsv2BDHh7w9v97J8jfP2FG6BpF+N4Siw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78441F8057D; Fri,  2 Jun 2023 22:24:11 +0200 (CEST)
+	id 20627F80588; Fri,  2 Jun 2023 22:24:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8796AF8062D;
-	Fri,  2 Jun 2023 22:24:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 621E8F8062E;
+	Fri,  2 Jun 2023 22:24:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8BE5FF805FD; Fri,  2 Jun 2023 22:23:53 +0200 (CEST)
+	id 38D49F805FD; Fri,  2 Jun 2023 22:23:54 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 33415F80149
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 22:23:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33415F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id C0740F80558
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 22:23:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0740F80558
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=DCzN5E7V
+ header.s=Intel header.b=oCWAIuvy
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685737394; x=1717273394;
+  t=1685737393; x=1717273393;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=x11QVuYK+u0pkN91FphTj6BIhUi+uCETtdcFBMfBWls=;
-  b=DCzN5E7Vqy2J5y2jpL0SlzQkwhZeQsIAyavT+YwguFmVJ9wxRGwrlq2U
-   V9zxP68/Qw52oFcMQdjZeFL1YbKdfCDnM8REStubbkasQEvvuubr0D/fr
-   H5jhIyGxcL7KKFisOjgHwqrFbMooKb7MLa8f9BvfQIW1g48Wk7PCUlncK
-   L/XQkZGt8q62u8pHVvPgH6SPXOqWMiK7IE4l4VTqqTnqWT9ek28I4Y0a4
-   JYnpmR2FL3u3AVEUsCukyDQpHIfx6UQUhdGOVPE8XOWGI56AqpzUcNuZj
-   Ej64aGjKtDi8nhPQk3mhoZibz0ModFVylMl8aqT6sOn/Fypue6xQvh7Qp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="354811271"
+  bh=yzdbsRMevvjJYm+E0v2dcGet06G7mPsFfNglCgBakhU=;
+  b=oCWAIuvyfrJ8XMych8al1GfM8UdwaziiDCXog5JX41lKHkY9uMH8VJss
+   fZuvDq0PCSsNtSRUjXv65huhBrzJYFfAs6JXmgyL3C2cAAKUyQSysnyjI
+   Lxx0/R14aOJzjFWfzX4yHstPYODegkANcDUmP3PtHYzhqOlkqmf0x/geV
+   v9NJdwr6JHgo8F/50pfFIvLcHxKZnWkIp9/X7iiwvuP21RrpeRgrwoUbe
+   ZVErq0Cqyz2lQFMTd4RFtwYfk0lDnxEkAiRXVm2LQjNMaSvR0PfyjY7D6
+   TvoQX/nPM7YOwRgx23YZrcvFiYLZK5lbRan4dGshF+4O7KQfMeDWMHE9C
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="354811268"
 X-IronPort-AV: E=Sophos;i="6.00,214,1681196400";
-   d="scan'208";a="354811271"
+   d="scan'208";a="354811268"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  02 Jun 2023 13:22:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="773020026"
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="773020024"
 X-IronPort-AV: E=Sophos;i="6.00,214,1681196400";
-   d="scan'208";a="773020026"
+   d="scan'208";a="773020024"
 Received: from clatorre-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.190.110])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jun 2023 13:22:54 -0700
+ 02 Jun 2023 13:22:53 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -72,17 +72,16 @@ Cc: tiwai@suse.de,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 14/28] ASoC: Intel: sof_sdw: increase sdw pin index for each
- sdw link
-Date: Fri,  2 Jun 2023 15:22:11 -0500
-Message-Id: <20230602202225.249209-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 13/28] ASoC: Intel: sof_sdw: add rt713 support
+Date: Fri,  2 Jun 2023 15:22:10 -0500
+Message-Id: <20230602202225.249209-14-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230602202225.249209-1-pierre-louis.bossart@linux.intel.com>
 References: <20230602202225.249209-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: PA2M2NP6JUNTLCFSAPBN4NKZ6CIIJBXJ
-X-Message-ID-Hash: PA2M2NP6JUNTLCFSAPBN4NKZ6CIIJBXJ
+Message-ID-Hash: M2Z5K2HGMYUHDGMJXITRCY2NBYARBHF4
+X-Message-ID-Hash: M2Z5K2HGMYUHDGMJXITRCY2NBYARBHF4
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PA2M2NP6JUNTLCFSAPBN4NKZ6CIIJBXJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M2Z5K2HGMYUHDGMJXITRCY2NBYARBHF4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,79 +105,55 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-To support multiple codecs per SoundWire link, we have to assign multiple
-CPU DAIs to different DAI links sharing the same physical link. This is
-not possible with the existing code since we assume that only 'Pin2' is
-used for playback and 'Pin3' used for capture - additional DAIs cannot
-be handled.
-
-This patch enables more CPU DAIs to be used, e.g. "SDW0 Pin2",
-"SDW0 Pin3", and "SDW0 Pin4" for SDW0-Playback-SimpleJack,
-SDW0-Capture-SimpleJack, and SDW0-Playback-SmartAmp DAI links on physical
-link #0.
+rt713 is rt712 but without amp.
 
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 73e5a6aed776..a032628f8925 100644
+index 4ab7cd7f9178..73e5a6aed776 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -22,6 +22,11 @@ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
- 
- #define INC_ID(BE, CPU, LINK)	do { (BE)++; (CPU)++; (LINK)++; } while (0)
- 
-+#define SDW_MAX_LINKS		4
-+
-+/* To store SDW Pin index for each SoundWire link */
-+static unsigned int sdw_pin_index[SDW_MAX_LINKS];
-+
- static void log_quirks(struct device *dev)
- {
- 	if (SOF_JACK_JDSRC(sof_sdw_quirk))
-@@ -1247,10 +1252,10 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 	int cpu_dai_num, cpu_dai_index;
- 	unsigned int group_id;
- 	int codec_idx = 0;
--	int i = 0, j = 0;
- 	int codec_index;
- 	int codec_num;
- 	int stream;
-+	int i = 0;
- 	int ret;
- 	int k;
- 
-@@ -1336,7 +1341,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 		for (k = 0; k < cpu_dai_num; k++) {
- 			cpu_name = devm_kasprintf(dev, GFP_KERNEL,
- 						  "SDW%d Pin%d", cpu_dai_id[k],
--						  j + SDW_INTEL_BIDIR_PDI_BASE);
-+						  sdw_pin_index[cpu_dai_id[k]]++);
- 			if (!cpu_name)
- 				return -ENOMEM;
- 
-@@ -1385,7 +1390,6 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 		}
- 
- 		*cpu_id += cpu_dai_num;
--		j++;
- 	}
- 
- 	return 0;
-@@ -1538,6 +1542,9 @@ static int sof_card_dai_links_create(struct device *dev,
- 	for (i = 0; i < SDW_MAX_GROUPS; i++)
- 		group_generated[i] = false;
- 
-+	for (i = 0; i < SDW_MAX_LINKS; i++)
-+		sdw_pin_index[i] = SDW_INTEL_BIDIR_PDI_BASE;
-+
- 	for (; adr_link->num_adr; adr_link++) {
- 		/*
- 		 * If there are two or more different devices on the same sdw link, we have to
+@@ -640,6 +640,35 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 		},
+ 		.dai_num = 1,
+ 	},
++	{
++		.part_id = 0x713,
++		.version_id = 3,
++		.dais =	{
++			{
++				.direction = {true, true},
++				.dai_name = "rt712-sdca-aif1",
++				.dai_type = SOF_SDW_DAI_TYPE_JACK,
++				.dailink = {SDW_JACK_OUT_DAI_ID, SDW_JACK_IN_DAI_ID},
++				.init = sof_sdw_rt_sdca_jack_init,
++				.exit = sof_sdw_rt_sdca_jack_exit,
++			},
++		},
++		.dai_num = 1,
++	},
++	{
++		.part_id = 0x1713,
++		.version_id = 3,
++		.dais =	{
++			{
++				.direction = {false, true},
++				.dai_name = "rt712-sdca-dmic-aif1",
++				.dai_type = SOF_SDW_DAI_TYPE_MIC,
++				.dailink = {SDW_UNUSED_DAI_ID, SDW_DMIC_DAI_ID},
++				.init = sof_sdw_rt712_sdca_dmic_init,
++			},
++		},
++		.dai_num = 1,
++	},
+ 	{
+ 		.part_id = 0x1308,
+ 		.acpi_id = "10EC1308",
 -- 
 2.37.2
 
