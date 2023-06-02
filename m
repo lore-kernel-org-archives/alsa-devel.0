@@ -4,48 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C0E1C7EE2C
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 10:35:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9661FC7EE24
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 11:45:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3EFAF3E8;
-	Fri,  2 Jun 2023 12:34:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EFAF3E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3263E206;
+	Fri,  2 Jun 2023 13:44:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3263E206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685702134;
-	bh=MPLGbHNDiodTR4iQv12OEnZGvLkC38oLoCNtvyRN0MU=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=WVdR2Jw6fAExfNX6j+otdQ0PyJkBVsaJVTZEPCYKxJ09TgVBceWTqTig90Ms1IbBu
-	 O7mDWFeID9yry06slCCi6g7YDTT906d0YNyq9g1XfaUcGW385kzB9l6udJAgjnjeqL
-	 ehnF9ThQuzt6pT8tYgZtqCbErRsBFTdwauIjNfKQ=
+	s=default; t=1685706299;
+	bh=qyj2TnFG9Q0Dqv/yetg95LBFYsBmGWLoH4r/LKwHNFI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ppottWDDkZUDuYE9hgS9UEZKGhKuYnUX0HFpldQMPAa3+NzH46e8nc7Xhx02Wbijc
+	 jMNKgBl8p6R96Ahm0HEg7cYZ22Amo8BSM5wkWzrPP/9Gfaxz+Da5sOZfmfhKatKPd+
+	 Nzdp9aL4VPTKDvtrLS9POeaVmSDapilYyZ0vKZ5w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AD0BCF80199; Fri,  2 Jun 2023 12:34:11 +0200 (CEST)
+	id B05C7F800C1; Fri,  2 Jun 2023 13:44:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15EAAF80149;
-	Fri,  2 Jun 2023 12:34:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6384BF80149;
+	Fri,  2 Jun 2023 13:44:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D47D5F80149; Fri,  2 Jun 2023 12:34:06 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69DE1F800C1
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 12:34:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69DE1F800C1
+	id 5AAF9F80149; Fri,  2 Jun 2023 13:44:04 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id D20A3F800ED
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 13:43:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D20A3F800ED
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=kAlxMoP/
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id BD10064F20;
+	Fri,  2 Jun 2023 11:43:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AC21C433D2;
+	Fri,  2 Jun 2023 11:43:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685706237;
+	bh=qyj2TnFG9Q0Dqv/yetg95LBFYsBmGWLoH4r/LKwHNFI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kAlxMoP/qBc0mYGcWpYHeVsa9+r7EDw01E7qngnPnA87Tv0sbunfoocMmS0lWr0IO
+	 xzTgsYDl/xjWuRMFdC/paiH3tQuz2xNEamizJmn5Jg5X97Q+xh3JBOKOEa3DbOQWlI
+	 R0gUicxEfXmC9PEeI2Mrz23WWJ6luwzf3Wv+d8OXgwN3Y9pLhE/6dLm4WoQJTWz8i1
+	 bb/ziz/uyfqIMztFJDty5LMV3rIVyt3iMADd2W9+TEfyE49g+MutpJ+WdcCviVuliE
+	 tPGj795nypFMC5LsLLRXBEkMTkScWCtGx0AdLzjBpsIWn7Qr4IiqHjY7WNRgW9EX9c
+	 +ivng4bHzEtIw==
+Date: Fri, 2 Jun 2023 12:43:51 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] ASoC: dt-bindings: document new symmetric-clock-role
+ flag
+Message-ID: <3fe93662-82b0-4834-b6c3-473669c66210@sirena.org.uk>
+References: <20230602090322.1876359-1-alvin@pqrs.dk>
+ <20230602090322.1876359-2-alvin@pqrs.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1685702042730272293-webhooks-bot@alsa-project.org>
-References: <1685702042730272293-webhooks-bot@alsa-project.org>
-Subject: configure: Update for autoconf 2.71
-Message-Id: <20230602103406.D47D5F80149@alsa1.perex.cz>
-Date: Fri,  2 Jun 2023 12:34:06 +0200 (CEST)
-Message-ID-Hash: FNDC4MZW44IQ4T6B7D7C3HC3AFGG5VIQ
-X-Message-ID-Hash: FNDC4MZW44IQ4T6B7D7C3HC3AFGG5VIQ
-X-MailFrom: github@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yljCHQatclI9IIDH"
+Content-Disposition: inline
+In-Reply-To: <20230602090322.1876359-2-alvin@pqrs.dk>
+X-Cookie: War is an equal opportunity destroyer.
+Message-ID-Hash: W2SRAGKJTTSDVESUPFKY4J65ELA7DFTA
+X-Message-ID-Hash: W2SRAGKJTTSDVESUPFKY4J65ELA7DFTA
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FNDC4MZW44IQ4T6B7D7C3HC3AFGG5VIQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W2SRAGKJTTSDVESUPFKY4J65ELA7DFTA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,11 +100,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib pull request #324 was opened from phodina:
 
-Hi,
-this is an update due to Alpine Linux packaging only `autoconf-2.71-r2` so that the https://github.com/alsa-project/alsa-lib/pull/308 could be tested.
+--yljCHQatclI9IIDH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Request URL   : https://github.com/alsa-project/alsa-lib/pull/324
-Patch URL     : https://github.com/alsa-project/alsa-lib/pull/324.patch
-Repository URL: https://github.com/alsa-project/alsa-lib
+On Fri, Jun 02, 2023 at 11:03:18AM +0200, Alvin =C5=A0ipraga wrote:
+> From: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
+>=20
+> The new flag specifies that both ends of the dai-link have the same
+> clock consumer/provider role. This should be used to describe hardware
+> where e.g. the CPU and codec both receive their bit- and frame-clocks
+> from an external source.
+
+Why would we have a property for this and not just describe whatever the
+actual clocking arrangement is?
+
+--yljCHQatclI9IIDH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmR51fYACgkQJNaLcl1U
+h9BNRAf/dP2YV4uOYvx3LXMZqRrfypjgfWwbbFEufSIelAq8lZS5puJ+MvumnDqL
+XR89aM7F6DDztwC4eCpUETQ1JsAz5EHnoaLe+uxnG5c2wV+AOXi2SVoXLtA+S6lX
+3IGObHfe4FnxwvIX2N0wZX0XH20MEpJhJCO71zo+t9dOZo7OykvYEQA+4kkBcePa
+7zx9TAhm0VkpEUY3RkT4uymkkyIczcaDkaF2HTNDIG0DEtrw02lXVYi1WmhiY5Ah
+C4IlcYDVqwVpAQGboONnZoF8+9IFeZRynit9kSNKajMK9EVz1T+NmXQzUYD/UxfY
+sOiGK2eIY2eai/KegHSKFnIOBmOw7w==
+=htpo
+-----END PGP SIGNATURE-----
+
+--yljCHQatclI9IIDH--
