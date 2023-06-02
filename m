@@ -4,90 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 366D8C7EE24
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 10:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9A1BC7EE29
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 10:14:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C2CF1F4;
-	Fri,  2 Jun 2023 12:13:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C2CF1F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id B81D76C1;
+	Fri,  2 Jun 2023 12:13:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B81D76C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685700874;
-	bh=X5+dhwPz2vtC7tFcuysq9BoN/EerkDzTH6T2xFypBz4=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1685700885;
+	bh=J06m1QW5AP72CMMPlSA0/12ApgkgGx1asxOAI/g4VDQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=X8F2SFUMAPYXldu/OtTrZH0i3Jxq2O1NRiKa9dHkmm99Sk1vD5Ou8kARlu/ABaY3T
-	 lSECPXAGFip18nhSShyi7CFBaPj7WpISKWJOvnUIfFhfWWM597L75FMRYbDApPH6bD
-	 ioUDHRPjITyuH+ZV+BTZbAJqMR6tMkZqEPc9OQFE=
+	b=IoH/e3//mSCJKH7o/etyfsK7FinRh2nMG3Nt2ppKmbERW3M3CyChKzip5rWSsRac1
+	 8M2HkXOhwlC++NbxSvA3TNuj2lSEr2q/gBP7eFg1T04vIyYLoKGWHAFW7KUHULD/Qm
+	 kibHeO6zAZrmRZcSrXwm9iH++LOxY5u3TceDZ4Hc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ECBE7F805AA; Fri,  2 Jun 2023 12:12:25 +0200 (CEST)
+	id 80689F804DA; Fri,  2 Jun 2023 12:13:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81CC8F805A9;
-	Fri,  2 Jun 2023 12:12:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C602F80199;
+	Fri,  2 Jun 2023 12:13:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4F03BF805A9; Fri,  2 Jun 2023 12:12:22 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id D9B5CF80199; Fri,  2 Jun 2023 12:13:11 +0200 (CEST)
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com
+ [209.85.166.46])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D406F8016B
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 12:11:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D406F8016B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=gyLkkm8O
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 35260jsw004169;
-	Fri, 2 Jun 2023 05:11:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=0oW6c0O7PIMw0dE08KvhlhAtSajGICopR4i8kG8wcME=;
- b=gyLkkm8O3KlbTvNnmk6WvVwBywdDuFsbRjEaKyjuafP96q9qi+oh9GI263hSR/zOBRkz
- oW6FM1uwimnbXkK1u9IgPvNr6jZ2l0EQsrvREm4khguD5nAKnCr7wSkEJxO9LF9qxhWl
- dtGmqM1iiroEZxvMR36v/v7BqTzLYHPfG00s/i5Wq2Sv9/wLUtdSg4L7Rj1ecqm7k+bK
- RdBClX3snO4QA/e+Rq9JKZcK60T9FIOpwK10Lr96xpSxo1Bzof4tnOgRaWVLNAYzaA9f
- zMFMS0DTzKRieGdQsY8xU/jDHLILmU9KmNsaLdlgD/QSJFWffsalYzWPlBbWtdBDeQhO IQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3que9myr1p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Jun 2023 05:11:42 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Fri, 2 Jun
- 2023 11:11:40 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Fri, 2 Jun 2023 11:11:40 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AD91211C6;
-	Fri,  2 Jun 2023 10:11:40 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <vkoul@kernel.org>
-CC: <yung-chuan.liao@linux.intel.com>, <pierre-louis.bossart@linux.intel.com>,
-        <sanyog.r.kale@intel.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: [PATCH v2 2/5] soundwire: bandwidth allocation: Remove pointless
- variable
-Date: Fri, 2 Jun 2023 11:11:37 +0100
-Message-ID: <20230602101140.2040141-2-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230602101140.2040141-1-ckeepax@opensource.cirrus.com>
-References: <20230602101140.2040141-1-ckeepax@opensource.cirrus.com>
-MIME-Version: 1.0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 55A04F800C1
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 12:13:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55A04F800C1
+Received: by mail-io1-f46.google.com with SMTP id
+ ca18e2360f4ac-774924b7c4dso35955039f.1
+        for <alsa-devel@alsa-project.org>;
+ Fri, 02 Jun 2023 03:13:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685700784; x=1688292784;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=l/PIFR+ZIA9eZqhv8ThRSE/EHs2TLrNkw8dWpu4ejEo=;
+        b=cvgz1dE8qdUPea5gIJ84jOSzZRiZl5RYX+4jfwkbR1xpyHSmdXUuKeu/TIqnOcgwJr
+         TVOn7z2Nbe/xiZQLZtL4Ggdz9xlLjgSJsqyt/epibEhWjtB43aVij++54dXdW6uvItd7
+         PnUS/XlSEsNcUFeTfw46COlkJ5g/OhIzbPMX90eerEfDFdUPXYcMA42zSSQMBgaK1kMU
+         MpcMuKwEGGmzsBaTsJJYa+PvPQz6wY6M4HFskhSgI2uIzd2MF26D1udsr9LJLJ/0ZckG
+         rlmni72XtUKELiU3JpqVyiPS685RM4S4XjZeV//CZWpPyXIkai/xn6L6WwW2TGS31+lx
+         F1/Q==
+X-Gm-Message-State: AC+VfDyz/yILHV1XrFBe9jj8GcPoQet5lz3okfiaH8OqBQgPxYsjppKC
+	3CQv33n2fQHRlu02ltU3OQ==
+X-Google-Smtp-Source: 
+ ACHHUZ6CYRer4ThVGQY100UimlMmqDeEPZXk9gl/qzrUD8+oKZRBwxw0FiZma7Yt5Kk1HtF3Qk5qGA==
+X-Received: by 2002:a6b:db17:0:b0:76c:71dc:55f3 with SMTP id
+ t23-20020a6bdb17000000b0076c71dc55f3mr2219262ioc.6.1685700784312;
+        Fri, 02 Jun 2023 03:13:04 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id
+ z3-20020a029f03000000b0040f94261ab1sm208404jal.12.2023.06.02.03.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Jun 2023 03:13:03 -0700 (PDT)
+Received: (nullmailer pid 1359772 invoked by uid 1000);
+	Fri, 02 Jun 2023 10:13:02 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: To0M1bIXH1WGsEKk2leM4UQaVu5iD9rk
-X-Proofpoint-ORIG-GUID: To0M1bIXH1WGsEKk2leM4UQaVu5iD9rk
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: E3CRHGRZEIO6HU2FHLWKRUTTK7EF5I5G
-X-Message-ID-Hash: E3CRHGRZEIO6HU2FHLWKRUTTK7EF5I5G
-X-MailFrom: prvs=1517dd3c90=ckeepax@opensource.cirrus.com
+MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20230602090322.1876359-2-alvin@pqrs.dk>
+References: <20230602090322.1876359-1-alvin@pqrs.dk>
+ <20230602090322.1876359-2-alvin@pqrs.dk>
+Message-Id: <168570078201.1359749.10287160624641352834.robh@kernel.org>
+Subject: Re: [PATCH 1/4] ASoC: dt-bindings: document new
+ symmetric-clock-role flag
+Date: Fri, 02 Jun 2023 04:13:02 -0600
+Message-ID-Hash: AGZV67C5STAHF2PPBEMS7FJUPEWWHEH6
+X-Message-ID-Hash: AGZV67C5STAHF2PPBEMS7FJUPEWWHEH6
+X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E3CRHGRZEIO6HU2FHLWKRUTTK7EF5I5G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AGZV67C5STAHF2PPBEMS7FJUPEWWHEH6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,49 +110,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The block_offset variable in _sdw_compute_port_params adds nothing
-either functionally or in terms of code clarity, remove it.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
+On Fri, 02 Jun 2023 11:03:18 +0200, Alvin Šipraga wrote:
+> From: Alvin Šipraga <alsi@bang-olufsen.dk>
+> 
+> The new flag specifies that both ends of the dai-link have the same
+> clock consumer/provider role. This should be used to describe hardware
+> where e.g. the CPU and codec both receive their bit- and frame-clocks
+> from an external source.
+> 
+> Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+> ---
+>  .../devicetree/bindings/sound/simple-card.yaml        | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
 
-No changes since v1.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Thanks,
-Charles
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/sound/simple-card.yaml:33:5: [error] syntax error: could not find expected ':' (syntax)
 
- drivers/soundwire/generic_bandwidth_allocation.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+dtschema/dtc warnings/errors:
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/sound/simple-card.example.dts'
+Documentation/devicetree/bindings/sound/simple-card.yaml:33:5: could not find expected ':'
+make[1]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/sound/simple-card.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/sound/simple-card.yaml:33:5: could not find expected ':'
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/simple-card.yaml: ignoring, error parsing file
+make: *** [Makefile:1512: dt_binding_check] Error 2
 
-diff --git a/drivers/soundwire/generic_bandwidth_allocation.c b/drivers/soundwire/generic_bandwidth_allocation.c
-index 325c475b6a66d..31162f2b56381 100644
---- a/drivers/soundwire/generic_bandwidth_allocation.c
-+++ b/drivers/soundwire/generic_bandwidth_allocation.c
-@@ -139,20 +139,16 @@ static void _sdw_compute_port_params(struct sdw_bus *bus,
- {
- 	struct sdw_master_runtime *m_rt;
- 	int hstop = bus->params.col - 1;
--	int block_offset, port_bo, i;
-+	int port_bo, i;
- 
- 	/* Run loop for all groups to compute transport parameters */
- 	for (i = 0; i < count; i++) {
- 		port_bo = 1;
--		block_offset = 1;
- 
- 		list_for_each_entry(m_rt, &bus->m_rt_list, bus_node) {
--			sdw_compute_master_ports(m_rt, &params[i],
--						 port_bo, hstop);
-+			sdw_compute_master_ports(m_rt, &params[i], port_bo, hstop);
- 
--			block_offset += m_rt->ch_count *
--					m_rt->stream->params.bps;
--			port_bo = block_offset;
-+			port_bo += m_rt->ch_count * m_rt->stream->params.bps;
- 		}
- 
- 		hstop = hstop - params[i].hwidth;
--- 
-2.30.2
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230602090322.1876359-2-alvin@pqrs.dk
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
