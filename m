@@ -4,79 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA191C77B7A
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 15:32:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF813C7EE24
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 16:24:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6CCE208;
-	Fri,  2 Jun 2023 17:32:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6CCE208
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50E60208;
+	Fri,  2 Jun 2023 18:23:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50E60208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685719974;
-	bh=5QXIHa2W0ELGorikCysfBGEGd/J7lBLGTLPblBeY30Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1685723089;
+	bh=L/1L66rn4RL9w+TYSZfp9KQW0Di4tDa8VVzdl1VNe24=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DBYjqUEwoo9UrmSdQyh2NjGNLjST7JoeMAeV47iUnsQ6CB38HKJ1BhMkXg8EoDlss
-	 BkHzMS2Rgy036JO+SEsdhttZevd60I4tFgDDV8jbjMWVSH+J7eNsuMumzwgqrCdna1
-	 OV1U+5vSO4D2S0gGPXw9e4EJ+lDWjkKSxroPEUj4=
+	b=ZfWtNeMPo8/urg5i8wxEPwsJ99KcbSLIpaug1CPfBsTX1ugQ7WbsIZvtv1LKTta1T
+	 t0LS1ZrSwhPidLOhDSybcZGpghwWOk2MdRJUepujVaviy8q3qTrX4VwcWNFFgG6T9p
+	 /D1iefGFmWQszRBDA8YTirFTw3WA9+WJdAFLW4Oc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1C2B3F80149; Fri,  2 Jun 2023 17:32:04 +0200 (CEST)
+	id 18F18F8047D; Fri,  2 Jun 2023 18:23:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0663F80149;
-	Fri,  2 Jun 2023 17:32:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CBB4F80199;
+	Fri,  2 Jun 2023 18:23:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45988F80149; Fri,  2 Jun 2023 17:31:58 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1DB7EF800BD
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 17:31:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DB7EF800BD
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Vb2XAcBW
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id 57B67F8016B; Fri,  2 Jun 2023 18:23:29 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4131561538;
-	Fri,  2 Jun 2023 15:31:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1B75C433D2;
-	Fri,  2 Jun 2023 15:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685719908;
-	bh=5QXIHa2W0ELGorikCysfBGEGd/J7lBLGTLPblBeY30Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Vb2XAcBW6R8rsoLSgPysLHzSyG2/r9HJktponYdAS4KVzAZL0ww8czuWolrFaBxLX
-	 kdWLV9B5WgnaHsEJAcxjMxDm/nfX52zzbuikEgQr6fzyzlIZO9dgF0mz8UZQaRTlOK
-	 ncqcW+e9v7sbfaqDPpZmIFwJp2YEJcrgOXwMuK/DnGxuMBOVekuYiQv0SfBk6FTgj3
-	 tDCCieysXNlawy6I11I/iyqq4j6fdIjrV0YL99QU+jlSqfbiDGBpx2GsJFCcgaJmBg
-	 +YTjtg8T2FmjkvNuz1UwlZJVFsLudrKYmg+XmrZQg059dPtn60Ziq1lmiDWCNbKrC5
-	 2LgcGmC8/qRJg==
-Date: Fri, 2 Jun 2023 16:31:44 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	alsa-devel@alsa-project.org
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3250EF800C1
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 18:23:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3250EF800C1
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=ihuUpgpy
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1685723006; x=1717259006;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=L/1L66rn4RL9w+TYSZfp9KQW0Di4tDa8VVzdl1VNe24=;
+  b=ihuUpgpyKXDCb7Qd14GpplQHXfxWKt6HUoenr9s70rtEB7aOoCgvvLqJ
+   qHxQM0OQh33idRNHjGBbSBs+T9KDzAAJisT/KSwGFDLjLEtVHCUBsczXX
+   7heT94blg0BTiWrZ2c/h0olqyes04mbjpoLyRx8JTQkW6WelkQMojk2l5
+   +BC4vFPY3H2Ot/jJjAwRSC4kFlsgDG0/H/8dz9heGT8GAfHRUPr//LMCm
+   cH3KqVvmkeMg+dqwa+8aiLtPZAo2npkRPZU1L7B+ntvQyndmz9wubmpX1
+   ngPewNaS6ipoRrZEyMggBrEZ8RgzN8LBK/ZAJoJZJei8j0QpfPxvmA9NG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="442285432"
+X-IronPort-AV: E=Sophos;i="6.00,213,1681196400";
+   d="scan'208";a="442285432"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Jun 2023 09:23:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="685367773"
+X-IronPort-AV: E=Sophos;i="6.00,213,1681196400";
+   d="scan'208";a="685367773"
+Received: from joshkuo-mobl.amr.corp.intel.com (HELO [10.209.39.242])
+ ([10.209.39.242])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Jun 2023 09:23:12 -0700
+Message-ID: <ba2d6ec7-6337-d6e5-cc11-9f0c4f17df3c@linux.intel.com>
+Date: Fri, 2 Jun 2023 09:53:08 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
 Subject: Re: [PATCH v2 00/21] ASoC: replace dpcm_playback/capture to
  playback/capture_only
-Message-ID: <5fa212c1-26a4-4449-9f90-631b91fa8ccc@sirena.org.uk>
+Content-Language: en-US
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
 References: <87ttw1gqgn.wl-kuninori.morimoto.gx@renesas.com>
  <ff4586eb-4363-2592-97f7-d2fa8bbdee8a@linux.intel.com>
  <875y8fx5fy.wl-kuninori.morimoto.gx@renesas.com>
  <87mt1ihhm3.wl-kuninori.morimoto.gx@renesas.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="HxIgFDngicBbunuL"
-Content-Disposition: inline
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 In-Reply-To: <87mt1ihhm3.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: War is an equal opportunity destroyer.
-Message-ID-Hash: YNF2KGA4POAB3MJ5NQNKVYOGS4AM7BFK
-X-Message-ID-Hash: YNF2KGA4POAB3MJ5NQNKVYOGS4AM7BFK
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: S5WFBSQPMF2QQ5CFP5GVEQD62KT23QZM
+X-Message-ID-Hash: S5WFBSQPMF2QQ5CFP5GVEQD62KT23QZM
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YNF2KGA4POAB3MJ5NQNKVYOGS4AM7BFK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S5WFBSQPMF2QQ5CFP5GVEQD62KT23QZM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,44 +107,58 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---HxIgFDngicBbunuL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 01, 2023 at 11:45:31PM +0000, Kuninori Morimoto wrote:
-
-> In case of CPU:Codec =3D 1:N, and if its validation were
-
+On 6/1/23 18:45, Kuninori Morimoto wrote:
+> 
+> Hi Pierre-Louis
+> Cc Mark
+> 
+> Can I ask you about your opinion ?
+> 
+>>> This is problematic, 1:4 connections have been handled for a very long
+>>> time, this is basic TDM.
+> 
+> 	static int soc_get_playback_capture(...)
+> 	{
+> 		...
+> 		if (dai_link->dynamic || dai_link->no_pcm) {
+> 			...
+> 		} else {
+> 			...
+> 			for_each_rtd_codec_dais(rtd, i, codec_dai) {
+> 				if (dai_link->num_cpus == 1) {
+> 					cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+> 				} else if (dai_link->num_cpus == dai_link->num_codecs) {
+> 					cpu_dai = asoc_rtd_to_cpu(rtd, i);
+> 				} else {
+> 					dev_err(rtd->card->dev,
+> 						"N cpus to M codecs link is not supported yet\n");
+> 					return -EINVAL;
+> 				}
+> 
+> 				if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
+> 				    snd_soc_dai_stream_valid(cpu_dai,   cpu_playback))
+> =>					has_playback = 1;
+> 				if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
+> 				    snd_soc_dai_stream_valid(cpu_dai,   cpu_capture))
+> =>					has_capture = 1;
+> 			}
+> 		...
+> 	}
+> 
+> In case of CPU:Codec = 1:N, and if its validation were
+> 
 > 	CPU   : OK
->=20
+> 
 > 	Codec : OK
 > 	Codec : NG
 > 	...
-
-> Current soc_get_playback_capture() will have has_playback/capture =3D 1
+> 
+> Current soc_get_playback_capture() will have has_playback/capture = 1
 > evan though one of Codec was NG.
 > I think it should be error, but am I right ?
 
-I guess the question here is if anything is relying on being able to
-play/capture to the other CODECs when one of them is bad for some
-reason.  I'd need to spend some time digging into it to refresh my
-memory, I do recall some systems where the TDM has a mix of things on it
-(eg, HDMI and analog outputs).
+Indeed, we should only enable playback (resp. capture) when all codec
+dais have the same settings. We should revert the logic here IMHO to go
+from 'at least one' to 'all'.
 
---HxIgFDngicBbunuL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmR6C18ACgkQJNaLcl1U
-h9AfRAf+K8zdiuwf61DLyIr/+4cCKWDqF6EVnOn/laMIndd9quQEH0D+ngeHrwYj
-4sLNxiA2UmzYhoxsBPRVJpwEEWV/+rTrhFKhFbhAWFK7Z2n/QvkSZIZRqNQoyNhA
-UVaCUiyB96QRZaoebQ7rSlRnSEcxJRh0ai5YGnu2zqUr3wp0uUefz1adciGu1S/q
-k9rqBcOMiUzZz6M6DE+8oZpLaLEHxWezMVWlBJYGXqnPAaGPZk2iAnXL66LDB8Di
-KgjtiHNCZd9ZSqVKgaC7r8eknhz4buNoMX+eaZPufRABsOEVk0WeyjfagSEBaBc+
-EkJ5LNC1pnyi4TTzmtg1Rrb4As5Tmw==
-=Wo5O
------END PGP SIGNATURE-----
-
---HxIgFDngicBbunuL--
