@@ -4,87 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08454C7EE24
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 16:25:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C15BC77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 16:25:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5C92827;
-	Fri,  2 Jun 2023 18:24:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5C92827
+	by alsa0.perex.cz (Postfix) with ESMTPS id E04E6825;
+	Fri,  2 Jun 2023 18:24:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E04E6825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685723114;
-	bh=sF8tH3G/ocxW4x77NN0zlyUDCOV5pH0gtR7CSxkyAIw=;
+	s=default; t=1685723121;
+	bh=P/aBOqyU1q7iZ4JIPu4JBjlwp0Z/TDUhLugAjN+JF18=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZEjvstBmR/c5GQ6KrNc0kX8xoi93OepCqSUK6SDwweLMyxZzsZFuHwkmwaLrCNU4I
-	 elrCpYbdvuBiHdhWpSe3F844aFfCtL6JJaCJZZSAj7tZpIpNNwGpkxqiDskHhuo0P2
-	 iKt+QwYWDEKxXNMJARzfbe2CA4PaPpiabVelsb4M=
+	b=K4ukDzpoukbo34lL6HUsFJWDYTPAhrbaE0hO/ScZzN5BIPcZAYUkCPHJEEPonITpB
+	 M/nQAMjOSc7F4DmjWBzOrcaoeP1s3o68GKwYK5dTr3pZYXVAXPd5k8uSZYmexT8aoM
+	 p5ee8Vu+kPx9EgQrMb0hWGypHmEYihrkffngdBOE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A484F8055B; Fri,  2 Jun 2023 18:23:36 +0200 (CEST)
+	id 4E175F80578; Fri,  2 Jun 2023 18:23:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0601EF80551;
-	Fri,  2 Jun 2023 18:23:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCEF7F80567;
+	Fri,  2 Jun 2023 18:23:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 402BCF80199; Fri,  2 Jun 2023 18:23:32 +0200 (CEST)
+	id C3312F80564; Fri,  2 Jun 2023 18:23:36 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 79F3CF80132
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 18:23:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79F3CF80132
+	by alsa1.perex.cz (Postfix) with ESMTPS id 74C30F80149
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 18:23:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74C30F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=TgVjFK41
+ header.s=Intel header.b=Ln9WjMyr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685723008; x=1717259008;
+  t=1685723010; x=1717259010;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=sF8tH3G/ocxW4x77NN0zlyUDCOV5pH0gtR7CSxkyAIw=;
-  b=TgVjFK411Wt4HKK4uZmBqoeH+5RMd5jaUUosFnBMiElqPShtOJTrG7Pc
-   KsV8GyBUVl/1HspcIq5k9gdeEgViwfEdqluR9uA60wN89NDzdL1g8AaZC
-   sP1qnM3HrUV496WSyn3L1zsawyZoU3aMLtkejQIfGAzXqXiSB8op7MKSG
-   zsxUbfB1f5ip2FitQmYA0C/M7sCn6zUJBZ21pRP+J1563ZErIpc8AndCD
-   NV0qQb6V/uQIiEY+mDXx9X30CdeGU4u9tZzhmSC0b7U7GTlRydhVVF23A
-   5g4slp28RULvw7eNGHCFkultzKcGV4u/4zHD3aQZtmu+SfmlDfqjYV9o8
+  bh=P/aBOqyU1q7iZ4JIPu4JBjlwp0Z/TDUhLugAjN+JF18=;
+  b=Ln9WjMyrPD3dsWAHBfYwmuC+8JGy88rcDZ/ajeTjz84AeGm1a4WkDxL0
+   ZMp8kwROoSbnMyaeRXv3HNmjwuU33vGXGoZTRom0i/Et1JZdSTgJslI7J
+   hPPkrL9gKZtvBKVpBxNVZr9Q+Sh7bgo3xrdyRlEk711M7g0tyKCZGk2/c
+   fIBva6VfaV74oJBFzmvaDDrv+/kC6mm0WzQIITZgo2YI9xGZl4YtvvvX4
+   pQJEUEgyWtbRMD9NPvbjf74Ta4hZDxq4AEQNilmCPkra75w9wUMwk9YPv
+   3QrtHy5yLUKkeFY5VjIbJTN0PxKP8ZVJZEH4ymF1wAtGHzE/oUm9KfvFl
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="442285439"
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="442285466"
 X-IronPort-AV: E=Sophos;i="6.00,213,1681196400";
-   d="scan'208";a="442285439"
+   d="scan'208";a="442285466"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jun 2023 09:23:13 -0700
+ 02 Jun 2023 09:23:16 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="685367779"
+X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="685367786"
 X-IronPort-AV: E=Sophos;i="6.00,213,1681196400";
-   d="scan'208";a="685367779"
+   d="scan'208";a="685367786"
 Received: from joshkuo-mobl.amr.corp.intel.com (HELO [10.209.39.242])
  ([10.209.39.242])
   by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jun 2023 09:23:13 -0700
-Message-ID: <e041a75f-82d5-32cc-c885-7245220bb392@linux.intel.com>
-Date: Fri, 2 Jun 2023 09:57:13 -0500
+ 02 Jun 2023 09:23:15 -0700
+Message-ID: <aa039ad4-ebb8-0ce6-80f9-480b7a0bf5ac@linux.intel.com>
+Date: Fri, 2 Jun 2023 10:13:01 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [PATCH v2 3/5] soundwire: stream: Remove unneeded checks for NULL
- bus
+Subject: Re: [PATCH v2 5/5] soundwire: stream: Remove unnecessary gotos
 Content-Language: en-US
 To: Charles Keepax <ckeepax@opensource.cirrus.com>, vkoul@kernel.org
 Cc: yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  patches@opensource.cirrus.com
 References: <20230602101140.2040141-1-ckeepax@opensource.cirrus.com>
- <20230602101140.2040141-3-ckeepax@opensource.cirrus.com>
+ <20230602101140.2040141-5-ckeepax@opensource.cirrus.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230602101140.2040141-3-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20230602101140.2040141-5-ckeepax@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: TK6HIKF7UHGXIXIZS22SRDDSUNGP3QZL
-X-Message-ID-Hash: TK6HIKF7UHGXIXIZS22SRDDSUNGP3QZL
+Message-ID-Hash: WPMW527BKXDSJUSNMEEQOIEE7FD6JTYZ
+X-Message-ID-Hash: WPMW527BKXDSJUSNMEEQOIEE7FD6JTYZ
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TK6HIKF7UHGXIXIZS22SRDDSUNGP3QZL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WPMW527BKXDSJUSNMEEQOIEE7FD6JTYZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,72 +108,201 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 On 6/2/23 05:11, Charles Keepax wrote:
-> Version of the code prior to commit d014688eb373 ("soundwire: stream:
-> remove bus->dev from logs on multiple buses"), used bus->dev in the
-> error message after do_bank_switch, this necessitated some checking to
-> ensure the bus pointer was valid. As the code no longer uses bus->dev
-> said checking is now redundant, so remove it.
+> There is a lot of code using gotos to skip small sections of code, this
+> is a fairly dubious use of a goto, especially when the level of
+> intentation is really low. Most of this code doesn't even breach 80
+> characters when naively shifted over.
+> 
+> Simplify the code a bit, by replacing these unnecessary gotos with
+> simple ifs.
 > 
 > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Good cleanup, thanks
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
 > ---
 > 
 > Changes since v1:
->  - Left the duplicate error prints in.
+>  - Split out the inversion of the alloc_*_rt logic
+> 
+> Worth noting this patch has no functional corrections it is just a
+> stylistic change, so as Pierre said on v1 we could just leave things
+> as is. Personally, I would prefer to merge it though, whilst the diff
+> is a little more of a pain to review (hopefully eased somewhat by
+> splitting out the alloc_*_rt logic into a separate patch), the
+> resulting code reads much nicer and the code will be read a lot more
+> times than this patch will be.
+
+Indeed, the resulting code is much nicer to look at. I ignored the diffs
+and just looked at the result to make up my mind.
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
 > 
 > Thanks,
 > Charles
 > 
->  drivers/soundwire/stream.c | 14 ++------------
->  1 file changed, 2 insertions(+), 12 deletions(-)
+>  drivers/soundwire/stream.c | 124 +++++++++++++++++--------------------
+>  1 file changed, 56 insertions(+), 68 deletions(-)
 > 
 > diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-> index 379228f221869..6595f47b403b5 100644
+> index df5600a80c174..93baca08a0dea 100644
 > --- a/drivers/soundwire/stream.c
 > +++ b/drivers/soundwire/stream.c
-> @@ -1338,7 +1338,7 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream,
->  			       bool update_params)
->  {
->  	struct sdw_master_runtime *m_rt;
-> -	struct sdw_bus *bus = NULL;
-> +	struct sdw_bus *bus;
->  	struct sdw_master_prop *prop;
->  	struct sdw_bus_params params;
->  	int ret;
-> @@ -1382,11 +1382,6 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream,
+> @@ -1355,25 +1355,23 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream,
+>  			return -EINVAL;
 >  		}
->  	}
 >  
-> -	if (!bus) {
-> -		pr_err("Configuration error in %s\n", __func__);
-> -		return -EINVAL;
+> -		if (!update_params)
+> -			goto program_params;
+> -
+> -		/* Increment cumulative bus bandwidth */
+> -		/* TODO: Update this during Device-Device support */
+> -		bus->params.bandwidth += m_rt->stream->params.rate *
+> -			m_rt->ch_count * m_rt->stream->params.bps;
+> -
+> -		/* Compute params */
+> -		if (bus->compute_params) {
+> -			ret = bus->compute_params(bus);
+> -			if (ret < 0) {
+> -				dev_err(bus->dev, "Compute params failed: %d\n",
+> -					ret);
+> -				goto restore_params;
+> +		if (update_params) {
+> +			/* Increment cumulative bus bandwidth */
+> +			/* TODO: Update this during Device-Device support */
+> +			bus->params.bandwidth += m_rt->stream->params.rate *
+> +				m_rt->ch_count * m_rt->stream->params.bps;
+> +
+> +			/* Compute params */
+> +			if (bus->compute_params) {
+> +				ret = bus->compute_params(bus);
+> +				if (ret < 0) {
+> +					dev_err(bus->dev, "Compute params failed: %d\n",
+> +						ret);
+> +					goto restore_params;
+> +				}
+>  			}
+>  		}
+>  
+> -program_params:
+>  		/* Program params */
+>  		ret = sdw_program_params(bus, true);
+>  		if (ret < 0) {
+> @@ -1876,30 +1874,25 @@ int sdw_stream_add_master(struct sdw_bus *bus,
+>  	 * it first), if so skip allocation and go to configuration
+>  	 */
+>  	m_rt = sdw_master_rt_find(bus, stream);
+> -	if (m_rt)
+> -		goto skip_alloc_master_rt;
+> -
+> -	m_rt = sdw_master_rt_alloc(bus, stream);
+>  	if (!m_rt) {
+> -		dev_err(bus->dev, "%s: Master runtime alloc failed for stream:%s\n",
+> -			__func__, stream->name);
+> -		ret = -ENOMEM;
+> -		goto unlock;
 > -	}
 > -
->  	ret = do_bank_switch(stream);
->  	if (ret < 0) {
->  		pr_err("%s: do_bank_switch failed: %d\n", __func__, ret);
-> @@ -1467,7 +1462,7 @@ EXPORT_SYMBOL(sdw_prepare_stream);
->  static int _sdw_enable_stream(struct sdw_stream_runtime *stream)
->  {
->  	struct sdw_master_runtime *m_rt;
-> -	struct sdw_bus *bus = NULL;
-> +	struct sdw_bus *bus;
->  	int ret;
+> -	alloc_master_rt = true;
+> -skip_alloc_master_rt:
+> -
+> -	if (sdw_master_port_allocated(m_rt))
+> -		goto skip_alloc_master_port;
+> +		m_rt = sdw_master_rt_alloc(bus, stream);
+> +		if (!m_rt) {
+> +			dev_err(bus->dev, "%s: Master runtime alloc failed for stream:%s\n",
+> +				__func__, stream->name);
+> +			ret = -ENOMEM;
+> +			goto unlock;
+> +		}
 >  
->  	/* Enable Master(s) and Slave(s) port(s) associated with stream */
-> @@ -1490,11 +1485,6 @@ static int _sdw_enable_stream(struct sdw_stream_runtime *stream)
->  		}
->  	}
+> -	ret = sdw_master_port_alloc(m_rt, num_ports);
+> -	if (ret)
+> -		goto alloc_error;
+> +		alloc_master_rt = true;
+> +	}
 >  
-> -	if (!bus) {
-> -		pr_err("Configuration error in %s\n", __func__);
-> -		return -EINVAL;
+> -	stream->m_rt_count++;
+> +	if (!sdw_master_port_allocated(m_rt)) {
+> +		ret = sdw_master_port_alloc(m_rt, num_ports);
+> +		if (ret)
+> +			goto alloc_error;
+>  
+> -skip_alloc_master_port:
+> +		stream->m_rt_count++;
+> +	}
+>  
+>  	ret = sdw_master_rt_config(m_rt, stream_config);
+>  	if (ret < 0)
+> @@ -1992,46 +1985,41 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
+>  	 * and go to configuration
+>  	 */
+>  	m_rt = sdw_master_rt_find(slave->bus, stream);
+> -	if (m_rt)
+> -		goto skip_alloc_master_rt;
+> -
+> -	/*
+> -	 * If this API is invoked by Slave first then m_rt is not valid.
+> -	 * So, allocate m_rt and add Slave to it.
+> -	 */
+> -	m_rt = sdw_master_rt_alloc(slave->bus, stream);
+>  	if (!m_rt) {
+> -		dev_err(&slave->dev, "%s: Master runtime alloc failed for stream:%s\n",
+> -			__func__, stream->name);
+> -		ret = -ENOMEM;
+> -		goto unlock;
+> -	}
+> +		/*
+> +		 * If this API is invoked by Slave first then m_rt is not valid.
+> +		 * So, allocate m_rt and add Slave to it.
+> +		 */
+> +		m_rt = sdw_master_rt_alloc(slave->bus, stream);
+> +		if (!m_rt) {
+> +			dev_err(&slave->dev, "%s: Master runtime alloc failed for stream:%s\n",
+> +				__func__, stream->name);
+> +			ret = -ENOMEM;
+> +			goto unlock;
+> +		}
+>  
+> -	alloc_master_rt = true;
+> +		alloc_master_rt = true;
+> +	}
+>  
+> -skip_alloc_master_rt:
+>  	s_rt = sdw_slave_rt_find(slave, stream);
+> -	if (s_rt)
+> -		goto skip_alloc_slave_rt;
+> -
+> -	s_rt = sdw_slave_rt_alloc(slave, m_rt);
+>  	if (!s_rt) {
+> -		dev_err(&slave->dev, "Slave runtime alloc failed for stream:%s\n", stream->name);
+> -		ret = -ENOMEM;
+> -		goto alloc_error;
 > -	}
 > -
->  	ret = do_bank_switch(stream);
->  	if (ret < 0) {
->  		pr_err("%s: do_bank_switch failed: %d\n", __func__, ret);
+> -	alloc_slave_rt = true;
+> +		s_rt = sdw_slave_rt_alloc(slave, m_rt);
+> +		if (!s_rt) {
+> +			dev_err(&slave->dev, "Slave runtime alloc failed for stream:%s\n",
+> +				stream->name);
+> +			ret = -ENOMEM;
+> +			goto alloc_error;
+> +		}
+>  
+> -skip_alloc_slave_rt:
+> -	if (sdw_slave_port_allocated(s_rt))
+> -		goto skip_port_alloc;
+> +		alloc_slave_rt = true;
+> +	}
+>  
+> -	ret = sdw_slave_port_alloc(slave, s_rt, num_ports);
+> -	if (ret)
+> -		goto alloc_error;
+> +	if (!sdw_slave_port_allocated(s_rt)) {
+> +		ret = sdw_slave_port_alloc(slave, s_rt, num_ports);
+> +		if (ret)
+> +			goto alloc_error;
+> +	}
+>  
+> -skip_port_alloc:
+>  	ret =  sdw_master_rt_config(m_rt, stream_config);
+>  	if (ret)
+>  		goto unlock;
