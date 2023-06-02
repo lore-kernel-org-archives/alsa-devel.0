@@ -4,81 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9661FC7EE24
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 11:45:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73B89C77B7A
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Jun 2023 12:20:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3263E206;
-	Fri,  2 Jun 2023 13:44:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3263E206
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55620112;
+	Fri,  2 Jun 2023 14:19:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55620112
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685706299;
-	bh=qyj2TnFG9Q0Dqv/yetg95LBFYsBmGWLoH4r/LKwHNFI=;
+	s=default; t=1685708414;
+	bh=v1yv6jsgbmHl+5NaoACfNaefQuLeoFE1uwpGD8SeaIs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ppottWDDkZUDuYE9hgS9UEZKGhKuYnUX0HFpldQMPAa3+NzH46e8nc7Xhx02Wbijc
-	 jMNKgBl8p6R96Ahm0HEg7cYZ22Amo8BSM5wkWzrPP/9Gfaxz+Da5sOZfmfhKatKPd+
-	 Nzdp9aL4VPTKDvtrLS9POeaVmSDapilYyZ0vKZ5w=
+	b=MhfGJLGpDumZSEN1mdAAiZL+neAYSelHhor7DFsL2JQMSM12uc+4wk1M8na08imsE
+	 gLzLMceFWD8PcOGzkLwU3rV8e6SYIhjqM7Pot7hHVTXItAiZ9edzO4c0Awr3Uqon6D
+	 GLDD/zcdW9PUVD9+LjHrdyMbNO5mI2DP/HVf8IP8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B05C7F800C1; Fri,  2 Jun 2023 13:44:08 +0200 (CEST)
+	id CDFCDF800C1; Fri,  2 Jun 2023 14:19:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6384BF80149;
-	Fri,  2 Jun 2023 13:44:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 908F3F80149;
+	Fri,  2 Jun 2023 14:19:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5AAF9F80149; Fri,  2 Jun 2023 13:44:04 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 9BE5FF80149; Fri,  2 Jun 2023 14:19:20 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D20A3F800ED
-	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 13:43:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D20A3F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 26B3FF800C1
+	for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2023 14:19:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26B3FF800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=kAlxMoP/
+ header.s=k20201202 header.b=al0vYMzs
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id BD10064F20;
-	Fri,  2 Jun 2023 11:43:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AC21C433D2;
-	Fri,  2 Jun 2023 11:43:54 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B832D64FD1;
+	Fri,  2 Jun 2023 12:19:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96100C433D2;
+	Fri,  2 Jun 2023 12:19:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685706237;
-	bh=qyj2TnFG9Q0Dqv/yetg95LBFYsBmGWLoH4r/LKwHNFI=;
+	s=k20201202; t=1685708354;
+	bh=v1yv6jsgbmHl+5NaoACfNaefQuLeoFE1uwpGD8SeaIs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kAlxMoP/qBc0mYGcWpYHeVsa9+r7EDw01E7qngnPnA87Tv0sbunfoocMmS0lWr0IO
-	 xzTgsYDl/xjWuRMFdC/paiH3tQuz2xNEamizJmn5Jg5X97Q+xh3JBOKOEa3DbOQWlI
-	 R0gUicxEfXmC9PEeI2Mrz23WWJ6luwzf3Wv+d8OXgwN3Y9pLhE/6dLm4WoQJTWz8i1
-	 bb/ziz/uyfqIMztFJDty5LMV3rIVyt3iMADd2W9+TEfyE49g+MutpJ+WdcCviVuliE
-	 tPGj795nypFMC5LsLLRXBEkMTkScWCtGx0AdLzjBpsIWn7Qr4IiqHjY7WNRgW9EX9c
-	 +ivng4bHzEtIw==
-Date: Fri, 2 Jun 2023 12:43:51 +0100
+	b=al0vYMzs78qApmR2nyyVBNzdSuWQh0Ug+iqj0oX5yM4zClF2iv8KLNBh4sC6OgclM
+	 /3V+58WCgUImIh2y6B5Ohc9ZwBL2Y/wvaQbIdVnI25kpHYhnVEOUeJlb0wcRjNlaAl
+	 ohVAn01nQN9GWX1k4dK9xh22RrBx0tOm5DPaUQk8g29E4ZavfVQtCmGwgENhzIwP9n
+	 iTLh+oA37gfB1tpSr7wIgigy1QTx32++LuofsLrwvK+60i0LCsubykSMGFc5RDykQz
+	 zBOyFWsNcIzuXOMW+L3KKwCpXNYI8dy23TzX28Y77a/Hli95kfTPV+7IgQwoL9Gp/c
+	 m5cxwIyPMqj/g==
+Date: Fri, 2 Jun 2023 13:19:08 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+To: Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
+Cc: Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
 	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH 1/4] ASoC: dt-bindings: document new symmetric-clock-role
  flag
-Message-ID: <3fe93662-82b0-4834-b6c3-473669c66210@sirena.org.uk>
+Message-ID: <91b6d02a-25d5-4835-942e-3f8072bd8897@sirena.org.uk>
 References: <20230602090322.1876359-1-alvin@pqrs.dk>
  <20230602090322.1876359-2-alvin@pqrs.dk>
+ <3fe93662-82b0-4834-b6c3-473669c66210@sirena.org.uk>
+ <7csvw25vhyal2jsznb3jykuijxqpk7bzyguxvl7cyitosgga2w@pxmkce22cm3d>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yljCHQatclI9IIDH"
+	protocol="application/pgp-signature"; boundary="eKLqXSuhsjfwfQXk"
 Content-Disposition: inline
-In-Reply-To: <20230602090322.1876359-2-alvin@pqrs.dk>
+In-Reply-To: <7csvw25vhyal2jsznb3jykuijxqpk7bzyguxvl7cyitosgga2w@pxmkce22cm3d>
 X-Cookie: War is an equal opportunity destroyer.
-Message-ID-Hash: W2SRAGKJTTSDVESUPFKY4J65ELA7DFTA
-X-Message-ID-Hash: W2SRAGKJTTSDVESUPFKY4J65ELA7DFTA
+Message-ID-Hash: WD7NWRAO6UV2LA2KIAS5RVITFJ3CAGYC
+X-Message-ID-Hash: WD7NWRAO6UV2LA2KIAS5RVITFJ3CAGYC
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W2SRAGKJTTSDVESUPFKY4J65ELA7DFTA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WD7NWRAO6UV2LA2KIAS5RVITFJ3CAGYC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,35 +106,73 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---yljCHQatclI9IIDH
+--eKLqXSuhsjfwfQXk
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 02, 2023 at 11:03:18AM +0200, Alvin =C5=A0ipraga wrote:
-> From: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
->=20
-> The new flag specifies that both ends of the dai-link have the same
-> clock consumer/provider role. This should be used to describe hardware
-> where e.g. the CPU and codec both receive their bit- and frame-clocks
-> from an external source.
+On Fri, Jun 02, 2023 at 12:12:52PM +0000, Alvin =C5=A0ipraga wrote:
+> On Fri, Jun 02, 2023 at 12:43:51PM +0100, Mark Brown wrote:
 
-Why would we have a property for this and not just describe whatever the
-actual clocking arrangement is?
+> > Why would we have a property for this and not just describe whatever the
+> > actual clocking arrangement is?
 
---yljCHQatclI9IIDH
+> Sure - let me just elaborate on my thinking and maybe you can help me wit=
+h a
+> better approach:
+
+> The clocking arrangement is encoded in the dai_fmt field of snd_soc_dai_l=
+ink,
+> but this is a single value that describes the format on both ends. The cu=
+rrent
+> behaviour of ASoC is to flip the clock roles encoded in dai_fmt when appl=
+ying it
+> to the CPU side of the link.
+
+> Looking from a DT perspective, if I do not specify e.g. bitclock-master on
+> either side of the link, then the dai_fmt will describe the codec as a bi=
+tclock
+> consumer and (after flipping) the CPU as a provider. That's the default
+> implication of the DT bindings and I can't break compatibility there.
+
+None of this addresses my question.  To repeat why would we not just
+describe the actual clocking arrangement here - this property does not
+specify where the clock actually comes from at all, we're still going to
+need additional information for that and if we've described that clock
+then we already know it's there without having to specify any more
+properties.
+
+> The other issue is that for the simple-card the DAI format is only parsed=
+ in one
+> place and applied to the whole link. Are you proposing that it be modifie=
+d to
+> explicitly try and parse both ends in order to determine if both sides wa=
+nt to
+> be clock consumers? In that case I'd have to also introduce bitclock-cons=
+umer
+> and frameclock-consumer properties to mirror the existing bitclock-master=
+ and
+> frameclock-master properties, as an explicit absence of the *-master prop=
+erty on
+> both sides would have to default to the original ASoC behaviour described=
+ above.
+
+If simple-card can't be made to work that's fine, it's deprecated
+anyway.
+
+--eKLqXSuhsjfwfQXk
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmR51fYACgkQJNaLcl1U
-h9BNRAf/dP2YV4uOYvx3LXMZqRrfypjgfWwbbFEufSIelAq8lZS5puJ+MvumnDqL
-XR89aM7F6DDztwC4eCpUETQ1JsAz5EHnoaLe+uxnG5c2wV+AOXi2SVoXLtA+S6lX
-3IGObHfe4FnxwvIX2N0wZX0XH20MEpJhJCO71zo+t9dOZo7OykvYEQA+4kkBcePa
-7zx9TAhm0VkpEUY3RkT4uymkkyIczcaDkaF2HTNDIG0DEtrw02lXVYi1WmhiY5Ah
-C4IlcYDVqwVpAQGboONnZoF8+9IFeZRynit9kSNKajMK9EVz1T+NmXQzUYD/UxfY
-sOiGK2eIY2eai/KegHSKFnIOBmOw7w==
-=htpo
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmR53jsACgkQJNaLcl1U
+h9AqQgf+Jtc2Ihjbp82B3yzWnRCVZupKiJ+T2iC3qd0hfq3+jWz+RFnFHdNMk1Zw
+iXOOvYCFENv9fZ3QnfkSGDXxEFfoPxPMaHZw3TgCWz3SjjotWePvHqRbEsvEOYFk
+IB9Qp1phuf/2LLkB7wowMhaPjieW0MM2ju5LtpR8Ghf/f1Uq2GsI5cyHqme/9vd0
+0q4Ti4HqvkAcrxIFsxp/PAY2z16ZKqPWLfErn3eFXsMpncYxyPu3Uzp51WFEdoTJ
+BhbptiaicarUbEua7PiWAWEMo5p9lfUavssHcAbShWxI0rGof7/3PwlzKdlmjbv1
+2Xc68INUB1l4EBgnVbZtFeX8YqFScw==
+=FVEu
 -----END PGP SIGNATURE-----
 
---yljCHQatclI9IIDH--
+--eKLqXSuhsjfwfQXk--
