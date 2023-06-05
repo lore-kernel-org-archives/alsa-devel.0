@@ -4,98 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA9A2C7EE23
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 17:23:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2A1DC77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 17:31:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EA9274C;
-	Mon,  5 Jun 2023 19:22:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EA9274C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E47B6C0;
+	Mon,  5 Jun 2023 19:30:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E47B6C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685985827;
-	bh=iksAL1nPzHckm7+3rUlyb9XTjfgicZlIf5CNH8kZVfw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1685986308;
+	bh=8fr3qa00GOsjuxbEPlfwIPeLmLPQt+VVpRdMD/o6eMU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=D4BEyStClguuJgZGbYhKy8FlRjIzf8ir/IFoL14pDqJrOBD7RLC33K1uCVwreXlVw
-	 vUtmG/on62ufPHvfDTrTM1MWHoiRwrK3PvX1IlXYMJAHC6ok8ToqSvxEut2iBGfzvY
-	 9OVLGm5lkJ11qPDoOh1Sdz6WwXlJTUV1Ux+C3HCk=
+	b=pkF0xfUaGeEJlnFUHkI6utuvYsh+JgENtEC5RybeAkg+K77CMVZgETDpgYkQ82mEi
+	 f1Mo3v7yd3/nk0zT17vEnvp9RTBhr+5q2kgPfq2gsZbD0fO840zm0Wqi3BAfhaOWDz
+	 q/xN89bHQQVn8b89I+uVyCY4ySUOfMtVJRb9DpHE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 711FDF80199; Mon,  5 Jun 2023 19:22:56 +0200 (CEST)
+	id DED15F80155; Mon,  5 Jun 2023 19:30:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0DBDF80199;
-	Mon,  5 Jun 2023 19:22:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DCF5F80199;
+	Mon,  5 Jun 2023 19:30:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF91FF80199; Mon,  5 Jun 2023 19:22:52 +0200 (CEST)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::221])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id B5B94F80254; Mon,  5 Jun 2023 19:30:44 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 86DA0F800ED
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 19:22:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86DA0F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 84ADBF80155
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 19:30:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84ADBF80155
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=J7ev+niT
-X-GND-Sasl: herve.codina@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1685985768;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Berwdtb2uXHQbSksaaVPK3mZrvObJ1lWrE4UzrcIf8M=;
-	b=J7ev+niTsg1xzPdC/Z0LVxKv4Z42cGvd9zc2KeBD1xxv+tqyeHe/4J8ImQTFJ1AoRgwgFN
-	6ojrllCzR4ja6qcd8Etya0M3KkgPxP7cdNUzzM1mBqdz0+9jfeouUaa6+qH29biRkSjfrN
-	DEIv/KSc/UuFrVmO58z9vm5utSERq6eCX49QApf1GYrUKVvHRTAtTYXX/eis3QNiXJMu6m
-	unP5K6zs/HR9ux7R15lM8AbrvRMKbugnYtaMO8wRVXXYMabKWLmZaZTrLy4l+nDei2D3CH
-	yOnw8Ft+VslMGLTB3zGn7OVLUIwcfgiqpz9hy1ufyO1B+48vf2k025F3lQLDcw==
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 30441240009;
-	Mon,  5 Jun 2023 17:22:46 +0000 (UTC)
-Date: Mon, 5 Jun 2023 19:22:45 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto
- <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 7/9] ASoC: codecs: Add support for the generic IIO
- auxiliary devices
-Message-ID: <20230605192245.4132e0ae@bootlin.com>
-In-Reply-To: <20230528183855.0c95d308@jic23-huawei>
-References: <20230523151223.109551-1-herve.codina@bootlin.com>
- <20230523151223.109551-8-herve.codina@bootlin.com>
- <20230528183855.0c95d308@jic23-huawei>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Vy8+4BMf
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B0366628AD;
+	Mon,  5 Jun 2023 17:30:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43892C4339E;
+	Mon,  5 Jun 2023 17:30:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685986236;
+	bh=8fr3qa00GOsjuxbEPlfwIPeLmLPQt+VVpRdMD/o6eMU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Vy8+4BMfOOj+OV52fa+lSrWTOXgIEk/glYR1lDcY2DLiFW9MoFCgHYayxRI2tcuCA
+	 0m7Sy/p7MzdZddxtcbPsYTQspxY9mIsxeubXxDtRQ0PCvVoRpqqNVeCO9rTfw7YZXk
+	 ZzbGL9IvJOGKGX+7XpRKo+1XICg7nDYSign/cAhtyz0KPt5b7ctjKXSp9rdA105LYX
+	 lM+jPN98cC9qwcONxNQ5m79drMCyVGIPO9II7XmznC6HJAMjW8mHAa4TYgQvOI8d4g
+	 QWg3qr7uFXrNseiMJpw/2resHDEC+pnqR/WGhFLBhd57q/Ks5u1xb4ZGzXizbqoAHE
+	 +lP+Eq7azEkFw==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Vinod Koul <vkoul@kernel.org>
+In-Reply-To: <20230602205620.310879-1-pierre-louis.bossart@linux.intel.com>
+References: <20230602205620.310879-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/9] ASoC: SOF: Intel: LunarLake preparation patches
+Message-Id: <168598623499.103672.2858781216173017006.b4-ty@kernel.org>
+Date: Mon, 05 Jun 2023 18:30:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZKCDKSHFTAGNZPP4K7WHBH35O4YL5JEP
-X-Message-ID-Hash: ZKCDKSHFTAGNZPP4K7WHBH35O4YL5JEP
-X-MailFrom: herve.codina@bootlin.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-bfdf5
+Message-ID-Hash: RMBA3RGACCG2JDKLUHFRCVKDWZ5WPF7J
+X-Message-ID-Hash: RMBA3RGACCG2JDKLUHFRCVKDWZ5WPF7J
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -107,72 +82,66 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZKCDKSHFTAGNZPP4K7WHBH35O4YL5JEP/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RMBA3RGACCG2JDKLUHFRCVKDWZ5WPF7J/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Jonathan,
+On Fri, 02 Jun 2023 15:56:11 -0500, Pierre-Louis Bossart wrote:
+> This patchset adds the changes required for the hda-dai extension to
+> deal with SSSP/DMIC/SoundWire starting with LunarLake, as well as the
+> new TLV IPC to provide the DMA stream_tag to the DSP firmware.
+> 
+> LunarLake support for SSP/DMIC is ready but is gated by the patch
+> "ASoC: SOF: Intel: shim: add enum for ACE 2.0 IP used in LunarLake"
+> currently only present in the SoundWire tree.
+> 
+> [...]
 
-On Sun, 28 May 2023 18:38:55 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+Applied to
 
-> On Tue, 23 May 2023 17:12:21 +0200
-> Herve Codina <herve.codina@bootlin.com> wrote:
-> 
-> > Industrial I/O devices can be present in the audio path.
-> > These devices needs to be used as audio components in order to be fully
-> > integrated in the audio path.
-> > 
-> > This support allows to consider these Industrial I/O devices as auxliary
-> > audio devices and allows to control them using mixer controls.
-> > 
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > ---  
-> 
-> > diff --git a/sound/soc/codecs/audio-iio-aux.c b/sound/soc/codecs/audio-iio-aux.c
-> > new file mode 100644
-> > index 000000000000..21575c4b35fd
-> > --- /dev/null
-> > +++ b/sound/soc/codecs/audio-iio-aux.c
-> > @@ -0,0 +1,302 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +//
-> > +// audio-iio-aux.c  --  ALSA SoC glue to use IIO devices as audio components
-> > +//
-> > +// Copyright 2023 CS GROUP France
-> > +//
-> > +// Author: Herve Codina <herve.codina@bootlin.com>
-> > +
-> > +#include <linux/iio/consumer.h>
-> > +#include <linux/module.h>  
-> 
-> #include <linux/mod_devicetable.h> ideally to pick up
-> the of_device_id definition without bouncing through some non 
-> obvious header path.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Right, <linux/module.h> will be replaced by <linux/mod_devicetable.h> in the
-next iteration.
+Thanks!
 
-Thanks for the review,
-Hervé
+[1/9] ASoC: SOF: Intel: hda-dai: add error checks to prevent static analysis warnings
+      commit: c4be6024d51d3930459a61d4c91990f20264c60b
+[2/9] ASoC: SOF: Intel: hda-dai: add codec_dai_set_stream callback
+      commit: 2205c63d8d216b44127560cc564b2098843553e2
+[3/9] ASoC: SOF: Intel: hda-dai: add calc_stream_format callback
+      commit: 767cda3fdac0faec84dc3fd654bd9d09b55eef40
+[4/9] ASoC: SOF: Intel: hda-dai: add get_hlink callback
+      commit: d1bf58474d17a77a26bc27ff85a4e5c4fefc0934
+[5/9] ASoC: SOF: ipc4-topology: extend ALH-specific data structure
+      commit: e186e1f237c1e2447a83059d48439ffcefbf5a93
+[6/9] ASoC: SOF: ipc4-topology: introduce DMA config TLV
+      commit: 116bc1503652c72541d63f67c74b2ff1e4532f03
+[7/9] ASoC: SOF: ipc4-topology: add DMA config TLV to IPC data
+      commit: a0659f81c348946383526b764ad66d9900ea2cb9
+[8/9] ASoC: SOF: Intel: mtl: prepare for code reuse
+      commit: 730025cffedc6b8887d72031795796ac6d9947c3
+[9/9] ASoC: SOF: Intel: hda: add helper to extract SoundWire link count
+      commit: d3e7c32b7d5c7132edca6d84499ec8ac2f060aa7
 
-> 
-> 
-> > +#include <linux/slab.h>
-> > +#include <sound/soc.h>
-> > +#include <sound/tlv.h>  
-> 
-> Otherwise, the IIO elements of this look good.  So for those at least
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> 
-> I don't have enough knowledge of the snd stuff to review those
-> parts.
-> 
-> Jonathan
-> 
-> 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
