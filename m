@@ -4,77 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82871C7EE23
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 17:32:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B7E7C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 17:38:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 392E2829;
-	Mon,  5 Jun 2023 19:31:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 392E2829
+	by alsa0.perex.cz (Postfix) with ESMTPS id D788A3E7;
+	Mon,  5 Jun 2023 19:37:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D788A3E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685986350;
-	bh=WdV07oy/o91QEHR/yUMXPJbDhkHpn84JHUxwqIBH/a4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1685986682;
+	bh=eOM1QQpaTQIMrgVqkxLpu8cchSBKMYQp6H/dwtHfVrc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=i1XC9P8w3RwTcgF2lEI8lTMVjuYj/rIv8AZmRPQC2ZrjzyMJkEnio5sNpfpo6Yw/6
-	 XNNhCbI44IKhidADVXvxolT9jOB905K5Ok3r22f+TaaY8jnavdO1uMaeX2iMmxaZSs
-	 dKmXnzIZqY3oytGWUKyZ55vL/FQ8ovCa9PzOFp00=
+	b=G+X0aVsDiU1RXP31LeKPPadTBLG+UY8Lq9IiCnqhd/otVC0b1yua07lTJRaULthYo
+	 F+1Ahet63l1uRKGo3u2xh1iB+1/Epk3rJRpqm0MxWv3OVs0KIQYCorXBXHu1cmZaR2
+	 fAsA/cjbfXlDN5c5ff3ra5/yzZ1KZz311geOzEPE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC9A8F80544; Mon,  5 Jun 2023 19:30:50 +0200 (CEST)
+	id 8C205F80199; Mon,  5 Jun 2023 19:36:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87043F80527;
-	Mon,  5 Jun 2023 19:30:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48A20F80199;
+	Mon,  5 Jun 2023 19:36:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DC990F80199; Mon,  5 Jun 2023 19:30:46 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 92893F80199; Mon,  5 Jun 2023 19:36:43 +0200 (CEST)
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net
+ [217.70.183.200])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 94F20F800ED
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 19:30:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94F20F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5EC26F800ED
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 19:36:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EC26F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=WV4/J8Lx
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5983261719;
-	Mon,  5 Jun 2023 17:30:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E35EAC433EF;
-	Mon,  5 Jun 2023 17:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685986234;
-	bh=WdV07oy/o91QEHR/yUMXPJbDhkHpn84JHUxwqIBH/a4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=WV4/J8LxaHbnn83o/tFnncB95q1CEMouX8J6cEuJJ8BqIw+HxGKjSw4SggwJCclmh
-	 bnjh16AvaQ+oXOk/C2vdQJGn1GFxuKQmc1VpkASsn8yAii3JkrBkBAuCWx+ctWSvGu
-	 gt0Wog/LH9xfYCD5PsdFl3k5fIzFI5ZR7PIZw5mSkX+yMxSo5wUOHvGk3ZiCs2m7YD
-	 sONooxx9S7MoWNN43+spGjmJwv+bC+aRgusr/ZmSoHbfAPAs7p1qAj2D86ugm2indf
-	 wV3HvFI+N8Kt4VB73e7JiGcVPHCJYokX7vCk8UclcXKmq2AqPB5BMdTqAucGNrMvPq
-	 Y6nAGTf53zMbg==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
- Trevor Wu <trevor.wu@mediatek.com>
-Cc: amergnat@baylibre.com, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20230526093150.22923-1-trevor.wu@mediatek.com>
-References: <20230526093150.22923-1-trevor.wu@mediatek.com>
-Subject: Re: [PATCH v3 0/7] ASoC: mt8188: add new board support
-Message-Id: <168598623165.103672.7353425800916087713.b4-ty@kernel.org>
-Date: Mon, 05 Jun 2023 18:30:31 +0100
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=fi5uoXdA
+X-GND-Sasl: herve.codina@bootlin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1685986599;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Yjxc+85Bq54GZEvP6akAc9UZPm7vVtcD2MajvGxNqiY=;
+	b=fi5uoXdANbPmsJUCGLlp8YkQvRea5sm2llsgEt0TFFbN/DiK/ijhu1QIs5Lb2SHJSBwlTa
+	xdRattLNG7l9JpgH7Z2IWlWWnCWosU1xEqePGqf0QzTm5HkuErSI72aB0EIN6+4amnT0Ga
+	8P+eqvTkLDpUBP2q2wVkWdPbKHMPlb/UrWbta2UWHEFpzfSkXWd8qOJMTia0XbM4I72MNo
+	htz4tOzOJNwc7ZqbKvRPvV4SamC6GjcYV5Yf3fFGzU1Qozhdsb7h7PJ7F8Vnc6JSTYkcZc
+	ETtauzV/LnDHBQc6O1Sj8LPo50Bx0osDRQ1RHgVz9XCDZ+P/SY/4l7DojYpbKA==
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A2C4E20004;
+	Mon,  5 Jun 2023 17:36:37 +0000 (UTC)
+Date: Mon, 5 Jun 2023 19:36:36 +0200
+From: Herve Codina <herve.codina@bootlin.com>
+To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Kuninori
+ Morimoto" <kuninori.morimoto.gx@renesas.com>,
+ <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>, Christophe
+ Leroy <christophe.leroy@csgroup.eu>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 5/9] iio: inkern: Add a helper to query an available
+ minimum raw value
+Message-ID: <20230605193636.5239a271@bootlin.com>
+In-Reply-To: <20230605180547.0000528b@Huawei.com>
+References: <20230523151223.109551-1-herve.codina@bootlin.com>
+	<20230523151223.109551-6-herve.codina@bootlin.com>
+	<ZHtIdTZbULl6t4RT@surfacebook>
+	<20230605094637.7615b689@bootlin.com>
+	<CAHp75Vec3fXT6phqvLGSn0c09USCXXF6ZoE+X1VNJGM6jyf=aQ@mail.gmail.com>
+	<20230605180547.0000528b@Huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: Z7SAY23T3F2F7RUTIYZ6DEU2V6AW7ABE
-X-Message-ID-Hash: Z7SAY23T3F2F7RUTIYZ6DEU2V6AW7ABE
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: DORZVNHBU45ALHXP3QGTY2UPAQ6VJFSQ
+X-Message-ID-Hash: DORZVNHBU45ALHXP3QGTY2UPAQ6VJFSQ
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z7SAY23T3F2F7RUTIYZ6DEU2V6AW7ABE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DORZVNHBU45ALHXP3QGTY2UPAQ6VJFSQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,54 +123,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 26 May 2023 17:31:43 +0800, Trevor Wu wrote:
-> In the series, we extend the capability of mt8188-mt6359 driver.
+Hi Jonathan, Andy,
+
+On Mon, 5 Jun 2023 18:05:47 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+
+> On Mon, 5 Jun 2023 12:45:24 +0300
+> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 > 
-> The following changes are included.
-> 1. Divide ADDA BE dai into two dais for SOF.
-> 2. Register hdmi/dp jack pins.
-> 3. dai_fmt can be configured from device tree.
-> 4. Add some I2S codecs support.
+...
+> > > > > +           default:
+> > > > > +                   /* FIXME: learn about min for other iio values */    
+> > > >
+> > > > I believe in a final version this comment won't be here.    
+> > >
+> > > We have the same FIXME comment in the iio_channel_read_max() function I
+> > > copied to create this iio_channel_read_min() and, to be honest, I
+> > > don't really know how to handle these other cases.
+> > >
+> > > In this series, I would prefer to keep this FIXME.    
+> > 
+> > I see, Jonathan needs to be involved here then.  
 > 
-> [...]
+> It's really more of a TODO when someone needs it than a FIXME.
+> I'm not particularly keen to see a bunch of code supporting cases
+> that no one uses, but it's useful to call out where the code would
+> go if other cases were to be supported.
+> 
+> Perhaps soften it to a note that doesn't have the work FIXME in it.
+> 
+> Jonathan
+> 
 
-Applied to
+Right, I will change to /* TODO: learn about max for other iio values */
+in the next iteration (both iio_channel_read_max() and iio_channel_read_min())
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Regards,
+Hervé
 
-Thanks!
-
-[1/7] ASoC: mediatek: mt8188: separate ADDA playback dai from capture dai
-      commit: 2a7a1ae95c84d4199736872bfbc39d01f4b6b0ab
-[2/7] ASoC: dt-bindings: mediatek,mt8188-mt6359: remove ADDA_BE from link-name
-      commit: 9fba0d3ec0a074d1a7c094b2cb722f135215fab0
-[3/7] ASoC: mediatek: mt8188-mt6359: register hdmi/dp jack pins
-      commit: 73cf2b3f2b45fa4c231e8e84ae5d8cc80947d799
-[4/7] ASoC: mediatek: common: soundcard driver add dai_fmt support
-      commit: c0e7390e6d3f42b9a15a0e72add21facb8e17790
-[5/7] ASoC: soc-dapm.c: clean up debugfs for freed widget
-      commit: 8ad13cdc92f66333ae475251ae7722313f84e496
-[6/7] ASoC: mediatek: mt8188-mt6359: support new board with nau88255
-      commit: 9f08dcbddeb307793bbfff036db213d2cdf03a50
-[7/7] ASoC: dt-bindings: mediatek,mt8188-mt6359: add NAU8825 support
-      commit: ee02b869dcad7ba3772b58e93dd90ab4f932fac5
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+> 
+> >   
+> > > > > +                   return -EINVAL;    
+> >   
+> 
