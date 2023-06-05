@@ -4,79 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 898D1C7EE2A
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 12:37:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 376FAC7EE23
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 12:48:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DB9982B;
-	Mon,  5 Jun 2023 14:36:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DB9982B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6BED6C0;
+	Mon,  5 Jun 2023 14:47:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6BED6C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685968650;
-	bh=nZwzWRbUjtqgCZKGkZzJhbXU6JBV9oEBXx/wRWmja3w=;
+	s=default; t=1685969314;
+	bh=YfGoSGL9f1bxiaV/tE9J6jAugp9YIwaqLS/mzYmvdec=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jBhEUDq0aBfpAx/iPo0ljd1cbbHf/f15yTPOQZAANqjalkWqtr75/4wn26OfoePzr
-	 8lqdVmcU4p42nBpPgkID5ml2yttgtMiaJoQ4T0S9HKpQ3W2xS8Rr0GDRTW+NWyy8nO
-	 zsDjw2P4XeHAF4SjnelUmOF/q7vDheiZHlbaQ128=
+	b=Anxjb29MY1eRiwzplnPKBzCWV4qrOW99jeZijKYDkpPyN0PXlcKkbk3oL0RSxm8LM
+	 z5HwTtg2eA7BPafdd6FK/yiW61G1CtT1YfbwX9fSSv/rX4gTEysWprIaS6JMakezdC
+	 KuLfTWdwPCPIPBJy7gArNNAe+kZ4radmrSR3N5/4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 785E6F80557; Mon,  5 Jun 2023 14:36:16 +0200 (CEST)
+	id 18343F80527; Mon,  5 Jun 2023 14:47:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE1B1F80254;
-	Mon,  5 Jun 2023 14:36:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C734F80199;
+	Mon,  5 Jun 2023 14:47:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D58CF80548; Mon,  5 Jun 2023 14:36:12 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 6D10FF80199; Mon,  5 Jun 2023 14:47:18 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 53AC5F8016C
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 14:36:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53AC5F8016C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 55737F80130
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 14:47:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55737F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=M2vsIhX5
+ header.s=k20201202 header.b=qIXw8Gyc
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 0BA016237E;
-	Mon,  5 Jun 2023 12:36:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E10AC433EF;
-	Mon,  5 Jun 2023 12:36:05 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 40E8262139;
+	Mon,  5 Jun 2023 12:47:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 744A4C433D2;
+	Mon,  5 Jun 2023 12:47:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685968568;
-	bh=nZwzWRbUjtqgCZKGkZzJhbXU6JBV9oEBXx/wRWmja3w=;
+	s=k20201202; t=1685969232;
+	bh=YfGoSGL9f1bxiaV/tE9J6jAugp9YIwaqLS/mzYmvdec=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M2vsIhX5F81Ujo6EeaYCPq8RmI+7s8v4vdBWO/p5/mwrP4DbenDCN4n3UeFMzcWhF
-	 x1qGuVv0lsCvA6r1piu+ptenxMe5Euprreh3W45XSRbyBKlYCubDHAICnabbsbRape
-	 OpV84JRCeDNRXMexIdTPvsGntZ9Gojc7ieB9fkLiVBLYO7MHHefXNOsZaRIXq0fgdy
-	 LzjUYQAQwHrG35BIcHB++YYkizXFA60TdLlGWxS7AMf70oVszdusxekMvI8dBoDwQM
-	 9xaMDML4JT2cDSChL4IpI3FhQIQWYe3XBleFmliA6MgS4BqIDUvJ98yB+WprarhbPc
-	 nC9VFMxIiOjPQ==
-Date: Mon, 5 Jun 2023 13:36:02 +0100
+	b=qIXw8Gyc0yrAwqnGZu0VmvnBA7Hmrnr8sWu+RVAhDW908i+wlMsOhnoLVOHPyjI1P
+	 wBQ3/HS9cOs+/JNhh3a5iibUCEo2OwdLwCRyo1U9oGv7bmM06BQpgCTmYJf39K15Qf
+	 YNKhi6Dat+88fize2tkJEt2/gbtP982y8so1F6GjX+8w4h5TMEp1cBbvI6bFxFZMGk
+	 FUU4d1e7QS3uisJ3+gSyKv+eETjEuk4JVWP8BZoTQVeuvoeuzEy+eguKyDsWIy12Cu
+	 hAL9joWYuANv2aWP2Dvy1QuLXLhrJdz2kIwf1qujt2gc7vzRarxsdRwek5WmRt6RjN
+	 s5OqtNvu7MwSQ==
+Date: Mon, 5 Jun 2023 13:47:08 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Arnd Bergmann <arnd@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-	Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-	Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-	Randy Dunlap <rdunlap@infradead.org>, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: amd: vangogh: select CONFIG_SND_AMD_ACP_CONFIG
-Message-ID: <bfc2b94f-f030-4236-8370-143a8e4d0faf@sirena.org.uk>
-References: <20230602124447.863476-1-arnd@kernel.org>
- <1108b836-38bf-4284-b3b9-82cb33509092@app.fastmail.com>
+To: YingKun Meng <mengyingkun@loongson.cn>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+	loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH 2/3] ASoC: loongson: Add Loongson Generic ASoC Sound Card
+ Support
+Message-ID: <aa8381b5-0a3b-4a64-8c92-333ad751956b@sirena.org.uk>
+References: <20230605120934.2306548-1-mengyingkun@loongson.cn>
+ <20230605120934.2306548-2-mengyingkun@loongson.cn>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UCIP91/GiG2xL0T0"
+	protocol="application/pgp-signature"; boundary="jMoQciNUS11hAL/M"
 Content-Disposition: inline
-In-Reply-To: <1108b836-38bf-4284-b3b9-82cb33509092@app.fastmail.com>
+In-Reply-To: <20230605120934.2306548-2-mengyingkun@loongson.cn>
 X-Cookie: Biggest security gap -- an open mouth.
-Message-ID-Hash: L6K6R76LVBTYT764HLN2SI6DTK46AKBE
-X-Message-ID-Hash: L6K6R76LVBTYT764HLN2SI6DTK46AKBE
+Message-ID-Hash: IFNLGER52RV7YRSNGCACZITCLFNWIS4H
+X-Message-ID-Hash: IFNLGER52RV7YRSNGCACZITCLFNWIS4H
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L6K6R76LVBTYT764HLN2SI6DTK46AKBE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IFNLGER52RV7YRSNGCACZITCLFNWIS4H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,32 +96,46 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---UCIP91/GiG2xL0T0
+--jMoQciNUS11hAL/M
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 05, 2023 at 10:58:25AM +0200, Arnd Bergmann wrote:
+On Mon, Jun 05, 2023 at 08:09:33PM +0800, YingKun Meng wrote:
 
-> Please disregard, this version was incomplete, and I ran into the
-> same issue again in another randconfig build.
+> The driver supports the use of ACPI table to describe device resources.
+> On loongson 7axxx platforms, the audio device is an ACPI device.
 
-> v2 coming up, please use that instead.
+I'm not seeing any ACPI IDs added here, this is all DT other than this:
 
-I already applied this one before I saw your message...
+> +	if (has_acpi_companion(&pdev->dev)) {
+> +		device_property_read_string(&pdev->dev, "codec-name",
+> +						&codec_name);
+> +		for (i = 0; i < card->num_links; i++)
+> +			loongson_dai_links[i].codecs->name = codec_name;
+> +
+> +		device_property_read_string(&pdev->dev, "codec-dai-name",
+> +						&codec_dai_name);
+> +		for (i = 0; i < card->num_links; i++)
+> +			loongson_dai_links[i].codecs->dai_name = codec_dai_name;
+> +	} else {
 
---UCIP91/GiG2xL0T0
+which doesn't look *great* from an ACPI point of view TBH.  I thought
+there were now some (semi?) standard ACPI bindings these days to support
+referencing other devices better?
+
+--jMoQciNUS11hAL/M
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmR91rIACgkQJNaLcl1U
-h9Avbwf/QeHTGVBCinNkmwT7kGX/3+fYCa5y3duDBpjzzQKB0cEl4P2ESNdw+asK
-dseIyssXPHu3SqepXeD0ndpYgUqWZLaTIAYWpxGGoT8+xpimgNEdnfmLyvXwQRCz
-EDZCF1T8mM37jeK4FILPORaVOJgnkAGy/Ifk/vMJid1r6iDDMPXJigUHwF9fz3Hl
-cpdax9PvX+5ZtITuwiU+JdipRHuoV5FJooERUriTDkbnVT/tgA/ggvTHv9gtQfue
-CG9GrX0zSVFmfAt+rvi45VoJk38u8qEoDkvtUTWsdTdyI42CLZ1QljHrHKcjaR4Q
-+/N/NaQDbVdrKYf8SUwimAMoARuauw==
-=b+tY
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmR92UsACgkQJNaLcl1U
+h9AfIgf+LWp5mvFSev7zoIBVC//Wc1pfEjLDt2S/xnOCplilBhXZxBjJMl0yfAXV
++JPXrf2vT2qhLlKhT+kF7YAKzpubykso0spCZBGbUe6cZTuqTcDpBJSSWsQxVyQs
+tJcStKW7vEquU3DmOL4YbTJ1GiZx6lum5idsxmnbrzGF6X60a5l8CAg2gXh9WD2m
+nhgW+Z0AMkIDeJd+1FxxytN4Is9XBlY+4vuMY5AUc9TSHB+uxCsvBLD8if2dIwST
+1t1/AcK2bKJzl5fP6t7lYwJbz7cdt/TaheVgSkN8I7LamuOlEwzs9cidU7yKPpBI
+Lk2NeacN6nFEFqLkf0R2PT/VJy7jVQ==
+=naBq
 -----END PGP SIGNATURE-----
 
---UCIP91/GiG2xL0T0--
+--jMoQciNUS11hAL/M--
