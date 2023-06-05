@@ -4,99 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82686C7EE23
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 08:55:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6DD7C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 09:00:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76AC5823;
-	Mon,  5 Jun 2023 10:54:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76AC5823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B29D828;
+	Mon,  5 Jun 2023 10:59:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B29D828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685955346;
-	bh=bwIyH+W2QvehNlhNjGOVDbJb4LN1LY6sRbOj4M03krk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=IG4cnfJztGH2sSimox9HLTiVbtDdKGYqksQHpizh6++o1187QeZOXH9gKTnzwGPc0
-	 TrWMXKjp7SIUbJg5kXnKIsuykxyyQ5nYuPHKW3UlOPLgrpoSpDRyhUxPjJwMlHhyCm
-	 OO9leN+Q3HkLbZQPWuqA8ahiL/R5X42HunBmrjVg=
+	s=default; t=1685955613;
+	bh=bet3Rij8GrGk8PCMTrChExTjViLqa8FMBXDGdTe4cGE=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Xeq3z8YcFve8sf8QZ2eAYfsSIY99JmrGNZb8Mh32plIhwI2gZ5OAytmS+Xfj9HzIn
+	 yH8JvDiK5TsV9MOpKBB8YRoeh6Ysad5stXxsf/ZDNuBVypY/eoszAkKL0oFNW9RwzK
+	 wxQlh1OPXR8t/BRLx0zCSZvX03GmDEMwa5X0Opmg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C7A2F80520; Mon,  5 Jun 2023 10:54:22 +0200 (CEST)
+	id 31C53F80548; Mon,  5 Jun 2023 10:58:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51144F80199;
-	Mon,  5 Jun 2023 10:54:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5CA7F804DA;
+	Mon,  5 Jun 2023 10:58:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6FE25F80199; Mon,  5 Jun 2023 10:54:16 +0200 (CEST)
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [217.70.183.197])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 5F450F80254; Mon,  5 Jun 2023 10:58:54 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EFD90F80155
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 10:54:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFD90F80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id 28B3CF80130
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 10:58:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28B3CF80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=WDaiNeGp
-X-GND-Sasl: herve.codina@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1685955249;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dNvkGsaRNjcLUAaRAQc2wTZtlEs619LxRWDYK7s9IYw=;
-	b=WDaiNeGp/8dW6v+ebqBLy0MPRo35NcuuRkxke6vf8dj8iHnv5Nl6xKEKMBGvu3VvsREio8
-	sDRcdg9puN/CvYQJb68brM5++QqwFvsZsz71TJrspS9Cmj2Z3785dOBfNEcjaW/nNYIZUx
-	DR4nw6QbTBQmnaF8CnzvwCAlu9yIWWblgKAkQru2+p183k8RpBWbfjuHpHwLAvtdmDOcHP
-	UVgnW/riry09OBZ7IviYz6ag1wV9o3fs1lij42CwZ8vQpC52/iEAlAGi60WDAGCvV2CcbB
-	289lKtWAcOcXHzS3SOO9YwRZHw2q6YOftNf9Zn+MqlmPFyr666NuUf9vSlA0lw==
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5089E1C0005;
-	Mon,  5 Jun 2023 08:54:06 +0000 (UTC)
-Date: Mon, 5 Jun 2023 10:54:05 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: andy.shevchenko@gmail.com
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori
- Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 6/9] ASoC: soc-dapm.h: Add a helper to build a DAPM
- widget dynamically
-Message-ID: <20230605105405.39bcebef@bootlin.com>
-In-Reply-To: <ZHtJLxNReoc4Yjqj@surfacebook>
-References: <20230523151223.109551-1-herve.codina@bootlin.com>
-	<20230523151223.109551-7-herve.codina@bootlin.com>
-	<ZHtJLxNReoc4Yjqj@surfacebook>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Rk4OFN4e
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4E23160B37;
+	Mon,  5 Jun 2023 08:58:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A715C433EF;
+	Mon,  5 Jun 2023 08:58:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685955526;
+	bh=bet3Rij8GrGk8PCMTrChExTjViLqa8FMBXDGdTe4cGE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Rk4OFN4ecvfEeSlgc06OshwB29bpXB7fJ+DBeGVuEBL5L1jtNCzJL0SF0gl/G3Ccn
+	 Mx0bUz5wwZmHPHCnVCo/wJcPRCy4B5m3s7IHm3K/GR7U9/NBnDlqxQlg/TDrW/YWeL
+	 /ERoZT3OBaUPjipvw8HbbXD1CWYI5zSJ/CK8v9TJzSsNf7SMG009VcyKm5AgCac/W6
+	 t8wI2cFadGynLgaBLlc14KwODdA7MyMfAtond+RoxivabJAyu6oDo0vvTyrtvuDg0X
+	 y54vt2TZCATRc8m28++wpJebgxIySopdf1krl5Htv3UN0Q2CBCa+i5194NUC+B+Auo
+	 jU8eMrD9RRG0g==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+	Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] ASoC: amd: vangogh: select CONFIG_SND_AMD_ACP_CONFIG
+Date: Mon,  5 Jun 2023 10:58:29 +0200
+Message-Id: <20230605085839.2157268-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7HEBRJJVDRSYZOETKSQBS7CGBDLJKRGI
-X-Message-ID-Hash: 7HEBRJJVDRSYZOETKSQBS7CGBDLJKRGI
-X-MailFrom: herve.codina@bootlin.com
+Message-ID-Hash: NJWTW5FIYWQF3QC5HUAYNVMQV24IWQRU
+X-Message-ID-Hash: NJWTW5FIYWQF3QC5HUAYNVMQV24IWQRU
+X-MailFrom: arnd@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7HEBRJJVDRSYZOETKSQBS7CGBDLJKRGI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NJWTW5FIYWQF3QC5HUAYNVMQV24IWQRU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,37 +96,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 3 Jun 2023 17:07:43 +0300
-andy.shevchenko@gmail.com wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-> Tue, May 23, 2023 at 05:12:20PM +0200, Herve Codina kirjoitti:
-> > The SND_SOC_DAPM_* helpers family are used to build widgets array in a
-> > static way.
-> > 
-> > Introduce SND_SOC_DAPM_WIDGET() in order to use the SND_SOC_DAPM_*
-> > helpers family in a dynamic way. The different SND_SOC_DAPM_* parameters
-> > can be computed by the code and the widget can be built based on this
-> > parameter computation.
-> > For instance:
-> >   static int create_widget(char *input_name)
-> >   {
-> > 	struct snd_soc_dapm_widget widget;
-> > 	char name*;
-> > 	...
-> > 	name = input_name;
-> > 	if (!name)
-> > 		name = "default";
-> > 
-> > 	widget = SND_SOC_DAPM_WIDGET(SND_SOC_DAPM_INPUT(name));
-> > 	...
-> >   }  
-> 
-> Maybe instead of adding a helper, simply convert those macros to provide
-> a compaund literal? (See, for example,
-> https://elixir.bootlin.com/linux/v6.4-rc4/source/include/linux/pinctrl/pinctrl.h#L42)
-> 
+The vangogh driver just gained a link time dependency that now causes
+randconfig builds to fail:
 
-Indeed, I will convert macros and remove the helper in the next iteration.
+x86_64-linux-ld: sound/soc/amd/vangogh/pci-acp5x.o: in function `snd_acp5x_probe':
+pci-acp5x.c:(.text+0xbb): undefined reference to `snd_amd_acp_find_config'
 
-Thanks for the review,
-Hervé
+Fixes: e89f45edb747e ("ASoC: amd: vangogh: Add check for acp config flags in vangogh platform")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: select CONFIG_SND_AMD_ACP_CONFIG from all ACP5, not just VANGOGH_MACH.
+---
+ sound/soc/amd/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 08e42082f5e96..713348508001a 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -71,6 +71,7 @@ config SND_SOC_AMD_RENOIR_MACH
+ config SND_SOC_AMD_ACP5x
+ 	tristate "AMD Audio Coprocessor-v5.x I2S support"
+ 	depends on X86 && PCI
++	select SND_AMD_ACP_CONFIG
+ 	help
+ 	 This option enables ACP v5.x support on AMD platform
+ 
+-- 
+2.39.2
+
