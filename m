@@ -4,89 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CA2FC77B73
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 13:57:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65699C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 13:58:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74531DEE;
-	Mon,  5 Jun 2023 15:57:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74531DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5683082B;
+	Mon,  5 Jun 2023 15:57:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5683082B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685973472;
-	bh=IHZ6T0HRBDFBYIf0Ym5bo1yUI0MC4kCwudRgb4mV5dg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1685973490;
+	bh=6KtWOEYwtAGSymqm1szGB9ms53AWVBcPjOqqxUCgyc0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CfarM00sSSc6VYv1/arKP++3HeEdS1RnUDO38gWUEKS7vqribUt09wKLakKe5LZcH
-	 Nek7geO9iVPk50tvzetntKETASJMXknwmqA04i47GGiu/l1uuAaFjUc5mOnzDdfeqo
-	 c19jGHCd5JBN09bH9ngys/L0uHfMlVvp5byi1LEY=
+	b=gL3iJ2KLia4PJOupriUulMyKaf0nXH3Wng9HQp6d0vl3fjC4x14a0x7i3v+9gx9qx
+	 ttJ0ECMZTBSjxdyvF4pTnUNGIYSvLQZ+bxvzEOqLIPOaCIWz9fyC0pLDDG94hP0lrH
+	 TGUGLTF9Y4UgkacTbuCHQL8ydRE40mkB4qrnFmRQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4793CF805A9; Mon,  5 Jun 2023 15:55:24 +0200 (CEST)
+	id DA498F8055B; Mon,  5 Jun 2023 15:55:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 763B6F805B1;
-	Mon,  5 Jun 2023 15:55:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D68DCF805E6;
+	Mon,  5 Jun 2023 15:55:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A8E4F8016C; Mon,  5 Jun 2023 14:10:10 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66850F80199
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 14:09:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66850F80199
-Received: from loongson.cn (unknown [10.180.13.124])
-	by gateway (Coremail) with SMTP id _____8Dx9vCG0H1k+BMAAA--.210S3;
-	Mon, 05 Jun 2023 20:09:42 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.180.13.124])
-	by localhost.localdomain (Coremail) with SMTP id
- AQAAf8AxauWC0H1k_3AAAA--.2032S6;
-	Mon, 05 Jun 2023 20:09:42 +0800 (CST)
-From: YingKun Meng <mengyingkun@loongson.cn>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Cc: alsa-devel@alsa-project.org,
-	loongarch@lists.linux.dev,
-	loongson-kernel@lists.loongnix.cn,
-	Yingkun Meng <mengyingkun@loongson.cn>
-Subject: [PATCH 3/3] ASoC: dt-bindings: Add support for Loongson audio card
-Date: Mon,  5 Jun 2023 20:09:34 +0800
-Message-Id: <20230605120934.2306548-3-mengyingkun@loongson.cn>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230605120934.2306548-1-mengyingkun@loongson.cn>
-References: <20230605120934.2306548-1-mengyingkun@loongson.cn>
+	id 2F3F0F80130; Mon,  5 Jun 2023 15:22:00 +0200 (CEST)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id DD73BF80130
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 15:21:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD73BF80130
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=baylibre-com.20221208.gappssmtp.com
+ header.i=@baylibre-com.20221208.gappssmtp.com header.a=rsa-sha256
+ header.s=20221208 header.b=3l13dOF1
+Received: by mail-lf1-x131.google.com with SMTP id
+ 2adb3069b0e04-4f3b4ed6fdeso5943087e87.3
+        for <alsa-devel@alsa-project.org>;
+ Mon, 05 Jun 2023 06:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1685971315;
+ x=1688563315;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AAVo5XJBmcZ1CILHNv8SMdAaagpninriUMxTg11Co/E=;
+        b=3l13dOF1IYsdmxWjy4gVBxm9mP0dSRgkbeDydZj89p6KSERrNBrlgUF9ZiLQsu8ZMO
+         98veLuKCuihN2OluBxFYHCZOrQHvFcmSWlsu4AI2agA1zTprkYPIrXNNbnXtSsaWkLxH
+         O3/l2/5D6iYmYs0L4o5wHlW3ohDgh9t+BqY3w1Hh1fKtmmPh9L791z7SKtOZ74tKd40P
+         zxDFG+1ww5fWag616iq03kZ+TIre346llSOCOoHDNPjqa0HsCL1EzkpiszzgoLcIpuiB
+         nCJvRpf26t/XE2dsdWozdG/uHYPfL1zXYJbUvG1qNMH2BmuOdX6D5spT+3/m81kMlgoX
+         ys7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685971315; x=1688563315;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AAVo5XJBmcZ1CILHNv8SMdAaagpninriUMxTg11Co/E=;
+        b=OYj0V7QrVMNmJpaVvhegmUsvzACtf0lVmlefmiQuONYHnfGcyNvcZD8kye+k9JYm1C
+         va9F4nmNkr2/ahkGPh3eT534h7wJGuUnNxdfEwBDBTg9eN3498BEvsLsiyZQ5ZKSLRWE
+         lTWA0dRoodZREiqWiVWgUDrNVpkfT/syIXkQZb8sJdaquW0RVqddq/YgvQuwne6Oz0ju
+         wT/shEnIPf6y0TsqpCFhCqpxHZSRFmgV79vhpMlY1W7iYH/7kxCKwlSplJaIhsXvf/1D
+         PINIYcumVOCt50AYx4GiZKF/SyrbxQ6A9V9u8bANMuHkCNI0AHcGUDUtiacOCG027UF3
+         S1aQ==
+X-Gm-Message-State: AC+VfDxMWv8pW7juTmQHOXKK3rLf6cHsgUdVlQNiK0R0WH/LWUdDJjmA
+	8dtNIsfZyMCTWEzL2xPPC54pCA==
+X-Google-Smtp-Source: 
+ ACHHUZ7Cp/Uhp6/Wpl9DeYjd1vvYra/v50oGeZW7mP1XrLzgq01OEH+9/gZgXDUd67xf7/rarGL7pw==
+X-Received: by 2002:a19:7609:0:b0:4f4:ca61:82ba with SMTP id
+ c9-20020a197609000000b004f4ca6182bamr5030485lff.67.1685971315388;
+        Mon, 05 Jun 2023 06:21:55 -0700 (PDT)
+Received: from [192.168.1.172] (158.22.5.93.rev.sfr.net. [93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id
+ l17-20020a1ced11000000b003f4266965fbsm14439285wmh.5.2023.06.05.06.21.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jun 2023 06:21:54 -0700 (PDT)
+Message-ID: <d94b5f07-aa37-f4ec-252b-ff1a96b89326@baylibre.com>
+Date: Mon, 5 Jun 2023 15:21:53 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxauWC0H1k_3AAAA--.2032S6
-X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQANDGR8fwASxAASsj
-X-Coremail-Antispam: 1Uk129KBj93XoW7tF4fuF1UWw15WF47ZFWDtrc_yoW8Zw1Dpw
-	s3C34UGrWxt3W7C395ZFWxAw4fJasayFsrXF42qw1UGFWDKa4FqwsIk3W5u3W2kFn5Jay7
-	Wa4rGr1xGas3CwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-	02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAF
-	wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
-	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU84xRDUUUUU==
-X-MailFrom: mengyingkun@loongson.cn
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 1/2] ASoC: mediatek: mt8188: fix use-after-free in
+ driver remove path
+To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
+ lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com
+Cc: dianders@chromium.org, alsa-devel@alsa-project.org,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20230601033318.10408-1-trevor.wu@mediatek.com>
+ <20230601033318.10408-2-trevor.wu@mediatek.com>
+Content-Language: en-US
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20230601033318.10408-2-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: amergnat@baylibre.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: B7RBD4ZQIK4Y2MHGAHXM3GTI2EB5F5XU
-X-Message-ID-Hash: B7RBD4ZQIK4Y2MHGAHXM3GTI2EB5F5XU
+Message-ID-Hash: FA5ECW4VWJPEIZCTVUEKACIGF67YYYB4
+X-Message-ID-Hash: FA5ECW4VWJPEIZCTVUEKACIGF67YYYB4
 X-Mailman-Approved-At: Mon, 05 Jun 2023 13:55:12 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B7RBD4ZQIK4Y2MHGAHXM3GTI2EB5F5XU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FA5ECW4VWJPEIZCTVUEKACIGF67YYYB4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,87 +126,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Yingkun Meng <mengyingkun@loongson.cn>
+On 01/06/2023 05:33, Trevor Wu wrote:
+> During mt8188_afe_init_clock(), mt8188_audsys_clk_register() was called
+> followed by several other devm functions. The caller of
+> mt8188_afe_init_clock() utilized devm_add_action_or_reset() to call
+> mt8188_afe_deinit_clock(). However, the order was incorrect, causing a
+> use-after-free issue during remove time.
+> 
+> At probe time, the order of calls was:
+> 1. mt8188_audsys_clk_register
+> 2. afe_priv->clk = devm_kcalloc
+> 3. afe_priv->clk[i] = devm_clk_get
+> 
+> At remove time, the order of calls was:
+> 1. mt8188_audsys_clk_unregister
+> 3. free afe_priv->clk[i]
+> 2. free afe_priv->clk
+> 
+> To resolve the problem, it's necessary to move devm_add_action_or_reset()
+> to the appropriate position so that the remove order can be 3->2->1.
 
-The audio card uses loongson I2S controller present in 7axxx/2kxxx chips
-to transfer audio data.
+Sounds good
 
-Signed-off-by: Yingkun Meng <mengyingkun@loongson.cn>
----
- .../sound/loongson,ls-audio-card.yaml         | 64 +++++++++++++++++++
- 1 file changed, 64 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
+Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-diff --git a/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml b/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
-new file mode 100644
-index 000000000000..f1d6ee346bb3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/loongson-audio-card.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Loongson generic ASoC audio sound card.
-+
-+maintainers:
-+  - Yingkun Meng <mengyingkun@loongson.cn>
-+
-+description:
-+  Generic ASoC audio device for loongson platform.
-+
-+properties:
-+  compatible:
-+    const: loongson,ls-audio-card
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
-+
-+  mclk-fs:
-+    $ref: simple-card.yaml#/definitions/mclk-fs
-+
-+  cpu:
-+    description: Holds subnode which indicates cpu dai.
-+    type: object
-+    additionalProperties: false
-+    properties:
-+      sound-dai:
-+        maxItems: 1
-+
-+  codec:
-+    description: Holds subnode which indicates codec dai.
-+    type: object
-+    additionalProperties: false
-+    properties:
-+      sound-dai:
-+        maxItems: 1
-+
-+required:
-+  - compatible
-+  - model
-+  - mclk-fs
-+  - cpu
-+  - codec
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    sound {
-+        compatible = "loongson,ls-audio-card";
-+        model = "loongson-audio";
-+        mclk-fs = <512>;
-+
-+        cpu {
-+            sound-dai = <&i2s>;
-+        };
-+        codec {
-+             sound-dai = <&es8323>;
-+        };
-+    };
 -- 
-2.33.0
+Regards,
+Alexandre
 
