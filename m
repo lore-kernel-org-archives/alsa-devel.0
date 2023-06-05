@@ -4,102 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11EF7C77B73
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 14:13:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 219EFC77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 14:34:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68E6E823;
-	Mon,  5 Jun 2023 16:12:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68E6E823
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB24874C;
+	Mon,  5 Jun 2023 16:33:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB24874C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685974378;
-	bh=mib4yiYnr4jTZMXaF3M70gmrEEloIuUKXdysYJr30cw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Mn27IMztYiM0rI50PXQ2nAvBF6z5r/mzLqeK28wLib94OCbQCdXG/GcPfvCZR29mo
-	 Zta4nutRtQr4Cuj1h8p3TMRTc9mL6nXi2Z6arUnEg10N9xndES5RjWHsWuPCYf90L2
-	 wNll9fCnDjf+NsO+bGtiUZkQkcowujp0d1eztuBU=
+	s=default; t=1685975650;
+	bh=wOzyoNeDgnhde/WTWUyO2NFOW8doH4Uyy34rUaE3i34=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Rt0OEYrxEZXaOQ28qe7PJnUFhKYdv6XaZlgMCGCHI2fZNPX1zMG9AosoQzC4CWP4w
+	 laZNIm23Lxyb/391ydebMhl7EPDcNnrXAgJI8xiJi0Hb8Mgt6bIX5ZizydokIdlvv/
+	 WMG2ZaxlPN2Ft/ws097WF0UJSIicEHEqVRtThgwU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4D4FFF8016C; Mon,  5 Jun 2023 16:11:42 +0200 (CEST)
+	id DFD6FF80199; Mon,  5 Jun 2023 16:32:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92F69F80290;
-	Mon,  5 Jun 2023 16:11:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96B6EF80199;
+	Mon,  5 Jun 2023 16:32:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E30DF80199; Mon,  5 Jun 2023 16:11:37 +0200 (CEST)
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net
- [217.70.183.198])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 21005F80199; Mon,  5 Jun 2023 16:32:49 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8540BF800ED
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 16:11:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8540BF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6B95CF800ED
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 16:32:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B95CF800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=I2dvsEv0
-X-GND-Sasl: herve.codina@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1685974292;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uHfp+IyYPxqhLvbm8OYS3Lo9uaz8M1hK/LpKpngruro=;
-	b=I2dvsEv0zE3yipuHlMDg7UA6Ckx9wEa+H7t4VCmIJcET1px6TWlt7rNFPhb/SO9IEr87xN
-	wBDLyJFUk2WuVLIjnpLpNczEg7ezgRrWzNXcHfM72l4s1aK3/1FBXifJpSNNg7ovgpqdnU
-	sEbgtIJ38z5zNlZtLiHlgEiq1hUq9FBgXbrBSv7ldAgs719ePTGOKJszV3E6vSlhEkmwO6
-	3Y8BW+LvafTVtnj1GhZ43dI/oLHQTUVjlzbkrqkGemXrN7lKXZWEQbi28a5jY0iiatAb96
-	D7cll8e4nHqA9hc6bkHvRmCcrDjnK9xkByDt3YyE/qSkEUNvWMff9ZOfwZSYKw==
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 32278C0003;
-	Mon,  5 Jun 2023 14:11:30 +0000 (UTC)
-Date: Mon, 5 Jun 2023 16:11:29 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori
- Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 5/9] iio: inkern: Add a helper to query an available
- minimum raw value
-Message-ID: <20230605161129.4ac3231b@bootlin.com>
-In-Reply-To: 
- <CAHp75Vec3fXT6phqvLGSn0c09USCXXF6ZoE+X1VNJGM6jyf=aQ@mail.gmail.com>
-References: <20230523151223.109551-1-herve.codina@bootlin.com>
-	<20230523151223.109551-6-herve.codina@bootlin.com>
-	<ZHtIdTZbULl6t4RT@surfacebook>
-	<20230605094637.7615b689@bootlin.com>
-	<CAHp75Vec3fXT6phqvLGSn0c09USCXXF6ZoE+X1VNJGM6jyf=aQ@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=E0A7Z1dT
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 3558e8mf010267;
+	Mon, 5 Jun 2023 09:32:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=BUg/70VlLSF5CVdl4IkVb4amOpOKudh8xy6hs1SyEI8=;
+ b=E0A7Z1dTyhJOn3BxfODvSXLAgR1BU0UwsmtqSmdM12D+s2MVPQl9FaJWx9Hx88K9kTd7
+ NsFAYsYM2P9DxKvetl4/rSfcm34Vx+OQadx9B18wJwYMpTYeF+zeILOrwWSikRK+9Q4P
+ IFrWcUQStX7w02pqsQPjcXK3OvEoGUZD9AhDfL7b81kUj1zfI+9NPDi9D6Cem1uq2pgn
+ x+ho3xgWdiO8zoubvQFGJ0BFKyxpkZUSeeXJC2WaIzQjuw8yf8ZGMQid12Q20boaO8Mj
+ mTH+rTKlTBiJnCsQJ56dfM+akTYWqlagOiSObMx52c8+k6n12hvtJ9TIrdnSAro5g3xC wQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3r01xn9y0t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Jun 2023 09:32:40 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Mon, 5 Jun
+ 2023 15:32:38 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 5 Jun 2023 15:32:38 +0100
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
+ [198.90.251.127])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8E557458;
+	Mon,  5 Jun 2023 14:32:38 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>
+Subject: [PATCH] firmware: cs_dsp: Log correct region name in bin error
+ messages
+Date: Mon, 5 Jun 2023 15:32:38 +0100
+Message-ID: <20230605143238.4001982-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7NKYV6ZPQ5NJLIFYRH7G6IFS4M3KTZ53
-X-Message-ID-Hash: 7NKYV6ZPQ5NJLIFYRH7G6IFS4M3KTZ53
-X-MailFrom: herve.codina@bootlin.com
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 1UcXCkDZowLuqpgA1f1A0IgzBBonALag
+X-Proofpoint-GUID: 1UcXCkDZowLuqpgA1f1A0IgzBBonALag
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: X4QHECXOUDOGCOULNNMAMWWIDCJQ2MA7
+X-Message-ID-Hash: X4QHECXOUDOGCOULNNMAMWWIDCJQ2MA7
+X-MailFrom: prvs=1520472a2a=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -111,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7NKYV6ZPQ5NJLIFYRH7G6IFS4M3KTZ53/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X4QHECXOUDOGCOULNNMAMWWIDCJQ2MA7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,74 +107,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Andy,
+In cs_dsp_load_coeff() region_name should be set in the XM/YM/ZM
+cases otherwise any errors will log the region as "Unknown".
 
-On Mon, 5 Jun 2023 12:45:24 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+While doing this also change one error message that logged the
+region type ID to log the region_name instead. This makes it
+consistent with other messages in the same function.
 
-> On Mon, Jun 5, 2023 at 10:46 AM Herve Codina <herve.codina@bootlin.com> wrote:
-> > On Sat, 3 Jun 2023 17:04:37 +0300
-> > andy.shevchenko@gmail.com wrote:  
-> > > Tue, May 23, 2023 at 05:12:19PM +0200, Herve Codina kirjoitti:  
-> 
-> ...
-> 
-> > > > +           case IIO_VAL_INT:
-> > > > +                   *val = vals[--length];  
-> > >  
-> > > > +                   while (length) {  
-> > >
-> > >                       while (length--) {
-> > >
-> > > will do the job and at the same time...
-> > >  
-> > > > +                           if (vals[--length] < *val)
-> > > > +                                   *val = vals[length];  
-> > >
-> > > ...this construction becomes less confusing (easier to parse).  
-> >
-> > Indeed, I will change in the next iteration.  
-> 
-> And looking into above line, this whole construction I would prefer to
-> have a macro in minmax.h like
-> 
-> #define min_array(array, len) \
-> {( \
->   typeof(len) __len = (len); \
->   typeof(*(array)) __element = (array)[--__len]; \
->   while (__len--) \
->     __element = min(__element, (array)[__len]); \
->   __element; \
-> )}
-> 
-> (it might need more work, but you got the idea)
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/firmware/cirrus/cs_dsp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-I will also introduce max_array() and update both iio_channel_read_max()
-and iio_channel_read_min() to use these macros.
+diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
+index d7e46a57ecf9..6a9aa97373d3 100644
+--- a/drivers/firmware/cirrus/cs_dsp.c
++++ b/drivers/firmware/cirrus/cs_dsp.c
+@@ -2124,6 +2124,7 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
+ 				   file, blocks, le32_to_cpu(blk->len),
+ 				   type, le32_to_cpu(blk->id));
+ 
++			region_name = cs_dsp_mem_region_name(type);
+ 			mem = cs_dsp_find_region(dsp, type);
+ 			if (!mem) {
+ 				cs_dsp_err(dsp, "No base for region %x\n", type);
+@@ -2147,8 +2148,8 @@ static int cs_dsp_load_coeff(struct cs_dsp *dsp, const struct firmware *firmware
+ 				reg = dsp->ops->region_to_reg(mem, reg);
+ 				reg += offset;
+ 			} else {
+-				cs_dsp_err(dsp, "No %x for algorithm %x\n",
+-					   type, le32_to_cpu(blk->id));
++				cs_dsp_err(dsp, "No %s for algorithm %x\n",
++					   region_name, le32_to_cpu(blk->id));
+ 			}
+ 			break;
+ 
+-- 
+2.30.2
 
-Will be available in the next series iteration.
-
-Thanks,
-Hervé
-
-> 
-> > > > +                   }
-> > > > +                   break;  
-> 
-> ...
-> 
-> > > > +           default:
-> > > > +                   /* FIXME: learn about min for other iio values */  
-> > >
-> > > I believe in a final version this comment won't be here.  
-> >
-> > We have the same FIXME comment in the iio_channel_read_max() function I
-> > copied to create this iio_channel_read_min() and, to be honest, I
-> > don't really know how to handle these other cases.
-> >
-> > In this series, I would prefer to keep this FIXME.  
-> 
-> I see, Jonathan needs to be involved here then.
-> 
-> > > > +                   return -EINVAL;  
-> 
