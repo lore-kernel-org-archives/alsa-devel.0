@@ -4,108 +4,162 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B997C7EE23
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 09:47:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5254C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 11:21:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCA1D822;
-	Mon,  5 Jun 2023 11:46:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCA1D822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43AB6820;
+	Mon,  5 Jun 2023 13:20:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43AB6820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685958452;
-	bh=k2jGWbNAMSJgvvMS4OIf83LG7kgH58pHgM7ZdSs7SSk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1685964065;
+	bh=xJyLeG0djOcKQ1Q9J7Qc1gopkBcAXugh2ikStc+Adiw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=c1RVCjYRKbj3GFuM9hSx8fRVI5FE2kmnH2dRuPlGRqtwtIeMr/myUvCVz3oTRU1lC
-	 w2WTjEJeJ3pu48Dbhr6qhl9MIV/6Gt3bAGZzcR9gkvQKcugMxYyrQ68B9lYEVdKczk
-	 tn5xK45pLk63GlVrNm2MK26sFxXF40mb92hjV1/o=
+	b=vr3PMTv6ZrCwvKnrD0BiVH/8vFsTtjDRuyNynbjZUm2ZSHthtRgrYcxI8n0eQT077
+	 oq3DP7AaDMfUjEpHoPeJmjkbrjnyiRiCqSfYkZsTaOL4qfJDhsf6RmtpiBfhoHkOWw
+	 Wnis1DxibeAbxYb/cWHRRTc2DrusmuMkGsh0pYBE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 70FC1F8016C; Mon,  5 Jun 2023 11:46:16 +0200 (CEST)
+	id 093F5F80130; Mon,  5 Jun 2023 13:19:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5BB2F80199;
-	Mon,  5 Jun 2023 11:46:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92094F80155;
+	Mon,  5 Jun 2023 13:19:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 751E1F80199; Mon,  5 Jun 2023 11:46:08 +0200 (CEST)
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com
- [IPv6:2607:f8b0:4864:20::736])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 0B0C8F80199; Mon,  5 Jun 2023 13:19:49 +0200 (CEST)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12on20603.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe5b::603])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 385C3F80130
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 11:46:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 385C3F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id B531BF80155
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 13:19:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B531BF80155
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=mXTdR4Cc
-Received: by mail-qk1-x736.google.com with SMTP id
- af79cd13be357-75eba89e373so16594885a.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 05 Jun 2023 02:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685958361; x=1688550361;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eJsWxNn+ehAzikAnLEGHSuhlWphRfQgau36mI159SV8=;
-        b=mXTdR4CcVVVjT/Qc4hbfsPVKcGa4qvFMqokLP3mWACF+hehi0eYEZCAAh8Mly5xqZ7
-         OdQwB9RvK466dKJPm3Xf14I/MnPDyaCEMucCpze46I6jU9fvPWEb2aq14aedRxI+v71L
-         TatFHLdGo2Rg1oJUNQjsOVwuVVSXFfr1tYysFr1hPhQ8oRe1Onf2jM19DMhv6J33siK3
-         MA4w8+18ByiU8GJrrUTFvaO66wdv/esL455cAs/VlnjO2Ru0vdNnpq+ioNINk5v+s/oX
-         ncCrSSB+ynRvBjn9sofTSltEuX0eoaDFtr/j37ETRRGdEjxUSuGc4aCgLaXRDtGYzKJ2
-         3oXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685958361; x=1688550361;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eJsWxNn+ehAzikAnLEGHSuhlWphRfQgau36mI159SV8=;
-        b=GSzxubSfWsyyN6QJ5q7++/kQDj362pg/iWLi8LPB8pUJoYX9aOilw7pmLwlBb7xgw2
-         0z76dwLZJhp7jOBUW4a6YWPURTdLz4RcPL1J5qRVUwCw5/9bpXNJbhde5TrFh4G1jcII
-         iUvAE1KQSq47QKU8F2ikum+BWboVMEuE18iK8DNQjSbFQ9l9BB78U9qbDWV/FQuCppU4
-         fDTEQyCdYkKeNSCEc3m63R5QIOTeVaA5FFbYAwUiZbuaTZoXH2IpiPIOKyvSlgCTM6gM
-         I1U4Iy0XkVB3vStkGV4uLJDKKS97jaFf/dIYL+DpiJNYhNv2T9iGksteg6SsjdNip3e/
-         tuEw==
-X-Gm-Message-State: AC+VfDwnXoc8RfiKFwL2Ui+zLlWMhCYrOah4LqZeyvSsd8mQ3FR1Pq+b
-	vbY/mRpfw1Nd+WNNJJeyILT54URfZpHsI1AAXL4=
-X-Google-Smtp-Source: 
- ACHHUZ7rEj10g7ikWyZ3KsOkINRJ5HpW1dgRXnpiCle+k7JUOkhRh3Ttxy58uWLS7jcOMUJiInZ1F65FYFqKngGaa+w=
-X-Received: by 2002:a05:620a:46a2:b0:75b:23a1:d847 with SMTP id
- bq34-20020a05620a46a200b0075b23a1d847mr15874844qkb.9.1685958360822; Mon, 05
- Jun 2023 02:46:00 -0700 (PDT)
+	dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=d5ois6Cy
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gAwPkIRQ8rWoCsegIpe9wu18RDtTVuPuK4LrrXxiA9vXe9rE3+FAgqBUwOZtqFD6kVVLX3XT3WTKvhUoQHeLqNvS2JtawEZW9xU4OUTFucmhUAsnA5iJseP14yEeMpIfwn4qFUKdTWYajGdBSS95KkmeMKAdq94nlzyWOUCN5KLMPR4V3CV12igHxqNh0dt8y12y/qoO08e/Nrac28OFLx6jmgypAFG8pCgWbHleV6ghlyASw/9u5ljEyd7MZwO3HJH/81uReRfCm33s0SuOmU9t7t59lyv68fo+UqSD4qZKgF0KWRNiR8ARlU/Bsy9IYN7+ezoxu0YgMdil2Rqc2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BI3gldnpQVaQW7t2KvnCw0oy9m5xP+nGga8I/aPCR+U=;
+ b=K05KW6JstmT0TK5mFY44uAuqSUB3bxpGExjx6yOlWy9+jwYB9xNs0IJj2p3vW+tVApg2bW6jZ9UEXLxvsm5UWs5+s5X1InhPb2VZ4akQjMS0rxMlkHYkC8R/Kzy42I/4wDDCgWKkcgucwnESSE8uJJcoMvg/lxIEcmHiUUt3T64d4FzZaMRNYjNyqrva+pwKPXSR8ZSV05vZ1tAvJ5rOBZSk9uJqZ+6uVOTYkoa2Ft/F3VjN5uS7ERePt+qAS0b5GLSuwtGdszXZwiq4/BXiQz7WoIfRCFPgoMilJ20MaS6pY2IwjEo3kpU9DgVlWTtNDOcO89CiM2QbzOL6jqWMQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BI3gldnpQVaQW7t2KvnCw0oy9m5xP+nGga8I/aPCR+U=;
+ b=d5ois6Cy6GQa2K5cOnCskk1REBqVO/ucJ5noPygzvfyDY0z17YGymcx5dRBdgez180cHMnVdaTYOz8aAXeBWa1dK7+Y46MFIDleCretW44MYDLMfGyvkqVa/yI+4BXRG3yLYJCj8eo4NCIBvdLpnqDl1uDxPCdTmhDrZia0x/LE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com (2603:10b6:5:21f::23)
+ by MW4PR12MB7467.namprd12.prod.outlook.com (2603:10b6:303:212::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Mon, 5 Jun
+ 2023 11:19:35 +0000
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::8760:2e89:1243:2b5d]) by DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::8760:2e89:1243:2b5d%6]) with mapi id 15.20.6455.030; Mon, 5 Jun 2023
+ 11:19:35 +0000
+Message-ID: <9f20e168-dea6-8837-a009-5429aac28466@amd.com>
+Date: Mon, 5 Jun 2023 16:54:17 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH V2 5/9] ASoC: amd: ps: add support for SoundWire DMA
+ interrupts
+Content-Language: en-US
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
+ Sunil-kumar.Dommati@amd.com, Mastan.Katragadda@amd.com,
+ Arungopal.kondaveeti@amd.com, mario.limonciello@amd.com,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20230522133122.166841-1-Vijendar.Mukunda@amd.com>
+ <20230522133122.166841-6-Vijendar.Mukunda@amd.com>
+ <fea3c862-1470-7911-ff77-5d945b1d77cf@linux.intel.com>
+ <2dfeee7c-32bd-c054-22ff-3a2266e62c90@amd.com>
+ <f11f3370-0b72-cb1f-21cf-c574ef03fd72@linux.intel.com>
+ <017abf89-a1aa-0c85-e244-a56c05b7c6e2@amd.com>
+ <af5b0669-2621-7fce-358c-76dca7b521c5@amd.com>
+ <5048a207-4ec4-e954-0fe8-88ed25320c1b@linux.intel.com>
+From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+In-Reply-To: <5048a207-4ec4-e954-0fe8-88ed25320c1b@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0239.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:eb::18) To DM6PR12MB4123.namprd12.prod.outlook.com
+ (2603:10b6:5:21f::23)
 MIME-Version: 1.0
-References: <20230523151223.109551-1-herve.codina@bootlin.com>
- <20230523151223.109551-6-herve.codina@bootlin.com>
- <ZHtIdTZbULl6t4RT@surfacebook>
- <20230605094637.7615b689@bootlin.com>
-In-Reply-To: <20230605094637.7615b689@bootlin.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 5 Jun 2023 12:45:24 +0300
-Message-ID: 
- <CAHp75Vec3fXT6phqvLGSn0c09USCXXF6ZoE+X1VNJGM6jyf=aQ@mail.gmail.com>
-Subject: Re: [PATCH v2 5/9] iio: inkern: Add a helper to query an available
- minimum raw value
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: M6XMDZ57NISVLGTM776PRGBIWON3VT3D
-X-Message-ID-Hash: M6XMDZ57NISVLGTM776PRGBIWON3VT3D
-X-MailFrom: andy.shevchenko@gmail.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4123:EE_|MW4PR12MB7467:EE_
+X-MS-Office365-Filtering-Correlation-Id: 920c0c26-e445-4b96-71b2-08db65b6bdd8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	M2D3lVV9H3xTxDh3W+mACWcAvlSjQ9qzjfknMXlQ2Cbram36uNU3U+/1pIwbS+MkS4D8HCE2un2iI+HU3ZtrM6M6AfaSgwq9xc1XlOfIlTNFmqQyqLNVbGAterZKQKJcNv5SDltUuldYjpbvy/gN7tE/JWI4ATYue/9buzkqnkWOKhD4AUjMCbNHOTfRQm51ZpGHoErmdCc0o8w5yL1SFUYGPzUYpboKc8j70MyT5lX2N5NVCLWvJDIMr6fCWTZUe8o/x7jUa30b4A+NSRnIQuArBjOTXt/4MqorX0TTW/f96L+cJAQQui0o/OhnKks8OEJtj/ZyWkISO7zD50rbm6Fk875gbrOIrLT6Eva/Xc/bmVzXwGZYK9a2Jxs76U+Pt4hz+nfcSQqGkwQtX3iTHnQIQ50pWsSwEEML+x4wuYCkvby5Vf1Mia2vDvLwlyb6crz/J2a5IX6dwJ6Ts7XgepE+0btfj0ywDPEs1FuDm2eA/i1iIxeHFzmKx7JehCpqcDgnqIhMmq1H5qL/y3k//A4y7nm1x8xq/QruYlbiG15AxomQNOvFrc04NEYYPVlZ5gDPAXsIw/1g/DLHjaF68fB4Fdd3+GcxRdiTLkdpkdbvPI5GouHFJbMA3n4NZKPSYn1m+sqBw07XH8U3oNmxyA==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4123.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(39860400002)(376002)(136003)(396003)(451199021)(54906003)(478600001)(8936002)(8676002)(4326008)(66946007)(66556008)(66476007)(316002)(38100700002)(41300700001)(2616005)(186003)(83380400001)(6666004)(6486002)(53546011)(6512007)(26005)(6506007)(31696002)(86362001)(5660300002)(2906002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?R3BYMGcvTVo2Nm41U1E2c2RVL1B0TjRBWEM1MGxIT2hLRGlHRVpObWlzQ1l6?=
+ =?utf-8?B?ZDMwL0ZQZkVKV21OS28vNThPOU5wVXFjemFYTHZnQVQ4bEFtUis0NHpDbFZm?=
+ =?utf-8?B?N3pqbFpFeE1tNEppWVdmbUJMNFJMMVBTS2hXNzVXTEFVU3piSkpaYitUcXVS?=
+ =?utf-8?B?b3Z6RjlhaEJLOEdKY0VRd1ZVUldVYld2S1BPL3I0Y0w3dEtNNjE0aDVGanA1?=
+ =?utf-8?B?bXFYem44a1NrTm5vYUJJTm1BV0x3c3NpemZDLzlMdGZXN093Ymkyamwvcmt0?=
+ =?utf-8?B?eFlYSXZiZlhHbEppRzNHQ3lRbm1mNmtlSU50U3VQQkpaWHF6MjdiNUxTbkpY?=
+ =?utf-8?B?ZUxabzJOTmlPVS8rK1JkTlBsSjBpMWpFM2J1NTJKTWJob3ZXdlFSUFNmNTFu?=
+ =?utf-8?B?YXQ4a2QvVkVYK2FWRU1WZ3piMnJINGQzc2xmVFJtdUl5RkxzMkExTlRMSEVW?=
+ =?utf-8?B?Z1FFOTkwU2NydGlNSWZZV3BYcGRHeGYyM1pncUZuSGs2QVBuKzQ5UWRnVFdJ?=
+ =?utf-8?B?aHhiVnJCbEtTUDNhRDZtdG5PUk9zbTNXZURnK2JOeU5veEFlTVJUTTFnSUht?=
+ =?utf-8?B?c3NsRVFMa0ZDY1NNWTJoaVZ3WGpwMDZMWXp3VCtIcDFEMlJpdCs2NGlUZGdk?=
+ =?utf-8?B?cm1SbmVrR0ZCTlhnTk5OV1lwSFByd0Q4VVk3SG9uVWRyc1BRNWVwUzN6TVFk?=
+ =?utf-8?B?OWswUE1YQXowOE1JbE5CYWhiMGdpR3pxcGEwWUlnRS84T1dRb2pTT3VHSlNm?=
+ =?utf-8?B?R2dLR2NIU09rOVY2bmovdk5KelJzR21RSnZKNVFPWnVmajZpRTQ1ZzQwUXkx?=
+ =?utf-8?B?SkpYNUMySFQxWXkzTVBTR2ZhNCt4cmU4T2tjZnM3d3J5SkRjRlBKOFdaM3NM?=
+ =?utf-8?B?aDJmRjJXTGNrME5BQm5XVWI4NGhuaGMxS0ZFaTdtRy9iL3haSzZrdktJMVJM?=
+ =?utf-8?B?QlVkdURyRXU3U28va0hOVGF3VnR6VWhVSFdqRlpqWDdqNXMxcmdRNVd5VkIw?=
+ =?utf-8?B?b0piWHN1cFFvVFZ2U1F5bEZBMVV1VnVCM3dObkk5WTlxNVZCQkdsYzFCamhD?=
+ =?utf-8?B?ZzREMThIRWhJbmtGZmNKVHVRa2pYWG1FZGxDcURnWEd0SXRPcDNPaUkvOEdh?=
+ =?utf-8?B?NEh2dmVPaHBEOEtiUVVqK0hlcXY2RGM5RDNtWWJQcFdzMjVVSDhHQVByTkta?=
+ =?utf-8?B?SC9sOWdqQzM1ODB0ZENKdE1Ta29oajhZQk83bjh4SjJ4bDd5dXZabDZpb2pH?=
+ =?utf-8?B?Q3QyRVN2SG1PSXBqL2tNdWlhUjFrZ0xBeUUwT1l5UnhOUlQ0SUYxdzJZS3RS?=
+ =?utf-8?B?VzczTzh2QWFhMk1MV3NxTHRjTDE3WW93aEcyWUxsUUtKLzczV2hkdjRHbEVP?=
+ =?utf-8?B?ekYwM3dHMlFaQkZ6YXc4TWliS3R3L3Y3ZEN3WHowai9mQ2VFNjdmLzE1WVN6?=
+ =?utf-8?B?b1ltbGNpeXpRZmllTDhOVUpxTXRBM3BYT3diTUJmc0pTMDhjdm4yNU9Lc0hR?=
+ =?utf-8?B?VkZLVGRqdFhUTUZCMWgxSURGWWFkdjU5TDlrV0JRbS9BSDlXdytjdzdXWGJT?=
+ =?utf-8?B?cVVjOGJXeDJqRUsvODlYMjkvZEJkSi9GdzhJUWZaK2JxYklsRjI1L0xCQzNa?=
+ =?utf-8?B?Q0lrc2hrRzJLMVVMWFBJbFBUR1dXdk5kKzFOZVRMMjdMa1NDTVpoVjl1S0Mx?=
+ =?utf-8?B?VXVoc0xJMHVkNkk5U0xGOUFyWVF2bDI3NUNYRUNuWDNCMnJmM2RFbVc1N1hY?=
+ =?utf-8?B?R05lZnFPK0x1TllXem5McEt6S25Cd1U4YU9FdHJxOUlBN2dOS3piWWl0aGgv?=
+ =?utf-8?B?T0Y5L28xRUNYVEtLMGZ4VFhxT1ZiWkxCemZYV0Rnd05MRGxJTW04b1JudDVj?=
+ =?utf-8?B?cTR3eDdpd3EwMVZRYUlDNElzdUFxNHBoTlZ1T0lYZ21WN1dyODhSV09SZUsr?=
+ =?utf-8?B?OFdycDg1K2pHdWpabUVSR1pERmFSeUp2cU1ucVluOUNWU2JlS3pWa1BPZE56?=
+ =?utf-8?B?eXB5WkFmSk84V0ovczVQT29kRlJzQ2E3aXVLbEEwU04wR2NyT3J1REJJTmNZ?=
+ =?utf-8?B?Z2xReTJaS1BHZTk0eUx4elM2SUdkTHpZM1NCeVUyRWFickNxak1Nc3diY2Zn?=
+ =?utf-8?Q?NGuYDO/p+SY4NE8eg06/kGM+d?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 920c0c26-e445-4b96-71b2-08db65b6bdd8
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4123.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2023 11:19:35.0493
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ 2t6rpGRm3XXPyn3sw9DaObeB8xPTxtBsYO1rs8NuZk9BWhLU/f8E3k94CpzrAwCNcd31IXDocRGOJF0h0I8GzA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7467
+Message-ID-Hash: XJDY7ID4NYULJ2B2PCOJR2KOODFURWNJ
+X-Message-ID-Hash: XJDY7ID4NYULJ2B2PCOJR2KOODFURWNJ
+X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -117,7 +171,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M6XMDZ57NISVLGTM776PRGBIWON3VT3D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XJDY7ID4NYULJ2B2PCOJR2KOODFURWNJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,64 +180,93 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jun 5, 2023 at 10:46=E2=80=AFAM Herve Codina <herve.codina@bootlin.=
-com> wrote:
-> On Sat, 3 Jun 2023 17:04:37 +0300
-> andy.shevchenko@gmail.com wrote:
-> > Tue, May 23, 2023 at 05:12:19PM +0200, Herve Codina kirjoitti:
-
-...
-
-> > > +           case IIO_VAL_INT:
-> > > +                   *val =3D vals[--length];
-> >
-> > > +                   while (length) {
-> >
-> >                       while (length--) {
-> >
-> > will do the job and at the same time...
-> >
-> > > +                           if (vals[--length] < *val)
-> > > +                                   *val =3D vals[length];
-> >
-> > ...this construction becomes less confusing (easier to parse).
+On 31/05/23 19:23, Pierre-Louis Bossart wrote:
 >
-> Indeed, I will change in the next iteration.
-
-And looking into above line, this whole construction I would prefer to
-have a macro in minmax.h like
-
-#define min_array(array, len) \
-{( \
-  typeof(len) __len =3D (len); \
-  typeof(*(array)) __element =3D (array)[--__len]; \
-  while (__len--) \
-    __element =3D min(__element, (array)[__len]); \
-  __element; \
-)}
-
-(it might need more work, but you got the idea)
-
-> > > +                   }
-> > > +                   break;
-
-...
-
-> > > +           default:
-> > > +                   /* FIXME: learn about min for other iio values */
-> >
-> > I believe in a final version this comment won't be here.
+> On 5/31/23 02:28, Mukunda,Vijendar wrote:
+>> On 24/05/23 13:15, Mukunda,Vijendar wrote:
+>>> On 23/05/23 20:30, Pierre-Louis Bossart wrote:
+>>>> On 5/23/23 02:36, Mukunda,Vijendar wrote:
+>>>>> On 22/05/23 23:42, Pierre-Louis Bossart wrote:
+>>>>>> On 5/22/23 08:31, Vijendar Mukunda wrote:
+>>>>>>> Initialize workqueue for SoundWire DMA interrupts handling.
+>>>>>>> Whenever audio data equal to the SoundWire FIFO watermark level
+>>>>>>> are produced/consumed, interrupt is generated.
+>>>>>>> Acknowledge the interrupt and schedule the workqueue.
+>>>>>> It would help to explain why a work queue is needed is the first place,
+>>>>>> as opposed to handling periods in the interrupt thread.
+>>>>> For SoundWire DAI link, we are setting nonatomic flag to true.
+>>>>> If we return period elapsed from hard irq handler instead of workqueue,
+>>>>> soft lock up is observed during stream closure.
+>>>>>
+>>>>> We can use interrupt thread as well. To have a symmetry with
+>>>>> SoundWire manager work queues, we have used workqueue for
+>>>>> DMA interrupts.
+>>>> Oh, I completely missed the model here.
+>>>>
+>>>> If you are using the bottom half/hard irq handler to read status
+>>>> information, the natural thing to do would be to have an irq thread, no?
+>>>>
+>>>> Not sure I see the benefit of aligning with the manager work queues -
+>>>> unless it makes your life simpler to avoid race conditions with
+>>>> cancel_work_sync()?
+>>> We can implement request_threaded_irq() and move the handling of
+>>> DMA interrupts to thread function whereas we need to handle SoundWire
+>>> manager interrupts in top half only. Reason as follows.
+>>>
+>>> As per our design, we are not masking the interrupts in top half and
+>>> restoring mask after thread execution like Intel and
+>>> our IP supports line based interrupts. If we move SoundWire manager
+>>> interrupt handling to thread function, we have observed interrupts are
+>>> reported but not handled properly due to thread execution is in progress
+>>> sometimes.
+>>> we will add comments for this design constraint in the code if we have to
+>>> go with threaded_irq implementation.
+>>>
+>>> @Bossart: we are waiting for your reply.
+> I am not sure I get the point about using workqueues v. threads for the
+> manager, which in turn makes it difficult to understand why the DMA
+> interrupt handling should be aligned with that of the manager interrupt
+> handling.
 >
-> We have the same FIXME comment in the iio_channel_read_max() function I
-> copied to create this iio_channel_read_min() and, to be honest, I
-> don't really know how to handle these other cases.
+> Using the combination of hard irq handler + workqueue feels odd. I may
+> very well 'work' but others should chime in since I am far from the most
+> knowledgeable reviewer in this area.
+Understood your point. We will use irq thread instead of workqueue
+for SoundWire DMA interrupts handling.
+We will push V3 version.
 >
-> In this series, I would prefer to keep this FIXME.
+>>>>>>> +static void acp63_sdw_dma_workthread(struct work_struct *work)
+>>>>>>> +{
+>>>>>>> +	struct acp63_dev_data *adata = container_of(work, struct acp63_dev_data,
+>>>>>>> +						    acp_sdw_dma_work);
+>>>>>>> +	struct sdw_dma_dev_data *sdw_dma_data;
+>>>>>>> +	u32 stream_index;
+>>>>>>> +	u16 pdev_index;
+>>>>>>> +
+>>>>>>> +	pdev_index = adata->sdw_dma_dev_index;
+>>>>>>> +	sdw_dma_data = dev_get_drvdata(&adata->pdev[pdev_index]->dev);
+>>>>>>> +
+>>>>>>> +	for (stream_index = 0; stream_index < ACP63_SDW0_DMA_MAX_STREAMS; stream_index++) {
+>>>>>>> +		if (adata->sdw0_dma_intr_stat[stream_index]) {
+>>>>>>> +			if (sdw_dma_data->sdw0_dma_stream[stream_index])
+>>>>>>> +				snd_pcm_period_elapsed(sdw_dma_data->sdw0_dma_stream[stream_index]);
+>>>>>>> +			adata->sdw0_dma_intr_stat[stream_index] = 0;
+>>>>>>> +		}
+>>>>>>> +	}
+>>>>>>> +	for (stream_index = 0; stream_index < ACP63_SDW1_DMA_MAX_STREAMS; stream_index++) {
+>>>>>>> +		if (adata->sdw1_dma_intr_stat[stream_index]) {
+>>>>>>> +			if (sdw_dma_data->sdw1_dma_stream[stream_index])
+>>>>>>> +				snd_pcm_period_elapsed(sdw_dma_data->sdw1_dma_stream[stream_index]);
+>>>>>>> +			adata->sdw1_dma_intr_stat[stream_index] = 0;
+>>>>>>> +		}
+>>>>>>> +	}
+>>>>>> I am not clear on the benefits of the workqueue which only tests a flag
+>>>>>> that's set ...
+>>>>> In top half, we are checking all stream irq mask and setting
+>>>>> corresponding stream id index in interrupt status array when dma
+>>>>> irq is raised.
+>>>>>
+>>>>> Our intention is to handle snd_pcm_period_elapsed in process context.
+>>>>> if the flag is set, call the period elapsed for the substream based on stream
+>>>>> id in work queue.
 
-I see, Jonathan needs to be involved here then.
-
-> > > +                   return -EINVAL;
-
---=20
-With Best Regards,
-Andy Shevchenko
