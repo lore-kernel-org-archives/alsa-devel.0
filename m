@@ -4,78 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28CFDC77B73
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 14:47:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE0C4C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 14:49:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DA89822;
-	Mon,  5 Jun 2023 16:46:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DA89822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C9853E7;
+	Mon,  5 Jun 2023 16:48:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C9853E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685976434;
-	bh=W29DiFd00K8hukRzh7m2tWsdPBE9ZZWXYOwuKdLzUOM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=hqudShKzyijeGYWA0SpbolQoqsH2ype1EEzbcFVNDt4zY+yorqag+Vb6aOpu2sXdF
-	 38s+oG+0YuTDZFCMHrfvHuo1A3AH5DIwWtn070e1yLHBegsGguqSTxT06VCfSToKpn
-	 m1xSiIysJT7AFDRojQDjDh9J3+YYtt9/ToW0LDHU=
+	s=default; t=1685976562;
+	bh=ucOenpIhyQHtU9opD7HRjyaONgF+MW9jjdFBjCHmeN8=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=ZE+NwXg+iMM+2/YtnroSE32PGx4r8TL6bes+A2CJirMuBzJ9ibBqAOy+gI3RHWTyv
+	 xHeI/zod4XwTlMMK8Rgu2MNKBCRe59qRTFYcPmxkjXtYi+YqaxNNly5PzNPikl89ai
+	 6d8x7czQC5qr9vMf0R9UsOVb3jgRkUTtPhsIPI/U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 754DAF8016C; Mon,  5 Jun 2023 16:45:58 +0200 (CEST)
+	id 73EF8F80290; Mon,  5 Jun 2023 16:48:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5A62F80199;
-	Mon,  5 Jun 2023 16:45:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E86E9F804DA;
+	Mon,  5 Jun 2023 16:48:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9BEC5F80199; Mon,  5 Jun 2023 16:45:53 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id CD222F80254; Mon,  5 Jun 2023 16:48:05 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6BFBFF80155
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 16:45:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BFBFF80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id 62D13F800ED
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 16:48:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62D13F800ED
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=JaVIG1v4
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=G+PDZBYW;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=U+kg53V/
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 6B23262605;
-	Mon,  5 Jun 2023 14:45:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5148C433D2;
-	Mon,  5 Jun 2023 14:45:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685976345;
-	bh=W29DiFd00K8hukRzh7m2tWsdPBE9ZZWXYOwuKdLzUOM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=JaVIG1v4rnNauxEFhjHpUvkm8iUPJoZmdzYPWadpgRZzAlfu2SzMTdt3iLmsLsbcF
-	 WnNI3LYmykUmviomBVf1KPJr9dTMls3dyAo3YB/pjePzaIcP9nVTIAl7Kp7T7HSo0K
-	 aTsOL0veP2X/YvXjgT73JhicFhMHtmV2pgrn/bsj9iyLpqWY69bSOgIk+SWi8/byKd
-	 Md0hhTIzirzyu7/tXH25UWzZwhOUz82jfuGY5rvpIz+Vzp5/xwb9bRvMayDlVo9EP6
-	 0lpvzFPNJi3rjzzeIJTZkIVBAOV4qHtX3Xu9R/QnwZgbG2glDuBa02l/pf/G9gp05M
-	 /rhDQdltDH3Tw==
-Message-ID: <118d13ef-a247-cf88-5084-afdebc6b7651@kernel.org>
-Date: Mon, 5 Jun 2023 16:45:38 +0200
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E7CDB21B67;
+	Mon,  5 Jun 2023 14:48:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1685976481; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cSgax4rMLB5Ej1iWw2VeveKyp/v9Eyqcam0xxdkZvQM=;
+	b=G+PDZBYWeRdlvSpQjHBJT4CR08Q/+ZocPYt6ua7F9HCRF2I2SIoTRd/xr+CYjbRyMxCQFj
+	dcH1hTp36W1R7qBKQUNzKokaYitLvzN/PPwSJXM5XW/IKdrm8G+GF1iVzt0/kaIPTYorsD
+	8zXqPq7/Ayw6hS78WJmzYCyhvLZNiD8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1685976481;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cSgax4rMLB5Ej1iWw2VeveKyp/v9Eyqcam0xxdkZvQM=;
+	b=U+kg53V/Y8mj2MPY+dMEbzVwkNO0GwcOXYrqGpvdFdGpceou1HwzRENdp+nXib2c1QJGit
+	LRnEMC59KjHbFIDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D4B2113A3C;
+	Mon,  5 Jun 2023 14:48:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id AOsJM6H1fWQMXwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 05 Jun 2023 14:48:01 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 2/2] ALSA: seq: Avoid confusion of aligned read size
+Date: Mon,  5 Jun 2023 16:47:58 +0200
+Message-Id: <20230605144758.6677-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230605144758.6677-1-tiwai@suse.de>
+References: <20230605144758.6677-1-tiwai@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH 3/3] ASoC: dt-bindings: Add support for Loongson audio
- card
-To: YingKun Meng <mengyingkun@loongson.cn>, lgirdwood@gmail.com,
- broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, loongarch@lists.linux.dev,
- loongson-kernel@lists.loongnix.cn
-References: <20230605120934.2306548-1-mengyingkun@loongson.cn>
- <20230605120934.2306548-3-mengyingkun@loongson.cn>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20230605120934.2306548-3-mengyingkun@loongson.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: PKGMICDNUMHIAW34GKLODHGQTT7YR6ZI
-X-Message-ID-Hash: PKGMICDNUMHIAW34GKLODHGQTT7YR6ZI
-X-MailFrom: krzk@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: GEDWO6A55H23IHMSZZ7GFOKHYWUPXVRZ
+X-Message-ID-Hash: GEDWO6A55H23IHMSZZ7GFOKHYWUPXVRZ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PKGMICDNUMHIAW34GKLODHGQTT7YR6ZI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GEDWO6A55H23IHMSZZ7GFOKHYWUPXVRZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,89 +112,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 05/06/2023 14:09, YingKun Meng wrote:
-> From: Yingkun Meng <mengyingkun@loongson.cn>
-> 
-> The audio card uses loongson I2S controller present in 7axxx/2kxxx chips
-> to transfer audio data.
+Currently the read event packet size in snd_seq_read() is defined by
+client->midi_version value that is guaranteed to be zero if UMP isn't
+enabled.  But the static analyzer doesn't know of the fact, and it
+still suspects as if it were leading to a potential overflow.
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC.  It might happen, that command when run on an older
-kernel, gives you outdated entries.  Therefore please be sure you base
-your patches on recent Linux kernel.
+Add the more explicit check of CONFIG_SND_SEQ_UMP to determine the
+aligned_size value for avoiding the confusion.
 
-You missed at least DT list (maybe more), so this won't be tested.
-Please resend and include all necessary entries.
+Fixes: 46397622a3fa ("ALSA: seq: Add UMP support")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202305261415.NY0vapZK-lkp@intel.com/
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/seq/seq_clientmgr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Signed-off-by: Yingkun Meng <mengyingkun@loongson.cn>
-> ---
->  .../sound/loongson,ls-audio-card.yaml         | 64 +++++++++++++++++++
->  1 file changed, 64 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml b/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
-> new file mode 100644
-> index 000000000000..f1d6ee346bb3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
-> @@ -0,0 +1,64 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/loongson-audio-card.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Loongson generic ASoC audio sound card.
-
-What is a "generic audio card"? Does it even match hardware? Bindings
-are supposed to describe hardware, which is usually very specific.
-
-Also: Drop full stop. It's a title.
-
-
-> +
-> +maintainers:
-> +  - Yingkun Meng <mengyingkun@loongson.cn>
-> +
-> +description:
-> +  Generic ASoC audio device for loongson platform.
-> +
-> +properties:
-> +  compatible:
-> +    const: loongson,ls-audio-card
-> +
-> +  model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: User specified audio sound card name
-> +
-> +  mclk-fs:
-> +    $ref: simple-card.yaml#/definitions/mclk-fs
-> +
-> +  cpu:
-> +    description: Holds subnode which indicates cpu dai.
-> +    type: object
-> +    additionalProperties: false
-> +    properties:
-> +      sound-dai:
-> +        maxItems: 1
-
-In the cpu: required with sound-dai
-
-> +
-> +  codec:
-> +    description: Holds subnode which indicates codec dai.
-> +    type: object
-> +    additionalProperties: false
-> +    properties:
-> +      sound-dai:
-> +        maxItems: 1
-
-In the codec: required with sound-dai
-
-No multiple dai links? Are you sure this card is so limited?
-
-
-Best regards,
-Krzysztof
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 948ae45e0cc3..e3f9ea67d019 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -451,7 +451,7 @@ static ssize_t snd_seq_read(struct file *file, char __user *buf, size_t count,
+ 	err = 0;
+ 	snd_seq_fifo_lock(fifo);
+ 
+-	if (client->midi_version > 0)
++	if (IS_ENABLED(CONFIG_SND_SEQ_UMP) && client->midi_version > 0)
+ 		aligned_size = sizeof(struct snd_seq_ump_event);
+ 	else
+ 		aligned_size = sizeof(struct snd_seq_event);
+-- 
+2.35.3
 
