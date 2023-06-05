@@ -4,175 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AC7CC7EE24
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 13:57:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95120C77B73
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Jun 2023 13:57:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2AAC6C1;
-	Mon,  5 Jun 2023 15:56:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2AAC6C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7393785D;
+	Mon,  5 Jun 2023 15:56:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7393785D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1685973428;
-	bh=PW/7TuyGczVznWIf05w+hmMxYtm4F7K9onGBVc8t6LE=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
+	s=default; t=1685973439;
+	bh=bqRIfvlx11MyhQ6O4N4SIv/cvez6moMVT0Ew++zRVW4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RAZ8sAj58CgnFJ8HvJLeE7nQr1cxNJTqPEzXDHE5HqNYPlbdK0rroteT6PgqnTQX8
-	 m7jsHvqauWV9SbrXLA11Vcco5LSNUhRMT+aQK7Zpoaej3QHqtk+h4Kyub6k0DhH/yg
-	 bKy6wMjlMpsCq/b8+wnnPWKc6ApG6xnSndXFPkyA=
+	b=hPTPxL7DE9FlTiAJx+8aSbovjlhfjkSqFsQVi3GnP0yhnRkXKRPbN3TOp96ia5OuI
+	 ZcXf5UI5g8RsoeE02pkemPx9EB4QUPVo6RChrnMtIo4KRSqhViLzFjBf+PB+w6a/m5
+	 Tbcip10FNQ4KXChgToatgQaX1AsgaEFVI7gsC0GM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A42AAF8058C; Mon,  5 Jun 2023 15:55:16 +0200 (CEST)
+	id B9932F80199; Mon,  5 Jun 2023 15:55:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2CBEF80520;
-	Mon,  5 Jun 2023 15:55:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B91F9F80520;
+	Mon,  5 Jun 2023 15:55:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0010F80199; Mon,  5 Jun 2023 13:42:56 +0200 (CEST)
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com
- (mail-dbaeur03on20701.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe1a::701])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F27FDF80130
-	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 13:42:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F27FDF80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=bang-olufsen.dk header.i=@bang-olufsen.dk
- header.a=rsa-sha256 header.s=selector1 header.b=Irv+8CaE
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BIhpxwslfDMeIaGUciiHDFB4QSxRPYJaMoIcuKARpKC3ecAFohn0hFfdsA+8dnsvdt0ueFjf6znmZMMIpAQ8c+qYnfBG3adG16PRmiD4VVeSEgvQyW88gdg/pfPVv6aQLQCca94NcGPQ58YbRpJaa2WZOAvoKmdWu5u8FzUb4DbXihgJ4W+784eEh1xlc0hBnF8dKxj7xO7geZoOduYZoF9maxA6irj5CjAjyxssn3KXASzAw2eSFd527EzyoDiBWPXzkCG9wVbKekuxUoqWl3LWx07RofKtp4GR7PHvNJTlK+S8v0LSoBHFKiVOpR6VSaZ3ubgJtnDVJyxBX0hFIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PW/7TuyGczVznWIf05w+hmMxYtm4F7K9onGBVc8t6LE=;
- b=Nof8WijzpHI5r6CiCGa9Je6qQH7WyqkZIseG4odK+7g1mzIoK+hKGo42HBaR1Ydhum+aLBriu86xWy6Eb7ULBOixyJrSa2p9CvqXATnzrVXCpFN3PE9Hxpb6lV7IplP/cSWDTZAAnR0rXHsuE6EfxnChdz2SoIjdmVogqwdAOf/ZMCSjzeoUFd3Viob+x66La/T8P0ulekQYz8IWSCWVv40u+BSGIxhydraXuQfFn9RtfdFpiFm1gds0vswD1yZ2kbNVu3FIZ09jPt09X5MpKWdwE54zwTzMD4MWX3pPl7ZPYIXoqqkPYaPU33CJMBZnXSGLNSixvUMj57t/ZqFWUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bang-olufsen.dk; dmarc=pass action=none
- header.from=bang-olufsen.dk; dkim=pass header.d=bang-olufsen.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bang-olufsen.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PW/7TuyGczVznWIf05w+hmMxYtm4F7K9onGBVc8t6LE=;
- b=Irv+8CaE/DsZj39OfkbBR9eFDdLCzOf1Y6c1KBln0izpC+qmUtZrKwBSlXe85djeMcUPH0CLfuxJOxulVB5lMyusIYXkexBtV3ucq9bLIGdq4VuOkmh9/Z6r6mQhQ3wAsrwHMgSIIFfZkOcZHFvu7iuviAMgGcsErIp404tamWk=
-Received: from AM6PR03MB3943.eurprd03.prod.outlook.com (2603:10a6:20b:26::24)
- by AS4PR03MB8183.eurprd03.prod.outlook.com (2603:10a6:20b:4f4::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6433.24; Mon, 5 Jun
- 2023 11:42:44 +0000
-Received: from AM6PR03MB3943.eurprd03.prod.outlook.com
- ([fe80::b8e6:a92f:367e:801f]) by AM6PR03MB3943.eurprd03.prod.outlook.com
- ([fe80::b8e6:a92f:367e:801f%7]) with mapi id 15.20.6455.030; Mon, 5 Jun 2023
- 11:42:44 +0000
-From: =?utf-8?B?QWx2aW4gxaBpcHJhZ2E=?= <ALSI@bang-olufsen.dk>
-To: Mark Brown <broonie@kernel.org>
-CC: =?utf-8?B?QWx2aW4gxaBpcHJhZ2E=?= <alvin@pqrs.dk>, Liam Girdwood
-	<lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori
- Morimoto <kuninori.morimoto.gx@renesas.com>, "alsa-devel@alsa-project.org"
-	<alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: dt-bindings: document new symmetric-clock-role
- flag
-Thread-Topic: [PATCH 1/4] ASoC: dt-bindings: document new symmetric-clock-role
- flag
-Thread-Index: AQHZlTEkbjROoMVD8k+Rhl00q7eUT693ZJ6AgAAIGwCAAAHAAIAErNKA
-Date: Mon, 5 Jun 2023 11:42:44 +0000
-Message-ID: <epx43xeghpqcourix74uyjdm6kpovlqocx7l34z3bvumk7ehfb@sfvjvladp2oh>
-References: <20230602090322.1876359-1-alvin@pqrs.dk>
- <20230602090322.1876359-2-alvin@pqrs.dk>
- <3fe93662-82b0-4834-b6c3-473669c66210@sirena.org.uk>
- <7csvw25vhyal2jsznb3jykuijxqpk7bzyguxvl7cyitosgga2w@pxmkce22cm3d>
- <91b6d02a-25d5-4835-942e-3f8072bd8897@sirena.org.uk>
-In-Reply-To: <91b6d02a-25d5-4835-942e-3f8072bd8897@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bang-olufsen.dk;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM6PR03MB3943:EE_|AS4PR03MB8183:EE_
-x-ms-office365-filtering-correlation-id: 65fa999f-6aab-4803-712a-08db65b9f9ff
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- fplj57rCnE0UCXNRM/vZF8xxFuIRImvbe12p1+qObwLsIYOGE28qo6eKFYybuRM5+5eZdVK/hoo3wnx/7iiwvnOD+Dk9KwkgfwUEvG9NJqo5X9ZoXm+w8ekroTthYkLhsKMCcRaXOLDgyJWrUrCZmmDdhcVxUYeKUy0uOqH/dbA9TdMRDXcUdLm+tD0MdIkgSANFTdwioAORgw6xOwmYP+xbjAsqFG3y5Za94JOcxsot+UaCIFBvHJrgzWP6ZLfuPcaacoCcZ6U73w+Ck4Gx1E+nvpU/xYSO4kQIY8sUDkHCtjiKqkB7NoxqECg8O5kgk1IB7MVdiSHh+jnFosDV8SkD/QZz+wUqDDV77R9f550vXqzvJ9qOmw/9GDbETrl5DzECkdHViE5h3MqokrD5HxzmbHvMCZ9UZz+pCLJE3Rnsm8tDXfwbPlR+b+8n0NOX9aHbZ7VRgqSgDSQ1cZ8iGa9OriGrbNrIZnwZFsac0BVjdOIc7BbeqIU2fBvThr62fDOqVK2WF4Pp+YT0Pv9fwG/Uz/f6uIFE2CtRO/nzCkHSiY7tZ88hlGu666e5z8U2zrXryJXGsd+l57Ic0wm0Tab4HEvhS4sM0W2iW7pxCvOuOQk5+SVG9LLpE1a64OdP
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB3943.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(346002)(396003)(136003)(39850400004)(366004)(376002)(451199021)(71200400001)(478600001)(6486002)(86362001)(66574015)(83380400001)(33716001)(85182001)(9686003)(186003)(38070700005)(26005)(85202003)(38100700002)(122000001)(6512007)(6506007)(4326008)(7416002)(6916009)(66556008)(64756008)(76116006)(66946007)(66476007)(91956017)(66446008)(2906002)(5660300002)(8676002)(316002)(41300700001)(54906003)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?TExXWXJGNElVY1RJcmhuMHNpVnBQUHBRWFZ1Rng2TVBENUhLMG5MMFBXR3Nq?=
- =?utf-8?B?YXRWQnRVbVlXMllkU245Q2JpdjlPdi90eXZDbW5oa0NDN0pzNzNyY05kUk5R?=
- =?utf-8?B?T0JzRG4xY3Y0U2YyN1hhc1RlTDREbGZsUEEzU3g3WnV0Z3NYUitub2F6UGM2?=
- =?utf-8?B?TWNwSjUyZWdiTW1EMThEK2FNY0pndmY1WFExSWxCM2t3Z3lYWnFNTDFYK2tq?=
- =?utf-8?B?cHQ4T2h2ZTM5YVk2b09icmk2VFREZkhISmsvd3l5NHdmbDRaemlYcjRkMmxh?=
- =?utf-8?B?UGhOQi92K2RjbHY4ZGVjUTZtRElWN21XQU14ZHVRUFdBM1F5aEVDUUIzQi90?=
- =?utf-8?B?bndZM2gxWGsyM0UvSzRkN1Frc29oRWxjVHhLd1hxVDJ6UW92SXJzcFZ2WXp1?=
- =?utf-8?B?dUZxdlFON0hYTmVabi9IVURidW5scms0M05odmRzZXJaVnFOS3FvNzd1Qnly?=
- =?utf-8?B?V2t3dzc1Rk4ydnI3dk56UmE5aFhzTEZ1WU1oemwwMGdUUU5Jdm9PM3FIbUZl?=
- =?utf-8?B?Q1R1eHBvcjRnWXdqbU5lMElYZVg1SFZvdGJUYjhGWU96a1I4Z2pINHhDdlMv?=
- =?utf-8?B?Y3VUR3lvKzVRQjhRWjFkSTVGNGVlNW5pZG5kWjRka1d1T1Q1a1Z0WWZFdHR0?=
- =?utf-8?B?c0k0ejhKelo3cHlNN2JSc3ZCNXMwbTZhT2xLck1JcjREbGY5elArN3ExNktO?=
- =?utf-8?B?NzlETm5lNGw3MXp2c3Z0Qm5rUzhheSs0Z1pzVElzTHFyWUsyR0ZMaHE2ZzhP?=
- =?utf-8?B?U3F0ZC9yQlFkZjRkeHd5RzJEY2RmbjZVWlR4OVIyYTVCTnBTK3hLaTZDWDc3?=
- =?utf-8?B?blJ2Z2xwMjB3bTIzcXp1UnE1RlVTdUFEbG5rRmMrRElRa3VNUC9CdDcxSEhU?=
- =?utf-8?B?Zk83UjNzamkzU2FhRTJqZk96YmI4VXRud1ZFL21WUWgrTlNsOUp0aDdMcGdl?=
- =?utf-8?B?WXpVckFwUWQxM2loeE1jZWNhVUJkTTJhbGgrcloyTVc4VXowSElUbnBudzJJ?=
- =?utf-8?B?VE1NY3JWOWJ2cVFwNFNwendZQ3BVSFQ4UVBQWmxoUXRlZWRCa0N5d0pXeXdo?=
- =?utf-8?B?bWJ4RndTd0hlRzJSUGw1dXRNWllMYlA0aFoyTldBVG1iS1RWRzVjZ05icHBm?=
- =?utf-8?B?Q3RiTm5tV2h2L0VqMEJUTkM0elVKTGZCcGkxWCtBVjdMUXJ5V01oeStNOHFk?=
- =?utf-8?B?YnEzYTRlVWlEb1ZTcjR3RnJBRHVCRUxtVXJiVW1BbkdjNzg3eEFBT3g0cHBM?=
- =?utf-8?B?Z3E5Q3VROU90WXk0a0dqVStEK25ySHVleDdsRmJ6OVkxdU44c2RQY1hlK1R1?=
- =?utf-8?B?K2Jyc2F4d3gvT2FmbUFvVVpMaFR1VWE0a3oxZmloenFSaExPYXlDUk1QR0cr?=
- =?utf-8?B?Ky9NMnhmMSszV2wrWDB2eUloU2haUFgyYk1PdisxNHdJME5mM0xGd1gyM2k0?=
- =?utf-8?B?dGpER3FLRXlZOC9zcXY1UDlJTFd2NVZzQTRpR25WVXozaEFTd010SmNYSTd1?=
- =?utf-8?B?RjVHdzlVVHdJM3dSYU1XaVU4V1VZcEhmTkxWZVdvam8xWXNLalU4aVg3eWRm?=
- =?utf-8?B?RUlTN3VJbG5Bd2N2SDJRNitoQkx2eUxCTjA2eXNXN2lrdnlpdzYwYmp5N0lw?=
- =?utf-8?B?cmlOT2F6cVBzRHZsSGM1ZEJUc0hFekhDb25ITVJzU3A1cjNqK2pGUFF5Q0VZ?=
- =?utf-8?B?OGFEdXdpWHJHcnp0YmR4YmVyRHN2WUxYRHhUYVR1THBqdGMwSkpRNTFMRGhj?=
- =?utf-8?B?SGpVVXVHUHB1WTNSZUdiSGxwUmhXeHhCbzJWNnd2RW1HUUhNNG5WdDA2VGpG?=
- =?utf-8?B?VmJHS3dYQXE0THd0TW1pK0JIMUZqZjl1TUJabENmbFlqVmdKdGtRUHREMlNK?=
- =?utf-8?B?Q1lPdVFjeEV4citJSURma1NQY3YwS1BhTDJkMG9hUzBhRkllaWNPYW5KbDZK?=
- =?utf-8?B?MWdjSC94S3MrZmlzQTM4aWtmR2FkZ2JIV09TamVPdDRYVEIwaVArcWhlNXZn?=
- =?utf-8?B?aGJSbzYzSjV2WHFxelJ4WmtJelZBWXRHN1lPYWxnWjhUTU4ybGpyUm5tWSt1?=
- =?utf-8?B?ejdUeFRmRWVyZW5qKzFNQmFEY3F5ZjFGQXlUU3VuZTdpeW8yNFNzTDhrQ0Ji?=
- =?utf-8?Q?Wh2ADpE8vG/JNzItZ/goxwQ1H?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <48648B97CCF33B45937F9EF3A440A99F@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	id 5ADCBF80290; Mon,  5 Jun 2023 14:10:01 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by alsa1.perex.cz (Postfix) with ESMTP id D8E7AF8016C
+	for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2023 14:09:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8E7AF8016C
+Received: from loongson.cn (unknown [10.180.13.124])
+	by gateway (Coremail) with SMTP id _____8AxhfCE0H1k8xMAAA--.171S3;
+	Mon, 05 Jun 2023 20:09:40 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.180.13.124])
+	by localhost.localdomain (Coremail) with SMTP id
+ AQAAf8AxauWC0H1k_3AAAA--.2032S5;
+	Mon, 05 Jun 2023 20:09:40 +0800 (CST)
+From: YingKun Meng <mengyingkun@loongson.cn>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	loongarch@lists.linux.dev,
+	loongson-kernel@lists.loongnix.cn,
+	Yingkun Meng <mengyingkun@loongson.cn>
+Subject: [PATCH 2/3] ASoC: loongson: Add Loongson Generic ASoC Sound Card
+ Support
+Date: Mon,  5 Jun 2023 20:09:33 +0800
+Message-Id: <20230605120934.2306548-2-mengyingkun@loongson.cn>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20230605120934.2306548-1-mengyingkun@loongson.cn>
+References: <20230605120934.2306548-1-mengyingkun@loongson.cn>
 MIME-Version: 1.0
-X-OriginatorOrg: bang-olufsen.dk
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB3943.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 65fa999f-6aab-4803-712a-08db65b9f9ff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jun 2023 11:42:44.0409
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 210d08b8-83f7-470a-bc96-381193ca14a1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 
- gJxmoetPZHBjiuY0Z+y6E1msU7p7j3f+BS7hahjQSKv4Hr25t5Pc0CYNfSXtwbNuZB9q7uZE3W/7in5bS7w90Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR03MB8183
-X-MailFrom: ALSI@bang-olufsen.dk
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8AxauWC0H1k_3AAAA--.2032S5
+X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQANDGR8fwASxAAQsh
+X-Coremail-Antispam: 1Uk129KBj93XoW3Ww1DCr4DJw47ur1UXF4rXrc_yoW3AF43pa
+	n3Zay5KrWrXF4fAwn5XrW8AF13C34fuFnrXa17Jw1xKrZrA3s5WwnrGF1UZF4fAr98KFWU
+	XFZ5CFW8GF98G3XCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+	02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAF
+	wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
+	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
+	IIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
+	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+	0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwMKuUUUUU
+X-MailFrom: mengyingkun@loongson.cn
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: WD54O25BFXZOQVS7QKZJEFR6RYNLQ4BS
-X-Message-ID-Hash: WD54O25BFXZOQVS7QKZJEFR6RYNLQ4BS
+Message-ID-Hash: LPYT5DSSIYUOTON22FMEB6NIZ3ZOQC2T
+X-Message-ID-Hash: LPYT5DSSIYUOTON22FMEB6NIZ3ZOQC2T
 X-Mailman-Approved-At: Mon, 05 Jun 2023 13:55:12 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WD54O25BFXZOQVS7QKZJEFR6RYNLQ4BS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LPYT5DSSIYUOTON22FMEB6NIZ3ZOQC2T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -181,35 +96,260 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-T24gRnJpLCBKdW4gMDIsIDIwMjMgYXQgMDE6MTk6MDhQTSArMDEwMCwgTWFyayBCcm93biB3cm90
-ZToNCj4gT24gRnJpLCBKdW4gMDIsIDIwMjMgYXQgMTI6MTI6NTJQTSArMDAwMCwgQWx2aW4gxaBp
-cHJhZ2Egd3JvdGU6DQo+ID4gT24gRnJpLCBKdW4gMDIsIDIwMjMgYXQgMTI6NDM6NTFQTSArMDEw
-MCwgTWFyayBCcm93biB3cm90ZToNCj4gDQo+ID4gPiBXaHkgd291bGQgd2UgaGF2ZSBhIHByb3Bl
-cnR5IGZvciB0aGlzIGFuZCBub3QganVzdCBkZXNjcmliZSB3aGF0ZXZlciB0aGUNCj4gPiA+IGFj
-dHVhbCBjbG9ja2luZyBhcnJhbmdlbWVudCBpcz8NCj4gDQo+ID4gU3VyZSAtIGxldCBtZSBqdXN0
-IGVsYWJvcmF0ZSBvbiBteSB0aGlua2luZyBhbmQgbWF5YmUgeW91IGNhbiBoZWxwIG1lIHdpdGgg
-YQ0KPiA+IGJldHRlciBhcHByb2FjaDoNCj4gDQo+ID4gVGhlIGNsb2NraW5nIGFycmFuZ2VtZW50
-IGlzIGVuY29kZWQgaW4gdGhlIGRhaV9mbXQgZmllbGQgb2Ygc25kX3NvY19kYWlfbGluaywNCj4g
-PiBidXQgdGhpcyBpcyBhIHNpbmdsZSB2YWx1ZSB0aGF0IGRlc2NyaWJlcyB0aGUgZm9ybWF0IG9u
-IGJvdGggZW5kcy4gVGhlIGN1cnJlbnQNCj4gPiBiZWhhdmlvdXIgb2YgQVNvQyBpcyB0byBmbGlw
-IHRoZSBjbG9jayByb2xlcyBlbmNvZGVkIGluIGRhaV9mbXQgd2hlbiBhcHBseWluZyBpdA0KPiA+
-IHRvIHRoZSBDUFUgc2lkZSBvZiB0aGUgbGluay4NCj4gDQo+ID4gTG9va2luZyBmcm9tIGEgRFQg
-cGVyc3BlY3RpdmUsIGlmIEkgZG8gbm90IHNwZWNpZnkgZS5nLiBiaXRjbG9jay1tYXN0ZXIgb24N
-Cj4gPiBlaXRoZXIgc2lkZSBvZiB0aGUgbGluaywgdGhlbiB0aGUgZGFpX2ZtdCB3aWxsIGRlc2Ny
-aWJlIHRoZSBjb2RlYyBhcyBhIGJpdGNsb2NrDQo+ID4gY29uc3VtZXIgYW5kIChhZnRlciBmbGlw
-cGluZykgdGhlIENQVSBhcyBhIHByb3ZpZGVyLiBUaGF0J3MgdGhlIGRlZmF1bHQNCj4gPiBpbXBs
-aWNhdGlvbiBvZiB0aGUgRFQgYmluZGluZ3MgYW5kIEkgY2FuJ3QgYnJlYWsgY29tcGF0aWJpbGl0
-eSB0aGVyZS4NCj4gDQo+IE5vbmUgb2YgdGhpcyBhZGRyZXNzZXMgbXkgcXVlc3Rpb24uICBUbyBy
-ZXBlYXQgd2h5IHdvdWxkIHdlIG5vdCBqdXN0DQo+IGRlc2NyaWJlIHRoZSBhY3R1YWwgY2xvY2tp
-bmcgYXJyYW5nZW1lbnQgaGVyZSAtIHRoaXMgcHJvcGVydHkgZG9lcyBub3QNCj4gc3BlY2lmeSB3
-aGVyZSB0aGUgY2xvY2sgYWN0dWFsbHkgY29tZXMgZnJvbSBhdCBhbGwsIHdlJ3JlIHN0aWxsIGdv
-aW5nIHRvDQo+IG5lZWQgYWRkaXRpb25hbCBpbmZvcm1hdGlvbiBmb3IgdGhhdCBhbmQgaWYgd2Un
-dmUgZGVzY3JpYmVkIHRoYXQgY2xvY2sNCj4gdGhlbiB3ZSBhbHJlYWR5IGtub3cgaXQncyB0aGVy
-ZSB3aXRob3V0IGhhdmluZyB0byBzcGVjaWZ5IGFueSBtb3JlDQo+IHByb3BlcnRpZXMuDQoNCk1h
-eWJlIEkgb3ZlcmNvbXBsaWNhdGVkIHlvdXIgcG9pbnQgd2l0aCBteSBwcmV2aW91cyByZXBseS4g
-U29tZSBxdWVzdGlvbnMgdG8NCmNsYXJpZnk6DQoNCjEuIFlvdSBkb24ndCBsaWtlIHRoZSBEVCBw
-cm9wZXJ0eSBiZWNhdXNlIGl0IHNob3VsZCBiZSBpbmZlcnJhYmxlIGJ5IG90aGVyDQptZWFucy4g
-Q29ycmVjdD8NCg0KMi4gQXMgZm9yIHRoZSBmbGFnIGFkZGVkIHRvIHNuZF9zb2NfZGFpX2xpbmss
-IGRvIHlvdSB0aGluayB0aGF0IGlzIGFuIE9LDQphcHByb2FjaD8NCg0KSnVzdCB3YW50IHRvIHVu
-ZGVyc3RhbmQgd2hpY2ggZGlyZWN0aW9uIHlvdSB3b3VsZCBsaWtlIG1lIHRvIGZvY3VzIHRoZQ0K
-ZWZmb3J0Lg0KDQpLaW5kIHJlZ2FyZHMsDQpBbHZpbg==
+From: Yingkun Meng <mengyingkun@loongson.cn>
+
+The Loongson Generic ASoC Sound Card is a general ASoC DAI Link driver that
+can be used for Loongson CPU DAI drivers and external CODECs.
+
+The driver supports the use of ACPI table to describe device resources.
+On loongson 7axxx platforms, the audio device is an ACPI device.
+
+Signed-off-by: Yingkun Meng <mengyingkun@loongson.cn>
+---
+ sound/soc/loongson/Kconfig         |  10 ++
+ sound/soc/loongson/Makefile        |   4 +
+ sound/soc/loongson/loongson_card.c | 201 +++++++++++++++++++++++++++++
+ 3 files changed, 215 insertions(+)
+ create mode 100644 sound/soc/loongson/loongson_card.c
+
+diff --git a/sound/soc/loongson/Kconfig b/sound/soc/loongson/Kconfig
+index fd477e7da6e0..da471ba3b2de 100644
+--- a/sound/soc/loongson/Kconfig
++++ b/sound/soc/loongson/Kconfig
+@@ -12,4 +12,14 @@ config SND_SOC_LOONGSON_I2S_PCI
+ 	  The controller is found in loongson bridge chips or SoCs,
+ 	  and work as a PCI device.
+ 
++config SND_SOC_LOONGSON_CARD
++	tristate "Loongson Sound Card Driver"
++	select SND_SOC_LOONGSON_I2S_PCI
++	help
++	  Say Y or M if you want to add support for SoC audio using
++	  loongson I2S controller.
++
++	  The driver add support for ALSA SoC Audio support using
++	  loongson I2S controller.
++
+ endmenu
+diff --git a/sound/soc/loongson/Makefile b/sound/soc/loongson/Makefile
+index cfd0de1b1b22..a173a0fe17fe 100644
+--- a/sound/soc/loongson/Makefile
++++ b/sound/soc/loongson/Makefile
+@@ -2,3 +2,7 @@
+ #Platform Support
+ snd-soc-loongson-i2s-pci-objs := loongson_i2s_pci.o loongson_i2s.o
+ obj-$(CONFIG_SND_SOC_LOONGSON_I2S_PCI) += snd-soc-loongson-i2s-pci.o
++
++#Machine Support
++snd-soc-loongson-card-objs := loongson_card.o
++obj-$(CONFIG_SND_SOC_LOONGSON_CARD) += snd-soc-loongson-card.o
+diff --git a/sound/soc/loongson/loongson_card.c b/sound/soc/loongson/loongson_card.c
+new file mode 100644
+index 000000000000..bedf799bd7f2
+--- /dev/null
++++ b/sound/soc/loongson/loongson_card.c
+@@ -0,0 +1,201 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Loongson ASoC Audio driver
++ *
++ * Copyright (C) 2022 Loongson Technology Corporation Limited
++ */
++
++#include <linux/module.h>
++#include <sound/soc.h>
++#include <sound/soc-acpi.h>
++#include <linux/acpi.h>
++#include <linux/pci.h>
++#include <sound/pcm_params.h>
++
++struct loongson_card_data {
++	struct snd_soc_card snd_card;
++	unsigned int mclk_fs;
++};
++
++static int loongson_card_hw_params(struct snd_pcm_substream *substream,
++				   struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct loongson_card_data *ls_card = snd_soc_card_get_drvdata(rtd->card);
++	int ret, mclk;
++
++	if (ls_card->mclk_fs) {
++		mclk = ls_card->mclk_fs * params_rate(params);
++		ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
++					     SND_SOC_CLOCK_OUT);
++		if (ret < 0) {
++			dev_err(codec_dai->dev, "cpu_dai clock not set\n");
++			return ret;
++		}
++
++		ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
++					     SND_SOC_CLOCK_IN);
++		if (ret < 0) {
++			dev_err(codec_dai->dev, "codec_dai clock not set\n");
++			return ret;
++		}
++	}
++	return 0;
++}
++
++static const struct snd_soc_ops loongson_ops = {
++	.hw_params = loongson_card_hw_params,
++};
++
++SND_SOC_DAILINK_DEFS(analog,
++	DAILINK_COMP_ARRAY(COMP_CPU("loongson-i2s")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()),
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("loongson-i2s")));
++
++static struct snd_soc_dai_link loongson_dai_links[] = {
++	{
++		.name = "HiFi PAIF TX",
++		.stream_name = "Playback",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_IB_NF
++			| SND_SOC_DAIFMT_CBC_CFC,
++		SND_SOC_DAILINK_REG(analog),
++		.ops = &loongson_ops,
++	},
++	{
++		.name = "HiFi PAIF RX",
++		.stream_name = "Capture",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_IB_NF
++			| SND_SOC_DAIFMT_CBC_CFC,
++		SND_SOC_DAILINK_REG(analog),
++		.ops = &loongson_ops,
++	},
++};
++
++static int loongson_card_parse_of(struct loongson_card_data *data)
++{
++	const char *cpu_dai_name, *codec_dai_name;
++	struct device_node *cpu, *codec;
++	struct snd_soc_card *card = &data->snd_card;
++	struct device *dev = card->dev;
++	struct of_phandle_args args;
++	int ret, i;
++
++	cpu = of_get_child_by_name(dev->of_node, "cpu");
++	if (!cpu) {
++		dev_err(dev, "platform property missing or invalid\n");
++		return -EINVAL;
++	}
++	codec = of_get_child_by_name(dev->of_node, "codec");
++	if (!codec) {
++		dev_err(dev, "audio-codec property missing or invalid\n");
++		ret = -EINVAL;
++		goto err;
++	}
++
++	ret = of_parse_phandle_with_args(cpu, "sound-dai",
++					 "#sound-dai-cells", 0, &args);
++	if (ret) {
++		dev_err(dev, "codec node missing #sound-dai-cells\n");
++		goto err;
++	}
++	for (i = 0; i < card->num_links; i++)
++		loongson_dai_links[i].cpus->of_node = args.np;
++
++	ret = of_parse_phandle_with_args(codec, "sound-dai",
++					 "#sound-dai-cells", 0, &args);
++	if (ret) {
++		dev_err(dev, "codec node missing #sound-dai-cells\n");
++		goto err;
++	}
++	for (i = 0; i < card->num_links; i++)
++		loongson_dai_links[i].codecs->of_node = args.np;
++
++	snd_soc_of_get_dai_name(cpu, &cpu_dai_name);
++	snd_soc_of_get_dai_name(codec, &codec_dai_name);
++	for (i = 0; i < card->num_links; i++) {
++		loongson_dai_links[i].cpus->dai_name = cpu_dai_name;
++		loongson_dai_links[i].codecs->dai_name = codec_dai_name;
++	}
++	of_node_put(cpu);
++	of_node_put(codec);
++
++	return 0;
++
++err:
++	of_node_put(cpu);
++	of_node_put(codec);
++	return ret;
++}
++
++static int loongson_asoc_card_probe(struct platform_device *pdev)
++{
++	struct loongson_card_data *ls_priv;
++	struct snd_soc_card *card;
++	const char *codec_name, *codec_dai_name;
++	int ret, i;
++
++	ls_priv = devm_kzalloc(&pdev->dev, sizeof(*ls_priv), GFP_KERNEL);
++	if (!ls_priv)
++		return -ENOMEM;
++
++	card = &ls_priv->snd_card;
++
++	card->dev = &pdev->dev;
++	card->owner = THIS_MODULE;
++	card->dai_link = loongson_dai_links;
++	card->num_links = ARRAY_SIZE(loongson_dai_links);
++	snd_soc_card_set_drvdata(card, ls_priv);
++
++	ret = device_property_read_string(&pdev->dev, "model", &card->name);
++	if (ret) {
++		dev_err(&pdev->dev, "Error parsing card name: %d\n", ret);
++		return ret;
++	}
++	ret = device_property_read_u32(&pdev->dev, "mclk-fs", &ls_priv->mclk_fs);
++	if (ret) {
++		dev_err(&pdev->dev, "Error parsing mclk-fs: %d\n", ret);
++		return ret;
++	}
++
++	if (has_acpi_companion(&pdev->dev)) {
++		device_property_read_string(&pdev->dev, "codec-name",
++						&codec_name);
++		for (i = 0; i < card->num_links; i++)
++			loongson_dai_links[i].codecs->name = codec_name;
++
++		device_property_read_string(&pdev->dev, "codec-dai-name",
++						&codec_dai_name);
++		for (i = 0; i < card->num_links; i++)
++			loongson_dai_links[i].codecs->dai_name = codec_dai_name;
++	} else {
++		ret = loongson_card_parse_of(ls_priv);
++		if (ret)
++			return ret;
++	}
++
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++
++	return ret;
++}
++
++static const struct of_device_id loongson_asoc_dt_ids[] = {
++	{ .compatible = "loongson,ls-audio-card" },
++	{ /* sentinel */ },
++};
++MODULE_DEVICE_TABLE(of, loongson_asoc_dt_ids);
++
++static struct platform_driver loongson_audio_driver = {
++	.probe = loongson_asoc_card_probe,
++	.driver = {
++		.name = "loongson-asoc-card",
++		.pm = &snd_soc_pm_ops,
++		.of_match_table = of_match_ptr(loongson_asoc_dt_ids),
++	},
++};
++module_platform_driver(loongson_audio_driver);
++
++MODULE_DESCRIPTION("Loongson ASoc Sound Card driver");
++MODULE_AUTHOR("Loongson Technology Corporation Limited");
++MODULE_LICENSE("GPL");
+-- 
+2.33.0
+
