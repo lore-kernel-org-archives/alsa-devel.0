@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7C68C7EE24
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 09:41:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 260C4C77B7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 10:36:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5C9F823;
-	Tue,  6 Jun 2023 11:40:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5C9F823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BF9A825;
+	Tue,  6 Jun 2023 12:35:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BF9A825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686044504;
-	bh=uuZZI0pG1mTR7xg5E3i68/KvoRA8LHroiLU0UFe6FFE=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=E3NaHrgXC5Gtfy95Vw0fo09QykDfKwQTFjAZ4tSRXVHHiMgUlrKMgY/jYRbMaEFma
-	 Chgx4XuxKzc5odAGmTXDd31e6924vQ2p3H/QQzKllbGorHHbNrM4MVkWB0LnJII3C3
-	 ouWJaqQja8TKZEubV4OyxIDHCw1uo8kIf377PcoY=
+	s=default; t=1686047777;
+	bh=O6JACBOybLFKiDCKUHXpkKR022gig8ragcTiQpzMQbQ=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=EXbSjDywL+3MpwH3G/dcYyaGuAi7BOwwk+CfX7sa5DH0pXW2o6WV/kLIZbTHvItjI
+	 wS8891GQ56TVM34Gytf4fDjycDOTTvM6rsKUFccJ+DYJfAcZnYnpXP2Z4/hmaoXhsx
+	 93OotB75nRBvWw+dWnlOOAe4hdAi2tthThu4O7Ho=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 536BBF80527; Tue,  6 Jun 2023 11:40:44 +0200 (CEST)
+	id 95AA3F804DA; Tue,  6 Jun 2023 12:35:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE630F80520;
-	Tue,  6 Jun 2023 11:40:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB361F80254;
+	Tue,  6 Jun 2023 12:35:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C29BF80520; Tue,  6 Jun 2023 11:40:41 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D542FF80494; Tue,  6 Jun 2023 12:34:55 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EDDD5F800C8
-	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 11:40:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDDD5F800C8
+	by alsa1.perex.cz (Postfix) with ESMTPS id A171FF8016C
+	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 12:34:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A171FF8016C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=sD8Z1VMh;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=YsJkuyEW
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9BD0A219A2;
-	Tue,  6 Jun 2023 09:40:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1686044437; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=NkzEZlN89Dfma2O7X8RLWuiD9NNBWfEAZi+10DTV+mQ=;
-	b=sD8Z1VMhire/SjzWzuq6hOXsa1962QL8wsgnB5wduZcopFsavfBzqy2+tF4bGWXc4P098z
-	3sWAQlBYCwpuybRLnGzC52qMBsCsZJ2j8sAvdJI9hxlwJhlfLIbs2/qjG6CsI7TJ6rhNvp
-	8b2heCYP9DVC+nB7hroDtE7vJmM5riw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1686044437;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=NkzEZlN89Dfma2O7X8RLWuiD9NNBWfEAZi+10DTV+mQ=;
-	b=YsJkuyEWIHkdRXISdnPnxlP62GWz4KTnekpPI4Z3PcanVm665dvUw9ZVAMHddTg8EHHdgm
-	i+3p8TzgXKwmSICQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8083413519;
-	Tue,  6 Jun 2023 09:40:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id HxOFHhX/fmQrWQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 06 Jun 2023 09:40:37 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: control: Keep the previous numid at snd_ctl_rename_id()
-Date: Tue,  6 Jun 2023 11:40:35 +0200
-Message-Id: <20230606094035.14808-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=e25Mszs4
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 3565OZKo029668;
+	Tue, 6 Jun 2023 05:34:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=I3l9dEf9Pxrt0iwsB+1r4Bv1ieTEMmtO3O+2uHhuyLc=;
+ b=e25Mszs4AxgJCBdm903tcJ8vy2ERaVTYIEXI6hAMUqeTNC8wu+vBxf1vwj7Z2yuZQ8Qh
+ 3IAR5lWnr5cIiFOo1al7Fx2UghT13lwKnAd1ESk9/vLII87Nn3awEvvsazz1dN9ze2ZF
+ ifzCqHHE4jJs7emlj3YwChEsrj/EjXApSuFXIeR5zBqkpQZ53aq2wBLOf4T+Egli/GNT
+ k7c2v3qAPX1s3aUaIIkMoSMwKO1eLQ4G+1nDkvH9uGlvbh6esLSHfdC83LvhSpAZiXp6
+ QBmoFCJWfn6RvByW3sxjuRskZmFOCxYZRUTm5s5vWY+OzLYwjiTta7asL73UImXOMwUs 5A==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3r01xnaxj3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Jun 2023 05:34:45 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 6 Jun
+ 2023 11:34:44 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 6 Jun 2023 11:34:44 +0100
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.36])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ECC9211C6;
+	Tue,  6 Jun 2023 10:34:43 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Stefan Binding
+	<sbinding@opensource.cirrus.com>
+Subject: [PATCH v3 1/3] ALSA: hda: cs35l41: Clean up Firmware Load Controls
+Date: Tue, 6 Jun 2023 11:34:34 +0100
+Message-ID: <20230606103436.455348-2-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230606103436.455348-1-sbinding@opensource.cirrus.com>
+References: <20230606103436.455348-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OQPS3IAKG53YPSAUH2SNGRGPJEL2W27Z
-X-Message-ID-Hash: OQPS3IAKG53YPSAUH2SNGRGPJEL2W27Z
-X-MailFrom: tiwai@suse.de
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 4xlscCVFeXNPze3XgusGQATzVDpQDq75
+X-Proofpoint-GUID: 4xlscCVFeXNPze3XgusGQATzVDpQDq75
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: ZESEMWN6KTHJPNSAIQQHJDVZKINNDTES
+X-Message-ID-Hash: ZESEMWN6KTHJPNSAIQQHJDVZKINNDTES
+X-MailFrom: prvs=15210a2e6b=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OQPS3IAKG53YPSAUH2SNGRGPJEL2W27Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZESEMWN6KTHJPNSAIQQHJDVZKINNDTES/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,49 +108,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We don't need to change the numid at each time snd_ctl_rename_id() is
-called, as the control element size itself doesn't change.  Let's keep
-the previous numid value.
+Ensure Firmware Load control and Firmware Type control
+returns 1 when the value changes.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Remove fw_mutex from firmware load control put, since it is
+unnecessary, and prevents any possibility of mutex inversion.
+
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/core/control.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/pci/hda/cs35l41_hda.c | 24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 82aa1af1d1d8..f4a90a687ae5 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -730,12 +730,16 @@ EXPORT_SYMBOL_GPL(snd_ctl_activate_id);
-  * Finds the control with the old id from the card, and replaces the
-  * id with the new one.
-  *
-+ * The function tries to keep the already assigned numid while replacing
-+ * the rest.
-+ *
-  * Return: Zero if successful, or a negative error code on failure.
-  */
- int snd_ctl_rename_id(struct snd_card *card, struct snd_ctl_elem_id *src_id,
- 		      struct snd_ctl_elem_id *dst_id)
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index b5210abb5141f..d100189e15b83 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -835,34 +835,26 @@ static int cs35l41_fw_load_ctl_put(struct snd_kcontrol *kcontrol,
+ 				   struct snd_ctl_elem_value *ucontrol)
  {
- 	struct snd_kcontrol *kctl;
-+	int saved_numid;
+ 	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
+-	unsigned int ret = 0;
+-
+-	mutex_lock(&cs35l41->fw_mutex);
  
- 	down_write(&card->controls_rwsem);
- 	kctl = snd_ctl_find_id(card, src_id);
-@@ -743,10 +747,10 @@ int snd_ctl_rename_id(struct snd_card *card, struct snd_ctl_elem_id *src_id,
- 		up_write(&card->controls_rwsem);
- 		return -ENOENT;
+ 	if (cs35l41->request_fw_load == ucontrol->value.integer.value[0])
+-		goto err;
++		return 0;
+ 
+ 	if (cs35l41->fw_request_ongoing) {
+ 		dev_dbg(cs35l41->dev, "Existing request not complete\n");
+-		ret = -EBUSY;
+-		goto err;
++		return -EBUSY;
  	}
-+	saved_numid = kctl->id.numid;
- 	remove_hash_entries(card, kctl);
- 	kctl->id = *dst_id;
--	kctl->id.numid = card->last_numid + 1;
--	card->last_numid += kctl->count;
-+	kctl->id.numid = saved_numid;
- 	add_hash_entries(card, kctl);
- 	up_write(&card->controls_rwsem);
- 	return 0;
+ 
+ 	/* Check if playback is ongoing when initial request is made */
+ 	if (cs35l41->playback_started) {
+ 		dev_err(cs35l41->dev, "Cannot Load/Unload firmware during Playback\n");
+-		ret = -EBUSY;
+-		goto err;
++		return -EBUSY;
+ 	}
+ 
+ 	cs35l41->fw_request_ongoing = true;
+ 	cs35l41->request_fw_load = ucontrol->value.integer.value[0];
+ 	schedule_work(&cs35l41->fw_load_work);
+ 
+-err:
+-	mutex_unlock(&cs35l41->fw_mutex);
+-
+-	return ret;
++	return 1;
+ }
+ 
+ static int cs35l41_fw_type_ctl_get(struct snd_kcontrol *kcontrol,
+@@ -881,8 +873,12 @@ static int cs35l41_fw_type_ctl_put(struct snd_kcontrol *kcontrol,
+ 	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
+ 
+ 	if (ucontrol->value.enumerated.item[0] < HDA_CS_DSP_NUM_FW) {
+-		cs35l41->firmware_type = ucontrol->value.enumerated.item[0];
+-		return 0;
++		if (cs35l41->firmware_type != ucontrol->value.enumerated.item[0]) {
++			cs35l41->firmware_type = ucontrol->value.enumerated.item[0];
++			return 1;
++		} else {
++			return 0;
++		}
+ 	}
+ 
+ 	return -EINVAL;
 -- 
-2.35.3
+2.34.1
 
