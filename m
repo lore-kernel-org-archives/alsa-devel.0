@@ -4,90 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20B7DC77B7A
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 10:37:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D28EC77B7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 11:16:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9854A836;
-	Tue,  6 Jun 2023 12:36:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9854A836
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8FCC1FE;
+	Tue,  6 Jun 2023 13:15:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8FCC1FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686047830;
-	bh=UruFh6U7bhpdZyDxBIlHCtnZk2zvtnd0T9fe9urbU2s=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=QonzMX9+ZfmbaYVvH16GueLUGsg8rHu3dKmULYswkRU3GUfc46iCT0IasPI8wS2oH
-	 ajItzJv4FOaAuIpHd295MAAoo1EY1F8bKcmKwAuEnCUhwfIMLEkDqZajfUZVeJB+yW
-	 Ncn7cuXlBc5tvzUwWmV81QCrZ9ZpqsWFKvDjQ5MY=
+	s=default; t=1686050204;
+	bh=Ded9/Ky+ytxCo5yLJY2tZBoFtsScFVRyhOZqAiowIjg=;
+	h=Date:To:References:From:Subject:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=HEcD3YDbXPlONfoXqxs8T7uGC2VRL2cvwZNhJuv+Fohcqs/JuXvKxbZqo1LNSFn6D
+	 AUlka03AFJNTuMc0zeXICVQxaCWqoWqCoPdfj/c22UVJCm3q13QZRDIzqQLsJgG5UO
+	 iynZPyxmhRDR7SFllASvhZ7Ftzmvm4wcjxvSfLhc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A28EF80567; Tue,  6 Jun 2023 12:35:16 +0200 (CEST)
+	id 4F75EF80548; Tue,  6 Jun 2023 13:15:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9FFEFF80199;
-	Tue,  6 Jun 2023 12:35:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD458F80494;
+	Tue,  6 Jun 2023 13:15:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8557F80580; Tue,  6 Jun 2023 12:35:12 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 18B5FF80199; Tue,  6 Jun 2023 13:15:27 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7A8FAF80199
-	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 12:34:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A8FAF80199
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=lPERgH4V
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 3565N8jJ006095;
-	Tue, 6 Jun 2023 05:34:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=eYBg8d8Hvj15ndjFUQ9ONSXAzqhuPZlCNKFw2fRkfqM=;
- b=lPERgH4VbDVJISBOYuuiYc/9MyB5ccv1+/2EAhdlbAsQJF4VYx2k3PV7Dq0dGQwsquwL
- AB1xxFkf7mPCW0+06S6t+Oh78ra9o1FZ3KsCkqNW2OH8rlSjVuX0v3dLcGI7HfKHr7vQ
- znLBodm7StYHJK+brz4Si2gLmybr6jLuSNeq1dk71SWb4sPnrv1AjkJ9pYVTjpMRzF6n
- Un/Chte2EQvQ+GJADiZpio55iyMvzizJ/0F3vHm62UXpoAE52viM07NZpn4C0EiJwPkt
- 6WgB6ixA9g/TtFA0ZwVBTwBOutIrWag0oedO30kNT4aO3kwy1LfcIouoD1FCd/aVhxQx cw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3r02x1asf3-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Jun 2023 05:34:46 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Tue, 6 Jun
- 2023 11:34:44 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 6 Jun 2023 11:34:44 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.36])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2DB09B2F;
-	Tue,  6 Jun 2023 10:34:44 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Stefan Binding
-	<sbinding@opensource.cirrus.com>
-Subject: [PATCH v3 2/3] ALSA: hda: cs35l41: Fix endian conversions
-Date: Tue, 6 Jun 2023 11:34:35 +0100
-Message-ID: <20230606103436.455348-3-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230606103436.455348-1-sbinding@opensource.cirrus.com>
-References: <20230606103436.455348-1-sbinding@opensource.cirrus.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 49A4DF80155
+	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 13:15:24 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 1209F1E3B;
+	Tue,  6 Jun 2023 13:15:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 1209F1E3B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1686050123; bh=AR+8DthPhq9YBvT+MUVUkICy6y4kBJd7rVpk9LdoONk=;
+	h=Date:To:References:From:Subject:In-Reply-To:From;
+	b=XML3NPQRDzx2cvT2vXds+9EoBTDc+tIWH/ix4LqXEt87I5t3S28GM3YBEJZqCW7Uf
+	 Ez7dMZCnPfksFEVM4pU4pGOPlYTnsW96hBxLEw3kQ++QoO231YAKCAoxU2Kmmwlkx/
+	 2ukVOlR5+QVrvHMEGaqayB7op4OnLZnlEgF0qlFE=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Tue,  6 Jun 2023 13:15:21 +0200 (CEST)
+Message-ID: <82b3dc7a-16f7-6c8d-766c-acd219e60f5b@perex.cz>
+Date: Tue, 6 Jun 2023 13:15:20 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: pGAQLpAMfUUpUum8VCGzvu5H1KEWN9ym
-X-Proofpoint-GUID: pGAQLpAMfUUpUum8VCGzvu5H1KEWN9ym
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: F5UIXGO4CNI27ONZDJQTDJ3DC63SSWO4
-X-Message-ID-Hash: F5UIXGO4CNI27ONZDJQTDJ3DC63SSWO4
-X-MailFrom: prvs=15210a2e6b=sbinding@opensource.cirrus.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+References: <20230606094035.14808-1-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: control: Keep the previous numid at
+ snd_ctl_rename_id()
+In-Reply-To: <20230606094035.14808-1-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: NHGHJHGZKN6U56TPS25CECTSWTISOUMN
+X-Message-ID-Hash: NHGHJHGZKN6U56TPS25CECTSWTISOUMN
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F5UIXGO4CNI27ONZDJQTDJ3DC63SSWO4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NHGHJHGZKN6U56TPS25CECTSWTISOUMN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,47 +90,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Found during static analysis, ensure variables are correct
-types before endian conversion.
+On 06. 06. 23 11:40, Takashi Iwai wrote:
+> We don't need to change the numid at each time snd_ctl_rename_id() is
+> called, as the control element size itself doesn't change.  Let's keep
+> the previous numid value.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I would also highlight in the comment that snd_ctl_rename_id() should be used 
+only in the card initialization phase. It may cause issues with the user space 
+(persistent numid) for the dynamic controls.
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index d100189e15b83..ce5faa6205170 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -308,8 +308,8 @@ static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
- }
- 
- #if IS_ENABLED(CONFIG_EFI)
--static int cs35l41_apply_calibration(struct cs35l41_hda *cs35l41, unsigned int ambient,
--				     unsigned int r0, unsigned int status, unsigned int checksum)
-+static int cs35l41_apply_calibration(struct cs35l41_hda *cs35l41, __be32 ambient, __be32 r0,
-+				     __be32 status, __be32 checksum)
- {
- 	int ret;
- 
-@@ -745,7 +745,7 @@ static int cs35l41_runtime_resume(struct device *dev)
- 
- static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
- {
--	int halo_sts;
-+	__be32 halo_sts;
- 	int ret;
- 
- 	ret = cs35l41_init_dsp(cs35l41);
-@@ -773,7 +773,7 @@ static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
- 				&halo_sts, sizeof(halo_sts));
- 
- 	if (ret) {
--		dev_err(cs35l41->dev, "Timeout waiting for HALO Core to start. State: %d\n",
-+		dev_err(cs35l41->dev, "Timeout waiting for HALO Core to start. State: %u\n",
- 			 halo_sts);
- 		goto clean_dsp;
- 	}
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+
 -- 
-2.34.1
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 
