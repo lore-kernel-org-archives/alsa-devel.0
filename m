@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98E53C77B7A
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 15:42:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C33BCC77B7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 15:42:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22E383E7;
-	Tue,  6 Jun 2023 17:41:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22E383E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60FA0828;
+	Tue,  6 Jun 2023 17:41:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60FA0828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686066142;
-	bh=YetqiMtBgg9iuZtDtv2kPhnSL2iH8CyOWdyD+KWIne8=;
+	s=default; t=1686066155;
+	bh=GelMQS7A/Lfhb0VxgBucg1eyg9fuPuwktHizh8Kwk48=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XRJZHrnEBgfudqhGK+pncqay2OfwstyE/YYLusO4CxO6DBiDszr1VIkh9XgFZf7xu
-	 9/6839hxgyEZy4J7vTHqIa+lK1KYqhIDvu6hfPwBylqd9gSH0hjO+UEL5Re39I+hnU
-	 urUpvlI9u+DRjCOj8R3/p8OvC+GTc/OKwjZ7Ycpg=
+	b=nBohXOiuTkcETnSJQu/+rAMAMfAfTaRiJsKw2oLOlKQb8JU7xwxUdaAZeUmXSFNKu
+	 mRaszKX5GNPBQynesgQD0TRA7elfNVneKthNrR961xZrZsMSGS2912BvQLc5CsSErd
+	 jG8BoB7oUT67K9c+MEqVp8tY1swERHhfaBaWh7YQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1B3E8F80563; Tue,  6 Jun 2023 17:40:42 +0200 (CEST)
+	id 94EEEF80579; Tue,  6 Jun 2023 17:40:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BED8EF80549;
-	Tue,  6 Jun 2023 17:40:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 438C0F80552;
+	Tue,  6 Jun 2023 17:40:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32513F80494; Tue,  6 Jun 2023 17:40:38 +0200 (CEST)
+	id A3504F80544; Tue,  6 Jun 2023 17:40:40 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E74D0F8016C
-	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 17:40:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E74D0F8016C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0F30DF800C8
+	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 17:40:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F30DF800C8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Z5sgQBoh
+ header.s=Intel header.b=oI4GuyBg
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686066028; x=1717602028;
+  t=1686066027; x=1717602027;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=YetqiMtBgg9iuZtDtv2kPhnSL2iH8CyOWdyD+KWIne8=;
-  b=Z5sgQBohXGx2k4/VsWFBx7CZy8Ql7hRlGqSQiS5oZyGKimbRdLQjPHxM
-   O4vqMQC2clXVMEobHKE63QOV3+L7Nulb4y5owY59XJjcACoz9ULiCmRfJ
-   QU7189FGv6Nw5R2l1WSx2lHuEaDLYfEoglGMLT+F00V+P1D5p4O+q145u
-   +uiYo3WyHR9T6MfMGIfth7MMfottdW8R/C/uyW7V6QuWvEVfkuoFNcT3a
-   OGkJIntg3f7TH36635hO/sj+GmmzTdAUFcmZ3Yxg9nQ+UKvl04NqpbwKq
-   ypEiaaAOMbVgg2Wwl8r4VlaPULkay57XRGmoPmMqOS9lL7MeHi44jlt0u
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10733"; a="422550191"
+  bh=GelMQS7A/Lfhb0VxgBucg1eyg9fuPuwktHizh8Kwk48=;
+  b=oI4GuyBgbHiFqDt+549dnUpSWG4ceIXPg6fyzbNCT76cmwDBBWZO0oEf
+   FGkMNvdGT+SAWQqHUt/dtIVpV3wGnu3CQzPnssR+uBVsgFiFN1Lmzp/k/
+   ykoUVTweE8JWnSVr4oJzkGb5C004S3P7KGj7LFKj5zb2Dq6b6mfbiwjJD
+   zXNFlcFZlWt8qJgNo2qiNqMaZnh/ofSIZhlIhv7XjbZ47g9lmDIBJw52W
+   vry+2+pHpLHm/yAGT/Qf6P36wvD8tVz4ED5VTe+qM+Kk965iID/hBCbsb
+   oKOQo+m3gFxuTb7bSeq6fNvy6yvCVR0uxK+/3v9B4vxGtppxAe7/JezZk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10733"; a="422550153"
 X-IronPort-AV: E=Sophos;i="6.00,221,1681196400";
-   d="scan'208";a="422550191"
+   d="scan'208";a="422550153"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2023 08:39:12 -0700
+ 06 Jun 2023 08:39:10 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10733"; a="955816519"
+X-IronPort-AV: E=McAfee;i="6600,9927,10733"; a="955816518"
 X-IronPort-AV: E=Sophos;i="6.00,221,1681196400";
-   d="scan'208";a="955816519"
+   d="scan'208";a="955816518"
 Received: from pdonvalk-mobl2.amr.corp.intel.com (HELO [10.255.231.168])
  ([10.255.231.168])
   by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2023 08:39:11 -0700
-Message-ID: <6c44969f-4d25-7b71-cd35-cd7087e083e4@linux.intel.com>
-Date: Tue, 6 Jun 2023 09:59:43 -0500
+ 06 Jun 2023 08:39:09 -0700
+Message-ID: <652a07e4-49be-7715-cc77-b05f1727a496@linux.intel.com>
+Date: Tue, 6 Jun 2023 09:49:10 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [PATCH V3 5/9] ASoC: amd: ps: add support for SoundWire DMA
- interrupts
+Subject: Re: [PATCH V3 2/9] ASoC: amd: ps: handle SoundWire interrupts in acp
+ pci driver
 Content-Language: en-US
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
@@ -81,13 +81,13 @@ Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
  Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
  open list <linux-kernel@vger.kernel.org>
 References: <20230606060724.2038680-1-Vijendar.Mukunda@amd.com>
- <20230606060724.2038680-6-Vijendar.Mukunda@amd.com>
+ <20230606060724.2038680-3-Vijendar.Mukunda@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230606060724.2038680-6-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20230606060724.2038680-3-Vijendar.Mukunda@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 67SUIDXA7PQEFJAH626DFUKGVARKTPAA
-X-Message-ID-Hash: 67SUIDXA7PQEFJAH626DFUKGVARKTPAA
+Message-ID-Hash: BNEUXHIIEZBFCO4UCBYTIPIZTWCI7YRQ
+X-Message-ID-Hash: BNEUXHIIEZBFCO4UCBYTIPIZTWCI7YRQ
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/67SUIDXA7PQEFJAH626DFUKGVARKTPAA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BNEUXHIIEZBFCO4UCBYTIPIZTWCI7YRQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,167 +110,76 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-> +enum amd_sdw0_channel {
-> +	ACP_SDW0_AUDIO0_TX = 0,
-> +	ACP_SDW0_AUDIO1_TX,
-> +	ACP_SDW0_AUDIO2_TX,
-> +	ACP_SDW0_AUDIO0_RX,
-> +	ACP_SDW0_AUDIO1_RX,
-> +	ACP_SDW0_AUDIO2_RX,
-> +};
-> +
-> +enum amd_sdw1_channel {
-> +	ACP_SDW1_AUDIO1_TX,
-> +	ACP_SDW1_AUDIO1_RX,
-
-any specify reason why SDW0 starts with AUDIO0 and SDW1 with AUDIO1?
-
-> +};
-> +
->  struct pdm_stream_instance {
->  	u16 num_pages;
->  	u16 channels;
-> @@ -239,6 +253,8 @@ struct sdw_dma_ring_buf_reg {
->   * @sdw0_dev_index: SoundWire Manager-0 platform device index
->   * @sdw1_dev_index: SoundWire Manager-1 platform device index
->   * @sdw_dma_dev_index: SoundWire DMA controller platform device index
-> + * @sdw0-dma_intr_stat: DMA interrupt status array for SoundWire manager-SW0 instance
-> + * @sdw_dma_intr_stat: DMA interrupt status array for SoundWire manager-SW1 instance
->   * @acp_reset: flag set to true when bus reset is applied across all
->   * the active SoundWire manager instances
->   */
-> @@ -256,6 +272,8 @@ struct acp63_dev_data {
->  	u16 sdw0_dev_index;
->  	u16 sdw1_dev_index;
->  	u16 sdw_dma_dev_index;
-> +	u16 sdw0_dma_intr_stat[ACP63_SDW0_DMA_MAX_STREAMS];
-> +	u16 sdw1_dma_intr_stat[ACP63_SDW1_DMA_MAX_STREAMS];
->  	bool acp_reset;
->  };
->  
-> diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
-> index 17e29a3e1c21..daf54fe9cafd 100644
-> --- a/sound/soc/amd/ps/pci-ps.c
-> +++ b/sound/soc/amd/ps/pci-ps.c
-> @@ -99,14 +99,44 @@ static int acp63_deinit(void __iomem *acp_base, struct device *dev)
->  	return 0;
->  }
->  
-> +static irqreturn_t acp63_irq_thread(int irq, void *context)
-> +{
-> +	struct sdw_dma_dev_data *sdw_dma_data;
-> +	struct acp63_dev_data *adata = context;
-> +	u32 stream_index;
-> +	u16 pdev_index;
-> +
-> +	pdev_index = adata->sdw_dma_dev_index;
-> +	sdw_dma_data = dev_get_drvdata(&adata->pdev[pdev_index]->dev);
-> +
-> +	for (stream_index = 0; stream_index < ACP63_SDW0_DMA_MAX_STREAMS; stream_index++) {
-> +		if (adata->sdw0_dma_intr_stat[stream_index]) {
-> +			if (sdw_dma_data->sdw0_dma_stream[stream_index])
-
-can this test be false?
-
-> +				snd_pcm_period_elapsed(sdw_dma_data->sdw0_dma_stream[stream_index]);
-> +			adata->sdw0_dma_intr_stat[stream_index] = 0;
-> +		}
-> +	}
-> +	for (stream_index = 0; stream_index < ACP63_SDW1_DMA_MAX_STREAMS; stream_index++) {
-> +		if (adata->sdw1_dma_intr_stat[stream_index]) {
-> +			if (sdw_dma_data->sdw1_dma_stream[stream_index])
-
-can this test be false?
-
-> +				snd_pcm_period_elapsed(sdw_dma_data->sdw1_dma_stream[stream_index]);
-> +			adata->sdw1_dma_intr_stat[stream_index] = 0;
-> +		}
-> +	}
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static irqreturn_t acp63_irq_handler(int irq, void *dev_id)
+>  static void acp63_disable_interrupts(void __iomem *acp_base)
+> @@ -102,23 +103,60 @@ static irqreturn_t acp63_irq_handler(int irq, void *dev_id)
 >  {
 >  	struct acp63_dev_data *adata;
 >  	struct pdm_dev_data *ps_pdm_data;
->  	struct amd_sdw_manager *amd_manager;
->  	u32 ext_intr_stat, ext_intr_stat1;
-> +	u32 stream_id = 0;
->  	u16 irq_flag = 0;
-> +	u16 sdw_dma_irq_flag = 0;
+> -	u32 val;
+> +	struct amd_sdw_manager *amd_manager;
+> +	u32 ext_intr_stat, ext_intr_stat1;
+> +	u16 irq_flag = 0;
 >  	u16 pdev_index;
-> +	u16 index;
 >  
 >  	adata = dev_id;
 >  	if (!adata)
-> @@ -153,6 +183,56 @@ static irqreturn_t acp63_irq_handler(int irq, void *dev_id)
+>  		return IRQ_NONE;
+> +	/* ACP interrupts will be cleared by reading particular bit and writing
+> +	 * same value to the status register. writing zero's doesn't have any
+> +	 * effect.
+> +	 * Bit by bit checking of IRQ field is implemented.
+> +	 */
+> +	ext_intr_stat = readl(adata->acp63_base + ACP_EXTERNAL_INTR_STAT);
+> +	if (ext_intr_stat & ACP_SDW0_STAT) {
+> +		writel(ACP_SDW0_STAT, adata->acp63_base + ACP_EXTERNAL_INTR_STAT);
+> +		pdev_index = adata->sdw0_dev_index;
+> +		amd_manager = dev_get_drvdata(&adata->pdev[pdev_index]->dev);
+> +		if (amd_manager)
+
+can this test be false?
+
+> +			schedule_work(&amd_manager->amd_sdw_irq_thread);
+> +		irq_flag = 1;
+> +	}
+>  
+> -	val = readl(adata->acp63_base + ACP_EXTERNAL_INTR_STAT);
+> -	if (val & BIT(PDM_DMA_STAT)) {
+> +	ext_intr_stat1 = readl(adata->acp63_base + ACP_EXTERNAL_INTR_STAT1);
+> +	if (ext_intr_stat1 & ACP_SDW1_STAT) {
+> +		writel(ACP_SDW1_STAT, adata->acp63_base + ACP_EXTERNAL_INTR_STAT1);
+> +		pdev_index = adata->sdw1_dev_index;
+> +		amd_manager = dev_get_drvdata(&adata->pdev[pdev_index]->dev);
+> +		if (amd_manager)
+
+can this be false?
+
+> +			schedule_work(&amd_manager->amd_sdw_irq_thread);
+> +		irq_flag = 1;
+> +	}
+> +
+> +	if (ext_intr_stat & ACP_ERROR_IRQ) {
+> +		writel(ACP_ERROR_IRQ, adata->acp63_base + ACP_EXTERNAL_INTR_STAT);
+> +		/* TODO: Report SoundWire Manager instance errors */
+> +		writel(0, adata->acp63_base + ACP_SW0_I2S_ERROR_REASON);
+> +		writel(0, adata->acp63_base + ACP_SW1_I2S_ERROR_REASON);
+> +		writel(0, adata->acp63_base + ACP_ERROR_STATUS);
+> +		irq_flag = 1;
+> +	}
+> +
+> +	if (ext_intr_stat & BIT(PDM_DMA_STAT)) {
+>  		pdev_index = adata->pdm_dev_index;
+>  		ps_pdm_data = dev_get_drvdata(&adata->pdev[pdev_index]->dev);
+>  		writel(BIT(PDM_DMA_STAT), adata->acp63_base + ACP_EXTERNAL_INTR_STAT);
+>  		if (ps_pdm_data->capture_stream)
 >  			snd_pcm_period_elapsed(ps_pdm_data->capture_stream);
->  		irq_flag = 1;
+> -		return IRQ_HANDLED;
+> +		irq_flag = 1;
 >  	}
-> +	if (ext_intr_stat & ACP_SDW_DMA_IRQ_MASK) {
-> +		for (index = ACP_AUDIO2_RX_THRESHOLD; index <= ACP_AUDIO0_TX_THRESHOLD; index++) {
-> +			if (ext_intr_stat & BIT(index)) {
-> +				writel(BIT(index), adata->acp63_base + ACP_EXTERNAL_INTR_STAT);
-> +				switch (index) {
-> +				case ACP_AUDIO0_TX_THRESHOLD:
-> +					stream_id = ACP_SDW0_AUDIO0_TX;
-> +					break;
-> +				case ACP_AUDIO1_TX_THRESHOLD:
-> +					stream_id = ACP_SDW0_AUDIO1_TX;
-> +					break;
-> +				case ACP_AUDIO2_TX_THRESHOLD:
-> +					stream_id = ACP_SDW0_AUDIO2_TX;
-> +					break;
-> +				case ACP_AUDIO0_RX_THRESHOLD:
-> +					stream_id = ACP_SDW0_AUDIO0_RX;
-> +					break;
-> +				case ACP_AUDIO1_RX_THRESHOLD:
-> +					stream_id = ACP_SDW0_AUDIO1_RX;
-> +					break;
-> +				case ACP_AUDIO2_RX_THRESHOLD:
-> +					stream_id = ACP_SDW0_AUDIO2_RX;
-> +					break;
-> +				}
-> +
-> +				adata->sdw0_dma_intr_stat[stream_id] = 1;
-> +				sdw_dma_irq_flag = 1;
-> +			}
-> +		}
-> +	}
-> +
-> +	/* SDW1 BT RX */
-> +	if (ext_intr_stat1 & ACP_P1_AUDIO1_RX_THRESHOLD) {
-> +		writel(ACP_P1_AUDIO1_RX_THRESHOLD,
-> +		       adata->acp63_base + ACP_EXTERNAL_INTR_STAT1);
-> +		adata->sdw1_dma_intr_stat[ACP_SDW1_AUDIO1_RX] = 1;
-> +		sdw_dma_irq_flag = 1;
-> +	}
-> +
-> +	/* SDW1 BT TX*/
-
-keep spaces before */
-
-> +	if (ext_intr_stat1 & ACP_P1_AUDIO1_TX_THRESHOLD) {
-> +		writel(ACP_P1_AUDIO1_TX_THRESHOLD,
-> +		       adata->acp63_base + ACP_EXTERNAL_INTR_STAT1);
-> +		adata->sdw1_dma_intr_stat[ACP_SDW1_AUDIO1_TX] = 1;
-> +		sdw_dma_irq_flag = 1;
-> +	}
-> +
-> +	if (sdw_dma_irq_flag)
-> +		return IRQ_WAKE_THREAD;
-> +
->  	if (irq_flag)
->  		return IRQ_HANDLED;
->  	else
-> @@ -544,8 +624,8 @@ static int snd_acp63_probe(struct pci_dev *pci,
->  	ret = acp63_init(adata->acp63_base, &pci->dev);
->  	if (ret)
->  		goto release_regions;
-> -	ret = devm_request_irq(&pci->dev, pci->irq, acp63_irq_handler,
-> -			       irqflags, "ACP_PCI_IRQ", adata);
-> +	ret = devm_request_threaded_irq(&pci->dev, pci->irq, acp63_irq_handler,
-> +					acp63_irq_thread, irqflags, "ACP_PCI_IRQ", adata);
->  	if (ret) {
->  		dev_err(&pci->dev, "ACP PCI IRQ request failed\n");
->  		goto de_init;
+> -	return IRQ_NONE;
+> +	if (irq_flag)
+> +		return IRQ_HANDLED;
+> +	else
+> +		return IRQ_NONE;
+>  }
+>  
+>  static int sdw_amd_scan_controller(struct device *dev)
