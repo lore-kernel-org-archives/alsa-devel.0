@@ -4,88 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C25A0C7EE24
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 14:41:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09667C77B7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 14:59:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 625AA3E7;
-	Tue,  6 Jun 2023 16:40:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 625AA3E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20A0F823;
+	Tue,  6 Jun 2023 16:58:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20A0F823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686062499;
-	bh=ghbtpfgzEXDZlStE43dHNyo9glR2yfvAKES2S5iqao0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=D0FalArqFX1YTlp/KE1M1w+jdV5lsjqsSE3jGh0uECV5d2dhd9MVZVNicWcDe+g60
-	 LuQ8i8w7XZaD5zUBMnt1qr24jCUN+Sm2cuASOsl43/8fYMAPzODQw1mMu0nv6vr6Wq
-	 1a2Ju99jZFcDPlfh7L2POwupa0j4C75NlgdoR3bw=
+	s=default; t=1686063565;
+	bh=S/2/H+3F6CjGWPwV+186drdDZsiq48DS9Yq9Y1JvxI8=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=N0S9MNAp1cdXJwQWxKTVva64tvYkwOqPiQaJ8W4D9w8ymGaH37uM1Wja0FlKkv0x0
+	 XUNWwahVpZJ5aQrccSO0V+iEGwt8yJpjRcge7WYIU3o3JaI4lD71pQZN3QiPLCmY0L
+	 IkX/vjOAL5nXmvpHsPvwddIW+ycJSn2ypFfjRL3s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7E3ADF80254; Tue,  6 Jun 2023 16:40:16 +0200 (CEST)
+	id 63B32F80199; Tue,  6 Jun 2023 16:58:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBC34F80199;
-	Tue,  6 Jun 2023 16:40:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC89CF800ED;
+	Tue,  6 Jun 2023 16:58:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E530AF80199; Tue,  6 Jun 2023 16:40:12 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 18D2DF80199; Tue,  6 Jun 2023 16:58:02 +0200 (CEST)
+Received: from smtp-relay-internal-1.canonical.com
+ (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CB22CF800ED
-	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 16:40:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB22CF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id ADEEEF800ED
+	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 16:57:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADEEEF800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=h9bki2II
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ unprotected) header.d=canonical.com header.i=@canonical.com
+ header.a=rsa-sha256 header.s=20210705 header.b=u/2Ad+2U
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 940B162CAC;
-	Tue,  6 Jun 2023 14:40:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 749F4C433D2;
-	Tue,  6 Jun 2023 14:40:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686062405;
-	bh=ghbtpfgzEXDZlStE43dHNyo9glR2yfvAKES2S5iqao0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h9bki2IIyHiObYwlt0XmTTgUGm8+InDcRMFw+o9s5a89DTT5WIBZFbGXQBjF2yGjr
-	 dUfmvE1sb5uGpA9/T+SZji32Q9ia4LFIrIiX1iLyMdVMtLK3tOL/B3DqGzWKI8nEr4
-	 ABFEy56A3uRC3y9xb0KUyOBtuxFH+K0ZI+2JL4sptX/J8sqviCqB1xTeR0o/kgDord
-	 tA+jZBs1UZgpOjeTEwP44O+9CrEpxUSQ+nVE2bi5+oe9pifrnVJsEeSkAZ5Ef40GJU
-	 dB+JysfYjL/5rR+DIUyFi2USlyfiZrvu+i8Ypfk85+3d9EZEWenb2kNvViqPkV5QGB
-	 FGuJhiyyW69TQ==
-Date: Tue, 6 Jun 2023 15:39:59 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
-Cc: Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: dt-bindings: document new symmetric-clock-role
- flag
-Message-ID: <9ea5a0be-606e-4c65-914f-c249d3f1b513@sirena.org.uk>
-References: <20230602090322.1876359-1-alvin@pqrs.dk>
- <20230602090322.1876359-2-alvin@pqrs.dk>
- <3fe93662-82b0-4834-b6c3-473669c66210@sirena.org.uk>
- <7csvw25vhyal2jsznb3jykuijxqpk7bzyguxvl7cyitosgga2w@pxmkce22cm3d>
- <91b6d02a-25d5-4835-942e-3f8072bd8897@sirena.org.uk>
- <aesymtpx5bkfkvlbt2d6o3gn4zjzsbyiwxiuqziohgovy7oaoo@kt2n6v7kmuw7>
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9C8EC3F0F8
+	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 14:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1686063476;
+	bh=MUN7viTHu6QALabQ1fR3s2tYxllzkOaxkPFGC1T37tc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+	b=u/2Ad+2U1wDWHMR+5nD/OyJ9mVLIANjf1fqvZeBk3ByPSM9NGAfuA7W0kBG1U54Hz
+	 lfVirn0m+cGDbnmolxFl2G2voRZfkdVUYg2sTJOe6wfEs/BZFWhbh/YY1NO9y5r2Zg
+	 nR3W3MDESraExVJ8p1U+rRPdnPl3257Da65nJGoIaewYnBOUhoNEap4wMkf4WMc9wD
+	 EWaW0QlpPmmdtjT/ACVrBMRfvnbSpGdxrmGByIp4oTE/YwwYHsvD4JFC6GZnrzVdm+
+	 tUz6DxOMF7dp4w8wfIQou/99nVKEzaSevh65eTXXuFM3Ehk2DR420nWTRTlrBz7n8q
+	 UbJ7pGjRoD1eQ==
+Received: by mail-oi1-f197.google.com with SMTP id
+ 5614622812f47-39826f057a0so5871764b6e.1
+        for <alsa-devel@alsa-project.org>;
+ Tue, 06 Jun 2023 07:57:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686063475; x=1688655475;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MUN7viTHu6QALabQ1fR3s2tYxllzkOaxkPFGC1T37tc=;
+        b=YKwAPU50H0LRgsMhI/bq3xYELC8YuFaez03lLrMMd5+jP57GS+EU9DtVXVv1St9X/T
+         CFvzhdudwzL3okbuoHGyvP85KZGxcE+o23rUsd8QXZBml0SKLKDeIGJH4lFX8Fl7sQ+f
+         ampSenOFpLxoWo8OdZinZMUyxJg1iiJpe82i5dWKRYDwUEQxc6D3UZIjD14uEEDgvPGB
+         uGNOSJ+bBNgH9Pz1TfCuWcVMO1lz3bR0wTb6Y9Mrjs3p+WLz/pwkid0bRhYHytphYgAS
+         koy3nRhaXapyqLjpOMQZl1GdizM31Axw5W/VaEFYn6wyRs3HOSb4LU8lZAE9gna5Nh7D
+         g1Yg==
+X-Gm-Message-State: AC+VfDwC54fzWRk0QED7fgXBB7DqBEeQVv9PBR3/fwWlHLXJ5dUrABYQ
+	GumUnmwiMgYs4afAkdac2Hg6+C7QJwZebKMiia9DCW1ukh2wzKagXztD0rU1kMRSbpOD8VYUy86
+	FWgDh6KHUZUAz8NJ9QlrkGlY5KSdsGs5DDEc1LjUy
+X-Received: by 2002:a05:6808:694:b0:39a:58b3:4ad8 with SMTP id
+ k20-20020a056808069400b0039a58b34ad8mr2536588oig.38.1686063475463;
+        Tue, 06 Jun 2023 07:57:55 -0700 (PDT)
+X-Google-Smtp-Source: 
+ ACHHUZ4WZdeJsUeKKOpuRDQxfcI2Fq707bGmB1acq4YojYhtIC94BcdcosdyOqjKlOzEkTIRyyy9bw==
+X-Received: by 2002:a05:6808:694:b0:39a:58b3:4ad8 with SMTP id
+ k20-20020a056808069400b0039a58b34ad8mr2536565oig.38.1686063475032;
+        Tue, 06 Jun 2023 07:57:55 -0700 (PDT)
+Received: from u-Precision-5560.mymeshdevice.home
+ (2001-b011-3817-b688-4e3d-edc0-b3ad-88dd.dynamic-ip6.hinet.net.
+ [2001:b011:3817:b688:4e3d:edc0:b3ad:88dd])
+        by smtp.gmail.com with ESMTPSA id
+ x7-20020aa79187000000b0064ccfb73cb8sm249824pfa.46.2023.06.06.07.57.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Jun 2023 07:57:54 -0700 (PDT)
+From: Chris Chiu <chris.chiu@canonical.com>
+To: perex@perex.cz,
+	tiwai@suse.com,
+	sbinding@opensource.cirrus.com
+Cc: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Chris Chiu <chris.chiu@canonical.com>
+Subject: [PATCH] ALSA: hda/realtek: Enable 4 amplifiers instead of 2 on a HP
+ platform
+Date: Tue,  6 Jun 2023 22:57:47 +0800
+Message-Id: <20230606145747.135966-1-chris.chiu@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="GvMNWsvRI2cx5zFa"
-Content-Disposition: inline
-In-Reply-To: <aesymtpx5bkfkvlbt2d6o3gn4zjzsbyiwxiuqziohgovy7oaoo@kt2n6v7kmuw7>
-X-Cookie: Keep out of the sunlight.
-Message-ID-Hash: UQQZDUMY3FT4EA3S4TRC77BADQF3J2V2
-X-Message-ID-Hash: UQQZDUMY3FT4EA3S4TRC77BADQF3J2V2
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: U6UTITELL2CESHZRU5CCH36537XKVU2S
+X-Message-ID-Hash: U6UTITELL2CESHZRU5CCH36537XKVU2S
+X-MailFrom: chris.chiu@canonical.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UQQZDUMY3FT4EA3S4TRC77BADQF3J2V2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U6UTITELL2CESHZRU5CCH36537XKVU2S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,70 +129,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+In the commit 7bb62340951a ("ALSA: hda/realtek: fix speaker, mute/micmute
+LEDs not work on a HP platform"), speakers and LEDs are fixed but only 2
+CS35L41 amplifiers on SPI bus connected to Realtek codec are enabled. Need
+the ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED to get all amplifiers working.
 
---GvMNWsvRI2cx5zFa
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Fri, Jun 02, 2023 at 12:42:49PM +0000, Alvin =C5=A0ipraga wrote:
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index f10790ace5c1..0e76938f56df 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9500,7 +9500,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8b8a, "HP", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8b8b, "HP", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8b8d, "HP", ALC236_FIXUP_HP_GPIO_LED),
+-	SND_PCI_QUIRK(0x103c, 0x8b8f, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8b8f, "HP", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8b92, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8b96, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8b97, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+-- 
+2.25.1
 
-> Yes I see what you mean. On my platform the clock source is actually desc=
-ribed
-> by the common clock framework, so I would want to use that. If it were a
-> component driver then it would most likely be a codec that is part of the
-> dai-link anyway. So what about having two struct clk pointers in struct
-> snd_soc_dai?
->=20
->     struct snd_soc_dai {
->         /* ... */
->         struct clk *bitclock_provider;
->         struct clk *frameclock_provider;
->         /* ... */
->     };
-
-> If non-NULL I could then have the ASoC core enable/disable the clocks on =
-demand?
-> I would say in hw_params/hw_free, albeit that runs after set_fmt.
-
-hw_params() can be called repeatedly so that's not a good fit but
-broadly yes.
-
-> Having said that, I see ASoC doesn't really use the CCF much... am I way =
-off?
-
-Ideally we'd be representing more of the clocking via the clock
-framework but at present yes.
-
-> I don't think it's feasible to modify every component driver to explicitly
-> handle this and then ignore any CBP_CFP bits set in its call to set_fmt -=
- this
-> is why I want help from the ASoC core.
-
-Sure, but that's not going to impact the DT bindings.  All these things
-are driven from the machine driver.
-
-> > If simple-card can't be made to work that's fine, it's deprecated
-> > anyway.
-
-> Ah OK, I didn't know that. Right now I'm using graph-card2, that's not
-> deprecated, right?
-
-Yes, audio-graph-card replaces simple-card.
-
---GvMNWsvRI2cx5zFa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmR/RT4ACgkQJNaLcl1U
-h9AOGAf9EegtL3c4zrX74J8pQRZd4hNb4Sdz7YOKInPb59JgB7ox9bswVlvLt+d4
-BrkL3O10PUppYenoCq91zVnJV7QCXrJNwmt2PxxoAEm2QODPTgDGYF7qqIYVFqqZ
-DFeRW8iIXBl5H5pzm3ubN1JnnUBTBoN1HklWggVlPm6QDVMJlPa5DtmGtgXfICin
-bF7AZl/jmdRkl419mnCVn8IqnbxtxBkMdOfll8Mhl5m37708v/GBSJuu9NuMucYT
-qqPl8DAzGmFux4oQWugYZJo8xsjaHNOLbb+i3Lv1tXeW24BrM/G/o2tzXNs5NGl5
-RecfVJxwWf7elqqloUovb6ii2Be/HA==
-=EUDa
------END PGP SIGNATURE-----
-
---GvMNWsvRI2cx5zFa--
