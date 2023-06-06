@@ -4,90 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE861C77B73
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 09:40:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88259C77B73
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 09:40:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6117823;
-	Tue,  6 Jun 2023 11:39:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6117823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 468826C1;
+	Tue,  6 Jun 2023 11:40:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 468826C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686044412;
-	bh=Rq9AaRXDuRlWUf2x4+tGhBdxhm+biBK0j+Myd4nW8tQ=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=tb7nZ70cYXFyjiWnQJII8g5m9Bgbrtiqrhg/+23cF2eNEPcFNylHniAnm/hAJgpom
-	 7lMhdyNCwXaitwsmv3ZkjKuWvBFVQT4+oFBtjR3oGLmYwA7iEHL2FoG7kZkUYJ5QbN
-	 +6EFaeqmOMkGBYHi7FXMApaGnr2TKLf9OeEWA+WE=
+	s=default; t=1686044452;
+	bh=pxG1OyaTICfwIcf8V26O6szdcxGZ5YNGuMNOwPrdpzg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=bezBMzmKQMPS6UhhBJrIxIMNHLlztGEkImYWhbpYkVZyoIdKITb2GNDs/vwdFpe3/
+	 q+o7WHplsy3I3fmMK8I2Hbc95mXYvODntL3721HbNZFFktfWO5hSTClnQyFGM73Gww
+	 He8S9/DgCmHpmjNYh2UP+kPt6K3uXxwMD4SluSu4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2BA03F80527; Tue,  6 Jun 2023 11:39:11 +0200 (CEST)
+	id E2F63F80155; Tue,  6 Jun 2023 11:39:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33334F80199;
-	Tue,  6 Jun 2023 11:39:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03F8FF80553;
+	Tue,  6 Jun 2023 11:39:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2BB5F804DA; Tue,  6 Jun 2023 11:39:05 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id D29A3F80494; Tue,  6 Jun 2023 11:39:07 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1963DF80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4FB70F800C8
 	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 11:38:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1963DF80155
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FB70F800C8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=OKFyEHeN;
+ header.s=susede2_rsa header.b=DI9Z8ReM;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=yPmjwlHK
+ header.s=susede2_ed25519 header.b=3xa+rmXB
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 58C821FD63;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BDBFE1FD69;
 	Tue,  6 Jun 2023 09:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
 	t=1686044339;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=5aAHWP2Z3Pd28CxD0s43v2ci0A56RSIhk2O7M/CsCb4=;
-	b=OKFyEHeNm4lUyxXZ34/0Vwb+yVjoEDETUC4dtC0V6lVJ23kSKfQJXepJalO0rOfxKIcqTB
-	Gjz34/XIAFzykcmdv4tEbjruzdnOHur4IbJQYQbacr6NYVxPLf4RInpD6SLVlqgSOaBSPs
-	ASRYiZeXZAQvwJdk0deVqPizRbjUwG4=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fZ3rE/t/oIr1Fex5iwckxZz45THSEO7XJxkZERCSF2U=;
+	b=DI9Z8ReMUJim9/8OvAKipsJiBUWUgsDdWtStgALRjyacG+dy1sHP3MpYcFNVUeCuYqIscq
+	FBfdGUTR4e5OHldtne6yh+Aw09J6dpx/94AFvz+gUlAKmGtMsmt3CfTRqtR4yKriShxkJK
+	edpZbL7H2Ap7GBWwZB5E54901s8wwD4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1686044339;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=5aAHWP2Z3Pd28CxD0s43v2ci0A56RSIhk2O7M/CsCb4=;
-	b=yPmjwlHKnNOHKbz8gi+GZ/hMF72vULJn6srtdkn8BbyTfCtMPqicLMB0iiguVn9ALHcOEB
-	057HWweTMVLKr/BA==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fZ3rE/t/oIr1Fex5iwckxZz45THSEO7XJxkZERCSF2U=;
+	b=3xa+rmXBs5l6pYoMeckCMaxy8xnRaxVdEj+NPVa7djFaiZCOPH2pJ2+bn/bHaFPnbJJ/lx
+	Z1exfRbEURQoT2BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2DB3E13519;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9FB3D13519;
 	Tue,  6 Jun 2023 09:38:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 2gRjCbP+fmTiVwAAMHmgww
+	id IFSYJbP+fmTiVwAAMHmgww
 	(envelope-from <tiwai@suse.de>); Tue, 06 Jun 2023 09:38:59 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 0/4] ALSA: Fix kctl->id initialization
-Date: Tue,  6 Jun 2023 11:38:51 +0200
-Message-Id: <20230606093855.14685-1-tiwai@suse.de>
+Subject: [PATCH 3/4] ALSA: gus: Fix kctl->id initialization
+Date: Tue,  6 Jun 2023 11:38:54 +0200
+Message-Id: <20230606093855.14685-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230606093855.14685-1-tiwai@suse.de>
+References: <20230606093855.14685-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: D3ISOKPAWF5WILY5BWFALFCDJWHRZFSI
-X-Message-ID-Hash: D3ISOKPAWF5WILY5BWFALFCDJWHRZFSI
+Message-ID-Hash: LJ7MZGYR36K6VBAPGWHDXBA5MH6FENVS
+X-Message-ID-Hash: LJ7MZGYR36K6VBAPGWHDXBA5MH6FENVS
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D3ISOKPAWF5WILY5BWFALFCDJWHRZFSI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LJ7MZGYR36K6VBAPGWHDXBA5MH6FENVS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,29 +115,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Inspired by the recent Jaroslav's fix patch, I skimmed over the tree
-and found that there are a few other similar bugs.  Here is a patch
-set to address them.  Most of them are just shuffling the call order,
-while the one in HD-audio is changed to use snd_ctl_replace_id()
-helper.
+GUS driver replaces the kctl->id.index after assigning the kctl via
+snd_ctl_add().  This doesn't work any longer with the new Xarray
+lookup change.  It has to be set before snd_ctl_add() call instead.
 
+Fixes: c27e1efb61c5 ("ALSA: control: Use xarray for faster lookups")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/isa/gus/gus_pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Takashi
-
-===
-
-Takashi Iwai (4):
-  ALSA: ymfpci: Fix kctl->id initialization
-  ALSA: cmipci: Fix kctl->id initialization
-  ALSA: gus: Fix kctl->id initialization
-  ALSA: hda: Fix kctl->id initialization
-
- sound/isa/gus/gus_pcm.c        | 2 +-
- sound/pci/cmipci.c             | 6 +++---
- sound/pci/hda/hda_codec.c      | 6 +++++-
- sound/pci/ymfpci/ymfpci_main.c | 6 +++---
- 4 files changed, 12 insertions(+), 8 deletions(-)
-
+diff --git a/sound/isa/gus/gus_pcm.c b/sound/isa/gus/gus_pcm.c
+index 230f65a0e4b0..388db5fb65bd 100644
+--- a/sound/isa/gus/gus_pcm.c
++++ b/sound/isa/gus/gus_pcm.c
+@@ -892,10 +892,10 @@ int snd_gf1_pcm_new(struct snd_gus_card *gus, int pcm_dev, int control_index)
+ 		kctl = snd_ctl_new1(&snd_gf1_pcm_volume_control1, gus);
+ 	else
+ 		kctl = snd_ctl_new1(&snd_gf1_pcm_volume_control, gus);
++	kctl->id.index = control_index;
+ 	err = snd_ctl_add(card, kctl);
+ 	if (err < 0)
+ 		return err;
+-	kctl->id.index = control_index;
+ 
+ 	return 0;
+ }
 -- 
 2.35.3
 
