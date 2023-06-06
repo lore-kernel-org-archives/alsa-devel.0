@@ -4,75 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20949C7EE24
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 11:56:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FAB0C77B7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 11:59:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E43374C;
-	Tue,  6 Jun 2023 13:55:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E43374C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0580F825;
+	Tue,  6 Jun 2023 13:58:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0580F825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686052605;
-	bh=AwQKK+vTDce/hOWPJg3SWi3sPnJdf83ZO5vJmOamOkE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=PdQoeO8yuQ2mK7V/CeG368HqYg3Oo4IZWvjtXIk7iRFQGO898hJQSPGweLQ8SMS4J
-	 H5iUI6wdBlIjHCwyVUp2Z7M/qfcBv7WeWTgDTyMie4t4dzakKfsYQrUTRnVXQgkHVk
-	 JOynVlaCCGem38LpUia+RM1Ie7wxfRGZm8X9qgjo=
+	s=default; t=1686052749;
+	bh=eDETaWd0iMtsugBwp+4YXSDWu6NjjHkUp3CQAEU3CaQ=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ufB2vsUi+4v0EyFiE8phupPrR2JDVSTx4Hwor3D8uI8wDEXKEhciBupu7Z8CMktDE
+	 PPjYCMjkB7qoYrbK+THUkIBMbs5DEwz/JA1xlwXkwG1+fa4QX/CWDTQANlZFBYGxCx
+	 OdgGNlNTBx+w0aMx64cdrZQKOHa2xkFu2KOVkhmg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 134C0F80199; Tue,  6 Jun 2023 13:55:28 +0200 (CEST)
+	id 6C9DCF80494; Tue,  6 Jun 2023 13:57:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7155F80199;
-	Tue,  6 Jun 2023 13:55:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B431EF804DA;
+	Tue,  6 Jun 2023 13:57:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62526F80199; Tue,  6 Jun 2023 13:55:24 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4ABECF800C8
-	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 13:55:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ABECF800C8
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=DHNG6V6/
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id F096CF80290; Tue,  6 Jun 2023 13:57:49 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 405BF62FC5;
-	Tue,  6 Jun 2023 11:55:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1754C433EF;
-	Tue,  6 Jun 2023 11:55:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686052516;
-	bh=AwQKK+vTDce/hOWPJg3SWi3sPnJdf83ZO5vJmOamOkE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=DHNG6V6/38Q7F4e45zExoOMuNwCarV2zw+iIG35cAsmapdi8OaU9g06REmXqAlMru
-	 wOgDlyyrGzdqiEAI/GUMHr7dvvi8qgZhxFcdZtpHZv0gmDgJQsQOiRVeCOWzgH3UEg
-	 gmdVkHWaVpCkhRFOEsi+YyalTDPx0gdnxnfXbd5ugn9lybnz40mzUf7waFN/RwBqBf
-	 a0lKyXkT7j1al+Q+DzxKI4+V/qK0BRS40FyzHcXKUd9vfM525paXPA+A0UYa6fvkFo
-	 R3VEwThIWwtxYmuWzrY8vFfeerJVAMj/CvNs7s2j2FDYDjVpZxieRebU8vgNkAlTPB
-	 /3O6z3ZiBP9+w==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com
-In-Reply-To: <20230605143238.4001982-1-rf@opensource.cirrus.com>
-References: <20230605143238.4001982-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] firmware: cs_dsp: Log correct region name in bin error
- messages
-Message-Id: <168605251548.20864.13850925270775082245.b4-ty@kernel.org>
-Date: Tue, 06 Jun 2023 12:55:15 +0100
+	by alsa1.perex.cz (Postfix) with ESMTPS id A1264F800ED
+	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 13:57:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1264F800ED
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
+ header.s=selector1 header.b=TwjC20W0
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 3568Pucb004495;
+	Tue, 6 Jun 2023 13:57:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=+QFsuZdE66Bb7uRQiJHsVqVL3CZ42NwQ6vPMIiT1SPE=;
+ b=TwjC20W0ZfeiHe/s5oyEkOo097BxXxDdIiBCs/i+MeRMEUWgGjFRmwkyi11rYSwXou63
+ MCU+y8uPni72YzkBvRiBrw7p3L1dbAik3xM3wpSaK4Tlg1ArnJEV3PF4poZsICGQTAXh
+ p+n3hv+pkhxLdpSpVdVlUURLhUo3n5RYpChNjliK8+kkOsGMVhrHwi+5JutPxuFkL/JH
+ lz/KV+cIAGSVhYJAaxDHd/a7tw46BXKsHwH3pxhwOOUqGk/pz4b3a2VH4xxF38fQiJA+
+ zQT9umkmw4z2fHlQJaaVaY/Wf7KvbFXwCT8WySF8QnvnIriHkv+pEN+ySi/uXUE52O2w Nw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3r219escb6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Jun 2023 13:57:44 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CC67210002A;
+	Tue,  6 Jun 2023 13:57:43 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 930E421D3B3;
+	Tue,  6 Jun 2023 13:57:43 +0200 (CEST)
+Received: from localhost (10.201.20.178) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 6 Jun
+ 2023 13:57:43 +0200
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+To: James Schulman <james.schulman@cirrus.com>,
+        David Rhodes
+	<david.rhodes@cirrus.com>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood
+	<lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Arnaud Pouliquen
+	<arnaud.pouliquen@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC: Alexandre Torgue <alexandre.torgue@st.com>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v2 0/3] ASoC: stm32: fix dtbs_check warnings
+Date: Tue, 6 Jun 2023 13:56:01 +0200
+Message-ID: <20230606115605.1633595-1-olivier.moysan@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: YZ5Y6TWRY7HCWTPVUCED2QGTLT64YBNN
-X-Message-ID-Hash: YZ5Y6TWRY7HCWTPVUCED2QGTLT64YBNN
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.178]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-06_08,2023-06-06_02,2023-05-22_02
+Message-ID-Hash: RMM6CQHU6PRH2B6DOL5VCE6BYHSMGGNL
+X-Message-ID-Hash: RMM6CQHU6PRH2B6DOL5VCE6BYHSMGGNL
+X-MailFrom: prvs=45217e30f3=olivier.moysan@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YZ5Y6TWRY7HCWTPVUCED2QGTLT64YBNN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RMM6CQHU6PRH2B6DOL5VCE6BYHSMGGNL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,41 +125,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 05 Jun 2023 15:32:38 +0100, Richard Fitzgerald wrote:
-> In cs_dsp_load_coeff() region_name should be set in the XM/YM/ZM
-> cases otherwise any errors will log the region as "Unknown".
-> 
-> While doing this also change one error message that logged the
-> region type ID to log the region_name instead. This makes it
-> consistent with other messages in the same function.
-> 
-> [...]
+Fix dtbs_check warnings in STM32MP15 DK boards Devices Trees for
+STM32 I2S and Cirrus CS42L51 codec.
 
-Applied to
+- Add OF graph port property in I2S and CS42L51 DT bindings.
+  Fixes warnings:
+  audio-controller@4000b000: Unevaluated properties are not allowed 
+  ('port' was unexpected)
+  cs42l51@4a: Unevaluated properties are not allowed
+  ('port' was unexpected)
+- Correct OF graph DAI audio format property for STM32MP15x Dkx I2S node
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Changes in v2:
+- Add port example in i2s and cs42l51 binding
 
-Thanks!
+Olivier Moysan (3):
+  ASoC: dt-bindings: stm32: document audio of graph port for i2s
+  ASoC: dt-bindings: document audio of graph port for cs42l51
+  ARM: dts: stm32: fix i2s endpoint format property for stm32mp15xx-dkx
 
-[1/1] firmware: cs_dsp: Log correct region name in bin error messages
-      commit: ad24919540fb4df83981d469b5253cc1aecca939
+ .../devicetree/bindings/sound/cirrus,cs42l51.yaml     | 11 +++++++++++
+ .../devicetree/bindings/sound/st,stm32-i2s.yaml       | 11 +++++++++++
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi                |  2 +-
+ 3 files changed, 23 insertions(+), 1 deletion(-)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+2.25.1
 
