@@ -4,95 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55328C77B73
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 13:18:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F185C7EE24
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 13:40:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 521A06C0;
-	Tue,  6 Jun 2023 15:17:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 521A06C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4063874C;
+	Tue,  6 Jun 2023 15:39:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4063874C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686057482;
-	bh=0st/FL7VsmGobo90yCYOb/PmfpdibkcqH6MNj/dpQyY=;
+	s=default; t=1686058821;
+	bh=9tz5M7ilSwzPlHqqRiPI0BDy14TDPiwoxvlm/CeEB6g=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A73vcm5jdtnuvOsz8QY3ZrQRm3ip04Xwf1hBu9orJypFIlp4yn3YmoCQQIhRVxGV8
-	 OXrHhv91AKjp4PDe7LPRivTRiVyrP+PUyfvNzwUMqpUIDrG196Sn7A4wiRQOpp8Xi+
-	 qrfOtiRunbo4XIxl3CNpw59cjcQddQUbTEtBbd+g=
+	b=ZddG1/TybXQJ3ueyyHCAy9c98aekqhJ2dmfpg9pXCSgJW3zPKTdyFoJMak8xcjIeT
+	 sjCRn5rfdli4FlMlXYnnhZVlr4R2SDU8jfLyErqHCbWj3qIPEsaZcpnM4bXE18+55t
+	 C1qLa2iqmp4Xsi+De44VNIY5XBGn3HYdhUHGTU1A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72FFCF804DA; Tue,  6 Jun 2023 15:16:44 +0200 (CEST)
+	id B4D1AF800ED; Tue,  6 Jun 2023 15:39:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98AE8F80199;
-	Tue,  6 Jun 2023 15:16:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6ECC3F800ED;
+	Tue,  6 Jun 2023 15:39:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0D7D4F80199; Tue,  6 Jun 2023 15:16:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
+	id 7793BF80199; Tue,  6 Jun 2023 15:39:25 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B96E0F800C8
-	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 15:16:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B96E0F800C8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 78BE4F80155
+	for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2023 15:39:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78BE4F80155
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=19/4eAhY;
+ header.s=susede2_rsa header.b=Zc+8aKUH;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=3TMm/BRj
+ header.s=susede2_ed25519 header.b=FcI4YqYO
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 54873219A4;
-	Tue,  6 Jun 2023 13:16:36 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BFE391FD69;
+	Tue,  6 Jun 2023 13:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1686057396;
+	t=1686058759;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=U1q57EVJISOVkAg092JqczPXfJXS2SSt4BZHMAFpzog=;
-	b=19/4eAhYaP2XcMVhg/FSRluT8zYcYKvsDOjysuxOLG0cSYm/pDmyykd0bjqhml+h5RnE1v
-	8qRCpkQoi9cvuGkvQZFiQXpV+8omx/kYMQU6ll5sNwuf9eFKxpzLYxIO1ooHJMT1t61+7E
-	MEGwBDeXcyGc1D7zBZJ3n6RPJtrEnGk=
+	bh=X3xzDKlG3PpmAUkZbQkkaHOVBGjwGcwG319m5fFmdYQ=;
+	b=Zc+8aKUHA5399nKts4U33rFj2llZdKPQCtRRs7luCssnsdhlKwsdsaB4yiuo2soiFabSgw
+	P6PH6NuDfC4JKTZW4x6P89Hbrh+GQ9YQdu4ok/ka4bagpMeGLxEso50pbBH9Q6rPc4ZqOx
+	2F8+wEEQIPpoBq1HMIA37OzSBFA33Fk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1686057396;
+	s=susede2_ed25519; t=1686058759;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=U1q57EVJISOVkAg092JqczPXfJXS2SSt4BZHMAFpzog=;
-	b=3TMm/BRjfdqOQIK/DjP//tFOgnhdj/5Ng5LxfMje8ShsYeFHiO78NqHOrxMlyB41naMFxB
-	ErcVnaTDUbqoa5Cw==
+	bh=X3xzDKlG3PpmAUkZbQkkaHOVBGjwGcwG319m5fFmdYQ=;
+	b=FcI4YqYOl7VOP9UjTFBiGHlwjSb79wLlLuiIe25aWYi/8zXKnO5IaDj3RcPeWsgMGpd+Eq
+	+QmoJnwVS8S57DCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3885E13776;
-	Tue,  6 Jun 2023 13:16:36 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 910CF13776;
+	Tue,  6 Jun 2023 13:39:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id jyUGDbQxf2QBVgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 06 Jun 2023 13:16:36 +0000
-Date: Tue, 06 Jun 2023 15:16:35 +0200
-Message-ID: <871qiohgss.wl-tiwai@suse.de>
+	id /JZpIgc3f2R1YgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 06 Jun 2023 13:39:19 +0000
+Date: Tue, 06 Jun 2023 15:39:19 +0200
+Message-ID: <87wn0gg16g.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v6.4-rc6
-In-Reply-To: <20230606130622.3F30AC433EF@smtp.kernel.org>
-References: <20230606130622.3F30AC433EF@smtp.kernel.org>
+To: Yanteng Si <siyanteng@loongson.cn>
+Cc: tiwai@suse.com,
+	perex@perex.cz,
+	chenhuacai@loongson.cn,
+	alsa-devel@alsa-project.org,
+	loongarch@lists.linux.dev,
+	loongson-kernel@lists.loongnix.cn,
+	Yingkun Meng <mengyingkun@loongson.cn>
+Subject: Re: [PATCH v2 2/4] ALSA: hda: Using polling mode for loongson
+ controller by default
+In-Reply-To: 
+ <521be42ac818d35a996e01cc3d591e1c87f230d9.1686057365.git.siyanteng@loongson.cn>
+References: <cover.1686057365.git.siyanteng@loongson.cn>
+	<521be42ac818d35a996e01cc3d591e1c87f230d9.1686057365.git.siyanteng@loongson.cn>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: J6WOAROYT3XYN6G4HKOCLG4PSNI4OW7C
-X-Message-ID-Hash: J6WOAROYT3XYN6G4HKOCLG4PSNI4OW7C
+Message-ID-Hash: MA4R2KBQXIYOBGPDSOAYBFHWJQIDBJWS
+X-Message-ID-Hash: MA4R2KBQXIYOBGPDSOAYBFHWJQIDBJWS
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J6WOAROYT3XYN6G4HKOCLG4PSNI4OW7C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MA4R2KBQXIYOBGPDSOAYBFHWJQIDBJWS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,29 +122,66 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 06 Jun 2023 15:06:10 +0200,
-Mark Brown wrote:
+On Tue, 06 Jun 2023 15:25:28 +0200,
+Yanteng Si wrote:
 > 
-> The following changes since commit 011a8719d6105dcb48077ea7a6a88ac019d4aa50:
+> On loongson controller, RIRBSTS.RINTFL cannot be cleared,
+> azx_interrupt() is called all the time. We disable RIRB
+> interrupt, and use polling mode by default.
 > 
->   ASoC: dwc: move DMA init to snd_soc_dai_driver probe() (2023-05-23 21:39:30 +0100)
+> Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
+> Signed-off-by: Yingkun Meng <mengyingkun@loongson.cn>
+> ---
+>  include/sound/hdaudio.h     | 1 +
+>  sound/hda/hdac_controller.c | 5 ++++-
+>  sound/pci/hda/hda_intel.c   | 4 ++++
+>  3 files changed, 9 insertions(+), 1 deletion(-)
 > 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.4-rc6
-> 
-> for you to fetch changes up to 32cf0046a652116d6a216d575f3049a9ff9dd80d:
-> 
->   ASoC: fsl_sai: Enable BCI bit if SAI works on synchronous mode with BYP asserted (2023-06-02 12:54:07 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v6.4
-> 
-> A lot of routine driver specific fixes here, nothing in the core though
-> there are a couple of fixes for the generic cards.  There's also a few
-> new quirks for x86 platforms.
+> diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+> index 97f09acae302..a1dcc7f97d08 100644
+> --- a/include/sound/hdaudio.h
+> +++ b/include/sound/hdaudio.h
+> @@ -346,6 +346,7 @@ struct hdac_bus {
+>  	bool reverse_assign:1;		/* assign devices in reverse order */
+>  	bool corbrp_self_clear:1;	/* CORBRP clears itself after reset */
+>  	bool polling_mode:1;
+> +	bool no_intr_polling_mode:1;
 
-Pulled now.  Thanks.
+It isn't clear enough what this flag does.  It's basically prohibiting
+the RIRB IRQ (hence requiring the polling mode), right?  Write it in
+the comment.
 
+> diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+> index 3c7af6558249..705e09cc50ac 100644
+> --- a/sound/hda/hdac_controller.c
+> +++ b/sound/hda/hdac_controller.c
+> @@ -79,7 +79,10 @@ void snd_hdac_bus_init_cmd_io(struct hdac_bus *bus)
+>  	/* set N=1, get RIRB response interrupt for new entry */
+>  	snd_hdac_chip_writew(bus, RINTCNT, 1);
+>  	/* enable rirb dma and response irq */
+> -	snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN | AZX_RBCTL_IRQ_EN);
+> +	if (bus->no_intr_polling_mode)
+> +		snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN);
+> +	else
+> +		snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN | AZX_RBCTL_IRQ_EN);
+>  	/* Accept unsolicited responses */
+>  	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, AZX_GCTL_UNSOL);
+>  	spin_unlock_irq(&bus->reg_lock);
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 9c353dc7740c..1e8993836fc6 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -1875,6 +1875,10 @@ static int azx_first_init(struct azx *chip)
+>  	if (chip->driver_type == AZX_DRIVER_GFHDMI)
+>  		bus->polling_mode = 1;
+>  
+> +	if (chip->driver_type == AZX_DRIVER_LOONGSON) {
+> +		bus->no_intr_polling_mode = 1;
+> +	}
+
+Don't you need to set the bus->polling_mode?
+
+
+thanks,
 
 Takashi
