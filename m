@@ -4,85 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3812FC7EE2F
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Jun 2023 22:27:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F0E5C7EE37
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jun 2023 01:45:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7AF5B84C;
-	Wed,  7 Jun 2023 00:26:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AF5B84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FA5F822;
+	Wed,  7 Jun 2023 03:44:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FA5F822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686090467;
-	bh=VkeqlGB3wXPwI5ihVJgjWYgOfSLYxnrXiEN/hdvVQbM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=lBF5Ffaf4WaAFdshz9JZzWdJQ0VbAbZPpXAsuo1cO1lRfT0QyVmTqDWg9fXbdIoFD
-	 WPkEpZzF7X4MdrO9DV4eypezha1Xa3OSZMnbXsojDy0iL1BFKAA0COy9HAE3edvUaH
-	 zmfPQfS9lKpijdhFZAV81r/SuRe7aC9Ju80+b8wE=
+	s=default; t=1686102324;
+	bh=oak0LJhMLWtP9UoshEOtnO5xklZAVt1BPVezT+IWuFw=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=tXrC2v+UKpeE7wyCQDzU7eMZkAADdcaaaQPkjzejSZ9+nyGv1tQMzYKyUR0/GmPrj
+	 8x86nnjG9RfKO2YDCECUmR8A6fM1iDhVpKkNo5/nyYQSe0rFY3oWnIifbOhBfOtcZJ
+	 ybdLqY/ULqK8ufzfNHpFFF/3xIWDl2Y2IcH7XrrE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2F577F8057D; Wed,  7 Jun 2023 00:26:02 +0200 (CEST)
+	id 68088F8016C; Wed,  7 Jun 2023 03:44:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2B36F8057B;
-	Wed,  7 Jun 2023 00:26:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22C5EF800C8;
+	Wed,  7 Jun 2023 03:44:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B956F8016C; Wed,  7 Jun 2023 00:25:57 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+	id 07492F80199; Wed,  7 Jun 2023 03:44:00 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 83EE5F8016C
-	for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2023 00:25:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83EE5F8016C
+	by alsa1.perex.cz (Postfix) with ESMTPS id C4ABEF800C8
+	for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2023 03:43:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4ABEF800C8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=mGMGl95a
+ header.s=Intel header.b=VoSzJvqU
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686090348; x=1717626348;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=VkeqlGB3wXPwI5ihVJgjWYgOfSLYxnrXiEN/hdvVQbM=;
-  b=mGMGl95afnu8iUA/RNXesN7i18mTw/noN30FJ6soyZgTWm3CtmyrqflL
-   VEec1BJlB7cgEc22oH15k/QLc4Z51yMlSAMU6tY0Ejm8Wl9E8AxsBvIcf
-   B470OojuO/LESQSxyPM+JR+uI35U5U7jmaW1U7xsjVkCX9QjagAS6Kg36
-   lp44HPBUBvHroII76soSQOxQu0LCUc0opfDjSN5WavM2JhXhdAzNiKwEg
-   jXn2RMhtndHNCANlLCHqM0tKcOtCUl6IWKpJZSQc89+pnFiNwkCq0Yv2d
-   SVL6DbiQbNh604LAs8DNu2+QUgwHli/ArKtPBr0grqZhdPaLAYDAKEceJ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10733"; a="341465403"
+  t=1686102234; x=1717638234;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=oak0LJhMLWtP9UoshEOtnO5xklZAVt1BPVezT+IWuFw=;
+  b=VoSzJvqUAOcfqwb2dk64YigPJZ16TQza+felYkpAvsyUOPZG70kRsC4f
+   AEGd/3v9+0BEN3z4r2J24qS6LUD7cVEdZcJaL3KxUAClNjwXjcQoyklLY
+   IQH9zIY89Yed45dJ9k9tLajgJHDBh/W5PPTPZp/aIeahuB2SAqPEInoD4
+   uMfShdN+w8brb6R4hqysVyb+tyb3dtkqn1M1Apems9BXzTRrmZhtbkZyF
+   lRjO/1jUptJDJapzYQJK3rM+avLdSSBVqQ9omfZb3JOR7sL0828NnF60h
+   SFfa4zfOP5TxjCBakuqS9vYQPDZHffUS+qAYira4Qp4wA7gPCrjDBG2Gr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10733"; a="359314356"
 X-IronPort-AV: E=Sophos;i="6.00,222,1681196400";
-   d="scan'208";a="341465403"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2023 15:25:40 -0700
+   d="scan'208";a="359314356"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Jun 2023 18:43:46 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10733"; a="712356551"
+X-IronPort-AV: E=McAfee;i="6600,9927,10733"; a="742396227"
 X-IronPort-AV: E=Sophos;i="6.00,222,1681196400";
-   d="scan'208";a="712356551"
-Received: from jrmonard-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.150.10])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2023 15:25:37 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de,
-	broonie@kernel.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [PATCH 1/2] ASoC: SOF: Intel: fix SoundWire/HDaudio mutual exclusion
-Date: Tue,  6 Jun 2023 17:25:28 -0500
-Message-Id: <20230606222529.57156-2-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230606222529.57156-1-pierre-louis.bossart@linux.intel.com>
-References: <20230606222529.57156-1-pierre-louis.bossart@linux.intel.com>
+   d="scan'208";a="742396227"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Jun 2023 18:43:44 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Cc: vinod.koul@linaro.org,
+	linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com,
+	bard.liao@intel.com
+Subject: [PATCH] soundwire: debugfs: Add missing SCP registers
+Date: Wed,  7 Jun 2023 10:06:32 +0800
+Message-Id: <20230607020632.1030309-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SRGJO5NMZ3Z76VXUHIX2P6A2GBSUIIDI
-X-Message-ID-Hash: SRGJO5NMZ3Z76VXUHIX2P6A2GBSUIIDI
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Message-ID-Hash: XQPCHTXX3IO6U74Q77DQU25IRFCYWT2E
+X-Message-ID-Hash: XQPCHTXX3IO6U74Q77DQU25IRFCYWT2E
+X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -94,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SRGJO5NMZ3Z76VXUHIX2P6A2GBSUIIDI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XQPCHTXX3IO6U74Q77DQU25IRFCYWT2E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,52 +99,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The functionality described in Commit 61bef9e68dca ("ASoC: SOF: Intel: hda: enforce exclusion between HDaudio and SoundWire")
-does not seem to be properly implemented with two issues that need to
-be corrected.
+From: Uday M Bhat <uday.m.bhat@intel.com>
 
-a) The test used is incorrect when DisplayAudio codecs are not supported.
+SCP registers needs to be updated to accommodate additional
+register entries as per the Soundwire 1.2 specification.
 
-b) Conversely when only Display Audio codecs can be found, we do want
-to start the SoundWire links, if any. That will help add the relevant
-topologies and machine descriptors, and identify cases where the
-SoundWire information in ACPI needs to be modified with a quirk.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Uday M Bhat <uday.m.bhat@intel.com>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/soundwire/debugfs.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index b1db940f9f25..64bebe1a72bb 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1391,12 +1391,22 @@ static void hda_generic_machine_select(struct snd_sof_dev *sdev,
- 			hda_mach->mach_params.dmic_num = dmic_num;
- 			pdata->tplg_filename = tplg_filename;
+diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
+index c3a1a359ee5c..d1553cb77187 100644
+--- a/drivers/soundwire/debugfs.c
++++ b/drivers/soundwire/debugfs.c
+@@ -86,10 +86,17 @@ static int sdw_slave_reg_show(struct seq_file *s_file, void *data)
  
--			if (codec_num == 2) {
-+			if (codec_num == 2 ||
-+			    (codec_num == 1 && !HDA_IDISP_CODEC(bus->codec_mask))) {
- 				/*
- 				 * Prevent SoundWire links from starting when an external
- 				 * HDaudio codec is used
- 				 */
- 				hda_mach->mach_params.link_mask = 0;
-+			} else {
-+				/*
-+				 * Allow SoundWire links to start when no external HDaudio codec
-+				 * was detected. This will not create a SoundWire card but
-+				 * will help detect if any SoundWire codec reports as ATTACHED.
-+				 */
-+				struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
+ 	/* SCP registers */
+ 	ret += scnprintf(buf + ret, RD_BUF - ret, "\nSCP\n");
+-	for (i = SDW_SCP_INT1; i <= SDW_SCP_BANKDELAY; i++)
++	for (i = SDW_SCP_INT1; i <= SDW_SCP_BUS_CLOCK_BASE; i++)
+ 		ret += sdw_sprintf(slave, buf, ret, i);
+ 	for (i = SDW_SCP_DEVID_0; i <= SDW_SCP_DEVID_5; i++)
+ 		ret += sdw_sprintf(slave, buf, ret, i);
++	for (i = SDW_SCP_FRAMECTRL_B0; i <= SDW_SCP_BUSCLOCK_SCALE_B0; i++)
++		ret += sdw_sprintf(slave, buf, ret, i);
++	for (i = SDW_SCP_FRAMECTRL_B1; i <= SDW_SCP_BUSCLOCK_SCALE_B1; i++)
++		ret += sdw_sprintf(slave, buf, ret, i);
++	for (i = SDW_SCP_PHY_OUT_CTRL_0; i <= SDW_SCP_PHY_OUT_CTRL_7; i++)
++		ret += sdw_sprintf(slave, buf, ret, i);
 +
-+				hda_mach->mach_params.link_mask = hdev->info.link_mask;
- 			}
  
- 			*mach = hda_mach;
+ 	/*
+ 	 * SCP Bank 0/1 registers are read-only and cannot be
 -- 
-2.37.2
+2.25.1
 
