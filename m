@@ -4,109 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D644C7EE23
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jun 2023 13:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FF08C7EE25
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jun 2023 14:57:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BA85825;
-	Wed,  7 Jun 2023 15:52:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BA85825
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB721823;
+	Wed,  7 Jun 2023 16:56:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB721823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686145973;
-	bh=k7V2Omfk2e7KnP8GMRjXGui32bYHEFm3qSDwRIqrZBI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1686149858;
+	bh=Y4B2gt5Cz2eVciMlide3N5nDQk5IkCzkT76wS3UwG9c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KDx77LNvY3bAHo3+Iel77D5Mr9FZEuK6cLJzkE5FqpkPYfZFYv37CDa47EtH/SRcg
-	 zC+mi2RnWeICM/6xVx56rtl3Q9UnlOyQlcYavv9eGOvrUcCJlt2vp9txoW1+KInxXE
-	 qinZKbocIHe6zgUCma9WVwjbLzjVDTSfki5Yvyms=
+	b=Jt5TIfOiskgHTNVz72Y34/Qt793aCHIsKQliM8PeBinuOpzR/jXoBAVIHOyWLmIaS
+	 pENo/TG1DeJndkYpk5z7NuWO5AkeFDfKQF5HyLSXp8U4GIuVMpe+QUrF2oewWcqGnM
+	 LNoOCFkhylHot4HHWDnunXm0VR/a23Y6BdtnNET0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 02E3AF80520; Wed,  7 Jun 2023 15:51:36 +0200 (CEST)
+	id 0A73CF80527; Wed,  7 Jun 2023 16:56:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86C91F80199;
-	Wed,  7 Jun 2023 15:51:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E62DF80199;
+	Wed,  7 Jun 2023 16:56:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 96167F80199; Wed,  7 Jun 2023 15:51:32 +0200 (CEST)
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
- [IPv6:2a00:1450:4864:20::630])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id EA03FF80199; Wed,  7 Jun 2023 16:56:15 +0200 (CEST)
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::224])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D0F60F80155
-	for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2023 15:51:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0F60F80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id 835A6F80130
+	for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2023 16:56:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 835A6F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=a19VN202
-Received: by mail-ej1-x630.google.com with SMTP id
- a640c23a62f3a-970028cfb6cso1232070866b.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 07 Jun 2023 06:51:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686145870; x=1688737870;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wF8v/Nr5lYY1iKzsnANRPfQdGbEg+1le4IAIlYm+ax0=;
-        b=a19VN202ZsV1liveY7vlwvCagRo6i8nWU8cqZuHZ7l6n90fuEDFGdDRVDBlRlm0hB8
-         0O/nODEGeEImVU/JWEgGN+bxOl5FXsedftfqcMEdkyVbRcjrWIACKGf858QYRGNzZECh
-         DNxUFUhLM3Og2xoANYSFj/kZy0k95ETNqUJ6NTnLQ/B9wu7Iu2/pQmUfUXgjCsnFIoZk
-         C/geriDvGCdrHAE5Be3Z/EGOZzS2damev1roaWYS5oTc91gim1TyWuJWp4mWSd6fETn+
-         HvrqQJZPtLc8EY7uMYIhhiopqR+tw+qySsbEhh4CFnb+JZANpz1+gLc9en48anq/u2yO
-         udBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686145870; x=1688737870;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wF8v/Nr5lYY1iKzsnANRPfQdGbEg+1le4IAIlYm+ax0=;
-        b=O4XcTDsEds/cFp2oc56NRI0PCuSH0wFpmvAdl7gJtmNuq3AWrSL93mh2lh2Hqf43Hz
-         xSHj1rEHV8cL/O64CPC7F6ZOD//c2ISO3HEYpXjic7wU9NLWMcKUvlu5bkdCQEnLSSj4
-         XfgDlhp1U2QT0SEzEWi1bB6kSGE7tFsWxqyp0fStBJKi5thh71/HFUbUdSNA9eX4RXeW
-         0GbAV9wE1VHewkFi2lx56PJfrKenEyBloWHcZoW5LxX9GbT0ONEUbXRVBVdhmilh/4cr
-         wdcjo74sX6hgwhtIX/Jnbofl6kXqWVgmTdT/ORIACaz2SUInYENWMnqTgSIjeYpHv9UO
-         RnGw==
-X-Gm-Message-State: AC+VfDzSn3gZsxhAsgtf1D8XBC70tJ/49SJ2jpgoq/5CGQQqWe2UphTW
-	e0yNzU9OrWbKvUcfzUaU9wdIEw==
-X-Google-Smtp-Source: 
- ACHHUZ61ZYzOZ4qkEgIxn3mhmXuts2TGVrNlXVWmBlSrcX+pv3KLh/o2gVDhbbzqDVipusDsFtFojA==
-X-Received: by 2002:a17:907:3e99:b0:96a:29c0:8515 with SMTP id
- hs25-20020a1709073e9900b0096a29c08515mr6259566ejc.58.1686145870379;
-        Wed, 07 Jun 2023 06:51:10 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id
- ss18-20020a170907039200b0094ee3e4c934sm6901777ejb.221.2023.06.07.06.51.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jun 2023 06:51:09 -0700 (PDT)
-Message-ID: <c39dc157-bd3d-a627-4eb0-a34ff43ab664@linaro.org>
-Date: Wed, 7 Jun 2023 15:51:07 +0200
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=Nus40yw6
+X-GND-Sasl: herve.codina@bootlin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1686149766;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j7gbXd0RpYvnzNDsTkINk8jfZlfPM/h26L3sVpQBEA0=;
+	b=Nus40yw6Ykq619bNhbiuMgDNNxhkNfmD14Z5vbLwgY6hhW6sGzQVXPz6yezJQAuibm3fVO
+	USQ6p9kQVGiMdTwif/CdYD2GjvVboIox6YRehy8tDI61HntMDikWkce1PcJVgdIMcHsoj1
+	SUfk2tN6yjS8jCngvcOnWfEygLeQk1nahPZvS7J0mI9gTi+53l/wpCZK7XxIQiIDL85pfH
+	+Txfnc17HzzcMLgvfWxK/1bTwiA3qJ/q7eAYbsmvXXk/PizhuPbi/BAbIqXSLBGPG9uv/k
+	afYTjjGKV7DIoUeGnHd7fHO+vkAjz7HKlDvvbQB6UYBOvwYmXKScsQntRRXYdA==
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: herve.codina@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CC4CEE000C;
+	Wed,  7 Jun 2023 14:56:01 +0000 (UTC)
+Date: Wed, 7 Jun 2023 16:56:00 +0200
+From: Herve Codina <herve.codina@bootlin.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori
+ Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-iio@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 7/9] ASoC: codecs: Add support for the generic IIO
+ auxiliary devices
+Message-ID: <20230607165600.535c8530@bootlin.com>
+In-Reply-To: 
+ <CAHp75Vd00N8z7kgTb=WTZHJW3XhsKbLfhTTKPjnCvKUSfL+xDQ@mail.gmail.com>
+References: <20230523151223.109551-1-herve.codina@bootlin.com>
+	<20230523151223.109551-8-herve.codina@bootlin.com>
+	<ZHuFywIrTnEFpX6e@surfacebook>
+	<20230606155404.28ada064@bootlin.com>
+	<CAHp75Vd00N8z7kgTb=WTZHJW3XhsKbLfhTTKPjnCvKUSfL+xDQ@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH] soundwire: qcom: fix storing port config out-of-bounds
-To: Vinod Koul <vkoul@kernel.org>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- kernel test robot <lkp@intel.com>, Dan Carpenter <error27@gmail.com>
-References: <20230601102525.609627-1-krzysztof.kozlowski@linaro.org>
- <ZICBvP33XyOswWFM@matsya>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <ZICBvP33XyOswWFM@matsya>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: DBLQM7EXFHHQ72YKH4B6SJHQ2RAIODGP
-X-Message-ID-Hash: DBLQM7EXFHHQ72YKH4B6SJHQ2RAIODGP
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: UKIAFN2YFM7CZ6MUBWN3P252JVHNH43E
+X-Message-ID-Hash: UKIAFN2YFM7CZ6MUBWN3P252JVHNH43E
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -118,56 +111,47 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DBLQM7EXFHHQ72YKH4B6SJHQ2RAIODGP/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UKIAFN2YFM7CZ6MUBWN3P252JVHNH43E/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 07/06/2023 15:10, Vinod Koul wrote:
-> On 01-06-23, 12:25, Krzysztof Kozlowski wrote:
->> The 'qcom_swrm_ctrl->pconfig' has size of QCOM_SDW_MAX_PORTS (14),
->> however we index it starting from 1, not 0, to match real port numbers.
->> This can lead to writing port config past 'pconfig' bounds and
->> overwriting next member of 'qcom_swrm_ctrl' struct.  Reported also by
->> smatch:
->>
->>   drivers/soundwire/qcom.c:1269 qcom_swrm_get_port_config() error: buffer overflow 'ctrl->pconfig' 14 <= 14
->>
->> Fixes: 9916c02ccd74 ("soundwire: qcom: cleanup internal port config indexing")
->> Cc: <stable@vger.kernel.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Reported-by: Dan Carpenter <error27@gmail.com>
->> Link: https://lore.kernel.org/r/202305201301.sCJ8UDKV-lkp@intel.com/
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
->>  drivers/soundwire/qcom.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
->> index 7cb1b7eba814..88a772075907 100644
->> --- a/drivers/soundwire/qcom.c
->> +++ b/drivers/soundwire/qcom.c
->> @@ -202,7 +202,8 @@ struct qcom_swrm_ctrl {
->>  	u32 intr_mask;
->>  	u8 rcmd_id;
->>  	u8 wcmd_id;
->> -	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
->> +	/* Port numbers are 1 - 14 */
->> +	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS + 1];
+Hi Andy,
+
+On Tue, 6 Jun 2023 17:34:22 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+
+...
+
+> > >
+> > > Btw, can you avoid using OF APIs? It's better to have device property/fwnode
+> > > API to be used from day 1.  
+> >
+> > Hum, this comment was raised in the previous iteration
+> >   https://lore.kernel.org/linux-kernel/20230501162456.3448c494@jic23-huawei/
+> >
+> > I didn't find any equivalent to of_property_read_u32_index() in the
+> > device_property_read_*() function family.
+> > I mean I did find anything available to get a value from an array using an index.  
 > 
-> Better use SDW_MAX_PORTS ?
+> This is done by reading the entire array at once and then parsing as
+> you wish in the code, device_property_read_u32_array() is for that.
+> 
+> > In the previous iteration it was concluded that keeping OF APIs in this series
+> > seemed "reasonable".  
+> 
+> Maybe, but consider the above.
 
-That's interesting idea, but except of value, is the meaning actually
-the same? Driver claims that port 0 is masked and max number of ports is
-14. Therefore it uses in all places constant QCOM_SDW_MAX_PORTS. We need
-here +1, only because we index from 1, not 0, but we still index over
-QCOM_SDW_MAX_PORTS, not SDW_MAX_PORTS. Wouldn't it be also confusing to
-use here SDW_MAX_PORTS but then index over something else?
+I see.
+Will switch to device_property_*() family in the next iteration.
 
-Best regards,
-Krzysztof
+Thanks,
+Hervé
 
+-- 
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
