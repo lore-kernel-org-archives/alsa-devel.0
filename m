@@ -4,102 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FF08C7EE25
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jun 2023 14:57:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FA9FC77B7A
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jun 2023 15:58:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB721823;
-	Wed,  7 Jun 2023 16:56:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB721823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42DDE822;
+	Wed,  7 Jun 2023 17:57:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42DDE822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686149858;
-	bh=Y4B2gt5Cz2eVciMlide3N5nDQk5IkCzkT76wS3UwG9c=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1686153508;
+	bh=7nNTbx876l3a0dmbd1lJ09G1ovmqUK2cjUQUfZr1dsM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Jt5TIfOiskgHTNVz72Y34/Qt793aCHIsKQliM8PeBinuOpzR/jXoBAVIHOyWLmIaS
-	 pENo/TG1DeJndkYpk5z7NuWO5AkeFDfKQF5HyLSXp8U4GIuVMpe+QUrF2oewWcqGnM
-	 LNoOCFkhylHot4HHWDnunXm0VR/a23Y6BdtnNET0=
+	b=geDDvqJa7qpPJpGzOpzMPM2pZqLO25mQvof354sYtqANeR3vj7gvp9Jfl7zLjsZSA
+	 X7SlHoR+yjHrs/kGZsXIQxzz+U+X7WTcOxBL73qzhhMSuzP+T8azfx12IVziOVI04V
+	 WkwasC0+m1Z6Xf4y8DNQvOLPaGXf/DQxpz3bEW5k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A73CF80527; Wed,  7 Jun 2023 16:56:20 +0200 (CEST)
+	id 59BF8F80494; Wed,  7 Jun 2023 17:57:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E62DF80199;
-	Wed,  7 Jun 2023 16:56:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8B38F800C8;
+	Wed,  7 Jun 2023 17:57:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA03FF80199; Wed,  7 Jun 2023 16:56:15 +0200 (CEST)
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::224])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id BFCF2F80254; Wed,  7 Jun 2023 17:57:05 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 835A6F80130
-	for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2023 16:56:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 835A6F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1EA37F80155
+	for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2023 17:56:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EA37F80155
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=Nus40yw6
-X-GND-Sasl: herve.codina@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686149766;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j7gbXd0RpYvnzNDsTkINk8jfZlfPM/h26L3sVpQBEA0=;
-	b=Nus40yw6Ykq619bNhbiuMgDNNxhkNfmD14Z5vbLwgY6hhW6sGzQVXPz6yezJQAuibm3fVO
-	USQ6p9kQVGiMdTwif/CdYD2GjvVboIox6YRehy8tDI61HntMDikWkce1PcJVgdIMcHsoj1
-	SUfk2tN6yjS8jCngvcOnWfEygLeQk1nahPZvS7J0mI9gTi+53l/wpCZK7XxIQiIDL85pfH
-	+Txfnc17HzzcMLgvfWxK/1bTwiA3qJ/q7eAYbsmvXXk/PizhuPbi/BAbIqXSLBGPG9uv/k
-	afYTjjGKV7DIoUeGnHd7fHO+vkAjz7HKlDvvbQB6UYBOvwYmXKScsQntRRXYdA==
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CC4CEE000C;
-	Wed,  7 Jun 2023 14:56:01 +0000 (UTC)
-Date: Wed, 7 Jun 2023 16:56:00 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori
- Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 7/9] ASoC: codecs: Add support for the generic IIO
- auxiliary devices
-Message-ID: <20230607165600.535c8530@bootlin.com>
-In-Reply-To: 
- <CAHp75Vd00N8z7kgTb=WTZHJW3XhsKbLfhTTKPjnCvKUSfL+xDQ@mail.gmail.com>
-References: <20230523151223.109551-1-herve.codina@bootlin.com>
-	<20230523151223.109551-8-herve.codina@bootlin.com>
-	<ZHuFywIrTnEFpX6e@surfacebook>
-	<20230606155404.28ada064@bootlin.com>
-	<CAHp75Vd00N8z7kgTb=WTZHJW3XhsKbLfhTTKPjnCvKUSfL+xDQ@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=PywH69qV
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686153418; x=1717689418;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7nNTbx876l3a0dmbd1lJ09G1ovmqUK2cjUQUfZr1dsM=;
+  b=PywH69qV6fQmz41acsjnwlOB2Mi+kTwumGcL8cPnAxye04BlIE/s+9PG
+   Vl9dj+8EOgiyNJRJlBUzVwvQHHzdRlh1e4BEeIEosJRLjMksxPmzw8pcr
+   dZMY81Tp+iYfkP2jcvqb4sNRK4sQ0IBya4GYNcEvXHVq9b/FVZEuQFWFd
+   oqmYtCACB6zg5dx11dIF9NxC9L4GDXuC5CYiatON3ElimhvIBLgpmLXTV
+   /7k9bPvr2w5Vzt+pBLiA0IgKgbNl/NYwFkVJzsOLqwrHEnmSfMq+rcXnL
+   i8Qn+VYOc/6oOJu20Ik5nfvbBRH5tG/Tl+66lC/RGVoL6Nk7ud1+0LfSF
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10734"; a="360360056"
+X-IronPort-AV: E=Sophos;i="6.00,224,1681196400";
+   d="scan'208";a="360360056"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jun 2023 08:56:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10734"; a="739335739"
+X-IronPort-AV: E=Sophos;i="6.00,224,1681196400";
+   d="scan'208";a="739335739"
+Received: from sorrin-mobl3.amr.corp.intel.com (HELO [10.209.124.63])
+ ([10.209.124.63])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jun 2023 08:56:49 -0700
+Message-ID: <a00d401f-961a-bd1d-b344-5c234e87135b@linux.intel.com>
+Date: Wed, 7 Jun 2023 09:45:10 -0500
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+Subject: Re: [PATCH v2 00/26] ASoC/soundwire: add support for ACE2.x
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, tiwai@suse.de,
+ linux-kernel@vger.kernel.org, bard.liao@intel.com
+References: <20230515071042.2038-1-yung-chuan.liao@linux.intel.com>
+ <ZHHdSjXwyHvBezkG@matsya>
+ <8f4a024d-a218-c4ed-925c-b74663b7e280@linux.intel.com>
+ <ZICA/YIYQ/DGhhdk@matsya>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <ZICA/YIYQ/DGhhdk@matsya>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UKIAFN2YFM7CZ6MUBWN3P252JVHNH43E
-X-Message-ID-Hash: UKIAFN2YFM7CZ6MUBWN3P252JVHNH43E
-X-MailFrom: herve.codina@bootlin.com
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: AIMKEO67XK4ILTI4VSZBKILDHIZKAN6H
+X-Message-ID-Hash: AIMKEO67XK4ILTI4VSZBKILDHIZKAN6H
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -111,47 +98,61 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UKIAFN2YFM7CZ6MUBWN3P252JVHNH43E/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AIMKEO67XK4ILTI4VSZBKILDHIZKAN6H/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Andy,
 
-On Tue, 6 Jun 2023 17:34:22 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-...
-
-> > >
-> > > Btw, can you avoid using OF APIs? It's better to have device property/fwnode
-> > > API to be used from day 1.  
-> >
-> > Hum, this comment was raised in the previous iteration
-> >   https://lore.kernel.org/linux-kernel/20230501162456.3448c494@jic23-huawei/
-> >
-> > I didn't find any equivalent to of_property_read_u32_index() in the
-> > device_property_read_*() function family.
-> > I mean I did find anything available to get a value from an array using an index.  
+On 6/7/23 08:07, Vinod Koul wrote:
 > 
-> This is done by reading the entire array at once and then parsing as
-> you wish in the code, device_property_read_u32_array() is for that.
+> Hi Pierre,
 > 
-> > In the previous iteration it was concluded that keeping OF APIs in this series
-> > seemed "reasonable".  
+> On 02-06-23, 15:46, Pierre-Louis Bossart wrote:
+>> On 5/27/23 05:36, Vinod Koul wrote:
+>>> On 15-05-23, 15:10, Bard Liao wrote:
+>>>> This series uses the abstraction added in past kernel cycles to provide
+>>>> support for the ACE2.x integration. The existing SHIM and Cadence
+>>>> registers are now split in 3 (SHIM, IP, SHIM vendor-specific), with some
+>>>> parts also moved to the HDaudio Extended Multi link structures. Nothing
+>>>> fundamentally different except for the register map.
+>>>>
+>>>> This series only provides the basic mechanisms to expose SoundWire-based
+>>>> DAIs. The PCI parts and DSP management will be contributed later, and the
+>>>> DAI ops are now empty as well.
+>>>>
+>>>> The change is mainly on SoundWire. It would be better to go through
+>>>> SoundWire tree.
+>>>
+>>> Applied, thanks
+>>
+>> Hi Vinod, is there a way you could provide an immutable tag for Mark
+>> Brown, the patch1 in this set is required for my next set of ASoC
+>> LunarLake patches?
 > 
-> Maybe, but consider the above.
+> Unfortunately, I have picked the whole series into next. If I was aware
+> I would have pushed them to a topic.
+> 
+> Mark can pull sdw/next but that would bring other things as well which
+> may not be preferred. I guess next best would be wait few weeks (rc1)
 
-I see.
-Will switch to device_property_*() family in the next iteration.
+Yeah, it's a miss on my side, I forgot about this one-line enum
+dependency for DMIC/SSP.
 
-Thanks,
-Hervé
+SoundWire has more dependencies so we expected to send the relevant
+patches in the next cycle. DMIC/SSP is quite simple and could have been
+part of 6.5.
 
--- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Oh well.
+
+>> "ASoC: SOF: Intel: shim: add enum for ACE 2.0 IP used in LunarLake" adds
+>> the SOF_INTEL_ACE_2_0 definition to select different ops for LunarLake.
+>>
+>> Thank you
+>> -Pierre
+> 
