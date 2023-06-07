@@ -4,90 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30656C7EE29
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jun 2023 09:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69022C7EE29
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Jun 2023 09:31:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23C8B868;
-	Wed,  7 Jun 2023 11:21:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23C8B868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B7C084C;
+	Wed,  7 Jun 2023 11:30:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B7C084C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686129752;
-	bh=LMRaz3hCR5DNi4pyizWt3HYrTC6iOlLpegiUHzbOdXs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1686130293;
+	bh=z/PW6iI35bkUwZGMG713VdVjC7l3+b1oX4KvQE0fKQM=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DyB5zXUyf9ltVRm5eZkkXI7ZmR8BWtl8oRB01ZefBgl1oD5zySkJ2wHNmXk3Vouoh
-	 aNNXbl6/7+KB//8NrAd44AzHMJR8qBz5nPJyYmU2f3m6HN32j20JZ0Sj8VBspaUa1e
-	 Bx84KwzwmNH7MycdQrpXk5SlIawxYBNuDc/BUEX0=
+	b=SRlsbf/z3lhJ94UblqSXzdVwbbkOJMnmXRSzRJYLlcTE8qUhV0IOhYT5IjFogJC1s
+	 wOyXI4+VsVUAW+5893MS6bRIgdioll8cwDQShjDDvSx3qnDXE77aEw+0wlQ97TgCwP
+	 ZQP/zsk1lfOsxce2tN1qPfFW4KaQtIZGXfqRS1eI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3BD4F805F1; Wed,  7 Jun 2023 11:19:07 +0200 (CEST)
+	id 3F8D6F80130; Wed,  7 Jun 2023 11:30:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E761EF805F0;
-	Wed,  7 Jun 2023 11:19:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 804A9F800C8;
+	Wed,  7 Jun 2023 11:30:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A145AF80199; Wed,  7 Jun 2023 11:18:18 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C367F80155
-	for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2023 11:18:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C367F80155
-Received: from loongson.cn (unknown [223.106.25.146])
-	by gateway (Coremail) with SMTP id _____8Bxa+pKS4Bk5hYAAA--.352S3;
-	Wed, 07 Jun 2023 17:18:03 +0800 (CST)
-Received: from [192.168.100.8] (unknown [223.106.25.146])
-	by localhost.localdomain (Coremail) with SMTP id
- AQAAf8BxTMpIS4BkSjYEAA--.6544S3;
-	Wed, 07 Jun 2023 17:18:01 +0800 (CST)
-Message-ID: <ec543e3f-8e68-5c02-ad89-fa9a72883112@loongson.cn>
-Date: Wed, 7 Jun 2023 17:18:00 +0800
+	id DFDC6F80199; Wed,  7 Jun 2023 11:30:08 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 34122F800C8
+	for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2023 11:29:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34122F800C8
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=bMfpFHxu
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 3578pNf9001679;
+	Wed, 7 Jun 2023 04:29:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=2FilRRws/rkRv7oinc5Lp1HLSfjSLS5jFCtY3ZdCaao=;
+ b=bMfpFHxuNYBiLDtGjB2uM02FibVHYo55+DJq0BhOT14DPmb7SQGeQRuQsLPiEE5f38zc
+ shbe2COhEZdrVK2ayxl+gWodoF/D47ojTV3ObJGnX02QQKzbXquNr0qrbeenM4akcqj+
+ eQmC8pKPsE193emZrboaryj+i150Owey6Sm808qnRnM5CpSh1Zo6ha4Hoqq/qxPNWK0Q
+ +lOIZE4CxgXutZD/pjzFSdK/LwPWlOoScPEL9WiUX64eCbrgjx/jdvwR2Y7uABAY6GcV
+ WVjrAe9XjHwBgNjxrLiHe+b9I065TBWTY/6mnIXYJvhCGE5HLK5KjgckN9/wauukmRQG 2w==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3r2a7agntt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 07 Jun 2023 04:29:51 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Wed, 7 Jun
+ 2023 10:29:50 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 7 Jun 2023 10:29:50 +0100
+Received: from [198.90.251.127] (edi-sw-dsktp-006.ad.cirrus.com
+ [198.90.251.127])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2EA5311C6;
+	Wed,  7 Jun 2023 09:29:49 +0000 (UTC)
+Message-ID: <8411fd34-0326-ae92-1d1e-ff171318ebf2@opensource.cirrus.com>
+Date: Wed, 7 Jun 2023 10:29:49 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH v3 0/4] Add Loongson HD Audio support
+ Thunderbird/102.10.0
+Subject: Re: [PATCH 0/2] ASoC: add N cpus to M codecs dai link support
 Content-Language: en-US
-To: tiwai@suse.com
-Cc: perex@perex.cz, chenhuacai@loongson.cn, alsa-devel@alsa-project.org,
- loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn
-References: <cover.1686125797.git.siyanteng@loongson.cn>
-From: Yanteng Si <siyanteng@loongson.cn>
-In-Reply-To: <cover.1686125797.git.siyanteng@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxTMpIS4BkSjYEAA--.6544S3
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7Gw1rZrW7ZF43ZF43Cw45Arc_yoWkArgEy3
-	ySqFWkCFyUG3Z7AayIyrs5JrZxXayUA348G3Z3tr48Xanayrsxtr4DCr13ur1xXFn5Gr15
-	Xr1vgr4rAr12qosvyTuYvTs0mTUanT9S1TB71UUUUjUqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUbfkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Cr1j6rxdM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-	twAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-	k0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
-	Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-	cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
-	8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v2
-	6r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2uc_DUUUU
-X-MailFrom: siyanteng@loongson.cn
-X-Mailman-Rule-Hits: nonmember-moderation
+To: Bard Liao <yung-chuan.liao@linux.intel.com>, <broonie@kernel.org>,
+        <tiwai@suse.de>
+CC: <alsa-devel@alsa-project.org>, <pierre-louis.bossart@linux.intel.com>,
+        <bard.liao@intel.com>, - <patches@opensource.cirrus.com>
+References: <20230607031242.1032060-1-yung-chuan.liao@linux.intel.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20230607031242.1032060-1-yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: Fw-Fb9i_1JhvQUxriPxsoilexUdY8XpA
+X-Proofpoint-ORIG-GUID: Fw-Fb9i_1JhvQUxriPxsoilexUdY8XpA
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: RDU37CUW3PYPD5QLJTII3H5PZUU4F3AM
+X-Message-ID-Hash: RDU37CUW3PYPD5QLJTII3H5PZUU4F3AM
+X-MailFrom: prvs=152265b6ca=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: USNXHQPX5E2LXZU2J4A5Y467ECJKSBK6
-X-Message-ID-Hash: USNXHQPX5E2LXZU2J4A5Y467ECJKSBK6
-X-Mailman-Approved-At: Wed, 07 Jun 2023 09:18:52 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/USNXHQPX5E2LXZU2J4A5Y467ECJKSBK6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RDU37CUW3PYPD5QLJTII3H5PZUU4F3AM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,44 +110,117 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 07/06/2023 04:12, Bard Liao wrote:
+> Currently, ASoC supports dailinks with the following mappings: 1 cpu
+> DAI to N codec DAIs N cpu DAIs to N codec DAIs But the mapping
+> between N cpu DAIs and M codec DAIs is not supported. The reason is
+> that we didn't have a mechanism to map cpu and codec DAIs
+> 
+> This series suggests a new snd_soc_dai_link_codec_ch_map struct in 
+> struct snd_soc_dai_link{} which provides codec DAI to cpu DAI
+> mapping information used to implement N cpu DAIs to M codec DAIs
+> support.
+> 
+> And add the codec_ch_maps to SOF SoundWire machine driver.
+> 
 
-在 2023/6/7 16:51, Yanteng Si 写道:
-> v3:
-> * Adding some comments.
-> * Seting polling_mode flag.
+I think there is a much simpler way to handle this. The existing ASoC
+code is trying to map CPU to CODEC to match the physical connection. But
+the physical connection is not important. The dailink represents the
+_logical_ link.
 
-I'm sorry that I sent this patch series comments without indentation, 
-I'll modify it and resend it.
+You are declaring that all the CPU and CODEC in the dailink behave as a
+single logical link. So you can just connect all CPUs to all CODECS.
 
+That also fixes a problem with the existing N CPU to N CODEC mapping. It
+assumes that means CPU0 is connected to CODEC0, CPU1 is connected to
+CODEC1, ... But that isn't necessarily true. You could have an N:N
+mapping where multiple CPUs have been combined to create a multi-channel
+stream that is sent to all CODECs. But the existing N:N code won't hook
+that up correctly.
 
-Thanks,
+I suggest that the simple fix is this:
 
-Yanteng
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 5d9a671e50f1..f4f955a991d5 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -4423,8 +4423,8 @@ static void soc_dapm_dai_stream_event(struct
+snd_soc_dai *dai, int stream,
+  void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
+  {
+  	struct snd_soc_pcm_runtime *rtd;
+-	struct snd_soc_dai *codec_dai;
+-	int i;
++	struct snd_soc_dai *codec_dai, *cpu_dai;
++	int i, j;
 
->
-> v2:
-> * Handling with two new flags added to struct hdac_bus.
->
-> v1:
-> * The Loongson HDA controller is compatible with High Definition Audio
->    Specification Revision 1.0a.
->    See <https://loongson.github.io/LoongArch-Documentation/Loongson-
->    7A1000-usermanual-EN.html#hda-controller>
->
-> Yanteng Si (4):
->    ALSA: hda: Add Loongson LS7A HD-Audio support
->    ALSA: hda: Using polling mode for loongson controller by default
->    ALSA: hda: Workaround for SDnCTL register on loongson
->    ALSA: hda/intel: Workaround for WALLCLK register for loongson
->      controller
->
->   include/linux/pci_ids.h     |  3 +++
->   include/sound/hdaudio.h     |  3 +++
->   sound/hda/hdac_controller.c |  5 ++++-
->   sound/hda/hdac_device.c     |  1 +
->   sound/hda/hdac_stream.c     |  6 +++++-
->   sound/pci/hda/hda_intel.c   | 20 ++++++++++++++++++++
->   sound/pci/hda/patch_hdmi.c  |  1 +
->   7 files changed, 37 insertions(+), 2 deletions(-)
->
+  	/* for each BE DAI link... */
+  	for_each_card_rtds(card, rtd)  {
+@@ -4435,17 +4435,9 @@ void snd_soc_dapm_connect_dai_link_widgets(struct
+snd_soc_card *card)
+  		if (rtd->dai_link->dynamic)
+  			continue;
+
+-		if (rtd->dai_link->num_cpus == 1) {
+-			for_each_rtd_codec_dais(rtd, i, codec_dai)
+-				dapm_connect_dai_pair(card, rtd, codec_dai,
+-						      asoc_rtd_to_cpu(rtd, 0));
+-		} else if (rtd->dai_link->num_codecs == rtd->dai_link->num_cpus) {
+-			for_each_rtd_codec_dais(rtd, i, codec_dai)
+-				dapm_connect_dai_pair(card, rtd, codec_dai,
+-						      asoc_rtd_to_cpu(rtd, i));
+-		} else {
+-			dev_err(card->dev,
+-				"N cpus to M codecs link is not supported yet\n");
++		for_each_rtd_codec_dais(rtd, i, codec_dai) {
++			for_each_rtd_cpu_dais(rtd, j, cpu_dai)
++				dapm_connect_dai_pair(card, rtd, codec_dai, cpu_dai);
+  		}
+  	}
+  }
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 7958c9defd49..43b1166eb333 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2747,7 +2747,7 @@ static int soc_get_playback_capture(struct
+snd_soc_pcm_runtime *rtd,
+  				    int *playback, int *capture)
+  {
+  	struct snd_soc_dai *cpu_dai;
+-	int i;
++	int i, j;
+
+  	if (rtd->dai_link->dynamic && rtd->dai_link->num_cpus > 1) {
+  		dev_err(rtd->dev,
+@@ -2801,22 +2801,14 @@ static int soc_get_playback_capture(struct
+snd_soc_pcm_runtime *rtd,
+  			SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+
+  		for_each_rtd_codec_dais(rtd, i, codec_dai) {
+-			if (rtd->dai_link->num_cpus == 1) {
+-				cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+-			} else if (rtd->dai_link->num_cpus == rtd->dai_link->num_codecs) {
+-				cpu_dai = asoc_rtd_to_cpu(rtd, i);
+-			} else {
+-				dev_err(rtd->card->dev,
+-					"N cpus to M codecs link is not supported yet\n");
+-				return -EINVAL;
++			for_each_rtd_cpu_dais(rtd, j, cpu_dai) {
++				if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
++				    snd_soc_dai_stream_valid(cpu_dai,   cpu_playback))
++					*playback = 1;
++				if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
++				    snd_soc_dai_stream_valid(cpu_dai,   cpu_capture))
++					*capture = 1;
+  			}
+-
+-			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_PLAYBACK) &&
+-			    snd_soc_dai_stream_valid(cpu_dai,   cpu_playback))
+-				*playback = 1;
+-			if (snd_soc_dai_stream_valid(codec_dai, SNDRV_PCM_STREAM_CAPTURE) &&
+-			    snd_soc_dai_stream_valid(cpu_dai,   cpu_capture))
+-				*capture = 1;
+  		}
+  	}
 
