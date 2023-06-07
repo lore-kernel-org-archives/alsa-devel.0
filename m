@@ -4,117 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9B69C7EE29
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:08:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADBA9C7EE2E
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:48:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B161174C;
-	Fri,  9 Jun 2023 16:07:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B161174C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E214C6C0;
+	Fri,  9 Jun 2023 16:47:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E214C6C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686319722;
-	bh=ghzM0f+3e3bi1a2M2jnIxlnndv8bDKtwasIbfqg8p5M=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Rq2JOXvXcgV3ia0m2rxgTjDkjWwcrIGl9YE8lmKBmTVVbyLzE2mCVPVOagvEnQcVM
-	 GMzSF5hd4v4gRVsPdPRDF4YMuRzlJQKjgfC+Gwtl5QHJVjx487BLGawshsplq9cg3z
-	 O/s5WQ8/tP7/D3bqNFCbE5NVjaHUBBD/RedsxAr8=
+	s=default; t=1686322085;
+	bh=n4r+ybyMtWHi2++J91FmUl1dx9ofKXKqH71D7lnVObc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=a+2XbpQNxyNptuJ/Wk2igYYz1gcLkh3S7JKHfYYkXMI0AAqY8iDhs7aglZL7uqhYm
+	 cunEkDPfrRE1Xc+O42piiJOG7oNEVedn9dvr/73Sm+xHY3isqsfaglkBtTHiZMUT02
+	 jDf02OXHoNJ8tL8KPqnLnr/xE1LT0oF2t3+74ADs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85724F80520; Fri,  9 Jun 2023 16:07:25 +0200 (CEST)
+	id 12ACBF80544; Fri,  9 Jun 2023 16:47:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D3B8F80199;
-	Fri,  9 Jun 2023 16:07:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08D54F800ED;
+	Fri,  9 Jun 2023 16:47:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74D5EF80199; Fri,  9 Jun 2023 16:07:20 +0200 (CEST)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
- [IPv6:2a00:1450:4864:20::52a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 143C7F80130
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 16:07:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 143C7F80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=wnzZoyqu
-Received: by mail-ed1-x52a.google.com with SMTP id
- 4fb4d7f45d1cf-5162d2373cdso3200878a12.3
-        for <alsa-devel@alsa-project.org>;
- Fri, 09 Jun 2023 07:07:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686319622; x=1688911622;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=E9uMQ0sfqZ2sQ8GreRUpH89gA6dhVg8HRnZ9nNzOC5U=;
-        b=wnzZoyqu+R5uWVV5c2SmCaaKcEtjCYLxh7x7XZdJRpl1l3mWEPqGa0s9zBwqqJYi2f
-         p1fgEf5EUa1on/lQLgGyhH2F2v+jUguBBBcFns7QGE2G/yVo89TKQZ+jh+7aJsRQsU+x
-         zg8x2XPvO/8RXDzVjkg/ETZ5d+0JFvgMBHZk9A3bmG74ceRu/lBeZxuao5KSRoCs1tVK
-         LeaTPlEMQ7aVF8CSCNsJ+n+Re6pTqxnFP7TaFUYhuWudZA+dUTmwuPC2v6chH892QlKq
-         SlsAZTGIlNyAqWV45BsQIngMiI1B0/EU/l0bJrJREMBjs0qKp84jeA2rkNGQmgfJg66C
-         Cj7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686319622; x=1688911622;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E9uMQ0sfqZ2sQ8GreRUpH89gA6dhVg8HRnZ9nNzOC5U=;
-        b=gdNOKNcAWae+QkuBr6Bu1XOH9ucU+UOuBt9K/iqFp2UyIgVn9cxn7qQg4IZEBFL7Vy
-         W/h06WnCyFp2zK4OqGVvJ3lObGr0v+snEpPBt8J+M/Ia40LDQXw1fkm8FVaa0SJCHzHs
-         e09ORAhu5HTqsp2JkPO+gDQ8LNgmYi7rCjymM4h9j/ZjtOhz3uWn0LKYMt6gnig/VcYF
-         WhJWlBkWAzKRgp3BziJS6i4uUH4Y8/1ofkvVpW5nCpEkXogvZNsb1TOmHaqZ20TZHPdd
-         uVTJ+CJAALnGOAh0bieT6mcPZuoXvrYnXjeDioYX8kU6PTpu8aFV1UwAQSkEu0lnHopQ
-         k6Bg==
-X-Gm-Message-State: AC+VfDx/EMaEjweMDK1Cdu8E2nCugRe8Gqc9r6cMCVvAuoPP2EmSlTQU
-	uUyTF7b0S1pk8FaD32f2k97vGg==
-X-Google-Smtp-Source: 
- ACHHUZ5DkXFiMm5CGgSQmITXmQLTvumkIiZtW5dSbMjJW9/TR74LmfVF2cvMFqNWQc10JQoD0Ezg9A==
-X-Received: by 2002:aa7:c910:0:b0:514:960e:6 with SMTP id
- b16-20020aa7c910000000b00514960e0006mr1388561edt.10.1686319622321;
-        Fri, 09 Jun 2023 07:07:02 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id
- f8-20020a05640214c800b00516a29dfa68sm1818429edx.90.2023.06.09.07.06.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jun 2023 07:07:01 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: James Schulman <james.schulman@cirrus.com>,
-	David Rhodes <david.rhodes@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>,
+	id 87EF4F80290; Wed,  7 Jun 2023 11:22:07 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by alsa1.perex.cz (Postfix) with ESMTP id 5EFA3F80130
+	for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2023 11:22:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EFA3F80130
+Received: from loongson.cn (unknown [223.106.25.146])
+	by gateway (Coremail) with SMTP id _____8Cx+ek4TIBkUxcAAA--.329S3;
+	Wed, 07 Jun 2023 17:22:00 +0800 (CST)
+Received: from localhost.localdomain (unknown [223.106.25.146])
+	by localhost.localdomain (Coremail) with SMTP id
+ AQAAf8BxNeQ2TIBkvzcEAA--.14996S4;
+	Wed, 07 Jun 2023 17:21:59 +0800 (CST)
+From: Yanteng Si <siyanteng@loongson.cn>
+To: tiwai@suse.com
+Cc: Yanteng Si <siyanteng@loongson.cn>,
+	perex@perex.cz,
+	chenhuacai@loongson.cn,
 	alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] ASoC: dt-bindings: cirrus,cs35l45: drop unneeded quotes
-Date: Fri,  9 Jun 2023 16:06:58 +0200
-Message-Id: <20230609140658.64557-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	loongarch@lists.linux.dev,
+	loongson-kernel@lists.loongnix.cn,
+	Yingkun Meng <mengyingkun@loongson.cn>
+Subject: [PATCH RESEND v3 2/4] ALSA: hda: Using polling mode for loongson
+ controller by default
+Date: Wed,  7 Jun 2023 17:21:50 +0800
+Message-Id: 
+ <d309a75424d438b958d90d797b4f1ba45468e090.1686128807.git.siyanteng@loongson.cn>
+X-Mailer: git-send-email 2.31.4
+In-Reply-To: <cover.1686128807.git.siyanteng@loongson.cn>
+References: <cover.1686128807.git.siyanteng@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AE4PHWH6YFIAM7WKO6ZCMYEDECCDCIYV
-X-Message-ID-Hash: AE4PHWH6YFIAM7WKO6ZCMYEDECCDCIYV
-X-MailFrom: krzysztof.kozlowski@linaro.org
+X-CM-TRANSID: AQAAf8BxNeQ2TIBkvzcEAA--.14996S4
+X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7ArWkuF1UCr1fGw1xXF4DJrc_yoW8tFyxpF
+	97C348KFW7Wr4Yvr4DKa4UKr13Xa93G3ZxGrW0k348Arn2v3WfW39FyF40yFWjkrWIgrW3
+	X3ykt348Jay5twcCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9Yb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6F4UJVW0owAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+	Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_
+	WrylYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+	vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+	Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
+	AY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAI
+	cVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
+	IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIev
+	Ja73UjIFyTuYvjxU28nYUUUUU
+X-MailFrom: siyanteng@loongson.cn
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: IWY3BFG277XIO4NASFMGNPYATOK7R2MQ
+X-Message-ID-Hash: IWY3BFG277XIO4NASFMGNPYATOK7R2MQ
+X-Mailman-Approved-At: Fri, 09 Jun 2023 14:46:39 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AE4PHWH6YFIAM7WKO6ZCMYEDECCDCIYV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IWY3BFG277XIO4NASFMGNPYATOK7R2MQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,63 +100,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Cleanup bindings dropping unneeded quotes. Once all these are fixed,
-checking for this can be enabled in yamllint.
+On loongson controller, RIRBSTS.RINTFL cannot be cleared,
+azx_interrupt() is called all the time. We disable RIRB
+interrupt, and use polling mode by default.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
+Signed-off-by: Yingkun Meng <mengyingkun@loongson.cn>
 ---
- .../devicetree/bindings/sound/cirrus,cs35l45.yaml      | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ include/sound/hdaudio.h     | 1 +
+ sound/hda/hdac_controller.c | 5 ++++-
+ sound/pci/hda/hda_intel.c   | 5 +++++
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs35l45.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs35l45.yaml
-index 2ab74f995685..4c9acb8d4c4c 100644
---- a/Documentation/devicetree/bindings/sound/cirrus,cs35l45.yaml
-+++ b/Documentation/devicetree/bindings/sound/cirrus,cs35l45.yaml
-@@ -62,7 +62,7 @@ patternProperties:
-           GPIO pin direction. Valid only when 'gpio-ctrl' is 1
-             0 = Output
-             1 = Input
--        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        $ref: /schemas/types.yaml#/definitions/uint32
-         minimum: 0
-         maximum: 1
-         default: 1
-@@ -71,7 +71,7 @@ patternProperties:
-           GPIO level. Valid only when 'gpio-ctrl' is 1 and 'gpio-dir' is 0
-             0 = Low
-             1 = High
--        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        $ref: /schemas/types.yaml#/definitions/uint32
-         minimum: 0
-         maximum: 1
-         default: 0
-@@ -80,7 +80,7 @@ patternProperties:
-           GPIO level. Valid only when 'gpio-ctrl' is 1 and 'gpio-dir' is 0
-             0 = CMOS
-             1 = Open Drain
--        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        $ref: /schemas/types.yaml#/definitions/uint32
-         minimum: 0
-         maximum: 1
-         default: 0
-@@ -90,7 +90,7 @@ patternProperties:
-           and 'gpio-dir' is 0
-             0 = Non-inverted, Active High
-             1 = Inverted, Active Low
--        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        $ref: /schemas/types.yaml#/definitions/uint32
-         minimum: 0
-         maximum: 1
-         default: 0
-@@ -114,7 +114,7 @@ patternProperties:
-             0 = High impedance input
-             1 = Pin acts as a GPIO, direction controlled by 'gpio-dir'
-             2-7 = Reserved
--        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        $ref: /schemas/types.yaml#/definitions/uint32
-         minimum: 0
-         maximum: 7
-         default: 0
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index 97f09acae302..a0bb40a4b721 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -347,6 +347,7 @@ struct hdac_bus {
+ 	bool corbrp_self_clear:1;	/* CORBRP clears itself after reset */
+ 	bool polling_mode:1;
+ 	bool needs_damn_long_delay:1;
++	bool not_use_interrupts:1;	/* prohibiting the RIRB IRQ */
+ 
+ 	int poll_count;
+ 
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index 3c7af6558249..7f3a000fab0c 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -79,7 +79,10 @@ void snd_hdac_bus_init_cmd_io(struct hdac_bus *bus)
+ 	/* set N=1, get RIRB response interrupt for new entry */
+ 	snd_hdac_chip_writew(bus, RINTCNT, 1);
+ 	/* enable rirb dma and response irq */
+-	snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN | AZX_RBCTL_IRQ_EN);
++	if (bus->not_use_interrupts)
++		snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN);
++	else
++		snd_hdac_chip_writeb(bus, RIRBCTL, AZX_RBCTL_DMA_EN | AZX_RBCTL_IRQ_EN);
+ 	/* Accept unsolicited responses */
+ 	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, AZX_GCTL_UNSOL);
+ 	spin_unlock_irq(&bus->reg_lock);
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 9c353dc7740c..b7a7a92d03ef 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1875,6 +1875,11 @@ static int azx_first_init(struct azx *chip)
+ 	if (chip->driver_type == AZX_DRIVER_GFHDMI)
+ 		bus->polling_mode = 1;
+ 
++	if (chip->driver_type == AZX_DRIVER_LOONGSON) {
++		bus->polling_mode = 1;
++		bus->not_use_interrupts = 1;
++	}
++
+ 	err = pcim_iomap_regions(pci, 1 << 0, "ICH HD audio");
+ 	if (err < 0)
+ 		return err;
 -- 
-2.34.1
+2.31.4
 
