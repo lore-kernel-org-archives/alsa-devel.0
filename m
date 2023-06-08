@@ -4,112 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 978DAC7EE29
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 11:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5F97C7EE43
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 12:23:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50EEF820;
-	Thu,  8 Jun 2023 13:57:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50EEF820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64FFB42;
+	Thu,  8 Jun 2023 14:22:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64FFB42
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686225499;
-	bh=qXMUMQ+cAGok+kj6QQHzoRRrdHTaKXyary7YOmeRRhg=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1686226996;
+	bh=XCENFFGMz+AlPXP+TAjP/jMokRT6oH/Ogdvfh1yAGao=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OU3oRDmMr7OcnUL588Ci3uE7RoLOOdSSVv9MSmNekWioN0nRqX7cESpdhv37f1saR
-	 bI9I6s3tHxf7wDhbG4HzAS3Pc5kVh1pJo3uCkQO5dOCBA0DKihkecqeKyrM6E9TpXc
-	 RJMJrKi25b78YF43Yk8p5nMFx0z7PR3lNCXUNkPE=
+	b=ZHM/OT5pYOsZj+iytvnKpBSgqGW1vrf+rjIQOsPn61Y4zfzc3IPSAMbAnXaf5YFYd
+	 9nBtxPxYqksRBq+Wt0McfqcR5ldPSwCTYaG4p15FTLyv5PUmbwXPsqCMP3gVsMl8Y6
+	 GiQGk1bQYTRt6cLtlS8FOtsKolmzKiV9sKdaz1ZU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 50D7DF80199; Thu,  8 Jun 2023 13:57:20 +0200 (CEST)
+	id C73EAF80520; Thu,  8 Jun 2023 14:22:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB007F800ED;
-	Thu,  8 Jun 2023 13:57:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B2C0F80155;
+	Thu,  8 Jun 2023 14:22:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BDD6DF80199; Thu,  8 Jun 2023 13:57:15 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [185.132.182.106])
+	id 4A8D4F80199; Thu,  8 Jun 2023 14:22:22 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 207C3F800ED
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 13:57:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 207C3F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id DCD9FF80155
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 14:22:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCD9FF80155
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=S73rOSWm
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 3589OCnw007652;
-	Thu, 8 Jun 2023 13:57:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=73Ubk5oRaELFQy9MiHEBTyfooWnX9EJZnQ7YDu0s2/M=;
- b=S73rOSWmTnk9u+GB1rogOjulSFtgS1Yc0hW/82plEdlDrmEh7NEIIKQn34WDhlm4m6hk
- aHL8TgxLwEnbSErpCCnYdsCvvUYntykGWAwjvdgi2ULqeqCRvxzEGyd2cP5AY6gPL3+O
- 8VrV1n/27oCSe+A//hKYww5a2XPPDdS6qz8Dbwoy3+bLTQ7VFtlbqQoPN/4GjZj6DSZs
- xSCl2hPEHuEN2QDDR7VNO+sg2ILkS6B/pAgnn0jvqn2Cd9lfAFV5z9AMrrxpzIoWbNGo
- y/BuqtSQ1boqyKlU9A8eQuOvAnLwTLN8gRrqtfKobGAtcP/ZRFoo39sNXtREsDaGwy2g 2A==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3r3cax10j8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Jun 2023 13:57:09 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 20F8E10002A;
-	Thu,  8 Jun 2023 13:57:06 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A15922291CB;
-	Thu,  8 Jun 2023 13:57:06 +0200 (CEST)
-Received: from [10.201.21.93] (10.201.21.93) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 8 Jun
- 2023 13:57:05 +0200
-Message-ID: <a02ae654-b0bb-5d57-64b9-94cc3182b463@foss.st.com>
-Date: Thu, 8 Jun 2023 13:57:05 +0200
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Rp0kcnc5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686226936; x=1717762936;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=XCENFFGMz+AlPXP+TAjP/jMokRT6oH/Ogdvfh1yAGao=;
+  b=Rp0kcnc5y72umwEw+/gnKJOTGMTX5ugKq3qqtUWYBbUy72ZBLSlSAS5W
+   d3zyqERWCELOPYyNBDzUbN4ROPZyFhr06c9xvfHsm2aNXs7BxDNfx3bOO
+   VqkHIUV8sHWJgHb2sVYFcQBjDTeQzflIFDIiPX+83+XDJuo0bQm83YmbT
+   dZrpI+LHHUX4xW4EIvQ6NaXsS1+DWF8bdBmSZd7qcZ4CaGAzmzYdPqwgh
+   aqaAzx8Q3MDDdxQLxFdacnEzZJR/FnI7CwTogAWv0BH5sNmnQn+Du+VwW
+   d/rRtQZVo72kvhDJIacrorTYzLvnQi8vXd1MTPTUVpnIM4LGCzWATKdUY
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10734"; a="354777366"
+X-IronPort-AV: E=Sophos;i="6.00,226,1681196400";
+   d="scan'208";a="354777366"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Jun 2023 05:22:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10734"; a="822601301"
+X-IronPort-AV: E=Sophos;i="6.00,226,1681196400";
+   d="scan'208";a="822601301"
+Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Jun 2023 05:22:05 -0700
+Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1q7EeS-0007kh-2m;
+	Thu, 08 Jun 2023 12:22:04 +0000
+Date: Thu, 8 Jun 2023 20:21:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: =?utf-8?B?4oCcUnlhbg==?= <ryan.lee.analog@gmail.com>,
+	lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, perex@perex.cz, tiwai@suse.com,
+	rf@opensource.cirrus.com, ryans.lee@analog.com,
+	wangweidong.a@awinic.com, shumingf@realtek.com,
+	herve.codina@bootlin.com, ckeepax@opensource.cirrus.com,
+	doug@schmorgal.com, ajye_huang@compal.corp-partner.google.com,
+	kiseok.jo@irondevice.com, alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, venkataprasad.potturu@amd.com
+Subject: Re: [PATCH 2/2] ASoC: max98388: add amplifier driver
+Message-ID: <202306082054.jIU9oENf-lkp@intel.com>
+References: <20230608054230.344014-2-ryan.lee.analog@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 0/3] ASoC: stm32: fix dtbs_check warnings
-Content-Language: en-US
-To: Olivier Moysan <olivier.moysan@foss.st.com>,
-        James Schulman
-	<james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        "Lucas
- Tanure" <tanureal@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
-	<broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Maxime Coquelin
-	<mcoquelin.stm32@gmail.com>
-CC: Alexandre Torgue <alexandre.torgue@st.com>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230606115605.1633595-1-olivier.moysan@foss.st.com>
-From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20230606115605.1633595-1-olivier.moysan@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.93]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
- definitions=2023-06-08_08,2023-06-08_01,2023-05-22_02
-Message-ID-Hash: P2HIICOOVROBAQRNBQUENJEM455SMIDV
-X-Message-ID-Hash: P2HIICOOVROBAQRNBQUENJEM455SMIDV
-X-MailFrom: prvs=4523726d7d=alexandre.torgue@foss.st.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230608054230.344014-2-ryan.lee.analog@gmail.com>
+Message-ID-Hash: 3LRLEPIETIEI65XQHZPGU7U34DSS2BEI
+X-Message-ID-Hash: 3LRLEPIETIEI65XQHZPGU7U34DSS2BEI
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -121,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P2HIICOOVROBAQRNBQUENJEM455SMIDV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3LRLEPIETIEI65XQHZPGU7U34DSS2BEI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,35 +110,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi
+Hi “Ryan,
 
-On 6/6/23 13:56, Olivier Moysan wrote:
-> Fix dtbs_check warnings in STM32MP15 DK boards Devices Trees for
-> STM32 I2S and Cirrus CS42L51 codec.
-> 
-> - Add OF graph port property in I2S and CS42L51 DT bindings.
->    Fixes warnings:
->    audio-controller@4000b000: Unevaluated properties are not allowed
->    ('port' was unexpected)
->    cs42l51@4a: Unevaluated properties are not allowed
->    ('port' was unexpected)
-> - Correct OF graph DAI audio format property for STM32MP15x Dkx I2S node
-> 
-> Changes in v2:
-> - Add port example in i2s and cs42l51 binding
-> 
-> Olivier Moysan (3):
->    ASoC: dt-bindings: stm32: document audio of graph port for i2s
->    ASoC: dt-bindings: document audio of graph port for cs42l51
->    ARM: dts: stm32: fix i2s endpoint format property for stm32mp15xx-dkx
-> 
->   .../devicetree/bindings/sound/cirrus,cs42l51.yaml     | 11 +++++++++++
->   .../devicetree/bindings/sound/st,stm32-i2s.yaml       | 11 +++++++++++
->   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi                |  2 +-
->   3 files changed, 23 insertions(+), 1 deletion(-)
-> 
+kernel test robot noticed the following build warnings:
 
-Patch[3] applied on stm32-next.
+[auto build test WARNING on broonie-sound/for-next]
+[also build test WARNING on linus/master v6.4-rc5 next-20230608]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks
-Alex
+url:    https://github.com/intel-lab-lkp/linux/commits/Ryan/ASoC-max98388-add-amplifier-driver/20230608-134526
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20230608054230.344014-2-ryan.lee.analog%40gmail.com
+patch subject: [PATCH 2/2] ASoC: max98388: add amplifier driver
+config: mips-allmodconfig (https://download.01.org/0day-ci/archive/20230608/202306082054.jIU9oENf-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 12.3.0
+reproduce (this is a W=1 build):
+        mkdir -p ~/bin
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        git remote add broonie-sound https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+        git fetch broonie-sound for-next
+        git checkout broonie-sound/for-next
+        b4 shazam https://lore.kernel.org/r/20230608054230.344014-2-ryan.lee.analog@gmail.com
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=mips olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash sound/soc/codecs/
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306082054.jIU9oENf-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> sound/soc/codecs/max98388.c:390:6: warning: no previous prototype for 'max98388_reset' [-Wmissing-prototypes]
+     390 | void max98388_reset(struct max98388_priv *max98388, struct device *dev)
+         |      ^~~~~~~~~~~~~~
+>> sound/soc/codecs/max98388.c:904:6: warning: no previous prototype for 'max98388_read_deveice_property' [-Wmissing-prototypes]
+     904 | void max98388_read_deveice_property(struct device *dev,
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/max98388_reset +390 sound/soc/codecs/max98388.c
+
+   389	
+ > 390	void max98388_reset(struct max98388_priv *max98388, struct device *dev)
+   391	{
+   392		int ret, reg, count;
+   393	
+   394		/* Software Reset */
+   395		ret = regmap_update_bits(max98388->regmap,
+   396					 MAX98388_R2000_SW_RESET,
+   397					 MAX98388_SOFT_RESET,
+   398					 MAX98388_SOFT_RESET);
+   399		if (ret)
+   400			dev_err(dev, "Reset command failed. (ret:%d)\n", ret);
+   401	
+   402		count = 0;
+   403		while (count < 3) {
+   404			usleep_range(10000, 11000);
+   405			/* Software Reset Verification */
+   406			ret = regmap_read(max98388->regmap,
+   407					  MAX98388_R22FF_REV_ID, &reg);
+   408			if (!ret) {
+   409				dev_info(dev, "Reset completed (retry:%d)\n", count);
+   410				return;
+   411			}
+   412			count++;
+   413		}
+   414		dev_err(dev, "Reset failed. (ret:%d)\n", ret);
+   415	}
+   416	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
