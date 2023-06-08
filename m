@@ -4,110 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06556C7EE23
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 09:35:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FB1FC7EE29
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 09:59:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4191822;
-	Thu,  8 Jun 2023 11:34:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4191822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B6C71D7;
+	Thu,  8 Jun 2023 11:58:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B6C71D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686216920;
-	bh=WlXBrXkeZY4XPCWDL4EhJKTT36HfU9AD032Pi+zKI6E=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=pm6XeWTDjVPTwZiUmIdPyAutDOSnsI0YN0rzUxL8urkWhhSYiSrZaQiijtgZ6COzU
-	 Ye5a3WsttGJZvXiOEXx73x6eLFS4pGc25pjEsOkYeIFzuNw4EwHhMNWxW46O/WXbRM
-	 ZcmeVB5FgQ/9YNSvvvtQkOmhtZWnQCqYhbnq2uyc=
+	s=default; t=1686218345;
+	bh=Abj1gkmLa48yb8iW0WQ8r6Hnx6PfuQ7ea7AnIpcaE50=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=m+2xRy8MZVVlcADcVKdPQmPzQWEe7SaYpe18NXynC9fpP/9OOhxyfDyETeTH05gZI
+	 wJN5h+n3EaLzM8FG6/Z2BHcIjlSas5VvoVin9jQK9h7B25qRAVVAqB5igXISVVcZAc
+	 tUFlOJ0v5oOi5JcqrmIcXbEh1DoYhWAs9fVneZ1o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 059BFF804DA; Thu,  8 Jun 2023 11:34:02 +0200 (CEST)
+	id 5F6D3F80527; Thu,  8 Jun 2023 11:57:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5AEFF80199;
-	Thu,  8 Jun 2023 11:34:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA74DF80199;
+	Thu,  8 Jun 2023 11:57:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 528EDF80199; Thu,  8 Jun 2023 11:33:58 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
+	id 5785FF80199; Thu,  8 Jun 2023 11:57:38 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 964DEF80130
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 11:57:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 964DEF80130
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=Tw3LJYSw
+Received: from [IPV6:2001:b07:2ed:14ed:a962:cd4d:a84:1eab] (unknown
+ [IPv6:2001:b07:2ed:14ed:a962:cd4d:a84:1eab])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9682CF80130
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 11:33:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9682CF80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=mc9adXQt
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-9741caaf9d4so64656666b.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 08 Jun 2023 02:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686216831; x=1688808831;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XHrWR78MCn7GOVO6jP+VpXAA4JR1qkGlYZ5kPs6LqkE=;
-        b=mc9adXQtN6XersVDRhnlail8T5GQnruABpjREJFga4locj60fiGQc3DEbqU5rE+wM+
-         IVIRmVKEaZcE4Qy9s6zN5jyiM9QHKBST+8n1uIFdlmXdHCsph6CS4JwZa2QvxkCwPDYl
-         bgtCgFQr+DKjuEqmvhtdkzII9qvgdRM6Wlrxs4j4/Td7UTrfzQBbkrAghZH2zKTVKqPL
-         e7UBB+XDwWHcqsGVNv+uuTGhzlK09irLgNNfQG3gdsSs+cPGMH9MIhio02yScsNjZVWw
-         2eKHG9bnllb38SZ8PzHa8aMw5MKsP9G69/UdaO3HxfnpoWHAxItZy1qIiFx2AU71TI3f
-         Xwqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686216831; x=1688808831;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XHrWR78MCn7GOVO6jP+VpXAA4JR1qkGlYZ5kPs6LqkE=;
-        b=h6PlmcKKbJXRDkjkr+W/oE3+3RkSxIxXiggbd3y60/6TeRT33PfX4o21FazvJwm8Tt
-         6SY78aJOFilD2RQ2Qi+eD/06AhHLFlMXuNP6Zsnl80MKVmXNAzArcOPac1c6v0h8WAef
-         YYOaQ6gX+6/9iqmHahDPPoXCRANWGhs3oOtYwqdoqEuWAmuGvqX5hHQgaoVUBjblFzLA
-         9h8YmcmVFbkCkj05GcGz62b3C2PkfYEYAWzcT78TaFEc2fV+vILFRexIAzofeo3alwMh
-         UwG0SEQMTLIZioxDg5E03eVX/ab5dG8lqRSdeCxzn6kvUWoVY6E8YETmSZF8stcuCus1
-         2w8A==
-X-Gm-Message-State: AC+VfDzrNF0GvYwUAAjg8s1dIXUWkx3UUgIXNIIsf75SLKX3fqTxpuCJ
-	+GZBubcq8c0QBnwTlanDpTLgrA==
-X-Google-Smtp-Source: 
- ACHHUZ5P3vA07L3KTs1RTP07AuvxF1iv5HiPlvFkqBvOQIBmIKUDz+s/jbEEE098Oeua68HrGDx7TQ==
-X-Received: by 2002:a17:907:6d05:b0:966:54ac:17d7 with SMTP id
- sa5-20020a1709076d0500b0096654ac17d7mr9357802ejc.76.1686216830865;
-        Thu, 08 Jun 2023 02:33:50 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id
- oz14-20020a170906cd0e00b0094e7d196aa4sm443537ejb.160.2023.06.08.02.33.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jun 2023 02:33:50 -0700 (PDT)
-Message-ID: <e4cc5966-0af9-80cc-c01f-b33620717a1e@linaro.org>
-Date: Thu, 8 Jun 2023 11:33:48 +0200
+	(Authenticated sender: kholk11)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 6F4746606F15;
+	Thu,  8 Jun 2023 10:57:32 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1686218253;
+	bh=Abj1gkmLa48yb8iW0WQ8r6Hnx6PfuQ7ea7AnIpcaE50=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Tw3LJYSwlTxxs/4vWOISFnCIKFeE/Aw2I4fbULbv0/vnf0IVskSEmmKoW1SZ5+ABz
+	 J1XD6X903rIQIKUtfr13/IhM1TfEDtKiNrL/sQlSXZTbU8uHPVgTrxDzqmQHDVA4yG
+	 4vvStYukIMo6glYEzjByEjsKrK5erQ8pKP2avcLbMmwLqI5DoTuLx1uovnLz4GFZrc
+	 wfKks3nHT+7y16s1LchIN8wnYAUila+W7zgnFzSt9eBzntD2/jL6+l+D3OaKPFp83v
+	 bwCaQF6wrTRixWcgTVY26mUdj9T6D2GhHzZtA+UegMfFt67JT0rNJimmL3ZOWyocww
+	 gvpFhbo/JL13g==
+Message-ID: <a8b454e3-dded-02d6-b97a-6a7aa3420cf1@collabora.com>
+Date: Thu, 8 Jun 2023 11:57:30 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.2
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: qcom,wsa8840: Add WSA884x family
- of speakers
+Subject: Re: [PATCH 5/5] ASoC: mediatek: mt8188-mt6359: Use bitfield macros
+ for registers
 Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230608085023.141745-1-krzysztof.kozlowski@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230608085023.141745-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: Z4ZKNHPPRSV2SF6K3ZUVHPFYNDBWBNTF
-X-Message-ID-Hash: Z4ZKNHPPRSV2SF6K3ZUVHPFYNDBWBNTF
-X-MailFrom: krzysztof.kozlowski@linaro.org
+To: Alexandre Mergnat <amergnat@baylibre.com>, broonie@kernel.org
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ matthias.bgg@gmail.com, trevor.wu@mediatek.com, dan.carpenter@linaro.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel@collabora.com
+References: <20230608084727.74403-1-angelogioacchino.delregno@collabora.com>
+ <20230608084727.74403-6-angelogioacchino.delregno@collabora.com>
+ <8bbbc852-6139-29d4-417c-a2d9c77c192f@baylibre.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <8bbbc852-6139-29d4-417c-a2d9c77c192f@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: AZHBNT7FUD6VXUUJSHDW3QZYPQXNLFPK
+X-Message-ID-Hash: AZHBNT7FUD6VXUUJSHDW3QZYPQXNLFPK
+X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -119,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z4ZKNHPPRSV2SF6K3ZUVHPFYNDBWBNTF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AZHBNT7FUD6VXUUJSHDW3QZYPQXNLFPK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,48 +104,131 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 08/06/2023 10:50, Krzysztof Kozlowski wrote:
-> Add binding for WSA8840/WSA8845/WSA8845H smart speaker amplifiers used
-> in Qualcomm QRD8550 board with SM8550 SoC.
+Il 08/06/23 11:50, Alexandre Mergnat ha scritto:
+> On 08/06/2023 10:47, AngeloGioacchino Del Regno wrote:
+>> Replace open coded instances of FIELD_GET() with it, move register
+>> definitions at the top of the file and also replace magic numbers
+>> with register definitions.
+>>
+>> While at it, also change a regmap_update_bits() call to regmap_write()
+>> because the top 29 bits of AUD_TOP_CFG (31:3) are reserved (unused).
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>   sound/soc/mediatek/mt8188/mt8188-mt6359.c | 32 ++++++++++++++---------
+>>   1 file changed, 19 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c 
+>> b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+>> index 5b2660139421..ac69c23e0da1 100644
+>> --- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+>> +++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+>> @@ -6,6 +6,7 @@
+>>    * Author: Trevor Wu <trevor.wu@mediatek.com>
+>>    */
+>> +#include <linux/bitfield.h>
+>>   #include <linux/input.h>
+>>   #include <linux/module.h>
+>>   #include <linux/of_device.h>
+>> @@ -19,6 +20,15 @@
+>>   #include "../common/mtk-afe-platform-driver.h"
+>>   #include "../common/mtk-soundcard-driver.h"
+>> +#define CKSYS_AUD_TOP_CFG    0x032c
+>> + #define RG_TEST_ON        BIT(0)
+>> + #define RG_TEST_TYPE        BIT(2)
+>> +#define CKSYS_AUD_TOP_MON    0x0330
+>> + #define TEST_MISO_COUNT_1    GENMASK(3, 0)
+>> + #define TEST_MISO_COUNT_2    GENMASK(7, 4)
+>> + #define TEST_MISO_DONE_1    BIT(28)
+>> + #define TEST_MISO_DONE_2    BIT(29)
+>> +
+>>   #define NAU8825_HS_PRESENT    BIT(0)
+>>   /*
+>> @@ -251,9 +261,6 @@ static const struct snd_kcontrol_new 
+>> mt8188_nau8825_controls[] = {
+>>       SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+>>   };
+>> -#define CKSYS_AUD_TOP_CFG 0x032c
+>> -#define CKSYS_AUD_TOP_MON 0x0330
+>> -
+>>   static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
+>>   {
+>>       struct snd_soc_component *cmpnt_afe =
+>> @@ -265,13 +272,13 @@ static int mt8188_mt6359_mtkaif_calibration(struct 
+>> snd_soc_pcm_runtime *rtd)
+>>       struct mtkaif_param *param;
+>>       int chosen_phase_1, chosen_phase_2;
+>>       int prev_cycle_1, prev_cycle_2;
+>> -    int test_done_1, test_done_2;
+>> +    u8 test_done_1, test_done_2;
+>>       int cycle_1, cycle_2;
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  .../bindings/sound/qcom,wsa8840.yaml          | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
+> Shouldn't be unsigned too ?
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-> new file mode 100644
-> index 000000000000..a999f787aa4d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-> @@ -0,0 +1,66 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/qcom,wsa8840.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm WSA8840/WSA8845/WSA8845H smart speaker amplifier
-> +
-> +maintainers:
-> +  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> +
-> +description:
-> +  WSA884X is a family of Qualcomm Aqstic smart speaker amplifiers using
-> +  SoundWire digital audio interface.
-> +
-> +allOf:
-> +  - $ref: dai-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: sdw10217020400
+> I'm wondering if it would be better (probably in another patch) to change the data 
+> type of the other variables too, to match their use-case. (maybe it's already the 
+> case, I'm just wondering)
+> 
 
-There is a mistake here - should be version 2, so "sdw20217020400". I
-will send a v2 a bit later.
+In theory, yes, cycle_1 and 2 should be unsigned, but the signedness of this
+variable is getting used in the calibration logic later, as in the for loop
+they are both being reinitialized to -1 ... so I couldn't just switch 'em to
+unsigned.
 
-Best regards,
-Krzysztof
+>>       int mtkaif_chosen_phase[MT8188_MTKAIF_MISO_NUM];
+>>       int mtkaif_phase_cycle[MT8188_MTKAIF_MISO_NUM];
+>>       int mtkaif_calibration_num_phase;
+>>       bool mtkaif_calibration_ok;
+>> -    unsigned int monitor = 0;
+>> +    u32 monitor = 0;
+>>       int counter;
+>>       int phase;
+>>       int i;
+>> @@ -303,8 +310,7 @@ static int mt8188_mt6359_mtkaif_calibration(struct 
+>> snd_soc_pcm_runtime *rtd)
+>>       mt6359_mtkaif_calibration_enable(cmpnt_codec);
+>>       /* set test type to synchronizer pulse */
+>> -    regmap_update_bits(afe_priv->topckgen,
+>> -               CKSYS_AUD_TOP_CFG, 0xffff, 0x4);
+>> +    regmap_write(afe_priv->topckgen, CKSYS_AUD_TOP_CFG, RG_TEST_TYPE);
+>>       mtkaif_calibration_num_phase = 42;    /* mt6359: 0 ~ 42 */
+>>       mtkaif_calibration_ok = true;
+>> @@ -314,7 +320,7 @@ static int mt8188_mt6359_mtkaif_calibration(struct 
+>> snd_soc_pcm_runtime *rtd)
+>>           mt6359_set_mtkaif_calibration_phase(cmpnt_codec,
+>>                               phase, phase, phase);
+>> -        regmap_set_bits(afe_priv->topckgen, CKSYS_AUD_TOP_CFG, 0x1);
+>> +        regmap_set_bits(afe_priv->topckgen, CKSYS_AUD_TOP_CFG, RG_TEST_ON);
+>>           test_done_1 = 0;
+>>           test_done_2 = 0;
+>> @@ -326,14 +332,14 @@ static int mt8188_mt6359_mtkaif_calibration(struct 
+>> snd_soc_pcm_runtime *rtd)
+>>           while (!(test_done_1 & test_done_2)) {
+>>               regmap_read(afe_priv->topckgen,
+>>                       CKSYS_AUD_TOP_MON, &monitor);
+>> -            test_done_1 = (monitor >> 28) & 0x1;
+>> -            test_done_2 = (monitor >> 29) & 0x1;
+>> +            test_done_1 = FIELD_GET(TEST_MISO_DONE_1, monitor);
+>> +            test_done_2 = FIELD_GET(TEST_MISO_DONE_2, monitor);
+>>               if (test_done_1 == 1)
+>> -                cycle_1 = monitor & 0xf;
+>> +                cycle_1 = FIELD_GET(TEST_MISO_COUNT_1, monitor);
+>>               if (test_done_2 == 1)
+>> -                cycle_2 = (monitor >> 4) & 0xf;
+>> +                cycle_2 = FIELD_GET(TEST_MISO_COUNT_2, monitor);
+>>               /* handle if never test done */
+>>               if (++counter > 10000) {
+>> @@ -361,7 +367,7 @@ static int mt8188_mt6359_mtkaif_calibration(struct 
+>> snd_soc_pcm_runtime *rtd)
+>>               mtkaif_phase_cycle[MT8188_MTKAIF_MISO_1] = prev_cycle_2;
+>>           }
+>> -        regmap_clear_bits(afe_priv->topckgen, CKSYS_AUD_TOP_CFG, 0x1);
+>> +        regmap_clear_bits(afe_priv->topckgen, CKSYS_AUD_TOP_CFG, RG_TEST_ON);
+>>           if (mtkaif_chosen_phase[MT8188_MTKAIF_MISO_0] >= 0 &&
+>>               mtkaif_chosen_phase[MT8188_MTKAIF_MISO_1] >= 0)
+> 
+> After that:
+> 
+> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+> 
 
