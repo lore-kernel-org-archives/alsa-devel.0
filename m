@@ -4,106 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E678C7EE25
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 08:17:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A716C7EE29
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 08:49:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AF2E820;
-	Thu,  8 Jun 2023 10:16:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AF2E820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3440F823;
+	Thu,  8 Jun 2023 10:48:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3440F823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686212240;
-	bh=pfvepxRd3f5BN6Nnf5WW+7KlUBf6JtFCO8LN8xlt4zU=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=exAYYlzExEMlEpb/qRLt1Cdx6ITM8SgoKMSqMBaUwOyicHy7uz6wUdmNKeOqshWu+
-	 jsGA32H3EJBF4jGuzcmWA29af4PhpZtT+u+hGiuRMfx3O6J0sYyaodv3sm4LbxddWQ
-	 NXTei75gEa6N78MRzBjStNgEmitLHXswobUA3YHU=
+	s=default; t=1686214156;
+	bh=GnnvLVruG/Y33qFCquYPrGvofADRKh+faHOxi3VmkPI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=BUyASgwPLneqdfSWVt2hYIP5l+b16iE3/FVXi5exPbYYvnZI/4oEOijADja9sF2eU
+	 EwZvXKOPcPVjECEaKljUqwS03EKDTi7DJO4AgA9EmFEtd8er6ohJDqGLSdirXoZQ2H
+	 KuGQZ39P4RQkr0TIu6JwFTAV37u8rdcnEpQYPBeg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6737FF80199; Thu,  8 Jun 2023 10:16:02 +0200 (CEST)
+	id 15D67F80548; Thu,  8 Jun 2023 10:47:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04D49F80199;
-	Thu,  8 Jun 2023 10:16:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B40BF80199;
+	Thu,  8 Jun 2023 10:47:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ACC2CF80199; Thu,  8 Jun 2023 10:15:58 +0200 (CEST)
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 0B65CF80254; Thu,  8 Jun 2023 10:47:51 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BA248F80130
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 10:15:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA248F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9F524F80130
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 10:47:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F524F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=tq-group.com header.i=@tq-group.com header.a=rsa-sha256
- header.s=key1 header.b=Ih4f8EIH;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com
- header.a=rsa-sha256 header.s=key1 header.b=FRdLuFo2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1686212153; x=1717748153;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=47TWQkV5kWTX8iyB2NH/f3PVGU4VqhK3gIY7B4/vtaQ=;
-  b=Ih4f8EIHEUW/0o18UX/yNpMcyjd218AvwtcfjNRUO2U2XXBB6PgO9mnn
-   YdFxePuxxUKB/F4nBr3pRqjncXQ4+IfEOicJk1CM79BG/NYUxuz5k/kN0
-   2fMYThmAH6zXBCp5Ee02S5BiNIDAk5Vhjd2DZ+s0Gb0YIvO8HJC7MTgXD
-   GpIhjpgBHnhS/Xx/QwXoFWGra+Ce7+urjcGaCRh6YcFY8jYnelS0tbjZz
-   pKvwhPYZ93/pWNbZNHjUxTHT1ztyG270gLFnxsQFF+6Xa/rITkfXBKjR9
-   rerwQF8DUYW8WV59oT83QpGrK2kf6P55pWD/nWhmRXhNNkeENVa4Utpu3
-   A==;
-X-IronPort-AV: E=Sophos;i="6.00,226,1681164000";
-   d="scan'208";a="31343660"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 08 Jun 2023 10:15:51 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 08 Jun 2023 10:15:51 +0200
-X-PGP-Universal: processed;
-	by tq-pgp-pr1.tq-net.de on Thu, 08 Jun 2023 10:15:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1686212151; x=1717748151;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=47TWQkV5kWTX8iyB2NH/f3PVGU4VqhK3gIY7B4/vtaQ=;
-  b=FRdLuFo2eolIUKw25xwA5KFMI1xKAQk3KFiFnKBWBDeIcJ5DoV8QT8b+
-   xsIiHeg5XPU6/OHnA0wjkL9Sw4v3teyXDE3UZcJGUNgngxNK8KYzhBDgI
-   fhY+IytdG7d2jFufzZtIgSfq16lPYbKNW2p5G2SrglS6WFYP6IwR/M1xt
-   ty3lyC0nerM3jT4e+Gf07Ly/sQvADQmBRCzVGFSHBq1HyQvRo3kQL8noI
-   XWYoZxYZhfV2GtVJXg3DBkpPOXjdXBEqpvO06cRP6pnDybSYKeHPvOcp9
-   zRoDIRPa4QQkrINiFglFJW/l6hGuNkiGn5ZhqVNE0vJqvUi9fxBRGAMOh
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.00,226,1681164000";
-   d="scan'208";a="31343659"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 08 Jun 2023 10:15:51 +0200
-Received: from steina-w.tq-net.de (unknown [10.123.53.21])
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=K3FR3YDR
+Received: from IcarusMOD.eternityproject.eu (unknown
+ [IPv6:2001:b07:2ed:14ed:a962:cd4d:a84:1eab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 4627C280087;
-	Thu,  8 Jun 2023 10:15:51 +0200 (CEST)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	(Authenticated sender: kholk11)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 9D7766606F19;
+	Thu,  8 Jun 2023 09:47:39 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1686214060;
+	bh=GnnvLVruG/Y33qFCquYPrGvofADRKh+faHOxi3VmkPI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=K3FR3YDRoNDC3LYRTZPIk5Rn0nu9jgsm8EPFVdYkLRCBkIRuQVlLT9BdgMshZzk9D
+	 2S8qEh6Y/Wl0WGnCL51l/+Vl0bg1d64uivRaGNfXfpmFY+OqFtYV9hfUg+XJiZ7xVV
+	 LQt1KyKn/DLUA9gRc5j+Rv5OXwIfmUftXMLZxkRYnBzWvZXFxB5Ek1BwzJhHhtJK66
+	 OwOpZYksqB7grpu1ZNzENrQNmTDGNrgs7Q9mbyVQFalxRnPhlhYuGGUpGmAI9xn10J
+	 gYb9Q42zm03N+gmDaJyOJjPOkFBF/BDgUdnD77G1mc/3nPXa5pv4guep0tu3gjgzfg
+	 ZGZ/uzDnU0zcA==
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	trevor.wu@mediatek.com,
+	amergnat@baylibre.com,
+	dan.carpenter@linaro.org,
 	alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH 1/1] ASoC: dt-bindings: tlv320aic32x4: convert to DT schema
- format
-Date: Thu,  8 Jun 2023 10:15:47 +0200
-Message-Id: <20230608081547.442763-1-alexander.stein@ew.tq-group.com>
-X-Mailer: git-send-email 2.34.1
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	kernel@collabora.com
+Subject: [PATCH 4/5] ASoC: mediatek: mt8188-mt6359: Clean up log levels
+Date: Thu,  8 Jun 2023 10:47:26 +0200
+Message-Id: <20230608084727.74403-5-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230608084727.74403-1-angelogioacchino.delregno@collabora.com>
+References: <20230608084727.74403-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: THVGCSISOFNNAZDBDAEZKRTXGZOUYZJT
-X-Message-ID-Hash: THVGCSISOFNNAZDBDAEZKRTXGZOUYZJT
-X-MailFrom: alexander.stein@ew.tq-group.com
+Message-ID-Hash: XYXNE26E6DJ6LTI2SVXDWE7OTKHDV4SN
+X-Message-ID-Hash: XYXNE26E6DJ6LTI2SVXDWE7OTKHDV4SN
+X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -115,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/THVGCSISOFNNAZDBDAEZKRTXGZOUYZJT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XYXNE26E6DJ6LTI2SVXDWE7OTKHDV4SN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,181 +105,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert the binding to DT schema format.
-Since commit 514b044cba667 ("ASoC: tlv320aic32x4: Model PLL in CCF")
-clocks & clock-names = "mclk" is mandatory, it has been added to required
-properties as well. '#sound-dai-cells' is added for reference from
-simple-audio-card.
+Change some dev_info prints to dev_err() and some to dev_dbg(),
+depending on the actual severity of them.
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
-There is no in-tree user for aic32x4-gpio-func, so I just converted the
-bindings to YAML and skipped introducing a dt-binding header for
-defining the constants.
+ sound/soc/mediatek/mt8188/mt8188-mt6359.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
- .../bindings/sound/tlv320aic32x4.txt          |  42 -------
- .../bindings/sound/tlv320aic32x4.yaml         | 103 ++++++++++++++++++
- 2 files changed, 103 insertions(+), 42 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
- create mode 100644 Documentation/devicetree/bindings/sound/tlv320aic32x4.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-deleted file mode 100644
-index 0b4e21bde5bc1..0000000000000
---- a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
-+++ /dev/null
-@@ -1,42 +0,0 @@
--Texas Instruments - tlv320aic32x4 Codec module
--
--The tlv320aic32x4 serial control bus communicates through I2C protocols
--
--Required properties:
-- - compatible - "string" - One of:
--	"ti,tlv320aic32x4" TLV320AIC3204
--	"ti,tlv320aic32x6" TLV320AIC3206, TLV320AIC3256
--	"ti,tas2505" TAS2505, TAS2521
-- - reg: I2C slave address
-- - *-supply: Required supply regulators are:
--    "iov" - digital IO power supply
--    "ldoin" - LDO power supply
--    "dv" - Digital core power supply
--    "av" - Analog core power supply
--    If you supply ldoin, dv and av are optional. Otherwise they are required
--   See regulator/regulator.txt for more information about the detailed binding
--   format.
--
--Optional properties:
-- - reset-gpios: Reset-GPIO phandle with args as described in gpio/gpio.txt
-- - clocks/clock-names: Clock named 'mclk' for the master clock of the codec.
--   See clock/clock-bindings.txt for information about the detailed format.
-- - aic32x4-gpio-func - <array of 5 int>
--	- Types are defined in include/sound/tlv320aic32x4.h
--
--
--Example:
--
--codec: tlv320aic32x4@18 {
--	compatible = "ti,tlv320aic32x4";
--	reg = <0x18>;
--	clocks = <&clks 201>;
--	clock-names = "mclk";
--	aic32x4-gpio-func= <
--			0xff /* AIC32X4_MFPX_DEFAULT_VALUE */
--			0xff /* AIC32X4_MFPX_DEFAULT_VALUE */
--			0x04 /* MFP3 AIC32X4_MFP3_GPIO_ENABLED */
--			0xff /* AIC32X4_MFPX_DEFAULT_VALUE */
--			0x08 /* MFP5 AIC32X4_MFP5_GPIO_INPUT */
--		>;
--};
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.yaml b/Documentation/devicetree/bindings/sound/tlv320aic32x4.yaml
-new file mode 100644
-index 0000000000000..ebf84cdcb68d5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.yaml
-@@ -0,0 +1,103 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2019 Texas Instruments Incorporated
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/tlv320aic32x4.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments TLV320AIC32x4 Stereo Audio codec
-+
-+maintainers:
-+  - Alexander Stein <alexander.stein@ew.tq-group.com>
-+
-+description: |
-+  The TLV320AIC32x4 audio codec can be accessed using I2C or SPI
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,tas2505
-+      - ti,tlv320aic32x4
-+      - ti,tlv320aic32x6
-+
-+  reg:
-+    description: |
-+      I2C address or SPI chip select of the device
-+
-+  clocks:
-+    items:
-+      - description: Master clock
-+
-+  clock-names:
-+    items:
-+      - const: mclk
-+
-+  av-supply:
-+    description: Analog core power supply
-+
-+  dv-supply:
-+    description: Digital core power supply
-+
-+  iov-supply:
-+    description: Digital IO power supply
-+
-+  ldoin-supply:
-+    description: LDO power supply
-+
-+  reset-gpios:
-+    maxItems: 1
-+    description: |
-+      GPIO used for hardware reset
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+  aic32x4-gpio-func:
-+    description: |
-+       GPIO function configuration for pins MFP1-MFP5.
-+       Types are defined in include/sound/tlv320aic32x4.h
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    minItems: 5
-+    maxItems: 5
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - iov-supply
-+
-+additionalProperties: false
-+
-+allOf:
-+  - if:
-+      not:
-+        required:
-+          - ldoin-supply
-+    then:
-+      required:
-+        - av-supply
-+        - dv-supply
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      codec: tlv320aic32x4@18 {
-+        compatible = "ti,tlv320aic32x4";
-+        reg = <0x18>;
-+        iov-supply = <&reg_3v3>;
-+        ldoin-supply = <&reg_3v3>;
-+        clocks = <&clks 201>;
-+        clock-names = "mclk";
-+        aic32x4-gpio-func= <
-+          0xff /* AIC32X4_MFPX_DEFAULT_VALUE */
-+          0xff /* AIC32X4_MFPX_DEFAULT_VALUE */
-+          0x04 /* MFP3 AIC32X4_MFP3_GPIO_ENABLED */
-+          0xff /* AIC32X4_MFPX_DEFAULT_VALUE */
-+          0x08 /* MFP5 AIC32X4_MFP5_GPIO_INPUT */
-+        >;
-+      };
-+    };
+diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+index 260cace408b9..5b2660139421 100644
+--- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
++++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+@@ -337,9 +337,8 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
+ 
+ 			/* handle if never test done */
+ 			if (++counter > 10000) {
+-				dev_info(afe->dev, "%s(), test fail, cycle_1 %d, cycle_2 %d, monitor 0x%x\n",
+-					 __func__,
+-					 cycle_1, cycle_2, monitor);
++				dev_err(afe->dev, "%s(), test fail, cycle_1 %d, cycle_2 %d, monitor 0x%x\n",
++					__func__, cycle_1, cycle_2, monitor);
+ 				mtkaif_calibration_ok = false;
+ 				break;
+ 			}
+@@ -398,8 +397,8 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
+ 	for (i = 0; i < MT8188_MTKAIF_MISO_NUM; i++)
+ 		param->mtkaif_phase_cycle[i] = mtkaif_phase_cycle[i];
+ 
+-	dev_info(afe->dev, "%s(), end, calibration ok %d\n",
+-		 __func__, param->mtkaif_calibration_ok);
++	dev_dbg(afe->dev, "%s(), end, calibration ok %d\n",
++		__func__, param->mtkaif_calibration_ok);
+ 
+ 	return 0;
+ }
+@@ -486,14 +485,14 @@ static int mt8188_hdmi_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 					 mt8188_hdmi_jack_pins,
+ 					 ARRAY_SIZE(mt8188_hdmi_jack_pins));
+ 	if (ret) {
+-		dev_info(rtd->dev, "%s, new jack failed: %d\n", __func__, ret);
++		dev_err(rtd->dev, "%s, new jack failed: %d\n", __func__, ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = snd_soc_component_set_jack(component, &priv->hdmi_jack, NULL);
+ 	if (ret) {
+-		dev_info(rtd->dev, "%s, set jack failed on %s (ret=%d)\n",
+-			 __func__, component->name, ret);
++		dev_err(rtd->dev, "%s, set jack failed on %s (ret=%d)\n",
++			__func__, component->name, ret);
+ 		return ret;
+ 	}
+ 
+@@ -510,14 +509,14 @@ static int mt8188_dptx_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 					 &priv->dp_jack, mt8188_dp_jack_pins,
+ 					 ARRAY_SIZE(mt8188_dp_jack_pins));
+ 	if (ret) {
+-		dev_info(rtd->dev, "%s, new jack failed: %d\n", __func__, ret);
++		dev_err(rtd->dev, "%s, new jack failed: %d\n", __func__, ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = snd_soc_component_set_jack(component, &priv->dp_jack, NULL);
+ 	if (ret) {
+-		dev_info(rtd->dev, "%s, set jack failed on %s (ret=%d)\n",
+-			 __func__, component->name, ret);
++		dev_err(rtd->dev, "%s, set jack failed on %s (ret=%d)\n",
++			__func__, component->name, ret);
+ 		return ret;
+ 	}
+ 
 -- 
-2.34.1
+2.40.1
 
