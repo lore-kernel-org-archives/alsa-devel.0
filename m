@@ -4,87 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33898C7EE23
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 15:11:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02106C7EE23
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 15:11:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 454CC828;
-	Thu,  8 Jun 2023 17:10:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 454CC828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BFCE1E0;
+	Thu,  8 Jun 2023 17:10:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BFCE1E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686237084;
-	bh=gLEq3vi4ShR5o0t/JrKR4zfOv7ndOd96flRBabiHYaw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1686237091;
+	bh=EePSVTT+XOqP8KK0ENYuYqvWSUC0AoMNrVkgXoocbKg=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GlQgc90A9Bw6qz9w546Upc6Z4mCvbQg6kmuoad/L93u96ttZHuAQHTlbdttvglkAP
-	 fPOxlk39i/2WKtfhtx6NGTJpi9iU40bZiJm0MS7QWTnRCjJuhOmRlXyrxHLIKJutLF
-	 8XxAEmstIAAPcdPLivzyuWAN93AcVaR0MdWXVP2k=
+	b=dcRCOUOueaS9sgJo3cqpMgBmqmOpBxL7Oyuc5F2X85I0p5pjw7ZNzluimduO+3cVY
+	 rk1zRmBnHfXW3nwDWr1EBO7spHaq5csbJa+RFfbUxKVBzfMUxKmvA/dIOjqery2M8B
+	 qNPX+K8HimQzAPk5/DuaPDc2ds6Tr6VPpLp3CtK8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35E82F80553; Thu,  8 Jun 2023 17:09:44 +0200 (CEST)
+	id 6BE23F80564; Thu,  8 Jun 2023 17:09:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83BD0F80155;
-	Thu,  8 Jun 2023 17:09:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02F0BF80563;
+	Thu,  8 Jun 2023 17:09:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A5DA6F80254; Thu,  8 Jun 2023 17:09:40 +0200 (CEST)
+	id 6A19FF80552; Thu,  8 Jun 2023 17:09:44 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81B89F8016C
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 17:09:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81B89F8016C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 42640F80155
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 17:09:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42640F80155
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=RY18g0b3
+ header.s=Intel header.b=R1vnKIP8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686236976; x=1717772976;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=gLEq3vi4ShR5o0t/JrKR4zfOv7ndOd96flRBabiHYaw=;
-  b=RY18g0b3vPYFzjbqGvYtgJNcN/LmJoB7zGs3NcANBK/lQjYam69Wu6f3
-   4r4xsc8h5X40QPpv+/RS6zLw0I9nj/i+dABqpm3sY6xLHe1onS5rMWKMl
-   VKD0GRblh1xSHlcnkHT+pl7tx3I4j68MIURh4m6QIZYHxqDE6QWq7bveR
-   8F3H0Z+w6bMNLbdVk6Yiy1xWJYu+LeEUS0/NC1riH7cYAkNkJr2GXMDVt
-   N21qYcNPt/Jf4AVLjRjAxjCVcqbfZkgBhjGxAYR1qvzWRd9ptnrzn6XFN
-   VluSX+4ydqhff+xKmTIMXICgL9HQMxfw2KICv60RFsPfWqd/P3JnmCEdX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10735"; a="443700530"
+  t=1686236977; x=1717772977;
+  h=message-id:date:mime-version:from:subject:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=EePSVTT+XOqP8KK0ENYuYqvWSUC0AoMNrVkgXoocbKg=;
+  b=R1vnKIP8in7/bRgpIQXuyj+TIP7ZoBp6Qv+rFvOkAvL/b/fXitNt24ma
+   yxcYaxOKiTw76Q/qrCFemZ6GHpJwVzj2c1i0wa0aukKEtKz9IaGS/ORxL
+   a3epWC+nxjps+Zn5HzVRKr+hBXkS62bB+Y3Eb6ddIy/ZPNEYFy8ZuNBIf
+   McP4UU1dKmfLRI/s4l1nxzAyguPxLkn/t31FHH3dSc8bDy9Ajpp4ypMAu
+   h77MDPKcGwBDtgf5ObCNX692Ssy9OVa2at7DU5qos4L4Jk53wunxxqaJt
+   OOXAvMDHY8oBBdaPPCJn5kU3STnhj0Mp3hZsjQ1VsPVMQr8DolGk7Sw4V
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10735"; a="443700552"
 X-IronPort-AV: E=Sophos;i="6.00,227,1681196400";
-   d="scan'208";a="443700530"
+   d="scan'208";a="443700552"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Jun 2023 08:09:30 -0700
+ 08 Jun 2023 08:09:33 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10735"; a="799842560"
+X-IronPort-AV: E=McAfee;i="6600,9927,10735"; a="799842570"
 X-IronPort-AV: E=Sophos;i="6.00,227,1681196400";
-   d="scan'208";a="799842560"
+   d="scan'208";a="799842570"
 Received: from svuppala-mobl.amr.corp.intel.com (HELO [10.212.207.249])
  ([10.212.207.249])
   by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Jun 2023 08:09:29 -0700
-Message-ID: <e07d507e-57bf-a2b7-2ab1-f5f45ff5399b@linux.intel.com>
-Date: Thu, 8 Jun 2023 08:24:00 -0500
+ 08 Jun 2023 08:09:32 -0700
+Message-ID: <6c75e986-29a4-d97c-3862-d20397f8b8b4@linux.intel.com>
+Date: Thu, 8 Jun 2023 10:09:03 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [PATCH 3/4] soundwire: extend parameters of
- new_peripheral_assigned() callback
-Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/4] soundwire: introduce SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY
 To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  bard.liao@intel.com
 References: <20230531033736.792464-1-yung-chuan.liao@linux.intel.com>
- <20230531033736.792464-4-yung-chuan.liao@linux.intel.com>
- <ZIF+G1mbis/lb8Po@matsya>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <ZIF+G1mbis/lb8Po@matsya>
+ <20230531033736.792464-3-yung-chuan.liao@linux.intel.com>
+ <ZIF94vZHzeGXfyin@matsya>
+Content-Language: en-US
+In-Reply-To: <ZIF94vZHzeGXfyin@matsya>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: NPORFW5Y6TSEO6AAQWWQ5QNTOHCNGO7I
-X-Message-ID-Hash: NPORFW5Y6TSEO6AAQWWQ5QNTOHCNGO7I
+Message-ID-Hash: JXWMS6R73FRVDWEUN5VYAHM74K2SYEBT
+X-Message-ID-Hash: JXWMS6R73FRVDWEUN5VYAHM74K2SYEBT
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NPORFW5Y6TSEO6AAQWWQ5QNTOHCNGO7I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JXWMS6R73FRVDWEUN5VYAHM74K2SYEBT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,26 +106,133 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
->> -static void generic_new_peripheral_assigned(struct sdw_bus *bus, int dev_num)
->> +static void generic_new_peripheral_assigned(struct sdw_bus *bus,
->> +					    struct sdw_slave *slave,
->> +					    int dev_num)
+
+On 6/8/23 02:06, Vinod Koul wrote:
+> On 31-05-23, 11:37, Bard Liao wrote:
+>> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>
+>> This patch adds a new Device Number allocation strategy, with the IDA
+>> used only for devices that are wake-capable.
+>>
+>> "regular" devices such as amplifiers will use Device Numbers
+>> [1..min_ida-1].
+>>
+>> "wake-capable" devices such as jack or microphone codecs will use
+>> Device Numbers [min_ida..11].
+>>
+>> This hybrid strategy extends the number of supported devices in a
+>> system by only constraining the allocation if required, e.g. in the
+>> case of Intel LunarLake platforms the wake-capable devices are
+>> required to have a unique address to use the HDaudio SDI and HDAudio
+>> WAKEEN/WAKESTS registers.
+> 
+> This seems to be a consequence of Intel hardware decisions, so I guess
+> best suited place for this is Intel controller, do we really want to
+> have this in core logic?
+
+It's a valid objection.
+
+The reason why I added the alternate strategies in the core logic is
+that the IDA and hybrid approach are just software-based with no
+specific hardware dependencies. If QCOM or AMD wanted to use the
+strategies contributed and tested by Intel, it'd be a two-line change on
+their side.
+
+That said, it's likely that at some point *someone* will want to
+constrain the device number allocation further, be it with ACPI/DT
+properties or reading hardware registers. The device number is a
+de-facto priority given the way we scan the PING frames, so some systems
+may want to give a higher priority to a specific peripherals.
+
+This would push us to add a master ops callback to control the device
+number allocation. It's a bit invasive but that would give the ultimate
+flexibility. Reuse between vendors could be possible if 'generic'
+callbacks were part of a library to pick from.
+
+I don't really have any objections if this vendor-specific callback was
+preferred, it may be a bit early to add this but long-term it's probably
+what makes more sense.
+
+I'll go with the flow on suggested recommendations.
+
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> Reviewed-by: Rander Wang <rander.wang@intel.com>
+>> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>> ---
+>>  drivers/soundwire/bus.c       | 26 +++++++++++++++++++++-----
+>>  include/linux/soundwire/sdw.h |  4 ++++
+>>  2 files changed, 25 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+>> index e8c1c55a2a73..6f465cce8369 100644
+>> --- a/drivers/soundwire/bus.c
+>> +++ b/drivers/soundwire/bus.c
+>> @@ -159,7 +159,9 @@ static int sdw_delete_slave(struct device *dev, void *data)
+>>  
+>>  	if (slave->dev_num) { /* clear dev_num if assigned */
+>>  		clear_bit(slave->dev_num, bus->assigned);
+>> -		if (bus->dev_num_alloc == SDW_DEV_NUM_ALLOC_IDA)
+>> +		if (bus->dev_num_alloc == SDW_DEV_NUM_ALLOC_IDA ||
+>> +		    (bus->dev_num_alloc == SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY &&
+>> +		     slave->prop.wake_capable))
+>>  			ida_free(&sdw_peripheral_ida, slave->dev_num);
+>>  	}
+>>  	list_del_init(&slave->node);
+>> @@ -699,17 +701,31 @@ EXPORT_SYMBOL(sdw_compare_devid);
+>>  /* called with bus_lock held */
+>>  static int sdw_get_device_num(struct sdw_slave *slave)
 >>  {
->>  	struct sdw_cdns *cdns = bus_to_cdns(bus);
->>  	struct sdw_intel *sdw = cdns_to_intel(cdns);
+>> +	struct sdw_bus *bus = slave->bus;
+>>  	int bit;
+>>  
+>> -	if (slave->bus->dev_num_alloc == SDW_DEV_NUM_ALLOC_IDA) {
+>> +	if (bus->dev_num_alloc == SDW_DEV_NUM_ALLOC_IDA ||
+>> +	    (bus->dev_num_alloc == SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY &&
+>> +	     slave->prop.wake_capable)) {
+>>  		bit = ida_alloc_range(&sdw_peripheral_ida,
+>> -				      slave->bus->dev_num_ida_min, SDW_MAX_DEVICES,
+>> +				      bus->dev_num_ida_min, SDW_MAX_DEVICES,
+>>  				      GFP_KERNEL);
+>>  		if (bit < 0)
+>>  			goto err;
+>>  	} else {
+>> -		bit = find_first_zero_bit(slave->bus->assigned, SDW_MAX_DEVICES);
+>> -		if (bit == SDW_MAX_DEVICES) {
+>> +		int max_devices = SDW_MAX_DEVICES;
+>> +
+>> +		if (bus->dev_num_alloc == SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY &&
+>> +		    !slave->prop.wake_capable) {
+>> +			max_devices = bus->dev_num_ida_min - 1;
+>> +
+>> +			/* range check */
+>> +			if (max_devices < 1 || max_devices > SDW_MAX_DEVICES)
+>> +				return -EINVAL;
+>> +		}
+>> +
+>> +		bit = find_first_zero_bit(bus->assigned, max_devices);
+>> +		if (bit == max_devices) {
+>>  			bit = -ENODEV;
+>>  			goto err;
+>>  		}
 >> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
->> index 8a7541ac735e..41a856bedf1e 100644
+>> index 4656d6d0f3bb..8a7541ac735e 100644
 >> --- a/include/linux/soundwire/sdw.h
 >> +++ b/include/linux/soundwire/sdw.h
->> @@ -861,7 +861,9 @@ struct sdw_master_ops {
->>  	int (*pre_bank_switch)(struct sdw_bus *bus);
->>  	int (*post_bank_switch)(struct sdw_bus *bus);
->>  	u32 (*read_ping_status)(struct sdw_bus *bus);
->> -	void (*new_peripheral_assigned)(struct sdw_bus *bus, int dev_num);
->> +	void (*new_peripheral_assigned)(struct sdw_bus *bus,
->> +					struct sdw_slave *slave,
+>> @@ -869,10 +869,14 @@ struct sdw_master_ops {
+>>   * @SDW_DEV_NUM_ALLOC_DEFAULT: unconstrained first-come-first-serve allocation,
+>>   * using range [1, 11]
+>>   * @SDW_DEV_NUM_ALLOC_IDA: IDA-based allocation, using range [ida_min, 11]
+>> + * @SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY: Hybrid allocation where wake-capable devices rely on
+>> + * IDA-based allocation and range [ida_min, 11], while regular devices rely on default
+>> + * allocation in range [1, ida_min - 1]
+>>   */
+>>  enum sdw_dev_num_alloc {
+>>  	SDW_DEV_NUM_ALLOC_DEFAULT = 0,
+>>  	SDW_DEV_NUM_ALLOC_IDA,
+>> +	SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY,
+>>  };
+>>  
+>>  /**
+>> -- 
+>> 2.25.1
 > 
-> maybe better, drop the bus and pass slave (which contains bus)
-
-I kept it for consistency, all callbacks for sdw_master_ops start with
-the bus parameter.
