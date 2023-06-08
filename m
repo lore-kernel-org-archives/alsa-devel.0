@@ -4,123 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5262EC7EE29
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 214FDC7EE2E
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:52:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1560FA4B;
-	Fri,  9 Jun 2023 16:51:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1560FA4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BFA9DEE;
+	Fri,  9 Jun 2023 16:51:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BFA9DEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686322352;
-	bh=lHn97RWkSBDgcIRxA2jfnsNCE/0l9/MxzCnsnieZfRM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1686322356;
+	bh=6YGwRwEEjx3lGQFneK0OW37Lfsk0sAclHnKga5gKbeE=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=h/uWsmJOduRrlg0RkyUDn+kXxD7r+/iP5AW1Q4g4F06MnMcZKppHUcrviRfDMks69
-	 MqUOvf02lZBnRCL/I7qNt/9RQJJb5k0qwWppH5RjGg0zmou9A8eOu25KPZb+DMxSPK
-	 xfMmtOqyL+FakiBUxkFe8htMqndGj2T4WEx0oDIs=
+	b=ikBoBrvnnBiu5H0/1rgBNHocGBy99f/E6c1cKtaQwBID6F+G792Jtkq3GqaQ1UN36
+	 dezLgy8VPXs+5mYXrKn+7zNC4CpxgYCde1c4sznivRft/kyb9LVGJlbyWeSntG6XRe
+	 mThsIbbGNq9rr6bJG3b9W5TahLhNoPY/h9EM7m2g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 77A66F8061C; Fri,  9 Jun 2023 16:47:46 +0200 (CEST)
+	id C9725F80634; Fri,  9 Jun 2023 16:47:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98C17F8061F;
-	Fri,  9 Jun 2023 16:47:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23294F80623;
+	Fri,  9 Jun 2023 16:47:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 97670F80199; Thu,  8 Jun 2023 12:01:01 +0200 (CEST)
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
- [IPv6:2a00:1450:4864:20::131])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id BC2A1F80199; Thu,  8 Jun 2023 12:43:23 +0200 (CEST)
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
+ [61.152.239.71])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CDAAFF80130
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 12:00:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDAAFF80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=baylibre-com.20221208.gappssmtp.com
- header.i=@baylibre-com.20221208.gappssmtp.com header.a=rsa-sha256
- header.s=20221208 header.b=4tyzkukr
-Received: by mail-lf1-x131.google.com with SMTP id
- 2adb3069b0e04-4f654d713c0so150835e87.3
-        for <alsa-devel@alsa-project.org>;
- Thu, 08 Jun 2023 03:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1686218455;
- x=1688810455;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bsOWfs49wC5N4v4NWtXmUnjFbzqZWXOVySuGPn3htMg=;
-        b=4tyzkukruKe8ZPA7RPnB00YrCnc3YfBJt40uG0nLFHL/S2MxEM1ID/0mg1wM6qR0Ap
-         O6/bzxhLWfWakDYYZSaELapb2cid4mN9Qnf2sxD64w4Inu9p5V0q7j0Kb3j5FjK6MiEi
-         9rSVcTKSTVnpx2CbhZ1k9pwKoDK+tf+kjFRRemHmgKPM8VlM5XJXahH2nLusHzlp1cL2
-         lJ+1UPZmC9MQjEgSw97kO1BYmj2wLUR5IIp58Ih7u9fTwzaxTuQ6ZQQfqXUg6UNVatUT
-         AKCn8JIS+6M9f9RI39+UNwbBbt1dKCMmz6jGVlDbdIifcAXhzBsnbyl6U4DkjmiB+V+E
-         C6uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686218455; x=1688810455;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bsOWfs49wC5N4v4NWtXmUnjFbzqZWXOVySuGPn3htMg=;
-        b=kVlRGZ/RVRGeBHJyRHEVXZBHsZPZttVC9U0G1NRJil34ckW6I1ob8DWomfJHujZQME
-         CzkcUh2J7DsysNqAV1HweAvBXT7oVt0O8BJrN3O9JeGqvhFpxTvqGlU9jLgXGlklNe5D
-         QilwBFr3Lxdx3n9reASRGAa8dceOq1bMIiCMa3tctslYL+kNCGPZDqldBwa19Qd70Siq
-         BoNebbujRC/hB5wBcr9k6KxVx3bf/3xXhvGA+UzqrjwvyME+q0gsjppNcbF5JMM0U3oP
-         Ah1HbpZ9lm0zEC/2nKjVFi9kwXuNUoseImNmQPWiDUO1vEado1MmNcAFnF1ugPu6eHu2
-         u+eQ==
-X-Gm-Message-State: AC+VfDz3c6h96zHG5ldfoAkt93UwpgFGN+UBLFa5olj0KNrCWrCQ3NE5
-	dNJhD0+te34Xycw9oLyY00EVAQ==
-X-Google-Smtp-Source: 
- ACHHUZ7LlWK64M5lFh/5PM74dhnqSCP79zYgwvl4PUklZhQtn1sfsWVhk/BVkBSv4bhXZyQ+/Lckrg==
-X-Received: by 2002:a19:a40e:0:b0:4f1:4504:2679 with SMTP id
- q14-20020a19a40e000000b004f145042679mr2891573lfc.41.1686218455474;
-        Thu, 08 Jun 2023 03:00:55 -0700 (PDT)
-Received: from [192.168.1.172] (158.22.5.93.rev.sfr.net. [93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id
- p23-20020a1c7417000000b003f60eb72cf5sm4786261wmc.2.2023.06.08.03.00.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jun 2023 03:00:55 -0700 (PDT)
-Message-ID: <f4547bf6-5e95-331b-5d8e-b6d71209859d@baylibre.com>
-Date: Thu, 8 Jun 2023 12:00:53 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id CA49AF800ED
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 12:43:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA49AF800ED
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 2A4EB8284;
+	Thu,  8 Jun 2023 18:43:11 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 8 Jun
+ 2023 18:43:11 +0800
+Received: from [192.168.125.124] (183.27.98.122) by EXMBX168.cuchost.com
+ (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 8 Jun
+ 2023 18:43:10 +0800
+Message-ID: <7db1d08e-8310-8876-4ed8-36d6e53ab8bf@starfivetech.com>
+Date: Thu, 8 Jun 2023 18:43:09 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 5/5] ASoC: mediatek: mt8188-mt6359: Use bitfield macros
- for registers
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH v1] ASoC: starfive: Cleanup and fix error check for JH7110
+ TDM
 Content-Language: en-US
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- broonie@kernel.org
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- matthias.bgg@gmail.com, trevor.wu@mediatek.com, dan.carpenter@linaro.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- kernel@collabora.com
-References: <20230608084727.74403-1-angelogioacchino.delregno@collabora.com>
- <20230608084727.74403-6-angelogioacchino.delregno@collabora.com>
- <8bbbc852-6139-29d4-417c-a2d9c77c192f@baylibre.com>
- <a8b454e3-dded-02d6-b97a-6a7aa3420cf1@collabora.com>
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <a8b454e3-dded-02d6-b97a-6a7aa3420cf1@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-MailFrom: amergnat@baylibre.com
+To: Mark Brown <broonie@kernel.org>
+CC: Claudiu Beznea <Claudiu.Beznea@microchip.com>, Dan Carpenter
+	<dan.carpenter@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai
+	<tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+	<alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+References: <20230607081439.1517-1-walker.chen@starfivetech.com>
+ <3eb7ffc5-a16a-4ac2-93a0-260f7cb1f81c@sirena.org.uk>
+ <d941ac20-e8b3-cb13-4258-3a9a86e978d3@starfivetech.com>
+ <fbbc0963-fba5-4178-b886-fbb35c0c8df2@sirena.org.uk>
+From: Walker Chen <walker.chen@starfivetech.com>
+In-Reply-To: <fbbc0963-fba5-4178-b886-fbb35c0c8df2@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [183.27.98.122]
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+X-MailFrom: walker.chen@starfivetech.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: WCDX4T7OX3WLBNXZWRENIA3GGOZUROIO
-X-Message-ID-Hash: WCDX4T7OX3WLBNXZWRENIA3GGOZUROIO
-X-Mailman-Approved-At: Fri, 09 Jun 2023 14:47:10 +0000
+Message-ID-Hash: K5RKCYDNGFND6NOAOUX2DPE4Q4XXBAMY
+X-Message-ID-Hash: K5RKCYDNGFND6NOAOUX2DPE4Q4XXBAMY
+X-Mailman-Approved-At: Fri, 09 Jun 2023 14:47:11 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WCDX4T7OX3WLBNXZWRENIA3GGOZUROIO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K5RKCYDNGFND6NOAOUX2DPE4Q4XXBAMY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,28 +94,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 08/06/2023 11:57, AngeloGioacchino Del Regno wrote:
->>> -    int test_done_1, test_done_2;
->>> +    u8 test_done_1, test_done_2;
->>>       int cycle_1, cycle_2;
->>
->> Shouldn't be unsigned too ?
->>
->> I'm wondering if it would be better (probably in another patch) to 
->> change the data type of the other variables too, to match their 
->> use-case. (maybe it's already the case, I'm just wondering)
->>
+
+
+On 2023/6/8 18:15, Mark Brown wrote:
+> On Thu, Jun 08, 2023 at 10:15:03AM +0800, Walker Chen wrote:
+>> On 2023/6/7 19:44, Mark Brown wrote:
 > 
-> In theory, yes, cycle_1 and 2 should be unsigned, but the signedness of 
-> this
-> variable is getting used in the calibration logic later, as in the for loop
-> they are both being reinitialized to -1 ... so I couldn't just switch 
-> 'em to
-> unsigned.
+>> >> -		  (tdm->rx.wl << WL_BIT) |
+>> >> -		  (tdm->rx.sscale << SSCALE_BIT) |
+>> >> -		  (tdm->rx.sl << SL_BIT) |
+>> >> -		  (tdm->rx.lrj << LRJ_BIT);
+>> >> +	datarx = (tdm->rxwl << 8) |
+>> >> +		  (tdm->rxsscale << 4) |
+>> >> +		  (tdm->rxsl << 2) |
+>> >> +		  TDM_PCMRXCR_LEFT_J;
+> 
+>> > I'm not sure this change to use numbers here is a win - the _BIT
+>> > definitions look fine (I might've called them _SHIFT but whatever).
+> 
+>> This is Claudiu's advice. Using the macro BIT() to replace these definition of *_BIT, 
+>> it will result in big changes in the code.
+> 
+> I'm questioning doing a change at all.
+> 
+>> Please refer to previous comments:
+>>  https://lore.kernel.org/all/143e2fa2-e85d-8036-4f74-ca250c026c1b@microchip.com/
+> 
+> I can't find the comments you're referring to in there.
 
-Understood, thanks for your explanation.
+You should see the following comments in the link above:
 
--- 
-Regards,
-Alexandre
+> +       #define CLKPOL_BIT              5
+> +       #define TRITXEN_BIT             4
+> +       #define ELM_BIT                 3
+> +       #define SYNCM_BIT               2
+> +       #define MS_BIT                  1
+
+Instead of these *_BIT defines as plain numbers you can defined them using
+BIT() macro and use macros in place instead of
 
