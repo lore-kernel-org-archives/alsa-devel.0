@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6D64C7EE29
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 08:50:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 576F7C7EE29
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 08:50:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21F15820;
-	Thu,  8 Jun 2023 10:49:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21F15820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88AD06C1;
+	Thu,  8 Jun 2023 10:49:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88AD06C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686214206;
-	bh=v2RbZsJIF8OTePPv81vl/VBbI91A/spCjRghtDBNM7Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=dXPAHBk7Me3WDmg+X2ydd7AbsDaz/0iuG0cqFu6cT1CtEytW66vBqWURmLJH4cL9u
-	 90mLmxWfLqkCy2wqflPWz8pKH5e62fcAy7F7V/11pg9ZpK4VMk9e608YC2PkxBrLN3
-	 cMRGq8u8lMlqax0hvDh6V1wqbERKx/9SIjwRKid8=
+	s=default; t=1686214226;
+	bh=/eSnfxogbScGlNOOjeGiLsCkqg34znU4OI0UheFc0FI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=h5xtqXoObm7jHxiCkFDArte8tDcVehjLmc9h8EE8nQth1s15eS/VxTyLkZQSTnNkT
+	 OrR/rMVGjWGo4pRRZZ6qN5sQUPN9rOxhdq+q7oJVhbG0kzPie5w2l7P46+gugQdx+K
+	 MBA3AHh4NUjiCRlDS3mvkswpfoiTJouqGVez2JTw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34412F805A1; Thu,  8 Jun 2023 10:48:05 +0200 (CEST)
+	id 8B604F805A0; Thu,  8 Jun 2023 10:48:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FEC2F8059F;
-	Thu,  8 Jun 2023 10:48:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8EC7F805A0;
+	Thu,  8 Jun 2023 10:48:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 99FF4F80570; Thu,  8 Jun 2023 10:47:59 +0200 (CEST)
+	id 6DC07F80570; Thu,  8 Jun 2023 10:48:00 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [46.235.227.172])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 57DECF80544
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 10:47:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57DECF80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3050EF80130
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 10:47:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3050EF80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=Gf18HmSx
+ header.a=rsa-sha256 header.s=mail header.b=JZVCfEXa
 Received: from IcarusMOD.eternityproject.eu (unknown
  [IPv6:2001:b07:2ed:14ed:a962:cd4d:a84:1eab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -47,18 +47,18 @@ Received: from IcarusMOD.eternityproject.eu (unknown
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 8072D6606F17;
-	Thu,  8 Jun 2023 09:47:37 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 5548A66058B2;
+	Thu,  8 Jun 2023 09:47:35 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1686214058;
-	bh=v2RbZsJIF8OTePPv81vl/VBbI91A/spCjRghtDBNM7Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Gf18HmSx3F3dEulzyCcItyoErGryylnFIIreRlee5hstTnWvpZqirZdfVHhz8G197
-	 kdkwZRySUDM8IkybCap5MZL0Tw6+iL3ERDCi0TIWFnPUkYszkTBXH09G8kFlBGr/Oh
-	 gnr8RWhiYZtZ48wF1iRKRzcE0wE6JVyiWWbqEBDOPpbT5Rf7+hQJucVaVXJwPKQwni
-	 hfPGvtjB3+QZkV0dTsL6I4bsAXw4kMonXZZbX4BSBPdvrPQBsTPOLE80/QfAPcM5uR
-	 L7vnSMA3Fh4ZH9Vok4qVDmVI2Iv2tIjabo/pBR7gEx5bhxnmPLfl7L6G4Hfxacfdz3
-	 +e+X/z2uFLSWA==
+	s=mail; t=1686214056;
+	bh=/eSnfxogbScGlNOOjeGiLsCkqg34znU4OI0UheFc0FI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=JZVCfEXagXlNeJVB5syTmC2EN4+t98xcDijANVzj/YBw8siGAZ1IY9sHCDYfqBQLQ
+	 onm1CV/QH2vC8VYFasLlfK9UUGYCkDLw7gTsKUNEVP2pa51/q4mTa+1Dajk7UvLU6+
+	 s2TSj6I6LbY8POa1PKywP57ol/mWO3T+YDtypzdjGhMg7ytJmWV5jQfW1yOWYK9ZSf
+	 ABp4ym3RTVWSzre1o8uNiQVxX6rJQ7ctE606ISvTSRvp2BAP+GrFoMmSE87o17qQgS
+	 zUnhtW2umIK1+2ZK7sZa/OEFeUnwcxwgx9414TPXOBoFwkcgXdTWPnQQmUAchmlwuM
+	 JyxuANLoP+Tlg==
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: broonie@kernel.org
 Cc: lgirdwood@gmail.com,
@@ -74,17 +74,14 @@ Cc: lgirdwood@gmail.com,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com
-Subject: [PATCH 2/5] ASoC: mediatek: mt8188-mt6359: clean up a return in
- codec_init
-Date: Thu,  8 Jun 2023 10:47:24 +0200
-Message-Id: <20230608084727.74403-3-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH 0/5] ASoC: mt8188-mt6359: Cleanups
+Date: Thu,  8 Jun 2023 10:47:22 +0200
+Message-Id: <20230608084727.74403-1-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230608084727.74403-1-angelogioacchino.delregno@collabora.com>
-References: <20230608084727.74403-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6SLXC56WHTEAPI5A6CWORSZZSVL544UK
-X-Message-ID-Hash: 6SLXC56WHTEAPI5A6CWORSZZSVL544UK
+Message-ID-Hash: 5Y4ZLBTFQVJOSYQ6IZYYNARYYZBR7HWK
+X-Message-ID-Hash: 5Y4ZLBTFQVJOSYQ6IZYYNARYYZBR7HWK
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6SLXC56WHTEAPI5A6CWORSZZSVL544UK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5Y4ZLBTFQVJOSYQ6IZYYNARYYZBR7HWK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,34 +103,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+This series performs some cleanups to the mt8188-mt6359 driver,
+including usage of bitfield macros, adding definitions of register
+fields and some others for readability and consistency.
 
-This code triggers a Smatch static checker warning and does sort of
-look like an error path.
+AngeloGioacchino Del Regno (4):
+  ASoC: mediatek: mt8188-mt6359: Compress of_device_id entries
+  ASoC: mediatek: mt8188-mt6359: Cleanup return 0 disguised as return
+    ret
+  ASoC: mediatek: mt8188-mt6359: Clean up log levels
+  ASoC: mediatek: mt8188-mt6359: Use bitfield macros for registers
 
-sound/soc/mediatek/mt8188/mt8188-mt6359.c:597 mt8188_max98390_codec_init() warn: missing error code? 'ret'
+Dan Carpenter (1):
+  ASoC: mediatek: mt8188-mt6359: clean up a return in codec_init
 
-However, returning 0 is intentional.  Make that explicit.
+ sound/soc/mediatek/mt8188/mt8188-mt6359.c | 87 ++++++++++++-----------
+ 1 file changed, 45 insertions(+), 42 deletions(-)
 
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- sound/soc/mediatek/mt8188/mt8188-mt6359.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-index 643a7a12a96b..b2735496d140 100644
---- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-+++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-@@ -594,7 +594,7 @@ static int mt8188_max98390_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	}
- 
- 	if (rtd->dai_link->num_codecs <= 2)
--		return ret;
-+		return 0;
- 
- 	/* add widgets/controls/dapm for rear speakers */
- 	ret = snd_soc_dapm_new_controls(&card->dapm, mt8188_rear_spk_widgets,
 -- 
 2.40.1
 
