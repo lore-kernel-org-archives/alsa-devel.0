@@ -4,79 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E300C7EE29
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 15:21:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2195C7EE29
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Jun 2023 16:49:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D08382C;
-	Thu,  8 Jun 2023 17:20:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D08382C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60D6F20C;
+	Thu,  8 Jun 2023 18:48:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60D6F20C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686237664;
-	bh=/A54Gy0vU98edPnbqK2o8zydJ92zi9Oi8moAunyOrJE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1686242967;
+	bh=gNQceAUJmTa6TFvIL+Km87KR8NZEQMd0d9aJCTeM7YU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=h0GQWpvEmJkhyiCqE+G3dwFRBkEi5wyUP4ZEbYCiFX3tYFSbm/sW/PFy5gfl/zeaM
-	 AAHdhPNUrgMqIxjl9PHyjhyeBMGY0msAaq/HTtJFgxbkxuTpGt8aFdovYsFcigdKNU
-	 xn/kLOh1h/sgcKwNvr+iaHkKLV0TvB2dLOoNQq+g=
+	b=dPSb4xhVv1ZIf1R+FJhvvCML60Oq0OuqZuNw5fAr9tg/rcARUkuqkLaz2mcmIWEyu
+	 O1N72wHGmXxJEOK29679LOKmXkVUkGbKAbkqOh74EnSzmr0bbq5zYuVisPdlZZur8S
+	 ENPiwkMp49UMbKUDee/KitE4jX8OPgD0sOEJmaKs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 55D1DF80564; Thu,  8 Jun 2023 17:19:21 +0200 (CEST)
+	id D30F1F80527; Thu,  8 Jun 2023 18:48:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC976F80563;
-	Thu,  8 Jun 2023 17:19:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44D38F80199;
+	Thu,  8 Jun 2023 18:48:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF52CF80199; Thu,  8 Jun 2023 17:19:12 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id D12F1F80199; Thu,  8 Jun 2023 18:48:30 +0200 (CEST)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
+ [IPv6:2a00:1450:4864:20::431])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9C08AF80155
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 17:18:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C08AF80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id D94BAF800ED
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 18:48:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D94BAF800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Rdrtpfvp
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C6D9F6414A;
-	Thu,  8 Jun 2023 15:18:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D19EC433D2;
-	Thu,  8 Jun 2023 15:18:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686237530;
-	bh=/A54Gy0vU98edPnbqK2o8zydJ92zi9Oi8moAunyOrJE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=RdrtpfvpzdGY8WkZ0yvWsGoaLstSARmD7jyc/8yluqGlgzTEUiib2fkv88fsFTwzt
-	 VI0ugZcV7T46reJCxWdJP49kC98i6KrF1VDSRTrx0a8YXLvXBwYBpHShvV2XcfjwuC
-	 PBtIASy0kct7WqQaV3CBy9zDKSY1CVdiUuNP7ht1SvF597BP95UxTyx71Rht2IrZ1i
-	 xvrSIVjcj191w/VV5jb43kVBKMoj3fBHHc/RRaivw8TN7XrcYhSGWYA32hSIoqSFuM
-	 Qtulm4/YMMgaxMJ61jE5WU8vConoEvRAd4bnIwBPUxbOZizfKzBfwCWVlbTFSTIqcG
-	 TyTU0X4THN/vw==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org
-In-Reply-To: 
- <53f928290f08f50ff43031e17fe1d88443c2c441.1686202022.git.christophe.jaillet@wanadoo.fr>
-References: 
- <53f928290f08f50ff43031e17fe1d88443c2c441.1686202022.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: tegra: Simplify code around clk_get_rate()
- handling
-Message-Id: <168623752796.1002486.3534848547952230494.b4-ty@kernel.org>
-Date: Thu, 08 Jun 2023 16:18:47 +0100
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=ISUlowyJ
+Received: by mail-wr1-x431.google.com with SMTP id
+ ffacd0b85a97d-30adc51b65cso851522f8f.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 08 Jun 2023 09:48:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686242898; x=1688834898;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zQLEV575N+KrNUGlsZrmx4zC48HUkepNutbY0RXCnbk=;
+        b=ISUlowyJjuLK125JQcOXVHEa2QeAgCdOj4C8MAGqYt7vr0t5LECt5PYKZ8XvtYHa/f
+         /jcGG0yITgrSx3ZzeH/RA+yJlQYKG+JF3qEckajkfu/8g5A8UodMP37O2GuDhJfYiC32
+         s+WRvq+3t8uPqJo5C25EYlZGDeY43Xp3xUwb5RdWahvk5iuoBMVEmeSbIHvo5rk4yEa7
+         f/XxcdTbh/6e6Kr6J3r6NBMuuNxx6H1UKOR1oP3FCyTWcGcrEH4c6FWWwrrRNFF5HyFA
+         99PMUVtltuQLEHUzouvdxGezr9nk8JiKbYrQpNE69pfOW7dKa6x17mUFEfuIBTloWhss
+         vy0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686242898; x=1688834898;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zQLEV575N+KrNUGlsZrmx4zC48HUkepNutbY0RXCnbk=;
+        b=BvgthhLyoRJWu+J/TXe5UwCh6maHMLCUdguzJHzPArs22iG4Wlhw4lYHrKHa6lhikF
+         0ER4xFO4B54riGvjF0PfnTV7O78YaK/aqXFF9IjCTmUyEnkRX67czksa4K+7MCa3aVh/
+         eQD4wRM1y3uNsLdqzRHTmiZEKu/O8naB3vHWEqw4BY5LHILNFuaThaIXEHvzHcRMpPuR
+         lWJKMVHXkYiamPp6cnoPiqLN7l8kN3Nx10VQd1lSW/H/+voCFVCNwTb0l3sBEDhZE4e1
+         sDj38TlxBCix9wRAzP90YrQa8SUZZRPuakMtwBckfQsGl6D5XE2AKK04SyCJj6ezyzAq
+         hN2g==
+X-Gm-Message-State: AC+VfDzKf5+2/yGi3pw1C2EpX5qmQM/msYXT56s0VNj/ODH+JlBOgxLh
+	1gbVfT016XLGgyDkkAEkjIw=
+X-Google-Smtp-Source: 
+ ACHHUZ4dJo9Yhk6pVGkaDe0tPdKFCQhHLtZW7L57ZwBBoQ377VxaNTldMtwjWar/LJ3Y+f0Y+1PTPw==
+X-Received: by 2002:adf:ea8c:0:b0:2f9:a798:602f with SMTP id
+ s12-20020adfea8c000000b002f9a798602fmr10422192wrm.48.1686242898149;
+        Thu, 08 Jun 2023 09:48:18 -0700 (PDT)
+Received: from [192.168.2.177] ([207.188.167.132])
+        by smtp.gmail.com with ESMTPSA id
+ q11-20020a056000136b00b002f9e04459desm2023010wrz.109.2023.06.08.09.48.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jun 2023 09:48:16 -0700 (PDT)
+Message-ID: <b7a19bb7-94e9-4837-c1dd-0ca891995efb@gmail.com>
+Date: Thu, 8 Jun 2023 18:48:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH 1/5] ASoC: mediatek: mt8188-mt6359: Compress of_device_id
+ entries
+Content-Language: en-US, ca-ES, es-ES
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ broonie@kernel.org
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ trevor.wu@mediatek.com, amergnat@baylibre.com, dan.carpenter@linaro.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel@collabora.com
+References: <20230608084727.74403-1-angelogioacchino.delregno@collabora.com>
+ <20230608084727.74403-2-angelogioacchino.delregno@collabora.com>
+From: Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20230608084727.74403-2-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: S3ASLKEO6MRBPUUILMQP3N3SW53SBX63
-X-Message-ID-Hash: S3ASLKEO6MRBPUUILMQP3N3SW53SBX63
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: F2M5XNJHMDWD5OEMCC6SZPKIW2NJTZV4
+X-Message-ID-Hash: F2M5XNJHMDWD5OEMCC6SZPKIW2NJTZV4
+X-MailFrom: matthias.bgg@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S3ASLKEO6MRBPUUILMQP3N3SW53SBX63/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F2M5XNJHMDWD5OEMCC6SZPKIW2NJTZV4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,43 +125,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 08 Jun 2023 07:27:22 +0200, Christophe JAILLET wrote:
-> clk_get_rate() returns an unsigned long, so there is no point in storing it
-> in a long, and test for negative values.
+
+
+On 08/06/2023 10:47, AngeloGioacchino Del Regno wrote:
+> Those entries fit in one line: compress them to reduce line count.
+> While at it, also add the sentinel comment to the last entry.
 > 
-> So, turn 'parent_rate' into an unsigned long, simplify the sanity check,
-> the error message and the return value, in case of error (i.e. 0).
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+> ---
+>   sound/soc/mediatek/mt8188/mt8188-mt6359.c | 12 +++---------
+>   1 file changed, 3 insertions(+), 9 deletions(-)
 > 
-> Doing so also turns 'i' and 'valid_rates' into unsigned long, but it is
-> fine and harmless.
-> 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: tegra: Simplify code around clk_get_rate() handling
-      commit: 41a343cd6b7f8d0f70dd90c236086ccf8a84a7de
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+> diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+> index bc4b74970a46..643a7a12a96b 100644
+> --- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+> +++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+> @@ -1117,15 +1117,9 @@ static struct mt8188_card_data mt8188_nau8825_card = {
+>   };
+>   
+>   static const struct of_device_id mt8188_mt6359_dt_match[] = {
+> -	{
+> -		.compatible = "mediatek,mt8188-mt6359-evb",
+> -		.data = &mt8188_evb_card,
+> -	},
+> -	{
+> -		.compatible = "mediatek,mt8188-nau8825",
+> -		.data = &mt8188_nau8825_card,
+> -	},
+> -	{},
+> +	{ .compatible = "mediatek,mt8188-mt6359-evb", .data = &mt8188_evb_card, },
+> +	{ .compatible = "mediatek,mt8188-nau8825", .data = &mt8188_nau8825_card, },
+> +	{ /* sentinel */ },
+>   };
+>   MODULE_DEVICE_TABLE(of, mt8188_mt6359_dt_match);
+>   
