@@ -4,72 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3879C7EE2E
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:53:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB4E4C7EE29
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:53:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C298D84D;
-	Fri,  9 Jun 2023 16:52:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C298D84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAC90100;
+	Fri,  9 Jun 2023 16:52:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAC90100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686322379;
-	bh=neOBnhJPaaPb1ivhRmmnvumdfCbwHGG7NGRGFyq3bQw=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=BiAf+ONq+GcSJHXsEJQrZ52HRPjrRiQ25N8NxYfWDetQy4QmnrwFOqE6o9LA7eA/1
-	 kI/vJR00WiptxSgkw6wMIFXlR8I4hIljTTdmN2GR0ipXXWh7kUxkHr/nwEO5tzHwdg
-	 HyucuGmMX/U5UlAOGCSdA0A7OEUOBRlUt8rrA9KU=
+	s=default; t=1686322395;
+	bh=8EK/bezEW0Lfz6eJbMYMvE+P2WAOQLIaqRC6wJcRjmM=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=c7Ectg6NMUVohzEgHtYynJ8K3Woxy2nzCHcEAfjZoCqi8jVKuu0YIAJASjxdDGYp5
+	 ZAImI8EShdRNrQ8d9ocLmff8bY/crDMPIWY4ZBmx2jdnEDOM37+1KwLHchiHwdB7AR
+	 i++J2wjGM3YJLgX0xMx1PlyGCMDYXapcVwY0rClg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 76DCBF80639; Fri,  9 Jun 2023 16:47:50 +0200 (CEST)
+	id 36DAAF80651; Fri,  9 Jun 2023 16:47:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BADABF80639;
-	Fri,  9 Jun 2023 16:47:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BD73F8064C;
+	Fri,  9 Jun 2023 16:47:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4918F80199; Thu,  8 Jun 2023 14:18:57 +0200 (CEST)
+	id C12C6F80290; Thu,  8 Jun 2023 15:58:16 +0200 (CEST)
 Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
 	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 65856F80155
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 14:18:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65856F80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0918DF80155
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 15:58:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0918DF80155
 Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id ADAD624E21A;
-	Thu,  8 Jun 2023 20:17:03 +0800 (CST)
+	by ex01.ufhost.com (Postfix) with ESMTP id 378BD24E20F;
+	Thu,  8 Jun 2023 21:57:52 +0800 (CST)
 Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
  (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 8 Jun
- 2023 20:17:03 +0800
-Received: from [192.168.125.124] (183.27.98.122) by EXMBX168.cuchost.com
- (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 8 Jun
- 2023 20:17:03 +0800
-Message-ID: <1eab400c-b568-3042-ebb6-e8244dee0149@starfivetech.com>
-Date: Thu, 8 Jun 2023 20:17:02 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH v1] ASoC: starfive: Cleanup and fix error check for JH7110
- TDM
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-CC: Claudiu Beznea <Claudiu.Beznea@microchip.com>, Dan Carpenter
-	<dan.carpenter@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai
-	<tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
-	<alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-References: <20230607081439.1517-1-walker.chen@starfivetech.com>
- <3eb7ffc5-a16a-4ac2-93a0-260f7cb1f81c@sirena.org.uk>
- <d941ac20-e8b3-cb13-4258-3a9a86e978d3@starfivetech.com>
- <fbbc0963-fba5-4178-b886-fbb35c0c8df2@sirena.org.uk>
- <7db1d08e-8310-8876-4ed8-36d6e53ab8bf@starfivetech.com>
- <c974d0c7-b091-4d5c-b73c-1b6584eb823a@sirena.org.uk>
+ 2023 21:57:52 +0800
+Received: from SD-Server.starfivetech.com (183.27.98.122) by
+ EXMBX168.cuchost.com (172.16.6.78) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.42; Thu, 8 Jun 2023 21:57:51 +0800
 From: Walker Chen <walker.chen@starfivetech.com>
-In-Reply-To: <c974d0c7-b091-4d5c-b73c-1b6584eb823a@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+To: Mark Brown <broonie@kernel.org>, Claudiu Beznea
+	<Claudiu.Beznea@microchip.com>, Dan Carpenter <dan.carpenter@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, "Jaroslav
+ Kysela" <perex@perex.cz>, Walker Chen <walker.chen@starfivetech.com>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/2] Fix error check and cleanup for JH7110 TDM
+Date: Thu, 8 Jun 2023 21:57:48 +0800
+Message-ID: <20230608135750.11041-1-walker.chen@starfivetech.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
 X-Originating-IP: [183.27.98.122]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX168.cuchost.com
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX168.cuchost.com
  (172.16.6.78)
 X-YovoleRuleAgent: yovoleflag
 X-MailFrom: walker.chen@starfivetech.com
@@ -78,15 +66,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: OT6LODDXJAYNFF3NVEHWA6V6HWRUL2IR
-X-Message-ID-Hash: OT6LODDXJAYNFF3NVEHWA6V6HWRUL2IR
+Message-ID-Hash: KUPHADL3MMWGBMVE3AHRIWSU5Y36LSNG
+X-Message-ID-Hash: KUPHADL3MMWGBMVE3AHRIWSU5Y36LSNG
 X-Mailman-Approved-At: Fri, 09 Jun 2023 14:47:26 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OT6LODDXJAYNFF3NVEHWA6V6HWRUL2IR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KUPHADL3MMWGBMVE3AHRIWSU5Y36LSNG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,30 +83,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Some minor issues were found during addtional testing and static
+analysis. The first patch fix the error check for the return value of
+devm_reset_control_array_get_exclusive(). The second patch drop some
+unused macros.
 
+Fixes: fd4762b6b5cf ("ASoC: starfive: Add JH7110 TDM driver")
 
-On 2023/6/8 18:50, Mark Brown wrote:
-> On Thu, Jun 08, 2023 at 06:43:09PM +0800, Walker Chen wrote:
->> On 2023/6/8 18:15, Mark Brown wrote:
-> 
->> > I can't find the comments you're referring to in there.
-> 
->> You should see the following comments in the link above:
-> 
->> > +       #define CLKPOL_BIT              5
->> > +       #define TRITXEN_BIT             4
->> > +       #define ELM_BIT                 3
->> > +       #define SYNCM_BIT               2
->> > +       #define MS_BIT                  1
-> 
->> Instead of these *_BIT defines as plain numbers you can defined them using
->> BIT() macro and use macros in place instead of
-> 
-> The usual pattern is to have defines for both the shift and the mask,
-> not just one.
+Changes since v1:
+- Fix an error check in jh7110_tdm_clk_reset_get().
+- Return to use *_BIT to indicate the shift and remove some unused macros.
 
-OK, I see. It's not necessary to make these changes.
-Thanks.
+---
+v1: https://lore.kernel.org/all/20230607081439.1517-1-walker.chen@starfivetech.com/
 
-Best regards,
-Walker
+Walker Chen (2):
+  ASoC: starfive: Fix an error check in jh7110_tdm_clk_reset_get()
+  ASoC: starfive: Remove some unused macros
+
+ sound/soc/starfive/jh7110_tdm.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
+
+-- 
+2.17.1
+
