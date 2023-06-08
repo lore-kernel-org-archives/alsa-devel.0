@@ -4,147 +4,183 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 466B4C7EE2E
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:50:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 213B4C7EE2E
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:50:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC79285D;
-	Fri,  9 Jun 2023 16:49:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC79285D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2A90851;
+	Fri,  9 Jun 2023 16:50:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2A90851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686322239;
-	bh=cRiC6NytWNVTshJVwhZtZl3nrxf90/Yfi1YPRqaX2X4=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1686322250;
+	bh=oPLLXqHh6cDUoQ+4Mo6q6CzulzpLWC1AODhQizquB6c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YKh4phrYfeb2nA8dHC5/W+NkW05qQb7LIIIMp4bc4OA40UY8cXezIamd/FKtfwO1K
-	 GIjPpSz251BT0n6ffc38wgWjsluRKhXpbFILViExQaixGUyRX0VZJr7MgunOpC87vs
-	 Fh1Z/3iGP84Vd5g13LCPiFwyOElC3JpSNCaqLEVs=
+	b=AHkoBWl1EuRSWGllz53Tm7WwJpbta3Hww3kMM7PHrgj/7wbnSQ5T5IGXUfDl8vr23
+	 GyE0TYLl5l6s2fZWEzRa82xgofjJSVxfqFYlU8FOBnLMERdGlMfH7tZgONMSZUb4Y6
+	 nFjKpoPRguAXo1pFQqaNi7oY4hSQysJ6A+oDMwXI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A295F805E5; Fri,  9 Jun 2023 16:47:27 +0200 (CEST)
+	id BC130F805F1; Fri,  9 Jun 2023 16:47:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64D0AF805CB;
-	Fri,  9 Jun 2023 16:47:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A6E8F805EA;
+	Fri,  9 Jun 2023 16:47:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DC9EDF80199; Thu,  8 Jun 2023 04:15:27 +0200 (CEST)
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	id 9F561F80199; Thu,  8 Jun 2023 10:57:57 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1893DF800ED
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 04:15:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1893DF800ED
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id D9BA824E25C;
-	Thu,  8 Jun 2023 10:15:04 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 8 Jun
- 2023 10:15:04 +0800
-Received: from [192.168.125.124] (183.27.98.122) by EXMBX168.cuchost.com
- (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 8 Jun
- 2023 10:15:04 +0800
-Message-ID: <d941ac20-e8b3-cb13-4258-3a9a86e978d3@starfivetech.com>
-Date: Thu, 8 Jun 2023 10:15:03 +0800
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6C221F80130
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 10:57:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C221F80130
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=gra6jAlo
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-3f7f6341bf9so2792195e9.1
+        for <alsa-devel@alsa-project.org>;
+ Thu, 08 Jun 2023 01:57:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1686214673; x=1688806673;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jtme5s3dRQf7Gtdgff/AfDj88pgSYDNPfGdCGVzp2R0=;
+        b=gra6jAlodbU30t5m7gbdPhx1pmD3IYs4W5CF5e7hZz0ughSR54Qmhb0FbJWse1Xlm1
+         XdkDYHT+hlIKFWiiLJznQwhuxbGB9YuXZh4ntt22vuiYvDYkACBpWgER6p6r72F/Rh0H
+         vSqJo1zRg9aIqJRGg10zUQSMhHH4lVZmTeok6WF4OWh8Dn0ls4YORpjvQU30QHQp2hL3
+         dfhtKEIW5f3FTrczaxzXv1CvHEPVLZ/97Z/FZ1tgXON9l+d8tAUWIpv758ut5jfiDuvl
+         1lB3D1lkIuQ/yEhN0TUavj6iR5hTRCPAWRUBn/UTtS0tpLfPXvLV0TLHq+nstox4cO/y
+         wszw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686214673; x=1688806673;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jtme5s3dRQf7Gtdgff/AfDj88pgSYDNPfGdCGVzp2R0=;
+        b=avpS9Jugtxx5HIWuFrQKurzMOv0lK5QxjhsmMKSVKdt93762UFtE/GXghP1eGAuz7r
+         TTvNgGliYJK/zDDTJYSx2rtdI3UVyNs8Zz68Khwjo6/E8S5iPNJ54+8n5Ba+d/4IyG6Y
+         szbMpIlQSnExzrbSq9uW+VnLyDaIGCzRzu84gQg1bWuL1IsnykE+pG7N8WKX6h6E/plF
+         mBrfQSqLFg65pYSu7Jc4meV4lwRiUKnyuYKeaQ0W9D9nvoBLlgP5jUG19cVTxsaysQq3
+         AUMWj38Kr0QruAEHlM6q9fMCMGn+l80RxzDOwaM12th0QSe/yNYticzk/9hEnT34k92a
+         Zoiw==
+X-Gm-Message-State: AC+VfDxVrN9xI8G9Wros47DJjxy4YQJ5U9gV/njzG7vGQeQf3OnqlWB4
+	yyI8XiYvjY4Nfe6+M+rv85d4OA==
+X-Google-Smtp-Source: 
+ ACHHUZ5Oj7KBjt/jU4KYcCWRyKtv4qWOgTZdAtGVt+sxedJk020uqbAfEPNcT/IfNVY3AFUKbwvv7A==
+X-Received: by 2002:a05:600c:364b:b0:3f1:93c2:4df7 with SMTP id
+ y11-20020a05600c364b00b003f193c24df7mr780513wmq.5.1686214672973;
+        Thu, 08 Jun 2023 01:57:52 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id
+ o17-20020a05600c379100b003f4e3ed98ffsm1259957wmr.35.2023.06.08.01.57.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Jun 2023 01:57:50 -0700 (PDT)
+Date: Thu, 8 Jun 2023 11:57:46 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Trevor Wu =?utf-8?B?KOWQs+aWh+iJryk=?= <Trevor.Wu@mediatek.com>
+Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+	"kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"broonie@kernel.org" <broonie@kernel.org>,
+	"tiwai@suse.com" <tiwai@suse.com>,
+	"amergnat@baylibre.com" <amergnat@baylibre.com>,
+	"linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"perex@perex.cz" <perex@perex.cz>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"angelogioacchino.delregno@collabora.com"
+ <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2] SoC: mediatek: mt8188-mt6359: clean up a return in
+ codec_init
+Message-ID: <72aee5eb-792e-40c0-83a5-79618fca30a3@kadam.mountain>
+References: <42f2a995-3545-40bf-82a0-fd9b8abc16ce@moroto.mountain>
+ <a667139fd91f980eca1936aed7c973b750d30858.camel@mediatek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH v1] ASoC: starfive: Cleanup and fix error check for JH7110
- TDM
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-CC: Claudiu Beznea <Claudiu.Beznea@microchip.com>, Dan Carpenter
-	<dan.carpenter@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai
-	<tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
-	<alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-References: <20230607081439.1517-1-walker.chen@starfivetech.com>
- <3eb7ffc5-a16a-4ac2-93a0-260f7cb1f81c@sirena.org.uk>
-From: Walker Chen <walker.chen@starfivetech.com>
-In-Reply-To: <3eb7ffc5-a16a-4ac2-93a0-260f7cb1f81c@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.98.122]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-X-MailFrom: walker.chen@starfivetech.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a667139fd91f980eca1936aed7c973b750d30858.camel@mediatek.com>
+X-MailFrom: dan.carpenter@linaro.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IS236AXUB226HBQO7IYXXF46LAOXYCFY
-X-Message-ID-Hash: IS236AXUB226HBQO7IYXXF46LAOXYCFY
-X-Mailman-Approved-At: Fri, 09 Jun 2023 14:47:07 +0000
+Message-ID-Hash: NSTYMCAQRJ52SH32L5DVJCGBJFND7ZBZ
+X-Message-ID-Hash: NSTYMCAQRJ52SH32L5DVJCGBJFND7ZBZ
+X-Mailman-Approved-At: Fri, 09 Jun 2023 14:47:08 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IS236AXUB226HBQO7IYXXF46LAOXYCFY/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NSTYMCAQRJ52SH32L5DVJCGBJFND7ZBZ/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-On 2023/6/7 19:44, Mark Brown wrote:
-> On Wed, Jun 07, 2023 at 04:14:39PM +0800, Walker Chen wrote:
+On Thu, Jun 08, 2023 at 04:02:07AM +0000, Trevor Wu (吳文良) wrote:
+> On Wed, 2023-06-07 at 17:57 +0300, Dan Carpenter wrote:
+> >  This code triggers a Smatch static checker warning and does sort of
+> > look like an error path.
+> > 
+> > sound/soc/mediatek/mt8188/mt8188-mt6359.c:597
+> > mt8188_max98390_codec_init() warn: missing error code? 'ret'
+> > 
+> > However, returning 0 is intentional.  Make that explicit.
 > 
->> Some minor issues were found during addtional testing and static
->> analysis. The patch fixed these minor issues.
->> 1.Use BIT() macro to indicate configuration for TDM registers.
->> 
->> 2.Fix the check for devm_reset_control_array_get_exclusive return
->> value. The devm_reset_control_array_get_exclusive() function may return
->> NULL if it's an optional request. If optional is intended then NULL
->> should not be treated as an error case, but as a special kind of success
->> case. So here the IS_ERR() is used to check better.
+> Hi Dan,
 > 
-> As covered in submitting-patches.rst please submit one patch per change
-> rather than combining multiple changes into a single patch, it makes
-> things much easier to review and handle.
-Hi Mark,
-
-Thanks for your review.
-OK, I will submit a single patch for each change in the next version.
-
+> There are several similar instances in this file. If using 'return
+> ret;' is not recommended, should we update all of them simultaneously?
 > 
->> -	datarx = (tdm->rx.ifl << IFL_BIT) |
->> -		  (tdm->rx.wl << WL_BIT) |
->> -		  (tdm->rx.sscale << SSCALE_BIT) |
->> -		  (tdm->rx.sl << SL_BIT) |
->> -		  (tdm->rx.lrj << LRJ_BIT);
->> +	datarx = (tdm->rxwl << 8) |
->> +		  (tdm->rxsscale << 4) |
->> +		  (tdm->rxsl << 2) |
->> +		  TDM_PCMRXCR_LEFT_J;
+> For instance, the value of 'ret' at the end of this function should
+> also be zero.
 > 
-> I'm not sure this change to use numbers here is a win - the _BIT
-> definitions look fine (I might've called them _SHIFT but whatever).
 
-This is Claudiu's advice. Using the macro BIT() to replace these definition of *_BIT, 
-it will result in big changes in the code.
-Please refer to previous comments:
- https://lore.kernel.org/all/143e2fa2-e85d-8036-4f74-ca250c026c1b@microchip.com/
+I would prefer that, yes.  "return 0;" is always more clear than
+"return ret;"
 
-@Claudiu What do think about this ?
+I didn't change the "return ret;" at the end of the functions because
+they were obviously intentional.  I'm doing static analysis and I have
+an unpublished check which complains about the return ret at the end
+of the function but I'm not going to publish it because that doesn't
+find bugs and I'm only focused on bugs.
 
-> 
->> -static const struct of_device_id jh7110_tdm_of_match[] = {
->> +static const struct of_device_id jh7110_tdm_match[] = {
->>  	{ .compatible = "starfive,jh7110-tdm", },
->>  	{}
->>  };
->>  
->> -MODULE_DEVICE_TABLE(of, jh7110_tdm_of_match);
->> +MODULE_DEVICE_TABLE(of, jh7110_tdm_match);
-> 
-> This rename wasn't mentioned in the changelog.
-Will be added in the change log.
+When we have code like:
 
-Best regards,
-Walker
+	ret = frob();
+	if (ret)
+		return ret;
+
+	if (x == 1)
+		return ret;
+
+More often than not, that is a bug.  But if it's code like:
+
+	ret = frob();
+	if (ret)
+		return ret;
+
+	frob();
+	frob();
+	frob();
+
+	return ret;
+
+Then that's probably not a bug.
+
+regards,
+dan carpenter
+
