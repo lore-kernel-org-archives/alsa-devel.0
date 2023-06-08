@@ -4,147 +4,147 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF049C7EE2E
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:50:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 466B4C7EE2E
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:50:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65C8D83E;
-	Fri,  9 Jun 2023 16:49:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65C8D83E
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC79285D;
+	Fri,  9 Jun 2023 16:49:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC79285D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686322222;
-	bh=8ka+kmamw9OEG79FDH88JoftVnnR/6Q0Bm6hO/Sy4TY=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=DKXQFdrYiO7AKzKL1WAnfSg69YzH4BkGVvlm+GburLXuCzutTKkZfTuvykSxQuf14
-	 h3/UaK/HYuNoLT/memZjsL2LVUhSip5Smq5ourIw4pca06vM2RHvGGXfbC5pSo1Byl
-	 CmdWYxSq17aWv8JFGZSIoE167FjKYTdfgFAJC268=
+	s=default; t=1686322239;
+	bh=cRiC6NytWNVTshJVwhZtZl3nrxf90/Yfi1YPRqaX2X4=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=YKh4phrYfeb2nA8dHC5/W+NkW05qQb7LIIIMp4bc4OA40UY8cXezIamd/FKtfwO1K
+	 GIjPpSz251BT0n6ffc38wgWjsluRKhXpbFILViExQaixGUyRX0VZJr7MgunOpC87vs
+	 Fh1Z/3iGP84Vd5g13LCPiFwyOElC3JpSNCaqLEVs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F0229F805C9; Fri,  9 Jun 2023 16:47:24 +0200 (CEST)
+	id 7A295F805E5; Fri,  9 Jun 2023 16:47:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B457FF805C9;
-	Fri,  9 Jun 2023 16:47:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64D0AF805CB;
+	Fri,  9 Jun 2023 16:47:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80A8BF80254; Wed,  7 Jun 2023 16:58:01 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id DC9EDF80199; Thu,  8 Jun 2023 04:15:27 +0200 (CEST)
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B1B6BF80130
-	for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2023 16:57:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1B6BF80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=qGqDR9tS
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-3f6042d605dso60997505e9.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 07 Jun 2023 07:57:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686149864; x=1688741864;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=15bcPlwJydkin0B+JJAsu+9McxnbVcGQs6T+4KYVyWQ=;
-        b=qGqDR9tSf/ntbvkpkgaO42huIAJWHmk04412CvhnpxAwQb+CiKuF2lAVZw29BLhpWG
-         wnEIyLfbZ6V/B3sHUTtyet7DHrb3nitMvWBbaZr/H5reMtDydgEwEGviYaeYGS9+xb3u
-         kIXqzZgE/fUMwYd4hwFMmIkC5dye70I+oXc/GMESJ9gC60AhQrvQO9T3suMtQj7N5hBk
-         Al/gAm95BjVudokd3ttDVMayJZuc+XjEdNIJkXQalNv29xxIE7fubija+2srf7PDj/lY
-         +IYE61jg29t+nsXqNc20nwKC7YQziScASypHutUCduar0YEr9hY5dyOeE7tW9C4rKpFm
-         0wgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686149864; x=1688741864;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=15bcPlwJydkin0B+JJAsu+9McxnbVcGQs6T+4KYVyWQ=;
-        b=l+MFoSXwWsHVtjSLWteUO4Slr88pVL9ysNfR5DRexM/reYJDXQPXJ5H5PEtv8ZWuIc
-         hyjFxCzaTV4kXEXR7DU7VVqhcBgo/8kNd+zaClatpIpa0ybCvxk9lIAKbQS9KxDjVEvW
-         TZmaZY5tOmITQ90hd1W6lB/ljfz8rJNJZZ/zedsJvLPOk3mjo/ZHDvCgYN223kcXMYTf
-         00Simu1r91TTJ9ZiK4B7qeAhR0U0Jp4h8K73kYgOpGKeVkMe5nSXq2b1x9BcXMIDSAZC
-         hMmdQdlLiyfiDIjcbm2WIM5T0BcuBuCoH+jIhvzOxom+XCEHHxoVOTOPFR1xJEqK6UGN
-         PJsw==
-X-Gm-Message-State: AC+VfDxAOzhdeBrQy7ebw7thxZ40HQ+2T7KCwtWvZ21cadorMSpxE8rF
-	R781lW8Kk8NG1Zp0tKz2PoYnJA==
-X-Google-Smtp-Source: 
- ACHHUZ4Om8wIr2+W8c2m5xch/rF8WjO/ue+qyFCuYy0t+JsljkFHxXGRUHuKnJgvRrjikjox6oNy/w==
-X-Received: by 2002:a05:600c:ad6:b0:3f7:e629:9f3 with SMTP id
- c22-20020a05600c0ad600b003f7e62909f3mr4734068wmr.16.1686149864352;
-        Wed, 07 Jun 2023 07:57:44 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id
- y6-20020adfd086000000b0030631a599a0sm15633048wrh.24.2023.06.07.07.57.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jun 2023 07:57:42 -0700 (PDT)
-Date: Wed, 7 Jun 2023 17:57:38 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Trevor Wu <trevor.wu@mediatek.com>
-Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Alexandre Mergnat <amergnat@baylibre.com>,
-	alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH v2] SoC: mediatek: mt8188-mt6359: clean up a return in
- codec_init
-Message-ID: <42f2a995-3545-40bf-82a0-fd9b8abc16ce@moroto.mountain>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1893DF800ED
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 04:15:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1893DF800ED
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id D9BA824E25C;
+	Thu,  8 Jun 2023 10:15:04 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 8 Jun
+ 2023 10:15:04 +0800
+Received: from [192.168.125.124] (183.27.98.122) by EXMBX168.cuchost.com
+ (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 8 Jun
+ 2023 10:15:04 +0800
+Message-ID: <d941ac20-e8b3-cb13-4258-3a9a86e978d3@starfivetech.com>
+Date: Thu, 8 Jun 2023 10:15:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-MailFrom: dan.carpenter@linaro.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH v1] ASoC: starfive: Cleanup and fix error check for JH7110
+ TDM
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+CC: Claudiu Beznea <Claudiu.Beznea@microchip.com>, Dan Carpenter
+	<dan.carpenter@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai
+	<tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+	<alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+References: <20230607081439.1517-1-walker.chen@starfivetech.com>
+ <3eb7ffc5-a16a-4ac2-93a0-260f7cb1f81c@sirena.org.uk>
+From: Walker Chen <walker.chen@starfivetech.com>
+In-Reply-To: <3eb7ffc5-a16a-4ac2-93a0-260f7cb1f81c@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [183.27.98.122]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+X-MailFrom: walker.chen@starfivetech.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: EI6IKERKDWYOG5DUJJUBEANLYFLOKU5I
-X-Message-ID-Hash: EI6IKERKDWYOG5DUJJUBEANLYFLOKU5I
-X-Mailman-Approved-At: Fri, 09 Jun 2023 14:46:45 +0000
+Message-ID-Hash: IS236AXUB226HBQO7IYXXF46LAOXYCFY
+X-Message-ID-Hash: IS236AXUB226HBQO7IYXXF46LAOXYCFY
+X-Mailman-Approved-At: Fri, 09 Jun 2023 14:47:07 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EI6IKERKDWYOG5DUJJUBEANLYFLOKU5I/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IS236AXUB226HBQO7IYXXF46LAOXYCFY/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This code triggers a Smatch static checker warning and does sort of
-look like an error path.
 
-sound/soc/mediatek/mt8188/mt8188-mt6359.c:597 mt8188_max98390_codec_init() warn: missing error code? 'ret'
+On 2023/6/7 19:44, Mark Brown wrote:
+> On Wed, Jun 07, 2023 at 04:14:39PM +0800, Walker Chen wrote:
+> 
+>> Some minor issues were found during addtional testing and static
+>> analysis. The patch fixed these minor issues.
+>> 1.Use BIT() macro to indicate configuration for TDM registers.
+>> 
+>> 2.Fix the check for devm_reset_control_array_get_exclusive return
+>> value. The devm_reset_control_array_get_exclusive() function may return
+>> NULL if it's an optional request. If optional is intended then NULL
+>> should not be treated as an error case, but as a special kind of success
+>> case. So here the IS_ERR() is used to check better.
+> 
+> As covered in submitting-patches.rst please submit one patch per change
+> rather than combining multiple changes into a single patch, it makes
+> things much easier to review and handle.
+Hi Mark,
 
-However, returning 0 is intentional.  Make that explicit.
+Thanks for your review.
+OK, I will submit a single patch for each change in the next version.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
-v2: At first I thought this was an error path but it is a not.
+> 
+>> -	datarx = (tdm->rx.ifl << IFL_BIT) |
+>> -		  (tdm->rx.wl << WL_BIT) |
+>> -		  (tdm->rx.sscale << SSCALE_BIT) |
+>> -		  (tdm->rx.sl << SL_BIT) |
+>> -		  (tdm->rx.lrj << LRJ_BIT);
+>> +	datarx = (tdm->rxwl << 8) |
+>> +		  (tdm->rxsscale << 4) |
+>> +		  (tdm->rxsl << 2) |
+>> +		  TDM_PCMRXCR_LEFT_J;
+> 
+> I'm not sure this change to use numbers here is a win - the _BIT
+> definitions look fine (I might've called them _SHIFT but whatever).
 
- sound/soc/mediatek/mt8188/mt8188-mt6359.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is Claudiu's advice. Using the macro BIT() to replace these definition of *_BIT, 
+it will result in big changes in the code.
+Please refer to previous comments:
+ https://lore.kernel.org/all/143e2fa2-e85d-8036-4f74-ca250c026c1b@microchip.com/
 
-diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-index bc4b74970a46..5ad8d2a5bbc4 100644
---- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-+++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-@@ -594,7 +594,7 @@ static int mt8188_max98390_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	}
- 
- 	if (rtd->dai_link->num_codecs <= 2)
--		return ret;
-+		return 0;
- 
- 	/* add widgets/controls/dapm for rear speakers */
- 	ret = snd_soc_dapm_new_controls(&card->dapm, mt8188_rear_spk_widgets,
--- 
-2.39.2
+@Claudiu What do think about this ?
 
+> 
+>> -static const struct of_device_id jh7110_tdm_of_match[] = {
+>> +static const struct of_device_id jh7110_tdm_match[] = {
+>>  	{ .compatible = "starfive,jh7110-tdm", },
+>>  	{}
+>>  };
+>>  
+>> -MODULE_DEVICE_TABLE(of, jh7110_tdm_of_match);
+>> +MODULE_DEVICE_TABLE(of, jh7110_tdm_match);
+> 
+> This rename wasn't mentioned in the changelog.
+Will be added in the change log.
+
+Best regards,
+Walker
