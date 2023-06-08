@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62CDDC7EE2E
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:53:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 490C4C7EE29
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:53:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E631E10;
-	Fri,  9 Jun 2023 16:52:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E631E10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35674E7A;
+	Fri,  9 Jun 2023 16:53:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35674E7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686322405;
-	bh=F64htUb4xomJnUgmv7OEFAWWoGzoGyTQai5dOhd5ivM=;
+	s=default; t=1686322433;
+	bh=tcwN9aHVLp01bCBIiZFwexVGo37BFdeJXQkLrmbqsJg=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=K/ZIKobsaP1Y0iF4JXadA0OzOEhfq9HIS34ijLrH6zUx6DH6chVSOJMkRcrI9sNxE
-	 kl0HuR2er4wBuRgdMmSAdEZMqC8mOW5NImLxVw2eb9I9/+wf3OyrmOyMrru9PXnHYR
-	 Nx6WVylQjGRkR1y9zuHmXMlUKYEXVKkLzgKI1CWY=
+	b=us0V9AHxynpnE6mwKlkDHMwH10NLPNfrgwQ/QDFof6hsa0yW8wgwMkvc/w0pOOTRt
+	 yrPVfCBHaNTbTlZaL4ytsdeqrgu8OoN2uuF9oUb4yDKpb01Or3L2Qz3m7Sv3IwzmEw
+	 7ALFJfCPPSMDw+wVOrL86Bt12AW0qe/7wAIajJic=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 595E6F80673; Fri,  9 Jun 2023 16:47:54 +0200 (CEST)
+	id ED257F80570; Fri,  9 Jun 2023 16:48:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C08BAF8065B;
-	Fri,  9 Jun 2023 16:47:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28049F804DA;
+	Fri,  9 Jun 2023 16:48:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B5BEF80254; Thu,  8 Jun 2023 15:58:20 +0200 (CEST)
+	id 826DAF80199; Thu,  8 Jun 2023 15:58:22 +0200 (CEST)
 Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
  [61.152.239.71])
 	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C07B6F8016C
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 15:58:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C07B6F8016C
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	by alsa1.perex.cz (Postfix) with ESMTPS id 54D94F800ED
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 15:58:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54D94F800ED
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 5F8D6807B;
-	Thu,  8 Jun 2023 21:57:53 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 8 Jun
- 2023 21:57:53 +0800
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id C9A688062;
+	Thu,  8 Jun 2023 21:57:52 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 8 Jun
+ 2023 21:57:52 +0800
 Received: from SD-Server.starfivetech.com (183.27.98.122) by
  EXMBX168.cuchost.com (172.16.6.78) with Microsoft SMTP Server (TLS) id
  15.0.1497.42; Thu, 8 Jun 2023 21:57:52 +0800
@@ -52,9 +52,10 @@ To: Mark Brown <broonie@kernel.org>, Claudiu Beznea
 	Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, "Jaroslav
  Kysela" <perex@perex.cz>, Walker Chen <walker.chen@starfivetech.com>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/2] ASoC: starfive: Remove some unused macros
-Date: Thu, 8 Jun 2023 21:57:50 +0800
-Message-ID: <20230608135750.11041-3-walker.chen@starfivetech.com>
+Subject: [PATCH v2 1/2] ASoC: starfive: Fix an error check in
+ jh7110_tdm_clk_reset_get()
+Date: Thu, 8 Jun 2023 21:57:49 +0800
+Message-ID: <20230608135750.11041-2-walker.chen@starfivetech.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230608135750.11041-1-walker.chen@starfivetech.com>
 References: <20230608135750.11041-1-walker.chen@starfivetech.com>
@@ -70,15 +71,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: PQADBXPKYKUXFM3IEW64HDQGIMG3FBPY
-X-Message-ID-Hash: PQADBXPKYKUXFM3IEW64HDQGIMG3FBPY
-X-Mailman-Approved-At: Fri, 09 Jun 2023 14:47:27 +0000
+Message-ID-Hash: UAYR6GA2AXDGCUF6MYSWV4IGFC7AYPT7
+X-Message-ID-Hash: UAYR6GA2AXDGCUF6MYSWV4IGFC7AYPT7
+X-Mailman-Approved-At: Fri, 09 Jun 2023 14:48:52 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PQADBXPKYKUXFM3IEW64HDQGIMG3FBPY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UAYR6GA2AXDGCUF6MYSWV4IGFC7AYPT7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -87,41 +88,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-These macros are unused and can be dropped.
+Fix the check for devm_reset_control_array_get_exclusive() return value.
+The devm_reset_control_array_get_exclusive() function may return NULL if
+it's an optional request. If optional is intended then NULL should not
+be treated as an error case, but as a special kind of success case. So
+here the IS_ERR() is used to check better.
 
 Signed-off-by: Walker Chen <walker.chen@starfivetech.com>
 ---
- sound/soc/starfive/jh7110_tdm.c | 8 --------
- 1 file changed, 8 deletions(-)
+Fix the following issue:
+https://lore.kernel.org/all/ZH7t6Nc+NTcGpq%2F3@moroto/
+---
+ sound/soc/starfive/jh7110_tdm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/starfive/jh7110_tdm.c b/sound/soc/starfive/jh7110_tdm.c
-index a9a3d52bdd2a..e4bdba20c499 100644
+index 973b910d2d3e..a9a3d52bdd2a 100644
 --- a/sound/soc/starfive/jh7110_tdm.c
 +++ b/sound/soc/starfive/jh7110_tdm.c
-@@ -25,11 +25,8 @@
- #include <sound/soc-dai.h>
+@@ -580,10 +580,9 @@ static int jh7110_tdm_clk_reset_get(struct platform_device *pdev,
+ 	}
  
- #define TDM_PCMGBCR			0x00
--	#define PCMGBCR_MASK		0x1e
- 	#define PCMGBCR_ENABLE		BIT(0)
--	#define PCMGBCR_TRITXEN		BIT(4)
- 	#define CLKPOL_BIT		5
--	#define TRITXEN_BIT		4
- 	#define ELM_BIT			3
- 	#define SYNCM_BIT		2
- 	#define MS_BIT			1
-@@ -42,11 +39,6 @@
- 	#define LRJ_BIT			1
- #define TDM_PCMRXCR			0x08
- 	#define PCMRXCR_RXEN		BIT(0)
--	#define PCMRXCR_RXSL_MASK	0xc
--	#define PCMRXCR_RXSL_16BIT	0x4
--	#define PCMRXCR_RXSL_32BIT	0x8
--	#define PCMRXCR_SCALE_MASK	0xf0
--	#define PCMRXCR_SCALE_1CH	0x10
- #define TDM_PCMDIV			0x0c
+ 	tdm->resets = devm_reset_control_array_get_exclusive(&pdev->dev);
+-	if (IS_ERR_OR_NULL(tdm->resets)) {
+-		ret = PTR_ERR(tdm->resets);
+-		dev_err(&pdev->dev, "Failed to get tdm resets");
+-		return ret;
++	if (IS_ERR(tdm->resets)) {
++		dev_err(&pdev->dev, "Failed to get tdm resets\n");
++		return PTR_ERR(tdm->resets);
+ 	}
  
- #define JH7110_TDM_FIFO			0x170c0000
+ 	return 0;
 -- 
 2.17.1
 
