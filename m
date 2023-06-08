@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 298E2C7EE29
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:52:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5262EC7EE29
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:52:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F34523E8;
-	Fri,  9 Jun 2023 16:51:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F34523E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1560FA4B;
+	Fri,  9 Jun 2023 16:51:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1560FA4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686322329;
-	bh=p+9PC0msxgulaw0kUPQjcFmAXXcZj54dyZVDOO3+x1U=;
+	s=default; t=1686322352;
+	bh=lHn97RWkSBDgcIRxA2jfnsNCE/0l9/MxzCnsnieZfRM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=krAADt4m3H9/zmvmRBhT67HxM6sRbXVvl2KPheQnUjYgGs8LMHtECR4j0Lyu4StiP
-	 hALNiwsXIvYlz+rSXE5rY7eCPepCYNc6YvtZ5lliOc3x5rak7rZ/u80yYeYE0qBYQT
-	 0llNBHF8fOY65lZs2lSlGUKTmiwXWfA9+VsgTr9E=
+	b=h/uWsmJOduRrlg0RkyUDn+kXxD7r+/iP5AW1Q4g4F06MnMcZKppHUcrviRfDMks69
+	 MqUOvf02lZBnRCL/I7qNt/9RQJJb5k0qwWppH5RjGg0zmou9A8eOu25KPZb+DMxSPK
+	 xfMmtOqyL+FakiBUxkFe8htMqndGj2T4WEx0oDIs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C410AF80617; Fri,  9 Jun 2023 16:47:43 +0200 (CEST)
+	id 77A66F8061C; Fri,  9 Jun 2023 16:47:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 185E9F80613;
-	Fri,  9 Jun 2023 16:47:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98C17F8061F;
+	Fri,  9 Jun 2023 16:47:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69E5BF80199; Thu,  8 Jun 2023 11:51:09 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
+	id 97670F80199; Thu,  8 Jun 2023 12:01:01 +0200 (CEST)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 05A4DF80155
-	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 11:50:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05A4DF80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id CDAAFF80130
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2023 12:00:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDAAFF80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=baylibre-com.20221208.gappssmtp.com
  header.i=@baylibre-com.20221208.gappssmtp.com header.a=rsa-sha256
- header.s=20221208 header.b=PpYoQ9yB
-Received: by mail-wr1-x434.google.com with SMTP id
- ffacd0b85a97d-30ae5f2ac94so424070f8f.1
+ header.s=20221208 header.b=4tyzkukr
+Received: by mail-lf1-x131.google.com with SMTP id
+ 2adb3069b0e04-4f654d713c0so150835e87.3
         for <alsa-devel@alsa-project.org>;
- Thu, 08 Jun 2023 02:50:36 -0700 (PDT)
+ Thu, 08 Jun 2023 03:00:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1686217835;
- x=1688809835;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1686218455;
+ x=1688810455;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BwfV7uve9JHvQ7KPIcuTdH5iXAupAcOmFZXka/qb7TE=;
-        b=PpYoQ9yBVRw2vZUWFh2CmtHT2Hf537cbytt50hvfTVoPmF9Gk4gIoqksRA90soEjgT
-         BJJUPYAibqGWlmew06C33ldDMSj9lAhFsIadnFoo4f9ywI2khZtxKVd959gjiVf8d84G
-         /cQfPbgAt3rK+8fYSrJi2T1sM9TFSEkemPr0raVGVnxl39pmXPzInTP70Toq4HrLbXlF
-         s66rtbskCNwdz9Pm8NDo6yRs9R+sqGG+njr5DbsW32pKBcJ6aOpZ9HcWJbXHgguMKqQQ
-         Iom8RjZLir4TsGAMTJ6Yxq9WQxxyLk7XSWLw1aqKJ1G50LYHOSPlnbGIEHZiJRw1Q/Rh
-         31YA==
+        bh=bsOWfs49wC5N4v4NWtXmUnjFbzqZWXOVySuGPn3htMg=;
+        b=4tyzkukruKe8ZPA7RPnB00YrCnc3YfBJt40uG0nLFHL/S2MxEM1ID/0mg1wM6qR0Ap
+         O6/bzxhLWfWakDYYZSaELapb2cid4mN9Qnf2sxD64w4Inu9p5V0q7j0Kb3j5FjK6MiEi
+         9rSVcTKSTVnpx2CbhZ1k9pwKoDK+tf+kjFRRemHmgKPM8VlM5XJXahH2nLusHzlp1cL2
+         lJ+1UPZmC9MQjEgSw97kO1BYmj2wLUR5IIp58Ih7u9fTwzaxTuQ6ZQQfqXUg6UNVatUT
+         AKCn8JIS+6M9f9RI39+UNwbBbt1dKCMmz6jGVlDbdIifcAXhzBsnbyl6U4DkjmiB+V+E
+         C6uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686217835; x=1688809835;
+        d=1e100.net; s=20221208; t=1686218455; x=1688810455;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BwfV7uve9JHvQ7KPIcuTdH5iXAupAcOmFZXka/qb7TE=;
-        b=KjdRITkECJ0AKiRkmBQhFeBG45PkgmxVlzuyGaFK1O8c8tklfqawnBuaaR9i4iFnNb
-         Wi2ZKOm4yeLaXPZeIExWsjEpd6lHq3YF5bLeLesE8x5NYAG6vv/zYSJHxdRQQ+RYaEYd
-         4Vuebs5xj8o2gqNBFylHOaX7EN9yCzqdC5zXkA7IGswjRrwoob36AvpcEQ5Rt+nWiPCl
-         T8ZT7u+yxJ1261AfmjBBBVdiZHODslQ38XnaPTFqCuY5YYxtf3EXxG8d4hPBLCVxduup
-         GXcaXkaXO1zovOKpcsJz/Pi4B2V8bxq8TdpuRNIhy6uyNHy1E03VGeyabOEBdtylONs0
-         E5hQ==
-X-Gm-Message-State: AC+VfDwwH295TVKF4XADoNafrRuPK9Y5RIe7stdkubuf/ybXb48vXiNC
-	ra6c3oJggy2aA7uGQPxicKohkw==
+        bh=bsOWfs49wC5N4v4NWtXmUnjFbzqZWXOVySuGPn3htMg=;
+        b=kVlRGZ/RVRGeBHJyRHEVXZBHsZPZttVC9U0G1NRJil34ckW6I1ob8DWomfJHujZQME
+         CzkcUh2J7DsysNqAV1HweAvBXT7oVt0O8BJrN3O9JeGqvhFpxTvqGlU9jLgXGlklNe5D
+         QilwBFr3Lxdx3n9reASRGAa8dceOq1bMIiCMa3tctslYL+kNCGPZDqldBwa19Qd70Siq
+         BoNebbujRC/hB5wBcr9k6KxVx3bf/3xXhvGA+UzqrjwvyME+q0gsjppNcbF5JMM0U3oP
+         Ah1HbpZ9lm0zEC/2nKjVFi9kwXuNUoseImNmQPWiDUO1vEado1MmNcAFnF1ugPu6eHu2
+         u+eQ==
+X-Gm-Message-State: AC+VfDz3c6h96zHG5ldfoAkt93UwpgFGN+UBLFa5olj0KNrCWrCQ3NE5
+	dNJhD0+te34Xycw9oLyY00EVAQ==
 X-Google-Smtp-Source: 
- ACHHUZ7vePKIJ7//4HDDmBh8tZbIexRsI4k41AJwSBLsN64OpFI6fQf5Jj3sbWscK45AtGmBnqt/1w==
-X-Received: by 2002:adf:d84e:0:b0:307:82e3:70cd with SMTP id
- k14-20020adfd84e000000b0030782e370cdmr7002149wrl.14.1686217834930;
-        Thu, 08 Jun 2023 02:50:34 -0700 (PDT)
+ ACHHUZ7LlWK64M5lFh/5PM74dhnqSCP79zYgwvl4PUklZhQtn1sfsWVhk/BVkBSv4bhXZyQ+/Lckrg==
+X-Received: by 2002:a19:a40e:0:b0:4f1:4504:2679 with SMTP id
+ q14-20020a19a40e000000b004f145042679mr2891573lfc.41.1686218455474;
+        Thu, 08 Jun 2023 03:00:55 -0700 (PDT)
 Received: from [192.168.1.172] (158.22.5.93.rev.sfr.net. [93.5.22.158])
         by smtp.gmail.com with ESMTPSA id
- x15-20020a5d650f000000b0030adfa48e1esm1071530wru.29.2023.06.08.02.50.33
+ p23-20020a1c7417000000b003f60eb72cf5sm4786261wmc.2.2023.06.08.03.00.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jun 2023 02:50:34 -0700 (PDT)
-Message-ID: <8bbbc852-6139-29d4-417c-a2d9c77c192f@baylibre.com>
-Date: Thu, 8 Jun 2023 11:50:33 +0200
+        Thu, 08 Jun 2023 03:00:55 -0700 (PDT)
+Message-ID: <f4547bf6-5e95-331b-5d8e-b6d71209859d@baylibre.com>
+Date: Thu, 8 Jun 2023 12:00:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
@@ -100,25 +100,27 @@ Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
  kernel@collabora.com
 References: <20230608084727.74403-1-angelogioacchino.delregno@collabora.com>
  <20230608084727.74403-6-angelogioacchino.delregno@collabora.com>
+ <8bbbc852-6139-29d4-417c-a2d9c77c192f@baylibre.com>
+ <a8b454e3-dded-02d6-b97a-6a7aa3420cf1@collabora.com>
 From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230608084727.74403-6-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <a8b454e3-dded-02d6-b97a-6a7aa3420cf1@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-MailFrom: amergnat@baylibre.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 4R6N7SHO5NZXRSRUNVMZE7GMHRP5TMJO
-X-Message-ID-Hash: 4R6N7SHO5NZXRSRUNVMZE7GMHRP5TMJO
+Message-ID-Hash: WCDX4T7OX3WLBNXZWRENIA3GGOZUROIO
+X-Message-ID-Hash: WCDX4T7OX3WLBNXZWRENIA3GGOZUROIO
 X-Mailman-Approved-At: Fri, 09 Jun 2023 14:47:10 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4R6N7SHO5NZXRSRUNVMZE7GMHRP5TMJO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WCDX4T7OX3WLBNXZWRENIA3GGOZUROIO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,131 +129,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 08/06/2023 10:47, AngeloGioacchino Del Regno wrote:
-> Replace open coded instances of FIELD_GET() with it, move register
-> definitions at the top of the file and also replace magic numbers
-> with register definitions.
+On 08/06/2023 11:57, AngeloGioacchino Del Regno wrote:
+>>> -    int test_done_1, test_done_2;
+>>> +    u8 test_done_1, test_done_2;
+>>>       int cycle_1, cycle_2;
+>>
+>> Shouldn't be unsigned too ?
+>>
+>> I'm wondering if it would be better (probably in another patch) to 
+>> change the data type of the other variables too, to match their 
+>> use-case. (maybe it's already the case, I'm just wondering)
+>>
 > 
-> While at it, also change a regmap_update_bits() call to regmap_write()
-> because the top 29 bits of AUD_TOP_CFG (31:3) are reserved (unused).
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->   sound/soc/mediatek/mt8188/mt8188-mt6359.c | 32 ++++++++++++++---------
->   1 file changed, 19 insertions(+), 13 deletions(-)
-> 
-> diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-> index 5b2660139421..ac69c23e0da1 100644
-> --- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-> +++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-> @@ -6,6 +6,7 @@
->    * Author: Trevor Wu <trevor.wu@mediatek.com>
->    */
->   
-> +#include <linux/bitfield.h>
->   #include <linux/input.h>
->   #include <linux/module.h>
->   #include <linux/of_device.h>
-> @@ -19,6 +20,15 @@
->   #include "../common/mtk-afe-platform-driver.h"
->   #include "../common/mtk-soundcard-driver.h"
->   
-> +#define CKSYS_AUD_TOP_CFG	0x032c
-> + #define RG_TEST_ON		BIT(0)
-> + #define RG_TEST_TYPE		BIT(2)
-> +#define CKSYS_AUD_TOP_MON	0x0330
-> + #define TEST_MISO_COUNT_1	GENMASK(3, 0)
-> + #define TEST_MISO_COUNT_2	GENMASK(7, 4)
-> + #define TEST_MISO_DONE_1	BIT(28)
-> + #define TEST_MISO_DONE_2	BIT(29)
-> +
->   #define NAU8825_HS_PRESENT	BIT(0)
->   
->   /*
-> @@ -251,9 +261,6 @@ static const struct snd_kcontrol_new mt8188_nau8825_controls[] = {
->   	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
->   };
->   
-> -#define CKSYS_AUD_TOP_CFG 0x032c
-> -#define CKSYS_AUD_TOP_MON 0x0330
-> -
->   static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
->   {
->   	struct snd_soc_component *cmpnt_afe =
-> @@ -265,13 +272,13 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
->   	struct mtkaif_param *param;
->   	int chosen_phase_1, chosen_phase_2;
->   	int prev_cycle_1, prev_cycle_2;
-> -	int test_done_1, test_done_2;
-> +	u8 test_done_1, test_done_2;
->   	int cycle_1, cycle_2;
+> In theory, yes, cycle_1 and 2 should be unsigned, but the signedness of 
+> this
+> variable is getting used in the calibration logic later, as in the for loop
+> they are both being reinitialized to -1 ... so I couldn't just switch 
+> 'em to
+> unsigned.
 
-Shouldn't be unsigned too ?
-
-I'm wondering if it would be better (probably in another patch) to 
-change the data type of the other variables too, to match their 
-use-case. (maybe it's already the case, I'm just wondering)
-
->   	int mtkaif_chosen_phase[MT8188_MTKAIF_MISO_NUM];
->   	int mtkaif_phase_cycle[MT8188_MTKAIF_MISO_NUM];
->   	int mtkaif_calibration_num_phase;
->   	bool mtkaif_calibration_ok;
-> -	unsigned int monitor = 0;
-> +	u32 monitor = 0;
->   	int counter;
->   	int phase;
->   	int i;
-> @@ -303,8 +310,7 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
->   	mt6359_mtkaif_calibration_enable(cmpnt_codec);
->   
->   	/* set test type to synchronizer pulse */
-> -	regmap_update_bits(afe_priv->topckgen,
-> -			   CKSYS_AUD_TOP_CFG, 0xffff, 0x4);
-> +	regmap_write(afe_priv->topckgen, CKSYS_AUD_TOP_CFG, RG_TEST_TYPE);
->   	mtkaif_calibration_num_phase = 42;	/* mt6359: 0 ~ 42 */
->   	mtkaif_calibration_ok = true;
->   
-> @@ -314,7 +320,7 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
->   		mt6359_set_mtkaif_calibration_phase(cmpnt_codec,
->   						    phase, phase, phase);
->   
-> -		regmap_set_bits(afe_priv->topckgen, CKSYS_AUD_TOP_CFG, 0x1);
-> +		regmap_set_bits(afe_priv->topckgen, CKSYS_AUD_TOP_CFG, RG_TEST_ON);
->   
->   		test_done_1 = 0;
->   		test_done_2 = 0;
-> @@ -326,14 +332,14 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
->   		while (!(test_done_1 & test_done_2)) {
->   			regmap_read(afe_priv->topckgen,
->   				    CKSYS_AUD_TOP_MON, &monitor);
-> -			test_done_1 = (monitor >> 28) & 0x1;
-> -			test_done_2 = (monitor >> 29) & 0x1;
-> +			test_done_1 = FIELD_GET(TEST_MISO_DONE_1, monitor);
-> +			test_done_2 = FIELD_GET(TEST_MISO_DONE_2, monitor);
->   
->   			if (test_done_1 == 1)
-> -				cycle_1 = monitor & 0xf;
-> +				cycle_1 = FIELD_GET(TEST_MISO_COUNT_1, monitor);
->   
->   			if (test_done_2 == 1)
-> -				cycle_2 = (monitor >> 4) & 0xf;
-> +				cycle_2 = FIELD_GET(TEST_MISO_COUNT_2, monitor);
->   
->   			/* handle if never test done */
->   			if (++counter > 10000) {
-> @@ -361,7 +367,7 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
->   			mtkaif_phase_cycle[MT8188_MTKAIF_MISO_1] = prev_cycle_2;
->   		}
->   
-> -		regmap_clear_bits(afe_priv->topckgen, CKSYS_AUD_TOP_CFG, 0x1);
-> +		regmap_clear_bits(afe_priv->topckgen, CKSYS_AUD_TOP_CFG, RG_TEST_ON);
->   
->   		if (mtkaif_chosen_phase[MT8188_MTKAIF_MISO_0] >= 0 &&
->   		    mtkaif_chosen_phase[MT8188_MTKAIF_MISO_1] >= 0)
-
-After that:
-
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+Understood, thanks for your explanation.
 
 -- 
 Regards,
