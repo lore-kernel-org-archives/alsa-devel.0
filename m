@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EA6DC7EE29
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 12:04:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB908C7EE2E
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 12:05:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64A2A6C0;
-	Fri,  9 Jun 2023 14:04:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64A2A6C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2EE7828;
+	Fri,  9 Jun 2023 14:04:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2EE7828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686312291;
-	bh=NGGxlKuQ91mS1ctq8IAbKwyJduKLClii+OA9Iz1bpi4=;
+	s=default; t=1686312315;
+	bh=1jjcdKhj/+ouunvIwaeB7ZlxqlPxeod3AFpiYr+Xgnk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kdRE/u0WdnqwYyH5HNpH2UGAj6rlL26supziUgEr4nB2iWxg1GL1f0Vsv3ukrvmnP
-	 bGJ7fUYEDXIuqQXxcHh2D85Cl8E2enRl9h5lnTy57wcsaC1+fypwOpYSekH07gug1p
-	 i7tAsCTevqYbuyYtYu6Wk7fSaGRtJ/K9xv0aGG7c=
+	b=sFIAddFk1FraH3tLKnuAXndBBwqPIKATWO9bgrDo8whANVol5z64ndpzApFH4QN97
+	 mSk7t5bZwdesgL22smoHad1XSRP+N8fUFg3gHWlNfM1yWBK5fBgS1S6tmqzjrFGWDb
+	 fE2q3RcIAJWHuqEMSHoVTxXpElNRJIueO4w55g8w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A3B8BF80130; Fri,  9 Jun 2023 14:03:34 +0200 (CEST)
+	id 47CF8F80553; Fri,  9 Jun 2023 14:03:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8579F80254;
-	Fri,  9 Jun 2023 14:03:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA8A7F80553;
+	Fri,  9 Jun 2023 14:03:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E564CF80254; Fri,  9 Jun 2023 14:03:28 +0200 (CEST)
+	id D1B75F80199; Fri,  9 Jun 2023 14:03:30 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4EF3DF80130
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 14:03:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EF3DF80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 10BE1F800ED
+	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 14:03:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10BE1F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=dq6pDqp1
+ header.s=k20201202 header.b=hswiHLpV
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 82B4165749;
-	Fri,  9 Jun 2023 12:03:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC60C433EF;
-	Fri,  9 Jun 2023 12:03:14 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 875E9637AB;
+	Fri,  9 Jun 2023 12:03:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AE37C433EF;
+	Fri,  9 Jun 2023 12:03:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686312196;
-	bh=NGGxlKuQ91mS1ctq8IAbKwyJduKLClii+OA9Iz1bpi4=;
+	s=k20201202; t=1686312201;
+	bh=1jjcdKhj/+ouunvIwaeB7ZlxqlPxeod3AFpiYr+Xgnk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=dq6pDqp1SBU72UrxEXz0l2ZSSiDsVEXGKNjtZcn+1RRrQ6hru/N9GUSmKGNZi9BmB
-	 zCsuJEKj6HaP3FC3pQvrNqBXqPF2h4DxujyMBnOG4B3qUrnf9FxZ0gkcSszaqr7+a2
-	 v2DCo4sFhJ30GTmL6BUcvf0XawYH87jm0L/Nc6bi4EOLU08h79zHUuKPfE+GZ9PfRK
-	 QyrI/CmXBrgldD0XS76dkOdUOqEKH+vMcVh8c7MqOPhfxsBFWU6/3bou4Ittd8hZxU
-	 uBn7cawMUdwUwgxT8EhLRpqeAXQ3t94wzoTgHjkbGxs8cSI5rq6m/d3of6xJj4lUBw
-	 qZSV+gkx1S5zQ==
+	b=hswiHLpVaRU5i3syRy6zKRhlad6hHBUThRgRBxw6c27iv3jKzT6iCS6Hrxiqabr4e
+	 3y1R6WV6wwbPQEdpahB2cBx2Me017YjDZ+eq4yXK+64r5HzP/8QPSY4ClzAn+6qLwi
+	 zsIx8U5ExAR/r5d2FEuOfJkWUhkCh9Ip8txAzhNueBwLGl2gOuNXwTHFNPkYA0Qj4G
+	 gFap5aClVRk+1gIdGsJ6yE41CcYQi0qlYArA/c/7q7EWyr62BgLqIx1IJMoHMtSeAL
+	 lrJ02XTMPDZz8P5QZYOPVeODPYJ1bRujONDD0VvXPPK7xdxwz8i2FkLO6HdggSkeSe
+	 HwFqZjJhJKwkw==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, cujomalainey@chromium.org
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- =?utf-8?q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+To: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+Cc: kernel@collabora.com,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Chen-Yu Tsai <wenst@chromium.org>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20230608221822.2825786-1-cujomalainey@chromium.org>
-References: <20230608221822.2825786-1-cujomalainey@chromium.org>
-Subject: Re: [PATCH 1/2] ASoC: SOF: Refactor rx function for fuzzing
-Message-Id: <168631219449.40482.11890865852608851986.b4-ty@kernel.org>
-Date: Fri, 09 Jun 2023 13:03:14 +0100
+ Matthias Brugger <matthias.bgg@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+In-Reply-To: <20230608221050.217968-1-nfraprado@collabora.com>
+References: <20230608221050.217968-1-nfraprado@collabora.com>
+Subject: Re: [PATCH] Revert "ASoC: mediatek: mt8192-mt6359: Remove " Jack"
+ from Headphone pin name"
+Message-Id: <168631219815.40482.7959512272039581328.b4-ty@kernel.org>
+Date: Fri, 09 Jun 2023 13:03:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: XMMIUUV27JLEQ25KAH3A7Q75HBLSYSFV
-X-Message-ID-Hash: XMMIUUV27JLEQ25KAH3A7Q75HBLSYSFV
+Message-ID-Hash: JQ6WP64ONUQC3FANWNH257GSWFAEHS3Z
+X-Message-ID-Hash: JQ6WP64ONUQC3FANWNH257GSWFAEHS3Z
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XMMIUUV27JLEQ25KAH3A7Q75HBLSYSFV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JQ6WP64ONUQC3FANWNH257GSWFAEHS3Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,13 +98,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 08 Jun 2023 15:18:15 -0700, cujomalainey@chromium.org wrote:
-> Refactor the function so reading the data is done outside the work
-> function so fuzzing can pass data directly into the work callbacks.
-> 
-> Also expose the inner function outside the module so we can call it from
-> the injector.
-> 
+On Thu, 08 Jun 2023 18:10:48 -0400, Nícolas F. R. A. Prado wrote:
+> This reverts commit cbbc0ec6dea09c815f1d1ef0abaf3f2ec89ff11f. That
+> commit removed the " Jack" suffix with the reasoning that it is
+> automatically added to the name of the kcontrol created, which is true,
+> but this name is also used to look for the DAPM widget that will be
+> toggled when the jack status is updated. Since the widget is still
+> called "Headphone Jack" the jack can't link to the widget and the
+> following error is shown:
 > 
 > [...]
 
@@ -114,10 +115,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: SOF: Refactor rx function for fuzzing
-      commit: 12c41c779fad54714ce4901757374f6006a88644
-[2/2] ASoC: SOF: Add IPC3 Kernel Injector
-      commit: 70dad53ddff0778c4920a1ee9eb1cfea539d4e91
+[1/1] Revert "ASoC: mediatek: mt8192-mt6359: Remove " Jack" from Headphone pin name"
+      commit: e352f31a863f47adfa54c76b633a21b1ed562387
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
