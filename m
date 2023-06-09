@@ -4,95 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07965C7EE45
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:54:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBB93C7EE2E
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:55:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE5E4E12;
-	Fri,  9 Jun 2023 16:53:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE5E4E12
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AC4FE7C;
+	Fri,  9 Jun 2023 16:54:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AC4FE7C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686322472;
-	bh=NuHvjjOphHtk5LXhRzfQMfjjf8MLO3yrQi3e6idKuVE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=K7l6EjvGilaO+ZMbucqmdHgHQJ0bMIzkwIUJRsvxfMhQq1LMNKfga5SvBpMTJhZj/
-	 iikO/51S+BOLH4B0mw+vmaqhh/hAoVXRCENOX4yP5I94y0gt22mhj5/J/Y7+Eerodl
-	 BNHYU7k51dxXsWnTmHIy0xj/25HW/pAGwm/tiFzw=
+	s=default; t=1686322514;
+	bh=tlmN7wIfwR/Ux2AzCHAsNlZLgnUc+amCY3lp87gbeRI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Vf+jTZXCIj9kPMgdjMy4l8HEy6m0ZJnP9qkdUCpCUXibgjuq8fk/dQkztPslfKnps
+	 FIq+R8XrkXeI+inCbW2fYYKasZoIOFUfBYbJlOwOOzTMqmgeOgmFgn+swVF567eUUf
+	 SAsu7P+yxRa/n/Y3/JwiD09ghIW7m1wR3KCot8tw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 07F97F80676; Fri,  9 Jun 2023 16:49:01 +0200 (CEST)
+	id 1DE18F80527; Fri,  9 Jun 2023 16:54:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61636F8062F;
-	Fri,  9 Jun 2023 16:49:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28462F80494;
+	Fri,  9 Jun 2023 16:54:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A39E2F80199; Fri,  9 Jun 2023 05:58:06 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by alsa1.perex.cz (Postfix) with ESMTP id F043EF80130
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 05:57:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F043EF80130
-Received: from loongson.cn (unknown [10.180.13.22])
-	by gateway (Coremail) with SMTP id _____8Ax3eo9o4JkTOEAAA--.2741S3;
-	Fri, 09 Jun 2023 11:57:50 +0800 (CST)
-Received: from [10.180.13.22] (unknown [10.180.13.22])
-	by localhost.localdomain (Coremail) with SMTP id
- AQAAf8DxK8o9o4Jk_bMJAA--.21398S3;
-	Fri, 09 Jun 2023 11:57:49 +0800 (CST)
-Message-ID: <9854871e-2345-d82e-4e4e-d5bf492c2296@loongson.cn>
-Date: Fri, 9 Jun 2023 11:57:22 +0800
+	id A9E26F80199; Fri,  9 Jun 2023 16:54:18 +0200 (CEST)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
+ [IPv6:2a00:1450:4864:20::12d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9517AF800ED
+	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 16:54:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9517AF800ED
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=KSOkzUtK
+Received: by mail-lf1-x12d.google.com with SMTP id
+ 2adb3069b0e04-4f62b512fe2so2464132e87.1
+        for <alsa-devel@alsa-project.org>;
+ Fri, 09 Jun 2023 07:54:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1686322454; x=1688914454;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QeftDeyvvysATSitJ+hgLelm68R1NmQyMnxNP/qXI28=;
+        b=KSOkzUtKrwVPxWpFH7oNQ7Fv+3X39paXhtnpEsPt+jAqXuCsDV9K4ANu1Hzlg03d1o
+         jVYB5dJdyl1nlnrZSu4WyJ2RnAl9gMmKFIZ469cV3tSOiCHeIRMjVrOHLafx5Wkq4oJM
+         xMoymFNVcUtkE+b1mnEiecCGzP7l8yCRVHeGq5lncuHOfaxXK+K77AdDU+jAwflnMobM
+         1Trb+ckh94xZwnPpyKHvplw/j+U0OGLIuj5rPfKvldMNHhUTN7N/zD7b541UB3nkaoOU
+         Jl9vIVpslY/2GcIGa2s3k6Ce60foTnSPlqsDR8r5KSYOPNr4pMwKUkdU3WcsAjcHJyL3
+         2Yug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686322454; x=1688914454;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QeftDeyvvysATSitJ+hgLelm68R1NmQyMnxNP/qXI28=;
+        b=d0DcFYKkT9CTCoZLnfGYpXCg8xQCHKbAaO8zU3HRSKECIBQB/oP9TMjkcoYyCOKF8t
+         Kb16m2+HQEPmOk4wqjMD0HqwLGupJItb7QXNBCaml/b6+uJTAD5v9+0PK7C4MgUUpgDV
+         W8Go1Gx1biuswUNMmzi4f6RHacw/REIj1OSIYM8/8yeqozFy49StFNPCsuDgtUDFfAx/
+         FwDawXLzUgDCLnEv/ls7wxoPl06GenQQRf59jjs61LxqSH9+CkpobmuOmA7TTIL3vtQz
+         3ZmJCDmsNO/DC6DogY6OQTRq4AxYWd0BwNkFfaZaggMLG6dzlEAswQgqU4g/oZITNJbt
+         MJKQ==
+X-Gm-Message-State: AC+VfDzoM6VPTGLtEzRyojTUszhxOUIqZu4krcqONYz0an+UD/zjmP7P
+	ZknFscGh9g6gqCq814ke+f1ynA==
+X-Google-Smtp-Source: 
+ ACHHUZ7jY1rwqaF8movy77QYmPcO580cVoSBABEAOaV3TJjxtZk5cpIC4Dy6acTqJyBocb1nRz7Hjw==
+X-Received: by 2002:a19:5f16:0:b0:4f6:25a3:95ab with SMTP id
+ t22-20020a195f16000000b004f625a395abmr1044393lfb.25.1686322453936;
+        Fri, 09 Jun 2023 07:54:13 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id
+ c21-20020a05600c0ad500b003f7310a3ffasm2946632wmr.2.2023.06.09.07.54.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jun 2023 07:54:13 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	lgirdwood@gmail.com,
+	ckeepax@opensource.cirrus.com,
+	kuninori.morimoto.gx@renesas.com,
+	linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com,
+	alsa-devel@alsa-project.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 00/11] ASoC: qcom: audioreach: add compress offload support
+Date: Fri,  9 Jun 2023 15:53:56 +0100
+Message-Id: <20230609145407.18774-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 2/3] ASoC: loongson: Add Loongson Generic ASoC Sound Card
- Support
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- loongson-kernel@lists.loongnix.cn
-References: <20230605120934.2306548-1-mengyingkun@loongson.cn>
- <20230605120934.2306548-2-mengyingkun@loongson.cn>
- <aa8381b5-0a3b-4a64-8c92-333ad751956b@sirena.org.uk>
-From: YingKun Meng <mengyingkun@loongson.cn>
-In-Reply-To: <aa8381b5-0a3b-4a64-8c92-333ad751956b@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8DxK8o9o4Jk_bMJAA--.21398S3
-X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQARDGSBxQEP2gABsp
-X-Coremail-Antispam: 1Uk129KBj93XoWrKw4rXr1kWrWxKF1UAr1kWFX_yoW8Jr1xpF
-	WjyFyjyF9xWF1qyrn5Ww4UZa4vyrWavw15Jw18GF1ag3s5ZFyfKr4fKFyYqayrCr92yFW2
-	vF4jgrZ5AryDWFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-	8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jeq2NUUU
-	UU=
-X-MailFrom: mengyingkun@loongson.cn
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: D3UIO4RPP75WCUFM4TADGWDAZEJDARSN
+X-Message-ID-Hash: D3UIO4RPP75WCUFM4TADGWDAZEJDARSN
+X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: EQ4A2ZKMLC2H3KQDMP5URM62XF5GXC36
-X-Message-ID-Hash: EQ4A2ZKMLC2H3KQDMP5URM62XF5GXC36
-X-Mailman-Approved-At: Fri, 09 Jun 2023 14:48:52 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EQ4A2ZKMLC2H3KQDMP5URM62XF5GXC36/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D3UIO4RPP75WCUFM4TADGWDAZEJDARSN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,36 +119,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Brown,
+This patchset adds compressed offload support to Qualcomm audioreach drivers.
+Currently it supports AAC, MP3 and FALC along with gapless.
 
-Thanks for your kindly work.
+Tested this on SM8450 and sc7280.
 
-On 2023/6/5 20:47, Mark Brown wrote:
-> On Mon, Jun 05, 2023 at 08:09:33PM +0800, YingKun Meng wrote:
->
->> The driver supports the use of ACPI table to describe device resources.
->> On loongson 7axxx platforms, the audio device is an ACPI device.
-> I'm not seeing any ACPI IDs added here, this is all DT other than this:
+thanks,
+srini
 
-I use the special ACPI ID "PRP0001", it provides a means to use the existing
+Changes since v1:
+	- removed lots of code duplication
+	- moved ALSA patch out of this series.
 
-DT-compatible device identification in ACPI.
+Mohammad Rafi Shaik (4):
+  ASoC: qcom: SC7280: audioreach: Add sc7280 hardware param fixup
+    callback
+  ASoC: q6dsp: q6apm: add end of stream events
+  ASoC: q6dsp: audioreach: Add support to set compress format params
+  ASoC: q6dsp: audioreach: Add gapless feature support
 
-As described in the document "ACPI Based Device Enumeration".
+Srinivas Kandagatla (7):
+  ASoC: q6dsp: audioreach: add helper function to set u32 param
+  ASoC: q6dsp: audioreach: Add placeholder decoder for compress playback
+  ASoC: q6dsp: q6apm-dai: Add open/free compress DAI callbacks
+  ASoC: q6dsp: q6apm-dai: Add compress DAI and codec caps get callbacks
+  ASoC: q6dsp: q6apm-dai: Add trigger/pointer compress DAI callbacks
+  ASoC: q6dsp: q6apm-dai: Add compress set params and metadata DAI
+    callbacks
+  ASoC: q6dsp: q6apm-dai: Add mmap and copy compress DAI callbacks
 
->> +	if (has_acpi_companion(&pdev->dev)) {
->> +		device_property_read_string(&pdev->dev, "codec-name",
->> +						&codec_name);
->> +		for (i = 0; i < card->num_links; i++)
->> +			loongson_dai_links[i].codecs->name = codec_name;
->> +
->> +		device_property_read_string(&pdev->dev, "codec-dai-name",
->> +						&codec_dai_name);
->> +		for (i = 0; i < card->num_links; i++)
->> +			loongson_dai_links[i].codecs->dai_name = codec_dai_name;
->> +	} else {
-> which doesn't look *great* from an ACPI point of view TBH.  I thought
-> there were now some (semi?) standard ACPI bindings these days to support
-> referencing other devices better?
-Got it! I will rewrite this part.
+ sound/soc/qcom/qdsp6/audioreach.c | 248 ++++++++++-------
+ sound/soc/qcom/qdsp6/audioreach.h |  51 ++++
+ sound/soc/qcom/qdsp6/q6apm-dai.c  | 445 ++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6apm.c      |  68 +++++
+ sound/soc/qcom/qdsp6/q6apm.h      |   6 +
+ sound/soc/qcom/sc7280.c           |  23 +-
+ 6 files changed, 745 insertions(+), 96 deletions(-)
+
+-- 
+2.21.0
 
