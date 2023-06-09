@@ -4,141 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30C25C7EE29
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07965C7EE45
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:54:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C3F5E76;
-	Fri,  9 Jun 2023 16:53:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C3F5E76
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE5E4E12;
+	Fri,  9 Jun 2023 16:53:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE5E4E12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686322456;
-	bh=5yCCx637qN6JiLW7I6+8zEHQGblEuFICtzq96prQWME=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:List-Id:
+	s=default; t=1686322472;
+	bh=NuHvjjOphHtk5LXhRzfQMfjjf8MLO3yrQi3e6idKuVE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ooVy1sgbLnV+XXfDRTLxESoypXjejVM4UeiJfEkGyrQ981jHucH5rRuYtBXhqKQFc
-	 vkXnVBqpumpFg3C5l+fR9+7tE3IFs2I69Iu8nKdZYaPYXzZ2R5gln+ocJ0cn7Mfp89
-	 T7whDENh4rbuGYCFIBj+OyiHJxuWbBEKoVztBzuY=
+	b=K7l6EjvGilaO+ZMbucqmdHgHQJ0bMIzkwIUJRsvxfMhQq1LMNKfga5SvBpMTJhZj/
+	 iikO/51S+BOLH4B0mw+vmaqhh/hAoVXRCENOX4yP5I94y0gt22mhj5/J/Y7+Eerodl
+	 BNHYU7k51dxXsWnTmHIy0xj/25HW/pAGwm/tiFzw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D65ADF8065B; Fri,  9 Jun 2023 16:48:59 +0200 (CEST)
+	id 07F97F80676; Fri,  9 Jun 2023 16:49:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18BDAF8065B;
-	Fri,  9 Jun 2023 16:48:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61636F8062F;
+	Fri,  9 Jun 2023 16:49:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8C585F80199; Fri,  9 Jun 2023 03:49:45 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF8A7F80130
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 03:49:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF8A7F80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=fail reason="signature verification failed" (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=K6IhUHPI
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id F197E652B2;
-	Fri,  9 Jun 2023 01:49:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41180C433EF;
-	Fri,  9 Jun 2023 01:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686275370;
-	bh=5yCCx637qN6JiLW7I6+8zEHQGblEuFICtzq96prQWME=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=K6IhUHPIMyX6G51Gvg9LBUJ3F+NMA6t6yEqi3fTeDTd+AJzCCvvookTr/6vQqGmIn
-	 YHm6xCzH29XDY1RxhGUWWRXRiWAz+w4FinVcWL9BZIaqu935rDcsd9srsnN7LexnGZ
-	 GCkr6cL3K8SIP7mxO9yA8OMPuNRkbBGzshyF7AScJsc0Echnlzdy6HrJq2B3P6eqEB
-	 C/vA6phGnqUiPVssfsHiLNKrmW37L5wDKBSmCLTQDZ9XlTE9d38MUMidr99RQRsQ6o
-	 iveJTt876EEgX7IN09+I3JVakkYPpa1Fbdci55u3kgBWbiPwoqFEOp6SBpvW+XcWiw
-	 hoc+eH+MLB+dw==
-Message-ID: <431d1ae3993d1fc78decbcd065442f29.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	id A39E2F80199; Fri,  9 Jun 2023 05:58:06 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by alsa1.perex.cz (Postfix) with ESMTP id F043EF80130
+	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 05:57:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F043EF80130
+Received: from loongson.cn (unknown [10.180.13.22])
+	by gateway (Coremail) with SMTP id _____8Ax3eo9o4JkTOEAAA--.2741S3;
+	Fri, 09 Jun 2023 11:57:50 +0800 (CST)
+Received: from [10.180.13.22] (unknown [10.180.13.22])
+	by localhost.localdomain (Coremail) with SMTP id
+ AQAAf8DxK8o9o4Jk_bMJAA--.21398S3;
+	Fri, 09 Jun 2023 11:57:49 +0800 (CST)
+Message-ID: <9854871e-2345-d82e-4e4e-d5bf492c2296@loongson.cn>
+Date: Fri, 9 Jun 2023 11:57:22 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20221018-clk-range-checks-fixes-v4-0-971d5077e7d2@cerno.tech>
-References: <20221018-clk-range-checks-fixes-v4-0-971d5077e7d2@cerno.tech>
-Subject: Re: [PATCH v4 00/68] clk: Make determine_rate mandatory for muxes
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-clk@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-	Abel Vesa <abelvesa@kernel.org>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Andreas =?utf-8?q?F=C3=A4rber?= <afaerber@suse.de>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Chen-Yu Tsai <wens@csie.org>, Chen-Yu Tsai <wenst@chromium.org>,
-	Chunyan Zhang <zhang.lyra@gmail.com>,
-	Claudiu Beznea <claudiu.beznea@microchip.com>,
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-	David Lechner <david@lechnology.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Fabio Estevam <festevam@gmail.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Liam Girdw ood <lgirdwood@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Markus Schneider-Pargmann <msp@baylibre.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Mikko Perttunen <mperttunen@nvidia.com>,
-	Miles Chen <miles.chen@mediatek.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Orson Zhai <orsonzhai@gmail.com>,
-	Paul Cercueil <paul@crapouillou.net>, Peng Fan <peng.fan@nxp.com>,
-	Peter De Schrijver <pdeschrijver@nvidia.com>,
-	Prashant Gaikwad <pgaikwad@nvidia.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>, Sekhar Nori <nsekhar@ti.com>,
-	Shawn Guo <shawnguo@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>, Vinod Koul <vkoul@kernel.org>,
-	dri-devel@lists.freedesktop.org, linux-actio@alsa-project.org,
-	ns@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-renesas-soc@vger.kernel.org, linux-rtc@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	NXP Linux Team <linux-imx@nxp.com>, patches@opensource.cirrus.com,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Liam Beguin <liambeguin@gmail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	linux-mediatek@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Pawel Moll <pawel.moll@arm.com>, alsa-devel@alsa-project.org
-To: Maxime Ripard <maxime@cerno.tech>,
- Michael Turquette <mturquette@baylibre.com>
-Date: Thu, 08 Jun 2023 18:49:28 -0700
-User-Agent: alot/0.10
-X-MailFrom: sboyd@kernel.org
-X-Mailman-Rule-Hits: max-recipients
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 2/3] ASoC: loongson: Add Loongson Generic ASoC Sound Card
+ Support
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+ loongson-kernel@lists.loongnix.cn
+References: <20230605120934.2306548-1-mengyingkun@loongson.cn>
+ <20230605120934.2306548-2-mengyingkun@loongson.cn>
+ <aa8381b5-0a3b-4a64-8c92-333ad751956b@sirena.org.uk>
+From: YingKun Meng <mengyingkun@loongson.cn>
+In-Reply-To: <aa8381b5-0a3b-4a64-8c92-333ad751956b@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8DxK8o9o4Jk_bMJAA--.21398S3
+X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQARDGSBxQEP2gABsp
+X-Coremail-Antispam: 1Uk129KBj93XoWrKw4rXr1kWrWxKF1UAr1kWFX_yoW8Jr1xpF
+	WjyFyjyF9xWF1qyrn5Ww4UZa4vyrWavw15Jw18GF1ag3s5ZFyfKr4fKFyYqayrCr92yFW2
+	vF4jgrZ5AryDWFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
+	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
+	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jeq2NUUU
+	UU=
+X-MailFrom: mengyingkun@loongson.cn
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: L2BH6KCNMC6VW6VT7WM2SJ4IUDOWM743
-X-Message-ID-Hash: L2BH6KCNMC6VW6VT7WM2SJ4IUDOWM743
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: EQ4A2ZKMLC2H3KQDMP5URM62XF5GXC36
+X-Message-ID-Hash: EQ4A2ZKMLC2H3KQDMP5URM62XF5GXC36
 X-Mailman-Approved-At: Fri, 09 Jun 2023 14:48:52 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L2BH6KCNMC6VW6VT7WM2SJ4IUDOWM743/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EQ4A2ZKMLC2H3KQDMP5URM62XF5GXC36/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -147,27 +101,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Quoting Maxime Ripard (2023-05-05 04:25:02)
-> Hi,
->=20
-> This is a follow-up to a previous series that was printing a warning
-> when a mux has a set_parent implementation but is missing
-> determine_rate().
->=20
-> The rationale is that set_parent() is very likely to be useful when
-> changing the rate, but it's determine_rate() that takes the parenting
-> decision. If we're missing it, then the current parent is always going
-> to be used, and thus set_parent() will not be used. The only exception
-> being a direct call to clk_set_parent(), but those are fairly rare
-> compared to clk_set_rate().
->=20
-> Stephen then asked to promote the warning to an error, and to fix up all
-> the muxes that are in that situation first. So here it is :)
->=20
+Hi Brown,
 
-I've applied this to clk-next after squashing in an export. Thanks for
-taking this on.
+Thanks for your kindly work.
 
-I'll have to monitor for wreckage with any in-flight drivers. I suspect
-I'll have to take out the last commit, but maybe we can just let those
-in-flight drivers get fixed up later.
+On 2023/6/5 20:47, Mark Brown wrote:
+> On Mon, Jun 05, 2023 at 08:09:33PM +0800, YingKun Meng wrote:
+>
+>> The driver supports the use of ACPI table to describe device resources.
+>> On loongson 7axxx platforms, the audio device is an ACPI device.
+> I'm not seeing any ACPI IDs added here, this is all DT other than this:
+
+I use the special ACPI ID "PRP0001", it provides a means to use the existing
+
+DT-compatible device identification in ACPI.
+
+As described in the document "ACPI Based Device Enumeration".
+
+>> +	if (has_acpi_companion(&pdev->dev)) {
+>> +		device_property_read_string(&pdev->dev, "codec-name",
+>> +						&codec_name);
+>> +		for (i = 0; i < card->num_links; i++)
+>> +			loongson_dai_links[i].codecs->name = codec_name;
+>> +
+>> +		device_property_read_string(&pdev->dev, "codec-dai-name",
+>> +						&codec_dai_name);
+>> +		for (i = 0; i < card->num_links; i++)
+>> +			loongson_dai_links[i].codecs->dai_name = codec_dai_name;
+>> +	} else {
+> which doesn't look *great* from an ACPI point of view TBH.  I thought
+> there were now some (semi?) standard ACPI bindings these days to support
+> referencing other devices better?
+Got it! I will rewrite this part.
+
