@@ -4,73 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74FA5C7EE2E
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 12:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64F17C7EE29
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 12:15:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E2AA836;
-	Fri,  9 Jun 2023 14:04:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E2AA836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DFA120C;
+	Fri,  9 Jun 2023 14:14:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DFA120C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686312329;
-	bh=YsWnf1FopHn7KWjdE5iAPcxo4TT2Yn9z9cA89MtOOvg=;
+	s=default; t=1686312932;
+	bh=uEkHK/OWnkh6TBr8Tflth6P5jYUmDTQTMsMjbj0gNak=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=s8QCJxhwO40NeU/9FzjMkrXK2h1B+R7DfTP5m4By4GSv3my6xhnsg7JmEArjjvnBt
-	 U35J4pQ039B0R9O5C+Nju9obbm+qgQ4eLdLtqKUOS7uy4SjTKXl1tItZ9PTZtMj7ou
-	 QLbZ7wuIGrZn7T/ycqRTvxBhIvTl+vYK7BGwdqAs=
+	b=MVKbYrka5l0uXWJi/UQpQ2KJ09aGSWk2WMDtWYPEkt3jDS912voIvJOyneuRJHzhe
+	 oUBb+InGythXvcVqihZ+UqA366i7QPDcKjc94LDtcKFqGUvnaP3g5t6bJndNqGjiUI
+	 qBPTtvumGqf7U54BU6W5LNcYyVOwn5knnG/QR/Ps=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9204FF80589; Fri,  9 Jun 2023 14:03:40 +0200 (CEST)
+	id A06DAF8016C; Fri,  9 Jun 2023 14:14:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1593EF8057A;
-	Fri,  9 Jun 2023 14:03:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5406EF800C8;
+	Fri,  9 Jun 2023 14:14:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8969EF80254; Fri,  9 Jun 2023 14:03:34 +0200 (CEST)
+	id 37431F80199; Fri,  9 Jun 2023 14:14:37 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AA78BF8016C
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 14:03:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA78BF8016C
+	by alsa1.perex.cz (Postfix) with ESMTPS id ECD6BF800C8
+	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 14:14:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECD6BF800C8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=m8JpU8Y2
+ header.s=k20201202 header.b=SETVrGFe
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 7CAF160C0F;
-	Fri,  9 Jun 2023 12:03:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 631D8C4339B;
-	Fri,  9 Jun 2023 12:03:17 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 64044615A1;
+	Fri,  9 Jun 2023 12:14:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30DC8C433D2;
+	Fri,  9 Jun 2023 12:14:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686312197;
-	bh=YsWnf1FopHn7KWjdE5iAPcxo4TT2Yn9z9cA89MtOOvg=;
+	s=k20201202; t=1686312871;
+	bh=uEkHK/OWnkh6TBr8Tflth6P5jYUmDTQTMsMjbj0gNak=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=m8JpU8Y243ld0lalorof5UWS+DnwbHjUZpGsc2dSn/omWS7umFZKlik0QIhNxG/sh
-	 nc/7dB8aqydCLuVDZ2Nw4nAjaOWZUOnmFhAcs2kJwWW3/G8Ueh39ZyfE8gHkmzNoxf
-	 /2/ZvyDqR4e/OlO1x41QCobrFUhk99kjJgqLoLs1pZQEyOocm+07qcboCNjDnqtsEO
-	 wIC3Ps3P1XfxaDh3fsZIBeiAf3/XH/ZlDK/l2gRz9GuFcenxr5yn74zQKK5X/zTSh1
-	 65TKAUk+vxUa1dfTpJB7XZMf+3x4e44ZxcypZd/C9WSB4b2IQSXbL4DOTZBSqAlYgd
-	 RzWYarJ1pE8Lw==
+	b=SETVrGFe66DeI9nDQrp9PDzhE14TlMnCnBvWMHQ/nPJb9roX+1jNaMI5zJsNhhxVq
+	 HmIvOmR3qqU3ZNKi+qgWOB/19H5DVN+M4CP5I8Cb9EoSIOmZ7/AFy5J+ex8OOqve9m
+	 K9Wo2iLgFdPQrsGvtnXVMJ33IVIaTtF1hvugL6gEqhl094LyGYjgAgGOwzLrUdzFDi
+	 aWKa98PyqnFvhdmgV/SWzbhwqAo8Y2RTotx+gEMXiRKCxRwUAHJZeDpSRRK0ar8fCC
+	 LESA1UpBK1eJ003zMU1EZ/DgfneDbojR3eLLXssIcpjNKKF3gmEt9/R2GyqN03HQGm
+	 868D2dF3WfNdw==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-In-Reply-To: <87ilbx1kh3.wl-kuninori.morimoto.gx@renesas.com>
-References: <87ilbx1kh3.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: audio-graph-card2-custom-sample: add missing
- CPU:Codec = 1:N sample
-Message-Id: <168631219712.40482.16853969366597236029.b4-ty@kernel.org>
-Date: Fri, 09 Jun 2023 13:03:17 +0100
+To: Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Jaroslav Kysela <perex@perex.cz>,
+ Walker Chen <walker.chen@starfivetech.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230608135750.11041-1-walker.chen@starfivetech.com>
+References: <20230608135750.11041-1-walker.chen@starfivetech.com>
+Subject: Re: [PATCH v2 0/2] Fix error check and cleanup for JH7110 TDM
+Message-Id: <168631286990.42950.16318348817986270915.b4-ty@kernel.org>
+Date: Fri, 09 Jun 2023 13:14:29 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: 35C6NG5BI7Z244VIQXXB5AF43VVJE7WT
-X-Message-ID-Hash: 35C6NG5BI7Z244VIQXXB5AF43VVJE7WT
+Message-ID-Hash: UOKGZRWUAYH5BGZUGMGZWP752DVBRZL4
+X-Message-ID-Hash: UOKGZRWUAYH5BGZUGMGZWP752DVBRZL4
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/35C6NG5BI7Z244VIQXXB5AF43VVJE7WT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UOKGZRWUAYH5BGZUGMGZWP752DVBRZL4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,13 +95,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 09 Jun 2023 01:40:41 +0000, Kuninori Morimoto wrote:
-> It has CPU:Codec = 1:1 and N:N samples, but missing 1:N settings.
-> This patch adds it.
+On Thu, 08 Jun 2023 21:57:48 +0800, Walker Chen wrote:
+> Some minor issues were found during addtional testing and static
+> analysis. The first patch fix the error check for the return value of
+> devm_reset_control_array_get_exclusive(). The second patch drop some
+> unused macros.
 > 
-> One note here is that because of registering timing, probing and
-> CPU/Codec numbering are mismatching.
-> 
+> Fixes: fd4762b6b5cf ("ASoC: starfive: Add JH7110 TDM driver")
 > 
 > [...]
 
@@ -108,8 +111,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: audio-graph-card2-custom-sample: add missing CPU:Codec = 1:N sample
-      commit: ca27441efe696a8990858156c6c332e786c30b4a
+[1/2] ASoC: starfive: Fix an error check in jh7110_tdm_clk_reset_get()
+      commit: 3582cf94ff49469ffe78e96014550f7d4e466fbd
+[2/2] ASoC: starfive: Remove some unused macros
+      commit: 8bd81864533bd02d6922deadeed643c813dfe142
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
