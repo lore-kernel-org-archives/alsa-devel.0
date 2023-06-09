@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7D9DC7EE2F
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:56:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8ACFC7EE29
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:56:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8896E93;
-	Fri,  9 Jun 2023 16:55:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8896E93
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFE74E80;
+	Fri,  9 Jun 2023 16:55:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFE74E80
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686322568;
-	bh=swPdvsYTKlEmkM0HgKJRO4O3bGsqf+vXLPLn7l+pdUk=;
+	s=default; t=1686322587;
+	bh=tqTDWASfrvgDbmEkW0f1FpCMUrobXpoIviF76PAgzZg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=oEx6VQZ1BJBMqt96dYDdOmkqOIuSXgKor9GJs2H9InWud7gzacR9sdWeWNQjI4w/f
-	 1wM9tlSTsvek20V4ANV6vCXk/DwjMWBvTBSZyLSITfcTI70QhmIKPPpuTvjRSdSnio
-	 MyZQ19E55C8LVw7G9f4W2C882OVMYUdfF0O/La90=
+	b=EeZxHecM0tI4a0mDKbo2Ufvpl8hMxMXIhis4VcAYQ2FRBMOadDPlOGkIG3cqAfV2u
+	 Bi30Awmyzauo+aESqpINAlEXDkdUMRyFhkbAH02dqhbvWBv/jFu4FeHQYgXJjPe9vD
+	 mcWs+3S5HhLfLEFwJcruS1qA6QmMyUNeK7NXwhis=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 52F47F80588; Fri,  9 Jun 2023 16:54:40 +0200 (CEST)
+	id D7143F8058C; Fri,  9 Jun 2023 16:54:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE09CF8057F;
-	Fri,  9 Jun 2023 16:54:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5374BF805B2;
+	Fri,  9 Jun 2023 16:54:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C9C42F80290; Fri,  9 Jun 2023 16:54:31 +0200 (CEST)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
+	id 99F77F80290; Fri,  9 Jun 2023 16:54:32 +0200 (CEST)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com
+ [IPv6:2a00:1450:4864:20::134])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5CA94F80551
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 16:54:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CA94F80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id D852EF80544
+	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 16:54:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D852EF80544
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=TAMGIEEE
-Received: by mail-lf1-x12e.google.com with SMTP id
- 2adb3069b0e04-4f644dffd71so2421434e87.1
+ header.s=google header.b=BwMDi6uc
+Received: by mail-lf1-x134.google.com with SMTP id
+ 2adb3069b0e04-4f644dffd71so2421590e87.1
         for <alsa-devel@alsa-project.org>;
- Fri, 09 Jun 2023 07:54:25 -0700 (PDT)
+ Fri, 09 Jun 2023 07:54:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686322464; x=1688914464;
+        d=linaro.org; s=google; t=1686322466; x=1688914466;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9JFL8jNKRrHzDOE8BEGRQfXvBY019VxhOr2ufujXe1U=;
-        b=TAMGIEEEJ9RK7aLUsa41oSkhZHSOgLJAFbWtA+9s51ls33ee6pMORTpWGF/vZdU2gS
-         gX6ctJNYfSr84xx7f1gYCP+NUG0GaOJcKqEj5Rvw5ts48+CHxWDhqnIoouR/pGzWLzfh
-         oseIe/J6D7bP/DLWGWniAZ/J4/BVAJ6md/8iTl5EIt8XgMMfcls6MnZI5N3lo2FaW18o
-         IFphiRlsuDd1+A8ynDrSUVtFyFjX6Ca4c5sZL0Shih92VJPwyPpnxMtsAgE4SL6yw7IS
-         KPe9MK+Bwl8P01Fpfl1j4qph41SFW9MJjKfX6D8uJpgLhMGNTaQsW8+5RyGxS3TgYbAm
-         N+vA==
+        bh=1BtEBe2KiptIwTf8OQC3A599yqS9fPvPypfh6VxvoyE=;
+        b=BwMDi6ucjw7EI9vmSDPSly0MyfJynfVsfquS5N/1+eXdBT9lxlub2WxQaChzZ6Zalf
+         a4d1BHgOBD0LKxR8H5VAft8j18rvi8a7odq6I7ybEjANYsJgnD/A4eRN8Cra/3ho+YBa
+         T4/VzDyM7t5exFA0fR5cXTArHIZJjocNUhneCyHy6bpWFBcX25d7NFLN7q06ky14vKGT
+         f1cM5Z+4do+wlw826xymWNp1aiGGEeL7M2j1domlnxXwh61Vt5a2zyWRyigad6JwasN1
+         t3tE900VgWWIPLgd9pJKUF1qFiVGntyhPK1bR9NWxEXVHML7bZo3uKEOB5Q4hQF2YbGU
+         sG6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686322464; x=1688914464;
+        d=1e100.net; s=20221208; t=1686322466; x=1688914466;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9JFL8jNKRrHzDOE8BEGRQfXvBY019VxhOr2ufujXe1U=;
-        b=jqV8Fh3qez1Cz1rn2rhtDiphqpvorYlMkXPTTTVvIOzuCLe/wojDo7tpA+qBjKBLV6
-         4hkgOPE0W2ybFW6evlOL73bxoACqJCvVVy+QzWjY115/F52/afFjIx0kkX4fToXAlg5Q
-         AhSqrIjkQ0kBdeJ8MgHeEYqWVtrM3hfSYODz+n9D0H+PVhjpKm7MqoQBAUZE7+4+0omF
-         lQjDgOdKsluZrYbn/01m9QUTylWiqfv7fhgmcfcqokDdrx7WJ+z1JXH/W6SpYOM+Jxn4
-         0xXjzPCN6EuTaU8wYgxu6Z73hPhgiaKRpFIvSccGzCGvJ24JH4H56s2PVsxVbyd+CQHs
-         oonA==
-X-Gm-Message-State: AC+VfDxif7l5ax8ZEofFM8lF7ukkOsq/WFcZdTDsOqzg14lIJhPpe6rs
-	HLDJzE9dQqE6dDrIM1Yl0tTVUQ==
+        bh=1BtEBe2KiptIwTf8OQC3A599yqS9fPvPypfh6VxvoyE=;
+        b=D8NUkYk6dEKnrw8Dx9ZEO3aLPB5PLX16UnhX++kdwvZ23LCCDozECi8qj67V/ByjvE
+         L4gNJ/4T1PD3ddyHoNVyahwzKkkBiku1tVyIAXVVyv1MDNaYoRsg0O8j3m3DJFfXBhqb
+         8ygYIysNUaXMW5ZfwSqlvRuiXjaGCI1M4MYQHaCC+gIN/DVkGd9i7lzvSZVmAUOufQ/0
+         PasDsuEIP5EQgVWUZNs3tyd4xJtHgPCVdPcjRk5LNVCOZjaA7ajT8gUlXPk7QYI2quNQ
+         AUVXlzG1Izg7Im4qGOxwPC6veHgo6NTiYQ9aukjxgfll9qilPRba+LOXvKDSEmSUCmtU
+         uw1w==
+X-Gm-Message-State: AC+VfDzR5XNPf1NgCZej66Syv2QaoDMjuMkJlj9DOadI4AlAVuroP/GX
+	jgKoFaM5tDJYhICYMCDbDTX+gw==
 X-Google-Smtp-Source: 
- ACHHUZ6ugyraOH0v8OYLxzLAY3Eq/p7st4i1LSwVEOuLuJ6w66qloZAfiplZ6C6zy8D5yeLp2D85Tw==
-X-Received: by 2002:a05:6512:521:b0:4f4:d41b:f421 with SMTP id
- o1-20020a056512052100b004f4d41bf421mr1328843lfc.33.1686322463902;
-        Fri, 09 Jun 2023 07:54:23 -0700 (PDT)
+ ACHHUZ5xAWwhl1lYGznngZ2YV3gAxOGrpQF8T5BCtHwbZZN+DOxnsvCsL1MRjJd9p4IQcYzOrAGr8A==
+X-Received: by 2002:a05:6512:328c:b0:4f2:53ab:8a2d with SMTP id
+ p12-20020a056512328c00b004f253ab8a2dmr1157879lfe.4.1686322466679;
+        Fri, 09 Jun 2023 07:54:26 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- c21-20020a05600c0ad500b003f7310a3ffasm2946632wmr.2.2023.06.09.07.54.20
+ c21-20020a05600c0ad500b003f7310a3ffasm2946632wmr.2.2023.06.09.07.54.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jun 2023 07:54:21 -0700 (PDT)
+        Fri, 09 Jun 2023 07:54:26 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
 Cc: perex@perex.cz,
@@ -91,18 +91,19 @@ Cc: perex@perex.cz,
 	linux-kernel@vger.kernel.org,
 	pierre-louis.bossart@linux.intel.com,
 	alsa-devel@alsa-project.org,
+	Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 03/11] ASoC: q6dsp: audioreach: add helper function to set
- u32 param
-Date: Fri,  9 Jun 2023 15:53:59 +0100
-Message-Id: <20230609145407.18774-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 05/11] ASoC: q6dsp: audioreach: Add support to set compress
+ format params
+Date: Fri,  9 Jun 2023 15:54:01 +0100
+Message-Id: <20230609145407.18774-6-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230609145407.18774-1-srinivas.kandagatla@linaro.org>
 References: <20230609145407.18774-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6VFH2EP5TRFAW4IMWTQLRBL52XUT2AT5
-X-Message-ID-Hash: 6VFH2EP5TRFAW4IMWTQLRBL52XUT2AT5
+Message-ID-Hash: FBIOUJB5U6BELZQ2XF7QGLW7FIB7HMFG
+X-Message-ID-Hash: FBIOUJB5U6BELZQ2XF7QGLW7FIB7HMFG
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -115,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6VFH2EP5TRFAW4IMWTQLRBL52XUT2AT5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FBIOUJB5U6BELZQ2XF7QGLW7FIB7HMFG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,169 +125,252 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some of the Audioreach commands take a u32 value,
-ex: PARAM_ID_MODULE_ENABLE.
+From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 
-It makes more sense to provide a helper function so that other new
-commands can reuse this.
+Add function for setting compress params.
 
+Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+Co-developed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/audioreach.c | 100 +++++++-----------------------
- sound/soc/qcom/qdsp6/audioreach.h |   2 +
- 2 files changed, 26 insertions(+), 76 deletions(-)
+ sound/soc/qcom/qdsp6/audioreach.c | 139 ++++++++++++++++++++++++++----
+ sound/soc/qcom/qdsp6/audioreach.h |  28 ++++++
+ sound/soc/qcom/qdsp6/q6apm-dai.c  |   1 +
+ 3 files changed, 149 insertions(+), 19 deletions(-)
 
 diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
-index 8d9410dcbd45..0acd4a75d5cd 100644
+index 0acd4a75d5cd..6d0f4c8505f1 100644
 --- a/sound/soc/qcom/qdsp6/audioreach.c
 +++ b/sound/soc/qcom/qdsp6/audioreach.c
-@@ -732,33 +732,32 @@ static int audioreach_codec_dma_set_media_format(struct q6apm_graph *graph,
+@@ -834,6 +834,99 @@ static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
  	return rc;
  }
  
--static int audioreach_sal_limiter_enable(struct q6apm_graph *graph,
--					 struct audioreach_module *module, bool enable)
-+int audioreach_send_u32_param(struct q6apm_graph *graph, struct audioreach_module *module,
-+			      uint32_t param_id, uint32_t param_val)
- {
- 	struct apm_module_param_data *param_data;
--	struct param_id_sal_limiter_enable *limiter_enable;
--	int payload_size;
- 	struct gpr_pkt *pkt;
--	int rc;
-+	uint32_t *param;
-+	int rc, payload_size;
- 	void *p;
- 
--	payload_size = sizeof(*limiter_enable) + APM_MODULE_PARAM_DATA_SIZE;
--
--	pkt = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
--	if (IS_ERR(pkt))
--		return PTR_ERR(pkt);
-+	payload_size = sizeof(uint32_t) + APM_MODULE_PARAM_DATA_SIZE;
-+	p = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
-+	if (IS_ERR(p))
-+		return -ENOMEM;
- 
--	p = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-+	pkt = p;
-+	p = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
- 
- 	param_data = p;
- 	param_data->module_instance_id = module->instance_id;
- 	param_data->error_code = 0;
--	param_data->param_id = PARAM_ID_SAL_LIMITER_ENABLE;
--	param_data->param_size = sizeof(*limiter_enable);
--	p = p + APM_MODULE_PARAM_DATA_SIZE;
--	limiter_enable = p;
-+	param_data->param_id = param_id;
-+	param_data->param_size = sizeof(uint32_t);
- 
--	limiter_enable->enable_lim = enable;
-+	p = p + APM_MODULE_PARAM_DATA_SIZE;
-+	param = p;
-+	*param = param_val;
- 
- 	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
- 
-@@ -766,77 +765,26 @@ static int audioreach_sal_limiter_enable(struct q6apm_graph *graph,
- 
- 	return rc;
- }
-+EXPORT_SYMBOL_GPL(audioreach_send_u32_param);
-+
-+static int audioreach_sal_limiter_enable(struct q6apm_graph *graph,
-+					 struct audioreach_module *module, bool enable)
++static int audioreach_set_compr_media_format(struct media_format *media_fmt_hdr,
++					     void *p, struct audioreach_module_config *mcfg)
 +{
-+	return audioreach_send_u32_param(graph, module, PARAM_ID_SAL_LIMITER_ENABLE, enable);
++	struct payload_media_fmt_aac_t *aac_cfg;
++	struct payload_media_fmt_pcm *mp3_cfg;
++	struct payload_media_fmt_flac_t *flac_cfg;
++
++	switch (mcfg->fmt) {
++	case SND_AUDIOCODEC_MP3:
++		media_fmt_hdr->data_format = DATA_FORMAT_RAW_COMPRESSED;
++		media_fmt_hdr->fmt_id = MEDIA_FMT_ID_MP3;
++		media_fmt_hdr->payload_size = 0;
++		p = p + sizeof(*media_fmt_hdr);
++		mp3_cfg = p;
++		mp3_cfg->sample_rate = mcfg->sample_rate;
++		mp3_cfg->bit_width = mcfg->bit_width;
++		mp3_cfg->alignment = PCM_LSB_ALIGNED;
++		mp3_cfg->bits_per_sample = mcfg->bit_width;
++		mp3_cfg->q_factor = mcfg->bit_width - 1;
++		mp3_cfg->endianness = PCM_LITTLE_ENDIAN;
++		mp3_cfg->num_channels = mcfg->num_channels;
++
++		if (mcfg->num_channels == 1) {
++			mp3_cfg->channel_mapping[0] =  PCM_CHANNEL_L;
++		} else if (mcfg->num_channels == 2) {
++			mp3_cfg->channel_mapping[0] =  PCM_CHANNEL_L;
++			mp3_cfg->channel_mapping[1] =  PCM_CHANNEL_R;
++		}
++		break;
++	case SND_AUDIOCODEC_AAC:
++		media_fmt_hdr->data_format = DATA_FORMAT_RAW_COMPRESSED;
++		media_fmt_hdr->fmt_id = MEDIA_FMT_ID_AAC;
++		media_fmt_hdr->payload_size = sizeof(struct payload_media_fmt_aac_t);
++		p = p + sizeof(*media_fmt_hdr);
++		aac_cfg = p;
++		aac_cfg->aac_fmt_flag = 0;
++		aac_cfg->audio_obj_type = 5;
++		aac_cfg->num_channels = mcfg->num_channels;
++		aac_cfg->total_size_of_PCE_bits = 0;
++		aac_cfg->sample_rate = mcfg->sample_rate;
++		break;
++	case SND_AUDIOCODEC_FLAC:
++		media_fmt_hdr->data_format = DATA_FORMAT_RAW_COMPRESSED;
++		media_fmt_hdr->fmt_id = MEDIA_FMT_ID_FLAC;
++		media_fmt_hdr->payload_size = sizeof(struct payload_media_fmt_flac_t);
++		p = p + sizeof(*media_fmt_hdr);
++		flac_cfg = p;
++		flac_cfg->sample_size = mcfg->codec.options.flac_d.sample_size;
++		flac_cfg->num_channels = mcfg->num_channels;
++		flac_cfg->min_blk_size = mcfg->codec.options.flac_d.min_blk_size;
++		flac_cfg->max_blk_size = mcfg->codec.options.flac_d.max_blk_size;
++		flac_cfg->sample_rate = mcfg->sample_rate;
++		flac_cfg->min_frame_size = mcfg->codec.options.flac_d.min_frame_size;
++		flac_cfg->max_frame_size = mcfg->codec.options.flac_d.max_frame_size;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
 +}
- 
- static int audioreach_sal_set_media_format(struct q6apm_graph *graph,
++
++int audioreach_compr_set_param(struct q6apm_graph *graph, struct audioreach_module_config *mcfg)
++{
++	struct media_format *header;
++	struct gpr_pkt *pkt;
++	int iid, payload_size, rc;
++	void *p;
++
++	payload_size = sizeof(struct apm_sh_module_media_fmt_cmd);
++
++	iid = q6apm_graph_get_rx_shmem_module_iid(graph);
++	pkt = audioreach_alloc_cmd_pkt(payload_size, DATA_CMD_WR_SH_MEM_EP_MEDIA_FORMAT,
++			0, graph->port->id, iid);
++
++	if (IS_ERR(pkt))
++		return -ENOMEM;
++
++	p = (void *)pkt + GPR_HDR_SIZE;
++	header = p;
++	rc = audioreach_set_compr_media_format(header, p, mcfg);
++	if (rc) {
++		kfree(pkt);
++		return rc;
++	}
++
++	rc = gpr_send_port_pkt(graph->port, pkt);
++	kfree(pkt);
++
++	return rc;
++}
++EXPORT_SYMBOL_GPL(audioreach_compr_set_param);
++
+ static int audioreach_i2s_set_media_format(struct q6apm_graph *graph,
  					   struct audioreach_module *module,
  					   struct audioreach_module_config *cfg)
- {
--	struct apm_module_param_data *param_data;
--	struct param_id_sal_output_config *media_format;
--	int payload_size;
--	struct gpr_pkt *pkt;
--	int rc;
--	void *p;
--
--	payload_size = sizeof(*media_format) + APM_MODULE_PARAM_DATA_SIZE;
--
--	pkt = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
--	if (IS_ERR(pkt))
--		return PTR_ERR(pkt);
--
--	p = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
--
--	param_data = p;
--	param_data->module_instance_id = module->instance_id;
--	param_data->error_code = 0;
--	param_data->param_id = PARAM_ID_SAL_OUTPUT_CFG;
--	param_data->param_size = sizeof(*media_format);
--	p = p + APM_MODULE_PARAM_DATA_SIZE;
--	media_format = p;
--
--	media_format->bits_per_sample = cfg->bit_width;
--
--	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
--
--	kfree(pkt);
--
--	return rc;
-+	return audioreach_send_u32_param(graph, module, PARAM_ID_SAL_OUTPUT_CFG,  cfg->bit_width);
- }
+@@ -1037,25 +1130,33 @@ static int audioreach_shmem_set_media_format(struct q6apm_graph *graph,
+ 	p = p + APM_MODULE_PARAM_DATA_SIZE;
  
- static int audioreach_module_enable(struct q6apm_graph *graph,
- 				    struct audioreach_module *module,
- 				    bool enable)
- {
--	struct apm_module_param_data *param_data;
--	struct param_id_module_enable *param;
--	int payload_size;
--	struct gpr_pkt *pkt;
--	int rc;
--	void *p;
+ 	header = p;
+-	header->data_format = DATA_FORMAT_FIXED_POINT;
+-	header->fmt_id = MEDIA_FMT_ID_PCM;
+-	header->payload_size = payload_size - sizeof(*header);
 -
--	payload_size = sizeof(*param) + APM_MODULE_PARAM_DATA_SIZE;
+-	p = p + sizeof(*header);
+-	cfg = p;
+-	cfg->sample_rate = mcfg->sample_rate;
+-	cfg->bit_width = mcfg->bit_width;
+-	cfg->alignment = PCM_LSB_ALIGNED;
+-	cfg->bits_per_sample = mcfg->bit_width;
+-	cfg->q_factor = mcfg->bit_width - 1;
+-	cfg->endianness = PCM_LITTLE_ENDIAN;
+-	cfg->num_channels = mcfg->num_channels;
 -
--	pkt = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
--	if (IS_ERR(pkt))
--		return PTR_ERR(pkt);
--
--	p = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
--
--	param_data = p;
--	param_data->module_instance_id = module->instance_id;
--	param_data->error_code = 0;
--	param_data->param_id = PARAM_ID_MODULE_ENABLE;
--	param_data->param_size = sizeof(*param);
--	p = p + APM_MODULE_PARAM_DATA_SIZE;
--	param = p;
--
--	param->enable = enable;
--
--	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
--
--	kfree(pkt);
--
--	return rc;
-+	return audioreach_send_u32_param(graph, module, PARAM_ID_MODULE_ENABLE, enable);
- }
+-	if (mcfg->num_channels == 1) {
+-		cfg->channel_mapping[0] =  PCM_CHANNEL_L;
+-	} else if (num_channels == 2) {
+-		cfg->channel_mapping[0] =  PCM_CHANNEL_L;
+-		cfg->channel_mapping[1] =  PCM_CHANNEL_R;
++	if (mcfg->fmt == SND_AUDIOCODEC_PCM) {
++		header->data_format = DATA_FORMAT_FIXED_POINT;
++		header->fmt_id =  MEDIA_FMT_ID_PCM;
++		header->payload_size = payload_size - sizeof(*header);
++
++		p = p + sizeof(*header);
++		cfg = p;
++		cfg->sample_rate = mcfg->sample_rate;
++		cfg->bit_width = mcfg->bit_width;
++		cfg->alignment = PCM_LSB_ALIGNED;
++		cfg->bits_per_sample = mcfg->bit_width;
++		cfg->q_factor = mcfg->bit_width - 1;
++		cfg->endianness = PCM_LITTLE_ENDIAN;
++		cfg->num_channels = mcfg->num_channels;
++
++		if (mcfg->num_channels == 1)
++			cfg->channel_mapping[0] =  PCM_CHANNEL_L;
++		else if (num_channels == 2) {
++			cfg->channel_mapping[0] =  PCM_CHANNEL_L;
++			cfg->channel_mapping[1] =  PCM_CHANNEL_R;
++		}
++	} else {
++		rc = audioreach_set_compr_media_format(header, p, mcfg);
++		if (rc) {
++			kfree(pkt);
++			return rc;
++		}
+ 	}
  
- static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
+ 	rc = audioreach_graph_send_cmd_sync(graph, pkt, 0);
 diff --git a/sound/soc/qcom/qdsp6/audioreach.h b/sound/soc/qcom/qdsp6/audioreach.h
-index 3ebb81cd7cb0..18d8d243b06b 100644
+index c4e03a49ac82..dc089879b501 100644
 --- a/sound/soc/qcom/qdsp6/audioreach.h
 +++ b/sound/soc/qcom/qdsp6/audioreach.h
-@@ -752,4 +752,6 @@ int audioreach_set_media_format(struct q6apm_graph *graph,
- int audioreach_shared_memory_send_eos(struct q6apm_graph *graph);
- int audioreach_gain_set_vol_ctrl(struct q6apm *apm,
+@@ -148,12 +148,15 @@ struct param_id_enc_bitrate_param {
+ } __packed;
+ 
+ #define DATA_FORMAT_FIXED_POINT		1
++#define DATA_FORMAT_GENERIC_COMPRESSED	5
++#define DATA_FORMAT_RAW_COMPRESSED	6
+ #define PCM_LSB_ALIGNED			1
+ #define PCM_MSB_ALIGNED			2
+ #define PCM_LITTLE_ENDIAN		1
+ #define PCM_BIT_ENDIAN			2
+ 
+ #define MEDIA_FMT_ID_PCM	0x09001000
++#define MEDIA_FMT_ID_MP3	0x09001009
+ #define PCM_CHANNEL_L		1
+ #define PCM_CHANNEL_R		2
+ #define SAMPLE_RATE_48K		48000
+@@ -231,6 +234,28 @@ struct apm_media_format {
+ 	uint32_t payload_size;
+ } __packed;
+ 
++#define MEDIA_FMT_ID_FLAC	0x09001004
++
++struct payload_media_fmt_flac_t {
++	uint16_t num_channels;
++	uint16_t sample_size;
++	uint16_t min_blk_size;
++	uint16_t max_blk_size;
++	uint32_t sample_rate;
++	uint32_t min_frame_size;
++	uint32_t max_frame_size;
++} __packed;
++
++#define MEDIA_FMT_ID_AAC	0x09001001
++
++struct payload_media_fmt_aac_t {
++	uint16_t aac_fmt_flag;
++	uint16_t audio_obj_type;
++	uint16_t num_channels;
++	uint16_t total_size_of_PCE_bits;
++	uint32_t sample_rate;
++} __packed;
++
+ #define DATA_CMD_WR_SH_MEM_EP_EOS			0x04001002
+ #define WR_SH_MEM_EP_EOS_POLICY_LAST	1
+ #define WR_SH_MEM_EP_EOS_POLICY_EACH	2
+@@ -730,6 +755,7 @@ struct audioreach_module_config {
+ 	u32	channel_allocation;
+ 	u32	sd_line_mask;
+ 	int	fmt;
++	struct snd_codec codec;
+ 	u8 channel_map[AR_PCM_MAX_NUM_CHANNEL];
+ };
+ 
+@@ -768,4 +794,6 @@ int audioreach_gain_set_vol_ctrl(struct q6apm *apm,
  				 struct audioreach_module *module, int vol);
-+int audioreach_send_u32_param(struct q6apm_graph *graph, struct audioreach_module *module,
-+			      uint32_t param_id, uint32_t param_val);
+ int audioreach_send_u32_param(struct q6apm_graph *graph, struct audioreach_module *module,
+ 			      uint32_t param_id, uint32_t param_val);
++int audioreach_compr_set_param(struct q6apm_graph *graph, struct audioreach_module_config *mcfg);
++
  #endif /* __AUDIOREACH_H__ */
+diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
+index 7f02f5b2c33f..9fff41ee98eb 100644
+--- a/sound/soc/qcom/qdsp6/q6apm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
+@@ -155,6 +155,7 @@ static int q6apm_dai_prepare(struct snd_soc_component *component,
+ 	cfg.sample_rate = runtime->rate;
+ 	cfg.num_channels = runtime->channels;
+ 	cfg.bit_width = prtd->bits_per_sample;
++	cfg.fmt = SND_AUDIOCODEC_PCM;
+ 
+ 	if (prtd->state) {
+ 		/* clear the previous setup if any  */
 -- 
 2.21.0
 
