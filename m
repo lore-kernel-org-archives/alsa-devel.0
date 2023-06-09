@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55D70C7EE29
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:55:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10080C7EE29
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Jun 2023 14:56:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8545E6C0;
-	Fri,  9 Jun 2023 16:54:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8545E6C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B341E81;
+	Fri,  9 Jun 2023 16:55:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B341E81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686322535;
-	bh=2KkWUHZ625w/PEVR+S3+jP7sIsSrnVNvwB2zLhROWGI=;
+	s=default; t=1686322565;
+	bh=Z4aZ7UoieQXmMmJvAM7v7QCJvzDxN0YKXHOpaKVcrXU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gbAgw+2XuihK6+gjeZccSbKRdcI7ii5+9jRzcnR7Z8svx7oVzrRLoylbKSyfPZ0+S
-	 HfmrFY5WbxLOV3/har6sa6OtAH2PBU9NCysM4JVBDF64W5sw27aozVzeL2bjSaIfbw
-	 nefNjMtpQAhVxVdf7Uo0HP/fuMM/B4iFIV8pTbuk=
+	b=TUiVKT7xo411T1xZWN2s18Oc+9UvWCEBXu+05wG1Pu9WOr8h7InbmuSkU3Si6CgUY
+	 5AiDldb6Z/2uQ1YbkLUg2nINoxUbLwXRnswQiF1kLNLxUY+EAOx/sbQrMr8VYgHzVT
+	 0P/GR2kEjlOSJMX1g5RoSiPrgiLdNdWXT1WDeLhg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2ED7CF80558; Fri,  9 Jun 2023 16:54:34 +0200 (CEST)
+	id 4B7B7F8057E; Fri,  9 Jun 2023 16:54:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 941FFF80199;
-	Fri,  9 Jun 2023 16:54:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F9E0F8056F;
+	Fri,  9 Jun 2023 16:54:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48D1CF80558; Fri,  9 Jun 2023 16:54:28 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+	id 64A03F80494; Fri,  9 Jun 2023 16:54:31 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EC46BF80549
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 16:54:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC46BF80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id CEAADF800ED
+	for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2023 16:54:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEAADF800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=ONwJl09/
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-3f736e0c9b1so19205865e9.3
+ header.s=google header.b=Vd0Vf8OB
+Received: by mail-wm1-x333.google.com with SMTP id
+ 5b1f17b1804b1-3f7f4819256so14388085e9.1
         for <alsa-devel@alsa-project.org>;
- Fri, 09 Jun 2023 07:54:22 -0700 (PDT)
+ Fri, 09 Jun 2023 07:54:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686322460; x=1688914460;
+        d=linaro.org; s=google; t=1686322465; x=1688914465;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RuQSolMY+GsunpVDUBYRLCP9uTfJjpPU4KcdicPOHq4=;
-        b=ONwJl09/bsLQmdUzwtjnMWbC7fFCwIu40+1GGEzwNKYAYTImxjdf80WVJenHhV6SZE
-         l4hyaIQb9uouf0Knk+bgqUpA18RhoQmWzHa7wGTm5DaL1kfmpeIfSfRyW1UzLp3TNe5M
-         gND5CHZmr7t5WkwjRCPDvGuC0Edq6WoaG+VBGf4QjCiqRI+E3F9BC/91d2r+CdYGCS6i
-         G17IodWT7T+WZtjs6mV8Dg2r0gO3rHNyRe2cAdPYHdyQ2n9s5t89eyCv0FdZ2gTN3MRX
-         GqPUaqQnWTqHRyJZ/jEBAx1d8jxCsWZ7kSYgZXoGyrwXvIHOkOCROW+CL57a6XTPXRqX
-         l03g==
+        bh=xT6jIsaE6umxJp6LYKmlwleIfCNa53LIehUuB1/ryv8=;
+        b=Vd0Vf8OBk3PGtxmzsgVG4KAb8TUnZ4cZkGdqyFQPd2LRpjIA1MektKV2tRCWG32Wpn
+         ic7pvZymZ/UHYoGO6M1V2I7d3Grr2X8GSdTmwESak18rlmeaVKw2CuJXpW9nDQEEqFjN
+         RuvQRXbG6FVfBxsJfrFVKniPlzeAnVkxHpX8t3lRyyuaixfVaLC2bojtgpuRrHiF2FU9
+         /AfQPO3ko7eQOLu7XYpwjzBjlDVOC/gjC4fqAhWEgpWaCVkXBm44IUO8nURx2TxI6Wvk
+         AH7tqyelW+2h1zk7Kvnsd9fg5RduXVDPiEKVxNAacgYgSsGaYovXDo6BdvG9azXxMb+D
+         JajA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686322460; x=1688914460;
+        d=1e100.net; s=20221208; t=1686322465; x=1688914465;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RuQSolMY+GsunpVDUBYRLCP9uTfJjpPU4KcdicPOHq4=;
-        b=eWMWDRkLcldIPf0RaR+bu/ZUuMiD5HoG6m/w2/X+VM5bu26CaVwJsphvr+reFA8DjG
-         M6e4lrK0J38s3HwZmUIZhnG3eyhiyxEtPzFPYYGgSyI8IG/xCz0vcBEpj1ILkqS84FdF
-         gXnemwTS1KU9KE0EDbRFXI2c/acN0r9Gcn+be87ZRYprUObxYaeJ7a3ZCsVCpvcHMjnS
-         ALnrxg8tuv80g/Im8zN46H+XouOXGAvWkAfYxDiusfGWFxbEg5m4mwFoGLEJIITC7hFl
-         yAqj0RcLASNanGBwEQGRK9DY+J4ji7CZJ656teCMwWNn8DBpiWgXuf8gV3djX6+lo3JW
-         D1uA==
-X-Gm-Message-State: AC+VfDxPBCiRqgctHrkh7lZDSgFfw7jhGfGV3x64IgF7dBloE92cLPsj
-	jYqgtn8fmMET/IBU78QxtVVdzA==
+        bh=xT6jIsaE6umxJp6LYKmlwleIfCNa53LIehUuB1/ryv8=;
+        b=SEPCv4rYKRnO5ReDiZGE19uVD7GPTPah5ARlfRVIkTETRK5Fk6vwgYkNOiYYAhe3gA
+         owD6rVjmFQ5mtCvRGWzcNymC98kxd0wubk+S6bkkoPaHvgkGT8G8/Q39dGZvcdxnEpPv
+         vESXYXYzOK2Vl2h1VBLFibvYjfZn2BzX2bGi/XrxX9B8/dTFiFb6vVarjIXo2MkrXClX
+         u1DJSwYdy8aMoQ7NP/MiFetYj4bm+9739DIVWzU1JUh97DNqYo1uBK7hBv3onkPo2NL+
+         utxLmoR9ChWbqNygzyhzpSAcQ7kZwgNx5joluUgAX4Ftk4kstdyA1XwH3QX6/y31E5Yp
+         xqOg==
+X-Gm-Message-State: AC+VfDw6v4kmJA8CwjlZmz1dRJZW/4rWQvW9noYigPjZ/AjZKOcWzBKZ
+	zo2iwz1LuOfvWLXtg9T0ITDtsvmODobP0BmmXdo=
 X-Google-Smtp-Source: 
- ACHHUZ5jmIwMMsS6bJUifZ1z8l17raD0V7Vbgzz65Isey3BWjeSbT6ZHcqCta3q3QBlg09+h3SCrMw==
-X-Received: by 2002:a1c:6a18:0:b0:3f7:e536:8f06 with SMTP id
- f24-20020a1c6a18000000b003f7e5368f06mr1341409wmc.26.1686322460491;
-        Fri, 09 Jun 2023 07:54:20 -0700 (PDT)
+ ACHHUZ6NM+CuWRv9gxLexLQhJhCThjo5KuWFrA2fMwfi0ZS4s5lwkEQbk/XKpw8R0FsppMO3HSGbTQ==
+X-Received: by 2002:a1c:ed15:0:b0:3f7:f584:579d with SMTP id
+ l21-20020a1ced15000000b003f7f584579dmr1058428wmh.0.1686322465617;
+        Fri, 09 Jun 2023 07:54:25 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- c21-20020a05600c0ad500b003f7310a3ffasm2946632wmr.2.2023.06.09.07.54.15
+ c21-20020a05600c0ad500b003f7310a3ffasm2946632wmr.2.2023.06.09.07.54.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jun 2023 07:54:16 -0700 (PDT)
+        Fri, 09 Jun 2023 07:54:24 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
 Cc: perex@perex.cz,
@@ -91,18 +91,19 @@ Cc: perex@perex.cz,
 	linux-kernel@vger.kernel.org,
 	pierre-louis.bossart@linux.intel.com,
 	alsa-devel@alsa-project.org,
-	Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 02/11] ASoC: q6dsp: q6apm: add end of stream events
-Date: Fri,  9 Jun 2023 15:53:58 +0100
-Message-Id: <20230609145407.18774-3-srinivas.kandagatla@linaro.org>
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+Subject: [PATCH v2 04/11] ASoC: q6dsp: audioreach: Add placeholder decoder for
+ compress playback
+Date: Fri,  9 Jun 2023 15:54:00 +0100
+Message-Id: <20230609145407.18774-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230609145407.18774-1-srinivas.kandagatla@linaro.org>
 References: <20230609145407.18774-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: PZDCOQ5ENJJPAN6V652RZHRRZ656YWS2
-X-Message-ID-Hash: PZDCOQ5ENJJPAN6V652RZHRRZ656YWS2
+Message-ID-Hash: AV3MVXWXWYGT4247FDYY6MP3SHWFCBWX
+X-Message-ID-Hash: AV3MVXWXWYGT4247FDYY6MP3SHWFCBWX
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -115,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PZDCOQ5ENJJPAN6V652RZHRRZ656YWS2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AV3MVXWXWYGT4247FDYY6MP3SHWFCBWX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,31 +125,145 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+Add placeholder decoder graph module for compressed playback feature.
 
-EOS event from dsp is currently not sent to the dai drivers, add the
-missing callback.
-
+Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6apm.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/qcom/qdsp6/audioreach.h | 14 +++++++
+ sound/soc/qcom/qdsp6/q6apm.c      | 65 +++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6apm.h      |  4 ++
+ 3 files changed, 83 insertions(+)
 
+diff --git a/sound/soc/qcom/qdsp6/audioreach.h b/sound/soc/qcom/qdsp6/audioreach.h
+index 18d8d243b06b..c4e03a49ac82 100644
+--- a/sound/soc/qcom/qdsp6/audioreach.h
++++ b/sound/soc/qcom/qdsp6/audioreach.h
+@@ -15,6 +15,8 @@ struct q6apm_graph;
+ #define MODULE_ID_PCM_CNV		0x07001003
+ #define MODULE_ID_PCM_ENC		0x07001004
+ #define MODULE_ID_PCM_DEC		0x07001005
++#define MODULE_ID_PLACEHOLDER_ENCODER	0x07001008
++#define MODULE_ID_PLACEHOLDER_DECODER	0x07001009
+ #define MODULE_ID_SAL			0x07001010
+ #define MODULE_ID_MFC			0x07001015
+ #define MODULE_ID_CODEC_DMA_SINK	0x07001023
+@@ -22,6 +24,9 @@ struct q6apm_graph;
+ #define MODULE_ID_I2S_SINK		0x0700100A
+ #define MODULE_ID_I2S_SOURCE		0x0700100B
+ #define MODULE_ID_DATA_LOGGING		0x0700101A
++#define MODULE_ID_AAC_DEC		0x0700101F
++#define MODULE_ID_FLAC_DEC		0x0700102F
++#define MODULE_ID_MP3_DECODE		0x0700103B
+ #define MODULE_ID_DISPLAY_PORT_SINK	0x07001069
+ 
+ #define APM_CMD_GET_SPF_STATE		0x01001021
+@@ -608,6 +613,15 @@ struct param_id_vol_ctrl_master_gain {
+ } __packed;
+ 
+ 
++#define PARAM_ID_REMOVE_INITIAL_SILENCE		0x0800114B
++#define PARAM_ID_REMOVE_TRAILING_SILENCE	0x0800115D
++
++#define PARAM_ID_REAL_MODULE_ID	0x0800100B
++
++struct param_id_placeholder_real_module_id {
++	uint32_t real_module_id;
++} __packed;
++
+ /* Graph */
+ struct audioreach_connection {
+ 	/* Connections */
 diff --git a/sound/soc/qcom/qdsp6/q6apm.c b/sound/soc/qcom/qdsp6/q6apm.c
-index a7a3f973eb6d..b07fee8ccac1 100644
+index b07fee8ccac1..7bfac9492ab5 100644
 --- a/sound/soc/qcom/qdsp6/q6apm.c
 +++ b/sound/soc/qcom/qdsp6/q6apm.c
-@@ -497,6 +497,9 @@ static int graph_callback(struct gpr_resp_pkt *data, void *priv, int op)
- 		}
- 		break;
- 	case DATA_CMD_WR_SH_MEM_EP_EOS_RENDERED:
-+		client_event = APM_CLIENT_EVENT_CMD_EOS_DONE;
-+		if (graph->cb)
-+			graph->cb(client_event, hdr->token, data->payload, graph->priv);
- 		break;
- 	case GPR_BASIC_RSP_RESULT:
- 		switch (result->opcode) {
+@@ -298,6 +298,71 @@ int q6apm_unmap_memory_regions(struct q6apm_graph *graph, unsigned int dir)
+ }
+ EXPORT_SYMBOL_GPL(q6apm_unmap_memory_regions);
+ 
++int q6apm_remove_initial_silence(struct device *dev, struct q6apm_graph *graph, uint32_t samples)
++{
++	struct audioreach_module *module;
++
++	module = q6apm_find_module_by_mid(graph, MODULE_ID_PLACEHOLDER_DECODER);
++	if (!module)
++		return -ENODEV;
++
++	return audioreach_send_u32_param(graph, module, PARAM_ID_REMOVE_INITIAL_SILENCE, samples);
++}
++EXPORT_SYMBOL_GPL(q6apm_remove_initial_silence);
++
++int q6apm_remove_trailing_silence(struct device *dev, struct q6apm_graph *graph, uint32_t samples)
++{
++	struct audioreach_module *module;
++
++	module = q6apm_find_module_by_mid(graph, MODULE_ID_PLACEHOLDER_DECODER);
++	if (!module)
++		return -ENODEV;
++
++	return audioreach_send_u32_param(graph, module, PARAM_ID_REMOVE_TRAILING_SILENCE, samples);
++}
++EXPORT_SYMBOL_GPL(q6apm_remove_trailing_silence);
++
++int q6apm_enable_compress_module(struct device *dev, struct q6apm_graph *graph, bool en)
++{
++	struct audioreach_module *module;
++
++	module = q6apm_find_module_by_mid(graph, MODULE_ID_PLACEHOLDER_DECODER);
++	if (!module)
++		return -ENODEV;
++
++	return audioreach_send_u32_param(graph, module, PARAM_ID_MODULE_ENABLE, en);
++}
++EXPORT_SYMBOL_GPL(q6apm_enable_compress_module);
++
++int q6apm_set_real_module_id(struct device *dev, struct q6apm_graph *graph,
++			     uint32_t codec_id)
++{
++	struct audioreach_module *module;
++	uint32_t module_id;
++
++	module = q6apm_find_module_by_mid(graph, MODULE_ID_PLACEHOLDER_DECODER);
++	if (!module)
++		return -ENODEV;
++
++	switch (codec_id) {
++	case SND_AUDIOCODEC_MP3:
++		module_id = MODULE_ID_MP3_DECODE;
++		break;
++	case SND_AUDIOCODEC_AAC:
++		module_id = MODULE_ID_AAC_DEC;
++		break;
++	case SND_AUDIOCODEC_FLAC:
++		module_id = MODULE_ID_FLAC_DEC;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return audioreach_send_u32_param(graph, module, PARAM_ID_REAL_MODULE_ID,
++					 module_id);
++}
++EXPORT_SYMBOL_GPL(q6apm_set_real_module_id);
++
+ int q6apm_graph_media_format_pcm(struct q6apm_graph *graph, struct audioreach_module_config *cfg)
+ {
+ 	struct audioreach_graph_info *info = graph->info;
+diff --git a/sound/soc/qcom/qdsp6/q6apm.h b/sound/soc/qcom/qdsp6/q6apm.h
+index 7005be9b63e3..87d67faf5f1a 100644
+--- a/sound/soc/qcom/qdsp6/q6apm.h
++++ b/sound/soc/qcom/qdsp6/q6apm.h
+@@ -147,4 +147,8 @@ int q6apm_graph_get_rx_shmem_module_iid(struct q6apm_graph *graph);
+ 
+ bool q6apm_is_adsp_ready(void);
+ 
++int q6apm_enable_compress_module(struct device *dev, struct q6apm_graph *graph, bool en);
++int q6apm_remove_initial_silence(struct device *dev, struct q6apm_graph *graph, uint32_t samples);
++int q6apm_remove_trailing_silence(struct device *dev, struct q6apm_graph *graph, uint32_t samples);
++int q6apm_set_real_module_id(struct device *dev, struct q6apm_graph *graph, uint32_t codec_id);
+ #endif /* __APM_GRAPH_ */
 -- 
 2.21.0
 
