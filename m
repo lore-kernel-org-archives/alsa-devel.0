@@ -4,87 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62A26C7EE37
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jun 2023 14:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80181C77B7A
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Jun 2023 14:02:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C08321CE;
-	Sat, 10 Jun 2023 16:01:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C08321CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A6BF83A;
+	Sat, 10 Jun 2023 16:01:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A6BF83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686405712;
-	bh=Hi+kWTK1PxUd+2cL7u+XNfww01HBNbov8hI2bW0Wnks=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=DU1NctGMidDcok+5sx5zey22jtf++sjW+QZ5mUdPNuNGNFHqNkJxrjW/ENFzklSHe
-	 I7u5hp/AoSF5OqVSjbQlzjVThGH1gGIS2DlOJ/hTKfO3z7eJKS2RLkeuCYF59FChaE
-	 +gs7rWBEeNmFhow/+VQC6rmIhPDOXbw964gm3ECw=
+	s=default; t=1686405742;
+	bh=3ef+87+yP4lycSwkYTARXRUFWygTQ/ITE4ODdtzYAXM=;
+	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=bHeE7oLtt3Xr15ykc8riiypvcPU/jvyoVzsoDKst6IGoSzNWATM1A8Y9RQDaxtj9Q
+	 DWuDESp/yP9yuFjQGqz+W8FUWn/fub8pqJ1sy5bJn7wbN6yKIPg7gogct7eUq1ci++
+	 X4Juz9ukyC4n14674EXxUecJ5Uj7LcKaVzd1mVIA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 76A02F805BF; Sat, 10 Jun 2023 15:59:03 +0200 (CEST)
+	id AEE18F805EB; Sat, 10 Jun 2023 15:59:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01E50F80587;
-	Sat, 10 Jun 2023 15:59:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5837AF805E2;
+	Sat, 10 Jun 2023 15:59:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4A514F80199; Sat, 10 Jun 2023 15:56:58 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 2E26EF80494; Sat, 10 Jun 2023 15:58:12 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6460EF804DA
-	for <alsa-devel@alsa-project.org>; Sat, 10 Jun 2023 15:56:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6460EF804DA
+	by alsa1.perex.cz (Postfix) with ESMTPS id ACD10F800C8
+	for <alsa-devel@alsa-project.org>; Sat, 10 Jun 2023 15:58:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACD10F800C8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ownAfYmK
+ header.s=k20201202 header.b=jlk+HdwG
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4B04C6119D;
-	Sat, 10 Jun 2023 13:56:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E489DC433D2;
-	Sat, 10 Jun 2023 13:56:45 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8327160A3B;
+	Sat, 10 Jun 2023 13:58:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16736C433D2;
+	Sat, 10 Jun 2023 13:58:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686405407;
-	bh=Hi+kWTK1PxUd+2cL7u+XNfww01HBNbov8hI2bW0Wnks=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ownAfYmKbWfyMHMVguJoNbBmEYfJLa6lV2dtjuZ2OtyTS8qxZV9/ZUE6T8jP/qiR2
-	 xJWgIBHaglBw3h5gs6VQzyNOgzEUvX0E9B6rjGwWg9E9W2mxHyJFaVa3P2skhX0N3s
-	 fqF4miMuto8TS5Ziv7aTtb9YXBBW2wd6CRltDllQK5v6NvSWv7U4ox+NMllUPhFvVe
-	 ELFWXNuNbYii3Dwz603UCPXwll4X3Mnmo3qVlma3rXYkSgurbarLdeoUOWbL/LLQjq
-	 kJs8sWWR4GkZns7PS1C8Xr0k8ZZ5ChUalNFYLyHqGLINAPFN1YUNCxpIKb8R2uzUED
-	 xjTFg0x97JR2w==
+	s=k20201202; t=1686405486;
+	bh=3ef+87+yP4lycSwkYTARXRUFWygTQ/ITE4ODdtzYAXM=;
+	h=From:Subject:Date:To:Cc:From;
+	b=jlk+HdwGmT/J1RT29Qb8r9O7QBn/rKlAJITgUCUpPS5jo5ErQofa++y0ZXXvhqjvy
+	 sPslopVRoFKy39DNb7P5jygwIqegKY/9t/gJDdqjQuV0qUa+1PBVAyRfmDLQwkU2HR
+	 QYObVylmPsnLm9sOaqPHT1JDUFqj+Hx6mYYIj88onaCqSksUccJFWYHEW9IySgP3Zd
+	 WgVItFmnLRSl5NbR9IRr4U33wFaW05t0LTF8RSgoqGKM5Y05vQoBjrBpjrcfHoOzfB
+	 jjKHhY4LH5pEx4QV44TU1cfAq010+/2SNDu2CQUyBpWG0ZU/ch+UG1QG+SNCI9UA/Y
+	 Dwe1wWtzb9LwA==
 From: Mark Brown <broonie@kernel.org>
-Date: Sat, 10 Jun 2023 14:56:26 +0100
-Subject: [PATCH 06/10] ASoC: cs42l42: Use maple tree register cache
+Subject: [PATCH 00/16] ASoC: Convert Realtek I2C drivers to use maple tree
+ register cache
+Date: Sat, 10 Jun 2023 14:57:46 +0100
+Message-Id: <20230609-asoc-rt-maple-v1-0-729c6553cdcf@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230609-asoc-cirrus-maple-v1-6-b806c4cbd1d4@kernel.org>
-References: <20230609-asoc-cirrus-maple-v1-0-b806c4cbd1d4@kernel.org>
-In-Reply-To: <20230609-asoc-cirrus-maple-v1-0-b806c4cbd1d4@kernel.org>
-To: James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- =?utf-8?q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- asahi@lists.linux.dev, Mark Brown <broonie@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAFuBhGQC/x2N0QqDMAwAf0XyvEDXUZ37lbGHWKOGba0kYwriv
+ 6/u8Q6O28BYhQ1u1QbKXzHJqcD5VEGcKI2M0hcG7/zF1a5FshxRP/im+cV4pSaw76kNIUBpOjL
+ GTinF6aiWrM9Dz8qDrP/N/bHvP5z2R5d2AAAA
+To: Oder Chiou <oder_chiou@realtek.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-bfdf5
-X-Developer-Signature: v=1; a=openpgp-sha256; l=945; i=broonie@kernel.org;
- h=from:subject:message-id; bh=Hi+kWTK1PxUd+2cL7u+XNfww01HBNbov8hI2bW0Wnks=;
- b=owGbwMvMwMWocq27KDak/QLjabUkhpSWRp6YeBaTxDuSK571zW1tmM6Zfly8LuycyOKUzZalMfdj
- qrQ7GY1ZGBi5GGTFFFnWPstYlR4usXX+o/mvYAaxMoFMYeDiFICJ9Hqz/7PliGuMFFF4EFgTxxA8L/
- 2aSW/fuqKrG7ufX/eoDC2rleVYprZ7UUTx1Vj+VcqTonnqp9mtrePiOcnjf3Tf/4Uck7faNfz/+lVb
- JYX3L+9K7w+ud7pC6sP/LQp++tJoC5fcwt4Tkdp202fyWttJnXHeY7r+f4rSW+fgsG0GLoZzc14J8r
- 082S3s6fz110zex+uLFK/NW/rKtrewqrfYrtbuh7By45Nb6n7cFpVvPvxKWLvIXtmhnCs0gpU9/r1M
- /oLbu9QbFFR0RF6xT97xOYbzknd/hGHh3e5q1y/N8lv92t+bWOg9dV8746moxjO7pcv55gmtPWX3SD
- tv+eeHz4/xZm07Ezq9xPJk4eLfAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1948; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=3ef+87+yP4lycSwkYTARXRUFWygTQ/ITE4ODdtzYAXM=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkhIFfngPBfP3cVO/PoYMQHeqaCf8bZRUVXzs/Nbeo
+ Q4svaTyJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZISBXwAKCRAk1otyXVSH0DC7B/
+ 9o6a/W5nRrnL7TepWJ/+uhsKTYpP8JCE+UnoAsPLM2uPONpzxQsjQJwUvpcdBVSZVkYcVjlHsLt8KA
+ ngrZL/2/4Q2rA0qKgBd1TQTgXlpUz7Xcg6HwyjddOul5AKbbVuR6TzF3xquOH1S2Z+ydig23D+XvOg
+ KVxFZ0qLlWzb2XpJopJbrjmt9bgz20BNagUi9ggkz7mQZpZmTHW103vYI+1BmFX73IK0K8LBiMfC2o
+ OBHBuZoEQQQB51sH0BL3y1LTSglFfP6YQ1t2Ljlu2UKv1JlWj+OZCMWSvBHYhYFOC+t5+bQ1T2zzun
+ ia1JvyV3FTchw83mX1cCNt102Pv/8p
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: Z4XVID7533VKNBFPILQ3IDQQJNAL5G7F
-X-Message-ID-Hash: Z4XVID7533VKNBFPILQ3IDQQJNAL5G7F
+Message-ID-Hash: G6UL4PWQPCPY2WIK6ERBSY3CA35BHEEX
+X-Message-ID-Hash: G6UL4PWQPCPY2WIK6ERBSY3CA35BHEEX
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,38 +95,61 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z4XVID7533VKNBFPILQ3IDQQJNAL5G7F/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G6UL4PWQPCPY2WIK6ERBSY3CA35BHEEX/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The cs42l42 can only support single register read and write operations
-so does not benefit from block writes. This means it gets no benefit from
-using the rbtree register cache over the maple tree register cache so
-convert it to use maple trees instead, it is more modern.
+Many of the Realtek I2C/SPI devices only support single register read
+and write operations so don't benefit from using the rbtree cache
+instead of the more modern maple tree cache, convert them to maple tree.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Mark Brown (16):
+      ASoC: rt1011: Use maple tree register cache
+      ASoC: rt1019: Use maple tree register cache
+      ASoC: rt1305: Use maple tree register cache
+      ASoC: rt1308: Use maple tree register cache
+      ASoC: rt5514: Use maple tree register cache
+      ASoC: rt5616: Use maple tree register cache
+      ASoC: rt5631: Use maple tree register cache
+      ASoC: rt5640: Use maple tree register cache
+      ASoC: rt5645: Use maple tree register cache
+      ASoC: rt5651: Use maple tree register cache
+      ASoC: rt5660: Use maple tree register cache
+      ASoC: rt5665: Use maple tree register cache
+      ASoC: rt5665: Use maple tree register cache
+      ASoC: rt5668: Use maple tree register cache
+      ASoC: rt5670: Use maple tree register cache
+      ASoC: rt5682: Use maple tree register cache
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index e3edaa1a2761..1c8cc4021232 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -393,7 +393,7 @@ const struct regmap_config cs42l42_regmap = {
- 	.max_register = CS42L42_MAX_REGISTER,
- 	.reg_defaults = cs42l42_reg_defaults,
- 	.num_reg_defaults = ARRAY_SIZE(cs42l42_reg_defaults),
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_MAPLE,
- 
- 	.use_single_read = true,
- 	.use_single_write = true,
+ sound/soc/codecs/rt1011.c     | 2 +-
+ sound/soc/codecs/rt1019.c     | 2 +-
+ sound/soc/codecs/rt1305.c     | 2 +-
+ sound/soc/codecs/rt1308.c     | 2 +-
+ sound/soc/codecs/rt5514.c     | 2 +-
+ sound/soc/codecs/rt5616.c     | 2 +-
+ sound/soc/codecs/rt5631.c     | 2 +-
+ sound/soc/codecs/rt5640.c     | 2 +-
+ sound/soc/codecs/rt5645.c     | 4 ++--
+ sound/soc/codecs/rt5651.c     | 2 +-
+ sound/soc/codecs/rt5660.c     | 2 +-
+ sound/soc/codecs/rt5663.c     | 4 ++--
+ sound/soc/codecs/rt5665.c     | 2 +-
+ sound/soc/codecs/rt5668.c     | 2 +-
+ sound/soc/codecs/rt5670.c     | 2 +-
+ sound/soc/codecs/rt5682-i2c.c | 2 +-
+ 16 files changed, 18 insertions(+), 18 deletions(-)
+---
+base-commit: 9561de3a55bed6bdd44a12820ba81ec416e705a7
+change-id: 20230609-asoc-rt-maple-8a75e2da9555
 
+Best regards,
 -- 
-2.30.2
+Mark Brown <broonie@kernel.org>
 
