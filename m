@@ -4,106 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDA8EC7EE23
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jun 2023 14:46:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8FCBC7EE23
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jun 2023 14:47:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA9F13E;
-	Sun, 11 Jun 2023 16:45:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA9F13E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0F9982A;
+	Sun, 11 Jun 2023 16:46:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0F9982A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686494792;
-	bh=0vk0trypvKvR6MOoTBsccB3ygG1e4pb47o3rVIf/1FE=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=iYXCOrzZeuCqLjHICPMhVeJjRkc6MXzq8wo3lUl4uaMu8kkSj7XhVBDCYTXDXffNU
-	 y7x1mT+K3fFnIHIfb+SvCdkjGJwIg9Peo2McLasvWiPJfAsIP8sQpdrKcQ/CDv8HAG
-	 WiOegKfgdQ1crE6z4pZjxA+yOurtG6ZivicDS1+g=
+	s=default; t=1686494818;
+	bh=AXYzxEx+XTsw9Dut+WNQwtQjDYP/iIrP3C1wR3x3+lM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=LOkTaFhQxiUYA6ymzGpYcgohY9e9q0DT7ayyR8m29A0iX7eT0pRhwLadThuey43OG
+	 gRYO7uQ1unohf79SzhhwN9ajgHO5FEjBUxyeQnzL/gKTuh3vgdPX4dll1AohMDzMag
+	 CJf6Fe7BwtLyoudFuQkQ2HTZrdwYZ+R1e+l2N1iY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 64331F80155; Sun, 11 Jun 2023 16:45:17 +0200 (CEST)
+	id AF1B3F8055A; Sun, 11 Jun 2023 16:45:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C53DF800ED;
-	Sun, 11 Jun 2023 16:45:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0884F80551;
+	Sun, 11 Jun 2023 16:45:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B59DF80246; Sun, 11 Jun 2023 16:45:09 +0200 (CEST)
+	id ADD71F80155; Sun, 11 Jun 2023 16:45:11 +0200 (CEST)
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
  [66.111.4.27])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EC245F80130
-	for <alsa-devel@alsa-project.org>; Sun, 11 Jun 2023 16:44:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC245F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6DF43F80132
+	for <alsa-devel@alsa-project.org>; Sun, 11 Jun 2023 16:44:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DF43F80132
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm1 header.b=gZeeMua5;
+ header.a=rsa-sha256 header.s=fm1 header.b=Suq8TTRR;
 	dkim=pass (2048-bit key,
  unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm1 header.b=MIbx27sN
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id B74515C0102;
-	Sun, 11 Jun 2023 10:44:50 -0400 (EDT)
+ header.a=rsa-sha256 header.s=fm1 header.b=ZUN/bCpJ
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.nyi.internal (Postfix) with ESMTP id EDE6C5C0107;
+	Sun, 11 Jun 2023 10:44:53 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sun, 11 Jun 2023 10:44:50 -0400
+  by compute1.internal (MEProxy); Sun, 11 Jun 2023 10:44:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
 	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
-	:from:in-reply-to:message-id:mime-version:reply-to:sender
-	:subject:subject:to:to; s=fm1; t=1686494690; x=1686581090; bh=zh
-	7pnK48QZWxs1JYWxUmK+S2XcdW2Mv/egaGGlTZ6to=; b=gZeeMua5mr/ZMuoDVK
-	uUtueDhVLPL1dNcjpIAS2yCRUbjC1oCIlC8xbroSoFWolhl84LaoLTw3qZvduKb2
-	FrECRsU4GHQTSZz0OYEShHeKuNyx4fxtxUpUljalRneRkQXWpvK33Fzym1FmZAmD
-	gMowUgcL/8xKSnDD17gcGwPcGzfYEHvRhNMzUggVshGXYqm23mAe+ylDJx7Uktsk
-	JG/B1VyXOTtTVbm4685qlt+5eMnrfWDDOKaU2mpkozJwjfRMZAMQmc/f+A/lit/S
-	PGEKCFcDKmacH+WDoNE6yPzeczhJCwUYKoM0OU0iPr88MXPt8AF6CrcziSs+Hsfp
-	r4mg==
+	:from:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:sender:subject:subject:to:to; s=fm1; t=1686494693; x=
+	1686581093; bh=y8W5XAYxi+i+XBaEeXuvYqE2RJN4a7DM7SirQzqwMTk=; b=S
+	uq8TTRR0dfskyPC2zzfUHYw96SuAKPnKhjdLEPGyBeWN+sg7FHE0mdQ3efvUtQgD
+	pAFHq6b2PtGpCwgQ8e7J4IQ5BPyQNzuHsDmhuxvZ3ANoM39QnXfxOfHK8KJpKeom
+	9FOM+Bs/S/9NfsE7eQUo34BH4dogdHuGEfGXi3C7bg9E0fYE9V+cMmapFTPJZETT
+	9KKJ8QDRXXVPCQP502lswoFD7SQnFXN+fzwQyANkeE17ydItCUquODHBcPCH6DR2
+	yz/J8k4Cv8ZYIvZxN5EDILqLPY1Eb24j0bZQnWnnQ+c+jz11UZZ7cG5dbkJLKLmX
+	aeYmBh+7poXfAEkPLpyiw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1686494690; x=1686581090; bh=zh7pnK48QZWxs
-	1JYWxUmK+S2XcdW2Mv/egaGGlTZ6to=; b=MIbx27sNXVtAJF/tySfJWN9Q4lZ16
-	KbcVFC8j923dE68lSVUfmBOmagT2kSjgRZNTvx52z/lt07SF7c8NAFJv55oraHL7
-	+qIJ3Fo4+1ScIqCfxgZqUaeMFmM9pemu1uxYB2rFkyj6yF2DxlC52+71TOzQZ15p
-	aDd9Tl0cqLrnNPS42oNxtBOoBpNIm5wHOyZ6uFA3Z56kDeXpYNdAlwjQbToSelHE
-	jsDW0ssg75oIQIxxenF2pxix4dxTD9YxTqTuvSNRJh4/7KuKlWnlOD6rD2ENaDMV
-	P9Yuk0Uu38LgpFjQZj5ZLIb/1Ri1gmQ2HoNB8W0Pg0CavDxC8DdrI1AqA==
-X-ME-Sender: <xms:4d2FZNOofmZNa6UgMrTwDAzml5xWQJpdHICp9dkljc9sFz2nZ_SYkQ>
-    <xme:4d2FZP-PFVQ2nOvJJPHJuThLa2jgIRNuLRc1Vu2oo2vV_VxwUQMfV62ARTtyvWkub
-    6Zgi_6jfkeJ1ySgb_U>
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1686494693; x=
+	1686581093; bh=y8W5XAYxi+i+XBaEeXuvYqE2RJN4a7DM7SirQzqwMTk=; b=Z
+	UN/bCpJkRbk4Vap6peiuO0ggwPyA8C32hEOB5yfcD9CBhU2QV5AAJL6VEjkdeQ3v
+	0jWXJsr8QEtPml/12l71WOFsJrELIEul4HOydM1YLSpomhp8x5/MCIwfH9Xu1mu+
+	vus0nUaA7qHCWimMM6aMetFbPiA0oLeNYXcWT432C3p9soHsjDy2JQUiboV5wEBr
+	+xFR60f6Ln/XrFS9UiXKR0u7gO6cx2D9HkRaWAMJGLutIcqCxNyYdu3l2g+gpq97
+	TgBW/tVWtahmvv3sVopE68RWhZifull+Q9vuY6vswGPUXxu26BR4DVAK1oee2C04
+	Xv2BtWrvMGpkDE9s9f7jA==
+X-ME-Sender: <xms:5d2FZOl4JxYTvZKi0c-ee47VyVdkrc4aWeKu4VXuu_ugDmVI9KQLsw>
+    <xme:5d2FZF3tMbInOw9R3ZAxfP5Vexv_j-liMGpTTddadj3So4FYHmcy2dUrkX59qNge3
+    hYNf4QVr--fKYz2eWw>
 X-ME-Received: 
- <xmr:4d2FZMTBAQUu4Al14Kw-nBbgFaPakMyYjl565_mduSkfbs-fQzTLwk41V-nNDi3OoZs_6DQWlkdo25tPpzAcJjdTQOyGuQxiNxzfgC4jucwATg>
+ <xmr:5d2FZMr2nynJUtVPPYPM6ETjw3B_7prXQLB8-Ul8_r5tfxJekw8sP6QoM_yV5qi-D6JIjjWnuPrawDV-EY_7MHuPNcCp_peMIK0HidYN_1Qt9Q>
 X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedvhedrgeduvddgjeelucetufdoteggodetrfdotf
+ gggruggvucftvghtrhhoucdtuddrgedvhedrgeduvddgkedtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
-    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeffvdeuleffve
-    ekudfhteejudffgefhtedtgfeutdfgvdfgueefudehveehveekkeenucevlhhushhtvghr
-    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrg
-    hkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:4d2FZJsEaZOOP9-jV-oDhK0-8w37ci3pi-Mnocd4wJXczGHchbOTOg>
-    <xmx:4d2FZFf8AQPxr0ZMFEF-G9SSpCZ5ot_vSx163rxkMp7ypO1FjY2cqg>
-    <xmx:4d2FZF03qaPCwii2V0p0cqgs7ztpC7y9dQWt6_QklFMfZscsFPAZwg>
-    <xmx:4t2FZFHoI0WtJteMBdYlF7a0RKQcTaN5VWHthIbt0vwx58o0BBAivA>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
+    ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
+    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedvjefgje
+    euvdfguddukeelveetgfdtvefhtdfffeeigfevueetffeivdffkedvtdenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
+    hsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:5d2FZCn88GNadTYjP99EdyLOZGtMv6Rj-CflFV6vEG5XDZ0TcYIzQQ>
+    <xmx:5d2FZM33N1A0zzZvcc1SzVynP245vnRY6lHrDhxFuzZ0IBvnAO2NyQ>
+    <xmx:5d2FZJtMWShTfUHkfE1ZUaC90Xx-a5G9vcWBIEQkgrf2OJ5OgpGOfA>
+    <xmx:5d2FZJ8D8pJgWHTL3HVwT4OGeXF0tsg3CTtpkPQ6IlQ0fsBizJ-R7A>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 11 Jun 2023 10:44:48 -0400 (EDT)
+ 11 Jun 2023 10:44:52 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: clemens@ladisch.de,
 	tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
-Subject: [PATCH 0/2] ALSA: firewire: use 'GPL' string for module license
-Date: Sun, 11 Jun 2023 23:44:43 +0900
-Message-Id: <20230611144445.221529-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/2] ALSA: firewire: use 'GPL' string for module license
+ contributed by Clemens Ladisch
+Date: Sun, 11 Jun 2023 23:44:45 +0900
+Message-Id: <20230611144445.221529-3-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230611144445.221529-1-o-takashi@sakamocchi.jp>
+References: <20230611144445.221529-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NCYKQLKAGZUA5TTRIVPYPFMZS5FSKVUR
-X-Message-ID-Hash: NCYKQLKAGZUA5TTRIVPYPFMZS5FSKVUR
+Message-ID-Hash: SLQQED6ICVR6BUXYB37FESAH2AYDZJZU
+X-Message-ID-Hash: SLQQED6ICVR6BUXYB37FESAH2AYDZJZU
 X-MailFrom: o-takashi@sakamocchi.jp
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -116,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NCYKQLKAGZUA5TTRIVPYPFMZS5FSKVUR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SLQQED6ICVR6BUXYB37FESAH2AYDZJZU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,45 +129,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+In MODULE_LICENSE macro, "GPL" string obsoletes "GPL v2" string by a
+commit bf7fbeeae6db ("module: Cure the MODULE_LICENSE "GPL" vs. "GPL v2"
+bogosity").
 
-Nowadays, the use of "GPL" string in MODULE_LICENSE macro seems to
-obsolete "GPL v2" string. This series includes two patches to use it for
-modules in ALSA firewire stack contributed by two developers.
+This commit uses the preferable expression.
 
-This change does not pose any issue for modules contributed by Takashi
-Sakamoto, the author of this series, while it is advisable to have careful
-consideration for modules contributed by Clemens Ladisch, since the code
-related to license will be modified by a developer who is not the
-copyright holder.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice.c | 2 +-
+ sound/firewire/isight.c    | 2 +-
+ sound/firewire/lib.c       | 2 +-
+ sound/firewire/oxfw/oxfw.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-A commit bf7fbeeae6db ("module: Cure the MODULE_LICENSE "GPL" vs.
-"GPL v2" bogosity") adds detail documentation about the macro itself and
-clarifies the difference between "GPL" and "GPL v2". The macro is designed
-to provide sufficient information to kernel module loader and user space
-tools. Both strings have the same meanings, but the latter is legacy.
-
-In conclusion, any change made to the usage of the macro neither result in
-significant alterations to license nor copyright.
-
-Takashi Sakamoto (2):
-  ALSA: firewire: use 'GPL' string for module license contributed by
-    Takashi Sakamoto
-  ALSA: firewire: use 'GPL' string for module license contributed by
-    Clemens Ladisch
-
- sound/firewire/bebob/bebob.c         | 2 +-
- sound/firewire/dice/dice.c           | 2 +-
- sound/firewire/digi00x/digi00x.c     | 2 +-
- sound/firewire/fireface/ff.c         | 2 +-
- sound/firewire/fireworks/fireworks.c | 2 +-
- sound/firewire/isight.c              | 2 +-
- sound/firewire/lib.c                 | 2 +-
- sound/firewire/motu/motu.c           | 2 +-
- sound/firewire/oxfw/oxfw.c           | 2 +-
- sound/firewire/tascam/tascam.c       | 2 +-
- 10 files changed, 10 insertions(+), 10 deletions(-)
-
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 6036a5edbcb8..6c93e6e4982c 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -9,7 +9,7 @@
+ 
+ MODULE_DESCRIPTION("DICE driver");
+ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+-MODULE_LICENSE("GPL v2");
++MODULE_LICENSE("GPL");
+ 
+ #define OUI_WEISS		0x001c6a
+ #define OUI_LOUD		0x000ff2
+diff --git a/sound/firewire/isight.c b/sound/firewire/isight.c
+index 6655af53b367..806f82c9ceee 100644
+--- a/sound/firewire/isight.c
++++ b/sound/firewire/isight.c
+@@ -77,7 +77,7 @@ struct audio_payload {
+ 
+ MODULE_DESCRIPTION("iSight audio driver");
+ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+-MODULE_LICENSE("GPL v2");
++MODULE_LICENSE("GPL");
+ 
+ static struct fw_iso_packet audio_packet = {
+ 	.payload_length = sizeof(struct audio_payload),
+diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
+index e0a2337e8f27..654e1a6050a9 100644
+--- a/sound/firewire/lib.c
++++ b/sound/firewire/lib.c
+@@ -69,4 +69,4 @@ EXPORT_SYMBOL(snd_fw_transaction);
+ 
+ MODULE_DESCRIPTION("FireWire audio helper functions");
+ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+-MODULE_LICENSE("GPL v2");
++MODULE_LICENSE("GPL");
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index b496f87841ae..9523479fa94a 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -32,7 +32,7 @@
+ 
+ MODULE_DESCRIPTION("Oxford Semiconductor FW970/971 driver");
+ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+-MODULE_LICENSE("GPL v2");
++MODULE_LICENSE("GPL");
+ MODULE_ALIAS("snd-firewire-speakers");
+ MODULE_ALIAS("snd-scs1x");
+ 
 -- 
 2.39.2
 
