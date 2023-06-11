@@ -4,111 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C8AAC7EE23
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jun 2023 14:47:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11734C7EE43
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jun 2023 15:48:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5879E844;
-	Sun, 11 Jun 2023 16:46:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5879E844
+	by alsa0.perex.cz (Postfix) with ESMTPS id E71DD823;
+	Sun, 11 Jun 2023 17:47:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E71DD823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686494826;
-	bh=Lst9QpbkISKmwQOeI650NIuV/KC939TnFMD9b/7LBrE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=P3gpw5oXRLOE+nP7xdmXmblJWB591x4+/M7wKnVyiewPoQR1vMYmEodwsp7rpYcYb
-	 YELTaTNolY7NBfUHc3Wz7BfKGkA0xvnlM36B3qovz8TdKG4BYvptDE5iBZERSfwvpm
-	 Udi5Q5rnR86kHWIVaQ+xv9+9Y/yBbKc07eCfTLH4=
+	s=default; t=1686498529;
+	bh=TAUH8I5bV0rLJjyIBLInv5sGrB6yke/WZq0UwXQC80Y=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=FOw2jJNaBbm21r87wi42Fez5f1BiT1Zc/gQ9t4d/64q7V7BwJysR6m784fXfqfw3n
+	 xaGUnH3Cyb/DHDEeofqSzIOqbO6c5aaDyT8nNPSzYptKH1jpeuyXE2xwb4+fVeGCSo
+	 pDpcLQ12QzpZh7/iuxQPxLx8FRTv4uCixOtBdixM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9855F80571; Sun, 11 Jun 2023 16:45:19 +0200 (CEST)
+	id CC032F80246; Sun, 11 Jun 2023 17:47:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B3F7F80563;
-	Sun, 11 Jun 2023 16:45:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35223F80149;
+	Sun, 11 Jun 2023 17:47:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92EB3F80149; Sun, 11 Jun 2023 16:45:14 +0200 (CEST)
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 33F13F80149; Sun, 11 Jun 2023 17:47:21 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 45172F800ED
-	for <alsa-devel@alsa-project.org>; Sun, 11 Jun 2023 16:44:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45172F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id F214FF80130
+	for <alsa-devel@alsa-project.org>; Sun, 11 Jun 2023 17:47:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F214FF80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm1 header.b=JbDaFgrn;
-	dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm1 header.b=m+2dzbm4
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 4AC455C00CC;
-	Sun, 11 Jun 2023 10:44:52 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Sun, 11 Jun 2023 10:44:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
-	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm1; t=1686494692; x=
-	1686581092; bh=Yn0aEu1aeS0zTTNKk9DiktzZz5EnwUeRU6UeCFqUZus=; b=J
-	bDaFgrnlFoKVahg3yqWSZb+92SSD6B7ls/SxS2KrwYJdLXBts7dGso6QFf6LidK9
-	sy6kyon3TbDqSFPrqBoXDBDGml2J5VrVTrLWkMOSx4vbC+jmOPvjrxNWpJ06dOZN
-	pZ/GZec8B6YgUJ0TVpvcqOO949lr/FnnYEinkv0caZHGFusR/wteu4LTCoF3hghs
-	no2VbwMd2cB7lXOzZ6V0nrS7/d9FMZuBLjHG/fN4sDXaYJxK+3SvoO4uPG/sQwjT
-	ftNR066Czu3rsXJAAPK4yW4SgFye21WOgnQemU8IvnMQvjXJMCpU8cXHI32FinP6
-	/N2L7CRs/78H0ZooeiLxQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1686494692; x=
-	1686581092; bh=Yn0aEu1aeS0zTTNKk9DiktzZz5EnwUeRU6UeCFqUZus=; b=m
-	+2dzbm4+mNzAPJUvo8wTz/ryixAVq4oG7rBoklQ55iY+NcPZBBhCpo3pCyq4ogZO
-	fil4b8qX1tpRbEKMvUaQwAKfiE1RuTVWx4S2NWhxCby9S7OWAb8aFNutPX7LlLu9
-	jPfCKoFNmv7Meg+Wo8xDjNnaJs4GZSmZN5wpU/K3vg8lHJZ6wLPgPgXf7cGWwq6Y
-	7GahgV+1jfztGc3gJlnSi7P/hBXPX0xMvHY/7PHZ9RgI9+4r7+4ctanKCocy2uBs
-	fzP5oy3lI4aLcRAO8oY9w12cLXZ4EhmFvIpxtvtMe2/b8ieNAXxBANlRoDBc5MrH
-	DsWoFekrES8X8o4bmAOWw==
-X-ME-Sender: <xms:5N2FZOrNq0O74gd6dHIsm-uzqm0Zgi3uYiJWWbORtUZGj6pd9rcSaQ>
-    <xme:5N2FZMoE1TI8nt5IeETdVO_YB1GjRYDvqn5yYgppPt9ofrT3tu0Yzj3e5sSwsah-4
-    KUF11h2YvXdvD9Nqgg>
-X-ME-Received: 
- <xmr:5N2FZDPemJR57zww-AUSy2h-hgP0FhHAkMa1SWSYSNCpMYdIQxdwRlhb5RMLG9_mg1A9de0wYMLUcMaIsEwhGeW_tWGMpUsim2843IuUySvP6g>
-X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedvhedrgeduvddgjeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
-    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedvjefgje
-    euvdfguddukeelveetgfdtvefhtdfffeeigfevueetffeivdffkedvtdenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
-    hsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:5N2FZN7Zn_JP_fPNlP3CO7QDbhPh7sAXVWritS8VGwz3zWGLzJHj8A>
-    <xmx:5N2FZN77uIQ--gmRP_ICFOFrD64uo_S26T-KbdweAppR5RaEm-u_Jg>
-    <xmx:5N2FZNhNm-posye0RRCgpE1aenH5uQl0aYKY13M1VL0uGGyfv9UWiw>
-    <xmx:5N2FZPQCWQlukFQ2ArU75oXijC7a1Gm9I9SGPy04ra1fnMAAjKmf4w>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 11 Jun 2023 10:44:50 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: clemens@ladisch.de,
-	tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] ALSA: firewire: use 'GPL' string for module license
- contributed by Takashi Sakamoto
-Date: Sun, 11 Jun 2023 23:44:44 +0900
-Message-Id: <20230611144445.221529-2-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230611144445.221529-1-o-takashi@sakamocchi.jp>
-References: <20230611144445.221529-1-o-takashi@sakamocchi.jp>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=FLBqR4pP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686498433; x=1718034433;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=TAUH8I5bV0rLJjyIBLInv5sGrB6yke/WZq0UwXQC80Y=;
+  b=FLBqR4pP56FhtiWkmQtHloTxkP83h+86AlvhvGnISO876vTNs8NWh6PX
+   JYgUK8wsZbtrdk7XY2iKxyBziu8AoUvUHCuiu+p4DNgZrV5E/ldP3Vsdi
+   G7Cw2AxBFapn0sJhdul78Y/DK1zpvqcbJaZ2dZPDTpM/KfK/fzQj7Isca
+   cSDKI/VD/+2vaMtU4oXBpTpMhhWXVy2O/uEocSElMsaKqgDG0cGtNqm54
+   S68Ai06nzaiNC8T4Y3MupS2qNn5A+SQKpK0QbtLgdD1ew83F7xsM4ZXz1
+   rvpoEBq1HwP62lwbCi7cYp6oiKppyViusOH7ROifQ8wxQ7D+zlRw0PK7I
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10738"; a="361237891"
+X-IronPort-AV: E=Sophos;i="6.00,234,1681196400";
+   d="scan'208";a="361237891"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jun 2023 08:47:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10738"; a="1041060701"
+X-IronPort-AV: E=Sophos;i="6.00,234,1681196400";
+   d="scan'208";a="1041060701"
+Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Jun 2023 08:47:05 -0700
+Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1q8NHV-000Aua-08;
+	Sun, 11 Jun 2023 15:47:05 +0000
+Date: Sun, 11 Jun 2023 23:46:57 +0800
+From: kernel test robot <lkp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org,
+	Jaroslav Kysela <perex@perex.cz>
+Subject: [tiwai-sound:for-next 14/74] include/sound/ump_msg.h:196:13: error:
+ duplicate member 'reserved'
+Message-ID: <202306112301.dMok4XSA-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3P4GNZ575NWVLXWMUJTD6P5VCPQRWM7M
-X-Message-ID-Hash: 3P4GNZ575NWVLXWMUJTD6P5VCPQRWM7M
-X-MailFrom: o-takashi@sakamocchi.jp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Message-ID-Hash: ZOUVLV2ZVWMEHS56GLST3Q4P3CDBV26V
+X-Message-ID-Hash: ZOUVLV2ZVWMEHS56GLST3Q4P3CDBV26V
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -120,108 +90,88 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3P4GNZ575NWVLXWMUJTD6P5VCPQRWM7M/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZOUVLV2ZVWMEHS56GLST3Q4P3CDBV26V/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In MODULE_LICENSE macro, "GPL" string obsoletes "GPL v2" string by a
-commit bf7fbeeae6db ("module: Cure the MODULE_LICENSE "GPL" vs. "GPL v2"
-bogosity").
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+head:   15253079ca300160c92c9c0ee2541836463043f6
+commit: 0b5288f5fe63eab687c14e5940b9e0d532b129f2 [14/74] ALSA: ump: Add legacy raw MIDI support
+config: parisc-allyesconfig (https://download.01.org/0day-ci/archive/20230611/202306112301.dMok4XSA-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 12.3.0
+reproduce (this is a W=1 build):
+        mkdir -p ~/bin
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?id=0b5288f5fe63eab687c14e5940b9e0d532b129f2
+        git remote add tiwai-sound https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+        git fetch --no-tags tiwai-sound for-next
+        git checkout 0b5288f5fe63eab687c14e5940b9e0d532b129f2
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=parisc olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=parisc SHELL=/bin/bash
 
-This commit uses the preferable expression.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202306112301.dMok4XSA-lkp@intel.com/
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob.c         | 2 +-
- sound/firewire/digi00x/digi00x.c     | 2 +-
- sound/firewire/fireface/ff.c         | 2 +-
- sound/firewire/fireworks/fireworks.c | 2 +-
- sound/firewire/motu/motu.c           | 2 +-
- sound/firewire/tascam/tascam.c       | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+Note: the tiwai-sound/for-next HEAD 15253079ca300160c92c9c0ee2541836463043f6 builds fine.
+      It only hurts bisectability.
 
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 06a7ced218e2..2ba5962beb30 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -15,7 +15,7 @@
- 
- MODULE_DESCRIPTION("BridgeCo BeBoB driver");
- MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
- 
- static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
- static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 995302808c27..704ae2a5316b 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -9,7 +9,7 @@
- 
- MODULE_DESCRIPTION("Digidesign Digi 002/003 family Driver");
- MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
- 
- #define VENDOR_DIGIDESIGN	0x00a07e
- #define MODEL_CONSOLE		0x000001
-diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
-index 448e972028d9..82241058ea14 100644
---- a/sound/firewire/fireface/ff.c
-+++ b/sound/firewire/fireface/ff.c
-@@ -11,7 +11,7 @@
- 
- MODULE_DESCRIPTION("RME Fireface series Driver");
- MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
- 
- static void name_card(struct snd_ff *ff)
- {
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index ffb6dd796243..dd4298876ac0 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -18,7 +18,7 @@
- 
- MODULE_DESCRIPTION("Echo Fireworks driver");
- MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
- 
- static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
- static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
-diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index f8b7fe38751c..d73599eb7d5a 100644
---- a/sound/firewire/motu/motu.c
-+++ b/sound/firewire/motu/motu.c
-@@ -11,7 +11,7 @@
- 
- MODULE_DESCRIPTION("MOTU FireWire driver");
- MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
- 
- const unsigned int snd_motu_clock_rates[SND_MOTU_CLOCK_RATE_COUNT] = {
- 	/* mode 0 */
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index eb58d3fcf087..86880089de28 100644
---- a/sound/firewire/tascam/tascam.c
-+++ b/sound/firewire/tascam/tascam.c
-@@ -9,7 +9,7 @@
- 
- MODULE_DESCRIPTION("TASCAM FireWire series Driver");
- MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
- 
- static const struct snd_tscm_spec model_specs[] = {
- 	{
+All errors (new ones prefixed by >>):
+
+   In file included from sound/core/ump_convert.h:5,
+                    from sound/core/ump.c:14:
+>> include/sound/ump_msg.h:196:13: error: duplicate member 'reserved'
+     196 |         u32 reserved:8;
+         |             ^~~~~~~~
+>> include/sound/ump_msg.h:197:13: error: duplicate member 'program'
+     197 |         u32 program:8;
+         |             ^~~~~~~
+>> include/sound/ump_msg.h:198:13: error: duplicate member 'channel'
+     198 |         u32 channel:4;
+         |             ^~~~~~~
+>> include/sound/ump_msg.h:199:13: error: duplicate member 'status'
+     199 |         u32 status:4;
+         |             ^~~~~~
+>> include/sound/ump_msg.h:200:13: error: duplicate member 'group'
+     200 |         u32 group:4;
+         |             ^~~~~
+>> include/sound/ump_msg.h:201:13: error: duplicate member 'type'
+     201 |         u32 type:4;
+         |             ^~~~
+
+
+vim +/reserved +196 include/sound/ump_msg.h
+
+   184	
+   185	/* MIDI 1.0 Program Change (32bit) */
+   186	struct snd_ump_midi1_msg_program {
+   187	#ifdef __BIG_ENDIAN_BITFIELD
+   188		u32 type:4;
+   189		u32 group:4;
+   190		u32 status:4;
+   191		u32 channel:4;
+   192		u32 program:8;
+   193		u32 reserved:8;
+   194	#else
+   195	#endif
+ > 196		u32 reserved:8;
+ > 197		u32 program:8;
+ > 198		u32 channel:4;
+ > 199		u32 status:4;
+ > 200		u32 group:4;
+ > 201		u32 type:4;
+   202	} __packed;
+   203	
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
