@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8FCBC7EE23
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jun 2023 14:47:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C8AAC7EE23
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Jun 2023 14:47:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0F9982A;
-	Sun, 11 Jun 2023 16:46:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0F9982A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5879E844;
+	Sun, 11 Jun 2023 16:46:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5879E844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686494818;
-	bh=AXYzxEx+XTsw9Dut+WNQwtQjDYP/iIrP3C1wR3x3+lM=;
+	s=default; t=1686494826;
+	bh=Lst9QpbkISKmwQOeI650NIuV/KC939TnFMD9b/7LBrE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LOkTaFhQxiUYA6ymzGpYcgohY9e9q0DT7ayyR8m29A0iX7eT0pRhwLadThuey43OG
-	 gRYO7uQ1unohf79SzhhwN9ajgHO5FEjBUxyeQnzL/gKTuh3vgdPX4dll1AohMDzMag
-	 CJf6Fe7BwtLyoudFuQkQ2HTZrdwYZ+R1e+l2N1iY=
+	b=P3gpw5oXRLOE+nP7xdmXmblJWB591x4+/M7wKnVyiewPoQR1vMYmEodwsp7rpYcYb
+	 YELTaTNolY7NBfUHc3Wz7BfKGkA0xvnlM36B3qovz8TdKG4BYvptDE5iBZERSfwvpm
+	 Udi5Q5rnR86kHWIVaQ+xv9+9Y/yBbKc07eCfTLH4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF1B3F8055A; Sun, 11 Jun 2023 16:45:18 +0200 (CEST)
+	id A9855F80571; Sun, 11 Jun 2023 16:45:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0884F80551;
-	Sun, 11 Jun 2023 16:45:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B3F7F80563;
+	Sun, 11 Jun 2023 16:45:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADD71F80155; Sun, 11 Jun 2023 16:45:11 +0200 (CEST)
+	id 92EB3F80149; Sun, 11 Jun 2023 16:45:14 +0200 (CEST)
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
  [66.111.4.27])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6DF43F80132
-	for <alsa-devel@alsa-project.org>; Sun, 11 Jun 2023 16:44:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DF43F80132
+	by alsa1.perex.cz (Postfix) with ESMTPS id 45172F800ED
+	for <alsa-devel@alsa-project.org>; Sun, 11 Jun 2023 16:44:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45172F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm1 header.b=Suq8TTRR;
+ header.a=rsa-sha256 header.s=fm1 header.b=JbDaFgrn;
 	dkim=pass (2048-bit key,
  unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm1 header.b=ZUN/bCpJ
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.nyi.internal (Postfix) with ESMTP id EDE6C5C0107;
-	Sun, 11 Jun 2023 10:44:53 -0400 (EDT)
+ header.a=rsa-sha256 header.s=fm1 header.b=m+2dzbm4
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 4AC455C00CC;
+	Sun, 11 Jun 2023 10:44:52 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Sun, 11 Jun 2023 10:44:53 -0400
+  by compute6.internal (MEProxy); Sun, 11 Jun 2023 10:44:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
 	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
 	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm1; t=1686494693; x=
-	1686581093; bh=y8W5XAYxi+i+XBaEeXuvYqE2RJN4a7DM7SirQzqwMTk=; b=S
-	uq8TTRR0dfskyPC2zzfUHYw96SuAKPnKhjdLEPGyBeWN+sg7FHE0mdQ3efvUtQgD
-	pAFHq6b2PtGpCwgQ8e7J4IQ5BPyQNzuHsDmhuxvZ3ANoM39QnXfxOfHK8KJpKeom
-	9FOM+Bs/S/9NfsE7eQUo34BH4dogdHuGEfGXi3C7bg9E0fYE9V+cMmapFTPJZETT
-	9KKJ8QDRXXVPCQP502lswoFD7SQnFXN+fzwQyANkeE17ydItCUquODHBcPCH6DR2
-	yz/J8k4Cv8ZYIvZxN5EDILqLPY1Eb24j0bZQnWnnQ+c+jz11UZZ7cG5dbkJLKLmX
-	aeYmBh+7poXfAEkPLpyiw==
+	:reply-to:sender:subject:subject:to:to; s=fm1; t=1686494692; x=
+	1686581092; bh=Yn0aEu1aeS0zTTNKk9DiktzZz5EnwUeRU6UeCFqUZus=; b=J
+	bDaFgrnlFoKVahg3yqWSZb+92SSD6B7ls/SxS2KrwYJdLXBts7dGso6QFf6LidK9
+	sy6kyon3TbDqSFPrqBoXDBDGml2J5VrVTrLWkMOSx4vbC+jmOPvjrxNWpJ06dOZN
+	pZ/GZec8B6YgUJ0TVpvcqOO949lr/FnnYEinkv0caZHGFusR/wteu4LTCoF3hghs
+	no2VbwMd2cB7lXOzZ6V0nrS7/d9FMZuBLjHG/fN4sDXaYJxK+3SvoO4uPG/sQwjT
+	ftNR066Czu3rsXJAAPK4yW4SgFye21WOgnQemU8IvnMQvjXJMCpU8cXHI32FinP6
+	/N2L7CRs/78H0ZooeiLxQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1686494693; x=
-	1686581093; bh=y8W5XAYxi+i+XBaEeXuvYqE2RJN4a7DM7SirQzqwMTk=; b=Z
-	UN/bCpJkRbk4Vap6peiuO0ggwPyA8C32hEOB5yfcD9CBhU2QV5AAJL6VEjkdeQ3v
-	0jWXJsr8QEtPml/12l71WOFsJrELIEul4HOydM1YLSpomhp8x5/MCIwfH9Xu1mu+
-	vus0nUaA7qHCWimMM6aMetFbPiA0oLeNYXcWT432C3p9soHsjDy2JQUiboV5wEBr
-	+xFR60f6Ln/XrFS9UiXKR0u7gO6cx2D9HkRaWAMJGLutIcqCxNyYdu3l2g+gpq97
-	TgBW/tVWtahmvv3sVopE68RWhZifull+Q9vuY6vswGPUXxu26BR4DVAK1oee2C04
-	Xv2BtWrvMGpkDE9s9f7jA==
-X-ME-Sender: <xms:5d2FZOl4JxYTvZKi0c-ee47VyVdkrc4aWeKu4VXuu_ugDmVI9KQLsw>
-    <xme:5d2FZF3tMbInOw9R3ZAxfP5Vexv_j-liMGpTTddadj3So4FYHmcy2dUrkX59qNge3
-    hYNf4QVr--fKYz2eWw>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1686494692; x=
+	1686581092; bh=Yn0aEu1aeS0zTTNKk9DiktzZz5EnwUeRU6UeCFqUZus=; b=m
+	+2dzbm4+mNzAPJUvo8wTz/ryixAVq4oG7rBoklQ55iY+NcPZBBhCpo3pCyq4ogZO
+	fil4b8qX1tpRbEKMvUaQwAKfiE1RuTVWx4S2NWhxCby9S7OWAb8aFNutPX7LlLu9
+	jPfCKoFNmv7Meg+Wo8xDjNnaJs4GZSmZN5wpU/K3vg8lHJZ6wLPgPgXf7cGWwq6Y
+	7GahgV+1jfztGc3gJlnSi7P/hBXPX0xMvHY/7PHZ9RgI9+4r7+4ctanKCocy2uBs
+	fzP5oy3lI4aLcRAO8oY9w12cLXZ4EhmFvIpxtvtMe2/b8ieNAXxBANlRoDBc5MrH
+	DsWoFekrES8X8o4bmAOWw==
+X-ME-Sender: <xms:5N2FZOrNq0O74gd6dHIsm-uzqm0Zgi3uYiJWWbORtUZGj6pd9rcSaQ>
+    <xme:5N2FZMoE1TI8nt5IeETdVO_YB1GjRYDvqn5yYgppPt9ofrT3tu0Yzj3e5sSwsah-4
+    KUF11h2YvXdvD9Nqgg>
 X-ME-Received: 
- <xmr:5d2FZMr2nynJUtVPPYPM6ETjw3B_7prXQLB8-Ul8_r5tfxJekw8sP6QoM_yV5qi-D6JIjjWnuPrawDV-EY_7MHuPNcCp_peMIK0HidYN_1Qt9Q>
+ <xmr:5N2FZDPemJR57zww-AUSy2h-hgP0FhHAkMa1SWSYSNCpMYdIQxdwRlhb5RMLG9_mg1A9de0wYMLUcMaIsEwhGeW_tWGMpUsim2843IuUySvP6g>
 X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedvhedrgeduvddgkedtucetufdoteggodetrfdotf
+ gggruggvucftvghtrhhoucdtuddrgedvhedrgeduvddgjeelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
     ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
@@ -86,28 +86,28 @@ X-ME-Proxy-Cause:
     euvdfguddukeelveetgfdtvefhtdfffeeigfevueetffeivdffkedvtdenucevlhhushht
     vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
     hsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:5d2FZCn88GNadTYjP99EdyLOZGtMv6Rj-CflFV6vEG5XDZ0TcYIzQQ>
-    <xmx:5d2FZM33N1A0zzZvcc1SzVynP245vnRY6lHrDhxFuzZ0IBvnAO2NyQ>
-    <xmx:5d2FZJtMWShTfUHkfE1ZUaC90Xx-a5G9vcWBIEQkgrf2OJ5OgpGOfA>
-    <xmx:5d2FZJ8D8pJgWHTL3HVwT4OGeXF0tsg3CTtpkPQ6IlQ0fsBizJ-R7A>
+X-ME-Proxy: <xmx:5N2FZN7Zn_JP_fPNlP3CO7QDbhPh7sAXVWritS8VGwz3zWGLzJHj8A>
+    <xmx:5N2FZN77uIQ--gmRP_ICFOFrD64uo_S26T-KbdweAppR5RaEm-u_Jg>
+    <xmx:5N2FZNhNm-posye0RRCgpE1aenH5uQl0aYKY13M1VL0uGGyfv9UWiw>
+    <xmx:5N2FZPQCWQlukFQ2ArU75oXijC7a1Gm9I9SGPy04ra1fnMAAjKmf4w>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 11 Jun 2023 10:44:52 -0400 (EDT)
+ 11 Jun 2023 10:44:50 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: clemens@ladisch.de,
 	tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ALSA: firewire: use 'GPL' string for module license
- contributed by Clemens Ladisch
-Date: Sun, 11 Jun 2023 23:44:45 +0900
-Message-Id: <20230611144445.221529-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/2] ALSA: firewire: use 'GPL' string for module license
+ contributed by Takashi Sakamoto
+Date: Sun, 11 Jun 2023 23:44:44 +0900
+Message-Id: <20230611144445.221529-2-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230611144445.221529-1-o-takashi@sakamocchi.jp>
 References: <20230611144445.221529-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SLQQED6ICVR6BUXYB37FESAH2AYDZJZU
-X-Message-ID-Hash: SLQQED6ICVR6BUXYB37FESAH2AYDZJZU
+Message-ID-Hash: 3P4GNZ575NWVLXWMUJTD6P5VCPQRWM7M
+X-Message-ID-Hash: 3P4GNZ575NWVLXWMUJTD6P5VCPQRWM7M
 X-MailFrom: o-takashi@sakamocchi.jp
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -120,9 +120,8 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SLQQED6ICVR6BUXYB37FESAH2AYDZJZU/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3P4GNZ575NWVLXWMUJTD6P5VCPQRWM7M/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -137,61 +136,92 @@ This commit uses the preferable expression.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice.c | 2 +-
- sound/firewire/isight.c    | 2 +-
- sound/firewire/lib.c       | 2 +-
- sound/firewire/oxfw/oxfw.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ sound/firewire/bebob/bebob.c         | 2 +-
+ sound/firewire/digi00x/digi00x.c     | 2 +-
+ sound/firewire/fireface/ff.c         | 2 +-
+ sound/firewire/fireworks/fireworks.c | 2 +-
+ sound/firewire/motu/motu.c           | 2 +-
+ sound/firewire/tascam/tascam.c       | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 6036a5edbcb8..6c93e6e4982c 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 06a7ced218e2..2ba5962beb30 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -15,7 +15,7 @@
+ 
+ MODULE_DESCRIPTION("BridgeCo BeBoB driver");
+ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
+-MODULE_LICENSE("GPL v2");
++MODULE_LICENSE("GPL");
+ 
+ static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
+ static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
+diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
+index 995302808c27..704ae2a5316b 100644
+--- a/sound/firewire/digi00x/digi00x.c
++++ b/sound/firewire/digi00x/digi00x.c
 @@ -9,7 +9,7 @@
  
- MODULE_DESCRIPTION("DICE driver");
- MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_DESCRIPTION("Digidesign Digi 002/003 family Driver");
+ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
 -MODULE_LICENSE("GPL v2");
 +MODULE_LICENSE("GPL");
  
- #define OUI_WEISS		0x001c6a
- #define OUI_LOUD		0x000ff2
-diff --git a/sound/firewire/isight.c b/sound/firewire/isight.c
-index 6655af53b367..806f82c9ceee 100644
---- a/sound/firewire/isight.c
-+++ b/sound/firewire/isight.c
-@@ -77,7 +77,7 @@ struct audio_payload {
+ #define VENDOR_DIGIDESIGN	0x00a07e
+ #define MODEL_CONSOLE		0x000001
+diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
+index 448e972028d9..82241058ea14 100644
+--- a/sound/firewire/fireface/ff.c
++++ b/sound/firewire/fireface/ff.c
+@@ -11,7 +11,7 @@
  
- MODULE_DESCRIPTION("iSight audio driver");
- MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_DESCRIPTION("RME Fireface series Driver");
+ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
 -MODULE_LICENSE("GPL v2");
 +MODULE_LICENSE("GPL");
  
- static struct fw_iso_packet audio_packet = {
- 	.payload_length = sizeof(struct audio_payload),
-diff --git a/sound/firewire/lib.c b/sound/firewire/lib.c
-index e0a2337e8f27..654e1a6050a9 100644
---- a/sound/firewire/lib.c
-+++ b/sound/firewire/lib.c
-@@ -69,4 +69,4 @@ EXPORT_SYMBOL(snd_fw_transaction);
+ static void name_card(struct snd_ff *ff)
+ {
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index ffb6dd796243..dd4298876ac0 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -18,7 +18,7 @@
  
- MODULE_DESCRIPTION("FireWire audio helper functions");
- MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_DESCRIPTION("Echo Fireworks driver");
+ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
 -MODULE_LICENSE("GPL v2");
 +MODULE_LICENSE("GPL");
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index b496f87841ae..9523479fa94a 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -32,7 +32,7 @@
  
- MODULE_DESCRIPTION("Oxford Semiconductor FW970/971 driver");
- MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ static int index[SNDRV_CARDS]	= SNDRV_DEFAULT_IDX;
+ static char *id[SNDRV_CARDS]	= SNDRV_DEFAULT_STR;
+diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
+index f8b7fe38751c..d73599eb7d5a 100644
+--- a/sound/firewire/motu/motu.c
++++ b/sound/firewire/motu/motu.c
+@@ -11,7 +11,7 @@
+ 
+ MODULE_DESCRIPTION("MOTU FireWire driver");
+ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
 -MODULE_LICENSE("GPL v2");
 +MODULE_LICENSE("GPL");
- MODULE_ALIAS("snd-firewire-speakers");
- MODULE_ALIAS("snd-scs1x");
  
+ const unsigned int snd_motu_clock_rates[SND_MOTU_CLOCK_RATE_COUNT] = {
+ 	/* mode 0 */
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index eb58d3fcf087..86880089de28 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -9,7 +9,7 @@
+ 
+ MODULE_DESCRIPTION("TASCAM FireWire series Driver");
+ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
+-MODULE_LICENSE("GPL v2");
++MODULE_LICENSE("GPL");
+ 
+ static const struct snd_tscm_spec model_specs[] = {
+ 	{
 -- 
 2.39.2
 
