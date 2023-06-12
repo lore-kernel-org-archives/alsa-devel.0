@@ -4,96 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88F82C7EE25
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 08:22:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 175E2C7EE23
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 09:07:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F9AD828;
-	Mon, 12 Jun 2023 10:21:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F9AD828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 746F6822;
+	Mon, 12 Jun 2023 11:06:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 746F6822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686558138;
-	bh=oUXeyBNR6tzZ43fs93lTF6SmJ+Ib+zuqUVh4G8k7A0s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=TWylCIyNUUiI1EY32XsdQcep/2ksUNAtZfRo0VmD09jO4xwaQ2ytN8MWYhbXSHspV
-	 v7gLWPXwbpjORWBRDR9SHRPuKy8xE2xqMHhxQRvWUBqUhGA08dIowx5k8q/QF3uGsN
-	 mGkK5GvW94LnP34DCv1jo8myclpSbexnf4WSNgWw=
+	s=default; t=1686560850;
+	bh=u4u7hEhZSgxD4Q24UIMt8SKbPVPeHlqMVl5rw50ldGE=;
+	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=q7530O9nPDt/rfWekPVxupoxx6whdMHXBpJkftZzGvtjU3LIakbz7hhANmbgfOixU
+	 AQEu+yRIaWRtjr8deEOLs/ws9Gk9j5EphwI8o3AkhiDl47upk544RY3eyj7ezX/bqV
+	 uiQQj/eMmMLAJvvZFdnyY8+RvJiwjnKOh5I2wrog=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1FEE2F8057C; Mon, 12 Jun 2023 10:13:31 +0200 (CEST)
+	id 1DCD3F80149; Mon, 12 Jun 2023 11:06:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E2F1F8055B;
-	Mon, 12 Jun 2023 10:13:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 758ADF80149;
+	Mon, 12 Jun 2023 11:06:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E1EAF80301; Mon, 12 Jun 2023 10:13:22 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id BC3AFF80155; Mon, 12 Jun 2023 11:06:13 +0200 (CEST)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
+ [IPv6:2a00:1450:4864:20::12a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BCC59F8025E
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 10:11:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCC59F8025E
+	by alsa1.perex.cz (Postfix) with ESMTPS id BACBDF800BA
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 11:06:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BACBDF800BA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=UF+soOXC;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Qeg1nXCr
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0077D20489;
-	Mon, 12 Jun 2023 08:11:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1686557467;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WZ6Jn+89eBIHgVAM96uOHKXFiJ5ayjFK1sJ6wbr/Oo8=;
-	b=UF+soOXCKMaWmkwnHVwFhGBGmc7/TNQ/eh4oY2PJzdIbwl64uHr5UyLQyu+sG/yYh36PC0
-	0Qc1zakcs171aHuMpfGFimcFnZnLy7eA1nbACAzpbidJgoiLO4wwyRrppX5pVPlJvb5nOo
-	lv8Tb/DCoHoIfjsX11NoksJ1/EP5Mcg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1686557467;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WZ6Jn+89eBIHgVAM96uOHKXFiJ5ayjFK1sJ6wbr/Oo8=;
-	b=Qeg1nXCrcRUvYfb3XduhiuHuoXZHSoY4DNdYQtwSOu3kv3SFIVUaPy1LL0Cx3qZneGaVea
-	l0WNGREebRkCi+DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D369713A67;
-	Mon, 12 Jun 2023 08:11:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 2DGlMhrThmSLcAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 12 Jun 2023 08:11:06 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 07/10] ALSA: seq: ump: Notify port changes to system port
-Date: Mon, 12 Jun 2023 10:10:51 +0200
-Message-Id: <20230612081054.17200-8-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230612081054.17200-1-tiwai@suse.de>
-References: <20230612081054.17200-1-tiwai@suse.de>
+ unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
+ header.s=google header.b=MPjcE+/r
+Received: by mail-lf1-x12a.google.com with SMTP id
+ 2adb3069b0e04-4f62cf9755eso4644541e87.1
+        for <alsa-devel@alsa-project.org>;
+ Mon, 12 Jun 2023 02:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1686560765; x=1689152765;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Og9TBGAwPn+7cIBOXsPpips1XtfHFEVu/z5r53B7A8w=;
+        b=MPjcE+/rzgc7kcCRs8WWQAkWJPGqXjGOhIyM7CYg626COM8DZM0R6GAVFHrsem0gZo
+         FPovE9X7d7I6k0vyte//F3QcCb/krQSJNRZTtGTpQWY1Zs1ZAtx4C29BW1ZuABgy22qf
+         d6a7rAXInnJMPCSrlJQv0okSfjsTF0DE6ie90=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686560765; x=1689152765;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Og9TBGAwPn+7cIBOXsPpips1XtfHFEVu/z5r53B7A8w=;
+        b=VWIwGNDjbaJ8PQGD0bwgT8iuFp/CY6WdiGdqouRLCYMyD2nbMCMBr0z6dXzGeKzCEO
+         Az1/nULVkDT/6QLOkyuS+gf41qGghgg+q5qbhejHZXsCx8DBlkO741IeCB7FGFZYI+Sd
+         90jPRuljCa/i5GMtLrGCa7mreEqcb9i/bYhqJxqVrvYSI7rwdGMPqtJxNv77zGsJxE2p
+         FDoDkpTpGKbyzqPoe8ghJBBQ3G9d10SLfArKRGXZTVVDT6LMetKTEdcPwrug3xZr5Nd4
+         Bbw0UaxygfIHeYOpgdJUzwGxfHFF3xHuz0DX4/MQ7V6lgxWE5ctQ0ZeuoKiX836Dc0+J
+         OqIw==
+X-Gm-Message-State: AC+VfDy9jmacYN8zOZS9tFbL9g0NTl8arsUrO9slLv/csCVbz7dA+zzV
+	UAT7IA9arEftPZJbIfpPkkbVJg==
+X-Google-Smtp-Source: 
+ ACHHUZ4AFtdtk5vbc84pFx8fmkaQZYYeUjmkPCbIs8hGaLKWkMZPhnp7T4qVI3RpJ/wytxakqMSOwg==
+X-Received: by 2002:a2e:8401:0:b0:2aa:3cee:c174 with SMTP id
+ z1-20020a2e8401000000b002aa3ceec174mr2147269ljg.13.1686560765135;
+        Mon, 12 Jun 2023 02:06:05 -0700 (PDT)
+Received: from alco.roam.corp.google.com
+ ([2620:0:1059:10:82e9:e3cf:d6f0:4c6a])
+        by smtp.gmail.com with ESMTPSA id
+ o10-20020a1709061d4a00b0096a742beb68sm4867275ejh.201.2023.06.12.02.06.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jun 2023 02:06:04 -0700 (PDT)
+From: Ricardo Ribalda Delgado <ribalda@chromium.org>
+Subject: [PATCH v2 0/2] ASoC: mediatek: mt8173: Fix error paths
+Date: Mon, 12 Jun 2023 11:05:30 +0200
+Message-Id: <20230612-mt8173-fixup-v2-0-432aa99ce24d@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ATI6QRXXB3EQXM2SHMFRKB52ML2VJAL4
-X-Message-ID-Hash: ATI6QRXXB3EQXM2SHMFRKB52ML2VJAL4
-X-MailFrom: tiwai@suse.de
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANrfhmQC/3WNOw6DMBBEr4Jcx5HXKA6kyj0iCv/AW4DRGqxEi
+ LvHUKVJN292R29jyRP6xB7VxshnTBinAvJSMRv0NHiOrjCTQtZCgeTj0sC95j2+15kbq4TUrXJ
+ GO1YmRifPDenJhmP0+3ucZ/Iln7ZXVzhgWiJ9TnmGo/3jycCBN9DfbCtqUA6eNlAccR2vkQbW7
+ fv+BeYEHJPKAAAA
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ Ricardo Ribalda Delgado <ribalda@chromium.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>, stable@kernel.org
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=761; i=ribalda@chromium.org;
+ h=from:subject:message-id; bh=u4u7hEhZSgxD4Q24UIMt8SKbPVPeHlqMVl5rw50ldGE=;
+ b=owEBbQKS/ZANAwAKAdE30T7POsSIAcsmYgBkht/dkMYqHwnIEHZ+41JKijVvqLzD6KdwPtBHF
+ P52bsfcRM6JAjMEAAEKAB0WIQREDzjr+/4oCDLSsx7RN9E+zzrEiAUCZIbf3QAKCRDRN9E+zzrE
+ iIVVD/0ewCXTJuAPyBW65v11fUyArpepY+0UQh6uLOiQfVArXUMuNaQu2qYTOTCRbQwUSx8T1Yi
+ tobpmaXoHg5Fj+ZChbIz0CCOuaOxEMzPGX/vNWZcFS85T5YAesx2ur4WM3S8tic6IcRRQnDdGgP
+ GCRt/PDdn4h7nxOw5Ur/7waoXc85mnWerg3iwkrRmnAM5p8fdxmLBlOvU4vXYnU9kctdO/Vd+A/
+ ffnMjOdxSjR2OwM61CAgwwH78pFh2m10/B+spY8YSzLuNdc8FECn/cSb2lqKXdWuXqIQM3Pc2u3
+ floqMLaH/OyVeFxyL/RMgDizstyHN3KlfhWmvnVdQtK0uC797lIqxFAjDQmsPqNo/qODGu4sNyD
+ 1ii76GTmZwZbBhVEhY/duPnnHCcHaXoW2qUsqdTp7G+kQOi4GhTNu3gqkR8tnDhOwJqU92ppmT6
+ 1a4M0lBqysOBdbhvDjxCfM62xyXw9Ibn0AL+v7PY7VPkD4Qq8jhIK7iaj9/sZ4k2RvtadLNNuBB
+ bnK2Qky9LICNc4JCdD1qZxl/NcalR0eFzqJhjqDGjKK/UTOOKYpgLCtDMjRNtU0UniyLpcJvlAw
+ UzEkU0U8IuUdmEUk9B4okALWK6iHVmJkZ28sKcVLCAOv+bdAjtyeXbpcMo5oClTpEwuoZdKL1qD
+ 5ntBFv1Zxs4PvNw==
+X-Developer-Key: i=ribalda@chromium.org; a=openpgp;
+ fpr=9EC3BB66E2FC129A6F90B39556A0D81F9F782DA9
+Message-ID-Hash: WDYGGOBARR7TJZSUS7JMFY6QFAZLQQ7O
+X-Message-ID-Hash: WDYGGOBARR7TJZSUS7JMFY6QFAZLQQ7O
+X-MailFrom: ribalda@chromium.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -105,7 +128,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ATI6QRXXB3EQXM2SHMFRKB52ML2VJAL4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WDYGGOBARR7TJZSUS7JMFY6QFAZLQQ7O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,49 +137,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-For allowing applications to track the FB active changes, this patch
-adds the notification from the system port at each time a FB change is
-handled and the active flag or re-grouping happens.
+ASoC: mediatek: mt8173, presented a couple of error paths errors, lets
+fix them.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Ricardo Ribalda Delgado <ribalda@chromium.org>
 ---
- sound/core/seq/seq_system.c     | 1 +
- sound/core/seq/seq_ump_client.c | 3 +++
- 2 files changed, 4 insertions(+)
+Changes in v2:
+- Fix other error paths bugs, Thanks Dan!
+- Link to v1: https://lore.kernel.org/r/20230612-mt8173-fixup-v1-1-81f5c90316d1@chromium.org
 
-diff --git a/sound/core/seq/seq_system.c b/sound/core/seq/seq_system.c
-index 32c2d9b57751..80267290190d 100644
---- a/sound/core/seq/seq_system.c
-+++ b/sound/core/seq/seq_system.c
-@@ -85,6 +85,7 @@ void snd_seq_system_broadcast(int client, int port, int type)
- 	ev.type = type;
- 	snd_seq_kernel_client_dispatch(sysclient, &ev, 0, 0);
- }
-+EXPORT_SYMBOL_GPL(snd_seq_system_broadcast);
- 
- /* entry points for broadcasting system events */
- int snd_seq_system_notify(int client, int port, struct snd_seq_event *ev)
-diff --git a/sound/core/seq/seq_ump_client.c b/sound/core/seq/seq_ump_client.c
-index 2f93d76b05ce..901a670dcb36 100644
---- a/sound/core/seq/seq_ump_client.c
-+++ b/sound/core/seq/seq_ump_client.c
-@@ -13,6 +13,7 @@
- #include <sound/seq_kernel.h>
- #include <sound/seq_device.h>
- #include "seq_clientmgr.h"
-+#include "seq_system.h"
- 
- struct seq_ump_client;
- struct seq_ump_group;
-@@ -273,6 +274,8 @@ static void update_port_infos(struct seq_ump_client *client)
- 						new);
- 		if (err < 0)
- 			goto error;
-+		/* notify to system port */
-+		snd_seq_system_client_ev_port_change(client->seq_client, i);
- 	}
-  error:
- 	kfree(new);
+---
+Ricardo Ribalda Delgado (2):
+      ASoC: mediatek: mt8173: Fix snd_soc_component_initialize error path
+      ASoC: mediatek: mt8173: Fix irq error path
+
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+---
+base-commit: 858fd168a95c5b9669aac8db6c14a9aeab446375
+change-id: 20230612-mt8173-fixup-bc602a96dbad
+
+Best regards,
 -- 
-2.35.3
+Ricardo Ribalda Delgado <ribalda@chromium.org>
 
