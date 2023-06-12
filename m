@@ -4,100 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEB41C7EE25
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 08:16:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 948AAC7EE25
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 08:21:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3990D829;
-	Mon, 12 Jun 2023 10:15:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3990D829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A64E822;
+	Mon, 12 Jun 2023 10:20:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A64E822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686557778;
-	bh=U9RHxZGx6FHWCQJYQE24SXPUitLyJdi8v+PBM+b7VKk=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=lFaNgb0l5iQ0n6eu59wqVURb1kb6Jn7TG5Ud3ge0OBlfQXsVIiE9Fpv+dBQ2BnQU4
-	 mdkuV0lQ/PEkoFORFJ62srRRtOBxMlJ+0Cday4KnXnhP+S5amUY7Cr8+1QIVdA0RgU
-	 RHZfWGe8cF61xZiYez6wbhW6d3n5ZT6SmAL+d5wE=
+	s=default; t=1686558082;
+	bh=sAOiIGDgwUN985n3Cv7l18QQGNrd9EbbKFbJywNdMoU=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=uf1vE+Ngg9LEfm6xhT91kstXhLwrNEEWjfOHEpWeQPpjIv0QMv3xkUN6F/OLF7j8+
+	 Hy7fw4rwLhcLBQ1LzIdzZXA3j7d+wYJQ88S797mmHV2j+jisS1uP1sAPm9rm1NDnBw
+	 uKGXoCKXkUBT8kSvsytKr4C0ND/xRP9gbDGrXrH0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF73EF80132; Mon, 12 Jun 2023 10:15:27 +0200 (CEST)
+	id E0DB3F8025E; Mon, 12 Jun 2023 10:20:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F78DF80132;
-	Mon, 12 Jun 2023 10:15:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76DDFF80246;
+	Mon, 12 Jun 2023 10:20:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7CD9AF80132; Mon, 12 Jun 2023 10:15:21 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id CDE16F800BA; Mon, 12 Jun 2023 10:20:02 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9400FF800BA
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 10:15:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9400FF800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C2C5F800BA
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 10:20:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C2C5F800BA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=gsY2m7BO
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 35C71Lpx018825;
-	Mon, 12 Jun 2023 03:15:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=LXNNqMvoD7R1b7HLxV4yMelCLvRV9Z70WNPNInx5Fxw=;
- b=gsY2m7BOfomtt5OnPtJqdTKX9hWKkX7cXy5zYh1yTmK/WTZHU9forn3x3P5uiesB4F4P
- rdikQePvKWttv+B+w8too2b4C3QUu5dFY3c6gLgeKLc+hEPyIhrnFiwmgzJksbSDIQSe
- OCk6jBpiheTCmG3G4No3UtfU8kzxqM2sgQTpj2pZdVD2hJEhrQi14PTaY5b6YWHDUsrt
- Y1LzYf09foGPW1c717OEcVsaDx5bKp3eArk28uwAGJQ1OUJYK6qTMoYAZ9zwVOJJH08W
- kbU/sIPNFq7/NDwgLBYhjuk0GSurkPszRpbvYU692Jm1S0p5WUJc5vcKFFubgPxEwlMa GA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3r4nkm9kub-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Jun 2023 03:15:16 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Mon, 12 Jun
- 2023 09:15:14 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Mon, 12 Jun 2023 09:15:14 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6EE0D11C6;
-	Mon, 12 Jun 2023 08:15:14 +0000 (UTC)
-Date: Mon, 12 Jun 2023 08:15:14 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC: James Schulman <james.schulman@cirrus.com>,
-        David Rhodes
-	<david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-        "Rob
- Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: cirrus,cs35l45: drop unneeded quotes
-Message-ID: <20230612081514.GP68926@ediswmail.ad.cirrus.com>
-References: <20230609140658.64557-1-krzysztof.kozlowski@linaro.org>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=VI3myUeW;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=KYCbsWwt
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4944620487;
+	Mon, 12 Jun 2023 08:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1686558000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xfrY9dgHX1IgoFS4kTyrdA8BY8ShvIpfZjRQZZfBZyY=;
+	b=VI3myUeWA3Dv7DNBi/5bRjgRvTe3xb/QF1sBbA0XN1cj4o1ZE1MPn3a1h17vHQ/fzucexC
+	RhsqnsqIzz8SCvKxN7L3/lMeRfcduHDIu5tHhdLP6bbpNaNjpHqpO61umRQiO/corpqb/6
+	1CymIkHcweUbuuH6HE5AwtpgSaWpHtc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1686558000;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xfrY9dgHX1IgoFS4kTyrdA8BY8ShvIpfZjRQZZfBZyY=;
+	b=KYCbsWwt7hE8xERwggZkSowcw/K9TLV8W5crfDzWojKTJBcGtYT/0xX9ogqAtgth1MQsP1
+	/sd3R3de+rnAouCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2DE4313A67;
+	Mon, 12 Jun 2023 08:20:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id IAViCjDVhmT5cwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 12 Jun 2023 08:20:00 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH alsa-lib 1/3] uapi: Update rawmidi API to 2.0.4
+Date: Mon, 12 Jun 2023 10:19:46 +0200
+Message-Id: <20230612081948.18346-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230612081948.18346-1-tiwai@suse.de>
+References: <20230612081948.18346-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230609140658.64557-1-krzysztof.kozlowski@linaro.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: fziVmXJwX3F20HoqU3eyPXMVoC6H7DZw
-X-Proofpoint-ORIG-GUID: fziVmXJwX3F20HoqU3eyPXMVoC6H7DZw
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 3C4N5ADMWUSFXNC7XAHPNYCBPLCSGPE2
-X-Message-ID-Hash: 3C4N5ADMWUSFXNC7XAHPNYCBPLCSGPE2
-X-MailFrom: prvs=1527555ab5=ckeepax@opensource.cirrus.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: BPRN6P3ZJD4JCIOADJWV2ZGQ5KRGTDIG
+X-Message-ID-Hash: BPRN6P3ZJD4JCIOADJWV2ZGQ5KRGTDIG
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,23 +103,82 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3C4N5ADMWUSFXNC7XAHPNYCBPLCSGPE2/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BPRN6P3ZJD4JCIOADJWV2ZGQ5KRGTDIG/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Jun 09, 2023 at 04:06:58PM +0200, Krzysztof Kozlowski wrote:
-> Cleanup bindings dropping unneeded quotes. Once all these are fixed,
-> checking for this can be enabled in yamllint.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+Sync with the kernel change of rawmidi API for supporting UMP 1.1
+features.
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/uapi/asound.h | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-Thanks,
-Charles
+diff --git a/include/sound/uapi/asound.h b/include/sound/uapi/asound.h
+index 80cd57e968e5..32095ef79cab 100644
+--- a/include/sound/uapi/asound.h
++++ b/include/sound/uapi/asound.h
+@@ -706,7 +706,7 @@ enum {
+  *  Raw MIDI section - /dev/snd/midi??
+  */
+ 
+-#define SNDRV_RAWMIDI_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 3)
++#define SNDRV_RAWMIDI_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 4)
+ 
+ enum {
+ 	SNDRV_RAWMIDI_STREAM_OUTPUT = 0,
+@@ -776,6 +776,9 @@ struct snd_rawmidi_status {
+ 	unsigned char reserved[16];	/* reserved for future use */
+ };
+ 
++/* UMP EP info flags */
++#define SNDRV_UMP_EP_INFO_STATIC_BLOCKS		0x01
++
+ /* UMP EP Protocol / JRTS capability bits */
+ #define SNDRV_UMP_EP_INFO_PROTO_MIDI_MASK	0x0300
+ #define SNDRV_UMP_EP_INFO_PROTO_MIDI1		0x0100 /* MIDI 1.0 */
+@@ -793,7 +796,11 @@ struct snd_ump_endpoint_info {
+ 	unsigned int protocol;		/* current protocol */
+ 	unsigned int num_blocks;	/* # of function blocks */
+ 	unsigned short version;		/* UMP major/minor version */
+-	unsigned short padding[7];
++	unsigned short family_id;	/* MIDI device family ID */
++	unsigned short model_id;	/* MIDI family model ID */
++	unsigned int manufacturer_id;	/* MIDI manufacturer ID */
++	unsigned char sw_revision[4];	/* software revision */
++	unsigned short padding;
+ 	unsigned char name[128];	/* endpoint name string */
+ 	unsigned char product_id[128];	/* unique product id string */
+ 	unsigned char reserved[32];
+@@ -808,6 +815,12 @@ struct snd_ump_endpoint_info {
+ #define SNDRV_UMP_BLOCK_IS_MIDI1	(1U << 0) /* MIDI 1.0 port w/o restrict */
+ #define SNDRV_UMP_BLOCK_IS_LOWSPEED	(1U << 1) /* 31.25Kbps B/W MIDI1 port */
+ 
++/* UMP block user-interface hint */
++#define SNDRV_UMP_BLOCK_UI_HINT_UNKNOWN		0x00
++#define SNDRV_UMP_BLOCK_UI_HINT_RECEIVER	0x01
++#define SNDRV_UMP_BLOCK_UI_HINT_SENDER		0x02
++#define SNDRV_UMP_BLOCK_UI_HINT_BOTH		0x03
++
+ /* UMP groups and blocks */
+ #define SNDRV_UMP_MAX_GROUPS		16
+ #define SNDRV_UMP_MAX_BLOCKS		32
+@@ -821,7 +834,9 @@ struct snd_ump_block_info {
+ 	unsigned char active;		/* Activeness */
+ 	unsigned char first_group;	/* first group ID */
+ 	unsigned char num_groups;	/* number of groups */
+-	unsigned char padding[3];
++	unsigned char midi_ci_version;	/* MIDI-CI support version */
++	unsigned char sysex8_streams;	/* max number of sysex8 streams */
++	unsigned char ui_hint;		/* user interface hint */
+ 	unsigned int flags;		/* various info flags */
+ 	unsigned char name[128];	/* block name string */
+ 	unsigned char reserved[32];
+-- 
+2.35.3
+
