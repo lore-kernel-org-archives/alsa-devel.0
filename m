@@ -4,96 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCF50C7EE25
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 08:15:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEB41C7EE25
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 08:16:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E37D847;
-	Mon, 12 Jun 2023 10:14:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E37D847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3990D829;
+	Mon, 12 Jun 2023 10:15:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3990D829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686557728;
-	bh=S7YGSr0GuwWLrvjrcfC7YcHoVekK04SyZN7cbRSkbJw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1686557778;
+	bh=U9RHxZGx6FHWCQJYQE24SXPUitLyJdi8v+PBM+b7VKk=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JQ5B/j18Xkjj5Ml11kd/9ylEm+aNov6sJsZx0NOZXnmyePKdnNrWut0yeOM4t7ocv
-	 g3lEeQsSE17VhXBAiNSPD8gmthPEyNYUJsx/gQDh/yRd8+C6zZ7+1R8Z1eSKq3aC6m
-	 Nob4S90l5uyS4MgI/qLBnfRKCExEYgED3RjBWsGA=
+	b=lFaNgb0l5iQ0n6eu59wqVURb1kb6Jn7TG5Ud3ge0OBlfQXsVIiE9Fpv+dBQ2BnQU4
+	 mdkuV0lQ/PEkoFORFJ62srRRtOBxMlJ+0Cday4KnXnhP+S5amUY7Cr8+1QIVdA0RgU
+	 RHZfWGe8cF61xZiYez6wbhW6d3n5ZT6SmAL+d5wE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2ACEFF80567; Mon, 12 Jun 2023 10:13:27 +0200 (CEST)
+	id EF73EF80132; Mon, 12 Jun 2023 10:15:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44852F80567;
-	Mon, 12 Jun 2023 10:13:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F78DF80132;
+	Mon, 12 Jun 2023 10:15:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6ECBCF80149; Mon, 12 Jun 2023 10:13:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 7CD9AF80132; Mon, 12 Jun 2023 10:15:21 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A372FF80149
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 10:11:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A372FF80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9400FF800BA
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 10:15:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9400FF800BA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=cM3iWBxe;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=9K5/BoBU
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CF83A2285B;
-	Mon, 12 Jun 2023 08:11:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1686557466;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ID6mwdj4lew1ZkjZ5qvw01SNKA8sKTmbLWkpEA6i+H8=;
-	b=cM3iWBxen5E6MQIwfbGTPhZAkAnNlPn4zCiQkyiYcoZVWyWMcnFntEvJzwqAFXzLzclF4k
-	wuvmKmz7X5uMLGsA9DDSX8Z8/45IZ6qNIUGotKckGiuv9CF4OmNvMC3RXb+rEWY6ADhQCX
-	ON3lybuUR18X3dXGsYlblNBdH98hw4g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1686557466;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ID6mwdj4lew1ZkjZ5qvw01SNKA8sKTmbLWkpEA6i+H8=;
-	b=9K5/BoBUlG9FZ44bYPS1sB4Rkx3sKT1wY+AcTGeg/7K7TnvyHhgvfqBHsxBfqJDi7gNVHA
-	ypfq62wjxLzKMaAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF067138EC;
-	Mon, 12 Jun 2023 08:11:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id cFKMKRrThmSLcAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 12 Jun 2023 08:11:06 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH 06/10] ALSA: seq: ump: Handle FB info update
-Date: Mon, 12 Jun 2023 10:10:50 +0200
-Message-Id: <20230612081054.17200-7-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230612081054.17200-1-tiwai@suse.de>
-References: <20230612081054.17200-1-tiwai@suse.de>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=gsY2m7BO
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 35C71Lpx018825;
+	Mon, 12 Jun 2023 03:15:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=LXNNqMvoD7R1b7HLxV4yMelCLvRV9Z70WNPNInx5Fxw=;
+ b=gsY2m7BOfomtt5OnPtJqdTKX9hWKkX7cXy5zYh1yTmK/WTZHU9forn3x3P5uiesB4F4P
+ rdikQePvKWttv+B+w8too2b4C3QUu5dFY3c6gLgeKLc+hEPyIhrnFiwmgzJksbSDIQSe
+ OCk6jBpiheTCmG3G4No3UtfU8kzxqM2sgQTpj2pZdVD2hJEhrQi14PTaY5b6YWHDUsrt
+ Y1LzYf09foGPW1c717OEcVsaDx5bKp3eArk28uwAGJQ1OUJYK6qTMoYAZ9zwVOJJH08W
+ kbU/sIPNFq7/NDwgLBYhjuk0GSurkPszRpbvYU692Jm1S0p5WUJc5vcKFFubgPxEwlMa GA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3r4nkm9kub-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jun 2023 03:15:16 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Mon, 12 Jun
+ 2023 09:15:14 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Mon, 12 Jun 2023 09:15:14 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
+ [198.61.86.93])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6EE0D11C6;
+	Mon, 12 Jun 2023 08:15:14 +0000 (UTC)
+Date: Mon, 12 Jun 2023 08:15:14 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: James Schulman <james.schulman@cirrus.com>,
+        David Rhodes
+	<david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        "Rob
+ Herring" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: cirrus,cs35l45: drop unneeded quotes
+Message-ID: <20230612081514.GP68926@ediswmail.ad.cirrus.com>
+References: <20230609140658.64557-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DHNMCAKS56XOUBKKS46LH4RPF5FMGL7G
-X-Message-ID-Hash: DHNMCAKS56XOUBKKS46LH4RPF5FMGL7G
-X-MailFrom: tiwai@suse.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230609140658.64557-1-krzysztof.kozlowski@linaro.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: fziVmXJwX3F20HoqU3eyPXMVoC6H7DZw
+X-Proofpoint-ORIG-GUID: fziVmXJwX3F20HoqU3eyPXMVoC6H7DZw
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 3C4N5ADMWUSFXNC7XAHPNYCBPLCSGPE2
+X-Message-ID-Hash: 3C4N5ADMWUSFXNC7XAHPNYCBPLCSGPE2
+X-MailFrom: prvs=1527555ab5=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -105,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DHNMCAKS56XOUBKKS46LH4RPF5FMGL7G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3C4N5ADMWUSFXNC7XAHPNYCBPLCSGPE2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,220 +118,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch implements the handling of the dynamic update of FB info.
+On Fri, Jun 09, 2023 at 04:06:58PM +0200, Krzysztof Kozlowski wrote:
+> Cleanup bindings dropping unneeded quotes. Once all these are fixed,
+> checking for this can be enabled in yamllint.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-When the FB info update is received after the initial parsing, it
-means the dynamic FB info update.  We compare the result, and if the
-actual update is detected, it's notified via a new ops,
-notify_fb_change, to the sequencer client, and the corresponding
-sequencer ports are updated accordingly.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/ump.h             |  2 ++
- sound/core/seq/seq_ump_client.c | 61 +++++++++++++++++++++++++++++++++
- sound/core/ump.c                | 49 ++++++++++++++++++++++----
- 3 files changed, 106 insertions(+), 6 deletions(-)
-
-diff --git a/include/sound/ump.h b/include/sound/ump.h
-index 5b50a2fc0d79..0e9c048346fa 100644
---- a/include/sound/ump.h
-+++ b/include/sound/ump.h
-@@ -70,6 +70,8 @@ struct snd_ump_ops {
- struct snd_seq_ump_ops {
- 	void (*input_receive)(struct snd_ump_endpoint *ump,
- 			      const u32 *data, int words);
-+	int (*notify_fb_change)(struct snd_ump_endpoint *ump,
-+				struct snd_ump_block *fb);
- };
- 
- struct snd_ump_block {
-diff --git a/sound/core/seq/seq_ump_client.c b/sound/core/seq/seq_ump_client.c
-index 7739fb3ebf34..2f93d76b05ce 100644
---- a/sound/core/seq/seq_ump_client.c
-+++ b/sound/core/seq/seq_ump_client.c
-@@ -48,6 +48,7 @@ struct seq_ump_client {
- 	struct seq_ump_input_buffer input; /* input parser context */
- 	struct seq_ump_group groups[SNDRV_UMP_MAX_GROUPS]; /* table of groups */
- 	void *ump_info[SNDRV_UMP_MAX_BLOCKS + 1]; /* shadow of seq client ump_info */
-+	struct work_struct group_notify_work; /* FB change notification */
- };
- 
- /* number of 32bit words for each UMP message type */
-@@ -244,6 +245,40 @@ static int seq_ump_group_init(struct seq_ump_client *client, int group_index)
- 	return err;
- }
- 
-+/* update the sequencer ports; called from notify_fb_change callback */
-+static void update_port_infos(struct seq_ump_client *client)
-+{
-+	struct snd_seq_port_info *old, *new;
-+	int i, err;
-+
-+	old = kzalloc(sizeof(*old), GFP_KERNEL);
-+	new = kzalloc(sizeof(*new), GFP_KERNEL);
-+	if (!old || !new)
-+		goto error;
-+
-+	for (i = 0; i < SNDRV_UMP_MAX_GROUPS; i++) {
-+		old->addr.client = client->seq_client;
-+		old->addr.port = i;
-+		err = snd_seq_kernel_client_ctl(client->seq_client,
-+						SNDRV_SEQ_IOCTL_GET_PORT_INFO,
-+						old);
-+		if (err < 0)
-+			goto error;
-+		fill_port_info(new, client, &client->groups[i]);
-+		if (old->capability == new->capability &&
-+		    !strcmp(old->name, new->name))
-+			continue;
-+		err = snd_seq_kernel_client_ctl(client->seq_client,
-+						SNDRV_SEQ_IOCTL_SET_PORT_INFO,
-+						new);
-+		if (err < 0)
-+			goto error;
-+	}
-+ error:
-+	kfree(new);
-+	kfree(old);
-+}
-+
- /* update dir_bits and active flag for all groups in the client */
- static void update_group_attrs(struct seq_ump_client *client)
- {
-@@ -353,6 +388,8 @@ static int create_ump_endpoint_port(struct seq_ump_client *client)
- /* release the client resources */
- static void seq_ump_client_free(struct seq_ump_client *client)
- {
-+	cancel_work_sync(&client->group_notify_work);
-+
- 	if (client->seq_client >= 0)
- 		snd_seq_delete_kernel_client(client->seq_client);
- 
-@@ -377,8 +414,31 @@ static void setup_client_midi_version(struct seq_ump_client *client)
- 	snd_seq_kernel_client_put(cptr);
- }
- 
-+/* UMP group change notification */
-+static void handle_group_notify(struct work_struct *work)
-+{
-+	struct seq_ump_client *client =
-+		container_of(work, struct seq_ump_client, group_notify_work);
-+
-+	update_group_attrs(client);
-+	update_port_infos(client);
-+}
-+
-+/* UMP FB change notification */
-+static int seq_ump_notify_fb_change(struct snd_ump_endpoint *ump,
-+				    struct snd_ump_block *fb)
-+{
-+	struct seq_ump_client *client = ump->seq_client;
-+
-+	if (!client)
-+		return -ENODEV;
-+	schedule_work(&client->group_notify_work);
-+	return 0;
-+}
-+
- static const struct snd_seq_ump_ops seq_ump_ops = {
- 	.input_receive = seq_ump_input_receive,
-+	.notify_fb_change = seq_ump_notify_fb_change,
- };
- 
- /* create a sequencer client and ports for the given UMP endpoint */
-@@ -396,6 +456,7 @@ static int snd_seq_ump_probe(struct device *_dev)
- 	if (!client)
- 		return -ENOMEM;
- 
-+	INIT_WORK(&client->group_notify_work, handle_group_notify);
- 	client->ump = ump;
- 
- 	client->seq_client =
-diff --git a/sound/core/ump.c b/sound/core/ump.c
-index 7df50f0affe9..c0cda12bce10 100644
---- a/sound/core/ump.c
-+++ b/sound/core/ump.c
-@@ -688,6 +688,28 @@ static void fill_fb_info(struct snd_ump_endpoint *ump,
- 		info->sysex8_streams, info->flags);
- }
- 
-+/* check whether the FB info gets updated by the current message */
-+static bool is_fb_info_updated(struct snd_ump_endpoint *ump,
-+			       struct snd_ump_block *fb,
-+			       const union snd_ump_stream_msg *buf)
-+{
-+	char tmpbuf[offsetof(struct snd_ump_block_info, name)];
-+
-+	memcpy(tmpbuf, &fb->info, sizeof(tmpbuf));
-+	fill_fb_info(ump, (struct snd_ump_block_info *)tmpbuf, buf);
-+	return memcmp(&fb->info, tmpbuf, sizeof(tmpbuf)) != 0;
-+}
-+
-+/* notify the FB info/name change to sequencer */
-+static void seq_notify_fb_change(struct snd_ump_endpoint *ump,
-+				 struct snd_ump_block *fb)
-+{
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER)
-+	if (ump->seq_ops && ump->seq_ops->notify_fb_change)
-+		ump->seq_ops->notify_fb_change(ump, fb);
-+#endif
-+}
-+
- /* handle FB info message; update FB info if the block is present */
- static int ump_handle_fb_info_msg(struct snd_ump_endpoint *ump,
- 				  const union snd_ump_stream_msg *buf)
-@@ -697,14 +719,24 @@ static int ump_handle_fb_info_msg(struct snd_ump_endpoint *ump,
- 
- 	blk = buf->fb_info.function_block_id;
- 	fb = snd_ump_get_block(ump, blk);
--	if (fb) {
--		fill_fb_info(ump, &fb->info, buf);
--	} else if (ump->parsed) {
--		/* complain only if updated after parsing */
-+
-+	/* complain only if updated after parsing */
-+	if (!fb && ump->parsed) {
- 		ump_info(ump, "Function Block Info Update for non-existing block %d\n",
- 			 blk);
- 		return -ENODEV;
- 	}
-+
-+	/* When updated after the initial parse, check the FB info update */
-+	if (ump->parsed && !is_fb_info_updated(ump, fb, buf))
-+		return 1; /* no content change */
-+
-+	if (fb) {
-+		fill_fb_info(ump, &fb->info, buf);
-+		if (ump->parsed)
-+			seq_notify_fb_change(ump, fb);
-+	}
-+
- 	return 1; /* finished */
- }
- 
-@@ -714,14 +746,19 @@ static int ump_handle_fb_name_msg(struct snd_ump_endpoint *ump,
- {
- 	unsigned char blk;
- 	struct snd_ump_block *fb;
-+	int ret;
- 
- 	blk = buf->fb_name.function_block_id;
- 	fb = snd_ump_get_block(ump, blk);
- 	if (!fb)
- 		return -ENODEV;
- 
--	return ump_append_string(ump, fb->info.name, sizeof(fb->info.name),
--				 buf->raw, 3);
-+	ret = ump_append_string(ump, fb->info.name, sizeof(fb->info.name),
-+				buf->raw, 3);
-+	/* notify the FB name update to sequencer, too */
-+	if (ret > 0 && ump->parsed)
-+		seq_notify_fb_change(ump, fb);
-+	return ret;
- }
- 
- static int create_block_from_fb_info(struct snd_ump_endpoint *ump, int blk)
--- 
-2.35.3
-
+Thanks,
+Charles
