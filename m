@@ -4,55 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D975C7EE2E
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 19:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40CA6C7EE43
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 19:16:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3C75886;
-	Mon, 12 Jun 2023 21:15:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3C75886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EEC1857;
+	Mon, 12 Jun 2023 21:15:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EEC1857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686597352;
-	bh=3i0WATeaW5+6FVG/aZj7PmTNjRB/7xezDMzg3ZPqa2c=;
+	s=default; t=1686597376;
+	bh=T6rn34wPZw/nPOUFODBIqBY18Wkvj5U9nDxaVAXi9Pk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PkioHePLpmMi5kdZJzIW8XB5f7LTcbqRkOEaX9Z1tDrQkLskzgwrdlCI7lqLS2f57
-	 Au0Xou/zmw9LiCZA2jA73Z0juTcQcl1zQYeSWIYj/qt+n5tV8QrDKXewJ6dy+gmw+t
-	 37KSm+58oD/hhsJVuLgTLsH4fDy8wGX7drmlq248=
+	b=ibzbiBReoXjgpOpZuEL7KAfsAPntuA/MHkvdoC1qPkJPju0/YeSS4h0jrBZpX8mrk
+	 vVUulTF8J9Osu1P3injJP4isV+hr1MQC/AP1jmUntUs6fsOf9SpCe9b07yKQ3N7z9d
+	 xHsPMF2JEmj9jT18QxwYZHKwpFMYIhA6PxEce7E4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A90BBF80588; Mon, 12 Jun 2023 21:13:53 +0200 (CEST)
+	id 60370F805AC; Mon, 12 Jun 2023 21:13:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3BB1F80589;
-	Mon, 12 Jun 2023 21:13:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A46F3F805A1;
+	Mon, 12 Jun 2023 21:13:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49127F80552; Mon, 12 Jun 2023 21:13:44 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	id 9EB46F8055C; Mon, 12 Jun 2023 21:13:46 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 36162F80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id 40966F8025E
 	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 21:13:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36162F80246
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40966F8025E
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id E4E3A24236;
+	by bluemchen.kde.org (Postfix) with ESMTP id E130124235;
 	Mon, 12 Jun 2023 15:13:25 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1q8myj-WKL-00; Mon, 12 Jun 2023 21:13:25 +0200
+	id 1q8myj-WKF-00; Mon, 12 Jun 2023 21:13:25 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 6/9] ALSA: timer: minimize open-coded access to hw.resolution
-Date: Mon, 12 Jun 2023 21:13:22 +0200
-Message-Id: <20230612191325.1315854-7-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 5/9] ALSA: emu10k1: fix synthesizer pitch for E-MU cards at
+ 44.1 kHz
+Date: Mon, 12 Jun 2023 21:13:21 +0200
+Message-Id: <20230612191325.1315854-6-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230612191325.1315854-1-oswald.buddenhagen@gmx.de>
 References: <20230612191325.1315854-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: J4A6KD7DCI7CEB5C4AP6O2P2LKLID5CR
-X-Message-ID-Hash: J4A6KD7DCI7CEB5C4AP6O2P2LKLID5CR
+Message-ID-Hash: K52INXBMZY4HHYJOC37NSUY4TJ5ZISRT
+X-Message-ID-Hash: K52INXBMZY4HHYJOC37NSUY4TJ5ZISRT
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -65,7 +67,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J4A6KD7DCI7CEB5C4AP6O2P2LKLID5CR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K52INXBMZY4HHYJOC37NSUY4TJ5ZISRT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -74,66 +76,104 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some info-querying code still used hw.resolution directly instead of
-calling snd_timer_hw_resolution(), thus missing a possible
-hw.c_resolution callback. This patch rectifies that.
+This is only a very partial fix - the frequency-dependent envelope & LFO
+register values aren't adjusted.
+
+But I'm not sure they were even correct at 48 kHz to start with, as most
+of them are precalculated by common code which assumes an EMU8K-specific
+44.1 kHz word clock, and it seems somewhat unlikely that the hardware's
+register interpretation was adjusted to compensate for the different
+word clock.
+
+In any case I'm not going to spend time on fixing that, as this code is
+unlikely to be actually used by anyone today.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/core/timer.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ include/sound/emux_synth.h           |  2 +-
+ sound/pci/emu10k1/emu10k1_callback.c | 10 ++++++++++
+ sound/pci/emu10k1/emu10k1_synth.c    |  1 -
+ sound/synth/emux/emux_synth.c        |  3 ++-
+ 4 files changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index e08a37c23add..9d0d2a5c2e15 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -1246,6 +1246,7 @@ static void snd_timer_proc_read(struct snd_info_entry *entry,
- {
- 	struct snd_timer *timer;
- 	struct snd_timer_instance *ti;
-+	unsigned long resolution;
+diff --git a/include/sound/emux_synth.h b/include/sound/emux_synth.h
+index d499b68122a3..1cc530434b97 100644
+--- a/include/sound/emux_synth.h
++++ b/include/sound/emux_synth.h
+@@ -54,6 +54,7 @@ struct snd_emux_operators {
+ #if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
+ 	int (*oss_ioctl)(struct snd_emux *emu, int cmd, int p1, int p2);
+ #endif
++	int (*get_pitch_shift)(struct snd_emux *emu);
+ };
  
- 	mutex_lock(&register_mutex);
- 	list_for_each_entry(timer, &snd_timer_list, device_list) {
-@@ -1269,10 +1270,13 @@ static void snd_timer_proc_read(struct snd_info_entry *entry,
- 				    timer->tmr_device, timer->tmr_subdevice);
- 		}
- 		snd_iprintf(buffer, "%s :", timer->name);
--		if (timer->hw.resolution)
-+		spin_lock_irq(&timer->lock);
-+		resolution = snd_timer_hw_resolution(timer);
-+		spin_unlock_irq(&timer->lock);
-+		if (resolution)
- 			snd_iprintf(buffer, " %lu.%03luus (%lu ticks)",
--				    timer->hw.resolution / 1000,
--				    timer->hw.resolution % 1000,
-+				    resolution / 1000,
-+				    resolution % 1000,
- 				    timer->hw.ticks);
- 		if (timer->hw.flags & SNDRV_TIMER_HW_SLAVE)
- 			snd_iprintf(buffer, " SLAVE");
-@@ -1662,7 +1666,9 @@ static int snd_timer_user_ginfo(struct file *file,
- 			ginfo->flags |= SNDRV_TIMER_FLG_SLAVE;
- 		strscpy(ginfo->id, t->id, sizeof(ginfo->id));
- 		strscpy(ginfo->name, t->name, sizeof(ginfo->name));
--		ginfo->resolution = t->hw.resolution;
-+		spin_lock_irq(&t->lock);
-+		ginfo->resolution = snd_timer_hw_resolution(t);
-+		spin_unlock_irq(&t->lock);
- 		if (t->hw.resolution_min > 0) {
- 			ginfo->resolution_min = t->hw.resolution_min;
- 			ginfo->resolution_max = t->hw.resolution_max;
-@@ -1817,7 +1823,9 @@ static int snd_timer_user_info(struct file *file,
- 		info->flags |= SNDRV_TIMER_FLG_SLAVE;
- 	strscpy(info->id, t->id, sizeof(info->id));
- 	strscpy(info->name, t->name, sizeof(info->name));
--	info->resolution = t->hw.resolution;
-+	spin_lock_irq(&t->lock);
-+	info->resolution = snd_timer_hw_resolution(t);
-+	spin_unlock_irq(&t->lock);
- 	if (copy_to_user(_info, info, sizeof(*_info)))
- 		err = -EFAULT;
- 	kfree(info);
+ 
+@@ -82,7 +83,6 @@ struct snd_emux {
+ 	int max_voices;		/* Number of voices */
+ 	int mem_size;		/* memory size (in byte) */
+ 	int num_ports;		/* number of ports to be created */
+-	int pitch_shift;	/* pitch shift value (for Emu10k1) */
+ 	struct snd_emux_operators ops;	/* operators */
+ 	void *hw;		/* hardware */
+ 	unsigned long flags;	/* other conditions */
+diff --git a/sound/pci/emu10k1/emu10k1_callback.c b/sound/pci/emu10k1/emu10k1_callback.c
+index ad0dea0c2be9..d36234b88fb4 100644
+--- a/sound/pci/emu10k1/emu10k1_callback.c
++++ b/sound/pci/emu10k1/emu10k1_callback.c
+@@ -35,6 +35,7 @@ static void terminate_voice(struct snd_emux_voice *vp);
+ static void free_voice(struct snd_emux_voice *vp);
+ static u32 make_fmmod(struct snd_emux_voice *vp);
+ static u32 make_fm2frq2(struct snd_emux_voice *vp);
++static int get_pitch_shift(struct snd_emux *emu);
+ 
+ /*
+  * Ensure a value is between two points
+@@ -58,6 +59,7 @@ static const struct snd_emux_operators emu10k1_ops = {
+ 	.free_voice =	free_voice,
+ 	.sample_new =	snd_emu10k1_sample_new,
+ 	.sample_free =	snd_emu10k1_sample_free,
++	.get_pitch_shift = get_pitch_shift,
+ };
+ 
+ void
+@@ -508,3 +510,11 @@ make_fm2frq2(struct snd_emux_voice *vp)
+ 	LIMITVALUE(pitch, -128, 127);
+ 	return ((unsigned char)pitch << 8) | freq;
+ }
++
++static int get_pitch_shift(struct snd_emux *emu)
++{
++	struct snd_emu10k1 *hw = emu->hw;
++
++	return (hw->card_capabilities->emu_model &&
++			hw->emu1010.word_clock == 44100) ? 0 : -501;
++}
+diff --git a/sound/pci/emu10k1/emu10k1_synth.c b/sound/pci/emu10k1/emu10k1_synth.c
+index 549013a4a80b..759e66e1105a 100644
+--- a/sound/pci/emu10k1/emu10k1_synth.c
++++ b/sound/pci/emu10k1/emu10k1_synth.c
+@@ -43,7 +43,6 @@ static int snd_emu10k1_synth_probe(struct device *_dev)
+ 	emux->hw = hw;
+ 	emux->max_voices = arg->max_voices;
+ 	emux->num_ports = arg->seq_ports;
+-	emux->pitch_shift = -501;
+ 	emux->memhdr = hw->memhdr;
+ 	/* maximum two ports */
+ 	emux->midi_ports = arg->seq_ports < 2 ? arg->seq_ports : 2;
+diff --git a/sound/synth/emux/emux_synth.c b/sound/synth/emux/emux_synth.c
+index a5385efcedb6..075358a533a0 100644
+--- a/sound/synth/emux/emux_synth.c
++++ b/sound/synth/emux/emux_synth.c
+@@ -845,7 +845,8 @@ calc_pitch(struct snd_emux_voice *vp)
+ 
+ 	/* 0xe000: root pitch */
+ 	offset += 0xe000 + vp->reg.rate_offset;
+-	offset += vp->emu->pitch_shift;
++	if (vp->emu->ops.get_pitch_shift)
++		offset += vp->emu->ops.get_pitch_shift(vp->emu);
+ 	LIMITVALUE(offset, 0, 0xffff);
+ 	if (offset == vp->apitch)
+ 		return 0; /* unchanged */
 -- 
 2.40.0.152.g15d061e6df
 
