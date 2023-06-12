@@ -4,58 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDCAEC7EE2E
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 19:17:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0960C7EE2E
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 20:09:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4C03A4D;
-	Mon, 12 Jun 2023 21:16:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4C03A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36196823;
+	Mon, 12 Jun 2023 22:08:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36196823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686597448;
-	bh=6ROM/0SV7r/vj00YR7rcPh+62aZFz/VdARGvk/Y/Jd0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Yh0b+aw5x2aakyw3njUuFh/LGV8piLCLaKn8PYWvMz2IPCDw8Pay+ElLoyvuOjWWH
-	 R4TcR9lV9y/FafTlL2H7HbJy4pLArrdriINHZw/N5I8a5cWkm7//eZzXVeK2ECusfx
-	 sJOm3XeEVWoiouW7moONxhbQZC/d7Fk2rrFkdulk=
+	s=default; t=1686600568;
+	bh=e3SpnNGKp4t7GsZV/TK9x9s/uJzP/f1uyz3TgTAeWC0=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Y9/qJTrZu7yaeyVoapo/jwTcP5qFiiCs51+2RB2QxjFwdayeWmNgJLDQhQxNGfpz3
+	 ln/VuNDoJrlNWIYizlKXY6UbGWiiAyULRb74lQYEIoKDAPI6hCsZAzgdJewSFF4xZZ
+	 wKhuIve1Isz1HPem0jPspOdTHAusHJxdPKDVNIjM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 21B7FF805D7; Mon, 12 Jun 2023 21:14:52 +0200 (CEST)
+	id 3DB4DF8052E; Mon, 12 Jun 2023 22:08:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D935F805D3;
-	Mon, 12 Jun 2023 21:14:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4F88F80149;
+	Mon, 12 Jun 2023 22:08:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DF0AF80132; Mon, 12 Jun 2023 21:14:47 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CF211F80155
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 21:13:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF211F80155
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id E728724260;
-	Mon, 12 Jun 2023 15:13:25 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1q8myj-WKR-00; Mon, 12 Jun 2023 21:13:25 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 7/9] ALSA: emu10k1: fix timer for E-MU cards at 44.1 kHz word
- clock
-Date: Mon, 12 Jun 2023 21:13:23 +0200
-Message-Id: <20230612191325.1315854-8-oswald.buddenhagen@gmx.de>
-X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230612191325.1315854-1-oswald.buddenhagen@gmx.de>
-References: <20230612191325.1315854-1-oswald.buddenhagen@gmx.de>
+	id 2538DF80149; Mon, 12 Jun 2023 22:08:09 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E034F800BA
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 22:08:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E034F800BA
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: W5HQUUWP7ML3A7UA4C5ZWF6RQ3JCUVR2
-X-Message-ID-Hash: W5HQUUWP7ML3A7UA4C5ZWF6RQ3JCUVR2
-X-MailFrom: ossi@kde.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1686600484466417074-webhooks-bot@alsa-project.org>
+References: <1686600484466417074-webhooks-bot@alsa-project.org>
+Subject: Alsa without support to usb headphone
+Message-Id: <20230612200809.2538DF80149@alsa1.perex.cz>
+Date: Mon, 12 Jun 2023 22:08:09 +0200 (CEST)
+Message-ID-Hash: RQNCHUZ6WY6M3K2EHKKQJIGWMKY7ORH2
+X-Message-ID-Hash: RQNCHUZ6WY6M3K2EHKKQJIGWMKY7ORH2
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -67,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W5HQUUWP7ML3A7UA4C5ZWF6RQ3JCUVR2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RQNCHUZ6WY6M3K2EHKKQJIGWMKY7ORH2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,57 +66,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The timer was presuming a fixed 48 kHz word clock, like the rest of the
-code.
+alsa-project/alsa-lib issue #326 was opened from wellinton-capixaba:
 
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
----
- sound/pci/emu10k1/timer.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+Hello. O recently built a media player (mplayer) with alsa support. However, telling mplayer to play multimedia files with alsa, specifying the usb headphone as the output device, didn't work.
 
-diff --git a/sound/pci/emu10k1/timer.c b/sound/pci/emu10k1/timer.c
-index 993663fef885..f3c78adf3248 100644
---- a/sound/pci/emu10k1/timer.c
-+++ b/sound/pci/emu10k1/timer.c
-@@ -38,20 +38,36 @@ static int snd_emu10k1_timer_stop(struct snd_timer *timer)
- 	return 0;
- }
- 
-+static unsigned long snd_emu10k1_timer_c_resolution(struct snd_timer *timer)
-+{
-+	struct snd_emu10k1 *emu = snd_timer_chip(timer);
-+
-+	if (emu->card_capabilities->emu_model &&
-+	    emu->emu1010.word_clock == 44100)
-+		return 22676;  // 1 sample @ 44.1 kHz = 22.675736...us
-+	else
-+		return 20833;  // 1 sample @ 48 kHz = 20.833...us
-+}
-+
- static int snd_emu10k1_timer_precise_resolution(struct snd_timer *timer,
- 					       unsigned long *num, unsigned long *den)
- {
-+	struct snd_emu10k1 *emu = snd_timer_chip(timer);
-+
- 	*num = 1;
--	*den = 48000;
-+	if (emu->card_capabilities->emu_model)
-+		*den = emu->emu1010.word_clock;
-+	else
-+		*den = 48000;
- 	return 0;
- }
- 
- static const struct snd_timer_hardware snd_emu10k1_timer_hw = {
- 	.flags = SNDRV_TIMER_HW_AUTO,
--	.resolution = 20833, /* 1 sample @ 48KHZ = 20.833...us */
- 	.ticks = 1024,
- 	.start = snd_emu10k1_timer_start,
- 	.stop = snd_emu10k1_timer_stop,
-+	.c_resolution = snd_emu10k1_timer_c_resolution,
- 	.precise_resolution = snd_emu10k1_timer_precise_resolution,
- };
- 
--- 
-2.40.0.152.g15d061e6df
+However, latter I built another mplayer, this time using the system provided Also. Then I redid the test, and it worked as I originally expected.
 
+The only difference I am aware between both also as is their version. The one I built it is the 1.0.17, while the system uses a 1.0.21.
+
+Can be this the cause of the problem. Or is something else?
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/326
+Repository URL: https://github.com/alsa-project/alsa-lib
