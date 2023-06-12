@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C80B7C7EE2F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:36:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6066C7EE2F
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:37:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 161EE851;
-	Mon, 12 Jun 2023 17:35:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 161EE851
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA00A857;
+	Mon, 12 Jun 2023 17:36:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA00A857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686584207;
-	bh=kANiShRbw8ZMtxhcsAhOY2IhWDUCpxSwd+IWcpVYv0M=;
+	s=default; t=1686584224;
+	bh=gL7ouzNlorzge+HwWuYXyoX/Q39xVVuxqMtOPl8ANNk=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=oZyMgG/GGF4EpLVQJSHkVectjIBCEntUTimkRx7ZVd4/w33RD056N+qFjy7l5BQEm
-	 SMGMmKiV8pH/2FzwTnoyPhjgWC+Um3APcmuyYis8ipLCq2/X+A6zKg8iCikv3rUAaV
-	 mftgWoHkwZmXXjNAieUAuU87PxL7wU4CVUWhUxeU=
+	b=EHmyO8SN1HeWPIybzAagQbNhJFinLAbigqS764/3oZZyd513yAS0SpwTDJs+2L542
+	 KTZ3xkD33m6ogbVH2R38bYGHt961bTTnTvicRFWx2d/nUUycQoDBADQknnySPzhezi
+	 Sb+Yc5ko26//yyQNqwF7yhx+xZFODokwm+lK1MA4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1FCEBF80579; Mon, 12 Jun 2023 17:32:34 +0200 (CEST)
+	id 1EAEFF8063B; Mon, 12 Jun 2023 17:32:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37952F80564;
-	Mon, 12 Jun 2023 17:32:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59C73F8063D;
+	Mon, 12 Jun 2023 17:32:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4C01F800ED; Mon, 12 Jun 2023 12:54:19 +0200 (CEST)
+	id 946EBF80246; Mon, 12 Jun 2023 12:54:23 +0200 (CEST)
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5C3B0F80155
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 12:53:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C3B0F80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id 39BB2F8025E
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 12:53:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39BB2F8025E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=NkWUN9Tj
-X-UUID: 68dfd50c090f11ee9cb5633481061a41-20230612
+ header.s=dk header.b=RmJrnLlt
+X-UUID: 6172414c090f11ee9cb5633481061a41-20230612
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
 	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=Dvi1PlHn3OIi9tRbQRhyfGDeuJwoTGNULd7VXBd16OQ=;
-	b=NkWUN9TjAX421Lh/2HsBGWOxDWB+Ksl4LAfGPeXRRUoj+oU0wp0Vs8e4Fzpju53g0eWtGotU5gZvlrh8mOn/AZd8DoHJIqLMRXHJ098H0dZ6ocmLHVxfKT5g2fORu8YUrCjWh3z2Wcsbd7Yc2wTQjhOmz8PkowTBkyEfdfMoyVo=;
+ bh=MJEyL8jMkELitxC8ODg8qd4/tZzZRqnj1z2BFS+GrJU=;
+	b=RmJrnLlteUpJINA3EoAphI8FY3hMyofHodMV1UvbP/YGMlc50F8GJqx47pkJDU1vnd673eB/tWS7I0q/muMe4rEp+oBoJ3DjTGIq3jFWXFboUysahUpQp2uZPs4uI9RwH22IR28N8PqYHrZkWW0fTCIkxUp8kliiPjVvdrRErzw=;
+X-CID-CACHE: Type:Local,Time:202306121844+08,HitQuantity:1
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.26,REQID:a94c04a8-fd9a-4b65-8b52-59af83553a31,IP:0,U
-	RL:25,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:25
-X-CID-META: VersionHash:cb9a4e1,CLOUDID:d2c7293e-de1e-4348-bc35-c96f92f1dcbb,B
+X-CID-O-INFO: VERSION:1.1.26,REQID:f434cd60-ecac-4c96-a030-68c38fafb66a,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:cb9a4e1,CLOUDID:2622ce6e-2f20-4998-991c-3b78627e4938,B
 	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-	NO
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
-X-UUID: 68dfd50c090f11ee9cb5633481061a41-20230612
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 6172414c090f11ee9cb5633481061a41-20230612
 Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
  mailgw01.mediatek.com
 	(envelope-from <maso.huang@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1671494933; Mon, 12 Jun 2023 18:53:48 +0800
+	with ESMTP id 499495370; Mon, 12 Jun 2023 18:53:35 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 12 Jun 2023 18:53:47 +0800
+ 15.2.1118.26; Mon, 12 Jun 2023 18:53:34 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 12 Jun 2023 18:53:47 +0800
+ 15.2.1118.26 via Frontend Transport; Mon, 12 Jun 2023 18:53:34 +0800
 From: Maso Hunag <maso.huang@mediatek.com>
 To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Trevor Wu
@@ -79,10 +79,9 @@ To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
 CC: Maso Huang <maso.huang@mediatek.com>
-Subject: [PATCH 6/7] ASoC: dt-bindings: mediatek,mt79xx-wm8960: add
- mt79xx-wm8960 document
-Date: Mon, 12 Jun 2023 18:52:49 +0800
-Message-ID: <20230612105250.15441-7-maso.huang@mediatek.com>
+Subject: [PATCH 3/7] ASoC: mediatek: mt79xx: add platform driver
+Date: Mon, 12 Jun 2023 18:52:46 +0800
+Message-ID: <20230612105250.15441-4-maso.huang@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20230612105250.15441-1-maso.huang@mediatek.com>
 References: <20230612105250.15441-1-maso.huang@mediatek.com>
@@ -94,15 +93,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: Q5PYBH3ROKNLPL6JFG5ZBJPO4CO7PKYI
-X-Message-ID-Hash: Q5PYBH3ROKNLPL6JFG5ZBJPO4CO7PKYI
-X-Mailman-Approved-At: Mon, 12 Jun 2023 15:32:09 +0000
+Message-ID-Hash: AJZGJYTSZSD454F6KZ724Y2JVDPM3SJN
+X-Message-ID-Hash: AJZGJYTSZSD454F6KZ724Y2JVDPM3SJN
+X-Mailman-Approved-At: Mon, 12 Jun 2023 15:32:39 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q5PYBH3ROKNLPL6JFG5ZBJPO4CO7PKYI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AJZGJYTSZSD454F6KZ724Y2JVDPM3SJN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,73 +112,680 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Maso Huang <maso.huang@mediatek.com>
 
-Add document for mt79xx board with wm8960.
+Add mt79xx platform driver.
 
 Signed-off-by: Maso Huang <maso.huang@mediatek.com>
 ---
- .../sound/mediatek,mt79xx-wm8960.yaml         | 53 +++++++++++++++++++
- 1 file changed, 53 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt79xx-wm8960.yaml
+ sound/soc/mediatek/Kconfig                 |  10 +
+ sound/soc/mediatek/Makefile                |   1 +
+ sound/soc/mediatek/mt79xx/Makefile         |   9 +
+ sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c | 608 +++++++++++++++++++++
+ 4 files changed, 628 insertions(+)
+ create mode 100644 sound/soc/mediatek/mt79xx/Makefile
+ create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c
 
-diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt79xx-wm8960.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt79xx-wm8960.yaml
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 4baac72677d9..192546078d5e 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -54,6 +54,16 @@ config SND_SOC_MT6797_MT6351
+ 	  Select Y if you have such device.
+ 	  If unsure select "N".
+ 
++config SND_SOC_MT79XX
++	tristate "ASoC support for Mediatek MT79XX chip"
++	depends on ARCH_MEDIATEK
++	select SND_SOC_MEDIATEK
++	help
++	  This adds ASoC platform driver support for MediaTek MT79XX chip
++	  that can be used with other codecs.
++	  Select Y if you have such device.
++	  If unsure select "N".
++
+ config SND_SOC_MT8173
+ 	tristate "ASoC support for Mediatek MT8173 chip"
+ 	depends on ARCH_MEDIATEK
+diff --git a/sound/soc/mediatek/Makefile b/sound/soc/mediatek/Makefile
+index 3de38cfc69e5..b2e530629887 100644
+--- a/sound/soc/mediatek/Makefile
++++ b/sound/soc/mediatek/Makefile
+@@ -2,6 +2,7 @@
+ obj-$(CONFIG_SND_SOC_MEDIATEK) += common/
+ obj-$(CONFIG_SND_SOC_MT2701) += mt2701/
+ obj-$(CONFIG_SND_SOC_MT6797) += mt6797/
++obj-$(CONFIG_SND_SOC_MT79XX) += mt79xx/
+ obj-$(CONFIG_SND_SOC_MT8173) += mt8173/
+ obj-$(CONFIG_SND_SOC_MT8183) += mt8183/
+ obj-$(CONFIG_SND_SOC_MT8186) += mt8186/
+diff --git a/sound/soc/mediatek/mt79xx/Makefile b/sound/soc/mediatek/mt79xx/Makefile
 new file mode 100644
-index 000000000000..26b38bb629da
+index 000000000000..984b20ae8819
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mediatek,mt79xx-wm8960.yaml
-@@ -0,0 +1,53 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mediatek,mt79xx-wm8960.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/sound/soc/mediatek/mt79xx/Makefile
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: GPL-2.0
 +
-+title: MediaTek MT79xx ASOC sound card with WM8960 codec
++# platform driver
++snd-soc-mt79xx-afe-objs := \
++	mt79xx-afe-pcm.o \
++	mt79xx-afe-clk.o \
++	mt79xx-dai-etdm.o
 +
-+maintainers:
-+  - Maso Huang <maso.huang@mediatek.com>
++obj-$(CONFIG_SND_SOC_MT79XX) += snd-soc-mt79xx-afe.o
+diff --git a/sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c b/sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c
+new file mode 100644
+index 000000000000..69c5f3f3f84b
+--- /dev/null
++++ b/sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c
+@@ -0,0 +1,608 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * MediaTek ALSA SoC AFE platform driver for MT79xx
++ *
++ * Copyright (c) 2021 MediaTek Inc.
++ * Author: Vic Wu <vic.wu@mediatek.com>
++ *         Maso Huang <maso.huang@mediatek.com>
++ */
 +
-+properties:
-+  compatible:
-+    const: mediatek,mt79xx-wm8960-machine
++#include <linux/delay.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/pm_runtime.h>
 +
-+  mediatek,platform:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: The phandle of MT79xx ASoC platform.
++#include "mt79xx-afe-common.h"
++#include "mt79xx-afe-clk.h"
++#include "mt79xx-reg.h"
++#include "../common/mtk-afe-platform-driver.h"
++#include "../common/mtk-afe-fe-dai.h"
 +
-+  audio-routing:
-+    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-+    description:
-+      A list of the connections between audio components. Each entry is a
-+      sink/source pair of strings. Valid names could be the input or output
-+      widgets of audio components, power supplies, MicBias of codec and the
-+      software switch.
++enum {
++	MTK_AFE_RATE_8K = 0,
++	MTK_AFE_RATE_11K = 1,
++	MTK_AFE_RATE_12K = 2,
++	MTK_AFE_RATE_16K = 4,
++	MTK_AFE_RATE_22K = 5,
++	MTK_AFE_RATE_24K = 6,
++	MTK_AFE_RATE_32K = 8,
++	MTK_AFE_RATE_44K = 9,
++	MTK_AFE_RATE_48K = 10,
++	MTK_AFE_RATE_88K = 13,
++	MTK_AFE_RATE_96K = 14,
++	MTK_AFE_RATE_176K = 17,
++	MTK_AFE_RATE_192K = 18,
++};
 +
-+  mediatek,audio-codec:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: The phandle of wm8960 codec.
++unsigned int mt79xx_afe_rate_transform(struct device *dev,
++				       unsigned int rate)
++{
++	switch (rate) {
++	case 8000:
++		return MTK_AFE_RATE_8K;
++	case 11025:
++		return MTK_AFE_RATE_11K;
++	case 12000:
++		return MTK_AFE_RATE_12K;
++	case 16000:
++		return MTK_AFE_RATE_16K;
++	case 22050:
++		return MTK_AFE_RATE_22K;
++	case 24000:
++		return MTK_AFE_RATE_24K;
++	case 32000:
++		return MTK_AFE_RATE_32K;
++	case 44100:
++		return MTK_AFE_RATE_44K;
++	case 48000:
++		return MTK_AFE_RATE_48K;
++	case 88200:
++		return MTK_AFE_RATE_88K;
++	case 96000:
++		return MTK_AFE_RATE_96K;
++	case 176400:
++		return MTK_AFE_RATE_176K;
++	case 192000:
++		return MTK_AFE_RATE_192K;
++	default:
++		dev_warn(dev, "%s(), rate %u invalid, use %d!!!\n",
++			 __func__, rate, MTK_AFE_RATE_48K);
++		return MTK_AFE_RATE_48K;
++	}
++}
 +
-+additionalProperties: false
++static const struct snd_pcm_hardware mt79xx_afe_hardware = {
++	.info = SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_INTERLEAVED |
++		SNDRV_PCM_INFO_MMAP_VALID,
++	.formats = SNDRV_PCM_FMTBIT_S16_LE |
++		   SNDRV_PCM_FMTBIT_S24_LE |
++		   SNDRV_PCM_FMTBIT_S32_LE,
++	.period_bytes_min = 256,
++	.period_bytes_max = 4 * 48 * 1024,
++	.periods_min = 2,
++	.periods_max = 256,
++	.buffer_bytes_max = 8 * 48 * 1024,
++	.fifo_size = 0,
++};
 +
-+required:
-+  - compatible
-+  - mediatek,platform
-+  - audio-routing
-+  - mediatek,audio-codec
++static int mt79xx_memif_fs(struct snd_pcm_substream *substream,
++			   unsigned int rate)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
++	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
 +
-+examples:
-+  - |
-+    sound {
-+        compatible = "mediatek,mt79xx-wm8960-machine";
-+        mediatek,platform = <&afe>;
-+        audio-routing =
-+            "Headphone", "HP_L",
-+            "Headphone", "HP_R",
-+            "LINPUT1", "AMIC",
-+            "RINPUT1", "AMIC";
-+        mediatek,audio-codec = <&wm8960>;
-+    };
++	return mt79xx_afe_rate_transform(afe->dev, rate);
++}
 +
-+...
++static int mt79xx_irq_fs(struct snd_pcm_substream *substream,
++			 unsigned int rate)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_component *component =
++		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
++	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++
++	return mt79xx_afe_rate_transform(afe->dev, rate);
++}
++
++#define MTK_PCM_RATES (SNDRV_PCM_RATE_8000_48000 |\
++		       SNDRV_PCM_RATE_88200 |\
++		       SNDRV_PCM_RATE_96000 |\
++		       SNDRV_PCM_RATE_176400 |\
++		       SNDRV_PCM_RATE_192000)
++
++#define MTK_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
++			 SNDRV_PCM_FMTBIT_S24_LE |\
++			 SNDRV_PCM_FMTBIT_S32_LE)
++
++static struct snd_soc_dai_driver mt79xx_memif_dai_driver[] = {
++	/* FE DAIs: memory intefaces to CPU */
++	{
++		.name = "DL1",
++		.id = MT79XX_MEMIF_DL1,
++		.playback = {
++			.stream_name = "DL1",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = MTK_PCM_RATES,
++			.formats = MTK_PCM_FORMATS,
++		},
++		.ops = &mtk_afe_fe_ops,
++	},
++	{
++		.name = "UL1",
++		.id = MT79XX_MEMIF_VUL12,
++		.capture = {
++			.stream_name = "UL1",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = MTK_PCM_RATES,
++			.formats = MTK_PCM_FORMATS,
++		},
++		.ops = &mtk_afe_fe_ops,
++	},
++};
++
++static const struct snd_kcontrol_new o018_mix[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("I150_Switch", AFE_CONN018_4, 22, 1, 0),
++};
++
++static const struct snd_kcontrol_new o019_mix[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("I151_Switch", AFE_CONN019_4, 23, 1, 0),
++};
++
++static const struct snd_soc_dapm_widget mt79xx_memif_widgets[] = {
++	/* DL */
++	SND_SOC_DAPM_MIXER("I032", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("I033", SND_SOC_NOPM, 0, 0, NULL, 0),
++
++	/* UL */
++	SND_SOC_DAPM_MIXER("O018", SND_SOC_NOPM, 0, 0,
++			   o018_mix, ARRAY_SIZE(o018_mix)),
++	SND_SOC_DAPM_MIXER("O019", SND_SOC_NOPM, 0, 0,
++			   o019_mix, ARRAY_SIZE(o019_mix)),
++};
++
++static const struct snd_soc_dapm_route mt79xx_memif_routes[] = {
++	{"I032", NULL, "DL1"},
++	{"I033", NULL, "DL1"},
++	{"UL1", NULL, "O018"},
++	{"UL1", NULL, "O019"},
++	{"O018", "I150_Switch", "I150"},
++	{"O019", "I151_Switch", "I151"},
++};
++
++static const struct snd_soc_component_driver mt79xx_afe_pcm_dai_component = {
++	.name = "mt79xx-afe-pcm-dai",
++};
++
++static const struct mtk_base_memif_data memif_data[MT79XX_MEMIF_NUM] = {
++	[MT79XX_MEMIF_DL1] = {
++		.name = "DL1",
++		.id = MT79XX_MEMIF_DL1,
++		.reg_ofs_base = AFE_DL0_BASE,
++		.reg_ofs_cur = AFE_DL0_CUR,
++		.reg_ofs_end = AFE_DL0_END,
++		.reg_ofs_base_msb = AFE_DL0_BASE_MSB,
++		.reg_ofs_cur_msb = AFE_DL0_CUR_MSB,
++		.reg_ofs_end_msb = AFE_DL0_END_MSB,
++		.fs_reg = AFE_DL0_CON0,
++		.fs_shift =  DL0_MODE_SFT,
++		.fs_maskbit =  DL0_MODE_MASK,
++		.mono_reg = AFE_DL0_CON0,
++		.mono_shift = DL0_MONO_SFT,
++		.enable_reg = AFE_DL0_CON0,
++		.enable_shift = DL0_ON_SFT,
++		.hd_reg = AFE_DL0_CON0,
++		.hd_shift = DL0_HD_MODE_SFT,
++		.hd_align_reg = AFE_DL0_CON0,
++		.hd_align_mshift = DL0_HALIGN_SFT,
++		.pbuf_reg = AFE_DL0_CON0,
++		.pbuf_shift = DL0_PBUF_SIZE_SFT,
++		.minlen_reg = AFE_DL0_CON0,
++		.minlen_shift = DL0_MINLEN_SFT,
++	},
++	[MT79XX_MEMIF_VUL12] = {
++		.name = "VUL12",
++		.id = MT79XX_MEMIF_VUL12,
++		.reg_ofs_base = AFE_VUL0_BASE,
++		.reg_ofs_cur = AFE_VUL0_CUR,
++		.reg_ofs_end = AFE_VUL0_END,
++		.reg_ofs_base_msb = AFE_VUL0_BASE_MSB,
++		.reg_ofs_cur_msb = AFE_VUL0_CUR_MSB,
++		.reg_ofs_end_msb = AFE_VUL0_END_MSB,
++		.fs_reg = AFE_VUL0_CON0,
++		.fs_shift = VUL0_MODE_SFT,
++		.fs_maskbit = VUL0_MODE_MASK,
++		.mono_reg = AFE_VUL0_CON0,
++		.mono_shift = VUL0_MONO_SFT,
++		.enable_reg = AFE_VUL0_CON0,
++		.enable_shift = VUL0_ON_SFT,
++		.hd_reg = AFE_VUL0_CON0,
++		.hd_shift = VUL0_HD_MODE_SFT,
++		.hd_align_reg = AFE_VUL0_CON0,
++		.hd_align_mshift = VUL0_HALIGN_SFT,
++	},
++};
++
++static const struct mtk_base_irq_data irq_data[MT79XX_IRQ_NUM] = {
++	[MT79XX_IRQ_0] = {
++		.id = MT79XX_IRQ_0,
++		.irq_cnt_reg = AFE_IRQ0_MCU_CFG1,
++		.irq_cnt_shift = AFE_IRQ_CNT_SHIFT,
++		.irq_cnt_maskbit = AFE_IRQ_CNT_MASK,
++		.irq_fs_reg = AFE_IRQ0_MCU_CFG0,
++		.irq_fs_shift = IRQ_MCU_MODE_SFT,
++		.irq_fs_maskbit = IRQ_MCU_MODE_MASK,
++		.irq_en_reg = AFE_IRQ0_MCU_CFG0,
++		.irq_en_shift = IRQ_MCU_ON_SFT,
++		.irq_clr_reg = AFE_IRQ_MCU_CLR,
++		.irq_clr_shift = IRQ0_MCU_CLR_SFT,
++	},
++	[MT79XX_IRQ_1] = {
++		.id = MT79XX_IRQ_1,
++		.irq_cnt_reg = AFE_IRQ1_MCU_CFG1,
++		.irq_cnt_shift = AFE_IRQ_CNT_SHIFT,
++		.irq_cnt_maskbit = AFE_IRQ_CNT_MASK,
++		.irq_fs_reg = AFE_IRQ1_MCU_CFG0,
++		.irq_fs_shift = IRQ_MCU_MODE_SFT,
++		.irq_fs_maskbit = IRQ_MCU_MODE_MASK,
++		.irq_en_reg = AFE_IRQ1_MCU_CFG0,
++		.irq_en_shift = IRQ_MCU_ON_SFT,
++		.irq_clr_reg = AFE_IRQ_MCU_CLR,
++		.irq_clr_shift = IRQ1_MCU_CLR_SFT,
++	},
++	[MT79XX_IRQ_2] = {
++		.id = MT79XX_IRQ_2,
++		.irq_cnt_reg = AFE_IRQ2_MCU_CFG1,
++		.irq_cnt_shift = AFE_IRQ_CNT_SHIFT,
++		.irq_cnt_maskbit = AFE_IRQ_CNT_MASK,
++		.irq_fs_reg = AFE_IRQ2_MCU_CFG0,
++		.irq_fs_shift = IRQ_MCU_MODE_SFT,
++		.irq_fs_maskbit = IRQ_MCU_MODE_MASK,
++		.irq_en_reg = AFE_IRQ2_MCU_CFG0,
++		.irq_en_shift = IRQ_MCU_ON_SFT,
++		.irq_clr_reg = AFE_IRQ_MCU_CLR,
++		.irq_clr_shift = IRQ2_MCU_CLR_SFT,
++	},
++};
++
++static bool mt79xx_is_volatile_reg(struct device *dev, unsigned int reg)
++{
++	/* these auto-gen reg has read-only bit, so put it as volatile */
++	/* volatile reg cannot be cached, so cannot be set when power off */
++	switch (reg) {
++	case AFE_DL0_CUR_MSB:
++	case AFE_DL0_CUR:
++	case AFE_DL0_RCH_MON:
++	case AFE_DL0_LCH_MON:
++	case AFE_VUL0_CUR_MSB:
++	case AFE_VUL0_CUR:
++	case AFE_IRQ_MCU_STATUS:
++	case AFE_MEMIF_RD_MON:
++	case AFE_MEMIF_WR_MON:
++		return true;
++	default:
++		return false;
++	};
++}
++
++static const struct regmap_config mt79xx_afe_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.volatile_reg = mt79xx_is_volatile_reg,
++	.max_register = AFE_MAX_REGISTER,
++	.num_reg_defaults_raw = ((AFE_MAX_REGISTER / 4) + 1),
++};
++
++static irqreturn_t mt79xx_afe_irq_handler(int irq_id, void *dev)
++{
++	struct mtk_base_afe *afe = dev;
++	struct mtk_base_afe_irq *irq;
++	unsigned int status;
++	unsigned int status_mcu;
++	unsigned int mcu_en;
++	int ret;
++	int i;
++	irqreturn_t irq_ret = IRQ_HANDLED;
++
++	/* get irq that is sent to MCU */
++	regmap_read(afe->regmap, AFE_IRQ_MCU_EN, &mcu_en);
++
++	ret = regmap_read(afe->regmap, AFE_IRQ_MCU_STATUS, &status);
++	/* only care IRQ which is sent to MCU */
++	status_mcu = status & mcu_en & AFE_IRQ_STATUS_BITS;
++
++	if (ret || status_mcu == 0) {
++		dev_err(afe->dev, "%s(), irq status err, ret %d, status 0x%x,
++			mcu_en 0x%x\n", __func__, ret, status, mcu_en);
++
++		irq_ret = IRQ_NONE;
++		goto err_irq;
++	}
++
++	for (i = 0; i < MT79XX_MEMIF_NUM; i++) {
++		struct mtk_base_afe_memif *memif = &afe->memif[i];
++
++		if (!memif->substream)
++			continue;
++
++		if (memif->irq_usage < 0)
++			continue;
++
++		irq = &afe->irqs[memif->irq_usage];
++
++		if (status_mcu & (1 << irq->irq_data->irq_en_shift))
++			snd_pcm_period_elapsed(memif->substream);
++	}
++
++err_irq:
++	/* clear irq */
++	regmap_write(afe->regmap, AFE_IRQ_MCU_CLR, status_mcu);
++
++	return irq_ret;
++}
++
++static int mt79xx_afe_runtime_suspend(struct device *dev)
++{
++	struct mtk_base_afe *afe = dev_get_drvdata(dev);
++	struct mt79xx_afe_private *afe_priv = afe->platform_priv;
++
++	if (!afe->regmap || afe_priv->pm_runtime_bypass_reg_ctl)
++		goto skip_regmap;
++
++	/* disable clk*/
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON4, 0x3fff, 0x3fff);
++	regmap_update_bits(afe->regmap, AUDIO_ENGEN_CON0, AUD_APLL2_EN_MASK,
++			   0);
++	regmap_update_bits(afe->regmap, AUDIO_ENGEN_CON0, AUD_26M_EN_MASK,
++			   0);
++
++	/* make sure all irq status are cleared, twice intended */
++	regmap_update_bits(afe->regmap, AFE_IRQ_MCU_CLR, 0xffff, 0xffff);
++
++skip_regmap:
++	return mt79xx_afe_disable_clock(afe);
++}
++
++static int mt79xx_afe_runtime_resume(struct device *dev)
++{
++	struct mtk_base_afe *afe = dev_get_drvdata(dev);
++	struct mt79xx_afe_private *afe_priv = afe->platform_priv;
++	int ret;
++
++	ret = mt79xx_afe_enable_clock(afe);
++	if (ret)
++		return ret;
++
++	if (!afe->regmap || afe_priv->pm_runtime_bypass_reg_ctl)
++		goto skip_regmap;
++
++	/* enable clk*/
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON4, 0x3fff, 0);
++	regmap_update_bits(afe->regmap, AUDIO_ENGEN_CON0, AUD_APLL2_EN_MASK,
++			   AUD_APLL2_EN);
++	regmap_update_bits(afe->regmap, AUDIO_ENGEN_CON0, AUD_26M_EN_MASK,
++			   AUD_26M_EN);
++
++skip_regmap:
++	return 0;
++}
++
++static int mt79xx_afe_component_probe(struct snd_soc_component *component)
++{
++	return mtk_afe_add_sub_dai_control(component);
++}
++
++static const struct snd_soc_component_driver mt79xx_afe_component = {
++	.name = AFE_PCM_NAME,
++	.probe = mt79xx_afe_component_probe,
++	.pointer	= mtk_afe_pcm_pointer,
++	.pcm_construct	= mtk_afe_pcm_new,
++};
++
++static int mt79xx_dai_memif_register(struct mtk_base_afe *afe)
++{
++	struct mtk_base_afe_dai *dai;
++
++	dai = devm_kzalloc(afe->dev, sizeof(*dai), GFP_KERNEL);
++	if (!dai)
++		return -ENOMEM;
++
++	list_add(&dai->list, &afe->sub_dais);
++
++	dai->dai_drivers = mt79xx_memif_dai_driver;
++	dai->num_dai_drivers = ARRAY_SIZE(mt79xx_memif_dai_driver);
++
++	dai->dapm_widgets = mt79xx_memif_widgets;
++	dai->num_dapm_widgets = ARRAY_SIZE(mt79xx_memif_widgets);
++	dai->dapm_routes = mt79xx_memif_routes;
++	dai->num_dapm_routes = ARRAY_SIZE(mt79xx_memif_routes);
++
++	return 0;
++}
++
++typedef int (*dai_register_cb)(struct mtk_base_afe *);
++static const dai_register_cb dai_register_cbs[] = {
++	mt79xx_dai_etdm_register,
++	mt79xx_dai_memif_register,
++};
++
++static int mt79xx_afe_pcm_dev_probe(struct platform_device *pdev)
++{
++	struct mtk_base_afe *afe;
++	struct mt79xx_afe_private *afe_priv;
++	struct device *dev;
++	int i, irq_id, ret;
++
++	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
++	if (!afe)
++		return -ENOMEM;
++	platform_set_drvdata(pdev, afe);
++
++	afe->platform_priv = devm_kzalloc(&pdev->dev, sizeof(*afe_priv),
++					  GFP_KERNEL);
++	if (!afe->platform_priv)
++		return -ENOMEM;
++
++	afe_priv = afe->platform_priv;
++	afe->dev = &pdev->dev;
++	dev = afe->dev;
++
++	afe->base_addr = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(afe->base_addr))
++		return PTR_ERR(afe->base_addr);
++
++	/* initial audio related clock */
++	ret = mt79xx_init_clock(afe);
++	if (ret) {
++		dev_err(dev, "init clock error\n");
++		return ret;
++	}
++
++	pm_runtime_enable(dev);
++
++	/* enable clock for regcache get default value from hw */
++	afe_priv->pm_runtime_bypass_reg_ctl = true;
++	pm_runtime_get_sync(&pdev->dev);
++
++	afe->regmap = devm_regmap_init_mmio(&pdev->dev, afe->base_addr,
++		      &mt79xx_afe_regmap_config);
++	if (IS_ERR(afe->regmap)) {
++		ret = PTR_ERR(afe->regmap);
++		goto err_pm_disable;
++	}
++
++	pm_runtime_put_sync(&pdev->dev);
++	afe_priv->pm_runtime_bypass_reg_ctl = false;
++
++	/* init memif */
++	afe->memif_size = MT79XX_MEMIF_NUM;
++	afe->memif = devm_kcalloc(dev, afe->memif_size, sizeof(*afe->memif),
++				  GFP_KERNEL);
++	if (!afe->memif)
++		goto err_pm_disable;
++
++	for (i = 0; i < afe->memif_size; i++) {
++		afe->memif[i].data = &memif_data[i];
++		afe->memif[i].irq_usage = -1;
++	}
++
++	mutex_init(&afe->irq_alloc_lock);
++
++	/* irq initialize */
++	afe->irqs_size = MT79XX_IRQ_NUM;
++	afe->irqs = devm_kcalloc(dev, afe->irqs_size, sizeof(*afe->irqs),
++				 GFP_KERNEL);
++	if (!afe->irqs)
++		goto err_pm_disable;
++
++	for (i = 0; i < afe->irqs_size; i++)
++		afe->irqs[i].irq_data = &irq_data[i];
++
++	/* request irq */
++	irq_id = platform_get_irq(pdev, 0);
++	if (!irq_id) {
++		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
++		goto err_pm_disable;
++	}
++	ret = devm_request_irq(dev, irq_id, mt79xx_afe_irq_handler,
++			       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
++	if (ret) {
++		dev_err(dev, "could not request_irq for asys-isr\n");
++		goto err_pm_disable;
++	}
++
++	/* init sub_dais */
++	INIT_LIST_HEAD(&afe->sub_dais);
++
++	for (i = 0; i < ARRAY_SIZE(dai_register_cbs); i++) {
++		ret = dai_register_cbs[i](afe);
++		if (ret) {
++			dev_warn(afe->dev, "dai register i %d fail, ret %d\n",
++				 i, ret);
++			goto err_pm_disable;
++		}
++	}
++
++	/* init dai_driver and component_driver */
++	ret = mtk_afe_combine_sub_dai(afe);
++	if (ret) {
++		dev_warn(afe->dev, "mtk_afe_combine_sub_dai fail, ret %d\n",
++			 ret);
++		goto err_pm_disable;
++	}
++
++	afe->mtk_afe_hardware = &mt79xx_afe_hardware;
++	afe->memif_fs = mt79xx_memif_fs;
++	afe->irq_fs = mt79xx_irq_fs;
++
++	afe->runtime_resume = mt79xx_afe_runtime_resume;
++	afe->runtime_suspend = mt79xx_afe_runtime_suspend;
++
++	/* register component */
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &mt79xx_afe_component,
++					      NULL, 0);
++	if (ret) {
++		dev_warn(dev, "err_platform\n");
++		goto err_pm_disable;
++	}
++
++	ret = devm_snd_soc_register_component(afe->dev,
++					      &mt79xx_afe_pcm_dai_component,
++					      afe->dai_drivers,
++					      afe->num_dai_drivers);
++	if (ret) {
++		dev_warn(dev, "err_dai_component\n");
++		goto err_pm_disable;
++	}
++
++	return ret;
++
++err_pm_disable:
++	pm_runtime_put_sync(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++	return ret;
++}
++
++static int mt79xx_afe_pcm_dev_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		mt79xx_afe_runtime_suspend(&pdev->dev);
++
++	return 0;
++}
++
++static const struct of_device_id mt79xx_afe_pcm_dt_match[] = {
++	{ .compatible = "mediatek,mt79xx-afe", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, mt79xx_afe_pcm_dt_match);
++
++static const struct dev_pm_ops mt79xx_afe_pm_ops = {
++	SET_RUNTIME_PM_OPS(mt79xx_afe_runtime_suspend,
++			   mt79xx_afe_runtime_resume, NULL)
++};
++
++static struct platform_driver mt79xx_afe_pcm_driver = {
++	.driver = {
++		   .name = "mt79xx-audio",
++		   .of_match_table = mt79xx_afe_pcm_dt_match,
++		   .pm = &mt79xx_afe_pm_ops,
++	},
++	.probe = mt79xx_afe_pcm_dev_probe,
++	.remove = mt79xx_afe_pcm_dev_remove,
++};
++
++module_platform_driver(mt79xx_afe_pcm_driver);
++
++MODULE_DESCRIPTION("Mediatek SoC AFE platform driver for ALSA MT79xx");
++MODULE_AUTHOR("Vic Wu <vic.wu@mediatek.com>");
++MODULE_LICENSE("GPL");
 -- 
 2.18.0
 
