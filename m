@@ -4,77 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C098C88CB2
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 17:28:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 455AEC7EE2F
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 17:29:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 069BB83A;
-	Mon, 12 Jun 2023 19:27:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 069BB83A
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED0B183B;
+	Mon, 12 Jun 2023 19:28:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED0B183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686590929;
-	bh=uOab3yRuil+00P2CAkfmCzTH6J2kw0s08EsYP6TTYAk=;
+	s=default; t=1686590938;
+	bh=75UZyHjl2zJMxrVcs7DUjZ1qnlvax8FntHKvTPz3AcQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NGZiiFa2iDsVdCgfjGoVNzhM0Hfpn/VDK4VTpXHqJS5YljBaGk6M5rqbQ/+3kMoUZ
-	 TVwK291rJcP6WoOUzrWyD5i9+/tCv4zR60BWKkZaGGmEpN8nuwDODmK86tQzMU+ysQ
-	 FPwlQhXend0h8ZcAZ/tCwaU5LxxhQfITcmPH66y0=
+	b=YtayaBD070QIvL8OQAqJ+wRrvFFJZmhY9Bd4+I7n9FyceIs1UBkiYtCGwaDJzTJUx
+	 kpTr7DY/PUMNHYUUEzrnb6R5vkjoEWCAo+tb5tpgLTb3k0KTi3+pyQOkP6D3uyV6Sz
+	 9ZYCVMb6O09x4U34rektc1b8/nKm2T6avP43itBw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5B0C6F80557; Mon, 12 Jun 2023 19:27:10 +0200 (CEST)
+	id 55916F80570; Mon, 12 Jun 2023 19:27:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC81CF8052E;
-	Mon, 12 Jun 2023 19:27:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC1A7F8056F;
+	Mon, 12 Jun 2023 19:27:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F916F80155; Mon, 12 Jun 2023 19:27:04 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 98D90F80155; Mon, 12 Jun 2023 19:27:05 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 57A6CF800ED
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 19:26:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57A6CF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id D6456F80132
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 19:27:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6456F80132
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uc6TOR1Z
+ header.s=k20201202 header.b=jOldAiAR
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 9B32561D74;
-	Mon, 12 Jun 2023 17:26:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B54EC433EF;
-	Mon, 12 Jun 2023 17:26:52 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 68D87620D7;
+	Mon, 12 Jun 2023 17:27:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA72C433EF;
+	Mon, 12 Jun 2023 17:26:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686590815;
-	bh=uOab3yRuil+00P2CAkfmCzTH6J2kw0s08EsYP6TTYAk=;
+	s=k20201202; t=1686590820;
+	bh=75UZyHjl2zJMxrVcs7DUjZ1qnlvax8FntHKvTPz3AcQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=uc6TOR1ZOtF/eV7k3z5Dz7S3LRRP6M71bjAOf/jvu9QnHwTu3ChJiD1zK5rr42j0I
-	 qrP2x6chV4GO8+vtF513icXxVAQX6KNtCXrPFW6SoNHlF2TqSIyi9q+dbdIipqOwp7
-	 Qgsg7rQ5S4Qkgm6EwvoaTG9tJRaw0oxOgzpDxnGEcmm8efIkSzp1Fcz3nuIbC+86sw
-	 BFnBAJI1jxzyny2Ojju7yxIf/TweyBqTQKuGyZN3cYZJG4l+Y+wxkBlj4RBF+3tcOr
-	 5yeFZrWRkavgnMxhDgiNfscvB8FsHp9RGX0uvMTLkMt+2IDZxG8EnP9cgtENUTGk2b
-	 hl+TP+KjpP95w==
+	b=jOldAiARikgSpZkEd1+M9+rsGHTXPW5+UZ83xA+hL79HPwCPMQz2G7we6H7STlSNa
+	 UTPrU23qLA7E+u+nrGf5U6uZAWBAJAG/CWfbixDzVqtUhJ0wjvu1Yd6haofNXHbGgA
+	 vLY2DQHSqvVVCCPb1s/NKPRCFDHrrUqKE1fvMYY6LKTDyZZyLfxv0hal8RTwBzNglL
+	 bpS9bt69m8MkbHBBCRhLB2lt15OMI/dHwan4iLiqsaUJXSe4P2lFT+mke/9cKMcJVp
+	 hcpTUbcOTpDgfPUfowyfYqrNzl6VbnIRMAuLqPlT9qDo5Sk4gz82RYh/sTo7te0bni
+	 1FB+feAQFvWJg==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Ricardo Ribalda Delgado <ribalda@chromium.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- Dan Carpenter <dan.carpenter@linaro.org>, stable@kernel.org
-In-Reply-To: <20230612-mt8173-fixup-v2-0-432aa99ce24d@chromium.org>
-References: <20230612-mt8173-fixup-v2-0-432aa99ce24d@chromium.org>
-Subject: Re: [PATCH v2 0/2] ASoC: mediatek: mt8173: Fix error paths
-Message-Id: <168659081228.87413.14975958802523841979.b4-ty@kernel.org>
-Date: Mon, 12 Jun 2023 18:26:52 +0100
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
+ =?utf-8?q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ kernel@pengutronix.de
+In-Reply-To: <20230612070608.836186-1-u.kleine-koenig@pengutronix.de>
+References: <20230612070608.836186-1-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] ASoC: Switch two more i2c drivers back to use .probe()
+Message-Id: <168659081830.87413.8638944897505868465.b4-ty@kernel.org>
+Date: Mon, 12 Jun 2023 18:26:58 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: 2KTVW7KYH77N2PLIWN4E4NIIALLLC2LV
-X-Message-ID-Hash: 2KTVW7KYH77N2PLIWN4E4NIIALLLC2LV
+Message-ID-Hash: QN3PEX7TBN443TKGRC53CWBXIX2UC7N7
+X-Message-ID-Hash: QN3PEX7TBN443TKGRC53CWBXIX2UC7N7
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2KTVW7KYH77N2PLIWN4E4NIIALLLC2LV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QN3PEX7TBN443TKGRC53CWBXIX2UC7N7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,11 +100,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 12 Jun 2023 11:05:30 +0200, Ricardo Ribalda Delgado wrote:
-> ASoC: mediatek: mt8173, presented a couple of error paths errors, lets
-> fix them.
+On Mon, 12 Jun 2023 09:06:08 +0200, Uwe Kleine-König wrote:
+> The previous conversion back to .probe() applied in commit 9abcd24002bf
+> ("ASoC: Switch i2c drivers back to use .probe()") was created based on
+> v6.3. Since then two more drivers were added which need to be convert
+> back in the same way before eventually .probe_new() can be dropped from
+> struct i2c_driver.
 > 
 > 
+> [...]
 
 Applied to
 
@@ -108,10 +116,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: mediatek: mt8173: Fix snd_soc_component_initialize error path
-      commit: a46d37012a5be1737393b8f82fd35665e4556eee
-[2/2] ASoC: mediatek: mt8173: Fix irq error path
-      commit: f9c058d14f4fe23ef523a7ff73734d51c151683c
+[1/1] ASoC: Switch two more i2c drivers back to use .probe()
+      commit: 947e3960a72aa51d8643098851534baa5cc6538b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
