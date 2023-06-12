@@ -4,105 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 886CDC7EE25
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 12:34:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E9A8C7EE25
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 12:40:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9321683E;
-	Mon, 12 Jun 2023 14:34:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9321683E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4C21827;
+	Mon, 12 Jun 2023 14:40:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4C21827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686573294;
-	bh=+bNHptp2V2lut6GtimuR3m5ZqbYJIEJA8llX4Kq9/2Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1686573655;
+	bh=eoZ+0qjZiLEJ3HnTSwjcfZB+lUo3LW6OPEM++42sLCA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VaNJq+K0K91e6XuvW9UNutjMiZC4JHozVV6TplqvOqpXlTUU3IrCLG3ptAM8J/ZyF
-	 IWtA7Ev0ybky8Lzib7Xf/mPfVMjJinyYwq3ABM6pIuWem4Nh2YUziyqI8sDm8FX07S
-	 /D3YNsCKssKX3IgIrA1Ru3+s11xE49QlViONeiag=
+	b=jUCR9ZPRaqH894lpBvGjSmEOdMSKuznamWQ5ZC1LEYgJFNQnAYKzg6tZHHXemGhai
+	 2ZkYZ0dkkRn17LomO9UG6+DFA+ZLW2okOmflgw2MzlsC4kfWMYNi9ea1DtHOW9M87e
+	 2anbe4T4rUSVMxuMVcNvgshNCdX3by7dFbhL8ipI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10994F8058C; Mon, 12 Jun 2023 14:33:11 +0200 (CEST)
+	id 6623FF80155; Mon, 12 Jun 2023 14:39:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69CBBF8057D;
-	Mon, 12 Jun 2023 14:33:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C931DF800ED;
+	Mon, 12 Jun 2023 14:39:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 98C1AF80149; Mon, 12 Jun 2023 14:33:03 +0200 (CEST)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::221])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 4ACB6F80149; Mon, 12 Jun 2023 14:39:34 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4AE31F80149
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 14:30:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AE31F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id D7754F80130
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 14:39:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7754F80130
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=Rz+Ii9wf
-X-GND-Sasl: herve.codina@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686573009;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=C7zwdbgD;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=Z7clgTSN
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CEDA62030A;
+	Mon, 12 Jun 2023 12:39:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1686573570;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=b7GpRi53x4asj1T+mG5YB9K5F5kbtkPlrvMMs/bfkeM=;
-	b=Rz+Ii9wfAJ84Hru5tWVZ2BHscLeDldbI7wxcUWvnboDxxaqAepsmlmzMDX9eCAB2TVZerH
-	vMam8AYocthmCfwmrQ5zzf/Y93M02RvKwhMsqypIx2AbNP2HGdaMCxVnlZ444fWwbIQEQE
-	/0corWxCLXrXGWmdJIQJRpTLjRtnkqRNuu143YDtSO4by62DLn4EhwHjh46lW7pdz21EUO
-	eisZ/tCTUrLPnY4dkmB116U0m3ruME+grhCRDdh0uHhfDnStL+8WwaudxayplAr5HRyChX
-	eF9a14vvZJSlCmiLVI+oJnJpAziN/1vjPf5Qt3/kgs0AN3BfNlPzjewLGrkRIQ==
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id B5C65240008;
-	Mon, 12 Jun 2023 12:30:00 +0000 (UTC)
-From: Herve Codina <herve.codina@bootlin.com>
-To: Herve Codina <herve.codina@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-iio@vger.kernel.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v3 04/12] iio: consumer.h: Fix raw values documentation notes
-Date: Mon, 12 Jun 2023 14:29:18 +0200
-Message-Id: <20230612122926.107333-5-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230612122926.107333-1-herve.codina@bootlin.com>
-References: <20230612122926.107333-1-herve.codina@bootlin.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SXIDXMCKOYRIYTYMZHJ64RITAIT3P4YP
-X-Message-ID-Hash: SXIDXMCKOYRIYTYMZHJ64RITAIT3P4YP
-X-MailFrom: herve.codina@bootlin.com
+	bh=XuFdALxXIStAxZd+Ym6NFbs/WXvUyVbbTHxMUbkje3Y=;
+	b=C7zwdbgD9JzI3gfS42Trpsq0qiF6Zb15uXfeorLx0cLLY2phPNxdUD03MBKBeKbPYEKYAJ
+	GoKOgck8xJAl2zvxZg6Tta3ic7XBGAkAl6wa0/SXaDRpsQRTiGzQ2C9UkafOWE1F89Ano9
+	0z7AOQVCxwxfBsqFhl5rUP6clpijtJM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1686573570;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XuFdALxXIStAxZd+Ym6NFbs/WXvUyVbbTHxMUbkje3Y=;
+	b=Z7clgTSN7lo/e9/bmTiBsyWWGu7tYcRWAHF8/55OLgiOcZL1SEgl0VbmVlVbTuMHa/2jnQ
+	RESFfHrms3QbzFCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEFE6138EC;
+	Mon, 12 Jun 2023 12:39:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id JARpKQISh2Q2awAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 12 Jun 2023 12:39:30 +0000
+Date: Mon, 12 Jun 2023 14:39:30 +0200
+Message-ID: <87edmgam7x.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: clemens@ladisch.de,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH 0/2] ALSA: firewire: use 'GPL' string for module license
+In-Reply-To: <20230611144445.221529-1-o-takashi@sakamocchi.jp>
+References: <20230611144445.221529-1-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: YOTPWONJPYRN77X752WOXT5CSDKEKZQT
+X-Message-ID-Hash: YOTPWONJPYRN77X752WOXT5CSDKEKZQT
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -114,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SXIDXMCKOYRIYTYMZHJ64RITAIT3P4YP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YOTPWONJPYRN77X752WOXT5CSDKEKZQT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,81 +114,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The raw values notes mention 'ADC counts' and are not fully accurate.
+On Sun, 11 Jun 2023 16:44:43 +0200,
+Takashi Sakamoto wrote:
+> 
+> Hi,
+> 
+> Nowadays, the use of "GPL" string in MODULE_LICENSE macro seems to
+> obsolete "GPL v2" string. This series includes two patches to use it for
+> modules in ALSA firewire stack contributed by two developers.
+> 
+> This change does not pose any issue for modules contributed by Takashi
+> Sakamoto, the author of this series, while it is advisable to have careful
+> consideration for modules contributed by Clemens Ladisch, since the code
+> related to license will be modified by a developer who is not the
+> copyright holder.
+> 
+> A commit bf7fbeeae6db ("module: Cure the MODULE_LICENSE "GPL" vs.
+> "GPL v2" bogosity") adds detail documentation about the macro itself and
+> clarifies the difference between "GPL" and "GPL v2". The macro is designed
+> to provide sufficient information to kernel module loader and user space
+> tools. Both strings have the same meanings, but the latter is legacy.
+> 
+> In conclusion, any change made to the usage of the macro neither result in
+> significant alterations to license nor copyright.
+> 
+> Takashi Sakamoto (2):
+>   ALSA: firewire: use 'GPL' string for module license contributed by
+>     Takashi Sakamoto
+>   ALSA: firewire: use 'GPL' string for module license contributed by
+>     Clemens Ladisch
 
-Reword the notes in order to remove the 'ADC counts' and describe the
-conversion needed between a raw value and a value in the standard units.
+Applied now.  Thanks.
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
- include/linux/iio/consumer.h | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
-index 6802596b017c..f536820b9cf2 100644
---- a/include/linux/iio/consumer.h
-+++ b/include/linux/iio/consumer.h
-@@ -201,8 +201,9 @@ struct iio_dev
-  * @chan:		The channel being queried.
-  * @val:		Value read back.
-  *
-- * Note raw reads from iio channels are in adc counts and hence
-- * scale will need to be applied if standard units required.
-+ * Note, if standard units are required, raw reads from iio channels
-+ * need the offset (default 0) and scale (default 1) to be applied
-+ * as (raw + offset) * scale.
-  */
- int iio_read_channel_raw(struct iio_channel *chan,
- 			 int *val);
-@@ -212,8 +213,9 @@ int iio_read_channel_raw(struct iio_channel *chan,
-  * @chan:		The channel being queried.
-  * @val:		Value read back.
-  *
-- * Note raw reads from iio channels are in adc counts and hence
-- * scale will need to be applied if standard units required.
-+ * Note, if standard units are required, raw reads from iio channels
-+ * need the offset (default 0) and scale (default 1) to be applied
-+ * as (raw + offset) * scale.
-  *
-  * In opposit to the normal iio_read_channel_raw this function
-  * returns the average of multiple reads.
-@@ -281,8 +283,9 @@ int iio_read_channel_attribute(struct iio_channel *chan, int *val,
-  * @chan:		The channel being queried.
-  * @val:		Value being written.
-  *
-- * Note raw writes to iio channels are in dac counts and hence
-- * scale will need to be applied if standard units required.
-+ * Note that for raw writes to iio channels, if the value provided is
-+ * in standard units, the affect of the scale and offset must be removed
-+ * as (value / scale) - offset.
-  */
- int iio_write_channel_raw(struct iio_channel *chan, int val);
- 
-@@ -292,8 +295,9 @@ int iio_write_channel_raw(struct iio_channel *chan, int val);
-  * @chan:		The channel being queried.
-  * @val:		Value read back.
-  *
-- * Note raw reads from iio channels are in adc counts and hence
-- * scale will need to be applied if standard units are required.
-+ * Note, if standard units are required, raw reads from iio channels
-+ * need the offset (default 0) and scale (default 1) to be applied
-+ * as (raw + offset) * scale.
-  */
- int iio_read_max_channel_raw(struct iio_channel *chan, int *val);
- 
-@@ -308,8 +312,9 @@ int iio_read_max_channel_raw(struct iio_channel *chan, int *val);
-  * For ranges, three vals are always returned; min, step and max.
-  * For lists, all the possible values are enumerated.
-  *
-- * Note raw available values from iio channels are in adc counts and
-- * hence scale will need to be applied if standard units are required.
-+ * Note, if standard units are required, raw available values from iio
-+ * channels need the offset (default 0) and scale (default 1) to be applied
-+ * as (raw + offset) * scale.
-  */
- int iio_read_avail_channel_raw(struct iio_channel *chan,
- 			       const int **vals, int *length);
--- 
-2.40.1
-
+Takashi
