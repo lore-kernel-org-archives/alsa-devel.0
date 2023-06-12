@@ -4,70 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06011C88CB2
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:35:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40F63C88CB2
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:35:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F28F785D;
-	Mon, 12 Jun 2023 17:34:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F28F785D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EABF83A;
+	Mon, 12 Jun 2023 17:34:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EABF83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686584105;
-	bh=4+nRoO97l3EPbLIT35Co8UlFP4D3AzNTprsn+WeIHAE=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=u1nfYVqBu6mQvhXipwD5+9FTKIO8X29Mlybw8iKoXS1TsDLIRwKp03aDhKUdAdM+8
-	 DxsOq3owbhJmV/+d2nQkQyxAhPX8Ez7mfUKmj2EkJ5xHppoSfrrc08UyJVbLQ2BkP/
-	 O0Dw+HcYlpGUGkizXRxuVSAAiXkZuG3oad2BBcFI=
+	s=default; t=1686584130;
+	bh=9PNOgDgKfHNhFWS/56djpdmbt/hVOlBptC54bwapaJw=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=LNR+E2+beaJQazme2sS4EQeEbJf3jZeKF815Rbx6ywoN0yhKIvQPY4sh0EXcHLmHL
+	 jt1mJFzJIeo3GMcYmG4x0YnIUa5BNfZxS8UNRRu+c46H5BBLCNeMYy3brx7gatwQE8
+	 SFh+6bgAsoXTkSVtzAEXPgoUGc7Q7syIxI9MLWm0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01CC7F805F6; Mon, 12 Jun 2023 17:32:14 +0200 (CEST)
+	id 44049F80604; Mon, 12 Jun 2023 17:32:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7AF1F805EC;
-	Mon, 12 Jun 2023 17:32:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E58CF80604;
+	Mon, 12 Jun 2023 17:32:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 925DCF800BA; Mon, 12 Jun 2023 12:53:43 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	id 6C822F80246; Mon, 12 Jun 2023 12:53:52 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D6D14F800BA
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 12:53:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6D14F800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 92E05F80149
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 12:53:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92E05F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=BkvTrXt7
-X-UUID: 5a1f80c6090f11eeb20a276fd37b9834-20230612
+ header.s=dk header.b=QcgmvK/1
+X-UUID: 5f9d85d4090f11ee9cb5633481061a41-20230612
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
- bh=HWQ9wrT35b6pkEnZ34pjf2szFkbwSXUpw/iZR2OP2Sg=;
-	b=BkvTrXt7qmssolIPIqsy99D/5EEBn1/gDglCxoFcMmSaxiXqkaQAFvt5RhdJ+KjU3Stfs+DqLSuzekLd65hfYiljRr1RBuTNjTZZtzKymv/ZEZ/OVDoRiNUj7vC3ON/etiwwaRv9N9WhPk6S+aaIKpB3LIGx/CJIzvwl/I67ghU=;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=aZY/OvmVIfR/+U1CwVj1hHp8VX+qCtSh3oDVJZZeK0E=;
+	b=QcgmvK/1G5I/CvY6FL16EkbRkMlz9XwiAjjsKcxhpk8IWofoq2xYvFMxTSofz0nL5ToxXzmKuDdQEAfYFSBk0LGO6f2jhc6k1WCX8BDdibBfxlW3NHngutmBdipLN6fz57LuVQeDkdAYMiJn4NZqfb38SIX2k1z9whx+90jFisQ=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.26,REQID:a02e8225-0875-415c-8895-ac3693ae37df,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:cb9a4e1,CLOUDID:2b945a3e-7aa7-41f3-a6bd-0433bee822f3,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 5a1f80c6090f11eeb20a276fd37b9834-20230612
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
- mailgw02.mediatek.com
+X-CID-O-INFO: VERSION:1.1.26,REQID:4d8b9c73-4ef7-4fd5-a9e8-16fd97839352,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:100
+X-CID-INFO: VERSION:1.1.26,REQID:4d8b9c73-4ef7-4fd5-a9e8-16fd97839352,IP:0,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTIO
+	N:quarantine,TS:100
+X-CID-META: VersionHash:cb9a4e1,CLOUDID:126ace6e-2f20-4998-991c-3b78627e4938,B
+	ulkID:2306121853338KRXL2OK,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
+	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+	,OSI:0,OSA:0,AV:0,LES:1,SPR:NO
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,
+	TF_CID_SPAM_FSD
+X-UUID: 5f9d85d4090f11ee9cb5633481061a41-20230612
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by
+ mailgw01.mediatek.com
 	(envelope-from <maso.huang@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 577519842; Mon, 12 Jun 2023 18:53:23 +0800
+	with ESMTP id 1520647404; Mon, 12 Jun 2023 18:53:32 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 12 Jun 2023 18:53:22 +0800
+ 15.2.1118.26; Mon, 12 Jun 2023 18:53:32 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 12 Jun 2023 18:53:22 +0800
+ 15.2.1118.26 via Frontend Transport; Mon, 12 Jun 2023 18:53:32 +0800
 From: Maso Hunag <maso.huang@mediatek.com>
 To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Trevor Wu
@@ -77,10 +83,12 @@ To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
 CC: Maso Huang <maso.huang@mediatek.com>
-Subject: [PATCH 0/7] ASoC: mediatek: Add support for MT79xx SoC
-Date: Mon, 12 Jun 2023 18:52:43 +0800
-Message-ID: <20230612105250.15441-1-maso.huang@mediatek.com>
+Subject: [PATCH 2/7] ASoC: mediatek: mt79xx: support audio clock control
+Date: Mon, 12 Jun 2023 18:52:45 +0800
+Message-ID: <20230612105250.15441-3-maso.huang@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230612105250.15441-1-maso.huang@mediatek.com>
+References: <20230612105250.15441-1-maso.huang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MailFrom: maso.huang@mediatek.com
@@ -89,16 +97,17 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 5GDTPQHCGPTKCPSURMWTTQ4SZOCQEYXM
-X-Message-ID-Hash: 5GDTPQHCGPTKCPSURMWTTQ4SZOCQEYXM
+Message-ID-Hash: AEE5IQY3R7MF2Z7RSUJPUUBOAO722HIK
+X-Message-ID-Hash: AEE5IQY3R7MF2Z7RSUJPUUBOAO722HIK
 X-Mailman-Approved-At: Mon, 12 Jun 2023 15:31:58 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5GDTPQHCGPTKCPSURMWTTQ4SZOCQEYXM/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AEE5IQY3R7MF2Z7RSUJPUUBOAO722HIK/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -107,42 +116,169 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Maso Huang <maso.huang@mediatek.com>
 
-This series of patches adds support for MediaTek AFE of MT79xx SoC.
-Patches are based on broonie tree "for-next" branch.
+Add audio clock wrapper and audio tuner control.
 
-Maso Huang (7):
-  ASoC: mediatek: mt79xx: add common header
-  ASoC: mediatek: mt79xx: support audio clock control
-  ASoC: mediatek: mt79xx: add platform driver
-  ASoC: mediatek: mt79xx: support etdm in platform driver
-  ASoC: mediatek: mt79xx: add machine driver with wm8960
-  ASoC: dt-bindings: mediatek,mt79xx-wm8960: add mt79xx-wm8960 document
-  ASoC: dt-bindings: mediatek,mt79xx-afe: add audio afe document
-
- .../bindings/sound/mediatek,mt79xx-afe.yaml   | 102 +++
- .../sound/mediatek,mt79xx-wm8960.yaml         |  53 ++
- sound/soc/mediatek/Kconfig                    |  20 +
- sound/soc/mediatek/Makefile                   |   1 +
- sound/soc/mediatek/mt79xx/Makefile            |  10 +
- sound/soc/mediatek/mt79xx/mt79xx-afe-clk.c    | 123 ++++
- sound/soc/mediatek/mt79xx/mt79xx-afe-clk.h    |  18 +
- sound/soc/mediatek/mt79xx/mt79xx-afe-common.h |  49 ++
- sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c    | 608 ++++++++++++++++++
- sound/soc/mediatek/mt79xx/mt79xx-dai-etdm.c   | 421 ++++++++++++
- sound/soc/mediatek/mt79xx/mt79xx-reg.h        | 206 ++++++
- sound/soc/mediatek/mt79xx/mt79xx-wm8960.c     | 185 ++++++
- 12 files changed, 1796 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt79xx-afe.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt79xx-wm8960.yaml
- create mode 100644 sound/soc/mediatek/mt79xx/Makefile
+Signed-off-by: Maso Huang <maso.huang@mediatek.com>
+---
+ sound/soc/mediatek/mt79xx/mt79xx-afe-clk.c | 123 +++++++++++++++++++++
+ sound/soc/mediatek/mt79xx/mt79xx-afe-clk.h |  18 +++
+ 2 files changed, 141 insertions(+)
  create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-afe-clk.c
  create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-afe-clk.h
- create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-afe-common.h
- create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c
- create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-dai-etdm.c
- create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-reg.h
- create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-wm8960.c
 
+diff --git a/sound/soc/mediatek/mt79xx/mt79xx-afe-clk.c b/sound/soc/mediatek/mt79xx/mt79xx-afe-clk.c
+new file mode 100644
+index 000000000000..f00f0d7de861
+--- /dev/null
++++ b/sound/soc/mediatek/mt79xx/mt79xx-afe-clk.c
+@@ -0,0 +1,123 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * mt79xx-afe-clk.c  --  MediaTek 79xx afe clock ctrl
++ *
++ * Copyright (c) 2021 MediaTek Inc.
++ * Author: Vic Wu <vic.wu@mediatek.com>
++ *         Maso Huang <maso.huang@mediatek.com>
++ */
++
++#include <linux/clk.h>
++
++#include "mt79xx-afe-common.h"
++#include "mt79xx-afe-clk.h"
++#include "mt79xx-reg.h"
++
++enum {
++	CK_INFRA_AUD_BUS_CK = 0,
++	CK_INFRA_AUD_26M_CK,
++	CK_INFRA_AUD_L_CK,
++	CK_INFRA_AUD_AUD_CK,
++	CK_INFRA_AUD_EG2_CK,
++	CLK_NUM
++};
++
++static const char *aud_clks[CLK_NUM] = {
++	[CK_INFRA_AUD_BUS_CK] = "aud_bus_ck",
++	[CK_INFRA_AUD_26M_CK] = "aud_26m_ck",
++	[CK_INFRA_AUD_L_CK] = "aud_l_ck",
++	[CK_INFRA_AUD_AUD_CK] = "aud_aud_ck",
++	[CK_INFRA_AUD_EG2_CK] = "aud_eg2_ck",
++};
++
++int mt79xx_init_clock(struct mtk_base_afe *afe)
++{
++	struct mt79xx_afe_private *afe_priv = afe->platform_priv;
++	int i;
++
++	afe_priv->clk = devm_kcalloc(afe->dev, CLK_NUM, sizeof(*afe_priv->clk),
++				     GFP_KERNEL);
++	if (!afe_priv->clk)
++		return -ENOMEM;
++
++	for (i = 0; i < CLK_NUM; i++) {
++		afe_priv->clk[i] = devm_clk_get(afe->dev, aud_clks[i]);
++		if (IS_ERR(afe_priv->clk[i])) {
++			dev_err(afe->dev, "%s(), devm_clk_get %s fail,
++				ret %ld\n", __func__, aud_clks[i],
++				PTR_ERR(afe_priv->clk[i]));
++			return PTR_ERR(afe_priv->clk[i]);
++		}
++	}
++
++	return 0;
++}
++
++int mt79xx_afe_enable_clock(struct mtk_base_afe *afe)
++{
++	struct mt79xx_afe_private *afe_priv = afe->platform_priv;
++	int ret;
++
++	ret = clk_prepare_enable(afe_priv->clk[CK_INFRA_AUD_BUS_CK]);
++	if (ret) {
++		dev_err(afe->dev, "%s(), clk_prepare_enable %s fail %d\n",
++			__func__, aud_clks[CK_INFRA_AUD_BUS_CK], ret);
++		goto CK_INFRA_AUD_BUS_CK_ERR;
++	}
++
++	ret = clk_prepare_enable(afe_priv->clk[CK_INFRA_AUD_26M_CK]);
++	if (ret) {
++		dev_err(afe->dev, "%s(), clk_prepare_enable %s fail %d\n",
++			__func__, aud_clks[CK_INFRA_AUD_26M_CK], ret);
++		goto CK_INFRA_AUD_26M_ERR;
++	}
++
++	ret = clk_prepare_enable(afe_priv->clk[CK_INFRA_AUD_L_CK]);
++	if (ret) {
++		dev_err(afe->dev, "%s(), clk_prepare_enable %s fail %d\n",
++			__func__, aud_clks[CK_INFRA_AUD_L_CK], ret);
++		goto CK_INFRA_AUD_L_CK_ERR;
++	}
++
++	ret = clk_prepare_enable(afe_priv->clk[CK_INFRA_AUD_AUD_CK]);
++	if (ret) {
++		dev_err(afe->dev, "%s clk_prepare_enable %s fail %d\n",
++			__func__, aud_clks[CK_INFRA_AUD_AUD_CK], ret);
++		goto CK_INFRA_AUD_AUD_CK_ERR;
++	}
++
++	ret = clk_prepare_enable(afe_priv->clk[CK_INFRA_AUD_EG2_CK]);
++	if (ret) {
++		dev_err(afe->dev, "%s clk_prepare_enable %s fail %d\n",
++			__func__, aud_clks[CK_INFRA_AUD_EG2_CK], ret);
++		goto CK_INFRA_AUD_EG2_CK_ERR;
++	}
++
++	return 0;
++
++CK_INFRA_AUD_EG2_CK_ERR:
++	clk_disable_unprepare(afe_priv->clk[CK_INFRA_AUD_AUD_CK]);
++CK_INFRA_AUD_AUD_CK_ERR:
++	clk_disable_unprepare(afe_priv->clk[CK_INFRA_AUD_L_CK]);
++CK_INFRA_AUD_L_CK_ERR:
++	clk_disable_unprepare(afe_priv->clk[CK_INFRA_AUD_26M_CK]);
++CK_INFRA_AUD_26M_ERR:
++	clk_disable_unprepare(afe_priv->clk[CK_INFRA_AUD_BUS_CK]);
++CK_INFRA_AUD_BUS_CK_ERR:
++	return ret;
++}
++EXPORT_SYMBOL_GPL(mt79xx_afe_enable_clock);
++
++int mt79xx_afe_disable_clock(struct mtk_base_afe *afe)
++{
++	struct mt79xx_afe_private *afe_priv = afe->platform_priv;
++
++	clk_disable_unprepare(afe_priv->clk[CK_INFRA_AUD_EG2_CK]);
++	clk_disable_unprepare(afe_priv->clk[CK_INFRA_AUD_AUD_CK]);
++	clk_disable_unprepare(afe_priv->clk[CK_INFRA_AUD_L_CK]);
++	clk_disable_unprepare(afe_priv->clk[CK_INFRA_AUD_26M_CK]);
++	clk_disable_unprepare(afe_priv->clk[CK_INFRA_AUD_BUS_CK]);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(mt79xx_afe_disable_clock);
+diff --git a/sound/soc/mediatek/mt79xx/mt79xx-afe-clk.h b/sound/soc/mediatek/mt79xx/mt79xx-afe-clk.h
+new file mode 100644
+index 000000000000..bf9c3edb6922
+--- /dev/null
++++ b/sound/soc/mediatek/mt79xx/mt79xx-afe-clk.h
+@@ -0,0 +1,18 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * mt79xx-afe-clk.h  --  MediaTek 79xx afe clock ctrl definition
++ *
++ * Copyright (c) 2021 MediaTek Inc.
++ * Author: Vic Wu <vic.wu@mediatek.com>
++ *         Maso Huang <maso.huang@mediatek.com>
++ */
++
++#ifndef _MT79XX_AFE_CLK_H_
++#define _MT79XX_AFE_CLK_H_
++
++struct mtk_base_afe;
++
++int mt79xx_init_clock(struct mtk_base_afe *afe);
++int mt79xx_afe_enable_clock(struct mtk_base_afe *afe);
++int mt79xx_afe_disable_clock(struct mtk_base_afe *afe);
++#endif
 -- 
 2.18.0
 
