@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9DA4C7EE43
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 19:16:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2377C7EE2E
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 19:17:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E284825;
-	Mon, 12 Jun 2023 21:16:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E284825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94DB384D;
+	Mon, 12 Jun 2023 21:16:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94DB384D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686597411;
-	bh=bhsNJyUWb/Kb2G5nfKSStAiNyy4eL/TvDIRssBuWuKs=;
+	s=default; t=1686597433;
+	bh=sJ+m7PhD9EbYzP2SLAz3V2su4BG9WntGd3m08q7H8oI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ocemK1RelIGQsd/7nYyIPyvtpGm0yMy3od32bpcJ2ErllG7o/TvlCs0FCikkXqxGy
-	 DSz+sRLQj9VuKwYPlcqZd8c6B6JuujNFS9cp+uhDJ7V1wUibMrEdM6mwGwaY2VULuw
-	 Emrh2E9tEjdeN6yk5d0q0+5gZPJqOnYCS8I/X8Tk=
+	b=jIjO/339iddaL8ZHDpc2C7TmLRhUw7ITzpr6mgBZTbOtpPGvvtHbhmQ3O6PW314BY
+	 ZJ5f1RP21zUe7m1dkDao6SZT/9aXvKKYNk284q0d1oGXbmkA01X9+WfexjiFF5qA2W
+	 j2CyhB+zchhZ8d+JI1r5+LZsC/JnRO0y/TU74D/A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35815F80551; Mon, 12 Jun 2023 21:14:48 +0200 (CEST)
+	id 75815F8057A; Mon, 12 Jun 2023 21:14:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6A28F80149;
-	Mon, 12 Jun 2023 21:14:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 837D5F8055C;
+	Mon, 12 Jun 2023 21:14:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B6752F80149; Mon, 12 Jun 2023 21:14:44 +0200 (CEST)
+	id 9398DF80149; Mon, 12 Jun 2023 21:14:46 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org
  [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D3A68F80301
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 21:13:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3A68F80301
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1F996F80132
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 21:13:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F996F80132
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id DEEE6241F9;
+	by bluemchen.kde.org (Postfix) with ESMTP id CC7C124154;
 	Mon, 12 Jun 2023 15:13:25 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1q8myj-WK9-00; Mon, 12 Jun 2023 21:13:25 +0200
+	id 1q8myj-WJr-00; Mon, 12 Jun 2023 21:13:25 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 4/9] ALSA: emu10k1: fix sample rates for E-MU cards at 44.1
- kHz word clock
-Date: Mon, 12 Jun 2023 21:13:20 +0200
-Message-Id: <20230612191325.1315854-5-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 1/9] ALSA: emu10k1: split off E-MU fallback clock from clock
+ source
+Date: Mon, 12 Jun 2023 21:13:17 +0200
+Message-Id: <20230612191325.1315854-2-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230612191325.1315854-1-oswald.buddenhagen@gmx.de>
 References: <20230612191325.1315854-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IBM7E56R2LQCU34SJSTVGNMYMO3HYIDT
-X-Message-ID-Hash: IBM7E56R2LQCU34SJSTVGNMYMO3HYIDT
+Message-ID-Hash: ZIASWMFANOOMNP5ROJMCJO726P3KLLHZ
+X-Message-ID-Hash: ZIASWMFANOOMNP5ROJMCJO726P3KLLHZ
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -67,7 +67,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IBM7E56R2LQCU34SJSTVGNMYMO3HYIDT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZIASWMFANOOMNP5ROJMCJO726P3KLLHZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,264 +76,242 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Now that we know the actual word clock, we can:
-- Put the resulting rate into the hardware info
-- At 44.1 kHz word clock shift the rate for the pitch calculations,
-  which presume a 48 kHz word clock
+So far, we set the fallback as a side effect of setting the source. But
+the fallback makes no sense at all when an internal clock is selected.
+Defaulting to 48k for S/PDIF & ADAT makes sense, but as that is the
+global default and we're not changing it automatically any more, it's
+just fine to leave it entirely to the explicit setting.
+
+This changes the name of the pre-existing control to something more
+appropriate (regardless of the split), so users will need to adjust
+their mixer settings.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- include/sound/emu10k1.h    |   1 +
- sound/pci/emu10k1/emupcm.c | 112 ++++++++++++++++++-------------------
- 2 files changed, 56 insertions(+), 57 deletions(-)
+ include/sound/emu10k1.h          |  3 +-
+ sound/pci/emu10k1/emu10k1_main.c |  3 +-
+ sound/pci/emu10k1/emumixer.c     | 89 +++++++++++++++++++++++---------
+ sound/pci/emu10k1/emupcm.c       |  4 +-
+ 4 files changed, 72 insertions(+), 27 deletions(-)
 
 diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
-index d64cf1697586..386a5f3be3e0 100644
+index cc0151e7c828..59e79ea1f75e 100644
 --- a/include/sound/emu10k1.h
 +++ b/include/sound/emu10k1.h
-@@ -1495,6 +1495,7 @@ struct snd_emu10k1_pcm {
- 	unsigned short first_ptr;
- 	snd_pcm_uframes_t resume_pos;
- 	struct snd_util_memblk *memblk;
-+	unsigned int pitch_target;
- 	unsigned int start_addr;
- 	unsigned int ccca_start_addr;
- 	unsigned int capture_ipr;	/* interrupt acknowledge mask */
-diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index fab537788587..3ef9130a9577 100644
---- a/sound/pci/emu10k1/emupcm.c
-+++ b/sound/pci/emu10k1/emupcm.c
-@@ -195,6 +195,33 @@ static unsigned int snd_emu10k1_audigy_capture_rate_reg(unsigned int rate)
- 	}
+@@ -1668,7 +1668,8 @@ struct snd_emu1010 {
+ 	unsigned char input_source[NUM_INPUT_DESTS];
+ 	unsigned int adc_pads; /* bit mask */
+ 	unsigned int dac_pads; /* bit mask */
+-	unsigned int internal_clock; /* 44100 or 48000 */
++	unsigned int clock_source;
++	unsigned int clock_fallback;
+ 	unsigned int optical_in; /* 0:SPDIF, 1:ADAT */
+ 	unsigned int optical_out; /* 0:SPDIF, 1:ADAT */
+ 	struct delayed_work firmware_work;
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index 65207ef689cb..2aa11d70e285 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -900,7 +900,8 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
+ 	/* IRQ Enable: All off */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_IRQ_ENABLE, 0x00);
+ 
+-	emu->emu1010.internal_clock = 1; /* 48000 */
++	emu->emu1010.clock_source = 1;  /* 48000 */
++	emu->emu1010.clock_fallback = 1;  /* 48000 */
+ 	/* Default WCLK set to 48kHz. */
+ 	snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K);
+ 	/* Word Clock source, Internal 48kHz x1 */
+diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
+index 20a0b3afc8a5..5b50d9c07a60 100644
+--- a/sound/pci/emu10k1/emumixer.c
++++ b/sound/pci/emu10k1/emumixer.c
+@@ -888,46 +888,44 @@ static const struct snd_emu1010_pads_info emu1010_pads_info[] = {
+ };
+ 
+ 
+-static int snd_emu1010_internal_clock_info(struct snd_kcontrol *kcontrol,
++static int snd_emu1010_clock_source_info(struct snd_kcontrol *kcontrol,
+ 					  struct snd_ctl_elem_info *uinfo)
+ {
+ 	static const char * const texts[4] = {
+ 		"44100", "48000", "SPDIF", "ADAT"
+ 	};
+ 		
+ 	return snd_ctl_enum_info(uinfo, 1, 4, texts);
  }
  
-+static void snd_emu10k1_constrain_capture_rates(struct snd_emu10k1 *emu,
-+						struct snd_pcm_runtime *runtime)
-+{
-+	if (emu->card_capabilities->emu_model &&
-+	    emu->emu1010.word_clock == 44100) {
-+		// This also sets the rate constraint by deleting SNDRV_PCM_RATE_KNOT
-+		runtime->hw.rates = SNDRV_PCM_RATE_11025 | \
-+				    SNDRV_PCM_RATE_22050 | \
-+				    SNDRV_PCM_RATE_44100;
-+		runtime->hw.rate_min = 11025;
-+		runtime->hw.rate_max = 44100;
-+		return;
-+	}
-+	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				   &hw_constraints_capture_rates);
-+}
-+
-+static void snd_emu1010_constrain_efx_rate(struct snd_emu10k1 *emu,
-+					   struct snd_pcm_runtime *runtime)
-+{
-+	int rate;
-+
-+	rate = emu->emu1010.word_clock;
-+	runtime->hw.rate_min = runtime->hw.rate_max = rate;
-+	runtime->hw.rates = snd_pcm_rate_to_rate_bit(rate);
-+}
-+
- static unsigned int emu10k1_calc_pitch_target(unsigned int rate)
+-static int snd_emu1010_internal_clock_get(struct snd_kcontrol *kcontrol,
++static int snd_emu1010_clock_source_get(struct snd_kcontrol *kcontrol,
+ 					struct snd_ctl_elem_value *ucontrol)
  {
- 	unsigned int pitch_target;
-@@ -251,29 +278,22 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1 *emu,
- 				       const unsigned char *send_routing,
- 				       const unsigned char *send_amount)
- {
--	struct snd_pcm_substream *substream = evoice->epcm->substream;
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	unsigned int silent_page;
- 	int voice;
--	unsigned int pitch_target;
+ 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
  
- 	voice = evoice->number;
- 
--	if (emu->card_capabilities->emu_model)
--		pitch_target = PITCH_48000; /* Disable interpolators on emu1010 card */
--	else
--		pitch_target = emu10k1_calc_pitch_target(runtime->rate);
- 	silent_page = ((unsigned int)emu->silent_page.addr << emu->address_mode) |
- 		      (emu->address_mode ? MAP_PTI_MASK1 : MAP_PTI_MASK0);
- 	snd_emu10k1_ptr_write_multiple(emu, voice,
- 		// Not really necessary for the slave, but it doesn't hurt
- 		CPF, stereo ? CPF_STEREO_MASK : 0,
- 		// Assumption that PT is already 0 so no harm overwriting
- 		PTRX, (send_amount[0] << 8) | send_amount[1],
- 		// Stereo slaves don't need to have the addresses set, but it doesn't hurt
- 		DSL, end_addr | (send_amount[3] << 24),
- 		PSST, start_addr | (send_amount[2] << 24),
--		CCCA, emu10k1_select_interprom(pitch_target) |
-+		CCCA, emu10k1_select_interprom(evoice->epcm->pitch_target) |
- 		      (w_16 ? 0 : CCCA_8BITSELECT),
- 		// Clear filter delay memory
- 		Z1, 0,
-@@ -419,6 +439,13 @@ static int snd_emu10k1_playback_prepare(struct snd_pcm_substream *substream)
- 	bool w_16 = snd_pcm_format_width(runtime->format) == 16;
- 	bool stereo = runtime->channels == 2;
- 	unsigned int start_addr, end_addr;
-+	unsigned int rate;
-+
-+	rate = runtime->rate;
-+	if (emu->card_capabilities->emu_model &&
-+	    emu->emu1010.word_clock == 44100)
-+		rate = rate * 480 / 441;
-+	epcm->pitch_target = emu10k1_calc_pitch_target(rate);
- 
- 	start_addr = epcm->start_addr >> w_16;
- 	end_addr = start_addr + runtime->period_size;
-@@ -443,6 +470,8 @@ static int snd_emu10k1_efx_playback_prepare(struct snd_pcm_substream *substream)
- 	unsigned int extra_size, channel_size;
- 	unsigned int i;
- 
-+	epcm->pitch_target = PITCH_48000;
-+
- 	start_addr = epcm->start_addr >> 1;  // 16-bit voices
- 
- 	extra_size = runtime->period_size;
-@@ -526,12 +555,16 @@ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
- 		epcm->capture_bs_val++;
- 	}
- 	if (epcm->type == CAPTURE_AC97ADC) {
-+		unsigned rate = runtime->rate;
-+		if (!(runtime->hw.rates & SNDRV_PCM_RATE_48000))
-+			rate = rate * 480 / 441;
-+
- 		epcm->capture_cr_val = emu->audigy ? A_ADCCR_LCHANENABLE : ADCCR_LCHANENABLE;
- 		if (runtime->channels > 1)
- 			epcm->capture_cr_val |= emu->audigy ? A_ADCCR_RCHANENABLE : ADCCR_RCHANENABLE;
- 		epcm->capture_cr_val |= emu->audigy ?
--			snd_emu10k1_audigy_capture_rate_reg(runtime->rate) :
--			snd_emu10k1_capture_rate_reg(runtime->rate);
-+			snd_emu10k1_audigy_capture_rate_reg(rate) :
-+			snd_emu10k1_capture_rate_reg(rate);
- 	}
+-	ucontrol->value.enumerated.item[0] = emu->emu1010.internal_clock;
++	ucontrol->value.enumerated.item[0] = emu->emu1010.clock_source;
  	return 0;
  }
-@@ -670,19 +703,10 @@ static void snd_emu10k1_playback_commit_pitch(struct snd_emu10k1 *emu,
- static void snd_emu10k1_playback_trigger_voice(struct snd_emu10k1 *emu,
- 					       struct snd_emu10k1_voice *evoice)
- {
--	struct snd_pcm_substream *substream;
--	struct snd_pcm_runtime *runtime;
--	unsigned int voice, pitch_target;
-+	unsigned int voice;
  
--	substream = evoice->epcm->substream;
--	runtime = substream->runtime;
- 	voice = evoice->number;
--
--	if (emu->card_capabilities->emu_model)
--		pitch_target = PITCH_48000; /* Disable interpolators on emu1010 card */
--	else 
--		pitch_target = emu10k1_calc_pitch_target(runtime->rate);
--	snd_emu10k1_playback_commit_pitch(emu, voice, pitch_target << 16);
-+	snd_emu10k1_playback_commit_pitch(emu, voice, evoice->epcm->pitch_target << 16);
+-static int snd_emu1010_internal_clock_put(struct snd_kcontrol *kcontrol,
++static int snd_emu1010_clock_source_put(struct snd_kcontrol *kcontrol,
+ 					struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
+ 	unsigned int val;
+ 	int change = 0;
+ 
+ 	val = ucontrol->value.enumerated.item[0] ;
+ 	/* Limit: uinfo->value.enumerated.items = 4; */
+ 	if (val >= 4)
+ 		return -EINVAL;
+-	change = (emu->emu1010.internal_clock != val);
++	change = (emu->emu1010.clock_source != val);
+ 	if (change) {
+-		emu->emu1010.internal_clock = val;
++		emu->emu1010.clock_source = val;
+ 		switch (val) {
+ 		case 0:
+ 			/* 44100 */
+ 			/* Mute all */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE );
+-			/* Default fallback clock 44.1kHz */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_44_1K );
+ 			/* Word Clock source, Internal 44.1kHz x1 */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK,
+ 			EMU_HANA_WCLOCK_INT_44_1K | EMU_HANA_WCLOCK_1X );
+@@ -943,8 +941,6 @@ static int snd_emu1010_internal_clock_put(struct snd_kcontrol *kcontrol,
+ 			/* 48000 */
+ 			/* Mute all */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE );
+-			/* Default fallback clock 48kHz */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K );
+ 			/* Word Clock source, Internal 48kHz x1 */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK,
+ 				EMU_HANA_WCLOCK_INT_48K | EMU_HANA_WCLOCK_1X );
+@@ -960,8 +956,6 @@ static int snd_emu1010_internal_clock_put(struct snd_kcontrol *kcontrol,
+ 		case 2: /* Take clock from S/PDIF IN */
+ 			/* Mute all */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE );
+-			/* Default fallback clock 48kHz */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K );
+ 			/* Word Clock source, sync to S/PDIF input */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK,
+ 				EMU_HANA_WCLOCK_HANA_SPDIF_IN | EMU_HANA_WCLOCK_1X );
+@@ -979,8 +973,6 @@ static int snd_emu1010_internal_clock_put(struct snd_kcontrol *kcontrol,
+ 			/* Take clock from ADAT IN */
+ 			/* Mute all */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_UNMUTE, EMU_MUTE );
+-			/* Default fallback clock 48kHz */
+-			snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, EMU_HANA_DEFCLOCK_48K );
+ 			/* Word Clock source, sync to ADAT input */
+ 			snd_emu1010_fpga_write(emu, EMU_HANA_WCLOCK,
+ 				EMU_HANA_WCLOCK_HANA_ADAT_IN | EMU_HANA_WCLOCK_1X );
+@@ -999,15 +991,62 @@ static int snd_emu1010_internal_clock_put(struct snd_kcontrol *kcontrol,
+         return change;
  }
  
- static void snd_emu10k1_playback_stop_voice(struct snd_emu10k1 *emu,
-@@ -1043,11 +1067,9 @@ static const struct snd_pcm_hardware snd_emu10k1_capture_efx =
- 				 SNDRV_PCM_INFO_RESUME |
- 				 SNDRV_PCM_INFO_MMAP_VALID),
- 	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
--	.rates =		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 | 
--				 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 | 
--				 SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
--	.rate_min =		44100,
--	.rate_max =		192000,
-+	.rates =		SNDRV_PCM_RATE_48000,
-+	.rate_min =		48000,
-+	.rate_max =		48000,
- 	.channels_min =		1,
- 	.channels_max =		16,
- 	.buffer_bytes_max =	(64*1024),
-@@ -1144,6 +1166,8 @@ static int snd_emu10k1_efx_playback_open(struct snd_pcm_substream *substream)
- 	runtime->private_data = epcm;
- 	runtime->private_free = snd_emu10k1_pcm_free_substream;
- 	runtime->hw = snd_emu10k1_efx_playback;
-+	if (emu->card_capabilities->emu_model)
-+		snd_emu1010_constrain_efx_rate(emu, runtime);
- 	err = snd_emu10k1_playback_set_constraints(runtime);
- 	if (err < 0) {
- 		kfree(epcm);
-@@ -1185,8 +1209,8 @@ static int snd_emu10k1_playback_open(struct snd_pcm_substream *substream)
+-static const struct snd_kcontrol_new snd_emu1010_internal_clock =
++static const struct snd_kcontrol_new snd_emu1010_clock_source =
+ {
+-	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE,
+-	.iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
+-	.name =         "Clock Internal Rate",
+-	.count =	1,
+-	.info =         snd_emu1010_internal_clock_info,
+-	.get =          snd_emu1010_internal_clock_get,
+-	.put =          snd_emu1010_internal_clock_put
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "Clock Source",
++	.count = 1,
++	.info = snd_emu1010_clock_source_info,
++	.get = snd_emu1010_clock_source_get,
++	.put = snd_emu1010_clock_source_put
++};
++
++static int snd_emu1010_clock_fallback_info(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_info *uinfo)
++{
++	static const char * const texts[2] = {
++		"44100", "48000"
++	};
++
++	return snd_ctl_enum_info(uinfo, 1, 2, texts);
++}
++
++static int snd_emu1010_clock_fallback_get(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
++
++	ucontrol->value.enumerated.item[0] = emu->emu1010.clock_fallback;
++	return 0;
++}
++
++static int snd_emu1010_clock_fallback_put(struct snd_kcontrol *kcontrol,
++					  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
++	unsigned int val = ucontrol->value.enumerated.item[0];
++	int change;
++
++	if (val >= 2)
++		return -EINVAL;
++	change = (emu->emu1010.clock_fallback != val);
++	if (change) {
++		emu->emu1010.clock_fallback = val;
++		snd_emu1010_fpga_write(emu, EMU_HANA_DEFCLOCK, 1 - val);
++	}
++	return change;
++}
++
++static const struct snd_kcontrol_new snd_emu1010_clock_fallback =
++{
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "Clock Fallback",
++	.count = 1,
++	.info = snd_emu1010_clock_fallback_info,
++	.get = snd_emu1010_clock_fallback_get,
++	.put = snd_emu1010_clock_fallback_put
+ };
+ 
+ static int snd_emu1010_optical_out_info(struct snd_kcontrol *kcontrol,
+@@ -2297,7 +2336,11 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
+ 		snd_emu1010_apply_sources(emu);
+ 
+ 		err = snd_ctl_add(card,
+-			snd_ctl_new1(&snd_emu1010_internal_clock, emu));
++			snd_ctl_new1(&snd_emu1010_clock_source, emu));
++		if (err < 0)
++			return err;
++		err = snd_ctl_add(card,
++			snd_ctl_new1(&snd_emu1010_clock_fallback, emu));
+ 		if (err < 0)
+ 			return err;
+ 
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index 550caefa0ce4..fab537788587 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -1185,7 +1185,7 @@ static int snd_emu10k1_playback_open(struct snd_pcm_substream *substream)
  		kfree(epcm);
  		return err;
  	}
--	if (emu->card_capabilities->emu_model && emu->emu1010.clock_source == 0)
--		sample_rate = 44100;
-+	if (emu->card_capabilities->emu_model)
-+		sample_rate = emu->emu1010.word_clock;
+-	if (emu->card_capabilities->emu_model && emu->emu1010.internal_clock == 0)
++	if (emu->card_capabilities->emu_model && emu->emu1010.clock_source == 0)
+ 		sample_rate = 44100;
  	else
  		sample_rate = 48000;
- 	err = snd_pcm_hw_rule_noresample(runtime, sample_rate);
-@@ -1236,11 +1260,11 @@ static int snd_emu10k1_capture_open(struct snd_pcm_substream *substream)
- 	runtime->private_data = epcm;
- 	runtime->private_free = snd_emu10k1_pcm_free_substream;
- 	runtime->hw = snd_emu10k1_capture;
-+	snd_emu10k1_constrain_capture_rates(emu, runtime);
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
- 				   &hw_constraints_capture_buffer_sizes);
- 	emu->capture_interrupt = snd_emu10k1_pcm_ac97adc_interrupt;
- 	emu->pcm_capture_substream = substream;
--	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hw_constraints_capture_rates);
- 	return 0;
- }
- 
-@@ -1313,51 +1337,25 @@ static int snd_emu10k1_capture_efx_open(struct snd_pcm_substream *substream)
- 	substream->runtime->private_data = epcm;
- 	substream->runtime->private_free = snd_emu10k1_pcm_free_substream;
- 	runtime->hw = snd_emu10k1_capture_efx;
--	runtime->hw.rates = SNDRV_PCM_RATE_48000;
--	runtime->hw.rate_min = runtime->hw.rate_max = 48000;
- 	if (emu->card_capabilities->emu_model) {
--		/* TODO
--		 * SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
--		 * SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000 |
--		 * SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000
--		 * rate_min = 44100,
--		 * rate_max = 192000,
--		 * Need to add mixer control to fix sample rate
--		 *                 
-+		snd_emu1010_constrain_efx_rate(emu, runtime);
-+		/*
- 		 * There are 32 mono channels of 16bits each.
- 		 * 24bit Audio uses 2x channels over 16bit,
- 		 * 96kHz uses 2x channels over 48kHz,
- 		 * 192kHz uses 4x channels over 48kHz.
- 		 * So, for 48kHz 24bit, one has 16 channels,
- 		 * for 96kHz 24bit, one has 8 channels,
- 		 * for 192kHz 24bit, one has 4 channels.
- 		 * 1010rev2 and 1616(m) cards have double that,
+@@ -1335,7 +1335,7 @@ static int snd_emu10k1_capture_efx_open(struct snd_pcm_substream *substream)
  		 * but we don't exceed 16 channels anyway.
  		 */
--#if 1
--		switch (emu->emu1010.clock_source) {
--		case 0:
--			/* For 44.1kHz */
--			runtime->hw.rates = SNDRV_PCM_RATE_44100;
--			runtime->hw.rate_min = runtime->hw.rate_max = 44100;
--			break;
--		case 1:
--			/* For 48kHz */
--			runtime->hw.rates = SNDRV_PCM_RATE_48000;
--			runtime->hw.rate_min = runtime->hw.rate_max = 48000;
--			break;
--		}
--#endif
- #if 0
- 		/* For 96kHz */
--		runtime->hw.rates = SNDRV_PCM_RATE_96000;
--		runtime->hw.rate_min = runtime->hw.rate_max = 96000;
- 		runtime->hw.channels_min = runtime->hw.channels_max = 4;
- #endif
- #if 0
- 		/* For 192kHz */
--		runtime->hw.rates = SNDRV_PCM_RATE_192000;
--		runtime->hw.rate_min = runtime->hw.rate_max = 192000;
- 		runtime->hw.channels_min = runtime->hw.channels_max = 2;
- #endif
- 		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
+ #if 1
+-		switch (emu->emu1010.internal_clock) {
++		switch (emu->emu1010.clock_source) {
+ 		case 0:
+ 			/* For 44.1kHz */
+ 			runtime->hw.rates = SNDRV_PCM_RATE_44100;
 -- 
 2.40.0.152.g15d061e6df
 
