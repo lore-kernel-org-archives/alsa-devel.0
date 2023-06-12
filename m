@@ -4,97 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF03FC7EE2E
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 18:03:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29106C7EE2F
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 18:53:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4EC61F1;
-	Mon, 12 Jun 2023 20:02:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4EC61F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2ECB4828;
+	Mon, 12 Jun 2023 20:53:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2ECB4828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686592989;
-	bh=v1SKKw5hi75/Uk50Jt3AiB4VgAKrNVx7wqorO4yeTL0=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1686596033;
+	bh=pnRmShH3zQPplLb9mvpVVNrWQAOBdcEg/Pe89/g7yo8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QC49WbSDGHCaeOk+wsmJ+Rwr3rCZFBYp3UbZCfWrOsfGAvhAuQaAvkCOQ4kcB/or4
-	 M3w0B5whEyQVaFT8Gv7EkvwDaJfCxSAJXRco7zo39jxGISURQr1vwYrALW0BzwrbLc
-	 sn/NoYWr2z7IingnncWYeg204LLr+cjIzKBvxEiA=
+	b=d+PVQWA2Fc7VaJxRtTPIYfv4jOOyiafwptMst0DVjnbei1WiKW04ogVB1M5sx4C1z
+	 DM//oOpMzqM/UwpomamJ8sWhzcCLZhrTwC6Y05wtaCTG/IMIGdkYysiuQVDUofaJIP
+	 n/t39sg4ApBesIuUpkGJNjjmVrkIbVJs1D4M8XaE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F3BDF80544; Mon, 12 Jun 2023 20:01:54 +0200 (CEST)
+	id 9FD61F8052E; Mon, 12 Jun 2023 20:52:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F7C6F80149;
-	Mon, 12 Jun 2023 20:01:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22A9AF800BA;
+	Mon, 12 Jun 2023 20:52:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57A86F80149; Mon, 12 Jun 2023 20:01:49 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 95D56F80149; Mon, 12 Jun 2023 20:52:31 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3216CF80130
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 20:01:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3216CF80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id E132FF800ED
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 20:52:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E132FF800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=k691v2RK
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 35CDOsMO023788;
-	Mon, 12 Jun 2023 13:01:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=0fhZSw8heUGKrKR9J9xBRt2ncINDfH8G5IqxRrkw4aE=;
- b=k691v2RKmsEmuHjfFAoWXHfCjEgpN8IYnhMaYczg9jNJkT+YPt4OgNAaq2kf7kJc0XhK
- 1Y7264YRfQi5e4Log6Vvgt3s/jUUlwRXoJLyvYZqO0evVoxnIOciXaZYjYQaa7gvxgKM
- q1uVcdNL/GAKj5YarkoGQJBoLqnGExaSx7nq9T/sTBh5re5Z+kxY3qrhZUGPcIV1It/Y
- PMrq3kQ89UgiYFQKxXGIofz2Ix68axxNwNMpkkG4JHybSr1fqs0nB/ndqaI7r4UHzbLr
- RX6RLo21DaEd0TVobJ/rF/RcdqXkvzwvuJZN3g7hT1iB/T4bUNGOdNfAdHJwTyYgs0Tm xA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3r4pk0a35w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Jun 2023 13:01:38 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Mon, 12 Jun
- 2023 19:01:36 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 12 Jun 2023 19:01:36 +0100
-Received: from [141.131.77.133] (unknown [141.131.77.133])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DA643475;
-	Mon, 12 Jun 2023 18:01:34 +0000 (UTC)
-Message-ID: <0d8d93ca-65fa-d0b4-e2e3-483c87711cf5@opensource.cirrus.com>
-Date: Mon, 12 Jun 2023 13:01:34 -0500
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ndlyxcr8
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C74C161FC1;
+	Mon, 12 Jun 2023 18:52:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97BCAC433D2;
+	Mon, 12 Jun 2023 18:52:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686595938;
+	bh=pnRmShH3zQPplLb9mvpVVNrWQAOBdcEg/Pe89/g7yo8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ndlyxcr8M5ZZZHhtDAKNpxVr7Y7goaKcu4uzsdw30OYeV6XVNvjqwpaJFKB8PymCy
+	 MQJmgL1rsrHjMdj9FKVLF9zf1TbsYeZm2/RHQNL1CfwhaC7wrdmSpA7DJMAPa952y1
+	 +AYPUMpXpztFp5l+ECrupKh+RAglfitV4CNENev2W3sPTwS45E5PoHqFcgJ965drjN
+	 /lTrJSYGFZYwzo930hShNSFJlOo++jz1Kndd1CSgKHixoT+p0UEay360mggpHhCWRm
+	 b1o6xfs/Zb9KJ3AvH5ryhE7cZNvZy6N834NzMluMoGD8RwfMlOog63P+Zb/pFugTK3
+	 dwv5gAhbDbHow==
+Date: Mon, 12 Jun 2023 19:52:13 +0100
+From: Mark Brown <broonie@kernel.org>
+To: YingKun Meng <mengyingkun@loongson.cn>
+Cc: lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org, loongarch@lists.linux.dev,
+	loongson-kernel@lists.loongnix.cn,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [ PATCH v2 1/3] ASoC: Add support for Loongson I2S controller
+Message-ID: <8b069919-664d-4329-9168-ec8f26fef647@sirena.org.uk>
+References: <20230612085318.3039485-1-mengyingkun@loongson.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.10.0
-Subject: Re: [PATCH 00/10] ASoC: Use maple tree for Cirrus Logic devices
-To: Mark Brown <broonie@kernel.org>,
-        James Schulman
-	<james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        "Richard
- Fitzgerald" <rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        =?UTF-8?Q?Martin_Povi=c5=a1er?= <povik+lin@cutebit.org>
-CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <asahi@lists.linux.dev>
-References: <20230609-asoc-cirrus-maple-v1-0-b806c4cbd1d4@kernel.org>
-Content-Language: en-US
-From: "Rhodes, David" <drhodes@opensource.cirrus.com>
-In-Reply-To: <20230609-asoc-cirrus-maple-v1-0-b806c4cbd1d4@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: xg50FgLF5dU4PJKCN9wkq7V8vgnMOFEd
-X-Proofpoint-GUID: xg50FgLF5dU4PJKCN9wkq7V8vgnMOFEd
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 6SKQQP4SFM7AIKBZE6OYH5HO4HPAOWFF
-X-Message-ID-Hash: 6SKQQP4SFM7AIKBZE6OYH5HO4HPAOWFF
-X-MailFrom: prvs=15273e91c8=drhodes@opensource.cirrus.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7mJvWglGipw14bY8"
+Content-Disposition: inline
+In-Reply-To: <20230612085318.3039485-1-mengyingkun@loongson.cn>
+X-Cookie: If it heals good, say it.
+Message-ID-Hash: Q3RGHUKPJDXHSHJIETMCY253VOKJE5T4
+X-Message-ID-Hash: Q3RGHUKPJDXHSHJIETMCY253VOKJE5T4
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6SKQQP4SFM7AIKBZE6OYH5HO4HPAOWFF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q3RGHUKPJDXHSHJIETMCY253VOKJE5T4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,14 +95,161 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 6/10/23 8:56 AM, Mark Brown wrote:
-> A lot of the Cirrus Logic devices only support single register
-> read/write operations so they get no benefit from using the rbtree cache
-> over the more modern maple tree cache, convert them to use maple tree.
-> 
 
-Acked-by: David Rhodes <david.rhodes@cirrus.com>
+--7mJvWglGipw14bY8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-David
+On Mon, Jun 12, 2023 at 04:53:18PM +0800, YingKun Meng wrote:
 
+> Loongson I2S controller is found on 7axxx/2kxxx chips from loongson,
+> it is a PCI device with two private DMA controllers, one for playback,
+> the other for capture.
+>=20
+> The driver supports the use of DTS or ACPI to describe device resources.
+
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202306060223.9hdivLrx-lkp@i=
+ntel.com/
+> Closes: https://lore.kernel.org/oe-kbuild-all/202306060320.Sphw0ihy-lkp@i=
+ntel.com/
+
+These don't really make sense for a new driver.
+
+> @@ -0,0 +1,213 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Loongson-2K I2S master mode driver
+> + *
+> + * Copyright (C) 2022 Loongson Technology Corporation Limited
+> + */
+
+Please make the entire comment a C++ one so things look more
+intentional.  You might also want to update the copyright year if there
+was any substantial work on the driver recently.
+
+> +		/* Enable master mode */
+> +		regmap_update_bits(i2s->regmap, LS_I2S_CTRL, I2S_CTRL_MASTER,
+> +				   I2S_CTRL_MASTER);
+> +		if (i2s->rev_id =3D=3D 1) {
+> +			ret =3D regmap_read_poll_timeout_atomic(i2s->regmap,
+> +						LS_I2S_CTRL, val,
+> +						val & I2S_CTRL_CLK_READY,
+> +						10, 2000);
+> +			if (ret < 0)
+> +				dev_warn(dai->dev, "wait BCLK ready timeout\n");
+> +		}
+
+Ideally you'd have a set_dai_fmt() operation and support both clock
+provider and consumer mode. =20
+
+> +	if (i2s->rev_id =3D=3D 0) {
+
+> +	} else if (i2s->rev_id =3D=3D 1) {
+
+> +	} else
+> +		dev_err(i2s->dev, "I2S revision invalid\n");
+> +
+
+This looks like a switch statement.
+
+> +static int loongson_i2s_set_dai_sysclk(struct snd_soc_dai *dai, int clk_=
+id,
+> +				       unsigned int freq, int dir)
+> +{
+> +	struct loongson_i2s *i2s =3D snd_soc_dai_get_drvdata(dai);
+> +
+> +	i2s->sysclk =3D freq;
+> +
+> +	return 0;
+> +}
+
+Should this be integrated with the clock API rather than just using the
+ASoC specific stuff - where does this sysclk come from?  I do note that
+the PCI driver appears to have a fixed clock...
+
+> +void loongson_i2s_init(struct loongson_i2s *i2s)
+> +{
+> +	if (i2s->rev_id =3D=3D 1) {
+> +		regmap_write(i2s->regmap, LS_I2S_CTRL, I2S_CTRL_RESET);
+> +		udelay(200);
+> +	}
+> +}
+
+What's this for?  I'd expect initialising the hardware to be handled
+internally within the driver but this is semi-exported?
+
+> diff --git a/sound/soc/loongson/loongson_i2s_pci.c b/sound/soc/loongson/l=
+oongson_i2s_pci.c
+> new file mode 100644
+> index 000000000000..f09713b560e9
+> --- /dev/null
+> +++ b/sound/soc/loongson/loongson_i2s_pci.c
+> @@ -0,0 +1,500 @@
+
+Please split the PCI driver into a separate patch to keep the individual
+reviews smaller.
+
+> +static int loongson_pcm_trigger(struct snd_soc_component *component,
+> +				struct snd_pcm_substream *substream, int cmd)
+> +{
+
+> +	switch (cmd) {
+
+> +	default:
+> +		ret =3D -EINVAL;
+> +	}
+
+Missing break; here.
+
+> +	/* initialize dma descriptor array */
+> +	mem_addr =3D runtime->dma_addr;
+> +	order_addr =3D prtd->dma_desc_arr_phy;
+> +	for (i =3D 0; i < num_periods; i++) {
+> +		desc =3D &prtd->dma_desc_arr[i];
+
+We didn't validate that the number of periods fits in the array.
+
+> +	if (num_periods > 0) {
+> +		desc =3D &prtd->dma_desc_arr[num_periods - 1];
+> +		desc->order =3D lower_32_bits(prtd->dma_desc_arr_phy | BIT(0));
+> +		desc->order_hi =3D upper_32_bits(prtd->dma_desc_arr_phy);
+> +	}
+
+This is always true, right?
+
+> +       ret =3D request_irq(dma_data->irq, loongson_pcm_dma_irq,
+> +                         IRQF_TRIGGER_HIGH, LS_I2S_DRVNAME, substream);
+
+Does it really make sense to request and free the interrupt when the
+stream is running?  It's generally better to just request the interrupt
+once during probe(), that way we know we've got all the resources we
+need.  If we do need to allocate/free all the time a comment explaining
+why would be good so people don't go trying to fix this.
+
+> +	ret =3D pci_request_region(pdev, BAR_NUM, LS_I2S_DRVNAME);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "request regions failed %d\n", ret);
+> +		return ret;
+> +	}
+
+pcim_iomap_regions()?  At the minute you'll free the region before devm
+frees the regmap which is probably harmless but not ideal.
+
+--7mJvWglGipw14bY8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSHaVwACgkQJNaLcl1U
+h9DJGAf9Ep6CwNQYredDySttL400B4S/REQ1oaOQqJw+0WmP0KmOF6PXeIQuDzAV
+zinJzrHhykdbNGHx6aW41IrCo8wxsctwRLlWQqfwzRcnGO0R8TnknoF1M39bLKWn
+A27hmnq0PZfvdWtRC3PhosiYhz+vav/1iU4fNxGyMHKYfTzFpZisJrOTO+xg40DI
+x+CKOEzpioj1QQHuOQQLGoGV3P9QXVsdkqRRG8mO2p7WgHsiIJSNpfvc/X0JmpqY
+O3YTCbzqbfst2o+QCJF7x06SLIQPg9j19MOFqX239VS+HGfnRITTvRQPTDMjrvL7
+FxbV/wCFf1KXQYFxyhrYLK3E3BIufw==
+=vj4u
+-----END PGP SIGNATURE-----
+
+--7mJvWglGipw14bY8--
