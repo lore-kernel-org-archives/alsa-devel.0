@@ -4,190 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9673C88CB2
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:35:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06011C88CB2
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:35:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1B4A850;
-	Mon, 12 Jun 2023 17:34:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1B4A850
+	by alsa0.perex.cz (Postfix) with ESMTPS id F28F785D;
+	Mon, 12 Jun 2023 17:34:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F28F785D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686584098;
-	bh=D+h6zmi1PwBN46LQ6PqhDOlK8bzw1EsX2G2MZRtDlS0=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1686584105;
+	bh=4+nRoO97l3EPbLIT35Co8UlFP4D3AzNTprsn+WeIHAE=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=NWDdtFsAdpAirpdGnVak03b+rpabpRE0iidQqj5Fy3XFQTzh1X+v2mUSn7WCxmQ8B
-	 72NPumtxeKLj4Aq91k/E2d5sX+hM93NVy8vRYM/wEoUk6wN9bcP0RRNrzkyjdGKRdf
-	 crjoNbQ4depWrnaWBKQvaNT6VOrLNb5hmSuirom4=
+	b=u1nfYVqBu6mQvhXipwD5+9FTKIO8X29Mlybw8iKoXS1TsDLIRwKp03aDhKUdAdM+8
+	 DxsOq3owbhJmV/+d2nQkQyxAhPX8Ez7mfUKmj2EkJ5xHppoSfrrc08UyJVbLQ2BkP/
+	 O0Dw+HcYlpGUGkizXRxuVSAAiXkZuG3oad2BBcFI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B8AEF805EF; Mon, 12 Jun 2023 17:32:12 +0200 (CEST)
+	id 01CC7F805F6; Mon, 12 Jun 2023 17:32:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B80AF805EA;
-	Mon, 12 Jun 2023 17:32:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7AF1F805EC;
+	Mon, 12 Jun 2023 17:32:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A899DF80132; Mon, 12 Jun 2023 11:02:14 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B34AF800BA
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 11:02:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B34AF800BA
-Received: from loongson.cn (unknown [10.180.13.124])
-	by gateway (Coremail) with SMTP id _____8AxEenN3oZkuJkDAA--.5858S3;
-	Mon, 12 Jun 2023 17:01:02 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.180.13.124])
-	by localhost.localdomain (Coremail) with SMTP id
- AQAAf8AxPMrM3oZkqmwVAA--.52803S4;
-	Mon, 12 Jun 2023 17:01:01 +0800 (CST)
-From: YingKun Meng <mengyingkun@loongson.cn>
-To: krzysztof.kozlowski+dt@linaro.org,
-	robh+dt@kernel.org,
-	conor+dt@kernel.org
-Cc: broonie@kernel.org,
-	lgirdwood@gmail.com,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	loongarch@lists.linux.dev,
-	loongson-kernel@lists.loongnix.cn,
-	Yingkun Meng <mengyingkun@loongson.cn>
-Subject: [ PATCH v2 3/3] ASoC: dt-bindings: Add support for Loongson audio
- card
-Date: Mon, 12 Jun 2023 17:00:58 +0800
-Message-Id: <20230612090058.3039546-1-mengyingkun@loongson.cn>
-X-Mailer: git-send-email 2.33.0
+	id 925DCF800BA; Mon, 12 Jun 2023 12:53:43 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id D6D14F800BA
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 12:53:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6D14F800BA
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
+ header.s=dk header.b=BkvTrXt7
+X-UUID: 5a1f80c6090f11eeb20a276fd37b9834-20230612
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
+ bh=HWQ9wrT35b6pkEnZ34pjf2szFkbwSXUpw/iZR2OP2Sg=;
+	b=BkvTrXt7qmssolIPIqsy99D/5EEBn1/gDglCxoFcMmSaxiXqkaQAFvt5RhdJ+KjU3Stfs+DqLSuzekLd65hfYiljRr1RBuTNjTZZtzKymv/ZEZ/OVDoRiNUj7vC3ON/etiwwaRv9N9WhPk6S+aaIKpB3LIGx/CJIzvwl/I67ghU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.26,REQID:a02e8225-0875-415c-8895-ac3693ae37df,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:cb9a4e1,CLOUDID:2b945a3e-7aa7-41f3-a6bd-0433bee822f3,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 5a1f80c6090f11eeb20a276fd37b9834-20230612
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
+ mailgw02.mediatek.com
+	(envelope-from <maso.huang@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 577519842; Mon, 12 Jun 2023 18:53:23 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 12 Jun 2023 18:53:22 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 12 Jun 2023 18:53:22 +0800
+From: Maso Hunag <maso.huang@mediatek.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Trevor Wu
+	<trevor.wu@mediatek.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>, Ren Zhijie
+	<renzhijie2@huawei.com>, Arnd Bergmann <arnd@arndb.de>, Allen-KH Cheng
+	<allen-kh.cheng@mediatek.com>, <alsa-devel@alsa-project.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+CC: Maso Huang <maso.huang@mediatek.com>
+Subject: [PATCH 0/7] ASoC: mediatek: Add support for MT79xx SoC
+Date: Mon, 12 Jun 2023 18:52:43 +0800
+Message-ID: <20230612105250.15441-1-maso.huang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxPMrM3oZkqmwVAA--.52803S4
-X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQAADGSFuYEEQQAWsH
-X-Coremail-Antispam: 1Uk129KBj93XoW7tF4fAFWfCrWUAFWUKr4xZrc_yoW8Kr15pw
-	s3C347Gr48t3W7C395ZFyxJw4fZasayFsrXr42q34UCFZ8Ka4Fqw4ak3WUu3W2kF1kJay7
-	uFyFkw18Gas3CwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUk529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVWxJr0_GcWln4kS14v26r1q6r43M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26rWY
-	6Fy7McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-	vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-	Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUnLID5UUUUU==
-X-MailFrom: mengyingkun@loongson.cn
+Content-Type: text/plain
+X-MailFrom: maso.huang@mediatek.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: FFDUGDZKZ23LOLF43R2DN2DWOHN7EGI3
-X-Message-ID-Hash: FFDUGDZKZ23LOLF43R2DN2DWOHN7EGI3
+Message-ID-Hash: 5GDTPQHCGPTKCPSURMWTTQ4SZOCQEYXM
+X-Message-ID-Hash: 5GDTPQHCGPTKCPSURMWTTQ4SZOCQEYXM
 X-Mailman-Approved-At: Mon, 12 Jun 2023 15:31:58 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FFDUGDZKZ23LOLF43R2DN2DWOHN7EGI3/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5GDTPQHCGPTKCPSURMWTTQ4SZOCQEYXM/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Yingkun Meng <mengyingkun@loongson.cn>
+From: Maso Huang <maso.huang@mediatek.com>
 
-The audio card uses loongson I2S controller present in
-7axxx/2kxxx chips to transfer audio data.
+This series of patches adds support for MediaTek AFE of MT79xx SoC.
+Patches are based on broonie tree "for-next" branch.
 
-On loongson platform, the chip has only one I2S controller.
+Maso Huang (7):
+  ASoC: mediatek: mt79xx: add common header
+  ASoC: mediatek: mt79xx: support audio clock control
+  ASoC: mediatek: mt79xx: add platform driver
+  ASoC: mediatek: mt79xx: support etdm in platform driver
+  ASoC: mediatek: mt79xx: add machine driver with wm8960
+  ASoC: dt-bindings: mediatek,mt79xx-wm8960: add mt79xx-wm8960 document
+  ASoC: dt-bindings: mediatek,mt79xx-afe: add audio afe document
 
-Signed-off-by: Yingkun Meng <mengyingkun@loongson.cn>
----
- .../sound/loongson,ls-audio-card.yaml         | 70 +++++++++++++++++++
- 1 file changed, 70 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
+ .../bindings/sound/mediatek,mt79xx-afe.yaml   | 102 +++
+ .../sound/mediatek,mt79xx-wm8960.yaml         |  53 ++
+ sound/soc/mediatek/Kconfig                    |  20 +
+ sound/soc/mediatek/Makefile                   |   1 +
+ sound/soc/mediatek/mt79xx/Makefile            |  10 +
+ sound/soc/mediatek/mt79xx/mt79xx-afe-clk.c    | 123 ++++
+ sound/soc/mediatek/mt79xx/mt79xx-afe-clk.h    |  18 +
+ sound/soc/mediatek/mt79xx/mt79xx-afe-common.h |  49 ++
+ sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c    | 608 ++++++++++++++++++
+ sound/soc/mediatek/mt79xx/mt79xx-dai-etdm.c   | 421 ++++++++++++
+ sound/soc/mediatek/mt79xx/mt79xx-reg.h        | 206 ++++++
+ sound/soc/mediatek/mt79xx/mt79xx-wm8960.c     | 185 ++++++
+ 12 files changed, 1796 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt79xx-afe.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt79xx-wm8960.yaml
+ create mode 100644 sound/soc/mediatek/mt79xx/Makefile
+ create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-afe-clk.c
+ create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-afe-clk.h
+ create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-afe-common.h
+ create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c
+ create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-dai-etdm.c
+ create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-reg.h
+ create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-wm8960.c
 
-diff --git a/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml b/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
-new file mode 100644
-index 000000000000..61e8babed402
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
-@@ -0,0 +1,70 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/loongson,ls-audio-card.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Loongson 7axxx/2kxxx ASoC audio sound card driver
-+
-+maintainers:
-+  - Yingkun Meng <mengyingkun@loongson.cn>
-+
-+description:
-+  The binding describes the sound card present in loongson
-+  7axxx/2kxxx platform. The sound card is an ASoC component
-+  which uses Loongson I2S controller to transfer the audio data.
-+
-+properties:
-+  compatible:
-+    const: loongson,ls-audio-card
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
-+
-+  mclk-fs:
-+    $ref: simple-card.yaml#/definitions/mclk-fs
-+
-+  cpu:
-+    description: Holds subnode which indicates cpu dai.
-+    type: object
-+    additionalProperties: false
-+    properties:
-+      sound-dai:
-+        maxItems: 1
-+    required:
-+      - sound-dai
-+
-+  codec:
-+    description: Holds subnode which indicates codec dai.
-+    type: object
-+    additionalProperties: false
-+    properties:
-+      sound-dai:
-+        maxItems: 1
-+    required:
-+      - sound-dai
-+
-+required:
-+  - compatible
-+  - model
-+  - mclk-fs
-+  - cpu
-+  - codec
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    sound {
-+        compatible = "loongson,ls-audio-card";
-+        model = "loongson-audio";
-+        mclk-fs = <512>;
-+
-+        cpu {
-+            sound-dai = <&i2s>;
-+        };
-+        codec {
-+             sound-dai = <&es8323>;
-+        };
-+    };
 -- 
-2.33.0
+2.18.0
 
