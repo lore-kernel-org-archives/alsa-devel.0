@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5967EC7EE25
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 13:29:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85875C63716
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 13:37:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4622820C;
-	Mon, 12 Jun 2023 15:29:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4622820C
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0C05820;
+	Mon, 12 Jun 2023 15:36:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0C05820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686576597;
-	bh=ZRE8YMXELZbkXIxKulEAu/J8bd6ASkHalzG0mnFEcLg=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=juANCpiI0ubnbR/GzsTFLtRo1pAH/4dxTF0r4X7lrqFs/NU+U9dhZgy6QYPgct4Ip
-	 +5VLhvH5zNUer7qw/OENDFV+V8GgkA6EerQOnWLXMCWnl7j4MKJhUnMnIN/4tmC27p
-	 +/VYdJvyWz8WevutjYDU5bbHr0q/WgRTR9XoWuSU=
+	s=default; t=1686577061;
+	bh=6t8SLEGkV+2LuUffPXlHIp83vOrBIwLaJMF1fy6qrmo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ix5m89+eGBKb+Zy1xOUKkTPc3U6TKQv7L+DUm/ehba6s7ECMJPn+MoqmtDYTZ4HKb
+	 XW+T49OPlCUwViW6dqQuE1vnev6XuR75fkLcyqps4HSicmJxtdnsU64YAELA8hHV8h
+	 yABaIwKI7Ny9lxkuR8XfeO3oyI2NQ3n+nzRuLgg8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 178F2F80132; Mon, 12 Jun 2023 15:28:36 +0200 (CEST)
+	id 2E091F80130; Mon, 12 Jun 2023 15:36:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58385F80132;
-	Mon, 12 Jun 2023 15:28:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB8B3F80132;
+	Mon, 12 Jun 2023 15:36:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C6CC1F80132; Mon, 12 Jun 2023 15:28:29 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 55AE6F80132; Mon, 12 Jun 2023 15:36:47 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 463F3F800BA
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 15:28:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 463F3F800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7FC5EF800ED
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 15:36:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FC5EF800ED
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=XLa05f3h;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ELokCdry
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=to/QjNsR
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 685782269E;
-	Mon, 12 Jun 2023 13:28:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1686576500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=1si6Ew2sISLNKEn9KyW5+4BCH2MJFnemqmY+jL/Fgoo=;
-	b=XLa05f3hpW9fir8uI+gexODpvQikE20MzO+zcHHmrRdKG4U8OOxflJpvTDtOXg/LuIkHVJ
-	qCTXs66sW68NqC2cYehzzrz/TGnlvu14BMNqkN0+NGB1SgYlkS1JIIn7iw0q3tT7QKUDls
-	xDPOWA+1IwMq+5g30NepjeRkF+pPo5k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1686576500;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=1si6Ew2sISLNKEn9KyW5+4BCH2MJFnemqmY+jL/Fgoo=;
-	b=ELokCdryZv3btgYRGygLoGz+FtIitMBXAbGQ3b/035mTIw8F/GFhr1uJnKYdWWRs8x2bKN
-	b0AvayLuT1M3FvCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4C9DE138EC;
-	Mon, 12 Jun 2023 13:28:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id r9vSEXQdh2QYBAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 12 Jun 2023 13:28:20 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Fix broken resume due to UAC3 power state
-Date: Mon, 12 Jun 2023 15:28:18 +0200
-Message-Id: <20230612132818.29486-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6FC5062959;
+	Mon, 12 Jun 2023 13:36:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 754D0C4339C;
+	Mon, 12 Jun 2023 13:36:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686576999;
+	bh=6t8SLEGkV+2LuUffPXlHIp83vOrBIwLaJMF1fy6qrmo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=to/QjNsRYu8mIPyhEBttCfHICSEZ1ZCL7V9KhsJIIk1PmYlxawzN6TRhxdgHCuNRS
+	 IaJ9dbbVGsiT5zRDYoFlSOu1gEYEA2pWauiQTsZl63cO6aiejasai/piMfGX/zU87Y
+	 +mkSpVhhA/4a5oq9JYP/VWvt+eM/QwGxhAWlGtdVRpTiNrn3fB3/NAzLDGlsGARf8J
+	 RiZcOLamRWgw54EVGUNqaJkykkbgEgqrzJusreiKQtd7NMbRJ41KWhKPzEHKgL8TIQ
+	 SZrGMEFaOSn2iQwbMZGjENGbl2XLZ6V+GIFEw3ZIxG7ALqU2PjELYWbBdCJZg3854P
+	 55/IpyjwitbQw==
+Date: Mon, 12 Jun 2023 14:36:33 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Patrick Lai <quic_plai@quicinc.com>
+Subject: Re: [PATCH v2 2/2] ASoC: codecs: wsa884x: Add WSA884x family of
+ speakers
+Message-ID: <bf81773c-8d9d-46bc-b9ba-db7b86600e3d@sirena.org.uk>
+References: <20230611102657.74714-1-krzysztof.kozlowski@linaro.org>
+ <20230611102657.74714-2-krzysztof.kozlowski@linaro.org>
+ <191859d3-42e3-4ef2-87ff-dd56864103f9@sirena.org.uk>
+ <421ddd6d-3938-027c-2099-57248a111831@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: U5VU4BSHY676VT27NGWBQADTLI6XDDAT
-X-Message-ID-Hash: U5VU4BSHY676VT27NGWBQADTLI6XDDAT
-X-MailFrom: tiwai@suse.de
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4W2AYxZZZ8GOZJ6I"
+Content-Disposition: inline
+In-Reply-To: <421ddd6d-3938-027c-2099-57248a111831@linaro.org>
+X-Cookie: If it heals good, say it.
+Message-ID-Hash: 6A3RP6Z2F2ZVFJ4JSDG3JXOCBXAGU74D
+X-Message-ID-Hash: 6A3RP6Z2F2ZVFJ4JSDG3JXOCBXAGU74D
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U5VU4BSHY676VT27NGWBQADTLI6XDDAT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6A3RP6Z2F2ZVFJ4JSDG3JXOCBXAGU74D/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,44 +108,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-As reported in the bugzilla below, the PM resume of a UAC3 device may
-fail due to the incomplete power state change, stuck at D1.  The
-reason is that the driver expects the full D0 power state change only
-at hw_params, while the normal PCM resume procedure doesn't call
-hw_params.
 
-For fixing the bug, we add the same power state update to D0 at the
-prepare callback, which is certainly called by the resume procedure.
+--4W2AYxZZZ8GOZJ6I
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Note that, with this change, the power state change in the hw_params
-becomes almost redundant, since snd_usb_hw_params() doesn't touch the
-parameters (at least it tires so).  But dropping it is still a bit
-risky (e.g. we have the media-driver binding), so I leave the D0 power
-state change in snd_usb_hw_params() as is for now.
+On Mon, Jun 12, 2023 at 09:25:44AM +0200, Krzysztof Kozlowski wrote:
+> On 11/06/2023 13:57, Mark Brown wrote:
+> > On Sun, Jun 11, 2023 at 12:26:57PM +0200, Krzysztof Kozlowski wrote:
 
-Fixes: a0a4959eb4e9 ("ALSA: usb-audio: Operate UAC3 Power Domains in PCM callbacks")
-Cc: <stable@vger.kernel.org>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=217539
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/pcm.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> >> +	{ WSA884X_OTP_REG_40,			0x00 },
+> >> +	{ WSA884X_OTP_REG_41,			0x00 },
+> >> +	{ WSA884X_OTP_REG_63,			0x40 },
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index eec5232f9fb2..08bf535ed163 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -650,6 +650,10 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
- 		goto unlock;
- 	}
- 
-+	ret = snd_usb_pcm_change_state(subs, UAC3_PD_STATE_D0);
-+	if (ret < 0)
-+		goto unlock;
-+
-  again:
- 	if (subs->sync_endpoint) {
- 		ret = snd_usb_endpoint_prepare(chip, subs->sync_endpoint);
--- 
-2.35.3
+> > These appear to be OTP data which suggests that they shouldn't have
+> > defaults either since they can be programmed.
 
+> Just to be clear - I don't have access to datasheet so I don't know what
+> are these. The downstream driver actually initializes (writes to) two
+> OTP registers - 38 and 40.
+
+That's...  counterintuitive given the naming.
+
+> >> +static bool wsa884x_readonly_register(struct device *dev, unsigned int reg)
+> >> +{
+> >> +	switch (reg) {
+
+> > In general the read only registers probably shouldn't have defaults...
+
+> For the case when regmap is being read before device enumerates (thus
+> synced)?
+
+If you're reading read only registers from the cache defaults like that
+you may as well cut out the middle man and not bother parsing the
+register at all - the value is just hard coded.  Either power up the
+device to find out what the values are or use the values directly.
+
+> >> +	/* Speaker mode by default */
+> >> +	{ WSA884X_DRE_CTL_0, 0x7 << WSA884X_DRE_CTL_0_PROG_DELAY_SHIFT },
+> >> +	{ WSA884X_CLSH_CTL_0, (0x37 & ~WSA884X_CLSH_CTL_0_DLY_CODE_MASK) |
+> >> +			      (0x6 << WSA884X_CLSH_CTL_0_DLY_CODE_SHIFT) },
+> >> +	{ WSA884X_CLSH_SOFT_MAX, 0xff },
+
+> > Why not just leave as the chip default?
+
+> Sincerely, I don't know. Without any documentation, I am relying
+> entirely on downstream driver which has some code like this. I don't
+> know whether some parts here make sense only for downstream case or
+> shall be applicable also for upstream.
+
+This sounds like someone hard coding their use case TBH.
+
+--4W2AYxZZZ8GOZJ6I
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSHH2AACgkQJNaLcl1U
+h9CaPwf/aX9WQEFcA6zXSh74pvL2X9EgjCIw0+zTNqo4m9a4OWMHcrlXGqKsi7pm
+b/kdJ53Asst3GGbTO+2V6+P3WctJRkxgrZRIswHYUfJVuZRwol07nq2v1T+2qu4l
+zPPqa9TNf7WOFJpm4xTEAD12CZsGeNUo8WSCoCR7qotMmqwUA2ZIqp7HsOzHfr2N
+C/zvaFTnotbGn73s+oZE6wqtQWF8GGXCu5wMcqGvGMHoxgU6MXcwwRFT3xXz0TkD
+j4fy8QoU7907ARX0cy6fMJEQtiZjrg41DJxkIY3GPGDJAS7YUdnI85/44YHga9EC
+ePr9Kxof5jGBxa7rDk0NVSwFtNFbyA==
+=AnsO
+-----END PGP SIGNATURE-----
+
+--4W2AYxZZZ8GOZJ6I--
