@@ -4,90 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E6B8C7EE2E
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 19:07:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D1FCC88CB2
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 19:07:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9B96829;
-	Mon, 12 Jun 2023 21:06:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9B96829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97EBF828;
+	Mon, 12 Jun 2023 21:07:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97EBF828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686596851;
-	bh=q13GFWCmLm1MudRhPtmwrMPvjYSVl9+NylXtT1ZBIFA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1686596877;
+	bh=+2CAjCfuiSvAQl5TXc8jdaS4YZBtxrP4Iq6jzt/7FnU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eEyiEq/KM+f95btd9C+hcMaPiESou/NWVutHp+SigM2RdWzA3H49dDNfh8f5qBIfi
-	 MvfRkAuPs/Njf6z0A6eNYT9Kh4IHaCbqYl26FS9eK29Inb7CKwJE8vSDznJfeGAN8I
-	 xmHH5ksQ7sRvAbU5wcpY1fg2YK0OstcUqiWNivzo=
+	b=cKJi3WE4VnP6RgvIm0SmSghL237SDux3K59M1RLgDTQzM0WjfpbsMvEzwJeld0YtA
+	 uJt30GCKegNgwcjHOupv7tABruG0LNtvY5TrCVqJIqjNB29ZcAAnWOQSOjq5+AzfRA
+	 Zpwud0H+saTapggavN2gQqrgWe2vZOD2uAceYxBs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4FCBF800ED; Mon, 12 Jun 2023 21:06:10 +0200 (CEST)
+	id 88E06F80552; Mon, 12 Jun 2023 21:06:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1250DF800ED;
-	Mon, 12 Jun 2023 21:06:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F78CF80563;
+	Mon, 12 Jun 2023 21:06:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 23EAEF80155; Mon, 12 Jun 2023 21:06:06 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 374DDF80563; Mon, 12 Jun 2023 21:06:29 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0DB1CF800ED
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 21:05:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DB1CF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5AD58F80552
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 21:06:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AD58F80552
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=CiLWfAow
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686596761; x=1718132761;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=q13GFWCmLm1MudRhPtmwrMPvjYSVl9+NylXtT1ZBIFA=;
-  b=CiLWfAow9dl408bSh8hmt7St0ZQUFbOt1CUJiFEDF5sy5DQd5LaUcEWc
-   qdxyJMVx9nSIcaB5imX/YS3jf3attp6YydjD28q80iHHuK3cb01RRKi1X
-   vXVNOsgeJx5Hn4n6Zu1jjwaHqihWXG29CPOXhqE+0c5HryR9CKjfKf0QX
-   OP6l3TksyY7KpRtr7yxidQBMpgS561yYCs+e3QCprbygVLEJYUfJpMg8a
-   OpR4kyXf/eZP10h249+Fh4XwDmzOcFitmA+UwcTEk1i6yX8Yx+npzi/wG
-   4RHug5tLvS4Yw7RRfS9mk6ku0+nemHQ2SiFyLfzKYfw2j7ZUyMv5Gx02b
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10739"; a="338499167"
-X-IronPort-AV: E=Sophos;i="6.00,236,1681196400";
-   d="scan'208";a="338499167"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jun 2023 12:05:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10739"; a="776503213"
-X-IronPort-AV: E=Sophos;i="6.00,236,1681196400";
-   d="scan'208";a="776503213"
-Received: from atulpuri-mobl1.amr.corp.intel.com (HELO [10.212.234.150])
- ([10.212.234.150])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jun 2023 12:05:56 -0700
-Message-ID: <0dbd1c24-0006-7956-9b82-780c7f005927@linux.intel.com>
-Date: Mon, 12 Jun 2023 13:06:19 -0500
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=fuEwoXIT
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AD0F862014;
+	Mon, 12 Jun 2023 19:06:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B55EAC433EF;
+	Mon, 12 Jun 2023 19:06:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686596784;
+	bh=+2CAjCfuiSvAQl5TXc8jdaS4YZBtxrP4Iq6jzt/7FnU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fuEwoXIT6KsRx/x8OU1vcGkN+5jlLj2A1GBzDyfg7BY/fXV2BjY7cYa84QwjEKLnm
+	 VOBeUJILFwZjWfST+Wq14X/hAJLHUc9+QooZ+M8Z41mfUHSxnBztJ0B0S7ObT45U+g
+	 u6NrgVRSSFWNkXT0ARLZLMQ1yYYK/ieAYU+CdX0PV6f9pgxcQ5oY/gxnJjxz5oeDYj
+	 jGwqCkDYuHJq8QzmzD4gLW5U8gNvwbhv/VWEwx5tktuIgwl2E29H4h7rNu+fwk7qU8
+	 2zUEuHR8KJm8AhCvG7A4fs4uEDMgN0+lo7Z3dJrSkdFifK4ZxvBFsI5J42BijoA/NJ
+	 HyZMuo8m7DXzg==
+Date: Mon, 12 Jun 2023 20:06:19 +0100
+From: Mark Brown <broonie@kernel.org>
+To: YingKun Meng <mengyingkun@loongson.cn>
+Cc: lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org, loongarch@lists.linux.dev,
+	loongson-kernel@lists.loongnix.cn
+Subject: Re: [ PATCH v2 2/3] ASoC: loongson: Add Loongson ASoC Sound Card
+ Support
+Message-ID: <1568e064-606e-4f56-951f-429a87a3a2d9@sirena.org.uk>
+References: <20230612090046.3039532-1-mengyingkun@loongson.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [PATCH V4 4/9] ASoC: amd: ps: add SoundWire dma driver dma ops
-Content-Language: en-US
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com, Mastan.Katragadda@amd.com,
- Arungopal.kondaveeti@amd.com, mario.limonciello@amd.com,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
- open list <linux-kernel@vger.kernel.org>
-References: <20230612095903.2113464-1-Vijendar.Mukunda@amd.com>
- <20230612095903.2113464-5-Vijendar.Mukunda@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230612095903.2113464-5-Vijendar.Mukunda@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: K45AFB2VBUMBINXYBPLDEV3HEWK5NUQW
-X-Message-ID-Hash: K45AFB2VBUMBINXYBPLDEV3HEWK5NUQW
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="JmH6MnoyxZ+mPA1w"
+Content-Disposition: inline
+In-Reply-To: <20230612090046.3039532-1-mengyingkun@loongson.cn>
+X-Cookie: If it heals good, say it.
+Message-ID-Hash: VG4LXPL4G3PYMZNVMQB34Z52ZGT2KAZQ
+X-Message-ID-Hash: VG4LXPL4G3PYMZNVMQB34Z52ZGT2KAZQ
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K45AFB2VBUMBINXYBPLDEV3HEWK5NUQW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VG4LXPL4G3PYMZNVMQB34Z52ZGT2KAZQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,129 +95,38 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-> +#define SDW_PLAYBACK_MIN_NUM_PERIODS    2
-> +#define SDW_PLAYBACK_MAX_NUM_PERIODS    8
-> +#define SDW_PLAYBACK_MAX_PERIOD_SIZE    8192
+--JmH6MnoyxZ+mPA1w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-that's a fairly small max period. That's 21ms for 2ch S32_LE 48kHz.
+On Mon, Jun 12, 2023 at 05:00:46PM +0800, YingKun Meng wrote:
 
-Does this come from specific limitations or is this an arbitrary number?
+> +	if (ls_card->mclk_fs) {
+> +		mclk = ls_card->mclk_fs * params_rate(params);
+> +		ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
+> +					     SND_SOC_CLOCK_OUT);
+> +		if (ret < 0) {
+> +			dev_err(codec_dai->dev, "cpu_dai clock not set\n");
+> +			return ret;
+> +		}
 
-A comment on this wouldn't hurt.
+Does this need to be in the machine driver - this isn't configuring an
+external clock, it's just within the SoC, so presumably the driver for
+the SoC DAI can just set itself up.
 
-> +static u32 sdw0_dma_enable_reg[ACP63_SDW0_DMA_MAX_STREAMS] = {
-> +	ACP_SW0_AUDIO0_TX_EN,
-> +	ACP_SW0_AUDIO1_TX_EN,
-> +	ACP_SW0_AUDIO2_TX_EN,
-> +	ACP_SW0_AUDIO0_RX_EN,
-> +	ACP_SW0_AUDIO1_RX_EN,
-> +	ACP_SW0_AUDIO2_RX_EN,
-> +};
-> +
-> +static u32 sdw1_dma_enable_reg[ACP63_SDW1_DMA_MAX_STREAMS] = {
-> +	ACP_SW1_AUDIO1_TX_EN,
-> +	ACP_SW1_AUDIO1_RX_EN,
-> +};
+--JmH6MnoyxZ+mPA1w
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Still no explanation as to why SDW0 indices start at zero and SDW1
-indices start at one?
+-----BEGIN PGP SIGNATURE-----
 
-> +
-> +static const struct snd_pcm_hardware acp63_sdw_hardware_playback = {
-> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
-> +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> +		SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-> +		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
-> +	.formats = SNDRV_PCM_FMTBIT_S16_LE |  SNDRV_PCM_FMTBIT_S8 |
-> +		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
-> +	.channels_min = 2,
-> +	.channels_max = 2,
-> +	.rates = SNDRV_PCM_RATE_48000,
-> +	.rate_min = 48000,
-> +	.rate_max = 48000,
-> +	.buffer_bytes_max = SDW_PLAYBACK_MAX_NUM_PERIODS * SDW_PLAYBACK_MAX_PERIOD_SIZE,
-> +	.period_bytes_min = SDW_PLAYBACK_MIN_PERIOD_SIZE,
-> +	.period_bytes_max = SDW_PLAYBACK_MAX_PERIOD_SIZE,
-> +	.periods_min = SDW_PLAYBACK_MIN_NUM_PERIODS,
-> +	.periods_max = SDW_PLAYBACK_MAX_NUM_PERIODS,
-> +};
-> +
-> +static const struct snd_pcm_hardware acp63_sdw_hardware_capture = {
-> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
-> +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> +		SNDRV_PCM_INFO_MMAP |
-> +		SNDRV_PCM_INFO_MMAP_VALID |
-> +		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
-> +	.formats = SNDRV_PCM_FMTBIT_S16_LE |  SNDRV_PCM_FMTBIT_S8 |
-> +		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
-> +	.channels_min = 2,
-> +	.channels_max = 2,
-> +	.rates = SNDRV_PCM_RATE_48000,
-> +	.rate_min = 48000,
-> +	.rate_max = 48000,
-> +	.buffer_bytes_max = SDW_CAPTURE_MAX_NUM_PERIODS * SDW_CAPTURE_MAX_PERIOD_SIZE,
-> +	.period_bytes_min = SDW_CAPTURE_MIN_PERIOD_SIZE,
-> +	.period_bytes_max = SDW_CAPTURE_MAX_PERIOD_SIZE,
-> +	.periods_min = SDW_CAPTURE_MIN_NUM_PERIODS,
-> +	.periods_max = SDW_CAPTURE_MAX_NUM_PERIODS,
-> +};
+iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSHbKoACgkQJNaLcl1U
+h9DjFQf3dlnL5S14TJo0QE32BmeVlgoqhFL9wxd3gu8bQCVhB6nAC9Bf3q/HRd5T
+fvkq/Qtuv1n4VCXt28d1SboHdkcwwbyeNFvR2UE+c9yVumPy5VHXHNfsdRCJlDn0
+dkrA+p2IG6SrGIKeyhTv4na9U5psScEjaTMqfTyk0DmlQO1IPRhpEi9/TI8VvRE4
+DR9zoE5bPwbnMw68HEOS1GJQaHvdfDVWV4lKAvB4SpUqdHmpe871o33+2dfsHi9w
+XCcqPyi/b3NwpA2/7r58meKwtroWgNVK3UXBrzQMwHFM1cEItj7b7WEIctIZrFxl
+Le5GHVG0fRO4igXwrRUArFACZFhI
+=PFnV
+-----END PGP SIGNATURE-----
 
-> +static int acp63_sdw_dma_open(struct snd_soc_component *component,
-> +			      struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_pcm_runtime *runtime;
-> +	struct acp_sdw_dma_stream *stream;
-> +	struct snd_soc_dai *cpu_dai;
-> +	struct amd_sdw_manager *amd_manager;
-> +	struct snd_soc_pcm_runtime *prtd = substream->private_data;
-> +	int ret;
-> +
-> +	runtime = substream->runtime;
-> +	cpu_dai = asoc_rtd_to_cpu(prtd, 0);
-> +	amd_manager = snd_soc_dai_get_drvdata(cpu_dai);
-> +	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
-> +	if (!stream)
-> +		return -ENOMEM;
-> +
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		runtime->hw = acp63_sdw_hardware_playback;
-> +	else
-> +		runtime->hw = acp63_sdw_hardware_capture;
-> +	ret = snd_pcm_hw_constraint_integer(runtime,
-> +					    SNDRV_PCM_HW_PARAM_PERIODS);
-> +	if (ret < 0) {
-> +		dev_err(component->dev, "set integer constraint failed\n");
-> +		kfree(stream);
-> +		return ret;
-> +	}
-
-it's not clear to me why you have to add this specific constraint, isn't
-this checked already with the sdw_hardware_playback information.
-
-> +static u64 acp63_sdw_get_byte_count(struct acp_sdw_dma_stream *stream, void __iomem *acp_base)
-> +{
-> +	union acp_sdw_dma_count byte_count;
-> +	u32 pos_low_reg, pos_high_reg;
-> +
-> +	byte_count.bytescount = 0;
-> +	switch (stream->instance) {
-> +	case ACP_SDW0:
-> +		pos_low_reg = sdw0_dma_ring_buf_reg[stream->stream_id].pos_low_reg;
-> +		pos_high_reg = sdw0_dma_ring_buf_reg[stream->stream_id].pos_high_reg;
-> +		break;
-> +	case ACP_SDW1:
-> +		pos_low_reg = sdw1_dma_ring_buf_reg[stream->stream_id].pos_low_reg;
-> +		pos_high_reg = sdw1_dma_ring_buf_reg[stream->stream_id].pos_high_reg;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-
-returning -EINVAL as a u64 doesn't seem quite right to me?
-
-> +	}
-> +	if (pos_low_reg) {
-> +		byte_count.bcount.high = readl(acp_base + pos_high_reg);
-> +		byte_count.bcount.low = readl(acp_base + pos_low_reg);
-> +	}
-> +	return byte_count.bytescount;
-> +}
+--JmH6MnoyxZ+mPA1w--
