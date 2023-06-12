@@ -4,146 +4,152 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88BFFC88CB6
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:33:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6447BC88CB2
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:33:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5A35828;
-	Mon, 12 Jun 2023 17:32:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5A35828
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4EE284A;
+	Mon, 12 Jun 2023 17:32:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4EE284A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686583998;
-	bh=YOCeZRHZqvMTlmLynbfsUjy5R9B0ftEMm2ePkmva+38=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=d/t9LbhTSkIw33i4WC+q4EM0A1DZSleQ8JfWlAr3IBuqzT5p/8FkjHc+mIHbDQXmB
-	 YlrFbIji6Tvq+khGovk4vQAJr48zX+v7fGPMd6hj9rko740qm5h12bZ6M3lKbZfEDb
-	 6fv3Rc9RtLCvyz2J3X4oRxivz3iCDbnZFUJV9jmE=
+	s=default; t=1686584017;
+	bh=JvIFM7O4H0lF+ksxpzCLpBiLELyf+8ihLvIrguVvSKk=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=J80RzQOvig8EBgLNLxHiLZWgpr1v1cseip7+FRaZ/VsLoZQSIHeVm5BVHiZOlVSAP
+	 qdrpeI1NaJbYIaxLbW2BGirQMnfqYRAxUB86skjQ6opRJtHu8ENEbHsBRMso9q+Kcm
+	 6Nquzi//qi5diCEu302RLLN7HgwD+5bg+tq5Ab6k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB00BF805AE; Mon, 12 Jun 2023 17:31:29 +0200 (CEST)
+	id BD462F80552; Mon, 12 Jun 2023 17:31:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D73DF805A8;
-	Mon, 12 Jun 2023 17:31:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A47EF80551;
+	Mon, 12 Jun 2023 17:31:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 285F1F80548; Mon, 12 Jun 2023 10:13:04 +0200 (CEST)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2AC27F800BA
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 10:12:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AC27F800BA
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=TRzCPGz+
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-3f6d38a140bso29084155e9.1
-        for <alsa-devel@alsa-project.org>;
- Mon, 12 Jun 2023 01:12:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1686557572; x=1689149572;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gc+miDzZceXCLueDQlgChLb47zA+DR3zS3KkscEcQ/E=;
-        b=TRzCPGz+Dq58XxB3JdEWqYt8+rvlmUpC+39cO6M1Y40MdAkZ7QLtwzQHTtg66aAPIC
-         k0VSpTG+VNmvOh0ERZepO44jfP1iLTjuSEUKtnNhB5x3k01TuG0A3CykBRTOzog9+rbz
-         HPmDlpujfiOgPajTRfAgS3aviuOIGZreHnEyPL59pXWhbYoePoVYp6cIjgcgsHZ+bNnp
-         X1i5xQJfEPL9DSy9CKB6aqHbOkVqc4XvLTpwFUZGSCX0Gohgw5BoIydC7Y0qs1jKyvDw
-         rwIarQnRitax1WzUnhRN8ntEbpBWEtk75snkv+3sxEoCMZl6vt9yi5Ywca2Q08w7b6dx
-         2qKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686557572; x=1689149572;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gc+miDzZceXCLueDQlgChLb47zA+DR3zS3KkscEcQ/E=;
-        b=GLuVFIyUneJGJpCTvwG4dlPWG5WB868Xt4lWtEet/W6+KBv3b2Xmo51nfs2RVP1caY
-         9c8SBOqej4TwVOkBiQA1JHakuBz0LkcoblVTxJNdlBUtRtjUnVobBRwRQlIB56QlXZIs
-         fhD4WM0gVAUquF7K+pBStSDEf6lT+lcYc5NCB4I6TQv70t0yM0zzCxKiGEDfPa+a9T9F
-         6OljuTH2qHI1+DvVXkyHg48vRY0PY2Oz2Qi1HwEpEWTq3jJdQ0TZtQe4GcGUFz675Fnm
-         hXQ74NnvrDdydqO4dTYyff6rZ7iFPW0s4sVhKEkQE/gbCDmQOJ8DG0BFUeLDh4n/4X4X
-         ezCw==
-X-Gm-Message-State: AC+VfDyj4lSaaX+PMxXFhbe3duzQkmRZlgqlc/tY00k+UN/5kgtupy23
-	i2Yq0anumpQ969Lu7E13+0PgLQ==
-X-Google-Smtp-Source: 
- ACHHUZ62clwI1bDc8gob+L8cRFqX7RG2mHcT69nqtEtI1HNgVVz1bnuC3Biqy4NvHzcY8XnVdYQGwQ==
-X-Received: by 2002:a1c:7718:0:b0:3f7:e660:cdc5 with SMTP id
- t24-20020a1c7718000000b003f7e660cdc5mr6736284wmi.9.1686557571903;
-        Mon, 12 Jun 2023 01:12:51 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id
- v18-20020adfebd2000000b0030789698eebsm11686312wrn.89.2023.06.12.01.12.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jun 2023 01:12:49 -0700 (PDT)
-Date: Mon, 12 Jun 2023 11:12:45 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Ricardo Ribalda Delgado <ribalda@chromium.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, stable@kernel.org
-Subject: Re: [PATCH] ASoC: mediatek: mt8173: Fix error path
-Message-ID: <178ec977-5be3-4b2a-bb24-1286be68baf2@kadam.mountain>
-References: <20230612-mt8173-fixup-v1-1-81f5c90316d1@chromium.org>
+	id 86D0BF80132; Mon, 12 Jun 2023 10:52:03 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by alsa1.perex.cz (Postfix) with ESMTP id C2459F800BA
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 10:51:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2459F800BA
+Received: from loongson.cn (unknown [10.180.13.124])
+	by gateway (Coremail) with SMTP id _____8AxHuuk3IZkVZgDAA--.7859S3;
+	Mon, 12 Jun 2023 16:51:48 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.180.13.124])
+	by localhost.localdomain (Coremail) with SMTP id
+ AQAAf8CxXMqj3IZkl2cVAA--.53102S4;
+	Mon, 12 Jun 2023 16:51:47 +0800 (CST)
+From: YingKun Meng <mengyingkun@loongson.cn>
+To: broonie@kernel.org,
+	lgirdwood@gmail.com
+Cc: krzysztof.kozlowski+dt@linaro.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	loongarch@lists.linux.dev,
+	loongson-kernel@lists.loongnix.cn,
+	YingKun Meng <mengyingkun@loongson.cn>
+Subject: [ PATCH v2 0/3] Add Loongson I2S controller support
+Date: Mon, 12 Jun 2023 16:50:48 +0800
+Message-Id: <20230612085048.3039471-1-mengyingkun@loongson.cn>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230612-mt8173-fixup-v1-1-81f5c90316d1@chromium.org>
-X-MailFrom: dan.carpenter@linaro.org
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxXMqj3IZkl2cVAA--.53102S4
+X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQAADGSFuYEEQQAGsX
+X-Coremail-Antispam: 1Uk129KBj93XoWxJr4fXF1UKr1ftw1fCr17Arc_yoW8Zw4xpa
+	nxC393WFW5tF4ayFn3tFy8JrWrAryrCFsxJanrX34UGr9Fv3WUu343tF15ZFW3CryUKFyq
+	9ry8G3y8G3ZxG3XCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE
+	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j1YL9UUUUU=
+X-MailFrom: mengyingkun@loongson.cn
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RYFMDX32ZNWEKC53Z5FIKNON4O2DXWP6
-X-Message-ID-Hash: RYFMDX32ZNWEKC53Z5FIKNON4O2DXWP6
-X-Mailman-Approved-At: Mon, 12 Jun 2023 15:31:25 +0000
+Message-ID-Hash: X6AWYAHIQDPNQ7XEDKIS4APDEKFQEBUF
+X-Message-ID-Hash: X6AWYAHIQDPNQ7XEDKIS4APDEKFQEBUF
+X-Mailman-Approved-At: Mon, 12 Jun 2023 15:31:33 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RYFMDX32ZNWEKC53Z5FIKNON4O2DXWP6/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X6AWYAHIQDPNQ7XEDKIS4APDEKFQEBUF/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jun 12, 2023 at 09:49:32AM +0200, Ricardo Ribalda Delgado wrote:
-> @@ -1175,14 +1179,11 @@ static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_cleanup_components;
->  
-> -	irq_id = platform_get_irq(pdev, 0);
-> -	if (irq_id <= 0)
-> -		return irq_id < 0 ? irq_id : -ENXIO;
->  	ret = devm_request_irq(afe->dev, irq_id, mt8173_afe_irq_handler,
->  			       0, "Afe_ISR_Handle", (void *)afe);
->  	if (ret) {
->  		dev_err(afe->dev, "could not request_irq\n");
-> -		goto err_pm_disable;
-> +		goto err_cleanup_components;
+Hi all,
 
-Hm...  I hadn't noticed that.  You're right, but I don't think your
-patch goes far enough.  I think everything after the first
-successful call to snd_soc_add_component() should be goto
-err_cleanup_components;
+This patchset adds support for Loongson I2S controller, and
+introduce a ASoC machine driver for loongson platform.
 
-But I am not 100% sure.
+The Loongson I2S controller is available on Loongson
+7a2000/2k2000 chips, works as a PCI device. It has two
+private DMA controllers used to playback and capture.
+Each DMA controller has one channel.
 
-regards,
-dan carpenter
+The ASoC machine driver adds support for audio device which
+using loongson I2S controller to tranfser the audio data.
+The audio device uses "PRP0001" as its ACPI device ID, which
+provides a means to use the existing DT-compatible device
+identification in ACPI.
 
->  	}
->  
+
+Thanks.
+
+---
+v2:
+* Use ACPI bindings to reference I2S and codec nodes.
+* Add 'required' restriction for sound-dai property in
+  dt-bindings.
+* Fix build errors from lkp@intel.com.
+* Replace pci_xxx() APIs with pcim_xxx() APIs.
+* mirror changes in log printing.
+
+v1:
+* Add support for Loongson I2S controller.
+
+Yingkun Meng (3):
+  ASoC: Add support for Loongson I2S controller
+  ASoC: loongson: Add Loongson ASoC Sound Card Support
+  ASoC: dt-bindings: Add support for Loongson audio card
+
+ .../sound/loongson,ls-audio-card.yaml         |  70 +++
+ sound/soc/Kconfig                             |   1 +
+ sound/soc/Makefile                            |   1 +
+ sound/soc/loongson/Kconfig                    |  26 +
+ sound/soc/loongson/Makefile                   |   8 +
+ sound/soc/loongson/loongson_card.c            | 237 +++++++++
+ sound/soc/loongson/loongson_i2s.c             | 213 ++++++++
+ sound/soc/loongson/loongson_i2s.h             |  70 +++
+ sound/soc/loongson/loongson_i2s_pci.c         | 500 ++++++++++++++++++
+ 9 files changed, 1126 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
+ create mode 100644 sound/soc/loongson/Kconfig
+ create mode 100644 sound/soc/loongson/Makefile
+ create mode 100644 sound/soc/loongson/loongson_card.c
+ create mode 100644 sound/soc/loongson/loongson_i2s.c
+ create mode 100644 sound/soc/loongson/loongson_i2s.h
+ create mode 100644 sound/soc/loongson/loongson_i2s_pci.c
+
+
+base-commit: 62a97bea5cce5317d6d7630f7bcf0cdf5333e269
+-- 
+2.33.0
 
