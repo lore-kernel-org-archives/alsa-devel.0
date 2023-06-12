@@ -4,121 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0502C88CB4
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:33:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88BFFC88CB6
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:33:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC92B85D;
-	Mon, 12 Jun 2023 17:32:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC92B85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5A35828;
+	Mon, 12 Jun 2023 17:32:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5A35828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686583991;
-	bh=XUJcRPPJhS/8T2Kip3YQVyWL/1b1Edq/FlQ3XDwFfmc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1686583998;
+	bh=YOCeZRHZqvMTlmLynbfsUjy5R9B0ftEMm2ePkmva+38=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lKq6lMa7moinUFM29c7+kyEyueLHPhm8qG09qZk2PBjR5d4n6p2Kw0d7tLJqikgHS
-	 m3X96WvZtPG7I5BH3Ow2mpP1UYSFhX6kU7LPYbiWy59oLG1yhVFVI7/w4aj6rNy7bh
-	 EHngY+zVw+DCBinNtB9vavp0Bjl33Yj/icI9yRGY=
+	b=d/t9LbhTSkIw33i4WC+q4EM0A1DZSleQ8JfWlAr3IBuqzT5p/8FkjHc+mIHbDQXmB
+	 YlrFbIji6Tvq+khGovk4vQAJr48zX+v7fGPMd6hj9rko740qm5h12bZ6M3lKbZfEDb
+	 6fv3Rc9RtLCvyz2J3X4oRxivz3iCDbnZFUJV9jmE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18233F80589; Mon, 12 Jun 2023 17:31:27 +0200 (CEST)
+	id BB00BF805AE; Mon, 12 Jun 2023 17:31:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A60E8F80589;
-	Mon, 12 Jun 2023 17:31:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D73DF805A8;
+	Mon, 12 Jun 2023 17:31:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11671F80149; Mon, 12 Jun 2023 04:39:32 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78CA2F800ED
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 04:39:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78CA2F800ED
-Received: from loongson.cn (unknown [10.180.13.22])
-	by gateway (Coremail) with SMTP id _____8CxvOo+hYZkdmQDAA--.7451S3;
-	Mon, 12 Jun 2023 10:38:54 +0800 (CST)
-Received: from [10.180.13.22] (unknown [10.180.13.22])
-	by localhost.localdomain (Coremail) with SMTP id
- AQAAf8AxauU+hYZkgcYUAA--.60237S3;
-	Mon, 12 Jun 2023 10:38:54 +0800 (CST)
-Message-ID: <2997ad32-66e2-3aac-2b8f-ab47c5d98d61@loongson.cn>
-Date: Mon, 12 Jun 2023 10:38:28 +0800
+	id 285F1F80548; Mon, 12 Jun 2023 10:13:04 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2AC27F800BA
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 10:12:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AC27F800BA
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=TRzCPGz+
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-3f6d38a140bso29084155e9.1
+        for <alsa-devel@alsa-project.org>;
+ Mon, 12 Jun 2023 01:12:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1686557572; x=1689149572;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gc+miDzZceXCLueDQlgChLb47zA+DR3zS3KkscEcQ/E=;
+        b=TRzCPGz+Dq58XxB3JdEWqYt8+rvlmUpC+39cO6M1Y40MdAkZ7QLtwzQHTtg66aAPIC
+         k0VSpTG+VNmvOh0ERZepO44jfP1iLTjuSEUKtnNhB5x3k01TuG0A3CykBRTOzog9+rbz
+         HPmDlpujfiOgPajTRfAgS3aviuOIGZreHnEyPL59pXWhbYoePoVYp6cIjgcgsHZ+bNnp
+         X1i5xQJfEPL9DSy9CKB6aqHbOkVqc4XvLTpwFUZGSCX0Gohgw5BoIydC7Y0qs1jKyvDw
+         rwIarQnRitax1WzUnhRN8ntEbpBWEtk75snkv+3sxEoCMZl6vt9yi5Ywca2Q08w7b6dx
+         2qKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686557572; x=1689149572;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gc+miDzZceXCLueDQlgChLb47zA+DR3zS3KkscEcQ/E=;
+        b=GLuVFIyUneJGJpCTvwG4dlPWG5WB868Xt4lWtEet/W6+KBv3b2Xmo51nfs2RVP1caY
+         9c8SBOqej4TwVOkBiQA1JHakuBz0LkcoblVTxJNdlBUtRtjUnVobBRwRQlIB56QlXZIs
+         fhD4WM0gVAUquF7K+pBStSDEf6lT+lcYc5NCB4I6TQv70t0yM0zzCxKiGEDfPa+a9T9F
+         6OljuTH2qHI1+DvVXkyHg48vRY0PY2Oz2Qi1HwEpEWTq3jJdQ0TZtQe4GcGUFz675Fnm
+         hXQ74NnvrDdydqO4dTYyff6rZ7iFPW0s4sVhKEkQE/gbCDmQOJ8DG0BFUeLDh4n/4X4X
+         ezCw==
+X-Gm-Message-State: AC+VfDyj4lSaaX+PMxXFhbe3duzQkmRZlgqlc/tY00k+UN/5kgtupy23
+	i2Yq0anumpQ969Lu7E13+0PgLQ==
+X-Google-Smtp-Source: 
+ ACHHUZ62clwI1bDc8gob+L8cRFqX7RG2mHcT69nqtEtI1HNgVVz1bnuC3Biqy4NvHzcY8XnVdYQGwQ==
+X-Received: by 2002:a1c:7718:0:b0:3f7:e660:cdc5 with SMTP id
+ t24-20020a1c7718000000b003f7e660cdc5mr6736284wmi.9.1686557571903;
+        Mon, 12 Jun 2023 01:12:51 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id
+ v18-20020adfebd2000000b0030789698eebsm11686312wrn.89.2023.06.12.01.12.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jun 2023 01:12:49 -0700 (PDT)
+Date: Mon, 12 Jun 2023 11:12:45 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Ricardo Ribalda Delgado <ribalda@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, stable@kernel.org
+Subject: Re: [PATCH] ASoC: mediatek: mt8173: Fix error path
+Message-ID: <178ec977-5be3-4b2a-bb24-1286be68baf2@kadam.mountain>
+References: <20230612-mt8173-fixup-v1-1-81f5c90316d1@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 3/3] ASoC: dt-bindings: Add support for Loongson audio
- card
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
- loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn
-References: <20230605120934.2306548-1-mengyingkun@loongson.cn>
- <20230605120934.2306548-3-mengyingkun@loongson.cn>
- <118d13ef-a247-cf88-5084-afdebc6b7651@kernel.org>
- <9fb3da48-a20b-4e2f-b84a-733f96126ebe@sirena.org.uk>
-From: Yingkun Meng <mengyingkun@loongson.cn>
-In-Reply-To: <9fb3da48-a20b-4e2f-b84a-733f96126ebe@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8AxauU+hYZkgcYUAA--.60237S3
-X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQAADGSFuYEEPAABst
-X-Coremail-Antispam: 1Uk129KBj9xXoW7Jw4DGr1fGry3GF1fCryDurX_yoW3GFb_Cw
-	4IqF4kC3yUJFnrXrZagr1UZ3sF9F1qyr9rXrWrGF1DX345tayv9FnrCr13JwnYq3yrGFWD
-	uw1Yqr18Zw1avosvyTuYvTs0mTUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb-xYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI
-	0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280
-	aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2
-	xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xF
-	xVAFwI0_Jw0_GFylx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWw
-	C2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_
-	Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJV
-	WUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIY
-	CTnIWIevJa73UjIFyTuYvjxU7tx6UUUUU
-X-MailFrom: mengyingkun@loongson.cn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230612-mt8173-fixup-v1-1-81f5c90316d1@chromium.org>
+X-MailFrom: dan.carpenter@linaro.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: QTYJ7UO6X4EYMUB7FORBWJZNSFP2AMRF
-X-Message-ID-Hash: QTYJ7UO6X4EYMUB7FORBWJZNSFP2AMRF
+Message-ID-Hash: RYFMDX32ZNWEKC53Z5FIKNON4O2DXWP6
+X-Message-ID-Hash: RYFMDX32ZNWEKC53Z5FIKNON4O2DXWP6
 X-Mailman-Approved-At: Mon, 12 Jun 2023 15:31:25 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QTYJ7UO6X4EYMUB7FORBWJZNSFP2AMRF/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RYFMDX32ZNWEKC53Z5FIKNON4O2DXWP6/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Mon, Jun 12, 2023 at 09:49:32AM +0200, Ricardo Ribalda Delgado wrote:
+> @@ -1175,14 +1179,11 @@ static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto err_cleanup_components;
+>  
+> -	irq_id = platform_get_irq(pdev, 0);
+> -	if (irq_id <= 0)
+> -		return irq_id < 0 ? irq_id : -ENXIO;
+>  	ret = devm_request_irq(afe->dev, irq_id, mt8173_afe_irq_handler,
+>  			       0, "Afe_ISR_Handle", (void *)afe);
+>  	if (ret) {
+>  		dev_err(afe->dev, "could not request_irq\n");
+> -		goto err_pm_disable;
+> +		goto err_cleanup_components;
 
-On 2023/6/5 23:06, Mark Brown wrote:
-> On Mon, Jun 05, 2023 at 04:45:38PM +0200, Krzysztof Kozlowski wrote:
->> On 05/06/2023 14:09, YingKun Meng wrote:
->>> +title: Loongson generic ASoC audio sound card.
->> What is a "generic audio card"? Does it even match hardware? Bindings
->> are supposed to describe hardware, which is usually very specific.
-> The concept of a generic, reusable sound card seems reasonably clear -
-> there's a bunch of in tree examples already and the idea that we have to
-> pull together multiple bits of hardware to make a useful sound subsystem
-> is a known thing.
->
->> Also: Drop full stop. It's a title.
-> Shouldn't this be checked by the tooling?
+Hm...  I hadn't noticed that.  You're right, but I don't think your
+patch goes far enough.  I think everything after the first
+successful call to snd_soc_add_component() should be goto
+err_cleanup_components;
 
+But I am not 100% sure.
 
-All work will be done in the new version.
+regards,
+dan carpenter
 
-
-Thanks,
-Yingkun Meng
+>  	}
+>  
 
