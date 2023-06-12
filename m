@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E62DC7EE2E
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 12:34:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 886CDC7EE25
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 12:34:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 907841F1;
-	Mon, 12 Jun 2023 14:33:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 907841F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9321683E;
+	Mon, 12 Jun 2023 14:34:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9321683E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686573274;
-	bh=EGWmWQF1su+a6hAP/Zf/0XQdg4FpArwAE9hZ8KIvt1M=;
+	s=default; t=1686573294;
+	bh=+bNHptp2V2lut6GtimuR3m5ZqbYJIEJA8llX4Kq9/2Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OGX0Epy9ogO0aPRTYgNI8OYGRH00OzJQzZgWzVDhNNfER7vp0yMvhZ2SIp8PMO6Ol
-	 r3dsI27dhuq4LBPXsBV7zUA1OABWigFkBmg65/pWg4wMGjO107NyhIPuUYAtJHBZYb
-	 9BTq3fU2vdNxzjEnu0lO9zF9MPwgjbVAiAOqIvfI=
+	b=VaNJq+K0K91e6XuvW9UNutjMiZC4JHozVV6TplqvOqpXlTUU3IrCLG3ptAM8J/ZyF
+	 IWtA7Ev0ybky8Lzib7Xf/mPfVMjJinyYwq3ABM6pIuWem4Nh2YUziyqI8sDm8FX07S
+	 /D3YNsCKssKX3IgIrA1Ru3+s11xE49QlViONeiag=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 383A8F80571; Mon, 12 Jun 2023 14:33:10 +0200 (CEST)
+	id 10994F8058C; Mon, 12 Jun 2023 14:33:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B33A5F80578;
-	Mon, 12 Jun 2023 14:33:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69CBBF8057D;
+	Mon, 12 Jun 2023 14:33:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94E4FF80130; Mon, 12 Jun 2023 14:33:03 +0200 (CEST)
+	id 98C1AF80149; Mon, 12 Jun 2023 14:33:03 +0200 (CEST)
 Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
- [217.70.183.193])
+ [IPv6:2001:4b98:dc4:8::221])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D3D7AF8052E
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 14:30:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3D7AF8052E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4AE31F80149
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 14:30:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AE31F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=Ipm5aZF+
+ header.s=gm1 header.b=Rz+Ii9wf
 X-GND-Sasl: herve.codina@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686573016;
+	t=1686573009;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GcN60f95EyHfAlDdNZvBkHTH/4nZm0eD62az2U/xx6A=;
-	b=Ipm5aZF+MxH/0yVuujxyILOsgp7H4wrDD1HcDBSi09vhPAyrcu2+JBURS2FlQBRIUAlqTt
-	Jja8UVv5RfwlSCpisQfZAi+JX+mnr9jfrnLQbZ4mfwqDrFFED/4zlnwVQps9w3ZSupCiNk
-	ohfmRQj3WQO3uzC705E0o6llbnpkmI0mUiudj1ZwkHwyelmftlADuFTTZSa9vFGDsL0zUI
-	lGj25+tvQOdtgrO+Si6qOQI6Uj+ZgCzP7CAjP9LBgiBoKzutzcwnN4qBA5APJBSyb2hRQN
-	wr844zVXq1KfJhygxGHI7bXDY9iXpI/s/91pWfjjSYYDaYPBs75MmKoQOj9Qrw==
+	bh=b7GpRi53x4asj1T+mG5YB9K5F5kbtkPlrvMMs/bfkeM=;
+	b=Rz+Ii9wfAJ84Hru5tWVZ2BHscLeDldbI7wxcUWvnboDxxaqAepsmlmzMDX9eCAB2TVZerH
+	vMam8AYocthmCfwmrQ5zzf/Y93M02RvKwhMsqypIx2AbNP2HGdaMCxVnlZ444fWwbIQEQE
+	/0corWxCLXrXGWmdJIQJRpTLjRtnkqRNuu143YDtSO4by62DLn4EhwHjh46lW7pdz21EUO
+	eisZ/tCTUrLPnY4dkmB116U0m3ruME+grhCRDdh0uHhfDnStL+8WwaudxayplAr5HRyChX
+	eF9a14vvZJSlCmiLVI+oJnJpAziN/1vjPf5Qt3/kgs0AN3BfNlPzjewLGrkRIQ==
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
@@ -69,8 +69,9 @@ X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 16402240019;
-	Mon, 12 Jun 2023 12:30:15 +0000 (UTC)
+X-GND-Sasl: herve.codina@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPA id B5C65240008;
+	Mon, 12 Jun 2023 12:30:00 +0000 (UTC)
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -89,18 +90,18 @@ Cc: alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	linux-iio@vger.kernel.org,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v3 07/12] iio: inkern: Use max_array() to get the maximum
- value from an array
-Date: Mon, 12 Jun 2023 14:29:21 +0200
-Message-Id: <20230612122926.107333-8-herve.codina@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH v3 04/12] iio: consumer.h: Fix raw values documentation notes
+Date: Mon, 12 Jun 2023 14:29:18 +0200
+Message-Id: <20230612122926.107333-5-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230612122926.107333-1-herve.codina@bootlin.com>
 References: <20230612122926.107333-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7DYJQYOH6QPTXYQYLSQILYBYNZ3CUQHX
-X-Message-ID-Hash: 7DYJQYOH6QPTXYQYLSQILYBYNZ3CUQHX
+Message-ID-Hash: SXIDXMCKOYRIYTYMZHJ64RITAIT3P4YP
+X-Message-ID-Hash: SXIDXMCKOYRIYTYMZHJ64RITAIT3P4YP
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -113,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7DYJQYOH6QPTXYQYLSQILYBYNZ3CUQHX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SXIDXMCKOYRIYTYMZHJ64RITAIT3P4YP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,39 +123,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use max_array() to get the maximum value from an array instead of a
-custom local loop.
+The raw values notes mention 'ADC counts' and are not fully accurate.
+
+Reword the notes in order to remove the 'ADC counts' and describe the
+conversion needed between a raw value and a value in the standard units.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- drivers/iio/inkern.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ include/linux/iio/consumer.h | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
-index ce537b4ca6ca..ae1a41d3a559 100644
---- a/drivers/iio/inkern.c
-+++ b/drivers/iio/inkern.c
-@@ -8,6 +8,7 @@
- #include <linux/property.h>
- #include <linux/slab.h>
- #include <linux/mutex.h>
-+#include <linux/minmax.h>
+diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
+index 6802596b017c..f536820b9cf2 100644
+--- a/include/linux/iio/consumer.h
++++ b/include/linux/iio/consumer.h
+@@ -201,8 +201,9 @@ struct iio_dev
+  * @chan:		The channel being queried.
+  * @val:		Value read back.
+  *
+- * Note raw reads from iio channels are in adc counts and hence
+- * scale will need to be applied if standard units required.
++ * Note, if standard units are required, raw reads from iio channels
++ * need the offset (default 0) and scale (default 1) to be applied
++ * as (raw + offset) * scale.
+  */
+ int iio_read_channel_raw(struct iio_channel *chan,
+ 			 int *val);
+@@ -212,8 +213,9 @@ int iio_read_channel_raw(struct iio_channel *chan,
+  * @chan:		The channel being queried.
+  * @val:		Value read back.
+  *
+- * Note raw reads from iio channels are in adc counts and hence
+- * scale will need to be applied if standard units required.
++ * Note, if standard units are required, raw reads from iio channels
++ * need the offset (default 0) and scale (default 1) to be applied
++ * as (raw + offset) * scale.
+  *
+  * In opposit to the normal iio_read_channel_raw this function
+  * returns the average of multiple reads.
+@@ -281,8 +283,9 @@ int iio_read_channel_attribute(struct iio_channel *chan, int *val,
+  * @chan:		The channel being queried.
+  * @val:		Value being written.
+  *
+- * Note raw writes to iio channels are in dac counts and hence
+- * scale will need to be applied if standard units required.
++ * Note that for raw writes to iio channels, if the value provided is
++ * in standard units, the affect of the scale and offset must be removed
++ * as (value / scale) - offset.
+  */
+ int iio_write_channel_raw(struct iio_channel *chan, int val);
  
- #include <linux/iio/iio.h>
- #include <linux/iio/iio-opaque.h>
-@@ -875,11 +876,7 @@ static int iio_channel_read_max(struct iio_channel *chan,
- 			return -EINVAL;
- 		switch (*type) {
- 		case IIO_VAL_INT:
--			*val = vals[--length];
--			while (length) {
--				if (vals[--length] > *val)
--					*val = vals[length];
--			}
-+			*val = max_array(vals, length);
- 			break;
- 		default:
- 			/* FIXME: learn about max for other iio values */
+@@ -292,8 +295,9 @@ int iio_write_channel_raw(struct iio_channel *chan, int val);
+  * @chan:		The channel being queried.
+  * @val:		Value read back.
+  *
+- * Note raw reads from iio channels are in adc counts and hence
+- * scale will need to be applied if standard units are required.
++ * Note, if standard units are required, raw reads from iio channels
++ * need the offset (default 0) and scale (default 1) to be applied
++ * as (raw + offset) * scale.
+  */
+ int iio_read_max_channel_raw(struct iio_channel *chan, int *val);
+ 
+@@ -308,8 +312,9 @@ int iio_read_max_channel_raw(struct iio_channel *chan, int *val);
+  * For ranges, three vals are always returned; min, step and max.
+  * For lists, all the possible values are enumerated.
+  *
+- * Note raw available values from iio channels are in adc counts and
+- * hence scale will need to be applied if standard units are required.
++ * Note, if standard units are required, raw available values from iio
++ * channels need the offset (default 0) and scale (default 1) to be applied
++ * as (raw + offset) * scale.
+  */
+ int iio_read_avail_channel_raw(struct iio_channel *chan,
+ 			       const int **vals, int *length);
 -- 
 2.40.1
 
