@@ -4,104 +4,166 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6066C7EE2F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 15:37:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91CF0C7EE2E
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 16:04:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA00A857;
-	Mon, 12 Jun 2023 17:36:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA00A857
+	by alsa0.perex.cz (Postfix) with ESMTPS id B00773E8;
+	Mon, 12 Jun 2023 18:03:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B00773E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686584224;
-	bh=gL7ouzNlorzge+HwWuYXyoX/Q39xVVuxqMtOPl8ANNk=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1686585861;
+	bh=VUEOEa4SGf3GUi69OlbiGTynJsYqazdK6TXMcGKAp+M=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EHmyO8SN1HeWPIybzAagQbNhJFinLAbigqS764/3oZZyd513yAS0SpwTDJs+2L542
-	 KTZ3xkD33m6ogbVH2R38bYGHt961bTTnTvicRFWx2d/nUUycQoDBADQknnySPzhezi
-	 Sb+Yc5ko26//yyQNqwF7yhx+xZFODokwm+lK1MA4=
+	b=VjbWsvdL7ph2XBSgfy/rIvPnDVfWPzDJUS0g87bWqxseUN1CfhCXB5IogeUqa31uQ
+	 p74LMOp+ZyHFiThHscRyFc930+6BNRgY0zAvzviHhyFFRyduVu26tM0bF6RIaMsHbS
+	 kxyW+H7ZcaLH1FfJGdro5mno+kQVEmP3v7jvS2/Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1EAEFF8063B; Mon, 12 Jun 2023 17:32:42 +0200 (CEST)
+	id 495CBF80551; Mon, 12 Jun 2023 18:03:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59C73F8063D;
-	Mon, 12 Jun 2023 17:32:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97458F80246;
+	Mon, 12 Jun 2023 18:03:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 946EBF80246; Mon, 12 Jun 2023 12:54:23 +0200 (CEST)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D3D48F80149; Mon, 12 Jun 2023 18:03:25 +0200 (CEST)
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam10on20631.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7e89::631])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 39BB2F8025E
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 12:53:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39BB2F8025E
+	by alsa1.perex.cz (Postfix) with ESMTPS id EB555F80130
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 18:03:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB555F80130
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=RmJrnLlt
-X-UUID: 6172414c090f11ee9cb5633481061a41-20230612
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=MJEyL8jMkELitxC8ODg8qd4/tZzZRqnj1z2BFS+GrJU=;
-	b=RmJrnLlteUpJINA3EoAphI8FY3hMyofHodMV1UvbP/YGMlc50F8GJqx47pkJDU1vnd673eB/tWS7I0q/muMe4rEp+oBoJ3DjTGIq3jFWXFboUysahUpQp2uZPs4uI9RwH22IR28N8PqYHrZkWW0fTCIkxUp8kliiPjVvdrRErzw=;
-X-CID-CACHE: Type:Local,Time:202306121844+08,HitQuantity:1
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.26,REQID:f434cd60-ecac-4c96-a030-68c38fafb66a,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:cb9a4e1,CLOUDID:2622ce6e-2f20-4998-991c-3b78627e4938,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 6172414c090f11ee9cb5633481061a41-20230612
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
- mailgw01.mediatek.com
-	(envelope-from <maso.huang@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 499495370; Mon, 12 Jun 2023 18:53:35 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 12 Jun 2023 18:53:34 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 12 Jun 2023 18:53:34 +0800
-From: Maso Hunag <maso.huang@mediatek.com>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Trevor Wu
-	<trevor.wu@mediatek.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>, Ren Zhijie
-	<renzhijie2@huawei.com>, Arnd Bergmann <arnd@arndb.de>, Allen-KH Cheng
-	<allen-kh.cheng@mediatek.com>, <alsa-devel@alsa-project.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-CC: Maso Huang <maso.huang@mediatek.com>
-Subject: [PATCH 3/7] ASoC: mediatek: mt79xx: add platform driver
-Date: Mon, 12 Jun 2023 18:52:46 +0800
-Message-ID: <20230612105250.15441-4-maso.huang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230612105250.15441-1-maso.huang@mediatek.com>
-References: <20230612105250.15441-1-maso.huang@mediatek.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256
+ header.s=selector2 header.b=U9dbVpdS
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ofgp5igecis4xvPjiJCLug5UDr9BKV2uZQ5QddDXMK8SIXg/f6mfpW7bdw+D45rNCg3zIsvroRLEzNEo+08v1YRKTPPbZygj13JyIVUGCcU5on52r0C9lMXYlBX7of48a7AtVJX6C8+oGw1oIPNSQZv8XjMdBCpbaVs9h83gaeieHHjOuGjye47ytdhD63j0l2qGzlNrfNcCYBfQ5+D4dIainkrufJ9MQMzigtKWgJmTNvE449UJr3kHR73r7oIpO/3qoUaiaod1kUTgRPQfg6F/6ZzCBELImYEX82q3dkD9BoPKokR+7CNC1t/tcqp+a+YKj5wagYpR9NkTzjsvWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8/CuGEyAnxI5pkvbZvfLRrLdC/9tCUsqhCzMZK6PESY=;
+ b=QwdheXDhxN2MzJZsVyZqjoHZ8eM/5khnZ40ezLwOsVTP7bl3Nbeyp2EHvcrbNdj7GJ4yM3CQFLQA44kE2e2/Th+0b8Uzl822SV6Dh0bIgYb7etab36WXR7YB5otstprLr9fJv8zIVuifdKwN/7Blg/fBDIxvWboedvFpnZKkskVXStfnIgvR/CF99qXK9lL6hEmOCXqUJ0nmrejXqICDJzvPMgTOnPeSIB76oK3b3taQL8hRWWkrTJ7vRW88QJX1fR8n8LcPIijhbjNYemCbeBwjwWDjgQKOZj4trVKKTXdpM7+1PPkaxaAMH+11dY/JPxWG4F0rwSFBC4E2k2MxLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8/CuGEyAnxI5pkvbZvfLRrLdC/9tCUsqhCzMZK6PESY=;
+ b=U9dbVpdSkRstPVGbKmSaGl6g6pPXP0KBizDrZnit3vIoYe+tX3sd2E4ThMFaMRxYnJ5aEvID1JgIj07pwZ2AFhsNdSUjcdE3im3kMjceFciEUvbn7b2PRYy1K1ekiEx7O5gP41sBdwOz4BynqJ/EgcqRbaCgEt/Fx7wVW6+mEkZjo0bxqyiJ6XO2QMgCRX49cHD+t5pHYBhYqMfciiKVPJC87jv25OSuJptJHnElQVYQNvsDIb52vIWZj5MFdh4AITvAHFvsnoETE+4F0o3ZzCBaEj7vLh47AKElsu4obGZFPYUogZUo9kzJ1H3Tm8qeL7D9kxoVOp3uaRZqN/B3Fw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
+ MN0PR12MB6269.namprd12.prod.outlook.com (2603:10b6:208:3c3::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.42; Mon, 12 Jun
+ 2023 16:03:12 +0000
+Received: from CO6PR12MB5444.namprd12.prod.outlook.com
+ ([fe80::21ef:9d59:5b2d:f1e8]) by CO6PR12MB5444.namprd12.prod.outlook.com
+ ([fe80::21ef:9d59:5b2d:f1e8%4]) with mapi id 15.20.6455.043; Mon, 12 Jun 2023
+ 16:03:11 +0000
+Message-ID: <9f68afaa-3bba-a154-db4d-ac6f3d6795bd@nvidia.com>
+Date: Mon, 12 Jun 2023 17:03:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] ALSA: pcm: fix wait_time calculations
+Content-Language: en-US
+To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>
+References: <20230405201219.2197774-1-oswald.buddenhagen@gmx.de>
+ <b57c46a6-4446-3418-fc4a-8bef1e28868c@nvidia.com>
+ <76082a48-508b-e5cf-6ae0-66c265ecfdd7@nvidia.com> <ZIcrlOSlA233SC2y@ugly>
+From: Jon Hunter <jonathanh@nvidia.com>
+In-Reply-To: <ZIcrlOSlA233SC2y@ugly>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO2P265CA0464.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a2::20) To CO6PR12MB5444.namprd12.prod.outlook.com
+ (2603:10b6:5:35e::8)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MailFrom: maso.huang@mediatek.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5444:EE_|MN0PR12MB6269:EE_
+X-MS-Office365-Filtering-Correlation-Id: ecabed88-a272-4d84-e70b-08db6b5e858a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	+odpvrAtZpjHFf6SrAX0un1WB31X/qznNH/IcQboRuz9PG9TDBxaH/rlrlk1W8AtsHg3IX+bAaNCDRdifCJylakeEQIge0ta9V1WVZwa/tgZNt+Fuog2h4iZi2hufEf5M0pcHGW6hxv3uAeHqz50aWKAhJruqL0XsmL/JA1ESDa9F6fF43Rm8YEIcAeNXzMYz3LJ8Knw/cF+oBVu3Xx1UkjUsU5aB8zUuMCANHMiqo/rN9+4xz+rHSxZRN7+LyIv9O56QLBod2/nGRbt+7J5SLOb6goKDTihqAvwwHJtV/I89Jmq6pzOrBA2t3cFX95z3GnbDz1NBDZpV3wMewsJMtQD1pS9oGq/OevP36RmhSH7aVcmKyA6cbb8BnaqfQ+a2rk2DBYk1IE5/iFyoTW4jgfOwqD4GbPM5zjbGz+LeEgwt48Y254s2iBxfVUSY8MHVDDi1GyC5WqxN2VbXSfIsO8zI8GRfJYeieC8FIB9bpWWMlXuwTgHHrhvfyJTXs3DL7l0BC2wRbK7vr/OGu16HW2IrrfZNx92XPRDMAMHtXdXJdfbJTs8//8giDPpkCNqyWfuFvqH7CZk23qnYKTZS+zo+DkDe1RRaDzo2tY6X2pi0Tq271MNgpRA5dBxrjAbMOdXW0ESGfJ8pgus+sEsZA==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(451199021)(6486002)(54906003)(508600001)(4326008)(66476007)(6916009)(8936002)(8676002)(66946007)(66556008)(38100700002)(2616005)(186003)(83380400001)(6666004)(53546011)(6506007)(6512007)(5660300002)(86362001)(31696002)(2906002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?L2RPQm5QaTd2NE41K3FyR29RMDVpVzR4VUdpWVdiRDJsNkJuSTNrM1F4QStX?=
+ =?utf-8?B?anl5MmtaR3lRQ2QvTnVqVmlBRXJVa1NaN3hhU3Z4Q3MrQnpVcUMrZ0JnV2pM?=
+ =?utf-8?B?NDEyMGZ5OThVZlBlcFppeXRSQkZ4eno1UWFUZUxWc0w2dHNZTEdwQWJyUmxp?=
+ =?utf-8?B?aTZmMERObXBpMEVueWZBc2Q0ajhrSzBHTFQxY3pZR24xMzhVK0V5QWQ5akFq?=
+ =?utf-8?B?NzFjTUJuUDEyaXRXRGN2eGhBbzJOVlJVRVB2Z1JsYTRsemgxeGJiSWpVWEpJ?=
+ =?utf-8?B?VzgvSFZvaTgxQlJOeDc1NVlCT3JnOWpqVWwyUHh1NERLTnBPVWR6Z1ZvdVE3?=
+ =?utf-8?B?UjZkN3k1L0tRNjhIQTdxVUNQeDdnallHeVN6bTZ3VmwwU0d6Sk15UFhkdHdV?=
+ =?utf-8?B?TG41RHMwN1dMM2IwZ2J6L25rQS9jWCt0R3VDcExYMnJ6MGNHV2QvSVpWYnZv?=
+ =?utf-8?B?S1MvVHRpUVloazQzYlpyYjQ0N1cycU1VWTJuY2VJRFhndmxaM3lmYVlIS2pX?=
+ =?utf-8?B?dU1VNDV0NFBCS2pGY1Uwd2gzaTBVK2JlSEVXSXhCUFExOWZpV1FsZXJEakJI?=
+ =?utf-8?B?RWNrZXpRYjY3VXF5MFh0VFN1NE1ZZG1OSlptR0hoK0t5a2ZBeVFyNG5RWXdB?=
+ =?utf-8?B?M2NGSVZNYWh4SjhOZXlNeFlsdGJUNWdtakVLazdId0hZeW5QYnVLSnpjVEZI?=
+ =?utf-8?B?SkpjdkNNY0xBVFlGcmV0dTlwT3p4Q3UxQkpteXRyTVZrSzhqbStwVmdma1FR?=
+ =?utf-8?B?MlZ0QVcwbm9XbTY4MGUreHVQcWNBYWxjYTBOeTVVRmN3TWFacjJGZkd5eGNm?=
+ =?utf-8?B?anBhZkcxbVRCS2ZpM0FyQ0NKSUZ2dzMxSXNHbWpxQmRTakFQMDBFdEpZem5O?=
+ =?utf-8?B?YzFDK3JnRjQ3TTQreGR5eXVwZHlyQ3FFbUYwY0Y3SmdZUjN1SW5Ed1F6SE02?=
+ =?utf-8?B?ck9qcGtadHRlNzhBQzhNNWFUeWcyNnlqNExJRWpjam1tcGpoT1pZSmtadG9L?=
+ =?utf-8?B?aGFXWjcrTXh0YjRtcnpnbWc0dnE4ZUUrVFVqemttL3RlNTZQVEwyTklFdVhi?=
+ =?utf-8?B?SnQ4dUVuNEZ2alcxNjR6bVlGWmFRMHVVbHFvdFd6VFlHZ3NvTVFZbVQwVFdD?=
+ =?utf-8?B?d1NqN0lxN3l5WUpqd1U3OEU1d3V5Y2g2Tlg4ZHV5eHhUVkN5Y1gvSlRqS005?=
+ =?utf-8?B?cmlKNjlIZDlxcnMweEZ2SDlvSnBJemx3RzNrWU5QRGJUaTNzRHEvb1U0ZTc1?=
+ =?utf-8?B?VjAyVmkwbzJhbWlGSE9pYW8xOGFoYWszRWdlbzViUk5FZlA3L2c0TVhCSGVB?=
+ =?utf-8?B?K1piMUZGUG5mM2hmUGQ5VWNsUmxaWEhOZUxtZjZ3Qy9vdG0waGlobFltd1dU?=
+ =?utf-8?B?REJ6UEVDS1RqSW9VOEVYVE9TVGFPd09XYmxLRHBKNTN6NG5ZZU5UcFlQc0dw?=
+ =?utf-8?B?eHJOOUlDNDhtclhGbjNYR1V0ZzhlS1JoUHE2cTNtZk0wTEE5bnRDZm1heFB4?=
+ =?utf-8?B?Qit6M2tzOFgxeTVhTmJFekhoU0hKQmNtRTRpQnBvNFBwL0lSTk5OU0prL3k3?=
+ =?utf-8?B?UldLVXRzUTNlMWh4djMxYnZ3WWl2OTJ5bDJNQlFEZmRmV0xKQTR0NHhxUHl6?=
+ =?utf-8?B?M2xIQkRzOW51MWMzeXp3ZVdsdVJ0QUxpZ0tydThKcjFiaGpQSzVUQXFyRmJH?=
+ =?utf-8?B?TXVRL1VJOTJrUkgzSkR0Zk9mNnUwN25NV3Y2dWkwUlVrTHFpZWFaUUVpZ1By?=
+ =?utf-8?B?QUUxSEwxQ0hLQVl1Smg5VlZiM3ZLcXp4U1NMbWdBZmt3LzNCcjV1RTZ6TG5r?=
+ =?utf-8?B?RWZrZE9UQVdiZjBQVEZaWEFmb3lEcndmTE1ETW5VSjkzZllWNGpmVDFBUzBh?=
+ =?utf-8?B?Y1YyOHdsUU93clRucjFrUHprU3lzb1BMb2dZUkZBeHJnWlRERXhsNklJN25B?=
+ =?utf-8?B?MVNRaTZVSmZIa3NvZXZiRERuKzhUK0FiRDQ4RGpCMzhXV2lHVjl5bDhLUDl2?=
+ =?utf-8?B?MkhDR2xLZlY1SnpiQnVEOFI0SXRQQU4wTHBIaC9DYnBrYTBFRFBubjYrZ1Fy?=
+ =?utf-8?B?c25LbHpLU3RwZnM5MWRScVhNTHdYeVBEZ1BwOUhmb0cyUDZ0ekVvSVp6U2Jh?=
+ =?utf-8?B?QnpaTnhneDh3RituS2FMb2phaXJKOWdadlNnWTFGaElScWI2OEQxc2lRdEpD?=
+ =?utf-8?Q?3biA4HaxPfpEY+nTPej0s3eJb4GLhanJBKRemLSVd6Tq?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ ecabed88-a272-4d84-e70b-08db6b5e858a
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2023 16:03:11.8596
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ Krvt1dsHEl/DhnRhsjV7Qt0OJGggYKAQzJitBqke/ZZlLIukAZxBwadUkuzVFPvHOMLUnOcNB23zPDgJP89tkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6269
+Message-ID-Hash: JUQSXF56UDVGQH5B5MTFYIPUYCFNYPGY
+X-Message-ID-Hash: JUQSXF56UDVGQH5B5MTFYIPUYCFNYPGY
+X-MailFrom: jonathanh@nvidia.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: AJZGJYTSZSD454F6KZ724Y2JVDPM3SJN
-X-Message-ID-Hash: AJZGJYTSZSD454F6KZ724Y2JVDPM3SJN
-X-Mailman-Approved-At: Mon, 12 Jun 2023 15:32:39 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AJZGJYTSZSD454F6KZ724Y2JVDPM3SJN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JUQSXF56UDVGQH5B5MTFYIPUYCFNYPGY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,682 +172,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Maso Huang <maso.huang@mediatek.com>
 
-Add mt79xx platform driver.
+On 12/06/2023 15:28, Oswald Buddenhagen wrote:
+> On Mon, Jun 12, 2023 at 02:16:15PM +0100, Jon Hunter wrote:
+>> On 12/06/2023 13:18, Jon Hunter wrote:
+>>> On 05/04/2023 21:12, Oswald Buddenhagen wrote:
+>>>> ... in wait_for_avail() and snd_pcm_drain().
+>>>
+>>> Sorry for not catching this sooner, but I have just noticed that one 
+>>> of our audio tests for Tegra is failing on v6.4-rc and bisect is 
+>>> pointing to this commit. Reverting this on top of the current 
+>>> mainline fixes it.
+>>>
+>> If I enable the debug prints, I do see the following messages ...
+>>
+>>  tegra-audio-graph-card sound: capture read timeout (DMA or IRQ trouble?)
+>>
+> yes, this is the kind of fallout one would expect from this change, as 
+> it significantly shortened the effective timeout under most circumstances.
+> 
+> first check that there isn't a genuine underlying bug, that is, that the 
+> unusually slow timings match expectations.
+> 
+> if everything looks right, then properly codify the timeout in the 
+> driver by setting substream->wait_time as required.
+> the lazy approach of more or less restoring the previous status quo 
+> would be setting it to 10000 in the `open` callback.
+> fwiw, soc/sof sets it to 500, which may actually be a bad idea (it's 
+> short enough that a very long period time would exceed it, if such is 
+> permitted). and it's not obvious why it does that.
 
-Signed-off-by: Maso Huang <maso.huang@mediatek.com>
----
- sound/soc/mediatek/Kconfig                 |  10 +
- sound/soc/mediatek/Makefile                |   1 +
- sound/soc/mediatek/mt79xx/Makefile         |   9 +
- sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c | 608 +++++++++++++++++++++
- 4 files changed, 628 insertions(+)
- create mode 100644 sound/soc/mediatek/mt79xx/Makefile
- create mode 100644 sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 4baac72677d9..192546078d5e 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -54,6 +54,16 @@ config SND_SOC_MT6797_MT6351
- 	  Select Y if you have such device.
- 	  If unsure select "N".
- 
-+config SND_SOC_MT79XX
-+	tristate "ASoC support for Mediatek MT79XX chip"
-+	depends on ARCH_MEDIATEK
-+	select SND_SOC_MEDIATEK
-+	help
-+	  This adds ASoC platform driver support for MediaTek MT79XX chip
-+	  that can be used with other codecs.
-+	  Select Y if you have such device.
-+	  If unsure select "N".
-+
- config SND_SOC_MT8173
- 	tristate "ASoC support for Mediatek MT8173 chip"
- 	depends on ARCH_MEDIATEK
-diff --git a/sound/soc/mediatek/Makefile b/sound/soc/mediatek/Makefile
-index 3de38cfc69e5..b2e530629887 100644
---- a/sound/soc/mediatek/Makefile
-+++ b/sound/soc/mediatek/Makefile
-@@ -2,6 +2,7 @@
- obj-$(CONFIG_SND_SOC_MEDIATEK) += common/
- obj-$(CONFIG_SND_SOC_MT2701) += mt2701/
- obj-$(CONFIG_SND_SOC_MT6797) += mt6797/
-+obj-$(CONFIG_SND_SOC_MT79XX) += mt79xx/
- obj-$(CONFIG_SND_SOC_MT8173) += mt8173/
- obj-$(CONFIG_SND_SOC_MT8183) += mt8183/
- obj-$(CONFIG_SND_SOC_MT8186) += mt8186/
-diff --git a/sound/soc/mediatek/mt79xx/Makefile b/sound/soc/mediatek/mt79xx/Makefile
-new file mode 100644
-index 000000000000..984b20ae8819
---- /dev/null
-+++ b/sound/soc/mediatek/mt79xx/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# platform driver
-+snd-soc-mt79xx-afe-objs := \
-+	mt79xx-afe-pcm.o \
-+	mt79xx-afe-clk.o \
-+	mt79xx-dai-etdm.o
-+
-+obj-$(CONFIG_SND_SOC_MT79XX) += snd-soc-mt79xx-afe.o
-diff --git a/sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c b/sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c
-new file mode 100644
-index 000000000000..69c5f3f3f84b
---- /dev/null
-+++ b/sound/soc/mediatek/mt79xx/mt79xx-afe-pcm.c
-@@ -0,0 +1,608 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * MediaTek ALSA SoC AFE platform driver for MT79xx
-+ *
-+ * Copyright (c) 2021 MediaTek Inc.
-+ * Author: Vic Wu <vic.wu@mediatek.com>
-+ *         Maso Huang <maso.huang@mediatek.com>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/pm_runtime.h>
-+
-+#include "mt79xx-afe-common.h"
-+#include "mt79xx-afe-clk.h"
-+#include "mt79xx-reg.h"
-+#include "../common/mtk-afe-platform-driver.h"
-+#include "../common/mtk-afe-fe-dai.h"
-+
-+enum {
-+	MTK_AFE_RATE_8K = 0,
-+	MTK_AFE_RATE_11K = 1,
-+	MTK_AFE_RATE_12K = 2,
-+	MTK_AFE_RATE_16K = 4,
-+	MTK_AFE_RATE_22K = 5,
-+	MTK_AFE_RATE_24K = 6,
-+	MTK_AFE_RATE_32K = 8,
-+	MTK_AFE_RATE_44K = 9,
-+	MTK_AFE_RATE_48K = 10,
-+	MTK_AFE_RATE_88K = 13,
-+	MTK_AFE_RATE_96K = 14,
-+	MTK_AFE_RATE_176K = 17,
-+	MTK_AFE_RATE_192K = 18,
-+};
-+
-+unsigned int mt79xx_afe_rate_transform(struct device *dev,
-+				       unsigned int rate)
-+{
-+	switch (rate) {
-+	case 8000:
-+		return MTK_AFE_RATE_8K;
-+	case 11025:
-+		return MTK_AFE_RATE_11K;
-+	case 12000:
-+		return MTK_AFE_RATE_12K;
-+	case 16000:
-+		return MTK_AFE_RATE_16K;
-+	case 22050:
-+		return MTK_AFE_RATE_22K;
-+	case 24000:
-+		return MTK_AFE_RATE_24K;
-+	case 32000:
-+		return MTK_AFE_RATE_32K;
-+	case 44100:
-+		return MTK_AFE_RATE_44K;
-+	case 48000:
-+		return MTK_AFE_RATE_48K;
-+	case 88200:
-+		return MTK_AFE_RATE_88K;
-+	case 96000:
-+		return MTK_AFE_RATE_96K;
-+	case 176400:
-+		return MTK_AFE_RATE_176K;
-+	case 192000:
-+		return MTK_AFE_RATE_192K;
-+	default:
-+		dev_warn(dev, "%s(), rate %u invalid, use %d!!!\n",
-+			 __func__, rate, MTK_AFE_RATE_48K);
-+		return MTK_AFE_RATE_48K;
-+	}
-+}
-+
-+static const struct snd_pcm_hardware mt79xx_afe_hardware = {
-+	.info = SNDRV_PCM_INFO_MMAP |
-+		SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_MMAP_VALID,
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+		   SNDRV_PCM_FMTBIT_S24_LE |
-+		   SNDRV_PCM_FMTBIT_S32_LE,
-+	.period_bytes_min = 256,
-+	.period_bytes_max = 4 * 48 * 1024,
-+	.periods_min = 2,
-+	.periods_max = 256,
-+	.buffer_bytes_max = 8 * 48 * 1024,
-+	.fifo_size = 0,
-+};
-+
-+static int mt79xx_memif_fs(struct snd_pcm_substream *substream,
-+			   unsigned int rate)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
-+
-+	return mt79xx_afe_rate_transform(afe->dev, rate);
-+}
-+
-+static int mt79xx_irq_fs(struct snd_pcm_substream *substream,
-+			 unsigned int rate)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_component *component =
-+		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
-+
-+	return mt79xx_afe_rate_transform(afe->dev, rate);
-+}
-+
-+#define MTK_PCM_RATES (SNDRV_PCM_RATE_8000_48000 |\
-+		       SNDRV_PCM_RATE_88200 |\
-+		       SNDRV_PCM_RATE_96000 |\
-+		       SNDRV_PCM_RATE_176400 |\
-+		       SNDRV_PCM_RATE_192000)
-+
-+#define MTK_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
-+			 SNDRV_PCM_FMTBIT_S24_LE |\
-+			 SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static struct snd_soc_dai_driver mt79xx_memif_dai_driver[] = {
-+	/* FE DAIs: memory intefaces to CPU */
-+	{
-+		.name = "DL1",
-+		.id = MT79XX_MEMIF_DL1,
-+		.playback = {
-+			.stream_name = "DL1",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_PCM_RATES,
-+			.formats = MTK_PCM_FORMATS,
-+		},
-+		.ops = &mtk_afe_fe_ops,
-+	},
-+	{
-+		.name = "UL1",
-+		.id = MT79XX_MEMIF_VUL12,
-+		.capture = {
-+			.stream_name = "UL1",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_PCM_RATES,
-+			.formats = MTK_PCM_FORMATS,
-+		},
-+		.ops = &mtk_afe_fe_ops,
-+	},
-+};
-+
-+static const struct snd_kcontrol_new o018_mix[] = {
-+	SOC_DAPM_SINGLE_AUTODISABLE("I150_Switch", AFE_CONN018_4, 22, 1, 0),
-+};
-+
-+static const struct snd_kcontrol_new o019_mix[] = {
-+	SOC_DAPM_SINGLE_AUTODISABLE("I151_Switch", AFE_CONN019_4, 23, 1, 0),
-+};
-+
-+static const struct snd_soc_dapm_widget mt79xx_memif_widgets[] = {
-+	/* DL */
-+	SND_SOC_DAPM_MIXER("I032", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("I033", SND_SOC_NOPM, 0, 0, NULL, 0),
-+
-+	/* UL */
-+	SND_SOC_DAPM_MIXER("O018", SND_SOC_NOPM, 0, 0,
-+			   o018_mix, ARRAY_SIZE(o018_mix)),
-+	SND_SOC_DAPM_MIXER("O019", SND_SOC_NOPM, 0, 0,
-+			   o019_mix, ARRAY_SIZE(o019_mix)),
-+};
-+
-+static const struct snd_soc_dapm_route mt79xx_memif_routes[] = {
-+	{"I032", NULL, "DL1"},
-+	{"I033", NULL, "DL1"},
-+	{"UL1", NULL, "O018"},
-+	{"UL1", NULL, "O019"},
-+	{"O018", "I150_Switch", "I150"},
-+	{"O019", "I151_Switch", "I151"},
-+};
-+
-+static const struct snd_soc_component_driver mt79xx_afe_pcm_dai_component = {
-+	.name = "mt79xx-afe-pcm-dai",
-+};
-+
-+static const struct mtk_base_memif_data memif_data[MT79XX_MEMIF_NUM] = {
-+	[MT79XX_MEMIF_DL1] = {
-+		.name = "DL1",
-+		.id = MT79XX_MEMIF_DL1,
-+		.reg_ofs_base = AFE_DL0_BASE,
-+		.reg_ofs_cur = AFE_DL0_CUR,
-+		.reg_ofs_end = AFE_DL0_END,
-+		.reg_ofs_base_msb = AFE_DL0_BASE_MSB,
-+		.reg_ofs_cur_msb = AFE_DL0_CUR_MSB,
-+		.reg_ofs_end_msb = AFE_DL0_END_MSB,
-+		.fs_reg = AFE_DL0_CON0,
-+		.fs_shift =  DL0_MODE_SFT,
-+		.fs_maskbit =  DL0_MODE_MASK,
-+		.mono_reg = AFE_DL0_CON0,
-+		.mono_shift = DL0_MONO_SFT,
-+		.enable_reg = AFE_DL0_CON0,
-+		.enable_shift = DL0_ON_SFT,
-+		.hd_reg = AFE_DL0_CON0,
-+		.hd_shift = DL0_HD_MODE_SFT,
-+		.hd_align_reg = AFE_DL0_CON0,
-+		.hd_align_mshift = DL0_HALIGN_SFT,
-+		.pbuf_reg = AFE_DL0_CON0,
-+		.pbuf_shift = DL0_PBUF_SIZE_SFT,
-+		.minlen_reg = AFE_DL0_CON0,
-+		.minlen_shift = DL0_MINLEN_SFT,
-+	},
-+	[MT79XX_MEMIF_VUL12] = {
-+		.name = "VUL12",
-+		.id = MT79XX_MEMIF_VUL12,
-+		.reg_ofs_base = AFE_VUL0_BASE,
-+		.reg_ofs_cur = AFE_VUL0_CUR,
-+		.reg_ofs_end = AFE_VUL0_END,
-+		.reg_ofs_base_msb = AFE_VUL0_BASE_MSB,
-+		.reg_ofs_cur_msb = AFE_VUL0_CUR_MSB,
-+		.reg_ofs_end_msb = AFE_VUL0_END_MSB,
-+		.fs_reg = AFE_VUL0_CON0,
-+		.fs_shift = VUL0_MODE_SFT,
-+		.fs_maskbit = VUL0_MODE_MASK,
-+		.mono_reg = AFE_VUL0_CON0,
-+		.mono_shift = VUL0_MONO_SFT,
-+		.enable_reg = AFE_VUL0_CON0,
-+		.enable_shift = VUL0_ON_SFT,
-+		.hd_reg = AFE_VUL0_CON0,
-+		.hd_shift = VUL0_HD_MODE_SFT,
-+		.hd_align_reg = AFE_VUL0_CON0,
-+		.hd_align_mshift = VUL0_HALIGN_SFT,
-+	},
-+};
-+
-+static const struct mtk_base_irq_data irq_data[MT79XX_IRQ_NUM] = {
-+	[MT79XX_IRQ_0] = {
-+		.id = MT79XX_IRQ_0,
-+		.irq_cnt_reg = AFE_IRQ0_MCU_CFG1,
-+		.irq_cnt_shift = AFE_IRQ_CNT_SHIFT,
-+		.irq_cnt_maskbit = AFE_IRQ_CNT_MASK,
-+		.irq_fs_reg = AFE_IRQ0_MCU_CFG0,
-+		.irq_fs_shift = IRQ_MCU_MODE_SFT,
-+		.irq_fs_maskbit = IRQ_MCU_MODE_MASK,
-+		.irq_en_reg = AFE_IRQ0_MCU_CFG0,
-+		.irq_en_shift = IRQ_MCU_ON_SFT,
-+		.irq_clr_reg = AFE_IRQ_MCU_CLR,
-+		.irq_clr_shift = IRQ0_MCU_CLR_SFT,
-+	},
-+	[MT79XX_IRQ_1] = {
-+		.id = MT79XX_IRQ_1,
-+		.irq_cnt_reg = AFE_IRQ1_MCU_CFG1,
-+		.irq_cnt_shift = AFE_IRQ_CNT_SHIFT,
-+		.irq_cnt_maskbit = AFE_IRQ_CNT_MASK,
-+		.irq_fs_reg = AFE_IRQ1_MCU_CFG0,
-+		.irq_fs_shift = IRQ_MCU_MODE_SFT,
-+		.irq_fs_maskbit = IRQ_MCU_MODE_MASK,
-+		.irq_en_reg = AFE_IRQ1_MCU_CFG0,
-+		.irq_en_shift = IRQ_MCU_ON_SFT,
-+		.irq_clr_reg = AFE_IRQ_MCU_CLR,
-+		.irq_clr_shift = IRQ1_MCU_CLR_SFT,
-+	},
-+	[MT79XX_IRQ_2] = {
-+		.id = MT79XX_IRQ_2,
-+		.irq_cnt_reg = AFE_IRQ2_MCU_CFG1,
-+		.irq_cnt_shift = AFE_IRQ_CNT_SHIFT,
-+		.irq_cnt_maskbit = AFE_IRQ_CNT_MASK,
-+		.irq_fs_reg = AFE_IRQ2_MCU_CFG0,
-+		.irq_fs_shift = IRQ_MCU_MODE_SFT,
-+		.irq_fs_maskbit = IRQ_MCU_MODE_MASK,
-+		.irq_en_reg = AFE_IRQ2_MCU_CFG0,
-+		.irq_en_shift = IRQ_MCU_ON_SFT,
-+		.irq_clr_reg = AFE_IRQ_MCU_CLR,
-+		.irq_clr_shift = IRQ2_MCU_CLR_SFT,
-+	},
-+};
-+
-+static bool mt79xx_is_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	/* these auto-gen reg has read-only bit, so put it as volatile */
-+	/* volatile reg cannot be cached, so cannot be set when power off */
-+	switch (reg) {
-+	case AFE_DL0_CUR_MSB:
-+	case AFE_DL0_CUR:
-+	case AFE_DL0_RCH_MON:
-+	case AFE_DL0_LCH_MON:
-+	case AFE_VUL0_CUR_MSB:
-+	case AFE_VUL0_CUR:
-+	case AFE_IRQ_MCU_STATUS:
-+	case AFE_MEMIF_RD_MON:
-+	case AFE_MEMIF_WR_MON:
-+		return true;
-+	default:
-+		return false;
-+	};
-+}
-+
-+static const struct regmap_config mt79xx_afe_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.volatile_reg = mt79xx_is_volatile_reg,
-+	.max_register = AFE_MAX_REGISTER,
-+	.num_reg_defaults_raw = ((AFE_MAX_REGISTER / 4) + 1),
-+};
-+
-+static irqreturn_t mt79xx_afe_irq_handler(int irq_id, void *dev)
-+{
-+	struct mtk_base_afe *afe = dev;
-+	struct mtk_base_afe_irq *irq;
-+	unsigned int status;
-+	unsigned int status_mcu;
-+	unsigned int mcu_en;
-+	int ret;
-+	int i;
-+	irqreturn_t irq_ret = IRQ_HANDLED;
-+
-+	/* get irq that is sent to MCU */
-+	regmap_read(afe->regmap, AFE_IRQ_MCU_EN, &mcu_en);
-+
-+	ret = regmap_read(afe->regmap, AFE_IRQ_MCU_STATUS, &status);
-+	/* only care IRQ which is sent to MCU */
-+	status_mcu = status & mcu_en & AFE_IRQ_STATUS_BITS;
-+
-+	if (ret || status_mcu == 0) {
-+		dev_err(afe->dev, "%s(), irq status err, ret %d, status 0x%x,
-+			mcu_en 0x%x\n", __func__, ret, status, mcu_en);
-+
-+		irq_ret = IRQ_NONE;
-+		goto err_irq;
-+	}
-+
-+	for (i = 0; i < MT79XX_MEMIF_NUM; i++) {
-+		struct mtk_base_afe_memif *memif = &afe->memif[i];
-+
-+		if (!memif->substream)
-+			continue;
-+
-+		if (memif->irq_usage < 0)
-+			continue;
-+
-+		irq = &afe->irqs[memif->irq_usage];
-+
-+		if (status_mcu & (1 << irq->irq_data->irq_en_shift))
-+			snd_pcm_period_elapsed(memif->substream);
-+	}
-+
-+err_irq:
-+	/* clear irq */
-+	regmap_write(afe->regmap, AFE_IRQ_MCU_CLR, status_mcu);
-+
-+	return irq_ret;
-+}
-+
-+static int mt79xx_afe_runtime_suspend(struct device *dev)
-+{
-+	struct mtk_base_afe *afe = dev_get_drvdata(dev);
-+	struct mt79xx_afe_private *afe_priv = afe->platform_priv;
-+
-+	if (!afe->regmap || afe_priv->pm_runtime_bypass_reg_ctl)
-+		goto skip_regmap;
-+
-+	/* disable clk*/
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON4, 0x3fff, 0x3fff);
-+	regmap_update_bits(afe->regmap, AUDIO_ENGEN_CON0, AUD_APLL2_EN_MASK,
-+			   0);
-+	regmap_update_bits(afe->regmap, AUDIO_ENGEN_CON0, AUD_26M_EN_MASK,
-+			   0);
-+
-+	/* make sure all irq status are cleared, twice intended */
-+	regmap_update_bits(afe->regmap, AFE_IRQ_MCU_CLR, 0xffff, 0xffff);
-+
-+skip_regmap:
-+	return mt79xx_afe_disable_clock(afe);
-+}
-+
-+static int mt79xx_afe_runtime_resume(struct device *dev)
-+{
-+	struct mtk_base_afe *afe = dev_get_drvdata(dev);
-+	struct mt79xx_afe_private *afe_priv = afe->platform_priv;
-+	int ret;
-+
-+	ret = mt79xx_afe_enable_clock(afe);
-+	if (ret)
-+		return ret;
-+
-+	if (!afe->regmap || afe_priv->pm_runtime_bypass_reg_ctl)
-+		goto skip_regmap;
-+
-+	/* enable clk*/
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON4, 0x3fff, 0);
-+	regmap_update_bits(afe->regmap, AUDIO_ENGEN_CON0, AUD_APLL2_EN_MASK,
-+			   AUD_APLL2_EN);
-+	regmap_update_bits(afe->regmap, AUDIO_ENGEN_CON0, AUD_26M_EN_MASK,
-+			   AUD_26M_EN);
-+
-+skip_regmap:
-+	return 0;
-+}
-+
-+static int mt79xx_afe_component_probe(struct snd_soc_component *component)
-+{
-+	return mtk_afe_add_sub_dai_control(component);
-+}
-+
-+static const struct snd_soc_component_driver mt79xx_afe_component = {
-+	.name = AFE_PCM_NAME,
-+	.probe = mt79xx_afe_component_probe,
-+	.pointer	= mtk_afe_pcm_pointer,
-+	.pcm_construct	= mtk_afe_pcm_new,
-+};
-+
-+static int mt79xx_dai_memif_register(struct mtk_base_afe *afe)
-+{
-+	struct mtk_base_afe_dai *dai;
-+
-+	dai = devm_kzalloc(afe->dev, sizeof(*dai), GFP_KERNEL);
-+	if (!dai)
-+		return -ENOMEM;
-+
-+	list_add(&dai->list, &afe->sub_dais);
-+
-+	dai->dai_drivers = mt79xx_memif_dai_driver;
-+	dai->num_dai_drivers = ARRAY_SIZE(mt79xx_memif_dai_driver);
-+
-+	dai->dapm_widgets = mt79xx_memif_widgets;
-+	dai->num_dapm_widgets = ARRAY_SIZE(mt79xx_memif_widgets);
-+	dai->dapm_routes = mt79xx_memif_routes;
-+	dai->num_dapm_routes = ARRAY_SIZE(mt79xx_memif_routes);
-+
-+	return 0;
-+}
-+
-+typedef int (*dai_register_cb)(struct mtk_base_afe *);
-+static const dai_register_cb dai_register_cbs[] = {
-+	mt79xx_dai_etdm_register,
-+	mt79xx_dai_memif_register,
-+};
-+
-+static int mt79xx_afe_pcm_dev_probe(struct platform_device *pdev)
-+{
-+	struct mtk_base_afe *afe;
-+	struct mt79xx_afe_private *afe_priv;
-+	struct device *dev;
-+	int i, irq_id, ret;
-+
-+	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
-+	if (!afe)
-+		return -ENOMEM;
-+	platform_set_drvdata(pdev, afe);
-+
-+	afe->platform_priv = devm_kzalloc(&pdev->dev, sizeof(*afe_priv),
-+					  GFP_KERNEL);
-+	if (!afe->platform_priv)
-+		return -ENOMEM;
-+
-+	afe_priv = afe->platform_priv;
-+	afe->dev = &pdev->dev;
-+	dev = afe->dev;
-+
-+	afe->base_addr = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(afe->base_addr))
-+		return PTR_ERR(afe->base_addr);
-+
-+	/* initial audio related clock */
-+	ret = mt79xx_init_clock(afe);
-+	if (ret) {
-+		dev_err(dev, "init clock error\n");
-+		return ret;
-+	}
-+
-+	pm_runtime_enable(dev);
-+
-+	/* enable clock for regcache get default value from hw */
-+	afe_priv->pm_runtime_bypass_reg_ctl = true;
-+	pm_runtime_get_sync(&pdev->dev);
-+
-+	afe->regmap = devm_regmap_init_mmio(&pdev->dev, afe->base_addr,
-+		      &mt79xx_afe_regmap_config);
-+	if (IS_ERR(afe->regmap)) {
-+		ret = PTR_ERR(afe->regmap);
-+		goto err_pm_disable;
-+	}
-+
-+	pm_runtime_put_sync(&pdev->dev);
-+	afe_priv->pm_runtime_bypass_reg_ctl = false;
-+
-+	/* init memif */
-+	afe->memif_size = MT79XX_MEMIF_NUM;
-+	afe->memif = devm_kcalloc(dev, afe->memif_size, sizeof(*afe->memif),
-+				  GFP_KERNEL);
-+	if (!afe->memif)
-+		goto err_pm_disable;
-+
-+	for (i = 0; i < afe->memif_size; i++) {
-+		afe->memif[i].data = &memif_data[i];
-+		afe->memif[i].irq_usage = -1;
-+	}
-+
-+	mutex_init(&afe->irq_alloc_lock);
-+
-+	/* irq initialize */
-+	afe->irqs_size = MT79XX_IRQ_NUM;
-+	afe->irqs = devm_kcalloc(dev, afe->irqs_size, sizeof(*afe->irqs),
-+				 GFP_KERNEL);
-+	if (!afe->irqs)
-+		goto err_pm_disable;
-+
-+	for (i = 0; i < afe->irqs_size; i++)
-+		afe->irqs[i].irq_data = &irq_data[i];
-+
-+	/* request irq */
-+	irq_id = platform_get_irq(pdev, 0);
-+	if (!irq_id) {
-+		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
-+		goto err_pm_disable;
-+	}
-+	ret = devm_request_irq(dev, irq_id, mt79xx_afe_irq_handler,
-+			       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
-+	if (ret) {
-+		dev_err(dev, "could not request_irq for asys-isr\n");
-+		goto err_pm_disable;
-+	}
-+
-+	/* init sub_dais */
-+	INIT_LIST_HEAD(&afe->sub_dais);
-+
-+	for (i = 0; i < ARRAY_SIZE(dai_register_cbs); i++) {
-+		ret = dai_register_cbs[i](afe);
-+		if (ret) {
-+			dev_warn(afe->dev, "dai register i %d fail, ret %d\n",
-+				 i, ret);
-+			goto err_pm_disable;
-+		}
-+	}
-+
-+	/* init dai_driver and component_driver */
-+	ret = mtk_afe_combine_sub_dai(afe);
-+	if (ret) {
-+		dev_warn(afe->dev, "mtk_afe_combine_sub_dai fail, ret %d\n",
-+			 ret);
-+		goto err_pm_disable;
-+	}
-+
-+	afe->mtk_afe_hardware = &mt79xx_afe_hardware;
-+	afe->memif_fs = mt79xx_memif_fs;
-+	afe->irq_fs = mt79xx_irq_fs;
-+
-+	afe->runtime_resume = mt79xx_afe_runtime_resume;
-+	afe->runtime_suspend = mt79xx_afe_runtime_suspend;
-+
-+	/* register component */
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+					      &mt79xx_afe_component,
-+					      NULL, 0);
-+	if (ret) {
-+		dev_warn(dev, "err_platform\n");
-+		goto err_pm_disable;
-+	}
-+
-+	ret = devm_snd_soc_register_component(afe->dev,
-+					      &mt79xx_afe_pcm_dai_component,
-+					      afe->dai_drivers,
-+					      afe->num_dai_drivers);
-+	if (ret) {
-+		dev_warn(dev, "err_dai_component\n");
-+		goto err_pm_disable;
-+	}
-+
-+	return ret;
-+
-+err_pm_disable:
-+	pm_runtime_put_sync(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
-+	return ret;
-+}
-+
-+static int mt79xx_afe_pcm_dev_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		mt79xx_afe_runtime_suspend(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id mt79xx_afe_pcm_dt_match[] = {
-+	{ .compatible = "mediatek,mt79xx-afe", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, mt79xx_afe_pcm_dt_match);
-+
-+static const struct dev_pm_ops mt79xx_afe_pm_ops = {
-+	SET_RUNTIME_PM_OPS(mt79xx_afe_runtime_suspend,
-+			   mt79xx_afe_runtime_resume, NULL)
-+};
-+
-+static struct platform_driver mt79xx_afe_pcm_driver = {
-+	.driver = {
-+		   .name = "mt79xx-audio",
-+		   .of_match_table = mt79xx_afe_pcm_dt_match,
-+		   .pm = &mt79xx_afe_pm_ops,
-+	},
-+	.probe = mt79xx_afe_pcm_dev_probe,
-+	.remove = mt79xx_afe_pcm_dev_remove,
-+};
-+
-+module_platform_driver(mt79xx_afe_pcm_driver);
-+
-+MODULE_DESCRIPTION("Mediatek SoC AFE platform driver for ALSA MT79xx");
-+MODULE_AUTHOR("Vic Wu <vic.wu@mediatek.com>");
-+MODULE_LICENSE("GPL");
+Yes I can see now that reducing the timeout is causing the problem here. 
+I can try a few settings to see what works.
+
+Thanks
+Jon
+
 -- 
-2.18.0
-
+nvpublic
