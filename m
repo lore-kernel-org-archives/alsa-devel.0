@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BA2FC7EE2E
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 12:32:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6012DC7EE25
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 12:33:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C9B96C0;
-	Mon, 12 Jun 2023 14:31:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C9B96C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79BAC820;
+	Mon, 12 Jun 2023 14:32:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79BAC820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686573168;
-	bh=j43ADNsIjjYmwoEmxuUqQg7nZkVYO+9i2b8VbRnKZ+0=;
+	s=default; t=1686573179;
+	bh=P7VpvLIVFjDFX5wkT4nJQ6EgCvEJbfiP6isClUPHG+I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AY8PYaSzPNquPMpojgM75IohEJu5XfVFVqO4CudA2q2kVCh2qBCgoFkcN38Gl7XI9
-	 Od/COKQYs+PsqdX+82qHLEiPtWegUGxKKl76W+9twJGXjvEcmSoDSo/apSZcSgHM10
-	 WiuXZ2VVuhjZZyadZnxjiQsKz6bLUz0OG5deb4zw=
+	b=RIOJoVvah+UQZdBVGcM5J9gnqG6/8VuNlXNgmm/UCwUfvYI6OyCcT+VFVTgyMsaal
+	 zRhZ0vMyg3jMvbg5uCr/tQTo35dFAw5sm6ztyCQ7R6HvK3KDRuiy2sYF2z06Gjeuri
+	 DdKROub9QsvvigBk9ltcj1r4SlcL9i/T65v2+NL4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86741F805AF; Mon, 12 Jun 2023 14:30:27 +0200 (CEST)
+	id 6C78CF805C6; Mon, 12 Jun 2023 14:30:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C03AAF805AF;
-	Mon, 12 Jun 2023 14:30:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BB06F805BB;
+	Mon, 12 Jun 2023 14:30:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73626F8058C; Mon, 12 Jun 2023 14:30:23 +0200 (CEST)
+	id 66017F805B5; Mon, 12 Jun 2023 14:30:28 +0200 (CEST)
 Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
  [217.70.183.193])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 43CF5F8025E
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 14:30:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43CF5F8025E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 26A3EF8057F
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 14:30:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26A3EF8057F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=GPwEuaot
+ header.s=gm1 header.b=FbrACQNU
 X-GND-Sasl: herve.codina@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686573014;
+	t=1686573021;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0zjmMFQWF61zw9+cDMz5UXwQs5v91FQYhgIX9kfi+g8=;
-	b=GPwEuaotHYy+KeLmHieSOGl4ZFBSI5jW9fbAzyelPnPJgZSUYNy2nJ9FQH481z2kbd79ev
-	mWK4v88w1xCDOy6EglLRLeaHs00makBSqA4AJGxjD6TwPfQDBwPPuKovSv7V3mxM5r2QCp
-	4VJ4UhiAKmRONu8MVSCmGOtzpzNqp/GrwQrjNtfnG+qvyDEhHEeQy84ifJMS/jfoKeB2Nu
-	nL1gGVg//0h7FtGkBRbit2gDlLHOX6XzuJD2VJwlxwdDUnQv5HshickA5soSnBtXunBI28
-	F9NolqiQPJl671dfvtxW3HhlH+LUGXfIaVs81/ZEVZ8FUjXXh369AS6RxJxgdw==
+	bh=EtIqNDwbBWA1PHsoAgu1+IjHyQBQ7NRNZYEibfB8UtA=;
+	b=FbrACQNUpBPPK5pcZMwmaX/axEgNj2WZRC9lGNgZRmfjVVnE2MNfUB/lgLcXOJDF3nn16P
+	MXdqANhlnGoHShqijFAzWmMkqaxXZbBXrkjC0Lim9l9K3pH2E+dhnb74wJNlpidzh84Ega
+	mIAkJoO8B76bflMipai82cPCadHM2S5hTDLw900Z5W4U5iwMe8TxQNRkurYPAVWD2Taw99
+	lYsCoTebu4BQgREXxFtltBOUw1CDCSYRbLbXUhTLGA9mkbqvt/0K/TCIonSlG0n2X13sHX
+	mbDNo71+/IPnE7XY6Y3IYWy3LxGSI30XszpVzuU1qg2OF7qt9jLe7IokC53Ndg==
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
@@ -69,8 +69,8 @@ X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id F177A24000C;
-	Mon, 12 Jun 2023 12:30:11 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPA id DDF11240014;
+	Mon, 12 Jun 2023 12:30:19 +0000 (UTC)
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -90,16 +90,17 @@ Cc: alsa-devel@alsa-project.org,
 	linux-iio@vger.kernel.org,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v3 06/12] minmax: Introduce {min,max}_array()
-Date: Mon, 12 Jun 2023 14:29:20 +0200
-Message-Id: <20230612122926.107333-7-herve.codina@bootlin.com>
+Subject: [PATCH v3 09/12] iio: inkern: Add a helper to query an available
+ minimum raw value
+Date: Mon, 12 Jun 2023 14:29:23 +0200
+Message-Id: <20230612122926.107333-10-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230612122926.107333-1-herve.codina@bootlin.com>
 References: <20230612122926.107333-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FJCZH7Q5UJMBE3V5SKZJAAVEJ6EM5XW6
-X-Message-ID-Hash: FJCZH7Q5UJMBE3V5SKZJAAVEJ6EM5XW6
+Message-ID-Hash: XROLSZZEALYKOHYAUPDKZHUGG5FIRS4T
+X-Message-ID-Hash: XROLSZZEALYKOHYAUPDKZHUGG5FIRS4T
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -112,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FJCZH7Q5UJMBE3V5SKZJAAVEJ6EM5XW6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XROLSZZEALYKOHYAUPDKZHUGG5FIRS4T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,51 +122,117 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Introduce min_array() (resp max_array()) in order to get the
-minimal (resp maximum) of values present in an array.
+A helper, iio_read_max_channel_raw() exists to read the available
+maximum raw value of a channel but nothing similar exists to read the
+available minimum raw value.
+
+This new helper, iio_read_min_channel_raw(), fills the hole and can be
+used for reading the available minimum raw value of a channel.
+It is fully based on the existing iio_read_max_channel_raw().
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- include/linux/minmax.h | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/iio/inkern.c         | 63 ++++++++++++++++++++++++++++++++++++
+ include/linux/iio/consumer.h | 12 +++++++
+ 2 files changed, 75 insertions(+)
 
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 396df1121bff..37a211f22404 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -133,6 +133,32 @@
-  */
- #define max_t(type, x, y)	__careful_cmp((type)(x), (type)(y), >)
+diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
+index 4331e74191cf..4f383a5ef59f 100644
+--- a/drivers/iio/inkern.c
++++ b/drivers/iio/inkern.c
+@@ -909,6 +909,69 @@ int iio_read_max_channel_raw(struct iio_channel *chan, int *val)
+ }
+ EXPORT_SYMBOL_GPL(iio_read_max_channel_raw);
  
-+#define __minmax_array(op, array, len) ({			\
-+	typeof(array) __array = (array);			\
-+	typeof(len) __len = (len);				\
-+	typeof(*__array + 0) __element = __array[--__len];	\
-+	while (__len--)						\
-+		__element = op(__element, __array[__len]);	\
-+	__element; })
++static int iio_channel_read_min(struct iio_channel *chan,
++				int *val, int *val2, int *type,
++				enum iio_chan_info_enum info)
++{
++	const int *vals;
++	int length;
++	int ret;
 +
-+/**
-+ * min_array - return minimum of values present in an array
-+ * @array: array
-+ * @len: array length
-+ *
-+ * Note that @len must not be zero (empty array).
-+ */
-+#define min_array(array, len) __minmax_array(min, array, len)
++	ret = iio_channel_read_avail(chan, &vals, type, &length, info);
++	if (ret < 0)
++		return ret;
 +
++	switch (ret) {
++	case IIO_AVAIL_RANGE:
++		switch (*type) {
++		case IIO_VAL_INT:
++			*val = vals[0];
++			break;
++		default:
++			*val = vals[0];
++			if (val2)
++				*val2 = vals[1];
++		}
++		return 0;
++
++	case IIO_AVAIL_LIST:
++		if (length <= 0)
++			return -EINVAL;
++		switch (*type) {
++		case IIO_VAL_INT:
++			*val = min_array(vals, length);
++			break;
++		default:
++			/* TODO: learn about min for other iio values */
++			return -EINVAL;
++		}
++		return 0;
++
++	default:
++		return -EINVAL;
++	}
++}
++
++int iio_read_min_channel_raw(struct iio_channel *chan, int *val)
++{
++	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(chan->indio_dev);
++	int ret;
++	int type;
++
++	mutex_lock(&iio_dev_opaque->info_exist_lock);
++	if (!chan->indio_dev->info) {
++		ret = -ENODEV;
++		goto err_unlock;
++	}
++
++	ret = iio_channel_read_min(chan, val, NULL, &type, IIO_CHAN_INFO_RAW);
++err_unlock:
++	mutex_unlock(&iio_dev_opaque->info_exist_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(iio_read_min_channel_raw);
++
+ int iio_get_channel_type(struct iio_channel *chan, enum iio_chan_type *type)
+ {
+ 	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(chan->indio_dev);
+diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
+index f536820b9cf2..e9910b41d48e 100644
+--- a/include/linux/iio/consumer.h
++++ b/include/linux/iio/consumer.h
+@@ -301,6 +301,18 @@ int iio_write_channel_raw(struct iio_channel *chan, int val);
+  */
+ int iio_read_max_channel_raw(struct iio_channel *chan, int *val);
+ 
 +/**
-+ * max_array - return maximum of values present in an array
-+ * @array: array
-+ * @len: array length
++ * iio_read_min_channel_raw() - read minimum available raw value from a given
++ *				channel, i.e. the minimum possible value.
++ * @chan:		The channel being queried.
++ * @val:		Value read back.
 + *
-+ * Note that @len must not be zero (empty array).
++ * Note, if standard units are required, raw reads from iio channels
++ * need the offset (default 0) and scale (default 1) to be applied
++ * as (raw + offset) * scale.
 + */
-+#define max_array(array, len) __minmax_array(max, array, len)
++int iio_read_min_channel_raw(struct iio_channel *chan, int *val);
 +
  /**
-  * clamp_t - return a value clamped to a given range using a given type
-  * @type: the type of variable to use
+  * iio_read_avail_channel_raw() - read available raw values from a given channel
+  * @chan:		The channel being queried.
 -- 
 2.40.1
 
