@@ -4,76 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D1FCC88CB2
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B961C7EE2F
 	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 19:07:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 97EBF828;
-	Mon, 12 Jun 2023 21:07:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97EBF828
+	by alsa0.perex.cz (Postfix) with ESMTPS id E518183B;
+	Mon, 12 Jun 2023 21:07:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E518183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686596877;
-	bh=+2CAjCfuiSvAQl5TXc8jdaS4YZBtxrP4Iq6jzt/7FnU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1686596872;
+	bh=N/dzqJlblDp6TTKWc155X+LGbZjpw//MJhRXHQQsR5k=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cKJi3WE4VnP6RgvIm0SmSghL237SDux3K59M1RLgDTQzM0WjfpbsMvEzwJeld0YtA
-	 uJt30GCKegNgwcjHOupv7tABruG0LNtvY5TrCVqJIqjNB29ZcAAnWOQSOjq5+AzfRA
-	 Zpwud0H+saTapggavN2gQqrgWe2vZOD2uAceYxBs=
+	b=LvutRZzprscrVVVd25+jF9n4Z7uWJR/wrQvSWjFPQVBn2K3wD8bBfuJf8LDKFJAjd
+	 EP1A3Joum7KblFRLIoIIlPcNFoAF8D5w3JGIf1/oeCnq3FGDpLKDOBV+MVPvIkghlK
+	 WmgznY3pycUyCJD8bqGTyNI06iSGOzkMVrHtWXC0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88E06F80552; Mon, 12 Jun 2023 21:06:33 +0200 (CEST)
+	id 37518F80557; Mon, 12 Jun 2023 21:06:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F78CF80563;
-	Mon, 12 Jun 2023 21:06:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7FA8F80557;
+	Mon, 12 Jun 2023 21:06:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 374DDF80563; Mon, 12 Jun 2023 21:06:29 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5AD58F80552
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 21:06:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AD58F80552
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fuEwoXIT
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id 541FCF80149; Mon, 12 Jun 2023 21:06:08 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id AD0F862014;
-	Mon, 12 Jun 2023 19:06:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B55EAC433EF;
-	Mon, 12 Jun 2023 19:06:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686596784;
-	bh=+2CAjCfuiSvAQl5TXc8jdaS4YZBtxrP4Iq6jzt/7FnU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fuEwoXIT6KsRx/x8OU1vcGkN+5jlLj2A1GBzDyfg7BY/fXV2BjY7cYa84QwjEKLnm
-	 VOBeUJILFwZjWfST+Wq14X/hAJLHUc9+QooZ+M8Z41mfUHSxnBztJ0B0S7ObT45U+g
-	 u6NrgVRSSFWNkXT0ARLZLMQ1yYYK/ieAYU+CdX0PV6f9pgxcQ5oY/gxnJjxz5oeDYj
-	 jGwqCkDYuHJq8QzmzD4gLW5U8gNvwbhv/VWEwx5tktuIgwl2E29H4h7rNu+fwk7qU8
-	 2zUEuHR8KJm8AhCvG7A4fs4uEDMgN0+lo7Z3dJrSkdFifK4ZxvBFsI5J42BijoA/NJ
-	 HyZMuo8m7DXzg==
-Date: Mon, 12 Jun 2023 20:06:19 +0100
-From: Mark Brown <broonie@kernel.org>
-To: YingKun Meng <mengyingkun@loongson.cn>
-Cc: lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org, loongarch@lists.linux.dev,
-	loongson-kernel@lists.loongnix.cn
-Subject: Re: [ PATCH v2 2/3] ASoC: loongson: Add Loongson ASoC Sound Card
- Support
-Message-ID: <1568e064-606e-4f56-951f-429a87a3a2d9@sirena.org.uk>
-References: <20230612090046.3039532-1-mengyingkun@loongson.cn>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 37665F800BA
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 21:06:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37665F800BA
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=fhytskk/
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1686596763; x=1718132763;
+  h=message-id:date:mime-version:from:subject:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=N/dzqJlblDp6TTKWc155X+LGbZjpw//MJhRXHQQsR5k=;
+  b=fhytskk/Gj2XQnF/GkfYzBR7ta0Hupclx4snuZdEnw06BwzahkFj+Fxc
+   YwhOM1qoTHFVlrEs9bjK1cxNS8bGtETaEy13ytktLRyE74hotX5eynOBw
+   asrjcnczDdmwSSF4M6HoKB9KyXJBO8ooJYD9FdqQCD2/dXK2ElDw08Nib
+   0V0owvLYCzUfTZzQM1L9HGXYhSa23lTF+cZDMHtZ+Z23pp3pe7T1rnTxk
+   nSxIuwiripqymd3D6L8yvInhB51ASVdj8zxrhbNefkkRA4Hk37mGUgIcw
+   T1E1ON8AaSKCZ14x0Jlltm5ZyRlu2anrzlizqX/RD+itPViw4Yewuag6D
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10739"; a="338499173"
+X-IronPort-AV: E=Sophos;i="6.00,236,1681196400";
+   d="scan'208";a="338499173"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jun 2023 12:05:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10739"; a="776503224"
+X-IronPort-AV: E=Sophos;i="6.00,236,1681196400";
+   d="scan'208";a="776503224"
+Received: from atulpuri-mobl1.amr.corp.intel.com (HELO [10.212.234.150])
+ ([10.212.234.150])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jun 2023 12:05:58 -0700
+Message-ID: <5899c2b8-e984-fda9-5e12-190b0c9fd3b2@linux.intel.com>
+Date: Mon, 12 Jun 2023 13:09:26 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="JmH6MnoyxZ+mPA1w"
-Content-Disposition: inline
-In-Reply-To: <20230612090046.3039532-1-mengyingkun@loongson.cn>
-X-Cookie: If it heals good, say it.
-Message-ID-Hash: VG4LXPL4G3PYMZNVMQB34Z52ZGT2KAZQ
-X-Message-ID-Hash: VG4LXPL4G3PYMZNVMQB34Z52ZGT2KAZQ
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH V4 1/9] ASoC: amd: ps: create platform devices based on
+ acp config
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
+ Sunil-kumar.Dommati@amd.com, Mastan.Katragadda@amd.com,
+ Arungopal.kondaveeti@amd.com, mario.limonciello@amd.com,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20230612095903.2113464-1-Vijendar.Mukunda@amd.com>
+ <20230612095903.2113464-2-Vijendar.Mukunda@amd.com>
+Content-Language: en-US
+In-Reply-To: <20230612095903.2113464-2-Vijendar.Mukunda@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: X657V5XNUOZVA3HDBZR5GOG5C2TQBOLH
+X-Message-ID-Hash: X657V5XNUOZVA3HDBZR5GOG5C2TQBOLH
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VG4LXPL4G3PYMZNVMQB34Z52ZGT2KAZQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X657V5XNUOZVA3HDBZR5GOG5C2TQBOLH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,39 +109,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+=
+> +static int sdw_amd_scan_controller(struct device *dev)
+> +{
+> +	struct acp63_dev_data *acp_data;
+> +	struct fwnode_handle *link;
+> +	char name[32];
+> +	u32 sdw_manager_bitmap;
+> +	u8 count = 0;
+> +	u32 acp_sdw_power_mode = 0;
+> +	int index;
+> +	int ret;
+> +
+> +	acp_data = dev_get_drvdata(dev);
+> +	/*
+> +	 * Current implementation is based on MIPI DisCo 2.0 spec.
+> +	 * Found controller, find links supported.
+> +	 */
+> +	ret = fwnode_property_read_u32_array((acp_data->sdw_fw_node), "mipi-sdw-manager-list",
+> +					     &sdw_manager_bitmap, 1);
+> +
+> +	if (ret) {
+> +		dev_err(dev, "Failed to read mipi-sdw-manager-list: %d\n", ret);
+> +		return -EINVAL;
+> +	}
+> +	count = hweight32(sdw_manager_bitmap);
+> +	/* Check count is within bounds */
+> +	if (count > AMD_SDW_MAX_MANAGERS) {
+> +		dev_err(dev, "Manager count %d exceeds max %d\n", count, AMD_SDW_MAX_MANAGERS);
+> +		return -EINVAL;
+> +	}
 
---JmH6MnoyxZ+mPA1w
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+nit-pick: the count is not enough, you should also check that only bits
+0 and 1 are set in mipi-sdw-manager-list...
 
-On Mon, Jun 12, 2023 at 05:00:46PM +0800, YingKun Meng wrote:
+> +
+> +	if (!count) {
+> +		dev_dbg(dev, "No SoundWire Managers detected\n");
+> +		return -EINVAL;
+> +	}
+> +	dev_dbg(dev, "ACPI reports %d SoundWire Manager devices\n", count);
+> +	acp_data->sdw_manager_count = count;
+> +	for (index = 0; index < count; index++) {
+> +		snprintf(name, sizeof(name), "mipi-sdw-link-%d-subproperties", index);
 
-> +	if (ls_card->mclk_fs) {
-> +		mclk = ls_card->mclk_fs * params_rate(params);
-> +		ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
-> +					     SND_SOC_CLOCK_OUT);
-> +		if (ret < 0) {
-> +			dev_err(codec_dai->dev, "cpu_dai clock not set\n");
-> +			return ret;
+... otherwise this will be wrong.
+
+> +		link = fwnode_get_named_child_node(acp_data->sdw_fw_node, name);
+> +		if (!link) {
+> +			dev_err(dev, "Manager node %s not found\n", name);
+> +			return -EIO;
 > +		}
+> +
+> +		ret = fwnode_property_read_u32(link, "amd-sdw-power-mode", &acp_sdw_power_mode);
+> +		if (ret)
+> +			return ret;
+> +		/*
+> +		 * when SoundWire configuration is selected from acp pin config,
+> +		 * based on manager instances count, acp init/de-init sequence should be
+> +		 * executed as part of PM ops only when Bus reset is applied for the active
+> +		 * SoundWire manager instances.
+> +		 */
+> +		if (acp_sdw_power_mode != AMD_SDW_POWER_OFF_MODE) {
+> +			acp_data->acp_reset = false;
+> +			return 0;
+> +		}
+> +	}
+> +	return 0;
+> +}
 
-Does this need to be in the machine driver - this isn't configuring an
-external clock, it's just within the SoC, so presumably the driver for
-the SoC DAI can just set itself up.
-
---JmH6MnoyxZ+mPA1w
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSHbKoACgkQJNaLcl1U
-h9DjFQf3dlnL5S14TJo0QE32BmeVlgoqhFL9wxd3gu8bQCVhB6nAC9Bf3q/HRd5T
-fvkq/Qtuv1n4VCXt28d1SboHdkcwwbyeNFvR2UE+c9yVumPy5VHXHNfsdRCJlDn0
-dkrA+p2IG6SrGIKeyhTv4na9U5psScEjaTMqfTyk0DmlQO1IPRhpEi9/TI8VvRE4
-DR9zoE5bPwbnMw68HEOS1GJQaHvdfDVWV4lKAvB4SpUqdHmpe871o33+2dfsHi9w
-XCcqPyi/b3NwpA2/7r58meKwtroWgNVK3UXBrzQMwHFM1cEItj7b7WEIctIZrFxl
-Le5GHVG0fRO4igXwrRUArFACZFhI
-=PFnV
------END PGP SIGNATURE-----
-
---JmH6MnoyxZ+mPA1w--
