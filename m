@@ -4,83 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9368C7EE2F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 17:37:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF03FC7EE2E
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Jun 2023 18:03:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69449829;
-	Mon, 12 Jun 2023 19:36:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69449829
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4EC61F1;
+	Mon, 12 Jun 2023 20:02:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4EC61F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686591439;
-	bh=yC5mi0XHtFLtIv5jLmar9jZwOk85IwJ3eKL6+ztXRvM=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1686592989;
+	bh=v1SKKw5hi75/Uk50Jt3AiB4VgAKrNVx7wqorO4yeTL0=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rJVPWEsU8HCkQxlHeeT/2tpXqQS2QoPcAA5lab/8p+LbLywR2ku6OP05rj+P46xis
-	 Hf6buNIiFDuv1i/I6nm7FhE8j9Bjf5wqD31m67mW0rnnfvHC1GCWKS+EyoYu4Ae9Gm
-	 G8O2ZVmED67nSKgr6C1PK+DYLbd5I74i+vMNVDCw=
+	b=QC49WbSDGHCaeOk+wsmJ+Rwr3rCZFBYp3UbZCfWrOsfGAvhAuQaAvkCOQ4kcB/or4
+	 M3w0B5whEyQVaFT8Gv7EkvwDaJfCxSAJXRco7zo39jxGISURQr1vwYrALW0BzwrbLc
+	 sn/NoYWr2z7IingnncWYeg204LLr+cjIzKBvxEiA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5E87BF80301; Mon, 12 Jun 2023 19:36:04 +0200 (CEST)
+	id 7F3BDF80544; Mon, 12 Jun 2023 20:01:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E51B5F80149;
-	Mon, 12 Jun 2023 19:36:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F7C6F80149;
+	Mon, 12 Jun 2023 20:01:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9BD39F80149; Mon, 12 Jun 2023 19:36:00 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0A09BF80130
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 19:35:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A09BF80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fcFgNk+B
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id 57A86F80149; Mon, 12 Jun 2023 20:01:49 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A518A62C4D;
-	Mon, 12 Jun 2023 17:35:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C36C4339B;
-	Mon, 12 Jun 2023 17:35:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686591355;
-	bh=yC5mi0XHtFLtIv5jLmar9jZwOk85IwJ3eKL6+ztXRvM=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=fcFgNk+B1+RWU1Yja2l/rB3cVIJfFbRkcTNtESIVYy+A2BQIvAAVLpAXSl4hcE4g0
-	 y24jT/5PPmP5n+EoQSSX2SSw54TIfOiLB8a4KGEs7V3V0cU3BDujndngxdlP02Bxtj
-	 vaofVez8+4vzTFqH2Y4uBOtHqKXPksh2qOQdyDLh8FTwH2WZDcqRNLpqR4S3V0XFYG
-	 aiZNm1HQJriOYSitf6EePTEdpLwuZQxrJ1ZsOc70fGmtvicN5mCqz6zdrbOXOlIqLF
-	 lqPZWHg0sUIxpcYLLczq5FefKYAyBUkMh4nCypfuRH4gvZWkfZvJexj1V+F6TuggTI
-	 pCXko+RIau8oQ==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- linux-kernel@vger.kernel.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <20230612110958.592674-1-brent.lu@intel.com>
-References: <20230612110958.592674-1-brent.lu@intel.com>
-Subject: Re: [PATCH 00/12] ASoC: Intel: avs: remove redundant dapm routes
-Message-Id: <168659135251.88952.16253642341528642250.b4-ty@kernel.org>
-Date: Mon, 12 Jun 2023 18:35:52 +0100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3216CF80130
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2023 20:01:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3216CF80130
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=k691v2RK
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 35CDOsMO023788;
+	Mon, 12 Jun 2023 13:01:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=0fhZSw8heUGKrKR9J9xBRt2ncINDfH8G5IqxRrkw4aE=;
+ b=k691v2RKmsEmuHjfFAoWXHfCjEgpN8IYnhMaYczg9jNJkT+YPt4OgNAaq2kf7kJc0XhK
+ 1Y7264YRfQi5e4Log6Vvgt3s/jUUlwRXoJLyvYZqO0evVoxnIOciXaZYjYQaa7gvxgKM
+ q1uVcdNL/GAKj5YarkoGQJBoLqnGExaSx7nq9T/sTBh5re5Z+kxY3qrhZUGPcIV1It/Y
+ PMrq3kQ89UgiYFQKxXGIofz2Ix68axxNwNMpkkG4JHybSr1fqs0nB/ndqaI7r4UHzbLr
+ RX6RLo21DaEd0TVobJ/rF/RcdqXkvzwvuJZN3g7hT1iB/T4bUNGOdNfAdHJwTyYgs0Tm xA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3r4pk0a35w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 12 Jun 2023 13:01:38 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Mon, 12 Jun
+ 2023 19:01:36 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 12 Jun 2023 19:01:36 +0100
+Received: from [141.131.77.133] (unknown [141.131.77.133])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DA643475;
+	Mon, 12 Jun 2023 18:01:34 +0000 (UTC)
+Message-ID: <0d8d93ca-65fa-d0b4-e2e3-483c87711cf5@opensource.cirrus.com>
+Date: Mon, 12 Jun 2023 13:01:34 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.10.0
+Subject: Re: [PATCH 00/10] ASoC: Use maple tree for Cirrus Logic devices
+To: Mark Brown <broonie@kernel.org>,
+        James Schulman
+	<james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        =?UTF-8?Q?Martin_Povi=c5=a1er?= <povik+lin@cutebit.org>
+CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <asahi@lists.linux.dev>
+References: <20230609-asoc-cirrus-maple-v1-0-b806c4cbd1d4@kernel.org>
+Content-Language: en-US
+From: "Rhodes, David" <drhodes@opensource.cirrus.com>
+In-Reply-To: <20230609-asoc-cirrus-maple-v1-0-b806c4cbd1d4@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bfdf5
-Message-ID-Hash: PF52WQXNT3GXNALT24C2MEET6TFA7GOJ
-X-Message-ID-Hash: PF52WQXNT3GXNALT24C2MEET6TFA7GOJ
-X-MailFrom: broonie@kernel.org
+X-Proofpoint-ORIG-GUID: xg50FgLF5dU4PJKCN9wkq7V8vgnMOFEd
+X-Proofpoint-GUID: xg50FgLF5dU4PJKCN9wkq7V8vgnMOFEd
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 6SKQQP4SFM7AIKBZE6OYH5HO4HPAOWFF
+X-Message-ID-Hash: 6SKQQP4SFM7AIKBZE6OYH5HO4HPAOWFF
+X-MailFrom: prvs=15273e91c8=drhodes@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PF52WQXNT3GXNALT24C2MEET6TFA7GOJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6SKQQP4SFM7AIKBZE6OYH5HO4HPAOWFF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,65 +115,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 12 Jun 2023 19:09:46 +0800, Brent Lu wrote:
-> This patch series remove redundant dapm routes declared in multiple machine
-> drivers. These routes will be created by snd_soc_dapm_connect_dai_link_widgets()
-> during soundcard initialization. Following is the kernel log from a KBL
-> chromebook nocturne.
+On 6/10/23 8:56 AM, Mark Brown wrote:
+> A lot of the Cirrus Logic devices only support single register
+> read/write operations so they get no benefit from using the rbtree cache
+> over the more modern maple tree cache, convert them to use maple tree.
 > 
-> dmic:
-> [   13.773455] avs_dmic avs_dmic: connected DAI link dmic-codec:Capture -> dmic-platform:DMIC Rx
-> [   13.773460] avs_dmic avs_dmic: connected DAI link dmic-codec:Capture -> dmic-platform:DMIC WoV Rx
-> 
-> [...]
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[01/12] ASoC: Intel: avs-da7219: remove redundant dapm routes
-        commit: 530ca0a7ed04230408775b495034941346ea5db1
-[02/12] ASoC: Intel: avs-dmic: remove redundant dapm routes
-        commit: c2076f4fa4f15559ed7e568186c4089479a62154
-[03/12] ASoC: Intel: avs-hdaudio: remove redundant dapm routes
-        commit: 12ea56d73c548929ef1a498848905b04bfe85f90
-[04/12] ASoC: Intel: avs-max98357a: remove redundant dapm routes
-        commit: d48e3cd5aaecd7769b073f65bb95004a54bc76e6
-[05/12] ASoC: Intel: avs-max98373: remove redundant dapm routes
-        commit: b4df7ce9905b1e8cb84ee247ca7db6ae004bc508
-[06/12] ASoC: Intel: avs-max98927: remove redundant dapm routes
-        commit: 9868ca64fd7a87cf997040452519b07e47a8d008
-[07/12] ASoC: Intel: avs-nau8825: remove redundant dapm routes
-        commit: ae7d66822de5aeaf991eda96c823ee9dffebfe46
-[08/12] ASoC: Intel: avs-rt274: remove redundant dapm routes
-        commit: 6227269fb375af2ff239a68499856abfd6a2bceb
-[09/12] ASoC: Intel: avs-rt286: remove redundant dapm routes
-        commit: cca1ac1f097afa7ad6e587d6f1e86fd738ede508
-[10/12] ASoC: Intel: avs-rt298: remove redundant dapm routes
-        commit: eae0655316a5d741ab27c7b3a67a55b0af970e19
-[11/12] ASoC: Intel: avs-rt5682: remove redundant dapm routes
-        commit: 96b5452fe43c23451050b3efa5197bd10dce9bc6
-[12/12] ASoC: Intel: avs-ssm4567: remove redundant dapm routes
-        commit: 51bdf6ebe5b7da8d1b86cf66fe7e21de353e5218
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Acked-by: David Rhodes <david.rhodes@cirrus.com>
 
 Thanks,
-Mark
+David
 
