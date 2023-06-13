@@ -4,148 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0A7FC88CB4
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jun 2023 13:26:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7652FC64E93
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jun 2023 13:29:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1CD4A4E;
-	Tue, 13 Jun 2023 15:25:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1CD4A4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 665D386E;
+	Tue, 13 Jun 2023 15:28:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 665D386E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686662808;
-	bh=2MDXSwhQw3/zppmy6zapeC3KwvSBcdDyln5BcCutQFY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=dpbNcleg7BHL7CxebLs8eVphZa+sMlfLOXgDjHndxY49zH111M9Qf90zPyGMxlrfN
-	 M0+nFJLGB9MX6IamAtNOjKSL/Xz3rwbeJY3Em2vcJxgN0mGsYDqNgEBmEPcYIRrrRD
-	 tBHRpTahcA+QMTGBo/4Qa+d1Y2pq3G8+uwaznwQo=
+	s=default; t=1686662985;
+	bh=koUzvEiCVL4ZV3eZE7rt/JBpHYifR93ypeG7YKwMHqk=;
+	h=Date:Subject:From:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=bcgoD9HKsnjkzx1tiZPPO1+XrnsjxSaJVSR32tumrONR19NJirgRf2t9O65PpqcHr
+	 j4UMyUr8pIcEsmhEO1tv2C+2uyqYztROc8yWlQ7i7EGxVhimL/4uPpDonZaP7jljMT
+	 5e6EQ3CViR3RU/CFB24RQNoehgbBvNRW8ae6ivJQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E570BF8025E; Tue, 13 Jun 2023 15:25:52 +0200 (CEST)
+	id 5193AF80246; Tue, 13 Jun 2023 15:28:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82333F8025E;
-	Tue, 13 Jun 2023 15:25:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA542F80149;
+	Tue, 13 Jun 2023 15:28:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53541F80155; Tue, 13 Jun 2023 15:25:49 +0200 (CEST)
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com
- [IPv6:2607:f8b0:4864:20::f30])
+	id 2838BF80149; Tue, 13 Jun 2023 08:24:07 +0200 (CEST)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com
+ [IPv6:2607:f8b0:4864:20::b4a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 15A21F80132
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2023 15:25:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15A21F80132
+	by alsa1.perex.cz (Postfix) with ESMTPS id A933AF80093
+	for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2023 08:24:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A933AF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=HWfrF9Tf
-Received: by mail-qv1-xf30.google.com with SMTP id
- 6a1803df08f44-62df4cc47d4so6899296d6.0
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20221208 header.b=Cvn1KURu
+Received: by mail-yb1-xb4a.google.com with SMTP id
+ 3f1490d57ef6-bce24604eeaso1372420276.0
         for <alsa-devel@alsa-project.org>;
- Tue, 13 Jun 2023 06:25:36 -0700 (PDT)
+ Mon, 12 Jun 2023 23:24:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686662735; x=1689254735;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PGWVSRLSWiSQmgCzVp1crJX1PaYgdtyOOFzd4KI8WPY=;
-        b=HWfrF9TfgiK84XltXfvEgJRiai43zOeGut8vINME/9REh2L3cElV8+jnFD9w1O4hCa
-         DOSLZRxfWQrvdXAonKLk4FnRb2jIBi7XLmGQgeF3fpheKhw1QiiaXteIPU65Z3BHmabx
-         PVBvMLCKFvLvZsn1uFcP9OKv5ZYU/OmETC3D8hALocTj1s02fudpY9GutoTjtLQSfq8N
-         BUM19YwPqIKRWmM0hed8lbHmYSNn4IXrLcq6JgCKGChoNCZKD5uyNWifQfBXN5dmMNiy
-         tgkqxWiCu53VpV40XJc5vCbXO37JudVTGjb4hjVI4J48uy6frPRTHL4AhmzHS8eD/2WY
-         EzyA==
+        d=google.com; s=20221208; t=1686637442; x=1689229442;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SksGVuYCcpsJS5jmOyFVtMmk7sbrZYWWYhHorGtkCYg=;
+        b=Cvn1KURuUQhom3FaKEax20iu/wRaoEiE+9IlyMWWIGvmYOydnM3Fbia3p3JYFkG+RA
+         79Kx39PwldBaXf9s3FZJRMs3Dxdn+VqpVnfMUNBTddetvkg5SuEx+Ourqz6HdUFX76WX
+         kqB4YCKy1WOxSMSQ/HghElbCNBtlZAXc+2YXlpmAFddwrIO865Zjv5CnjDZUbKqA0Np7
+         uHVlrgjkSHMvsRKpgnXbRDRReCBmcYlgGVHF/KII5tQzwunuWWx0krZ2Z/Hmt7TQfRdg
+         TgKKvc0ShTp2X83gkNhOLw5dm5ro1bozBtFfo7BHd8oUDDdPH+BQZOYe7aw3PBB1A2dk
+         83Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686662735; x=1689254735;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PGWVSRLSWiSQmgCzVp1crJX1PaYgdtyOOFzd4KI8WPY=;
-        b=iQHKpv/31C6eWtZ6peSTJOTKpdagVKyj/TJ6d2V9E9+mzSyZdbveD+uFgqc0XL3EXm
-         ZNC38/DA/dw71O/qG/SPjY1Z0AtWrmdA4VVRqacT5GCxF4isOfqUq1lHpY0Svjn0wjjl
-         K5BiDrBD131y0brbVvji3roXb7WqRNQtUzCh/WbMck2DTyMuLs8KEFagMuYnaCacPDgT
-         kkcG2zGf2ojVnOAdfEkbqNiYCzqcGgXI+Dn6A2Nmu6IAh6z627KRHXR3BA3/WE4NFn1X
-         BCbGl9E02ZuKjlVx+aTluh7D3kJF7SBbZ+K/rohdKy8bjxwh0grsy/vADfcxGPeXciis
-         QXdg==
-X-Gm-Message-State: AC+VfDxTRpMw2ykbpGYXnopEfhQSAq2Gu0EE1JYjBO8zbWriQrZ3j8ek
-	X7b2E7BUhinupZYgHqlZQZH2pdlVnW85+fSNgZM=
+        d=1e100.net; s=20221208; t=1686637442; x=1689229442;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SksGVuYCcpsJS5jmOyFVtMmk7sbrZYWWYhHorGtkCYg=;
+        b=hk4t8iPxuvzLomajzRLwM/lk9xgLk0MIgCLRjhuECxfWQPWhmqUCQVUDhS1n5CBkx6
+         Cjcf0hPbp2K2dUE0QoJ6iCYBB0T0sJiGc4dnC31CmkCoKpHtIxXZ2f1CAzobNipcl/Q5
+         UGpc8a0qWY6/75YXJAvz6LJHJXc9keXLXw7E7AAcRjAOyoD72kdYBOM7Zri0UA1jKwuT
+         EAqXeVJwMrK1IokrBlR9JRyPcy9YR4PLTAxVezppkWYSVv+AmTu2JdYxoxwCyced9EDo
+         gad1WxH+Npt9uzcuNu9MvOJjtrDbwzHzwTDcFbSK9Fv1XZLoOuf1Or5Q20APpZ302kfM
+         X3qg==
+X-Gm-Message-State: AC+VfDwfmZnEm/BxAk+1uPLCLIrAidcciHsxfM/avdl+D1H5vUbRDMFK
+	RlyjSRNBxY0W7nwM7UtzyZctz1zAiOyTLgsgYw==
 X-Google-Smtp-Source: 
- ACHHUZ5kz189tnuVuyMuffOhKxE4YMOwXJzuYUWwxct+eUXsThGzOBu6ItCuKQ3mJGC+D7Re2VsLvEk8QpOGwIlN9E8=
-X-Received: by 2002:a05:6214:1cce:b0:62d:fddb:1856 with SMTP id
- g14-20020a0562141cce00b0062dfddb1856mr392857qvd.43.1686662734879; Tue, 13 Jun
- 2023 06:25:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230612122926.107333-1-herve.codina@bootlin.com>
- <20230612122926.107333-12-herve.codina@bootlin.com>
- <CAHp75Vfz+vSJ7rQ4sxb0R+zRbrjipXUX3VpaHyvOWWePdPxejQ@mail.gmail.com>
- <20230613113707.0b5d9648@bootlin.com>
-In-Reply-To: <20230613113707.0b5d9648@bootlin.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 13 Jun 2023 16:24:58 +0300
-Message-ID: 
- <CAHp75Vd0SNY6XgKwS5j74VftY46MDQ9=Zc3wXwGLOiMc_ZX8Ow@mail.gmail.com>
-Subject: Re: [PATCH v3 11/12] ASoC: codecs: Add support for the generic IIO
- auxiliary devices
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+ ACHHUZ7MsfCSnI9ZnIsllvUmu8OVRtd5lAnbhP5r+QUWm1RA9r7epvJv2CV2dCkQTlRGDW/LSP6fFyjXpFb9Xgka4g==
+X-Received: from yixuanjiang.ntc.corp.google.com
+ ([2401:fa00:fc:202:8f9c:a67:3aa8:51ac])
+ (user=yixuanjiang job=sendgmr) by 2002:a25:ad1d:0:b0:bd1:ae45:5447 with SMTP
+ id y29-20020a25ad1d000000b00bd1ae455447mr208027ybi.0.1686637442066; Mon, 12
+ Jun 2023 23:24:02 -0700 (PDT)
+Date: Tue, 13 Jun 2023 14:23:50 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.162.gfafddb0af9-goog
+Message-ID: <20230613062350.271107-1-yixuanjiang@google.com>
+Subject: [PATCH] ASoC: soc-compress: Fix deadlock in soc_compr_open_fe
+From: yixuanjiang <yixuanjiang@google.com>
+To: vkoul@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+	tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	yixuanjiang <yixuanjiang@google.com>, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: CAHOLFS5Z52XEHJUQ3TGY5LTSBUCIWMU
-X-Message-ID-Hash: CAHOLFS5Z52XEHJUQ3TGY5LTSBUCIWMU
-X-MailFrom: andy.shevchenko@gmail.com
+X-MailFrom: 
+ 3gguIZAsKCuMdNcZFSONFSLLTTLQJ.HTRFQXF-IJaJQFQXF-UWTOJHY.TWL@flex--yixuanjiang.bounces.google.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: AYEOVOU5PIL2BSVRADMXZBT6N67XJOPT
+X-Message-ID-Hash: AYEOVOU5PIL2BSVRADMXZBT6N67XJOPT
+X-Mailman-Approved-At: Tue, 13 Jun 2023 13:28:14 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CAHOLFS5Z52XEHJUQ3TGY5LTSBUCIWMU/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AYEOVOU5PIL2BSVRADMXZBT6N67XJOPT/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jun 13, 2023 at 12:37=E2=80=AFPM Herve Codina <herve.codina@bootlin=
-.com> wrote:
-> On Mon, 12 Jun 2023 17:37:00 +0300
-> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+Modify the error handling flow by release lock.
+The require pcm_mutex will keep holding if open fail.
 
-...
+Fixes: aa9ff6a4955f ("ASoC: soc-compress: Reposition and add pcm_mutex")
+Signed-off-by: yixuanjiang <yixuanjiang@google.com>
+Cc: stable@vger.kernel.org # v5.15+
+---
+ sound/soc/soc-compress.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> > > +       struct snd_kcontrol_new control =3D {0};
-> >
-> > 0 is not needed.
->
-> Not for this one.
->
-> The variable is in stack.
-> Some of the structure members will be set in the code but we need to ensu=
-re
-> that all others are set to 0.
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 256e45001f85..b6727b91dd85 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -166,6 +166,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 	snd_soc_dai_compr_shutdown(cpu_dai, cstream, 1);
+ out:
+ 	dpcm_path_put(&list);
++	mutex_unlock(&fe->card->pcm_mutex);
+ be_err:
+ 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
+ 	mutex_unlock(&fe->card->mutex);
+-- 
+2.41.0.162.gfafddb0af9-goog
 
-Yes, and as I said, 0 is not needed. Compiler assumes that if you just
-use plain {}.
-
---=20
-With Best Regards,
-Andy Shevchenko
