@@ -4,145 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB9B7EB64D0
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jun 2023 13:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B720EB64D7
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jun 2023 13:30:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A076BDED;
-	Tue, 13 Jun 2023 15:29:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A076BDED
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8953E79;
+	Tue, 13 Jun 2023 15:30:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8953E79
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686663025;
-	bh=2dgO6aOYmED13N2sr0Qd1XFANwhQLDifQhtAECMMgCY=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=pRQg6wMi8YcMzvL4+F3+CcVYPsFzmJJF9oD40eDyHFGevGgyAK2c9XW21dDeCAfKQ
-	 G833XnSdNkuXkcZaAgam/GNI10AJNar9pqOY7tiUdKJiI5nZRqzAlD7LvHirKQMIx0
-	 D228Gn/ua1FLy3GbEaYJRH7Fy21WkrAy7HuZYLqM=
+	s=default; t=1686663052;
+	bh=2NmbXsBuDmGEfrvDWU/BoLX/yRmbLKx0kk1xwWwrynk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=YDrWgHvuVd7Vp7VfY77F0u+T1/hVQNg99EOYFsnWJwsAxcpRbgQmi6Mrv+Rvfo//E
+	 fXRCQw5FtQ3Xjga6PyAzj+6G31E4HIrfhUV/I4/UNXWM2T+iQ1xF/1Gda3OJj8OAZs
+	 gNBS74l73PmT0cytsh15OQJU+ezynnrEVNMPNNsI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 52E85F8057B; Tue, 13 Jun 2023 15:29:08 +0200 (CEST)
+	id 64BF7F8059F; Tue, 13 Jun 2023 15:29:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72B31F80570;
-	Tue, 13 Jun 2023 15:29:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FBDEF80580;
+	Tue, 13 Jun 2023 15:29:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF800F80149; Tue, 13 Jun 2023 14:28:20 +0200 (CEST)
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam11on20601.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7eae::601])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5327BF800ED
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2023 14:28:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5327BF800ED
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=Kg59ikpA
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ivoDcP2yxX+hJwW9R96/LRrhEdoRyonlHaiJ6/4/6dVok03fCvKtqBKgNafUvETDajuz+kNdZghje8GVpV3C9+w1yqMfNTJipkXxR8N4mlUsyyZCpETqTMu43EcLsPhzqrrzadX+pcZeRvWISlcl+ZjuKEfzUBfRdBK07dlbqWqrTssrMN8veTzf+v58B5V6joDkUhRdCfeYXUmrYxQ2jOKOOmQUhRiKR4q85+opF0BQG8ejPaOK01kGVDYJ6D0VBig3gJRcaA/nbiP/1dCNivx/ozkoGjbWQdgkjBud/9y/MrBp0atZJkkrkCdmFKJcTuJU/Jm1lZWXgj7Hve5lCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hO2JSQyz6gRmMoZGHNyD60VEPB42Wq/pL3MpoRi4GeQ=;
- b=Y0pVttY/3IAzMRSFC3go/KKDoiubQx8TsBqYQhfQSPkRnfsZghGfcBabI4zOhzoFzMmgSglmiSMtnlqjjFSufRy+KDCVvdn15c8BbYGCVlTeKAJiCCOqgf1hVU4khIzA3zCuA2H1MrIaapKZAP532/gxXaBpQrbiqnWHonpmNMnejqAOAwn/IMwboo/3TZW9nFafcfwnga1rVPNoMLIkdSzOIqK3ZoiL4J2cvjz5rm6dc11WAtpsDgSA0tP7Rt/rUbrpaZV5nVN8Y8Ce7/+lk8GuqXHyFCaePWmkLAJrVUrg+RPNElrPJEGhpAFFvg6zUXVe2F1RQ7OXGipYk2F6Cw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hO2JSQyz6gRmMoZGHNyD60VEPB42Wq/pL3MpoRi4GeQ=;
- b=Kg59ikpAnnjwkhcq2KQB8TnP2d/50PxtOl0e/Dyeo9zVG0umD9cNx7Bknyz4UfrDfDMp2li46nWyZ70syupWbAFYTCxAjAP765LjxO549VrmmH7jjoaz0yfCXZX5Vi1aE9RhJN1VLlzG321i4P+t8UtdVdAigQXR/9SOyYBovL0=
-Received: from BN9PR03CA0367.namprd03.prod.outlook.com (2603:10b6:408:f7::12)
- by IA0PR12MB8839.namprd12.prod.outlook.com (2603:10b6:208:493::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6455.33; Tue, 13 Jun
- 2023 12:28:00 +0000
-Received: from BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:f7:cafe::7d) by BN9PR03CA0367.outlook.office365.com
- (2603:10b6:408:f7::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.35 via Frontend
- Transport; Tue, 13 Jun 2023 12:28:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BN8NAM11FT018.mail.protection.outlook.com (10.13.176.89) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6500.23 via Frontend Transport; Tue, 13 Jun 2023 12:28:00 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Tue, 13 Jun
- 2023 07:27:59 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Tue, 13 Jun
- 2023 05:27:54 -0700
-Received: from amd-Z390-D.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.23 via Frontend
- Transport; Tue, 13 Jun 2023 07:27:44 -0500
-From: Arun Gopal Kondaveeti <arungopal.kondaveeti@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC: <vsujithkumar.reddy@amd.com>, <Vijendar.Mukunda@amd.com>,
-	<Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>,
-	<syed.sabakareem@amd.com>, <mastan.katragadda@amd.com>,
-	<arungopal.kondaveeti@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav
- Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Syed Saba Kareem"
-	<Syed.SabaKareem@amd.com>, =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
-	<u.kleine-koenig@pengutronix.de>, Mario Limonciello
-	<mario.limonciello@amd.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>, open list
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: amd: correct pm_runtime enable sequence
-Date: Wed, 14 Jun 2023 06:01:59 +0530
-Message-ID: <20230614003206.933147-1-arungopal.kondaveeti@amd.com>
-X-Mailer: git-send-email 2.25.1
+	id 8503AF80149; Tue, 13 Jun 2023 14:39:33 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F62EF80093
+	for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2023 14:39:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F62EF80093
+Received: from loongson.cn (unknown [10.180.13.22])
+	by gateway (Coremail) with SMTP id _____8Cx_ep9Y4hkiKQEAA--.10048S3;
+	Tue, 13 Jun 2023 20:39:25 +0800 (CST)
+Received: from [10.180.13.22] (unknown [10.180.13.22])
+	by localhost.localdomain (Coremail) with SMTP id
+ AQAAf8DxFOR8Y4hkTigZAA--.6345S3;
+	Tue, 13 Jun 2023 20:39:24 +0800 (CST)
+Message-ID: <887f9cc4-6457-9d14-8aef-011ff4c9aeda@loongson.cn>
+Date: Tue, 13 Jun 2023 20:38:59 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT018:EE_|IA0PR12MB8839:EE_
-X-MS-Office365-Filtering-Correlation-Id: d94dff17-cc43-40d2-e5f0-08db6c09a063
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	4Gbd8KEQr3lLZii1FYZyJEYdNYYL7fhZdzGdBQKR/DmJKWKecCB/TORqzgzFthy60rwiJOW3kS+CSAqKvi12mGP/zP06oF0MbYeBqvxPkRMuS8LZOXdVwbdFCEWkYHLDy3jjWNXAgQoOUIoHKYJzv4BJ9Q9ma30TsiAjCgeRbPJAEIWkvNjkz/W4siFsD59NzaJyZVeICbddX2DFt3GiwWJg1Nx+u3OQbf5rX3qTQdI4Ql5VGY1Id5jxZOOHVJSJqPw9IlAuikPEJG2MC7HVWMwppKMJeTrlrscp0EVwnn+g7d+2qDqr7KqmsVjegSjcsI8lBTXhWhWgklE8fP2Vv7ehFdxEDqjVlSoPlSmAPScCXzz5sH57t11fR7oNP9IfgLYFw4zPhDxELeia5vHLl4RVI+LTSgtFbVneLFC93X3b4Smp2KeyWPpfn57+sm34SbM/MDVQ/cx1PaaPq+IM7aJqdIUNVV75n0okXBRKXpLKACsSbX4xb5pzhPC/MRHtKoKIudcKBqIRB0xWXL7whUwqZgzHuS02//lI5kWHcXN2GvWghrXW7230SpBpIvfXwO7A5kBa3cyafz+1oU36vpqjPS2T1R/x0g7e+K48ZrTR+eSLY3TxH3e1d/6EaVdxIUa5nb9NRwhs+lHfSpOP8KuAXX453ZFnMgpQQakl5K+apgiYzhULDxw+lDBKaoWA634FJjNqsy5S2X5YglkJuWBJqPU8giCG2WVAwr7b6FwIAhWe4JUODYlPUzOku3RfZDcnwvAySX9ZLbkrfQex2w==
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(376002)(396003)(136003)(451199021)(46966006)(36840700001)(40470700004)(6666004)(7696005)(36756003)(36860700001)(186003)(82310400005)(2616005)(40480700001)(86362001)(426003)(83380400001)(47076005)(356005)(81166007)(82740400003)(26005)(1076003)(336012)(40460700003)(41300700001)(5660300002)(316002)(8676002)(2906002)(110136005)(54906003)(478600001)(8936002)(70586007)(70206006)(4326008)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jun 2023 12:28:00.3995
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- d94dff17-cc43-40d2-e5f0-08db6c09a063
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8839
-X-MailFrom: Arungopal.kondaveeti@amd.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [ PATCH v2 3/3] ASoC: dt-bindings: Add support for Loongson audio
+ card
+Content-Language: en-US
+To: Conor Dooley <conor.dooley@microchip.com>
+Cc: Conor Dooley <conor@kernel.org>, krzysztof.kozlowski+dt@linaro.org,
+ robh+dt@kernel.org, conor+dt@kernel.org, broonie@kernel.org,
+ lgirdwood@gmail.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn
+References: <20230612085614.3039498-1-mengyingkun@loongson.cn>
+ <20230612-booted-french-186dd95e78a9@spud>
+ <bda7c25f-65cf-d45f-3ac0-f2471e3aacf8@loongson.cn>
+ <20230613-zoologist-panorama-a87858bba075@wendy>
+From: Yingkun Meng <mengyingkun@loongson.cn>
+In-Reply-To: <20230613-zoologist-panorama-a87858bba075@wendy>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8DxFOR8Y4hkTigZAA--.6345S3
+X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQABDGSIXIIARQADs4
+X-Coremail-Antispam: 1Uk129KBj93XoWxZrW3Zw1UAr4DZF4xJw15Jrc_yoW5WFWkpF
+	WrCa47KF4xtw17Cr9Iv3WfJr4avrWftanrXr42qw1UCr98tFy3Ww42yF15uF92yr18JrW2
+	vFyFk3WxG3Z8AagCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9ab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE
+	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
+	AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E
+	14v26r1q6r43MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+	CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
+	4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsG
+	vfC2KfnxnUUI43ZEXa7IU8czVUUUUUU==
+X-MailFrom: mengyingkun@loongson.cn
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2T33W7DKITJSMM4CZ4C3ZI2FJ2VEGZEE
-X-Message-ID-Hash: 2T33W7DKITJSMM4CZ4C3ZI2FJ2VEGZEE
+Message-ID-Hash: QLSFOCQQUTCEJ7S3IONXCYSTA7VLCOMB
+X-Message-ID-Hash: QLSFOCQQUTCEJ7S3IONXCYSTA7VLCOMB
 X-Mailman-Approved-At: Tue, 13 Jun 2023 13:29:02 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2T33W7DKITJSMM4CZ4C3ZI2FJ2VEGZEE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QLSFOCQQUTCEJ7S3IONXCYSTA7VLCOMB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,95 +103,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Replace pm_runtime_allow() with pm_runtime_mark_last_busy()
-& pm_runtime_set_active() in pm_runtime enable sequence for
-dma drivers.
 
-Signed-off-by: Arun Gopal <arungopal.kondaveeti@amd.com>
----
- sound/soc/amd/ps/ps-pdm-dma.c         | 3 ++-
- sound/soc/amd/raven/acp3x-pcm-dma.c   | 3 ++-
- sound/soc/amd/renoir/acp3x-pdm-dma.c  | 3 ++-
- sound/soc/amd/vangogh/acp5x-pcm-dma.c | 4 ++--
- sound/soc/amd/yc/acp6x-pdm-dma.c      | 3 ++-
- 5 files changed, 10 insertions(+), 6 deletions(-)
+On 2023/6/13 20:28, Conor Dooley wrote:
+> On Tue, Jun 13, 2023 at 08:23:58PM +0800, Yingkun Meng wrote:
+>> On 2023/6/13 01:24, Conor Dooley wrote:
+>>> Hey!
+>>>
+>>> On Mon, Jun 12, 2023 at 04:56:14PM +0800, YingKun Meng wrote:
+>>>> From: Yingkun Meng <mengyingkun@loongson.cn>
+>>>>
+>>>> The audio card uses loongson I2S controller present in
+>>>> 7axxx/2kxxx chips to transfer audio data.
+>>>>
+>>>> On loongson platform, the chip has only one I2S controller.
+>>>>
+>>>> Signed-off-by: Yingkun Meng <mengyingkun@loongson.cn>
+>>> I got 2 copies of this patch, but none of the rest of the series appears
+>>> to be threaded with it.
+>>>
+>>>>    .../sound/loongson,ls-audio-card.yaml         | 70 +++++++++++++++++++
+>>>>    1 file changed, 70 insertions(+)
+>>>>    create mode 100644 Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml b/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
+>>>> new file mode 100644
+>>>> index 000000000000..61e8babed402
+>>>> --- /dev/null
+>>>> +++ b/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
+>>>> @@ -0,0 +1,70 @@
+>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>>> +%YAML 1.2
+>>>> +---
+>>>> +$id: http://devicetree.org/schemas/sound/loongson,ls-audio-card.yaml#
+>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>> +
+>>>> +title: Loongson 7axxx/2kxxx ASoC audio sound card driver
+>>>> +
+>>>> +maintainers:
+>>>> +  - Yingkun Meng <mengyingkun@loongson.cn>
+>>>> +
+>>>> +description:
+>>>> +  The binding describes the sound card present in loongson
+>>>> +  7axxx/2kxxx platform. The sound card is an ASoC component
+>>>> +  which uses Loongson I2S controller to transfer the audio data.
+>>>> +
+>>>> +properties:
+>>>> +  compatible:
+>>>> +    const: loongson,ls-audio-card
+>>> Reviewing sound stuff is beyond my pay grade, so forgive me if I am off
+>>> the rails here, but this (and the "x"s in the description) look a bit
+>>> odd. Recently, we've noticed quite a few loongson dt-bindings attempting
+>>> to use a single compatible for many different chips.
+>>> Usually you have individual compatibles for the various SoCs with this
+>>> core, which can fall back to a generic one, rather than just adding a
+>>> generic compatible for all devices.
+>>> As far as I know, there's several SoCs fitting 2kxxx, and the format
+>>> being used elsewhere is "loongson,ls2k1000" etc.
+>>
+>> Currently, Loongson has 2K0500/2K1000LA/2K1500/2K2000 chips.
+>>
+>> Here, its' possible to use a single compatible for different chips,
+>>
+>> as the audio device is a logical device, not dependent on chip model.
+> What, may I ask, is a "logical device"?
 
-diff --git a/sound/soc/amd/ps/ps-pdm-dma.c b/sound/soc/amd/ps/ps-pdm-dma.c
-index bdbbb797c74d..d48f7c5af289 100644
---- a/sound/soc/amd/ps/ps-pdm-dma.c
-+++ b/sound/soc/amd/ps/ps-pdm-dma.c
-@@ -391,8 +391,9 @@ static int acp63_pdm_audio_probe(struct platform_device *pdev)
- 	}
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, ACP_SUSPEND_DELAY_MS);
- 	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
--	pm_runtime_allow(&pdev->dev);
- 	return 0;
- }
- 
-diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
-index 7362dd15ad30..9538f3ffc5d9 100644
---- a/sound/soc/amd/raven/acp3x-pcm-dma.c
-+++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
-@@ -416,8 +416,9 @@ static int acp3x_audio_probe(struct platform_device *pdev)
- 
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, 2000);
- 	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
--	pm_runtime_allow(&pdev->dev);
- 	return 0;
- }
- 
-diff --git a/sound/soc/amd/renoir/acp3x-pdm-dma.c b/sound/soc/amd/renoir/acp3x-pdm-dma.c
-index 4e299f96521f..c3b47e9bd239 100644
---- a/sound/soc/amd/renoir/acp3x-pdm-dma.c
-+++ b/sound/soc/amd/renoir/acp3x-pdm-dma.c
-@@ -430,8 +430,9 @@ static int acp_pdm_audio_probe(struct platform_device *pdev)
- 	}
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, ACP_SUSPEND_DELAY_MS);
- 	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
--	pm_runtime_allow(&pdev->dev);
- 	return 0;
- }
- 
-diff --git a/sound/soc/amd/vangogh/acp5x-pcm-dma.c b/sound/soc/amd/vangogh/acp5x-pcm-dma.c
-index 29901ee4bfe3..587dec5bb33d 100644
---- a/sound/soc/amd/vangogh/acp5x-pcm-dma.c
-+++ b/sound/soc/amd/vangogh/acp5x-pcm-dma.c
-@@ -409,9 +409,9 @@ static int acp5x_audio_probe(struct platform_device *pdev)
- 	}
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, 2000);
- 	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
--	pm_runtime_allow(&pdev->dev);
--
- 	return 0;
- }
- 
-diff --git a/sound/soc/amd/yc/acp6x-pdm-dma.c b/sound/soc/amd/yc/acp6x-pdm-dma.c
-index d818eba48546..72c4591e451b 100644
---- a/sound/soc/amd/yc/acp6x-pdm-dma.c
-+++ b/sound/soc/amd/yc/acp6x-pdm-dma.c
-@@ -383,8 +383,9 @@ static int acp6x_pdm_audio_probe(struct platform_device *pdev)
- 	}
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, ACP_SUSPEND_DELAY_MS);
- 	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
--	pm_runtime_allow(&pdev->dev);
- 	return 0;
- }
- 
--- 
-2.25.1
+
+I means it's not a physical one, like "platform bus".
 
