@@ -4,97 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81640C7EE2E
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jun 2023 12:54:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EADEC7EE29
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jun 2023 13:25:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C65E6A4D;
-	Tue, 13 Jun 2023 14:53:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C65E6A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 465AEAE8;
+	Tue, 13 Jun 2023 15:24:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 465AEAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686660881;
-	bh=6s4D68dn5Rkh35hEvQgkAU45p/aGXdJjyZezPElB/Vo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1686662716;
+	bh=9j6+21qxfghNTh8H6Uo20cvp0i4uRCoBz58+Pij1eB8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JThwgA2KiqMkvUG4J5fLBGSm5oOgt1Tg1pTuBSfaDfpmHc9VUCB7BQ02fGRBtbktF
-	 G2QLtawP5O3iE8OgYsKVp2mD5iZQT32yXWLSOGLMBjaPAnJ0uxoueGDADdQm97qyPJ
-	 1b7OENyAQjdto2xosUepN7IV1VGqR+yllRZHJ1IA=
+	b=VyHNHD/Hni70+jyNchZPukXZ/Vz9kYtZl7y4FnL4tJoH6E2HOX6YcCs0HL82XL4xH
+	 4Kh4uMrqD5tSlaFhu7SviK1Z0qUAbsL7zlPlS8TO6d3mfduLlqK31jHn6KX6LQLPSr
+	 17hKCyCKeDS5mspy8g1w8Wqqnkt5PDqv9hBcs7F0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4D046F80246; Tue, 13 Jun 2023 14:53:26 +0200 (CEST)
+	id 28FAEF80533; Tue, 13 Jun 2023 15:24:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8F23F80149;
-	Tue, 13 Jun 2023 14:53:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B26CDF80149;
+	Tue, 13 Jun 2023 15:24:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1952F80149; Tue, 13 Jun 2023 14:53:21 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id B3662F80149; Tue, 13 Jun 2023 15:24:00 +0200 (CEST)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de
+ [80.237.130.52])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CC35DF800ED
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2023 14:53:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC35DF800ED
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=oa92r/3i;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=fIzGSIMp
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3056C1FD9C;
-	Tue, 13 Jun 2023 12:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1686660798;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U41sQoAS4isUpIbfFlFmd+7y1701JtIEBGroQzz+tJI=;
-	b=oa92r/3iKSM06B+Kxxzjc9YV4DYvdl4Q/LQ2fozVI2oJT68sPkTMPwQ9kjztX2E+s3umWS
-	JBWLLg0SvQCmVNckfDjJ0UqMLhsIY2o1n7W67xQJXrzWZi6V6JHChZRiclqVkEjy5h8H2a
-	BeKoTiPegBajfZDpusgIKtgSZyQ3LWo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1686660798;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U41sQoAS4isUpIbfFlFmd+7y1701JtIEBGroQzz+tJI=;
-	b=fIzGSIMpFBKvZIWI0rB0U3acF+3Y4eeKqK7bq2kUqdffQSUY3hKTmAJFy/gwdY5XsdttWh
-	7SjTW1LvJrg4DWAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E9D413483;
-	Tue, 13 Jun 2023 12:53:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id pRV9Ar5miGTXQQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 13 Jun 2023 12:53:18 +0000
-Date: Tue, 13 Jun 2023 14:53:17 +0200
-Message-ID: <87o7ljplqa.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: happy.debugging@gmail.com
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2 00/37] ALSA: Add MIDI 2.0 support
-In-Reply-To: 
- <168666006765.22.17667904471972537472@mailman-web.alsa-project.org>
-References: <20230523075358.9672-1-tiwai@suse.de>
-	<168666006765.22.17667904471972537472@mailman-web.alsa-project.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: TU7H7Q2VDEUJNNIXVNBMRMZUGQ3HE62X
-X-Message-ID-Hash: TU7H7Q2VDEUJNNIXVNBMRMZUGQ3HE62X
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id 74545F800ED
+	for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2023 15:23:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74545F800ED
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1q9401-00032v-61; Tue, 13 Jun 2023 15:23:53 +0200
+Message-ID: <8f00c62e-7e9b-4b5b-c1a3-2562117795e9@leemhuis.info>
+Date: Tue, 13 Jun 2023 15:23:52 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH] ASoC: tegra: Fix Master Volume Control
+Content-Language: en-US, de-DE
+To: Jon Hunter <jonathanh@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>,
+ Sameer Pujar <spujar@nvidia.com>
+Cc: alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+ Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
+ Linux kernel regressions list <regressions@lists.linux.dev>
+References: <20230613093453.13927-1-jonathanh@nvidia.com>
+From: "Linux regression tracking #adding (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+In-Reply-To: <20230613093453.13927-1-jonathanh@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: 
+ webpack.hosteurope.de;regressions@leemhuis.info;1686662637;ee109bf9;
+X-HE-SMSGID: 1q9401-00032v-61
+Message-ID-Hash: DZ4CDHFR5MDW3M4BUENDMU7AZ4EAZKQB
+X-Message-ID-Hash: DZ4CDHFR5MDW3M4BUENDMU7AZ4EAZKQB
+X-MailFrom: regressions@leemhuis.info
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,10 +75,11 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TU7H7Q2VDEUJNNIXVNBMRMZUGQ3HE62X/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DZ4CDHFR5MDW3M4BUENDMU7AZ4EAZKQB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,54 +88,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 13 Jun 2023 14:41:07 +0200,
-happy.debugging@gmail.com wrote:
+[CCing the regression list, as it should be in the loop for regressions:
+https://docs.kernel.org/admin-guide/reporting-regressions.html]
+
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
+
+On 13.06.23 11:34, Jon Hunter wrote:
+> Commit 3ed2b549b39f ("ALSA: pcm: fix wait_time calculations") corrected
+> the PCM wait_time calculations and in doing so reduced the calculated
+> wait_time. This exposed an issue with the Tegra Master Volume Control
+> (MVC) device where the reduced wait_time caused the MVC to fail. For now
+> fix this by setting the default wait_time for Tegra to be 500ms.
 > 
-> Hello I have a few questions:
-> 
-> 1. As default, USB-audio driver will take the alternate setting for MIDI 2.0 interface:  Does this mean that the ALSA driver will default to Alt Function 1 if it exists ? 
+> Fixes: 3ed2b549b39f ("ALSA: pcm: fix wait_time calculations")
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+> [...]
 
-Yes.
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
 
-> 2. What happens when using a kernel that does not support Alt Function 1 (MIDI 2.0) and  device with a  (much longer) MIDI 2.0 descriptor is attached ?
+#regzbot ^introduced 3ed2b549b39f
+#regzbot title ASoC: tegra: Master Volume Control broken
+#regzbot ignore-activity
 
-It falls back to MIDI 1.0 interface.
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
 
-> 3. " However, user may let the driver falling back to the old MIDI 1.0 interface by a module option, too."
->      Can or how it this done via the ALSA API  ?
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
 
-You can't.  Only via a module option or kconfig.
-
-> If the switch is made, does an ALSA client require to re-enumerate all the ports ?
-> 4. Is there a way to force a specific device (port) to Legacy MIDI 1.0 ?
-
-If demanded, we can implement a device-specific quirk for that.
-
-> 5. Is there a way , via ALSA, to select UMP MIDI 1.0 protocol instead of MIDI 2.0 UMP protocol.
-
-Use the UMP 1.1 Streaming command to switch the protocol.
-
-> 6. To which protocol does the driver default ? UMP MIDI 1.0 or UMP MIDI 2.0 ? 
-
-Whatever the device sets as default.
-
-> 7. Does the driver do anything related to  Jitter Reduction ? How/is this supported via the ALSA API ?a
-
-JRTS is sent as normal UMP packet (also as sequencer events).
-No particular API is provided for JRTS, so far.
-
-> 8. Does the driver do anything related to  Bandwidth restriction ?  How/is this supported via the ALSA API ?
-
-Currently no restriction is.
-The bandwidth is provided via the API, but it's only for information.
-
-> 9. Are/will UMP streaming messages be supported ? (new feature in MIDI 2.0 specification), if yes, how ?
-
-It was already implemented in kernel UMP core.  See the recent posts.
-
-> 10. Is function block information supported via ALSA, i.e added in the ALSA Port information ?
-
-Ditto.
-
-
-Takashi
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
