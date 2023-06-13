@@ -4,100 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65F2AC7EE2E
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jun 2023 09:38:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E116C7EE2E
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Jun 2023 09:56:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4124E823;
-	Tue, 13 Jun 2023 11:37:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4124E823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7880282A;
+	Tue, 13 Jun 2023 11:55:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7880282A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686649097;
-	bh=XZ+tMOyCj7A6zWh3FIKLwNwu1RjF2Fbolep0ySTPB9s=;
+	s=default; t=1686650199;
+	bh=kDt+MeozlcPfE384o/5LKd64kj66NomoX9MvBxwk8PU=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kxGeQQYU1GvIebq9V7MjCsHQJiU2xTdL9+utEm+/rA3FW/jKgOObPEGih9xgqYsZN
-	 X4vXdzQAwxlmyGwjU1kJRH376PfYURJXQToMPuB1IyheoPGB/Tqjeo6wGsGkQEA0Ou
-	 dZYD8Xa1mFwWVwGv46Xgzpbl+MlqoiePdRVxgyeg=
+	b=Of0xfLWIChsMgU/FkdQDeEJQULQG1MeeGKUgyN2jW48rtSztnlfekxcuY2RXOkGad
+	 HDLyx19fquB+q6SNfOdiWrtD/ilsmTToZqsR1Uhg77h+ynfBdxxZJ/17YAr61C32OH
+	 4B6yviRTMwf5brvwWfYI0DbWfJ6wXxXBskgWo5d8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F181DF800ED; Tue, 13 Jun 2023 11:37:26 +0200 (CEST)
+	id C3FF3F800ED; Tue, 13 Jun 2023 11:55:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65D3BF80155;
-	Tue, 13 Jun 2023 11:37:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E1A9F800ED;
+	Tue, 13 Jun 2023 11:55:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 98199F80155; Tue, 13 Jun 2023 11:37:22 +0200 (CEST)
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [217.70.183.197])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id A96F7F80149; Tue, 13 Jun 2023 11:55:21 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 69F29F800ED
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2023 11:37:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69F29F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 21DFDF80093
+	for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2023 11:55:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21DFDF80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=cI4E+0KO
-X-GND-Sasl: herve.codina@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686649030;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=Mv/vVjRT;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=DY+yVkmY
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 69EA81FD6D;
+	Tue, 13 Jun 2023 09:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1686650117;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eEwfBJFCHzxYRQZi7kEFO2bxAicvTJZZs7UatO3IpJY=;
-	b=cI4E+0KOLchkY75M01qJZk03RB9OYLGMIknmHlekjZAFP9rMQm4qdF0plxkJvW4o0wQb3V
-	aeOKu0+VWSa+XUy0hxzF17L3AyuurA1xLK/8403rCjD34EdOaVFxFBuQvaoGKhfT+sU63P
-	8VpipIM3aay0z2B77mUXpat210sCtstH5/ByVej4cne+lLryxekrqE9YtnGoHCkfJT++U4
-	j32ezAkUWMdd4ILDfcxzg+8fI0CcCMTB5bVwNzI2mAYfMyHvynBFzTYu6avs8GGNEzTdtz
-	UXB3+Crd46nY2Qsey6k71iqGnlTyj5iGRVCQH/sTtqBREr1QCPP6SeOKDt9EZw==
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 76FB11C0005;
-	Tue, 13 Jun 2023 09:37:08 +0000 (UTC)
-Date: Tue, 13 Jun 2023 11:37:07 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori
- Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 11/12] ASoC: codecs: Add support for the generic IIO
- auxiliary devices
-Message-ID: <20230613113707.0b5d9648@bootlin.com>
-In-Reply-To: 
- <CAHp75Vfz+vSJ7rQ4sxb0R+zRbrjipXUX3VpaHyvOWWePdPxejQ@mail.gmail.com>
-References: <20230612122926.107333-1-herve.codina@bootlin.com>
-	<20230612122926.107333-12-herve.codina@bootlin.com>
-	<CAHp75Vfz+vSJ7rQ4sxb0R+zRbrjipXUX3VpaHyvOWWePdPxejQ@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: R7W225PCISERKU5TQN2MHM56CYO6CZDJ
-X-Message-ID-Hash: R7W225PCISERKU5TQN2MHM56CYO6CZDJ
-X-MailFrom: herve.codina@bootlin.com
+	bh=P265Uv6CcvavmFR5gq/Gw0Drohun0A3BXfzFYfOVCjk=;
+	b=Mv/vVjRTUYdmUgz4jK2/qs07f2XV91aV9ZgTpFL6ExMcWzsCOtCR2JbwR2U2Iy23moqcKG
+	X/of1TalAJHkt72TBvolS67yyXUdpWwFP3FWiT9DEIdP1dHCQRbXsCPWvyOaN5Egls6IKk
+	ZaQ3fncZaBX7/q2E6sPH6SL5zfXPQQw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1686650117;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P265Uv6CcvavmFR5gq/Gw0Drohun0A3BXfzFYfOVCjk=;
+	b=DY+yVkmYUjd9A5eaevhIWViGx4qzSfwb9m2rqdAiEobI3Zm7emi0inBNNvdYoPDgLmK6Jp
+	sWaG0xrxLrG3/JBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2FECC13345;
+	Tue, 13 Jun 2023 09:55:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id LcSkCgU9iGS+YgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 13 Jun 2023 09:55:17 +0000
+Date: Tue, 13 Jun 2023 11:55:16 +0200
+Message-ID: <87mt13elff.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	"Thierry Reding" <thierry.reding@gmail.com>,
+	Sameer Pujar <spujar@nvidia.com>,
+	<alsa-devel@alsa-project.org>,
+	<linux-tegra@vger.kernel.org>,
+	"Oswald Buddenhagen" <oswald.buddenhagen@gmx.de>
+Subject: Re: [PATCH] ASoC: tegra: Fix Master Volume Control
+In-Reply-To: <20230613093453.13927-1-jonathanh@nvidia.com>
+References: <20230613093453.13927-1-jonathanh@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: RE5WXOE7VIWLQR3D23LLB2BCEOFVYTH2
+X-Message-ID-Hash: RE5WXOE7VIWLQR3D23LLB2BCEOFVYTH2
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +112,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R7W225PCISERKU5TQN2MHM56CYO6CZDJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RE5WXOE7VIWLQR3D23LLB2BCEOFVYTH2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,40 +121,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Andy,
-
-On Mon, 12 Jun 2023 17:37:00 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-
-> ...
+On Tue, 13 Jun 2023 11:34:53 +0200,
+Jon Hunter wrote:
 > 
-> > +       struct snd_kcontrol_new control = {0};  
+> Commit 3ed2b549b39f ("ALSA: pcm: fix wait_time calculations") corrected
+> the PCM wait_time calculations and in doing so reduced the calculated
+> wait_time. This exposed an issue with the Tegra Master Volume Control
+> (MVC) device where the reduced wait_time caused the MVC to fail. For now
+> fix this by setting the default wait_time for Tegra to be 500ms.
 > 
-> 0 is not needed.
+> Fixes: 3ed2b549b39f ("ALSA: pcm: fix wait_time calculations")
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
 
-Not for this one.
+Hm, it's still not clear why it fails.  The commit above changes the
+timeout of wait_for_avail() to the full-buffer + 10% margin.  In
+thoery, the loop should abort after the full buffer read, and that
+must be enough.  If there were a large FIFO behind, it might be
+overflow, but the fifo_size of Tegra driver seems 4, so it's
+negligible.
 
-The variable is in stack.
-Some of the structure members will be set in the code but we need to ensure
-that all others are set to 0.
+If extending the timeout "fixes" the problem, it might indicate that
+the period update IRQ is triggered too late.  Could you measure the
+timing of each snd_pcm_period_elapsed() and wait_for_avail() call?
 
-The full context:
---- 8< ---
-static int audio_iio_aux_add_controls(struct snd_soc_component *component,
-				      struct audio_iio_aux_chan *chan)
-{
-	struct snd_kcontrol_new control = {0};
 
-	control.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-	control.name = chan->name;
-	control.info = audio_iio_aux_info_volsw;
-	control.get = audio_iio_aux_get_volsw;
-	control.put = audio_iio_aux_put_volsw;
-	control.private_value = (unsigned long)chan;
+thanks,
 
-	return snd_soc_add_component_controls(component, &control, 1);
-}
---- 8< ---
+Takashi
 
-Thanks for the review,
-Hervé
+
+> ---
+>  sound/soc/tegra/tegra_pcm.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
+> index 468c8e77de21..0b69cebc9a33 100644
+> --- a/sound/soc/tegra/tegra_pcm.c
+> +++ b/sound/soc/tegra/tegra_pcm.c
+> @@ -117,6 +117,9 @@ int tegra_pcm_open(struct snd_soc_component *component,
+>  		return ret;
+>  	}
+>  
+> +	/* Set wait time to 500ms by default */
+> +	substream->wait_time = 500;
+> +
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(tegra_pcm_open);
+> -- 
+> 2.34.1
+> 
