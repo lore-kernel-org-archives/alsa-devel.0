@@ -4,93 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0AC0EB64D9
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jun 2023 12:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D120EB64DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Jun 2023 12:18:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92CB4822;
-	Wed, 14 Jun 2023 14:16:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92CB4822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4AF75857;
+	Wed, 14 Jun 2023 14:17:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AF75857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686745066;
-	bh=xck7Azc00zW8PMEOxog3T4+d2hqNm2DNbGF9OuR5jGc=;
+	s=default; t=1686745093;
+	bh=v27Rw9DPGIfi1ukWJXTso9FKGJiLdugUyTroISQrf0k=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=M4HluTK4f5922KrBLfoSows0dWTjWfFI4oJNeDLO1y9+K1mjdTYfEOzLiwF7vRBdz
-	 eZHp1yJz9E8mIMoF6KbX1lM9GrAvVd2oNhiOz6m1McsoBEjegUYOpZEHRZE5EGsNnq
-	 FvzEhiXMx7QFNC+Iutb69ExYu6JpyFtYs2oA7nRY=
+	b=I+HILOb9eeyOhOtSAOJiesAQP/dV5q9TbSjcw9mVIZYJe3it/FRhsntE2CKpwH9/1
+	 sUYb+NVzWQwIJc6B/N9DYRrbUt68iTfcRhEswoCrjCbqvofSSb6teKiYj51PjwalUn
+	 ce02yqcBwX5/GpitG82EI9vi+RVOVh4G6OK9y2zU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E131F80570; Wed, 14 Jun 2023 14:16:32 +0200 (CEST)
+	id 98BFBF805A0; Wed, 14 Jun 2023 14:16:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A53EAF8056F;
-	Wed, 14 Jun 2023 14:16:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9C84F80544;
+	Wed, 14 Jun 2023 14:16:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 98911F80093; Wed, 14 Jun 2023 11:16:28 +0200 (CEST)
+	id 352C2F80149; Wed, 14 Jun 2023 11:26:21 +0200 (CEST)
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EDA0F80093
-	for <alsa-devel@alsa-project.org>; Wed, 14 Jun 2023 11:16:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EDA0F80093
+	by alsa1.perex.cz (Postfix) with ESMTP id F03DFF800BA
+	for <alsa-devel@alsa-project.org>; Wed, 14 Jun 2023 11:26:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F03DFF800BA
 Received: from loongson.cn (unknown [10.180.13.22])
-	by gateway (Coremail) with SMTP id _____8AxX+sMhYlkcQ8FAA--.10762S3;
-	Wed, 14 Jun 2023 17:14:52 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8AxX+u0h4lkvxEFAA--.10772S3;
+	Wed, 14 Jun 2023 17:26:12 +0800 (CST)
 Received: from [10.180.13.22] (unknown [10.180.13.22])
 	by localhost.localdomain (Coremail) with SMTP id
- AQAAf8BxduQLhYlkyW0aAA--.9439S3;
-	Wed, 14 Jun 2023 17:14:51 +0800 (CST)
-Message-ID: <978fa726-e194-2162-e10d-aed3a1c756e8@loongson.cn>
-Date: Wed, 14 Jun 2023 17:14:27 +0800
+ AQAAf8AxJeSzh4lkDnEaAA--.10205S3;
+	Wed, 14 Jun 2023 17:26:11 +0800 (CST)
+Message-ID: <75be5e57-28a7-bf3f-8b2e-a0183e54e25c@loongson.cn>
+Date: Wed, 14 Jun 2023 17:25:47 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [ PATCH v2 2/3] ASoC: loongson: Add Loongson ASoC Sound Card
- Support
+Subject: Re: [ PATCH v2 3/3] ASoC: dt-bindings: Add support for Loongson audio
+ card
 Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, loongarch@lists.linux.dev,
- loongson-kernel@lists.loongnix.cn
-References: <20230612090046.3039532-1-mengyingkun@loongson.cn>
- <1568e064-606e-4f56-951f-429a87a3a2d9@sirena.org.uk>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org, conor+dt@kernel.org
+Cc: broonie@kernel.org, lgirdwood@gmail.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn
+References: <20230612090058.3039546-1-mengyingkun@loongson.cn>
+ <4f1c934c-5a68-a2cd-10d1-568d61865755@linaro.org>
 From: Yingkun Meng <mengyingkun@loongson.cn>
-In-Reply-To: <1568e064-606e-4f56-951f-429a87a3a2d9@sirena.org.uk>
+In-Reply-To: <4f1c934c-5a68-a2cd-10d1-568d61865755@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxduQLhYlkyW0aAA--.9439S3
-X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQACDGSIXIIXpwABsM
-X-Coremail-Antispam: 1Uk129KBj9xXoWrurW3ZrWUJr1DWF1kGFW7trc_yoWxAFX_uF
-	4rWFn2ywnxCr4qq3yrGr4DXr4IkF1ayFn3Kw1Y93W3AF1xGa92kFykXr1ru393Za95JasI
-	v395X3say3y7ZosvyTuYvTs0mTUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUbxkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
-	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AK
-	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
-	AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1LiSJUU
-	UUU==
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8AxJeSzh4lkDnEaAA--.10205S3
+X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQACDGSIXIIX-wABsU
+X-Coremail-Antispam: 1Uk129KBj93XoW7Kr4xAryDCrW3WrW3AF48Zrc_yoW8CrWrpF
+	s7CasrKFWxt3W7u39I9FyfJr45Z39ayanxJF42qw1UGF98K3Wru3yayF1UZanIyr1rGFW7
+	ZFyF9w48GFn0yacCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+	02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAF
+	wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4
+	CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
+	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MI
+	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E
+	14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
+	WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcDDG
+	UUUUU
 X-MailFrom: mengyingkun@loongson.cn
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZP56ZUEEGR7NZ6Y5LCKR5UTJRNGDU5K2
-X-Message-ID-Hash: ZP56ZUEEGR7NZ6Y5LCKR5UTJRNGDU5K2
-X-Mailman-Approved-At: Wed, 14 Jun 2023 12:16:24 +0000
+Message-ID-Hash: FI623WN35IK63Z2NOSIRPHCQOO2QEGJV
+X-Message-ID-Hash: FI623WN35IK63Z2NOSIRPHCQOO2QEGJV
+X-Mailman-Approved-At: Wed, 14 Jun 2023 12:16:25 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZP56ZUEEGR7NZ6Y5LCKR5UTJRNGDU5K2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FI623WN35IK63Z2NOSIRPHCQOO2QEGJV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,22 +101,58 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On 2023/6/13 03:06, Mark Brown wrote:
-> On Mon, Jun 12, 2023 at 05:00:46PM +0800, YingKun Meng wrote:
+On 2023/6/13 16:36, Krzysztof Kozlowski wrote:
+> On 12/06/2023 11:00, YingKun Meng wrote:
+>> From: Yingkun Meng <mengyingkun@loongson.cn>
+>>
+>> The audio card uses loongson I2S controller present in
+>> 7axxx/2kxxx chips to transfer audio data.
+>>
+>> On loongson platform, the chip has only one I2S controller.
+>>
+>> Signed-off-by: Yingkun Meng <mengyingkun@loongson.cn>
+>> ---
+>>   .../sound/loongson,ls-audio-card.yaml         | 70 +++++++++++++++++++
+>>   1 file changed, 70 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml b/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
+>> new file mode 100644
+>> index 000000000000..61e8babed402
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/loongson,ls-audio-card.yaml
+>> @@ -0,0 +1,70 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/sound/loongson,ls-audio-card.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Loongson 7axxx/2kxxx ASoC audio sound card driver
+>> +
+>> +maintainers:
+>> +  - Yingkun Meng <mengyingkun@loongson.cn>
+>> +
+>> +description:
+>> +  The binding describes the sound card present in loongson
+>> +  7axxx/2kxxx platform. The sound card is an ASoC component
+>> +  which uses Loongson I2S controller to transfer the audio data.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: loongson,ls-audio-card
+> Generic compatible does not allow you to add any quirks or differences
+> if one board is a bit different.
 >
->> +	if (ls_card->mclk_fs) {
->> +		mclk = ls_card->mclk_fs * params_rate(params);
->> +		ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
->> +					     SND_SOC_CLOCK_OUT);
->> +		if (ret < 0) {
->> +			dev_err(codec_dai->dev, "cpu_dai clock not set\n");
->> +			return ret;
->> +		}
-> Does this need to be in the machine driver - this isn't configuring an
-> external clock, it's just within the SoC, so presumably the driver for
-> the SoC DAI can just set itself up.
+
+Yeah, i know. It's okay to use a generic compatible.
+
+>
+> Best regards,
+> Krzysztof
 
 
-I think so. The driver for the SoC DAI cannot obtain the MCLK frequency of
-I2S bus from the clock subsystem.
+Thanks,
+
+Yingkun
 
