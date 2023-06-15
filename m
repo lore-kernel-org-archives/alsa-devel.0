@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70995EB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jun 2023 15:28:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72AECEB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jun 2023 15:28:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1459884B;
-	Thu, 15 Jun 2023 17:27:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1459884B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64E76950;
+	Thu, 15 Jun 2023 17:28:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64E76950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686842920;
-	bh=omyK8EMZFIuk2H2NcLRfSrI/todecGtoc2EXB60MIrs=;
+	s=default; t=1686842935;
+	bh=7e+7ZksAfL4pOgUmmUpF/ZpeR7gAdjp6+TumaVqnWzM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DtL79dZDcgn/XWy23iKHD+r5enjcq0+vfQ4hbAyVxApbJ66l8xjQKq2Ld0Ft6Syk4
-	 Gk5tshTI/nOx8hCSs6BScpN+E9eP6Wjb42kXKBhII9PgBU3Hoj3tRDwYXWda9UjP5d
-	 lI4C6gJ83PNwN6paopEdSJP0nFCxYSy9v5UgKI+o=
+	b=UmdBtS2nKiwGr8dYMNBqqrWgUWn9EvO5quwuEEypnT0lcDfB2koRvzKCWv5EGMOQj
+	 XR231LsFIw9G/EXDyG+H9Ki64bnlCDWw8zI/ubdgl3Y+Uo5IBoF/7pY16GTFhwhv8H
+	 PxFlXhsEtiAgSuBrYN+pk392lLfi26R6nTfEs+qQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ACF84F80549; Thu, 15 Jun 2023 17:26:52 +0200 (CEST)
+	id C34DBF8058C; Thu, 15 Jun 2023 17:26:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8419F80093;
-	Thu, 15 Jun 2023 17:26:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0158FF8057D;
+	Thu, 15 Jun 2023 17:26:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D7D9F8025E; Thu, 15 Jun 2023 17:26:46 +0200 (CEST)
+	id 3F7C5F8025E; Thu, 15 Jun 2023 17:26:47 +0200 (CEST)
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::229])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C656AF800ED
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 17:26:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C656AF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id ED06CF80155
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 17:26:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED06CF80155
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=hEsTxs4F
+ header.s=gm1 header.b=DNkwSUbQ
 X-GND-Sasl: herve.codina@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1686842797;
+	t=1686842801;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GyTXVmL/5teIh8xuYTUUi3ltQcCGVDf6AcEbfADS6og=;
-	b=hEsTxs4FYerXIh5EHWoQI0TmMEDx3dymBWYlPvN7qpgqMdrnMMFZFdm769O7M5RLmQr0TF
-	cRf0g9gXPRGnaxOdrgoB3o3BMg4ApnEWCx8cR+y4SYzXz71U1AIBFTlmvpb81ifqwLgKRM
-	Gxla0V3y744JELfZso8AtVer/OPRePbaEqaqzrUF3dY3AnR0CpuPGj2uXypOTJA7Y048zI
-	gOSpAiNnC2xXhYW1NKyhQIBDxurSZbBv/w2qLdXoFBS8QIjCng0RiJfRQfaKYkyubOuE+d
-	FR+z63B08sfCZW1ULYalGYslK1C3kCpImmPBpnqpa6K1kA3w1USE9PzdWEO+TA==
+	bh=rfYOy7L85MdtcQ88k+lfhIIjhcOaxuYtKNcPHMwEQsI=;
+	b=DNkwSUbQpzHsmovXfUt9+3hYNv8lCpGKZkIGNMH72ReCCWpw+SwUaY107imywc9IFOPHqX
+	FjrkCczX3FJv6E/kjcNSw6DXTCGE5i9+mRdg89jn1h53WOChKq8umRZqDRu3lkiqOOXuTi
+	5btEtvVFHzdCNLyJPU6lQz3sWq1w7ZBWitlJ2Oi31jlHg5uhWGLntHxZuIv4LFwXyLGnOY
+	tegR8uS9gANHOoUoYoLX8DG1fSD7Wnc52O3IzmB3f05ZsdKr7HjLEXHQtlNO4KU3K+xK1p
+	WC53rkJUnFlGvs03zITB1ejOfp3lF58wei7nXm227iHlVPT4l8LE872S3r7RPQ==
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
@@ -69,8 +69,9 @@ X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 3E4FCFF807;
-	Thu, 15 Jun 2023 15:26:36 +0000 (UTC)
+X-GND-Sasl: herve.codina@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPA id 54A2CFF80B;
+	Thu, 15 Jun 2023 15:26:39 +0000 (UTC)
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -89,17 +90,19 @@ Cc: alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	linux-iio@vger.kernel.org,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v5 01/13] ASoC: dt-bindings: Add audio-iio-aux
-Date: Thu, 15 Jun 2023 17:26:19 +0200
-Message-Id: <20230615152631.224529-2-herve.codina@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH v5 03/13] iio: inkern: Check error explicitly in
+ iio_channel_read_max()
+Date: Thu, 15 Jun 2023 17:26:21 +0200
+Message-Id: <20230615152631.224529-4-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230615152631.224529-1-herve.codina@bootlin.com>
 References: <20230615152631.224529-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TSIWOMXJJPVJIYT2KFYJKKW5YZ2UD7P6
-X-Message-ID-Hash: TSIWOMXJJPVJIYT2KFYJKKW5YZ2UD7P6
+Message-ID-Hash: FVN7BGCNWCRBJMI7TN5PIN4JANOWVXR3
+X-Message-ID-Hash: FVN7BGCNWCRBJMI7TN5PIN4JANOWVXR3
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -111,99 +114,51 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TSIWOMXJJPVJIYT2KFYJKKW5YZ2UD7P6/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+Archived-At: <>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Industrial I/O devices can be present in the audio path.
-These devices needs to be viewed as audio components in order to be
-fully integrated in the audio path.
+The current implementation returns the error code as part of the
+default switch case.
+This can lead to returning an incorrect positive value in case of
+iio_avail_type enum entries evolution.
 
-audio-iio-aux allows to consider these Industrial I/O devices as
-auxliary audio devices.
+In order to avoid this case, be more strict in error checking.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- .../bindings/sound/audio-iio-aux.yaml         | 64 +++++++++++++++++++
- 1 file changed, 64 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/audio-iio-aux.yaml
+ drivers/iio/inkern.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/audio-iio-aux.yaml b/Documentation/devicetree/bindings/sound/audio-iio-aux.yaml
-new file mode 100644
-index 000000000000..d3cc1ea4a175
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/audio-iio-aux.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/audio-iio-aux.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
+index 872fd5c24147..f738db9a0c04 100644
+--- a/drivers/iio/inkern.c
++++ b/drivers/iio/inkern.c
+@@ -858,6 +858,9 @@ static int iio_channel_read_max(struct iio_channel *chan,
+ 		val2 = &unused;
+ 
+ 	ret = iio_channel_read_avail(chan, &vals, type, &length, info);
++	if (ret < 0)
++		return ret;
 +
-+title: Audio IIO auxiliary
-+
-+maintainers:
-+  - Herve Codina <herve.codina@bootlin.com>
-+
-+description:
-+  Auxiliary device based on Industrial I/O device channels
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: audio-iio-aux
-+
-+  io-channels:
-+    description:
-+      Industrial I/O device channels used
-+
-+  io-channel-names:
-+    description:
-+      Industrial I/O channel names related to io-channels.
-+      These names are used to provides sound controls, widgets and routes names.
-+
-+  snd-control-invert-range:
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    description: |
-+      A list of 0/1 flags defining whether or not the related channel is
-+      inverted
-+    items:
-+      enum: [0, 1]
-+      default: 0
-+      description: |
-+        Invert the sound control value compared to the IIO channel raw value.
-+          - 1: The related sound control value is inverted meaning that the
-+               minimum sound control value correspond to the maximum IIO channel
-+               raw value and the maximum sound control value correspond to the
-+               minimum IIO channel raw value.
-+          - 0: The related sound control value is not inverted meaning that the
-+               minimum (resp maximum) sound control value correspond to the
-+               minimum (resp maximum) IIO channel raw value.
-+
-+required:
-+  - compatible
-+  - io-channels
-+  - io-channel-names
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    iio-aux {
-+        compatible = "audio-iio-aux";
-+        io-channels = <&iio 0>, <&iio 1>, <&iio 2>, <&iio 3>;
-+        io-channel-names = "CH0", "CH1", "CH2", "CH3";
-+        /* Invert CH1 and CH2 */
-+        snd-control-invert-range = <0 1 1 0>;
-+    };
+ 	switch (ret) {
+ 	case IIO_AVAIL_RANGE:
+ 		switch (*type) {
+@@ -888,7 +891,7 @@ static int iio_channel_read_max(struct iio_channel *chan,
+ 		return 0;
+ 
+ 	default:
+-		return ret;
++		return -EINVAL;
+ 	}
+ }
+ 
 -- 
 2.40.1
 
