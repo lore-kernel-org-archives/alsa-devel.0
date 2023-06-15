@@ -4,95 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6DF9EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 07:16:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DF0CEB64D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 07:16:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2638857;
-	Fri, 16 Jun 2023 09:15:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2638857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E5E4839;
+	Fri, 16 Jun 2023 09:16:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E5E4839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686899795;
-	bh=OaC1nUKdnxfa6K3QRDHYonpcCa70eHiwXnh/es/qfhs=;
-	h=From:To:Cc:Subject:References:In-reply-to:Date:List-Id:
+	s=default; t=1686899810;
+	bh=1jsL0MNDFPDm2x0vXDt0JuNPRl3uGfeylHKrs56Pcr8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aazmqvLVJSXtP4AtEEZ0MvyyXrsqnSQXOBHceD4tlTfw5qIWXHvUb7UP8Q1ssgC37
-	 Euyaeez/GI2QT9ifxuLgNAdxq9qs2ZBF6OkjVAjVlKNf+W6XVTrY2Ge2Nz0D4tOVTi
-	 sS2rWpTsD5rDICwojOh/LwpxOToOBpgdRcint4J8=
+	b=gmUJeGpLwtqTsx/yjUiZrHJnG0WAkpwxVaP9EVX0HddoKyZFUZ/yOr+9ytsATHDFP
+	 SfwiFGnuRp4Sr+CwoIjZZQAnLQZHCsTVrPhMFWG1BYjsnuRB5JS9/GiZvtrUfQTXT7
+	 IkibeNUdEDdFLDjiW/25CRNgNw6UOTQSMuH9MWUA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 13FA1F8057E; Fri, 16 Jun 2023 09:14:54 +0200 (CEST)
+	id 6FBFAF805A1; Fri, 16 Jun 2023 09:15:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6A35F8057A;
-	Fri, 16 Jun 2023 09:14:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21E36F8057A;
+	Fri, 16 Jun 2023 09:15:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C460F80149; Fri, 16 Jun 2023 09:10:51 +0200 (CEST)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 22710F80149; Thu, 15 Jun 2023 17:26:19 +0200 (CEST)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com
+ [IPv6:2607:f8b0:4864:20::42b])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81EE1F80130
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 09:10:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81EE1F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 008AAF80093
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 17:26:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 008AAF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=XJNz+vis
-Received: from localhost (unknown
- [IPv6:2a0c:5a83:9106:d00:27a:a702:1397:9647])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: rcn)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 044206606F61;
-	Fri, 16 Jun 2023 08:10:42 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1686899443;
-	bh=OaC1nUKdnxfa6K3QRDHYonpcCa70eHiwXnh/es/qfhs=;
-	h=From:To:Cc:Subject:References:In-reply-to:Date:From;
-	b=XJNz+vis7E9WaQQYxIJBmj7bz72IwFZpEksccqocNsKW7/KYpg9eyC3MRIVC+kZ7A
-	 DyPFv4AIC45g4nR2msp6Ssh2XQ1gl9RecLkdhkrQbKlpQ7VeyPxNNE4h2VsMclujlf
-	 0o9P/W2llNpjmjYbmBJKB+mwFc0Thou+gyKgCpA/jZ4+JWhKXqfE3O769mgDJEpN0n
-	 3kieBNxZO0v48Hb4iMVFdc8gN0wfgS8wL5FNgwe7nOQv5g6l3pl2Z1j6AHLtz9e6Rg
-	 rg2iyujO02hKA1mgzweTd06Fc4cYZsVhrkprCUdnuARHHg62hPag8ptEj6HT/GDhez
-	 ZYw04T+FCYFug==
-From: Ricardo =?utf-8?Q?Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>
-To: Shuah Khan <skhan@linuxfoundation.org>
-Cc: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>,
- Mark Brown <broonie@kernel.org>, kernel@collabora.com, Jaroslav Kysela
- <perex@perex.cz>, Shuah Khan <shuah@kernel.org>, Takashi Iwai
- <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] kselftest/alsa: Increase kselftest timeout
-References: <20221213183242.1908249-1-nfraprado@collabora.com>
- <2ee34e21-44bd-71e7-6da2-f4bea9a35452@linuxfoundation.org>
- <20230515094310.hulpyhhtb4sxxn7i@rcn-XPS-13-9305>
-In-reply-to: <20230515094310.hulpyhhtb4sxxn7i@rcn-XPS-13-9305>
-Date: Fri, 16 Jun 2023 09:10:39 +0200
-Message-ID: 
- <87sfarj30w.fsf@rcn-XPS-13-9305.i-did-not-set--mail-host-address--so-tickle-me>
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20221208 header.b=U+3bso/V
+Received: by mail-pf1-x42b.google.com with SMTP id
+ d2e1a72fcca58-666acbdfc86so287519b3a.2
+        for <alsa-devel@alsa-project.org>;
+ Thu, 15 Jun 2023 08:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1686842772; x=1689434772;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UTxeaxXFn5GNkcVsWJTf9D5g3nTYEaM86Nc45vNWBR4=;
+        b=U+3bso/Vm9pUh7xz0npUzHyVDR5CzodEcM7fFoco4BuXpWwCjquik+lxENBhrMcsOj
+         47Ax7BphyLNVPJtOvGwxU7iIoUcYpizzcBRj5urmQYZCCcoQdeIrsNIWpI+/klxOwyJ8
+         rSeQ35lLDEKNLBw1GKnC3v2STOrd17u5fZiRJmCbaoONzjRkpjdgTVGYNcEJOvKMZ0Zq
+         znHO1uxq1JyIbH93OcfJe2V8LiSfeihsjC9/Q4TBmmP7236UKtmm9AqXxTiS//zyfkA2
+         QLuFK1SD8fY8z7zaxBTIbR0OOXmJugf9fyhb/8t49LxdyOhrxB8io/WGjavrSVdxUflL
+         cewQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686842772; x=1689434772;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UTxeaxXFn5GNkcVsWJTf9D5g3nTYEaM86Nc45vNWBR4=;
+        b=gCqHX3Q/uwiGn+3G6Qwyqu73A48u3ba0tBgMG8Kd7upnXpZdoFmzmWcNrMplH+2A6m
+         zhM5aO5PDF1zJpSM3m25cZ2r6CKvC/iQT4qLjkGqXTcIXPq+F3Ya2S9SrytMmmFppNAs
+         Rmi6LvTp/NRcd4j102cZYFICMIkTte9ZxoOQoc2guAQkmZV4v/c4miOSGXd3NObYYp91
+         NPoD3XzS65M0ptTG1aeUu+MeX6fIxD7BpDL9r+x+9bfQjks1RSUblYavYQN4zSHF87eq
+         5Otw+Cu5BhYwVAR+DOGlu5IAIVLuJN3ZfQz03kH9h7D0EBJ01DX3Ns3sgCmL/FntrDJQ
+         ZIzA==
+X-Gm-Message-State: AC+VfDyLd/7H6IvbyZ9eSsgECTonEvQ0J5R+JSaXNREJsaB0hi0P2zgz
+	kv1LsgqpLUbowG1c4p19DV9vkQ==
+X-Google-Smtp-Source: 
+ ACHHUZ6zhkxnK3m0+W2oZ3v6Wv41P+H4hsW2NlUutS9ndUuE/gSDgZwQhIQlfr5b/Sh8t/0At9tMIQ==
+X-Received: by 2002:a17:902:c94f:b0:1b0:7c3c:31f7 with SMTP id
+ i15-20020a170902c94f00b001b07c3c31f7mr17437450pla.28.1686842772232;
+        Thu, 15 Jun 2023 08:26:12 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com.
+ [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id
+ j11-20020a170902690b00b001b02bd00c61sm14181120plk.237.2023.06.15.08.26.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jun 2023 08:26:11 -0700 (PDT)
+Date: Thu, 15 Jun 2023 15:26:07 +0000
+From: Carlos Llamas <cmllamas@google.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: yixuanjiang <yixuanjiang@google.com>, vkoul@kernel.org,
+	lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] ASoC: soc-compress: Fix deadlock in soc_compr_open_fe
+Message-ID: <ZIstjzsar5a4bCFN@google.com>
+References: <20230613062350.271107-1-yixuanjiang@google.com>
+ <92159f51-2e17-4c6b-8fd4-0bde8b1dd38a@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: ricardo.canuelo@collabora.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92159f51-2e17-4c6b-8fd4-0bde8b1dd38a@sirena.org.uk>
+X-MailFrom: cmllamas@google.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 3SPDKBIKYRKAR75GGLIWL6SMZ6QRV3UP
-X-Message-ID-Hash: 3SPDKBIKYRKAR75GGLIWL6SMZ6QRV3UP
-X-Mailman-Approved-At: Fri, 16 Jun 2023 07:14:51 +0000
+Message-ID-Hash: BFHHZ5JUU7VOZ4EX3SIGZ5I56E47RAN5
+X-Message-ID-Hash: BFHHZ5JUU7VOZ4EX3SIGZ5I56E47RAN5
+X-Mailman-Approved-At: Fri, 16 Jun 2023 07:14:57 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3SPDKBIKYRKAR75GGLIWL6SMZ6QRV3UP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BFHHZ5JUU7VOZ4EX3SIGZ5I56E47RAN5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,24 +119,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Thu, Jun 15, 2023 at 01:56:35AM +0100, Mark Brown wrote:
+> On Tue, Jun 13, 2023 at 02:23:50PM +0800, yixuanjiang wrote:
+> > Modify the error handling flow by release lock.
+> > The require pcm_mutex will keep holding if open fail.
+> 
+> > +++ b/sound/soc/soc-compress.c
+> > @@ -166,6 +166,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+> >  	snd_soc_dai_compr_shutdown(cpu_dai, cstream, 1);
+> >  out:
+> >  	dpcm_path_put(&list);
+> > +	mutex_unlock(&fe->card->pcm_mutex);
+> >  be_err:
+> 
+> This is really hard to follow due to the lack of any mutex_lock()s in
+> the function, I think because this is intended to undo
+> snd_soc_dpcm_mutex_lock(fe) but if that's the case why is it not using
+> snd_soc_dpcm_mutex_unlock(fe) like the success path does?  Given the use
+> of classes not doing that looks like it'll create lockdep issues.
+> 
+> I'd expect the unlock to match the lock.
 
-Hi Shuah,
+Yes, and judging from the context of the patch I believe this was based
+off of stable 5.15.y tree. The locking has been refactored since. So
+Yixuan, please rebase/adjust your patch on top of Linus's mainline tree
+and resend. Thanks!
 
-Gentle ping for this
-
-On lun, may 15 2023 at 11:43:10, Ricardo Ca=C3=B1uelo <ricardo.canuelo@coll=
-abora.com> wrote:
-> Is there a downside to that? There'll be some tests that take more time,
-> I don't think that's a problem with the tests or a reason to let them
-> timeout. IMO it's the test framework which should adapt to the needs of
-> different types of tests, and the solution provided by this patch is
-> good enough, it addresses the problem for this particular test suite.
->
-> If the solution is still unacceptable, do you have an alternative
-> proposal in mind that we can try to implement?
-
-There are some tests failing because of this and we're trying to address
-these problems to clean up the regression results.
-
-Thanks,
-Ricardo
+--
+Carlos Llamas
