@@ -4,97 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F386EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 06:49:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2EEFEB64D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 07:15:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51958820;
-	Fri, 16 Jun 2023 08:48:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51958820
+	by alsa0.perex.cz (Postfix) with ESMTPS id F362182A;
+	Fri, 16 Jun 2023 09:14:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F362182A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686898185;
-	bh=iWnJbgwh0T9lZF52oJFx/PfM6eCdscB/2fVbEaWlmmc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1686899745;
+	bh=bfKCa4lhWiKG1JkHgXQQtlzjtP0rCABzcTIjkeuk89E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uVMDG4/WVr22gzT+GV4AJztXpOWDlCSvZLtobFCSIa9YfptKFHGCjFro0HuGPvNGb
-	 00hwcZZGIyN2jiNb/mt1KDHfWO4f6zbcMPIylrd6cKeDg3np2LYmG8iqtYjJx1rBG+
-	 2zdJLdTWaSiaXzhrP2SZtzl/F/p5kti4kfh+Mv+A=
+	b=cWD51gimscB4nI78wiqWiG4H5R/urO4/kendXgZ2Ep4i4WkPC05ASZriyWg6qCFWS
+	 PnNejAtuJD6DcZ4cUngkabQFvBoIr9ATnpacO6Vq/oMCwGxYgNRpWv0k5VzFTtRlPO
+	 4IMe0iwKcKz3vQrtmwfLgamwh3Ois0e+fpVIAWCE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8179F80548; Fri, 16 Jun 2023 08:48:05 +0200 (CEST)
+	id B8790F80301; Fri, 16 Jun 2023 09:14:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFAA2F80549;
-	Fri, 16 Jun 2023 08:48:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F4C4F80246;
+	Fri, 16 Jun 2023 09:14:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9765F80149; Fri, 16 Jun 2023 08:42:59 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A72E3F80130
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 08:42:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A72E3F80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=gwLLhaaT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686897772; x=1718433772;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=iWnJbgwh0T9lZF52oJFx/PfM6eCdscB/2fVbEaWlmmc=;
-  b=gwLLhaaTgjv5JHqlJtJtAnCzfiIFwLVDeucwvylxRPyIA+6hd13YQIRJ
-   ae4A/WK8Pvz3QjxFiUMjWGFGfitd7Y3tBmyNaBvp3VgWCNnPKkNz98gFX
-   s5dmgMzR3SvwL+b6CQUJcRNxxCZxtfXIVi+Wm+OFTvR35Y7NH4EYpufDL
-   X24qRw/Oz04tIroidKvuoORqjXECXVpZdrcFk6Kfp3DzUiR2Lb83qH+fM
-   PSalJ8tS+bicz/ZlPh+l0UWgvsKVIqLlPbAGL+4WYIOif+uoUlC7sAMJR
-   ZVzzBI2sus/9HvquAMO+2Wk1obHyXPwhPDfhylXbHR540z1hR7SHq2LAk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="358017079"
-X-IronPort-AV: E=Sophos;i="6.00,246,1681196400";
-   d="scan'208";a="358017079"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jun 2023 23:42:14 -0700
-X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="746062653"
-X-IronPort-AV: E=Sophos;i="6.00,246,1681196400";
-   d="scan'208";a="746062653"
-Received: from macchian-builder.itwn.intel.com ([10.5.253.188])
-  by orsmga001.jf.intel.com with ESMTP; 15 Jun 2023 23:42:12 -0700
-From: Mac Chiang <mac.chiang@intel.com>
-To: broonie@kernel.org,
-	tiwai@suse.de
-Cc: alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com,
-	htcheong@chromium.org,
-	zhourui@huaqin.corp-partner.google.com,
-	bard.liao@intel.com,
-	mac.chiang@intel.com
-Subject: [PATCH v2 2/2] ASoC: Intel: sof_rt5682: Add mtl support RT1019P
- speaker
-Date: Fri, 16 Jun 2023 02:36:17 -0400
-Message-Id: <20230616063617.25900-2-mac.chiang@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230616063617.25900-1-mac.chiang@intel.com>
-References: <20230616063617.25900-1-mac.chiang@intel.com>
+	id DCF3DF80149; Thu, 15 Jun 2023 14:26:10 +0200 (CEST)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by alsa1.perex.cz (Postfix) with ESMTP id 236C0F800BA
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 14:26:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 236C0F800BA
+Received: from loongson.cn (unknown [10.180.13.22])
+	by gateway (Coremail) with SMTP id _____8AxnOrtAotknI0FAA--.11801S3;
+	Thu, 15 Jun 2023 20:24:13 +0800 (CST)
+Received: from [10.180.13.22] (unknown [10.180.13.22])
+	by localhost.localdomain (Coremail) with SMTP id
+ AQAAf8AxPMrsAotknPobAA--.4953S3;
+	Thu, 15 Jun 2023 20:24:12 +0800 (CST)
+Message-ID: <ecd99175-d9da-cecd-d165-e9bd3452f7cb@loongson.cn>
+Date: Thu, 15 Jun 2023 20:23:48 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VZSO23RZNGKM5245HG5CIHGQQ7OGCG5C
-X-Message-ID-Hash: VZSO23RZNGKM5245HG5CIHGQQ7OGCG5C
-X-MailFrom: mac.chiang@intel.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 1/3] ASoC: Add support for Loongson I2S controller
+To: Mark Brown <broonie@kernel.org>
+Cc: lgirdwood@gmail.com, krzysztof.kozlowski@linaro.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn
+References: <20230614122140.3402749-1-mengyingkun@loongson.cn>
+ <89022514-9f99-4fdc-9eba-d428ad0bcbb6@sirena.org.uk>
+Content-Language: en-US
+From: Yingkun Meng <mengyingkun@loongson.cn>
+In-Reply-To: <89022514-9f99-4fdc-9eba-d428ad0bcbb6@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8AxPMrsAotknPobAA--.4953S3
+X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQADDGSJrgIcngABsM
+X-Coremail-Antispam: 1Uk129KBj9xXoWrtF4kCF45trW8Xw15Gr4rJFc_yoW3WFXE93
+	429F18C3yDWFy8Wr95Kr4kXryY9F9ru345Ga1ftrykJa4S9r93Xas7Cr929asIvFs2gFnI
+	vr1qgF48Za4xuosvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbI8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
+	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
+	AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
+	rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
+	CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x02
+	67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
+	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzZ2-
+	UUUUU
+X-MailFrom: mengyingkun@loongson.cn
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: PVBZXD27BH333JSHNGUMGKK3ZKJQOZDM
+X-Message-ID-Hash: PVBZXD27BH333JSHNGUMGKK3ZKJQOZDM
+X-Mailman-Approved-At: Fri, 16 Jun 2023 07:14:28 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VZSO23RZNGKM5245HG5CIHGQQ7OGCG5C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PVBZXD27BH333JSHNGUMGKK3ZKJQOZDM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,89 +98,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch support below hardware configuration:
 
-SSP2: 10EC5682/RTL5682 codec
-SSP0: RTL1019 amplifier
+On 2023/6/15 19:30, Mark Brown wrote:
+> On Wed, Jun 14, 2023 at 08:21:40PM +0800, YingKun Meng wrote:
+>> From: Yingkun Meng <mengyingkun@loongson.cn>
+>>
+>> Loongson I2S controller is found on 7axxx/2kxxx chips from loongson,
+>> it is a PCI device with two private DMA controllers, one for playback,
+>> the other for capture.
+>>
+>> The driver supports the use of DTS or ACPI to describe device resources.
+> One minor thing which can be done as an incremental patch:
+>
+>> +/*
+>> + * DMA registers descriptor.
+>> + */
+>> +struct loongson_dma_desc {
+>> +	u32 order;		/* Next descriptor address register */
+> This probably needs a __packed to ensure the layout doesn't get changed
+> by the compiler (eg, with struct randomisation options).
 
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-Signed-off-by: Rui Zhou <zhourui@huaqin.corp-partner.google.com>
----
- sound/soc/intel/boards/sof_rt5682.c           | 23 +++++++++++++++++++
- .../intel/common/soc-acpi-intel-mtl-match.c   | 12 ++++++++++
- 2 files changed, 35 insertions(+)
+OK, got it.
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index be34d7595537..7c034d671cf3 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -239,6 +239,20 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
- 					SOF_SSP_BT_OFFLOAD_PRESENT
- 					),
- 	},
-+	{
-+		.callback = sof_rt5682_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Rex"),
-+			DMI_MATCH(DMI_OEM_STRING, "AUDIO-ALC1019_ALC5682I_I2S"),
-+		},
-+		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_SSP_CODEC(2) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT1019_SPEAKER_AMP_PRESENT |
-+					SOF_RT5682_SSP_AMP(0) |
-+					SOF_RT5682_NUM_HDMIDEV(3)
-+					),
-+	},
- 	{
- 		.callback = sof_rt5682_quirk_cb,
- 		.matches = {
-@@ -1155,6 +1169,15 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_RT5682_SSP_AMP(1) |
- 					SOF_RT5682_NUM_HDMIDEV(4)),
- 	},
-+	{
-+		.name = "mtl_rt1019_rt5682",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_SSP_CODEC(2) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT1019_SPEAKER_AMP_PRESENT |
-+					SOF_RT5682_SSP_AMP(0) |
-+					SOF_RT5682_NUM_HDMIDEV(3)),
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(platform, board_ids);
-diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-index 3d5cf8867926..ed9821adc1d9 100644
---- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-@@ -20,6 +20,11 @@ static const struct snd_soc_acpi_codecs mtl_max98360a_amp = {
- 	.codecs = {"MX98360A"}
- };
- 
-+static const struct snd_soc_acpi_codecs mtl_rt1019p_amp = {
-+	.num_codecs = 1,
-+	.codecs = {"RTL1019"}
-+};
-+
- static const struct snd_soc_acpi_codecs mtl_rt5682_rt5682s_hp = {
- 	.num_codecs = 2,
- 	.codecs = {"10EC5682", "RTL5682"},
-@@ -40,6 +45,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_machines[] = {
- 		.quirk_data = &mtl_max98360a_amp,
- 		.sof_tplg_filename = "sof-mtl-max98360a-rt5682.tplg",
- 	},
-+	{
-+		.comp_ids = &mtl_rt5682_rt5682s_hp,
-+		.drv_name = "mtl_rt1019_rt5682",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &mtl_rt1019p_amp,
-+		.sof_tplg_filename = "sof-mtl-rt1019-rt5682.tplg",
-+	},
- 	{},
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_mtl_machines);
--- 
-2.20.1
+Thanks,
+
+Yingkun
 
