@@ -4,87 +4,159 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A1FFEB64D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jun 2023 15:57:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF70CEB64DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jun 2023 16:06:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD906828;
-	Thu, 15 Jun 2023 17:56:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD906828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DDA2826;
+	Thu, 15 Jun 2023 18:06:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DDA2826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686844666;
-	bh=81m9Vmffhc3FqRRrO4ay/UJLQnvq0BnK8Q/r/d8P7L8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1686845213;
+	bh=mzTem/5iI859I0dy0pJltlazoduoQrAxbCk5i/PFSn4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TihlHP0pyL2g/nRfk2AzFaZ/TLgygiXsC+iBx5PkYxeJ+e15EZwH6NrCimrVVtYZi
-	 AQxqi6gVN1RumX+MCVmyqqyWdCbHRq3A0gtydYLZt8gweKuHzYLz9RmGQcSO38/WsA
-	 1EEWmiAFUGPZvTBTdWEeCJJ+4BoZQRuRtDCRaYsU=
+	b=qatVDHshiKizkc/gVd0hn/77IrhGyoMXq3UdD1O/4vmZemP3iPLfYhQTC9uSy2hFE
+	 WR4VEfytYvgOkYDC+sk2Oe0dqJjtMD+a6ZPtYwCOOuXZZ3fm3I21he3DsLtJWXzVPr
+	 7rJGlKUT2RgRaRcyM/34dkjZi/TpKEJ6iS4IyZdA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54014F80093; Thu, 15 Jun 2023 17:56:33 +0200 (CEST)
+	id 5F7A7F80551; Thu, 15 Jun 2023 18:05:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9798F80093;
-	Thu, 15 Jun 2023 17:56:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBBF7F80149;
+	Thu, 15 Jun 2023 18:05:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C8A8F80149; Thu, 15 Jun 2023 17:56:29 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C4D4CF80149; Thu, 15 Jun 2023 18:05:34 +0200 (CEST)
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam11on20611.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7eaa::611])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5F312F800ED
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 17:56:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F312F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0FFF5F800ED
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 18:05:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FFF5F800ED
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=TI2UIp6z
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 6CED460BCB;
-	Thu, 15 Jun 2023 15:56:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95D58C433C8;
-	Thu, 15 Jun 2023 15:56:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686844583;
-	bh=81m9Vmffhc3FqRRrO4ay/UJLQnvq0BnK8Q/r/d8P7L8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TI2UIp6zI24NA0wCak9uyhggg/zcJ09fUad71oE2r72K5RCL+Yyk861RfzkEKS9FG
-	 dXLNhvlSVKBN5sDOh0rlhqtVxnRjdpCflGXCZ3eR6+EPwpLFviqx1hFDR/yrGEmzNP
-	 0tKTksMtiClVD8LH6/pp9IDv76lDEPUgjr/sFCB8Gos7J84yW6WOoyw69bERUqsu3e
-	 38Y3oxi5kAKD8n1u32ZBhFt5vaKla/jvLlCGCEv82O0lm3SFtmsFrKHn3gkBhi4Qar
-	 eg5YOYJCaVynvxB/3AebNgI2Eqw2Lt8r+1McmlThRsbpvvkNsFS2VTqY5W6KrK94y4
-	 Q8ZFWIfObO0RQ==
-Date: Thu, 15 Jun 2023 16:56:13 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
-	Sunil-kumar.Dommati@amd.com, Mastan.Katragadda@amd.com,
-	Arungopal.kondaveeti@amd.com, mario.limonciello@amd.com,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-	open list <linux-kernel@vger.kernel.org>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=KDfg/kRQ
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KcY/ZBz20rdmdKqKURHtbgDhVxOBTzPy+Zjrwml5xZl29gX+B7sefdEMs8YAebLLoj018v6HYeddjPuEjVGw6bgLGtBoaKf/3OXXHHU/0IsjSEUmyyiReaEuOCkb+g9safrhSmunpZBSTXjfJ6JCyYTBiwfidj54fW+xCZCcOtyXbMOGOys5n7dw5aZ11BfXfRrRbi5zi41nUL2vZmy+DKCmg89T6pUFujdONFCzAOnVvISdPxVVkEBSVALUK5uarzg4mlJDI2PpwDbRFNlrGojPfAKwuhh0OaWTupru2SYiz6uxwYWkSLujYY/ekxLaeSotrqkglXjLgdW803N8Bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jujABUvwGy1I+/dcIYPq2VfhMnh1mDPNK3I1fj5GGxs=;
+ b=SB9MjU4iejFIC4FVckhIycpNtUDjh+xg3Gk9rkxy3VpakqyDHloEwaqLBU3znu4elaWc/VhyJEIQanSBnxwx5fxcElcTasehWfhhXQqmaRb+VqflTZIIXgnOdq0pWExLqpTAFNVT0omYru2EkPAAiLvN02Kdnnvjx1mCKkv63vzlHzPyA55jmXP4AZBfJk49P61Ya8I0P55JoROzS6mz60FuHuu5CYijI/Zd1Jsmwwdm9froVlkCWEglzIYqlIoiMHsDR5bLqC1cL0FOkJt7iXw0AaIw3Tpx01lobYjq0bsFwVpGADlcza0vb8OMPVX00S/0cjnLXDliZWBVY3omIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jujABUvwGy1I+/dcIYPq2VfhMnh1mDPNK3I1fj5GGxs=;
+ b=KDfg/kRQaxWKLcuXLnsB8IOvRkTmYn69eUkS0hDbmPlYQ8wXBq/P8P3G0Z9c6Rs+cHMjR241W82jiFFl4BkYvQqYYOykxGCHJuKNkacw028j8LHSOIXXJFeRkabg4qABukK5j64v1uqKpSxkwv54KcSLMZk+08z6Mo7Gcy61zJQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com (2603:10b6:5:21f::23)
+ by BL1PR12MB5993.namprd12.prod.outlook.com (2603:10b6:208:399::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.27; Thu, 15 Jun
+ 2023 16:05:25 +0000
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::8760:2e89:1243:2b5d]) by DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::8760:2e89:1243:2b5d%7]) with mapi id 15.20.6500.025; Thu, 15 Jun 2023
+ 16:05:24 +0000
+Message-ID: <e58e85b1-b52f-7a0d-733e-df1729ac737e@amd.com>
+Date: Thu, 15 Jun 2023 21:39:56 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
 Subject: Re: [PATCH V4 4/9] ASoC: amd: ps: add SoundWire dma driver dma ops
-Message-ID: <bf711135-8959-4ea6-b1e7-4adcb11dab67@sirena.org.uk>
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Basavaraj.Hiregoudar@amd.com,
+ Sunil-kumar.Dommati@amd.com, Mastan.Katragadda@amd.com,
+ Arungopal.kondaveeti@amd.com, mario.limonciello@amd.com,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+ open list <linux-kernel@vger.kernel.org>
 References: <20230612095903.2113464-1-Vijendar.Mukunda@amd.com>
  <20230612095903.2113464-5-Vijendar.Mukunda@amd.com>
  <0dbd1c24-0006-7956-9b82-780c7f005927@linux.intel.com>
  <36242cca-b20f-03dc-2d3b-62a797291af7@amd.com>
  <2c4fb68a-70f7-6d75-951b-ee7fd209fa8b@amd.com>
+ <bf711135-8959-4ea6-b1e7-4adcb11dab67@sirena.org.uk>
+From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+In-Reply-To: <bf711135-8959-4ea6-b1e7-4adcb11dab67@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0189.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:e8::10) To DM6PR12MB4123.namprd12.prod.outlook.com
+ (2603:10b6:5:21f::23)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kUsvJ1h86RzSufS+"
-Content-Disposition: inline
-In-Reply-To: <2c4fb68a-70f7-6d75-951b-ee7fd209fa8b@amd.com>
-X-Cookie: You are false data.
-Message-ID-Hash: NAAGEUTEOFXFMQV3AH6U4D5W2K5IETSV
-X-Message-ID-Hash: NAAGEUTEOFXFMQV3AH6U4D5W2K5IETSV
-X-MailFrom: broonie@kernel.org
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4123:EE_|BL1PR12MB5993:EE_
+X-MS-Office365-Filtering-Correlation-Id: ac0dfa6a-3a6f-441c-8f8b-08db6dba53d8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	jvpTrWgxxlD7LlRjOzPZiQ3HdH9bWLeiIMtJsNDMMou5iJxqPI1Hgw3gprr0Yy/3g1ZIpVg76jp4pIfPqhNAtz9VkxqWu0ns7qRU+AqTit93GzuQMW+saJqMQLWUFLKPiuLpFllYB/PHLElyW3Lm3xYwYfuGwFBnxJDqPtydl+TXBuZWWUk5NtyzVYJlAN3jrqW35tmPNSojMbOE/lWMz75KgWT0G8oyS1bB/QXcE2ddkO62rFvqFbneiWJlaZRv/4Dtwhk9NigAMvI9MhuZdDXdxU2X0bYaKCMQyIIqw6v2NJgbInTszmf99rlMdtpDXslAkOsTBd5vOYMiPH+Pk8sZYpOo1AjFgvqOLXmam9fU55js7zk8RUODyfxoUp/utQjX5IoptngQuM9JuswPZsdkSiudgrrK1uhKmwESFjyf86HoP10fmR3ZxTlUnY3UHqwFNFIEDORLhG46P+dtPQhKrEwldE6BUJkT8XR9Cf8mffagi6zoWIbvB8lb66vT7ZVaoaxnVnZz4jqUfXra8DYRCOujoiYWW//L0dFc245j33e/EZ3Fdg4ifk8PhN6B08JXc6WHzH6TxszCr+1jbbeSBl/vwFXeAVOq/lm5kxZtJ0PWNoTA8OEBXS/IV43s9Nd6KARaDvjPq7wyDExv4g==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4123.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(366004)(396003)(136003)(451199021)(478600001)(6486002)(6666004)(38100700002)(2616005)(186003)(6512007)(26005)(6506007)(53546011)(36756003)(316002)(41300700001)(66476007)(66556008)(66946007)(6916009)(4326008)(31696002)(86362001)(2906002)(4744005)(31686004)(5660300002)(8936002)(8676002)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?RlFkdUdxcGNjRXc0blNDU2lsR3h2dGV2MGNPQ0dGQjh1dEJiNy9sVlJxc1Rk?=
+ =?utf-8?B?RE5oRS84L0JXZVlkbGcvMFdGUUNvL0hLOXhRZHJic0FHS3QwL2hjYnFUcEtI?=
+ =?utf-8?B?enlrN1RjVjA2NTdNYzB1MSs1RythU0lHVlpkc3NERWptZWlxU1NZOHFvS2Jt?=
+ =?utf-8?B?VktGU3N3aERCd3hMYnVJWjFLQjZUcUpKRVVDRkpqL2pyS0tkaEphUW9oRlVa?=
+ =?utf-8?B?Y0Z4S1N2Z0dYUmZFcWtYdDBzamZxbVovcnpuL1l3V1hCOCtwbzhIeW1YdXVF?=
+ =?utf-8?B?dmQ4MUYyTWhKVFNIejdRTU9xdDNWcERoKzRCTGx1NkhOK3dXWnBjTG5Ld0VX?=
+ =?utf-8?B?SjVYSVJKOFNwVmlhTGt2OGZ3M1BuRGxwQmZ5U2wxeS82a2cyZjJjWFFDS01U?=
+ =?utf-8?B?RXlLbW1BSEFHVnJ2OEFJMnZ3Y3lnMVg3UThtaUNCSzM2T2JHSDBXbVZsaWZk?=
+ =?utf-8?B?L3ZHaXBtczVaQWRENkdZcnZDK1MzVUwyM3A4UEdNa0h6NkNqdzQ3R21ZZ012?=
+ =?utf-8?B?VEdyOEpYa3dibjBHRFR1Q1RRMVZuRzRGQStpem1JRUh0MWdTaTlSNWZEeGtB?=
+ =?utf-8?B?Myt4dGZwV1hNT2NJVWRKZTV3cFRMd3Q5TWNkSTJSa0k5VTNQdDNRaDM3TGlP?=
+ =?utf-8?B?RzJEVXFHK1NHTkRpUHNQYjhVUG9KcnNEMTdSRk9BRkw1WEQ0QzYzQndnSEtp?=
+ =?utf-8?B?Z3FHWkRpNVVYZE9jNmdpTXN3eG9RNlMwSlRTYmFwbnlzaGxnbmt1aTI4QWVp?=
+ =?utf-8?B?Y1drbHdqY1ZOMjJsd1Y4bkdVR0d1OE1TMHcrU2VYZzdVNmh1NlhLTHVXODdt?=
+ =?utf-8?B?dWdhamttdFRXREZPREVURGlkcEh4WUZZb0hxOGhJVHV2U2ZFZ3FxVXdsWkly?=
+ =?utf-8?B?R0NENkkrUjlDYVJHNTJGeWFId3dseGIxUzBjbEhOd0lmNzlaN3dhZCtESWpo?=
+ =?utf-8?B?NFB4VlBUZGhPUHFFNTU4NHB3S0hsZjlHSUlQdk82K3ZZTm1VcCswN2dJSkc2?=
+ =?utf-8?B?Zmw4TUVIQXBsUDlTVTFDQzFYK3R6MkQ4TStsY1B1VkYrK3F0MGtMUlZXdmxZ?=
+ =?utf-8?B?WGtCOEtBenZMVGRFNDhGbjdNeFpvQmZQNEFkZmtXR2xxbWhMYXY0MUpMQTZk?=
+ =?utf-8?B?L011NkJpN1BqYXBOSnVtaUNhUmhaMnV2czBaZXNhNmQ1NXEwamxaWVc5a3Bj?=
+ =?utf-8?B?c2pDSHRTam9vMmdLcko4K3h1K2oycUVHVUhZSmk1MEk1MnBFRE9yNk1IaTVv?=
+ =?utf-8?B?VHgxcWZIQyt5ZHFjbk4xOVk2eDFCOUR1ZHRab2hLVjdJa3ljRkQ0TlpXZXZX?=
+ =?utf-8?B?WFNWUG1pYm1YYmY4dU9ZaURXdXQ3U1RqRFpzTXhLZWpWclBzbnQxZC9ubEZT?=
+ =?utf-8?B?eTdWOTN5ZFVldzNUbGJoWEowckNudjc4cXpUMVg5K1pIdDh6Mi9SSWhsZnEv?=
+ =?utf-8?B?U0QrVDU2MURuYnZNMXJsYnBXUFVsWmlFcVoxMW10Ykg1Ri9PZXd1aUpsOTA2?=
+ =?utf-8?B?MFZGUTRuNkdjb3hvZ3p0ckZqWElTbGVvRHBqQUZHN0trNEloVEFDbmlUaEhx?=
+ =?utf-8?B?QXhPK0Nwc21HL1dralZjdUF6RWp0M3JRcHo3d0Zid0ExTzBoR295elhYeW1H?=
+ =?utf-8?B?dGN3RmRMTTl5MllST1RvNU4xcDhBWndlWm5NZHVyMEtVa1YvcXZnSEdOK0V3?=
+ =?utf-8?B?Q3dhMFB5R2xuclh0eEdQSFI4RWhBQmUweDJJOEpjUW1HNjZ3YjR5VlJQNVpr?=
+ =?utf-8?B?RHhER21WRmtnTnRXZmE3ZWlRKzJGei9Nc1FkZk9mejZ2M095M3F0Q1o1Qm1M?=
+ =?utf-8?B?eE96NWVScko1akRUQ29ybmJ6QTd0V05FOGVpdk1rQ2pNOXpJY1doRmZiTXhi?=
+ =?utf-8?B?ZWFNMjI1eDFHTXRHN1JpUkt6WHhzTFFsNXQwZFZ0NTJFbDk0S1d2K2MzYmRi?=
+ =?utf-8?B?d0NwZEJzWlVlc1dNLzRmRTB3OEhORUhVMlVOQmJ6eTB6MXRncjNKbVNNQWlH?=
+ =?utf-8?B?anhaQzlqQ0FCVVlPa3BUZEJkSEprSnNMTUhuTnU3c3BMRitady9PL29vVkNT?=
+ =?utf-8?B?T1VtNWEwdTliV2tKZ1JUN21Pak1PUE9nbGxYZTRPMm9YV3FQS041MmRnUnZ4?=
+ =?utf-8?Q?y6u1JZKl6mvT2QQVpgnhij11/?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ ac0dfa6a-3a6f-441c-8f8b-08db6dba53d8
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4123.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2023 16:05:24.4859
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ 767+b199o1Zw8xU0o03zFT4OYTIzkbgzQmDlb6CgA1kmI00GfEg78iWRmdIx1Mxg5FqcOES7TauxujuA/ozAxg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5993
+Message-ID-Hash: OQBQUEEROQ7RHAROVE4ZWGVEBEC36Y6M
+X-Message-ID-Hash: OQBQUEEROQ7RHAROVE4ZWGVEBEC36Y6M
+X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +168,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NAAGEUTEOFXFMQV3AH6U4D5W2K5IETSV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OQBQUEEROQ7RHAROVE4ZWGVEBEC36Y6M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,32 +177,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 15/06/23 21:26, Mark Brown wrote:
+> On Thu, Jun 15, 2023 at 09:20:08PM +0530, Mukunda,Vijendar wrote:
+>> On 13/06/23 12:30, Mukunda,Vijendar wrote:
+>>> On 12/06/23 23:36, Pierre-Louis Bossart wrote:
+>>>>> +#define SDW_PLAYBACK_MIN_NUM_PERIODS    2
+>>>>> +#define SDW_PLAYBACK_MAX_NUM_PERIODS    8
+> Not seeing any new text in this mail?
+Sorry it's my bad.
+My reply got mixed with previous thread comments.
 
---kUsvJ1h86RzSufS+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jun 15, 2023 at 09:20:08PM +0530, Mukunda,Vijendar wrote:
-> On 13/06/23 12:30, Mukunda,Vijendar wrote:
-> > On 12/06/23 23:36, Pierre-Louis Bossart wrote:
-> >>> +#define SDW_PLAYBACK_MIN_NUM_PERIODS    2
-> >>> +#define SDW_PLAYBACK_MAX_NUM_PERIODS    8
-
-Not seeing any new text in this mail?
-
---kUsvJ1h86RzSufS+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSLNJwACgkQJNaLcl1U
-h9Ahogf+JLkkhAqsPebM24o79GcLJ7Mn4RC6lzjRNbjVJmn1JBi8jRcxcZ7I8lm4
-6u9gx2T+V0TQIwH21NgvDEKSXDJZFm7D1I8A8/nIYeI7PUqA+k1MMC9HFXi5K8S/
-KzpUV2jGc6e4OaEhL0OFXazl6+fkaMvidAfNKoGLQTQYB6nY+teOCGg6aJ+IfvP6
-AP7htfr+bLtDZiJlPwKt+SUMtVwgr8/Nps7HsNLvzYG6YQT+K8P3JZixWS2RJg+O
-UgQUK30E73e96NVKUjDJfutmkfkXZKcTiPdW9OsAY5CgHQbZswxc+/TVUCq4c+sb
-jxpssmwBg9eWz85wUqGdGjUN4RDz9A==
-=99Av
------END PGP SIGNATURE-----
-
---kUsvJ1h86RzSufS+--
