@@ -4,76 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6FD3EB64D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jun 2023 12:54:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41338EB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jun 2023 12:55:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4BA7820;
-	Thu, 15 Jun 2023 14:53:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4BA7820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FC1E82C;
+	Thu, 15 Jun 2023 14:54:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FC1E82C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686833681;
-	bh=jjQPD3Rd3TRkAAFucYVz3Qi1gC6lAoRcvE6Yq5DHQW4=;
+	s=default; t=1686833709;
+	bh=wnmThzC+j9lDdLEcAD0pIRR1CHiL1hMaMBlNZUalJNQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=f4N+daCvhPVsw8SmYPf5HxXdMwYattLyj9n3wbgqClYyRC2pYHSFzoDRHnrrbqNo3
-	 M+XreaJW8My0RI0RXywG1lxyFhKSD6iJvCqN+Tbyozf0VHx3T8Av3RcQk8bDmU3TzL
-	 qPT6gwg/hzK9I5W97IfRyocZOt7EiDyLdq9+fMsk=
+	b=PZ/Sx4PUHece6wtpTX7NtxLHQDGGfy8HKPOTq5PybgUK68GRor06KsqqPIpKjv4nA
+	 5S9hrNmmxGfdm56BsT9pxDc6QYNDRatC01qMyTqxezg5zX9kCq/6+iTan5tOIsvqlO
+	 y5RyVw382GGFEFlcLm9XFU18walqg8dcuqM1I4fk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EEE84F80149; Thu, 15 Jun 2023 14:53:27 +0200 (CEST)
+	id E2910F80093; Thu, 15 Jun 2023 14:53:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20B4AF80149;
-	Thu, 15 Jun 2023 14:53:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CE77F80093;
+	Thu, 15 Jun 2023 14:53:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9054AF80246; Thu, 15 Jun 2023 14:53:21 +0200 (CEST)
+	id B3860F80155; Thu, 15 Jun 2023 14:53:22 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5452AF800ED
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 14:53:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5452AF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 65702F80130
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 14:53:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65702F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=FwB8XfAx
+ header.s=k20201202 header.b=WGIECeun
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id DF72561634;
-	Thu, 15 Jun 2023 12:53:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8670EC433C0;
-	Thu, 15 Jun 2023 12:53:10 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 332CF6210F;
+	Thu, 15 Jun 2023 12:53:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AF24C433C0;
+	Thu, 15 Jun 2023 12:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686833592;
-	bh=jjQPD3Rd3TRkAAFucYVz3Qi1gC6lAoRcvE6Yq5DHQW4=;
+	s=k20201202; t=1686833596;
+	bh=wnmThzC+j9lDdLEcAD0pIRR1CHiL1hMaMBlNZUalJNQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=FwB8XfAxPhaae2u7ft+pYqNleYN8P9d+9WBjKrJRw1uwEwbryzFnXK+slOkQ2jlZh
-	 dXLO+oPexijqDa6L+dAVLiE7efA3ublAZxUXhE3d5Sj7YF+NOZKtH/sZ2ucgzWlnEr
-	 Z3UPZfG7zgntaRv8gT5Y33JVXIrioWeL37uE7OzHz/LrPrhfw9BUzBTjv72ObOj6PC
-	 VKU1nwCMC+c0TZ2HBabR0ov7n/39vj/OvcRH4dWt53dGk/OZ4CIltXLCVL3mDvSwUk
-	 i5tdQnaVpGOBNbudKZSAB0HdGosO/cLPdHEiaFWSHIrrD93wYbvAL41z6bTgQI7cyc
-	 wNjZ3CBLXR2lw==
+	b=WGIECeunQM85OLmI7FiAai4P3eIZRjxFZ4CK3Ps0buQMgcQd5ry8O/NHW9iSRv/Sh
+	 QacPXyvJ/DErKB+Ao8vbDfUSSHhoFU92Kv2PGHFfF1CTH8Qu9fNWo52fDzIYkz8xi3
+	 t4LH+p9dJcrRxHbcm6cgaL3pBtUWffnY9M0AUfjSt0h3kHSp+Gs+4P5zw5a8/e/5XK
+	 GTZRxBDTJygYGDvMYCTIqilUKpiojrb7Ptg12dAfVN51g/mcCgPSrAU/3f8lIeUe6u
+	 c1BJYm832NeOQNL7KLBpYvHJH70yFsJPaSB6mGFsE+WQANoHBmmlxXLNdH9vJ34zSq
+	 //6XB/RsZgqtA==
 From: Mark Brown <broonie@kernel.org>
-To: Oder Chiou <oder_chiou@realtek.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-In-Reply-To: <20230609-asoc-rt-maple-v1-0-729c6553cdcf@kernel.org>
-References: <20230609-asoc-rt-maple-v1-0-729c6553cdcf@kernel.org>
-Subject: Re: [PATCH 00/16] ASoC: Convert Realtek I2C drivers to use maple
- tree register cache
-Message-Id: <168683358998.543460.7392476219485838823.b4-ty@kernel.org>
-Date: Thu, 15 Jun 2023 13:53:09 +0100
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+In-Reply-To: <87bkhhxpc6.wl-kuninori.morimoto.gx@renesas.com>
+References: <87bkhhxpc6.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: simple_card_utils: remove unused
+ cpus/codecs/platforms from props
+Message-Id: <168683359508.543460.8904351812277422730.b4-ty@kernel.org>
+Date: Thu, 15 Jun 2023 13:53:15 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-c6835
-Message-ID-Hash: A62KJH7MQNWSEP6HCXPCPLFJTHYQFP6R
-X-Message-ID-Hash: A62KJH7MQNWSEP6HCXPCPLFJTHYQFP6R
+Message-ID-Hash: RKFK2QLK4RUTS34KPEGM2SPEZ63BIFBS
+X-Message-ID-Hash: RKFK2QLK4RUTS34KPEGM2SPEZ63BIFBS
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A62KJH7MQNWSEP6HCXPCPLFJTHYQFP6R/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RKFK2QLK4RUTS34KPEGM2SPEZ63BIFBS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,12 +93,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 10 Jun 2023 14:57:46 +0100, Mark Brown wrote:
-> Many of the Realtek I2C/SPI devices only support single register read
-> and write operations so don't benefit from using the rbtree cache
-> instead of the more modern maple tree cache, convert them to maple tree.
+On Thu, 15 Jun 2023 05:32:42 +0000, Kuninori Morimoto wrote:
+> simple_dai_props has cpus/codecs/platforms. These pointer were used
+> for dai_link before, but are allocated today since
+> commit 050c7950fd70 ("ASoC: simple-card-utils: alloc dai_link
+> information for CPU/Codec/Platform").
+> We don't need to keep it anymore. This patch removes these.
 > 
 > 
+> [...]
 
 Applied to
 
@@ -108,38 +109,8 @@ Applied to
 
 Thanks!
 
-[01/16] ASoC: rt1011: Use maple tree register cache
-        (no commit info)
-[02/16] ASoC: rt1019: Use maple tree register cache
-        (no commit info)
-[03/16] ASoC: rt1305: Use maple tree register cache
-        (no commit info)
-[04/16] ASoC: rt1308: Use maple tree register cache
-        commit: 4f69e29ace9dce5f8226bfc99b77b8497d3d3d79
-[05/16] ASoC: rt5514: Use maple tree register cache
-        (no commit info)
-[06/16] ASoC: rt5616: Use maple tree register cache
-        (no commit info)
-[07/16] ASoC: rt5631: Use maple tree register cache
-        (no commit info)
-[08/16] ASoC: rt5640: Use maple tree register cache
-        (no commit info)
-[09/16] ASoC: rt5645: Use maple tree register cache
-        (no commit info)
-[10/16] ASoC: rt5651: Use maple tree register cache
-        (no commit info)
-[11/16] ASoC: rt5660: Use maple tree register cache
-        (no commit info)
-[12/16] ASoC: rt5665: Use maple tree register cache
-        (no commit info)
-[13/16] ASoC: rt5665: Use maple tree register cache
-        (no commit info)
-[14/16] ASoC: rt5668: Use maple tree register cache
-        (no commit info)
-[15/16] ASoC: rt5670: Use maple tree register cache
-        (no commit info)
-[16/16] ASoC: rt5682: Use maple tree register cache
-        (no commit info)
+[1/1] ASoC: simple_card_utils: remove unused cpus/codecs/platforms from props
+      commit: 45b4ad53d4840d92681060c11fcd4f55b1c2f246
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
