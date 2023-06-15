@@ -4,76 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28526EB64D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jun 2023 12:55:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D0B2EB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Jun 2023 13:00:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3AB582A;
-	Thu, 15 Jun 2023 14:54:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3AB582A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 038146C0;
+	Thu, 15 Jun 2023 14:59:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 038146C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686833716;
-	bh=PdugifJ988kHOdPqRVdugDyIXLOqN0JGsCj3o2txrKQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1686834021;
+	bh=6rG0n+MCvKMJZeSH/oBsEjwwf9EMDZdOJDuWIvdHiC0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qh3VSPhW1Du918pWddKabHLp4e/7+WMOviF7CpnTPtzF4rDwdnJB4UZE4L3lThQ3H
-	 bMtsxDJovHD+Y9TpnrgEFoR5VLcjnCaZofgD7Nrc7aA6/Qh/kAHXD9hT0AMCJzW2xX
-	 cb+PMcskYikLScZ3iIpKl+ITJPgkcLHfy2yb9BtI=
+	b=UEG5fJf0JI0ZzwI3zJnDOtjci6HYXomzrMnd2Z9Br4KUvFFtxkS+KKQaS/PQuRgqc
+	 blN9hgV+2tTsowwwZwA41G7EDDqv06rh86UYiaU7WhWzxANjFzv99FeFcjakDyT6oF
+	 zEjnBI3urmcOQpKdgpLMSxzsEsckRjYIF0SXH7zo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D829F8055C; Thu, 15 Jun 2023 14:53:32 +0200 (CEST)
+	id 44C6DF80149; Thu, 15 Jun 2023 14:59:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC749F80564;
-	Thu, 15 Jun 2023 14:53:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF2A9F80149;
+	Thu, 15 Jun 2023 14:59:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BCEE9F80149; Thu, 15 Jun 2023 14:53:23 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id A2943F80149; Thu, 15 Jun 2023 14:59:02 +0200 (CEST)
+Received: from phobos.denx.de (phobos.denx.de
+ [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 665EFF80093
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 14:53:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 665EFF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id B34C4F800ED
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 14:58:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B34C4F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=utGJJOov
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ unprotected) header.d=denx.de header.i=@denx.de header.a=rsa-sha256
+ header.s=phobos-20191101 header.b=AAHpVA88
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5C6F662883;
-	Thu, 15 Jun 2023 12:53:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14796C433C8;
-	Thu, 15 Jun 2023 12:53:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686833594;
-	bh=PdugifJ988kHOdPqRVdugDyIXLOqN0JGsCj3o2txrKQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=utGJJOovI3TUSVdVwfcvJdBw/Ei2bpgjAHM8k8Wuai6d7HUG+hKgBqaWvKe/needd
-	 slDAf60dMHamjsw2s85TpYsjpQcywHJZXF3onpHmuAZQIPKZGYuQr8EtfWrz8zQzNo
-	 FlYo5VjC5u3eMobT6H7qrp2yS0mamiA0OdQ85mdsPBHOu1c3nW1At9FQW3qH81xca0
-	 MVJRLQqcWbTwB1zEy5WBDYPhk5b7YAPE4aBZy85Lba3I/Uk11Hucjk5ESyrv47NH0Y
-	 t4Q2FdP2lvIpaxCdEOENc4i6nol3urvo83wUkZDP/NI48JQi2+Wq581HF9Hur0+5R7
-	 EGcV7uhrqoKRA==
-From: Mark Brown <broonie@kernel.org>
-To: Oder Chiou <oder_chiou@realtek.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-In-Reply-To: <20230609-asoc-rt-sdw-maple-v1-0-85ee50c93905@kernel.org>
-References: <20230609-asoc-rt-sdw-maple-v1-0-85ee50c93905@kernel.org>
-Subject: Re: [PATCH 0/8] ASoC: Use the maple tree register cache for
- RealTek SoundWire CODECs
-Message-Id: <168683359259.543460.10829470795045808370.b4-ty@kernel.org>
-Date: Thu, 15 Jun 2023 13:53:12 +0100
+	(Authenticated sender: marex@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 184CE86262;
+	Thu, 15 Jun 2023 14:58:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1686833937;
+	bh=CoPVgQejVWEK8px9zanv04a/R6+DcHZDe3wrnocLwGk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=AAHpVA885KlCXOwz0Bca2C/rd5sN5PwLAUepIQ81rOIbuVSUX5T8x+Yz5N9Gv1tlp
+	 oynjcSho88nicLdLLN24CqNj5asv7194aWpb4w8CXMt03EB7ZrVNr/D1xc+ZLett1v
+	 DSM9GY9OjweZIKz3bBUitqVwHLWeRUYtNlsbRfRbEOdogpEV0cqxXAAD4Ow3XAm7KG
+	 5jodOIHak6BS3IrFQnW6L4I2J31+I1OnV/zjrRfy/qyKDQGJnfIK7CplcWETGuFwdZ
+	 ZzlnY2O1xX2eLpgy6a2Uh41/ZkRNfbJZmzUzOcj+xa0X4FyIway/sWP26vMK7hHinY
+	 lXlRz5i2230Bg==
+Message-ID: <664102f3-e963-531a-5e39-b556ca132ece@denx.de>
+Date: Thu, 15 Jun 2023 14:58:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] ASoC: dt-bindings: audio-graph-card: Expand 'widgets'
+ documentation
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ alsa-devel@alsa-project.org
+References: <20230606175951.215740-1-marex@denx.de>
+ <d40f2c63-0b8a-425e-90a9-dd8f552ba782@sirena.org.uk>
+From: Marek Vasut <marex@denx.de>
+In-Reply-To: <d40f2c63-0b8a-425e-90a9-dd8f552ba782@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-c6835
-Message-ID-Hash: TRZBY45PODAOWMFMECREHY6TA3GO4VCA
-X-Message-ID-Hash: TRZBY45PODAOWMFMECREHY6TA3GO4VCA
-X-MailFrom: broonie@kernel.org
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+Message-ID-Hash: UVCPXSFQ5WOMDZ737UZAO3QSVGQXW5GK
+X-Message-ID-Hash: UVCPXSFQ5WOMDZ737UZAO3QSVGQXW5GK
+X-MailFrom: marex@denx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TRZBY45PODAOWMFMECREHY6TA3GO4VCA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UVCPXSFQ5WOMDZ737UZAO3QSVGQXW5GK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,52 +102,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 10 Jun 2023 15:27:11 +0100, Mark Brown wrote:
-> The RealTek SoundWire CODECs don't support bulk register operations so
-> they gain no advantage from using the rbtree cache, convert them to use
-> the maple tree cache instead - it is more modern.
+On 6/6/23 20:25, Mark Brown wrote:
+> On Tue, Jun 06, 2023 at 07:59:51PM +0200, Marek Vasut wrote:
 > 
+>> Document the encoding of 'widgets' property to avoid confusion.
 > 
+>>     widgets:
+>> -    description: User specified audio sound widgets.
+>> +    description: |
+>> +      User specified audio sound widgets.
+>> +      Each entry is a pair of strings, the first being the type of
+>> +      widget ("Microphone", "Line", "Headphone", "Speaker"), the
+>> +      second being the machine specific name for the widget.
+> 
+> This looks sensible to me, I don't know if there's a way we can get the
+> tooling to validate either the length or (ideally) the widget type
+> strings?
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/8] ASoC: rt700: Use maple tree register cache
-      commit: 049a78048e15ab276052d846c9692ea272699644
-[2/8] ASoC: rt711: Use maple tree register cache
-      commit: 0a5757293339fbbbb627baa7d2da65fd083c7cce
-[3/8] ASoC: rt712: Use maple tree register cache
-      commit: f438c799aa934fcd9b956083043b6f691bcc8492
-[4/8] ASoC: rt715: Use maple tree register cache
-      commit: dd08b6ddcb319375b4ee69cd02ce3298ca7608aa
-[5/8] ASoC: rt722: Use maple tree register cache
-      commit: 799457a3200b0451ca9859c77dd4e863f70ba608
-[6/8] ASoC: rt1308: Use maple tree register cache
-      commit: 4f69e29ace9dce5f8226bfc99b77b8497d3d3d79
-[7/8] ASoC: rt1316: Use maple tree register cache
-      commit: 6179a2e84f0b0b353079fe965d321ed25251c996
-[8/8] ASoC: rt1318: Use maple tree register cache
-      commit: 22691a051377763e6a4e149b7362944253fb434a
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+It seems there is no way to do validation of every two elements for 
+lists with variable number of elements.
