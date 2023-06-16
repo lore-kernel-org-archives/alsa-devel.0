@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD792EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 10:32:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65235EB64DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 10:32:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF406846;
-	Fri, 16 Jun 2023 12:31:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF406846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4051D82B;
+	Fri, 16 Jun 2023 12:31:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4051D82B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686911538;
-	bh=vixycZa0jXtagiMlhPDBWtOLoaPdv3OMpN1lDdPe7/U=;
+	s=default; t=1686911558;
+	bh=kFhzkGd95i1D4e3OhqkRKeyrJNwwBj0RlloZMpmVPV4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qPv2eSDMWvjSiJrhfCt/isPSph5VnyH3ZvGZ8ayneQSscNKkJ9Xk1mTbF4+BJC7lZ
-	 PZQpjRvhoGuYFL52Ln4R2uFuO4qFFloSz0RS1Xn7qOe4GDeej7PxUY+T13ne0yLmHw
-	 ceEBspOp6FqWTNzOUo8avU/6hOJ1VjDu2lfmVLRQ=
+	b=Fw5XRcAewEr9AFbCjU90Ezc9uWSaqquaiYOApYnMvPZjYTT2kCySAy05sM68O48E2
+	 A4o+AVQWV4CtTXBTqM9noNsSgvaC8eQvaJ4ml3VUTJ8hCZSkYIDyg2aHoVP1+oS5Fb
+	 P32rK1TeIdGOwv8f7XjBufmnW3yt+jjsL7pzmqOE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5AAFAF805A8; Fri, 16 Jun 2023 12:28:19 +0200 (CEST)
+	id 5AFC1F805B2; Fri, 16 Jun 2023 12:28:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1EFC8F805BE;
-	Fri, 16 Jun 2023 12:28:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9B8BF805D2;
+	Fri, 16 Jun 2023 12:28:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4147F805BF; Fri, 16 Jun 2023 12:28:14 +0200 (CEST)
+	id 8E045F805D3; Fri, 16 Jun 2023 12:28:22 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87CC4F805A9
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 12:28:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87CC4F805A9
+	by alsa1.perex.cz (Postfix) with ESMTPS id E67B0F805B0
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 12:28:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E67B0F805B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=YXzr9E8S
+ header.s=k20201202 header.b=kpQ26WAB
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 636FC636E9;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C46C9635F3;
+	Fri, 16 Jun 2023 10:28:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 188A7C433C9;
 	Fri, 16 Jun 2023 10:28:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B306C433C0;
-	Fri, 16 Jun 2023 10:28:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686911281;
-	bh=vixycZa0jXtagiMlhPDBWtOLoaPdv3OMpN1lDdPe7/U=;
+	s=k20201202; t=1686911283;
+	bh=kFhzkGd95i1D4e3OhqkRKeyrJNwwBj0RlloZMpmVPV4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YXzr9E8SXQf5anqREkgTajbzQkb1NHXDzW06YQA9nl+qjHLJ1+hnkPvYYgPcnFnP2
-	 UStgnjo/8J6Xw7GQpr0UL/5ptK7TOK9siiISXkORVVDXCBVMFVkeRaAI7Yc8MaOeHD
-	 bs++5A0vGDilOO+3b6ShFFEv7eye8eMoKx4BNyYpEWroZ4NmrsQBUb9GyWlFOjRu8r
-	 rJ9kLsCOkcy6ZIk8Qq00Vn8OMsGtNQD2DNg0dP7ib9nXo9Zr/dv8gPZtHlKWNIwuos
-	 1N5TeCCUnezHvnpNejuznDdyLBVn5BUxUuvF2RPZDYddhJu9t/S1KeKzQXdgn5vyni
-	 s9vA4w1W5tzyg==
+	b=kpQ26WABEPLmA1niE11lJLP1lLEIDH2GkMFIOE2LAEj6vhu04J3Za5ZF+cBlL7Oe6
+	 JP/7WpaR7CB3XgCdE/h826z5WFusoORLZYFjrWcMDOh1zHhvf++SRg8STHI8kvPAdz
+	 d3IcpTTRr0I2EJ4vyNHLuhVZHPZ+g5dVHYX+VPeVLf7hdpUAiLmBEmnLvwIY2qvVjK
+	 zKLkkj54lfgk6PooRG18YNrn37vidsmBudvkyYMmYH8unsBPrGjEgWbJ3ei+g4RKCs
+	 i3FGPGQ+rbYrRhmoGoKsyrzODZyrm4Fjk228MWplMOQx8PnY47k+CIsCAAIpCZPJqH
+	 ZG8i7hzYgIrcQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Herve Codina <herve.codina@bootlin.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Vinod Koul <vkoul@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	spujar@nvidia.com,
-	aidanmacdonald.0x0@gmail.com,
-	astrid.rost@axis.com,
+	agross@kernel.org,
+	andersson@kernel.org,
+	yung-chuan.liao@linux.intel.com,
+	linux-arm-msm@vger.kernel.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 04/14] ASoC: simple-card: Add missing
- of_node_put() in case of error
-Date: Fri, 16 Jun 2023 06:27:41 -0400
-Message-Id: <20230616102753.673975-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 05/14] soundwire: qcom: add proper error paths in
+ qcom_swrm_startup()
+Date: Fri, 16 Jun 2023 06:27:42 -0400
+Message-Id: <20230616102753.673975-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230616102753.673975-1-sashal@kernel.org>
 References: <20230616102753.673975-1-sashal@kernel.org>
@@ -84,8 +82,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.184
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BGKSLRRINO3NP7UK6XLSCHXAD45XBIBI
-X-Message-ID-Hash: BGKSLRRINO3NP7UK6XLSCHXAD45XBIBI
+Message-ID-Hash: E2RJIPZGQMIWL7VAHID7GWMGV6JX7HMA
+X-Message-ID-Hash: E2RJIPZGQMIWL7VAHID7GWMGV6JX7HMA
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BGKSLRRINO3NP7UK6XLSCHXAD45XBIBI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E2RJIPZGQMIWL7VAHID7GWMGV6JX7HMA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,34 +105,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Herve Codina <herve.codina@bootlin.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit 8938f75a5e35c597a647c28984a0304da7a33d63 ]
+[ Upstream commit 99e09b9c0ab43346c52f2787ca4e5c4b1798362e ]
 
-In the error path, a of_node_put() for platform is missing.
-Just add it.
+Reverse actions in qcom_swrm_startup() error paths to avoid leaking
+stream memory and keeping runtime PM unbalanced.
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/20230523151223.109551-9-herve.codina@bootlin.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20230517163736.997553-1-krzysztof.kozlowski@linaro.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/soundwire/qcom.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index d916ec69c24ff..ac97e8b7978c7 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -410,6 +410,7 @@ static int simple_for_each_link(struct asoc_simple_priv *priv,
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index ac73258792e6c..68ec7fde48cba 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -643,8 +643,10 @@ static int qcom_swrm_startup(struct snd_pcm_substream *substream,
+ 	int ret, i;
  
- 			if (ret < 0) {
- 				of_node_put(codec);
-+				of_node_put(plat);
- 				of_node_put(np);
- 				goto error;
- 			}
+ 	sruntime = sdw_alloc_stream(dai->name);
+-	if (!sruntime)
+-		return -ENOMEM;
++	if (!sruntime) {
++		ret = -ENOMEM;
++		goto err_alloc;
++	}
+ 
+ 	ctrl->sruntime[dai->id] = sruntime;
+ 
+@@ -654,12 +656,19 @@ static int qcom_swrm_startup(struct snd_pcm_substream *substream,
+ 		if (ret < 0 && ret != -ENOTSUPP) {
+ 			dev_err(dai->dev, "Failed to set sdw stream on %s",
+ 				codec_dai->name);
+-			sdw_release_stream(sruntime);
+-			return ret;
++			goto err_set_stream;
+ 		}
+ 	}
+ 
+ 	return 0;
++
++err_set_stream:
++	sdw_release_stream(sruntime);
++err_alloc:
++	pm_runtime_mark_last_busy(ctrl->dev);
++	pm_runtime_put_autosuspend(ctrl->dev);
++
++	return ret;
+ }
+ 
+ static void qcom_swrm_shutdown(struct snd_pcm_substream *substream,
 -- 
 2.39.2
 
