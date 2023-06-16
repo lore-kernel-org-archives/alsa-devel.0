@@ -4,87 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3604EEB64DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 10:04:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DF76EB64D8
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 10:04:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 097C39F6;
-	Fri, 16 Jun 2023 12:03:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 097C39F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5BA7883A;
+	Fri, 16 Jun 2023 12:03:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BA7883A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686909855;
-	bh=18Cg1qLjEkAqV2l06dhUWufeg8cv1oqaR23A772yCjI=;
+	s=default; t=1686909876;
+	bh=euc1LNyU/gOBdaoUs/unm7pIRjpPLm0R/Sx438RYDVY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hmhADxwwDj8eP/TzpvwO/yIBFcDAZ7hZGI6siCNB0APWeUR5lHDJkg94rtNffMbei
-	 ztuQnrZvrs94/s3oLWiClHMcmgkOlAiEbA2SDIGJ8peq53MbI07zIMxFgO5bUU0jo3
-	 x05dV6IzApwCquvVu303BCyE8kD5XzlmCAGqntmU=
+	b=UY98dGykkcNi2d6Nr6AjbZHqeMxGTCtNQTZPQxDd7zq2HedPOPXOtm4yF27diXXia
+	 dUgAIxNuJAu4BTL0u3ACvwrsGdg2jj0QZPrmqp909QL7E8G6N8q+Mz/Tw67kSind6v
+	 r6AgQFKz1N1rEvs6Q0MajBLe7L9iQaWnwRA/MGlw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8D79EF805C9; Fri, 16 Jun 2023 12:01:35 +0200 (CEST)
+	id 3A043F805D9; Fri, 16 Jun 2023 12:01:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90120F805C8;
-	Fri, 16 Jun 2023 12:01:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEB17F80548;
+	Fri, 16 Jun 2023 12:01:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C0E1F805BE; Fri, 16 Jun 2023 12:01:30 +0200 (CEST)
+	id 55DFFF805BE; Fri, 16 Jun 2023 12:01:48 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 15762F805AF
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 12:01:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15762F805AF
+	by alsa1.perex.cz (Postfix) with ESMTPS id A7A6BF80155
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 12:01:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7A6BF80155
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=WX/HTuJl
+ header.s=Intel header.b=OtrmcSSb
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686909685; x=1718445685;
+  t=1686909664; x=1718445664;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=18Cg1qLjEkAqV2l06dhUWufeg8cv1oqaR23A772yCjI=;
-  b=WX/HTuJlYxvFF6jCmobHywbWb0eBnZKuvGHrvZmnTn961bLrY0lpOnXi
-   6bgdgX4pCVGb+FwhmU3I/bSnej/25sW48EARP3OLzvFwgfTc024w6834J
-   rCn+fv2V3wrsatG+9f30A/xMIhPERT8LmWrm1nbyqaaRrWGGNDUEDTgpV
-   NYd90Q5oytlLl9eyxpW570lfaASkA51fg48WxrfhR1AAXnUQ7+dXtbX8V
-   5yHaxPw7D32q5uN0PF/CPRuVQBzzx8AmQx71X7Eo7KRewQexDVYJF95Ov
-   uqI6H+/fn8ajOwkSGBtZHDdmdYzKcVJ6pNVBp2vTEfH1+LDwb8QPq+wEE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="362591719"
+  bh=euc1LNyU/gOBdaoUs/unm7pIRjpPLm0R/Sx438RYDVY=;
+  b=OtrmcSSbPpftShvaqPCL5XsfoIs6m5i5xJ+hISK9Lz1ukWn4jONHaE+9
+   HlwRIHB9nl7rw8aZlLxqrUDCa4em4lO+UsXf2fi46+K8G8v9dcSKP0dXa
+   Q7AhQD9n1V+Avn9+u/iBG/EdCSArG7UDaz6lf6b1gBbDQkCV/YG8UScqa
+   PZaTCfdZnUnbFoz9eKhA/6D8/IXSV5bizCC3hn2D2IEp1mrysgoRWqzU5
+   G0qZEyxFsdBCliFfmneqD9rapR84dAIFiGx9imNWHujW43sRwh7IelPRf
+   0pLnsoDkvKbJcs/VP+CNHqlrsVw0+yw3I/LK+bFDIrDjOvjzw2PVFg3rm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="362591608"
 X-IronPort-AV: E=Sophos;i="6.00,247,1681196400";
-   d="scan'208";a="362591719"
+   d="scan'208";a="362591608"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2023 03:01:18 -0700
+ 16 Jun 2023 03:01:03 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="825689490"
+X-IronPort-AV: E=McAfee;i="6600,9927,10742"; a="825689393"
 X-IronPort-AV: E=Sophos;i="6.00,247,1681196400";
-   d="scan'208";a="825689490"
+   d="scan'208";a="825689393"
 Received: from kjaffe-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.254.114.132])
   by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2023 03:01:15 -0700
+ 16 Jun 2023 03:00:59 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
-	Rander Wang <rander.wang@intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+	Rander Wang <rander.wang@intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 8/8] ASoC: SOF: Intel: mtl: setup primary core info on
- MeteorLake platform
-Date: Fri, 16 Jun 2023 12:00:39 +0200
-Message-Id: <20230616100039.378150-9-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/8] ASoC: SOF: core: Free the firmware trace before calling
+ snd_sof_shutdown()
+Date: Fri, 16 Jun 2023 12:00:34 +0200
+Message-Id: <20230616100039.378150-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230616100039.378150-1-pierre-louis.bossart@linux.intel.com>
 References: <20230616100039.378150-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DGTPCRYU2NVBZLMXNDBQL4BQT7YSCWKW
-X-Message-ID-Hash: DGTPCRYU2NVBZLMXNDBQL4BQT7YSCWKW
+Message-ID-Hash: FOP4ZTRPE7WI7H7FLXO6SSCI4LMUXPTC
+X-Message-ID-Hash: FOP4ZTRPE7WI7H7FLXO6SSCI4LMUXPTC
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DGTPCRYU2NVBZLMXNDBQL4BQT7YSCWKW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FOP4ZTRPE7WI7H7FLXO6SSCI4LMUXPTC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,60 +108,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Rander Wang <rander.wang@intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Set primary core mask and refcount.
+The shutdown is called on reboot/shutdown of the machine.
+At this point the firmware tracing cannot be used anymore but in case of
+IPC3 it is using and keeping a DMA channel active (dtrace).
 
+For Tiger Lake platforms we have a quirk in place to fix rare reboot issues
+when a DMA was active before rebooting the system.
+If the tracing is enabled this quirk will be always used and a print
+appears on the kernel log which might be misleading or not even correct.
+
+Release the fw tracing before executing the shutdown to make sure that this
+known DMA user is cleared away.
+
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/mtl.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ sound/soc/sof/core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/mtl.c b/sound/soc/sof/intel/mtl.c
-index 8ae331faca4e..30fe77fd87bf 100644
---- a/sound/soc/sof/intel/mtl.c
-+++ b/sound/soc/sof/intel/mtl.c
-@@ -361,11 +361,17 @@ static int mtl_dsp_core_power_up(struct snd_sof_dev *sdev, int core)
- 	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR, MTL_DSP2CXCTL_PRIMARY_CORE, dspcxctl,
- 					    (dspcxctl & cpa) == cpa, HDA_DSP_REG_POLL_INTERVAL_US,
- 					    HDA_DSP_RESET_TIMEOUT_US);
--	if (ret < 0)
-+	if (ret < 0) {
- 		dev_err(sdev->dev, "%s: timeout on MTL_DSP2CXCTL_PRIMARY_CORE read\n",
- 			__func__);
-+		return ret;
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 9a9d82220fd0..30db685cc5f4 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -504,8 +504,10 @@ int snd_sof_device_shutdown(struct device *dev)
+ 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
+ 		cancel_work_sync(&sdev->probe_work);
+ 
+-	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE)
++	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE) {
++		sof_fw_trace_free(sdev);
+ 		return snd_sof_shutdown(sdev);
 +	}
  
--	return ret;
-+	/* set primary core mask and refcount to 1 */
-+	sdev->enabled_cores_mask = BIT(SOF_DSP_PRIMARY_CORE);
-+	sdev->dsp_core_ref_count[SOF_DSP_PRIMARY_CORE] = 1;
-+
-+	return 0;
+ 	return 0;
  }
- 
- static int mtl_dsp_core_power_down(struct snd_sof_dev *sdev, int core)
-@@ -388,10 +394,15 @@ static int mtl_dsp_core_power_down(struct snd_sof_dev *sdev, int core)
- 					    !(dspcxctl & MTL_DSP2CXCTL_PRIMARY_CORE_CPA_MASK),
- 					    HDA_DSP_REG_POLL_INTERVAL_US,
- 					    HDA_DSP_PD_TIMEOUT * USEC_PER_MSEC);
--	if (ret < 0)
-+	if (ret < 0) {
- 		dev_err(sdev->dev, "failed to power down primary core\n");
-+		return ret;
-+	}
- 
--	return ret;
-+	sdev->enabled_cores_mask = 0;
-+	sdev->dsp_core_ref_count[SOF_DSP_PRIMARY_CORE] = 0;
-+
-+	return 0;
- }
- 
- int mtl_power_down_dsp(struct snd_sof_dev *sdev)
 -- 
 2.37.2
 
