@@ -4,85 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98573EB64DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 12:25:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04108EB64D8
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 12:28:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B312083A;
-	Fri, 16 Jun 2023 14:24:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B312083A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E92DB836;
+	Fri, 16 Jun 2023 14:27:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E92DB836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686918312;
-	bh=moqr/ES15lNuEX11Pc5H3g2wE3xXbAAM8Kc9YsxOkgQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1686918530;
+	bh=+ggIknnZfTUt+gzchC2RAxcdpt1fIxhbY+hn7VH0c5E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=trbCiE3ULuYXUsNrO5XLhOAXOQ/lGIHlTmj/2TgA8XeQfGn5qbCZ197185ckl/Iok
-	 6D+GdIbAjOeBpVx7HzeCrIvKyeTqsvt8dw8U/YnSlFOwbzQupb+6xJsMVzkBTB/w6n
-	 ZL3Fyb5QlbHHfQQ1LAKKAt0mFE5UPaWt6uprmP1k=
+	b=TLThe2Ybc8XaSTVjTTpUiTPnB8AENSymOU0I8DAPPMHEx0wByXFTjK5ahjumas841
+	 oFxR2ViFimxpqywOUpe0qLLlNpu7QHPoqEtsbkrzRooRkIzH/njb4p80cTwbGFChN7
+	 1s4B2yenwzY2Ah6uETk4zGRY2PlyK3AGK40yDQog=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7CB0BF8025E; Fri, 16 Jun 2023 14:24:22 +0200 (CEST)
+	id 1C3C7F80093; Fri, 16 Jun 2023 14:27:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFDACF8025E;
-	Fri, 16 Jun 2023 14:24:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A55B5F80149;
+	Fri, 16 Jun 2023 14:27:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B313F80155; Fri, 16 Jun 2023 14:24:18 +0200 (CEST)
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9DABFF80132
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 14:24:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DABFF80132
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=tq-group.com header.i=@tq-group.com header.a=rsa-sha256
- header.s=key1 header.b=OeawgwdQ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1686918257; x=1718454257;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TntxgH50+AsaLwkL2M6URwHtw/vlX2hwx9IGEkWwFKw=;
-  b=OeawgwdQucEKN/4bn7bT8FOJ9LF4y+2HpU4q/cVlR4gxkyKiwH97D12p
-   G8pEYXNbRoi/2jqtLq5EMMS6pmDIEIFWW/gC9ZR8nujL94pvtMXUNzfOk
-   GigDoJV4ED1ZIXs13uL2qjrUrrq2AMJeOpgw6Ks4i6+EqiBQnpcAuSyeb
-   EihhTMmNqbY5oq2cPxOBHbnfxzclfoUIUXWngwphLFdrMNswzu3XWbOif
-   KsM4/zQgcoh8SXYiHy+i9ex+9MdLKLOvTfSDZrwtZcEwUflki3nkoImAe
-   01V0XXOxf63ZEoeDh3QJjHId+W1gxQ4UlAQ0mSU6L3UpO8jxd+UBff/f4
-   A==;
-X-IronPort-AV: E=Sophos;i="6.00,247,1681164000";
-   d="scan'208";a="31465682"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 16 Jun 2023 14:24:15 +0200
-Received: from steina-w.localnet (unknown [10.123.53.21])
+	id BD3DDF80149; Fri, 16 Jun 2023 14:27:25 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id B570D280082;
-	Fri, 16 Jun 2023 14:24:15 +0200 (CEST)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] ASoC: dt-bindings: tlv320aic32x4: convert to DT
- schema format
-Date: Fri, 16 Jun 2023 14:24:17 +0200
-Message-ID: <24617723.6Emhk5qWAg@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <3ddb3d09-2a9b-4a25-8108-a79ea83a9dd5@sirena.org.uk>
-References: <20230616083549.2331830-1-alexander.stein@ew.tq-group.com>
- <4930994.QJadu78ljV@steina-w>
- <3ddb3d09-2a9b-4a25-8108-a79ea83a9dd5@sirena.org.uk>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-Message-ID-Hash: N5HDPJ3NB3CEHBTJ7KVGR6VCXEE2U5DU
-X-Message-ID-Hash: N5HDPJ3NB3CEHBTJ7KVGR6VCXEE2U5DU
-X-MailFrom: alexander.stein@ew.tq-group.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7FCB9F800BA
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 14:27:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FCB9F800BA
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=TcBiJduk;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=bYcNsA6U
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DA4AD21CE2;
+	Fri, 16 Jun 2023 12:27:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1686918441;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xh3FFyGfpNJ7qx05rStAV5/effKPNMbrRxuRGv4gI+4=;
+	b=TcBiJdukawu8odMf/rS42Sx3UB4NmTYS5NLVn1H7XsD1fWqw1YWS5lq+y22omzigC1pKac
+	1DffDbCD64Px+r3+xLcyrt4y9m7guTgOK9w+hjOx3yNY6KgOO91WDg8HAglWBITS/KHGUo
+	mmcvTQJCwcU+GyMA4bpsRHSN66J7yTs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1686918441;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xh3FFyGfpNJ7qx05rStAV5/effKPNMbrRxuRGv4gI+4=;
+	b=bYcNsA6Uw9t54BS1B5bhZ0EB7QmFfpnpiHUcuH/3EYHc8W5eKk4YoqDFuw/USHjLbWXMBj
+	PlCWn/sUbGlRS/BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE2BF1330B;
+	Fri, 16 Jun 2023 12:27:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 1Xd0LSlVjGRQKAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 16 Jun 2023 12:27:21 +0000
+Date: Fri, 16 Jun 2023 14:27:21 +0200
+Message-ID: <87jzw37fti.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Symbolic Debugger" <happy.debugging@gmail.com>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 00/37] ALSA: Add MIDI 2.0 support
+In-Reply-To: 
+ <168691818283.22.13707495755989096624@mailman-web.alsa-project.org>
+References: 
+ <168682914833.20.10859690398442251462@mailman-web.alsa-project.org>
+	<168691818283.22.13707495755989096624@mailman-web.alsa-project.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: NJ2R3ACSTOJ77FGSRRR4RGSWOKYBPWTD
+X-Message-ID-Hash: NJ2R3ACSTOJ77FGSRRR4RGSWOKYBPWTD
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -94,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N5HDPJ3NB3CEHBTJ7KVGR6VCXEE2U5DU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NJ2R3ACSTOJ77FGSRRR4RGSWOKYBPWTD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,37 +116,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Mark,
+On Fri, 16 Jun 2023 14:23:02 +0200,
+Symbolic Debugger wrote:
+> 
+> Well never mind... Finally ! 
+> 
+> uname -a
+> Linux Ubuntu 6.4.0-rc6-next-20230615 #3 SMP PREEMPT_DYNAMIC Fri Jun 16 17:48:44 CST 2023 x86_64 x86_64 x86_64 GNU/Linux
 
-Am Freitag, 16. Juni 2023, 14:21:29 CEST schrieb Mark Brown:
-> On Fri, Jun 16, 2023 at 02:17:40PM +0200, Alexander Stein wrote:
-> > Am Freitag, 16. Juni 2023, 13:54:49 CEST schrieb Mark Brown:
-> > > This doesn't apply against current code, please check and resend.  Th=
-is
-> > > should be an incremental patch perhaps?
-> >=20
-> > Is there any change to original .txt file I am not aware of? The to be
-> > created .yaml file is new, so there is no increment.
->=20
-> That'll be the issue, yes.
+Good to hear that you made it :)
 
-Ok, there is nothing I can do, right?
+Actually, backporting the patches to 6.2 should be trivial, too.
+You can simply rebase the commits between v6.4-rc2..topic/midi20 onto
+6.2 or 6.3 base.
 
-> > To which base/branch/tag should I rebase this?
->=20
-> As ever
->=20
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-> for-next
-
-As mentioned in the changelog, that's already the case.
-
-Thanks and best regards,
-Alexander
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
+As mentioned, the backports for other LTS branches are found on
+sound.git tree, which required a few more pieces and some
+corrections.
 
 
+Takashi
