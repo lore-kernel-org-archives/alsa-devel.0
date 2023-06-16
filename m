@@ -4,82 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17580EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 12:22:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CD85EB64D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 12:23:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B46F382C;
-	Fri, 16 Jun 2023 14:21:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B46F382C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E801782B;
+	Fri, 16 Jun 2023 14:23:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E801782B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686918162;
-	bh=lcb93UyauGjanSidvqpH8YqMun+SYig4FM52t4gM0L0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=HYJALmC0PZ1m2m7EaLCflZCWuNq/H5Tgtmt+Wk/JC+SKH5m6vkG1roxGnoDdqRPQ2
-	 IRTfIi9pdpnLzknF4I/X2g0B4hwcImFMz0ayb/RS5H6Yznsmv9NGIVOZA+NFa4Ip5k
-	 nxegy2ElgkJ3QyelG/YjEPBKDktsVXNN00KxojrU=
+	s=default; t=1686918238;
+	bh=a4h3OVKjXJwnzri7CZ4hcdGpjqC4XEyFrpTXp5HCFZk=;
+	h=Subject:From:To:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=IePdki9rKSHy1yA5SCPricD6wUrf8beNcPUOF+chLVQyLFO8rEDhCTfATd8Rn3xWl
+	 Ui+54gRA5qmNtraKyjsMEEUylKBethA5+EtT2F76i8ohsuiYMnFqkXNgUsgT0NJWtq
+	 ZBLtLksWOpkGvjTyY2D7PYey9i/IkjsJ2r5aWFu0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C104AF80246; Fri, 16 Jun 2023 14:21:44 +0200 (CEST)
+	id B27AFF8052E; Fri, 16 Jun 2023 14:23:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34F06F80149;
-	Fri, 16 Jun 2023 14:21:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D756F80149;
+	Fri, 16 Jun 2023 14:23:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB38DF80149; Fri, 16 Jun 2023 14:21:39 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7A824F800BA
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 14:21:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A824F800BA
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=gCP5rmGi
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3BE6D62C48;
-	Fri, 16 Jun 2023 12:21:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B71ACC433C8;
-	Fri, 16 Jun 2023 12:21:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686918094;
-	bh=lcb93UyauGjanSidvqpH8YqMun+SYig4FM52t4gM0L0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gCP5rmGihmwrXYl1izXvZHeOWpY7EBrp8d+rz4wyph8U/HopwLx3yNzcOrI2VkwtZ
-	 mq7hMlYlFD7RIQBqAgGzXaQfK3qaCUtblW26cLC5jCVGzg95RWn6g8R6sbRKk0vKbR
-	 gMb4UbsvG0m5R24PE81Xzv2Flz0KL1grvRvrcCmKfKfWo76SM9gZ1fW/45UOhLxvHc
-	 W4SUbCRVIzB1gapVFpYE1ogHq7GoYXrX6JR6vmXUNCk1kP2Upwqd+vi/FOFE+S3/9R
-	 QwqWkQdtJGHptQkYELC06DR/0u42xk3La0pSxstm1qqw697L++r+IUa+G3B5KOk0Pi
-	 rAb9BMjzGP/aA==
-Date: Fri, 16 Jun 2023 13:21:29 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] ASoC: dt-bindings: tlv320aic32x4: convert to DT
- schema format
-Message-ID: <3ddb3d09-2a9b-4a25-8108-a79ea83a9dd5@sirena.org.uk>
-References: <20230616083549.2331830-1-alexander.stein@ew.tq-group.com>
- <5a562bbc-9bba-4829-8998-af12041a434c@sirena.org.uk>
- <4930994.QJadu78ljV@steina-w>
+	id E8635F80149; Fri, 16 Jun 2023 14:23:02 +0200 (CEST)
+Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
+ [10.254.200.11])
+	by alsa1.perex.cz (Postfix) with ESMTP id D041BF800BA
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 14:23:02 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fKDuqabGFWUpzE8H"
-Content-Disposition: inline
-In-Reply-To: <4930994.QJadu78ljV@steina-w>
-X-Cookie: P-K4
-Message-ID-Hash: UOKO2WMQPLSPF4VPOVJKWOSLTYHUPJ72
-X-Message-ID-Hash: UOKO2WMQPLSPF4VPOVJKWOSLTYHUPJ72
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2 00/37] ALSA: Add MIDI 2.0 support
+From: "Symbolic Debugger" <happy.debugging@gmail.com>
+To: alsa-devel@alsa-project.org
+Date: Fri, 16 Jun 2023 12:23:02 -0000
+Message-ID: 
+ <168691818283.22.13707495755989096624@mailman-web.alsa-project.org>
+In-Reply-To: 
+ <168682914833.20.10859690398442251462@mailman-web.alsa-project.org>
+References: 
+ <168682914833.20.10859690398442251462@mailman-web.alsa-project.org>
+User-Agent: HyperKitty on https://mailman.alsa-project.org/
+Message-ID-Hash: LSVYP2OPN6JR7ZDLEELDUC6N2P54NPYX
+X-Message-ID-Hash: LSVYP2OPN6JR7ZDLEELDUC6N2P54NPYX
+X-MailFrom: happy.debugging@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +60,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UOKO2WMQPLSPF4VPOVJKWOSLTYHUPJ72/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VZMJAITR2DMQXBQ5EPD2AOZJCQMN7BNQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,44 +69,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Well never mind... Finally ! 
 
---fKDuqabGFWUpzE8H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jun 16, 2023 at 02:17:40PM +0200, Alexander Stein wrote:
-> Am Freitag, 16. Juni 2023, 13:54:49 CEST schrieb Mark Brown:
-
-> > This doesn't apply against current code, please check and resend.  This
-> > should be an incremental patch perhaps?
-
-> Is there any change to original .txt file I am not aware of? The to be cr=
-eated=20
-> .yaml file is new, so there is no increment.
-
-That'll be the issue, yes.
-
-> To which base/branch/tag should I rebase this?
-
-As ever
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-ne=
-xt
-
---fKDuqabGFWUpzE8H
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSMU8kACgkQJNaLcl1U
-h9BUcAf9G7CPLU2eWfY5FglRTT5eSN2hsyUQzpxU5q3tcoyx38HkKsR49fRnvMtd
-k2Qotg1rHf2bcyuCbzQhd5lS0khMjyEFTznkWpUyAhLhvnMrO1jhBO0Chhxyndpi
-v09npGyzYgZUySR+g2boyw6eGbjHaWf707Q1PCRqeiwDoUVVmQbm05mdQetavckq
-HgCM00ZGPq9fkdYtf+g9s7iAW/8giZndtL0P+Iu56aAQISP28qi5G5kJswe0l4Os
-ATlmp+Svkd5fWZPSXkjAgolQ4OgZNNbY/648vsqBuHNW874DeJr3VowD8JvxT275
-EsqelHTY81AIYqbVZOF9/oJrKtfwfw==
-=ScV4
------END PGP SIGNATURE-----
-
---fKDuqabGFWUpzE8H--
+uname -a
+Linux Ubuntu 6.4.0-rc6-next-20230615 #3 SMP PREEMPT_DYNAMIC Fri Jun 16 17:48:44 CST 2023 x86_64 x86_64 x86_64 GNU/Linux
