@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EEEDEB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 09:03:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EE7CEB64D8
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 09:04:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D39AE82B;
-	Fri, 16 Jun 2023 11:03:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D39AE82B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AA04839;
+	Fri, 16 Jun 2023 11:03:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AA04839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686906235;
-	bh=UOnPoFg43i3UesyhFVozRmIc8vnbB70GQh4IzFCjtN0=;
+	s=default; t=1686906241;
+	bh=liQAyMeBABb3jk++u+GcttTTYo2zoQN5sl4L8LiR7W4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Bks90nCcJ/j2UTZlyzDboiosE0+8bxG1r/aQR2fl2OmneyFKt7dVfaGmxsZJeH7mx
-	 TnPtl71V2kf87KPWqgiDj398H+1HJp/DxbNYwtVSa8dRJwMBqtYeInKcxnp73qIpTo
-	 B4JX77DXBzWbYtxnZIFHW7JfyMTlegp7S1jygiBI=
+	b=pp6rTSFeEZhxuuptJD6WC/Lt6w0NvjvhLYcKt700Y+agDOWfAslWpeYJJmoY8LnVT
+	 Qxg20GrGIqI/WkoP/eIMhE/tgl/FvIoK2r++Xy1OhAuS/ybhD9e+JO4W2NNL5/sjvQ
+	 T9FggkWqLR3WN/1J5VX0RFvsw7pZnBFciFhoxq9E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DEB94F80552; Fri, 16 Jun 2023 11:02:26 +0200 (CEST)
+	id 59DD6F80563; Fri, 16 Jun 2023 11:02:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88838F80552;
-	Fri, 16 Jun 2023 11:02:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8069F80563;
+	Fri, 16 Jun 2023 11:02:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53AA9F80549; Fri, 16 Jun 2023 11:02:22 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 040D1F80563; Fri, 16 Jun 2023 11:02:31 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D6A23F80544
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 11:02:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6A23F80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id 65D9DF80553
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 11:02:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65D9DF80553
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=q/nhG7AO
+ header.s=k20201202 header.b=cb5Wuf4p
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E294863202;
-	Fri, 16 Jun 2023 09:02:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55DC8C433C0;
-	Fri, 16 Jun 2023 09:02:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0D41761840;
+	Fri, 16 Jun 2023 09:02:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D68AC433C8;
+	Fri, 16 Jun 2023 09:02:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686906137;
-	bh=UOnPoFg43i3UesyhFVozRmIc8vnbB70GQh4IzFCjtN0=;
+	s=k20201202; t=1686906146;
+	bh=liQAyMeBABb3jk++u+GcttTTYo2zoQN5sl4L8LiR7W4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=q/nhG7AOdYsI3nv+QMHa1sa79lU32ytFCuAbdWYzzYuo0eZvAqQqwJjHiYUk0p+x6
-	 lJbLILzZUk+zlak4Hv/XANuqsfyEkHsj3WMQObqLLLFsRUiadkD63bjp0TRVslmGQ/
-	 AhYVR87FEhBmKcXkTwLtddA+M8gGyIHtTFUGIlO/QiGJQ+Bj/gaDku/tSb6MKz2mao
-	 5Yk3FQeLdKKMxKVGPv0o4CfrP3/U1lh/NPjRyzAvgO+GcO5uazcdgJaJRpuX0Mpzwj
-	 MZvk4kxH4F5HRJREvI71UF7RixnpxI8z8cURMJhlJ7U0sfhgzyUc/UGPvCfhOikrTS
-	 /syyNBHkwic9g==
+	b=cb5Wuf4p9yI0VjVK/YaONawmhznz+7Rimp+gudyxGyAWeWkQKoIV3Ip6CHkjYm6ci
+	 SoqOhzy9/0kwQikK94Y/NhXGchjI9D/CADjiCK4fSaFkOj2fPubcRZfFu8OFPfsnGE
+	 5OVYVWWXHOJJZOI1rHnQjt4fi4+ddvzhqBadP2kjC8nqcZ201XiMIscymtApauolaI
+	 930BQ2v4pdm5L8ahRo4W3Kn8zGIpHuRnzdC58fXQopEwSaxmdvNLQ2UeFIib7szHTy
+	 6fNdEImZcNX8bIvGhBYV6k4ndgW3kayd+X8OmA7gKNjwRIVDL54P5IDvPfQpSStiDa
+	 uoz1NcWQUx8mg==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Mark Brown <broonie@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -67,16 +67,16 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	Yingkun Meng <mengyingkun@loongson.cn>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] ASoC: loongson: fix unused PM function warning
-Date: Fri, 16 Jun 2023 11:00:38 +0200
-Message-Id: <20230616090156.2347850-2-arnd@kernel.org>
+Subject: [PATCH 3/4] ASoC: loongson: add PCI dependency
+Date: Fri, 16 Jun 2023 11:00:39 +0200
+Message-Id: <20230616090156.2347850-3-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230616090156.2347850-1-arnd@kernel.org>
 References: <20230616090156.2347850-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: Z7DZCOBZWHJSZMOO64USHHYDVBQYKZBH
-X-Message-ID-Hash: Z7DZCOBZWHJSZMOO64USHHYDVBQYKZBH
+Message-ID-Hash: VX2X4EJ5M4NMESRZV3TOUAYYKREPFRM5
+X-Message-ID-Hash: VX2X4EJ5M4NMESRZV3TOUAYYKREPFRM5
 X-MailFrom: arnd@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z7DZCOBZWHJSZMOO64USHHYDVBQYKZBH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VX2X4EJ5M4NMESRZV3TOUAYYKREPFRM5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,30 +100,35 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Build testing without CONFIG_PM_SLEEP causes a warning:
+The new driver fails to build when PCI is disabled:
 
-sound/soc/loongson/loongson_i2s.c:246:12: error: unused function 'i2s_suspend' [-Werror,-Wunused-function]
-sound/soc/loongson/loongson_i2s.c:255:12: error: unused function 'i2s_resume' [-Werror,-Wunused-function]
+WARNING: unmet direct dependencies detected for SND_SOC_LOONGSON_I2S_PCI
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && (LOONGARCH || COMPILE_TEST [=y]) && PCI [=n]
+  Selected by [y]:
+  - SND_SOC_LOONGSON_CARD [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && (LOONGARCH || COMPILE_TEST [=y])
+sound/soc/loongson/loongson_i2s_pci.c:167:1: error: type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+module_pci_driver(loongson_i2s_driver);
 
-Use the modern SYSTEM_SLEEP_PM_OPS() instead of the old one to avoid this.
+Add the appropriate Kconfig dependency.
 
 Fixes: d24028606e764 ("ASoC: loongson: Add Loongson ASoC Sound Card Support")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/loongson/loongson_i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/loongson/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/loongson/loongson_i2s.c b/sound/soc/loongson/loongson_i2s.c
-index 35d34568be79e..f73b6d6f16c23 100644
---- a/sound/soc/loongson/loongson_i2s.c
-+++ b/sound/soc/loongson/loongson_i2s.c
-@@ -265,5 +265,5 @@ static int i2s_resume(struct device *dev)
- }
- 
- const struct dev_pm_ops loongson_i2s_pm = {
--	SET_SYSTEM_SLEEP_PM_OPS(i2s_suspend, i2s_resume)
-+	SYSTEM_SLEEP_PM_OPS(i2s_suspend, i2s_resume)
- };
+diff --git a/sound/soc/loongson/Kconfig b/sound/soc/loongson/Kconfig
+index c175f9de19a85..b8d7e2bade246 100644
+--- a/sound/soc/loongson/Kconfig
++++ b/sound/soc/loongson/Kconfig
+@@ -16,6 +16,7 @@ config SND_SOC_LOONGSON_I2S_PCI
+ config SND_SOC_LOONGSON_CARD
+ 	tristate "Loongson Sound Card Driver"
+ 	select SND_SOC_LOONGSON_I2S_PCI
++	depends on PCI
+ 	help
+ 	  Say Y or M if you want to add support for SoC audio using
+ 	  loongson I2S controller.
 -- 
 2.39.2
 
