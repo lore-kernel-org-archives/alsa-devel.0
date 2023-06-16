@@ -4,88 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74BC9EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 07:16:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C2B0EB64DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 07:16:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D6E083B;
-	Fri, 16 Jun 2023 09:15:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D6E083B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 487AB84D;
+	Fri, 16 Jun 2023 09:15:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 487AB84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686899773;
-	bh=YSHmQYDYUH6AMNTymTwaqITMTHm59Vmp3LYVXRZXZSg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=u1eKXeGE9qLO/9ZguA6ZE5KOb+N3AURUsVoJwwolAR1iCRKAVqdOizTOt6JEMkBoq
-	 0hWCRjL3OVS7+fwfZu5aN0YO+xloawPb2VLD7GaLwZDAQ/JB1dWfQTt6UzerARabOT
-	 JkGjEkMpXClDq569EPamYtnjDG7G2ICuinpi52Ek=
+	s=default; t=1686899779;
+	bh=gOtODPfFRFtN+I+Rtz//BJuLVFqoiA8iHwZWc9a1u7o=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=RO9GH1XjH2KTx53URQycsrrxt5asvzoIBEfqs5B/Xy9EPOpXh6FvkLU1QlntY/gX0
+	 YbHKVf52Vdc+LvIiXQExKo+mWT8vXT4kz/vXcQyu+T91/HwRQ11p/M+F/e3BrFyW0n
+	 qxoxtoCmo5FfzN8vg+j+iFBAwQ45Qmovz9HuqPnI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20D17F80558; Fri, 16 Jun 2023 09:14:39 +0200 (CEST)
+	id DEEE6F80571; Fri, 16 Jun 2023 09:14:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C5D2F80557;
-	Fri, 16 Jun 2023 09:14:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3AD21F80563;
+	Fri, 16 Jun 2023 09:14:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 09C30F80149; Thu, 15 Jun 2023 14:30:22 +0200 (CEST)
+	id C5D8AF80149; Fri, 16 Jun 2023 03:15:27 +0200 (CEST)
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86A05F80093
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2023 14:30:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86A05F80093
-Received: from loongson.cn (unknown [10.180.13.124])
-	by gateway (Coremail) with SMTP id _____8Ax3erZA4tk4I0FAA--.11862S3;
-	Thu, 15 Jun 2023 20:28:09 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.180.13.124])
+	by alsa1.perex.cz (Postfix) with ESMTP id DC80FF80093
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 03:15:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC80FF80093
+Received: from loongson.cn (unknown [10.180.13.22])
+	by gateway (Coremail) with SMTP id _____8CxNukqt4tkK8cFAA--.10258S3;
+	Fri, 16 Jun 2023 09:13:14 +0800 (CST)
+Received: from [10.180.13.22] (unknown [10.180.13.22])
 	by localhost.localdomain (Coremail) with SMTP id
- AQAAf8AxJeTYA4tkRfsbAA--.14263S4;
-	Thu, 15 Jun 2023 20:28:08 +0800 (CST)
-From: YingKun Meng <mengyingkun@loongson.cn>
-To: broonie@kernel.org,
-	lgirdwood@gmail.com
-Cc: krzysztof.kozlowski@linaro.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	loongarch@lists.linux.dev,
-	loongson-kernel@lists.loongnix.cn,
-	mengyingkun@loongson.cn
-Subject: [PATCH v4 1/3] ASoC: Add support for Loongson I2S controller
-Date: Thu, 15 Jun 2023 20:27:18 +0800
-Message-Id: <20230615122718.3412942-1-mengyingkun@loongson.cn>
-X-Mailer: git-send-email 2.33.0
+ AQAAf8BxNeQpt4tkqrEcAA--.16006S3;
+	Fri, 16 Jun 2023 09:13:13 +0800 (CST)
+Message-ID: <035f0d3c-ed8c-b55d-2029-ce099b0cec53@loongson.cn>
+Date: Fri, 16 Jun 2023 09:12:49 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxJeTYA4tkRfsbAA--.14263S4
-X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQADDGSK-4IAhwACsY
-X-Coremail-Antispam: 1Uk129KBj9fXoWfXry8tFWfZw1xZw4rKFyDArc_yoW5Ary8uo
-	W29F93W3yrZr1UZFyYq3WrWF1UXF15uF4ay3yxAr98C3WYyFyDWayUGr17GF1fuF4rtrW8
-	AF95trs3Ww42vr4xl-sFpf9Il3svdjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8wcxFpf
-	9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
-	UjIYCTnIWjp_UUUY17kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
-	8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-	Y2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-	v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI
-	0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280
-	aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28Icx
-	kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
-	xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42
-	IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY
-	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-	CY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU24SoDUUUU
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v4 1/3] ASoC: Add support for Loongson I2S controller
+To: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+Cc: krzysztof.kozlowski@linaro.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, loongarch@lists.linux.dev,
+ loongson-kernel@lists.loongnix.cn
+References: <20230615122718.3412942-1-mengyingkun@loongson.cn>
+ <168683751466.557448.16150477443606791325.b4-ty@kernel.org>
+Content-Language: en-US
+From: Yingkun Meng <mengyingkun@loongson.cn>
+In-Reply-To: <168683751466.557448.16150477443606791325.b4-ty@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8BxNeQpt4tkqrEcAA--.16006S3
+X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQADDGSK-4IAhwAJsT
+X-Coremail-Antispam: 1Uk129KBj93XoW7AFy3Cry7WF45tryfCrWrtFc_yoW8GFW3pa
+	9YqwnxCF4rKF1Iya1DCa10ya40vFZ7Krn8t3Z5GryjgrnxWFW2krWFyF4Y93y7Wr1S9rW2
+	y34Yqws5GFykJFgCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
+	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
+	AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
+	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+	wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8j-e5UU
+	UUU==
 X-MailFrom: mengyingkun@loongson.cn
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZL43ZPEYUCYGT4YK3YPBAML2U6FUEE34
-X-Message-ID-Hash: ZL43ZPEYUCYGT4YK3YPBAML2U6FUEE34
-X-Mailman-Approved-At: Fri, 16 Jun 2023 07:14:33 +0000
+Message-ID-Hash: Z7XC5UOUIL5FGOMGYS3U6WIW5CMJ6Y7W
+X-Message-ID-Hash: Z7XC5UOUIL5FGOMGYS3U6WIW5CMJ6Y7W
+X-Mailman-Approved-At: Fri, 16 Jun 2023 07:14:36 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZL43ZPEYUCYGT4YK3YPBAML2U6FUEE34/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z7XC5UOUIL5FGOMGYS3U6WIW5CMJ6Y7W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,1000 +98,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Yingkun Meng <mengyingkun@loongson.cn>
 
-Loongson I2S controller is found on 7axxx/2kxxx chips from loongson,
-it is a PCI device with two private DMA controllers, one for playback,
-the other for capture.
+On 2023/6/15 21:58, Mark Brown wrote:
+> On Thu, 15 Jun 2023 20:27:18 +0800, YingKun Meng wrote:
+>> Loongson I2S controller is found on 7axxx/2kxxx chips from loongson,
+>> it is a PCI device with two private DMA controllers, one for playback,
+>> the other for capture.
+>>
+>> The driver supports the use of DTS or ACPI to describe device resources.
+>>
+>>
+>> [...]
+> Applied to
+>
+>     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+>
+> Thanks!
+>
+> [1/3] ASoC: Add support for Loongson I2S controller
+>        commit: d84881e06836dc1655777a592b4279be76ad7324
+>
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.
+>
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+>
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+>
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
+>
+> Thanks,
+> Mark
 
-The driver supports the use of DTS or ACPI to describe device resources.
+Thanks for your review.
 
-Signed-off-by: Yingkun Meng <mengyingkun@loongson.cn>
----
-changes v3 -> v4
-  Add __packed attribute for loongson_dma_desc struct.
+Thanks,
 
-sound/soc/Kconfig                     |   1 +
- sound/soc/Makefile                    |   1 +
- sound/soc/loongson/Kconfig            |  16 ++
- sound/soc/loongson/Makefile           |   4 +
- sound/soc/loongson/loongson_dma.c     | 350 ++++++++++++++++++++++++++
- sound/soc/loongson/loongson_dma.h     |  16 ++
- sound/soc/loongson/loongson_i2s.c     | 269 ++++++++++++++++++++
- sound/soc/loongson/loongson_i2s.h     |  71 ++++++
- sound/soc/loongson/loongson_i2s_pci.c | 171 +++++++++++++
- 9 files changed, 899 insertions(+)
- create mode 100644 sound/soc/loongson/Kconfig
- create mode 100644 sound/soc/loongson/Makefile
- create mode 100644 sound/soc/loongson/loongson_dma.c
- create mode 100644 sound/soc/loongson/loongson_dma.h
- create mode 100644 sound/soc/loongson/loongson_i2s.c
- create mode 100644 sound/soc/loongson/loongson_i2s.h
- create mode 100644 sound/soc/loongson/loongson_i2s_pci.c
-
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 4b6e5a802880..bfa9622e1ab1 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -79,6 +79,7 @@ source "sound/soc/google/Kconfig"
- source "sound/soc/hisilicon/Kconfig"
- source "sound/soc/jz4740/Kconfig"
- source "sound/soc/kirkwood/Kconfig"
-+source "sound/soc/loongson/Kconfig"
- source "sound/soc/img/Kconfig"
- source "sound/soc/intel/Kconfig"
- source "sound/soc/mediatek/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 9d9b228e4508..8376fdb217ed 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -46,6 +46,7 @@ obj-$(CONFIG_SND_SOC)	+= fsl/
- obj-$(CONFIG_SND_SOC)	+= google/
- obj-$(CONFIG_SND_SOC)	+= hisilicon/
- obj-$(CONFIG_SND_SOC)	+= jz4740/
-+obj-$(CONFIG_SND_SOC)	+= loongson/
- obj-$(CONFIG_SND_SOC)	+= img/
- obj-$(CONFIG_SND_SOC)	+= intel/
- obj-$(CONFIG_SND_SOC)	+= mediatek/
-diff --git a/sound/soc/loongson/Kconfig b/sound/soc/loongson/Kconfig
-new file mode 100644
-index 000000000000..4478ac91e402
---- /dev/null
-+++ b/sound/soc/loongson/Kconfig
-@@ -0,0 +1,16 @@
-+# SPDX-License-Identifier: GPL-2.0
-+menu "SoC Audio for Loongson CPUs"
-+	depends on LOONGARCH || COMPILE_TEST
-+
-+config SND_SOC_LOONGSON_I2S_PCI
-+	tristate "Loongson I2S-PCI Device Driver"
-+	select REGMAP_MMIO
-+	depends on PCI
-+	help
-+	  Say Y or M if you want to add support for I2S driver for
-+	  Loongson I2S controller.
-+
-+	  The controller is found in loongson bridge chips or SoCs,
-+	  and work as a PCI device.
-+
-+endmenu
-diff --git a/sound/soc/loongson/Makefile b/sound/soc/loongson/Makefile
-new file mode 100644
-index 000000000000..099af7989103
---- /dev/null
-+++ b/sound/soc/loongson/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#Platform Support
-+snd-soc-loongson-i2s-pci-objs := loongson_i2s_pci.o loongson_i2s.o loongson_dma.o
-+obj-$(CONFIG_SND_SOC_LOONGSON_I2S_PCI) += snd-soc-loongson-i2s-pci.o
-diff --git a/sound/soc/loongson/loongson_dma.c b/sound/soc/loongson/loongson_dma.c
-new file mode 100644
-index 000000000000..65b6719e61c5
---- /dev/null
-+++ b/sound/soc/loongson/loongson_dma.c
-@@ -0,0 +1,350 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Loongson ALSA SoC Platform (DMA) driver
-+//
-+// Copyright (C) 2023 Loongson Technology Corporation Limited
-+// Author: Yingkun Meng <mengyingkun@loongson.cn>
-+//
-+
-+#include <linux/module.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/delay.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/dma-mapping.h>
-+#include <sound/soc.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include "loongson_i2s.h"
-+
-+/* DMA dma_order Register */
-+#define DMA_ORDER_STOP          (1 << 4) /* DMA stop */
-+#define DMA_ORDER_START         (1 << 3) /* DMA start */
-+#define DMA_ORDER_ASK_VALID     (1 << 2) /* DMA ask valid flag */
-+#define DMA_ORDER_AXI_UNCO      (1 << 1) /* Uncache access */
-+#define DMA_ORDER_ADDR_64       (1 << 0) /* 64bits address support */
-+
-+#define DMA_ORDER_ASK_MASK      (~0x1fUL) /* Ask addr mask */
-+#define DMA_ORDER_CTRL_MASK     (0x0fUL)  /* Control mask  */
-+
-+/*
-+ * DMA registers descriptor.
-+ */
-+struct loongson_dma_desc {
-+	u32 order;		/* Next descriptor address register */
-+	u32 saddr;		/* Source address register */
-+	u32 daddr;		/* Device address register */
-+	u32 length;		/* Total length register */
-+	u32 step_length;	/* Memory stride register */
-+	u32 step_times;		/* Repeat time register */
-+	u32 cmd;		/* Command register */
-+	u32 stats;		/* Status register */
-+	u32 order_hi;		/* Next descriptor high address register */
-+	u32 saddr_hi;		/* High source address register */
-+	u32 res[6];		/* Reserved */
-+} __packed;
-+
-+struct loongson_runtime_data {
-+	struct loongson_dma_data *dma_data;
-+
-+	struct loongson_dma_desc *dma_desc_arr;
-+	dma_addr_t dma_desc_arr_phy;
-+	int dma_desc_arr_size;
-+
-+	struct loongson_dma_desc *dma_pos_desc;
-+	dma_addr_t dma_pos_desc_phy;
-+};
-+
-+static const struct snd_pcm_hardware ls_pcm_hardware = {
-+	.info = SNDRV_PCM_INFO_MMAP |
-+		SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_MMAP_VALID |
-+		SNDRV_PCM_INFO_RESUME |
-+		SNDRV_PCM_INFO_PAUSE,
-+	.formats = (SNDRV_PCM_FMTBIT_S8 |
-+		SNDRV_PCM_FMTBIT_S16_LE |
-+		SNDRV_PCM_FMTBIT_S20_3LE |
-+		SNDRV_PCM_FMTBIT_S24_LE),
-+	.period_bytes_min = 128,
-+	.period_bytes_max = 128 * 1024,
-+	.periods_min = 1,
-+	.periods_max = PAGE_SIZE / sizeof(struct loongson_dma_desc),
-+	.buffer_bytes_max = 1024 * 1024,
-+};
-+
-+static struct
-+loongson_dma_desc *dma_desc_save(struct loongson_runtime_data *prtd)
-+{
-+	void __iomem *order_reg = prtd->dma_data->order_addr;
-+	u64 val;
-+
-+	val = (u64)prtd->dma_pos_desc_phy & DMA_ORDER_ASK_MASK;
-+	val |= (readq(order_reg) & DMA_ORDER_CTRL_MASK);
-+	val |= DMA_ORDER_ASK_VALID;
-+	writeq(val, order_reg);
-+
-+	while (readl(order_reg) & DMA_ORDER_ASK_VALID)
-+		udelay(2);
-+
-+	return prtd->dma_pos_desc;
-+}
-+
-+static int loongson_pcm_trigger(struct snd_soc_component *component,
-+				struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct loongson_runtime_data *prtd = substream->runtime->private_data;
-+	struct device *dev = substream->pcm->card->dev;
-+	void __iomem *order_reg = prtd->dma_data->order_addr;
-+	u64 val;
-+	int ret = 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		val = prtd->dma_pos_desc_phy & DMA_ORDER_ASK_MASK;
-+		if (dev->coherent_dma_mask == DMA_BIT_MASK(64))
-+			val |= DMA_ORDER_ADDR_64;
-+		else
-+			val &= ~DMA_ORDER_ADDR_64;
-+		val |= (readq(order_reg) & DMA_ORDER_CTRL_MASK);
-+		val |= DMA_ORDER_START;
-+		writeq(val, order_reg);
-+
-+		while ((readl(order_reg) & DMA_ORDER_START))
-+			udelay(2);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		dma_desc_save(prtd);
-+
-+		/* dma stop */
-+		val = readq(order_reg) | DMA_ORDER_STOP;
-+		writeq(val, order_reg);
-+		udelay(1000);
-+
-+		break;
-+	default:
-+		dev_err(dev, "Invalid pcm trigger operation\n");
-+		return -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+
-+static int loongson_pcm_hw_params(struct snd_soc_component *component,
-+				  struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct device *dev = substream->pcm->card->dev;
-+	struct loongson_runtime_data *prtd = runtime->private_data;
-+	size_t buf_len = params_buffer_bytes(params);
-+	size_t period_len = params_period_bytes(params);
-+	dma_addr_t order_addr, mem_addr;
-+	struct loongson_dma_desc *desc;
-+	u32 num_periods;
-+	int i;
-+
-+	if (buf_len % period_len) {
-+		dev_err(dev, "buf len not multiply of period len\n");
-+		return -EINVAL;
-+	}
-+
-+	num_periods = buf_len / period_len;
-+	if (!num_periods || num_periods > prtd->dma_desc_arr_size) {
-+		dev_err(dev, "dma data too small or too big\n");
-+		return -EINVAL;
-+	}
-+
-+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+	runtime->dma_bytes = buf_len;
-+
-+	/* initialize dma descriptor array */
-+	mem_addr = runtime->dma_addr;
-+	order_addr = prtd->dma_desc_arr_phy;
-+	for (i = 0; i < num_periods; i++) {
-+		desc = &prtd->dma_desc_arr[i];
-+
-+		/* next descriptor physical address */
-+		order_addr += sizeof(*desc);
-+		desc->order = lower_32_bits(order_addr | BIT(0));
-+		desc->order_hi = upper_32_bits(order_addr);
-+
-+		desc->saddr = lower_32_bits(mem_addr);
-+		desc->saddr_hi = upper_32_bits(mem_addr);
-+		desc->daddr = prtd->dma_data->dev_addr;
-+
-+		desc->cmd = BIT(0);
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			desc->cmd |= BIT(12);
-+
-+		desc->length = period_len >> 2;
-+		desc->step_length = 0;
-+		desc->step_times = 1;
-+
-+		mem_addr += period_len;
-+	}
-+	desc = &prtd->dma_desc_arr[num_periods - 1];
-+	desc->order = lower_32_bits(prtd->dma_desc_arr_phy | BIT(0));
-+	desc->order_hi = upper_32_bits(prtd->dma_desc_arr_phy);
-+
-+	/* init position descriptor */
-+	*prtd->dma_pos_desc = *prtd->dma_desc_arr;
-+
-+	return 0;
-+}
-+
-+static snd_pcm_uframes_t
-+loongson_pcm_pointer(struct snd_soc_component *component,
-+		     struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct loongson_runtime_data *prtd = runtime->private_data;
-+	struct loongson_dma_desc *desc;
-+	snd_pcm_uframes_t x;
-+	u64 addr;
-+
-+	desc = dma_desc_save(prtd);
-+	addr = ((u64)desc->saddr_hi << 32) | desc->saddr;
-+
-+	x = bytes_to_frames(runtime, addr - runtime->dma_addr);
-+	if (x == runtime->buffer_size)
-+		x = 0;
-+	return x;
-+}
-+
-+static irqreturn_t loongson_pcm_dma_irq(int irq, void *devid)
-+{
-+	struct snd_pcm_substream *substream = devid;
-+
-+	snd_pcm_period_elapsed(substream);
-+	return IRQ_HANDLED;
-+}
-+
-+static int loongson_pcm_open(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_card *card = substream->pcm->card;
-+	struct loongson_runtime_data *prtd;
-+	struct loongson_dma_data *dma_data;
-+	int ret;
-+
-+	/*
-+	 * For mysterious reasons (and despite what the manual says)
-+	 * playback samples are lost if the DMA count is not a multiple
-+	 * of the DMA burst size.  Let's add a rule to enforce that.
-+	 */
-+	snd_pcm_hw_constraint_step(runtime, 0,
-+				   SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 128);
-+	snd_pcm_hw_constraint_step(runtime, 0,
-+				   SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 128);
-+	snd_pcm_hw_constraint_integer(substream->runtime,
-+				      SNDRV_PCM_HW_PARAM_PERIODS);
-+	snd_soc_set_runtime_hwparams(substream, &ls_pcm_hardware);
-+
-+	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
-+	if (!prtd)
-+		return -ENOMEM;
-+
-+	prtd->dma_desc_arr = dma_alloc_coherent(card->dev, PAGE_SIZE,
-+						&prtd->dma_desc_arr_phy,
-+						GFP_KERNEL);
-+	if (!prtd->dma_desc_arr) {
-+		ret = -ENOMEM;
-+		goto desc_err;
-+	}
-+	prtd->dma_desc_arr_size = PAGE_SIZE / sizeof(*prtd->dma_desc_arr);
-+
-+	prtd->dma_pos_desc = dma_alloc_coherent(card->dev,
-+						sizeof(*prtd->dma_pos_desc),
-+						&prtd->dma_pos_desc_phy,
-+						GFP_KERNEL);
-+	if (!prtd->dma_pos_desc) {
-+		ret = -ENOMEM;
-+		goto pos_err;
-+	}
-+
-+	dma_data = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
-+	prtd->dma_data = dma_data;
-+
-+	substream->runtime->private_data = prtd;
-+
-+	return 0;
-+pos_err:
-+	dma_free_coherent(card->dev, PAGE_SIZE, prtd->dma_desc_arr,
-+			  prtd->dma_desc_arr_phy);
-+desc_err:
-+	kfree(prtd);
-+
-+	return ret;
-+}
-+
-+static int loongson_pcm_close(struct snd_soc_component *component,
-+			      struct snd_pcm_substream *substream)
-+{
-+	struct snd_card *card = substream->pcm->card;
-+	struct loongson_runtime_data *prtd = substream->runtime->private_data;
-+
-+	dma_free_coherent(card->dev, PAGE_SIZE, prtd->dma_desc_arr,
-+			  prtd->dma_desc_arr_phy);
-+
-+	dma_free_coherent(card->dev, sizeof(*prtd->dma_pos_desc),
-+			  prtd->dma_pos_desc, prtd->dma_pos_desc_phy);
-+
-+	kfree(prtd);
-+	return 0;
-+}
-+
-+static int loongson_pcm_mmap(struct snd_soc_component *component,
-+			     struct snd_pcm_substream *substream,
-+			     struct vm_area_struct *vma)
-+{
-+	return remap_pfn_range(vma, vma->vm_start,
-+			substream->dma_buffer.addr >> PAGE_SHIFT,
-+			vma->vm_end - vma->vm_start, vma->vm_page_prot);
-+}
-+
-+static int loongson_pcm_new(struct snd_soc_component *component,
-+			    struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_card *card = rtd->card->snd_card;
-+	struct snd_pcm_substream *substream;
-+	struct loongson_dma_data *dma_data;
-+	unsigned int i;
-+	int ret;
-+
-+	for_each_pcm_streams(i) {
-+		substream = rtd->pcm->streams[i].substream;
-+		if (!substream)
-+			continue;
-+
-+		dma_data = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0),
-+						    substream);
-+		ret = devm_request_irq(card->dev, dma_data->irq,
-+				       loongson_pcm_dma_irq,
-+				       IRQF_TRIGGER_HIGH, LS_I2S_DRVNAME,
-+				       substream);
-+		if (ret < 0) {
-+			dev_err(card->dev, "request irq for DMA failed\n");
-+			return ret;
-+		}
-+	}
-+
-+	return snd_pcm_set_fixed_buffer_all(rtd->pcm, SNDRV_DMA_TYPE_DEV,
-+					    card->dev,
-+					    ls_pcm_hardware.buffer_bytes_max);
-+}
-+
-+const struct snd_soc_component_driver loongson_i2s_component = {
-+	.name		= LS_I2S_DRVNAME,
-+	.open		= loongson_pcm_open,
-+	.close		= loongson_pcm_close,
-+	.hw_params	= loongson_pcm_hw_params,
-+	.trigger	= loongson_pcm_trigger,
-+	.pointer	= loongson_pcm_pointer,
-+	.mmap		= loongson_pcm_mmap,
-+	.pcm_construct	= loongson_pcm_new,
-+};
-diff --git a/sound/soc/loongson/loongson_dma.h b/sound/soc/loongson/loongson_dma.h
-new file mode 100644
-index 000000000000..073ee8c0c046
---- /dev/null
-+++ b/sound/soc/loongson/loongson_dma.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * ALSA ASoC interface for the Loongson platform
-+ *
-+ * Copyright (C) 2023 Loongson Technology Corporation Limited
-+ * Author: Yingkun Meng <mengyingkun@loongson.cn>
-+ */
-+
-+#ifndef _LOONGSON_DMA_H
-+#define _LOONGSON_DMA_H
-+
-+#include <sound/soc.h>
-+
-+extern const struct snd_soc_component_driver loongson_i2s_component;
-+
-+#endif
-diff --git a/sound/soc/loongson/loongson_i2s.c b/sound/soc/loongson/loongson_i2s.c
-new file mode 100644
-index 000000000000..35d34568be79
---- /dev/null
-+++ b/sound/soc/loongson/loongson_i2s.c
-@@ -0,0 +1,269 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Common functions for loongson I2S controller driver
-+//
-+// Copyright (C) 2023 Loongson Technology Corporation Limited.
-+// Author: Yingkun Meng <mengyingkun@loongson.cn>
-+//
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/delay.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/dma-mapping.h>
-+#include <sound/soc.h>
-+#include <linux/regmap.h>
-+#include <sound/pcm_params.h>
-+#include "loongson_i2s.h"
-+
-+#define LOONGSON_I2S_FORMATS (SNDRV_PCM_FMTBIT_S8 | \
-+			SNDRV_PCM_FMTBIT_S16_LE | \
-+			SNDRV_PCM_FMTBIT_S20_3LE | \
-+			SNDRV_PCM_FMTBIT_S24_LE)
-+
-+static int loongson_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
-+				struct snd_soc_dai *dai)
-+{
-+	struct loongson_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+	int ret = 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			regmap_update_bits(i2s->regmap, LS_I2S_CTRL,
-+					   I2S_CTRL_TX_EN | I2S_CTRL_TX_DMA_EN,
-+					   I2S_CTRL_TX_EN | I2S_CTRL_TX_DMA_EN);
-+		else
-+			regmap_update_bits(i2s->regmap, LS_I2S_CTRL,
-+					   I2S_CTRL_RX_EN | I2S_CTRL_RX_DMA_EN,
-+					   I2S_CTRL_RX_EN | I2S_CTRL_RX_DMA_EN);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			regmap_update_bits(i2s->regmap, LS_I2S_CTRL,
-+					I2S_CTRL_TX_EN | I2S_CTRL_TX_DMA_EN, 0);
-+		else
-+			regmap_update_bits(i2s->regmap, LS_I2S_CTRL,
-+					I2S_CTRL_RX_EN | I2S_CTRL_RX_DMA_EN, 0);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+
-+static int loongson_i2s_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct loongson_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+	u32 clk_rate = i2s->clk_rate;
-+	u32 sysclk = i2s->sysclk;
-+	u32 bits = params_width(params);
-+	u32 chans = params_channels(params);
-+	u32 fs = params_rate(params);
-+	u32 bclk_ratio, mclk_ratio;
-+	u32 mclk_ratio_frac;
-+	u32 val = 0;
-+
-+	switch (i2s->rev_id) {
-+	case 0:
-+		bclk_ratio = DIV_ROUND_CLOSEST(clk_rate,
-+					       (bits * chans * fs * 2)) - 1;
-+		mclk_ratio = DIV_ROUND_CLOSEST(clk_rate, (sysclk * 2)) - 1;
-+
-+		/* According to 2k1000LA user manual, set bits == depth */
-+		val |= (bits << 24);
-+		val |= (bits << 16);
-+		val |= (bclk_ratio << 8);
-+		val |= mclk_ratio;
-+		regmap_write(i2s->regmap, LS_I2S_CFG, val);
-+
-+		break;
-+	case 1:
-+		bclk_ratio = DIV_ROUND_CLOSEST(sysclk,
-+					       (bits * chans * fs * 2)) - 1;
-+		mclk_ratio = clk_rate / sysclk;
-+		mclk_ratio_frac = DIV_ROUND_CLOSEST(((u64)clk_rate << 16),
-+						    sysclk) - (mclk_ratio << 16);
-+
-+		regmap_read(i2s->regmap, LS_I2S_CFG, &val);
-+		val |= (bits << 24);
-+		val |= (bclk_ratio << 8);
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			val |= (bits << 16);
-+		else
-+			val |= bits;
-+		regmap_write(i2s->regmap, LS_I2S_CFG, val);
-+
-+		val = (mclk_ratio_frac << 16) | mclk_ratio;
-+		regmap_write(i2s->regmap, LS_I2S_CFG1, val);
-+
-+		break;
-+	default:
-+		dev_err(i2s->dev, "I2S revision invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int loongson_i2s_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
-+				       unsigned int freq, int dir)
-+{
-+	struct loongson_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+
-+	i2s->sysclk = freq;
-+
-+	return 0;
-+}
-+
-+static int loongson_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct loongson_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-+	u32 val;
-+	int ret;
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		regmap_update_bits(i2s->regmap, LS_I2S_CTRL, I2S_CTRL_MSB,
-+				   I2S_CTRL_MSB);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BC_FC:
-+		break;
-+	case SND_SOC_DAIFMT_BP_FC:
-+		/* Enable master mode */
-+		regmap_update_bits(i2s->regmap, LS_I2S_CTRL, I2S_CTRL_MASTER,
-+				   I2S_CTRL_MASTER);
-+		if (i2s->rev_id == 1) {
-+			ret = regmap_read_poll_timeout_atomic(i2s->regmap,
-+						LS_I2S_CTRL, val,
-+						val & I2S_CTRL_CLK_READY,
-+						10, 500000);
-+			if (ret < 0)
-+				dev_warn(dai->dev, "wait BCLK ready timeout\n");
-+		}
-+		break;
-+	case SND_SOC_DAIFMT_BC_FP:
-+		/* Enable MCLK */
-+		if (i2s->rev_id == 1) {
-+			regmap_update_bits(i2s->regmap, LS_I2S_CTRL,
-+					   I2S_CTRL_MCLK_EN,
-+					   I2S_CTRL_MCLK_EN);
-+			ret = regmap_read_poll_timeout_atomic(i2s->regmap,
-+						LS_I2S_CTRL, val,
-+						val & I2S_CTRL_MCLK_READY,
-+						10, 500000);
-+			if (ret < 0)
-+				dev_warn(dai->dev, "wait MCLK ready timeout\n");
-+		}
-+		break;
-+	case SND_SOC_DAIFMT_BP_FP:
-+		/* Enable MCLK */
-+		if (i2s->rev_id == 1) {
-+			regmap_update_bits(i2s->regmap, LS_I2S_CTRL,
-+					   I2S_CTRL_MCLK_EN,
-+					   I2S_CTRL_MCLK_EN);
-+			ret = regmap_read_poll_timeout_atomic(i2s->regmap,
-+						LS_I2S_CTRL, val,
-+						val & I2S_CTRL_MCLK_READY,
-+						10, 500000);
-+			if (ret < 0)
-+				dev_warn(dai->dev, "wait MCLK ready timeout\n");
-+		}
-+
-+		/* Enable master mode */
-+		regmap_update_bits(i2s->regmap, LS_I2S_CTRL, I2S_CTRL_MASTER,
-+				   I2S_CTRL_MASTER);
-+		if (i2s->rev_id == 1) {
-+			ret = regmap_read_poll_timeout_atomic(i2s->regmap,
-+						LS_I2S_CTRL, val,
-+						val & I2S_CTRL_CLK_READY,
-+						10, 500000);
-+			if (ret < 0)
-+				dev_warn(dai->dev, "wait BCLK ready timeout\n");
-+		}
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops loongson_i2s_dai_ops = {
-+	.trigger	= loongson_i2s_trigger,
-+	.hw_params	= loongson_i2s_hw_params,
-+	.set_sysclk	= loongson_i2s_set_dai_sysclk,
-+	.set_fmt	= loongson_i2s_set_fmt,
-+};
-+
-+static int loongson_i2s_dai_probe(struct snd_soc_dai *cpu_dai)
-+{
-+	struct loongson_i2s *i2s = dev_get_drvdata(cpu_dai->dev);
-+
-+	snd_soc_dai_init_dma_data(cpu_dai, &i2s->playback_dma_data,
-+				  &i2s->capture_dma_data);
-+	snd_soc_dai_set_drvdata(cpu_dai, i2s);
-+
-+	return 0;
-+}
-+
-+struct snd_soc_dai_driver loongson_i2s_dai = {
-+	.name = "loongson-i2s",
-+	.probe = loongson_i2s_dai_probe,
-+	.playback = {
-+		.stream_name = "CPU-Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.formats = LOONGSON_I2S_FORMATS,
-+	},
-+	.capture = {
-+		.stream_name = "CPU-Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.formats = LOONGSON_I2S_FORMATS,
-+	},
-+	.ops = &loongson_i2s_dai_ops,
-+	.symmetric_rate = 1,
-+};
-+
-+static int i2s_suspend(struct device *dev)
-+{
-+	struct loongson_i2s *i2s = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(i2s->regmap, true);
-+
-+	return 0;
-+}
-+
-+static int i2s_resume(struct device *dev)
-+{
-+	struct loongson_i2s *i2s = dev_get_drvdata(dev);
-+	int ret;
-+
-+	regcache_cache_only(i2s->regmap, false);
-+	regcache_mark_dirty(i2s->regmap);
-+	ret = regcache_sync(i2s->regmap);
-+
-+	return ret;
-+}
-+
-+const struct dev_pm_ops loongson_i2s_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(i2s_suspend, i2s_resume)
-+};
-diff --git a/sound/soc/loongson/loongson_i2s.h b/sound/soc/loongson/loongson_i2s.h
-new file mode 100644
-index 000000000000..52788f6a94ad
---- /dev/null
-+++ b/sound/soc/loongson/loongson_i2s.h
-@@ -0,0 +1,71 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * ALSA I2S interface for the Loongson platform
-+ *
-+ * Copyright (C) 2023 Loongson Technology Corporation Limited
-+ * Author: Yingkun Meng <mengyingkun@loongson.cn>
-+ */
-+
-+#ifndef _LOONGSON_I2S_H
-+#define _LOONGSON_I2S_H
-+
-+#include <linux/regmap.h>
-+#include <sound/dmaengine_pcm.h>
-+
-+/* I2S Common Registers */
-+#define LS_I2S_VER	0x00 /* I2S Version */
-+#define LS_I2S_CFG	0x04 /* I2S Config */
-+#define LS_I2S_CTRL	0x08 /* I2S Control */
-+#define LS_I2S_RX_DATA	0x0C /* I2S DMA RX Address */
-+#define LS_I2S_TX_DATA	0x10 /* I2S DMA TX Address */
-+
-+/* 2K2000 I2S Specify Registers */
-+#define LS_I2S_CFG1	0x14 /* I2S Config1 */
-+
-+/* 7A2000 I2S Specify Registers */
-+#define LS_I2S_TX_ORDER	0x100 /* TX DMA Order */
-+#define LS_I2S_RX_ORDER 0x110 /* RX DMA Order */
-+
-+/* Loongson I2S Control Register */
-+#define I2S_CTRL_MCLK_READY	(1 << 16) /* MCLK ready */
-+#define I2S_CTRL_MASTER		(1 << 15) /* Master mode */
-+#define I2S_CTRL_MSB		(1 << 14) /* MSB bit order */
-+#define I2S_CTRL_RX_EN		(1 << 13) /* RX enable */
-+#define I2S_CTRL_TX_EN		(1 << 12) /* TX enable */
-+#define I2S_CTRL_RX_DMA_EN	(1 << 11) /* DMA RX enable */
-+#define I2S_CTRL_CLK_READY	(1 << 8)  /* BCLK ready */
-+#define I2S_CTRL_TX_DMA_EN	(1 << 7)  /* DMA TX enable */
-+#define I2S_CTRL_RESET		(1 << 4)  /* Controller soft reset */
-+#define I2S_CTRL_MCLK_EN	(1 << 3)  /* Enable MCLK */
-+#define I2S_CTRL_RX_INT_EN	(1 << 1)  /* RX interrupt enable */
-+#define I2S_CTRL_TX_INT_EN	(1 << 0)  /* TX interrupt enable */
-+
-+#define LS_I2S_DRVNAME		"loongson-i2s"
-+
-+struct loongson_dma_data {
-+	dma_addr_t dev_addr;		/* device physical address for DMA */
-+	void __iomem *order_addr;	/* DMA order register */
-+	u32 irq;			/* DMA irq */
-+};
-+
-+struct loongson_i2s {
-+	struct device *dev;
-+	union {
-+		struct snd_dmaengine_dai_dma_data playback_dma_data;
-+		struct loongson_dma_data tx_dma_data;
-+	};
-+	union {
-+		struct snd_dmaengine_dai_dma_data capture_dma_data;
-+		struct loongson_dma_data rx_dma_data;
-+	};
-+	struct regmap *regmap;
-+	void __iomem *reg_base;
-+	u32 rev_id;
-+	u32 clk_rate;
-+	u32 sysclk;
-+};
-+
-+extern const struct dev_pm_ops loongson_i2s_pm;
-+extern struct snd_soc_dai_driver loongson_i2s_dai;
-+
-+#endif
-diff --git a/sound/soc/loongson/loongson_i2s_pci.c b/sound/soc/loongson/loongson_i2s_pci.c
-new file mode 100644
-index 000000000000..6dcfb17d3276
---- /dev/null
-+++ b/sound/soc/loongson/loongson_i2s_pci.c
-@@ -0,0 +1,171 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// loongson_i2s_pci.c -- Loongson I2S controller driver
-+//
-+// Copyright (C) 2023 Loongson Technology Corporation Limited
-+// Author: Yingkun Meng <mengyingkun@loongson.cn>
-+//
-+
-+#include <linux/module.h>
-+#include <linux/delay.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/acpi.h>
-+#include <linux/pci.h>
-+#include <sound/soc.h>
-+#include "loongson_i2s.h"
-+#include "loongson_dma.h"
-+
-+static bool loongson_i2s_wr_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case LS_I2S_CFG:
-+	case LS_I2S_CTRL:
-+	case LS_I2S_RX_DATA:
-+	case LS_I2S_TX_DATA:
-+	case LS_I2S_CFG1:
-+		return true;
-+	default:
-+		return false;
-+	};
-+}
-+
-+static bool loongson_i2s_rd_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case LS_I2S_VER:
-+	case LS_I2S_CFG:
-+	case LS_I2S_CTRL:
-+	case LS_I2S_RX_DATA:
-+	case LS_I2S_TX_DATA:
-+	case LS_I2S_CFG1:
-+		return true;
-+	default:
-+		return false;
-+	};
-+}
-+
-+static bool loongson_i2s_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case LS_I2S_CFG:
-+	case LS_I2S_CTRL:
-+	case LS_I2S_RX_DATA:
-+	case LS_I2S_TX_DATA:
-+	case LS_I2S_CFG1:
-+		return true;
-+	default:
-+		return false;
-+	};
-+}
-+
-+static const struct regmap_config loongson_i2s_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = LS_I2S_CFG1,
-+	.writeable_reg = loongson_i2s_wr_reg,
-+	.readable_reg = loongson_i2s_rd_reg,
-+	.volatile_reg = loongson_i2s_volatile_reg,
-+	.cache_type = REGCACHE_FLAT,
-+};
-+
-+static int loongson_i2s_pci_probe(struct pci_dev *pdev,
-+				  const struct pci_device_id *pid)
-+{
-+	const struct fwnode_handle *fwnode = pdev->dev.fwnode;
-+	struct loongson_dma_data *tx_data, *rx_data;
-+	struct loongson_i2s *i2s;
-+	int ret;
-+
-+	if (pcim_enable_device(pdev)) {
-+		dev_err(&pdev->dev, "pci_enable_device failed\n");
-+		return -ENODEV;
-+	}
-+
-+	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
-+	if (!i2s)
-+		return -ENOMEM;
-+
-+	i2s->rev_id = pdev->revision;
-+	i2s->dev = &pdev->dev;
-+	pci_set_drvdata(pdev, i2s);
-+
-+	ret = pcim_iomap_regions(pdev, 1 << 0, dev_name(&pdev->dev));
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "iomap_regions failed\n");
-+		return ret;
-+	}
-+	i2s->reg_base = pcim_iomap_table(pdev)[0];
-+	i2s->regmap = devm_regmap_init_mmio(&pdev->dev, i2s->reg_base,
-+					    &loongson_i2s_regmap_config);
-+	if (IS_ERR(i2s->regmap)) {
-+		dev_err(&pdev->dev, "regmap_init_mmio failed\n");
-+		return PTR_ERR(i2s->regmap);
-+	}
-+
-+	tx_data = &i2s->tx_dma_data;
-+	rx_data = &i2s->rx_dma_data;
-+
-+	tx_data->dev_addr = (dma_addr_t)i2s->reg_base + LS_I2S_TX_DATA;
-+	tx_data->order_addr = i2s->reg_base + LS_I2S_TX_ORDER;
-+
-+	rx_data->dev_addr = (dma_addr_t)i2s->reg_base + LS_I2S_RX_DATA;
-+	rx_data->order_addr = i2s->reg_base + LS_I2S_RX_ORDER;
-+
-+	tx_data->irq = fwnode_irq_get_byname(fwnode, "tx");
-+	if (tx_data->irq < 0) {
-+		dev_err(&pdev->dev, "dma tx irq invalid\n");
-+		return tx_data->irq;
-+	}
-+
-+	rx_data->irq = fwnode_irq_get_byname(fwnode, "rx");
-+	if (rx_data->irq < 0) {
-+		dev_err(&pdev->dev, "dma rx irq invalid\n");
-+		return rx_data->irq;
-+	}
-+
-+	device_property_read_u32(&pdev->dev, "clock-frequency", &i2s->clk_rate);
-+	if (!i2s->clk_rate) {
-+		dev_err(&pdev->dev, "clock-frequency property invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
-+
-+	if (i2s->rev_id == 1) {
-+		regmap_write(i2s->regmap, LS_I2S_CTRL, I2S_CTRL_RESET);
-+		udelay(200);
-+	}
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+					      &loongson_i2s_component,
-+					      &loongson_i2s_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "register DAI failed %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct pci_device_id loongson_i2s_ids[] = {
-+	{ PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, 0x7a27) },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(pci, loongson_i2s_ids);
-+
-+static struct pci_driver loongson_i2s_driver = {
-+	.name = "loongson-i2s-pci",
-+	.id_table = loongson_i2s_ids,
-+	.probe = loongson_i2s_pci_probe,
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.pm = pm_sleep_ptr(&loongson_i2s_pm),
-+	},
-+};
-+module_pci_driver(loongson_i2s_driver);
-+
-+MODULE_DESCRIPTION("Loongson I2S Master Mode ASoC Driver");
-+MODULE_AUTHOR("Loongson Technology Corporation Limited");
-+MODULE_LICENSE("GPL");
--- 
-2.33.0
+Yingkun
 
