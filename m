@@ -4,92 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C2B0EB64DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 07:16:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6DF9EB64D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 07:16:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 487AB84D;
-	Fri, 16 Jun 2023 09:15:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 487AB84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2638857;
+	Fri, 16 Jun 2023 09:15:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2638857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686899779;
-	bh=gOtODPfFRFtN+I+Rtz//BJuLVFqoiA8iHwZWc9a1u7o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1686899795;
+	bh=OaC1nUKdnxfa6K3QRDHYonpcCa70eHiwXnh/es/qfhs=;
+	h=From:To:Cc:Subject:References:In-reply-to:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RO9GH1XjH2KTx53URQycsrrxt5asvzoIBEfqs5B/Xy9EPOpXh6FvkLU1QlntY/gX0
-	 YbHKVf52Vdc+LvIiXQExKo+mWT8vXT4kz/vXcQyu+T91/HwRQ11p/M+F/e3BrFyW0n
-	 qxoxtoCmo5FfzN8vg+j+iFBAwQ45Qmovz9HuqPnI=
+	b=aazmqvLVJSXtP4AtEEZ0MvyyXrsqnSQXOBHceD4tlTfw5qIWXHvUb7UP8Q1ssgC37
+	 Euyaeez/GI2QT9ifxuLgNAdxq9qs2ZBF6OkjVAjVlKNf+W6XVTrY2Ge2Nz0D4tOVTi
+	 sS2rWpTsD5rDICwojOh/LwpxOToOBpgdRcint4J8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DEEE6F80571; Fri, 16 Jun 2023 09:14:40 +0200 (CEST)
+	id 13FA1F8057E; Fri, 16 Jun 2023 09:14:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AD21F80563;
-	Fri, 16 Jun 2023 09:14:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6A35F8057A;
+	Fri, 16 Jun 2023 09:14:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5D8AF80149; Fri, 16 Jun 2023 03:15:27 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC80FF80093
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 03:15:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC80FF80093
-Received: from loongson.cn (unknown [10.180.13.22])
-	by gateway (Coremail) with SMTP id _____8CxNukqt4tkK8cFAA--.10258S3;
-	Fri, 16 Jun 2023 09:13:14 +0800 (CST)
-Received: from [10.180.13.22] (unknown [10.180.13.22])
-	by localhost.localdomain (Coremail) with SMTP id
- AQAAf8BxNeQpt4tkqrEcAA--.16006S3;
-	Fri, 16 Jun 2023 09:13:13 +0800 (CST)
-Message-ID: <035f0d3c-ed8c-b55d-2029-ce099b0cec53@loongson.cn>
-Date: Fri, 16 Jun 2023 09:12:49 +0800
+	id 4C460F80149; Fri, 16 Jun 2023 09:10:51 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 81EE1F80130
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 09:10:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81EE1F80130
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=XJNz+vis
+Received: from localhost (unknown
+ [IPv6:2a0c:5a83:9106:d00:27a:a702:1397:9647])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: rcn)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 044206606F61;
+	Fri, 16 Jun 2023 08:10:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1686899443;
+	bh=OaC1nUKdnxfa6K3QRDHYonpcCa70eHiwXnh/es/qfhs=;
+	h=From:To:Cc:Subject:References:In-reply-to:Date:From;
+	b=XJNz+vis7E9WaQQYxIJBmj7bz72IwFZpEksccqocNsKW7/KYpg9eyC3MRIVC+kZ7A
+	 DyPFv4AIC45g4nR2msp6Ssh2XQ1gl9RecLkdhkrQbKlpQ7VeyPxNNE4h2VsMclujlf
+	 0o9P/W2llNpjmjYbmBJKB+mwFc0Thou+gyKgCpA/jZ4+JWhKXqfE3O769mgDJEpN0n
+	 3kieBNxZO0v48Hb4iMVFdc8gN0wfgS8wL5FNgwe7nOQv5g6l3pl2Z1j6AHLtz9e6Rg
+	 rg2iyujO02hKA1mgzweTd06Fc4cYZsVhrkprCUdnuARHHg62hPag8ptEj6HT/GDhez
+	 ZYw04T+FCYFug==
+From: Ricardo =?utf-8?Q?Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>
+To: Shuah Khan <skhan@linuxfoundation.org>
+Cc: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>,
+ Mark Brown <broonie@kernel.org>, kernel@collabora.com, Jaroslav Kysela
+ <perex@perex.cz>, Shuah Khan <shuah@kernel.org>, Takashi Iwai
+ <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] kselftest/alsa: Increase kselftest timeout
+References: <20221213183242.1908249-1-nfraprado@collabora.com>
+ <2ee34e21-44bd-71e7-6da2-f4bea9a35452@linuxfoundation.org>
+ <20230515094310.hulpyhhtb4sxxn7i@rcn-XPS-13-9305>
+In-reply-to: <20230515094310.hulpyhhtb4sxxn7i@rcn-XPS-13-9305>
+Date: Fri, 16 Jun 2023 09:10:39 +0200
+Message-ID: 
+ <87sfarj30w.fsf@rcn-XPS-13-9305.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4 1/3] ASoC: Add support for Loongson I2S controller
-To: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
-Cc: krzysztof.kozlowski@linaro.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, loongarch@lists.linux.dev,
- loongson-kernel@lists.loongnix.cn
-References: <20230615122718.3412942-1-mengyingkun@loongson.cn>
- <168683751466.557448.16150477443606791325.b4-ty@kernel.org>
-Content-Language: en-US
-From: Yingkun Meng <mengyingkun@loongson.cn>
-In-Reply-To: <168683751466.557448.16150477443606791325.b4-ty@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8BxNeQpt4tkqrEcAA--.16006S3
-X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQADDGSK-4IAhwAJsT
-X-Coremail-Antispam: 1Uk129KBj93XoW7AFy3Cry7WF45tryfCrWrtFc_yoW8GFW3pa
-	9YqwnxCF4rKF1Iya1DCa10ya40vFZ7Krn8t3Z5GryjgrnxWFW2krWFyF4Y93y7Wr1S9rW2
-	y34Yqws5GFykJFgCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
-	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
-	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
-	AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8j-e5UU
-	UUU==
-X-MailFrom: mengyingkun@loongson.cn
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: ricardo.canuelo@collabora.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: Z7XC5UOUIL5FGOMGYS3U6WIW5CMJ6Y7W
-X-Message-ID-Hash: Z7XC5UOUIL5FGOMGYS3U6WIW5CMJ6Y7W
-X-Mailman-Approved-At: Fri, 16 Jun 2023 07:14:36 +0000
+Message-ID-Hash: 3SPDKBIKYRKAR75GGLIWL6SMZ6QRV3UP
+X-Message-ID-Hash: 3SPDKBIKYRKAR75GGLIWL6SMZ6QRV3UP
+X-Mailman-Approved-At: Fri, 16 Jun 2023 07:14:51 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z7XC5UOUIL5FGOMGYS3U6WIW5CMJ6Y7W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3SPDKBIKYRKAR75GGLIWL6SMZ6QRV3UP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,47 +102,23 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On 2023/6/15 21:58, Mark Brown wrote:
-> On Thu, 15 Jun 2023 20:27:18 +0800, YingKun Meng wrote:
->> Loongson I2S controller is found on 7axxx/2kxxx chips from loongson,
->> it is a PCI device with two private DMA controllers, one for playback,
->> the other for capture.
->>
->> The driver supports the use of DTS or ACPI to describe device resources.
->>
->>
->> [...]
-> Applied to
->
->     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
->
-> Thanks!
->
-> [1/3] ASoC: Add support for Loongson I2S controller
->        commit: d84881e06836dc1655777a592b4279be76ad7324
->
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
->
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
->
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
->
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
->
-> Thanks,
-> Mark
+Hi Shuah,
 
-Thanks for your review.
+Gentle ping for this
+
+On lun, may 15 2023 at 11:43:10, Ricardo Ca=C3=B1uelo <ricardo.canuelo@coll=
+abora.com> wrote:
+> Is there a downside to that? There'll be some tests that take more time,
+> I don't think that's a problem with the tests or a reason to let them
+> timeout. IMO it's the test framework which should adapt to the needs of
+> different types of tests, and the solution provided by this patch is
+> good enough, it addresses the problem for this particular test suite.
+>
+> If the solution is still unacceptable, do you have an alternative
+> proposal in mind that we can try to implement?
+
+There are some tests failing because of this and we're trying to address
+these problems to clean up the regression results.
 
 Thanks,
-
-Yingkun
-
+Ricardo
