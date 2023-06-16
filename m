@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82CDCEB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 10:30:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C171EB64D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 10:30:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DBFA868;
-	Fri, 16 Jun 2023 12:29:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DBFA868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81562843;
+	Fri, 16 Jun 2023 12:29:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81562843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686911404;
-	bh=9gVndDDGD3GB5YZiZTn+lErzwx67qIfGPxOubXPSXPE=;
+	s=default; t=1686911416;
+	bh=FxyDFM80gAodbMr/Zh0mljDGdPjue49EbrEZmedq9oU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lDltp3nI15yQYexLdHrSf7IG6qq+sFRorwfSmt2UJX8qFxj9Rdd/QU+71wlKhXEuf
-	 KW8HY+38XIFrb0gQuNcl3PNKNE0qhJFgvEZqBs7Pp0Gsl4y9WqIrf1/nlKC2iU1QQd
-	 9uIWZOraEicfVD/r2oyLbwqfM81raoyqntooNpUk=
+	b=duTK2Gg4rgKWUpEkgnebjtTC05ALnuhYAaWpzXQiGQOPR9uXhYXTlFCMbK7N4CWd1
+	 WdhJzE/K+OvR4yIUpi/Sy4+LnUFZOdgywKWveR0jnux2zE6zA4vdLXMfDQYYCEOWxB
+	 gDVNxGuvOa5EWz0UcqMQZx9rslosHNfwPyrdzAUg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1E82CF805F6; Fri, 16 Jun 2023 12:26:51 +0200 (CEST)
+	id 6D24CF805F7; Fri, 16 Jun 2023 12:26:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 274C3F80570;
-	Fri, 16 Jun 2023 12:26:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4739F805F1;
+	Fri, 16 Jun 2023 12:26:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 285E3F805D9; Fri, 16 Jun 2023 12:26:46 +0200 (CEST)
+	id 159D0F805E8; Fri, 16 Jun 2023 12:26:50 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 570D6F80246
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 12:26:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 570D6F80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6901DF805E7
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 12:26:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6901DF805E7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=YeXUuc34
+ header.s=k20201202 header.b=eDPQCbV+
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 42C56611D8;
-	Fri, 16 Jun 2023 10:26:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 770DBC433C0;
-	Fri, 16 Jun 2023 10:26:41 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 53883635B4;
+	Fri, 16 Jun 2023 10:26:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 829AEC433C0;
+	Fri, 16 Jun 2023 10:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686911202;
-	bh=9gVndDDGD3GB5YZiZTn+lErzwx67qIfGPxOubXPSXPE=;
+	s=k20201202; t=1686911205;
+	bh=FxyDFM80gAodbMr/Zh0mljDGdPjue49EbrEZmedq9oU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YeXUuc34FCH8NTyCplbJ7WXDhTemElK4rEKmxW3NRn7K5dSsDzWzWpR2DCGuPhAwi
-	 EFy4HzjjBMTC7XLivNMWDG4auWgpjzw9esTCRAc/ZjQOnp4sw0Y2LDTIxoPmIPd/QF
-	 G77UuXdiGDysSaU1sJa04RwQWYlWldcwJwLggyMXTNanK2b3hoXirL4HtMyb5fBhc1
-	 4QeJIbxuONI7tl3O0DzHMuSa+cSszGJ4OOlR3zCQTx1QrpAIc/HFKbCG4PTbVRj6J1
-	 0ZTsHbRjYqArEOoZqTlhlwrMzupdl8F1RTWEBqvxJwZoQ4kTe0f+E47NJWkFsJaOfb
-	 I2XcGs+/IJ/OQ==
+	b=eDPQCbV+Q17/JpgimS4ZH78QUF8hbfghoa+Q54GS7mqMJXxphoy2ixdOV3v6gZ9Hx
+	 mRXlOecdFT11ekG9YNB4uj7qzojQRDHOx/vhuBDMgaw9iXZkGrMUW3KMKRcBV9JmcN
+	 qo2CUTpxhE21UnYq7vx2iunYpLE6TFYlpimIMrjwnwi/7JTl+Wo2zGtT8QZc7JKn1z
+	 VnaokKfiRN9b9PqRXmSNgmuWlJDLEhjOJ7sJjpWyyVaVuhs/oDuIsmHb6GZnf0sH+Z
+	 StnJyQQyqBmFWGjeL7tqivBbLO33xwMcfSZ83xBu0clRO+JQ2eAnF75sKMuGKTEqyV
+	 Ty1buFjNO5rFQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Vinod Koul <vkoul@kernel.org>,
+Cc: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	agross@kernel.org,
-	andersson@kernel.org,
-	yung-chuan.liao@linux.intel.com,
-	linux-arm-msm@vger.kernel.org,
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	ckeepax@opensource.cirrus.com,
+	SJLIN0@nuvoton.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 09/26] soundwire: qcom: add proper error paths in
- qcom_swrm_startup()
-Date: Fri, 16 Jun 2023 06:26:06 -0400
-Message-Id: <20230616102625.673454-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 10/26] ASoC: nau8824: Add quirk to active-high
+ jack-detect
+Date: Fri, 16 Jun 2023 06:26:07 -0400
+Message-Id: <20230616102625.673454-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230616102625.673454-1-sashal@kernel.org>
 References: <20230616102625.673454-1-sashal@kernel.org>
@@ -81,8 +81,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.34
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XRC4R27GMKJWFJLWGECX22WEOLHMKTP6
-X-Message-ID-Hash: XRC4R27GMKJWFJLWGECX22WEOLHMKTP6
+Message-ID-Hash: 6ML75QNW2I4L2N4RM2NR5QJRDNH6RHHY
+X-Message-ID-Hash: 6ML75QNW2I4L2N4RM2NR5QJRDNH6RHHY
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XRC4R27GMKJWFJLWGECX22WEOLHMKTP6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6ML75QNW2I4L2N4RM2NR5QJRDNH6RHHY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,61 +104,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
 
-[ Upstream commit 99e09b9c0ab43346c52f2787ca4e5c4b1798362e ]
+[ Upstream commit e384dba03e3294ce7ea69e4da558e9bf8f0e8946 ]
 
-Reverse actions in qcom_swrm_startup() error paths to avoid leaking
-stream memory and keeping runtime PM unbalanced.
+Add  entries for Positivo laptops: CW14Q01P, K1424G, N14ZP74G to the
+DMI table, so that  active-high jack-detect will work properly on
+these laptops.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20230517163736.997553-1-krzysztof.kozlowski@linaro.org
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
+Link: https://lore.kernel.org/r/20230529181911.632851-1-edson.drosdeck@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/qcom.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ sound/soc/codecs/nau8824.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 21c50972047f5..b2eb3090f4b46 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -1090,8 +1090,10 @@ static int qcom_swrm_startup(struct snd_pcm_substream *substream,
- 	}
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index 4f19fd9b65d11..5a4db8944d06a 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -1903,6 +1903,30 @@ static const struct dmi_system_id nau8824_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(NAU8824_MONO_SPEAKER),
+ 	},
++	{
++		/* Positivo CW14Q01P */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Positivo Tecnologia SA"),
++			DMI_MATCH(DMI_BOARD_NAME, "CW14Q01P"),
++		},
++		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
++	},
++	{
++		/* Positivo K1424G */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Positivo Tecnologia SA"),
++			DMI_MATCH(DMI_BOARD_NAME, "K1424G"),
++		},
++		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
++	},
++	{
++		/* Positivo N14ZP74G */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Positivo Tecnologia SA"),
++			DMI_MATCH(DMI_BOARD_NAME, "N14ZP74G"),
++		},
++		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
++	},
+ 	{}
+ };
  
- 	sruntime = sdw_alloc_stream(dai->name);
--	if (!sruntime)
--		return -ENOMEM;
-+	if (!sruntime) {
-+		ret = -ENOMEM;
-+		goto err_alloc;
-+	}
- 
- 	ctrl->sruntime[dai->id] = sruntime;
- 
-@@ -1101,12 +1103,19 @@ static int qcom_swrm_startup(struct snd_pcm_substream *substream,
- 		if (ret < 0 && ret != -ENOTSUPP) {
- 			dev_err(dai->dev, "Failed to set sdw stream on %s\n",
- 				codec_dai->name);
--			sdw_release_stream(sruntime);
--			return ret;
-+			goto err_set_stream;
- 		}
- 	}
- 
- 	return 0;
-+
-+err_set_stream:
-+	sdw_release_stream(sruntime);
-+err_alloc:
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+
-+	return ret;
- }
- 
- static void qcom_swrm_shutdown(struct snd_pcm_substream *substream,
 -- 
 2.39.2
 
