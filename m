@@ -4,86 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5CF2EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 10:32:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD792EB64D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Jun 2023 10:32:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1777851;
-	Fri, 16 Jun 2023 12:31:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1777851
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF406846;
+	Fri, 16 Jun 2023 12:31:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF406846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1686911526;
-	bh=8WpkNaqlzrCdWtc0ZiYsBRXoIZPGOkQUBjDAFyzepYU=;
+	s=default; t=1686911538;
+	bh=vixycZa0jXtagiMlhPDBWtOLoaPdv3OMpN1lDdPe7/U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jVTJIoFChPcbiY2Sb2dDUTUhBRRKw6GMY8AGHACwJE2icLW7GkUDLSCgTxLa+KecE
-	 95H+8VkrnuhBV1oyUATKTSAIfdXoC8cHYMp1gzY/FxKx9gpvkYScdVILFnVzN8j/bC
-	 4YCoP97hts1PilDEg7ApebF1ppCV5u38L+hVPJxE=
+	b=qPv2eSDMWvjSiJrhfCt/isPSph5VnyH3ZvGZ8ayneQSscNKkJ9Xk1mTbF4+BJC7lZ
+	 PZQpjRvhoGuYFL52Ln4R2uFuO4qFFloSz0RS1Xn7qOe4GDeej7PxUY+T13ne0yLmHw
+	 ceEBspOp6FqWTNzOUo8avU/6hOJ1VjDu2lfmVLRQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 044B4F80623; Fri, 16 Jun 2023 12:27:45 +0200 (CEST)
+	id 5AAFAF805A8; Fri, 16 Jun 2023 12:28:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77ED8F80579;
-	Fri, 16 Jun 2023 12:27:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EFC8F805BE;
+	Fri, 16 Jun 2023 12:28:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 925B0F80614; Fri, 16 Jun 2023 12:27:42 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id B4147F805BF; Fri, 16 Jun 2023 12:28:14 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3EC68F80579
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 12:27:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EC68F80579
+	by alsa1.perex.cz (Postfix) with ESMTPS id 87CC4F805A9
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2023 12:28:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87CC4F805A9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=R9JicIN5
+ header.s=k20201202 header.b=YXzr9E8S
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E5CD56245F;
-	Fri, 16 Jun 2023 10:27:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1446DC433C9;
-	Fri, 16 Jun 2023 10:27:33 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 636FC636E9;
+	Fri, 16 Jun 2023 10:28:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B306C433C0;
+	Fri, 16 Jun 2023 10:28:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686911255;
-	bh=8WpkNaqlzrCdWtc0ZiYsBRXoIZPGOkQUBjDAFyzepYU=;
+	s=k20201202; t=1686911281;
+	bh=vixycZa0jXtagiMlhPDBWtOLoaPdv3OMpN1lDdPe7/U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R9JicIN5jq7XzGzdOkIoM76kBFUYfqFQ5QCocQq+w8+LFvLG+E0FssK23to+LTFBV
-	 MWEuqgUUL7vWjRbPKzr7oHbydtTXf6tZvLdtaIFbcHOwIyjfvgrYPc9t6UZrbsmxHg
-	 97G7ce2Ltlsqh2dKf/qZgGT3I9PDVeeT+MCbYqyVrsCflGR0+mPaSCZL8pRgDaqIqG
-	 jblPcz50JQw8pRGREZTyrMmv3T/JybJ9gVXg3DldjgGZy6tX3vB167r8lffurKqSq2
-	 ZmFjygCG7odigSEpYHD9y5toTsHd15eOwa9A9s3PGBm8ok5DBv2vFKp4/5RVJkc/E/
-	 ZUEYwV5xtL5NQ==
+	b=YXzr9E8SXQf5anqREkgTajbzQkb1NHXDzW06YQA9nl+qjHLJ1+hnkPvYYgPcnFnP2
+	 UStgnjo/8J6Xw7GQpr0UL/5ptK7TOK9siiISXkORVVDXCBVMFVkeRaAI7Yc8MaOeHD
+	 bs++5A0vGDilOO+3b6ShFFEv7eye8eMoKx4BNyYpEWroZ4NmrsQBUb9GyWlFOjRu8r
+	 rJ9kLsCOkcy6ZIk8Qq00Vn8OMsGtNQD2DNg0dP7ib9nXo9Zr/dv8gPZtHlKWNIwuos
+	 1N5TeCCUnezHvnpNejuznDdyLBVn5BUxUuvF2RPZDYddhJu9t/S1KeKzQXdgn5vyni
+	 s9vA4w1W5tzyg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>,
+Cc: Herve Codina <herve.codina@bootlin.com>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	savagecin@gmail.com,
-	SJLIN0@nuvoton.com,
-	ckeepax@opensource.cirrus.com,
+	spujar@nvidia.com,
+	aidanmacdonald.0x0@gmail.com,
+	astrid.rost@axis.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.15 07/16] ASoC: nau8824: Add quirk to active-high
- jack-detect
-Date: Fri, 16 Jun 2023 06:27:10 -0400
-Message-Id: <20230616102721.673775-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 04/14] ASoC: simple-card: Add missing
+ of_node_put() in case of error
+Date: Fri, 16 Jun 2023 06:27:41 -0400
+Message-Id: <20230616102753.673975-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230616102721.673775-1-sashal@kernel.org>
-References: <20230616102721.673775-1-sashal@kernel.org>
+In-Reply-To: <20230616102753.673975-1-sashal@kernel.org>
+References: <20230616102753.673975-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.117
+X-stable-base: Linux 5.10.184
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OG63WS2DE24MTHQIN66JEOPYCGGF55AM
-X-Message-ID-Hash: OG63WS2DE24MTHQIN66JEOPYCGGF55AM
+Message-ID-Hash: BGKSLRRINO3NP7UK6XLSCHXAD45XBIBI
+X-Message-ID-Hash: BGKSLRRINO3NP7UK6XLSCHXAD45XBIBI
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OG63WS2DE24MTHQIN66JEOPYCGGF55AM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BGKSLRRINO3NP7UK6XLSCHXAD45XBIBI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,57 +107,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
+From: Herve Codina <herve.codina@bootlin.com>
 
-[ Upstream commit e384dba03e3294ce7ea69e4da558e9bf8f0e8946 ]
+[ Upstream commit 8938f75a5e35c597a647c28984a0304da7a33d63 ]
 
-Add  entries for Positivo laptops: CW14Q01P, K1424G, N14ZP74G to the
-DMI table, so that  active-high jack-detect will work properly on
-these laptops.
+In the error path, a of_node_put() for platform is missing.
+Just add it.
 
-Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
-Link: https://lore.kernel.org/r/20230529181911.632851-1-edson.drosdeck@gmail.com
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20230523151223.109551-9-herve.codina@bootlin.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/nau8824.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ sound/soc/generic/simple-card.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-index 27589900f4fbf..f7ff130a9485d 100644
---- a/sound/soc/codecs/nau8824.c
-+++ b/sound/soc/codecs/nau8824.c
-@@ -1866,6 +1866,30 @@ static const struct dmi_system_id nau8824_quirk_table[] = {
- 		},
- 		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
- 	},
-+	{
-+		/* Positivo CW14Q01P */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Positivo Tecnologia SA"),
-+			DMI_MATCH(DMI_BOARD_NAME, "CW14Q01P"),
-+		},
-+		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
-+	},
-+	{
-+		/* Positivo K1424G */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Positivo Tecnologia SA"),
-+			DMI_MATCH(DMI_BOARD_NAME, "K1424G"),
-+		},
-+		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
-+	},
-+	{
-+		/* Positivo N14ZP74G */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Positivo Tecnologia SA"),
-+			DMI_MATCH(DMI_BOARD_NAME, "N14ZP74G"),
-+		},
-+		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
-+	},
- 	{}
- };
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index d916ec69c24ff..ac97e8b7978c7 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -410,6 +410,7 @@ static int simple_for_each_link(struct asoc_simple_priv *priv,
  
+ 			if (ret < 0) {
+ 				of_node_put(codec);
++				of_node_put(plat);
+ 				of_node_put(np);
+ 				goto error;
+ 			}
 -- 
 2.39.2
 
