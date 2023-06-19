@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48D6DEB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 17:21:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D51FEB64D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 17:22:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1695482C;
-	Mon, 19 Jun 2023 19:21:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1695482C
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE032844;
+	Mon, 19 Jun 2023 19:21:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE032844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687195316;
-	bh=M8cpsIdLnXuuGWAJvDw9amJqINMPDXinMkvsofzWarg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=V0Ksu5d1bJLnyMXZ+2Kc1MaXPuZS36G4s5nzAxv3vFwCPF3NkxfdP4F1BqujKTEdd
-	 9lvjCxZB4bacx8HQXAfSwETN1tpSVK4k+8VyRsYH4Uh04hVE3knuZ17EZYuyQ1IhZp
-	 HjerkMPB8EXuiSf4SekrhSdrKV6B6xg/0PWYpBcU=
+	s=default; t=1687195342;
+	bh=bEqeDD3qlJ8khKucahwjiIUNYJkrQelnvBDmHsOyzeg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=XWCrHqmpehz/eaiF+se3jL8mmra3VU9MYc0zRgNEyaHVfF/XhewkE3y4256YY76J7
+	 IF2JCRkrosPgvdom7eOS2twHAe8ol1LrmisJaimw3pWYCifpl9IQaWGpIGAAvEdVGs
+	 iJKj3yTEsY+ljjySHQh4KPlq0nP3rf9aFsK6DTj4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4D74FF80132; Mon, 19 Jun 2023 19:20:40 +0200 (CEST)
+	id 7CB98F8052E; Mon, 19 Jun 2023 19:20:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B674BF80529;
-	Mon, 19 Jun 2023 19:20:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3653CF80558;
+	Mon, 19 Jun 2023 19:20:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7AE1F8052D; Mon, 19 Jun 2023 19:20:33 +0200 (CEST)
+	id 57461F80529; Mon, 19 Jun 2023 19:20:35 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1AD2EF80132
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 19:20:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AD2EF80132
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1A921F80301
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 19:20:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A921F80301
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=dwmbmTjG
+ header.s=Intel header.b=Zs8HS7Ey
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1687195225; x=1718731225;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=M8cpsIdLnXuuGWAJvDw9amJqINMPDXinMkvsofzWarg=;
-  b=dwmbmTjGSMfMIgIDnXtXpyzZelxxiOnkwCqN3OLDqGUjYZwh6Z/s9lYU
-   ex6sSC9zWiMNpZf+WzeUr4JppouLqeUkNxQEYoaBcPgJAZcngIAbtAZpW
-   xbmbHvTsRU6ym22KPCSSSKO3IRvm2FH6QLZ4cNMD6mnmv08LT1PQSWf3O
-   +MjYkJ+3dBy4AN5knyO0qZa7BsNBhnGcOW+D1NuRGlSqNJwkUzPOsuYK2
-   TYspOlLL3FMOxAaQRYYWqxEBQ+NXTUAAyawemN124Qm1g8e2oHtrSPob8
-   Yj6oukLEPrqxMeGRQtQ/QV/3KiLQSnCH+vfrVd8ytqgzJ4IoWyX527NDm
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="363105836"
+  t=1687195227; x=1718731227;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=bEqeDD3qlJ8khKucahwjiIUNYJkrQelnvBDmHsOyzeg=;
+  b=Zs8HS7Ey2T9l7FhzEdcju0u+QeNHT4FR0qXzFfy36n+kDBVmiDigRX62
+   dOVjkOo5GoSwFRYqBwJ9JZEHA2A/u2q0unDrOYYJwh6FLD4Kl0a11QJN5
+   W+6+usptL1CPIwgAuhyrl/hqIQ67L8Gz4oyLpabbG6uOUW1LHnfCvKtZI
+   EKNtmXWtUBGufGhXPAh7xbPJqTEO2joSgtFqQ5Qjn3ODR3ESgrRw1DXd2
+   Plyd1Wm/f/nXDhRdgF5CYJIiyL3Jay+CwUUrkeH6wmYiDpRDbE7nmOKwv
+   OYx5hYz9Tjo5n5JA/f4qunBiy7NfJqfjOhgiiA4jhAROWF+4iypAcNbzU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="363105854"
 X-IronPort-AV: E=Sophos;i="6.00,255,1681196400";
-   d="scan'208";a="363105836"
+   d="scan'208";a="363105854"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  19 Jun 2023 10:20:18 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="960482500"
+X-IronPort-AV: E=McAfee;i="6600,9927,10746"; a="960482501"
 X-IronPort-AV: E=Sophos;i="6.00,255,1681196400";
-   d="scan'208";a="960482500"
+   d="scan'208";a="960482501"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga006.fm.intel.com with ESMTP; 19 Jun 2023 10:20:13 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 8B0323CC; Mon, 19 Jun 2023 20:20:23 +0300 (EEST)
+	id A68BE40F; Mon, 19 Jun 2023 20:20:23 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -84,14 +85,17 @@ Cc: Antti Palosaari <crope@iki.fi>,
 	Liam Girdwood <lgirdwood@gmail.com>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v1 0/4] ASoC: remove copy of intlog10()
-Date: Mon, 19 Jun 2023 20:20:15 +0300
-Message-Id: <20230619172019.21457-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 2/4] lib/math/int_log: Use ARRAY_SIZE(logtable) where makes
+ sense
+Date: Mon, 19 Jun 2023 20:20:17 +0300
+Message-Id: <20230619172019.21457-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+In-Reply-To: <20230619172019.21457-1-andriy.shevchenko@linux.intel.com>
+References: <20230619172019.21457-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KX57JCKACVIDVA3PAXLLMEJKMFG5QVVS
-X-Message-ID-Hash: KX57JCKACVIDVA3PAXLLMEJKMFG5QVVS
+Message-ID-Hash: BFAHBEKK55HW7YXEUOMGZ7H766BOSWCT
+X-Message-ID-Hash: BFAHBEKK55HW7YXEUOMGZ7H766BOSWCT
 X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KX57JCKACVIDVA3PAXLLMEJKMFG5QVVS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BFAHBEKK55HW7YXEUOMGZ7H766BOSWCT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,60 +117,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The first three patches moves intlog10() to be available in entire
-kernel. The last one removes copy of it in one driver. Besides already
-good Lines of Code (LoC) statistics the upcoming users, if any, can
-utilize the exported functions.
+Use ARRAY_SIZE(logtable) where makes sense.
 
-The series can be routed either via ASoC tree or media tree.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ lib/math/int_log.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Note, int_log.h is separated from math.h due to licensing.
-I dunno if we can mix two in a single header file. In any
-case we may do it later on.
-
-Andy Shevchenko (4):
-  lib/math: Move dvb_math.c into lib/math/int_log.c
-  lib/math/int_log: Use ARRAY_SIZE(logtable) where makes sense
-  lib/math/int_log: Replace LGPL-2.1-or-later boilerplate with SPDX
-    identifier
-  ASoC: nau8825: Replace copied'n'pasted intlog10()
-
- Documentation/driver-api/media/dtv-common.rst |  2 +-
- drivers/media/dvb-core/Makefile               |  2 +-
- drivers/media/dvb-frontends/af9013_priv.h     |  2 +-
- drivers/media/dvb-frontends/af9033_priv.h     |  2 +-
- drivers/media/dvb-frontends/cxd2820r_priv.h   |  2 +-
- drivers/media/dvb-frontends/cxd2841er.c       |  2 +-
- .../cxd2880/cxd2880_tnrdmd_dvbt2_mon.c        |  2 +-
- .../cxd2880/cxd2880_tnrdmd_dvbt_mon.c         |  2 +-
- .../media/dvb-frontends/cxd2880/cxd2880_top.c |  2 +-
- drivers/media/dvb-frontends/dib7000p.c        |  2 +-
- drivers/media/dvb-frontends/dib8000.c         |  2 +-
- drivers/media/dvb-frontends/dib9000.c         |  2 +-
- drivers/media/dvb-frontends/drxk_hard.c       |  2 +-
- drivers/media/dvb-frontends/lgdt3305.c        |  2 +-
- drivers/media/dvb-frontends/lgdt3306a.c       |  2 +-
- drivers/media/dvb-frontends/lgdt330x.c        |  2 +-
- drivers/media/dvb-frontends/m88ds3103_priv.h  |  2 +-
- drivers/media/dvb-frontends/mn88443x.c        |  2 +-
- drivers/media/dvb-frontends/mn88472_priv.h    |  2 +-
- drivers/media/dvb-frontends/mn88473_priv.h    |  2 +-
- drivers/media/dvb-frontends/or51132.c         |  2 +-
- drivers/media/dvb-frontends/or51211.c         |  2 +-
- drivers/media/dvb-frontends/rtl2830_priv.h    |  2 +-
- drivers/media/dvb-frontends/rtl2832_priv.h    |  2 +-
- drivers/media/dvb-frontends/si2165.c          |  2 +-
- drivers/media/dvb-frontends/stv0367.c         |  2 +-
- drivers/media/dvb-frontends/tc90522.c         |  2 +-
- drivers/media/dvb-frontends/tda10048.c        |  2 +-
- include/{media/dvb_math.h => linux/int_log.h} | 18 +---
- lib/math/Makefile                             |  2 +-
- .../dvb-core/dvb_math.c => lib/math/int_log.c | 26 ++----
- sound/soc/codecs/nau8825.c                    | 93 +------------------
- 32 files changed, 45 insertions(+), 150 deletions(-)
- rename include/{media/dvb_math.h => linux/int_log.h} (63%)
- rename drivers/media/dvb-core/dvb_math.c => lib/math/int_log.c (84%)
-
+diff --git a/lib/math/int_log.c b/lib/math/int_log.c
+index 322df25a22d6..ea98fc0b3fe2 100644
+--- a/lib/math/int_log.c
++++ b/lib/math/int_log.c
+@@ -91,7 +91,7 @@ unsigned int intlog2(u32 value)
+ 	 *	so we would use the entry 0x18
+ 	 */
+ 	significand = value << (31 - msb);
+-	logentry = (significand >> 23) & 0xff;
++	logentry = (significand >> 23) % ARRAY_SIZE(logtable);
+ 
+ 	/**
+ 	 *	last step we do is interpolation because of the
+@@ -109,7 +109,7 @@ unsigned int intlog2(u32 value)
+ 	 *	logtable_next is 256
+ 	 */
+ 	interpolation = ((significand & 0x7fffff) *
+-			((logtable[(logentry + 1) & 0xff] -
++			((logtable[(logentry + 1) % ARRAY_SIZE(logtable)] -
+ 			  logtable[logentry]) & 0xffff)) >> 15;
+ 
+ 	/* now we return the result */
 -- 
 2.40.0.1.gaa8946217a0b
 
