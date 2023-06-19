@@ -4,80 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0227EB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 22:31:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 953B4EB64D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 22:32:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F38A8950;
-	Tue, 20 Jun 2023 00:31:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F38A8950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 743A2844;
+	Tue, 20 Jun 2023 00:31:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 743A2844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687213916;
-	bh=1Fai1c9PqtR1nbAseq/sPKVMxOFXSch7MmBt+o0w9SE=;
+	s=default; t=1687213921;
+	bh=VTOn8TZIRkr5hcTwCFN624AmM4XHhsXL5EFuVLuRufE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iSryAQxEBSTHjTeu6hB4FubKKRbPYGPUP1o4SF7bJ2ancm/yn+gx0/llJ/mqPnz0Q
-	 YG9KzgdggBUgJYPTXDMi/REYGgS4KDRYHctTgOvx04EzFBbyHA8viwknV6cOZH39ad
-	 NyoE0sJNDepwWUDtCC+7LMR2Ism3y+XWvXmfsX6Q=
+	b=GbMlnIR3BfEcxPCm8LL/bNPR5HPAUtLGDeGF0mveNHBijmukOMMw8BzVcJcjyOv82
+	 kc2obqXQNK2cTh7fsegILi6+Rv1L22Ihe8yR+rqc5HunoB+wF+Dc6O+b748pyuf+Le
+	 C1N3j0BYIQJv7AAUm8jVfdMfoY/X8suVY5PLn850=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32E39F80589; Tue, 20 Jun 2023 00:29:34 +0200 (CEST)
+	id 612C2F80141; Tue, 20 Jun 2023 00:30:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A6CEF8059F;
-	Tue, 20 Jun 2023 00:29:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E67B8F80169;
+	Tue, 20 Jun 2023 00:30:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 25C18F80169; Tue, 20 Jun 2023 00:29:23 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id CFB09F80163; Tue, 20 Jun 2023 00:30:28 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D4D48F80130
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2023 00:29:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4D48F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 60E0AF80093
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2023 00:29:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60E0AF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=W7bI+Z4R
+ header.s=k20201202 header.b=L2HS91AR
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id B5A2560F38;
-	Mon, 19 Jun 2023 22:29:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32074C433CA;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2E68160F23;
 	Mon, 19 Jun 2023 22:29:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37F40C433C0;
+	Mon, 19 Jun 2023 22:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687213757;
-	bh=1Fai1c9PqtR1nbAseq/sPKVMxOFXSch7MmBt+o0w9SE=;
+	s=k20201202; t=1687213753;
+	bh=VTOn8TZIRkr5hcTwCFN624AmM4XHhsXL5EFuVLuRufE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=W7bI+Z4RXdoKnSAQfVmWdPXZIz6ju2OLKJyLf75gQ3sLjh1VUnG4zk+WskfVUk4j7
-	 vowDxMBzOLKs5fPcVMXgXrdyacOdwhtb9q3OCK2rYE3BuAP1iD3OSrTpqHu4t7M07k
-	 bOsbtyvti6RUptBz1ITex243pDdP0LED/em/IHfz1WIgs45P3e2Q8lraGG/pXNoKxW
-	 fKeGSkC8YtsX+7THc2ljZeTLsxCzJuAaDjcqs2tfyTZ4VJ7qBhUGh9dCGpQyFffuJH
-	 bN8VzmlNpCYqwYR4gG9UY8CYe/mpo/4fxtqh1ZnYcCRDqOafZJRTTJfLnwsubokOKh
-	 XmjGSeEKybNyA==
+	b=L2HS91ARE+lTOqsWF6lhYxQkY5E2QL8FpAC2QPjiBfDM2u9/emMwksPxNp2Lh+2im
+	 ubiOCJ9ujrU3iX1uwh6wbQvX+NN0HLrQ3sJg0mrv5Hn5nc0wpCoQTGBa/Di1ZphcPB
+	 siAiVrvsTuVEshRM9TydI6oDE4sVHNAP5qAdvSn2WOUuSRb5VuV4RjlG6vBTijjb80
+	 Q2zEpLIWgEs0tnHS7wc1s+ll0DV9tmE8suHJTfbZG4Z7/1/JD1A/tQIyoXnsGUwV9s
+	 v6gvGVQor3MbStL7BgJjP+7JpTXsQuudJ0kr4g0zaE3YKMycbIOOv1xJ9U9r/uFJTi
+	 xBK8RFTDU9bhw==
 From: Mark Brown <broonie@kernel.org>
-To: devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
- robh+dt@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
- pierre-louis.bossart@linux.intel.com, Shenghao Ding <13916275206@139.com>
-Cc: kevin-lu@ti.com, shenghao-ding@ti.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, x1077012@ti.com, peeyush@ti.com,
- navada@ti.com, gentuser@gmail.com, Ryan_Chu@wistron.com, Sam_Wu@wistron.com,
- tiwai@suse.de
-In-Reply-To: <20230618122819.23143-1-13916275206@139.com>
-References: <20230618122819.23143-1-13916275206@139.com>
-Subject: Re: [PATCH v6 1/4] ASoC: tas2781: Add Header file for tas2781
- driver
-Message-Id: <168721375392.200161.3235917580792681848.b4-ty@kernel.org>
-Date: Mon, 19 Jun 2023 23:29:13 +0100
+To: Ryan Lee <ryans.lee@analog.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ kernel-janitors@vger.kernel.org
+In-Reply-To: <d44c8388-b12b-4045-95de-0d4bc7b428ac@moroto.mountain>
+References: <d44c8388-b12b-4045-95de-0d4bc7b428ac@moroto.mountain>
+Subject: Re: [PATCH] ASoC: max98388: fix error code in probe()
+Message-Id: <168721375195.200161.4552209882264201706.b4-ty@kernel.org>
+Date: Mon, 19 Jun 2023 23:29:11 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-c6835
-Message-ID-Hash: C5572KCHTR7G2ED43D44UQUFHZLUUY4J
-X-Message-ID-Hash: C5572KCHTR7G2ED43D44UQUFHZLUUY4J
+Message-ID-Hash: QZGAWHNX7QOVGNWKOQLLDMPLNQECAN7Z
+X-Message-ID-Hash: QZGAWHNX7QOVGNWKOQLLDMPLNQECAN7Z
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,17 +86,17 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C5572KCHTR7G2ED43D44UQUFHZLUUY4J/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QZGAWHNX7QOVGNWKOQLLDMPLNQECAN7Z/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 18 Jun 2023 20:28:16 +0800, Shenghao Ding wrote:
-> Create Header file for  tas2781 driver.
+On Mon, 19 Jun 2023 12:46:48 +0300, Dan Carpenter wrote:
+> This seems like a copy and paste bug.  Return the correct variable.
+> It should be "ret" instead of PTR_ERR(max98388->regmap).
 > 
 > 
 
@@ -110,14 +106,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: tas2781: Add Header file for tas2781 driver
-      commit: 678f38eba1f2fe33ff700e85390ac98393e609ef
-[2/4] ASoC: tas2781: firmware lib
-      commit: 915f5eadebd29ba185ac506766a90120153b7e14
-[3/4] ASoC: tas2781: Add tas2781 driver
-      commit: ef3bcde75d06d65f78ba38a30d5a87fb83a5cdae
-[4/4] ASoC: dt-bindings: Add tas2781 amplifier
-      commit: 3e4ecd6c4e14e1eff8f52bd89240399e7dac881c
+[1/1] ASoC: max98388: fix error code in probe()
+      commit: 02474880e8fdd8533f21da4264a7ebfce8196be7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
