@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE70EEB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 10:19:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3CACEB64D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 10:19:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C43BA4E;
-	Mon, 19 Jun 2023 12:18:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C43BA4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EA50886;
+	Mon, 19 Jun 2023 12:18:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EA50886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687169956;
-	bh=swPdvsYTKlEmkM0HgKJRO4O3bGsqf+vXLPLn7l+pdUk=;
+	s=default; t=1687169979;
+	bh=DhpnZ/0pS4S1J7570XPduAWPCALDUGt97qqEuqU0ZaY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XbsvKPf/sEjs9e7HvpIN65b0flygHKL+xXtcdnnS+PB4K8+EellxsGRM7jc4E3aAJ
-	 9dfQ6vbQbanlz+pfFFbLyEuMSXP7XR2wVxzXcBptajoXS/RPWaSZX211pyy8jV1xPs
-	 VdYp2/O8AqPYFx6aVl7iCiX4eBr1aNN8WodZ297w=
+	b=o5fsYrLQTsTIM1LiH/RL7Ryi9x/fKsu8NUDj11jLQEdSW2P2zdwRtW03vg7g5Yzyx
+	 zBSROsfsyFBut3+dqN8Z7B7rqonyXp4iMdU4mDq03jQS/N2dAbYNVgMAs8asaBRkFn
+	 GL9VW6UKqSsZI3xbbsESckWLn6vn+sLBfwHerIWI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45ED2F8058C; Mon, 19 Jun 2023 12:17:17 +0200 (CEST)
+	id D96C8F805AE; Mon, 19 Jun 2023 12:17:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 420B9F8057E;
-	Mon, 19 Jun 2023 12:17:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32499F805AE;
+	Mon, 19 Jun 2023 12:17:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B1E9F80529; Mon, 19 Jun 2023 12:17:06 +0200 (CEST)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
+	id 5556DF80557; Mon, 19 Jun 2023 12:17:08 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A513EF80217
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 12:17:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A513EF80217
+	by alsa1.perex.cz (Postfix) with ESMTPS id B7D57F80130
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 12:16:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7D57F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=d5rsWEtr
-Received: by mail-wr1-x42d.google.com with SMTP id
- ffacd0b85a97d-3112c11fdc9so1437864f8f.3
+ header.s=google header.b=TeE5sjg5
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-30fcde6a73cso2671234f8f.2
         for <alsa-devel@alsa-project.org>;
- Mon, 19 Jun 2023 03:17:01 -0700 (PDT)
+ Mon, 19 Jun 2023 03:16:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687169819; x=1689761819;
+        d=linaro.org; s=google; t=1687169817; x=1689761817;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9JFL8jNKRrHzDOE8BEGRQfXvBY019VxhOr2ufujXe1U=;
-        b=d5rsWEtrwYPU3hk50ll38maHjk7H4KVUW4qeJVHM1vYJkX5V703bjfz1cSBJa7GbCu
-         ku/HpXX8X47EdUqR9aAVgJPUcWgNL4HoXh7c6jg/VqIDiL+KAOIUlH6HfFSz57C1BAkZ
-         DSfnCsk1IKuE1efmNXIVPaSrCHBQaZdW+GDxnqZsOVaL8oWcVPrbzWu7QkZdk3+bjaL2
-         qbFaBwdRi77IQYgzZXnYKpPHFKBErEISKSTGtQruTlmxd+C93GGLbEO+pRkhjXRj3ytf
-         n+u3Y+00lFj+83OJiQjCtGf1kjAaWNyDvS5Z7OVSYapfvcn60AGqPfLUo4F+BKI6F7JF
-         Qesg==
+        bh=VzGepGC6ZYnmZGsocL2P2Z4ZNGc2QuSBI4PBc8L8Xeo=;
+        b=TeE5sjg5OrE2aYeX3pBftMim05QPJa+/1qvmbEQ7QqIESt06ME2tY/5wUULlHtheGN
+         MlyFiC94sTyk3kzCrpXyrJeEPiecH0uvEUX5s0isGIOCV+u1979I/ihcn3ylReRR1dD2
+         gF8ikSN6IaM+dloiqmY4eR5e7UBWVsgPUTwehGhqFx91Fzu1A/JL6lt5THWWLibYFg7Y
+         TayBkWuQsVZh8xE0mBIcsxiyfjphS+E7Low2ppJDRJthHifZiq8YMXfi77xCnhElMUgn
+         7IUJ6UdWQRcRAJeUi/T2GdS30Lz1GvFwvTYSBfQc6i5z/GzoH6v6200DB1dwk2lH8VkE
+         i0pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687169819; x=1689761819;
+        d=1e100.net; s=20221208; t=1687169817; x=1689761817;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9JFL8jNKRrHzDOE8BEGRQfXvBY019VxhOr2ufujXe1U=;
-        b=jftoPgpjy1d4U18Tro4tdgtpurtU4cdP85hpWxBcA31bhDgdFV7zcKWliktL+06G7p
-         fP9Z/dHzK1fJVyWSlcJQYdiHPF65fUt7E4TUqWwrlQyYQ6jqs8Eipj99aEwDOl5NI5kr
-         Mxi1QAbGVgTOTzisd1TBtrh604aVp9FyXHIwWHLN3XzSOVngo283mu9+R7MvfO77EOWh
-         yPyZF2GoqaveLhbf8ArAxt4H5Sj0RmLwd7LqJoq6S8exgNqZhqu4nTPfcu8xQXuP8AJV
-         Fnz9jpdlTEoRsMJE6Ci2mbtJJnC1eP/S6/sHTw8PpucUht8ty50ZGlnNuKGn3NFdTNez
-         kILQ==
-X-Gm-Message-State: AC+VfDya0H/4+m5JpH5B4P3jMGfCG9/99Q0QtsHyC2cUFQ5ciiSy1Dmo
-	x5dVgiHghsqLNXfszQ8THKnmAQ==
+        bh=VzGepGC6ZYnmZGsocL2P2Z4ZNGc2QuSBI4PBc8L8Xeo=;
+        b=iCWR01MW8s3xA+R/HIoyyc5DpILFcqGVU6GvFuwQOzXSIgPg5K2dywU7CP7lMJhOdU
+         FnE6qPjhEAz9ncZJgwCSVHNvtqq9GyRPBVCnZakBSK4CxsAp/jtbPPqN6xLf83DlALs+
+         FhiF+SYraI/aUCqGqVCMjYIV306AwnxrvczmtklBT2QgLQxvcDmReSaIp3egf0C+szYZ
+         4OELA5Poxxl99octMMH/sqheBbTOS7wHYVu5f8xuV7Ep0L0zoAIAwRxTA1Dc4SqUMYWl
+         IChhkbFahFr5vt7xxdbJQoexvNu+MU5oOhCFxWgW8Gw9+gkBkWuA0bloPOHKphvj3COX
+         h+aw==
+X-Gm-Message-State: AC+VfDzZyPl4Yw18Cy5hq1LGJSbbf38BMc5JohOCDuggGFJEnRtbnGqj
+	2N5PHMhga9sOXXWxYoH9G50Zow==
 X-Google-Smtp-Source: 
- ACHHUZ5SJqR17WP/PXrxE8kDrua5KYQ+rNQy9+Dv1AOTu9r5nypm52CrkIsN1YgJtlFhvTrDT+5VNA==
-X-Received: by 2002:a5d:5305:0:b0:30f:d2d3:55a8 with SMTP id
- e5-20020a5d5305000000b0030fd2d355a8mr5902494wrv.11.1687169819499;
-        Mon, 19 Jun 2023 03:16:59 -0700 (PDT)
+ ACHHUZ6pAkcRKDuJ4mER66rw0TC0DL/95Zxf3iH5VEfKJr4ev+OM49ZLGU0BYRxcsKVlBBnIwgvMkA==
+X-Received: by 2002:a5d:4952:0:b0:30d:43ca:55ab with SMTP id
+ r18-20020a5d4952000000b0030d43ca55abmr5394016wrs.38.1687169817457;
+        Mon, 19 Jun 2023 03:16:57 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- c2-20020a5d5282000000b002fae7408544sm31146922wrv.108.2023.06.19.03.16.58
+ c2-20020a5d5282000000b002fae7408544sm31146922wrv.108.2023.06.19.03.16.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jun 2023 03:16:58 -0700 (PDT)
+        Mon, 19 Jun 2023 03:16:56 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
 Cc: perex@perex.cz,
@@ -91,18 +91,19 @@ Cc: perex@perex.cz,
 	linux-kernel@vger.kernel.org,
 	pierre-louis.bossart@linux.intel.com,
 	alsa-devel@alsa-project.org,
+	Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 03/11] ASoC: q6dsp: audioreach: add helper function to set
- u32 param
-Date: Mon, 19 Jun 2023 11:16:45 +0100
-Message-Id: <20230619101653.9750-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 01/11] ASoC: qcom: SC7280: audioreach: Add sc7280 hardware
+ param fixup callback
+Date: Mon, 19 Jun 2023 11:16:43 +0100
+Message-Id: <20230619101653.9750-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230619101653.9750-1-srinivas.kandagatla@linaro.org>
 References: <20230619101653.9750-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IFGGWNHMQENUSEKIUWQU4JVZFXSBC5B6
-X-Message-ID-Hash: IFGGWNHMQENUSEKIUWQU4JVZFXSBC5B6
+Message-ID-Hash: GKEHC2TW27TX5ZN7DIK2N5ZBTCZEZH42
+X-Message-ID-Hash: GKEHC2TW27TX5ZN7DIK2N5ZBTCZEZH42
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -115,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IFGGWNHMQENUSEKIUWQU4JVZFXSBC5B6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GKEHC2TW27TX5ZN7DIK2N5ZBTCZEZH42/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,169 +125,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some of the Audioreach commands take a u32 value,
-ex: PARAM_ID_MODULE_ENABLE.
+From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 
-It makes more sense to provide a helper function so that other new
-commands can reuse this.
+Add support to set backend params such as sampling rate and
+number of channels using backend params fixup callback.
+Also add no pcm check for hardware params constraints setting.
 
+Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/audioreach.c | 100 +++++++-----------------------
- sound/soc/qcom/qdsp6/audioreach.h |   2 +
- 2 files changed, 26 insertions(+), 76 deletions(-)
+ sound/soc/qcom/sc7280.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
-index 8d9410dcbd45..0acd4a75d5cd 100644
---- a/sound/soc/qcom/qdsp6/audioreach.c
-+++ b/sound/soc/qcom/qdsp6/audioreach.c
-@@ -732,33 +732,32 @@ static int audioreach_codec_dma_set_media_format(struct q6apm_graph *graph,
- 	return rc;
- }
+diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
+index da7469a6a267..787dd49e03f6 100644
+--- a/sound/soc/qcom/sc7280.c
++++ b/sound/soc/qcom/sc7280.c
+@@ -14,6 +14,7 @@
+ #include <sound/soc.h>
+ #include <sound/rt5682s.h>
+ #include <linux/soundwire/sdw.h>
++#include <sound/pcm_params.h>
  
--static int audioreach_sal_limiter_enable(struct q6apm_graph *graph,
--					 struct audioreach_module *module, bool enable)
-+int audioreach_send_u32_param(struct q6apm_graph *graph, struct audioreach_module *module,
-+			      uint32_t param_id, uint32_t param_val)
- {
- 	struct apm_module_param_data *param_data;
--	struct param_id_sal_limiter_enable *limiter_enable;
--	int payload_size;
- 	struct gpr_pkt *pkt;
--	int rc;
-+	uint32_t *param;
-+	int rc, payload_size;
- 	void *p;
+ #include "../codecs/rt5682.h"
+ #include "../codecs/rt5682s.h"
+@@ -196,8 +197,10 @@ static int sc7280_snd_hw_params(struct snd_pcm_substream *substream,
+ 	struct sdw_stream_runtime *sruntime;
+ 	int i;
  
--	payload_size = sizeof(*limiter_enable) + APM_MODULE_PARAM_DATA_SIZE;
--
--	pkt = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
--	if (IS_ERR(pkt))
--		return PTR_ERR(pkt);
-+	payload_size = sizeof(uint32_t) + APM_MODULE_PARAM_DATA_SIZE;
-+	p = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
-+	if (IS_ERR(p))
-+		return -ENOMEM;
+-	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
+-	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_RATE, 48000, 48000);
++	if (!rtd->dai_link->no_pcm) {
++		snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
++		snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_RATE, 48000, 48000);
++	}
  
--	p = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-+	pkt = p;
-+	p = p + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
+ 	switch (cpu_dai->id) {
+ 	case LPASS_CDC_DMA_TX3:
+@@ -358,6 +361,20 @@ static const struct snd_soc_dapm_widget sc7280_snd_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ };
  
- 	param_data = p;
- 	param_data->module_instance_id = module->instance_id;
- 	param_data->error_code = 0;
--	param_data->param_id = PARAM_ID_SAL_LIMITER_ENABLE;
--	param_data->param_size = sizeof(*limiter_enable);
--	p = p + APM_MODULE_PARAM_DATA_SIZE;
--	limiter_enable = p;
-+	param_data->param_id = param_id;
-+	param_data->param_size = sizeof(uint32_t);
- 
--	limiter_enable->enable_lim = enable;
-+	p = p + APM_MODULE_PARAM_DATA_SIZE;
-+	param = p;
-+	*param = param_val;
- 
- 	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
- 
-@@ -766,77 +765,26 @@ static int audioreach_sal_limiter_enable(struct q6apm_graph *graph,
- 
- 	return rc;
- }
-+EXPORT_SYMBOL_GPL(audioreach_send_u32_param);
-+
-+static int audioreach_sal_limiter_enable(struct q6apm_graph *graph,
-+					 struct audioreach_module *module, bool enable)
++static int sc7280_snd_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++					 struct snd_pcm_hw_params *params)
 +{
-+	return audioreach_send_u32_param(graph, module, PARAM_ID_SAL_LIMITER_ENABLE, enable);
++	struct snd_interval *rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
++
++	return 0;
 +}
- 
- static int audioreach_sal_set_media_format(struct q6apm_graph *graph,
- 					   struct audioreach_module *module,
- 					   struct audioreach_module_config *cfg)
++
+ static int sc7280_snd_platform_probe(struct platform_device *pdev)
  {
--	struct apm_module_param_data *param_data;
--	struct param_id_sal_output_config *media_format;
--	int payload_size;
--	struct gpr_pkt *pkt;
--	int rc;
--	void *p;
--
--	payload_size = sizeof(*media_format) + APM_MODULE_PARAM_DATA_SIZE;
--
--	pkt = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
--	if (IS_ERR(pkt))
--		return PTR_ERR(pkt);
--
--	p = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
--
--	param_data = p;
--	param_data->module_instance_id = module->instance_id;
--	param_data->error_code = 0;
--	param_data->param_id = PARAM_ID_SAL_OUTPUT_CFG;
--	param_data->param_size = sizeof(*media_format);
--	p = p + APM_MODULE_PARAM_DATA_SIZE;
--	media_format = p;
--
--	media_format->bits_per_sample = cfg->bit_width;
--
--	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
--
--	kfree(pkt);
--
--	return rc;
-+	return audioreach_send_u32_param(graph, module, PARAM_ID_SAL_OUTPUT_CFG,  cfg->bit_width);
- }
+ 	struct snd_soc_card *card;
+@@ -387,6 +404,8 @@ static int sc7280_snd_platform_probe(struct platform_device *pdev)
+ 	for_each_card_prelinks(card, i, link) {
+ 		link->init = sc7280_init;
+ 		link->ops = &sc7280_ops;
++		if (link->no_pcm == 1)
++			link->be_hw_params_fixup = sc7280_snd_be_hw_params_fixup;
+ 	}
  
- static int audioreach_module_enable(struct q6apm_graph *graph,
- 				    struct audioreach_module *module,
- 				    bool enable)
- {
--	struct apm_module_param_data *param_data;
--	struct param_id_module_enable *param;
--	int payload_size;
--	struct gpr_pkt *pkt;
--	int rc;
--	void *p;
--
--	payload_size = sizeof(*param) + APM_MODULE_PARAM_DATA_SIZE;
--
--	pkt = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
--	if (IS_ERR(pkt))
--		return PTR_ERR(pkt);
--
--	p = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
--
--	param_data = p;
--	param_data->module_instance_id = module->instance_id;
--	param_data->error_code = 0;
--	param_data->param_id = PARAM_ID_MODULE_ENABLE;
--	param_data->param_size = sizeof(*param);
--	p = p + APM_MODULE_PARAM_DATA_SIZE;
--	param = p;
--
--	param->enable = enable;
--
--	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
--
--	kfree(pkt);
--
--	return rc;
-+	return audioreach_send_u32_param(graph, module, PARAM_ID_MODULE_ENABLE, enable);
- }
- 
- static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
-diff --git a/sound/soc/qcom/qdsp6/audioreach.h b/sound/soc/qcom/qdsp6/audioreach.h
-index 3ebb81cd7cb0..18d8d243b06b 100644
---- a/sound/soc/qcom/qdsp6/audioreach.h
-+++ b/sound/soc/qcom/qdsp6/audioreach.h
-@@ -752,4 +752,6 @@ int audioreach_set_media_format(struct q6apm_graph *graph,
- int audioreach_shared_memory_send_eos(struct q6apm_graph *graph);
- int audioreach_gain_set_vol_ctrl(struct q6apm *apm,
- 				 struct audioreach_module *module, int vol);
-+int audioreach_send_u32_param(struct q6apm_graph *graph, struct audioreach_module *module,
-+			      uint32_t param_id, uint32_t param_val);
- #endif /* __AUDIOREACH_H__ */
+ 	return devm_snd_soc_register_card(dev, card);
 -- 
 2.21.0
 
