@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3321AEB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 10:20:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0A25EB64DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 10:20:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25895DF3;
-	Mon, 19 Jun 2023 12:19:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25895DF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B9CE84D;
+	Mon, 19 Jun 2023 12:20:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B9CE84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687170035;
-	bh=ZYqGQdzbwH5O8sSWHntgNb4HLTgGhf/AzpNUHu+2nlI=;
+	s=default; t=1687170056;
+	bh=2reZq8sJYnsYRfweoggB/d18SpsoSUlGnLipk1FHLKk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LgciiKlJ4H0l/7zWONcVHtTVRSfoM0c2gogeh4v3IDVDcVnI73aOxAXJe+r5PMmCO
-	 8GbqmeTeI2JIen+F2A2kmBejrnnatL4nI8w7eHMSMDMSy7nPH/hparve70VoZJCEgN
-	 awM0z2d+83XW0pPbcuJ28wuoEN9r0k76VSnAoRH8=
+	b=tgagIKAcN4UtURH+rF5MH1WWTHla8ybi8c5g5pnneBCZKeNsqwP+YZ9yo1BYWWOQD
+	 IIRtT7bZXrGCTk8EFT3FMOW8JLbfVEIi29zg1NNGxhVGhxyELGqjwZabcS9UE0Nvxl
+	 1MGBXKMoE2NpDPm0qMlWbF63qsRPKKuHWVo3QO4o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66433F805CB; Mon, 19 Jun 2023 12:17:32 +0200 (CEST)
+	id 9F069F80217; Mon, 19 Jun 2023 12:17:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C03C5F805CB;
-	Mon, 19 Jun 2023 12:17:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17386F805E0;
+	Mon, 19 Jun 2023 12:17:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1FBF9F8057D; Mon, 19 Jun 2023 12:17:15 +0200 (CEST)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+	id CA01AF8057D; Mon, 19 Jun 2023 12:17:15 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E81B0F80567
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 12:17:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E81B0F80567
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3E81EF80448
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 12:17:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E81EF80448
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=wy9CQ5VT
-Received: by mail-wm1-x330.google.com with SMTP id
- 5b1f17b1804b1-3f97e08b012so12228095e9.3
+ header.s=google header.b=K545tCci
+Received: by mail-wr1-x42f.google.com with SMTP id
+ ffacd0b85a97d-31109cd8d8cso2967172f8f.2
         for <alsa-devel@alsa-project.org>;
- Mon, 19 Jun 2023 03:17:09 -0700 (PDT)
+ Mon, 19 Jun 2023 03:17:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687169828; x=1689761828;
+        d=linaro.org; s=google; t=1687169822; x=1689761822;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0jmFbS7HPXuVPo+Ttg6W++jAmeGcDWis3QnGP8fIhMU=;
-        b=wy9CQ5VTjjJKyhnudYc6Tzx0GC4cGmsexR7mqUP65SLBywiqJeqPlYkCZKqkRYGmGj
-         0euK9Yci70dqdesZoqJLE7SugOZ8j+XtrLvOckhbq+9HDgCnzD8gIgpaj3b6QaDG1LOl
-         rZE7jRUXsNsaSyip7hcbTs28iOcLP2MHCQwCXhZdI4WbvJOAWX9kpb6/q4r/mHQwCj4G
-         4Piq+qWW9ZFQT8bgNPIUxPLBbmBsCviWql/+64tHy6PcmD36aEOBESy8qK168mbm6eEM
-         Lq+ofnZA+GveTZ2EyLonzWe2QvWPFYzMNey/tDyzjpioMu+8Lyst9HYnyMiSLhZlGCBL
-         w1CA==
+        bh=hhDOcyfRIoE2cQHMZGlVdvXCRT+HvU3JTOnhcjqd13I=;
+        b=K545tCci1GTfmEnyjn8i0zeEnnQq4kD+wGaUowMiGIfPnKKKsG9iwdbHcYM72jk4km
+         NbUsDIGv4z1zDUspYUkKMHYkPtwgVVcYGJ2JPQtUFrwuoumHhBianHSJjjbt9QIQ8Gv3
+         ENkUz2UJVAnxCf9rjWxMcmtkdXfgQoUCdwZpEZRAIVLfJ4y3a8cXZi+NF8FFc9F70C8U
+         K2+vhil7gSDTWz9yA+ph0NRd5lXuWj9bMc+/HYP30aKZotMvOVCbqfu0Oqh1qGHbxj92
+         NczQSKq/3Ns0iil16NlNKQj3wjS4QUbcm1wbK4T8kLixtSir8nVaQAqhDtXWl9rU6gv/
+         uxxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687169828; x=1689761828;
+        d=1e100.net; s=20221208; t=1687169822; x=1689761822;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0jmFbS7HPXuVPo+Ttg6W++jAmeGcDWis3QnGP8fIhMU=;
-        b=S1X1JoP1iOGu63fNFg0fgkIFQQQCOxt3zWUppruQQi5+ieKOSCk5htiI3d3CkDq+YF
-         uL6iUIhRpnF37WkJIgFHSI9b0O78Flavp1MblfUdsuu9qxjo0EBABD5UcGjQRTq0STRC
-         K1liy8/glV4vd9KxN0l8R7gBcXfAODW0Hiw6qU8kbMh3kYzEhbxalw+VelqVn6SFgi+g
-         2vUmoOF+ElRUPJ0ZDGRS1s8yuTFBuA2KdMGblReRwXL2EWa0SDd1Hj4Y5LVyc94TFcwW
-         imCYNjBdtnPf7oLjNDA4ncbl+eofY6/cfE55yjQskiJLxJN2rDdJB3o2wYg8k1KjcPGN
-         +ypg==
-X-Gm-Message-State: AC+VfDwxPPjVh5yJ7t/MYCJzTdclow8ubwQhu8g8i5zh1ZTXZgkcIJvr
-	Pmg/yABAOrspxy65ReSkh2KNcw==
+        bh=hhDOcyfRIoE2cQHMZGlVdvXCRT+HvU3JTOnhcjqd13I=;
+        b=P97ab4QLzm3vkesNd2lnlexUsC4kNZa+leucx3ZL29WJJN0GCtwhY0/XsOa7IzCj8G
+         dRN7AdX7DAKOwjoSu+HtGD+/BBNdjWxPwnZ6zqI3+FYq8maX+gvM2fn2lOyZwbc6TQxM
+         A49CF30BBm/EMHGZJPWQiNeC/MYlTtD6d9owiEWBAsde3KZbsPanSjy7p3UGuMcIRN7G
+         kMj48AfTuLta2L6F4E35MarJ5Wh2GM/x8NFfNOE2ZFpWmyr6rI36GaaYVsKQCqx5GZlL
+         ArdllmITExascIpOZYhHnJONWsoy3IZ6pV7QEv1pYqSVNRglBplFVHT2KOcpgojjmkOI
+         pmTw==
+X-Gm-Message-State: AC+VfDyS/sk3sTp3gfmqSdzsnQlsE+T7ZtpdEEnBjKPr18a8kNT5jtj/
+	3Ir8QZXLKl5mEw+D4BhYYSZsXg==
 X-Google-Smtp-Source: 
- ACHHUZ79GAF/rMepsxEO8EbbcqC5rfSTBEWArAY5CuoL4lXM+FTQV0Ep868fL2F2hoL5TNbq1ev8/g==
-X-Received: by 2002:a5d:595a:0:b0:311:1a91:cdac with SMTP id
- e26-20020a5d595a000000b003111a91cdacmr7112812wri.57.1687169827878;
-        Mon, 19 Jun 2023 03:17:07 -0700 (PDT)
+ ACHHUZ6rFD9Xi0ixsLMYlGX+5AcwRfcQFbE58cljPfYsn+BKzSAKfColuB0CUTsPpZlELzAvg2dhRw==
+X-Received: by 2002:a5d:6711:0:b0:30f:c298:601d with SMTP id
+ o17-20020a5d6711000000b0030fc298601dmr6654075wru.5.1687169822717;
+        Mon, 19 Jun 2023 03:17:02 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- c2-20020a5d5282000000b002fae7408544sm31146922wrv.108.2023.06.19.03.17.06
+ c2-20020a5d5282000000b002fae7408544sm31146922wrv.108.2023.06.19.03.17.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jun 2023 03:17:07 -0700 (PDT)
+        Mon, 19 Jun 2023 03:17:02 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
 Cc: perex@perex.cz,
@@ -91,19 +91,18 @@ Cc: perex@perex.cz,
 	linux-kernel@vger.kernel.org,
 	pierre-louis.bossart@linux.intel.com,
 	alsa-devel@alsa-project.org,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Subject: [PATCH v3 10/11] ASoC: q6dsp: q6apm-dai: Add compress set params and
- metadata DAI callbacks
-Date: Mon, 19 Jun 2023 11:16:52 +0100
-Message-Id: <20230619101653.9750-11-srinivas.kandagatla@linaro.org>
+	Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 06/11] ASoC: q6dsp: audioreach: Add gapless feature support
+Date: Mon, 19 Jun 2023 11:16:48 +0100
+Message-Id: <20230619101653.9750-7-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230619101653.9750-1-srinivas.kandagatla@linaro.org>
 References: <20230619101653.9750-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KS5GT2G4JQK3FWAXWWZO2IGKNDA5DK72
-X-Message-ID-Hash: KS5GT2G4JQK3FWAXWWZO2IGKNDA5DK72
+Message-ID-Hash: NYP6NM53TNE2IE3VOTGZUMA3FO7HNMYQ
+X-Message-ID-Hash: NYP6NM53TNE2IE3VOTGZUMA3FO7HNMYQ
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -116,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KS5GT2G4JQK3FWAXWWZO2IGKNDA5DK72/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NYP6NM53TNE2IE3VOTGZUMA3FO7HNMYQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,148 +124,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add q6apm compress DAI callbacks for setting params and metadata to support
-compress offload playback.
+From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+
+Add support for setting EOS delay command and receive the
+EOS response from ADSP, for seamless compress offload
+playback feature.
 
 Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6apm-dai.c | 107 +++++++++++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
+ sound/soc/qcom/qdsp6/audioreach.c | 11 +++++++++++
+ sound/soc/qcom/qdsp6/audioreach.h |  7 +++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
-index 9543b79ce83d..c67147e5388b 100644
---- a/sound/soc/qcom/qdsp6/q6apm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
-@@ -76,6 +76,8 @@ struct q6apm_dai_rtd {
- 	enum stream_state state;
- 	struct q6apm_graph *graph;
- 	spinlock_t lock;
-+	uint32_t initial_samples_drop;
-+	uint32_t trailing_samples_drop;
- 	bool notify_on_drain;
- };
- 
-@@ -632,6 +634,109 @@ static int q6apm_dai_compr_ack(struct snd_soc_component *component, struct snd_c
- 	return count;
+diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
+index ba262408b27a..5974c7929dd3 100644
+--- a/sound/soc/qcom/qdsp6/audioreach.c
++++ b/sound/soc/qcom/qdsp6/audioreach.c
+@@ -787,6 +787,14 @@ static int audioreach_module_enable(struct q6apm_graph *graph,
+ 	return audioreach_send_u32_param(graph, module, PARAM_ID_MODULE_ENABLE, enable);
  }
  
-+static int q6apm_dai_compr_set_params(struct snd_soc_component *component,
-+				      struct snd_compr_stream *stream,
-+				      struct snd_compr_params *params)
++static int audioreach_gapless_set_media_format(struct q6apm_graph *graph,
++					       struct audioreach_module *module,
++					       struct audioreach_module_config *cfg)
 +{
-+	struct snd_compr_runtime *runtime = stream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+	struct q6apm_dai_data *pdata;
-+	struct audioreach_module_config cfg;
-+	struct snd_codec *codec = &params->codec;
-+	int dir = stream->direction;
-+	int ret;
-+
-+	pdata = snd_soc_component_get_drvdata(component);
-+	if (!pdata)
-+		return -EINVAL;
-+
-+	prtd->periods = runtime->fragments;
-+	prtd->pcm_count = runtime->fragment_size;
-+	prtd->pcm_size = runtime->fragments * runtime->fragment_size;
-+	prtd->bits_per_sample = 16;
-+
-+	prtd->pos = 0;
-+
-+	if (prtd->next_track != true) {
-+		memcpy(&prtd->codec, codec, sizeof(*codec));
-+
-+		ret = q6apm_set_real_module_id(component->dev, prtd->graph, codec->id);
-+		if (ret)
-+			return ret;
-+
-+		cfg.direction = dir;
-+		cfg.sample_rate = codec->sample_rate;
-+		cfg.num_channels = 2;
-+		cfg.bit_width = prtd->bits_per_sample;
-+		cfg.fmt = codec->id;
-+		memcpy(&cfg.codec, codec, sizeof(*codec));
-+
-+		ret = q6apm_graph_media_format_shmem(prtd->graph, &cfg);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = q6apm_graph_media_format_pcm(prtd->graph, &cfg);
-+		if (ret)
-+			return ret;
-+
-+		ret = q6apm_map_memory_regions(prtd->graph, SNDRV_PCM_STREAM_PLAYBACK,
-+					       prtd->phys, (prtd->pcm_size / prtd->periods),
-+					       prtd->periods);
-+		if (ret < 0)
-+			return -ENOMEM;
-+
-+		ret = q6apm_graph_prepare(prtd->graph);
-+		if (ret)
-+			return ret;
-+
-+		ret = q6apm_graph_start(prtd->graph);
-+		if (ret)
-+			return ret;
-+
-+	} else {
-+		cfg.direction = dir;
-+		cfg.sample_rate = codec->sample_rate;
-+		cfg.num_channels = 2;
-+		cfg.bit_width = prtd->bits_per_sample;
-+		cfg.fmt = codec->id;
-+		memcpy(&cfg.codec, codec, sizeof(*codec));
-+
-+		ret = audioreach_compr_set_param(prtd->graph,  &cfg);
-+		if (ret < 0)
-+			return ret;
-+	}
-+	prtd->state = Q6APM_STREAM_RUNNING;
-+
-+	return 0;
++	return audioreach_send_u32_param(graph, module, PARAM_ID_EARLY_EOS_DELAY,
++					 EARLY_EOS_DELAY_MS);
 +}
 +
-+static int q6apm_dai_compr_set_metadata(struct snd_soc_component *component,
-+					struct snd_compr_stream *stream,
-+					struct snd_compr_metadata *metadata)
-+{
-+	struct snd_compr_runtime *runtime = stream->runtime;
-+	struct q6apm_dai_rtd *prtd = runtime->private_data;
-+	int ret = 0;
-+
-+	switch (metadata->key) {
-+	case SNDRV_COMPRESS_ENCODER_PADDING:
-+		prtd->trailing_samples_drop = metadata->value[0];
-+		q6apm_remove_trailing_silence(component->dev, prtd->graph,
-+					      prtd->trailing_samples_drop);
+ static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
+ 					   struct audioreach_module *module,
+ 					   struct audioreach_module_config *cfg)
+@@ -1270,6 +1278,9 @@ int audioreach_set_media_format(struct q6apm_graph *graph, struct audioreach_mod
+ 	case MODULE_ID_MFC:
+ 		rc = audioreach_mfc_set_media_format(graph, module, cfg);
+ 		break;
++	case MODULE_ID_GAPLESS:
++		rc = audioreach_gapless_set_media_format(graph, module, cfg);
 +		break;
-+	case SNDRV_COMPRESS_ENCODER_DELAY:
-+		prtd->initial_samples_drop = metadata->value[0];
-+		q6apm_remove_initial_silence(component->dev, prtd->graph,
-+					     prtd->initial_samples_drop);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
- static const struct snd_compress_ops q6apm_dai_compress_ops = {
- 	.open		= q6apm_dai_compr_open,
- 	.free		= q6apm_dai_compr_free,
-@@ -640,6 +745,8 @@ static const struct snd_compress_ops q6apm_dai_compress_ops = {
- 	.pointer	= q6apm_dai_compr_pointer,
- 	.trigger	= q6apm_dai_compr_trigger,
- 	.ack		= q6apm_dai_compr_ack,
-+	.set_params	= q6apm_dai_compr_set_params,
-+	.set_metadata	= q6apm_dai_compr_set_metadata,
- };
+ 	default:
+ 		rc = 0;
+ 	}
+diff --git a/sound/soc/qcom/qdsp6/audioreach.h b/sound/soc/qcom/qdsp6/audioreach.h
+index dc089879b501..e38111ffd7b9 100644
+--- a/sound/soc/qcom/qdsp6/audioreach.h
++++ b/sound/soc/qcom/qdsp6/audioreach.h
+@@ -27,6 +27,7 @@ struct q6apm_graph;
+ #define MODULE_ID_AAC_DEC		0x0700101F
+ #define MODULE_ID_FLAC_DEC		0x0700102F
+ #define MODULE_ID_MP3_DECODE		0x0700103B
++#define MODULE_ID_GAPLESS		0x0700104D
+ #define MODULE_ID_DISPLAY_PORT_SINK	0x07001069
  
- static const struct snd_soc_component_driver q6apm_fe_dai_component = {
+ #define APM_CMD_GET_SPF_STATE		0x01001021
+@@ -552,6 +553,8 @@ struct param_id_sal_limiter_enable {
+ } __packed;
+ 
+ #define PARAM_ID_MFC_OUTPUT_MEDIA_FORMAT	0x08001024
++#define PARAM_ID_EARLY_EOS_DELAY		0x0800114C
++#define EARLY_EOS_DELAY_MS			150
+ 
+ struct param_id_mfc_media_format {
+ 	uint32_t sample_rate;
+@@ -560,6 +563,10 @@ struct param_id_mfc_media_format {
+ 	uint16_t channel_mapping[];
+ } __packed;
+ 
++struct param_id_gapless_early_eos_delay_t {
++	uint32_t early_eos_delay_ms;
++} __packed;
++
+ struct media_format {
+ 	uint32_t data_format;
+ 	uint32_t fmt_id;
 -- 
 2.21.0
 
