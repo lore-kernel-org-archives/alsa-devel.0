@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5377DEB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 10:18:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E87C4EB64D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 10:18:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 443C2836;
-	Mon, 19 Jun 2023 12:17:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 443C2836
+	by alsa0.perex.cz (Postfix) with ESMTPS id D747A851;
+	Mon, 19 Jun 2023 12:17:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D747A851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687169905;
-	bh=q/uJzb+PVm9sDqRPDgFYZWvl+JxwgWOn+cLrqks7LNY=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=A2IK5xNi/hUKPvGlhokFc0K8xyoB2Ndl6KpfaiSXYCbcmomcB4AGuWBk73Z/ccEwx
-	 JHE3S5Zyt/TKVRSLYulHH6lCliTXzLqkCSQn5lYWHtEFSJuNBa6ccrKUuLZ4h9Gz6o
-	 GxUbsCZqkteqk3U/Hyg4s8+Brf/A+wPmnT0cs8HQ=
+	s=default; t=1687169928;
+	bh=2KkWUHZ625w/PEVR+S3+jP7sIsSrnVNvwB2zLhROWGI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=iD8OZPgOlNwphXdj6CInnz21c3Grs0tJoIfslhnFzvYOCco/q6K0yCg+skK2KUQPF
+	 gP96rnnokwwYpPrZXgQcf36LnADuEbKkOYirh3LMI23Lu5KoxjtkqEeZ4X/326P/1l
+	 N+msLtOc6Q3G2xmVq8KFBEcAg8+ZaXbq+XYrSc+4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B5DCBF80548; Mon, 19 Jun 2023 12:17:07 +0200 (CEST)
+	id 7D097F80564; Mon, 19 Jun 2023 12:17:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E01CF80544;
-	Mon, 19 Jun 2023 12:17:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1C03F80563;
+	Mon, 19 Jun 2023 12:17:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C4B9F80448; Mon, 19 Jun 2023 12:17:02 +0200 (CEST)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
+	id 7C844F80132; Mon, 19 Jun 2023 12:17:03 +0200 (CEST)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 80DE7F800BA
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 12:16:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80DE7F800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id CA2A4F80132
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 12:17:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA2A4F80132
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=dLj1MVLX
-Received: by mail-wr1-x431.google.com with SMTP id
- ffacd0b85a97d-3112f256941so1368685f8f.1
+ header.s=google header.b=wEV0ue9J
+Received: by mail-wr1-x42d.google.com with SMTP id
+ ffacd0b85a97d-307d20548adso2339791f8f.0
         for <alsa-devel@alsa-project.org>;
- Mon, 19 Jun 2023 03:16:58 -0700 (PDT)
+ Mon, 19 Jun 2023 03:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687169816; x=1689761816;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gSYLEp+YdUxldV8igLt5BFNVK72bviFN+/4CDtA3Mh8=;
-        b=dLj1MVLXyF0FrCD8KYvoc9fQGbRxY6I7GSzXo3cjom6O7tGC188XsxGeJIc7XT63Jb
-         3yPOs8Hqypd9Bi6B8IQxGCjq3U1MFE/SUsMK4UG0jLtgbCGqNRc4dwBiVksSyNUqY3Ne
-         gEx+DKEqXiDIG7o/hH1cl9pZBFcRKhdNWatv9gpj4zE2evMz2XkxdT5xB76oRAcXIDC0
-         AzHJc1lgC26H1gRvizZGMT8orYL8aFcvrL89DaOxa0AHS7lxy2aWyvftE6HInU/SPe6t
-         XLhiyyGpeqwm7p4GAFj0wemaS81PXkEyRH5tkTEDqm9gdJfo2EdYWH5z3UBHqFLwqC2j
-         8aXA==
+        d=linaro.org; s=google; t=1687169818; x=1689761818;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RuQSolMY+GsunpVDUBYRLCP9uTfJjpPU4KcdicPOHq4=;
+        b=wEV0ue9J+u2a2HLQ1CP4MMx4oGUdCkt99zwyjc1W2LXUU+UOnfNpWLbPyorE15KNuh
+         U8NmkVrj022hXe0Zu+MXJ6IjR0ZDkR4U8Tdz1GjgGdFlq9wM+ChK/oftoibeGpZNb0OY
+         SY8NPWh/scWhHbh/m020O0nK5HbJQbsW3lidlAwxPyxIZPAMQgJYwrpFK5YXlN8Ekg52
+         H9iq0M+OJeSsxY679hBNisfWGI0R4dDLtvfAHXXne+oGRTUBfhQqitqDPcmdwG3jCoRF
+         PkfQi6Qswfa7rC1TNenqhpjjWGoQSO+fM3DvX4B0SS2kSNgRqM9drcAJzS0dtGyIaWGc
+         tqeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687169816; x=1689761816;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gSYLEp+YdUxldV8igLt5BFNVK72bviFN+/4CDtA3Mh8=;
-        b=cSYZIXIXeahzTfEO++wAm8brqe5eee3kkmb+zw8lngvp4nk+M97AvvYnF26WYWdtBH
-         3UGw2XvqqaRkLhY2tw84xKFY5zYCe/xQVMkinwU9Fj50SwqNTPldCr7wwGqcXxOQqgNn
-         T2tT7+LjE3dpyt0ZzCVNYTrg6GO0kmRSONe+BpAs6FrHEaZ0Y9qhit1aGdQww47zbiFE
-         SlTQm1ddmXjUL5+d/S/42LB5IJj7NZXN8AgfLl2v/TMGj/ySD4NqtrLuYDykN473o5F0
-         rjwTmAf5qnT8j+m0vm73L0eMbDWH5DFC0PRuo2pBKOTMEaWUgSeb/fJVeG7ldtftKie9
-         y/GA==
-X-Gm-Message-State: AC+VfDw7P+DDwIlvgB4ywbtp1w7zOHURJlscqWsEKJeSVrhGJpFAgT3y
-	0Xfz1kBwTqu9QHfKpRdzd3EYKg==
+        d=1e100.net; s=20221208; t=1687169818; x=1689761818;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RuQSolMY+GsunpVDUBYRLCP9uTfJjpPU4KcdicPOHq4=;
+        b=ByuD82uwLbarxQ+1tbNurVLakctXzYx63k0b2HKcEA7m9e61KSYbUlWmuSWk+cR106
+         G1MJlnw1aq2x9O6q9EQutGAZyAbqu13LFbCa+yreRRtD641wIzltiyK3bZZIsD8xdqGd
+         PW93/5qdtUG4p+7Q9gQU2++6xWDSUchkXmiN3RMKkLcRfbqCsfWBAX3ysizgjZ6jO5es
+         ifnNLyXsGnV6OzvK1Q29N65hRfNMsczGSr8MPYs94NICU5GIlmxMKLbc95nnCnSgGm73
+         0WQzFh7GrFAlthufjAxLWd0ZZLlfB5Nkr+ZpUmxPbXN+ofL9rNp90SfJrPzS2Wbwf6Lr
+         WV/g==
+X-Gm-Message-State: AC+VfDyon9U7vA4Wq7V2/wafAPBSc20He0v7giv0ALZh0zbRLDZtD0IJ
+	dB8RoUdvMsFwRSJyxglUnx/09Q==
 X-Google-Smtp-Source: 
- ACHHUZ4B9JQC1lZJ8vlWh4TNeD8qz6y9HFsakUA3OeGPoGiIknnJ1wgidU3nd85ZRFDQcLB8DrwBzA==
-X-Received: by 2002:adf:e849:0:b0:311:27bf:f9ec with SMTP id
- d9-20020adfe849000000b0031127bff9ecmr4601602wrn.21.1687169816492;
-        Mon, 19 Jun 2023 03:16:56 -0700 (PDT)
+ ACHHUZ7BIVHsLCveYS2BY00A5DGsfQvOZmnevUwUYrB78+bxfIPEytNYbcdcNJd1tSwKU7IpnCOegw==
+X-Received: by 2002:a5d:464e:0:b0:30f:c1d6:61cf with SMTP id
+ j14-20020a5d464e000000b0030fc1d661cfmr5503176wrs.51.1687169818587;
+        Mon, 19 Jun 2023 03:16:58 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- c2-20020a5d5282000000b002fae7408544sm31146922wrv.108.2023.06.19.03.16.55
+ c2-20020a5d5282000000b002fae7408544sm31146922wrv.108.2023.06.19.03.16.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jun 2023 03:16:55 -0700 (PDT)
+        Mon, 19 Jun 2023 03:16:58 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
 Cc: perex@perex.cz,
@@ -89,15 +91,18 @@ Cc: perex@perex.cz,
 	linux-kernel@vger.kernel.org,
 	pierre-louis.bossart@linux.intel.com,
 	alsa-devel@alsa-project.org,
+	Mohammad Rafi Shaik <quic_mohs@quicinc.com>,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 00/11] ASoC: qcom: audioreach: add compress offload support
-Date: Mon, 19 Jun 2023 11:16:42 +0100
-Message-Id: <20230619101653.9750-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 02/11] ASoC: q6dsp: q6apm: add end of stream events
+Date: Mon, 19 Jun 2023 11:16:44 +0100
+Message-Id: <20230619101653.9750-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20230619101653.9750-1-srinivas.kandagatla@linaro.org>
+References: <20230619101653.9750-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 2ZHFQ6UDB6DINIPJ5SYOIJFB5HIPS3NA
-X-Message-ID-Hash: 2ZHFQ6UDB6DINIPJ5SYOIJFB5HIPS3NA
+Message-ID-Hash: PZCCLBU6SJZF73632NIY4JVRUPGAXRLZ
+X-Message-ID-Hash: PZCCLBU6SJZF73632NIY4JVRUPGAXRLZ
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -110,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2ZHFQ6UDB6DINIPJ5SYOIJFB5HIPS3NA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PZCCLBU6SJZF73632NIY4JVRUPGAXRLZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,43 +124,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patchset adds compressed offload support to Qualcomm audioreach drivers.
-Currently it supports AAC, MP3 and FALC along with gapless.
+From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 
-Tested this on SM8450 and sc7280.
+EOS event from dsp is currently not sent to the dai drivers, add the
+missing callback.
 
-thanks,
-srini
+Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/qdsp6/q6apm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Changes since v2:
-	- fixed order of sign-off
-	- added placeholder decoder and encoder to audioreach_set_media_format
-
-Mohammad Rafi Shaik (4):
-  ASoC: qcom: SC7280: audioreach: Add sc7280 hardware param fixup
-    callback
-  ASoC: q6dsp: q6apm: add end of stream events
-  ASoC: q6dsp: audioreach: Add support to set compress format params
-  ASoC: q6dsp: audioreach: Add gapless feature support
-
-Srinivas Kandagatla (7):
-  ASoC: q6dsp: audioreach: add helper function to set u32 param
-  ASoC: q6dsp: audioreach: Add placeholder decoder for compress playback
-  ASoC: q6dsp: q6apm-dai: Add open/free compress DAI callbacks
-  ASoC: q6dsp: q6apm-dai: Add compress DAI and codec caps get callbacks
-  ASoC: q6dsp: q6apm-dai: Add trigger/pointer compress DAI callbacks
-  ASoC: q6dsp: q6apm-dai: Add compress set params and metadata DAI
-    callbacks
-  ASoC: q6dsp: q6apm-dai: Add mmap and copy compress DAI callbacks
-
- sound/soc/qcom/qdsp6/audioreach.c | 250 ++++++++++-------
- sound/soc/qcom/qdsp6/audioreach.h |  51 ++++
- sound/soc/qcom/qdsp6/q6apm-dai.c  | 445 ++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6apm.c      |  68 +++++
- sound/soc/qcom/qdsp6/q6apm.h      |   6 +
- sound/soc/qcom/sc7280.c           |  23 +-
- 6 files changed, 747 insertions(+), 96 deletions(-)
-
+diff --git a/sound/soc/qcom/qdsp6/q6apm.c b/sound/soc/qcom/qdsp6/q6apm.c
+index a7a3f973eb6d..b07fee8ccac1 100644
+--- a/sound/soc/qcom/qdsp6/q6apm.c
++++ b/sound/soc/qcom/qdsp6/q6apm.c
+@@ -497,6 +497,9 @@ static int graph_callback(struct gpr_resp_pkt *data, void *priv, int op)
+ 		}
+ 		break;
+ 	case DATA_CMD_WR_SH_MEM_EP_EOS_RENDERED:
++		client_event = APM_CLIENT_EVENT_CMD_EOS_DONE;
++		if (graph->cb)
++			graph->cb(client_event, hdr->token, data->payload, graph->priv);
+ 		break;
+ 	case GPR_BASIC_RSP_RESULT:
+ 		switch (result->opcode) {
 -- 
 2.21.0
 
