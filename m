@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28C00EB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 10:20:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3321AEB64D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 10:20:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27DAD851;
-	Mon, 19 Jun 2023 12:19:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27DAD851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25895DF3;
+	Mon, 19 Jun 2023 12:19:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25895DF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687170024;
-	bh=T8UeFghN+xRl96JHCM4tgRWclFkq5LeofZ8UBCLDeu8=;
+	s=default; t=1687170035;
+	bh=ZYqGQdzbwH5O8sSWHntgNb4HLTgGhf/AzpNUHu+2nlI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BRHDScw3w0s5Ml8Cmw30tJeXweRsKtsRq8PmgK8AYcDJEI/begFiQIEjvajMq87GQ
-	 QbDvoiMBCUH7qjjciV4MClo7y28WuBiFNC5M7jtU69dJ+wzE6mn9XSNE+i2OFBszqd
-	 oMCLPkc7gz2obszsAgclCw+JW2+tQ4wgcsgBUoyg=
+	b=LgciiKlJ4H0l/7zWONcVHtTVRSfoM0c2gogeh4v3IDVDcVnI73aOxAXJe+r5PMmCO
+	 8GbqmeTeI2JIen+F2A2kmBejrnnatL4nI8w7eHMSMDMSy7nPH/hparve70VoZJCEgN
+	 awM0z2d+83XW0pPbcuJ28wuoEN9r0k76VSnAoRH8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88A84F805D5; Mon, 19 Jun 2023 12:17:29 +0200 (CEST)
+	id 66433F805CB; Mon, 19 Jun 2023 12:17:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF344F805C1;
-	Mon, 19 Jun 2023 12:17:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C03C5F805CB;
+	Mon, 19 Jun 2023 12:17:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA28CF8057C; Mon, 19 Jun 2023 12:17:13 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
+	id 1FBF9F8057D; Mon, 19 Jun 2023 12:17:15 +0200 (CEST)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 05680F80552
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 12:17:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05680F80552
+	by alsa1.perex.cz (Postfix) with ESMTPS id E81B0F80567
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 12:17:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E81B0F80567
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=cUWb4upm
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-3111547c8f9so3861396f8f.1
+ header.s=google header.b=wy9CQ5VT
+Received: by mail-wm1-x330.google.com with SMTP id
+ 5b1f17b1804b1-3f97e08b012so12228095e9.3
         for <alsa-devel@alsa-project.org>;
- Mon, 19 Jun 2023 03:17:06 -0700 (PDT)
+ Mon, 19 Jun 2023 03:17:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687169825; x=1689761825;
+        d=linaro.org; s=google; t=1687169828; x=1689761828;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Sys5TdhsIRvy1RJtrPRmzzTf1MuduWY9oZx3ELz0gpM=;
-        b=cUWb4upmBaLp26qcGEFTIUOex7qyJ6XSbeJnL0DMJfSmVyf1Kzinq75EJk2mSNy7Ma
-         LGP/GyqEmB0IMk00k2ax0HQSawey79vn58f7Ef8X+crQhxvkZu4DYmvSONx42oaOClEu
-         qRe/RhTquxhqfe2ekHAmfM5qJodHwCRQbirjIGtsIjd18EEe0KyR/BcpvABGf8FAtwX+
-         OvaOwCgCDvleBZLKGNVeUjyjiLZC9FN6FhkjPbwE7QJpP4/cn+CmtR3Egj+lzkLVygwc
-         Of7PTyq6doN3NLjn47uaGK6vcDtX7fAEjiqphyx3FvfwiomF0C6rt/tmrwAo8jdAuNFo
-         aQsQ==
+        bh=0jmFbS7HPXuVPo+Ttg6W++jAmeGcDWis3QnGP8fIhMU=;
+        b=wy9CQ5VTjjJKyhnudYc6Tzx0GC4cGmsexR7mqUP65SLBywiqJeqPlYkCZKqkRYGmGj
+         0euK9Yci70dqdesZoqJLE7SugOZ8j+XtrLvOckhbq+9HDgCnzD8gIgpaj3b6QaDG1LOl
+         rZE7jRUXsNsaSyip7hcbTs28iOcLP2MHCQwCXhZdI4WbvJOAWX9kpb6/q4r/mHQwCj4G
+         4Piq+qWW9ZFQT8bgNPIUxPLBbmBsCviWql/+64tHy6PcmD36aEOBESy8qK168mbm6eEM
+         Lq+ofnZA+GveTZ2EyLonzWe2QvWPFYzMNey/tDyzjpioMu+8Lyst9HYnyMiSLhZlGCBL
+         w1CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687169825; x=1689761825;
+        d=1e100.net; s=20221208; t=1687169828; x=1689761828;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Sys5TdhsIRvy1RJtrPRmzzTf1MuduWY9oZx3ELz0gpM=;
-        b=gtPWEeBRt+SM3mBWYVaXYB4yRXKml58isauvhyx8ZyjlMOaYW+yqBvCXATrXT5NR9g
-         Tje7A60B1gTUMCPoPoro3HVmBvooxZI1NqXHTcNrKqV6RvU/IUWEYnEQNV0g/JdfLIW5
-         noIp1vpoS4tbLsp82/q8Z9omfNzm2qPVbC1NidEqrzAP8J6o0E8KcpyFtfET/uKs2g4M
-         lKX47yAqn3CYjT1d9jxsgzTTyo+NUYJDY5OoBs+Y5fJaakabxSjf4C+KgWXau9qdQcLg
-         wDd80zn/umau6YHnlmr2PGD0Lr9dv5Nciw0xsx0/bleNxbXIT8fHXWJYbtjd6zgOnsCL
-         9Vrw==
-X-Gm-Message-State: AC+VfDzlQwab3b/ktxL/tt6SUVbgz9FPo8olD+yavc2SsmgFt/v36g+6
-	TyM5MghKwES0sscNLdbb+2d+9A==
+        bh=0jmFbS7HPXuVPo+Ttg6W++jAmeGcDWis3QnGP8fIhMU=;
+        b=S1X1JoP1iOGu63fNFg0fgkIFQQQCOxt3zWUppruQQi5+ieKOSCk5htiI3d3CkDq+YF
+         uL6iUIhRpnF37WkJIgFHSI9b0O78Flavp1MblfUdsuu9qxjo0EBABD5UcGjQRTq0STRC
+         K1liy8/glV4vd9KxN0l8R7gBcXfAODW0Hiw6qU8kbMh3kYzEhbxalw+VelqVn6SFgi+g
+         2vUmoOF+ElRUPJ0ZDGRS1s8yuTFBuA2KdMGblReRwXL2EWa0SDd1Hj4Y5LVyc94TFcwW
+         imCYNjBdtnPf7oLjNDA4ncbl+eofY6/cfE55yjQskiJLxJN2rDdJB3o2wYg8k1KjcPGN
+         +ypg==
+X-Gm-Message-State: AC+VfDwxPPjVh5yJ7t/MYCJzTdclow8ubwQhu8g8i5zh1ZTXZgkcIJvr
+	Pmg/yABAOrspxy65ReSkh2KNcw==
 X-Google-Smtp-Source: 
- ACHHUZ69d7ZaC5DAxHI5Amjpfc4qJJKsrdGiqhyJPz2JqPWO9aGl2us1iOxQB3382Pk/1CuPSrHJeA==
-X-Received: by 2002:a5d:570b:0:b0:309:4da8:7713 with SMTP id
- a11-20020a5d570b000000b003094da87713mr7237177wrv.64.1687169825370;
-        Mon, 19 Jun 2023 03:17:05 -0700 (PDT)
+ ACHHUZ79GAF/rMepsxEO8EbbcqC5rfSTBEWArAY5CuoL4lXM+FTQV0Ep868fL2F2hoL5TNbq1ev8/g==
+X-Received: by 2002:a5d:595a:0:b0:311:1a91:cdac with SMTP id
+ e26-20020a5d595a000000b003111a91cdacmr7112812wri.57.1687169827878;
+        Mon, 19 Jun 2023 03:17:07 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- c2-20020a5d5282000000b002fae7408544sm31146922wrv.108.2023.06.19.03.17.04
+ c2-20020a5d5282000000b002fae7408544sm31146922wrv.108.2023.06.19.03.17.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jun 2023 03:17:04 -0700 (PDT)
+        Mon, 19 Jun 2023 03:17:07 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
 Cc: perex@perex.cz,
@@ -93,17 +93,17 @@ Cc: perex@perex.cz,
 	alsa-devel@alsa-project.org,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Subject: [PATCH v3 08/11] ASoC: q6dsp: q6apm-dai: Add compress DAI and codec
- caps get callbacks
-Date: Mon, 19 Jun 2023 11:16:50 +0100
-Message-Id: <20230619101653.9750-9-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 10/11] ASoC: q6dsp: q6apm-dai: Add compress set params and
+ metadata DAI callbacks
+Date: Mon, 19 Jun 2023 11:16:52 +0100
+Message-Id: <20230619101653.9750-11-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230619101653.9750-1-srinivas.kandagatla@linaro.org>
 References: <20230619101653.9750-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: WQY6W6VNO5ZXHUSPI6PWTB5DPZG4N6GD
-X-Message-ID-Hash: WQY6W6VNO5ZXHUSPI6PWTB5DPZG4N6GD
+Message-ID-Hash: KS5GT2G4JQK3FWAXWWZO2IGKNDA5DK72
+X-Message-ID-Hash: KS5GT2G4JQK3FWAXWWZO2IGKNDA5DK72
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -116,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQY6W6VNO5ZXHUSPI6PWTB5DPZG4N6GD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KS5GT2G4JQK3FWAXWWZO2IGKNDA5DK72/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,103 +125,145 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add q6apm get compress DAI capabilities and codec capabilities callbacks
-to support compress offload playback.
+Add q6apm compress DAI callbacks for setting params and metadata to support
+compress offload playback.
 
 Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6apm-dai.c | 53 ++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ sound/soc/qcom/qdsp6/q6apm-dai.c | 107 +++++++++++++++++++++++++++++++
+ 1 file changed, 107 insertions(+)
 
 diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
-index 32df5db014d3..d43705bf523a 100644
+index 9543b79ce83d..c67147e5388b 100644
 --- a/sound/soc/qcom/qdsp6/q6apm-dai.c
 +++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
-@@ -30,8 +30,25 @@
- #define BUFFER_BYTES_MIN (PLAYBACK_MIN_NUM_PERIODS * PLAYBACK_MIN_PERIOD_SIZE)
- #define COMPR_PLAYBACK_MAX_FRAGMENT_SIZE (128 * 1024)
- #define COMPR_PLAYBACK_MAX_NUM_FRAGMENTS (16 * 4)
-+#define COMPR_PLAYBACK_MIN_FRAGMENT_SIZE (8 * 1024)
-+#define COMPR_PLAYBACK_MIN_NUM_FRAGMENTS (4)
- #define SID_MASK_DEFAULT	0xF
- 
-+static const struct snd_compr_codec_caps q6apm_compr_caps = {
-+	.num_descriptors = 1,
-+	.descriptor[0].max_ch = 2,
-+	.descriptor[0].sample_rates = {	8000, 11025, 12000, 16000, 22050,
-+					24000, 32000, 44100, 48000, 88200,
-+					96000, 176400, 192000 },
-+	.descriptor[0].num_sample_rates = 13,
-+	.descriptor[0].bit_rate[0] = 320,
-+	.descriptor[0].bit_rate[1] = 128,
-+	.descriptor[0].num_bitrates = 2,
-+	.descriptor[0].profiles = 0,
-+	.descriptor[0].modes = SND_AUDIOCHANMODE_MP3_STEREO,
-+	.descriptor[0].formats = 0,
-+};
-+
- enum stream_state {
- 	Q6APM_STREAM_IDLE = 0,
- 	Q6APM_STREAM_STOPPED,
-@@ -41,6 +58,7 @@ enum stream_state {
- struct q6apm_dai_rtd {
- 	struct snd_pcm_substream *substream;
- 	struct snd_compr_stream *cstream;
-+	struct snd_codec codec;
- 	struct snd_compr_params codec_param;
- 	struct snd_dma_buffer dma_buffer;
- 	phys_addr_t phys;
-@@ -54,6 +72,7 @@ struct q6apm_dai_rtd {
- 	uint16_t bits_per_sample;
- 	uint16_t source; /* Encoding source bit mask */
- 	uint16_t session_id;
-+	bool next_track;
+@@ -76,6 +76,8 @@ struct q6apm_dai_rtd {
  	enum stream_state state;
  	struct q6apm_graph *graph;
  	spinlock_t lock;
-@@ -517,9 +536,43 @@ static int q6apm_dai_compr_free(struct snd_soc_component *component,
++	uint32_t initial_samples_drop;
++	uint32_t trailing_samples_drop;
+ 	bool notify_on_drain;
+ };
  
- 	return 0;
+@@ -632,6 +634,109 @@ static int q6apm_dai_compr_ack(struct snd_soc_component *component, struct snd_c
+ 	return count;
  }
-+
-+static int q6apm_dai_compr_get_caps(struct snd_soc_component *component,
-+				    struct snd_compr_stream *stream,
-+				    struct snd_compr_caps *caps)
+ 
++static int q6apm_dai_compr_set_params(struct snd_soc_component *component,
++				      struct snd_compr_stream *stream,
++				      struct snd_compr_params *params)
 +{
-+	caps->direction = SND_COMPRESS_PLAYBACK;
-+	caps->min_fragment_size = COMPR_PLAYBACK_MIN_FRAGMENT_SIZE;
-+	caps->max_fragment_size = COMPR_PLAYBACK_MAX_FRAGMENT_SIZE;
-+	caps->min_fragments = COMPR_PLAYBACK_MIN_NUM_FRAGMENTS;
-+	caps->max_fragments = COMPR_PLAYBACK_MAX_NUM_FRAGMENTS;
-+	caps->num_codecs = 3;
-+	caps->codecs[0] = SND_AUDIOCODEC_MP3;
-+	caps->codecs[1] = SND_AUDIOCODEC_AAC;
-+	caps->codecs[2] = SND_AUDIOCODEC_FLAC;
++	struct snd_compr_runtime *runtime = stream->runtime;
++	struct q6apm_dai_rtd *prtd = runtime->private_data;
++	struct q6apm_dai_data *pdata;
++	struct audioreach_module_config cfg;
++	struct snd_codec *codec = &params->codec;
++	int dir = stream->direction;
++	int ret;
++
++	pdata = snd_soc_component_get_drvdata(component);
++	if (!pdata)
++		return -EINVAL;
++
++	prtd->periods = runtime->fragments;
++	prtd->pcm_count = runtime->fragment_size;
++	prtd->pcm_size = runtime->fragments * runtime->fragment_size;
++	prtd->bits_per_sample = 16;
++
++	prtd->pos = 0;
++
++	if (prtd->next_track != true) {
++		memcpy(&prtd->codec, codec, sizeof(*codec));
++
++		ret = q6apm_set_real_module_id(component->dev, prtd->graph, codec->id);
++		if (ret)
++			return ret;
++
++		cfg.direction = dir;
++		cfg.sample_rate = codec->sample_rate;
++		cfg.num_channels = 2;
++		cfg.bit_width = prtd->bits_per_sample;
++		cfg.fmt = codec->id;
++		memcpy(&cfg.codec, codec, sizeof(*codec));
++
++		ret = q6apm_graph_media_format_shmem(prtd->graph, &cfg);
++		if (ret < 0)
++			return ret;
++
++		ret = q6apm_graph_media_format_pcm(prtd->graph, &cfg);
++		if (ret)
++			return ret;
++
++		ret = q6apm_map_memory_regions(prtd->graph, SNDRV_PCM_STREAM_PLAYBACK,
++					       prtd->phys, (prtd->pcm_size / prtd->periods),
++					       prtd->periods);
++		if (ret < 0)
++			return -ENOMEM;
++
++		ret = q6apm_graph_prepare(prtd->graph);
++		if (ret)
++			return ret;
++
++		ret = q6apm_graph_start(prtd->graph);
++		if (ret)
++			return ret;
++
++	} else {
++		cfg.direction = dir;
++		cfg.sample_rate = codec->sample_rate;
++		cfg.num_channels = 2;
++		cfg.bit_width = prtd->bits_per_sample;
++		cfg.fmt = codec->id;
++		memcpy(&cfg.codec, codec, sizeof(*codec));
++
++		ret = audioreach_compr_set_param(prtd->graph,  &cfg);
++		if (ret < 0)
++			return ret;
++	}
++	prtd->state = Q6APM_STREAM_RUNNING;
 +
 +	return 0;
 +}
 +
-+static int q6apm_dai_compr_get_codec_caps(struct snd_soc_component *component,
-+					  struct snd_compr_stream *stream,
-+					  struct snd_compr_codec_caps *codec)
++static int q6apm_dai_compr_set_metadata(struct snd_soc_component *component,
++					struct snd_compr_stream *stream,
++					struct snd_compr_metadata *metadata)
 +{
-+	switch (codec->codec) {
-+	case SND_AUDIOCODEC_MP3:
-+		*codec = q6apm_compr_caps;
++	struct snd_compr_runtime *runtime = stream->runtime;
++	struct q6apm_dai_rtd *prtd = runtime->private_data;
++	int ret = 0;
++
++	switch (metadata->key) {
++	case SNDRV_COMPRESS_ENCODER_PADDING:
++		prtd->trailing_samples_drop = metadata->value[0];
++		q6apm_remove_trailing_silence(component->dev, prtd->graph,
++					      prtd->trailing_samples_drop);
++		break;
++	case SNDRV_COMPRESS_ENCODER_DELAY:
++		prtd->initial_samples_drop = metadata->value[0];
++		q6apm_remove_initial_silence(component->dev, prtd->graph,
++					     prtd->initial_samples_drop);
 +		break;
 +	default:
++		ret = -EINVAL;
 +		break;
 +	}
 +
-+	return 0;
++	return ret;
 +}
++
  static const struct snd_compress_ops q6apm_dai_compress_ops = {
  	.open		= q6apm_dai_compr_open,
  	.free		= q6apm_dai_compr_free,
-+	.get_caps	= q6apm_dai_compr_get_caps,
-+	.get_codec_caps	= q6apm_dai_compr_get_codec_caps,
+@@ -640,6 +745,8 @@ static const struct snd_compress_ops q6apm_dai_compress_ops = {
+ 	.pointer	= q6apm_dai_compr_pointer,
+ 	.trigger	= q6apm_dai_compr_trigger,
+ 	.ack		= q6apm_dai_compr_ack,
++	.set_params	= q6apm_dai_compr_set_params,
++	.set_metadata	= q6apm_dai_compr_set_metadata,
  };
  
  static const struct snd_soc_component_driver q6apm_fe_dai_component = {
