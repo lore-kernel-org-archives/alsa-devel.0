@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1218EB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 09:58:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D546EB64DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Jun 2023 09:58:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1985E852;
-	Mon, 19 Jun 2023 11:57:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1985E852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7568686E;
+	Mon, 19 Jun 2023 11:57:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7568686E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687168702;
-	bh=1QABusYxr1nTlV9ri3HwAfQjZVjcWfDUUzFgT9o8430=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=pA17VRp4wcwW+e0oVtOOS+56jDmfhlp7SsrZTy/i43AJs78ocjvJ5mWSVST5b2da9
-	 oLyoDxMCnPDhSXWQqSRdMrSL7g+uMeGFfB93WbCh0LhtlxkwR8wLbKOSDb+xrCXIkk
-	 7wqM52x1e8VkEnxHxtf+JeFD0WuOwR1V6UkToUGQ=
+	s=default; t=1687168709;
+	bh=S1p8c0iwhzvgShB9vue9+DWHV+8dBrzfK7Fj+bPUKYI=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=pPtx/ORJP+bhhvW5YeqI4c03++poJG9iB33dd+bZ2pd0Rp0pObOH9H5/FV/LF8WSu
+	 +vRKg57kjs3C/H8hiDnwRSG4lWiC0BsDvNmIzsc+qYz90s60HAbWrrm5c+rVPmEKc5
+	 wJ4+cud5A8H0wnqm6OtmxBjCwDsomaQKxvCXnS1I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30F7DF80557; Mon, 19 Jun 2023 11:56:42 +0200 (CEST)
+	id 4A940F80132; Mon, 19 Jun 2023 11:56:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6135F80558;
-	Mon, 19 Jun 2023 11:56:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8DBB7F80132;
+	Mon, 19 Jun 2023 11:56:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4F88BF8052E; Mon, 19 Jun 2023 11:56:37 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+	id F21A7F8056F; Mon, 19 Jun 2023 11:56:42 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4BA57F80217
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8F201F80132
 	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 11:56:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BA57F80217
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F201F80132
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=fPahJfu1
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 35J5L9Dq009890;
+ header.s=PODMain02222019 header.b=WWg4PDc9
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 35J5mUnh002763;
 	Mon, 19 Jun 2023 04:56:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=TfGrH3Uleie1Co1qiJ5GXAl8Q/ErU0G0tmVgE1EhgVI=;
- b=fPahJfu1hiHC0O+7Ef5ILbXEx81HpcTUo+uDRypi6ALV7e9sV9AcHvnndrqgZbnAva0J
- PD0jp0oq92RqYroI3/jc1K5oIN6Q1d8i5aP2ttrEWRoeTp3gv8p28SEC3S7GZB/gBwoA
- EsMasIH/Cytq1ouI8WBW0NHoaNvcJSQyZ0ItzDnHKDhOfZrS7ni7743t4P1prh/3Czfd
- QymCk75DkZJkMAcfcf5hO0c1580kAz5XlYniBh95ZdGoh+pEUFJJQU/2+QqsDe+/PaFt
- KTIPplZM/4g/sYf8fobXPAIq2yr3o05Ajhas1g88EuAVBvKQZCYE/ZfxQ9RQdjibUQas iw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3r9a809n3e-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=cpHkfCAzEJJW1CS6GcpubURDKyU3rHOGnxBd77XOIes=;
+ b=WWg4PDc93NSGhhByE+4zYy8O93FMtr2pN+QtiYKuv3lG4lf1GqO2dqfcFMd2aujBBoL+
+ EaBHXwokQ6xiJDhxRnpSFjlFZ4YnPgpCsB4GH6V0lxqateQcU7hgnnzkQvL1Tu5dh+SA
+ S+evaTsDEcgOqECq1Qwx/C+SXtwhN7DgjQ4AiCDg+3N4HrzIbHM9f7GpmukA4X2XHci/
+ 4/HEf9OQxT0vI24HclMQrTK0iwua3g8PLP3ZZbSRuMM+NAmH8HALiBg/YuMnYEFpXL/S
+ QCOvH8H0J9Q02GD+furjB1Mqu9Ib4shIE54+1+FsrMfkANTvKEwXGn1eLHV4tqglN/xm aQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3r998mhtm4-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Mon, 19 Jun 2023 04:56:25 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.26; Mon, 19 Jun
  2023 10:56:23 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
  15.2.1118.26 via Frontend Transport; Mon, 19 Jun 2023 10:56:23 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 386D246B;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 637B115B7;
 	Mon, 19 Jun 2023 09:56:23 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>, <lee@kernel.org>,
@@ -76,18 +77,21 @@ CC: <robh+dt@kernel.org>, <conor+dt@kernel.org>, <lgirdwood@gmail.com>,
         <patches@opensource.cirrus.com>, <devicetree@vger.kernel.org>,
         <linux-gpio@vger.kernel.org>, <linux-spi@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 0/6] Add cs42l43 PC focused SoundWire CODEC
-Date: Mon, 19 Jun 2023 10:56:17 +0100
-Message-ID: <20230619095623.1987742-1-ckeepax@opensource.cirrus.com>
+Subject: [PATCH v5 2/6] dt-bindings: mfd: cirrus,cs42l43: Add initial DT
+ binding
+Date: Mon, 19 Jun 2023 10:56:19 +0100
+Message-ID: <20230619095623.1987742-3-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230619095623.1987742-1-ckeepax@opensource.cirrus.com>
+References: <20230619095623.1987742-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: TwJIzOos5_RoQCCaIygw3wlU1xV9vY00
-X-Proofpoint-GUID: TwJIzOos5_RoQCCaIygw3wlU1xV9vY00
+X-Proofpoint-GUID: BDBEBDAYgxwi0PNsPdQdUlRyXJUMrooU
+X-Proofpoint-ORIG-GUID: BDBEBDAYgxwi0PNsPdQdUlRyXJUMrooU
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: C5CZ4YM6OJGGPIUJLK4AQR6M5FIBDISN
-X-Message-ID-Hash: C5CZ4YM6OJGGPIUJLK4AQR6M5FIBDISN
+Message-ID-Hash: UEDQH7LOEIQAINKBHSS7OGM76FBV3R4G
+X-Message-ID-Hash: UEDQH7LOEIQAINKBHSS7OGM76FBV3R4G
 X-MailFrom: prvs=153447c1f4=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C5CZ4YM6OJGGPIUJLK4AQR6M5FIBDISN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UEDQH7LOEIQAINKBHSS7OGM76FBV3R4G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,65 +113,347 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch chain adds support for the Cirrus Logic cs42l43 PC focused
-SoundWire CODEC. The chain is currently based of Lee's for-mfd-next
-branch.
+The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
+(Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
+for portable applications. It provides a high dynamic range, stereo
+DAC for headphone output, two integrated Class D amplifiers for
+loudspeakers, and two ADCs for wired headset microphone input or
+stereo line input. PDM inputs are provided for digital microphones.
+
+Add a YAML DT binding document for this device.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+
+No change since v4.
 
 Thanks,
 Charles
 
-Charles Keepax (4):
-  dt-bindings: mfd: cirrus,cs42l43: Add initial DT binding
-  mfd: cs42l43: Add support for cs42l43 core driver
-  pinctrl: cs42l43: Add support for the cs42l43
-  ASoC: cs42l43: Add support for the cs42l43
-
-Lucas Tanure (2):
-  soundwire: bus: Allow SoundWire peripherals to register IRQ handlers
-  spi: cs42l43: Add SPI controller support
-
- .../bindings/sound/cirrus,cs42l43.yaml        |  313 +++
- MAINTAINERS                                   |    4 +
- drivers/mfd/Kconfig                           |   23 +
- drivers/mfd/Makefile                          |    3 +
- drivers/mfd/cs42l43-i2c.c                     |   98 +
- drivers/mfd/cs42l43-sdw.c                     |  239 ++
- drivers/mfd/cs42l43.c                         | 1189 +++++++++
- drivers/mfd/cs42l43.h                         |   28 +
- drivers/pinctrl/cirrus/Kconfig                |   11 +
- drivers/pinctrl/cirrus/Makefile               |    2 +
- drivers/pinctrl/cirrus/pinctrl-cs42l43.c      |  609 +++++
- drivers/soundwire/bus.c                       |   32 +
- drivers/soundwire/bus_type.c                  |   12 +
- drivers/spi/Kconfig                           |    7 +
- drivers/spi/Makefile                          |    1 +
- drivers/spi/spi-cs42l43.c                     |  281 ++
- include/linux/mfd/cs42l43-regs.h              | 1184 +++++++++
- include/linux/mfd/cs42l43.h                   |  102 +
- include/linux/soundwire/sdw.h                 |    9 +
- include/sound/cs42l43.h                       |   17 +
- sound/soc/codecs/Kconfig                      |   16 +
- sound/soc/codecs/Makefile                     |    4 +
- sound/soc/codecs/cs42l43-jack.c               |  969 +++++++
- sound/soc/codecs/cs42l43-sdw.c                |   74 +
- sound/soc/codecs/cs42l43.c                    | 2278 +++++++++++++++++
- sound/soc/codecs/cs42l43.h                    |  131 +
- 26 files changed, 7636 insertions(+)
+ .../bindings/sound/cirrus,cs42l43.yaml        | 313 ++++++++++++++++++
+ 1 file changed, 313 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
- create mode 100644 drivers/mfd/cs42l43-i2c.c
- create mode 100644 drivers/mfd/cs42l43-sdw.c
- create mode 100644 drivers/mfd/cs42l43.c
- create mode 100644 drivers/mfd/cs42l43.h
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs42l43.c
- create mode 100644 drivers/spi/spi-cs42l43.c
- create mode 100644 include/linux/mfd/cs42l43-regs.h
- create mode 100644 include/linux/mfd/cs42l43.h
- create mode 100644 include/sound/cs42l43.h
- create mode 100644 sound/soc/codecs/cs42l43-jack.c
- create mode 100644 sound/soc/codecs/cs42l43-sdw.c
- create mode 100644 sound/soc/codecs/cs42l43.c
- create mode 100644 sound/soc/codecs/cs42l43.h
 
+diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
+new file mode 100644
+index 0000000000000..7a6de938b11d1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
+@@ -0,0 +1,313 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/cirrus,cs42l43.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cirrus Logic CS42L43 Audio CODEC
++
++maintainers:
++  - patches@opensource.cirrus.com
++
++description: |
++  The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
++  (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
++  for portable applications. It provides a high dynamic range, stereo
++  DAC for headphone output, two integrated Class D amplifiers for
++  loudspeakers, and two ADCs for wired headset microphone input or
++  stereo line input. PDM inputs are provided for digital microphones.
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    enum:
++      - cirrus,cs42l43
++
++  reg:
++    maxItems: 1
++
++  vdd-p-supply:
++    description:
++      Power supply for the high voltage interface.
++
++  vdd-a-supply:
++    description:
++      Power supply for internal analog circuits.
++
++  vdd-d-supply:
++    description:
++      Power supply for internal digital circuits. Can be internally supplied.
++
++  vdd-io-supply:
++    description:
++      Power supply for external interface and internal digital logic.
++
++  vdd-cp-supply:
++    description:
++      Power supply for the amplifier 3 and 4 charge pump.
++
++  vdd-amp-supply:
++    description:
++      Power supply for amplifier 1 and 2.
++
++  reset-gpios:
++    maxItems: 1
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 2
++
++  interrupts:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 1
++
++  clocks:
++    items:
++      - description: Synchronous audio clock provided on mclk_in.
++
++  clock-names:
++    const: mclk
++
++  cirrus,bias-low:
++    type: boolean
++    description:
++      Select a 1.8V headset micbias rather than 2.8V.
++
++  cirrus,bias-sense-microamp:
++    description:
++      Current at which the headset micbias sense clamp will engage, 0 to
++      disable.
++    enum: [ 0, 14, 23, 41, 50, 60, 68, 86, 95 ]
++    default: 0
++
++  cirrus,bias-ramp-ms:
++    description:
++      Time in milliseconds the hardware allows for the headset micbias to
++      ramp up.
++    enum: [ 10, 40, 90, 170 ]
++    default: 170
++
++  cirrus,detect-us:
++    description:
++      Time in microseconds the type detection will run for. Long values will
++      cause more audible effects, but give more accurate detection.
++    enum: [ 20, 100, 1000, 10000, 50000, 75000, 100000, 200000 ]
++    default: 10000
++
++  cirrus,button-automute:
++    type: boolean
++    description:
++      Enable the hardware automuting of decimator 1 when a headset button is
++      pressed.
++
++  cirrus,buttons-ohms:
++    description:
++      Impedance in Ohms for each headset button, these should be listed in
++      ascending order.
++    minItems: 1
++    maxItems: 6
++
++  cirrus,tip-debounce-ms:
++    description:
++      Software debounce on tip sense triggering in milliseconds.
++    default: 0
++
++  cirrus,tip-invert:
++    type: boolean
++    description:
++      Indicates tip detect polarity, inverted implies open-circuit whilst the
++      jack is inserted.
++
++  cirrus,tip-disable-pullup:
++    type: boolean
++    description:
++      Indicates if the internal pullup on the tip detect should be disabled.
++
++  cirrus,tip-fall-db-ms:
++    description:
++      Time in milliseconds a falling edge on the tip detect should be hardware
++      debounced for. Note the falling edge is considered after the invert.
++    enum: [ 0, 125, 250, 500, 750, 1000, 1250, 1500 ]
++    default: 500
++
++  cirrus,tip-rise-db-ms:
++    description:
++      Time in milliseconds a rising edge on the tip detect should be hardware
++      debounced for. Note the rising edge is considered after the invert.
++    enum: [ 0, 125, 250, 500, 750, 1000, 1250, 1500 ]
++    default: 500
++
++  cirrus,use-ring-sense:
++    type: boolean
++    description:
++      Indicates if the ring sense should be used.
++
++  cirrus,ring-invert:
++    type: boolean
++    description:
++      Indicates ring detect polarity, inverted implies open-circuit whilst the
++      jack is inserted.
++
++  cirrus,ring-disable-pullup:
++    type: boolean
++    description:
++      Indicates if the internal pullup on the ring detect should be disabled.
++
++  cirrus,ring-fall-db-ms:
++    description:
++      Time in milliseconds a falling edge on the ring detect should be hardware
++      debounced for. Note the falling edge is considered after the invert.
++    enum: [ 0, 125, 250, 500, 750, 1000, 1250, 1500 ]
++    default: 500
++
++  cirrus,ring-rise-db-ms:
++    description:
++      Time in milliseconds a rising edge on the ring detect should be hardware
++      debounced for. Note the rising edge is considered after the invert.
++    enum: [ 0, 125, 250, 500, 750, 1000, 1250, 1500 ]
++    default: 500
++
++  pinctrl:
++    type: object
++    $ref: /schemas/pinctrl/pinctrl.yaml#
++    additionalProperties: false
++
++    properties:
++      gpio-controller: true
++
++      "#gpio-cells":
++        const: 2
++
++      gpio-ranges:
++        items:
++          - description: A phandle to the CODEC pinctrl node
++            minimum: 0
++          - const: 0
++          - const: 0
++          - const: 3
++
++    patternProperties:
++      "-state$":
++        oneOf:
++          - $ref: "#/$defs/cirrus-cs42l43-state"
++          - patternProperties:
++              "-pins$":
++                $ref: "#/$defs/cirrus-cs42l43-state"
++            additionalProperties: false
++
++  spi:
++    type: object
++    $ref: /schemas/spi/spi-controller.yaml#
++    unevaluatedProperties: false
++
++$defs:
++  cirrus-cs42l43-state:
++    type: object
++
++    allOf:
++      - $ref: /schemas/pinctrl/pincfg-node.yaml#
++      - $ref: /schemas/pinctrl/pinmux-node.yaml#
++
++    oneOf:
++      - required: [ groups ]
++      - required: [ pins ]
++
++    additionalProperties: false
++
++    properties:
++      groups:
++        enum: [ gpio1, gpio2, gpio3, asp, pdmout2, pdmout1, i2c, spi ]
++
++      pins:
++        enum: [ gpio1, gpio2, gpio3,
++                asp_dout, asp_fsync, asp_bclk,
++                pdmout2_clk, pdmout2_data, pdmout1_clk, pdmout1_data,
++                i2c_sda, i2c_scl,
++                spi_miso, spi_sck, spi_ssb ]
++
++      function:
++        enum: [ gpio, spdif, irq, mic-shutter, spk-shutter ]
++
++      drive-strength:
++        description: Set drive strength in mA
++        enum: [ 1, 2, 4, 8, 9, 10, 12, 16 ]
++
++      input-debounce:
++        description: Set input debounce in uS
++        enum: [ 0, 85 ]
++
++required:
++  - compatible
++  - reg
++  - vdd-p-supply
++  - vdd-a-supply
++  - vdd-io-supply
++  - vdd-cp-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        cs42l43: codec@1a {
++            compatible = "cirrus,cs42l43";
++            reg = <0x1a>;
++
++            vdd-p-supply = <&vdd5v0>;
++            vdd-a-supply = <&vdd1v8>;
++            vdd-io-supply = <&vdd1v8>;
++            vdd-cp-supply = <&vdd1v8>;
++            vdd-amp-supply = <&vdd5v0>;
++
++            reset-gpios = <&gpio 0>;
++
++            interrupt-controller;
++            #interrupt-cells = <2>;
++            interrupt-parent = <&gpio>;
++            interrupts = <56 IRQ_TYPE_LEVEL_LOW>;
++
++            #sound-dai-cells = <1>;
++
++            clocks = <&clks 0>;
++            clock-names = "mclk";
++
++            cs42l43_pins: pinctrl {
++                gpio-controller;
++                #gpio-cells = <2>;
++                gpio-ranges = <&cs42l43_pins 0 0 3>;
++
++                pinctrl-names = "default";
++                pinctrl-0 = <&pinsettings>;
++
++                pinsettings: default-state {
++                    shutter-pins {
++                        groups = "gpio3";
++                        function = "mic-shutter";
++                    };
++                };
++            };
++
++            spi {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                cs-gpios = <&cs42l43_pins 1 0>;
++
++                sensor@0 {
++                    compatible = "bosch,bme680";
++                    reg = <0>;
++                    spi-max-frequency = <1400000>;
++                };
++            };
++        };
++    };
 -- 
 2.30.2
 
