@@ -4,99 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19F27EB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 12:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10601EB64D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 12:16:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0415D822;
-	Wed, 21 Jun 2023 14:01:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0415D822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60C6A822;
+	Wed, 21 Jun 2023 14:15:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60C6A822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687348934;
-	bh=4nZAUJpuw54IxEET1Chgwp2wAZspz5jwEiSMbWB8XlY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=i6ZbTj3db1o79+witWAmT8y5vnAA66ZQ4UyCzCoGKPwYZgipKUijQkAKxLItT4G5z
-	 H27t0sjZiLukXywghIJ5kYdXpJG7g32ONwwssVKcHBOZ9JH1heHcjzLx/6PhHFeu3t
-	 vpRMfXqt4JBEYQ21X0N5xkpmdrPryxOicplQoWlY=
+	s=default; t=1687349787;
+	bh=BWNYdCQNfYbOwWFOOqojtVq9yKl779+HZWfA1Uh2z3M=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=R4QfvQq+zOwNq4oTd33C8Cc33/mS8pJohpRpFWxPw6wgHPsYuGPT1BaSUQrI3oUzu
+	 zEDGpTwjvhk9tgTYLpl2fn42q6opsmiQ4/WRGbAe/cg5E+R28t2kfVdU5DPx2+S9bE
+	 8PvuODpe7MVbLWd1n7oD4WEB5MxVMpFcT6d3Tiaw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82B7BF805C4; Wed, 21 Jun 2023 13:59:57 +0200 (CEST)
+	id 76921F801F5; Wed, 21 Jun 2023 14:15:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D056AF80567;
-	Wed, 21 Jun 2023 13:59:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBE95F80022;
+	Wed, 21 Jun 2023 14:15:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 334D5F80217; Mon, 19 Jun 2023 09:49:44 +0200 (CEST)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4464DF800BA
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 09:49:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4464DF800BA
-Received: from loongson.cn (unknown [10.180.13.22])
-	by gateway (Coremail) with SMTP id _____8AxX+uQCJBkqsgGAA--.14030S3;
-	Mon, 19 Jun 2023 15:49:37 +0800 (CST)
-Received: from [10.180.13.22] (unknown [10.180.13.22])
-	by localhost.localdomain (Coremail) with SMTP id
- AQAAf8Ax6OSPCJBk5P8fAA--.24411S3;
-	Mon, 19 Jun 2023 15:49:35 +0800 (CST)
-Message-ID: <ae880c97-e38d-0f01-f349-a427ab4afd41@loongson.cn>
-Date: Mon, 19 Jun 2023 15:49:12 +0800
+	id 50EDBF80217; Mon, 19 Jun 2023 11:45:45 +0200 (CEST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 504CCF80130
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2023 11:45:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 504CCF80130
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=Ifx0mnry
+Received: by mail-wr1-x42e.google.com with SMTP id
+ ffacd0b85a97d-3112c11fdc9so1405645f8f.3
+        for <alsa-devel@alsa-project.org>;
+ Mon, 19 Jun 2023 02:45:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1687167938; x=1689759938;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bg5fyMPNnhaYlCgPT+RQHkxkEw/BblxkkUDcQhx50UI=;
+        b=Ifx0mnryKOC6PtwitReKj+0hIqMwU2MSk+29dFX+l56ow0X8CUR+LgX0DJKbyo3d+H
+         rzSIHSeox2/3nY/ruYRr2N+PHpsGqA8tjJ3psCZRBf9t5lpNRf835eLErcIHsLsZcOl1
+         bWdNa91BCoj7PTSKnVMiBpuvqDNdiTdZ4iWfc3A+T9hcab4UtvNc9x5uhzjVSbxnF2vi
+         cuFzYZE8vnCCJi8l3LejqFJ2yCD2DomyazKKT6yZc2l63skhPad+GGyEPGMEuhlG4Vgm
+         VkPGMVjvGLf9a4mr49aZBk6uvPmlZthBuGtsSdJqEspe87dJ/X0GbuRCIf5hK1+yWGq7
+         3vYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687167938; x=1689759938;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bg5fyMPNnhaYlCgPT+RQHkxkEw/BblxkkUDcQhx50UI=;
+        b=DQIHu1XI51V0qZQ+6dCk4i2YUXXEPMmPmto+6OaGurK5h4dzgu2jyUNDZnjMe80kBK
+         M8Rz7I91rGcosZKSX/hwGseR+LAm5vD61tpPnibSccff4KOEcNElzDuqQ5jg1yHm+y7j
+         kyz6p/5FJYQh8xkf/fbJBAEy/LV/x0BmrKJBs7703iftMXukWOP6FjhxIrTstmwQ51JK
+         aLdSJjVFbzIpRY+fh3JVRZhkh39hXHkoQ4cWbuPWt+SS4xnoPqXVmxeJUsdXbX8k+0tz
+         6QY8czGBVbxT4235PVC5jK8kMTIyV9QvgY9r4mt3BYJAgPYMUTHVSgFzqvE/QqO8WRu2
+         yjXQ==
+X-Gm-Message-State: AC+VfDynU7WamedcArGdWnjbyQzzNOUjKzwBA3yncnRwtGdNS5Gyd/xd
+	eT/Es2Xq/bfecMchSaHMdzBQPg==
+X-Google-Smtp-Source: 
+ ACHHUZ5EJx7xgI7MpP4cCD0zI85bOqyLaWTZ2yeQIWYLYH97e3PBEm7Z1GPQ4kMXlIOCjBQriHGn/w==
+X-Received: by 2002:adf:f5d0:0:b0:30e:5b63:7487 with SMTP id
+ k16-20020adff5d0000000b0030e5b637487mr6099603wrp.58.1687167938145;
+        Mon, 19 Jun 2023 02:45:38 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id
+ o7-20020adfeac7000000b002fed865c55esm31114276wrn.56.2023.06.19.02.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Jun 2023 02:45:36 -0700 (PDT)
+Date: Mon, 19 Jun 2023 12:45:32 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: mengyingkun@loongson.cn
+Cc: alsa-devel@alsa-project.org
+Subject: [bug report] ASoC: loongson: Add Loongson ASoC Sound Card Support
+Message-ID: <4ef86c3e-0bb1-41c4-bdee-ee52c17dc9b8@moroto.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4 1/3] ASoC: Add support for Loongson I2S controller
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>, broonie@kernel.org,
- lgirdwood@gmail.com
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn,
- Dan Carpenter <dan.carpenter@linaro.org>, Dan Carpenter <error27@gmail.com>,
- kernel-janitors@vger.kernel.org
-References: <20230615122718.3412942-1-mengyingkun@loongson.cn>
- <cf2f3bc9-3141-8d7b-b57d-73eac70a21d2@oracle.com>
- <6901166d-387f-24de-6ffd-1c8eea724718@oracle.com>
- <325dd825-6fa5-0ebc-4b7e-7acf2d2840e4@loongson.cn>
- <bd4da934-72b7-67f3-0c9c-c18d3af16e7d@linaro.org>
-Content-Language: en-US
-From: Yingkun Meng <mengyingkun@loongson.cn>
-In-Reply-To: <bd4da934-72b7-67f3-0c9c-c18d3af16e7d@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Ax6OSPCJBk5P8fAA--.24411S3
-X-CM-SenderInfo: 5phqw55lqjy33q6o00pqjv00gofq/1tbiAQAHDGSO9AIDRgAHsU
-X-Coremail-Antispam: 1Uk129KBj9xXoW7JrW5Ww15CrWUJF13Ar1rZrc_yoWkGFg_Xw
-	4q9wn8XFyUJay5Jrs7Kr9FvFyDXr13trn8Jw4rZF1UXwnrJF95Wr15Gwn3JrZrGrWUGr1U
-	Xrn8Wa43u3WUWosvyTuYvTs0mTUanT9S1TB71UUUUjJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUbqkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-	6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-	1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxG
-	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUtVW8ZwC20s026c02F40E14
-	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4U
-	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j8XocUUU
-	UU=
-X-MailFrom: mengyingkun@loongson.cn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-MailFrom: dan.carpenter@linaro.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: H3IRQTQJGTDPPBEGXRXNO7HJE6PZCA2M
-X-Message-ID-Hash: H3IRQTQJGTDPPBEGXRXNO7HJE6PZCA2M
-X-Mailman-Approved-At: Wed, 21 Jun 2023 11:59:39 +0000
+Message-ID-Hash: D2VWBI3QKQWGKT5FDT5VWXECYA5X67OV
+X-Message-ID-Hash: D2VWBI3QKQWGKT5FDT5VWXECYA5X67OV
+X-Mailman-Approved-At: Wed, 21 Jun 2023 12:15:08 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H3IRQTQJGTDPPBEGXRXNO7HJE6PZCA2M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D2VWBI3QKQWGKT5FDT5VWXECYA5X67OV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,41 +110,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hello Yingkun Meng,
 
-On 2023/6/19 15:00, Krzysztof Kozlowski wrote:
-> On 19/06/2023 03:45, Yingkun Meng wrote:
->>>>> +    tx_data->irq = fwnode_irq_get_byname(fwnode, "tx");
->>>> Smatch detects that tx_data->irq and rx_data->irq are of type
->>>> u32(unsigned) so they can never be negative.
->>>>
->>>>> +    if (tx_data->irq < 0) {
->>>>               ^^^^^^^^ This can never be true.
->>>>
->>>> Should irq be of type 'int' instead?
->>>>
->>>>> +        dev_err(&pdev->dev, "dma tx irq invalid\n");
->>>>> +        return tx_data->irq;
->>>>> +    }
->>>>> +
->>>>> +    rx_data->irq = fwnode_irq_get_byname(fwnode, "rx");
->>>>> +    if (rx_data->irq < 0) {
->>>>               ^^^ Same problem here.
->>>>
->>>> Should irq
->>> Should 'irq' be of type int instead?
->>>
->>> As fwnode_irq_get_byname() returns a integer.
->>>
->> Yes, you are right. I will add a patch to fix the type of 'irq' to int.
-> Run smatch and sparse on your code before posting. It would find such
-> trivial mistakes.
+The patch d24028606e76: "ASoC: loongson: Add Loongson ASoC Sound Card
+Support" from Jun 14, 2023, leads to the following Smatch static
+checker warning:
 
-Thanks, got it.
+  sound/soc/loongson/loongson_card.c:157 loongson_card_parse_of()
+  error: uninitialized symbol 'cpu_dai_name'.
 
-Thanks,
-Yingkun
+  sound/soc/loongson/loongson_card.c:158 loongson_card_parse_of()
+  error: uninitialized symbol 'codec_dai_name'.
 
->
-> Best regards,
-> Krzysztof
+sound/soc/loongson/loongson_card.c
+    115 static int loongson_card_parse_of(struct loongson_card_data *data)
+    116 {
+    117         const char *cpu_dai_name, *codec_dai_name;
+    118         struct device_node *cpu, *codec;
+    119         struct snd_soc_card *card = &data->snd_card;
+    120         struct device *dev = card->dev;
+    121         struct of_phandle_args args;
+    122         int ret, i;
+    123 
+    124         cpu = of_get_child_by_name(dev->of_node, "cpu");
+    125         if (!cpu) {
+    126                 dev_err(dev, "platform property missing or invalid\n");
+    127                 return -EINVAL;
+    128         }
+    129         codec = of_get_child_by_name(dev->of_node, "codec");
+    130         if (!codec) {
+    131                 dev_err(dev, "audio-codec property missing or invalid\n");
+    132                 ret = -EINVAL;
+    133                 goto err;
+    134         }
+    135 
+    136         ret = of_parse_phandle_with_args(cpu, "sound-dai",
+    137                                          "#sound-dai-cells", 0, &args);
+    138         if (ret) {
+    139                 dev_err(dev, "codec node missing #sound-dai-cells\n");
+    140                 goto err;
+    141         }
+    142         for (i = 0; i < card->num_links; i++)
+    143                 loongson_dai_links[i].cpus->of_node = args.np;
+    144 
+    145         ret = of_parse_phandle_with_args(codec, "sound-dai",
+    146                                          "#sound-dai-cells", 0, &args);
+    147         if (ret) {
+    148                 dev_err(dev, "codec node missing #sound-dai-cells\n");
+    149                 goto err;
+    150         }
+    151         for (i = 0; i < card->num_links; i++)
+    152                 loongson_dai_links[i].codecs->of_node = args.np;
+    153 
+    154         snd_soc_of_get_dai_name(cpu, &cpu_dai_name);
+    155         snd_soc_of_get_dai_name(codec, &codec_dai_name);
 
+It looks like snd_soc_of_get_dai_name() can fail but I can add an
+exception for that if it never fails in real life.
+
+    156         for (i = 0; i < card->num_links; i++) {
+--> 157                 loongson_dai_links[i].cpus->dai_name = cpu_dai_name;
+    158                 loongson_dai_links[i].codecs->dai_name = codec_dai_name;
+    159         }
+    160         of_node_put(cpu);
+    161         of_node_put(codec);
+    162 
+    163         return 0;
+    164 
+    165 err:
+    166         of_node_put(cpu);
+    167         of_node_put(codec);
+    168         return ret;
+    169 }
+
+regards,
+dan carpenter
