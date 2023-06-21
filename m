@@ -4,75 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DC3FEB64D8
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 10:55:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EFDFEB64D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 11:00:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 149E1823;
-	Wed, 21 Jun 2023 12:54:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 149E1823
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDB44839;
+	Wed, 21 Jun 2023 12:59:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDB44839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687344925;
-	bh=8b+uU3Bs2sYqRmJk9/fT6n7FW28WjMTbPY0E1GKJS1s=;
+	s=default; t=1687345238;
+	bh=XGqVwPV972bAofKq7Ii+BNgpn8zMgGdyFdhMEb7bJ0c=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uprxUtpAcP4KKTl4tBvcoPW+htQVGv/tFmBIF8d9baQ2uk1O95C1m8RISAIrH76Pe
-	 tMAzbbq0hqerDxYRXPdHZG5lZ1smYFoZ3NFyXrSV6ve+o/V8VkeGKf48+GG35N3QlQ
-	 zE+eMRU88dK2dH2CSa9QLRn6yqN8H6s1BvtyV3CA=
+	b=fWEmcJRrVpfQw6AzNH1o3DesKbSXXwFUgVV+Bmzyu7qq7hGwZ7QVApGX8sB+Jc+X4
+	 m6hKaO6Kbs5Am54dhfE4FyuVFDuIm+1TbhaC7VLRCIfCHgVLIKZ3K+sYow5hkbJhGz
+	 WgCMgHpwQrOfQeoFzVDn1L+FFQXBt9pYBZXOc4T0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8864BF80132; Wed, 21 Jun 2023 12:54:08 +0200 (CEST)
+	id 6A39EF80169; Wed, 21 Jun 2023 12:59:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1603CF80141;
-	Wed, 21 Jun 2023 12:54:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD35CF80022;
+	Wed, 21 Jun 2023 12:59:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA1C9F80141; Wed, 21 Jun 2023 12:54:04 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 5D020F80141; Wed, 21 Jun 2023 12:59:18 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DD707F80132
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 12:53:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD707F80132
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9A623F80093
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 12:59:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A623F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=gMF6LhlQ
+ header.s=k20201202 header.b=nl1pyQ0P
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id ACDE0614F0;
-	Wed, 21 Jun 2023 10:53:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84DEFC433C0;
-	Wed, 21 Jun 2023 10:53:53 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 03345614D8;
+	Wed, 21 Jun 2023 10:59:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCD08C433C8;
+	Wed, 21 Jun 2023 10:59:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687344834;
-	bh=8b+uU3Bs2sYqRmJk9/fT6n7FW28WjMTbPY0E1GKJS1s=;
+	s=k20201202; t=1687345153;
+	bh=XGqVwPV972bAofKq7Ii+BNgpn8zMgGdyFdhMEb7bJ0c=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gMF6LhlQ8BB9kWB22e32blkxJkHYKdSnN11rulUgtPhi6lIpYQ5GY+v+qP1GwDNVS
-	 AobbulHyeFXjObvKjs6whBlw2A87+z2ckauyf6gu46egCRue0gNn21iqItpjNmXQXG
-	 FrUPT2O5nKVyv9rRr31X3tkKP1z8xnBtb188e+tSHJXpDQ7Hh2bw/0CMwX+qIIF1vh
-	 ujJidCroEGOWsNy3mS7EUGGtTo6RlSw77kU7b6Ug+QRoLi9l4VQN+kSzxFAUPuZdev
-	 FWauUE17DS5B/0PHHVu4JHfmECqb7W3jPBI/bOw8ORmEK97BRE/UE4ufKgUSCOgaht
-	 /K4EfiN1xnDBw==
-Date: Wed, 21 Jun 2023 16:23:49 +0530
+	b=nl1pyQ0PaXumCuGFHcKPQwtVTpyKlQgbw42RYLBQbmmK7vzjRYOe8mnCvGNCVujH5
+	 afER4UF24JrV29TMZfHL1kQYo4PDe0SAgfcvD8wIKHldrsShKM1Ev3dZCqW8QyH7Rj
+	 PS6fxqDqD8lZr/7Nen+0JxLvYk5WXkB+uRQJtlxqgIHM49pREJhQ6+lM94Dxj700cn
+	 ch2uE79VSRXokOG5OMBV1N1pTvwxdSv9KG98ZMXm3BT54Qcy3d1D9Eu7lfAZL5ySDN
+	 zQKSKClODeJA3sPZl1YJSbX+JgWUh2iUbLQZPL0pFzYX+TKduQ/dC7f34AcBDYlb24
+	 jtHqe2LuuPY6A==
+Date: Wed, 21 Jun 2023 16:29:09 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: yung-chuan.liao@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
 	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	patches@opensource.cirrus.com
-Subject: Re: [PATCH 1/2] soundwire: bus: Prevent lockdep asserts when stream
- has multiple buses
-Message-ID: <ZJLWvSRevDmdP/Cy@matsya>
-References: <20230615141208.679011-1-rf@opensource.cirrus.com>
+	bard.liao@intel.com
+Subject: Re: [PATCH 3/4] soundwire: extend parameters of
+ new_peripheral_assigned() callback
+Message-ID: <ZJLX/fPM1FbBxM2X@matsya>
+References: <20230531033736.792464-1-yung-chuan.liao@linux.intel.com>
+ <20230531033736.792464-4-yung-chuan.liao@linux.intel.com>
+ <ZIF+G1mbis/lb8Po@matsya>
+ <e07d507e-57bf-a2b7-2ab1-f5f45ff5399b@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230615141208.679011-1-rf@opensource.cirrus.com>
-Message-ID-Hash: IS4ZBHSEJIB65RXWZSDOV74KHYJZNRDP
-X-Message-ID-Hash: IS4ZBHSEJIB65RXWZSDOV74KHYJZNRDP
+In-Reply-To: <e07d507e-57bf-a2b7-2ab1-f5f45ff5399b@linux.intel.com>
+Message-ID-Hash: CPKACE2SSBNRBS62XDSFKGS6E3UZNV5K
+X-Message-ID-Hash: CPKACE2SSBNRBS62XDSFKGS6E3UZNV5K
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IS4ZBHSEJIB65RXWZSDOV74KHYJZNRDP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CPKACE2SSBNRBS62XDSFKGS6E3UZNV5K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,19 +98,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 15-06-23, 15:12, Richard Fitzgerald wrote:
-> Give the bus_lock and msg_lock of each bus a different unique key
-> so that it is possible to acquire the locks of multiple buses
-> without lockdep asserting a possible deadlock.
+On 08-06-23, 08:24, Pierre-Louis Bossart wrote:
 > 
-> Using mutex_init() to initialize a mutex gives all those mutexes
-> the same lock class. Lockdep checking treats it as an error to
-> attempt to take a mutex while already holding a mutex of the same
-> class. This causes a lockdep assert when sdw_acquire_bus_lock()
-> attempts to lock multiple buses, and when do_bank_switch() takes
-> multiple msg_lock.
+> >> -static void generic_new_peripheral_assigned(struct sdw_bus *bus, int dev_num)
+> >> +static void generic_new_peripheral_assigned(struct sdw_bus *bus,
+> >> +					    struct sdw_slave *slave,
+> >> +					    int dev_num)
+> >>  {
+> >>  	struct sdw_cdns *cdns = bus_to_cdns(bus);
+> >>  	struct sdw_intel *sdw = cdns_to_intel(cdns);
+> >> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+> >> index 8a7541ac735e..41a856bedf1e 100644
+> >> --- a/include/linux/soundwire/sdw.h
+> >> +++ b/include/linux/soundwire/sdw.h
+> >> @@ -861,7 +861,9 @@ struct sdw_master_ops {
+> >>  	int (*pre_bank_switch)(struct sdw_bus *bus);
+> >>  	int (*post_bank_switch)(struct sdw_bus *bus);
+> >>  	u32 (*read_ping_status)(struct sdw_bus *bus);
+> >> -	void (*new_peripheral_assigned)(struct sdw_bus *bus, int dev_num);
+> >> +	void (*new_peripheral_assigned)(struct sdw_bus *bus,
+> >> +					struct sdw_slave *slave,
+> > 
+> > maybe better, drop the bus and pass slave (which contains bus)
+> 
+> I kept it for consistency, all callbacks for sdw_master_ops start with
+> the bus parameter.
 
-Applied both, thanks
+That is a valid point, since this is sdw_master_ops() and not slave,
+this looks better
 
 -- 
 ~Vinod
