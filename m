@@ -4,93 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22624EB64DC
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 11:05:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BC1AEB64D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 11:31:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC460852;
-	Wed, 21 Jun 2023 13:04:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC460852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88E7C820;
+	Wed, 21 Jun 2023 13:30:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88E7C820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687345523;
-	bh=ed9fN0NNyIr3+JO+rkQNqfm3g9dsIp7/IpWQrq6ELTk=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=bkXZFax6sd6cE8DNzHKfasi3qvwfU9HJjXtcXkyeppKpAcKXvnht56C/L5H5vfgba
-	 orZTtjvoDtTSqsWOiNZgEBYQ1gKIhgepC5mYhv1ISCVddYxdO2lF34+89SEyWRXFyd
-	 L8uqMaeKbIRzZdRWFW/9DfuBNp+U83Z/tjl+oFmo=
+	s=default; t=1687347091;
+	bh=23TD0+CbVvcoZOlAaMY1cfwdodLuTd6fRSuZyiIaz5M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=R46VOp+TZi0JZYyXBYGAcSDDex487SrAv2Hzrvj1gmaGd6dq9Q+MQPvjFnE5Autqs
+	 JIOOHXcWXbVfAJFiu9I/pN0E8jY9EDQbUw0YMNK+mLxCPFFUH2l1SetKz+H9u/5UX6
+	 0MzUI4sVDQtFhmwt0G4qNNyUK5s7IXmoLQ+fPo2c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B3C9AF80169; Wed, 21 Jun 2023 13:04:32 +0200 (CEST)
+	id 330D8F80093; Wed, 21 Jun 2023 13:30:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 168CBF80141;
-	Wed, 21 Jun 2023 13:04:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B051BF80093;
+	Wed, 21 Jun 2023 13:30:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B93E4F80022; Wed, 21 Jun 2023 13:04:27 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 3EDA1F80141; Wed, 21 Jun 2023 13:30:09 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0A92F80141
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 13:02:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0A92F80141
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4501CF80124
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 13:30:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4501CF80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=w5pN3oHa;
+ header.s=susede2_rsa header.b=RwGjh6XH;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=kwXM8oRt
+ header.s=susede2_ed25519 header.b=yR1nUhot
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 90C9521BA6;
-	Wed, 21 Jun 2023 11:02:43 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 41E251FDD9;
+	Wed, 21 Jun 2023 11:29:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1687345363; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	t=1687346999;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6BHUZ9fQTKfdFvWz70nExMQCtNPIrhf25ykUHDW/N9Y=;
-	b=w5pN3oHaPBRIDWnMs9wT+Zt1MQz2jA1EYyLLAejahciUALWJZTUjhPicwjqbC2iYxu473b
-	azC+1Z8sPHTH5zGNxWEipaPfnN6tDPTxEwTdHMQEZKf3OJ+RS0T45S+RWDA0rfTUShSuAE
-	/T/iAb40RZKeAqtV5V+XPKTEGrjDWRs=
+	bh=2rd1XA/DMAp6AcG8TgHnPbCfk/t/rHdBEBaFpsw7cAg=;
+	b=RwGjh6XH6cvqwzB8V+wCpOx7Y2uqJexUazUi60BZj3gJ8kvBAs6PxtzSxxYPwTASd2/gSJ
+	OowG3XAl1NnyQ/w8iQwCy6S1y2bfCxAVMiMSOj66Bot4IFiQP6gi3TI7YoYWBorENWcHaw
+	pRv4Cn+U+S9QlyQPG/i9GO1EO2+7hgE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1687345363;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=susede2_ed25519; t=1687346999;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6BHUZ9fQTKfdFvWz70nExMQCtNPIrhf25ykUHDW/N9Y=;
-	b=kwXM8oRtLOXdCh2NvfJ93aPzmyPF5ESpONowMbGEfDg4Z5CgBYoiIpwXwgyxZ0wIpaZCtE
-	BY/IQiydbYHmwlDA==
+	bh=2rd1XA/DMAp6AcG8TgHnPbCfk/t/rHdBEBaFpsw7cAg=;
+	b=yR1nUhothHLWxos/73fp1sN7GqUiY0KNjJizWaxUo7otXcFtZEuvQEpiI870YK5h854HpR
+	8BBWKTVx5uFAYbAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 86A4113A66;
-	Wed, 21 Jun 2023 11:02:43 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1C5FE134B1;
+	Wed, 21 Jun 2023 11:29:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id aMs4INPYkmTdHgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 21 Jun 2023 11:02:43 +0000
+	id IXVqBjffkmQuLAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 21 Jun 2023 11:29:59 +0000
+Date: Wed, 21 Jun 2023 13:29:58 +0200
+Message-ID: <87legd59zd.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ALSA: ump: Export snd_ump_receive_ump_val()
-Date: Wed, 21 Jun 2023 13:02:41 +0200
-Message-Id: <20230621110241.4751-4-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230621110241.4751-1-tiwai@suse.de>
-References: <20230621110241.4751-1-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HUD4C4B3JVHNXTZVMXTOUPGS5AWEAMLB
-X-Message-ID-Hash: HUD4C4B3JVHNXTZVMXTOUPGS5AWEAMLB
+To: "Luke D. Jones" <luke@ljones.dev>
+Cc: tiwai@suse.com,
+	perex@perex.cz,
+	sbinding@opensource.cirrus.com,
+	tangmeng@uniontech.com,
+	andy.chi@canonical.com,
+	p.jungkamp@gmx.net,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for ASUS ROG GV601V
+In-Reply-To: <20230621085715.5382-1-luke@ljones.dev>
+References: <20230621085715.5382-1-luke@ljones.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: COZ2DBY32MPEVOK7XW2VHJMJGPGIBQPC
+X-Message-ID-Hash: COZ2DBY32MPEVOK7XW2VHJMJGPGIBQPC
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HUD4C4B3JVHNXTZVMXTOUPGS5AWEAMLB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/COZ2DBY32MPEVOK7XW2VHJMJGPGIBQPC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,60 +119,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This is another preliminary patch for USB MIDI 2.0 gadget driver.
-Export the currently local snd_ump_receive_ump_val().  It can be used
-by the gadget driver for processing the UMP data.
+On Wed, 21 Jun 2023 10:57:15 +0200,
+Luke D. Jones wrote:
+> 
+> Adds the required quirk to enable the Cirrus amp and correct pins
+> on the ASUS ROG GV601V series.
+> 
+> While this works if the related _DSD properties are made available, these
+> aren't included in the ACPI of these laptops (yet).
+> 
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/ump.h |  1 +
- sound/core/ump.c    | 11 ++++++++---
- 2 files changed, 9 insertions(+), 3 deletions(-)
+Applied now.  Thanks.
 
-diff --git a/include/sound/ump.h b/include/sound/ump.h
-index 2f6a9944c6ef..44d2c2fd021d 100644
---- a/include/sound/ump.h
-+++ b/include/sound/ump.h
-@@ -109,6 +109,7 @@ static inline int snd_ump_attach_legacy_rawmidi(struct snd_ump_endpoint *ump,
- }
- #endif
- 
-+int snd_ump_receive_ump_val(struct snd_ump_endpoint *ump, u32 val);
- int snd_ump_switch_protocol(struct snd_ump_endpoint *ump, unsigned int protocol);
- 
- /*
-diff --git a/sound/core/ump.c b/sound/core/ump.c
-index 5e73c9cf5919..5e17351ca984 100644
---- a/sound/core/ump.c
-+++ b/sound/core/ump.c
-@@ -263,12 +263,16 @@ static unsigned char ump_packet_words[0x10] = {
- 	1, 1, 1, 2, 2, 4, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4
- };
- 
--/* parse the UMP packet data;
-- * the data is copied onto ump->input_buf[].
-+/**
-+ * snd_ump_receive_ump_val - parse the UMP packet data
-+ * @ump: UMP endpoint
-+ * @val: UMP packet data
-+ *
-+ * The data is copied onto ump->input_buf[].
-  * When a full packet is completed, returns the number of words (from 1 to 4).
-  * OTOH, if the packet is incomplete, returns 0.
-  */
--static int snd_ump_receive_ump_val(struct snd_ump_endpoint *ump, u32 val)
-+int snd_ump_receive_ump_val(struct snd_ump_endpoint *ump, u32 val)
- {
- 	int words;
- 
-@@ -284,6 +288,7 @@ static int snd_ump_receive_ump_val(struct snd_ump_endpoint *ump, u32 val)
- 	}
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(snd_ump_receive_ump_val);
- 
- /**
-  * snd_ump_receive - transfer UMP packets from the device
--- 
-2.35.3
 
+Takashi
