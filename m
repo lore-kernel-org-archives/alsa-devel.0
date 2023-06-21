@@ -4,88 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7819EB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 11:55:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5E53EB64D8
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 11:57:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C8991CF;
-	Wed, 21 Jun 2023 13:54:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C8991CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22ADF82B;
+	Wed, 21 Jun 2023 13:56:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22ADF82B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687348505;
-	bh=N/Ozz1SWcSYIwUSTA3fKiHIcowjVH0MJQ16D65rqdl0=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=oYq7UOjXWQSxQ0Yts5ZI0H0F39fj19Wdo45brBw9k13uaVaYP2c4l8U+uksQSyIEH
-	 PDLfYZ7IuqfA5o45qMSdLdo+5BLISJ5EnmqJD9L8zB4penXcr7lj7xObTkKD+CVncJ
-	 tOfEq56Vr13wtPme1s4hMT8Vq+xpU4u0ZAyHt0tg=
+	s=default; t=1687348656;
+	bh=7QBHZaWGpgML3bccn9yBAWgsyF73qca2uv8Bv8Cwr00=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=QELbg8z8UNDofw39nSeA3hQB2C/iTQZZY3FVtc/ccNTZLfmb9haKGRjxVHoq4FqVy
+	 ArhiNVJd8TCeXZmMLfgitnq+Sp8bsyflVDFxfdFjF5AhsSlp8MOylERfp1YHrzqOp+
+	 jJXOu22FESJbZ4mc8upxkoUUKHyd7RbXnr318r4M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5B91F80169; Wed, 21 Jun 2023 13:53:51 +0200 (CEST)
+	id 9C133F80169; Wed, 21 Jun 2023 13:56:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A729DF80141;
-	Wed, 21 Jun 2023 13:53:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F4F6F80141;
+	Wed, 21 Jun 2023 13:56:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4367F80141; Wed, 21 Jun 2023 13:53:46 +0200 (CEST)
-Received: from smtpng1.i.mail.ru (smtpng1.i.mail.ru [94.100.181.251])
+	id 1B197F80141; Wed, 21 Jun 2023 13:56:20 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1A023F80093
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 13:53:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A023F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id C2A4CF80124
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 13:56:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2A4CF80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=inbox.ru header.i=@inbox.ru header.a=rsa-sha256
- header.s=mail4 header.b=Qh981oAE
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru;
- s=mail4;
-	h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc;
- bh=Dt0Pfw4hhB64UidxR15sPo8nXNsoSpkcj1h2rZuo8hk=;
-	t=1687348423;x=1687438423;
-	b=Qh981oAENONIOfSqU4A5/6Bb2jFxpt5X53BeVvyA+n2KCrPpyxADdBBYjRo7+evg9ES8RVzmWkuZ6wrCwJtzsh1CkZxEPNT5lSq566GE1nLF549TcR1C04DjIuEshqV2IV4xubEYHZbZUl+x3QdLvI8xS3RxB9PhQ87whRE4PVpq0L/YzZQsz+NmqUeAs05Uf5paLmX7PxtXquMSgZ5OJ5pMYo5PaJI9r5yIziZaG6ZfVwh6y18rwI/TbhXhENovCtiWNQ1Wha2d2zbGX+rKOtkzkZMQuh2qC77yDpXfJu3O8bnMsxgOQmCHfberhx3ap46rnncPtMugHIxiHoWTRA==;
-Received: by smtpng1.m.smailru.net with esmtpa (envelope-from
- <fido_max@inbox.ru>)
-	id 1qBwP5-0000gW-SZ; Wed, 21 Jun 2023 14:53:40 +0300
-From: Maxim Kochetkov <fido_max@inbox.ru>
-To: alsa-devel@alsa-project.org
-Cc: Maxim Kochetkov <fido_max@inbox.ru>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Claudiu Beznea <claudiu.beznea@microchip.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] ASoC: codecs: max98090: Allow dsp_a mode
-Date: Wed, 21 Jun 2023 14:53:27 +0300
-Message-Id: <20230621115328.156457-1-fido_max@inbox.ru>
-X-Mailer: git-send-email 2.40.1
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=bu10ImQ9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687348577; x=1718884577;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7QBHZaWGpgML3bccn9yBAWgsyF73qca2uv8Bv8Cwr00=;
+  b=bu10ImQ9I+Q0hbPfXi4FsI9Cv7xywOnPHoaHiA0MhDmToW6zXUS1QvVs
+   luCluBUhGCUnVRKNDgA+5TG977hdr7J07f+am0ACCMy0MtcUSn50rAsox
+   +V5YbFV16vib1FjiQAoNMBbK6lUlhM4uGtadCgmkfrrRQFVprqJOfk3Pp
+   2ofXGPbz3nYQVa4gvUwkfRssffEeb9GIZdw/EU6Xg2vyDl/U4k7mIhh1k
+   UfMHx0AFU+CSaxTBrktkeH0mi/MqhBT89Rp3FfnLX+anG2TMCg2o7IYCE
+   8nfWsywbL/OIDuxL7qpdLnpRxC95T/HqeKCZvsOXioJiAChI3euJ7ezqv
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="349880692"
+X-IronPort-AV: E=Sophos;i="6.00,260,1681196400";
+   d="scan'208";a="349880692"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Jun 2023 04:56:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10747"; a="714451259"
+X-IronPort-AV: E=Sophos;i="6.00,260,1681196400";
+   d="scan'208";a="714451259"
+Received: from taoki-mobl1.gar.corp.intel.com (HELO [10.254.114.157])
+ ([10.254.114.157])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Jun 2023 04:56:04 -0700
+Message-ID: <e098e8a9-533b-319e-ea0c-24af28714471@linux.intel.com>
+Date: Wed, 21 Jun 2023 13:28:42 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtpng1.m.smailru.net;
- auth=pass smtp.auth=fido_max@inbox.ru smtp.mailfrom=fido_max@inbox.ru
-X-Mailru-Src: smtp
-X-7564579A: 646B95376F6C166E
-X-77F55803: 
- 4F1203BC0FB41BD95D99986233CC4DDC4468B86CD3C8787546E8D189E2EBE9EA182A05F53808504070B069C72436E1D2D5A4E71BD025E4125047B1DA41A3FADE443584DC68319CB8
-X-7FA49CB5: 
- FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7A140E7B1D51EB231EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006374D0D183F14C070BA8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D83712544A9697989658D127D5918B20866F9789CCF6C18C3F8528715B7D10C86859CC434672EE6371117882F4460429724CE54428C33FAD305F5C1EE8F4F765FC3A703B70628EAD7BA471835C12D1D9774AD6D5ED66289B52BA9C0B312567BB23117882F4460429728776938767073520C24E1E72F37C03A0CB629EEF1311BF91D2E47CDBA5A96583BA9C0B312567BB231DD303D21008E29813377AFFFEAFD269A417C69337E82CC2E827F84554CEF50127C277FBC8AE2E8BA83251EDC214901ED5E8D9A59859A8B67393CE827C55B5F775ECD9A6C639B01B4E70A05D1297E1BBCB5012B2E24CD356
-X-C1DE0DAB: 
- 0D63561A33F958A53ED0F0D15519928FD04AAF18DCFED2499590945C3EDE3FF3F87CCE6106E1FC07E67D4AC08A07B9B0A6C7FFFE744CA7FB9C5DF10A05D560A950611B66E3DA6D700B0A020F03D25A0997E3FB2386030E77
-X-C8649E89: 
- 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF874C60ACDD5FE242F57F3AD3431D0F7AB6867A931EA55A5E929DFB5A80A42D569B332213384B5353C17492877F82D9B86CE4D2ACC560A8F38AAD56CD3798406E04DA52CF61C1B8024C41F94D744909CEE921556F0E976A29E6EC0772259F8F8F8815B87D7EC76CB9
-X-D57D3AED: 
- 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojw7uTMtz3/lzKbCaM7tQQkw==
-X-Mailru-Sender: 
- 689FA8AB762F73930F533AC2B33E986B42AF639ED9E053B675404323CF2E7D5998CC072019C18A892CA7F8C7C9492E1F2F5E575105D0B01ADBE2EF17B331888EEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
-Message-ID-Hash: PCJY36FCJBNMTVR76Y2TU3FOQ7AZWH4F
-X-Message-ID-Hash: PCJY36FCJBNMTVR76Y2TU3FOQ7AZWH4F
-X-MailFrom: fido_max@inbox.ru
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+Subject: Re: [PATCH 2/4] soundwire: introduce SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY
+Content-Language: en-US
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, bard.liao@intel.com
+References: <20230531033736.792464-1-yung-chuan.liao@linux.intel.com>
+ <20230531033736.792464-3-yung-chuan.liao@linux.intel.com>
+ <ZIF94vZHzeGXfyin@matsya>
+ <6c75e986-29a4-d97c-3862-d20397f8b8b4@linux.intel.com>
+ <ZJLYQCwvvIwEj47H@matsya>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <ZJLYQCwvvIwEj47H@matsya>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: GATSIR5BFU4Y7YNPSVMRRPK5IW6NTUCM
+X-Message-ID-Hash: GATSIR5BFU4Y7YNPSVMRRPK5IW6NTUCM
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PCJY36FCJBNMTVR76Y2TU3FOQ7AZWH4F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GATSIR5BFU4Y7YNPSVMRRPK5IW6NTUCM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,26 +107,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-TDM mode for max98090 is dsp_a compatible. So allow it.
 
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
----
- sound/soc/codecs/max98090.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>>> This seems to be a consequence of Intel hardware decisions, so I guess
+>>> best suited place for this is Intel controller, do we really want to
+>>> have this in core logic?
+>>
+>> It's a valid objection.
+>>
+>> The reason why I added the alternate strategies in the core logic is
+>> that the IDA and hybrid approach are just software-based with no
+>> specific hardware dependencies. If QCOM or AMD wanted to use the
+>> strategies contributed and tested by Intel, it'd be a two-line change on
+>> their side.
+>>
+>> That said, it's likely that at some point *someone* will want to
+>> constrain the device number allocation further, be it with ACPI/DT
+>> properties or reading hardware registers. The device number is a
+>> de-facto priority given the way we scan the PING frames, so some systems
+>> may want to give a higher priority to a specific peripherals.
+>>
+>> This would push us to add a master ops callback to control the device
+>> number allocation. It's a bit invasive but that would give the ultimate
+>> flexibility. Reuse between vendors could be possible if 'generic'
+>> callbacks were part of a library to pick from.
+>>
+>> I don't really have any objections if this vendor-specific callback was
+>> preferred, it may be a bit early to add this but long-term it's probably
+>> what makes more sense.
+>>
+>> I'll go with the flow on suggested recommendations.
+> 
+> Thanks, if it all one of the other two controller start using this, it
+> would make sense to move it to core then, for now would be better to
+> have this in specific driver
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 7bc463910d4f..403926254c84 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -1635,7 +1635,7 @@ static int max98090_dai_set_fmt(struct snd_soc_dai *codec_dai,
- 			regval |= M98090_RJ_MASK;
- 			break;
- 		case SND_SOC_DAIFMT_DSP_A:
--			/* Not supported mode */
-+			break;
- 		default:
- 			dev_err(component->dev, "DAI format unsupported");
- 			return -EINVAL;
--- 
-2.40.1
+The code is much cleaner indeed that way.
 
+I still have to work on a race condition if the codec driver probe
+happens *after* the enumeration. In that case, the properties needed to
+decide which allocation to use are not initialized yet.
+
+We may need to either force the codec to re-enumerate with a ForceReset,
+or to switch the device number. In theory the latter is straightforward
+but there can be additional races if there are interrupts thrown just
+before the device number change happens.
