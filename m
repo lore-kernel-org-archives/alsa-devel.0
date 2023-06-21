@@ -4,78 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A666EB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 11:01:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 513E8EB64D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 11:04:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 915B2846;
-	Wed, 21 Jun 2023 13:00:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 915B2846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70E0B832;
+	Wed, 21 Jun 2023 13:03:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70E0B832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687345281;
-	bh=lXzszQD+zptu3Dhn+zgRvR6h6mdmH5naNO55GH7WfQE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=tRWG9dcUzcwmJXAR5tbkdcpcU9gMquPVU5l4hXKj8AI2spxHh/Q9t7PKeAniN88DM
-	 F63gmXJasPhC/Ox2bIQfUsJpSe9Wg+2rIw+ggL9GckCATRsTEVMBe00nqLdZQpwloU
-	 klEJDl6wYRGPgu6qPAeq7dHkC3rYcfVmMEyZYMhA=
+	s=default; t=1687345447;
+	bh=j3ypb7FoZ+Hj3q0HXMuEFm0gbOUhPy66C7XhrUcvb+s=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=FQROIaH8S88CUGTVuzYmC2t0smtzqFj3/h0Mk6zb9zoZCoJWjc19sW76cLpVwqGpm
+	 BDzudXlqM3xF+4MPI+AGv9XwXHsq7Mz/xj+WHgMrAtfYRsRuy7R2d7jatR3OgBcgnI
+	 BpDbPUKP0xXr2PuV+HJICR0wnQXPL+BjCL4WwVBo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1599BF80141; Wed, 21 Jun 2023 13:00:30 +0200 (CEST)
+	id DAFCCF80163; Wed, 21 Jun 2023 13:02:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67A6FF80022;
-	Wed, 21 Jun 2023 13:00:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4563EF80022;
+	Wed, 21 Jun 2023 13:02:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C718CF80141; Wed, 21 Jun 2023 13:00:26 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id B8E81F801D5; Wed, 21 Jun 2023 13:02:46 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 21D4CF80093
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 13:00:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21D4CF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id EC087F80132
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 13:02:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC087F80132
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ezCkDl0d
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=nN8BIVkl;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=rIMcWGFI
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 59265614C0;
-	Wed, 21 Jun 2023 11:00:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32E96C433C0;
-	Wed, 21 Jun 2023 11:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687345220;
-	bh=lXzszQD+zptu3Dhn+zgRvR6h6mdmH5naNO55GH7WfQE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ezCkDl0dShEAojqKiOZZfJIfIyZOWQ4bsdnFsAMM5buRpqn30urYYfa7ZZ81l8woq
-	 /X8xYwAtPkZv+W4eJOQA4XUplnt3BPQFC+BYkTPLxDnf7VdtJGSikuEIwgHA7PBPUV
-	 FRgKH8Oam///jNZmSJx6sdOasO7dlTnSnG8rX+3ek6z6VZXNJCb9nCegCHQfNErx2r
-	 mEqs1E6CYixsXgnXFSr/VDxY3pdvg75IGMzqztq2EYRKzSt9sGIimbK8DEn1/ZiLPY
-	 4eOgmJcwjhXqjGojAbqRy4Y0j8376fnrMKTpwSUVnUZoZxXitZM2vA27mx5SdKLuF+
-	 f0jTzRcdOYqmw==
-Date: Wed, 21 Jun 2023 16:30:16 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	bard.liao@intel.com
-Subject: Re: [PATCH 2/4] soundwire: introduce SDW_DEV_NUM_ALLOC_IDA_WAKE_ONLY
-Message-ID: <ZJLYQCwvvIwEj47H@matsya>
-References: <20230531033736.792464-1-yung-chuan.liao@linux.intel.com>
- <20230531033736.792464-3-yung-chuan.liao@linux.intel.com>
- <ZIF94vZHzeGXfyin@matsya>
- <6c75e986-29a4-d97c-3862-d20397f8b8b4@linux.intel.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7E07A1FDBC;
+	Wed, 21 Jun 2023 11:02:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1687345363; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CTK+LG8EY7gjDGXzlfTmo8KKpl89b9MC0vtmWoX81VE=;
+	b=nN8BIVklLO6dE3FVzIR6pi1EAabdz9Pd+2uZfK55n+uihaiIMSk8wlAaZkSrFOYBFpct5o
+	GBVEKu18tW3DuNFNHV0oNx61r6oakXQhzPZ9ynm7ribH3blhCVUcd6kw76/ETWngMBg7zH
+	GuC4hiRfj7YJfugVfWWUZ55MfF8K/mY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1687345363;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CTK+LG8EY7gjDGXzlfTmo8KKpl89b9MC0vtmWoX81VE=;
+	b=rIMcWGFI7NvxwHVAscbFkTKFa0Z28wn4Bm3piy/oxx3eo7TmNf5heVlfnb+HPy38dHWFm0
+	DfFncHKP51zoD3Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 739BE13A66;
+	Wed, 21 Jun 2023 11:02:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id +IrFG9PYkmTdHgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 21 Jun 2023 11:02:43 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/3] ALSA: ump: Add helper to change MIDI protocol
+Date: Wed, 21 Jun 2023 13:02:39 +0200
+Message-Id: <20230621110241.4751-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230621110241.4751-1-tiwai@suse.de>
+References: <20230621110241.4751-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6c75e986-29a4-d97c-3862-d20397f8b8b4@linux.intel.com>
-Message-ID-Hash: P3W6T5AUZZK7YFS3SVCCMZQH3WWRDLR3
-X-Message-ID-Hash: P3W6T5AUZZK7YFS3SVCCMZQH3WWRDLR3
-X-MailFrom: vkoul@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: P73DTII23USBBXK7BQCRUPXBYKIAG62Q
+X-Message-ID-Hash: P73DTII23USBBXK7BQCRUPXBYKIAG62Q
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P3W6T5AUZZK7YFS3SVCCMZQH3WWRDLR3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P73DTII23USBBXK7BQCRUPXBYKIAG62Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,60 +112,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 08-06-23, 10:09, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 6/8/23 02:06, Vinod Koul wrote:
-> > On 31-05-23, 11:37, Bard Liao wrote:
-> >> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> >>
-> >> This patch adds a new Device Number allocation strategy, with the IDA
-> >> used only for devices that are wake-capable.
-> >>
-> >> "regular" devices such as amplifiers will use Device Numbers
-> >> [1..min_ida-1].
-> >>
-> >> "wake-capable" devices such as jack or microphone codecs will use
-> >> Device Numbers [min_ida..11].
-> >>
-> >> This hybrid strategy extends the number of supported devices in a
-> >> system by only constraining the allocation if required, e.g. in the
-> >> case of Intel LunarLake platforms the wake-capable devices are
-> >> required to have a unique address to use the HDaudio SDI and HDAudio
-> >> WAKEEN/WAKESTS registers.
-> > 
-> > This seems to be a consequence of Intel hardware decisions, so I guess
-> > best suited place for this is Intel controller, do we really want to
-> > have this in core logic?
-> 
-> It's a valid objection.
-> 
-> The reason why I added the alternate strategies in the core logic is
-> that the IDA and hybrid approach are just software-based with no
-> specific hardware dependencies. If QCOM or AMD wanted to use the
-> strategies contributed and tested by Intel, it'd be a two-line change on
-> their side.
-> 
-> That said, it's likely that at some point *someone* will want to
-> constrain the device number allocation further, be it with ACPI/DT
-> properties or reading hardware registers. The device number is a
-> de-facto priority given the way we scan the PING frames, so some systems
-> may want to give a higher priority to a specific peripherals.
-> 
-> This would push us to add a master ops callback to control the device
-> number allocation. It's a bit invasive but that would give the ultimate
-> flexibility. Reuse between vendors could be possible if 'generic'
-> callbacks were part of a library to pick from.
-> 
-> I don't really have any objections if this vendor-specific callback was
-> preferred, it may be a bit early to add this but long-term it's probably
-> what makes more sense.
-> 
-> I'll go with the flow on suggested recommendations.
+This is a preliminary patch for MIDI 2.0 USB gadget driver.
+Export a new helper to allow changing the current MIDI protocol from
+the outside.
 
-Thanks, if it all one of the other two controller start using this, it
-would make sense to move it to core then, for now would be better to
-have this in specific driver
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/ump.h |  2 ++
+ sound/core/ump.c    | 31 ++++++++++++++++++++++++-------
+ 2 files changed, 26 insertions(+), 7 deletions(-)
 
+diff --git a/include/sound/ump.h b/include/sound/ump.h
+index 68478e7be3b4..3c7e67475676 100644
+--- a/include/sound/ump.h
++++ b/include/sound/ump.h
+@@ -108,6 +108,8 @@ static inline int snd_ump_attach_legacy_rawmidi(struct snd_ump_endpoint *ump,
+ }
+ #endif
+ 
++int snd_ump_switch_protocol(struct snd_ump_endpoint *ump, unsigned int protocol);
++
+ /*
+  * Some definitions for UMP
+  */
+diff --git a/sound/core/ump.c b/sound/core/ump.c
+index a64dc2d8a129..4150b9c0b35b 100644
+--- a/sound/core/ump.c
++++ b/sound/core/ump.c
+@@ -671,18 +671,35 @@ static void seq_notify_protocol(struct snd_ump_endpoint *ump)
+ #endif /* CONFIG_SND_SEQUENCER */
+ }
+ 
++/**
++ * snd_ump_switch_protocol - switch MIDI protocol
++ * @ump: UMP endpoint
++ * @protocol: protocol to switch to
++ *
++ * Returns 1 if the protocol is actually switched, 0 if unchanged
++ */
++int snd_ump_switch_protocol(struct snd_ump_endpoint *ump, unsigned int protocol)
++{
++	protocol &= ump->info.protocol_caps;
++	if (protocol == ump->info.protocol)
++		return 0;
++
++	ump->info.protocol = protocol;
++	ump_dbg(ump, "New protocol = %x (caps = %x)\n",
++		protocol, ump->info.protocol_caps);
++	seq_notify_protocol(ump);
++	return 1;
++}
++EXPORT_SYMBOL_GPL(snd_ump_switch_protocol);
++
+ /* handle EP stream config message; update the UMP protocol */
+ static int ump_handle_stream_cfg_msg(struct snd_ump_endpoint *ump,
+ 				     const union snd_ump_stream_msg *buf)
+ {
+-	unsigned int old_protocol = ump->info.protocol;
+-
+-	ump->info.protocol =
++	unsigned int protocol =
+ 		(buf->stream_cfg.protocol << 8) | buf->stream_cfg.jrts;
+-	ump_dbg(ump, "Current protocol = %x (caps = %x)\n",
+-		ump->info.protocol, ump->info.protocol_caps);
+-	if (ump->parsed && ump->info.protocol != old_protocol)
+-		seq_notify_protocol(ump);
++
++	snd_ump_switch_protocol(ump, protocol);
+ 	return 1; /* finished */
+ }
+ 
 -- 
-~Vinod
+2.35.3
+
