@@ -4,85 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCEEFEB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 09:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 972F9EB64D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 10:06:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 594EE1EF;
-	Wed, 21 Jun 2023 11:53:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 594EE1EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FD5C1EF;
+	Wed, 21 Jun 2023 12:05:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FD5C1EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687341256;
-	bh=HjDAudkKipQLczGA3Z+Xcf4LUnUH5z5iQaIO41AWYto=;
+	s=default; t=1687341972;
+	bh=TkhnU2iO60KxroaUzwi5K/9HVKzmC+S3U1Gmy9jPOLM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KJihcys4lClsktKH49YFyS5xnNQxXR4vW/ObxNbkGzQZtCdy+iiGrhdTofUG8FZtq
-	 5gPsAgTpq3EDKYQamTpgSOiv8fp2r8B27ODpKTW3ZcaKMo4J6xLQ2gyiqVYWEMnAPr
-	 drh+ZrozOwLq+0p6xhPg3IMY/QreQ/o9Gzw1cbFg=
+	b=asUAv2EJP1D1E8YKspMmL/uVk7eP0KVrZRacQdybiyiEQ+PW1B0x6xQvZDRRFBl1b
+	 ukjNx2eDDZVmRsAntjJhceqPyNGgykH0lpii10sltUN81WIK8863P+Eqb/4SeFyB0t
+	 T6wiyFYk705wxL49sP+Y2TH+c5e6FZI8rWcIoG28=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68B88F80093; Wed, 21 Jun 2023 11:53:00 +0200 (CEST)
+	id BCFD1F80169; Wed, 21 Jun 2023 12:04:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C275FF80141;
-	Wed, 21 Jun 2023 11:53:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5244BF80141;
+	Wed, 21 Jun 2023 12:04:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 52BF3F80141; Wed, 21 Jun 2023 11:52:57 +0200 (CEST)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+	id 09294F80141; Wed, 21 Jun 2023 12:04:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 08D8FF80124
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 11:52:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08D8FF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id A5F5FF80124
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 12:04:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5F5FF80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=e4nqUfiW
-Received: from [IPV6:2001:b07:2ed:14ed:c5f8:7372:f042:90a2] (unknown
- [IPv6:2001:b07:2ed:14ed:c5f8:7372:f042:90a2])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ZZpmaVLM
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 1FB486606F73;
-	Wed, 21 Jun 2023 10:52:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1687341170;
-	bh=HjDAudkKipQLczGA3Z+Xcf4LUnUH5z5iQaIO41AWYto=;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 224706150F;
+	Wed, 21 Jun 2023 10:04:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55E2DC433C8;
+	Wed, 21 Jun 2023 10:04:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1687341885;
+	bh=TkhnU2iO60KxroaUzwi5K/9HVKzmC+S3U1Gmy9jPOLM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=e4nqUfiWPdOPILSnlwY/fnUauQ1CgUSbBk904O3wxRq8jufIdx8Se0MUH8zg2LTa6
-	 F07saruQacith8Q7T55AI+b2nspXoX4g5eiOtdk4qrDdC74qOcbephNt7p/2ryX5ci
-	 Cfu5P9NI2QgrEEyVHqPZzrz85w5mjlqirx3nGX3iv1QWwizOKwo6LV08oTaWT6+JfS
-	 3jwuzOq7ILskZxpSV6FUQ7JgX7lPuOdjkAQck2+rRDKqhjHH3e2xAdWRVb2IcdY+NN
-	 PhbzBizMVGXgFDHl+evY1+z4mECWBOFGqWcr+qyAW74O7oHu+3yxRxc7G2kvZTEM6R
-	 gQZSyraCMBQfQ==
-Message-ID: <d26ea42b-5749-bf08-997b-4a3b6062aed4@collabora.com>
-Date: Wed, 21 Jun 2023 11:52:48 +0200
+	b=ZZpmaVLMIM+bIiN8ius4k8PHeJAeZ9L4HLOFFQ306hpR9kansM1W6V6lKaCHKvBn/
+	 BqrO3sZ4eHvHTM5fM8QL+BE0CHRJ5DQOnXPn4+B07ZFENZZOZ/Fw9h5SVMo4ouIFDk
+	 zh+Dm0BeKBW+PsZjyiehEme1yMbTorEm6iP1SpfKocUjvmq6LfYLENtA6shG1zTHaC
+	 VaWcUVF/RlcnOiTCh5SO/wEVRqChL3cZKREkdi8uQvS73FP6w8uHF7IVXw8XnHt+zp
+	 wUNyB3Qa/QoVDAgoBbTUeh7ZBCanLzeBflXfzSLRZMk5UN7IWahnS5Mw8pePsucmUH
+	 NQiBxE7qlAooA==
+Message-ID: <7875a8c3-0ea6-d725-1dd1-bad42f089e80@kernel.org>
+Date: Wed, 21 Jun 2023 12:04:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH 1/2] kselftest/alsa: pcm-test: Move stream duration and
- margin to variables
-Content-Language: en-US
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+Subject: Re: [PATCH 13/14] ASoC: dt-bindings: renesas,rsnd.yaml: add common
+ port-def
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Mark Brown <broonie@kernel.org>
-Cc: kernel@collabora.com, Jaroslav Kysela <perex@perex.cz>,
- Shuah Khan <shuah@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20230620220839.2215057-1-nfraprado@collabora.com>
- <20230620220839.2215057-2-nfraprado@collabora.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230620220839.2215057-2-nfraprado@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MFJITQVAX6QOZHV6QIIR27ZWVUZ6LWPE
-X-Message-ID-Hash: MFJITQVAX6QOZHV6QIIR27ZWVUZ6LWPE
-X-MailFrom: angelogioacchino.delregno@collabora.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+References: <87r0q5blta.wl-kuninori.morimoto.gx@renesas.com>
+ <878rcdblq9.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <878rcdblq9.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 4V7LC6CCKGL4QMC5WMLAULZJKDJCMCBM
+X-Message-ID-Hash: 4V7LC6CCKGL4QMC5WMLAULZJKDJCMCBM
+X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -94,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MFJITQVAX6QOZHV6QIIR27ZWVUZ6LWPE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4V7LC6CCKGL4QMC5WMLAULZJKDJCMCBM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,13 +99,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Il 21/06/23 00:08, Nícolas F. R. A. Prado ha scritto:
-> The duration to stream for and time margin to consider the stream failed
-> are currently hardcoded values. Move them to variables so they can be
-> reused and more easily changed.
+On 21/06/2023 04:19, Kuninori Morimoto wrote:
+> renesas,rsnd uses both "ports" has "port", and these are very similar.
+> To avoid duplicated definitions, this patch adds common port-def.
 > 
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC.  It might happen, that command when run on an older
+kernel, gives you outdated entries.  Therefore please be sure you base
+your patches on recent Linux kernel.
+
+You missed at least DT list (maybe more), so this won't be tested by our
+tools. Performing review on untested code might be a waste of time, thus
+I will skip this patch entirely till you follow the process allowing the
+patch to be tested.
+
+Please kindly resend and include all necessary To/Cc entries.
+
+Best regards,
+Krzysztof
 
