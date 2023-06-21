@@ -4,80 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8DF4EB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 13:10:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42E13EB64D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Jun 2023 13:20:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C32C682B;
-	Wed, 21 Jun 2023 15:09:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C32C682B
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCF98822;
+	Wed, 21 Jun 2023 15:19:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCF98822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687353014;
-	bh=8rei6Srdj2hOeoUrA3FxQyYSVAkO4eKByya+vrCiMow=;
+	s=default; t=1687353606;
+	bh=fNzgBv3S6Z9XVyqQGOlHUKzzBC7T0ZKsC6puwES5pQA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lYl+LsX/T1icKU7Pcmdv7zNdjU+OeGfSy/XQIW+QNVSrrvBBz0lwRonRYl4pqCKmu
-	 nh5T4Wh2ik+0wr3qeIS/9uNbzSBVhQOq/idZTf32fh6+a6fqbVZFRWVwdTRAxoPRuH
-	 IhqLPyfaG17ue2cR3z7icXNVK7JAQ9dK67n/xqJc=
+	b=BaY30JiQS+zfTlqM4UoN4l3Zv6a+hFimoDIGpOCxLCpwF8so3aueMULXhRMrveV5w
+	 ol49OGCgmSG6RxmXIqtatF5VWbMpsLetySZ21KDvbPNS5iXD4U/L69s25Qayi/FFop
+	 te4p4IEs0JNnIZZ0ahItbT68Gct1biewRKxDY+o8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B497CF80093; Wed, 21 Jun 2023 15:08:57 +0200 (CEST)
+	id 9DD10F8051E; Wed, 21 Jun 2023 15:18:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44848F80141;
-	Wed, 21 Jun 2023 15:08:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A86EF80141;
+	Wed, 21 Jun 2023 15:18:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06299F80141; Wed, 21 Jun 2023 15:08:54 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 33305F80141; Wed, 21 Jun 2023 15:18:44 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 69351F80093
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 15:08:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69351F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8370AF80093
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2023 15:18:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8370AF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Jzdbg3X7
+ header.s=k20201202 header.b=UzLCHXo4
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 35F0C61480;
-	Wed, 21 Jun 2023 13:08:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76F99C433C8;
-	Wed, 21 Jun 2023 13:08:43 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4AC5861478;
+	Wed, 21 Jun 2023 13:18:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BBDDC433C8;
+	Wed, 21 Jun 2023 13:18:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687352925;
-	bh=8rei6Srdj2hOeoUrA3FxQyYSVAkO4eKByya+vrCiMow=;
+	s=k20201202; t=1687353518;
+	bh=fNzgBv3S6Z9XVyqQGOlHUKzzBC7T0ZKsC6puwES5pQA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Jzdbg3X7R2R5aA3l8Bd5J468BcoyvZBbSNoW5z+bFd+uFHYr1hhHbrrbcXsJlunb6
-	 RRtpi5CAMalVtBG9vvSqM6C5QpMzt7OdwQIcW2TO3CSc+L/uHJDuOaJqKvYwFhBd57
-	 2SSve45pWiVdVg6dY8nlQNVJ9ktQDejU8ZmG5VqnOR5pOIIU99tEYhg9A8RncBiNmd
-	 UsqW95s+2dzAa61gQ8bB0RFNUCnZNkvXKvi1YNf+X8FW/YRSxSgNZQn4Et8139Rn1l
-	 rGoMll5XO4YOTdPbpbBdZSkcqEf7e9jCXwNlIyrcbOO/VeqQt4v1WalbRl4ud0xEAh
-	 bwiFENJzWPQTg==
-Date: Wed, 21 Jun 2023 14:08:40 +0100
+	b=UzLCHXo4e0aRFNPwG0rKmRZ9TVR7a7NN1lkXVYfd9yPfJU1E6Lg07Ar/4It34XzUV
+	 g1835P2QVlAfUwL/EBQCqVeHkbXhGjyBlNGwelfSACYHzwFy7Lm3FcRlI4LPZHbVw/
+	 E4aNvkzIJw9G3i9pY7BeuvjkXaqbqeJ6d1sfQR2qae8hDac/kQ4ZFDvTvaQg0vGn95
+	 VTI/6/hHSiSDkYDP1YsdFRlzRboP3tpT06MS7rsrYtruEacD4hMjGcSJdwTxOVrQ0c
+	 cFyvNY2pMQYoYxp7zeKAFsm13UEUxM3+4dwcBkSvvtm62vhXe2q8hYCrE6ECimHnei
+	 a+dbmUfZ74W0Q==
+Date: Wed, 21 Jun 2023 14:18:32 +0100
 From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
-Cc: kernel@collabora.com,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Jaroslav Kysela <perex@perex.cz>, Shuah Khan <shuah@kernel.org>,
-	Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/2] kselftest/alsa: pcm-test: Decrease stream duration
- from 4 to 2 seconds
-Message-ID: <33bea0d3-b8dd-4936-812e-392166df4437@sirena.org.uk>
-References: <20230620220839.2215057-1-nfraprado@collabora.com>
- <20230620220839.2215057-3-nfraprado@collabora.com>
+To: Maxim Kochetkov <fido_max@inbox.ru>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] ASoC: codecs: max98090: Allow dsp_a mode
+Message-ID: <b763d08e-f751-480c-96b6-339a53856768@sirena.org.uk>
+References: <20230621115328.156457-1-fido_max@inbox.ru>
+ <3805dc65-113f-453a-90a9-2ae6204004ba@sirena.org.uk>
+ <e6be75f6-054f-6c3b-00b4-a5e112bcefc3@inbox.ru>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XuUu5UqlTitESjDI"
+	protocol="application/pgp-signature"; boundary="7uVBzkQ09VJrlG8A"
 Content-Disposition: inline
-In-Reply-To: <20230620220839.2215057-3-nfraprado@collabora.com>
+In-Reply-To: <e6be75f6-054f-6c3b-00b4-a5e112bcefc3@inbox.ru>
 X-Cookie: When among apes, one must play the ape.
-Message-ID-Hash: LY4O5BLZI7WJ3Y5SFM73BSFLBES4QGMU
-X-Message-ID-Hash: LY4O5BLZI7WJ3Y5SFM73BSFLBES4QGMU
+Message-ID-Hash: NT6HIVKHM76LT75V4USJOKJH3VL354AG
+X-Message-ID-Hash: NT6HIVKHM76LT75V4USJOKJH3VL354AG
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LY4O5BLZI7WJ3Y5SFM73BSFLBES4QGMU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NT6HIVKHM76LT75V4USJOKJH3VL354AG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,40 +105,40 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---XuUu5UqlTitESjDI
-Content-Type: text/plain; charset=iso-8859-1
+--7uVBzkQ09VJrlG8A
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 20, 2023 at 06:08:26PM -0400, N=EDcolas F. R. A. Prado wrote:
+On Wed, Jun 21, 2023 at 04:02:34PM +0300, Maxim Kochetkov wrote:
+> On 21.06.2023 15:26, Mark Brown wrote:
 
-> -	const int duration_s =3D 4, margin_ms =3D 100;
-> +	const int duration_s =3D 2, margin_ms =3D 100;
+> > This is configuring DSP A identically to left justified mode, it looks
+> > like the format configuration needs at least some interlock with the TDM
+> > configuration.
 
-This doesn't scale the margin with the duration which will affect the
-sensitivity of the test to misclocking.  It should make it less
-sensitive which is *probably* safer but at least worth noting.
+> According to datasheet MAX98090 supports only DSP_A (L data MSB after FRM
+> LRC) TDM mode. Allowing this mode will let us proper configure CPU audio
+> node via DT. Actual TDM mode activation is performed in
+> max98090_set_tdm_slot() via M98090_REG_TDM_FORMAT/M98090_REG_TDM_CONTROL
+> registers.
 
-We might also have issues with some of the lower sample rates, IIRC some
-devices are constrained in ways that mean they want a minimum buffer
-size which is harder to satisfy with very short playbacks and low sample
-rates.
+I'm saying there should be some interlock between these two settings, if
+nothing else setting DSP A mode should force TDM mode with automatically
+configured slot sizes.
 
-I don't know why Jaroslav picked the 4s number here.
-
---XuUu5UqlTitESjDI
+--7uVBzkQ09VJrlG8A
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSS9lcACgkQJNaLcl1U
-h9DvRQf/Sa8yVLTUhx/xI7Go5M1j3MnEnA2L8Kol2HP04viW/HKYX9nikxkUgxKI
-30UMmR4G03BqyUEpOcDV2fxkvkeHCJXpvC9fRR16FWeTQbSFb/RNXMDxiP5tQa90
-DG/qLbm2FEoOgPYARMmqwI/E1610i63eSnsj0toP87QQxGc4H8XRL1HH7u3/tl5D
-BhFVvN2xaiZCnQROs1n4yDcslDNZLIdGR1yWUW9nx+e4dNIWOQ/AW4yluB3EFv+J
-tGfFR5SPEsJNtIqVAtKb+NPBGYcEl52aUFRCbB30gWKSQIsq6gris+8EOTTjHs+x
-L0tFO5FBQfrA9J3lK6eOwSQTx0Ob4A==
-=yDSV
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSS+KgACgkQJNaLcl1U
+h9BaHgf+PmazZFiaoqkNhCaUKsZylWCGAFPo+cgvXRDHq5Knkow2MpiNkogFgGJf
+I/9l7+LvZ8II/1BIxBVK4slt5eygq94wMkzA3q4UOVq0z0npBQZNfM3osCGXGOKW
+P3h77NAS5OSyNhe4GcKMSmRyiG4cPc1QYp6/KDJSuUWXHUaQMXQG9nWNv718Fsxj
+gtD96exbO3v2B5a/y8D0tGXhFCNU5xw9ZOlkXQULZtD/FD6oYL2loZ26os0Js7o5
+qhmuoxz7ymH+ZLeLZZZxXNixaj8CcksYNiCWlWIj8VPxfEAmegLac3GzFWu7f8GW
+VH52b6Q6SFn9Gu5bjcJZGj8M6ClZfw==
+=1W9y
 -----END PGP SIGNATURE-----
 
---XuUu5UqlTitESjDI--
+--7uVBzkQ09VJrlG8A--
