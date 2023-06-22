@@ -4,77 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BC11EB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jun 2023 21:44:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A83AEB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jun 2023 21:44:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E5FC844;
-	Thu, 22 Jun 2023 23:43:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E5FC844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B2F9847;
+	Thu, 22 Jun 2023 23:43:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B2F9847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687470248;
-	bh=CmoCKyNaOpNX7hbl6+IjFa9Mgxj6fjzJg7My8SnO4Jo=;
+	s=default; t=1687470271;
+	bh=tHxbl8Q9Nrryr9eFui+LGWkE4l3NJ3fvNNBwuk0UpXU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=O1U/PT74YOm3Sy4X9DymC0HdY/yMvdZK59JPjiqwqJnOHdgInjb94/tRY4l1AvZgk
-	 HQogsVHn5DFsQTc5BOmWYHA9523BJ70aQusHur7uVJWwWWo+vqeqaLH74GItU6eADS
-	 3vG3QDEyun4Vyo9TN3C2q86BNm1/mwixP0lkztcs=
+	b=qJUphiEYCFEicV0CYzXMvTDzGtjFMXmOGPCtQthwwMb1so4eSHh0ZJVexRFbdm0Nf
+	 YynSqvBhLGrSZ79PWmgGiQpKboftZj6RgYCyjDkFxOE+kjHcn3kYrJe7hej3OL4dsw
+	 giGnONLniudMZucunMRqETfmUy3W05DHdddflg1I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B44C9F80549; Thu, 22 Jun 2023 23:42:49 +0200 (CEST)
+	id 69F83F8051E; Thu, 22 Jun 2023 23:42:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEBF7F80141;
-	Thu, 22 Jun 2023 23:42:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C570DF80169;
+	Thu, 22 Jun 2023 23:42:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8DB89F80163; Thu, 22 Jun 2023 23:42:43 +0200 (CEST)
+	id 5D489F80132; Thu, 22 Jun 2023 23:42:45 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C26D7F8003A
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2023 23:42:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C26D7F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id D24C0F80130
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2023 23:42:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D24C0F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=YEbeTuG/
+ header.s=k20201202 header.b=KfPO/uU2
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4A18361898;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 23AD4618A9;
+	Thu, 22 Jun 2023 21:42:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CD94C433C9;
 	Thu, 22 Jun 2023 21:42:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F086C433C8;
-	Thu, 22 Jun 2023 21:42:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687470153;
-	bh=CmoCKyNaOpNX7hbl6+IjFa9Mgxj6fjzJg7My8SnO4Jo=;
+	s=k20201202; t=1687470155;
+	bh=tHxbl8Q9Nrryr9eFui+LGWkE4l3NJ3fvNNBwuk0UpXU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=YEbeTuG/V/Mw8pMW2ykLWzTkV+Ujvw27lgCNVzl2bc/F93XgxYmxuxv0Ebr9K/yYH
-	 Mj+9YtNH/FkgIHqRHwQc3lOnSAS5Zy60sleRogWIVseiia/4PsTudAaUZFNAz2jfBR
-	 7GaQKJow5Bff1kXvQ4uRGYa5IS9WzAHPTujsFRDGwk4DN7fcGUgX3PNh8cOIA/Fmrc
-	 I/IDY1HQ3n+vfjq/ihcMeuLNl2sbRhNYbC1RO5Ol9A5/vDjS/yMubOXUTThaTzQhXq
-	 79BsBexoWDtgrqZ+SDCB0yQ9IF5+Hh0IymcmCb7X9B7CyfOOnm16EToyxkAfyRcDwU
-	 cW2sF4V5ZtpZw==
+	b=KfPO/uU2uRVxQwqMWbAs9fMxBz2yjlEsusXCr6KK1QpRJnEor7nBwtyrWCzIPgxfT
+	 j6tVLhgrsBBRWCv4MtQYkV5SX8NCIyMZHE0CmC2QV2uPtrCDaJEkyDrNpwMLIxzKio
+	 +L0gNfHgsYvlYt03uBiiwMVnp5ez2mVUVYUTUIgahhSYp3sKJGee9BJAsrwz+CAY2u
+	 yO6Z3o/Ns8hAawUCOKflLeGcd0MvW8dO7dG2QsD93Jp0Xw3o0yg1cNR6iE05+VJO//
+	 K+syfTtTj1D85AMoDylfXEf6tCii//YBWEQcrSyPdWO5kFks7B6gm3LozXg87iNUcU
+	 IOxEh44LBVZZg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- ryans.lee@analog.com, Tom Rix <trix@redhat.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230617122635.3225639-1-trix@redhat.com>
-References: <20230617122635.3225639-1-trix@redhat.com>
-Subject: Re: [PATCH] ASoC: max98388: set variable soc_codec_dev_max98388
- storage-class-specifier to static
-Message-Id: <168747015091.308583.17966762362837372641.b4-ty@kernel.org>
-Date: Thu, 22 Jun 2023 22:42:30 +0100
+To: alsa-devel@alsa-project.org, Hui Wang <hui.wang@canonical.com>
+Cc: shengjiu.wang@nxp.com
+In-Reply-To: <20220616040046.103524-1-hui.wang@canonical.com>
+References: <20220616040046.103524-1-hui.wang@canonical.com>
+Subject: Re: [PATCH 1/2] ASoC: fsl-asoc-card: add nau8822 support
+Message-Id: <168747015398.308583.11306627604621757182.b4-ty@kernel.org>
+Date: Thu, 22 Jun 2023 22:42:33 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-c6835
-Message-ID-Hash: MZ2T77YWMGCO7KK7VSMVT7IDXP4HS7UF
-X-Message-ID-Hash: MZ2T77YWMGCO7KK7VSMVT7IDXP4HS7UF
+Message-ID-Hash: 53QYVVAPIYW6GAACO4TTNZNUJFHVQVNZ
+X-Message-ID-Hash: 53QYVVAPIYW6GAACO4TTNZNUJFHVQVNZ
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MZ2T77YWMGCO7KK7VSMVT7IDXP4HS7UF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/53QYVVAPIYW6GAACO4TTNZNUJFHVQVNZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,13 +93,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 17 Jun 2023 08:26:35 -0400, Tom Rix wrote:
-> smatch reports
-> sound/soc/codecs/max98388.c:890:39: warning: symbol
->   'soc_codec_dev_max98388' was not declared. Should it be static?
+On Thu, 16 Jun 2022 12:00:45 +0800, Hui Wang wrote:
+> This is for an imx6sx EVB which has a nau8822 codec connects to the
+> SSI2 interface, so add the nau8822 support in this machine driver.
 > 
-> This variable is only used in its defining file, so it should be static.
-> 
+> Because the codec driver nau8822.c doesn't handle mclk enabling, here
+> adding a codec_priv->mclk for nau8822 and similar codecs which need to
+> enable the mclk in the machine driver, and enable the mclk in the
+> card_late_probe() conditionally.
 > 
 > [...]
 
@@ -112,8 +110,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: max98388: set variable soc_codec_dev_max98388 storage-class-specifier to static
-      commit: 320d0e2db9edcde026aac93359624c1d429cb865
+[1/2] ASoC: fsl-asoc-card: add nau8822 support
+      commit: 1075df4bdeb320bbf94a1f6d3761391264eb2c7f
+[2/2] ASoC: bindings: fsl-asoc-card: add compatible string for nau8822 codec
+      commit: 424a64a2bbc6014c76b9ef6356d38ad8e66d95ad
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
