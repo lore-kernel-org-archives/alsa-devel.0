@@ -4,118 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF696EB64D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:14:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07069EB64D7
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:17:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EC78839;
-	Mon, 26 Jun 2023 13:13:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EC78839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 202BB826;
+	Mon, 26 Jun 2023 13:16:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 202BB826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687778084;
-	bh=62c3Y86+OLkF4s7dXix5zSxvKy2EOIzqBdqAnDGHfCM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=kducOWXkR3hSk411SDSxsH3uIVfRa4H45QQ9QXR7Cv2T2+o+eX4JSjOxvHEyZoS8C
-	 nSqCGMkCnL2LNNKSBBKfMkbqY7Cjrd2Xxj15WREFj5uESCVbC7jQDyFkT7MArMGE1w
-	 bUB1FRdexZ7H2BVsD3K1f1Yy6sU2Zy/UsSeIRSb0=
+	s=default; t=1687778224;
+	bh=2rT8kLRbFAZ53z/xuHc/r7vMzcnuNTjzcmIsA4Dp3h4=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=KMuF2+IOLV4H+pPrjZVOSxxrP5CciuxFfn/Sm+Z9a3li//q+wv+HI5zgcfbSvHBqT
+	 AinJNwpH0ohe4+zqm/ZRrIsbbsDeA1ob2sG/LwPFxg1iXJgvEJxdlOIgpsBbOsbY/I
+	 1dFLtWfrvAaddxfej8NPwWFG+Pwp9s4++3e7tN+E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2437CF800E3; Mon, 26 Jun 2023 13:13:29 +0200 (CEST)
+	id 80186F8027B; Mon, 26 Jun 2023 13:16:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3161F80431;
-	Mon, 26 Jun 2023 13:13:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABBB2F80246;
+	Mon, 26 Jun 2023 13:16:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 690D8F80246; Mon, 26 Jun 2023 13:13:26 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 74026F80141; Thu, 22 Jun 2023 17:07:40 +0200 (CEST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 36057F800E3
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 13:13:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36057F800E3
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2F4ABF80124
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2023 17:07:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F4ABF80124
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xDSvj+cA;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=MTQZUZ7D
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ACC391F8AB;
-	Mon, 26 Jun 2023 11:13:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1687778003;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vKaUDMX7q/k4wnF5zn+Vr6K9ID3Iq87i7XrGFy/yZkk=;
-	b=xDSvj+cA2CrQW1d62/Hj9ME9axiJ+O/23UMa+mgChTWNbHzBw4uM/vWi5T1dR2joITeEOE
-	H3MVyOpfp1IeqA5cjVs3PZ79QjwUlCIzZ5M5oLdtunX6FHbqJHZUXQPVLgQQmNO0rZYtna
-	VyTxkWulNw7C7ahnlnVhHJzmMyPOHiQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1687778003;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vKaUDMX7q/k4wnF5zn+Vr6K9ID3Iq87i7XrGFy/yZkk=;
-	b=MTQZUZ7DNlmCoXdgQk6JahE7IEQ55oYgyNPsqB40wbT1iqRA8yXqESqu/5jzwapNseMsTk
-	UC6JtrgSrpqJw0Cw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F3FF13483;
-	Mon, 26 Jun 2023 11:13:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id RToNHtNymWT4JAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 26 Jun 2023 11:13:23 +0000
-Date: Mon, 26 Jun 2023 13:13:21 +0200
-Message-ID: <87ttuuv5m6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Tuo Li <islituo@gmail.com>,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	baijiaju1990@outlook.com
-Subject: Re: [BUG] ALSA: core: pcm_memory: a possible data race in
- do_alloc_pages()
-In-Reply-To: <45445f57-0a73-59e6-6f3d-3983ce93a324@perex.cz>
-References: 
- <CADm8Tek6t0WedK+3Y6rbE5YEt19tML8BUL45N2ji4ZAz1KcN_A@mail.gmail.com>
-	<877crqwvi1.wl-tiwai@suse.de>
-	<CADm8Tenfy8joto5WLCqQWjfT8WimsbJgOss0hJe-ciyDRMrSXw@mail.gmail.com>
-	<871qhywucj.wl-tiwai@suse.de>
-	<4d0931bf-b356-6969-5aaf-b663d7f2b21a@perex.cz>
-	<87wmzqv64o.wl-tiwai@suse.de>
-	<45445f57-0a73-59e6-6f3d-3983ce93a324@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: XNKSX5J7N4TNOV6MO4SLVVISK75AER47
-X-Message-ID-Hash: XNKSX5J7N4TNOV6MO4SLVVISK75AER47
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=BiWlZL2W
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-3fa71db4208so8841105e9.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 22 Jun 2023 08:07:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1687446451; x=1690038451;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LmPKoAkPkH2OG308+PMwW0FpK5flWUMphUg8wo9BFIc=;
+        b=BiWlZL2WfEVqtefAm74gDhLj0Qt7lo3leLjFR9tEqljSr2NmqwKiM8kCl0bgghk1fo
+         QtAvRp4K/81aqnkm9LxXYcf3xaXsm7xA49sQObtE8SC+gt9a6rzyb00xvBsuvl4PdNWS
+         l8/kvktN+R8xXg44912qYJzycoPcCB5OY5WCviNlN0kegGpdqpWRy8U6tWthVbzk6rYk
+         LBq+Sgc3hccHM0NjngQcLCzbkZbI1d4dRZNO7uObSrhGwc1ddSh0XHQ9xHPBP0OJAtz6
+         x0MPE9uceVmGdh8TXRh03h32l01OKnakmMJQ+VRtjK9YAUJGSi6uw85lnnhGRvKGmCJ3
+         m93A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687446451; x=1690038451;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LmPKoAkPkH2OG308+PMwW0FpK5flWUMphUg8wo9BFIc=;
+        b=Q/rpdMdhzLg/2e6VERAOOqtuCY1NduU1+BCErlBSJOJ0zkLybdbK9WQB3xZ1R1PkMt
+         HBhHxp2tphnHhSM8Wjha0fjV98PUPDycJvh4vZSvGNCM4tpSfu8+h79XSIbegSkhT+X5
+         JrHeQ5z5LhajevOtaHro1GrMLA2ZIqhp5Z5qW3WJMgzLekFFcJNRo6cVWQas6HNfhEFk
+         7Nl1w9CJpjcRW/C9GMTeOnOdo/RL9krP6XVqis7Rr7TyJDEXnytUAZ2nzwULa9ty5M68
+         VLRk99p7oBpTuKimCL9Co1F8nvHIlJ0vN0gKatGdPd6yFB21Od9pHL/duhCCtopVJsSU
+         9BjA==
+X-Gm-Message-State: AC+VfDyXNjP5z0foXG0GBSGlPdpb1FiXtFkb64Ng7zQd8FNmIKtuXHV3
+	SqC+3vIHVcsu4IfDvXXDsZKZtIFUVyuVxIowYIM=
+X-Google-Smtp-Source: 
+ ACHHUZ44diC0v2c/90W56UO2anGXMm2EScSZjf8rYClomzBLATcaqoSoswtdUz05FLaYwIjfhf0NPw==
+X-Received: by 2002:a05:600c:2046:b0:3f9:b3c9:feed with SMTP id
+ p6-20020a05600c204600b003f9b3c9feedmr2139349wmg.13.1687446451514;
+        Thu, 22 Jun 2023 08:07:31 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id
+ q20-20020a1cf314000000b003f8f8fc3c32sm8100276wmq.31.2023.06.22.08.07.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jun 2023 08:07:29 -0700 (PDT)
+Date: Thu, 22 Jun 2023 18:07:25 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: 13916275206@139.com
+Cc: alsa-devel@alsa-project.org
+Subject: [bug report] ASoC: tas2781: Add tas2781 driver
+Message-ID: <5e37bcfa-50d9-45e8-8a68-52438a5a8dc6@moroto.mountain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-MailFrom: dan.carpenter@linaro.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: A4ADJPL5WAPZGZFNIX3GUZVFHQXYOMRV
+X-Message-ID-Hash: A4ADJPL5WAPZGZFNIX3GUZVFHQXYOMRV
+X-Mailman-Approved-At: Mon, 26 Jun 2023 11:16:02 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XNKSX5J7N4TNOV6MO4SLVVISK75AER47/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A4ADJPL5WAPZGZFNIX3GUZVFHQXYOMRV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,42 +110,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 26 Jun 2023 13:09:00 +0200,
-Jaroslav Kysela wrote:
-> 
-> On 26. 06. 23 13:02, Takashi Iwai wrote:
-> > On Mon, 26 Jun 2023 09:56:47 +0200,
-> > Jaroslav Kysela wrote:
-> >> 
-> >> On 26. 06. 23 9:33, Takashi Iwai wrote:
-> >>> On Mon, 26 Jun 2023 09:31:18 +0200,
-> >>> Tuo Li wrote:
-> >>>> 
-> >>>> 
-> >>>> Hello,
-> >>>> 
-> >>>> Thank you for your reply!
-> >>> 
-> >>> FWIW, the simplest fix would be something like below, just extending
-> >>> the mutex coverage.  But it'll serialize the all calls, so it might
-> >>> influence on the performance, while it's the safest way.
-> >> 
-> >> It may be better to update total_pcm_alloc_bytes before
-> >> snd_dma_alloc_dir_pages() call and decrease this value when allocation
-> >> fails to allow parallel allocations. Then the mutex can be held only
-> >> for the total_pcm_alloc_bytes variable update.
-> > 
-> > Yes, it'd work.  But a tricky part is that the actual allocation size
-> > can be bigger, and we need to correct the total_pcm_alloc_bytes after
-> > the allocation result.  So the end result would be a patch like below,
-> > which is a bit more complex than the previous simpler approach.  But
-> > it might be OK.
-> 
-> The patch looks good, but it may be better to move the "post" variable
-> updates to an inline function (mutex lock - update - mutex unlock) for
-> a better readability.
+Hello Shenghao Ding,
 
-Sounds like a good idea.  Let me cook later.
+The patch ef3bcde75d06: "ASoC: tas2781: Add tas2781 driver" from Jun
+18, 2023, leads to the following Smatch static checker warning:
 
+	sound/soc/codecs/tas2781-i2c.c:651 tasdevice_parse_dt()
+	warn: assigning signed to unsigned: 'tas_priv->ndev = ndev' 's32min-s32max'
 
-Takashi
+sound/soc/codecs/tas2781-i2c.c
+    602 static void tasdevice_parse_dt(struct tasdevice_priv *tas_priv)
+    603 {
+    604         struct i2c_client *client = (struct i2c_client *)tas_priv->client;
+    605         unsigned int dev_addrs[TASDEVICE_MAX_CHANNELS];
+    606         int rc, i, ndev = 0;
+    607 
+    608         if (tas_priv->isacpi) {
+    609                 ndev = device_property_read_u32_array(&client->dev,
+    610                         "ti,audio-slots", NULL, 0);
+
+When we pass NULL to device_property_read_u32_array() then it returns
+then number of items.
+
+    611                 if (ndev <= 0) {
+    612                         ndev = 1;
+    613                         dev_addrs[0] = client->addr;
+    614                 } else {
+    615                         ndev = (ndev < ARRAY_SIZE(dev_addrs))
+    616                                 ? ndev : ARRAY_SIZE(dev_addrs);
+    617                         ndev = device_property_read_u32_array(&client->dev,
+                                ^^^^^^^
+Smatch is concerned that this value can be negative.  But actually this
+sets it to zero, doesn't it?  Is that intentional?  It feels like we
+should leave ndev as the number of items.  Or if we want ndev to be zero
+do "ndev = 0;" on the next line.
+
+    618                                 "ti,audio-slots", dev_addrs, ndev);
+    619                 }
+    620 
+    621                 tas_priv->irq_info.irq_gpio =
+    622                         acpi_dev_gpio_irq_get(ACPI_COMPANION(&client->dev), 0);
+    623         } else {
+    624                 struct device_node *np = tas_priv->dev->of_node;
+    625 #ifdef CONFIG_OF
+    626                 const __be32 *reg, *reg_end;
+    627                 int len, sw, aw;
+    628 
+    629                 aw = of_n_addr_cells(np);
+    630                 sw = of_n_size_cells(np);
+    631                 if (sw == 0) {
+    632                         reg = (const __be32 *)of_get_property(np,
+    633                                 "reg", &len);
+    634                         reg_end = reg + len/sizeof(*reg);
+    635                         ndev = 0;
+    636                         do {
+    637                                 dev_addrs[ndev] = of_read_number(reg, aw);
+    638                                 reg += aw;
+    639                                 ndev++;
+    640                         } while (reg < reg_end);
+    641                 } else {
+    642                         ndev = 1;
+    643                         dev_addrs[0] = client->addr;
+    644                 }
+    645 #else
+    646                 ndev = 1;
+    647                 dev_addrs[0] = client->addr;
+    648 #endif
+    649                 tas_priv->irq_info.irq_gpio = of_irq_get(np, 0);
+    650         }
+--> 651         tas_priv->ndev = ndev;
+                ^^^^^^^^^^^^^^^^^^^^^
+Warning
+
+    652         for (i = 0; i < ndev; i++)
+    653                 tas_priv->tasdevice[i].dev_addr = dev_addrs[i];
+    654 
+    655         tas_priv->reset = devm_gpiod_get_optional(&client->dev,
+    656                         "reset-gpios", GPIOD_OUT_HIGH);
+
+regards,
+dan carpenter
