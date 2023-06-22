@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23615EB64DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jun 2023 11:36:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6CDCEB64D8
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jun 2023 11:37:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3E9884D;
-	Thu, 22 Jun 2023 13:35:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3E9884D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7796D846;
+	Thu, 22 Jun 2023 13:36:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7796D846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687433800;
-	bh=Co+6t32ifwUs0+wNsOFKXTRfff6uqscWL+stBOUqqAY=;
+	s=default; t=1687433827;
+	bh=wB2PKeNE2FSCf+LJnzL4YCJTrxZywmGWy9Wq9UA8lVQ=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HU65hUeLWE5HZIOn6Xr5mvyUi1PAupGxvLCc0SGFcLNutilkQ+Ym9NzsEC0sZkPJm
-	 sZUlNQ2rHfrH0jr2i4fVo9R6pKD0nmUNWA/S+QgyThl/zLAAJRPYU9dr4YM/ES/1lT
-	 W0qmiNVZAZLPKsEeCZquTFAFMOCbMw0yTwLkRn8o=
+	b=pMWSSKI4QCKK0I7g03Fie4UhAawKqyBksTQ8PchhuH+zMSRsGVZ+0A2trLpeNo2LG
+	 ExVHemZkGmeYbp1cff8lH3AMjrsxqLzGCWprYQhBaAl22Fhz4vQZeTeNQfF6Vqc4Ai
+	 WN1kTQnNbbCI97Yl6xmjtYKH2rHniGyW6hyCewh8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E2972F80130; Thu, 22 Jun 2023 13:35:04 +0200 (CEST)
+	id 600A8F8057B; Thu, 22 Jun 2023 13:35:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07A54F80557;
-	Thu, 22 Jun 2023 13:35:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96D0FF8055C;
+	Thu, 22 Jun 2023 13:35:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44346F80552; Thu, 22 Jun 2023 13:35:00 +0200 (CEST)
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam11on20604.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7eaa::604])
+	id 2AA27F80124; Thu, 22 Jun 2023 13:35:05 +0200 (CEST)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12on20610.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe5a::610])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5090CF80130
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2023 13:34:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5090CF80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 31124F80124
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2023 13:34:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31124F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256
- header.s=selector2 header.b=PD8dEx84
+ header.s=selector2 header.b=ZNUt73vI
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=niU2U/wVirjqNP60lGC/WklJghK521Nxj65nAgX7jUxvVWyZNJUBLTzJjXdp3VBxxmK55FaeMC44Y7iaq/LYovYImTzETic2XCNTGV3frzK8gILo3v1qNd+gD/KmSJrc99I4XZsa16kcNGPvor1Ep1xBNv7UGfPxXmq7G3eAodk7v1+uWE0g3IodrlasVJSMDGzbFfym7xoedXkyKHjc+zYLKurFqnTUUPtksFT/n22hMU1r300GR+2hNdIsyXUnhEbOSMZGUk/YV/CIF+ah59r6vyDcVyf9IpzZr+bRxUQxXZ9m4PLR+73EU8E+iYFo3tQQ5PlKDr6xA961IQwt6A==
+ b=EDiv+1+XSkQa9YMcaPxiCI6k8p9SzEbhhK9SrHKyD6Pi1mrLklh3hHG/Ycodrq8Xn5Q7m5ij5MAILBNX+VyqLmC50Fo5jPR4Qq3c1++WckacRi0b5VGN3nIQVkRjVLOKrqATfHq2AiQETwKW1V+dwdRPv6mTW1FFHtY+HYYW6ZJNryB3Vu0RlloUKob0uiP4SlOVrZIGpUkiHXnH78wrKJWcqjCDgawtxNy7KWBOd+En64o2v0aN1Fudfj0sapA+CavJ47qSJg0SkqbsFiHEfv6asl5yFfPres8EhdUzCVn2bzC2oA/AB509A9OeEl1iWp6NlVMe+MMyIWYz9GLHqA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CEQsmQLzDILFpD+48COHhMUR9Q9jyAoHdI0QjJXHQyI=;
- b=gQu7cYVVwrZi65nt/8FdwkgaVik3gsN/8psH11RNMJ/lIKRC4HAVUue3Te1VzsFge9bWZOrAg2bJ1TdTcg4n4asY4dseBMwtuM5HWJ/JEH8McQ/yRe/qQGrVAnI5p5fSsHCZjh5YngWUnQHITpGscpCLRw9sLkyg6asmczB70PUFOEooo2Qm86y86eyj20aIxORi/91TRCF4p9JYbZKgUlmRvP+/87WGPw9IM5h117zl2Qbgi5jFAEuJa9wziHR+MX4a3jIk5z2pJXUZ/pyFLw5p0cvRUuegTQkrnsoPIMDf35E9FkvYAPnhdbIQcDj4rc3azMF6DjkelnUOFMJkgg==
+ bh=fOOEk07t4kRzna0D9TEOHF5B3wQ4vCIjlzV1k6C6SrE=;
+ b=D0MgwCiTWMj9d1cAYO704v9NkJq6fwpbSpMfYbLPngRsOpWCD+X+y4toKQq6Xyh5pqTR83AeNygtJEGpFUebriNwyy2tS2QH6s1kl6wNeCBXJl8o9V+fv/SC536WCi84j+I6BOmbiL50hNyZgkpQXc/JylRTsxpjpSRRxULqeDQbkq29qj/DbsYu/6E/jDI6/O1qnTAxBLTE5N6L4Yje0hg95PWz7FVgVqTzDkumWFTuQPgjiBZLU15j5fWTjBCvM9NXdRL6kXREum7Iqr8/5pavmwAYn8kzJmmZ3t3NlmnbUP+8w70Pkw8bdK6y1OCp8o2Dz+Ih+FoUT2roqdmxcg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -54,18 +54,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CEQsmQLzDILFpD+48COHhMUR9Q9jyAoHdI0QjJXHQyI=;
- b=PD8dEx84U5pwFIzGpZxeatxDjQ3fplbxfq1asjwg2CDHSZdWFQXHwSI8mS+u/cPwaxbwFgwn9hUvAimW7EGwaUbamW/bXR/5uFT75fE9iIBgblC/6TVFVCBj8s51D8JBGFcYYjnR+yb4hLQgNgcnijx8Z6ML9LknEbnYIT/a1qvPGPRW8jwQp0sA35gKmiYB9/yk9zqasjQHw0HDCVCUpGGoEkCESSspECrL1CoN6qSDYx4TYxeEsSWZJawzCBrCDd6PIyf42eUmE/SLwwcFE2Gx9R/TTbnpBd8Yz8CmsL8Pn5SmPxHU7uwxp+uID/RwxYfrJNGC2egX7cwh0LJLoA==
-Received: from CY5PR22CA0046.namprd22.prod.outlook.com (2603:10b6:930:1d::28)
- by CH0PR12MB5267.namprd12.prod.outlook.com (2603:10b6:610:d2::18) with
+ bh=fOOEk07t4kRzna0D9TEOHF5B3wQ4vCIjlzV1k6C6SrE=;
+ b=ZNUt73vI6RSWBIC1TJEu9SLb4A/SsvB1iZeKSU2qBK/Xgh1mv1hM4QdzFhqzF+tTWwZoxVL6atBe5iO+lLI17vWLa1EjEbhq7HRh/cQS0HPQHrbyp+pvg00XMSEDl8teEumosEChYoMuEI59Wzc/RN5GDoVNxzu2kOHDEsBMMYtGj+Z9/59tT8ocln573OEvN+LVU/JoxLbUQBAGJHqla7WW613eOg95Dk7Kmyp/5bCldykLK8aUCHi7AAG5u1xTnevgAnaMbqh+Le/sZDjM5Qfw3sSvPJ02MTsMgMWBrLfLSk49z5oSPkDJVI7VogHbgmsJL2UuSxdowBtlkUySIg==
+Received: from CY5PR22CA0034.namprd22.prod.outlook.com (2603:10b6:930:1d::10)
+ by PH7PR12MB7354.namprd12.prod.outlook.com (2603:10b6:510:20d::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Thu, 22 Jun
- 2023 11:34:37 +0000
-Received: from CY4PEPF0000E9D3.namprd03.prod.outlook.com
- (2603:10b6:930:1d:cafe::6c) by CY5PR22CA0046.outlook.office365.com
- (2603:10b6:930:1d::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.24; Thu, 22 Jun
+ 2023 11:34:49 +0000
+Received: from CY4PEPF0000E9D2.namprd03.prod.outlook.com
+ (2603:10b6:930:1d:cafe::7c) by CY5PR22CA0034.outlook.office365.com
+ (2603:10b6:930:1d::10) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.24 via Frontend
- Transport; Thu, 22 Jun 2023 11:34:37 +0000
+ Transport; Thu, 22 Jun 2023 11:34:48 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -73,20 +73,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.161 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000E9D3.mail.protection.outlook.com (10.167.241.146) with Microsoft
+ CY4PEPF0000E9D2.mail.protection.outlook.com (10.167.241.145) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6521.24 via Frontend Transport; Thu, 22 Jun 2023 11:34:37 +0000
+ 15.20.6521.21 via Frontend Transport; Thu, 22 Jun 2023 11:34:48 +0000
 Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
  (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 22 Jun 2023
- 04:34:29 -0700
+ 04:34:38 -0700
 Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
  (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 22 Jun
- 2023 04:34:29 -0700
+ 2023 04:34:37 -0700
 Received: from audio.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
  with Microsoft SMTP Server id 15.2.986.37 via Frontend Transport; Thu, 22 Jun
- 2023 04:34:25 -0700
+ 2023 04:34:34 -0700
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>, <krzk+dt@kernel.org>,
 	<thierry.reding@gmail.com>, <lgirdwood@gmail.com>, <perex@perex.cz>,
@@ -95,9 +95,9 @@ CC: <jonathanh@nvidia.com>, <mkumard@nvidia.com>, <sheetal@nvidia.com>,
 	<alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
 	<linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<stable@vger.kernel.org>
-Subject: [PATCH 1/8] ASoC: tegra: Fix SFC conversion for few rates
-Date: Thu, 22 Jun 2023 17:04:09 +0530
-Message-ID: <1687433656-7892-2-git-send-email-spujar@nvidia.com>
+Subject: [PATCH 3/8] ASoC: tegra: Fix ADX byte map
+Date: Thu, 22 Jun 2023 17:04:11 +0530
+Message-ID: <1687433656-7892-4-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1687433656-7892-1-git-send-email-spujar@nvidia.com>
 References: <1687433656-7892-1-git-send-email-spujar@nvidia.com>
@@ -106,30 +106,30 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D3:EE_|CH0PR12MB5267:EE_
-X-MS-Office365-Filtering-Correlation-Id: e443e6dc-2704-4ffc-17d1-08db7314a91e
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D2:EE_|PH7PR12MB7354:EE_
+X-MS-Office365-Filtering-Correlation-Id: d94bf0b3-4db9-4ca6-2095-08db7314afca
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	Ur0C9B7ctux0FimLFv0adNJRlZHg+Z8dCoD+TLDoGh5cqeKUcE8EfGQpMR5bjanLbFYup4ZKiqEB73sNYLEYe7sLL5btlwDtE/VNGsKOLaUTzIoEITw/hbiHag7kGgJT0gNifP8doPQtYe10W5s1IqEjeq7Pipb/Pef1BBQgx2e+CxxynGAFdxQcTRKZ4fG5u7PQ5Oon02bexvFRBgnquhyVfu6w8EzmS82aCLqRNjIIi6MQo16FYMetPeg1+famWkscUbiYuM0zITc1kK3IbwpSauAvaB5BSmoViqNy0Ad3yt5ZtZNtY+BvIijhQMhdplkplsgpLFN+D+hWsJVKAzAHinJ0/7FMPsaRNUzyaPHR/c20b/HgV3DFA9wQpOrJ5LA0UhDuf7VdH0AmC2F/zHt/RRuTF7D1gT9fJIbBRirIZYyE8y/E/QBidwbDuGaYHWhOi/FZ/QjYEPRxLklSZ2//xP6WipZariAD5Y7gkNImzDfusPPKFkpKOWVQPbJa4fmMU9EveR+WQeUwgaSW9usxIQ+h8hvJqxTUmcQ2xDA4QlDu+WWPLXdsKI4fx1OZsaEpBEfZJ57i9o5r8cICthQxdVllLUl2MmwsWjYvFm5SEo4TpU7UXw8sQoUQ6xhCFWHBM1MU9ZCQjg9VtJElKFnr9DwVAbIrnkmqUKlYGVwbJ9c7Ydk0Sa+MKwohtddUPFpbxDjmYrkOfu+Awb1aA9kkno0/WoSKQXVdQPlyMtz4PJLgXZiBO+8QmBUwoNAL
+	cCHUG8nL0Gu6uZP+GhmXo2HUhCHe/pFnHEhaR9DLD0/U7bUkvQvq8TZ9NN+W7xrYMEyWJVZp1qVCgVnJmMnNKUe7ruFlaq/ANQslAlxtU/hDW3U8bpCgDDauEeDjqBUpy2PFngv4GeIpyhDiR5fWB78SQF6LZwFQYFULDeGT4BbAcNB/IArALn7kBx18QVRWqKpMaBAEaaJrpE8GaA83XuRbY26/ElVDZ144rhT0yodvmUgo77fvKOldfgubspFKbq0ixmv8DG0FTerlLhfNvO66zSNfC8pfSekO247D4KdCsdl/Tu2uk+V82Kh0R/YzS9/N6qKHin35ZIYiT1UFJC6OyAncjqgHcm0/TRetN0QvQ4bX8Bgwj9eaXnq0geb4ZNVL8QnHKcCO2KXX5o3Iw9aXebKTQwE6818lrxDPcD13QNUu7HDAaQU+WfBEV2L2l1qI5TEyByIJIjRt8hUwLLKy+bvGGScbBbdRy26b8siUxK3XoDt6G1IiZbnDmcpS7tGSw5LzuRTO1btvbEQ5dJc3DeZ0RgFnrSb05pgp+hCyhzmfWfZrWqK2jA4HCJ60l1ppR+bIKLR4pCSqbYbC610UYx7iZJJSxz3058iwZsVu5f7G3aixStO6ErSbz/Qq3xfQmiOEMV2zBlTq6eGwDNOwSIsOSletASuw4/Hmh/5o0OkzVfXlIaxLq05MzHVivAs9KvJuzVdksM7ptNpSYec8fMM2UAeh3IoHiJdOuu4oPZPCeVKomfJHgbLnT2cJ
 X-Forefront-Antispam-Report: 
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(376002)(39860400002)(396003)(451199021)(36840700001)(46966006)(40470700004)(70206006)(70586007)(4326008)(316002)(8676002)(8936002)(41300700001)(26005)(186003)(2616005)(54906003)(110136005)(40460700003)(6666004)(426003)(336012)(7696005)(82310400005)(2906002)(5660300002)(478600001)(7416002)(40480700001)(356005)(7636003)(82740400003)(47076005)(36860700001)(83380400001)(36756003)(86362001);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(396003)(376002)(39860400002)(451199021)(36840700001)(46966006)(40470700004)(186003)(26005)(5660300002)(86362001)(7696005)(6666004)(8936002)(8676002)(7416002)(2906002)(478600001)(40460700003)(110136005)(54906003)(36756003)(36860700001)(4326008)(83380400001)(47076005)(41300700001)(82740400003)(7636003)(356005)(2616005)(336012)(40480700001)(70206006)(426003)(70586007)(82310400005)(316002);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2023 11:34:37.5981
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2023 11:34:48.7919
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- e443e6dc-2704-4ffc-17d1-08db7314a91e
+ d94bf0b3-4db9-4ca6-2095-08db7314afca
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	CY4PEPF0000E9D3.namprd03.prod.outlook.com
+	CY4PEPF0000E9D2.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5267
-Message-ID-Hash: 4XNU5VCKPMCAMD4LSYJWT7T6WTT6NYKO
-X-Message-ID-Hash: 4XNU5VCKPMCAMD4LSYJWT7T6WTT6NYKO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7354
+Message-ID-Hash: J2YJU7QOAVBVWF5VINYLI5SHUET3QXT5
+X-Message-ID-Hash: J2YJU7QOAVBVWF5VINYLI5SHUET3QXT5
 X-MailFrom: spujar@nvidia.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -142,8 +142,9 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4XNU5VCKPMCAMD4LSYJWT7T6WTT6NYKO/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J2YJU7QOAVBVWF5VINYLI5SHUET3QXT5/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -152,192 +153,78 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Sheetal <sheetal@nvidia.com>
 
-Sample rate conversions for rates greater than 48kHz are found to be
-failing. It means x->y conversions fail when either x or y is greater
-than 48kHz.
+Byte mask for channel-1 of stream-1 is not getting enabled and this
+causes failures during ADX use cases. The enable bit is not set during
+put() callback of byte map mixer control.
 
-This happens because, tegra210_sfc_rate_to_idx() returns incorrect
-index for rates greater than 48kHz. This actually depends on the
-tegra210_sfc_rates[] array and it is not in sync with frequency
-values of SFC TX/RX register. To be precise, 64kHz entry is missing
-in above array defined in the driver. Due to this wrong index is
-returned and this results in incorrect programming of coefficients.
+This happens because the byte map value 0 matches the initial state
+of byte map array and put() callback returns without doing anything.
 
-To fix this, align the tegra210_sfc_rates[] array with SFC register
-specification and thus add 64kHz entry to it. Also, the coefficient
-table is updated to reflect that none of the conversions are supported
-for 64kHz.
+Fix the put() callback by actually looking at the byte mask array
+to identify if any change is needed and update the fields accordingly.
+Also update get() callback to return 256 if the byte map is disabled.
 
-Fixes: b2f74ec53a6c ("ASoC: tegra: Add Tegra210 based SFC driver")
+Fixes: 3c97881b8c8a ("ASoC: tegra: Fix kcontrol put callback in ADX")
 Cc: stable@vger.kernel.org
 Signed-off-by: Sheetal <sheetal@nvidia.com>
 Reviewed-by: Mohan Kumar D <mkumard@nvidia.com>
 Reviewed-by: Sameer Pujar <spujar@nvidia.com>
 ---
- sound/soc/tegra/tegra210_sfc.c | 31 ++++++++++++++++++++++++++++++-
- sound/soc/tegra/tegra210_sfc.h |  4 ++--
- 2 files changed, 32 insertions(+), 3 deletions(-)
+ sound/soc/tegra/tegra210_adx.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra210_sfc.c b/sound/soc/tegra/tegra210_sfc.c
-index e9df1ff..c2240bab 100644
---- a/sound/soc/tegra/tegra210_sfc.c
-+++ b/sound/soc/tegra/tegra210_sfc.c
+diff --git a/sound/soc/tegra/tegra210_adx.c b/sound/soc/tegra/tegra210_adx.c
+index bd0b10c..6894b11 100644
+--- a/sound/soc/tegra/tegra210_adx.c
++++ b/sound/soc/tegra/tegra210_adx.c
 @@ -2,7 +2,7 @@
  //
- // tegra210_sfc.c - Tegra210 SFC driver
+ // tegra210_adx.c - Tegra210 ADX driver
  //
 -// Copyright (c) 2021 NVIDIA CORPORATION.  All rights reserved.
 +// Copyright (c) 2021-2023 NVIDIA CORPORATION.  All rights reserved.
  
  #include <linux/clk.h>
  #include <linux/device.h>
-@@ -42,6 +42,7 @@ static const int tegra210_sfc_rates[TEGRA210_SFC_NUM_RATES] = {
- 	32000,
- 	44100,
- 	48000,
-+	64000,
- 	88200,
- 	96000,
- 	176400,
-@@ -2857,6 +2858,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_8to32,
- 		coef_8to44,
- 		coef_8to48,
-+		UNSUPP_CONV,
- 		coef_8to88,
- 		coef_8to96,
- 		UNSUPP_CONV,
-@@ -2872,6 +2874,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_11to32,
- 		coef_11to44,
- 		coef_11to48,
-+		UNSUPP_CONV,
- 		coef_11to88,
- 		coef_11to96,
- 		UNSUPP_CONV,
-@@ -2887,6 +2890,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_16to32,
- 		coef_16to44,
- 		coef_16to48,
-+		UNSUPP_CONV,
- 		coef_16to88,
- 		coef_16to96,
- 		coef_16to176,
-@@ -2902,6 +2906,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_22to32,
- 		coef_22to44,
- 		coef_22to48,
-+		UNSUPP_CONV,
- 		coef_22to88,
- 		coef_22to96,
- 		coef_22to176,
-@@ -2917,6 +2922,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_24to32,
- 		coef_24to44,
- 		coef_24to48,
-+		UNSUPP_CONV,
- 		coef_24to88,
- 		coef_24to96,
- 		coef_24to176,
-@@ -2932,6 +2938,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		BYPASS_CONV,
- 		coef_32to44,
- 		coef_32to48,
-+		UNSUPP_CONV,
- 		coef_32to88,
- 		coef_32to96,
- 		coef_32to176,
-@@ -2947,6 +2954,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_44to32,
- 		BYPASS_CONV,
- 		coef_44to48,
-+		UNSUPP_CONV,
- 		coef_44to88,
- 		coef_44to96,
- 		coef_44to176,
-@@ -2962,11 +2970,28 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_48to32,
- 		coef_48to44,
- 		BYPASS_CONV,
-+		UNSUPP_CONV,
- 		coef_48to88,
- 		coef_48to96,
- 		coef_48to176,
- 		coef_48to192,
- 	},
-+	/* Convertions from 64 kHz */
-+	{
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+		UNSUPP_CONV,
-+	},
- 	/* Convertions from 88.2 kHz */
- 	{
- 		coef_88to8,
-@@ -2977,6 +3002,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_88to32,
- 		coef_88to44,
- 		coef_88to48,
-+		UNSUPP_CONV,
- 		BYPASS_CONV,
- 		coef_88to96,
- 		coef_88to176,
-@@ -2991,6 +3017,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_96to32,
- 		coef_96to44,
- 		coef_96to48,
-+		UNSUPP_CONV,
- 		coef_96to88,
- 		BYPASS_CONV,
- 		coef_96to176,
-@@ -3006,6 +3033,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_176to32,
- 		coef_176to44,
- 		coef_176to48,
-+		UNSUPP_CONV,
- 		coef_176to88,
- 		coef_176to96,
- 		BYPASS_CONV,
-@@ -3021,6 +3049,7 @@ static s32 *coef_addr_table[TEGRA210_SFC_NUM_RATES][TEGRA210_SFC_NUM_RATES] = {
- 		coef_192to32,
- 		coef_192to44,
- 		coef_192to48,
-+		UNSUPP_CONV,
- 		coef_192to88,
- 		coef_192to96,
- 		coef_192to176,
-diff --git a/sound/soc/tegra/tegra210_sfc.h b/sound/soc/tegra/tegra210_sfc.h
-index 5a6b66e..a4c993d7 100644
---- a/sound/soc/tegra/tegra210_sfc.h
-+++ b/sound/soc/tegra/tegra210_sfc.h
-@@ -2,7 +2,7 @@
- /*
-  * tegra210_sfc.h - Definitions for Tegra210 SFC driver
-  *
-- * Copyright (c) 2021 NVIDIA CORPORATION.  All rights reserved.
-+ * Copyright (c) 2021-2023 NVIDIA CORPORATION.  All rights reserved.
-  *
-  */
+@@ -178,7 +178,7 @@ static int tegra210_adx_get_byte_map(struct snd_kcontrol *kcontrol,
+ 	if (enabled)
+ 		ucontrol->value.integer.value[0] = bytes_map[mc->reg];
+ 	else
+-		ucontrol->value.integer.value[0] = 0;
++		ucontrol->value.integer.value[0] = 256;
  
-@@ -47,7 +47,7 @@
- #define TEGRA210_SFC_EN_SHIFT			0
- #define TEGRA210_SFC_EN				(1 << TEGRA210_SFC_EN_SHIFT)
+ 	return 0;
+ }
+@@ -192,19 +192,19 @@ static int tegra210_adx_put_byte_map(struct snd_kcontrol *kcontrol,
+ 	int value = ucontrol->value.integer.value[0];
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
++	unsigned int mask_val = adx->byte_mask[mc->reg / 32];
  
--#define TEGRA210_SFC_NUM_RATES 12
-+#define TEGRA210_SFC_NUM_RATES 13
+-	if (value == bytes_map[mc->reg])
++	if (value >= 0 && value <= 255)
++		mask_val |= (1 << (mc->reg % 32));
++	else
++		mask_val &= ~(1 << (mc->reg % 32));
++
++	if (mask_val == adx->byte_mask[mc->reg / 32])
+ 		return 0;
  
- /* Fields in TEGRA210_SFC_COEF_RAM */
- #define TEGRA210_SFC_COEF_RAM_EN		BIT(0)
+-	if (value >= 0 && value <= 255) {
+-		/* update byte map and enable slot */
+-		bytes_map[mc->reg] = value;
+-		adx->byte_mask[mc->reg / 32] |= (1 << (mc->reg % 32));
+-	} else {
+-		/* reset byte map and disable slot */
+-		bytes_map[mc->reg] = 0;
+-		adx->byte_mask[mc->reg / 32] &= ~(1 << (mc->reg % 32));
+-	}
++	/* Update byte map and slot */
++	bytes_map[mc->reg] = value % 256;
++	adx->byte_mask[mc->reg / 32] = mask_val;
+ 
+ 	return 1;
+ }
 -- 
 2.7.4
 
