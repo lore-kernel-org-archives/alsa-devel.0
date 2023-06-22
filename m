@@ -4,82 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 631CDEB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jun 2023 22:35:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D1EAEB64DC
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jun 2023 22:35:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57F2584A;
-	Fri, 23 Jun 2023 00:34:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57F2584A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3ABE885D;
+	Fri, 23 Jun 2023 00:34:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ABE885D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687473330;
-	bh=Fx3v4G/Q/qRPvxtg3Mgx/rYdfAvEoHue1uehMtXOhZQ=;
+	s=default; t=1687473336;
+	bh=ma8yFR5QnALuCTyQbyzW/gXgi2WHYs1DAJMOAeHZ5cM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CtFrzJmL3QvB4gSeMDzOdXKT/FrRS/YoPMrKvETvfw31zqHxIWZQFvKFkJHgRrhyF
-	 qkRkM3bM5JSVyhD5p7AFoFViMuQFvxEAPwsdFYSQ76jnzkHcc+7pWER0/gXL4QmDic
-	 P1LMSSecW8UQ87eSG6Brp8oNMiloVVP44HpdkfGE=
+	b=Iof+AGjk9JSEaD1P+mZZ5yc8C/xfgEmYqekFK3nnXov0mogxWnimjxUfGvND6c3u4
+	 DL+C9HTvOq4YbW7GAF1+YDxvjefdre0+TlBufKjvVRNkbbMHJwRd62xV12rtvGm/JK
+	 SF+QdYUCSb6MG2i9bIlDdXLytq9WoU3vcwVwBVQM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E830DF80551; Fri, 23 Jun 2023 00:33:53 +0200 (CEST)
+	id A78FCF80578; Fri, 23 Jun 2023 00:34:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6AEF2F80552;
-	Fri, 23 Jun 2023 00:33:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11DC1F80553;
+	Fri, 23 Jun 2023 00:34:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D4CAF801F5; Fri, 23 Jun 2023 00:33:49 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 443B5F80567; Fri, 23 Jun 2023 00:34:01 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 62085F8003A
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 00:33:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62085F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 137AFF80169
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 00:33:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 137AFF80169
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Jk5peD++
+ header.s=k20201202 header.b=qSKzWAxV
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A1E5061924;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D7DDD61903;
+	Thu, 22 Jun 2023 22:33:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B69A6C433C8;
 	Thu, 22 Jun 2023 22:33:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F27CC433CA;
-	Thu, 22 Jun 2023 22:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687473224;
-	bh=Fx3v4G/Q/qRPvxtg3Mgx/rYdfAvEoHue1uehMtXOhZQ=;
+	s=k20201202; t=1687473229;
+	bh=ma8yFR5QnALuCTyQbyzW/gXgi2WHYs1DAJMOAeHZ5cM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Jk5peD++dJDfFdJZnWbVzS3MvLCy9R+jOHoXLYovKYM9fB5hizu5axPGxPBWRYp2e
-	 dX0fTz91H0BC3BlqDJOwEfeyO426zb9qctjpO/37mf+5DxLAPSBRHWhPxGpcsvdQsa
-	 GdqM3W4TfHjLqT39SAm6sGe8RoPD97ISunnC3sB0x3cKqyvDLzy/VVhf23wG5fzb1h
-	 KWi8bVxAUlXv1rtUV5dEWxsS4Vf0Yl0gSBVla+pdgqD/lrCqRxhPofk/huDYpbw7Mw
-	 xbK3hE8R009lLxgJ0IexZNUluF/7g+av++i9JRk+WFzCkBIFdDdfvk2BhgOYmeTPTG
-	 sfc6hflfW85Ww==
+	b=qSKzWAxVTU4YlMrv/k79Lu0IAzA7Wuogok1jqFuTUcVQTZbDinrIT/ypsWQXoPztj
+	 QGJfeDsP/MHMWyOvELrLXkMyUdX5/lC5PdIYronA+rNWHuZ4DKxycGqO/DXRMKfv+W
+	 qqAXy9hmZA34ySWMUyggPp6Y/T26LS0hOcRbALM5HtFP9agcaia5ZXHoI9sbUPjQw0
+	 dsIFDnYxlma7cTAIK4aQLEUWtgDoSZwLM0ufNS1q+AB4QecICkq/wB3jK//SXY7sJN
+	 vPoYmPztsWKGbxVo9akSbHF/zBS2dhCvc79B2drdjiEWCEqTqzeka1jkJYWbJBbu91
+	 tn+reAMp8lDCQ==
 From: Mark Brown <broonie@kernel.org>
-To: Claudiu Beznea <claudiu.beznea@microchip.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Rob Herring <robh@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20230621231044.3816914-1-robh@kernel.org>
-References: <20230621231044.3816914-1-robh@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: microchip,sama7g5-pdmc: Simplify
- "microchip,mic-pos" constraints
-Message-Id: <168747322064.318849.2286093832255639633.b4-ty@kernel.org>
-Date: Thu, 22 Jun 2023 23:33:40 +0100
+To: robh+dt@kernel.org, krzk+dt@kernel.org, thierry.reding@gmail.com,
+ lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ Sameer Pujar <spujar@nvidia.com>
+Cc: jonathanh@nvidia.com, mkumard@nvidia.com, sheetal@nvidia.com,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1687433656-7892-1-git-send-email-spujar@nvidia.com>
+References: <1687433656-7892-1-git-send-email-spujar@nvidia.com>
+Subject: Re: (subset) [PATCH 0/8] Few audio fixes on Tegra platforms
+Message-Id: <168747322434.318849.728081824901814342.b4-ty@kernel.org>
+Date: Thu, 22 Jun 2023 23:33:44 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-c6835
-Message-ID-Hash: B6Y7T57PAIIBZ3DRXYXYMJMGCBYY3WOJ
-X-Message-ID-Hash: B6Y7T57PAIIBZ3DRXYXYMJMGCBYY3WOJ
+Message-ID-Hash: IECPPK6WMWELL4FMP4PIIGM6OFWROJCJ
+X-Message-ID-Hash: IECPPK6WMWELL4FMP4PIIGM6OFWROJCJ
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B6Y7T57PAIIBZ3DRXYXYMJMGCBYY3WOJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IECPPK6WMWELL4FMP4PIIGM6OFWROJCJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,12 +96,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 21 Jun 2023 17:10:44 -0600, Rob Herring wrote:
-> "enum" values should be integers or strings, not arrays (though json-schema
-> does allow arrays, we do not). In this case, all possible combinations are
-> allowed anyways, so there's little point in expressing as an array.
+On Thu, 22 Jun 2023 17:04:08 +0530, Sameer Pujar wrote:
+> This series fixes some of the issues which were observed during an attempt to
+> enhance automated test coverage on Jetson AGX Orin. Below is a short summary
+> of the issues and fixes:
 > 
+>   * Sample rate coversion failures above 48kHz.
+>   * AMX and ADX test cases failures due to incorrect byte mask.
+>   * Atomic sleep in RT5640 codec which is present on Jetson AGX Orin.
+>   * AHUB clock fixes on Tegra234 and previous chips.
+>   * Minor cleanups in ASRC and AHUB driver.
 > 
+> [...]
 
 Applied to
 
@@ -114,8 +115,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: microchip,sama7g5-pdmc: Simplify "microchip,mic-pos" constraints
-      commit: b2c28785b125acb28a681462510297410cbbabd7
+[1/8] ASoC: tegra: Fix SFC conversion for few rates
+      (no commit info)
+[5/8] ASoC: tegra: Use normal system sleep for ASRC
+      commit: 2cc41db71a434844ca97b6e30c9a30a2464a996e
+[6/8] ASoC: tegra: Remove stale comments in AHUB
+      commit: f47d43283a4233528683deaaba95f0ee2cfe862d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
