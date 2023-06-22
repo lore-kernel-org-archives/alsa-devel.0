@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D1EAEB64DC
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jun 2023 22:35:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2574EB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jun 2023 22:35:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3ABE885D;
-	Fri, 23 Jun 2023 00:34:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ABE885D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D65B3839;
+	Fri, 23 Jun 2023 00:35:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D65B3839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687473336;
-	bh=ma8yFR5QnALuCTyQbyzW/gXgi2WHYs1DAJMOAeHZ5cM=;
+	s=default; t=1687473354;
+	bh=pVo+/ISXibiLscmCDNLsV1/WF9MElrFoN9dy+8aHC3w=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Iof+AGjk9JSEaD1P+mZZ5yc8C/xfgEmYqekFK3nnXov0mogxWnimjxUfGvND6c3u4
-	 DL+C9HTvOq4YbW7GAF1+YDxvjefdre0+TlBufKjvVRNkbbMHJwRd62xV12rtvGm/JK
-	 SF+QdYUCSb6MG2i9bIlDdXLytq9WoU3vcwVwBVQM=
+	b=SSpAvSFBB7mMB93Vhft89tdmM0KgpllHJCtvKgQ9pNEcH19EWI5zU+rsKQcz7GhJN
+	 p8wJMfEzHg7/GUGEMmKrLEqrJdDVPRdVwSJ3wnbaS27pTob85IYZV0amcVkz8usY99
+	 wvHNky3JMHnJLLwYdVFyVBcUh1HHlaTUTcUV1rYo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A78FCF80578; Fri, 23 Jun 2023 00:34:05 +0200 (CEST)
+	id B4267F8057A; Fri, 23 Jun 2023 00:34:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11DC1F80553;
-	Fri, 23 Jun 2023 00:34:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 733E8F8057A;
+	Fri, 23 Jun 2023 00:34:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 443B5F80567; Fri, 23 Jun 2023 00:34:01 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 9CC62F8057A; Fri, 23 Jun 2023 00:34:07 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 137AFF80169
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 00:33:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 137AFF80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id AFA43F8055A
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 00:33:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFA43F8055A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qSKzWAxV
+ header.s=k20201202 header.b=tMY4mvc2
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D7DDD61903;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8B09461924;
+	Thu, 22 Jun 2023 22:33:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDA44C433CC;
 	Thu, 22 Jun 2023 22:33:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B69A6C433C8;
-	Thu, 22 Jun 2023 22:33:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687473229;
-	bh=ma8yFR5QnALuCTyQbyzW/gXgi2WHYs1DAJMOAeHZ5cM=;
+	s=k20201202; t=1687473233;
+	bh=pVo+/ISXibiLscmCDNLsV1/WF9MElrFoN9dy+8aHC3w=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=qSKzWAxVTU4YlMrv/k79Lu0IAzA7Wuogok1jqFuTUcVQTZbDinrIT/ypsWQXoPztj
-	 QGJfeDsP/MHMWyOvELrLXkMyUdX5/lC5PdIYronA+rNWHuZ4DKxycGqO/DXRMKfv+W
-	 qqAXy9hmZA34ySWMUyggPp6Y/T26LS0hOcRbALM5HtFP9agcaia5ZXHoI9sbUPjQw0
-	 dsIFDnYxlma7cTAIK4aQLEUWtgDoSZwLM0ufNS1q+AB4QecICkq/wB3jK//SXY7sJN
-	 vPoYmPztsWKGbxVo9akSbHF/zBS2dhCvc79B2drdjiEWCEqTqzeka1jkJYWbJBbu91
-	 tn+reAMp8lDCQ==
+	b=tMY4mvc2IEk3huRUmyd+CKSIQAg1Fq5ZpTvMm8j5idWbc8/Mgvh3uMK1sWAbWc1id
+	 Z81MdZKEwFZv4FWArTsafK1cLI/l+SkwloUA4P9hj79JW8pyPp6jQNCJm772mOuACm
+	 7tEfX4TKkP3DBZ7VjlGRu6q3Ym799nOHoVbGxRKCOy6v3IHaNKbIEx7K+ZIU4ODdtw
+	 Sr+MsXl6PpDKsLVwIoZ2S4UVq7QsNZyB50CHN83OlVlmClBxRTNpe3g2KpreDY/4vi
+	 8Hx9JxHmjPlmQkHWKkSf7Csvk/LyVQ7irOU9XOeNCDfUMch/NmZ6HIhcHEj7QXMpia
+	 m4bCIYUTRMNlw==
 From: Mark Brown <broonie@kernel.org>
-To: robh+dt@kernel.org, krzk+dt@kernel.org, thierry.reding@gmail.com,
- lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- Sameer Pujar <spujar@nvidia.com>
-Cc: jonathanh@nvidia.com, mkumard@nvidia.com, sheetal@nvidia.com,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1687433656-7892-1-git-send-email-spujar@nvidia.com>
-References: <1687433656-7892-1-git-send-email-spujar@nvidia.com>
-Subject: Re: (subset) [PATCH 0/8] Few audio fixes on Tegra platforms
-Message-Id: <168747322434.318849.728081824901814342.b4-ty@kernel.org>
-Date: Thu, 22 Jun 2023 23:33:44 +0100
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, steev@kali.org,
+ johan+linaro@kernel.org, quic_bjorande@quicinc.com
+In-Reply-To: <20230302120327.10823-1-srinivas.kandagatla@linaro.org>
+References: <20230302120327.10823-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: qcom: common: add default jack dapm pins
+Message-Id: <168747322954.318849.3017080931137286900.b4-ty@kernel.org>
+Date: Thu, 22 Jun 2023 23:33:49 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-c6835
-Message-ID-Hash: IECPPK6WMWELL4FMP4PIIGM6OFWROJCJ
-X-Message-ID-Hash: IECPPK6WMWELL4FMP4PIIGM6OFWROJCJ
+Message-ID-Hash: BPYPOP6UDJNIB6VSFAHKESIJHOL24Y5B
+X-Message-ID-Hash: BPYPOP6UDJNIB6VSFAHKESIJHOL24Y5B
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IECPPK6WMWELL4FMP4PIIGM6OFWROJCJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BPYPOP6UDJNIB6VSFAHKESIJHOL24Y5B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,18 +95,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 22 Jun 2023 17:04:08 +0530, Sameer Pujar wrote:
-> This series fixes some of the issues which were observed during an attempt to
-> enhance automated test coverage on Jetson AGX Orin. Below is a short summary
-> of the issues and fixes:
+On Thu, 02 Mar 2023 12:03:27 +0000, Srinivas Kandagatla wrote:
+> If the soundcard does not specify the dapm pins, let the common
+> code add these pins for jack.
 > 
->   * Sample rate coversion failures above 48kHz.
->   * AMX and ADX test cases failures due to incorrect byte mask.
->   * Atomic sleep in RT5640 codec which is present on Jetson AGX Orin.
->   * AHUB clock fixes on Tegra234 and previous chips.
->   * Minor cleanups in ASRC and AHUB driver.
 > 
-> [...]
 
 Applied to
 
@@ -115,12 +107,8 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: tegra: Fix SFC conversion for few rates
-      (no commit info)
-[5/8] ASoC: tegra: Use normal system sleep for ASRC
-      commit: 2cc41db71a434844ca97b6e30c9a30a2464a996e
-[6/8] ASoC: tegra: Remove stale comments in AHUB
-      commit: f47d43283a4233528683deaaba95f0ee2cfe862d
+[1/1] ASoC: qcom: common: add default jack dapm pins
+      commit: 82f76ac26c601c5b0c0db7f69500efc42f2ee7ed
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
