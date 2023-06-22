@@ -4,86 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8293EB64D8
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jun 2023 07:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73E7FEB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Jun 2023 08:35:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3F8F822;
-	Thu, 22 Jun 2023 09:07:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3F8F822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BB7982C;
+	Thu, 22 Jun 2023 10:34:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BB7982C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687417686;
-	bh=Ucz/cGBHZV0/08hkWPSC4dkuM9OUlC6Z+Ne26wBFqu0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1687422926;
+	bh=XgtNm+HD/SrGa3ByxHL3PTBnMHBtElsxgSR6rt60Ne4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=u8Q0PwLcYyMM0wxf6J+BgcGet56trsPUc6dy2bms0XZROo8wohMWdWLADKUlXCQ3j
-	 FoGCJg48AUAWWK1M5uOdY2CGLSqv/OZZ3YXGt/K7qDfS9rSDAI6TNwvM6dKKdg1dBH
-	 s3bNGkhSL8VIhRJlNLASJ54GZMUDZb7uH8tmNcDk=
+	b=THI3n4IjowAHjqZNeGD6wBHyWR6qUFmqIDaC+U2cf8uttO80jwmRCRv5Q5OmGgarg
+	 aJHFQK6PT34dbPgvG5KdZp25sOvc/kploU5lO1ratWv4e0FshfdPOyfuNbzUCcqyhp
+	 dVh9HDBmPDijs3VpON14qHlkX6X/3hrOfoxEUbug=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8606DF80141; Thu, 22 Jun 2023 09:06:52 +0200 (CEST)
+	id 05F2BF80141; Thu, 22 Jun 2023 10:34:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06582F80141;
-	Thu, 22 Jun 2023 09:06:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 515DBF80141;
+	Thu, 22 Jun 2023 10:34:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1FEC7F80141; Thu, 22 Jun 2023 09:06:49 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 6E6A5F80141; Thu, 22 Jun 2023 10:34:03 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 18640F80130
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2023 09:06:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18640F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9B54FF80124
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2023 10:33:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B54FF80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lIliUlkd
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1687417600; x=1718953600;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ucz/cGBHZV0/08hkWPSC4dkuM9OUlC6Z+Ne26wBFqu0=;
-  b=lIliUlkdx69KvqlXlpDSjO51oUm/9orQYMD6rAA1JDXJHb608b/UbKu3
-   AE8qFrL1qKLJdhVyMe0UgczQNNhcfkw/lb2w5IdQdWZLic+xQQtG1i3Xg
-   uqWYZbEUAWVZkpVkfwzJq+k2O7QMG9nG2fe5IhRPFNVMRajE+6rz7Z75D
-   KGXV5yF8ed7Ffay7c42k9QlEIn5B8XunMCRFNSnvXZ/XIKCUtinrnrRvV
-   UCJkoJ9o+stiRADSx6M80ZuvTAxwn/FkVoQ0KiJCGNO3Rbmn3otA+WkNF
-   4zTfLhyE33D4oPLju42Z5zUogievSXyL1rP+jKGeo9h5imbdFh7WSpTnr
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10748"; a="340746372"
-X-IronPort-AV: E=Sophos;i="6.00,262,1681196400";
-   d="scan'208";a="340746372"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Jun 2023 00:06:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10748"; a="708979705"
-X-IronPort-AV: E=Sophos;i="6.00,262,1681196400";
-   d="scan'208";a="708979705"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 22 Jun 2023 00:06:33 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qCEOl-0007Oz-2P;
-	Thu, 22 Jun 2023 07:06:31 +0000
-Date: Thu, 22 Jun 2023 15:05:50 +0800
-From: kernel test robot <lkp@intel.com>
-To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>,
-	alsa-devel@alsa-project.org
-Cc: oe-kbuild-all@lists.linux.dev, Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 8/8] ALSA: emu10k1: add high-rate playback in E-MU D.A.S.
- mode
-Message-ID: <202306221430.7QukSHhG-lkp@intel.com>
-References: <20230613073822.1343234-9-oswald.buddenhagen@gmx.de>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Eb3IyCXm
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id E97EF617B0;
+	Thu, 22 Jun 2023 08:33:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AD03C433C8;
+	Thu, 22 Jun 2023 08:33:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1687422834;
+	bh=XgtNm+HD/SrGa3ByxHL3PTBnMHBtElsxgSR6rt60Ne4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Eb3IyCXmyj2S6adM6ACKO6YNPC4nqaAT+wPQxg9yTc5/WJ37OuWcQKNi5uofKL++Z
+	 U01/zMz7j0x49zWR1xw52ZzwyYnmeIUqHYN6CBjfr4ZyNmDsBTktoUEfu0vg5ccuk8
+	 QQ7jPFn4bOT1ckGitDj82+vvOwkqjVLqR2W/VjXnUMjnzYAgkhyctN52Kw0R9SPb+H
+	 zEELxvfbTDsD7ytoxHzZjbZlU9sxqvteocJjFdWSceTDLwFgTo0jHvL1me2IF5hJoA
+	 iPOwzVFzEx7/ULCQir4NKymwzEHpwwsUG7L6AL4K/WuaLAHdPZJtajPqPcorKms5V2
+	 Ql65HdpouX9eQ==
+Message-ID: <956657b8-bae1-2096-e932-3a1ae6852431@kernel.org>
+Date: Thu, 22 Jun 2023 10:33:47 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230613073822.1343234-9-oswald.buddenhagen@gmx.de>
-Message-ID-Hash: XMJSMPLOJEIUXSKE3ADXPSLVDN774RAV
-X-Message-ID-Hash: XMJSMPLOJEIUXSKE3ADXPSLVDN774RAV
-X-MailFrom: lkp@intel.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] ASoC: dt-bindings: nau8821: Convert to dtschema
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>, Seven Lee <wtli@nuvoton.com>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, YHCHuang@nuvoton.com,
+ KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
+ scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com,
+ devicetree@vger.kernel.org
+References: <20230621093903.1077050-1-wtli@nuvoton.com>
+ <99102ee0-ed59-4e60-89d2-60964cec012c@sirena.org.uk>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <99102ee0-ed59-4e60-89d2-60964cec012c@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: L2UTYP5H3VW7OBG4OX3YETVLZLQ4NOYX
+X-Message-ID-Hash: L2UTYP5H3VW7OBG4OX3YETVLZLQ4NOYX
+X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -94,8 +89,7 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XMJSMPLOJEIUXSKE3ADXPSLVDN774RAV/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,87 +98,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Oswald,
+On 21/06/2023 20:13, Mark Brown wrote:
+> On Wed, Jun 21, 2023 at 05:39:03PM +0800, Seven Lee wrote:
+>> Convert the NAU8821 audio CODEC bindings to DT schema.
+> 
+> This wasn't sent to the DT list or maintainers, it should be in order to
+> ensure they can review it.  Copying in the list and leaving the whole
+> message for context.
 
-kernel test robot noticed the following build warnings:
+Thanks.
 
-[auto build test WARNING on tiwai-sound/for-next]
-[also build test WARNING on next-20230621]
-[cannot apply to tiwai-sound/for-linus linus/master v6.4-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+DT list is being used for testing the patches, so this has to be resend
+following get_maintainers.pl output.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Oswald-Buddenhagen/ALSA-emu10k1-introduce-alternative-E-MU-D-A-S-mode/20230613-154242
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230613073822.1343234-9-oswald.buddenhagen%40gmx.de
-patch subject: [PATCH 8/8] ALSA: emu10k1: add high-rate playback in E-MU D.A.S. mode
-config: i386-randconfig-s002-20230621 (https://download.01.org/0day-ci/archive/20230622/202306221430.7QukSHhG-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230622/202306221430.7QukSHhG-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306221430.7QukSHhG-lkp@intel.com/
+Seven,
 
-sparse warnings: (new ones prefixed by >>)
->> sound/pci/emu10k1/emupcm.c:1180:45: sparse: sparse: cast removes address space '__user' of expression
->> sound/pci/emu10k1/emupcm.c:1182:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int [usertype] *src @@
-   sound/pci/emu10k1/emupcm.c:1182:41: sparse:     expected void const volatile [noderef] __user *ptr
-   sound/pci/emu10k1/emupcm.c:1182:41: sparse:     got unsigned int [usertype] *src
+You already got such feedback before, so it's a repeat of same mistake
+in the process. Use tools to automate such tasks, so the process is
+being followed without need for additional steps.
 
-vim +/__user +1180 sound/pci/emu10k1/emupcm.c
+Best regards,
+Krzysztof
 
-  1146	
-  1147	static int snd_emu10k1_efx_playback_copy_user(struct snd_pcm_substream *substream,
-  1148						      int channel, unsigned long hwoff,
-  1149						      void __user *buf, unsigned long bytes)
-  1150	{
-  1151		struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
-  1152		struct snd_pcm_runtime *runtime = substream->runtime;
-  1153		unsigned shift = emu->emu1010.clock_shift;
-  1154		unsigned i, j, k, channels, subchans, voices, frame_size, frames;
-  1155	
-  1156		if (!shift) {
-  1157			// Non-interleaved source
-  1158			if (copy_from_user(get_dma_ptr(runtime, channel, hwoff), buf, bytes))
-  1159				return -EFAULT;
-  1160		} else {
-  1161			// Interleaved source
-  1162			channels = runtime->channels;
-  1163			subchans = 1 << shift;
-  1164			voices = channels << shift;
-  1165			frame_size = voices << 2;
-  1166			// It is recommended that writes are period-sized, and it appears
-  1167			// unlikely that someone would actually use a period size which
-  1168			// is not divisible by four, so don't bother making it work.
-  1169			// This check should also prevent that hwoff becomes unaligned.
-  1170			// Ideally, snd_pcm_sw_params.xfer_align would handle this ...
-  1171			if (bytes % frame_size)
-  1172				return -EIO;
-  1173			frames = bytes / frame_size;
-  1174			hwoff /= voices;
-  1175			if (!user_access_begin(buf, bytes))
-  1176				return -EFAULT;
-  1177			for (i = 0; i < channels; i++) {
-  1178				for (j = 0; j < subchans; j++) {
-  1179					u32 *dst = get_dma_ptr_x(runtime, shift, i, j, hwoff);
-> 1180					u32 *src = (u32 *)buf + j * channels + i;
-  1181					for (k = 0; k < frames; k++, dst++, src += voices)
-> 1182						unsafe_get_user(*dst, src, faulted);
-  1183				}
-  1184			}
-  1185			user_access_end();
-  1186		}
-  1187		return 0;
-  1188	
-  1189	faulted:
-  1190		user_access_end();
-  1191		return -EFAULT;
-  1192	}
-  1193	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
