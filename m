@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42C23EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jun 2023 23:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15BF2EB64D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jun 2023 23:12:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0726C83A;
-	Sat, 24 Jun 2023 01:10:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0726C83A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00A2384A;
+	Sat, 24 Jun 2023 01:11:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00A2384A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687561882;
-	bh=AhTyVrezEb7xISciSylu0n0Qyim1F111XYrBxnV80IQ=;
+	s=default; t=1687561932;
+	bh=Mhd166EPkeVELtxz3wOL++HbLzHAs9D0tqBr4aCUI4A=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cmXzwXzq6Ycc+RfJpenrUuoVW78NOQim9nnqv4jlcNulo8ImD7AemKkb+EClsiX+G
-	 pYZB7fafUdT0S+6QiT9Ud3jA3fDYwQDROxmUBXMamt9pt+e3f1Tf6Wszl9T/+YcmT7
-	 orG399R7u/hxPFaaew+qpFn9F51KzNyJ54R2R07I=
+	b=qJqogcYcIdtb011ft+Wt5PthOuxYa2qj1sc5r/Jm3yO1PT3mbw/PM8ejmBrXhVJM6
+	 uaTxzs2w60uvtd6oD50EyV3DZrhjPNM5NdDu7tsxyjth6jL2kfzy0w54gZKl2DO7F3
+	 eDuY37jMglIc12423W3yj26KhIa2OP3Ez/+yHIZM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4036F80132; Sat, 24 Jun 2023 01:10:30 +0200 (CEST)
+	id B9D08F8051E; Sat, 24 Jun 2023 01:10:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 540D4F80169;
-	Sat, 24 Jun 2023 01:10:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB839F80549;
+	Sat, 24 Jun 2023 01:10:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E090AF80163; Sat, 24 Jun 2023 01:10:24 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id EBF54F80141; Sat, 24 Jun 2023 01:10:26 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E18B8F80130
-	for <alsa-devel@alsa-project.org>; Sat, 24 Jun 2023 01:10:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E18B8F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id D3748F80132
+	for <alsa-devel@alsa-project.org>; Sat, 24 Jun 2023 01:10:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3748F80132
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=QLXdp79y
+ header.s=k20201202 header.b=fFm65H5c
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A4EB7611F6;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 1B8E161077;
+	Fri, 23 Jun 2023 23:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5D69C433C8;
 	Fri, 23 Jun 2023 23:10:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2EF6C433C0;
-	Fri, 23 Jun 2023 23:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687561814;
-	bh=AhTyVrezEb7xISciSylu0n0Qyim1F111XYrBxnV80IQ=;
+	s=k20201202; t=1687561816;
+	bh=Mhd166EPkeVELtxz3wOL++HbLzHAs9D0tqBr4aCUI4A=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=QLXdp79yFL2jHUj+smoXBvOn1yR18rfo/ld1dHN57UKTiMPYrDHJDdXYd0YVm2E+K
-	 2dXgFn2t/HVRyeH9YbmupgVZ12hBvOE82/4ldtrCzsS5ZfF4iFAxFzuzfdm69csJwo
-	 IzgGRoF/Jf3XLv2iM/6H6Vne5CRVa1U6v8OTDoEHiIO3iib/sxjXJ405LmbQMhat41
-	 yJUho2EIjpK1bSho1a0YjWYKKQthH87tpoK8ER9LhjHMf51MMg15L1s1HcmGpQQ5fE
-	 f/6E9UKs1eZfgToQLrI350rEEkBlm0Noz6QAnPq2NsDzlv0Z/Nu7jctO1VlV+CBXNB
-	 Im90/cjyeDWww==
+	b=fFm65H5c1qSSW+fLp1P/xOXOUCNI3jK6nxEndmhpdXCd5joIDM60s1jJe0XAp/qYf
+	 UkCSa0T5yMzsA03yiZbPkm1mN4CJNGdkNvFF/3zPSfMYbIi2Rc5VEbD6BPF0J4yVng
+	 3FNBsE97EC8c6MkwipV7sB+GFPDRTujEmWC4ijgBiY3zPB/8vbmqTt6HYY15/wh866
+	 qDIS6YBEM8Gy/nVbkeMrefji2FTHxG2WTGscoTSGlKMdxNomGgxCq/iE6ca1+k4XXF
+	 wL2c4hH0VcbG7/Du1eR3ODOWa1shiStJH/DD/F2EwxIPN1djkWVD2ijSQ3JUqxotpH
+	 PuPy8MMgxh8Ow==
 From: Mark Brown <broonie@kernel.org>
-To: Shenghao Ding <13916275206@139.com>,
- Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org
-In-Reply-To: <729bb6b3-bc1d-4b3d-8b65-077a492c753c@moroto.mountain>
-References: <729bb6b3-bc1d-4b3d-8b65-077a492c753c@moroto.mountain>
-Subject: Re: [PATCH] ASoC: tas2781: Fix error code in
- tas2781_load_calibration()
-Message-Id: <168756181136.1144026.12966447947961318975.b4-ty@kernel.org>
-Date: Sat, 24 Jun 2023 00:10:11 +0100
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230623-asoc-fix-meson-probe-v1-1-82b2c2ec5ca4@kernel.org>
+References: <20230623-asoc-fix-meson-probe-v1-1-82b2c2ec5ca4@kernel.org>
+Subject: Re: [PATCH] ASoC: core: Always store of_node when getting DAI link
+ component
+Message-Id: <168756181441.1144026.11961364462852265443.b4-ty@kernel.org>
+Date: Sat, 24 Jun 2023 00:10:14 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-c6835
-Message-ID-Hash: VFX4Z4BZ2DSI3UX2Q3XTEAAUMBRLLUJP
-X-Message-ID-Hash: VFX4Z4BZ2DSI3UX2Q3XTEAAUMBRLLUJP
+Message-ID-Hash: 54VGQGDEYVUX4GK3P5GFU35BVNDPVI3L
+X-Message-ID-Hash: 54VGQGDEYVUX4GK3P5GFU35BVNDPVI3L
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VFX4Z4BZ2DSI3UX2Q3XTEAAUMBRLLUJP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/54VGQGDEYVUX4GK3P5GFU35BVNDPVI3L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,10 +97,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 23 Jun 2023 15:09:48 +0300, Dan Carpenter wrote:
-> Return -EINVAL instead of success on this error path.
+On Fri, 23 Jun 2023 22:04:39 +0100, Mark Brown wrote:
+> The generic snd_soc_dai_get_dlc() contains a default translation function
+> for DAI names which has factored out common code in a number of card
+> drivers, resolving the dai_name and of_node either using a driver provided
+> translation function or with a generic implementation. Unfortunately the
+> of_node can't be set by the translation function since it currently doesn't
+> have an interface to do that but snd_soc_dai_get_dlc() only initialises the
+> of_node in the case where there is no translation function.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -108,8 +114,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tas2781: Fix error code in tas2781_load_calibration()
-      commit: ed959833db7bdb4e57fa8f4076babf3810296f5b
+[1/1] ASoC: core: Always store of_node when getting DAI link component
+      commit: 2d0cad0473bd1ffbc5842be0b9f2546265acb011
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
