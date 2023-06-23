@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF14CEB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jun 2023 09:00:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED423C001B0
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jun 2023 09:00:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D526186F;
-	Fri, 23 Jun 2023 10:59:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D526186F
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF5A5950;
+	Fri, 23 Jun 2023 10:59:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF5A5950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687510843;
-	bh=Pwe93HySoHBwZEXD+07SCkMbpVbTfpNOM3zOW2bQ6EE=;
+	s=default; t=1687510848;
+	bh=/hTbZj/Pa+Nzd59V/qjms0RDfk5/KWt2J2oHLNyyvaw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CSisAFppDzvyX8fjv4FmYXmSVX8WduOmCMvtOJJBAT6jzyCHGzEQExbERpuvR6GjF
-	 P2HnGqv0kvN0rW3LzhXVgOr0PCZaO5MEcnDMan06PCJ6kgrnh5gH/zrWNoEsge/KCZ
-	 8LqSZJKkL61G/MVlS6ZdIWPZ/B250VQ1HdDudvNE=
+	b=tbYk8pz013RfeA5mfAMppHjLQufGT7UIv8R8apw1m+PDmZcmrmoWjG07dX96r+50O
+	 8XWycz5HwZUSVn75im4tnGRpsWi15L7QJjh/v5LamWZCoVXPYlmqas7V5NndW6Vl3j
+	 1c3hFNQcseHjHpOIxQ45fsRO4+7S5qDT2VQWie64=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 052A0F8057D; Fri, 23 Jun 2023 10:59:05 +0200 (CEST)
+	id 95BD6F80130; Fri, 23 Jun 2023 10:59:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D838BF8057C;
-	Fri, 23 Jun 2023 10:59:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 104A0F8058C;
+	Fri, 23 Jun 2023 10:59:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BBCD8F801F5; Fri, 23 Jun 2023 10:58:53 +0200 (CEST)
+	id 951DAF801F5; Fri, 23 Jun 2023 10:58:55 +0200 (CEST)
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
  [217.70.183.196])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 692DEF80132
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 10:58:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 692DEF80132
+	by alsa1.perex.cz (Postfix) with ESMTPS id 05D2EF80169
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 10:58:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05D2EF80169
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=poXQb6l0
+ header.s=gm1 header.b=ONhXLrnB
 X-GND-Sasl: herve.codina@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687510723;
+	t=1687510729;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bOjUEUa+0v4gjRsjixC0ZUKxZ+b4tghUzi1tXKl/N6c=;
-	b=poXQb6l0cEHC73knVIo0+10AHqgF/mUekvirOylTeNnSx+PaqoPQVZlRF+dyI2+0/lI9cl
-	UzFiXUl+Zg9ygv6MARKwCWo9tctVTVbubnks2+aRy9bXLlV7KZZSpQWBUmxs73pQBb9NPJ
-	aSAJ/gD8Y9jkg552ubQj4k38KHLEf1mqY0GOixpcnUF7ELGlDLl7ezenwSEby0s0hJl9Ig
-	f/Fa3cp3110QCbyLbAP+wunwNpfrKsui/ijn5hA+a8XzvOpYaSsYaHTxGyZjYgqTkux4B4
-	aP2W1AG1QrjUHW7kgtCz/HEwBFe2Xsx96lajdmYtJf5/XTsufUJ6Umx+C+PFyg==
+	bh=/hsiLkhiPhkv1THloCiztKYYIF7LrdRF7qyhpJmA/Ws=;
+	b=ONhXLrnBHT9aoyHuwq5KlvouXzbQh+QAmv9J7ceVVSq34ivg6s8qyGIr6i04Sagh36RmE5
+	QX5t9pUBXx8h4CQxdlHYVRAdUnpCPiZ7B64oigbrIStqKvmyXOxh4QsLrrg4MvujZFuNaP
+	BqfMwsfKiRw7UaBllrYpDvsidpVA5t8euhAHUmC0W4piebJHsAK+XMLIylcD1yi8cbCk1l
+	fUpajUGxh2VxZM8U6BfKDYpZmT1NIw+chgYSsMPisZnwSJPEE27cYzbiWk6/kFRs0qWjK3
+	JkttD8Dx+vz3+ndT3Ph4yLXVgJZsZrX90UlV3MAc4PdcN/q8wXB1fbwC98NNow==
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
@@ -71,8 +71,8 @@ X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id D3C40E0002;
-	Fri, 23 Jun 2023 08:58:40 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 2F61FE0004;
+	Fri, 23 Jun 2023 08:58:48 +0000 (UTC)
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -94,17 +94,17 @@ Cc: alsa-devel@alsa-project.org,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v6 02/13] ASoC: dt-bindings: simple-card: Add additional-devs
- subnode
-Date: Fri, 23 Jun 2023 10:58:19 +0200
-Message-Id: <20230623085830.749991-3-herve.codina@bootlin.com>
+Subject: [PATCH v6 05/13] iio: inkern: Remove the 'unused' variable usage in
+ iio_channel_read_max()
+Date: Fri, 23 Jun 2023 10:58:22 +0200
+Message-Id: <20230623085830.749991-6-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230623085830.749991-1-herve.codina@bootlin.com>
 References: <20230623085830.749991-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NPGBVIQKR4A756YZUNWRTKGCK55IOW3U
-X-Message-ID-Hash: NPGBVIQKR4A756YZUNWRTKGCK55IOW3U
+Message-ID-Hash: ILU3LNYZ2D6TZOGOFY2Q7RW7QAN5M6MA
+X-Message-ID-Hash: ILU3LNYZ2D6TZOGOFY2Q7RW7QAN5M6MA
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -117,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NPGBVIQKR4A756YZUNWRTKGCK55IOW3U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ILU3LNYZ2D6TZOGOFY2Q7RW7QAN5M6MA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,98 +126,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The additional-devs subnode allows to declared some virtual devices
-as sound card children.
-These virtual devices can then be used by the sound card and so be
-present in the audio path.
+The code uses a local variable to initialize a null pointer in order to
+avoid accessing this null pointer later on.
 
-The first virtual device supported is the audio IIO auxiliary device
-in order to support an IIO device as an audio auxiliary device.
+Simply removed the 'unused' variable and check for the null pointer just
+before accessing it.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- .../bindings/sound/simple-card.yaml           | 53 +++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ drivers/iio/inkern.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.yaml b/Documentation/devicetree/bindings/sound/simple-card.yaml
-index b05e05c81cc4..59ac2d1d1ccf 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.yaml
-+++ b/Documentation/devicetree/bindings/sound/simple-card.yaml
-@@ -148,6 +148,15 @@ definitions:
-     required:
-       - sound-dai
+diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
+index f738db9a0c04..ce537b4ca6ca 100644
+--- a/drivers/iio/inkern.c
++++ b/drivers/iio/inkern.c
+@@ -849,14 +849,10 @@ static int iio_channel_read_max(struct iio_channel *chan,
+ 				int *val, int *val2, int *type,
+ 				enum iio_chan_info_enum info)
+ {
+-	int unused;
+ 	const int *vals;
+ 	int length;
+ 	int ret;
  
-+  additional-devs:
-+    type: object
-+    description:
-+      Additional devices used by the simple audio card.
-+    patternProperties:
-+      '^iio-aux(-.+)?$':
-+        type: object
-+        $ref: audio-iio-aux.yaml#
-+
- properties:
-   compatible:
-     contains:
-@@ -187,6 +196,8 @@ properties:
-     $ref: "#/definitions/mclk-fs"
-   simple-audio-card,aux-devs:
-     $ref: "#/definitions/aux-devs"
-+  simple-audio-card,additional-devs:
-+    $ref: "#/definitions/additional-devs"
-   simple-audio-card,convert-rate:
-     $ref: "#/definitions/convert-rate"
-   simple-audio-card,convert-channels:
-@@ -359,6 +370,48 @@ examples:
-         };
-     };
+-	if (!val2)
+-		val2 = &unused;
+-
+ 	ret = iio_channel_read_avail(chan, &vals, type, &length, info);
+ 	if (ret < 0)
+ 		return ret;
+@@ -869,7 +865,8 @@ static int iio_channel_read_max(struct iio_channel *chan,
+ 			break;
+ 		default:
+ 			*val = vals[4];
+-			*val2 = vals[5];
++			if (val2)
++				*val2 = vals[5];
+ 		}
+ 		return 0;
  
-+# --------------------
-+# route audio to/from a codec through an amplifier
-+# designed with a potentiometer driven by IIO:
-+# --------------------
-+  - |
-+    sound {
-+        compatible = "simple-audio-card";
-+
-+        simple-audio-card,aux-devs = <&amp_in>, <&amp_out>;
-+        simple-audio-card,routing =
-+            "CODEC LEFTIN", "AMP_IN LEFT OUT",
-+            "CODEC RIGHTIN", "AMP_IN RIGHT OUT",
-+            "AMP_OUT LEFT IN", "CODEC LEFTOUT",
-+            "AMP_OUT RIGHT IN", "CODEC RIGHTOUT";
-+
-+        simple-audio-card,additional-devs {
-+            amp_out: iio-aux-out {
-+                compatible = "audio-iio-aux";
-+                io-channels = <&pot_out 0>, <&pot_out 1>;
-+                io-channel-names = "LEFT", "RIGHT";
-+                snd-control-invert-range = <1 1>;
-+                sound-name-prefix = "AMP_OUT";
-+            };
-+
-+            amp_in: iio_aux-in {
-+                compatible = "audio-iio-aux";
-+                io-channels = <&pot_in 0>, <&pot_in 1>;
-+                io-channel-names = "LEFT", "RIGHT";
-+                sound-name-prefix = "AMP_IN";
-+            };
-+        };
-+
-+        simple-audio-card,cpu {
-+            sound-dai = <&cpu>;
-+        };
-+
-+        simple-audio-card,codec {
-+            sound-dai = <&codec>;
-+            clocks = <&clocks>;
-+        };
-+    };
-+
- # --------------------
- # Sampling Rate Conversion
- # --------------------
 -- 
 2.40.1
 
