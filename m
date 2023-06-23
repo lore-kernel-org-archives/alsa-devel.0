@@ -4,108 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CB49EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jun 2023 09:03:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 886F0EB64DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jun 2023 09:39:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A1C29F6;
-	Fri, 23 Jun 2023 11:02:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A1C29F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id A48DA857;
+	Fri, 23 Jun 2023 11:38:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A48DA857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687511018;
-	bh=7e+7ZksAfL4pOgUmmUpF/ZpeR7gAdjp6+TumaVqnWzM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=sJdCiVOHiWc+HXYtuLjuTF1g40o1oh+sphz6pOowx8Uw9VW8k0z84fnKlNGIZx0f5
-	 qIhXSWcYqn1DyqDjEN45JaVP0UJNJpypdAPYqruFJVSDUAQfEjEQ3oBHomLVrRqOIc
-	 MJD9C+aJRtga1WImeuiWtWsRzdGCfNZNhOkSpra4=
+	s=default; t=1687513147;
+	bh=cvaGOrYPwCrQwjKg4T7XBqhhoH9GxGnQ1/Oj2kUz7wc=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=XFpyYeIp2FqNcHkOCdpn46KYvs4nqk76e/OXdnOS20J9SVbA3IGdY+SkYXC5dw/8O
+	 YBEZSHxAandp+7xZ99lV3ANK9Qqay6VYroHjuRtHCUGyLNTEfGu55OJ8UGHcuq2smn
+	 hHodYh2Bzw94AIuNuCU6Rz5u1YUeH/NlSRF/3v6s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A6D4EF8057B; Fri, 23 Jun 2023 11:01:22 +0200 (CEST)
+	id 8BD58F80169; Fri, 23 Jun 2023 11:37:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0541DF8056F;
-	Fri, 23 Jun 2023 11:01:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C4DAF80141;
+	Fri, 23 Jun 2023 11:37:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E2B99F80163; Fri, 23 Jun 2023 11:01:13 +0200 (CEST)
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::224])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 37F5AF80141; Fri, 23 Jun 2023 11:37:41 +0200 (CEST)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12on2061d.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe5a::61d])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 09D88F80141
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 10:58:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09D88F80141
+	by alsa1.perex.cz (Postfix) with ESMTPS id 00246F80130
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 11:37:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00246F80130
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=knWhzUEE
-X-GND-Sasl: herve.codina@bootlin.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687510725;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rfYOy7L85MdtcQ88k+lfhIIjhcOaxuYtKNcPHMwEQsI=;
-	b=knWhzUEEAUpZM8lHUEu/eXc+ozD4+EQx9Vv/n38Hd/h+Xap3AJYOXF/5VTV6+22Zre7/1M
-	oOUXew1BzvDWkjKyNE8Xs7CQlPwhnyA4JW0qqnlIuenZlcOvaDXXFXn0qGFJuE9yTQE834
-	Xo3P8dWJ6gA+9BfIXNVlurWsMPIVI8uw47FDWBsYMUZo7KMyNkN7qbDZXIOJTNFaZ2QAOw
-	UUSBPO1mIBjQGH06CySF6+pZcYuaLxhxtFclCKF6yuSckGrw0IZrJ/SKdsXWimflP9xp+W
-	MYyVvW7poaLHVR/8ilityk7Npvsac90w/h1JE8wUBe0JR5J2dXQuu3RYB4i7Lw==
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 5832BE000A;
-	Fri, 23 Jun 2023 08:58:43 +0000 (UTC)
-From: Herve Codina <herve.codina@bootlin.com>
-To: Herve Codina <herve.codina@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-iio@vger.kernel.org,
-	Wojciech Ziemba <wojciech.ziemba@intel.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v6 03/13] iio: inkern: Check error explicitly in
- iio_channel_read_max()
-Date: Fri, 23 Jun 2023 10:58:20 +0200
-Message-Id: <20230623085830.749991-4-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230623085830.749991-1-herve.codina@bootlin.com>
-References: <20230623085830.749991-1-herve.codina@bootlin.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=fp31OFPA
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EYtXnFQ5HwcMOoC6PjI4KufRujfuM3pPoQ0iCImqd8N6d4NzDuT+KcQmRnkUfPWWKyY5rD1+jT313c+g8xegh3cm0bItF3MkC8iT8pVooZcLL1/Z8t4sWYRcJuC42AkWY9PPz9JduW8dFbAQSsam8OeQm9093Tos9GrMzwVdxMRwl3bHVsZLJSPEuqJ+0CyEH5xrRmRxveL9MELeZ+XpTr67u7ICOzjGg7S1tRnB/CUv6U9k61j3EOk22w82ek7vrfxbINe23UHBgRXICRhysKPGTtRGQbizJa1xYdcOM/WP9Di7hcpWCnl8iPN8SpgYRfUtWxftsA+3FpQ/t/xfuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Uff4I+f/JIXJsb1bkQsRX8wckjpzJfKnrgqnvisMh6E=;
+ b=E2PZhaEcOolElJLqriAlA8MIMnbvl3+1izLrZpbkhVa9npQLrx8+tRzl3fCMFQdUXCVIC6UCR/VY9moOKx42kcLuyHlSI+rbZc3IKS4RnBojkrDMnwVggs9xdMoqRHsP297RxSJcgySHAlR2c7vIxRfI2L7L5HWMGOcJN+Im7XclWlOD0XByX8+wLwJNBusESKeMzI8xhLLLOQQpy02jlnZu5RItqU7UZC2+cM3pTXNxLlpdAv2Gb05oKqzusoYuvpPmZqm/vIu4WgDfQ6qdnA2+vlgnQC8Sn0Mk7U2CdT/vXqKZVGxePeD+d376C3KMDx7VkbeS2e98OcHwsngJmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Uff4I+f/JIXJsb1bkQsRX8wckjpzJfKnrgqnvisMh6E=;
+ b=fp31OFPAa/orE+s8prYGywByQwhSGNHVfus7EdQz3imhFlv0VQudErtz6fO8TEDumvsWkw0atbbHhTIqnAZabQ4/T8M9z/ERaIKppT7RZ0ICna4E3cPdCvblxA8UdCkfiIKC+v0nOb14sKRnxJdgOwHg6wQVGz2D7EKZwevnZnI=
+Received: from MW4PR03CA0043.namprd03.prod.outlook.com (2603:10b6:303:8e::18)
+ by PH7PR12MB6468.namprd12.prod.outlook.com (2603:10b6:510:1f4::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.24; Fri, 23 Jun
+ 2023 09:37:28 +0000
+Received: from CO1PEPF000044F9.namprd21.prod.outlook.com
+ (2603:10b6:303:8e:cafe::e3) by MW4PR03CA0043.outlook.office365.com
+ (2603:10b6:303:8e::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.26 via Frontend
+ Transport; Fri, 23 Jun 2023 09:37:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000044F9.mail.protection.outlook.com (10.167.241.199) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6544.9 via Frontend Transport; Fri, 23 Jun 2023 09:37:27 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 23 Jun
+ 2023 04:37:26 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Fri, 23 Jun
+ 2023 04:37:26 -0500
+Received: from amd-Z390-D.amd.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.23 via Frontend
+ Transport; Fri, 23 Jun 2023 04:37:16 -0500
+From: Arun Gopal Kondaveeti <arungopal.kondaveeti@amd.com>
+To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+CC: <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
+	<sunil-kumar.dommati@amd.com>, <venkataprasad.potturu@amd.com>,
+	<syed.sabakareem@amd.com>, <mario.limonciello@amd.com>, Arun Gopal Kondaveeti
+	<arungopal.kondaveeti@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Syed Saba Kareem"
+	<Syed.SabaKareem@amd.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Charles
+ Keepax <ckeepax@opensource.cirrus.com>, open list
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] ASoC: amd: update pm_runtime enable sequence
+Date: Sat, 24 Jun 2023 03:11:40 +0530
+Message-ID: <20230623214150.4058721-1-arungopal.kondaveeti@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FEFFKYXT2BJJHMDPDKMJ6VCPXOTWVZ5W
-X-Message-ID-Hash: FEFFKYXT2BJJHMDPDKMJ6VCPXOTWVZ5W
-X-MailFrom: herve.codina@bootlin.com
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F9:EE_|PH7PR12MB6468:EE_
+X-MS-Office365-Filtering-Correlation-Id: 921700c0-91c6-48e7-11e4-08db73cd7593
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	8QvE0eruGI6uyTDLgmwjCC/9fTh6pRjfCj0yk8cv4YdTFWB4Jasy9db9pmq4rcRjqOeRD9JxQRmJQJao2VkJYbQQCHryiNWY/e2GH426vtmtfYYzsfTEABiFtNindIQGhrDSgJP+6lS8pmMTJ1NbItUYgcLkFnKKBmN7z8V1e/YRE4nBBz18DrTwwBX6qgnPnFz+0ETyAarM35e4eXw1selsa1prDpeX4ZX+drVFfQmpbtXtrP3fttF54qmpLsQ/HRXPrQV90p4oU76VPMOJ2em4xtifDz9EJzJWit3OpvfKad9Z1k0pbnx5n79lMRefVTtc9970Rsy1d+ByS2sJlbLKpEn0N4fcDrrbMX98U97vQdILSAi0oTkUOcosOKUhNMYgaRLsTX/1J0MMg1ZJkSVYlDIyPjcJIBxkQ0voTRm7CQHAdMgvzZTaAmHUgvbjGH1rhmdEru8EOaq/p27cGqj1V3XS9jUxfR4qQ5JApYjB9c5oJCHDIYPLxOkqaLlv9nYRo+NAKEdtEDb9QNtnKkiXJlKKGrSV74yRScccPpV4JWkxgWdNhaJN/sp6aPD2bw5ElzpwxxLBrHK+RAKJiwIsqnoZ3K17mI4lAPi4fwiRkr8e5jAfevupjsMkSPRas8CDCdoTI9HN8b7V7TasKHhYCj/7dBoJeMO+A4xFMCz7KQApxz7mGbcD42wNJEYxIqIdpCvi0rWVZhTd2YXCgjCGhgGRhJQBDcCdlsRcHd8Rt574wRtmepXAz+VRPZOaOkIZcETgc21CcgTHcaO9vQ==
+X-Forefront-Antispam-Report: 
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(346002)(396003)(39860400002)(451199021)(46966006)(36840700001)(40470700004)(356005)(82310400005)(81166007)(86362001)(40480700001)(40460700003)(316002)(2616005)(41300700001)(8936002)(8676002)(70586007)(4326008)(70206006)(336012)(5660300002)(15650500001)(7696005)(426003)(1076003)(478600001)(6666004)(54906003)(110136005)(83380400001)(186003)(26005)(36756003)(36860700001)(2906002)(47076005)(82740400003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2023 09:37:27.9400
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 921700c0-91c6-48e7-11e4-08db73cd7593
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	CO1PEPF000044F9.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6468
+Message-ID-Hash: F4I63YYL4DO7WPTZA5YVAO5Y4IGZOSNS
+X-Message-ID-Hash: F4I63YYL4DO7WPTZA5YVAO5Y4IGZOSNS
+X-MailFrom: Arungopal.kondaveeti@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -117,7 +141,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FEFFKYXT2BJJHMDPDKMJ6VCPXOTWVZ5W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F4I63YYL4DO7WPTZA5YVAO5Y4IGZOSNS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,43 +150,101 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The current implementation returns the error code as part of the
-default switch case.
-This can lead to returning an incorrect positive value in case of
-iio_avail_type enum entries evolution.
+pm_runtime_allow() is not needed for ACP child platform devices.
+Replace pm_runtime_allow() with pm_runtime_mark_last_busy()
+& pm_runtime_set_active() in pm_runtime enable sequence for
+ACP child platform drivers.
 
-In order to avoid this case, be more strict in error checking.
-
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Arun Gopal <arungopal.kondaveeti@amd.com>
 ---
- drivers/iio/inkern.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
-index 872fd5c24147..f738db9a0c04 100644
---- a/drivers/iio/inkern.c
-+++ b/drivers/iio/inkern.c
-@@ -858,6 +858,9 @@ static int iio_channel_read_max(struct iio_channel *chan,
- 		val2 = &unused;
- 
- 	ret = iio_channel_read_avail(chan, &vals, type, &length, info);
-+	if (ret < 0)
-+		return ret;
-+
- 	switch (ret) {
- 	case IIO_AVAIL_RANGE:
- 		switch (*type) {
-@@ -888,7 +891,7 @@ static int iio_channel_read_max(struct iio_channel *chan,
- 		return 0;
- 
- 	default:
--		return ret;
-+		return -EINVAL;
+Changes since v1:
+    -- Updated commit message
+
+---
+ sound/soc/amd/ps/ps-pdm-dma.c         | 3 ++-
+ sound/soc/amd/raven/acp3x-pcm-dma.c   | 3 ++-
+ sound/soc/amd/renoir/acp3x-pdm-dma.c  | 3 ++-
+ sound/soc/amd/vangogh/acp5x-pcm-dma.c | 4 ++--
+ sound/soc/amd/yc/acp6x-pdm-dma.c      | 3 ++-
+ 5 files changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/amd/ps/ps-pdm-dma.c b/sound/soc/amd/ps/ps-pdm-dma.c
+index bdbbb797c74d..d48f7c5af289 100644
+--- a/sound/soc/amd/ps/ps-pdm-dma.c
++++ b/sound/soc/amd/ps/ps-pdm-dma.c
+@@ -391,8 +391,9 @@ static int acp63_pdm_audio_probe(struct platform_device *pdev)
  	}
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, ACP_SUSPEND_DELAY_MS);
+ 	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+-	pm_runtime_allow(&pdev->dev);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/amd/raven/acp3x-pcm-dma.c b/sound/soc/amd/raven/acp3x-pcm-dma.c
+index 7362dd15ad30..9538f3ffc5d9 100644
+--- a/sound/soc/amd/raven/acp3x-pcm-dma.c
++++ b/sound/soc/amd/raven/acp3x-pcm-dma.c
+@@ -416,8 +416,9 @@ static int acp3x_audio_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, 2000);
+ 	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+-	pm_runtime_allow(&pdev->dev);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/amd/renoir/acp3x-pdm-dma.c b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+index 4e299f96521f..c3b47e9bd239 100644
+--- a/sound/soc/amd/renoir/acp3x-pdm-dma.c
++++ b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+@@ -430,8 +430,9 @@ static int acp_pdm_audio_probe(struct platform_device *pdev)
+ 	}
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, ACP_SUSPEND_DELAY_MS);
+ 	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+-	pm_runtime_allow(&pdev->dev);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/amd/vangogh/acp5x-pcm-dma.c b/sound/soc/amd/vangogh/acp5x-pcm-dma.c
+index 29901ee4bfe3..587dec5bb33d 100644
+--- a/sound/soc/amd/vangogh/acp5x-pcm-dma.c
++++ b/sound/soc/amd/vangogh/acp5x-pcm-dma.c
+@@ -409,9 +409,9 @@ static int acp5x_audio_probe(struct platform_device *pdev)
+ 	}
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, 2000);
+ 	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+-	pm_runtime_allow(&pdev->dev);
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/amd/yc/acp6x-pdm-dma.c b/sound/soc/amd/yc/acp6x-pdm-dma.c
+index d818eba48546..72c4591e451b 100644
+--- a/sound/soc/amd/yc/acp6x-pdm-dma.c
++++ b/sound/soc/amd/yc/acp6x-pdm-dma.c
+@@ -383,8 +383,9 @@ static int acp6x_pdm_audio_probe(struct platform_device *pdev)
+ 	}
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, ACP_SUSPEND_DELAY_MS);
+ 	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+-	pm_runtime_allow(&pdev->dev);
+ 	return 0;
  }
  
 -- 
-2.40.1
+2.25.1
 
