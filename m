@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E7CEB64DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jun 2023 09:02:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69F7FEB64DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jun 2023 09:03:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF9AE844;
-	Fri, 23 Jun 2023 11:02:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF9AE844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9043F845;
+	Fri, 23 Jun 2023 11:02:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9043F845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687510970;
-	bh=wlCgR2jDnUhDvPDT+CuOWwhImKCkxcyK5DY0WjfQpcE=;
+	s=default; t=1687510980;
+	bh=SHsRGGRQfIPzKnJ/GmHg5EWGSRe7iLhNHPVjQhTfDzw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WjS3/PnRyOq1uvA7zGwd4V2FP1Vr/ONvPtTEv8aM7SXYLuuXhPKilYjGAg5A1muf+
-	 CtjZObTTaY9qFe9NXHF9Qg8oSgXV5lccqB2uC+56c126+w5XUgktTMO0/yljQ6i0uu
-	 5mTL0moJTNFbG9+l6qgS5CdjW3bvGZ9ZYST03CII=
+	b=A4XM/piH/SAp3tsS3O52uyUN55N7ZdPcPsuFKj+8Tbcz5HxM8xPHQIfLLRo1fK2xB
+	 HBhmmgor6m0P5ODDBjd06rvjQaJ9kmB9fBv2Jtg0nV/QJroG5YGDgw0PG7SJqNYfc0
+	 F5ZSmb96mxpR7ofLPye9pXgQ+KnAeT9KN01Ig+sM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2303DF805EE; Fri, 23 Jun 2023 10:59:30 +0200 (CEST)
+	id 3B289F80535; Fri, 23 Jun 2023 11:01:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FF91F805EB;
-	Fri, 23 Jun 2023 10:59:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 131C2F80163;
+	Fri, 23 Jun 2023 11:01:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF735F805D7; Fri, 23 Jun 2023 10:59:24 +0200 (CEST)
+	id 8B5FFF80535; Fri, 23 Jun 2023 11:01:13 +0200 (CEST)
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::224])
+ [217.70.183.196])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 604A7F805A8
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 10:59:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 604A7F805A8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 52ACEF80163
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 10:58:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52ACEF80163
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=Er+F9DMU
+ header.s=gm1 header.b=CLzL0Eh0
 X-GND-Sasl: herve.codina@bootlin.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1687510746;
+	t=1687510728;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WiCubefUJT8lqguruRQEQMdku90oEPaE9zL5TkFrvME=;
-	b=Er+F9DMUoyhxCT4e3wLHeMsS1VAU8PNH1Bul8bZKuE7b9UDWdIF+nl22bVCY4NHvZ9+3Xy
-	vnwe1qxOxH/XHl1klPoHe3AQjzL2rg2JKRWm9yPuf4iKAfdVFHAjeN5ojCxCEvtaNopi5e
-	WIpPlPZxrioUfayxbqdutoHsTZz+naztAStXu/QGtC7en9ibj7HvS9gznvcv9nqGW1rPS5
-	11Anc5P4V8bc6IpMlrf3gLKvD2d8Snf5O+TyQ/TBc8U6ZKAryVv1rRNFW5S7ANa8WTu1fd
-	38yb7/Tbgo2tth/LaCfHJC9M9i2KM33OLVDwtohEKTAWWkKjVCqC3D29bF9h5g==
+	bh=rgrvFu84ZrZIMRnZAFcmpkUkbG8qISQlNfLp/T/UU5I=;
+	b=CLzL0Eh08jrIftwnY5tvc3hLa+aqBLyyvgkWdSq2R+LHaFIfZ85y3mX8jo0cf5XVdbMEFh
+	DgypWB/vJqWm7P+iXc5osF08rfQbYzZTIA7GsKgTDLEiCyKzHcnta9VBM9XflTHldBT3A2
+	mUm/7W2jpD1EYI1NpcDXcm85JLC/dY17N7zf1jjBsraTYjOI5bG+w0dAKNiIzlg/ZLcy2w
+	PSvQf8MrjiCUwP7ojwlMT5/ScfzSqbC21LnEk503/aQ5XHgCJ++exjNUNd4cwhD5tLR6v0
+	q26ZvYHhagGUrCkIez/p7Do36tbr+uGCZG3fIF30RNeHAL3EKvrqOHJlmpGCwA==
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
@@ -70,8 +70,9 @@ X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
 X-GND-Sasl: herve.codina@bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 52723E000B;
-	Fri, 23 Jun 2023 08:59:04 +0000 (UTC)
+X-GND-Sasl: herve.codina@bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPA id 6D955E0007;
+	Fri, 23 Jun 2023 08:58:45 +0000 (UTC)
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -91,17 +92,18 @@ Cc: alsa-devel@alsa-project.org,
 	linux-iio@vger.kernel.org,
 	Wojciech Ziemba <wojciech.ziemba@intel.com>,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v6 13/13] ASoC: simple-card: Handle additional devices
-Date: Fri, 23 Jun 2023 10:58:30 +0200
-Message-Id: <20230623085830.749991-14-herve.codina@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH v6 04/13] iio: consumer.h: Fix raw values documentation notes
+Date: Fri, 23 Jun 2023 10:58:21 +0200
+Message-Id: <20230623085830.749991-5-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230623085830.749991-1-herve.codina@bootlin.com>
 References: <20230623085830.749991-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QR72FJP7YS7GL52WURNHW2QRSZZC5RPP
-X-Message-ID-Hash: QR72FJP7YS7GL52WURNHW2QRSZZC5RPP
+Message-ID-Hash: D4APP2Y5FFLLAL6ZNS2HQUERS2A53J2C
+X-Message-ID-Hash: D4APP2Y5FFLLAL6ZNS2HQUERS2A53J2C
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -114,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QR72FJP7YS7GL52WURNHW2QRSZZC5RPP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D4APP2Y5FFLLAL6ZNS2HQUERS2A53J2C/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,120 +125,82 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-An additional-devs subnode can be present in the simple-card top node.
-This subnode is used to declared some "virtual" additional devices.
+The raw values notes mention 'ADC counts' and are not fully accurate.
 
-Create related devices from this subnode and avoid this subnode presence
-to interfere with the already supported subnodes analysis.
+Reword the notes in order to remove the 'ADC counts' and describe the
+conversion needed between a raw value and a value in the standard units.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- sound/soc/generic/simple-card.c | 46 +++++++++++++++++++++++++++++++--
- 1 file changed, 44 insertions(+), 2 deletions(-)
+ include/linux/iio/consumer.h | 25 +++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 6f044cc8357e..ae4a47018278 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -348,6 +348,7 @@ static int __simple_for_each_link(struct asoc_simple_priv *priv,
- 	struct device *dev = simple_priv_to_dev(priv);
- 	struct device_node *top = dev->of_node;
- 	struct device_node *node;
-+	struct device_node *add_devs;
- 	uintptr_t dpcm_selectable = (uintptr_t)of_device_get_match_data(dev);
- 	bool is_top = 0;
- 	int ret = 0;
-@@ -359,6 +360,8 @@ static int __simple_for_each_link(struct asoc_simple_priv *priv,
- 		is_top = 1;
- 	}
+diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
+index 6802596b017c..f536820b9cf2 100644
+--- a/include/linux/iio/consumer.h
++++ b/include/linux/iio/consumer.h
+@@ -201,8 +201,9 @@ struct iio_dev
+  * @chan:		The channel being queried.
+  * @val:		Value read back.
+  *
+- * Note raw reads from iio channels are in adc counts and hence
+- * scale will need to be applied if standard units required.
++ * Note, if standard units are required, raw reads from iio channels
++ * need the offset (default 0) and scale (default 1) to be applied
++ * as (raw + offset) * scale.
+  */
+ int iio_read_channel_raw(struct iio_channel *chan,
+ 			 int *val);
+@@ -212,8 +213,9 @@ int iio_read_channel_raw(struct iio_channel *chan,
+  * @chan:		The channel being queried.
+  * @val:		Value read back.
+  *
+- * Note raw reads from iio channels are in adc counts and hence
+- * scale will need to be applied if standard units required.
++ * Note, if standard units are required, raw reads from iio channels
++ * need the offset (default 0) and scale (default 1) to be applied
++ * as (raw + offset) * scale.
+  *
+  * In opposit to the normal iio_read_channel_raw this function
+  * returns the average of multiple reads.
+@@ -281,8 +283,9 @@ int iio_read_channel_attribute(struct iio_channel *chan, int *val,
+  * @chan:		The channel being queried.
+  * @val:		Value being written.
+  *
+- * Note raw writes to iio channels are in dac counts and hence
+- * scale will need to be applied if standard units required.
++ * Note that for raw writes to iio channels, if the value provided is
++ * in standard units, the affect of the scale and offset must be removed
++ * as (value / scale) - offset.
+  */
+ int iio_write_channel_raw(struct iio_channel *chan, int val);
  
-+	add_devs = of_get_child_by_name(top, PREFIX "additional-devs");
-+
- 	/* loop for all dai-link */
- 	do {
- 		struct asoc_simple_data adata;
-@@ -367,6 +370,12 @@ static int __simple_for_each_link(struct asoc_simple_priv *priv,
- 		struct device_node *np;
- 		int num = of_get_child_count(node);
+@@ -292,8 +295,9 @@ int iio_write_channel_raw(struct iio_channel *chan, int val);
+  * @chan:		The channel being queried.
+  * @val:		Value read back.
+  *
+- * Note raw reads from iio channels are in adc counts and hence
+- * scale will need to be applied if standard units are required.
++ * Note, if standard units are required, raw reads from iio channels
++ * need the offset (default 0) and scale (default 1) to be applied
++ * as (raw + offset) * scale.
+  */
+ int iio_read_max_channel_raw(struct iio_channel *chan, int *val);
  
-+		/* Skip additional-devs node */
-+		if (node == add_devs) {
-+			node = of_get_next_child(top, node);
-+			continue;
-+		}
-+
- 		/* get codec */
- 		codec = of_get_child_by_name(node, is_top ?
- 					     PREFIX "codec" : "codec");
-@@ -380,12 +389,15 @@ static int __simple_for_each_link(struct asoc_simple_priv *priv,
- 
- 		/* get convert-xxx property */
- 		memset(&adata, 0, sizeof(adata));
--		for_each_child_of_node(node, np)
-+		for_each_child_of_node(node, np) {
-+			if (np == add_devs)
-+				continue;
- 			simple_parse_convert(dev, np, &adata);
-+		}
- 
- 		/* loop for all CPU/Codec node */
- 		for_each_child_of_node(node, np) {
--			if (plat == np)
-+			if (plat == np || add_devs == np)
- 				continue;
- 			/*
- 			 * It is DPCM
-@@ -427,6 +439,7 @@ static int __simple_for_each_link(struct asoc_simple_priv *priv,
- 	} while (!is_top && node);
- 
-  error:
-+	of_node_put(add_devs);
- 	of_node_put(node);
- 	return ret;
- }
-@@ -464,6 +477,31 @@ static int simple_for_each_link(struct asoc_simple_priv *priv,
- 	return ret;
- }
- 
-+static void simple_depopulate_aux(void *data)
-+{
-+	struct asoc_simple_priv *priv = data;
-+
-+	of_platform_depopulate(simple_priv_to_dev(priv));
-+}
-+
-+static int simple_populate_aux(struct asoc_simple_priv *priv)
-+{
-+	struct device *dev = simple_priv_to_dev(priv);
-+	struct device_node *node;
-+	int ret;
-+
-+	node = of_get_child_by_name(dev->of_node, PREFIX "additional-devs");
-+	if (!node)
-+		return 0;
-+
-+	ret = of_platform_populate(node, NULL, NULL, dev);
-+	of_node_put(node);
-+	if (ret)
-+		return ret;
-+
-+	return devm_add_action_or_reset(dev, simple_depopulate_aux, priv);
-+}
-+
- static int simple_parse_of(struct asoc_simple_priv *priv, struct link_info *li)
- {
- 	struct snd_soc_card *card = simple_priv_to_card(priv);
-@@ -493,6 +531,10 @@ static int simple_parse_of(struct asoc_simple_priv *priv, struct link_info *li)
- 	if (ret < 0)
- 		return ret;
- 
-+	ret = simple_populate_aux(priv);
-+	if (ret < 0)
-+		return ret;
-+
- 	ret = snd_soc_of_parse_aux_devs(card, PREFIX "aux-devs");
- 
- 	return ret;
+@@ -308,8 +312,9 @@ int iio_read_max_channel_raw(struct iio_channel *chan, int *val);
+  * For ranges, three vals are always returned; min, step and max.
+  * For lists, all the possible values are enumerated.
+  *
+- * Note raw available values from iio channels are in adc counts and
+- * hence scale will need to be applied if standard units are required.
++ * Note, if standard units are required, raw available values from iio
++ * channels need the offset (default 0) and scale (default 1) to be applied
++ * as (raw + offset) * scale.
+  */
+ int iio_read_avail_channel_raw(struct iio_channel *chan,
+ 			       const int **vals, int *length);
 -- 
 2.40.1
 
