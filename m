@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB159EB64D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B53FEB64DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:20:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0EDC7F8;
-	Mon, 26 Jun 2023 13:19:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0EDC7F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C39DAE8;
+	Mon, 26 Jun 2023 13:20:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C39DAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687778431;
-	bh=7nhAGSQj8zuC4h0VCcRRvftj9ytkh4m3PuE266HinoA=;
+	s=default; t=1687778451;
+	bh=8W6xQ5iOuEQjq/7qSBNFBQNslDYc9PSMT0e2N9sMZgY=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=MBTZHcK7Qr+HiL9eJx+XAhkZwXBkh16P6yus5tmfPDFNj9Jqwq43gT5qfYzHt+tOs
-	 W0B/8yCmHRav3Y9NlRBegXvxYl+88j7PQnTCQyI6bK5cQgVaSlS5WNvAK987at6d9S
-	 2ETE2ONPQ7cTThgP2lNQjn5c35c4LGs4oSlSjIOU=
+	b=FGIqylcYl4yusVOo159S+v4H9eiIMNsAzF9Tkp+Eh+aWY/s/hLHJl99X9RHas4ywT
+	 W74t8LRqgCpieU8NWYCiI1DJpW43p3IFaWdd/DS1sGj9GJIU6pbK6bi1N5R2lK9D5e
+	 +Gd2QLFsmGE2bREXLJ60vut7ITspoHlGZfZmrWbc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9BD4BF805A1; Mon, 26 Jun 2023 13:18:32 +0200 (CEST)
+	id E67BCF805B1; Mon, 26 Jun 2023 13:18:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2EEAF8057F;
-	Mon, 26 Jun 2023 13:18:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5063AF805AF;
+	Mon, 26 Jun 2023 13:18:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ED582F80141; Fri, 23 Jun 2023 22:32:43 +0200 (CEST)
+	id AD38BF80141; Fri, 23 Jun 2023 22:33:13 +0200 (CEST)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AEA23F80130
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 22:32:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEA23F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 073B8F8003A
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 22:33:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 073B8F8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=gRwuaBAi
+ header.a=rsa-sha256 header.s=mchp header.b=TFMbJtym
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1687552362; x=1719088362;
+  t=1687552392; x=1719088392;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7nhAGSQj8zuC4h0VCcRRvftj9ytkh4m3PuE266HinoA=;
-  b=gRwuaBAib/WSg74NdPcQiraSQyLpwQkiBv4CPyGyNa6tbG/reqdpRyxL
-   NyX9Si46D5Uz5UR1RX1KiVNJrhY1YSAdHK9Iw0+Y3Tutxwjrkaf/B8pIF
-   k11UYGESgCrloIXGsVWCdh8Q8y0EMZe/9iGv8H5zhCdRanAyaw1ht5X2q
-   fYzuKizgc+iKWs0giIb+cSpPUphlW3gdnbp3wBIw1GX1JaE8p6hGXM0Hj
-   kEGHP+6Aea75t6EnE+TiALuBeUwjmJ487BrUT2igqT/sdgWrrmSVA5Sza
-   u1xbxaoyxEGNyoZqRTCH/mkhx3T6BJHhLDSyqHPo+iBKefJMnYsLmaHfQ
-   Q==;
+  bh=8W6xQ5iOuEQjq/7qSBNFBQNslDYc9PSMT0e2N9sMZgY=;
+  b=TFMbJtymSHz9QnBbohUujRE7d5D+yrtbN21FWVJyxVJIRPXWG+46ZvNg
+   rFVYjkOha04ZZHL8tFmERPc0c/vh+6pGs9mkNXuFt7Nqk7t8q0j0DOAhR
+   q3fHWPZgPvqFoTsqmU4gyblu3zIRIS8Bvo9Sp/yijgs/hFNjqn4VfHusx
+   jBfqB3UUbjlmhFIkYSAdTmBlN/UpH7fv00aCCrYM5XtvdMWtewAi5Sqnq
+   5aCHuylyCUk5yMKRPMZVeVUc4/IyZmO0K8YEmEk47Qciuc02MZUcXGukx
+   BgkOcEjCtpse+2ulvU/uA6/9pLN3nb/gNeY08MXhhEPWahY8fFmqiCbON
+   w==;
 X-IronPort-AV: E=Sophos;i="6.01,153,1684825200";
-   d="scan'208";a="221701784"
+   d="scan'208";a="158361838"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 23 Jun 2023 13:32:36 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 23 Jun 2023 13:33:05 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 23 Jun 2023 13:32:28 -0700
+ 15.1.2507.21; Fri, 23 Jun 2023 13:32:59 -0700
 Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:31:57 -0700
+ 15.1.2507.21 via Frontend Transport; Fri, 23 Jun 2023 13:32:29 -0700
 From: Varshini Rajendran <varshini.rajendran@microchip.com>
 To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
 	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
@@ -97,10 +97,10 @@ CC: <Hari.PrasathGE@microchip.com>, <cristian.birsan@microchip.com>,
 	<balamanikandan.gunasundar@microchip.com>, <manikandan.m@microchip.com>,
 	<dharma.b@microchip.com>, <nayabbasha.sayed@microchip.com>,
 	<balakrishnan.s@microchip.com>
-Subject: [PATCH v2 02/45] dt-bindings: usb: ehci: Add atmel at91sam9g45-ehci
- compatible
-Date: Sat, 24 Jun 2023 02:00:13 +0530
-Message-ID: <20230623203056.689705-3-varshini.rajendran@microchip.com>
+Subject: [PATCH v2 03/45] dt-bindings: usb: generic-ehci: Document clock-names
+ property
+Date: Sat, 24 Jun 2023 02:00:14 +0530
+Message-ID: <20230623203056.689705-4-varshini.rajendran@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230623203056.689705-1-varshini.rajendran@microchip.com>
 References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
@@ -113,15 +113,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZEQ73TOLCHKIN2SNBXQDHDGDV5F7JIPC
-X-Message-ID-Hash: ZEQ73TOLCHKIN2SNBXQDHDGDV5F7JIPC
-X-Mailman-Approved-At: Mon, 26 Jun 2023 11:18:20 +0000
+Message-ID-Hash: 6GGSCIOIZNHNPKQA5H2XRA5W3R62AD73
+X-Message-ID-Hash: 6GGSCIOIZNHNPKQA5H2XRA5W3R62AD73
+X-Mailman-Approved-At: Mon, 26 Jun 2023 11:18:21 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZEQ73TOLCHKIN2SNBXQDHDGDV5F7JIPC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6GGSCIOIZNHNPKQA5H2XRA5W3R62AD73/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,25 +130,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Document at91sam9g45-ehci compatible for usb-ehci.
+Document the property clock-names in the schema.
+
+It fixes the dtbs_check warning,
+'clock-names' does not match any of the regexes: 'pinctrl-[0-9]+'
 
 Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 ---
- Documentation/devicetree/bindings/usb/generic-ehci.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/usb/generic-ehci.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/usb/generic-ehci.yaml b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-index 9445764bd8de..7e486cc6cfb8 100644
+index 7e486cc6cfb8..542ac26960fc 100644
 --- a/Documentation/devicetree/bindings/usb/generic-ehci.yaml
 +++ b/Documentation/devicetree/bindings/usb/generic-ehci.yaml
-@@ -66,6 +66,7 @@ properties:
-           - const: generic-ehci
-       - items:
-           - enum:
-+              - atmel,at91sam9g45-ehci
-               - cavium,octeon-6335-ehci
-               - ibm,usb-ehci-440epx
-               - ibm,usb-ehci-460ex
+@@ -102,6 +102,10 @@ properties:
+         - if a USB DRD channel: first clock should be host and second
+           one should be peripheral
+ 
++  clock-names:
++    minItems: 1
++    maxItems: 4
++
+   power-domains:
+     maxItems: 1
+ 
 -- 
 2.25.1
 
