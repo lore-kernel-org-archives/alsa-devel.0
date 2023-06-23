@@ -4,79 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51E0AEB64DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jun 2023 00:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56786EB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Jun 2023 00:53:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03F8E844;
-	Fri, 23 Jun 2023 02:50:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03F8E844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D209844;
+	Fri, 23 Jun 2023 02:52:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D209844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687481495;
-	bh=oJHJEMY/Tw4oHZ3YcvE0+KStZz9Rx02eJWvCCGe1ao4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1687481603;
+	bh=8F3QLTypT8o8BKPr1qBiRaDEyhzGodljn7Dj+mPyyeY=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Y8LSkj1xN8q2GfKd3lT4GoMjKVKTiWj77kZODb6ExOTOiATR1uNtLengSrWN2uwzf
-	 LFHH/nQvz3BGMrxqKH4RzPdN38S+OQQMUGzz8lZbrlr++Nn4UfyyuCr+BzGF//wbMw
-	 55oDxXEJ+1CxbFr4B1zjLQqAa2j6LdlwY+uptIcw=
+	b=SWRonpxeiqNIWfZPBTLGXQ1XxVc3SPQLjf8m9md9OuLuI24rpyRAtKZhkDtyGO92k
+	 HHkVqRFFhrnDJGoYfBokUwHBIc3F4X7xiHic7Cpdkq9H3B/IKyxlJgJR4aceFA/GFy
+	 DcG/XDi15sQaMTFO/ZBayE/bEhKODic4kCl0y2kw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A6FBF80548; Fri, 23 Jun 2023 02:49:52 +0200 (CEST)
+	id 78521F8003A; Fri, 23 Jun 2023 02:52:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D03E4F80563;
-	Fri, 23 Jun 2023 02:49:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE725F8003A;
+	Fri, 23 Jun 2023 02:52:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6924EF80141; Fri, 23 Jun 2023 02:49:47 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 4FDBBF80163; Fri, 23 Jun 2023 02:52:05 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4D497F8003A
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 02:49:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D497F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 17FE5F80141
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2023 02:51:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17FE5F80141
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=L9ibKQDO
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E2EE761956;
-	Fri, 23 Jun 2023 00:49:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93DB6C433C8;
-	Fri, 23 Jun 2023 00:49:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687481381;
-	bh=oJHJEMY/Tw4oHZ3YcvE0+KStZz9Rx02eJWvCCGe1ao4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=L9ibKQDOSYOvHCUs7vTYVlJjtEyjqdYm2dfNqkvnG95BBpbDsLHi1xX0BPl94kn50
-	 Z0JY5dHu+LZgZpQXfKq1HsGGp4wtyPt/WXTFwj5D2dpjzlHKjP1QXk1OHH+iobfggM
-	 PaoEKDtPLjqBTL6Bo7YHUORNd0kA7HA2ScyQ8xjjAaiPzf4oGec7+/ydYC3VLB4Xj3
-	 NroBDQtXM+KypK2rVF42Z01GOhKOSWbchmGSn7l5d/lFcxsAGty1ADf3tEJMMWzhR5
-	 FooWAciyx7oQES5HJOyg41nFy1T/R3IkKwnyTyO1vQ3HXlTj6tEYFmeGrkgKPLdjny
-	 I66nHhJZ8gy3A==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Syed Saba Kareem <Syed.SabaKareem@amd.com>
-Cc: Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
- open list <linux-kernel@vger.kernel.org>
-In-Reply-To: <20230622152406.3709231-1-Syed.SabaKareem@amd.com>
-References: <20230622152406.3709231-1-Syed.SabaKareem@amd.com>
-Subject: Re: [PATCH 01/12] ASoC: amd: acp: clear pdm dma interrupt mask
-Message-Id: <168748137822.337790.12159310582328534204.b4-ty@kernel.org>
-Date: Fri, 23 Jun 2023 01:49:38 +0100
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=QDP/PYqu
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 35N0R5R1026701;
+	Fri, 23 Jun 2023 00:51:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=nb0gkvwePDE1+BINC+VXWChN6537cCXhu4XADvMOeq8=;
+ b=QDP/PYquSWe0PH24muDrIpUqnvNcfVepE0M+pEhJqZshxfW+3NkyiAnZ+FHarRRRj3Ds
+ DPk6wLPXf/2x8ve5STI0Usd3PZ+mrpAwUBZLwukZ11OanGxSzB6eDUFaK0/274/jqVaN
+ blCI55GyZuvMHqcCm+BBPAoqRndf1ts2tAqrqCH+XqfX9DswPiJxAVqido1bGW+hy7rB
+ HcV3vcLsCP7+kcF3YjNYiOIDMMWy5uO6V1KTcYZonBg3mIXk5aMnxgWt6hy8A0ue7AIv
+ KG1wGPygoamPulWMh9mqQQeaoolDNRLir+3r88Sk3BxNQOH5Q5DC5KIzdxdkA+04XS5g Dg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rc359m38k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Jun 2023 00:51:54 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
+ [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 35N0pql8027064
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 23 Jun 2023 00:51:52 GMT
+Received: from [10.110.109.161] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42; Thu, 22 Jun
+ 2023 17:51:52 -0700
+Message-ID: <dea0a69e-7c5d-07ad-48da-71d19a7f75e0@quicinc.com>
+Date: Thu, 22 Jun 2023 17:51:51 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v3 21/28] ASoC: dt-bindings: Update example for enabling
+ USB offload on SM8250
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <broonie@kernel.org>, <lgirdwood@gmail.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <agross@kernel.org>,
+        <Thinh.Nguyen@synopsys.com>, <bgoswami@quicinc.com>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <tiwai@suse.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <quic_jackp@quicinc.com>,
+        <quic_plai@quicinc.com>
+References: <20230308235751.495-1-quic_wcheng@quicinc.com>
+ <20230308235751.495-22-quic_wcheng@quicinc.com>
+ <87f20b22-6305-7590-1dbf-014b5898b15c@linaro.org>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <87f20b22-6305-7590-1dbf-014b5898b15c@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-c6835
-Message-ID-Hash: TSD5KMAEWQV74AIPUL6AGYNR6Q5MIOJN
-X-Message-ID-Hash: TSD5KMAEWQV74AIPUL6AGYNR6Q5MIOJN
-X-MailFrom: broonie@kernel.org
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: mL6LnlnUdMfzV_lOLAVeCjfsLcopLIYy
+X-Proofpoint-ORIG-GUID: mL6LnlnUdMfzV_lOLAVeCjfsLcopLIYy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-22_18,2023-06-22_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501
+ suspectscore=0 bulkscore=0 mlxscore=0 malwarescore=0 mlxlogscore=780
+ spamscore=0 impostorscore=0 clxscore=1015 phishscore=0 lowpriorityscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2306230005
+Message-ID-Hash: E6DYBMU2Q5UO7HYWBP7POEJBVGIA3FWK
+X-Message-ID-Hash: E6DYBMU2Q5UO7HYWBP7POEJBVGIA3FWK
+X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +125,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TSD5KMAEWQV74AIPUL6AGYNR6Q5MIOJN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E6DYBMU2Q5UO7HYWBP7POEJBVGIA3FWK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,61 +134,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 22 Jun 2023 20:53:38 +0530, Syed Saba Kareem wrote:
-> Clear pdm dma interrupt mask in acp_dmic_shutdown().
+Hi Krzysztof,
+
+On 3/10/2023 12:56 AM, Krzysztof Kozlowski wrote:
+> On 09/03/2023 00:57, Wesley Cheng wrote:
+>> Add an example on enabling of USB offload for the Q6DSP.  The routing can
+>> be done by the mixer, which can pass the multimedia stream to the USB
+>> backend.
+>>
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 > 
-> 'Fixes: c32bd332ce5c9 ("ASoC: amd: acp: Add generic support for
-> PDM controller on ACP")'
 > 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> You still miss binding change to APR/GPR. Where is the USB DAI going to sit?
 > 
 
-Applied to
+My initial idea is to have it as part of the q6afe APR node (as a 
+child).  It would need to issues some transactions over APR to the Q6AFE 
+port on the audio DSP, which was the main reason for this.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Something like:
 
-Thanks!
+q6afe: apr-service@4 {
+	compatible = "qcom,q6afe";
+	reg = <APR_SVC_AFE>;
+	q6afedai: dais {
+		compatible = "qcom,q6afe-dais";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		#sound-dai-cells = <1>;
+	};
+...
+	usbdai: usbd {
+		compatible = "qcom,q6usb";
+		#sound-dai-cells = <1>;
+		iommus = <&apps_smmu 0x180f 0x0>;
+		qcom,usb-audio-stream-id = <0xf>;
+		qcom,usb-audio-intr-num = <2>;
+	};
+};
 
-[01/12] ASoC: amd: acp: clear pdm dma interrupt mask
-        commit: ad60672394bd1f95c58d3d9336902f47e05126fc
-[02/12] ASoC: amd: acp: remove acp poweroff function
-        commit: 3eb96217c16cb7be0fe6e1d416ff4fe47f686bea
-[03/11] ASoC: amd: acp: add acp i2s master clock generation for rembrandt platform
-        (no commit info)
-[04/12] ASoC: amd: acp: add acp i2s master clock generation for rembrandt platform
-        (no commit info)
-[05/11] ASoC: amd: acp: store platform device reference created in pci probe call
-        (no commit info)
-[06/11] ASoC: amd: acp: add pm ops support for acp pci driver
-        (no commit info)
-[07/12] ASoC: amd: acp: add pm ops support for acp pci driver
-        (no commit info)
-[08/11] ASoC: amd: acp: export config_acp_dma() and config_pte_for_stream() symbols
-        (no commit info)
-[09/11] ASoC: amd: acp: store the pdm stream channel mask
-        (no commit info)
-[10/12] ASoC: amd: acp: store the pdm stream channel mask
-        (no commit info)
-[11/12] ASoC: amd: acp: move pdm macros to common header file
-        (no commit info)
-[12/12] ASoC: amd: acp: add pm ops support for rembrandt platform
-        (no commit info)
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I think the only modification I would probably make is to have an 
+example of how to add the q6usb node to enable the audio offloading.
 
 Thanks,
-Mark
+Wesley Cheng
 
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
