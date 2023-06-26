@@ -4,76 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC7B2EB64DA
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:49:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B17DCEB64D7
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:50:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F6DC152B;
-	Mon, 26 Jun 2023 13:48:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F6DC152B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE4C2150B;
+	Mon, 26 Jun 2023 13:49:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE4C2150B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687780184;
-	bh=DVbyTqVe7PFg4oS1CvPOBQPtjD3P3zw8n64kWFcf1xw=;
+	s=default; t=1687780207;
+	bh=aMZpeUdo3WuFn6fyQxHqP6M/I29SUGMYfbqZL7a3Ngg=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Vo6ukkzvysIbfuOzlD5UX8Dc1sf6j0rdzYhd2BZiC0sBEpLdnPAg29FStO4Kt2HJN
-	 OBBer/Mt2IjbfushRiqSy8MfBtUZmDmcVPrXTcppOQ9cCb+TmAg3Cw/DBb87MyqGH0
-	 69jmEaNUs5j0E6zngl0qjHTOuv8WuWqMlmuBoubI=
+	b=iyIEzKMjpbZ7urwK5Y+SiZq21pmQBPOsr4okULFZ0r1BQOpsNSvlHWef6qb3su781
+	 iLhiHPiY0W23vIhT2XQW+Aw25xKJIltV2/A3vcz65Nfc1yJ6BXWB/s4EVPOwZ/39Zn
+	 14hRDB7HSX/QcQnZsEPUGKNPYZJJEnHC0UrL22zs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68370F8067E; Mon, 26 Jun 2023 13:43:35 +0200 (CEST)
+	id 22026F8067D; Mon, 26 Jun 2023 13:43:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26747F8067E;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D90BF8068C;
 	Mon, 26 Jun 2023 13:43:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6CBD3F8027B; Mon, 26 Jun 2023 04:36:09 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	id E4530F80169; Mon, 26 Jun 2023 04:36:14 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9C2FF80169
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 04:35:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9C2FF80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id 06228F80246
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 04:35:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06228F80246
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=Loz9KJki
-X-UUID: 1f5d9d6813ca11eeb20a276fd37b9834-20230626
+ header.s=dk header.b=ihMKutjG
+X-UUID: 264fafee13ca11ee9cb5633481061a41-20230626
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
 	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=V3HARW8YLeq+LFpkekMqBQrPaprHk/f/osFibxzs4yc=;
-	b=Loz9KJkiSNAKL1dw8CYSnPwIG/J0fuNxY0EUo9UksRceZUo+kpVOzlU8gKmHCfV/2FckXqWYNIlMiEOtJm4jJsq41zD4GNLgxFb7M44ucWE9/Tzg1l8yrzYW50ryXbg0pWW79Q9t20kYXcDWtUktj2Z0EuJyXXpTIfIO8OLZzMk=;
+ bh=To/hkL+XsHV+7bzfuPa862srWIZ++zvnkd6g5DhdBek=;
+	b=ihMKutjG9CfJJvKPG3KWJTX55sPZlCyPFfbXheR85Ugk/B+VrFrxncOXpyP4QFOzsrZlEREdzMEARjbiNQ+XTJ7SL0MwADD76AU76d3XbLM4QP9PWdiThjyHspoqac5tYs9OLx+fquyfSCD6wfKKE9ohQyYnlD8kgiXRT48YqUA=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.27,REQID:7a8801b3-dbbe-4378-a9ed-14ac58850e4f,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:70
-X-CID-INFO: VERSION:1.1.27,REQID:7a8801b3-dbbe-4378-a9ed-14ac58850e4f,IP:0,URL
-	:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTI
-	ON:quarantine,TS:70
-X-CID-META: VersionHash:01c9525,CLOUDID:c0d4a03f-7aa7-41f3-a6bd-0433bee822f3,B
-	ulkID:2306261035335NF81FGO,BulkQuantity:1,Recheck:0,SF:28|17|19|48|38|29,T
-	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,
-	OSI:0,OSA:0,AV:0,LES:1,SPR:NO
+X-CID-O-INFO: VERSION:1.1.27,REQID:5716ea10-fdf7-4bf1-bcee-552509a8c80a,IP:0,U
+	RL:25,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:0
+X-CID-META: VersionHash:01c9525,CLOUDID:4d00703f-de1e-4348-bc35-c96f92f1dcbb,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+	NO
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
-	TF_CID_SPAM_SNR
-X-UUID: 1f5d9d6813ca11eeb20a276fd37b9834-20230626
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
- mailgw02.mediatek.com
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 264fafee13ca11ee9cb5633481061a41-20230626
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by
+ mailgw01.mediatek.com
 	(envelope-from <maso.huang@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1703096274; Mon, 26 Jun 2023 10:35:32 +0800
+	with ESMTP id 1405323478; Mon, 26 Jun 2023 10:35:44 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 26 Jun 2023 10:35:31 +0800
+ 15.2.1118.26; Mon, 26 Jun 2023 10:35:42 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 26 Jun 2023 10:35:31 +0800
+ 15.2.1118.26 via Frontend Transport; Mon, 26 Jun 2023 10:35:42 +0800
 From: Maso Huang <maso.huang@mediatek.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
  Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
@@ -86,10 +82,10 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
 CC: Maso Huang <maso.huang@mediatek.com>
-Subject: [PATCH v2 3/7] ASoC: mediatek: mt7986: support etdm in platform
- driver
-Date: Mon, 26 Jun 2023 10:34:57 +0800
-Message-ID: <20230626023501.11120-4-maso.huang@mediatek.com>
+Subject: [PATCH v2 7/7] ASoC: dt-bindings: mediatek,mt7986-afe: add audio afe
+ document
+Date: Mon, 26 Jun 2023 10:35:01 +0800
+Message-ID: <20230626023501.11120-8-maso.huang@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20230626023501.11120-1-maso.huang@mediatek.com>
 References: <20230626023501.11120-1-maso.huang@mediatek.com>
@@ -101,15 +97,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: B24DI2D6KMF6XS7W5N6OGP2FHIP7RNZD
-X-Message-ID-Hash: B24DI2D6KMF6XS7W5N6OGP2FHIP7RNZD
+Message-ID-Hash: O2RG7TZA7ESJGZPNOZITLVPYGWNAAQB3
+X-Message-ID-Hash: O2RG7TZA7ESJGZPNOZITLVPYGWNAAQB3
 X-Mailman-Approved-At: Mon, 26 Jun 2023 11:41:56 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B24DI2D6KMF6XS7W5N6OGP2FHIP7RNZD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O2RG7TZA7ESJGZPNOZITLVPYGWNAAQB3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,441 +114,109 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add mt7986 etdm dai driver support.
+Add mt7986 audio afe document.
 
 Signed-off-by: Maso Huang <maso.huang@mediatek.com>
 ---
- sound/soc/mediatek/mt7986/mt7986-dai-etdm.c | 421 ++++++++++++++++++++
- 1 file changed, 421 insertions(+)
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-dai-etdm.c
+ .../bindings/sound/mediatek,mt7986-afe.yaml   | 89 +++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt7986-afe.yaml
 
-diff --git a/sound/soc/mediatek/mt7986/mt7986-dai-etdm.c b/sound/soc/mediatek/mt7986/mt7986-dai-etdm.c
+diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt7986-afe.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt7986-afe.yaml
 new file mode 100644
-index 000000000000..672deb59ea46
+index 000000000000..257327a33ea1
 --- /dev/null
-+++ b/sound/soc/mediatek/mt7986/mt7986-dai-etdm.c
-@@ -0,0 +1,421 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * MediaTek ALSA SoC Audio DAI eTDM Control
-+ *
-+ * Copyright (c) 2021 MediaTek Inc.
-+ * Author: Vic Wu <vic.wu@mediatek.com>
-+ *         Maso Huang <maso.huang@mediatek.com>
-+ */
++++ b/Documentation/devicetree/bindings/sound/mediatek,mt7986-afe.yaml
+@@ -0,0 +1,89 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/mediatek,mt7986-afe.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#include <linux/bitops.h>
-+#include <linux/regmap.h>
-+#include <sound/pcm_params.h>
-+#include "mt7986-afe-clk.h"
-+#include "mt7986-afe-common.h"
-+#include "mt7986-reg.h"
++title: MediaTek AFE PCM controller for MT7986
 +
-+enum {
-+	HOPPING_CLK = 0,
-+	APLL_CLK = 1,
-+};
++maintainers:
++  - Maso Huang <maso.huang@mediatek.com>
 +
-+enum {
-+	MTK_DAI_ETDM_FORMAT_I2S = 0,
-+	MTK_DAI_ETDM_FORMAT_DSPA = 4,
-+	MTK_DAI_ETDM_FORMAT_DSPB = 5,
-+};
++properties:
++  compatible:
++    oneOf:
++      - const: mediatek,mt7986-afe
++      - items:
++          - enum:
++              - mediatek,mt7981-afe
++              - mediatek,mt7988-afe
++          - const: mediatek,mt7986-afe
 +
-+enum {
-+	ETDM_IN5 = 2,
-+	ETDM_OUT5 = 10,
-+};
++  reg:
++    maxItems: 1
 +
-+enum {
-+	MTK_ETDM_RATE_8K = 0,
-+	MTK_ETDM_RATE_12K = 1,
-+	MTK_ETDM_RATE_16K = 2,
-+	MTK_ETDM_RATE_24K = 3,
-+	MTK_ETDM_RATE_32K = 4,
-+	MTK_ETDM_RATE_48K = 5,
-+	MTK_ETDM_RATE_96K = 7,
-+	MTK_ETDM_RATE_192K = 9,
-+	MTK_ETDM_RATE_11K = 16,
-+	MTK_ETDM_RATE_22K = 17,
-+	MTK_ETDM_RATE_44K = 18,
-+	MTK_ETDM_RATE_88K = 19,
-+	MTK_ETDM_RATE_176K = 20,
-+};
++  interrupts:
++    maxItems: 1
 +
-+struct mtk_dai_etdm_priv {
-+	bool bck_inv;
-+	bool lrck_inv;
-+	bool slave_mode;
-+	unsigned int format;
-+};
++  clocks:
++    minItems: 5
++    items:
++      - description: audio bus clock
++      - description: audio 26M clock
++      - description: audio intbus clock
++      - description: audio hopping clock
++      - description: audio pll clock
++      - description: mux for pcm_mck
++      - description: audio i2s/pcm mck
 +
-+static unsigned int mt7986_etdm_rate_transform(struct device *dev,
-+					unsigned int rate)
-+{
-+	switch (rate) {
-+	case 8000:
-+		return MTK_ETDM_RATE_8K;
-+	case 11025:
-+		return MTK_ETDM_RATE_11K;
-+	case 12000:
-+		return MTK_ETDM_RATE_12K;
-+	case 16000:
-+		return MTK_ETDM_RATE_16K;
-+	case 22050:
-+		return MTK_ETDM_RATE_22K;
-+	case 24000:
-+		return MTK_ETDM_RATE_24K;
-+	case 32000:
-+		return MTK_ETDM_RATE_32K;
-+	case 44100:
-+		return MTK_ETDM_RATE_44K;
-+	case 48000:
-+		return MTK_ETDM_RATE_48K;
-+	case 88200:
-+		return MTK_ETDM_RATE_88K;
-+	case 96000:
-+		return MTK_ETDM_RATE_96K;
-+	case 176400:
-+		return MTK_ETDM_RATE_176K;
-+	case 192000:
-+		return MTK_ETDM_RATE_192K;
-+	default:
-+		dev_warn(dev, "%s(), rate %u invalid, use %d!!!\n",
-+			 __func__, rate, MTK_ETDM_RATE_48K);
-+		return MTK_ETDM_RATE_48K;
-+	}
-+}
++  clock-names:
++    minItems: 5
++    items:
++      - const: aud_bus_ck
++      - const: aud_26m_ck
++      - const: aud_l_ck
++      - const: aud_aud_ck
++      - const: aud_eg2_ck
++      - const: aud_sel
++      - const: aud_i2s_m
 +
-+static int get_etdm_wlen(unsigned int bitwidth)
-+{
-+	return bitwidth <= 16 ? 16 : 32;
-+}
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - assigned-clocks
++  - assigned-clock-parents
 +
-+/* dai component */
-+/* interconnection */
++additionalProperties: false
 +
-+static const struct snd_kcontrol_new o124_mix[] = {
-+	SOC_DAPM_SINGLE_AUTODISABLE("I032_Switch", AFE_CONN124_1, 0, 1, 0),
-+};
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/clock/mt7986-clk.h>
 +
-+static const struct snd_kcontrol_new o125_mix[] = {
-+	SOC_DAPM_SINGLE_AUTODISABLE("I033_Switch", AFE_CONN125_1, 1, 1, 0),
-+};
++    afe@11210000 {
++        compatible = "mediatek,mt7986-afe";
++        reg = <0x11210000 0x9000>;
++        interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&infracfg_ao CLK_INFRA_AUD_BUS_CK>,
++                 <&infracfg_ao CLK_INFRA_AUD_26M_CK>,
++                 <&infracfg_ao CLK_INFRA_AUD_L_CK>,
++                 <&infracfg_ao CLK_INFRA_AUD_AUD_CK>,
++                 <&infracfg_ao CLK_INFRA_AUD_EG2_CK>;
++        clock-names = "aud_bus_ck",
++                      "aud_26m_ck",
++                      "aud_l_ck",
++                      "aud_aud_ck",
++                      "aud_eg2_ck";
++        assigned-clocks = <&topckgen CLK_TOP_A1SYS_SEL>,
++                          <&topckgen CLK_TOP_AUD_L_SEL>,
++                          <&topckgen CLK_TOP_A_TUNER_SEL>;
++        assigned-clock-parents = <&topckgen CLK_TOP_APLL2_D4>,
++                                 <&apmixedsys CLK_APMIXED_APLL2>,
++                                 <&topckgen CLK_TOP_APLL2_D4>;
++    };
 +
-+static const struct snd_soc_dapm_widget mtk_dai_etdm_widgets[] = {
-+
-+	/* DL */
-+	SND_SOC_DAPM_MIXER("I150", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("I151", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	/* UL */
-+	SND_SOC_DAPM_MIXER("O124", SND_SOC_NOPM, 0, 0,
-+			   o124_mix, ARRAY_SIZE(o124_mix)),
-+	SND_SOC_DAPM_MIXER("O125", SND_SOC_NOPM, 0, 0,
-+			   o125_mix, ARRAY_SIZE(o125_mix)),
-+};
-+
-+static const struct snd_soc_dapm_route mtk_dai_etdm_routes[] = {
-+	{"I150", NULL, "ETDM Capture"},
-+	{"I151", NULL, "ETDM Capture"},
-+	{"ETDM Playback", NULL, "O124"},
-+	{"ETDM Playback", NULL, "O125"},
-+	{"O124", "I032_Switch", "I032"},
-+	{"O125", "I033_Switch", "I033"},
-+};
-+
-+/* dai ops */
-+static int mtk_dai_etdm_startup(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
-+
-+	mt7986_afe_enable_clock(afe);
-+
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON2, CLK_OUT5_PDN_MASK,
-+			   0);
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON2, CLK_IN5_PDN_MASK,
-+			   0);
-+
-+	return 0;
-+}
-+
-+static void mtk_dai_etdm_shutdown(struct snd_pcm_substream *substream,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
-+
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON2, CLK_OUT5_PDN_MASK,
-+			   CLK_OUT5_PDN);
-+	regmap_update_bits(afe->regmap, AUDIO_TOP_CON2, CLK_IN5_PDN_MASK,
-+			   CLK_IN5_PDN);
-+
-+	mt7986_afe_disable_clock(afe);
-+}
-+
-+static unsigned int get_etdm_ch_fixup(unsigned int channels)
-+{
-+	if (channels > 16)
-+		return 24;
-+	else if (channels > 8)
-+		return 16;
-+	else if (channels > 4)
-+		return 8;
-+	else if (channels > 2)
-+		return 4;
-+	else
-+		return 2;
-+}
-+
-+static int mtk_dai_etdm_config(struct mtk_base_afe *afe,
-+			       struct snd_pcm_hw_params *params,
-+			       struct snd_soc_dai *dai,
-+			       int stream)
-+{
-+	struct mt7986_afe_private *afe_priv = afe->platform_priv;
-+	struct mtk_dai_etdm_priv *etdm_data = afe_priv->dai_priv[dai->id];
-+	unsigned int rate = params_rate(params);
-+	unsigned int etdm_rate = mt7986_etdm_rate_transform(afe->dev, rate);
-+	unsigned int afe_rate = mt7986_afe_rate_transform(afe->dev, rate);
-+	unsigned int channels = params_channels(params);
-+	unsigned int bit_width = params_width(params);
-+	unsigned int wlen = get_etdm_wlen(bit_width);
-+	unsigned int val = 0;
-+	unsigned int mask = 0;
-+
-+	dev_dbg(afe->dev, "%s(), stream %d, rate %u, bitwidth %u\n",
-+		 __func__, stream, rate, bit_width);
-+
-+	/* CON0 */
-+	mask |= ETDM_BIT_LEN_MASK;
-+	val |= ETDM_BIT_LEN(bit_width);
-+	mask |= ETDM_WRD_LEN_MASK;
-+	val |= ETDM_WRD_LEN(wlen);
-+	mask |= ETDM_FMT_MASK;
-+	val |= ETDM_FMT(etdm_data->format);
-+	mask |= ETDM_CH_NUM_MASK;
-+	val |= ETDM_CH_NUM(get_etdm_ch_fixup(channels));
-+	mask |= RELATCH_SRC_MASK;
-+	val |= RELATCH_SRC(APLL_CLK);
-+
-+	switch (stream) {
-+	case SNDRV_PCM_STREAM_PLAYBACK:
-+		/* set ETDM_OUT5_CON0 */
-+		regmap_update_bits(afe->regmap, ETDM_OUT5_CON0, mask, val);
-+
-+		/* set ETDM_OUT5_CON4 */
-+		regmap_update_bits(afe->regmap, ETDM_OUT5_CON4,
-+				   OUT_RELATCH_MASK, OUT_RELATCH(afe_rate));
-+		regmap_update_bits(afe->regmap, ETDM_OUT5_CON4,
-+				   OUT_CLK_SRC_MASK, OUT_CLK_SRC(APLL_CLK));
-+		regmap_update_bits(afe->regmap, ETDM_OUT5_CON4,
-+				   OUT_SEL_FS_MASK, OUT_SEL_FS(etdm_rate));
-+
-+		/* set ETDM_OUT5_CON5 */
-+		regmap_update_bits(afe->regmap, ETDM_OUT5_CON5,
-+				   ETDM_CLK_DIV_MASK, ETDM_CLK_DIV);
-+		break;
-+	case SNDRV_PCM_STREAM_CAPTURE:
-+		/* set ETDM_IN5_CON0 */
-+		regmap_update_bits(afe->regmap, ETDM_IN5_CON0, mask, val);
-+		regmap_update_bits(afe->regmap, ETDM_IN5_CON0,
-+				   ETDM_SYNC_MASK, ETDM_SYNC);
-+
-+		/* set ETDM_IN5_CON2 */
-+		regmap_update_bits(afe->regmap, ETDM_IN5_CON2,
-+				   IN_CLK_SRC_MASK, IN_CLK_SRC(APLL_CLK));
-+
-+		/* set ETDM_IN5_CON3 */
-+		regmap_update_bits(afe->regmap, ETDM_IN5_CON3,
-+				   IN_SEL_FS_MASK, IN_SEL_FS(etdm_rate));
-+
-+		/* set ETDM_IN5_CON4 */
-+		regmap_update_bits(afe->regmap, ETDM_IN5_CON4,
-+				   IN_RELATCH_MASK, IN_RELATCH(afe_rate));
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mtk_dai_etdm_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
-+
-+	mtk_dai_etdm_config(afe, params, dai, SNDRV_PCM_STREAM_PLAYBACK);
-+	mtk_dai_etdm_config(afe, params, dai, SNDRV_PCM_STREAM_CAPTURE);
-+
-+	return 0;
-+}
-+
-+static int mtk_dai_etdm_trigger(struct snd_pcm_substream *substream, int cmd,
-+				struct snd_soc_dai *dai)
-+{
-+	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
-+
-+	dev_dbg(afe->dev, "%s(), cmd %d, dai id %d\n", __func__, cmd, dai->id);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		regmap_update_bits(afe->regmap, ETDM_IN5_CON0, ETDM_EN_MASK,
-+				   ETDM_EN);
-+		regmap_update_bits(afe->regmap, ETDM_OUT5_CON0, ETDM_EN_MASK,
-+				   ETDM_EN);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		regmap_update_bits(afe->regmap, ETDM_IN5_CON0, ETDM_EN_MASK,
-+				   0);
-+		regmap_update_bits(afe->regmap, ETDM_OUT5_CON0, ETDM_EN_MASK,
-+				   0);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mtk_dai_etdm_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
-+	struct mt7986_afe_private *afe_priv = afe->platform_priv;
-+	struct mtk_dai_etdm_priv *etdm_data;
-+	void *priv_data;
-+
-+	switch (dai->id) {
-+	case MT7986_DAI_ETDM:
-+		break;
-+	default:
-+		dev_warn(afe->dev, "%s(), id %d not support\n",
-+			 __func__, dai->id);
-+		return -EINVAL;
-+	}
-+
-+	priv_data = devm_kzalloc(afe->dev, sizeof(struct mtk_dai_etdm_priv),
-+				 GFP_KERNEL);
-+	if (!priv_data)
-+		return -ENOMEM;
-+
-+	afe_priv->dai_priv[dai->id] = priv_data;
-+	etdm_data = afe_priv->dai_priv[dai->id];
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		etdm_data->format = MTK_DAI_ETDM_FORMAT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		etdm_data->format = MTK_DAI_ETDM_FORMAT_DSPA;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		etdm_data->format = MTK_DAI_ETDM_FORMAT_DSPB;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		etdm_data->bck_inv = false;
-+		etdm_data->lrck_inv = false;
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		etdm_data->bck_inv = false;
-+		etdm_data->lrck_inv = true;
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		etdm_data->bck_inv = true;
-+		etdm_data->lrck_inv = false;
-+		break;
-+	case SND_SOC_DAIFMT_IB_IF:
-+		etdm_data->bck_inv = true;
-+		etdm_data->lrck_inv = true;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		etdm_data->slave_mode = true;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		etdm_data->slave_mode = false;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops mtk_dai_etdm_ops = {
-+	.startup = mtk_dai_etdm_startup,
-+	.shutdown = mtk_dai_etdm_shutdown,
-+	.hw_params = mtk_dai_etdm_hw_params,
-+	.trigger = mtk_dai_etdm_trigger,
-+	.set_fmt = mtk_dai_etdm_set_fmt,
-+};
-+
-+/* dai driver */
-+#define MTK_ETDM_RATES (SNDRV_PCM_RATE_8000_48000 |\
-+			SNDRV_PCM_RATE_88200 |\
-+			SNDRV_PCM_RATE_96000 |\
-+			SNDRV_PCM_RATE_176400 |\
-+			SNDRV_PCM_RATE_192000)
-+
-+#define MTK_ETDM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
-+			  SNDRV_PCM_FMTBIT_S24_LE |\
-+			  SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static struct snd_soc_dai_driver mtk_dai_etdm_driver[] = {
-+	{
-+		.name = "ETDM",
-+		.id = MT7986_DAI_ETDM,
-+		.capture = {
-+			.stream_name = "ETDM Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_ETDM_RATES,
-+			.formats = MTK_ETDM_FORMATS,
-+		},
-+		.playback = {
-+			.stream_name = "ETDM Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_ETDM_RATES,
-+			.formats = MTK_ETDM_FORMATS,
-+		},
-+		.ops = &mtk_dai_etdm_ops,
-+		.symmetric_rate = 1,
-+		.symmetric_sample_bits = 1,
-+	},
-+};
-+
-+int mt7986_dai_etdm_register(struct mtk_base_afe *afe)
-+{
-+	struct mtk_base_afe_dai *dai;
-+
-+	dai = devm_kzalloc(afe->dev, sizeof(*dai), GFP_KERNEL);
-+	if (!dai)
-+		return -ENOMEM;
-+
-+	list_add(&dai->list, &afe->sub_dais);
-+
-+	dai->dai_drivers = mtk_dai_etdm_driver;
-+	dai->num_dai_drivers = ARRAY_SIZE(mtk_dai_etdm_driver);
-+
-+	dai->dapm_widgets = mtk_dai_etdm_widgets;
-+	dai->num_dapm_widgets = ARRAY_SIZE(mtk_dai_etdm_widgets);
-+	dai->dapm_routes = mtk_dai_etdm_routes;
-+	dai->num_dapm_routes = ARRAY_SIZE(mtk_dai_etdm_routes);
-+
-+	return 0;
-+}
++...
 -- 
 2.18.0
 
