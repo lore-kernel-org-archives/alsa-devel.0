@@ -4,132 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1A04EB64D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 10:48:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55382EB64D7
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 10:50:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0841D83A;
-	Mon, 26 Jun 2023 12:47:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0841D83A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E52F4839;
+	Mon, 26 Jun 2023 12:49:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E52F4839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687776487;
-	bh=IbKCW2fF++n7beX2SoKxLEo/wdwicftB9M19P0hITxM=;
+	s=default; t=1687776637;
+	bh=K/DIrngDXRqFkoySoWrM87AZXYW6qNCWHv9oMMivNBY=;
 	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=P8fmuMFw0DYmYFnQy+5FB9BjKabpkg/bdCm+cNlS98L9ENty/AvJhCExlhS8/Eo5u
-	 61feG5tRdTudt24gXoKzAfIpZ4P4UTREfgjms/0HHlxD8VuRdhMZnh18juJj4ETkqr
-	 qXqs32gDKXKO02id9nl0PBMTxBCSDKGCRPv6qhOk=
+	b=bCwQ8riJ8O5AYTnASmG90kjdFh9apJibibddhIQMfGLOzqukJGO4vumAWS6szqgkl
+	 w7MkzFqLBiZeTUaa4nwwTq5D6uqZ2/lkVdGNO0rAX2Ip8wG50K1vfOi88qAv+2kQ9C
+	 MOts4bwna/cgSq7DlOC79Afq0gac/0Dl3W5i9ytc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DBAE7F80535; Mon, 26 Jun 2023 12:46:54 +0200 (CEST)
+	id 6355CF80212; Mon, 26 Jun 2023 12:49:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF4CCF80246;
-	Mon, 26 Jun 2023 12:46:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9840F80169;
+	Mon, 26 Jun 2023 12:49:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E31AF80246; Mon, 26 Jun 2023 12:46:48 +0200 (CEST)
-Received: from APC01-SG2-obe.outbound.protection.outlook.com
- (mail-sgaapc01hn2030f.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:feab::30f])
+	id 586B9F80246; Mon, 26 Jun 2023 12:49:42 +0200 (CEST)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam12on20613.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe59::613])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BB448F80169
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 12:46:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB448F80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id 23A31F80169
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 12:49:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23A31F80169
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
- header.s=selector1 header.b=WS9ZFLef
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=vI8Bgnz2
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lRLzQYRIeH8R1i0K0AKmxecqHHAMxlDPFIe82meHA+RRF7X71RlwbyWcUguDLEErS1HKJWJvmXDY6UFa73l228bzC7GwZVgHKnJXnCbeo5HgfdY3XdgO6EnzrQc/F1ROqjuSBHKZlM7hcQBzkRtkoxb9vY4VaX99E5b4X24S7XaqkQEW1t7XSnwY9C7VvG2rxdYaDZS5BhJCuuAm66NXiyYityPPU04aLTZdb3dswaQabB9dYnRVsC8ZzZukKD/OSddrEdDpA6dEgTXNGsCEhDT8oEYfYJAJyAOKzuYH6dD+CfmgCJ/A8h9R/e7FLuJfgSh6+koV18wQ6Rv98uybbg==
+ b=jrS8CMKTuhJsk6UXNjoRsI5vyUJgmieSei+qEbZh8zXowu1G5VTqM3AQ8X464PvSnwzdewQW+cx/5tspLkwid6c9WnooI97T4FJGoGLmsUQXlxhB/PBwW7ftGWEN1kiVYCPzRi8qWOvLGq7RouusTjas00qmM8wUTMkuTjAqKgJM0cupQf4UiR7tHcHA9gSj5zZbjPMPk49F4QhHMvFnM+bn79gyLLbOqLl6WVl/zw9Z2Qp+aH5JG2rbEdYXUw2475u9GPH6OnHshc/vGw18YqfbEEfhzO3Wu4bDOqVyaG7d2PpeRdtDqvCUQ24I/kkQVvbUo6MR44QWOOiUEslNiw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Z5ej0lptjdV2CRtZEzkXS+Gb9EZSadzOdB/EyIUWQ6U=;
- b=Ko/tMeW8MSflKnYpbvUul0npTKktCW57KjDzXWWTZijyL8wFVpSedhLDJ/9y4OnM4BYpTvPK+MLz/6Sm+ve9j7maXacQ4k8dalDhJ4EZPE0mIOJdAQcTaHedjZHMqwmY22eFXPYCKhvfQes8SmU/3nmq932Gy1NmG0T21q/UzkFDPsG3ORUeySMn3oxch6ZpKD4NUe2QzR5isai3d5Alpo2VjX+AuhSi4QF/xo2bYOByQf6dNKJ4ZhpnzcuQkboQ3Y8blsw4ERYfLVxGzCYzQxg74t7ioLlo9vSryv/e8uMYMniNamz5bi5W9H3mB+/d08c8ppn9WGEAakJEfiRdjA==
+ bh=W25PCIQtrqSR/2RyQHi3bguFladghcAJ45xobGw6ji0=;
+ b=SQ9foh429Eg8IHvwrB7eVUeBy50JZp2aEgFW5zsWELjdYJ4gQwMB5bM+ozt2ElzG03kfCU+FVlRn57Qi8BEby4h3aUwUogx76VATgzxu2m4bs1/44kGB5afITMaQ6ejyN/kbZGNs2N9jLS5KG7APAStImmAVgnPFFfy7yoA4kqQaQVxT3rnxgIOrRmzaE+fyeXXtVyCmeCcdv2Dgboc+HOTW6nItx3/oaJPxTGE+Wa8RQ+o09NNWQ4iyyykYxHbXQHeSkRI7/eWBufldwBhJux0rwrIc+8MGAHySQMAuZRc2/bCQT5Uqy9fNLPBPelBfuTDnxEdiw8wGaBS0dbbsJw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 175.98.123.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nuvoton.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
- s=selector1;
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z5ej0lptjdV2CRtZEzkXS+Gb9EZSadzOdB/EyIUWQ6U=;
- b=WS9ZFLefmgWJlpzsYZ6uXRIEwhqBKYN0zUo9HgZw2mgZuMrqzms1uYpZ5cbVIJJaa6Og2nMxDdUIKjQE0J/j2V0Zly646Jh9rANpOLe5j7S16MM6Bc+n3CmNgV1A9JHsznp0gF8MbC7Nu4fyZh5tzKrgKHVKPAcGuwCCXKz8Shc=
-Received: from TY2PR02CA0006.apcprd02.prod.outlook.com (2603:1096:404:56::18)
- by SEZPR03MB7615.apcprd03.prod.outlook.com (2603:1096:101:12c::10) with
+ bh=W25PCIQtrqSR/2RyQHi3bguFladghcAJ45xobGw6ji0=;
+ b=vI8Bgnz2ynneWhmWx+ub9cR9WfaDw/NwWZGFvTpN0jA7028ZvXJFxP2QyhUQVfq8AbTA1cwdAZKqJfDeTqh8i/IdwUGc1Lr4Egv6uynj6fWgnlGRmXzWnCxWwcxoQbUOuGNjL+cQHKI/qWIwZOXgIKonmScPWex89jxPd7dQV9o=
+Received: from MW4PR03CA0204.namprd03.prod.outlook.com (2603:10b6:303:b8::29)
+ by SJ0PR12MB8116.namprd12.prod.outlook.com (2603:10b6:a03:4ec::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Mon, 26 Jun
- 2023 10:46:25 +0000
-Received: from TYZAPC01FT044.eop-APC01.prod.protection.outlook.com
- (2603:1096:404:56:cafe::89) by TY2PR02CA0006.outlook.office365.com
- (2603:1096:404:56::18) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 10:49:29 +0000
+Received: from CO1NAM11FT015.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:b8:cafe::d2) by MW4PR03CA0204.outlook.office365.com
+ (2603:10b6:303:b8::29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.33 via Frontend
- Transport; Mon, 26 Jun 2023 10:46:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 175.98.123.7)
- smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nuvoton.com;
-Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
- 175.98.123.7 as permitted sender) receiver=protection.outlook.com;
- client-ip=175.98.123.7; helo=NTHCCAS04.nuvoton.com; pr=C
-Received: from NTHCCAS04.nuvoton.com (175.98.123.7) by
- TYZAPC01FT044.mail.protection.outlook.com (10.118.152.91) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.20.6544.15 via Frontend Transport; Mon, 26 Jun 2023 10:46:24 +0000
-Received: from NTHCCAS03.nuvoton.com (10.1.20.28) by NTHCCAS04.nuvoton.com
- (10.1.8.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 26
- Jun 2023 18:46:23 +0800
-Received: from NTHCCAS04.nuvoton.com (10.1.8.29) by NTHCCAS03.nuvoton.com
- (10.1.20.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1847.3; Mon, 26 Jun
- 2023 18:46:23 +0800
-Received: from localhost.localdomain (10.11.36.27) by NTHCCAS04.nuvoton.com
- (10.1.8.29) with Microsoft SMTP Server id 15.1.2176.2 via Frontend Transport;
- Mon, 26 Jun 2023 18:46:23 +0800
-From: Seven Lee <wtli@nuvoton.com>
+ Transport; Mon, 26 Jun 2023 10:49:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT015.mail.protection.outlook.com (10.13.175.130) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6500.47 via Frontend Transport; Mon, 26 Jun 2023 10:49:28 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Mon, 26 Jun
+ 2023 05:49:27 -0500
+Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.23
+ via Frontend Transport; Mon, 26 Jun 2023 05:49:24 -0500
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <broonie@kernel.org>
-CC: <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <YHCHuang@nuvoton.com>, <KCHSU0@nuvoton.com>,
-	<CTLIN0@nuvoton.com>, <WTLI@nuvoton.com>, <SJLIN0@nuvoton.com>,
-	<scott6986@gmail.com>, <supercraig0719@gmail.com>, <dardar923@gmail.com>,
-	Seven Lee <wtli@nuvoton.com>
-Subject: [PATCH] ASoC: dt-bindings: nau8821: Convert to dtschema
-Date: Mon, 26 Jun 2023 18:46:19 +0800
-Message-ID: <20230626104619.1112588-1-wtli@nuvoton.com>
-X-Mailer: git-send-email 2.25.1
+CC: <alsa-devel@alsa-project.org>, <Basavaraj.Hiregoudar@amd.com>,
+	<Sunil-kumar.Dommati@amd.com>, <Mastan.Katragadda@amd.com>,
+	<Arungopal.kondaveeti@amd.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+	Mario Limonciello <mario.limonciello@amd.com>, open list
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/6] ASoC: amd: ps: add comments for DMA irq bits mapping
+Date: Mon, 26 Jun 2023 16:23:49 +0530
+Message-ID: <20230626105356.2580125-1-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-NotSetDelaration: True
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZAPC01FT044:EE_|SEZPR03MB7615:EE_
-X-MS-Office365-Filtering-Correlation-Id: fca53768-e698-43d0-63aa-08db7632968f
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT015:EE_|SJ0PR12MB8116:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4440eeff-f82d-4fa7-fcbe-08db76330434
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	sZfb1C8ikX8gkj3l8Nvbr+cx1GV2eI1+LEBH/EOHVR8o4Zg3C3P6ALCdrecI2Wf9HxFog6sTSShuqAdwFhTnGocrUXU86MB3tFzpx9pI7MN5HrhTTxTpHdSQeBZUSjUCXo0Z6ioiOukIVtVYRNL0sBN3rgTj8SrjDxpz0mF9kxJkHJ2/p1ep0BY3e/FTa7dz1WL3njq4ZU3qQNfirxJ2rxH/9nZFQVXapiJ5vAhh+MQVzcgTNDMiOtGzgzpPc9hnc1o0awBAQ3NhZr8+NqV9hljZ4sWQ3QsadEhqWzqyJKrxRrGrkNGirdDi2lLcg3KSv6YkxICpfXZDopbD2oox6Xcgeg+9IaR/bp4hHKNfhxr4gZ4olFE6K4V3t1v5iCHWXGpY2AIQVtuLRu01iZBwpu8k6cwDT6MnpEtUqwXZy4ubIAGAbiS92d/bPQ7DWhMy/LA4QeFSb8TaMORlYLPdSc7O3lBYvnc4DN+R6UHp3NfxHNHEsimqZHHzPnYhuGUe3+QbCzN99yQNTFqJKLfQJR+Q/nNRwiz6YgAqlVVsSr//Ek6eh+hpOLCNLScyr2eRfXs8o3zQssqt46nBS2RPpJihNBCWw6TxBzEIDvD4JXpKcB6a+dMGgTIEvlQ3kDdBGK50nzbWxkY+SncDiWsPby9sUn+xi+/KiviiAcmT0U17JsJeBCPqrg/IUSVEq1/zZDogRoBIIQ6cEsgasMiddfYuCY/eSG/s7eX5aj9mnmrQN562E8UULq0G8e2x/z0dCuOTpZZREu1CFzeYXBGji6zMmJhIGE32g1pxgC22ZFkOdK9tbcT4vsqJAf5mmCvErjOHRHHeyQE55nYa8B4a8Q==
+	TIzvj2pQl/phlP1ZXEPpjGEL+QdqWK0IewbSPVOxx2Zlh0+5/UF0rcNokD4ahfwtgyOmfxkeSz46JK6WktSRnH7fyvxuyCS3jPJKB/oxck7jJQqtYVUaHX/bwva1pYiWCqX9ERetYhJC3NNbyDEOqMuChmYtwudL5RsZrDw11oOxMye9VvrfPJfvnnnCTVd7QM1yCULYn+zvHzPStwj5cIXZYfi2GgqGjIzDyJ7R4SeOAgJXxdINsK9KyOxFNXAxVw/ehgc7ADp0uI9d6cEAIobIwFXLbRGyc/hKy7TT4KNrtePGcuDBvYOf6JgbZRG/tFRUSQW2aa+cQy0T61uicXsNur2CM53lAWB11RSneR3kdtg/RmenqKj4NlGJ5GMhycrP/Mj4IWnUp4UNNnwgn/WL7F5/7hScGktxXFr0XzofdVhB0MVxW6VliJaQZSUlKOQ+hWWR7LY5/JSIFlu+wx2QFK26lKaWjL4dgJqLd3g/P7sEsWLkAPpvAzCigUXbdRIRShm0e1z6OqBUQxrO5FY2kEI/CZNHq/uc+5/kHkDBvEAgHCPcWDLimEuu/c4whdtVr4afOPvRv80RZKJMM4GLtCjyOr8k329o/p4mAhxbaq+lkU5ju8E/VEUpjrqjBqICXS0rV8uSxJoTUBB+xqvXsXlNw4u+YFfKfLd0Fho4BeWcSIsb1HTzQdyd5tE3HxMemXDs/JM2O2xyzEwOyC2zYVmU+2yyoiy3Yfa7Y7UybdxXL8sVf9LC1ys11OEABwIAh0KYrF6dBHzFOYri5A==
 X-Forefront-Antispam-Report: 
-	CIP:175.98.123.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS04.nuvoton.com;PTR:175-98-123-7.static.tfn.net.tw;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(376002)(346002)(136003)(451199021)(5400799015)(40470700004)(46966006)(36840700001)(2906002)(186003)(26005)(1076003)(426003)(107886003)(47076005)(2616005)(81166007)(336012)(34020700004)(356005)(40480700001)(36860700001)(5660300002)(41300700001)(40460700003)(83380400001)(70586007)(70206006)(8936002)(7416002)(8676002)(36756003)(82740400003)(6666004)(54906003)(86362001)(478600001)(4326008)(966005)(6916009)(316002)(82310400005)(12100799033);DIR:OUT;SFP:1501;
-X-OriginatorOrg: nuvoton.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2023 10:46:24.8697
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(396003)(39860400002)(346002)(451199021)(46966006)(40470700004)(36840700001)(36860700001)(82310400005)(47076005)(478600001)(7696005)(2616005)(54906003)(426003)(336012)(6666004)(1076003)(26005)(2906002)(186003)(5660300002)(70206006)(40460700003)(36756003)(356005)(4326008)(81166007)(70586007)(82740400003)(40480700001)(8936002)(8676002)(41300700001)(316002)(86362001)(6916009)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2023 10:49:28.7485
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- fca53768-e698-43d0-63aa-08db7632968f
-X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+ 4440eeff-f82d-4fa7-fcbe-08db76330434
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[175.98.123.7];Helo=[NTHCCAS04.nuvoton.com]
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	TYZAPC01FT044.eop-APC01.prod.protection.outlook.com
+	CO1NAM11FT015.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB7615
-Message-ID-Hash: U2Y6KLIMIAK2UWZETXAHV7GSOUBNQSVC
-X-Message-ID-Hash: U2Y6KLIMIAK2UWZETXAHV7GSOUBNQSVC
-X-MailFrom: WTLI@nuvoton.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB8116
+Message-ID-Hash: ALRPK7CIFEZ3ZQYSG6DM2AWGVEANKWTQ
+X-Message-ID-Hash: ALRPK7CIFEZ3ZQYSG6DM2AWGVEANKWTQ
+X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -141,7 +135,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U2Y6KLIMIAK2UWZETXAHV7GSOUBNQSVC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ALRPK7CIFEZ3ZQYSG6DM2AWGVEANKWTQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -150,203 +144,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert the NAU8821 audio CODEC bindings to DT schema.
+Add comments for DMA stream id and IRQ bit mapping in
+ACP_EXTERNAL_CNTL & ACP_EXTERNAL_CNTL1 registers for
+SDW0 and SDW1 manager instances.
 
-Signed-off-by: Seven Lee <wtli@nuvoton.com>
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- .../devicetree/bindings/sound/nau8821.txt     |  55 --------
- .../bindings/sound/nuvoton,nau8821.yaml       | 120 ++++++++++++++++++
- 2 files changed, 120 insertions(+), 55 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/nau8821.txt
- create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+ sound/soc/amd/ps/acp63.h | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/nau8821.txt b/Documentation/devicetree/bindings/sound/nau8821.txt
-deleted file mode 100644
-index 7c84e7c7327a..000000000000
---- a/Documentation/devicetree/bindings/sound/nau8821.txt
-+++ /dev/null
-@@ -1,55 +0,0 @@
--Nuvoton NAU88L21 audio codec
--
--This device supports I2C only.
--
--Required properties:
--  - compatible : Must be "nuvoton,nau8821"
--
--  - reg : the I2C address of the device. This is either 0x1B (CSB=0) or 0x54 (CSB=1).
--
--Optional properties:
--  - nuvoton,jkdet-enable: Enable jack detection via JKDET pin.
--  - nuvoton,jkdet-pull-enable: Enable JKDET pin pull. If set - pin pull enabled,
--      otherwise pin in high impedance state.
--  - nuvoton,jkdet-pull-up: Pull-up JKDET pin. If set then JKDET pin is pull up, otherwise pull down.
--  - nuvoton,jkdet-polarity: JKDET pin polarity. 0 - active high, 1 - active low.
--
--  - nuvoton,vref-impedance: VREF Impedance selection
--      0 - Open
--      1 - 25 kOhm
--      2 - 125 kOhm
--      3 - 2.5 kOhm
--
--  - nuvoton,micbias-voltage: Micbias voltage level.
--      0 - VDDA
--      1 - VDDA
--      2 - VDDA * 1.1
--      3 - VDDA * 1.2
--      4 - VDDA * 1.3
--      5 - VDDA * 1.4
--      6 - VDDA * 1.53
--      7 - VDDA * 1.53
--
--  - nuvoton,jack-insert-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
--  - nuvoton,jack-eject-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
--
--  - nuvoton,dmic-clk-threshold: the ADC threshold of DMIC clock.
--  - nuvoton,key_enable: Headset button detection switch.
--
--Example:
--
--  headset: nau8821@1b {
--      compatible = "nuvoton,nau8821";
--      reg = <0x1b>;
--      interrupt-parent = <&gpio>;
--      interrupts = <23 IRQ_TYPE_LEVEL_LOW>;
--      nuvoton,jkdet-enable;
--      nuvoton,jkdet-pull-enable;
--      nuvoton,jkdet-pull-up;
--      nuvoton,jkdet-polarity = <GPIO_ACTIVE_LOW>;
--      nuvoton,vref-impedance = <2>;
--      nuvoton,micbias-voltage = <6>;
--      nuvoton,jack-insert-debounce = <7>;
--      nuvoton,jack-eject-debounce = <7>;
--      nuvoton,dmic-clk-threshold = 3072000;
--  };
-diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-new file mode 100644
-index 000000000000..728223d20876
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-@@ -0,0 +1,120 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nuvoton,nau8821.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/soc/amd/ps/acp63.h b/sound/soc/amd/ps/acp63.h
+index e96e6dc9d90f..733a16e23d32 100644
+--- a/sound/soc/amd/ps/acp63.h
++++ b/sound/soc/amd/ps/acp63.h
+@@ -116,8 +116,28 @@
+ #define ACP63_SDW0_DMA_MAX_STREAMS	6
+ #define ACP63_SDW1_DMA_MAX_STREAMS	2
+ #define ACP_P1_AUDIO_TX_THRESHOLD	6
 +
-+title: NAU88L21 audio codec
++/*
++ * Below entries describes SDW0 instance DMA stream id and DMA irq bit mapping
++ * in ACP_EXTENAL_INTR_CNTL register.
++ * Stream id		IRQ Bit
++ * 0 (SDW0_AUDIO0_TX)	28
++ * 1 (SDW0_AUDIO1_TX)	26
++ * 2 (SDW0_AUDIO2_TX)	24
++ * 3 (SDW0_AUDIO0_RX)	27
++ * 4 (SDW0_AUDIO1_RX)	25
++ * 5 (SDW0_AUDIO2_RX)	23
++ */
+ #define SDW0_DMA_TX_IRQ_MASK(i)	(ACP_AUDIO0_TX_THRESHOLD - (2 * (i)))
+ #define SDW0_DMA_RX_IRQ_MASK(i)	(ACP_AUDIO0_RX_THRESHOLD - (2 * (i)))
 +
-+maintainers:
-+  - Seven Lee <wtli@nuvoton.com>
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: nuvoton,nau8821
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  nuvoton,jkdet-enable:
-+    description: Enable jack detection via JKDET pin.
-+    type: boolean
-+
-+  nuvoton,jkdet-pull-enable:
-+    description: Enable JKDET pin pull. If set - pin pull enabled,
-+      otherwise pin in high impedance state.
-+    type: boolean
-+
-+  nuvoton,jkdet-pull-up:
-+    description: Pull-up JKDET pin. If set then JKDET pin is pull up,
-+      otherwise pull down.
-+    type: boolean
-+
-+  nuvoton,jkdet-polarity:
-+    description: JKDET pin polarity.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum:
-+      - 0 # active high
-+      - 1 # active low
-+    default: 1
-+
-+  nuvoton,micbias-voltage:
-+    description: MICBIAS output level select.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum:
-+      - 0 # VDDA
-+      - 1 # VDDA * 1
-+      - 2 # VDDA * 1.1
-+      - 3 # VDDA * 1.2
-+      - 4 # VDDA * 1.3
-+      - 5 # VDDA * 1.4
-+      - 6 # VDDA * 1.53
-+      - 7 # VDDA * 1.53
-+    default: 6
-+
-+  nuvoton,vref-impedance:
-+    description: VMID Tie-off impedance select.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum:
-+      - 0 # open(default)
-+      - 1 # 25KOhms
-+      - 2 # 125KOhms
-+      - 3 # 2.5KOhms
-+    default: 2
-+
-+  nuvoton,jack-insert-debounce:
-+    description: number from 0 to 7 that sets debounce time to 2^(n+2)ms.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 7
-+    default: 7
-+
-+  nuvoton,jack-eject-debounce:
-+    description: number from 0 to 7 that sets debounce time to 2^(n+2)ms.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 7
-+    default: 0
-+
-+  nuvoton,dmic-clk-threshold:
-+    description: DMIC clock speed expected value. Unit is Hz.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 3072000
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        codec@1b {
-+            #sound-dai-cells = <0>;
-+            compatible = "nuvoton,nau8821";
-+            reg = <0x1b>;
-+            interrupt-parent = <&gpio>;
-+            interrupts = <23 IRQ_TYPE_LEVEL_LOW>;
-+            nuvoton,jkdet-enable;
-+            nuvoton,jkdet-pull-enable;
-+            nuvoton,jkdet-pull-up;
-+            nuvoton,jkdet-polarity = <GPIO_ACTIVE_LOW>;
-+            nuvoton,micbias-voltage = <6>;
-+            nuvoton,vref-impedance = <2>;
-+            nuvoton,jack-insert-debounce = <7>;
-+            nuvoton,jack-eject-debounce = <0>;
-+            nuvoton,dmic-clk-threshold = <3072000>;
-+        };
-+    };
++/*
++ * Below entries describes SDW1 instance DMA stream id and DMA irq bit mapping
++ * in ACP_EXTENAL_INTR_CNTL1 register.
++ * Stream id		IRQ Bit
++ * 0 (SDW1_AUDIO1_TX)	6
++ * 1 (SDW1_AUDIO1_RX)	5
++ */
+ #define SDW1_DMA_IRQ_MASK(i)	(ACP_P1_AUDIO_TX_THRESHOLD - (i))
+ 
+ #define ACP_DELAY_US		5
 -- 
-2.25.1
+2.34.1
 
