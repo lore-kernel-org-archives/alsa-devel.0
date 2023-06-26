@@ -4,145 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C5F2EB64D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:48:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7A4AEB64D7
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:48:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D37B149C;
-	Mon, 26 Jun 2023 13:47:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D37B149C
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF720151B;
+	Mon, 26 Jun 2023 13:47:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF720151B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687780085;
-	bh=EB3sH4aygfzKgkxQn+Hddb8TJGsHlWFfuruIP2mkinc=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=mSIEjKvgyWcw/rHkEte1J54KZ0nhdU1Gqq1oHGMrG/Qsyi2ogqrOtOpoORjbhw5vy
-	 xAkXivaRV+XaGVXGfRuiHRRpGqspzzyPMkBxuzz5Wzj+rsjQgDel8Pj3PlIWiqsfMD
-	 NX3zMs/oJFOohD0J66DtQEO45VkJHJ+KVwo/OoMg=
+	s=default; t=1687780108;
+	bh=L/w/yKwH7VkN3xKyWRZSXKgCTmvFtWY6kWBrBMgXy2Q=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Tl5hNtABofeg28haFnvVpp8iDpyOkaVkK4mp1J9DBI/f44j2YMqu4Pa7CtLtSlmS1
+	 1EZvpqQ1eMnCqih+1WgMBvJBgsgyD9/Puju6L7FRwER36RSx8q/HW6PB/N70H/8uER
+	 jPKKqEivkFP9ZsGxVjMjctyseYhDyYoIfy+wa9Qo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 87127F80612; Mon, 26 Jun 2023 13:43:30 +0200 (CEST)
+	id 0B817F80621; Mon, 26 Jun 2023 13:43:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DA0DF8060A;
-	Mon, 26 Jun 2023 13:43:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52B6EF8061C;
+	Mon, 26 Jun 2023 13:43:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6336AF80141; Sat, 24 Jun 2023 11:20:07 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id B8341F8051E; Mon, 26 Jun 2023 04:35:43 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F1712F80124
-	for <alsa-devel@alsa-project.org>; Sat, 24 Jun 2023 11:19:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1712F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1A50DF80093
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 04:35:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A50DF80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=yQVzjTKS
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-988883b0d8fso186929166b.1
-        for <alsa-devel@alsa-project.org>;
- Sat, 24 Jun 2023 02:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687598396; x=1690190396;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KfAcGT4J8pUoMJBGxBaLszgHGiS6c9l8JOpUoHeAAOA=;
-        b=yQVzjTKSXVmVV9dLLVhjlfW4hSkCHaHSkFp8XKDuppCzQpGHvyVttjnWT3sZWadL6G
-         Aptg8K8aHU9euO2VsKWw8w5GNb7iZUmQN6s980dsKNw8bDt/Gg0mjyG+1qbTOWHueIrY
-         /Q6bxSUkrx10KI9Bk3ImA6gPyy5RwRLI1IVUQjGo73WdFwY+k9WU2qYNImsGMRH4LVBY
-         NGoLGDAz09o/yosqduTlRt/bCpwDw40AnKJvyTtb5EsV6kYLtwXhkQO6myiWdEiHilCp
-         eezk0kHCVcUBB/e4mc1VfkMXxJnPCuve2SWX/BdtYwhjQIOCgvko85iNcFXLb/8ecU/N
-         rm6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687598396; x=1690190396;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KfAcGT4J8pUoMJBGxBaLszgHGiS6c9l8JOpUoHeAAOA=;
-        b=laxRnN2BtKLjW32WQie4TMXwG+3diEmQNgg7btUMc/8GZuKe9X14QUdN1Y14x66C3e
-         Yw0MHM3i8GFh349tg1UJYlj0ngP55CzhaAAcNQl2CzQ0/3WRnAp11qMTWABk2xna9tuG
-         7nWDjqnreDFzEkTlp0WhyNJH8s3ZBFXADX1Lw8W1Amoi3chr05NFzfMxCXYgUjTnX8VA
-         ng+jIfLsJUa4fE0yviopIXv4R2vdKDzS/+ORvTpx+A0pbHz3ahx9BYDaz7Fdz9TWsuEf
-         VKbJEfPb72LLtaPvb6LjwYX0y4U0FL9SlObRXC8i2P3sIg5OdBGN6DzmE9GBShwnctAk
-         y1Ig==
-X-Gm-Message-State: AC+VfDwwh8fOW3rJfJ7hNnKvLB0iYNExHVrtV2Vu1XBJJCB2sn+PTO7k
-	yZBDbIGVIAcTPCWwFBqdO8j+VA==
-X-Google-Smtp-Source: 
- ACHHUZ5fG8f481PX14S7vktzFZQMA1l6HoKP1yysFPHfBvGgcLJOb2TMBp2polua7/w5jYwHHssrXQ==
-X-Received: by 2002:a17:907:987:b0:987:6372:c31f with SMTP id
- bf7-20020a170907098700b009876372c31fmr16230436ejc.37.1687598396633;
-        Sat, 24 Jun 2023 02:19:56 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.219.26])
-        by smtp.gmail.com with ESMTPSA id
- p13-20020a1709060e8d00b00989065149d0sm663324ejf.86.2023.06.24.02.19.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jun 2023 02:19:55 -0700 (PDT)
-Message-ID: <ca3b6a75-2811-6013-28cc-9f6a7854b469@linaro.org>
-Date: Sat, 24 Jun 2023 11:19:49 +0200
+	dkim=pass (1024-bit key,
+ unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
+ header.s=dk header.b=SnoQq1dU
+X-UUID: 19b1dee213ca11eeb20a276fd37b9834-20230626
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
+ bh=Iwm0zG4h3gdP7jHydJXH0fWBg1eTZidbjOVJW6/TgdU=;
+	b=SnoQq1dU0WmTTMLJIWRB6QFoCIsbegxc2VK7dDC3xJVMV8megKtP4Qh2CSxign9Bwv2yHi2RaesfwyONrlsIA3pAZXOnPlKR58C/0m6ZzuaRKQ/71klhZWowFY5SlBF+QY9R0Gz5auPnAxpuzOJyAImvhxrJ+jZZVM2xi8LUrko=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.27,REQID:41937417-b15c-444f-ac88-b8ba1722d666,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:01c9525,CLOUDID:9bd3a03f-7aa7-41f3-a6bd-0433bee822f3,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 19b1dee213ca11eeb20a276fd37b9834-20230626
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
+ mailgw02.mediatek.com
+	(envelope-from <maso.huang@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 881512161; Mon, 26 Jun 2023 10:35:23 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 26 Jun 2023 10:35:21 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 26 Jun 2023 10:35:21 +0800
+From: Maso Huang <maso.huang@mediatek.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, Trevor Wu <trevor.wu@mediatek.com>, Jiaxin Yu
+	<jiaxin.yu@mediatek.com>, Ren Zhijie <renzhijie2@huawei.com>, Allen-KH Cheng
+	<allen-kh.cheng@mediatek.com>, <alsa-devel@alsa-project.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+CC: Maso Huang <maso.huang@mediatek.com>
+Subject: [PATCH v2 0/7] ASoC: mediatek: Add support for MT7986 SoC
+Date: Mon, 26 Jun 2023 10:34:54 +0800
+Message-ID: <20230626023501.11120-1-maso.huang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 01/45] dt-bindings: microchip: atmel,at91rm9200-tcb:
- add sam9x60, sam9x7 compatible
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Varshini Rajendran <varshini.rajendran@microchip.com>,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@microchip.com, mturquette@baylibre.com, sboyd@kernel.org,
- herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
- tglx@linutronix.de, maz@kernel.org, lee@kernel.org, ulf.hansson@linaro.org,
- tudor.ambarus@linaro.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- linus.walleij@linaro.org, p.zabel@pengutronix.de, olivia@selenic.com,
- a.zummo@towertech.it, radu_nicolae.pirea@upb.ro, richard.genoud@gmail.com,
- gregkh@linuxfoundation.org, lgirdwood@gmail.com, broonie@kernel.org,
- wim@linux-watchdog.org, linux@roeck-us.net, arnd@arndb.de, olof@lixom.net,
- soc@kernel.org, linux@armlinux.org.uk, sre@kernel.org,
- jerry.ray@microchip.com, horatiu.vultur@microchip.com,
- durai.manickamkr@microchip.com, andrew@lunn.ch, alain.volmat@foss.st.com,
- neil.armstrong@linaro.org, mihai.sain@microchip.com,
- eugen.hristev@collabora.com, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- netdev@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-serial@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
- linux-pm@vger.kernel.org
-Cc: Hari.PrasathGE@microchip.com, cristian.birsan@microchip.com,
- balamanikandan.gunasundar@microchip.com, manikandan.m@microchip.com,
- dharma.b@microchip.com, nayabbasha.sayed@microchip.com,
- balakrishnan.s@microchip.com
-References: <20230623203056.689705-1-varshini.rajendran@microchip.com>
- <20230623203056.689705-2-varshini.rajendran@microchip.com>
- <074048a2-5153-e013-3562-b5cad2ba0954@linaro.org>
-In-Reply-To: <074048a2-5153-e013-3562-b5cad2ba0954@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-MailFrom: krzysztof.kozlowski@linaro.org
-X-Mailman-Rule-Hits: max-recipients
+Content-Type: text/plain
+X-MailFrom: maso.huang@mediatek.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: 2XNKINURC43IODQZ6Z3WNQLDPCA3FSFZ
-X-Message-ID-Hash: 2XNKINURC43IODQZ6Z3WNQLDPCA3FSFZ
-X-Mailman-Approved-At: Mon, 26 Jun 2023 11:41:23 +0000
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 3D776BY6AWI2QAQD7HLARJOEJXGPILNM
+X-Message-ID-Hash: 3D776BY6AWI2QAQD7HLARJOEJXGPILNM
+X-Mailman-Approved-At: Mon, 26 Jun 2023 11:41:55 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2XNKINURC43IODQZ6Z3WNQLDPCA3FSFZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3D776BY6AWI2QAQD7HLARJOEJXGPILNM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,21 +109,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 24/06/2023 09:53, Krzysztof Kozlowski wrote:
-> On 23/06/2023 22:30, Varshini Rajendran wrote:
->> Add sam9x60, sam9x7 compatible string support in the schema file.
->>
->> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
->> ---
->>  .../devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml | 
-> 
-> 
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Changes in v2:
+ - v1 title: [PATCH 0/7] ASoC: mediatek: Add support for MT79xx SoC
+ - add missing maintainers
+ - rename mt79xx to mt7986 in all files
+ - use clk bulk api in mt7986-afe-clk.c [2/7]
+ - refine mt7986-afe-pcm.c based on reviewer's suggestions [4/7]
+ - refine dt-binding files based on reviewer's suggestions [6/7] [7/7]
+ - transpose [3/7] and [4/7] in v1 to fix test build errors
+ 
+This series of patches adds support for MediaTek AFE of MT7986 SoC.
+Patches are based on broonie tree "for-next" branch.
 
-Un-acked. Actually NAK.
+Maso Huang (7):
+  ASoC: mediatek: mt7986: add common header
+  ASoC: mediatek: mt7986: support audio clock control
+  ASoC: mediatek: mt7986: support etdm in platform driver
+  ASoC: mediatek: mt7986: add platform driver
+  ASoC: mediatek: mt7986: add machine driver with wm8960
+  ASoC: dt-bindings: mediatek,mt7986-wm8960: add mt7986-wm8960 document
+  ASoC: dt-bindings: mediatek,mt7986-afe: add audio afe document
 
-This does not match your DTS. Please test your patches before sending.
+ .../bindings/sound/mediatek,mt7986-afe.yaml   |  89 +++
+ .../sound/mediatek,mt7986-wm8960.yaml         |  53 ++
+ sound/soc/mediatek/Kconfig                    |  20 +
+ sound/soc/mediatek/Makefile                   |   1 +
+ sound/soc/mediatek/mt7986/Makefile            |  10 +
+ sound/soc/mediatek/mt7986/mt7986-afe-clk.c    |  75 +++
+ sound/soc/mediatek/mt7986/mt7986-afe-clk.h    |  18 +
+ sound/soc/mediatek/mt7986/mt7986-afe-common.h |  51 ++
+ sound/soc/mediatek/mt7986/mt7986-afe-pcm.c    | 598 ++++++++++++++++++
+ sound/soc/mediatek/mt7986/mt7986-dai-etdm.c   | 421 ++++++++++++
+ sound/soc/mediatek/mt7986/mt7986-reg.h        | 206 ++++++
+ sound/soc/mediatek/mt7986/mt7986-wm8960.c     | 184 ++++++
+ 12 files changed, 1726 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt7986-afe.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt7986-wm8960.yaml
+ create mode 100644 sound/soc/mediatek/mt7986/Makefile
+ create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-clk.c
+ create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-clk.h
+ create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-common.h
+ create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-pcm.c
+ create mode 100644 sound/soc/mediatek/mt7986/mt7986-dai-etdm.c
+ create mode 100644 sound/soc/mediatek/mt7986/mt7986-reg.h
+ create mode 100644 sound/soc/mediatek/mt7986/mt7986-wm8960.c
 
-Best regards,
-Krzysztof
+-- 
+2.18.0
 
