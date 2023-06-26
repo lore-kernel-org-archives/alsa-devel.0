@@ -4,70 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7A4AEB64D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:48:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 259DBEB64D7
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:48:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF720151B;
-	Mon, 26 Jun 2023 13:47:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF720151B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B3F71520;
+	Mon, 26 Jun 2023 13:47:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B3F71520
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687780108;
-	bh=L/w/yKwH7VkN3xKyWRZSXKgCTmvFtWY6kWBrBMgXy2Q=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Tl5hNtABofeg28haFnvVpp8iDpyOkaVkK4mp1J9DBI/f44j2YMqu4Pa7CtLtSlmS1
-	 1EZvpqQ1eMnCqih+1WgMBvJBgsgyD9/Puju6L7FRwER36RSx8q/HW6PB/N70H/8uER
-	 jPKKqEivkFP9ZsGxVjMjctyseYhDyYoIfy+wa9Qo=
+	s=default; t=1687780125;
+	bh=2BLYvJvQSllCIi4BMFpTh2kRLL+qk6C6vUPMogk5RWo=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=B1qxWoBq/71OWFH3dbirLt4qaKkrcBhoEfLNQxfCDzy0+tvMMe8AoMWdmDoC9Cqdw
+	 rgeoQ4g7V4AVjKlBpF6+7HDS0KRbnua2v65iDvtOJm02bMllha6yGkg32VY+Fwaywp
+	 yy77KGVLsbjffmWYEZ9GkifH/ym5eJjLXP/5dXTQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B817F80621; Mon, 26 Jun 2023 13:43:31 +0200 (CEST)
+	id A2DBAF80635; Mon, 26 Jun 2023 13:43:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52B6EF8061C;
+	by alsa1.perex.cz (Postfix) with ESMTP id DB22EF80633;
 	Mon, 26 Jun 2023 13:43:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8341F8051E; Mon, 26 Jun 2023 04:35:43 +0200 (CEST)
+	id 20B13F80534; Mon, 26 Jun 2023 04:35:48 +0200 (CEST)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1A50DF80093
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 04:35:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A50DF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id C8DC6F80246
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 04:35:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8DC6F80246
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=SnoQq1dU
-X-UUID: 19b1dee213ca11eeb20a276fd37b9834-20230626
+ header.s=dk header.b=IArIkbT5
+X-UUID: 1e0f399e13ca11eeb20a276fd37b9834-20230626
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
- bh=Iwm0zG4h3gdP7jHydJXH0fWBg1eTZidbjOVJW6/TgdU=;
-	b=SnoQq1dU0WmTTMLJIWRB6QFoCIsbegxc2VK7dDC3xJVMV8megKtP4Qh2CSxign9Bwv2yHi2RaesfwyONrlsIA3pAZXOnPlKR58C/0m6ZzuaRKQ/71klhZWowFY5SlBF+QY9R0Gz5auPnAxpuzOJyAImvhxrJ+jZZVM2xi8LUrko=;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=wnjl5yaKC0oV4FudiXEwd8pFPQGS9Pkhlv469Vk/tDE=;
+	b=IArIkbT54+OA95p/FxkDQG6Hul7c3FU6wv69iz3a7L9HHFCxoIb8t3kUMmoYbsHC0RI29ZGNTQcijnWBqNoGguOkVF4MwQDHJFddBdKlc0C36lLcSDbAfMT24p5b1YBLpe4pAqJT1pX8OYSZ1xJ8CMo+g8eZ+ExxIA1GKsI52Zs=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.27,REQID:41937417-b15c-444f-ac88-b8ba1722d666,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:01c9525,CLOUDID:9bd3a03f-7aa7-41f3-a6bd-0433bee822f3,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 19b1dee213ca11eeb20a276fd37b9834-20230626
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
+X-CID-O-INFO: VERSION:1.1.27,REQID:11f4377d-ac4c-4bff-816a-43e3b24119cf,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:95
+X-CID-INFO: VERSION:1.1.27,REQID:11f4377d-ac4c-4bff-816a-43e3b24119cf,IP:0,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
+	:quarantine,TS:95
+X-CID-META: VersionHash:01c9525,CLOUDID:e2761470-2f20-4998-991c-3b78627e4938,B
+	ulkID:230626103531PV9Z8MKQ,BulkQuantity:0,Recheck:0,SF:17|19|48|38|29|28,T
+	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+	,OSI:0,OSA:0,AV:0,LES:1,SPR:NO
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
+	TF_CID_SPAM_SNR
+X-UUID: 1e0f399e13ca11eeb20a276fd37b9834-20230626
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by
  mailgw02.mediatek.com
 	(envelope-from <maso.huang@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 881512161; Mon, 26 Jun 2023 10:35:23 +0800
+	with ESMTP id 381454555; Mon, 26 Jun 2023 10:35:30 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 26 Jun 2023 10:35:21 +0800
+ 15.2.1118.26; Mon, 26 Jun 2023 10:35:29 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 26 Jun 2023 10:35:21 +0800
+ 15.2.1118.26 via Frontend Transport; Mon, 26 Jun 2023 10:35:29 +0800
 From: Maso Huang <maso.huang@mediatek.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
  Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
@@ -80,10 +86,12 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
 CC: Maso Huang <maso.huang@mediatek.com>
-Subject: [PATCH v2 0/7] ASoC: mediatek: Add support for MT7986 SoC
-Date: Mon, 26 Jun 2023 10:34:54 +0800
-Message-ID: <20230626023501.11120-1-maso.huang@mediatek.com>
+Subject: [PATCH v2 2/7] ASoC: mediatek: mt7986: support audio clock control
+Date: Mon, 26 Jun 2023 10:34:56 +0800
+Message-ID: <20230626023501.11120-3-maso.huang@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230626023501.11120-1-maso.huang@mediatek.com>
+References: <20230626023501.11120-1-maso.huang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MailFrom: maso.huang@mediatek.com
@@ -92,15 +100,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 3D776BY6AWI2QAQD7HLARJOEJXGPILNM
-X-Message-ID-Hash: 3D776BY6AWI2QAQD7HLARJOEJXGPILNM
+Message-ID-Hash: ZEERK5QIGWGLZRJNUNZOF6OCA6KM7JTZ
+X-Message-ID-Hash: ZEERK5QIGWGLZRJNUNZOF6OCA6KM7JTZ
 X-Mailman-Approved-At: Mon, 26 Jun 2023 11:41:55 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3D776BY6AWI2QAQD7HLARJOEJXGPILNM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZEERK5QIGWGLZRJNUNZOF6OCA6KM7JTZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,51 +117,121 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Changes in v2:
- - v1 title: [PATCH 0/7] ASoC: mediatek: Add support for MT79xx SoC
- - add missing maintainers
- - rename mt79xx to mt7986 in all files
- - use clk bulk api in mt7986-afe-clk.c [2/7]
- - refine mt7986-afe-pcm.c based on reviewer's suggestions [4/7]
- - refine dt-binding files based on reviewer's suggestions [6/7] [7/7]
- - transpose [3/7] and [4/7] in v1 to fix test build errors
- 
-This series of patches adds support for MediaTek AFE of MT7986 SoC.
-Patches are based on broonie tree "for-next" branch.
+Add audio clock wrapper and audio tuner control.
 
-Maso Huang (7):
-  ASoC: mediatek: mt7986: add common header
-  ASoC: mediatek: mt7986: support audio clock control
-  ASoC: mediatek: mt7986: support etdm in platform driver
-  ASoC: mediatek: mt7986: add platform driver
-  ASoC: mediatek: mt7986: add machine driver with wm8960
-  ASoC: dt-bindings: mediatek,mt7986-wm8960: add mt7986-wm8960 document
-  ASoC: dt-bindings: mediatek,mt7986-afe: add audio afe document
-
- .../bindings/sound/mediatek,mt7986-afe.yaml   |  89 +++
- .../sound/mediatek,mt7986-wm8960.yaml         |  53 ++
- sound/soc/mediatek/Kconfig                    |  20 +
- sound/soc/mediatek/Makefile                   |   1 +
- sound/soc/mediatek/mt7986/Makefile            |  10 +
- sound/soc/mediatek/mt7986/mt7986-afe-clk.c    |  75 +++
- sound/soc/mediatek/mt7986/mt7986-afe-clk.h    |  18 +
- sound/soc/mediatek/mt7986/mt7986-afe-common.h |  51 ++
- sound/soc/mediatek/mt7986/mt7986-afe-pcm.c    | 598 ++++++++++++++++++
- sound/soc/mediatek/mt7986/mt7986-dai-etdm.c   | 421 ++++++++++++
- sound/soc/mediatek/mt7986/mt7986-reg.h        | 206 ++++++
- sound/soc/mediatek/mt7986/mt7986-wm8960.c     | 184 ++++++
- 12 files changed, 1726 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt7986-afe.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt7986-wm8960.yaml
- create mode 100644 sound/soc/mediatek/mt7986/Makefile
+Signed-off-by: Maso Huang <maso.huang@mediatek.com>
+---
+ sound/soc/mediatek/mt7986/mt7986-afe-clk.c | 75 ++++++++++++++++++++++
+ sound/soc/mediatek/mt7986/mt7986-afe-clk.h | 18 ++++++
+ 2 files changed, 93 insertions(+)
  create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-clk.c
  create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-clk.h
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-common.h
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-pcm.c
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-dai-etdm.c
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-reg.h
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-wm8960.c
 
+diff --git a/sound/soc/mediatek/mt7986/mt7986-afe-clk.c b/sound/soc/mediatek/mt7986/mt7986-afe-clk.c
+new file mode 100644
+index 000000000000..a8b5fae05673
+--- /dev/null
++++ b/sound/soc/mediatek/mt7986/mt7986-afe-clk.c
+@@ -0,0 +1,75 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * mt7986-afe-clk.c  --  MediaTek 7986 afe clock ctrl
++ *
++ * Copyright (c) 2021 MediaTek Inc.
++ * Author: Vic Wu <vic.wu@mediatek.com>
++ *         Maso Huang <maso.huang@mediatek.com>
++ */
++
++#include <linux/clk.h>
++
++#include "mt7986-afe-common.h"
++#include "mt7986-afe-clk.h"
++#include "mt7986-reg.h"
++
++enum {
++	CK_INFRA_AUD_BUS_CK = 0,
++	CK_INFRA_AUD_26M_CK,
++	CK_INFRA_AUD_L_CK,
++	CK_INFRA_AUD_AUD_CK,
++	CK_INFRA_AUD_EG2_CK,
++	CLK_NUM
++};
++
++static const char *aud_clks[CLK_NUM] = {
++	[CK_INFRA_AUD_BUS_CK] = "aud_bus_ck",
++	[CK_INFRA_AUD_26M_CK] = "aud_26m_ck",
++	[CK_INFRA_AUD_L_CK] = "aud_l_ck",
++	[CK_INFRA_AUD_AUD_CK] = "aud_aud_ck",
++	[CK_INFRA_AUD_EG2_CK] = "aud_eg2_ck",
++};
++
++int mt7986_init_clock(struct mtk_base_afe *afe)
++{
++	struct mt7986_afe_private *afe_priv = afe->platform_priv;
++	int ret, i;
++
++	afe_priv->clks = devm_kcalloc(afe->dev, CLK_NUM,
++				sizeof(*afe_priv->clks), GFP_KERNEL);
++	if (!afe_priv->clks)
++		return -ENOMEM;
++	afe_priv->num_clks = CLK_NUM;
++
++	for (i = 0; i < afe_priv->num_clks; i++)
++		afe_priv->clks[i].id = aud_clks[i];
++
++	ret = devm_clk_bulk_get(afe->dev, afe_priv->num_clks, afe_priv->clks);
++	if (ret)
++		return dev_err_probe(afe->dev, ret, "Failed to get clocks\n");
++
++	return 0;
++}
++
++int mt7986_afe_enable_clock(struct mtk_base_afe *afe)
++{
++	struct mt7986_afe_private *afe_priv = afe->platform_priv;
++	int ret;
++
++	ret = clk_bulk_prepare_enable(afe_priv->num_clks, afe_priv->clks);
++	if (ret)
++		return dev_err_probe(afe->dev, ret, "Failed to enable clocks\n");
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(mt7986_afe_enable_clock);
++
++int mt7986_afe_disable_clock(struct mtk_base_afe *afe)
++{
++	struct mt7986_afe_private *afe_priv = afe->platform_priv;
++
++	clk_bulk_disable_unprepare(afe_priv->num_clks, afe_priv->clks);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(mt7986_afe_disable_clock);
+diff --git a/sound/soc/mediatek/mt7986/mt7986-afe-clk.h b/sound/soc/mediatek/mt7986/mt7986-afe-clk.h
+new file mode 100644
+index 000000000000..2f15b7a54bdc
+--- /dev/null
++++ b/sound/soc/mediatek/mt7986/mt7986-afe-clk.h
+@@ -0,0 +1,18 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * mt7986-afe-clk.h  --  MediaTek 7986 afe clock ctrl definition
++ *
++ * Copyright (c) 2021 MediaTek Inc.
++ * Author: Vic Wu <vic.wu@mediatek.com>
++ *         Maso Huang <maso.huang@mediatek.com>
++ */
++
++#ifndef _MT7986_AFE_CLK_H_
++#define _MT7986_AFE_CLK_H_
++
++struct mtk_base_afe;
++
++int mt7986_init_clock(struct mtk_base_afe *afe);
++int mt7986_afe_enable_clock(struct mtk_base_afe *afe);
++int mt7986_afe_disable_clock(struct mtk_base_afe *afe);
++#endif
 -- 
 2.18.0
 
