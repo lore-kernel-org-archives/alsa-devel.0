@@ -4,88 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C18FEEB64D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 13:31:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0743FEB64D7
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 13:34:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89651DEC;
-	Mon, 26 Jun 2023 15:30:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89651DEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AEA2DF8;
+	Mon, 26 Jun 2023 15:33:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AEA2DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687786277;
-	bh=ehLHb1RaOcUfG+7IZea2m2p8XSolF2Z1Rc+ScCZMMSA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1687786457;
+	bh=al3qAFhG0xPK1EpjwK9cSwRnrUKaOkUGbWVQChLd2Es=;
+	h=Date:To:Cc:References:From:Subject:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qqhepFPXNsqGfhCYly6uWgJ0Ih8B1RE7ZeJFgR9cMQGVl2czLRAs10PvIBybcIhbE
-	 0TIBXv7iDaow3Pm/RZiWXbzLEdzkumE47zENmHdHbRYy0O/ILNQGMMObYSgZdVazsd
-	 Dlf8L+/inD7zL/JkpF4DBxfqWSZ7xcSWozdOje1g=
+	b=bdZppmhFEwywcgCZijvwMeyFfiOiAQ7b7omnSIVrBcnX8f3xOBImAD+M2A5s03wcO
+	 m6pJxBd3KZTWEy0LNG2Gr7PO6OScTjYi+cTfuWEtnunVO8jF6b+JUBt0ySTYDpMQ0P
+	 qQi8zLolzbmGFlHuBCGR1skwKWU1dKCh6u141B8Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4CBE0F80534; Mon, 26 Jun 2023 15:30:01 +0200 (CEST)
+	id C2F33F80169; Mon, 26 Jun 2023 15:33:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19E87F80246;
-	Mon, 26 Jun 2023 15:30:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D857F8027B;
+	Mon, 26 Jun 2023 15:33:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4574BF80246; Mon, 26 Jun 2023 15:29:55 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id DEE22F8027B; Mon, 26 Jun 2023 15:33:00 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 27CACF80093
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 15:29:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27CACF80093
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=GbQvr5gh
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	by alsa1.perex.cz (Postfix) with ESMTPS id C0315F80212
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 15:32:47 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id EB2841E18;
+	Mon, 26 Jun 2023 15:32:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz EB2841E18
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1687786367; bh=P4b7pQGf/nmZaFg3tRkshnVDvy5ehhcr3/lNB4wKevk=;
+	h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
+	b=INm+DvE15zSIDUunAUMNiMSC6/hpj0qh3QF2GvxufGkWEaPvEN9DjdE2RAZvM5/L2
+	 w5l3jtSrcHcxm00BbLxBo7sj/8HP9D5alhZ1K4pooC04EUlWfrNuzDg1LN0atr0TcB
+	 rdKJhvemxKr2z4c45NgTGaFfkY2kAIKm/vsy2wH0=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 1263260EA9;
-	Mon, 26 Jun 2023 13:29:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85A88C433C0;
-	Mon, 26 Jun 2023 13:29:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687786184;
-	bh=ehLHb1RaOcUfG+7IZea2m2p8XSolF2Z1Rc+ScCZMMSA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GbQvr5ghOUDaGI288BIeJ6JwK7aOMs1W33UezDpEXEIR75+EC40Z+/A6qAODDiMPL
-	 6UIgOecebxc9sTXCyVEOoBabNM1J50ZSsbqZspLYkKa1W9U2kvEzNVR/gPFCpxLG83
-	 y1176v09ngDEC/LHktFAFtvkc7WqFjRszbwZDAt5b80IDnsJBb7FFq38LJ+w+hYEye
-	 cWB53DG2bOp2kGazx72O4qP9/cVJ83lc/7vNWv0rEAyh41AZ/oLqERTIwh5Q3vC2o/
-	 zIIrL4k2UNjjIJBXbziWOGwgAA6LxuCpL2iSzxnDIongdSR14g+9LRz4j0uw3axAaI
-	 QMWe3Td43BocQ==
-Date: Mon, 26 Jun 2023 14:29:38 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-	oder_chiou@realtek.com,
-	Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	vinod.koul@linaro.org, "vkoul@kernel.org" <vkoul@kernel.org>,
-	"Katragadda, Mastan" <mastan.katragadda@amd.com>,
-	"kondaveeti, Arungopal" <arungopal.kondaveeti@amd.com>,
-	"Hiregoudar, Basavaraj" <Basavaraj.Hiregoudar@amd.com>,
-	"Dommati, Sunil-kumar" <Sunil-kumar.Dommati@amd.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [BUG] ASoC: Use the maple tree register cache for RealTek
- SoundWire CODECs
-Message-ID: <d305c960-afe8-49b0-8583-a3f168311cf5@sirena.org.uk>
-References: <20230609-asoc-rt-sdw-maple-v1-0-85ee50c93905@kernel.org>
- <b8af4050-85e7-6974-9c44-c26cb6962972@amd.com>
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Mon, 26 Jun 2023 15:32:40 +0200 (CEST)
+Message-ID: <fb9db138-82a3-678c-bb94-035f923b3e16@perex.cz>
+Date: Mon, 26 Jun 2023 15:32:40 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7GcTA/om1rjWkCw3"
-Content-Disposition: inline
-In-Reply-To: <b8af4050-85e7-6974-9c44-c26cb6962972@amd.com>
-X-Cookie: Nihilism should commence with oneself.
-Message-ID-Hash: K6QRPGQZNTSPKPAZKP6FM6ZCU2HSJZJZ
-X-Message-ID-Hash: K6QRPGQZNTSPKPAZKP6FM6ZCU2HSJZJZ
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Tuo Li <islituo@gmail.com>, tiwai@suse.com, alsa-devel@alsa-project.org,
+ Linux Kernel <linux-kernel@vger.kernel.org>, baijiaju1990@outlook.com
+References: 
+ <CADm8Tek6t0WedK+3Y6rbE5YEt19tML8BUL45N2ji4ZAz1KcN_A@mail.gmail.com>
+ <877crqwvi1.wl-tiwai@suse.de>
+ <CADm8Tenfy8joto5WLCqQWjfT8WimsbJgOss0hJe-ciyDRMrSXw@mail.gmail.com>
+ <871qhywucj.wl-tiwai@suse.de> <4d0931bf-b356-6969-5aaf-b663d7f2b21a@perex.cz>
+ <87wmzqv64o.wl-tiwai@suse.de> <45445f57-0a73-59e6-6f3d-3983ce93a324@perex.cz>
+ <87ttuuv5m6.wl-tiwai@suse.de> <87jzvquzyr.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [BUG] ALSA: core: pcm_memory: a possible data race in
+ do_alloc_pages()
+In-Reply-To: <87jzvquzyr.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: JLNUMSV5JSPO3B3GYDTABARACRFFBFHO
+X-Message-ID-Hash: JLNUMSV5JSPO3B3GYDTABARACRFFBFHO
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K6QRPGQZNTSPKPAZKP6FM6ZCU2HSJZJZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JLNUMSV5JSPO3B3GYDTABARACRFFBFHO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,39 +98,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 26. 06. 23 15:15, Takashi Iwai wrote:
+> On Mon, 26 Jun 2023 13:13:21 +0200,
+> Takashi Iwai wrote:
+>>
+>> On Mon, 26 Jun 2023 13:09:00 +0200,
+>> Jaroslav Kysela wrote:
+>>>
+>>> On 26. 06. 23 13:02, Takashi Iwai wrote:
+>>>> On Mon, 26 Jun 2023 09:56:47 +0200,
+>>>> Jaroslav Kysela wrote:
+>>>>>
+>>>>> On 26. 06. 23 9:33, Takashi Iwai wrote:
+>>>>>> On Mon, 26 Jun 2023 09:31:18 +0200,
+>>>>>> Tuo Li wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> Hello,
+>>>>>>>
+>>>>>>> Thank you for your reply!
+>>>>>>
+>>>>>> FWIW, the simplest fix would be something like below, just extending
+>>>>>> the mutex coverage.  But it'll serialize the all calls, so it might
+>>>>>> influence on the performance, while it's the safest way.
+>>>>>
+>>>>> It may be better to update total_pcm_alloc_bytes before
+>>>>> snd_dma_alloc_dir_pages() call and decrease this value when allocation
+>>>>> fails to allow parallel allocations. Then the mutex can be held only
+>>>>> for the total_pcm_alloc_bytes variable update.
+>>>>
+>>>> Yes, it'd work.  But a tricky part is that the actual allocation size
+>>>> can be bigger, and we need to correct the total_pcm_alloc_bytes after
+>>>> the allocation result.  So the end result would be a patch like below,
+>>>> which is a bit more complex than the previous simpler approach.  But
+>>>> it might be OK.
+>>>
+>>> The patch looks good, but it may be better to move the "post" variable
+>>> updates to an inline function (mutex lock - update - mutex unlock) for
+>>> a better readability.
+>>
+>> Sounds like a good idea.  Let me cook later.
+> 
+> ... and here it is.
+> 
+> If that looks OK, I'll submit a proper fix patch.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> --- a/sound/core/pcm_memory.c
+> +++ b/sound/core/pcm_memory.c
+> @@ -31,15 +31,41 @@ static unsigned long max_alloc_per_card = 32UL * 1024UL * 1024UL;
+>   module_param(max_alloc_per_card, ulong, 0644);
+>   MODULE_PARM_DESC(max_alloc_per_card, "Max total allocation bytes per card.");
+>   
+> +static void __update_allocated_size(struct snd_card *card, ssize_t bytes)
 
---7GcTA/om1rjWkCw3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Missing inline ? May be also used for
 
-On Mon, Jun 26, 2023 at 07:00:31PM +0530, Mukunda,Vijendar wrote:
+> +static void update_allocated_size(struct snd_card *card, ssize_t bytes)
+> +static void decrease_allocated_size(struct snd_card *card, size_t bytes)
 
-> With cache type changing to maple tree for SoundWire Codec patch series, we are observing
-> rcu warnings with AMD SoundWire stack.
+The rest is fine in my eyes.
 
-Do you you have 0cc6578048e0980 ("regmap: maple: Drop the RCU read lock
-while syncing registers") in your tree when testing?
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
 
-> Below are the pastebin links for rcu warnings dmesg logs.
+				Thanks,
+					Jaroslav
 
-> https://pastebin.com/6sadwNCw <https://pastebin.com/6sadwNCw>
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 
-Please include at least some of the actual warning in your emails so
-they are directly readable.
-
---7GcTA/om1rjWkCw3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSZksEACgkQJNaLcl1U
-h9CFvQf9EiUzY0LKzTIS6a9H0r1rIGY6rY1qIU2UbyalhKtUMfBrETx/nNUYqW4v
-qSZWLqgHJNE4/xiiw/ImNHeNsnHaa0X8TeXLND2NBqMGqZRVW+54oXPnF3LEvvj2
-L2tAH5jZd/Sk0FD0DnFiAjyaoffRPjix5NBzxyx3yMaIlgD/AJZFYFGbMMTCesgd
-9pry2MrSUn1Kf8QasNohLN2/Cpc43zIpS7Bo6dUDyLf2fagOYkkz47kgiRc0AQXR
-TjbHbtpKxZsxS5/u8LRgIdBpoFL1+qh8G2nqz6xpwyr1vMPmCBYGfHqqufba8ShC
-gVsuilMxWNLrc1TabY2Hvy/tqNDGQQ==
-=KzPm
------END PGP SIGNATURE-----
-
---7GcTA/om1rjWkCw3--
