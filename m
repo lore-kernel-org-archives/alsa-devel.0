@@ -4,47 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAC9CEB64D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:52:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 600E4EB64D7
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:52:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC87C1549;
-	Mon, 26 Jun 2023 13:51:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC87C1549
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BC061553;
+	Mon, 26 Jun 2023 13:51:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BC061553
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687780332;
-	bh=9yrpg3UH2i6Z0jfZVMFU0CRs7mFJ3ju0r1RLsEaCyKU=;
+	s=default; t=1687780339;
+	bh=t2iwz8NdocWztQ729MinHyVy3bil+Oor3cmxL6XggpM=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hFpLJ1ae6KdKZPq78D+n0ZgCHx233N3HF0rUNIVsotaLOkeJdP1ZNa4wwBzcKooW6
-	 uRy6XYk75JsSENhmPILsJekqXodmO9kcEy0QlTGkGCf7DNRgcs2zDFUtdl9EIVfpgt
-	 NxEdmsvYONd4I0MDW/a5QkwR80GT1n8AZn72reOc=
+	b=hLD9MrMXXZ9XMQ3zrDpwYsTeave2h+MTlh6zgJQUD+EQfIfMXAh2qRdPVExdQ+48u
+	 S1PIYiHFdOl5WHS2LeZ2nqbn5zUDV/dn1Du15Ue+zhgmP3gTZbJ71zzjnQSgoFZLUG
+	 A5Hzvb3wf17HRd8GbaNqshkKHI9Tp2cmumEMucVg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 67FD2F806D8; Mon, 26 Jun 2023 13:43:39 +0200 (CEST)
+	id A1AF7F806E2; Mon, 26 Jun 2023 13:43:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C2C5F806D6;
+	by alsa1.perex.cz (Postfix) with ESMTP id D4244F806EC;
 	Mon, 26 Jun 2023 13:43:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01CFBF80567; Mon, 26 Jun 2023 13:09:33 +0200 (CEST)
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	id 4B4D0F8055B; Mon, 26 Jun 2023 13:09:34 +0200 (CEST)
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
+ [61.152.239.71])
 	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A9CF1F80551
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 13:09:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9CF1F80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8BAF0F80548
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 13:09:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BAF0F80548
 Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id A483124E27D;
-	Mon, 26 Jun 2023 19:09:14 +0800 (CST)
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id C230524DEC3;
+	Mon, 26 Jun 2023 19:09:12 +0800 (CST)
 Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX166.cuchost.com
  (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 26 Jun
- 2023 19:09:14 +0800
+ 2023 19:09:12 +0800
 Received: from ubuntu.localdomain (113.72.146.167) by EXMBX172.cuchost.com
  (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 26 Jun
- 2023 19:09:13 +0800
+ 2023 19:09:11 +0800
 From: Hal Feng <hal.feng@starfivetech.com>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
 	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
@@ -55,9 +56,10 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
 	<hal.feng@starfivetech.com>
 CC: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
 	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 4/5] ASoC: starfive: Add JH7110 PWM-DAC driver
-Date: Mon, 26 Jun 2023 19:09:08 +0800
-Message-ID: <20230626110909.38718-5-hal.feng@starfivetech.com>
+Subject: [PATCH v1 2/5] ASoC: codecs: Add StarFive JH7110 dummy PWM-DAC
+ transmitter driver
+Date: Mon, 26 Jun 2023 19:09:06 +0800
+Message-ID: <20230626110909.38718-3-hal.feng@starfivetech.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20230626110909.38718-1-hal.feng@starfivetech.com>
 References: <20230626110909.38718-1-hal.feng@starfivetech.com>
@@ -74,15 +76,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 75GMEZFY2OBUUF32VBCGJVODJORUF3EO
-X-Message-ID-Hash: 75GMEZFY2OBUUF32VBCGJVODJORUF3EO
+Message-ID-Hash: N6V5MHQ5ALAHTRVILDPWO5AJXNVXBHJQ
+X-Message-ID-Hash: N6V5MHQ5ALAHTRVILDPWO5AJXNVXBHJQ
 X-Mailman-Approved-At: Mon, 26 Jun 2023 11:42:26 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/75GMEZFY2OBUUF32VBCGJVODJORUF3EO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N6V5MHQ5ALAHTRVILDPWO5AJXNVXBHJQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,868 +93,141 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add PWM-DAC driver support for the StarFive JH7110 SoC.
+Add a dummy transmitter driver for StarFive JH7110 PWM-DAC module.
+StarFive JH7110 PWM-DAC controller uses this driver.
 
 Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
 ---
- MAINTAINERS                        |   8 +
- sound/soc/starfive/Kconfig         |   9 +
- sound/soc/starfive/Makefile        |   1 +
- sound/soc/starfive/jh7110_pwmdac.c | 787 +++++++++++++++++++++++++++++
- 4 files changed, 805 insertions(+)
- create mode 100644 sound/soc/starfive/jh7110_pwmdac.c
+ sound/soc/codecs/Kconfig                     |  4 ++
+ sound/soc/codecs/Makefile                    |  2 +
+ sound/soc/codecs/jh7110_pwmdac_transmitter.c | 74 ++++++++++++++++++++
+ 3 files changed, 80 insertions(+)
+ create mode 100644 sound/soc/codecs/jh7110_pwmdac_transmitter.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1dc12c5c02f7..a936ba4d5f1d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20125,6 +20125,14 @@ S:	Supported
- F:	Documentation/devicetree/bindings/mmc/starfive*
- F:	drivers/mmc/host/dw_mmc-starfive.c
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 8020097d4e4c..f2cd8f999649 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -115,6 +115,7 @@ config SND_SOC_ALL_CODECS
+ 	imply SND_SOC_IDT821034
+ 	imply SND_SOC_INNO_RK3036
+ 	imply SND_SOC_ISABELLE
++	imply SND_SOC_JH7110_PWMDAC_DIT
+ 	imply SND_SOC_JZ4740_CODEC
+ 	imply SND_SOC_JZ4725B_CODEC
+ 	imply SND_SOC_JZ4760_CODEC
+@@ -903,6 +904,9 @@ config SND_SOC_CX2072X
+ 	help
+ 	  Enable support for Conexant CX20721 and CX20723 codec chips.
 =20
-+STARFIVE JH7110 PWMDAC DRIVER
-+M:	Hal Feng <hal.feng@starfivetech.com>
-+M:	Xingyu Wu <xingyu.wu@starfivetech.com>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/sound/starfive,jh7110-pwmdac*
-+F:	sound/soc/codecs/jh7110_pwmdac_transmitter.c
-+F:	sound/soc/starfive/jh7110_pwmdac.c
++config SND_SOC_JH7110_PWMDAC_DIT
++	tristate "StarFive JH7110 dummy PWM-DAC transmitter"
 +
- STARFIVE JH71X0 CLOCK DRIVERS
- M:	Emil Renner Berthing <kernel@esmil.dk>
- M:	Hal Feng <hal.feng@starfivetech.com>
-diff --git a/sound/soc/starfive/Kconfig b/sound/soc/starfive/Kconfig
-index fafb681f8c0a..fabef377db8c 100644
---- a/sound/soc/starfive/Kconfig
-+++ b/sound/soc/starfive/Kconfig
-@@ -7,6 +7,15 @@ config SND_SOC_STARFIVE
- 	  the Starfive SoCs' Audio interfaces. You will also need to
- 	  select the audio interfaces to support below.
-=20
-+config SND_SOC_JH7110_PWMDAC
-+	tristate "JH7110 PWM-DAC device driver"
-+	depends on HAVE_CLK && SND_SOC_STARFIVE
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	select SND_SOC_JH7110_PWMDAC_DIT
-+	help
-+	 Say Y or M if you want to add support for StarFive JH7110
-+	 PWM-DAC driver.
-+
- config SND_SOC_JH7110_TDM
- 	tristate "JH7110 TDM device driver"
- 	depends on HAVE_CLK && SND_SOC_STARFIVE
-diff --git a/sound/soc/starfive/Makefile b/sound/soc/starfive/Makefile
-index f7d960211d72..9e958f70ef51 100644
---- a/sound/soc/starfive/Makefile
-+++ b/sound/soc/starfive/Makefile
-@@ -1,2 +1,3 @@
- # StarFive Platform Support
-+obj-$(CONFIG_SND_SOC_JH7110_PWMDAC) +=3D jh7110_pwmdac.o
- obj-$(CONFIG_SND_SOC_JH7110_TDM) +=3D jh7110_tdm.o
-diff --git a/sound/soc/starfive/jh7110_pwmdac.c b/sound/soc/starfive/jh71=
-10_pwmdac.c
+ config SND_SOC_JZ4740_CODEC
+ 	depends on MACH_INGENIC || COMPILE_TEST
+ 	depends on OF
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 5cdbae88e6e3..8e0e12d7b959 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -122,6 +122,7 @@ snd-soc-ics43432-objs :=3D ics43432.o
+ snd-soc-idt821034-objs :=3D idt821034.o
+ snd-soc-inno-rk3036-objs :=3D inno_rk3036.o
+ snd-soc-isabelle-objs :=3D isabelle.o
++snd-soc-jh7110-pwmdac-dit-objs :=3D jh7110_pwmdac_transmitter.o
+ snd-soc-jz4740-codec-objs :=3D jz4740.o
+ snd-soc-jz4725b-codec-objs :=3D jz4725b.o
+ snd-soc-jz4760-codec-objs :=3D jz4760.o
+@@ -496,6 +497,7 @@ obj-$(CONFIG_SND_SOC_ICS43432)	+=3D snd-soc-ics43432.=
+o
+ obj-$(CONFIG_SND_SOC_IDT821034)	+=3D snd-soc-idt821034.o
+ obj-$(CONFIG_SND_SOC_INNO_RK3036)	+=3D snd-soc-inno-rk3036.o
+ obj-$(CONFIG_SND_SOC_ISABELLE)	+=3D snd-soc-isabelle.o
++obj-$(CONFIG_SND_SOC_JH7110_PWMDAC_DIT)	+=3D snd-soc-jh7110-pwmdac-dit.o
+ obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+=3D snd-soc-jz4740-codec.o
+ obj-$(CONFIG_SND_SOC_JZ4725B_CODEC)	+=3D snd-soc-jz4725b-codec.o
+ obj-$(CONFIG_SND_SOC_JZ4760_CODEC)      +=3D snd-soc-jz4760-codec.o
+diff --git a/sound/soc/codecs/jh7110_pwmdac_transmitter.c b/sound/soc/cod=
+ecs/jh7110_pwmdac_transmitter.c
 new file mode 100644
-index 000000000000..c3123bd6ea45
+index 000000000000..69077be840c7
 --- /dev/null
-+++ b/sound/soc/starfive/jh7110_pwmdac.c
-@@ -0,0 +1,787 @@
++++ b/sound/soc/codecs/jh7110_pwmdac_transmitter.c
+@@ -0,0 +1,74 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * jh7110_pwmdac.c -- StarFive JH7110 PWM-DAC driver
++ * Dummy PWM-DAC transmitter driver for the StarFive JH7110 SoC
 + *
 + * Copyright (C) 2021-2023 StarFive Technology Co., Ltd.
-+ *
-+ * Authors: Jenny Zhang
-+ *	    Curry Zhang
-+ *	    Xingyu Wu <xingyu.wu@starfivetech.com>
-+ *	    Hal Feng <hal.feng@starfivetech.com>
 + */
 +
-+#include <linux/clk.h>
-+#include <linux/device.h>
-+#include <linux/init.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
 +#include <linux/module.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/reset.h>
++#include <linux/moduleparam.h>
++#include <linux/of.h>
 +#include <linux/slab.h>
-+#include <linux/types.h>
-+#include <sound/dmaengine_pcm.h>
++#include <sound/initval.h>
 +#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
 +#include <sound/soc.h>
 +
-+#define JH7110_PWMDAC_WDATA				0x00
-+#define JH7110_PWMDAC_CTRL				0x04
-+	#define JH7110_PWMDAC_ENABLE			BIT(0)
-+	#define JH7110_PWMDAC_SHIFT			BIT(1)
-+	#define JH7110_PWMDAC_DUTY_CYCLE_SHIFT		2
-+	#define JH7110_PWMDAC_DUTY_CYCLE_MASK		GENMASK(3, 2)
-+	#define JH7110_PWMDAC_CNT_N_SHIFT		4
-+	#define JH7110_PWMDAC_CNT_N_MASK		GENMASK(12, 4)
-+	#define JH7110_PWMDAC_DATA_CHANGE		BIT(13)
-+	#define JH7110_PWMDAC_DATA_MODE			BIT(14)
-+	#define JH7110_PWMDAC_DATA_SHIFT_SHIFT		15
-+	#define JH7110_PWMDAC_DATA_SHIFT_MASK		GENMASK(17, 15)
++#define DRV_NAME "pwmdac-dit"
 +
-+enum JH7110_PWMDAC_SHIFT_VAL {
-+	PWMDAC_SHIFT_8 =3D 0,
-+	PWMDAC_SHIFT_10,
++static const struct snd_soc_dapm_widget dit_widgets[] =3D {
++	SND_SOC_DAPM_OUTPUT("pwmdac-out"),
 +};
 +
-+enum JH7110_PWMDAC_DUTY_CYCLE_VAL {
-+	PWMDAC_CYCLE_LEFT =3D 0,
-+	PWMDAC_CYCLE_RIGHT,
-+	PWMDAC_CYCLE_CENTER,
++static const struct snd_soc_dapm_route dit_routes[] =3D {
++	{ "pwmdac-out", NULL, "Playback" },
 +};
 +
-+enum JH7110_PWMDAC_CNT_N_VAL {
-+	PWMDAC_SAMPLE_CNT_1 =3D 1,
-+	PWMDAC_SAMPLE_CNT_2,
-+	PWMDAC_SAMPLE_CNT_3,
-+	PWMDAC_SAMPLE_CNT_512 =3D 512, /* max */
++static const struct snd_soc_component_driver soc_codec_pwmdac_dit =3D {
++	.dapm_widgets		=3D dit_widgets,
++	.num_dapm_widgets	=3D ARRAY_SIZE(dit_widgets),
++	.dapm_routes		=3D dit_routes,
++	.num_dapm_routes	=3D ARRAY_SIZE(dit_routes),
++	.idle_bias_on		=3D 1,
++	.use_pmdown_time	=3D 1,
++	.endianness		=3D 1,
 +};
 +
-+enum JH7110_PWMDAC_DATA_CHANGE_VAL {
-+	NO_CHANGE =3D 0,
-+	CHANGE,
-+};
-+
-+enum JH7110_PWMDAC_DATA_MODE_VAL {
-+	UNSIGNED_DATA =3D 0,
-+	INVERTER_DATA_MSB,
-+};
-+
-+enum JH7110_PWMDAC_DATA_SHIFT_VAL {
-+	PWMDAC_DATA_LEFT_SHIFT_BIT_0 =3D 0,
-+	PWMDAC_DATA_LEFT_SHIFT_BIT_1,
-+	PWMDAC_DATA_LEFT_SHIFT_BIT_2,
-+	PWMDAC_DATA_LEFT_SHIFT_BIT_3,
-+	PWMDAC_DATA_LEFT_SHIFT_BIT_4,
-+	PWMDAC_DATA_LEFT_SHIFT_BIT_5,
-+	PWMDAC_DATA_LEFT_SHIFT_BIT_6,
-+	PWMDAC_DATA_LEFT_SHIFT_BIT_7,
-+};
-+
-+struct jh7110_pwmdac_dev {
-+	void __iomem *base;
-+	resource_size_t	mapbase;
-+	u8 shift;
-+	u8 duty_cycle;
-+	u8 cnt_n;
-+	u8 data_change;
-+	u8 data_mode;
-+	u8 data_shift;
-+
-+	struct clk_bulk_data clks[2];
-+	struct reset_control *rst_apb;
-+	struct device *dev;
-+	struct snd_dmaengine_dai_dma_data play_dma_data;
-+	u32 saved_ctrl;
-+};
-+
-+enum jh7110_ct_pwmdac_name {
-+	PWMDAC_CT_SHIFT =3D 0,
-+	PWMDAC_CT_DUTY_CYCLE,
-+	PWMDAC_CT_DATA_CHANGE,
-+	PWMDAC_CT_DATA_MODE,
-+	PWMDAC_CT_DATA_SHIFT,
-+};
-+
-+struct jh7110_ct_pwmdac {
-+	char *name;
-+	unsigned int vals;
-+};
-+
-+static const struct jh7110_ct_pwmdac pwmdac_ct_shift[] =3D {
-+	{ .name =3D "8bit", .vals =3D PWMDAC_SHIFT_8 },
-+	{ .name =3D "10bit", .vals =3D PWMDAC_SHIFT_10 }
-+};
-+
-+static const struct jh7110_ct_pwmdac pwmdac_ct_duty_cycle[] =3D {
-+	{ .name =3D "left", .vals =3D PWMDAC_CYCLE_LEFT },
-+	{ .name =3D "right", .vals =3D PWMDAC_CYCLE_RIGHT },
-+	{ .name =3D "center", .vals =3D PWMDAC_CYCLE_CENTER }
-+};
-+
-+static const struct jh7110_ct_pwmdac pwmdac_ct_data_change[] =3D {
-+	{ .name =3D "no_change", .vals =3D NO_CHANGE },
-+	{ .name =3D "change", .vals =3D CHANGE }
-+};
-+
-+static const struct jh7110_ct_pwmdac pwmdac_ct_data_mode[] =3D {
-+	{ .name =3D "unsigned", .vals =3D UNSIGNED_DATA },
-+	{ .name =3D "inverter", .vals =3D INVERTER_DATA_MSB }
-+};
-+
-+static const struct jh7110_ct_pwmdac pwmdac_ct_data_shift[] =3D {
-+	{ .name =3D "left 0 bit", .vals =3D PWMDAC_DATA_LEFT_SHIFT_BIT_0 },
-+	{ .name =3D "left 1 bit", .vals =3D PWMDAC_DATA_LEFT_SHIFT_BIT_1 },
-+	{ .name =3D "left 2 bit", .vals =3D PWMDAC_DATA_LEFT_SHIFT_BIT_2 },
-+	{ .name =3D "left 3 bit", .vals =3D PWMDAC_DATA_LEFT_SHIFT_BIT_3 },
-+	{ .name =3D "left 4 bit", .vals =3D PWMDAC_DATA_LEFT_SHIFT_BIT_4 },
-+	{ .name =3D "left 5 bit", .vals =3D PWMDAC_DATA_LEFT_SHIFT_BIT_5 },
-+	{ .name =3D "left 6 bit", .vals =3D PWMDAC_DATA_LEFT_SHIFT_BIT_6 },
-+	{ .name =3D "left 7 bit", .vals =3D PWMDAC_DATA_LEFT_SHIFT_BIT_7 }
-+};
-+
-+static int jh7110_pwmdac_info(struct snd_ctl_elem_info *uinfo, int pwmda=
-c_ct)
-+{
-+	unsigned int items;
-+
-+	if (pwmdac_ct =3D=3D PWMDAC_CT_SHIFT) {
-+		items =3D ARRAY_SIZE(pwmdac_ct_shift);
-+		strcpy(uinfo->value.enumerated.name,
-+		       pwmdac_ct_shift[uinfo->value.enumerated.item].name);
-+	} else if (pwmdac_ct =3D=3D PWMDAC_CT_DUTY_CYCLE) {
-+		items =3D ARRAY_SIZE(pwmdac_ct_duty_cycle);
-+		strcpy(uinfo->value.enumerated.name,
-+		       pwmdac_ct_duty_cycle[uinfo->value.enumerated.item].name);
-+	} else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_CHANGE) {
-+		items =3D ARRAY_SIZE(pwmdac_ct_data_change);
-+		strcpy(uinfo->value.enumerated.name,
-+		       pwmdac_ct_data_change[uinfo->value.enumerated.item].name);
-+	} else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_MODE) {
-+		items =3D ARRAY_SIZE(pwmdac_ct_data_mode);
-+		strcpy(uinfo->value.enumerated.name,
-+		       pwmdac_ct_data_mode[uinfo->value.enumerated.item].name);
-+	} else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_SHIFT) {
-+		items =3D ARRAY_SIZE(pwmdac_ct_data_shift);
-+		strcpy(uinfo->value.enumerated.name,
-+		       pwmdac_ct_data_shift[uinfo->value.enumerated.item].name);
-+	}
-+
-+	uinfo->type =3D SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count =3D 1;
-+	uinfo->value.enumerated.items =3D items;
-+	if (uinfo->value.enumerated.item >=3D items)
-+		uinfo->value.enumerated.item =3D items - 1;
-+
-+	return 0;
-+}
-+
-+static int jh7110_pwmdac_get(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol,
-+			     int pwmdac_ct)
-+{
-+	struct snd_soc_component *component =3D snd_kcontrol_chip(kcontrol);
-+	struct jh7110_pwmdac_dev *dev =3D snd_soc_component_get_drvdata(compone=
-nt);
-+
-+	if (pwmdac_ct =3D=3D PWMDAC_CT_SHIFT)
-+		ucontrol->value.enumerated.item[0] =3D dev->shift;
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DUTY_CYCLE)
-+		ucontrol->value.enumerated.item[0] =3D dev->duty_cycle;
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_CHANGE)
-+		ucontrol->value.enumerated.item[0] =3D dev->data_change;
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_MODE)
-+		ucontrol->value.enumerated.item[0] =3D dev->data_mode;
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_SHIFT)
-+		ucontrol->value.enumerated.item[0] =3D dev->data_shift;
-+
-+	return 0;
-+}
-+
-+static int jh7110_pwmdac_put(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol,
-+			     int pwmdac_ct)
-+{
-+	struct snd_soc_component *component =3D snd_kcontrol_chip(kcontrol);
-+	struct jh7110_pwmdac_dev *dev =3D snd_soc_component_get_drvdata(compone=
-nt);
-+	int sel =3D ucontrol->value.enumerated.item[0];
-+	unsigned int items;
-+
-+	if (pwmdac_ct =3D=3D PWMDAC_CT_SHIFT)
-+		items =3D ARRAY_SIZE(pwmdac_ct_shift);
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DUTY_CYCLE)
-+		items =3D ARRAY_SIZE(pwmdac_ct_duty_cycle);
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_CHANGE)
-+		items =3D ARRAY_SIZE(pwmdac_ct_data_change);
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_MODE)
-+		items =3D ARRAY_SIZE(pwmdac_ct_data_mode);
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_SHIFT)
-+		items =3D ARRAY_SIZE(pwmdac_ct_data_shift);
-+
-+	if (sel >=3D items)
-+		return -EINVAL;
-+
-+	if (pwmdac_ct =3D=3D PWMDAC_CT_SHIFT)
-+		dev->shift =3D pwmdac_ct_shift[sel].vals;
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DUTY_CYCLE)
-+		dev->duty_cycle =3D pwmdac_ct_duty_cycle[sel].vals;
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_CHANGE)
-+		dev->data_change =3D pwmdac_ct_data_change[sel].vals;
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_MODE)
-+		dev->data_mode =3D pwmdac_ct_data_mode[sel].vals;
-+	else if (pwmdac_ct =3D=3D PWMDAC_CT_DATA_SHIFT)
-+		dev->data_shift =3D pwmdac_ct_data_shift[sel].vals;
-+
-+	return 0;
-+}
-+
-+static int jh7110_pwmdac_shift_info(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_info *uinfo)
-+{
-+	return jh7110_pwmdac_info(uinfo, PWMDAC_CT_SHIFT);
-+}
-+
-+static int jh7110_pwmdac_shift_get(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	return jh7110_pwmdac_get(kcontrol, ucontrol, PWMDAC_CT_SHIFT);
-+}
-+
-+static int jh7110_pwmdac_shift_put(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	return jh7110_pwmdac_put(kcontrol, ucontrol, PWMDAC_CT_SHIFT);
-+}
-+
-+static int jh7110_pwmdac_duty_cycle_info(struct snd_kcontrol *kcontrol,
-+					 struct snd_ctl_elem_info *uinfo)
-+{
-+	return jh7110_pwmdac_info(uinfo, PWMDAC_CT_DUTY_CYCLE);
-+}
-+
-+static int jh7110_pwmdac_duty_cycle_get(struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+	return jh7110_pwmdac_get(kcontrol, ucontrol, PWMDAC_CT_DUTY_CYCLE);
-+}
-+
-+static int jh7110_pwmdac_duty_cycle_put(struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+	return jh7110_pwmdac_put(kcontrol, ucontrol, PWMDAC_CT_DUTY_CYCLE);
-+}
-+
-+static int jh7110_pwmdac_data_change_info(struct snd_kcontrol *kcontrol,
-+					  struct snd_ctl_elem_info *uinfo)
-+{
-+	return jh7110_pwmdac_info(uinfo, PWMDAC_CT_DATA_CHANGE);
-+}
-+
-+static int jh7110_pwmdac_data_change_get(struct snd_kcontrol *kcontrol,
-+					 struct snd_ctl_elem_value *ucontrol)
-+{
-+	return jh7110_pwmdac_get(kcontrol, ucontrol, PWMDAC_CT_DATA_CHANGE);
-+}
-+
-+static int jh7110_pwmdac_data_change_put(struct snd_kcontrol *kcontrol,
-+					 struct snd_ctl_elem_value *ucontrol)
-+{
-+	return jh7110_pwmdac_put(kcontrol, ucontrol, PWMDAC_CT_DATA_CHANGE);
-+}
-+
-+static int jh7110_pwmdac_data_mode_info(struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_info *uinfo)
-+{
-+	return jh7110_pwmdac_info(uinfo, PWMDAC_CT_DATA_MODE);
-+}
-+
-+static int jh7110_pwmdac_data_mode_get(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	return jh7110_pwmdac_get(kcontrol, ucontrol, PWMDAC_CT_DATA_MODE);
-+}
-+
-+static int jh7110_pwmdac_data_mode_put(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	return jh7110_pwmdac_put(kcontrol, ucontrol, PWMDAC_CT_DATA_MODE);
-+}
-+
-+static int jh7110_pwmdac_data_shift_info(struct snd_kcontrol *kcontrol,
-+					 struct snd_ctl_elem_info *uinfo)
-+{
-+	return jh7110_pwmdac_info(uinfo, PWMDAC_CT_DATA_SHIFT);
-+}
-+
-+static int jh7110_pwmdac_data_shift_get(struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+	return jh7110_pwmdac_get(kcontrol, ucontrol, PWMDAC_CT_DATA_SHIFT);
-+}
-+
-+static int jh7110_pwmdac_data_shift_put(struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+	return jh7110_pwmdac_put(kcontrol, ucontrol, PWMDAC_CT_DATA_SHIFT);
-+}
-+
-+static inline void jh7110_pwmdac_write_reg(void __iomem *io_base, int re=
-g, u32 val)
-+{
-+	writel(val, io_base + reg);
-+}
-+
-+static inline u32 jh7110_pwmdac_read_reg(void __iomem *io_base, int reg)
-+{
-+	return readl(io_base + reg);
-+}
-+
-+static void jh7110_pwmdac_set_enable(struct jh7110_pwmdac_dev *dev, bool=
- enable)
-+{
-+	u32 value;
-+
-+	value =3D jh7110_pwmdac_read_reg(dev->base, JH7110_PWMDAC_CTRL);
-+	if (enable)
-+		value |=3D JH7110_PWMDAC_ENABLE;
-+	else
-+		value &=3D ~JH7110_PWMDAC_ENABLE;
-+
-+	jh7110_pwmdac_write_reg(dev->base, JH7110_PWMDAC_CTRL, value);
-+}
-+
-+static void jh7110_pwmdac_set_shift(struct jh7110_pwmdac_dev *dev)
-+{
-+	u32 value;
-+
-+	value =3D jh7110_pwmdac_read_reg(dev->base, JH7110_PWMDAC_CTRL);
-+	if (dev->shift =3D=3D PWMDAC_SHIFT_8)
-+		value &=3D ~JH7110_PWMDAC_SHIFT;
-+	else if (dev->shift =3D=3D PWMDAC_SHIFT_10)
-+		value |=3D JH7110_PWMDAC_SHIFT;
-+
-+	jh7110_pwmdac_write_reg(dev->base, JH7110_PWMDAC_CTRL, value);
-+}
-+
-+static void jh7110_pwmdac_set_duty_cycle(struct jh7110_pwmdac_dev *dev)
-+{
-+	u32 value;
-+
-+	value =3D jh7110_pwmdac_read_reg(dev->base, JH7110_PWMDAC_CTRL);
-+	value &=3D ~JH7110_PWMDAC_DUTY_CYCLE_MASK;
-+	value |=3D (dev->duty_cycle & 0x3) << JH7110_PWMDAC_DUTY_CYCLE_SHIFT;
-+
-+	jh7110_pwmdac_write_reg(dev->base, JH7110_PWMDAC_CTRL, value);
-+}
-+
-+static void jh7110_pwmdac_set_cnt_n(struct jh7110_pwmdac_dev *dev)
-+{
-+	u32 value;
-+
-+	value =3D jh7110_pwmdac_read_reg(dev->base, JH7110_PWMDAC_CTRL);
-+	value &=3D ~JH7110_PWMDAC_CNT_N_MASK;
-+	value |=3D ((dev->cnt_n - 1) & 0x1ff) << JH7110_PWMDAC_CNT_N_SHIFT;
-+
-+	jh7110_pwmdac_write_reg(dev->base, JH7110_PWMDAC_CTRL, value);
-+}
-+
-+static void jh7110_pwmdac_set_data_change(struct jh7110_pwmdac_dev *dev)
-+{
-+	u32 value;
-+
-+	value =3D jh7110_pwmdac_read_reg(dev->base, JH7110_PWMDAC_CTRL);
-+	if (dev->data_change =3D=3D NO_CHANGE)
-+		value &=3D ~JH7110_PWMDAC_DATA_CHANGE;
-+	else if (dev->data_change =3D=3D CHANGE)
-+		value |=3D JH7110_PWMDAC_DATA_CHANGE;
-+
-+	jh7110_pwmdac_write_reg(dev->base, JH7110_PWMDAC_CTRL, value);
-+}
-+
-+static void jh7110_pwmdac_set_data_mode(struct jh7110_pwmdac_dev *dev)
-+{
-+	u32 value;
-+
-+	value =3D jh7110_pwmdac_read_reg(dev->base, JH7110_PWMDAC_CTRL);
-+	if (dev->data_mode =3D=3D UNSIGNED_DATA)
-+		value &=3D ~JH7110_PWMDAC_DATA_MODE;
-+	else if (dev->data_mode =3D=3D INVERTER_DATA_MSB)
-+		value |=3D JH7110_PWMDAC_DATA_MODE;
-+
-+	jh7110_pwmdac_write_reg(dev->base, JH7110_PWMDAC_CTRL, value);
-+}
-+
-+static void jh7110_pwmdac_set_data_shift(struct jh7110_pwmdac_dev *dev)
-+{
-+	u32 value;
-+
-+	value =3D jh7110_pwmdac_read_reg(dev->base, JH7110_PWMDAC_CTRL);
-+	value &=3D ~JH7110_PWMDAC_DATA_SHIFT_MASK;
-+	value |=3D (dev->data_shift & 0x7) << JH7110_PWMDAC_DATA_SHIFT_SHIFT;
-+
-+	jh7110_pwmdac_write_reg(dev->base, JH7110_PWMDAC_CTRL, value);
-+}
-+
-+static void jh7110_pwmdac_set(struct jh7110_pwmdac_dev *dev)
-+{
-+	jh7110_pwmdac_set_shift(dev);
-+	jh7110_pwmdac_set_duty_cycle(dev);
-+	jh7110_pwmdac_set_cnt_n(dev);
-+	jh7110_pwmdac_set_enable(dev, true);
-+
-+	jh7110_pwmdac_set_data_change(dev);
-+	jh7110_pwmdac_set_data_mode(dev);
-+	jh7110_pwmdac_set_data_shift(dev);
-+}
-+
-+static void jh7110_pwmdac_stop(struct jh7110_pwmdac_dev *dev)
-+{
-+	jh7110_pwmdac_set_enable(dev, false);
-+}
-+
-+static int jh7110_pwmdac_startup(struct snd_pcm_substream *substream,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd =3D asoc_substream_to_rtd(substream);
-+	struct snd_soc_dai_link *dai_link =3D rtd->dai_link;
-+
-+	dai_link->stop_dma_first =3D 1;
-+
-+	return 0;
-+}
-+
-+static int jh7110_pwmdac_hw_params(struct snd_pcm_substream *substream,
-+				   struct snd_pcm_hw_params *params,
-+				   struct snd_soc_dai *dai)
-+{
-+	unsigned long core_clk_rate;
-+	int ret;
-+	struct jh7110_pwmdac_dev *dev =3D dev_get_drvdata(dai->dev);
-+
-+	switch (params_rate(params)) {
-+	case 8000:
-+		dev->cnt_n =3D PWMDAC_SAMPLE_CNT_3;
-+		core_clk_rate =3D 6144000;
-+		break;
-+	case 11025:
-+		dev->cnt_n =3D PWMDAC_SAMPLE_CNT_2;
-+		core_clk_rate =3D 5644800;
-+		break;
-+	case 16000:
-+		dev->cnt_n =3D PWMDAC_SAMPLE_CNT_3;
-+		core_clk_rate =3D 12288000;
-+		break;
-+	case 22050:
-+		dev->cnt_n =3D PWMDAC_SAMPLE_CNT_1;
-+		core_clk_rate =3D 5644800;
-+		break;
-+	case 32000:
-+		dev->cnt_n =3D PWMDAC_SAMPLE_CNT_1;
-+		core_clk_rate =3D 8192000;
-+		break;
-+	case 44100:
-+		dev->cnt_n =3D PWMDAC_SAMPLE_CNT_1;
-+		core_clk_rate =3D 11289600;
-+		break;
-+	case 48000:
-+		dev->cnt_n =3D PWMDAC_SAMPLE_CNT_1;
-+		core_clk_rate =3D 12288000;
-+		break;
-+	default:
-+		dev_err(dai->dev, "%d rate not supported\n",
-+			params_rate(params));
-+		return -EINVAL;
-+	}
-+
-+	switch (params_channels(params)) {
-+	case 1:
-+		dev->play_dma_data.addr_width =3D DMA_SLAVE_BUSWIDTH_2_BYTES;
-+		break;
-+	case 2:
-+		dev->play_dma_data.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		break;
-+	default:
-+		dev_err(dai->dev, "%d channels not supported\n",
-+			params_channels(params));
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * The clock rate always rounds down when using clk_set_rate()
-+	 * so increase the rate a bit
-+	 */
-+	core_clk_rate +=3D 64;
-+	jh7110_pwmdac_set(dev);
-+
-+	ret =3D clk_set_rate(dev->clks[1].clk, core_clk_rate);
-+	if (ret) {
-+		dev_err(dai->dev,
-+			"failed to set rate %lu for core clock\n",
-+			core_clk_rate);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int jh7110_pwmdac_trigger(struct snd_pcm_substream *substream, in=
-t cmd,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct jh7110_pwmdac_dev *dev =3D snd_soc_dai_get_drvdata(dai);
-+	int ret =3D 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		jh7110_pwmdac_set(dev);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		jh7110_pwmdac_stop(dev);
-+		break;
-+	default:
-+		ret =3D -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int jh7110_pwmdac_crg_enable(struct jh7110_pwmdac_dev *dev, bool =
-enable)
-+{
-+	int ret;
-+
-+	if (enable) {
-+		ret =3D clk_bulk_prepare_enable(ARRAY_SIZE(dev->clks), dev->clks);
-+		if (ret) {
-+			dev_err(dev->dev, "failed to enable pwmdac clocks\n");
-+			return ret;
-+		}
-+
-+		ret =3D reset_control_deassert(dev->rst_apb);
-+		if (ret) {
-+			dev_err(dev->dev, "failed to deassert pwmdac apb reset\n");
-+			goto err_rst_apb;
-+		}
-+	} else {
-+		clk_bulk_disable_unprepare(ARRAY_SIZE(dev->clks), dev->clks);
-+	}
-+
-+	return 0;
-+
-+err_rst_apb:
-+	clk_bulk_disable_unprepare(ARRAY_SIZE(dev->clks), dev->clks);
-+
-+	return ret;
-+}
-+
-+static int jh7110_pwmdac_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct jh7110_pwmdac_dev *dev =3D dev_get_drvdata(dai->dev);
-+
-+	dev->play_dma_data.addr =3D dev->mapbase + JH7110_PWMDAC_WDATA;
-+	dev->play_dma_data.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
-+	dev->play_dma_data.fifo_size =3D 1;
-+	dev->play_dma_data.maxburst =3D 16;
-+
-+	snd_soc_dai_init_dma_data(dai, &dev->play_dma_data, NULL);
-+	snd_soc_dai_set_drvdata(dai, dev);
-+
-+	return 0;
-+}
-+
-+#define JH7110_PWMDAC_ENUM_DECL(xname, xinfo, xget, xput) \
-+{	.iface =3D SNDRV_CTL_ELEM_IFACE_MIXER, .name =3D xname, \
-+	.info =3D xinfo, .get =3D xget, .put =3D xput,}
-+
-+static const struct snd_kcontrol_new jh7110_pwmdac_snd_controls[] =3D {
-+	JH7110_PWMDAC_ENUM_DECL("shift", jh7110_pwmdac_shift_info,
-+				jh7110_pwmdac_shift_get,
-+				jh7110_pwmdac_shift_put),
-+	JH7110_PWMDAC_ENUM_DECL("duty_cycle", jh7110_pwmdac_duty_cycle_info,
-+				jh7110_pwmdac_duty_cycle_get,
-+				jh7110_pwmdac_duty_cycle_put),
-+	JH7110_PWMDAC_ENUM_DECL("data_change", jh7110_pwmdac_data_change_info,
-+				jh7110_pwmdac_data_change_get,
-+				jh7110_pwmdac_data_change_put),
-+	JH7110_PWMDAC_ENUM_DECL("data_mode", jh7110_pwmdac_data_mode_info,
-+				jh7110_pwmdac_data_mode_get,
-+				jh7110_pwmdac_data_mode_put),
-+	JH7110_PWMDAC_ENUM_DECL("data_shift", jh7110_pwmdac_data_shift_info,
-+				jh7110_pwmdac_data_shift_get,
-+				jh7110_pwmdac_data_shift_put),
-+};
-+
-+static int jh7110_pwmdac_component_probe(struct snd_soc_component *compo=
-nent)
-+{
-+	snd_soc_add_component_controls(component, jh7110_pwmdac_snd_controls,
-+				       ARRAY_SIZE(jh7110_pwmdac_snd_controls));
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops jh7110_pwmdac_dai_ops =3D {
-+	.startup	=3D jh7110_pwmdac_startup,
-+	.hw_params	=3D jh7110_pwmdac_hw_params,
-+	.trigger	=3D jh7110_pwmdac_trigger,
-+};
-+
-+static const struct snd_soc_component_driver jh7110_pwmdac_component =3D=
- {
-+	.name		=3D "jh7110-pwmdac",
-+	.probe		=3D jh7110_pwmdac_component_probe,
-+};
-+
-+static struct snd_soc_dai_driver jh7110_pwmdac_dai =3D {
-+	.name		=3D "jh7110-pwmdac",
-+	.id		=3D 0,
-+	.probe		=3D jh7110_pwmdac_dai_probe,
-+	.playback =3D {
-+		.channels_min =3D 1,
-+		.channels_max =3D 2,
-+		.rates =3D SNDRV_PCM_RATE_8000_48000,
-+		.formats =3D SNDRV_PCM_FMTBIT_S16_LE,
++static struct snd_soc_dai_driver dit_stub_dai =3D {
++	.name		=3D "pwmdac-dit-hifi",
++	.playback	=3D {
++		.stream_name	=3D "Playback",
++		.channels_min	=3D 1,
++		.channels_max	=3D 384,
++		.rates		=3D SNDRV_PCM_RATE_8000_48000,
++		.formats	=3D SNDRV_PCM_FMTBIT_S16_LE,
 +	},
-+	.ops =3D &jh7110_pwmdac_dai_ops,
 +};
 +
-+static int jh7110_pwmdac_runtime_suspend(struct device *dev)
++static int pwmdac_dit_probe(struct platform_device *pdev)
 +{
-+	struct jh7110_pwmdac_dev *pwmdac =3D dev_get_drvdata(dev);
-+
-+	return jh7110_pwmdac_crg_enable(pwmdac, false);
++	return devm_snd_soc_register_component(&pdev->dev,
++					       &soc_codec_pwmdac_dit,
++					       &dit_stub_dai, 1);
 +}
 +
-+static int jh7110_pwmdac_runtime_resume(struct device *dev)
-+{
-+	struct jh7110_pwmdac_dev *pwmdac =3D dev_get_drvdata(dev);
-+
-+	return jh7110_pwmdac_crg_enable(pwmdac, true);
-+}
-+
-+static int jh7110_pwmdac_system_suspend(struct device *dev)
-+{
-+	struct jh7110_pwmdac_dev *pwmdac =3D dev_get_drvdata(dev);
-+
-+	/* save the CTRL register value */
-+	pwmdac->saved_ctrl =3D jh7110_pwmdac_read_reg(pwmdac->base,
-+						    JH7110_PWMDAC_CTRL);
-+	return pm_runtime_force_suspend(dev);
-+}
-+
-+static int jh7110_pwmdac_system_resume(struct device *dev)
-+{
-+	struct jh7110_pwmdac_dev *pwmdac =3D dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret =3D pm_runtime_force_resume(dev);
-+	if (ret)
-+		return ret;
-+
-+	/* restore the CTRL register value */
-+	jh7110_pwmdac_write_reg(pwmdac->base, JH7110_PWMDAC_CTRL,
-+				pwmdac->saved_ctrl);
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops jh7110_pwmdac_pm_ops =3D {
-+	RUNTIME_PM_OPS(jh7110_pwmdac_runtime_suspend,
-+		       jh7110_pwmdac_runtime_resume, NULL)
-+	SYSTEM_SLEEP_PM_OPS(jh7110_pwmdac_system_suspend,
-+			    jh7110_pwmdac_system_resume)
++#ifdef CONFIG_OF
++static const struct of_device_id pwmdac_dit_dt_ids[] =3D {
++	{ .compatible =3D "starfive,jh7110-pwmdac-dit", },
++	{ }
 +};
++MODULE_DEVICE_TABLE(of, pwmdac_dit_dt_ids);
++#endif
 +
-+static int jh7110_pwmdac_probe(struct platform_device *pdev)
-+{
-+	struct jh7110_pwmdac_dev *dev;
-+	struct resource *res;
-+	int ret;
-+
-+	dev =3D devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
-+	if (!dev)
-+		return -ENOMEM;
-+
-+	dev->base =3D devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-+	if (IS_ERR(dev->base))
-+		return PTR_ERR(dev->base);
-+
-+	dev->mapbase =3D res->start;
-+
-+	dev->clks[0].id =3D "apb";
-+	dev->clks[1].id =3D "core";
-+
-+	ret =3D devm_clk_bulk_get(&pdev->dev, ARRAY_SIZE(dev->clks), dev->clks)=
-;
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to get pwmdac clocks\n");
-+		return ret;
-+	}
-+
-+	dev->rst_apb =3D devm_reset_control_get_exclusive(&pdev->dev, NULL);
-+	if (IS_ERR(dev->rst_apb)) {
-+		dev_err(&pdev->dev, "failed to get pwmdac apb reset\n");
-+		return PTR_ERR(dev->rst_apb);
-+	}
-+
-+	dev->dev =3D &pdev->dev;
-+	dev->shift =3D PWMDAC_SHIFT_8;
-+	dev->duty_cycle =3D PWMDAC_CYCLE_CENTER;
-+	dev->cnt_n =3D PWMDAC_SAMPLE_CNT_1;
-+	dev->data_change =3D NO_CHANGE;
-+	dev->data_mode =3D INVERTER_DATA_MSB;
-+	dev->data_shift =3D PWMDAC_DATA_LEFT_SHIFT_BIT_0;
-+
-+	dev_set_drvdata(&pdev->dev, dev);
-+	ret =3D devm_snd_soc_register_component(&pdev->dev,
-+					      &jh7110_pwmdac_component,
-+					      &jh7110_pwmdac_dai, 1);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register dai\n");
-+		return ret;
-+	}
-+
-+	ret =3D devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to register pcm\n");
-+		return ret;
-+	}
-+
-+	pm_runtime_enable(dev->dev);
-+	if (!pm_runtime_enabled(&pdev->dev)) {
-+		ret =3D jh7110_pwmdac_runtime_resume(&pdev->dev);
-+		if (ret)
-+			goto err_pm_disable;
-+	}
-+
-+	return 0;
-+
-+err_pm_disable:
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return ret;
-+}
-+
-+static int jh7110_pwmdac_remove(struct platform_device *pdev)
-+{
-+	pm_runtime_disable(&pdev->dev);
-+	return 0;
-+}
-+
-+static const struct of_device_id jh7110_pwmdac_of_match[] =3D {
-+	{ .compatible =3D "starfive,jh7110-pwmdac" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, jh7110_pwmdac_of_match);
-+
-+static struct platform_driver jh7110_pwmdac_driver =3D {
++static struct platform_driver pwmdac_dit_driver =3D {
++	.probe		=3D pwmdac_dit_probe,
 +	.driver		=3D {
-+		.name	=3D "jh7110-pwmdac",
-+		.of_match_table =3D jh7110_pwmdac_of_match,
-+		.pm =3D pm_ptr(&jh7110_pwmdac_pm_ops),
++		.name	=3D DRV_NAME,
++		.of_match_table =3D of_match_ptr(pwmdac_dit_dt_ids),
 +	},
-+	.probe		=3D jh7110_pwmdac_probe,
-+	.remove		=3D jh7110_pwmdac_remove,
 +};
-+module_platform_driver(jh7110_pwmdac_driver);
 +
-+MODULE_AUTHOR("Jenny Zhang");
-+MODULE_AUTHOR("Curry Zhang");
-+MODULE_AUTHOR("Xingyu Wu <xingyu.wu@starfivetech.com>");
-+MODULE_AUTHOR("Hal Feng <hal.feng@starfivetech.com>");
-+MODULE_DESCRIPTION("StarFive JH7110 PWM-DAC driver");
++module_platform_driver(pwmdac_dit_driver);
++
++MODULE_DESCRIPTION("StarFive JH7110 dummy PWM-DAC transmitter driver");
 +MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:" DRV_NAME);
 --=20
 2.38.1
 
