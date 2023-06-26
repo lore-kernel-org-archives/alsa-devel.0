@@ -4,111 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BFD0EB64D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:51:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B770EB64D7
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 11:51:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DBD1153B;
-	Mon, 26 Jun 2023 13:50:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DBD1153B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37F891547;
+	Mon, 26 Jun 2023 13:50:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37F891547
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687780274;
-	bh=uh/+vSA09hy2AuLFjmYs4Bd0Ami5MGqo95dMCjfAlyM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1687780281;
+	bh=UaEWMeEwQlYb5sY8Xmi2bZeRfUjtJfqjkAlZTJng8t8=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GnXVxuFoBeneSRnuXWZ2lT0PWZ5jNCVY3EiCn/v4RiZiiarCxwupsQ9wzmEyYN6N+
-	 Lk94egs5eIaxEqTtdP1mPK0woS65avC/KMaD+Tw+P9qpseJCSOZ4DmLGGch+uaBEF5
-	 NXEpZFRDoxHAvuTirnGINzWZo7DIDtZI8rSr+zHM=
+	b=fCu+H/ZtiCYeRP0OgiGl8M92H7v09L1TamEBZnr4+blEwQ/U060IIkSlKW6ubDgOC
+	 K1f4ui38isx9s7Ffl3irUDvhnkY0M/xAWLJuHrbvJMcwaMzob7OeRSzpzerbxCnkLN
+	 p/tPuDljonCdCCWB0bcXOCC0Q53P7MWiOEXT1igA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7E86CF806B8; Mon, 26 Jun 2023 13:43:37 +0200 (CEST)
+	id E2C0DF806D1; Mon, 26 Jun 2023 13:43:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD1E6F806B8;
-	Mon, 26 Jun 2023 13:43:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44197F806B0;
+	Mon, 26 Jun 2023 13:43:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B225F80246; Mon, 26 Jun 2023 09:52:43 +0200 (CEST)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id CD97AF80557; Mon, 26 Jun 2023 13:09:26 +0200 (CEST)
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6F30CF80169
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 09:52:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F30CF80169
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=KoeVJe5X
-Received: by mail-wm1-x32b.google.com with SMTP id
- 5b1f17b1804b1-3fa8ce2307dso16446745e9.2
-        for <alsa-devel@alsa-project.org>;
- Mon, 26 Jun 2023 00:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687765958; x=1690357958;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=irlZVhx/XKlbttEvUnkzS/s4wzYma5T1mMdZcjlEesw=;
-        b=KoeVJe5XpQX5WRA9xHMmehzdrbQVOwdi2+dOPnORWgDRrxWjXZpLAhL25Ou8OqLnJa
-         LAGpO2QfhHsomFUpEsBIfBbnDWotjDvSJ/TQz3Qr+qvDQv1+UqUbUY0ibKfz3G3q5JKo
-         bguQCZxFYo1XcNqkPMHF9A7GtxfDz9lpPyKRQtAuKj0lfy84UZC3VJyWBcWcy2kFltNX
-         dZnlNER/WpKUDNMrSifUt9dy7r85nuQ8vv2vwGmrntuc6eeZsBslKko6ER83olt2iawm
-         V4QCLiAkAn4Z6czjihrynQpNTEHdGm02+2oQQbYVLM2PgLlFRp5Hj0wRFDW2GekNUFbs
-         G0HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687765958; x=1690357958;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=irlZVhx/XKlbttEvUnkzS/s4wzYma5T1mMdZcjlEesw=;
-        b=SSdPNkXwaRCkLpE2kVTOxyv/qHMAj0+5sOV5bpPp3IJo3p3iONZZCB+hgAAkm5heGX
-         1RgnWjfo0f12632cjrvVhJoAx3Zl/iK1cFWYfv/4lQkQGXEQAS0D8oBZEVwkxlmKTE+m
-         izV0Yz4usL5n0T9qZ7iq+FkqfrXjLr5ArF55hy77ViFS28ITtQEpVWlNXghHp6t9+I+M
-         Lr+YfCAMWVemCo/GNqgUfWJqw9C2qgQb1hHRuljqYWToTyhjaXaHm/OVEnojPdAFApbq
-         T/TMbCH2fmT8zSrGfjoCEeu2NHGNZAwIkVE8fbkUZtLc4xM2B+aGnD6iL+NayIFMmwhc
-         nSrA==
-X-Gm-Message-State: AC+VfDzyNNXPrErnieN4tqVrx60h5tz31OsP2EzZls6L08hLfW8f6kjL
-	AAlc4eFo+bz8cPguMxWLT6UBCZkd0Kk6z775rvM=
-X-Google-Smtp-Source: 
- ACHHUZ5aHx7TsBeLGvfREUZ4S4k1gxhPakWI23RtFUuoy89vsffopk/L6hfk5qp95bvldWkyK+KwCrnbXbqZPB9GH4A=
-X-Received: by 2002:a7b:c7d8:0:b0:3fa:935e:e185 with SMTP id
- z24-20020a7bc7d8000000b003fa935ee185mr3819456wmk.22.1687765957756; Mon, 26
- Jun 2023 00:52:37 -0700 (PDT)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5B942F80534
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 13:09:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B942F80534
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id B713324E26A;
+	Mon, 26 Jun 2023 19:09:13 +0800 (CST)
+Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 26 Jun
+ 2023 19:09:13 +0800
+Received: from ubuntu.localdomain (113.72.146.167) by EXMBX172.cuchost.com
+ (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 26 Jun
+ 2023 19:09:12 +0800
+From: Hal Feng <hal.feng@starfivetech.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor@kernel.org>, "Walker
+ Chen" <walker.chen@starfivetech.com>, Xingyu Wu <xingyu.wu@starfivetech.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>, Hal Feng
+	<hal.feng@starfivetech.com>
+CC: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 3/5] ASoC: dt-bindings: Add StarFive JH7110 PWM-DAC
+ controller
+Date: Mon, 26 Jun 2023 19:09:07 +0800
+Message-ID: <20230626110909.38718-4-hal.feng@starfivetech.com>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20230626110909.38718-1-hal.feng@starfivetech.com>
+References: <20230626110909.38718-1-hal.feng@starfivetech.com>
 MIME-Version: 1.0
-References: 
- <CADm8Tek6t0WedK+3Y6rbE5YEt19tML8BUL45N2ji4ZAz1KcN_A@mail.gmail.com>
- <877crqwvi1.wl-tiwai@suse.de>
- <CADm8Tenfy8joto5WLCqQWjfT8WimsbJgOss0hJe-ciyDRMrSXw@mail.gmail.com>
- <871qhywucj.wl-tiwai@suse.de>
-In-Reply-To: <871qhywucj.wl-tiwai@suse.de>
-From: Tuo Li <islituo@gmail.com>
-Date: Mon, 26 Jun 2023 15:52:30 +0800
-Message-ID: 
- <CADm8Te=k38KRch7ONZVRZak-=om4kEEy24c=JwwTKLvSiBs5Bw@mail.gmail.com>
-Subject: Re: [BUG] ALSA: core: pcm_memory: a possible data race in
- do_alloc_pages()
-To: Takashi Iwai <tiwai@suse.de>
-Cc: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-	Linux Kernel <linux-kernel@vger.kernel.org>, baijiaju1990@outlook.com
-X-MailFrom: islituo@gmail.com
+Content-Type: text/plain
+X-Originating-IP: [113.72.146.167]
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX172.cuchost.com
+ (172.16.6.92)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: hal.feng@starfivetech.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: PBYGDCE7VCVPFJEMVA2YAW3S6B2TEMZA
-X-Message-ID-Hash: PBYGDCE7VCVPFJEMVA2YAW3S6B2TEMZA
+Message-ID-Hash: 4VI2JTSVOVYU7A7QR7P3DLJTLGF5EGR4
+X-Message-ID-Hash: 4VI2JTSVOVYU7A7QR7P3DLJTLGF5EGR4
 X-Mailman-Approved-At: Mon, 26 Jun 2023 11:42:25 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.8
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PBYGDCE7VCVPFJEMVA2YAW3S6B2TEMZA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4VI2JTSVOVYU7A7QR7P3DLJTLGF5EGR4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,33 +92,103 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGVsbG8sDQoNClRoYW5rcyBmb3IgeW91ciByZXBseSEgSXQgaXMgdmVyeSBoZWxwZnVsIQ0KU2hv
-dWxkIEkgc3VibWl0IGEgcGF0Y2ggYXMgeW91IHN1Z2dlc3RlZCBmb3Igc2FmZXR5Pw0KDQpCZXN0
-IHdpc2hlcywNClR1byBMaQ0KDQpPbiBNb24sIEp1biAyNiwgMjAyMyBhdCAzOjMz4oCvUE0gVGFr
-YXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToNCg0KPiBPbiBNb24sIDI2IEp1biAyMDIz
-IDA5OjMxOjE4ICswMjAwLA0KPiBUdW8gTGkgd3JvdGU6DQo+ID4NCj4gPg0KPiA+IEhlbGxvLA0K
-PiA+DQo+ID4gVGhhbmsgeW91IGZvciB5b3VyIHJlcGx5IQ0KPg0KPiBGV0lXLCB0aGUgc2ltcGxl
-c3QgZml4IHdvdWxkIGJlIHNvbWV0aGluZyBsaWtlIGJlbG93LCBqdXN0IGV4dGVuZGluZw0KPiB0
-aGUgbXV0ZXggY292ZXJhZ2UuICBCdXQgaXQnbGwgc2VyaWFsaXplIHRoZSBhbGwgY2FsbHMsIHNv
-IGl0IG1pZ2h0DQo+IGluZmx1ZW5jZSBvbiB0aGUgcGVyZm9ybWFuY2UsIHdoaWxlIGl0J3MgdGhl
-IHNhZmVzdCB3YXkuDQo+DQo+DQo+IFRha2FzaGkNCj4NCj4gLS0tIGEvc291bmQvY29yZS9wY21f
-bWVtb3J5LmMNCj4gKysrIGIvc291bmQvY29yZS9wY21fbWVtb3J5LmMNCj4gQEAgLTM3LDIwICsz
-NywyMiBAQCBzdGF0aWMgaW50IGRvX2FsbG9jX3BhZ2VzKHN0cnVjdCBzbmRfY2FyZCAqY2FyZCwg
-aW50DQo+IHR5cGUsIHN0cnVjdCBkZXZpY2UgKmRldiwNCj4gICAgICAgICBlbnVtIGRtYV9kYXRh
-X2RpcmVjdGlvbiBkaXI7DQo+ICAgICAgICAgaW50IGVycjsNCj4NCj4gKyAgICAgICBtdXRleF9s
-b2NrKCZjYXJkLT5tZW1vcnlfbXV0ZXgpOw0KPiAgICAgICAgIGlmIChtYXhfYWxsb2NfcGVyX2Nh
-cmQgJiYNCj4gLSAgICAgICAgICAgY2FyZC0+dG90YWxfcGNtX2FsbG9jX2J5dGVzICsgc2l6ZSA+
-IG1heF9hbGxvY19wZXJfY2FyZCkNCj4gLSAgICAgICAgICAgICAgIHJldHVybiAtRU5PTUVNOw0K
-PiArICAgICAgICAgICBjYXJkLT50b3RhbF9wY21fYWxsb2NfYnl0ZXMgKyBzaXplID4gbWF4X2Fs
-bG9jX3Blcl9jYXJkKSB7DQo+ICsgICAgICAgICAgICAgICBlcnIgPSAtRU5PTUVNOw0KPiArICAg
-ICAgICAgICAgICAgZ290byB1bmxvY2s7DQo+ICsgICAgICAgfQ0KPg0KPiAgICAgICAgIGlmIChz
-dHIgPT0gU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSykNCj4gICAgICAgICAgICAgICAgIGRpciA9
-IERNQV9UT19ERVZJQ0U7DQo+ICAgICAgICAgZWxzZQ0KPiAgICAgICAgICAgICAgICAgZGlyID0g
-RE1BX0ZST01fREVWSUNFOw0KPiAgICAgICAgIGVyciA9IHNuZF9kbWFfYWxsb2NfZGlyX3BhZ2Vz
-KHR5cGUsIGRldiwgZGlyLCBzaXplLCBkbWFiKTsNCj4gLSAgICAgICBpZiAoIWVycikgew0KPiAt
-ICAgICAgICAgICAgICAgbXV0ZXhfbG9jaygmY2FyZC0+bWVtb3J5X211dGV4KTsNCj4gKyAgICAg
-ICBpZiAoIWVycikNCj4gICAgICAgICAgICAgICAgIGNhcmQtPnRvdGFsX3BjbV9hbGxvY19ieXRl
-cyArPSBkbWFiLT5ieXRlczsNCj4gLSAgICAgICAgICAgICAgIG11dGV4X3VubG9jaygmY2FyZC0+
-bWVtb3J5X211dGV4KTsNCj4gLSAgICAgICB9DQo+ICsgdW5sb2NrOg0KPiArICAgICAgIG11dGV4
-X3VubG9jaygmY2FyZC0+bWVtb3J5X211dGV4KTsNCj4gICAgICAgICByZXR1cm4gZXJyOw0KPiAg
-fQ0KPg0KPg0K
+Add bindings for the PWM-DAC controller on the JH7110
+RISC-V SoC by StarFive Ltd.
+
+Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
+---
+ .../sound/starfive,jh7110-pwmdac.yaml         | 76 +++++++++++++++++++
+ 1 file changed, 76 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/starfive,jh71=
+10-pwmdac.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/starfive,jh7110-pwmd=
+ac.yaml b/Documentation/devicetree/bindings/sound/starfive,jh7110-pwmdac.=
+yaml
+new file mode 100644
+index 000000000000..91a4213f2bd8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/starfive,jh7110-pwmdac.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/starfive,jh7110-pwmdac.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: StarFive JH7110 PWM-DAC Controller
++
++description: |
++  The PWM-DAC Controller uses PWM square wave generators plus RC filters=
+ to
++  form a DAC for audio play in StarFive JH7110 SoC. This audio play cont=
+roller
++  supports 16 bit audio format, up to 48K sampling frequency , up to lef=
+t
++  and right dual channels.
++
++maintainers:
++  - Hal Feng <hal.feng@starfivetech.com>
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: starfive,jh7110-pwmdac
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: PWMDAC APB
++      - description: PWMDAC CORE
++
++  clock-names:
++    items:
++      - const: apb
++      - const: core
++
++  resets:
++    maxItems: 1
++    description: PWMDAC APB
++
++  dmas:
++    maxItems: 1
++    description: TX DMA Channel
++
++  dma-names:
++    const: tx
++
++  "#sound-dai-cells":
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - resets
++  - dmas
++  - dma-names
++  - "#sound-dai-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    pwmdac@100b0000 {
++        compatible =3D "starfive,jh7110-pwmdac";
++        reg =3D <0x100b0000 0x1000>;
++        clocks =3D <&syscrg 157>,
++                 <&syscrg 158>;
++        clock-names =3D "apb", "core";
++        resets =3D <&syscrg 96>;
++        dmas =3D <&dma 22>;
++        dma-names =3D "tx";
++        #sound-dai-cells =3D <0>;
++    };
+--=20
+2.38.1
+
