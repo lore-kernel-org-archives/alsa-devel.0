@@ -4,110 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8D2EEB64D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 13:39:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82037EB64DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Jun 2023 13:55:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E71E9E10;
-	Mon, 26 Jun 2023 15:38:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E71E9E10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 703FE857;
+	Mon, 26 Jun 2023 15:55:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 703FE857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687786745;
-	bh=iSIGucjInYxKHhhepSg5bgCdNEU+30EmUDUSwXh6BGA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1687787754;
+	bh=UIOhw/+18cUbQ6mrRiXB9WS5HrjLqAxhhP6EGQM4t/0=;
+	h=Date:To:Cc:References:From:Subject:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RnGaRNHu74eR4sg6pqcICzufvLdVjyPdSB/ryHPHWuOQC7MPBM5m9ikvdtVAyAmXy
-	 l2vtxessMP/xjqp3vlo3K/QXTjXdxKm6wwgDezPWV5dpIhu3vcjOZUOZ2IYwAb/igO
-	 ++PAQEYXvc8GXOIG/6F5hkJI1NLiBEuLN87AtGVs=
+	b=Hfmqj7nMNXwAPy1ne451Zjg7TlnnTvIiQRw1OLf9pYa0qhepzbjyVkwYUX+eOMjAF
+	 BcgEbwQDb6IWoygTg0l2uwI7x5ZE+DkuXXFTtrfQvyYgdL9z7l6UadEKksze57rHIp
+	 dDXffYK/ZqJHCXlzhtnKV08xZi5CJtidSDobaVcc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03D15F8053B; Mon, 26 Jun 2023 15:37:44 +0200 (CEST)
+	id 02C5DF80169; Mon, 26 Jun 2023 15:54:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43592F80246;
-	Mon, 26 Jun 2023 15:37:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B28B0F80431;
+	Mon, 26 Jun 2023 15:54:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39560F80246; Mon, 26 Jun 2023 15:37:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D9A48F80246; Mon, 26 Jun 2023 15:54:34 +0200 (CEST)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3A465F80169
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 15:37:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A465F80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id 857B7F80169
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2023 15:54:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 857B7F80169
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Y3YnlDle;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=QeZ8uo/1
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A912221867;
-	Mon, 26 Jun 2023 13:37:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1687786657;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jUBjTAufjEln2vbph+DCrSwWVeakUOgT748UPyQBH7M=;
-	b=Y3YnlDlewui2Sb35svlBgg7ORuRA3ZV7JeBHNwi5NMNYO9HUhl3hCvL3UN0fyHsU3Vr8YE
-	KA4SHIzscegqf3Rj5oHx8jRluTevvWccvWTxoiAYI/XlylKkrJs+2Y5zxoKVe+j10dPneM
-	0HDFSkY6im9coOSsbsKHnz48ZHlIsac=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1687786657;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jUBjTAufjEln2vbph+DCrSwWVeakUOgT748UPyQBH7M=;
-	b=QeZ8uo/1BufTlRiSiyzrtNc7gPHInwJdTcNbeccLQoCtWnqlp/J5dA0bH2BWeFT3BEgzdR
-	nSaq7Tw9qHpXz4CA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D7E413483;
-	Mon, 26 Jun 2023 13:37:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id X+K4HaGUmWTzawAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 26 Jun 2023 13:37:37 +0000
-Date: Mon, 26 Jun 2023 15:37:36 +0200
-Message-ID: <87bkh2uyxr.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Tuo Li <islituo@gmail.com>,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	baijiaju1990@outlook.com
-Subject: Re: [BUG] ALSA: core: pcm_memory: a possible data race in
- do_alloc_pages()
-In-Reply-To: <fb9db138-82a3-678c-bb94-035f923b3e16@perex.cz>
-References: 
- <CADm8Tek6t0WedK+3Y6rbE5YEt19tML8BUL45N2ji4ZAz1KcN_A@mail.gmail.com>
-	<877crqwvi1.wl-tiwai@suse.de>
-	<CADm8Tenfy8joto5WLCqQWjfT8WimsbJgOss0hJe-ciyDRMrSXw@mail.gmail.com>
-	<871qhywucj.wl-tiwai@suse.de>
-	<4d0931bf-b356-6969-5aaf-b663d7f2b21a@perex.cz>
-	<87wmzqv64o.wl-tiwai@suse.de>
-	<45445f57-0a73-59e6-6f3d-3983ce93a324@perex.cz>
-	<87ttuuv5m6.wl-tiwai@suse.de>
-	<87jzvquzyr.wl-tiwai@suse.de>
-	<fb9db138-82a3-678c-bb94-035f923b3e16@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: MW7K7SSAG4S6YUKLDDFCRTML2THNBX2W
-X-Message-ID-Hash: MW7K7SSAG4S6YUKLDDFCRTML2THNBX2W
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=gNk17S/d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687787671; x=1719323671;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=UIOhw/+18cUbQ6mrRiXB9WS5HrjLqAxhhP6EGQM4t/0=;
+  b=gNk17S/dzQq6CUlTGQkMNJ6PXVvLTq/ttLbFWVAtsKYfy3xB2swWOU0O
+   Zk0osXTL5Kn7JpaxuNnZ56B0niN0zAbec5zES9m+9bm1fpCNXEDBMpsZq
+   r2qYXP01mF98C2i0tY0PPma2MCBVmQ7iPAqSD98IPdtWYeMXYqYWR3ZI4
+   WQzXgEik0bBkxo0q1B6tNtY0xITal2gj3OLk+M6aEPZszO5v8ja37qNGc
+   tm0Ok+UMwi6zbW4x4SPmvXb7/Ucg3ugs5LY1sQjSLgJI+bOMltw9toW3A
+   s2V9Cb3k2BLSLPp9/twVt8c0iJdL7Oa21PG1hc8OObB2lBGk30LUxhrIi
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="424942332"
+X-IronPort-AV: E=Sophos;i="6.01,159,1684825200";
+   d="scan'208";a="424942332"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jun 2023 06:54:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10753"; a="962761705"
+X-IronPort-AV: E=Sophos;i="6.01,159,1684825200";
+   d="scan'208";a="962761705"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199])
+ ([10.237.72.199])
+  by fmsmga006.fm.intel.com with ESMTP; 26 Jun 2023 06:54:19 -0700
+Message-ID: <da468fe6-709c-b6e6-159d-10f76d296307@linux.intel.com>
+Date: Mon, 26 Jun 2023 16:55:46 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.10.0
+Content-Language: en-US
+To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+ mathias.nyman@intel.com, perex@perex.cz, broonie@kernel.org,
+ lgirdwood@gmail.com, krzysztof.kozlowski+dt@linaro.org, agross@kernel.org,
+ Thinh.Nguyen@synopsys.com, bgoswami@quicinc.com, andersson@kernel.org,
+ robh+dt@kernel.org, gregkh@linuxfoundation.org, tiwai@suse.com
+Cc: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-usb@vger.kernel.org, quic_jackp@quicinc.com, quic_plai@quicinc.com
+References: <20230308235751.495-1-quic_wcheng@quicinc.com>
+ <20230308235751.495-2-quic_wcheng@quicinc.com>
+ <a45ff335-0563-85c7-3b31-d6ca23a54a3f@linux.intel.com>
+ <ed0397eb-da17-fbee-647e-f3a2a57577fe@quicinc.com>
+ <9f30e9f9-280e-b381-fecc-2a032c1117af@quicinc.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH v3 01/28] xhci: Add support to allocate several
+ interrupters
+In-Reply-To: <9f30e9f9-280e-b381-fecc-2a032c1117af@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: XEGSFD6NUBYSAUNU222FJ2XEX4WLFEWT
+X-Message-ID-Hash: XEGSFD6NUBYSAUNU222FJ2XEX4WLFEWT
+X-MailFrom: mathias.nyman@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -119,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MW7K7SSAG4S6YUKLDDFCRTML2THNBX2W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XEGSFD6NUBYSAUNU222FJ2XEX4WLFEWT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,76 +112,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 26 Jun 2023 15:32:40 +0200,
-Jaroslav Kysela wrote:
+On 24.6.2023 1.37, Wesley Cheng wrote:
+> Hi Mathias,
 > 
-> On 26. 06. 23 15:15, Takashi Iwai wrote:
-> > On Mon, 26 Jun 2023 13:13:21 +0200,
-> > Takashi Iwai wrote:
-> >> 
-> >> On Mon, 26 Jun 2023 13:09:00 +0200,
-> >> Jaroslav Kysela wrote:
-> >>> 
-> >>> On 26. 06. 23 13:02, Takashi Iwai wrote:
-> >>>> On Mon, 26 Jun 2023 09:56:47 +0200,
-> >>>> Jaroslav Kysela wrote:
-> >>>>> 
-> >>>>> On 26. 06. 23 9:33, Takashi Iwai wrote:
-> >>>>>> On Mon, 26 Jun 2023 09:31:18 +0200,
-> >>>>>> Tuo Li wrote:
-> >>>>>>> 
-> >>>>>>> 
-> >>>>>>> Hello,
-> >>>>>>> 
-> >>>>>>> Thank you for your reply!
-> >>>>>> 
-> >>>>>> FWIW, the simplest fix would be something like below, just extending
-> >>>>>> the mutex coverage.  But it'll serialize the all calls, so it might
-> >>>>>> influence on the performance, while it's the safest way.
-> >>>>> 
-> >>>>> It may be better to update total_pcm_alloc_bytes before
-> >>>>> snd_dma_alloc_dir_pages() call and decrease this value when allocation
-> >>>>> fails to allow parallel allocations. Then the mutex can be held only
-> >>>>> for the total_pcm_alloc_bytes variable update.
-> >>>> 
-> >>>> Yes, it'd work.  But a tricky part is that the actual allocation size
-> >>>> can be bigger, and we need to correct the total_pcm_alloc_bytes after
-> >>>> the allocation result.  So the end result would be a patch like below,
-> >>>> which is a bit more complex than the previous simpler approach.  But
-> >>>> it might be OK.
-> >>> 
-> >>> The patch looks good, but it may be better to move the "post" variable
-> >>> updates to an inline function (mutex lock - update - mutex unlock) for
-> >>> a better readability.
-> >> 
-> >> Sounds like a good idea.  Let me cook later.
-> > 
-> > ... and here it is.
-> > 
-> > If that looks OK, I'll submit a proper fix patch.
-> > 
-> > 
-> > thanks,
-> > 
-> > Takashi
-> > 
-> > --- a/sound/core/pcm_memory.c
-> > +++ b/sound/core/pcm_memory.c
-> > @@ -31,15 +31,41 @@ static unsigned long max_alloc_per_card = 32UL * 1024UL * 1024UL;
-> >   module_param(max_alloc_per_card, ulong, 0644);
-> >   MODULE_PARM_DESC(max_alloc_per_card, "Max total allocation bytes per card.");
-> >   +static void __update_allocated_size(struct snd_card *card,
-> > ssize_t bytes)
+> On 3/13/2023 1:32 PM, Wesley Cheng wrote:
+>> Hi Mathias,
+>>
+>> On 3/10/2023 7:07 AM, Mathias Nyman wrote:
+>>> On 9.3.2023 1.57, Wesley Cheng wrote:
+>>>> From: Mathias Nyman <mathias.nyman@linux.intel.com>
+>>>>
+>>>> Introduce xHCI APIs to allow for clients to allocate and free
+>>>> interrupters.  This allocates an array of interrupters, which is based on
+>>>> the max_interrupters parameter.  The primary interrupter is set as the
+>>>> first entry in the array, and secondary interrupters following after.
+>>>>
+>>>
+>>> I'm thinking about changing this offloading xHCI API
+>>> xhci should be aware and keep track of which devices and endpoints that
+>>> are offloaded to avoid device getting offloaded twice, avoid xhci driver
+>>> from queuing anything itself for these, and act properly if the offloaded
+>>> device or entire host is removed.
+>>>
+>>> So first thing audio side would need to do do is register/create an
+>>> offload entry for the device using the API:
+>>>
+>>> struct xhci_sideband *xhci_sideband_register(struct usb_device *udev)
+>>>
+>>> (xHCI specs calls offload sideband)
+>>> Then endpoints and interrupters can be added and removed from this
+>>> offload entry
+>>>
+>>> I have some early thoughts written as non-compiling code in:
+>>>
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git feature_interrupters
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
+>>>
+>>> Let me know what you think about this.
+>>>
+>>>> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+>>>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>>>
+>>> My Signed-off-by tag is being misused here.
+>>>
+>>> I wrote a chunk of the code in this patch as PoC that I shared in a separate topic branch.
+>>> It was incomplete and not intended for upstream yet. (lacked locking, several fixme parts, etc..)
+>>> The rest of the code in this patch is completely new to me.
+>>>
+>>
+>> Sorry about this.  I cherry picked the change directly from your branch, so it carried your signed off tag with it.  Will make to include them properly next time.
+>>
 > 
-> Missing inline ? May be also used for
+> I'm about ready to submit the next revision for this set of changes, and I was wondering how we should handle the changes you made on:
+> https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
 > 
-> > +static void update_allocated_size(struct snd_card *card, ssize_t bytes)
-> > +static void decrease_allocated_size(struct snd_card *card, size_t bytes)
+> I did make some modifications to some of the interrupter fixme tags you had, and also updated the xhci-sideband APIs with the proper logic.  I don't believe it is correct for me to submit a set of patches authored by you without your signed off tag. (checkpatch throws an error saying the author did not sign off on the change)
+> 
 
-I left the optimizations to compilers.  Usually they do inline if it
-makes sense, and it's often a more sensible choice.
+Note that the first patch "xhci: split allocate interrupter into separate alloacte and add parts"
+is already in usb-next on its way to 6.5
 
+Maybe Co-developed-by would work in this case, with a small explanation at the end of the commit message.
+Something like:
 
-thanks,
+Locking, DMA something and feataure x added by Wesley Cheng to
+complete original concept code by Mathias
 
-Takashi
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Co-developed-by: Wesley Cheng <quic_wcheng@quicinc.com>
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+
+Thanks
+-Mathias
+
