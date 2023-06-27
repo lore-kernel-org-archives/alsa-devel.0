@@ -4,116 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 508E4EB64D9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jun 2023 23:37:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 067FDEB64D9
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jun 2023 23:55:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E2F17F1;
-	Wed, 28 Jun 2023 01:36:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E2F17F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6B3F20C;
+	Wed, 28 Jun 2023 01:54:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6B3F20C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687909067;
-	bh=LW4ffYtAlOGdg70Xi/bJWSA+X43EWRN+IoxuhvnBfI8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=MfSr+rRb7nfWSBLcRIFN8oLlTr+0ggJFpjQscClDdUllvJbB/45kH8h0XUUFxaiRe
-	 JkV+ASiY9cbSbEKoqvAlT4DuGmAoh5+wetid/R2Vy3a2v9etdbHy9uTsERZjy9HT9B
-	 P3uC39UX54xuN5QJUNxdnd7KBt/zLbcKN6N/NmM0=
+	s=default; t=1687910140;
+	bh=FkP958FUPduMYVL43AeFsQvNf3op3XAxaRasfftbmig=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=VHa4n1pTQVXUjVtwE15au16CZn5+aA/WbYr6RYYJRLS/eheUY+HCm01u6QwMhf4fL
+	 qzg5neTlxV5MT3Ubk0GhQVg82+P8HX3n0QFVzfFmJNjI3TC+IoJnGm4dKruoGKCu4r
+	 0Rt0Okc8tYvPIdOKv+SiETeebAVoTK7n4nBw17K8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B89B8F80534; Wed, 28 Jun 2023 01:36:33 +0200 (CEST)
+	id 59C77F8027B; Wed, 28 Jun 2023 01:54:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61196F80246;
-	Wed, 28 Jun 2023 01:36:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0EB83F80246;
+	Wed, 28 Jun 2023 01:54:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 52458F80246; Wed, 28 Jun 2023 01:36:25 +0200 (CEST)
+	id 9C13FF80246; Wed, 28 Jun 2023 01:54:21 +0200 (CEST)
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F37FFF80169
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 01:36:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F37FFF80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id A74C4F80169
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 01:54:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A74C4F80169
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm2 header.b=lIlERPxv;
+ header.a=rsa-sha256 header.s=fm2 header.b=ZHHZ+ClN;
 	dkim=pass (2048-bit key,
  unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm2 header.b=K+Nxy0YO
+ header.a=rsa-sha256 header.s=fm2 header.b=EEsXm7Dx
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.west.internal (Postfix) with ESMTP id 352B13200914;
-	Tue, 27 Jun 2023 19:36:13 -0400 (EDT)
+	by mailout.west.internal (Postfix) with ESMTP id 784383200910;
+	Tue, 27 Jun 2023 19:54:13 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 27 Jun 2023 19:36:13 -0400
+  by compute1.internal (MEProxy); Tue, 27 Jun 2023 19:54:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm2; t=1687908972; x=
-	1687995372; bh=FAAyEM8Ly5PWnExbNv7ubvTfVH0QtKdzbHqCX13GAzg=; b=l
-	IlERPxvSpe39YUYHZnaOyWLv1s1k8zsvCBIJF5U+QY9ypB1nulA4rrRQznySXi9F
-	qdfWJsAvTgN6t0BvaYOzWOPPbmOWInG6rQvjz488L0nnC2x9zmtU2NQavD4tEi2i
-	Rb3uIGfNd9kGO5CtI//igdkti4n8ZIHZbtXi2z0oaQuRIkHYBb5eGoX9HgC/dZ8Y
-	QpnY8+I2yTJifPxmw5d/SbUMMaOQmV8lFKvjbsnyVKTFl74QsP5wxBbq62i+Ur/v
-	4wAngpX7Nd1j6bGiyNQIR7fij1u6yIwZXEjKvwBrTUgEOLRGwY4UolhxhEVS43Ph
-	D2ZEFbnX0IZFnM8mRZlXg==
+	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
+	:from:in-reply-to:message-id:mime-version:reply-to:sender
+	:subject:subject:to:to; s=fm2; t=1687910053; x=1687996453; bh=+i
+	LJcVYMKcSARNmROzcHiP4o7l8X4P/BgNXF/nQNUQc=; b=ZHHZ+ClNQUMqBz9yWM
+	53QtSS78riNAEPRY4aBgOdWNLrPdodVCsk8D0ZaJ0KJCaB2BLx8aq9/zFXnVyjXS
+	+7N4jvAxuScGH/bOQY3a3LorAQVg5AJhDRdM0Waq4/Tvgenxr7nXENrHLS6HmJP7
+	sqThSY1m+5iYyzlGYzEKe4fRlrG3AMT2c/bpTO//o5D5A8DaAlEKzH8bneAdU+8n
+	nqMdU9wdVF/yRVOdFJBl866defTR1BAYUSa053WsxBkViO8OQ1SQI6cV7JwDj6oe
+	/Gbe+yASL9GquNzpNnWDONe5zAc9bpSxb7tMGJF35KoBb8KuNbZvm1UUfEVJBhVX
+	/E6A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
 	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1687908972; x=1687995372; bh=FAAyEM8Ly5PWn
-	ExbNv7ubvTfVH0QtKdzbHqCX13GAzg=; b=K+Nxy0YOe7J0ueBKr1pqqeW2UurQ0
-	PN5DErctn5r4iiJoC+crmjrkbSPxmy5Tvi3f1W34dfOqKGhrMFqmxaT0z5FYZKoJ
-	lv/yqnPkn2C1KoSnqzTHfMF0LdEeGwdPy5kTZ1lnfe0Fn6iV9WOTKaMzABuYhv5k
-	pVWkoHZbzUwpSZVU57bLiqh9lwEMcBBGT9hxGf4HKX/cfRyYOFwi675NjoSh11J/
-	0ciYiwS4TO5tlCw4nOhSFm++NK/ITSoDOJ1m7am3/UR0f4bna6Bilp3o9PcWelfz
-	R6oY61zRJ4lcg+bdGBU81UZI266qAo71CM5Tm9R5+yc+PD3WSEeQlcc+Q==
-X-ME-Sender: <xms:bHKbZFL80QjAugbZ5EXFs64HpbxZ8FWkYBOpHeirjvWJxdrsZI3U3A>
-    <xme:bHKbZBI3qGle7beVPqY9-zmFwpnFOEhpKbBRxQqGr-otcPMkxyO6lkVIuoMmAUDJO
-    yGHqFFrOB29QKCMYlI>
+	:x-sasl-enc; s=fm2; t=1687910053; x=1687996453; bh=+iLJcVYMKcSAR
+	NmROzcHiP4o7l8X4P/BgNXF/nQNUQc=; b=EEsXm7DxADhLKQ+bvD96I4IE9MljB
+	+6aJC87uBFJEeFJLxuMo88OUN3FWpasimnvW7DDZnpwIoiAZODk0WIamObdTCXAO
+	jPEehl8aFW46YHKPuNeIICuBJiklTfJgYfHNGTkCr6aTa+4pc+BKx8QLpjeFtT01
+	9rGfktTRe+U536B0ToaVSzW71essO31gbV1pxVYcz/cXiqjTSZzkAGVkMJWpOIWv
+	fRSyVmRPTx6Fi8G9zDVk7Ftqz76MlyodGVXne5P86AbwFqgs6xuYmjnsxLcFAmHi
+	A5uu3QsiwaDa5dNmCRMl0YHr0epp//XpKRWWoEeHHJDyCntuEU5vAyT8Q==
+X-ME-Sender: <xms:pHabZJ-ZE_7xv0lQLjitn5Byrw_4F9SEje5sGyNPEgDTw_2w5ETKng>
+    <xme:pHabZNte55IxBT7Xdgxd4BS8N7coFDPXjjoYkitR1UXamFcfeLwncFPgPUiofjosq
+    4y1mhv3UeK6GnhlfcI>
 X-ME-Received: 
- <xmr:bHKbZNv2EXYyk_-3ER_W5GFYTFLqS_PtpA0q5amYEg0yPlMzMyW36S_-_8I447f7j9QolvfzjmElHN1CHp7YF0i30QLByTwUSZs>
+ <xmr:pHabZHB9AL-q-vP7DszuGzRvAc8rDrMGtykiD4ToJPT2VErjN-ZqIzFVvp7e2vc2CzGUPrBkWLI6NK3ur9WVNarK9xyAfcdIN6B3qld_a8dNbA>
 X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedviedrtddugddvgecutefuodetggdotefrodftvf
+ gggruggvucftvghtrhhoucdtuddrgedviedrtddugddvkecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
-    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
-    hpqeenucggtffrrghtthgvrhhnpeehhffhteetgfekvdeiueffveevueeftdelhfejieei
-    tedvleeftdfgfeeuudekueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:bHKbZGZJNiqFsXFwYPdeo91acXo6ieaA_nfP6S_l3gCi5vnkaPMBWw>
-    <xmx:bHKbZMaoWhl6zy0G8GQa_1yECBsCFh0-0glVW375saVkrlgCcHQkuQ>
-    <xmx:bHKbZKBcqgqSvureY-vlQ4CjXN8FPgb15p7YnissYGbkOl4EhxGR8w>
-    <xmx:bHKbZLxd7odaSe15pixMn6AKZDz_pdu-QhKYxrfGavYkQfKLHgw8oA>
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
+    dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
+    ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepffdvueelffevke
+    duhfetjeduffeghfettdfguedtgfdvgfeufeduheevheevkeeknecuvehluhhsthgvrhfu
+    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkh
+    grmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:pHabZNd0C8xctbn0JlKWNPqXeXbXW53CoxxoD5jxTck-m4D3ItAsRQ>
+    <xmx:pHabZOOtUZCB5zYmg2hs-ekUSaTZHSUmGeqBLpToC7FyqyH7tDENdA>
+    <xmx:pHabZPmXK30bnUBGF2ZAugfFHpTBQ9dHoxboFtG75dfGQ8ufhyY2Zw>
+    <xmx:pXabZIXYdcZavBQ759BfgXgwdMRnx_zmTUGy_WJkvkcDGEbCDh7Ciw>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Jun 2023 19:36:09 -0400 (EDT)
-Date: Wed, 28 Jun 2023 08:36:04 +0900
+ 27 Jun 2023 19:54:11 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ALSA: oxfw: make read-only const array models
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: fireface: make read-only const array for model names
  static
-Message-ID: <20230627233604.GA278863@workstation.local>
-Mail-Followup-To: Colin Ian King <colin.i.king@gmail.com>,
-	Clemens Ladisch <clemens@ladisch.de>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-References: <20230627113253.700065-1-colin.i.king@gmail.com>
+Date: Wed, 28 Jun 2023 08:54:06 +0900
+Message-Id: <20230627235406.289970-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230627113253.700065-1-colin.i.king@gmail.com>
-Message-ID-Hash: QILGCXRC4BCTH537T43766F5MAIXT3H6
-X-Message-ID-Hash: QILGCXRC4BCTH537T43766F5MAIXT3H6
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: GSI6PALXGRQF5SOIYICEZCMLI2HM7EL3
+X-Message-ID-Hash: GSI6PALXGRQF5SOIYICEZCMLI2HM7EL3
 X-MailFrom: o-takashi@sakamocchi.jp
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -126,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QILGCXRC4BCTH537T43766F5MAIXT3H6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GSI6PALXGRQF5SOIYICEZCMLI2HM7EL3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,40 +124,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+It is preferable not to populate the constant array for constant strings
+on the stack.
 
-On Tue, Jun 27, 2023 at 12:32:53PM +0100, Colin Ian King wrote:
-> Don't populate the const array on the stack, instead make it static.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  sound/firewire/oxfw/oxfw.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-> index 9523479fa94a..63d40f1a914f 100644
-> --- a/sound/firewire/oxfw/oxfw.c
-> +++ b/sound/firewire/oxfw/oxfw.c
-> @@ -44,7 +44,7 @@ struct compat_info {
->  
->  static bool detect_loud_models(struct fw_unit *unit)
->  {
-> -	const char *const models[] = {
-> +	static const char *const models[] = {
->  		"Onyxi",
->  		"Onyx-i",
->  		"Onyx 1640i",
-> -- 
-> 2.39.2
- 
-Indeed. It is preferable.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/fireface/ff.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
+index 82241058ea14..6e84e4787259 100644
+--- a/sound/firewire/fireface/ff.c
++++ b/sound/firewire/fireface/ff.c
+@@ -16,7 +16,7 @@ MODULE_LICENSE("GPL");
+ static void name_card(struct snd_ff *ff)
+ {
+ 	struct fw_device *fw_dev = fw_parent_device(ff->unit);
+-	const char *const names[] = {
++	static const char *const names[] = {
+ 		[SND_FF_UNIT_VERSION_FF800]	= "Fireface800",
+ 		[SND_FF_UNIT_VERSION_FF400]	= "Fireface400",
+ 		[SND_FF_UNIT_VERSION_UFX]	= "FirefaceUFX",
+-- 
+2.39.2
 
-I found that ALSA fireface driver includes the similar issue. I'll send a
-patch to fix it later.
-
-
-Thanks
-
-Takashi Sakamoto
