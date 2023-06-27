@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF2F9EB64DD
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jun 2023 16:27:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A7ABEB64D9
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jun 2023 16:27:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 248D8845;
-	Tue, 27 Jun 2023 18:26:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 248D8845
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4608839;
+	Tue, 27 Jun 2023 18:26:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4608839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687883239;
-	bh=qMPr5ji7TxiW7p+3tmhmdQkl5/eI9UsztKpO6YmgD0s=;
+	s=default; t=1687883253;
+	bh=uE+UU1PMQNBYsYkBYV409QKnIYIcTBQRlTvAYK5pYKY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OAgoo6fT/4e8Qnpxi2Yb18hiih3icXfjUY3oHTxSGnVip5z5Vn7y58QuEEY/jvt54
-	 8eZ/fG1KQc2J0HBphtAknKvWho//8zRym7HILggCmOWCUwEEA7UH3SVn3tEKEgj6rJ
-	 nEeZU5glH1b7hIb6yv4nk45Qc/SdVlrKOPeZEQhE=
+	b=H78K1zyvISKzHD6lSEYL9CUN6L1YbB7FNhKRQXoQikZ8fXava222yLyZ+L+5M4PJn
+	 uwIbLcVTGOsTyiGwYtiG8JPrrR5UIqMJEzsNGRPlDishoQQeYbsIpjPTKadXDTpSe+
+	 CqlL+j6mL8H1O/Z9gxriRjRZUOHFyLXzqWQiBKVs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5D285F8057F; Tue, 27 Jun 2023 18:25:04 +0200 (CEST)
+	id 39110F805C7; Tue, 27 Jun 2023 18:25:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D269FF805A8;
-	Tue, 27 Jun 2023 18:25:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8C5CF805C5;
+	Tue, 27 Jun 2023 18:25:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5B303F80212; Tue, 27 Jun 2023 18:24:58 +0200 (CEST)
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
- [IPv6:2a00:1450:4864:20::133])
+	id 9BBA2F805B2; Tue, 27 Jun 2023 18:25:08 +0200 (CEST)
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
+ [IPv6:2a00:1450:4864:20::136])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7980EF80212
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2023 18:24:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7980EF80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id 126EBF80093
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2023 18:24:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 126EBF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=pc1ltOmR
-Received: by mail-lf1-x133.google.com with SMTP id
- 2adb3069b0e04-4f86e6e4038so42079e87.0
+ header.s=google header.b=BOVVvXqN
+Received: by mail-lf1-x136.google.com with SMTP id
+ 2adb3069b0e04-4f875b267d9so6781293e87.1
         for <alsa-devel@alsa-project.org>;
- Tue, 27 Jun 2023 09:24:42 -0700 (PDT)
+ Tue, 27 Jun 2023 09:24:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687883080; x=1690475080;
+        d=linaro.org; s=google; t=1687883090; x=1690475090;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ay5CzniySnwEMooKVt/XOy1z9VfFqB2Jhn8qIwDw2AU=;
-        b=pc1ltOmRM0YZYgZOi+g3p1/3rAqT0Q/AYh4yLt+KniBs5IdXvrwjPGmMqK5YTbxCnB
-         xFEa8f8eSouuMDsImmQbpOi4CFsZHRb8dMe/581qn6WRKlbvVBluGK+Y5MKQcgRs3jyK
-         0+p5RGW7p3bRBXvPM8s4iuiQJNtshbGS/jLgyHx8cKj4ro3LcucpEI+do6hqQmszEKla
-         wN0hmUFciYaVoom4FsMVkpXFEkOUNjvK0xP8Zh9+bG8iCLzLdr4pI/Dr2moQcBAR60HO
-         6qEFUf332HQDNFd6rdGLwBoEPrVYnH8l5iQJgFvcgGbf1VwyQHndGiRD//DXcMCVcw7F
-         lu4A==
+        bh=ctd6NThpx69jPylUbb4gptRsxME69SX4+Gzv2K70VRo=;
+        b=BOVVvXqNrZIAQGOBdv707QC8EQ5sHi6gmFvrnAlotB+9fchHS1X9Ykle6oSU66Ffij
+         DSlIk7VYigcKJbM6QpT5dUXTNWkCHdu2cVB4qYJqj415lMisiZAGIH107dOnSAxbkgV2
+         zhXOYVsgGQbU8adZTfxsZNOBEoHoYdeEjPB2uVNsWD5VVxDJMlpS31WXF66y2sYK5MYl
+         +HTIC46yh7dfpvVJblamv2+Pa8MoExmgFz4wXCsdLttegxqnWR+CKQVmFYqz/RgAaGtR
+         2E48YTCLonYoBdTMPq0+/K9pOKHuqf8wtsEHJNOjDmQX54Z5nbZ1xy/c4XItBeBLXWSP
+         Hseg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687883080; x=1690475080;
+        d=1e100.net; s=20221208; t=1687883090; x=1690475090;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ay5CzniySnwEMooKVt/XOy1z9VfFqB2Jhn8qIwDw2AU=;
-        b=MbFNy48KBjrZIH4yBq6vL4ncG+TM62HzFcNu/DxA3dVppW3E76WUYX531V6pKHikL4
-         /08uA6V3Tw1836t+cv5HuvA7jQrKhqme5c3AfF/m31oOhjIAt9BPrU3bUO067VoopH5N
-         T0G2LclvuG31VwbjJfYwGlEJ/TvWS1RyoVZEuwHrvXDLXCmpnybA77Q1PXhd7PqfPMEO
-         krrFSUwwfqbeei7Z+r7WNEqq3VkTueTcuKql0dJ1XMFVfHdYQCCCpvPxj5GWMXUAWV6i
-         yrs9D+SNDtlOgKJPX0IiFQTb1aR7WSW4inXt/5jFOlGN/DxFCyxce3+z1c/LmYhmblJl
-         LDiA==
-X-Gm-Message-State: AC+VfDwIqZF6hCT/zw3FTjQbAuSX/NTnyw7SVv9iSeB2pgqPj7NL/+Ib
-	tooaX0XSrO3NbuT8ZRsDtbRSMg==
+        bh=ctd6NThpx69jPylUbb4gptRsxME69SX4+Gzv2K70VRo=;
+        b=mEoyBaIbEWREf6HRd4h/Eh/mCb/IxSoHqlonlOow9mT46V429HACNKm3cfeyt5FW8w
+         8zytJFCQmCoT40olOD06vS/fxJdruOQYKrY/JcLA2KyjAoJ/4fjWDsSGum2YJvZABPIy
+         buHMJQrrR0/z8VeuSXs/kcGSbYvtTUl+eGfa8bp1DGiy+k/hqitUmrNG4cGJOunVQw0M
+         YLRLZnvSrx9nC1lkqqpnaEq59kH1kNDf0cSxW4bvWO4RxSs0SGLvHrpOGvuz7TqbdarY
+         8tl+qgDB0DOzbh/DJOH9KJa8OM6gOZZYHRVs+h0OcQVAvrtBehFGtTFh7W3uoZkeYG+A
+         EYGQ==
+X-Gm-Message-State: AC+VfDxyKYobtD7Edu/vKgDdBYAZQClCPjufyo5UxjEYa81Kr3143nmp
+	htWkKJqX+HwCKDQGs5qNLXEvTQ==
 X-Google-Smtp-Source: 
- ACHHUZ49YzKh1xHFKDTfmdAfCT+y7MRWyFEMO2kfF9W5tFQkv+4/HgwK3Tei8g4VbO1JOR8V88J7fg==
-X-Received: by 2002:a19:4354:0:b0:4f9:56b8:45e5 with SMTP id
- m20-20020a194354000000b004f956b845e5mr6207966lfj.25.1687883080136;
-        Tue, 27 Jun 2023 09:24:40 -0700 (PDT)
+ ACHHUZ7/IsrAYYJ83qNIX85WmUB8XQr3Dyw8YmG60/Pgj6ZfFtoyl/nbnCy5K9y/GyUuCqUq4R2nlg==
+X-Received: by 2002:a05:6512:1584:b0:4f8:710c:e2c7 with SMTP id
+ bp4-20020a056512158400b004f8710ce2c7mr13974676lfb.33.1687883090060;
+        Tue, 27 Jun 2023 09:24:50 -0700 (PDT)
 Received: from [192.168.1.101] (abxj103.neoplus.adsl.tpnet.pl. [83.9.3.103])
         by smtp.gmail.com with ESMTPSA id
- g7-20020a19ac07000000b004fb259a5589sm1190508lfc.104.2023.06.27.09.24.37
+ g7-20020a19ac07000000b004fb259a5589sm1190508lfc.104.2023.06.27.09.24.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jun 2023 09:24:39 -0700 (PDT)
+        Tue, 27 Jun 2023 09:24:49 -0700 (PDT)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Tue, 27 Jun 2023 18:24:17 +0200
-Subject: [PATCH 01/11] arm64: dts: qcom: sc7180: Fix DSI0_PHY reg-names
+Date: Tue, 27 Jun 2023 18:24:21 +0200
+Subject: [PATCH 05/11] dt-bindings: sound: Convert pm8916-wcd-analog-codec
+ to YAML
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230627-topic-more_bindings-v1-1-6b4b6cd081e5@linaro.org>
+Message-Id: <20230627-topic-more_bindings-v1-5-6b4b6cd081e5@linaro.org>
 References: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
 In-Reply-To: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
 To: cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>,
@@ -120,15 +121,15 @@ Cc: Marijn Suijten <marijn.suijten@somainline.org>,
  Andy Gross <andy.gross@linaro.org>,
  Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1687883074; l=941;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1687883074; l=9977;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=qMPr5ji7TxiW7p+3tmhmdQkl5/eI9UsztKpO6YmgD0s=;
- b=MbgNEkJ4ywd3Nj8Je7BLfi3S0Ws+2ZSlBsN3swV7U0MpdhsVAYIeNsR07In2pvGOe8Wu+U3MD
- PgOYyCpmXUMAqmmRQTd/MAr5w0NCcApsYpskUCP32H0enI9VrE0eLfz
+ bh=uE+UU1PMQNBYsYkBYV409QKnIYIcTBQRlTvAYK5pYKY=;
+ b=ylbQz6shMjx5lnxaRBjhrP3JWvzCQM5oZnlXR3bVaBTrtloCKKp5Ahu9D93lKetS3VtOSvBGd
+ bnHc4HJs/T0C/ycfLYk2PP7QKWRsGStWE6uvvRwzgbDcFZbYWNRUi8Q
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-Message-ID-Hash: UG7JHVZ4QSRGUWLBF7XDLYMSE5YKNKRX
-X-Message-ID-Hash: UG7JHVZ4QSRGUWLBF7XDLYMSE5YKNKRX
+Message-ID-Hash: Y2XGE2UDDQW4FJQT5KWDA2WDBTN3SICM
+X-Message-ID-Hash: Y2XGE2UDDQW4FJQT5KWDA2WDBTN3SICM
 X-MailFrom: konrad.dybcio@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -141,7 +142,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UG7JHVZ4QSRGUWLBF7XDLYMSE5YKNKRX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y2XGE2UDDQW4FJQT5KWDA2WDBTN3SICM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -150,30 +151,287 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Commit 2b616f86d51b ("arm64: dts: qcom: sc7180: rename labels for DSI
-nodes") broke reg-names, possibly with search-and-replace. Fix it.
+Convert the PM8916 analog WCD codec bindings to YAML.
 
-Fixes: 2b616f86d51b ("arm64: dts: qcom: sc7180: rename labels for DSI nodes")
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../bindings/sound/qcom,msm8916-wcd-analog.txt     | 101 -------------
+ .../sound/qcom,pm8916-wcd-analog-codec.yaml        | 160 +++++++++++++++++++++
+ 2 files changed, 160 insertions(+), 101 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 34eff97f8630..b9640574e73b 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -3120,8 +3120,8 @@ mdss_dsi0_phy: phy@ae94400 {
- 				reg = <0 0x0ae94400 0 0x200>,
- 				      <0 0x0ae94600 0 0x280>,
- 				      <0 0x0ae94a00 0 0x1e0>;
--				reg-names = "dsi0_phy",
--					    "dsi0_phy_lane",
-+				reg-names = "dsi_phy",
-+					    "dsi_phy_lane",
- 					    "dsi_pll";
- 
- 				#clock-cells = <1>;
+diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
+deleted file mode 100644
+index e7d17dda55db..000000000000
+--- a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
++++ /dev/null
+@@ -1,101 +0,0 @@
+-msm8916 analog audio CODEC
+-
+-Bindings for codec Analog IP which is integrated in pmic pm8916,
+-
+-## Bindings for codec core on pmic:
+-
+-Required properties
+- - compatible = "qcom,pm8916-wcd-analog-codec";
+- - reg: represents the slave base address provided to the peripheral.
+- - interrupts: List of interrupts in given SPMI peripheral.
+- - interrupt-names: Names specified to above list of interrupts in same
+-		    order. List of supported interrupt names are:
+-  "cdc_spk_cnp_int" - Speaker click and pop interrupt.
+-  "cdc_spk_clip_int" - Speaker clip interrupt.
+-  "cdc_spk_ocp_int" - Speaker over current protect interrupt.
+-  "mbhc_ins_rem_det1" - jack insert removal detect interrupt 1.
+-  "mbhc_but_rel_det" - button release interrupt.
+-  "mbhc_but_press_det" - button press event
+-  "mbhc_ins_rem_det" - jack insert removal detect interrupt.
+-  "mbhc_switch_int"	- multi button headset interrupt.
+-  "cdc_ear_ocp_int" - Earphone over current protect interrupt.
+-  "cdc_hphr_ocp_int" - Headphone R over current protect interrupt.
+-  "cdc_hphl_ocp_det" - Headphone L over current protect interrupt.
+-  "cdc_ear_cnp_int" - earphone cnp interrupt.
+-  "cdc_hphr_cnp_int" - hphr click and pop interrupt.
+-  "cdc_hphl_cnp_int" - hphl click and pop interrupt.
+-
+- - clocks: Handle to mclk.
+- - clock-names: should be "mclk"
+- - vdd-cdc-io-supply: phandle to VDD_CDC_IO regulator DT node.
+- - vdd-cdc-tx-rx-cx-supply: phandle to VDD_CDC_TX/RX/CX regulator DT node.
+- - vdd-micbias-supply: phandle of VDD_MICBIAS supply's regulator DT node.
+-
+-Optional Properties:
+- - qcom,mbhc-vthreshold-low: Array of 5 threshold voltages in mV for 5 buttons
+-			     detection on headset when the mbhc is powered up
+-			     by internal current source, this is a low power.
+- - qcom,mbhc-vthreshold-high: Array of 5 thresold voltages in mV for 5 buttons
+-			      detection on headset when mbhc is powered up
+-			       from micbias.
+-- qcom,micbias-lvl:  Voltage (mV) for Mic Bias
+-- qcom,hphl-jack-type-normally-open: boolean, present if hphl pin on jack is a
+-				     NO (Normally Open). If not specified, then
+-				     its assumed that hphl pin on jack is NC
+-				     (Normally Closed).
+-- qcom,gnd-jack-type-normally-open: boolean, present if gnd pin on jack is
+-				    NO (Normally Open). If not specified, then
+-				    its assumed that gnd pin on jack is NC
+-				    (Normally Closed).
+-- qcom,micbias1-ext-cap: boolean, present if micbias1 has external capacitor
+-			 connected.
+-- qcom,micbias2-ext-cap: boolean, present if micbias2 has external capacitor
+-			 connected.
+-
+-Example:
+-
+-spmi_bus {
+-	...
+-	audio-codec@f000{
+-		compatible = "qcom,pm8916-wcd-analog-codec";
+-		reg = <0xf000 0x200>;
+-		reg-names = "pmic-codec-core";
+-		clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
+-		clock-names = "mclk";
+-		qcom,mbhc-vthreshold-low = <75 150 237 450 500>;
+-		qcom,mbhc-vthreshold-high = <75 150 237 450 500>;
+-		interrupt-parent = <&spmi_bus>;
+-		interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
+-			     <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
+-			     <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
+-			     <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
+-			     <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
+-			     <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
+-			     <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
+-			     <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
+-			     <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
+-			     <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
+-			     <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
+-			     <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
+-			     <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
+-			     <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
+-		interrupt-names = "cdc_spk_cnp_int",
+-				  "cdc_spk_clip_int",
+-				  "cdc_spk_ocp_int",
+-				  "mbhc_ins_rem_det1",
+-				  "mbhc_but_rel_det",
+-				  "mbhc_but_press_det",
+-				  "mbhc_ins_rem_det",
+-				  "mbhc_switch_int",
+-				  "cdc_ear_ocp_int",
+-				  "cdc_hphr_ocp_int",
+-				  "cdc_hphl_ocp_det",
+-				  "cdc_ear_cnp_int",
+-				  "cdc_hphr_cnp_int",
+-				  "cdc_hphl_cnp_int";
+-	               vdd-cdc-io-supply = <&pm8916_l5>;
+-	               vdd-cdc-tx-rx-cx-supply = <&pm8916_l5>;
+-	               vdd-micbias-supply = <&pm8916_l13>;
+-	               #sound-dai-cells = <1>;
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml b/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
+new file mode 100644
+index 000000000000..c385028c4296
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
+@@ -0,0 +1,160 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/qcom,pm8916-wcd-analog-codec.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm PM8916 WCD Analog Audio Codec
++
++maintainers:
++  - Konrad Dybcio <konradybcio@kernel.org>
++
++description:
++  The analog WCD audio codec found on Qualcomm PM8916 PMIC.
++
++properties:
++  compatible:
++    const: qcom,pm8916-wcd-analog-codec
++
++  reg:
++    maxItems: 1
++
++  reg-names:
++    items:
++      - const: pmic-codec-core
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: mclk
++
++  interrupts:
++    maxItems: 14
++
++  interrupt-names:
++    items:
++      - const: cdc_spk_cnp_int
++      - const: cdc_spk_clip_int
++      - const: cdc_spk_ocp_int
++      - const: mbhc_ins_rem_det1
++      - const: mbhc_but_rel_det
++      - const: mbhc_but_press_det
++      - const: mbhc_ins_rem_det
++      - const: mbhc_switch_int
++      - const: cdc_ear_ocp_int
++      - const: cdc_hphr_ocp_int
++      - const: cdc_hphl_ocp_det
++      - const: cdc_ear_cnp_int
++      - const: cdc_hphr_cnp_int
++      - const: cdc_hphl_cnp_int
++
++  vdd-cdc-io-supply:
++    description: 1.8V buck supply
++
++  vdd-cdc-tx-rx-cx-supply:
++    description: 1.8V SIDO buck supply
++
++  vdd-micbias-supply:
++    description: micbias supply
++
++  qcom,mbhc-vthreshold-low:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description:
++      Array of 5 threshold voltages in mV for 5-button detection on
++      headset when MBHC is powered by an internal current source.
++    minItems: 5
++    maxItems: 5
++
++  qcom,mbhc-vthreshold-high:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description:
++      Array of 5 threshold voltages in mV for 5-button detection on
++      headset when MBHC is powered from micbias.
++    minItems: 5
++    maxItems: 5
++
++  qcom,micbias-lvl:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Voltage (mV) for Mic Bias
++
++  qcom,hphl-jack-type-normally-open:
++    type: boolean
++    description:
++      True if the HPHL pin on the jack is NO (Normally Open), false if it's
++      NC (Normally Closed).
++
++  qcom,gnd-jack-type-normally-open:
++    type: boolean
++    description:
++      True if the GND pin on the jack is NO (Normally Open), false if it's
++      NC (Normally Closed).
++
++  qcom,micbias1-ext-cap:
++    type: boolean
++    description:
++      True if micbias1 has an external capacitor.
++
++  qcom,micbias2-ext-cap:
++    type: boolean
++    description:
++      True if micbias2 has an external capacitor.
++
++  "#sound-dai-cells":
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,gcc-msm8916.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    audio-codec@f000{
++      compatible = "qcom,pm8916-wcd-analog-codec";
++      reg = <0xf000 0x200>;
++      reg-names = "pmic-codec-core";
++      clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
++      clock-names = "mclk";
++      qcom,mbhc-vthreshold-low = <75 150 237 450 500>;
++      qcom,mbhc-vthreshold-high = <75 150 237 450 500>;
++      interrupt-parent = <&spmi_bus>;
++      interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
++            <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
++            <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
++            <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
++            <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
++            <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
++            <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
++            <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
++            <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
++            <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
++            <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
++            <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
++            <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
++            <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
++      interrupt-names = "cdc_spk_cnp_int",
++                        "cdc_spk_clip_int",
++                        "cdc_spk_ocp_int",
++                        "mbhc_ins_rem_det1",
++                        "mbhc_but_rel_det",
++                        "mbhc_but_press_det",
++                        "mbhc_ins_rem_det",
++                        "mbhc_switch_int",
++                        "cdc_ear_ocp_int",
++                        "cdc_hphr_ocp_int",
++                        "cdc_hphl_ocp_det",
++                        "cdc_ear_cnp_int",
++                        "cdc_hphr_cnp_int",
++                        "cdc_hphl_cnp_int";
++      vdd-cdc-io-supply = <&pm8916_l5>;
++      vdd-cdc-tx-rx-cx-supply = <&pm8916_l5>;
++      vdd-micbias-supply = <&pm8916_l13>;
++      #sound-dai-cells = <1>;
++    };
 
 -- 
 2.41.0
