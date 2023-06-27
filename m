@@ -4,91 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF212EB64D9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jun 2023 16:28:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A92B2EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jun 2023 16:29:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B247DA4E;
-	Tue, 27 Jun 2023 18:27:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B247DA4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28F46DEB;
+	Tue, 27 Jun 2023 18:28:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28F46DEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687883329;
-	bh=lErWU6dobB0XeId/RGdHSYC+Fh+f5HQU6i/ZQfWoHV4=;
+	s=default; t=1687883352;
+	bh=dxmGowAABZGGJvN38BvE9OivxrhsE/2mFCf47Qi+lvI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OGZqdzCOTP9rVtU7viVMgZ6RzC0aW2aOHyJQipXlaa34SHl6seXriMrmGMqssG4dg
-	 WkOeCtUwZW4CJrv7htSCcSp3fGUF5KG4UNuJWOwA6Rv1eadxeM/kSTLZb2963BStsM
-	 s9XXb5DBjyteqlofdCffCCl7Q1/WXEkdpFXlW9M4=
+	b=LcrACNtf7BXIk7w+Peo5Y4t4ZBx7RVQepZe28ql+NiWAdsWVq21Np5p+Hwlb8fyy6
+	 J/iWdEaGlvlXhAAyhUZ+PAN2SJ2AMPPhZWpJuoVx2nLmgvy5FehYszCbwUxTBizn6J
+	 PAUSYdoPv5y9PEign63yPaGJL84WnsbFpv+c1GSk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9DB2EF80246; Tue, 27 Jun 2023 18:27:25 +0200 (CEST)
+	id A0FABF80579; Tue, 27 Jun 2023 18:27:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8557F80553;
-	Tue, 27 Jun 2023 18:27:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADDD2F80567;
+	Tue, 27 Jun 2023 18:27:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 868FDF80093; Tue, 27 Jun 2023 18:27:18 +0200 (CEST)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
- [IPv6:2a00:1450:4864:20::136])
+	id 528CBF80431; Tue, 27 Jun 2023 18:27:19 +0200 (CEST)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
+ [IPv6:2a00:1450:4864:20::12d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 01DB5F80246
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2023 18:24:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01DB5F80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id E4573F80564
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2023 18:24:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4573F80564
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=gPQ+01eM
-Received: by mail-lf1-x136.google.com with SMTP id
- 2adb3069b0e04-4fa08687246so4695107e87.1
+ header.s=google header.b=wT4UzEMp
+Received: by mail-lf1-x12d.google.com with SMTP id
+ 2adb3069b0e04-4f865f0e16cso6560288e87.3
         for <alsa-devel@alsa-project.org>;
- Tue, 27 Jun 2023 09:24:54 -0700 (PDT)
+ Tue, 27 Jun 2023 09:24:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687883092; x=1690475092;
+        d=linaro.org; s=google; t=1687883095; x=1690475095;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=apFUalLZyQqWq0aQwYgxypM+yPAfzDeJRJiPTT9OzgQ=;
-        b=gPQ+01eM8GOGBERecL3B/NIxhQbrVmrrFXxYZiCCONOF7/F61cH5oZ4S7PViK0H9X3
-         yXr/dkivL6tpoBinlyPIzXzeVhamwTu8Oo4+oDsjDo9mxhFy9Kp7iTj9zqBShJlvW5Sr
-         3XZeOtU4fWRTMlxkBRNd1kkaaCf27QvN1bclNG3WoJmKIpIgQhZ03uKOPZvd7hIT0PGY
-         azP7RD8WQQxDUWPpOCyYB/heKlw/sQWav43VkZQQ4ykMqIbGoZPA/wnM17Ra7uPnIX5m
-         nrtp2FldB8AQvrSjYItV9pKqMHKA5lejbTU0yr8PwlU1APcwlIwpaSCeeMY7VuNPD0vN
-         kayw==
+        bh=xPNg5vny77tvK7IJAfh5JkOu6WowF9wjESyOAY+a1Tg=;
+        b=wT4UzEMp3D2z+CEciSOj2hOqJZY5IsO6ESwlLi6JpPKPVleeLPbEYQowD4j6ugDDWT
+         Xsekoq3dAMFIe2qSha7QD5qXwQK7uvTB6BiLhhzYloSKH2DUuxfYiK6ynHQf2ri1d2c1
+         Yia2iEKdlcVgPDQx2b9Z8S09tPtYnMMz4koijj0kOEogFOMnrkkPJthflCOJDrz34rZ5
+         VwnYMEmbL3YNE8ElBGdgiBCOyXavqYtRbS4Z6W3D5oGCPCTo//ykefDkMq0NfHPVL3Zs
+         /WmtNQzYvKoXfJ6zYDHEJ1lCyAJ49i1gWKSv1N2fqbVfHVreFhWFLTVqIFYR6dTTqWOv
+         B+hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687883092; x=1690475092;
+        d=1e100.net; s=20221208; t=1687883095; x=1690475095;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=apFUalLZyQqWq0aQwYgxypM+yPAfzDeJRJiPTT9OzgQ=;
-        b=EafwZco3OPmaRCB+EgWRbfICFfNbtYsg5K3ja5RZMDMnZBryOU4P+zB+kQxHzkMwdR
-         zI+eEKWyiErLLaxeHEiK5J0iutkSjgEKZLr5lzHtqbMRjUg2nKlPyQ04UfjTIFoPNZ7W
-         4BG6OVSLtX196SidfZyBDig1n019ot9gZ/Z87dBXcptz1c+YvMLubRZ1feSyDKX5HWIe
-         LRs6xeW/wSIerknj1GvEQorMCzyMur2kaZUnrJdGufLjcz5uXjNcpUP4e+Rt6gNjs1oh
-         POjahmzz4QWjuPZcTSirMPko9WljDmRwYwLQqey8xe4bJMyEEm2/Oy26LFgG9kd68xgn
-         pccw==
-X-Gm-Message-State: AC+VfDyKXOYripwNqr7Vel0lLn7pcVwcopdFRcdkzs4FYV56cTEzSFON
-	ByJFSl4zUg6UUlfPyGqAc1nn8Q==
+        bh=xPNg5vny77tvK7IJAfh5JkOu6WowF9wjESyOAY+a1Tg=;
+        b=kgSj32S96qr2EOZtxXeLH0RDmX5nKJ5aNAGwQDnHkB2mKwmoO97Kcw3epEp/9mK7IX
+         89H9EK6k3I+pH/pAJaqNF2Ww2g+kD1Hcbm7zmmco+2Lkwzax3ZuGYA1FiUzmvmsFtkBK
+         11T6t40SQMtPLV+kNaqWcmqn0S56I454jHxZP8ljxSkjXrZlOHYg0j6EPADQ3naR4TV+
+         7Uv4pb2nDZon/pMfHIIsGJBjxRMl5qd1pSkqP52GPu0FunIpl6bV1Ty7oZxo8CV8jIUp
+         qJfo4T5Rzvj960TjboMl/neWCT5CPvwtJ5cxB0Wnwt/KjKkY/s+kM1gV7j1qF0DXN8EV
+         96mw==
+X-Gm-Message-State: AC+VfDx4WkDsQUUb1gNs3cKoZHlS9nZAUxXsN12xB24ZbNw1yzw+rVqp
+	U2eH7nm4WcEok0GhlB/nEQwDbw==
 X-Google-Smtp-Source: 
- ACHHUZ4atKHp3LY0BnQtuVG83sCZJ0bHCYAJTWN9stucrksa1utFdi1jhZ+5jdferRA74CWyuyxYjw==
-X-Received: by 2002:a05:6512:234a:b0:4f9:607a:6508 with SMTP id
- p10-20020a056512234a00b004f9607a6508mr11552003lfu.50.1687883092611;
-        Tue, 27 Jun 2023 09:24:52 -0700 (PDT)
+ ACHHUZ5//rTUoalDl1QqK0Ki39B5TbO1+DYtkIbMhpfMKaAAAhwU2SHZDezjmb3zz2NxqSeNX+6TzQ==
+X-Received: by 2002:a05:6512:2824:b0:4fb:7888:7e6d with SMTP id
+ cf36-20020a056512282400b004fb78887e6dmr4544050lfb.46.1687883095019;
+        Tue, 27 Jun 2023 09:24:55 -0700 (PDT)
 Received: from [192.168.1.101] (abxj103.neoplus.adsl.tpnet.pl. [83.9.3.103])
         by smtp.gmail.com with ESMTPSA id
- g7-20020a19ac07000000b004fb259a5589sm1190508lfc.104.2023.06.27.09.24.50
+ g7-20020a19ac07000000b004fb259a5589sm1190508lfc.104.2023.06.27.09.24.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jun 2023 09:24:52 -0700 (PDT)
+        Tue, 27 Jun 2023 09:24:54 -0700 (PDT)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Tue, 27 Jun 2023 18:24:22 +0200
-Subject: [PATCH 06/11] dt-bindings: mfd: qcom,spmi-pmic: Reference pm8916
- wcd analog codec schema
+Date: Tue, 27 Jun 2023 18:24:23 +0200
+Subject: [PATCH 07/11] dt-bindings: iommu: qcom_iommu: Allow 'tbu' clock
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230627-topic-more_bindings-v1-6-6b4b6cd081e5@linaro.org>
+Message-Id: <20230627-topic-more_bindings-v1-7-6b4b6cd081e5@linaro.org>
 References: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
 In-Reply-To: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
 To: cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>,
@@ -121,15 +120,15 @@ Cc: Marijn Suijten <marijn.suijten@somainline.org>,
  Andy Gross <andy.gross@linaro.org>,
  Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1687883074; l=878;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1687883074; l=1161;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=lErWU6dobB0XeId/RGdHSYC+Fh+f5HQU6i/ZQfWoHV4=;
- b=UL8UOKYocMxpJYoe0YJwzMhvxXtghVykIHjdlEGq50CZhtl1LLZ8LZLlN2lH90cJbYWcbYJLO
- QV9/CGe0uXSAFNUnoT8wQU4pN1dR03bjwZsdsXFzKbUyEu8A3n7SbpX
+ bh=dxmGowAABZGGJvN38BvE9OivxrhsE/2mFCf47Qi+lvI=;
+ b=wzz2xUcbFtxUiSi4ThrPFbDIaElQBro5YtXx/lBo+PD1GGVfkejB8EYDpam4TZsF1HGcnDTRP
+ unvzC8nqkCDCKapltiz8/h5Mv3Va5gUnt0oPVF9FgChKOoZXy8L9VnG
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-Message-ID-Hash: PJYYIMJ6CMXI7OE4O6NUXQY6PFLBPZAC
-X-Message-ID-Hash: PJYYIMJ6CMXI7OE4O6NUXQY6PFLBPZAC
+Message-ID-Hash: BHHZYB4IR4E6OOEC7T6ZNTQAELZNEEDN
+X-Message-ID-Hash: BHHZYB4IR4E6OOEC7T6ZNTQAELZNEEDN
 X-MailFrom: konrad.dybcio@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -142,7 +141,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PJYYIMJ6CMXI7OE4O6NUXQY6PFLBPZAC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BHHZYB4IR4E6OOEC7T6ZNTQAELZNEEDN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,27 +150,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Now that it's been converted to YAML, reference the PM8916 wcd codec
-schema.
+Some IOMMUs on some platforms (there doesn't seem to be a good denominator
+for this) require the presence of a third clock, specifically for
+accessing the IOMMU's Translation Buffer Unit (TBU). Allow it.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/iommu/qcom,iommu.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-index f473b2d820bc..b5ec8cecab6a 100644
---- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-+++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-@@ -128,7 +128,7 @@ patternProperties:
+diff --git a/Documentation/devicetree/bindings/iommu/qcom,iommu.yaml b/Documentation/devicetree/bindings/iommu/qcom,iommu.yaml
+index d9fabdf930d9..3b7acb459f8e 100644
+--- a/Documentation/devicetree/bindings/iommu/qcom,iommu.yaml
++++ b/Documentation/devicetree/bindings/iommu/qcom,iommu.yaml
+@@ -24,14 +24,18 @@ properties:
+       - const: qcom,msm-iommu-v1
  
-   "^audio-codec@[0-9a-f]+$":
-     type: object
--    additionalProperties: true # FIXME qcom,pm8916-wcd-analog-codec binding not converted yet
-+    $ref: /schemas/sound/qcom,pm8916-wcd-analog-codec.yaml#
+   clocks:
++    minItems: 2
+     items:
+       - description: Clock required for IOMMU register group access
+       - description: Clock required for underlying bus access
++      - description: Clock required for Translation Buffer Unit access
  
-   "^charger@[0-9a-f]+$":
-     type: object
+   clock-names:
++    minItems: 2
+     items:
+       - const: iface
+       - const: bus
++      - const: tbu
+ 
+   power-domains:
+     maxItems: 1
 
 -- 
 2.41.0
