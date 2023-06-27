@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21D84EB64D9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jun 2023 16:27:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40038EB64D9
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Jun 2023 16:28:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27F9884C;
-	Tue, 27 Jun 2023 18:27:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27F9884C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 305546C1;
+	Tue, 27 Jun 2023 18:27:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 305546C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687883272;
-	bh=vuI+abY7emKvxqxwg2J7Vf5U+QSl3xD3cylxKBp47QM=;
+	s=default; t=1687883284;
+	bh=uv1qnNvLB8G/rnBdtPGJ5lEE8zxGk1cKOrp6LALI2o0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TYK3bk9gRuefXR3scnwNOtB9V15JAdvad0NmuXdJulWP+yQoObtvDUhoGOMH3j5oK
-	 cdhz8yMzvErcCzmCcj2SMAo8c0dIjbVAvmcNXsihC6JdtMuX+Mut3mVsa2BrK8ZVMW
-	 Z7UZl8qCVVbx/sC0mH9NDwBp8eWCjm89kZwXC3dU=
+	b=pTk1jGLsI0EBwCC/kQzYF7jX7Q6ugt4OM90H4rB7eQlVz+OrBcECWfc4a8QzcXTOV
+	 NpmEBDr4tE4qTNbdT85yEuzdN5EhYvGPfIy32JJrvQQq4ll04Qed6dP2vk325P4Aa2
+	 JhfPL2c+ZgJiZGAxK9GQV9DKm1mNV7EPV7z+z/yM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B3E79F805D4; Tue, 27 Jun 2023 18:25:16 +0200 (CEST)
+	id E71A2F805DA; Tue, 27 Jun 2023 18:25:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5BBBF80535;
-	Tue, 27 Jun 2023 18:25:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2591FF805DF;
+	Tue, 27 Jun 2023 18:25:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8AAE2F805BD; Tue, 27 Jun 2023 18:25:10 +0200 (CEST)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
+	id 9617DF805C2; Tue, 27 Jun 2023 18:25:10 +0200 (CEST)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com
+ [IPv6:2a00:1450:4864:20::134])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9530EF8057B
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2023 18:24:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9530EF8057B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9E1AAF805AF
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2023 18:25:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E1AAF805AF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=IoddTkfO
-Received: by mail-lf1-x12b.google.com with SMTP id
- 2adb3069b0e04-4f957a45b10so6392012e87.0
+ header.s=google header.b=kDAt9Yy2
+Received: by mail-lf1-x134.google.com with SMTP id
+ 2adb3069b0e04-4f973035d60so6298368e87.3
         for <alsa-devel@alsa-project.org>;
- Tue, 27 Jun 2023 09:24:59 -0700 (PDT)
+ Tue, 27 Jun 2023 09:25:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687883097; x=1690475097;
+        d=linaro.org; s=google; t=1687883102; x=1690475102;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ZSIrkDXpbBJJF79TNwbHEzUtRhMGVG0zQuOGkk3fmhI=;
-        b=IoddTkfO5tyJTW4sBdG96yKju/2zkdaz8Ih6r1OgbZyFYIGnFb9FgdojUCQbNDpsC2
-         CSDG1Y9IvFn0LGAkBT/zzvqbcU6oi0jFv3gJWgTtUrZ9OtczoQWBftZWtafS0go4jEhe
-         uTdrSVkI5P2pU8jdHjBaNe7LbovRankNV5OBrCNbN8bts3hxbXbCCted9KSZ4btQFE4Z
-         QxmC96DVoK0JJ2+wcl0s76bxFn6GyhL5tFD4rQsq+Nj+zPK4kMs/6lDlUINp9JGbJNqo
-         cBhatXQ00E1GUSGawoBVzZCeOV0Ubb0Aa5ewYLXSP4z+8f7pPOhaKvSXo5RYGAjInEmp
-         d2LQ==
+        bh=iQgv+M2yvcOQU4FeOLMklrteeN9rCIkhqHWc6b1bMlw=;
+        b=kDAt9Yy2OlLY6IWaIgh8Bk9OfVdK25RlsrNuwLLMtXXbG397TVa8a3J+BE2Rthx19v
+         ohLNC/e5SJMBYIIx9zS2sFd/JWPzMOHoJq33iJVFsCwitbawpcYQxHixGIODdZjNyoBa
+         ZzskP4FEFk2ilEFEAaixuyH1WQha+2ExAWd6CEgTK1Y9lQ77j2gYVGYys3ECidK9mrHk
+         nvJj+DSJ2Zxm3GEMajsX81wBQieJ1d4ahWo9QmqJRXHZlDJLhMcjLkakBY8kA8KmjYwC
+         VFI7sMK3I0eHGPSZYa3fQRAeFm0je1CrG0P0NoPv5kecifNBI9VjBaa7iVbD/OGDkCea
+         ax8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687883097; x=1690475097;
+        d=1e100.net; s=20221208; t=1687883102; x=1690475102;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZSIrkDXpbBJJF79TNwbHEzUtRhMGVG0zQuOGkk3fmhI=;
-        b=Y36JZbzcyozktI0qX1VZ8V3dEeQpSYydEZOf7AUl4imT2Hvu1k1aMJDn+bCIpXcwKM
-         pwoWIcZ4ezAIHHxIt9oemDXANIBLA6b7CLFYagEYKwX7tYd6+rqpjHUv38kA2f6CQWrP
-         66qeaf1LqCTEt/a/imR/DAyc/Qfz0UqtXlhgjVPFT73xbREq2PPKItKP5G52vsEI26hr
-         5LM3vtnw5onYiVAIH+gI4hDtfOhjqOsPOzechqzpWKik2WbMGnjU5l/obFXe0ivN7dyV
-         9At3RoJg0YUEkIJRy+0ybggUPBZWxz77JAx26SJyJlFUbBJj9rQlAx4Jf89eo7MYuX36
-         B4kw==
-X-Gm-Message-State: AC+VfDzalCtNPpoG5xuSfYlfUlVnA3VTpVIKKKVoIJhYoibTFH01QMeh
-	ivRYnsfkQ5Oun9jj4YyEdevqrg==
+        bh=iQgv+M2yvcOQU4FeOLMklrteeN9rCIkhqHWc6b1bMlw=;
+        b=Vj8IKYNxexV3R5el34P9WziXqa3GkGis2fiWdDWBiOAp+gL93g9iYwLyougb7rB3D7
+         jSQK2wJCYlhuP2Nc1p9vQGgI2OAqXJOhY5BdsEigV1mP44eYjVD22HEbqriMbfjdqb28
+         BQMC7DgvNu8h0p7kE98O9mOEeuQvM0syVOAh2KjKaH3n5gD5UVSlBLaQgHwHS3VAxzCF
+         kbxwa8yRo8nrlVEBYGHODihHVE6/siEcIPzajt9YxuFnK+9SysdhTeQzzp9r9t28bfAa
+         8TWYTZu4GPresoGefN9vkte2zdXC7ioVpxtHoSlhmKdBFx4DgRT5MQwsquTL6rkhS1nX
+         bYbw==
+X-Gm-Message-State: AC+VfDw6402ZtvEb44nKrFBPKyAPbiOHI2xjUKSBVx2AISsmIZG7cgZE
+	i7nQwc4cnozIED2xXubRgA/y4A==
 X-Google-Smtp-Source: 
- ACHHUZ4r9irVoENkd8byj3320r8JiIAdEQ/lABEZXknA2fxdO6BKPyPCZg1djvkW496qNULbkbBgNA==
-X-Received: by 2002:a19:915d:0:b0:4fb:8aeb:d9be with SMTP id
- y29-20020a19915d000000b004fb8aebd9bemr731320lfj.30.1687883097444;
-        Tue, 27 Jun 2023 09:24:57 -0700 (PDT)
+ ACHHUZ5yApBC4INNLgHvtxRRdunBBs9+0RduUnvVu4BrnfQlBcgFBMr/Gb/6J5qgvmBXvYAWuE6Fvw==
+X-Received: by 2002:a05:6512:3c9e:b0:4fb:7be5:46b3 with SMTP id
+ h30-20020a0565123c9e00b004fb7be546b3mr3902801lfv.55.1687883102401;
+        Tue, 27 Jun 2023 09:25:02 -0700 (PDT)
 Received: from [192.168.1.101] (abxj103.neoplus.adsl.tpnet.pl. [83.9.3.103])
         by smtp.gmail.com with ESMTPSA id
- g7-20020a19ac07000000b004fb259a5589sm1190508lfc.104.2023.06.27.09.24.55
+ g7-20020a19ac07000000b004fb259a5589sm1190508lfc.104.2023.06.27.09.25.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jun 2023 09:24:57 -0700 (PDT)
+        Tue, 27 Jun 2023 09:25:02 -0700 (PDT)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Tue, 27 Jun 2023 18:24:24 +0200
-Subject: [PATCH 08/11] dt-bindings: usb: ci-hdrc-usb2: Fix handling pinctrl
- properties
+Date: Tue, 27 Jun 2023 18:24:26 +0200
+Subject: [PATCH 10/11] dt-bindings: usb: dwc3: Allow just 1 interrupt for
+ MSM8996
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230627-topic-more_bindings-v1-8-6b4b6cd081e5@linaro.org>
+Message-Id: <20230627-topic-more_bindings-v1-10-6b4b6cd081e5@linaro.org>
 References: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
 In-Reply-To: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
 To: cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>,
@@ -121,15 +121,15 @@ Cc: Marijn Suijten <marijn.suijten@somainline.org>,
  Andy Gross <andy.gross@linaro.org>,
  Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1687883074; l=1843;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1687883074; l=1056;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=vuI+abY7emKvxqxwg2J7Vf5U+QSl3xD3cylxKBp47QM=;
- b=cA//QEaEi/GzH/ZTEpwNhEiym+hD656nG3IixPCS0Yi7t2cIiwxXA4DNzeydmsOVFuKJMXujb
- YnsymIapOVCBidELFNlYPj1ztQ+aNTLBST/+567mWks3T4NqajGgjOd
+ bh=uv1qnNvLB8G/rnBdtPGJ5lEE8zxGk1cKOrp6LALI2o0=;
+ b=CbB0RfIBkaHhb6P0sSoQoxoKLH0+Nroq3t9sxL+VfHWMFB3r3IxNmJNLNTbVFLUIegbeAFWQG
+ oue2RQYT9w3Ch9MjHPlF80d7+kumlsNMxdRcFp2gCaZ4O5ae5p95yJx
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-Message-ID-Hash: FTRBZMLLXE5TUXLQ55U6G5UAXKPLUYF2
-X-Message-ID-Hash: FTRBZMLLXE5TUXLQ55U6G5UAXKPLUYF2
+Message-ID-Hash: MYFGT5EYVMGHH45YT576I2ZEMKMHROFH
+X-Message-ID-Hash: MYFGT5EYVMGHH45YT576I2ZEMKMHROFH
 X-MailFrom: konrad.dybcio@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -142,7 +142,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FTRBZMLLXE5TUXLQ55U6G5UAXKPLUYF2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MYFGT5EYVMGHH45YT576I2ZEMKMHROFH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,62 +151,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Untangle the bit messy oneOf trees and add the missing pinctrl-2 mention
-to handle the different pinctrl combinations.
+MSM8996, similarly to SDM660 has two DWC3 controllers: one for SS and
+another one for HS operation. Allow just specifying the HS interrupt
+in the latter case.
 
-Fixes: 4c8375d35f72 ("dt-bindings: usb: ci-hdrc-usb2: convert to DT schema format")
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- .../devicetree/bindings/usb/ci-hdrc-usb2.yaml      | 27 ++++++----------------
- 1 file changed, 7 insertions(+), 20 deletions(-)
+ Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
-index 782402800d4a..24431a7adf3e 100644
---- a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
-+++ b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.yaml
-@@ -199,17 +199,6 @@ properties:
-       In case of HSIC-mode, "idle" and "active" pin modes are mandatory.
-       In this case, the "idle" state needs to pull down the data and
-       strobe pin and the "active" state needs to pull up the strobe pin.
--    oneOf:
--      - items:
--          - const: idle
--          - const: active
--      - items:
--          - const: default
--          - enum:
--              - host
--              - device
--      - items:
--          - const: default
- 
-   pinctrl-0:
-     maxItems: 1
-@@ -357,17 +346,15 @@ allOf:
-             - const: active
-     else:
-       properties:
-+        pinctrl-2:
-+          maxItems: 1
-+
-         pinctrl-names:
-           minItems: 1
--          maxItems: 2
--          oneOf:
--            - items:
--                - const: default
--                - enum:
--                    - host
--                    - device
--            - items:
--                - const: default
-+          items:
-+            - const: default
-+            - const: host
-+            - const: device
-   - if:
-       properties:
+diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+index aca20aa8f504..beaeba47a150 100644
+--- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+@@ -394,7 +394,6 @@ allOf:
+           contains:
+             enum:
+               - qcom,msm8953-dwc3
+-              - qcom,msm8996-dwc3
+               - qcom,msm8998-dwc3
+               - qcom,sm6115-dwc3
+     then:
+@@ -411,6 +410,7 @@ allOf:
          compatible:
+           contains:
+             enum:
++              - qcom,msm8996-dwc3
+               - qcom,sdm660-dwc3
+     then:
+       properties:
 
 -- 
 2.41.0
