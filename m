@@ -4,84 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12690EB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 11:54:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4106AEB64D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 12:51:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41375822;
-	Wed, 28 Jun 2023 13:53:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41375822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31491822;
+	Wed, 28 Jun 2023 14:51:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31491822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687953289;
-	bh=xVwb1hbny65LhXYunDaleFlCI4FDcQUSrTRPLj3KOu4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ScdcADuwSnZTMl1+mmKDJs7/PQpd6AkWiqE1rx0WHSX7K/s0VUlWvoUbKISIuMbOH
-	 ILzakly8b592udy3pMvTA5Qri1CrH+66wSel1UKwbgsCG7tZYRxFTz7SfVWeWakpSc
-	 vdVG5t9Q8jWuZIGsleg4VJxz2f3jHctb86bJI13I=
+	s=default; t=1687956717;
+	bh=FM06hAzUJYRZbdfF74LbkfHXkeBshKd+aj4zJ//1NoE=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ghq/73WtoxP1IirIpGMbA0P7v3J44o+aNryjs0xAg+/m3IVE14XRdPGHu+1iDR/eG
+	 ncwehq8X9TmBWToXSQX8+K46PX7bQTmYcIHwfoOW8RakLGuLmOUiBezLMxm3Y4VT5C
+	 mTDaAvJHxVB/vV73qw16lgkGX/S+6tCdXc2IWMEw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E90D2F8027B; Wed, 28 Jun 2023 13:53:35 +0200 (CEST)
+	id 69723F80553; Wed, 28 Jun 2023 14:50:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95416F8027B;
-	Wed, 28 Jun 2023 13:53:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FFFBF8053B;
+	Wed, 28 Jun 2023 14:50:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 70A14F80212; Wed, 28 Jun 2023 13:53:31 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 03895F8051E; Wed, 28 Jun 2023 14:50:53 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2DAF0F80124
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 13:53:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DAF0F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4FA1EF80124
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 14:50:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FA1EF80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=n5+HSauX
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5C34361218;
-	Wed, 28 Jun 2023 11:53:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E20C433C8;
-	Wed, 28 Jun 2023 11:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687953204;
-	bh=xVwb1hbny65LhXYunDaleFlCI4FDcQUSrTRPLj3KOu4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n5+HSauXIMq7f8QOzjxVRIWnK3eqJ1mLau90HUb4uVZsHYw7BRnhCeuJGwyOX6qWV
-	 E16XKq5bnSNYMFnZCMR1M0ZYF8ZNUSO1L4Jylwy4G3PDb5X8+WrSS2ACWaT607iITu
-	 fcKM++1YXmWkvyxdHi458eviBa+KPKIynKx9odHdDBLpiM95i0BQTri/X43JvEE1MG
-	 oWAEQTUrC93KxgYtJTJqbS0p5EPVDvgg7Whzux/W9S+Yq/jAE0Zx6QbkK1M2lfBFgs
-	 9Ljvr0Go4pxMvx8QlpRDw6Jyulq19dQHwUf45xFICTrZSXuyq2nV0NxOsvHymBVcox
-	 L+lMr6g18Ojag==
-Date: Wed, 28 Jun 2023 12:53:14 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: krzysztof.kozlowski+dt@linaro.org, andersson@kernel.org,
-	robh+dt@kernel.org, devicetree@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org,
-	johan+linaro@kernel.org, perex@perex.cz, tiwai@suse.com,
-	lgirdwood@gmail.com, ckeepax@opensource.cirrus.com,
-	kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 2/3] ASoC: qcom: q6apm: add support for reading firmware
- name from DT
-Message-ID: <f71c8d2b-d5f4-42bb-932f-5b9ec6117ffc@sirena.org.uk>
-References: <20230628102621.15016-1-srinivas.kandagatla@linaro.org>
- <20230628102621.15016-3-srinivas.kandagatla@linaro.org>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=IFxt6a1d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1687956647; x=1719492647;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FM06hAzUJYRZbdfF74LbkfHXkeBshKd+aj4zJ//1NoE=;
+  b=IFxt6a1dDHM5EQLDJbUnLcGTG9yfyy8iSHjj9dzLIiO2bVa7WDnuQOZF
+   u7Ahwl78HpHs0wm53Kf/wjb2DTmTXIufeDO5pCzkYybjFNsGzm1tcHEUX
+   YB6RC8vnWIsrr23rn5UwqcfQDI1OHzvAT28qKzzemr8TgzfGK8NbiYKdb
+   id93OlAHRBq0C+rBGc6f7K9pVdVVPh8x4RV9a4mJuE0AuOqY7Xc/d57RZ
+   CrasRAVvJR6MFAGKzHFKHCw3BWcwRLpFiPP4njPjQ5xIR9jhb4MYdv3Nw
+   5+5sWIXhkckmYWcLEVMGWLxFdAMR/tpgBGfst4F2R2YZGKaK5lp+1EIKz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10754"; a="361875553"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200";
+   d="scan'208";a="361875553"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Jun 2023 05:50:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10754"; a="891035024"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200";
+   d="scan'208";a="891035024"
+Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
+  by orsmga005.jf.intel.com with ESMTP; 28 Jun 2023 05:50:15 -0700
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Bjorn Helgaas <bhelgaas@google.com>,
+	Mark Brown <broonie@kernel.org>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org,
+	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@intel.com>,
+	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: [RFC PATCH 0/8] PCI: Define Intel PCI IDs and use them in drivers
+Date: Wed, 28 Jun 2023 22:51:27 +0200
+Message-Id: <20230628205135.517241-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hBi2IyGgla1GexBf"
-Content-Disposition: inline
-In-Reply-To: <20230628102621.15016-3-srinivas.kandagatla@linaro.org>
-X-Cookie: HELLO, everybody, I'm a HUMAN!!
-Message-ID-Hash: G6AIYBXGDD2CXAPU767OQ6SHFLQFI7TY
-X-Message-ID-Hash: G6AIYBXGDD2CXAPU767OQ6SHFLQFI7TY
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: LMP5G5LDBYTG5NPU3TDNNRIUVOQDW2SE
+X-Message-ID-Hash: LMP5G5LDBYTG5NPU3TDNNRIUVOQDW2SE
+X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G6AIYBXGDD2CXAPU767OQ6SHFLQFI7TY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LMP5G5LDBYTG5NPU3TDNNRIUVOQDW2SE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,39 +106,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+PCI IDs for Intel HDA are duplicated across quite a few drivers, due to
+various configurations and historical reasons. Currently almost all uses
+of HDA PCI IDs have corresponding comment telling which platform it is.
+Additionally there are some inconsistencies between drivers about which
+ID corresponds to which device.
 
---hBi2IyGgla1GexBf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Simplify things, by adding PCI IDs to global header and make use of them
+in drivers. This allows for removal of comments by having IDs themselves
+being self explanatory. Additionally it allows for removal of existing
+inconsistencies by having one source of truth.
 
-On Wed, Jun 28, 2023 at 11:26:20AM +0100, Srinivas Kandagatla wrote:
-> Currently firmware file name is autogenerated based on card name and mode=
-l number,
-> however this imposed a restriction of finding firmware in a single firmwa=
-re path.
-> Platform specific firmwares are normally located in sub folders of the So=
-C.
->=20
-> Provide more flexibity by reading firmware-name from DT.
+Amadeusz Sławiński (8):
+  PCI: Add Intel Audio DSP devices to pci_ids.h
+  ALSA: intel-dsp-config: Update PCI ID list
+  ALSA: hda: Update PCI ID list
+  ALSA: hda/i915: Update PCI IDs
+  ASoC: Intel: avs: Update PCI ID list
+  ASoC: Intel: avs: Update PCI ID list
+  ASoC: Intel: Skylake: Update PCI ID list
+  ASoC: SOF: Intel: Update PCI ID list
 
-Why not try a series of firmware names/locations generated using the
-identifying information for the card/system?  That way we don't have to
-put a filename in the ABI which has fun scaling issues.
+ include/linux/pci_ids.h                |  44 ++++
+ sound/hda/hdac_i915.c                  |   8 +-
+ sound/hda/intel-dsp-config.c           | 119 +++++-----
+ sound/pci/hda/hda_intel.c              | 292 ++++++++++++-------------
+ sound/soc/intel/avs/board_selection.c  |  10 +-
+ sound/soc/intel/avs/core.c             |  16 +-
+ sound/soc/intel/skylake/skl-messages.c |  16 +-
+ sound/soc/intel/skylake/skl.c          |  36 +--
+ sound/soc/sof/intel/pci-apl.c          |   9 +-
+ sound/soc/sof/intel/pci-cnl.c          |  15 +-
+ sound/soc/sof/intel/pci-icl.c          |  12 +-
+ sound/soc/sof/intel/pci-mtl.c          |   3 +-
+ sound/soc/sof/intel/pci-skl.c          |   6 +-
+ sound/soc/sof/intel/pci-tgl.c          |  45 ++--
+ sound/soc/sof/intel/pci-tng.c          |   3 +-
+ 15 files changed, 311 insertions(+), 323 deletions(-)
 
---hBi2IyGgla1GexBf
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.34.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmScHyoACgkQJNaLcl1U
-h9A3/Qf+M+M8zuT/1Y8FhzspndLccu9JqoTFH0Rx5lIglukamB7ABbwn7IZYk2Q/
-A0l3/Gs8GOpaNVeWpWDp603eHiEdgL3Lxuoe5uFfIWDYiciH8JIYgenbpqJSpleG
-NmcSFUwTLUC/Jd3pLlbBmjhRL8SncpXvEuReausjHNdnSzMqZurMFhC5wzli4Iv4
-eFpFGmYvQ0S1ljHC0Kfs3s7TC9xfk5yNYBcRoC3V1tzQkFsBm7X237QCvyjQO7Q8
-4d03zsBHN8y1jK+Iaz3qGLwu6MHlmkKkH7ZtKlPNDNziMjyg3F6XwiobWukjWYu7
-/OqWgA7xwRYquR7taXpc2cpK116OrA==
-=3HfF
------END PGP SIGNATURE-----
-
---hBi2IyGgla1GexBf--
