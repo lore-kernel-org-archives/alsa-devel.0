@@ -4,111 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BA2EEB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 19:34:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4629AEB64D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 19:41:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D14BB7F8;
-	Wed, 28 Jun 2023 21:33:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D14BB7F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA912826;
+	Wed, 28 Jun 2023 21:40:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA912826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687980886;
-	bh=wy4MXR049H3XUXg0VqwusbKdgMQlk4Pp8EZyGJDC6tY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1687981305;
+	bh=klgTWdJWuY+ukpWOnYTdmCpH06zL7nTICvdJceCsqqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pye4k9DFrquQvodz7dPRB8c6M7M9b9VY6OuBo5562QGBgwzrOUw3TY/jV6QWvnlRC
-	 83poEHUsdL1fiqJ0/tnqxSBinNoyJtWgIX9ELZ6y8ZzaiuRiYI1O3rkAbTyb5yOW6P
-	 iT1FLof2Mrx+QuCc0WTgwGkhyB/AAGXXJvaElN6Q=
+	b=mCf05Hnph2+WlcmjAFHwdbnR8t9Iij4hxRaAxVSsi/gWV2/pFqxlN7HJWBhNzMoVs
+	 RnfbHZzVEK7c84s0cPMXA5WOIZ4YBRUzCqUh66zIxS5Q0xiherlWiL5cTHmb6gtqUk
+	 aJzV+iZPrECN559W6lE2sfvKuf2VATasPrKnil8Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E7570F8027B; Wed, 28 Jun 2023 21:33:34 +0200 (CEST)
+	id E6F2EF8053B; Wed, 28 Jun 2023 21:40:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54918F80246;
-	Wed, 28 Jun 2023 21:33:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73180F80246;
+	Wed, 28 Jun 2023 21:40:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 804B6F80246; Wed, 28 Jun 2023 21:33:29 +0200 (CEST)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 6865BF80246; Wed, 28 Jun 2023 21:40:27 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 73C04F80124
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 21:33:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73C04F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3D283F80124
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 21:40:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D283F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=OFojlgb6
-Received: by mail-lf1-x130.google.com with SMTP id
- 2adb3069b0e04-4f865f0e16cso8980116e87.3
-        for <alsa-devel@alsa-project.org>;
- Wed, 28 Jun 2023 12:33:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687980797; x=1690572797;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8luJOwdXXfNeGMdyQDRfNqFP6j7QRvwX8K5JggFfHh4=;
-        b=OFojlgb6qOIm4BRwHjuEJRu21xeqeV1LKW39dulUm0vJglosAJKjZTlgW3/cLlgfU8
-         sPI1lmD/lzuYgpDV9HQafdKnia9WgUg3ps4kGh906wC3CQM3CUftthUwZpdg7TBFzX3b
-         9IKQRCdmv2yazcc8DILLCL5930i2OlChyeDr4t8roHHZ/8D5Pg3L6dzeUbrwd+FnfPJP
-         DP6qRBRkRtoeC5tx0hOHsHdiNUcEQtnRemfIlpTpqqZ9vtZXAlhmrS8UpwMjvoRSIX/i
-         jxGG/T63PLW80jwq8IRznHCsNQ9kM6G9jYkhNVr3xenUyn7YyYoQknQ5JwtTAu3ecF4b
-         Yjjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687980797; x=1690572797;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8luJOwdXXfNeGMdyQDRfNqFP6j7QRvwX8K5JggFfHh4=;
-        b=iztO9tnl7uKJd7Evb0vjyMM7coMLoC6FzsK+rhPqO5cliD5qZWeA0zCjNOCLBrYEOI
-         b1t0BwmjhGDjX83ZItwVlyMPkevncZqd0GJA4TE51ogjORlqjnqLFfqdxW2dTvBKHHZT
-         NVkj+eHDufog4oGFuGuK+01hgMUMrk4V2rSka9j4LUiiqi3InK8Nm8N77Z0nrQfN5JkO
-         WjTRQEZaouHIIe3S2azX4yqkZtDxUIpH1WV3GkjRuOSiFuOdqRvN0YjvjgagSPBcPBTX
-         8u7NGtQzq4FLVsAv97Hn56T7vo8Im59RJFylIOUbMpAgpIHimnP3yHlbxd/DgyjsJRbH
-         6rwA==
-X-Gm-Message-State: AC+VfDzWV9IyLp1i/ZRmz1UuU1mAzjo6VrVNZCK5DQ1RCg5f88yXp703
-	BJJYd9u3fSVoWsnmLHbNg28Iwg==
-X-Google-Smtp-Source: 
- ACHHUZ4tzZacjhlbNXcdymGFQQEzjZFRE+pRBdGohWQU6TmdwqnDkuI66k6/rbtFjpxqb2SbajrvVQ==
-X-Received: by 2002:a19:674d:0:b0:4f8:6ea5:104b with SMTP id
- e13-20020a19674d000000b004f86ea5104bmr16247327lfj.30.1687980797180;
-        Wed, 28 Jun 2023 12:33:17 -0700 (PDT)
-Received: from [10.10.15.130] ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id
- r22-20020ac24d16000000b004fb757bd429sm1385852lfi.96.2023.06.28.12.33.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jun 2023 12:33:16 -0700 (PDT)
-Message-ID: <fabef33c-a8c7-af61-80b4-91e55081c977@linaro.org>
-Date: Wed, 28 Jun 2023 22:33:16 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=CylwdhIn
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3EAAE6144F;
+	Wed, 28 Jun 2023 19:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54110C433C0;
+	Wed, 28 Jun 2023 19:40:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1687981220;
+	bh=klgTWdJWuY+ukpWOnYTdmCpH06zL7nTICvdJceCsqqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CylwdhInikX6hCGDUJn+nYbTRlGsBpp8Ur1zy7oz6vC3UiprJVxVbFkCZu74t2Jtu
+	 ZiEy79TUuvXOOtW/Bfd3qpZLlyZFkU5s41sV/eC5HbLQ4zcrdDAc553OUbwklCuyRg
+	 na5DZ7Re+mqsLV37CoA4VTFyrlL+fDLinK29qUx22ceiiKxmgtjSevvnmNaaTt033Z
+	 IZ6IL22GqPzZqCgBJwJNQIkU5ToE4Sn5FwqVysax+mF/tePaX3LFWpfdteoqyMR4sL
+	 CQh/pCdpvXIZy2UcIY+I6iVRPEcJ3LbQTaqJDECGNaFtJN9fzCErqCO1FIg8cNB48P
+	 llGyLkXmA2NiA==
+Date: Wed, 28 Jun 2023 20:40:12 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	krzysztof.kozlowski+dt@linaro.org, andersson@kernel.org,
+	robh+dt@kernel.org, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, johan+linaro@kernel.org,
+	perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
+	ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
+	linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+	alsa-devel@alsa-project.org
 Subject: Re: [PATCH 2/3] ASoC: qcom: q6apm: add support for reading firmware
  name from DT
-Content-Language: en-GB
-To: Mark Brown <broonie@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- krzysztof.kozlowski+dt@linaro.org, andersson@kernel.org, robh+dt@kernel.org,
- devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- johan+linaro@kernel.org, perex@perex.cz, tiwai@suse.com,
- lgirdwood@gmail.com, ckeepax@opensource.cirrus.com,
- kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+Message-ID: <c5bbdaa9-43fb-4ec3-af7d-b1629d2d88f7@sirena.org.uk>
 References: <20230628102621.15016-1-srinivas.kandagatla@linaro.org>
  <20230628102621.15016-3-srinivas.kandagatla@linaro.org>
  <f71c8d2b-d5f4-42bb-932f-5b9ec6117ffc@sirena.org.uk>
  <73dce263-bee6-554f-9eb6-af4aa7badab1@linaro.org>
  <c377aefe-2678-4ba7-96b3-2186e8f3f1b4@sirena.org.uk>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <c377aefe-2678-4ba7-96b3-2186e8f3f1b4@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: QTTS74SV2FFD63CSABUHBEIWA4RPUKOR
-X-Message-ID-Hash: QTTS74SV2FFD63CSABUHBEIWA4RPUKOR
-X-MailFrom: dmitry.baryshkov@linaro.org
+ <fabef33c-a8c7-af61-80b4-91e55081c977@linaro.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mgpSf2rFHH6HbzH9"
+Content-Disposition: inline
+In-Reply-To: <fabef33c-a8c7-af61-80b4-91e55081c977@linaro.org>
+X-Cookie: HELLO, everybody, I'm a HUMAN!!
+Message-ID-Hash: TVCBDUGNYSMZ6DCGF3C53QC7NDGOGPK3
+X-Message-ID-Hash: TVCBDUGNYSMZ6DCGF3C53QC7NDGOGPK3
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -120,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QTTS74SV2FFD63CSABUHBEIWA4RPUKOR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TVCBDUGNYSMZ6DCGF3C53QC7NDGOGPK3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,40 +107,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 28/06/2023 21:10, Mark Brown wrote:
-> On Wed, Jun 28, 2023 at 07:57:38PM +0300, Dmitry Baryshkov wrote:
->> On 28/06/2023 14:53, Mark Brown wrote:
-> 
->>> Why not try a series of firmware names/locations generated using the
->>> identifying information for the card/system?  That way we don't have to
->>> put a filename in the ABI which has fun scaling issues.
-> 
->> This is what was done by Srini in the initial (currently committed) version.
->> Unfortunately this easily results in the audio topology being separated from
->> the rest of the platform-specific firmware. For example, for the mentioned
->> X13s we already have a subdir under /lib/firmware/qcom and several
->> firmware-name DT properties pointing to the files in that subdir:
-> 
->> $ grep firmware-name
->> arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
->> 		firmware-name = "qcom/sc8280xp/LENOVO/21BX/qcdxkmsuc8280.mbn";
->> 	firmware-name = "qcom/sc8280xp/LENOVO/21BX/qcadsp8280.mbn";
->> 	firmware-name = "qcom/sc8280xp/LENOVO/21BX/qccdsp8280.mbn";
-> 
->> This is not unique to the X13s, other Qualcomm boards also use full paths.
-> 
-> If the goal here is to put all the firmwares for a given board in a
-> single place surely it would be better to factor this all out of the
-> individual drivers so that they ask some helper for a directory to use
-> for firmware?  Adding these device specific firmware node properties
-> doesn't seem to follow.
 
-This quickly becomes overcomplicated. Some platforms use different 
-firmware naming structure. Some firmware goes into a generic location 
-and other files go into device-specific location. So having a generic 
-helper doesn't really help.
+--mgpSf2rFHH6HbzH9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-With best wishes
-Dmitry
+On Wed, Jun 28, 2023 at 10:33:16PM +0300, Dmitry Baryshkov wrote:
+> On 28/06/2023 21:10, Mark Brown wrote:
 
+> > If the goal here is to put all the firmwares for a given board in a
+> > single place surely it would be better to factor this all out of the
+> > individual drivers so that they ask some helper for a directory to use
+> > for firmware?  Adding these device specific firmware node properties
+> > doesn't seem to follow.
+
+> This quickly becomes overcomplicated. Some platforms use different firmware
+> naming structure. Some firmware goes into a generic location and other files
+> go into device-specific location. So having a generic helper doesn't really
+> help.
+
+That sounds like a job for symlinks surely?
+
+--mgpSf2rFHH6HbzH9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmScjJwACgkQJNaLcl1U
+h9BCDgf+MwHq6JhItt1dx5AosYopofv5eM+cXQTZJxH7Ty1pBE0ZrubrQITHgUps
+ZMN5jdtiLpD1sam4qsyb1yNUB8o+4sk7p6Q6rKS/Bwv73R6lQwd04PS3+KW+12V/
+Pg39ZUdB4XjjKgmKQ+LKBXZi2qkB4Vhd9ApqIMIEtNYXhRk68JVnhlUseenPfn6Y
++bay/mh1nmisb1hVYEhwlabisc2pRStjRhD4+MKBxEEdHPKyUtUciYCUasW4OCj6
+mcptRKGax8OZWyWykw0htaHI19V+6QkTFvZDlNc7mwWBqQx+t7FxgsbpGR3Eo1L2
+dnMNFETQ1pxu67LvWHYP5e6gRpok4Q==
+=Nl3r
+-----END PGP SIGNATURE-----
+
+--mgpSf2rFHH6HbzH9--
