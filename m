@@ -4,101 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFF6AEB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 09:45:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BFEEB64D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 10:27:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9EC1826;
-	Wed, 28 Jun 2023 11:45:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9EC1826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3717A74C;
+	Wed, 28 Jun 2023 12:26:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3717A74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687945550;
-	bh=c8qYYruq4/Z5laM2g1+g34GIBJ3D1Ny6om6d+4uW7os=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=kjD9VmQgAo+KqpWoXJtPE1TTNZeE6kLQmyvpNYAb2QjAogX7TRQmz7pk/EH9i/FuA
-	 fiTFUaTSwe1wNHDiPxINjf0gE1FUzIiq8HtRC1ybd2WFy7vIrf9RG6F/bfmaHXm4cm
-	 NEHFErhyiR7TyX+QflcAOM3PeYSgggBm7dBpyPlM=
+	s=default; t=1687948063;
+	bh=TA24QYjHstd/WwrC7y7tZQcLx+bi2yPx/HLj2hZumu0=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=o7kXWRLPqrpd8BCNurQhE+sKsASemqa7Kdmdbg9JLD3S5hkys0dxI2ulU1zonrjB/
+	 1b7CHeuW3vmWbmxCII7+DPINKVwbHCXQ+oqHut4HE9vf/TI/STeJryl+J6kjBBI7Cm
+	 u6m6LItc07mQ5AXD+3Ikg/WJ3XZTQF+IzF0GOwKM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5322BF80169; Wed, 28 Jun 2023 11:45:00 +0200 (CEST)
+	id BE14AF80535; Wed, 28 Jun 2023 12:26:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0004F80093;
-	Wed, 28 Jun 2023 11:44:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96B59F80124;
+	Wed, 28 Jun 2023 12:26:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 698EEF80212; Wed, 28 Jun 2023 11:44:56 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id C6D92F80169; Wed, 28 Jun 2023 12:26:43 +0200 (CEST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C39DEF80246
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 11:42:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C39DEF80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id 460BCF80169
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 12:26:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 460BCF80169
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=fUp+2j+x;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=9mWONnFB
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A91F51F8B6;
-	Wed, 28 Jun 2023 09:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1687945361;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R5BpJubHpBlkq7A2dm81fT6qaZ1MVpLy5vDM8K0Jzsw=;
-	b=fUp+2j+xN5ROSNKs0geGd8tqsVuFiLlPVQNZ7yLEjJ8I9Ni6ZbRkNR+ctOSTJG5QRI6P1G
-	zCuqQyAOxDqSBUqI4IEzZQ6cnlXP3+6rBdQ18hFcAocTyH2h8JnHeEQu8wReWa6pXlV7tm
-	uscwIp+X7OPa2H7GOAVY840OUhzL3LU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1687945361;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R5BpJubHpBlkq7A2dm81fT6qaZ1MVpLy5vDM8K0Jzsw=;
-	b=9mWONnFBdDOKorEpZ4qfeBrDz/e1nNohVbxMh+gSgV2MADEDIxARIr1lmkGk9OsBxNyk8a
-	Zoeb0OnUKUmqkNDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 79921138EF;
-	Wed, 28 Jun 2023 09:42:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id dgK3HJEAnGQVAgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 28 Jun 2023 09:42:41 +0000
-Date: Wed, 28 Jun 2023 11:42:41 +0200
-Message-ID: <87zg4jexda.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=ewY1PWWZ
+Received: by mail-wm1-x32f.google.com with SMTP id
+ 5b1f17b1804b1-3fba66f3b14so18828395e9.3
+        for <alsa-devel@alsa-project.org>;
+ Wed, 28 Jun 2023 03:26:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1687947997; x=1690539997;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dKNfjF3wW/Nm/nNPQwIEGWNf3zo0Uzcpr6AjJzCAwQs=;
+        b=ewY1PWWZFTqt3d2EoUX7BYeBLURb1ND+wfkfANY8NH8ewiDiDYKhlwdmgQGxnQHkI8
+         ujbIh67rsT39B+IL/3a8hsS/BEj2wi3cUm+tFOp4wJS0FnaJkXGH2PifG6QUVyjxANxh
+         vIkdZ0LrYWYjLSMtpTnjDRNMO/yuWxKK6T7KEZrYZIxsDgX55CJ+BtTx2tlvUvxd5AJx
+         ebygNj3edwU9/m9vW6Aof0Z7kz8PgpIbtNi5dvx0nvfx6BvZ0Tlsf9yTOmmqtUjAR1IT
+         uw9np5GnyIYAIKzB8AcSIotnpy4LoKUgR4oER6EgFCgrN9/mxdvL7FAeiJhmWdp9C/aM
+         06ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687947997; x=1690539997;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dKNfjF3wW/Nm/nNPQwIEGWNf3zo0Uzcpr6AjJzCAwQs=;
+        b=dWrhdLh9mQ/meI7ASiUBPr+tZXnPmabExEsHfkz5LCo7AUswpZTtwJnPmi19XusjL6
+         czIhSWh1OgeU7gHJ99T+gvXUbdz1bGKA0eKsiEaHh8BmbuIHbP1NWTvqF63fssIBEK/7
+         +efWLNwDDQuu1bcm+c3znkmNaCHT3prTD0PL/AiwPm9r/GVaqeMpUklyJy4vfT0rrTiJ
+         wV2I66UJ54F3NYIMBsFg1I4Gys4VuTaTkqtPXnc0BR11zxhGATBCgjIaVBFTiLkz14NQ
+         QbBW7Ckl+7S5dutMS17vZIccuBxnmTh1HuujNj9rHBZBfkuXJiM0kF4kXK5FHILx0a+a
+         gqkQ==
+X-Gm-Message-State: AC+VfDx4Fd2Ui2Q7Oq1v8OMEraYg1WKJvopKOI8aOalPBg+rYmbE+wyE
+	HQCSKVg1YQLHOK7YN9VTxpJILg==
+X-Google-Smtp-Source: 
+ ACHHUZ6k6c/Qr75tGaXs6nIJMRkFErVcop4miNK7mJz2p1ioVu4szwQeFKE/lyY1CYAz4y9CySApsA==
+X-Received: by 2002:a7b:cd98:0:b0:3f9:b4d8:8e84 with SMTP id
+ y24-20020a7bcd98000000b003f9b4d88e84mr22176859wmj.21.1687947997137;
+        Wed, 28 Jun 2023 03:26:37 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id
+ a10-20020a5d53ca000000b003140555c0ddsm2467780wrw.56.2023.06.28.03.26.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jun 2023 03:26:36 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: krzysztof.kozlowski+dt@linaro.org,
+	andersson@kernel.org,
+	broonie@kernel.org
+Cc: robh+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	dmitry.baryshkov@linaro.org,
+	johan+linaro@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	lgirdwood@gmail.com,
+	ckeepax@opensource.cirrus.com,
+	kuninori.morimoto.gx@renesas.com,
+	linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com,
 	alsa-devel@alsa-project.org,
-	kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ALSA: oxfw: make read-only const array models
- static
-In-Reply-To: <20230627113253.700065-1-colin.i.king@gmail.com>
-References: <20230627113253.700065-1-colin.i.king@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: VI56MC656MES47TG76LOJC2I6EYNM7ZT
-X-Message-ID-Hash: VI56MC656MES47TG76LOJC2I6EYNM7ZT
-X-MailFrom: tiwai@suse.de
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/3] ASoC: qcom: get tplg firmware-name from device tree
+Date: Wed, 28 Jun 2023 11:26:18 +0100
+Message-Id: <20230628102621.15016-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: 5B6GR3QXGHZ4JXRFJKV47OUCJQZEDZWJ
+X-Message-ID-Hash: 5B6GR3QXGHZ4JXRFJKV47OUCJQZEDZWJ
+X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -110,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VI56MC656MES47TG76LOJC2I6EYNM7ZT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5B6GR3QXGHZ4JXRFJKV47OUCJQZEDZWJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,14 +126,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 27 Jun 2023 13:32:53 +0200,
-Colin Ian King wrote:
-> 
-> Don't populate the const array on the stack, instead make it static.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+With the existing setup the firmware file is looked up in a fixed location
+based on soundcard name, however this is not really scalable and not inline
+with where linux-firmware stores board specific firmwares.
 
-Thanks, applied.
+This patchset adds a new binding to q6apm to allow board specific Device Tree
+to pass firmware-name, this also makes it inline with how other firmwares are
+specified in qcom boards.
 
 
-Takashi
+Srinivas Kandagatla (3):
+  ASoC: dt-bindings: q6apm: add firmware-name bindings
+  ASoC: qcom: q6apm: add support for reading firmware name from DT
+  arm64: dts: qcom: sc8280xp-x13s: Add audio topology firmware path
+
+ .../devicetree/bindings/sound/qcom,q6apm.yaml      |  5 +++++
+ .../dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts     |  5 +++++
+ sound/soc/qcom/qdsp6/topology.c                    | 14 ++++++--------
+ 3 files changed, 16 insertions(+), 8 deletions(-)
+
+-- 
+2.21.0
+
