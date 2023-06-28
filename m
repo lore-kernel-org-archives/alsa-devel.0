@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BFEEB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 10:27:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B69CEB64D7
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 10:28:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3717A74C;
-	Wed, 28 Jun 2023 12:26:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3717A74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98A36839;
+	Wed, 28 Jun 2023 12:27:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98A36839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687948063;
-	bh=TA24QYjHstd/WwrC7y7tZQcLx+bi2yPx/HLj2hZumu0=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=o7kXWRLPqrpd8BCNurQhE+sKsASemqa7Kdmdbg9JLD3S5hkys0dxI2ulU1zonrjB/
-	 1b7CHeuW3vmWbmxCII7+DPINKVwbHCXQ+oqHut4HE9vf/TI/STeJryl+J6kjBBI7Cm
-	 u6m6LItc07mQ5AXD+3Ikg/WJ3XZTQF+IzF0GOwKM=
+	s=default; t=1687948112;
+	bh=Z6gCjtJw1AHN2sv1Sx+u/yEIB8sLzUUJEixlKZcN+L8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=h4c91NSo/VmIxUJrt3q9EKzpWprtaJVdKA0o21ACcGuMAHTDbjcfeEi1si+Ew1RRP
+	 X5JGDMbjgcBrvbhLCxFtI4z8VBMwsBunpLyK3LoSVRILG42kemxbP5mhoxgU14L6W8
+	 u1E6h4xzj2WROc3vFLPVEdPkqG4LV3Ap1rxUeXlw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE14AF80535; Wed, 28 Jun 2023 12:26:50 +0200 (CEST)
+	id 7A26BF80558; Wed, 28 Jun 2023 12:26:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96B59F80124;
-	Wed, 28 Jun 2023 12:26:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA971F80549;
+	Wed, 28 Jun 2023 12:26:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C6D92F80169; Wed, 28 Jun 2023 12:26:43 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+	id B8D71F80431; Wed, 28 Jun 2023 12:26:45 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 460BCF80169
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 12:26:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 460BCF80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7BE26F80212
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 12:26:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BE26F80212
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=ewY1PWWZ
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-3fba66f3b14so18828395e9.3
+ header.s=google header.b=xXvqIFxI
+Received: by mail-wr1-x436.google.com with SMTP id
+ ffacd0b85a97d-313f3cd6bb4so2941054f8f.3
         for <alsa-devel@alsa-project.org>;
- Wed, 28 Jun 2023 03:26:38 -0700 (PDT)
+ Wed, 28 Jun 2023 03:26:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1687947997; x=1690539997;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dKNfjF3wW/Nm/nNPQwIEGWNf3zo0Uzcpr6AjJzCAwQs=;
-        b=ewY1PWWZFTqt3d2EoUX7BYeBLURb1ND+wfkfANY8NH8ewiDiDYKhlwdmgQGxnQHkI8
-         ujbIh67rsT39B+IL/3a8hsS/BEj2wi3cUm+tFOp4wJS0FnaJkXGH2PifG6QUVyjxANxh
-         vIkdZ0LrYWYjLSMtpTnjDRNMO/yuWxKK6T7KEZrYZIxsDgX55CJ+BtTx2tlvUvxd5AJx
-         ebygNj3edwU9/m9vW6Aof0Z7kz8PgpIbtNi5dvx0nvfx6BvZ0Tlsf9yTOmmqtUjAR1IT
-         uw9np5GnyIYAIKzB8AcSIotnpy4LoKUgR4oER6EgFCgrN9/mxdvL7FAeiJhmWdp9C/aM
-         06ew==
+        d=linaro.org; s=google; t=1687947999; x=1690539999;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QndBu+Ea73+5HZm45UHtALLqjv/Bpq0i3QEOMrOjFEA=;
+        b=xXvqIFxIGebSeM10VHUvp6JelIbH0a8Ghpt64wKknXwMSWL95vKtz40Urf/l2eRZyA
+         cjijU5zSPWNmwFnS43WQxxT2utoqGcRzSyayFdaRLw0YHKXIWNe5nbZlSY5r5IUciEtW
+         Sur/5jylNwWcOGVtBJ3bEGewf7JLwbJrpY2LUxwj92DLECfudE3uVlpVGlrPXyKYapA9
+         H1yc3NgwjRve8v2SGiIZGEu2TQDAlBD3bjDUzFPwr1kBUwjVLXE4764tZgl9hFDs1Yak
+         lZrusYucIwYjDAT76FMkcFZmsRM6Gyn/Z02PodY4GX3iq+EfHcdaJnfC15T9MvKCvs4P
+         ocEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687947997; x=1690539997;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dKNfjF3wW/Nm/nNPQwIEGWNf3zo0Uzcpr6AjJzCAwQs=;
-        b=dWrhdLh9mQ/meI7ASiUBPr+tZXnPmabExEsHfkz5LCo7AUswpZTtwJnPmi19XusjL6
-         czIhSWh1OgeU7gHJ99T+gvXUbdz1bGKA0eKsiEaHh8BmbuIHbP1NWTvqF63fssIBEK/7
-         +efWLNwDDQuu1bcm+c3znkmNaCHT3prTD0PL/AiwPm9r/GVaqeMpUklyJy4vfT0rrTiJ
-         wV2I66UJ54F3NYIMBsFg1I4Gys4VuTaTkqtPXnc0BR11zxhGATBCgjIaVBFTiLkz14NQ
-         QbBW7Ckl+7S5dutMS17vZIccuBxnmTh1HuujNj9rHBZBfkuXJiM0kF4kXK5FHILx0a+a
-         gqkQ==
-X-Gm-Message-State: AC+VfDx4Fd2Ui2Q7Oq1v8OMEraYg1WKJvopKOI8aOalPBg+rYmbE+wyE
-	HQCSKVg1YQLHOK7YN9VTxpJILg==
+        d=1e100.net; s=20221208; t=1687947999; x=1690539999;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QndBu+Ea73+5HZm45UHtALLqjv/Bpq0i3QEOMrOjFEA=;
+        b=jVoJD4TEX+cQryyEdH6F2yH4IKR/NTJ9NhQkgstmNixuLJwPdnWsHoiE+1lQjS0Dqo
+         6iq+0xQMoHF0DsDKlKpt3JumSqWi5TCKvAwe8cXk3GmfMphzWJbXLn+82Tp7tQCWEWGP
+         bIRMwZvuXOVipVIrXbtkORiRNWLT/RpfZP6+IsskNe0uH4LBDQJyZf98cAFVrrD7hNAA
+         ZinWMwOq5Dp+fqYSysMEEfuXC4B9DO6Ws2h6pLv43idRccKrScyhy40FD6wvGvkP/VNi
+         RS9Gy67uQ6p1ec5zJLxNetSboiCQbz7uIGpOP7MROlpPxvLHNjM2D77h88he/UqBsSo2
+         gCZg==
+X-Gm-Message-State: AC+VfDyA0UMORHQ/nm2v7l0BZJh+t1ufcAXrXon/07pM0es0kyX6fMMY
+	0PQdjyLDJbILHkaNahpFxQB1Zw==
 X-Google-Smtp-Source: 
- ACHHUZ6k6c/Qr75tGaXs6nIJMRkFErVcop4miNK7mJz2p1ioVu4szwQeFKE/lyY1CYAz4y9CySApsA==
-X-Received: by 2002:a7b:cd98:0:b0:3f9:b4d8:8e84 with SMTP id
- y24-20020a7bcd98000000b003f9b4d88e84mr22176859wmj.21.1687947997137;
-        Wed, 28 Jun 2023 03:26:37 -0700 (PDT)
+ ACHHUZ5jM7AFbBVobXv7tCMo8URNzib2Q8aoTQ3nBXjD6sz9p2fAnpPFJReVgG2Pjw6ld9T5Q04RIw==
+X-Received: by 2002:adf:e741:0:b0:313:ee2e:dae1 with SMTP id
+ c1-20020adfe741000000b00313ee2edae1mr7605993wrn.18.1687947999424;
+        Wed, 28 Jun 2023 03:26:39 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- a10-20020a5d53ca000000b003140555c0ddsm2467780wrw.56.2023.06.28.03.26.36
+ a10-20020a5d53ca000000b003140555c0ddsm2467780wrw.56.2023.06.28.03.26.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jun 2023 03:26:36 -0700 (PDT)
+        Wed, 28 Jun 2023 03:26:39 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: krzysztof.kozlowski+dt@linaro.org,
 	andersson@kernel.org,
@@ -97,14 +99,17 @@ Cc: robh+dt@kernel.org,
 	pierre-louis.bossart@linux.intel.com,
 	alsa-devel@alsa-project.org,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 0/3] ASoC: qcom: get tplg firmware-name from device tree
-Date: Wed, 28 Jun 2023 11:26:18 +0100
-Message-Id: <20230628102621.15016-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/3] ASoC: qcom: q6apm: add support for reading firmware name
+ from DT
+Date: Wed, 28 Jun 2023 11:26:20 +0100
+Message-Id: <20230628102621.15016-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20230628102621.15016-1-srinivas.kandagatla@linaro.org>
+References: <20230628102621.15016-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 5B6GR3QXGHZ4JXRFJKV47OUCJQZEDZWJ
-X-Message-ID-Hash: 5B6GR3QXGHZ4JXRFJKV47OUCJQZEDZWJ
+Message-ID-Hash: K5A6I57DFPSGQRNV2TEP7JBN7SZQMMIE
+X-Message-ID-Hash: K5A6I57DFPSGQRNV2TEP7JBN7SZQMMIE
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -117,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5B6GR3QXGHZ4JXRFJKV47OUCJQZEDZWJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K5A6I57DFPSGQRNV2TEP7JBN7SZQMMIE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,25 +131,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-With the existing setup the firmware file is looked up in a fixed location
-based on soundcard name, however this is not really scalable and not inline
-with where linux-firmware stores board specific firmwares.
+Currently firmware file name is autogenerated based on card name and model number,
+however this imposed a restriction of finding firmware in a single firmware path.
+Platform specific firmwares are normally located in sub folders of the SoC.
 
-This patchset adds a new binding to q6apm to allow board specific Device Tree
-to pass firmware-name, this also makes it inline with how other firmwares are
-specified in qcom boards.
+Provide more flexibity by reading firmware-name from DT.
 
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/qdsp6/topology.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-Srinivas Kandagatla (3):
-  ASoC: dt-bindings: q6apm: add firmware-name bindings
-  ASoC: qcom: q6apm: add support for reading firmware name from DT
-  arm64: dts: qcom: sc8280xp-x13s: Add audio topology firmware path
-
- .../devicetree/bindings/sound/qcom,q6apm.yaml      |  5 +++++
- .../dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts     |  5 +++++
- sound/soc/qcom/qdsp6/topology.c                    | 14 ++++++--------
- 3 files changed, 16 insertions(+), 8 deletions(-)
-
+diff --git a/sound/soc/qcom/qdsp6/topology.c b/sound/soc/qcom/qdsp6/topology.c
+index cccc59b570b9..ccb4efc15648 100644
+--- a/sound/soc/qcom/qdsp6/topology.c
++++ b/sound/soc/qcom/qdsp6/topology.c
+@@ -1258,16 +1258,16 @@ static struct snd_soc_tplg_ops audioreach_tplg_ops  = {
+ 
+ int audioreach_tplg_init(struct snd_soc_component *component)
+ {
+-	struct snd_soc_card *card = component->card;
+ 	struct device *dev = component->dev;
+ 	const struct firmware *fw;
+-	char *tplg_fw_name;
++	const char *tplg_fw_name;
+ 	int ret;
+ 
+-	/* Inline with Qualcomm UCM configs and linux-firmware path */
+-	tplg_fw_name = kasprintf(GFP_KERNEL, "qcom/%s/%s-tplg.bin", card->driver_name, card->name);
+-	if (!tplg_fw_name)
+-		return -ENOMEM;
++	ret = of_property_read_string(dev->of_node, "firmware-name",  &tplg_fw_name);
++	if (ret < 0) {
++		dev_err(dev, "firmware-name property missing in Device tree\n");
++		return ret;
++	}
+ 
+ 	ret = request_firmware(&fw, tplg_fw_name, dev);
+ 	if (ret < 0) {
+@@ -1283,8 +1283,6 @@ int audioreach_tplg_init(struct snd_soc_component *component)
+ 
+ 	release_firmware(fw);
+ err:
+-	kfree(tplg_fw_name);
+-
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(audioreach_tplg_init);
 -- 
 2.21.0
 
