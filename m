@@ -4,83 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6FDDEB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 13:02:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 331ACEB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 14:21:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 838FF3E8;
-	Wed, 28 Jun 2023 15:01:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 838FF3E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE705826;
+	Wed, 28 Jun 2023 16:20:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE705826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687957332;
-	bh=2Y00wv8k2zeA83pKwDQ0+f0MQm1Vo3HU23NOR7nc/K4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1687962097;
+	bh=JI+IbpQ5/apGlo5oDhaHO4LrQ5upOVsiW5Fd9XBHvPA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tLLbDMwmEyteuCwMSZaFZG9csDNBNdp8oUF5d3IiXPXBFIWNphXKTTnParYKB4R5M
-	 xbosiatQGISg7qau8okHmcHUNmBRLg/wwpKAef5txQ+vs5VqLp82z1JC2j2zcVEaY8
-	 JXW0FoCPtLN0EHuZ0NWbul5blCw9sPTVJmKr6/cI=
+	b=GouEeFXO8ikH5zLiop7/NfgGJnIeSTqm+qGkIDT/QeT9/CrScH8F1fsz4gXHRvDk5
+	 iBOMsvT5X7SqnmEpzSufonM6VuDHGOGUMQ8ve4K46Lyl2PAdsgHEmadc6UnevPCRk2
+	 SjXe19QTvNfJ/vxnV69dQZVnwvwrTu2QHbEE+anU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DCC52F80544; Wed, 28 Jun 2023 15:01:21 +0200 (CEST)
+	id 432CAF8027B; Wed, 28 Jun 2023 16:20:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F932F8027B;
-	Wed, 28 Jun 2023 15:01:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7139F80246;
+	Wed, 28 Jun 2023 16:20:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8688BF80246; Wed, 28 Jun 2023 15:01:11 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 6E40BF80246; Wed, 28 Jun 2023 16:20:17 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ED0D6F80124
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 15:01:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED0D6F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 614A1F80093
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2023 16:20:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 614A1F80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=EZpxB2up
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=n8ObRBPV;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=djP8+c8M
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 64A0561324;
-	Wed, 28 Jun 2023 13:01:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78AE7C433C8;
-	Wed, 28 Jun 2023 13:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687957264;
-	bh=2Y00wv8k2zeA83pKwDQ0+f0MQm1Vo3HU23NOR7nc/K4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EZpxB2upZeStM/+zsI4GTnz6y7pPZiv3bTGZVGP1AYAEmWtE42tKhS6Rv8k2+I13f
-	 hhpQyoUb/MhYmnfA8zzwdKTX23t5SBXPaIYRMMgUagzwYTWwlGfUm8pIyk0jWTQezB
-	 2pEC/BGq8sV/DRQ7RkRqHkkJrjbIWrXPIqUTNHeyLZYYbKq10dVObhXR2nomA/8Boy
-	 w68yKaXAO9VxzlrymNs37HVgCnNVjSVGB8+yhXJGkolukx0DQSRyjlO/tJ1JoYtARS
-	 B2PCckymx1q/0MeyaI2aAbDB57tkJETjgL/UYY/a9tVtHqE7nkkW2B/8HQJDN8afUE
-	 TOjpM5+3oqArA==
-Date: Wed, 28 Jun 2023 14:00:58 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@intel.com>
-Subject: Re: [RFC PATCH 0/8] PCI: Define Intel PCI IDs and use them in drivers
-Message-ID: <f4baf2d6-5fb8-4a28-acdb-ec838b0e2568@sirena.org.uk>
-References: <20230628205135.517241-1-amadeuszx.slawinski@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2ivVRextVhQTuygq"
-Content-Disposition: inline
-In-Reply-To: <20230628205135.517241-1-amadeuszx.slawinski@linux.intel.com>
-X-Cookie: HELLO, everybody, I'm a HUMAN!!
-Message-ID-Hash: 7CSDB3PKM73MYK2YYRGL7MGITUMSBCF7
-X-Message-ID-Hash: 7CSDB3PKM73MYK2YYRGL7MGITUMSBCF7
-X-MailFrom: broonie@kernel.org
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 08746216DA;
+	Wed, 28 Jun 2023 14:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1687962008;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NwQK9I4qIEjyYcrYvwDUh56IDuBSHpVGFUokjQNhgfU=;
+	b=n8ObRBPV1FGflIxMgiUbz1zbHOcwTXxeJbPQs0qmwXE4NYj0J8oRkidVPCEndvDTT0jODh
+	MZRHI9Yh1F4neUff/KUYRxA6ne459Mi8xWWY4uFqWB/H52vL4ZeAQQWQEyubgaE7FhF3Oo
+	9Qc87gI1V5h4DHJtZ2mlKQk8jnP0uMk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1687962008;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NwQK9I4qIEjyYcrYvwDUh56IDuBSHpVGFUokjQNhgfU=;
+	b=djP8+c8MYg0HsrQzYnraYdxrTk0+Fin5/v6XU91Osjm/vMIrrY0Pmw8rHKt7A9E+4cFYAm
+	CUVqbUN9WE2ohuDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D7BF2138EF;
+	Wed, 28 Jun 2023 14:20:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id FAHHM5dBnGShHAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 28 Jun 2023 14:20:07 +0000
+Date: Wed, 28 Jun 2023 16:20:07 +0200
+Message-ID: <87leg3ekiw.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Symbolic Debugger" <happy.debugging@gmail.com>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 00/37] ALSA: Add MIDI 2.0 support
+In-Reply-To: <168795193282.22.889084679335823356@mailman-web.alsa-project.org>
+References: <87r0pvet82.wl-tiwai@suse.de>
+	<168795193282.22.889084679335823356@mailman-web.alsa-project.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: VEGMRN2ZVCR52BEHNPXFJDNALREA2CCD
+X-Message-ID-Hash: VEGMRN2ZVCR52BEHNPXFJDNALREA2CCD
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7CSDB3PKM73MYK2YYRGL7MGITUMSBCF7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VEGMRN2ZVCR52BEHNPXFJDNALREA2CCD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,35 +113,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Wed, 28 Jun 2023 13:32:12 +0200,
+Symbolic Debugger wrote:
+> 
+> Thanks for the notes. I read the (USB) spec again page 27/28.  (well multiple times) and as I understood 1 endpoint has 1 or more multiple  Group Terminal Blocks for which GTB each has  1 to 16 groups (group = in/out or bi =  similar to one or two midi cables/ports)  per terminal block  The spec I have is from May 5th, 2020. i wonder how the driver get the Function Block information function blocks are not mentioned in the USB spec. Is there a a newer USB spec? if yes, it may make no sense to develop a device now if the descriptors and USB functions calls changed. Page 28 still refers to MIDI -CI protocol negotiation which already has been removed.  It's a bit confusing. Would have been better to first release the updated USB spec before releasing the updated MIDI specs.
 
---2ivVRextVhQTuygq
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Basically a UMP EP can have up to 16 groups, and GTB indicates which
+groups out of those can be managed together.  And for the old USB MIDI
+2.0 spec, groups in multiple GTBs have to be unique; i.e. if GTB#1
+contains the group#1, the group#1 can't be found in another GTBs.
 
-On Wed, Jun 28, 2023 at 10:51:27PM +0200, Amadeusz S=C5=82awi=C5=84ski wrot=
-e:
-> PCI IDs for Intel HDA are duplicated across quite a few drivers, due to
-> various configurations and historical reasons. Currently almost all uses
-> of HDA PCI IDs have corresponding comment telling which platform it is.
-> Additionally there are some inconsistencies between drivers about which
-> ID corresponds to which device.
+OTOH, the new UMP 1.1 spec allows the shared groups by multiple
+Function Blocks.  For explicitly disallowing this new (rather
+confusing) behavior, "static block" flag was added in the FB info.
+When this bit is set, the FB is fixed and doesn't overlap, so that
+it's more or less compatible with GTB.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Note that Function Block is a new thing that was defined in UMP 1.1
+spec.  Naturally it didn't exist in the old USB MIDI 2.0 spec of
+year 2020.  But, the concept of Function Block (and implementation) is
+rather about UMP, and it's independent from the transport layer; that
+is, USB MIDI 2.0 spec still applies as is, and won't be updated soon,
+AFAIK.  It's a matter of the driver which information is used as the
+primary source: FB or GTB.  The device should provide both info, in
+somehow compatible ways.
 
---2ivVRextVhQTuygq
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmScLwoACgkQJNaLcl1U
-h9C14Qf/enTslOfeuoQE3sEiC7/D5fPrkfXHo5SpklR5QWR22KGn23Mr0UqCdSUa
-PJaY1aUhKtpPW/x1rP8LK0b7Hsb6zI+MW8FT+oNXIHveJRBgevnDB3MbHkv9betY
-FnBfa3gRALg0kPKxrpSYSGef1Tbg/F1m3YgtpTwBbTf5UBoRQVBhFOPw/ghLVmqt
-GRlu5kU6zBIEbEg9jTJ5eP6qFpmkYIWYMXJnuc6kA2IbDRXhtECItlWjSAs82bMY
-w9XyPZMPCY4KYbMeGAB/L1KlZvmLCsLQEDRUIva/0Ml6ty97cX67+9e+bgsqRtEC
-XtmEQX5+/sSnbrCZzUgJ1K6cMEYgXQ==
-=loPF
------END PGP SIGNATURE-----
-
---2ivVRextVhQTuygq--
+Takashi
