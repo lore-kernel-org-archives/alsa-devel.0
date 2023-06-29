@@ -4,113 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93EC3EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jun 2023 08:30:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4044FEB64DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jun 2023 08:34:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FEAC825;
-	Fri, 30 Jun 2023 10:29:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FEAC825
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3567822;
+	Fri, 30 Jun 2023 10:34:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3567822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688113833;
-	bh=L8twC1xQ5SlaB7fPp57jHEpsl+4Qe8Q0s79bb+qXOqM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=TXrMw9SfOJDESdZrbON9Eypy/JUU0dxbVzekF27T+/zYLQCBtuQGsoOjq/auHEpFs
-	 PDP3k0SqexmKq26pYT+i6FRtANDFpJ+pxvJLk+fSo3nGoa0ulky7XqAsBYgeX7+IdW
-	 Im/vJGAbRgeJncGQujB5b8XyrXK7TvsJ+NPwExf8=
+	s=default; t=1688114092;
+	bh=/SW5ysnji5GPwGhR5ZglUlrZ1PzBhv5U1Uc4Obx0LiM=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=DLHZ5l/uxg6a3QJVtY2hbN9kOCNIJZ+dwLg48WlAkeVZvx+SbjtbacLn+fcI9vaty
+	 C4/CNgO3S/C6oML9YNbVjGQJzus8qkTbGApPRl5jb/c94dWnwV5GYpGo4jLnpNyE9b
+	 FWucn5zeVbFPeC9KZPhTdAiskrfNawsH/RYXpAQw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 89B81F8051E; Fri, 30 Jun 2023 10:29:17 +0200 (CEST)
+	id 81B36F8051E; Fri, 30 Jun 2023 10:33:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0370DF80246;
-	Fri, 30 Jun 2023 10:29:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AC0EF80431;
+	Fri, 30 Jun 2023 10:33:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 167C9F80246; Fri, 30 Jun 2023 10:29:12 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 2575EF80246; Thu, 29 Jun 2023 13:51:47 +0200 (CEST)
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com
+ [IPv6:2607:f8b0:4864:20::434])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 666EFF80124
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2023 10:29:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 666EFF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 67BC1F80169
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 13:51:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67BC1F80169
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=c63xGAKx;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=FN5pXLyn
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 324551F8C8;
-	Fri, 30 Jun 2023 08:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1688113742;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sPfMVz9fzdH7759AhtIu8QxDAdvl6cZkVliQlQqx7wQ=;
-	b=c63xGAKxYwGoLNjDTpFklyoYtQL4u1JhWkWpKthjYxVksw28ft8ZP1Q/ASPPxRyJaYBRn7
-	aL0H3IBihfZPECNSERtAnCjCAjqquseksqE7gVh/PtFkriNwanAGJNKVR5V89muB365ip2
-	dBSQ11g9Kpt3zp7VlCmLloNFD0s+H34=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1688113742;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sPfMVz9fzdH7759AhtIu8QxDAdvl6cZkVliQlQqx7wQ=;
-	b=FN5pXLyno/TVUz+2leczgkywXRRdb8JuW3nt6uMUhO/HjKn3yBvswOCuqgRyvWiieqqF0B
-	IpR2pHlZf+J8/gDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2200138F8;
-	Fri, 30 Jun 2023 08:29:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id JBoTOk2SnmSITwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 30 Jun 2023 08:29:01 +0000
-Date: Fri, 30 Jun 2023 10:29:01 +0200
-Message-ID: <87h6qpcq0i.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Luke D. Jones" <luke@ljones.dev>
-Cc: tiwai@suse.com,
-	perex@perex.cz,
-	sbinding@opensource.cirrus.com,
-	andy.chi@canonical.com,
-	tangmeng@uniontech.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ALSA: hda/realtek: Add quirk for ASUS ROG GX650P
-In-Reply-To: <20230630043106.914724-2-luke@ljones.dev>
-References: <20230630043106.914724-1-luke@ljones.dev>
-	<20230630043106.914724-2-luke@ljones.dev>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: LGUSGRCU7K4KVOMFOTU7LQJPDHZOAS7T
-X-Message-ID-Hash: LGUSGRCU7K4KVOMFOTU7LQJPDHZOAS7T
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=AUt4AOWq
+Received: by mail-pf1-x434.google.com with SMTP id
+ d2e1a72fcca58-6682909acadso345206b3a.3
+        for <alsa-devel@alsa-project.org>;
+ Thu, 29 Jun 2023 04:51:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688039501; x=1690631501;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SFIiYNtlNSqroNrtzmhagRxkFdGItjtQCdhKlFJnDHI=;
+        b=AUt4AOWqIZhyyE2jfbneDnBYp3HZG8BwQ23vXh0EAR6che7HBdUfK+ipMNCJGKasZt
+         CNfeJFhmoXBdM/lvqxjBX3OKLo+2zUJ+ymaS3UL0Hk/nmAsZKyX9EZX7QFPU9guiIa6W
+         7CMdypSTdKwKmKOwg4TZ1WKPgBbpyrTetUtLBpGDVEESniINQD7fWZ2k+mDdBULlfMrD
+         o1omRvmLC/lc+wjb+kl8SL7+Kjo+B8wQwXcL1MF0mRuqxXyuXQM9Wg9Cn6OKMvLm5Ncg
+         3ztjs0cDXwQJ46wHnWKmQQz6JQG/AA9sBn33ZEgUisUAzpgFuZGP4s7j08HClTtlBRvg
+         hCWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688039501; x=1690631501;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SFIiYNtlNSqroNrtzmhagRxkFdGItjtQCdhKlFJnDHI=;
+        b=RGrIHVlaSnRiMQ7Y0mPpCISrIfEaOiVNUWGND6rED4gXNCNF/3VJYPJkcJ1UH14pID
+         xpPm01IROsDfED1udXur2CnlF8kCLfYyM+fscGhvdlskEN6DWmmxeGDYSqEVI/xVUxIb
+         nV7C8jlhQLAn2pReD+KGnFsECuv8f+i3hcA21a7THSX7FPOFnklefqQG7nsg6TmXJ2CY
+         tClxRMbtHJNv019lo6L1Wj9/86uEPAIlpiQwjrgr1l8X98m7YmEp4Zanv5VS3S3uRT3z
+         ZOt3e/KAmjRu++qymEA+EvtBE+zpsuxk01zKHgm5+JYoMXNSn5Rr1HM5fWeqemztrt8L
+         skfg==
+X-Gm-Message-State: AC+VfDwdyhhoEYZIsTSdVu1MXOoRRzhFxno3z6gqjaTD+kUPa6q6lCIr
+	kEpG815Zin8vkTJtk3BXCnM=
+X-Google-Smtp-Source: 
+ ACHHUZ7t8UNxjnFrQAOU+cnS6LGNdmLAjkfaeYPGQc9MCu7fsWNBcvZqQCOQI9KbPkH0qh6rDLKwpw==
+X-Received: by 2002:a05:6a00:3996:b0:67e:bf65:ae61 with SMTP id
+ fi22-20020a056a00399600b0067ebf65ae61mr6239403pfb.28.1688039500624;
+        Thu, 29 Jun 2023 04:51:40 -0700 (PDT)
+Received: from localhost.localdomain ([107.148.241.191])
+        by smtp.gmail.com with ESMTPSA id
+ u5-20020aa78485000000b00671eb039b23sm7050492pfn.58.2023.06.29.04.51.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jun 2023 04:51:40 -0700 (PDT)
+From: Huang Rui <vowstar@gmail.com>
+To: tiwai@suse.com,
+	perex@perex.cz
+Cc: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	vitalyr@opensource.cirrus.com,
+	Huang Rui <vowstar@gmail.com>
+Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP EliteBook G10
+Date: Thu, 29 Jun 2023 19:50:33 +0800
+Message-ID: <20230629115033.2719876-1-vowstar@gmail.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-MailFrom: vowstar@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: D5XSHHCQBECBYWH4WZQIJRH3YFU354MZ
+X-Message-ID-Hash: D5XSHHCQBECBYWH4WZQIJRH3YFU354MZ
+X-Mailman-Approved-At: Fri, 30 Jun 2023 08:33:30 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LGUSGRCU7K4KVOMFOTU7LQJPDHZOAS7T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D5XSHHCQBECBYWH4WZQIJRH3YFU354MZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,25 +115,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 30 Jun 2023 06:31:05 +0200,
-Luke D. Jones wrote:
-> 
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -5883,7 +5883,7 @@ static void alc_fixup_headset_mode_alc255_no_hp_mic(struct hda_codec *codec,
->  		struct alc_spec *spec = codec->spec;
->  		spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
->  		alc255_set_default_jack_type(codec);
-> -	} 
-> +	}
->  	else
->  		alc_fixup_headset_mode(codec, fix, action);
->  }
+In the commit 3e10f6ca76c4 ("ALSA: hda/realtek: Add quirk for
+HP EliteBook G10 laptops"), speakers are fixed but mute/micmute
+LEDs does not lit. Need the ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED
+to get all mute/micmute LEDs working.
 
-This change looks irrelevant.  Could you drop it?
-If it needs to be fixed, put in another cleanup patch.
+Signed-off-by: Huang Rui <vowstar@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index dabfdecece26..425c87733e79 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9491,7 +9491,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8b65, "HP ProBook 455 15.6 inch G10 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8b66, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8b70, "HP EliteBook 835 G10", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x103c, 0x8b72, "HP EliteBook 845 G10", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x103c, 0x8b72, "HP EliteBook 845 G10", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8b74, "HP EliteBook 845W G10", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x103c, 0x8b77, "HP ElieBook 865 G10", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x103c, 0x8b7a, "HP", ALC236_FIXUP_HP_GPIO_LED),
+-- 
+2.41.0
 
-thanks,
-
-Takashi
