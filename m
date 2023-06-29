@@ -4,48 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BACD5EB64D7
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Jun 2023 23:58:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CD49EB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 02:05:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E96EB839;
-	Thu, 29 Jun 2023 01:57:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E96EB839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 039F5826;
+	Thu, 29 Jun 2023 04:04:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 039F5826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1687996713;
-	bh=/ecU/vRlyWCLdN61xy1BnAb0dARS38sGOsvDkZ3/Xfk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	s=default; t=1688004306;
+	bh=2k1AWCmQuhGYPHF6PczZ4gH7+wRLgyhbmtKx96F/9Vo=;
+	h=Subject:From:To:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=U7aBioSQN7KV6v/RedOSnFf8K+0gNodxZd2F7REc0LR4rRXw/mViTgay/u5C6E1jG
-	 wNFxcXM3r+d7DuysYaWs6pIRShbu7S+1NvFyqPFGJyaCVmra8/5IAQjsZbEjJhZf9P
-	 koUV4n1MFIdu3MfCyhj6PD315cJPepJirtk2TEdk=
+	b=DwIMLz2TMqB+vOgZFzwn1cRwb2fpHWFUal5uka+JclhLwDAjJzqgdsfSt7OUh1jJ/
+	 XEZgNMrxwuTlydVjkaU4FDd1S+Sfi7aOju8a/buT/zuMmac5tnGBv6tUI02qCn8M0c
+	 uBlGw/mk8bwCXMwXxA5bluQocGO1ya5yyWuqfjDY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DD2BDF8053B; Thu, 29 Jun 2023 01:57:18 +0200 (CEST)
+	id A5887F80246; Thu, 29 Jun 2023 04:03:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 567E1F80246;
-	Thu, 29 Jun 2023 01:57:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A5B1F8051E;
+	Thu, 29 Jun 2023 04:03:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8BDE6F80246; Thu, 29 Jun 2023 01:57:13 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BFD7F80093
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 01:57:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BFD7F80093
+	id 1EF5CF80246; Thu, 29 Jun 2023 04:03:48 +0200 (CEST)
+Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
+ [10.254.200.11])
+	by alsa1.perex.cz (Postfix) with ESMTP id C775AF800E3
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 04:03:47 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+Subject: Re: [PATCH v2 00/37] ALSA: Add MIDI 2.0 support
+From: "Symbolic Debugger" <happy.debugging@gmail.com>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1687996631681684971-webhooks-bot@alsa-project.org>
-References: <1687996631681684971-webhooks-bot@alsa-project.org>
-Subject: configure: Add large file support via CFLAGS
-Message-Id: <20230628235713.8BDE6F80246@alsa1.perex.cz>
-Date: Thu, 29 Jun 2023 01:57:13 +0200 (CEST)
-Message-ID-Hash: 4XDONOU3RCYASWPSFGQII2Q7OR5A7EIT
-X-Message-ID-Hash: 4XDONOU3RCYASWPSFGQII2Q7OR5A7EIT
-X-MailFrom: github@alsa-project.org
+Date: Thu, 29 Jun 2023 02:03:47 -0000
+Message-ID: 
+ <168800422777.22.14097919444187982640@mailman-web.alsa-project.org>
+In-Reply-To: <87leg3ekiw.wl-tiwai@suse.de>
+References: <87leg3ekiw.wl-tiwai@suse.de>
+User-Agent: HyperKitty on https://mailman.alsa-project.org/
+Message-ID-Hash: JD5BLJ2Q2QYJH62MNY34K2BM5UXOZOGM
+X-Message-ID-Hash: JD5BLJ2Q2QYJH62MNY34K2BM5UXOZOGM
+X-MailFrom: happy.debugging@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4XDONOU3RCYASWPSFGQII2Q7OR5A7EIT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JVMCYYMVKCN7RB4Q7ZFX42OUE7VG7Q3N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,17 +67,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib pull request #333 was opened from kendase3:
+Thanks again for your time to reply . I think my coin has dropped :-)
 
-Currently scanelf (pax-utils) detects missing LFS support in the following files/calls:
-fopen,__open_2,mmap,lseek,open /usr/lib/libasound.so.2.0.0 fopen,open /usr/lib/libatopology.so.2.0.0
-
-Note that this may cause problems on systems with a 32-bit kernel, but I've tested playing audio on a more recent 32-bit system with a 64-bit kernel.
-
-Notably AC_SYS_LARGEFILE (currently used in alsa-utils for example) did not solve the issue for my case, whereas FILE_OFFSET_BITS did.
-
-Let me know if you'd prefer an alternative approach!
-
-Request URL   : https://github.com/alsa-project/alsa-lib/pull/333
-Patch URL     : https://github.com/alsa-project/alsa-lib/pull/333.patch
-Repository URL: https://github.com/alsa-project/alsa-lib
+1 .So basically, we have GTB in the device descriptor and the FB information is an UMP call to the device by the ALSA driver.  "The device should provide both info, in somehow compatible ways."  . The process would be [a]. driver gets USB device descriptors,  [b]. driver issues USB call to retrieve  USB GTB descriptors and then [c] driver issues UMP stream call to retrieve the function block information. (if N/A, driver falls back on the GTB information). This information should be consistent with the groups defined in the GTB.
+2. When creating the device descriptors and GTB descriptors based on the 2020 USB 2.0 spec, it should work ?  Would those port show up in ALSA or can only be access via /dev/umpC*D*
+3. w/o duplicates with 2 GTB's and for 32 groups, for example, it would be 1st GTB has group 1~16 and 2nd GTB 17~23  ?. A FB could use the groups from both GTB's for example Group1  and 17.
+4. If two functions uses all 16 groups, that would use up all 32 FB's , correct ?
