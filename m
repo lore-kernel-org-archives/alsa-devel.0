@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99117EB64D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 10:48:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C2BFEB64DD
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 10:48:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A065F846;
-	Thu, 29 Jun 2023 12:47:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A065F846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29E9F850;
+	Thu, 29 Jun 2023 12:47:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29E9F850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688035722;
-	bh=zhLC9JAzQNOB8jyzT8cMCfKVD3PidLJzPIIHOo/ep4E=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=f2IYXD73TWuzLl3TELtnLauz/bPHgM0cjrySLOXb9cXYajwHkl7socEsPGSQeMN6X
-	 JRqB+FfJz576rRL5FVo760YTUiCYbyjwdodJXh81Q7josfB0kzepI52ik5iHx/9uJZ
-	 hNhwu4vAEnr3O1xXUB+LSEtIM5HIFA9YJKZ6GuvA=
+	s=default; t=1688035728;
+	bh=bKELHWVc0gm7Wrq9rJb2qhEkSaXqfGvlib5oCM0+8EM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=sZIbxnRGZFXxdE8te63fldmH5Oj7WBvnlBNoPeh4XBl46KDGF3VYPMymzDhALGlGb
+	 86Q8QZHGrm6TAWVHbL8VHmcspohhUitjSsJgVXsREBUfJ2IjpcnIHZcQukYK9uZ7P7
+	 Nk/YFAkgkEuzvk+dil3lts4vBBhOXLyX6ugJSf38=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5C0D5F80548; Thu, 29 Jun 2023 12:47:52 +0200 (CEST)
+	id C1D2BF80564; Thu, 29 Jun 2023 12:47:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9596F80246;
-	Thu, 29 Jun 2023 12:47:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45107F80549;
+	Thu, 29 Jun 2023 12:47:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79DC1F80212; Thu, 29 Jun 2023 12:47:48 +0200 (CEST)
+	id 7F809F80212; Thu, 29 Jun 2023 12:47:49 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AF22AF80431
+	by alsa1.perex.cz (Postfix) with ESMTPS id 97ABEF80246
 	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 12:46:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF22AF80431
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97ABEF80246
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=OrbXaQQT
+ header.s=Intel header.b=A1wX8GIZ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1688035574; x=1719571574;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zhLC9JAzQNOB8jyzT8cMCfKVD3PidLJzPIIHOo/ep4E=;
-  b=OrbXaQQTZYp7bv+l8Ox96JF3lduH+QNsz8yPaMvK1M4kAtunrH1Gx9HC
-   kFfaj/P7AstN4wQykkHkoC4qhOxPxa+x+MPlv3OkX1SjbUoHbHqYL9xoX
-   CMRsjdQvtwF6cRoggV8H+A/YI9HvjNucFOkWOAJKcV3CPgB2Z3SHXfwCx
-   BuyFapfClK5s0PE+6ZAa3U5KvXtyow8zD8AZZEqBo4l7uGCGA93otqeg8
-   aCai6cTKDMyvf9oD4jYUFflhkJF/HuWJg4plE6x+odS0HlZGRx6xgliXo
-   lNz2bz7c2x2RpJr4KefuNPlEXBSoW3y6V8phMKvKI6iaHFCqhXlacu7I1
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=bKELHWVc0gm7Wrq9rJb2qhEkSaXqfGvlib5oCM0+8EM=;
+  b=A1wX8GIZuk7uZXj0lekrwzD/8dcnQdiSXTrnOfpIeuhmsb2ThYeGiOWw
+   l5MUMCea1KozD898sGawuFrTjsd6FdGk0qAc/JNEQewPRop/QHrwrMD/a
+   ZjSKwcPOXQCqXbba/s73XmkjLKUOojrtrxtWsf4IpJAT7iqFzzr56AJ0Z
+   8tvXunbyRtFPeLuOz49ou6kk5w9T8up2gd3kG2vR+IQSx6dRCHQ2GU/B7
+   /qwVBqQzf5L8Xk71wiy96nEyIjUuuax5yDdqYDm4qyra05Owf2W7r5osP
+   1h6fVMnaSXYHYW3IcMuIKngxEKpq9IIl1l4/hi16Uso6Qi8k+6NloWgDB
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="362115085"
+X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="362115080"
 X-IronPort-AV: E=Sophos;i="6.01,168,1684825200";
-   d="scan'208";a="362115085"
+   d="scan'208";a="362115080"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  29 Jun 2023 03:46:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="963948379"
+X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="963948381"
 X-IronPort-AV: E=Sophos;i="6.01,168,1684825200";
-   d="scan'208";a="963948379"
+   d="scan'208";a="963948381"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga006.fm.intel.com with ESMTP; 29 Jun 2023 03:46:04 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id AB1AA358; Thu, 29 Jun 2023 13:46:05 +0300 (EEST)
+	id C55EC4DA; Thu, 29 Jun 2023 13:46:05 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	alsa-devel@alsa-project.org,
@@ -73,14 +74,16 @@ Cc: Oder Chiou <oder_chiou@realtek.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v1 0/3] ASoC: rt5677: Refactor to use device_get_match_data()
-Date: Thu, 29 Jun 2023 13:46:00 +0300
-Message-Id: <20230629104603.88612-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 2/3] ASoC: rt5677: Use device_get_match_data()
+Date: Thu, 29 Jun 2023 13:46:02 +0300
+Message-Id: <20230629104603.88612-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+In-Reply-To: <20230629104603.88612-1-andriy.shevchenko@linux.intel.com>
+References: <20230629104603.88612-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BXJORMWIM6PW6WQCOMXRSGL67P5FI7ZN
-X-Message-ID-Hash: BXJORMWIM6PW6WQCOMXRSGL67P5FI7ZN
+Message-ID-Hash: S6WYEUA3YSPEALY2BWJAGZVUVSHG4DOF
+X-Message-ID-Hash: S6WYEUA3YSPEALY2BWJAGZVUVSHG4DOF
 X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BXJORMWIM6PW6WQCOMXRSGL67P5FI7ZN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S6WYEUA3YSPEALY2BWJAGZVUVSHG4DOF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,19 +105,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The code can be simplified with device_get_match_data().
-Besides that couple of additional changes, one for maintenance (patch 3)
-and one for making IRQ domain agnostic (not pinned to OF).
+Use device_get_match_data() to simplify the code.
 
-Andy Shevchenko (3):
-  ASoC: rt5677: Use agnostic irq_domain_create_linear()
-  ASoC: rt5677: Use device_get_match_data()
-  ASoC: rt5677: Sort headers alphabetically
-
- sound/soc/codecs/rt5677.c | 41 +++++++++++++--------------------------
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/soc/codecs/rt5677.c | 21 ++++-----------------
  sound/soc/codecs/rt5677.h |  4 ++--
- 2 files changed, 16 insertions(+), 29 deletions(-)
+ 2 files changed, 6 insertions(+), 19 deletions(-)
 
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 4ef9c88cb20a..4d09eb2a0755 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -6,7 +6,6 @@
+  * Author: Oder Chiou <oder_chiou@realtek.com>
+  */
+ 
+-#include <linux/acpi.h>
+ #include <linux/fs.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+@@ -18,7 +17,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+ #include <linux/firmware.h>
+-#include <linux/of_device.h>
+ #include <linux/property.h>
+ #include <linux/irq.h>
+ #include <linux/interrupt.h>
+@@ -5559,6 +5557,7 @@ static int rt5677_init_irq(struct i2c_client *i2c)
+ 
+ static int rt5677_i2c_probe(struct i2c_client *i2c)
+ {
++	struct device *dev = &i2c->dev;
+ 	struct rt5677_priv *rt5677;
+ 	int ret;
+ 	unsigned int val;
+@@ -5573,21 +5572,9 @@ static int rt5677_i2c_probe(struct i2c_client *i2c)
+ 	INIT_DELAYED_WORK(&rt5677->dsp_work, rt5677_dsp_work);
+ 	i2c_set_clientdata(i2c, rt5677);
+ 
+-	if (i2c->dev.of_node) {
+-		const struct of_device_id *match_id;
+-
+-		match_id = of_match_device(rt5677_of_match, &i2c->dev);
+-		if (match_id)
+-			rt5677->type = (enum rt5677_type)match_id->data;
+-	} else if (ACPI_HANDLE(&i2c->dev)) {
+-		const struct acpi_device_id *acpi_id;
+-
+-		acpi_id = acpi_match_device(rt5677_acpi_match, &i2c->dev);
+-		if (acpi_id)
+-			rt5677->type = (enum rt5677_type)acpi_id->driver_data;
+-	} else {
++	rt5677->type = (enum rt5677_type)(uintptr_t)device_get_match_data(dev);
++	if (rt5677->type == 0)
+ 		return -EINVAL;
+-	}
+ 
+ 	rt5677_read_device_properties(rt5677, &i2c->dev);
+ 
+@@ -5702,7 +5689,7 @@ static struct i2c_driver rt5677_i2c_driver = {
+ 	.driver = {
+ 		.name = RT5677_DRV_NAME,
+ 		.of_match_table = rt5677_of_match,
+-		.acpi_match_table = ACPI_PTR(rt5677_acpi_match),
++		.acpi_match_table = rt5677_acpi_match,
+ 	},
+ 	.probe    = rt5677_i2c_probe,
+ 	.remove   = rt5677_i2c_remove,
+diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
+index 944ae02aafc2..5ccdf1ba613a 100644
+--- a/sound/soc/codecs/rt5677.h
++++ b/sound/soc/codecs/rt5677.h
+@@ -1753,8 +1753,8 @@ enum {
+ };
+ 
+ enum rt5677_type {
+-	RT5677,
+-	RT5676,
++	RT5677 = 1,
++	RT5676 = 2,
+ };
+ 
+ /* ASRC clock source selection */
 -- 
 2.40.0.1.gaa8946217a0b
 
