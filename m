@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2866CEB64D7
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 02:12:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9257DEB64DC
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 02:12:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06894844;
-	Thu, 29 Jun 2023 04:11:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06894844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03B94851;
+	Thu, 29 Jun 2023 04:11:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03B94851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688004748;
-	bh=MostrNHwPu0gNiTD0upitaaQGXhh9TwwG+U2goir75s=;
+	s=default; t=1688004750;
+	bh=3sGFug+NvgAFN3k5HnauHm2aPnOTjtfZadwZ5UtUyQ4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=dtdSsmbZmwkXLR0ihreYc19rsslJn51HKKBCW0sPtgjrRK2kRdunJf2MVR4b6T5mq
-	 g1KH4Vi371FqnM5RgACTAJSw5dd7Ekr+n8N0y2/3JTgCF3AiAmdzgR/wVEfPwuU/Dv
-	 V9hC2WdGT6+xg/xy9yqPBnyDw70HVsoXyPKEPrvg=
+	b=ImdvosP8nqBIZKuxalZMCaL8EPnXk5opDXZDoQ3ezsWXBSa6yT0lRvNOGD6EiTlPk
+	 e1pc9guIvVk4/a5PQnF66CPjdEq/S+jdESuM2Cx1M0Kvr3GzKXBuZ8duJAmUzDCTAk
+	 xJRhZIoxgFmNTnuOUGzunUUU2pJQER+UhpqMAou8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EE82FF80212; Thu, 29 Jun 2023 04:11:10 +0200 (CEST)
+	id 76194F8057A; Thu, 29 Jun 2023 04:11:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F57EF8055C;
-	Thu, 29 Jun 2023 04:11:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E1B6F80579;
+	Thu, 29 Jun 2023 04:11:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB5B6F80558; Thu, 29 Jun 2023 04:11:03 +0200 (CEST)
+	id DD5E0F80551; Thu, 29 Jun 2023 04:11:09 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D3283F80212
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 04:10:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3283F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id 756A2F8051E
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 04:10:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 756A2F8051E
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 33884200D39;
-	Thu, 29 Jun 2023 04:10:35 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 222B4200D56;
+	Thu, 29 Jun 2023 04:10:40 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C6925200D36;
-	Thu, 29 Jun 2023 04:10:34 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DF4AA200D42;
+	Thu, 29 Jun 2023 04:10:39 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 0E481181D0E5;
-	Thu, 29 Jun 2023 10:10:32 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 2919D181D0E5;
+	Thu, 29 Jun 2023 10:10:38 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: tfiga@chromium.org,
 	m.szyprowski@samsung.com,
@@ -61,16 +61,15 @@ To: tfiga@chromium.org,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 2/6] ASoC: fsl_asrc: define functions for memory to memory
- usage
-Date: Thu, 29 Jun 2023 09:37:49 +0800
-Message-Id: <1688002673-28493-3-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 6/6] ASoC: fsl_easrc: enable memory to memory function
+Date: Thu, 29 Jun 2023 09:37:53 +0800
+Message-Id: <1688002673-28493-7-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1688002673-28493-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1688002673-28493-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: 672YG6PXS6HWFC4RQK3I34SCTUYYSSUR
-X-Message-ID-Hash: 672YG6PXS6HWFC4RQK3I34SCTUYYSSUR
+Message-ID-Hash: U24XMVUIIDNDHVG2UZ36F3QN7ZEULPDI
+X-Message-ID-Hash: U24XMVUIIDNDHVG2UZ36F3QN7ZEULPDI
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/672YG6PXS6HWFC4RQK3I34SCTUYYSSUR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U24XMVUIIDNDHVG2UZ36F3QN7ZEULPDI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,303 +91,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-ASRC can be used on memory to memory case, define several
-functions for m2m usage.
-
-m2m_start_part_one: first part of the start steps
-m2m_start_part_two: second part of the start steps
-m2m_stop_part_one: first part of stop steps
-m2m_stop_part_two: second part of stop steps
-m2m_check_format: check format is supported or not
-m2m_calc_out_len: calculate output length according to input length
-m2m_get_maxburst: burst size for dma
-m2m_pair_suspend: suspend function of pair
-m2m_pair_resume: resume function of pair
-get_output_fifo_size: get remaining data size in FIFO
+Intergrate memory to memory feature to EASRC driver.
+call m2m probe(), remove(), suspend() and resume()
+in different callback.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_asrc.c        | 138 ++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_asrc.h        |   2 +
- sound/soc/fsl/fsl_asrc_common.h |  54 +++++++++++++
- 3 files changed, 194 insertions(+)
+ sound/soc/fsl/fsl_easrc.c | 41 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 39 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index adb8a59de2bd..30190ccb74e7 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -1063,6 +1063,135 @@ static int fsl_asrc_get_fifo_addr(u8 dir, enum asrc_pair_index index)
- 	return REG_ASRDx(dir, index);
- }
+diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
+index b735b24badc2..bc5404627032 100644
+--- a/sound/soc/fsl/fsl_easrc.c
++++ b/sound/soc/fsl/fsl_easrc.c
+@@ -29,6 +29,7 @@
+ #include <sound/core.h>
  
-+/* Get sample numbers in FIFO */
-+static unsigned int fsl_asrc_get_output_fifo_size(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	enum asrc_pair_index index = pair->index;
-+	u32 val;
-+
-+	regmap_read(asrc->regmap, REG_ASRFST(index), &val);
-+
-+	val &= ASRFSTi_OUTPUT_FIFO_MASK;
-+
-+	return val >> ASRFSTi_OUTPUT_FIFO_SHIFT;
-+}
-+
-+static int fsl_asrc_m2m_start_part_one(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc_pair_priv *pair_priv = pair->private;
-+	struct fsl_asrc *asrc = pair->asrc;
-+	struct device *dev = &asrc->pdev->dev;
-+	struct asrc_config config;
-+	int ret;
-+
-+	/* fill config */
-+	config.pair = pair->index;
-+	config.channel_num = pair->channels;
-+	config.input_sample_rate = pair->rate[IN];
-+	config.output_sample_rate = pair->rate[OUT];
-+	config.input_format = pair->sample_format[IN];
-+	config.output_format = pair->sample_format[OUT];
-+	config.inclk = INCLK_NONE;
-+	config.outclk = OUTCLK_ASRCK1_CLK;
-+
-+	pair_priv->config = &config;
-+	ret = fsl_asrc_config_pair(pair, true);
+ #include "fsl_easrc.h"
++#include "fsl_asrc_m2m.h"
+ #include "imx-pcm.h"
+ 
+ #define FSL_EASRC_FORMATS       (SNDRV_PCM_FMTBIT_S16_LE | \
+@@ -2190,11 +2191,21 @@ static int fsl_easrc_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	/* probe the m2m feature */
++	ret = fsl_asrc_m2m_probe(easrc);
 +	if (ret) {
-+		dev_err(dev, "failed to config pair: %d\n", ret);
++		dev_err(&pdev->dev, "failed to init m2m device %d\n", ret);
 +		return ret;
 +	}
 +
-+	fsl_asrc_start_pair(pair);
+ 	return 0;
+ }
+ 
+ static void fsl_easrc_remove(struct platform_device *pdev)
+ {
++	/* remove the m2m feature */
++	fsl_asrc_m2m_remove(pdev);
 +
-+	return 0;
-+}
-+
-+static int fsl_asrc_m2m_start_part_two(struct fsl_asrc_pair *pair)
+ 	pm_runtime_disable(&pdev->dev);
+ }
+ 
+@@ -2295,12 +2306,38 @@ static __maybe_unused int fsl_easrc_runtime_resume(struct device *dev)
+ 	return ret;
+ }
+ 
++static int __maybe_unused fsl_easrc_suspend(struct device *dev)
 +{
-+	/*
-+	 * Clear DMA request during the stall state of ASRC:
-+	 * During STALL state, the remaining in input fifo would never be
-+	 * smaller than the input threshold while the output fifo would not
-+	 * be bigger than output one. Thus the DMA request would be cleared.
-+	 */
-+	fsl_asrc_set_watermarks(pair, ASRC_FIFO_THRESHOLD_MIN,
-+				ASRC_FIFO_THRESHOLD_MAX);
++	struct fsl_asrc *easrc = dev_get_drvdata(dev);
++	int ret;
 +
-+	/* Update the real input threshold to raise DMA request */
-+	fsl_asrc_set_watermarks(pair, ASRC_M2M_INPUTFIFO_WML,
-+				ASRC_M2M_OUTPUTFIFO_WML);
++	/* suspend m2m function first */
++	fsl_asrc_m2m_suspend(easrc);
 +
-+	return 0;
++	ret = pm_runtime_force_suspend(dev);
++
++	return ret;
 +}
 +
-+static int fsl_asrc_m2m_stop_part_one(struct fsl_asrc_pair *pair)
++static int __maybe_unused fsl_easrc_resume(struct device *dev)
 +{
-+	fsl_asrc_stop_pair(pair);
++	struct fsl_asrc *easrc = dev_get_drvdata(dev);
++	int ret;
 +
-+	return 0;
++	ret = pm_runtime_force_resume(dev);
++
++	/* resume m2m function */
++	fsl_asrc_m2m_resume(easrc);
++
++	return ret;
 +}
 +
-+static int fsl_asrc_m2m_check_format(u8 dir, u32 rate, u32 channels, u32 format)
-+{
-+	u64 support_format = FSL_ASRC_FORMATS;
-+
-+	if (channels < 1 || channels > 10)
-+		return -EINVAL;
-+
-+	if (rate < 5512 || rate > 192000)
-+		return -EINVAL;
-+
-+	if (dir == IN)
-+		support_format |= SNDRV_PCM_FMTBIT_S8;
-+
-+	if (!(1 << format & support_format))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+/* calculate capture data length according to output data length and sample rate */
-+static int fsl_asrc_m2m_calc_out_len(struct fsl_asrc_pair *pair, int input_buffer_length)
-+{
-+	unsigned int in_width, out_width;
-+	unsigned int channels = pair->channels;
-+	unsigned int in_samples, out_samples;
-+	unsigned int out_length;
-+
-+	in_width = snd_pcm_format_physical_width(pair->sample_format[IN]) / 8;
-+	out_width = snd_pcm_format_physical_width(pair->sample_format[OUT]) / 8;
-+
-+	in_samples = input_buffer_length / in_width / channels;
-+	out_samples = pair->rate[OUT] * in_samples / pair->rate[IN];
-+	out_length = (out_samples - ASRC_OUTPUT_LAST_SAMPLE) * out_width * channels;
-+
-+	return out_length;
-+}
-+
-+static int fsl_asrc_m2m_get_maxburst(u8 dir, struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	struct fsl_asrc_priv *asrc_priv = asrc->private;
-+	int wml = (dir == IN) ? ASRC_M2M_INPUTFIFO_WML : ASRC_M2M_OUTPUTFIFO_WML;
-+
-+	if (!asrc_priv->soc->use_edma)
-+		return wml * pair->channels;
-+	else
-+		return 1;
-+}
-+
-+static int fsl_asrc_m2m_pair_resume(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	int i;
-+
-+	for (i = 0; i < pair->channels * 4; i++)
-+		regmap_write(asrc->regmap, REG_ASRDI(pair->index), 0);
-+
-+	return 0;
-+}
-+
- static int fsl_asrc_runtime_resume(struct device *dev);
- static int fsl_asrc_runtime_suspend(struct device *dev);
- 
-@@ -1147,6 +1276,15 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 	asrc->get_fifo_addr = fsl_asrc_get_fifo_addr;
- 	asrc->pair_priv_size = sizeof(struct fsl_asrc_pair_priv);
- 
-+	asrc->m2m_start_part_one = fsl_asrc_m2m_start_part_one;
-+	asrc->m2m_start_part_two = fsl_asrc_m2m_start_part_two;
-+	asrc->m2m_stop_part_one = fsl_asrc_m2m_stop_part_one;
-+	asrc->get_output_fifo_size = fsl_asrc_get_output_fifo_size;
-+	asrc->m2m_check_format = fsl_asrc_m2m_check_format;
-+	asrc->m2m_calc_out_len = fsl_asrc_m2m_calc_out_len;
-+	asrc->m2m_get_maxburst = fsl_asrc_m2m_get_maxburst;
-+	asrc->m2m_pair_resume = fsl_asrc_m2m_pair_resume;
-+
- 	if (of_device_is_compatible(np, "fsl,imx35-asrc")) {
- 		asrc_priv->clk_map[IN] = input_clk_map_imx35;
- 		asrc_priv->clk_map[OUT] = output_clk_map_imx35;
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 86d2422ad606..1c492eb237f5 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -12,6 +12,8 @@
- 
- #include  "fsl_asrc_common.h"
- 
-+#define ASRC_M2M_INPUTFIFO_WML		0x4
-+#define ASRC_M2M_OUTPUTFIFO_WML		0x2
- #define ASRC_DMA_BUFFER_NUM		2
- #define ASRC_INPUTFIFO_THRESHOLD	32
- #define ASRC_OUTPUTFIFO_THRESHOLD	32
-diff --git a/sound/soc/fsl/fsl_asrc_common.h b/sound/soc/fsl/fsl_asrc_common.h
-index 7e1c13ca37f1..9294f378f0cc 100644
---- a/sound/soc/fsl/fsl_asrc_common.h
-+++ b/sound/soc/fsl/fsl_asrc_common.h
-@@ -4,6 +4,10 @@
-  *
-  */
- 
-+#include <media/v4l2-ctrls.h>
-+#include <media/v4l2-device.h>
-+#include <media/v4l2-fh.h>
-+
- #ifndef _FSL_ASRC_COMMON_H
- #define _FSL_ASRC_COMMON_H
- 
-@@ -34,6 +38,13 @@ enum asrc_pair_index {
-  * @pos: hardware pointer position
-  * @req_dma_chan: flag to release dev_to_dev chan
-  * @private: pair private area
-+ * @complete: dma task complete
-+ * @fh: v4l2 file handler
-+ * @ctrl_handler: v4l2 control handler
-+ * @sample_format: format of m2m
-+ * @rate: rate of m2m
-+ * @buf_len: buffer length of m2m
-+ * @req_pair: flag for request pair
-  */
- struct fsl_asrc_pair {
- 	struct fsl_asrc *asrc;
-@@ -49,6 +60,15 @@ struct fsl_asrc_pair {
- 	bool req_dma_chan;
- 
- 	void *private;
-+
-+	/* used for m2m */
-+	struct completion complete[2];
-+	struct v4l2_fh fh;
-+	struct v4l2_ctrl_handler ctrl_handler;
-+	snd_pcm_format_t sample_format[2];
-+	unsigned int rate[2];
-+	unsigned int buf_len[2];
-+	bool req_pair;
+ static const struct dev_pm_ops fsl_easrc_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(fsl_easrc_runtime_suspend,
+ 			   fsl_easrc_runtime_resume,
+ 			   NULL)
+-	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+-				pm_runtime_force_resume)
++	SET_SYSTEM_SLEEP_PM_OPS(fsl_easrc_suspend,
++				fsl_easrc_resume)
  };
  
- /**
-@@ -63,6 +83,10 @@ struct fsl_asrc_pair {
-  * @ipg_clk: clock source to drive peripheral
-  * @spba_clk: SPBA clock (optional, depending on SoC design)
-  * @lock: spin lock for resource protection
-+ * @v4l2_dev: v4l2 device structure
-+ * @m2m_dev: pointer to v4l2_m2m_dev
-+ * @dec_vdev: pointer to video_device
-+ * @mlock: v4l2 ioctls serialization
-  * @pair: pair pointers
-  * @channel_avail: non-occupied channel numbers
-  * @asrc_rate: default sample rate for ASoC Back-Ends
-@@ -72,6 +96,17 @@ struct fsl_asrc_pair {
-  * @request_pair: function pointer
-  * @release_pair: function pointer
-  * @get_fifo_addr: function pointer
-+ * @m2m_start_part_one: function pointer
-+ * @m2m_start_part_two: function pointer
-+ * @m2m_stop_part_one: function pointer
-+ * @m2m_stop_part_two: function pointer
-+ * @m2m_check_format: function pointer
-+ * @m2m_calc_out_len: function pointer
-+ * @m2m_get_maxburst: function pointer
-+ * @m2m_pair_suspend: function pointer
-+ * @m2m_pair_resume: function pointer
-+ * @m2m_set_ratio_mod: function pointer
-+ * @get_output_fifo_size: function pointer
-  * @pair_priv_size: size of pair private struct.
-  * @private: private data structure
-  */
-@@ -86,6 +121,11 @@ struct fsl_asrc {
- 	struct clk *spba_clk;
- 	spinlock_t lock;      /* spin lock for resource protection */
- 
-+	struct v4l2_device v4l2_dev;
-+	struct v4l2_m2m_dev *m2m_dev;
-+	struct video_device *dec_vdev;
-+	struct mutex mlock; /* v4l2 ioctls serialization */
-+
- 	struct fsl_asrc_pair *pair[PAIR_CTX_NUM];
- 	unsigned int channel_avail;
- 
-@@ -97,6 +137,20 @@ struct fsl_asrc {
- 	int (*request_pair)(int channels, struct fsl_asrc_pair *pair);
- 	void (*release_pair)(struct fsl_asrc_pair *pair);
- 	int (*get_fifo_addr)(u8 dir, enum asrc_pair_index index);
-+
-+	int (*m2m_start_part_one)(struct fsl_asrc_pair *pair);
-+	int (*m2m_start_part_two)(struct fsl_asrc_pair *pair);
-+	int (*m2m_stop_part_one)(struct fsl_asrc_pair *pair);
-+	int (*m2m_stop_part_two)(struct fsl_asrc_pair *pair);
-+
-+	int (*m2m_check_format)(u8 dir, u32 rate, u32 channels, u32 format);
-+	int (*m2m_calc_out_len)(struct fsl_asrc_pair *pair, int input_buffer_length);
-+	int (*m2m_get_maxburst)(u8 dir, struct fsl_asrc_pair *pair);
-+	int (*m2m_pair_suspend)(struct fsl_asrc_pair *pair);
-+	int (*m2m_pair_resume)(struct fsl_asrc_pair *pair);
-+	int (*m2m_set_ratio_mod)(struct fsl_asrc_pair *pair, int val);
-+
-+	unsigned int (*get_output_fifo_size)(struct fsl_asrc_pair *pair);
- 	size_t pair_priv_size;
- 
- 	void *private;
+ static struct platform_driver fsl_easrc_driver = {
 -- 
 2.34.1
 
