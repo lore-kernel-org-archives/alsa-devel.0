@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0683EB64DC
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 05:23:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27079EB64DC
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 05:23:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAB27825;
-	Thu, 29 Jun 2023 07:22:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAB27825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96D6484A;
+	Thu, 29 Jun 2023 07:22:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96D6484A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688016199;
-	bh=FwayqleBgEOAxs19wet/kDLMS22UbCbeOnFtQ2l9fHk=;
+	s=default; t=1688016218;
+	bh=VhIGbW+79tB2+wu5WqNsZMYbNPSlu9hmvyNRV1qOSso=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mwC4ScI/i7ou6xauo82RITqWpZ6hMBeSBgRU5Q39YyUMrC+MQMXH5KSFZenfyPHWX
-	 axUab3aDusoEXuP/7mT19RI7viYxF5tVOgHPrR/saWsYKdtIwHQPNwf53uLLU80zXP
-	 VET7xFsqwkUx5zbN3bNSKQvmWqtdNCdli2hpRqkM=
+	b=TCOmFJ8boWrz+YGI/o3RmkpQo+mCl77Wh1A2JW+7OTVKhgJ0uuufvdjjZaME+TDRM
+	 UATwdvIq7B86BQ7cRbfCVCXrfdJYJr8SabtRsuFzlqiB7zhYwJLdb/yr4nbbLBlKX/
+	 Aov5OxkUM4wtn3dd2c2v/oZMqYXHTzQzbB9MX8bY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EBD0BF8059F; Thu, 29 Jun 2023 07:21:18 +0200 (CEST)
+	id A052FF805B0; Thu, 29 Jun 2023 07:21:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B37BF8057F;
-	Thu, 29 Jun 2023 07:21:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D24AF80587;
+	Thu, 29 Jun 2023 07:21:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F1A2CF8027B; Thu, 29 Jun 2023 07:14:08 +0200 (CEST)
+	id AF4E6F80169; Thu, 29 Jun 2023 07:18:11 +0200 (CEST)
 Received: from NAM12-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam12on20624.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe5a::624])
+ (mail-mw2nam12on2062b.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe5a::62b])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1531BF80431
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 07:13:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1531BF80431
+	by alsa1.perex.cz (Postfix) with ESMTPS id AABC6F80169
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 07:12:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AABC6F80169
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256
- header.s=selector2 header.b=OhtxVqL5
+ header.s=selector2 header.b=a6zMNAO7
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ODApN4UDHklRmBOeP9KKVp7kssrJTSJ944+0eJKFBIywXW2acUzdP8gY2VnzpMpge4Z/vHq119krquiP676IVUWLjvSeZWY1KyUANSXNxJ2CKhlsF4aS8lE3zzHu47y4IRSYrOEhQHpTzFikJihxw1F8ib0lFutzZRNWpmeX9EwGT0onaCWWeubA5VkvJkjkovBsX2TQCF4TrbXdViRXsUj50WyHMM5hA1W834TyokVm9KynIwNZgoDwdZl05/HptaNq4GI9gcAxIjK6BTXfxTyyAAYgcuE1uLcZKWOrO0/NTIlNDaNOAPRsOHvWRGocJS+kSVn1gcao5NpLtrvgqA==
+ b=kEXpULa6UxcL32cbgXgqXdEExXRCuej+uRQ9cobaxQ1aPpXsao+VJMzlaXCzhL8gMQnghnnlJzNp05VMiyvnoJStca1vNC7BPQ94OnWBi2e6Y3wCI/UvWdL54ldS7FL7Io9nfPLeYj/A9vzWwvn0QNh/x2NdROOpqQqwDUuEWRub/Nt9QQjteK/OKxrS/Ydo5BRSaSPZJnNNVPyUjKZNaBF0VyAInGnWQiwbVBLVSIGbEMSMYcirwKTSbSwqlxIP5El9E38HXbrrOj/i7Oc101eQQYUZSulKDKk9e/SHLozovwn6yV4k7bXMqKHqtt9pDptPE1TzH6CrkTL+WauoVA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EuCwMM3vyXtufdb1uc4t1V6RwotqPAeFw7Fjw46Fgxc=;
- b=Zg+EUhCKZTY9Fe+XsCK9vVouy8iImOrgCRBsH/i2kCOiCw4ePhaBoIOnaiE6qCAxw4ngi3jeQv3bfLrtUQxIQWrMtIO0N7JYDvbMvlcBdcA5FY9MLYmTE0ChKk25iJCMRK56qehFUA5IgQSiBmHxyvoXntCJVl+ZjA4a8IL2Sfs/cwhEblxifzH6O3BHfmr8D07oVWj/QDGAwfA0ta+OC12eirlz15BOyxte9+O7XeVuXHZVP3qAabnnm5qv9qaxme6ETiWdw8fooT7sTgnKOtF0wiG51Bk46+1GpClEhoEePiusYDbdZrk2Ql28B0mPHA6uPV0a/0wrhlP8AySN1g==
+ bh=ECdVB3XMFdKCZs4HiexmMhy89ZPUmz/7lvXEcH0P0Ew=;
+ b=RuJIr7Gj4dEu9gWQMgVyOZ7o15t1V4KHJ64pcIGbB1ozuUJr2d3XjuUH1U/eZxHYcaZ0DKa+aF+Mpp0bnJ3RW/t1pRbK8yAj/6vNciCyZHkIXuuphZ+j9gOKGcizYH/VwPJuRL8W1GoAjSA0cMuh0B2mOZyz8PwTtFFLpzUNzxn0qbntj2iwBJ59JGSzhiD+2QUPyFAyj0SBoDZ/gQ5CebBj+3CsMir8hw3p+nvIFvjaSwReIJHmFo2TRq6ak4eooH4LbdrJFVeSoihjBJpWFc/Zih8LYLBmBEbElsrOyJowWHxxd9qd665SVeeZV6XT741VfkP76cDO14CJZ9L/WA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.118.233) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -54,18 +54,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EuCwMM3vyXtufdb1uc4t1V6RwotqPAeFw7Fjw46Fgxc=;
- b=OhtxVqL5H4B7iFgb49vaT97D+27BXdOXjzG3lUI3WanS+KJCKldlUO8pujktf583kcYz1NmmX0qcbXOMpetis2zbSDHBiJbOsppgAetEcVeYN04PzNjDEi2jjIx43jcqW8NGXU67u3P+vnYdX2EMd2H8uebHc86R39t4xVkgj2WDDSZMEkfACS/URWkaqHopPSMHiCLoY4rYRzECkoR0XtOQYGz15N4szi1R5+eRFm9yMOzO6Oyq9Hc51wW+edEfCE8YTgq4zsqB5aSQd737E4zH/62fRlWZS65k8PT5j/4ZloAfpCpvbKicVD6venj9MI8n0QaFZY9rrqc0vMsBqw==
-Received: from SJ0PR13CA0224.namprd13.prod.outlook.com (2603:10b6:a03:2c1::19)
- by PH7PR12MB7235.namprd12.prod.outlook.com (2603:10b6:510:206::14) with
+ bh=ECdVB3XMFdKCZs4HiexmMhy89ZPUmz/7lvXEcH0P0Ew=;
+ b=a6zMNAO7gp7YVcF+rESewWcVBSde3Xi5OjA2qkeQ2vL+PaPYV2cJRWNZA2PNPHxxKdwOhM4BDk6CoCJyGttBDoFZhhBb1Zx310zqi0/ZUZ7YMvnMlXcEFO9XgwhaZkKuKjLDn6Bydb+EhxEaEFx3svpgaVWHRGrvCvRFb2R/bfDx31HVBmCPdZEe+HRgeoOqqTvE5adzzOKdMOR2VaL3EGVq+Gjs4Iiw3hc49GHG007LoheGgKwg5FrnVP5Y42d1ViMoAAbJZRozHYuhMfkSxrfnyujQrbN3EFrfR9IF9K7x54LzUQwlxaWf/H+ZSm75sPhGqyGDd1LQHn/0TeuTlg==
+Received: from DM6PR17CA0030.namprd17.prod.outlook.com (2603:10b6:5:1b3::43)
+ by BL3PR12MB6401.namprd12.prod.outlook.com (2603:10b6:208:3b1::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.24; Thu, 29 Jun
- 2023 05:13:05 +0000
-Received: from DM6NAM11FT077.eop-nam11.prod.protection.outlook.com
- (2603:10b6:a03:2c1:cafe::f5) by SJ0PR13CA0224.outlook.office365.com
- (2603:10b6:a03:2c1::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.6 via Frontend
- Transport; Thu, 29 Jun 2023 05:13:05 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.26; Thu, 29 Jun
+ 2023 05:12:50 +0000
+Received: from DM6NAM11FT019.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:1b3:cafe::cd) by DM6PR17CA0030.outlook.office365.com
+ (2603:10b6:5:1b3::43) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.22 via Frontend
+ Transport; Thu, 29 Jun 2023 05:12:50 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -73,20 +73,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.118.233 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.118.233) by
- DM6NAM11FT077.mail.protection.outlook.com (10.13.173.147) with Microsoft SMTP
+ DM6NAM11FT019.mail.protection.outlook.com (10.13.172.172) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6500.48 via Frontend Transport; Thu, 29 Jun 2023 05:13:04 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ 15.20.6500.49 via Frontend Transport; Thu, 29 Jun 2023 05:12:50 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
  (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 28 Jun 2023
- 22:12:53 -0700
+ 22:12:40 -0700
 Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Wed, 28 Jun 2023 22:12:53 -0700
+ 15.2.986.37; Wed, 28 Jun 2023 22:12:40 -0700
 Received: from audio.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.126.190.182) with Microsoft SMTP Server id 15.2.986.37 via Frontend
- Transport; Wed, 28 Jun 2023 22:12:49 -0700
+ Transport; Wed, 28 Jun 2023 22:12:36 -0700
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>, <krzk+dt@kernel.org>,
 	<thierry.reding@gmail.com>, <lgirdwood@gmail.com>, <perex@perex.cz>,
@@ -95,10 +95,9 @@ CC: <jonathanh@nvidia.com>, <mkumard@nvidia.com>, <sheetal@nvidia.com>,
 	<spujar@nvidia.com>, <alsa-devel@alsa-project.org>,
 	<devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: [PATCH v2 4/5] arm64: tegra: Update AHUB clock parent and rate on
- Tegra234
-Date: Thu, 29 Jun 2023 10:42:16 +0530
-Message-ID: <1688015537-31682-5-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v2 1/5] ASoC: tegra: Fix AMX byte map
+Date: Thu, 29 Jun 2023 10:42:13 +0530
+Message-ID: <1688015537-31682-2-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1688015537-31682-1-git-send-email-spujar@nvidia.com>
 References: <1688015537-31682-1-git-send-email-spujar@nvidia.com>
@@ -107,30 +106,30 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT077:EE_|PH7PR12MB7235:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3d58e787-e01f-4b7d-f5bc-08db785f84ec
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT019:EE_|BL3PR12MB6401:EE_
+X-MS-Office365-Filtering-Correlation-Id: cff92479-bfc6-41b5-d28b-08db785f7c2d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	4a+NXPR5I2IRaN3SetKaA4vsN6VGYaiXergXyDBVlkNjKy6QIluyx986o2whVwph3k36sc+y05EdFgGkPmsjJOOwS+l3Pgc0qoAXDuRY7m0WR8LH57ma+/Bf7PidoZ+qsjSh/5G++tl+TpAjkXT8Zqat6E5AQjTwD65G8zvQ02B0PMPBBT5myp4L5H5YE4M+3ByG2+ePuUKU+bfCKAV69iCw+eOUqhqbVY5woUuxsqlDbUYaXKin4kMg7hYbLt8yhQNgBRYBbfBfzIwKzcSGjRoAp4aa4YwAhkF7eCNVXKcuiTzaEAYmlYphGYS8/UGWAq16dkpRMcuiTFqjVR7iS3zaufhuJWbNAZ3k+fj1xkM4TTRVrGHjqegAFISEj6GU97+8wiOYe9yIqjRZiL16CGpLgV2yy17thNniALyO4/AKL5o894nPf6mcRZc6aZ7MCixX8pDS8LT34Xo4fEy5d8rPQIbQh5qB846crcYyqCwgAfo7Z95/IEC696V6GTs2LPUyHXCh2tfqVGRSEXZcqOUggMgti9AfXfbGovr5ZOY/b8N/WWvc3hcBYKdQIUz9DOvaLArWvQgieGhTSqOn9LCuGF4DCSfpdEZgQl25u1R/V5HO0YdsI/dX/p3UKr3MvyReIwlBGl+M8JvH7iMfW+hoMH4emT4yfHyDxb9Vnr2nJwz06KUDiTAtnriVPZ7AxNcqsGHM6rsVboXSJ+7SQLpQjlWE3fPdmDhiKMC0Dl21rvzWOESOe4W8Vfl+7DKR
+	MzMXUHTe7ulcIia5sRULdACtI4ITWib+pqe6zQtNPN1LPAvcYUk2O1X5/6y3i5flGM7hdhGBgssOQB3UO31JO4/5iazPt+JXJWu+Lthrm4dn1y1BWb0qdI8H0P6ZP6l3sEi8y0grNCHlHI0H7QcFng+6POUeP2viJQMF6mS7SEVt+YdUUSLbf4IZIZdkq1S7W1GquXKN2QiLHBpP5l+OMep/AKz+E4LcwbcgUcdu4MjlpgbY7UVmAStW4mvgprGQ3Cqe2FzGxnvmCmIu+e5pZQ84CKNQh7f7MvrMDye2K/Oq77HfPSy9xJHMHM3T5VDd4u5O6gmtRBudWuoXx1p1dWrUHJi/G3eLymNjx1DPAUA1R3WNIlal4u//ooluXdwl1xaSyhO1QkDPnnyGFe9E3JsbmKGj9jmGItfBwyq78nm5+cA4vwHQWkn6WI39Jql3qj4h23Rmibe/7luSwCMJlYvFPRfKzDxsEjRiQCi8JkHmRvTdKhw0mnYC5J9jrVOYcw1YM5X4NDxiSgpsikRJgyQ/Wl5FJ+09iARdaVIRiF7sDmfuq4DSycdY5I50Soo3F9IUq1uepjmPMv/yJ86tLgCw4IivLLXDludOrFtnS453fN3PysyeQmNrUH+i9GQTvYqVRGu/W7Yb0Vqlmm0bZkK6BfPfKsec23LCT7FcA9E2oUjqWHT7twRd8e9isZEPOTkw1CjmEcOjX4kbIFfbeRQtaQG8aa5wAj6oT9LUmLrPtvd998LRpSu7BYHPjOj6
 X-Forefront-Antispam-Report: 
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(39860400002)(376002)(346002)(451199021)(36840700001)(46966006)(40470700004)(5660300002)(7416002)(70586007)(316002)(70206006)(8676002)(8936002)(2906002)(41300700001)(40480700001)(40460700003)(82310400005)(356005)(7636003)(82740400003)(86362001)(36756003)(36860700001)(6666004)(186003)(26005)(7696005)(478600001)(4326008)(110136005)(54906003)(83380400001)(47076005)(426003)(2616005)(336012);DIR:OUT;SFP:1101;
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(136003)(396003)(376002)(451199021)(46966006)(40470700004)(36840700001)(356005)(7636003)(82740400003)(36756003)(47076005)(83380400001)(36860700001)(86362001)(54906003)(8936002)(110136005)(7696005)(40460700003)(6666004)(41300700001)(70206006)(316002)(8676002)(70586007)(336012)(426003)(26005)(186003)(4326008)(82310400005)(40480700001)(2616005)(478600001)(2906002)(5660300002)(7416002);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2023 05:13:04.8843
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2023 05:12:50.2255
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 3d58e787-e01f-4b7d-f5bc-08db785f84ec
+ cff92479-bfc6-41b5-d28b-08db785f7c2d
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	DM6NAM11FT077.eop-nam11.prod.protection.outlook.com
+	DM6NAM11FT019.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7235
-Message-ID-Hash: QWB4MP24FMKLKSAU3LVUER2Z4CQCBHA2
-X-Message-ID-Hash: QWB4MP24FMKLKSAU3LVUER2Z4CQCBHA2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6401
+Message-ID-Hash: 63V66M66M235COXOLVHYYQP3T6PFCWK6
+X-Message-ID-Hash: 63V66M66M235COXOLVHYYQP3T6PFCWK6
 X-MailFrom: spujar@nvidia.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -143,7 +142,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QWB4MP24FMKLKSAU3LVUER2Z4CQCBHA2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/63V66M66M235COXOLVHYYQP3T6PFCWK6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -154,38 +153,121 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Sheetal <sheetal@nvidia.com>
 
-I2S data sanity tests fail beyond a bit clock frequency of 6.144MHz.
-This happens because the AHUB clock rate is too low and it shows
-9.83MHz on boot.
+Byte mask for channel-1 of stream-1 is not getting enabled and this
+causes failures during AMX use cases. This happens because the byte
+map value 0 matches the byte map array and put() callback returns
+without enabling the corresponding bits in the byte mask.
 
-The maximum rate of PLLA_OUT0 is 49.152MHz and is used to serve I/O
-clocks. It is recommended that AHUB clock operates higher than this.
-Thus fix this by using PLLP_OUT0 as parent clock for AHUB instead of
-PLLA_OUT0 and fix the rate to 81.6MHz.
+AMX supports 4 input streams and each stream can take a maximum of
+16 channels. Each byte in the output frame is uniquely mapped to a
+byte in one of these 4 inputs. This mapping is done with the help of
+byte map array via user space control setting. The byte map array
+size in the driver is 16 and each array element is of size 4 bytes.
+This corresponds to 64 byte map values.
 
-Fixes: dc94a94daa39 ("arm64: tegra: Add audio devices on Tegra234")
+Each byte in the byte map array can have any value between 0 to 255
+to enable the corresponding bits in the byte mask. The value 256 is
+used as a way to disable the byte map. However the byte map array
+element cannot store this value. The put() callback disables the byte
+mask for 256 value and byte map value is reset to 0 for this case.
+This causes problems during subsequent runs since put() callback,
+for value of 0, just returns without enabling the byte mask. In short,
+the problem is coming because 0 and 256 control values are stored as
+0 in the byte map array.
+
+Right now fix the put() callback by actually looking at the byte mask
+array state to identify if any change is needed and update the fields
+accordingly. The get() callback needs an update as well to return the
+correct control value that user has set before. Note that when user
+sets 256, the value is stored as 0 and byte mask is disabled. So byte
+mask state is used to either return 256 or the value from byte map
+array.
+
+Given above, this looks bit complicated and all this happens because
+the byte map array is tightly packed and cannot actually store the 256
+value. Right now the priority is to fix the existing failure and a TODO
+item is put to improve this logic.
+
+Fixes: 8db78ace1ba8 ("ASoC: tegra: Fix kcontrol put callback in AMX")
 Cc: stable@vger.kernel.org
 Signed-off-by: Sheetal <sheetal@nvidia.com>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 Reviewed-by: Mohan Kumar D <mkumard@nvidia.com>
+Reviewed-by: Sameer Pujar <spujar@nvidia.com>
 ---
- arch/arm64/boot/dts/nvidia/tegra234.dtsi | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/tegra/tegra210_amx.c | 40 ++++++++++++++++++++++------------------
+ 1 file changed, 22 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra234.dtsi b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-index f4974e8..0f12a8de 100644
---- a/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-@@ -180,7 +180,8 @@
- 				clocks = <&bpmp TEGRA234_CLK_AHUB>;
- 				clock-names = "ahub";
- 				assigned-clocks = <&bpmp TEGRA234_CLK_AHUB>;
--				assigned-clock-parents = <&bpmp TEGRA234_CLK_PLLA_OUT0>;
-+				assigned-clock-parents = <&bpmp TEGRA234_CLK_PLLP_OUT0>;
-+				assigned-clock-rates = <81600000>;
- 				status = "disabled";
+diff --git a/sound/soc/tegra/tegra210_amx.c b/sound/soc/tegra/tegra210_amx.c
+index 782a141..1798769 100644
+--- a/sound/soc/tegra/tegra210_amx.c
++++ b/sound/soc/tegra/tegra210_amx.c
+@@ -2,7 +2,7 @@
+ //
+ // tegra210_amx.c - Tegra210 AMX driver
+ //
+-// Copyright (c) 2021 NVIDIA CORPORATION.  All rights reserved.
++// Copyright (c) 2021-2023 NVIDIA CORPORATION.  All rights reserved.
  
- 				#address-cells = <2>;
+ #include <linux/clk.h>
+ #include <linux/device.h>
+@@ -203,10 +203,20 @@ static int tegra210_amx_get_byte_map(struct snd_kcontrol *kcontrol,
+ 	else
+ 		enabled = amx->byte_mask[0] & (1 << reg);
+ 
++	/*
++	 * TODO: Simplify this logic to just return from bytes_map[]
++	 *
++	 * Presently below is required since bytes_map[] is
++	 * tightly packed and cannot store the control value of 256.
++	 * Byte mask state is used to know if 256 needs to be returned.
++	 * Note that for control value of 256, the put() call stores 0
++	 * in the bytes_map[] and disables the corresponding bit in
++	 * byte_mask[].
++	 */
+ 	if (enabled)
+ 		ucontrol->value.integer.value[0] = bytes_map[reg];
+ 	else
+-		ucontrol->value.integer.value[0] = 0;
++		ucontrol->value.integer.value[0] = 256;
+ 
+ 	return 0;
+ }
+@@ -221,25 +231,19 @@ static int tegra210_amx_put_byte_map(struct snd_kcontrol *kcontrol,
+ 	unsigned char *bytes_map = (unsigned char *)&amx->map;
+ 	int reg = mc->reg;
+ 	int value = ucontrol->value.integer.value[0];
++	unsigned int mask_val = amx->byte_mask[reg / 32];
+ 
+-	if (value == bytes_map[reg])
++	if (value >= 0 && value <= 255)
++		mask_val |= (1 << (reg % 32));
++	else
++		mask_val &= ~(1 << (reg % 32));
++
++	if (mask_val == amx->byte_mask[reg / 32])
+ 		return 0;
+ 
+-	if (value >= 0 && value <= 255) {
+-		/* Update byte map and enable slot */
+-		bytes_map[reg] = value;
+-		if (reg > 31)
+-			amx->byte_mask[1] |= (1 << (reg - 32));
+-		else
+-			amx->byte_mask[0] |= (1 << reg);
+-	} else {
+-		/* Reset byte map and disable slot */
+-		bytes_map[reg] = 0;
+-		if (reg > 31)
+-			amx->byte_mask[1] &= ~(1 << (reg - 32));
+-		else
+-			amx->byte_mask[0] &= ~(1 << reg);
+-	}
++	/* Update byte map and slot */
++	bytes_map[reg] = value % 256;
++	amx->byte_mask[reg / 32] = mask_val;
+ 
+ 	return 1;
+ }
 -- 
 2.7.4
 
