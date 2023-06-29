@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21D15EB64DD
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 14:00:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98A0BEB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 14:00:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67D0C83B;
-	Thu, 29 Jun 2023 15:59:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67D0C83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3ECA4857;
+	Thu, 29 Jun 2023 15:59:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ECA4857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688047217;
-	bh=BSWFuzun0EgdetRqF5fsYapOeYQ4T46M7HWTiQiUZuQ=;
+	s=default; t=1688047223;
+	bh=uApN2MENzFh+gZI+h3oY3kdwp9zl/0g2Xx233y+aPK0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jHiofrnVZGF/ZZaULNSAJIL/xV02tVhtCIDtWPkOzPgtRPolVV/WE9MFo+xPLhyyH
-	 I09/G41Xrje5FBA0Ik065dTK1Nk+GKEAEIerecYvKQ/skzwxW/VOQkqlzG5uVj+VzL
-	 0o7so4u9LN0F49hEWyKSLjercWA9xfOc6i++l9pg=
+	b=SbjS+At7nsacGkw7L8be8E5EFZw2R7CY2LNOi/7uaKR7dnuKWFzJCdr0Kwf0N709u
+	 7eVzl6bG3jWsSgeYUe3g2KnhVPqEfU+dEah/zQdPnJj6U4WMIM4RnLN3Jj7rqX0aQW
+	 WH9KekC6qjjnakooJJFcacGTtt6TKn0Z1y8Ymz1k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DB1C3F80246; Thu, 29 Jun 2023 15:58:39 +0200 (CEST)
+	id BD58CF80571; Thu, 29 Jun 2023 15:58:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26A47F80553;
-	Thu, 29 Jun 2023 15:58:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 518CEF80571;
+	Thu, 29 Jun 2023 15:58:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F00A6F80246; Thu, 29 Jun 2023 15:58:32 +0200 (CEST)
+	id 3D6F8F80549; Thu, 29 Jun 2023 15:58:38 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4B89DF80212
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 15:58:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B89DF80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id C784BF80169
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 15:58:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C784BF80169
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <sha@pengutronix.de>)
-	id 1qEsAC-0002Oi-MM; Thu, 29 Jun 2023 15:58:24 +0200
+	id 1qEsAC-0002Oh-MO; Thu, 29 Jun 2023 15:58:24 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
 	(envelope-from <sha@pengutronix.de>)
-	id 1qEsAB-00Aujq-HH; Thu, 29 Jun 2023 15:58:23 +0200
+	id 1qEsAB-00Aujp-HD; Thu, 29 Jun 2023 15:58:23 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
 	(envelope-from <sha@pengutronix.de>)
-	id 1qEsAA-00B7Np-FD; Thu, 29 Jun 2023 15:58:22 +0200
+	id 1qEsAA-00B7Nt-G7; Thu, 29 Jun 2023 15:58:22 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
 Cc: Shengjiu Wang <shengjiu.wang@gmail.com>,
@@ -59,10 +59,9 @@ Cc: Shengjiu Wang <shengjiu.wang@gmail.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: [PATCH 1/2] ASoC: fsl_sai: refactor TDM slots calculation into helper
- function
-Date: Thu, 29 Jun 2023 15:58:19 +0200
-Message-Id: <20230629135820.2631908-2-s.hauer@pengutronix.de>
+Subject: [PATCH 2/2] ASoC: fsl_sai: Fill Tx FIFO to avoid initial underruns
+Date: Thu, 29 Jun 2023 15:58:20 +0200
+Message-Id: <20230629135820.2631908-3-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230629135820.2631908-1-s.hauer@pengutronix.de>
 References: <20230629135820.2631908-1-s.hauer@pengutronix.de>
@@ -73,8 +72,8 @@ X-SA-Exim-Mail-From: sha@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: ZLCXQLK4QRF464CYZNEJR4FVCPK237M5
-X-Message-ID-Hash: ZLCXQLK4QRF464CYZNEJR4FVCPK237M5
+Message-ID-Hash: VRDX3MPTJ6YYQFNDXJ2PBB6LLIQZRBJV
+X-Message-ID-Hash: VRDX3MPTJ6YYQFNDXJ2PBB6LLIQZRBJV
 X-MailFrom: sha@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +85,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VRDX3MPTJ6YYQFNDXJ2PBB6LLIQZRBJV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,60 +97,77 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-Splitting the calculation between the initializer and later on makes it
-harder to follow. A follow-up commit will also need to do this calculation,
-so move it into a helper function. No functional change.
+JACK handles XRuns by stopping and start the ALSA device. On occasion,
+this leads to early underruns on start leading to reorderd output
+channels.
 
+By filling the FIFO initially, we can avoid these early underruns.
+This is also suggested by the i.MX8MM reference manual:
+
+  "If the Transmit FIFO is empty, then to avoid a FIFO underrun, the
+  Transmit Data Register must be written at least 3 bit clocks before
+  the start of the next unmasked word. Before enabling the transmitter,
+  the Transmit FIFO should be initialized with data (since after the
+  transmitter is enabled, the transmitter will start a new frame, and
+  if no data is in the FIFO, then the transmitter will immediately give
+  an error)"
+
+[1]: Rev. 0, 02/2019, 13.9.3.5.2 FIFO pointers
+Fixes: 435508214942 ("ASoC: Add SAI SoC Digital Audio Interface driver.")
 Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 ---
- sound/soc/fsl/fsl_sai.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 18 ++++++++++++++++++
+ sound/soc/fsl/fsl_sai.h |  1 +
+ 2 files changed, 19 insertions(+)
 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index e3105d48fb651..36f6115469843 100644
+index 36f6115469843..6a4f990110d91 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -516,6 +516,19 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 	return 0;
+@@ -755,6 +755,21 @@ static void fsl_sai_config_disable(struct fsl_sai *sai, int dir)
+ 	}
  }
  
-+static unsigned int fsl_sai_get_tdm_slots(struct fsl_sai *sai,
-+					  unsigned int channels,
-+					  unsigned int slot_width)
++static void fsl_sai_tx_fill_fifo(struct fsl_sai *sai,
++				 struct snd_pcm_runtime *runtime)
 +{
-+	if (sai->slots)
-+		return sai->slots;
++	u32 slots, slot_width, pins;
++	int i;
 +
-+	if (sai->bclk_ratio)
-+		return sai->bclk_ratio / slot_width;
++	slot_width = sai->slot_width ?: snd_pcm_format_physical_width(runtime->format);
 +
-+	return channels == 1 ? 2 : channels;
++	slots = fsl_sai_get_tdm_slots(sai, runtime->channels, slot_width);
++	pins = DIV_ROUND_UP(runtime->channels, slots);
++
++	for (i = 0; i < runtime->channels; i++)
++		regmap_write(sai->regmap, FSL_SAI_TDR(i % pins), 0x0);
 +}
 +
- static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params,
+ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
  		struct snd_soc_dai *cpu_dai)
-@@ -531,7 +544,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	int dl_cfg_cnt = sai->dl_cfg_cnt;
- 	u32 dl_type = FSL_SAI_DL_I2S;
- 	u32 val_cr4 = 0, val_cr5 = 0;
--	u32 slots = (channels == 1) ? 2 : channels;
-+	u32 slots;
- 	u32 slot_width = word_width;
- 	int adir = tx ? RX : TX;
- 	u32 pins, bclk;
-@@ -541,10 +554,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	if (sai->slot_width)
- 		slot_width = sai->slot_width;
+ {
+@@ -784,6 +799,9 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		/* Fill FIFO to avoid initial underruns */
++		if (tx)
++			fsl_sai_tx_fill_fifo(sai, substream->runtime);
+ 		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx, ofs),
+ 				   FSL_SAI_CSR_FRDE, FSL_SAI_CSR_FRDE);
  
--	if (sai->slots)
--		slots = sai->slots;
--	else if (sai->bclk_ratio)
--		slots = sai->bclk_ratio / slot_width;
-+	slots = fsl_sai_get_tdm_slots(sai, channels, slot_width);
- 
- 	pins = DIV_ROUND_UP(channels, slots);
- 
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index a53c4f0e25faf..66a136d97a441 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -34,6 +34,7 @@
+ #define FSL_SAI_TDR5	0x34 /* SAI Transmit Data 5 */
+ #define FSL_SAI_TDR6	0x38 /* SAI Transmit Data 6 */
+ #define FSL_SAI_TDR7	0x3C /* SAI Transmit Data 7 */
++#define FSL_SAI_TDR(ofs)	(FSL_SAI_TDR0 + (ofs) * 4)
+ #define FSL_SAI_TFR0	0x40 /* SAI Transmit FIFO 0 */
+ #define FSL_SAI_TFR1	0x44 /* SAI Transmit FIFO 1 */
+ #define FSL_SAI_TFR2	0x48 /* SAI Transmit FIFO 2 */
 -- 
 2.39.2
 
