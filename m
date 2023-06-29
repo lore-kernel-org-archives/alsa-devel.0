@@ -4,92 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2475FEB64D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 08:21:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EEDDEB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 08:39:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 811E7843;
-	Thu, 29 Jun 2023 10:20:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 811E7843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FAD87F4;
+	Thu, 29 Jun 2023 10:38:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FAD87F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688026859;
-	bh=iDqHrC+b5je00aAWpKWWDWwFkzD6FMRna9LaqlrNfh8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=SyQfskyamr3VPUx3kcqBg1YArAz5+yEXsHUqBLSzwTlRvsi3No8JVC/vy8LEhjI0/
-	 a/VruYMPcsPjior70MMnO9vDDHY8DLq8MrwBMUxMe+jnQCcBb20h8+wirJPA4jExds
-	 slwNzD9a2YVPdj0s+kUFHW4ISXJsoq+2u84U9X6Q=
+	s=default; t=1688027979;
+	bh=K5Qec0A3dH86u/WmMlurFT7f2Ry0hRaAQHSxxVf0e8k=;
+	h=Subject:From:To:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=WC5jKnmioIPHnOfaBrzQfPjmiqLOL9SVwJ4tUXFf+B1hM369jrYOsFEXAXfBxreAk
+	 U+ueDmq++mRNK2SyYVYgDGB0Y+lr42P3cmvAAto2v7zxw8dBzYmQ7wnm0GKBh9shP+
+	 AhRFz0uZ02Yv4PP77CfaAUdhzDW9n++0HODjnb4A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EE49F8055C; Thu, 29 Jun 2023 10:19:20 +0200 (CEST)
+	id 763AFF800E3; Thu, 29 Jun 2023 10:38:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 488B6F80570;
-	Thu, 29 Jun 2023 10:19:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF8CFF80534;
+	Thu, 29 Jun 2023 10:38:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A42BCF80570; Thu, 29 Jun 2023 10:19:16 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 64508F8053B
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 10:19:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64508F8053B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=PR/xQNn6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688026754; x=1719562754;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=iDqHrC+b5je00aAWpKWWDWwFkzD6FMRna9LaqlrNfh8=;
-  b=PR/xQNn6UVk4wRTewiemvcqRAyxsYSRaHMKmTTBJX9Xxdn7oENyss2wo
-   ypQUG/gG9GKoRxGsKKz7vqG10rEnqA7wRNKhNi7hqjbkpqX7ANfWJq0uV
-   Xi+h0Xf68A4aDUIRknyIdtxQtlHT3/vsWLk/NbKp9ZqzlxtKzVKXVROB0
-   73VDMV4YXOeYlldVYJfSHiePSk0lar6YWreSkSfJKolAoo64NeueRwV45
-   3IP6FBqdZBLvNLJryngx2rBCSRXfjkhZsbbxZDbhUxaiydZJneZ/VyI1o
-   a3LeeyPhhpSH/QLZqjDff47UcAAWJ50O4FJjbecOFb8Srp9b05FruSxxJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="351854340"
-X-IronPort-AV: E=Sophos;i="6.01,168,1684825200";
-   d="scan'208";a="351854340"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Jun 2023 01:19:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="891331273"
-X-IronPort-AV: E=Sophos;i="6.01,168,1684825200";
-   d="scan'208";a="891331273"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144])
- ([10.99.16.144])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Jun 2023 01:19:08 -0700
-Message-ID: <ca1ede5f-0859-5eea-f59c-9377d5945b71@linux.intel.com>
-Date: Thu, 29 Jun 2023 10:19:06 +0200
+	id 31691F80246; Thu, 29 Jun 2023 10:38:20 +0200 (CEST)
+Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
+ [10.254.200.11])
+	by alsa1.perex.cz (Postfix) with ESMTP id D2BF2F80093
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 10:38:19 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [RFC PATCH 7/8] ASoC: Intel: Skylake: Update PCI ID list
-Content-Language: en-US
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
-References: <20230628205135.517241-1-amadeuszx.slawinski@linux.intel.com>
- <20230628205135.517241-8-amadeuszx.slawinski@linux.intel.com>
- <ZJxJMg0bldj/M7TY@smile.fi.intel.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <ZJxJMg0bldj/M7TY@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: R7XK5X4JNDFECVVWGZGP4WQTADLCAFTB
-X-Message-ID-Hash: R7XK5X4JNDFECVVWGZGP4WQTADLCAFTB
-X-MailFrom: amadeuszx.slawinski@linux.intel.com
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2 00/37] ALSA: Add MIDI 2.0 support
+From: "Symbolic Debugger" <happy.debugging@gmail.com>
+To: alsa-devel@alsa-project.org
+Date: Thu, 29 Jun 2023 08:38:19 -0000
+Message-ID: <168802789986.22.1719965101425313209@mailman-web.alsa-project.org>
+In-Reply-To: <87cz1eepow.wl-tiwai@suse.de>
+References: <87cz1eepow.wl-tiwai@suse.de>
+User-Agent: HyperKitty on https://mailman.alsa-project.org/
+Message-ID-Hash: BOQ37PE7AJFRFLDWWRW3PITNHH5BIT4G
+X-Message-ID-Hash: BOQ37PE7AJFRFLDWWRW3PITNHH5BIT4G
+X-MailFrom: happy.debugging@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,29 +57,17 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R7XK5X4JNDFECVVWGZGP4WQTADLCAFTB/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BOQ37PE7AJFRFLDWWRW3PITNHH5BIT4G/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 6/28/2023 4:52 PM, Andy Shevchenko wrote:
-> On Wed, Jun 28, 2023 at 10:51:34PM +0200, Amadeusz Sławiński wrote:
->> Use PCI device IDs from pci_ids.h header and while at it change to using
->> PCI_DEVICE_DATA macro, to simplify declarations.
-> 
-> PCI_DEVICE_DATA()
-> 
-> ...
-> 
->> +	{ PCI_DEVICE_DATA(INTEL, HDA_SKL_LP,	&snd_soc_acpi_intel_skl_machines) },
-> 
-> Do you really need TAB(s) in the parameter list?
-> 
+Thanks again. Its getting much clearer now. To summarize:
 
-I did this to align entries, I know it is not that visible in this 
-patch, but they are defined close to each other and I feel that it looks 
-better if they are aligned, but can drop alignment if you prefer. Should 
-I also drop them in other patches, as I don't see comment for that?
+[a] more than 1 Group Terminal Blocks are supported by the driver for one endpoint, but  [b] you can't have more than 16 groups (per direction) on a single EP.  and [c] if devices (mainly due to Windows)  only support 1 EP, that would mean when using two GTB for 16 groups,  one device cannot go beyond the 16 group limit. That would mean  - in a rare corner case - to design  ay a USB UMP (MIDI 1.0) interface that has legacy DIN I/O it can't go beyond 16 in and 16 OUT  DIN connectors.  
+
+Perhaps a logical use for multiple GTB is to use one GTB per function, but on the others hand designers would probably won't take all that hassle if that if they can do with one GTB for all the functions, and mostly devices have two functions, one for voice data an one for firmware updates or other non-voice purposes.
