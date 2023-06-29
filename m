@@ -4,101 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BFF5EB64D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 10:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E20ECEB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 10:47:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A82691E4;
-	Thu, 29 Jun 2023 12:45:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A82691E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D6BE7F4;
+	Thu, 29 Jun 2023 12:46:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D6BE7F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688035560;
-	bh=nRRm4COrztPDc9d4lK66YBTeFaRthBZjzVF09aZ+V/g=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1688035666;
+	bh=9Y1oNOI6Iu45KvslBrhl/Teb6DyPllgKYWJpWorjH0M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=V5x0p50nz05qDHKI93wJJKhKxge7iOCLsLgKfnl8UGOUZZrwo5BVpo3mnYO9aWOzf
-	 iJs5ZV77aorR+QqeBqdcJ/QmOvirYmAEWnSEZjh5x2JLtIU5r22EvKWUjOpxR9W6cm
-	 HXuzqnch6Tp8Wa8oEKM61dbkPuBLcLaJP1cY2QUA=
+	b=hI+Ar5YAQeWDFAN/8bq9rGJ15Kmp8lp4zcsLaD7Xg3FC1YyRyWeSS5wU49R736oZT
+	 3ZvR1hydrUi8rircokRi/cbHgoGVWYr+SQs9UO4JO172Wrhc0nCPffSdwjGM5aktVA
+	 G2ve4Am+19CAneYPSv6d3B4wbxtX6tAhtKUyqHso=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74C50F80246; Thu, 29 Jun 2023 12:44:43 +0200 (CEST)
+	id 7861AF8053B; Thu, 29 Jun 2023 12:46:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15656F80246;
-	Thu, 29 Jun 2023 12:44:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFB1AF8027B;
+	Thu, 29 Jun 2023 12:46:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D317F80246; Thu, 29 Jun 2023 12:44:39 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 755E5F8051E; Thu, 29 Jun 2023 12:46:26 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D30D6F80093
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 12:44:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D30D6F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id E3DD5F80093
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 12:46:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3DD5F80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=FnZsrKJb;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=gQMuUdfB
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 365431F8CC;
-	Thu, 29 Jun 2023 10:44:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1688035476;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jMIvzrr3FC/XxOCIX56sg3CyA8NZGg8bEmD3ORrTSlM=;
-	b=FnZsrKJb9M/pkagQKIgnoBaRWdjCWbaiiBRe+Q2pE4V7ylRSps18RxWKh4XAgPYN2aJbWs
-	s62wqn9LGFzjy6RIA0A7viAMKTNV92all3dGF75gFBOr9oXAa+EeRWeSFQH0RMT06IHS/9
-	7MH2UkaDk4rltepPKtfr1DydLmM1j0w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1688035476;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jMIvzrr3FC/XxOCIX56sg3CyA8NZGg8bEmD3ORrTSlM=;
-	b=gQMuUdfBHIVrpWfegvuO9d6Fgm7HsdUJDPzcqEKdMxIdrQujIjjkYLQCP9AoZfL+VJjzR/
-	gXRJkfWrfKDsCGCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1B3E5139FF;
-	Thu, 29 Jun 2023 10:44:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id DpkvBpRgnWRpJAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 29 Jun 2023 10:44:36 +0000
-Date: Thu, 29 Jun 2023 12:44:31 +0200
-Message-ID: <87zg4ifsz4.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Matthias Reichl <hias@horus.com>,
-	Dom Cobley <popcornmix@gmail.com>,
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Lp434YNw
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1688035571; x=1719571571;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=9Y1oNOI6Iu45KvslBrhl/Teb6DyPllgKYWJpWorjH0M=;
+  b=Lp434YNwS4fZrmDt24nU55NJMAb1QADS/PFLfk1SJHqMeGm+Ub1eLC/T
+   7nNmzNUwM9yoeRAmH/kpYoGaPOEuz1Kcm895cy5PXRJEWKPOidKoHcHIY
+   xljNFxul09ykIk03rciNS1IuWkgdxwqwZRCh4mKTSc7WE5NHMKW1irKwI
+   XxsgumRLBQQ4xNFGkZ0Aww8QYBBi34vqcpmEBMCsZRt1m4UdTokEOlAdu
+   VMScUhOLC7HsOLH3QQp4bGhsHRyN3HhcMwBjiRSBcgzK+zcxZ/1d4nqoC
+   1jedPsQXvSbKnhaYpIhUE5XRwTn5RDHD4dL3O4VIu44/VjMC6DQFJdXU+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="362115064"
+X-IronPort-AV: E=Sophos;i="6.01,168,1684825200";
+   d="scan'208";a="362115064"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jun 2023 03:46:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="963948378"
+X-IronPort-AV: E=Sophos;i="6.01,168,1684825200";
+   d="scan'208";a="963948378"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 29 Jun 2023 03:46:04 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id CEC003DA; Thu, 29 Jun 2023 13:46:05 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: hdmi-codec: fix channel info for compressed formats
-In-Reply-To: <168803481324.25247.5593448279992144349.b4-ty@kernel.org>
-References: <20230624165232.5751-1-hias@horus.com>
-	<168803481324.25247.5593448279992144349.b4-ty@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: U4EJVQQUGNZSIW5JPDO6O5HQOUSEGTNR
-X-Message-ID-Hash: U4EJVQQUGNZSIW5JPDO6O5HQOUSEGTNR
-X-MailFrom: tiwai@suse.de
+Cc: Oder Chiou <oder_chiou@realtek.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v1 3/3] ASoC: rt5677: Sort headers alphabetically
+Date: Thu, 29 Jun 2023 13:46:03 +0300
+Message-Id: <20230629104603.88612-4-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+In-Reply-To: <20230629104603.88612-1-andriy.shevchenko@linux.intel.com>
+References: <20230629104603.88612-1-andriy.shevchenko@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: XAFZHAS75NFD45IVE6YFBE3SFOZISC5O
+X-Message-ID-Hash: XAFZHAS75NFD45IVE6YFBE3SFOZISC5O
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -110,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U4EJVQQUGNZSIW5JPDO6O5HQOUSEGTNR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XAFZHAS75NFD45IVE6YFBE3SFOZISC5O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,26 +105,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 29 Jun 2023 12:33:33 +0200,
-Mark Brown wrote:
-> 
-> On Sat, 24 Jun 2023 18:52:32 +0200, Matthias Reichl wrote:
-> > According to CTA 861 the channel/speaker allocation info in the
-> > audio infoframe only applies to uncompressed (PCM) audio streams.
-> > 
-> > The channel count info should indicate the number of channels
-> > in the transmitted audio, which usually won't match the number of
-> > channels used to transmit the compressed bitstream.
-> > 
-> > [...]
-> 
-> Applied to
-> 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+It's hard to see what's included and what's not on the glance.
+Sort headers alphabetically to improve maintenance.
 
-Oh, I already applied this one together with another fix for HDMI,
-and it's in the ongoing PR to Linus.  I didn't notice that it was
-ASoC-only.  Sorry for confusion!
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/soc/codecs/rt5677.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 4d09eb2a0755..01595205c1d9 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -6,21 +6,21 @@
+  * Author: Oder Chiou <oder_chiou@realtek.com>
+  */
+ 
++#include <linux/delay.h>
++#include <linux/firmware.h>
+ #include <linux/fs.h>
++#include <linux/i2c.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/irqdomain.h>
++#include <linux/irq.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/init.h>
+-#include <linux/delay.h>
++#include <linux/platform_device.h>
+ #include <linux/pm.h>
++#include <linux/property.h>
+ #include <linux/regmap.h>
+-#include <linux/i2c.h>
+-#include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+-#include <linux/firmware.h>
+-#include <linux/property.h>
+-#include <linux/irq.h>
+-#include <linux/interrupt.h>
+-#include <linux/irqdomain.h>
+ #include <linux/workqueue.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+-- 
+2.40.0.1.gaa8946217a0b
 
-Takashi
