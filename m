@@ -4,100 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3237FEB64D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 12:47:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C7A1EB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 13:59:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 917C9825;
-	Thu, 29 Jun 2023 14:47:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 917C9825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2093E1F1;
+	Thu, 29 Jun 2023 15:59:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2093E1F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688042877;
-	bh=C2Y24ivHm/B/fKxjKnmKGxzY8SU7utz2eHE5M2snbCk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=H/IwG1lSd9bYqAN4Anm2L73g9TD+CvfvrGxdxTLLOLM2KdZ/0xw0Th0RoBSOC9AKh
-	 fDO9n+3+LaTx59zS4YCpxBiwW80byf4tWvtIyK8pQSn/pKxbc+lOsRhIdQ65k1mY5D
-	 xS55tLAFWEwg9sa6qPmagbJoU5yD7MwzKCfPt6vE=
+	s=default; t=1688047190;
+	bh=LX65sx3ebIwtVGlnvjEDeuEZKzll8UngfF+qA6/0ZMw=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ZYf922/RvzAnwtYhcZnFis/mnxGcnPjeOJoxMPNnQfo+aSzAekaN9Hr5p5hWdn5KR
+	 1Wz5V8ydyrvU+Zkg43wf41U2s1Nj9ca5PGy5A4K/aFr2wIJ+uyITQyVWlVw1kIPdMY
+	 KaJj1BjgsofsiZG07z3I2XdyEcCvFlelulhfGCy8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D766EF80212; Thu, 29 Jun 2023 14:46:42 +0200 (CEST)
+	id 5183EF80431; Thu, 29 Jun 2023 15:58:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DF5DF80246;
-	Thu, 29 Jun 2023 14:46:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A41DF80212;
+	Thu, 29 Jun 2023 15:58:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4ADA7F80246; Thu, 29 Jun 2023 14:46:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 4CF87F8027B; Thu, 29 Jun 2023 15:58:31 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D5F5DF80093
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 14:46:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5F5DF80093
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=bDjJbTjY;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ABOeuopA
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BDF101F8BE;
-	Thu, 29 Jun 2023 12:46:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1688042793;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vAH504Fcy+aW1ZxkZK4KYeGzA66qMsvuD3CDKEk1s5U=;
-	b=bDjJbTjY4kz98CZ0t2VRvkGqMAwn3TBFyIzYy8hMncfaKL7kt1bOU+lFtQ05HYwIjMOE0k
-	Msfbu6zkRorNZK+Z0Z3Pq2o0izlN8tRPT24lTlVAi8XMuabkZg40Ue0YJWeAo22xbB2qwi
-	57pbASxulLL50qEt1b9uRL+AVq5ADYQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1688042793;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vAH504Fcy+aW1ZxkZK4KYeGzA66qMsvuD3CDKEk1s5U=;
-	b=ABOeuopA1kVgF2TtlPJ+8UvGp9jXGkD2up7/XPFqn6Yb/sJzEMdYSB9Dvgt33xd7o0a0Md
-	ENykrl7Juw0zusDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A5D51139FF;
-	Thu, 29 Jun 2023 12:46:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id sZDOJyl9nWRlYgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 29 Jun 2023 12:46:33 +0000
-Date: Thu, 29 Jun 2023 14:46:29 +0200
-Message-ID: <87ttuqfnbu.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Huang Rui <vowstar@gmail.com>
-Cc: tiwai@suse.com,
-	perex@perex.cz,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	vitalyr@opensource.cirrus.com
-Subject: Re: [PATCHv2] ALSA: hda/realtek: fix mute/micmute LEDs for HP
- EliteBook G10
-In-Reply-To: <20230629123557.3627401-1-vowstar@gmail.com>
-References: <20230629123557.3627401-1-vowstar@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: Z6Q5XCT2IGGN3OV7U6O6G4OF5N5FOLY3
-X-Message-ID-Hash: Z6Q5XCT2IGGN3OV7U6O6G4OF5N5FOLY3
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id 220DEF80169
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 15:58:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 220DEF80169
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1qEsAC-0002Of-MN; Thu, 29 Jun 2023 15:58:24 +0200
+Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1qEsAB-00Aujm-8U; Thu, 29 Jun 2023 15:58:23 +0200
+Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1qEsAA-00B7Nm-EJ; Thu, 29 Jun 2023 15:58:22 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: alsa-devel@alsa-project.org
+Cc: Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH 0/2] ASoC: fsl_sai: Fill Tx FIFO to avoid initial underruns
+Date: Thu, 29 Jun 2023 15:58:18 +0200
+Message-Id: <20230629135820.2631908-1-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Message-ID-Hash: XPTAZWSJVQFNA3LFQKE2HKANRZPL3MMS
+X-Message-ID-Hash: XPTAZWSJVQFNA3LFQKE2HKANRZPL3MMS
+X-MailFrom: sha@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z6Q5XCT2IGGN3OV7U6O6G4OF5N5FOLY3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XPTAZWSJVQFNA3LFQKE2HKANRZPL3MMS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,22 +92,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 29 Jun 2023 14:35:57 +0200,
-Huang Rui wrote:
-> 
-> In the commit 3e10f6ca76c4 ("ALSA: hda/realtek: Add quirk for
-> HP EliteBook G10 laptops"), speakers are fixed but mute/micmute
-> LEDs does not lit. Need the ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED
-> to get all mute/micmute LEDs working.
-> 
-> Signed-off-by: Huang Rui <vowstar@gmail.com>
-> Fixes: 3e10f6ca76c4 ("ALSA: hda/realtek: Add quirk for HP EliteBook G10 laptops")
-> ---
-> V1 -> V2: Add fixes to link a previously committed issue
+This series fixes initial underruns that can occur in the TX queue of the
+fsl_sai interface when starting playback. These patches are around here
+for quite some time and have proven useful. Time to upstream them.
 
-This was already fixed by Andi's patch.
+Sascha
 
+Ahmad Fatoum (2):
+  ASoC: fsl_sai: refactor TDM slots calculation into helper function
+  ASoC: fsl_sai: Fill Tx FIFO to avoid initial underruns
 
-thanks,
+ sound/soc/fsl/fsl_sai.c | 38 +++++++++++++++++++++++++++++++++-----
+ sound/soc/fsl/fsl_sai.h |  1 +
+ 2 files changed, 34 insertions(+), 5 deletions(-)
 
-Takashi
+-- 
+2.39.2
+
