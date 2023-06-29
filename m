@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3DD8EB64D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 07:45:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A1EEEB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 07:46:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 124EB83E;
-	Thu, 29 Jun 2023 09:45:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 124EB83E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2211844;
+	Thu, 29 Jun 2023 09:45:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2211844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688024755;
-	bh=Fl0jFByNNA+ddrP8Q+lEFgQH2y4nc229wXOSqG6/n2U=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=iD18NjK3/8LUf4Th0xVyDHa9oOm6oR+ykgSl75/aJbbLRc1wrlSGl7+GEXB2iauUM
-	 iS7kl60pALxkftRng8wDhmt4VzNRhAY7c2/wW6IWg5wsU9l8i+Ak6WYjLtZmJH1r5J
-	 UYKccS0GFNgBlRh59LcJj5dlxqANYF0oELDIGbto=
+	s=default; t=1688024761;
+	bh=kcKwKp2hJJxAH1ZJDrmrC8VK8PYaDgFEEqdHj73c0Z0=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=or4sP1S7hcMBbbdjesRipGxEZFTmmmwwJvrXgqtOnoWkMQC9spaltvpGRoC3knvkO
+	 MLNi9PjblbolI5dG90g3H9GRZhugA+eJibAxhWBkTXaZHQl205TR8VZeKghOKOzGQR
+	 CjTmLoWtdvFwNLnNzYzJY4O7kzExKnAYMWGQ4JTY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8ABBF8055A; Thu, 29 Jun 2023 09:44:13 +0200 (CEST)
+	id E9F6CF80571; Thu, 29 Jun 2023 09:44:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50A1FF80552;
-	Thu, 29 Jun 2023 09:44:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4A05F80563;
+	Thu, 29 Jun 2023 09:44:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 368AEF8027B; Thu, 29 Jun 2023 09:44:07 +0200 (CEST)
+	id D30BFF80246; Thu, 29 Jun 2023 09:44:10 +0200 (CEST)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D5BC5F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 334C1F80212
 	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 09:44:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5BC5F80093
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 334C1F80212
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=DXyTuPap
-X-UUID: b0d78776165011eeb20a276fd37b9834-20230629
+ header.s=dk header.b=t12ckbwp
+X-UUID: b0bf0d0e165011eeb20a276fd37b9834-20230629
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=Qi3pNvb+/UkgZQSIW/v9NFWhcRMbBNVFPD0l1h5cxDs=;
-	b=DXyTuPapGTU55a71yIdWpBJ+OwowXJLlcLwB7QwB+KqOr9gkZeltHuiZW/FIoFINTZ5G893zRsSDGmaim5VkFV+m4X9T6YpKMhy8niIgvI5lrecFGFNKOtWQDFEVCtoN7e0hNUwPLivXGwPId3AJAxeue07uyzdetIJpi+r1DN8=;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
+ bh=KZK6v7E8kHCPjtinARHKKSNSSSYIxdy5ZnnahfjvQeo=;
+	b=t12ckbwpK+DrNF3nDPfBJvF/qrk+il5UL+EdGJKnDz8evxOzREqhCaDqtthgqVDbC/hESHK7cux/F5MGpzfQLMOTP89WSiMuzmBmwEWhkDN4vE0O4xHN4wME/RNt+m2XzUYxDO6zIej38lxo+TJeij0azmS1QwLj96I76dAInCo=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.27,REQID:3936ce5e-bd6d-4d7c-8690-543c67918ce7,IP:0,U
+X-CID-O-INFO: VERSION:1.1.27,REQID:1ed5075c-2400-4c28-afb6-56b662d54566,IP:0,U
 	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
 	:release,TS:95
-X-CID-INFO: VERSION:1.1.27,REQID:3936ce5e-bd6d-4d7c-8690-543c67918ce7,IP:0,URL
+X-CID-INFO: VERSION:1.1.27,REQID:1ed5075c-2400-4c28-afb6-56b662d54566,IP:0,URL
 	:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
 	:quarantine,TS:95
-X-CID-META: VersionHash:01c9525,CLOUDID:a89e5e0d-26a8-467f-b838-f99719a9c083,B
-	ulkID:2306291543523Z2PV2AW,BulkQuantity:2,Recheck:0,SF:48|38|29|28|17|19,T
-	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,
-	OSI:0,OSA:0,AV:0,LES:1,SPR:NO
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,
-	TF_CID_SPAM_FAS
-X-UUID: b0d78776165011eeb20a276fd37b9834-20230629
+X-CID-META: VersionHash:01c9525,CLOUDID:fb096eda-b4fa-43c8-9c3e-0d3fabd03ec0,B
+	ulkID:230629154353VZX7P57N,BulkQuantity:0,Recheck:0,SF:29|28|17|19|48|38,T
+	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+	,OSI:0,OSA:0,AV:0,LES:1,SPR:NO
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,
+	TF_CID_SPAM_FSD
+X-UUID: b0bf0d0e165011eeb20a276fd37b9834-20230629
 Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by
  mailgw02.mediatek.com
 	(envelope-from <trevor.wu@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 637585350; Thu, 29 Jun 2023 15:43:51 +0800
+	with ESMTP id 694028665; Thu, 29 Jun 2023 15:43:51 +0800
 Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.26; Thu, 29 Jun 2023 15:43:50 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
@@ -82,17 +81,15 @@ To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
 CC: <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
 	<linux-mediatek@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH 1/2] ASoC: mediatek: mt8188: add memory-region support
-Date: Thu, 29 Jun 2023 15:43:47 +0800
-Message-ID: <20230629074348.21670-2-trevor.wu@mediatek.com>
+Subject: [PATCH 0/2] ASoC: mt8188: add memory-region support
+Date: Thu, 29 Jun 2023 15:43:46 +0800
+Message-ID: <20230629074348.21670-1-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230629074348.21670-1-trevor.wu@mediatek.com>
-References: <20230629074348.21670-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
-Message-ID-Hash: UGDVJLY45RESPYEIOOLFH4GZEJE5PKVA
-X-Message-ID-Hash: UGDVJLY45RESPYEIOOLFH4GZEJE5PKVA
+Message-ID-Hash: EZAIYPTCKKXWBOGJQHKFXOOIDPRREO5S
+X-Message-ID-Hash: EZAIYPTCKKXWBOGJQHKFXOOIDPRREO5S
 X-MailFrom: trevor.wu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UGDVJLY45RESPYEIOOLFH4GZEJE5PKVA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EZAIYPTCKKXWBOGJQHKFXOOIDPRREO5S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,53 +111,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In certain projects, it is necessary to utilize the reserved memory
-region for audio dma. The patch takes into account the dts property
-'memory-region', allowing for the specification of memory for afe memif
-through device tree.
+This series introduces support for memory-region, allowing afe memif to
+utilize the region specified in dts.
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- sound/soc/mediatek/mt8188/mt8188-afe-pcm.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Trevor Wu (2):
+  ASoC: mediatek: mt8188: add memory-region support
+  ASoC: dt-bindings: mediatek,mt8188-afe: add memory-region
 
-diff --git a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-index 6a24b339444b..5e14655c5617 100644
---- a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-@@ -16,6 +16,7 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/pm_runtime.h>
- #include <linux/soc/mediatek/infracfg.h>
- #include <linux/reset.h>
-@@ -3193,11 +3194,15 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
- {
- 	struct mtk_base_afe *afe;
- 	struct mt8188_afe_private *afe_priv;
--	struct device *dev;
-+	struct device *dev = &pdev->dev;
- 	struct reset_control *rstc;
- 	struct regmap *infra_ao;
- 	int i, irq_id, ret;
- 
-+	ret = of_reserved_mem_device_init(dev);
-+	if (ret)
-+		dev_dbg(dev, "failed to assign memory region: %d\n", ret);
-+
- 	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(33));
- 	if (ret)
- 		return ret;
-@@ -3213,7 +3218,6 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
- 
- 	afe_priv = afe->platform_priv;
- 	afe->dev = &pdev->dev;
--	dev = afe->dev;
- 
- 	afe->base_addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(afe->base_addr))
+ .../devicetree/bindings/sound/mediatek,mt8188-afe.yaml    | 7 +++++++
+ sound/soc/mediatek/mt8188/mt8188-afe-pcm.c                | 8 ++++++--
+ 2 files changed, 13 insertions(+), 2 deletions(-)
+
 -- 
 2.18.0
 
