@@ -4,74 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C7E7EB64DC
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 02:13:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D5AAEB64DC
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 05:22:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15611A4A;
-	Thu, 29 Jun 2023 04:12:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15611A4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1DB1D839;
+	Thu, 29 Jun 2023 07:21:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DB1D839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688004810;
-	bh=SUGjA9n8gHS2G3mzAMLrZhYAhbujvCvU12wQOFvuaO4=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=V+I+brFA08sV7X8ckDrSjbIyFdHcZi2Xij6zseUBxP7i+PhA5Rh1et1wv283fZJVI
-	 aCrYKL5v4Ohn6QrDqy8b+mflvUFC2mLnPQGWWOL4WK1tN3Lj9wjbee0fCct1DOyrqt
-	 MhNPsCVcFCkb5J6neJulXLq2Z8bTgAgMOZEVsT54=
+	s=default; t=1688016152;
+	bh=ubXuhAAXzwmrWEhmIm9tC+Mrs2b2Qa6lUrhRMWanLVk=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ODNON+JYNJTo6jvGtEaxoonD5B6nmGE1NruCKJEK4nJp8xScscv6gjr7PQ63mePSu
+	 2b8a5forU5YFz1Ol4F0lkZ8YpNAySaLQzOVmB3cjG5DVAtRi/R/2w1wcHGgy3xy5im
+	 3IFyvs4FOuhuOCcjGs1swxKcwWS765nUK4tBC6cE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5502EF805AF; Thu, 29 Jun 2023 04:11:29 +0200 (CEST)
+	id 89871F8051E; Thu, 29 Jun 2023 07:21:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2BF4F805BD;
-	Thu, 29 Jun 2023 04:11:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14FCAF800E3;
+	Thu, 29 Jun 2023 07:21:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5570F8058C; Thu, 29 Jun 2023 04:11:24 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	id EFB73F80534; Thu, 29 Jun 2023 07:13:08 +0200 (CEST)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12on20630.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe5b::630])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 48441F8027B
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 04:10:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48441F8027B
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 75343200D3A;
-	Thu, 29 Jun 2023 04:10:36 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1412D200D36;
-	Thu, 29 Jun 2023 04:10:36 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 52F65181D0E3;
-	Thu, 29 Jun 2023 10:10:34 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: tfiga@chromium.org,
-	m.szyprowski@samsung.com,
-	mchehab@kernel.org,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 3/6] ASoC: fsl_easrc: define functions for memory to memory
- usage
-Date: Thu, 29 Jun 2023 09:37:50 +0800
-Message-Id: <1688002673-28493-4-git-send-email-shengjiu.wang@nxp.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id B22C4F800E3
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 07:12:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B22C4F800E3
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256
+ header.s=selector2 header.b=HfX9g2X7
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d0CGbmk5JRcQ7re/jWLqxWbTTg88yjoARe7JFWuIHW2R5vr000tIZHysbL71Ox96gbKX+cZf7EKnbglHN8kjD66YhN7YFovjsCb85HHpk/IhyeutsuBN+lGMx2N8mS71pIScmIYGebCFzGP+sL8qtLrVLEO+FJYjqnzFJeSwOZl77tGap90dUlf3v5Blxxn3aSv/0ONt/nuLVyvzZGIJsuC1j23mnrSBxhwnTOUP38KBwi/4zKNqQzTQXd+asPAt/cA/I0H5cAdkVk2tNbh91k8ieB3+Yye+mF5YC5hNXhcLx/yO5drEs0exMTKcH1prEKDX7zCfqIBD4hWzx6arcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hAgdfubI6pwq0yqSukH//XbBNRMzoPCy8LJXH5OUHxc=;
+ b=dpmEszFXBiM1K/vMVNhXLkOsTxs+5ke/BlhRe7+OVJVgvnj9KCrxSh5JFLiAZhfK3FIeC9RLoBPb1mjaYioK1gg0uAysbLeBcx8hpb5RSXvzAZMpDe6gKxfsp3crE8mspQfkSmAaisOl+vDElmRpdRodUv5Coz4xUvvW2m2R8IIS8eMzlXUmdy6LaSk9fzT/T9SUhnZ+xh6Ak5B7uLwqeJTtiglkB+pq0klYSGNcMkzOE/Z1NJugc0BgS0llVuBqOjxMUR/4zzo0l7DV6wRQ9FIDGsd39Jd+HBAUV/JVsgEdJ+uER9YUJHlIbsQDMFQ+U6OAAWB1HkfYQkRZDUTzuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hAgdfubI6pwq0yqSukH//XbBNRMzoPCy8LJXH5OUHxc=;
+ b=HfX9g2X7fMwC1bALoHT7s+QwYirHD1yx01p4Rfx5AYavoHqOfBgm2Me1lskiY9F/OUVvnJSeqKNW7cCww9D10NNapf9biWntB80y5OphS9nfuSgeW2gVbRi+NOHZn5MN2NpiNUGbv6VAh9ZTgW/lJPRhbSOra+hHy3uEQPR8shFm/2fgYDrUEoPQJqQXAGIny4NtOVS9AkN2RyeyT6gkal63X8L2IzkIG9SABDF7gwa0DCxKwFAYrlFL0RviwZ6FdbQnFsS40jfxhY467egFMa8U6jRCXCaR//l0PBnRf0Jk3RBpNmeFfeOGjgoBgAF3jRlUYfmjcjqO80P8PYqiag==
+Received: from BYAPR04CA0031.namprd04.prod.outlook.com (2603:10b6:a03:40::44)
+ by IA1PR12MB6187.namprd12.prod.outlook.com (2603:10b6:208:3e5::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Thu, 29 Jun
+ 2023 05:12:44 +0000
+Received: from DM6NAM11FT018.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:a03:40:cafe::8d) by BYAPR04CA0031.outlook.office365.com
+ (2603:10b6:a03:40::44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.20 via Frontend
+ Transport; Thu, 29 Jun 2023 05:12:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ DM6NAM11FT018.mail.protection.outlook.com (10.13.172.110) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6500.48 via Frontend Transport; Thu, 29 Jun 2023 05:12:43 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 28 Jun 2023
+ 22:12:36 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Wed, 28 Jun 2023 22:12:35 -0700
+Received: from audio.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Wed, 28 Jun 2023 22:12:32 -0700
+From: Sameer Pujar <spujar@nvidia.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>, <krzk+dt@kernel.org>,
+	<thierry.reding@gmail.com>, <lgirdwood@gmail.com>, <perex@perex.cz>,
+	<tiwai@suse.com>
+CC: <jonathanh@nvidia.com>, <mkumard@nvidia.com>, <sheetal@nvidia.com>,
+	<spujar@nvidia.com>, <alsa-devel@alsa-project.org>,
+	<devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/5] Few audio fixes on Tegra platforms
+Date: Thu, 29 Jun 2023 10:42:12 +0530
+Message-ID: <1688015537-31682-1-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1688002673-28493-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1688002673-28493-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: VAVMMW5VZ5CIBNW4NT3WUZKR2Y4DPDZR
-X-Message-ID-Hash: VAVMMW5VZ5CIBNW4NT3WUZKR2Y4DPDZR
-X-MailFrom: shengjiu.wang@nxp.com
+MIME-Version: 1.0
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT018:EE_|IA1PR12MB6187:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7def737b-9da9-4088-0a85-08db785f77e3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	iI7xlo+8Xdr2s1h4pxOJNx1Bq2qGpMaTj1oCcc9ymaOsrL0vNrzMQkf+Cf+7WAe36rRyfM2Of/CCGMELZOEglea6rvQsCeYZZa+V119N9VOgKFg1SFVlF+o3qcLwqGaANDmwOdp7ThgeAIf3fs73h7r7FaVJXJUDlQWtWaDHF2MIH/QlmRnvqYLlMSb2xmQxkiNWfur+zGW64GkSgBBuYP0KgH5V8C/mkpNsmaV6M0K/k2HnCICLQ8k78BoH5NWxNLn+1YlrLomgj59sJx0hC+9JKrcVifhuyEDg9o1OR1hJ0Zpnl15k0tCy74WbFRWTQ0IBkJ7LFyTrGb1cACMu0XvwdCtwc/EjcratZp0Uhm+RMgLwMAzTjZHUE6kKfgU2tbqRmSFXbAq0aB+OQoRNlO/cgDHE5o9XnkhGDiALmhTx6caWhxYYASEoZmFAVB67r7O2semTJPgJcp50DsMlOs4ITm/g3+ObkBvkH+UzZG0slAB+lisdcx/JVmw6s78ij32mUvJmjQ2OYMyHNRo/pWRS29G772mSqfBZEMO1a9+o6pKkqTSIEieis6Rz+vLRGIntChJyfkp0emwDn7+GO2xpPKbXAcAY1xU22bE0YU1psW4XK+917GENZYdTwsMGTN0hsrA7/zqzahEZ2VpwXCibVvLNZLd49dWcM7bnQypf966cPRt+LL4XU6GpAv9GM8Lk94cvUrG04inajXo9t/5r8KPx8Qg5g7+MtcD1/nY1rhxxnryYwZQAIh8Fqrfp
+X-Forefront-Antispam-Report: 
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(136003)(396003)(376002)(451199021)(46966006)(40470700004)(36840700001)(356005)(7636003)(82740400003)(36756003)(47076005)(83380400001)(36860700001)(86362001)(54906003)(8936002)(110136005)(7696005)(40460700003)(6666004)(41300700001)(70206006)(316002)(8676002)(70586007)(336012)(426003)(26005)(186003)(4326008)(82310400005)(40480700001)(2616005)(478600001)(2906002)(5660300002)(7416002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2023 05:12:43.0089
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 7def737b-9da9-4088-0a85-08db785f77e3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	DM6NAM11FT018.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6187
+Message-ID-Hash: HZGFXREMSWYXIIMTQQP3QFQIOJDCB7KT
+X-Message-ID-Hash: HZGFXREMSWYXIIMTQQP3QFQIOJDCB7KT
+X-MailFrom: spujar@nvidia.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +139,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VAVMMW5VZ5CIBNW4NT3WUZKR2Y4DPDZR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HZGFXREMSWYXIIMTQQP3QFQIOJDCB7KT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,271 +148,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-ASRC can be used on memory to memory case, define several
-functions for m2m usage and export them as function pointer.
+This series fixes some of the issues which were observed during an attempt to
+enhance automated test coverage on Jetson AGX Orin. Below is a short summary
+of the issues and fixes:
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_easrc.c | 214 ++++++++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_easrc.h |   6 ++
- 2 files changed, 220 insertions(+)
+  * Sample rate coversion failures above 48kHz.
+  * AMX and ADX test cases failures due to incorrect byte mask.
+  * Atomic sleep in RT5640 codec which is present on Jetson AGX Orin.
+  * AHUB clock fixes on Tegra234 and previous chips.
+  * Minor cleanups in ASRC and AHUB driver.
 
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index 670cbdb361b6..b735b24badc2 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1861,6 +1861,210 @@ static int fsl_easrc_get_fifo_addr(u8 dir, enum asrc_pair_index index)
- 	return REG_EASRC_FIFO(dir, index);
- }
- 
-+/* Get sample numbers in FIFO */
-+static unsigned int fsl_easrc_get_output_fifo_size(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	enum asrc_pair_index index = pair->index;
-+	u32 val;
-+
-+	regmap_read(asrc->regmap, REG_EASRC_SFS(index), &val);
-+	val &= EASRC_SFS_NSGO_MASK;
-+
-+	return val >> EASRC_SFS_NSGO_SHIFT;
-+}
-+
-+static int fsl_easrc_m2m_start_part_one(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	struct fsl_asrc *asrc = pair->asrc;
-+	struct device *dev = &asrc->pdev->dev;
-+	int ret;
-+
-+	ctx_priv->in_params.sample_rate = pair->rate[IN];
-+	ctx_priv->in_params.sample_format = pair->sample_format[IN];
-+	ctx_priv->out_params.sample_rate = pair->rate[OUT];
-+	ctx_priv->out_params.sample_format = pair->sample_format[OUT];
-+
-+	ctx_priv->in_params.fifo_wtmk = FSL_EASRC_INPUTFIFO_WML;
-+	ctx_priv->out_params.fifo_wtmk = FSL_EASRC_OUTPUTFIFO_WML;
-+	/* Fill the right half of the re-sampler with zeros */
-+	ctx_priv->rs_init_mode = 0x2;
-+	/* Zero fill the right half of the prefilter */
-+	ctx_priv->pf_init_mode = 0x2;
-+
-+	ret = fsl_easrc_set_ctx_format(pair,
-+				       &ctx_priv->in_params.sample_format,
-+				       &ctx_priv->out_params.sample_format);
-+	if (ret) {
-+		dev_err(dev, "failed to set context format: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = fsl_easrc_config_context(asrc, pair->index);
-+	if (ret) {
-+		dev_err(dev, "failed to config context %d\n", ret);
-+		return ret;
-+	}
-+
-+	ctx_priv->in_params.iterations = 1;
-+	ctx_priv->in_params.group_len = pair->channels;
-+	ctx_priv->in_params.access_len = pair->channels;
-+	ctx_priv->out_params.iterations = 1;
-+	ctx_priv->out_params.group_len = pair->channels;
-+	ctx_priv->out_params.access_len = pair->channels;
-+
-+	ret = fsl_easrc_set_ctx_organziation(pair);
-+	if (ret) {
-+		dev_err(dev, "failed to set fifo organization\n");
-+		return ret;
-+	}
-+
-+	/* The context start flag */
-+	ctx_priv->first_convert = 1;
-+	return 0;
-+}
-+
-+static int fsl_easrc_m2m_start_part_two(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	/* start context once */
-+	if (ctx_priv->first_convert) {
-+		fsl_easrc_start_context(pair);
-+		ctx_priv->first_convert = 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int fsl_easrc_m2m_stop_part_two(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	/* Stop pair/context */
-+	if (!ctx_priv->first_convert) {
-+		fsl_easrc_stop_context(pair);
-+		ctx_priv->first_convert = 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int fsl_easrc_m2m_check_format(u8 dir, u32 rate, u32 channels, u32 format)
-+{
-+	u64 support_format = FSL_EASRC_FORMATS;
-+
-+	if (channels < 1 || channels > 32)
-+		return -EINVAL;
-+
-+	if (rate < 8000 || rate > 768000)
-+		return -EINVAL;
-+
-+	if (dir == OUT)
-+		support_format |= SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE;
-+
-+	if (!(1 << format & support_format))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+/* calculate capture data length according to output data length and sample rate */
-+static int fsl_easrc_m2m_calc_out_len(struct fsl_asrc_pair *pair, int input_buffer_length)
-+{
-+	struct fsl_asrc *easrc = pair->asrc;
-+	struct fsl_easrc_priv *easrc_priv = easrc->private;
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	unsigned int in_rate = ctx_priv->in_params.norm_rate;
-+	unsigned int out_rate = ctx_priv->out_params.norm_rate;
-+	unsigned int channels = pair->channels;
-+	unsigned int in_samples, out_samples;
-+	unsigned int in_width, out_width;
-+	unsigned int out_length;
-+	unsigned int frac_bits;
-+	u64 val1, val2;
-+
-+	switch (easrc_priv->rs_num_taps) {
-+	case EASRC_RS_32_TAPS:
-+		/* integer bits = 5; */
-+		frac_bits = 39;
-+		break;
-+	case EASRC_RS_64_TAPS:
-+		/* integer bits = 6; */
-+		frac_bits = 38;
-+		break;
-+	case EASRC_RS_128_TAPS:
-+		/* integer bits = 7; */
-+		frac_bits = 37;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	val1 = (u64)in_rate << frac_bits;
-+	do_div(val1, out_rate);
-+	val1 = val1 + ctx_priv->ratio_mod;
-+
-+	in_width = snd_pcm_format_physical_width(ctx_priv->in_params.sample_format) / 8;
-+	out_width = snd_pcm_format_physical_width(ctx_priv->out_params.sample_format) / 8;
-+
-+	ctx_priv->in_filled_len += input_buffer_length;
-+	if (ctx_priv->in_filled_len <= ctx_priv->in_filled_sample * in_width * channels) {
-+		out_length = 0;
-+	} else {
-+		in_samples = ctx_priv->in_filled_len / (in_width * channels) -
-+			     ctx_priv->in_filled_sample;
-+
-+		/* right shift 12 bit to make ratio in 32bit space */
-+		val2 = (u64)in_samples << (frac_bits - 12);
-+		val1 = val1 >> 12;
-+		do_div(val2, val1);
-+		out_samples = val2;
-+
-+		out_length = out_samples * out_width * channels;
-+		ctx_priv->in_filled_len = ctx_priv->in_filled_sample * in_width * channels;
-+	}
-+
-+	return out_length;
-+}
-+
-+static int fsl_easrc_m2m_get_maxburst(u8 dir, struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+
-+	if (dir == IN)
-+		return ctx_priv->in_params.fifo_wtmk * pair->channels;
-+	else
-+		return ctx_priv->out_params.fifo_wtmk * pair->channels;
-+}
-+
-+static int fsl_easrc_m2m_pair_suspend(struct fsl_asrc_pair *pair)
-+{
-+	fsl_easrc_stop_context(pair);
-+
-+	return 0;
-+}
-+
-+static int fsl_easrc_m2m_pair_resume(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+
-+	ctx_priv->first_convert = 1;
-+	ctx_priv->in_filled_len = 0;
-+
-+	return 0;
-+}
-+
-+static int fsl_easrc_m2m_set_ratio_mod(struct fsl_asrc_pair *pair, int val)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	struct fsl_asrc *easrc = pair->asrc;
-+
-+	ctx_priv->ratio_mod += val;
-+	regmap_write(easrc->regmap, REG_EASRC_RUC(pair->index), EASRC_RSUC_RS_RM(val));
-+
-+	return 0;
-+}
-+
- static const struct of_device_id fsl_easrc_dt_ids[] = {
- 	{ .compatible = "fsl,imx8mn-easrc",},
- 	{}
-@@ -1926,6 +2130,16 @@ static int fsl_easrc_probe(struct platform_device *pdev)
- 	easrc->release_pair = fsl_easrc_release_context;
- 	easrc->get_fifo_addr = fsl_easrc_get_fifo_addr;
- 	easrc->pair_priv_size = sizeof(struct fsl_easrc_ctx_priv);
-+	easrc->m2m_start_part_one = fsl_easrc_m2m_start_part_one;
-+	easrc->m2m_start_part_two = fsl_easrc_m2m_start_part_two;
-+	easrc->m2m_stop_part_two = fsl_easrc_m2m_stop_part_two;
-+	easrc->get_output_fifo_size = fsl_easrc_get_output_fifo_size;
-+	easrc->m2m_check_format = fsl_easrc_m2m_check_format;
-+	easrc->m2m_calc_out_len = fsl_easrc_m2m_calc_out_len;
-+	easrc->m2m_get_maxburst = fsl_easrc_m2m_get_maxburst;
-+	easrc->m2m_pair_suspend = fsl_easrc_m2m_pair_suspend;
-+	easrc->m2m_pair_resume = fsl_easrc_m2m_pair_resume;
-+	easrc->m2m_set_ratio_mod = fsl_easrc_m2m_set_ratio_mod;
- 
- 	easrc_priv->rs_num_taps = EASRC_RS_32_TAPS;
- 	easrc_priv->const_coeff = 0x3FF0000000000000;
-diff --git a/sound/soc/fsl/fsl_easrc.h b/sound/soc/fsl/fsl_easrc.h
-index 7c70dac52713..bee887c8b4f2 100644
---- a/sound/soc/fsl/fsl_easrc.h
-+++ b/sound/soc/fsl/fsl_easrc.h
-@@ -601,6 +601,9 @@ struct fsl_easrc_slot {
-  * @out_missed_sample: sample missed in output
-  * @st1_addexp: exponent added for stage1
-  * @st2_addexp: exponent added for stage2
-+ * @ratio_mod: update ratio
-+ * @first_convert: start of conversion
-+ * @in_filled_len: input filled length
-  */
- struct fsl_easrc_ctx_priv {
- 	struct fsl_easrc_io_params in_params;
-@@ -618,6 +621,9 @@ struct fsl_easrc_ctx_priv {
- 	int out_missed_sample;
- 	int st1_addexp;
- 	int st2_addexp;
-+	int ratio_mod;
-+	unsigned int first_convert;
-+	unsigned int in_filled_len;
- };
- 
- /**
+
+Changelog
+=========
+
+  v1 -> v2:
+  ---------
+    * Few patches got accepted in the original (v1) series. Now v2
+      addresses comments for remaining patches.
+    * AMX/ADX byte map fix patch is updated with more details
+      in the commit message and added TODO item in the driver
+      to improve the logic.
+    * For RT5640 codec patch, the threaded IRQ is used for
+      only for rt5640_irq() and rt5640_jd_gpio_irq() is left
+      untouched.
+
+Sameer Pujar (2):
+  ASoC: rt5640: Fix sleep in atomic context
+  arm64: tegra: Update AHUB clock parent and rate
+
+Sheetal (3):
+  ASoC: tegra: Fix AMX byte map
+  ASoC: tegra: Fix ADX byte map
+  arm64: tegra: Update AHUB clock parent and rate on Tegra234
+
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi |  3 ++-
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi |  3 ++-
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi |  3 ++-
+ arch/arm64/boot/dts/nvidia/tegra234.dtsi |  3 ++-
+ sound/soc/codecs/rt5640.c                | 12 ++++++----
+ sound/soc/tegra/tegra210_adx.c           | 34 +++++++++++++++++----------
+ sound/soc/tegra/tegra210_amx.c           | 40 ++++++++++++++++++--------------
+ 7 files changed, 59 insertions(+), 39 deletions(-)
+
 -- 
-2.34.1
+2.7.4
 
