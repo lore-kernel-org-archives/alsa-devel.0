@@ -4,99 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37599EB64DD
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 11:01:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 198AFEB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 11:08:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B70F47F4;
-	Thu, 29 Jun 2023 13:00:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B70F47F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4D11822;
+	Thu, 29 Jun 2023 13:07:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4D11822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688036462;
-	bh=SNuvCv0VFWJ1T/BA1jgFsWK/sbewukgBLN8NThITlGY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=rvidyhVDaPdQSXamovVXa4Zdbsu/+dqMr5YOwBVdKHGo0m85WPfcUBr9bSb/ChjvJ
-	 ApSAxb+A73If82phqk0ZPeOfw5eFQXj5AHKOeRp/kGHu1oanuIBgbFa6gV6++rpHBy
-	 hYOp10owp1v8+nZJzkOjKGvksRDsJAxEa4S/aWgA=
+	s=default; t=1688036899;
+	bh=FLoL8An0bukglSPKXHABsGoYDKvwe2tm5bWLwcg/0gA=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ZBrO0prfQ9r/vugKn9F1D4se6G3thR5eswzRci8C1uFI23Bjx13casbePaqRaAYEy
+	 F/6Oyei++LderY6VZJ6oeeli1++7bThVtfzw+ofKmhARfS1i/5yllyVkHo8hmGgYBj
+	 /Hzcx7KkWqtONACM7lFWW95TBIw2pzI3nTBXLTqE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DD6B5F80246; Thu, 29 Jun 2023 13:00:11 +0200 (CEST)
+	id 5773CF80169; Thu, 29 Jun 2023 13:07:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EBAFF80093;
-	Thu, 29 Jun 2023 13:00:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D547F80246;
+	Thu, 29 Jun 2023 13:07:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BEA18F80246; Thu, 29 Jun 2023 13:00:07 +0200 (CEST)
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com
- [IPv6:2607:f8b0:4864:20::42f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 81CD3F80246; Thu, 29 Jun 2023 13:07:01 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E3AE8F80169
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 13:00:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3AE8F80169
+	by alsa1.perex.cz (Postfix) with ESMTPS id 096A1F80093
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 13:06:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 096A1F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=IJJG70VR
-Received: by mail-pf1-x42f.google.com with SMTP id
- d2e1a72fcca58-66d6a9851f3so144183b3a.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 29 Jun 2023 04:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688036403; x=1690628403;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SNuvCv0VFWJ1T/BA1jgFsWK/sbewukgBLN8NThITlGY=;
-        b=IJJG70VRTfv6SzZDiw5KgcGaeym0vz6jCVdSX8aL1AtgKYxIKxEz+FbieZyrRKMKt6
-         XCNCfb6e0kP4qrLVYCOdleUjQ0iPjzq7WtSDVVd1E/SnYE0lqHji5iXyEH54McdjI3Q6
-         aGP09g3gRxxOG3bTuanQqLSGUYvKcsHm5AbgJBGY2+BeZSDjm6FHWKrH5NokTFFFcK4n
-         5M0DelgYVruwm87q4YsvLXl0PCpvA7mJRxPfLrw0EJJgh1S2hE6eMETfer+m2znDNGz+
-         rx7t9Pn79B0zCEhWoBBcJnDez2ncEfQAzyDnYf6kYmZsBkPiLUqjN+/nFgPhNsy3lsLQ
-         N82w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688036403; x=1690628403;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SNuvCv0VFWJ1T/BA1jgFsWK/sbewukgBLN8NThITlGY=;
-        b=OXexyYPzyehLMgpfWyMZOiew2DgXRPoWAvHse1D47rpXFi69yHqjD+QSSfOzcrYAlz
-         OsaLHzxFc93JiZX3yQRE91QLVtHbwHeIUHx164qCo3XffSttxTH3XJYn6hm2QbSH8zds
-         j2oYUoQW+fKg7/vaKor4/dfKk/Iqn0y66LgNHB9Nyi24i6TxESsfpL7BfCeYr5xagBAU
-         GwQdZ7vE1dWJrw+Cl7u41Ao+6nQQf4Fd+9QIu+O+1on6uQLF6h9/ulgKQ0RvjBOWMM6c
-         92gjErIevIlOxwxxhXWmhzbCtxX9McZR9ifYx+ZRE6mOSSPcW47vUG93pqfyAdfWVwO+
-         RP4Q==
-X-Gm-Message-State: AC+VfDy5uxfSnct8MYHF8CovyoB6uss5tcKnuxeLYY3lpjBSCxdcgOKi
-	ZiUvHa68/g3Hf0vd+YzV9EEqUoQizXlZR9Pv6qE=
-X-Google-Smtp-Source: 
- ACHHUZ4241Q0Xok00mtSesZ0ScAf8EpY8gqClpDPFmqvjMGqm+Sl0vzMI5IyImuqQIvVL0JNHSy7d4g+Mx22zwDE2r4=
-X-Received: by 2002:a05:6a20:7295:b0:111:fba0:bd3b with SMTP id
- o21-20020a056a20729500b00111fba0bd3bmr45440823pzk.1.1688036403198; Thu, 29
- Jun 2023 04:00:03 -0700 (PDT)
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=HsQuQ/3m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1688036820; x=1719572820;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FLoL8An0bukglSPKXHABsGoYDKvwe2tm5bWLwcg/0gA=;
+  b=HsQuQ/3muBYuW+VxjocIhFsk1d+bB+dTyT/qxhb1PSGw/oHN5hcJI/xw
+   AsCsB7xdeoMRowdGTSXBfhAnGkYCTn84cHanFCJ6UBJvBndUOkGHPUfEX
+   ZGIStdS0GAy7c0IUXa/MPX4BRVfcxvjs2hpaJ5qNWOBpJ8J1PJFpQk+tL
+   30kgFbLtbhiTaoQJ5VOnJvzKT4FwP+4ejIYIpzLArEW2mycGY4kZAoGhO
+   6VlHfjBCTmn7lGNypOPFekc7Ymf7gPLVZGXw50eVnkoKCVd/fnrcFPzNU
+   H+0pppQuPc/HtTkzWOpFuRgHFKauuTh3+Z9TDgdbw9L4eYas5vGmdzyfP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="365543564"
+X-IronPort-AV: E=Sophos;i="6.01,168,1684825200";
+   d="scan'208";a="365543564"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jun 2023 04:06:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="1047732684"
+X-IronPort-AV: E=Sophos;i="6.01,168,1684825200";
+   d="scan'208";a="1047732684"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+  by fmsmga005.fm.intel.com with ESMTP; 29 Jun 2023 04:06:49 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Cc: tiwai@suse.com,
+	perex@perex.cz,
+	zhuning@everest-semi.com,
+	amadeuszx.slawinski@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	hdegoede@redhat.com,
+	Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH 0/8] ASoC: Intel: avs: New boards and fixes to existing ones
+Date: Thu, 29 Jun 2023 13:24:41 +0200
+Message-Id: <20230629112449.1755928-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1688002673-28493-1-git-send-email-shengjiu.wang@nxp.com>
- <1688002673-28493-4-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1688002673-28493-4-git-send-email-shengjiu.wang@nxp.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Thu, 29 Jun 2023 07:59:53 -0300
-Message-ID: 
- <CAOMZO5DPHmm7YuHBfYHpx2-g4R6t1BQ93GBAZvyyb_rBz7+hFg@mail.gmail.com>
-Subject: Re: [PATCH 3/6] ASoC: fsl_easrc: define functions for memory to
- memory usage
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-	alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: WWZ4ZYWUUFCAHQ3542EECMB7QEFNZIJJ
-X-Message-ID-Hash: WWZ4ZYWUUFCAHQ3542EECMB7QEFNZIJJ
-X-MailFrom: festevam@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: BOPUJ3HWBK2ADDIOLCNF72CVEFXDTJYG
+X-Message-ID-Hash: BOPUJ3HWBK2ADDIOLCNF72CVEFXDTJYG
+X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WWZ4ZYWUUFCAHQ3542EECMB7QEFNZIJJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BOPUJ3HWBK2ADDIOLCNF72CVEFXDTJYG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,22 +102,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Shengjiu,
+Series adds support for two boards: es8336 and rt5663. The former is
+utilized by some KBL-based tablets whereas the latter unlocks
+Chromebooks with rt5663 i2c codecs.
 
-On Wed, Jun 28, 2023 at 11:10=E2=80=AFPM Shengjiu Wang <shengjiu.wang@nxp.c=
-om> wrote:
->
-> ASRC can be used on memory to memory case, define several
-> functions for m2m usage and export them as function pointer.
->
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+As existing implementation of es8336 (es8316.c) codec driver is not
+prepared to cope with KBL-based platforms, couple of small,
+clock-related changes precede anything avs-driver related.
 
-Could you please explain what is the benefit of using M2M in the EASRC driv=
-er?
+The tail of patchset cleans up existing implementation of rt5682.
 
-A few weeks ago, an imx8mn user reported that the EASRC with the
-mainline kernel introduces huge delays.
+Amadeusz Sławiński (2):
+  ASoC: Intel: avs: Add rt5663 machine board
+  ASoC: Intel: avs: Load rt5663 board on KBL-based platforms
 
-Does M2M help with this aspect?
+Cezary Rojewski (6):
+  ASoC: codecs: es8316: Add support for 24 MHz MCLK
+  ASoC: codecs: es8316: Add support for S24_3LE format
+  ASoC: Intel: avs: Add es8336 machine board
+  ASoC: Intel: avs: Load es8336 board on KBL-based platforms
+  ASoC: Intel: avs: rt5682: Add missing components
+  ASoC: Intel: avs: rt5682: Tidy up hw_params()
 
-Thanks
+ sound/soc/codecs/es8316.c             |   5 +-
+ sound/soc/intel/avs/board_selection.c |  16 ++
+ sound/soc/intel/avs/boards/Kconfig    |  20 ++
+ sound/soc/intel/avs/boards/Makefile   |   4 +
+ sound/soc/intel/avs/boards/es8336.c   | 315 ++++++++++++++++++++++++++
+ sound/soc/intel/avs/boards/rt5663.c   | 254 +++++++++++++++++++++
+ sound/soc/intel/avs/boards/rt5682.c   |  67 +++---
+ 7 files changed, 652 insertions(+), 29 deletions(-)
+ create mode 100644 sound/soc/intel/avs/boards/es8336.c
+ create mode 100644 sound/soc/intel/avs/boards/rt5663.c
+
+-- 
+2.25.1
+
