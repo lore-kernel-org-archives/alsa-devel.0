@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B364EB64D9
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 19:03:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 729F7EB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 19:03:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 426E2850;
-	Thu, 29 Jun 2023 21:02:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 426E2850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19E2C84A;
+	Thu, 29 Jun 2023 21:02:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19E2C84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688065390;
-	bh=y9x06U1tVv44gNduxq6fUF2ydIzmA1HJ9n4cFuX6o94=;
+	s=default; t=1688065416;
+	bh=lXAIcOYJ04rYnjX1H6sNHonDK/FOgyHGfIdz8ibt4dw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=s1htaKjbjwJrfmMAzgdNpmU9sK5Bk+0A3tUdLk2TAUx7usCVElN3kM0PMocYff7ZS
-	 xFEkIwS9kb/p89lEcnhK8n/CzHMTZYbcymzBrvP7lTj/bhLCCkzr68ooBmsOpU7Dsf
-	 U8UhdO16W9avkSBVZSkEHvJFtIF4bXaFJVw8dWuA=
+	b=vD7OZp7g4ijTWJZiY5DLbJPYrbolw3mvm2fP1UUbKyEbBRFsV/6P+vFVKjA/DgFqK
+	 IvYfD5eHMqxJOEHlirr9xFncDCh3nuXPI07Q9yDoPUIQofvz9dFFye05l0j0/U0uhZ
+	 F07KTZERge49Cled4YixapgYTCOqXHOG+VnexkhQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4F127F8057B; Thu, 29 Jun 2023 21:01:55 +0200 (CEST)
+	id D44EFF80553; Thu, 29 Jun 2023 21:02:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA35EF8053B;
-	Thu, 29 Jun 2023 21:01:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 795DDF8057E;
+	Thu, 29 Jun 2023 21:02:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2EA15F80564; Thu, 29 Jun 2023 21:01:51 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id B1427F8057E; Thu, 29 Jun 2023 21:01:58 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5F4C2F80212
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 21:01:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F4C2F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id EBECFF800E3
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 21:01:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBECFF800E3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=YDJdqh9w
+ header.s=k20201202 header.b=Y5kTwmBC
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id F0D85615FD;
-	Thu, 29 Jun 2023 19:01:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2B9EC433D9;
-	Thu, 29 Jun 2023 19:01:46 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A8102615FF;
+	Thu, 29 Jun 2023 19:01:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 856C6C433AB;
+	Thu, 29 Jun 2023 19:01:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688065307;
-	bh=y9x06U1tVv44gNduxq6fUF2ydIzmA1HJ9n4cFuX6o94=;
+	s=k20201202; t=1688065315;
+	bh=lXAIcOYJ04rYnjX1H6sNHonDK/FOgyHGfIdz8ibt4dw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YDJdqh9wSG/TwsPyVzIjNQ+a8T8JVZwfL5JQ0oCGeQnIzc1Uh6rBI4h5pRvggH0ub
-	 ftbB6jxpYMV7MO8Mc0a+o4r6hpo+P1u8Jvp4kIaad96UTAfw9xgfOuj2XNHkpwwU/I
-	 KovYDxI+ClvZWRjTysNnfqiR6IFbOPgQ+E5Eb4YRaRx9E2CwbROt66aDeT1vbB9j7Y
-	 6uCoDTXF89dE9H1BEFHJFAL//a9Zq9FcdUs+AnEhAusV69NzCXbIiDVqPmdq6xaXqL
-	 QjhlKkYtSTwc8Zm3bCGG5D/EeMuMNof522zmMhVurEM9M/TGcRM5pF4zKAujx1txjf
-	 6aZ94LmosAaAw==
+	b=Y5kTwmBC+Kka84XwhYog5FoWO1QKuoixZBynw9VE8VaYowv6d/D0AjKKA4YNLVs41
+	 L/CAh833EPaRQYWqIQmy18iGbsY/nBnHeaE2ru9FB3U7gt1OlvLJW7PAmVcxUDnEFZ
+	 wFRJ9HOqxJ1d6TPQfqT3Y4hSYsnPHzrvszOCMfZFCLNh01E4F7rqR9syZRYGcNXNdc
+	 kQ2fULasF1d4Av/VOrkKp14g+JplvS7WPF5WcLaiPoiF9PLN6mW00NT6LCgSgcorG+
+	 YqJpNGYRAYsEznXZsaH7Fa8woVIqHtuBCNrpi3O6NO1XMTOQzKjBfkUE4OPcPE3AOU
+	 gkD/OLQZRudaw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -67,17 +68,16 @@ Cc: "Luke D. Jones" <luke@ljones.dev>,
 	tiwai@suse.com,
 	sbinding@opensource.cirrus.com,
 	tangmeng@uniontech.com,
-	tcrawford@system76.com,
 	andy.chi@canonical.com,
 	p.jungkamp@gmx.net,
 	kasper93@gmail.com,
 	yangyuchi66@gmail.com,
 	yangyingliang@huawei.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 07/12] ALSA: hda/realtek: Add quirk for ASUS ROG
- G634Z
-Date: Thu, 29 Jun 2023 15:01:27 -0400
-Message-Id: <20230629190134.907949-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 11/12] ALSA: hda/realtek: Add quirk for ASUS ROG
+ GV601V
+Date: Thu, 29 Jun 2023 15:01:31 -0400
+Message-Id: <20230629190134.907949-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230629190134.907949-1-sashal@kernel.org>
 References: <20230629190134.907949-1-sashal@kernel.org>
@@ -86,8 +86,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.35
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KKUVVMQCAIRPYSXDYQBTMFBQRH34I2AV
-X-Message-ID-Hash: KKUVVMQCAIRPYSXDYQBTMFBQRH34I2AV
+Message-ID-Hash: VBOXY2IDQIYPP264GHO6L4ROVZKGBYEN
+X-Message-ID-Hash: VBOXY2IDQIYPP264GHO6L4ROVZKGBYEN
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KKUVVMQCAIRPYSXDYQBTMFBQRH34I2AV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VBOXY2IDQIYPP264GHO6L4ROVZKGBYEN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,16 +111,16 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: "Luke D. Jones" <luke@ljones.dev>
 
-[ Upstream commit 555434fd5c6b3589d9511ab6e88faf50346e19da ]
+[ Upstream commit 82edd1bd7f98567928871e2a2a317724d35f0085 ]
 
 Adds the required quirk to enable the Cirrus amp and correct pins
-on the ASUS ROG G634Z series.
+on the ASUS ROG GV601V series.
 
 While this works if the related _DSD properties are made available, these
 aren't included in the ACPI of these laptops (yet).
 
 Signed-off-by: Luke D. Jones <luke@ljones.dev>
-Link: https://lore.kernel.org/r/20230619060320.1336455-1-luke@ljones.dev
+Link: https://lore.kernel.org/r/20230621085715.5382-1-luke@ljones.dev
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -128,17 +128,17 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 920e44ba998a5..3889701bdb1c9 100644
+index 3889701bdb1c9..0547f60a400e7 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -9552,6 +9552,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1c23, "Asus X55U", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x1043, 0x1c62, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1c92, "ASUS ROG Strix G15", ALC285_FIXUP_ASUS_G533Z_PINS),
-+	SND_PCI_QUIRK(0x1043, 0x1caf, "ASUS G634JYR/JZR", ALC285_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1d42, "ASUS Zephyrus G14 2022", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
+@@ -9527,6 +9527,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
+ 	SND_PCI_QUIRK(0x1043, 0x1473, "ASUS GU604V", ALC285_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1483, "ASUS GU603V", ALC285_FIXUP_ASUS_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1043, 0x1493, "ASUS GV601V", ALC285_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
+ 	SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", ALC294_FIXUP_ASUS_DUAL_SPK),
+ 	SND_PCI_QUIRK(0x1043, 0x1683, "ASUS UM3402YAR", ALC287_FIXUP_CS35L41_I2C_2),
 -- 
 2.39.2
 
