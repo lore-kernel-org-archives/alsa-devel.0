@@ -4,48 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF7EBEB64DD
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 21:21:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 398F1EB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 21:25:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89E8A826;
-	Thu, 29 Jun 2023 23:21:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89E8A826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18546826;
+	Thu, 29 Jun 2023 23:24:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18546826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688073711;
-	bh=Hh22/kvpJj3tvczt2QD8hWbD6WP9clTWrGtEAE/s0x4=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=nGg8okfh5kKZj2dIoXpo2Ve6bSp2gkkkPdW+/EHWoSAoGeTNhUAj6SU+xX01prHuA
-	 soYlozwOl+YIRA4BZIk8WjWAcmi7TuH1vclLnmo/OOU5yS8m4LOJAo5AcnqpKtooA7
-	 543SMSlRUOgrqLhaepW47rl9EyGLwyjE7ro23iy4=
+	s=default; t=1688073926;
+	bh=zOehGqKX+VYh9hnjIWi/Nq52SHkJn4rPs67np4lrfEg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=JlKivsdICUINMOstwpct7vJFxJZ46EOIjs5VtPCFOVXKg9jTJsSZogPkXGRgxcN+l
+	 D8b1SHHqkLgXCwq3A8gFQ6eHu6SnWHWXMUMDezwd7P+loBSkXdjqp5UnaU/yXR0u+e
+	 i0+qMb710qyecMfjwol8EIm38zmWtU+hyoSfHPjE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D5DA1F80535; Thu, 29 Jun 2023 23:20:36 +0200 (CEST)
+	id ACEC2F80212; Thu, 29 Jun 2023 23:24:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DB47F80246;
-	Thu, 29 Jun 2023 23:20:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0672FF80246;
+	Thu, 29 Jun 2023 23:24:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E998F80246; Thu, 29 Jun 2023 23:20:32 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5EEFF800E3
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 23:20:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5EEFF800E3
+	id F1E46F80246; Thu, 29 Jun 2023 23:24:07 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 003F6F800E3
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 23:24:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 003F6F800E3
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ZELw7XXz
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A492561651;
+	Thu, 29 Jun 2023 21:23:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 765C2C433C0;
+	Thu, 29 Jun 2023 21:23:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688073839;
+	bh=zOehGqKX+VYh9hnjIWi/Nq52SHkJn4rPs67np4lrfEg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZELw7XXzZnOk5RfhnLMGd5rmjCOLIlzu82UcPR/O+XEQBVHkbxAqGBQJKtlEbYzmV
+	 dmij9daTBQNjt+161eT2qunRcdDXVP+CuJlH1S2FE6O+dsdmNzxSbUxshFfpHtra9L
+	 Uz1crmAGMycMHj1gqCk2qS26QlHAOVgPeJOeIRMl8r9AfVoufbauR99Ng9vQoZqubs
+	 J+N5xh/KctU0tCATZdxr1yS0ZnF4YVGJs14LdTYGIpF1j7lIfR71gmeDUmsyj5EapA
+	 i1bW3rNQ57Fbfd+YsaVio0WBv/NVIrR81oTOpHZJAqb8wmM6jDv0/r90JFcpGk8EtO
+	 yPBmw2T2n9baw==
+Date: Thu, 29 Jun 2023 22:23:53 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Greg KH <greg@kroah.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	johan+linaro@kernel.org, perex@perex.cz, tiwai@suse.com,
+	lgirdwood@gmail.com, ckeepax@opensource.cirrus.com,
+	kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+	Stable@vger.kernel.org
+Subject: Re: [PATCH] ASoC: qdsp6: q6apm: use dai link pcm id as pcm device
+ number
+Message-ID: <00ac35ee-b507-43ee-b596-801b76972946@sirena.org.uk>
+References: <20230628092404.13927-1-srinivas.kandagatla@linaro.org>
+ <c22fcc94-aa41-4ffd-bfe8-f0b9f15a76c0@sirena.org.uk>
+ <2023062940-snore-brick-419b@gregkh>
+ <9699a960-74b0-4064-b264-6cde06cd16fc@sirena.org.uk>
+ <2023062958-thumping-ambulance-7a2f@gregkh>
+ <1c1dd19e-cbc4-41fe-9e97-a07cfebdaa4b@sirena.org.uk>
+ <2023062905-tiring-bauble-84ef@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1688073618816920757-webhooks-bot@alsa-project.org>
-References: <1688073618816920757-webhooks-bot@alsa-project.org>
-Subject: configure: Add large file support via CFLAGS
-Message-Id: <20230629212032.6E998F80246@alsa1.perex.cz>
-Date: Thu, 29 Jun 2023 23:20:32 +0200 (CEST)
-Message-ID-Hash: GGC6TWDBK2IQHCD3CZALR4GJFNSOMKGT
-X-Message-ID-Hash: GGC6TWDBK2IQHCD3CZALR4GJFNSOMKGT
-X-MailFrom: github@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lwINwq5DE62imWCd"
+Content-Disposition: inline
+In-Reply-To: <2023062905-tiring-bauble-84ef@gregkh>
+X-Cookie: Surprise due today.  Also the rent.
+Message-ID-Hash: XYOIQOPYVMQH6CF6B74ZFZ7FYZ3VLYEW
+X-Message-ID-Hash: XYOIQOPYVMQH6CF6B74ZFZ7FYZ3VLYEW
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GGC6TWDBK2IQHCD3CZALR4GJFNSOMKGT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XYOIQOPYVMQH6CF6B74ZFZ7FYZ3VLYEW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,21 +107,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils pull request #223 was opened from kendase3:
 
-Currently scanelf (pax-utils) detects missing LFS support in the following files/calls:
-__open_2,fstat,mmap,open,scandir,stat,alphasort,lstat /usr/sbin/alsactl fopen /usr/lib/alsa-topology/libalsatplg_module_nhlt.so fopen /usr/bin/alsaucm
-fopen /usr/bin/aplaymidi
-__open_2,open /usr/bin/alsatplg
-fstat,open,__open_2 /usr/bin/axfer
-fopen /usr/bin/arecordmidi
-fopen,__open_2 /usr/bin/speaker-test
-creat,__open_2,lseek /usr/bin/amidi
+--lwINwq5DE62imWCd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Note that this may cause problems on systems with a 32-bit kernel, but I've tested playing audio on a more recent 32-bit system with a 64-bit kernel.
+On Thu, Jun 29, 2023 at 08:48:42PM +0200, Greg KH wrote:
+> On Thu, Jun 29, 2023 at 06:38:38PM +0100, Mark Brown wrote:
 
-Let me know if you'd prefer a different approach! Notably the existing AC_SYS_LARGEFILE in configure.ac was not having any effect in my environment. I'm building on a 64-bit host for a 32-bit target.
+> > As discussed before your tolerance for risk in stable is *far* higher
+> > than mine, if there's any value in doing this at all it's probably
+> > within what would get taken but that doesn't mean that it's something
+> > that it's sensible to highlight as an important fix like tagging for
+> > stable does.  It's extremely unclear that it fits the severity criteria
+> > that are supposed to be being applied to stable, though obviously the
+> > documentation doesn't fit the actual practice these days.
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/223
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/223.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+> It's not a matter of "tolerance for risk", it's a "if this change is
+> good enough for future releases, why isn't it good enough for older
+> releases as well?"
+
+> As you know, we don't break user interfaces, so either this is a break
+> or it isn't, stable trees have nothing to do with it as a normal user
+> would "hit" this when updating to run Linus's tree, just as easily as
+> they would "hit" it updating their stable kernel version.
+
+You know as well as I do that we have a bunch of interfaces where things
+end up getting dynamically numbered as they appear, and provided to
+userspace together with identifying information that allows userspace to
+figure out what's what in a stable fashion even though the numbers might
+change.  Like I said earlier in the thread this is one of them, better
+hardware support also has some risk of disturbing things (and some of
+the numbering is going to be hotplug dependent, though this patch isn't
+likely to run into that particular bit of things).
+
+ABI stability is a continuum, from for example things relying on race
+conditions or other timing things that were lucky they ever worked to
+changes in interfaces that break clear and documented guarantees.
+Reliance on stability is similar, and how much of an issue it is when
+something does change and someone notices is going to vary depending on
+what changed and why.  While the risk here seems low if the reasoning is
+just to make things neater then it's even harder to justify for a stable
+kernel than it is for mainline.
+
+Note also that the patch is still under discussion for mainline...
+
+--lwINwq5DE62imWCd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSd9mgACgkQJNaLcl1U
+h9AXXwf9EFiOfs5GMkyWdupiHCqH36l3Y4SpOl/P9yNdpyTD2WLSl6757Is4Qp40
+fj/P/IN4C+yrSVsiAzviATS3iuHY1iwGc7ScLAyCiPezQjut/W8Wrrqm/bKBUVZ1
+jg2piqSGRhiHUW3srfU5oVZ1xRuL4phpD/mLHJzYghgCkS/qUPGuDcillURKktN0
+xeI2VFey0BHH4o/KHz/5d9mDrj97JmIGfqf7tTTlaSlG6p+UnpPGbPuPTX/oy+3m
+Oi0of1cmCvNP3moP1v0LZFHxZt9Mlo86w+erg9/PyYUT7wq5K+J9n3WmZjHgp/g8
+CxokZyuSOyFBktGFiou7KL49zgPM+Q==
+=72ZD
+-----END PGP SIGNATURE-----
+
+--lwINwq5DE62imWCd--
