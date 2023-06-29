@@ -4,87 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C2BFEB64DD
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 10:48:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 952B5EB64DC
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Jun 2023 10:54:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29E9F850;
-	Thu, 29 Jun 2023 12:47:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29E9F850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E4857F1;
+	Thu, 29 Jun 2023 12:54:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E4857F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688035728;
-	bh=bKELHWVc0gm7Wrq9rJb2qhEkSaXqfGvlib5oCM0+8EM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1688036093;
+	bh=poSaV7vPCmMGIchCP8KtyYjj33uRe1tp4qJZ5FhuCR4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sZIbxnRGZFXxdE8te63fldmH5Oj7WBvnlBNoPeh4XBl46KDGF3VYPMymzDhALGlGb
-	 86Q8QZHGrm6TAWVHbL8VHmcspohhUitjSsJgVXsREBUfJ2IjpcnIHZcQukYK9uZ7P7
-	 Nk/YFAkgkEuzvk+dil3lts4vBBhOXLyX6ugJSf38=
+	b=o1s9xsCecONXYkyJ5EnatyrdiHrwce8P5YLrTL1wn4WUylwDsz0ybRllnb+GS5EQk
+	 y80grIT7RA5W9A0cMDrb71tUCiDVwJnOfZsbIYjvpYxpecs8v4IsIQJ2ldJVBdmeoU
+	 hwa254VURwW+jgTUPURxdyn78hZXNeXAZIN0OM3Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1D2BF80564; Thu, 29 Jun 2023 12:47:54 +0200 (CEST)
+	id 97D25F80093; Thu, 29 Jun 2023 12:54:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45107F80549;
-	Thu, 29 Jun 2023 12:47:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D362F80246;
+	Thu, 29 Jun 2023 12:54:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F809F80212; Thu, 29 Jun 2023 12:47:49 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 81640F80246; Thu, 29 Jun 2023 12:53:59 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 97ABEF80246
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 12:46:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97ABEF80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id C38AAF80093
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2023 12:53:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C38AAF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=A1wX8GIZ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688035574; x=1719571574;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bKELHWVc0gm7Wrq9rJb2qhEkSaXqfGvlib5oCM0+8EM=;
-  b=A1wX8GIZuk7uZXj0lekrwzD/8dcnQdiSXTrnOfpIeuhmsb2ThYeGiOWw
-   l5MUMCea1KozD898sGawuFrTjsd6FdGk0qAc/JNEQewPRop/QHrwrMD/a
-   ZjSKwcPOXQCqXbba/s73XmkjLKUOojrtrxtWsf4IpJAT7iqFzzr56AJ0Z
-   8tvXunbyRtFPeLuOz49ou6kk5w9T8up2gd3kG2vR+IQSx6dRCHQ2GU/B7
-   /qwVBqQzf5L8Xk71wiy96nEyIjUuuax5yDdqYDm4qyra05Owf2W7r5osP
-   1h6fVMnaSXYHYW3IcMuIKngxEKpq9IIl1l4/hi16Uso6Qi8k+6NloWgDB
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="362115080"
-X-IronPort-AV: E=Sophos;i="6.01,168,1684825200";
-   d="scan'208";a="362115080"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Jun 2023 03:46:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10755"; a="963948381"
-X-IronPort-AV: E=Sophos;i="6.01,168,1684825200";
-   d="scan'208";a="963948381"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 29 Jun 2023 03:46:04 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id C55EC4DA; Thu, 29 Jun 2023 13:46:05 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	alsa-devel@alsa-project.org,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=XZzqE/WB
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B6658614B3;
+	Thu, 29 Jun 2023 10:53:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BE11C433C0;
+	Thu, 29 Jun 2023 10:53:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688036035;
+	bh=poSaV7vPCmMGIchCP8KtyYjj33uRe1tp4qJZ5FhuCR4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XZzqE/WBL7IXD6yWk1Df2Kr25ACGxHt0ko/HvPQBz2R8lxIpjag0evGKbB9BUmBTN
+	 g3wFcdmD4ofzoGD1XE+mBPL7zKZ+gBfPXTHuHhDRJ/Rx+7WcTqbAf2y9yQgkqZlqe+
+	 68iKkOJnRV9BayWqHhJri4gmybW/7ikFdQB1lkoOKG1/usNaJXbZLIOz2mFq8fJUfK
+	 YmVeLxRa/ocv/G5TY+BdhWbHkoKc3e1Vd8svZMFlgh0yqUKFtk9MeOIl+GsIttRDzB
+	 VkhZpffGMBhvfKThkEwexM1JKiV0KzOr8JgWcwT8QUctGhMjLt6adB3v6V2VBFQCjV
+	 4wAYbNqcK5phw==
+Date: Thu, 29 Jun 2023 11:53:50 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, Matthias Reichl <hias@horus.com>,
+	Dom Cobley <popcornmix@gmail.com>, alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Cc: Oder Chiou <oder_chiou@realtek.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v1 2/3] ASoC: rt5677: Use device_get_match_data()
-Date: Thu, 29 Jun 2023 13:46:02 +0300
-Message-Id: <20230629104603.88612-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230629104603.88612-1-andriy.shevchenko@linux.intel.com>
-References: <20230629104603.88612-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH] ASoC: hdmi-codec: fix channel info for compressed formats
+Message-ID: <65adc6e1-c74b-4cba-93de-172a7129228f@sirena.org.uk>
+References: <20230624165232.5751-1-hias@horus.com>
+ <168803481324.25247.5593448279992144349.b4-ty@kernel.org>
+ <87zg4ifsz4.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: S6WYEUA3YSPEALY2BWJAGZVUVSHG4DOF
-X-Message-ID-Hash: S6WYEUA3YSPEALY2BWJAGZVUVSHG4DOF
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="BgVLAPeZ8a3Gk2s9"
+Content-Disposition: inline
+In-Reply-To: <87zg4ifsz4.wl-tiwai@suse.de>
+X-Cookie: Surprise due today.  Also the rent.
+Message-ID-Hash: SFVN3A6QUROHDEE67OIHXPLOUHIQTIR3
+X-Message-ID-Hash: SFVN3A6QUROHDEE67OIHXPLOUHIQTIR3
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S6WYEUA3YSPEALY2BWJAGZVUVSHG4DOF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SFVN3A6QUROHDEE67OIHXPLOUHIQTIR3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,90 +99,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use device_get_match_data() to simplify the code.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- sound/soc/codecs/rt5677.c | 21 ++++-----------------
- sound/soc/codecs/rt5677.h |  4 ++--
- 2 files changed, 6 insertions(+), 19 deletions(-)
+--BgVLAPeZ8a3Gk2s9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 4ef9c88cb20a..4d09eb2a0755 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -6,7 +6,6 @@
-  * Author: Oder Chiou <oder_chiou@realtek.com>
-  */
- 
--#include <linux/acpi.h>
- #include <linux/fs.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-@@ -18,7 +17,6 @@
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
- #include <linux/firmware.h>
--#include <linux/of_device.h>
- #include <linux/property.h>
- #include <linux/irq.h>
- #include <linux/interrupt.h>
-@@ -5559,6 +5557,7 @@ static int rt5677_init_irq(struct i2c_client *i2c)
- 
- static int rt5677_i2c_probe(struct i2c_client *i2c)
- {
-+	struct device *dev = &i2c->dev;
- 	struct rt5677_priv *rt5677;
- 	int ret;
- 	unsigned int val;
-@@ -5573,21 +5572,9 @@ static int rt5677_i2c_probe(struct i2c_client *i2c)
- 	INIT_DELAYED_WORK(&rt5677->dsp_work, rt5677_dsp_work);
- 	i2c_set_clientdata(i2c, rt5677);
- 
--	if (i2c->dev.of_node) {
--		const struct of_device_id *match_id;
--
--		match_id = of_match_device(rt5677_of_match, &i2c->dev);
--		if (match_id)
--			rt5677->type = (enum rt5677_type)match_id->data;
--	} else if (ACPI_HANDLE(&i2c->dev)) {
--		const struct acpi_device_id *acpi_id;
--
--		acpi_id = acpi_match_device(rt5677_acpi_match, &i2c->dev);
--		if (acpi_id)
--			rt5677->type = (enum rt5677_type)acpi_id->driver_data;
--	} else {
-+	rt5677->type = (enum rt5677_type)(uintptr_t)device_get_match_data(dev);
-+	if (rt5677->type == 0)
- 		return -EINVAL;
--	}
- 
- 	rt5677_read_device_properties(rt5677, &i2c->dev);
- 
-@@ -5702,7 +5689,7 @@ static struct i2c_driver rt5677_i2c_driver = {
- 	.driver = {
- 		.name = RT5677_DRV_NAME,
- 		.of_match_table = rt5677_of_match,
--		.acpi_match_table = ACPI_PTR(rt5677_acpi_match),
-+		.acpi_match_table = rt5677_acpi_match,
- 	},
- 	.probe    = rt5677_i2c_probe,
- 	.remove   = rt5677_i2c_remove,
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 944ae02aafc2..5ccdf1ba613a 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1753,8 +1753,8 @@ enum {
- };
- 
- enum rt5677_type {
--	RT5677,
--	RT5676,
-+	RT5677 = 1,
-+	RT5676 = 2,
- };
- 
- /* ASRC clock source selection */
--- 
-2.40.0.1.gaa8946217a0b
+On Thu, Jun 29, 2023 at 12:44:31PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
+> > Applied to
+
+> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+> Oh, I already applied this one together with another fix for HDMI,
+> and it's in the ongoing PR to Linus.  I didn't notice that it was
+> ASoC-only.  Sorry for confusion!
+
+No worries, two copies won't hurt anything.  I think it was already
+running through my CI by the time you applied it and didn't seem worth
+it to restart everything.
+
+--BgVLAPeZ8a3Gk2s9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSdYr0ACgkQJNaLcl1U
+h9CWVwf/XPtSjRfNi9gR3KLwYxvVVSCu4gSX4zsGhbswXhSD/HAWjnguykaz/98g
+GwpZyNrod1racSgOeF+EKmy8jxk4POfu/lfuvNqxNL95AUCWgQFh2LIj+9iUcOlU
+oIOIOhdTaTJTE8QEb4B9RnkdtrxewdpA493RYmvAY32EMs4EKYF18vm1XM8eF+by
+diNPK8xlPg8Nf1L9ubJeQOKnJ/qbrDl0ZJYFQqsDGJPJEiTaAv+U95EffhBHtjzc
+7vetrNIf2e1IBoSmP+ymzd/E22fGL7MML6bAf8yaYhNicxvI32or7OvhUlV2zaBy
+ehR++q3VfFNJDy/EpbsRK0rUfzX7Yg==
+=mgUV
+-----END PGP SIGNATURE-----
+
+--BgVLAPeZ8a3Gk2s9--
