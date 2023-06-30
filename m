@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B102EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jun 2023 17:23:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33107EB64D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jun 2023 17:23:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 733CB846;
-	Fri, 30 Jun 2023 19:23:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 733CB846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14A911E0;
+	Fri, 30 Jun 2023 19:23:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14A911E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688145831;
-	bh=852l4DCb7xc8jWGJwMlgO0SVAGdAQ8kwN02snMdlQxA=;
+	s=default; t=1688145837;
+	bh=o4v52pbTbPKjL7/CqY3UgPjebMqu/2BTGtwSA/m6eKM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gqgjwigD482PFFscjiqfE08B5N63Fp5xClJBIV1nssOHr+4l3k2zCfAexbqxfgU7w
-	 WFMsCdGqQ3d8oqLfg0ERbdBso/ysK//j7lYbViqn038bQkk/W6s3MmfHZxuSNMK0vZ
-	 qP63WZr/0/0a/jCHDRynjRHAh5buBm6iQo7Lo2rA=
+	b=uSkV6X/Cb+R/vG1YxaKf+o78ZoyyQKhXCWaGSjxj81fHJENTueBQ1GUqQRGTAmv8n
+	 U8TEIJ6GzS8wlWyB/5dZ1Gs+fYqpnkzSIbYEyoOuq0YHIP4MgC2iVzSdjCJwNUHIsF
+	 pLvIf8FHyqCsdRg2V4+LXko9NHlMA0PBn0+7GrSc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59CAAF80557; Fri, 30 Jun 2023 19:22:13 +0200 (CEST)
+	id 6960CF80568; Fri, 30 Jun 2023 19:22:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DDEDF80549;
-	Fri, 30 Jun 2023 19:22:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85323F8055B;
+	Fri, 30 Jun 2023 19:22:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 130BCF80124; Fri, 30 Jun 2023 19:22:08 +0200 (CEST)
+	id 0D019F8027B; Fri, 30 Jun 2023 19:22:09 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A8BACF80124
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2023 19:22:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8BACF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9A952F80169
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2023 19:22:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A952F80169
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=LAVhudUW
+ header.s=Intel header.b=SzVexxdU
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688145725; x=1719681725;
+  t=1688145727; x=1719681727;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=852l4DCb7xc8jWGJwMlgO0SVAGdAQ8kwN02snMdlQxA=;
-  b=LAVhudUWjaS5M5xynsApbICU3UonQNnDJI6tTUFGrHrtEWiURxZ6i2Yc
-   iMdEjw4COWeDrCBNYMzVJGS0Z5/VmaZEaep6rffGtGm0n6qQbdfy5WxdY
-   uDR/aSNGiBt2YOoNgAh1Cb1xQjmD+tL4bosZtBwZYvzzb6P0GhPN58hRb
-   VkLeaVxCsDm4cq8NWIKBAOCpuVoQdZyuX7wJaVN3Hwd/mdyFDE3GsjlaK
-   CXil/9ijbV/L7IoY2w/wwjvnM5RmpS4FijF8gxv6x/eKa3/YA96PLS167
-   fTPO4fZyGKkm3x5HXWer4mzjT4SIFiUg8fO8V2VjlJ6AMbOOp088n1gE1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10757"; a="342032360"
+  bh=o4v52pbTbPKjL7/CqY3UgPjebMqu/2BTGtwSA/m6eKM=;
+  b=SzVexxdUpKtPex7/zdNqjEPy3HuHVcHfKT2UpLVY1/XalQsx2RDWdC7e
+   HDX42w1k6ETc7G0KwBuL7CDHj+52OcudhvAZyQm2qTH+pWkKa2GuARwRv
+   JIZ1FkCEAQK47gbBh76P20kWPCIzC4WqPG3puwY108axlC07UOZGefdeh
+   XLIN8onmQdbS4D8OTjXe4SXDrpDOkXe9p6C/wmT1lQK6q8ELoPj7zYEQ0
+   37s/ieQX3esVwEtmr3p0EZoAMRFbRDjweDGiA0za6R4Is2BoiWrfaaWC7
+   9X+Jc9ASfOiUMcOxiI2P8GLPfX70lyiTU7IYDS679DnNQOpxKbqXpFAAD
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10757"; a="342032354"
 X-IronPort-AV: E=Sophos;i="6.01,171,1684825200";
-   d="scan'208";a="342032360"
+   d="scan'208";a="342032354"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  30 Jun 2023 10:21:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10757"; a="711879224"
+X-IronPort-AV: E=McAfee;i="6600,9927,10757"; a="711879225"
 X-IronPort-AV: E=Sophos;i="6.01,171,1684825200";
-   d="scan'208";a="711879224"
+   d="scan'208";a="711879225"
 Received: from black.fi.intel.com ([10.237.72.28])
   by orsmga007.jf.intel.com with ESMTP; 30 Jun 2023 10:21:55 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id D8EAF165; Fri, 30 Jun 2023 20:21:57 +0300 (EEST)
+	id 01F2A51E; Fri, 30 Jun 2023 20:21:57 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	alsa-devel@alsa-project.org,
@@ -74,16 +74,16 @@ Cc: Oder Chiou <oder_chiou@realtek.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 1/4] ASoC: rt5677: Refactor GPIO support code
-Date: Fri, 30 Jun 2023 20:21:52 +0300
-Message-Id: <20230630172155.83754-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 4/4] ASoC: rt5677: Sort headers alphabetically
+Date: Fri, 30 Jun 2023 20:21:55 +0300
+Message-Id: <20230630172155.83754-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230630172155.83754-1-andriy.shevchenko@linux.intel.com>
 References: <20230630172155.83754-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SZ5I53QROBELMK3AYCCGLU35JUVTKWB6
-X-Message-ID-Hash: SZ5I53QROBELMK3AYCCGLU35JUVTKWB6
+Message-ID-Hash: OAL6DGQR33MTK2H57VVRWK4EW2576V2U
+X-Message-ID-Hash: OAL6DGQR33MTK2H57VVRWK4EW2576V2U
 X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SZ5I53QROBELMK3AYCCGLU35JUVTKWB6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OAL6DGQR33MTK2H57VVRWK4EW2576V2U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,235 +105,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-After compiler complains:
-
-  sound/soc/codecs/rt5677.c:4748:30: warning: dubious: x | !y
-
-I looked into the code and realized that we can refactor it
-for better reading and fixing above issue at the same time.
-Hence this change. It does not imply any functional changes.
+It's hard to see what's included and what's not on the glance.
+Sort headers alphabetically to improve maintenance.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/codecs/rt5677.c | 76 +++++++++++----------------------
- sound/soc/codecs/rt5677.h | 88 ++++++---------------------------------
- 2 files changed, 37 insertions(+), 127 deletions(-)
+ sound/soc/codecs/rt5677.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index ad14d18860fc..3a2a6b150cda 100644
+index b0c15e27c763..0e70a3ab42b5 100644
 --- a/sound/soc/codecs/rt5677.c
 +++ b/sound/soc/codecs/rt5677.c
-@@ -4717,50 +4717,34 @@ static int rt5677_set_bias_level(struct snd_soc_component *component,
- 	return 0;
- }
+@@ -6,21 +6,21 @@
+  * Author: Oder Chiou <oder_chiou@realtek.com>
+  */
  
-+static int rt5677_update_gpio_bits(struct rt5677_priv *rt5677, unsigned offset, int m, int v)
-+{
-+	unsigned int bank = offset / 5;
-+	unsigned int shift = (offset % 5) * 3;
-+	unsigned int reg = bank ? RT5677_GPIO_CTRL3 : RT5677_GPIO_CTRL2;
-+
-+	return regmap_update_bits(rt5677->regmap, reg, m << shift, v << shift);
-+}
-+
- #ifdef CONFIG_GPIOLIB
- static void rt5677_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
- {
- 	struct rt5677_priv *rt5677 = gpiochip_get_data(chip);
-+	int level = value ? RT5677_GPIOx_OUT_HI : RT5677_GPIOx_OUT_LO;
-+	int m = RT5677_GPIOx_OUT_MASK;
- 
--	switch (offset) {
--	case RT5677_GPIO1 ... RT5677_GPIO5:
--		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL2,
--			0x1 << (offset * 3 + 1), !!value << (offset * 3 + 1));
--		break;
--
--	case RT5677_GPIO6:
--		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL3,
--			RT5677_GPIO6_OUT_MASK, !!value << RT5677_GPIO6_OUT_SFT);
--		break;
--
--	default:
--		break;
--	}
-+	rt5677_update_gpio_bits(rt5677, offset, m, level);
- }
- 
- static int rt5677_gpio_direction_out(struct gpio_chip *chip,
- 				     unsigned offset, int value)
- {
- 	struct rt5677_priv *rt5677 = gpiochip_get_data(chip);
-+	int level = value ? RT5677_GPIOx_OUT_HI : RT5677_GPIOx_OUT_LO;
-+	int m = RT5677_GPIOx_DIR_MASK | RT5677_GPIOx_OUT_MASK;
-+	int v = RT5677_GPIOx_DIR_OUT | level;
- 
--	switch (offset) {
--	case RT5677_GPIO1 ... RT5677_GPIO5:
--		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL2,
--			0x3 << (offset * 3 + 1),
--			(0x2 | !!value) << (offset * 3 + 1));
--		break;
--
--	case RT5677_GPIO6:
--		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL3,
--			RT5677_GPIO6_DIR_MASK | RT5677_GPIO6_OUT_MASK,
--			RT5677_GPIO6_DIR_OUT | !!value << RT5677_GPIO6_OUT_SFT);
--		break;
--
--	default:
--		break;
--	}
--
--	return 0;
-+	return rt5677_update_gpio_bits(rt5677, offset, m, v);
- }
- 
- static int rt5677_gpio_get(struct gpio_chip *chip, unsigned offset)
-@@ -4778,26 +4762,14 @@ static int rt5677_gpio_get(struct gpio_chip *chip, unsigned offset)
- static int rt5677_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
- {
- 	struct rt5677_priv *rt5677 = gpiochip_get_data(chip);
-+	int m = RT5677_GPIOx_DIR_MASK;
-+	int v = RT5677_GPIOx_DIR_IN;
- 
--	switch (offset) {
--	case RT5677_GPIO1 ... RT5677_GPIO5:
--		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL2,
--			0x1 << (offset * 3 + 2), 0x0);
--		break;
--
--	case RT5677_GPIO6:
--		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL3,
--			RT5677_GPIO6_DIR_MASK, RT5677_GPIO6_DIR_IN);
--		break;
--
--	default:
--		break;
--	}
--
--	return 0;
-+	return rt5677_update_gpio_bits(rt5677, offset, m, v);
- }
- 
--/** Configures the gpio as
-+/*
-+ * Configures the GPIO as
-  *   0 - floating
-  *   1 - pull down
-  *   2 - pull up
-@@ -5673,9 +5645,9 @@ static int rt5677_i2c_probe(struct i2c_client *i2c)
- 		regmap_update_bits(rt5677->regmap, RT5677_GEN_CTRL2,
- 					RT5677_GPIO5_FUNC_MASK,
- 					RT5677_GPIO5_FUNC_DMIC);
--		regmap_update_bits(rt5677->regmap, RT5677_GPIO_CTRL2,
--					RT5677_GPIO5_DIR_MASK,
--					RT5677_GPIO5_DIR_OUT);
-+		rt5677_update_gpio_bits(rt5677, RT5677_GPIO5,
-+					RT5677_GPIOx_DIR_MASK,
-+					RT5677_GPIOx_DIR_OUT);
- 	}
- 
- 	if (rt5677->pdata.micbias1_vdd_3v3)
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 944ae02aafc2..5932b04cf85e 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1587,81 +1587,19 @@
- #define RT5677_FUNC_MODE_DMIC_GPIO		(0x0 << 13)
- #define RT5677_FUNC_MODE_JTAG			(0x1 << 13)
- 
--/* GPIO Control 2 (0xc1) */
--#define RT5677_GPIO5_DIR_MASK			(0x1 << 14)
--#define RT5677_GPIO5_DIR_SFT			14
--#define RT5677_GPIO5_DIR_IN			(0x0 << 14)
--#define RT5677_GPIO5_DIR_OUT			(0x1 << 14)
--#define RT5677_GPIO5_OUT_MASK			(0x1 << 13)
--#define RT5677_GPIO5_OUT_SFT			13
--#define RT5677_GPIO5_OUT_LO			(0x0 << 13)
--#define RT5677_GPIO5_OUT_HI			(0x1 << 13)
--#define RT5677_GPIO5_P_MASK			(0x1 << 12)
--#define RT5677_GPIO5_P_SFT			12
--#define RT5677_GPIO5_P_NOR			(0x0 << 12)
--#define RT5677_GPIO5_P_INV			(0x1 << 12)
--#define RT5677_GPIO4_DIR_MASK			(0x1 << 11)
--#define RT5677_GPIO4_DIR_SFT			11
--#define RT5677_GPIO4_DIR_IN			(0x0 << 11)
--#define RT5677_GPIO4_DIR_OUT			(0x1 << 11)
--#define RT5677_GPIO4_OUT_MASK			(0x1 << 10)
--#define RT5677_GPIO4_OUT_SFT			10
--#define RT5677_GPIO4_OUT_LO			(0x0 << 10)
--#define RT5677_GPIO4_OUT_HI			(0x1 << 10)
--#define RT5677_GPIO4_P_MASK			(0x1 << 9)
--#define RT5677_GPIO4_P_SFT			9
--#define RT5677_GPIO4_P_NOR			(0x0 << 9)
--#define RT5677_GPIO4_P_INV			(0x1 << 9)
--#define RT5677_GPIO3_DIR_MASK			(0x1 << 8)
--#define RT5677_GPIO3_DIR_SFT			8
--#define RT5677_GPIO3_DIR_IN			(0x0 << 8)
--#define RT5677_GPIO3_DIR_OUT			(0x1 << 8)
--#define RT5677_GPIO3_OUT_MASK			(0x1 << 7)
--#define RT5677_GPIO3_OUT_SFT			7
--#define RT5677_GPIO3_OUT_LO			(0x0 << 7)
--#define RT5677_GPIO3_OUT_HI			(0x1 << 7)
--#define RT5677_GPIO3_P_MASK			(0x1 << 6)
--#define RT5677_GPIO3_P_SFT			6
--#define RT5677_GPIO3_P_NOR			(0x0 << 6)
--#define RT5677_GPIO3_P_INV			(0x1 << 6)
--#define RT5677_GPIO2_DIR_MASK			(0x1 << 5)
--#define RT5677_GPIO2_DIR_SFT			5
--#define RT5677_GPIO2_DIR_IN			(0x0 << 5)
--#define RT5677_GPIO2_DIR_OUT			(0x1 << 5)
--#define RT5677_GPIO2_OUT_MASK			(0x1 << 4)
--#define RT5677_GPIO2_OUT_SFT			4
--#define RT5677_GPIO2_OUT_LO			(0x0 << 4)
--#define RT5677_GPIO2_OUT_HI			(0x1 << 4)
--#define RT5677_GPIO2_P_MASK			(0x1 << 3)
--#define RT5677_GPIO2_P_SFT			3
--#define RT5677_GPIO2_P_NOR			(0x0 << 3)
--#define RT5677_GPIO2_P_INV			(0x1 << 3)
--#define RT5677_GPIO1_DIR_MASK			(0x1 << 2)
--#define RT5677_GPIO1_DIR_SFT			2
--#define RT5677_GPIO1_DIR_IN			(0x0 << 2)
--#define RT5677_GPIO1_DIR_OUT			(0x1 << 2)
--#define RT5677_GPIO1_OUT_MASK			(0x1 << 1)
--#define RT5677_GPIO1_OUT_SFT			1
--#define RT5677_GPIO1_OUT_LO			(0x0 << 1)
--#define RT5677_GPIO1_OUT_HI			(0x1 << 1)
--#define RT5677_GPIO1_P_MASK			(0x1 << 0)
--#define RT5677_GPIO1_P_SFT			0
--#define RT5677_GPIO1_P_NOR			(0x0 << 0)
--#define RT5677_GPIO1_P_INV			(0x1 << 0)
--
--/* GPIO Control 3 (0xc2) */
--#define RT5677_GPIO6_DIR_MASK			(0x1 << 2)
--#define RT5677_GPIO6_DIR_SFT			2
--#define RT5677_GPIO6_DIR_IN			(0x0 << 2)
--#define RT5677_GPIO6_DIR_OUT			(0x1 << 2)
--#define RT5677_GPIO6_OUT_MASK			(0x1 << 1)
--#define RT5677_GPIO6_OUT_SFT			1
--#define RT5677_GPIO6_OUT_LO			(0x0 << 1)
--#define RT5677_GPIO6_OUT_HI			(0x1 << 1)
--#define RT5677_GPIO6_P_MASK			(0x1 << 0)
--#define RT5677_GPIO6_P_SFT			0
--#define RT5677_GPIO6_P_NOR			(0x0 << 0)
--#define RT5677_GPIO6_P_INV			(0x1 << 0)
-+/* GPIO Control 2 (0xc1) & 3 (0xc2) common bits */
-+#define RT5677_GPIOx_DIR_MASK			(0x1 << 2)
-+#define RT5677_GPIOx_DIR_SFT			2
-+#define RT5677_GPIOx_DIR_IN			(0x0 << 2)
-+#define RT5677_GPIOx_DIR_OUT			(0x1 << 2)
-+#define RT5677_GPIOx_OUT_MASK			(0x1 << 1)
-+#define RT5677_GPIOx_OUT_SFT			1
-+#define RT5677_GPIOx_OUT_LO			(0x0 << 1)
-+#define RT5677_GPIOx_OUT_HI			(0x1 << 1)
-+#define RT5677_GPIOx_P_MASK			(0x1 << 0)
-+#define RT5677_GPIOx_P_SFT			0
-+#define RT5677_GPIOx_P_NOR			(0x0 << 0)
-+#define RT5677_GPIOx_P_INV			(0x1 << 0)
- 
- /* General Control (0xfa) */
- #define RT5677_IRQ_DEBOUNCE_SEL_MASK		(0x3 << 3)
++#include <linux/delay.h>
++#include <linux/firmware.h>
+ #include <linux/fs.h>
++#include <linux/i2c.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/irqdomain.h>
++#include <linux/irq.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/init.h>
+-#include <linux/delay.h>
++#include <linux/platform_device.h>
+ #include <linux/pm.h>
++#include <linux/property.h>
+ #include <linux/regmap.h>
+-#include <linux/i2c.h>
+-#include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+-#include <linux/firmware.h>
+-#include <linux/property.h>
+-#include <linux/irq.h>
+-#include <linux/interrupt.h>
+-#include <linux/irqdomain.h>
+ #include <linux/workqueue.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
 -- 
 2.40.0.1.gaa8946217a0b
 
