@@ -4,57 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF532EB64DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jun 2023 14:49:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05CB0EB64D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jun 2023 14:49:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86937852;
-	Fri, 30 Jun 2023 16:48:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86937852
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5402826;
+	Fri, 30 Jun 2023 16:48:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5402826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688136550;
-	bh=pRStDLhdFflzmHpDcnkbuByk76a3KnlKQSmH5SnE93k=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=bIBCdBAxBMBYMMj5PXWcs0c8EesCKhJrD9M+syOTYUYd4b9iyZAZLvaDeeyLO562/
-	 sAWxZL2idSeT+r9xTSOAZAA/WOHe0SptlIBTmHS99qrwcM/ux93Vu2Ze/a1PnyAoQD
-	 izsgFoYvWIITbkEZYl9P/DjeehmhixuEcnmofvgs=
+	s=default; t=1688136568;
+	bh=uF0TfAuind/llrrS0J7b0cg0G0nqkL/iiITBqpMwsJQ=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=rjQIEd0K9Q/McfiCdNYeSIVuXaED4qd4stVQeiUu3j015Ea8bO/NKB9IlQa7yYKq+
+	 SIuB91GOXd9oenYncUDOyd7UIKgWeF8B4rRXPdyx1vrs7Lg1qjZZ1qXNXvvKOqyl68
+	 WqISTKvNcshZkihamlgo97UAcDxJhWZCBxt7ZWh4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33965F8053B; Fri, 30 Jun 2023 16:47:29 +0200 (CEST)
+	id 87DB6F80549; Fri, 30 Jun 2023 16:47:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68CF2F80124;
-	Fri, 30 Jun 2023 16:47:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BD9DF80557;
+	Fri, 30 Jun 2023 16:47:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C2B7F80431; Fri, 30 Jun 2023 16:47:25 +0200 (CEST)
+	id 0DC14F80212; Fri, 30 Jun 2023 16:47:26 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org
  [IPv6:2001:470:142:8::100])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9601F800E3
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2023 16:45:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9601F800E3
+	by alsa1.perex.cz (Postfix) with ESMTPS id D0782F8027B
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2023 16:45:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0782F8027B
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 44171242CC;
+	by bluemchen.kde.org (Postfix) with ESMTP id 83EE3242EA;
 	Fri, 30 Jun 2023 10:45:43 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1qFFNW-mnF-00; Fri, 30 Jun 2023 16:45:42 +0200
+	id 1qFFNW-mn3-00; Fri, 30 Jun 2023 16:45:42 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v2 2/8] ALSA: emu10k1: improve mixer control naming in E-MU
- D.A.S. mode
-Date: Fri, 30 Jun 2023 16:45:36 +0200
-Message-Id: <20230630144542.664190-3-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2 0/8] ALSA: emu10k1: add support for high-bitrate modes of
+ E-MU cards
+Date: Fri, 30 Jun 2023 16:45:34 +0200
+Message-Id: <20230630144542.664190-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230630144542.664190-1-oswald.buddenhagen@gmx.de>
-References: <20230630144542.664190-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RD7GHR2VB3YKQXHVYFWTGUI7IVP6BTVU
-X-Message-ID-Hash: RD7GHR2VB3YKQXHVYFWTGUI7IVP6BTVU
+Message-ID-Hash: JNET4ZTLBTVDPTHGP6ABRCYY5CC5PFJ2
+X-Message-ID-Hash: JNET4ZTLBTVDPTHGP6ABRCYY5CC5PFJ2
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -67,346 +64,159 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RD7GHR2VB3YKQXHVYFWTGUI7IVP6BTVU/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JNET4ZTLBTVDPTHGP6ABRCYY5CC5PFJ2/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use the clearer "PbChn <n>" instead of "DSP <n>" for the source names.
-In particular, this is much less confusing in the capture source
-selection - "DSP 0" having the source "DSP 0" really didn't help.
-I didn't use "Playback Channel <n>", because that would be a tad too
-long to be sensibly displayed in alsamixer.
+This series is what all the work was about: support the "dual-/quad-pumped"
+modes of the E-MU cards.
 
-The capture enums also get a "DSP" => "CpChn" replacement.
+Oswald Buddenhagen (8):
+  ALSA: emu10k1: introduce alternative E-MU D.A.S. mode
+  ALSA: emu10k1: improve mixer control naming in E-MU D.A.S. mode
+  ALSA: emu10k1: set the "no filtering" bits on PCM voices
+  ALSA: emu10k1: make playback in E-MU D.A.S. mode 32-bit
+  ALSA: add snd_ctl_add_locked()
+  ALSA: emu10k1: add support for 2x/4x word clocks in E-MU D.A.S. mode
+  ALSA: emu10k1: add high-rate capture in E-MU D.A.S. mode
+  ALSA: emu10k1: add high-rate playback in E-MU D.A.S. mode
 
-I used zero-padded decimals, so the capture elements are properly sorted
-in alsamixer. I found hex too confusing.
+ include/sound/control.h          |   1 +
+ include/sound/emu10k1.h          |  11 +
+ sound/core/control.c             |  31 ++
+ sound/pci/emu10k1/emu10k1.c      |  29 +-
+ sound/pci/emu10k1/emu10k1_main.c |  19 +-
+ sound/pci/emu10k1/emufx.c        | 109 +++-
+ sound/pci/emu10k1/emumixer.c     | 901 +++++++++++++++++++++++++++----
+ sound/pci/emu10k1/emupcm.c       | 422 +++++++++++++--
+ sound/pci/emu10k1/emuproc.c      |   5 +
+ sound/pci/emu10k1/io.c           |  30 +-
+ sound/pci/emu10k1/voice.c        |   6 +
+ 11 files changed, 1383 insertions(+), 181 deletions(-)
 
-Note that unlike in the legacy mixer, we define enum values only for
-actually "wired" channels.
-
-I'm leaving the legacy mixer alone, as I don't want to completely
-invalidate saved mixer states. This introduces some bloat, but it seems
-bearable.
-
-Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
----
- sound/pci/emu10k1/emumixer.c | 108 ++++++++++++++++++++++++++---------
- 1 file changed, 81 insertions(+), 27 deletions(-)
-
-diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
-index a9358d9c08b9..8878b660ba94 100644
---- a/sound/pci/emu10k1/emumixer.c
-+++ b/sound/pci/emu10k1/emumixer.c
-@@ -106,6 +106,12 @@ static int snd_emu10k1_spdif_get_mask(struct snd_kcontrol *kcontrol,
- 	"DSP 16", "DSP 17", "DSP 18", "DSP 19", "DSP 20", "DSP 21", "DSP 22", "DSP 23", \
- 	"DSP 24", "DSP 25", "DSP 26", "DSP 27", "DSP 28", "DSP 29", "DSP 30", "DSP 31"
- 
-+#define PB_TEXTS \
-+	"PbChn 00", "PbChn 01", "PbChn 02", "PbChn 03", \
-+	"PbChn 04", "PbChn 05", "PbChn 06", "PbChn 07", \
-+	"PbChn 08", "PbChn 09", "PbChn 10", "PbChn 11", \
-+	"PbChn 12", "PbChn 13", "PbChn 14", "PbChn 15"
-+
- #define PAIR_TEXTS(base, one, two) PAIR_PS(base, one, two, "")
- #define LR_TEXTS(base) LR_PS(base, "")
- #define ADAT_TEXTS(pfx) ADAT_PS(pfx, "")
-@@ -161,6 +167,11 @@ static const char * const emu1010_src_texts[] = {
- 	DSP_TEXTS,
- };
- 
-+static const char * const emu1010_das_src_texts[] = {
-+	EMU1010_COMMON_TEXTS,
-+	PB_TEXTS,
-+};
-+
- static const unsigned short emu1010_src_regs[] = {
- 	EMU_SRC_SILENCE,
- 	PAIR_REGS(EMU_SRC_DOCK_MIC, _A, _B),
-@@ -192,6 +203,11 @@ static const char * const emu1010b_src_texts[] = {
- 	DSP_TEXTS,
- };
- 
-+static const char * const emu1010b_das_src_texts[] = {
-+	EMU1010b_COMMON_TEXTS,
-+	PB_TEXTS,
-+};
-+
- static const unsigned short emu1010b_src_regs[] = {
- 	EMU_SRC_SILENCE,
- 	PAIR_REGS(EMU_SRC_DOCK_MIC, _A, _B),
-@@ -221,6 +237,11 @@ static const char * const emu1616_src_texts[] = {
- 	DSP_TEXTS,
- };
- 
-+static const char * const emu1616_das_src_texts[] = {
-+	EMU1616_COMMON_TEXTS,
-+	PB_TEXTS,
-+};
-+
- static const unsigned short emu1616_src_regs[] = {
- 	EMU_SRC_SILENCE,
- 	PAIR_REGS(EMU_SRC_DOCK_MIC, _A, _B),
-@@ -244,6 +265,11 @@ static const char * const emu0404_src_texts[] = {
- 	DSP_TEXTS,
- };
- 
-+static const char * const emu0404_das_src_texts[] = {
-+	EMU0404_COMMON_TEXTS,
-+	PB_TEXTS,
-+};
-+
- static const unsigned short emu0404_src_regs[] = {
- 	EMU_SRC_SILENCE,
- 	LR_REGS(EMU_SRC_HAMOA_ADC),
-@@ -427,6 +453,25 @@ static const char * const emu1010_input_texts[] = {
- };
- static_assert(ARRAY_SIZE(emu1010_input_texts) <= NUM_INPUT_DESTS);
- 
-+static const char * const emu1010_das_input_texts[] = {
-+	"CpChn 00 Capture Enum",
-+	"CpChn 01 Capture Enum",
-+	"CpChn 02 Capture Enum",
-+	"CpChn 03 Capture Enum",
-+	"CpChn 04 Capture Enum",
-+	"CpChn 05 Capture Enum",
-+	"CpChn 06 Capture Enum",
-+	"CpChn 07 Capture Enum",
-+	"CpChn 08 Capture Enum",
-+	"CpChn 09 Capture Enum",
-+	"CpChn 10 Capture Enum",
-+	"CpChn 11 Capture Enum",
-+	"CpChn 12 Capture Enum",
-+	"CpChn 13 Capture Enum",
-+	"CpChn 14 Capture Enum",
-+	"CpChn 15 Capture Enum",
-+};
-+
- static const unsigned short emu1010_input_dst[] = {
- 	EMU_DST_ALICE2_EMU32_0,
- 	EMU_DST_ALICE2_EMU32_1,
-@@ -504,78 +549,78 @@ static const unsigned short emu0404_input_dflt[] = {
- };
- 
- struct snd_emu1010_routing_info {
--	const char * const *src_texts;
-+	const char * const *src_texts[2];
- 	const char * const *out_texts;
- 	const unsigned short *src_regs;
- 	const unsigned short *out_regs;
- 	const unsigned short *in_regs;
- 	const unsigned short *out_dflts;
- 	const unsigned short *in_dflts;
--	unsigned n_srcs;
-+	unsigned n_srcs[2];
- 	unsigned n_outs;
--	unsigned n_ins;
-+	unsigned n_ins[2];
- };
- 
- static const struct snd_emu1010_routing_info emu1010_routing_info[] = {
- 	{
- 		/* rev1 1010 */
- 		.src_regs = emu1010_src_regs,
--		.src_texts = emu1010_src_texts,
--		.n_srcs = ARRAY_SIZE(emu1010_src_texts),
-+		.src_texts = { emu1010_src_texts, emu1010_das_src_texts },
-+		.n_srcs = { ARRAY_SIZE(emu1010_src_texts), ARRAY_SIZE(emu1010_das_src_texts) },
- 
- 		.out_dflts = emu1010_output_dflt,
- 		.out_regs = emu1010_output_dst,
- 		.out_texts = emu1010_output_texts,
- 		.n_outs = ARRAY_SIZE(emu1010_output_dst),
- 
- 		.in_dflts = emu1010_input_dflt,
- 		.in_regs = emu1010_input_dst,
--		.n_ins = ARRAY_SIZE(emu1010_input_dst),
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst), 16 },
- 	},
- 	{
- 		/* rev2 1010 */
- 		.src_regs = emu1010b_src_regs,
--		.src_texts = emu1010b_src_texts,
--		.n_srcs = ARRAY_SIZE(emu1010b_src_texts),
-+		.src_texts = { emu1010b_src_texts, emu1010b_das_src_texts },
-+		.n_srcs = { ARRAY_SIZE(emu1010b_src_texts), ARRAY_SIZE(emu1010b_das_src_texts) },
- 
- 		.out_dflts = emu1010b_output_dflt,
- 		.out_regs = emu1010b_output_dst,
- 		.out_texts = snd_emu1010b_output_texts,
- 		.n_outs = ARRAY_SIZE(emu1010b_output_dst),
- 
- 		.in_dflts = emu1010_input_dflt,
- 		.in_regs = emu1010_input_dst,
--		.n_ins = ARRAY_SIZE(emu1010_input_dst) - 6,
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16 },
- 	},
- 	{
- 		/* 1616(m) cardbus */
- 		.src_regs = emu1616_src_regs,
--		.src_texts = emu1616_src_texts,
--		.n_srcs = ARRAY_SIZE(emu1616_src_texts),
-+		.src_texts = { emu1616_src_texts, emu1616_das_src_texts },
-+		.n_srcs = { ARRAY_SIZE(emu1616_src_texts), ARRAY_SIZE(emu1616_das_src_texts) },
- 
- 		.out_dflts = emu1616_output_dflt,
- 		.out_regs = emu1616_output_dst,
- 		.out_texts = snd_emu1616_output_texts,
- 		.n_outs = ARRAY_SIZE(emu1616_output_dst),
- 
- 		.in_dflts = emu1010_input_dflt,
- 		.in_regs = emu1010_input_dst,
--		.n_ins = ARRAY_SIZE(emu1010_input_dst) - 6,
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16 },
- 	},
- 	{
- 		/* 0404 */
- 		.src_regs = emu0404_src_regs,
--		.src_texts = emu0404_src_texts,
--		.n_srcs = ARRAY_SIZE(emu0404_src_texts),
-+		.src_texts = { emu0404_src_texts, emu0404_das_src_texts },
-+		.n_srcs = { ARRAY_SIZE(emu0404_src_texts), ARRAY_SIZE(emu0404_das_src_texts) },
- 
- 		.out_dflts = emu0404_output_dflt,
- 		.out_regs = emu0404_output_dst,
- 		.out_texts = snd_emu0404_output_texts,
- 		.n_outs = ARRAY_SIZE(emu0404_output_dflt),
- 
- 		.in_dflts = emu0404_input_dflt,
- 		.in_regs = emu1010_input_dst,
--		.n_ins = ARRAY_SIZE(emu1010_input_dst) - 6,
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16 },
- 	},
- };
- 
-@@ -608,32 +653,34 @@ static void snd_emu1010_apply_sources(struct snd_emu10k1 *emu)
- {
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 
- 	for (unsigned i = 0; i < emu_ri->n_outs; i++)
- 		snd_emu1010_output_source_apply(
- 			emu, i, emu->emu1010.output_source[i]);
--	for (unsigned i = 0; i < emu_ri->n_ins; i++)
-+	for (unsigned i = 0; i < emu_ri->n_ins[iidx]; i++)
- 		snd_emu1010_input_source_apply(
- 			emu, i, emu->emu1010.input_source[i]);
- }
- 
- static u8 emu1010_map_source(const struct snd_emu1010_routing_info *emu_ri,
--			     unsigned val)
-+			     unsigned das_mode, unsigned val)
- {
--	for (unsigned i = 0; i < emu_ri->n_srcs; i++)
-+	for (unsigned i = 0; i < emu_ri->n_srcs[das_mode]; i++)
- 		if (val == emu_ri->src_regs[i])
- 			return i;
- 	return 0;
- }
- 
- static int snd_emu1010_input_output_source_info(struct snd_kcontrol *kcontrol,
- 						struct snd_ctl_elem_info *uinfo)
- {
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 
--	return snd_ctl_enum_info(uinfo, 1, emu_ri->n_srcs, emu_ri->src_texts);
-+	return snd_ctl_enum_info(uinfo, 1, emu_ri->n_srcs[iidx], emu_ri->src_texts[iidx]);
- }
- 
- static int snd_emu1010_output_source_get(struct snd_kcontrol *kcontrol,
-@@ -656,11 +703,12 @@ static int snd_emu1010_output_source_put(struct snd_kcontrol *kcontrol,
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 	unsigned val = ucontrol->value.enumerated.item[0];
- 	unsigned channel = kcontrol->private_value;
- 	int change;
- 
--	if (val >= emu_ri->n_srcs)
-+	if (val >= emu_ri->n_srcs[iidx])
- 		return -EINVAL;
- 	if (channel >= emu_ri->n_outs)
- 		return -EINVAL;
-@@ -686,27 +734,29 @@ static int snd_emu1010_input_source_get(struct snd_kcontrol *kcontrol,
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 	unsigned channel = kcontrol->private_value;
- 
--	if (channel >= emu_ri->n_ins)
-+	if (channel >= emu_ri->n_ins[iidx])
- 		return -EINVAL;
- 	ucontrol->value.enumerated.item[0] = emu->emu1010.input_source[channel];
- 	return 0;
- }
- 
- static int snd_emu1010_input_source_put(struct snd_kcontrol *kcontrol,
-                                  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 	unsigned val = ucontrol->value.enumerated.item[0];
- 	unsigned channel = kcontrol->private_value;
- 	int change;
- 
--	if (val >= emu_ri->n_srcs)
-+	if (val >= emu_ri->n_srcs[iidx])
- 		return -EINVAL;
--	if (channel >= emu_ri->n_ins)
-+	if (channel >= emu_ri->n_ins[iidx])
- 		return -EINVAL;
- 	change = (emu->emu1010.input_source[channel] != val);
- 	if (change) {
-@@ -728,14 +778,17 @@ static int add_emu1010_source_mixers(struct snd_emu10k1 *emu)
- {
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 	int err;
- 
- 	err = add_ctls(emu, &emu1010_output_source_ctl,
- 		       emu_ri->out_texts, emu_ri->n_outs);
- 	if (err < 0)
- 		return err;
- 	err = add_ctls(emu, &emu1010_input_source_ctl,
--		       emu1010_input_texts, emu_ri->n_ins);
-+		       iidx ? emu1010_das_input_texts :
-+			      emu1010_input_texts,
-+		       emu_ri->n_ins[iidx]);
- 	return err;
- }
- 
-@@ -2338,13 +2391,14 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
- 		const struct snd_emu1010_routing_info *emu_ri =
- 			&emu1010_routing_info[emu_idx];
- 		const struct snd_emu1010_pads_info *emu_pi = &emu1010_pads_info[emu_idx];
-+		int midx = emu->das_mode;
- 
--		for (i = 0; i < emu_ri->n_ins; i++)
-+		for (i = 0; i < emu_ri->n_ins[midx]; i++)
- 			emu->emu1010.input_source[i] =
--				emu1010_map_source(emu_ri, emu_ri->in_dflts[i]);
-+				emu1010_map_source(emu_ri, midx, emu_ri->in_dflts[i]);
- 		for (i = 0; i < emu_ri->n_outs; i++)
- 			emu->emu1010.output_source[i] =
--				emu1010_map_source(emu_ri, emu_ri->out_dflts[i]);
-+				emu1010_map_source(emu_ri, midx, emu_ri->out_dflts[i]);
- 		snd_emu1010_apply_sources(emu);
- 
- 		err = snd_ctl_add(card,
+Range-diff against v1:
+1:  c8c1fbba5e52 = 1:  7cb49147164f ALSA: emu10k1: introduce alternative E-MU D.A.S. mode
+2:  879066428bee = 2:  aa9ead00e045 ALSA: emu10k1: improve mixer control naming in E-MU D.A.S. mode
+3:  b663229a0f46 = 3:  ac830e67322f ALSA: emu10k1: set the "no filtering" bits on PCM voices
+4:  a9de9a73571e = 4:  26e0b7c02c1d ALSA: emu10k1: make playback in E-MU D.A.S. mode 32-bit
+5:  0f1950b03193 ! 5:  94b64e6c123d ALSA: add snd_ctl_add_locked()
+    @@ Commit message
+         This is in fact more symmetrical to snd_ctl_remove() than snd_ctl_add()
+         is - the former could be named snd_ctl_remove_locked() just as well.
+     
+    +    One may argue that this is going in the wrong direction, as drivers have
+    +    no business managing the lock. This may be true in principle, but in
+    +    practice the vast majority of controls is created even before the device
+    +    was registered, and therefore before any locking is necessary at all.
+    +    That means that an even more radical approach of changing snd_ctl_add()
+    +    do do no locking, and converting the call sites that actually need
+    +    locking to a new function, would better match reality, and would be
+    +    somewhat more efficient at that. However, that seems a bit risky and way
+    +    too much work.
+    +
+         This will be used to dynamically change the available controls from
+         another control's put() callback, which is already locked.
+     
+         One might want to add snd_ctl_replace_locked() for completeness, but I
+         have no use for it now.
+     
+         Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+    +    ---
+    +    v2:
+    +    - extended commit message
+     
+      ## include/sound/control.h ##
+     @@ include/sound/control.h: void snd_ctl_notify_one(struct snd_card * card, unsigned int mask, struct snd_kc
+6:  511efe4ac7ad ! 6:  7bc314bae7f2 ALSA: emu10k1: add support for 2x/4x word clocks in E-MU D.A.S. mode
+    @@ Commit message
+         on playback, and throw away the excess ones on capture. Input-to-output
+         monitoring does actually use the full sample rate, though.
+     
+    -    Notably, add_ctls() now uses snd_ctl_add_locked(), so it doesn't
+    -    deadlock when called from snd_emu1010_clock_shift_put(). This also
+    -    affects the initial creation of the controls, which is OK, as that is
+    -    done before the card is registered, so no concurrent access can occur.
+    +    Due to hardware constraints, changing the clock multiplier (CM) changes
+    +    the available audio ports and the number of available channels. This has
+    +    an impact on the channel routing mixer controls. One way to deal with
+    +    this would be presenting a union of all possibilities, and simply
+    +    ignoring currently inapplicable settings. However, this would be a
+    +    terrible user experience, and go against the spirit of prior patches
+    +    aimed at decluttering the mixer. Therefore, we do dynamic
+    +    reconfiguration (DR) of the mixer in response to changing the CM.
+    +
+    +    DR is somewhat controversial, as it has the potential to crash poorly
+    +    programmed applications. But that in itself isn't a very convincing
+    +    argument against it, as by that logic we'd have to ban all hot-plugging.
+    +    Such crashes would also not really qualify as regressions, as the D.A.S.
+    +    mode is a new opt-in feature, and therefore no previously stable setups
+    +    would be impacted. Also, pendantically, the driver already had DR via
+    +    SNDRV_EMU10K1_IOCTL_CODE_POKE. A somewhat valid concern is that changing
+    +    mixer settings is a non-privileged operation and therefore potential
+    +    crashes could be exploited for a somewhat more impactful nuisance attack
+    +    on another user than messing with the mixer per se. However, systemd &
+    +    co. limit device access to the user currently logged in on the seat
+    +    owning the device.
+    +
+    +    There is a specific concern about doing DR in response to changing a
+    +    mixer control's value, as an application may legitimately react to DR by
+    +    updating all mixer settings in turn. However, that update should write
+    +    the same value to the clock multiplier, thus terminating the recursion.
+    +
+    +    One may limit DR to merely disabling inapplicable controls, in the hope
+    +    that this would be better handled than completely tearing down and
+    +    re-creating controls as we do. However, there is no guarantee for that.
+    +    And because it is impossible to disable particular enum values within a
+    +    control, it would be necessary to have three complete sets of
+    +    per-channel controls. This would yield an extremely cluttered and
+    +    confusing UI if the application (reasonably) chose to merely visually
+    +    disable inactive controls rather than hiding them.
+    +
+    +    We do the DR synchronously from within snd_emu1010_clock_shift_put().
+    +    This was enabled by commit 5bbb1ab5bd ("control: use counting semaphore
+    +    as write lock for ELEM_WRITE operation"); we merely need to make
+    +    add_ctls() use snd_ctl_add_locked() instead of snd_ctl_add(), so it
+    +    doesn't deadlock. That also affects the initial creation of the
+    +    controls, which is OK, as that is done before the card is registered, so
+    +    no concurrent access can occur.
+    +
+    +    It would be possible to do the DR in a tasklet after the ioctl finishes.
+    +    However, it is not obvious what actual problem that would solve, and the
+    +    added asynchronicity would significantly complicate matters, esp. wrt.
+    +    the batch updates expected during mixer state restoration.
+     
+         Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+    +    ---
+    +    v2:
+    +    - expanded commit message
+     
+      ## include/sound/emu10k1.h ##
+     @@ include/sound/emu10k1.h: struct snd_emu1010 {
+7:  d5cb50ca707f = 7:  72a156fb32cd ALSA: emu10k1: add high-rate capture in E-MU D.A.S. mode
+8:  319425a4ccb6 ! 8:  6d35891832b3 ALSA: emu10k1: add high-rate playback in E-MU D.A.S. mode
+    @@ Commit message
+         d948035a92 ("Remove PCM xfer_align sw params").
+     
+         Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+    +    ---
+    +    v2:
+    +    - fixed `sparse` warning re missing __user annotation
+     
+      ## sound/pci/emu10k1/emufx.c ##
+     @@ sound/pci/emu10k1/emufx.c: static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
+    @@ sound/pci/emu10k1/emupcm.c: static int snd_emu10k1_efx_playback_trigger(struct s
+     +		for (i = 0; i < channels; i++) {
+     +			for (j = 0; j < subchans; j++) {
+     +				u32 *dst = get_dma_ptr_x(runtime, shift, i, j, hwoff);
+    -+				u32 *src = (u32 *)buf + j * channels + i;
+    ++				u32 __user *src = (u32 __user *)buf + j * channels + i;
+     +				for (k = 0; k < frames; k++, dst++, src += voices)
+     +					unsafe_get_user(*dst, src, faulted);
+     +			}
 -- 
 2.40.0.152.g15d061e6df
 
