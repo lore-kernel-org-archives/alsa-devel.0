@@ -4,121 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56D60C001B3
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jul 2023 08:20:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5BA7C0015E
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jul 2023 08:33:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46E177F1;
-	Mon,  3 Jul 2023 10:20:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46E177F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47F147F4;
+	Mon,  3 Jul 2023 10:32:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47F147F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688372451;
-	bh=3UEGfrgPju3zSaFmHw2TFWmfbSB44g35w5Prp+BGBKE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=igrCNFjQ3lLN2lj7BY0/q48aMoXB9LY3PnmY3T9Jv5A0RFYj4hTPPv1h0Dxr+pblS
-	 zbXz0wLPaAGRC6p/1m5myP9cnW/ur4r52w3wZWaaw5IUkIgvhB/0j2fBDwljuFC0C4
-	 84p0aFc0nhFNoYoE/8Sj2vf2uQFQVKhCaGZhSU3E=
+	s=default; t=1688373204;
+	bh=g9hLiJat+dtXzcd2zhhtjEUxB1SI6RvzzK4VEH1nhEk=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=oqIDNVyWdD52jGnP2X1d2o7q+RVad/KELUpdO+8J5CUyspIwvsNEI0w+sXDPryudK
+	 3ioUtC15GI8rcC8IMeXGxdbX6uurw7Xv6JkAaMdo1gQHWIq+Mk7MRiqqjkC2sKLr9r
+	 +LwDKViwc/Q7EZ8DvFByTe5/Tb4/d45x5rzPNO7Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DD540F80100; Mon,  3 Jul 2023 10:19:36 +0200 (CEST)
+	id F3040F80535; Mon,  3 Jul 2023 10:32:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 999AFF80132;
-	Mon,  3 Jul 2023 10:19:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2AC5F80125;
+	Mon,  3 Jul 2023 10:32:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 045C4F80125; Mon,  3 Jul 2023 10:19:34 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
+	id 7E01BF80246; Fri, 30 Jun 2023 14:04:26 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C3754F80093
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2023 10:19:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3754F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 52F7DF800E3
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2023 14:04:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52F7DF800E3
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=aJje8umu;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=jmqiKABT
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=DdCvdQpj
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3368B218F6;
-	Mon,  3 Jul 2023 08:19:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1688372370;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UpkuB3/PahTMC3E01tkVXYrfpgLpPbrbEH63Q3jfRXo=;
-	b=aJje8umumX+wbjeh/5WR+y740OPtf3TqtEYdg8fi56N38n6f+o5F4bQKfkU1tGir/mD2Pk
-	JtD0nyrvIaIPHs9Y2dmpNwfRdR0s7ygD8MbOfwlSdp2Gs/Oj3uSPqibe8KFrjCUPMPDlFf
-	BykWceTpucFYTP0aqh27bgWta1D2FZI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1688372370;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UpkuB3/PahTMC3E01tkVXYrfpgLpPbrbEH63Q3jfRXo=;
-	b=jmqiKABTTV2EIlXnmTNx//2wzH20PGtjQsULnm6Zpk+W33q4yANxojTDrMLbWEhhuyqajv
-	dYmEfZFeF01bH1CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4FCB138FC;
-	Mon,  3 Jul 2023 08:19:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 0OLxNpGEomQZbwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 03 Jul 2023 08:19:29 +0000
-Date: Mon, 03 Jul 2023 10:19:29 +0200
-Message-ID: <877crh76ge.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Johan Hovold <johan@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Mark Brown <broonie@kernel.org>,
-	johan+linaro@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	lgirdwood@gmail.com,
-	ckeepax@opensource.cirrus.com,
-	kuninori.morimoto.gx@renesas.com,
-	linux-kernel@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0407261730;
+	Fri, 30 Jun 2023 12:04:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69047C433C9;
+	Fri, 30 Jun 2023 12:04:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688126656;
+	bh=g9hLiJat+dtXzcd2zhhtjEUxB1SI6RvzzK4VEH1nhEk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=DdCvdQpjcPzzD6bDojCti8fnagXcQHzzXrDxTUGCqSFt0f/t1aN6GClYYPMBch45A
+	 0noIXvsZXuuHLmISup9G88yZhpXWLHVXSSqFrLIK2PMboCGZ8QeoDuLHdpZqoLvQOe
+	 w7ecouI1oH7frM1NgbzO/712nY13RxowM3MUtlPivxxTTRrfvOdy5OlQkqeDU2DSzU
+	 bMTEAFVaQKAviE93HsMG2nmosKPGwEIZE9ZOFXjC5U1QXIyMBtWEm8lgo6Nw7uxvFq
+	 5Lvb7gxZJAP+sKZfcElMNlZjxT4Gl39kaLeGXaiMkiVq7RPSGrVeNqLt/+gLOzDLcE
+	 wjloORClBpiVA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+	(envelope-from <johan+linaro@kernel.org>)
+	id 1qFCrO-0001if-C8; Fri, 30 Jun 2023 14:04:22 +0200
+From: Johan Hovold <johan+linaro@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
 	alsa-devel@alsa-project.org,
-	Stable@vger.kernel.org
-Subject: Re: [PATCH] ASoC: qdsp6: q6apm: use dai link pcm id as pcm device
- number
-In-Reply-To: <ZKKA6K44mp_vjwtp@hovoldconsulting.com>
-References: <20230628092404.13927-1-srinivas.kandagatla@linaro.org>
-	<ZKJ9UrB8FRkLzLc-@hovoldconsulting.com>
-	<ZKKA6K44mp_vjwtp@hovoldconsulting.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: ASCRYTGBB4KUOMWZWFPVLPDHFZYAPBTZ
-X-Message-ID-Hash: ASCRYTGBB4KUOMWZWFPVLPDHFZYAPBTZ
-X-MailFrom: tiwai@suse.de
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>,
+	stable@vger.kernel.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Steev Klimaszewski <steev@kali.org>
+Subject: [PATCH] ASoC: codecs: wcd938x: fix codec initialisation race
+Date: Fri, 30 Jun 2023 14:03:18 +0200
+Message-Id: <20230630120318.6571-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.39.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-MailFrom: johan+linaro@kernel.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: OBF654437EQNKALM6J6XWF3RXTZIT4JR
+X-Message-ID-Hash: OBF654437EQNKALM6J6XWF3RXTZIT4JR
+X-Mailman-Approved-At: Mon, 03 Jul 2023 08:32:18 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ASCRYTGBB4KUOMWZWFPVLPDHFZYAPBTZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OBF654437EQNKALM6J6XWF3RXTZIT4JR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,73 +100,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 03 Jul 2023 10:03:52 +0200,
-Johan Hovold wrote:
-> 
-> On Mon, Jul 03, 2023 at 09:48:34AM +0200, Johan Hovold wrote:
-> > On Wed, Jun 28, 2023 at 10:24:04AM +0100, Srinivas Kandagatla wrote:
-> > > For some reason we ended up with a setup without this flag.
-> > > This resulted in inconsistent sound card devices numbers which
-> > >  are also not starting as expected at dai_link->id.
-> > >  (Ex: MultiMedia1 pcm ended up with device number 4 instead of 0)
-> > > 
-> > > With this patch patch now the MultiMedia1 PCM ends up with device number 0
-> > > as expected.
-> > 
-> > This appears to fix the intermittent probe breakage that I see every
-> > five boots or so:
-> > 
-> > [   11.843320] q6apm-dai 3000000.remoteproc:glink-edge:gpr:service@1:dais: Adding to iommu group 23
-> > [   11.867467] snd-sc8280xp sound: ASoC: adding FE link failed
-> > [   11.867574] snd-sc8280xp sound: ASoC: topology: could not load header: -517
-> > [   11.867725] qcom-apm gprsvc:service:2:1: tplg component load failed-517
-> > [   11.867933] qcom-apm gprsvc:service:2:1: ASoC: error at snd_soc_component_probe on gprsvc:service:2:1: -22
-> > [   11.868379] snd-sc8280xp sound: ASoC: failed to instantiate card -22
-> > [   11.873645] snd-sc8280xp: probe of sound failed with error -22
-> > 
-> > and which I've reported here:
-> > 
-> > 	https://lore.kernel.org/lkml/ZIHMMFtuDtvdpFAZ@hovoldconsulting.com/
-> > 
-> > as unrelated changes in timings resulting from that series made the
-> > problem much harder (but not impossible) to hit.
-> > 
-> > With this fix, I've rebooted 20+ times without hitting the issue once.
-> > 
-> > I'm guessing that you found this issue while investigated that probe
-> > race, Srini? It does look related, and it does seem to make the problem
-> > go away, but I'm not comfortable claiming that the intermittent probe
-> > breakage has been resolved without some analysis to back that up.
-> 
-> Ok, scratch that. I just hit the race again also with this patch
-> applied:
-> 
-> [   11.815028] q6apm-dai 3000000.remoteproc:glink-edge:gpr:service@1:dais: Adding to iommu group 23
-> [   11.838667] snd-sc8280xp sound: ASoC: adding FE link failed
-> [   11.838774] snd-sc8280xp sound: ASoC: topology: could not load header: -517
-> [   11.838916] qcom-apm gprsvc:service:2:1: tplg component load failed-517
-> [   11.838996] qcom-apm gprsvc:service:2:1: ASoC: error at snd_soc_component_probe on gprsvc:service:2:1: -22
-> [   11.839430] snd-sc8280xp sound: ASoC: failed to instantiate card -22
-> [   11.844801] snd-sc8280xp: probe of sound failed with error -22
+Make sure to resume the codec and soundwire device before trying to read
+the codec variant and configure the device during component probe.
 
-Isn't it rather an issue about the error code passing in qcom driver?
-How about the change like below?
+This specifically avoids interpreting (a masked and shifted) -EBUSY
+errno as the variant:
 
+	wcd938x_codec audio-codec: ASoC: error at soc_component_read_no_lock on audio-codec for register: [0x000034b0] -16
 
-Takashi
+when the soundwire device happens to be suspended, which in turn
+prevents some headphone controls from being registered.
 
---- a/sound/soc/qcom/qdsp6/topology.c
-+++ b/sound/soc/qcom/qdsp6/topology.c
-@@ -1276,10 +1276,8 @@ int audioreach_tplg_init(struct snd_soc_component *component)
+Fixes: 8d78602aa87a ("ASoC: codecs: wcd938x: add basic driver")
+Cc: stable@vger.kernel.org      # 5.14
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reported-by: Steev Klimaszewski <steev@kali.org>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ sound/soc/codecs/wcd938x.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
+index e7d6a02cdec0..e3ae4fb2c4db 100644
+--- a/sound/soc/codecs/wcd938x.c
++++ b/sound/soc/codecs/wcd938x.c
+@@ -3085,6 +3085,10 @@ static int wcd938x_soc_codec_probe(struct snd_soc_component *component)
+ 
+ 	snd_soc_component_init_regmap(component, wcd938x->regmap);
+ 
++	ret = pm_runtime_resume_and_get(dev);
++	if (ret < 0)
++		return ret;
++
+ 	wcd938x->variant = snd_soc_component_read_field(component,
+ 						 WCD938X_DIGITAL_EFUSE_REG_0,
+ 						 WCD938X_ID_MASK);
+@@ -3098,6 +3102,8 @@ static int wcd938x_soc_codec_probe(struct snd_soc_component *component)
+ 			     (WCD938X_DIGITAL_INTR_LEVEL_0 + i), 0);
  	}
  
- 	ret = snd_soc_tplg_component_load(component, &audioreach_tplg_ops, fw);
--	if (ret < 0) {
--		dev_err(dev, "tplg component load failed%d\n", ret);
--		ret = -EINVAL;
--	}
-+	if (ret < 0)
-+		dev_err_probe(dev, ret, "tplg component load failed %d\n", ret);
- 
- 	release_firmware(fw);
- err:
++	pm_runtime_put(dev);
++
+ 	wcd938x->hphr_pdm_wd_int = regmap_irq_get_virq(wcd938x->irq_chip,
+ 						       WCD938X_IRQ_HPHR_PDM_WD_INT);
+ 	wcd938x->hphl_pdm_wd_int = regmap_irq_get_virq(wcd938x->irq_chip,
+-- 
+2.39.3
+
