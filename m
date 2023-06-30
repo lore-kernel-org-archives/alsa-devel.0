@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3088EB64D7
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jun 2023 14:47:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2135EB64D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jun 2023 14:48:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A230684C;
-	Fri, 30 Jun 2023 16:47:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A230684C
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFD47844;
+	Fri, 30 Jun 2023 16:47:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFD47844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688136470;
-	bh=dlbRMB1gF9g9SaK2gpIqreRNE9vNQNbSPC3PMRVZqWc=;
+	s=default; t=1688136496;
+	bh=Dy7OEeb9uhMqoSQ1NszHwiAzSl4oYFkpfvoQ3cmb4SY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KK8PWbsBP28ntdPtQ7DTSFzG6BGJqHyqJ0nlZ/vsy9RpsQZm2BxHs4bcr/rxKY4JD
-	 5mw5AmdrTeM7KxNyF8eS4cJDn1SbSRx+1kgFJjZtvkPGKwq+MPAffA+OYsyLxIfxsS
-	 p9GyjBIutxl+eeSrmW5SAZx2EFjdvUWIv9tMQKg8=
+	b=SgA4IPXjQNORzkhR+S2Pe7xv/cjFRZskp8agUqaPQAIuL/Yddb/MDDmqDrcLbXW8B
+	 gPuRymY4Jl2W/ZVow7jCpdrGgzTy6aU3Rd7zTIhZCnMZhU2noeLgGD7Olg1nns5Jy7
+	 R7Y+Q4si/1q3iP8l5O3WIy0PCXI2ALhYN0spotw8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B2112F80558; Fri, 30 Jun 2023 16:46:11 +0200 (CEST)
+	id 66170F80589; Fri, 30 Jun 2023 16:46:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A21EF80551;
-	Fri, 30 Jun 2023 16:46:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6EB4F805A0;
+	Fri, 30 Jun 2023 16:46:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0D4C0F80544; Fri, 30 Jun 2023 16:46:03 +0200 (CEST)
+	id 6843AF80558; Fri, 30 Jun 2023 16:46:09 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C7236F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id D80CAF80431
 	for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2023 16:45:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7236F80212
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D80CAF80431
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id E771D242EF;
+	by bluemchen.kde.org (Postfix) with ESMTP id 9CDDF242ED;
 	Fri, 30 Jun 2023 10:45:43 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1qFFNX-mnj-00; Fri, 30 Jun 2023 16:45:43 +0200
+	id 1qFFNX-mnR-00; Fri, 30 Jun 2023 16:45:43 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v2 7/8] ALSA: emu10k1: add high-rate capture in E-MU D.A.S.
- mode
-Date: Fri, 30 Jun 2023 16:45:41 +0200
-Message-Id: <20230630144542.664190-8-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v2 4/8] ALSA: emu10k1: make playback in E-MU D.A.S. mode
+ 32-bit
+Date: Fri, 30 Jun 2023 16:45:38 +0200
+Message-Id: <20230630144542.664190-5-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230630144542.664190-1-oswald.buddenhagen@gmx.de>
 References: <20230630144542.664190-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JZOWM7DTIQAUEZHY5XEYBHQGKXXLHISY
-X-Message-ID-Hash: JZOWM7DTIQAUEZHY5XEYBHQGKXXLHISY
+Message-ID-Hash: MXEXJ755RFVL2LUIGIDWSAJRIIVGC2NL
+X-Message-ID-Hash: MXEXJ755RFVL2LUIGIDWSAJRIIVGC2NL
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -66,343 +66,237 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JZOWM7DTIQAUEZHY5XEYBHQGKXXLHISY/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MXEXJ755RFVL2LUIGIDWSAJRIIVGC2NL/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This is tested only with a 0404b card, so it is unclear whether the
-EMU_DST_TINA_EMU32B (1010b) & EMU_DST_TINA2_EMU32B (1616m CardBus)
-register definitions (derived from comments in the same file) are
-correct, and whether they actually lack the one-sample delay
-relative to EMU_DST_ALICE2_EMU32_0.
+Each channel now uses a stereo voice pair. But the FX send amounts and
+attenuation are per voice, so we have to use fixed values tuned to the
+DSP code to avoid messing up the split samples.
+
+As "regular" mode allows manipulating the amounts and att'n via mixer
+controls, we can either:
+- "Fake" them with DSP code, which doesn't seem worth the bother
+- Ignore them, which doesn't seem very nice
+
+So 32-bit playback simply remains unavailable in non-D.A.S. mode.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- include/sound/emu10k1.h          |   4 ++
- sound/pci/emu10k1/emu10k1_main.c |   3 +
- sound/pci/emu10k1/emufx.c        |   4 +-
- sound/pci/emu10k1/emumixer.c     | 107 +++++++++++++++++++++++++++----
- sound/pci/emu10k1/emupcm.c       |  40 +++++++++---
- 5 files changed, 135 insertions(+), 23 deletions(-)
+ sound/pci/emu10k1/emufx.c  | 18 ++++++++++-----
+ sound/pci/emu10k1/emupcm.c | 46 +++++++++++++++++++++++++-------------
+ 2 files changed, 43 insertions(+), 21 deletions(-)
 
-diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
-index 1f827290977f..443710e31021 100644
---- a/include/sound/emu10k1.h
-+++ b/include/sound/emu10k1.h
-@@ -1286,6 +1286,9 @@ SUB_REG_NC(A_EHC, A_I2S_CAPTURE_RATE, 0x00000e00)  /* This sets the capture PCM
- #define EMU_DST_HAMOA_DAC_RIGHT4	0x0307	/* Hamoa DAC Right, 4th or 192kHz */
- // In S/MUX mode, the samples of one channel are adjacent.
- #define EMU_DST_HANA_ADAT	0x0400	/* Hana ADAT 8 channel out +0 to +7 */
-+/* FIXME: It is not clear whether these are actually enumerated like that. */
-+#define EMU_DST_TINA2_EMU32B	0x0400	/* 16 EMU32 channels to Tina2 +0 to +0xf */
-+#define EMU_DST_TINA_EMU32B	0x0500	/* 16 EMU32 channels to Tina +0 to +0xf */
- #define EMU_DST_ALICE_I2S0_LEFT		0x0500	/* Alice2 I2S0 Left */
- #define EMU_DST_ALICE_I2S0_RIGHT	0x0501	/* Alice2 I2S0 Right */
- #define EMU_DST_ALICE_I2S1_LEFT		0x0600	/* Alice2 I2S1 Left */
-@@ -1648,6 +1651,7 @@ struct snd_emu_chip_details {
- 	unsigned int ca0108_chip:1;	/* Audigy 2 Value */
- 	unsigned int ca_cardbus_chip:1;	/* Audigy 2 ZS Notebook */
- 	unsigned int ca0151_chip:1;	/* P16V */
-+	unsigned int emu_in_32:1;	/* EMU32 input has 32 (connected) channels */
- 	unsigned int spk20:1;		/* Stereo only */
- 	unsigned int spk71:1;		/* Has 7.1 speakers */
- 	unsigned int no_adat:1;		/* Has no ADAT, only SPDIF */
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 13e9200b8fcb..78f71df96312 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -1093,6 +1093,7 @@ static const struct snd_emu_chip_details emu_chip_details[] = {
- 	 .emu10k2_chip = 1,
- 	 .ca0108_chip = 1,
- 	 .ca_cardbus_chip = 1,
-+	 .emu_in_32 = 1,
- 	 .spk71 = 1 ,
- 	 .emu_model = EMU_MODEL_EMU1616},
- 	/* Tested by James@superbug.co.uk 4th Nov 2007. */
-@@ -1105,6 +1106,7 @@ static const struct snd_emu_chip_details emu_chip_details[] = {
- 	 .id = "EMU1010",
- 	 .emu10k2_chip = 1,
- 	 .ca0108_chip = 1,
-+	 .emu_in_32 = 1,
- 	 .spk71 = 1,
- 	 .emu_model = EMU_MODEL_EMU1010B}, /* EMU 1010 new revision */
- 	/* Tested by Maxim Kachur <mcdebugger@duganet.ru> 17th Oct 2012. */
-@@ -1119,6 +1121,7 @@ static const struct snd_emu_chip_details emu_chip_details[] = {
- 	 .id = "EMU1010",
- 	 .emu10k2_chip = 1,
- 	 .ca0108_chip = 1,
-+	 .emu_in_32 = 1,
- 	 .spk71 = 1,
- 	 .emu_model = EMU_MODEL_EMU1010B}, /* EMU 1010 PCIe */
- 	/* Tested by James@superbug.co.uk 8th July 2005. */
 diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 103cb35b39e0..62fcc1d27848 100644
+index 428ae365eb99..103cb35b39e0 100644
 --- a/sound/pci/emu10k1/emufx.c
 +++ b/sound/pci/emu10k1/emufx.c
-@@ -1325,17 +1325,19 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
- 	gpr_map[lowword_mask] = 0x0000ffff;
+@@ -1290,7 +1290,8 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
+ {
+ 	enum {
+ 		ENUM_GPR(bit_shifter16, 1),
+-		ENUM_GPR(tmp, 1),
++		ENUM_GPR(lowword_mask, 1),
++		ENUM_GPR(tmp, 2),
+ 		num_static_gprs
+ 	};
+ 	int gpr = num_static_gprs;
+@@ -1321,10 +1322,14 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
+ 
+ 	gpr_map = icode->gpr_map;
+ 	gpr_map[bit_shifter16] = 0x00008000;
++	gpr_map[lowword_mask] = 0x0000ffff;
  
  	if (emu->card_capabilities->ca0108_chip) {
-+		int num_cap = emu->card_capabilities->emu_in_32 ? 32 : 16;
-+
- 		for (int z = 0; z < 16; z++) {
- 			A_OP(icode, &ptr, iMAC0, A_GPR(tmp), A_C_00000000, A_FXBUS(z * 2), A_C_00010000); // >> 15
- 			A_OP(icode, &ptr, iMACINT0, A_GPR(tmp + 1), A_C_00000000, A_FXBUS(z * 2 + 1), A_C_00000002); // << 1
- 			A_OP(icode, &ptr, iANDXOR, A3_EMU32OUT(z), A_GPR(tmp), A_GPR(lowword_mask), A_GPR(tmp + 1));
- 		}
+-		for (int z = 0; z < 16; z++)
+-			A_OP(icode, &ptr, iMACINT0, A3_EMU32OUT(z), A_C_00000000, A_FXBUS(z), A_C_00000002);
++		for (int z = 0; z < 16; z++) {
++			A_OP(icode, &ptr, iMAC0, A_GPR(tmp), A_C_00000000, A_FXBUS(z * 2), A_C_00010000); // >> 15
++			A_OP(icode, &ptr, iMACINT0, A_GPR(tmp + 1), A_C_00000000, A_FXBUS(z * 2 + 1), A_C_00000002); // << 1
++			A_OP(icode, &ptr, iANDXOR, A3_EMU32OUT(z), A_GPR(tmp), A_GPR(lowword_mask), A_GPR(tmp + 1));
++		}
  
  		snd_emu10k1_audigy_dsp_convert_32_to_2x16(
  			icode, &ptr, tmp, bit_shifter16, A3_EMU32IN(0), A_EXTOUT(0));
- 		// A3_EMU32IN(0) is delayed by one sample, so all other A3_EMU32IN channels
- 		// need to be delayed as well; we use an auxiliary register for that.
--		for (int z = 1; z < 16; z++) {
-+		for (int z = 1; z < num_cap; z++) {
- 			snd_emu10k1_audigy_dsp_convert_32_to_2x16(
- 				icode, &ptr, tmp, bit_shifter16, A_GPR(gpr), A_EXTOUT(z * 2));
- 			A_OP(icode, &ptr, iACC3, A_GPR(gpr), A3_EMU32IN(z), A_C_00000000, A_C_00000000);
-diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
-index 844ccf3b025c..387a0ad895c3 100644
---- a/sound/pci/emu10k1/emumixer.c
-+++ b/sound/pci/emu10k1/emumixer.c
-@@ -882,6 +882,90 @@ static const unsigned short emu1010_input_dflt[] = {
- };
- static_assert(ARRAY_SIZE(emu1010_input_dflt) == ARRAY_SIZE(emu1010_input_dst));
+@@ -1337,8 +1342,11 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
+ 			gpr_map[gpr++] = 0x00000000;
+ 		}
+ 	} else {
+-		for (int z = 0; z < 16; z++)
+-			A_OP(icode, &ptr, iMACINT0, A_EMU32OUTL(z), A_C_00000000, A_FXBUS(z), A_C_00000002);
++		for (int z = 0; z < 16; z++) {
++			A_OP(icode, &ptr, iMAC0, A_GPR(tmp), A_C_00000000, A_FXBUS(z * 2), A_C_00010000); // >> 15
++			A_OP(icode, &ptr, iMACINT0, A_GPR(tmp + 1), A_C_00000000, A_FXBUS(z * 2 + 1), A_C_00000002); // << 1
++			A_OP(icode, &ptr, iANDXOR, A_EMU32OUTL(z), A_GPR(tmp), A_GPR(lowword_mask), A_GPR(tmp + 1));
++		}
  
-+static const unsigned short emu1010_2x_input_dst[][2] = {
-+	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_ALICE2_EMU32_8 },
-+	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_ALICE2_EMU32_9 },
-+	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_ALICE2_EMU32_A },
-+	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_ALICE2_EMU32_B },
-+	{ EMU_DST_ALICE2_EMU32_4, EMU_DST_ALICE2_EMU32_C },
-+	{ EMU_DST_ALICE2_EMU32_5, EMU_DST_ALICE2_EMU32_D },
-+	{ EMU_DST_ALICE2_EMU32_6, EMU_DST_ALICE2_EMU32_E },
-+	{ EMU_DST_ALICE2_EMU32_7, EMU_DST_ALICE2_EMU32_F },
-+};
-+static_assert(ARRAY_SIZE(emu1010_2x_input_dst) <= NUM_INPUT_DESTS);
-+
-+static const unsigned short emu1010_4x_input_dst[][4] = {
-+	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_ALICE2_EMU32_4, EMU_DST_ALICE2_EMU32_8, EMU_DST_ALICE2_EMU32_C },
-+	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_ALICE2_EMU32_5, EMU_DST_ALICE2_EMU32_9, EMU_DST_ALICE2_EMU32_D },
-+	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_ALICE2_EMU32_6, EMU_DST_ALICE2_EMU32_A, EMU_DST_ALICE2_EMU32_E },
-+	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_ALICE2_EMU32_7, EMU_DST_ALICE2_EMU32_B, EMU_DST_ALICE2_EMU32_F },
-+};
-+static_assert(ARRAY_SIZE(emu1010_4x_input_dst) <= NUM_INPUT_DESTS);
-+
-+static const unsigned short emu1010b_2x_input_dst[][2] = {
-+	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_TINA_EMU32B+0x0 },
-+	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_TINA_EMU32B+0x1 },
-+	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_TINA_EMU32B+0x2 },
-+	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_TINA_EMU32B+0x3 },
-+	{ EMU_DST_ALICE2_EMU32_4, EMU_DST_TINA_EMU32B+0x4 },
-+	{ EMU_DST_ALICE2_EMU32_5, EMU_DST_TINA_EMU32B+0x5 },
-+	{ EMU_DST_ALICE2_EMU32_6, EMU_DST_TINA_EMU32B+0x6 },
-+	{ EMU_DST_ALICE2_EMU32_7, EMU_DST_TINA_EMU32B+0x7 },
-+	{ EMU_DST_ALICE2_EMU32_8, EMU_DST_TINA_EMU32B+0x8 },
-+	{ EMU_DST_ALICE2_EMU32_9, EMU_DST_TINA_EMU32B+0x9 },
-+	{ EMU_DST_ALICE2_EMU32_A, EMU_DST_TINA_EMU32B+0xa },
-+	{ EMU_DST_ALICE2_EMU32_B, EMU_DST_TINA_EMU32B+0xb },
-+	{ EMU_DST_ALICE2_EMU32_C, EMU_DST_TINA_EMU32B+0xc },
-+	{ EMU_DST_ALICE2_EMU32_D, EMU_DST_TINA_EMU32B+0xd },
-+	{ EMU_DST_ALICE2_EMU32_E, EMU_DST_TINA_EMU32B+0xe },
-+	{ EMU_DST_ALICE2_EMU32_F, EMU_DST_TINA_EMU32B+0xf },
-+};
-+static_assert(ARRAY_SIZE(emu1010b_2x_input_dst) <= NUM_INPUT_DESTS);
-+
-+static const unsigned short emu1010b_4x_input_dst[][4] = {
-+	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_ALICE2_EMU32_8, EMU_DST_TINA_EMU32B+0x0, EMU_DST_TINA_EMU32B+0x8 },
-+	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_ALICE2_EMU32_9, EMU_DST_TINA_EMU32B+0x1, EMU_DST_TINA_EMU32B+0x9 },
-+	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_ALICE2_EMU32_A, EMU_DST_TINA_EMU32B+0x2, EMU_DST_TINA_EMU32B+0xa },
-+	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_ALICE2_EMU32_B, EMU_DST_TINA_EMU32B+0x3, EMU_DST_TINA_EMU32B+0xb },
-+	{ EMU_DST_ALICE2_EMU32_4, EMU_DST_ALICE2_EMU32_C, EMU_DST_TINA_EMU32B+0x4, EMU_DST_TINA_EMU32B+0xc },
-+	{ EMU_DST_ALICE2_EMU32_5, EMU_DST_ALICE2_EMU32_D, EMU_DST_TINA_EMU32B+0x5, EMU_DST_TINA_EMU32B+0xd },
-+	{ EMU_DST_ALICE2_EMU32_6, EMU_DST_ALICE2_EMU32_E, EMU_DST_TINA_EMU32B+0x6, EMU_DST_TINA_EMU32B+0xe },
-+	{ EMU_DST_ALICE2_EMU32_7, EMU_DST_ALICE2_EMU32_F, EMU_DST_TINA_EMU32B+0x7, EMU_DST_TINA_EMU32B+0xf },
-+};
-+static_assert(ARRAY_SIZE(emu1010b_4x_input_dst) <= NUM_INPUT_DESTS);
-+
-+static const unsigned short emu1616_2x_input_dst[][2] = {
-+	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_TINA2_EMU32B+0x0 },
-+	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_TINA2_EMU32B+0x1 },
-+	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_TINA2_EMU32B+0x2 },
-+	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_TINA2_EMU32B+0x3 },
-+	{ EMU_DST_ALICE2_EMU32_4, EMU_DST_TINA2_EMU32B+0x4 },
-+	{ EMU_DST_ALICE2_EMU32_5, EMU_DST_TINA2_EMU32B+0x5 },
-+	{ EMU_DST_ALICE2_EMU32_6, EMU_DST_TINA2_EMU32B+0x6 },
-+	{ EMU_DST_ALICE2_EMU32_7, EMU_DST_TINA2_EMU32B+0x7 },
-+	{ EMU_DST_ALICE2_EMU32_8, EMU_DST_TINA2_EMU32B+0x8 },
-+	{ EMU_DST_ALICE2_EMU32_9, EMU_DST_TINA2_EMU32B+0x9 },
-+	{ EMU_DST_ALICE2_EMU32_A, EMU_DST_TINA2_EMU32B+0xa },
-+	{ EMU_DST_ALICE2_EMU32_B, EMU_DST_TINA2_EMU32B+0xb },
-+	{ EMU_DST_ALICE2_EMU32_C, EMU_DST_TINA2_EMU32B+0xc },
-+	{ EMU_DST_ALICE2_EMU32_D, EMU_DST_TINA2_EMU32B+0xd },
-+	{ EMU_DST_ALICE2_EMU32_E, EMU_DST_TINA2_EMU32B+0xe },
-+	{ EMU_DST_ALICE2_EMU32_F, EMU_DST_TINA2_EMU32B+0xf },
-+};
-+static_assert(ARRAY_SIZE(emu1616_2x_input_dst) <= NUM_INPUT_DESTS);
-+
-+static const unsigned short emu1616_4x_input_dst[][4] = {
-+	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_ALICE2_EMU32_8, EMU_DST_TINA2_EMU32B+0x0, EMU_DST_TINA2_EMU32B+0x8 },
-+	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_ALICE2_EMU32_9, EMU_DST_TINA2_EMU32B+0x1, EMU_DST_TINA2_EMU32B+0x9 },
-+	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_ALICE2_EMU32_A, EMU_DST_TINA2_EMU32B+0x2, EMU_DST_TINA2_EMU32B+0xa },
-+	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_ALICE2_EMU32_B, EMU_DST_TINA2_EMU32B+0x3, EMU_DST_TINA2_EMU32B+0xb },
-+	{ EMU_DST_ALICE2_EMU32_4, EMU_DST_ALICE2_EMU32_C, EMU_DST_TINA2_EMU32B+0x4, EMU_DST_TINA2_EMU32B+0xc },
-+	{ EMU_DST_ALICE2_EMU32_5, EMU_DST_ALICE2_EMU32_D, EMU_DST_TINA2_EMU32B+0x5, EMU_DST_TINA2_EMU32B+0xd },
-+	{ EMU_DST_ALICE2_EMU32_6, EMU_DST_ALICE2_EMU32_E, EMU_DST_TINA2_EMU32B+0x6, EMU_DST_TINA2_EMU32B+0xe },
-+	{ EMU_DST_ALICE2_EMU32_7, EMU_DST_ALICE2_EMU32_F, EMU_DST_TINA2_EMU32B+0x7, EMU_DST_TINA2_EMU32B+0xf },
-+};
-+static_assert(ARRAY_SIZE(emu1616_4x_input_dst) <= NUM_INPUT_DESTS);
-+
- static const unsigned short emu0404_input_dflt[] = {
- 	EMU_SRC_HAMOA_ADC_LEFT1,
- 	EMU_SRC_HAMOA_ADC_RIGHT1,
-@@ -906,7 +990,7 @@ struct snd_emu1010_routing_info {
- 	const char * const *out_texts[3];
- 	const unsigned short *src_regs[3];
- 	const unsigned short *out_regs[3];
--	const unsigned short *in_regs;
-+	const unsigned short *in_regs[3];
- 	const unsigned short *out_dflts;
- 	const unsigned short *in_dflts;
- 	unsigned n_srcs[4];
-@@ -931,8 +1015,8 @@ static const struct snd_emu1010_routing_info emu1010_routing_info[] = {
- 			    ARRAY_SIZE(emu1010_2x_output_texts), ARRAY_SIZE(emu1010_4x_output_texts) },
- 
- 		.in_dflts = emu1010_input_dflt,
--		.in_regs = emu1010_input_dst,
--		.n_ins = { ARRAY_SIZE(emu1010_input_dst), 16, 16, 16 },
-+		.in_regs = { emu1010_input_dst, emu1010_2x_input_dst[0], emu1010_4x_input_dst[0] },
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst), 16, 8, 4 },
- 	},
- 	{
- 		/* rev2 1010 */
-@@ -950,8 +1034,8 @@ static const struct snd_emu1010_routing_info emu1010_routing_info[] = {
- 			    ARRAY_SIZE(snd_emu1010b_2x_output_texts), ARRAY_SIZE(snd_emu1010b_4x_output_texts) },
- 
- 		.in_dflts = emu1010_input_dflt,
--		.in_regs = emu1010_input_dst,
--		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 16, 16 },
-+		.in_regs = { emu1010_input_dst, emu1010b_2x_input_dst[0], emu1010b_4x_input_dst[0] },
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 16, 8 },
- 	},
- 	{
- 		/* 1616(m) cardbus */
-@@ -969,8 +1053,8 @@ static const struct snd_emu1010_routing_info emu1010_routing_info[] = {
- 			    ARRAY_SIZE(snd_emu1616_2x_output_texts), ARRAY_SIZE(snd_emu1616_4x_output_texts) },
- 
- 		.in_dflts = emu1010_input_dflt,
--		.in_regs = emu1010_input_dst,
--		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 16, 16 },
-+		.in_regs = { emu1010_input_dst, emu1616_2x_input_dst[0], emu1616_4x_input_dst[0] },
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 16, 8 },
- 	},
- 	{
- 		/* 0404 */
-@@ -988,8 +1072,8 @@ static const struct snd_emu1010_routing_info emu1010_routing_info[] = {
- 			    ARRAY_SIZE(snd_emu0404_output_texts), ARRAY_SIZE(snd_emu0404_4x_output_texts) },
- 
- 		.in_dflts = emu0404_input_dflt,
--		.in_regs = emu1010_input_dst,
--		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 16, 16 },
-+		.in_regs = { emu1010_input_dst, emu1010_2x_input_dst[0], emu1010_4x_input_dst[0] },
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 8, 4 },
- 	},
- };
- 
-@@ -1041,11 +1125,10 @@ static void snd_emu1010_input_source_apply(struct snd_emu10k1 *emu,
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
- 	unsigned shift = emu->emu1010.clock_shift;
--	const unsigned short *regs = &emu_ri->in_regs[channel];
-+	const unsigned short *regs = &emu_ri->in_regs[shift][channel << shift];
- 	const unsigned short *vals = &emu_ri->src_regs[shift][src << shift];
- 
--	// Only 1x capture for now
--	snd_emu1010_fpga_link_dst_src_write(emu, regs[0], vals[0]);
-+	snd_emu1010_source_apply(emu, shift, regs, vals);
- }
- 
- static void snd_emu1010_apply_sources(struct snd_emu10k1 *emu, int active)
+ 		/* Note that the Alice2 DSPs have 6 I2S inputs which we don't use. */
+ 		snd_emu10k1_audigy_dsp_convert_32_to_2x16(
 diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index 69552d5c9e45..037ca92dee98 100644
+index bd222de7ea9f..7aed356637ab 100644
 --- a/sound/pci/emu10k1/emupcm.c
 +++ b/sound/pci/emu10k1/emupcm.c
-@@ -233,6 +233,16 @@ static void snd_emu1010_constrain_efx_rate(struct snd_emu10k1 *emu,
- 	runtime->hw.rates = snd_pcm_rate_to_rate_bit(rate);
+@@ -366,13 +366,16 @@ static void snd_emu10k1_pcm_init_das_voices(struct snd_emu10k1 *emu,
+ 					    unsigned char channel)
+ {
+ 	static const unsigned char send_amount[8] = { 255, 0, 0, 0, 0, 0, 0, 0 };
+-	unsigned char send_routing[8];
++	unsigned char send_routing[9];
+ 
+ 	for (int i = 0; i < ARRAY_SIZE(send_routing); i++)
+ 		send_routing[i] = (channel + i) % NUM_G;
+-	snd_emu10k1_pcm_init_voice(emu, evoice, true, false,
++	snd_emu10k1_pcm_init_voice(emu, evoice, true, true,
+ 				   start_addr, end_addr,
+ 				   send_routing, send_amount);
++	snd_emu10k1_pcm_init_voice(emu, evoice + 1, true, true,
++				   start_addr, end_addr,
++				   send_routing + 1, send_amount);
  }
  
-+static void snd_emu1010_constrain_efx_capture_rate(struct snd_emu10k1 *emu,
-+						   struct snd_pcm_runtime *runtime)
-+{
-+	int rate;
-+
-+	rate = emu->emu1010.word_clock << emu->emu1010.clock_shift;
-+	runtime->hw.rate_min = runtime->hw.rate_max = rate;
-+	runtime->hw.rates = snd_pcm_rate_to_rate_bit(rate);
-+}
-+
- static unsigned int emu10k1_calc_pitch_target(unsigned int rate)
- {
- 	unsigned int pitch_target;
-@@ -570,8 +580,22 @@ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
- 		if (emu->card_capabilities->emu_model) {
- 			unsigned mask = 0xffffffff >> (32 - runtime->channels * 2);
- 			if (emu->das_mode) {
-+				unsigned shift = emu->emu1010.clock_shift;
-+				if (shift) {
-+					if (emu->card_capabilities->emu_in_32) {
-+						if (shift == 2)
-+							mask |= mask << 16;
-+						epcm->capture_cr_val2 = mask;
-+					} else {
-+						if (shift == 2)
-+							mask |= mask << 8;
-+						mask |= mask << 16;
-+						epcm->capture_cr_val2 = 0;
-+					}
-+				} else {
-+					epcm->capture_cr_val2 = 0;
-+				}
- 				epcm->capture_cr_val = mask;
--				epcm->capture_cr_val2 = 0;
- 			} else {
- 				// The upper 32 16-bit capture voices, two for each of the 16 32-bit channels.
- 				// The lower voices are occupied by A_EXTOUT_*_CAP*.
-@@ -1446,26 +1470,22 @@ static int snd_emu10k1_capture_efx_open(struct snd_pcm_substream *substream)
- 	substream->runtime->private_free = snd_emu10k1_pcm_free_substream;
- 	runtime->hw = snd_emu10k1_capture_efx;
- 	if (emu->card_capabilities->emu_model) {
--		snd_emu1010_constrain_efx_rate(emu, runtime);
-+		snd_emu1010_constrain_efx_capture_rate(emu, runtime);
- 		/*
- 		 * There are 32 mono channels of 16bits each.
- 		 * 24bit Audio uses 2x channels over 16bit,
- 		 * 96kHz uses 2x channels over 48kHz,
- 		 * 192kHz uses 4x channels over 48kHz.
- 		 * So, for 48kHz 24bit, one has 16 channels,
- 		 * for 96kHz 24bit, one has 8 channels,
- 		 * for 192kHz 24bit, one has 4 channels.
- 		 * 1010rev2 and 1616(m) cards have double that,
- 		 * but we don't exceed 16 channels anyway.
- 		 */
--#if 0
--		/* For 96kHz */
--		runtime->hw.channels_min = runtime->hw.channels_max = 4;
--#endif
--#if 0
--		/* For 192kHz */
--		runtime->hw.channels_min = runtime->hw.channels_max = 2;
--#endif
-+		if (emu->das_mode)
-+			runtime->hw.channels_max =
-+				min(16, 32 >> (emu->emu1010.clock_shift +
-+					       !emu->card_capabilities->emu_in_32));
- 		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
+ static void snd_emu10k1_pcm_init_extra_voice(struct snd_emu10k1 *emu,
+@@ -406,7 +409,7 @@ static int snd_emu10k1_playback_hw_params(struct snd_pcm_substream *substream,
  	} else {
- 		spin_lock_irq(&emu->reg_lock);
+ 		type = EMU10K1_EFX;
+ 		channels = params_channels(hw_params);
+-		count = 1;
++		count = 1 + emu->das_mode;
+ 	}
+ 	err = snd_emu10k1_pcm_channel_alloc(epcm, type, count, channels);
+ 	if (err < 0)
+@@ -509,15 +512,17 @@ static int snd_emu10k1_efx_playback_prepare(struct snd_pcm_substream *substream)
+ 	snd_emu10k1_pcm_init_extra_voice(emu, epcm->extra, true,
+ 					 start_addr, start_addr + extra_size);
+ 
+-	epcm->ccca_start_addr = start_addr;
+ 	if (das_mode) {
++		start_addr >>= 1;
++		epcm->ccca_start_addr = start_addr;
+ 		for (i = 0; i < runtime->channels; i++) {
+ 			snd_emu10k1_pcm_init_das_voices(emu, epcm->voices[i],
+ 							start_addr, start_addr + channel_size,
+-							i);
++							i * 2);
+ 			start_addr += channel_size;
+ 		}
+ 	} else {
++		epcm->ccca_start_addr = start_addr;
+ 		for (i = 0; i < runtime->channels; i++) {
+ 			snd_emu10k1_pcm_init_voices(emu, epcm->voices[i], true, false,
+ 						    start_addr, start_addr + channel_size,
+@@ -722,6 +727,7 @@ static void snd_emu10k1_playback_unmute_das_voices(struct snd_emu10k1 *emu,
+ 						   struct snd_emu10k1_voice *evoice)
+ {
+ 	snd_emu10k1_playback_commit_volume(emu, evoice, 0x8000 << 16);
++	snd_emu10k1_playback_commit_volume(emu, evoice + 1, 0x8000 << 16);
+ }
+ 
+ static void snd_emu10k1_playback_mute_voice(struct snd_emu10k1 *emu,
+@@ -936,24 +942,29 @@ static snd_pcm_uframes_t snd_emu10k1_playback_pointer(struct snd_pcm_substream *
+ }
+ 
+ static u64 snd_emu10k1_efx_playback_voice_mask(struct snd_emu10k1_pcm *epcm,
+-					       int channels)
++					       bool stereo, int channels)
+ {
+ 	u64 mask = 0;
++	u64 mask0 = (1 << (1 << stereo)) - 1;
+ 
+ 	for (int i = 0; i < channels; i++) {
+ 		int voice = epcm->voices[i]->number;
+-		mask |= 1ULL << voice;
++		mask |= mask0 << voice;
+ 	}
+ 	return mask;
+ }
+ 
+ static void snd_emu10k1_efx_playback_freeze_voices(struct snd_emu10k1 *emu,
+ 						   struct snd_emu10k1_pcm *epcm,
+-						   int channels)
++						   bool stereo, int channels)
+ {
+ 	for (int i = 0; i < channels; i++) {
+ 		int voice = epcm->voices[i]->number;
+ 		snd_emu10k1_ptr_write(emu, CPF_STOP, voice, 1);
++		if (stereo) {
++			// Weirdly enough, the stereo slave needs to be stopped separately
++			snd_emu10k1_ptr_write(emu, CPF_STOP, voice + 1, 1);
++		}
+ 		snd_emu10k1_playback_commit_pitch(emu, voice, PITCH_48000 << 16);
+ 	}
+ }
+@@ -977,14 +988,14 @@ static void snd_emu10k1_efx_playback_unmute_das_voices(struct snd_emu10k1 *emu,
+ 
+ static void snd_emu10k1_efx_playback_stop_voices(struct snd_emu10k1 *emu,
+ 						 struct snd_emu10k1_pcm *epcm,
+-						 int channels)
++						 bool stereo, int channels)
+ {
+ 	for (int i = 0; i < channels; i++)
+ 		snd_emu10k1_playback_stop_voice(emu, epcm->voices[i]);
+ 	snd_emu10k1_playback_set_stopped(emu, epcm);
+ 
+ 	for (int i = 0; i < channels; i++)
+-		snd_emu10k1_playback_mute_voice(emu, epcm->voices[i]);
++		snd_emu10k1_playback_mute_voices(emu, epcm->voices[i], stereo);
+ }
+ 
+ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+@@ -1003,15 +1014,15 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 		mask = snd_emu10k1_efx_playback_voice_mask(
+-				epcm, runtime->channels);
++				epcm, das_mode, runtime->channels);
+ 		for (int i = 0; i < 10; i++) {
+ 			// Note that the freeze is not interruptible, so we make no
+ 			// effort to reset the bits outside the error handling here.
+ 			snd_emu10k1_voice_set_loop_stop_multiple(emu, mask);
+ 			snd_emu10k1_efx_playback_freeze_voices(
+-					emu, epcm, runtime->channels);
++					emu, epcm, das_mode, runtime->channels);
+ 			snd_emu10k1_playback_prepare_voices(
+-					emu, epcm, true, false, runtime->channels);
++					emu, epcm, true, das_mode, runtime->channels);
+ 
+ 			// It might seem to make more sense to unmute the voices only after
+ 			// they have been started, to potentially avoid torturing the speakers
+@@ -1033,7 +1044,7 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+ 			}
+ 
+ 			snd_emu10k1_efx_playback_stop_voices(
+-					emu, epcm, runtime->channels);
++					emu, epcm, das_mode, runtime->channels);
+ 
+ 			if (result != -EAGAIN)
+ 				break;
+@@ -1046,7 +1057,7 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		snd_emu10k1_playback_stop_voice(emu, epcm->extra);
+ 		snd_emu10k1_efx_playback_stop_voices(
+-				emu, epcm, runtime->channels);
++				emu, epcm, das_mode, runtime->channels);
+ 
+ 		epcm->resume_pos = snd_emu10k1_playback_pointer(substream);
+ 		break;
+@@ -1232,8 +1243,11 @@ static int snd_emu10k1_efx_playback_open(struct snd_pcm_substream *substream)
+ 	runtime->private_data = epcm;
+ 	runtime->private_free = snd_emu10k1_pcm_free_substream;
+ 	runtime->hw = snd_emu10k1_efx_playback;
+-	if (emu->card_capabilities->emu_model)
++	if (emu->card_capabilities->emu_model) {
+ 		snd_emu1010_constrain_efx_rate(emu, runtime);
++		if (emu->das_mode)
++			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
++	}
+ 	err = snd_emu10k1_playback_set_constraints(runtime);
+ 	if (err < 0) {
+ 		kfree(epcm);
 -- 
 2.40.0.152.g15d061e6df
 
