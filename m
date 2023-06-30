@@ -4,87 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27075EB64DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jun 2023 17:24:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3B9BEB64DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Jun 2023 17:35:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 420E385D;
-	Fri, 30 Jun 2023 19:23:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 420E385D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C337839;
+	Fri, 30 Jun 2023 19:34:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C337839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688145873;
-	bh=Xfinsx2cbNjgygxyV5dAX8kY09FdNFlEzPlxBJeXw0c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1688146543;
+	bh=pipgj+CfH2pBUcaRm4vy8fJc0i5xR75jN0dc5tuwJ4Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=trwwScq2ijHZo5CkszW9ogix7RESpGj0ROs+fme2De4/JvdeJSoEue099O+6j25ng
-	 igcVdK14ikB6SH+5KWMA4WPKN+May9BJA9ejfDrZtkYCtWxzxiOCfLiU9q5CEzu2x1
-	 UUsxUo+fyd3kbv5noB1CooYhURBLMnK+BrTArhR8=
+	b=AfOozPZGtxoqI6vsBEVS9MP62xAMCxYs1TlnIQaB9rqoWR93lfkEIrRYAK9nBv3A4
+	 2HBD0Qn0gwj8rCVFMEZIBZUcQQgJxRjyxVn9MPyMsR4mStuZ7GR1CYhCLfL+9TDvMz
+	 DU/U/M9ITx0nlJsK+UJwbl8KMDL3hLIwcI1vEarE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A1DA3F805AC; Fri, 30 Jun 2023 19:22:21 +0200 (CEST)
+	id 312A3F80246; Fri, 30 Jun 2023 19:34:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17523F805A8;
-	Fri, 30 Jun 2023 19:22:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA298F800E3;
+	Fri, 30 Jun 2023 19:34:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EBBFF800E3; Fri, 30 Jun 2023 19:22:11 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id BBD34F80212; Fri, 30 Jun 2023 19:34:46 +0200 (CEST)
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com
+ [209.85.166.175])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 287CDF800E3
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2023 19:22:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 287CDF800E3
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=IUjoI/dz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688145726; x=1719681726;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Xfinsx2cbNjgygxyV5dAX8kY09FdNFlEzPlxBJeXw0c=;
-  b=IUjoI/dzWUcfKPwjX0QrHFm+LGsgd/I8JXrZ4tn5sEGyHmxMTuPGx/1A
-   ofrvUaCbgg0dCvNP3K3Pyn3iGWxoj6H/vXkVegNa06d3AtJjpe/56Pg43
-   I1eRBn28G5R26ffcjP3xJvc9iesoNNp+qa/E49RlfhHrLZ+RCJ10q8k4j
-   toR26d1h6qvCX4nOZGSN8QQ0Gpr5tniNvVeh9FVe2mF6Ci3rzrtZejJIh
-   RTTGACPYFvfCHwpbhySZ6pkxl2GGjhNC7YMXyU109EPgntQpIillz5902
-   GAEzQJljTYWCUa/RkCB9+WUdduObbN1myQIbv35Yu75GFAjHYf5kKaFc0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10757"; a="361298316"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200";
-   d="scan'208";a="361298316"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Jun 2023 10:21:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10757"; a="747486144"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200";
-   d="scan'208";a="747486144"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 30 Jun 2023 10:21:55 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id E97F5516; Fri, 30 Jun 2023 20:21:57 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Cc: Oder Chiou <oder_chiou@realtek.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 3/4] ASoC: rt5677: Use device_get_match_data()
-Date: Fri, 30 Jun 2023 20:21:54 +0300
-Message-Id: <20230630172155.83754-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230630172155.83754-1-andriy.shevchenko@linux.intel.com>
-References: <20230630172155.83754-1-andriy.shevchenko@linux.intel.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 42450F80124
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2023 19:34:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42450F80124
+Received: by mail-il1-f175.google.com with SMTP id
+ e9e14a558f8ab-345a4efb66dso8928595ab.3
+        for <alsa-devel@alsa-project.org>;
+ Fri, 30 Jun 2023 10:34:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688146471; x=1690738471;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LQ94kfdEfq9RrPFyhfJUVdunZkyBAVzDUoOb8tFiC9I=;
+        b=RaPFKM9KNv0WYTKNXJtjBPmduuO2s3+dNIp8v5BEwD4fVxeFWbgPbh3u8CBA6tq4x7
+         VVjkvzca/IthGP6LZio/rjYZhIFm44quKppXM6ae2f0+A1I4w3ncsbrQVf5VQ0Mfyauy
+         urO55oraXuoWNiP9TZ1p3hj+YDkVr4wk7XJEoa+A1vkzKo+y+4oQTTZaBa7weLeT/eyI
+         h4UocSHSFXiCqpD+KZspUpm0FVaMt4NN6qtvmSnhSpnQtfTSd1c9Ei8mU4f3a7qe3gPq
+         S9gjDX8kom4eqibWCOAZSj3OREkZk0eo5yr5RsO2e+MMM/OFXO4MWSXYyrQj5gi7Ozvr
+         BqMA==
+X-Gm-Message-State: AC+VfDzYlhVC0EzlFj2uApbO0hww+Gbgb3Ot5MvN3EsJlmk2uTy+aGHn
+	p8g8NBQ6ew6FK7PTCnbIzg==
+X-Google-Smtp-Source: 
+ ACHHUZ4EbUs4PS9q79isRP9O3xuyN3VlPHEnyRoBjVZ32PU31b0maNUtRwGNVSbiOr7AKyybiYfTVQ==
+X-Received: by 2002:a6b:a16:0:b0:783:694f:e791 with SMTP id
+ z22-20020a6b0a16000000b00783694fe791mr3651652ioi.12.1688146471480;
+        Fri, 30 Jun 2023 10:34:31 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id
+ i17-20020a02ca51000000b0042af069eeefsm1830983jal.50.2023.06.30.10.34.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jun 2023 10:34:30 -0700 (PDT)
+Received: (nullmailer pid 2074728 invoked by uid 1000);
+	Fri, 30 Jun 2023 17:34:28 -0000
+Date: Fri, 30 Jun 2023 11:34:28 -0600
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-phy@lists.infradead.org, linux-rtc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
+ linux-watchdog@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Tony Lindgren <tony@atomide.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Dilip Kota <eswara.kota@linux.intel.com>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>, timestamp@lists.linux.dev,
+ Vinod Koul <vkoul@kernel.org>, alsa-devel@alsa-project.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Guenter Roeck <linux@roeck-us.net>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+ Dipen Patel <dipenp@nvidia.com>, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 6/7] dt-bindings: timestamp: restrict node name suffixes
+Message-ID: <168814645706.2074491.15762386958786625732.robh@kernel.org>
+References: <20230530144851.92059-1-krzysztof.kozlowski@linaro.org>
+ <20230530144851.92059-7-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4H2ZNBMB6LTZLXJGNP6FMAYSGZDZHJSX
-X-Message-ID-Hash: 4H2ZNBMB6LTZLXJGNP6FMAYSGZDZHJSX
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230530144851.92059-7-krzysztof.kozlowski@linaro.org>
+Message-ID-Hash: JC7HCPAOBJ6QA2VEOOE6KRHXNZ5QBVFQ
+X-Message-ID-Hash: JC7HCPAOBJ6QA2VEOOE6KRHXNZ5QBVFQ
+X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4H2ZNBMB6LTZLXJGNP6FMAYSGZDZHJSX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JC7HCPAOBJ6QA2VEOOE6KRHXNZ5QBVFQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,90 +119,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use device_get_match_data() to simplify the code.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- sound/soc/codecs/rt5677.c | 21 ++++-----------------
- sound/soc/codecs/rt5677.h |  4 ++--
- 2 files changed, 6 insertions(+), 19 deletions(-)
+On Tue, 30 May 2023 16:48:50 +0200, Krzysztof Kozlowski wrote:
+> Make the pattern matching node names a bit stricter to improve DTS
+> consistency.  The pattern is restricted to -N suffixes to decimal
+> numbers.
+> 
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../bindings/timestamp/hardware-timestamps-common.yaml          | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 17d5dd5d2974..b0c15e27c763 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -6,7 +6,6 @@
-  * Author: Oder Chiou <oder_chiou@realtek.com>
-  */
- 
--#include <linux/acpi.h>
- #include <linux/fs.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-@@ -18,7 +17,6 @@
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
- #include <linux/firmware.h>
--#include <linux/of_device.h>
- #include <linux/property.h>
- #include <linux/irq.h>
- #include <linux/interrupt.h>
-@@ -5531,6 +5529,7 @@ static int rt5677_init_irq(struct i2c_client *i2c)
- 
- static int rt5677_i2c_probe(struct i2c_client *i2c)
- {
-+	struct device *dev = &i2c->dev;
- 	struct rt5677_priv *rt5677;
- 	int ret;
- 	unsigned int val;
-@@ -5545,21 +5544,9 @@ static int rt5677_i2c_probe(struct i2c_client *i2c)
- 	INIT_DELAYED_WORK(&rt5677->dsp_work, rt5677_dsp_work);
- 	i2c_set_clientdata(i2c, rt5677);
- 
--	if (i2c->dev.of_node) {
--		const struct of_device_id *match_id;
--
--		match_id = of_match_device(rt5677_of_match, &i2c->dev);
--		if (match_id)
--			rt5677->type = (enum rt5677_type)match_id->data;
--	} else if (ACPI_HANDLE(&i2c->dev)) {
--		const struct acpi_device_id *acpi_id;
--
--		acpi_id = acpi_match_device(rt5677_acpi_match, &i2c->dev);
--		if (acpi_id)
--			rt5677->type = (enum rt5677_type)acpi_id->driver_data;
--	} else {
-+	rt5677->type = (enum rt5677_type)(uintptr_t)device_get_match_data(dev);
-+	if (rt5677->type == 0)
- 		return -EINVAL;
--	}
- 
- 	rt5677_read_device_properties(rt5677, &i2c->dev);
- 
-@@ -5674,7 +5661,7 @@ static struct i2c_driver rt5677_i2c_driver = {
- 	.driver = {
- 		.name = RT5677_DRV_NAME,
- 		.of_match_table = rt5677_of_match,
--		.acpi_match_table = ACPI_PTR(rt5677_acpi_match),
-+		.acpi_match_table = rt5677_acpi_match,
- 	},
- 	.probe    = rt5677_i2c_probe,
- 	.remove   = rt5677_i2c_remove,
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 5932b04cf85e..d67ebae067d9 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1691,8 +1691,8 @@ enum {
- };
- 
- enum rt5677_type {
--	RT5677,
--	RT5676,
-+	RT5677 = 1,
-+	RT5676 = 2,
- };
- 
- /* ASRC clock source selection */
--- 
-2.40.0.1.gaa8946217a0b
+Applied, thanks!
 
