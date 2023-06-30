@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F128CEB64DD
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jul 2023 08:34:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39E9EEB64DC
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Jul 2023 08:34:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3C50852;
-	Mon,  3 Jul 2023 10:33:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3C50852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0816486F;
+	Mon,  3 Jul 2023 10:33:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0816486F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688373253;
-	bh=mKsth7EbgkktN+M1x6jv9ltsVnjMGds9Bu4btwXjhuc=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=CbEqmuwvxma4DOK7zuhxNHXxgewoskOxSVsilDdAs5ZYtkMmmoe5d1t39U4AjGufF
-	 ZEE6hECP+GpGL8xx3YQjn/Rrp0oqgl54fDPTbwwXSvZXihFGwTyMPt5+yxYqd1OMHG
-	 OIhKR3HgzukiZ2J6HOCAI850skwKhdquR5n5gwz4=
+	s=default; t=1688373269;
+	bh=d1TV3UMh6xoeemuKnST1bo2dXdckO3q+r8QUrL0X6V0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=U8cEX4SKELTBwGg8pUiRt+1lwYrqng8arByupXnubrwxutlRwR51XRMTt/2FisoNU
+	 /f1Ag/lKdGfYZlBrbpiyYHjbxGD/4mlf/V1zsZVm6T/789toGJ7JdPfDCnmzkZbIQH
+	 h+HBaWW5iImUK3+0KzIFjohTY5mZTSj2+Cmlyh38=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DDB63F8055B; Mon,  3 Jul 2023 10:32:28 +0200 (CEST)
+	id 7AE8BF8057A; Mon,  3 Jul 2023 10:32:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33C0CF80563;
-	Mon,  3 Jul 2023 10:32:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24549F8057A;
+	Mon,  3 Jul 2023 10:32:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3081AF80534; Fri, 30 Jun 2023 16:27:29 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 4535AF8027B; Fri, 30 Jun 2023 16:27:30 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A8F6BF80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id D4947F80431
 	for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2023 16:27:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8F6BF80212
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4947F80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=i+wLH/8a
+ header.s=k20201202 header.b=jcldJ0KI
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4888361762;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4615E61717;
 	Fri, 30 Jun 2023 14:27:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB939C433CB;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB857C433C8;
 	Fri, 30 Jun 2023 14:27:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1688135238;
-	bh=mKsth7EbgkktN+M1x6jv9ltsVnjMGds9Bu4btwXjhuc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=i+wLH/8aztVS6laPB94qFGyj49FNfrCnK1P4cZtv8bt+cErbMbT6EHOinqk6S6IG2
-	 A0oRHVrLT/N75GT2CeKVImUVz0vCZ/M1tbxy8QAjZCGkxeq470Q580o4d8Hmh2wGL5
-	 9OXmakeNK9A6lNP5GUUwBfS7vRKWDjlC3JZK3oZ1+iX/qKxXaXWu86FXn0LZfgOOiH
-	 M/ZkTqq1aVOJZ8sR/7bY52YvtrtEmPlr4UO9abheW48h+YJWz/nc8KrVyxbkBPPXfn
-	 LRhrTpiFBv3bmSUVeStZxhGM1xdFFt16ASmQvxQInsbznK+mmJBoMegKXUj6njSzJd
-	 kq8C5/9LfAVww==
+	bh=d1TV3UMh6xoeemuKnST1bo2dXdckO3q+r8QUrL0X6V0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=jcldJ0KIiGOHCLdh9VVbIIOMTDdsd6uLObALf9+N/4QXztMgUhpnzo07D6JSEprGM
+	 ysVwMdU2PImvgsB5pqYjIvXZMsmeeULwOILdMeIoJXSwnjfIErW6dM4eX1nbNAAJXY
+	 V9JcWcfAE4AfzWdwEc1M4M77rRKpZVqIQwUz3MiMlfa2v7hLL3SFBbvGoiSa+xN5H5
+	 OfzWVaRpKNjExA124iP9Ph2a1ewcq91hqNWwCiKAMNmSwWeO7QJdoOU5wS78uBPvXy
+	 fzqKb+BQ2096laCMex5jcQuh3ulVn45f94C2JgpZgoQgM6iNWghg5jSYM2fyJqS3/W
+	 W3WQTNgRXUdWg==
 Received: from johan by xi.lan with local (Exim 4.94.2)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1qFF5o-0001O3-FO; Fri, 30 Jun 2023 16:27:25 +0200
+	id 1qFF5p-0001OU-GP; Fri, 30 Jun 2023 16:27:25 +0200
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Mark Brown <broonie@kernel.org>,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
@@ -70,10 +70,12 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH 0/5] ASoC: codecs: wcd938x/wcd934x: loglevel fix and cleanups
-Date: Fri, 30 Jun 2023 16:27:12 +0200
-Message-Id: <20230630142717.5314-1-johan+linaro@kernel.org>
+Subject: [PATCH 4/5] ASoC: codecs: wcd934x: demote impedance printk
+Date: Fri, 30 Jun 2023 16:27:16 +0200
+Message-Id: <20230630142717.5314-5-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230630142717.5314-1-johan+linaro@kernel.org>
+References: <20230630142717.5314-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: johan+linaro@kernel.org
@@ -82,15 +84,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: KZAS33HNVLO4XLCIYBS6CIEIZO5GIBUY
-X-Message-ID-Hash: KZAS33HNVLO4XLCIYBS6CIEIZO5GIBUY
+Message-ID-Hash: NB57CH5SKOXF2JJFCPHTAHCZGEUGARZ3
+X-Message-ID-Hash: NB57CH5SKOXF2JJFCPHTAHCZGEUGARZ3
 X-Mailman-Approved-At: Mon, 03 Jul 2023 08:32:22 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KZAS33HNVLO4XLCIYBS6CIEIZO5GIBUY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NB57CH5SKOXF2JJFCPHTAHCZGEUGARZ3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,30 +101,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When investigating a race in the wcd938x driver I noticed that the MBHC
-impedance measurements where printed at error loglevel which is clearly
-wrong.
+Demote the MBHC impedance measurement printk, which is only needed
+for development and debugging, to debug level.
 
-Fix that, and clean up the logging somewhat by using dev_printk() and
-addressing some style issues.
+While at it, fix the capitalisation of "ohm" and add the missing space
+before the opening parenthesis.
 
-Included are also two patches that drop the bogus inline keywords from
-the functions involved.
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ sound/soc/codecs/wcd934x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Johan
-
-
-Johan Hovold (5):
-  ASoC: codecs: wcd938x: fix mbhc impedance loglevel
-  ASoC: codecs: wcd938x: drop inline keywords
-  ASoC: codecs: wcd938x: use dev_printk() for impedance logging
-  ASoC: codecs: wcd934x: demote impedance printk loglevel
-  ASoC: codecs: wcd934x: drop inline keywords
-
- sound/soc/codecs/wcd934x.c |  8 ++++----
- sound/soc/codecs/wcd938x.c | 17 +++++++++--------
- 2 files changed, 13 insertions(+), 12 deletions(-)
-
+diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+index c0d1fa36d841..9d724b5710f7 100644
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -2683,7 +2683,7 @@ static inline void wcd934x_mbhc_get_result_params(struct wcd934x_codec *wcd934x,
+ 	else if (x1 < minCode_param[noff])
+ 		*zdet = WCD934X_ZDET_FLOATING_IMPEDANCE;
+ 
+-	dev_info(wcd934x->dev, "%s: d1=%d, c1=%d, x1=0x%x, z_val=%d(milliOhm)\n",
++	dev_dbg(wcd934x->dev, "%s: d1=%d, c1=%d, x1=0x%x, z_val=%di (milliohm)\n",
+ 		__func__, d1, c1, x1, *zdet);
+ ramp_down:
+ 	i = 0;
 -- 
 2.39.3
 
