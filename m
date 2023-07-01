@@ -4,71 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BE7BEB64DC
-	for <alsa-devel@archiver.kernel.org>; Sat,  1 Jul 2023 04:52:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3082AEB64DC
+	for <alsa-devel@archiver.kernel.org>; Sat,  1 Jul 2023 04:57:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22AE383A;
-	Sat,  1 Jul 2023 06:51:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22AE383A
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE788822;
+	Sat,  1 Jul 2023 06:56:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE788822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688187147;
-	bh=NDKhCva291HrBFyUCX2WUXWZp/DC9kjIhdFA4xInn0g=;
+	s=default; t=1688187462;
+	bh=mp4/SnB2HGxNNmLofSpDfCRV10WQj8BqBB1augGOWc8=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=sojxsKL0ORXFGJOriZWwryZk88SD6fIyDLKIlulD+dOdH4fRtyTQ1kxeWN0r+knS3
-	 WKhB3v/DUt6QzpGBSwwBHqpzDeih8It8LhVhkpEB9yxJ7zSHqumQN758Z+bmDnO+Fr
-	 g+iOLCE/aAJfOCoakzscaBTC3gb93oLYv+g3kAsw=
+	b=PwMf86Glk+Qm6uGbE/Z5/+taj270LeXWh/jKq+vYOQO0jSArp2N8kZl8MlUGkds/g
+	 S8rjiAdctOWM9xZJZkpIoBKma9tTrgGCLhxgIHb+EPmgTM9nHlkV1i38u7pDDbDN9O
+	 scLmfEln1EgIhSGtcW9W2PMDAFtKSF7A9GH+p/iw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB40FF80093; Sat,  1 Jul 2023 06:51:36 +0200 (CEST)
+	id 0AF3AF80093; Sat,  1 Jul 2023 06:56:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17496F80093;
-	Sat,  1 Jul 2023 06:51:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19C13F80246;
+	Sat,  1 Jul 2023 06:56:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B157F80246; Sat,  1 Jul 2023 06:48:56 +0200 (CEST)
+	id 7947DF80246; Sat,  1 Jul 2023 06:56:18 +0200 (CEST)
 Received: from bombadil.infradead.org (bombadil.infradead.org
  [IPv6:2607:7c80:54:3::133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 743ADF80124
-	for <alsa-devel@alsa-project.org>; Sat,  1 Jul 2023 06:48:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 743ADF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 80DCDF80093
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jul 2023 06:56:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80DCDF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=infradead.org header.i=@infradead.org
- header.a=rsa-sha256 header.s=bombadil.20210309 header.b=5BOjmmRR
+ header.a=rsa-sha256 header.s=bombadil.20210309 header.b=lSUtVdDx
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
 	Content-ID:Content-Description:In-Reply-To:References;
-	bh=Ouh+ENUfH7xDuVT7/QdgSLCq0AO5QpecmqQ9yR+vKU4=; b=5BOjmmRRZbyzHZwHcUwvpKsx0g
-	z3P5naFfEu/0m6BSaanaNGWs0IRuQQBjI2xz2BRVJivDYa54kRd6nAFudndfJ41KsYlzYS9bpBIEo
-	Jk+yvhFndjxf5pUexRyWK76ivhXUKoNgb/YzvdBzUi6CDAsM/8j1WWDo8sV0SW89W1qcqumHH4KEa
-	pxRzobws8/Oz2fNBIWWeuAzP9w3Jj7Y6w6Pmc/GcV1WuOWOBXkSu6Q+x7t2/1iODekyJTH4LQtfz9
-	rfAmqI+bgo2ITH9ai2jQ9nQadsFeDp8c0cwyq/9fGwl70hDCcIfEi6WY3q957fbrQ95rkuYjWj6N2
-	/PRYpzcg==;
+	bh=V34U8x+xt3cNOs6Hq3uSEoa9SGtAD0arB4vReWdva5o=; b=lSUtVdDxXI/OgDHgSQt4HRzsPZ
+	nZUMDWwJwXbwtuQPPn++hWmb1SWKpfIySTrWYpJi+T+SlP01upmKXwvBvdfomak79v8tIgY8nUnVu
+	6twyGreYNzfVHePBTaAQdU3JghqV4afNehEvDkWlbLgX2NDiSRnhPPuGDcpbIqVHEreZKdeCuu8sO
+	cZjaw9eq26IEOnBcjAukOdlv61tPwzAKWzOFOAi+6pEshlSGlRJ1sK7hE7ks7sSidPdNGJu5Wl6Yp
+	wzYm/KdJskkownkXgL3XiipngKy4sgNShw+L3dc6SFudLnAu+QsL/wvWSsg+MM2BdDzUaZilsaD7j
+	Xtfy1zrw==;
 Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1qFSXF-005AKU-1V;
-	Sat, 01 Jul 2023 04:48:37 +0000
+	id 1qFSeQ-005BFi-07;
+	Sat, 01 Jul 2023 04:56:02 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
 To: linux-kernel@vger.kernel.org
 Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
+	Grant Likely <grant.likely@secretlab.ca>,
 	Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>,
-	alsa-devel@alsa-project.org
-Subject: [PATCH v2] ASoC: stac9766: fix build errors with REGMAP_AC97
-Date: Fri, 30 Jun 2023 21:48:36 -0700
-Message-ID: <20230701044836.18789-1-rdunlap@infradead.org>
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2 RESEND RESEND] ASoC: fsl MPC52xx drivers require
+ PPC_BESTCOMM
+Date: Fri, 30 Jun 2023 21:56:01 -0700
+Message-ID: <20230701045601.31452-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6E6BVS6Y7JRZ4Z3JP2MT22SGL7IOPGM5
-X-Message-ID-Hash: 6E6BVS6Y7JRZ4Z3JP2MT22SGL7IOPGM5
+Message-ID-Hash: OIMDEVRJGO54HQWNNOTGOZGV4DWIVVV3
+X-Message-ID-Hash: OIMDEVRJGO54HQWNNOTGOZGV4DWIVVV3
 X-MailFrom: rdunlap@infradead.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6E6BVS6Y7JRZ4Z3JP2MT22SGL7IOPGM5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OIMDEVRJGO54HQWNNOTGOZGV4DWIVVV3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,31 +96,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Select REGMAP_AC97 to fix these build errors:
+Both SND_MPC52xx_SOC_PCM030 and SND_MPC52xx_SOC_EFIKA select
+SND_SOC_MPC5200_AC97. The latter symbol depends on PPC_BESTCOMM,
+so the 2 former symbols should also depend on PPC_BESTCOMM since
+"select" does not follow any dependency chains.
 
-ERROR: modpost: "regmap_ac97_default_volatile" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
-ERROR: modpost: "__regmap_init_ac97" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
+This prevents a kconfig warning and build errors:
 
-Fixes: 6bbf787bb70c ("ASoC: stac9766: Convert to regmap")
+WARNING: unmet direct dependencies detected for SND_SOC_MPC5200_AC97
+  Depends on [n]: SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_MPC52xx [=y] && PPC_BESTCOMM [=n]
+  Selected by [m]:
+  - SND_MPC52xx_SOC_PCM030 [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_MPC5200_SIMPLE [=y]
+  - SND_MPC52xx_SOC_EFIKA [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_EFIKA [=y]
+
+ERROR: modpost: "mpc5200_audio_dma_destroy" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
+ERROR: modpost: "mpc5200_audio_dma_create" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
+
+Fixes: 40d9ec14e7e1 ("ASoC: remove BROKEN from Efika and pcm030 fabric drivers")
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Grant Likely <grant.likely@secretlab.ca>
 Cc: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
 Cc: alsa-devel@alsa-project.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 ---
-v2: rebase/resend
+v2: use correct email address for Mark Brown.
 
- sound/soc/codecs/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/fsl/Kconfig |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff -- a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1707,6 +1707,7 @@ config SND_SOC_STA529
- config SND_SOC_STAC9766
- 	tristate
- 	depends on SND_SOC_AC97_BUS
-+	select REGMAP_AC97
+diff -- a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -243,7 +243,7 @@ config SND_SOC_MPC5200_AC97
  
- config SND_SOC_STI_SAS
- 	tristate "codec Audio support for STI SAS codec"
+ config SND_MPC52xx_SOC_PCM030
+ 	tristate "SoC AC97 Audio support for Phytec pcm030 and WM9712"
+-	depends on PPC_MPC5200_SIMPLE
++	depends on PPC_MPC5200_SIMPLE && PPC_BESTCOMM
+ 	select SND_SOC_MPC5200_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -252,7 +252,7 @@ config SND_MPC52xx_SOC_PCM030
+ 
+ config SND_MPC52xx_SOC_EFIKA
+ 	tristate "SoC AC97 Audio support for bbplan Efika and STAC9766"
+-	depends on PPC_EFIKA
++	depends on PPC_EFIKA && PPC_BESTCOMM
+ 	select SND_SOC_MPC5200_AC97
+ 	select SND_SOC_STAC9766
+ 	help
