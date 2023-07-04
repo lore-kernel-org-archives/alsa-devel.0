@@ -4,79 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E85AEB64D9
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jul 2023 14:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7861EB64D9
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jul 2023 15:19:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A9333E8;
-	Tue,  4 Jul 2023 16:00:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A9333E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7DB22210;
+	Tue,  4 Jul 2023 17:18:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DB22210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688479270;
-	bh=Rz4B8MHS9txQmFz0LcpLJ1buoy3ozqfsNNEcFtPbKqo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1688483976;
+	bh=g/ZTw2G13wieSmqP1vOTwnbQPbqfI6AqaxzWOfFWhnQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sGgC3Eq8EgRqsV3J+W0aBMxNSRs3MVz1WSXFgjHq7EKB3j8s4QU4Iyar5NIxNMyXG
-	 8GS8ZhzVLxJudEuP7FYbKyWSv65z+pczuhQzhv6stBje1EVmtC6peHYKwWX2/176nD
-	 TZcFT5K0mxJHMGidX+WTzO+CnmWBcNpesbS/DvK0=
+	b=dl2ljfAyThKt3K0B8d7lkO2Cc8IeK7UkZFfKFZIrrc2uxBuaCpej7nLNgzy7JWAEJ
+	 vx2H+JKVt667dduWPiUR26A/ySEFaKS5vre06UsXZymdbLNWfkcmDFvTCMKJmn+u9/
+	 f0zsNTPDJK5uBdCjCLHWLEcnqsDeNvUarjzzUYqc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10EB8F80132; Tue,  4 Jul 2023 15:59:55 +0200 (CEST)
+	id 31E9CF80272; Tue,  4 Jul 2023 17:18:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61E39F800E4;
-	Tue,  4 Jul 2023 15:59:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E973F80125;
+	Tue,  4 Jul 2023 17:18:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 071B3F80125; Tue,  4 Jul 2023 15:59:50 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id E563CF80125; Tue,  4 Jul 2023 17:18:16 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 91AAAF80104
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jul 2023 15:59:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91AAAF80104
+	by alsa1.perex.cz (Postfix) with ESMTPS id F2925F800E4
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jul 2023 17:18:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2925F800E4
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=dU9DnKCb
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=Q+uIOR3r;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=l/mff3Mb
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id CFC4261261;
-	Tue,  4 Jul 2023 13:59:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A161AC433C7;
-	Tue,  4 Jul 2023 13:59:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688479178;
-	bh=Rz4B8MHS9txQmFz0LcpLJ1buoy3ozqfsNNEcFtPbKqo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=dU9DnKCbUtQlsSLXuzeuGgmel6qzYFu9wkqmw6ntxqF9XYeh3Vh4Eb9l67a9s6J2K
-	 qtPhBaLtyrSyRuIicwn7tX8YgmI7xeBJa1uui19xvDKbjhnmOcLMwC6Rh+WOeVykSW
-	 V1xY4UuIn8mm5A+B7f+NM1wx9v/WiWXAKviFkyDlHdd6tt87MVcR2hClDZUdY045jD
-	 Dz44o+wGfumCb1StQXr+mzwy1rbGl6dXtoVNKnaN/3ktCf/RZ4T8nd6v14euCkm+1x
-	 WQmEFRGCXT5FHTi1B4YjGwyMgMteDjgwqhGl1ro9LTUQwGQHME6NdjZX+bW69Yscms
-	 XBPuXhl860tSQ==
-From: Mark Brown <broonie@kernel.org>
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20230703124701.11734-1-johan+linaro@kernel.org>
-References: <20230703124701.11734-1-johan+linaro@kernel.org>
-Subject: Re: [PATCH] ASoC: codecs: wcd938x: fix missing mbhc init error
- handling
-Message-Id: <168847917636.48984.6400261777618066312.b4-ty@kernel.org>
-Date: Tue, 04 Jul 2023 14:59:36 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: RGQGRAUZOH6MSA7JPLKFT6SNFW6V7SJC
-X-Message-ID-Hash: RGQGRAUZOH6MSA7JPLKFT6SNFW6V7SJC
-X-MailFrom: broonie@kernel.org
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 45C851FDBF;
+	Tue,  4 Jul 2023 15:18:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1688483890;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=09ZFhrK9gHoXmJ/csCv5GswlFwioAkV5H04kGj7QAAo=;
+	b=Q+uIOR3rTG4OQFhgqdczakOzPTrGAvmWL69rDYY+7k4FGWi0sGdQRc6xPrK+3Of3kKJ9UR
+	tRPkKzbNvCuWkXd7h8mnsB8UrI2Z/pM19uSqo9ffdWd3qZEpi2A5yArQ6AG8Z4WvSIaSq4
+	8EraVqyOjxj6vv5E3K68WM+N87QJTKY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1688483890;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=09ZFhrK9gHoXmJ/csCv5GswlFwioAkV5H04kGj7QAAo=;
+	b=l/mff3MbANizx6wXIOAFSZwoYCYFtctvpca4iVlEvBYfQXhTI3dIUsqjryj6QI5Md5SiEt
+	bvhZX2DGKLSD8qBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 218B81346D;
+	Tue,  4 Jul 2023 15:18:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id +5dFBzI4pGRkGAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 04 Jul 2023 15:18:10 +0000
+Date: Tue, 04 Jul 2023 17:18:09 +0200
+Message-ID: <87h6qjpuxa.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Pentracillin@" <pentracillin@gmail.com>
+Cc: tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	"Pentracillin@" <Pentracillin@gmail.com>
+Subject: Re: [PATCH] Add Dell XPS 15 9530 ALC289 speaker fix
+In-Reply-To: <20230704130223.13873-1-Pentracillin@gmail.com>
+References: <20230704130223.13873-1-Pentracillin@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: GTNTLNLPH5SOSUXWM7DIOTWQM6PF66RZ
+X-Message-ID-Hash: GTNTLNLPH5SOSUXWM7DIOTWQM6PF66RZ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RGQGRAUZOH6MSA7JPLKFT6SNFW6V7SJC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GTNTLNLPH5SOSUXWM7DIOTWQM6PF66RZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,42 +115,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 03 Jul 2023 14:47:01 +0200, Johan Hovold wrote:
-> MBHC initialisation can fail so add the missing error handling to avoid
-> dereferencing an error pointer when later configuring the jack:
+On Tue, 04 Jul 2023 15:02:23 +0200,
+Pentracillin@ wrote:
 > 
->     Unable to handle kernel paging request at virtual address fffffffffffffff8
+
+Thanks for your patch.  But it needs a lot of things to be improved.
+
+A patch must have a description to explain why this change is needed
+and what / how the patch works.  Please fill the text.
+
+And, your Signed-off-by tag is mandatory.  It's a legal requirement to
+merge to the upstream, and it needs to be with a real name.
+
+Also, please put the new quirk entry at the right position.  The table
+is sorted in PCI SSID order.
+
+Last but not least, please put a proper prefix to the subject line.
+In your case, it'd be like 'ALSA: hda/realtek: ...."
+
+
+thanks,
+
+Takashi
+
+> ---
+>  sound/pci/hda/patch_realtek.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
->     pc : wcd_mbhc_start+0x28/0x380 [snd_soc_wcd_mbhc]
->     lr : wcd938x_codec_set_jack+0x28/0x48 [snd_soc_wcd938x]
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index afe8253f9..b5b80b6cd 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -9355,6 +9355,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x1028, 0x0a9d, "Dell Latitude 5430", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
+>  	SND_PCI_QUIRK(0x1028, 0x0a9e, "Dell Latitude 5430", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
+>  	SND_PCI_QUIRK(0x1028, 0x0b19, "Dell XPS 15 9520", ALC289_FIXUP_DUAL_SPK),
+> +	SND_PCI_QUIRK(0x1028, 0x0beb, "Dell XPS 15 9530", ALC289_FIXUP_DUAL_SPK),
+>  	SND_PCI_QUIRK(0x1028, 0x0b1a, "Dell Precision 5570", ALC289_FIXUP_DUAL_SPK),
+>  	SND_PCI_QUIRK(0x1028, 0x0b37, "Dell Inspiron 16 Plus 7620 2-in-1", ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS),
+>  	SND_PCI_QUIRK(0x1028, 0x0b71, "Dell Inspiron 16 Plus 7620", ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS),
+> -- 
+> 2.34.1
 > 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: codecs: wcd938x: fix missing mbhc init error handling
-      commit: 7dfae2631bfbdebecd35fe7b472ab3cc95c9ed66
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
