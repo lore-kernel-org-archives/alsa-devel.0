@@ -4,107 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81593EB64D9
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jul 2023 15:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4972AEB64DA
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jul 2023 17:28:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBDF1857;
-	Tue,  4 Jul 2023 17:53:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBDF1857
+	by alsa0.perex.cz (Postfix) with ESMTPS id C817F210;
+	Tue,  4 Jul 2023 19:27:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C817F210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688486056;
-	bh=n7EApB9aBcn43zncrn6pU/zlWjsBq5juXtaj8cXrTlM=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1688491720;
+	bh=2QGBOJZ19LcMZYyhoCW8k1flmQrDjPi3FZ7EiP3iiII=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=RuxuW/13ZHdQNX/0D7BgeFM+UBaZk/WQuRkoa2g3E8Z5QQ0UiE2zPi0SWx8zpXHt/
-	 TnM1h0Dap/WwN0Wgt/Ioc8bfyg3nw0F9iCj+xjQq/FgrJDzNNmQveE/RzfS4n0oFwJ
-	 rte9OhvOZ9J/o55UCQtw78BuJ1nbwRmZgzIM2Xjg=
+	b=sqnOs+S77XUHQD5sM20KlRNdgmqoe3JwSuMNZrXNMeuI3m/q96FnJmyS4faJyJ1Kn
+	 I4KCoK0CdDH9edITLZI4MikLOpzd4UB2Tdwv05tmgR7GumpJ+6N1i/8ive5Mhz1ZNk
+	 Tqu+G9qU4Zf+0KpIRo+oPUv2FMtUVjquKq7XSIO8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 098EDF8057E; Tue,  4 Jul 2023 17:52:21 +0200 (CEST)
+	id 2D757F80125; Tue,  4 Jul 2023 19:27:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B17D8F80579;
-	Tue,  4 Jul 2023 17:52:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C558F800E4;
+	Tue,  4 Jul 2023 19:27:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20965F80125; Tue,  4 Jul 2023 15:02:40 +0200 (CEST)
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com
- [IPv6:2607:f8b0:4864:20::42f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 80CCFF80125; Tue,  4 Jul 2023 19:27:19 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 23649F80093
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jul 2023 15:02:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23649F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 71090F800E4
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jul 2023 19:27:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71090F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=q+vIsYHi
-Received: by mail-pf1-x42f.google.com with SMTP id
- d2e1a72fcca58-668711086f4so3544841b3a.1
-        for <alsa-devel@alsa-project.org>;
- Tue, 04 Jul 2023 06:02:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688475751; x=1691067751;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SdXUxK+a1YB+zJOclgAZUovmZZT+3zpJEQp7SeGvRFs=;
-        b=q+vIsYHiKwRk68x5mJk2HWPxjJ7P0EtjAQyQ8FQVb5YR5R723C5epb1cwtZBVTHRdg
-         YFCImxmX+m+svuCOcg4FLs4Gy2Bdw4K8g1Wf6Z3g5lJ02HJWM36TqZHb+7uaNmZemh0U
-         3Jv+oP3HziW9fDxcj7uKV5KfYZYbkUOEEhWiDNubPn+oLGZlLIYIf02b6HT8EILD7m6p
-         Qh9A+5DBxZHdoDOfBkTQln1CF3ECE6wzalYoabJhSdIxYlmz8y2le3TI8EgzrTiuw+Xc
-         ANSWjUwcAo9DxKC660ffXm3bzDgIAYQPV+yMOMuW9jPD3bBFIJ5+duDDhvV26o8E6vN4
-         FB4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688475751; x=1691067751;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SdXUxK+a1YB+zJOclgAZUovmZZT+3zpJEQp7SeGvRFs=;
-        b=NoyMKs/ofA3wnhYqAJkk2EG1hNTUSytT5JVNWg+xFN7Dwb0bIF87qTD/HMhkCaWOBp
-         OLJMtcMl6Ba6W1uV2c9xetIjmKNWhC234vrc49tBPiJe3vf4Nx7neXJobjCKjiV3l5t8
-         QOJ6mSLVaKyoXomZuJnA5I+UhxJ8zK6suzAAWcN86Jj2bwLTVJuvIj2+sDGGO23AKW4T
-         MPTN1LixoAO5gRmlW0ty+3pEdkAKhw70IReQO3VQp33Uv+Ba38BSmmAA9BZNUrYn/zZp
-         mrmA1K1+rFln58yge9Jupgt63uoHl1UP+84Dcs87yJADsTfp1mxNny7T7zNJeMFWEq8J
-         oNlw==
-X-Gm-Message-State: AC+VfDzD038bD2r8xrHIvnDGGyoqI4eSIE3imb/h5Akd0WyQ1Wp1icdO
-	W0ILBcyQCkvkguOY3sA44hM=
-X-Google-Smtp-Source: 
- ACHHUZ5vcAkUmcTOklEqrYIlojQm+aoGgNhS0ML7/izYwVQ8LjmBIdZq6hc5XJN+lnApTglHLppiyQ==
-X-Received: by 2002:a05:6a00:1402:b0:67a:72d5:3365 with SMTP id
- l2-20020a056a00140200b0067a72d53365mr26257437pfu.6.1688475750870;
-        Tue, 04 Jul 2023 06:02:30 -0700 (PDT)
-Received: from localhost.localdomain (87-121-248-135.dyn.launtel.net.au.
- [87.121.248.135])
-        by smtp.gmail.com with ESMTPSA id
- o6-20020a63e346000000b00553b9e0510esm16156126pgj.60.2023.07.04.06.02.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jul 2023 06:02:30 -0700 (PDT)
-From: "Pentracillin@" <pentracillin@gmail.com>
-X-Google-Original-From: "Pentracillin@" <Pentracillin@gmail.com>
-To: tiwai@suse.com,
-	alsa-devel@alsa-project.org
-Cc: "Pentracillin@" <Pentracillin@gmail.com>
-Subject: [PATCH] Add Dell XPS 15 9530 ALC289 speaker fix
-Date: Tue,  4 Jul 2023 23:02:23 +1000
-Message-Id: <20230704130223.13873-1-Pentracillin@gmail.com>
-X-Mailer: git-send-email 2.34.1
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Hi5HYUj3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1688491628; x=1720027628;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=2QGBOJZ19LcMZYyhoCW8k1flmQrDjPi3FZ7EiP3iiII=;
+  b=Hi5HYUj3tI+XSQBgl7D0O6r2M7GgdO6MzKUjc8Jw7m6OZ8S1jTVAzA/w
+   8IvHSabsb+sUqJtGCDizVDnd54AAbMRObewJYWn/C+TA48lmSq4hcK1rl
+   g2e41d3/kUNYDvS1oCn6c/lVDMJFHJ9wAQIlrom1ET/CG/XbbBw3/9dr7
+   rb3zKuKPFK0Gvyhdgo4Ldg4Y3wXNbuss2S0WRzOcassNjyFkRitFj+Fit
+   uhurzD89b9/yuDHfLL7wpxf/koIWIwrgUzj8lnyDNXuffEvQopDX0DkmP
+   1jHC3GckyKSajqmadvw/n+TWbNQAL1T1/wQDg7vbNQ88u9Fq7+ti1NKLF
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10761"; a="366648653"
+X-IronPort-AV: E=Sophos;i="6.01,181,1684825200";
+   d="scan'208";a="366648653"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Jul 2023 10:27:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10761"; a="808993742"
+X-IronPort-AV: E=Sophos;i="6.01,181,1684825200";
+   d="scan'208";a="808993742"
+Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Jul 2023 10:27:01 -0700
+Received: from kbuild by 783282924a45 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qGjnp-000IPT-0P;
+	Tue, 04 Jul 2023 17:27:01 +0000
+Date: Wed, 5 Jul 2023 01:26:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org
+Subject: [tiwai-sound:test/snd_ctl_remove-lock-fix 34/38]
+ drivers/staging/greybus/audio_codec.c:810:26: warning: variable 'card' set
+ but not used
+Message-ID: <202307050117.pUc9sZub-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: pentracillin@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Message-ID-Hash: BQJBSBVQ23HSPALWOBLO26L35BSP2D5S
+X-Message-ID-Hash: BQJBSBVQ23HSPALWOBLO26L35BSP2D5S
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: TZI3O6Z6W3WAVQBIEZITJTFOSXVLAN5M
-X-Message-ID-Hash: TZI3O6Z6W3WAVQBIEZITJTFOSXVLAN5M
-X-Mailman-Approved-At: Tue, 04 Jul 2023 15:52:11 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BQJBSBVQ23HSPALWOBLO26L35BSP2D5S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,22 +99,109 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git test/snd_ctl_remove-lock-fix
+head:   6dd4ae925ae5b90ccfbcb11dce06fd505cc18bc8
+commit: 812cf704dac9f2f275d7bc53818fcccde62dcef8 [34/38] staging: greybus: Avoid abusing controls_rwsem
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230705/202307050117.pUc9sZub-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230705/202307050117.pUc9sZub-lkp@intel.com/reproduce)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index afe8253f9..b5b80b6cd 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9355,6 +9355,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0a9d, "Dell Latitude 5430", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0a9e, "Dell Latitude 5430", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0b19, "Dell XPS 15 9520", ALC289_FIXUP_DUAL_SPK),
-+	SND_PCI_QUIRK(0x1028, 0x0beb, "Dell XPS 15 9530", ALC289_FIXUP_DUAL_SPK),
- 	SND_PCI_QUIRK(0x1028, 0x0b1a, "Dell Precision 5570", ALC289_FIXUP_DUAL_SPK),
- 	SND_PCI_QUIRK(0x1028, 0x0b37, "Dell Inspiron 16 Plus 7620 2-in-1", ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS),
- 	SND_PCI_QUIRK(0x1028, 0x0b71, "Dell Inspiron 16 Plus 7620", ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS),
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307050117.pUc9sZub-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/staging/greybus/audio_codec.c: In function 'gbaudio_register_module':
+>> drivers/staging/greybus/audio_codec.c:810:26: warning: variable 'card' set but not used [-Wunused-but-set-variable]
+     810 |         struct snd_card *card;
+         |                          ^~~~
+   drivers/staging/greybus/audio_codec.c: In function 'gbaudio_unregister_module':
+   drivers/staging/greybus/audio_codec.c:938:26: warning: unused variable 'card' [-Wunused-variable]
+     938 |         struct snd_card *card = comp->card->snd_card;
+         |                          ^~~~
+
+
+vim +/card +810 drivers/staging/greybus/audio_codec.c
+
+64a7e2cceb75cc drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  805  
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  806  int gbaudio_register_module(struct gbaudio_module_info *module)
+d3d2af51f9c2f2 drivers/staging/greybus/audio-codec.c Vaibhav Agarwal 2015-11-23  807  {
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  808  	int ret;
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  809  	struct snd_soc_component *comp;
+2b8c2b51000e3d drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-04-21 @810  	struct snd_card *card;
+ac40b4d1e40997 drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  811  	struct gbaudio_jack *jack = NULL;
+d3d2af51f9c2f2 drivers/staging/greybus/audio-codec.c Vaibhav Agarwal 2015-11-23  812  
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  813  	if (!gbcodec) {
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  814  		dev_err(module->dev, "GB Codec not yet probed\n");
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  815  		return -EAGAIN;
+d3d2af51f9c2f2 drivers/staging/greybus/audio-codec.c Vaibhav Agarwal 2015-11-23  816  	}
+d3d2af51f9c2f2 drivers/staging/greybus/audio-codec.c Vaibhav Agarwal 2015-11-23  817  
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  818  	comp = gbcodec->component;
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  819  	card = comp->card->snd_card;
+2b8c2b51000e3d drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-04-21  820  
+812cf704dac9f2 drivers/staging/greybus/audio_codec.c Takashi Iwai    2023-07-04  821  	mutex_lock(&gbcodec->register_mutex);
+d3d2af51f9c2f2 drivers/staging/greybus/audio-codec.c Vaibhav Agarwal 2015-11-23  822  
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  823  	if (module->num_dais) {
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  824  		dev_err(gbcodec->dev,
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  825  			"%d:DAIs not supported via gbcodec driver\n",
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  826  			module->num_dais);
+812cf704dac9f2 drivers/staging/greybus/audio_codec.c Takashi Iwai    2023-07-04  827  		mutex_unlock(&gbcodec->register_mutex);
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  828  		return -EINVAL;
+d3d2af51f9c2f2 drivers/staging/greybus/audio-codec.c Vaibhav Agarwal 2015-11-23  829  	}
+d3d2af51f9c2f2 drivers/staging/greybus/audio-codec.c Vaibhav Agarwal 2015-11-23  830  
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  831  	ret = gbaudio_init_jack(module, comp->card);
+64a7e2cceb75cc drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  832  	if (ret) {
+812cf704dac9f2 drivers/staging/greybus/audio_codec.c Takashi Iwai    2023-07-04  833  		mutex_unlock(&gbcodec->register_mutex);
+64a7e2cceb75cc drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  834  		return ret;
+64a7e2cceb75cc drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  835  	}
+64a7e2cceb75cc drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  836  
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  837  	if (module->dapm_widgets)
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  838  		snd_soc_dapm_new_controls(&comp->dapm, module->dapm_widgets,
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  839  					  module->num_dapm_widgets);
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  840  	if (module->controls)
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  841  		snd_soc_add_component_controls(comp, module->controls,
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  842  					       module->num_controls);
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  843  	if (module->dapm_routes)
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  844  		snd_soc_dapm_add_routes(&comp->dapm, module->dapm_routes,
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  845  					module->num_dapm_routes);
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  846  
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  847  	/* card already instantiated, create widgets here only */
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  848  	if (comp->card->instantiated) {
+620d28440c10b8 drivers/staging/greybus/audio_codec.c Deepak R Varma  2020-10-22  849  		gbaudio_dapm_link_component_dai_widgets(comp->card, &comp->dapm);
+64a7e2cceb75cc drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  850  #ifdef CONFIG_SND_JACK
+461ab8077d573d drivers/staging/greybus/audio_codec.c Gioh Kim        2017-02-09  851  		/*
+461ab8077d573d drivers/staging/greybus/audio_codec.c Gioh Kim        2017-02-09  852  		 * register jack devices for this module
+461ab8077d573d drivers/staging/greybus/audio_codec.c Gioh Kim        2017-02-09  853  		 * from codec->jack_list
+461ab8077d573d drivers/staging/greybus/audio_codec.c Gioh Kim        2017-02-09  854  		 */
+ac40b4d1e40997 drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  855  		list_for_each_entry(jack, &module->jack_list, list) {
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  856  			snd_device_register(comp->card->snd_card,
+ac40b4d1e40997 drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  857  					    jack->jack.jack);
+64a7e2cceb75cc drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  858  		}
+64a7e2cceb75cc drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  859  #endif
+bb9986ef6b311f drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-05-04  860  	}
+64a7e2cceb75cc drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  861  
+c188fdc8176a8c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-05-04  862  	mutex_lock(&gbcodec->lock);
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  863  	list_add(&module->list, &gbcodec->module_list);
+c188fdc8176a8c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-05-04  864  	mutex_unlock(&gbcodec->lock);
+c188fdc8176a8c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-05-04  865  
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  866  	if (comp->card->instantiated)
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  867  		ret = snd_soc_dapm_new_widgets(comp->card);
+ce7bd8325dc75c drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2020-07-09  868  	dev_dbg(comp->dev, "Registered %s module\n", module->name);
+d3d2af51f9c2f2 drivers/staging/greybus/audio-codec.c Vaibhav Agarwal 2015-11-23  869  
+812cf704dac9f2 drivers/staging/greybus/audio_codec.c Takashi Iwai    2023-07-04  870  	mutex_unlock(&gbcodec->register_mutex);
+bb9986ef6b311f drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-05-04  871  	return ret;
+d3d2af51f9c2f2 drivers/staging/greybus/audio-codec.c Vaibhav Agarwal 2015-11-23  872  }
+6dd67645f22cfe drivers/staging/greybus/audio_codec.c Vaibhav Agarwal 2016-03-29  873  EXPORT_SYMBOL(gbaudio_register_module);
+d3d2af51f9c2f2 drivers/staging/greybus/audio-codec.c Vaibhav Agarwal 2015-11-23  874  
+
+:::::: The code at line 810 was first introduced by commit
+:::::: 2b8c2b51000e3d056f9aa27a64b93feabddf77a4 greybus: audio: Changes in response to ASoC cleanup
+
+:::::: TO: Vaibhav Agarwal <vaibhav.agarwal@linaro.org>
+:::::: CC: Greg Kroah-Hartman <gregkh@google.com>
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
