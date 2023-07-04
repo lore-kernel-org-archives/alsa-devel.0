@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47B41EB64D9
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jul 2023 09:02:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C855EEB64D9
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jul 2023 09:14:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 361EA3E8;
-	Tue,  4 Jul 2023 11:01:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 361EA3E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FFCE820;
+	Tue,  4 Jul 2023 11:14:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FFCE820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688461355;
-	bh=Sc7fq+rTOlTB0mP3kaMF9Dy8NIoMJX8FCQ4muEAYp6A=;
+	s=default; t=1688462091;
+	bh=+UQ3wJ7CsnBFYk8FxVMfEoCs8C7XLAIRsUVYc1Mm22w=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=odB51y8o15G7Wi/rMTrcTF98/siFBY8OHrU4suQ5n+lycIGxgT0pBv3lb5J62kZ2O
-	 NQwe46HkvvXbM5E/NppVJ7diDHwhN5WFgMNQmR+C8QoSl/oF/M/wo98S/yfJThwq+y
-	 aBwg6igz4G+Y1+RmuutjteKXSf1mjijooJA5i4MI=
+	b=bO0evFSwqu6xhfHWzEYD81S/kH6i3mlxv8L3+HvcV+AldBUeXA5XRHf7UzBbiGAyB
+	 73fkCY74GL16KnHNwi/uQbBhUmf8ECwB7uQtXTZG38HvRj2dx/486LcEnQLT3Vjkan
+	 0ZUI3DHoQTmyMfoMzoT8kuBGWQxbg8g8+wqz61UQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63C33F80104; Tue,  4 Jul 2023 11:01:23 +0200 (CEST)
+	id F026BF80132; Tue,  4 Jul 2023 11:13:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E11D2F80125;
-	Tue,  4 Jul 2023 11:01:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B5BEF80153;
+	Tue,  4 Jul 2023 11:13:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 50B9AF80125; Tue,  4 Jul 2023 11:01:19 +0200 (CEST)
+	id 49A9BF80125; Tue,  4 Jul 2023 11:13:32 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ [46.235.227.172])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3446EF80104
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jul 2023 11:01:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3446EF80104
+	by alsa1.perex.cz (Postfix) with ESMTPS id 510C0F800E4
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jul 2023 11:13:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 510C0F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=O2D7hTO3
+ header.a=rsa-sha256 header.s=mail header.b=E/AxA8JE
 Received: from [IPV6:2001:b07:2ed:14ed:c5f8:7372:f042:90a2] (unknown
  [IPv6:2001:b07:2ed:14ed:c5f8:7372:f042:90a2])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id E5D856606ED1;
-	Tue,  4 Jul 2023 10:01:11 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 64A046606F97;
+	Tue,  4 Jul 2023 10:13:23 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1688461272;
-	bh=Sc7fq+rTOlTB0mP3kaMF9Dy8NIoMJX8FCQ4muEAYp6A=;
+	s=mail; t=1688462004;
+	bh=+UQ3wJ7CsnBFYk8FxVMfEoCs8C7XLAIRsUVYc1Mm22w=;
 	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=O2D7hTO3dCooM7TV2L607b3CAeHCPy9CXrnmemtTqdcNVqW3OaHCRHR7Xei0SA5X1
-	 vR/6dkqKCAqnF1iRFd2yFrNM+f0POcDBln/YzdOD1ymssEJMSXIcUgLELMu/sLZEeY
-	 n4zoBbPJpqXb6euNRgMglQZzpvMxg21TtOct7VM2CnY94lp7H+Vbob7KG1rg1EGRpG
-	 9WfDXiRGDAc56LsxFAjplAI1ZXwOXwvFq38TS1FF5ClTKSIRaiwKJl2ftQ2qvmPGW6
-	 oYmxqDzfh34SUJECqwaNwfc5Bgat0skEr9UrvPg6b38fUwaS3HauJbn4ExwnCMPnkG
-	 l0WxMXD+1tSRg==
-Message-ID: <bb13702f-801d-57f4-64d1-077dd977d43b@collabora.com>
-Date: Tue, 4 Jul 2023 11:01:09 +0200
+	b=E/AxA8JE41PCtF5GjxclcVxesQ4YexgIMo4X6onAErZ8smkNVVqEbLRUdzinos12M
+	 g/rkKhPWvRoHRA9n5WApg3bBQS7SToRtw2C4o6ZXrk6S6Z32/s9QrvOSwuR4tzvS6J
+	 mz1EPIrlIw3HbGzqL7cAZvYqE7/CiZY586WJE16pvjzfcZM0H+cG3rXYuXaYVX5tUj
+	 yO5xm6bs4QCDW/PmAkM088FI6XLKFX1izK5Vveguzq7X/iPqZpgwF+LLR1VLpSmsoc
+	 jPUYDHoy6SX9ttmfIr4gQqFV92tOZbj6sQvI+q4sNr3jrv7so6qXR9j0UYbINBEUU3
+	 J2lwDPpI9K4RA==
+Message-ID: <d5c0ea7a-e38b-b078-4664-dd451d4e3396@collabora.com>
+Date: Tue, 4 Jul 2023 11:13:20 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v2 1/7] ASoC: mediatek: mt7986: add common header
+Subject: Re: [PATCH v2 4/7] ASoC: mediatek: mt7986: add platform driver
 Content-Language: en-US
 To: Maso Huang <maso.huang@mediatek.com>, Liam Girdwood
  <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -77,13 +78,13 @@ To: Maso Huang <maso.huang@mediatek.com>, Liam Girdwood
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
 References: <20230626023501.11120-1-maso.huang@mediatek.com>
- <20230626023501.11120-2-maso.huang@mediatek.com>
+ <20230626023501.11120-5-maso.huang@mediatek.com>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230626023501.11120-2-maso.huang@mediatek.com>
+In-Reply-To: <20230626023501.11120-5-maso.huang@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 3LUCCCZZVXIUGZR4WCQJ5EUPWFQ2W7BO
-X-Message-ID-Hash: 3LUCCCZZVXIUGZR4WCQJ5EUPWFQ2W7BO
+Message-ID-Hash: O5MSXJEETPX6FSTY6L3RFJFFRALLUB2R
+X-Message-ID-Hash: O5MSXJEETPX6FSTY6L3RFJFFRALLUB2R
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3LUCCCZZVXIUGZR4WCQJ5EUPWFQ2W7BO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O5MSXJEETPX6FSTY6L3RFJFFRALLUB2R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,110 +107,331 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 Il 26/06/23 04:34, Maso Huang ha scritto:
-> Add header files for register definition and structure.
+> Add mt7986 platform driver.
 > 
 > Signed-off-by: Maso Huang <maso.huang@mediatek.com>
 > ---
->   sound/soc/mediatek/mt7986/mt7986-afe-common.h |  51 +++++
->   sound/soc/mediatek/mt7986/mt7986-reg.h        | 206 ++++++++++++++++++
->   2 files changed, 257 insertions(+)
->   create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-common.h
->   create mode 100644 sound/soc/mediatek/mt7986/mt7986-reg.h
+>   sound/soc/mediatek/Kconfig                 |  10 +
+>   sound/soc/mediatek/Makefile                |   1 +
+>   sound/soc/mediatek/mt7986/Makefile         |   9 +
+>   sound/soc/mediatek/mt7986/mt7986-afe-pcm.c | 598 +++++++++++++++++++++
+>   4 files changed, 618 insertions(+)
+>   create mode 100644 sound/soc/mediatek/mt7986/Makefile
+>   create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-pcm.c
 > 
-> diff --git a/sound/soc/mediatek/mt7986/mt7986-afe-common.h b/sound/soc/mediatek/mt7986/mt7986-afe-common.h
-> new file mode 100644
-> index 000000000000..646e1be4fdce
-> --- /dev/null
-> +++ b/sound/soc/mediatek/mt7986/mt7986-afe-common.h
-> @@ -0,0 +1,51 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * mt7986-afe-common.h  --  MediaTek 7986 audio driver definitions
-> + *
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Vic Wu <vic.wu@mediatek.com>
-> + *         Maso Huang <maso.huang@mediatek.com>
-> + */
-> +
-> +#ifndef _MT_7986_AFE_COMMON_H_
-> +#define _MT_7986_AFE_COMMON_H_
-> +
-> +#include <sound/soc.h>
-> +#include <linux/clk.h>
-> +#include <linux/list.h>
-> +#include <linux/regmap.h>
-> +#include "../common/mtk-base-afe.h"
-> +
-> +enum {
-> +	MT7986_MEMIF_DL1,
-> +	MT7986_MEMIF_VUL12,
-> +	MT7986_MEMIF_NUM,
-> +	MT7986_DAI_ETDM = MT7986_MEMIF_NUM,
-> +	MT7986_DAI_NUM,
-> +};
-> +
-> +enum {
-> +	MT7986_IRQ_0,
-> +	MT7986_IRQ_1,
-> +	MT7986_IRQ_2,
-> +	MT7986_IRQ_NUM,
-> +};
-> +
-> +struct clk;
-> +
-> +struct mt7986_afe_private {
-> +	struct clk_bulk_data *clks;
-> +	int num_clks;
-> +
-> +	int pm_runtime_bypass_reg_ctl;
-> +
-> +	/* dai */
-> +	void *dai_priv[MT7986_DAI_NUM];
-> +};
-> +
-> +unsigned int mt7986_afe_rate_transform(struct device *dev,
-> +				       unsigned int rate);
-> +
-> +/* dai register */
-> +int mt7986_dai_etdm_register(struct mtk_base_afe *afe);
-> +#endif
-> diff --git a/sound/soc/mediatek/mt7986/mt7986-reg.h b/sound/soc/mediatek/mt7986/mt7986-reg.h
-> new file mode 100644
-> index 000000000000..6433cdf3da92
-> --- /dev/null
-> +++ b/sound/soc/mediatek/mt7986/mt7986-reg.h
-> @@ -0,0 +1,206 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * mt7986-reg.h  --  MediaTek 7986 audio driver reg definition
-> + *
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Vic Wu <vic.wu@mediatek.com>
-> + *         Maso Huang <maso.huang@mediatek.com>
-> + */
-> +
-> +#ifndef _MT7986_REG_H_
-> +#define _MT7986_REG_H_
 
 ..snip..
 
-> +/* ETDM_OUT5_CON4 */
-> +#define OUT_RELATCH(x)                  ((x) << 24)
-> +#define OUT_RELATCH_SFT                 24
-> +#define OUT_RELATCH_MASK                GENMASK(28, 24)
-> +#define OUT_CLK_SRC(x)                  ((x) << 6)
-> +#define OUT_CLK_SRC_SFT                 6
-> +#define OUT_CLK_SRC_MASK                GENMASK(8, 6)
-> +#define OUT_SEL_FS(x)                   ((x) << 0)
+> diff --git a/sound/soc/mediatek/mt7986/mt7986-afe-pcm.c b/sound/soc/mediatek/mt7986/mt7986-afe-pcm.c
+> new file mode 100644
+> index 000000000000..9eef21762e93
+> --- /dev/null
+> +++ b/sound/soc/mediatek/mt7986/mt7986-afe-pcm.c
+> @@ -0,0 +1,598 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * MediaTek ALSA SoC AFE platform driver for MT7986
+> + *
+> + * Copyright (c) 2021 MediaTek Inc.
+> + * Author: Vic Wu <vic.wu@mediatek.com>
+> + *         Maso Huang <maso.huang@mediatek.com>
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/pm_runtime.h>
+> +
+> +#include "mt7986-afe-common.h"
+> +#include "mt7986-afe-clk.h"
+> +#include "mt7986-reg.h"
+> +#include "../common/mtk-afe-platform-driver.h"
+> +#include "../common/mtk-afe-fe-dai.h"
+> +
+> +enum {
+> +	MTK_AFE_RATE_8K = 0,
+> +	MTK_AFE_RATE_11K = 1,
+> +	MTK_AFE_RATE_12K = 2,
+> +	MTK_AFE_RATE_16K = 4,
+> +	MTK_AFE_RATE_22K = 5,
+> +	MTK_AFE_RATE_24K = 6,
+> +	MTK_AFE_RATE_32K = 8,
+> +	MTK_AFE_RATE_44K = 9,
+> +	MTK_AFE_RATE_48K = 10,
+> +	MTK_AFE_RATE_88K = 13,
+> +	MTK_AFE_RATE_96K = 14,
+> +	MTK_AFE_RATE_176K = 17,
+> +	MTK_AFE_RATE_192K = 18,
+> +};
+> +
+> +unsigned int mt7986_afe_rate_transform(struct device *dev,
+> +				       unsigned int rate)
 
-A number shifted by zero bits is equal to itself, so, this statement doesn't
-make sense. I understand why you want a OUT_SEL_FS(x) definition though, so
-you could do it like:
+Fits in one line.
 
-#define OUT_SEL_FS(x)			(x)
+> +{
+> +	switch (rate) {
+> +	case 8000:
+> +		return MTK_AFE_RATE_8K;
+> +	case 11025:
+> +		return MTK_AFE_RATE_11K;
+> +	case 12000:
+> +		return MTK_AFE_RATE_12K;
+> +	case 16000:
+> +		return MTK_AFE_RATE_16K;
+> +	case 22050:
+> +		return MTK_AFE_RATE_22K;
+> +	case 24000:
+> +		return MTK_AFE_RATE_24K;
+> +	case 32000:
+> +		return MTK_AFE_RATE_32K;
+> +	case 44100:
+> +		return MTK_AFE_RATE_44K;
+> +	case 48000:
+> +		return MTK_AFE_RATE_48K;
+> +	case 88200:
+> +		return MTK_AFE_RATE_88K;
+> +	case 96000:
+> +		return MTK_AFE_RATE_96K;
+> +	case 176400:
+> +		return MTK_AFE_RATE_176K;
+> +	case 192000:
+> +		return MTK_AFE_RATE_192K;
+> +	default:
+> +		dev_warn(dev, "%s(), rate %u invalid, use %d!!!\n",
 
-After which,
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+s/use/using/g
+
+> +			 __func__, rate, MTK_AFE_RATE_48K);
+> +		return MTK_AFE_RATE_48K;
+> +	}
+> +}
+> +
+
+..snip..
+
+> +
+> +static bool mt7986_is_volatile_reg(struct device *dev, unsigned int reg)
+> +{
+> +	/* these auto-gen reg has read-only bit, so put it as volatile */
+> +	/* volatile reg cannot be cached, so cannot be set when power off */
+
+Fix the comment format please; for multi-line comments, you want:
+
+	/*
+	 * Those auto-gen regs are read-only, so put it a volatile because
+	 * volatile registers cannot be cached, which means that they cannot
+	 * be set when power is off
+	 */
+
+
+> +	switch (reg) {
+> +	case AFE_DL0_CUR_MSB:
+> +	case AFE_DL0_CUR:
+> +	case AFE_DL0_RCH_MON:
+> +	case AFE_DL0_LCH_MON:
+> +	case AFE_VUL0_CUR_MSB:
+> +	case AFE_VUL0_CUR:
+> +	case AFE_IRQ_MCU_STATUS:
+> +	case AFE_MEMIF_RD_MON:
+> +	case AFE_MEMIF_WR_MON:
+> +		return true;
+> +	default:
+> +		return false;
+> +	};
+> +}
+> +
+
+..snip..
+
+> +
+> +static int mt7986_afe_pcm_dev_probe(struct platform_device *pdev)
+> +{
+> +	struct mtk_base_afe *afe;
+> +	struct mt7986_afe_private *afe_priv;
+> +	struct device *dev;
+> +	int i, irq_id, ret;
+> +
+> +	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
+> +	if (!afe)
+> +		return -ENOMEM;
+> +	platform_set_drvdata(pdev, afe);
+> +
+> +	afe->platform_priv = devm_kzalloc(&pdev->dev, sizeof(*afe_priv),
+> +					  GFP_KERNEL);
+> +	if (!afe->platform_priv)
+> +		return -ENOMEM;
+> +
+> +	afe_priv = afe->platform_priv;
+> +	afe->dev = &pdev->dev;
+> +	dev = afe->dev;
+> +
+> +	afe->base_addr = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(afe->base_addr))
+> +		return PTR_ERR(afe->base_addr);
+> +
+> +	/* initial audio related clock */
+> +	ret = mt7986_init_clock(afe);
+
+As said in the review for patch [2/7], function mt7986_init_clock() must be moved
+in this file instead.
+
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "Cannot initialize clocks\n");
+> +
+> +	ret = devm_pm_runtime_enable(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* enable clock for regcache get default value from hw */
+> +	afe_priv->pm_runtime_bypass_reg_ctl = true;
+> +	pm_runtime_get_sync(&pdev->dev);
+> +
+> +	afe->regmap = devm_regmap_init_mmio(&pdev->dev, afe->base_addr,
+> +		      &mt7986_afe_regmap_config);
+
+	pm_runtime_put_sync(&pdev->dev);
+	if (IS_ERR(afe->regmap))
+		return PTR_ERR(afe->regmap);
+
+	afe_prov->pm_runtime_bypass_reg_ctl = false;
+
+that's better :-)
+
+> +	if (IS_ERR(afe->regmap)) {
+> +		ret = PTR_ERR(afe->regmap);
+> +		goto err_pm_disable;
+> +	}
+> +
+> +	pm_runtime_put_sync(&pdev->dev);
+> +	afe_priv->pm_runtime_bypass_reg_ctl = false;
+> +
+> +	/* init memif */
+> +	afe->memif_size = MT7986_MEMIF_NUM;
+> +	afe->memif = devm_kcalloc(dev, afe->memif_size, sizeof(*afe->memif),
+> +				  GFP_KERNEL);
+> +	if (!afe->memif)
+> +		goto err_pm_disable;
+> +
+> +	for (i = 0; i < afe->memif_size; i++) {
+> +		afe->memif[i].data = &memif_data[i];
+> +		afe->memif[i].irq_usage = -1;
+> +	}
+> +
+> +	mutex_init(&afe->irq_alloc_lock);
+> +
+> +	/* irq initialize */
+> +	afe->irqs_size = MT7986_IRQ_NUM;
+> +	afe->irqs = devm_kcalloc(dev, afe->irqs_size, sizeof(*afe->irqs),
+> +				 GFP_KERNEL);
+> +	if (!afe->irqs)
+> +		goto err_pm_disable;
+> +
+> +	for (i = 0; i < afe->irqs_size; i++)
+> +		afe->irqs[i].irq_data = &irq_data[i];
+> +
+> +	/* request irq */
+> +	irq_id = platform_get_irq(pdev, 0);
+> +	if (irq_id < 0) {
+> +		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
+> +		ret = irq_id;
+> +		goto err_pm_disable;
+
+You can just return... and please use dev_err_probe().
+
+> +	}
+> +	ret = devm_request_irq(dev, irq_id, mt7986_afe_irq_handler,
+> +			       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
+> +	if (ret) {
+> +		dev_err(dev, "could not request_irq for asys-isr\n");
+> +		goto err_pm_disable;
+> +	}
+> +
+> +	/* init sub_dais */
+> +	INIT_LIST_HEAD(&afe->sub_dais);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(dai_register_cbs); i++) {
+> +		ret = dai_register_cbs[i](afe);
+> +		if (ret) {
+> +			dev_err(afe->dev, "dai register i %d fail, ret %d\n",
+> +				 i, ret);
+> +			goto err_pm_disable;
+> +		}
+> +	}
+> +
+> +	/* init dai_driver and component_driver */
+> +	ret = mtk_afe_combine_sub_dai(afe);
+> +	if (ret) {
+> +		dev_err(afe->dev, "mtk_afe_combine_sub_dai fail, ret %d\n",
+> +			 ret);
+> +		goto err_pm_disable;
+> +	}
+> +
+> +	afe->mtk_afe_hardware = &mt7986_afe_hardware;
+> +	afe->memif_fs = mt7986_memif_fs;
+> +	afe->irq_fs = mt7986_irq_fs;
+> +
+> +	afe->runtime_resume = mt7986_afe_runtime_resume;
+> +	afe->runtime_suspend = mt7986_afe_runtime_suspend;
+> +
+> +	/* register component */
+> +	ret = devm_snd_soc_register_component(&pdev->dev,
+> +					      &mt7986_afe_component,
+> +					      NULL, 0);
+> +	if (ret) {
+> +		dev_warn(dev, "err_platform\n");
+
+That shall not be a dev_warn, but a dev_err() instead, but then, being this
+a probe function and not needing that jump, it's dev_err_probe().
+
+> +		goto err_pm_disable;
+> +	}
+> +
+> +	ret = devm_snd_soc_register_component(afe->dev,
+> +					      &mt7986_afe_pcm_dai_component,
+> +					      afe->dai_drivers,
+> +					      afe->num_dai_drivers);
+> +	if (ret) {
+> +		dev_warn(dev, "err_dai_component\n");
+
+Same here.
+
+> +		goto err_pm_disable;
+> +	}
+> +
+> +	return ret;
+> +
+> +err_pm_disable:
+
+You don't need this label because you're now using devm_pm_runtime_enable() and,
+following my advice from some lines up, pm_runtime_put_sync() is called at the
+right time already.
+
+This means that you can simplify this function a lot with directly returning the
+error in error paths (including instances of dev_err_probe() ).
+
+> +	pm_runtime_put_sync(&pdev->dev);
+> +	pm_runtime_disable(&pdev->dev);
+> +	return ret;
+> +}
+> +
+> +static void mt7986_afe_pcm_dev_remove(struct platform_device *pdev)
+> +{
+> +	pm_runtime_disable(&pdev->dev);
+> +	if (!pm_runtime_status_suspended(&pdev->dev))
+> +		mt7986_afe_runtime_suspend(&pdev->dev);
+> +}
+> +
+> +static const struct of_device_id mt7986_afe_pcm_dt_match[] = {
+> +	{ .compatible = "mediatek,mt7986-afe", },
+
+You don't need the comma here               ^^
+so this is just
+
+	{ .compatible = "mediatek,mt7986-afe" },
+
+Everything else looks fine.
 
 Regards,
 Angelo
