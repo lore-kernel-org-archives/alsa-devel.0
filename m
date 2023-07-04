@@ -4,149 +4,153 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F142EB64D9
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jul 2023 07:57:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52ECEEB64DD
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Jul 2023 07:57:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7AFBB210;
-	Tue,  4 Jul 2023 09:56:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AFBB210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E5A4852;
+	Tue,  4 Jul 2023 09:56:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E5A4852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688457436;
-	bh=rYGRyJNHHXQ7oymock8xOkHIzpAdqjkA0dU69O2LoWM=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Icjqne+1qfblwB7cQkBuHhuDPDOcVJA8lC5Cd4f+VKIBNtEG2ozP4eOJ/Ct95U3la
-	 BSVVx+oCSb51RO9/xWzfFing1aVUMt8bTSQZRHgk8HXWytfRXnVcMGiNCP5NFItSWP
-	 C5gg5PW3ECQczFpU5xV/cL/E2ck3F+w5RaqaEUnE=
+	s=default; t=1688457442;
+	bh=jB1/DWVJxnWQM/so14LoVd9LwqqwTW+J1+12UZYrchg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=u6Z9pSC4CKjx+8Pidjp3s85qa5jtxlnS4WhAuEcgeEmdJ3ultNW7twJakvCFXgyIa
+	 Fb9A2jgarZlpGR6v0kFkPvRIZAfQuouUMmafnqrkqStTssm6hupfWWr+/AC3x3xasH
+	 WWolkJKcH8+eqL2hAUBqlncfSRGig62yxaJGvOWE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C57F7F8053B; Tue,  4 Jul 2023 09:55:41 +0200 (CEST)
+	id 2EECAF8057B; Tue,  4 Jul 2023 09:55:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 587E4F8053B;
-	Tue,  4 Jul 2023 09:55:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 865C4F8057B;
+	Tue,  4 Jul 2023 09:55:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 41CD8F80124; Mon,  3 Jul 2023 16:18:38 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
+	id 7B3C0F80125; Tue,  4 Jul 2023 09:46:46 +0200 (CEST)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
+ [IPv6:2a00:1450:4864:20::132])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81018F80100
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2023 16:18:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81018F80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5FD03F800E4
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jul 2023 09:46:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FD03F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=fetSxyhg
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-3fa9850bfebso46156945e9.1
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=YqVWrq4J
+Received: by mail-lf1-x132.google.com with SMTP id
+ 2adb3069b0e04-4f766777605so8173827e87.1
         for <alsa-devel@alsa-project.org>;
- Mon, 03 Jul 2023 07:18:33 -0700 (PDT)
+ Tue, 04 Jul 2023 00:46:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1688393912; x=1690985912;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LxB5kQuGTUex9qgEMykoEN13WoS4AeEsCPhxBgnGUm8=;
-        b=fetSxyhgO9GgsrU43Q+X6DGKLQ6PnI539bmAxdU04I2Rs0l4v3G92WlCehgdlrxcEE
-         tQoG+6Asflp0Fyor0XWGu96466Fc6bqrpPwULNFn2hk8XmTpA1UgwCeAgmwCCJqJNvGL
-         +i0PAbNJGHO9MWfVeI/E/ihPuUzV/7/w0kLoe2mmZ1VsNpBKxehQTCxGY0FpxcMKZZ15
-         OJamWz1R1k7Luko9OU/C6l3lRyJgIUQp24AO4i3ukn5/wrhvVCWSHo7UIEUsksIWg+Hd
-         Aw4Rd0f/Q4UYWuvYTc4HSHY7X/V/IlNQbivC40vHdXNX+xWRyNiy6s/Pp+lDKrP1a+QJ
-         evMg==
+        d=gmail.com; s=20221208; t=1688456798; x=1691048798;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=p1Dg1yh/CaKjtIZqVOCs9qJ34fsbrfyQUu2yhOVOmp4=;
+        b=YqVWrq4JWiUcqqbKYjLW+TLDS5HCjdLJ/2HzrjTCiqq7slRR1YOCj2kST8hxxEIlRa
+         4zW2QjQiWeXh/Hh6fFB66fy0wKyUS2WLgbq/eLG6nNv72NDNQHccf4HZjCPrMSYZW592
+         D7u6xU5KkQjgohmkXbjBWknRYTGcB1g/Nmj/4s/92CXgHQtKp/ap56wl4274Hn+dA0Jc
+         xZFvrj56xogUXuYrb5RU1LZV8nbbj4ov3SW4+22bBoaExsQshmaedQEdhbpFv+a4eKxT
+         FKZPmIY3FLBm7veBN3jCYrzFRa67OeWbMhPgZLX08LFRtDh4k9S8E1EQnIyDvBQpCwyW
+         uM9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688393912; x=1690985912;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LxB5kQuGTUex9qgEMykoEN13WoS4AeEsCPhxBgnGUm8=;
-        b=ELLnOqCqOnrsqzmzhzWBjwjpDaAZy2iw4tT5dPOp6aByhScunmVbX7WA6bW1xCB1D3
-         GSPPWZ5K7DqUUt1ix+5KabhiePACV+Ujehz8ANDNyYovgCVb/AmC1HDLjwdFnR2GgVrd
-         3mbbKxGiBmPK2CTlA0zFJTtyqbZz4p47nbzV9fh23zSp0KhefiNe/xAmoXPzNtij8gul
-         vwGtp2DACorl2JZeyYz7EjLtYarcmmtMOdqgwzCG1ru0qfltFcDpOugOyHHNKrJXRAMi
-         9goroKh3onUk3/JmlRcYztVl2hYLQvT/svat8ee17eYH98EC32kZ8pUjsSpsCeKyzsq0
-         siXg==
-X-Gm-Message-State: AC+VfDxceqBmBIWcucZ2U+Gv4xCTt6PPwYXBxF2SmBvs8NXxpV9/kccw
-	z8eYV4Amm6QfsEL219/kEsbyhg==
+        d=1e100.net; s=20221208; t=1688456798; x=1691048798;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p1Dg1yh/CaKjtIZqVOCs9qJ34fsbrfyQUu2yhOVOmp4=;
+        b=WIv8BFR/IYoyFANfQjGAOVcAOBpQbADeWtGfYOqzuoy2WTY8evN2K9VqXSsCZTYGHn
+         WUtUcuHcX9oBLMlTdxzcTsG9Ddpe7hSukH57EO6xT06LtklXK2i249HbPzjzPIquiPn/
+         FmEp35DrOVCDM91t8FunmJm2GT9wInPi8UggJZOnyFy/DOatts02KmGpu0+sj0NkgJ7m
+         tIdLy1fwwWKVVoulg+kLJ+4sCb8xoCsqdLwal3Zf7Lq7UckTEoiCMB8ZMDi5Dr/XAKHH
+         x5ZZ/xTtcTfB/SWgZFOq9AAcU9oSdIkQJlvk7Mu3jl66o5FgV2+6pO+qTpZ2B8pPlqaC
+         aK9A==
+X-Gm-Message-State: ABy/qLbClELgPOOUw8EE46d87YR5ZZxMNaWIgBZVIChMqTXd4k5wow3a
+	ZYG4XxW9ff/Q3oKXpmmh7WnFAaO4/aJzBfDtwK8=
 X-Google-Smtp-Source: 
- ACHHUZ4CeqsYD+kGlTx0UpeZLkUbvtru8rqzWMLlIOVRvaVfLR1NSaJZrifOoQx1XHGsRkhc7NUAqg==
-X-Received: by 2002:a1c:f70a:0:b0:3fb:c060:8b3d with SMTP id
- v10-20020a1cf70a000000b003fbc0608b3dmr7813252wmh.40.1688393912291;
-        Mon, 03 Jul 2023 07:18:32 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id
- f10-20020a7bc8ca000000b003fbad1b4904sm15869915wml.0.2023.07.03.07.18.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jul 2023 07:18:31 -0700 (PDT)
-Date: Mon, 3 Jul 2023 17:18:27 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: amadeuszx.slawinski@linux.intel.com
-Cc: alsa-devel@alsa-project.org
-Subject: [bug report] ALSA: jack: Access input_dev under mutex
-Message-ID: <cf95f7fe-a748-4990-8378-000491b40329@moroto.mountain>
+ APBJJlGrVaTOW97bBVasVEqhKP7YGiU7+0a87bnVkpdDubBdLImBDhXIxXR04JvwYsAc7pQojktedmbMQgMMQX3w3Tk=
+X-Received: by 2002:a05:6512:250b:b0:4fb:8cc0:57e3 with SMTP id
+ be11-20020a056512250b00b004fb8cc057e3mr9404428lfb.62.1688456797748; Tue, 04
+ Jul 2023 00:46:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-MailFrom: dan.carpenter@linaro.org
+References: <20230703031016.1184711-1-islituo@gmail.com>
+ <87a5wd76v9.wl-tiwai@suse.de>
+In-Reply-To: <87a5wd76v9.wl-tiwai@suse.de>
+From: Tuo Li <islituo@gmail.com>
+Date: Tue, 4 Jul 2023 15:46:28 +0800
+Message-ID: 
+ <CADm8Tek0mGzAx-JSRO33PiKtzxyfkUk=_HW3y-EQDw7eC2RBjg@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: hda: fix a possible null-pointer dereference due to
+ data race in snd_hdac_regmap_sync()
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org, baijiaju1990@outlook.com,
+	BassCheck <bass@buaa.edu.cn>
+X-MailFrom: islituo@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: BISISR5RWKP6MHRUQNK6P2LRAWDWHE3R
-X-Message-ID-Hash: BISISR5RWKP6MHRUQNK6P2LRAWDWHE3R
-X-Mailman-Approved-At: Tue, 04 Jul 2023 07:55:35 +0000
+Message-ID-Hash: JE5EDSWO4AXGGTNDMHRB6RZQWQATS457
+X-Message-ID-Hash: JE5EDSWO4AXGGTNDMHRB6RZQWQATS457
+X-Mailman-Approved-At: Tue, 04 Jul 2023 07:55:37 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.8
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BISISR5RWKP6MHRUQNK6P2LRAWDWHE3R/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+Archived-At: <>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello Amadeusz Sławiński,
-
-The patch 1b6a6fc5280e: "ALSA: jack: Access input_dev under mutex"
-from Apr 12, 2022, leads to the following Smatch static checker
-warning:
-
-	sound/core/jack.c:673 snd_jack_report()
-	warn: sleeping in atomic context
-
-sound/core/jack.c
-    663         jack->hw_status_cache = status;
-    664 
-    665         list_for_each_entry(jack_kctl, &jack->kctl_list, list)
-    666                 if (jack_kctl->sw_inject_enable)
-    667                         mask_bits |= jack_kctl->mask_bits;
-    668                 else
-    669                         snd_kctl_jack_report(jack->card, jack_kctl->kctl,
-    670                                              status & jack_kctl->mask_bits);
-    671 
-    672 #ifdef CONFIG_SND_JACK_INPUT_DEV
---> 673         mutex_lock(&jack->input_dev_lock);
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-That patch adds this mutex but we can't take mutex because we're already
-holding a spinlock.  The problematic call trees are:
-
-virtsnd_event_notify_cb() <- disables preempt
-virtsnd_disable_event_vq() <- disables preempt
--> virtsnd_event_dispatch()
-   -> virtsnd_jack_event()
-      -> snd_jack_report()
-
-The virtsnd_event_notify_cb() and virtsnd_disable_event_vq() functions
-take the spin_lock_irqsave(&queue->lock, flags);
-
-regards,
-dan carpenter
+VGhhbmtzIGZvciB5b3VyIHJlcGx5IQ0KDQpCZXN0IHJlZ2FyZHMsDQpUdW8gTGkNCg0KT24gTW9u
+LCBKdWwgMywgMjAyMyBhdCA0OjEw4oCvUE0gVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3
+cm90ZToNCg0KPiBPbiBNb24sIDAzIEp1bCAyMDIzIDA1OjEwOjE2ICswMjAwLA0KPiBUdW8gTGkg
+d3JvdGU6DQo+ID4NCj4gPiBUaGUgdmFyaWFibGUgY29kZWMtPnJlZ21hcCBpcyBvZnRlbiBwcm90
+ZWN0ZWQgYnkgdGhlIGxvY2sNCj4gPiBjb2RlYy0+cmVnbWFwX2xvY2sgd2hlbiBpcyBhY2Nlc3Nl
+ZC4gSG93ZXZlciwgaXQgaXMgYWNjZXNzZWQgd2l0aG91dA0KPiA+IGhvbGRpbmcgdGhlIGxvY2sg
+d2hlbiBpcyBhY2Nlc3NlZCBpbiBzbmRfaGRhY19yZWdtYXBfc3luYygpOg0KPiA+DQo+ID4gICBp
+ZiAoY29kZWMtPnJlZ21hcCkNCj4gPg0KPiA+IEluIG15IG9waW5pb24sIHRoaXMgbWF5IGJlIGEg
+aGFybWZ1bCByYWNlLCBiZWNhdXNlIGlmIGNvZGVjLT5yZWdtYXAgaXMNCj4gPiBzZXQgdG8gTlVM
+TCByaWdodCBhZnRlciB0aGUgY29uZGl0aW9uIGlzIGNoZWNrZWQsIGEgbnVsbC1wb2ludGVyDQo+
+ID4gZGVyZWZlcmVuY2UgY2FuIG9jY3VyIGluIHRoZSBjYWxsZWQgZnVuY3Rpb24gcmVnY2FjaGVf
+c3luYygpOg0KPiA+DQo+ID4gICBtYXAtPmxvY2sobWFwLT5sb2NrX2FyZyk7IC0tPiBMaW5lIDM2
+MCBpbg0KPiBkcml2ZXJzL2Jhc2UvcmVnbWFwL3JlZ2NhY2hlLmMNCj4gPg0KPiA+IFRvIGZpeCB0
+aGlzIHBvc3NpYmxlIG51bGwtcG9pbnRlciBkZXJlZmVyZW5jZSBjYXVzZWQgYnkgZGF0YSByYWNl
+LCB0aGUNCj4gPiBtdXRleF9sb2NrIGNvdmVyYWdlIGlzIGV4dGVuZGVkIHRvIHByb3RlY3QgdGhl
+IGlmIHN0YXRlbWVudCBhcyB3ZWxsIGFzDQo+IHRoZQ0KPiA+IGZ1bmN0aW9uIGNhbGwgdG8gcmVn
+Y2FjaGVfc3luYygpLg0KPiA+DQo+ID4gUmVwb3J0ZWQtYnk6IEJhc3NDaGVjayA8YmFzc0BidWFh
+LmVkdS5jbj4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBUdW8gTGkgPGlzbGl0dW9AZ21haWwuY29tPg0K
+Pg0KPiBQcmFjdGljYWxseSBzZWVuLCBpdCdzIHByZXR0eSBoYXJtbGVzcywgYXMgdGhlIGZsYWcg
+aXMgc2V0IGF0IHRoZSB2ZXJ5DQo+IGJlZ2lubmluZyBvZiB0aGUgY29kZWMgZHJpdmVyIHByb2Jl
+LCB3aGlsZSBzbmRfaGRhY19yZWdtYXBfc3luYygpIGlzDQo+IHVzZWQgb25seSBpbiB0aGUgcnVu
+dGltZSBQTSByZXN1bWUgdGhhdCBtdXN0IG5vdCBoYXBwZW4gZHVyaW5nIHRoZQ0KPiBwcm9iZS4g
+IElPVywgY29kZWMtPnJlZ21hcF9sb2NrIGl0c2VsZiBpc24ndCByZWFsbHkgbWVhbnQgdG8NCj4g
+cHJvdGVjdHRoZSBjaGFuZ2Ugb2YgY29kZWMtPnJlZ21hcCBmbGFnLg0KPg0KPiBPVE9ILCB5b3Vy
+IGNoYW5nZSBtYWtlcyB0aGluZ3MgbW9yZSBjb25zaXN0ZW50LCBzbyBJIGFwcGxpZWQgdGhlIHBh
+dGNoDQo+IG5vdy4NCj4NCj4NCj4gVGhhbmtzIQ0KPg0KPiBUYWthc2hpDQo+DQo+DQo+ID4gLS0t
+DQo+ID4gIHNvdW5kL2hkYS9oZGFjX3JlZ21hcC5jIHwgNyArKystLS0tDQo+ID4gIDEgZmlsZSBj
+aGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0t
+Z2l0IGEvc291bmQvaGRhL2hkYWNfcmVnbWFwLmMgYi9zb3VuZC9oZGEvaGRhY19yZWdtYXAuYw0K
+PiA+IGluZGV4IGZlMzU4NzU0N2NmZS4uMzk2MTBhMTViY2M5IDEwMDY0NA0KPiA+IC0tLSBhL3Nv
+dW5kL2hkYS9oZGFjX3JlZ21hcC5jDQo+ID4gKysrIGIvc291bmQvaGRhL2hkYWNfcmVnbWFwLmMN
+Cj4gPiBAQCAtNTk3LDEwICs1OTcsOSBAQCBFWFBPUlRfU1lNQk9MX0dQTChzbmRfaGRhY19yZWdt
+YXBfdXBkYXRlX3Jhd19vbmNlKTsNCj4gPiAgICovDQo+ID4gIHZvaWQgc25kX2hkYWNfcmVnbWFw
+X3N5bmMoc3RydWN0IGhkYWNfZGV2aWNlICpjb2RlYykNCj4gPiAgew0KPiA+IC0gICAgIGlmIChj
+b2RlYy0+cmVnbWFwKSB7DQo+ID4gLSAgICAgICAgICAgICBtdXRleF9sb2NrKCZjb2RlYy0+cmVn
+bWFwX2xvY2spOw0KPiA+ICsgICAgIG11dGV4X2xvY2soJmNvZGVjLT5yZWdtYXBfbG9jayk7DQo+
+ID4gKyAgICAgaWYgKGNvZGVjLT5yZWdtYXApDQo+ID4gICAgICAgICAgICAgICByZWdjYWNoZV9z
+eW5jKGNvZGVjLT5yZWdtYXApOw0KPiA+IC0gICAgICAgICAgICAgbXV0ZXhfdW5sb2NrKCZjb2Rl
+Yy0+cmVnbWFwX2xvY2spOw0KPiA+IC0gICAgIH0NCj4gPiArICAgICBtdXRleF91bmxvY2soJmNv
+ZGVjLT5yZWdtYXBfbG9jayk7DQo+ID4gIH0NCj4gPiAgRVhQT1JUX1NZTUJPTF9HUEwoc25kX2hk
+YWNfcmVnbWFwX3N5bmMpOw0KPiA+IC0tDQo+ID4gMi4zNC4xDQo+ID4NCj4NCg==
