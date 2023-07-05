@@ -4,152 +4,173 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC9CAC001DE
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 14:44:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DD83EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 14:46:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7FDC84B;
-	Wed,  5 Jul 2023 16:43:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7FDC84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EEDF7F4;
+	Wed,  5 Jul 2023 16:45:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EEDF7F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688568276;
-	bh=bdDLZCglkynD91RnEE0P/JUB/wG+iACKpfOzXwB+k8g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1688568386;
+	bh=s0GWJM5gFoud1+XZjR2N78Pc/ZDBarybll1Oke7Rovs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DLByY0Cf4DLQuNlvWkWxwQmEBAEtAdkxTghurSEodXE2vymg3M2zQ1egKcoArwHl8
-	 ssn9oMEqxPkOs5/APiFWrKCuQF8MftEbcBy6TleKzbFLJJvKNyOjWYKpQIkhNogG0z
-	 PXvtfxqAmJgDntC3i22m07wYwmU1ONLI1Sf0uvyo=
+	b=llRgcv2YeYM9DA7JGKVHFx6wm9QqD1qpRQErEm+RBR0FiV/dAqK94EgA8+STlLrku
+	 wgLgzpJCIs0RuCVrHuRMtHb/FsPiAmJkeDCxvw8hApZO3x5TWgzHl1oPcWRC+HlZ+0
+	 zj+7nL3Mnf07/1tng+UTSa2vVJ0EwoUpbK0MLkMc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3FA4AF805BD; Wed,  5 Jul 2023 16:41:56 +0200 (CEST)
+	id 82390F80544; Wed,  5 Jul 2023 16:45:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6D92F805BD;
-	Wed,  5 Jul 2023 16:41:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BD9CF80104;
+	Wed,  5 Jul 2023 16:45:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58396F80125; Wed,  5 Jul 2023 14:35:15 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 31A2AF80125; Wed,  5 Jul 2023 16:45:07 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4DE1AF80132
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 14:33:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DE1AF80132
+	by alsa1.perex.cz (Postfix) with ESMTPS id A4842F800E4
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 16:45:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4842F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=NvZ0l2dY
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D7D4261582;
-	Wed,  5 Jul 2023 12:33:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A0BAC433CD;
-	Wed,  5 Jul 2023 12:33:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688560389;
-	bh=bdDLZCglkynD91RnEE0P/JUB/wG+iACKpfOzXwB+k8g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NvZ0l2dYbJQL3lj93Xn3I8gdvEuHf+3CGUMkAUgBGfLBeRyaOtnuNVkeKKv9DvaIc
-	 j+brMH46O0LAES+l7K3gpLdqox4aDDo4y1DifGhEJCMENB2X6hhPv6qQE2rc9XCcEP
-	 9AtNEn7q6L1rzIciuH8Mk9ucxXUmVfjved2Frd6hgxVw+z3NXuL+Pdb9/VT6ygpbig
-	 hlBlW+6cu+Yl8fijCgNNbXarVmWYStGzlo96dixoMP4LtohVD/1coVAAeJhHEVtLkU
-	 ycGkzcabxy+3WKmfISCfZZR9ztCBEt8hf34WZeM488kXWw3FRsMH6nnfOqg1yENlgZ
-	 SqFS0sRMTDB9g==
-Received: from johan by xi.lan with local (Exim 4.96)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1qH1hK-00084G-1V;
-	Wed, 05 Jul 2023 14:33:30 +0200
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Mark Brown <broonie@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Sanyog Kale <sanyog.r.kale@intel.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH 5/8] ASoC: codecs: wcd934x: fix resource leaks on component
- remove
-Date: Wed,  5 Jul 2023 14:30:15 +0200
-Message-Id: <20230705123018.30903-6-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230705123018.30903-1-johan+linaro@kernel.org>
-References: <20230705123018.30903-1-johan+linaro@kernel.org>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=eQV30L4a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1688568304; x=1720104304;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=s0GWJM5gFoud1+XZjR2N78Pc/ZDBarybll1Oke7Rovs=;
+  b=eQV30L4acNYbYCOAWgms8c8pEdGOWyrhoj1Wmx/0VDfH5W33l8XBp5VP
+   NjmzgERhJcq9O5b+kUF7DJldJFVAMO4t1VplHTVUjh3ajYQf9Vge4OE7M
+   fOiqlUQmS4sFkSc8ZApiYW722aLxh1pSUL83Qz7C8XX3Yho39cmILOxHo
+   eEFMogtHKBfJEtbPjKoOhOqyF8bxhREuywbeJWAAiv78nWDR51CTEV9N8
+   RnBPc5PLOoEJONv1eqHftT5KKqvGzZzBZv11VgRTh19LyF18ynYBPxwrL
+   Ub/7kQYW8HQEdFjlwjAD1G3fGdhpovYjMuLj4R87RCy+W5rVj86AbmXgr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10762"; a="362226709"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200";
+   d="scan'208";a="362226709"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Jul 2023 07:45:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10762"; a="722430589"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200";
+   d="scan'208";a="722430589"
+Received: from meggieha-mobl.ger.corp.intel.com (HELO [10.252.48.235])
+ ([10.252.48.235])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Jul 2023 07:44:57 -0700
+Message-ID: <14395e2a-db0b-8f26-3356-741945478eb0@linux.intel.com>
+Date: Wed, 5 Jul 2023 16:44:55 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: johan+linaro@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+Subject: Re: [PATCH 1/8] soundwire: fix enumeration completion
+Content-Language: en-US
+To: Johan Hovold <johan@kernel.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Rander Wang <rander.wang@linux.intel.com>
+References: <20230705123018.30903-1-johan+linaro@kernel.org>
+ <20230705123018.30903-2-johan+linaro@kernel.org>
+ <907ad7a3-3384-c0c4-90a9-5beab4cc45e0@linux.intel.com>
+ <ZKV-oXAWzRXnjXus@hovoldconsulting.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <ZKV-oXAWzRXnjXus@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: DZRB3JYYJXOORNNRG56UP4E23PEZ3WO2
+X-Message-ID-Hash: DZRB3JYYJXOORNNRG56UP4E23PEZ3WO2
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: VGHZJRPJXP534F2UTW73RUNOJN5YUXHJ
-X-Message-ID-Hash: VGHZJRPJXP534F2UTW73RUNOJN5YUXHJ
-X-Mailman-Approved-At: Wed, 05 Jul 2023 14:41:38 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
-List-Archive: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DZRB3JYYJXOORNNRG56UP4E23PEZ3WO2/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Make sure to release allocated MBHC resources also on component remove.
 
-This is specifically needed to allow probe deferrals of the sound card
-which otherwise fails when reprobing the codec component.
 
-Fixes: 9fb9b1690f0b ("ASoC: codecs: wcd934x: add mbhc support")
-Cc: stable@vger.kernel.org      # 5.14
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- sound/soc/codecs/wcd934x.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+On 7/5/23 16:30, Johan Hovold wrote:
+> On Wed, Jul 05, 2023 at 02:53:17PM +0200, Pierre-Louis Bossart wrote:
+>> On 7/5/23 14:30, Johan Hovold wrote:
+>>> The soundwire subsystem uses two completion structures that allow
+>>> drivers to wait for soundwire device to become enumerated on the bus and
+>>> initialised by their drivers, respectively.
+>>>
+>>> The code implementing the signalling is currently broken as it does not
+>>> signal all current and future waiters and also uses the wrong
+>>> reinitialisation function, which can potentially lead to memory
+>>> corruption if there are still waiters on the queue.
+>>
+>> That change sounds good, but I am not following the two paragraphs below.
+>>
+>>> Not signalling future waiters specifically breaks sound card probe
+>>> deferrals as codec drivers can not tell that the soundwire device is
+>>> already attached when being reprobed. 
+>>
+>> What makes you say that? There is a test in the probe and the codec
+>> driver will absolutely be notified, see bus_type.c
+>>
+>> 	if (drv->ops && drv->ops->update_status) {
+>> 		ret = drv->ops->update_status(slave, slave->status);
+>> 		if (ret < 0)
+>> 			dev_warn(dev, "%s: update_status failed with status %d\n", __func__,
+>> ret);
+>> 	}
+> 
+> I'm talking about signalling the codec driver using the soundwire device
+> via the completion structs. Unless the underling device is detached and
+> reattached, trying to wait for completion a second time will currently
+> timeout instead of returning immediately.
+> 
+> This affects codecs like rt5682, which wait for completion in component
+> probe (see rt5682_probe()).
+> 
+>>> Some codec runtime PM
+>>> implementations suffer from similar problems as waiting for enumeration
+>>> during resume can also timeout despite the device already having been
+>>> enumerated.
+>>
+>> I am not following this either. Are you saying the wait_for_completion()
+>> times out because of the init_completion/reinit_completion confusion, or
+>> something else.
+> 
+> It times out because the completion counter is not saturated unless you
+> use complete_all().
+> 
+> Drivers that wait unconditionally in resume, will time out the second
+> time they are runtime resumed unless the underlying device has been
+> detached and reattached in the meantime (e.g. wsa881x_runtime_resume()).
 
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-index a17cd75b969b..1b6e376f3833 100644
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -3044,6 +3044,17 @@ static int wcd934x_mbhc_init(struct snd_soc_component *component)
- 
- 	return 0;
- }
-+
-+static void wcd934x_mbhc_deinit(struct snd_soc_component *component)
-+{
-+	struct wcd934x_codec *wcd = snd_soc_component_get_drvdata(component);
-+
-+	if (!wcd->mbhc)
-+		return;
-+
-+	wcd_mbhc_deinit(wcd->mbhc);
-+}
-+
- static int wcd934x_comp_probe(struct snd_soc_component *component)
- {
- 	struct wcd934x_codec *wcd = dev_get_drvdata(component->dev);
-@@ -3077,6 +3088,7 @@ static void wcd934x_comp_remove(struct snd_soc_component *comp)
- {
- 	struct wcd934x_codec *wcd = dev_get_drvdata(comp->dev);
- 
-+	wcd934x_mbhc_deinit(comp);
- 	wcd_clsh_ctrl_free(wcd->clsh_ctrl);
- }
- 
--- 
-2.39.3
+Makes sense. The default on Intel platforms is to reset the bus in all
+resume cases, that forces the attachment so we never saw the issue.
+
+For this patch:
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
 
