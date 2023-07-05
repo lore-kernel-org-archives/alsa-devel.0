@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38E03EB64DD
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 16:06:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28580EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 16:07:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9510214E;
-	Wed,  5 Jul 2023 18:05:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9510214E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A7E883E;
+	Wed,  5 Jul 2023 18:06:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A7E883E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688573199;
-	bh=MaQ9axNX26c9wxnJ0P+IdEAV6VOXIK3LAWryZ90v/Qg=;
+	s=default; t=1688573225;
+	bh=CTAvb6JMEf73tIiPsKFyvyNZoYYTcypUwmV94CiGldw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SIu8BASASpVMvHGQulETcFumTkGTtJBugT0+ciB5Fa89HI9CCsHr4ZZ4xdZz9zjpn
-	 6M3cfByw6o0U+ygtdfxp3M3p9kS75pNIrz2g9XbfnbZWorIhueBGqVmyotSVJrIdCo
-	 Bm88bAbR8/I0kPEiLwidgr17t5F3WwBYRS9StHSk=
+	b=XdEVXVbhGlA0FiuKMQfUu2ZKYwIkzzxG6R/7xP0OALWtnJyus/AeBzzRC5d22Y4Ii
+	 v+Cs9rxi2cnpn91IM0NlwMEboII7PT2UOqzB21JGH/HOaNYJRGWQAUbwuMWk1EUoAc
+	 GZbykEJ9BbRQsLGBAKU1r6EdF3JGCx9zYR/ecLuc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD7B1F80132; Wed,  5 Jul 2023 18:05:23 +0200 (CEST)
+	id F3FDEF8055A; Wed,  5 Jul 2023 18:05:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 429E1F80125;
-	Wed,  5 Jul 2023 18:05:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAA19F80549;
+	Wed,  5 Jul 2023 18:05:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2026DF80132; Wed,  5 Jul 2023 18:05:19 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 7F18AF80125; Wed,  5 Jul 2023 18:05:20 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 92843F800E4
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 18:05:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92843F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id E7C2FF80100
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 18:05:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7C2FF80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=l3w5MPUr
+ header.s=k20201202 header.b=g0bUY8Th
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2AD606160D;
-	Wed,  5 Jul 2023 16:05:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7A7FC433C8;
-	Wed,  5 Jul 2023 16:05:06 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6DD5C61543;
+	Wed,  5 Jul 2023 16:05:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B50DC433CA;
+	Wed,  5 Jul 2023 16:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688573108;
-	bh=MaQ9axNX26c9wxnJ0P+IdEAV6VOXIK3LAWryZ90v/Qg=;
+	s=k20201202; t=1688573110;
+	bh=CTAvb6JMEf73tIiPsKFyvyNZoYYTcypUwmV94CiGldw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=l3w5MPUrUOOTkdmknB6dx2CtyE52F8JS3tBM0epQzl+7XfY9lWhN2iMZRW8obwzfE
-	 2OSTQTiVyWTgkJZ1X/k94tnKvPJuszNC1sD492Gept8Na3v0tjQoPiMHzmOt1y83fG
-	 s68wJHzlZ9RN0CRG7CPdagmeRZHbi9Xrsx88wzrORB/C5bBUGC5fH8RL0WgpnFDWaa
-	 4gC9pnSi/uYA+dZNAcTrj8jrhduibrdK0zNisA5ZQRLTTIuU6H2awoyad6vEsA8/hZ
-	 2fkuXp0LC1Xw55zACnJGJTwUfmUBfAWf8sFQDnYNULgtoqroey94oDHoPstIDJ4AMQ
-	 XRIUuMjx8DMpQ==
+	b=g0bUY8Th4vWaYNWwyLz7jTJPy3ZDM6KoOBH8ukFXwhB3KGyk71f1koc/tz34wTTH1
+	 DThD7v22L3L/U5eoWMyqP+9X4kpeiE+7qgStYWmEJF4tiRLaLyLcqcsXeKbVT7HOAe
+	 tQbtpc6EFEI780FDnqbC8BvZcQyf/Jf+pKe9nVJ1rlRhqsP3AoNGPuC6L23+EKwc6Z
+	 P0NdV1rJdTLVXlQYTrkvD/BlN34aCA3rVj5Gub0QkZejwIqX8iaeHYsqNy/gVqh2hf
+	 HRwKln3IA6VP8UspUNp8HtWpTZiev5fwPjRDNjj1PQ2d6MeXs1WwiVR+7yLEJ1uLT9
+	 /nExiyC2UH4Pw==
 From: Mark Brown <broonie@kernel.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: lgirdwood@gmail.com, vkarpovi@opensource.cirrus.com,
- rf@opensource.cirrus.com, ckeepax@opensource.cirrus.com,
- alsa-devel@alsa-project.org, patches@lists.linux.dev,
- stable@vger.kernel.org, Marcus Seyfarth <m.seyfarth@gmail.com>
-In-Reply-To: <20230703-cs35l45-select-regmap_irq-v1-1-37d7e838b614@kernel.org>
-References: <20230703-cs35l45-select-regmap_irq-v1-1-37d7e838b614@kernel.org>
-Subject: Re: [PATCH] ASoC: cs35l45: Select REGMAP_IRQ
-Message-Id: <168857310652.55162.4180283376212806885.b4-ty@kernel.org>
-Date: Wed, 05 Jul 2023 17:05:06 +0100
+To: lgirdwood@gmail.com, shumingf@realtek.com
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
+ oder_chiou@realtek.com, jack.yu@realtek.com, derek.fang@realtek.com,
+ cychiang@google.com
+In-Reply-To: <20230705042915.24932-1-shumingf@realtek.com>
+References: <20230705042915.24932-1-shumingf@realtek.com>
+Subject: Re: [PATCH 2/3] ASoC: rt5645: check return value after reading
+ device id
+Message-Id: <168857310884.55162.3076080568171850157.b4-ty@kernel.org>
+Date: Wed, 05 Jul 2023 17:05:08 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: G2M4U4IUBL5GUO7ASGKFX3ULQP4JSIQY
-X-Message-ID-Hash: G2M4U4IUBL5GUO7ASGKFX3ULQP4JSIQY
+Message-ID-Hash: KZBCADCYP4VKHUD37IXJIDCM3B2PMZC4
+X-Message-ID-Hash: KZBCADCYP4VKHUD37IXJIDCM3B2PMZC4
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G2M4U4IUBL5GUO7ASGKFX3ULQP4JSIQY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KZBCADCYP4VKHUD37IXJIDCM3B2PMZC4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,15 +96,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 03 Jul 2023 14:43:15 -0700, Nathan Chancellor wrote:
-> After commit 6085f9e6dc19 ("ASoC: cs35l45: IRQ support"), without any
-> other configuration that selects CONFIG_REGMAP_IRQ, modpost errors out
-> with:
+On Wed, 05 Jul 2023 12:29:14 +0800, shumingf@realtek.com wrote:
+> If the I2C controller encounters some problems like timed-out, the codec
+> driver will report the error code for the first read.
 > 
->   ERROR: modpost: "regmap_irq_get_virq" [sound/soc/codecs/snd-soc-cs35l45.ko] undefined!
->   ERROR: modpost: "devm_regmap_add_irq_chip" [sound/soc/codecs/snd-soc-cs35l45.ko] undefined!
 > 
-> [...]
 
 Applied to
 
@@ -113,8 +108,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cs35l45: Select REGMAP_IRQ
-      commit: d9ba2975e98a4bec0a9f8d4be4c1de8883fccb71
+[2/3] ASoC: rt5645: check return value after reading device id
+      commit: bf62eec5cdecbe7eeab02407da98f36cd7b1dea7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
