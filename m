@@ -4,108 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC2A7EB64DC
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jul 2023 07:27:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3197EB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jul 2023 08:01:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71D5B74C;
-	Thu,  6 Jul 2023 09:26:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71D5B74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DCDE7F1;
+	Thu,  6 Jul 2023 10:00:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DCDE7F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688628426;
-	bh=d/JeGf4O7nqV9K0UCQyS7h7C0MLtL6IXNPzF10Io+yo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=MlDoQ5kKzvLQ0AUtxGLPUZ5kq66bvLDJSIUlB5xvYCZVyzJXtYoBwh1jmiToBrGr7
-	 9cq0wDrqeTQboruR7RBXI0NIYVK87vMnGWoOKsOgiCZEHocGx1d2rkLB3EFHHNtwi+
-	 EDzAAU4+qv1SjqAlACj4B3tpIDDmzsWoq46M+aGY=
+	s=default; t=1688630509;
+	bh=RcacutE7xxZJJ2H4X1H5T96DQVDwRWxueVioNssujMg=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=f2QrI8b4ZTUDb5S+2U6ArqgdiYzE7T75ZcjKQbqkfZxyJjdxVkGiSfwbHibzYlvRa
+	 +bJpcvawrx3C3xAtWQRr7+U6uNUaDD+pJcZSXdbnQBQfAlZiGI4ZXtOXly4c5ZHm3/
+	 0GvhVpOCG3Fg4sTqTsKFaVydwkYGeJds0CKKcDt8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CBF26F800E4; Thu,  6 Jul 2023 09:25:50 +0200 (CEST)
+	id CC89EF80544; Thu,  6 Jul 2023 10:00:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A66BF80125;
-	Thu,  6 Jul 2023 09:25:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66173F80125;
+	Thu,  6 Jul 2023 10:00:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 55494F80125; Thu,  6 Jul 2023 09:25:45 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 716FBF8025F; Wed,  5 Jul 2023 21:03:49 +0200 (CEST)
+Received: from mail.andi.de1.cc (mail.andi.de1.cc
+ [IPv6:2a02:c205:3004:2154::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8451EF800E4
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jul 2023 09:25:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8451EF800E4
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=m68a8qkC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688628341; x=1720164341;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=d/JeGf4O7nqV9K0UCQyS7h7C0MLtL6IXNPzF10Io+yo=;
-  b=m68a8qkCWsLN1u+/hnNxZYdsehVyffc2fgQZEyQQJebKhhgs4B/LNiTL
-   ixYs67afyFX0W74FNJXODaBaBZmJ41yMoaIuc3aNnvsTlzoD26elYFztq
-   tFabBdiFp87o9/E3qVCFR8YsruzmsdbGQ4LExuOSXAo5hdpNIV0Ed1ax7
-   Es/x6KzmiwM/0YFEby19xjF4IrIzqPdGgkkhoT55rkCB88us1Y+x25SHB
-   KyQtDGQUmXqn1/dtPHgzVzwOerGIDnVa/EIrnlJsPvSiSlUzGcN6r97az
-   P/SR8rHVMXNEtuBmet0c5Qcf85MhVjxM/PFeQQyzE+ZcLa7b7BMLdybWc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10762"; a="363556030"
-X-IronPort-AV: E=Sophos;i="6.01,185,1684825200";
-   d="scan'208";a="363556030"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2023 00:25:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10762"; a="713450911"
-X-IronPort-AV: E=Sophos;i="6.01,185,1684825200";
-   d="scan'208";a="713450911"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144])
- ([10.99.16.144])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2023 00:25:29 -0700
-Message-ID: <f464d5b1-c708-4b3f-f1d1-031c5def5b38@linux.intel.com>
-Date: Thu, 6 Jul 2023 09:25:26 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id D5061F800E4
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 21:03:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5061F800E4
+Received: from p200300ccff0adc001a3da2fffebfd33a.dip0.t-ipconnect.de
+ ([2003:cc:ff0a:dc00:1a3d:a2ff:febf:d33a] helo=aktux)
+	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <andreas@kemnade.info>)
+	id 1qH7mi-0017Xe-Bk; Wed, 05 Jul 2023 21:03:28 +0200
+Received: from andi by aktux with local (Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1qH7mh-001UQk-36;
+	Wed, 05 Jul 2023 21:03:27 +0200
+From: Andreas Kemnade <andreas@kemnade.info>
+To: bcousson@baylibre.com,
+	tony@atomide.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	peter.ujfalusi@gmail.com,
+	jarkko.nikula@bitmer.com,
+	dmitry.torokhov@gmail.com,
+	andreas@kemnade.info,
+	linux-omap@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting fck_src
+Date: Wed,  5 Jul 2023 21:03:22 +0200
+Message-Id: <20230705190324.355282-2-andreas@kemnade.info>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230705190324.355282-1-andreas@kemnade.info>
+References: <20230705190324.355282-1-andreas@kemnade.info>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 7/8] ASoC: topology: suppress probe deferral errors
-Content-Language: en-US
-To: Johan Hovold <johan@kernel.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Alex Elder <elder@linaro.org>
-References: <20230705123018.30903-1-johan+linaro@kernel.org>
- <20230705123018.30903-8-johan+linaro@kernel.org>
- <ac232872-734f-d192-d46c-555ebe3625c5@linux.intel.com>
- <ZKZbzctgLpV-67hJ@hovoldconsulting.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <ZKZbzctgLpV-67hJ@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: S34H47D7WIFJN7TMSAEB6VHP47MJ66RT
-X-Message-ID-Hash: S34H47D7WIFJN7TMSAEB6VHP47MJ66RT
-X-MailFrom: amadeuszx.slawinski@linux.intel.com
+X-MailFrom: andreas@kemnade.info
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: JK6CVQV674FULFTK23WQSW65TYSD7NL7
+X-Message-ID-Hash: JK6CVQV674FULFTK23WQSW65TYSD7NL7
+X-Mailman-Approved-At: Thu, 06 Jul 2023 08:00:53 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S34H47D7WIFJN7TMSAEB6VHP47MJ66RT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JK6CVQV674FULFTK23WQSW65TYSD7NL7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,37 +97,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 7/6/2023 8:14 AM, Johan Hovold wrote:
-> On Wed, Jul 05, 2023 at 05:07:22PM +0200, Amadeusz Sławiński wrote:
->> On 7/5/2023 2:30 PM, Johan Hovold wrote:
->>> Suppress probe deferral error messages when loading topologies and
->>> creating frontend links to avoid spamming the logs when a component has
->>> not yet been registered:
->>>
->>>       snd-sc8280xp sound: ASoC: adding FE link failed
->>>       snd-sc8280xp sound: ASoC: topology: could not load header: -517
->>>
->>> Note that dev_err_probe() is not used as the topology component can be
->>> probed and removed while the underlying platform device remains bound to
->>> its driver.
->>
->> I'm not sure that I understand that argument... what's wrong with
->> dev_err_probe(tplg->dev, err, "ASoC: adding FE link failed\n");
->> instead of
->> dev_err(tplg->dev, "ASoC: adding FE link failed\n");
->> ?
-> 
-> In short, it is not correct to use dev_err_probe() here as this is not a
-> probe function.
-> 
-> dev_err_probe() is tied to driver core and will specifically allocate
-> and associate an error message with the struct device on probe
-> deferrals, which is later freed when the struct device is bound to a
-> driver (or released).
-> 
+Commit 349355ce3a05 ("ARM: OMAP2+: Drop legacy platform data for omap4 mcbsp")
+dropped prcm_fck for omap4, so the clk_src might not be available making the
+clk_get(src) fail. In such cases, rely on the devicetree to assign
+the correct parent.
 
-I guess you mean call to: device_set_deferred_probe_reason(dev, &vaf);
-perhaps functionality could be extended to allow to skip this call and 
-just do prints? Or just add separate dev_err_defer function without this 
-step, although it would be best if they could share parts of code.
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+ sound/soc/ti/omap-mcbsp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+index 21fa7b9787997..f9fe96b61852b 100644
+--- a/sound/soc/ti/omap-mcbsp.c
++++ b/sound/soc/ti/omap-mcbsp.c
+@@ -70,8 +70,8 @@ static int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
+ 
+ 	fck_src = clk_get(mcbsp->dev, src);
+ 	if (IS_ERR(fck_src)) {
+-		dev_err(mcbsp->dev, "CLKS: could not clk_get() %s\n", src);
+-		return -EINVAL;
++		dev_info(mcbsp->dev, "CLKS: could not clk_get() %s\n", src);
++		return 0;
+ 	}
+ 
+ 	pm_runtime_put_sync(mcbsp->dev);
+-- 
+2.39.2
 
