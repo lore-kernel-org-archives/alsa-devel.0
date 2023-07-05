@@ -4,86 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3151FEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 13:46:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB4F8EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 13:59:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BD35886;
-	Wed,  5 Jul 2023 15:45:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BD35886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30625820;
+	Wed,  5 Jul 2023 15:58:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30625820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688564765;
-	bh=RDOqL2QvBsWdGDtjLILdg3uwJMqeZ/zmgqZTS73BrJo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1688565567;
+	bh=PdRHsWcUvKlFxrNHtPGxrZat7W9p+9tZkkMZRNnSzjQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QpRcGeQaeyXBbWZKZ9mHE5RauFW412XFdQWHLEubCQdu69mOn/T7wcoI1OmHec4iL
-	 KmFsqDKx8QEa0KrVioSL5djXKy4LyElpph2jOIC7nkjCwfMVjGgTs64+845971ME7U
-	 96CE8Is6WGnTDW91AijNWrcWs7MZkI7jEA6Mv6hc=
+	b=WwX6O9E+eP3sOXVqYxeP4HsmSxBc+l3cb8Kbrax/3rzMX7q/dlnb125LWHBcywsS8
+	 ZWkGuUQlx3vxhM7GpTTIGRJrHppjQBDWk3/w9wMdQ4dr1dyZRgNBI0SnZuEKNWU+S2
+	 J+c7Q5GBdlC78HJsOfYwaF82SizAuWjizMSeAPG8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 46DF5F8057A; Wed,  5 Jul 2023 15:44:05 +0200 (CEST)
+	id EF55AF80544; Wed,  5 Jul 2023 15:58:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CFD2F80578;
-	Wed,  5 Jul 2023 15:44:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D67FF80153;
+	Wed,  5 Jul 2023 15:58:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8C442F8057A; Wed,  5 Jul 2023 15:44:01 +0200 (CEST)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id BD39FF80125; Wed,  5 Jul 2023 15:58:01 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3801AF80100
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 15:43:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3801AF80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1776AF80100
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 15:57:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1776AF80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=R9+hXXfo
-Received: from localhost (unknown [188.24.137.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 9BE1B6606FB9;
-	Wed,  5 Jul 2023 14:43:54 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1688564634;
-	bh=RDOqL2QvBsWdGDtjLILdg3uwJMqeZ/zmgqZTS73BrJo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=R9+hXXfoQBhv2BkO+lcoUezRvdGuWvPh2dbcGjdiUWAMbQPVeqJwnAqnbekAXIlsR
-	 6yzZVNYDX0U+bebjeEmbrL/imbi57wYBrbKbJoQM9syAQMeqr4sRW9LwiwBk4qMpjw
-	 +lgaaq6iKNBnL//EygYNxObX2Z/i+KxPk0R05yP+0ZZCoDw0DLJeZTXmcw2hK56+tW
-	 3xqyG0wUtWFEafTvk5bFZwnypQCz72y+7/CiXEjqw6L4N+QDhXDlPHVDA27kRnC+aw
-	 z96Ik8w3KnlzUWAjdQmrz7wRcam7smUIs85hwYlGUghJ5XU5ZmCR6iU0Sj+UWuuQgB
-	 Em761I+1rgGyQ==
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-	Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	kernel@collabora.com
-Subject: [PATCH v2 3/3] ASoC: amd: vangogh: Add support for NAU8821/MAX98388
- variant
-Date: Wed,  5 Jul 2023 16:43:41 +0300
-Message-ID: <20230705134341.175889-4-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230705134341.175889-1-cristian.ciocaltea@collabora.com>
-References: <20230705134341.175889-1-cristian.ciocaltea@collabora.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=ex282C1m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1688565477; x=1720101477;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=PdRHsWcUvKlFxrNHtPGxrZat7W9p+9tZkkMZRNnSzjQ=;
+  b=ex282C1mJ1Tf1X24rO8W7GinM+rY2Ne6iNMcIZ7MHpvJ6Jd5CrRpMvmM
+   i7g6/ZNdnLAOyU5CtHu0gvL3VUMbNKOEBAqQ5rZBC1et3kY9ZGPrhrmx2
+   bJblPOks/v/bco8U2MADSdgXKzwHc95RleV9/Rkk94S7C63tdRzgQEhm6
+   7u19C0GITU5kUw1xyj2rqxW8FErb/gWEeSglXIQo3PTvaF+KZb1FTtWr0
+   KrJeDAvyI+ONUkycQWO2f9uR2nOlwHRoOsKxanilBWi9xRBXpE6WOuCp+
+   dKpRdnl+BG0SBeO/XU2cgykHEtWVD/SAeD363LdYJ+8/Ui54+uUiQ2nNH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10762"; a="342934606"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200";
+   d="scan'208";a="342934606"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Jul 2023 06:57:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10762"; a="965835533"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200";
+   d="scan'208";a="965835533"
+Received: from meggieha-mobl.ger.corp.intel.com (HELO [10.252.48.235])
+ ([10.252.48.235])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Jul 2023 06:57:49 -0700
+Message-ID: <907ad7a3-3384-c0c4-90a9-5beab4cc45e0@linux.intel.com>
+Date: Wed, 5 Jul 2023 14:53:17 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7O7XMORINS7P32UNNJKGPRU7EGNAZ726
-X-Message-ID-Hash: 7O7XMORINS7P32UNNJKGPRU7EGNAZ726
-X-MailFrom: cristian.ciocaltea@collabora.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+Subject: Re: [PATCH 1/8] soundwire: fix enumeration completion
+Content-Language: en-US
+To: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Rander Wang <rander.wang@linux.intel.com>
+References: <20230705123018.30903-1-johan+linaro@kernel.org>
+ <20230705123018.30903-2-johan+linaro@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230705123018.30903-2-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: DYU4DX6HZ4U7RV4LO6GACLFUFBNH3WCQ
+X-Message-ID-Hash: DYU4DX6HZ4U7RV4LO6GACLFUFBNH3WCQ
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7O7XMORINS7P32UNNJKGPRU7EGNAZ726/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DYU4DX6HZ4U7RV4LO6GACLFUFBNH3WCQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,246 +110,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Extend the Vangogh machine driver to support a variant based on the
-Nuvoton NAU88L21 Codec and the Analog Devices MAX98388 Speaker
-Amplifier.
 
-Additionally, enable probing via ACPI match table for this and future
-hardware revisions.
 
-Co-developed-by: Lucas Tanure <lucas.tanure@collabora.com>
-Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
----
- sound/soc/amd/Kconfig              |   5 +-
- sound/soc/amd/vangogh/acp5x-mach.c | 155 +++++++++++++++++++++++++++--
- 2 files changed, 150 insertions(+), 10 deletions(-)
+On 7/5/23 14:30, Johan Hovold wrote:
+> The soundwire subsystem uses two completion structures that allow
+> drivers to wait for soundwire device to become enumerated on the bus and
+> initialised by their drivers, respectively.
+> 
+> The code implementing the signalling is currently broken as it does not
+> signal all current and future waiters and also uses the wrong
+> reinitialisation function, which can potentially lead to memory
+> corruption if there are still waiters on the queue.
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 1dd8579e8034..273688c05317 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -79,14 +79,15 @@ config SND_SOC_AMD_ACP5x
- 	 ACP DMA driver, CPU DAI driver.
- 
- config SND_SOC_AMD_VANGOGH_MACH
--	tristate "AMD Vangogh support for NAU8821 CS35L41"
-+	tristate "AMD Vangogh support for NAU8821/CS35L41/MAX98388"
- 	select SND_SOC_NAU8821
- 	select SND_SOC_CS35L41_SPI
-+	select SND_SOC_MAX98388
- 	select SND_AMD_ACP_CONFIG
- 	depends on SND_SOC_AMD_ACP5x && I2C && SPI_MASTER
- 	help
- 	  This option enables machine driver for Vangogh platform
--	  using NAU8821 and CS35L41 codecs.
-+	  using NAU8821 and either CS35L41 or MAX98388 codecs.
- 	  Say m if you have such a device.
- 	  If unsure select "N".
- 
-diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index 1efa8f8b77ab..42e37f4f1495 100644
---- a/sound/soc/amd/vangogh/acp5x-mach.c
-+++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0+
- /*
-- * Machine driver for AMD Vangogh platform using NAU8821 & CS35L41
-- * codecs.
-+ * Machine driver for AMD Vangogh platform using either
-+ * NAU8821 & CS35L41 or NAU8821 & MAX98388 codecs.
-  *
-  * Copyright 2021 Advanced Micro Devices, Inc.
-  */
-@@ -29,6 +29,9 @@
- #define ACP5X_CS35L41_COMP_LNAME	"spi-VLV1776:00"
- #define ACP5X_CS35L41_COMP_RNAME	"spi-VLV1776:01"
- #define ACP5X_CS35L41_DAI_NAME		"cs35l41-pcm"
-+#define ACP5X_MAX98388_COMP_LNAME	"i2c-ADS8388:00"
-+#define ACP5X_MAX98388_COMP_RNAME	"i2c-ADS8388:01"
-+#define ACP5X_MAX98388_DAI_NAME		"max98388-aif1"
- 
- static struct snd_soc_jack vg_headset;
- 
-@@ -326,6 +329,126 @@ static struct snd_soc_card acp5x_8821_35l41_card = {
- 	.num_controls = ARRAY_SIZE(acp5x_8821_controls),
- };
- 
-+static int acp5x_max98388_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct acp5x_platform_info *machine = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	machine->play_i2s_instance = I2S_HS_INSTANCE;
-+
-+	runtime->hw.channels_max = DUAL_CHANNEL;
-+	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				   &constraints_channels);
-+	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				   &constraints_rates);
-+	return 0;
-+}
-+
-+static int acp5x_max98388_hw_params(struct snd_pcm_substream *substream,
-+				    struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct snd_soc_dai *dai = snd_soc_card_get_codec_dai(rtd->card,
-+							     ACP5X_MAX98388_DAI_NAME);
-+	int ret;
-+
-+	ret = snd_soc_dai_set_fmt(dai,
-+				  SND_SOC_DAIFMT_CBS_CFS | SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_NF);
-+	if (ret < 0)
-+		dev_err(dai->dev, "Failed to set format: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static const struct snd_soc_ops acp5x_max98388_play_ops = {
-+	.startup = acp5x_max98388_startup,
-+	.hw_params = acp5x_max98388_hw_params,
-+};
-+
-+static struct snd_soc_codec_conf acp5x_max98388_conf[] = {
-+	{
-+		.dlc = COMP_CODEC_CONF(ACP5X_MAX98388_COMP_LNAME),
-+		.name_prefix = "Left",
-+	},
-+	{
-+		.dlc = COMP_CODEC_CONF(ACP5X_MAX98388_COMP_RNAME),
-+		.name_prefix = "Right",
-+	},
-+};
-+
-+SND_SOC_DAILINK_DEF(max98388, DAILINK_COMP_ARRAY(COMP_CODEC(ACP5X_MAX98388_COMP_LNAME,
-+							    ACP5X_MAX98388_DAI_NAME),
-+						 COMP_CODEC(ACP5X_MAX98388_COMP_RNAME,
-+							    ACP5X_MAX98388_DAI_NAME)));
-+
-+static struct snd_soc_dai_link acp5x_8821_98388_dai[] = {
-+	{
-+		.name = "acp5x-8821-play",
-+		.stream_name = "Playback/Capture",
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			   SND_SOC_DAIFMT_NB_NF |
-+			   SND_SOC_DAIFMT_CBC_CFC,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ops = &acp5x_8821_ops,
-+		.init = acp5x_8821_init,
-+		SND_SOC_DAILINK_REG(acp5x_i2s, nau8821, platform),
-+	},
-+	{
-+		.name = "acp5x-max98388-play",
-+		.stream_name = "MAX98388 Playback",
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			   SND_SOC_DAIFMT_NB_NF |
-+			   SND_SOC_DAIFMT_CBC_CFC,
-+		.dpcm_playback = 1,
-+		.playback_only = 1,
-+		.ops = &acp5x_max98388_play_ops,
-+		SND_SOC_DAILINK_REG(acp5x_bt, max98388, platform),
-+	},
-+};
-+
-+static const struct snd_soc_dapm_widget acp5x_8821_98388_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("Int Mic", NULL),
-+	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-+			    platform_clock_control,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_SPK("SPK", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route acp5x_8821_98388_route[] = {
-+	{ "Headphone", NULL, "HPOL" },
-+	{ "Headphone", NULL, "HPOR" },
-+	{ "MICL", NULL, "Headset Mic" },
-+	{ "MICR", NULL, "Headset Mic" },
-+	{ "DMIC", NULL, "Int Mic" },
-+
-+	{ "Headphone", NULL, "Platform Clock" },
-+	{ "Headset Mic", NULL, "Platform Clock" },
-+	{ "Int Mic", NULL, "Platform Clock" },
-+
-+	{ "SPK", NULL, "Left BE_OUT" },
-+	{ "SPK", NULL, "Right BE_OUT" },
-+};
-+
-+static struct snd_soc_card acp5x_8821_98388_card = {
-+	.name = "acp5x-max98388",
-+	.owner = THIS_MODULE,
-+	.dai_link = acp5x_8821_98388_dai,
-+	.num_links = ARRAY_SIZE(acp5x_8821_98388_dai),
-+	.dapm_widgets = acp5x_8821_98388_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(acp5x_8821_98388_widgets),
-+	.dapm_routes = acp5x_8821_98388_route,
-+	.num_dapm_routes = ARRAY_SIZE(acp5x_8821_98388_route),
-+	.codec_conf = acp5x_max98388_conf,
-+	.num_configs = ARRAY_SIZE(acp5x_max98388_conf),
-+	.controls = acp5x_8821_controls,
-+	.num_controls = ARRAY_SIZE(acp5x_8821_controls),
-+};
-+
- static const struct dmi_system_id acp5x_vg_quirk_table[] = {
- 	{
- 		.matches = {
-@@ -344,11 +467,20 @@ static int acp5x_probe(struct platform_device *pdev)
- 	struct snd_soc_card *card;
- 	int ret;
- 
--	dmi_id = dmi_first_match(acp5x_vg_quirk_table);
--	if (!dmi_id)
--		return -ENODEV;
--
--	card = &acp5x_8821_35l41_card;
-+	card = (struct snd_soc_card *)device_get_match_data(dev);
-+	if (!card) {
-+		/*
-+		 * This is normally the result of directly probing the driver
-+		 * in pci-acp5x through platform_device_register_full(), which
-+		 * is necessary for the CS35L41 variant, as it doesn't support
-+		 * ACPI probing and relies on DMI quirks.
-+		 */
-+		dmi_id = dmi_first_match(acp5x_vg_quirk_table);
-+		if (!dmi_id)
-+			return -ENODEV;
-+
-+		card = &acp5x_8821_35l41_card;
-+	}
- 
- 	machine = devm_kzalloc(dev, sizeof(*machine), GFP_KERNEL);
- 	if (!machine)
-@@ -365,10 +497,17 @@ static int acp5x_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct acpi_device_id acp5x_acpi_match[] = {
-+	{ "AMDI8821", (kernel_ulong_t)&acp5x_8821_98388_card },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, acp5x_acpi_match);
-+
- static struct platform_driver acp5x_mach_driver = {
- 	.driver = {
- 		.name = DRV_NAME,
- 		.pm = &snd_soc_pm_ops,
-+		.acpi_match_table = acp5x_acpi_match,
- 	},
- 	.probe = acp5x_probe,
- };
-@@ -376,6 +515,6 @@ static struct platform_driver acp5x_mach_driver = {
- module_platform_driver(acp5x_mach_driver);
- 
- MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
--MODULE_DESCRIPTION("NAU8821 & CS35L41 audio support");
-+MODULE_DESCRIPTION("NAU8821/CS35L41 & NAU8821/MAX98388 audio support");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("platform:" DRV_NAME);
--- 
-2.41.0
+That change sounds good, but I am not following the two paragraphs below.
 
+> Not signalling future waiters specifically breaks sound card probe
+> deferrals as codec drivers can not tell that the soundwire device is
+> already attached when being reprobed. 
+
+What makes you say that? There is a test in the probe and the codec
+driver will absolutely be notified, see bus_type.c
+
+	if (drv->ops && drv->ops->update_status) {
+		ret = drv->ops->update_status(slave, slave->status);
+		if (ret < 0)
+			dev_warn(dev, "%s: update_status failed with status %d\n", __func__,
+ret);
+	}
+
+> Some codec runtime PM
+> implementations suffer from similar problems as waiting for enumeration
+> during resume can also timeout despite the device already having been
+> enumerated.
+
+I am not following this either. Are you saying the wait_for_completion()
+times out because of the init_completion/reinit_completion confusion, or
+something else.
+
+> Fixes: fb9469e54fa7 ("soundwire: bus: fix race condition with enumeration_complete signaling")
+> Fixes: a90def068127 ("soundwire: bus: fix race condition with initialization_complete signaling")
+> Cc: stable@vger.kernel.org      # 5.7
+> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Cc: Rander Wang <rander.wang@linux.intel.com>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>  drivers/soundwire/bus.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index 1ea6a64f8c4a..66e5dba919fa 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -908,8 +908,8 @@ static void sdw_modify_slave_status(struct sdw_slave *slave,
+>  			"initializing enumeration and init completion for Slave %d\n",
+>  			slave->dev_num);
+>  
+> -		init_completion(&slave->enumeration_complete);
+> -		init_completion(&slave->initialization_complete);
+> +		reinit_completion(&slave->enumeration_complete);
+> +		reinit_completion(&slave->initialization_complete);
+>  
+>  	} else if ((status == SDW_SLAVE_ATTACHED) &&
+>  		   (slave->status == SDW_SLAVE_UNATTACHED)) {
+> @@ -917,7 +917,7 @@ static void sdw_modify_slave_status(struct sdw_slave *slave,
+>  			"signaling enumeration completion for Slave %d\n",
+>  			slave->dev_num);
+>  
+> -		complete(&slave->enumeration_complete);
+> +		complete_all(&slave->enumeration_complete);
+>  	}
+>  	slave->status = status;
+>  	mutex_unlock(&bus->bus_lock);
+> @@ -1941,7 +1941,7 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
+>  				"signaling initialization completion for Slave %d\n",
+>  				slave->dev_num);
+>  
+> -			complete(&slave->initialization_complete);
+> +			complete_all(&slave->initialization_complete);
+>  
+>  			/*
+>  			 * If the manager became pm_runtime active, the peripherals will be
