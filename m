@@ -4,107 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53FFBEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 14:40:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75959EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 14:40:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6902E7F1;
-	Wed,  5 Jul 2023 16:39:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6902E7F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 021C0844;
+	Wed,  5 Jul 2023 16:40:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 021C0844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688568026;
-	bh=R8aWXpLF/uB7zTkUi9Gr8xyNd3yM6c/Ws7kW1A/OW98=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1688568050;
+	bh=qDcBaomIkhoRa3+mwqsvw9eva/EwpZwx+a08ZDhuyHw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uxWlcb4pztJa4cy+FI6tPAW5NDAGXAsLbh4xTcYk91MixhhHU69jcN8i0GBFFTgP2
-	 aUgYzF9xHG1imCxJ189gLc/yCXWeNfVZHbRnF3oRqZ4d3QjKbo+jYbyDBDgx3iwWsn
-	 FKd5S8lMFr3aCbkYrUBRRr5pqoRumCDdYTO+zOcg=
+	b=YfKrrLkl1QLuyu2E0r6bRRMxCyRK2D88ICkYDvr73k/r7RfttY++w4rwzdNf8pvgS
+	 ocJCtqtwrICfGwOXBmKhu3b2/qqEJNe1LnfVE9ZyzLypyDAzrYaVtUVU3GO2L1vv1g
+	 8RKNxybN+rW/m3NlKeRkt+a5Iw5vjk/FgoFDFIL0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58E6DF8053B; Wed,  5 Jul 2023 16:39:09 +0200 (CEST)
+	id 32E95F8055B; Wed,  5 Jul 2023 16:39:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4FD1F800E4;
-	Wed,  5 Jul 2023 16:39:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C07BF80132;
+	Wed,  5 Jul 2023 16:39:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0FFC4F80125; Wed,  5 Jul 2023 13:37:35 +0200 (CEST)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 26F37F80548; Wed,  5 Jul 2023 14:33:19 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B75EAF80104
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 13:37:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B75EAF80104
+	by alsa1.perex.cz (Postfix) with ESMTPS id A9420F80125
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 14:33:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9420F80125
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=streamunlimited.com header.i=@streamunlimited.com
- header.a=rsa-sha256 header.s=google header.b=ZkdG5g8A
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-3fba5a8af2cso68453265e9.3
-        for <alsa-devel@alsa-project.org>;
- Wed, 05 Jul 2023 04:37:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=streamunlimited.com; s=google; t=1688557046; x=1691149046;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R8aWXpLF/uB7zTkUi9Gr8xyNd3yM6c/Ws7kW1A/OW98=;
-        b=ZkdG5g8Aa2jsUtf3YmCBYyZdqAfVRO/M39iAUnudqGbx+kqmkLKkyFmtsCJxRHnPAD
-         6kkkhHvjKGu8aDqMVJwaf3iPshFcWQWggmuCdV63266OwOj9WcJi87rq06T+G2N9psEe
-         OLb12wO5jM9cHaLO0rZiMc6IvOp1WuHVmgWZ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688557046; x=1691149046;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R8aWXpLF/uB7zTkUi9Gr8xyNd3yM6c/Ws7kW1A/OW98=;
-        b=WEt/6tL+R9I/RuBY0GR4qJkWS9rNxnuaQaNd3bicGrj2Da7OEOpd3nIQsgXqbaTN8z
-         7N3nnjXV0O7um+PIZVSvBXrBiesJqC23u0lYnmeiG7qFFw/DkrHiYjnbPgWpCDC8bqck
-         N8OCqoiPZYRm+Pmaj2qX1C3XZGDqZ92j2ieSRYZmbQXyX6/3MbYXv0NKWKAlLv8R4w8r
-         a2XWvPRph+D4WC+TC/HTGtB7ltho7/k3p3HEhoQTBTOAip+3ysU9DDvJmBxQ3aA9YVDz
-         4BpxbsAWTyAo7MQM5BsWYMOzWEVxKsqmaHknYspcHlpreN1pADiz+/Lmr1YEn1O2fQYk
-         WC8A==
-X-Gm-Message-State: AC+VfDxJIxbnAnGBworeLISi2ZIaa917MTZdAlJNgAmI1CNrVDIcNr1v
-	80cOaWUJw6kxugTuYXsd0ujuAKZeexDeI0huvze+7ZdgHVDp28BLdfg=
-X-Google-Smtp-Source: 
- ACHHUZ4ER11XVWpijQ3xcGXichsaVw88Bea3pLu7DUuq1yiZW9I7I7N07DEQbWoCS9T5/HNKWl6w8YusvmmNJ0IHFU0=
-X-Received: by 2002:a7b:c7d5:0:b0:3f9:70f:8b99 with SMTP id
- z21-20020a7bc7d5000000b003f9070f8b99mr12524790wmk.7.1688557045952; Wed, 05
- Jul 2023 04:37:25 -0700 (PDT)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=F1G8j3jK
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 22F886155A;
+	Wed,  5 Jul 2023 12:33:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CA00C433C7;
+	Wed,  5 Jul 2023 12:33:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688560389;
+	bh=qDcBaomIkhoRa3+mwqsvw9eva/EwpZwx+a08ZDhuyHw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=F1G8j3jK0849KbqKJS5dUNA/FOp0LYg/sWx4IR2s8SU71hGnMLB1Dc1xzHbGtdeT+
+	 GNQ5oMXTaZa0UZkoNokxGgfvOOFvsMLL2Fw+brlcIRK5xoznygPEeg7EsMnvr/sl0K
+	 ucYgrqPEhgRyyeouQsH9g6gLkWj7uAzvIW2VZ45Hmg5DgjsjsiS/1welAEpXqwvR1g
+	 yhGDrWDR9fwgklawYzDZxd3tn4Nr/oDM9QfFba9etng7A2nPY46f/QPIjTel699iTa
+	 mkNAufmHMQ2EXRfhKSLdtlexwHK+zEEO14ZfuWGmaSo5JHGdX0A84mm+jiZyKyk+0c
+	 tIpItOK1VtFpA==
+Received: from johan by xi.lan with local (Exim 4.96)
+	(envelope-from <johan+linaro@kernel.org>)
+	id 1qH1hK-00084A-0k;
+	Wed, 05 Jul 2023 14:33:30 +0200
+From: Johan Hovold <johan+linaro@kernel.org>
+To: Mark Brown <broonie@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH 2/8] ASoC: qdsp6: audioreach: fix topology probe deferral
+Date: Wed,  5 Jul 2023 14:30:12 +0200
+Message-Id: <20230705123018.30903-3-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230705123018.30903-1-johan+linaro@kernel.org>
+References: <20230705123018.30903-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
-References: 
- <CACMGZgY9SLGJ3d+66DxXwddwh2LTw3BXeEWUBGN=7fyrO0QkeQ@mail.gmail.com>
- <ae06b00a-f3f7-f9d1-0b58-4d71f3394416@linux.intel.com>
-In-Reply-To: <ae06b00a-f3f7-f9d1-0b58-4d71f3394416@linux.intel.com>
-From: Peter Suti <peter.suti@streamunlimited.com>
-Date: Wed, 5 Jul 2023 13:37:15 +0200
-Message-ID: 
- <CACMGZgYcjGghOkvcyEvCYsK+Y+xUOF5S6CNoedV1P3k7MSzcrw@mail.gmail.com>
-Subject: Re: snd_soc_dai_ops.startup called for all codecs
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org,
-	=?UTF-8?Q?Radek_Dost=C3=A1l?= <radek.dostal@streamunlimited.com>,
-	Martin Pietryka <martin.pietryka@streamunlimited.com>,
- Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: peter.suti@streamunlimited.com
+Content-Transfer-Encoding: 8bit
+X-MailFrom: johan+linaro@kernel.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: UEG3M2VHIATYXHRAOUCT6EEWQRF4RRH4
-X-Message-ID-Hash: UEG3M2VHIATYXHRAOUCT6EEWQRF4RRH4
+Message-ID-Hash: QVCW5O3TRXFLKAT5X7MABCQRH4SIA4HF
+X-Message-ID-Hash: QVCW5O3TRXFLKAT5X7MABCQRH4SIA4HF
 X-Mailman-Approved-At: Wed, 05 Jul 2023 14:39:05 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UEG3M2VHIATYXHRAOUCT6EEWQRF4RRH4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QVCW5O3TRXFLKAT5X7MABCQRH4SIA4HF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,33 +108,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Jul 5, 2023 at 9:45=E2=80=AFAM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
-> [Adding Mark Brown - ASoC maintainer]
->
-> On 7/4/23 14:17, Peter Suti wrote
-> > Hi,
-> >
-> > I'm trying to create a sound card which has two codecs associated with
-> > one DAI. One codec is responsible for playback and the other one for
-> > capture. I can see in soc-pcm.c that
-> > __soc_pcm_hw_params() is checking if the stream is valid for the
-> > current codec with
-> > snd_soc_dai_stream_valid() and if it isn't it is not calling the
-> > hw_params() callback.
-> > But this check is not there in __soc_pcm_open() which calls
-> > snd_soc_dai_startup() for every codec. Can someone shed some light on
-> > this? Why is startup() called for codecs that don't support the
-> > current stream?
->
-> We have a similar issue but with the .trigger callback.
->
-> We will send a patch when the merge window closes, see
-> https://github.com/thesofproject/linux/pull/4434
->
-> You may need a similar test for the startup?
+Propagate errors when failing to load the topology component so that
+probe deferrals can be handled.
 
-Would it make sense to add this check for every callback then? I still
-don't really understand why only hw_params() and trigger() needs such
-a check.
+Fixes: 36ad9bf1d93d ("ASoC: qdsp6: audioreach: add topology support")
+Cc: stable@vger.kernel.org      # 5.17
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ sound/soc/qcom/qdsp6/topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/qcom/qdsp6/topology.c b/sound/soc/qcom/qdsp6/topology.c
+index cccc59b570b9..130b22a34fb3 100644
+--- a/sound/soc/qcom/qdsp6/topology.c
++++ b/sound/soc/qcom/qdsp6/topology.c
+@@ -1277,8 +1277,8 @@ int audioreach_tplg_init(struct snd_soc_component *component)
+ 
+ 	ret = snd_soc_tplg_component_load(component, &audioreach_tplg_ops, fw);
+ 	if (ret < 0) {
+-		dev_err(dev, "tplg component load failed%d\n", ret);
+-		ret = -EINVAL;
++		if (ret != -EPROBE_DEFER)
++			dev_err(dev, "tplg component load failed: %d\n", ret);
+ 	}
+ 
+ 	release_firmware(fw);
+-- 
+2.39.3
+
