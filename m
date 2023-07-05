@@ -4,83 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 530ADEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 19:24:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33EFAEB64DD
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 19:41:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E9A0483E;
-	Wed,  5 Jul 2023 21:23:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9A0483E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 608A474C;
+	Wed,  5 Jul 2023 21:40:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 608A474C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688585051;
-	bh=XkVpsUMAas5eIwMCK29P6mupS9x7AHoqzqeWqww4zek=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1688586072;
+	bh=y1xNhn3TbRj2EGBYvKnXzaAoh84CV0kUN2P/Rntc9xw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fSr54u44SWYEd7IaNwUh5uCQuZllS6fOlwEh5ugb//UCGop/5E/fwRd8RyCZ1R2K/
-	 Z6okuaOnfjjed8FxBWodSOWoIpkNS7jvYTcCANA8FSJQufjNwuBq6xycXSxRLPMZan
-	 uxAibbIG1LJzaj/4D5f07ySzDEVeCfPdr+ahUqIU=
+	b=ICPrTLQyUzEu8m7m+PwdtOKsceHO2HS1ivwjcb/M+Ta1z5zshVWXDSdg1qhecScNc
+	 2vXPQT8gMPq9s6VRHclsp5t7/fSUI4ehSB1T+5SoNsQC35Z650GSSzKQrY9Q9ZGmHH
+	 jxVFEeTYlr+/wGfWA15nSMZrfAZA2JkMYixxZDKs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BBBEBF80548; Wed,  5 Jul 2023 21:23:19 +0200 (CEST)
+	id 33610F80125; Wed,  5 Jul 2023 21:39:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F622F80132;
-	Wed,  5 Jul 2023 21:23:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31568F80132;
+	Wed,  5 Jul 2023 21:39:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36B03F80104; Wed,  5 Jul 2023 21:23:15 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id A14FCF80125; Wed,  5 Jul 2023 21:39:44 +0200 (CEST)
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com
+ [209.85.166.173])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DDCC5F80125
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 21:23:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDCC5F80125
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=eNl7MYi7
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 12430616C5;
-	Wed,  5 Jul 2023 19:23:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3813CC433C7;
-	Wed,  5 Jul 2023 19:23:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688584990;
-	bh=XkVpsUMAas5eIwMCK29P6mupS9x7AHoqzqeWqww4zek=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eNl7MYi731YwNgsgM/VwIqWPCoZUNk0bnt3+OStb36lZZCm+6qhcnoPIgV5j+ziht
-	 hVr94DU8Jay65as+NyTdkTyby1mDqoTxh1IjK1SHgJSbHhCGbwi5pNEGv8sMiOByOh
-	 GKDQZHyNXX+mpxM2tpRqOn4YfMtGFVhZ4qrLn9OBxraO1IZwBGCiSBuzuJTbnkYGXI
-	 lqnMqho2MgW3jb/iSaYQTBHqlsR2P1tvYKXreKn4uenMO9QoTIT6MRg3nkvq+27Jds
-	 24ZU6wAVtUcid427JvedRqKRIxbIuzDoaI7Nvy33/HD/uvStyPDZaQfCx/8pW2Rzwx
-	 +IGEg0bKCFjDw==
-Date: Wed, 5 Jul 2023 20:23:03 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Andreas Kemnade <andreas@kemnade.info>
-Cc: bcousson@baylibre.com, tony@atomide.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-	peter.ujfalusi@gmail.com, jarkko.nikula@bitmer.com,
-	dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH 3/3] ARM: dts: omap4: embt2ws: Add audio support
-Message-ID: <9014a59b-5972-484e-ac70-c013e049b140@sirena.org.uk>
-References: <20230705190324.355282-1-andreas@kemnade.info>
- <20230705190324.355282-4-andreas@kemnade.info>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 00908F80104
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 21:39:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00908F80104
+Received: by mail-il1-f173.google.com with SMTP id
+ e9e14a558f8ab-3460aee1d57so19688775ab.0
+        for <alsa-devel@alsa-project.org>;
+ Wed, 05 Jul 2023 12:39:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688585978; x=1691177978;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=n9XXXuHpMOQBfJPbmDE208zmHNLuLmJ5W06p0NFVR4Q=;
+        b=bXjN09fEp6TUHqTaadbwKW5MWFA0Uf6bu9bkDBULm1oZKpmfJRGZ7n9kaq6oxk8v7s
+         f2kZDFsCywHXq4uc2worQWsRGPqlCN8g9hr0EGNEEsVkV0VyFyBmI3k7CuBoJAPBaVNE
+         4Ie9TfK05jbdG29UQplVyVcY1zHbz0ohWtVKXyNkpKXrbsrjBxIMxw2aOQzT7Ulg2rmS
+         yQil2SRgIkZgaupTG7mO0uKGIbBFVrzHM65SpBayL84LY5vSeyv8r+OBFAf0781wV0yc
+         Bqjv0zEzSyS+wSftG52s3f3lGZrmQJqNWQBpt1mw0xtSjuk0qap2lVMRWIfPRbmKEeaz
+         SJNg==
+X-Gm-Message-State: ABy/qLY3hEzxFQmLMvHGi0dVLOJYvpdYmDNlgTYCPztTdRUUkpA4Slyw
+	hVU6qkREC80rk89zsbusCw==
+X-Google-Smtp-Source: 
+ APBJJlHeCCgfywEkTbD8TaGxOES0xf6LHwH4LNaopQfeQ1Mlc+0XwkrXc56AMYZDW2D01Tl0iYFNfw==
+X-Received: by 2002:a92:c70d:0:b0:345:af3e:3aa8 with SMTP id
+ a13-20020a92c70d000000b00345af3e3aa8mr110268ilp.25.1688585978167;
+        Wed, 05 Jul 2023 12:39:38 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id
+ n24-20020a5e8c18000000b007835686237asm7580752ioj.27.2023.07.05.12.39.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Jul 2023 12:39:37 -0700 (PDT)
+Received: (nullmailer pid 1714647 invoked by uid 1000);
+	Wed, 05 Jul 2023 19:39:32 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pcNKJC6KNSizl/+7"
-Content-Disposition: inline
-In-Reply-To: <20230705190324.355282-4-andreas@kemnade.info>
-X-Cookie: Don't feed the bats tonight.
-Message-ID-Hash: Y5VXEEOFCOI6CJVHNJPM7MI72GBEHXDP
-X-Message-ID-Hash: Y5VXEEOFCOI6CJVHNJPM7MI72GBEHXDP
-X-MailFrom: broonie@kernel.org
+From: Rob Herring <robh@kernel.org>
+To: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, lee@kernel.org, davem@davemloft.net,
+	pabeni@redhat.com, linux-stm32@st-md-mailman.stormreply.com,
+	linux-media@vger.kernel.org, mchehab@kernel.org, robh+dt@kernel.org,
+	alexandre.torgue@foss.st.com, will@kernel.org, dmaengine@vger.kernel.org,
+	linux-spi@vger.kernel.org, linux-phy@lists.infradead.org,
+	catalin.marinas@arm.com, Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
+ arnd@kernel.org,
+	devicetree@vger.kernel.org, netdev@vger.kernel.org,
+	fabrice.gasnier@foss.st.com, edumazet@google.com, hugues.fruchet@foss.st.com,
+	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+	herbert@gondor.apana.org.au, Oleksii_Moisieiev@epam.com,
+	andi.shyti@kernel.org, linux-crypto@vger.kernel.org, kuba@kernel.org,
+	linux-mmc@vger.kernel.org, conor+dt@kernel.org, olivier.moysan@foss.st.com,
+	linux-i2c@vger.kernel.org, alsa-devel@alsa-project.org, jic23@kernel.org,
+	linux-arm-kernel@lists.infradead.org, richardcochran@gmail.com,
+	vkoul@kernel.org, krzysztof.kozlowski+dt@linaro.org, ulf.hansson@linaro.org,
+	arnaud.pouliquen@foss.st.com
+In-Reply-To: <20230705172759.1610753-2-gatien.chevallier@foss.st.com>
+References: <20230705172759.1610753-1-gatien.chevallier@foss.st.com>
+ <20230705172759.1610753-2-gatien.chevallier@foss.st.com>
+Message-Id: <168858597047.1714514.3836923282073685393.robh@kernel.org>
+Subject: Re: [IGNORE][PATCH 01/10] dt-bindings: Document common device
+ controller bindings
+Date: Wed, 05 Jul 2023 13:39:32 -0600
+Message-ID-Hash: CDVSKHMPM4LRLSEQRFSMPSRRTWBTQQ2K
+X-Message-ID-Hash: CDVSKHMPM4LRLSEQRFSMPSRRTWBTQQ2K
+X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,8 +111,9 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y5VXEEOFCOI6CJVHNJPM7MI72GBEHXDP/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CDVSKHMPM4LRLSEQRFSMPSRRTWBTQQ2K/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -101,39 +121,48 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---pcNKJC6KNSizl/+7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, 05 Jul 2023 19:27:50 +0200, Gatien Chevallier wrote:
+> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
+> 
+> Introducing of the common device controller bindings for the controller
+> provider and consumer devices. Those bindings are intended to allow
+> divided system on chip into muliple domains, that can be used to
+> configure hardware permissions.
+> 
+> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> ---
+> 
+> Depends-on: https://lore.kernel.org/lkml/c869d2751125181a55bc8a88c96e3a892b42f37a.1668070216.git.oleksii_moisieiev@epam.com/
+> 
+>  .../feature-domain-controller.yaml            | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
+> 
 
-On Wed, Jul 05, 2023 at 09:03:24PM +0200, Andreas Kemnade wrote:
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> +	sound {
-> +		compatible = "simple-audio-card";
+yamllint warnings/errors:
 
-For new usage audio-graph-card2 is preferred, it's a superset of the
-functionality and much more flexible.
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml: title: 'Generic Domain Controller bindings' should not be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
+	hint: Everything is a binding/schema, no need to say it. Describe what hardware the binding is for.
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
 
-> +		simple-audio-card,codec {
-> +			sound-dai = <&tlv320aic3x>;
-> +			system-clock-frequency = <24000000>;
-> +		};
-> +	};
+doc reference errors (make refcheckdocs):
 
-Are you *sure* the BCLK always comes out at this rate?
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230705172759.1610753-2-gatien.chevallier@foss.st.com
 
---pcNKJC6KNSizl/+7
-Content-Type: application/pgp-signature; name="signature.asc"
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
------BEGIN PGP SIGNATURE-----
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSlwxcACgkQJNaLcl1U
-h9AxHQf/dak+OKZYRo/pero4Ava2YorLLQDCh8ADYq1T+GPQnaWaBTdq0golyC18
-AlqjHoluidxXdpB3UWSe9x0dlvNCpGCuVXnlWOTXDEG8DSK3S0PPbbNEEslMQh8c
-SBLHqRGCn2PQkurZiWVJYHRmkM79+HlVSC58kHit3ErbDsesSCrdyPSAl8UspAo7
-/jtUhvbU7+NmPj9DQ7JDwdJrQouIel015F1YmjLPHBzlMecQ0kernj55wb0l0K/N
-ytyuHhQyyadBVaGh0x9EoctC3/Nbk1ETR45Xlg9eIlSGwUTnyDzF/PhmlT9CVj6s
-ZrL++EXT411pHGrqVeBIgUE9Ht9fpg==
-=QPu1
------END PGP SIGNATURE-----
+pip3 install dtschema --upgrade
 
---pcNKJC6KNSizl/+7--
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
