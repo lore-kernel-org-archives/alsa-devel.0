@@ -4,92 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB4F8EB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 13:59:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C4D9EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 14:32:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30625820;
-	Wed,  5 Jul 2023 15:58:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30625820
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFA8E3E7;
+	Wed,  5 Jul 2023 16:31:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFA8E3E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688565567;
-	bh=PdRHsWcUvKlFxrNHtPGxrZat7W9p+9tZkkMZRNnSzjQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1688567526;
+	bh=mioA+NwZpkg7KB16O0oCsl2L7Ti3kUkbc08ZUpiE4dQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WwX6O9E+eP3sOXVqYxeP4HsmSxBc+l3cb8Kbrax/3rzMX7q/dlnb125LWHBcywsS8
-	 ZWkGuUQlx3vxhM7GpTTIGRJrHppjQBDWk3/w9wMdQ4dr1dyZRgNBI0SnZuEKNWU+S2
-	 J+c7Q5GBdlC78HJsOfYwaF82SizAuWjizMSeAPG8=
+	b=A/3DkL5vx4ZXlrhC+I92RYmu33IYHGJzMV0r1dXSiru54o/1mi0r+PLVEqkYFWcgu
+	 y5KX1HBR/wsYodjSyZfewyDxhsdjRCtC3aly84gsQMhuPcNb4gBI7XL4k5WZJMbHzA
+	 Q5Yd/SyPCLIT2/jPLBx7ArPsVB2jHmxmO9LR/+bQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF55AF80544; Wed,  5 Jul 2023 15:58:05 +0200 (CEST)
+	id 1A306F80104; Wed,  5 Jul 2023 16:30:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D67FF80153;
-	Wed,  5 Jul 2023 15:58:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79355F80125;
+	Wed,  5 Jul 2023 16:30:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD39FF80125; Wed,  5 Jul 2023 15:58:01 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id DB32FF80125; Wed,  5 Jul 2023 16:30:48 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1776AF80100
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 15:57:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1776AF80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 673A7F80104
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 16:30:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 673A7F80104
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ex282C1m
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688565477; x=1720101477;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PdRHsWcUvKlFxrNHtPGxrZat7W9p+9tZkkMZRNnSzjQ=;
-  b=ex282C1mJ1Tf1X24rO8W7GinM+rY2Ne6iNMcIZ7MHpvJ6Jd5CrRpMvmM
-   i7g6/ZNdnLAOyU5CtHu0gvL3VUMbNKOEBAqQ5rZBC1et3kY9ZGPrhrmx2
-   bJblPOks/v/bco8U2MADSdgXKzwHc95RleV9/Rkk94S7C63tdRzgQEhm6
-   7u19C0GITU5kUw1xyj2rqxW8FErb/gWEeSglXIQo3PTvaF+KZb1FTtWr0
-   KrJeDAvyI+ONUkycQWO2f9uR2nOlwHRoOsKxanilBWi9xRBXpE6WOuCp+
-   dKpRdnl+BG0SBeO/XU2cgykHEtWVD/SAeD363LdYJ+8/Ui54+uUiQ2nNH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10762"; a="342934606"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200";
-   d="scan'208";a="342934606"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Jul 2023 06:57:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10762"; a="965835533"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200";
-   d="scan'208";a="965835533"
-Received: from meggieha-mobl.ger.corp.intel.com (HELO [10.252.48.235])
- ([10.252.48.235])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Jul 2023 06:57:49 -0700
-Message-ID: <907ad7a3-3384-c0c4-90a9-5beab4cc45e0@linux.intel.com>
-Date: Wed, 5 Jul 2023 14:53:17 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.11.0
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=tHyEobZ4
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id EFDF7615A7;
+	Wed,  5 Jul 2023 14:30:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 530FCC433C7;
+	Wed,  5 Jul 2023 14:30:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688567437;
+	bh=mioA+NwZpkg7KB16O0oCsl2L7Ti3kUkbc08ZUpiE4dQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tHyEobZ4yZ6Rf5P4cpd7HdExbDFfbfwjSd9AOkAamID+KUpZLK3UX1Ssiu3WEZob9
+	 k/S/wpYG3g5A+k/Zd9q4qO9qNtok2xT0r1VnWKJ8ffAo5OtFxZBdnxjW8HqTlznM2k
+	 dy6Ih2YDHHoWWcJeC74ZCp68RRIXR969V9jXPKOOTAwZevqQlW8Jfa21AJxEKzD6Ie
+	 I9kSC7ozj89z0APRO985AwxivYx5Jejt3rEuv87AeietuvgV7417+qJkqGMp8AgF8q
+	 CBK/6Ksld10CgpxWIHyvxj/5lgIZHaWqVBIAjZV9MzAqTPgYowu7FKAEnBTwJ6jQ1F
+	 YgNkRGtArbf7A==
+Received: from johan by xi.lan with local (Exim 4.96)
+	(envelope-from <johan@kernel.org>)
+	id 1qH3Wz-0000g3-1S;
+	Wed, 05 Jul 2023 16:30:58 +0200
+Date: Wed, 5 Jul 2023 16:30:57 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, Rander Wang <rander.wang@linux.intel.com>
 Subject: Re: [PATCH 1/8] soundwire: fix enumeration completion
-Content-Language: en-US
-To: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
- Vinod Koul <vkoul@kernel.org>
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Rander Wang <rander.wang@linux.intel.com>
+Message-ID: <ZKV-oXAWzRXnjXus@hovoldconsulting.com>
 References: <20230705123018.30903-1-johan+linaro@kernel.org>
  <20230705123018.30903-2-johan+linaro@kernel.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230705123018.30903-2-johan+linaro@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: DYU4DX6HZ4U7RV4LO6GACLFUFBNH3WCQ
-X-Message-ID-Hash: DYU4DX6HZ4U7RV4LO6GACLFUFBNH3WCQ
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+ <907ad7a3-3384-c0c4-90a9-5beab4cc45e0@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <907ad7a3-3384-c0c4-90a9-5beab4cc45e0@linux.intel.com>
+Message-ID-Hash: QDFRGYYN5UYAWXBZTXLBGRZGKOKRV3OD
+X-Message-ID-Hash: QDFRGYYN5UYAWXBZTXLBGRZGKOKRV3OD
+X-MailFrom: johan@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DYU4DX6HZ4U7RV4LO6GACLFUFBNH3WCQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QDFRGYYN5UYAWXBZTXLBGRZGKOKRV3OD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,83 +107,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 7/5/23 14:30, Johan Hovold wrote:
-> The soundwire subsystem uses two completion structures that allow
-> drivers to wait for soundwire device to become enumerated on the bus and
-> initialised by their drivers, respectively.
+On Wed, Jul 05, 2023 at 02:53:17PM +0200, Pierre-Louis Bossart wrote:
+> On 7/5/23 14:30, Johan Hovold wrote:
+> > The soundwire subsystem uses two completion structures that allow
+> > drivers to wait for soundwire device to become enumerated on the bus and
+> > initialised by their drivers, respectively.
+> > 
+> > The code implementing the signalling is currently broken as it does not
+> > signal all current and future waiters and also uses the wrong
+> > reinitialisation function, which can potentially lead to memory
+> > corruption if there are still waiters on the queue.
 > 
-> The code implementing the signalling is currently broken as it does not
-> signal all current and future waiters and also uses the wrong
-> reinitialisation function, which can potentially lead to memory
-> corruption if there are still waiters on the queue.
-
-That change sounds good, but I am not following the two paragraphs below.
-
-> Not signalling future waiters specifically breaks sound card probe
-> deferrals as codec drivers can not tell that the soundwire device is
-> already attached when being reprobed. 
-
-What makes you say that? There is a test in the probe and the codec
-driver will absolutely be notified, see bus_type.c
-
-	if (drv->ops && drv->ops->update_status) {
-		ret = drv->ops->update_status(slave, slave->status);
-		if (ret < 0)
-			dev_warn(dev, "%s: update_status failed with status %d\n", __func__,
-ret);
-	}
-
-> Some codec runtime PM
-> implementations suffer from similar problems as waiting for enumeration
-> during resume can also timeout despite the device already having been
-> enumerated.
-
-I am not following this either. Are you saying the wait_for_completion()
-times out because of the init_completion/reinit_completion confusion, or
-something else.
-
-> Fixes: fb9469e54fa7 ("soundwire: bus: fix race condition with enumeration_complete signaling")
-> Fixes: a90def068127 ("soundwire: bus: fix race condition with initialization_complete signaling")
-> Cc: stable@vger.kernel.org      # 5.7
-> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Cc: Rander Wang <rander.wang@linux.intel.com>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
->  drivers/soundwire/bus.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> That change sounds good, but I am not following the two paragraphs below.
 > 
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index 1ea6a64f8c4a..66e5dba919fa 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -908,8 +908,8 @@ static void sdw_modify_slave_status(struct sdw_slave *slave,
->  			"initializing enumeration and init completion for Slave %d\n",
->  			slave->dev_num);
->  
-> -		init_completion(&slave->enumeration_complete);
-> -		init_completion(&slave->initialization_complete);
-> +		reinit_completion(&slave->enumeration_complete);
-> +		reinit_completion(&slave->initialization_complete);
->  
->  	} else if ((status == SDW_SLAVE_ATTACHED) &&
->  		   (slave->status == SDW_SLAVE_UNATTACHED)) {
-> @@ -917,7 +917,7 @@ static void sdw_modify_slave_status(struct sdw_slave *slave,
->  			"signaling enumeration completion for Slave %d\n",
->  			slave->dev_num);
->  
-> -		complete(&slave->enumeration_complete);
-> +		complete_all(&slave->enumeration_complete);
->  	}
->  	slave->status = status;
->  	mutex_unlock(&bus->bus_lock);
-> @@ -1941,7 +1941,7 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
->  				"signaling initialization completion for Slave %d\n",
->  				slave->dev_num);
->  
-> -			complete(&slave->initialization_complete);
-> +			complete_all(&slave->initialization_complete);
->  
->  			/*
->  			 * If the manager became pm_runtime active, the peripherals will be
+> > Not signalling future waiters specifically breaks sound card probe
+> > deferrals as codec drivers can not tell that the soundwire device is
+> > already attached when being reprobed. 
+> 
+> What makes you say that? There is a test in the probe and the codec
+> driver will absolutely be notified, see bus_type.c
+> 
+> 	if (drv->ops && drv->ops->update_status) {
+> 		ret = drv->ops->update_status(slave, slave->status);
+> 		if (ret < 0)
+> 			dev_warn(dev, "%s: update_status failed with status %d\n", __func__,
+> ret);
+> 	}
+
+I'm talking about signalling the codec driver using the soundwire device
+via the completion structs. Unless the underling device is detached and
+reattached, trying to wait for completion a second time will currently
+timeout instead of returning immediately.
+
+This affects codecs like rt5682, which wait for completion in component
+probe (see rt5682_probe()).
+
+> > Some codec runtime PM
+> > implementations suffer from similar problems as waiting for enumeration
+> > during resume can also timeout despite the device already having been
+> > enumerated.
+> 
+> I am not following this either. Are you saying the wait_for_completion()
+> times out because of the init_completion/reinit_completion confusion, or
+> something else.
+
+It times out because the completion counter is not saturated unless you
+use complete_all().
+
+Drivers that wait unconditionally in resume, will time out the second
+time they are runtime resumed unless the underlying device has been
+detached and reattached in the meantime (e.g. wsa881x_runtime_resume()).
+
+Johan
