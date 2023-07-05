@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E413CEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 14:44:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC9CAC001DE
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 14:44:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ADC3B9F6;
-	Wed,  5 Jul 2023 16:43:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADC3B9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7FDC84B;
+	Wed,  5 Jul 2023 16:43:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7FDC84B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688568254;
-	bh=wn7CUVVxrOWOl0kh/DRq8DJmjTUPwwGVXxwtuxE9kBs=;
+	s=default; t=1688568276;
+	bh=bdDLZCglkynD91RnEE0P/JUB/wG+iACKpfOzXwB+k8g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rqcV2S9bA+IzgLkDC/eMl8Wl31pw7QNcrSd8pir/4yOwH3zgnlN5qtT1NsppdeEqO
-	 fslJJupabg7MLSZTZdrzG+oUUsxhxoz0e3rVL03/k0HB0NEDlc1ETnC4yXwfcqpSmI
-	 LPPH852RDEuKvZ/TFf0sg0NJJS3LzI76Eap3Topc=
+	b=DLByY0Cf4DLQuNlvWkWxwQmEBAEtAdkxTghurSEodXE2vymg3M2zQ1egKcoArwHl8
+	 ssn9oMEqxPkOs5/APiFWrKCuQF8MftEbcBy6TleKzbFLJJvKNyOjWYKpQIkhNogG0z
+	 PXvtfxqAmJgDntC3i22m07wYwmU1ONLI1Sf0uvyo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B756CF805B4; Wed,  5 Jul 2023 16:41:52 +0200 (CEST)
+	id 3FA4AF805BD; Wed,  5 Jul 2023 16:41:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59CDCF805B1;
-	Wed,  5 Jul 2023 16:41:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6D92F805BD;
+	Wed,  5 Jul 2023 16:41:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C78ECF80125; Wed,  5 Jul 2023 14:35:13 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 58396F80125; Wed,  5 Jul 2023 14:35:15 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F1B02F80104
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 14:33:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1B02F80104
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4DE1AF80132
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 14:33:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DE1AF80132
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=iQteiVQr
+ header.s=k20201202 header.b=NvZ0l2dY
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 46BFB6158D;
-	Wed,  5 Jul 2023 12:33:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD18FC433BA;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D7D4261582;
+	Wed,  5 Jul 2023 12:33:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A0BAC433CD;
 	Wed,  5 Jul 2023 12:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1688560389;
-	bh=wn7CUVVxrOWOl0kh/DRq8DJmjTUPwwGVXxwtuxE9kBs=;
+	bh=bdDLZCglkynD91RnEE0P/JUB/wG+iACKpfOzXwB+k8g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iQteiVQr2zXXSIJZcGhyLp5bdPktNo1wKcXW3iBcr+scNrD/ATzB0mxiv3vtz+BP9
-	 yje/CvC2ZTg7hw4yGVsFgYiDAo359/q8VtCtNmChWwB40JlIsdfKapL0ad+VCRTRQR
-	 t7FAvlZw7kQwXBhHJ2KmJTYsvjCLsE+nUXwRAsVxAws4EJ5UsB4Hy6kgf6K1Hj3fji
-	 +amjTqFZpYjvb1JwZoTGDEqi1cBJilYsGkf78KdOR5kSnYli+gJTvolNm7nMA+sWbo
-	 h6tD2W/u+n2VZeUC+zj5kNSp7qDd0T9kR6P0jmpq9CsS4sbyDF8kKmsFORlaakEIe+
-	 Cy29u0las/GsQ==
+	b=NvZ0l2dYbJQL3lj93Xn3I8gdvEuHf+3CGUMkAUgBGfLBeRyaOtnuNVkeKKv9DvaIc
+	 j+brMH46O0LAES+l7K3gpLdqox4aDDo4y1DifGhEJCMENB2X6hhPv6qQE2rc9XCcEP
+	 9AtNEn7q6L1rzIciuH8Mk9ucxXUmVfjved2Frd6hgxVw+z3NXuL+Pdb9/VT6ygpbig
+	 hlBlW+6cu+Yl8fijCgNNbXarVmWYStGzlo96dixoMP4LtohVD/1coVAAeJhHEVtLkU
+	 ycGkzcabxy+3WKmfISCfZZR9ztCBEt8hf34WZeM488kXWw3FRsMH6nnfOqg1yENlgZ
+	 SqFS0sRMTDB9g==
 Received: from johan by xi.lan with local (Exim 4.96)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1qH1hK-00084J-1l;
+	id 1qH1hK-00084G-1V;
 	Wed, 05 Jul 2023 14:33:30 +0200
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Mark Brown <broonie@kernel.org>,
@@ -76,10 +77,10 @@ Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan+linaro@kernel.org>,
 	stable@vger.kernel.org
-Subject: [PATCH 6/8] ASoC: codecs: wcd-mbhc-v2: fix resource leaks on
- component remove
-Date: Wed,  5 Jul 2023 14:30:16 +0200
-Message-Id: <20230705123018.30903-7-johan+linaro@kernel.org>
+Subject: [PATCH 5/8] ASoC: codecs: wcd934x: fix resource leaks on component
+ remove
+Date: Wed,  5 Jul 2023 14:30:15 +0200
+Message-Id: <20230705123018.30903-6-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230705123018.30903-1-johan+linaro@kernel.org>
 References: <20230705123018.30903-1-johan+linaro@kernel.org>
@@ -91,168 +92,63 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: MIIORCKAP5XDDBQK7KKPNWY3L3GRKMZP
-X-Message-ID-Hash: MIIORCKAP5XDDBQK7KKPNWY3L3GRKMZP
+Message-ID-Hash: VGHZJRPJXP534F2UTW73RUNOJN5YUXHJ
+X-Message-ID-Hash: VGHZJRPJXP534F2UTW73RUNOJN5YUXHJ
 X-Mailman-Approved-At: Wed, 05 Jul 2023 14:41:38 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MIIORCKAP5XDDBQK7KKPNWY3L3GRKMZP/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+Archived-At: <>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The MBHC resources must be released on component probe failure and
-removal so can not be tied to the lifetime of the component device.
+Make sure to release allocated MBHC resources also on component remove.
 
 This is specifically needed to allow probe deferrals of the sound card
-which otherwise fails when reprobing the codec component:
+which otherwise fails when reprobing the codec component.
 
-    snd-sc8280xp sound: ASoC: failed to instantiate card -517
-    genirq: Flags mismatch irq 299. 00002001 (mbhc sw intr) vs. 00002001 (mbhc sw intr)
-    wcd938x_codec audio-codec: Failed to request mbhc interrupts -16
-    wcd938x_codec audio-codec: mbhc initialization failed
-    wcd938x_codec audio-codec: ASoC: error at snd_soc_component_probe on audio-codec: -16
-    snd-sc8280xp sound: ASoC: failed to instantiate card -16
-
-Fixes: 0e5c9e7ff899 ("ASoC: codecs: wcd: add multi button Headset detection support")
+Fixes: 9fb9b1690f0b ("ASoC: codecs: wcd934x: add mbhc support")
 Cc: stable@vger.kernel.org      # 5.14
 Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- sound/soc/codecs/wcd-mbhc-v2.c | 57 ++++++++++++++++++++++++----------
- 1 file changed, 41 insertions(+), 16 deletions(-)
+ sound/soc/codecs/wcd934x.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v2.c
-index 1911750f7445..5da1934527f3 100644
---- a/sound/soc/codecs/wcd-mbhc-v2.c
-+++ b/sound/soc/codecs/wcd-mbhc-v2.c
-@@ -1454,7 +1454,7 @@ struct wcd_mbhc *wcd_mbhc_init(struct snd_soc_component *component,
- 		return ERR_PTR(-EINVAL);
- 	}
+diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+index a17cd75b969b..1b6e376f3833 100644
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -3044,6 +3044,17 @@ static int wcd934x_mbhc_init(struct snd_soc_component *component)
  
--	mbhc = devm_kzalloc(dev, sizeof(*mbhc), GFP_KERNEL);
-+	mbhc = kzalloc(sizeof(*mbhc), GFP_KERNEL);
- 	if (!mbhc)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -1474,61 +1474,76 @@ struct wcd_mbhc *wcd_mbhc_init(struct snd_soc_component *component,
- 
- 	INIT_WORK(&mbhc->correct_plug_swch, wcd_correct_swch_plug);
- 
--	ret = devm_request_threaded_irq(dev, mbhc->intr_ids->mbhc_sw_intr, NULL,
-+	ret = request_threaded_irq(mbhc->intr_ids->mbhc_sw_intr, NULL,
- 					wcd_mbhc_mech_plug_detect_irq,
- 					IRQF_ONESHOT | IRQF_TRIGGER_RISING,
- 					"mbhc sw intr", mbhc);
- 	if (ret)
--		goto err;
-+		goto err_free_mbhc;
- 
--	ret = devm_request_threaded_irq(dev, mbhc->intr_ids->mbhc_btn_press_intr, NULL,
-+	ret = request_threaded_irq(mbhc->intr_ids->mbhc_btn_press_intr, NULL,
- 					wcd_mbhc_btn_press_handler,
- 					IRQF_ONESHOT | IRQF_TRIGGER_RISING,
- 					"Button Press detect", mbhc);
- 	if (ret)
--		goto err;
-+		goto err_free_sw_intr;
- 
--	ret = devm_request_threaded_irq(dev, mbhc->intr_ids->mbhc_btn_release_intr, NULL,
-+	ret = request_threaded_irq(mbhc->intr_ids->mbhc_btn_release_intr, NULL,
- 					wcd_mbhc_btn_release_handler,
- 					IRQF_ONESHOT | IRQF_TRIGGER_RISING,
- 					"Button Release detect", mbhc);
- 	if (ret)
--		goto err;
-+		goto err_free_btn_press_intr;
- 
--	ret = devm_request_threaded_irq(dev, mbhc->intr_ids->mbhc_hs_ins_intr, NULL,
-+	ret = request_threaded_irq(mbhc->intr_ids->mbhc_hs_ins_intr, NULL,
- 					wcd_mbhc_adc_hs_ins_irq,
- 					IRQF_ONESHOT | IRQF_TRIGGER_RISING,
- 					"Elect Insert", mbhc);
- 	if (ret)
--		goto err;
-+		goto err_free_btn_release_intr;
- 
- 	disable_irq_nosync(mbhc->intr_ids->mbhc_hs_ins_intr);
- 
--	ret = devm_request_threaded_irq(dev, mbhc->intr_ids->mbhc_hs_rem_intr, NULL,
-+	ret = request_threaded_irq(mbhc->intr_ids->mbhc_hs_rem_intr, NULL,
- 					wcd_mbhc_adc_hs_rem_irq,
- 					IRQF_ONESHOT | IRQF_TRIGGER_RISING,
- 					"Elect Remove", mbhc);
- 	if (ret)
--		goto err;
-+		goto err_free_hs_ins_intr;
- 
- 	disable_irq_nosync(mbhc->intr_ids->mbhc_hs_rem_intr);
- 
--	ret = devm_request_threaded_irq(dev, mbhc->intr_ids->hph_left_ocp, NULL,
-+	ret = request_threaded_irq(mbhc->intr_ids->hph_left_ocp, NULL,
- 					wcd_mbhc_hphl_ocp_irq,
- 					IRQF_ONESHOT | IRQF_TRIGGER_RISING,
- 					"HPH_L OCP detect", mbhc);
- 	if (ret)
--		goto err;
-+		goto err_free_hs_rem_intr;
- 
--	ret = devm_request_threaded_irq(dev, mbhc->intr_ids->hph_right_ocp, NULL,
-+	ret = request_threaded_irq(mbhc->intr_ids->hph_right_ocp, NULL,
- 					wcd_mbhc_hphr_ocp_irq,
- 					IRQF_ONESHOT | IRQF_TRIGGER_RISING,
- 					"HPH_R OCP detect", mbhc);
- 	if (ret)
--		goto err;
-+		goto err_free_hph_left_ocp;
- 
- 	return mbhc;
--err:
-+
-+err_free_hph_left_ocp:
-+	free_irq(mbhc->intr_ids->hph_left_ocp, mbhc);
-+err_free_hs_rem_intr:
-+	free_irq(mbhc->intr_ids->mbhc_hs_rem_intr, mbhc);
-+err_free_hs_ins_intr:
-+	free_irq(mbhc->intr_ids->mbhc_hs_ins_intr, mbhc);
-+err_free_btn_release_intr:
-+	free_irq(mbhc->intr_ids->mbhc_btn_release_intr, mbhc);
-+err_free_btn_press_intr:
-+	free_irq(mbhc->intr_ids->mbhc_btn_press_intr, mbhc);
-+err_free_sw_intr:
-+	free_irq(mbhc->intr_ids->mbhc_sw_intr, mbhc);
-+err_free_mbhc:
-+	kfree(mbhc);
-+
- 	dev_err(dev, "Failed to request mbhc interrupts %d\n", ret);
- 
- 	return ERR_PTR(ret);
-@@ -1537,9 +1552,19 @@ EXPORT_SYMBOL(wcd_mbhc_init);
- 
- void wcd_mbhc_deinit(struct wcd_mbhc *mbhc)
- {
-+	free_irq(mbhc->intr_ids->hph_right_ocp, mbhc);
-+	free_irq(mbhc->intr_ids->hph_left_ocp, mbhc);
-+	free_irq(mbhc->intr_ids->mbhc_hs_rem_intr, mbhc);
-+	free_irq(mbhc->intr_ids->mbhc_hs_ins_intr, mbhc);
-+	free_irq(mbhc->intr_ids->mbhc_btn_release_intr, mbhc);
-+	free_irq(mbhc->intr_ids->mbhc_btn_press_intr, mbhc);
-+	free_irq(mbhc->intr_ids->mbhc_sw_intr, mbhc);
-+
- 	mutex_lock(&mbhc->lock);
- 	wcd_cancel_hs_detect_plug(mbhc,	&mbhc->correct_plug_swch);
- 	mutex_unlock(&mbhc->lock);
-+
-+	kfree(mbhc);
+ 	return 0;
  }
- EXPORT_SYMBOL(wcd_mbhc_deinit);
++
++static void wcd934x_mbhc_deinit(struct snd_soc_component *component)
++{
++	struct wcd934x_codec *wcd = snd_soc_component_get_drvdata(component);
++
++	if (!wcd->mbhc)
++		return;
++
++	wcd_mbhc_deinit(wcd->mbhc);
++}
++
+ static int wcd934x_comp_probe(struct snd_soc_component *component)
+ {
+ 	struct wcd934x_codec *wcd = dev_get_drvdata(component->dev);
+@@ -3077,6 +3088,7 @@ static void wcd934x_comp_remove(struct snd_soc_component *comp)
+ {
+ 	struct wcd934x_codec *wcd = dev_get_drvdata(comp->dev);
+ 
++	wcd934x_mbhc_deinit(comp);
+ 	wcd_clsh_ctrl_free(wcd->clsh_ctrl);
+ }
  
 -- 
 2.39.3
