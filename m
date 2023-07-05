@@ -4,99 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 525DDEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 16:28:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9EFEEB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 17:29:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D25EF1DC;
-	Wed,  5 Jul 2023 18:27:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D25EF1DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D1E9741;
+	Wed,  5 Jul 2023 19:29:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D1E9741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688574500;
-	bh=zRngUswDDjUkAq0whRYB/BwUdgXkOveiuP3S4rNRLKg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1688578190;
+	bh=rYr6VAbqyrf+sxTztNuoApn/dQHo9M4//o4ZryUxxo0=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=j0JiK17cXwzrB3hyK0xjRMnZd2M+NxXxfKcGljvVFnTd+ekbB5JvXPmZpOLy1ZmTl
-	 U9WI62FsrodwHurLhw87G1CIfqOmgkXQIEkyMj4339BMpllxOv/Y/j3uLBii3WVzvc
-	 vsFQ7/SU9x9eoHxgiEzq+pmT+eTGb3BcioThOkEQ=
+	b=vph4ZxZkbqz9+KtWsgHuVkHNOPUkCKkcQ72PleBKY/YQq8dHiYcFdJ2cxVTsxgEcD
+	 Qi9Ot1mxlFcbZdr2kKyHxRa5bw41foHRvQdfURpFVzhLYu17GXGgov2ZnNcChRA/Mf
+	 RI9jSuYDeT4bh5dssq+i6nXcMp6h6D0sRt8hLmSw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 02FA6F80104; Wed,  5 Jul 2023 18:27:05 +0200 (CEST)
+	id 2E821F8025F; Wed,  5 Jul 2023 19:28:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80E74F80125;
-	Wed,  5 Jul 2023 18:27:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B6FBF80104;
+	Wed,  5 Jul 2023 19:28:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A9EEF80125; Wed,  5 Jul 2023 18:26:59 +0200 (CEST)
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com
- [IPv6:2001:4860:4864:20::34])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id E19DAF80272; Wed,  5 Jul 2023 19:28:45 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [185.132.182.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 15DB1F80100
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 18:26:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15DB1F80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 27198F80104
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 19:28:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27198F80104
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=dACqdluA
-Received: by mail-oa1-x34.google.com with SMTP id
- 586e51a60fabf-1b012c3ce43so5969312fac.3
-        for <alsa-devel@alsa-project.org>;
- Wed, 05 Jul 2023 09:26:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688574412; x=1691166412;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BNUN1LyDtrUudoc7yqfmzgIHsmmaYOYd/qCnPyCLiZY=;
-        b=dACqdluAjxlZcLwqfbzoJBEK8v86zLgGo7Dij0qbplnSwW5xvS2UILpnyedymJarmj
-         QtRYTpRGqt7qUCPp3xzYyTGrcCDz868vlxHB8eTpbwC5pxGV6BcLhrTKbGgajin98v3j
-         JGKgQn47CUbe38MuBHKL72AmUxuVSw3cftb/GNic04d1EPcM5VfrZbE1w+8dBc+BKZxL
-         1JYSTqnbQA51qEv0yYBawyzcR0SxP/BogEBPNGTNzCsze8QOyjBvQfBVusTAtBLJ35sk
-         +6Un2iHgOCiEpcTdELFv2q8OIm4+srBVQWEAr0XEvkwNZvfRC59fx+Lfv8PUY7ql3g4E
-         sFZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688574412; x=1691166412;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BNUN1LyDtrUudoc7yqfmzgIHsmmaYOYd/qCnPyCLiZY=;
-        b=igREYdfRAl+8Vo60wQmdHvU2elsSnSfanc7fYrMkBSGyDtuJsqNYiWkO9M30cRRoqg
-         vvC27cl0CcM5GRULLgyB6Radia6sdhbbM/d3g3YwRlzwm70f4OAlQEuX22ZeeULpqHzP
-         BfggHrXw3Cr2aFw7KlOgvXYbfJtPf3hhk5J3Q2vY+uqIlILUA34B7v4FF/WBy2Nb3bqc
-         yoPM+dgHRKX79nbUMnhoxMRCBSEhPhfc8Q4+jPnTme5s6AOiEynMUfsxkwnOpXXvLLOV
-         enbpl2rkHy+zopC6nH54QvNe4lQTQYlFTKLtagpZdjzrGlemlKFDN0y1YUg6AjvoWoez
-         L2Cg==
-X-Gm-Message-State: AC+VfDwu2ZDpni8SoU6EndgUsBvj3SzFkfmF5dZF/wX2eJ7TSXwQJnyt
-	iT96BQXoIxsgJCoEO0mX44Q=
-X-Google-Smtp-Source: 
- ACHHUZ7KFqOaSAQQ+CzBwEtxbQDKAYOgWNyAYLimrEIB2wxYJy5c8zyqufbeIH7pRYPYxoG6RY0zNg==
-X-Received: by 2002:a05:6870:3e04:b0:196:8dc3:4e16 with SMTP id
- lk4-20020a0568703e0400b001968dc34e16mr16781179oab.39.1688574411684;
-        Wed, 05 Jul 2023 09:26:51 -0700 (PDT)
-Received: from geday ([2804:7f2:8002:4e4c:85d7:6b16:f905:6cb0])
-        by smtp.gmail.com with ESMTPSA id
- ma15-20020a056870fd8f00b001b011efb1ebsm2535697oab.0.2023.07.05.09.26.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Jul 2023 09:26:51 -0700 (PDT)
-Date: Wed, 5 Jul 2023 13:27:02 -0300
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-To: =?utf-8?B?QXVyw6lsaWVu?= <aurelien@ap2c.com>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: Garbage returned while reading unused S/PDIF, A CM106 like sound
- card
-Message-ID: <ZKWZ1l+fIBlEHELJ@geday>
-References: <5962046.lOV4Wx5bFT@antimony.ap2c.org>
+ unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
+ header.s=selector1 header.b=tlYJ8bAB
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 365ELI4l007752;
+	Wed, 5 Jul 2023 19:28:32 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=selector1;
+ bh=R+Z7Pl439e9+R/OYQcTq/KrptBdKV0UCpQ0mjty63sk=;
+ b=tlYJ8bAB1TUj0LwFVbPDnHnNsQsPEKDYc7RIdUFugmNIoLHfC9MaAgyosgyAvqii/B6R
+ 5qrcoTg3Q6k/I56I0OzVx2vgYM9cPbcocO8TE8ndfp4La2vhrI+bGU3jccxQdu7LWrdq
+ D6LgARFUY19H5DB81M8iSFUJVQN7j5WgUupSW271GTZo0D9jYqYEMi8hyi5mccSJlFQ8
+ Ykw4TM4uYhbwykn3MxO7MsXVFGtEITcCpk7yMWdHWZo41ha4KeIlnHVoRO8P1gM52J3u
+ oZvaUz6AtUMiOHaAFIhelP5FcJvRrCChR+aan2ciYmXxdwF3AdnR0PYOib6sbU07oiCK 4w==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3rna75h3xb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 05 Jul 2023 19:28:32 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 084AA100060;
+	Wed,  5 Jul 2023 19:28:32 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F0C3224C433;
+	Wed,  5 Jul 2023 19:28:31 +0200 (CEST)
+Received: from localhost (10.201.21.121) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 5 Jul
+ 2023 19:28:31 +0200
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <vkoul@kernel.org>, <jic23@kernel.org>, <olivier.moysan@foss.st.com>,
+        <arnaud.pouliquen@foss.st.com>, <mchehab@kernel.org>,
+        <fabrice.gasnier@foss.st.com>, <andi.shyti@kernel.org>,
+        <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <hugues.fruchet@foss.st.com>, <lee@kernel.org>,
+        <will@kernel.org>, <catalin.marinas@arm.com>, <arnd@kernel.org>,
+        <richardcochran@gmail.com>
+CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>,
+        Gatien Chevallier
+	<gatien.chevallier@foss.st.com>
+Subject: [PATCH 02/10] dt-bindings: bus: add device tree bindings for RIFSC
+Date: Wed, 5 Jul 2023 19:27:51 +0200
+Message-ID: <20230705172759.1610753-3-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230705172759.1610753-1-gatien.chevallier@foss.st.com>
+References: <20230705172759.1610753-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5962046.lOV4Wx5bFT@antimony.ap2c.org>
-Message-ID-Hash: CAUW4WTFSL6BIYL63Z6AGRWCGZMHGWWS
-X-Message-ID-Hash: CAUW4WTFSL6BIYL63Z6AGRWCGZMHGWWS
-X-MailFrom: geraldogabriel@gmail.com
+Content-Type: text/plain
+X-Originating-IP: [10.201.21.121]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-05_09,2023-07-05_01,2023-05-22_02
+Message-ID-Hash: EPXUJI4KH44UW3QQGZHGPAHUBX3DMHCX
+X-Message-ID-Hash: EPXUJI4KH44UW3QQGZHGPAHUBX3DMHCX
+X-MailFrom: prvs=5550e8e426=gatien.chevallier@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CAUW4WTFSL6BIYL63Z6AGRWCGZMHGWWS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EPXUJI4KH44UW3QQGZHGPAHUBX3DMHCX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,40 +129,122 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jul 04, 2023 at 08:06:04PM +0200, Aurélien wrote:
-> Hello,
+Document RIFSC (RIF security controller). RIFSC is a firewall controller
+composed of different kinds of hardware resources.
 
-Hi Aurélien!
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+---
+ .../bindings/bus/st,stm32-rifsc.yaml          | 101 ++++++++++++++++++
+ 1 file changed, 101 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-rifsc.yaml
 
-> 
-> I encounter troubles while using S/PDIF input on an CM106 like sound card 
-> (vendor 0x0d8c, device 0x0102) when the remote device which is connected by S/
-> PDIF to the sound card is powered off.
-> In that case garbage data are reading from the S/PDIF rather than.. nothing
-> 
-> It is really boring since this S/PDIF input is connected to the output 
-> speakers and once the remote deviced is powered off it emits a really 
-> disturbing sound.
-> Since there is no input on the S/PDIF I guess that it could be a driver bug?
-> If it's an hardware bug (I don't encounter the problem under windows..) is it 
-> possible to make a hack in order to distinguish between real data and noise on 
-> the S/PDIF input?
-> 
-> Unfortunately this test is performed on an embedded device which runs linux 
-> 5.16.17-sun50iw6. I don't know if this problem still occurs with newer alsa 
-> version.
+diff --git a/Documentation/devicetree/bindings/bus/st,stm32-rifsc.yaml b/Documentation/devicetree/bindings/bus/st,stm32-rifsc.yaml
+new file mode 100644
+index 000000000000..68d585ed369c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/st,stm32-rifsc.yaml
+@@ -0,0 +1,101 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/st,stm32-rifsc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STM32 Resource isolation framework security controller bindings
++
++maintainers:
++  - Gatien Chevallier <gatien.chevallier@foss.st.com>
++
++description: |
++  Resource isolation framework (RIF) is a comprehensive set of hardware blocks
++  designed to enforce and manage isolation of STM32 hardware resources like
++  memory and peripherals.
++
++  The RIFSC (RIF security controller) is composed of three sets of registers,
++  each managing a specific set of hardware resources:
++    - RISC registers associated with RISUP logic (resource isolation device unit
++      for peripherals), assign all non-RIF aware peripherals to zero, one or
++      any security domains (secure, privilege, compartment).
++    - RIMC registers: associated with RIMU logic (resource isolation master
++      unit), assign all non RIF-aware bus master to one security domain by
++      setting secure, privileged and compartment information on the system bus.
++      Alternatively, the RISUP logic controlling the device port access to a
++      peripheral can assign target bus attributes to this peripheral master port
++      (supported attribute: CID).
++    - RISC registers associated with RISAL logic (resource isolation device unit
++      for address space - Lite version), assign address space subregions to one
++      security domains (secure, privilege, compartment).
++
++properties:
++  compatible:
++    const: st,stm32mp25-rifsc
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++  "#feature-domain-cells":
++    const: 1
++
++  ranges: true
++
++  feature-domain-controller: true
++
++patternProperties:
++  "^.*@[0-9a-f]+$":
++    description: Peripherals
++    type: object
++    properties:
++      feature-domains:
++        minItems: 1
++        maxItems: 2
++        description:
++          The first argument must always be a phandle that references to the
++          firewall controller of the peripheral. The second can contain the
++          platform specific firewall ID of the peripheral.
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++  - feature-domain-controller
++  - "#feature-domain-cells"
++  - ranges
++
++additionalProperties: false
++
++examples:
++  - |
++    // In this example, the usart2 device refers to rifsc as its domain
++    // controller.
++    // Access rights are verified before creating devices.
++
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    rifsc: rifsc-bus@42080000 {
++        compatible = "st,stm32mp25-rifsc";
++        reg = <0x42080000 0x1000>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges;
++        feature-domain-controller;
++        #feature-domain-cells = <1>;
++
++        usart2: serial@400e0000 {
++            compatible = "st,stm32h7-uart";
++            reg = <0x400e0000 0x400>;
++            interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&ck_flexgen_08>;
++            feature-domains = <&rifsc 32>;
++            status = "disabled";
++        };
++    };
+-- 
+2.25.1
 
-This looks like a vendor (downstream) kernel. ALSA Project does not
-accept bug reports for vendor kernels. You must try to reproduce your
-issue with the latest mainline kernel.
-
-Thanks,
-Geraldo Nascimento
-
-> 
-> Thank you in advance for your help.
-> Regards, 
-> 
-> Aurélien
-> 
-> 
