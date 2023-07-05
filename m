@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B88E7EB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 21:50:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C06CEB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 21:50:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64C9C84A;
-	Wed,  5 Jul 2023 23:49:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64C9C84A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F1AE85D;
+	Wed,  5 Jul 2023 23:49:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F1AE85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688593801;
-	bh=f6qzZZCqh3StcdQmbdXHhNuewxQtRotpLidUnnuRtcw=;
+	s=default; t=1688593820;
+	bh=qRItAJndJX1XqrEIXciz6duNiIanh49578CFIMHWANY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VPNjUVb4XlG6Vqerx083h00OwM8WR4ogIVZGRdWFqTsSsBRx3ARlSdT0muWg/Qv2s
-	 rP0pZN5+3CqlB/qk0mBCNJL4Mb/CB2H6NRl3Xp4yN/B1noBmYWuip/Rlep/mF62JRT
-	 L6rTdQsxaJ0ICVpHUzPk4UnlKMPYjnHf9vSzerXo=
+	b=cpdv67/2KN7n0/uJjr6k0Kb44njPZE4p7BoGN1L8c/SJyi8ASGWNM8g4baFBbDka0
+	 i7c/gOF3w/mX6gt67nsqT25UJXdsJxjTNWEIGobwXMhPC1LWRuvxMx5F2JpLhh4gb7
+	 tMbiK24F+/RiRSzrKAJbpGwu2XF8pQFMMHoi0dsg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18F9DF8056F; Wed,  5 Jul 2023 23:48:21 +0200 (CEST)
+	id 73550F8058C; Wed,  5 Jul 2023 23:48:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9674AF80124;
-	Wed,  5 Jul 2023 23:48:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D3F1F8057F;
+	Wed,  5 Jul 2023 23:48:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7CCB1F80564; Wed,  5 Jul 2023 23:48:17 +0200 (CEST)
+	id EEE5FF8057A; Wed,  5 Jul 2023 23:48:21 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 656A2F80124
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 23:48:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 656A2F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id D451AF80548
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 23:48:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D451AF80548
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=kUKURCXz
+ header.a=rsa-sha256 header.s=mail header.b=YGvTqmE/
 Received: from localhost (unknown [188.24.137.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 141E46600B9D;
-	Wed,  5 Jul 2023 22:48:11 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id A7C396606FBB;
+	Wed,  5 Jul 2023 22:48:13 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1688593691;
-	bh=f6qzZZCqh3StcdQmbdXHhNuewxQtRotpLidUnnuRtcw=;
+	s=mail; t=1688593693;
+	bh=qRItAJndJX1XqrEIXciz6duNiIanh49578CFIMHWANY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kUKURCXzesKef5UuNO0S9nrGOdxIBU6hP2l1oa6onMIafbG3Egc8uHZC2bfroH2AC
-	 VAcNc5oGV4CKaLY+wuvoIfnzEQXzIHnNJ1aGUs6MeCaCsjsEpMOXNPsQIdFsvHT5nr
-	 jpYQs2pMyCwLOWermrrdgFCWWWpFLz10bz3bRuzyi9cyjexQpbxaXXF2md3VSquE7d
-	 ZKUYBUo6JuaBBMSK5gerQBQZUb4xBoTCfdcicdX5D7OakpJMfn2bFWpZ4yHm2tDT+w
-	 arZBBc81DYeuDnj6b++imWjWnC+CzhzboY6XIQscxOOvB0rQMZ2sfpar9RHaCF3UmO
-	 qI2K/MzSduNCQ==
+	b=YGvTqmE/u5qJdGp+1aUK1zJwT17jhLF2quT+67kaGJImPvp7D/Oj9lSr2nwzwbmw6
+	 aJ7FjorCBxQEv87JJ5tURZ1zUPTxdTECMKFrnQdPqLW82daO5OUgtRZyqF3V1Iuein
+	 G+lcPHFHlaGdHUhRdJZI+EboTbOJXNAL1hrTrgeFjROj3k4xaLaQg7ql2vDmkMTrMc
+	 SotRmOlm4tRbuwhCvomToXJ5onyXwimgN3EbivLapbNfW2KKF8XPe8CEj9r5xIPKXW
+	 WV2NVUFyIXYeOMbJmu3bVrRluxKbf9PmdrqUHXbAqqBaxU34thZ+O8PG76BiWXZBYL
+	 thztkmTipLW6w==
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -73,17 +72,17 @@ To: Liam Girdwood <lgirdwood@gmail.com>,
 Cc: alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	kernel@collabora.com
-Subject: [PATCH v3 2/3] ASoC: amd: vangogh: Use dmi_first_match() for DMI
- quirk handling
-Date: Thu,  6 Jul 2023 00:47:59 +0300
-Message-ID: <20230705214800.193244-3-cristian.ciocaltea@collabora.com>
+Subject: [PATCH v3 3/3] ASoC: amd: vangogh: Add support for NAU8821/MAX98388
+ variant
+Date: Thu,  6 Jul 2023 00:48:00 +0300
+Message-ID: <20230705214800.193244-4-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230705214800.193244-1-cristian.ciocaltea@collabora.com>
 References: <20230705214800.193244-1-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XBYUAJOVQ57FHSQID5APB3ODBPLJDE7N
-X-Message-ID-Hash: XBYUAJOVQ57FHSQID5APB3ODBPLJDE7N
+Message-ID-Hash: 6PMFHM32SR35SXAHBEENK2R76JDR6VDI
+X-Message-ID-Hash: 6PMFHM32SR35SXAHBEENK2R76JDR6VDI
 X-MailFrom: cristian.ciocaltea@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,112 +95,237 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XBYUAJOVQ57FHSQID5APB3ODBPLJDE7N/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6PMFHM32SR35SXAHBEENK2R76JDR6VDI/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In preparation for supporting ACPI probing, move DMI quirk handling
-logic at the probe's top, to be able to return as quickly as possible in
-case there is no DMI matching.
+Extend the Vangogh machine driver to support a variant based on the
+Nuvoton NAU88L21 Codec and the Analog Devices MAX98388 Speaker
+Amplifier.
 
-Additionally, simplify the code by replacing dmi_check_system() and
-related callback with dmi_first_match(). While at it, also drop a few
-unnecessary empty lines.
+Additionally, enable probing via ACPI match table for this and future
+hardware revisions.
 
+Co-developed-by: Lucas Tanure <lucas.tanure@collabora.com>
+Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- sound/soc/amd/vangogh/acp5x-mach.c | 28 +++++++---------------------
- 1 file changed, 7 insertions(+), 21 deletions(-)
+ sound/soc/amd/Kconfig              |   5 +-
+ sound/soc/amd/vangogh/acp5x-mach.c | 137 +++++++++++++++++++++++++++--
+ 2 files changed, 132 insertions(+), 10 deletions(-)
 
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 1dd8579e8034..273688c05317 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -79,14 +79,15 @@ config SND_SOC_AMD_ACP5x
+ 	 ACP DMA driver, CPU DAI driver.
+ 
+ config SND_SOC_AMD_VANGOGH_MACH
+-	tristate "AMD Vangogh support for NAU8821 CS35L41"
++	tristate "AMD Vangogh support for NAU8821/CS35L41/MAX98388"
+ 	select SND_SOC_NAU8821
+ 	select SND_SOC_CS35L41_SPI
++	select SND_SOC_MAX98388
+ 	select SND_AMD_ACP_CONFIG
+ 	depends on SND_SOC_AMD_ACP5x && I2C && SPI_MASTER
+ 	help
+ 	  This option enables machine driver for Vangogh platform
+-	  using NAU8821 and CS35L41 codecs.
++	  using NAU8821 and either CS35L41 or MAX98388 codecs.
+ 	  Say m if you have such a device.
+ 	  If unsure select "N".
+ 
 diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index 5e36179cf611..1efa8f8b77ab 100644
+index 1efa8f8b77ab..125a8e93478d 100644
 --- a/sound/soc/amd/vangogh/acp5x-mach.c
 +++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -22,7 +22,6 @@
- 
- #define DRV_NAME			"acp5x_mach"
- #define DUAL_CHANNEL			2
--#define VG_JUPITER			1
- #define ACP5X_NAU8821_BCLK		3072000
- #define ACP5X_NAU8821_FREQ_OUT		12288000
- #define ACP5X_NAU8821_COMP_NAME 	"i2c-NVTN2020:00"
-@@ -31,7 +30,6 @@
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ /*
+- * Machine driver for AMD Vangogh platform using NAU8821 & CS35L41
+- * codecs.
++ * Machine driver for AMD Vangogh platform using either
++ * NAU8821 & CS35L41 or NAU8821 & MAX98388 codecs.
+  *
+  * Copyright 2021 Advanced Micro Devices, Inc.
+  */
+@@ -29,6 +29,9 @@
+ #define ACP5X_CS35L41_COMP_LNAME	"spi-VLV1776:00"
  #define ACP5X_CS35L41_COMP_RNAME	"spi-VLV1776:01"
  #define ACP5X_CS35L41_DAI_NAME		"cs35l41-pcm"
++#define ACP5X_MAX98388_COMP_LNAME	"i2c-ADS8388:00"
++#define ACP5X_MAX98388_COMP_RNAME	"i2c-ADS8388:01"
++#define ACP5X_MAX98388_DAI_NAME		"max98388-aif1"
  
--static unsigned long acp5x_machine_id;
  static struct snd_soc_jack vg_headset;
  
- SND_SOC_DAILINK_DEF(platform,  DAILINK_COMP_ARRAY(COMP_PLATFORM("acp5x_i2s_dma.0")));
-@@ -242,7 +240,6 @@ static int acp5x_cs35l41_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	return 0;
--
- }
- 
- static const struct snd_soc_ops acp5x_cs35l41_play_ops = {
-@@ -292,8 +289,6 @@ static struct snd_soc_dai_link acp5x_8821_35l41_dai[] = {
- 	},
- };
- 
--
--
- static const struct snd_soc_dapm_widget acp5x_8821_35l41_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-@@ -331,16 +326,8 @@ static struct snd_soc_card acp5x_8821_35l41_card = {
+@@ -326,6 +329,108 @@ static struct snd_soc_card acp5x_8821_35l41_card = {
  	.num_controls = ARRAY_SIZE(acp5x_8821_controls),
  };
  
--static int acp5x_vg_quirk_cb(const struct dmi_system_id *id)
--{
--	acp5x_machine_id = VG_JUPITER;
--
--	return 1;
--}
--
++static int acp5x_max98388_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct acp5x_platform_info *machine = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	machine->play_i2s_instance = I2S_HS_INSTANCE;
++
++	runtime->hw.channels_max = DUAL_CHANNEL;
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				   &constraints_channels);
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				   &constraints_rates);
++	return 0;
++}
++
++static const struct snd_soc_ops acp5x_max98388_play_ops = {
++	.startup = acp5x_max98388_startup,
++};
++
++static struct snd_soc_codec_conf acp5x_max98388_conf[] = {
++	{
++		.dlc = COMP_CODEC_CONF(ACP5X_MAX98388_COMP_LNAME),
++		.name_prefix = "Left",
++	},
++	{
++		.dlc = COMP_CODEC_CONF(ACP5X_MAX98388_COMP_RNAME),
++		.name_prefix = "Right",
++	},
++};
++
++SND_SOC_DAILINK_DEF(max98388, DAILINK_COMP_ARRAY(COMP_CODEC(ACP5X_MAX98388_COMP_LNAME,
++							    ACP5X_MAX98388_DAI_NAME),
++						 COMP_CODEC(ACP5X_MAX98388_COMP_RNAME,
++							    ACP5X_MAX98388_DAI_NAME)));
++
++static struct snd_soc_dai_link acp5x_8821_98388_dai[] = {
++	{
++		.name = "acp5x-8821-play",
++		.stream_name = "Playback/Capture",
++		.dai_fmt = SND_SOC_DAIFMT_I2S |
++			   SND_SOC_DAIFMT_NB_NF |
++			   SND_SOC_DAIFMT_CBC_CFC,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ops = &acp5x_8821_ops,
++		.init = acp5x_8821_init,
++		SND_SOC_DAILINK_REG(acp5x_i2s, nau8821, platform),
++	},
++	{
++		.name = "acp5x-max98388-play",
++		.stream_name = "MAX98388 Playback",
++		.dai_fmt = SND_SOC_DAIFMT_I2S |
++			   SND_SOC_DAIFMT_NB_NF |
++			   SND_SOC_DAIFMT_CBC_CFC,
++		.dpcm_playback = 1,
++		.playback_only = 1,
++		.ops = &acp5x_max98388_play_ops,
++		SND_SOC_DAILINK_REG(acp5x_bt, max98388, platform),
++	},
++};
++
++static const struct snd_soc_dapm_widget acp5x_8821_98388_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Int Mic", NULL),
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			    platform_clock_control,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SPK("SPK", NULL),
++};
++
++static const struct snd_soc_dapm_route acp5x_8821_98388_route[] = {
++	{ "Headphone", NULL, "HPOL" },
++	{ "Headphone", NULL, "HPOR" },
++	{ "MICL", NULL, "Headset Mic" },
++	{ "MICR", NULL, "Headset Mic" },
++	{ "DMIC", NULL, "Int Mic" },
++
++	{ "Headphone", NULL, "Platform Clock" },
++	{ "Headset Mic", NULL, "Platform Clock" },
++	{ "Int Mic", NULL, "Platform Clock" },
++
++	{ "SPK", NULL, "Left BE_OUT" },
++	{ "SPK", NULL, "Right BE_OUT" },
++};
++
++static struct snd_soc_card acp5x_8821_98388_card = {
++	.name = "acp5x-max98388",
++	.owner = THIS_MODULE,
++	.dai_link = acp5x_8821_98388_dai,
++	.num_links = ARRAY_SIZE(acp5x_8821_98388_dai),
++	.dapm_widgets = acp5x_8821_98388_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(acp5x_8821_98388_widgets),
++	.dapm_routes = acp5x_8821_98388_route,
++	.num_dapm_routes = ARRAY_SIZE(acp5x_8821_98388_route),
++	.codec_conf = acp5x_max98388_conf,
++	.num_configs = ARRAY_SIZE(acp5x_max98388_conf),
++	.controls = acp5x_8821_controls,
++	.num_controls = ARRAY_SIZE(acp5x_8821_controls),
++};
++
  static const struct dmi_system_id acp5x_vg_quirk_table[] = {
  	{
--		.callback = acp5x_vg_quirk_cb,
  		.matches = {
- 			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Valve"),
- 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Jupiter"),
-@@ -351,23 +338,22 @@ static const struct dmi_system_id acp5x_vg_quirk_table[] = {
- 
- static int acp5x_probe(struct platform_device *pdev)
- {
-+	const struct dmi_system_id *dmi_id;
- 	struct acp5x_platform_info *machine;
- 	struct device *dev = &pdev->dev;
+@@ -344,11 +449,20 @@ static int acp5x_probe(struct platform_device *pdev)
  	struct snd_soc_card *card;
  	int ret;
  
-+	dmi_id = dmi_first_match(acp5x_vg_quirk_table);
-+	if (!dmi_id)
-+		return -ENODEV;
+-	dmi_id = dmi_first_match(acp5x_vg_quirk_table);
+-	if (!dmi_id)
+-		return -ENODEV;
+-
+-	card = &acp5x_8821_35l41_card;
++	card = (struct snd_soc_card *)device_get_match_data(dev);
++	if (!card) {
++		/*
++		 * This is normally the result of directly probing the driver
++		 * in pci-acp5x through platform_device_register_full(), which
++		 * is necessary for the CS35L41 variant, as it doesn't support
++		 * ACPI probing and relies on DMI quirks.
++		 */
++		dmi_id = dmi_first_match(acp5x_vg_quirk_table);
++		if (!dmi_id)
++			return -ENODEV;
 +
-+	card = &acp5x_8821_35l41_card;
-+
++		card = &acp5x_8821_35l41_card;
++	}
+ 
  	machine = devm_kzalloc(dev, sizeof(*machine), GFP_KERNEL);
  	if (!machine)
- 		return -ENOMEM;
+@@ -365,10 +479,17 @@ static int acp5x_probe(struct platform_device *pdev)
+ 	return 0;
+ }
  
--	dmi_check_system(acp5x_vg_quirk_table);
--	switch (acp5x_machine_id) {
--	case VG_JUPITER:
--		card = &acp5x_8821_35l41_card;
--		break;
--	default:
--		return -ENODEV;
--	}
- 	card->dev = dev;
- 	platform_set_drvdata(pdev, card);
- 	snd_soc_card_set_drvdata(card, machine);
++static const struct acpi_device_id acp5x_acpi_match[] = {
++	{ "AMDI8821", (kernel_ulong_t)&acp5x_8821_98388_card },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, acp5x_acpi_match);
++
+ static struct platform_driver acp5x_mach_driver = {
+ 	.driver = {
+ 		.name = DRV_NAME,
+ 		.pm = &snd_soc_pm_ops,
++		.acpi_match_table = acp5x_acpi_match,
+ 	},
+ 	.probe = acp5x_probe,
+ };
+@@ -376,6 +497,6 @@ static struct platform_driver acp5x_mach_driver = {
+ module_platform_driver(acp5x_mach_driver);
+ 
+ MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
+-MODULE_DESCRIPTION("NAU8821 & CS35L41 audio support");
++MODULE_DESCRIPTION("NAU8821/CS35L41 & NAU8821/MAX98388 audio support");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("platform:" DRV_NAME);
 -- 
 2.41.0
 
