@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DCC2C00528
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 14:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0701BEB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 14:43:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31A07741;
-	Wed,  5 Jul 2023 16:42:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31A07741
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3D3584D;
+	Wed,  5 Jul 2023 16:42:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3D3584D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688568201;
-	bh=f6yTboHdDxAlYnmIQ62ZL53MjCiOLY54svw8nFvYa9k=;
+	s=default; t=1688568206;
+	bh=dSIi6iSQrZcwHBgwfGJF2PaWQmJdlHaoNoR7kIW6AWE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TsQYbyCMXojerl3smY/DCkQDCxksik2U0nBif1v9lIEJe1c2L0W74G6Ynhv5HZ9lX
-	 JdMAZ5ANcR68yjFh6FxxzUWIxFLYvhX06bp8ad1r7ObPhazb+Cu5ab56gkaKrdyNmI
-	 NOYoWWmaKny5wNwn1tcdsZBiDNet9+UdWjMJyee0=
+	b=RvCrVBYkxnvsCVFleHzL8GEQsSxPQGFEifXKVB/05wHOigpcRjffMR0aotqPUCerN
+	 yqIxzMmKy4ydrmSkOsu2Gq4SlzPvc3ISv0MBsz6jGcmrONxfzcXaBUd+kxL6NdkNAG
+	 vxdYTu5hcELRiUof6jWeWFzk721kpf0TMZTUGwaQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 52E20F8055C; Wed,  5 Jul 2023 16:41:43 +0200 (CEST)
+	id AC344F8057B; Wed,  5 Jul 2023 16:41:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD5E9F80553;
-	Wed,  5 Jul 2023 16:41:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 033C5F80568;
+	Wed,  5 Jul 2023 16:41:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB181F80552; Wed,  5 Jul 2023 14:33:25 +0200 (CEST)
+	id C3A5DF8025F; Wed,  5 Jul 2023 14:33:26 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9365EF80535
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9B4E5F8053B
 	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 14:33:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9365EF80535
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B4E5F8053B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=hftrEYWe
+ header.s=k20201202 header.b=LzN+lNYV
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id DCED661584;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D7ACB61574;
 	Wed,  5 Jul 2023 12:33:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6BCBC61180;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5E10C433BD;
 	Wed,  5 Jul 2023 12:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1688560389;
-	bh=f6yTboHdDxAlYnmIQ62ZL53MjCiOLY54svw8nFvYa9k=;
+	bh=dSIi6iSQrZcwHBgwfGJF2PaWQmJdlHaoNoR7kIW6AWE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hftrEYWeSMZIfjIEg07Y6+0dHdPyzdBS2xzN7RS9Wr85NheRLLfBNEceT3aMvGVC7
-	 7VsXgQaoUle+/v3YCEBGdUlVAHb1nDUrxnWSIFIHT+WckFCaTA3mpAxEWWyoFHXtHS
-	 wYStwMUAypCluPlvQ32frttjV0TOja268wd5fu3gQ+TaOxcx1GcM1V2ZhUhftvZGg6
-	 YWtyZTjk1WzZcGbi1T7j5oI4XFvEpD46APG79mSiGT0jS+32s8Fda4Wn2F0sWRN+PT
-	 n2ZNotMGM+AOKg29dMtZmMAGl995QUpxi5HTIo3PF6aqOunw3Il7yMPKcLhDPa5BMF
-	 F00koUNwRkvEA==
+	b=LzN+lNYV2vZg4H9gENrrC6S4iEtnSjbuaAMDlT4SwILg4/z7V0Qdovnpeu/pzfK1M
+	 Q+ctGGcaD8nzUIpSHwHh1cpUp8W583nWBufO0LIC2VlZ072W/pJrIFrcb57wuRcpIp
+	 5hge0sli/lraHNXfY4ziya9+OgNzXr5AQZixhA0IMTrCUF+/kDet7QlBhgz6xPm9fP
+	 +K5gaSo9nnbpC1iMMGVniPOvenW1gy7BsF6+0c9S4wnj5t6Jn8lbVguA3fiTygfAZF
+	 CQSDcs5a9Rkh98cNY2jFSoQWUClevB4HqouDDW9LrtRHe7Rbtk0dwCKu3omSzAbWcC
+	 rMeLgQpNmPD/A==
 Received: from johan by xi.lan with local (Exim 4.96)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1qH1hK-00084Q-2K;
+	id 1qH1hK-00084M-25;
 	Wed, 05 Jul 2023 14:33:30 +0200
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Mark Brown <broonie@kernel.org>,
@@ -75,9 +75,9 @@ Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH 8/8] ASoC: core: suppress probe deferral errors
-Date: Wed,  5 Jul 2023 14:30:18 +0200
-Message-Id: <20230705123018.30903-9-johan+linaro@kernel.org>
+Subject: [PATCH 7/8] ASoC: topology: suppress probe deferral errors
+Date: Wed,  5 Jul 2023 14:30:17 +0200
+Message-Id: <20230705123018.30903-8-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20230705123018.30903-1-johan+linaro@kernel.org>
 References: <20230705123018.30903-1-johan+linaro@kernel.org>
@@ -89,54 +89,65 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 32PYKRAYL5IOM3T4CYQALSPFUPKAMGO4
-X-Message-ID-Hash: 32PYKRAYL5IOM3T4CYQALSPFUPKAMGO4
+Message-ID-Hash: 37KVCR22JK74QJELHHD5EHPG7ZMMZ7WX
+X-Message-ID-Hash: 37KVCR22JK74QJELHHD5EHPG7ZMMZ7WX
 X-Mailman-Approved-At: Wed, 05 Jul 2023 14:41:37 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/32PYKRAYL5IOM3T4CYQALSPFUPKAMGO4/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/37KVCR22JK74QJELHHD5EHPG7ZMMZ7WX/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Suppress probe deferral error messages when probing link components to
-avoid spamming the logs, for example, if a required component has not
-yet been registered:
+Suppress probe deferral error messages when loading topologies and
+creating frontend links to avoid spamming the logs when a component has
+not yet been registered:
 
-	snd-sc8280xp sound: ASoC: failed to instantiate card -517
+    snd-sc8280xp sound: ASoC: adding FE link failed
+    snd-sc8280xp sound: ASoC: topology: could not load header: -517
 
-Note that dev_err_probe() is not used as the card can be unbound and
-rebound while the underlying platform device remains bound to its
-driver.
+Note that dev_err_probe() is not used as the topology component can be
+probed and removed while the underlying platform device remains bound to
+its driver.
 
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- sound/soc/soc-core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/soc-topology.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b48efc3a08d2..b9cb5c4e3685 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1988,8 +1988,10 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
- 	/* probe all components used by DAI links on this card */
- 	ret = soc_probe_link_components(card);
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index d0aca6b9058b..696c9647debe 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1751,7 +1751,8 @@ static int soc_tplg_fe_link_create(struct soc_tplg *tplg,
+ 
+ 	ret = snd_soc_add_pcm_runtimes(tplg->comp->card, link, 1);
  	if (ret < 0) {
--		dev_err(card->dev,
--			"ASoC: failed to instantiate card %d\n", ret);
-+		if (ret != -EPROBE_DEFER) {
-+			dev_err(card->dev,
-+				"ASoC: failed to instantiate card %d\n", ret);
-+		}
- 		goto probe_end;
+-		dev_err(tplg->dev, "ASoC: adding FE link failed\n");
++		if (ret != -EPROBE_DEFER)
++			dev_err(tplg->dev, "ASoC: adding FE link failed\n");
+ 		goto err;
  	}
+ 
+@@ -2514,8 +2515,11 @@ static int soc_tplg_process_headers(struct soc_tplg *tplg)
+ 			/* load the header object */
+ 			ret = soc_tplg_load_header(tplg, hdr);
+ 			if (ret < 0) {
+-				dev_err(tplg->dev,
+-					"ASoC: topology: could not load header: %d\n", ret);
++				if (ret != -EPROBE_DEFER) {
++					dev_err(tplg->dev,
++						"ASoC: topology: could not load header: %d\n",
++						ret);
++				}
+ 				return ret;
+ 			}
  
 -- 
 2.39.3
