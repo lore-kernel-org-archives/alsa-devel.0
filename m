@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D736EB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 17:30:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7730EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 17:30:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C03D0846;
-	Wed,  5 Jul 2023 19:29:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C03D0846
+	by alsa0.perex.cz (Postfix) with ESMTPS id E031884D;
+	Wed,  5 Jul 2023 19:29:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E031884D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688578213;
-	bh=ipB9VoTfdjKsCWpocgJOtvUzi5mrsYmAWuMlGbfayoA=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=aQxS5huPUO7uNIOzKdA0KismyOfBGBYoEXjsVah4KEUdVd/M45n5BpGRCKTqXtb0v
-	 F/OJLE53GTSjpSHSa/zpNfxZYNaxUi3tWPspAZPMRI75DoCyPI86aazj8Wc+zl+Y5i
-	 u4zm+6E/gYl2pzDfxGhZhUdoE5fxgvDv4TAUTorQ=
+	s=default; t=1688578235;
+	bh=AWvPY1feBtZCbtt9sVTA4gCg0EErEYnvZrRdpx8RQdI=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=t40WcUlErWsqnn6U5LnzJFjnXyOpwyh2Z8AX2vX5/GTF8H6RnSzdQaVjJPJHUV4xz
+	 BKv7rOdsk9WoC5HiZ4iIkASCuXCSbSkBD9nZwnbp8NGlosdI0pQfanBTkJvchR/JMg
+	 M6hz922SB7zoP6g7fHvY/R+RrVHARhrtqNtgoy8A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C9C31F80558; Wed,  5 Jul 2023 19:28:55 +0200 (CEST)
+	id CBCCEF8057B; Wed,  5 Jul 2023 19:29:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5088CF8055A;
-	Wed,  5 Jul 2023 19:28:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD69AF80549;
+	Wed,  5 Jul 2023 19:29:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5334EF80125; Wed,  5 Jul 2023 19:28:52 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
+	id 9E4C3F80578; Wed,  5 Jul 2023 19:28:57 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2EDE8F80125
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 19:28:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EDE8F80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id 90284F800E4
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 19:28:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90284F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=O/EQFxcp
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+ header.s=selector1 header.b=pGKPFySL
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
 	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 365FWsxt003059;
-	Wed, 5 Jul 2023 19:28:32 +0200
+ 365EZlYN001538;
+	Wed, 5 Jul 2023 19:28:34 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=selector1;
- bh=MIhovnbgvnMdNtHNxjg0wEK4d4BXCh9D4rqEom4bNLc=;
- b=O/EQFxcpOihBGN4SRp2i4E0s5PwExEVaYYg33yZifbN58K9wNb75zntBCBYIp8VzHAuL
- zIdKiETDjlsJsnfX6JYP3z5zxsommrO+m34V9Ip2dVf4weVqMjOB5/EVtgSVZ9uNovMi
- T2IZ1XXDOW6kPHcfw+R4EX/XtvrwuhZWClNKnmfY88jwMyj8HM7gOSdho01gDK3J6cUT
- 8WfZEsDQS/raoTmbzo+KGxiu7Cm1tNT1+epmyaLA41Feszf5s0z2I6bCeBKN1st7h/4M
- hkVzC2Sp7tM3vNaQ9fJKbVk4LqXMie3tTC8KirRfrbnonMIierq+tjMwPTssjQf/ntUs Gw==
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=selector1;
+ bh=dUbA/EeMMBkVXrUrRQwz7bP3CmJ9L4dNcrWL4KpdwsQ=;
+ b=pGKPFySLNX0ZJNUo/J/Gr9RbtbQWcDZkC9DR1yCBFxW13fxSUOVwT5i02XA/aJMZ1KJk
+ LNetlImznyZXoaSXfAqLPIF8AltzGWU6/iLDQ7hovHbBT8pLEZ0JdZEg8VfRyHFyLSyp
+ 58EgWIwcZ8Tl+mcUAqORrYPJ3SxjtEVwbXnvZzVQ1C+kVz5ugCwMgEBd+tu54W5QdspQ
+ Skd1wP99ryWUkSMNeJ318g1WOLKVLG4Gk9LWMdEfrPTunDOu2iT7vgPd1sAhH8KqM2De
+ Hn6djro0mKFlWtUWuKmcRMcL784TLJ9khS3gqlnxU2kQHxD0IjIz+TpUN+MFEcdBhcSJ bg==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3rn8c9t2d3-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3rn09qp1xb-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 05 Jul 2023 19:28:32 +0200
+	Wed, 05 Jul 2023 19:28:34 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 86C91100057;
-	Wed,  5 Jul 2023 19:28:30 +0200 (CEST)
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1B97510005E;
+	Wed,  5 Jul 2023 19:28:34 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1D30824C42F;
-	Wed,  5 Jul 2023 19:28:30 +0200 (CEST)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0F9CB24C42F;
+	Wed,  5 Jul 2023 19:28:34 +0200 (CEST)
 Received: from localhost (10.201.21.121) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 5 Jul
- 2023 19:28:29 +0200
+ 2023 19:28:33 +0200
 From: Gatien Chevallier <gatien.chevallier@foss.st.com>
 To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
         <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
@@ -90,10 +91,13 @@ CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-usb@vger.kernel.org>,
         Gatien Chevallier
 	<gatien.chevallier@foss.st.com>
-Subject: [PATCH 00/10] Introduce STM32 Firewall framework
-Date: Wed, 5 Jul 2023 19:27:49 +0200
-Message-ID: <20230705172759.1610753-1-gatien.chevallier@foss.st.com>
+Subject: [PATCH 04/10] dt-bindings: treewide: add feature-domains description
+ in binding files
+Date: Wed, 5 Jul 2023 19:27:53 +0200
+Message-ID: <20230705172759.1610753-5-gatien.chevallier@foss.st.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230705172759.1610753-1-gatien.chevallier@foss.st.com>
+References: <20230705172759.1610753-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -103,8 +107,8 @@ X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-05_09,2023-07-05_01,2023-05-22_02
-Message-ID-Hash: NTYNX5KEW47R67KOW3YXTSCGRYFOUR5H
-X-Message-ID-Hash: NTYNX5KEW47R67KOW3YXTSCGRYFOUR5H
+Message-ID-Hash: 57CRMFYFBPFZ2FXVSLKGYYJK2S3LFLVB
+X-Message-ID-Hash: 57CRMFYFBPFZ2FXVSLKGYYJK2S3LFLVB
 X-MailFrom: prvs=5550e8e426=gatien.chevallier@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -117,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NTYNX5KEW47R67KOW3YXTSCGRYFOUR5H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/57CRMFYFBPFZ2FXVSLKGYYJK2S3LFLVB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,131 +130,408 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Introduce STM32 Firewall framework for STM32MP1x and STM32MP2x
-platforms. STM32MP1x(ETZPC) and STM32MP2x(RIFSC) Firewall controllers
-register to the framework to offer firewall services such as access
-granting.
+feature-domains is an optional property that allows a peripheral to
+refer to one or more feature domain controller(s).
 
-This series of patches is a new approach on the previous STM32 system
-bus, history is available here:
-https://lore.kernel.org/lkml/20230127164040.1047583/
+Description of this property is added to all peripheral binding files of
+the peripheral under the STM32 firewall controllers. It allows an accurate
+representation of the hardware, where various peripherals are connected
+to this firewall bus. The firewall can then check the peripheral accesses
+before allowing it to probe.
 
-The need for such framework arises from the fact that there are now
-multiple hardware firewalls implemented across multiple products.
-Drivers are shared between different products, using the same code.
-When it comes to firewalls, the purpose mostly stays the same: Protect
-hardware resources. But the implementation differs, and there are
-multiple types of firewalls: peripheral, memory, ... 
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+---
 
-Some hardware firewall controllers such as the RIFSC implemented on
-STM32MP2x platforms may require to take ownership of a resource before
-being able to use it, hence the requirement for firewall services to
-take/release the ownership of such resources.
+Disclaimer: Some error with dtbs_check will be observed as I've
+considered the property to be generic, as Rob asked
 
-On the other hand, hardware firewall configurations are becoming
-more and more complex. These mecanisms prevent platform crashes
-or other firewall-related incoveniences by denying access to some
-resources.
+ Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml  | 4 ++++
+ Documentation/devicetree/bindings/dma/st,stm32-dma.yaml      | 4 ++++
+ Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml   | 4 ++++
+ Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml      | 4 ++++
+ Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml  | 4 ++++
+ .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml      | 4 ++++
+ Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml  | 4 ++++
+ .../devicetree/bindings/media/cec/st,stm32-cec.yaml          | 4 ++++
+ Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml   | 4 ++++
+ .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml       | 4 ++++
+ Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml  | 4 ++++
+ Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml   | 5 +++++
+ Documentation/devicetree/bindings/mmc/arm,pl18x.yaml         | 4 ++++
+ Documentation/devicetree/bindings/net/stm32-dwmac.yaml       | 4 ++++
+ Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml | 4 ++++
+ .../devicetree/bindings/regulator/st,stm32-vrefbuf.yaml      | 4 ++++
+ Documentation/devicetree/bindings/rng/st,stm32-rng.yaml      | 4 ++++
+ Documentation/devicetree/bindings/serial/st,stm32-uart.yaml  | 4 ++++
+ Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml    | 4 ++++
+ Documentation/devicetree/bindings/sound/st,stm32-sai.yaml    | 4 ++++
+ .../devicetree/bindings/sound/st,stm32-spdifrx.yaml          | 4 ++++
+ Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml     | 4 ++++
+ Documentation/devicetree/bindings/spi/st,stm32-spi.yaml      | 4 ++++
+ Documentation/devicetree/bindings/usb/dwc2.yaml              | 4 ++++
+ 24 files changed, 97 insertions(+)
 
-The stm32 firewall framework offers an API that is defined in
-firewall controllers drivers to best fit the specificity of each
-firewall.
-
-For every peripherals protected by either the ETZPC or the RIFSC, the
-firewall framework checks the firewall controlelr registers to see if
-the peripheral's access is granted to the Linux kernel. If not, the
-peripheral is configured as secure, the node is marked populated,
-so that the driver is not probed for that device.
-
-The firewall framework relies on the feature-domain-controller device
-tree bindings: https://lore.kernel.org/lkml/0c0a82bb-18ae-d057-562b.
-It is used by peripherals to reference a domain controller, in this
-case a firewall feature domain. The bus uses the ID referenced by
-the feature-domains property to know where to look in the firewall
-to get the security configuration for the peripheral. This allows
-a device tree description rather than a hardcoded peripheral table
-in the bus driver.
-
-The STM32 ETZPC device is responsible for filtering accesses based on
-security level, or co-processor isolation for any resource connected
-to it.
-
-The RIFSC is responsible for filtering accesses based on Compartment
-ID / security level / privilege level for any resource connected to
-it.
-
-STM32MP13/15/25 SoC device tree files are updated in this series to
-implement this mecanism.
-
-Oleksii Moisieiev (1):
-  dt-bindings: Document common device controller bindings
-
-Gatien Chevallier (9):
-  dt-bindings: bus: add device tree bindings for RIFSC
-  dt-bindings: bus: add device tree bindings for ETZPC
-  dt-bindings: treewide: add feature-domains description in binding
-    files
-  firewall: introduce stm32_firewall framework
-  bus: rifsc: introduce RIFSC firewall controller driver
-  arm64: dts: st: add RIFSC as a domain controller for STM32MP25x boards
-  bus: etzpc: introduce ETZPC firewall controller driver
-  ARM: dts: stm32: add ETZPC as a system bus for STM32MP15x boards
-  ARM: dts: stm32: add ETZPC as a system bus for STM32MP13x boards
-
- .../bindings/bus/st,stm32-etzpc.yaml          |   90 +
- .../bindings/bus/st,stm32-rifsc.yaml          |  101 +
- .../bindings/crypto/st,stm32-hash.yaml        |    4 +
- .../devicetree/bindings/dma/st,stm32-dma.yaml |    4 +
- .../bindings/dma/st,stm32-dmamux.yaml         |    4 +
- .../feature-domain-controller.yaml            |   84 +
- .../devicetree/bindings/i2c/st,stm32-i2c.yaml |    4 +
- .../bindings/iio/adc/st,stm32-adc.yaml        |    4 +
- .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  |    4 +
- .../bindings/iio/dac/st,stm32-dac.yaml        |    4 +
- .../bindings/media/cec/st,stm32-cec.yaml      |    4 +
- .../bindings/media/st,stm32-dcmi.yaml         |    4 +
- .../memory-controllers/st,stm32-fmc2-ebi.yaml |    4 +
- .../bindings/mfd/st,stm32-lptimer.yaml        |    4 +
- .../bindings/mfd/st,stm32-timers.yaml         |    5 +
- .../devicetree/bindings/mmc/arm,pl18x.yaml    |    4 +
- .../devicetree/bindings/net/stm32-dwmac.yaml  |    4 +
- .../bindings/phy/phy-stm32-usbphyc.yaml       |    4 +
- .../bindings/regulator/st,stm32-vrefbuf.yaml  |    4 +
- .../devicetree/bindings/rng/st,stm32-rng.yaml |    4 +
- .../bindings/serial/st,stm32-uart.yaml        |    4 +
- .../bindings/sound/st,stm32-i2s.yaml          |    4 +
- .../bindings/sound/st,stm32-sai.yaml          |    4 +
- .../bindings/sound/st,stm32-spdifrx.yaml      |    4 +
- .../bindings/spi/st,stm32-qspi.yaml           |    4 +
- .../devicetree/bindings/spi/st,stm32-spi.yaml |    4 +
- .../devicetree/bindings/usb/dwc2.yaml         |    4 +
- MAINTAINERS                                   |    7 +
- arch/arm/boot/dts/st/stm32mp131.dtsi          | 1027 +++---
- arch/arm/boot/dts/st/stm32mp133.dtsi          |   51 +-
- arch/arm/boot/dts/st/stm32mp13xc.dtsi         |   19 +-
- arch/arm/boot/dts/st/stm32mp13xf.dtsi         |   19 +-
- arch/arm/boot/dts/st/stm32mp151.dtsi          | 2757 +++++++++--------
- arch/arm/boot/dts/st/stm32mp153.dtsi          |   52 +-
- arch/arm/boot/dts/st/stm32mp15xc.dtsi         |   19 +-
- arch/arm64/Kconfig.platforms                  |    1 +
- arch/arm64/boot/dts/st/stm32mp251.dtsi        |    5 +-
- drivers/bus/Kconfig                           |   10 +
- drivers/bus/Makefile                          |    1 +
- drivers/bus/stm32_etzpc.c                     |  137 +
- drivers/bus/stm32_firewall.c                  |  252 ++
- drivers/bus/stm32_firewall.h                  |   83 +
- drivers/bus/stm32_rifsc.c                     |  248 ++
- include/linux/bus/stm32_firewall_device.h     |  134 +
- 44 files changed, 3276 insertions(+), 1918 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
- create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-rifsc.yaml
- create mode 100644 Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
- create mode 100644 drivers/bus/stm32_etzpc.c
- create mode 100644 drivers/bus/stm32_firewall.c
- create mode 100644 drivers/bus/stm32_firewall.h
- create mode 100644 drivers/bus/stm32_rifsc.c
- create mode 100644 include/linux/bus/stm32_firewall_device.h
-
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+index b767ec72a999..daf8dcaef627 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+@@ -50,6 +50,10 @@ properties:
+   power-domains:
+     maxItems: 1
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
+index 329847ef096a..2236ac95574b 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
++++ b/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
+@@ -82,6 +82,10 @@ properties:
+     description: if defined, it indicates that the controller
+       supports memory-to-memory transfer
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
+index e722fbcd8a5f..47ae890f5bd9 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
++++ b/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
+@@ -28,6 +28,10 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+index 94b75d9f66cd..326a96741f50 100644
+--- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+@@ -99,6 +99,10 @@ properties:
+ 
+   wakeup-source: true
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+index 995cbf8cefc6..3eb20d67f0fc 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+@@ -93,6 +93,10 @@ properties:
+   '#size-cells':
+     const: 0
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ allOf:
+   - if:
+       properties:
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+index 1970503389aa..bc34ae172417 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+@@ -59,6 +59,10 @@ properties:
+       If not, SPI CLKOUT frequency will not be accurate.
+     maximum: 20000000
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml b/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
+index 04045b932bd2..90d35a2a6504 100644
+--- a/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
++++ b/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
+@@ -45,6 +45,10 @@ properties:
+   '#size-cells':
+     const: 0
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ additionalProperties: false
+ 
+ required:
+diff --git a/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml b/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml
+index 2314a9a14650..f88e3c0e6175 100644
+--- a/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml
++++ b/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml
+@@ -29,6 +29,10 @@ properties:
+       - const: cec
+       - const: hdmi-cec
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+index 6b3e413cedb2..4fa1d14910df 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+@@ -36,6 +36,10 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+   port:
+     $ref: /schemas/graph.yaml#/$defs/port-base
+     unevaluatedProperties: false
+diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+index 14f1833d37c9..63b3d012147b 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+@@ -45,6 +45,10 @@ properties:
+       Reflects the memory layout with four integer values per bank. Format:
+       <bank-number> 0 <address of the bank> <size>
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ patternProperties:
+   "^.*@[0-4],[a-f0-9]+$":
+     additionalProperties: true
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+index 27329c5dc38e..59d770544950 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+@@ -44,6 +44,10 @@ properties:
+ 
+   wakeup-source: true
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+   pwm:
+     type: object
+     additionalProperties: false
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+index f84e09a5743b..d5ad097e94ec 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+@@ -67,6 +67,11 @@ properties:
+   "#size-cells":
+     const: 0
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
++
+   pwm:
+     type: object
+     additionalProperties: false
+diff --git a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
+index 2459a55ed540..6ebedee65153 100644
+--- a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
++++ b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
+@@ -79,6 +79,10 @@ properties:
+           - const: rx
+           - const: tx
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+   power-domains: true
+ 
+   resets:
+diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+index fc8c96b08d7d..0e408dc85c13 100644
+--- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+@@ -93,6 +93,10 @@ properties:
+       select RCC clock instead of ETH_REF_CLK.
+     type: boolean
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - clocks
+diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+index 24a3dbde223b..b9ac20c8bf05 100644
+--- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
++++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+@@ -55,6 +55,10 @@ properties:
+     description: number of clock cells for ck_usbo_48m consumer
+     const: 0
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ # Required child nodes:
+ 
+ patternProperties:
+diff --git a/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml b/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
+index 05f4ad2c7d3a..02cefe4ef42b 100644
+--- a/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
++++ b/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
+@@ -30,6 +30,10 @@ properties:
+   vdda-supply:
+     description: phandle to the vdda input analog voltage.
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+index 187b172d0cca..79eb5f5bd252 100644
+--- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
++++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+@@ -30,6 +30,10 @@ properties:
+     type: boolean
+     description: If set enable the clock detection management
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 1df8ffe95fc6..893978e7170f 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -70,6 +70,10 @@ properties:
+     enum: [1, 2, 4, 8, 12, 14, 16]
+     default: 8
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ allOf:
+   - $ref: rs485.yaml#
+   - $ref: serial.yaml#
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+index b9111d375b93..64c5898e51f8 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+@@ -65,6 +65,10 @@ properties:
+     $ref: audio-graph-port.yaml#
+     unevaluatedProperties: false
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - "#sound-dai-cells"
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+index 56d206f97a96..9bc08b7645dc 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+@@ -48,6 +48,10 @@ properties:
+   clock-names:
+     maxItems: 3
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+index bc48151b9adb..f00e5db9ee3b 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+@@ -50,6 +50,10 @@ properties:
+   resets:
+     maxItems: 1
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - "#sound-dai-cells"
+diff --git a/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
+index 8bba965a9ae6..2ac136802467 100644
+--- a/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
+@@ -46,6 +46,10 @@ properties:
+       - const: tx
+       - const: rx
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ required:
+   - compatible
+   - reg
+diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+index 9ca1a843c820..725c26daabe4 100644
+--- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+@@ -59,6 +59,10 @@ properties:
+       - const: rx
+       - const: tx
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ patternProperties:
+   "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-f]+$":
+     type: object
+diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
+index d3506090f8b1..c372caf154fc 100644
+--- a/Documentation/devicetree/bindings/usb/dwc2.yaml
++++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+@@ -171,6 +171,10 @@ properties:
+ 
+   tpl-support: true
+ 
++  feature-domains:
++    minItems: 1
++    maxItems: 3
++
+ dependencies:
+   port: [ usb-role-switch ]
+   role-switch-default-mode: [ usb-role-switch ]
 -- 
 2.25.1
 
