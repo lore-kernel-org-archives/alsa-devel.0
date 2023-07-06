@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F075BEB64DC
-	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jul 2023 11:44:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7008CEB64DC
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jul 2023 11:44:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 052FF74C;
-	Thu,  6 Jul 2023 13:43:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 052FF74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C01E7F1;
+	Thu,  6 Jul 2023 13:43:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C01E7F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688643846;
-	bh=7V0IiqwCRKVXTRZ+4Acio3NJxJf7pXTiiEWwWpMKguk=;
+	s=default; t=1688643866;
+	bh=ktJo01LsD6QStJzrlw+pWxwDMZrFWbHnwYUoORFYSJY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Z4dt9mKZ3bOZsjYFZajFEnn+RgRi8w3RRkec9dTQvuqyNsEm2v+5gp0ojV5h1W4op
-	 1mkQRBcRehMj2AP+IDL9lRly/q/0Pb6fbB+t+WV3NPCpNczjkd0P/d404BRr50qdib
-	 yHAffwShgcKHSszLWe5A9lcGBn49lQuhc1rCnpzs=
+	b=KL0hrXxYRWpBz95lSc2ZZy0KwJZY9uDdFQZUAIyC8MTMeGgMSTXlSaaJqy+2307Ea
+	 641K6Vpt+fbg6uaX662Bby9P8ZP4hp4kiT7tXf51DtY8tWq0C9o7rluV94gdIL6jBT
+	 /FBH3ce7ZMJ1nzYG2JEdX+B0FKS2vYl4/YoTQl5Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D032F80570; Thu,  6 Jul 2023 13:42:27 +0200 (CEST)
+	id 3E29AF80564; Thu,  6 Jul 2023 13:42:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A923F80564;
-	Thu,  6 Jul 2023 13:42:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA2FAF8057A;
+	Thu,  6 Jul 2023 13:42:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 630BAF80093; Thu,  6 Jul 2023 13:42:24 +0200 (CEST)
-Received: from michel.telenet-ops.be (michel.telenet-ops.be
- [IPv6:2a02:1800:110:4::f00:18])
+	id 28BB9F8057A; Thu,  6 Jul 2023 13:42:31 +0200 (CEST)
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be
+ [IPv6:2a02:1800:110:4::f00:19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 15F99F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6D044F80100
 	for <alsa-devel@alsa-project.org>; Thu,  6 Jul 2023 13:42:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15F99F80093
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D044F80100
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:5979:7b6f:39a:b9cb])
-	by michel.telenet-ops.be with bizsmtp
-	id Hni62A00145Xpxs06ni620; Thu, 06 Jul 2023 13:42:08 +0200
+	by laurent.telenet-ops.be with bizsmtp
+	id Hni62A00545Xpxs01ni6hb; Thu, 06 Jul 2023 13:42:08 +0200
 Received: from rox.of.borg ([192.168.97.57])
 	by ramsan.of.borg with esmtp (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1qHNN3-000faq-HA;
-	Thu, 06 Jul 2023 13:42:05 +0200
+	id 1qHNN3-000fay-Ik;
+	Thu, 06 Jul 2023 13:42:06 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1qHNN7-000QkF-Ro;
+	id 1qHNN7-000QkN-Ut;
 	Thu, 06 Jul 2023 13:42:05 +0200
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Mark Brown <broonie@kernel.org>,
@@ -60,17 +60,17 @@ To: Mark Brown <broonie@kernel.org>,
 Cc: alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/3] regmap: Replace "default y if" by select
-Date: Thu,  6 Jul 2023 13:42:02 +0200
+Subject: [PATCH 3/3] ASoC: codecs: SND_SOC_WCD934X should select REGMAP_IRQ
+Date: Thu,  6 Jul 2023 13:42:04 +0200
 Message-Id: 
- <525c37a568b10623ffb2d108850afd7e37f9350e.1688643442.git.geert@linux-m68k.org>
+ <cafd878747e7951914a7d9fea33788a4a230d1f0.1688643442.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1688643442.git.geert@linux-m68k.org>
 References: <cover.1688643442.git.geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FMX3LUBE2V3ALOJE7C3QDWFJMQ5IHCCK
-X-Message-ID-Hash: FMX3LUBE2V3ALOJE7C3QDWFJMQ5IHCCK
+Message-ID-Hash: ROEJG4O5M2SVRHS65B7SQII7MYNJHCMU
+X-Message-ID-Hash: ROEJG4O5M2SVRHS65B7SQII7MYNJHCMU
 X-MailFrom: geert@linux-m68k.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FMX3LUBE2V3ALOJE7C3QDWFJMQ5IHCCK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ROEJG4O5M2SVRHS65B7SQII7MYNJHCMU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,111 +92,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Merely setting the default to enabled is no guarantee that a Kconfig
-option is actually enabled.  While this works for an invisible option,
-the user can still disable it manually if the option is visible.
-Hence since the REGMAP option was made visible if KUNIT_ALL_TESTS is
-enabled, the user can now manually disable REGMAP, causing build
-failures if any of the REGMAP_* configuration options are enabled.
+If CONFIG_SND_SOC_WCD934X=y, CONFIG_COMPILE_TEST=y,
+CONFIG_MFD_WCD934X=n, CONFIG_REGMAP_IRQ=n:
 
-Fix this by replacing "default y if ..." by individual "select REGMAP"
-statements for all users.
+    aarch64-linux-gnu-ld: sound/soc/codecs/wcd934x.o: in function `wcd934x_codec_probe':
+    wcd934x.c:(.text+0x33cc): undefined reference to `regmap_irq_get_virq'
+    aarch64-linux-gnu-ld: sound/soc/codecs/wcd934x.o: in function `wcd934x_comp_probe':
+    wcd934x.c:(.text+0x4cb0): undefined reference to `regmap_irq_get_virq'
+    aarch64-linux-gnu-ld: wcd934x.c:(.text+0x4cc0): undefined reference to `regmap_irq_get_virq'
+    aarch64-linux-gnu-ld: wcd934x.c:(.text+0x4cd0): undefined reference to `regmap_irq_get_virq'
+    aarch64-linux-gnu-ld: wcd934x.c:(.text+0x4ce0): undefined reference to `regmap_irq_get_virq'
+    aarch64-linux-gnu-ld: sound/soc/codecs/wcd934x.o:wcd934x.c:(.text+0x4cf0): more undefined references to `regmap_irq_get_virq' follow
 
-Fixes: 70a640c0efa76674 ("regmap: REGMAP_KUNIT should not select REGMAP")
-Reported-by: Benjamin Gray <bgray@linux.ibm.com>
-Closes: https://lore.kernel.org/r/20230705003024.1486757-1-bgray@linux.ibm.com
-Reported-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Closes: https://lore.kernel.org/r/d8437dd4-63b6-13fb-22fd-9b92c661071c@csgroup.eu
+Fix this by making SND_SOC_WCD934X select REGMAP_IRQ.
+
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/base/regmap/Kconfig | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
-index 0db2021f7477f2ab..e25cc619c75de3d9 100644
---- a/drivers/base/regmap/Kconfig
-+++ b/drivers/base/regmap/Kconfig
-@@ -5,7 +5,6 @@
- 
- config REGMAP
- 	bool "Register Map support" if KUNIT_ALL_TESTS
--	default y if (REGMAP_I2C || REGMAP_SPI || REGMAP_SPMI || REGMAP_W1 || REGMAP_AC97 || REGMAP_MMIO || REGMAP_IRQ || REGMAP_SOUNDWIRE || REGMAP_SOUNDWIRE_MBQ || REGMAP_SCCB || REGMAP_I3C || REGMAP_SPI_AVMM || REGMAP_MDIO || REGMAP_FSI)
- 	select IRQ_DOMAIN if REGMAP_IRQ
- 	select MDIO_BUS if REGMAP_MDIO
- 	help
-@@ -25,10 +24,12 @@ config REGMAP_KUNIT
- 
- config REGMAP_AC97
- 	tristate
-+	select REGMAP
- 
- config REGMAP_I2C
- 	tristate
- 	depends on I2C
-+	select REGMAP
- 
- config REGMAP_SLIMBUS
- 	tristate
-@@ -37,23 +38,29 @@ config REGMAP_SLIMBUS
- config REGMAP_SPI
- 	tristate
- 	depends on SPI
-+	select REGMAP
- 
- config REGMAP_SPMI
- 	tristate
- 	depends on SPMI
-+	select REGMAP
- 
- config REGMAP_W1
- 	tristate
- 	depends on W1
-+	select REGMAP
- 
- config REGMAP_MDIO
- 	tristate
-+	select REGMAP
- 
- config REGMAP_MMIO
- 	tristate
-+	select REGMAP
- 
- config REGMAP_IRQ
- 	bool
-+	select REGMAP
- 
- config REGMAP_RAM
- 	tristate
-@@ -61,23 +68,29 @@ config REGMAP_RAM
- config REGMAP_SOUNDWIRE
- 	tristate
- 	depends on SOUNDWIRE
-+	select REGMAP
- 
- config REGMAP_SOUNDWIRE_MBQ
- 	tristate
- 	depends on SOUNDWIRE
-+	select REGMAP
- 
- config REGMAP_SCCB
- 	tristate
- 	depends on I2C
-+	select REGMAP
- 
- config REGMAP_I3C
- 	tristate
- 	depends on I3C
-+	select REGMAP
- 
- config REGMAP_SPI_AVMM
- 	tristate
- 	depends on SPI
-+	select REGMAP
- 
- config REGMAP_FSI
- 	tristate
- 	depends on FSI
-+	select REGMAP
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 2a62dbd5339e4a3a..958499050c8b6a3f 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1942,6 +1942,7 @@ config SND_SOC_WCD934X
+ 	tristate "WCD9340/WCD9341 Codec"
+ 	depends on COMMON_CLK
+ 	depends on SLIMBUS
++	select REGMAP_IRQ
+ 	select REGMAP_SLIMBUS
+ 	select SND_SOC_WCD_MBHC
+ 	depends on MFD_WCD934X || COMPILE_TEST
 -- 
 2.34.1
 
