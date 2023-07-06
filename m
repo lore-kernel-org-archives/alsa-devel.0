@@ -4,103 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82362EB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 15:25:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57711EB64D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 15:31:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B69877F4;
-	Mon, 10 Jul 2023 17:24:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B69877F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id C234E83B;
+	Mon, 10 Jul 2023 17:30:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C234E83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689002704;
-	bh=doEGXCzGELXBjhlHMMHj2D10kVYrjVBiIyTRpTAKujA=;
+	s=default; t=1689003076;
+	bh=JgAS7+H/bXuGN7P4jhyATEkL5iXN8WwS5vNdjCpDTKM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nX9e5uhgScLk5hmcgt/nXKWs4Jk+JLmiOJkv/TJeA4sITnhTxivlWkjH9ZKu8FokQ
-	 /oVLGIFVDVFXoMIRorucEyPcNobAbNlM1JlCE9txRfuAICSqCxzvETSo23xM3Ff52o
-	 Oy9YLTg2Pje5juGyZ+S1Upzsa7YXydP6ug/qxFyk=
+	b=mrckU/++5z4Kbo71AoJOREmeIyxd07qle9RbxjMxLU7+SNUGDC4d0jsjA6mHa6Seb
+	 MEvGJDLKlcCWQjQzD6mNs3exsSLjImJY2/ocwdlejqaIddHce0FFckrywW1HabwRAj
+	 lp4D1bVXSYu1aAqO+nAWY/MclXkiSdmv1U7WaPBA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C6D97F80290; Mon, 10 Jul 2023 17:23:53 +0200 (CEST)
+	id 18AE4F8024E; Mon, 10 Jul 2023 17:29:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6499DF8027B;
-	Mon, 10 Jul 2023 17:23:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FB14F80249;
+	Mon, 10 Jul 2023 17:29:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79A31F80249; Mon, 10 Jul 2023 17:23:50 +0200 (CEST)
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com
- [209.85.166.50])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4720BF80093
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:23:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4720BF80093
-Received: by mail-io1-f50.google.com with SMTP id
- ca18e2360f4ac-78666f06691so146966839f.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 10 Jul 2023 08:23:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689002625; x=1691594625;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AgntDtiN/HaSOPUrDKiRPniiMg0bi29a5uBEmLG2Jvc=;
-        b=dKicTRwckYnWzzw9aafaTpEs4pHGgkY1s93K8fjltZfRZ8e8jnYdETx2yEAcmaGOOt
-         2aF1AQEygtDPT4fRYnd43E+Ovx6i3xYdhFEHMMGVdYpyEIu76fsN4/RQclTunr3qVt1+
-         /e9TpK++FRGXl1oRQibH6O4p/BQ+d6axkwyA1JWV4EMa8Uy6Ko+rFcXodnHhkDK934jA
-         736I7T512Nyxx9raRo95VfctlG49sVMthFVjj3oT6pHVPBzbxX1yWyf+iXFP5Rmqrq4g
-         NufUqohN375vKi61SSORTTl6yFKG5gggNn1CYzilv5ulxEmh5utvY/GzwTMKEXF04dyT
-         VDdw==
-X-Gm-Message-State: ABy/qLYtMBDnU+yOC1isje+8NQl5U5HXYS1t98w3yT2NJ+MtM8vPSZoy
-	p6SgUUjsZQWF3fkP2YsXZQ==
-X-Google-Smtp-Source: 
- APBJJlEIrl+JxrkL+m7AoCnXnNiZ/7i1ohm2Fy0z/ryA9efk1SBhej0LHDNHSpv/cn6JwOv2F1V8Pg==
-X-Received: by 2002:a6b:5903:0:b0:786:e612:72f8 with SMTP id
- n3-20020a6b5903000000b00786e61272f8mr8371903iob.21.1689002625063;
-        Mon, 10 Jul 2023 08:23:45 -0700 (PDT)
-Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id
- f7-20020a056638022700b0042b1cd4c096sm3204527jaq.74.2023.07.10.08.23.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jul 2023 08:23:44 -0700 (PDT)
-Received: (nullmailer pid 2002022 invoked by uid 1000);
-	Mon, 10 Jul 2023 15:23:42 -0000
-Date: Mon, 10 Jul 2023 09:23:42 -0600
-From: Rob Herring <robh@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- =?utf-8?B?IkFtYWRldXN6IFPFgmF3acWEc2tpIg==?=
- <amadeuszx.slawinski@linux.intel.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 15/15] ASoC: dt-bindings: renesas,rsnd.yaml: enable
- multi ports for multi Component support
-Message-ID: <20230710152342.GA1997421-robh@kernel.org>
-References: <87mt04o96f.wl-kuninori.morimoto.gx@renesas.com>
- <871qhgo91l.wl-kuninori.morimoto.gx@renesas.com>
+	id 0386DF80125; Thu,  6 Jul 2023 10:47:15 +0200 (CEST)
+Received: from pi.fatal.se (andreasfatal-1-pt.tunnel.tserv3.fmt2.ipv6.he.net
+ [IPv6:2001:470:1f04:f16::2])
+	by alsa1.perex.cz (Postfix) with ESMTP id 78F97F80093
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jul 2023 10:47:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78F97F80093
+Received: by pi.fatal.se (Postfix, from userid 1000)
+	id 49B302A8D9; Thu,  6 Jul 2023 10:47:06 +0200 (CEST)
+Date: Thu, 6 Jul 2023 10:47:06 +0200
+From: Andreas Henriksson <andreas@fatal.se>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Linux-ALSA <alsa-devel@alsa-project.org>,
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	Hans =?iso-8859-1?Q?S=F6derlund?= <hans.soderlund@realbit.se>
+Subject: Re: [PATCH] ASoC: fsl_sai: Enable MCTL_MCLK_EN bit for master mode
+Message-ID: <20230706084706.bzwsbi3zisx5m5rl@fatal.se>
+References: <1652963808-14515-1-git-send-email-shengjiu.wang@nxp.com>
+ <CAOMZO5DtpoH0dLDX3=Sv4UUpX_=66VEZPsJUWQNnYviApfMLKQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871qhgo91l.wl-kuninori.morimoto.gx@renesas.com>
-Message-ID-Hash: M4HQCQ2D6WVVOM3UGK3WIQOUKPDDCYN3
-X-Message-ID-Hash: M4HQCQ2D6WVVOM3UGK3WIQOUKPDDCYN3
-X-MailFrom: robherring2@gmail.com
+In-Reply-To: 
+ <CAOMZO5DtpoH0dLDX3=Sv4UUpX_=66VEZPsJUWQNnYviApfMLKQ@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-MailFrom: ah@fatal.se
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 43HMEGOLBLQ7PGGLELCIMF4DXJ5II4JS
+X-Message-ID-Hash: 43HMEGOLBLQ7PGGLELCIMF4DXJ5II4JS
+X-Mailman-Approved-At: Mon, 10 Jul 2023 15:29:49 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M4HQCQ2D6WVVOM3UGK3WIQOUKPDDCYN3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/43HMEGOLBLQ7PGGLELCIMF4DXJ5II4JS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,82 +82,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jul 10, 2023 at 10:21:58AM +0900, Kuninori Morimoto wrote:
-> To enable multi Component support, "multi ports" is needed for Audio Graph
-> Card/Card2, and "multi rcar_sound,dai" is needed for Simple Audio Card.
-> This patch enable these.
+Hello Shengjiu, Fabio,
+
+On Thu, May 19, 2022 at 10:23:06AM -0300, Fabio Estevam wrote:
+> Hi Shengjiu,
 > 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  .../bindings/sound/renesas,rsnd.yaml          | 24 ++++++++++++-------
->  1 file changed, 16 insertions(+), 8 deletions(-)
+> On Thu, May 19, 2022 at 9:49 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> index d9808b130e8d..13a5a0a10fe6 100644
-> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> @@ -91,6 +91,12 @@ properties:
->        it must be 1 if your system has audio_clkout0/1/2/3
->      enum: [0, 1]
->  
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
->    clock-frequency:
->      description: for audio_clkout0/1/2/3
->  
-> @@ -117,13 +123,7 @@ properties:
->      description: List of necessary clock names.
->      # details are defined below
->  
-> -  ports:
-> -    $ref: audio-graph-port.yaml#/definitions/port-base
-> -    unevaluatedProperties: false
-> -    patternProperties:
-> -      '^port(@[0-9a-f]+)?$':
-> -        $ref: "#/definitions/port-def"
-> -
-> +  # ports is below
->    port:
->      $ref: "#/definitions/port-def"
->  
-> @@ -242,8 +242,9 @@ properties:
->            - interrupts
->      additionalProperties: false
->  
-> +patternProperties:
->    # For DAI base
-> -  rcar_sound,dai:
-> +  'rcar_sound,dai(@[0-9a-f]+)?$':
-
-With a unit-address you need a 'reg' property.
-
->      description: DAI subnode.
->      type: object
->      patternProperties:
-> @@ -263,6 +264,13 @@ properties:
->                - capture
->      additionalProperties: false
->  
-> +  'ports(@[0-9a-f]+)?$':
-
-Multiple 'ports' nodes is not valid.
-
-Here too would need a 'reg' property. Did you test any of this because 
-that would be a dtc warning.
-
-> +    $ref: audio-graph-port.yaml#/definitions/port-base
-> +    unevaluatedProperties: false
-> +    patternProperties:
-> +      '^port(@[0-9a-f]+)?$':
-> +        $ref: "#/definitions/port-def"
-> +
->  required:
->    - compatible
->    - reg
-> -- 
-> 2.25.1
+> > diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> > index fa950dde5310..dae16a14f177 100644
+> > --- a/sound/soc/fsl/fsl_sai.c
+> > +++ b/sound/soc/fsl/fsl_sai.c
+> > @@ -437,6 +437,12 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
+> >                                    FSL_SAI_CR2_DIV_MASK | FSL_SAI_CR2_BYP,
+> >                                    savediv / 2 - 1);
+> >
+> > +       if (sai->soc_data->max_register >= FSL_SAI_MCTL) {
 > 
+> Isn't it a bit fragile to take this decision based on the number of
+> SAI registers in the SoC?
+> 
+> What about adding a specific field in soc_data for such a purpose?
+
+We've been working on an i.MX8MP where MCLK needs to be input and found
+that this enables the MCLK as output despite not having set the
+`fsl,sai-mclk-direction-output;` devicetree property in our DT.
+Reverting the patch fixes the issues for us.
+
+I have to say that the code comment made me a bit confused, but once
+I found the commit message I understood why this code existed.
+If this is really i.MX8MM specific maybe mention that in the code
+comment and please make the code actually only trigger on i.MX8MM.
+It seems to me like these all fulfill the current criteria:
+imx7ulp, imx8mq, imx8mm, imx8mp, imx8ulp, imx93
+
+Should I report this in bugzilla.kernel.org ?
+
+Regards,
+Andreas Henriksson
