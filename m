@@ -4,86 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C06CEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 Jul 2023 21:50:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12B95EB64D9
+	for <alsa-devel@archiver.kernel.org>; Thu,  6 Jul 2023 06:18:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F1AE85D;
-	Wed,  5 Jul 2023 23:49:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F1AE85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACDB8741;
+	Thu,  6 Jul 2023 08:17:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACDB8741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688593820;
-	bh=qRItAJndJX1XqrEIXciz6duNiIanh49578CFIMHWANY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1688624304;
+	bh=VF7EajoQhYvqmxOEcoOLJjSq1A7k7YQBhV8Tz0D7gM4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cpdv67/2KN7n0/uJjr6k0Kb44njPZE4p7BoGN1L8c/SJyi8ASGWNM8g4baFBbDka0
-	 i7c/gOF3w/mX6gt67nsqT25UJXdsJxjTNWEIGobwXMhPC1LWRuvxMx5F2JpLhh4gb7
-	 tMbiK24F+/RiRSzrKAJbpGwu2XF8pQFMMHoi0dsg=
+	b=sE5DWiTfk8zX39q9/SycxCMrkQOvNfnJD+V4GvKZouldYzcKZTa93YyzMuAgb3sGB
+	 pCApDbDmGa62hPAvM1//TPIGmSuFx4ISBv6u11X+G5NurkQDV+Z9GiVxh+b3gsxP62
+	 82DMNXuu9zikUNWf6ulrnCOVRB2uA7rJT8sQmB3g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73550F8058C; Wed,  5 Jul 2023 23:48:25 +0200 (CEST)
+	id 34DD0F80093; Thu,  6 Jul 2023 08:17:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D3F1F8057F;
-	Wed,  5 Jul 2023 23:48:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E13FAF8025F;
+	Thu,  6 Jul 2023 08:17:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EEE5FF8057A; Wed,  5 Jul 2023 23:48:21 +0200 (CEST)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+	id 019F6F80125; Thu,  6 Jul 2023 08:14:25 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D451AF80548
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2023 23:48:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D451AF80548
+	by alsa1.perex.cz (Postfix) with ESMTPS id 07C02F80100
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jul 2023 08:14:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07C02F80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=YGvTqmE/
-Received: from localhost (unknown [188.24.137.5])
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=J11t8+3r
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id A7C396606FBB;
-	Wed,  5 Jul 2023 22:48:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1688593693;
-	bh=qRItAJndJX1XqrEIXciz6duNiIanh49578CFIMHWANY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YGvTqmE/u5qJdGp+1aUK1zJwT17jhLF2quT+67kaGJImPvp7D/Oj9lSr2nwzwbmw6
-	 aJ7FjorCBxQEv87JJ5tURZ1zUPTxdTECMKFrnQdPqLW82daO5OUgtRZyqF3V1Iuein
-	 G+lcPHFHlaGdHUhRdJZI+EboTbOJXNAL1hrTrgeFjROj3k4xaLaQg7ql2vDmkMTrMc
-	 SotRmOlm4tRbuwhCvomToXJ5onyXwimgN3EbivLapbNfW2KKF8XPe8CEj9r5xIPKXW
-	 WV2NVUFyIXYeOMbJmu3bVrRluxKbf9PmdrqUHXbAqqBaxU34thZ+O8PG76BiWXZBYL
-	 thztkmTipLW6w==
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-	Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	kernel@collabora.com
-Subject: [PATCH v3 3/3] ASoC: amd: vangogh: Add support for NAU8821/MAX98388
- variant
-Date: Thu,  6 Jul 2023 00:48:00 +0300
-Message-ID: <20230705214800.193244-4-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230705214800.193244-1-cristian.ciocaltea@collabora.com>
-References: <20230705214800.193244-1-cristian.ciocaltea@collabora.com>
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6E2C4615E6;
+	Thu,  6 Jul 2023 06:14:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C86ACC433C7;
+	Thu,  6 Jul 2023 06:14:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688624055;
+	bh=VF7EajoQhYvqmxOEcoOLJjSq1A7k7YQBhV8Tz0D7gM4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J11t8+3rmnuCwBxgU75U8OwLGHb2mVbqY8RGPxIakNjiNFMdqRvt8Yo8L0uNSdINb
+	 nufZLNutYsTEjmkApL9bJ4sPV9DKWe75wcTA3HDfbPtqC6HuPqmm5ET36q59G9xqRH
+	 poOp5Mp+YioNqGz3IwjwOgO3F0UhJRKWfoMUqirS4yUKSm+T/Qvh76I+oxPD1XE2He
+	 Xu4bXAtF6AxiZZNyui8MTxeRE17Bi5TO3RBI4ei1RkC991aB7wEf42CeEQhZtmyClH
+	 YFnUKsCCi9NyBSiKH3Tuct0voE/1KDBbBwVzVUk7g6eXpisthmgMR2/JFMeMzeyf4Y
+	 TPo0rR6Yci6FA==
+Received: from johan by xi.lan with local (Exim 4.96)
+	(envelope-from <johan@kernel.org>)
+	id 1qHIGD-00045E-1x;
+	Thu, 06 Jul 2023 08:14:38 +0200
+Date: Thu, 6 Jul 2023 08:14:37 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?=
+ <amadeuszx.slawinski@linux.intel.com>
+Cc: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	Alex Elder <elder@linaro.org>
+Subject: Re: [PATCH 7/8] ASoC: topology: suppress probe deferral errors
+Message-ID: <ZKZbzctgLpV-67hJ@hovoldconsulting.com>
+References: <20230705123018.30903-1-johan+linaro@kernel.org>
+ <20230705123018.30903-8-johan+linaro@kernel.org>
+ <ac232872-734f-d192-d46c-555ebe3625c5@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6PMFHM32SR35SXAHBEENK2R76JDR6VDI
-X-Message-ID-Hash: 6PMFHM32SR35SXAHBEENK2R76JDR6VDI
-X-MailFrom: cristian.ciocaltea@collabora.com
+In-Reply-To: <ac232872-734f-d192-d46c-555ebe3625c5@linux.intel.com>
+Message-ID-Hash: H67M3EN3STNPDPTB3JL5KGAXLCXYQBY5
+X-Message-ID-Hash: H67M3EN3STNPDPTB3JL5KGAXLCXYQBY5
+X-MailFrom: johan@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6PMFHM32SR35SXAHBEENK2R76JDR6VDI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H67M3EN3STNPDPTB3JL5KGAXLCXYQBY5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,228 +111,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Extend the Vangogh machine driver to support a variant based on the
-Nuvoton NAU88L21 Codec and the Analog Devices MAX98388 Speaker
-Amplifier.
+On Wed, Jul 05, 2023 at 05:07:22PM +0200, Amadeusz Sławiński wrote:
+> On 7/5/2023 2:30 PM, Johan Hovold wrote:
+> > Suppress probe deferral error messages when loading topologies and
+> > creating frontend links to avoid spamming the logs when a component has
+> > not yet been registered:
+> > 
+> >      snd-sc8280xp sound: ASoC: adding FE link failed
+> >      snd-sc8280xp sound: ASoC: topology: could not load header: -517
+> > 
+> > Note that dev_err_probe() is not used as the topology component can be
+> > probed and removed while the underlying platform device remains bound to
+> > its driver.
+> 
+> I'm not sure that I understand that argument... what's wrong with
+> dev_err_probe(tplg->dev, err, "ASoC: adding FE link failed\n");
+> instead of
+> dev_err(tplg->dev, "ASoC: adding FE link failed\n");
+> ?
 
-Additionally, enable probing via ACPI match table for this and future
-hardware revisions.
+In short, it is not correct to use dev_err_probe() here as this is not a
+probe function.
 
-Co-developed-by: Lucas Tanure <lucas.tanure@collabora.com>
-Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
----
- sound/soc/amd/Kconfig              |   5 +-
- sound/soc/amd/vangogh/acp5x-mach.c | 137 +++++++++++++++++++++++++++--
- 2 files changed, 132 insertions(+), 10 deletions(-)
+dev_err_probe() is tied to driver core and will specifically allocate
+and associate an error message with the struct device on probe
+deferrals, which is later freed when the struct device is bound to a
+driver (or released).
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 1dd8579e8034..273688c05317 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -79,14 +79,15 @@ config SND_SOC_AMD_ACP5x
- 	 ACP DMA driver, CPU DAI driver.
- 
- config SND_SOC_AMD_VANGOGH_MACH
--	tristate "AMD Vangogh support for NAU8821 CS35L41"
-+	tristate "AMD Vangogh support for NAU8821/CS35L41/MAX98388"
- 	select SND_SOC_NAU8821
- 	select SND_SOC_CS35L41_SPI
-+	select SND_SOC_MAX98388
- 	select SND_AMD_ACP_CONFIG
- 	depends on SND_SOC_AMD_ACP5x && I2C && SPI_MASTER
- 	help
- 	  This option enables machine driver for Vangogh platform
--	  using NAU8821 and CS35L41 codecs.
-+	  using NAU8821 and either CS35L41 or MAX98388 codecs.
- 	  Say m if you have such a device.
- 	  If unsure select "N".
- 
-diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index 1efa8f8b77ab..125a8e93478d 100644
---- a/sound/soc/amd/vangogh/acp5x-mach.c
-+++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0+
- /*
-- * Machine driver for AMD Vangogh platform using NAU8821 & CS35L41
-- * codecs.
-+ * Machine driver for AMD Vangogh platform using either
-+ * NAU8821 & CS35L41 or NAU8821 & MAX98388 codecs.
-  *
-  * Copyright 2021 Advanced Micro Devices, Inc.
-  */
-@@ -29,6 +29,9 @@
- #define ACP5X_CS35L41_COMP_LNAME	"spi-VLV1776:00"
- #define ACP5X_CS35L41_COMP_RNAME	"spi-VLV1776:01"
- #define ACP5X_CS35L41_DAI_NAME		"cs35l41-pcm"
-+#define ACP5X_MAX98388_COMP_LNAME	"i2c-ADS8388:00"
-+#define ACP5X_MAX98388_COMP_RNAME	"i2c-ADS8388:01"
-+#define ACP5X_MAX98388_DAI_NAME		"max98388-aif1"
- 
- static struct snd_soc_jack vg_headset;
- 
-@@ -326,6 +329,108 @@ static struct snd_soc_card acp5x_8821_35l41_card = {
- 	.num_controls = ARRAY_SIZE(acp5x_8821_controls),
- };
- 
-+static int acp5x_max98388_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct acp5x_platform_info *machine = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	machine->play_i2s_instance = I2S_HS_INSTANCE;
-+
-+	runtime->hw.channels_max = DUAL_CHANNEL;
-+	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				   &constraints_channels);
-+	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				   &constraints_rates);
-+	return 0;
-+}
-+
-+static const struct snd_soc_ops acp5x_max98388_play_ops = {
-+	.startup = acp5x_max98388_startup,
-+};
-+
-+static struct snd_soc_codec_conf acp5x_max98388_conf[] = {
-+	{
-+		.dlc = COMP_CODEC_CONF(ACP5X_MAX98388_COMP_LNAME),
-+		.name_prefix = "Left",
-+	},
-+	{
-+		.dlc = COMP_CODEC_CONF(ACP5X_MAX98388_COMP_RNAME),
-+		.name_prefix = "Right",
-+	},
-+};
-+
-+SND_SOC_DAILINK_DEF(max98388, DAILINK_COMP_ARRAY(COMP_CODEC(ACP5X_MAX98388_COMP_LNAME,
-+							    ACP5X_MAX98388_DAI_NAME),
-+						 COMP_CODEC(ACP5X_MAX98388_COMP_RNAME,
-+							    ACP5X_MAX98388_DAI_NAME)));
-+
-+static struct snd_soc_dai_link acp5x_8821_98388_dai[] = {
-+	{
-+		.name = "acp5x-8821-play",
-+		.stream_name = "Playback/Capture",
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			   SND_SOC_DAIFMT_NB_NF |
-+			   SND_SOC_DAIFMT_CBC_CFC,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ops = &acp5x_8821_ops,
-+		.init = acp5x_8821_init,
-+		SND_SOC_DAILINK_REG(acp5x_i2s, nau8821, platform),
-+	},
-+	{
-+		.name = "acp5x-max98388-play",
-+		.stream_name = "MAX98388 Playback",
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			   SND_SOC_DAIFMT_NB_NF |
-+			   SND_SOC_DAIFMT_CBC_CFC,
-+		.dpcm_playback = 1,
-+		.playback_only = 1,
-+		.ops = &acp5x_max98388_play_ops,
-+		SND_SOC_DAILINK_REG(acp5x_bt, max98388, platform),
-+	},
-+};
-+
-+static const struct snd_soc_dapm_widget acp5x_8821_98388_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("Int Mic", NULL),
-+	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-+			    platform_clock_control,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_SPK("SPK", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route acp5x_8821_98388_route[] = {
-+	{ "Headphone", NULL, "HPOL" },
-+	{ "Headphone", NULL, "HPOR" },
-+	{ "MICL", NULL, "Headset Mic" },
-+	{ "MICR", NULL, "Headset Mic" },
-+	{ "DMIC", NULL, "Int Mic" },
-+
-+	{ "Headphone", NULL, "Platform Clock" },
-+	{ "Headset Mic", NULL, "Platform Clock" },
-+	{ "Int Mic", NULL, "Platform Clock" },
-+
-+	{ "SPK", NULL, "Left BE_OUT" },
-+	{ "SPK", NULL, "Right BE_OUT" },
-+};
-+
-+static struct snd_soc_card acp5x_8821_98388_card = {
-+	.name = "acp5x-max98388",
-+	.owner = THIS_MODULE,
-+	.dai_link = acp5x_8821_98388_dai,
-+	.num_links = ARRAY_SIZE(acp5x_8821_98388_dai),
-+	.dapm_widgets = acp5x_8821_98388_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(acp5x_8821_98388_widgets),
-+	.dapm_routes = acp5x_8821_98388_route,
-+	.num_dapm_routes = ARRAY_SIZE(acp5x_8821_98388_route),
-+	.codec_conf = acp5x_max98388_conf,
-+	.num_configs = ARRAY_SIZE(acp5x_max98388_conf),
-+	.controls = acp5x_8821_controls,
-+	.num_controls = ARRAY_SIZE(acp5x_8821_controls),
-+};
-+
- static const struct dmi_system_id acp5x_vg_quirk_table[] = {
- 	{
- 		.matches = {
-@@ -344,11 +449,20 @@ static int acp5x_probe(struct platform_device *pdev)
- 	struct snd_soc_card *card;
- 	int ret;
- 
--	dmi_id = dmi_first_match(acp5x_vg_quirk_table);
--	if (!dmi_id)
--		return -ENODEV;
--
--	card = &acp5x_8821_35l41_card;
-+	card = (struct snd_soc_card *)device_get_match_data(dev);
-+	if (!card) {
-+		/*
-+		 * This is normally the result of directly probing the driver
-+		 * in pci-acp5x through platform_device_register_full(), which
-+		 * is necessary for the CS35L41 variant, as it doesn't support
-+		 * ACPI probing and relies on DMI quirks.
-+		 */
-+		dmi_id = dmi_first_match(acp5x_vg_quirk_table);
-+		if (!dmi_id)
-+			return -ENODEV;
-+
-+		card = &acp5x_8821_35l41_card;
-+	}
- 
- 	machine = devm_kzalloc(dev, sizeof(*machine), GFP_KERNEL);
- 	if (!machine)
-@@ -365,10 +479,17 @@ static int acp5x_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct acpi_device_id acp5x_acpi_match[] = {
-+	{ "AMDI8821", (kernel_ulong_t)&acp5x_8821_98388_card },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, acp5x_acpi_match);
-+
- static struct platform_driver acp5x_mach_driver = {
- 	.driver = {
- 		.name = DRV_NAME,
- 		.pm = &snd_soc_pm_ops,
-+		.acpi_match_table = acp5x_acpi_match,
- 	},
- 	.probe = acp5x_probe,
- };
-@@ -376,6 +497,6 @@ static struct platform_driver acp5x_mach_driver = {
- module_platform_driver(acp5x_mach_driver);
- 
- MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
--MODULE_DESCRIPTION("NAU8821 & CS35L41 audio support");
-+MODULE_DESCRIPTION("NAU8821/CS35L41 & NAU8821/MAX98388 audio support");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("platform:" DRV_NAME);
--- 
-2.41.0
+For ASoC drivers, the struct device is typically bound to a driver long
+before the components they register are "probed". I use quotation marks
+as this is not probing in the driver model sense of the word and the
+underlying struct device is already bound to a driver when the component
+is "probed".
 
+> Personally I would prefer dev_err_probe() to be used as it also provides 
+> debug message.
+
+Yeah, but it would be conceptually wrong to do so (besides the fact that
+it would waste some memory).
+
+Johan
