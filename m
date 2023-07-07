@@ -4,84 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D07F7EB64D9
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Jul 2023 13:24:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81E69EB64D9
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Jul 2023 13:32:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 852F920C;
-	Fri,  7 Jul 2023 15:23:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 852F920C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67A70741;
+	Fri,  7 Jul 2023 15:31:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67A70741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688736258;
-	bh=NHCxkwb/m5V0S7DCsQ1y4xdBpD1W9GlLedhbup59uxc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1688736738;
+	bh=XkM5fI108OLI61Ld0/rQxbLfnDNbbtay3MtNfjLqr6w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cbATJ0O8oXxdL5naxK2jdFfsROrx2+YFQZ5XQmrsYXd0Ra6vdzC1hUwKkiPJy5hko
-	 ZaJn+Qv3/Es3/bpVgla/jq7pUsc7qTw1L4BOn7u7HlQHkkKYO5hipq29sB93QuoRbK
-	 fTOY5cTZiRZMQromN1kednsH1uEAjr4b5+GwBmcQ=
+	b=nH12lDqnnozjY6Wor5QhusRhj7FOM7OeWIwtX741TOSMnBUxd5cNjnYQIfFF4SWwK
+	 EkBXfRM58LCukaUp0uDWb5pFs3a/czDcgPOZvkMDfWjbbEx9wFvUwbNuQcJPBDWsYF
+	 HJGPVDb5lrj/eRH6jcm+F9wi2Zr+Zp0gzmd/zNeE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7CDF9F80104; Fri,  7 Jul 2023 15:23:02 +0200 (CEST)
+	id F1220F8025F; Fri,  7 Jul 2023 15:31:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB3E0F80093;
-	Fri,  7 Jul 2023 15:23:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7AC7FF80125;
+	Fri,  7 Jul 2023 15:31:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADC0BF80125; Fri,  7 Jul 2023 15:22:57 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id E1CD4F80125; Fri,  7 Jul 2023 15:30:55 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7146BF80093
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jul 2023 15:22:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7146BF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9B547F80104
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jul 2023 15:30:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B547F80104
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uTi+H3Wd
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=OfKupCDL;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=VPllrIwj
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C40AF61900;
-	Fri,  7 Jul 2023 13:22:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1990C433C7;
-	Fri,  7 Jul 2023 13:22:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688736171;
-	bh=NHCxkwb/m5V0S7DCsQ1y4xdBpD1W9GlLedhbup59uxc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uTi+H3WdfHPM9Byxcm2uOHye+pl0xSXW+NfUsQ2T1zjOFGAvJdUSuxZTA/NL7BxrV
-	 fmc5hIq2P1DY6FKKo4OLqdf7zMj0GhlBpQSe8CbmAgz6k7lQzWOIV0dvsg9gY4nj/b
-	 fe5qRdVwrg/cT18TVNUNYkRGo+aaQCRjq//shCKUoW7NlcBfa+VSO6mcsouBmp+r/Z
-	 xsZ5a6S2HYt6Ma3/6Brph4A4s8SR6dYCsVo4ALeyVsR9YvkCTcz/LBv0BScgRl6z8G
-	 GiL0BTmgsyY3V2VyaCZWzRhXNLwQXC5+tRftUA4asvU19qN3Fvm2VekpjfWSUZs6wf
-	 mS/YMTZmyuJHw==
-Date: Fri, 7 Jul 2023 14:22:45 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E7C1F22695;
+	Fri,  7 Jul 2023 13:30:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1688736648;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dML+Bci7dvwejb6fUN7elzw5DqVmGNwoDlI56jXp5jo=;
+	b=OfKupCDLFLkgEOE1Gv6MCWiNkK7+GW6YUeLeaUAOcWOc9SFKx4HPAJ4fBbSuQPNMe9J7rl
+	Glj83gAjHi7uHvlsmhLpkqgkXY2HMBMSMkUYZzYDnCPDa7cP5wK14AxxNkbhdRf73RslgL
+	j8kKcs6TP8gXFbxN8MydDSZNJM9TPBI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1688736648;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dML+Bci7dvwejb6fUN7elzw5DqVmGNwoDlI56jXp5jo=;
+	b=VPllrIwjpS28/Oy40IrMqdng/0BqwT/L23bu9CyaTHtRoWcVsnu6tNlmyJsv1E2uX8oZdw
+	nfLc5Tzn6sMsbfDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9FB6F1346D;
+	Fri,  7 Jul 2023 13:30:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id Vd3gJYgTqGQIWgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 07 Jul 2023 13:30:48 +0000
+Date: Fri, 07 Jul 2023 15:30:48 +0200
+Message-ID: <87wmzbkfw7.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
 Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Johan Hovold <johan@kernel.org>, perex@perex.cz, tiwai@suse.com,
-	lgirdwood@gmail.com, ckeepax@opensource.cirrus.com,
-	kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+	Johan Hovold <johan@kernel.org>,
+	perex@perex.cz,
+	tiwai@suse.com,
+	lgirdwood@gmail.com,
+	ckeepax@opensource.cirrus.com,
+	kuninori.morimoto.gx@renesas.com,
+	linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com,
+	alsa-devel@alsa-project.org
 Subject: Re: [PATCH] ASoC: codecs: wcd938x: fix dB range for HPHL and HPHR
-Message-ID: <3450ef1e-cb20-4242-b482-41d3d34c4564@sirena.org.uk>
+In-Reply-To: <3450ef1e-cb20-4242-b482-41d3d34c4564@sirena.org.uk>
 References: <20230705125723.40464-1-srinivas.kandagatla@linaro.org>
- <ZKfAUOOcGoBanHHu@hovoldconsulting.com>
- <efaf5960-bcc5-6d52-5552-e1505a13b635@linaro.org>
- <87y1jrkgdx.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5wVyCaq/6JTHUGMD"
-Content-Disposition: inline
-In-Reply-To: <87y1jrkgdx.wl-tiwai@suse.de>
-X-Cookie: Victory or defeat!
-Message-ID-Hash: H5EHL3FFSFQI4QO7RACJTYQWADH4EYQI
-X-Message-ID-Hash: H5EHL3FFSFQI4QO7RACJTYQWADH4EYQI
-X-MailFrom: broonie@kernel.org
+	<ZKfAUOOcGoBanHHu@hovoldconsulting.com>
+	<efaf5960-bcc5-6d52-5552-e1505a13b635@linaro.org>
+	<87y1jrkgdx.wl-tiwai@suse.de>
+	<3450ef1e-cb20-4242-b482-41d3d34c4564@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: FDUNM5GSZG6ZKBV76XSSTXIV7SSZ76XC
+X-Message-ID-Hash: FDUNM5GSZG6ZKBV76XSSTXIV7SSZ76XC
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H5EHL3FFSFQI4QO7RACJTYQWADH4EYQI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FDUNM5GSZG6ZKBV76XSSTXIV7SSZ76XC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,36 +126,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Fri, 07 Jul 2023 15:22:45 +0200,
+Mark Brown wrote:
+> 
+> On Fri, Jul 07, 2023 at 03:20:10PM +0200, Takashi Iwai wrote:
+> > Srinivas Kandagatla wrote:
+> 
+> > > yes, the highest value corresponds to lowest dB which is why its inverted.
+> 
+> > Ouch, that's a bad design choice...
+> 
+> It's moderately common - typically in these cases the control is
+> described in the datasheet as an attenuation control rather than a gain,
+> and this usually corresponds to the physical implementation being only
+> able to make signals smaller relative to the reference.
 
---5wVyCaq/6JTHUGMD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yeah, I see the use case.  The problem is, however, that we're using
+the very same dB info for both gain and attenuation.  That means,
+application has no idea how to interpret those dB values -- to be
+added or to be subtracted.
 
-On Fri, Jul 07, 2023 at 03:20:10PM +0200, Takashi Iwai wrote:
-> Srinivas Kandagatla wrote:
+We should have defined a new TLV type for attenuation to
+differentiate, and define the TLV macro to give proper min/max.
 
-> > yes, the highest value corresponds to lowest dB which is why its inverted.
 
-> Ouch, that's a bad design choice...
-
-It's moderately common - typically in these cases the control is
-described in the datasheet as an attenuation control rather than a gain,
-and this usually corresponds to the physical implementation being only
-able to make signals smaller relative to the reference.
-
---5wVyCaq/6JTHUGMD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSoEaUACgkQJNaLcl1U
-h9CsMwf/SZvOJmKt2vqSP+P7xpCmdnZuh5IZm0EUCIEuuA293OaTfe1+amJOiCPB
-/wIC4KaE4nYOKYq7VltaO9ytlJuUPbTgYSJDaLuA/N54rNmkhc5LPUfpb1U7vhUS
-PtFvtPDhHdiEgSAUHMJ+hFg3+dacjO39J/5X/8mhVJQefrSK7wZRfuaiBbhgxIpU
-AKRTLYxDE8wAQwoRmPqpfTOQaDZ3FJ88FeK0LBtVwCPc0jVEXzIE8zUanWxXeNZv
-riUd4goWN9XLteCM9iFu2WlCrPVrTwJj0ICAGOJMxHM3SpACSu9GAn9JIy8aDaR3
-LpUiI3ukZByAEAt6HOo/dh20Hl5aLA==
-=BUAJ
------END PGP SIGNATURE-----
-
---5wVyCaq/6JTHUGMD--
+Takashi
