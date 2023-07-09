@@ -4,48 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03FEBEB64DA
-	for <alsa-devel@archiver.kernel.org>; Sat,  8 Jul 2023 23:14:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D193EB64DC
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Jul 2023 12:34:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E951E6C1;
-	Sun,  9 Jul 2023 01:13:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E951E6C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id F01887F4;
+	Sun,  9 Jul 2023 14:33:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F01887F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688858068;
-	bh=cDl44rXjWzHaSzUBqHvOQJQ57ZhL1WuLq09x47txyVU=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=D9qe4lZKjaztuh0EiWVcYTI8eiGkID+lokk81x+kuzMQZPYfOyz/HkL04v+96C64M
-	 IjETVnjoJZEThFUju/MewLfIyyHkZq95Pd9PHs5f6cbyqyeOvZsOd7vb8H+SjXMxRE
-	 C6xRdc27Ng3PhwViTDwXtEtalp54xQKPpc0g/eyU=
+	s=default; t=1688906081;
+	bh=5x6xKUeBEcGoluwYqew+DkhtRk6qF3j/K+HJS7ErQIo=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=iiYddqKCZlSn6jD4c4/FS6IpCC+2h82ZfkObYiDEcfCqiYqjs0B7F4AaKp4qowKiw
+	 7iE3kRpRxeAmzD0joRyrohE8qi6GaX6y/D88iwdIMyGPXVxFm+wIw7NNBMkSEVJUa/
+	 iYbdK8aVQN0Ro4V242Hml9sdgbb9U070ubwBlo1I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA8DAF80249; Sun,  9 Jul 2023 01:13:11 +0200 (CEST)
+	id C271AF800E4; Sun,  9 Jul 2023 14:33:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72A0EF80249;
-	Sun,  9 Jul 2023 01:13:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51F9EF80249;
+	Sun,  9 Jul 2023 14:33:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 83F1DF80249; Sun,  9 Jul 2023 01:12:41 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBE63F80093
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jul 2023 01:12:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBE63F80093
+	id 50332F80249; Sun,  9 Jul 2023 14:32:22 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id DD2B7F800E4
+	for <alsa-devel@alsa-project.org>; Sun,  9 Jul 2023 14:32:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD2B7F800E4
+Received: from ugly.fritz.box (localhost [127.0.0.1])
+	by bluemchen.kde.org (Postfix) with ESMTP id B7B672074D;
+	Sun,  9 Jul 2023 08:32:03 -0400 (EDT)
+Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
+	id 1qITa7-3h0-00; Sun, 09 Jul 2023 14:32:03 +0200
+Date: Sun, 9 Jul 2023 14:32:03 +0200
+From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+	tiwai@suse.com, perex@perex.cz
+Subject: on (not) breaking user space
+Message-ID: <ZKqow+jPg4HGyV6R@ugly>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1688857951989094257-webhooks-bot@alsa-project.org>
-References: <1688857951989094257-webhooks-bot@alsa-project.org>
-Subject: [Feature Request] New hdajackretask ncurses TUI
-Message-Id: <20230708231241.83F1DF80249@alsa1.perex.cz>
-Date: Sun,  9 Jul 2023 01:12:41 +0200 (CEST)
-Message-ID-Hash: COA4GSNMWACNKWYCTLFN5GELJNK4J4KB
-X-Message-ID-Hash: COA4GSNMWACNKWYCTLFN5GELJNK4J4KB
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+Message-ID-Hash: KYXBBI5H6GL5CDYRUPBOBGKL2JKXKLX3
+X-Message-ID-Hash: KYXBBI5H6GL5CDYRUPBOBGKL2JKXKLX3
+X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +62,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/COA4GSNMWACNKWYCTLFN5GELJNK4J4KB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KYXBBI5H6GL5CDYRUPBOBGKL2JKXKLX3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,14 +71,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-tools issue #16 was opened from HalanoSiblee:
+hi linus,
 
-Hi
-Why i need gtk GUI when I do such a simple retaskable jack input
-Please make hdajackretask with ncurses like alsamixer to work in tty and terminal's
-at this point it will be so useful less bloat ,and blazingly fast
+the alsa maintainers seem to be applying a reading of "we don't break 
+user space" that i find counter-productive. so i would appreciate you 
+clarifying your position on that matter (once more ...)
 
-Thanks.
+to be clear, we're not arguing over changing any abi, but simply 
+exercising one somewhat more than before. the claim is that this would 
+likely have unacceptable consequences. i disagree.
 
-Issue URL     : https://github.com/alsa-project/alsa-tools/issues/16
-Repository URL: https://github.com/alsa-project/alsa-tools
+context:
+> Due to hardware constraints, changing the clock multiplier (CM) 
+> changes the available audio ports and the number of available 
+> channels. [...] Therefore, we do dynamic reconfiguration (DR) of the 
+> mixer in response to changing the CM.
+
+arguments:
+> DR is somewhat controversial, as it has the potential to crash poorly 
+> programmed applications.
+> But that in itself isn't a very convincing argument against it, as by 
+> that logic we'd have to ban all hot-plugging. (1)
+> Such crashes would also not really qualify as regressions, as the 
+> D.A.S. mode is a new opt-in feature, and therefore no previously 
+> stable setups would be impacted. (2)
+
+the full text is at 
+https://lore.kernel.org/all/20230630144542.664190-7-oswald.buddenhagen@gmx.de/
+
+the preceding discussion is at 
+https://lore.kernel.org/all/87v8fren1k.wl-tiwai@suse.de/T/#u
+
+regards,
+ossi
