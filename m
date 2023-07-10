@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91984EB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 13:33:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5F89EB64D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 13:38:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15492820;
-	Mon, 10 Jul 2023 15:33:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15492820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2155C206;
+	Mon, 10 Jul 2023 15:37:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2155C206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688996034;
-	bh=PcgdfCqBIbPTu4JqQZu5q+HYQGpr7DWOm49hDVjk5i0=;
+	s=default; t=1688996310;
+	bh=HA2So+NjBTWAY2fjVnTJJii4ARFTRIerq07ZS5EB7BI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NmGulV6ubkutcWBC7gTT7PZ4vssC9Nwi2dBKmrjxPUW2q3hMxByYnnL/Ty3lQUUqe
-	 DL1eu3QnQraIegkDCMs3bO8a71szVxkk/rMdHkvYm6tgE53JY+yLJi3xB2m/+aPjAB
-	 M5MJlTB8RgyGZJ9m5sRzV/Bpoov3bcQudVsJfTCI=
+	b=uyVZHaT5IW+1LkleUYTUtR2Z5fJZHJq0ufJNbGlMyHG1wJaX6u9WOxNx2SU9W87LD
+	 ws0tIRR1BsBEbLqRo2MF2lPZE9oyjJuxhSF8RVyJSSYgQaPcumD8hpc//k6Va1Yami
+	 R3GzQOqP1R07Ej3FJ1EDikC9pSFZtl84ZOAzxFPM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB78BF8047D; Mon, 10 Jul 2023 15:32:35 +0200 (CEST)
+	id 57502F800E4; Mon, 10 Jul 2023 15:37:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF8D0F80249;
-	Mon, 10 Jul 2023 15:32:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D05A2F80249;
+	Mon, 10 Jul 2023 15:37:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53BA6F80249; Mon, 10 Jul 2023 15:32:31 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+	id 2EB1EF80249; Mon, 10 Jul 2023 15:37:10 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4242FF800E4
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 15:32:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4242FF800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id DFD42F800E4
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 15:37:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFD42F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=SMOtDTxm
+ header.s=Intel header.b=IjYLkVSv
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688995946; x=1720531946;
+  t=1688996228; x=1720532228;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=PcgdfCqBIbPTu4JqQZu5q+HYQGpr7DWOm49hDVjk5i0=;
-  b=SMOtDTxmFrGnPGK+C4+ACaN1MnhjrrFAoLx0boQW9xpoj99jJGujIhaf
-   7A6IIzE6JR5AvoJ3rod88nlnuz+HTOtn+HEoDuDQUPJnuww8DGgERlPRN
-   wvDueApCFU09OFCZo5bX/cSed72aK/8R3uaAeOsHVyc+rEMJXCxOglXi3
-   Bpgc1eAJjjdpqCGPLyO/h6IBRoUDVmZ+k813qIIUMbVd1TeH29iStvdhJ
-   GHXZ7d81d6Gpbj4QnR7XH5nyheKvd3RHhCyaI3fS6IQpvnHWY+5QDrKqk
-   8a4EGiw2+BeodYa4UjZD9peZ5m6uMueiomX6rkebf5ZL4Yzz1K5bTiJ4t
+  bh=HA2So+NjBTWAY2fjVnTJJii4ARFTRIerq07ZS5EB7BI=;
+  b=IjYLkVSvmCHsTPWzf2GNThVqCrYFi1Qz6kM9yhAIuU9//+YxkMurdVG4
+   HyD7dVtpOY0iQLvlxg8wIm8oKkds+omoAYoOVpghh8U6BR4O6Y1CUNsiZ
+   TvdqhD1YyfAy+gglytLMZgITBBZviFwkEqsLfjpo4w7hTphikd/F8esG+
+   Co5+V0DZU5mQXlabEujPh7nJUwaQlkDYOxx+dg2W683kADCtRfRECHRXr
+   XRVppt2PpI+vrQ9gpTFrMihhg4OSVL0iBi7svnxDERMjwt24D36+TxZec
+   LORuq/4AX42Dhb/ne0EISkR7gVLLJStrlq6F6pbYQdKEBKwZl7acZEzAG
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="428037972"
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="450701153"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="428037972"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jul 2023 06:32:19 -0700
+   d="scan'208";a="450701153"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jul 2023 06:37:02 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="790802176"
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="894774244"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="790802176"
+   d="scan'208";a="894774244"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP; 10 Jul 2023 06:32:12 -0700
+  by orsmga005.jf.intel.com with ESMTP; 10 Jul 2023 06:36:56 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.96)
 	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1qIqzq-001Z8L-0E;
-	Mon, 10 Jul 2023 16:32:10 +0300
-Date: Mon, 10 Jul 2023 16:32:09 +0300
+	id 1qIr4P-001ZC8-1X;
+	Mon, 10 Jul 2023 16:36:53 +0300
+Date: Mon, 10 Jul 2023 16:36:53 +0300
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Yang Yingliang <yangyingliang@huawei.com>,
+To: Mark Brown <broonie@kernel.org>,
+	Yang Yingliang <yangyingliang@huawei.com>,
 	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
 	Kris Bahnsen <kris@embeddedts.com>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
@@ -79,8 +79,8 @@ Cc: Yang Yingliang <yangyingliang@huawei.com>,
 	linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
 	linux-mediatek@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
-	Radu Pirea <radu_nicolae.pirea@upb.ro>,
+	linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org
+Cc: Radu Pirea <radu_nicolae.pirea@upb.ro>,
 	Nicolas Ferre <nicolas.ferre@microchip.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	Claudiu Beznea <claudiu.beznea@microchip.com>,
@@ -95,24 +95,16 @@ Cc: Yang Yingliang <yangyingliang@huawei.com>,
 	Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	Max Filippov <jcmvbkbc@gmail.com>,
 	Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v1 4/8] spi: Get rid of old SPI_MASTER_NO_.X and
- SPI_MASTER_MUST_.X
-Message-ID: <ZKwIWUeqD/otnSFM@smile.fi.intel.com>
+Subject: Re: [PATCH v1 0/8] spi: Header and core clean up and refactoring
+Message-ID: <ZKwJdb0rJCmH5cBA@smile.fi.intel.com>
 References: <20230710102751.83314-1-andriy.shevchenko@linux.intel.com>
- <20230710102751.83314-5-andriy.shevchenko@linux.intel.com>
- <1ffd5603-4140-4bf6-bfed-af70a6759bda@sirena.org.uk>
- <ZKvmkAP5ZuT6lGLN@smile.fi.intel.com>
- <ZKvnPXl9H+cQR8Ok@smile.fi.intel.com>
- <353027bf-6d2a-40de-9e18-8553864b343c@sirena.org.uk>
- <ZKv7p96D2B9vYd0J@smile.fi.intel.com>
- <7aff8759-cfca-47b5-b995-5260e5082c45@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7aff8759-cfca-47b5-b995-5260e5082c45@sirena.org.uk>
+In-Reply-To: <20230710102751.83314-1-andriy.shevchenko@linux.intel.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: X6CBJ3RERKTKXFXU6UOW6XRMCZRGBNOI
-X-Message-ID-Hash: X6CBJ3RERKTKXFXU6UOW6XRMCZRGBNOI
+Message-ID-Hash: VMXVQ7YNW2PGO4Q4ARYRMZCFZSNM5FER
+X-Message-ID-Hash: VMXVQ7YNW2PGO4Q4ARYRMZCFZSNM5FER
 X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -125,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X6CBJ3RERKTKXFXU6UOW6XRMCZRGBNOI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VMXVQ7YNW2PGO4Q4ARYRMZCFZSNM5FER/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,32 +126,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jul 10, 2023 at 02:21:05PM +0100, Mark Brown wrote:
-> On Mon, Jul 10, 2023 at 03:37:59PM +0300, Andy Shevchenko wrote:
-> > On Mon, Jul 10, 2023 at 12:22:59PM +0100, Mark Brown wrote:
-> > > On Mon, Jul 10, 2023 at 02:10:53PM +0300, Andy Shevchenko wrote:
-
-...
-
-> > > > > > > Convert the users to SPI_CONTROLLER_NO_?X and SPI_CONTROLLER_MUST_.X
-> > > > > > > and kill the not used anymore definitions.
-
-...
-
-> > > > > > > -	controller->flags = SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX;
-> > > > > > > +	controller->flags = SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_MUST_TX;
+On Mon, Jul 10, 2023 at 01:27:43PM +0300, Andy Shevchenko wrote:
+> Various cleanups and refactorings of the SPI header and core parts
+> united in a single series.
 > 
-> > > What part of the above change is replacing _NO_ with _MUST_?
+> Patches 1 & 2, 5 & 6 & 8 are dependent inside each group.
 > 
-> > None, that's why assuming the split by name should be fine.
-> 
-> That's what the above changelog sounds like it's trying to do (I'm not
-> sure the change itself makes sense but the first thing I ran into when
-> reviewing the patch), AFIACT you're missing a "from" in the changelog?
+> No functional change intended.
 
-I see, I will elaborate better in v2.
-But still, I will split on per macro and add one for GPIO_SS.
-Seems to me better that way.
+I will resend the entire series.
 
 -- 
 With Best Regards,
