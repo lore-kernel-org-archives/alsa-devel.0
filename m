@@ -4,83 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A11FEB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 15:34:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89F37EB64DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 15:34:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 804AB201;
-	Mon, 10 Jul 2023 17:33:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 804AB201
+	by alsa0.perex.cz (Postfix) with ESMTPS id B63A6203;
+	Mon, 10 Jul 2023 17:33:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B63A6203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689003257;
-	bh=5CM62BWHL8zOH1qrcSFyvnkmKB8XTQfKgi5NKFnPmeg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1689003270;
+	bh=/Nhh6CNgOPOLlNknULlhicVqhTi0E7lOobdqH1gzezo=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sRFJvFuJeNc7inzhNOyffqFhQGZMr5J3TCWc3HHBLh8UXIxO3G0k354/lP9bdOjsB
-	 3ndKOVU8rfbcQJ5oOKxdMp5OozDGslocr+ciQx7pnRscew0noutH77T70i+VMJidsV
-	 k1+tEiVetScKXxsQdXNnFj4E3hBz4+cWC/cdQ9Z4=
+	b=ao+oC2oDuiZIC7PNIre+I9TDW9KV/IdOSfFmbxjJBpdy1jxI6qmmWAliyX/Fk37cP
+	 TWk3lTBsb1W9pA1gBisUDuy2UPSc1rVr24totMOLH7a1yRv+m8b7oG+IKfbmBgs6xc
+	 NTNSQumEw2hway3xvEehGz9IXga8OYsMe7zgiPs0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 96052F80578; Mon, 10 Jul 2023 17:32:15 +0200 (CEST)
+	id 83151F805A9; Mon, 10 Jul 2023 17:32:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01F55F8056F;
-	Mon, 10 Jul 2023 17:32:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2930F805AB;
+	Mon, 10 Jul 2023 17:32:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E01CF80125; Sat,  8 Jul 2023 15:03:42 +0200 (CEST)
-Received: from mail.andi.de1.cc (mail.andi.de1.cc
- [IPv6:2a02:c205:3004:2154::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id 80C50F80249; Mon, 10 Jul 2023 05:23:10 +0200 (CEST)
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E3CE9F800E4
-	for <alsa-devel@alsa-project.org>; Sat,  8 Jul 2023 15:03:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3CE9F800E4
-Received: from p5dc58ef9.dip0.t-ipconnect.de ([93.197.142.249] helo=aktux)
-	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <andreas@kemnade.info>)
-	id 1qI7ar-001Dj3-76; Sat, 08 Jul 2023 15:03:21 +0200
-Date: Sat, 8 Jul 2023 15:03:19 +0200
-From: Andreas Kemnade <andreas@kemnade.info>
-To: Mark Brown <broonie@kernel.org>
-Cc: bcousson@baylibre.com, tony@atomide.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- peter.ujfalusi@gmail.com, jarkko.nikula@bitmer.com,
- dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH 2/3] ASoC: tlv320aic3x: use BCLK instead of MCLK if not
- in master mode
-Message-ID: <20230708150319.202789c1@aktux>
-In-Reply-To: <eeba3297-acdb-45ca-a80d-40d8b3a90231@sirena.org.uk>
-References: <20230705190324.355282-1-andreas@kemnade.info>
-	<20230705190324.355282-3-andreas@kemnade.info>
-	<15d3fc6e-d294-4968-bc7d-66307efc92db@sirena.org.uk>
-	<20230705215611.5f96584e@aktux>
-	<eeba3297-acdb-45ca-a80d-40d8b3a90231@sirena.org.uk>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+	by alsa1.perex.cz (Postfix) with ESMTPS id CFB4BF800D2
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 05:22:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFB4BF800D2
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id E952A24E023;
+	Mon, 10 Jul 2023 11:22:51 +0800 (CST)
+Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 10 Jul
+ 2023 11:22:51 +0800
+Received: from [192.168.125.93] (113.72.145.114) by EXMBX172.cuchost.com
+ (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 10 Jul
+ 2023 11:22:51 +0800
+Message-ID: <d046796e-34a0-56e5-a740-6a1fcf41d216@starfivetech.com>
+Date: Mon, 10 Jul 2023 11:22:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH v1 1/5] ASoC: dt-bindings: Add StarFive JH7110 dummy
+ PWM-DAC transmitter
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Mark Brown
+	<broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela
+	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor@kernel.org>, "Walker
+ Chen" <walker.chen@starfivetech.com>, Xingyu Wu <xingyu.wu@starfivetech.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20230626110909.38718-1-hal.feng@starfivetech.com>
+ <20230626110909.38718-2-hal.feng@starfivetech.com>
+ <006ddacd-0496-70d1-3310-99b16706de84@linaro.org>
+ <0312262c-28c0-9445-c6f7-2079a57db8c7@starfivetech.com>
+ <c0244a98-4c91-93d8-a3e4-5210d0b3f205@linaro.org>
+Content-Language: en-US
+From: Hal Feng <hal.feng@starfivetech.com>
+In-Reply-To: <c0244a98-4c91-93d8-a3e4-5210d0b3f205@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-MailFrom: andreas@kemnade.info
+X-Originating-IP: [113.72.145.114]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
+ (172.16.6.92)
+X-YovoleRuleAgent: yovoleflag
+X-MailFrom: hal.feng@starfivetech.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: D5C3B2IUDXOEROV2DXEHKLJHKMVL5YXU
-X-Message-ID-Hash: D5C3B2IUDXOEROV2DXEHKLJHKMVL5YXU
-X-Mailman-Approved-At: Mon, 10 Jul 2023 15:32:11 +0000
+Message-ID-Hash: D5TDMRC4LBDG5TTAMKXKHORT2TH766J7
+X-Message-ID-Hash: D5TDMRC4LBDG5TTAMKXKHORT2TH766J7
+X-Mailman-Approved-At: Mon, 10 Jul 2023 15:32:12 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D5C3B2IUDXOEROV2DXEHKLJHKMVL5YXU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D5TDMRC4LBDG5TTAMKXKHORT2TH766J7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -89,34 +98,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
-
-On Thu, 6 Jul 2023 13:02:36 +0100
-Mark Brown <broonie@kernel.org> wrote:
-
-> On Wed, Jul 05, 2023 at 09:56:11PM +0200, Andreas Kemnade wrote:
-> > Mark Brown <broonie@kernel.org> wrote:  
+On Sat, 1 Jul 2023 10:17:51 +0200, Krzysztof Kozlowski wrote:
+> On 30/06/2023 03:57, Hal Feng wrote:
+>> On Mon, 26 Jun 2023 17:34:56 +0200, Krzysztof Kozlowski wrote:
+>>> On 26/06/2023 13:09, Hal Feng wrote:
+>>>> Add bindings for StarFive JH7110 dummy PWM-DAC transmitter.
+>>>
+>>> ...
+>>>
+>>>> +required:
+>>>> +  - compatible
+>>>> +  - "#sound-dai-cells"
+>>>> +
+>>>> +additionalProperties: false
+>>>> +
+>>>> +examples:
+>>>> +  - |
+>>>> +    pwmdac-dit {
+>>>> +        compatible = "starfive,jh7110-pwmdac-dit";
+>>>> +        #sound-dai-cells = <0>;
+>>>
+>>> BTW, I don't see any resources here. Neither in the driver. I think you
+>>> just added this for driver, not for a real hardware.
+>> 
+>> Yes, this is a dummy PWM-DAC transmitter as described in the title. The
+>> StarFive JH7110 PWM-DAC module doesn't need a hardware codec, but a
+>> dummy codec is needed for the driver.
 > 
-> > > It would be nicer to set the clock via the DT bindings, ideally with the
-> > > clock bindings...  
-> 
-> > I found no path from these simple-audio-card things to provide a clk_id 
-> > to set_dai_sysclk. I would of course prefer such a thing. Do I have overlooked
-> > something?  
-> 
-> Since we already have clock bindings we should use those to configure
-> the clocks, there's several drivers that have added this support already
-> - look for clock providers.
+> Bindings are no for drivers, therefore with such reasoning the answer
+> is: drop entire binding. If you think otherwise, please give me some
+> more details about the hardware.
 
-ok, looking around:
-Just to make sure I am not running in a bad direction: Do you think
-tlv320aic32x4{,-clk}.c is a good example? It is ignoring clk_id. 
-I was mentally bound to have to use clk_id there, so I did not found a good
-solution.
+I agreed. I will drop this binding and the compatible in patch 2. Thanks.
 
-So I guess I have to configure the chip as a master and using mclk and compare
-register dumps with the state we have now and the state after the changes,
-additionally to check bclk functionality directly.
-
-Regards,
-Andreas
+Best regards,
+Hal
