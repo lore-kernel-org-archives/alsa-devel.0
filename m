@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96045EB64DC
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 15:21:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82362EB64D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 15:25:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 037BE206;
-	Mon, 10 Jul 2023 17:20:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 037BE206
+	by alsa0.perex.cz (Postfix) with ESMTPS id B69877F4;
+	Mon, 10 Jul 2023 17:24:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B69877F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689002485;
-	bh=y3Qja2tZEdI5pJFpK+5UFa1z3KU+jRanN4lE0QsT3Rk=;
+	s=default; t=1689002704;
+	bh=doEGXCzGELXBjhlHMMHj2D10kVYrjVBiIyTRpTAKujA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WgtJID8I+4IsZix2rLbKQd9ZfnXxCe/JOaSKSlS3aT6yz+mtxM1AhyJOfJ9L1couM
-	 nZy3Knu+qDhFt+MubiC+RHMltGOWBR0cFO7slVUyiQ8miVhsUtwQjQCC3jHaAj5TEc
-	 uu3HVvGvoUmXRtlX+YsD3U1scqRUBRkHF9CrCqWQ=
+	b=nX9e5uhgScLk5hmcgt/nXKWs4Jk+JLmiOJkv/TJeA4sITnhTxivlWkjH9ZKu8FokQ
+	 /oVLGIFVDVFXoMIRorucEyPcNobAbNlM1JlCE9txRfuAICSqCxzvETSo23xM3Ff52o
+	 Oy9YLTg2Pje5juGyZ+S1Upzsa7YXydP6ug/qxFyk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CA2CDF80544; Mon, 10 Jul 2023 17:20:08 +0200 (CEST)
+	id C6D97F80290; Mon, 10 Jul 2023 17:23:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C12EF80249;
-	Mon, 10 Jul 2023 17:20:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6499DF8027B;
+	Mon, 10 Jul 2023 17:23:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E150F80249; Mon, 10 Jul 2023 17:20:05 +0200 (CEST)
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com
- [209.85.166.173])
+	id 79A31F80249; Mon, 10 Jul 2023 17:23:50 +0200 (CEST)
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com
+ [209.85.166.50])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 84AD1F800E4
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:19:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84AD1F800E4
-Received: by mail-il1-f173.google.com with SMTP id
- e9e14a558f8ab-3460815fde5so24296285ab.2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4720BF80093
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:23:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4720BF80093
+Received: by mail-io1-f50.google.com with SMTP id
+ ca18e2360f4ac-78666f06691so146966839f.0
         for <alsa-devel@alsa-project.org>;
- Mon, 10 Jul 2023 08:19:59 -0700 (PDT)
+ Mon, 10 Jul 2023 08:23:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689002398; x=1691594398;
+        d=1e100.net; s=20221208; t=1689002625; x=1691594625;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SKBJSWYguobSqgw2ST9rUfCndiuxEmDCw91JSLUKizE=;
-        b=L1+Cimbi4IwiSHfoKUCcXqA1ScrE1iMWyVccQwTXH6smalCaiSSiq4p+nEqoQUURgy
-         JM+6XHT+2CBE43LRNZ/ruji6EMJDWpeOjThAwdrm62v+DkI7dpL6v5Akr69CqQ2i0MkX
-         8RmvV9l7+DxiTg5m2JEQ9EogYvRvxUjRpAQHrUmJbwctBPWTSY1FSGscNZEYdflf2Zh8
-         JaaZWgWo7TjyXyP3BOi9OKdRYo5hec+z/2ifgLRJ9O3lSKvxUubtz7mAI2eOfzjurqpk
-         OztwDxH/ZyZO59m9Freau8Okv5AasVGFdbwuncUUpRyIK3652Ir2g0I2VbPy1LPO1qbX
-         mK9g==
-X-Gm-Message-State: ABy/qLYjiH/IyNyXRoiu0Ysrq8iHSWTOZVyUVVJItxXCrtf4oB/8UUwF
-	ZcFySpqAUGQOv0+0xm81uA==
+        bh=AgntDtiN/HaSOPUrDKiRPniiMg0bi29a5uBEmLG2Jvc=;
+        b=dKicTRwckYnWzzw9aafaTpEs4pHGgkY1s93K8fjltZfRZ8e8jnYdETx2yEAcmaGOOt
+         2aF1AQEygtDPT4fRYnd43E+Ovx6i3xYdhFEHMMGVdYpyEIu76fsN4/RQclTunr3qVt1+
+         /e9TpK++FRGXl1oRQibH6O4p/BQ+d6axkwyA1JWV4EMa8Uy6Ko+rFcXodnHhkDK934jA
+         736I7T512Nyxx9raRo95VfctlG49sVMthFVjj3oT6pHVPBzbxX1yWyf+iXFP5Rmqrq4g
+         NufUqohN375vKi61SSORTTl6yFKG5gggNn1CYzilv5ulxEmh5utvY/GzwTMKEXF04dyT
+         VDdw==
+X-Gm-Message-State: ABy/qLYtMBDnU+yOC1isje+8NQl5U5HXYS1t98w3yT2NJ+MtM8vPSZoy
+	p6SgUUjsZQWF3fkP2YsXZQ==
 X-Google-Smtp-Source: 
- APBJJlHCigiMWQeoAZDBI7Y7BWxmtnDvCocoeswLmvtyKWBi4JZzDcEG6CBraMQsGMR2hpJWkdatbw==
-X-Received: by 2002:a92:c6c8:0:b0:345:83d6:6020 with SMTP id
- v8-20020a92c6c8000000b0034583d66020mr13161811ilm.21.1689002398238;
-        Mon, 10 Jul 2023 08:19:58 -0700 (PDT)
+ APBJJlEIrl+JxrkL+m7AoCnXnNiZ/7i1ohm2Fy0z/ryA9efk1SBhej0LHDNHSpv/cn6JwOv2F1V8Pg==
+X-Received: by 2002:a6b:5903:0:b0:786:e612:72f8 with SMTP id
+ n3-20020a6b5903000000b00786e61272f8mr8371903iob.21.1689002625063;
+        Mon, 10 Jul 2023 08:23:45 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
         by smtp.gmail.com with ESMTPSA id
- gv7-20020a0566382e4700b0042bb03d3a2esm1218309jab.96.2023.07.10.08.19.56
+ f7-20020a056638022700b0042b1cd4c096sm3204527jaq.74.2023.07.10.08.23.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jul 2023 08:19:57 -0700 (PDT)
-Received: (nullmailer pid 1997035 invoked by uid 1000);
-	Mon, 10 Jul 2023 15:19:56 -0000
-Date: Mon, 10 Jul 2023 09:19:56 -0600
+        Mon, 10 Jul 2023 08:23:44 -0700 (PDT)
+Received: (nullmailer pid 2002022 invoked by uid 1000);
+	Mon, 10 Jul 2023 15:23:42 -0000
+Date: Mon, 10 Jul 2023 09:23:42 -0600
 From: Rob Herring <robh@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>,
@@ -77,17 +77,17 @@ Cc: Mark Brown <broonie@kernel.org>,
  <amadeuszx.slawinski@linux.intel.com>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Linux-ALSA <alsa-devel@alsa-project.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 14/15] ASoC: dt-bindings: renesas,rsnd.yaml: add
- common port-def
-Message-ID: <20230710151956.GA1992791-robh@kernel.org>
+Subject: Re: [PATCH v2 15/15] ASoC: dt-bindings: renesas,rsnd.yaml: enable
+ multi ports for multi Component support
+Message-ID: <20230710152342.GA1997421-robh@kernel.org>
 References: <87mt04o96f.wl-kuninori.morimoto.gx@renesas.com>
- <87351wo921.wl-kuninori.morimoto.gx@renesas.com>
+ <871qhgo91l.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87351wo921.wl-kuninori.morimoto.gx@renesas.com>
-Message-ID-Hash: RYHNFR4ZCJ7LRERS5HV532MYRNKEFBEH
-X-Message-ID-Hash: RYHNFR4ZCJ7LRERS5HV532MYRNKEFBEH
+In-Reply-To: <871qhgo91l.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID-Hash: M4HQCQ2D6WVVOM3UGK3WIQOUKPDDCYN3
+X-Message-ID-Hash: M4HQCQ2D6WVVOM3UGK3WIQOUKPDDCYN3
 X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RYHNFR4ZCJ7LRERS5HV532MYRNKEFBEH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M4HQCQ2D6WVVOM3UGK3WIQOUKPDDCYN3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,80 +109,82 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jul 10, 2023 at 10:21:42AM +0900, Kuninori Morimoto wrote:
-> renesas,rsnd uses both "ports" has "port", and these are very similar.
-> To avoid duplicated definitions, this patch adds common port-def.
+On Mon, Jul 10, 2023 at 10:21:58AM +0900, Kuninori Morimoto wrote:
+> To enable multi Component support, "multi ports" is needed for Audio Graph
+> Card/Card2, and "multi rcar_sound,dai" is needed for Simple Audio Card.
+> This patch enable these.
 > 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->  .../bindings/sound/renesas,rsnd.yaml          | 38 ++++++++-----------
->  1 file changed, 16 insertions(+), 22 deletions(-)
+>  .../bindings/sound/renesas,rsnd.yaml          | 24 ++++++++++++-------
+>  1 file changed, 16 insertions(+), 8 deletions(-)
 > 
 > diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> index 8a821dec9526..d9808b130e8d 100644
+> index d9808b130e8d..13a5a0a10fe6 100644
 > --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
 > +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> @@ -9,6 +9,20 @@ title: Renesas R-Car Sound Driver
->  maintainers:
->    - Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> @@ -91,6 +91,12 @@ properties:
+>        it must be 1 if your system has audio_clkout0/1/2/3
+>      enum: [0, 1]
 >  
-> +definitions:
-
-$defs
-
-> +  port-def:
-> +    $ref: audio-graph-port.yaml#/definitions/port-base
-> +    unevaluatedProperties: false
-> +    patternProperties:
-> +      "^endpoint(@[0-9a-f]+)?":
-> +        $ref: audio-graph-port.yaml#/definitions/endpoint-base
-> +        properties:
-> +          playback:
-> +            $ref: /schemas/types.yaml#/definitions/phandle-array
-> +          capture:
-> +            $ref: /schemas/types.yaml#/definitions/phandle-array
-> +        unevaluatedProperties: false
+> +  "#address-cells":
+> +    const: 1
 > +
->  properties:
+> +  "#size-cells":
+> +    const: 0
+> +
+>    clock-frequency:
+>      description: for audio_clkout0/1/2/3
 >  
->    compatible:
-> @@ -108,30 +122,10 @@ properties:
->      unevaluatedProperties: false
->      patternProperties:
->        '^port(@[0-9a-f]+)?$':
-> -        $ref: audio-graph-port.yaml#/definitions/port-base
-> -        unevaluatedProperties: false
-> -        patternProperties:
-> -          "^endpoint(@[0-9a-f]+)?":
-> -            $ref: audio-graph-port.yaml#/definitions/endpoint-base
-> -            properties:
-> -              playback:
-> -                $ref: /schemas/types.yaml#/definitions/phandle-array
-> -              capture:
-> -                $ref: /schemas/types.yaml#/definitions/phandle-array
-> -            unevaluatedProperties: false
-> +        $ref: "#/definitions/port-def"
+> @@ -117,13 +123,7 @@ properties:
+>      description: List of necessary clock names.
+>      # details are defined below
 >  
->    port:
+> -  ports:
 > -    $ref: audio-graph-port.yaml#/definitions/port-base
 > -    unevaluatedProperties: false
 > -    patternProperties:
-> -      "^endpoint(@[0-9a-f]+)?":
-> -        $ref: audio-graph-port.yaml#/definitions/endpoint-base
-> -        properties:
-> -          playback:
-> -            $ref: /schemas/types.yaml#/definitions/phandle-array
-> -          capture:
-> -            $ref: /schemas/types.yaml#/definitions/phandle-array
-> -        unevaluatedProperties: false
-> +    $ref: "#/definitions/port-def"
-
-It would be better if users just always used "ports { port {}; };" even 
-in the single port case.
-
+> -      '^port(@[0-9a-f]+)?$':
+> -        $ref: "#/definitions/port-def"
+> -
+> +  # ports is below
+>    port:
+>      $ref: "#/definitions/port-def"
 >  
->    rcar_sound,dvc:
->      description: DVC subnode.
+> @@ -242,8 +242,9 @@ properties:
+>            - interrupts
+>      additionalProperties: false
+>  
+> +patternProperties:
+>    # For DAI base
+> -  rcar_sound,dai:
+> +  'rcar_sound,dai(@[0-9a-f]+)?$':
+
+With a unit-address you need a 'reg' property.
+
+>      description: DAI subnode.
+>      type: object
+>      patternProperties:
+> @@ -263,6 +264,13 @@ properties:
+>                - capture
+>      additionalProperties: false
+>  
+> +  'ports(@[0-9a-f]+)?$':
+
+Multiple 'ports' nodes is not valid.
+
+Here too would need a 'reg' property. Did you test any of this because 
+that would be a dtc warning.
+
+> +    $ref: audio-graph-port.yaml#/definitions/port-base
+> +    unevaluatedProperties: false
+> +    patternProperties:
+> +      '^port(@[0-9a-f]+)?$':
+> +        $ref: "#/definitions/port-def"
+> +
+>  required:
+>    - compatible
+>    - reg
 > -- 
 > 2.25.1
 > 
