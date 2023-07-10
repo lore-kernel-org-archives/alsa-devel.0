@@ -4,80 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12F39EB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 10:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF553EB64D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 10:29:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83294820;
-	Mon, 10 Jul 2023 12:25:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83294820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50BC47F4;
+	Mon, 10 Jul 2023 12:28:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50BC47F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688984806;
-	bh=8wbTdNkehE98Ctimhl7nOewzsLGVvoA8c+GqiH1ZOE0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1688984954;
+	bh=REWyC/nAC6Z96ggpA1NLsyDE3cGETw1DuCTFixDA/T8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GWDKzVpF44edbg64tKt+ZJ2a4kKqX293KJKMCywKbzpBDG59vLjKlfn3WAHqrCrP2
-	 S70LUg9IZltnmMR/IesqlFmJmhhfc8Xd6GLTTNnyg717NwSpmcOvPAy7J8H5yIWmWe
-	 mvnwmMoVxS6R15vUG+WSr5CXS3GxnvsLoNyq+eXY=
+	b=h5KgZqEevbru1zs2HXYHhQgImLLzbZ5k0bcEfFA3FtLVFks8/vqVBjI+FmGx+bKSF
+	 e42DDOMxjcqeYTi3qWcQs/kHikK3+T1YMaSTgKUlP2UrpNOhhhc4XzPiviGs/QIuFi
+	 men99Ze5mVcgltGExxYmQZM3Rc9Y/Ko59YuL0uVE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB147F8053B; Mon, 10 Jul 2023 12:25:24 +0200 (CEST)
+	id 67243F80557; Mon, 10 Jul 2023 12:28:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8183FF800D2;
-	Mon, 10 Jul 2023 12:25:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3AE46F8053B;
+	Mon, 10 Jul 2023 12:28:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37CBEF80249; Mon, 10 Jul 2023 12:25:19 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 0552BF80535; Mon, 10 Jul 2023 12:28:07 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 702C7F800D2
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 12:25:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 702C7F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 17465F800E4
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 12:27:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17465F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=iXl9Eo6S
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E555F60F99;
-	Mon, 10 Jul 2023 10:25:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 235FBC433C8;
-	Mon, 10 Jul 2023 10:25:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688984712;
-	bh=8wbTdNkehE98Ctimhl7nOewzsLGVvoA8c+GqiH1ZOE0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=iXl9Eo6SSYgH/eoyMB8fQr2XK36z/x0kVrQoG0lLfPMq4Cq2yaOBoYJZDKOouKCh4
-	 Th5NHzsbFXHwpkAiqmUe3tqLsosQ/JXuG9J4JyHvEMD+7AqcA1BCXi4L4Dod/Of97y
-	 YVvqOyixLfaW9ipq+55G58aF0PKUA+J5zBRbOj9A2+poIPhv78PboITZx4EFXiJcoQ
-	 ytr9DI4SpwIN9SVA5fNNOOciZU5IuyZVQBs3ymqU41csMMGYtUFI+jt7Y/NVmAgOLK
-	 pkAIP4/QGeeq97MOPxblc8QlYCH/w+UethpuLGdyc+u/JPUMNTubblqlinnacnkOjW
-	 v814xFgVJEo7A==
-From: Vinod Koul <vkoul@kernel.org>
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>,
- Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org
-In-Reply-To: <9863b2bf-0de2-4bf8-8f09-fe24dc5c63ff@moroto.mountain>
-References: <9863b2bf-0de2-4bf8-8f09-fe24dc5c63ff@moroto.mountain>
-Subject: Re: [PATCH v2] soundwire: amd: Fix a check for errors in probe()
-Message-Id: <168898470975.164858.364870274805965240.b4-ty@kernel.org>
-Date: Mon, 10 Jul 2023 15:55:09 +0530
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Uua5wXKX
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1688984879; x=1720520879;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=REWyC/nAC6Z96ggpA1NLsyDE3cGETw1DuCTFixDA/T8=;
+  b=Uua5wXKXQiJGupqxRTclm303oaos49MT1ZHeVQ0vdsOvb8hC4pd+XIrS
+   bdwFEmoVgfZXt04X9rmcFH6fybrDn/tRyOOzbimIIwD1dLn74RJ3GUUSx
+   Nt6M+5aOQDBWard0jYGlx4qjapF6ou+gaRfFwPjtvDDgt8XgTBNi5fp0i
+   CcQ2LAIyxiLkKf8w9qWBhW3kiN2UPD1FDuqaYoq/UM/6tfEy+u1wCBPRt
+   KgHXKCWx8TX7KB4yIa/a8gaHFA5nJP6LxoJl7qHl9TuT3x1o9HFITC62Z
+   dwyaFUimkTtLkfJD0CZ6eJ2uIaGiHahXy/0prqkA/oJsRbCz7zT6kjSaJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="364345397"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
+   d="scan'208";a="364345397"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jul 2023 03:27:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="865297523"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
+   d="scan'208";a="865297523"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Jul 2023 03:27:48 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 0244B379; Mon, 10 Jul 2023 13:27:52 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>,
+	Yang Yingliang <yangyingliang@huawei.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
+	Kris Bahnsen <kris@embeddedTS.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-spi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-amlogic@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	netdev@vger.kernel.org
+Cc: Radu Pirea <radu_nicolae.pirea@upb.ro>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>
+Subject: [PATCH v1 2/8] spi: Drop duplicate IDR allocation code in
+ spi_register_controller()
+Date: Mon, 10 Jul 2023 13:27:45 +0300
+Message-Id: <20230710102751.83314-3-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+In-Reply-To: <20230710102751.83314-1-andriy.shevchenko@linux.intel.com>
+References: <20230710102751.83314-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.2
-Message-ID-Hash: K3OQ3LHEQIAUVRFNB3BQPWMVL5NHTHNK
-X-Message-ID-Hash: K3OQ3LHEQIAUVRFNB3BQPWMVL5NHTHNK
-X-MailFrom: vkoul@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: XMEP6I7FBO37ARFF44O5J7DFZGZFYB5Q
+X-Message-ID-Hash: XMEP6I7FBO37ARFF44O5J7DFZGZFYB5Q
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -89,30 +119,108 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K3OQ3LHEQIAUVRFNB3BQPWMVL5NHTHNK/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XMEP6I7FBO37ARFF44O5J7DFZGZFYB5Q/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Refactor spi_register_controller() to drop duplicate IDR allocation.
+Instead of if-else-if branching use two sequential if:s, which allows
+to re-use the logic of IDR allocation in all cases.
 
-On Tue, 27 Jun 2023 08:42:10 +0300, Dan Carpenter wrote:
-> This code has two problems:
-> 1) The devm_ioremap() function returns NULL, not error pointers.
-> 2) It's checking the wrong variable.  ->mmio instead of ->acp_mmio.
-> 
-> 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/spi/spi.c | 50 ++++++++++++++++++++++-------------------------
+ 1 file changed, 23 insertions(+), 27 deletions(-)
 
-Applied, thanks!
-
-[1/1] soundwire: amd: Fix a check for errors in probe()
-      commit: a06d6088cfd49b63a2759910f2328ba28d6a342d
-
-Best regards,
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 8f3282a71c63..6d74218cf38e 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -3081,6 +3081,20 @@ static int spi_controller_check_ops(struct spi_controller *ctlr)
+ 	return 0;
+ }
+ 
++/* Allocate dynamic bus number using Linux idr */
++static int spi_controller_id_alloc(struct spi_controller *ctlr, int start, int end)
++{
++	int id;
++
++	mutex_lock(&board_lock);
++	id = idr_alloc(&spi_master_idr, ctlr, start, end, GFP_KERNEL);
++	mutex_unlock(&board_lock);
++	if (WARN(id < 0, "couldn't get idr"))
++		return id == -ENOSPC ? -EBUSY : id;
++	ctlr->bus_num = id;
++	return 0;
++}
++
+ /**
+  * spi_register_controller - register SPI master or slave controller
+  * @ctlr: initialized master, originally from spi_alloc_master() or
+@@ -3108,8 +3122,8 @@ int spi_register_controller(struct spi_controller *ctlr)
+ {
+ 	struct device		*dev = ctlr->dev.parent;
+ 	struct boardinfo	*bi;
++	int			first_dynamic;
+ 	int			status;
+-	int			id, first_dynamic;
+ 
+ 	if (!dev)
+ 		return -ENODEV;
+@@ -3122,27 +3136,13 @@ int spi_register_controller(struct spi_controller *ctlr)
+ 	if (status)
+ 		return status;
+ 
++	if (ctlr->bus_num < 0)
++		ctlr->bus_num = of_alias_get_id(ctlr->dev.of_node, "spi");
+ 	if (ctlr->bus_num >= 0) {
+ 		/* Devices with a fixed bus num must check-in with the num */
+-		mutex_lock(&board_lock);
+-		id = idr_alloc(&spi_master_idr, ctlr, ctlr->bus_num,
+-			ctlr->bus_num + 1, GFP_KERNEL);
+-		mutex_unlock(&board_lock);
+-		if (WARN(id < 0, "couldn't get idr"))
+-			return id == -ENOSPC ? -EBUSY : id;
+-		ctlr->bus_num = id;
+-	} else {
+-		/* Allocate dynamic bus number using Linux idr */
+-		id = of_alias_get_id(ctlr->dev.of_node, "spi");
+-		if (id >= 0) {
+-			ctlr->bus_num = id;
+-			mutex_lock(&board_lock);
+-			id = idr_alloc(&spi_master_idr, ctlr, ctlr->bus_num,
+-				       ctlr->bus_num + 1, GFP_KERNEL);
+-			mutex_unlock(&board_lock);
+-			if (WARN(id < 0, "couldn't get idr"))
+-				return id == -ENOSPC ? -EBUSY : id;
+-		}
++		status = spi_controller_id_alloc(ctlr, ctlr->bus_num, ctlr->bus_num + 1);
++		if (status)
++			return status;
+ 	}
+ 	if (ctlr->bus_num < 0) {
+ 		first_dynamic = of_alias_get_highest_id("spi");
+@@ -3151,13 +3151,9 @@ int spi_register_controller(struct spi_controller *ctlr)
+ 		else
+ 			first_dynamic++;
+ 
+-		mutex_lock(&board_lock);
+-		id = idr_alloc(&spi_master_idr, ctlr, first_dynamic,
+-			       0, GFP_KERNEL);
+-		mutex_unlock(&board_lock);
+-		if (WARN(id < 0, "couldn't get idr"))
+-			return id;
+-		ctlr->bus_num = id;
++		status = spi_controller_id_alloc(ctlr, first_dynamic, 0);
++		if (status)
++			return status;
+ 	}
+ 	ctlr->bus_lock_flag = 0;
+ 	init_completion(&ctlr->xfer_completion);
 -- 
-~Vinod
-
+2.40.0.1.gaa8946217a0b
 
