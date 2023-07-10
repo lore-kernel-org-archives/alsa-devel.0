@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D436EB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:55:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA7D1EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:55:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EA58843;
-	Tue, 11 Jul 2023 15:54:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EA58843
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1BA1E94;
+	Tue, 11 Jul 2023 15:54:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1BA1E94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689083719;
-	bh=X4L2zj0s8AySDlJPOTwB53/1Cp1xNye7i+ww1MhojGE=;
+	s=default; t=1689083724;
+	bh=2ECimbLN3Odgvy6H4NztBc0veTLSWVtVr1a7U9ECQf8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GMmEeUxRUSuWGW2Riv6QEJ3ye3CW+G7OxhGpNqa5HDGP8a+5+B/F7UlGUdlU+qP89
-	 EZ/UuU+i5c69bARAeulSxwAGc0ysp3okf9KEfwczd+hC2Ww5GL+ObjTUCZlQhW9phA
-	 SMmKoMY/VKCtm6DrFtaXBitaNb2QWQfag4ono3og=
+	b=Ky45dw53vJG8qTeHeb895hNptrJcUZH+bBl7jRFtbcBoi+mbdgbzvn3ZDoY5z8E5V
+	 vNPkm3afVhHnVMwvf07jXsdr5b4df7hiAZYog5TbdzM6+Pzlacjzcsxr1z1/mSeSvo
+	 wweqgWblY3Y3C3y+2T6PcM169YbaXT/+FMYkO+lo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 922CBF805E9; Tue, 11 Jul 2023 15:52:14 +0200 (CEST)
+	id 7CA0BF805F1; Tue, 11 Jul 2023 15:52:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA574F805E5;
-	Tue, 11 Jul 2023 15:52:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBF08F805ED;
+	Tue, 11 Jul 2023 15:52:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1E4DF80548; Mon, 10 Jul 2023 17:50:07 +0200 (CEST)
+	id 5AB85F80290; Mon, 10 Jul 2023 17:50:09 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D61FF80249
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D61FF80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 281A6F80544
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 281A6F80544
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=fHmP0Qpk
+ header.s=Intel header.b=ctNBgP5e
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689004195; x=1720540195;
+  t=1689004193; x=1720540193;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=X4L2zj0s8AySDlJPOTwB53/1Cp1xNye7i+ww1MhojGE=;
-  b=fHmP0QpkPTXwHfacbvlfPLDuWCQX3wbQW1BepwDN7vDiY6l1G03IB6Jk
-   /JsZon6CluP1P9tWpgjWVDHVQRV5hwE59G07+sDneQAK2YDh3KvvDMp45
-   vh528HIXLha2rJ1Hw8rWb3RmVwPR9HyUOsxIovWfNd9FwSb2uRC4FCdAh
-   gvoVhhZOELTzS3ae/AlRjmTB/5SAatnGQmZUe4dzNSoALbyugA6SMFNOm
-   LrcVxDonXdYK1wZJ+Xcogc7cPOzUPB4RWpxu/3l1Jrx4uWXaY27clw6kG
-   yH5lSNRsiU1xso6f+rNxTOcfpO9n5fyvOTMcUVwQD7gqARxp3HDR3fwAT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="361842583"
+  bh=2ECimbLN3Odgvy6H4NztBc0veTLSWVtVr1a7U9ECQf8=;
+  b=ctNBgP5egH/ER8JXz/dZ5qzCA2JrP4mOzYdsF1dJFhwk3geY+Jd6bdDF
+   4yI5IyE7q2Hh0R11RX74lYImHes58t1oTnyDtzVDDpNzOb/gf0NWXwBSq
+   +TqikY8IqtvoecpnaqM6Z0OFPAGVtffmkCkqiJPVO4taQh1P/NmekOqTQ
+   prbsdQb5xv6ouwqFn8lbyaK5CJWB8y0t5I5sEheZVl2oZJ+Rg6pLimagI
+   ZP1PXA8qzPfXkim700VgRZSUQ4Au2GzeMwWNhcbmX9dnDwH+FAJpf3zc1
+   PBIoXx+vys6EOYWiJyNXpeX0FSoE98OGwRu75rHKFz1Gxtk8zWS4mIGkw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="361842523"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="361842583"
+   d="scan'208";a="361842523"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jul 2023 08:49:51 -0700
+ 10 Jul 2023 08:49:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="720743962"
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="720743960"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="720743962"
+   d="scan'208";a="720743960"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 10 Jul 2023 08:49:39 -0700
+  by orsmga002.jf.intel.com with ESMTP; 10 Jul 2023 08:49:36 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id D2DB477B; Mon, 10 Jul 2023 18:49:34 +0300 (EEST)
+	id AC4E86B9; Mon, 10 Jul 2023 18:49:34 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
@@ -119,10 +119,9 @@ Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Richard Cochran <richardcochran@gmail.com>
-Subject: [PATCH v2 12/15] spi: Get rid of old SPI_MASTER_MUST_TX &
- SPI_MASTER_MUST_RX
-Date: Mon, 10 Jul 2023 18:49:29 +0300
-Message-Id: <20230710154932.68377-13-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 09/15] spi: Use struct_size() helper
+Date: Mon, 10 Jul 2023 18:49:26 +0300
+Message-Id: <20230710154932.68377-10-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
 References: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
@@ -136,15 +135,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: WZC3MK5OWSLKPX2FSZPK7QVPYBFMOHCQ
-X-Message-ID-Hash: WZC3MK5OWSLKPX2FSZPK7QVPYBFMOHCQ
+Message-ID-Hash: PNRQ2ECA3TVBH333CQZRECLUVWIP45YH
+X-Message-ID-Hash: PNRQ2ECA3TVBH333CQZRECLUVWIP45YH
 X-Mailman-Approved-At: Tue, 11 Jul 2023 13:52:06 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WZC3MK5OWSLKPX2FSZPK7QVPYBFMOHCQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PNRQ2ECA3TVBH333CQZRECLUVWIP45YH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,182 +152,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert the users from SPI_MASTER_MUST_TX and/or SPI_MASTER_MUST_RX
-to SPI_CONTROLLER_MUST_TX and/or SPI_CONTROLLER_MUST_RX respectively
-and kill the not used anymore definitions.
+Prefer struct_size() over open-coded versions.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi-at91-usart.c   | 2 +-
- drivers/spi/spi-atmel.c        | 2 +-
- drivers/spi/spi-davinci.c      | 2 +-
- drivers/spi/spi-fsl-lpspi.c    | 2 +-
- drivers/spi/spi-meson-spicc.c  | 2 +-
- drivers/spi/spi-mt65xx.c       | 2 +-
- drivers/spi/spi-pci1xxxx.c     | 2 +-
- drivers/spi/spi-pic32.c        | 2 +-
- drivers/spi/spi-rb4xx.c        | 2 +-
- drivers/spi/spi-slave-mt27xx.c | 2 +-
- drivers/spi/spi-stm32.c        | 2 +-
- include/linux/spi/spi.h        | 2 --
- 12 files changed, 11 insertions(+), 13 deletions(-)
+ include/linux/spi/spi.h | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/spi/spi-at91-usart.c b/drivers/spi/spi-at91-usart.c
-index 7854d9790fe9..7dfe2b6c2990 100644
---- a/drivers/spi/spi-at91-usart.c
-+++ b/drivers/spi/spi-at91-usart.c
-@@ -527,7 +527,7 @@ static int at91_usart_spi_probe(struct platform_device *pdev)
- 	controller->dev.of_node = pdev->dev.parent->of_node;
- 	controller->bits_per_word_mask = SPI_BPW_MASK(8);
- 	controller->setup = at91_usart_spi_setup;
--	controller->flags = SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX;
-+	controller->flags = SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_MUST_TX;
- 	controller->transfer_one = at91_usart_spi_transfer_one;
- 	controller->prepare_message = at91_usart_spi_prepare_message;
- 	controller->unprepare_message = at91_usart_spi_unprepare_message;
-diff --git a/drivers/spi/spi-atmel.c b/drivers/spi/spi-atmel.c
-index 152cd6773403..0865993005b2 100644
---- a/drivers/spi/spi-atmel.c
-+++ b/drivers/spi/spi-atmel.c
-@@ -1475,7 +1475,7 @@ static int atmel_spi_probe(struct platform_device *pdev)
- 	host->bus_num = pdev->id;
- 	host->num_chipselect = 4;
- 	host->setup = atmel_spi_setup;
--	host->flags = (SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX |
-+	host->flags = (SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_MUST_TX |
- 			SPI_MASTER_GPIO_SS);
- 	host->transfer_one = atmel_spi_one_transfer;
- 	host->set_cs = atmel_spi_set_cs;
-diff --git a/drivers/spi/spi-davinci.c b/drivers/spi/spi-davinci.c
-index b04811c911e2..014392459d5e 100644
---- a/drivers/spi/spi-davinci.c
-+++ b/drivers/spi/spi-davinci.c
-@@ -939,7 +939,7 @@ static int davinci_spi_probe(struct platform_device *pdev)
- 	master->bus_num = pdev->id;
- 	master->num_chipselect = pdata->num_chipselect;
- 	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(2, 16);
--	master->flags = SPI_MASTER_MUST_RX | SPI_MASTER_GPIO_SS;
-+	master->flags = SPI_CONTROLLER_MUST_RX | SPI_MASTER_GPIO_SS;
- 	master->setup = davinci_spi_setup;
- 	master->cleanup = davinci_spi_cleanup;
- 	master->can_dma = davinci_spi_can_dma;
-diff --git a/drivers/spi/spi-fsl-lpspi.c b/drivers/spi/spi-fsl-lpspi.c
-index fb68c72df171..1c907d5d5bb3 100644
---- a/drivers/spi/spi-fsl-lpspi.c
-+++ b/drivers/spi/spi-fsl-lpspi.c
-@@ -856,7 +856,7 @@ static int fsl_lpspi_probe(struct platform_device *pdev)
- 	controller->prepare_transfer_hardware = lpspi_prepare_xfer_hardware;
- 	controller->unprepare_transfer_hardware = lpspi_unprepare_xfer_hardware;
- 	controller->mode_bits = SPI_CPOL | SPI_CPHA | SPI_CS_HIGH;
--	controller->flags = SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX;
-+	controller->flags = SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_MUST_TX;
- 	controller->dev.of_node = pdev->dev.of_node;
- 	controller->bus_num = pdev->id;
- 	controller->num_chipselect = fsl_lpspi->num_cs;
-diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
-index 141562c882f1..7a9eba35ac38 100644
---- a/drivers/spi/spi-meson-spicc.c
-+++ b/drivers/spi/spi-meson-spicc.c
-@@ -864,7 +864,7 @@ static int meson_spicc_probe(struct platform_device *pdev)
- 				     SPI_BPW_MASK(24) |
- 				     SPI_BPW_MASK(16) |
- 				     SPI_BPW_MASK(8);
--	master->flags = (SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX);
-+	master->flags = (SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_MUST_TX);
- 	master->min_speed_hz = spicc->data->min_speed_hz;
- 	master->max_speed_hz = spicc->data->max_speed_hz;
- 	master->setup = meson_spicc_setup;
-diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-index 39272ad6641b..0757985947dd 100644
---- a/drivers/spi/spi-mt65xx.c
-+++ b/drivers/spi/spi-mt65xx.c
-@@ -1142,7 +1142,7 @@ static int mtk_spi_probe(struct platform_device *pdev)
- 		master->mode_bits |= SPI_CS_HIGH;
- 
- 	if (mdata->dev_comp->must_tx)
--		master->flags = SPI_MASTER_MUST_TX;
-+		master->flags = SPI_CONTROLLER_MUST_TX;
- 	if (mdata->dev_comp->ipm_design)
- 		master->mode_bits |= SPI_LOOP | SPI_RX_DUAL | SPI_TX_DUAL |
- 				     SPI_RX_QUAD | SPI_TX_QUAD;
-diff --git a/drivers/spi/spi-pci1xxxx.c b/drivers/spi/spi-pci1xxxx.c
-index 4445d82409d6..d23c42839da1 100644
---- a/drivers/spi/spi-pci1xxxx.c
-+++ b/drivers/spi/spi-pci1xxxx.c
-@@ -365,7 +365,7 @@ static int pci1xxxx_spi_probe(struct pci_dev *pdev, const struct pci_device_id *
- 		spi_host->bits_per_word_mask = SPI_BPW_MASK(8);
- 		spi_host->max_speed_hz = PCI1XXXX_SPI_MAX_CLOCK_HZ;
- 		spi_host->min_speed_hz = PCI1XXXX_SPI_MIN_CLOCK_HZ;
--		spi_host->flags = SPI_MASTER_MUST_TX;
-+		spi_host->flags = SPI_CONTROLLER_MUST_TX;
- 		spi_master_set_devdata(spi_host, spi_sub_ptr);
- 		ret = devm_spi_register_master(dev, spi_host);
- 		if (ret)
-diff --git a/drivers/spi/spi-pic32.c b/drivers/spi/spi-pic32.c
-index f2af5e653f3d..e9b4c9cb97fb 100644
---- a/drivers/spi/spi-pic32.c
-+++ b/drivers/spi/spi-pic32.c
-@@ -773,7 +773,7 @@ static int pic32_spi_probe(struct platform_device *pdev)
- 	master->max_speed_hz	= clk_get_rate(pic32s->clk);
- 	master->setup		= pic32_spi_setup;
- 	master->cleanup		= pic32_spi_cleanup;
--	master->flags		= SPI_MASTER_MUST_TX | SPI_MASTER_MUST_RX;
-+	master->flags		= SPI_CONTROLLER_MUST_TX | SPI_CONTROLLER_MUST_RX;
- 	master->bits_per_word_mask	= SPI_BPW_MASK(8) | SPI_BPW_MASK(16) |
- 					  SPI_BPW_MASK(32);
- 	master->transfer_one		= pic32_spi_one_transfer;
-diff --git a/drivers/spi/spi-rb4xx.c b/drivers/spi/spi-rb4xx.c
-index 5073736d3d1f..c817889a7797 100644
---- a/drivers/spi/spi-rb4xx.c
-+++ b/drivers/spi/spi-rb4xx.c
-@@ -156,7 +156,7 @@ static int rb4xx_spi_probe(struct platform_device *pdev)
- 	master->num_chipselect = 3;
- 	master->mode_bits = SPI_TX_DUAL;
- 	master->bits_per_word_mask = SPI_BPW_MASK(8);
--	master->flags = SPI_MASTER_MUST_TX;
-+	master->flags = SPI_CONTROLLER_MUST_TX;
- 	master->transfer_one = rb4xx_transfer_one;
- 	master->set_cs = rb4xx_set_cs;
- 
-diff --git a/drivers/spi/spi-slave-mt27xx.c b/drivers/spi/spi-slave-mt27xx.c
-index 4e4d426bfb43..6d6772974783 100644
---- a/drivers/spi/spi-slave-mt27xx.c
-+++ b/drivers/spi/spi-slave-mt27xx.c
-@@ -414,7 +414,7 @@ static int mtk_spi_slave_probe(struct platform_device *pdev)
- 	mdata->dev_comp = of_id->data;
- 
- 	if (mdata->dev_comp->must_rx)
--		ctlr->flags = SPI_MASTER_MUST_RX;
-+		ctlr->flags = SPI_CONTROLLER_MUST_RX;
- 
- 	platform_set_drvdata(pdev, ctlr);
- 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 6d10fa4ab783..423212bd0675 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -1750,7 +1750,7 @@ static const struct stm32_spi_cfg stm32f4_spi_cfg = {
- 	.baud_rate_div_min = STM32F4_SPI_BR_DIV_MIN,
- 	.baud_rate_div_max = STM32F4_SPI_BR_DIV_MAX,
- 	.has_fifo = false,
--	.flags = SPI_MASTER_MUST_TX,
-+	.flags = SPI_CONTROLLER_MUST_TX,
- };
- 
- static const struct stm32_spi_cfg stm32h7_spi_cfg = {
 diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index ce77dcf47b96..cdc3addfe117 100644
+index c9479badf38c..9fb8efb068c6 100644
 --- a/include/linux/spi/spi.h
 +++ b/include/linux/spi/spi.h
-@@ -1645,8 +1645,6 @@ spi_transfer_is_last(struct spi_controller *ctlr, struct spi_transfer *xfer)
- #define spi_master			spi_controller
+@@ -17,6 +17,7 @@
+ #include <linux/minmax.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/mutex.h>
++#include <linux/overflow.h>
+ #include <linux/scatterlist.h>
+ #include <linux/slab.h>
+ #include <linux/smp.h>
+@@ -1095,6 +1096,8 @@ struct spi_transfer {
+  * @state: for use by whichever driver currently owns the message
+  * @resources: for resource management when the spi message is processed
+  * @prepared: spi_prepare_message was called for the this message
++ * @t: for use with spi_message_alloc() when message and transfers have
++ *	been allocated together
+  *
+  * A @spi_message is used to execute an atomic sequence of data transfers,
+  * each represented by a struct spi_transfer.  The sequence is "atomic"
+@@ -1147,6 +1150,9 @@ struct spi_message {
  
- #define SPI_MASTER_HALF_DUPLEX		SPI_CONTROLLER_HALF_DUPLEX
--#define SPI_MASTER_MUST_RX		SPI_CONTROLLER_MUST_RX
--#define SPI_MASTER_MUST_TX		SPI_CONTROLLER_MUST_TX
+ 	/* List of spi_res reources when the spi message is processed */
+ 	struct list_head        resources;
++
++	/* For embedding transfers into the memory of the message */
++	struct spi_transfer	t[];
+ };
  
- #define spi_master_get_devdata(_ctlr)	spi_controller_get_devdata(_ctlr)
- #define spi_master_set_devdata(_ctlr, _data)	\
+ static inline void spi_message_init_no_memset(struct spi_message *m)
+@@ -1207,16 +1213,13 @@ static inline struct spi_message *spi_message_alloc(unsigned ntrans, gfp_t flags
+ {
+ 	struct spi_message *m;
+ 
+-	m = kzalloc(sizeof(struct spi_message)
+-			+ ntrans * sizeof(struct spi_transfer),
+-			flags);
++	m = kzalloc(struct_size(m, t, ntrans), flags);
+ 	if (m) {
+ 		unsigned i;
+-		struct spi_transfer *t = (struct spi_transfer *)(m + 1);
+ 
+ 		spi_message_init_no_memset(m);
+-		for (i = 0; i < ntrans; i++, t++)
+-			spi_message_add_tail(t, m);
++		for (i = 0; i < ntrans; i++)
++			spi_message_add_tail(&m->t[i], m);
+ 	}
+ 	return m;
+ }
 -- 
 2.40.0.1.gaa8946217a0b
 
