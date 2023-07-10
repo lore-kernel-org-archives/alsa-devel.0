@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50A0CEB64DD
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:54:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D9B1EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:54:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 121B5DF9;
-	Tue, 11 Jul 2023 15:53:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 121B5DF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 383C4206;
+	Tue, 11 Jul 2023 15:53:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 383C4206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689083642;
-	bh=wJa3Jmu6iVXPZMGevJvu2fkKY/Gm2mVbHm4RgDFco0c=;
+	s=default; t=1689083653;
+	bh=NaAUtfuKUjWfIyo2AvU+b2/TN3c63zF3Fr8TWiuiUkI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DPRNRTq5dTFf8ZOlsAlPxNqAYALLHrBLwONYS0NxHOp12s8ol3F7YvpGUF0CjcVGm
-	 r+Og555MdOi1GVbtLWLjbsTiCzgXLO5f5B33YqE7H4GfHLVMhGrh2flfEuU3g/anlq
-	 ztCQd8zONhWwY8Cyyg7+8fRs35ActUUH2gUaTHNk=
+	b=fm5erObI/uj2537ilGcqPBCtIwTHJzV8kymgPg4ws79EZ+hPWgL4Ag6iOWfxwAqWF
+	 I38qgD6AZzFFnhk4h4MJyVczhUoOC4oZ+yzEs8RvDJTmtgXzc/IwcBxEI8ueTRGzb4
+	 LFnF5oqwdpPYCFeVVldhngFhNszm9RHVDdQaGTeU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4FC7F805AE; Tue, 11 Jul 2023 15:51:44 +0200 (CEST)
+	id 2CC20F805BB; Tue, 11 Jul 2023 15:51:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5C03F805AD;
-	Tue, 11 Jul 2023 15:51:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F95CF805AF;
+	Tue, 11 Jul 2023 15:51:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 64F45F80552; Mon, 10 Jul 2023 17:49:58 +0200 (CEST)
+	id E6492F80553; Mon, 10 Jul 2023 17:49:59 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8EBB8F80093
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EBB8F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 946A7F800E4
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 946A7F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=WZWOhrai
+ header.s=Intel header.b=GhgolFR0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689004186; x=1720540186;
+  t=1689004190; x=1720540190;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=wJa3Jmu6iVXPZMGevJvu2fkKY/Gm2mVbHm4RgDFco0c=;
-  b=WZWOhraiCucTKcs980iFImvTCeat+CP5EDoobssokgnBKUOpW1MmNIrA
-   rtIEuDynE3kMnqrOLu1TncOkaZEtNq5jM5kHOH+KkBZSOQ/jV0GOXX05W
-   gqGCAgb6dUp/HOgBVZ/tjHsdmCTnrD1ey1nJavYbuAY+ow5JPNHqgUIe3
-   drr9paKf3OGjcoDhVTxJXZVGWIQltvHvohKJDqcRwg7BnED2t25EMeSD3
-   0TYwE/uCjZmnYrFVsjVyNpFbcSacbpXxR3/j0s0iO6ae7En0BN8odD2rl
-   atjOBPR4iWJGg7nfU4ddDcxBg/DDCy8f1gxsJ+Dz9FSe8ROPOXFsP/Y9Y
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="349185334"
+  bh=NaAUtfuKUjWfIyo2AvU+b2/TN3c63zF3Fr8TWiuiUkI=;
+  b=GhgolFR0MvhyGL5geVyUiFG/rPa7ASVKl9kgdR0frR4QVpWByXOHww0h
+   0nP5XV2wg19eru1LQJo1H5VOv+pv1+iijwpg8Y7syoqAxGHNLI276L3uN
+   7utCMjufCkSu5J/BmCXX+kxOTG3r81MdTx//PtqhvaZSfWHgHHJcgmwMy
+   ZCOLdozx+BSkK0JEJc56GsiiVJhxBJQmU1Jl9rmOMCz947p4Zu8wtRw26
+   +f0S7TBV2F2egCYci4b+XmGJXUbEm+yeNgVuZdM0h6++L7SBOyw3tK7UE
+   A647gh5oPKWDzxVwb6j9LZyP3QAv8ekp5LS+CR0kn0kUbIHxepqnaeDRs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="349185452"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="349185334"
+   d="scan'208";a="349185452"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jul 2023 08:49:42 -0700
+ 10 Jul 2023 08:49:46 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="844921834"
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="844921872"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="844921834"
+   d="scan'208";a="844921872"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 10 Jul 2023 08:49:31 -0700
+  by orsmga004.jf.intel.com with ESMTP; 10 Jul 2023 08:49:35 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 5A18C4BD; Mon, 10 Jul 2023 18:49:34 +0300 (EEST)
+	id 8BD3669A; Mon, 10 Jul 2023 18:49:34 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
@@ -119,10 +119,9 @@ Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Richard Cochran <richardcochran@gmail.com>
-Subject: [PATCH v2 04/15] spi: Replace open coded
- spi_controller_xfer_timeout()
-Date: Mon, 10 Jul 2023 18:49:21 +0300
-Message-Id: <20230710154932.68377-5-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 07/15] spi: Sort headers alphabetically
+Date: Mon, 10 Jul 2023 18:49:24 +0300
+Message-Id: <20230710154932.68377-8-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
 References: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
@@ -136,15 +135,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: PFCTZZSPF7BHMQZ5A6FR37XMLDMF6BA5
-X-Message-ID-Hash: PFCTZZSPF7BHMQZ5A6FR37XMLDMF6BA5
-X-Mailman-Approved-At: Tue, 11 Jul 2023 13:51:32 +0000
+Message-ID-Hash: AYMQQLMKEKGEYNYWJ4IT76OJJ7NKVIRD
+X-Message-ID-Hash: AYMQQLMKEKGEYNYWJ4IT76OJJ7NKVIRD
+X-Mailman-Approved-At: Tue, 11 Jul 2023 13:51:33 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PFCTZZSPF7BHMQZ5A6FR37XMLDMF6BA5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AYMQQLMKEKGEYNYWJ4IT76OJJ7NKVIRD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,82 +152,108 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Since the new spi_controller_xfer_timeout() helper appeared,
-we may replace open coded variant in spi_transfer_wait().
+Sorting headers alphabetically helps locating duplicates, and
+make it easier to figure out where to insert new headers.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi.c       | 25 ++-----------------------
- include/linux/spi/spi.h |  6 +++++-
- 2 files changed, 7 insertions(+), 24 deletions(-)
+ drivers/spi/spi.c       | 42 ++++++++++++++++++++---------------------
+ include/linux/spi/spi.h | 14 +++++++-------
+ 2 files changed, 28 insertions(+), 28 deletions(-)
 
 diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 125dea8fae00..c99ee4164f11 100644
+index cfb1c985d940..06a92a3a5746 100644
 --- a/drivers/spi/spi.c
 +++ b/drivers/spi/spi.c
-@@ -1342,8 +1342,7 @@ static int spi_transfer_wait(struct spi_controller *ctlr,
- {
- 	struct spi_statistics __percpu *statm = ctlr->pcpu_statistics;
- 	struct spi_statistics __percpu *stats = msg->spi->pcpu_statistics;
--	u32 speed_hz = xfer->speed_hz;
--	unsigned long long ms;
-+	unsigned long ms;
+@@ -4,36 +4,36 @@
+ // Copyright (C) 2005 David Brownell
+ // Copyright (C) 2008 Secret Lab Technologies Ltd.
  
- 	if (spi_controller_is_slave(ctlr)) {
- 		if (wait_for_completion_interruptible(&ctlr->xfer_completion)) {
-@@ -1351,29 +1350,9 @@ static int spi_transfer_wait(struct spi_controller *ctlr,
- 			return -EINTR;
- 		}
- 	} else {
--		if (!speed_hz)
--			speed_hz = 100000;
--
--		/*
--		 * For each byte we wait for 8 cycles of the SPI clock.
--		 * Since speed is defined in Hz and we want milliseconds,
--		 * use respective multiplier, but before the division,
--		 * otherwise we may get 0 for short transfers.
--		 */
--		ms = 8LL * MSEC_PER_SEC * xfer->len;
--		do_div(ms, speed_hz);
--
--		/*
--		 * Increase it twice and add 200 ms tolerance, use
--		 * predefined maximum in case of overflow.
--		 */
--		ms += ms + 200;
--		if (ms > UINT_MAX)
--			ms = UINT_MAX;
--
-+		ms = spi_controller_xfer_timeout(ctlr, xfer);
- 		ms = wait_for_completion_timeout(&ctlr->xfer_completion,
- 						 msecs_to_jiffies(ms));
--
- 		if (ms == 0) {
- 			SPI_STATISTICS_INCREMENT_FIELD(statm, timedout);
- 			SPI_STATISTICS_INCREMENT_FIELD(stats, timedout);
+-#include <linux/kernel.h>
+-#include <linux/device.h>
+-#include <linux/init.h>
++#include <linux/acpi.h>
+ #include <linux/cache.h>
+-#include <linux/dma-mapping.h>
++#include <linux/clk/clk-conf.h>
++#include <linux/delay.h>
++#include <linux/device.h>
+ #include <linux/dmaengine.h>
++#include <linux/dma-mapping.h>
++#include <linux/export.h>
++#include <linux/gpio/consumer.h>
++#include <linux/highmem.h>
++#include <linux/idr.h>
++#include <linux/init.h>
++#include <linux/ioport.h>
++#include <linux/kernel.h>
++#include <linux/kthread.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/mutex.h>
+ #include <linux/of_device.h>
+ #include <linux/of_irq.h>
+-#include <linux/clk/clk-conf.h>
+-#include <linux/slab.h>
+-#include <linux/mod_devicetable.h>
+-#include <linux/spi/spi.h>
+-#include <linux/spi/spi-mem.h>
+-#include <linux/gpio/consumer.h>
+-#include <linux/pm_runtime.h>
++#include <linux/percpu.h>
++#include <linux/platform_data/x86/apple.h>
+ #include <linux/pm_domain.h>
++#include <linux/pm_runtime.h>
+ #include <linux/property.h>
+-#include <linux/export.h>
++#include <linux/ptp_clock_kernel.h>
+ #include <linux/sched/rt.h>
++#include <linux/slab.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/spi-mem.h>
+ #include <uapi/linux/sched/types.h>
+-#include <linux/delay.h>
+-#include <linux/kthread.h>
+-#include <linux/ioport.h>
+-#include <linux/acpi.h>
+-#include <linux/highmem.h>
+-#include <linux/idr.h>
+-#include <linux/platform_data/x86/apple.h>
+-#include <linux/ptp_clock_kernel.h>
+-#include <linux/percpu.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/spi.h>
 diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 32c94eae8926..0ce1cb18a076 100644
+index 0ce1cb18a076..2026eae97329 100644
 --- a/include/linux/spi/spi.h
 +++ b/include/linux/spi/spi.h
-@@ -1270,12 +1270,16 @@ static inline bool spi_is_bpw_supported(struct spi_device *spi, u32 bpw)
-  * that it would take on a single data line and take twice this amount of time
-  * with a minimum of 500ms to avoid false positives on loaded systems.
-  *
-+ * Assume speed to be 100 kHz if it's not defined at the time of invocation.
-+ *
-  * Returns: Transfer timeout value in milliseconds.
-  */
- static inline unsigned int spi_controller_xfer_timeout(struct spi_controller *ctlr,
- 						       struct spi_transfer *xfer)
- {
--	return max(xfer->len * 8 * 2 / (xfer->speed_hz / 1000), 500U);
-+	u32 speed_hz = xfer->speed_hz ?: 100000;
-+
-+	return max(xfer->len * 8 * 2 / (speed_hz / 1000), 500U);
- }
+@@ -6,19 +6,19 @@
+ #ifndef __LINUX_SPI_H
+ #define __LINUX_SPI_H
  
- /*---------------------------------------------------------------------------*/
++#include <linux/acpi.h>
+ #include <linux/bits.h>
++#include <linux/completion.h>
+ #include <linux/device.h>
+-#include <linux/mod_devicetable.h>
+-#include <linux/slab.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/kthread.h>
+-#include <linux/completion.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/scatterlist.h>
+-#include <linux/gpio/consumer.h>
+-
+-#include <uapi/linux/spi/spi.h>
+-#include <linux/acpi.h>
++#include <linux/slab.h>
+ #include <linux/u64_stats_sync.h>
+ 
++#include <uapi/linux/spi/spi.h>
++
+ struct dma_chan;
+ struct software_node;
+ struct ptp_system_timestamp;
 -- 
 2.40.0.1.gaa8946217a0b
 
