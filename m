@@ -4,108 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5F89EB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 13:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 725C4EB64D9
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 14:32:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2155C206;
-	Mon, 10 Jul 2023 15:37:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2155C206
+	by alsa0.perex.cz (Postfix) with ESMTPS id 569F06C1;
+	Mon, 10 Jul 2023 16:31:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 569F06C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688996310;
-	bh=HA2So+NjBTWAY2fjVnTJJii4ARFTRIerq07ZS5EB7BI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1688999547;
+	bh=LJFJauwkckXYADCm6I1mTNoFUBen6qA8EKay4zwpmNY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uyVZHaT5IW+1LkleUYTUtR2Z5fJZHJq0ufJNbGlMyHG1wJaX6u9WOxNx2SU9W87LD
-	 ws0tIRR1BsBEbLqRo2MF2lPZE9oyjJuxhSF8RVyJSSYgQaPcumD8hpc//k6Va1Yami
-	 R3GzQOqP1R07Ej3FJ1EDikC9pSFZtl84ZOAzxFPM=
+	b=LVLFhqBjDkofEK87OWnOet5OJwZ8buwiRoiXxzxvC0/OW69lErKTnGzrjeUxHouj3
+	 ICnrRrT/m9gAIkTyH32vD0lveJUdffTdcabPHbjj8rURc/qM8TDW/Pjad5oYZzz9mq
+	 OjwwbNXGXxq+Rb7Px6Foi8u2ehjoPLM0/tsyiwZo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57502F800E4; Mon, 10 Jul 2023 15:37:13 +0200 (CEST)
+	id E230CF8053B; Mon, 10 Jul 2023 16:31:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D05A2F80249;
-	Mon, 10 Jul 2023 15:37:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4524EF80249;
+	Mon, 10 Jul 2023 16:31:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2EB1EF80249; Mon, 10 Jul 2023 15:37:10 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 4AC1CF80249; Mon, 10 Jul 2023 16:31:05 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DFD42F800E4
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 15:37:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFD42F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6FFFCF800D2
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 16:30:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FFFCF800D2
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=IjYLkVSv
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688996228; x=1720532228;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HA2So+NjBTWAY2fjVnTJJii4ARFTRIerq07ZS5EB7BI=;
-  b=IjYLkVSvmCHsTPWzf2GNThVqCrYFi1Qz6kM9yhAIuU9//+YxkMurdVG4
-   HyD7dVtpOY0iQLvlxg8wIm8oKkds+omoAYoOVpghh8U6BR4O6Y1CUNsiZ
-   TvdqhD1YyfAy+gglytLMZgITBBZviFwkEqsLfjpo4w7hTphikd/F8esG+
-   Co5+V0DZU5mQXlabEujPh7nJUwaQlkDYOxx+dg2W683kADCtRfRECHRXr
-   XRVppt2PpI+vrQ9gpTFrMihhg4OSVL0iBi7svnxDERMjwt24D36+TxZec
-   LORuq/4AX42Dhb/ne0EISkR7gVLLJStrlq6F6pbYQdKEBKwZl7acZEzAG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="450701153"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="450701153"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jul 2023 06:37:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="894774244"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="894774244"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP; 10 Jul 2023 06:36:56 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1qIr4P-001ZC8-1X;
-	Mon, 10 Jul 2023 16:36:53 +0300
-Date: Mon, 10 Jul 2023 16:36:53 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
-	Kris Bahnsen <kris@embeddedts.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org
-Cc: Radu Pirea <radu_nicolae.pirea@upb.ro>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@microchip.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v1 0/8] spi: Header and core clean up and refactoring
-Message-ID: <ZKwJdb0rJCmH5cBA@smile.fi.intel.com>
-References: <20230710102751.83314-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230710102751.83314-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: VMXVQ7YNW2PGO4Q4ARYRMZCFZSNM5FER
-X-Message-ID-Hash: VMXVQ7YNW2PGO4Q4ARYRMZCFZSNM5FER
-X-MailFrom: andriy.shevchenko@linux.intel.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=O2gr+3UK;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=1x34zqIm
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8CF8B1FFA2;
+	Mon, 10 Jul 2023 14:30:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1688999454;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SjlMk0EbffxuJOjramPPb1TR2XCPnRGkKXj9Qt7aAIQ=;
+	b=O2gr+3UKqOIqNDknFnuyExnyA2GyVIpvfbTUZDFkgROlAWUvecJcwYBk3f9qGdVarxw/ps
+	iYm9yXIxGqTMj6uOyBg9AOjOa6C47zxfKmHOjkBeM2H6wJPzHQFk4GzPrYOUFukNxmzOIN
+	sIbyCBg0nbtitfhDHZO7FLFcMSBlk64=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1688999454;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SjlMk0EbffxuJOjramPPb1TR2XCPnRGkKXj9Qt7aAIQ=;
+	b=1x34zqImdfaqQE5pWTOJvMwf0R480bRp7n1ETIvCExjCri9k/g4gKTj4ALsioIT21D4zyp
+	5bOQX6oDJRF4NWAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E1E713A05;
+	Mon, 10 Jul 2023 14:30:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id SJlECh4WrGS8QwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 10 Jul 2023 14:30:54 +0000
+Date: Mon, 10 Jul 2023 16:30:53 +0200
+Message-ID: <87351vzvmq.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Shenghao Ding <13916275206@139.com>
+Cc: broonie@kernel.org,
+	devicetree@vger.kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	robh+dt@kernel.org,
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	pierre-louis.bossart@linux.intel.com,
+	kevin-lu@ti.com,
+	shenghao-ding@ti.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	liam.r.girdwood@intel.com,
+	mengdong.lin@intel.com,
+	x1077012@ti.com,
+	peeyush@ti.com,
+	navada@ti.com
+Subject: Re: [PATCH v2 1/3] ALSA: hda/tas2781: Add tas2781 HDA driver
+In-Reply-To: <20230710041217.151099-1-13916275206@139.com>
+References: <20230710041217.151099-1-13916275206@139.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: OLA3NRVIL4AZWONYBC43ROJS3ER35EVX
+X-Message-ID-Hash: OLA3NRVIL4AZWONYBC43ROJS3ER35EVX
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -117,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VMXVQ7YNW2PGO4Q4ARYRMZCFZSNM5FER/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OLA3NRVIL4AZWONYBC43ROJS3ER35EVX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,18 +128,82 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jul 10, 2023 at 01:27:43PM +0300, Andy Shevchenko wrote:
-> Various cleanups and refactorings of the SPI header and core parts
-> united in a single series.
+On Mon, 10 Jul 2023 06:12:15 +0200,
+Shenghao Ding wrote:
 > 
-> Patches 1 & 2, 5 & 6 & 8 are dependent inside each group.
+> Integrate tas2781 configs for Lenovo Laptops. All of the tas2781s in the
+> laptop will be aggregated as one audio device. The code support realtek
+> as the primary codec. Rename "struct cs35l41_dev_name" to
+> "struct scodec_dev_name" for all other side codecs instead of the certain
+> one.
 > 
-> No functional change intended.
+> Signed-off-by: Shenghao Ding <13916275206@139.com>
+> 
+> ---
+> Changes in v2:
+>  -  simplify the check of vendor id with Lenovo
+>  - ThinkPad is one of Lenovo's brands, they suggested me to use
+>    ALC269_FIXUP_THINKPAD_ACPI.
+>  - Add comments on ACARD_SINGLE_RANGE_EXT_TLV
+>  - Add the range check for tas_priv->tasdevice[] in tas2781_acpi_get_i2c_res.
+>  - remove acpi_subsystem_id
+>  - Issue in Laptop 0x17aa38be ACPI talbe caused codec->bus->pci->subsystem_device
+>    is not equal to (codec->core.subsystem_id & 0xffff) in snd_hda_pick_fixup.
+>    The former is 0x3802 and the latter is 0x38be leads to getting the wrong
+>    fixup_id and enter into the wrong entry. Although, this issue has been raised
+>    to the laptop manufacturer, but the ACPI table is locked, cannot be changed
+>    any more. Correct the wrong entry in the code.
+>  - Rename "struct cs35l41_dev_name" to "struct scodec_dev_name" for all
+>    other side codecs instead of one certain codec.
+>  - Ignore the checkpatch complaints in alc269_fixup_tbl
+>  - Drop the hunk which is irrelevant with my code in
+>    alc_fixup_headset_mode_alc255_no_hp_mic
+>  - Add tiwai@suse.de into Cc list
+>  - remove useless index
+>  - combine ALC287_FIXUP_TAS2781_I2C_2 and ALC287_FIXUP_TAS2781_I2C_4 together as
+>    ALC287_FIXUP_TAS2781_I2C, The code view all the tas2781s in the laptop as one instance.
+>  - delete the white space at the end of the line in alc_fixup_headset_mode_alc255_no_hp_mic
 
-I will resend the entire series.
+The patch looks almost fine.  Just a few things:
 
--- 
-With Best Regards,
-Andy Shevchenko
+> @@ -6730,12 +6730,32 @@ static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
+>  	return !strcmp(d + n, tmp);
+>  }
+>  
+> +static int comp_match_tas2781_dev_name(struct device *dev,
+> +	void *data)
+
+The indentation in the patch doesn't look good.
+I don't want to be too strict about it, but this inconsistent
+indentation makes reading quite difficult, so better to be fixed.
+In general, it's recommended to align the opened parenthesis.
+(But, in the case above, you don't need to break the line at all.)
+
+> @@ -10761,6 +10843,22 @@ static int patch_alc269(struct hda_codec *codec)
+>  		codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
+>  	}
+>  
+> +	/* FIXME: Issue in Laptop 0x17aa38be ACPI talbe caused
+> +	 * codec->bus->pci->subsystem_device is not equal to
+> +	 * (codec->core.subsystem_id & 0xffff) in snd_hda_pick_fixup.
+> +	 * The former is 0x3802 and the latter is 0x38be leads to getting the
+> +	 * wrong fixup_id and enter into the wrong entry. Although, this issue
+> +	 * has been raised to the laptop manufacturer, but the ACPI table is
+> +	 * locked, cannot be changed any more. Correct the wrong entry in the
+> +	 * code.
+> +	 */
+> +	if (codec->fixup_id == ALC287_FIXUP_YOGA7_14ITL_SPEAKERS &&
+> +		codec->core.vendor_id == 0x10ec0287 &&
+> +		codec->core.subsystem_id == 0x17aa38be) {
+> +		codec_dbg(codec, "Clear wrong fixup for 17aa38be\n");
+> +		codec->fixup_id = ALC287_FIXUP_TAS2781_I2C;
+> +	}
+
+This should be rather applied differently.  A similar workaround was
+found in the commit 56ec3e755bd1041d35bdec020a99b327697ee470
+    ALSA: hda/realtek: Apply fixup for Lenovo Yoga Duet 7 properly
 
 
+thanks,
+
+Takashi
