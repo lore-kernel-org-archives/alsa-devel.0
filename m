@@ -4,106 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 140C3EB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 12:02:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECA27EB64DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 12:39:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02AB46C1;
-	Mon, 10 Jul 2023 14:01:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02AB46C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 281CD206;
+	Mon, 10 Jul 2023 14:38:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 281CD206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688990561;
-	bh=hi2KjYVNB1fgMeU4P1IicTBxc+ULEU0k8ide4WBCPI0=;
+	s=default; t=1688992789;
+	bh=2I7Ns5P9Fqk5itIQUPMwgPj6Db+DdMBwViqY3DgUc6U=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pscNiqBpPRfEx6KA98U03FXVihH5tP/67wm6f2JcXIKRYfeOC01M6exEs683B+IE6
-	 UVBGV5+88fUuNYtRoKxM3wIL/pqi6zbZWFq/B4U/koC+K5d7iyZNcD/oeCQynWrZrt
-	 Chmf5kVVUg11Socrm1VaiZiOGCjiYatvwtck6LAQ=
+	b=sUpzUMPLTSU6ksLDGj++19VQWSAAnlCLgR64E1AU5Evk68gCl9lLPC9akNtIAl0oa
+	 UHWJiQjmJa/qSIrwcv3H6em9kNcMeT/46qaLY119u+zINkNnqcYb+VLLOObgR4rS3c
+	 vJSvENlJ6r2JEtXbrrE0avS+3rSixCWQS/dyRbcg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9ADE4F80093; Mon, 10 Jul 2023 14:01:24 +0200 (CEST)
+	id BBB0AF80290; Mon, 10 Jul 2023 14:38:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20BC2F80249;
-	Mon, 10 Jul 2023 14:01:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E921F80249;
+	Mon, 10 Jul 2023 14:38:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC8F9F80249; Mon, 10 Jul 2023 14:01:19 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id F2FB5F80249; Mon, 10 Jul 2023 14:38:26 +0200 (CEST)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1D7CFF800D2
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 14:01:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D7CFF800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id E154BF800D2
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 14:38:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E154BF800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=eUf+bOsB
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id AEED460FD2;
-	Mon, 10 Jul 2023 12:01:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18618C433C8;
-	Mon, 10 Jul 2023 12:01:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688990471;
-	bh=hi2KjYVNB1fgMeU4P1IicTBxc+ULEU0k8ide4WBCPI0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eUf+bOsBAEEtyVa+Tu1NcCxNEphDSnC05lrP4V2VIQBaufImErwI42F5EzPJ0MezX
-	 SKXml0eAJvfoOhNufaG/FFftOj5O85WkSU+EoDWLvENzmFx3yMOfr58/Cf1Z0cKQvc
-	 43NWvDGjxTh58W/y+ucwfNf12IomMSRZh9iZUPtDAl5l8bAoI9bLjUJsyy6Qp9O1kt
-	 VpP37cZyPeIkUkFQe9ycH3/S/plF5OkiXOA8SZ92QcKQshxDOzXiWgPQIWhgciIf05
-	 JfSeULY9SLcRUHCMIBMkqQxmfAjcqdKcFA/++E4awkkOmZtLjY1Rea/dBIhZx/KQSh
-	 baWFwlbKT/rGg==
-Received: from johan by xi.lan with local (Exim 4.96)
-	(envelope-from <johan@kernel.org>)
-	id 1qIpaD-0003Lu-15;
-	Mon, 10 Jul 2023 14:01:37 +0200
-Date: Mon, 10 Jul 2023 14:01:37 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Sanyog Kale <sanyog.r.kale@intel.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	Alex Elder <elder@linaro.org>
-Subject: Re: [PATCH 7/8] ASoC: topology: suppress probe deferral errors
-Message-ID: <ZKvzITFLCQzmw72w@hovoldconsulting.com>
-References: <20230705123018.30903-1-johan+linaro@kernel.org>
- <20230705123018.30903-8-johan+linaro@kernel.org>
- <ac232872-734f-d192-d46c-555ebe3625c5@linux.intel.com>
- <ZKZbzctgLpV-67hJ@hovoldconsulting.com>
- <f464d5b1-c708-4b3f-f1d1-031c5def5b38@linux.intel.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=B+4okRfM
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1688992697; x=1720528697;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2I7Ns5P9Fqk5itIQUPMwgPj6Db+DdMBwViqY3DgUc6U=;
+  b=B+4okRfMay5cKaUdBt+YXEUfYbqaTA4Kasu+YT9xdGmni+KVM17qmUxL
+   PnfFtglMyqBYqNL6iIEuj2rH5anMQrdEzzi1SZhtT5OCSqn9jyc/mxMyB
+   UwtRgApnYc0mCFdK1HW4prul0fzeFMlMfMAiw7zJtPXYUjX9Tr/5CsoDj
+   TcUZ/gCOdOLOdHe7YtsXA+/16lFc5n5G4KFDI+d5qcpw8BiyHUIMAl2qU
+   wrLISuggLyOod80bm9px8ON9cpdW+hAZzfv0ct9P/BthW2d6XVDQH/sqf
+   OX/11tcqVnx8m9a65xIUJ9Q1wmSExLJ9BFy8RCbojm/Lh4NC+ULaJDtDJ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="428025540"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
+   d="scan'208";a="428025540"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jul 2023 05:38:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="755983743"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
+   d="scan'208";a="755983743"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP; 10 Jul 2023 05:38:02 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1qIq9Q-001YUr-0L;
+	Mon, 10 Jul 2023 15:38:00 +0300
+Date: Mon, 10 Jul 2023 15:37:59 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Yang Yingliang <yangyingliang@huawei.com>,
+	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
+	Kris Bahnsen <kris@embeddedts.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
+	Radu Pirea <radu_nicolae.pirea@upb.ro>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [PATCH v1 4/8] spi: Get rid of old SPI_MASTER_NO_.X and
+ SPI_MASTER_MUST_.X
+Message-ID: <ZKv7p96D2B9vYd0J@smile.fi.intel.com>
+References: <20230710102751.83314-1-andriy.shevchenko@linux.intel.com>
+ <20230710102751.83314-5-andriy.shevchenko@linux.intel.com>
+ <1ffd5603-4140-4bf6-bfed-af70a6759bda@sirena.org.uk>
+ <ZKvmkAP5ZuT6lGLN@smile.fi.intel.com>
+ <ZKvnPXl9H+cQR8Ok@smile.fi.intel.com>
+ <353027bf-6d2a-40de-9e18-8553864b343c@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f464d5b1-c708-4b3f-f1d1-031c5def5b38@linux.intel.com>
-Message-ID-Hash: HWWZVBXQC6UWZCX2LB5QXPNBK73MV7GL
-X-Message-ID-Hash: HWWZVBXQC6UWZCX2LB5QXPNBK73MV7GL
-X-MailFrom: johan@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+In-Reply-To: <353027bf-6d2a-40de-9e18-8553864b343c@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID-Hash: Z5K7LSNFISGXGWC7AQMVDR2N3TYWZQSF
+X-Message-ID-Hash: Z5K7LSNFISGXGWC7AQMVDR2N3TYWZQSF
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HWWZVBXQC6UWZCX2LB5QXPNBK73MV7GL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z5K7LSNFISGXGWC7AQMVDR2N3TYWZQSF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,24 +132,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, Jul 06, 2023 at 09:25:26AM +0200, Amadeusz Sławiński wrote:
-> On 7/6/2023 8:14 AM, Johan Hovold wrote:
+On Mon, Jul 10, 2023 at 12:22:59PM +0100, Mark Brown wrote:
+> On Mon, Jul 10, 2023 at 02:10:53PM +0300, Andy Shevchenko wrote:
+> > On Mon, Jul 10, 2023 at 02:08:00PM +0300, Andy Shevchenko wrote:
+> > > On Mon, Jul 10, 2023 at 12:04:35PM +0100, Mark Brown wrote:
+> > > > On Mon, Jul 10, 2023 at 01:27:47PM +0300, Andy Shevchenko wrote:
+> 
+> > > > > Convert the users to SPI_CONTROLLER_NO_?X and SPI_CONTROLLER_MUST_.X
+> > > > > and kill the not used anymore definitions.
+> 
+> > > > The above is not what this change does:
+> 
+> > > How to improve it? I was sure that the form of "converting to something and
+> > > something" is clear...
+> 
+> > A wild guess, maybe you meant to split to two changes, one per each macro group?
+> 
+> No, doing TX and RX in one commit is fine.
 
-> > In short, it is not correct to use dev_err_probe() here as this is not a
-> > probe function.
-> > 
-> > dev_err_probe() is tied to driver core and will specifically allocate
-> > and associate an error message with the struct device on probe
-> > deferrals, which is later freed when the struct device is bound to a
-> > driver (or released).
+No, I meant one per _NO_ and _MUST_.
 
-> I guess you mean call to: device_set_deferred_probe_reason(dev, &vaf);
-> perhaps functionality could be extended to allow to skip this call and 
-> just do prints? Or just add separate dev_err_defer function without this 
-> step, although it would be best if they could share parts of code.
+> > > > > -	controller->flags = SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX;
+> > > > > +	controller->flags = SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_MUST_TX;
+> 
+> What part of the above change is replacing _NO_ with _MUST_?
 
-Feel free to suggest adding such a function if you think it's
-worthwhile. It doesn't exist today it should not be a prerequisite for
-suppressing these error messages.
+None, that's why assuming the split by name should be fine.
 
-Johan
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
