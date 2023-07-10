@@ -4,72 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2A1DEB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 11:09:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D19A0EB64DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 11:11:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21EF883A;
-	Mon, 10 Jul 2023 13:09:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21EF883A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CED083A;
+	Mon, 10 Jul 2023 13:10:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CED083A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688987390;
-	bh=VFbT1YSYy4BNeDq7qC0WXbC9ofiSs7SR6qU8CkE8Ddw=;
+	s=default; t=1688987504;
+	bh=gBzc2tZIawZS0PUBWYuNntkIVRyxrqJrpV4aYLufX50=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eZvjv4bHgtAGg7fY4loaxbwZTtwPwpkaqOvFonYbKXTeWuTSFcxaK0klWYm1+VymB
-	 KohASAEC088THVd8UeiFA3EJ9wp2v6Op0U/psOqKbQcuHz4QndLeT6R58/FsQJ02hu
-	 h9VoWYad2ujnXVTewGKVKQ7Z3AXT+umeOzQCjY30=
+	b=VNt2UNCAEW93IpJbWp2EQbI/j0yzEzJQisyYrlBtXl0ywxNZgN1OsYtUTmflI5pcr
+	 o3dg7pcZBlppfaXd1SZS131MwNc+7lsYusTVffPPth4RJftb0qJmcBYdUUBfsVRfq4
+	 yxiDwS3wRbYodfnE1cmCt03fcGDx7wP9Sv/V+6Mg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F066DF80153; Mon, 10 Jul 2023 13:08:27 +0200 (CEST)
+	id 2FAD4F80544; Mon, 10 Jul 2023 13:10:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC355F8047D;
-	Mon, 10 Jul 2023 13:08:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4686F80249;
+	Mon, 10 Jul 2023 13:10:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A825FF80249; Mon, 10 Jul 2023 13:08:19 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1B029F80249; Mon, 10 Jul 2023 13:10:19 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8A5C4F80093
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 13:08:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A5C4F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id E2AD6F80093
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 13:10:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2AD6F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=TqELvSo/
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688987295; x=1720523295;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VFbT1YSYy4BNeDq7qC0WXbC9ofiSs7SR6qU8CkE8Ddw=;
-  b=TqELvSo/cfdcdurExCQK6h8fyqlYOBQch7Y9DMXlowTGKmCGUvCl4XOB
-   Hiksy6NIzoYKyX7UGDIab17suJVjnESPmgiSaM2S/7KHoXEo1H+zfw+ZJ
-   tHDdMI0QRe1pw/K3lHBPNYSAkTdVhdCjx2gOgt6TQ5+gP53UW1Y/3XqMw
-   YzNoGfnppVubkfn7kO/AxFONAwgZICLiG/2fuaLfMRIyz6tIgIIz8tcd1
-   L3z8/c512EnkFCb4zSFNorWf//a6VdSNpw1LD0So6PnvHEmvNkZD/qwmO
-   bAEVjTnhP4xJS47c3W6TNwvklRLb/NA25dOEPMkcmqmDMxr2t5tQH2rJj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="349117626"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="349117626"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jul 2023 04:08:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="967393168"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="967393168"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP; 10 Jul 2023 04:08:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1qIokK-001XII-18;
-	Mon, 10 Jul 2023 14:08:00 +0300
-Date: Mon, 10 Jul 2023 14:08:00 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=YCpsYi8h
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0AAB360F99;
+	Mon, 10 Jul 2023 11:10:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BE7CC433C7;
+	Mon, 10 Jul 2023 11:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688987414;
+	bh=gBzc2tZIawZS0PUBWYuNntkIVRyxrqJrpV4aYLufX50=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YCpsYi8hZ5dhRZJo2dzz+GDrlvZ3y3Af66p3CIYUZn5Y7dTwO5nu+KqKKyalcHXoR
+	 PkygyNMxxD1kJ/lpREraWAr7ptMwrZdtMjK3PU29AnATl/uf8vAL9Nckrl/+MeLppg
+	 19u1l5oucwxlHlsOpcNXdgeY/3jdD6Md8RpxHE5vhqDd2CdGQZpt4EJ9jkXLMIe2Vi
+	 j8G3+oragW3KzCHXGkgfsqlqyuDdPjSBwMnDouPbYGO7j5vHL2lOm/CiBcEG3D/6Yt
+	 UEI3ZfBZW8x+aJt6SPMz70Pu1DNSCBE7XnZHCFijw9ibPwJlex9VzJs5Gg1OIblL+p
+	 7Sf/vgDKmS0KA==
+Date: Mon, 10 Jul 2023 12:10:03 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: Yang Yingliang <yangyingliang@huawei.com>,
 	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
 	Kris Bahnsen <kris@embeddedts.com>,
@@ -97,18 +88,20 @@ Cc: Yang Yingliang <yangyingliang@huawei.com>,
 	Richard Cochran <richardcochran@gmail.com>
 Subject: Re: [PATCH v1 4/8] spi: Get rid of old SPI_MASTER_NO_.X and
  SPI_MASTER_MUST_.X
-Message-ID: <ZKvmkAP5ZuT6lGLN@smile.fi.intel.com>
+Message-ID: <bb3b9ef2-0a32-4f8a-8d92-06d47875b562@sirena.org.uk>
 References: <20230710102751.83314-1-andriy.shevchenko@linux.intel.com>
  <20230710102751.83314-5-andriy.shevchenko@linux.intel.com>
  <1ffd5603-4140-4bf6-bfed-af70a6759bda@sirena.org.uk>
+ <ZKvmkAP5ZuT6lGLN@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XsbcL+9pzd4b793B"
 Content-Disposition: inline
-In-Reply-To: <1ffd5603-4140-4bf6-bfed-af70a6759bda@sirena.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: KBYGTTWZQWCOKWD7BUQMXUST2YCZXMXL
-X-Message-ID-Hash: KBYGTTWZQWCOKWD7BUQMXUST2YCZXMXL
-X-MailFrom: andriy.shevchenko@linux.intel.com
+In-Reply-To: <ZKvmkAP5ZuT6lGLN@smile.fi.intel.com>
+X-Cookie: Do you have lysdexia?
+Message-ID-Hash: KDO7HSCRLXNYZAG3Q5O4KH7BPZ42NYW6
+X-Message-ID-Hash: KDO7HSCRLXNYZAG3Q5O4KH7BPZ42NYW6
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -120,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KBYGTTWZQWCOKWD7BUQMXUST2YCZXMXL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KDO7HSCRLXNYZAG3Q5O4KH7BPZ42NYW6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,22 +122,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jul 10, 2023 at 12:04:35PM +0100, Mark Brown wrote:
-> On Mon, Jul 10, 2023 at 01:27:47PM +0300, Andy Shevchenko wrote:
-> 
-> > Convert the users to SPI_CONTROLLER_NO_?X and SPI_CONTROLLER_MUST_.X
-> > and kill the not used anymore definitions.
-> 
-> The above is not what this change does:
 
-How to improve it? I was sure that the form of "converting to something and
-something" is clear...
+--XsbcL+9pzd4b793B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > -	controller->flags = SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX;
-> > +	controller->flags = SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_MUST_TX;
+On Mon, Jul 10, 2023 at 02:08:00PM +0300, Andy Shevchenko wrote:
+> On Mon, Jul 10, 2023 at 12:04:35PM +0100, Mark Brown wrote:
+> > On Mon, Jul 10, 2023 at 01:27:47PM +0300, Andy Shevchenko wrote:
+> >=20
+> > > Convert the users to SPI_CONTROLLER_NO_?X and SPI_CONTROLLER_MUST_.X
+> > > and kill the not used anymore definitions.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> > The above is not what this change does:
 
+> How to improve it? I was sure that the form of "converting to something a=
+nd
+> something" is clear...
 
+> > > -	controller->flags =3D SPI_MASTER_MUST_RX | SPI_MASTER_MUST_TX;
+> > > +	controller->flags =3D SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_MUST_=
+TX;
+
+The change here is not the change that is described above.
+
+--XsbcL+9pzd4b793B
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSr5woACgkQJNaLcl1U
+h9AETQf/V6X5zgJr6k7uYHVQFcwbbL/m5vofjoxPJtbBrBmanG5Gk4nvQRtvE5KM
+RpVSjTeFZ6uC+MkUxft/VIyhHYX0UETqWF2qmW7X91ieOzQ+qA80TTz19J1soL8A
+bdQuSDpZRGY0O5f9XVApQSJ9PvLzql1IvaU8JVkUlF9HL8cNol+5w/YPdvB3kKU0
+zxUG62Tx0R0Qvo/ku288lZhsKbhtXH6jwNvsxH39TNsnewnat7fJiZvShg6theLk
+vV02J7JmsFAeUR3ZH24aBIcYM3bYv86vKInV1cKHAzBjoan98DG8cghY3IvapKia
+sf0W5e1oHmvyUi1zga0aGvHvsKHkcA==
+=AmsT
+-----END PGP SIGNATURE-----
+
+--XsbcL+9pzd4b793B--
