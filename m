@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B997EB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:54:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77DB0EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:55:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E13FE0F;
-	Tue, 11 Jul 2023 15:54:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E13FE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4B85E82;
+	Tue, 11 Jul 2023 15:54:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4B85E82
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689083690;
-	bh=iFM79YydR4MNlFIdl2NOHjMiuF+oxhq3YQtKaR8hU0E=;
+	s=default; t=1689083699;
+	bh=0v8XTkg22X4+SjZKJZYJseJJcu9T6jyLmPuYe7Mrmmg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FbwCxCDgCk7AhE83jYGtq1BxmkbLco4dWXz0FV9REttBGDH/T0gyFntctTLWuPj0f
-	 HnROEy8PTy3p7Em4ORKO2hnglNKoFjHbjiDzaNKdLR7F9ID1TB9Nz3LG6j/k3fCW62
-	 gtY8F/svnQemXC3NFkJmU+cIm0JUIOkX3UUl7ZFM=
+	b=V4QudrTxIsEeguwhQmcL6/k6nv/VD7duCeCXNzb7w3+IK1MlGPFRPpGQB9oS1M0qO
+	 +gnBzpgdfqM3NJpaDr3vTqY3k3pthWkN7/i6onsOcMpAAvWiN1/cQIFu55aqWHEz+T
+	 Gi5r22Qa5FTOvx7cXjodhSpOcocBQuL9O2gaWYLc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1E82F805C9; Tue, 11 Jul 2023 15:52:09 +0200 (CEST)
+	id 67E6DF805D7; Tue, 11 Jul 2023 15:52:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2481DF805C9;
-	Tue, 11 Jul 2023 15:52:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3CCFF805D7;
+	Tue, 11 Jul 2023 15:52:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DBD29F80553; Mon, 10 Jul 2023 17:50:03 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	id CE391F80290; Mon, 10 Jul 2023 17:50:04 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B3F87F80290
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3F87F80290
+	by alsa1.perex.cz (Postfix) with ESMTPS id D9068F8027B
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9068F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=KbH/OIhi
+ header.s=Intel header.b=EvyITdKo
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689004194; x=1720540194;
+  t=1689004190; x=1720540190;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=iFM79YydR4MNlFIdl2NOHjMiuF+oxhq3YQtKaR8hU0E=;
-  b=KbH/OIhir3H0b+T3sLjom2qsVMACoyU0Crzw0MvKgq+9fh5rmbTmikAy
-   IJUpvMzQyfTZ47IVXVkB0pahgbWcLp3iNBSMaRF2Y4YdCJs39MN9+gKjx
-   EsPxHoU57ZEyMDCV7/mssarCqNKAecNLZ90pdmK2LluroMxqdtMlrwLeZ
-   WEVyGkEbUTdm8gwzry9ZxSY9mron+RggeudYlfQah7nHkfazPPVD1y+AL
-   QAH2gRgLs32HoKS1OR8btUTJwsc9N2fb8PjTkreRveg4AlSCdhOUIqnRY
-   gbeP2AOa5iXbdkXiedORwRzkEymTdzCeHQObZDsnHPpURkCzFw85QcMM7
+  bh=0v8XTkg22X4+SjZKJZYJseJJcu9T6jyLmPuYe7Mrmmg=;
+  b=EvyITdKoQJ8DEP0YPHep+1rHQ1WvdGOFL0kHv5mpRQHIZi5cSiAq71ZC
+   tcmtVWwmCWrmopDefn530WPkqPNohHi5tbsnk/5C808tGh4mHFT43NXg4
+   Vg8wUEOj9oGiDfH6d6NqYPqlWNFQGIyZ5ypIUjgQ2xuwjkR+0qg6kmt0F
+   HbGbXd249SG5+yGSQ7XHe6N/zdQ9K4eEDO2zZBgcyUs44SreLpVxltXZJ
+   af/FJycutu4hRnPJreAmzv8cuEsbCsFeLmZVNJf9aRW0HzioP0cs5+1T0
+   PRhhd2mei4p80iEHSXQ1qikdvvWQxeia8/tSIQ1dJ3i151w/9vmnmReqN
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="361842550"
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="349185397"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="361842550"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jul 2023 08:49:49 -0700
+   d="scan'208";a="349185397"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jul 2023 08:49:44 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="720743961"
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="844921854"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="720743961"
+   d="scan'208";a="844921854"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 10 Jul 2023 08:49:37 -0700
+  by orsmga004.jf.intel.com with ESMTP; 10 Jul 2023 08:49:33 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id B9DAD718; Mon, 10 Jul 2023 18:49:34 +0300 (EEST)
+	id 6932A5FC; Mon, 10 Jul 2023 18:49:34 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
@@ -119,10 +119,10 @@ Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Richard Cochran <richardcochran@gmail.com>
-Subject: [PATCH v2 10/15] spi: Use predefined constants from bits.h and
- units.h
-Date: Mon, 10 Jul 2023 18:49:27 +0300
-Message-Id: <20230710154932.68377-11-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 05/15] spi: Remove code duplication in
+ spi_add_device_locked()
+Date: Mon, 10 Jul 2023 18:49:22 +0300
+Message-Id: <20230710154932.68377-6-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
 References: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
@@ -136,15 +136,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: 4HEQBYN3FXSUTW5XVU6M26DZCVTGPGUH
-X-Message-ID-Hash: 4HEQBYN3FXSUTW5XVU6M26DZCVTGPGUH
-X-Mailman-Approved-At: Tue, 11 Jul 2023 13:52:05 +0000
+Message-ID-Hash: YP7DVBYZKE4FRGEJK43I4BOM7NZILJFH
+X-Message-ID-Hash: YP7DVBYZKE4FRGEJK43I4BOM7NZILJFH
+X-Mailman-Approved-At: Tue, 11 Jul 2023 13:52:06 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4HEQBYN3FXSUTW5XVU6M26DZCVTGPGUH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YP7DVBYZKE4FRGEJK43I4BOM7NZILJFH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,38 +153,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Instead of hard coded numbers, use predefined constancts,
-such as BITS_PER_BYTE.
+Seems by unknown reason, probably some kind of mis-rebase,
+the commit 0c79378c0199 ("spi: add ancillary device support")
+adds a dozen of duplicating lines of code. Drop them.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/spi/spi.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/spi/spi.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 9fb8efb068c6..10265184ea02 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -25,6 +25,7 @@
- #include <linux/string.h>
- #include <linux/types.h>
- #include <linux/u64_stats_sync.h>
-+#include <linux/units.h>
- 
- #include <asm/byteorder.h>
- 
-@@ -1294,9 +1295,9 @@ static inline bool spi_is_bpw_supported(struct spi_device *spi, u32 bpw)
- static inline unsigned int spi_controller_xfer_timeout(struct spi_controller *ctlr,
- 						       struct spi_transfer *xfer)
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index c99ee4164f11..46cbda383228 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -712,17 +712,6 @@ EXPORT_SYMBOL_GPL(spi_add_device);
+ static int spi_add_device_locked(struct spi_device *spi)
  {
--	u32 speed_hz = xfer->speed_hz ?: 100000;
-+	u32 speed_hz = xfer->speed_hz ?: 100 * HZ_PER_KHZ;
+ 	struct spi_controller *ctlr = spi->controller;
+-	struct device *dev = ctlr->dev.parent;
+-
+-	/* Chipselects are numbered 0..max; validate. */
+-	if (spi_get_chipselect(spi, 0) >= ctlr->num_chipselect) {
+-		dev_err(dev, "cs%d >= max %d\n", spi_get_chipselect(spi, 0),
+-			ctlr->num_chipselect);
+-		return -EINVAL;
+-	}
+-
+-	/* Set the bus ID string */
+-	spi_dev_set_name(spi);
  
--	return max(xfer->len * 8 * 2 / (speed_hz / 1000), 500U);
-+	return max(xfer->len * BITS_PER_BYTE * 2 / (speed_hz / MILLI), 500UL);
- }
- 
- /*---------------------------------------------------------------------------*/
+ 	WARN_ON(!mutex_is_locked(&ctlr->add_lock));
+ 	return __spi_add_device(spi);
 -- 
 2.40.0.1.gaa8946217a0b
 
