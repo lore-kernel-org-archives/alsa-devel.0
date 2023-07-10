@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24863EB64D9
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 10:30:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47979EB64DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Jul 2023 10:30:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4433C7F4;
-	Mon, 10 Jul 2023 12:29:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4433C7F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 062C1846;
+	Mon, 10 Jul 2023 12:30:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 062C1846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1688985048;
-	bh=8VTp2VvPftW0K82t/UQGFNBKatn1Y+wh44m0tYwuY/M=;
+	s=default; t=1688985056;
+	bh=1YMEKoH26Jvs8dKIC6vdH9uSV/g2LDeyMP+ZqFMU56I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Co9jqsf8/v7QJeyprndhYOGhOM3qQ1w4pAILFKFATGmsIMinfOboU9rylftg6SZTN
-	 P/HOVkwUhVbAs7ukRnYBZNWFdtHNYciXymLDvJYwfjhDd6e0tQyq+me1STgucDPPTB
-	 Ds9mtXO+AvzXFucdyJw3/7vNoDn7URI2t+icmZzM=
+	b=FYV6tQYAcwsrgjGvpGaCIwttCMAaSw56Z73CKIm/4gWRbptcWmOCN3nVRc0jkBshH
+	 LbTVuc9fBi4KlCOrBLxTqgg4aMCGjK3EVqFDYhYU+iccXz9rIm/ZQitmn04+Jzovam
+	 +tF9+21VRL9XTUjGT59Eposjs4ogb5OccT/FetVo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F660F805A9; Mon, 10 Jul 2023 12:28:32 +0200 (CEST)
+	id 9E573F80549; Mon, 10 Jul 2023 12:30:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 913F5F805AD;
-	Mon, 10 Jul 2023 12:28:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B9C4F80535;
+	Mon, 10 Jul 2023 12:30:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C16C2F8059F; Mon, 10 Jul 2023 12:28:28 +0200 (CEST)
+	id 7F16EF80290; Mon, 10 Jul 2023 12:29:56 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A63C0F8047D
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 12:28:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A63C0F8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8FAA8F8024E
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 12:27:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FAA8F8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=KV2g6wSd
+ header.s=Intel header.b=Opi/1FOk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1688984889; x=1720520889;
+  t=1688984885; x=1720520885;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=8VTp2VvPftW0K82t/UQGFNBKatn1Y+wh44m0tYwuY/M=;
-  b=KV2g6wSdhNgJwrrj/lziNCk7zWWURw1azZVMJvGBCPCVmYFc8H2pPx1a
-   KM3pG/jkBObxXoMEpUN2xsFe3dVITsBF5mk5ob68IXnKAJ0mkTNdRBan2
-   4lngqwha5P2Aliv3CpJVmeR8gz9YwfTyrW2hqSO0M8wcIbb63tVRYy4rV
-   PUjs9o2+MVEWTNbiDPOmClrrwDEjrK8xNXzzxYr21Y6k1j6+7YWhz77Js
-   W9ZhS0GZyaE/rwpy8xa9oEtb5THAoah5dpsRhjjtDwDD8spSHndzKM3X0
-   /tRuJiqICU3BZarfm0y+NzJC1+5rnnAr50gLBOaKXwr19z5cZN9ah4JZ9
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="367803799"
+  bh=1YMEKoH26Jvs8dKIC6vdH9uSV/g2LDeyMP+ZqFMU56I=;
+  b=Opi/1FOkoXlY8n0UE1RQZTYOTzQdWyXBge3Q1jnBP+siwc4l4YMLYVps
+   9hYZ7coHD+OvlpnwFlQi15eq0v4F2krbA2cQ4LbimNLmBJN2XeUQE+yu1
+   tH+SnbLmMh6mqzIltzL4JohC6o81Ifa0AzbsKEXTbul9DxaF915/F4Hb0
+   bP8hIQ5VsRMHAaoFTjS6RZyNFkiIB1xP7lYwS23fQjMOGPIIhSK4VhvUk
+   pTYq+5hWCwY20e5Ds/wJ1jXlFC75II3HLeQ4lqNgUJVJ+OjcirfQKVzAw
+   xEDGtb+7GpcUz7A+i/Rn2oPp+CtJTXqRxWYzWif4dF1q0R/TEOLqbqu4a
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="367803745"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="367803799"
+   d="scan'208";a="367803745"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jul 2023 03:28:02 -0700
+ 10 Jul 2023 03:27:55 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="755956019"
+X-IronPort-AV: E=McAfee;i="6600,9927,10766"; a="755956011"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="755956019"
+   d="scan'208";a="755956011"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 10 Jul 2023 03:27:55 -0700
+  by orsmga001.jf.intel.com with ESMTP; 10 Jul 2023 03:27:48 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 6D8A169F; Mon, 10 Jul 2023 13:27:53 +0300 (EEST)
+	id EDFD31D9; Mon, 10 Jul 2023 13:27:52 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Yang Yingliang <yangyingliang@huawei.com>,
@@ -96,16 +96,16 @@ Cc: Radu Pirea <radu_nicolae.pirea@upb.ro>,
 	Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	Max Filippov <jcmvbkbc@gmail.com>,
 	Richard Cochran <richardcochran@gmail.com>
-Subject: [PATCH v1 8/8] spi: Use struct_size() helper
-Date: Mon, 10 Jul 2023 13:27:51 +0300
-Message-Id: <20230710102751.83314-9-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/8] spi: Remove unneeded OF node NULL checks
+Date: Mon, 10 Jul 2023 13:27:44 +0300
+Message-Id: <20230710102751.83314-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230710102751.83314-1-andriy.shevchenko@linux.intel.com>
 References: <20230710102751.83314-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: EMXB4SCE2KVVKJB6MCYB5POU2A2IYZ2Q
-X-Message-ID-Hash: EMXB4SCE2KVVKJB6MCYB5POU2A2IYZ2Q
+Message-ID-Hash: L36OAOIR4UFV5T646KBW4CPUBSTS3DY6
+X-Message-ID-Hash: L36OAOIR4UFV5T646KBW4CPUBSTS3DY6
 X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EMXB4SCE2KVVKJB6MCYB5POU2A2IYZ2Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L36OAOIR4UFV5T646KBW4CPUBSTS3DY6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,64 +127,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Prefer struct_size() over open-coded versions.
+In the couple of places the NULL check of OF node is implied by the call
+that takes it as a parameter. Drop the respective duplicate checks.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/spi/spi.h | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ drivers/spi/spi.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index e9fb96016dc1..d4d686af76bd 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -17,6 +17,7 @@
- #include <linux/minmax.h>
- #include <linux/mod_devicetable.h>
- #include <linux/mutex.h>
-+#include <linux/overflow.h>
- #include <linux/scatterlist.h>
- #include <linux/slab.h>
- #include <linux/smp.h>
-@@ -1100,6 +1101,8 @@ struct spi_transfer {
-  * @state: for use by whichever driver currently owns the message
-  * @resources: for resource management when the SPI message is processed
-  * @prepared: spi_prepare_message was called for the this message
-+ * @t: for use with spi_message_alloc() when memory has message and transfers
-+ *	together
-  *
-  * A @spi_message is used to execute an atomic sequence of data transfers,
-  * each represented by a struct spi_transfer.  The sequence is "atomic"
-@@ -1154,6 +1157,9 @@ struct spi_message {
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 9291b2a0e887..8f3282a71c63 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2399,9 +2399,6 @@ static void of_register_spi_devices(struct spi_controller *ctlr)
+ 	struct spi_device *spi;
+ 	struct device_node *nc;
  
- 	/* List of spi_res resources when the SPI message is processed */
- 	struct list_head        resources;
-+
-+	/* For embedding transfers into the memory of the message */
-+	struct spi_transfer	t[];
- };
- 
- static inline void spi_message_init_no_memset(struct spi_message *m)
-@@ -1214,16 +1220,13 @@ static inline struct spi_message *spi_message_alloc(unsigned ntrans, gfp_t flags
- {
- 	struct spi_message *m;
- 
--	m = kzalloc(sizeof(struct spi_message)
--			+ ntrans * sizeof(struct spi_transfer),
--			flags);
-+	m = kzalloc(struct_size(m, t, ntrans), flags);
- 	if (m) {
- 		unsigned i;
--		struct spi_transfer *t = (struct spi_transfer *)(m + 1);
- 
- 		spi_message_init_no_memset(m);
--		for (i = 0; i < ntrans; i++, t++)
--			spi_message_add_tail(t, m);
-+		for (i = 0; i < ntrans; i++)
-+			spi_message_add_tail(&m->t[i], m);
- 	}
- 	return m;
- }
+-	if (!ctlr->dev.of_node)
+-		return;
+-
+ 	for_each_available_child_of_node(ctlr->dev.of_node, nc) {
+ 		if (of_node_test_and_set_flag(nc, OF_POPULATED))
+ 			continue;
+@@ -3134,7 +3131,7 @@ int spi_register_controller(struct spi_controller *ctlr)
+ 		if (WARN(id < 0, "couldn't get idr"))
+ 			return id == -ENOSPC ? -EBUSY : id;
+ 		ctlr->bus_num = id;
+-	} else if (ctlr->dev.of_node) {
++	} else {
+ 		/* Allocate dynamic bus number using Linux idr */
+ 		id = of_alias_get_id(ctlr->dev.of_node, "spi");
+ 		if (id >= 0) {
 -- 
 2.40.0.1.gaa8946217a0b
 
