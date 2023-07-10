@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CEC7EB64DD
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71D7FEB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:53:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF80ADF3;
-	Tue, 11 Jul 2023 15:51:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF80ADF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42C4BE0F;
+	Tue, 11 Jul 2023 15:52:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42C4BE0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689083566;
-	bh=REWyC/nAC6Z96ggpA1NLsyDE3cGETw1DuCTFixDA/T8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=tb4811Ii+oSl8iU8AML8CqC/6cfr4zfByS/25gHabEaiRUVSYdHl815wJaM2ZPKNH
-	 mUo4KF/rrUh9tQ7v9lvOfLmYUol/MR4GZU7Y2013YfqnpDgWUllz1KyoH8WoSRpRdt
-	 9KNdLFZmzBBOY4glYwMFbSsi4J2z2+GNM7rmmksM=
+	s=default; t=1689083595;
+	bh=qyXZ9l/eDXJvwNtej9Cq3pKS54WfQZS0AfJJYPgySOQ=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=GrWEoVEKKOHoAeGpwelMKIk//PF6GKZLSQyrt7urvH5IuEM+jVuT7H15FH0ebinUg
+	 gQMIqi0AwuL5wMH/ueHjLP7s9c8wEssLQQgLU/pBX6U6jCxH4a+TMtE31eHpGcuXn0
+	 fhzZ5DszUhd2btC5H+heCwzzyBZmxtxx5U/lUv3w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C55ACF8027B; Tue, 11 Jul 2023 15:51:33 +0200 (CEST)
+	id 75696F80549; Tue, 11 Jul 2023 15:51:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB83DF8027B;
-	Tue, 11 Jul 2023 15:51:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC414F80544;
+	Tue, 11 Jul 2023 15:51:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F0C1F8053B; Mon, 10 Jul 2023 17:49:50 +0200 (CEST)
+	id 3D769F80549; Mon, 10 Jul 2023 17:49:54 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C4F8CF800E4
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4F8CF800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 14425F80249
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14425F80249
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=PYZNa7Kx
+ header.s=Intel header.b=G/BsFnDc
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689004185; x=1720540185;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=REWyC/nAC6Z96ggpA1NLsyDE3cGETw1DuCTFixDA/T8=;
-  b=PYZNa7KxX8N35y6MlWgb9q/p2vTFrv2olHPuvhrBDPwCVuEM3XT+NIw9
-   pLVD/GfYYgEh0dxMbsgQf+fA/YBz72SLzD6Sxo6KJhw/DdkTcXLCqKI2h
-   gW5kYFOjD43kVtVgo25c4j3URpj7VzsCbPts+jMPoc4bwrntj5PehJsIT
-   97ss3jGgHfsAukVa0Rau1j6G+mQ8lXniANxQCV6f6Vjd8qQFYqKIM5B7g
-   3Vol1hob86OrSynoRnxj5eTVihC6o5lKCGUzf8LtNsKA3ixwLQ35+VBev
-   ILKoa7FVaeO9qNp+DHW2+yGYgroTLQCFb83HI55ZdlzY/5pnoDYSAverx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="361842430"
+  t=1689004187; x=1720540187;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qyXZ9l/eDXJvwNtej9Cq3pKS54WfQZS0AfJJYPgySOQ=;
+  b=G/BsFnDcZfMOZvp1T5ou6ie4s9lhLvyDUURD5gqCTjx4OcZspojbE8C1
+   Wk3EIY2aJJR5ocpIHxxczcr39CqPe2ozEjGoZbXAje8/w4JtzJ+crQcpG
+   Mc0aRm2N8PAECX8i5zOmHgXCFpH3DwUDrMSOR4P7vIjM/FSG8Ct0Gd4Kh
+   dhNf6HVsMwbOYL4ZNbmo015bPc6WoA0y+VR3jJNTQJiTAxEn8LfxRaOo7
+   JztD3nZrE/RtKDsWXwBvomJxCJKC2kixCFFnas0CozrKed5n14rtbFRDy
+   QqvANCe6bQnVy1sPj0PyiVfOuM3HlgzUndckQ9qWTNTLnw2MWL1y89XUM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="361842449"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="361842430"
+   d="scan'208";a="361842449"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  10 Jul 2023 08:49:41 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="720743949"
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="720743951"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="720743949"
+   d="scan'208";a="720743951"
 Received: from black.fi.intel.com ([10.237.72.28])
   by orsmga002.jf.intel.com with ESMTP; 10 Jul 2023 08:49:29 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 36E48385; Mon, 10 Jul 2023 18:49:34 +0300 (EEST)
+	id 115861FC; Mon, 10 Jul 2023 18:49:33 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
@@ -119,13 +118,10 @@ Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Richard Cochran <richardcochran@gmail.com>
-Subject: [PATCH v2 02/15] spi: Drop duplicate IDR allocation code in
- spi_register_controller()
-Date: Mon, 10 Jul 2023 18:49:19 +0300
-Message-Id: <20230710154932.68377-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 00/15] spi: Header and core clean up and refactoring
+Date: Mon, 10 Jul 2023 18:49:17 +0300
+Message-Id: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
-References: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: andriy.shevchenko@linux.intel.com
@@ -136,15 +132,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: YTVQDFMKGJMAY7J7ZGDN6SWULX7AAO3K
-X-Message-ID-Hash: YTVQDFMKGJMAY7J7ZGDN6SWULX7AAO3K
-X-Mailman-Approved-At: Tue, 11 Jul 2023 13:51:28 +0000
+Message-ID-Hash: ZNS74KBBS7LY4GUGZHSPWS32CMEI3HQL
+X-Message-ID-Hash: ZNS74KBBS7LY4GUGZHSPWS32CMEI3HQL
+X-Mailman-Approved-At: Tue, 11 Jul 2023 13:51:31 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YTVQDFMKGJMAY7J7ZGDN6SWULX7AAO3K/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZNS74KBBS7LY4GUGZHSPWS32CMEI3HQL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,100 +149,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Refactor spi_register_controller() to drop duplicate IDR allocation.
-Instead of if-else-if branching use two sequential if:s, which allows
-to re-use the logic of IDR allocation in all cases.
+Various cleanups and refactorings of the SPI header and core parts
+united in a single series. It also touches drivers under SPI subsystem
+folder on the pure renaming purposes of some constants.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi.c | 50 ++++++++++++++++++++++-------------------------
- 1 file changed, 23 insertions(+), 27 deletions(-)
+No functional change intended.
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 8f3282a71c63..6d74218cf38e 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -3081,6 +3081,20 @@ static int spi_controller_check_ops(struct spi_controller *ctlr)
- 	return 0;
- }
- 
-+/* Allocate dynamic bus number using Linux idr */
-+static int spi_controller_id_alloc(struct spi_controller *ctlr, int start, int end)
-+{
-+	int id;
-+
-+	mutex_lock(&board_lock);
-+	id = idr_alloc(&spi_master_idr, ctlr, start, end, GFP_KERNEL);
-+	mutex_unlock(&board_lock);
-+	if (WARN(id < 0, "couldn't get idr"))
-+		return id == -ENOSPC ? -EBUSY : id;
-+	ctlr->bus_num = id;
-+	return 0;
-+}
-+
- /**
-  * spi_register_controller - register SPI master or slave controller
-  * @ctlr: initialized master, originally from spi_alloc_master() or
-@@ -3108,8 +3122,8 @@ int spi_register_controller(struct spi_controller *ctlr)
- {
- 	struct device		*dev = ctlr->dev.parent;
- 	struct boardinfo	*bi;
-+	int			first_dynamic;
- 	int			status;
--	int			id, first_dynamic;
- 
- 	if (!dev)
- 		return -ENODEV;
-@@ -3122,27 +3136,13 @@ int spi_register_controller(struct spi_controller *ctlr)
- 	if (status)
- 		return status;
- 
-+	if (ctlr->bus_num < 0)
-+		ctlr->bus_num = of_alias_get_id(ctlr->dev.of_node, "spi");
- 	if (ctlr->bus_num >= 0) {
- 		/* Devices with a fixed bus num must check-in with the num */
--		mutex_lock(&board_lock);
--		id = idr_alloc(&spi_master_idr, ctlr, ctlr->bus_num,
--			ctlr->bus_num + 1, GFP_KERNEL);
--		mutex_unlock(&board_lock);
--		if (WARN(id < 0, "couldn't get idr"))
--			return id == -ENOSPC ? -EBUSY : id;
--		ctlr->bus_num = id;
--	} else {
--		/* Allocate dynamic bus number using Linux idr */
--		id = of_alias_get_id(ctlr->dev.of_node, "spi");
--		if (id >= 0) {
--			ctlr->bus_num = id;
--			mutex_lock(&board_lock);
--			id = idr_alloc(&spi_master_idr, ctlr, ctlr->bus_num,
--				       ctlr->bus_num + 1, GFP_KERNEL);
--			mutex_unlock(&board_lock);
--			if (WARN(id < 0, "couldn't get idr"))
--				return id == -ENOSPC ? -EBUSY : id;
--		}
-+		status = spi_controller_id_alloc(ctlr, ctlr->bus_num, ctlr->bus_num + 1);
-+		if (status)
-+			return status;
- 	}
- 	if (ctlr->bus_num < 0) {
- 		first_dynamic = of_alias_get_highest_id("spi");
-@@ -3151,13 +3151,9 @@ int spi_register_controller(struct spi_controller *ctlr)
- 		else
- 			first_dynamic++;
- 
--		mutex_lock(&board_lock);
--		id = idr_alloc(&spi_master_idr, ctlr, first_dynamic,
--			       0, GFP_KERNEL);
--		mutex_unlock(&board_lock);
--		if (WARN(id < 0, "couldn't get idr"))
--			return id;
--		ctlr->bus_num = id;
-+		status = spi_controller_id_alloc(ctlr, first_dynamic, 0);
-+		if (status)
-+			return status;
- 	}
- 	ctlr->bus_lock_flag = 0;
- 	init_completion(&ctlr->xfer_completion);
+Changelog v2:
+- added new patches 3,4,5,10,13,14
+- massaged comment and kernel doc in patch 9
+- split used to be patch 4 to patches 11,12
+- covered a few things in SPI core in patch 15
+- amended commit message for above (Mark)
+- reshuffled patches in the series for better logical grouping
+
+Andy Shevchenko (15):
+  spi: Remove unneeded OF node NULL checks
+  spi: Drop duplicate IDR allocation code in spi_register_controller()
+  spi: Replace if-else-if by bitops and multiplications
+  spi: Replace open coded spi_controller_xfer_timeout()
+  spi: Remove code duplication in spi_add_device_locked()
+  spi: Use sysfs_emit() to instead of s*printf()
+  spi: Sort headers alphabetically
+  spi: Clean up headers
+  spi: Use struct_size() helper
+  spi: Use predefined constants from bits.h and units.h
+  spi: Get rid of old SPI_MASTER_NO_TX & SPI_MASTER_NO_RX
+  spi: Get rid of old SPI_MASTER_MUST_TX & SPI_MASTER_MUST_RX
+  spi: Rename SPI_MASTER_GPIO_SS to SPI_CONTROLLER_GPIO_SS
+  spi: Convert to SPI_CONTROLLER_HALF_DUPLEX
+  spi: Fix spelling typos and acronyms capitalization
+
+ drivers/spi/spi-amd.c             |   2 +-
+ drivers/spi/spi-at91-usart.c      |   2 +-
+ drivers/spi/spi-ath79.c           |   2 +-
+ drivers/spi/spi-atmel.c           |   4 +-
+ drivers/spi/spi-bitbang-txrx.h    |  16 +--
+ drivers/spi/spi-bitbang.c         |   8 +-
+ drivers/spi/spi-cavium-thunderx.c |   2 +-
+ drivers/spi/spi-davinci.c         |   2 +-
+ drivers/spi/spi-dw-core.c         |   2 +-
+ drivers/spi/spi-falcon.c          |   2 +-
+ drivers/spi/spi-fsl-lpspi.c       |   2 +-
+ drivers/spi/spi-gpio.c            |  10 +-
+ drivers/spi/spi-imx.c             |   2 +-
+ drivers/spi/spi-lp8841-rtc.c      |  10 +-
+ drivers/spi/spi-meson-spicc.c     |   2 +-
+ drivers/spi/spi-mt65xx.c          |   2 +-
+ drivers/spi/spi-mxs.c             |   2 +-
+ drivers/spi/spi-omap-uwire.c      |   2 +-
+ drivers/spi/spi-orion.c           |   2 +-
+ drivers/spi/spi-pci1xxxx.c        |   2 +-
+ drivers/spi/spi-pic32-sqi.c       |   2 +-
+ drivers/spi/spi-pic32.c           |   2 +-
+ drivers/spi/spi-qcom-qspi.c       |   2 +-
+ drivers/spi/spi-rb4xx.c           |   2 +-
+ drivers/spi/spi-rockchip-sfc.c    |   2 +-
+ drivers/spi/spi-rockchip.c        |   2 +-
+ drivers/spi/spi-sifive.c          |   2 +-
+ drivers/spi/spi-slave-mt27xx.c    |   2 +-
+ drivers/spi/spi-sprd-adi.c        |   2 +-
+ drivers/spi/spi-stm32.c           |   2 +-
+ drivers/spi/spi-ti-qspi.c         |   2 +-
+ drivers/spi/spi-xcomm.c           |   2 +-
+ drivers/spi/spi-xtensa-xtfpga.c   |   2 +-
+ drivers/spi/spi.c                 | 204 ++++++++++++------------------
+ include/linux/spi/spi.h           | 198 +++++++++++++++++------------
+ include/trace/events/spi.h        |   2 +-
+ 36 files changed, 247 insertions(+), 261 deletions(-)
+
 -- 
 2.40.0.1.gaa8946217a0b
 
