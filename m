@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D9B1EB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 633B6EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:54:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 383C4206;
-	Tue, 11 Jul 2023 15:53:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 383C4206
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61051E88;
+	Tue, 11 Jul 2023 15:53:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61051E88
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689083653;
-	bh=NaAUtfuKUjWfIyo2AvU+b2/TN3c63zF3Fr8TWiuiUkI=;
+	s=default; t=1689083668;
+	bh=a4OeQXOY1tsroZV4NMFgyMSROfjvqRdZJUYq/GX8st8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fm5erObI/uj2537ilGcqPBCtIwTHJzV8kymgPg4ws79EZ+hPWgL4Ag6iOWfxwAqWF
-	 I38qgD6AZzFFnhk4h4MJyVczhUoOC4oZ+yzEs8RvDJTmtgXzc/IwcBxEI8ueTRGzb4
-	 LFnF5oqwdpPYCFeVVldhngFhNszm9RHVDdQaGTeU=
+	b=EVVmM0Ruhn9lYtStxBJe0Aee0Pxob407E0GV25uMor2m8AiG2Lj5Gp3t6EeZJm+up
+	 9u77G+xUZlvkQwA+GjTvMcj1hYBw13yZzkcU3L6zpJdjhPPH3QZ54wLNuAMFMSJXa/
+	 2hRPAKF+EcU9vzjytDgSWjakHwFl2l52m2ReWiZ4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2CC20F805BB; Tue, 11 Jul 2023 15:51:47 +0200 (CEST)
+	id 80B9CF805C0; Tue, 11 Jul 2023 15:51:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F95CF805AF;
-	Tue, 11 Jul 2023 15:51:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2B30F805BF;
+	Tue, 11 Jul 2023 15:51:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E6492F80553; Mon, 10 Jul 2023 17:49:59 +0200 (CEST)
+	id 0EC83F8055B; Mon, 10 Jul 2023 17:50:03 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 946A7F800E4
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 946A7F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id D19A9F8053B
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D19A9F8053B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=GhgolFR0
+ header.s=Intel header.b=j4IQ+2Ob
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689004190; x=1720540190;
+  t=1689004193; x=1720540193;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=NaAUtfuKUjWfIyo2AvU+b2/TN3c63zF3Fr8TWiuiUkI=;
-  b=GhgolFR0MvhyGL5geVyUiFG/rPa7ASVKl9kgdR0frR4QVpWByXOHww0h
-   0nP5XV2wg19eru1LQJo1H5VOv+pv1+iijwpg8Y7syoqAxGHNLI276L3uN
-   7utCMjufCkSu5J/BmCXX+kxOTG3r81MdTx//PtqhvaZSfWHgHHJcgmwMy
-   ZCOLdozx+BSkK0JEJc56GsiiVJhxBJQmU1Jl9rmOMCz947p4Zu8wtRw26
-   +f0S7TBV2F2egCYci4b+XmGJXUbEm+yeNgVuZdM0h6++L7SBOyw3tK7UE
-   A647gh5oPKWDzxVwb6j9LZyP3QAv8ekp5LS+CR0kn0kUbIHxepqnaeDRs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="349185452"
+  bh=a4OeQXOY1tsroZV4NMFgyMSROfjvqRdZJUYq/GX8st8=;
+  b=j4IQ+2Obl96AkJVCRL/yweqA8E0wUjsRnFFNReAOW2/FU8QDbaH1h6Kq
+   vTIX/gpExMdutX37tgHzWEt8s/w75ilVgZEbfd9+U7RWaRu6gaEe7Gd4P
+   kVi6gku3wBMBt5SKjW1mj4ddXvNf6j7BNegdYi1YZgEuHGVuxHj4QRTEG
+   8p9ctcoioO3NqfA/u2gc34SfhpxzvORRwK/BptcwIG7ELKtb6Q4rlzUsk
+   PsLxoixpRUmno0nR/t1E3jcvdwVMASxaDrAAK+ndTivPR1Pbg2ZiIPSip
+   Z8kInHKokR4UQt1NDDx1EfXzk4WwXglnckppDTrcGTKZG9daVbyRqO/nL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="349185491"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="349185452"
+   d="scan'208";a="349185491"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jul 2023 08:49:46 -0700
+ 10 Jul 2023 08:49:50 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="844921872"
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="844921907"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="844921872"
+   d="scan'208";a="844921907"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 10 Jul 2023 08:49:35 -0700
+  by orsmga004.jf.intel.com with ESMTP; 10 Jul 2023 08:49:39 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 8BD3669A; Mon, 10 Jul 2023 18:49:34 +0300 (EEST)
+	id C66AA748; Mon, 10 Jul 2023 18:49:34 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
@@ -119,9 +119,10 @@ Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Richard Cochran <richardcochran@gmail.com>
-Subject: [PATCH v2 07/15] spi: Sort headers alphabetically
-Date: Mon, 10 Jul 2023 18:49:24 +0300
-Message-Id: <20230710154932.68377-8-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 11/15] spi: Get rid of old SPI_MASTER_NO_TX &
+ SPI_MASTER_NO_RX
+Date: Mon, 10 Jul 2023 18:49:28 +0300
+Message-Id: <20230710154932.68377-12-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
 References: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
@@ -135,15 +136,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: AYMQQLMKEKGEYNYWJ4IT76OJJ7NKVIRD
-X-Message-ID-Hash: AYMQQLMKEKGEYNYWJ4IT76OJJ7NKVIRD
-X-Mailman-Approved-At: Tue, 11 Jul 2023 13:51:33 +0000
+Message-ID-Hash: 5QB75KNFLK2FUVURQXIXM36D5J2C3LYU
+X-Message-ID-Hash: 5QB75KNFLK2FUVURQXIXM36D5J2C3LYU
+X-Mailman-Approved-At: Tue, 11 Jul 2023 13:51:34 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AYMQQLMKEKGEYNYWJ4IT76OJJ7NKVIRD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5QB75KNFLK2FUVURQXIXM36D5J2C3LYU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -152,108 +153,210 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Sorting headers alphabetically helps locating duplicates, and
-make it easier to figure out where to insert new headers.
+Convert the users from SPI_MASTER_NO_TX and/or SPI_MASTER_NO_RX
+to SPI_CONTROLLER_NO_TX and/or SPI_CONTROLLER_NO_RX respectively
+and kill the not used anymore definitions.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi.c       | 42 ++++++++++++++++++++---------------------
- include/linux/spi/spi.h | 14 +++++++-------
- 2 files changed, 28 insertions(+), 28 deletions(-)
+ drivers/spi/spi-bitbang-txrx.h  | 16 ++++++++--------
+ drivers/spi/spi-bitbang.c       |  2 +-
+ drivers/spi/spi-gpio.c          |  8 ++++----
+ drivers/spi/spi-lp8841-rtc.c    |  8 ++++----
+ drivers/spi/spi-xtensa-xtfpga.c |  2 +-
+ include/linux/spi/spi.h         |  2 --
+ 6 files changed, 18 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index cfb1c985d940..06a92a3a5746 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -4,36 +4,36 @@
- // Copyright (C) 2005 David Brownell
- // Copyright (C) 2008 Secret Lab Technologies Ltd.
+diff --git a/drivers/spi/spi-bitbang-txrx.h b/drivers/spi/spi-bitbang-txrx.h
+index 2dcbe166df63..0cab48b7875b 100644
+--- a/drivers/spi/spi-bitbang-txrx.h
++++ b/drivers/spi/spi-bitbang-txrx.h
+@@ -57,7 +57,7 @@ bitbang_txrx_be_cpha0(struct spi_device *spi,
+ 	for (word <<= (32 - bits); likely(bits); bits--) {
  
--#include <linux/kernel.h>
--#include <linux/device.h>
--#include <linux/init.h>
-+#include <linux/acpi.h>
- #include <linux/cache.h>
--#include <linux/dma-mapping.h>
-+#include <linux/clk/clk-conf.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
- #include <linux/dmaengine.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/export.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/highmem.h>
-+#include <linux/idr.h>
-+#include <linux/init.h>
-+#include <linux/ioport.h>
-+#include <linux/kernel.h>
-+#include <linux/kthread.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/mutex.h>
- #include <linux/of_device.h>
- #include <linux/of_irq.h>
--#include <linux/clk/clk-conf.h>
--#include <linux/slab.h>
--#include <linux/mod_devicetable.h>
--#include <linux/spi/spi.h>
--#include <linux/spi/spi-mem.h>
--#include <linux/gpio/consumer.h>
--#include <linux/pm_runtime.h>
-+#include <linux/percpu.h>
-+#include <linux/platform_data/x86/apple.h>
- #include <linux/pm_domain.h>
-+#include <linux/pm_runtime.h>
- #include <linux/property.h>
--#include <linux/export.h>
-+#include <linux/ptp_clock_kernel.h>
- #include <linux/sched/rt.h>
-+#include <linux/slab.h>
-+#include <linux/spi/spi.h>
-+#include <linux/spi/spi-mem.h>
- #include <uapi/linux/sched/types.h>
--#include <linux/delay.h>
--#include <linux/kthread.h>
--#include <linux/ioport.h>
--#include <linux/acpi.h>
--#include <linux/highmem.h>
--#include <linux/idr.h>
--#include <linux/platform_data/x86/apple.h>
--#include <linux/ptp_clock_kernel.h>
--#include <linux/percpu.h>
+ 		/* setup MSB (to slave) on trailing edge */
+-		if ((flags & SPI_MASTER_NO_TX) == 0) {
++		if ((flags & SPI_CONTROLLER_NO_TX) == 0) {
+ 			if ((word & (1 << 31)) != oldbit) {
+ 				setmosi(spi, word & (1 << 31));
+ 				oldbit = word & (1 << 31);
+@@ -70,7 +70,7 @@ bitbang_txrx_be_cpha0(struct spi_device *spi,
  
- #define CREATE_TRACE_POINTS
- #include <trace/events/spi.h>
+ 		/* sample MSB (from slave) on leading edge */
+ 		word <<= 1;
+-		if ((flags & SPI_MASTER_NO_RX) == 0)
++		if ((flags & SPI_CONTROLLER_NO_RX) == 0)
+ 			word |= getmiso(spi);
+ 		setsck(spi, cpol);
+ 	}
+@@ -90,7 +90,7 @@ bitbang_txrx_be_cpha1(struct spi_device *spi,
+ 
+ 		/* setup MSB (to slave) on leading edge */
+ 		setsck(spi, !cpol);
+-		if ((flags & SPI_MASTER_NO_TX) == 0) {
++		if ((flags & SPI_CONTROLLER_NO_TX) == 0) {
+ 			if ((word & (1 << 31)) != oldbit) {
+ 				setmosi(spi, word & (1 << 31));
+ 				oldbit = word & (1 << 31);
+@@ -103,7 +103,7 @@ bitbang_txrx_be_cpha1(struct spi_device *spi,
+ 
+ 		/* sample MSB (from slave) on trailing edge */
+ 		word <<= 1;
+-		if ((flags & SPI_MASTER_NO_RX) == 0)
++		if ((flags & SPI_CONTROLLER_NO_RX) == 0)
+ 			word |= getmiso(spi);
+ 	}
+ 	return word;
+@@ -122,7 +122,7 @@ bitbang_txrx_le_cpha0(struct spi_device *spi,
+ 	for (; likely(bits); bits--) {
+ 
+ 		/* setup LSB (to slave) on trailing edge */
+-		if ((flags & SPI_MASTER_NO_TX) == 0) {
++		if ((flags & SPI_CONTROLLER_NO_TX) == 0) {
+ 			if ((word & 1) != oldbit) {
+ 				setmosi(spi, word & 1);
+ 				oldbit = word & 1;
+@@ -135,7 +135,7 @@ bitbang_txrx_le_cpha0(struct spi_device *spi,
+ 
+ 		/* sample LSB (from slave) on leading edge */
+ 		word >>= 1;
+-		if ((flags & SPI_MASTER_NO_RX) == 0)
++		if ((flags & SPI_CONTROLLER_NO_RX) == 0)
+ 			word |= getmiso(spi) << rxbit;
+ 		setsck(spi, cpol);
+ 	}
+@@ -156,7 +156,7 @@ bitbang_txrx_le_cpha1(struct spi_device *spi,
+ 
+ 		/* setup LSB (to slave) on leading edge */
+ 		setsck(spi, !cpol);
+-		if ((flags & SPI_MASTER_NO_TX) == 0) {
++		if ((flags & SPI_CONTROLLER_NO_TX) == 0) {
+ 			if ((word & 1) != oldbit) {
+ 				setmosi(spi, word & 1);
+ 				oldbit = word & 1;
+@@ -169,7 +169,7 @@ bitbang_txrx_le_cpha1(struct spi_device *spi,
+ 
+ 		/* sample LSB (from slave) on trailing edge */
+ 		word >>= 1;
+-		if ((flags & SPI_MASTER_NO_RX) == 0)
++		if ((flags & SPI_CONTROLLER_NO_RX) == 0)
+ 			word |= getmiso(spi) << rxbit;
+ 	}
+ 	return word;
+diff --git a/drivers/spi/spi-bitbang.c b/drivers/spi/spi-bitbang.c
+index 27d0087f8688..862f209cada1 100644
+--- a/drivers/spi/spi-bitbang.c
++++ b/drivers/spi/spi-bitbang.c
+@@ -248,7 +248,7 @@ static int spi_bitbang_bufs(struct spi_device *spi, struct spi_transfer *t)
+ 	if (spi->mode & SPI_3WIRE) {
+ 		unsigned flags;
+ 
+-		flags = t->tx_buf ? SPI_MASTER_NO_RX : SPI_MASTER_NO_TX;
++		flags = t->tx_buf ? SPI_CONTROLLER_NO_RX : SPI_CONTROLLER_NO_TX;
+ 		return cs->txrx_bufs(spi, cs->txrx_word, nsecs, t, flags);
+ 	}
+ 	return cs->txrx_bufs(spi, cs->txrx_word, nsecs, t, 0);
+diff --git a/drivers/spi/spi-gpio.c b/drivers/spi/spi-gpio.c
+index 092afc7679d4..85e149ec2910 100644
+--- a/drivers/spi/spi-gpio.c
++++ b/drivers/spi/spi-gpio.c
+@@ -170,7 +170,7 @@ static u32 spi_gpio_txrx_word_mode3(struct spi_device *spi,
+ 
+ /*
+  * These functions do not call setmosi or getmiso if respective flag
+- * (SPI_MASTER_NO_RX or SPI_MASTER_NO_TX) is set, so they are safe to
++ * (SPI_CONTROLLER_NO_RX or SPI_CONTROLLER_NO_TX) is set, so they are safe to
+  * call when such pin is not present or defined in the controller.
+  * A separate set of callbacks is defined to get highest possible
+  * speed in the generic case (when both MISO and MOSI lines are
+@@ -416,11 +416,11 @@ static int spi_gpio_probe(struct platform_device *pdev)
+ 	if (!spi_gpio->mosi) {
+ 		/* HW configuration without MOSI pin
+ 		 *
+-		 * No setting SPI_MASTER_NO_RX here - if there is only
++		 * No setting SPI_CONTROLLER_NO_RX here - if there is only
+ 		 * a MOSI pin connected the host can still do RX by
+ 		 * changing the direction of the line.
+ 		 */
+-		master->flags = SPI_MASTER_NO_TX;
++		master->flags = SPI_CONTROLLER_NO_TX;
+ 	}
+ 
+ 	master->bus_num = pdev->id;
+@@ -438,7 +438,7 @@ static int spi_gpio_probe(struct platform_device *pdev)
+ 	bb->chipselect = spi_gpio_chipselect;
+ 	bb->set_line_direction = spi_gpio_set_direction;
+ 
+-	if (master->flags & SPI_MASTER_NO_TX) {
++	if (master->flags & SPI_CONTROLLER_NO_TX) {
+ 		bb->txrx_word[SPI_MODE_0] = spi_gpio_spec_txrx_word_mode0;
+ 		bb->txrx_word[SPI_MODE_1] = spi_gpio_spec_txrx_word_mode1;
+ 		bb->txrx_word[SPI_MODE_2] = spi_gpio_spec_txrx_word_mode2;
+diff --git a/drivers/spi/spi-lp8841-rtc.c b/drivers/spi/spi-lp8841-rtc.c
+index 2d436541d6c2..ccaa7a946359 100644
+--- a/drivers/spi/spi-lp8841-rtc.c
++++ b/drivers/spi/spi-lp8841-rtc.c
+@@ -75,14 +75,14 @@ bitbang_txrx_be_cpha0_lsb(struct spi_lp8841_rtc *data,
+ 	for (; likely(bits); bits--) {
+ 
+ 		/* setup LSB (to slave) on leading edge */
+-		if ((flags & SPI_MASTER_NO_TX) == 0)
++		if ((flags & SPI_CONTROLLER_NO_TX) == 0)
+ 			setmosi(data, (word & 1));
+ 
+ 		usleep_range(usecs, usecs + 1);	/* T(setup) */
+ 
+ 		/* sample LSB (from slave) on trailing edge */
+ 		word >>= 1;
+-		if ((flags & SPI_MASTER_NO_RX) == 0)
++		if ((flags & SPI_CONTROLLER_NO_RX) == 0)
+ 			word |= (getmiso(data) << 31);
+ 
+ 		setsck(data, !cpol);
+@@ -113,7 +113,7 @@ spi_lp8841_rtc_transfer_one(struct spi_master *master,
+ 		while (likely(count > 0)) {
+ 			word = *tx++;
+ 			bitbang_txrx_be_cpha0_lsb(data, 1, 0,
+-					SPI_MASTER_NO_RX, word, 8);
++					SPI_CONTROLLER_NO_RX, word, 8);
+ 			count--;
+ 		}
+ 	} else if (rx) {
+@@ -121,7 +121,7 @@ spi_lp8841_rtc_transfer_one(struct spi_master *master,
+ 		writeb(data->state, data->iomem);
+ 		while (likely(count > 0)) {
+ 			word = bitbang_txrx_be_cpha0_lsb(data, 1, 0,
+-					SPI_MASTER_NO_TX, word, 8);
++					SPI_CONTROLLER_NO_TX, word, 8);
+ 			*rx++ = word;
+ 			count--;
+ 		}
+diff --git a/drivers/spi/spi-xtensa-xtfpga.c b/drivers/spi/spi-xtensa-xtfpga.c
+index 24dc845b940e..dbd85d7a1526 100644
+--- a/drivers/spi/spi-xtensa-xtfpga.c
++++ b/drivers/spi/spi-xtensa-xtfpga.c
+@@ -87,7 +87,7 @@ static int xtfpga_spi_probe(struct platform_device *pdev)
+ 	if (!master)
+ 		return -ENOMEM;
+ 
+-	master->flags = SPI_MASTER_NO_RX;
++	master->flags = SPI_CONTROLLER_NO_RX;
+ 	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(1, 16);
+ 	master->bus_num = pdev->dev.id;
+ 	master->dev.of_node = pdev->dev.of_node;
 diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 0ce1cb18a076..2026eae97329 100644
+index 10265184ea02..ce77dcf47b96 100644
 --- a/include/linux/spi/spi.h
 +++ b/include/linux/spi/spi.h
-@@ -6,19 +6,19 @@
- #ifndef __LINUX_SPI_H
- #define __LINUX_SPI_H
+@@ -1645,8 +1645,6 @@ spi_transfer_is_last(struct spi_controller *ctlr, struct spi_transfer *xfer)
+ #define spi_master			spi_controller
  
-+#include <linux/acpi.h>
- #include <linux/bits.h>
-+#include <linux/completion.h>
- #include <linux/device.h>
--#include <linux/mod_devicetable.h>
--#include <linux/slab.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/kthread.h>
--#include <linux/completion.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/scatterlist.h>
--#include <linux/gpio/consumer.h>
--
--#include <uapi/linux/spi/spi.h>
--#include <linux/acpi.h>
-+#include <linux/slab.h>
- #include <linux/u64_stats_sync.h>
+ #define SPI_MASTER_HALF_DUPLEX		SPI_CONTROLLER_HALF_DUPLEX
+-#define SPI_MASTER_NO_RX		SPI_CONTROLLER_NO_RX
+-#define SPI_MASTER_NO_TX		SPI_CONTROLLER_NO_TX
+ #define SPI_MASTER_MUST_RX		SPI_CONTROLLER_MUST_RX
+ #define SPI_MASTER_MUST_TX		SPI_CONTROLLER_MUST_TX
  
-+#include <uapi/linux/spi/spi.h>
-+
- struct dma_chan;
- struct software_node;
- struct ptp_system_timestamp;
 -- 
 2.40.0.1.gaa8946217a0b
 
