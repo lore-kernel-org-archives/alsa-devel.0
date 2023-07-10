@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71D7FEB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:53:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F3BFEB64DD
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:53:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42C4BE0F;
-	Tue, 11 Jul 2023 15:52:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42C4BE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A69E1D9;
+	Tue, 11 Jul 2023 15:52:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A69E1D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689083595;
-	bh=qyXZ9l/eDXJvwNtej9Cq3pKS54WfQZS0AfJJYPgySOQ=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=GrWEoVEKKOHoAeGpwelMKIk//PF6GKZLSQyrt7urvH5IuEM+jVuT7H15FH0ebinUg
-	 gQMIqi0AwuL5wMH/ueHjLP7s9c8wEssLQQgLU/pBX6U6jCxH4a+TMtE31eHpGcuXn0
-	 fhzZ5DszUhd2btC5H+heCwzzyBZmxtxx5U/lUv3w=
+	s=default; t=1689083606;
+	bh=eCA4jmpHdK4tCQy+WYVaMHkZ61alyGNaPi2evxW0e9A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ARSlIvUudysIf2b1anUC5wHwG7Xs/wp/1axAU7q2iVA81KabFzaUBnZvSZRT5l7gp
+	 2VBat0rwXd1BThhR9NZgYzt2Hg/K2VwsvY8+QayaxBFh74ha8nr4UYBgqc7Cx+2doM
+	 6NugBovTV2gAEVbR9rTfuCyIYY9cBLTAF2onh+pY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 75696F80549; Tue, 11 Jul 2023 15:51:35 +0200 (CEST)
+	id B748BF80571; Tue, 11 Jul 2023 15:51:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC414F80544;
-	Tue, 11 Jul 2023 15:51:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85AE5F80564;
+	Tue, 11 Jul 2023 15:51:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D769F80549; Mon, 10 Jul 2023 17:49:54 +0200 (CEST)
+	id BAC34F80552; Mon, 10 Jul 2023 17:49:55 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 14425F80249
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14425F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id E9DD4F8047D
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2023 17:49:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9DD4F8047D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=G/BsFnDc
+ header.s=Intel header.b=i1AFQEtE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689004187; x=1720540187;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=qyXZ9l/eDXJvwNtej9Cq3pKS54WfQZS0AfJJYPgySOQ=;
-  b=G/BsFnDcZfMOZvp1T5ou6ie4s9lhLvyDUURD5gqCTjx4OcZspojbE8C1
-   Wk3EIY2aJJR5ocpIHxxczcr39CqPe2ozEjGoZbXAje8/w4JtzJ+crQcpG
-   Mc0aRm2N8PAECX8i5zOmHgXCFpH3DwUDrMSOR4P7vIjM/FSG8Ct0Gd4Kh
-   dhNf6HVsMwbOYL4ZNbmo015bPc6WoA0y+VR3jJNTQJiTAxEn8LfxRaOo7
-   JztD3nZrE/RtKDsWXwBvomJxCJKC2kixCFFnas0CozrKed5n14rtbFRDy
-   QqvANCe6bQnVy1sPj0PyiVfOuM3HlgzUndckQ9qWTNTLnw2MWL1y89XUM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="361842449"
+  t=1689004190; x=1720540190;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=eCA4jmpHdK4tCQy+WYVaMHkZ61alyGNaPi2evxW0e9A=;
+  b=i1AFQEtErj/pA12X39r28TgkusX5J9Pqm1nSYM+DQeuWMt240jfYKN+c
+   6URBn7kM/hwQPd9QwI44a4VTYpt34Lqd/Vb7EESvFjHsje5f4tWawdOMP
+   WCKGwOzc53emvIjvFUPCi1vN0Vm5evA2q2BBHMDRp8Uk4BWKo7tQ3oGt/
+   TH9rvnsbEAB5o0GkCdsnUMmdkgSSA3gaDkMkAQZh9CxsGt8dl77e5aD/6
+   Azo0ddQ6vAF/PD0W0E/8wivZvhi7qNzxGLO4WWpzynxsukdQf3gtq6+9y
+   wr3mltTYuudIteT1yrt0koQYBnn2VytsnOv/LSv9ez68+fmskUZKpkVqC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="361842498"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="361842449"
+   d="scan'208";a="361842498"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jul 2023 08:49:41 -0700
+ 10 Jul 2023 08:49:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="720743951"
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="720743959"
 X-IronPort-AV: E=Sophos;i="6.01,194,1684825200";
-   d="scan'208";a="720743951"
+   d="scan'208";a="720743959"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 10 Jul 2023 08:49:29 -0700
+  by orsmga002.jf.intel.com with ESMTP; 10 Jul 2023 08:49:35 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 115861FC; Mon, 10 Jul 2023 18:49:33 +0300 (EEST)
+	id 9C17069F; Mon, 10 Jul 2023 18:49:34 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
@@ -118,10 +119,12 @@ Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Richard Cochran <richardcochran@gmail.com>
-Subject: [PATCH v2 00/15] spi: Header and core clean up and refactoring
-Date: Mon, 10 Jul 2023 18:49:17 +0300
-Message-Id: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 08/15] spi: Clean up headers
+Date: Mon, 10 Jul 2023 18:49:25 +0300
+Message-Id: <20230710154932.68377-9-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+In-Reply-To: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
+References: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: andriy.shevchenko@linux.intel.com
@@ -132,15 +135,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: ZNS74KBBS7LY4GUGZHSPWS32CMEI3HQL
-X-Message-ID-Hash: ZNS74KBBS7LY4GUGZHSPWS32CMEI3HQL
-X-Mailman-Approved-At: Tue, 11 Jul 2023 13:51:31 +0000
+Message-ID-Hash: 4CDK74GZ2YN5KMRD3YUJXGF5XFSUL4AT
+X-Message-ID-Hash: 4CDK74GZ2YN5KMRD3YUJXGF5XFSUL4AT
+X-Mailman-Approved-At: Tue, 11 Jul 2023 13:51:32 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZNS74KBBS7LY4GUGZHSPWS32CMEI3HQL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4CDK74GZ2YN5KMRD3YUJXGF5XFSUL4AT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -149,75 +152,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Various cleanups and refactorings of the SPI header and core parts
-united in a single series. It also touches drivers under SPI subsystem
-folder on the pure renaming purposes of some constants.
+There is a few things done:
+- include only the headers we are direct user of
+- when pointer is in use, provide a forward declaration
+- add missing headers
+- group generic headers and subsystem headers
+- sort each group alphabetically
 
-No functional change intended.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/spi/spi.h | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-Changelog v2:
-- added new patches 3,4,5,10,13,14
-- massaged comment and kernel doc in patch 9
-- split used to be patch 4 to patches 11,12
-- covered a few things in SPI core in patch 15
-- amended commit message for above (Mark)
-- reshuffled patches in the series for better logical grouping
-
-Andy Shevchenko (15):
-  spi: Remove unneeded OF node NULL checks
-  spi: Drop duplicate IDR allocation code in spi_register_controller()
-  spi: Replace if-else-if by bitops and multiplications
-  spi: Replace open coded spi_controller_xfer_timeout()
-  spi: Remove code duplication in spi_add_device_locked()
-  spi: Use sysfs_emit() to instead of s*printf()
-  spi: Sort headers alphabetically
-  spi: Clean up headers
-  spi: Use struct_size() helper
-  spi: Use predefined constants from bits.h and units.h
-  spi: Get rid of old SPI_MASTER_NO_TX & SPI_MASTER_NO_RX
-  spi: Get rid of old SPI_MASTER_MUST_TX & SPI_MASTER_MUST_RX
-  spi: Rename SPI_MASTER_GPIO_SS to SPI_CONTROLLER_GPIO_SS
-  spi: Convert to SPI_CONTROLLER_HALF_DUPLEX
-  spi: Fix spelling typos and acronyms capitalization
-
- drivers/spi/spi-amd.c             |   2 +-
- drivers/spi/spi-at91-usart.c      |   2 +-
- drivers/spi/spi-ath79.c           |   2 +-
- drivers/spi/spi-atmel.c           |   4 +-
- drivers/spi/spi-bitbang-txrx.h    |  16 +--
- drivers/spi/spi-bitbang.c         |   8 +-
- drivers/spi/spi-cavium-thunderx.c |   2 +-
- drivers/spi/spi-davinci.c         |   2 +-
- drivers/spi/spi-dw-core.c         |   2 +-
- drivers/spi/spi-falcon.c          |   2 +-
- drivers/spi/spi-fsl-lpspi.c       |   2 +-
- drivers/spi/spi-gpio.c            |  10 +-
- drivers/spi/spi-imx.c             |   2 +-
- drivers/spi/spi-lp8841-rtc.c      |  10 +-
- drivers/spi/spi-meson-spicc.c     |   2 +-
- drivers/spi/spi-mt65xx.c          |   2 +-
- drivers/spi/spi-mxs.c             |   2 +-
- drivers/spi/spi-omap-uwire.c      |   2 +-
- drivers/spi/spi-orion.c           |   2 +-
- drivers/spi/spi-pci1xxxx.c        |   2 +-
- drivers/spi/spi-pic32-sqi.c       |   2 +-
- drivers/spi/spi-pic32.c           |   2 +-
- drivers/spi/spi-qcom-qspi.c       |   2 +-
- drivers/spi/spi-rb4xx.c           |   2 +-
- drivers/spi/spi-rockchip-sfc.c    |   2 +-
- drivers/spi/spi-rockchip.c        |   2 +-
- drivers/spi/spi-sifive.c          |   2 +-
- drivers/spi/spi-slave-mt27xx.c    |   2 +-
- drivers/spi/spi-sprd-adi.c        |   2 +-
- drivers/spi/spi-stm32.c           |   2 +-
- drivers/spi/spi-ti-qspi.c         |   2 +-
- drivers/spi/spi-xcomm.c           |   2 +-
- drivers/spi/spi-xtensa-xtfpga.c   |   2 +-
- drivers/spi/spi.c                 | 204 ++++++++++++------------------
- include/linux/spi/spi.h           | 198 +++++++++++++++++------------
- include/trace/events/spi.h        |   2 +-
- 36 files changed, 247 insertions(+), 261 deletions(-)
-
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 2026eae97329..c9479badf38c 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -6,27 +6,41 @@
+ #ifndef __LINUX_SPI_H
+ #define __LINUX_SPI_H
+ 
+-#include <linux/acpi.h>
+ #include <linux/bits.h>
+ #include <linux/completion.h>
++#include <linux/container_of.h>
+ #include <linux/device.h>
+-#include <linux/gpio/consumer.h>
++#include <linux/export.h>
+ #include <linux/kthread.h>
++#include <linux/limits.h>
++#include <linux/list.h>
++#include <linux/minmax.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/mutex.h>
+ #include <linux/scatterlist.h>
+ #include <linux/slab.h>
++#include <linux/smp.h>
++#include <linux/spinlock_types.h>
++#include <linux/string.h>
++#include <linux/types.h>
+ #include <linux/u64_stats_sync.h>
+ 
++#include <asm/byteorder.h>
++
+ #include <uapi/linux/spi/spi.h>
+ 
++struct acpi_device;
+ struct dma_chan;
+-struct software_node;
++struct gpio_desc;
+ struct ptp_system_timestamp;
++struct software_node;
++
+ struct spi_controller;
+-struct spi_transfer;
+ struct spi_controller_mem_ops;
+ struct spi_controller_mem_caps;
++struct spi_device_id;
+ struct spi_message;
++struct spi_transfer;
+ 
+ /*
+  * INTERFACES between SPI master-side drivers and SPI slave protocol handlers,
 -- 
 2.40.0.1.gaa8946217a0b
 
