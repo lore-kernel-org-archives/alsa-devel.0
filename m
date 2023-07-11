@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BF04EB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DE1FEB64D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:16:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89405207;
-	Wed, 12 Jul 2023 15:15:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89405207
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE939844;
+	Wed, 12 Jul 2023 15:15:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE939844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689167754;
-	bh=u9L8bC8uc7avplPhBiWwS/Uu0Hqr1Wth57luzKoKJGU=;
+	s=default; t=1689167777;
+	bh=8Fi7Z+SejqB8FmLnWihYsJBZfmhjua3hB69p3/WVjRY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Mdr09FnRWDLxOTARvF/2znO09SNWoh1zEJs602jKPChUSROVeKE8B7abK9G3vAAW7
-	 GYaytve/M0yRpwuB+2yqQdwzzNE9AKpzUtj0mZR0nCoANH2Iw5adZQlZuu07stbr9P
-	 vDdhBQZdup7GvP7bzB8qcfMotWgKMiynLWjsnk3M=
+	b=J8UFdJBsuLA+ncF+X/LOHDF8roQvK4Ao0sSy2Py3HWpNKZeAxhDMAZnqZwHuJX2Rd
+	 dYExpwjNhWHcs2upbeyzENP76kha/Z4bZ5phmbwJTAFpq7io94l07LJ6tiG+Vibc3E
+	 0/vWkKyztqj93tHuFAq1NGjcJml1Lt7OVpaupyu4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 23183F80589; Wed, 12 Jul 2023 15:13:56 +0200 (CEST)
+	id 2B09DF805B1; Wed, 12 Jul 2023 15:13:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96352F8058C;
-	Wed, 12 Jul 2023 15:13:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7885CF805AA;
+	Wed, 12 Jul 2023 15:13:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6353CF80549; Tue, 11 Jul 2023 19:19:32 +0200 (CEST)
+	id 0B8E4F8047D; Tue, 11 Jul 2023 19:19:35 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 230ACF80290
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 19:19:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 230ACF80290
+	by alsa1.perex.cz (Postfix) with ESMTPS id EAEA6F80093
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 19:19:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAEA6F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=EM3aWwAl
+ header.s=Intel header.b=i7PS+y9z
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689095969; x=1720631969;
+  t=1689095971; x=1720631971;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=u9L8bC8uc7avplPhBiWwS/Uu0Hqr1Wth57luzKoKJGU=;
-  b=EM3aWwAle8x6y8Ply0wQWBHZ8hv4DZ9ELgRii4k9po53nCgT3Kw9Ue1K
-   pyUeE0IoQBK2QtIAQ2N7sNPp83YD/KMC8IqY1MkiDu/DME0/79IpwPEbu
-   TqoQ/clhBUkCaycyg61QwSSkFypXhU6FesxxJgiTsDOqsZAq1dYycddNO
-   Wu0LlVSpxiRycVq8Hahto+HKAVZQy3fpHnIOSP9pZRAYvgNln15RsSHfO
-   YJp/1WRD0fbd2eNh7O7csPVF7+WmNTFvZQRUc1rEn1jgZRgSeB2GRhjVq
-   jHAeR8i7ozoru7vrbCWN+HlvxeV02LQgN9pZAnXUe4oyR9zVNOh+MCmGJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="362148933"
+  bh=8Fi7Z+SejqB8FmLnWihYsJBZfmhjua3hB69p3/WVjRY=;
+  b=i7PS+y9zPrBtnQO0ssBlspdUivS2LrEV7ydpQt6JrbZvV7UUgnavoZBK
+   TqXmR9RwGPWVEiO2aORDSByGFZQP/SqV8Br7zptH7ZYNgVp0Y8WTOMSKa
+   WYYtckfArJBXcCAb2AK4ElAhQvHYi3uVgx1m3pegAG8/eEbQkdUFFo6Yn
+   3GcS/OCSCkEN9lkOSZ/+t8oLaFnkGSJTA+iZdG+9KZhTKfYDSVCs/o8x2
+   Rc/uedjzWgzixiQy6dM7BbW7ph4IIr5k/mcotSnpXfTz8HScA6QFgKAGW
+   iTNh1+A7roE8dYBwxOLDAzraLl45i9SYXsijkKLqENTU4TAGxUviSYjVE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="362148993"
 X-IronPort-AV: E=Sophos;i="6.01,197,1684825200";
-   d="scan'208";a="362148933"
+   d="scan'208";a="362148993"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jul 2023 10:19:23 -0700
+ 11 Jul 2023 10:19:25 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="715240913"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="715240987"
 X-IronPort-AV: E=Sophos;i="6.01,197,1684825200";
-   d="scan'208";a="715240913"
+   d="scan'208";a="715240987"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 11 Jul 2023 10:18:02 -0700
+  by orsmga007.jf.intel.com with ESMTP; 11 Jul 2023 10:18:06 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 896E669F; Tue, 11 Jul 2023 20:17:59 +0300 (EEST)
+	id DE1AC7AB; Tue, 11 Jul 2023 20:17:59 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
@@ -120,9 +120,9 @@ Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Richard Cochran <richardcochran@gmail.com>,
 	Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH v3 08/14] spi: Sort headers alphabetically
-Date: Tue, 11 Jul 2023 20:17:50 +0300
-Message-Id: <20230711171756.86736-9-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 13/14] spi: Convert to SPI_CONTROLLER_HALF_DUPLEX
+Date: Tue, 11 Jul 2023 20:17:55 +0300
+Message-Id: <20230711171756.86736-14-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230711171756.86736-1-andriy.shevchenko@linux.intel.com>
 References: <20230711171756.86736-1-andriy.shevchenko@linux.intel.com>
@@ -136,15 +136,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: AYKHUU2L6V6AMRJCSOV3MQW7ISSHFRRU
-X-Message-ID-Hash: AYKHUU2L6V6AMRJCSOV3MQW7ISSHFRRU
+Message-ID-Hash: LKZ3RZO44EA5MBERASC6OTXMVEJS7OWD
+X-Message-ID-Hash: LKZ3RZO44EA5MBERASC6OTXMVEJS7OWD
 X-Mailman-Approved-At: Wed, 12 Jul 2023 13:13:45 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AYKHUU2L6V6AMRJCSOV3MQW7ISSHFRRU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LKZ3RZO44EA5MBERASC6OTXMVEJS7OWD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,108 +153,180 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Sorting headers alphabetically helps locating duplicates, and
-make it easier to figure out where to insert new headers.
+Convert the users under SPI subsystem to SPI_CONTROLLER_HALF_DUPLEX.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi.c       | 42 ++++++++++++++++++++---------------------
- include/linux/spi/spi.h | 14 +++++++-------
- 2 files changed, 28 insertions(+), 28 deletions(-)
+ drivers/spi/spi-amd.c             | 2 +-
+ drivers/spi/spi-cavium-thunderx.c | 2 +-
+ drivers/spi/spi-falcon.c          | 2 +-
+ drivers/spi/spi-lp8841-rtc.c      | 2 +-
+ drivers/spi/spi-mxs.c             | 2 +-
+ drivers/spi/spi-omap-uwire.c      | 2 +-
+ drivers/spi/spi-pic32-sqi.c       | 2 +-
+ drivers/spi/spi-qcom-qspi.c       | 2 +-
+ drivers/spi/spi-rockchip-sfc.c    | 2 +-
+ drivers/spi/spi-sprd-adi.c        | 2 +-
+ drivers/spi/spi-ti-qspi.c         | 2 +-
+ drivers/spi/spi-xcomm.c           | 2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 0259516a6943..9b096cbc9926 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -4,36 +4,36 @@
- // Copyright (C) 2005 David Brownell
- // Copyright (C) 2008 Secret Lab Technologies Ltd.
+diff --git a/drivers/spi/spi-amd.c b/drivers/spi/spi-amd.c
+index fecead757a3c..b19766571f28 100644
+--- a/drivers/spi/spi-amd.c
++++ b/drivers/spi/spi-amd.c
+@@ -404,7 +404,7 @@ static int amd_spi_probe(struct platform_device *pdev)
+ 	master->bus_num = 0;
+ 	master->num_chipselect = 4;
+ 	master->mode_bits = 0;
+-	master->flags = SPI_MASTER_HALF_DUPLEX;
++	master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 	master->max_speed_hz = AMD_SPI_MAX_HZ;
+ 	master->min_speed_hz = AMD_SPI_MIN_HZ;
+ 	master->setup = amd_spi_master_setup;
+diff --git a/drivers/spi/spi-cavium-thunderx.c b/drivers/spi/spi-cavium-thunderx.c
+index 60c0d6934654..535f7eb9fa69 100644
+--- a/drivers/spi/spi-cavium-thunderx.c
++++ b/drivers/spi/spi-cavium-thunderx.c
+@@ -64,7 +64,7 @@ static int thunderx_spi_probe(struct pci_dev *pdev,
+ 		p->sys_freq = SYS_FREQ_DEFAULT;
+ 	dev_info(dev, "Set system clock to %u\n", p->sys_freq);
  
--#include <linux/kernel.h>
--#include <linux/device.h>
--#include <linux/init.h>
-+#include <linux/acpi.h>
- #include <linux/cache.h>
--#include <linux/dma-mapping.h>
-+#include <linux/clk/clk-conf.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
- #include <linux/dmaengine.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/export.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/highmem.h>
-+#include <linux/idr.h>
-+#include <linux/init.h>
-+#include <linux/ioport.h>
-+#include <linux/kernel.h>
-+#include <linux/kthread.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/mutex.h>
- #include <linux/of_device.h>
- #include <linux/of_irq.h>
--#include <linux/clk/clk-conf.h>
--#include <linux/slab.h>
--#include <linux/mod_devicetable.h>
--#include <linux/spi/spi.h>
--#include <linux/spi/spi-mem.h>
--#include <linux/gpio/consumer.h>
--#include <linux/pm_runtime.h>
-+#include <linux/percpu.h>
-+#include <linux/platform_data/x86/apple.h>
- #include <linux/pm_domain.h>
-+#include <linux/pm_runtime.h>
- #include <linux/property.h>
--#include <linux/export.h>
-+#include <linux/ptp_clock_kernel.h>
- #include <linux/sched/rt.h>
-+#include <linux/slab.h>
-+#include <linux/spi/spi.h>
-+#include <linux/spi/spi-mem.h>
- #include <uapi/linux/sched/types.h>
--#include <linux/delay.h>
--#include <linux/kthread.h>
--#include <linux/ioport.h>
--#include <linux/acpi.h>
--#include <linux/highmem.h>
--#include <linux/idr.h>
--#include <linux/platform_data/x86/apple.h>
--#include <linux/ptp_clock_kernel.h>
--#include <linux/percpu.h>
+-	master->flags = SPI_MASTER_HALF_DUPLEX;
++	master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 	master->num_chipselect = 4;
+ 	master->mode_bits = SPI_CPHA | SPI_CPOL | SPI_CS_HIGH |
+ 			    SPI_LSB_FIRST | SPI_3WIRE;
+diff --git a/drivers/spi/spi-falcon.c b/drivers/spi/spi-falcon.c
+index 4c103dff0d44..8a8414cbb400 100644
+--- a/drivers/spi/spi-falcon.c
++++ b/drivers/spi/spi-falcon.c
+@@ -401,7 +401,7 @@ static int falcon_sflash_probe(struct platform_device *pdev)
+ 	priv->master = master;
  
- #define CREATE_TRACE_POINTS
- #include <trace/events/spi.h>
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 32c94eae8926..21b77bdfac29 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -6,19 +6,19 @@
- #ifndef __LINUX_SPI_H
- #define __LINUX_SPI_H
+ 	master->mode_bits = SPI_MODE_3;
+-	master->flags = SPI_MASTER_HALF_DUPLEX;
++	master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 	master->setup = falcon_sflash_setup;
+ 	master->transfer_one_message = falcon_sflash_xfer_one;
+ 	master->dev.of_node = pdev->dev.of_node;
+diff --git a/drivers/spi/spi-lp8841-rtc.c b/drivers/spi/spi-lp8841-rtc.c
+index ccaa7a946359..c6810720b3b5 100644
+--- a/drivers/spi/spi-lp8841-rtc.c
++++ b/drivers/spi/spi-lp8841-rtc.c
+@@ -191,7 +191,7 @@ spi_lp8841_rtc_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	platform_set_drvdata(pdev, master);
  
-+#include <linux/acpi.h>
- #include <linux/bits.h>
-+#include <linux/completion.h>
- #include <linux/device.h>
--#include <linux/mod_devicetable.h>
--#include <linux/slab.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/kthread.h>
--#include <linux/completion.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/scatterlist.h>
--#include <linux/gpio/consumer.h>
--
--#include <uapi/linux/spi/spi.h>
--#include <linux/acpi.h>
-+#include <linux/slab.h>
- #include <linux/u64_stats_sync.h>
+-	master->flags = SPI_MASTER_HALF_DUPLEX;
++	master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 	master->mode_bits = SPI_CS_HIGH | SPI_3WIRE | SPI_LSB_FIRST;
  
-+#include <uapi/linux/spi/spi.h>
-+
- struct dma_chan;
- struct software_node;
- struct ptp_system_timestamp;
+ 	master->bus_num = pdev->id;
+diff --git a/drivers/spi/spi-mxs.c b/drivers/spi/spi-mxs.c
+index 963a53dd680b..cd0e7ae07162 100644
+--- a/drivers/spi/spi-mxs.c
++++ b/drivers/spi/spi-mxs.c
+@@ -572,7 +572,7 @@ static int mxs_spi_probe(struct platform_device *pdev)
+ 	master->mode_bits = SPI_CPOL | SPI_CPHA;
+ 	master->num_chipselect = 3;
+ 	master->dev.of_node = np;
+-	master->flags = SPI_MASTER_HALF_DUPLEX;
++	master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 	master->auto_runtime_pm = true;
+ 
+ 	spi = spi_master_get_devdata(master);
+diff --git a/drivers/spi/spi-omap-uwire.c b/drivers/spi/spi-omap-uwire.c
+index 902d2e0c1f2f..f89aa9e52c23 100644
+--- a/drivers/spi/spi-omap-uwire.c
++++ b/drivers/spi/spi-omap-uwire.c
+@@ -486,7 +486,7 @@ static int uwire_probe(struct platform_device *pdev)
+ 	/* the spi->mode bits understood by this driver: */
+ 	master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_CS_HIGH;
+ 	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(1, 16);
+-	master->flags = SPI_MASTER_HALF_DUPLEX;
++	master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 
+ 	master->bus_num = 2;	/* "official" */
+ 	master->num_chipselect = 4;
+diff --git a/drivers/spi/spi-pic32-sqi.c b/drivers/spi/spi-pic32-sqi.c
+index 51dfb49523f3..5cbebcf26a2a 100644
+--- a/drivers/spi/spi-pic32-sqi.c
++++ b/drivers/spi/spi-pic32-sqi.c
+@@ -648,7 +648,7 @@ static int pic32_sqi_probe(struct platform_device *pdev)
+ 	master->dev.of_node	= pdev->dev.of_node;
+ 	master->mode_bits	= SPI_MODE_3 | SPI_MODE_0 | SPI_TX_DUAL |
+ 				  SPI_RX_DUAL | SPI_TX_QUAD | SPI_RX_QUAD;
+-	master->flags		= SPI_MASTER_HALF_DUPLEX;
++	master->flags		= SPI_CONTROLLER_HALF_DUPLEX;
+ 	master->can_dma		= pic32_sqi_can_dma;
+ 	master->bits_per_word_mask	= SPI_BPW_RANGE_MASK(8, 32);
+ 	master->transfer_one_message	= pic32_sqi_one_message;
+diff --git a/drivers/spi/spi-qcom-qspi.c b/drivers/spi/spi-qcom-qspi.c
+index a8a683d6145c..5a98c52bad32 100644
+--- a/drivers/spi/spi-qcom-qspi.c
++++ b/drivers/spi/spi-qcom-qspi.c
+@@ -724,7 +724,7 @@ static int qcom_qspi_probe(struct platform_device *pdev)
+ 	master->mode_bits = SPI_MODE_0 |
+ 			    SPI_TX_DUAL | SPI_RX_DUAL |
+ 			    SPI_TX_QUAD | SPI_RX_QUAD;
+-	master->flags = SPI_MASTER_HALF_DUPLEX;
++	master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 	master->prepare_message = qcom_qspi_prepare_message;
+ 	master->transfer_one = qcom_qspi_transfer_one;
+ 	master->handle_err = qcom_qspi_handle_err;
+diff --git a/drivers/spi/spi-rockchip-sfc.c b/drivers/spi/spi-rockchip-sfc.c
+index 583f4187f030..bd550e76ab3d 100644
+--- a/drivers/spi/spi-rockchip-sfc.c
++++ b/drivers/spi/spi-rockchip-sfc.c
+@@ -565,7 +565,7 @@ static int rockchip_sfc_probe(struct platform_device *pdev)
+ 	if (!master)
+ 		return -ENOMEM;
+ 
+-	master->flags = SPI_MASTER_HALF_DUPLEX;
++	master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 	master->mem_ops = &rockchip_sfc_mem_ops;
+ 	master->dev.of_node = pdev->dev.of_node;
+ 	master->mode_bits = SPI_TX_QUAD | SPI_TX_DUAL | SPI_RX_QUAD | SPI_RX_DUAL;
+diff --git a/drivers/spi/spi-sprd-adi.c b/drivers/spi/spi-sprd-adi.c
+index 22e39c4c12c4..94d16aadfa44 100644
+--- a/drivers/spi/spi-sprd-adi.c
++++ b/drivers/spi/spi-sprd-adi.c
+@@ -580,7 +580,7 @@ static int sprd_adi_probe(struct platform_device *pdev)
+ 	ctlr->dev.of_node = pdev->dev.of_node;
+ 	ctlr->bus_num = pdev->id;
+ 	ctlr->num_chipselect = num_chipselect;
+-	ctlr->flags = SPI_MASTER_HALF_DUPLEX;
++	ctlr->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 	ctlr->bits_per_word_mask = 0;
+ 	ctlr->transfer_one = sprd_adi_transfer_one;
+ 
+diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+index 5914335ff63d..bf4b40289bee 100644
+--- a/drivers/spi/spi-ti-qspi.c
++++ b/drivers/spi/spi-ti-qspi.c
+@@ -770,7 +770,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
+ 
+ 	master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_RX_DUAL | SPI_RX_QUAD;
+ 
+-	master->flags = SPI_MASTER_HALF_DUPLEX;
++	master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 	master->setup = ti_qspi_setup;
+ 	master->auto_runtime_pm = true;
+ 	master->transfer_one_message = ti_qspi_start_transfer_one;
+diff --git a/drivers/spi/spi-xcomm.c b/drivers/spi/spi-xcomm.c
+index ae6218bcd02a..a3d57554f5ba 100644
+--- a/drivers/spi/spi-xcomm.c
++++ b/drivers/spi/spi-xcomm.c
+@@ -218,7 +218,7 @@ static int spi_xcomm_probe(struct i2c_client *i2c)
+ 	master->num_chipselect = 16;
+ 	master->mode_bits = SPI_CPHA | SPI_CPOL | SPI_3WIRE;
+ 	master->bits_per_word_mask = SPI_BPW_MASK(8);
+-	master->flags = SPI_MASTER_HALF_DUPLEX;
++	master->flags = SPI_CONTROLLER_HALF_DUPLEX;
+ 	master->transfer_one_message = spi_xcomm_transfer_one;
+ 	master->dev.of_node = i2c->dev.of_node;
+ 	i2c_set_clientdata(i2c, master);
 -- 
 2.40.0.1.gaa8946217a0b
 
