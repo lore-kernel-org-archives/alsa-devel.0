@@ -4,81 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26546EB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 20:46:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BB51EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 21:22:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA70FF00;
-	Tue, 11 Jul 2023 22:45:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA70FF00
+	by alsa0.perex.cz (Postfix) with ESMTPS id 063C5F77;
+	Tue, 11 Jul 2023 23:21:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 063C5F77
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689108367;
-	bh=1guEqJf5+OkgpLUyXf9dWW0/CtKqT6vSVMJIe9pjt6w=;
+	s=default; t=1689110544;
+	bh=pb2syncfua/cIuxL9FTXoABIuiYWz1vV+RpCpqcOOgM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eoNbA2OnwyyTvWup8EbHLexBxLWtGqovK2Crelzppfb7DbT4o8pj+oEcXmR/QVvPa
-	 2QvL5fOf7Peujyqc497nVUvm4RumODdiceZ/4OuziwLuzypFtJx6cs9gq8tFnM3Ezl
-	 44JxN9y/z9vDscCqeI+yxNDRHx3fEcsuVXRcrCkI=
+	b=qz39BqvGeKAzkbHba3QYKv3rT/I24fYxOu5NwFvn44AtgflQnMRlmrrrXbliYU7b9
+	 /PSNxu1FOK0s+9t7UM7BNhIp97NV2TjcAxwAXf3wHGBdFJ2ANedwyzp2KyPwX2ltvg
+	 6u0AXll11VK+G3gr/c26cOVAf5tZrfDExXiAKMYE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0806AF80563; Tue, 11 Jul 2023 22:44:24 +0200 (CEST)
+	id 5173AF80290; Tue, 11 Jul 2023 23:21:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D347F8056F;
-	Tue, 11 Jul 2023 22:44:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0349F8024E;
+	Tue, 11 Jul 2023 23:21:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6FA35F80249; Tue, 11 Jul 2023 22:44:19 +0200 (CEST)
+	id 7337FF8027B; Tue, 11 Jul 2023 23:21:29 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 84BD8F80236
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 22:44:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84BD8F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F8B1F80093
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 23:21:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F8B1F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=t9MzO8bS
+ header.s=k20201202 header.b=B4FYs6ds
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D4B1261614;
-	Tue, 11 Jul 2023 20:44:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA5C4C433CD;
-	Tue, 11 Jul 2023 20:44:06 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 53E5261602;
+	Tue, 11 Jul 2023 21:21:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58CE0C433CA;
+	Tue, 11 Jul 2023 21:21:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689108249;
-	bh=1guEqJf5+OkgpLUyXf9dWW0/CtKqT6vSVMJIe9pjt6w=;
+	s=k20201202; t=1689110479;
+	bh=pb2syncfua/cIuxL9FTXoABIuiYWz1vV+RpCpqcOOgM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=t9MzO8bSHRogekgPqKQpViXQsUSYHnmrn/b5ADQd7TFmZUxIznnN9T4uK/ZVKhbEF
-	 4W+cZC8yhKmusTA5Rbipm7Gv0ixhYP7DLfrUAGCYWde4j+zTYmb5RQPZQaIrIaRN8D
-	 unpkZfIJufw2ulmeopTd2U79F0qShAAjw9ZfP7eqlmDLEDlIBX3WUca0ZLBepHtGg0
-	 L91nsuSd0qK6TpFzAZjNxn/ChxGS6YhFuYaprTzM3Yy9OdAGN/255Gqa9hSn69Xcdj
-	 /8JAPhRISwxr7LSWHb2qjl2SAwovW5FqIF/PfmZ4MGR1yoFvJXVWa3MfrI4C/4wGFZ
-	 zWRxTYs5P+R5g==
+	b=B4FYs6dsSs4yyI5USmLDNke/bT3rMz4d2mrxpoaBtLSWvKmTzFRsTt4c0USDMa1HW
+	 AI+6eRUtz4HPUMeeU6aKR4WwpvTbXFR8aY6RJ0mzcwIMPsRljSG9oUtkvfxu7RgDDl
+	 x7dN00JQ8ZweRd/8wTfK/W4QAyjfLl7faiC/vcGwRvfWukBJCH0snI8r02BszumQsE
+	 CIfN5cmHzuM9CV5r+KmlduJ+bqGtbBTtg6j5oZZCyjFwUWY9viIih2ZerY2cIuUzul
+	 wCOn3IQQTjM0craVQ6ui18wWKMvJVYCeVCawetfIPGFM9s7RD2gWnlkQIRBH6wrFnn
+	 NdFZd0+Pau3wA==
 From: Mark Brown <broonie@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>, Johan Hovold <johan+linaro@kernel.org>
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230705123018.30903-1-johan+linaro@kernel.org>
-References: <20230705123018.30903-1-johan+linaro@kernel.org>
-Subject: Re: (subset) [PATCH 0/8] ASoC/soundwire/qdsp6/wcd: fix leaks and
- probe deferral
-Message-Id: <168910824667.478364.6400848972625194425.b4-ty@kernel.org>
-Date: Tue, 11 Jul 2023 21:44:06 +0100
+To: Fabio Estevam <festevam@gmail.com>
+Cc: shengjiu.wang@gmail.com, alsa-devel@alsa-project.org, andreas@fatal.se,
+ hans.soderlund@realbit.se, Fabio Estevam <festevam@denx.de>,
+ stable@vger.kernel.org
+In-Reply-To: <20230706221827.1938990-1-festevam@gmail.com>
+References: <20230706221827.1938990-1-festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Revert "ASoC: fsl_sai: Enable
+ MCTL_MCLK_EN bit for master mode"
+Message-Id: <168911047807.530041.5127278576693925983.b4-ty@kernel.org>
+Date: Tue, 11 Jul 2023 22:21:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: 5KK72ECFRF35GCV5WFX4NL3FZAPFW4BI
-X-Message-ID-Hash: 5KK72ECFRF35GCV5WFX4NL3FZAPFW4BI
+Message-ID-Hash: O6W4IOR5OMEAKBJJZBPJ2RTEMT3AH4GD
+X-Message-ID-Hash: O6W4IOR5OMEAKBJJZBPJ2RTEMT3AH4GD
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5KK72ECFRF35GCV5WFX4NL3FZAPFW4BI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O6W4IOR5OMEAKBJJZBPJ2RTEMT3AH4GD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,15 +95,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 05 Jul 2023 14:30:10 +0200, Johan Hovold wrote:
-> I've been hitting a race during boot which breaks probe of the sound
-> card on the Lenovo ThinkPad X13s as I've previously reported here:
+On Thu, 06 Jul 2023 19:18:27 -0300, Fabio Estevam wrote:
+> This reverts commit ff87d619ac180444db297f043962a5c325ded47b.
 > 
-> 	https://lore.kernel.org/all/ZIHMMFtuDtvdpFAZ@hovoldconsulting.com/
+> Andreas reports that on an i.MX8MP-based system where MCLK needs to be
+> used as an input, the MCLK pin is actually an output, despite not having
+> the 'fsl,sai-mclk-direction-output' property present in the devicetree.
 > 
-> The immediate issue appeared to be a probe deferral that was turned into
-> a hard failure, but addressing that in itself only made things worse as
-> it exposed further bugs.
+> This is caused by commit ff87d619ac18 ("ASoC: fsl_sai: Enable
+> MCTL_MCLK_EN bit for master mode") that sets FSL_SAI_MCTL_MCLK_EN
+> unconditionally for imx8mm/8mn/8mp/93, causing the MCLK to always
+> be configured as output.
 > 
 > [...]
 
@@ -118,20 +115,8 @@ Applied to
 
 Thanks!
 
-[2/8] ASoC: qdsp6: audioreach: fix topology probe deferral
-      commit: 46ec420573cefa1fc98025e7e6841bdafd6f1e20
-[3/8] ASoC: codecs: wcd938x: fix missing clsh ctrl error handling
-      commit: ed0dd9205bf69593edb495cb4b086dbae96a3f05
-[4/8] ASoC: codecs: wcd938x: fix resource leaks on component remove
-      commit: a3406f87775fee986876e03f93a84385f54d5999
-[5/8] ASoC: codecs: wcd934x: fix resource leaks on component remove
-      commit: 798590cc7d3c2b5f3a7548d96dd4d8a081c1bc39
-[6/8] ASoC: codecs: wcd-mbhc-v2: fix resource leaks on component remove
-      commit: a5475829adcc600bc69ee9ff7c9e3e43fb4f8d30
-[7/8] ASoC: topology: suppress probe deferral errors
-      commit: b6c3bdda3a7e43acfcec711ce20e7cfe44744740
-[8/8] ASoC: core: suppress probe deferral errors
-      commit: f09b6e96796056633453cb0d07b720d09f1efc68
+[1/1] ASoC: fsl_sai: Revert "ASoC: fsl_sai: Enable MCTL_MCLK_EN bit for master mode"
+      commit: 86867aca7330e4fbcfa2a117e20b48bbb6c758a9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
