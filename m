@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8844FEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:15:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC0A0EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:15:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99031846;
-	Wed, 12 Jul 2023 15:14:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99031846
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4E35206;
+	Wed, 12 Jul 2023 15:14:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4E35206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689167728;
-	bh=rn9d/T3W6Uq2IhVx3LkqBWZwSCJuFxg8vPiXigm9Nk4=;
+	s=default; t=1689167739;
+	bh=i6xTQM/M83VGl5L40MPme6/MD9lIrLsXxW1pfo9MYv4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=l8VpHZLg4y10qRIAwOR2okTSjxeeMtAjFe/k7GoyNHgKhK1IV1anb9TojWVjHI2I+
-	 opto4spAnCm/A1dGlA4n2Lt5FZwN6RdTJOZWoZpO08e7kkZ+Oq4NkPxDSlJwhG0e4N
-	 lAhpz4feanDz7FlklkG6j5vCnHB1IpkvgoS/a1KE=
+	b=B69LigLD6qpwdD965L7Mdvuo1pJsTZcewYO/81oWPq6TzSo7JB6F2RwVDPS346W5p
+	 K6ovQ563AME7MR4IT/weoctNRA08r0ZmdLuaameqzYcwcDqSRkpB+eildNged+vh66
+	 INwE+QAsrKTbXDbmZIx3GJeqULscFpBSQfUTIa+w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DEBBEF80544; Wed, 12 Jul 2023 15:13:50 +0200 (CEST)
+	id 73A0AF8057B; Wed, 12 Jul 2023 15:13:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAA51F80544;
-	Wed, 12 Jul 2023 15:13:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA5D8F8056F;
+	Wed, 12 Jul 2023 15:13:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D3153F80535; Tue, 11 Jul 2023 19:19:28 +0200 (CEST)
+	id 31809F80549; Tue, 11 Jul 2023 19:19:30 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 25ECDF80236
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 19:19:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25ECDF80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6DAC1F80093
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 19:19:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DAC1F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=a4ZODRow
+ header.s=Intel header.b=XFj4kK+i
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1689095967; x=1720631967;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=rn9d/T3W6Uq2IhVx3LkqBWZwSCJuFxg8vPiXigm9Nk4=;
-  b=a4ZODRow/eZ/kUzf06hkqr4uwMC8KjvbjHzOAoqFqichGk7/5WxfrGnj
-   f0/px8LCIzODAqfNKocNytSTJ32eRp/mbN4yS/Oo7yPBBokKqxPDmH1f6
-   I/+r3lNtTzZHBmWCP4A7kCqJyqK0M0htCmWxvEx6ZdPyin+I7Lc7bqx1+
-   /OZ15z31pvtSJyFKAg2eiBa9kR3Bks/kJnalfzxQ7leWlt/d1r45Ok8aj
-   KVMfHIN5mNxuqxg4ToAltbhJk4PsxqE7Oa9e8SIwUTm5mIlpxoPOYZ33C
-   4ejMmWaTafevKieUqnldzXGWnZJvisPO0N/uG+zfvQsmSVk8EQQhBJuBu
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="362148839"
+  bh=i6xTQM/M83VGl5L40MPme6/MD9lIrLsXxW1pfo9MYv4=;
+  b=XFj4kK+iW2JYVQIpIxH86TvMGztCULABOc6fqGb+ZcGGLxin2sKvpfAL
+   5ga0tywydf+7Sj17VZt2czhDE1ucl6JHr98YSyfVml3XqdX6LmkZ9rZ3j
+   zGjIocA4AIPQ80R9/D4KrU/zGS0nuUu34Ww2E16amgfW6sC6p5qOBOO6M
+   AwFUWJxDrdi4gQ5tI6T2Hypmj0aTUjUSrS5fQ6IN93xoTuftzmQcyZUwC
+   /9vtVI9upcFR/GX1fRWUh1BChJcEGsa8/cgN3EOAT0swg0xBS3BtBQF8j
+   K0XkKKnDf3ResZG9zlMNcb6vbcrYWB51KT5wM8TYN2B6sp9vgE89R5Bby
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="362148882"
 X-IronPort-AV: E=Sophos;i="6.01,197,1684825200";
-   d="scan'208";a="362148839"
+   d="scan'208";a="362148882"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jul 2023 10:19:19 -0700
+ 11 Jul 2023 10:19:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="715240840"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="715240862"
 X-IronPort-AV: E=Sophos;i="6.01,197,1684825200";
-   d="scan'208";a="715240840"
+   d="scan'208";a="715240862"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 11 Jul 2023 10:17:56 -0700
+  by orsmga007.jf.intel.com with ESMTP; 11 Jul 2023 10:17:58 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 3818F3E3; Tue, 11 Jul 2023 20:17:59 +0300 (EEST)
+	id 5C3475FC; Tue, 11 Jul 2023 20:17:59 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
@@ -120,10 +120,9 @@ Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Richard Cochran <richardcochran@gmail.com>,
 	Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH v3 03/14] spi: Refactor bus number assigning code in
- spi_register_controller()
-Date: Tue, 11 Jul 2023 20:17:45 +0300
-Message-Id: <20230711171756.86736-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 05/14] spi: Kill spi_add_device_locked()
+Date: Tue, 11 Jul 2023 20:17:47 +0300
+Message-Id: <20230711171756.86736-6-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230711171756.86736-1-andriy.shevchenko@linux.intel.com>
 References: <20230711171756.86736-1-andriy.shevchenko@linux.intel.com>
@@ -137,15 +136,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: RFOJWKMN2UUQG3I5P4HTAZTO4YDY7NU5
-X-Message-ID-Hash: RFOJWKMN2UUQG3I5P4HTAZTO4YDY7NU5
+Message-ID-Hash: HMSD7IGI7CV3JICCLTJZHUUPEY7KPS4D
+X-Message-ID-Hash: HMSD7IGI7CV3JICCLTJZHUUPEY7KPS4D
 X-Mailman-Approved-At: Wed, 12 Jul 2023 13:13:45 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RFOJWKMN2UUQG3I5P4HTAZTO4YDY7NU5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HMSD7IGI7CV3JICCLTJZHUUPEY7KPS4D/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -154,50 +153,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Instead of 'else' branching use two sequential if:s, which allows
-to re-use the logic of IDR allocation in both cases.
+Now, spi_add_device_locked() has just a line on top of __spi_add_device().
+Besides that, it has a single caller. So, just kill it and embed its parts
+into the caller.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/spi/spi.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index d8064998aa27..6d74218cf38e 100644
+index 876d40d2c708..57b5e4488416 100644
 --- a/drivers/spi/spi.c
 +++ b/drivers/spi/spi.c
-@@ -3122,8 +3122,8 @@ int spi_register_controller(struct spi_controller *ctlr)
+@@ -708,14 +708,6 @@ int spi_add_device(struct spi_device *spi)
+ }
+ EXPORT_SYMBOL_GPL(spi_add_device);
+ 
+-static int spi_add_device_locked(struct spi_device *spi)
+-{
+-	struct spi_controller *ctlr = spi->controller;
+-
+-	WARN_ON(!mutex_is_locked(&ctlr->add_lock));
+-	return __spi_add_device(spi);
+-}
+-
+ /**
+  * spi_new_device - instantiate one new SPI device
+  * @ctlr: Controller to which device is connected
+@@ -2417,11 +2409,12 @@ static void of_register_spi_devices(struct spi_controller *ctlr) { }
+ struct spi_device *spi_new_ancillary_device(struct spi_device *spi,
+ 					     u8 chip_select)
  {
- 	struct device		*dev = ctlr->dev.parent;
- 	struct boardinfo	*bi;
-+	int			first_dynamic;
- 	int			status;
--	int			id, first_dynamic;
++	struct spi_controller *ctlr = spi->controller;
+ 	struct spi_device *ancillary;
+ 	int rc = 0;
  
- 	if (!dev)
- 		return -ENODEV;
-@@ -3136,19 +3136,13 @@ int spi_register_controller(struct spi_controller *ctlr)
- 	if (status)
- 		return status;
+ 	/* Alloc an spi_device */
+-	ancillary = spi_alloc_device(spi->controller);
++	ancillary = spi_alloc_device(ctlr);
+ 	if (!ancillary) {
+ 		rc = -ENOMEM;
+ 		goto err_out;
+@@ -2436,8 +2429,10 @@ struct spi_device *spi_new_ancillary_device(struct spi_device *spi,
+ 	ancillary->max_speed_hz = spi->max_speed_hz;
+ 	ancillary->mode = spi->mode;
  
-+	if (ctlr->bus_num < 0)
-+		ctlr->bus_num = of_alias_get_id(ctlr->dev.of_node, "spi");
- 	if (ctlr->bus_num >= 0) {
- 		/* Devices with a fixed bus num must check-in with the num */
- 		status = spi_controller_id_alloc(ctlr, ctlr->bus_num, ctlr->bus_num + 1);
- 		if (status)
- 			return status;
--	} else {
--		/* Allocate dynamic bus number using Linux idr */
--		id = of_alias_get_id(ctlr->dev.of_node, "spi");
--		if (id >= 0) {
--			status = spi_controller_id_alloc(ctlr, id, id + 1);
--			if (status)
--				return status;
--		}
- 	}
- 	if (ctlr->bus_num < 0) {
- 		first_dynamic = of_alias_get_highest_id("spi");
++	WARN_ON(!mutex_is_locked(&ctlr->add_lock));
++
+ 	/* Register the new device */
+-	rc = spi_add_device_locked(ancillary);
++	rc = __spi_add_device(ancillary);
+ 	if (rc) {
+ 		dev_err(&spi->dev, "failed to register ancillary device\n");
+ 		goto err_out;
 -- 
 2.40.0.1.gaa8946217a0b
 
