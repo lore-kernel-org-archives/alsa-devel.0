@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9811DEB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:02:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 332F7EB64DD
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 13:02:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35C8F852;
-	Tue, 11 Jul 2023 15:01:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35C8F852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2823A950;
+	Tue, 11 Jul 2023 15:01:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2823A950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689080524;
-	bh=bl/zYgzCi3o2blRR5uBjNAGlQOwq1q6m2wvBNMtj8IM=;
+	s=default; t=1689080535;
+	bh=zk2sNO05UAbs2nuTw7unuMIHhKz7EsY9TKiKaOgRRPU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=d+fHnufYT7YiGBBh1qMpEsZxjZaDBlEnsEDjMji9wL4+7WNcd7PtPympcgx5TKMJl
-	 J0igS+CSTHIKmHQn2/+nd8OHkuQEmOtC+s+aAGP3mwIb+g9y2arH/3iwxn1tIWShWm
-	 1Vh7lbj0qyC5CbQnJud6R+ETVtPKsNnFo2WPRX6o=
+	b=bclBRpN2Jvo5jUMOl+MlPz3ooeg5K+dBs1/dX+RoHVgZpggelV2A7fNuFA6RMZhbq
+	 JB/u7rhDKyQKEttGdEduXFbBIa2vAIhQn3+FiRmzDMV3DX9+rLbTFBgD4Mo4GcP578
+	 +AqN/oP8dOxjkxdmLPNuPwFYUpndzYiSO+wZON4A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F198F80553; Tue, 11 Jul 2023 14:59:10 +0200 (CEST)
+	id 98729F805A9; Tue, 11 Jul 2023 14:59:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4A09F80553;
-	Tue, 11 Jul 2023 14:59:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E8D9F80579;
+	Tue, 11 Jul 2023 14:59:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 293D5F8027B; Tue, 11 Jul 2023 14:59:04 +0200 (CEST)
+	id A5678F8027B; Tue, 11 Jul 2023 14:59:05 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8C27FF8057F
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 14:57:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C27FF8057F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8041FF800E4
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 14:57:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8041FF800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=OHoAoBF5
+ header.s=Intel header.b=JWy2RaB9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689080254; x=1720616254;
+  t=1689080245; x=1720616245;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=bl/zYgzCi3o2blRR5uBjNAGlQOwq1q6m2wvBNMtj8IM=;
-  b=OHoAoBF5j1e6biyErCWOehiOj5d7pIsQ9oRqhJr5XnN4Jqhy9yWodpA3
-   w7MckoHW/FvrgfKb9set60MonBsi56kq3JIM4I7M36G2NBIDBrOKaFcir
-   9mER2OQGx+nDEYpXxLRs5v9MeZ2VUr5v+TqfWUgAd84+SbDNJLfpuj3w1
-   xQKf2bPdU65Sqd8+SRFxmCIgviAZcr6xBXTDdTw4WtzUBXPTEi1/pZGkj
-   6hFDqB2DCirUgGfhx9CHPgGaL9zlBnZTqY2zQqk5x/JyAVeyIMZ9hCvxC
-   zdFVI95A4cL+cPf3oeuRsKYrnk95u/G8P3klG2sK8aMiWoRvVQSIDE38W
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="367187503"
+  bh=zk2sNO05UAbs2nuTw7unuMIHhKz7EsY9TKiKaOgRRPU=;
+  b=JWy2RaB9AjC9XLvcQAUDUSCpL1pWI6icK4rzPy8XREIKwCIOaOhWxYag
+   h+RTa2n2Ned6qYxzhmzW/X6F3WyzV+lTXhGsziNSkL/loDUb6NFkbfAkY
+   jWtXOmZlDuL7tXjhC+C+RMiJ3tYPvhiBoIsDPuMw31Zdz2RJt48MRVicX
+   /Ebri8J0haxxlojnOJgfkjFgpC14yVJlaFmX07O6DC9Das2gdTsQwyPKD
+   q07YH5gqs0hVF7xi6YJL8W7xMECP8sU30mW/DKV92lLfEFtx1NUk/WjY/
+   ZMuFEpRO/T0eYwW0SQaGV4RwoV1sYN3Bil3E1oXYon8Y/VM4ADdP7/vMA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="367187446"
 X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
-   d="scan'208";a="367187503"
+   d="scan'208";a="367187446"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jul 2023 05:57:32 -0700
+ 11 Jul 2023 05:57:24 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="834666738"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="834666632"
 X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
-   d="scan'208";a="834666738"
+   d="scan'208";a="834666632"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Jul 2023 05:57:30 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 11 Jul 2023 05:57:21 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Bjorn Helgaas <bhelgaas@google.com>,
@@ -78,17 +78,17 @@ Cc: alsa-devel@alsa-project.org,
 	Hans de Goede <hdegoede@redhat.com>,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 09/13] ASoC: Intel: avs: Convert to PCI device IDs defines
-Date: Tue, 11 Jul 2023 14:57:22 +0200
-Message-Id: <20230711125726.3509391-10-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 06/13] ASoC: Intel: Skylake: Use global PCI match macro
+Date: Tue, 11 Jul 2023 14:57:19 +0200
+Message-Id: <20230711125726.3509391-7-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230711125726.3509391-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230711125726.3509391-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KNWTRKPAVMGDF4736RN7C7AJGP26N4V5
-X-Message-ID-Hash: KNWTRKPAVMGDF4736RN7C7AJGP26N4V5
+Message-ID-Hash: EV2IAYFMTED4PIWHOCACAZ62OAJ4ODUG
+X-Message-ID-Hash: EV2IAYFMTED4PIWHOCACAZ62OAJ4ODUG
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KNWTRKPAVMGDF4736RN7C7AJGP26N4V5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EV2IAYFMTED4PIWHOCACAZ62OAJ4ODUG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,42 +110,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use PCI device IDs from pci_ids.h header and while at it change to using
-PCI_DEVICE_DATA() macro, to simplify declarations.
+Instead of using local macro to match PCI device, use global one.
 
 Acked-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/avs/core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ include/sound/hda_codec.h         | 3 ---
+ sound/soc/intel/skylake/skl-pcm.c | 3 ++-
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
-index 637501850728..859b217fc761 100644
---- a/sound/soc/intel/avs/core.c
-+++ b/sound/soc/intel/avs/core.c
-@@ -745,14 +745,14 @@ static const struct avs_spec apl_desc = {
- };
+diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
+index bbb7805e85d8..5497dc9c396a 100644
+--- a/include/sound/hda_codec.h
++++ b/include/sound/hda_codec.h
+@@ -18,9 +18,6 @@
+ #include <sound/hda_verbs.h>
+ #include <sound/hda_regmap.h>
  
- static const struct pci_device_id avs_ids[] = {
--	{ PCI_VDEVICE(INTEL, 0x9d70), (unsigned long)&skl_desc }, /* SKL */
--	{ PCI_VDEVICE(INTEL, 0xa170), (unsigned long)&skl_desc }, /* SKL-H */
--	{ PCI_VDEVICE(INTEL, 0x9d71), (unsigned long)&skl_desc }, /* KBL */
--	{ PCI_VDEVICE(INTEL, 0xa171), (unsigned long)&skl_desc }, /* KBL-H */
--	{ PCI_VDEVICE(INTEL, 0xa2f0), (unsigned long)&skl_desc }, /* KBL-S */
--	{ PCI_VDEVICE(INTEL, 0xa3f0), (unsigned long)&skl_desc }, /* CML-V */
--	{ PCI_VDEVICE(INTEL, 0x5a98), (unsigned long)&apl_desc }, /* APL */
--	{ PCI_VDEVICE(INTEL, 0x3198), (unsigned long)&apl_desc }, /* GML */
-+	{ PCI_DEVICE_DATA(INTEL, HDA_SKL_LP, &skl_desc) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_SKL, &skl_desc) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_KBL_LP, &skl_desc) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_KBL, &skl_desc) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_KBL_H, &skl_desc) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_CML_S, &skl_desc) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_APL, &apl_desc) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_GML, &apl_desc) },
- 	{ 0 }
- };
- MODULE_DEVICE_TABLE(pci, avs_ids);
+-#define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
+-#define IS_CFL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa348)
+-
+ /*
+  * Structures
+  */
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index a4209d88b0c6..ac3dc8c63c26 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -13,6 +13,7 @@
+ #include <linux/pci.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/delay.h>
++#include <sound/hdaudio.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include "skl.h"
+@@ -152,7 +153,7 @@ int skl_pcm_host_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ 	 * The recommended SDxFMT programming sequence for BXT
+ 	 * platforms is to couple the stream before writing the format
+ 	 */
+-	if (IS_BXT(skl->pci)) {
++	if (HDA_CONTROLLER_IS_APL(skl->pci)) {
+ 		snd_hdac_ext_stream_decouple(bus, stream, false);
+ 		err = snd_hdac_stream_setup(hdac_stream(stream));
+ 		snd_hdac_ext_stream_decouple(bus, stream, true);
 -- 
 2.34.1
 
