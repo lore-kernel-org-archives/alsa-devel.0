@@ -4,105 +4,152 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 682BFEB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 14:18:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2BDEEB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 14:22:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41AC1EBD;
-	Tue, 11 Jul 2023 16:17:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41AC1EBD
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3043EC7;
+	Tue, 11 Jul 2023 16:22:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3043EC7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689085090;
-	bh=GydZ/1lpJ/AnE3XIEbDEpzC1D7bZ7OxWRWr9gYhGDh8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=iujQeq8qPZTkrbPXQke7vC8Dux1c2ff00REgkoOltjWiGFiyJQjTU+i1AFiZK/k0d
-	 EADNCgGXMxSBlBRqlaBM4K90876m/Xk+IYQntNWaH81WpfgOeda40FllVYUebPhizl
-	 nWLvDLgCFu1AMsnB114+58HXlBPeuaDY3CUfDrsI=
+	s=default; t=1689085371;
+	bh=jnza72F8PtcgB2Ut4Kjad6rRLEvFzQT/qjoBkpd06L8=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=GMl7XUHyr7UVwJnXnWPuKA/21JkoH3ecjr7/AAlZYCs1+Z0KmKFXmrjDOMuZLjRQW
+	 7YKVhaic9k3wjmbVDdjCLNwwAMSrkXejL480Dfr1QHYVCEi1MgDKw85UFPtUF/+vV1
+	 GbHkbcI/G15Q/ZJPgkHjXmDAyzmxKQ+wkRPS7Y5E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 861CFF80544; Tue, 11 Jul 2023 16:16:52 +0200 (CEST)
+	id EC588F8024E; Tue, 11 Jul 2023 16:21:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DF44F80535;
-	Tue, 11 Jul 2023 16:16:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53C2FF80093;
+	Tue, 11 Jul 2023 16:21:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39356F80249; Tue, 11 Jul 2023 16:16:48 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+	id 1C46FF8047D; Tue, 11 Jul 2023 05:49:18 +0200 (CEST)
+Received: from APC01-SG2-obe.outbound.protection.outlook.com
+ (mail-sgaapc01on2072e.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:feab::72e])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2A617F80093
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 16:16:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A617F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 60341F80093
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 05:49:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60341F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=NEbrVMn4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689085004; x=1720621004;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=GydZ/1lpJ/AnE3XIEbDEpzC1D7bZ7OxWRWr9gYhGDh8=;
-  b=NEbrVMn4G49xkmUMZREhdKdjqzUueGrm1GjXoipeIgyUJuqaY8ENcxp1
-   fjblgpDjcMdA1HZaXtZHfoc0asd2p9iMn9iZSvFbXVm3sVY7dhhOpsRgQ
-   j018o/IwBjzOX+CJzAeVOWDOoa3b8+sg3DwGabSgKqF19z/F/icqm6IV4
-   QlNz6zz2LFR0U7mUziF5A/+LkPKOKTtuHf4Xi1ciZzOSeRCRyCWn7F9Ac
-   h26ABGQmKcKvN+IzFMRVz100VMRXjT4sfg5n3AQ6eKVLI0gaLfnk6T1Ll
-   OJp1CPQ+QKy6LlhfmuaIj4FYYL0Z9l7bCcexIoVrjItxANgy6gFR+jF0s
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="450989637"
-X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
-   d="scan'208";a="450989637"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jul 2023 07:16:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="715173555"
-X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
-   d="scan'208";a="715173555"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 11 Jul 2023 07:16:31 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1qJEAI-001s37-0N;
-	Tue, 11 Jul 2023 17:16:30 +0300
-Date: Tue, 11 Jul 2023 17:16:29 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Mark Brown <broonie@kernel.org>,
-	Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 12/13] ASoC: SOF: Intel: Convert to PCI device IDs defines
-Message-ID: <ZK1kPXm+FieJ+vya@smile.fi.intel.com>
-References: <20230711125726.3509391-1-amadeuszx.slawinski@linux.intel.com>
- <20230711125726.3509391-13-amadeuszx.slawinski@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+ unprotected) header.d=vivo.com header.i=@vivo.com header.a=rsa-sha256
+ header.s=selector2 header.b=g7CrR/vN
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TKwB1bHCLrhEGe4oqInfAQdB2kJzZhBUOqpQP5Ta6LXTFLIuSbI+8Cc6AFbd2hEQjLrvMEd05jlt2nrDqW1U0H0QoTgFzGCNnYj8A4swT5lvUoHDQPiUPhTpeK60q7f5HYqh63DTdWtPrVKZEUoJSD4bFwgJx5Blsdi4QgPrG3nrNv729BiAaHEqGopIo7iStF6iqyg6BbTJesXqPHwF3WQu5AZWqGqtYNYC/N9N9TccAMr3ZTlTbM1t0JwHTp402ojZxClhQ9X+VMftMD1H1aGJAneAJLiSlGf024YtlIeGtF2uzvtjzWap17YkWPpKz2TUC/+tEgATX21JT5gMog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Qcx2CLMip+TskW0MjLXMBtoDwtSTCuRX+IeqqilVuiQ=;
+ b=nEjBWnzXpx7zAwvv2RrVMy82p+oaaQX8VFXZ/Y0nne/Xo6cZNFTM4FyQKaPgrG1XSsQnd4GzEIofkhkdAS7eT4ehWjPb+ee2mwVWosXWLkkTsPT4z8RCLRLXLF7ec3Cg/SaDEES4NG0Hv5R+wREF45qR1qaz52o0zE3G4kE2hkE0+gSdzJcekIzGhAvacxLPQK5ma8yDV9OQ4g3nFsikcPxoRvuyn5Q3uyD+ErPrpsrylYh3uO7wzPZ0MMnG+nIZMHLjaf2/OFjuVXn+chRzZ1rfuBoGjvx39xpHXuj1KtOr0U9K9Tmg1lVNcWbtW8u80ytDm1OGz5GwRV7ZjAD1pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qcx2CLMip+TskW0MjLXMBtoDwtSTCuRX+IeqqilVuiQ=;
+ b=g7CrR/vNoP21Lt5U+oEQBmJOlkR3my0XjF72E37opYkOJtvhY0PMhHg76sn2Mt0yfonrhGW4V4nxq3n6WtWLab2oNizkhN5aPbZpAkEmP8Yl+J+v4RJKcB1WviYEK/CRP5FSDx0WvHy1IkIfI7Q4r3U/9n6unqUsZoaJivt/G5pFUA85+BbWqjYVgSedNA3CvN6521h7g9VPsjqFKDUgVB+vluSbUnANN4y2m4SSMwNUtXryKUBzvyYiR0MiBLyo6aaUrxfAaBpahdP6RHPSiC3ke/5YzW+YMTw/P4XwPaWg/AknQHL5lijNMB6loXqsEtnyiwtDvT+5j+lf7ufztw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
+ by KL1PR0601MB4385.apcprd06.prod.outlook.com (2603:1096:820:71::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.31; Tue, 11 Jul
+ 2023 03:48:58 +0000
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::fa0e:6c06:7474:285c]) by SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::fa0e:6c06:7474:285c%5]) with mapi id 15.20.6565.028; Tue, 11 Jul 2023
+ 03:48:57 +0000
+From: Yangtao Li <frank.li@vivo.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Yangtao Li <frank.li@vivo.com>,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] ASoC: bcm: bcm63xx-i2s-whistler: Convert to
+ devm_platform_ioremap_resource()
+Date: Tue, 11 Jul 2023 11:48:41 +0800
+Message-Id: <20230711034846.69437-1-frank.li@vivo.com>
+X-Mailer: git-send-email 2.39.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230711125726.3509391-13-amadeuszx.slawinski@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: SKCJXZZTOHDUXKM26IB7GJR4QCC7OMEV
-X-Message-ID-Hash: SKCJXZZTOHDUXKM26IB7GJR4QCC7OMEV
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR01CA0038.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:193::20) To SEZPR06MB5269.apcprd06.prod.outlook.com
+ (2603:1096:101:78::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|KL1PR0601MB4385:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2e802745-1da3-411b-8c4d-08db81c1c0fc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	2qIsBUf5Xa61Y7E1dssbO6hURt0wxJwpaSer5PZzZTEzTpmD5Y4Tsp1Yh6H7n8v/NCG941+8GouoATIeqFoohLZbmDMwdBUoaBHIv2hnNXtuvhqmCJmAibjBbJFQNr2PQVfkjZNLEFfcIxmr3CyYt5XTp+NJUzJbODrUaL/noiTRqKOzTSTVh/XjNGTwQJowwZn3QNBxJ6AwiVN51hJadYOBrwqMgw5oglu+qcTNYTUi/1h9iNVNr5nlBBdDx0MylcnwqfAGmsXfng873ie8aYT5TXBdH/F0PblDG6hSDoTmXsblqab337DgNDDYv544liYrFImi7rEYc1fWOqAPF+gTQ3WayHrGTcRdbpF6oHX3zSEeIrRCAvZl36rkz5YfUTB/oRjYLX5oFmREhz3rlm42BkrjMhuAtxN2pdft8NCQVDg1yZCAsYnGmEhgPMGRNgvjQ9QoBDXa8MgUeD/njyxCpzubquLQ4bx00mkixKdrR8XbokTFMw26MgDOBmutvDSboRGcgjLvhtj1TcASIE2/j+0BHziPhrpwT8b+5GsrajHBn474bkolucOUyiZukfCnhjuPsIL37MYGE3kyO1aFwOn0Utv7S7CJEs2wXITZly2WUtRPTsgmOR8NCv9h
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(39860400002)(136003)(346002)(366004)(451199021)(478600001)(4326008)(52116002)(6486002)(66476007)(6666004)(36756003)(66556008)(41300700001)(110136005)(316002)(66946007)(86362001)(6506007)(83380400001)(26005)(1076003)(2616005)(186003)(38350700002)(6512007)(38100700002)(2906002)(8676002)(5660300002)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?ELrz9EZb6pVJjlyLrEc8YcDM4vA1l9XyvHEHsKlbqtRTnY4WXbolOumUdhaI?=
+ =?us-ascii?Q?5ycguVmeA8fJEIMsAFw0fRSzd9znDfZZLB+Do8dPjxk2zWtp6FT0Nk2KH+CU?=
+ =?us-ascii?Q?njECyfHDt4568hUmD4tfsgr1hH10lYDoDujFpYFmdB/CcAAvd9KGI7qvR5yi?=
+ =?us-ascii?Q?BQqPj/5VgfDlb6IFxZ1n8sW+WYpuFg7o0j8G4iO041Tbag0RZnmIFbbO2FBN?=
+ =?us-ascii?Q?U1dbR3DBPxSz4c//ulf3Mays7FfsSGfogjE9fpIp4Jc8CrXh1+sLzNmQMrik?=
+ =?us-ascii?Q?L57PyVwcSD6De8AXLYSargn/8ryRoDi9FfF5IqLmco5wG1RY4nRadvC6WURl?=
+ =?us-ascii?Q?O/0c2LG8SNpucDpnG1iANaZYwJT61E/qvwEUnJ0FifAQa/ujHc2H/+/YiGaL?=
+ =?us-ascii?Q?lPOr3le/vVqroToo5a8fO8Z7LXGGKUXdXWAp1ObIs5keYLDHcrXDryEqcZAm?=
+ =?us-ascii?Q?/GdRi8UzokhILzL7nqHXshKcV60vL65KlJFB/powo8gCYmZHRafWbUVtRxm6?=
+ =?us-ascii?Q?Q/zhvyUB0EEmQTn6vwcLzEJvImMbjpMt926Nubp9aOzMFZMwzhfLJeVwj5xT?=
+ =?us-ascii?Q?C+V6dKevMfsFPLe3pCTzbwzk8R/iz1oEStHSsU/jx484exAtWb9IQiqqn0MS?=
+ =?us-ascii?Q?eAsWgmzYCcYtTdN6H6Wk7lvPFxteCW5F6+WNqmPju1TuGCSf8WAKBR5pdKaP?=
+ =?us-ascii?Q?Edo3ua1MopVK7mgdZOSa+JXwxyJYsjKi0c6+HhshgLzlPk6WCR9v/MTEzTVJ?=
+ =?us-ascii?Q?JYOX78F/BSRXL+0zpadLI2a7yVaKN9dVAT+8tU9cAIIj0bO7d9dEyk5A/njV?=
+ =?us-ascii?Q?HENfPCYFj2VN9+fu979V2yKlQkLtsdiBRKGqH1tUChT4JaCDr8vGnVQ6ep55?=
+ =?us-ascii?Q?zZylP5SX4yWxwznPBGPA3JmMQhTPZhKVNAsUSTo+ooRkKXyCW7gBrYGn6gFn?=
+ =?us-ascii?Q?Qav8pcj7UE6pNH/kgBDKe9RjuaC+8678kesU7OtfF9wOQV9Z/cV8YVrGzYYs?=
+ =?us-ascii?Q?ur7LbmdUZq9FSe2UVhFYDgG2nNA/JjF9hNBE+072vz/33oYLQ0YXeVBON+ub?=
+ =?us-ascii?Q?+wNxcmz+eZ9GZhL3YFJZiSQbQN9ESAKJJZzB6PtecrN7k1cnKTDupA6IF+5h?=
+ =?us-ascii?Q?WKwMxN7O1hPdU+FLMEuxSQrUp+kCDUnW4uAUDVccuSNAeF7V/oxW2eVbN1L6?=
+ =?us-ascii?Q?XzkgwJ9bOOaaDbHatztbaFX/stYNsFRkhJk2R/pxqsYsSR+CmiqeeRUiAbrj?=
+ =?us-ascii?Q?MrDRJGHbDPc4nB0jPDOepA2wkqBdWcMk5S4KRjZebfrm9zegzN6FDfZwrcG0?=
+ =?us-ascii?Q?2pOzw0NJWCT05Jcq1FJyI1XGY6k/WU49V+jwtSiBEvjFUHqux6bvjIeshNCF?=
+ =?us-ascii?Q?LMtVf2SA2OwqmtrYA3ikPwoJjS7C1+UBtd6dfYpDRVKK4qUdkBnh/sbo4nZW?=
+ =?us-ascii?Q?UWhQ7veKibyUG84AVFpmWPQA6oiQ/oktSv4gdpzehVNgf1jJh2qIGaanVU4M?=
+ =?us-ascii?Q?Ne0WU8GukbJJVEJIXLmkOL/+t6eShenlkZZZ9IHTIpmWZ0IQzxtvRIcRBUWs?=
+ =?us-ascii?Q?Hnnw1gHfI8cI5wecaDQ81PGWmmjz1ybOUQvC4MqH?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 2e802745-1da3-411b-8c4d-08db81c1c0fc
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2023 03:48:57.2114
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ IjX0iRPltM6uKiGWp5O6JhgYzOu++rRP41CxJO1+Yl62ZmCPSb55lfsV8kB8FOYHvcBzSXp8Vv82YAfBDV9s/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB4385
+X-MailFrom: frank.li@vivo.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: XEKXQQMK2JEKI7SMBAN3XYRG6ZHUZ3O3
+X-Message-ID-Hash: XEKXQQMK2JEKI7SMBAN3XYRG6ZHUZ3O3
+X-Mailman-Approved-At: Tue, 11 Jul 2023 14:21:25 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SKCJXZZTOHDUXKM26IB7GJR4QCC7OMEV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XEKXQQMK2JEKI7SMBAN3XYRG6ZHUZ3O3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,207 +158,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jul 11, 2023 at 02:57:25PM +0200, Amadeusz Sławiński wrote:
-> Use PCI device IDs from pci_ids.h header and while at it change to using
-> PCI_DEVICE_DATA() macro, to simplify declarations.
+Use devm_platform_ioremap_resource() to simplify code.
 
-FWIW,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Oh, additional remark below.
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
+---
+ sound/soc/bcm/bcm63xx-i2s-whistler.c | 16 +---------------
+ 1 file changed, 1 insertion(+), 15 deletions(-)
 
-> Acked-by: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-> ---
->  sound/soc/sof/intel/pci-apl.c |  9 +++----
->  sound/soc/sof/intel/pci-cnl.c | 15 ++++--------
->  sound/soc/sof/intel/pci-icl.c | 12 ++++------
->  sound/soc/sof/intel/pci-mtl.c |  3 +--
->  sound/soc/sof/intel/pci-skl.c |  6 ++---
->  sound/soc/sof/intel/pci-tgl.c | 45 ++++++++++++-----------------------
->  sound/soc/sof/intel/pci-tng.c |  3 +--
->  7 files changed, 31 insertions(+), 62 deletions(-)
-> 
-> diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
-> index 69cad5a6bc72..083659ddfe6b 100644
-> --- a/sound/soc/sof/intel/pci-apl.c
-> +++ b/sound/soc/sof/intel/pci-apl.c
-> @@ -85,12 +85,9 @@ static const struct sof_dev_desc glk_desc = {
->  
->  /* PCI IDs */
->  static const struct pci_device_id sof_pci_ids[] = {
-> -	{ PCI_DEVICE(0x8086, 0x5a98), /* BXT-P (ApolloLake) */
-> -		.driver_data = (unsigned long)&bxt_desc},
-> -	{ PCI_DEVICE(0x8086, 0x1a98),/* BXT-T */
-> -		.driver_data = (unsigned long)&bxt_desc},
-> -	{ PCI_DEVICE(0x8086, 0x3198), /* GeminiLake */
-> -		.driver_data = (unsigned long)&glk_desc},
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_APL, &bxt_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_APL_T, &bxt_desc) },
-
-Have we ever had APL-T? What is that? I remember that we have had two or
-three BXTs inside, and then products become for Broxton and Apollo Lake
-SoC codenames. I never have heard about -T...
-
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_GML, &glk_desc) },
->  	{ 0, }
->  };
->  MODULE_DEVICE_TABLE(pci, sof_pci_ids);
-> diff --git a/sound/soc/sof/intel/pci-cnl.c b/sound/soc/sof/intel/pci-cnl.c
-> index 8895508a0be6..e2c50e7b0aa7 100644
-> --- a/sound/soc/sof/intel/pci-cnl.c
-> +++ b/sound/soc/sof/intel/pci-cnl.c
-> @@ -120,16 +120,11 @@ static const struct sof_dev_desc cml_desc = {
->  
->  /* PCI IDs */
->  static const struct pci_device_id sof_pci_ids[] = {
-> -	{ PCI_DEVICE(0x8086, 0x9dc8), /* CNL-LP */
-> -		.driver_data = (unsigned long)&cnl_desc},
-> -	{ PCI_DEVICE(0x8086, 0xa348), /* CNL-H */
-> -		.driver_data = (unsigned long)&cfl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x02c8), /* CML-LP */
-> -		.driver_data = (unsigned long)&cml_desc},
-> -	{ PCI_DEVICE(0x8086, 0x06c8), /* CML-H */
-> -		.driver_data = (unsigned long)&cml_desc},
-> -	{ PCI_DEVICE(0x8086, 0xa3f0), /* CML-S */
-> -		.driver_data = (unsigned long)&cml_desc},
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_CNL_LP, &cnl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_CNL_H, &cfl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_CML_LP, &cml_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_CML_H, &cml_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_CML_S, &cml_desc) },
->  	{ 0, }
->  };
->  MODULE_DEVICE_TABLE(pci, sof_pci_ids);
-> diff --git a/sound/soc/sof/intel/pci-icl.c b/sound/soc/sof/intel/pci-icl.c
-> index 5fb5a820693e..0a65df3ed9e2 100644
-> --- a/sound/soc/sof/intel/pci-icl.c
-> +++ b/sound/soc/sof/intel/pci-icl.c
-> @@ -86,14 +86,10 @@ static const struct sof_dev_desc jsl_desc = {
->  
->  /* PCI IDs */
->  static const struct pci_device_id sof_pci_ids[] = {
-> -	{ PCI_DEVICE(0x8086, 0x34C8), /* ICL-LP */
-> -		.driver_data = (unsigned long)&icl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x3dc8), /* ICL-H */
-> -		.driver_data = (unsigned long)&icl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x38c8), /* ICL-N */
-> -		.driver_data = (unsigned long)&jsl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x4dc8), /* JSL-N */
-> -		.driver_data = (unsigned long)&jsl_desc},
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_ICL_LP, &icl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_ICL_H, &icl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_ICL_N, &jsl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_JSL_N, &jsl_desc) },
->  	{ 0, }
->  };
->  MODULE_DEVICE_TABLE(pci, sof_pci_ids);
-> diff --git a/sound/soc/sof/intel/pci-mtl.c b/sound/soc/sof/intel/pci-mtl.c
-> index e276e1e37fed..7868b0827e84 100644
-> --- a/sound/soc/sof/intel/pci-mtl.c
-> +++ b/sound/soc/sof/intel/pci-mtl.c
-> @@ -52,8 +52,7 @@ static const struct sof_dev_desc mtl_desc = {
->  
->  /* PCI IDs */
->  static const struct pci_device_id sof_pci_ids[] = {
-> -	{ PCI_DEVICE(0x8086, 0x7E28), /* MTL */
-> -		.driver_data = (unsigned long)&mtl_desc},
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_MTL, &mtl_desc) },
->  	{ 0, }
->  };
->  MODULE_DEVICE_TABLE(pci, sof_pci_ids);
-> diff --git a/sound/soc/sof/intel/pci-skl.c b/sound/soc/sof/intel/pci-skl.c
-> index 5e69af6eed34..a6588b138a8c 100644
-> --- a/sound/soc/sof/intel/pci-skl.c
-> +++ b/sound/soc/sof/intel/pci-skl.c
-> @@ -69,10 +69,8 @@ static struct sof_dev_desc kbl_desc = {
->  
->  /* PCI IDs */
->  static const struct pci_device_id sof_pci_ids[] = {
-> -	/* Sunrise Point-LP */
-> -	{ PCI_DEVICE(0x8086, 0x9d70), .driver_data = (unsigned long)&skl_desc},
-> -	/* KBL */
-> -	{ PCI_DEVICE(0x8086, 0x9d71), .driver_data = (unsigned long)&kbl_desc},
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_SKL_LP, &skl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_KBL_LP, &kbl_desc) },
->  	{ 0, }
->  };
->  MODULE_DEVICE_TABLE(pci, sof_pci_ids);
-> diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
-> index ca37ff1bbd2a..d688f9373fb2 100644
-> --- a/sound/soc/sof/intel/pci-tgl.c
-> +++ b/sound/soc/sof/intel/pci-tgl.c
-> @@ -284,36 +284,21 @@ static const struct sof_dev_desc rpl_desc = {
->  
->  /* PCI IDs */
->  static const struct pci_device_id sof_pci_ids[] = {
-> -	{ PCI_DEVICE(0x8086, 0xa0c8), /* TGL-LP */
-> -		.driver_data = (unsigned long)&tgl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x43c8), /* TGL-H */
-> -		.driver_data = (unsigned long)&tglh_desc},
-> -	{ PCI_DEVICE(0x8086, 0x4b55), /* EHL */
-> -		.driver_data = (unsigned long)&ehl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x4b58), /* EHL */
-> -		.driver_data = (unsigned long)&ehl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x7ad0), /* ADL-S */
-> -		.driver_data = (unsigned long)&adls_desc},
-> -	{ PCI_DEVICE(0x8086, 0x7a50), /* RPL-S */
-> -		.driver_data = (unsigned long)&rpls_desc},
-> -	{ PCI_DEVICE(0x8086, 0x51c8), /* ADL-P */
-> -		.driver_data = (unsigned long)&adl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x51c9), /* ADL-PS */
-> -		.driver_data = (unsigned long)&adl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x51ca), /* RPL-P */
-> -		.driver_data = (unsigned long)&rpl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x51cb), /* RPL-P */
-> -		.driver_data = (unsigned long)&rpl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x51cc), /* ADL-M */
-> -		.driver_data = (unsigned long)&adl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x51cd), /* ADL-P */
-> -		.driver_data = (unsigned long)&adl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x51ce), /* RPL-M */
-> -		.driver_data = (unsigned long)&rpl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x51cf), /* RPL-PX */
-> -		.driver_data = (unsigned long)&rpl_desc},
-> -	{ PCI_DEVICE(0x8086, 0x54c8), /* ADL-N */
-> -		.driver_data = (unsigned long)&adl_n_desc},
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_TGL_LP, &tgl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_TGL_H, &tglh_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_EHL_0, &ehl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_EHL_3, &ehl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_S, &adls_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_S, &rpls_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_P, &adl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_PS, &adl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_P_0, &rpl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_P_1, &rpl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_M, &adl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_PX, &adl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_M, &rpl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_PX, &rpl_desc) },
-> +	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_N, &adl_n_desc) },
->  	{ 0, }
->  };
->  MODULE_DEVICE_TABLE(pci, sof_pci_ids);
-> diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
-> index 8c22a00266c0..12e81456a80c 100644
-> --- a/sound/soc/sof/intel/pci-tng.c
-> +++ b/sound/soc/sof/intel/pci-tng.c
-> @@ -225,8 +225,7 @@ static const struct sof_dev_desc tng_desc = {
->  
->  /* PCI IDs */
->  static const struct pci_device_id sof_pci_ids[] = {
-> -	{ PCI_DEVICE(0x8086, 0x119a),
-> -		.driver_data = (unsigned long)&tng_desc},
-> +	{ PCI_DEVICE_DATA(INTEL, ADSP_TNG, &tng_desc) },
->  	{ 0, }
->  };
->  MODULE_DEVICE_TABLE(pci, sof_pci_ids);
-> -- 
-> 2.34.1
-> 
-
+diff --git a/sound/soc/bcm/bcm63xx-i2s-whistler.c b/sound/soc/bcm/bcm63xx-i2s-whistler.c
+index 18c51dbbc8dc..c64609718738 100644
+--- a/sound/soc/bcm/bcm63xx-i2s-whistler.c
++++ b/sound/soc/bcm/bcm63xx-i2s-whistler.c
+@@ -225,7 +225,6 @@ static int bcm63xx_i2s_dev_probe(struct platform_device *pdev)
+ {
+ 	int ret = 0;
+ 	void __iomem *regs;
+-	struct resource *r_mem, *region;
+ 	struct bcm_i2s_priv *i2s_priv;
+ 	struct regmap *regmap_i2s;
+ 	struct clk *i2s_clk;
+@@ -241,20 +240,7 @@ static int bcm63xx_i2s_dev_probe(struct platform_device *pdev)
+ 		return PTR_ERR(i2s_clk);
+ 	}
+ 
+-	r_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!r_mem) {
+-		dev_err(&pdev->dev, "Unable to get register resource.\n");
+-		return -ENODEV;
+-	}
+-
+-	region = devm_request_mem_region(&pdev->dev, r_mem->start,
+-					resource_size(r_mem), DRV_NAME);
+-	if (!region) {
+-		dev_err(&pdev->dev, "Memory region already claimed\n");
+-		return -EBUSY;
+-	}
+-
+-	regs = devm_ioremap_resource(&pdev->dev, r_mem);
++	regs = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(regs)) {
+ 		ret = PTR_ERR(regs);
+ 		return ret;
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.0
 
