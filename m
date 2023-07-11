@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC0A0EB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BF04EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:15:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4E35206;
-	Wed, 12 Jul 2023 15:14:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4E35206
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89405207;
+	Wed, 12 Jul 2023 15:15:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89405207
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689167739;
-	bh=i6xTQM/M83VGl5L40MPme6/MD9lIrLsXxW1pfo9MYv4=;
+	s=default; t=1689167754;
+	bh=u9L8bC8uc7avplPhBiWwS/Uu0Hqr1Wth57luzKoKJGU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=B69LigLD6qpwdD965L7Mdvuo1pJsTZcewYO/81oWPq6TzSo7JB6F2RwVDPS346W5p
-	 K6ovQ563AME7MR4IT/weoctNRA08r0ZmdLuaameqzYcwcDqSRkpB+eildNged+vh66
-	 INwE+QAsrKTbXDbmZIx3GJeqULscFpBSQfUTIa+w=
+	b=Mdr09FnRWDLxOTARvF/2znO09SNWoh1zEJs602jKPChUSROVeKE8B7abK9G3vAAW7
+	 GYaytve/M0yRpwuB+2yqQdwzzNE9AKpzUtj0mZR0nCoANH2Iw5adZQlZuu07stbr9P
+	 vDdhBQZdup7GvP7bzB8qcfMotWgKMiynLWjsnk3M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73A0AF8057B; Wed, 12 Jul 2023 15:13:53 +0200 (CEST)
+	id 23183F80589; Wed, 12 Jul 2023 15:13:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA5D8F8056F;
-	Wed, 12 Jul 2023 15:13:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96352F8058C;
+	Wed, 12 Jul 2023 15:13:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31809F80549; Tue, 11 Jul 2023 19:19:30 +0200 (CEST)
+	id 6353CF80549; Tue, 11 Jul 2023 19:19:32 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6DAC1F80093
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 19:19:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DAC1F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 230ACF80290
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 19:19:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 230ACF80290
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XFj4kK+i
+ header.s=Intel header.b=EM3aWwAl
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689095967; x=1720631967;
+  t=1689095969; x=1720631969;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=i6xTQM/M83VGl5L40MPme6/MD9lIrLsXxW1pfo9MYv4=;
-  b=XFj4kK+iW2JYVQIpIxH86TvMGztCULABOc6fqGb+ZcGGLxin2sKvpfAL
-   5ga0tywydf+7Sj17VZt2czhDE1ucl6JHr98YSyfVml3XqdX6LmkZ9rZ3j
-   zGjIocA4AIPQ80R9/D4KrU/zGS0nuUu34Ww2E16amgfW6sC6p5qOBOO6M
-   AwFUWJxDrdi4gQ5tI6T2Hypmj0aTUjUSrS5fQ6IN93xoTuftzmQcyZUwC
-   /9vtVI9upcFR/GX1fRWUh1BChJcEGsa8/cgN3EOAT0swg0xBS3BtBQF8j
-   K0XkKKnDf3ResZG9zlMNcb6vbcrYWB51KT5wM8TYN2B6sp9vgE89R5Bby
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="362148882"
+  bh=u9L8bC8uc7avplPhBiWwS/Uu0Hqr1Wth57luzKoKJGU=;
+  b=EM3aWwAle8x6y8Ply0wQWBHZ8hv4DZ9ELgRii4k9po53nCgT3Kw9Ue1K
+   pyUeE0IoQBK2QtIAQ2N7sNPp83YD/KMC8IqY1MkiDu/DME0/79IpwPEbu
+   TqoQ/clhBUkCaycyg61QwSSkFypXhU6FesxxJgiTsDOqsZAq1dYycddNO
+   Wu0LlVSpxiRycVq8Hahto+HKAVZQy3fpHnIOSP9pZRAYvgNln15RsSHfO
+   YJp/1WRD0fbd2eNh7O7csPVF7+WmNTFvZQRUc1rEn1jgZRgSeB2GRhjVq
+   jHAeR8i7ozoru7vrbCWN+HlvxeV02LQgN9pZAnXUe4oyR9zVNOh+MCmGJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="362148933"
 X-IronPort-AV: E=Sophos;i="6.01,197,1684825200";
-   d="scan'208";a="362148882"
+   d="scan'208";a="362148933"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jul 2023 10:19:21 -0700
+ 11 Jul 2023 10:19:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="715240862"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="715240913"
 X-IronPort-AV: E=Sophos;i="6.01,197,1684825200";
-   d="scan'208";a="715240862"
+   d="scan'208";a="715240913"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 11 Jul 2023 10:17:58 -0700
+  by orsmga007.jf.intel.com with ESMTP; 11 Jul 2023 10:18:02 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 5C3475FC; Tue, 11 Jul 2023 20:17:59 +0300 (EEST)
+	id 896E669F; Tue, 11 Jul 2023 20:17:59 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
@@ -120,9 +120,9 @@ Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Richard Cochran <richardcochran@gmail.com>,
 	Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH v3 05/14] spi: Kill spi_add_device_locked()
-Date: Tue, 11 Jul 2023 20:17:47 +0300
-Message-Id: <20230711171756.86736-6-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 08/14] spi: Sort headers alphabetically
+Date: Tue, 11 Jul 2023 20:17:50 +0300
+Message-Id: <20230711171756.86736-9-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230711171756.86736-1-andriy.shevchenko@linux.intel.com>
 References: <20230711171756.86736-1-andriy.shevchenko@linux.intel.com>
@@ -136,15 +136,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: HMSD7IGI7CV3JICCLTJZHUUPEY7KPS4D
-X-Message-ID-Hash: HMSD7IGI7CV3JICCLTJZHUUPEY7KPS4D
+Message-ID-Hash: AYKHUU2L6V6AMRJCSOV3MQW7ISSHFRRU
+X-Message-ID-Hash: AYKHUU2L6V6AMRJCSOV3MQW7ISSHFRRU
 X-Mailman-Approved-At: Wed, 12 Jul 2023 13:13:45 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HMSD7IGI7CV3JICCLTJZHUUPEY7KPS4D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AYKHUU2L6V6AMRJCSOV3MQW7ISSHFRRU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,60 +153,108 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Now, spi_add_device_locked() has just a line on top of __spi_add_device().
-Besides that, it has a single caller. So, just kill it and embed its parts
-into the caller.
+Sorting headers alphabetically helps locating duplicates, and
+make it easier to figure out where to insert new headers.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ drivers/spi/spi.c       | 42 ++++++++++++++++++++---------------------
+ include/linux/spi/spi.h | 14 +++++++-------
+ 2 files changed, 28 insertions(+), 28 deletions(-)
 
 diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 876d40d2c708..57b5e4488416 100644
+index 0259516a6943..9b096cbc9926 100644
 --- a/drivers/spi/spi.c
 +++ b/drivers/spi/spi.c
-@@ -708,14 +708,6 @@ int spi_add_device(struct spi_device *spi)
- }
- EXPORT_SYMBOL_GPL(spi_add_device);
+@@ -4,36 +4,36 @@
+ // Copyright (C) 2005 David Brownell
+ // Copyright (C) 2008 Secret Lab Technologies Ltd.
  
--static int spi_add_device_locked(struct spi_device *spi)
--{
--	struct spi_controller *ctlr = spi->controller;
+-#include <linux/kernel.h>
+-#include <linux/device.h>
+-#include <linux/init.h>
++#include <linux/acpi.h>
+ #include <linux/cache.h>
+-#include <linux/dma-mapping.h>
++#include <linux/clk/clk-conf.h>
++#include <linux/delay.h>
++#include <linux/device.h>
+ #include <linux/dmaengine.h>
++#include <linux/dma-mapping.h>
++#include <linux/export.h>
++#include <linux/gpio/consumer.h>
++#include <linux/highmem.h>
++#include <linux/idr.h>
++#include <linux/init.h>
++#include <linux/ioport.h>
++#include <linux/kernel.h>
++#include <linux/kthread.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/mutex.h>
+ #include <linux/of_device.h>
+ #include <linux/of_irq.h>
+-#include <linux/clk/clk-conf.h>
+-#include <linux/slab.h>
+-#include <linux/mod_devicetable.h>
+-#include <linux/spi/spi.h>
+-#include <linux/spi/spi-mem.h>
+-#include <linux/gpio/consumer.h>
+-#include <linux/pm_runtime.h>
++#include <linux/percpu.h>
++#include <linux/platform_data/x86/apple.h>
+ #include <linux/pm_domain.h>
++#include <linux/pm_runtime.h>
+ #include <linux/property.h>
+-#include <linux/export.h>
++#include <linux/ptp_clock_kernel.h>
+ #include <linux/sched/rt.h>
++#include <linux/slab.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/spi-mem.h>
+ #include <uapi/linux/sched/types.h>
+-#include <linux/delay.h>
+-#include <linux/kthread.h>
+-#include <linux/ioport.h>
+-#include <linux/acpi.h>
+-#include <linux/highmem.h>
+-#include <linux/idr.h>
+-#include <linux/platform_data/x86/apple.h>
+-#include <linux/ptp_clock_kernel.h>
+-#include <linux/percpu.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/spi.h>
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 32c94eae8926..21b77bdfac29 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -6,19 +6,19 @@
+ #ifndef __LINUX_SPI_H
+ #define __LINUX_SPI_H
+ 
++#include <linux/acpi.h>
+ #include <linux/bits.h>
++#include <linux/completion.h>
+ #include <linux/device.h>
+-#include <linux/mod_devicetable.h>
+-#include <linux/slab.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/kthread.h>
+-#include <linux/completion.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/scatterlist.h>
+-#include <linux/gpio/consumer.h>
 -
--	WARN_ON(!mutex_is_locked(&ctlr->add_lock));
--	return __spi_add_device(spi);
--}
--
- /**
-  * spi_new_device - instantiate one new SPI device
-  * @ctlr: Controller to which device is connected
-@@ -2417,11 +2409,12 @@ static void of_register_spi_devices(struct spi_controller *ctlr) { }
- struct spi_device *spi_new_ancillary_device(struct spi_device *spi,
- 					     u8 chip_select)
- {
-+	struct spi_controller *ctlr = spi->controller;
- 	struct spi_device *ancillary;
- 	int rc = 0;
+-#include <uapi/linux/spi/spi.h>
+-#include <linux/acpi.h>
++#include <linux/slab.h>
+ #include <linux/u64_stats_sync.h>
  
- 	/* Alloc an spi_device */
--	ancillary = spi_alloc_device(spi->controller);
-+	ancillary = spi_alloc_device(ctlr);
- 	if (!ancillary) {
- 		rc = -ENOMEM;
- 		goto err_out;
-@@ -2436,8 +2429,10 @@ struct spi_device *spi_new_ancillary_device(struct spi_device *spi,
- 	ancillary->max_speed_hz = spi->max_speed_hz;
- 	ancillary->mode = spi->mode;
- 
-+	WARN_ON(!mutex_is_locked(&ctlr->add_lock));
++#include <uapi/linux/spi/spi.h>
 +
- 	/* Register the new device */
--	rc = spi_add_device_locked(ancillary);
-+	rc = __spi_add_device(ancillary);
- 	if (rc) {
- 		dev_err(&spi->dev, "failed to register ancillary device\n");
- 		goto err_out;
+ struct dma_chan;
+ struct software_node;
+ struct ptp_system_timestamp;
 -- 
 2.40.0.1.gaa8946217a0b
 
