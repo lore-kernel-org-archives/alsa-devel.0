@@ -4,158 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 119C9C001DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 14:23:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43DA8EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 14:24:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF987E89;
-	Tue, 11 Jul 2023 16:23:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF987E89
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65F37E98;
+	Tue, 11 Jul 2023 16:23:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65F37E98
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689085436;
-	bh=MfB7IQbq0Oj4m2i6Hy8PFFdyPPMxVlmwbXAjnNAc6ug=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1689085449;
+	bh=2+yn6FDwMd8voKMx1WPt05JiOyMTQxbLsZaEtvbtNN4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YH4YsnQ77A5tXNMOmiRBKbBqjPzrfOn0AIGuhQeKv8Y+zg0uLkbmrYs7ocgsVonfF
-	 dFFp1MBXJaBqKC2GllYcJdh+ZGiHI5/AOiimZk9eWt7th6axtTHF05TAz1L0zMCjZB
-	 7oLLrVJV1Py07na330ENUSJJ5B/WmnM0j52/Dd3s=
+	b=WLf/A6soiwJV5g81MEj9cgI1AJHDxmASjC4D6kJMTzAIvf5GazXeZAiKCkJcf1CgW
+	 1x+gdtmqR7ECBE/XVa0e0ZdPtp+hr/CWOSM1QnA9mzAHxkCruLxf+pFI6zNI2MT9hw
+	 dc8Q9xwvKG7AU3I7cTnD4mWiCNRnxofxqEZdV00w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2F9A6F805AF; Tue, 11 Jul 2023 16:21:38 +0200 (CEST)
+	id 340E9F805BD; Tue, 11 Jul 2023 16:21:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB78DF805AB;
-	Tue, 11 Jul 2023 16:21:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB79AF805B4;
+	Tue, 11 Jul 2023 16:21:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C6B2AF80249; Tue, 11 Jul 2023 05:49:57 +0200 (CEST)
-Received: from APC01-SG2-obe.outbound.protection.outlook.com
- (mail-sgaapc01on2072e.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:feab::72e])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 132F2F80249; Tue, 11 Jul 2023 10:13:11 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 11240F800E4
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 05:49:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11240F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id EF09BF80093
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 10:13:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF09BF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=vivo.com header.i=@vivo.com header.a=rsa-sha256
- header.s=selector2 header.b=EKQDZ3Dp
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZQKeFfyQAokp2A5MD1Igfs932d2zzr52hHQWX0cwt6npVTUWzvZEhxs07Da2WPtAvWgx57JvGojBdQ7t4DWHyuuIMdybaCOXv4EkokjN0wfja36oUF0/LTvy7uSGqj6GZao6JT/ZGRF0I9WG8hqCJCznDSdo5rx2BH2X1W7KSEBBy+2dU5z3r5X7WYg+DhLJ5rTP3U8kmyhX8vV1ZZRcmL/6e4Gny3+PQ4QmTDARLuJWYBGxUzcCOA5PQki095x/s8mk7q2TikOq10JhDH0/csYABVvXnzkchJDFkz/V46SBNldq+q46hPfk+R+0my1Yhl4yR8/nrJDiKUVlGBnvOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bYZMZaULZaSNJm1d+jD+6WoxN7c1KwymooFZolcgcD8=;
- b=RPKCdTnMczii2f3/BVivt+5KlEKcRxi0q8h0Tnh2tpZ0UWkmPZdmq91l1YQx/RerE2W510tISE3BjkBSMo/2P72w87Rf18QKUNl1X/o1CYz/7Ryw3qsanewIAqr6cuKl1zx6AXgKyxmdTG1fO6vyBQvKQeekBKeNaTpLuX3bGbU8lsv4N9cN6niI7ZANt/Gw02ldmMvHbnopDa3ML3cZrbSjQtB6aCY8IGDwA0OzCShjNk+HhCA837BCMS0TYHha5Ye9RiMa0H/X2EClcmlbZTmBS0SFdJeH4A69cKZtr6hGU0cLnM0mkVFDFydc99awTigbtxoeZTElbou/Q4xG5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bYZMZaULZaSNJm1d+jD+6WoxN7c1KwymooFZolcgcD8=;
- b=EKQDZ3DpWdcCK9TeVdIPoDex2sSZecqOta4ZQ0Pca/FUJhNKq8cCem/j36X5/qzzn30/O9JaXuSo8nfurtlcO7lLblNTFyoXK9vN9XL5JciOi3rcGqRHId2SqCYV9FU83hDOgFWgE+yzjxznPJRy67ms5Xs2MLyqf0xz3KTs/QDVzZJ30/h8z54GBTA1QiyWmvIY401yeOaGB2dCGWgW688fPealVxtMcsDlbswzdtzrnqx/lThqeyjzFnZ6DG6gSQMM72FjzOkue6tdBxXtsb48LNPhtUelNHHbkZI+WK5/BpBsTaCpXoujTkgHV6TToCnRGkX3y4qEdGBs9r82ng==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
- by KL1PR0601MB4385.apcprd06.prod.outlook.com (2603:1096:820:71::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.31; Tue, 11 Jul
- 2023 03:49:00 +0000
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::fa0e:6c06:7474:285c]) by SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::fa0e:6c06:7474:285c%5]) with mapi id 15.20.6565.028; Tue, 11 Jul 2023
- 03:49:00 +0000
-From: Yangtao Li <frank.li@vivo.com>
-To: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-	Jarkko Nikula <jarkko.nikula@bitmer.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: Yangtao Li <frank.li@vivo.com>,
-	alsa-devel@alsa-project.org,
-	linux-omap@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/5] ASoC: ti: Convert to
- devm_platform_ioremap_resource_byname()
-Date: Tue, 11 Jul 2023 11:48:42 +0800
-Message-Id: <20230711034846.69437-2-frank.li@vivo.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230711034846.69437-1-frank.li@vivo.com>
-References: <20230711034846.69437-1-frank.li@vivo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR01CA0038.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::20) To SEZPR06MB5269.apcprd06.prod.outlook.com
- (2603:1096:101:78::6)
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=Fx8WIExU
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
+ [2.237.20.237])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 6971C660700A;
+	Tue, 11 Jul 2023 09:12:58 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1689063180;
+	bh=2+yn6FDwMd8voKMx1WPt05JiOyMTQxbLsZaEtvbtNN4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Fx8WIExUEuJPaY5MFu8knfLP/k0C26AMfNb/AvH/Fmm0WSmwyzjbdouviC0vRIt5c
+	 MKvJLE8w0cLrlZEwxmbFWfOjjLGUQZgFi0o1pLWqgdMYxBGlFBGIjiNaupLZ6FnB33
+	 j1HPiXlommzYaYv6ce4cvKcTdjN1ewdnVTlkRjRRehst4X7XEwQxnR9ySh21JtPk6b
+	 7KLhT/OtiV9F5v6WVi5j7pxhtZflk0tkK/vKZu9Q314nRK+CtbZPcevQ7M0A64UCcq
+	 2GUJjcluoW7Hk+VgSk0dx0uk8kgwhRiKCYyXOMoe3dlhEE5DcTiXTswvygvLYV31mr
+	 rt/T478FT4VDw==
+Message-ID: <f0b9e2e4-b2c0-4336-0ec4-5afd9f1b6c72@collabora.com>
+Date: Tue, 11 Jul 2023 10:12:55 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|KL1PR0601MB4385:EE_
-X-MS-Office365-Filtering-Correlation-Id: d4f08620-1496-44db-8402-08db81c1c2f3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	WJGTuuwEvjq3TFm521NuXM5md9xUXvfglMkB4AmL53pM7Opyl31878ntLLcPgsYKh8k3+N3wHuW1MO11VLz2Re+/GXhV3G1X8HNJnKUlLnHh//gDPekyZ+aIQuKIDxak/ebQOWSOD9x4mADJww0yFAUkwSXfIO5BOJzuaEDjVWJQJaowuCxucg3r74gU3tRJ+sE8wlOp+PKcE/UEQ6hZyG5imBYX1YeHG15Wppt2qKzN6v+CdRyI5AidQBeVMONcsq23Jz3KJnTwDDSBmBQmSZbRpp15T3t3NaeKAzCUvllPDNxXaAVTLMATREpaDeQEJk6C20B+GAbP5Qvf2BOrVKYYUic0RpF6/1PzVSaYcheDUKRTvFMcD/0ziofvue9A/VLKNNs1cRMNaQ1C6JCDgJOOwqMReV3r2Jrdi8wNCjdYh5AhPC3YgT+3KCMDdEs5t7LKdwz7AcCdaN6hFhUk+7kWINtIlOpywX30ZgMWG1p1GuqvQCVN0Ge7juw1Nm6P+H93PlwNXrO9KTEwimxqgcHormhzordOqGZsLc1PgC82auKncw9JZ4uJAelpFI5P7fQqi6XbRro+bY+1qa03VGtAK3xSz9HOBf1+P8fEln03+NdUKNlg6FtvRjBKQ/7/
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(39860400002)(136003)(346002)(366004)(451199021)(478600001)(4326008)(52116002)(6486002)(66476007)(6666004)(36756003)(66556008)(41300700001)(110136005)(316002)(66946007)(86362001)(6506007)(83380400001)(26005)(1076003)(2616005)(186003)(38350700002)(6512007)(38100700002)(2906002)(8676002)(5660300002)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?N/IjbmORQ4kgxDMbaM9DGIhuA9F7kGQpQrRMMZZbC8TNZRUy1GzucN0vppqE?=
- =?us-ascii?Q?Mq2ZqOm/78L+wuRYjml8QVwzYZtXfDSz+hKBTcbQWA52DBtbWx77bscpTJy5?=
- =?us-ascii?Q?Y5IoBFz634k3UJM2SzAtoZ/VSrngDqCMoiB41Lll7IgsdTz06B82jAJfAZ+Z?=
- =?us-ascii?Q?XFURag1TdHhjxrMcEMAvnHogEtnJm76kVi6gSrmnkJ9Ki9zAZfXhEC+Ff2Vn?=
- =?us-ascii?Q?TiGfzK+W/MJLx5UcMX4Yy0Hpntrsh9SEol3ag63fYr5plf1hQvkiQGWRu0rO?=
- =?us-ascii?Q?HLmRwISiMAAQqTGAqsw3qqoVrz2Wl5g0XjhCwqqjio66B8J24L7ztuxIqFHr?=
- =?us-ascii?Q?UMAGdoNm+3x6inrsKKyxJgXkmuMUfJECEPHPKhD+36lL7OqS6X4Yo5zs8NRJ?=
- =?us-ascii?Q?xDkans5TURhJo8mXjbVmRk92F0Ruj5GQX/HAYGuBp1ZqdavHtZTg0kKwrkLl?=
- =?us-ascii?Q?5JGLE/aOS1Bm7XbbSk/sp6NCqhNCowEkwwg7PoiH956RUk8p4Psqj/ZBxRXU?=
- =?us-ascii?Q?RQ6eIQXZEfJdcFy7HGjS3JQ1ufJZVe6h3VpfGKPlcslM2m8c5u24rBxlbEER?=
- =?us-ascii?Q?SAZCzQsvNu3p60w9ca9ESiePaTxuMLy79nTkQrZkIIJvmxD3UEpD5P+zVGyg?=
- =?us-ascii?Q?dq9Z62DoyyVQCJS1iScOqyYqcihUmTanMQMsc6mD9xmKTRHnUCsJvvErulQt?=
- =?us-ascii?Q?3P+7gMaC/J9rkwEQ3+oZHuglUoLosCP8mN6GB9Xi2dsAmNb1qW0gvB9YLiBz?=
- =?us-ascii?Q?a7DSLMQoizm+BQXhZl3IDqxJZT4VcmUfffe5PyizJdDp3FZ/5VejqCMj03mo?=
- =?us-ascii?Q?SnE0YCkOd3c9yO+V15GfJlJfIZPgchMesAsh63ZUrpjvo9PteLGCF7M+3DJT?=
- =?us-ascii?Q?EXA5grHdy9rpDarwbd8iRyT44kTD92YSTEgxsAxwId2Mq4l1eyuFSgRqr5Wp?=
- =?us-ascii?Q?7OMBVB9SAIbb7D56b7NiDvpxaSkiaiictJWBaEKdsdruzQH4iKHedoZrl8fc?=
- =?us-ascii?Q?/+I0SpwqPZ4HAr2wkedF5mG0ai8+VY1BXIRKp8ZLiJyd2BNYyxa/LsrwXpQr?=
- =?us-ascii?Q?sfhGi9kaSpK7rPTeHWNLEDj1hVi+RNSjL/J/A6O1DDMqB0LOZ51H3KAffrsP?=
- =?us-ascii?Q?W0MkftZrTS5ykx/QoGgiSD8UHdpKD3i9O5+sRW9Kz2ZS9OZ49uX7msN05ogo?=
- =?us-ascii?Q?8etP/v07fZT7d6+z+l5TGZSh5tFXnSW14kthBnVdgS3i+3x9+N1zKc9bl05b?=
- =?us-ascii?Q?LoOEOhHlFD64Pq3lOE/dmVen6y+AkVLphPcpWPQRWR10ZD2LRMEF7K75BgZW?=
- =?us-ascii?Q?aGjHNJ8UJv8kDE7F9ZgKIMRJ2RNIBrDa14xu8fuJvxOmMzVaCwPfZIkIq0gw?=
- =?us-ascii?Q?d4G7N/F0vtpEvp0QS4kvavZHeEExcEkaaRQccd0uDZYbRDMUb/bC8xIAS66b?=
- =?us-ascii?Q?1dZZvVS+fNMJRAjskNou/I7lviZ75E6CowzCAJ+YU2RjcVHy1RbSb3RzHiuS?=
- =?us-ascii?Q?/K40SsYSnLkQ1JUx4Q+PcL3hCK8UZEFqd8yT2d+YXnbRzXLSHHhnZy/MVtxn?=
- =?us-ascii?Q?Q07TIppJWkB0H8In43Rqov59KVerFa+/emQr8ibK?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- d4f08620-1496-44db-8402-08db81c1c2f3
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2023 03:49:00.4260
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- BE+AeSzT45cSx6uuD0/6oetZhSm2D6kQs3O2z66TRgrqfh3tQcko3i7C0fN7idAILsDEl032R7Np29kIGUfFaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB4385
-X-MailFrom: frank.li@vivo.com
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 01/15] spi: Remove unneeded OF node NULL checks
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ Yang Yingliang <yangyingliang@huawei.com>,
+ Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
+ Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-riscv@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
+ Radu Pirea <radu_nicolae.pirea@upb.ro>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Serge Semin <fancer.lancer@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Heiko Stuebner <heiko@sntech.de>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Orson Zhai <orsonzhai@gmail.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Chunyan Zhang <zhang.lyra@gmail.com>, Alain Volmat
+ <alain.volmat@foss.st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Max Filippov <jcmvbkbc@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Richard Cochran <richardcochran@gmail.com>
+References: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
+ <20230710154932.68377-2-andriy.shevchenko@linux.intel.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230710154932.68377-2-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: angelogioacchino.delregno@collabora.com
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: QESWGGOSY5PUPXSP3D6NNNOLUL2AV7CJ
-X-Message-ID-Hash: QESWGGOSY5PUPXSP3D6NNNOLUL2AV7CJ
-X-Mailman-Approved-At: Tue, 11 Jul 2023 14:21:25 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: QQUYP23YO7463YDRBHJHPO2STAEISI2O
+X-Message-ID-Hash: QQUYP23YO7463YDRBHJHPO2STAEISI2O
+X-Mailman-Approved-At: Tue, 11 Jul 2023 14:21:35 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QESWGGOSY5PUPXSP3D6NNNOLUL2AV7CJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QQUYP23YO7463YDRBHJHPO2STAEISI2O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -164,46 +136,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use devm_platform_ioremap_resource_byname() to simplify code.
+Il 10/07/23 17:49, Andy Shevchenko ha scritto:
+> In the couple of places the NULL check of OF node is implied by the call
+> that takes it as a parameter. Drop the respective duplicate checks.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
----
- sound/soc/ti/omap-dmic.c  | 4 +---
- sound/soc/ti/omap-mcpdm.c | 3 +--
- 2 files changed, 2 insertions(+), 5 deletions(-)
+Validated against spi-mt65xx, spi-mt7621, spi-mtk-nor, spi-mtk-snfi;
 
-diff --git a/sound/soc/ti/omap-dmic.c b/sound/soc/ti/omap-dmic.c
-index 825c70a443da..cb60af36dbc3 100644
---- a/sound/soc/ti/omap-dmic.c
-+++ b/sound/soc/ti/omap-dmic.c
-@@ -488,12 +488,10 @@ static int asoc_dmic_probe(struct platform_device *pdev)
- 
- 	dmic->dma_data.filter_data = "up_link";
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
--	dmic->io_base = devm_ioremap_resource(&pdev->dev, res);
-+	dmic->io_base = devm_platform_ioremap_resource_byname(pdev, "mpu");
- 	if (IS_ERR(dmic->io_base))
- 		return PTR_ERR(dmic->io_base);
- 
--
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					      &omap_dmic_component,
- 					      &omap_dmic_dai, 1);
-diff --git a/sound/soc/ti/omap-mcpdm.c b/sound/soc/ti/omap-mcpdm.c
-index 0b18a7bfd3fd..35deceb73427 100644
---- a/sound/soc/ti/omap-mcpdm.c
-+++ b/sound/soc/ti/omap-mcpdm.c
-@@ -563,8 +563,7 @@ static int asoc_mcpdm_probe(struct platform_device *pdev)
- 	mcpdm->dma_data[0].filter_data = "dn_link";
- 	mcpdm->dma_data[1].filter_data = "up_link";
- 
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
--	mcpdm->io_base = devm_ioremap_resource(&pdev->dev, res);
-+	mcpdm->io_base = devm_platform_ioremap_resource_byname(pdev, "mpu");
- 	if (IS_ERR(mcpdm->io_base))
- 		return PTR_ERR(mcpdm->io_base);
- 
--- 
-2.39.0
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com> # 
+MediaTek
+
+> ---
+>   drivers/spi/spi.c | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index 9291b2a0e887..8f3282a71c63 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -2399,9 +2399,6 @@ static void of_register_spi_devices(struct spi_controller *ctlr)
+>   	struct spi_device *spi;
+>   	struct device_node *nc;
+>   
+> -	if (!ctlr->dev.of_node)
+> -		return;
+> -
+>   	for_each_available_child_of_node(ctlr->dev.of_node, nc) {
+>   		if (of_node_test_and_set_flag(nc, OF_POPULATED))
+>   			continue;
+> @@ -3134,7 +3131,7 @@ int spi_register_controller(struct spi_controller *ctlr)
+>   		if (WARN(id < 0, "couldn't get idr"))
+>   			return id == -ENOSPC ? -EBUSY : id;
+>   		ctlr->bus_num = id;
+> -	} else if (ctlr->dev.of_node) {
+> +	} else {
+>   		/* Allocate dynamic bus number using Linux idr */
+>   		id = of_alias_get_id(ctlr->dev.of_node, "spi");
+>   		if (id >= 0) {
+
+
 
