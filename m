@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4B7CEB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 12:59:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DA5CEB64DD
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 12:59:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E292886;
-	Tue, 11 Jul 2023 14:58:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E292886
+	by alsa0.perex.cz (Postfix) with ESMTPS id D411F203;
+	Tue, 11 Jul 2023 14:59:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D411F203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689080369;
-	bh=tU0YKDrNO8akCl8ICeHMrwDADb8DlmjfJNdSrYKQcZk=;
+	s=default; t=1689080394;
+	bh=vinqnO46VRRCtcTS7KWV2T0847JFuBFICYgZjG0DVDI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=W7+CxIu72d3a7Dixx5mgqTNntJnV6GZtoBaDBSMjJ8pYfWkMRzrxm3pr3xXRuv879
-	 9SeqCQu34LsGfolxIKcYchPRBgzUeqDPhWeeM8GREdl70aFphBBF1K47m21uum/qrY
-	 4x6Eg81bYyJ7dPte8HMLCETMLRAsd2SQ4zq218Zk=
+	b=bmIDVqMn4tacFgQEc2pVrkEf9EKsYQICZyciJgMYYFSJpzOPn78bqz+zJC7AHkINz
+	 iN3jH08VS8owdl9DfyIuEzPJkjESnv5/QaVc//QEEZbZa7K13e5HK7mVJ46dyXZJ3Z
+	 hs7FgwyfLuICQRXBFc69+ieuvg8DxHHXyehBMguM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6ED8F8057B; Tue, 11 Jul 2023 14:57:33 +0200 (CEST)
+	id 5AF43F805B4; Tue, 11 Jul 2023 14:57:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D525F8057B;
-	Tue, 11 Jul 2023 14:57:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B824FF805B0;
+	Tue, 11 Jul 2023 14:57:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0FCE2F80564; Tue, 11 Jul 2023 14:57:27 +0200 (CEST)
+	id 37126F8057B; Tue, 11 Jul 2023 14:57:30 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 189BEF80236
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 14:57:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 189BEF80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2DDD7F8024E
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 14:57:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DDD7F8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=SavwD5PP
+ header.s=Intel header.b=fBB6kDKw
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689080236; x=1720616236;
+  t=1689080240; x=1720616240;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=tU0YKDrNO8akCl8ICeHMrwDADb8DlmjfJNdSrYKQcZk=;
-  b=SavwD5PP4eG5bpMLqf59gQvU6KfePXAT0mYw/hPz6Tv7lSoyqsv+8wjH
-   A7y5qak4XKFtUO8DqVL7OblYEBrRiUQjXTv6+g66d8MOPweTzuGNMP+dB
-   bf0UuNno/0sbcswrUg/nvd2KzyR2ZjmYYZwhpMYnHUgeCKPUQ0DqPDGny
-   ppQ1SBTAr6ArouEOJFrC7yQP0nH4cjNoWkm5nflb4u1X4KG8pN9arhZFZ
-   VHR5TY9W5hovBmxUgASRWVObSLC8N6fZEpCEXbjr1NSBUWojc0HpGuiZe
-   iZYxmfIvBEI8xsMMW0xArOS5XnkkxpwxPUYzA5kC2ii6viT8dCpscUgD0
+  bh=vinqnO46VRRCtcTS7KWV2T0847JFuBFICYgZjG0DVDI=;
+  b=fBB6kDKwbr+AaKByJB/kTjfxpuiV/n7Hr7i3ZGIQIMEpvXCvdmCrUvil
+   bmHH4G3Wq4nz7D++XDF1pdz5wgKvjSfotZt6Cwp3XVeoqTXh4Rjsr5VVa
+   8NvkxSe7YwUScfpS/RNFe2xFRLEJx9vjPDAIG7lSRq8llKsIolEzW3hgJ
+   RIzKBjG2SCA+Nd1uY0xTN5oL1bMpnHyV85IsaQt/B/q0MK/hIvSWAMaYf
+   SgS/mT0rCOku/Yl2fnlM8xS2+6VbxCEgorXnLERv3MyTeWAgJf7P1/qMo
+   olDBvTPlIxMJOV2WvyXbPvguOtu25ngqRc8DRd8DICPA77Tb1iXNqykyA
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="367187354"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="367187394"
 X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
-   d="scan'208";a="367187354"
+   d="scan'208";a="367187394"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jul 2023 05:57:13 -0700
+ 11 Jul 2023 05:57:18 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="834666497"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="834666551"
 X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
-   d="scan'208";a="834666497"
+   d="scan'208";a="834666551"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Jul 2023 05:57:10 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 11 Jul 2023 05:57:16 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Bjorn Helgaas <bhelgaas@google.com>,
@@ -78,17 +78,17 @@ Cc: alsa-devel@alsa-project.org,
 	Hans de Goede <hdegoede@redhat.com>,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 02/13] PCI: Add Intel Audio DSP devices to pci_ids.h
-Date: Tue, 11 Jul 2023 14:57:15 +0200
-Message-Id: <20230711125726.3509391-3-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 04/13] ALSA: hda: Use global PCI match macro
+Date: Tue, 11 Jul 2023 14:57:17 +0200
+Message-Id: <20230711125726.3509391-5-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230711125726.3509391-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230711125726.3509391-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GS2ESQPUTGF5BN2XGE2HTBYAF7OGWOCW
-X-Message-ID-Hash: GS2ESQPUTGF5BN2XGE2HTBYAF7OGWOCW
+Message-ID-Hash: NTBQEXCUS2KB4TPS63PL7BP76UQUUD42
+X-Message-ID-Hash: NTBQEXCUS2KB4TPS63PL7BP76UQUUD42
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GS2ESQPUTGF5BN2XGE2HTBYAF7OGWOCW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NTBQEXCUS2KB4TPS63PL7BP76UQUUD42/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,238 +110,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Those IDs are mostly sprinkled between HDA, Skylake, SOF and avs drivers.
-Almost every use contains additional comments to identify to which
-platform those IDs refer to. Add those IDs to pci_ids.h header, so that
-there is one place which defines those names.
+Instead of using local macro to match PCI device, use global one.
 
-Acked-by: Mark Brown <broonie@kernel.org>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- include/linux/pci_ids.h | 72 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+ sound/pci/hda/hda_intel.c | 20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index add7fb6bd844..76e686a94c64 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -2644,6 +2644,7 @@
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index ef831770ca7d..143efa54b9bf 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -330,18 +330,6 @@ enum {
+ #define needs_eld_notify_link(chip)	false
+ #endif
  
- #define PCI_VENDOR_ID_INTEL		0x8086
- #define PCI_DEVICE_ID_INTEL_EESSC	0x0008
-+#define PCI_DEVICE_ID_INTEL_HDA_CML_LP	0x02c8
- #define PCI_DEVICE_ID_INTEL_PXHD_0	0x0320
- #define PCI_DEVICE_ID_INTEL_PXHD_1	0x0321
- #define PCI_DEVICE_ID_INTEL_PXH_0	0x0329
-@@ -2659,8 +2660,10 @@
- #define PCI_DEVICE_ID_INTEL_82424	0x0483
- #define PCI_DEVICE_ID_INTEL_82378	0x0484
- #define PCI_DEVICE_ID_INTEL_82425	0x0486
-+#define PCI_DEVICE_ID_INTEL_HDA_CML_H	0x06c8
- #define PCI_DEVICE_ID_INTEL_MRST_SD0	0x0807
- #define PCI_DEVICE_ID_INTEL_MRST_SD1	0x0808
-+#define PCI_DEVICE_ID_INTEL_HDA_OAKTRAIL	0x080a
- #define PCI_DEVICE_ID_INTEL_MFD_SD	0x0820
- #define PCI_DEVICE_ID_INTEL_MFD_SDIO1	0x0821
- #define PCI_DEVICE_ID_INTEL_MFD_SDIO2	0x0822
-@@ -2670,12 +2673,17 @@
- #define PCI_DEVICE_ID_INTEL_QUARK_X1000_ILB	0x095e
- #define PCI_DEVICE_ID_INTEL_I960	0x0960
- #define PCI_DEVICE_ID_INTEL_I960RM	0x0962
-+#define PCI_DEVICE_ID_INTEL_HDA_HSW_0	0x0a0c
-+#define PCI_DEVICE_ID_INTEL_HDA_HSW_2	0x0c0c
- #define PCI_DEVICE_ID_INTEL_CENTERTON_ILB	0x0c60
-+#define PCI_DEVICE_ID_INTEL_HDA_HSW_3	0x0d0c
-+#define PCI_DEVICE_ID_INTEL_HDA_BYT	0x0f04
- #define PCI_DEVICE_ID_INTEL_8257X_SOL	0x1062
- #define PCI_DEVICE_ID_INTEL_82573E_SOL	0x1085
- #define PCI_DEVICE_ID_INTEL_82573L_SOL	0x108f
- #define PCI_DEVICE_ID_INTEL_82815_MC	0x1130
- #define PCI_DEVICE_ID_INTEL_82815_CGC	0x1132
-+#define PCI_DEVICE_ID_INTEL_ADSP_TNG	0x119a
- #define PCI_DEVICE_ID_INTEL_82092AA_0	0x1221
- #define PCI_DEVICE_ID_INTEL_82437	0x122d
- #define PCI_DEVICE_ID_INTEL_82371FB_0	0x122e
-@@ -2702,20 +2710,26 @@
- #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_2C_BRIDGE  0x1576
- #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_NHI     0x1577
- #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_BRIDGE  0x1578
-+#define PCI_DEVICE_ID_INTEL_HDA_BDW	0x160c
- #define PCI_DEVICE_ID_INTEL_80960_RP	0x1960
- #define PCI_DEVICE_ID_INTEL_QAT_C3XXX	0x19e2
- #define PCI_DEVICE_ID_INTEL_QAT_C3XXX_VF	0x19e3
- #define PCI_DEVICE_ID_INTEL_82840_HB	0x1a21
- #define PCI_DEVICE_ID_INTEL_82845_HB	0x1a30
- #define PCI_DEVICE_ID_INTEL_IOAT	0x1a38
-+#define PCI_DEVICE_ID_INTEL_HDA_APL_T	0x1a98
-+#define PCI_DEVICE_ID_INTEL_HDA_CPT	0x1c20
- #define PCI_DEVICE_ID_INTEL_COUGARPOINT_LPC_MIN	0x1c41
- #define PCI_DEVICE_ID_INTEL_COUGARPOINT_LPC_MAX	0x1c5f
-+#define PCI_DEVICE_ID_INTEL_HDA_PBG	0x1d20
- #define PCI_DEVICE_ID_INTEL_PATSBURG_LPC_0	0x1d40
- #define PCI_DEVICE_ID_INTEL_PATSBURG_LPC_1	0x1d41
-+#define PCI_DEVICE_ID_INTEL_HDA_PPT	0x1e20
- #define PCI_DEVICE_ID_INTEL_PANTHERPOINT_XHCI	0x1e31
- #define PCI_DEVICE_ID_INTEL_PANTHERPOINT_LPC_MIN	0x1e40
- #define PCI_DEVICE_ID_INTEL_PANTHERPOINT_LPC_MAX	0x1e5f
- #define PCI_DEVICE_ID_INTEL_VMD_201D	0x201d
-+#define PCI_DEVICE_ID_INTEL_HDA_BSW	0x2284
- #define PCI_DEVICE_ID_INTEL_DH89XXCC_LPC_MIN	0x2310
- #define PCI_DEVICE_ID_INTEL_DH89XXCC_LPC_MAX	0x231f
- #define PCI_DEVICE_ID_INTEL_82801AA_0	0x2410
-@@ -2793,12 +2807,14 @@
- #define PCI_DEVICE_ID_INTEL_ICH6_0	0x2640
- #define PCI_DEVICE_ID_INTEL_ICH6_1	0x2641
- #define PCI_DEVICE_ID_INTEL_ICH6_2	0x2642
-+#define PCI_DEVICE_ID_INTEL_HDA_ICH6	0x2668
- #define PCI_DEVICE_ID_INTEL_ICH6_16	0x266a
- #define PCI_DEVICE_ID_INTEL_ICH6_17	0x266d
- #define PCI_DEVICE_ID_INTEL_ICH6_18	0x266e
- #define PCI_DEVICE_ID_INTEL_ICH6_19	0x266f
- #define PCI_DEVICE_ID_INTEL_ESB2_0	0x2670
- #define PCI_DEVICE_ID_INTEL_ESB2_14	0x2698
-+#define PCI_DEVICE_ID_INTEL_HDA_ESB2	0x269a
- #define PCI_DEVICE_ID_INTEL_ESB2_17	0x269b
- #define PCI_DEVICE_ID_INTEL_ESB2_18	0x269e
- #define PCI_DEVICE_ID_INTEL_82945G_HB	0x2770
-@@ -2811,6 +2827,7 @@
- #define PCI_DEVICE_ID_INTEL_ICH7_1	0x27b9
- #define PCI_DEVICE_ID_INTEL_TGP_LPC	0x27bc
- #define PCI_DEVICE_ID_INTEL_ICH7_31	0x27bd
-+#define PCI_DEVICE_ID_INTEL_HDA_ICH7	0x27d8
- #define PCI_DEVICE_ID_INTEL_ICH7_17	0x27da
- #define PCI_DEVICE_ID_INTEL_ICH7_19	0x27dd
- #define PCI_DEVICE_ID_INTEL_ICH7_20	0x27de
-@@ -2821,6 +2838,7 @@
- #define PCI_DEVICE_ID_INTEL_ICH8_3	0x2814
- #define PCI_DEVICE_ID_INTEL_ICH8_4	0x2815
- #define PCI_DEVICE_ID_INTEL_ICH8_5	0x283e
-+#define PCI_DEVICE_ID_INTEL_HDA_ICH8	0x284b
- #define PCI_DEVICE_ID_INTEL_ICH8_6	0x2850
- #define PCI_DEVICE_ID_INTEL_VMD_28C0	0x28c0
- #define PCI_DEVICE_ID_INTEL_ICH9_0	0x2910
-@@ -2832,6 +2850,8 @@
- #define PCI_DEVICE_ID_INTEL_ICH9_8	0x2918
- #define PCI_DEVICE_ID_INTEL_ICH9_5	0x2919
- #define PCI_DEVICE_ID_INTEL_ICH9_6	0x2930
-+#define PCI_DEVICE_ID_INTEL_HDA_ICH9_0	0x293e
-+#define PCI_DEVICE_ID_INTEL_HDA_ICH9_1	0x293f
- #define PCI_DEVICE_ID_INTEL_I7_MCR	0x2c18
- #define PCI_DEVICE_ID_INTEL_I7_MC_TAD	0x2c19
- #define PCI_DEVICE_ID_INTEL_I7_MC_RAS	0x2c1a
-@@ -2883,6 +2903,7 @@
- #define PCI_DEVICE_ID_INTEL_LYNNFIELD_MC_CH2_ADDR_REV2  0x2db1
- #define PCI_DEVICE_ID_INTEL_LYNNFIELD_MC_CH2_RANK_REV2  0x2db2
- #define PCI_DEVICE_ID_INTEL_LYNNFIELD_MC_CH2_TC_REV2    0x2db3
-+#define PCI_DEVICE_ID_INTEL_HDA_GML	0x3198
- #define PCI_DEVICE_ID_INTEL_82855PM_HB	0x3340
- #define PCI_DEVICE_ID_INTEL_IOAT_TBG4	0x3429
- #define PCI_DEVICE_ID_INTEL_IOAT_TBG5	0x342a
-@@ -2893,6 +2914,7 @@
- #define PCI_DEVICE_ID_INTEL_IOAT_TBG1	0x3431
- #define PCI_DEVICE_ID_INTEL_IOAT_TBG2	0x3432
- #define PCI_DEVICE_ID_INTEL_IOAT_TBG3	0x3433
-+#define PCI_DEVICE_ID_INTEL_HDA_ICL_LP	0x34c8
- #define PCI_DEVICE_ID_INTEL_82830_HB	0x3575
- #define PCI_DEVICE_ID_INTEL_82830_CGC	0x3577
- #define PCI_DEVICE_ID_INTEL_82855GM_HB	0x3580
-@@ -2925,14 +2947,19 @@
- #define PCI_DEVICE_ID_INTEL_IOAT_JSF9	0x3719
- #define PCI_DEVICE_ID_INTEL_QAT_C62X	0x37c8
- #define PCI_DEVICE_ID_INTEL_QAT_C62X_VF	0x37c9
-+#define PCI_DEVICE_ID_INTEL_HDA_ICL_N	0x38c8
- #define PCI_DEVICE_ID_INTEL_ICH10_0	0x3a14
- #define PCI_DEVICE_ID_INTEL_ICH10_1	0x3a16
- #define PCI_DEVICE_ID_INTEL_ICH10_2	0x3a18
- #define PCI_DEVICE_ID_INTEL_ICH10_3	0x3a1a
- #define PCI_DEVICE_ID_INTEL_ICH10_4	0x3a30
-+#define PCI_DEVICE_ID_INTEL_HDA_ICH10_0	0x3a3e
- #define PCI_DEVICE_ID_INTEL_ICH10_5	0x3a60
-+#define PCI_DEVICE_ID_INTEL_HDA_ICH10_1 0x3a6e
- #define PCI_DEVICE_ID_INTEL_5_3400_SERIES_LPC_MIN	0x3b00
- #define PCI_DEVICE_ID_INTEL_5_3400_SERIES_LPC_MAX	0x3b1f
-+#define PCI_DEVICE_ID_INTEL_HDA_5_3400_SERIES_0	0x3b56
-+#define PCI_DEVICE_ID_INTEL_HDA_5_3400_SERIES_1	0x3b57
- #define PCI_DEVICE_ID_INTEL_IOAT_SNB0	0x3c20
- #define PCI_DEVICE_ID_INTEL_IOAT_SNB1	0x3c21
- #define PCI_DEVICE_ID_INTEL_IOAT_SNB2	0x3c22
-@@ -2969,12 +2996,31 @@
- #define PCI_DEVICE_ID_INTEL_SBRIDGE_SAD0	0x3cf4	/* 12.6 */
- #define PCI_DEVICE_ID_INTEL_SBRIDGE_BR		0x3cf5	/* 13.6 */
- #define PCI_DEVICE_ID_INTEL_SBRIDGE_SAD1	0x3cf6	/* 12.7 */
-+#define PCI_DEVICE_ID_INTEL_HDA_ICL_H	0x3dc8
- #define PCI_DEVICE_ID_INTEL_IOAT_SNB	0x402f
- #define PCI_DEVICE_ID_INTEL_5400_ERR	0x4030
- #define PCI_DEVICE_ID_INTEL_5400_FBD0	0x4035
- #define PCI_DEVICE_ID_INTEL_5400_FBD1	0x4036
-+#define PCI_DEVICE_ID_INTEL_HDA_TGL_H	0x43c8
-+#define PCI_DEVICE_ID_INTEL_HDA_DG1	0x490d
-+#define PCI_DEVICE_ID_INTEL_HDA_EHL_0	0x4b55
-+#define PCI_DEVICE_ID_INTEL_HDA_EHL_3	0x4b58
-+#define PCI_DEVICE_ID_INTEL_HDA_JSL_N	0x4dc8
-+#define PCI_DEVICE_ID_INTEL_HDA_DG2_0	0x4f90
-+#define PCI_DEVICE_ID_INTEL_HDA_DG2_1	0x4f91
-+#define PCI_DEVICE_ID_INTEL_HDA_DG2_2	0x4f92
- #define PCI_DEVICE_ID_INTEL_EP80579_0	0x5031
- #define PCI_DEVICE_ID_INTEL_EP80579_1	0x5032
-+#define PCI_DEVICE_ID_INTEL_HDA_ADL_P	0x51c8
-+#define PCI_DEVICE_ID_INTEL_HDA_ADL_PS	0x51c9
-+#define PCI_DEVICE_ID_INTEL_HDA_RPL_P_0	0x51ca
-+#define PCI_DEVICE_ID_INTEL_HDA_RPL_P_1	0x51cb
-+#define PCI_DEVICE_ID_INTEL_HDA_ADL_M	0x51cc
-+#define PCI_DEVICE_ID_INTEL_HDA_ADL_PX	0x51cd
-+#define PCI_DEVICE_ID_INTEL_HDA_RPL_M	0x51ce
-+#define PCI_DEVICE_ID_INTEL_HDA_RPL_PX	0x51cf
-+#define PCI_DEVICE_ID_INTEL_HDA_ADL_N	0x54c8
-+#define PCI_DEVICE_ID_INTEL_HDA_APL	0x5a98
- #define PCI_DEVICE_ID_INTEL_5100_16	0x65f0
- #define PCI_DEVICE_ID_INTEL_5100_19	0x65f3
- #define PCI_DEVICE_ID_INTEL_5100_21	0x65f5
-@@ -3008,8 +3054,12 @@
- #define PCI_DEVICE_ID_INTEL_82443GX_0	0x71a0
- #define PCI_DEVICE_ID_INTEL_82443GX_2	0x71a2
- #define PCI_DEVICE_ID_INTEL_82372FB_1	0x7601
-+#define PCI_DEVICE_ID_INTEL_HDA_RPL_S	0x7a50
-+#define PCI_DEVICE_ID_INTEL_HDA_ADL_S	0x7ad0
-+#define PCI_DEVICE_ID_INTEL_HDA_MTL	0x7e28
- #define PCI_DEVICE_ID_INTEL_SCH_LPC	0x8119
- #define PCI_DEVICE_ID_INTEL_SCH_IDE	0x811a
-+#define PCI_DEVICE_ID_INTEL_HDA_POULSBO	0x811b
- #define PCI_DEVICE_ID_INTEL_E6XX_CU	0x8183
- #define PCI_DEVICE_ID_INTEL_ITC_LPC	0x8186
- #define PCI_DEVICE_ID_INTEL_82454GX	0x84c4
-@@ -3018,9 +3068,31 @@
- #define PCI_DEVICE_ID_INTEL_82454NX     0x84cb
- #define PCI_DEVICE_ID_INTEL_84460GX	0x84ea
- #define PCI_DEVICE_ID_INTEL_IXP4XX	0x8500
-+#define PCI_DEVICE_ID_INTEL_HDA_LPT	0x8c20
-+#define PCI_DEVICE_ID_INTEL_HDA_9_SERIES	0x8ca0
-+#define PCI_DEVICE_ID_INTEL_HDA_WBG_0	0x8d20
-+#define PCI_DEVICE_ID_INTEL_HDA_WBG_1	0x8d21
- #define PCI_DEVICE_ID_INTEL_IXP2800	0x9004
-+#define PCI_DEVICE_ID_INTEL_HDA_LKF	0x98c8
- #define PCI_DEVICE_ID_INTEL_VMD_9A0B	0x9a0b
-+#define PCI_DEVICE_ID_INTEL_HDA_LPT_LP_0	0x9c20
-+#define PCI_DEVICE_ID_INTEL_HDA_LPT_LP_1	0x9c21
-+#define PCI_DEVICE_ID_INTEL_HDA_WPT_LP	0x9ca0
-+#define PCI_DEVICE_ID_INTEL_HDA_SKL_LP	0x9d70
-+#define PCI_DEVICE_ID_INTEL_HDA_KBL_LP	0x9d71
-+#define PCI_DEVICE_ID_INTEL_HDA_CNL_LP	0x9dc8
-+#define PCI_DEVICE_ID_INTEL_HDA_TGL_LP	0xa0c8
-+#define PCI_DEVICE_ID_INTEL_HDA_SKL	0xa170
-+#define PCI_DEVICE_ID_INTEL_HDA_KBL	0xa171
-+#define PCI_DEVICE_ID_INTEL_HDA_LBG_0	0xa1f0
-+#define PCI_DEVICE_ID_INTEL_HDA_LBG_1	0xa270
-+#define PCI_DEVICE_ID_INTEL_HDA_KBL_H	0xa2f0
-+#define PCI_DEVICE_ID_INTEL_HDA_CNL_H	0xa348
-+#define PCI_DEVICE_ID_INTEL_HDA_CML_S	0xa3f0
-+#define PCI_DEVICE_ID_INTEL_HDA_LNL_P	0xa828
- #define PCI_DEVICE_ID_INTEL_S21152BB	0xb152
-+#define PCI_DEVICE_ID_INTEL_HDA_CML_R	0xf0c8
-+#define PCI_DEVICE_ID_INTEL_HDA_RKL_S	0xf1c8
+-#define CONTROLLER_IN_GPU(pci) (((pci)->vendor == 0x8086) &&         \
+-				       (((pci)->device == 0x0a0c) || \
+-					((pci)->device == 0x0c0c) || \
+-					((pci)->device == 0x0d0c) || \
+-					((pci)->device == 0x160c) || \
+-					((pci)->device == 0x490d) || \
+-					((pci)->device == 0x4f90) || \
+-					((pci)->device == 0x4f91) || \
+-					((pci)->device == 0x4f92)))
+-
+-#define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
+-
+ static const char * const driver_short_names[] = {
+ 	[AZX_DRIVER_ICH] = "HDA Intel",
+ 	[AZX_DRIVER_PCH] = "HDA Intel PCH",
+@@ -573,7 +561,7 @@ static void hda_intel_init_chip(struct azx *chip, bool full_reset)
+ 	snd_hdac_set_codec_wakeup(bus, false);
  
- #define PCI_VENDOR_ID_WANGXUN		0x8088
+ 	/* reduce dma latency to avoid noise */
+-	if (IS_BXT(pci))
++	if (HDA_CONTROLLER_IS_APL(pci))
+ 		bxt_reduce_dma_latency(chip);
+ 
+ 	if (bus->mlcap != NULL)
+@@ -2175,7 +2163,7 @@ static int azx_probe(struct pci_dev *pci,
+ #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+ 
+ #ifndef CONFIG_SND_HDA_I915
+-	if (CONTROLLER_IN_GPU(pci))
++	if (HDA_CONTROLLER_IN_GPU(pci))
+ 		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
+ #endif
+ 
+@@ -2283,7 +2271,7 @@ static int azx_probe_continue(struct azx *chip)
+ 			 * for other chips, still continue probing as other
+ 			 * codecs can be on the same link.
+ 			 */
+-			if (CONTROLLER_IN_GPU(pci)) {
++			if (HDA_CONTROLLER_IN_GPU(pci)) {
+ 				dev_err(chip->card->dev,
+ 					"HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
+ 				goto out_free;
+@@ -2294,7 +2282,7 @@ static int azx_probe_continue(struct azx *chip)
+ 		}
+ 
+ 		/* HSW/BDW controllers need this power */
+-		if (CONTROLLER_IN_GPU(pci))
++		if (HDA_CONTROLLER_IN_GPU(pci))
+ 			hda->need_i915_power = true;
+ 	}
  
 -- 
 2.34.1
