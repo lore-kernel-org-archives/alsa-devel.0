@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21C31EB64DD
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 14:27:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CA6FEB64DD
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 14:28:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4373914FB;
-	Tue, 11 Jul 2023 16:26:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4373914FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCE1B1502;
+	Tue, 11 Jul 2023 16:27:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCE1B1502
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689085657;
-	bh=OYszt38IqNikveaxxJtUvxsFTPNnv5LlXD+DX90BkWs=;
+	s=default; t=1689085678;
+	bh=fixFH5Llqroff/AhZ015VZ+OpUUgSBQ7xNlXodB8idQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bbSwPuzp3vaDzSVYqJmcDRikUjIL2UG7WaDVOcFUQGk4veOjWVEWfFOYjwMIzBCwl
-	 IkPEQXVvetFSujxTb4Z+jw2JQK5ey+fu7yKY6uqiDiJf6k70FPiIe+qqAxgiC1dn99
-	 Sfeqej1O6cFWtih4V+PHS8fxMHIl4NOWpE99d3os=
+	b=ru04ZBIk9JFoEkSFPtwroqLDxx2c32FdfVTl9mfAzzzAUkQ7tUkiMgbRv+oy/FSem
+	 xFRMWXx1hdeTnOe4MW5cWhNt7laZWiWXddLezkvzjNkv4BDRBsvVhRIfV+vPQmEdVI
+	 gtvQ4ScatI94oTU4EMwJSPWxzOd5kRWzeI+Dm8ds=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CA083F80672; Tue, 11 Jul 2023 16:22:17 +0200 (CEST)
+	id CEDEDF80249; Tue, 11 Jul 2023 16:22:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24945F80236;
-	Tue, 11 Jul 2023 16:22:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E75B5F8067A;
+	Tue, 11 Jul 2023 16:22:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0103CF80249; Tue, 11 Jul 2023 14:49:31 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	id 937F6F80249; Tue, 11 Jul 2023 14:52:14 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6D737F800E4
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 14:49:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D737F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 91D55F800E4
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 14:52:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91D55F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=W0dBbjqg
+ header.s=Intel header.b=GRr45l5D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689079770; x=1720615770;
+  t=1689079931; x=1720615931;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=OYszt38IqNikveaxxJtUvxsFTPNnv5LlXD+DX90BkWs=;
-  b=W0dBbjqg/cc9Ce7dnR4pg5AoceaN9CJDKLn7cWEjh/lmCsAP4+tSaj2I
-   Nsq+oy6fzcM7LH/gNvuqIUCLYICB6tOAKFcCFkPPGxm3la1egSJPGm1qq
-   NAvDciPmAVQbz0KXVuoBKQkG3F49oBoEBb7R2GesT0I5gG3JnOE0Kq+ie
-   sRoD1M78KOBADHTOh+sTHwKgZnpGGsJnMKY87Ib9+Rf7EYBD5Q3DeRBU8
-   fh79kDqPp1VPx9MRl5Cgpr6kCaXQdgHn8XmU9hbmR3IiTsBnLOSczT7Hc
-   BddvnAST/xk2NTpnp4iK8PwVdwXJO5KZl7cGOv3a87fXOJ7VLB8TUfa/v
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="354470009"
+  bh=fixFH5Llqroff/AhZ015VZ+OpUUgSBQ7xNlXodB8idQ=;
+  b=GRr45l5DBmmc/9UmCGAeyY/3Tbo9o8wkFFxrNlhb467IUlz/IGWGHaqq
+   O8+qVwhxVwPxpYURZ2lpxB44pUBxntk3IPYcPcIMCicBb5Hi/tmbcXsXs
+   C/Ao1fOpFLYUfOLHeKvN1cAl4Y7hUd5EsVVi3RhO1yWknjX1HVDTHBGZY
+   RTMUNKwk3QSjJca25InW997aI6ruov8VTWoai5Eh4trjD6zLLHXnsazGv
+   j6QiFozYgFqA+xkhINL4H83smUSUSFlY2fLiiRhRocQHAVozGgWYpAo2f
+   38QnGcnwfgT2MIMtszJN5uqfss/+EN/1CBpoeHs/D8s4uvyHBha7AjZBJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="344205674"
 X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
-   d="scan'208";a="354470009"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jul 2023 05:49:20 -0700
+   d="scan'208";a="344205674"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jul 2023 05:52:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="721078284"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="786613329"
 X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
-   d="scan'208";a="721078284"
+   d="scan'208";a="786613329"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP; 11 Jul 2023 05:49:08 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 11 Jul 2023 05:51:56 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.96)
 	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1qJCng-001qlR-32;
-	Tue, 11 Jul 2023 15:49:04 +0300
-Date: Tue, 11 Jul 2023 15:49:04 +0300
+	id 1qJCqO-001qnp-39;
+	Tue, 11 Jul 2023 15:51:52 +0300
+Date: Tue, 11 Jul 2023 15:51:52 +0300
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Serge Semin <fancer.lancer@gmail.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Cc: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
 	Yang Yingliang <yangyingliang@huawei.com>,
@@ -91,6 +91,7 @@ Cc: Mark Brown <broonie@kernel.org>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	Claudiu Beznea <claudiu.beznea@microchip.com>,
 	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Serge Semin <fancer.lancer@gmail.com>,
 	Shawn Guo <shawnguo@kernel.org>,
 	Sascha Hauer <s.hauer@pengutronix.de>,
 	Pengutronix Kernel Team <kernel@pengutronix.de>,
@@ -100,7 +101,6 @@ Cc: Mark Brown <broonie@kernel.org>,
 	Jerome Brunet <jbrunet@baylibre.com>,
 	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
 	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -117,16 +117,15 @@ Cc: Mark Brown <broonie@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v2 13/15] spi: Rename SPI_MASTER_GPIO_SS to
- SPI_CONTROLLER_GPIO_SS
-Message-ID: <ZK1PwMAz8OjsHgsE@smile.fi.intel.com>
+Subject: Re: [PATCH v2 01/15] spi: Remove unneeded OF node NULL checks
+Message-ID: <ZK1QaK3Qy/mDauae@smile.fi.intel.com>
 References: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
- <20230710154932.68377-14-andriy.shevchenko@linux.intel.com>
- <tvm772o6uqndgyjvycv27qouqq76crpre5tyqcnanaautqjjwn@pydiwhjzhbgd>
+ <20230710154932.68377-2-andriy.shevchenko@linux.intel.com>
+ <f0b9e2e4-b2c0-4336-0ec4-5afd9f1b6c72@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <tvm772o6uqndgyjvycv27qouqq76crpre5tyqcnanaautqjjwn@pydiwhjzhbgd>
+In-Reply-To: <f0b9e2e4-b2c0-4336-0ec4-5afd9f1b6c72@collabora.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Hits: max-recipients
@@ -136,15 +135,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: 6H2JQIRTJSMIU6WX4KFODMQH4UPLGDMK
-X-Message-ID-Hash: 6H2JQIRTJSMIU6WX4KFODMQH4UPLGDMK
+Message-ID-Hash: 5DFNLO32LAACOPMK3V2BKALSRMCWB34O
+X-Message-ID-Hash: 5DFNLO32LAACOPMK3V2BKALSRMCWB34O
 X-Mailman-Approved-At: Tue, 11 Jul 2023 14:22:03 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6H2JQIRTJSMIU6WX4KFODMQH4UPLGDMK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5DFNLO32LAACOPMK3V2BKALSRMCWB34O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,26 +152,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jul 11, 2023 at 03:30:19PM +0300, Serge Semin wrote:
-> On Mon, Jul 10, 2023 at 06:49:30PM +0300, Andy Shevchenko wrote:
-> > Rename SPI_MASTER_GPIO_SS to SPI_CONTROLLER_GPIO_SS and
-> > convert the users to SPI_CONTROLLER_GPIO_SS to follow
+On Tue, Jul 11, 2023 at 10:12:55AM +0200, AngeloGioacchino Del Regno wrote:
+> Il 10/07/23 17:49, Andy Shevchenko ha scritto:
+> > In the couple of places the NULL check of OF node is implied by the call
+> > that takes it as a parameter. Drop the respective duplicate checks.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
-> * I'm not an expert in English, but imo the next would look a
-> * bit more readable:
-> * convert s/the users to SPI_CONTROLLER_GPIO_SS/the code to using SPI_CONTROLLER_GPIO_SS
-
-> > the new naming shema.
+> Validated against spi-mt65xx, spi-mt7621, spi-mtk-nor, spi-mtk-snfi;
 > 
-> s/shema/schema
+> Reviewed-by: AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com> # MediaTek
 
-Right, thank you!
-
-...
-
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-
-Thank you for the review!
+By some reason the tag is split and I'm not sure `b4` can cope with that.
+In any case, added manually. Thank you for the review!
 
 -- 
 With Best Regards,
