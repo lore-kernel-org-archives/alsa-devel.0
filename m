@@ -4,90 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F656EB64D9
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:17:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 163A4EB64D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:17:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 498A7857;
-	Wed, 12 Jul 2023 15:16:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 498A7857
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD7C3DED;
+	Wed, 12 Jul 2023 15:17:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD7C3DED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689167852;
-	bh=rM83K+8cJkJE4xGj15BlfW6NeYwJQps/lMnHrXNpxyE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1689167871;
+	bh=xTQ0mmZSKT6xaRW2cSSnwsyXZRn21W+fLOIKOFiv5HU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Kp3PLOAj6aim0woHbyfSUg/f81KYYfvRGHtRB22ASO68R5NsZQYFXZkkCGrA5GaZD
-	 xAFhot1m4CrbxOcHAFElfP/WtRtVJKDzJdaMv1tQygPA221I7Bup+VIs3gPXgr6P/k
-	 MVyireHi5m/XnYMJPlCn/4eYoOD2p8wFUYIVz1es=
+	b=FKEX71JCM7TBjp+1ltN5K2sgY7QCqgoN2eIcHqdU8/ED83c5EwNlAbM+y2goSebXi
+	 hR57HpECSIowAAaI6MY9xsxZiuwrDr7xlE5w8A3GppZw6pqvPPjiiw5VGiS3YFrEix
+	 TVyyj3P8xxxPzMpW5MTBbrPXvh8bucUFrq6a4Ozs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9A9D5F80548; Wed, 12 Jul 2023 15:14:29 +0200 (CEST)
+	id CD974F805F2; Wed, 12 Jul 2023 15:14:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F162FF805EE;
-	Wed, 12 Jul 2023 15:14:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20D2DF805F7;
+	Wed, 12 Jul 2023 15:14:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 65BD9F80290; Tue, 11 Jul 2023 19:20:08 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 98478F80249; Tue, 11 Jul 2023 19:34:11 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6A3AAF800E4
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 19:19:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A3AAF800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 86FB3F80093
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 19:34:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86FB3F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=OtLhNxab
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689095969; x=1720631969;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rM83K+8cJkJE4xGj15BlfW6NeYwJQps/lMnHrXNpxyE=;
-  b=OtLhNxabQXioXY7t+F2JglOZYa8q00yycrupIPwdQiYXj3o9mS9Inayf
-   i9OIsGYJn1gb8TlpbqWXMzo2F8DVjvVVuEqLk6ZOI0P1BxvRzxJmFCwth
-   hOgcpk3IUV7AxbQWYnWvH+w0Vr3CnWABRwZ5Hg8usrXvYmcRGqaRsEbJJ
-   K3451H0y7T8PtsuI5ffRKgAbIqWEmAf+IGroWjdYdbHj0w+Fg45vPGh1P
-   6i5Hkn4E+T2BwUriqq3/DykPycGTnMPEsJ9tlvRGn2Fv7F/pLC4Pjw0yV
-   v5sxv32bLiMvPXhFBZwPp7JtGH7HaDkpHCtoqtAWx4XCEQORwIPMiZek1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="362148945"
-X-IronPort-AV: E=Sophos;i="6.01,197,1684825200";
-   d="scan'208";a="362148945"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jul 2023 10:19:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="715240935"
-X-IronPort-AV: E=Sophos;i="6.01,197,1684825200";
-   d="scan'208";a="715240935"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 11 Jul 2023 10:18:03 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id AE50B718; Tue, 11 Jul 2023 20:17:59 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=H4apaSnH
+Received: from mercury (dyndsl-091-248-213-212.ewe-ip-backbone.de
+ [91.248.213.212])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 033A86606FD5;
+	Tue, 11 Jul 2023 18:34:04 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1689096844;
+	bh=xTQ0mmZSKT6xaRW2cSSnwsyXZRn21W+fLOIKOFiv5HU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H4apaSnHRDvSkpSCkk+wyU65Ngqr9P5JyDBeie6RLPAeIF/a84cxGH59ddGSbX5qw
+	 63kfAbpaiUnhKnAjL7v46VWmzE4FkX9fEEyauEpMkG3DYbKmfvZvGjPGtA+xeI6swf
+	 kjXbLmO76/FOA8FnaeGqaVHoSCSKZ347Op8QNSbAV1AHFtd/woPULZ7cp0Xe7t6lvK
+	 j+oEiKCypr4OaNiLGZi4zRujwMiEhT9wkldDGMRFDyKdZJ0dEmjL8X+4AzL1KA1Sn6
+	 6BSpra8CwZ37kLECStDWmCD4Br675HzuR2KsJ6ZFQzDp7r6efy1uSO15+pqJdv0f+r
+	 Or4DZYoJuC/iQ==
+Received: by mercury (Postfix, from userid 1000)
+	id B8CBE106765E; Tue, 11 Jul 2023 19:34:01 +0200 (CEST)
+Date: Tue, 11 Jul 2023 19:34:01 +0200
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>,
 	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
 	Yang Yingliang <yangyingliang@huawei.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
 	Serge Semin <fancer.lancer@gmail.com>,
 	Neil Armstrong <neil.armstrong@linaro.org>,
 	Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
 	Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-amlogic@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-riscv@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-rockchip@lists.infradead.org, linux-riscv@lists.infradead.org,
 	linux-stm32@st-md-mailman.stormreply.com,
-	linux-trace-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
+	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Sanjay R Mehta <sanju.mehta@amd.com>,
 	Radu Pirea <radu_nicolae.pirea@upb.ro>,
 	Nicolas Ferre <nicolas.ferre@microchip.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
@@ -118,18 +112,18 @@ Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
 	Max Filippov <jcmvbkbc@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH v3 10/14] spi: Get rid of old SPI_MASTER_NO_TX &
- SPI_MASTER_NO_RX
-Date: Tue, 11 Jul 2023 20:17:52 +0300
-Message-Id: <20230711171756.86736-11-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230711171756.86736-1-andriy.shevchenko@linux.intel.com>
+	Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [PATCH v3 04/14] spi: Remove code duplication in
+ spi_add_device*()
+Message-ID: <20230711173401.kz7or6ucurhoe4er@mercury.elektranox.org>
 References: <20230711171756.86736-1-andriy.shevchenko@linux.intel.com>
+ <20230711171756.86736-5-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="nr4764lrwkknwz4l"
+Content-Disposition: inline
+In-Reply-To: <20230711171756.86736-5-andriy.shevchenko@linux.intel.com>
+X-MailFrom: sebastian.reichel@collabora.com
 X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -137,15 +131,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: O3377JTBFNJ53JZVNJ7XVJJQPQGWZXIJ
-X-Message-ID-Hash: O3377JTBFNJ53JZVNJ7XVJJQPQGWZXIJ
+Message-ID-Hash: F5JCBVKRO4GE5YIWYUBE5PZSPHGU4E5S
+X-Message-ID-Hash: F5JCBVKRO4GE5YIWYUBE5PZSPHGU4E5S
 X-Mailman-Approved-At: Wed, 12 Jul 2023 13:14:25 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O3377JTBFNJ53JZVNJ7XVJJQPQGWZXIJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F5JCBVKRO4GE5YIWYUBE5PZSPHGU4E5S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -154,210 +148,111 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert the users from SPI_MASTER_NO_TX and/or SPI_MASTER_NO_RX
-to SPI_CONTROLLER_NO_TX and/or SPI_CONTROLLER_NO_RX respectively
-and kill the not used anymore definitions.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi-bitbang-txrx.h  | 16 ++++++++--------
- drivers/spi/spi-bitbang.c       |  2 +-
- drivers/spi/spi-gpio.c          |  8 ++++----
- drivers/spi/spi-lp8841-rtc.c    |  8 ++++----
- drivers/spi/spi-xtensa-xtfpga.c |  2 +-
- include/linux/spi/spi.h         |  2 --
- 6 files changed, 18 insertions(+), 20 deletions(-)
+--nr4764lrwkknwz4l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/spi/spi-bitbang-txrx.h b/drivers/spi/spi-bitbang-txrx.h
-index 2dcbe166df63..0cab48b7875b 100644
---- a/drivers/spi/spi-bitbang-txrx.h
-+++ b/drivers/spi/spi-bitbang-txrx.h
-@@ -57,7 +57,7 @@ bitbang_txrx_be_cpha0(struct spi_device *spi,
- 	for (word <<= (32 - bits); likely(bits); bits--) {
- 
- 		/* setup MSB (to slave) on trailing edge */
--		if ((flags & SPI_MASTER_NO_TX) == 0) {
-+		if ((flags & SPI_CONTROLLER_NO_TX) == 0) {
- 			if ((word & (1 << 31)) != oldbit) {
- 				setmosi(spi, word & (1 << 31));
- 				oldbit = word & (1 << 31);
-@@ -70,7 +70,7 @@ bitbang_txrx_be_cpha0(struct spi_device *spi,
- 
- 		/* sample MSB (from slave) on leading edge */
- 		word <<= 1;
--		if ((flags & SPI_MASTER_NO_RX) == 0)
-+		if ((flags & SPI_CONTROLLER_NO_RX) == 0)
- 			word |= getmiso(spi);
- 		setsck(spi, cpol);
- 	}
-@@ -90,7 +90,7 @@ bitbang_txrx_be_cpha1(struct spi_device *spi,
- 
- 		/* setup MSB (to slave) on leading edge */
- 		setsck(spi, !cpol);
--		if ((flags & SPI_MASTER_NO_TX) == 0) {
-+		if ((flags & SPI_CONTROLLER_NO_TX) == 0) {
- 			if ((word & (1 << 31)) != oldbit) {
- 				setmosi(spi, word & (1 << 31));
- 				oldbit = word & (1 << 31);
-@@ -103,7 +103,7 @@ bitbang_txrx_be_cpha1(struct spi_device *spi,
- 
- 		/* sample MSB (from slave) on trailing edge */
- 		word <<= 1;
--		if ((flags & SPI_MASTER_NO_RX) == 0)
-+		if ((flags & SPI_CONTROLLER_NO_RX) == 0)
- 			word |= getmiso(spi);
- 	}
- 	return word;
-@@ -122,7 +122,7 @@ bitbang_txrx_le_cpha0(struct spi_device *spi,
- 	for (; likely(bits); bits--) {
- 
- 		/* setup LSB (to slave) on trailing edge */
--		if ((flags & SPI_MASTER_NO_TX) == 0) {
-+		if ((flags & SPI_CONTROLLER_NO_TX) == 0) {
- 			if ((word & 1) != oldbit) {
- 				setmosi(spi, word & 1);
- 				oldbit = word & 1;
-@@ -135,7 +135,7 @@ bitbang_txrx_le_cpha0(struct spi_device *spi,
- 
- 		/* sample LSB (from slave) on leading edge */
- 		word >>= 1;
--		if ((flags & SPI_MASTER_NO_RX) == 0)
-+		if ((flags & SPI_CONTROLLER_NO_RX) == 0)
- 			word |= getmiso(spi) << rxbit;
- 		setsck(spi, cpol);
- 	}
-@@ -156,7 +156,7 @@ bitbang_txrx_le_cpha1(struct spi_device *spi,
- 
- 		/* setup LSB (to slave) on leading edge */
- 		setsck(spi, !cpol);
--		if ((flags & SPI_MASTER_NO_TX) == 0) {
-+		if ((flags & SPI_CONTROLLER_NO_TX) == 0) {
- 			if ((word & 1) != oldbit) {
- 				setmosi(spi, word & 1);
- 				oldbit = word & 1;
-@@ -169,7 +169,7 @@ bitbang_txrx_le_cpha1(struct spi_device *spi,
- 
- 		/* sample LSB (from slave) on trailing edge */
- 		word >>= 1;
--		if ((flags & SPI_MASTER_NO_RX) == 0)
-+		if ((flags & SPI_CONTROLLER_NO_RX) == 0)
- 			word |= getmiso(spi) << rxbit;
- 	}
- 	return word;
-diff --git a/drivers/spi/spi-bitbang.c b/drivers/spi/spi-bitbang.c
-index 27d0087f8688..862f209cada1 100644
---- a/drivers/spi/spi-bitbang.c
-+++ b/drivers/spi/spi-bitbang.c
-@@ -248,7 +248,7 @@ static int spi_bitbang_bufs(struct spi_device *spi, struct spi_transfer *t)
- 	if (spi->mode & SPI_3WIRE) {
- 		unsigned flags;
- 
--		flags = t->tx_buf ? SPI_MASTER_NO_RX : SPI_MASTER_NO_TX;
-+		flags = t->tx_buf ? SPI_CONTROLLER_NO_RX : SPI_CONTROLLER_NO_TX;
- 		return cs->txrx_bufs(spi, cs->txrx_word, nsecs, t, flags);
- 	}
- 	return cs->txrx_bufs(spi, cs->txrx_word, nsecs, t, 0);
-diff --git a/drivers/spi/spi-gpio.c b/drivers/spi/spi-gpio.c
-index 092afc7679d4..85e149ec2910 100644
---- a/drivers/spi/spi-gpio.c
-+++ b/drivers/spi/spi-gpio.c
-@@ -170,7 +170,7 @@ static u32 spi_gpio_txrx_word_mode3(struct spi_device *spi,
- 
- /*
-  * These functions do not call setmosi or getmiso if respective flag
-- * (SPI_MASTER_NO_RX or SPI_MASTER_NO_TX) is set, so they are safe to
-+ * (SPI_CONTROLLER_NO_RX or SPI_CONTROLLER_NO_TX) is set, so they are safe to
-  * call when such pin is not present or defined in the controller.
-  * A separate set of callbacks is defined to get highest possible
-  * speed in the generic case (when both MISO and MOSI lines are
-@@ -416,11 +416,11 @@ static int spi_gpio_probe(struct platform_device *pdev)
- 	if (!spi_gpio->mosi) {
- 		/* HW configuration without MOSI pin
- 		 *
--		 * No setting SPI_MASTER_NO_RX here - if there is only
-+		 * No setting SPI_CONTROLLER_NO_RX here - if there is only
- 		 * a MOSI pin connected the host can still do RX by
- 		 * changing the direction of the line.
- 		 */
--		master->flags = SPI_MASTER_NO_TX;
-+		master->flags = SPI_CONTROLLER_NO_TX;
- 	}
- 
- 	master->bus_num = pdev->id;
-@@ -438,7 +438,7 @@ static int spi_gpio_probe(struct platform_device *pdev)
- 	bb->chipselect = spi_gpio_chipselect;
- 	bb->set_line_direction = spi_gpio_set_direction;
- 
--	if (master->flags & SPI_MASTER_NO_TX) {
-+	if (master->flags & SPI_CONTROLLER_NO_TX) {
- 		bb->txrx_word[SPI_MODE_0] = spi_gpio_spec_txrx_word_mode0;
- 		bb->txrx_word[SPI_MODE_1] = spi_gpio_spec_txrx_word_mode1;
- 		bb->txrx_word[SPI_MODE_2] = spi_gpio_spec_txrx_word_mode2;
-diff --git a/drivers/spi/spi-lp8841-rtc.c b/drivers/spi/spi-lp8841-rtc.c
-index 2d436541d6c2..ccaa7a946359 100644
---- a/drivers/spi/spi-lp8841-rtc.c
-+++ b/drivers/spi/spi-lp8841-rtc.c
-@@ -75,14 +75,14 @@ bitbang_txrx_be_cpha0_lsb(struct spi_lp8841_rtc *data,
- 	for (; likely(bits); bits--) {
- 
- 		/* setup LSB (to slave) on leading edge */
--		if ((flags & SPI_MASTER_NO_TX) == 0)
-+		if ((flags & SPI_CONTROLLER_NO_TX) == 0)
- 			setmosi(data, (word & 1));
- 
- 		usleep_range(usecs, usecs + 1);	/* T(setup) */
- 
- 		/* sample LSB (from slave) on trailing edge */
- 		word >>= 1;
--		if ((flags & SPI_MASTER_NO_RX) == 0)
-+		if ((flags & SPI_CONTROLLER_NO_RX) == 0)
- 			word |= (getmiso(data) << 31);
- 
- 		setsck(data, !cpol);
-@@ -113,7 +113,7 @@ spi_lp8841_rtc_transfer_one(struct spi_master *master,
- 		while (likely(count > 0)) {
- 			word = *tx++;
- 			bitbang_txrx_be_cpha0_lsb(data, 1, 0,
--					SPI_MASTER_NO_RX, word, 8);
-+					SPI_CONTROLLER_NO_RX, word, 8);
- 			count--;
- 		}
- 	} else if (rx) {
-@@ -121,7 +121,7 @@ spi_lp8841_rtc_transfer_one(struct spi_master *master,
- 		writeb(data->state, data->iomem);
- 		while (likely(count > 0)) {
- 			word = bitbang_txrx_be_cpha0_lsb(data, 1, 0,
--					SPI_MASTER_NO_TX, word, 8);
-+					SPI_CONTROLLER_NO_TX, word, 8);
- 			*rx++ = word;
- 			count--;
- 		}
-diff --git a/drivers/spi/spi-xtensa-xtfpga.c b/drivers/spi/spi-xtensa-xtfpga.c
-index 24dc845b940e..dbd85d7a1526 100644
---- a/drivers/spi/spi-xtensa-xtfpga.c
-+++ b/drivers/spi/spi-xtensa-xtfpga.c
-@@ -87,7 +87,7 @@ static int xtfpga_spi_probe(struct platform_device *pdev)
- 	if (!master)
- 		return -ENOMEM;
- 
--	master->flags = SPI_MASTER_NO_RX;
-+	master->flags = SPI_CONTROLLER_NO_RX;
- 	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(1, 16);
- 	master->bus_num = pdev->dev.id;
- 	master->dev.of_node = pdev->dev.of_node;
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 35fd61070d9b..39e6271b5003 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -1626,8 +1626,6 @@ spi_transfer_is_last(struct spi_controller *ctlr, struct spi_transfer *xfer)
- #define spi_master			spi_controller
- 
- #define SPI_MASTER_HALF_DUPLEX		SPI_CONTROLLER_HALF_DUPLEX
--#define SPI_MASTER_NO_RX		SPI_CONTROLLER_NO_RX
--#define SPI_MASTER_NO_TX		SPI_CONTROLLER_NO_TX
- #define SPI_MASTER_MUST_RX		SPI_CONTROLLER_MUST_RX
- #define SPI_MASTER_MUST_TX		SPI_CONTROLLER_MUST_TX
- 
--- 
-2.40.0.1.gaa8946217a0b
+Hi,
 
+On Tue, Jul 11, 2023 at 08:17:46PM +0300, Andy Shevchenko wrote:
+> The commit 0c79378c0199 ("spi: add ancillary device support")
+> added a dozen of duplicating lines of code. We may move them
+> to the __spi_add_device(). Note, that the code may be called
+> under the mutex.
+>=20
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+-- Sebastian
+
+> ---
+>  drivers/spi/spi.c | 32 ++++++++++----------------------
+>  1 file changed, 10 insertions(+), 22 deletions(-)
+>=20
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index 6d74218cf38e..876d40d2c708 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -631,6 +631,16 @@ static int __spi_add_device(struct spi_device *spi)
+>  	struct device *dev =3D ctlr->dev.parent;
+>  	int status;
+> =20
+> +	/* Chipselects are numbered 0..max; validate. */
+> +	if (spi_get_chipselect(spi, 0) >=3D ctlr->num_chipselect) {
+> +		dev_err(dev, "cs%d >=3D max %d\n", spi_get_chipselect(spi, 0),
+> +			ctlr->num_chipselect);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Set the bus ID string */
+> +	spi_dev_set_name(spi);
+> +
+>  	/*
+>  	 * We need to make sure there's no other device with this
+>  	 * chipselect **BEFORE** we call setup(), else we'll trash
+> @@ -689,19 +699,8 @@ static int __spi_add_device(struct spi_device *spi)
+>  int spi_add_device(struct spi_device *spi)
+>  {
+>  	struct spi_controller *ctlr =3D spi->controller;
+> -	struct device *dev =3D ctlr->dev.parent;
+>  	int status;
+> =20
+> -	/* Chipselects are numbered 0..max; validate. */
+> -	if (spi_get_chipselect(spi, 0) >=3D ctlr->num_chipselect) {
+> -		dev_err(dev, "cs%d >=3D max %d\n", spi_get_chipselect(spi, 0),
+> -			ctlr->num_chipselect);
+> -		return -EINVAL;
+> -	}
+> -
+> -	/* Set the bus ID string */
+> -	spi_dev_set_name(spi);
+> -
+>  	mutex_lock(&ctlr->add_lock);
+>  	status =3D __spi_add_device(spi);
+>  	mutex_unlock(&ctlr->add_lock);
+> @@ -712,17 +711,6 @@ EXPORT_SYMBOL_GPL(spi_add_device);
+>  static int spi_add_device_locked(struct spi_device *spi)
+>  {
+>  	struct spi_controller *ctlr =3D spi->controller;
+> -	struct device *dev =3D ctlr->dev.parent;
+> -
+> -	/* Chipselects are numbered 0..max; validate. */
+> -	if (spi_get_chipselect(spi, 0) >=3D ctlr->num_chipselect) {
+> -		dev_err(dev, "cs%d >=3D max %d\n", spi_get_chipselect(spi, 0),
+> -			ctlr->num_chipselect);
+> -		return -EINVAL;
+> -	}
+> -
+> -	/* Set the bus ID string */
+> -	spi_dev_set_name(spi);
+> =20
+>  	WARN_ON(!mutex_is_locked(&ctlr->add_lock));
+>  	return __spi_add_device(spi);
+> --=20
+> 2.40.0.1.gaa8946217a0b
+>=20
+
+--nr4764lrwkknwz4l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmStkn4ACgkQ2O7X88g7
++pormhAAnK4ipkeSKHu0xl8agX+r1Ks97iOFEMGG8+gzX4xY/hXNKVPfgpoWdNZa
+rN+CMPEFa2M5kKdm7v6s7wv2A/R0bRMIwUrHhMxAVBKQSNlp47s2N/PBkCgghK7x
+dOCmH/DDN17c1ODn8FJUD/WO5p1/grLRg1mUoNQvVqLVz7jQBx+oOZxG1Fm2e5pb
+suAySbAqDtYVper0iqZhu1BwDjFxj7l/+kXhJWt+mtgFq1shfCwdfK+gm9Z1hJ4B
+kDa1PZSzlIbs8znfYFu8n7gPJIN/nplWGmWgFAbwex3GxdZbSrO58X4m2B0fooFg
+xQ3w3b710ONolovhZktxkx7nibXjJiVFQwgS7BPRquCjCEok5jNmuyVJmu9Pud0s
+nRDWYic0TKErHny9NYCTwdJQX5ZkDIV9QpjVyp5FR7e/ylT8chmX1LwnsKZSd91j
+TN9+lh3yU6BjbjopIAFAhP5BvYeYMI2tvbXpCC3iiqGno53AZUyP5dXBupB/zri7
+bwN6fXNXsuVX0JJH3CHCm13ZK9IFY8GHGqLJBUulYVyaXSLOimXhi/l6bkkhvzxN
+IKpuSWUPTxAVu9q5LxsOWS45GXR0oWiiKL7tOcaX1yJypn+5lKy+4yStvF0cER9d
+NdLreesrYaGS2zSH4qIA7m8dd2oaqPtYCa1VHzxRfLcNsnyCoXY=
+=zPs/
+-----END PGP SIGNATURE-----
+
+--nr4764lrwkknwz4l--
