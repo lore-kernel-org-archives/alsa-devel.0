@@ -4,140 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 375FFEB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 14:29:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E2A8EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 14:35:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FD8E1500;
-	Tue, 11 Jul 2023 16:28:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FD8E1500
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF1A3EE6;
+	Tue, 11 Jul 2023 16:34:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF1A3EE6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689085755;
-	bh=A+lgFSqWg8vRgir1XqFzY9nIE1Cw0dwqFBu8P2BdZBc=;
+	s=default; t=1689086111;
+	bh=XYaVMQ3P2Xw+yr548W+rzf2xAqljuiRQQedbp9M8+Ao=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=e7nVA4KqTrU5G2s84VFUUImMehoDj1ySnNsnelGNL6jaq+QL3bIQgWafwam5iPiRE
-	 FaeGOtV0u24tEN3cYy4YgQl4hyQn+pKUw7sD68VO6dF3CNe9X49MxndBs4t8f4Uto/
-	 PFiMhXLZG+FIe/d4S89Z5qDUCbE0tRC4HBW+DCR0=
+	b=ChXmgAu7e++Zw6EPnW25meEDdpEcM8X3HFDAGeLUYIPwYXJsp8vZFygVPolgu6tII
+	 y9nhRTLq8NS50JIHyeLZWqiPj1MAnajg/c3jBKApB34A8J7ghd0CGeYs/aFnzJHKLg
+	 qkm/n9P0N4T/266VQJGskzjmIIuuLIDR9tWT6Zfs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B2F4F806A3; Tue, 11 Jul 2023 16:22:39 +0200 (CEST)
+	id 75B1FF80093; Tue, 11 Jul 2023 16:33:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 229D1F8069E;
-	Tue, 11 Jul 2023 16:22:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F39EDF80249;
+	Tue, 11 Jul 2023 16:33:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0701DF80249; Tue, 11 Jul 2023 16:15:16 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id B1BB1F80249; Tue, 11 Jul 2023 16:33:50 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5DFE4F80093
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 16:15:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DFE4F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9E922F800E4
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 16:33:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E922F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=KwXQpO0J
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 77C8D61360;
-	Tue, 11 Jul 2023 14:15:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 209CBC433C9;
-	Tue, 11 Jul 2023 14:14:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689084907;
-	bh=A+lgFSqWg8vRgir1XqFzY9nIE1Cw0dwqFBu8P2BdZBc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KwXQpO0JwJwS2tync5AfGpO9HXb9u4mgZfpWRxyxjmWV7o23oHa66oSgLBUqWen2D
-	 ZlOHsSEyXpzrsEeWWEmLhLLitAzI15911I18ub63ARZldiwGDK6EeLi3B34Qy+IEG4
-	 waxyA6VmnpE80hBohYtayTpWfyRhiz5yBCu2xfPCie7wDB1OJGO5pfFeIe7TmhLaf6
-	 2F7TtEpspxDmIAOKWfQt4n5/QaTo60Dymh5zBKNq1hnkXPOMFNsHXFu721qfrAekf9
-	 KAql0ORVXuf2YxOmwhPq6tE1iNaCTZM61qgKsPoZvWs0hppRNFtMcBrTT4RcCr66z6
-	 VpMXSzxRgleHw==
-Date: Tue, 11 Jul 2023 15:14:54 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
-	Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-rockchip@lists.infradead.org, linux-riscv@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	Sanjay R Mehta <sanju.mehta@amd.com>,
-	Radu Pirea <radu_nicolae.pirea@upb.ro>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@microchip.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Orson Zhai <orsonzhai@gmail.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Chunyan Zhang <zhang.lyra@gmail.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v2 04/15] spi: Replace open coded
- spi_controller_xfer_timeout()
-Message-ID: <5959b123-09e3-474b-9ab0-68d71cfdd9a2@sirena.org.uk>
-References: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
- <20230710154932.68377-5-andriy.shevchenko@linux.intel.com>
- <cfaffa00-4b61-4d81-8675-70295844513b@sirena.org.uk>
- <ZK02efTYxV3czigr@smile.fi.intel.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=jl1/Sq2L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689086025; x=1720622025;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=XYaVMQ3P2Xw+yr548W+rzf2xAqljuiRQQedbp9M8+Ao=;
+  b=jl1/Sq2L3Lf8aXss1ToBTEaAG70t7UmXj48xjwXgISkuyeEzAzQGrYak
+   meABrlSKhXc3LJJVVzjfQvUOmoe/SdcBNZX6FUCyLBwl+PHBUIHPtuGr7
+   cgmMVe122l9ekIZ+QsJao+QjoMYJyxplUFfl5/wmdRUOsajhLcg5WNE/z
+   iGTZCgrDzuzzOxd7NowitXN61QpkqZ52DlfsKPsHMRSSd6c110HIQ+KQj
+   3XRYwb+/AY2opYDHzLkrAyd5nbjufyH5hFetEC5AKYMbXpAeCVd3VKKEE
+   jNRcrsGlAt1m8vw6EDAMwsPWuKpcIQGNWXMX4/yC0/JaNZROd4EbQsyFL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="368135307"
+X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
+   d="scan'208";a="368135307"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Jul 2023 07:33:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="721103911"
+X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
+   d="scan'208";a="721103911"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP; 11 Jul 2023 07:33:15 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1qJEQT-001sG8-2y;
+	Tue, 11 Jul 2023 17:33:13 +0300
+Date: Tue, 11 Jul 2023 17:33:13 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?=
+ <amadeuszx.slawinski@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Mark Brown <broonie@kernel.org>,
+	Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 13/13] ASoC: Intel: sst: Convert to PCI device IDs defines
+Message-ID: <ZK1oKYW0rro4FnNO@smile.fi.intel.com>
+References: <20230711125726.3509391-1-amadeuszx.slawinski@linux.intel.com>
+ <20230711125726.3509391-14-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="MZrPSMfLUzZVYlnE"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZK02efTYxV3czigr@smile.fi.intel.com>
-X-Cookie: marriage, n.:
-X-MailFrom: broonie@kernel.org
-X-Mailman-Rule-Hits: max-recipients
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230711125726.3509391-14-amadeuszx.slawinski@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID-Hash: 3MMQWSIA7Z45OGVZQEBFBAAEC62P52K4
+X-Message-ID-Hash: 3MMQWSIA7Z45OGVZQEBFBAAEC62P52K4
+X-MailFrom: andriy.shevchenko@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: W5RVIUA6FGPV6XRP3EMWRU43BVBWNI7I
-X-Message-ID-Hash: W5RVIUA6FGPV6XRP3EMWRU43BVBWNI7I
-X-Mailman-Approved-At: Tue, 11 Jul 2023 14:22:36 +0000
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W5RVIUA6FGPV6XRP3EMWRU43BVBWNI7I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3MMQWSIA7Z45OGVZQEBFBAAEC62P52K4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -146,54 +111,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Tue, Jul 11, 2023 at 02:57:26PM +0200, Amadeusz Sławiński wrote:
+> Use PCI device IDs from pci_ids.h header.
 
---MZrPSMfLUzZVYlnE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+...
 
-On Tue, Jul 11, 2023 at 02:01:13PM +0300, Andy Shevchenko wrote:
-> On Mon, Jul 10, 2023 at 06:30:32PM +0100, Mark Brown wrote:
-> > On Mon, Jul 10, 2023 at 06:49:21PM +0300, Andy Shevchenko wrote:
+>  	switch (sst->dev_id) {
+> -	case SST_MRFLD_PCI_ID:
+> +	case PCI_DEVICE_ID_INTEL_ADSP_TNG:
+>  	case SST_BYT_ACPI_ID:
+>  	case SST_CHV_ACPI_ID:
 
-> > > + * Assume speed to be 100 kHz if it's not defined at the time of invocation.
+I think this needs a bit more, i.e. replacing the rest with respective PCI IDs.
 
-> > You didn't mention this bit in the changelog, and I'm not 100% convinced
-> > it was the best idea in the first place.  It's going to result in some
-> > very big timeouts if it goes off, and we really should be doing
-> > validation much earlier in the process.
+All three will be defined with SST prefix, which makes sense to me.
 
-> Okay, let's drop this change.
+ACPI here is a bit misleading, but correct. The ACPI specification assumes that
+respective part of the ID space covers 100% of PCI ID space.
 
-Like I say we *should* be fine with the refactoring without this, or at
-least if it's an issue we should improve the validation.
+I have briefly checked the code and it seems that ID is used externally only
+for PCI case, so we may simply use the lower 16 bits of the ACPI _HID for the
+context.
 
-> > > +	u32 speed_hz = xfer->speed_hz ?: 100000;
+diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+index a0d29510d2bc..b1f59604d825 100644
+--- a/sound/soc/intel/atom/sst/sst.c
++++ b/sound/soc/intel/atom/sst/sst.c
+@@ -222,7 +222,7 @@ static void sst_init_locks(struct intel_sst_drv *ctx)
+ }
+ 
+ int sst_alloc_drv_context(struct intel_sst_drv **ctx,
+-		struct device *dev, unsigned int dev_id)
++		struct device *dev, unsigned short dev_id)
+ {
+ 	*ctx = devm_kzalloc(dev, sizeof(struct intel_sst_drv), GFP_KERNEL);
+ 	if (!(*ctx))
+diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
+index 4d37d39fd8f4..c04f033e1d5f 100644
+--- a/sound/soc/intel/atom/sst/sst.h
++++ b/sound/soc/intel/atom/sst/sst.h
+@@ -358,7 +358,7 @@ struct sst_fw_save {
+ struct intel_sst_drv {
+ 	int			sst_state;
+ 	int			irq_num;
+-	unsigned int		dev_id;
++	unsigned short		dev_id;
+ 	void __iomem		*ddr;
+ 	void __iomem		*shim;
+ 	void __iomem		*mailbox;
+@@ -523,7 +523,7 @@ int sst_register(struct device *);
+ int sst_unregister(struct device *);
+ 
+ int sst_alloc_drv_context(struct intel_sst_drv **ctx,
+-		struct device *dev, unsigned int dev_id);
++		struct device *dev, unsigned short dev_id);
+ int sst_context_init(struct intel_sst_drv *ctx);
+ void sst_context_cleanup(struct intel_sst_drv *ctx);
+ void sst_configure_runtime_pm(struct intel_sst_drv *ctx);
 
-> > Not only the ternery operator, but the version without the second
-> > argument for extra clarity!
+...
 
-> Elvis can be interpreted as "A _or_ B (if A is false/0)".
-> Some pieces related to SPI use Elvis already IIRC.
+>  /* driver names */
+>  #define SST_DRV_NAME "intel_sst_driver"
 
-I understand what it means, I just don't find it's adding clarity most
-of the times it's used (there's a few places where it is useful like
-pasting in strings in formats).  There are some examples that I'd
-complain about in the code, most of them predating me working on SPI too
-much, but I'm not a fan.
+> -#define SST_MRFLD_PCI_ID 0x119A
+>  #define SST_BYT_ACPI_ID	0x80860F28
+>  #define SST_CHV_ACPI_ID	0x808622A8
 
---MZrPSMfLUzZVYlnE
-Content-Type: application/pgp-signature; name="signature.asc"
+And kill all three!
 
------BEGIN PGP SIGNATURE-----
+-- 
+With Best Regards,
+Andy Shevchenko
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmStY90ACgkQJNaLcl1U
-h9DeQQf+MxpgOv6egcsQtreuAtaq7Ev7HPCaH6MbusHDNH2hElvH+GmEYjovkV6m
-h3LadU5OvktJBaXfjDQRjU71Cbf70/Nlo8I3WN5V4iRKzqWtfMV16ZStvy2+1Rx/
-jHek+Aib8L8SiwlzvD6WB163yHCsSn5KBv2Pqp95DjGWamTl918onxXzSS6g2j5A
-ib1Mz8aOXWBsiIdaFTQ3NoK7Uvnykzp1X2uGcfrRZuPWQNVvpJs/wt5iOuTpuEws
-6O2PEgJext+6CeKBCv8pCvpex2QsVtDKLnDVvmDX4Oa2impxsxSIjLyVbZfbJ480
-4XviYIQ2LNlTFidlbAAqqEafOQrvRg==
-=WM20
------END PGP SIGNATURE-----
 
---MZrPSMfLUzZVYlnE--
