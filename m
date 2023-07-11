@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C2AAEB64DD
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 12:59:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5ED51EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Jul 2023 12:59:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54DED7F4;
-	Tue, 11 Jul 2023 14:58:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54DED7F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA03B844;
+	Tue, 11 Jul 2023 14:58:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA03B844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689080346;
-	bh=Jid2RuYbICnO2j6tUDkfKrrrf977lWFjcHoNG9Lge9A=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=bHrL4u/Y/vxrpXaunsPldkYZ+fb9GkzDU+U1vwvFkp45WLW7j2uHZ+mOeRTfNWOsg
-	 5wKz6TAtxLtC29kS0WXmVoi12K+P1QMtLj+xFkX1awcZyT0adnod+ZbbTtiD45v0+L
-	 uOULD36jMABwC0+nq9CHmZYamjeULxSxOgceCLwI=
+	s=default; t=1689080353;
+	bh=cqzG/YH5kuutolTR1cOIZEsbX/zwe6Apecdzhtfj8uI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=SSP0WOzSp7Yta79F4JvdYBfsMMDFYHvQboWXuORz0hlEF76y1CRytmnRweL+8hDxl
+	 d5+hY61ssu5DO6XBy9uuPUvrCiFu0X2kUIDrnD1xSgelFeTRB0StteNgC6PTUzUWUe
+	 E7VA9llMSJXUsECN7LA2lnQsjlKvbiATgEqopEfg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EC120F80552; Tue, 11 Jul 2023 14:57:27 +0200 (CEST)
+	id F3793F8056F; Tue, 11 Jul 2023 14:57:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCE0AF80553;
-	Tue, 11 Jul 2023 14:57:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74ED6F80568;
+	Tue, 11 Jul 2023 14:57:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ABB17F8047D; Tue, 11 Jul 2023 14:57:23 +0200 (CEST)
+	id 6B0D6F8053B; Tue, 11 Jul 2023 14:57:25 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 22CE2F80249
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 14:57:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22CE2F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0A95BF800E4
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2023 14:57:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A95BF800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lRW0ybB8
+ header.s=Intel header.b=KNL8NvJa
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689080237; x=1720616237;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Jid2RuYbICnO2j6tUDkfKrrrf977lWFjcHoNG9Lge9A=;
-  b=lRW0ybB8rVR5ft7pV1FLTeCJz/XqlOuNyPy6Q0EWn6fC2dtQAqQ9wjoq
-   Nc3wpTtd4SxYrIMfBFck7AccwU9lbGnbdnJiVMchNbMuKljbjtyeNcFyb
-   FawLideWNhkzW7agh5FXQgm6J47Y0FsJ7OLeSvaUpJIcHjPXxtDFBdCQm
-   MAppMl4xyL+FDEkupKcgFInnEooR4TSpLIsiNU06/hX6IZg8u5F4YEWHs
-   6heh/DxcFfQG5H/D3VATGZ7HFcL8leK50KL7oNpaJLJIUpmmCaAa2ufR6
-   r6G9avdfJPFFB9ZKYYg9T8b4UOygUR5dCpYsmVOZmiPzqUZqVD/6BOSDI
+  t=1689080238; x=1720616238;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=cqzG/YH5kuutolTR1cOIZEsbX/zwe6Apecdzhtfj8uI=;
+  b=KNL8NvJacPANx++Hi7y4fm3eoMNrKNA4yInSYyOc+SY54BMjO3aM6f1w
+   j6Fp8oXizlr3RwFcIAmuPTCZlFbxtlDcAFMAgMjlk85i0eogJaYMyeLDS
+   8zVT782vmSSWk/Luivpxk4S+ihbngZ3HXMaQIr4Y9nkeGWJBUgiryLox8
+   6gfL3+yqVUAkEMHd9fwE0mNOyw937ILuUtAb4mf59dpGWAsJb3XKijE0Y
+   XmFs65c8CvODJIBpvR/aIrv5IS7AEf0sLHF4Lhr2PnasXGTkEPOyZXLM1
+   NyDOTnu0Hx2kRQJsNGPIB339R7EYbL5fVN/7K3d3qkI8Uw2x7JTAf+N7J
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="367187323"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="367187373"
 X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
-   d="scan'208";a="367187323"
+   d="scan'208";a="367187373"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jul 2023 05:57:08 -0700
+ 11 Jul 2023 05:57:16 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="834666447"
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="834666531"
 X-IronPort-AV: E=Sophos;i="6.01,196,1684825200";
-   d="scan'208";a="834666447"
+   d="scan'208";a="834666531"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Jul 2023 05:57:05 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 11 Jul 2023 05:57:13 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Bjorn Helgaas <bhelgaas@google.com>,
@@ -77,15 +78,17 @@ Cc: alsa-devel@alsa-project.org,
 	Hans de Goede <hdegoede@redhat.com>,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 00/13] PCI: Define Intel PCI IDs and use them in drivers
-Date: Tue, 11 Jul 2023 14:57:13 +0200
-Message-Id: <20230711125726.3509391-1-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 03/13] ALSA: hda: Add controller matching macros
+Date: Tue, 11 Jul 2023 14:57:16 +0200
+Message-Id: <20230711125726.3509391-4-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230711125726.3509391-1-amadeuszx.slawinski@linux.intel.com>
+References: <20230711125726.3509391-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3E3CSHQG5S5LFRO3XPFWW5VNAKCB7GXM
-X-Message-ID-Hash: 3E3CSHQG5S5LFRO3XPFWW5VNAKCB7GXM
+Message-ID-Hash: WT3LGAR7D73TWIV5JXMOBVWZ3U5C23SQ
+X-Message-ID-Hash: WT3LGAR7D73TWIV5JXMOBVWZ3U5C23SQ
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3E3CSHQG5S5LFRO3XPFWW5VNAKCB7GXM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WT3LGAR7D73TWIV5JXMOBVWZ3U5C23SQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,65 +110,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-PCI IDs for Intel HDA are duplicated across quite a few drivers, due to
-various configurations and historical reasons. Currently almost all uses
-of HDA PCI IDs have corresponding comment telling which platform it is.
-Additionally there are some inconsistencies between drivers about which
-ID corresponds to which device.
+Some HDA controllers require additional handling, so there are macros to
+match them, however those are spread across multiple files. Add them all
+in one place, so they can be reused.
 
-Simplify things, by adding PCI IDs to global header and make use of them
-in drivers. This allows for removal of comments by having IDs themselves
-being self explanatory. Additionally it allows for removal of existing
-inconsistencies by having one source of truth.
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ include/sound/hdaudio.h | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-Changes from RFC:
- - Sort Intel PCI IDs before adding new ones
- - Fix ordering of new PCI IDs (Andy)
- - Define all used Intel IDs (Andy)
- - Add macros for controller type detection (Andy/Bjorn)
- - Add set of patches changing to use above macro (Andy/Bjorn)
- - Use PCI_DEVICE_DATA for Intel IDs in sound/pci/hda/hda_intel.c (Andy)
- - Commit message wording (Andy)
- - Remove unnecessary tabs (Andy)
-
-Amadeusz Sławiński (13):
-  PCI: Sort Intel PCI IDs by number
-  PCI: Add Intel Audio DSP devices to pci_ids.h
-  ALSA: hda: Add controller matching macros
-  ALSA: hda: Use global PCI match macro
-  ALSA: hda/i915:  Use global PCI match macro
-  ASoC: Intel: Skylake: Use global PCI match macro
-  ALSA: intel-dsp-config: Convert to PCI device IDs defines
-  ALSA: hda: Convert to PCI device IDs defines
-  ASoC: Intel: avs: Convert to PCI device IDs defines
-  ASoC: Intel: avs: Convert to PCI device IDs defines
-  ASoC: Intel: Skylake: Convert to PCI device IDs defines
-  ASoC: SOF: Intel: Convert to PCI device IDs defines
-  ASoC: Intel: sst: Convert to PCI device IDs defines
-
- include/linux/pci_ids.h                | 104 +++++--
- include/sound/hda_codec.h              |   3 -
- include/sound/hdaudio.h                |  27 ++
- sound/hda/hdac_i915.c                  |   7 +-
- sound/hda/intel-dsp-config.c           | 119 ++++----
- sound/pci/hda/hda_intel.c              | 373 ++++++++++---------------
- sound/soc/intel/atom/sst/sst.c         |   3 +-
- sound/soc/intel/atom/sst/sst.h         |   1 -
- sound/soc/intel/atom/sst/sst_pci.c     |   4 +-
- sound/soc/intel/avs/board_selection.c  |  10 +-
- sound/soc/intel/avs/core.c             |  16 +-
- sound/soc/intel/skylake/skl-messages.c |  16 +-
- sound/soc/intel/skylake/skl-pcm.c      |   3 +-
- sound/soc/intel/skylake/skl.c          |  36 +--
- sound/soc/sof/intel/pci-apl.c          |   9 +-
- sound/soc/sof/intel/pci-cnl.c          |  15 +-
- sound/soc/sof/intel/pci-icl.c          |  12 +-
- sound/soc/sof/intel/pci-mtl.c          |   3 +-
- sound/soc/sof/intel/pci-skl.c          |   6 +-
- sound/soc/sof/intel/pci-tgl.c          |  45 +--
- sound/soc/sof/intel/pci-tng.c          |   3 +-
- 21 files changed, 384 insertions(+), 431 deletions(-)
-
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index 2ffdf58bd6d4..aacacca456d5 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -11,6 +11,7 @@
+ #include <linux/io.h>
+ #include <linux/io-64-nonatomic-lo-hi.h>
+ #include <linux/iopoll.h>
++#include <linux/pci.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/timecounter.h>
+ #include <sound/core.h>
+@@ -704,4 +705,30 @@ static inline unsigned int snd_array_index(struct snd_array *array, void *ptr)
+ 	for ((idx) = 0, (ptr) = (array)->list; (idx) < (array)->used; \
+ 	     (ptr) = snd_array_elem(array, ++(idx)))
+ 
++/*
++ * Device matching
++ */
++
++#define HDA_CONTROLLER_IS_HSW(pci) (pci_match_id((struct pci_device_id []){ \
++			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_HSW_0) }, \
++			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_HSW_2) }, \
++			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_HSW_3) }, \
++			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_BDW) }, \
++			{ } \
++		}, pci))
++
++#define HDA_CONTROLLER_IS_APL(pci) (pci_match_id((struct pci_device_id []){ \
++			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_APL) }, \
++			{ } \
++		}, pci))
++
++#define HDA_CONTROLLER_IN_GPU(pci) (HDA_CONTROLLER_IS_HSW(pci) || \
++		pci_match_id((struct pci_device_id []){ \
++			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG1) }, \
++			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG2_0) }, \
++			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG2_1) }, \
++			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG2_2) }, \
++			{ } \
++		}, pci))
++
+ #endif /* __SOUND_HDAUDIO_H */
 -- 
 2.34.1
 
