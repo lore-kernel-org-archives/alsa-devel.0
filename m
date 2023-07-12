@@ -4,99 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB9CBEB64D9
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 09:20:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D861EB64D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 10:22:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D7A06C1;
-	Wed, 12 Jul 2023 11:19:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D7A06C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A1D6820;
+	Wed, 12 Jul 2023 12:21:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A1D6820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689153614;
-	bh=Ry3czwbD+drojCmAK4STnlovd4LCSba5lWwblh25Umg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1689157325;
+	bh=tY/BfVTFYGugQI0lJy+CeErN+l4YRI6ixdTewpDFRCY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=C8Q5VMPQa7u66VHbmS6DRdURlVrpyKi6vEWw2j9w2SamDJchRumk5GZofrAdibyEZ
-	 cQw6o71GYZKTOFp/OxbpV9Z4tYvuY3VEfRKDiiBdS8/qdN1xZYnAX5CHjLYyDoP3Td
-	 khlpBhAUNMbCfyJd+Sz0DSvY+ZlTxEP1vKUi17Zk=
+	b=Ipan+2MMKcVJCvBTl+hV7f9shZ8GTKaXOkVH4pyNrimdaRHC1bmFs6ATXP+IWqHSK
+	 vd8wa1hrVXo+99X0+Mm6e94kRyi1ymoBRPWma7DSiIu/c6CA4Sl2Zb6OJbUU93MM1M
+	 F2z4VJf4grt3cD07f0rjXk0Uzbplv2Fj1SbbZ0wo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A6F64F80153; Wed, 12 Jul 2023 11:19:00 +0200 (CEST)
+	id 7F369F8024E; Wed, 12 Jul 2023 12:20:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33C82F8027B;
-	Wed, 12 Jul 2023 11:19:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0725AF80249;
+	Wed, 12 Jul 2023 12:20:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6046FF80249; Wed, 12 Jul 2023 11:18:54 +0200 (CEST)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com
- [209.85.128.179])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id EC3C8F80249; Wed, 12 Jul 2023 12:20:45 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 954AAF80153
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 11:18:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 954AAF80153
-Received: by mail-yw1-f179.google.com with SMTP id
- 00721157ae682-57026f4bccaso76891287b3.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 12 Jul 2023 02:18:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689153530; x=1691745530;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kG5q3OE8NA2B1Rd9ySf5DoQyHhC234Q++094p9pDpiY=;
-        b=TOCiuLJQs/HsMWt/wk7doE4+N+2xORd6T8uYR3oW3T/h91+lkg0OqvZvuYvk0ouY2s
-         f/GR+oeKln7ZSZrbfI/31uUrgUpnmYma4kPXVeAIgMRpusaH3xltdIduarhKFCKaJB33
-         8L124peS4TtUqNA37/A7iDaPI/forXL/J4ncAbRJq3QdDi96Xqi044rlOphDwKpK3lng
-         HoCq+Y7gSoiw100HvDF/udOSbGSJUNsfGuAOBOucPfFBLbkE2bu+RaVy4f7aXpbdcEGD
-         1CGxh2fevzKBafE+QqzchIxUg1EOto74pTIly5cteovBOcNzx68zBPSuIFLgOZ0be3EV
-         BGuQ==
-X-Gm-Message-State: ABy/qLYbKsLNRiSkwx8OkMKq9QO6FQX80IFvG2tsQ0sBBnYmltIGSwGa
-	rAIfhbukOvtaV7J0d6AjzR5VUV+tkhyaHA==
-X-Google-Smtp-Source: 
- APBJJlGHlfQUUorcWN5lIeMju/ZO70BeUG2sicjT/7jQLu408FFbcrAxkMTA5fMdNntqiWHSj1/k7Q==
-X-Received: by 2002:a81:a191:0:b0:577:3cd0:384 with SMTP id
- y139-20020a81a191000000b005773cd00384mr17666975ywg.15.1689153529696;
-        Wed, 12 Jul 2023 02:18:49 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com.
- [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id
- w18-20020a814912000000b0057a92cd7f95sm1049339ywa.100.2023.07.12.02.18.49
-        for <alsa-devel@alsa-project.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 02:18:49 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id
- 3f1490d57ef6-bff27026cb0so7556491276.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 12 Jul 2023 02:18:49 -0700 (PDT)
-X-Received: by 2002:a25:748e:0:b0:c69:b15:3e79 with SMTP id
- p136-20020a25748e000000b00c690b153e79mr17478596ybc.28.1689153528941; Wed, 12
- Jul 2023 02:18:48 -0700 (PDT)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 278FAF800D2
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 12:20:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 278FAF800D2
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=LPORpcgL
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689157238; x=1720693238;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=tY/BfVTFYGugQI0lJy+CeErN+l4YRI6ixdTewpDFRCY=;
+  b=LPORpcgLpClTxDeZLYhIQ62EZaIL/cc13VcAt8de/u78mxZH7gYYtWej
+   EB+1sy3B47+iHmSaPp55GBxV8CUaPHpg5TNDZ9cxpi7OnmYoi6rtp5fzR
+   0xlwDZpYSiN8Lbdu3XaV9+BSOAg8k0fCEEIE3Om88WpFJe1jgAegKBWH3
+   xYnWQV12zi4nrVItHx9/eOJ8WLg24oaVUKuFuMveMUBX/f2JFGdrcM6Pr
+   kDiZKvUo57SvfojQ3nhBKameQ+XebKCdKvnusS2lQMkPbFbOyT02Nou6r
+   P4e4r/s7l/TA4kDB4wxesCDXW64ONDy5spJuV/l0mzRjl5mj6mH7DZ91U
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="354759618"
+X-IronPort-AV: E=Sophos;i="6.01,199,1684825200";
+   d="scan'208";a="354759618"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jul 2023 03:20:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10768"; a="866070621"
+X-IronPort-AV: E=Sophos;i="6.01,199,1684825200";
+   d="scan'208";a="866070621"
+Received: from hoermank-mobl.ger.corp.intel.com (HELO [10.252.42.188])
+ ([10.252.42.188])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jul 2023 03:20:26 -0700
+Message-ID: <ab085fff-ade7-02b1-22e0-acba8e6c1846@linux.intel.com>
+Date: Wed, 12 Jul 2023 12:20:24 +0200
 MIME-Version: 1.0
-References: <20230707074337.3120530-1-quic_rohkumar@quicinc.com>
-In-Reply-To: <20230707074337.3120530-1-quic_rohkumar@quicinc.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 12 Jul 2023 11:18:35 +0200
-X-Gmail-Original-Message-ID: 
- <CAMuHMdXRt_9BzfnaqVJUAS4QdvGBDZk3B+R_cERUykZhyNWtzQ@mail.gmail.com>
-Message-ID: 
- <CAMuHMdXRt_9BzfnaqVJUAS4QdvGBDZk3B+R_cERUykZhyNWtzQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ASoC: dt-bindings: Update maintainer email id
-To: Rohit kumar <quic_rohkumar@quicinc.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	srinivas.kandagatla@linaro.org, bgoswami@quicinc.com, agross@kernel.org,
-	andersson@kernel.org, konrad.dybcio@linaro.org, cychiang@chromium.org,
-	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: DC5PPJU46PLAX7ECHSFHDHLOSZTCINIQ
-X-Message-ID-Hash: DC5PPJU46PLAX7ECHSFHDHLOSZTCINIQ
-X-MailFrom: geert.uytterhoeven@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+Subject: Re: [PATCH v3] ASoC: Intel: sof_rt5682: add jsl_rt5650 board config
+Content-Language: en-US
+To: "Lu, Brent" <brent.lu@intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, "Zhi, Yong" <yong.zhi@intel.com>,
+ "Bhat, Uday M" <uday.m.bhat@intel.com>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Arnd Bergmann <arnd@arndb.de>, "Song, Gongjun" <gongjun.song@intel.com>,
+ Terry Cheong <htcheong@chromium.org>, "Chiang, Mac" <mac.chiang@intel.com>,
+ "R, Dharageswari" <dharageswari.r@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230712100855.272467-1-brent.lu@intel.com>
+ <2e9a5d5b-f637-1f9a-b500-03f9c151dc26@linux.intel.com>
+ <CY5PR11MB6257F77DBF1D123FAD0DF4689736A@CY5PR11MB6257.namprd11.prod.outlook.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: 
+ <CY5PR11MB6257F77DBF1D123FAD0DF4689736A@CY5PR11MB6257.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 6Y3YSYNSUEWETLTX3BJ4SLYKXNWSLWNA
+X-Message-ID-Hash: 6Y3YSYNSUEWETLTX3BJ4SLYKXNWSLWNA
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +112,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DC5PPJU46PLAX7ECHSFHDHLOSZTCINIQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6Y3YSYNSUEWETLTX3BJ4SLYKXNWSLWNA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,42 +121,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Rohit,
 
-Thanks for your patch!
 
-On Fri, Jul 7, 2023 at 9:49=E2=80=AFAM Rohit kumar <quic_rohkumar@quicinc.c=
-om> wrote:
-> [PATCH v2] ASoC: dt-bindings: Update maintainer email id
+On 7/12/23 08:15, Lu, Brent wrote:
+>>> +	{
+>>> +		.id = "10EC5650",
+>>> +		.drv_name = "jsl_rt5650",
+>>> +		.machine_quirk = snd_soc_acpi_codec_list,
+>>> +		.quirk_data = &rt5650_spk,
+>>> +		.sof_tplg_filename = "sof-jsl-rt5650-dual.tplg",
+>>
+>> what does 'dual' mean in this context? it's not something we've used before
+>> so a comment would be needed IMHO.
+>>
+>> two DAIs, two codecs?
+> 
+> Dual I2S. Should we remove it? Just sof-jsl-rt5650.tplg?
 
-Thank you for stepping forward to become a maintainer for all ASoC
-DT bindings ;-)
+that would be my preference, we have lots of configurations with 2 I2S
+and never mention it in the topology file name. 'dual' sounds more
+confusing than helping here.
 
-> Updated my mail id to latest quicinc id.
->
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Rohit kumar <quic_rohkumar@quicinc.com>
-> ---
-> v2: Updated commit header
->
->  .../devicetree/bindings/sound/google,sc7180-trogdor.yaml        | 2 +-
->  Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml     | 2 +-
-
-Oh wait, this is not for all of ASoC...
-
-Please use one-line summaries that reflect the actual changes.
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+The rest of the patch is fine.
