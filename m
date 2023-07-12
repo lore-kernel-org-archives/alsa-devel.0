@@ -4,93 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2947CEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 12:21:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28BB0EB64D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 12:48:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC2AD6C1;
-	Wed, 12 Jul 2023 14:20:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC2AD6C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED55C3E7;
+	Wed, 12 Jul 2023 14:47:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED55C3E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689164503;
-	bh=aHYcX/RpGX8NgxBuDMZyXS2bZgmbpwPq0YBcwOhVdKI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1689166092;
+	bh=tLoJFh4oywXrxNXtAmdPnSrR0ry2WPhGPC1p7CMbphM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dWpWcpc6aS9ghHATz5abP4wyNteeolsnWf1xcEDrOwc3Bt9ZbPW2wfnRp9+VQli0o
-	 phyMHfL3T9QzqBHgzkjvveDTwHWRebqCtVtdEJb8jVoQPF9JZG2BOd1MkuuTbsTmlG
-	 3okolZTt34aii96t1eIGAlgHgCujJHBYx7zuY7GQ=
+	b=MtgKDQGlJ4UE+LGdxX9S56WUCbFBECdhoAZMU8oI+AFTM6/bLBLEihn2eEW6eGgde
+	 NJNcW6Aimd44TZhQAYLmkBI1+GeZUXNhS5/LmgQ7lNM9YIMxpBvwokQv92EJFmN/m3
+	 ManNwjZhnNwT7nEHMBWGdSfQFDLhRhMtmpNCJCWE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A4AAF80544; Wed, 12 Jul 2023 14:20:20 +0200 (CEST)
+	id CF349F80153; Wed, 12 Jul 2023 14:46:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0019F8027B;
-	Wed, 12 Jul 2023 14:20:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B7B2F80153;
+	Wed, 12 Jul 2023 14:46:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5E41F80249; Wed, 12 Jul 2023 14:20:17 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 85C37F80249; Wed, 12 Jul 2023 14:46:52 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2DD64F800D2
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 14:20:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DD64F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0A8A4F80093
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 14:46:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A8A4F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Po6p7KNu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689164415; x=1720700415;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=aHYcX/RpGX8NgxBuDMZyXS2bZgmbpwPq0YBcwOhVdKI=;
-  b=Po6p7KNu0m8TPUd/uaOcBiuJ/ZigIQSYSH0Fp0Glu/YAxMxOWERnMFRV
-   qtohaOBKTJfXUf7u43Q/Zdloxg8zpIb5x7fJxexLsKvyahUdn/YusQri8
-   rsDLHo0qJeZAgxJ10oASN3c8V8Lyjf3acHeV1GZgOkxofWBFgFS0cnH8F
-   zdi23FymUrLGnN3OwpB54sK8dMzWmK1sd2YF3DYdyGu0xy0+UUpCrsDoT
-   8dENT57eg08eIMSHdmnWWcAxyWKWd22VuW3DuitOglYPi7gHy7vTsaaw0
-   6O+rYg533JAU6taGd4VU8SZYGokFldy2Ku27o75DFh9FV+KjfsVrPRnBq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="431007172"
-X-IronPort-AV: E=Sophos;i="6.01,199,1684825200";
-   d="scan'208";a="431007172"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2023 05:19:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="1052168447"
-X-IronPort-AV: E=Sophos;i="6.01,199,1684825200";
-   d="scan'208";a="1052168447"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144])
- ([10.99.16.144])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2023 05:19:50 -0700
-Message-ID: <958f3638-f68a-ebec-29cc-816f823b017f@linux.intel.com>
-Date: Wed, 12 Jul 2023 14:19:47 +0200
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=bagkg5dq
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id BCD12617BB;
+	Wed, 12 Jul 2023 12:46:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92875C433C7;
+	Wed, 12 Jul 2023 12:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689166004;
+	bh=tLoJFh4oywXrxNXtAmdPnSrR0ry2WPhGPC1p7CMbphM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bagkg5dqgmXwAAzDRa77IkA22lcd1wJ/uMh0mrb2TvgBkjNYxGPHIKefXSYqzmKeP
+	 9XLr0qTmQvyeoqAkhcopnmvqY+yqIK5kHItD/t4jQUqsZIvSi+hIghUWIlTHZsYRCg
+	 9j9ORMgJpgmafe06oCcQ1vy2n49DKnwAxv496ZRfDWzSDuxnMxb5YE1fiEvYI6U7oL
+	 PLQv7hfmGBvLGJU6qocK1H0aeWERU805iG01LxWiK9ZvYKI1ZQrSmYOtG2khxgS5Iu
+	 g+Ss6IdqkHmeuV5KEEUb/RYhJXpp6AYJh9PskQg/GOXd6SqoZv+gbOiswEg3aIF0oz
+	 Sypgup85mp7ug==
+Date: Wed, 12 Jul 2023 13:46:39 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Zhu Ning <zhuning0077@gmail.com>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+	tiwai@suse.com, amadeuszx.slawinski@linux.intel.com,
+	yangxiaohua@everest-semi.com, zhuning@everest-semi.com
+Subject: Re: [PATCH 2/4] ASoC: codecs: es8326: Fix power-up sequence
+Message-ID: <481906d1-977b-4c19-8910-81268937d706@sirena.org.uk>
+References: <20230712080830.973766-1-zhuning0077@gmail.com>
+ <20230712080830.973766-2-zhuning0077@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 13/13] ASoC: Intel: sst: Convert to PCI device IDs defines
-Content-Language: en-US
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>
-References: <20230711125726.3509391-1-amadeuszx.slawinski@linux.intel.com>
- <20230711125726.3509391-14-amadeuszx.slawinski@linux.intel.com>
- <ZK1oKYW0rro4FnNO@smile.fi.intel.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <ZK1oKYW0rro4FnNO@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UDKJJA6DCP6GAEABDY2SOUDV6AFV6PKH
-X-Message-ID-Hash: UDKJJA6DCP6GAEABDY2SOUDV6AFV6PKH
-X-MailFrom: amadeuszx.slawinski@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="A5qTlZLlNmei/b37"
+Content-Disposition: inline
+In-Reply-To: <20230712080830.973766-2-zhuning0077@gmail.com>
+X-Cookie: Dammit Jim, I'm an actor, not a doctor.
+Message-ID-Hash: QX26KGLF3VEWSLBLVHRN35NSIUV4WVUP
+X-Message-ID-Hash: QX26KGLF3VEWSLBLVHRN35NSIUV4WVUP
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UDKJJA6DCP6GAEABDY2SOUDV6AFV6PKH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QX26KGLF3VEWSLBLVHRN35NSIUV4WVUP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,80 +98,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 7/11/2023 4:33 PM, Andy Shevchenko wrote:
-> On Tue, Jul 11, 2023 at 02:57:26PM +0200, Amadeusz Sławiński wrote:
->> Use PCI device IDs from pci_ids.h header.
-> 
-> ...
-> 
->>   	switch (sst->dev_id) {
->> -	case SST_MRFLD_PCI_ID:
->> +	case PCI_DEVICE_ID_INTEL_ADSP_TNG:
->>   	case SST_BYT_ACPI_ID:
->>   	case SST_CHV_ACPI_ID:
-> 
-> I think this needs a bit more, i.e. replacing the rest with respective PCI IDs.
-> 
-> All three will be defined with SST prefix, which makes sense to me.
-> 
-> ACPI here is a bit misleading, but correct. The ACPI specification assumes that
-> respective part of the ID space covers 100% of PCI ID space.
-> 
-> I have briefly checked the code and it seems that ID is used externally only
-> for PCI case, so we may simply use the lower 16 bits of the ACPI _HID for the
-> context.
-> 
 
-Do I understand correctly that I should just do:
-#define PCI_DEVICE_ID_INTEL_SST_BYT	0x0F28
-#define PCI_DEVICE_ID_INTEL_SST_CHV	0x22A8
-and use those IDs instead?
+--A5qTlZLlNmei/b37
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-> index a0d29510d2bc..b1f59604d825 100644
-> --- a/sound/soc/intel/atom/sst/sst.c
-> +++ b/sound/soc/intel/atom/sst/sst.c
-> @@ -222,7 +222,7 @@ static void sst_init_locks(struct intel_sst_drv *ctx)
->   }
->   
->   int sst_alloc_drv_context(struct intel_sst_drv **ctx,
-> -		struct device *dev, unsigned int dev_id)
-> +		struct device *dev, unsigned short dev_id)
->   {
->   	*ctx = devm_kzalloc(dev, sizeof(struct intel_sst_drv), GFP_KERNEL);
->   	if (!(*ctx))
-> diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
-> index 4d37d39fd8f4..c04f033e1d5f 100644
-> --- a/sound/soc/intel/atom/sst/sst.h
-> +++ b/sound/soc/intel/atom/sst/sst.h
-> @@ -358,7 +358,7 @@ struct sst_fw_save {
->   struct intel_sst_drv {
->   	int			sst_state;
->   	int			irq_num;
-> -	unsigned int		dev_id;
-> +	unsigned short		dev_id;
->   	void __iomem		*ddr;
->   	void __iomem		*shim;
->   	void __iomem		*mailbox;
-> @@ -523,7 +523,7 @@ int sst_register(struct device *);
->   int sst_unregister(struct device *);
->   
->   int sst_alloc_drv_context(struct intel_sst_drv **ctx,
-> -		struct device *dev, unsigned int dev_id);
-> +		struct device *dev, unsigned short dev_id);
->   int sst_context_init(struct intel_sst_drv *ctx);
->   void sst_context_cleanup(struct intel_sst_drv *ctx);
->   void sst_configure_runtime_pm(struct intel_sst_drv *ctx);
-> 
-> ...
-> 
->>   /* driver names */
->>   #define SST_DRV_NAME "intel_sst_driver"
-> 
->> -#define SST_MRFLD_PCI_ID 0x119A
->>   #define SST_BYT_ACPI_ID	0x80860F28
->>   #define SST_CHV_ACPI_ID	0x808622A8
-> 
-> And kill all three!
-> 
+On Wed, Jul 12, 2023 at 04:08:28PM +0800, Zhu Ning wrote:
+> Old power-up sequence causes large pop noise during start-up.
+> Using a new sequence instead.
 
+>  static const struct regmap_range es8326_volatile_ranges[] =3D {
+> -	regmap_reg_range(ES8326_HP_DETECT, ES8326_HP_DETECT),
+> +	regmap_reg_range(ES8326_HPDET_TYPE, ES8326_HPDET_TYPE),
+>  };
+
+As well as not seeming to correspond to the patch description this seems
+obviously buggy - even if _HPDET_TYPE was missed from the list of
+volatile registers no software change should be able to make a volatile
+register non-volatile, that's a property of the hardware.  The changes
+to read from HPDET_TYPE also seem unrelated to the main change here in
+the resume function, this should probably be multiple commits.
+
+> @@ -633,40 +633,80 @@ static irqreturn_t es8326_irq(int irq, void *dev_id)
+>  static int es8326_resume(struct snd_soc_component *component)
+>  {
+>  	struct es8326_priv *es8326 =3D snd_soc_component_get_drvdata(component);
+> -	unsigned int reg;
+> =20
+>  	regcache_cache_only(es8326->regmap, false);
+>  	regcache_sync(es8326->regmap);
+> =20
+> +	/* reset register value to default */
+> +	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x01);
+> +	usleep_range(1000, 3000);
+> +	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x00);
+
+This looks wrong, you're resyncing the cache and then start resetting
+registers?  It feels like the ordering is off here, and some of this
+reset sequence might want to be done with the cache bypassed.  Are you
+sure that there's no corruption of user visible state resulting from the
+power up sequence, especially around the HP driver?
+
+--A5qTlZLlNmei/b37
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSuoK4ACgkQJNaLcl1U
+h9DQVgf/cYBeH4e1di5Xbcdo+6h4ApUf6FpdhxdASIOdeb3nltekqUWE3OvNVdHz
+PctTTtl+x4rsJcn1XE6hUZCLvhYPrYHew3Jp8SgXs6S8Z5BGodo5vAfWgfdR1MvD
+EbMSqWxPC+w+Z31nb7VvTxRbObPKFJI2KO5+ljxx++fmC1CSHgUFxBV7aLjeZ+f6
+YeS4/eiO+GjddVA+RikUTrBkSvKJs6fbhyTK8gKeZPcXjbOEJ3WuQmFzvAm2EVPB
+2Qj9q6lDOV78UCano6vP9OLzxc/4iU14qUMhK0uOh9OIzR94kDfm1ix7ZnA20lzf
+Z8Jn7A6szXv2uX4TLHQ0RDLjrSQWAw==
+=oMyt
+-----END PGP SIGNATURE-----
+
+--A5qTlZLlNmei/b37--
