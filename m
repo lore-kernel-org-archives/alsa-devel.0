@@ -4,73 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7353EB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 11:50:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0140EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 11:50:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3CC6846;
-	Wed, 12 Jul 2023 13:49:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3CC6846
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9186847;
+	Wed, 12 Jul 2023 13:49:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9186847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689162627;
-	bh=j1lgOkiqZl2ylPYx2qvyKimXaRK52M1zf0sTgvIFSuw=;
+	s=default; t=1689162635;
+	bh=TGhw0BOQLfLCUfvKyBi3wy+x2YHrjsCaDwvjVbjEVZw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rSrYB2fI9I2h9iB6gTaU4V7w9U2nC+ILXZLMW/wi/D8ZMkM8P56NtBDCeFVzp+EYE
-	 S0Xd81vo/RJpOCe/uQciOHf5bHO0Ci77YLVV2xPEQLDjBjLjyn4VVHq1so+N6SqfJ0
-	 r2wEOYCNGp3XJtZUBGgEB7SBfOfNFTsWFeX02H7Y=
+	b=B79wm3Q+dtBxS7XxMYlR5AE9Ew2WRD8H2Y8Ydouml/pM1wc5Fz01BvQIvr7xA7aHy
+	 bYOT7AEPzig3bzI6LOxgqhC7QV9B4/WQcnOZoDqT6D4ylzJRPyntrASFUOhze0MuPB
+	 S/w+xva1vsh7S7MjZHP7jEXrrMvo4P4xqA6jXeUw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 905FBF805E0; Wed, 12 Jul 2023 13:47:13 +0200 (CEST)
+	id 5C209F805EF; Wed, 12 Jul 2023 13:47:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D110BF805E6;
-	Wed, 12 Jul 2023 13:47:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD6C2F805ED;
+	Wed, 12 Jul 2023 13:47:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EDB1F805CA; Wed, 12 Jul 2023 13:47:07 +0200 (CEST)
+	id 23CA8F805D2; Wed, 12 Jul 2023 13:47:10 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8E0CAF805D2
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 13:47:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E0CAF805D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 09570F80290
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 13:47:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09570F80290
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=SLUF3s/S
+ header.s=k20201202 header.b=m+a21ZBw
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 7AA7761797;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AA6DD617A2;
+	Wed, 12 Jul 2023 11:47:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BF00C433CA;
 	Wed, 12 Jul 2023 11:47:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A301C433C7;
-	Wed, 12 Jul 2023 11:47:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689162422;
-	bh=j1lgOkiqZl2ylPYx2qvyKimXaRK52M1zf0sTgvIFSuw=;
+	s=k20201202; t=1689162426;
+	bh=TGhw0BOQLfLCUfvKyBi3wy+x2YHrjsCaDwvjVbjEVZw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=SLUF3s/Ssn0i4CTiFLoAcm0Ymwe+DLfMOGBBXyQDaT4s0DQMVxaKRavYx9hZwGu/m
-	 ptit0ZW5WGr7hbRiOih9Hzmwow4T3tpg7vz9ZrBy/05oXPZhCj/U1jKRE0OM98F1uM
-	 kg0h1TGRV/gg/mgbpOzuKOgZb1wnSKorKzN2hk2865SUAzfAeogwGMkuygzv7y1HAg
-	 l0WaYp/vTjFlZ/sxXQvKOOW9HYz+9tWtYgoYuqN+YQwlDz/2i4A03gdzQI5RcjekvU
-	 PWBXnP7JcfbkYSWlLWUFRrsavyjOfPLuRzGn+IsYJcvLi6nUtkHr1dLSF8BJSGCxb+
-	 F0SufDxjQ0KOg==
+	b=m+a21ZBwBD0dLXB9dUo3vmJ1K4Ko4ztyANwi9/iMKKtwbXia2rmAGh9lzTvFfquBH
+	 bb6U6QwxZ8wz5c8QcOT52DKSEhGNA80SaZPpO1Cy3Rey2D0GydCcV3Io1jHm0wofH4
+	 LDMYsllnFWxuLIFlPTNfOA2pvow6mzET8nKCuPljaLd5i/rxCwdbF446poiMzF1jIt
+	 seC+a9Phb7jS92O2SlmY1cMWcicKAi1S7BXxs/8ylnfL0p7VRN8uBYJ7Q5acnQCluk
+	 HPvXdIfUlRYx4pJ8YCre+jpIqPhLiygd3TvUK6kRTcbZWaCtGTExNgw35IYUSG/LqY
+	 S5S5A1IJVXifQ==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-In-Reply-To: <878rc1kerv.wl-kuninori.morimoto.gx@renesas.com>
-References: <878rc1kerv.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: soc-core: protect dlc->of_node under mutex
-Message-Id: <168916242215.46574.9918581139892744995.b4-ty@kernel.org>
-Date: Wed, 12 Jul 2023 12:47:02 +0100
+To: lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+ Trevor Wu <trevor.wu@mediatek.com>
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+In-Reply-To: <20230629074348.21670-1-trevor.wu@mediatek.com>
+References: <20230629074348.21670-1-trevor.wu@mediatek.com>
+Subject: Re: [PATCH 0/2] ASoC: mt8188: add memory-region support
+Message-Id: <168916242315.46574.12917006493052835977.b4-ty@kernel.org>
+Date: Wed, 12 Jul 2023 12:47:03 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: Q6JVCEWZBXCNPVERV5WJPDIJ5M7NYFVH
-X-Message-ID-Hash: Q6JVCEWZBXCNPVERV5WJPDIJ5M7NYFVH
+Message-ID-Hash: ML5JMHLLVDMUEJNDCRWX44XWSANVM255
+X-Message-ID-Hash: ML5JMHLLVDMUEJNDCRWX44XWSANVM255
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q6JVCEWZBXCNPVERV5WJPDIJ5M7NYFVH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ML5JMHLLVDMUEJNDCRWX44XWSANVM255/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,12 +97,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 29 Jun 2023 23:52:20 +0000, Kuninori Morimoto wrote:
-> dlc->of_node will be set on snd_soc_get_dlc(), but we want
-> 1) protect it by mutex, 2) set only when successed.
-> This patch do it.
+On Thu, 29 Jun 2023 15:43:46 +0800, Trevor Wu wrote:
+> This series introduces support for memory-region, allowing afe memif to
+> utilize the region specified in dts.
 > 
+> Trevor Wu (2):
+>   ASoC: mediatek: mt8188: add memory-region support
+>   ASoC: dt-bindings: mediatek,mt8188-afe: add memory-region
 > 
+> [...]
 
 Applied to
 
@@ -105,8 +113,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-core: protect dlc->of_node under mutex
-      commit: 065aa861b1243704b329a6d8407d8399614df6bd
+[1/2] ASoC: mediatek: mt8188: add memory-region support
+      commit: fd9965235099fc4cccd94f82a371192bf7645a3e
+[2/2] ASoC: dt-bindings: mediatek,mt8188-afe: add memory-region
+      commit: e3326e3bc4937622b4dc6e9721262483109b0f0c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
