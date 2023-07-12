@@ -4,128 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C83BAEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:18:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0A92EB64D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:18:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8A47DEB;
-	Wed, 12 Jul 2023 15:17:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8A47DEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EA3B850;
+	Wed, 12 Jul 2023 15:17:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EA3B850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689167881;
-	bh=BL+8Fo9QG0zNtj0y7Lgb/m7HMTTimtNx9krlJ8PROKk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1689167896;
+	bh=3pQppWVt3H+dmm96X12NXydkwFFAb723GVzqH+1F+V4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gcGSk8bqYNzJF2jjEAe5OAgfWPAFv03ET7nSaZ/GziVzh0pQwtd4NAgN9N0wbK6gu
-	 Sl8U7ZW/fqCbl8gPHZndeNJMh9NjEk+xfFZNJAG+Rc99jTANVzI/bSQi2jFXLjz7as
-	 oftcFOYXXQP1fmJS/YjbIbMSCImVbf6iLxGigU4A=
+	b=LuLjqRB1MmxSaooGy9pL94yaiY2r80z6uOqk6pUt+rP+0AyFBXLHnkUyVYX1N+ZUm
+	 Pg3rfFiCr0DDjBVc6Wq8I62prBKM1EKlw3CMs7YkLzfvk5wVmpYw6DEOipBtis4aIL
+	 IAV45YlPRCmiMiVJ44beGB/wHnJkiLY8oFyUw9dA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B92AFF805FA; Wed, 12 Jul 2023 15:14:33 +0200 (CEST)
+	id 2619EF8060D; Wed, 12 Jul 2023 15:14:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E40E2F805FB;
-	Wed, 12 Jul 2023 15:14:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62DFBF80602;
+	Wed, 12 Jul 2023 15:14:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 898D5F80553; Wed, 12 Jul 2023 13:48:01 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 60B74F80249; Wed, 12 Jul 2023 14:40:23 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C0838F800D2
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 13:47:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0838F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 98127F80153
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 14:40:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98127F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=MBDgsatf
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A2B01617A4;
-	Wed, 12 Jul 2023 11:47:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6827AC433C9;
-	Wed, 12 Jul 2023 11:47:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689162475;
-	bh=BL+8Fo9QG0zNtj0y7Lgb/m7HMTTimtNx9krlJ8PROKk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=MBDgsatfZpWqdAMwV6qveeIfLQ6N7jrowK9LjuavtymGZJ2RZ2Oc1MpqiENhz3quE
-	 3C52w4yN+XHh2R9JtS9d5C82wdCYmJLOyIegf8gaLO9fnbUYfmxOmBAQgyocJctiAI
-	 6E59ipQJyxOm+qSbYi3HkSZBX2tCKWY1iP+GjHTkOSnvKhvbhkax3ZarfbH5wu0wKK
-	 qx68/+nBANjiNw+aQoV6C1vLW4EDygmSD4fpo+BTkFwtXsm5w2b39Kd49evlvRZIW7
-	 KcdjwPLLtdt+TqxuNclA8arYxR3eJ8wd/C5/2IO8CCIn4CiFbVXi916UJQXvZWbBYq
-	 HcHdiJ1RRWg+A==
-From: Mark Brown <broonie@kernel.org>
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
- Yang Yingliang <yangyingliang@huawei.com>,
- Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
- Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>,
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-riscv@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Sanjay R Mehta <sanju.mehta@amd.com>,
- Radu Pirea <radu_nicolae.pirea@upb.ro>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@microchip.com>,
- Tudor Ambarus <tudor.ambarus@linaro.org>,
- Serge Semin <fancer.lancer@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Heiko Stuebner <heiko@sntech.de>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Orson Zhai <orsonzhai@gmail.com>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Chunyan Zhang <zhang.lyra@gmail.com>,
- Alain Volmat <alain.volmat@foss.st.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Max Filippov <jcmvbkbc@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Richard Cochran <richardcochran@gmail.com>
-In-Reply-To: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
-References: <20230710154932.68377-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: (subset) [PATCH v2 00/15] spi: Header and core clean up and
- refactoring
-Message-Id: <168916246513.47003.10097115249886306259.b4-ty@kernel.org>
-Date: Wed, 12 Jul 2023 12:47:45 +0100
+ unprotected) header.d=baylibre-com.20221208.gappssmtp.com
+ header.i=@baylibre-com.20221208.gappssmtp.com header.a=rsa-sha256
+ header.s=20221208 header.b=w9wh4Pkr
+Received: by mail-wr1-x42a.google.com with SMTP id
+ ffacd0b85a97d-315adee6ac8so542409f8f.2
+        for <alsa-devel@alsa-project.org>;
+ Wed, 12 Jul 2023 05:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689165613;
+ x=1691757613;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SkNQv7geS5CR2LiJ7vpq5fz0PNWmI57+KWeY+aP5fjo=;
+        b=w9wh4Pkr8rOHj8Cbmzkuimk9nKuqBy9JUTg8kjwlj8n8OPSxsfutY+Kk8wexoYVZX+
+         5xTPaDLVpb0WZ1xVXeOGb5YPK0rqIiTmWXMM+XytwPPKhxGylqcDYQxJnXSyIpgqBgDZ
+         ZlC7q6y7wxiej8SzCDfSNI2BXCYXpQaTQ3lTCUT9hSlWjyY5RbocTNvWbnF8GZT3eY0U
+         /eyMserg5zIMY1c+JA19IF6abF6bzOYSBc/fPK/AeOojgY/sKEhdFQ6jL+l7TkJgJCIh
+         2xG/fV/JRFf6gwsisfocp8jKlghZoi7JjGzlH/dRcdCo8U9wvoJOnlsujx7JfLc4BxN6
+         YDiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689165613; x=1691757613;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SkNQv7geS5CR2LiJ7vpq5fz0PNWmI57+KWeY+aP5fjo=;
+        b=FzVY3xx297fvVlZYi1Hrju3ZeivWavCVxc3bcAXVbPf89plvtTY0PdWGsEibf9/RY3
+         FDfwBb1yHJiZlj7/Kmj6nwB3nOy3GbQ1+fC65lECbFX2k3QP2WrxninvDwD2iE9xO7cQ
+         261XXK6CG7dJxjfwwBsPUCxOiQg0eNYCHR27ybIl3RLnMrTAPR7cUWg2JaMK/nHwvOkX
+         SuVpVAk0RpIGf6atmcDhEz2Aqti9u3/IYkPV7v/ipzXr2bsI4xdnwrRY3xiuFvLkFZvb
+         4zxeXMPf0/iGz4mr376iv5KLcu7U02abJnV+/NW9wd1Dqw5TYaYZ90o94205BDuYKxYG
+         gaGA==
+X-Gm-Message-State: ABy/qLa+uefjasmWmf5ubcKmorDsDnuPZPjXhxE9CORLVZhj5VDayzyq
+	gtfr+Ctw8CuGW0kMkjBHWRtg8A==
+X-Google-Smtp-Source: 
+ APBJJlF5yLpkbdjZuR9UBaY6jqLSbZs8oxILlpMjHaH5n0w7cV1ebVwGScR6HD9FlErXpx3JbkAshg==
+X-Received: by 2002:adf:d0c9:0:b0:314:1ce9:3c86 with SMTP id
+ z9-20020adfd0c9000000b003141ce93c86mr16299116wrh.0.1689165613366;
+        Wed, 12 Jul 2023 05:40:13 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id
+ l16-20020a1c7910000000b003fb40ec9475sm4978175wme.11.2023.07.12.05.40.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 05:40:12 -0700 (PDT)
+Message-ID: <fab21c8b-13d7-1046-6b13-51a3d6684a2f@baylibre.com>
+Date: Wed, 12 Jul 2023 14:40:11 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RESEND 1/2] ASoC: mediatek: mt8188: add memory-region support
+Content-Language: en-US
+To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
+ lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20230712070821.23971-1-trevor.wu@mediatek.com>
+ <20230712070821.23971-2-trevor.wu@mediatek.com>
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20230712070821.23971-2-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-MailFrom: broonie@kernel.org
-X-Mailman-Rule-Hits: max-recipients
+X-MailFrom: amergnat@baylibre.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: EFCCBTPCNC333N4RTFA2PRA6ISJD65VC
-X-Message-ID-Hash: EFCCBTPCNC333N4RTFA2PRA6ISJD65VC
-X-Mailman-Approved-At: Wed, 12 Jul 2023 13:14:25 +0000
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 6HR2WCR3EJEJMWIPHVNTMBBUGPC2OUBU
+X-Message-ID-Hash: 6HR2WCR3EJEJMWIPHVNTMBBUGPC2OUBU
+X-Mailman-Approved-At: Wed, 12 Jul 2023 13:14:26 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EFCCBTPCNC333N4RTFA2PRA6ISJD65VC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6HR2WCR3EJEJMWIPHVNTMBBUGPC2OUBU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,68 +126,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 10 Jul 2023 18:49:17 +0300, Andy Shevchenko wrote:
-> Various cleanups and refactorings of the SPI header and core parts
-> united in a single series. It also touches drivers under SPI subsystem
-> folder on the pure renaming purposes of some constants.
+
+
+On 12/07/2023 09:08, Trevor Wu wrote:
+> In certain projects, it is necessary to utilize the reserved memory
+> region for audio dma. The patch takes into account the dts property
+> 'memory-region', allowing for the specification of memory for afe memif
+> through device tree.
 > 
-> No functional change intended.
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> ---
+>   sound/soc/mediatek/mt8188/mt8188-afe-pcm.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> Changelog v2:
-> - added new patches 3,4,5,10,13,14
-> - massaged comment and kernel doc in patch 9
-> - split used to be patch 4 to patches 11,12
-> - covered a few things in SPI core in patch 15
-> - amended commit message for above (Mark)
-> - reshuffled patches in the series for better logical grouping
-> 
-> [...]
+> diff --git a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
+> index 6a24b339444b..5e14655c5617 100644
+> --- a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
+> +++ b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
+> @@ -16,6 +16,7 @@
+>   #include <linux/of.h>
+>   #include <linux/of_address.h>
+>   #include <linux/of_platform.h>
+> +#include <linux/of_reserved_mem.h>
+>   #include <linux/pm_runtime.h>
+>   #include <linux/soc/mediatek/infracfg.h>
+>   #include <linux/reset.h>
+> @@ -3193,11 +3194,15 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
+>   {
+>   	struct mtk_base_afe *afe;
+>   	struct mt8188_afe_private *afe_priv;
+> -	struct device *dev;
+> +	struct device *dev = &pdev->dev;
 
-Applied to
+I think that make sense to replace all "&pdev->dev" by "dev" in the next 
+called functions:
+- dma_set_mask_and_coherent
+- devm_kzalloc
+- devm_kzalloc
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+>   	struct reset_control *rstc;
+>   	struct regmap *infra_ao;
+>   	int i, irq_id, ret;
+>   
+> +	ret = of_reserved_mem_device_init(dev);
+> +	if (ret)
+> +		dev_dbg(dev, "failed to assign memory region: %d\n", ret);
+> +
+>   	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(33));
+>   	if (ret)
+>   		return ret;
+> @@ -3213,7 +3218,6 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
+>   
+>   	afe_priv = afe->platform_priv;
+>   	afe->dev = &pdev->dev;
+> -	dev = afe->dev;
+>   
+>   	afe->base_addr = devm_platform_ioremap_resource(pdev, 0);
+>   	if (IS_ERR(afe->base_addr))
 
-Thanks!
-
-[01/15] spi: Remove unneeded OF node NULL checks
-        commit: fbab5b2c09060e8034fee6ec2df69a62594fb7db
-[02/15] spi: Drop duplicate IDR allocation code in spi_register_controller()
-        commit: 440c47331bdb889e24128c75387c695ca81d9b9b
-[03/15] spi: Replace if-else-if by bitops and multiplications
-        commit: 2b308e7176e366a52a07a49868e3b1a295e56785
-[06/15] spi: Use sysfs_emit() to instead of s*printf()
-        commit: f2daa4667fda1aa951b91da0ae9675a5da9d7716
-[07/15] spi: Sort headers alphabetically
-        commit: edf6a864c996f9a9f5299a3b3e574a37e64000c5
-[08/15] spi: Clean up headers
-        (no commit info)
-[11/15] spi: Get rid of old SPI_MASTER_NO_TX & SPI_MASTER_NO_RX
-        commit: c397f09e5498994790503a64486213ef85e58db9
-[12/15] spi: Get rid of old SPI_MASTER_MUST_TX & SPI_MASTER_MUST_RX
-        commit: 90366cd60133a9f5b6a2f31360367c658585e125
-[13/15] spi: Rename SPI_MASTER_GPIO_SS to SPI_CONTROLLER_GPIO_SS
-        commit: 82238d2cbd99ebd09dda48fb7c1c8802097da6a2
-[14/15] spi: Convert to SPI_CONTROLLER_HALF_DUPLEX
-        commit: 7a2b552c8e0e5bb280558f6c120140f5f06323bc
-[15/15] spi: Fix spelling typos and acronyms capitalization
-        commit: 702ca0269ed56e2d8dae7874a4d8af268e2a382e
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+-- 
+Regards,
+Alexandre
