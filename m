@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3910EEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 11:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1F69C04A6A
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 11:49:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 263EA84C;
-	Wed, 12 Jul 2023 13:48:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 263EA84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1263886;
+	Wed, 12 Jul 2023 13:48:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1263886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689162559;
-	bh=TfYXCDxUmVUxSwQOO9/NMcMApKt7tS2ywxqe784ZU2s=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=mHIxZFVxXrJe060e+uSGWJL6ZKK/AKz2/GTAOaxgpzJLQKISBzWTeVxG5hTY03O7P
-	 gmwDaxzxqK9ux2LmswD4mKbAdd0tp5CkrxgZ3UrRlP4HpNWPbaX/V3lcAmIotVuUzX
-	 eA+qL3c5BoSUDZMBKNRCIX7XnYd8esb9sX3U8tmk=
+	s=default; t=1689162582;
+	bh=JXAMcZrpRoE91F6XTSvxZwcYhk6D31xbdpQ1w4SM5Ns=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=puiQgRoH4N+/HWytvaKlAAI+lZJ8rLlfgGRkQLq+WTjFdmqFzgFVDTF3318nxjoQi
+	 e0GePhURZ+0h31ynkfQayBvBqxwQWIqqIuThPILqTe7D6e0YOAp7wWMXKKFOMlcE+7
+	 IORuYLBjyVOeFmVEg4rUt/TkTct5Eu3QkKOhUlS0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B5B6CF805BB; Wed, 12 Jul 2023 13:46:58 +0200 (CEST)
+	id 98116F805C4; Wed, 12 Jul 2023 13:47:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54DE3F80587;
-	Wed, 12 Jul 2023 13:46:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23749F805B4;
+	Wed, 12 Jul 2023 13:47:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5DB9F80587; Wed, 12 Jul 2023 13:46:52 +0200 (CEST)
+	id E7702F805A0; Wed, 12 Jul 2023 13:46:55 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CCC37F80579
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 13:46:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCC37F80579
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2571DF80579
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 13:46:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2571DF80579
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ExmBsOQq
+ header.s=k20201202 header.b=Ug77po3J
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 96DC96178F;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C692961797;
+	Wed, 12 Jul 2023 11:46:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EE21C433CD;
 	Wed, 12 Jul 2023 11:46:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE6FAC433CC;
-	Wed, 12 Jul 2023 11:46:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689162408;
-	bh=TfYXCDxUmVUxSwQOO9/NMcMApKt7tS2ywxqe784ZU2s=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ExmBsOQqJe3sMrBHNa6sBltdfVww5GGgVG69y/XJgG4ZToDjr+hUayOgITI3SKFnS
-	 9IbEe+ViobENcNR4klosGGZncfa9i+OHHA6WPQE+q2TescPnibLAohJggRPQpldSRc
-	 0f5ppmK5qbNAkQxJ8Bz0ReabzetYktb76AiAOoxKyykm0VnS2+fNB3V+lXvhWbaWwJ
-	 dWSic2EF3tcjdZAIyLwOeyyO5irRrUQv6iORKU3SqzM1UBLWK7esF37cdnhX75FEnq
-	 HpbWesuGjMvEa2J36BU4/IOlSzq10nmpTU2jHIwK8OB7Z1kc3tSiYJouWiVv2LKzp0
-	 kG9Qa0ihYrOQg==
+	s=k20201202; t=1689162411;
+	bh=JXAMcZrpRoE91F6XTSvxZwcYhk6D31xbdpQ1w4SM5Ns=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=Ug77po3JMwPWMfa4AgH0aTo577IWr7JHKnVhLNkT7MaYL7jRKqyYx9n7qmXYFms1F
+	 voLs+23dPqdWNMKTdRUW9Lti7Ynb2Te3lqf+1WarjmTBFRD+actcKwAE3Ht/QjArKi
+	 Jwa0dPaTXTU4WLNowXxlbesUOiY1YGQdey9ZNtdhQsQCVOEaOkV79J9bC+C3U1LitF
+	 1vlUyevOEuItBBWnt9mwXwolZG9ucqQfWvdxMIv5mxEIc4K37NtC0Q7vi3N9qrJUX3
+	 ZfwIsHV7tl3wm103IrqoN57DbjNBT+kTdH4MFQImTByu6QCJ8TBg5Hobmf43jgO3Gb
+	 sdufjRjTIFVgw==
 From: Mark Brown <broonie@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: lgirdwood@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com,
- CTLIN0@nuvoton.com, WTLI@nuvoton.com, SJLIN0@nuvoton.com,
- scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
-In-Reply-To: <20230628085009.1130318-1-wtli@nuvoton.com>
-References: <20230628085009.1130318-1-wtli@nuvoton.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: nau8821: Convert to dtschema
-Message-Id: <168916240469.46574.6320216062589774248.b4-ty@kernel.org>
-Date: Wed, 12 Jul 2023 12:46:44 +0100
+To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Chancel Liu <chancel.liu@nxp.com>
+In-Reply-To: <20230625065412.651870-1-chancel.liu@nxp.com>
+References: <20230625065412.651870-1-chancel.liu@nxp.com>
+Subject: Re: [PATCH] ASoC: imx-pcm-rpmsg: Set PCM hardware parameters
+ separately
+Message-Id: <168916240829.46574.4591447025609181967.b4-ty@kernel.org>
+Date: Wed, 12 Jul 2023 12:46:48 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: PICAFKMHTWWEEH2NKLFI2NGW5CGXE3NR
-X-Message-ID-Hash: PICAFKMHTWWEEH2NKLFI2NGW5CGXE3NR
+Message-ID-Hash: OL6K6TYMIEAPHVELPCCH7UX4DCWVK53H
+X-Message-ID-Hash: OL6K6TYMIEAPHVELPCCH7UX4DCWVK53H
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PICAFKMHTWWEEH2NKLFI2NGW5CGXE3NR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OL6K6TYMIEAPHVELPCCH7UX4DCWVK53H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,8 +96,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 28 Jun 2023 16:50:09 +0800, Seven Lee wrote:
-> Convert the NAU8821 audio CODEC bindings to DT schema.
+On Sun, 25 Jun 2023 14:54:12 +0800, Chancel Liu wrote:
+> Different PCM devices may have different PCM hardware parameters. It
+> requires PCM hardware parameters set separately if there is more than
+> one rpmsg sound card.
 > 
 > 
 
@@ -108,8 +109,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: nau8821: Convert to dtschema
-      commit: 754d1ce3ab6bec057bf94b0ec1a789fdfa2fef99
+[1/1] ASoC: imx-pcm-rpmsg: Set PCM hardware parameters separately
+      commit: 82770b76abae2ff9d70f354a61983b921e63bae1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
