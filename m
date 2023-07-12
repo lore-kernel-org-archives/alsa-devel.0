@@ -4,78 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C5D7EB64D9
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 11:49:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1CD4EB64D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 11:50:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1224D3E7;
-	Wed, 12 Jul 2023 13:49:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1224D3E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8D41A4C;
+	Wed, 12 Jul 2023 13:49:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8D41A4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689162594;
-	bh=KmwlamqPlSfph8KdfjR/gbkiDbd94LmD5FbVEGJevbM=;
+	s=default; t=1689162608;
+	bh=QhVaK0LsU7eehMipwwCOTnQKn7A7QZ/0f5Q1VZIwGuA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mz8LQT7sxK/G7KfXHCoJYV6yvN1+R7Y8WGGJv8nPi3qMOxmcdsoiWJVGGab2FoXL+
-	 BDU00XGSBMr69ZTpvecaoTmVaRMvzh2RO84PSCXJd7Fl13s8e6H8ZO8VOoipmnwGWW
-	 3WszVZF9uOwCrulByQ+AmrcZKg05gtjN6JlB0vDw=
+	b=ag4pMHtr/ju4goSOhZaDTTM8NvRi/YbtwlVwc4rSzAcH0MxM2rX0qQcSISpLDNG2B
+	 rK7fR/rkJkvwZaDJs9OnrF7P8b3Vi5X1WKrX/7xm+jyUhRgo4Xx7ZbIG+BQBZ9ThjS
+	 wv1VdhCsDPCCsWi0Bo5hP6puuyh5i1sLAKeIr2v4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 67D90F805D3; Wed, 12 Jul 2023 13:47:03 +0200 (CEST)
+	id 4B829F805DF; Wed, 12 Jul 2023 13:47:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7565F805BF;
-	Wed, 12 Jul 2023 13:47:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96514F80290;
+	Wed, 12 Jul 2023 13:47:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93024F805B1; Wed, 12 Jul 2023 13:46:57 +0200 (CEST)
+	id 548E4F805D6; Wed, 12 Jul 2023 13:47:06 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E8BF4F805AE
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 13:46:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8BF4F805AE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 66C4BF805CA
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 13:47:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66C4BF805CA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Uo6+1utY
+ header.s=k20201202 header.b=GUdoi12+
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id DC7BC6178F;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2E222617AA;
+	Wed, 12 Jul 2023 11:47:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14254C433C8;
 	Wed, 12 Jul 2023 11:46:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7269C433C8;
-	Wed, 12 Jul 2023 11:46:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689162413;
-	bh=KmwlamqPlSfph8KdfjR/gbkiDbd94LmD5FbVEGJevbM=;
+	s=k20201202; t=1689162422;
+	bh=QhVaK0LsU7eehMipwwCOTnQKn7A7QZ/0f5Q1VZIwGuA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Uo6+1utYnsjFmyazMllTs8Sukvnz5rMWWuc592F0DwlSu2N9H+6ZBNER5AFcSIvUb
-	 hnEINpBXKGOa4LHJdcJH5/rhifuP9/zdt7dVLrIvYImN8qRk4RqAVFM6aVkmskCGKv
-	 md0z+KeC0Mo6tkv3pujE57CuoXENpTPD9yAUFERlrWCncqSC/SjzOW4xiTzjt/9nWw
-	 nQIJMQjFHMf19KykH/FWw9il44rHQIIro1+DgaL08PvD/UU4pyD3/7HUSyUQSRdABd
-	 keS3mkdmtsyfWAWMzEPf7AU2V934TwgDkjMlfuc2j3ACReTBFJDNR3D45pHRja7lHF
-	 6gBCRYIyfrK3Q==
+	b=GUdoi12+nwBnrPTbxYZ2a9geyEqe0U28by0VFwg6tqYv117M3vJeo7W/c3Pf+4e79
+	 r2F0W5C/3UO3uWWhtMs/W70+WVAtPg6XXuuAqOhcLxR9qj9zDMgABk3t4NgHH+Dk/B
+	 BxY/P+ZUcLNmE5YBLA+Dtu+huFUqYJwg75B5MHnv4mR/QPOc8U81qsaUeEj81gMPvu
+	 /Bu9qNp5H337C4v2CNQhCHMPKOlb4szHXTtmmNdzjicIAk24uoczmt7db7QUR/dBbG
+	 p9wmn7CIh20RMyzN0MbM2MyCNcUQhjq/s5IV+/jEfsnU0L2X0zrAXnrgbGzuiRNMiy
+	 wFPmrWQk+3Plg==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: tiwai@suse.com, perex@perex.cz, zhuning@everest-semi.com,
- amadeuszx.slawinski@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- hdegoede@redhat.com
-In-Reply-To: <20230629112449.1755928-1-cezary.rojewski@intel.com>
-References: <20230629112449.1755928-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH 0/8] ASoC: Intel: avs: New boards and fixes to existing
- ones
-Message-Id: <168916241146.46574.17236718708306500593.b4-ty@kernel.org>
-Date: Wed, 12 Jul 2023 12:46:51 +0100
+To: cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Benjamin Li <benl@squareup.com>, James Willcox <jwillcox@squareup.com>,
+ Joseph Gates <jgates@squareup.com>, Stephan Gerhold <stephan@gerhold.net>,
+ Zac Crosby <zac@squareup.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Lee Jones <lee@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Xu Yang <xu.yang_2@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+ Christian Marangi <ansuelsmth@gmail.com>,
+ Wesley Cheng <quic_wcheng@quicinc.com>, Jun Nie <jun.nie@linaro.org>,
+ Max Chen <mchen@squareup.com>, Shawn Guo <shawn.guo@linaro.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Vincent Knecht <vincent.knecht@mailoo.org>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Konrad Dybcio <konradybcio@kernel.org>, alsa-devel@alsa-project.org,
+ iommu@lists.linux.dev, linux-usb@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Leo Yan <leo.yan@linaro.org>, Rob Herring <robh@kernel.org>,
+ Andy Gross <andy.gross@linaro.org>
+In-Reply-To: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
+References: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
+Subject: Re: (subset) [PATCH 00/11] Even more msm bindings fixes
+Message-Id: <168916241380.46574.15546639128394124503.b4-ty@kernel.org>
+Date: Wed, 12 Jul 2023 12:46:53 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: UGG3GRA5KBR5IPM2HMDLGOFD76JNLXGR
-X-Message-ID-Hash: UGG3GRA5KBR5IPM2HMDLGOFD76JNLXGR
+Message-ID-Hash: PT3BAUD67YBCNDWSNM5AWP23T2Z32R2T
+X-Message-ID-Hash: PT3BAUD67YBCNDWSNM5AWP23T2Z32R2T
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UGG3GRA5KBR5IPM2HMDLGOFD76JNLXGR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PT3BAUD67YBCNDWSNM5AWP23T2Z32R2T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,14 +119,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 29 Jun 2023 13:24:41 +0200, Cezary Rojewski wrote:
-> Series adds support for two boards: es8336 and rt5663. The former is
-> utilized by some KBL-based tablets whereas the latter unlocks
-> Chromebooks with rt5663 i2c codecs.
+On Tue, 27 Jun 2023 18:24:16 +0200, Konrad Dybcio wrote:
+> This series contains couple more random dt schema warning fixes, centered
+> around linux-msm.
 > 
-> As existing implementation of es8336 (es8316.c) codec driver is not
-> prepared to cope with KBL-based platforms, couple of small,
-> clock-related changes precede anything avs-driver related.
+> All of the patches (except) the last two are pretty much independent.
+> Patch 1 is not only a bindings fix, but also a functional one.
+> 
 > 
 > [...]
 
@@ -114,22 +135,8 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: codecs: es8316: Add support for 24 MHz MCLK
-      commit: be7dc10ab0bc247c2abbdefdaa9d5196df88e9d1
-[2/8] ASoC: codecs: es8316: Add support for S24_3LE format
-      commit: c30d10aeb398cf71662cb8c6b0090ed9ab38dd8e
-[3/8] ASoC: Intel: avs: Add es8336 machine board
-      commit: 32e40c8d6ff920354fde36299198c80e7a7d3b76
-[4/8] ASoC: Intel: avs: Load es8336 board on KBL-based platforms
-      commit: d55bb0f1c1a365c42d8b4032cb965a255692a400
-[5/8] ASoC: Intel: avs: Add rt5663 machine board
-      commit: 05c5d4e326cc41221a9c065c1e6fee4cdca549b1
-[6/8] ASoC: Intel: avs: Load rt5663 board on KBL-based platforms
-      commit: 3ed180ac3cec77fe193573adcbaaca34bbc63551
-[7/8] ASoC: Intel: avs: rt5682: Add missing components
-      commit: 27cd41698de49c8afbcc148a0d76c35da3271519
-[8/8] ASoC: Intel: avs: rt5682: Tidy up hw_params()
-      commit: 7012fa7d56b7b3e100e4ff0c8d8d7a183f09130d
+[05/11] dt-bindings: sound: Convert pm8916-wcd-analog-codec to YAML
+        commit: e125891c2ed6f6d3f59375caf04d76802c86efae
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
