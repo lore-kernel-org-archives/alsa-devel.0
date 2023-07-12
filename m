@@ -4,48 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B1C4EB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:27:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CF01EB64D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:27:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 386F883A;
-	Wed, 12 Jul 2023 15:26:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 386F883A
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8338A4B;
+	Wed, 12 Jul 2023 15:26:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8338A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689168426;
-	bh=xqQINfo99SfX8A2v+elbxn62fhSORm4PQ4GJ/8oF95g=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	s=default; t=1689168455;
+	bh=yTRvXenkGrqL9z6P0Xvf6hCPwgm+EP+8gjM+700OikM=;
+	h=Subject:From:To:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=CvPrfNrywg16HHWR7VaNXbIlBLzwd+KtlZX2HCH/QC1xnQeLavhNVxnNkgSOVpGif
-	 lWOHXkvh4nEHFJnb04TEQe1inGO4Pe9aPce+D9Lz608/KpH6sWdosD+1t0+L2lM4dJ
-	 TeJiaiTaQ0csDVCuQZB5U0Intkd3MIwT2YGRCynk=
+	b=DVsT3W75D91l5c3p36RVwBaow0ARKLWCLFlkUQLY0JW4JjFoG/JmtOA9nUKgWsavM
+	 jZv7Pyn6THQ6ERCaLTFlLRQoXy3Jrbld5QYRY2btKoWPBxBgKX33k3ARVscGwgfMFf
+	 0Ye1hujtaT+vaYnENOzuSXrig0RKjPYHUAjecClk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EC75EF80236; Wed, 12 Jul 2023 15:25:54 +0200 (CEST)
+	id 5C21FF80552; Wed, 12 Jul 2023 15:26:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B52BF80249;
-	Wed, 12 Jul 2023 15:25:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1CE69F80548;
+	Wed, 12 Jul 2023 15:26:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7FFDF80249; Wed, 12 Jul 2023 15:25:50 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28C80F80093
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 15:25:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28C80F80093
+	id 7E6FEF80549; Wed, 12 Jul 2023 15:26:15 +0200 (CEST)
+Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
+ [10.254.200.11])
+	by alsa1.perex.cz (Postfix) with ESMTP id 789D0F80249
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 15:26:15 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
+Subject: Re: [PATCH v2 00/37] ALSA: Add MIDI 2.0 support
+From: "Symbolic Debugger" <happy.debugging@gmail.com>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1689168343997067213-webhooks-bot@alsa-project.org>
-References: <1689168343997067213-webhooks-bot@alsa-project.org>
-Subject: ALC4082 - ASRock Z790 PG-ITX/TB4
-Message-Id: <20230712132550.C7FFDF80249@alsa1.perex.cz>
-Date: Wed, 12 Jul 2023 15:25:50 +0200 (CEST)
-Message-ID-Hash: 4VPDFIUDWJ6MFR4HUJQ66LQQFQB4G4XP
-X-Message-ID-Hash: 4VPDFIUDWJ6MFR4HUJQ66LQQFQB4G4XP
-X-MailFrom: github@alsa-project.org
+Date: Wed, 12 Jul 2023 13:26:15 -0000
+Message-ID: 
+ <168916837549.20.16800242816564295866@mailman-web.alsa-project.org>
+In-Reply-To: 
+ <168839241976.20.1297601488525827705@mailman-web.alsa-project.org>
+References: <168839241976.20.1297601488525827705@mailman-web.alsa-project.org>
+User-Agent: HyperKitty on https://mailman.alsa-project.org/
+Message-ID-Hash: 5NYQNUABRBHJP7BVO7NQZNH5COHDRNCV
+X-Message-ID-Hash: 5NYQNUABRBHJP7BVO7NQZNH5COHDRNCV
+X-MailFrom: happy.debugging@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +59,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4VPDFIUDWJ6MFR4HUJQ66LQQFQB4G4XP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IRR44W2X2UQY3FJYRG6C6UPTEPRQIO3X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,19 +68,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #334 was edited from Shmob1:
+A question about the implementation of notification messages (name, endpoint and function blocks)
 
-I have an [ASRock Z790 PG-ITX/TB4](https://pg.asrock.com/MB/Intel/Z790%20PG-ITXTB4/index.asp) which has the `ALC4082` Realtek chipset connected over USB, that has been mentioned in a number of issues, most recently #229.
+The spec defines that these notification only get sent upon receiving a Discovery message. 
 
-It seems the configuration changes in that issue (notably, https://github.com/hwchong/alsa-ucm-conf/commit/3ec7e6e2a61240764b77c30892f0bc56803799cc) work on my board as well, with a small modification. Unlike the Taichi boards, my Realtek audio driver is at `USB26ce:0a08`, not `USB26ce:0a06`. Making the necessary regex changes in `ALC4080-HiFi.conf` and `USB-Audio.conf` enables functionality on my board.
-
-I am happy to make a PR to merge these changes if pertinent.
-
-Thanks for the great work!
-
-
-Update:
-I am unable to get more than 2 channels through spdif either using AC3 or DTS
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/334
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Does this mean that the ALSA driver will poll at specific intervals to send a discover message or  can the device send a notification even without a discovery message from the ALSA driver ? I could imagine a function block info / name, or endpoint info/ name or endpoint info change (i.e when the device changes the number of function block)
