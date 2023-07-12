@@ -4,116 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3CE7EB64D9
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:18:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B1C4EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 13:27:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8CF4203;
-	Wed, 12 Jul 2023 15:18:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8CF4203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 386F883A;
+	Wed, 12 Jul 2023 15:26:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 386F883A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689167930;
-	bh=/NxuoQdfKa7E0cwzAqMUuCOBMLeJ3bIfXpOnOIO9VXU=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=t3KNUe7CiCitpowY0nAvqVDZWj4/kZuvUGWXZ+zdxyWhu7yAE7Sk6KpLqIa2xn1T7
-	 0oJMpXk3R2KmdJ9nMP66rpd3hzQPyNB1wyHB07hpOUWtp1pYnIVfc4QMrRCd5ZAXL5
-	 p4Hm4EAOw6C7nzt92iB8RxeS8KBKaqy1QyINCh9s=
+	s=default; t=1689168426;
+	bh=xqQINfo99SfX8A2v+elbxn62fhSORm4PQ4GJ/8oF95g=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=CvPrfNrywg16HHWR7VaNXbIlBLzwd+KtlZX2HCH/QC1xnQeLavhNVxnNkgSOVpGif
+	 lWOHXkvh4nEHFJnb04TEQe1inGO4Pe9aPce+D9Lz608/KpH6sWdosD+1t0+L2lM4dJ
+	 TeJiaiTaQ0csDVCuQZB5U0Intkd3MIwT2YGRCynk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CBEC2F80619; Wed, 12 Jul 2023 15:14:42 +0200 (CEST)
+	id EC75EF80236; Wed, 12 Jul 2023 15:25:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68D83F80549;
-	Wed, 12 Jul 2023 15:14:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B52BF80249;
+	Wed, 12 Jul 2023 15:25:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 25B88F80249; Wed, 12 Jul 2023 14:53:10 +0200 (CEST)
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
- [IPv6:2a00:1450:4864:20::630])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AAB0AF80153
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 14:53:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAB0AF80153
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=HZPxYS2q
-Received: by mail-ej1-x630.google.com with SMTP id
- a640c23a62f3a-9939fbb7191so161698366b.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 12 Jul 2023 05:53:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689166384; x=1691758384;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ef9ldj54LfSreJO+VbHq1Yil94yCCRtncr0AA0IgxoI=;
-        b=HZPxYS2q0wdP+oUdlVbS0bHA1gduL/QbI3aYqBTAD7g0jrxG3ckLP7O+qlZaCgpYtZ
-         uR4tL/+dPcz2X7WQA7Fx5G0jEmaDPw2Hhj0hWt2d2dgvDINwW3fJ9RFCZgPA9NDBkJb5
-         kZgq4OzAms76DQJFiMj/dA8201Fs9jVy+T1gw9BJIwYxEbnqt9CZPa1Yi9XAcVJYJGtm
-         dTuHFo/YgPTWVnjwjFDJgMYaMbkZMTOHkjl9hN/mRikq8ZEUDstWunwXChiIZQ93QvNf
-         N/sg+1KPo3DQA/CI8eCoAQaMO9n1/x2MW6pBZtB+m1YOE0718F6Wvr9mm4rOJU8SuPhc
-         u1zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689166384; x=1691758384;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ef9ldj54LfSreJO+VbHq1Yil94yCCRtncr0AA0IgxoI=;
-        b=RljbqkOeb+8AhadgCdD7jErmLRgLOUI0NzRg7jsAS4cvHRwXfDdNqH8DoIHR19996H
-         ZVsX9zBMiA8pPVs3BurVsE73wOa67bQH5tt605YhFwaLjcM0BYhw/1GH5BwRQNvC41Ig
-         FQT0LucYjxwBsgXRD0ttKb2mcQtNKY9OQReSsSVyVoOlfdaw47MczXuZ3larvi+zAfdr
-         OX/XCoO26VdorXdX/+htlfSa2l7b5uXNkBiYeO7sEVm+osqLkgmgw6Wyofx2uu18HZIo
-         XR8Szn8+lY4foid+Mn5T6qJG6gYLlSq+O+kVK56MfDcTTyMD92shYxYG0R2wMkfff2zA
-         pimw==
-X-Gm-Message-State: ABy/qLYhjzHpcpr7SdPPfUjVuDkMgU5684QHC15FOhB7z1AzIFnyBFJk
-	Kbj/zMPxWIxP6tabAN1oXa8=
-X-Google-Smtp-Source: 
- APBJJlEQwzCXnLSG9Db+b/tZpzul5Q8lvD7Ip0hLgkyKGo/6GNq4Xfrpf2kkMy9+NX6RlyZ+hk/4uQ==
-X-Received: by 2002:a17:906:64c2:b0:993:d632:2c3 with SMTP id
- p2-20020a17090664c200b00993d63202c3mr2421780ejn.21.1689166383605;
-        Wed, 12 Jul 2023 05:53:03 -0700 (PDT)
-Received: from localhost.localdomain
- ([2a01:c844:242b:b300:215:5dff:fe81:5e96])
-        by smtp.gmail.com with ESMTPSA id
- l6-20020a170906230600b00991faf3810esm2544506eja.146.2023.07.12.05.53.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 05:53:03 -0700 (PDT)
-From: Matus Gajdos <matuszpd@gmail.com>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: Matus Gajdos <matuszpd@gmail.com>,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_sai: Disable bit clock with transmitter
-Date: Wed, 12 Jul 2023 14:49:33 +0200
-Message-Id: <20230712124934.32232-1-matuszpd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	id C7FFDF80249; Wed, 12 Jul 2023 15:25:50 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 28C80F80093
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 15:25:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28C80F80093
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: matuszpd@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1689168343997067213-webhooks-bot@alsa-project.org>
+References: <1689168343997067213-webhooks-bot@alsa-project.org>
+Subject: ALC4082 - ASRock Z790 PG-ITX/TB4
+Message-Id: <20230712132550.C7FFDF80249@alsa1.perex.cz>
+Date: Wed, 12 Jul 2023 15:25:50 +0200 (CEST)
+Message-ID-Hash: 4VPDFIUDWJ6MFR4HUJQ66LQQFQB4G4XP
+X-Message-ID-Hash: 4VPDFIUDWJ6MFR4HUJQ66LQQFQB4G4XP
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: WG2TUP5PQS32DQQY5IUMB3HKXOBK37BA
-X-Message-ID-Hash: WG2TUP5PQS32DQQY5IUMB3HKXOBK37BA
-X-Mailman-Approved-At: Wed, 12 Jul 2023 13:14:26 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WG2TUP5PQS32DQQY5IUMB3HKXOBK37BA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4VPDFIUDWJ6MFR4HUJQ66LQQFQB4G4XP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,39 +66,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Otherwise bit clock remains running writing invalid data to the DAC.
+alsa-project/alsa-ucm-conf issue #334 was edited from Shmob1:
 
-Signed-off-by: Matus Gajdos <matuszpd@gmail.com>
----
- sound/soc/fsl/fsl_sai.c | 2 +-
- sound/soc/fsl/fsl_sai.h | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+I have an [ASRock Z790 PG-ITX/TB4](https://pg.asrock.com/MB/Intel/Z790%20PG-ITXTB4/index.asp) which has the `ALC4082` Realtek chipset connected over USB, that has been mentioned in a number of issues, most recently #229.
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 5e09f634c61b..dcc7fbe7acac 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -719,7 +719,7 @@ static void fsl_sai_config_disable(struct fsl_sai *sai, int dir)
- 	u32 xcsr, count = 100;
- 
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx, ofs),
--			   FSL_SAI_CSR_TERE, 0);
-+			   FSL_SAI_CSR_TERE | FSL_SAI_CSR_BCE, 0);
- 
- 	/* TERE will remain set till the end of current frame */
- 	do {
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index 8254c3547b87..550df87b6a06 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -91,6 +91,7 @@
- /* SAI Transmit/Receive Control Register */
- #define FSL_SAI_CSR_TERE	BIT(31)
- #define FSL_SAI_CSR_SE		BIT(30)
-+#define FSL_SAI_CSR_BCE		BIT(28)
- #define FSL_SAI_CSR_FR		BIT(25)
- #define FSL_SAI_CSR_SR		BIT(24)
- #define FSL_SAI_CSR_xF_SHIFT	16
--- 
-2.25.1
+It seems the configuration changes in that issue (notably, https://github.com/hwchong/alsa-ucm-conf/commit/3ec7e6e2a61240764b77c30892f0bc56803799cc) work on my board as well, with a small modification. Unlike the Taichi boards, my Realtek audio driver is at `USB26ce:0a08`, not `USB26ce:0a06`. Making the necessary regex changes in `ALC4080-HiFi.conf` and `USB-Audio.conf` enables functionality on my board.
 
+I am happy to make a PR to merge these changes if pertinent.
+
+Thanks for the great work!
+
+
+Update:
+I am unable to get more than 2 channels through spdif either using AC3 or DTS
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/334
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
