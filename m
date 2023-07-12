@@ -4,116 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 078F9C001B0
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jul 2023 06:09:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75DABC0015E
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jul 2023 06:47:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52F5E7F4;
-	Thu, 13 Jul 2023 08:09:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52F5E7F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF2816C1;
+	Thu, 13 Jul 2023 08:46:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF2816C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689228591;
-	bh=NOhp7FDl3h9X8XDbZa9Fi93rAZ3wvCUUl+zxnfDSgLA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=XUUbQdTh6CIIxyHpghja+Wc0WadveBR5omW09CR2w0vGyDnZljhEY/LGq43UDGBcK
-	 wwJ2ASQ8sySFd0i743yCKTmtMuNtwy1p3ovtWyiJeBVEYRblecwDwJwgaE0hvG2wng
-	 zJdlLP9g3qJjERaCmfLidhM4Po3STsJMkKjNjLaA=
+	s=default; t=1689230864;
+	bh=c/i8enrq6cezEUQfQvzd9HWY5GpAOY8Zf0YXfgTpu3A=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=aPRm1ETXdQtSksA7wx198RhRGwpkN7ldPiDPZygFY1rqyiKHz1qV/VfyYci7hE4dS
+	 Ckb7X3uX3Kt86jzqVpVMcexjReGHgjlUoHNUEo940X42AEhtMT/EGPDdd4tGAGRzvU
+	 /0Y9rTeWXlsFe4NfPAbmM9rpZHh3tNOslabtqqdU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 479FFF8053B; Thu, 13 Jul 2023 08:08:40 +0200 (CEST)
+	id 10A3DF80290; Thu, 13 Jul 2023 08:46:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B202CF800E4;
-	Thu, 13 Jul 2023 08:08:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B1B1F80249;
+	Thu, 13 Jul 2023 08:46:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 13E53F80236; Thu, 13 Jul 2023 08:08:37 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 676ACF80249; Wed, 12 Jul 2023 17:12:33 +0200 (CEST)
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com
+ [IPv6:2607:f8b0:4864:20::531])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 49143F80236
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2023 08:08:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49143F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 375D6F80093
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 17:12:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 375D6F80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=dXrwWQhM;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Z4SirNNw
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 60D741F8D9;
-	Thu, 13 Jul 2023 06:08:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1689228510;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LQjoMOuDYWVyTBw8okmanAfIbcPTrQ1gl3sbWKCUhxY=;
-	b=dXrwWQhMGcSaIhgFB3ZwGALWDt+omPHExLwdA0WE+EtnfRANm34FO5HMLxboq2ltsVweMi
-	Dx1JeRQkaLZUwtscJr+IaFiies7a6gZabZirJzbmRR0OlglOCdzFbmrAkhyXlhrQHm3wnq
-	c5F6pQZ+dvU5yg1zV8hsX7DuOx4If3M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689228510;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LQjoMOuDYWVyTBw8okmanAfIbcPTrQ1gl3sbWKCUhxY=;
-	b=Z4SirNNwXt4OQsKULKDcn4lRQ0PduBGfu7fDJ8kJ+dBfF2/Rv8JRLD32QJIQ9azxu+GY3L
-	hvXnKSO0lraYG8Ag==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 24259138ED;
-	Thu, 13 Jul 2023 06:08:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id YPLaB96Ur2TrOAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 13 Jul 2023 06:08:30 +0000
-Date: Thu, 13 Jul 2023 08:08:29 +0200
-Message-ID: <871qhcgx7m.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Ivan Orlov <ivan.orlov0322@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shuah Khan <shuah@kernel.org>,
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=RIGQGajl
+Received: by mail-pg1-x531.google.com with SMTP id
+ 41be03b00d2f7-55bc29a909dso3649277a12.3
+        for <alsa-devel@alsa-project.org>;
+ Wed, 12 Jul 2023 08:12:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689174746; x=1691766746;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ECiLeGJkNprLw+g0X3L1cAWQ/zU6I6t8+jDfAyzLBrU=;
+        b=RIGQGajl4x6HG/JpHEe5LWkWl3o6uSi4Cjg3mnn+4o9OXlDmdtt2UqZzyDHc+xAdT4
+         oQNrjXrGz2nMqkeH2CaT4iSnqTWd8KrEjetpDXUq757pdI1PKkChxJs21v3IvoWL3kIc
+         MrDVlIST/yShOiyGSgJSotztHQWCPuddqhasHwpsnUrZEfp+8C3s+wasATRGtRN4Rq7B
+         0Y2wnQ9qirTjN8v0GspYswf7TvHxggmPmFIWPxqijq1ha+BFK/rxa7iKtCV61YBhY3tu
+         gFfWei7//QnJuS1grZSJrRTq1XxG9QWjgqYV1tNDq4QTgW1BPPONZY1KW4nTR9HfpetI
+         5kRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689174746; x=1691766746;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ECiLeGJkNprLw+g0X3L1cAWQ/zU6I6t8+jDfAyzLBrU=;
+        b=Lh7ogt53jf0oLnVRN4aqdLIkR35Ka+oJO86wjGTjxoVTrhgfSQn1hjZcHzJes8Wkqt
+         tcMp8ZOLle0//R9x2G6oOPy07yBh7S3M6uVE+b5hRM+0MzXKnMMAYNNpbstypDwaBbSv
+         lzd9BCQWKJupf5aKGYS11iebjlJ8fV0wVLOyVfgdOmtLcQ7GOEIBS2cmZ2CHJXoHcZD7
+         XUe/bseJZRu5QAMwYwitmH9SwmVlTbh31twlmvmIBt8VZ/KazM6PS5U9uobgZTewUD+R
+         N3F/JZbq18rINFaY8ejkTe0adE/v+vdTe0r2pEl+tEoYKPa6jPLvbEq0LmVlnvEZ/0Hq
+         c1Qw==
+X-Gm-Message-State: ABy/qLYfh6C/eCFBUagQo2I7Jf6gviz+OSR0XyQ9Z8BK0B83gSFseak0
+	vlZQbtr2oUMoQKcfh8aMJqI=
+X-Google-Smtp-Source: 
+ APBJJlEz3x4C9lBqp+zKUm5wncQq7Aa5uekWuoz+qkfaXGKTS3GMvF34BoJ/i79KeHAkK42zScjy7g==
+X-Received: by 2002:a17:902:c246:b0:1b6:ba60:77f0 with SMTP id
+ 6-20020a170902c24600b001b6ba6077f0mr15260373plg.10.1689174745620;
+        Wed, 12 Jul 2023 08:12:25 -0700 (PDT)
+Received: from localhost.localdomain ([113.103.7.132])
+        by smtp.gmail.com with ESMTPSA id
+ g22-20020a170902869600b001b9cea4e8a2sm4064711plo.293.2023.07.12.08.12.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 08:12:25 -0700 (PDT)
+From: Guiting Shen <aarongt.shen@gmail.com>
+To: lgirdwood@gmail.com
+Cc: broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	sboyd@kernel.org,
+	mripard@kernel.org,
 	alsa-devel@alsa-project.org,
-	linux-kselftest@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] selftests: ALSA: Fix fclose on an already fclosed
- file pointer
-In-Reply-To: <20230712140122.457206-1-colin.i.king@gmail.com>
-References: <20230712140122.457206-1-colin.i.king@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: NPOVPV2SQIYJYXXVKRNCXJNS7523AYUY
-X-Message-ID-Hash: NPOVPV2SQIYJYXXVKRNCXJNS7523AYUY
-X-MailFrom: tiwai@suse.de
+	linux-kernel@vger.kernel.org,
+	Guiting Shen <aarongt.shen@gmail.com>
+Subject: [PATCH] ASoC: tlv320aic32x4: Fix the divide by zero
+Date: Wed, 12 Jul 2023 23:11:58 +0800
+Message-Id: <20230712151158.20378-1-aarongt.shen@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-MailFrom: aarongt.shen@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: EMAXHLEAV6UEQ7NSASCOV4MJ64IZ4A7A
+X-Message-ID-Hash: EMAXHLEAV6UEQ7NSASCOV4MJ64IZ4A7A
+X-Mailman-Approved-At: Thu, 13 Jul 2023 06:46:46 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NPOVPV2SQIYJYXXVKRNCXJNS7523AYUY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EMAXHLEAV6UEQ7NSASCOV4MJ64IZ4A7A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,17 +118,79 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 12 Jul 2023 16:01:22 +0200,
-Colin Ian King wrote:
-> 
-> In the case where a sysfs file cannot be opened the error return path
-> fcloses file pointer fpl, however, fpl has already been closed in the
-> previous stanza. Fix the double fclose by removing it.
-> 
-> Fixes: 10b98a4db11a ("selftests: ALSA: Add test for the 'pcmtest' driver")
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+The value of register(NDAC,MDAC,NADC,MADC,BCLKN) maybe zero lead to
+divide by zero in clk_aic32x4_div_recalc_rate().And the rate should be
+divide by 128 if the value was zero in this function according to the
+datasheet.
+Add the macro AIC32X4_DIV_MAX to present the 128 and return 0 if failing
+to read the value of register.
 
-Thanks, applied.
+Signed-off-by: Guiting Shen <aarongt.shen@gmail.com>
+---
+ sound/soc/codecs/tlv320aic32x4-clk.c | 16 +++++++++++-----
+ sound/soc/codecs/tlv320aic32x4.h     |  5 +++--
+ 2 files changed, 14 insertions(+), 7 deletions(-)
 
+diff --git a/sound/soc/codecs/tlv320aic32x4-clk.c b/sound/soc/codecs/tlv320aic32x4-clk.c
+index c116e82f712d..5c0a76a4a106 100644
+--- a/sound/soc/codecs/tlv320aic32x4-clk.c
++++ b/sound/soc/codecs/tlv320aic32x4-clk.c
+@@ -321,7 +321,7 @@ static int clk_aic32x4_div_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	u8 divisor;
+ 
+ 	divisor = DIV_ROUND_UP(parent_rate, rate);
+-	if (divisor > 128)
++	if (divisor > AIC32X4_DIV_MAX)
+ 		return -EINVAL;
+ 
+ 	return regmap_update_bits(div->regmap, div->reg,
+@@ -334,7 +334,7 @@ static int clk_aic32x4_div_determine_rate(struct clk_hw *hw,
+ 	unsigned long divisor;
+ 
+ 	divisor = DIV_ROUND_UP(req->best_parent_rate, req->rate);
+-	if (divisor > 128)
++	if (divisor > AIC32X4_DIV_MAX)
+ 		return -EINVAL;
+ 
+ 	req->rate = DIV_ROUND_UP(req->best_parent_rate, divisor);
+@@ -345,12 +345,18 @@ static unsigned long clk_aic32x4_div_recalc_rate(struct clk_hw *hw,
+ 						unsigned long parent_rate)
+ {
+ 	struct clk_aic32x4 *div = to_clk_aic32x4(hw);
+-
+ 	unsigned int val;
++	int err;
++
++	err = regmap_read(div->regmap, div->reg, &val);
++	if (err)
++		return 0;
+ 
+-	regmap_read(div->regmap, div->reg, &val);
++	val &= AIC32X4_DIV_MASK;
++	if (!val)
++		val = AIC32X4_DIV_MAX;
+ 
+-	return DIV_ROUND_UP(parent_rate, val & AIC32X4_DIV_MASK);
++	return DIV_ROUND_UP(parent_rate, val);
+ }
+ 
+ static const struct clk_ops aic32x4_div_ops = {
+diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
+index 4de5bd9e8cc5..d6101ce73f80 100644
+--- a/sound/soc/codecs/tlv320aic32x4.h
++++ b/sound/soc/codecs/tlv320aic32x4.h
+@@ -223,8 +223,9 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
+ #define AIC32X4_REFPOWERUP_120MS	0x07
+ 
+ /* Common mask and enable for all of the dividers */
+-#define AIC32X4_DIVEN           BIT(7)
+-#define AIC32X4_DIV_MASK        GENMASK(6, 0)
++#define AIC32X4_DIVEN			BIT(7)
++#define AIC32X4_DIV_MASK		GENMASK(6, 0)
++#define AIC32X4_DIV_MAX			128
+ 
+ /* Clock Limits */
+ #define AIC32X4_MAX_DOSR_FREQ		6200000
+-- 
+2.25.1
 
-Takashi
