@@ -4,80 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28BB0EB64D9
-	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 12:48:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 873B0EB64D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 12 Jul 2023 12:59:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED55C3E7;
-	Wed, 12 Jul 2023 14:47:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED55C3E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18AC11E7;
+	Wed, 12 Jul 2023 14:59:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18AC11E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689166092;
-	bh=tLoJFh4oywXrxNXtAmdPnSrR0ry2WPhGPC1p7CMbphM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1689166793;
+	bh=FvuonApgo3gnnJdPGRqPyo1DrsyIWj9AcxIUCeLyd6A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=MtgKDQGlJ4UE+LGdxX9S56WUCbFBECdhoAZMU8oI+AFTM6/bLBLEihn2eEW6eGgde
-	 NJNcW6Aimd44TZhQAYLmkBI1+GeZUXNhS5/LmgQ7lNM9YIMxpBvwokQv92EJFmN/m3
-	 ManNwjZhnNwT7nEHMBWGdSfQFDLhRhMtmpNCJCWE=
+	b=jmc08r6hiCL12Hxwhbgdv8gXJT9ER7lZenBYfC5+wJS8+KB4j8AMtnHwUTVVDk/4A
+	 ThIOTycZt6iCEXPeM7vsF9svyQ00nreW5ArHzfJa7BqjMy7lfVQQbm5ARKYmOWOMEv
+	 Xr38hl3pVDk1t/u2WDAzQR1+0lkISXUFiT8l4lLE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF349F80153; Wed, 12 Jul 2023 14:46:55 +0200 (CEST)
+	id 7BCF9F80236; Wed, 12 Jul 2023 14:59:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B7B2F80153;
-	Wed, 12 Jul 2023 14:46:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C81CF80249;
+	Wed, 12 Jul 2023 14:59:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85C37F80249; Wed, 12 Jul 2023 14:46:52 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id CBCEDF80249; Wed, 12 Jul 2023 14:58:55 +0200 (CEST)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0A8A4F80093
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 14:46:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A8A4F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 29037F80153
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2023 14:58:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29037F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=bagkg5dq
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id BCD12617BB;
-	Wed, 12 Jul 2023 12:46:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92875C433C7;
-	Wed, 12 Jul 2023 12:46:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689166004;
-	bh=tLoJFh4oywXrxNXtAmdPnSrR0ry2WPhGPC1p7CMbphM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bagkg5dqgmXwAAzDRa77IkA22lcd1wJ/uMh0mrb2TvgBkjNYxGPHIKefXSYqzmKeP
-	 9XLr0qTmQvyeoqAkhcopnmvqY+yqIK5kHItD/t4jQUqsZIvSi+hIghUWIlTHZsYRCg
-	 9j9ORMgJpgmafe06oCcQ1vy2n49DKnwAxv496ZRfDWzSDuxnMxb5YE1fiEvYI6U7oL
-	 PLQv7hfmGBvLGJU6qocK1H0aeWERU805iG01LxWiK9ZvYKI1ZQrSmYOtG2khxgS5Iu
-	 g+Ss6IdqkHmeuV5KEEUb/RYhJXpp6AYJh9PskQg/GOXd6SqoZv+gbOiswEg3aIF0oz
-	 Sypgup85mp7ug==
-Date: Wed, 12 Jul 2023 13:46:39 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Zhu Ning <zhuning0077@gmail.com>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
-	tiwai@suse.com, amadeuszx.slawinski@linux.intel.com,
-	yangxiaohua@everest-semi.com, zhuning@everest-semi.com
-Subject: Re: [PATCH 2/4] ASoC: codecs: es8326: Fix power-up sequence
-Message-ID: <481906d1-977b-4c19-8910-81268937d706@sirena.org.uk>
-References: <20230712080830.973766-1-zhuning0077@gmail.com>
- <20230712080830.973766-2-zhuning0077@gmail.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=cHxCj9mh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689166732; x=1720702732;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=FvuonApgo3gnnJdPGRqPyo1DrsyIWj9AcxIUCeLyd6A=;
+  b=cHxCj9mh7eMCw/LLfrZJicLJ8OJvdj+08GN2u3SLVzNoS9JNgS2959zY
+   2kvT+6HdVhpTR7p9ND5rBm3WWftj2DctnyPv84qmkrqiM1hdA12SLAgfY
+   otkPHZyCVgXBPiJM+yigOrIkRR1G3TTLe6HsXPTKTb2IE6/JJNSK7D3xR
+   +Ttoy25Ky0nTlsBzX5wF+8dbHYaG4viyxo5Lnthm19aHPFGS+OY7vGUop
+   vK3j1H2GkVeO8g1eTZmvjWR9SywRfQihVFOemASP+C2zsi8N1SKLqk2u0
+   i+sw0dY//ldYy1u+jcPMa78O67AluglCMd5xOVj+7CX3uhiHvA6vQsQqq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="428617416"
+X-IronPort-AV: E=Sophos;i="6.01,199,1684825200";
+   d="scan'208";a="428617416"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jul 2023 05:58:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="895623137"
+X-IronPort-AV: E=Sophos;i="6.01,199,1684825200";
+   d="scan'208";a="895623137"
+Received: from hoermank-mobl.ger.corp.intel.com (HELO [10.252.42.188])
+ ([10.252.42.188])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jul 2023 05:58:42 -0700
+Message-ID: <6d1e5e05-1bc8-25cc-0d53-043c3bc1fc72@linux.intel.com>
+Date: Wed, 12 Jul 2023 14:58:40 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="A5qTlZLlNmei/b37"
-Content-Disposition: inline
-In-Reply-To: <20230712080830.973766-2-zhuning0077@gmail.com>
-X-Cookie: Dammit Jim, I'm an actor, not a doctor.
-Message-ID-Hash: QX26KGLF3VEWSLBLVHRN35NSIUV4WVUP
-X-Message-ID-Hash: QX26KGLF3VEWSLBLVHRN35NSIUV4WVUP
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+Subject: Re: [PATCH v4] ASoC: Intel: sof_rt5682: add jsl_rt5650 board config
+Content-Language: en-US
+To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Yong Zhi <yong.zhi@intel.com>,
+ Uday M Bhat <uday.m.bhat@intel.com>, Gongjun Song <gongjun.song@intel.com>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Arnd Bergmann <arnd@arndb.de>, Terry Cheong <htcheong@chromium.org>,
+ "Dharageswari . R" <dharageswari.r@intel.com>,
+ Mac Chiang <mac.chiang@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>, linux-kernel@vger.kernel.org
+References: <20230712191423.443765-1-brent.lu@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230712191423.443765-1-brent.lu@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: ON6AHNMRGOUSXTZRBNB3I3ZQLFKA5O2N
+X-Message-ID-Hash: ON6AHNMRGOUSXTZRBNB3I3ZQLFKA5O2N
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -89,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QX26KGLF3VEWSLBLVHRN35NSIUV4WVUP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ON6AHNMRGOUSXTZRBNB3I3ZQLFKA5O2N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,60 +117,14 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---A5qTlZLlNmei/b37
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 12, 2023 at 04:08:28PM +0800, Zhu Ning wrote:
-> Old power-up sequence causes large pop noise during start-up.
-> Using a new sequence instead.
+On 7/12/23 21:14, Brent Lu wrote:
+> This configuration supports JSL boards which implement ALC5650 dual
+> I2S interface codec. Two DAI links are added: AIF1 (on codec side) for
+> headphone and AIF2 for speakers.
+> 
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
 
->  static const struct regmap_range es8326_volatile_ranges[] =3D {
-> -	regmap_reg_range(ES8326_HP_DETECT, ES8326_HP_DETECT),
-> +	regmap_reg_range(ES8326_HPDET_TYPE, ES8326_HPDET_TYPE),
->  };
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-As well as not seeming to correspond to the patch description this seems
-obviously buggy - even if _HPDET_TYPE was missed from the list of
-volatile registers no software change should be able to make a volatile
-register non-volatile, that's a property of the hardware.  The changes
-to read from HPDET_TYPE also seem unrelated to the main change here in
-the resume function, this should probably be multiple commits.
-
-> @@ -633,40 +633,80 @@ static irqreturn_t es8326_irq(int irq, void *dev_id)
->  static int es8326_resume(struct snd_soc_component *component)
->  {
->  	struct es8326_priv *es8326 =3D snd_soc_component_get_drvdata(component);
-> -	unsigned int reg;
-> =20
->  	regcache_cache_only(es8326->regmap, false);
->  	regcache_sync(es8326->regmap);
-> =20
-> +	/* reset register value to default */
-> +	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x01);
-> +	usleep_range(1000, 3000);
-> +	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x00);
-
-This looks wrong, you're resyncing the cache and then start resetting
-registers?  It feels like the ordering is off here, and some of this
-reset sequence might want to be done with the cache bypassed.  Are you
-sure that there's no corruption of user visible state resulting from the
-power up sequence, especially around the HP driver?
-
---A5qTlZLlNmei/b37
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSuoK4ACgkQJNaLcl1U
-h9DQVgf/cYBeH4e1di5Xbcdo+6h4ApUf6FpdhxdASIOdeb3nltekqUWE3OvNVdHz
-PctTTtl+x4rsJcn1XE6hUZCLvhYPrYHew3Jp8SgXs6S8Z5BGodo5vAfWgfdR1MvD
-EbMSqWxPC+w+Z31nb7VvTxRbObPKFJI2KO5+ljxx++fmC1CSHgUFxBV7aLjeZ+f6
-YeS4/eiO+GjddVA+RikUTrBkSvKJs6fbhyTK8gKeZPcXjbOEJ3WuQmFzvAm2EVPB
-2Qj9q6lDOV78UCano6vP9OLzxc/4iU14qUMhK0uOh9OIzR94kDfm1ix7ZnA20lzf
-Z8Jn7A6szXv2uX4TLHQ0RDLjrSQWAw==
-=oMyt
------END PGP SIGNATURE-----
-
---A5qTlZLlNmei/b37--
+Thanks!
