@@ -4,88 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04F00EB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jul 2023 00:56:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1BF5C001B0
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jul 2023 00:56:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3589FE89;
-	Thu, 13 Jul 2023 02:55:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3589FE89
+	by alsa0.perex.cz (Postfix) with ESMTPS id 595E6DF8;
+	Thu, 13 Jul 2023 02:55:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 595E6DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689209763;
-	bh=DcoEvYheopgrQDi8DNh3R3S9w3R74TioORNRzPvufsU=;
-	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=rumC5munL+cqP5T83goLyUhR/DWoWFdj4c/Z2gWUUFi+Up1ZgTfmTdE8FxPrtCJUS
-	 ZcFpMBO2n5FlzmXpeSDcGGg4FBBPmh9b7XaF6xfxq0+E3Gv6TFhy8n+zzz0TxA1Wz1
-	 95SpjIEULGgkhhwu9K55BEsDLyTk2VxlxYZnHsdM=
+	s=default; t=1689209792;
+	bh=9opwocm8Bxmswth6eY43OSPv8SSHNSdvl6coyj+aFLQ=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=uZMxAOs9GEOuUcj4Ithhm+ihm7SUibOW5FvuW+CkVvU2sqIbqjUuMdgkYrcOAQUOt
+	 ry64ithHK4Gs1+GG7wCAcXzaQgMSBwVExS4R+7jAzXMAuWHajGJ5Qe8vPWr9/EX1y5
+	 AKagYjzTu2xmktS9R4xSlIX41LckJYBiFlGu3TMo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BFCDAF8057C; Thu, 13 Jul 2023 02:54:02 +0200 (CEST)
+	id A4055F8057F; Thu, 13 Jul 2023 02:54:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3231F8057B;
-	Thu, 13 Jul 2023 02:54:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9BEBF805A9;
+	Thu, 13 Jul 2023 02:54:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 67B52F80557; Thu, 13 Jul 2023 02:53:56 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 4889FF80567; Thu, 13 Jul 2023 02:53:58 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EB111F80236
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2023 02:53:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB111F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id DF6DAF80153
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2023 02:53:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF6DAF80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qBedp93f
+ header.s=k20201202 header.b=Ak9P+Sug
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id AD30861804;
-	Thu, 13 Jul 2023 00:53:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71608C433C7;
-	Thu, 13 Jul 2023 00:53:39 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id CA99F619E4;
+	Thu, 13 Jul 2023 00:53:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64999C433CB;
+	Thu, 13 Jul 2023 00:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689209621;
-	bh=DcoEvYheopgrQDi8DNh3R3S9w3R74TioORNRzPvufsU=;
-	h=From:Subject:Date:To:Cc:From;
-	b=qBedp93f9ec/meBoS/A3SOlbv/DZI+Jb+G5DVOui8AxANEsJ8dOLRfvrMBsoXUMYQ
-	 TvRGgAggQ0dvLpwbBpnqLx2NhrdWOMPpjV5KfdugKJ77WoSwWvsYhAMHFIptUX4BoK
-	 BDvFHCzRrHbRjGc/oAbOVTZoh+8gvxF29KNA8ZzorhIH3g+g1NLEufro8WgUWNCAnc
-	 I+WvFr+qI8hVYNitLBTXNtwFk4zzRa0NX/5cwXTpZy2hPGnI3jQ/Kig+KqPm1WQ7hX
-	 I2zFZwtU7qDulE/P6k4NKVFYTfNgzP94yUohDU2oYymbdNCa24r9Bs1vF1i7mqa7wk
-	 PybPo06JOcqfA==
+	s=k20201202; t=1689209630;
+	bh=9opwocm8Bxmswth6eY43OSPv8SSHNSdvl6coyj+aFLQ=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=Ak9P+SugOsPagKIfJrMaoaw+AAFvEqKBIhHa4D2xv4HwdZBFVrIlmdNCoBf7r8HYa
+	 /CvIKdO5PWpnTozdS1X8oCXBD6qrQVXJtwcMmemre2wOXmqwQ8Rz99HuyjNFjlwq7W
+	 zSK2O4wKemExGAYc5iw2esnXQfcWpK/yimFVNRmxw76vI+IMdh2vLmIlC2MVWRCVq8
+	 QCpBucBzBDNP6rdmg+Yh/hK/p9q1jgmVNqte1Z6+pZ+fji4ETwek3pQ6M4uiF0nCLE
+	 k3JlfC8OsLBw+bt6LXPD067CMChJbMxqh2zu09S7Ego4byc9gDl9Ew46ZQZqYr2Eyz
+	 WyBKiB97WCe0w==
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 00/11] mfd:: Update Cirrus Logic drivers to use maple tree
- register caches
-Date: Thu, 13 Jul 2023 01:49:18 +0100
-Message-Id: <20230713-mfd-cirrus-maple-v1-0-16dacae402a8@kernel.org>
+Date: Thu, 13 Jul 2023 01:49:22 +0100
+Subject: [PATCH 04/11] mfd: cs47l85: Update to use maple tree register
+ cache
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAA5Kr2QC/x2NQQrCQAwAv1JyNlCztYhfEQ/ZbWoD7lqSKkLp3
- 932OAzDrOBiKg63ZgWTr7q+S4XzqYE0cXkK6lAZqKXQ9hQwjwMmNfs4Zp5fgl0MdO3DhSIz1Cy
- yC0bjkqY9zOyL2C5mk1F/x+v+2LY/Vx0VmnsAAAA=
+Message-Id: <20230713-mfd-cirrus-maple-v1-4-16dacae402a8@kernel.org>
+References: <20230713-mfd-cirrus-maple-v1-0-16dacae402a8@kernel.org>
+In-Reply-To: <20230713-mfd-cirrus-maple-v1-0-16dacae402a8@kernel.org>
 To: Charles Keepax <ckeepax@opensource.cirrus.com>,
  Richard Fitzgerald <rf@opensource.cirrus.com>, Lee Jones <lee@kernel.org>
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1906; i=broonie@kernel.org;
- h=from:subject:message-id; bh=DcoEvYheopgrQDi8DNh3R3S9w3R74TioORNRzPvufsU=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkr0sJ6BvFNMfr6b/z11DVDFKXT92YsUbBF8hTV
- aZQReHc9gKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZK9LCQAKCRAk1otyXVSH
- 0ImRB/0bh89vd7Y1kkagOtJ9hrsYWv/LfYtlll/I1kStvRUK6h97GJWOEqz9qByUVnPyxxUwoHm
- LYTkzS1lae7cCwcrGtiHPZI7hIv7m+5Q/o5H3wi6I636MpflRzub3ryMUJJKT3HQU2ploTNQvKT
- Xrj+XD/YQqFm+QpSj9s8OqBcnGqPZald5BQLu8qrKrwHs60+tjBqe75UK6ZF/n/LLBe4VTbKHZn
- YZ3KOTWVBsnyFDNf8CCyGMqlvNrktuvZ+X/u11z5rt+oVCq2+/a2preFjupzIdmbc6sicthnSgt
- IKldpz+b0kSOKTkZY9sz9pnqzWO03VPsxVobyRpgIVb/6aHM
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2127; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=9opwocm8Bxmswth6eY43OSPv8SSHNSdvl6coyj+aFLQ=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkr0sM8UI068/G7/CDS8R7s+b+JyPD/0VjEJUc1
+ 2zJya7fnEKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZK9LDAAKCRAk1otyXVSH
+ 0Do6B/4/iI5Agfo0eBLtv5QMHaMiWVLZezbwTn3XuOftiZ35oPvOCiUtMN7IenWL0iJ9EgMNnLg
+ 78u+6+VHZohZ7ADz7cScEppK17wigN7WHjX6fT8ldDDGp8t1IOqC4Nf8GtfRTLdfz9C7rxI+e2f
+ iMjv3Yj5EAQxjadmGLiFNZseu46V7i/gwPdsL+qqk2y4H0qE7fxBI5u8cIAxwINJu8lqQgZHcvc
+ cHwHH60N+3pHNMNuYHgYQpB43PW8Ym5xpYuy2Ocivd08nnkCjwn+00h90OLeEo85bUglVLoPWyo
+ KG6AVCMxFZ2E8i8IvSbKYVK5KLapLQyleYUY4ogxaLWHJWyx
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: Q6Q76V73CEB6TBWQCDJR74OX3Z2NR6GO
-X-Message-ID-Hash: Q6Q76V73CEB6TBWQCDJR74OX3Z2NR6GO
+Message-ID-Hash: 7U7DSN5IAD63MB6QYVFIRV37MXEC4WZR
+X-Message-ID-Hash: 7U7DSN5IAD63MB6QYVFIRV37MXEC4WZR
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q6Q76V73CEB6TBWQCDJR74OX3Z2NR6GO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7U7DSN5IAD63MB6QYVFIRV37MXEC4WZR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,47 +107,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-With the v6.5 merge window the maple tree register cache has acquired
-the ability to generate multi-register writes during sync operations,
-removing the last major limitation it had compared to the rbtree cache.
-As part of a general modernisation effort update the Cirrus Logic
-drivers to use the more modern data structure, realistically there is
-likely to be very little user visible impact either way but generally
-the implementation choices of the maple tree cache should be a bit
-better on modern hardware.
+The maple tree register cache is based on a much more modern data structure
+than the rbtree cache and makes optimisation choices which are probably
+more appropriate for modern systems than those made by the rbtree cache. In
+v6.5 it has also acquired the ability to generate multi-register writes in
+sync operations, bringing performance up to parity with the rbtree cache
+there.
 
-Signed-off-by: Mark
+Update the cs47l85 driver to use the more modern data structure.
+
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
-Mark Brown (11):
-      mfd: cs47l15: Update to use maple tree register cache
-      mfd: cs47l24: Update to use maple tree register cache
-      mfd: cs47l35: Update to use maple tree register cache
-      mfd: cs47l85: Update to use maple tree register cache
-      mfd: cs47l90: Update to use maple tree register cache
-      mfd: cs47l92: Update to use maple tree register cache
-      mfd: wm5102: Update to use maple tree register cache
-      mfd: wm5110: Update to use maple tree register cache
-      mfd: wm8994: Update to use maple tree register cache
-      mfd: wm8997: Update to use maple tree register cache
-      mfd: wm8998: Update to use maple tree register cache
-
- drivers/mfd/cs47l15-tables.c | 8 ++++----
- drivers/mfd/cs47l24-tables.c | 2 +-
- drivers/mfd/cs47l35-tables.c | 8 ++++----
  drivers/mfd/cs47l85-tables.c | 8 ++++----
- drivers/mfd/cs47l90-tables.c | 8 ++++----
- drivers/mfd/cs47l92-tables.c | 8 ++++----
- drivers/mfd/wm5102-tables.c  | 2 +-
- drivers/mfd/wm5110-tables.c  | 2 +-
- drivers/mfd/wm8994-regmap.c  | 6 +++---
- drivers/mfd/wm8997-tables.c  | 2 +-
- drivers/mfd/wm8998-tables.c  | 2 +-
- 11 files changed, 28 insertions(+), 28 deletions(-)
----
-base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-change-id: 20230623-mfd-cirrus-maple-4b3286352baa
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Best regards,
+diff --git a/drivers/mfd/cs47l85-tables.c b/drivers/mfd/cs47l85-tables.c
+index 270d8eda3f5f..f397894827ce 100644
+--- a/drivers/mfd/cs47l85-tables.c
++++ b/drivers/mfd/cs47l85-tables.c
+@@ -2836,7 +2836,7 @@ const struct regmap_config cs47l85_16bit_spi_regmap = {
+ 	.readable_reg = cs47l85_16bit_readable_register,
+ 	.volatile_reg = cs47l85_16bit_volatile_register,
+ 
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ 	.reg_defaults = cs47l85_reg_default,
+ 	.num_reg_defaults = ARRAY_SIZE(cs47l85_reg_default),
+ };
+@@ -2853,7 +2853,7 @@ const struct regmap_config cs47l85_16bit_i2c_regmap = {
+ 	.readable_reg = cs47l85_16bit_readable_register,
+ 	.volatile_reg = cs47l85_16bit_volatile_register,
+ 
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ 	.reg_defaults = cs47l85_reg_default,
+ 	.num_reg_defaults = ARRAY_SIZE(cs47l85_reg_default),
+ };
+@@ -2872,7 +2872,7 @@ const struct regmap_config cs47l85_32bit_spi_regmap = {
+ 	.readable_reg = cs47l85_32bit_readable_register,
+ 	.volatile_reg = cs47l85_32bit_volatile_register,
+ 
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ };
+ EXPORT_SYMBOL_GPL(cs47l85_32bit_spi_regmap);
+ 
+@@ -2888,6 +2888,6 @@ const struct regmap_config cs47l85_32bit_i2c_regmap = {
+ 	.readable_reg = cs47l85_32bit_readable_register,
+ 	.volatile_reg = cs47l85_32bit_volatile_register,
+ 
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ };
+ EXPORT_SYMBOL_GPL(cs47l85_32bit_i2c_regmap);
+
 -- 
-Mark Brown <broonie@kernel.org>
+2.39.2
 
