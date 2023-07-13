@@ -4,95 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95717EB64DD
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jul 2023 06:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 964D7EB64DD
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Jul 2023 06:04:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3262B6C1;
-	Thu, 13 Jul 2023 08:02:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3262B6C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7AA7B1F6;
+	Thu, 13 Jul 2023 08:03:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AA7B1F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689228188;
-	bh=QrJzctHjr52ewn8DgZeDoQGFFw04fkKjsT8aGC0mdN0=;
+	s=default; t=1689228266;
+	bh=ti5TgRTMR7tpRIyC9NXZRyzJl9k/posiVIikby0ixzk=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=abhlYoB/JoQ7Hl4Zb0zywMo4ce23vYAsMsePvYD5k2wFLtN7Z/c/c/qjn5li5z3Sk
-	 PItj5wTIFFMHLdB9d1bglehNRA18m0OLcBmflXxmZOL5hPsqLbuqvq29vg+6Wv2IXR
-	 CY0HN18hGu2bqhd1kpdbXphm69PfZmGw6TJQtpUY=
+	b=BHWTkT60z8T0mhUngXlPo7wZAA6BrPVhGZxjmd9/W37A4L2xW1e96IG8OEIxdhXdZ
+	 WpKuFSloFDZKGBrdmA9ZvzCiiuIMCBroamRVVUKUblxY3zStPgb/dKa1aZIWILDPNd
+	 AZduVKsLSuT1YGfp6XD2WJPDy3lXnGh/VZBVEnTA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD68BF80249; Thu, 13 Jul 2023 08:01:51 +0200 (CEST)
+	id 9D7B9F80153; Thu, 13 Jul 2023 08:03:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E647F800E4;
-	Thu, 13 Jul 2023 08:01:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C120F80153;
+	Thu, 13 Jul 2023 08:03:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53E9BF8047D; Thu, 13 Jul 2023 07:58:57 +0200 (CEST)
+	id 8709AF8027B; Thu, 13 Jul 2023 08:03:06 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 10F59F80249
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2023 07:58:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10F59F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6E69DF800E4
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2023 08:03:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E69DF800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=cWqfmokH;
+ header.s=susede2_rsa header.b=Ho5EUXl2;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=G0p+Fr7T
+ header.s=susede2_ed25519 header.b=Tfa6rZRN
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CEB6322202;
-	Thu, 13 Jul 2023 05:58:53 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 721B022205;
+	Thu, 13 Jul 2023 06:03:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1689227933;
+	t=1689228181;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zLYPwx4k+u0j2PCQTxuBOZi/DbVGMAN0ij5roSZCatc=;
-	b=cWqfmokH9wResauwnHCMwq9P3i9HOBR6WwSxGwHi9PNjQ6guogs2VW+SnvG4UWAibY/F52
-	GndmkLO51w+ru0rSf7ey658Jx3MqpfBDP63YUebof5Zg17Y0cTelGYieUzwmV1wwM8dkkc
-	10pV6YTNM6cIPPhY1f12BGGRBBgnUvA=
+	bh=k3MojbVcIgPhkMJWXOyivxSHkZorYQbjQcXYbfJta8g=;
+	b=Ho5EUXl2R3gG/HOkYXyqUGmQjoY1p0jAzF/fpFtckClR80sCTgn4Kh5//vjD2kQNCl06h/
+	tVKjsG9YFXOi/NJoaBxQ9g3IXUviCqtMmNPqsbFeepZ7NCroF8xusCLpamSm9/P6eWxXfV
+	AjvLDRyDtUdqnBxf4zWqfsYYqErp/bg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689227933;
+	s=susede2_ed25519; t=1689228181;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zLYPwx4k+u0j2PCQTxuBOZi/DbVGMAN0ij5roSZCatc=;
-	b=G0p+Fr7TeW7Z4KZ5Gb2M1cTv9Se0RMqezEtd96qz2fH1DdsH8Tz6FAS/jB2hP8n2eO/9pH
-	nATTbMXyMVaErtAw==
+	bh=k3MojbVcIgPhkMJWXOyivxSHkZorYQbjQcXYbfJta8g=;
+	b=Tfa6rZRNnuHp0qkjzkTIE5snNcjsz1XUc13wtk9ZTSSEb9bJC9/zIpLo+XdQ6qi7vkXqDf
+	xfoHbtRXgtZ1NVBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89FB51390D;
-	Thu, 13 Jul 2023 05:58:53 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40B48138ED;
+	Thu, 13 Jul 2023 06:03:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id jle5IJ2Sr2RDNQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 13 Jul 2023 05:58:53 +0000
-Date: Thu, 13 Jul 2023 07:58:53 +0200
-Message-ID: <874jm8gxnm.wl-tiwai@suse.de>
+	id KwXTDpWTr2QFNwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 13 Jul 2023 06:03:01 +0000
+Date: Thu, 13 Jul 2023 08:03:00 +0200
+Message-ID: <87351sgxgr.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Cc: alsa-devel@alsa-project.org,
-	Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 1/3] ALSA: emu10k1: fix return value of
- snd_emu1010_adc_pads_put()
-In-Reply-To: <20230712145750.125086-1-oswald.buddenhagen@gmx.de>
-References: <20230712145750.125086-1-oswald.buddenhagen@gmx.de>
+To: Ivan Orlov <ivan.orlov0322@gmail.com>
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: pcmtest: Extend error injection,
+ decrease buffer filling overhead
+In-Reply-To: <20230712191325.8791-1-ivan.orlov0322@gmail.com>
+References: <20230712191325.8791-1-ivan.orlov0322@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: 2O7UOONQ5UKQDGK5HKNU5MDGFQDS5UMO
-X-Message-ID-Hash: 2O7UOONQ5UKQDGK5HKNU5MDGFQDS5UMO
+Message-ID-Hash: CP65L6B26HFOXZKUFWWXSICLU2EEZHIB
+X-Message-ID-Hash: CP65L6B26HFOXZKUFWWXSICLU2EEZHIB
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2O7UOONQ5UKQDGK5HKNU5MDGFQDS5UMO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CP65L6B26HFOXZKUFWWXSICLU2EEZHIB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,14 +116,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 12 Jul 2023 16:57:48 +0200,
-Oswald Buddenhagen wrote:
+On Wed, 12 Jul 2023 21:13:25 +0200,
+Ivan Orlov wrote:
 > 
-> It returned zero even if the value had changed.
+> Extend 'pcmtest' virtual driver with 'open' callback error injection
+> functionality, as it already can inject errors into other PCM callbacks.
 > 
-> Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+> Fix the driver to use already defined variables where it is possible.
+> 
+> Additionally, decrease the buffer filling overhead with conditional
+> reminder calculation in the 'inc_buf_pos' inline function.
+> 
+> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
 
-Applied this one.  Thanks.
+Please avoid mixing different changes in a single patch.
 
+This patch does three completely different things, and they should be
+split. 
+
+- New inject_open_err parameter
+- Optimization of inc_buf_pos()
+- Optimization of check_buf_block_ni() and fill_block_pattern_n()
+
+The latter two could be put in a single patch as minor optimizations,
+but the introduction of a new option doesn't fit with the rest.
+
+
+thanks,
 
 Takashi
