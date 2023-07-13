@@ -4,91 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9059BEB64DD
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Jul 2023 12:53:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1F7AEB64DA
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Jul 2023 12:58:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF312AE8;
-	Sun, 16 Jul 2023 14:52:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF312AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11451AE8;
+	Sun, 16 Jul 2023 14:57:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11451AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689512022;
-	bh=XqQsD/jyEYXRxRj2JCNHaHmg2K9MPOUoFp5MhDfXGrk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Ohqisqx+G3IducOcEh6YLHk02I4EvcxpozrqpcFSsfppOiVK2imGbGkPjFGBnZZ4t
-	 u45Q8lKQsXTW8oT50af0dItdOM/p1CY5PuJhTE/31GLKdVeepiSD25s2MLX8NfVBau
-	 18Rk0kimmwr8HAR84nISf6IRGOksCs7loHq0tB0k=
+	s=default; t=1689512324;
+	bh=xQ4w5iebjkSzGuQ/RTDrpEWkMpL1OkxXxjzaVL6jiAw=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=nehcDfBnk3k5wD2KQA9zHRFfBJn+tHDx8C8cW89O12xnU3YALsm6g+N3BDYTxUfi8
+	 5U6nWSENW+qwx5Qu9N9wKukgD+KKJod3mcxdSPUqWWHrVVvOJV10JmxKkoUmPk75+i
+	 MbulYqJd2G4SCZWkrz7sPs+k1+Vk5jd9nwF++SjQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2241FF8058C; Sun, 16 Jul 2023 14:51:41 +0200 (CEST)
+	id 0E61CF80544; Sun, 16 Jul 2023 14:57:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE8CEF8058C;
-	Sun, 16 Jul 2023 14:51:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAA75F8027B;
+	Sun, 16 Jul 2023 14:57:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD988F8056F; Sun, 16 Jul 2023 14:51:36 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 5971DF80249; Thu, 13 Jul 2023 17:17:55 +0200 (CEST)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com
+ [IPv6:2607:f8b0:4864:20::62a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 55464F80552
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2023 14:51:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55464F80552
+	by alsa1.perex.cz (Postfix) with ESMTPS id 555B3F80153
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2023 17:17:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 555B3F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=IbWAbqRr
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 8EA8F60D42;
-	Sun, 16 Jul 2023 12:51:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9FBBC433CB;
-	Sun, 16 Jul 2023 12:51:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689511886;
-	bh=XqQsD/jyEYXRxRj2JCNHaHmg2K9MPOUoFp5MhDfXGrk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=IbWAbqRrP1KvSI/oYlnOR04pFbJd2Ioj1RTnXizHiTHKD0wfkfUiNRPBO386OpVc9
-	 3tt1EuYQ53HstMuPFLBJ11nfSo4XFQzKJGPCkK7F2u6SxN1rk/2fDCOJ0Fv7tmURQ4
-	 p60+SZwqvKTquCrLMDCJyn21EM5a/iNP4hvd3Jpm2kec03UopYB/yPUun02y9filLq
-	 bGJiV8LqQj5OLlgHi9dQB78AmojQdzeA4j+3bExoj8ngsQ/SkjnZR+FbdavhAxX4OH
-	 IMZ7P8ItXsiCzv5LaBKHaH7KcBbiUOc3TuiVXtSRIVT+rpq7tm5GgEbbnkWswNe3p9
-	 pgUSOulbW2fqQ==
-From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- =?utf-8?q?Amadeusz_S=C5=82aw_i=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-In-Reply-To: <87mt04o96f.wl-kuninori.morimoto.gx@renesas.com>
-References: <87mt04o96f.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: (subset) [PATCH v2 00/15] ASoC: add multi Component support
-Message-Id: <168951188561.111741.13518304398769198151.b4-ty@kernel.org>
-Date: Sun, 16 Jul 2023 13:51:25 +0100
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=cPJcXmar
+Received: by mail-pl1-x62a.google.com with SMTP id
+ d9443c01a7336-1b9c368f4b5so14289675ad.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 13 Jul 2023 08:17:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689261470; x=1691853470;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fkYvuheuXxUs7lcziZSh45/cEYAEtU5XJFKyTCEdPAw=;
+        b=cPJcXmarGy/THqQS5YeBkXPiaUN6TNcqTUg4N/gUAzoGAZF/YDWi+9CV32JMSIufHf
+         eGsnoa5VCpDibdNPlLNPjuhC9X10Y6IzZKZ5yyqVwPbcisWxLeeFYoeOXaYpVctMNeXc
+         bk0rfmLISbTW1sVPcX48CvKFHh/TxKtg2ph3oCO38dWTM+Nz2U7TgMbCLLf1y0mIeUFs
+         2JeQ2xUbm9WYLUT3c+PGSaud31GKWHfdJgZGHaQwDvPc5QGQn9hD+tYyISUmqRT9Nbrv
+         BcTDGVhWLoADC58nzgh6sKcjBRZS2gMNCPM3Xrz0j3dkS6FpEiiMWSFYZ1zpRJ6PuBpi
+         65Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689261470; x=1691853470;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fkYvuheuXxUs7lcziZSh45/cEYAEtU5XJFKyTCEdPAw=;
+        b=g7aYv26UGKT19frsbqBrZzhPeu9rK+imNN+bU+vdAz3csGITjlkZXcW3kzINuUyVKj
+         8oeE4TkDnDtYwf/WFFrbvMKZ1BAvcMFM4pG51R+fyApBo0N6hw21/BV/DBg5gKtxKhHo
+         EXjmqjnOHV5QBzEhuJf+lRd99mHV41Ndl0mFW3LwR82u48+J5hydTUy1oK7Mkn4lXSpn
+         xEeB6Mc8nzVaHCanYbcPgzP2AIaQakZ0tqtatqhTQUh/sE6PCMNZu0jJoFp+XTwnVv1n
+         tz5DQ4z70mvurSbCpFvViiglCmT19HI0MLYVlOjepUH5c6p56gq6BHzg1rhsZO8zSdJf
+         BSxA==
+X-Gm-Message-State: ABy/qLZP3OiRWbKSl32jrRuDlmlsvqcQkB2xLbCSGZDbHUBfSTN+ARkg
+	2HlW1sslqe81moFAE7TJ/h0=
+X-Google-Smtp-Source: 
+ APBJJlHqbZ9l5bN1xWh2PTo56lO26Opa/ZRbOUhSfvD4lbvNfmbnAzKjlum4jgW8YgbdEOFDj1ZOlA==
+X-Received: by 2002:a17:903:41cb:b0:1b8:9846:a3b2 with SMTP id
+ u11-20020a17090341cb00b001b89846a3b2mr2736704ple.14.1689261469776;
+        Thu, 13 Jul 2023 08:17:49 -0700 (PDT)
+Received: from ubuntu777.domain.name (36-228-70-13.dynamic-ip.hinet.net.
+ [36.228.70.13])
+        by smtp.gmail.com with ESMTPSA id
+ y4-20020a170902ed4400b001b8a844b023sm6043640plb.272.2023.07.13.08.17.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 08:17:49 -0700 (PDT)
+From: Min-Hua Chen <minhuadotchen@gmail.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Min-Hua Chen <minhuadotchen@gmail.com>,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: q6dsp: q6apm: make g_apm static
+Date: Thu, 13 Jul 2023 23:17:43 +0800
+Message-Id: <20230713151744.86072-1-minhuadotchen@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: N3XUX2IADXWJYFVSPGWQS7HMW5FSRELH
-X-Message-ID-Hash: N3XUX2IADXWJYFVSPGWQS7HMW5FSRELH
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+X-MailFrom: minhuadotchen@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: AR27I3BYLLBMLSEHTZMTBMEAOOAC76AI
+X-Message-ID-Hash: AR27I3BYLLBMLSEHTZMTBMEAOOAC76AI
+X-Mailman-Approved-At: Sun, 16 Jul 2023 12:57:23 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N3XUX2IADXWJYFVSPGWQS7HMW5FSRELH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AR27I3BYLLBMLSEHTZMTBMEAOOAC76AI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,59 +119,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 10 Jul 2023 10:19:04 +0900, Kuninori Morimoto wrote:
-> These are v2 of multi Component support.
-> 
-> On below HW case, we would like to use it as "2 Cards",
-> but unfortunately it is impossible in intuitive way,
-> or possible but not intuitive way.
-> In reality, it is handled as "1 big Card" today.
-> 
-> [...]
+This patch fixes the following sprse warning:
 
-Applied to
+sound/soc/qcom/qdsp6/q6apm.c:30:14: sparse: warning: symbol 'g_apm' was not declared. Should it be static?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+No functional change intended
 
-Thanks!
+Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
+---
+ sound/soc/qcom/qdsp6/q6apm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[01/15] ASoC: soc-core: protect dlc->of_node under mutex
-        commit: 065aa861b1243704b329a6d8407d8399614df6bd
-[02/15] ASoC: soc-core.c: initialize dlc on snd_soc_get_dai_id()
-        commit: 521d675d2497f890e881dc48e954a1559460e97c
-[03/15] ASoC: soc-core.c: cleanup soc_dai_link_sanity_check()
-        commit: 0e66a2c694096abc54ed58b3be654103f155ea43
-[04/15] ASoC: soc-dai.c: add DAI get/match functions
-        (no commit info)
-[05/15] ASoC: soc-core.c: enable multi Component
-        (no commit info)
-[06/15] ASoC: soc-core.c: add snd_soc_get_dai_via_args()
-        (no commit info)
-[07/15] ASoC: soc-core.c: add snd_soc_dlc_use_cpu_as_platform()
-        (no commit info)
-[08/15] ASoC: soc-core.c: add snd_soc_copy_dai_args()
-        (no commit info)
-[09/15] ASoC: simple-card-utils.c: enable multi Component support
-        (no commit info)
-[10/15] ASoC: simple-card.c: enable multi Component support
-        (no commit info)
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/soc/qcom/qdsp6/q6apm.c b/sound/soc/qcom/qdsp6/q6apm.c
+index 7bfac9492ab5..d5ad9cbd3c21 100644
+--- a/sound/soc/qcom/qdsp6/q6apm.c
++++ b/sound/soc/qcom/qdsp6/q6apm.c
+@@ -27,7 +27,7 @@ struct apm_graph_mgmt_cmd {
+ 
+ #define APM_GRAPH_MGMT_PSIZE(p, n) ALIGN(struct_size(p, sub_graph_id_list, n), 8)
+ 
+-struct q6apm *g_apm;
++static struct q6apm *g_apm;
+ 
+ int q6apm_send_cmd_sync(struct q6apm *apm, struct gpr_pkt *pkt, uint32_t rsp_opcode)
+ {
+-- 
+2.34.1
 
