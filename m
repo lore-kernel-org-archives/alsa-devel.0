@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA87CEB64DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jul 2023 10:58:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BA78EB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jul 2023 10:58:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2664DE73;
-	Fri, 14 Jul 2023 12:57:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2664DE73
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D1A3DEB;
+	Fri, 14 Jul 2023 12:57:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D1A3DEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689332293;
-	bh=npG2m1UCZxKCtzRaw5t5Am2kMO3bj0pf6Epbexb+5Ig=;
+	s=default; t=1689332308;
+	bh=TmGepNwGZefwHGMI61IGIjei5sa121IuqyQR9urAzVk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hwDPWGxIF414h4MPlL/Y0M7YPRTELwv3yARvib9eyWNiHb8IJdCsZJM322yxcHtRo
-	 SiZAE93hZAwUWFyYsUiIgH5/YEsVMfpe2QVfrN7LMNjlcyOtXtfpJePMyd97L3Xx6q
-	 JkfbOupo0QM5pM+ut2ymlOvbXvLf1oByPINnZSuo=
+	b=FTASGNFYwft1Lo44ag+ZivMBziDYgj9//kSOTrBZg+Vt+7k7MVItgzZHjf4MjwsAx
+	 Qoj5Af6r7daRmwLNrle/QmhYlDiAnmnansgqpCM0WZhjH9815nOv0tpXA3k/k0o7qe
+	 G4aXRG+G41A7aE6yRM9ClmqM/VTXAH8eSd90V1xg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17765F805BE; Fri, 14 Jul 2023 12:55:51 +0200 (CEST)
+	id 23C99F805C6; Fri, 14 Jul 2023 12:55:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4774EF805BD;
-	Fri, 14 Jul 2023 12:55:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59F11F805C7;
+	Fri, 14 Jul 2023 12:55:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2941CF8027B; Fri, 14 Jul 2023 12:55:40 +0200 (CEST)
+	id 7D9DFF80290; Fri, 14 Jul 2023 12:55:41 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 47A72F80290
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2023 12:55:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47A72F80290
+	by alsa1.perex.cz (Postfix) with ESMTPS id 880ACF8024E
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2023 12:55:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 880ACF8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=M0Fs9AMk
+ header.s=Intel header.b=nmObKLiz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689332123; x=1720868123;
+  t=1689332122; x=1720868122;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=npG2m1UCZxKCtzRaw5t5Am2kMO3bj0pf6Epbexb+5Ig=;
-  b=M0Fs9AMkTQDKlMOTY3N00yADHuV3uqrVbiG44AMWQuAA4ILp+LLaMJQa
-   iHiIf1LY3I9LXFxRbZgmxMs45lRCE702rsn+IBViFhu9Ut7gBwo1oEuDd
-   k0nceTb0Dn84tFvpUh6vCjoM9Knx+Du8hGM4mijvIIplkDz2zbkSJBcbt
-   3QxYN1sv8EE81rldvLgd1OUljKpB0sw8Tv+TA1elhKAIrFRTo8KBiG1kD
-   GZfx7tQb4Pd6Iq2yKVuqbvz46Xs7TECoR6UNWlL95nhBZSjsx0LbnjUjb
-   4ABRq9Bged7v0rq0yGxxqmkEQ9cC6P7KA/rKb2JjTJ4/RgQRb0iLQgG39
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="364321161"
+  bh=TmGepNwGZefwHGMI61IGIjei5sa121IuqyQR9urAzVk=;
+  b=nmObKLizPowx5QYJHaUDBpxk7IdsiCQtuAdCyzftfPxHXLX+cNIyiGtf
+   /gc8faG0hsRkynACRpjUCeIA9aiHgNnlW53TTbLJjEPJTldkZYT2jXcIp
+   8P3gfBXstI0ZdCxOyU44YVqqKTwatb8d2u93LDW19p19+LJ47shhRDMq6
+   2cxMvbPtYcFVVVYDyRLY1TZj+lNf7Y4J/hgQWXFVkYlJZq4htgza6/tcv
+   VzUOXi7MwOQqqy1ZeU7Z+6yGPFw1R7NUhvAcau4Yw//NenIst+PGq/Ivi
+   EBPTiGo8DELS5wv7iIrpi2shuUDFJIPe2fi9JrVUE1u4RM0KhI+mTzpY9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="364321141"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200";
-   d="scan'208";a="364321161"
+   d="scan'208";a="364321141"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jul 2023 03:55:17 -0700
+ 14 Jul 2023 03:55:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="722365472"
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="722365446"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200";
-   d="scan'208";a="722365472"
+   d="scan'208";a="722365446"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orsmga002.jf.intel.com with ESMTP; 14 Jul 2023 03:55:14 -0700
+  by orsmga002.jf.intel.com with ESMTP; 14 Jul 2023 03:55:08 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Bjorn Helgaas <bhelgaas@google.com>,
@@ -77,19 +77,18 @@ Cc: alsa-devel@alsa-project.org,
 	Andy Shevchenko <andriy.shevchenko@intel.com>,
 	Hans de Goede <hdegoede@redhat.com>,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 05/15] ALSA: hda: Add controller matching macros
-Date: Fri, 14 Jul 2023 20:56:05 +0200
-Message-Id: <20230714185615.370597-6-amadeuszx.slawinski@linux.intel.com>
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v2 03/15] ASoC: SOF: Remove unused Broxton PCI ID
+Date: Fri, 14 Jul 2023 20:56:03 +0200
+Message-Id: <20230714185615.370597-4-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230714185615.370597-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230714185615.370597-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KTPAK64YCQ6EPSG2VT2BMXGNCGHHRZHJ
-X-Message-ID-Hash: KTPAK64YCQ6EPSG2VT2BMXGNCGHHRZHJ
+Message-ID-Hash: Z3OA6J4Z6TACR3NCQSRLV2DH2FJCVH2Z
+X-Message-ID-Hash: Z3OA6J4Z6TACR3NCQSRLV2DH2FJCVH2Z
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KTPAK64YCQ6EPSG2VT2BMXGNCGHHRZHJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z3OA6J4Z6TACR3NCQSRLV2DH2FJCVH2Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,58 +110,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some HDA controllers require additional handling, so there are macros to
-match them, however those are spread across multiple files. Add them all
-in one place, so they can be reused.
+Current code references 0x1a98 which is BXT-M (not -T as it is
+commented) and it's an RVP, BXT-M B0 to be specific. From what we know
+no BXT is available on market.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- include/sound/hdaudio.h | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ sound/hda/intel-dsp-config.c  | 7 -------
+ sound/soc/sof/intel/pci-apl.c | 2 --
+ 2 files changed, 9 deletions(-)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 2ffdf58bd6d4..32c59053b48e 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -11,6 +11,7 @@
- #include <linux/io.h>
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/iopoll.h>
-+#include <linux/pci.h>
- #include <linux/pm_runtime.h>
- #include <linux/timecounter.h>
- #include <sound/core.h>
-@@ -704,4 +705,29 @@ static inline unsigned int snd_array_index(struct snd_array *array, void *ptr)
- 	for ((idx) = 0, (ptr) = (array)->list; (idx) < (array)->used; \
- 	     (ptr) = snd_array_elem(array, ++(idx)))
- 
-+/*
-+ * Device matching
-+ */
-+
-+#define HDA_CONTROLLER_IS_HSW(pci) (pci_match_id((struct pci_device_id []){ \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_HSW_0) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_HSW_2) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_HSW_3) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_BDW) }, \
-+			{ } \
-+		}, pci))
-+
-+#define HDA_CONTROLLER_IS_APL(pci) (pci_match_id((struct pci_device_id []){ \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_APL) }, \
-+			{ } \
-+		}, pci))
-+
-+#define HDA_CONTROLLER_IN_GPU(pci) (pci_match_id((struct pci_device_id []){ \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG1) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG2_0) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG2_1) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG2_2) }, \
-+			{ } \
-+		}, pci) || HDA_CONTROLLER_IS_HSW(pci))
-+
- #endif /* __SOUND_HDAUDIO_H */
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index 317bdf6dcbef..5cee995f7a42 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -53,13 +53,6 @@ static const struct config_entry config_table[] = {
+ 		.device = 0x119a,
+ 	},
+ #endif
+-/* Broxton-T */
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
+-	{
+-		.flags = FLAG_SOF,
+-		.device = 0x1a98,
+-	},
+-#endif
+ /*
+  * Apollolake (Broxton-P)
+  * the legacy HDAudio driver is used except on Up Squared (SOF) and
+diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
+index 69cad5a6bc72..bc3ad64baec5 100644
+--- a/sound/soc/sof/intel/pci-apl.c
++++ b/sound/soc/sof/intel/pci-apl.c
+@@ -87,8 +87,6 @@ static const struct sof_dev_desc glk_desc = {
+ static const struct pci_device_id sof_pci_ids[] = {
+ 	{ PCI_DEVICE(0x8086, 0x5a98), /* BXT-P (ApolloLake) */
+ 		.driver_data = (unsigned long)&bxt_desc},
+-	{ PCI_DEVICE(0x8086, 0x1a98),/* BXT-T */
+-		.driver_data = (unsigned long)&bxt_desc},
+ 	{ PCI_DEVICE(0x8086, 0x3198), /* GeminiLake */
+ 		.driver_data = (unsigned long)&glk_desc},
+ 	{ 0, }
 -- 
 2.34.1
 
