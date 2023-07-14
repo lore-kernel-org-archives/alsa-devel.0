@@ -4,150 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DF06EB64DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jul 2023 09:31:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5B25EB64DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jul 2023 10:56:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00980DFA;
-	Fri, 14 Jul 2023 11:30:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00980DFA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06D5E9F6;
+	Fri, 14 Jul 2023 12:55:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06D5E9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689327096;
-	bh=8UAt24Ff/Hqk1uH+9fia4ZA3p3sQUbY3wjoPO53RI3w=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Emh5U5GEzp+l7BkyVUQ7X39hHyoAaeiz2MUdMJ88/HEYMG/Slz8AT0K8XRPbLcssu
-	 iPkIq+igOuOQ4DOAsuP7NeE1hnK0bk2Ld3mII7KkNMyP0LPWmvw3nJ1sY6p/vFxGy1
-	 OsuMceTKMZUGFjDeMOXGT/ptnXh3JEtmROqy0EDc=
+	s=default; t=1689332209;
+	bh=cL+iOP33aHs+u6cHLRGi+E0JMjOKGZJJ+7CXN6XHEtk=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=FJ38HCGGFTbW0SukWeyJEy3jBCOVL5PQ0magd4NjZLzu0yNRoyKqziFRdeRtM6JUM
+	 9RCCX8MUoX6TrQWFQPrs9hKSp02ozIRqLQoxLD6eDF5X38ehVt+x971KVyE2UhL4Bp
+	 Rf/aK7KLbzL2GZjR3kSY0vDjUoS3LjrV8OT3JQlk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0611DF80579; Fri, 14 Jul 2023 11:30:24 +0200 (CEST)
+	id 39789F80557; Fri, 14 Jul 2023 12:55:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0301F80548;
-	Fri, 14 Jul 2023 11:30:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C051F80549;
+	Fri, 14 Jul 2023 12:55:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 379EDF8055B; Fri, 14 Jul 2023 11:30:21 +0200 (CEST)
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur05on20606.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7d00::606])
+	id EC4E6F8053B; Fri, 14 Jul 2023 12:55:24 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2ACE8F8027B
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2023 11:30:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2ACE8F8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id C31C2F800E4
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2023 12:55:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C31C2F800E4
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=nxp.com header.i=@nxp.com header.a=rsa-sha256
- header.s=selector2 header.b=YQE4RF8k
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e9YUFTL9Tz5hks+BBzNlfASKSMH/KTEM0sxkhyHMHkb3J5poGFm3VNepBIb+Bo1UCEruYvn9HntM0dD7H/N2DFxLmVy1JFvGgB24yiDfzY8NXEGdzQjFE4l/vUEvIlHAzlSn5ZBZY3frH37QsFZKvC+tdYXro+Z92Iil6jVVXxnKXdRPKYPdIuFo4ckvGIl72rxcrs7BkW4CtExjuUgHPgKkzuDd5kN94Z48Jl5YB6uUZkAPSwY9nazVh60SkOs1TI0hhvpnqwOaQgu22/EJTUjh4+3rgkVaG1QUIQ+V8OIiPo8uIs9Qkf8vZMqg4+TjHFg6/qOEf/FIkMtbV2NIKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rZ87tA6/Ep+q9H+YAMrgp+VkBc+axD4WcUZO3DqFYYI=;
- b=C88eny6I+rHYZHRO3e9faZk/S6lzWKkDU3nzuRNquBFTtpcYy8HiGQlX7TvynIxQAjXRuKK9BJIg1fWVMDozr6zfNCZ3yDIxcEuJJluUxfWBgISGSYuS/fdS9QyRX+oFHMclDavUFmAqMXQKKDrWFCeJz3RQ2QtIMilF6JEM3PG7mlTSaIrV9oCb1I87EH/moM8E/PE2qUEU5g7FfphCharvZs3rGkrLtQJMuvJl2bOQ3GBN2q6Ru3+hSqjyaBxsDPBE29oQFqbJbphlZkC+SUvOK33JGk9str8cZ5IirqnvZF9v0LOPPA24o/pfo1DSN2hOLMIz2qNH8eWLgaS72Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rZ87tA6/Ep+q9H+YAMrgp+VkBc+axD4WcUZO3DqFYYI=;
- b=YQE4RF8kx5zMJDxmSQnu1Z+Vm84SSxqOtSmz/5q9ck8w5VNZPM7zr8jpQO5wEYOOiVRsttLD8iGYElQAkk9u0A7A2KgNuaB3Mj309OcEUj3yT6ifn4nGoYI1H5zKQPKhdGXA0rT6IZc4IGkJaZLWZ/G3S3jImziHHbkPeCWbQ3w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by DB9PR04MB9578.eurprd04.prod.outlook.com (2603:10a6:10:305::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
- 2023 09:30:13 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::7552:a10c:7f4b:96b7]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::7552:a10c:7f4b:96b7%6]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
- 09:30:12 +0000
-From: Chancel Liu <chancel.liu@nxp.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=NDcOft1B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689332119; x=1720868119;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cL+iOP33aHs+u6cHLRGi+E0JMjOKGZJJ+7CXN6XHEtk=;
+  b=NDcOft1BaSjz5P+IzI8cf/tf2/jIZvI5A6okBWI/CjV696l3OBdEADwy
+   edkqTBkj5xnKSLbfTyOlqZaRHoTAL/lu/e/nrLZo34sYesaINH1s12Wg+
+   to4wkN8cvwYHO/B35jpG1bDdETbtWa1FdSi0E7L5hIbFfsiyYbJd7uU/G
+   ZuFMmIL9kH04S3dego5NES7wAX4Rez+jlHsY9zN3mnhnZcngwD7aXPvoV
+   M5gtdrLA2tccKx7uR6b/O4xmL2zhjdDllFHmCt0eigsnp0s+kK/ORn9u/
+   otYABr8RCqVJY30/uQ4krQOxX3bS3TKgNL46LGkCPH3xLgTOGoSDe6HHG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="364321110"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200";
+   d="scan'208";a="364321110"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Jul 2023 03:55:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="722365344"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200";
+   d="scan'208";a="722365344"
+Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
+  by orsmga002.jf.intel.com with ESMTP; 14 Jul 2023 03:54:59 -0700
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Bjorn Helgaas <bhelgaas@google.com>,
+	Mark Brown <broonie@kernel.org>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org,
+	linux-pci@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	devicetree@vger.kernel.org
-Cc: Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH 2/2] ASoC: fsl_rpmsg: Add support for i.MX93 platform
-Date: Fri, 14 Jul 2023 17:29:13 +0800
-Message-Id: <20230714092913.1591195-3-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230714092913.1591195-1-chancel.liu@nxp.com>
-References: <20230714092913.1591195-1-chancel.liu@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0186.apcprd06.prod.outlook.com (2603:1096:4:1::18)
- To DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v2 00/15] PCI: Define Intel PCI IDs and use them in drivers
+Date: Fri, 14 Jul 2023 20:56:00 +0200
+Message-Id: <20230714185615.370597-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DB9PR04MB9578:EE_
-X-MS-Office365-Filtering-Correlation-Id: 85b1982a-33cd-48e1-13cf-08db844cec8a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	lrDk2oKhhIUpnAYlJ+VhcYmX8QdcRfwNeDmPGbtKw9dZmiKEXy1H04vYK4G7zVzWCSmtzJRju7+2VF7cxv+wtR15gveSobuqTrr3slLr9EVSiw/Fy39VSp+DBqleQWLxL8CavU0tu4Tvn9eXd4sDAQF8Ou/xkUko81mB5/kLqlhRK0OxCPtb+X1gBj4CFz2VHXkShGL5SOkjPdcO9fExHeVXmkx0Nh89aQTQr4Xiv1/Hv0B65gp/CMCpNTZJ5DQHt8qvNrljKyDB1Cc4EXMrek5vFePJ9JAjFwR0b0LGH3mJT55r9UvmPLdFFHd9mCs/QouFBp/LGEmyAimb9bZZjqJU6n16M0gvD2G7f6hCtMQRBvThJ9b4NhoCO/MU0wJudRw5hRRwgHdZOE2ylC2Nm5L5bvHUFNWALjCtcaBJlYwaEzMs65FrES+EpOxMLLsvwcYQnwZhjdm7w8p+RY1l5+bL1qKjvtVANSzSVlR7l5QoHRikN+MCAOPHSI1bbwsk+7ZlsxrQhMgpG2goaYXhnN2gBvbwOoTxBM+cm8Fiyxma/RcsKKbrxav3FELAN8gP2xU5nqzCHNNWaJ0cmZZiWSxSNbClHfjyS6WwmC3nH+v05fOq4GxFSOzgVWUsY6TpedoevQTBpkd6s4oIPCMfSw==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(376002)(39860400002)(366004)(346002)(451199021)(2906002)(478600001)(38100700002)(921005)(38350700002)(6512007)(186003)(2616005)(26005)(1076003)(6506007)(86362001)(5660300002)(8936002)(44832011)(7416002)(36756003)(52116002)(41300700001)(66556008)(66946007)(4326008)(66476007)(8676002)(6486002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?yZXyQNgjdtLDWrLOA/eHq8UWULbL6zmaujj04WfRkocwvoGJpI737pqSoRaV?=
- =?us-ascii?Q?FP5WY4jM+zYm09HCVYPMbXpfGww0gdNvW5/FHm9PaU7Pux63f4ZEdXlzMKHg?=
- =?us-ascii?Q?Xq7fe0EUNrAfbehBGrTRKpCY6gKx2xsz5mre2F/xnG70aJpLAN7VsMa3gxdK?=
- =?us-ascii?Q?vzCNNZ4r9PMC8ymB5uy0je5R2QQFo7gHOTY4XO4VJnM6qZOTImwA7VI5WHLv?=
- =?us-ascii?Q?hMIOaXEGBfjnsnpCiNMIJ6hV46rSkoEyvHjP2uKVPmtaY80jnww6+Si2Buoo?=
- =?us-ascii?Q?CF+/YR/7ekz1SpNoV9QHm3asJklMCAJUpGQBUQNjgAaYDLDh/cdcT0cJvSSW?=
- =?us-ascii?Q?eVO7puh6yxOagbP/ltw4i64yA1aFs5wzA98RK+DWoVNV9IApTfUDBm8x/XKM?=
- =?us-ascii?Q?bUtZSujopsRl99xnmxr4Rvx6DIGm8BOyDJDTzFpuy5KgXGTo5jkCkBMI3Wzh?=
- =?us-ascii?Q?ha5xEpyFxHNiNusGj9rshofeBjU21RBGed136+VFh8mLc+4CVDAXuZsYXe9h?=
- =?us-ascii?Q?pLUsrlTT6Wxjhz4GdYUnAxLpECOCtmyj4Frg8eImZ6+S2EQXqX6WV7K4XeL4?=
- =?us-ascii?Q?lqIa1ksIE3QYxwgw6irJJSxG+3Lg1rts7xJXyKOlSk3/tcOtjnnhk8Ofptk3?=
- =?us-ascii?Q?03D0o3zIIxR99BgphxOGzk4+5DgnPOZ1tQSmOOWDN1Zrv+8rBMcoDWr5rOR+?=
- =?us-ascii?Q?120mzop9zcAQ7TooF6/ogBdjc+O/2LexYUc0RVLzfXdffLHZIrBaNkDWrr6F?=
- =?us-ascii?Q?7T1ToBIFe8KnMAWXWUhhLrRUg7kDjvMZMi+hzBZlgpVjr3kGR22dJ4wQy1IH?=
- =?us-ascii?Q?Ox/muAYpTyDn4NiaF3IyvOKNXrzu9l+YZ5Nou2BjXurPRFw/fu6AeibFhYvl?=
- =?us-ascii?Q?/ktXuuJBQLbS4/tMsjz2+3Ssnjfd5yP6PZC8RCdsg01Ltz63FlSCioAg+YJk?=
- =?us-ascii?Q?3V9yBs2hRwaytOVuK7D4bcNjUQRaTKpzQGF+Q9HuW9VvxoSyyYNXEQGEudrM?=
- =?us-ascii?Q?uuU3BIkJv40WckSAEO2MuldqM5/8bKTXkxdVKQZpUm83pv4zlhiE+WH0WqUt?=
- =?us-ascii?Q?wkTiwZHTMgxQxMvO5vxgBYe2oLXUNbNwrZU+WAU2R16paHyE4EML3O3U/0Kl?=
- =?us-ascii?Q?bDMAArSFNdwpAHNJVWsnr25W33X2/8oKCrXaWN6rhGZOT4KDdgWZwgi1YMW8?=
- =?us-ascii?Q?rlmkiHTKSySPcitOAXKm2LUIW9ts7LfG0rQUSTJmNtq8KeAGNPnHuGwIOZ6g?=
- =?us-ascii?Q?zBYTiI6SxeAQXiG8nFNZTAkOyc2gCrJFIHcLZskfFY2oKqUn/YzvYQ3USVbK?=
- =?us-ascii?Q?+M0wNmGnS5ANyuSz+utp33GeQE3Wv9Apl+ZYtc1KoRu4rTgT7LPZGv+En6Xe?=
- =?us-ascii?Q?NAh/pVsSMEbK1fd65mRhiJ/DGRS5YBAnxL5IDizWgdVhD5mm4YlqcUvVSi3W?=
- =?us-ascii?Q?m1wFJyz1jcIM+RJhKaXcbjrXlxy4pJfkh4D6d7ljYxuHJVPJnbNzSk4Zu8UU?=
- =?us-ascii?Q?5DBz9x+BA0z0Z1Mu+e6wLFDVBgXQey2Wpg/JKNJbpD+e6wOicqQMoU0LTl37?=
- =?us-ascii?Q?t9ZopSdPi3qpPobhixRk/fqo6VBASqzqM1xcUXyh?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 85b1982a-33cd-48e1-13cf-08db844cec8a
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 09:30:12.6962
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- ADOcABPvPX/3uu0DBxiXsEa1hbKOwMkguY0hb1N2AR3L1s+HCxY4VvfeIEHgMdlY6kOtSAe8VJ8swM9nKOB72w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9578
-Message-ID-Hash: HSA2UEYEXB7LM3CX73FXVP6KIOL4OUHQ
-X-Message-ID-Hash: HSA2UEYEXB7LM3CX73FXVP6KIOL4OUHQ
-X-MailFrom: chancel.liu@nxp.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: PKRSEU43BLINBG2FLQQAYSA7E52QIWND
+X-Message-ID-Hash: PKRSEU43BLINBG2FLQQAYSA7E52QIWND
+X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -159,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HSA2UEYEXB7LM3CX73FXVP6KIOL4OUHQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PKRSEU43BLINBG2FLQQAYSA7E52QIWND/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -168,39 +107,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add compatible string and specific soc data to support rpmsg sound card
-on i.MX93 platform.
+PCI IDs for Intel HDA are duplicated across quite a few drivers, due to
+various configurations and historical reasons. Currently almost all uses
+of HDA PCI IDs have corresponding comment telling which platform it is.
+Additionally there are some inconsistencies between drivers about which
+ID corresponds to which device.
 
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
----
- sound/soc/fsl/fsl_rpmsg.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Simplify things, by adding PCI IDs to global header and make use of them
+in drivers. This allows for removal of comments by having IDs themselves
+being self explanatory. Additionally it allows for removal of existing
+inconsistencies by having one source of truth.
 
-diff --git a/sound/soc/fsl/fsl_rpmsg.c b/sound/soc/fsl/fsl_rpmsg.c
-index 15b48b5ea856..abe19a8a7aa7 100644
---- a/sound/soc/fsl/fsl_rpmsg.c
-+++ b/sound/soc/fsl/fsl_rpmsg.c
-@@ -170,12 +170,20 @@ static const struct fsl_rpmsg_soc_data imx8mp_data = {
- 		   SNDRV_PCM_FMTBIT_S32_LE,
- };
- 
-+static const struct fsl_rpmsg_soc_data imx93_data = {
-+	.rates = SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_32000 |
-+		 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000,
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+		   SNDRV_PCM_FMTBIT_S32_LE,
-+};
-+
- static const struct of_device_id fsl_rpmsg_ids[] = {
- 	{ .compatible = "fsl,imx7ulp-rpmsg-audio", .data = &imx7ulp_data},
- 	{ .compatible = "fsl,imx8mm-rpmsg-audio", .data = &imx8mm_data},
- 	{ .compatible = "fsl,imx8mn-rpmsg-audio", .data = &imx8mn_data},
- 	{ .compatible = "fsl,imx8mp-rpmsg-audio", .data = &imx8mp_data},
- 	{ .compatible = "fsl,imx8ulp-rpmsg-audio", .data = &imx7ulp_data},
-+	{ .compatible = "fsl,imx93-rpmsg-audio", .data = &imx93_data},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, fsl_rpmsg_ids);
+Changes from v1:
+ - Remove BXT-T PCI ID as it is not released (Andy)
+ - Reorder macros to start from pci_match_id() (Andy)
+ - Add comment about BXT->APL name change in commit messages (Andy)
+ - Use SST as part of macro name for DSP only devices (Andy)
+ - Add PCI IDs for all SST combinations (Andy)
+
+Changes from RFC:
+ - Sort Intel PCI IDs before adding new ones
+ - Fix ordering of new PCI IDs (Andy)
+ - Define all used Intel IDs (Andy)
+ - Add macros for controller type detection (Andy/Bjorn)
+ - Add set of patches changing to use above macro (Andy/Bjorn)
+ - Use PCI_DEVICE_DATA for Intel IDs in sound/pci/hda/hda_intel.c (Andy)
+ - Commit message wording (Andy)
+ - Remove unnecessary tabs (Andy)
+
+Amadeusz Sławiński (15):
+  PCI: Sort Intel PCI IDs by number
+  PCI: Add Intel Audio DSP devices to pci_ids.h
+  ASoC: SOF: Remove unused Broxton PCI ID
+  ALSA: Remove unused Broxton PCI ID
+  ALSA: hda: Add controller matching macros
+  ALSA: hda: Use global PCI match macro
+  ALSA: hda/i915:  Use global PCI match macro
+  ASoC: Intel: Skylake: Use global PCI match macro
+  ALSA: intel-dsp-config: Convert to PCI device IDs defines
+  ALSA: hda: Convert to PCI device IDs defines
+  ASoC: Intel: avs: Convert to PCI device IDs defines
+  ASoC: Intel: avs: Convert to PCI device IDs defines
+  ASoC: Intel: Skylake: Convert to PCI device IDs defines
+  ASoC: SOF: Intel: Convert to PCI device IDs defines
+  ASoC: Intel: sst: Convert to PCI device IDs defines
+
+ include/linux/pci_ids.h                | 105 +++++--
+ include/sound/hda_codec.h              |   3 -
+ include/sound/hdaudio.h                |  26 ++
+ sound/hda/hdac_i915.c                  |   7 +-
+ sound/hda/intel-dsp-config.c           | 124 ++++----
+ sound/pci/hda/hda_intel.c              | 373 ++++++++++---------------
+ sound/soc/intel/atom/sst/sst.c         |   7 +-
+ sound/soc/intel/atom/sst/sst.h         |   3 -
+ sound/soc/intel/atom/sst/sst_pci.c     |   4 +-
+ sound/soc/intel/avs/board_selection.c  |  10 +-
+ sound/soc/intel/avs/core.c             |  16 +-
+ sound/soc/intel/skylake/skl-messages.c |  16 +-
+ sound/soc/intel/skylake/skl-pcm.c      |   3 +-
+ sound/soc/intel/skylake/skl.c          |  36 +--
+ sound/soc/sof/intel/pci-apl.c          |   8 +-
+ sound/soc/sof/intel/pci-cnl.c          |  15 +-
+ sound/soc/sof/intel/pci-icl.c          |  12 +-
+ sound/soc/sof/intel/pci-mtl.c          |   3 +-
+ sound/soc/sof/intel/pci-skl.c          |   6 +-
+ sound/soc/sof/intel/pci-tgl.c          |  45 +--
+ sound/soc/sof/intel/pci-tng.c          |   3 +-
+ 21 files changed, 383 insertions(+), 442 deletions(-)
+
 -- 
-2.25.1
+2.34.1
 
