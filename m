@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B868EB64DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jul 2023 12:37:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBECEEB64DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jul 2023 12:42:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F004DF4;
-	Fri, 14 Jul 2023 14:36:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F004DF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3C09DE5;
+	Fri, 14 Jul 2023 14:41:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3C09DE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689338242;
-	bh=jtrdQg43uwRw8V/SyWjoA6lDOg9Cy8vdVhZHpyU1RSk=;
+	s=default; t=1689338547;
+	bh=kOKU0Oxxh2EfZONWCEwEiRbt3oUTbJJvsq5FBiKlLUE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AAcMpvTcUFfPZ87FfPQkKq+mxvhk7UT0qdJ1afEI+z7CFv2sXElnX0+KdmRC9hoc/
-	 9riePHnw8Xd6iFylFpgm/rXR5VRnDr5HqTOyHkaxvvvL3hmgcqbYxUVBBANd257Lrf
-	 YMgPYCV/umE1RbMGQmaz2wQQ7qXPVOoWoQ8FK2Wo=
+	b=hKaRHF5+ck3v56IQVw7btErCfAI7WU7q4MktyW8rhfxJh4neMZOYRlqkX4CC3ZIC2
+	 oE0NbMOeJBKbFHbbstWenX+kfsWG3mI2yx9uSZhyUwBl7PKo23fR9of+R4kZx4edq/
+	 fABmkMdbEni3tsvqY2y1rrZWBIsaoCjp9X8T4Lbc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 23894F80153; Fri, 14 Jul 2023 14:36:32 +0200 (CEST)
+	id 15347F80153; Fri, 14 Jul 2023 14:41:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D89C7F80249;
-	Fri, 14 Jul 2023 14:36:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB516F800D2;
+	Fri, 14 Jul 2023 14:41:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37608F80236; Fri, 14 Jul 2023 14:36:29 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+	id 8ABFFF80236; Fri, 14 Jul 2023 14:41:06 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 860C3F80153
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2023 14:36:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 860C3F80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0E0DF800D2
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2023 14:41:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0E0DF800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ciyPq1Q4
+ header.s=Intel header.b=bxCrzJAP
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689338187; x=1720874187;
+  t=1689338465; x=1720874465;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:content-transfer-encoding:in-reply-to;
-  bh=jtrdQg43uwRw8V/SyWjoA6lDOg9Cy8vdVhZHpyU1RSk=;
-  b=ciyPq1Q4nxZfJxVHQoiKBymAZI3q5I4COBes9xafXAkWMau37foPQVXX
-   ZE46KWvgDdiuP1LhE4PqTuRM/1Y0FGaDgoiPS7m8rl66AAphKjVqVo6GO
-   ysdtmUIHflh6INW4vYOcuEELg5eUbH+vZbdlvZhSifOMOJt1cgL2SqxBF
-   7s1LkDvV1XyEV8zeiAy7HCXa4rqevquGeggM2yRSag0qLnOw2srs6/vrO
-   GCC1EKFu5dzFV8pYolbSadjw1Bh8aOiVFaEBMbJzcWQWFuIAarb8bIzZ0
-   taNPU6lc8QvNJVdmLXqy7FCzfn2qzp1TrZwAvY6c5okAoJ8e5zA4mgFC8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="429228637"
+  bh=kOKU0Oxxh2EfZONWCEwEiRbt3oUTbJJvsq5FBiKlLUE=;
+  b=bxCrzJAPHPttHh5sG7jYaYCym0Ua/QROAXuvb2ew6qoFrExWMTq2ECg4
+   jKvolG9897kIprtjvEJhoGKhLhXBaceNHPN6RFNQtab3fJ8U2nmfIfvxL
+   wSBZyZA5rhKIz8IyWSV9QQqpeMzzDJVB5gS6rycheVSU0Ahs5EOfoDvN7
+   Ou2IMKE6uci7qwWNLZP3adyrTA5+6e5NJYBCD3YPIptb/dvdaFWB44kVm
+   XTsvfe8ONUqBudiGypmYcDSPuUdfROhruLULcyhr8y4pjDjhU9f+OgkBl
+   BuWR4QhjbU2yAWeGyONx6dlhGb7329o9R1i/FUYVQvfbvbL7RdZxFoIGs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="368103723"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200";
-   d="scan'208";a="429228637"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jul 2023 05:36:24 -0700
+   d="scan'208";a="368103723"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Jul 2023 05:41:01 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="1053039721"
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="812421841"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200";
-   d="scan'208";a="1053039721"
+   d="scan'208";a="812421841"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Jul 2023 05:36:20 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Jul 2023 05:40:58 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.96)
 	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1qKI1y-002ey7-2b;
-	Fri, 14 Jul 2023 15:36:18 +0300
-Date: Fri, 14 Jul 2023 15:36:18 +0300
+	id 1qKI6S-002f1l-2H;
+	Fri, 14 Jul 2023 15:40:56 +0300
+Date: Fri, 14 Jul 2023 15:40:56 +0300
 From: Andy Shevchenko <andriy.shevchenko@intel.com>
 To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?=
  <amadeuszx.slawinski@linux.intel.com>
@@ -78,18 +78,19 @@ Cc: Bjorn Helgaas <bhelgaas@google.com>, Mark Brown <broonie@kernel.org>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
 	Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v3 00/15] PCI: Define Intel PCI IDs and use them in
- drivers
-Message-ID: <ZLFBQqGzoCjBHChK@smile.fi.intel.com>
+Subject: Re: [PATCH v3 15/15] ASoC: Intel: sst: Convert to PCI device IDs
+ defines
+Message-ID: <ZLFCWKqiaJZhx6ci@smile.fi.intel.com>
 References: <20230714202457.423866-1-amadeuszx.slawinski@linux.intel.com>
+ <20230714202457.423866-16-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230714202457.423866-1-amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <20230714202457.423866-16-amadeuszx.slawinski@linux.intel.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: KSMSDFPZ5VQQNRR5Y5SN4WL2MGJFC2MF
-X-Message-ID-Hash: KSMSDFPZ5VQQNRR5Y5SN4WL2MGJFC2MF
+Message-ID-Hash: NJ5YPMMKYAAMPUES2QZ7BA6DT6GT5G2G
+X-Message-ID-Hash: NJ5YPMMKYAAMPUES2QZ7BA6DT6GT5G2G
 X-MailFrom: andriy.shevchenko@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KSMSDFPZ5VQQNRR5Y5SN4WL2MGJFC2MF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NJ5YPMMKYAAMPUES2QZ7BA6DT6GT5G2G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,26 +112,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Jul 14, 2023 at 10:24:42PM +0200, Amadeusz Sławiński wrote:
-> PCI IDs for Intel HDA are duplicated across quite a few drivers, due to
-> various configurations and historical reasons. Currently almost all uses
-> of HDA PCI IDs have corresponding comment telling which platform it is.
-> Additionally there are some inconsistencies between drivers about which
-> ID corresponds to which device.
-> 
-> Simplify things, by adding PCI IDs to global header and make use of them
-> in drivers. This allows for removal of comments by having IDs themselves
-> being self explanatory. Additionally it allows for removal of existing
-> inconsistencies by having one source of truth.
+On Fri, Jul 14, 2023 at 10:24:57PM +0200, Amadeusz Sławiński wrote:
+> Use PCI device IDs from pci_ids.h header. BSW replaces CHV, as 0x22a8
+> was added in PCI header as BSW ID for consistency, as they are same
+> (similar) platforms. The ACPI IDs are used only internally and lower
+> 16 bits uniquely define the device as vendor ID for Intel is 8086 for
+> all of them. Use PCI_DEVICE_DATA() to match PCI device to be consistent
+> with other Intel audio drivers.
 
-> Changes from v2:
->  - Change CHV to BSW (Andy)
->  - Fix incorrectly rebased patches (Andy)
->  - Fix commit message and add suggestions from Andy to SST patch (Andy)
->  - Rebased on top of Linus tree commit: 4b810bf037e5
+One nit-pick below, otherwise
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Use --base parameter, it will help CIs as well to test your changes against
-correct base.
+...
+
+> -	unsigned int		dev_id;
+> +	unsigned short		dev_id;
+
+Thinking more about this change I would probably add a comment on top of
+sst_alloc_drv_context() call in sst_acpi.c to tell that in this case the
+driver handles PCI IDs in ACPI and we are using only device ID part.
+(If real ACPI ID appears, the kstrtouint() returns error, so we are fine
+ with the change)
+
+So, summarize above and add a comment.
 
 -- 
 With Best Regards,
