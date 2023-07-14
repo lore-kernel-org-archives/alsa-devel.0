@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FDF6EB64DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jul 2023 12:28:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35DAEEB64DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jul 2023 12:28:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5EF6FE0F;
-	Fri, 14 Jul 2023 14:27:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EF6FE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20BF5DEC;
+	Fri, 14 Jul 2023 14:27:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20BF5DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689337690;
-	bh=npG2m1UCZxKCtzRaw5t5Am2kMO3bj0pf6Epbexb+5Ig=;
+	s=default; t=1689337709;
+	bh=jKFPbTHoA2uU7RWBMJDbq4wYBw/0LJsv7WL6ODM/3Ww=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ofyYdYkve0hJQy+mN1SmLX3xlBlxPCBkXCl5980k+NEhG8vLWbDNCSpk4elyOO7Sv
-	 apamfg2CXSUOA/MjuCEHAuoKr9TfxJlIYDjvTbwNt9NyPEUnEeT8gaabTYq5P4T+Ne
-	 Iv3iRAh8c2xgnBWe9hIaKJuCUu6+3FdzxvZ83PKI=
+	b=Y8Iibkcy/e9JZeYOBzzOfHL9hM++0GnkJjrxMqXMDtoeoE0RARGgKDxn8O2pq2j5V
+	 sNSpN/5JGiUg92kOTUel5vu4vnOul26L1bU5VdOb+SHpUU1JBxr6f/03obUbKLxxUb
+	 mdjizHT5lALzP5M5FCy4BDJs+mHe763TSA5U/cBU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB69CF805E8; Fri, 14 Jul 2023 14:24:49 +0200 (CEST)
+	id 9A60EF805EE; Fri, 14 Jul 2023 14:24:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F30C2F80563;
-	Fri, 14 Jul 2023 14:24:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9BF7F80578;
+	Fri, 14 Jul 2023 14:24:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8662DF805B6; Fri, 14 Jul 2023 14:24:36 +0200 (CEST)
+	id 025DBF805C2; Fri, 14 Jul 2023 14:24:37 +0200 (CEST)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C68BFF8027B
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2023 14:24:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C68BFF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 593CEF8053B
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2023 14:24:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 593CEF8053B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=TvvTzmFv
+ header.s=Intel header.b=jBsFB6t9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689337448; x=1720873448;
+  t=1689337450; x=1720873450;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=npG2m1UCZxKCtzRaw5t5Am2kMO3bj0pf6Epbexb+5Ig=;
-  b=TvvTzmFvi79RmKQWZV3av2eRWL1U26OwAgemkY4/wngHVXjpB9OQTmaO
-   zPMcC/oZLxOwPWBJl93AIq1Sg5h2mHWLi+a5cTVFE8IAAJYVzO4KcMDWy
-   kVofi/ZX/1uODft3BlAy5R/9/6uW56orxe6yA14Ugb4NRypLhjA89oV0G
-   1UGkUqq1G+Im1CWkBdI9KQ7CkjKYUQt6hawp5JsAgrVxS1D8efhvHuZe8
-   bk4yvyTAIDDNMauyxg4kNITFtJaZES3JhrR8ANufaTjUDZEq1lgVIRyNj
-   zZFzm+ss9lPdFk7BYREvDKovY9vWtQ5Q0Q8yaFZhiDDwOZ/c4WCEtdUDw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="429225830"
+  bh=jKFPbTHoA2uU7RWBMJDbq4wYBw/0LJsv7WL6ODM/3Ww=;
+  b=jBsFB6t9cx8Jv2wLie9T06rKkJ62Zq2n5pNkZrZrD9wsvbuK1cB6tLKc
+   7+yrWNlxihTgi7X8EnQA34sF31NCVz5/7hFWMi/e1LH1mGZA0B8ISSxPy
+   1wZWqxCDCfOsKlkXB1tiLO23IhIpsD67fTM/nyKfBuoB442voUIKxZzia
+   fHJTqkywCAPFzzdSf564Dk5SwJByxgTe4lyB55EbLK250vOdzFVG0c0vA
+   1u9jTFv0h8BbLpaVx7rHZP9QGD8fuBZTwzW6sqXg5L41mLLiApk2/tC6b
+   LT/OaeTmCgngjOcldkocI8ns2+s3BHlt+drtZEXytR6skotqy9uNRaAQh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="429225871"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200";
-   d="scan'208";a="429225830"
+   d="scan'208";a="429225871"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
   by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jul 2023 05:23:56 -0700
+ 14 Jul 2023 05:24:08 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="1053034885"
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="1053034950"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200";
-   d="scan'208";a="1053034885"
+   d="scan'208";a="1053034950"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Jul 2023 05:23:54 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 14 Jul 2023 05:24:05 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Bjorn Helgaas <bhelgaas@google.com>,
@@ -79,17 +79,18 @@ Cc: alsa-devel@alsa-project.org,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v3 05/15] ALSA: hda: Add controller matching macros
-Date: Fri, 14 Jul 2023 22:24:47 +0200
-Message-Id: <20230714202457.423866-6-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v3 09/15] ALSA: intel-dsp-config: Convert to PCI device IDs
+ defines
+Date: Fri, 14 Jul 2023 22:24:51 +0200
+Message-Id: <20230714202457.423866-10-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230714202457.423866-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230714202457.423866-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7PNHVNVDLJDHKJK4SWPOVON4WC272WY4
-X-Message-ID-Hash: 7PNHVNVDLJDHKJK4SWPOVON4WC272WY4
+Message-ID-Hash: FFH6C63ELW5ETWYRSDJNYDLTIA252B62
+X-Message-ID-Hash: FFH6C63ELW5ETWYRSDJNYDLTIA252B62
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7PNHVNVDLJDHKJK4SWPOVON4WC272WY4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FFH6C63ELW5ETWYRSDJNYDLTIA252B62/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,58 +112,396 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some HDA controllers require additional handling, so there are macros to
-match them, however those are spread across multiple files. Add them all
-in one place, so they can be reused.
+Use PCI device IDs from pci_ids.h header. Also simplify comments for
+Alder Lake and Raptor Lake platforms, as new IDs make it clear what
+revision is in use.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com> # for Intel Tangier ID
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- include/sound/hdaudio.h | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ sound/hda/intel-dsp-config.c | 117 ++++++++++++++++-------------------
+ 1 file changed, 54 insertions(+), 63 deletions(-)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 2ffdf58bd6d4..32c59053b48e 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -11,6 +11,7 @@
- #include <linux/io.h>
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/iopoll.h>
-+#include <linux/pci.h>
- #include <linux/pm_runtime.h>
- #include <linux/timecounter.h>
- #include <sound/core.h>
-@@ -704,4 +705,29 @@ static inline unsigned int snd_array_index(struct snd_array *array, void *ptr)
- 	for ((idx) = 0, (ptr) = (array)->list; (idx) < (array)->used; \
- 	     (ptr) = snd_array_elem(array, ++(idx)))
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index 5cee995f7a42..48bd1fb06f26 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -50,7 +50,7 @@ static const struct config_entry config_table[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_MERRIFIELD)
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x119a,
++		.device = PCI_DEVICE_ID_INTEL_SST_TNG,
+ 	},
+ #endif
+ /*
+@@ -61,7 +61,7 @@ static const struct config_entry config_table[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x5a98,
++		.device = PCI_DEVICE_ID_INTEL_HDA_APL,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Up Squared",
+@@ -75,14 +75,14 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x5a98,
++		.device = PCI_DEVICE_ID_INTEL_HDA_APL,
+ 		.codec_hid =  &essx_83x6,
+ 	},
+ #endif
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
+ 	{
+ 		.flags = FLAG_SST,
+-		.device = 0x5a98,
++		.device = PCI_DEVICE_ID_INTEL_HDA_APL,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Google Chromebooks",
+@@ -103,7 +103,7 @@ static const struct config_entry config_table[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
+ 	{
+ 		.flags = FLAG_SST,
+-		.device = 0x9d70,
++		.device = PCI_DEVICE_ID_INTEL_HDA_SKL_LP,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Google Chromebooks",
+@@ -116,14 +116,14 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SST | FLAG_SST_ONLY_IF_DMIC,
+-		.device = 0x9d70,
++		.device = PCI_DEVICE_ID_INTEL_HDA_SKL_LP,
+ 	},
+ #endif
+ /* Kabylake-LP */
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
+ 	{
+ 		.flags = FLAG_SST,
+-		.device = 0x9d71,
++		.device = PCI_DEVICE_ID_INTEL_HDA_KBL_LP,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Google Chromebooks",
+@@ -136,7 +136,7 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SST | FLAG_SST_ONLY_IF_DMIC,
+-		.device = 0x9d71,
++		.device = PCI_DEVICE_ID_INTEL_HDA_KBL_LP,
+ 	},
+ #endif
  
-+/*
-+ * Device matching
-+ */
-+
-+#define HDA_CONTROLLER_IS_HSW(pci) (pci_match_id((struct pci_device_id []){ \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_HSW_0) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_HSW_2) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_HSW_3) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_BDW) }, \
-+			{ } \
-+		}, pci))
-+
-+#define HDA_CONTROLLER_IS_APL(pci) (pci_match_id((struct pci_device_id []){ \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_APL) }, \
-+			{ } \
-+		}, pci))
-+
-+#define HDA_CONTROLLER_IN_GPU(pci) (pci_match_id((struct pci_device_id []){ \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG1) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG2_0) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG2_1) }, \
-+			{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_HDA_DG2_2) }, \
-+			{ } \
-+		}, pci) || HDA_CONTROLLER_IS_HSW(pci))
-+
- #endif /* __SOUND_HDAUDIO_H */
+@@ -148,7 +148,7 @@ static const struct config_entry config_table[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x3198,
++		.device = PCI_DEVICE_ID_INTEL_HDA_GML,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Google Chromebooks",
+@@ -161,7 +161,7 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x3198,
++		.device = PCI_DEVICE_ID_INTEL_HDA_GML,
+ 		.codec_hid =  &essx_83x6,
+ 	},
+ #endif
+@@ -181,7 +181,7 @@ static const struct config_entry config_table[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_CANNONLAKE)
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x9dc8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CNL_LP,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Google Chromebooks",
+@@ -200,12 +200,12 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x09dc8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CNL_LP,
+ 		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x9dc8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CNL_LP,
+ 	},
+ #endif
+ 
+@@ -213,7 +213,7 @@ static const struct config_entry config_table[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_COFFEELAKE)
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0xa348,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CNL_H,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Google Chromebooks",
+@@ -226,7 +226,7 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0xa348,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CNL_H,
+ 	},
+ #endif
+ 
+@@ -234,7 +234,7 @@ static const struct config_entry config_table[] = {
+ /* Cometlake-LP */
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x02c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CML_LP,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Google Chromebooks",
+@@ -260,17 +260,17 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x02c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CML_LP,
+ 		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x02c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CML_LP,
+ 	},
+ /* Cometlake-H */
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x06c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CML_H,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.matches = {
+@@ -289,12 +289,12 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x06c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CML_H,
+ 		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x06c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_CML_H,
+ 	},
+ #endif
+ 
+@@ -302,7 +302,7 @@ static const struct config_entry config_table[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_ICELAKE)
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x34c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ICL_LP,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Google Chromebooks",
+@@ -315,12 +315,12 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x34c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ICL_LP,
+ 		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x34c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ICL_LP,
+ 	},
+ #endif
+ 
+@@ -328,7 +328,7 @@ static const struct config_entry config_table[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_JASPERLAKE)
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x4dc8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_JSL_N,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Google Chromebooks",
+@@ -341,12 +341,12 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x4dc8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_JSL_N,
+ 		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
+-		.device = 0x4dc8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_JSL_N,
+ 	},
+ #endif
+ 
+@@ -354,7 +354,7 @@ static const struct config_entry config_table[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0xa0c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_TGL_LP,
+ 		.dmi_table = (const struct dmi_system_id []) {
+ 			{
+ 				.ident = "Google Chromebooks",
+@@ -373,16 +373,16 @@ static const struct config_entry config_table[] = {
+ 	},
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0xa0c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_TGL_LP,
+ 		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0xa0c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_TGL_LP,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x43c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_TGL_H,
+ 	},
+ #endif
+ 
+@@ -390,78 +390,69 @@ static const struct config_entry config_table[] = {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_ELKHARTLAKE)
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
+-		.device = 0x4b55,
++		.device = PCI_DEVICE_ID_INTEL_HDA_EHL_0,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
+-		.device = 0x4b58,
++		.device = PCI_DEVICE_ID_INTEL_HDA_EHL_3,
+ 	},
+ #endif
+ 
+-/* Alder Lake */
++/* Alder Lake / Raptor Lake */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_ALDERLAKE)
+-	/* Alderlake-S */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x7ad0,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_S,
+ 	},
+-	/* RaptorLake-S */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x7a50,
++		.device = PCI_DEVICE_ID_INTEL_HDA_RPL_S,
+ 	},
+-	/* Alderlake-P */
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x51c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_P,
+ 		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_P,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51cd,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_PX,
+ 	},
+-	/* Alderlake-PS */
+ 	{
+ 		.flags = FLAG_SOF,
+-		.device = 0x51c9,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_PS,
+ 		.codec_hid =  &essx_83x6,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51c9,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_PS,
+ 	},
+-	/* Alderlake-M */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51cc,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_M,
+ 	},
+-	/* Alderlake-N */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x54c8,
++		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_N,
+ 	},
+-	/* RaptorLake-P */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51ca,
++		.device = PCI_DEVICE_ID_INTEL_HDA_RPL_P_0,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51cb,
++		.device = PCI_DEVICE_ID_INTEL_HDA_RPL_P_1,
+ 	},
+-	/* RaptorLake-M */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51ce,
++		.device = PCI_DEVICE_ID_INTEL_HDA_RPL_M,
+ 	},
+-	/* RaptorLake-PX */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51cf,
++		.device = PCI_DEVICE_ID_INTEL_HDA_RPL_PX,
+ 	},
+ #endif
+ 
+@@ -542,7 +533,7 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
+ 	const struct config_entry *cfg;
+ 
+ 	/* Intel vendor only */
+-	if (pci->vendor != 0x8086)
++	if (pci->vendor != PCI_VENDOR_ID_INTEL)
+ 		return SND_INTEL_DSP_DRIVER_ANY;
+ 
+ 	/*
+@@ -550,12 +541,12 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
+ 	 * for HDMI/DP support, ignore kernel parameter
+ 	 */
+ 	switch (pci->device) {
+-	case 0x160c: /* Broadwell */
+-	case 0x0a0c: /* Haswell */
+-	case 0x0c0c:
+-	case 0x0d0c:
+-	case 0x0f04: /* Baytrail */
+-	case 0x2284: /* Braswell */
++	case PCI_DEVICE_ID_INTEL_HDA_BDW:
++	case PCI_DEVICE_ID_INTEL_HDA_HSW_0:
++	case PCI_DEVICE_ID_INTEL_HDA_HSW_2:
++	case PCI_DEVICE_ID_INTEL_HDA_HSW_3:
++	case PCI_DEVICE_ID_INTEL_HDA_BYT:
++	case PCI_DEVICE_ID_INTEL_HDA_BSW:
+ 		return SND_INTEL_DSP_DRIVER_ANY;
+ 	}
+ 
 -- 
 2.34.1
 
