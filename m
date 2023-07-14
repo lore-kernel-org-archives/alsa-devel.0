@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D49AEB64DA
-	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jul 2023 12:27:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9742CEB64DA
+	for <alsa-devel@archiver.kernel.org>; Fri, 14 Jul 2023 12:27:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92AB1A4B;
-	Fri, 14 Jul 2023 14:26:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92AB1A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 817DCE73;
+	Fri, 14 Jul 2023 14:26:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 817DCE73
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689337662;
-	bh=t3HZv5qJPf5xVVC8Dhp4RNscGO5uzAyDv01K9l4KYPQ=;
+	s=default; t=1689337669;
+	bh=6Hi0/au1Z7W8Ae3bYV68XGhs74D1joYSt9bHUr1c1ng=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qazT+vLPTIfHfiW3z4zlVtFGn/Fm5sqHcv26n8uhfAkInaOMjc7YMNJhZq2gfhrYE
-	 qoyooeA2mn63qlDKYfOpjzRmOcD/LK+n1/yVkuk42WnVbmOEJq0g2ovZLnXD+GKUMn
-	 fqgPmxgqzxmArB4gg8RCoXNBbzGQIiml/L9Tptag=
+	b=PzVgkDrb/xZryAVNrwgdQyUmHiXIbhIdaq1ZN67O9wZT+mZLH1LUzoT5Q09InPPhn
+	 J82f8Q5463Tbi2ZbtBY+VRN9uWJpUzw6st6e/T68Ka4oiOE1Q04s4c2Yma9Lvlmzhf
+	 RBeZav80PFy5xLJBFX/XGTzUr3ZtGcm/hPg9UYTI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D5D6FF805D5; Fri, 14 Jul 2023 14:24:43 +0200 (CEST)
+	id 6DD76F805E4; Fri, 14 Jul 2023 14:24:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33BBCF805CB;
-	Fri, 14 Jul 2023 14:24:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD4B3F805DF;
+	Fri, 14 Jul 2023 14:24:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D13B7F8059F; Fri, 14 Jul 2023 14:24:31 +0200 (CEST)
+	id 1FDFFF805AE; Fri, 14 Jul 2023 14:24:33 +0200 (CEST)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5F6AAF80153
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2023 14:24:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F6AAF80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id B278FF800D2
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2023 14:24:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B278FF800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ShfPqW1t
+ header.s=Intel header.b=Uz3lWzk1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689337446; x=1720873446;
+  t=1689337455; x=1720873455;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=t3HZv5qJPf5xVVC8Dhp4RNscGO5uzAyDv01K9l4KYPQ=;
-  b=ShfPqW1t/8lsZkZkEvKX2WliERPp33ekcSKyuIoG1uqpgFlU0fZjxOpE
-   123YU+NfAOzawoLGjvQiL7js75ig4pwa96YHEkP8MoquyvmFTfZmUPMKX
-   XUR548jgM4aWCTUboKxc0IGNuooYJ/ZVG2n37MJVw9WG0D7rEjBo714ga
-   U5jrJXfo46+9XhRcfLWburLC4o5lYmrH4GR/gz4fGCJkf6quND4M8Xmfv
-   jmlyzz94Va19eKh55fVzG4D9KmDalmINvzjs6OzLw5xMif1i/KwnhTPRp
-   2+mtGUHYiL8EgFNXAxS11K1ZpL0pIUEJLcIcZsebc+6ogX0odkf7Zf1MW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="429225808"
+  bh=6Hi0/au1Z7W8Ae3bYV68XGhs74D1joYSt9bHUr1c1ng=;
+  b=Uz3lWzk1BeqRdjKnHrKu9iwjoX9cziih5DFWs33SRO/S3JIGYUlPefdb
+   NrBrv7G9+MCJjAnQV3suIUPWxc80d92Koe8IIoJcT4Ctc1M9DmjnYARPU
+   c6KGxuqMus1UJHLchtWmDnnpaAmIHOqO1Q8um4tqqFxEvyVwXfJpGCB/f
+   AOzmbCWY3zp2aToVBkg0A7bpCz+jPGuhpj05y8On0kMl/nArSMEgHwXP3
+   fhTumxOpud2Oj4di9PopBz2bhyCVnc/AMyuLgKtNb9/earBxX9izIWPv7
+   QDl6DrPsNWag/MlstNkgLm+bhk3OmwSKBj9SXYPo4EGJ6aPaXzscrp6Qh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="429225888"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200";
-   d="scan'208";a="429225808"
+   d="scan'208";a="429225888"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
   by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jul 2023 05:23:51 -0700
+ 14 Jul 2023 05:24:14 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="1053034865"
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="1053034977"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200";
-   d="scan'208";a="1053034865"
+   d="scan'208";a="1053034977"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Jul 2023 05:23:48 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 14 Jul 2023 05:24:11 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Bjorn Helgaas <bhelgaas@google.com>,
@@ -79,17 +79,17 @@ Cc: alsa-devel@alsa-project.org,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v3 03/15] ASoC: SOF: Remove unused Broxton PCI ID
-Date: Fri, 14 Jul 2023 22:24:45 +0200
-Message-Id: <20230714202457.423866-4-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v3 11/15] ASoC: Intel: avs: Convert to PCI device IDs defines
+Date: Fri, 14 Jul 2023 22:24:53 +0200
+Message-Id: <20230714202457.423866-12-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230714202457.423866-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230714202457.423866-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 46E73D7ZYNAXTTYTB464ZPJRM4GUTS64
-X-Message-ID-Hash: 46E73D7ZYNAXTTYTB464ZPJRM4GUTS64
+Message-ID-Hash: 24SLJDUCYWMUXP33VOG5EW6HZKWICY7U
+X-Message-ID-Hash: 24SLJDUCYWMUXP33VOG5EW6HZKWICY7U
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/46E73D7ZYNAXTTYTB464ZPJRM4GUTS64/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/24SLJDUCYWMUXP33VOG5EW6HZKWICY7U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,48 +111,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Current code references 0x1a98 which is BXT-M (not -T as it is
-commented) and it's an RVP, BXT-M B0 to be specific. From what we know
-no BXT is available on market.
+Use PCI device IDs from pci_ids.h header and while at it change to using
+PCI_DEVICE_DATA() macro, to simplify declarations.
 
+Acked-by: Mark Brown <broonie@kernel.org>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/hda/intel-dsp-config.c  | 7 -------
- sound/soc/sof/intel/pci-apl.c | 2 --
- 2 files changed, 9 deletions(-)
+ sound/soc/intel/avs/core.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 317bdf6dcbef..5cee995f7a42 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -53,13 +53,6 @@ static const struct config_entry config_table[] = {
- 		.device = 0x119a,
- 	},
- #endif
--/* Broxton-T */
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
--	{
--		.flags = FLAG_SOF,
--		.device = 0x1a98,
--	},
--#endif
- /*
-  * Apollolake (Broxton-P)
-  * the legacy HDAudio driver is used except on Up Squared (SOF) and
-diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
-index 69cad5a6bc72..bc3ad64baec5 100644
---- a/sound/soc/sof/intel/pci-apl.c
-+++ b/sound/soc/sof/intel/pci-apl.c
-@@ -87,8 +87,6 @@ static const struct sof_dev_desc glk_desc = {
- static const struct pci_device_id sof_pci_ids[] = {
- 	{ PCI_DEVICE(0x8086, 0x5a98), /* BXT-P (ApolloLake) */
- 		.driver_data = (unsigned long)&bxt_desc},
--	{ PCI_DEVICE(0x8086, 0x1a98),/* BXT-T */
--		.driver_data = (unsigned long)&bxt_desc},
- 	{ PCI_DEVICE(0x8086, 0x3198), /* GeminiLake */
- 		.driver_data = (unsigned long)&glk_desc},
- 	{ 0, }
+diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+index 637501850728..859b217fc761 100644
+--- a/sound/soc/intel/avs/core.c
++++ b/sound/soc/intel/avs/core.c
+@@ -745,14 +745,14 @@ static const struct avs_spec apl_desc = {
+ };
+ 
+ static const struct pci_device_id avs_ids[] = {
+-	{ PCI_VDEVICE(INTEL, 0x9d70), (unsigned long)&skl_desc }, /* SKL */
+-	{ PCI_VDEVICE(INTEL, 0xa170), (unsigned long)&skl_desc }, /* SKL-H */
+-	{ PCI_VDEVICE(INTEL, 0x9d71), (unsigned long)&skl_desc }, /* KBL */
+-	{ PCI_VDEVICE(INTEL, 0xa171), (unsigned long)&skl_desc }, /* KBL-H */
+-	{ PCI_VDEVICE(INTEL, 0xa2f0), (unsigned long)&skl_desc }, /* KBL-S */
+-	{ PCI_VDEVICE(INTEL, 0xa3f0), (unsigned long)&skl_desc }, /* CML-V */
+-	{ PCI_VDEVICE(INTEL, 0x5a98), (unsigned long)&apl_desc }, /* APL */
+-	{ PCI_VDEVICE(INTEL, 0x3198), (unsigned long)&apl_desc }, /* GML */
++	{ PCI_DEVICE_DATA(INTEL, HDA_SKL_LP, &skl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_SKL, &skl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_KBL_LP, &skl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_KBL, &skl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_KBL_H, &skl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_CML_S, &skl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_APL, &apl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_GML, &apl_desc) },
+ 	{ 0 }
+ };
+ MODULE_DEVICE_TABLE(pci, avs_ids);
 -- 
 2.34.1
 
