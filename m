@@ -4,53 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CED62C001DC
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Jul 2023 16:09:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58EDFC001B0
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Jul 2023 16:09:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBFDBAE8;
-	Sat, 15 Jul 2023 18:08:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBFDBAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 246CEDF3;
+	Sat, 15 Jul 2023 18:08:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 246CEDF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689437369;
-	bh=kWfpO32roF7JEpiuP6zZy6QTEnFknk7ifhBTcLqSI5E=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=OgDZpopFe9GEIOqfJ/1fahA0cNuTC5c408ME8WvX2qDnQUD8i7DH7Q/Ge20oRoiqy
-	 ITj5ZaUnuKiPw6zPmCJs55vUYlrPc1VI/i+q8JNQsmDoJ9sZrAkXoVpReNW0pIrQ0h
-	 R+jQ4sQqAFticZboJxRbVs9eQwbuXe5outIbnnpg=
+	s=default; t=1689437380;
+	bh=tBz1lNoB9z5HQpFPnVyMryRPhYjZK+znx9YZIiibd2M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=VCbx4YiKOCww695Gi/AwQGsBZcCZNIou4S0/2A/K6vOW2XxIQ6mBajR92V/9QEMX8
+	 y77XNthfTGdzCmaPtnki+5zVP/lvapJ9xTuN7SOKzzvZduMkfp9dpgZmrndSPjaVu7
+	 yjynivzouByl6I8OxGfZbH7QNSUdFqoPLQa5C5gQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD49DF8055A; Sat, 15 Jul 2023 18:08:12 +0200 (CEST)
+	id 73E7EF80548; Sat, 15 Jul 2023 18:08:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F954F8055A;
-	Sat, 15 Jul 2023 18:08:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1191BF8047D;
+	Sat, 15 Jul 2023 18:08:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C583F80549; Sat, 15 Jul 2023 18:08:08 +0200 (CEST)
+	id 5C43BF80551; Sat, 15 Jul 2023 18:08:46 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DA3A4F80236
-	for <alsa-devel@alsa-project.org>; Sat, 15 Jul 2023 18:08:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA3A4F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 86830F8047D
+	for <alsa-devel@alsa-project.org>; Sat, 15 Jul 2023 18:08:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86830F8047D
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id F0D6023EE2;
-	Sat, 15 Jul 2023 12:08:02 -0400 (EDT)
+	by bluemchen.kde.org (Postfix) with ESMTP id 30EC62408D;
+	Sat, 15 Jul 2023 12:08:40 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1qKhoQ-N2H-00; Sat, 15 Jul 2023 18:08:02 +0200
+	id 1qKhp1-N46-00; Sat, 15 Jul 2023 18:08:39 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v3] ALSA: emu10k1: set the "no filtering" bits on PCM voices
- on Audigy
-Date: Sat, 15 Jul 2023 18:08:02 +0200
-Message-Id: <20230715160802.326872-1-oswald.buddenhagen@gmx.de>
+Subject: [PATCH 2/2] ALSA: emu10k1: rework copyright statements
+Date: Sat, 15 Jul 2023 18:08:39 +0200
+Message-Id: <20230715160839.326978-2-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <20230715160839.326978-1-oswald.buddenhagen@gmx.de>
+References: <20230715160839.326978-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SJD7TFUSC5MOXMWEVMB3S33BJPNNQIYZ
-X-Message-ID-Hash: SJD7TFUSC5MOXMWEVMB3S33BJPNNQIYZ
+Message-ID-Hash: LCFJ3XP7OD5HJGEGFVHQTEAXGWWR3QHJ
+X-Message-ID-Hash: LCFJ3XP7OD5HJGEGFVHQTEAXGWWR3QHJ
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -63,7 +65,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SJD7TFUSC5MOXMWEVMB3S33BJPNNQIYZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LCFJ3XP7OD5HJGEGFVHQTEAXGWWR3QHJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -72,61 +74,189 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Given that the filter is already set to neutral for PCM voices, the
-only observable effect is that the Z1/Z2/FXBUS registers don't have a
-stray bit set for negative numbers anymore. The bit is below the ones
-significant for output, but it would mess with 32-bit sample
-recombination, which we intend to add.
-
-kX-project does that, but I had to figure out myself why.
+- Remove the "log-like" parts, following the same logic as the previous
+  commit
+- Unify format
+- Add missing major contributors, including myself
+- Sort entries in order of first contribution (Creative comes last for
+  optical reasons; they don't appear to have directly contributed
+  anyway)
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-
 ---
-v3:
-- simplify, as this is actually unrelated to the interpolator
----
- include/sound/emu10k1.h | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ sound/pci/emu10k1/emu10k1.c      | 4 +---
+ sound/pci/emu10k1/emu10k1_main.c | 8 +++-----
+ sound/pci/emu10k1/emufx.c        | 6 +++---
+ sound/pci/emu10k1/emumixer.c     | 8 ++++----
+ sound/pci/emu10k1/emupcm.c       | 5 ++++-
+ sound/pci/emu10k1/emuproc.c      | 7 ++++---
+ sound/pci/emu10k1/io.c           | 4 ++++
+ sound/pci/emu10k1/timer.c        | 2 ++
+ sound/pci/emu10k1/voice.c        | 6 +++---
+ 9 files changed, 28 insertions(+), 22 deletions(-)
 
-diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
-index 43c097952c3c..ef948e45b4c6 100644
---- a/include/sound/emu10k1.h
-+++ b/include/sound/emu10k1.h
-@@ -902,6 +902,11 @@ SUB_REG_NC(A_EHC, A_I2S_CAPTURE_RATE, 0x00000e00)  /* This sets the capture PCM
- #define A_TTDA			0x7a		/* Tank Table DMA Address			*/
- #define A_TTDD			0x7b		/* Tank Table DMA Data				*/
+diff --git a/sound/pci/emu10k1/emu10k1.c b/sound/pci/emu10k1/emu10k1.c
+index 1a13c086e86c..ba8e5534e2df 100644
+--- a/sound/pci/emu10k1/emu10k1.c
++++ b/sound/pci/emu10k1/emu10k1.c
+@@ -2,9 +2,7 @@
+ /*
+  *  The driver for the EMU10K1 (SB Live!) based soundcards
+  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
+- *
+- *  Copyright (c) by James Courtier-Dutton <James@superbug.demon.co.uk>
+- *      Added support for Audigy 2 Value.
++ *                   James Courtier-Dutton <James@superbug.co.uk>
+  */
  
-+// In A_FXRT1 & A_FXRT2, the 0x80 bit of each byte completely disables the
-+// filter (CVCF_CURRENTFILTER) for the corresponding channel. There is no
-+// effect on the volume (CVCF_CURRENTVOLUME) or the interpolator's filter
-+// (CCCA_INTERPROM_MASK).
-+
- #define A_FXRT2			0x7c
- #define A_FXRT_CHANNELE		0x0000003f	/* Effects send bus number for channel's effects send E	*/
- #define A_FXRT_CHANNELF		0x00003f00	/* Effects send bus number for channel's effects send F	*/
-@@ -914,8 +919,6 @@ SUB_REG_NC(A_EHC, A_I2S_CAPTURE_RATE, 0x00000e00)  /* This sets the capture PCM
- #define A_FXSENDAMOUNT_G_MASK	0x0000FF00
- #define A_FXSENDAMOUNT_H_MASK	0x000000FF
+ #include <linux/init.h>
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index 529d0bba87da..d3a37d805fb2 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -1,13 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
++ *                   James Courtier-Dutton <James@superbug.co.uk>
++ *                   Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+  *                   Creative Labs, Inc.
+- *  Routines for control of EMU10K1 chips
+  *
+- *  Copyright (c) by James Courtier-Dutton <James@superbug.co.uk>
+- *      Added support for Audigy 2 Value.
+- *  	Added EMU 1010 support.
+- *  	General bug fixes and enhancements.
++ *  Routines for control of EMU10K1 chips
+  */
  
--/* 0x7c, 0x7e "high bit is used for filtering" */
-- 
- /* The send amounts for this one are the same as used with the emu10k1 */
- #define A_FXRT1			0x7e
- #define A_FXRT_CHANNELA		0x0000003f
-@@ -1523,10 +1526,10 @@ struct snd_emu10k1_pcm_mixer {
- ((route[0] | (route[1] << 4) | (route[2] << 8) | (route[3] << 12)) << 16)
+ #include <linux/sched.h>
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index e0ad339c5bbf..347141635604 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -1,11 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
++ *                   James Courtier-Dutton <James@superbug.co.uk>
++ *                   Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+  *                   Creative Labs, Inc.
+- *  Routines for effect processor FX8010
+  *
+- *  Copyright (c) by James Courtier-Dutton <James@superbug.co.uk>
+- *  	Added EMU 1010 support.
++ *  Routines for effect processor FX8010
+  */
  
- #define snd_emu10k1_compose_audigy_fxrt1(route) \
--((unsigned int)route[0] | ((unsigned int)route[1] << 8) | ((unsigned int)route[2] << 16) | ((unsigned int)route[3] << 24))
-+((unsigned int)route[0] | ((unsigned int)route[1] << 8) | ((unsigned int)route[2] << 16) | ((unsigned int)route[3] << 24) | 0x80808080)
+ #include <linux/pci.h>
+diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
+index 6ff59c44da36..cb2b4e5553e7 100644
+--- a/sound/pci/emu10k1/emumixer.c
++++ b/sound/pci/emu10k1/emumixer.c
+@@ -2,12 +2,12 @@
+ /*
+  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>,
+  *                   Takashi Iwai <tiwai@suse.de>
++ *                   Lee Revell <rlrevell@joe-job.com>
++ *                   James Courtier-Dutton <James@superbug.co.uk>
++ *                   Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+  *                   Creative Labs, Inc.
+- *  Routines for control of EMU10K1 chips / mixer routines
+- *  Multichannel PCM support Copyright (c) Lee Revell <rlrevell@joe-job.com>
+  *
+- *  Copyright (c) by James Courtier-Dutton <James@superbug.co.uk>
+- *  	Added EMU 1010 support.
++ *  Routines for control of EMU10K1 chips / mixer routines
+  */
  
- #define snd_emu10k1_compose_audigy_fxrt2(route) \
--((unsigned int)route[4] | ((unsigned int)route[5] << 8) | ((unsigned int)route[6] << 16) | ((unsigned int)route[7] << 24))
-+((unsigned int)route[4] | ((unsigned int)route[5] << 8) | ((unsigned int)route[6] << 16) | ((unsigned int)route[7] << 24) | 0x80808080)
+ #include <linux/time.h>
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index 7a1d448f0656..7f4c1b38d6ec 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -1,9 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
++ *                   Lee Revell <rlrevell@joe-job.com>
++ *                   James Courtier-Dutton <James@superbug.co.uk>
++ *                   Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+  *                   Creative Labs, Inc.
++ *
+  *  Routines for control of EMU10K1 chips / PCM routines
+- *  Multichannel PCM support Copyright (c) Lee Revell <rlrevell@joe-job.com>
+  */
  
- #define snd_emu10k1_compose_audigy_sendamounts(vol) \
- (((unsigned int)vol[4] << 24) | ((unsigned int)vol[5] << 16) | ((unsigned int)vol[6] << 8) | (unsigned int)vol[7])
+ #include <linux/pci.h>
+diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
+index 39b422297c70..2f80fd91017c 100644
+--- a/sound/pci/emu10k1/emuproc.c
++++ b/sound/pci/emu10k1/emuproc.c
+@@ -1,11 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
++ *                   Lee Revell <rlrevell@joe-job.com>
++ *                   James Courtier-Dutton <James@superbug.co.uk>
++ *                   Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+  *                   Creative Labs, Inc.
+- *  Routines for control of EMU10K1 chips / proc interface routines
+  *
+- *  Copyright (c) by James Courtier-Dutton <James@superbug.co.uk>
+- *  	Added EMU 1010 support.
++ *  Routines for control of EMU10K1 chips / proc interface routines
+  */
+ 
+ #include <linux/slab.h>
+diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
+index 7e4483c5bd2a..74df2330015f 100644
+--- a/sound/pci/emu10k1/io.c
++++ b/sound/pci/emu10k1/io.c
+@@ -1,7 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
++ *                   Lee Revell <rlrevell@joe-job.com>
++ *                   James Courtier-Dutton <James@superbug.co.uk>
++ *                   Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+  *                   Creative Labs, Inc.
++ *
+  *  Routines for control of EMU10K1 chips
+  */
+ 
+diff --git a/sound/pci/emu10k1/timer.c b/sound/pci/emu10k1/timer.c
+index 8798604e7f98..bb2478319361 100644
+--- a/sound/pci/emu10k1/timer.c
++++ b/sound/pci/emu10k1/timer.c
+@@ -2,6 +2,8 @@
+ /*
+  *  Copyright (c) by Lee Revell <rlrevell@joe-job.com>
+  *                   Clemens Ladisch <clemens@ladisch.de>
++ *                   Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
++ *
+  *  Routines for control of EMU10K1 chips
+  */
+ 
+diff --git a/sound/pci/emu10k1/voice.c b/sound/pci/emu10k1/voice.c
+index ffe87f359a0e..77fb5427aaed 100644
+--- a/sound/pci/emu10k1/voice.c
++++ b/sound/pci/emu10k1/voice.c
+@@ -1,11 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
+- *                   Creative Labs, Inc.
+  *                   Lee Revell <rlrevell@joe-job.com>
+- *  Routines for control of EMU10K1 chips - voice manager
++ *                   Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
++ *                   Creative Labs, Inc.
+  *
+- *  Rewrote voice allocator for multichannel support - rlrevell 12/2004
++ *  Routines for control of EMU10K1 chips - voice manager
+  */
+ 
+ #include <linux/time.h>
 -- 
 2.40.0.152.g15d061e6df
 
