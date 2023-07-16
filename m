@@ -4,86 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7C2FEB64DD
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Jul 2023 13:00:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 800C2EB64DD
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Jul 2023 13:08:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E57D6DF4;
-	Sun, 16 Jul 2023 15:00:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E57D6DF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0D02DEC;
+	Sun, 16 Jul 2023 15:07:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0D02DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689512452;
-	bh=p+P/WbbuoEGaUjF+Tn7R1hULJ23c/3mcMJnAj/KCtTw=;
-	h=Date:Subject:From:To:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Dzjo//HvXHwKu3Gqw3YmnRWKm+0Ob5gNkUZaQ+th0xY2hUS/x38eDaByXWGeLAhTI
-	 aaFBQP4XMQvcMlscTDRqDKCi9M1LDUPBsXLC3HybLg6k6wUF9ZBDh/vmydElhHetkg
-	 tIBDVNyw6+V3xj4Vt9cL9rJl7rxXnraCKkylSFnI=
+	s=default; t=1689512928;
+	bh=WiIqbD/NzqJJszvO1N9enMMHatBX+E/8PXNtOTBB5xE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=IzRNQmhV1nb+wyv24wjOlZBtZmpSEdDIhNhYPqeZ1okiRsBBOHJO5D8lBUdyOTl3U
+	 4A5LwnChk9q2TmrNJluONpmbkzs0Ui49HxFb1MxDzfPTqtuaowBsdpeog8HJbugj9c
+	 ABnTKGALwTdGXgp3ggkinIAxPsL+Ytsrndy+5oXc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4A45F80153; Sun, 16 Jul 2023 14:58:34 +0200 (CEST)
+	id 65E1BF8032D; Sun, 16 Jul 2023 15:07:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3F7DF80535;
-	Sun, 16 Jul 2023 14:58:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 024F1F80520;
+	Sun, 16 Jul 2023 15:07:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59055F8047D; Sun, 16 Jul 2023 10:21:53 +0200 (CEST)
-Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com
- [209.85.167.205])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id DF1D2F8047D; Sun, 16 Jul 2023 15:07:27 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4734BF8027B
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2023 10:21:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4734BF8027B
-Received: by mail-oi1-f205.google.com with SMTP id
- 5614622812f47-39fb9cce400so5404501b6e.1
-        for <alsa-devel@alsa-project.org>;
- Sun, 16 Jul 2023 01:21:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689495709; x=1692087709;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Z/9vVWmFMMeqNG0xDcaixSejDntCvADQME2O0gHEl4Q=;
-        b=jvWeT9AYMXe/alDW6yXd+azG/7SRgt4aFKVbVqwhWkajGa7NArcEd19nI7afi+D3cW
-         dO0ZCi5lTwCP1Y1sJ0fsHnnXcVJyv5tzCihIvKeBV1VrSC7+SYP6J7YmxA7nJjBOXYlE
-         YPDVqSomP6BZv0PKXK0fj2YsDi0cKGe1Q5pBTboXI19Mi8ciG+C2kwwRAEa3o24h4Dcp
-         tBGc1bhYaQTnhZ88BjdE7n1NChOYy9Cy/NeTiCwxsqOddl35WLzu3lIaC3egRVT9w9OA
-         qOtZv7c/9HrO89vWztr0v1g+2OypBiJCfXEn74k9Qyk0hlE51+9fEy07f+kqUds4sGNd
-         ng6Q==
-X-Gm-Message-State: ABy/qLYUyfzY00wABVoFwOP8r2fvVgovbTRVhMbEN0bQpemcz2k5rmd4
-	iPj6sTw8jWu/BAxJ5maEaDSsrSLzl+YEbF84UyWs+/UX93Br1cTnfg==
-X-Google-Smtp-Source: 
- APBJJlEddIYY1oNa9o+XsPUUVXCVS1PtHLHzqRRrNf18e45dUc9ZoAKM+2PZ+09CLYXBZYmkLMUll3a4gL/uvKPgU5GrvrrUSbk5
-MIME-Version: 1.0
-X-Received: by 2002:a05:6808:14c4:b0:39e:de07:a6b7 with SMTP id
- f4-20020a05680814c400b0039ede07a6b7mr12516901oiw.1.1689495709214; Sun, 16 Jul
- 2023 01:21:49 -0700 (PDT)
-Date: Sun, 16 Jul 2023 01:21:49 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000098ed3a0600965f89@google.com>
-Subject: [syzbot] [alsa?] memory leak in snd_seq_create_port
-From: syzbot <syzbot+cf8e7fa4eeec59b3d485@syzkaller.appspotmail.com>
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz,
-	syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
-X-MailFrom: 
- 3naizZAkbAOgcijUKVVObKZZSN.QYYQVOecObMYXdOXd.MYW@M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-X-Mailman-Rule-Hits: nonmember-moderation
+	by alsa1.perex.cz (Postfix) with ESMTPS id D85C8F8027B
+	for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2023 15:07:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D85C8F8027B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=hQ3EqsRw;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=p4paIBZq
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 30A8A218F2;
+	Sun, 16 Jul 2023 13:07:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1689512844;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7AtYK9H6OEFphuJ+7xGg8FXecY+/gGpOOXHIVq4Nm0Y=;
+	b=hQ3EqsRwAhiMBD02CyvRlJD10ouY1Gg7CTjKztqt3HmuqJdPadnsfF5rIIxLzqNx9qMfdq
+	52NHfjiOTnGMzhefq2LRccYKaazu5394f45vmpGtpsTVoD5luiQPMHiPE+kgn9EeTNjRV3
+	l6pttHqRko0QCWUXAKldY/Tf3P0j8cg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1689512844;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7AtYK9H6OEFphuJ+7xGg8FXecY+/gGpOOXHIVq4Nm0Y=;
+	b=p4paIBZq6Eq6jnI8esXqfm/daNrNu+5LvAY9EcswEOpkFVjsHrUIjZrogi64S83jLkwAGI
+	LBMUAzEO1E68RpBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 097C113252;
+	Sun, 16 Jul 2023 13:07:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id ndCCAYzrs2T2fwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sun, 16 Jul 2023 13:07:24 +0000
+Date: Sun, 16 Jul 2023 15:07:23 +0200
+Message-ID: <87v8ekattg.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: syzbot <syzbot+cf8e7fa4eeec59b3d485@syzkaller.appspotmail.com>
+Cc: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	perex@perex.cz,
+	syzkaller-bugs@googlegroups.com,
+	tiwai@suse.com
+Subject: Re: [syzbot] [alsa?] memory leak in snd_seq_create_port
+In-Reply-To: <00000000000098ed3a0600965f89@google.com>
+References: <00000000000098ed3a0600965f89@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: GN66YFA5XT3OIWCPBJWV7OAKTMLBVNLO
+X-Message-ID-Hash: GN66YFA5XT3OIWCPBJWV7OAKTMLBVNLO
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IDES4JUJHAJXRQCMPF5BQDEAI5RU3KRL
-X-Message-ID-Hash: IDES4JUJHAJXRQCMPF5BQDEAI5RU3KRL
-X-Mailman-Approved-At: Sun, 16 Jul 2023 12:58:31 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IDES4JUJHAJXRQCMPF5BQDEAI5RU3KRL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GN66YFA5XT3OIWCPBJWV7OAKTMLBVNLO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,95 +116,109 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello,
+On Sun, 16 Jul 2023 10:21:49 +0200,
+syzbot wrote:
+> 
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14b07344a80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=75da4f0a455bdbd3
+> dashboard link: https://syzkaller.appspot.com/bug?extid=cf8e7fa4eeec59b3d485
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15877dc2a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12905004a80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/441fb7ea58b8/disk-3f01e9fe.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/8fa7790ba0c3/vmlinux-3f01e9fe.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/5e7a6471dadf/bzImage-3f01e9fe.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+cf8e7fa4eeec59b3d485@syzkaller.appspotmail.com
+> 
+> Warning: Permanently added '10.128.1.1' (ED25519) to the list of known hosts.
+> executing program
+> executing program
+> BUG: memory leak
+> unreferenced object 0xffff888100877000 (size 512):
+>   comm "syz-executor257", pid 5012, jiffies 4294941742 (age 12.790s)
+>   hex dump (first 32 bytes):
+>     80 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1076
+>     [<ffffffff83d29e28>] kmalloc include/linux/slab.h:582 [inline]
+>     [<ffffffff83d29e28>] kzalloc include/linux/slab.h:703 [inline]
+>     [<ffffffff83d29e28>] snd_seq_create_port+0x78/0x300 sound/core/seq/seq_ports.c:135
+>     [<ffffffff83d1f681>] snd_seq_ioctl_create_port+0xe1/0x2a0 sound/core/seq/seq_clientmgr.c:1324
+>     [<ffffffff83d20e5e>] snd_seq_ioctl+0x13e/0x290 sound/core/seq/seq_clientmgr.c:2327
+>     [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>     [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>     [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
+>     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888106742c00 (size 512):
+>   comm "syz-executor257", pid 5013, jiffies 4294942276 (age 7.450s)
+>   hex dump (first 32 bytes):
+>     80 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1076
+>     [<ffffffff83d29e28>] kmalloc include/linux/slab.h:582 [inline]
+>     [<ffffffff83d29e28>] kzalloc include/linux/slab.h:703 [inline]
+>     [<ffffffff83d29e28>] snd_seq_create_port+0x78/0x300 sound/core/seq/seq_ports.c:135
+>     [<ffffffff83d1f681>] snd_seq_ioctl_create_port+0xe1/0x2a0 sound/core/seq/seq_clientmgr.c:1324
+>     [<ffffffff83d20e5e>] snd_seq_ioctl+0x13e/0x290 sound/core/seq/seq_clientmgr.c:2327
+>     [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>     [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>     [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
+>     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-syzbot found the following issue on:
+Likely a forgotten kfree() at the error path.
+The patch below should fix it.
 
-HEAD commit:    3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14b07344a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=75da4f0a455bdbd3
-dashboard link: https://syzkaller.appspot.com/bug?extid=cf8e7fa4eeec59b3d485
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15877dc2a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12905004a80000
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/441fb7ea58b8/disk-3f01e9fe.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8fa7790ba0c3/vmlinux-3f01e9fe.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5e7a6471dadf/bzImage-3f01e9fe.xz
+Takashi
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
+-- 8< --
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: seq: Fix memory leak at error path in
+ snd_seq_create_port()
+
+We forgot to release a newly allocated item at the error path in
+snd_seq_create_port().  This patch fixes it.
+
 Reported-by: syzbot+cf8e7fa4eeec59b3d485@syzkaller.appspotmail.com
-
-Warning: Permanently added '10.128.1.1' (ED25519) to the list of known hosts.
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff888100877000 (size 512):
-  comm "syz-executor257", pid 5012, jiffies 4294941742 (age 12.790s)
-  hex dump (first 32 bytes):
-    80 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1076
-    [<ffffffff83d29e28>] kmalloc include/linux/slab.h:582 [inline]
-    [<ffffffff83d29e28>] kzalloc include/linux/slab.h:703 [inline]
-    [<ffffffff83d29e28>] snd_seq_create_port+0x78/0x300 sound/core/seq/seq_ports.c:135
-    [<ffffffff83d1f681>] snd_seq_ioctl_create_port+0xe1/0x2a0 sound/core/seq/seq_clientmgr.c:1324
-    [<ffffffff83d20e5e>] snd_seq_ioctl+0x13e/0x290 sound/core/seq/seq_clientmgr.c:2327
-    [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
-    [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
-    [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
-    [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff888106742c00 (size 512):
-  comm "syz-executor257", pid 5013, jiffies 4294942276 (age 7.450s)
-  hex dump (first 32 bytes):
-    80 ff 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1076
-    [<ffffffff83d29e28>] kmalloc include/linux/slab.h:582 [inline]
-    [<ffffffff83d29e28>] kzalloc include/linux/slab.h:703 [inline]
-    [<ffffffff83d29e28>] snd_seq_create_port+0x78/0x300 sound/core/seq/seq_ports.c:135
-    [<ffffffff83d1f681>] snd_seq_ioctl_create_port+0xe1/0x2a0 sound/core/seq/seq_clientmgr.c:1324
-    [<ffffffff83d20e5e>] snd_seq_ioctl+0x13e/0x290 sound/core/seq/seq_clientmgr.c:2327
-    [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
-    [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
-    [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
-    [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-
-
+Closes: https://lore.kernel.org/r/00000000000098ed3a0600965f89@google.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ sound/core/seq/seq_ports.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/sound/core/seq/seq_ports.c b/sound/core/seq/seq_ports.c
+index 9b80f8275026..f3f14ff0f80f 100644
+--- a/sound/core/seq/seq_ports.c
++++ b/sound/core/seq/seq_ports.c
+@@ -149,6 +149,7 @@ int snd_seq_create_port(struct snd_seq_client *client, int port,
+ 	write_lock_irq(&client->ports_lock);
+ 	list_for_each_entry(p, &client->ports_list_head, list) {
+ 		if (p->addr.port == port) {
++			kfree(new_port);
+ 			num = -EBUSY;
+ 			goto unlock;
+ 		}
+-- 
+2.35.3
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
