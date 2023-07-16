@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5512EB64DA
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Jul 2023 12:36:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F872C001B0
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Jul 2023 12:36:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 996BADE5;
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA1FBDEE;
 	Sun, 16 Jul 2023 14:35:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 996BADE5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA1FBDEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
 	s=default; t=1689510992;
-	bh=yvtuhWLQ+EExarWsHG2awiTbIVsOuHEaffBfimuWLNo=;
+	bh=0x2P08+l/pbfhSxnyHHr/kyN6kNudGpOV24p+zWSWFk=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=qHqI0CGDuaUnLzUNnj5Dhp77irH/yU3lvOaJZ277YbDvMJkprSH8HAuiDt4/RDiLn
-	 Dcvp4uP5Djfi9w4JkP58jbRThv9EUCLtmaVakDsCoTpUvqPv00a50q6jEw5zewiGDT
-	 DPalvB2kxOQnI4fV3+ITrewgf6ty+ScyYBi+i1Z4=
+	b=W6LoefV9+iyTMJRItFhIjNtf3IoOtwUHtlDbblyhm6A/Lk8q48c8WTYiRDY7xMFGK
+	 9AQpqBe51IrpNfOO6nDGrwpdSP2XhluGrq4WrFec0WEzC26jBGNmGgw+8aoiplakyR
+	 GRdJtX7vtlVDJOuQtlZ07LpVs8zQawa0eJE90RYA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6AD7BF80494; Sun, 16 Jul 2023 14:34:50 +0200 (CEST)
+	id 8716DF80553; Sun, 16 Jul 2023 14:34:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40925F8047D;
+	by alsa1.perex.cz (Postfix) with ESMTP id EBA41F80551;
 	Sun, 16 Jul 2023 14:34:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 75B82F8047D; Sun, 16 Jul 2023 14:33:42 +0200 (CEST)
+	id 57FD3F8047D; Sun, 16 Jul 2023 14:33:44 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F652F8027B
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2023 14:33:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F652F8027B
+	by alsa1.perex.cz (Postfix) with ESMTP id E5986F8027B
+	for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2023 14:33:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5986F8027B
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1689510816799805164-webhooks-bot@alsa-project.org>
-References: <1689510816799805164-webhooks-bot@alsa-project.org>
+In-Reply-To: <1689510822921379566-webhooks-bot@alsa-project.org>
+References: <1689510822921379566-webhooks-bot@alsa-project.org>
 Subject: speaker-test: inconsistent behaviour of --buffer option.
-Message-Id: <20230716123342.75B82F8047D@alsa1.perex.cz>
-Date: Sun, 16 Jul 2023 14:33:42 +0200 (CEST)
-Message-ID-Hash: 7TJIF4DRRJC6MDR7ZMMI5X4H2TC4GKTW
-X-Message-ID-Hash: 7TJIF4DRRJC6MDR7ZMMI5X4H2TC4GKTW
+Message-Id: <20230716123344.57FD3F8047D@alsa1.perex.cz>
+Date: Sun, 16 Jul 2023 14:33:44 +0200 (CEST)
+Message-ID-Hash: 23C4LHHMSFRNFJ3P2N26PHNZ4ROBNDLS
+X-Message-ID-Hash: 23C4LHHMSFRNFJ3P2N26PHNZ4ROBNDLS
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7TJIF4DRRJC6MDR7ZMMI5X4H2TC4GKTW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/23C4LHHMSFRNFJ3P2N26PHNZ4ROBNDLS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,9 +66,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils issue #224 was opened from AndrewAmmerlaan:
+alsa-project/alsa-utils issue #224 was edited from AndrewAmmerlaan:
 
-Without specifying the `--buffer` option `speaker-test returns this:
+Without specifying the `--buffer` option `speaker-test` returns this:
 
 ```
 andrew@andrew-gentoo-pc ~ % speaker-test -c2 -twav -Dplughw:CARD=PCH,DEV=3
