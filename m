@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B79A1EB64DC
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 11:50:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21F1AEB64DC
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 11:50:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E546ADEE;
-	Mon, 17 Jul 2023 13:49:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E546ADEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E5FEDF1;
+	Mon, 17 Jul 2023 13:49:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E5FEDF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689594632;
-	bh=I63WX4Y7KvvQnBOIgWrAylG7A1PnA5CLndKDuo0BnEQ=;
+	s=default; t=1689594648;
+	bh=HcAiVfX8941SqbdZWvTs/HtG3VAd1/g4g5CgCMgyrEQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=R9b5nEfA2ADUm4025I/6CWHXyU75gRBWm3P1VuNPxVy1uhrzsvI6R/n/GTUpWGPPb
-	 pFuYQv9i7UNw4CnjqYhYKve6t+u/ExMNQiGgzPp+GNitUtrxc6N9cONwRpDpaapnJB
-	 E5YmU94jxDiVBxYva0c4Lzi2averFlgxL3j9Z0io=
+	b=PpkfHiANVA++DefTV4eApYwGiRH/99nDq/DLo+Z2qfCVAEwi3JIv7RV7bOxfIx1tV
+	 yrgMRi1CNFwf4h6ycE7F4+2aJF/AplfnBkOEu5fn8QMG+P1gtw7svjRrVY0zOS0kF0
+	 pSM3isN7KfW8T3bpODCzNkLwUeYt4iMOI87DJnfs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82D4CF8060E; Mon, 17 Jul 2023 13:46:27 +0200 (CEST)
+	id 6BC94F80618; Mon, 17 Jul 2023 13:46:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D134FF80611;
-	Mon, 17 Jul 2023 13:46:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88527F80617;
+	Mon, 17 Jul 2023 13:46:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30FB3F805F3; Mon, 17 Jul 2023 13:46:19 +0200 (CEST)
+	id 63FB2F805F8; Mon, 17 Jul 2023 13:46:20 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A2566F80520
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 13:45:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2566F80520
+	by alsa1.perex.cz (Postfix) with ESMTPS id BA0ECF805BB
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 13:46:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA0ECF805BB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=JSF/9EGx
+ header.s=Intel header.b=Wglx46Ol
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689594356; x=1721130356;
+  t=1689594368; x=1721130368;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=I63WX4Y7KvvQnBOIgWrAylG7A1PnA5CLndKDuo0BnEQ=;
-  b=JSF/9EGxiGmfDrQNShxGxBHXbEYaPfUjbizmP4fhFF3+pLTMl/Mke0B1
-   uyDJfO/r8F9RBjIbRfC5z9/6RyaEdnduvcLYlVYOPymZhZdO3wSC8rdTF
-   MFA28bx/xXr5WgNfpl7wDzzHgN0uA18zOGPqXQ0vBLJasrVU0nFRh9suR
-   sQhCjnFASuUurH6Ntg4F5kuPhX14o84s1AXtxKLHv23LVSygGwMFbS8Wi
-   dH02AbzJe7wtCsOzsZa9FxM+OpbvpFwxG4OVRFMP177EARUhrgaK/hB/j
-   4aDKHMqjDIMSKdzGCKMewiYTUGAociDimJ54swltuu9KGKaPQtAPWSubz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="363372935"
+  bh=HcAiVfX8941SqbdZWvTs/HtG3VAd1/g4g5CgCMgyrEQ=;
+  b=Wglx46OlnE30ixbd8nemCgPmjAMx/msVl57zTJOQA8jCM6DiGR1UbnN3
+   qn96P4nPZbiHnd+fPaOVhWr5Y9MmYb69uvc5XhrP8WH3vTFTSycFCxqSY
+   FEpipGZAK+umBGXCTgT5xdBKjqDVIcMGcpUIPuWCNtr6vf3Oi+Apxset0
+   U2e/gGW3LVZtGHGS4ZFz1clrbknOvtIycJ/PKlK732/0fwAVOxeXN/x09
+   3ugi7C4l1REduEvbtFGLODPwXCygBtbDhT2irKHrzBhEk1wdmFVRvKLzu
+   +Jn5mL8UCxudD+p2Lb9B0sw2JfuC3bzWddH0tDt4j/DOBd7ufXz1S97Ah
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="363373006"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200";
-   d="scan'208";a="363372935"
+   d="scan'208";a="363373006"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jul 2023 04:45:54 -0700
+ 17 Jul 2023 04:46:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="969856529"
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="969856563"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200";
-   d="scan'208";a="969856529"
+   d="scan'208";a="969856563"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Jul 2023 04:45:51 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 17 Jul 2023 04:46:04 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Bjorn Helgaas <bhelgaas@google.com>,
@@ -80,17 +80,17 @@ Cc: alsa-devel@alsa-project.org,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v4 10/15] ALSA: hda: Convert to PCI device IDs defines
-Date: Mon, 17 Jul 2023 13:45:06 +0200
-Message-Id: <20230717114511.484999-11-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v4 14/15] ASoC: SOF: Intel: Convert to PCI device IDs defines
+Date: Mon, 17 Jul 2023 13:45:10 +0200
+Message-Id: <20230717114511.484999-15-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NMW66NKFAMV2PLHNAILK327NU4H2W3ET
-X-Message-ID-Hash: NMW66NKFAMV2PLHNAILK327NU4H2W3ET
+Message-ID-Hash: IKD4RRWVWIICDJXSKXXAHBDPWIWVIRN5
+X-Message-ID-Hash: IKD4RRWVWIICDJXSKXXAHBDPWIWVIRN5
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NMW66NKFAMV2PLHNAILK327NU4H2W3ET/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IKD4RRWVWIICDJXSKXXAHBDPWIWVIRN5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,550 +112,190 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use PCI device IDs from pci_ids.h header and while at it to simplify
-declarations change to using PCI_DEVICE_DATA() macro for Intel IDs and
-PCI_VDEVICE() for all other that have defined vendor.
+Use PCI device IDs from pci_ids.h header and while at it change to using
+PCI_DEVICE_DATA() macro, to simplify declarations.
 
 Acked-by: Mark Brown <broonie@kernel.org>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/pci/hda/hda_intel.c | 350 +++++++++++++++-----------------------
- 1 file changed, 140 insertions(+), 210 deletions(-)
+ sound/soc/sof/intel/pci-apl.c |  6 ++---
+ sound/soc/sof/intel/pci-cnl.c | 15 ++++--------
+ sound/soc/sof/intel/pci-icl.c | 12 ++++------
+ sound/soc/sof/intel/pci-mtl.c |  3 +--
+ sound/soc/sof/intel/pci-skl.c |  6 ++---
+ sound/soc/sof/intel/pci-tgl.c | 45 ++++++++++++-----------------------
+ sound/soc/sof/intel/pci-tng.c |  3 +--
+ 7 files changed, 30 insertions(+), 60 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 5e59dcc35665..176567f0d0e0 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2416,330 +2416,260 @@ static void azx_shutdown(struct pci_dev *pci)
+diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
+index bc3ad64baec5..460f87f25dac 100644
+--- a/sound/soc/sof/intel/pci-apl.c
++++ b/sound/soc/sof/intel/pci-apl.c
+@@ -85,10 +85,8 @@ static const struct sof_dev_desc glk_desc = {
+ 
  /* PCI IDs */
- static const struct pci_device_id azx_ids[] = {
- 	/* CPT */
--	{ PCI_DEVICE(0x8086, 0x1c20),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_CPT, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM) },
- 	/* PBG */
--	{ PCI_DEVICE(0x8086, 0x1d20),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_PBG, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM) },
- 	/* Panther Point */
--	{ PCI_DEVICE(0x8086, 0x1e20),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_PPT, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM) },
- 	/* Lynx Point */
--	{ PCI_DEVICE(0x8086, 0x8c20),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_LPT, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH) },
- 	/* 9 Series */
--	{ PCI_DEVICE(0x8086, 0x8ca0),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_9_SERIES, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH) },
- 	/* Wellsburg */
--	{ PCI_DEVICE(0x8086, 0x8d20),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
--	{ PCI_DEVICE(0x8086, 0x8d21),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_WBG_0, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_WBG_1, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH) },
- 	/* Lewisburg */
--	{ PCI_DEVICE(0x8086, 0xa1f0),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
--	{ PCI_DEVICE(0x8086, 0xa270),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_LBG_0, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_LBG_1, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Lynx Point-LP */
--	{ PCI_DEVICE(0x8086, 0x9c20),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_LPT_LP_0, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH) },
- 	/* Lynx Point-LP */
--	{ PCI_DEVICE(0x8086, 0x9c21),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_LPT_LP_1, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH) },
- 	/* Wildcat Point-LP */
--	{ PCI_DEVICE(0x8086, 0x9ca0),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
--	/* Sunrise Point */
--	{ PCI_DEVICE(0x8086, 0xa170),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
--	/* Sunrise Point-LP */
--	{ PCI_DEVICE(0x8086, 0x9d70),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_WPT_LP, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH) },
-+	/* Skylake (Sunrise Point) */
-+	{ PCI_DEVICE_DATA(INTEL, HDA_SKL, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	/* Skylake-LP (Sunrise Point-LP) */
-+	{ PCI_DEVICE_DATA(INTEL, HDA_SKL_LP, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Kabylake */
--	{ PCI_DEVICE(0x8086, 0xa171),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_KBL, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Kabylake-LP */
--	{ PCI_DEVICE(0x8086, 0x9d71),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_KBL_LP, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Kabylake-H */
--	{ PCI_DEVICE(0x8086, 0xa2f0),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_KBL_H, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Coffelake */
--	{ PCI_DEVICE(0x8086, 0xa348),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_CNL_H, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Cannonlake */
--	{ PCI_DEVICE(0x8086, 0x9dc8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_CNL_LP, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* CometLake-LP */
--	{ PCI_DEVICE(0x8086, 0x02C8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_CML_LP, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* CometLake-H */
--	{ PCI_DEVICE(0x8086, 0x06C8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0xf1c8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_CML_H, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_RKL_S, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* CometLake-S */
--	{ PCI_DEVICE(0x8086, 0xa3f0),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_CML_S, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* CometLake-R */
--	{ PCI_DEVICE(0x8086, 0xf0c8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_CML_R, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Icelake */
--	{ PCI_DEVICE(0x8086, 0x34c8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ICL_LP, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Icelake-H */
--	{ PCI_DEVICE(0x8086, 0x3dc8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ICL_H, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Jasperlake */
--	{ PCI_DEVICE(0x8086, 0x38c8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0x4dc8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ICL_N, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_JSL_N, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Tigerlake */
--	{ PCI_DEVICE(0x8086, 0xa0c8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_TGL_LP, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Tigerlake-H */
--	{ PCI_DEVICE(0x8086, 0x43c8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_TGL_H, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* DG1 */
--	{ PCI_DEVICE(0x8086, 0x490d),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_DG1, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* DG2 */
--	{ PCI_DEVICE(0x8086, 0x4f90),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0x4f91),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0x4f92),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_DG2_0, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_DG2_1, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_DG2_2, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Alderlake-S */
--	{ PCI_DEVICE(0x8086, 0x7ad0),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_S, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Alderlake-P */
--	{ PCI_DEVICE(0x8086, 0x51c8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0x51c9),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0x51cd),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_P, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_PS, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_PX, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Alderlake-M */
--	{ PCI_DEVICE(0x8086, 0x51cc),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_M, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Alderlake-N */
--	{ PCI_DEVICE(0x8086, 0x54c8),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_N, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Elkhart Lake */
--	{ PCI_DEVICE(0x8086, 0x4b55),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0x4b58),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_EHL_0, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_EHL_3, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Raptor Lake */
--	{ PCI_DEVICE(0x8086, 0x7a50),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0x51ca),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0x51cb),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0x51ce),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	{ PCI_DEVICE(0x8086, 0x51cf),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	/* Meteorlake-P */
--	{ PCI_DEVICE(0x8086, 0x7e28),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_S, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_P_0, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_P_1, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_M, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_PX, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_MTL, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
- 	/* Lunarlake-P */
--	{ PCI_DEVICE(0x8086, 0xa828),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
--	/* Broxton-P(Apollolake) */
--	{ PCI_DEVICE(0x8086, 0x5a98),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_LNL_P, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE) },
-+	/* Apollolake (Broxton-P) */
-+	{ PCI_DEVICE_DATA(INTEL, HDA_APL, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON) },
- 	/* Gemini-Lake */
--	{ PCI_DEVICE(0x8086, 0x3198),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_GML, AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON) },
- 	/* Haswell */
--	{ PCI_DEVICE(0x8086, 0x0a0c),
--	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL },
--	{ PCI_DEVICE(0x8086, 0x0c0c),
--	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL },
--	{ PCI_DEVICE(0x8086, 0x0d0c),
--	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_HSW_0, AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_HSW_2, AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_HSW_3, AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL) },
- 	/* Broadwell */
--	{ PCI_DEVICE(0x8086, 0x160c),
--	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_BROADWELL },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_BDW, AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_BROADWELL) },
- 	/* 5 Series/3400 */
--	{ PCI_DEVICE(0x8086, 0x3b56),
--	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM },
--	{ PCI_DEVICE(0x8086, 0x3b57),
--	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_5_3400_SERIES_0, AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM) },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_5_3400_SERIES_1, AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM) },
- 	/* Poulsbo */
--	{ PCI_DEVICE(0x8086, 0x811b),
--	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_BASE |
--	  AZX_DCAPS_POSFIX_LPIB },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_POULSBO, AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_BASE |
-+	  AZX_DCAPS_POSFIX_LPIB) },
- 	/* Oaktrail */
--	{ PCI_DEVICE(0x8086, 0x080a),
--	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_BASE },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_OAKTRAIL, AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_BASE) },
- 	/* BayTrail */
--	{ PCI_DEVICE(0x8086, 0x0f04),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BAYTRAIL },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_BYT, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BAYTRAIL) },
- 	/* Braswell */
--	{ PCI_DEVICE(0x8086, 0x2284),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BRASWELL },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_BSW, AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BRASWELL) },
- 	/* ICH6 */
--	{ PCI_DEVICE(0x8086, 0x2668),
--	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ICH6, AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH) },
- 	/* ICH7 */
--	{ PCI_DEVICE(0x8086, 0x27d8),
--	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ICH7, AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH) },
- 	/* ESB2 */
--	{ PCI_DEVICE(0x8086, 0x269a),
--	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ESB2, AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH) },
- 	/* ICH8 */
--	{ PCI_DEVICE(0x8086, 0x284b),
--	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ICH8, AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH) },
- 	/* ICH9 */
--	{ PCI_DEVICE(0x8086, 0x293e),
--	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ICH9_0, AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH) },
- 	/* ICH9 */
--	{ PCI_DEVICE(0x8086, 0x293f),
--	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ICH9_1, AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH) },
- 	/* ICH10 */
--	{ PCI_DEVICE(0x8086, 0x3a3e),
--	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ICH10_0, AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH) },
- 	/* ICH10 */
--	{ PCI_DEVICE(0x8086, 0x3a6e),
--	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH },
-+	{ PCI_DEVICE_DATA(INTEL, HDA_ICH10_1, AZX_DRIVER_ICH | AZX_DCAPS_INTEL_ICH) },
- 	/* Generic Intel */
- 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_ANY_ID),
- 	  .class = PCI_CLASS_MULTIMEDIA_HD_AUDIO << 8,
- 	  .class_mask = 0xffffff,
- 	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_NO_ALIGN_BUFSIZE },
- 	/* ATI SB 450/600/700/800/900 */
--	{ PCI_DEVICE(0x1002, 0x437b),
-+	{ PCI_VDEVICE(ATI, 0x437b),
- 	  .driver_data = AZX_DRIVER_ATI | AZX_DCAPS_PRESET_ATI_SB },
--	{ PCI_DEVICE(0x1002, 0x4383),
-+	{ PCI_VDEVICE(ATI, 0x4383),
- 	  .driver_data = AZX_DRIVER_ATI | AZX_DCAPS_PRESET_ATI_SB },
- 	/* AMD Hudson */
--	{ PCI_DEVICE(0x1022, 0x780d),
-+	{ PCI_VDEVICE(AMD, 0x780d),
- 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_SB },
- 	/* AMD, X370 & co */
--	{ PCI_DEVICE(0x1022, 0x1457),
-+	{ PCI_VDEVICE(AMD, 0x1457),
- 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_AMD_SB },
- 	/* AMD, X570 & co */
--	{ PCI_DEVICE(0x1022, 0x1487),
-+	{ PCI_VDEVICE(AMD, 0x1487),
- 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_AMD_SB },
- 	/* AMD Stoney */
--	{ PCI_DEVICE(0x1022, 0x157a),
-+	{ PCI_VDEVICE(AMD, 0x157a),
- 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_SB |
- 			 AZX_DCAPS_PM_RUNTIME },
- 	/* AMD Raven */
--	{ PCI_DEVICE(0x1022, 0x15e3),
-+	{ PCI_VDEVICE(AMD, 0x15e3),
- 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_AMD_SB },
- 	/* ATI HDMI */
--	{ PCI_DEVICE(0x1002, 0x0002),
-+	{ PCI_VDEVICE(ATI, 0x0002),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0x1308),
-+	{ PCI_VDEVICE(ATI, 0x1308),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
--	{ PCI_DEVICE(0x1002, 0x157a),
-+	{ PCI_VDEVICE(ATI, 0x157a),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
--	{ PCI_DEVICE(0x1002, 0x15b3),
-+	{ PCI_VDEVICE(ATI, 0x15b3),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
--	{ PCI_DEVICE(0x1002, 0x793b),
-+	{ PCI_VDEVICE(ATI, 0x793b),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0x7919),
-+	{ PCI_VDEVICE(ATI, 0x7919),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0x960f),
-+	{ PCI_VDEVICE(ATI, 0x960f),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0x970f),
-+	{ PCI_VDEVICE(ATI, 0x970f),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0x9840),
-+	{ PCI_VDEVICE(ATI, 0x9840),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
--	{ PCI_DEVICE(0x1002, 0xaa00),
-+	{ PCI_VDEVICE(ATI, 0xaa00),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa08),
-+	{ PCI_VDEVICE(ATI, 0xaa08),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa10),
-+	{ PCI_VDEVICE(ATI, 0xaa10),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa18),
-+	{ PCI_VDEVICE(ATI, 0xaa18),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa20),
-+	{ PCI_VDEVICE(ATI, 0xaa20),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa28),
-+	{ PCI_VDEVICE(ATI, 0xaa28),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa30),
-+	{ PCI_VDEVICE(ATI, 0xaa30),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa38),
-+	{ PCI_VDEVICE(ATI, 0xaa38),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa40),
-+	{ PCI_VDEVICE(ATI, 0xaa40),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa48),
-+	{ PCI_VDEVICE(ATI, 0xaa48),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa50),
-+	{ PCI_VDEVICE(ATI, 0xaa50),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa58),
-+	{ PCI_VDEVICE(ATI, 0xaa58),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa60),
-+	{ PCI_VDEVICE(ATI, 0xaa60),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa68),
-+	{ PCI_VDEVICE(ATI, 0xaa68),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa80),
-+	{ PCI_VDEVICE(ATI, 0xaa80),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa88),
-+	{ PCI_VDEVICE(ATI, 0xaa88),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa90),
-+	{ PCI_VDEVICE(ATI, 0xaa90),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0xaa98),
-+	{ PCI_VDEVICE(ATI, 0xaa98),
- 	  .driver_data = AZX_DRIVER_ATIHDMI | AZX_DCAPS_PRESET_ATI_HDMI },
--	{ PCI_DEVICE(0x1002, 0x9902),
-+	{ PCI_VDEVICE(ATI, 0x9902),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
--	{ PCI_DEVICE(0x1002, 0xaaa0),
-+	{ PCI_VDEVICE(ATI, 0xaaa0),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
--	{ PCI_DEVICE(0x1002, 0xaaa8),
-+	{ PCI_VDEVICE(ATI, 0xaaa8),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
--	{ PCI_DEVICE(0x1002, 0xaab0),
-+	{ PCI_VDEVICE(ATI, 0xaab0),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS },
--	{ PCI_DEVICE(0x1002, 0xaac0),
-+	{ PCI_VDEVICE(ATI, 0xaac0),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xaac8),
-+	{ PCI_VDEVICE(ATI, 0xaac8),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xaad8),
-+	{ PCI_VDEVICE(ATI, 0xaad8),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xaae0),
-+	{ PCI_VDEVICE(ATI, 0xaae0),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xaae8),
-+	{ PCI_VDEVICE(ATI, 0xaae8),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xaaf0),
-+	{ PCI_VDEVICE(ATI, 0xaaf0),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xaaf8),
-+	{ PCI_VDEVICE(ATI, 0xaaf8),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xab00),
-+	{ PCI_VDEVICE(ATI, 0xab00),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xab08),
-+	{ PCI_VDEVICE(ATI, 0xab08),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xab10),
-+	{ PCI_VDEVICE(ATI, 0xab10),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xab18),
-+	{ PCI_VDEVICE(ATI, 0xab18),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xab20),
-+	{ PCI_VDEVICE(ATI, 0xab20),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xab28),
-+	{ PCI_VDEVICE(ATI, 0xab28),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xab30),
-+	{ PCI_VDEVICE(ATI, 0xab30),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--	{ PCI_DEVICE(0x1002, 0xab38),
-+	{ PCI_VDEVICE(ATI, 0xab38),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
- 	/* GLENFLY */
-@@ -2749,15 +2679,15 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_GFHDMI | AZX_DCAPS_POSFIX_LPIB |
- 	  AZX_DCAPS_NO_MSI | AZX_DCAPS_NO_64BIT },
- 	/* VIA VT8251/VT8237A */
--	{ PCI_DEVICE(0x1106, 0x3288), .driver_data = AZX_DRIVER_VIA },
-+	{ PCI_VDEVICE(VIA, 0x3288), .driver_data = AZX_DRIVER_VIA },
- 	/* VIA GFX VT7122/VX900 */
--	{ PCI_DEVICE(0x1106, 0x9170), .driver_data = AZX_DRIVER_GENERIC },
-+	{ PCI_VDEVICE(VIA, 0x9170), .driver_data = AZX_DRIVER_GENERIC },
- 	/* VIA GFX VT6122/VX11 */
--	{ PCI_DEVICE(0x1106, 0x9140), .driver_data = AZX_DRIVER_GENERIC },
-+	{ PCI_VDEVICE(VIA, 0x9140), .driver_data = AZX_DRIVER_GENERIC },
- 	/* SIS966 */
--	{ PCI_DEVICE(0x1039, 0x7502), .driver_data = AZX_DRIVER_SIS },
-+	{ PCI_VDEVICE(SI, 0x7502), .driver_data = AZX_DRIVER_SIS },
- 	/* ULI M5461 */
--	{ PCI_DEVICE(0x10b9, 0x5461), .driver_data = AZX_DRIVER_ULI },
-+	{ PCI_VDEVICE(AL, 0x5461), .driver_data = AZX_DRIVER_ULI },
- 	/* NVIDIA MCP */
- 	{ PCI_DEVICE(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID),
- 	  .class = PCI_CLASS_MULTIMEDIA_HD_AUDIO << 8,
-@@ -2770,9 +2700,9 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_TERA | AZX_DCAPS_NO_64BIT },
- 	/* Creative X-Fi (CA0110-IBG) */
- 	/* CTHDA chips */
--	{ PCI_DEVICE(0x1102, 0x0010),
-+	{ PCI_VDEVICE(CREATIVE, 0x0010),
- 	  .driver_data = AZX_DRIVER_CTHDA | AZX_DCAPS_PRESET_CTHDA },
--	{ PCI_DEVICE(0x1102, 0x0012),
-+	{ PCI_VDEVICE(CREATIVE, 0x0012),
- 	  .driver_data = AZX_DRIVER_CTHDA | AZX_DCAPS_PRESET_CTHDA },
- #if !IS_ENABLED(CONFIG_SND_CTXFI)
- 	/* the following entry conflicts with snd-ctxfi driver,
-@@ -2786,18 +2716,18 @@ static const struct pci_device_id azx_ids[] = {
- 	  AZX_DCAPS_NO_64BIT | AZX_DCAPS_POSFIX_LPIB },
- #else
- 	/* this entry seems still valid -- i.e. without emu20kx chip */
--	{ PCI_DEVICE(0x1102, 0x0009),
-+	{ PCI_VDEVICE(CREATIVE, 0x0009),
- 	  .driver_data = AZX_DRIVER_CTX | AZX_DCAPS_CTX_WORKAROUND |
- 	  AZX_DCAPS_NO_64BIT | AZX_DCAPS_POSFIX_LPIB },
- #endif
- 	/* CM8888 */
--	{ PCI_DEVICE(0x13f6, 0x5011),
-+	{ PCI_VDEVICE(CMEDIA, 0x5011),
- 	  .driver_data = AZX_DRIVER_CMEDIA |
- 	  AZX_DCAPS_NO_MSI | AZX_DCAPS_POSFIX_LPIB | AZX_DCAPS_SNOOP_OFF },
- 	/* Vortex86MX */
--	{ PCI_DEVICE(0x17f3, 0x3010), .driver_data = AZX_DRIVER_GENERIC },
-+	{ PCI_VDEVICE(RDC, 0x3010), .driver_data = AZX_DRIVER_GENERIC },
- 	/* VMware HDAudio */
--	{ PCI_DEVICE(0x15ad, 0x1977), .driver_data = AZX_DRIVER_GENERIC },
-+	{ PCI_VDEVICE(VMWARE, 0x1977), .driver_data = AZX_DRIVER_GENERIC },
- 	/* AMD/ATI Generic, PCI class code and Vendor ID for HD Audio */
- 	{ PCI_DEVICE(PCI_VENDOR_ID_ATI, PCI_ANY_ID),
- 	  .class = PCI_CLASS_MULTIMEDIA_HD_AUDIO << 8,
-@@ -2808,11 +2738,11 @@ static const struct pci_device_id azx_ids[] = {
- 	  .class_mask = 0xffffff,
- 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_HDMI },
- 	/* Zhaoxin */
--	{ PCI_DEVICE(0x1d17, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
-+	{ PCI_VDEVICE(ZHAOXIN, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
- 	/* Loongson HDAudio*/
--	{PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_HDA),
-+	{ PCI_VDEVICE(LOONGSON, PCI_DEVICE_ID_LOONGSON_HDA),
- 	  .driver_data = AZX_DRIVER_LOONGSON },
--	{PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_HDMI),
-+	{ PCI_VDEVICE(LOONGSON, PCI_DEVICE_ID_LOONGSON_HDMI),
- 	  .driver_data = AZX_DRIVER_LOONGSON },
+ static const struct pci_device_id sof_pci_ids[] = {
+-	{ PCI_DEVICE(0x8086, 0x5a98), /* BXT-P (ApolloLake) */
+-		.driver_data = (unsigned long)&bxt_desc},
+-	{ PCI_DEVICE(0x8086, 0x3198), /* GeminiLake */
+-		.driver_data = (unsigned long)&glk_desc},
++	{ PCI_DEVICE_DATA(INTEL, HDA_APL, &bxt_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_GML, &glk_desc) },
  	{ 0, }
  };
+ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
+diff --git a/sound/soc/sof/intel/pci-cnl.c b/sound/soc/sof/intel/pci-cnl.c
+index 8895508a0be6..e2c50e7b0aa7 100644
+--- a/sound/soc/sof/intel/pci-cnl.c
++++ b/sound/soc/sof/intel/pci-cnl.c
+@@ -120,16 +120,11 @@ static const struct sof_dev_desc cml_desc = {
+ 
+ /* PCI IDs */
+ static const struct pci_device_id sof_pci_ids[] = {
+-	{ PCI_DEVICE(0x8086, 0x9dc8), /* CNL-LP */
+-		.driver_data = (unsigned long)&cnl_desc},
+-	{ PCI_DEVICE(0x8086, 0xa348), /* CNL-H */
+-		.driver_data = (unsigned long)&cfl_desc},
+-	{ PCI_DEVICE(0x8086, 0x02c8), /* CML-LP */
+-		.driver_data = (unsigned long)&cml_desc},
+-	{ PCI_DEVICE(0x8086, 0x06c8), /* CML-H */
+-		.driver_data = (unsigned long)&cml_desc},
+-	{ PCI_DEVICE(0x8086, 0xa3f0), /* CML-S */
+-		.driver_data = (unsigned long)&cml_desc},
++	{ PCI_DEVICE_DATA(INTEL, HDA_CNL_LP, &cnl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_CNL_H, &cfl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_CML_LP, &cml_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_CML_H, &cml_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_CML_S, &cml_desc) },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
+diff --git a/sound/soc/sof/intel/pci-icl.c b/sound/soc/sof/intel/pci-icl.c
+index 5fb5a820693e..0a65df3ed9e2 100644
+--- a/sound/soc/sof/intel/pci-icl.c
++++ b/sound/soc/sof/intel/pci-icl.c
+@@ -86,14 +86,10 @@ static const struct sof_dev_desc jsl_desc = {
+ 
+ /* PCI IDs */
+ static const struct pci_device_id sof_pci_ids[] = {
+-	{ PCI_DEVICE(0x8086, 0x34C8), /* ICL-LP */
+-		.driver_data = (unsigned long)&icl_desc},
+-	{ PCI_DEVICE(0x8086, 0x3dc8), /* ICL-H */
+-		.driver_data = (unsigned long)&icl_desc},
+-	{ PCI_DEVICE(0x8086, 0x38c8), /* ICL-N */
+-		.driver_data = (unsigned long)&jsl_desc},
+-	{ PCI_DEVICE(0x8086, 0x4dc8), /* JSL-N */
+-		.driver_data = (unsigned long)&jsl_desc},
++	{ PCI_DEVICE_DATA(INTEL, HDA_ICL_LP, &icl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_ICL_H, &icl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_ICL_N, &jsl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_JSL_N, &jsl_desc) },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
+diff --git a/sound/soc/sof/intel/pci-mtl.c b/sound/soc/sof/intel/pci-mtl.c
+index e276e1e37fed..7868b0827e84 100644
+--- a/sound/soc/sof/intel/pci-mtl.c
++++ b/sound/soc/sof/intel/pci-mtl.c
+@@ -52,8 +52,7 @@ static const struct sof_dev_desc mtl_desc = {
+ 
+ /* PCI IDs */
+ static const struct pci_device_id sof_pci_ids[] = {
+-	{ PCI_DEVICE(0x8086, 0x7E28), /* MTL */
+-		.driver_data = (unsigned long)&mtl_desc},
++	{ PCI_DEVICE_DATA(INTEL, HDA_MTL, &mtl_desc) },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
+diff --git a/sound/soc/sof/intel/pci-skl.c b/sound/soc/sof/intel/pci-skl.c
+index 5e69af6eed34..a6588b138a8c 100644
+--- a/sound/soc/sof/intel/pci-skl.c
++++ b/sound/soc/sof/intel/pci-skl.c
+@@ -69,10 +69,8 @@ static struct sof_dev_desc kbl_desc = {
+ 
+ /* PCI IDs */
+ static const struct pci_device_id sof_pci_ids[] = {
+-	/* Sunrise Point-LP */
+-	{ PCI_DEVICE(0x8086, 0x9d70), .driver_data = (unsigned long)&skl_desc},
+-	/* KBL */
+-	{ PCI_DEVICE(0x8086, 0x9d71), .driver_data = (unsigned long)&kbl_desc},
++	{ PCI_DEVICE_DATA(INTEL, HDA_SKL_LP, &skl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_KBL_LP, &kbl_desc) },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
+diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
+index ca37ff1bbd2a..d688f9373fb2 100644
+--- a/sound/soc/sof/intel/pci-tgl.c
++++ b/sound/soc/sof/intel/pci-tgl.c
+@@ -284,36 +284,21 @@ static const struct sof_dev_desc rpl_desc = {
+ 
+ /* PCI IDs */
+ static const struct pci_device_id sof_pci_ids[] = {
+-	{ PCI_DEVICE(0x8086, 0xa0c8), /* TGL-LP */
+-		.driver_data = (unsigned long)&tgl_desc},
+-	{ PCI_DEVICE(0x8086, 0x43c8), /* TGL-H */
+-		.driver_data = (unsigned long)&tglh_desc},
+-	{ PCI_DEVICE(0x8086, 0x4b55), /* EHL */
+-		.driver_data = (unsigned long)&ehl_desc},
+-	{ PCI_DEVICE(0x8086, 0x4b58), /* EHL */
+-		.driver_data = (unsigned long)&ehl_desc},
+-	{ PCI_DEVICE(0x8086, 0x7ad0), /* ADL-S */
+-		.driver_data = (unsigned long)&adls_desc},
+-	{ PCI_DEVICE(0x8086, 0x7a50), /* RPL-S */
+-		.driver_data = (unsigned long)&rpls_desc},
+-	{ PCI_DEVICE(0x8086, 0x51c8), /* ADL-P */
+-		.driver_data = (unsigned long)&adl_desc},
+-	{ PCI_DEVICE(0x8086, 0x51c9), /* ADL-PS */
+-		.driver_data = (unsigned long)&adl_desc},
+-	{ PCI_DEVICE(0x8086, 0x51ca), /* RPL-P */
+-		.driver_data = (unsigned long)&rpl_desc},
+-	{ PCI_DEVICE(0x8086, 0x51cb), /* RPL-P */
+-		.driver_data = (unsigned long)&rpl_desc},
+-	{ PCI_DEVICE(0x8086, 0x51cc), /* ADL-M */
+-		.driver_data = (unsigned long)&adl_desc},
+-	{ PCI_DEVICE(0x8086, 0x51cd), /* ADL-P */
+-		.driver_data = (unsigned long)&adl_desc},
+-	{ PCI_DEVICE(0x8086, 0x51ce), /* RPL-M */
+-		.driver_data = (unsigned long)&rpl_desc},
+-	{ PCI_DEVICE(0x8086, 0x51cf), /* RPL-PX */
+-		.driver_data = (unsigned long)&rpl_desc},
+-	{ PCI_DEVICE(0x8086, 0x54c8), /* ADL-N */
+-		.driver_data = (unsigned long)&adl_n_desc},
++	{ PCI_DEVICE_DATA(INTEL, HDA_TGL_LP, &tgl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_TGL_H, &tglh_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_EHL_0, &ehl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_EHL_3, &ehl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_S, &adls_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_S, &rpls_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_P, &adl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_PS, &adl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_P_0, &rpl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_P_1, &rpl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_M, &adl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_PX, &adl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_M, &rpl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_RPL_PX, &rpl_desc) },
++	{ PCI_DEVICE_DATA(INTEL, HDA_ADL_N, &adl_n_desc) },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
+diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
+index 8c22a00266c0..4ae4fe17cc0b 100644
+--- a/sound/soc/sof/intel/pci-tng.c
++++ b/sound/soc/sof/intel/pci-tng.c
+@@ -225,8 +225,7 @@ static const struct sof_dev_desc tng_desc = {
+ 
+ /* PCI IDs */
+ static const struct pci_device_id sof_pci_ids[] = {
+-	{ PCI_DEVICE(0x8086, 0x119a),
+-		.driver_data = (unsigned long)&tng_desc},
++	{ PCI_DEVICE_DATA(INTEL, SST_TNG, &tng_desc) },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
 -- 
 2.34.1
 
