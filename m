@@ -4,87 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55ACAC001B0
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 20:35:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F7D0EB64DC
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 20:40:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC173E0F;
-	Mon, 17 Jul 2023 22:35:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC173E0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF7DC11C;
+	Mon, 17 Jul 2023 22:39:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF7DC11C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689626155;
-	bh=cdhA/uWMGFYNLiuZXNgnxDS/KR9lMC2udWWSbRYPndE=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1689626436;
+	bh=9r8nmW7FvrBM2RO/chcgcitOjNrs6P8qcWr79prgTfQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LitSL3HI6I/pjqi23Hu4kzGh7AIlhmlDqc3C6PBtGGrmBz69ZRQNepR7aLxr4Z4YI
-	 d3h98SaoBrr5L3WtsOC/ZMU/vhU4sAXDx8rjcboK5VMQGGG9MBUqDJ7ZOYufRCfnej
-	 G0eEyozaqJkpbBDGwpzoALLF54yXiIAjzIW2Qb9g=
+	b=azQFeSGSBYia4XSdZp/PDdOoYc4PTBpYyfbNFUZp1m9wCZEn1u/iEJlO+vg24+B8e
+	 f3K4zd/HNjZSC4A2ZysGBD1fz7yyiBN/DvfpM2AG/GhbEbB2woWT5U10W1Q4hi4shN
+	 h/6gJ1KwcmuPi6OdWbS/8DanOpRok/18CFxfozMs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9746CF8047D; Mon, 17 Jul 2023 22:35:05 +0200 (CEST)
+	id B3CFEF8027B; Mon, 17 Jul 2023 22:39:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 064DCF80494;
-	Mon, 17 Jul 2023 22:35:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36D86F8027B;
+	Mon, 17 Jul 2023 22:39:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E51EAF80494; Mon, 17 Jul 2023 22:35:01 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 3834EF8047D; Mon, 17 Jul 2023 22:39:15 +0200 (CEST)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A4E70F8047D
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 22:33:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4E70F8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id A7AB5F8027B
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 22:39:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7AB5F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=gLZUVojg
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 96EA461233;
-	Mon, 17 Jul 2023 20:33:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B94ECC433C8;
-	Mon, 17 Jul 2023 20:33:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689625999;
-	bh=cdhA/uWMGFYNLiuZXNgnxDS/KR9lMC2udWWSbRYPndE=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=gLZUVojg4jKy4PTMuuRaJRkPy+KTOrIc2UqPsvLIftUTjRU0kvMiaTuoTgweG9Bht
-	 gDFKrXKBxBCs+bnehoD3lhqDPcmEDlSGL6Idg9YliOGb435aFLHWn5PHm8/uCb3Kpm
-	 LDaOJU5IrN8F5ERCzO4kozWw4HWr+CTKw9cPrimuqScteGzPG3tEnRkSJ+YGKLXLYF
-	 8oV/pREqjmFcItdEBJncwBwbGTV6R7uYNsU0Mkp+/0bZfzDp9mXJptYkw//OTqgE0E
-	 RNPM3BrwctvGv3QNMKYhdq3dEbQCBp8UIOVb909e4fIhvossYCCIUNYtbLks91BjZ1
-	 MGv+Am4MHzkGw==
-From: Mark Brown <broonie@kernel.org>
-Date: Mon, 17 Jul 2023 21:33:05 +0100
-Subject: [PATCH 3/3] ALSA: hda: Use regcache_reg_cached() rather than open
- coding
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=Qe2A4+Qe
+Received: by mail-ej1-x631.google.com with SMTP id
+ a640c23a62f3a-991f956fb5aso616554066b.0
+        for <alsa-devel@alsa-project.org>;
+ Mon, 17 Jul 2023 13:39:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689626350; x=1692218350;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gmNkfDah6O+uPw4Ib3W9slf1ycVoQFYR0H5sgdKTjwI=;
+        b=Qe2A4+QegpFejdVnrN5POOEeWtjx8ab8C0UDC1TZ/2ISJ+fKzl8uf1A9x+LeQK3WR7
+         s/LjpJUWuYe4u0IITKRiqrf8gojjrfn4ES9GmnFqrQtmWFG0wggg5aHuzV6QqfkMT4UY
+         NrAaN3avPkOXX7iPde8eJkKI+W0QxIhj5v3TjH0/73Qkd0dS+jeZ9IKg5zgCjcOAcTfz
+         Ht6HEmCWTU4eFRRxZOT4zXYUR8TRa6JBECdQ6JfDA2phRot1PQ4L411I+IlIkUnC7NXh
+         qAl+CxwurmcfYZJskg2VFhtnJTWhpIqOOxXoDtG5SjbIySfI5fp3ZOihTFhpKXk7pbWg
+         ylKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689626350; x=1692218350;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gmNkfDah6O+uPw4Ib3W9slf1ycVoQFYR0H5sgdKTjwI=;
+        b=jLL/0rsvwG0pri3nr84jQjrm3lzar1w68bXg3ehjZnCHNVIMDqU6pulA5y0iqq/e0G
+         aJayVaE2n/eN8hRVd6mJ1YdJCTvOVsrh8qOk/08ieqJgZixBqKEEA4WjPyoqSIn4eYob
+         D4ZgWPU+aY+QO3mlBKOBnoSQLYVABk21GWShc58l9RimhbMxCVZvMTZBbBG0xAIrrAYm
+         cnftiIR1K9FiU8raueC2TfCfFZFu8HiiwSDI/3wJfWig71kIbFd3gGcQE/O5wEuglY1K
+         fjcAPWoNlJ0s4ZGFPQUTUB+1uDw/vqUchvdjbo8Pp3l0cGLVtH0rDrRbKu/ouhauAJoF
+         qUcQ==
+X-Gm-Message-State: ABy/qLbCBAkeaY/Ef/Vz0w424P4r3hvTDrhXBCR03+XyDuyRjwkmr9O1
+	2ijinOPoI6jEtKRtiK/An7merw==
+X-Google-Smtp-Source: 
+ APBJJlEcyhWZAO0MBPswLPa/ZIbl8mavuG7TjjlAudVH8Oks+LQPu3vA+mJ81Wq/x+wex65JIo+xbQ==
+X-Received: by 2002:a17:907:b0a:b0:993:6382:6e34 with SMTP id
+ h10-20020a1709070b0a00b0099363826e34mr9815665ejl.72.1689626350230;
+        Mon, 17 Jul 2023 13:39:10 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id
+ s1-20020a1709067b8100b009875a6d28b0sm141129ejo.51.2023.07.17.13.39.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 13:39:09 -0700 (PDT)
+Message-ID: <4ef0d83e-b0c9-1f6e-c1a4-24d650630fe4@linaro.org>
+Date: Mon, 17 Jul 2023 22:39:07 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V1 2/5] ASoC: codecs: aw88261 function for ALSA Audio
+ Driver
+Content-Language: en-US
+To: wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ perex@perex.cz, tiwai@suse.com, rf@opensource.cirrus.co,
+ shumingf@realtek.com, herve.codina@bootlin.com, flatmax@flatmax.com,
+ ckeepax@opensource.cirrus.com, doug@schmorgal.com, fido_max@inbox.ru,
+ pierre-louis.bossart@linux.intel.com, kiseok.jo@irondevice.com,
+ liweilei@awinic.com, colin.i.king@gmail.com, trix@redhat.com,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: yijiangtao@awinic.com, zhangjianming@awinic.com
+References: <20230717115845.297991-1-wangweidong.a@awinic.com>
+ <20230717115845.297991-3-wangweidong.a@awinic.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230717115845.297991-3-wangweidong.a@awinic.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230717-regmap-cache-check-v1-3-73ef688afae3@kernel.org>
-References: <20230717-regmap-cache-check-v1-0-73ef688afae3@kernel.org>
-In-Reply-To: <20230717-regmap-cache-check-v1-0-73ef688afae3@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1479; i=broonie@kernel.org;
- h=from:subject:message-id; bh=cdhA/uWMGFYNLiuZXNgnxDS/KR9lMC2udWWSbRYPndE=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBktaWHp8xs+otXp3Fz83pPngNJL1ch5h3eptyOK
- 9g68ULu8WKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZLWlhwAKCRAk1otyXVSH
- 0FCcB/4/yqh/MT+mdIfR75L/u63k+FCJNO88xJeft85zjt58cF6oIUCQASp6BHpO+VK0Mqo+gaj
- vG2O+pbUy5tqfb6sVSbE3smMne18FuwqkldckIQsIxAQsJmjZgroJDCXgjiFqmIpfURfXQE021y
- kBTCvDuGa4jfVy7zC5w8JYa6TabufjXiuWOZ04u9a+8ngQjVvPbJFxFEG3OMKpGdOx/mHIhyFj/
- OjMt+3AN1u3TX69YaRBa+908Tpc7x20j2RZro3hA/wiZ8Ogw2Xj1C//ABatTJx3oh57QxhcfXqC
- oMyVfCXaeM3x8HbZiNxXDtBC/mob9h9QTvXJLImqCDortOj+
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: LCFWYOPFOARDWVOMP6SZLMUVGQIEWJ2P
-X-Message-ID-Hash: LCFWYOPFOARDWVOMP6SZLMUVGQIEWJ2P
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: LWBFONEYROVGF27VELOKLQ4QOH7QCERN
+X-Message-ID-Hash: LWBFONEYROVGF27VELOKLQ4QOH7QCERN
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LCFWYOPFOARDWVOMP6SZLMUVGQIEWJ2P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LWBFONEYROVGF27VELOKLQ4QOH7QCERN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,44 +128,124 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The HDA driver intentionally drops repeated writes to registers in some
-circumstances, beyond the suppression of noop writes that regmap does in
-regmap_update_bits(). It does this by checking if the register is cached
-before doing a regmap_update_bits(), now we have an API for querying this
-directly use it directly rather than trying a read in cache only mode
-making the code a little clearer.
+On 17/07/2023 13:58, wangweidong.a@awinic.com wrote:
+> From: Weidong Wang <wangweidong.a@awinic.com>
+> 
+> The AW88261 is an I2S/TDM input, high efficiency
+> digital Smart K audio amplifier with an integrated 10.25V
+> smart boost convert
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/hda/hdac_regmap.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+It's the same as in patch before. This does not help and does not
+justify having one driver split into two.
 
-diff --git a/sound/hda/hdac_regmap.c b/sound/hda/hdac_regmap.c
-index 9b1bcabd8414..97cee096a286 100644
---- a/sound/hda/hdac_regmap.c
-+++ b/sound/hda/hdac_regmap.c
-@@ -556,17 +556,14 @@ EXPORT_SYMBOL_GPL(snd_hdac_regmap_update_raw);
- static int reg_raw_update_once(struct hdac_device *codec, unsigned int reg,
- 			       unsigned int mask, unsigned int val)
- {
--	unsigned int orig;
--	int err;
-+	int err = 0;
- 
- 	if (!codec->regmap)
- 		return reg_raw_update(codec, reg, mask, val);
- 
- 	mutex_lock(&codec->regmap_lock);
--	regcache_cache_only(codec->regmap, true);
--	err = regmap_read(codec->regmap, reg, &orig);
--	regcache_cache_only(codec->regmap, false);
--	if (err < 0)
-+	/* Discard any updates to already initialised registers. */
-+	if (!regcache_reg_cached(codec->regmap, reg))
- 		err = regmap_update_bits(codec->regmap, reg, mask, val);
- 	mutex_unlock(&codec->regmap_lock);
- 	return err;
+> 
 
--- 
-2.39.2
+...
+
+> +
+> +static void aw_dev_i2s_tx_enable(struct aw_device *aw_dev, bool flag)
+> +{
+> +	int ret;
+> +
+> +	if (flag) {
+> +		ret = regmap_update_bits(aw_dev->regmap, AW88261_I2SCFG1_REG,
+> +			~AW88261_I2STXEN_MASK, AW88261_I2STXEN_ENABLE_VALUE);
+> +	} else {
+> +		ret = regmap_update_bits(aw_dev->regmap, AW88261_I2SCFG1_REG,
+> +			~AW88261_I2STXEN_MASK, AW88261_I2STXEN_DISABLE_VALUE);
+> +	}
+
+You should not need {} here and in multiple other places.
+
+> +	if (ret)
+> +		dev_dbg(aw_dev->dev, "%s failed", __func__);
+
+Why you are not handling the errors properly?
+
+> +}
+> +
+> +static void aw_dev_pwd(struct aw_device *aw_dev, bool pwd)
+> +{
+> +	int ret;
+> +
+> +	if (pwd) {
+> +		ret = regmap_update_bits(aw_dev->regmap, AW88261_SYSCTRL_REG,
+> +				~AW88261_PWDN_MASK,	AW88261_PWDN_POWER_DOWN_VALUE);
+> +	} else {
+> +		ret = regmap_update_bits(aw_dev->regmap, AW88261_SYSCTRL_REG,
+> +				~AW88261_PWDN_MASK,	AW88261_PWDN_WORKING_VALUE);
+> +	}
+> +	if (ret)
+> +		dev_dbg(aw_dev->dev, "%s failed", __func__);
+> +}
+> +
+
+...
+
+> +
+> +int aw88261_dev_fw_update(struct aw_device *aw_dev)
+> +{
+> +	struct aw_prof_desc *prof_index_desc;
+> +	struct aw_sec_data_desc *sec_desc;
+> +	char *prof_name;
+> +	int ret;
+> +
+> +	prof_name = aw88261_dev_get_prof_name(aw_dev, aw_dev->prof_index);
+> +	if (!prof_name) {
+> +		dev_err(aw_dev->dev, "get prof name failed");
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_dbg(aw_dev->dev, "start update %s", prof_name);
+> +
+> +	ret = aw88261_dev_get_prof_data(aw_dev, aw_dev->prof_index, &prof_index_desc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* update reg */
+> +	sec_desc = prof_index_desc->sec_desc;
+> +	ret = aw_dev_reg_update(aw_dev, sec_desc[AW88261_DATA_TYPE_REG].data,
+> +					sec_desc[AW88261_DATA_TYPE_REG].len);
+> +	if (ret) {
+> +		dev_err(aw_dev->dev, "update reg failed");
+> +		return ret;
+> +	}
+> +
+> +	aw_dev->prof_cur = aw_dev->prof_index;
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(aw88261_dev_fw_update);
+
+Why do you need to export this? Where is the user?
+
+> +
+> +int aw88261_dev_reg_update(struct aw_device *aw_dev, bool force)
+> +{
+> +	int ret;
+> +
+> +	if (force) {
+> +		aw88261_dev_soft_reset(aw_dev);
+> +		ret = aw88261_dev_fw_update(aw_dev);
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		if (aw_dev->prof_cur != aw_dev->prof_index) {
+> +			ret = aw88261_dev_fw_update(aw_dev);
+> +			if (ret < 0)
+> +				return ret;
+> +		}
+> +	}
+> +
+> +	aw_dev->prof_cur = aw_dev->prof_index;
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(aw88261_dev_reg_update);
+
+Same question. And in all other places as well.
+
+
+Best regards,
+Krzysztof
 
