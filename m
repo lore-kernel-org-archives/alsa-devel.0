@@ -4,57 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7097EEB64DC
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 10:22:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F08FDEB64DC
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 10:22:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88029A4D;
-	Mon, 17 Jul 2023 12:21:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88029A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1978ADE5;
+	Mon, 17 Jul 2023 12:21:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1978ADE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689589333;
-	bh=SyuSvPLPcz0An/q97hKKC0WnC75FGUhjII+rwVoIGKk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=AU8LgUqmEHt2HUVChS5uuZOePHvwAGSVZWZju3ADxoWlCbf50IVUVOJ/G8YzRuO7e
-	 JJ1Qalc0mKyhmKL64F9bAwi2+j8S9TE1qZWfCz/4qESRpPA5VGll3NQKh3ZlukNiKU
-	 b4FlO6zEqiRL2RBMbIOjh0pZAV4VSi+teziID7Yo=
+	s=default; t=1689589357;
+	bh=qk870tW1Opfvgz4wiWdYRGsF5rENd4kncqSbXfvJlUE=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=TDeRkLgIGx+HNdYoibEtPI/23TRNwXnGngQt2z5a+1mSc7szTvW7WgIwxTNyWZGjE
+	 WJWTlnSok2lcwmDN3CE+Fvb6/AW5GsVkz/HF2zHAtISphXKSsU+HucfK/bOwPF1cF1
+	 +41PK+wX0VODgLEsEROwFb1VX29q09JMxbikXViU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16C76F8059F; Mon, 17 Jul 2023 12:20:58 +0200 (CEST)
+	id AEA77F80571; Mon, 17 Jul 2023 12:21:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 509C3F8059F;
-	Mon, 17 Jul 2023 12:20:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3AA8EF80527;
+	Mon, 17 Jul 2023 12:21:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9E817F80587; Mon, 17 Jul 2023 12:20:53 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id 4E0D6F8057B; Mon, 17 Jul 2023 12:21:00 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6EF84F80535
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 12:20:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EF84F80535
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9EC10F80557
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 12:20:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EC10F80557
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 16D63242C4;
+	by bluemchen.kde.org (Postfix) with ESMTP id A6B2E242CD;
 	Mon, 17 Jul 2023 06:20:37 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1qLLLI-hAr-00; Mon, 17 Jul 2023 12:20:36 +0200
+	id 1qLLLJ-hBO-00; Mon, 17 Jul 2023 12:20:37 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v3 3/6] ALSA: emu10k1: make playback in E-MU D.A.S. mode
- 32-bit
-Date: Mon, 17 Jul 2023 12:20:33 +0200
-Message-Id: <20230717102036.404260-4-oswald.buddenhagen@gmx.de>
+Subject: [PATCH] ALSA: emu10k1: do away with extra voices in E-MU D.A.S. mode
+Date: Mon, 17 Jul 2023 12:20:37 +0200
+Message-Id: <20230717102037.404317-1-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
-In-Reply-To: <20230717102036.404260-1-oswald.buddenhagen@gmx.de>
-References: <20230717102036.404260-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: X7SO5JKDVUQOUBCO3PFNGGGGUAS4MANV
-X-Message-ID-Hash: X7SO5JKDVUQOUBCO3PFNGGGGUAS4MANV
+Message-ID-Hash: KQ3JJFRCS4GCQSJ2GEJRE5TA37JQU6NQ
+X-Message-ID-Hash: KQ3JJFRCS4GCQSJ2GEJRE5TA37JQU6NQ
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -67,7 +62,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X7SO5JKDVUQOUBCO3PFNGGGGUAS4MANV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KQ3JJFRCS4GCQSJ2GEJRE5TA37JQU6NQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,228 +71,272 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Each channel now uses a stereo voice pair. But the FX send amounts and
-attenuation are per voice, so we have to use fixed values tuned to the
-DSP code to avoid messing up the split samples.
+Maybe somewhat unsurprisingly, Creative Inc. learned from the period
+interrupt disaster of the EMU10K1, and equipped Audigy with a way to
+delay the interrupts by a configurable amount. So make use of that.
+This allows us to do away with the extra voices for driving interrupts.
 
-As "regular" mode allows manipulating the amounts and att'n via mixer
-controls, we can either:
-- "Fake" them with DSP code, which doesn't seem worth the bother
-- Ignore them, which doesn't seem very nice
+The most salient advantage of that is that we can maximize the number of
+playback channels in 24-bit 192 kHz mode, bringing it up to 8.
+A minor point is that no bandwidth is wasted on fetching data that is
+discarded anyway.
 
-So 32-bit playback simply remains unavailable in non-D.A.S. mode.
+The removal of the extra voices has one disadvantage: the hardware is
+limited to two periods, thus increasing the likelihood of underruns.
+Therefore, we do this only in D.A.S. mode, which aims at high-quality
+low-latency multi-channel recording, and therefore can be expected to be
+operated in an optimal environment. Also, prior to a few commits back,
+the multi-channel playback was actually limited to two periods anyway
+(for no good reason).
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emufx.c  | 18 ++++++++++-----
- sound/pci/emu10k1/emupcm.c | 46 +++++++++++++++++++++++++-------------
- 2 files changed, 43 insertions(+), 21 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 7dae69d7a70f..1dff05f916fc 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -1284,7 +1284,8 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
- {
- 	enum {
- 		ENUM_GPR(bit_shifter16, 1),
--		ENUM_GPR(tmp, 1),
-+		ENUM_GPR(lowword_mask, 1),
-+		ENUM_GPR(tmp, 2),
- 		num_static_gprs
- 	};
- 	int gpr = num_static_gprs;
-@@ -1315,10 +1316,14 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
+this is obviously meaningless without the d.a.s. series. i'm posting it
+only so it's on record.
+---
+This patch needs to be applied on top of the patch titled "ALSA:
+emu10k1: add high-rate playback in E-MU D.A.S. mode".
+---
+ include/sound/emu10k1.h          | 11 +++++++
+ sound/pci/emu10k1/emu10k1_main.c | 16 ++++++++++
+ sound/pci/emu10k1/emupcm.c       | 52 +++++++++++++++++++++++---------
+ sound/pci/emu10k1/irq.c          |  8 +++++
+ 4 files changed, 73 insertions(+), 14 deletions(-)
+
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index fd4cf7d6eb3f..0931b1e65e56 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -838,7 +838,18 @@ SUB_REG(FXIDX, IDX,		0x0000ffff)
+ #define A_SPRA			0x6b		/* S/PDIF Host Record Address			*/
+ #define A_SPRC			0x6c		/* S/PDIF Host Record Control			*/
  
- 	gpr_map = icode->gpr_map;
- 	gpr_map[bit_shifter16] = 0x00008000;
-+	gpr_map[lowword_mask] = 0x0000ffff;
++// NOTE: 64-bit
++// Voice 0 holds the counter, while voice 1 holds the enable bits.
++// Bits in IPR are set according to incoming IRQs as usual.
++// When a corresponding bit is set in the delay enable register,
++// the counter starts, and the IRQ isn't delivered until timeout.
++// Additional delayed IRQs arriving during the countdown do not
++// retrigger it, so they will be delayed less or not at all.
++// Non-delayed IRQs arriving during the countdown are delivered
++// immediately, while the countdown continues.
+ #define A_DICE			0x6d		/* Delayed Interrupt Counter & Enable		*/
++#define A_DICE_DELAY_MASK	0x000003ff	/* Interrupt delay minus 1			*/
++#define A_DICE_COUNTER_MASK	0x03ff0000	/* Counter's current value			*/
  
- 	if (emu->card_capabilities->ca0108_chip) {
--		for (int z = 0; z < 16; z++)
--			A_OP(icode, &ptr, iMACINT0, A3_EMU32OUT(z), A_C_00000000, A_FXBUS(z), A_C_00000002);
-+		for (int z = 0; z < 16; z++) {
-+			A_OP(icode, &ptr, iMAC0, A_GPR(tmp), A_C_00000000, A_FXBUS(z * 2), A_C_00010000); // >> 15
-+			A_OP(icode, &ptr, iMACINT0, A_GPR(tmp + 1), A_C_00000000, A_FXBUS(z * 2 + 1), A_C_00000002); // << 1
-+			A_OP(icode, &ptr, iANDXOR, A3_EMU32OUT(z), A_GPR(tmp), A_GPR(lowword_mask), A_GPR(tmp + 1));
-+		}
+ #define A_TTB			0x6e		/* Tank Table Base				*/
+ #define A_TDOF			0x6f		/* Tank Delay Offset				*/
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index 2125925c2d5e..97a4be6eaf7a 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -159,6 +159,8 @@ static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir)
+ 		/* disable channel interrupt */
+ 		CLIEL, 0,
+ 		CLIEH, 0,
++		HLIEL, 0,
++		HLIEH, 0,
  
- 		snd_emu10k1_audigy_dsp_convert_32_to_2x16(
- 			icode, &ptr, tmp, bit_shifter16, A3_EMU32IN(0), A_EXTOUT(0));
-@@ -1331,8 +1336,11 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
- 			gpr_map[gpr++] = 0x00000000;
- 		}
- 	} else {
--		for (int z = 0; z < 16; z++)
--			A_OP(icode, &ptr, iMACINT0, A_EMU32OUTL(z), A_C_00000000, A_FXBUS(z), A_C_00000002);
-+		for (int z = 0; z < 16; z++) {
-+			A_OP(icode, &ptr, iMAC0, A_GPR(tmp), A_C_00000000, A_FXBUS(z * 2), A_C_00010000); // >> 15
-+			A_OP(icode, &ptr, iMACINT0, A_GPR(tmp + 1), A_C_00000000, A_FXBUS(z * 2 + 1), A_C_00000002); // << 1
-+			A_OP(icode, &ptr, iANDXOR, A_EMU32OUTL(z), A_GPR(tmp), A_GPR(lowword_mask), A_GPR(tmp + 1));
-+		}
+ 		/* disable stop on loop end */
+ 		SOLEL, 0,
+@@ -174,6 +176,12 @@ static int snd_emu10k1_init(struct snd_emu10k1 *emu, int enable_ir)
+ 				      AC97SLOT_REAR_LEFT);
+ 	}
  
- 		/* Note that the Alice2 DSPs have 6 I2S inputs which we don't use. */
- 		snd_emu10k1_audigy_dsp_convert_32_to_2x16(
++	if (emu->das_mode) {
++		// Enable delayed period interrupts
++		snd_emu10k1_ptr_write(emu, A_DICE, 0, 64 - 3 + 1);
++		snd_emu10k1_ptr_write(emu, A_DICE, 1, IPR_CHANNELLOOP);
++	}
++
+ 	/* init envelope engine */
+ 	for (ch = 0; ch < NUM_G; ch++)
+ 		snd_emu10k1_voice_init(emu, ch);
+@@ -414,6 +422,12 @@ int snd_emu10k1_done(struct snd_emu10k1 *emu)
+ 	else
+ 		snd_emu10k1_ptr_write(emu, DBG, 0, EMU10K1_DBG_SINGLE_STEP);
+ 
++	if (emu->das_mode) {
++		// Disable delayed period interrupts
++		snd_emu10k1_ptr_write(emu, A_DICE, 0, 0);
++		snd_emu10k1_ptr_write(emu, A_DICE, 1, 0);
++	}
++
+ 	snd_emu10k1_ptr_write_multiple(emu, 0,
+ 		/* reset recording buffers */
+ 		MICBS, 0,
+@@ -429,6 +443,8 @@ int snd_emu10k1_done(struct snd_emu10k1 *emu)
+ 		/* disable channel interrupt */
+ 		CLIEL, 0,
+ 		CLIEH, 0,
++		HLIEL, 0,
++		HLIEH, 0,
+ 		SOLEL, 0,
+ 		SOLEH, 0,
+ 
 diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index 9a0efa6e5ba9..a433793345d4 100644
+index ccb0e13da3dd..b7841076f019 100644
 --- a/sound/pci/emu10k1/emupcm.c
 +++ b/sound/pci/emu10k1/emupcm.c
-@@ -360,13 +360,16 @@ static void snd_emu10k1_pcm_init_das_voices(struct snd_emu10k1 *emu,
- 					    unsigned char channel)
- {
- 	static const unsigned char send_amount[8] = { 255, 0, 0, 0, 0, 0, 0, 0 };
--	unsigned char send_routing[8];
-+	unsigned char send_routing[9];
- 
- 	for (int i = 0; i < ARRAY_SIZE(send_routing); i++)
- 		send_routing[i] = (channel + i) % NUM_G;
--	snd_emu10k1_pcm_init_voice(emu, evoice, true, false,
-+	snd_emu10k1_pcm_init_voice(emu, evoice, true, true,
- 				   start_addr, end_addr,
- 				   send_routing, send_amount);
-+	snd_emu10k1_pcm_init_voice(emu, evoice + 1, true, true,
-+				   start_addr, end_addr,
-+				   send_routing + 1, send_amount);
- }
- 
- static void snd_emu10k1_pcm_init_extra_voice(struct snd_emu10k1 *emu,
-@@ -400,7 +403,7 @@ static int snd_emu10k1_playback_hw_params(struct snd_pcm_substream *substream,
- 	} else {
- 		type = EMU10K1_EFX;
- 		channels = params_channels(hw_params);
--		count = 1;
-+		count = 1 + emu->das_mode;
- 	}
- 	err = snd_emu10k1_pcm_channel_alloc(epcm, type, count, channels);
+@@ -96,7 +96,9 @@ static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm *epcm,
  	if (err < 0)
-@@ -503,15 +506,17 @@ static int snd_emu10k1_efx_playback_prepare(struct snd_pcm_substream *substream)
- 	snd_emu10k1_pcm_init_extra_voice(emu, epcm->extra, true,
- 					 start_addr, start_addr + extra_size);
+ 		return err;
  
--	epcm->ccca_start_addr = start_addr;
+-	if (epcm->extra == NULL) {
++	if (epcm->emu->das_mode) {
++		epcm->voices[0]->interrupt = snd_emu10k1_pcm_interrupt;
++	} else if (epcm->extra == NULL) {
+ 		// The hardware supports only (half-)loop interrupts, so to support an
+ 		// arbitrary number of periods per buffer, we use an extra voice with a
+ 		// period-sized loop as the interrupt source. Additionally, the interrupt
+@@ -500,13 +502,8 @@ static int snd_emu10k1_efx_playback_prepare(struct snd_pcm_substream *substream)
+ 	epcm->pitch_target = PITCH_48000;
+ 
+ 	start_addr = epcm->start_addr >> 1;  // 16-bit voices
+-
+-	extra_size = runtime->period_size >> shift;
+ 	channel_size = runtime->buffer_size >> shift;
+ 
+-	snd_emu10k1_pcm_init_extra_voice(emu, epcm->extra, true,
+-					 start_addr, start_addr + extra_size);
+-
  	if (das_mode) {
-+		start_addr >>= 1;
-+		epcm->ccca_start_addr = start_addr;
- 		for (i = 0; i < runtime->channels; i++) {
- 			snd_emu10k1_pcm_init_das_voices(emu, epcm->voices[i],
- 							start_addr, start_addr + channel_size,
--							i);
-+							i * 2);
- 			start_addr += channel_size;
+ 		unsigned count = 1 << shift;
+ 		start_addr >>= 1;
+@@ -520,6 +517,10 @@ static int snd_emu10k1_efx_playback_prepare(struct snd_pcm_substream *substream)
+ 			}
  		}
  	} else {
-+		epcm->ccca_start_addr = start_addr;
++		extra_size = runtime->period_size >> shift;
++		snd_emu10k1_pcm_init_extra_voice(emu, epcm->extra, true,
++						 start_addr, start_addr + extra_size);
++
+ 		epcm->ccca_start_addr = start_addr;
  		for (i = 0; i < runtime->channels; i++) {
  			snd_emu10k1_pcm_init_voices(emu, epcm->voices[i], true, false,
- 						    start_addr, start_addr + channel_size,
-@@ -716,6 +721,7 @@ static void snd_emu10k1_playback_unmute_das_voices(struct snd_emu10k1 *emu,
- 						   struct snd_emu10k1_voice *evoice)
+@@ -547,7 +548,7 @@ static const struct snd_pcm_hardware snd_emu10k1_efx_playback =
+ 	.buffer_bytes_max =	(128*1024),
+ 	.period_bytes_max =	(128*1024),
+ 	.periods_min =		2,
+-	.periods_max =		1024,
++	.periods_max =		2,
+ 	.fifo_size =		0,
+ };
+ 
+@@ -698,8 +699,16 @@ static void snd_emu10k1_playback_prepare_voices(struct snd_emu10k1 *emu,
+ 	// This is why all other (open) drivers for these chips use timer-based
+ 	// interrupts.
+ 	//
+-	eloop_start += (epcm->resume_pos + eloop_size - 3) % eloop_size;
+-	snd_emu10k1_ptr_write(emu, CCCA_CURRADDR, epcm->extra->number, eloop_start);
++	// But then, Audigy introduced delayed interrupt functionality, so we
++	// use it in D.A.S. mode, where we may need all voices. We can't use
++	// it in regular mode due to supporting multiple substreams, which the
++	// delayed IRQs cannot really handle; also, we prefer supporting an
++	// arbitrary number of periods there, for which we need the extra voice.
++	//
++	if (!emu->das_mode) {
++		eloop_start += (epcm->resume_pos + eloop_size - 3) % eloop_size;
++		snd_emu10k1_ptr_write(emu, CCCA_CURRADDR, epcm->extra->number, eloop_start);
++	}
+ 
+ 	// It takes a moment until the cache fills complete,
+ 	// but the unmuting takes long enough for that.
+@@ -793,13 +802,25 @@ static void snd_emu10k1_playback_set_running(struct snd_emu10k1 *emu,
+ 					     struct snd_emu10k1_pcm *epcm)
  {
- 	snd_emu10k1_playback_commit_volume(emu, evoice, 0x8000 << 16);
-+	snd_emu10k1_playback_commit_volume(emu, evoice + 1, 0x8000 << 16);
+ 	epcm->running = 1;
+-	snd_emu10k1_voice_intr_enable(emu, epcm->extra->number);
++	if (emu->das_mode) {
++		unsigned int voice = epcm->voices[0]->number;
++		snd_emu10k1_voice_half_loop_intr_enable(emu, voice);
++		snd_emu10k1_voice_intr_enable(emu, voice);
++	} else {
++		snd_emu10k1_voice_intr_enable(emu, epcm->extra->number);
++	}
  }
  
- static void snd_emu10k1_playback_mute_voice(struct snd_emu10k1 *emu,
-@@ -930,24 +936,29 @@ static snd_pcm_uframes_t snd_emu10k1_playback_pointer(struct snd_pcm_substream *
- }
- 
- static u64 snd_emu10k1_efx_playback_voice_mask(struct snd_emu10k1_pcm *epcm,
--					       int channels)
-+					       bool stereo, int channels)
+ static void snd_emu10k1_playback_set_stopped(struct snd_emu10k1 *emu,
+ 					      struct snd_emu10k1_pcm *epcm)
  {
- 	u64 mask = 0;
-+	u64 mask0 = (1 << (1 << stereo)) - 1;
- 
- 	for (int i = 0; i < channels; i++) {
- 		int voice = epcm->voices[i]->number;
--		mask |= 1ULL << voice;
-+		mask |= mask0 << voice;
- 	}
- 	return mask;
+-	snd_emu10k1_voice_intr_disable(emu, epcm->extra->number);
++	if (emu->das_mode) {
++		unsigned int voice = epcm->voices[0]->number;
++		snd_emu10k1_voice_half_loop_intr_disable(emu, voice);
++		snd_emu10k1_voice_intr_disable(emu, voice);
++	} else {
++		snd_emu10k1_voice_intr_disable(emu, epcm->extra->number);
++	}
+ 	epcm->running = 0;
  }
  
- static void snd_emu10k1_efx_playback_freeze_voices(struct snd_emu10k1 *emu,
- 						   struct snd_emu10k1_pcm *epcm,
--						   int channels)
-+						   bool stereo, int channels)
- {
- 	for (int i = 0; i < channels; i++) {
- 		int voice = epcm->voices[i]->number;
- 		snd_emu10k1_ptr_write(emu, CPF_STOP, voice, 1);
-+		if (stereo) {
-+			// Weirdly enough, the stereo slave needs to be stopped separately
-+			snd_emu10k1_ptr_write(emu, CPF_STOP, voice + 1, 1);
-+		}
- 		snd_emu10k1_playback_commit_pitch(emu, voice, PITCH_48000 << 16);
- 	}
- }
-@@ -971,14 +982,14 @@ static void snd_emu10k1_efx_playback_unmute_das_voices(struct snd_emu10k1 *emu,
- 
- static void snd_emu10k1_efx_playback_stop_voices(struct snd_emu10k1 *emu,
- 						 struct snd_emu10k1_pcm *epcm,
--						 int channels)
-+						 bool stereo, int channels)
- {
- 	for (int i = 0; i < channels; i++)
- 		snd_emu10k1_playback_stop_voice(emu, epcm->voices[i]);
- 	snd_emu10k1_playback_set_stopped(emu, epcm);
- 
- 	for (int i = 0; i < channels; i++)
--		snd_emu10k1_playback_mute_voice(emu, epcm->voices[i]);
-+		snd_emu10k1_playback_mute_voices(emu, epcm->voices[i], stereo);
- }
- 
- static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
-@@ -997,15 +1008,15 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 		mask = snd_emu10k1_efx_playback_voice_mask(
--				epcm, runtime->channels);
-+				epcm, das_mode, runtime->channels);
- 		for (int i = 0; i < 10; i++) {
- 			// Note that the freeze is not interruptible, so we make no
- 			// effort to reset the bits outside the error handling here.
- 			snd_emu10k1_voice_set_loop_stop_multiple(emu, mask);
- 			snd_emu10k1_efx_playback_freeze_voices(
--					emu, epcm, runtime->channels);
-+					emu, epcm, das_mode, runtime->channels);
- 			snd_emu10k1_playback_prepare_voices(
--					emu, epcm, true, false, runtime->channels);
-+					emu, epcm, true, das_mode, runtime->channels);
- 
- 			// It might seem to make more sense to unmute the voices only after
- 			// they have been started, to potentially avoid torturing the speakers
-@@ -1027,7 +1038,7 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+@@ -1064,7 +1085,8 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+ 			result = snd_emu10k1_voice_clear_loop_stop_multiple_atomic(emu, mask);
+ 			if (result == 0) {
+ 				// The extra voice is allowed to lag a bit
+-				snd_emu10k1_playback_trigger_voice(emu, epcm->extra);
++				if (!emu->das_mode)
++					snd_emu10k1_playback_trigger_voice(emu, epcm->extra);
+ 				goto leave;
  			}
  
- 			snd_emu10k1_efx_playback_stop_voices(
--					emu, epcm, runtime->channels);
-+					emu, epcm, das_mode, runtime->channels);
- 
- 			if (result != -EAGAIN)
- 				break;
-@@ -1040,7 +1051,7 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+@@ -1080,7 +1102,8 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_STOP:
  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		snd_emu10k1_playback_stop_voice(emu, epcm->extra);
+-		snd_emu10k1_playback_stop_voice(emu, epcm->extra);
++		if (!emu->das_mode)
++			snd_emu10k1_playback_stop_voice(emu, epcm->extra);
  		snd_emu10k1_efx_playback_stop_voices(
--				emu, epcm, runtime->channels);
-+				emu, epcm, das_mode, runtime->channels);
+ 				emu, epcm, das_mode, count, runtime->channels);
  
- 		epcm->resume_pos = snd_emu10k1_playback_pointer(substream);
- 		break;
-@@ -1226,8 +1237,11 @@ static int snd_emu10k1_efx_playback_open(struct snd_pcm_substream *substream)
- 	runtime->private_data = epcm;
- 	runtime->private_free = snd_emu10k1_pcm_free_substream;
- 	runtime->hw = snd_emu10k1_efx_playback;
--	if (emu->card_capabilities->emu_model)
-+	if (emu->card_capabilities->emu_model) {
- 		snd_emu1010_constrain_efx_rate(emu, runtime);
-+		if (emu->das_mode)
-+			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
-+	}
- 	err = snd_emu10k1_playback_set_constraints(runtime);
- 	if (err < 0) {
- 		kfree(epcm);
+@@ -1428,15 +1451,16 @@ static int snd_emu10k1_efx_playback_open(struct snd_pcm_substream *substream)
+ 					SNDRV_PCM_INFO_RESUME |
+ 					SNDRV_PCM_INFO_PAUSE;
+ 				if (shift == 2)
+-					runtime->hw.channels_max = 7;  // FIXME: should be 8, but extra voice ...
++					runtime->hw.channels_max = 8;
+ 				err = snd_pcm_hw_constraint_step(
+ 						runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 1 << shift);
+ 				if (err < 0) {
+ 					kfree(epcm);
+ 					return err;
+ 				}
+ 			}
+ 			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
++			runtime->hw.periods_max = 2;  // Not using an extra voice
+ 		}
+ 	}
+ 	err = snd_emu10k1_playback_set_constraints(emu, runtime);
+diff --git a/sound/pci/emu10k1/irq.c b/sound/pci/emu10k1/irq.c
+index 71aa90b9cc88..be2dbed12e74 100644
+--- a/sound/pci/emu10k1/irq.c
++++ b/sound/pci/emu10k1/irq.c
+@@ -23,6 +23,14 @@ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id)
+ 				 "Suspected sound card removal\n");
+ 			break;
+ 		}
++		if ((status & IPR_CHANNELLOOP) && emu->das_mode &&
++		    (snd_emu10k1_ptr_read(emu, A_DICE, 0) & A_DICE_COUNTER_MASK)) {
++			// If another IRQ "punched through" the delay,
++			// we mask away the delayed IRQ.
++			status &= ~(IPR_CHANNELLOOP | IPR_CHANNELNUMBERMASK);
++			if (!status)  // Will usually happen in 2nd iteration
++				break;
++		}
+ 		if (++timeout == 1000) {
+ 			dev_info(emu->card->dev, "emu10k1 irq routine failure\n");
+ 			break;
+
+base-commit: 3c04ccbdf86e7e93e06e68f1915e39eb55afb0d0
+prerequisite-patch-id: 45677e4f73ea654bda3258c1143c8027173e4b5c
+prerequisite-patch-id: 358302d653684999fa1d7b7c0b9c643d6daf768d
+prerequisite-patch-id: e5ad839d4411bacb9ed5d639a0bf151a3b9dfeb1
+prerequisite-patch-id: aa2b589f883089a61a979b76897a60865ab2fd8a
+prerequisite-patch-id: 86710b3c986270dcdbabbbbad9f0d86ed634a3ad
+prerequisite-patch-id: 7d3ce3deda4c9a317868cc13150b3ece13f0096e
+prerequisite-patch-id: 3bd887e1980015ed352cc20eea63b69f3cf8a9c2
 -- 
 2.40.0.152.g15d061e6df
 
