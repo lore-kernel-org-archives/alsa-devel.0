@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEF72EB64DC
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 10:23:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3359CC001B0
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 10:23:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99202DEC;
-	Mon, 17 Jul 2023 12:22:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99202DEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15C03E76;
+	Mon, 17 Jul 2023 12:22:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15C03E76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689589417;
-	bh=MzKi7VoadE+F+sw82wvpygf+dp7NL1ahajfncYXkh2A=;
+	s=default; t=1689589424;
+	bh=uIRUTj10RDLM7nopB6zFUK5Sx30EKdG8PGguHzMM6sQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nqMttXOaVOq/J/F0s125/yBk6SjnCA/uytm0JDjJ0kW5/lmwUJfqNrUW4ZnVEz6bw
-	 Ih+CEWtQa8N6JMDzcPtsoLEg2fbUX9eJ6ErIkp8f03Jm7TzSUseQBvOtvkzBZXg3yo
-	 +T+7Goa1ln8K5fUxKIGYr7bIRb0Cnqlg8WEu29r4=
+	b=MoW5GkYsN5AYdB3L7emjcvl60DlKYNJHJUlhoaOv3lL/UtcdQxDQx3yB77mfIG5ES
+	 DKk/R+fMKCwfltvcE6iffJJSekXpgwG4MnKyvVWTIQI4KaidhDyfo10sn5yFoStJfP
+	 elGwyBfuCorcpeg6VKGnH54uQm3IkfIgeVDoqlGo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D1B7F80494; Mon, 17 Jul 2023 12:22:47 +0200 (CEST)
+	id D8EB4F80549; Mon, 17 Jul 2023 12:22:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D46B9F804DA;
-	Mon, 17 Jul 2023 12:22:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 657AAF80558;
+	Mon, 17 Jul 2023 12:22:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 133E6F80494; Mon, 17 Jul 2023 12:22:43 +0200 (CEST)
+	id E38C7F80558; Mon, 17 Jul 2023 12:22:49 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8EEC0F80551
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 12:20:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EEC0F80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id E3A66F80549
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 12:20:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3A66F80549
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 13FD7241E3;
+	by bluemchen.kde.org (Postfix) with ESMTP id 1FF23242CA;
 	Mon, 17 Jul 2023 06:20:37 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1qLLLI-hAl-00; Mon, 17 Jul 2023 12:20:36 +0200
+	id 1qLLLI-hB3-00; Mon, 17 Jul 2023 12:20:36 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v3 2/6] ALSA: emu10k1: improve mixer control naming in E-MU
- D.A.S. mode
-Date: Mon, 17 Jul 2023 12:20:32 +0200
-Message-Id: <20230717102036.404260-3-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v3 5/6] ALSA: emu10k1: add high-rate capture in E-MU D.A.S.
+ mode
+Date: Mon, 17 Jul 2023 12:20:35 +0200
+Message-Id: <20230717102036.404260-6-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230717102036.404260-1-oswald.buddenhagen@gmx.de>
 References: <20230717102036.404260-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MKOTMUMQVLMG3P5HNEBD63T2G7H7Y2DF
-X-Message-ID-Hash: MKOTMUMQVLMG3P5HNEBD63T2G7H7Y2DF
+Message-ID-Hash: 7TOCFES2UHTYI35QLIKPCVVEEGNE2SLX
+X-Message-ID-Hash: 7TOCFES2UHTYI35QLIKPCVVEEGNE2SLX
 X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -66,7 +66,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MKOTMUMQVLMG3P5HNEBD63T2G7H7Y2DF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7TOCFES2UHTYI35QLIKPCVVEEGNE2SLX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -75,337 +75,335 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use the clearer "PbChn <n>" instead of "DSP <n>" for the source names.
-In particular, this is much less confusing in the capture source
-selection - "DSP 0" having the source "DSP 0" really didn't help.
-I didn't use "Playback Channel <n>", because that would be a tad too
-long to be sensibly displayed in alsamixer.
-
-The capture enums also get a "DSP" => "CpChn" replacement.
-
-I used zero-padded decimals, so the capture elements are properly sorted
-in alsamixer. I found hex too confusing.
-
-Note that unlike in the legacy mixer, we define enum values only for
-actually "wired" channels.
-
-I'm leaving the legacy mixer alone, as I don't want to completely
-invalidate saved mixer states. This introduces some bloat, but it seems
-bearable.
+This is tested only with a 0404b card, so it is unclear whether the
+EMU_DST_TINA_EMU32B (1010b) & EMU_DST_TINA2_EMU32B (1616m CardBus)
+register definitions (derived from comments in the same file) are
+correct, and whether they actually lack the one-sample delay
+relative to EMU_DST_ALICE2_EMU32_0.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/pci/emu10k1/emumixer.c | 108 ++++++++++++++++++++++++++---------
- 1 file changed, 81 insertions(+), 27 deletions(-)
+ include/sound/emu10k1.h          |   4 ++
+ sound/pci/emu10k1/emu10k1_main.c |   3 +
+ sound/pci/emu10k1/emufx.c        |   4 +-
+ sound/pci/emu10k1/emumixer.c     | 107 +++++++++++++++++++++++++++----
+ sound/pci/emu10k1/emupcm.c       |  40 +++++++++---
+ 5 files changed, 135 insertions(+), 23 deletions(-)
 
+diff --git a/include/sound/emu10k1.h b/include/sound/emu10k1.h
+index aafa6ad2c5a0..fd4cf7d6eb3f 100644
+--- a/include/sound/emu10k1.h
++++ b/include/sound/emu10k1.h
+@@ -1292,6 +1292,9 @@ SUB_REG_NC(A_EHC, A_I2S_CAPTURE_RATE, 0x00000e00)  /* This sets the capture PCM
+ #define EMU_DST_HAMOA_DAC_RIGHT4	0x0307	/* Hamoa DAC Right, 4th or 192kHz */
+ // In S/MUX mode, the samples of one channel are adjacent.
+ #define EMU_DST_HANA_ADAT	0x0400	/* Hana ADAT 8 channel out +0 to +7 */
++/* FIXME: It is not clear whether these are actually enumerated like that. */
++#define EMU_DST_TINA2_EMU32B	0x0400	/* 16 EMU32 channels to Tina2 +0 to +0xf */
++#define EMU_DST_TINA_EMU32B	0x0500	/* 16 EMU32 channels to Tina +0 to +0xf */
+ #define EMU_DST_ALICE_I2S0_LEFT		0x0500	/* Alice2 I2S0 Left */
+ #define EMU_DST_ALICE_I2S0_RIGHT	0x0501	/* Alice2 I2S0 Right */
+ #define EMU_DST_ALICE_I2S1_LEFT		0x0600	/* Alice2 I2S1 Left */
+@@ -1654,6 +1657,7 @@ struct snd_emu_chip_details {
+ 	unsigned int ca0108_chip:1;	/* Audigy 2 Value */
+ 	unsigned int ca_cardbus_chip:1;	/* Audigy 2 ZS Notebook */
+ 	unsigned int ca0151_chip:1;	/* P16V */
++	unsigned int emu_in_32:1;	/* EMU32 input has 32 (connected) channels */
+ 	unsigned int spk20:1;		/* Stereo only */
+ 	unsigned int spk71:1;		/* Has 7.1 speakers */
+ 	unsigned int no_adat:1;		/* Has no ADAT, only SPDIF */
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index 0b660a7d0ef7..2125925c2d5e 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -1109,6 +1109,7 @@ static const struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .emu10k2_chip = 1,
+ 	 .ca0108_chip = 1,
+ 	 .ca_cardbus_chip = 1,
++	 .emu_in_32 = 1,
+ 	 .spk71 = 1 ,
+ 	 .emu_model = EMU_MODEL_EMU1616},
+ 	/* Tested by James@superbug.co.uk 4th Nov 2007. */
+@@ -1121,6 +1122,7 @@ static const struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .id = "EMU1010",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0108_chip = 1,
++	 .emu_in_32 = 1,
+ 	 .spk71 = 1,
+ 	 .emu_model = EMU_MODEL_EMU1010B}, /* EMU 1010 new revision */
+ 	/* Tested by Maxim Kachur <mcdebugger@duganet.ru> 17th Oct 2012. */
+@@ -1135,6 +1137,7 @@ static const struct snd_emu_chip_details emu_chip_details[] = {
+ 	 .id = "EMU1010",
+ 	 .emu10k2_chip = 1,
+ 	 .ca0108_chip = 1,
++	 .emu_in_32 = 1,
+ 	 .spk71 = 1,
+ 	 .emu_model = EMU_MODEL_EMU1010B}, /* EMU 1010 PCIe */
+ 	/* Tested by James@superbug.co.uk 8th July 2005. */
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index 1dff05f916fc..b5301aa53e38 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -1319,17 +1319,19 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
+ 	gpr_map[lowword_mask] = 0x0000ffff;
+ 
+ 	if (emu->card_capabilities->ca0108_chip) {
++		int num_cap = emu->card_capabilities->emu_in_32 ? 32 : 16;
++
+ 		for (int z = 0; z < 16; z++) {
+ 			A_OP(icode, &ptr, iMAC0, A_GPR(tmp), A_C_00000000, A_FXBUS(z * 2), A_C_00010000); // >> 15
+ 			A_OP(icode, &ptr, iMACINT0, A_GPR(tmp + 1), A_C_00000000, A_FXBUS(z * 2 + 1), A_C_00000002); // << 1
+ 			A_OP(icode, &ptr, iANDXOR, A3_EMU32OUT(z), A_GPR(tmp), A_GPR(lowword_mask), A_GPR(tmp + 1));
+ 		}
+ 
+ 		snd_emu10k1_audigy_dsp_convert_32_to_2x16(
+ 			icode, &ptr, tmp, bit_shifter16, A3_EMU32IN(0), A_EXTOUT(0));
+ 		// A3_EMU32IN(0) is delayed by one sample, so all other A3_EMU32IN channels
+ 		// need to be delayed as well; we use an auxiliary register for that.
+-		for (int z = 1; z < 16; z++) {
++		for (int z = 1; z < num_cap; z++) {
+ 			snd_emu10k1_audigy_dsp_convert_32_to_2x16(
+ 				icode, &ptr, tmp, bit_shifter16, A_GPR(gpr), A_EXTOUT(z * 2));
+ 			A_OP(icode, &ptr, iACC3, A_GPR(gpr), A3_EMU32IN(z), A_C_00000000, A_C_00000000);
 diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
-index 278aecb3fd94..4ab00f65e48d 100644
+index 88dd156173cb..049ec64ef7e7 100644
 --- a/sound/pci/emu10k1/emumixer.c
 +++ b/sound/pci/emu10k1/emumixer.c
-@@ -100,6 +100,12 @@ static int snd_emu10k1_spdif_get_mask(struct snd_kcontrol *kcontrol,
- 	"DSP 16", "DSP 17", "DSP 18", "DSP 19", "DSP 20", "DSP 21", "DSP 22", "DSP 23", \
- 	"DSP 24", "DSP 25", "DSP 26", "DSP 27", "DSP 28", "DSP 29", "DSP 30", "DSP 31"
- 
-+#define PB_TEXTS \
-+	"PbChn 00", "PbChn 01", "PbChn 02", "PbChn 03", \
-+	"PbChn 04", "PbChn 05", "PbChn 06", "PbChn 07", \
-+	"PbChn 08", "PbChn 09", "PbChn 10", "PbChn 11", \
-+	"PbChn 12", "PbChn 13", "PbChn 14", "PbChn 15"
-+
- #define PAIR_TEXTS(base, one, two) PAIR_PS(base, one, two, "")
- #define LR_TEXTS(base) LR_PS(base, "")
- #define ADAT_TEXTS(pfx) ADAT_PS(pfx, "")
-@@ -155,6 +161,11 @@ static const char * const emu1010_src_texts[] = {
- 	DSP_TEXTS,
+@@ -876,6 +876,90 @@ static const unsigned short emu1010_input_dflt[] = {
  };
+ static_assert(ARRAY_SIZE(emu1010_input_dflt) == ARRAY_SIZE(emu1010_input_dst));
  
-+static const char * const emu1010_das_src_texts[] = {
-+	EMU1010_COMMON_TEXTS,
-+	PB_TEXTS,
++static const unsigned short emu1010_2x_input_dst[][2] = {
++	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_ALICE2_EMU32_8 },
++	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_ALICE2_EMU32_9 },
++	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_ALICE2_EMU32_A },
++	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_ALICE2_EMU32_B },
++	{ EMU_DST_ALICE2_EMU32_4, EMU_DST_ALICE2_EMU32_C },
++	{ EMU_DST_ALICE2_EMU32_5, EMU_DST_ALICE2_EMU32_D },
++	{ EMU_DST_ALICE2_EMU32_6, EMU_DST_ALICE2_EMU32_E },
++	{ EMU_DST_ALICE2_EMU32_7, EMU_DST_ALICE2_EMU32_F },
 +};
++static_assert(ARRAY_SIZE(emu1010_2x_input_dst) <= NUM_INPUT_DESTS);
 +
- static const unsigned short emu1010_src_regs[] = {
- 	EMU_SRC_SILENCE,
- 	PAIR_REGS(EMU_SRC_DOCK_MIC, _A, _B),
-@@ -186,6 +197,11 @@ static const char * const emu1010b_src_texts[] = {
- 	DSP_TEXTS,
- };
- 
-+static const char * const emu1010b_das_src_texts[] = {
-+	EMU1010b_COMMON_TEXTS,
-+	PB_TEXTS,
++static const unsigned short emu1010_4x_input_dst[][4] = {
++	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_ALICE2_EMU32_4, EMU_DST_ALICE2_EMU32_8, EMU_DST_ALICE2_EMU32_C },
++	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_ALICE2_EMU32_5, EMU_DST_ALICE2_EMU32_9, EMU_DST_ALICE2_EMU32_D },
++	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_ALICE2_EMU32_6, EMU_DST_ALICE2_EMU32_A, EMU_DST_ALICE2_EMU32_E },
++	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_ALICE2_EMU32_7, EMU_DST_ALICE2_EMU32_B, EMU_DST_ALICE2_EMU32_F },
 +};
++static_assert(ARRAY_SIZE(emu1010_4x_input_dst) <= NUM_INPUT_DESTS);
 +
- static const unsigned short emu1010b_src_regs[] = {
- 	EMU_SRC_SILENCE,
- 	PAIR_REGS(EMU_SRC_DOCK_MIC, _A, _B),
-@@ -215,6 +231,11 @@ static const char * const emu1616_src_texts[] = {
- 	DSP_TEXTS,
- };
- 
-+static const char * const emu1616_das_src_texts[] = {
-+	EMU1616_COMMON_TEXTS,
-+	PB_TEXTS,
++static const unsigned short emu1010b_2x_input_dst[][2] = {
++	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_TINA_EMU32B+0x0 },
++	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_TINA_EMU32B+0x1 },
++	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_TINA_EMU32B+0x2 },
++	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_TINA_EMU32B+0x3 },
++	{ EMU_DST_ALICE2_EMU32_4, EMU_DST_TINA_EMU32B+0x4 },
++	{ EMU_DST_ALICE2_EMU32_5, EMU_DST_TINA_EMU32B+0x5 },
++	{ EMU_DST_ALICE2_EMU32_6, EMU_DST_TINA_EMU32B+0x6 },
++	{ EMU_DST_ALICE2_EMU32_7, EMU_DST_TINA_EMU32B+0x7 },
++	{ EMU_DST_ALICE2_EMU32_8, EMU_DST_TINA_EMU32B+0x8 },
++	{ EMU_DST_ALICE2_EMU32_9, EMU_DST_TINA_EMU32B+0x9 },
++	{ EMU_DST_ALICE2_EMU32_A, EMU_DST_TINA_EMU32B+0xa },
++	{ EMU_DST_ALICE2_EMU32_B, EMU_DST_TINA_EMU32B+0xb },
++	{ EMU_DST_ALICE2_EMU32_C, EMU_DST_TINA_EMU32B+0xc },
++	{ EMU_DST_ALICE2_EMU32_D, EMU_DST_TINA_EMU32B+0xd },
++	{ EMU_DST_ALICE2_EMU32_E, EMU_DST_TINA_EMU32B+0xe },
++	{ EMU_DST_ALICE2_EMU32_F, EMU_DST_TINA_EMU32B+0xf },
 +};
++static_assert(ARRAY_SIZE(emu1010b_2x_input_dst) <= NUM_INPUT_DESTS);
 +
- static const unsigned short emu1616_src_regs[] = {
- 	EMU_SRC_SILENCE,
- 	PAIR_REGS(EMU_SRC_DOCK_MIC, _A, _B),
-@@ -238,6 +259,11 @@ static const char * const emu0404_src_texts[] = {
- 	DSP_TEXTS,
- };
- 
-+static const char * const emu0404_das_src_texts[] = {
-+	EMU0404_COMMON_TEXTS,
-+	PB_TEXTS,
++static const unsigned short emu1010b_4x_input_dst[][4] = {
++	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_ALICE2_EMU32_8, EMU_DST_TINA_EMU32B+0x0, EMU_DST_TINA_EMU32B+0x8 },
++	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_ALICE2_EMU32_9, EMU_DST_TINA_EMU32B+0x1, EMU_DST_TINA_EMU32B+0x9 },
++	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_ALICE2_EMU32_A, EMU_DST_TINA_EMU32B+0x2, EMU_DST_TINA_EMU32B+0xa },
++	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_ALICE2_EMU32_B, EMU_DST_TINA_EMU32B+0x3, EMU_DST_TINA_EMU32B+0xb },
++	{ EMU_DST_ALICE2_EMU32_4, EMU_DST_ALICE2_EMU32_C, EMU_DST_TINA_EMU32B+0x4, EMU_DST_TINA_EMU32B+0xc },
++	{ EMU_DST_ALICE2_EMU32_5, EMU_DST_ALICE2_EMU32_D, EMU_DST_TINA_EMU32B+0x5, EMU_DST_TINA_EMU32B+0xd },
++	{ EMU_DST_ALICE2_EMU32_6, EMU_DST_ALICE2_EMU32_E, EMU_DST_TINA_EMU32B+0x6, EMU_DST_TINA_EMU32B+0xe },
++	{ EMU_DST_ALICE2_EMU32_7, EMU_DST_ALICE2_EMU32_F, EMU_DST_TINA_EMU32B+0x7, EMU_DST_TINA_EMU32B+0xf },
 +};
++static_assert(ARRAY_SIZE(emu1010b_4x_input_dst) <= NUM_INPUT_DESTS);
 +
- static const unsigned short emu0404_src_regs[] = {
- 	EMU_SRC_SILENCE,
- 	LR_REGS(EMU_SRC_HAMOA_ADC),
-@@ -421,6 +447,25 @@ static const char * const emu1010_input_texts[] = {
- };
- static_assert(ARRAY_SIZE(emu1010_input_texts) <= NUM_INPUT_DESTS);
- 
-+static const char * const emu1010_das_input_texts[] = {
-+	"CpChn 00 Capture Enum",
-+	"CpChn 01 Capture Enum",
-+	"CpChn 02 Capture Enum",
-+	"CpChn 03 Capture Enum",
-+	"CpChn 04 Capture Enum",
-+	"CpChn 05 Capture Enum",
-+	"CpChn 06 Capture Enum",
-+	"CpChn 07 Capture Enum",
-+	"CpChn 08 Capture Enum",
-+	"CpChn 09 Capture Enum",
-+	"CpChn 10 Capture Enum",
-+	"CpChn 11 Capture Enum",
-+	"CpChn 12 Capture Enum",
-+	"CpChn 13 Capture Enum",
-+	"CpChn 14 Capture Enum",
-+	"CpChn 15 Capture Enum",
++static const unsigned short emu1616_2x_input_dst[][2] = {
++	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_TINA2_EMU32B+0x0 },
++	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_TINA2_EMU32B+0x1 },
++	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_TINA2_EMU32B+0x2 },
++	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_TINA2_EMU32B+0x3 },
++	{ EMU_DST_ALICE2_EMU32_4, EMU_DST_TINA2_EMU32B+0x4 },
++	{ EMU_DST_ALICE2_EMU32_5, EMU_DST_TINA2_EMU32B+0x5 },
++	{ EMU_DST_ALICE2_EMU32_6, EMU_DST_TINA2_EMU32B+0x6 },
++	{ EMU_DST_ALICE2_EMU32_7, EMU_DST_TINA2_EMU32B+0x7 },
++	{ EMU_DST_ALICE2_EMU32_8, EMU_DST_TINA2_EMU32B+0x8 },
++	{ EMU_DST_ALICE2_EMU32_9, EMU_DST_TINA2_EMU32B+0x9 },
++	{ EMU_DST_ALICE2_EMU32_A, EMU_DST_TINA2_EMU32B+0xa },
++	{ EMU_DST_ALICE2_EMU32_B, EMU_DST_TINA2_EMU32B+0xb },
++	{ EMU_DST_ALICE2_EMU32_C, EMU_DST_TINA2_EMU32B+0xc },
++	{ EMU_DST_ALICE2_EMU32_D, EMU_DST_TINA2_EMU32B+0xd },
++	{ EMU_DST_ALICE2_EMU32_E, EMU_DST_TINA2_EMU32B+0xe },
++	{ EMU_DST_ALICE2_EMU32_F, EMU_DST_TINA2_EMU32B+0xf },
 +};
++static_assert(ARRAY_SIZE(emu1616_2x_input_dst) <= NUM_INPUT_DESTS);
 +
- static const unsigned short emu1010_input_dst[] = {
- 	EMU_DST_ALICE2_EMU32_0,
- 	EMU_DST_ALICE2_EMU32_1,
-@@ -498,78 +543,78 @@ static const unsigned short emu0404_input_dflt[] = {
- };
- 
- struct snd_emu1010_routing_info {
--	const char * const *src_texts;
-+	const char * const *src_texts[2];
- 	const char * const *out_texts;
- 	const unsigned short *src_regs;
- 	const unsigned short *out_regs;
- 	const unsigned short *in_regs;
++static const unsigned short emu1616_4x_input_dst[][4] = {
++	{ EMU_DST_ALICE2_EMU32_0, EMU_DST_ALICE2_EMU32_8, EMU_DST_TINA2_EMU32B+0x0, EMU_DST_TINA2_EMU32B+0x8 },
++	{ EMU_DST_ALICE2_EMU32_1, EMU_DST_ALICE2_EMU32_9, EMU_DST_TINA2_EMU32B+0x1, EMU_DST_TINA2_EMU32B+0x9 },
++	{ EMU_DST_ALICE2_EMU32_2, EMU_DST_ALICE2_EMU32_A, EMU_DST_TINA2_EMU32B+0x2, EMU_DST_TINA2_EMU32B+0xa },
++	{ EMU_DST_ALICE2_EMU32_3, EMU_DST_ALICE2_EMU32_B, EMU_DST_TINA2_EMU32B+0x3, EMU_DST_TINA2_EMU32B+0xb },
++	{ EMU_DST_ALICE2_EMU32_4, EMU_DST_ALICE2_EMU32_C, EMU_DST_TINA2_EMU32B+0x4, EMU_DST_TINA2_EMU32B+0xc },
++	{ EMU_DST_ALICE2_EMU32_5, EMU_DST_ALICE2_EMU32_D, EMU_DST_TINA2_EMU32B+0x5, EMU_DST_TINA2_EMU32B+0xd },
++	{ EMU_DST_ALICE2_EMU32_6, EMU_DST_ALICE2_EMU32_E, EMU_DST_TINA2_EMU32B+0x6, EMU_DST_TINA2_EMU32B+0xe },
++	{ EMU_DST_ALICE2_EMU32_7, EMU_DST_ALICE2_EMU32_F, EMU_DST_TINA2_EMU32B+0x7, EMU_DST_TINA2_EMU32B+0xf },
++};
++static_assert(ARRAY_SIZE(emu1616_4x_input_dst) <= NUM_INPUT_DESTS);
++
+ static const unsigned short emu0404_input_dflt[] = {
+ 	EMU_SRC_HAMOA_ADC_LEFT1,
+ 	EMU_SRC_HAMOA_ADC_RIGHT1,
+@@ -900,7 +984,7 @@ struct snd_emu1010_routing_info {
+ 	const char * const *out_texts[3];
+ 	const unsigned short *src_regs[3];
+ 	const unsigned short *out_regs[3];
+-	const unsigned short *in_regs;
++	const unsigned short *in_regs[3];
  	const unsigned short *out_dflts;
  	const unsigned short *in_dflts;
--	unsigned n_srcs;
-+	unsigned n_srcs[2];
- 	unsigned n_outs;
--	unsigned n_ins;
-+	unsigned n_ins[2];
- };
- 
- static const struct snd_emu1010_routing_info emu1010_routing_info[] = {
- 	{
- 		/* rev1 1010 */
- 		.src_regs = emu1010_src_regs,
--		.src_texts = emu1010_src_texts,
--		.n_srcs = ARRAY_SIZE(emu1010_src_texts),
-+		.src_texts = { emu1010_src_texts, emu1010_das_src_texts },
-+		.n_srcs = { ARRAY_SIZE(emu1010_src_texts), ARRAY_SIZE(emu1010_das_src_texts) },
- 
- 		.out_dflts = emu1010_output_dflt,
- 		.out_regs = emu1010_output_dst,
- 		.out_texts = emu1010_output_texts,
- 		.n_outs = ARRAY_SIZE(emu1010_output_dst),
+ 	unsigned n_srcs[4];
+@@ -925,8 +1009,8 @@ static const struct snd_emu1010_routing_info emu1010_routing_info[] = {
+ 			    ARRAY_SIZE(emu1010_2x_output_texts), ARRAY_SIZE(emu1010_4x_output_texts) },
  
  		.in_dflts = emu1010_input_dflt,
- 		.in_regs = emu1010_input_dst,
--		.n_ins = ARRAY_SIZE(emu1010_input_dst),
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst), 16 },
+-		.in_regs = emu1010_input_dst,
+-		.n_ins = { ARRAY_SIZE(emu1010_input_dst), 16, 16, 16 },
++		.in_regs = { emu1010_input_dst, emu1010_2x_input_dst[0], emu1010_4x_input_dst[0] },
++		.n_ins = { ARRAY_SIZE(emu1010_input_dst), 16, 8, 4 },
  	},
  	{
  		/* rev2 1010 */
- 		.src_regs = emu1010b_src_regs,
--		.src_texts = emu1010b_src_texts,
--		.n_srcs = ARRAY_SIZE(emu1010b_src_texts),
-+		.src_texts = { emu1010b_src_texts, emu1010b_das_src_texts },
-+		.n_srcs = { ARRAY_SIZE(emu1010b_src_texts), ARRAY_SIZE(emu1010b_das_src_texts) },
- 
- 		.out_dflts = emu1010b_output_dflt,
- 		.out_regs = emu1010b_output_dst,
- 		.out_texts = snd_emu1010b_output_texts,
- 		.n_outs = ARRAY_SIZE(emu1010b_output_dst),
+@@ -944,8 +1028,8 @@ static const struct snd_emu1010_routing_info emu1010_routing_info[] = {
+ 			    ARRAY_SIZE(snd_emu1010b_2x_output_texts), ARRAY_SIZE(snd_emu1010b_4x_output_texts) },
  
  		.in_dflts = emu1010_input_dflt,
- 		.in_regs = emu1010_input_dst,
--		.n_ins = ARRAY_SIZE(emu1010_input_dst) - 6,
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16 },
+-		.in_regs = emu1010_input_dst,
+-		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 16, 16 },
++		.in_regs = { emu1010_input_dst, emu1010b_2x_input_dst[0], emu1010b_4x_input_dst[0] },
++		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 16, 8 },
  	},
  	{
  		/* 1616(m) cardbus */
- 		.src_regs = emu1616_src_regs,
--		.src_texts = emu1616_src_texts,
--		.n_srcs = ARRAY_SIZE(emu1616_src_texts),
-+		.src_texts = { emu1616_src_texts, emu1616_das_src_texts },
-+		.n_srcs = { ARRAY_SIZE(emu1616_src_texts), ARRAY_SIZE(emu1616_das_src_texts) },
- 
- 		.out_dflts = emu1616_output_dflt,
- 		.out_regs = emu1616_output_dst,
- 		.out_texts = snd_emu1616_output_texts,
- 		.n_outs = ARRAY_SIZE(emu1616_output_dst),
+@@ -963,8 +1047,8 @@ static const struct snd_emu1010_routing_info emu1010_routing_info[] = {
+ 			    ARRAY_SIZE(snd_emu1616_2x_output_texts), ARRAY_SIZE(snd_emu1616_4x_output_texts) },
  
  		.in_dflts = emu1010_input_dflt,
- 		.in_regs = emu1010_input_dst,
--		.n_ins = ARRAY_SIZE(emu1010_input_dst) - 6,
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16 },
+-		.in_regs = emu1010_input_dst,
+-		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 16, 16 },
++		.in_regs = { emu1010_input_dst, emu1616_2x_input_dst[0], emu1616_4x_input_dst[0] },
++		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 16, 8 },
  	},
  	{
  		/* 0404 */
- 		.src_regs = emu0404_src_regs,
--		.src_texts = emu0404_src_texts,
--		.n_srcs = ARRAY_SIZE(emu0404_src_texts),
-+		.src_texts = { emu0404_src_texts, emu0404_das_src_texts },
-+		.n_srcs = { ARRAY_SIZE(emu0404_src_texts), ARRAY_SIZE(emu0404_das_src_texts) },
- 
- 		.out_dflts = emu0404_output_dflt,
- 		.out_regs = emu0404_output_dst,
- 		.out_texts = snd_emu0404_output_texts,
- 		.n_outs = ARRAY_SIZE(emu0404_output_dflt),
+@@ -982,8 +1066,8 @@ static const struct snd_emu1010_routing_info emu1010_routing_info[] = {
+ 			    ARRAY_SIZE(snd_emu0404_output_texts), ARRAY_SIZE(snd_emu0404_4x_output_texts) },
  
  		.in_dflts = emu0404_input_dflt,
- 		.in_regs = emu1010_input_dst,
--		.n_ins = ARRAY_SIZE(emu1010_input_dst) - 6,
-+		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16 },
+-		.in_regs = emu1010_input_dst,
+-		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 16, 16 },
++		.in_regs = { emu1010_input_dst, emu1010_2x_input_dst[0], emu1010_4x_input_dst[0] },
++		.n_ins = { ARRAY_SIZE(emu1010_input_dst) - 6, 16, 8, 4 },
  	},
  };
  
-@@ -602,32 +647,34 @@ static void snd_emu1010_apply_sources(struct snd_emu10k1 *emu)
- {
+@@ -1035,11 +1119,10 @@ static void snd_emu1010_input_source_apply(struct snd_emu10k1 *emu,
  	const struct snd_emu1010_routing_info *emu_ri =
  		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
+ 	unsigned shift = emu->emu1010.clock_shift;
+-	const unsigned short *regs = &emu_ri->in_regs[channel];
++	const unsigned short *regs = &emu_ri->in_regs[shift][channel << shift];
+ 	const unsigned short *vals = &emu_ri->src_regs[shift][src << shift];
  
- 	for (unsigned i = 0; i < emu_ri->n_outs; i++)
- 		snd_emu1010_output_source_apply(
- 			emu, i, emu->emu1010.output_source[i]);
--	for (unsigned i = 0; i < emu_ri->n_ins; i++)
-+	for (unsigned i = 0; i < emu_ri->n_ins[iidx]; i++)
- 		snd_emu1010_input_source_apply(
- 			emu, i, emu->emu1010.input_source[i]);
+-	// Only 1x capture for now
+-	snd_emu1010_fpga_link_dst_src_write(emu, regs[0], vals[0]);
++	snd_emu1010_source_apply(emu, shift, regs, vals);
  }
  
- static u8 emu1010_map_source(const struct snd_emu1010_routing_info *emu_ri,
--			     unsigned val)
-+			     unsigned das_mode, unsigned val)
- {
--	for (unsigned i = 0; i < emu_ri->n_srcs; i++)
-+	for (unsigned i = 0; i < emu_ri->n_srcs[das_mode]; i++)
- 		if (val == emu_ri->src_regs[i])
- 			return i;
- 	return 0;
+ static void snd_emu1010_apply_sources(struct snd_emu10k1 *emu, int active)
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index 408db0d7c959..769096e05571 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -230,6 +230,16 @@ static void snd_emu1010_constrain_efx_rate(struct snd_emu10k1 *emu,
+ 	runtime->hw.rates = snd_pcm_rate_to_rate_bit(rate);
  }
  
- static int snd_emu1010_input_output_source_info(struct snd_kcontrol *kcontrol,
- 						struct snd_ctl_elem_info *uinfo)
++static void snd_emu1010_constrain_efx_capture_rate(struct snd_emu10k1 *emu,
++						   struct snd_pcm_runtime *runtime)
++{
++	int rate;
++
++	rate = emu->emu1010.word_clock << emu->emu1010.clock_shift;
++	runtime->hw.rate_min = runtime->hw.rate_max = rate;
++	runtime->hw.rates = snd_pcm_rate_to_rate_bit(rate);
++}
++
+ static unsigned int emu10k1_calc_pitch_target(unsigned int rate)
  {
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 
--	return snd_ctl_enum_info(uinfo, 1, emu_ri->n_srcs, emu_ri->src_texts);
-+	return snd_ctl_enum_info(uinfo, 1, emu_ri->n_srcs[iidx], emu_ri->src_texts[iidx]);
- }
- 
- static int snd_emu1010_output_source_get(struct snd_kcontrol *kcontrol,
-@@ -650,11 +697,12 @@ static int snd_emu1010_output_source_put(struct snd_kcontrol *kcontrol,
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 	unsigned val = ucontrol->value.enumerated.item[0];
- 	unsigned channel = kcontrol->private_value;
- 	int change;
- 
--	if (val >= emu_ri->n_srcs)
-+	if (val >= emu_ri->n_srcs[iidx])
- 		return -EINVAL;
- 	if (channel >= emu_ri->n_outs)
- 		return -EINVAL;
-@@ -680,27 +728,29 @@ static int snd_emu1010_input_source_get(struct snd_kcontrol *kcontrol,
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 	unsigned channel = kcontrol->private_value;
- 
--	if (channel >= emu_ri->n_ins)
-+	if (channel >= emu_ri->n_ins[iidx])
- 		return -EINVAL;
- 	ucontrol->value.enumerated.item[0] = emu->emu1010.input_source[channel];
- 	return 0;
- }
- 
- static int snd_emu1010_input_source_put(struct snd_kcontrol *kcontrol,
-                                  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_emu10k1 *emu = snd_kcontrol_chip(kcontrol);
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 	unsigned val = ucontrol->value.enumerated.item[0];
- 	unsigned channel = kcontrol->private_value;
- 	int change;
- 
--	if (val >= emu_ri->n_srcs)
-+	if (val >= emu_ri->n_srcs[iidx])
- 		return -EINVAL;
--	if (channel >= emu_ri->n_ins)
-+	if (channel >= emu_ri->n_ins[iidx])
- 		return -EINVAL;
- 	change = (emu->emu1010.input_source[channel] != val);
- 	if (change) {
-@@ -722,14 +772,17 @@ static int add_emu1010_source_mixers(struct snd_emu10k1 *emu)
- {
- 	const struct snd_emu1010_routing_info *emu_ri =
- 		&emu1010_routing_info[emu1010_idx(emu)];
-+	unsigned iidx = emu->das_mode;
- 	int err;
- 
- 	err = add_ctls(emu, &emu1010_output_source_ctl,
- 		       emu_ri->out_texts, emu_ri->n_outs);
- 	if (err < 0)
- 		return err;
- 	err = add_ctls(emu, &emu1010_input_source_ctl,
--		       emu1010_input_texts, emu_ri->n_ins);
-+		       iidx ? emu1010_das_input_texts :
-+			      emu1010_input_texts,
-+		       emu_ri->n_ins[iidx]);
- 	return err;
- }
- 
-@@ -2330,13 +2383,14 @@ int snd_emu10k1_mixer(struct snd_emu10k1 *emu,
- 		const struct snd_emu1010_routing_info *emu_ri =
- 			&emu1010_routing_info[emu_idx];
- 		const struct snd_emu1010_pads_info *emu_pi = &emu1010_pads_info[emu_idx];
-+		int midx = emu->das_mode;
- 
--		for (i = 0; i < emu_ri->n_ins; i++)
-+		for (i = 0; i < emu_ri->n_ins[midx]; i++)
- 			emu->emu1010.input_source[i] =
--				emu1010_map_source(emu_ri, emu_ri->in_dflts[i]);
-+				emu1010_map_source(emu_ri, midx, emu_ri->in_dflts[i]);
- 		for (i = 0; i < emu_ri->n_outs; i++)
- 			emu->emu1010.output_source[i] =
--				emu1010_map_source(emu_ri, emu_ri->out_dflts[i]);
-+				emu1010_map_source(emu_ri, midx, emu_ri->out_dflts[i]);
- 		snd_emu1010_apply_sources(emu);
- 
- 		kctl = emu->ctl_clock_source = snd_ctl_new1(&snd_emu1010_clock_source, emu);
+ 	unsigned int pitch_target;
+@@ -564,8 +574,22 @@ static int snd_emu10k1_capture_prepare(struct snd_pcm_substream *substream)
+ 		if (emu->card_capabilities->emu_model) {
+ 			unsigned mask = 0xffffffff >> (32 - runtime->channels * 2);
+ 			if (emu->das_mode) {
++				unsigned shift = emu->emu1010.clock_shift;
++				if (shift) {
++					if (emu->card_capabilities->emu_in_32) {
++						if (shift == 2)
++							mask |= mask << 16;
++						epcm->capture_cr_val2 = mask;
++					} else {
++						if (shift == 2)
++							mask |= mask << 8;
++						mask |= mask << 16;
++						epcm->capture_cr_val2 = 0;
++					}
++				} else {
++					epcm->capture_cr_val2 = 0;
++				}
+ 				epcm->capture_cr_val = mask;
+-				epcm->capture_cr_val2 = 0;
+ 			} else {
+ 				// The upper 32 16-bit capture voices, two for each of the 16 32-bit channels.
+ 				// The lower voices are occupied by A_EXTOUT_*_CAP*.
+@@ -1440,26 +1464,22 @@ static int snd_emu10k1_capture_efx_open(struct snd_pcm_substream *substream)
+ 	substream->runtime->private_free = snd_emu10k1_pcm_free_substream;
+ 	runtime->hw = snd_emu10k1_capture_efx;
+ 	if (emu->card_capabilities->emu_model) {
+-		snd_emu1010_constrain_efx_rate(emu, runtime);
++		snd_emu1010_constrain_efx_capture_rate(emu, runtime);
+ 		/*
+ 		 * There are 32 mono channels of 16bits each.
+ 		 * 24bit Audio uses 2x channels over 16bit,
+ 		 * 96kHz uses 2x channels over 48kHz,
+ 		 * 192kHz uses 4x channels over 48kHz.
+ 		 * So, for 48kHz 24bit, one has 16 channels,
+ 		 * for 96kHz 24bit, one has 8 channels,
+ 		 * for 192kHz 24bit, one has 4 channels.
+ 		 * 1010rev2 and 1616(m) cards have double that,
+ 		 * but we don't exceed 16 channels anyway.
+ 		 */
+-#if 0
+-		/* For 96kHz */
+-		runtime->hw.channels_min = runtime->hw.channels_max = 4;
+-#endif
+-#if 0
+-		/* For 192kHz */
+-		runtime->hw.channels_min = runtime->hw.channels_max = 2;
+-#endif
++		if (emu->das_mode)
++			runtime->hw.channels_max =
++				min(16, 32 >> (emu->emu1010.clock_shift +
++					       !emu->card_capabilities->emu_in_32));
+ 		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
+ 	} else {
+ 		spin_lock_irq(&emu->reg_lock);
 -- 
 2.40.0.152.g15d061e6df
 
