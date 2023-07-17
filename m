@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C37FEEB64DA
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 03:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 506E5EB64DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 03:37:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C39B8AE9;
-	Mon, 17 Jul 2023 05:36:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C39B8AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 370AEE72;
+	Mon, 17 Jul 2023 05:36:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 370AEE72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689565020;
-	bh=KCAnswSABYr2ITXy8z4k/eFmHYY+VeqKD+NeQuMer60=;
+	s=default; t=1689565026;
+	bh=rtdGQYBWGUpna2FPjsL9T4rQG6S0ab/3WCfgQD2+N10=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CzxeeugvchTlBngAGrmekvVVcrWgcasbIaVYxCEvkhDNXxe1+dooF3+UUPbw6E79e
-	 k0sBNQMMRzMMCRzlXSENOL35lDuVGHnCoZoH78gcYN8F2yAmzKVhlmnkQ7kSETYv6y
-	 8OsficttpBaLNdyH06Bi8a3Naop/cdFxzAQZKH4I=
+	b=LLeVoVikYkBw+PjMGomXRUI/m5j4LY+SLzIBmbj5k+4awES5DA2fqZQm8Bf7//LIv
+	 aUs7SGjS+C0upYricqZtPmRV7DExxuZFyDFdXApgGqybF5e5cS5eNi6HiYWvpmgyti
+	 up/q7zpS7j9ZN+/YDMBp/fMfPgtQzLxDAiKXi57E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C56BF8055C; Mon, 17 Jul 2023 05:35:00 +0200 (CEST)
+	id 2F846F8057E; Mon, 17 Jul 2023 05:35:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6EE3F80551;
-	Mon, 17 Jul 2023 05:34:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 683BDF8057E;
+	Mon, 17 Jul 2023 05:35:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69E74F804DA; Mon, 17 Jul 2023 05:33:35 +0200 (CEST)
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com
- [IPv6:2607:f8b0:4864:20::22e])
+	id BCD62F8047D; Mon, 17 Jul 2023 05:33:40 +0200 (CEST)
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com
+ [IPv6:2607:f8b0:4864:20::22d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E3571F8007E
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 05:32:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3571F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5414FF8032D
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 05:32:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5414FF8032D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=llYatUmB
-Received: by mail-oi1-x22e.google.com with SMTP id
- 5614622812f47-3a36b30aa7bso3002335b6e.3
+ header.s=20221208 header.b=FUqeePH0
+Received: by mail-oi1-x22d.google.com with SMTP id
+ 5614622812f47-3a1e6022b93so2939412b6e.1
         for <alsa-devel@alsa-project.org>;
- Sun, 16 Jul 2023 20:32:33 -0700 (PDT)
+ Sun, 16 Jul 2023 20:32:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689564751; x=1692156751;
+        d=gmail.com; s=20221208; t=1689564758; x=1692156758;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PvI0P+9cSyZtkmqCZIS8QCJlA+e7eXnlLRhnl2WbHKY=;
-        b=llYatUmBkNw2Zh+iPmtnUZwca/Y2fmO8hm1PmpcbID/cgpc3HXN2KLRjsVofnN1mU5
-         orM6Kr9pTHQHnR9AjZbvp8siVl17mQt+Zhd/hrwRN02bWF/QA8bCL2uM8BvtoWaOVpr9
-         eciuQwMGEfDZFJUCuY4UOt4xtlK12/nG6AZPAChqWxTm7xkGwYl35MimhKFgXPVGaase
-         r26wfTSehVvzE2QLz8X4AZ7ms/QtSE/+2wZWkPoLGN80+PvKN870JW8oyXh4u/Vb4IrA
-         1VatLeBy1dnZMWf8cNIjJq7RhEL5BNoM5e0SaXUUT+jSwh2JTDLPrei2qKs0dZvP6JOW
-         s8Zw==
+        bh=ZbZ8B9EmRUagDKp2bmjGUZzuohr9WL08JwlgNpFRSPk=;
+        b=FUqeePH0dmcgxhHNTF9xOXEfXtFY2knFN618TyPHDyzW+JmLShbbxnHVkjQYG5t9yH
+         JkX8L1tkxYvqHnAv13CQCa1G55p5zGA7pGkMnwWFevEIslDrgKEQAfzfrm/pacf3d4QI
+         yTkFo2OP/yBjypdp5GACrPecStaTjHReBdeRRdQEl2XYT0JdbJrnqPKu6RJU1nSbnKN3
+         3oFoXCpsgIWJvRDvrFZ34w5rkNlsxg6R/+Pqg9uKNuaKKTp7l4+KPbk6lBKA+oe0LYjO
+         wNXoUJeRDtBzu53CTLP90saTYXn3fMxAmb29zKh6w47o0jkeSdwy/ESV9HqWeXqqJLbK
+         QFvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689564751; x=1692156751;
+        d=1e100.net; s=20221208; t=1689564758; x=1692156758;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PvI0P+9cSyZtkmqCZIS8QCJlA+e7eXnlLRhnl2WbHKY=;
-        b=CQL/cEoRySWKNaqMKEmqPCzE6Vbm1W4mWWapSk2oOZEOTnb/zIFq8z4G/KF4XyHUoX
-         cGii4ngBLUODhZtlbMv38JwZ5B4fuyyBwguDTao1u8yvhixg3X3uZf2g7S3zkQO37uFd
-         qLaYERfNictk3WcYjD7AVETYp/JgP/A22wdwI6VSbwm7r6yPAK/dmseDFgcLXAsXsMA1
-         LWpH2U1cBBckyftb5I9Dksqztdo+DEOKEZRp4jfBxjAftrH4NhmyNcHa2hUbCUePuDbe
-         vM/vot+38VNh3swJYECykyzRwXlsjR15/aMfk1C/1rrLC3H4lonXWDBW2jAU7FesPJ4p
-         4gJw==
-X-Gm-Message-State: ABy/qLYkYs/1th1wSMMbpxKEfbGVjQUj6uHyJHIsvWGGdIg0S6cvJUtC
-	Skc+fKMYkZVijEw+fYuvPyxedZaB4WkmEGOm
+        bh=ZbZ8B9EmRUagDKp2bmjGUZzuohr9WL08JwlgNpFRSPk=;
+        b=anfk9qiEnNnfbIZqv8+z5YdaG85bggiIVYLF/xAbD//rYRxvUlQaBPhp80ONZOKNmf
+         VPqhfNr3995P62ShdmroUVmhigDlkjqpOHxhptl3bqyAeS2gQTJf8Lwf4CQil2pux20I
+         sawQ0OQH1eFZDB2Owb730cX3gAP9uohYg1CJahZHOcxr9pwK5jPRPA64VY60xaeH42Tv
+         MXhIGagWrpU/EnV1EhNQFtbi+/itCbDPtVEv/4CZF+joKTVLyFaa2rzmsUx+TWMnFScv
+         k7mWqhID6k4jeHCddn27SyB9GLRav/oyTdfFs3BNweTLAaPwDKWqJTivvLQj3xpDYxof
+         fQNw==
+X-Gm-Message-State: ABy/qLYkXUY1qx8uzRxs/K+5xyaWB+YIGgc0VhB2+oddQGSBoFw9Is5x
+	ClYB5agTArQJRo8MpbxqE1q/WIY0TkYfMlRa
 X-Google-Smtp-Source: 
- APBJJlE364QYoS3zNEs1g16WFN6Bf0gfUSUbnfVkniNh035K/c03wk8RBm5/TNXiqfrc8cGF9bCBKg==
-X-Received: by 2002:a05:6808:1283:b0:3a4:31ee:da6a with SMTP id
- a3-20020a056808128300b003a431eeda6amr12654821oiw.55.1689564751040;
-        Sun, 16 Jul 2023 20:32:31 -0700 (PDT)
+ APBJJlEWMVVqeKj8z9+jTurhA6evp44VtrxH+r5igBjvCOdmByWsF3ZlsryhLh5MEsSDp0J+h+8yBA==
+X-Received: by 2002:a05:6808:1645:b0:3a3:7977:8995 with SMTP id
+ az5-20020a056808164500b003a379778995mr10537548oib.47.1689564757822;
+        Sun, 16 Jul 2023 20:32:37 -0700 (PDT)
 Received: from a-VirtualBox.. ([116.233.75.15])
         by smtp.gmail.com with ESMTPSA id
- a28-20020a63705c000000b00528513c6bbcsm11647509pgn.28.2023.07.16.20.32.29
+ a28-20020a63705c000000b00528513c6bbcsm11647509pgn.28.2023.07.16.20.32.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Jul 2023 20:32:30 -0700 (PDT)
+        Sun, 16 Jul 2023 20:32:37 -0700 (PDT)
 From: Zhu Ning <zhuning0077@gmail.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
@@ -90,16 +90,16 @@ Cc: pierre-louis.bossart@linux.intel.com,
 	yangxiaohua@everest-semi.com,
 	zhuning@everest-semi.com,
 	Zhu Ning <zhuning0077@gmail.com>
-Subject: [PATCH v2 2/5] ASoC: codecs: ES8326: Change Volatile Reg function
-Date: Mon, 17 Jul 2023 11:32:20 +0800
-Message-Id: <20230717033223.42506-2-zhuning0077@gmail.com>
+Subject: [PATCH v2 5/5] ASoC: codecs: ES8326: Update jact detection function
+Date: Mon, 17 Jul 2023 11:32:23 +0800
+Message-Id: <20230717033223.42506-5-zhuning0077@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230717033223.42506-1-zhuning0077@gmail.com>
 References: <20230717033223.42506-1-zhuning0077@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3M423Y3RFZYHX6LAKTN6RLEAQT2LVCH7
-X-Message-ID-Hash: 3M423Y3RFZYHX6LAKTN6RLEAQT2LVCH7
+Message-ID-Hash: 2E2AFLBGMJHBB4GFSV22V34SSD7HSS2M
+X-Message-ID-Hash: 2E2AFLBGMJHBB4GFSV22V34SSD7HSS2M
 X-MailFrom: zhuning0077@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -112,61 +112,207 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3M423Y3RFZYHX6LAKTN6RLEAQT2LVCH7/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2E2AFLBGMJHBB4GFSV22V34SSD7HSS2M/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The new calibration and headphone detection function
-require reading new volatile registers. Add them in
-the volatile register function.
+The old jack detection function only supports fixed OMTP/CTIA
+hardware connection. The new one supports auto OMTP/CTIA
+headset detection
 
 Signed-off-by: Zhu Ning <zhuning0077@gmail.com>
 ---
- sound/soc/codecs/es8326.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ sound/soc/codecs/es8326.c | 109 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 89 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index e953c0157ba0..7cfe535e0b6d 100644
+index 50b13296e246..74c03d151005 100644
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
-@@ -158,20 +158,25 @@ static const struct snd_soc_dapm_route es8326_dapm_routes[] = {
- 	{"HPOR", NULL, "RHPMIX"},
+@@ -41,6 +41,8 @@ struct es8326_priv {
+ 
+ 	bool calibrated;
+ 	int version;
++	int hp;
++	int jack_remove_retry;
  };
  
--static const struct regmap_range es8326_volatile_ranges[] = {
--	regmap_reg_range(ES8326_HPDET_STA, ES8326_HPDET_STA),
--};
--
--static const struct regmap_access_table es8326_volatile_table = {
--	.yes_ranges = es8326_volatile_ranges,
--	.n_yes_ranges = ARRAY_SIZE(es8326_volatile_ranges),
--};
-+static bool es8326_volatile_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case ES8326_HPL_OFFSET_INI:
-+	case ES8326_HPR_OFFSET_INI:
-+	case ES8326_HPDET_STA:
-+	case ES8326_CTIA_OMTP_STA:
-+	case ES8326_CSM_MUTE_STA:
-+		return true;
-+	default:
-+		return false;
+ static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(dac_vol_tlv, -9550, 50, 0);
+@@ -535,6 +537,7 @@ static void es8326_jack_button_handler(struct work_struct *work)
+ 		cur_button = SND_JACK_BTN_0;
+ 		break;
+ 	case 0x6f:
++	case 0x4b:
+ 		/* button volume up */
+ 		cur_button = SND_JACK_BTN_1;
+ 		break;
+@@ -543,6 +546,7 @@ static void es8326_jack_button_handler(struct work_struct *work)
+ 		cur_button = SND_JACK_BTN_2;
+ 		break;
+ 	case 0x1e:
++	case 0xe2:
+ 		/* button released or not pressed */
+ 		cur_button = 0;
+ 		break;
+@@ -552,20 +556,20 @@ static void es8326_jack_button_handler(struct work_struct *work)
+ 
+ 	if ((prev_button == cur_button) && (cur_button != 0)) {
+ 		press_count++;
+-		if (press_count > 10) {
+-			/* report a press every 500ms */
++		if (press_count > 3) {
++			/* report a press every 120ms */
+ 			snd_soc_jack_report(es8326->jack, cur_button,
+ 					SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2);
+ 			press_count = 0;
+ 		}
+ 		button_to_report = cur_button;
+ 		queue_delayed_work(system_wq, &es8326->button_press_work,
+-				   msecs_to_jiffies(50));
++				   msecs_to_jiffies(35));
+ 	} else if (prev_button != cur_button) {
+ 		/* mismatch, detect again */
+ 		prev_button = cur_button;
+ 		queue_delayed_work(system_wq, &es8326->button_press_work,
+-				   msecs_to_jiffies(50));
++				   msecs_to_jiffies(35));
+ 	} else {
+ 		/* released or no pressed */
+ 		if (button_to_report != 0) {
+@@ -589,32 +593,96 @@ static void es8326_jack_detect_handler(struct work_struct *work)
+ 	mutex_lock(&es8326->lock);
+ 	iface = snd_soc_component_read(comp, ES8326_HPDET_STA);
+ 	dev_dbg(comp->dev, "gpio flag %#04x", iface);
++
++	if (es8326->jack_remove_retry == 1) {
++		if (iface & ES8326_HPINSERT_FLAG)
++			es8326->jack_remove_retry = 2;
++		else
++			es8326->jack_remove_retry = 0;
++
++		dev_dbg(comp->dev, "remove event check, set HPJACK_POL normal, cnt = %d\n",
++				es8326->jack_remove_retry);
++		/*
++		 * Inverted HPJACK_POL bit to trigger one IRQ to double check HP Removal event
++		 */
++		regmap_update_bits(es8326->regmap, ES8326_HPDET_TYPE,
++					ES8326_HP_DET_JACK_POL, (es8326->jd_inverted ?
++					~es8326->jack_pol : es8326->jack_pol));
++		goto exit;
 +	}
-+}
++
+ 	if ((iface & ES8326_HPINSERT_FLAG) == 0) {
+ 		/* Jack unplugged or spurious IRQ */
+-		dev_dbg(comp->dev, "No headset detected");
++		dev_dbg(comp->dev, "No headset detected\n");
++		es8326_disable_micbias(es8326->component);
+ 		if (es8326->jack->status & SND_JACK_HEADPHONE) {
++			dev_dbg(comp->dev, "Report hp remove event\n");
+ 			snd_soc_jack_report(es8326->jack, 0, SND_JACK_HEADSET);
+-			snd_soc_component_write(comp, ES8326_ADC1_SRC, es8326->mic2_src);
+-			es8326_disable_micbias(comp);
++			/* mute adc when mic path switch */
++			regmap_write(es8326->regmap, ES8326_ADC_SCALE, 0x33);
++			regmap_write(es8326->regmap, ES8326_ADC1_SRC, 0x44);
++			regmap_write(es8326->regmap, ES8326_ADC2_SRC, 0x66);
++			es8326->hp = 0;
++		}
++		regmap_update_bits(es8326->regmap, ES8326_HPDET_TYPE, 0x03, 0x01);
++		/*
++		 * Inverted HPJACK_POL bit to trigger one IRQ to double check HP Removal event
++		 */
++		if (es8326->jack_remove_retry == 0) {
++			es8326->jack_remove_retry = 1;
++			dev_dbg(comp->dev, "remove event check, invert HPJACK_POL, cnt = %d\n",
++					es8326->jack_remove_retry);
++			regmap_update_bits(es8326->regmap, ES8326_HPDET_TYPE,
++					ES8326_HP_DET_JACK_POL, (es8326->jd_inverted ?
++					es8326->jack_pol : ~es8326->jack_pol));
++
++		} else {
++			es8326->jack_remove_retry = 0;
+ 		}
+ 	} else if ((iface & ES8326_HPINSERT_FLAG) == ES8326_HPINSERT_FLAG) {
++		es8326->jack_remove_retry = 0;
++		if (es8326->hp == 0) {
++			dev_dbg(comp->dev, "First insert, start OMTP/CTIA type check\n");
++			/*
++			 * set auto-check mode, then restart jack_detect_work after 100ms.
++			 * Don't report jack status.
++			 */
++			regmap_update_bits(es8326->regmap, ES8326_HPDET_TYPE, 0x03, 0x01);
++			usleep_range(50000, 70000);
++			regmap_update_bits(es8326->regmap, ES8326_HPDET_TYPE, 0x03, 0x00);
++			queue_delayed_work(system_wq, &es8326->jack_detect_work,
++					msecs_to_jiffies(100));
++			es8326->hp = 1;
++			goto exit;
++		}
+ 		if (es8326->jack->status & SND_JACK_HEADSET) {
+ 			/* detect button */
++			dev_dbg(comp->dev, "button pressed\n");
+ 			queue_delayed_work(system_wq, &es8326->button_press_work, 10);
++			goto exit;
++		}
++		if ((iface & ES8326_HPBUTTON_FLAG) == 0x01) {
++			dev_dbg(comp->dev, "Headphone detected\n");
++			snd_soc_jack_report(es8326->jack,
++					SND_JACK_HEADPHONE, SND_JACK_HEADSET);
+ 		} else {
+-			if ((iface & ES8326_HPBUTTON_FLAG) == 0x00) {
+-				dev_dbg(comp->dev, "Headset detected");
+-				snd_soc_jack_report(es8326->jack,
+-						    SND_JACK_HEADSET, SND_JACK_HEADSET);
+-				snd_soc_component_write(comp,
+-							ES8326_ADC1_SRC, es8326->mic1_src);
+-			} else {
+-				dev_dbg(comp->dev, "Headphone detected");
+-				snd_soc_jack_report(es8326->jack,
+-						    SND_JACK_HEADPHONE, SND_JACK_HEADSET);
+-			}
++			dev_dbg(comp->dev, "Headset detected\n");
++			snd_soc_jack_report(es8326->jack,
++					SND_JACK_HEADSET, SND_JACK_HEADSET);
++
++			regmap_write(es8326->regmap, ES8326_ADC_SCALE, 0x33);
++			regmap_update_bits(es8326->regmap, ES8326_PGA_PDN,
++					0x08, 0x08);
++			regmap_update_bits(es8326->regmap, ES8326_PGAGAIN,
++					0x80, 0x80);
++			regmap_write(es8326->regmap, ES8326_ADC1_SRC, 0x00);
++			regmap_write(es8326->regmap, ES8326_ADC2_SRC, 0x00);
++			regmap_update_bits(es8326->regmap, ES8326_PGA_PDN,
++					0x08, 0x00);
++			usleep_range(10000, 15000);
+ 		}
+ 	}
++exit:
+ 	mutex_unlock(&es8326->lock);
+ }
  
- static const struct regmap_config es8326_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
- 	.max_register = 0xff,
--	.volatile_table = &es8326_volatile_table,
-+	.volatile_reg = es8326_volatile_register,
- 	.cache_type = REGCACHE_RBTREE,
- };
+@@ -633,7 +701,7 @@ static irqreturn_t es8326_irq(int irq, void *dev_id)
+ 				   msecs_to_jiffies(10));
+ 	else
+ 		queue_delayed_work(system_wq, &es8326->jack_detect_work,
+-				   msecs_to_jiffies(300));
++				   msecs_to_jiffies(600));
+ 
+ out:
+ 	return IRQ_HANDLED;
+@@ -763,7 +831,8 @@ static int es8326_resume(struct snd_soc_component *component)
+ 			(ES8326_HP_DET_SRC_PIN9 | es8326->jack_pol) :
+ 			(ES8326_HP_DET_SRC_PIN9 | es8326->jack_pol | 0x04)));
+ 
+-	es8326_irq(es8326->irq, es8326);
++	es8326->jack_remove_retry = 0;
++	es8326->hp = 0;
+ 	return 0;
+ }
  
 -- 
 2.34.1
