@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47BFCC001DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 11:47:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 677A7C00528
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 11:48:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 188CFDE5;
-	Mon, 17 Jul 2023 13:46:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 188CFDE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95219E73;
+	Mon, 17 Jul 2023 13:47:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95219E73
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689594469;
-	bh=DAr+POYVw8U019TczNsGgzolTNRRVedmJ61tFw/QC4Y=;
+	s=default; t=1689594497;
+	bh=xDZvjDAnmyr9idM4V2jRguD7382ptl0JEWF/BZWKdgo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HKygPQcQUGJJW5uPxYQp2Ra3DVNZPWpOxbJMMS94Fudmz7orq7xGNWnTzD8/EVmG6
-	 /v5uZ8jZSncrmn5hdc7jzyw3cTZLy5i1wio5iO0W+S4LDZBg2G9dASGtqpzQENlBdC
-	 IB/MBoSQ4D6l/rCFC+uUkUqymCHNSe8k8cXHjtfY=
+	b=boNIGNzbQ2mMkvfzKNyIcvjAUPwCvckK6v6wteApsOEJxzn4dGMHwXZmaLllXaA9s
+	 w+TuSjgos59s3/1Nt5/bxW3JI/6kF1zcPRK6wtuuagNzhrKPB+DfM9ZZONoKgWhYjY
+	 Cq3VJJSg8uO93cZY0pRJkgjveOCqNubEX6Bt7sdY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30A39F8057C; Mon, 17 Jul 2023 13:45:59 +0200 (CEST)
+	id C8584F805A1; Mon, 17 Jul 2023 13:46:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 507DBF8057D;
-	Mon, 17 Jul 2023 13:45:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1E54F805A1;
+	Mon, 17 Jul 2023 13:46:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14766F80570; Mon, 17 Jul 2023 13:45:53 +0200 (CEST)
+	id DC37FF8056F; Mon, 17 Jul 2023 13:45:53 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A3E65F8032D
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 13:45:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3E65F8032D
+	by alsa1.perex.cz (Postfix) with ESMTPS id AD8B7F80520
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 13:45:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD8B7F80520
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=eK9oXg1O
+ header.s=Intel header.b=ReR3e816
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689594335; x=1721130335;
+  t=1689594341; x=1721130341;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DAr+POYVw8U019TczNsGgzolTNRRVedmJ61tFw/QC4Y=;
-  b=eK9oXg1O0lSTxBjpH2y6kIFHLUNEc+xxpxGAHzJYhPej3GWyf6HdtyEV
-   czJpq7RRqiDC8XsPby7inZQM1zsylOEXScjhy1auaBvIcB2q1tF6Cv51G
-   w5RmiClJxqmOJv72pLkiPtpxm0KzBn8InEswHZHcyqAhJCtrbrJobxlC8
-   iaX3+kluQxfzI4nx887bcxmU5RC6Y227JI5mOWVp1fPwKD7U/TdOyGSW/
-   +o+ibzS1epMIEB5sAklf76awEo9ZtKDYQnChfiL4MBsE1Ec8tv3dFD2Dk
-   n0he8yEsC5VEYymfC9kDj9YBiR7dIef4ktZX4nGRkt0nagdrXJGLUw/5Q
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="363372801"
+  bh=xDZvjDAnmyr9idM4V2jRguD7382ptl0JEWF/BZWKdgo=;
+  b=ReR3e816B2LQYR54gCMS3XC+x9lW/Y3xyh2ZZn1Sk7ejOi7MP4LwMgXz
+   08eM6kvG3sstwlu9tHxFcUpdsdQJZxn4l8cxrwwPyTvKBVO3JlgKh/xKZ
+   8Zi35hTpxDza8FLF7tawfnx08IRnrOxXFXL87PTjIj0jw0EAuFAWsbmil
+   YEgj41tMpJpIVYtVstepH7s8M/vxsINPpL3AYL2ThFuIr+1sP/hxEvAuG
+   Wuz/y9OPhUJ/IZHbliRg441KuFcv9Wu87euZ/4Ap2e5/PHXFHkuchl6X+
+   b7Vqz3W19N3npUv0HfwHLdpCsjA2zlPbCfl9+1tvZTB4jlOtNqm+6wzZb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="363372835"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200";
-   d="scan'208";a="363372801"
+   d="scan'208";a="363372835"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jul 2023 04:45:34 -0700
+ 17 Jul 2023 04:45:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="969856495"
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="969856511"
 X-IronPort-AV: E=Sophos;i="6.01,211,1684825200";
-   d="scan'208";a="969856495"
+   d="scan'208";a="969856511"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Jul 2023 04:45:30 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 17 Jul 2023 04:45:37 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Bjorn Helgaas <bhelgaas@google.com>,
@@ -80,17 +80,17 @@ Cc: alsa-devel@alsa-project.org,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v4 04/15] ALSA: Remove unused Broxton PCI ID
-Date: Mon, 17 Jul 2023 13:45:00 +0200
-Message-Id: <20230717114511.484999-5-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v4 06/15] ALSA: hda: Use global PCI match macro
+Date: Mon, 17 Jul 2023 13:45:02 +0200
+Message-Id: <20230717114511.484999-7-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CGKYI26H5PJM7UY6VEWC6HZLTXIAFZZK
-X-Message-ID-Hash: CGKYI26H5PJM7UY6VEWC6HZLTXIAFZZK
+Message-ID-Hash: 3VMYTEKH3SOKNFIYVGBVJY2BAYZOLN5D
+X-Message-ID-Hash: 3VMYTEKH3SOKNFIYVGBVJY2BAYZOLN5D
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,41 +103,85 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CGKYI26H5PJM7UY6VEWC6HZLTXIAFZZK/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3VMYTEKH3SOKNFIYVGBVJY2BAYZOLN5D/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Current code references 0x1a98 which is BXT-M (not -T as it is
-commented) and it's an RVP, BXT-M B0 to be specific. From what we know
-no BXT is available on market.
+Instead of using local macro to match PCI device, use global one. As
+Apollolake is Broxton-P successor that made it to the market, be precise
+and use APL shortcut.
 
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Acked-by: Mark Brown <broonie@kernel.org>
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/pci/hda/hda_intel.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/pci/hda/hda_intel.c | 20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
 
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index ef831770ca7d..8f0cebb83302 100644
+index 8f0cebb83302..5e59dcc35665 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -2564,9 +2564,6 @@ static const struct pci_device_id azx_ids[] = {
- 	/* Broxton-P(Apollolake) */
- 	{ PCI_DEVICE(0x8086, 0x5a98),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
--	/* Broxton-T */
--	{ PCI_DEVICE(0x8086, 0x1a98),
--	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
- 	/* Gemini-Lake */
- 	{ PCI_DEVICE(0x8086, 0x3198),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
+@@ -330,18 +330,6 @@ enum {
+ #define needs_eld_notify_link(chip)	false
+ #endif
+ 
+-#define CONTROLLER_IN_GPU(pci) (((pci)->vendor == 0x8086) &&         \
+-				       (((pci)->device == 0x0a0c) || \
+-					((pci)->device == 0x0c0c) || \
+-					((pci)->device == 0x0d0c) || \
+-					((pci)->device == 0x160c) || \
+-					((pci)->device == 0x490d) || \
+-					((pci)->device == 0x4f90) || \
+-					((pci)->device == 0x4f91) || \
+-					((pci)->device == 0x4f92)))
+-
+-#define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
+-
+ static const char * const driver_short_names[] = {
+ 	[AZX_DRIVER_ICH] = "HDA Intel",
+ 	[AZX_DRIVER_PCH] = "HDA Intel PCH",
+@@ -573,7 +561,7 @@ static void hda_intel_init_chip(struct azx *chip, bool full_reset)
+ 	snd_hdac_set_codec_wakeup(bus, false);
+ 
+ 	/* reduce dma latency to avoid noise */
+-	if (IS_BXT(pci))
++	if (HDA_CONTROLLER_IS_APL(pci))
+ 		bxt_reduce_dma_latency(chip);
+ 
+ 	if (bus->mlcap != NULL)
+@@ -2175,7 +2163,7 @@ static int azx_probe(struct pci_dev *pci,
+ #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+ 
+ #ifndef CONFIG_SND_HDA_I915
+-	if (CONTROLLER_IN_GPU(pci))
++	if (HDA_CONTROLLER_IN_GPU(pci))
+ 		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
+ #endif
+ 
+@@ -2283,7 +2271,7 @@ static int azx_probe_continue(struct azx *chip)
+ 			 * for other chips, still continue probing as other
+ 			 * codecs can be on the same link.
+ 			 */
+-			if (CONTROLLER_IN_GPU(pci)) {
++			if (HDA_CONTROLLER_IN_GPU(pci)) {
+ 				dev_err(chip->card->dev,
+ 					"HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
+ 				goto out_free;
+@@ -2294,7 +2282,7 @@ static int azx_probe_continue(struct azx *chip)
+ 		}
+ 
+ 		/* HSW/BDW controllers need this power */
+-		if (CONTROLLER_IN_GPU(pci))
++		if (HDA_CONTROLLER_IN_GPU(pci))
+ 			hda->need_i915_power = true;
+ 	}
+ 
 -- 
 2.34.1
 
