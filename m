@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C1EBEB64DA
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 03:36:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83551EB64DA
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 03:36:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DA6E850;
-	Mon, 17 Jul 2023 05:35:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DA6E850
+	by alsa0.perex.cz (Postfix) with ESMTPS id A582ADEE;
+	Mon, 17 Jul 2023 05:35:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A582ADEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689564975;
-	bh=QjDnB89hjRx55s7EDZuB9ho6HsYGvnAnuBjm0bhJJIQ=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ckcfSFkG78j6fcjjzUm7ohnL7FDNRTTtG53fKulO/MrZmvhZrU6/iUBVF2B+7m9gO
-	 4JZczFRAJv0GfY4a5Vbc8G2EjL46ZG5c4xf1v8tR2bNLRgEqj0++I19PJRUawomcaQ
-	 Pf+qhPaA5ibfjtFb5pPJ/lp9q/Q3/7y/6oNLhGog=
+	s=default; t=1689565001;
+	bh=/IEpAVF78Rqv2LVczrZlfFO477LOjAVAjWBRPvOnjh4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=q7ku4K0AzlkS8uW33XdIe7ni2Fwp4jodtac4PdVqe2pzFWk9xF1GP5ZoxJpWtqiTU
+	 eIIaA6+AmVxGe83i9DzNNPud1ME89S5DTLhstWZUWac8AJwdWGcyxeb7q6XA2UIZAt
+	 CFYirf83wr9mafGTxc0tUYbp4A2dUxAUL1OmZPUI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58C85F80535; Mon, 17 Jul 2023 05:34:58 +0200 (CEST)
+	id 1CD25F80553; Mon, 17 Jul 2023 05:34:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 601F9F800D2;
-	Mon, 17 Jul 2023 05:34:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 290C8F80551;
+	Mon, 17 Jul 2023 05:34:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BDA7DF80527; Mon, 17 Jul 2023 05:32:44 +0200 (CEST)
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com
- [IPv6:2607:f8b0:4864:20::32c])
+	id 462B7F80520; Mon, 17 Jul 2023 05:32:51 +0200 (CEST)
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com
+ [IPv6:2607:f8b0:4864:20::42c])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 163EDF800D2
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 05:32:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 163EDF800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2C160F8047D
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 05:32:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C160F8047D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=IaGBK371
-Received: by mail-ot1-x32c.google.com with SMTP id
- 46e09a7af769-6b9b89627c3so1711407a34.1
+ header.s=20221208 header.b=Mv1EXEXa
+Received: by mail-pf1-x42c.google.com with SMTP id
+ d2e1a72fcca58-666ed230c81so4185593b3a.0
         for <alsa-devel@alsa-project.org>;
- Sun, 16 Jul 2023 20:32:31 -0700 (PDT)
+ Sun, 16 Jul 2023 20:32:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689564749; x=1692156749;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OSQ/EF4eTeZehLtAwdrrxfniB7LkpUpWRgcBFX06IoY=;
-        b=IaGBK371AH+W28iGujdqp77Jk3e+29UkB3k1JOp5WVxrMN6WTt9jDC8EiaJJC0UT6x
-         YR5yP+fgIBFiOJVOvPgwjmbPpcY49fYKymEAAUQKMZvl5JDMDMWxxUQcbEhhYe+wkLW7
-         yTINTNsvKAgxhlAWPGr5S+eUFKZEnw8ZfQNL1JgjsOnntGRXqzqQaGCqRfiUXMi0Yag/
-         RZbaQ6w84fiPntEd1bcBL4smJxndGlhxfU5aOkHLme0PVTv+qT6EPuPt595ERQe9Rv+7
-         nGbQv3r8BE2qVwkbH6oqwCRJ4m/fMIx6L9MxrlFhRzVQm3+7m6ucTY60QNKQMrPMfEYu
-         Akyg==
+        d=gmail.com; s=20221208; t=1689564753; x=1692156753;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QqKM93j3IhItw8kQLLKECLDwgBAuQVtO1eMhzHy4jXo=;
+        b=Mv1EXEXaMTnQU83Pm9cVrpngqVnemxd7Xf7bb5pAOCsHMFIOwzk3aL5wFptPEmPH5s
+         nNWGN5f6uJ40EgZ/F7aAX+BfdVYpO9ooLmqrVDvdFOeR4iztzwlEnrGaOVENKGymOigS
+         +nWtgMWmIOCP4Rn9M8NZs6DHrgGLfqwYfokpGz7X2Xyg2+h4m9zA7tPximR37jGWXK6Q
+         mqOUOVJPKGzlb2HrFCFcgE3Fk95mVKg9hUHBRlSQR4ygavBSqJDqaTTzAavqzSK/J4cm
+         7AGbMuXJTU7BnEOay9acsSyuYYesOnbzmKhPvNEbSfr7xO/26hMU7yXjdqhAjR28uemV
+         inyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689564749; x=1692156749;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OSQ/EF4eTeZehLtAwdrrxfniB7LkpUpWRgcBFX06IoY=;
-        b=VFfRM0jBFePZLB3V3KyHHsHhM1msEFR/c9RjunyZ+1z422Ads7PXhwkUwz1fCOgiLG
-         GiLLT+YP8IUYe4lk2Y2tSFe3iUYEKSecWIHkJ8/O4mQNUhwAwk2MXtHeL3bPqc3VqyEs
-         AjW1o48UI6v/6GDw+uNTRIlpVUfoDeWnSFgXJ0ntYKTGGhb9aPM+r8KJBOTeCXzEaGNO
-         ZERdrOp0Hg6Mi3580sR7H/BTQrp25Eg7Y80a9gDhW5CS1bx2dXWNKei1H8+1cwWYLfBH
-         YN9OGGBIDIw1pO+AJKthkwWJ5CwiRHyboYN4KWQN2OCYvuozNZa6xhMtRqH2GBriuUYH
-         6HmQ==
-X-Gm-Message-State: ABy/qLa+Bu6tZB47sUKoSZ89+fKiFCvoCJ8/w6LSTFmrlSik/osr444B
-	XBT5w7kkby0mMQd8SKNkHLXZfTrMwdSoZExQ
+        d=1e100.net; s=20221208; t=1689564753; x=1692156753;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QqKM93j3IhItw8kQLLKECLDwgBAuQVtO1eMhzHy4jXo=;
+        b=huteRwWT2VnvqcLM/mLOjz1tQNJZQXG+A4tftkJQq/klhyuUCUUPjJk/GbcEqhG5Qs
+         mYa2pe3iPLSg67OK2ZJ7VQq8tJQ/GxkDOZ0zjWHU+NtKGn9tVXH9Ig7h/++fj5JUATr6
+         33JTgJ4sUSZzV14mmI9MNeyunZPIH1FSZPPi5zdqaMMt/GTzw6MEZrV/RkFpZCi5ZAHc
+         zhWBFD/M9F0WXWwWAIXdUD89XHpARZ/rQHH9AKfPU3VO24Z4+N3iU2aezqBWc8/OKTBF
+         V2LtGRi5AnFqmDJxWzvSFHIHcKwke4m5OxhVQhf6X3rfAv8RV/lylG55EYuVU1dSBpO6
+         QnbQ==
+X-Gm-Message-State: ABy/qLYhGZVmfMIDk63ZJr0qAkjiOxmQu4Q/zFdLV7s3yrLzNuOoKZoX
+	UT3hxD4IHV80WI1F9iECq07bOtbYiQA0gWDU
 X-Google-Smtp-Source: 
- APBJJlGg8JYNaTcEI4w4FmPP+UoihsWazxN4PnsVp22P5uh5MAU2lthLhzuKclMyf3+e/7VZG0/cZw==
-X-Received: by 2002:a05:6830:148:b0:6b9:c869:862c with SMTP id
- j8-20020a056830014800b006b9c869862cmr3382128otp.1.1689564748854;
-        Sun, 16 Jul 2023 20:32:28 -0700 (PDT)
+ APBJJlFmRIXs7se0lMvJHtX23dDZ839dPXuVp0j3zvaND4B/ksNFzVUOyiXWJZsh2fAzuHOSsKE58w==
+X-Received: by 2002:a05:6a20:12ca:b0:121:fd18:4b51 with SMTP id
+ v10-20020a056a2012ca00b00121fd184b51mr14362663pzg.36.1689564753224;
+        Sun, 16 Jul 2023 20:32:33 -0700 (PDT)
 Received: from a-VirtualBox.. ([116.233.75.15])
         by smtp.gmail.com with ESMTPSA id
- a28-20020a63705c000000b00528513c6bbcsm11647509pgn.28.2023.07.16.20.32.26
+ a28-20020a63705c000000b00528513c6bbcsm11647509pgn.28.2023.07.16.20.32.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Jul 2023 20:32:28 -0700 (PDT)
+        Sun, 16 Jul 2023 20:32:32 -0700 (PDT)
 From: Zhu Ning <zhuning0077@gmail.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
@@ -88,14 +90,16 @@ Cc: pierre-louis.bossart@linux.intel.com,
 	yangxiaohua@everest-semi.com,
 	zhuning@everest-semi.com,
 	Zhu Ning <zhuning0077@gmail.com>
-Subject: [PATCH v2 1/5] ASoC: codecs: ES8326: Change Hp_detect register names
-Date: Mon, 17 Jul 2023 11:32:19 +0800
-Message-Id: <20230717033223.42506-1-zhuning0077@gmail.com>
+Subject: [PATCH v2 3/5] ASoC: codecs: ES8326: Fix power-up sequence
+Date: Mon, 17 Jul 2023 11:32:21 +0800
+Message-Id: <20230717033223.42506-3-zhuning0077@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230717033223.42506-1-zhuning0077@gmail.com>
+References: <20230717033223.42506-1-zhuning0077@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NH3DZORNQJTELWNPVS5S6JTRZXR37IBU
-X-Message-ID-Hash: NH3DZORNQJTELWNPVS5S6JTRZXR37IBU
+Message-ID-Hash: NRAMVVK7OLNZXE7K23QYDSTKLCHIJHBT
+X-Message-ID-Hash: NRAMVVK7OLNZXE7K23QYDSTKLCHIJHBT
 X-MailFrom: zhuning0077@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -108,7 +112,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NH3DZORNQJTELWNPVS5S6JTRZXR37IBU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NRAMVVK7OLNZXE7K23QYDSTKLCHIJHBT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,115 +121,173 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The old register naming method is confusing. The reg 0x57 decides
-the default headset hardware connection type, and the reg 0xfb is
-the headset detection status register, which changes during headset
-insertion. Change the name to ES8326_HPDET_TYPE and ES8326_HPDET_STA.
+Old power-up sequence causes large pop noise during start-up.
+Using a new sequence instead.
+
+Also, the registers are now reset to default value in suspend
+function.
 
 Signed-off-by: Zhu Ning <zhuning0077@gmail.com>
 ---
- sound/soc/codecs/es8326.c | 10 +++++-----
- sound/soc/codecs/es8326.h | 13 ++++++++-----
- 2 files changed, 13 insertions(+), 10 deletions(-)
+ sound/soc/codecs/es8326.c | 95 ++++++++++++++++++++++++++++-----------
+ sound/soc/codecs/es8326.h | 10 ++++-
+ 2 files changed, 77 insertions(+), 28 deletions(-)
 
 diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index 4399ba36aee2..e953c0157ba0 100644
+index 7cfe535e0b6d..1525fac1f9b8 100644
 --- a/sound/soc/codecs/es8326.c
 +++ b/sound/soc/codecs/es8326.c
-@@ -159,7 +159,7 @@ static const struct snd_soc_dapm_route es8326_dapm_routes[] = {
- };
+@@ -638,40 +638,77 @@ static irqreturn_t es8326_irq(int irq, void *dev_id)
+ static int es8326_resume(struct snd_soc_component *component)
+ {
+ 	struct es8326_priv *es8326 = snd_soc_component_get_drvdata(component);
+-	unsigned int reg;
  
- static const struct regmap_range es8326_volatile_ranges[] = {
--	regmap_reg_range(ES8326_HP_DETECT, ES8326_HP_DETECT),
-+	regmap_reg_range(ES8326_HPDET_STA, ES8326_HPDET_STA),
- };
+ 	regcache_cache_only(es8326->regmap, false);
+ 	regcache_sync(es8326->regmap);
  
- static const struct regmap_access_table es8326_volatile_table = {
-@@ -519,7 +519,7 @@ static void es8326_jack_button_handler(struct work_struct *work)
- 		return;
++	/* reset internal clock state */
++	regmap_write(es8326->regmap, ES8326_RESET, 0x1f);
++	regmap_write(es8326->regmap, ES8326_VMIDSEL, 0x0E);
++	usleep_range(10000, 15000);
++	regmap_write(es8326->regmap, ES8326_HPJACK_TIMER, 0x88);
++	/* set headphone default type and detect pin */
++	regmap_write(es8326->regmap, ES8326_HPDET_TYPE, 0x81);
++	regmap_write(es8326->regmap, ES8326_CLK_RESAMPLE, 0x05);
++
++	/* set internal oscillator as clock source of headpone cp */
++	regmap_write(es8326->regmap, ES8326_CLK_DIV_CPC, 0x84);
+ 	regmap_write(es8326->regmap, ES8326_CLK_CTL, ES8326_CLK_ON);
+-	/* Two channel ADC */
+-	regmap_write(es8326->regmap, ES8326_PULLUP_CTL, 0x02);
++	/* clock manager reset release */
++	regmap_write(es8326->regmap, ES8326_RESET, 0x17);
++	/* set headphone detection as half scan mode */
++	regmap_write(es8326->regmap, ES8326_HP_MISC, 0x08);
++	regmap_write(es8326->regmap, ES8326_PULLUP_CTL, 0x00);
++
++	/* enable headphone driver */
++	regmap_write(es8326->regmap, ES8326_HP_DRIVER, 0xa7);
++	usleep_range(2000, 5000);
++	regmap_write(es8326->regmap, ES8326_HP_DRIVER_REF, 0xab);
++	usleep_range(2000, 5000);
++	regmap_write(es8326->regmap, ES8326_HP_DRIVER_REF, 0xbb);
++	usleep_range(2000, 5000);
++	regmap_write(es8326->regmap, ES8326_HP_DRIVER, 0xa1);
++
+ 	regmap_write(es8326->regmap, ES8326_CLK_INV, 0x00);
+-	regmap_write(es8326->regmap, ES8326_CLK_DIV_CPC, 0x1F);
+-	regmap_write(es8326->regmap, ES8326_CLK_VMIDS1, 0xC8);
+-	regmap_write(es8326->regmap, ES8326_CLK_VMIDS2, 0x88);
+-	regmap_write(es8326->regmap, ES8326_CLK_CAL_TIME, 0x20);
++	regmap_write(es8326->regmap, ES8326_CLK_VMIDS1, 0xc4);
++	regmap_write(es8326->regmap, ES8326_CLK_VMIDS2, 0x81);
++	regmap_write(es8326->regmap, ES8326_CLK_CAL_TIME, 0x00);
++
++	/* turn off headphone out */
++	regmap_write(es8326->regmap, ES8326_HP_CAL, 0x00);
++	/* set ADC and DAC in low power mode */
++	regmap_write(es8326->regmap, ES8326_ANA_LP, 0xf0);
++
++	/* force micbias on */
++	regmap_write(es8326->regmap, ES8326_ANA_MICBIAS, 0x4f);
+ 	regmap_write(es8326->regmap, ES8326_SYS_BIAS, 0x08);
+-	regmap_write(es8326->regmap, ES8326_DAC2HPMIX, 0x22);
+-	regmap_write(es8326->regmap, ES8326_ADC1_SRC, es8326->mic1_src);
+-	regmap_write(es8326->regmap, ES8326_ADC2_SRC, es8326->mic2_src);
+-	regmap_write(es8326->regmap, ES8326_HPJACK_TIMER, 0x88);
+-	regmap_write(es8326->regmap, ES8326_HPDET_TYPE,
+-		     ES8326_HP_DET_SRC_PIN9 | es8326->jack_pol);
+-	regmap_write(es8326->regmap, ES8326_INT_SOURCE, es8326->interrupt_src);
+-	regmap_write(es8326->regmap, ES8326_INTOUT_IO, es8326->interrupt_clk);
++	regmap_write(es8326->regmap, ES8326_ANA_VSEL, 0x7F);
++	/* select vdda as micbias source */
++	regmap_write(es8326->regmap, ES8326_VMIDLOW, 0x23);
++	/* set dac dsmclip = 1 */
++	regmap_write(es8326->regmap, ES8326_DAC_DSM, 0x08);
++	regmap_write(es8326->regmap, ES8326_DAC_VPPSCALE, 0x15);
++
++	regmap_write(es8326->regmap, ES8326_INT_SOURCE,
++		    (ES8326_INT_SRC_PIN9 | ES8326_INT_SRC_BUTTON));
++	regmap_write(es8326->regmap, ES8326_INTOUT_IO,
++		     es8326->interrupt_clk);
++	regmap_write(es8326->regmap, ES8326_SDINOUT1_IO,
++		    (ES8326_IO_DMIC_CLK << ES8326_SDINOUT1_SHIFT));
++	regmap_write(es8326->regmap, ES8326_SDINOUT23_IO, ES8326_IO_INPUT);
++
++	regmap_write(es8326->regmap, ES8326_ANA_PDN, 0x3b);
+ 	regmap_write(es8326->regmap, ES8326_RESET, ES8326_CSM_ON);
+-	snd_soc_component_update_bits(component, ES8326_PGAGAIN,
+-				      ES8326_MIC_SEL_MASK, ES8326_MIC1_SEL);
+-
+-	regmap_read(es8326->regmap, ES8326_CHIP_VERSION, &reg);
+-	if ((reg & ES8326_VERSION_B) == 1) {
+-		regmap_write(es8326->regmap, ES8326_ANA_MICBIAS, 0xDD);
+-		regmap_write(es8326->regmap, ES8326_ANA_VSEL, 0x7F);
+-		regmap_write(es8326->regmap, ES8326_VMIDLOW, 0x0F);
+-		/* enable button detect */
+-		regmap_write(es8326->regmap, ES8326_HP_DRIVER, 0xA0);
+-	}
++	regmap_update_bits(es8326->regmap, ES8326_PGAGAIN, ES8326_MIC_SEL_MASK,
++			   ES8326_MIC1_SEL);
++
++	regmap_update_bits(es8326->regmap, ES8326_DAC_MUTE, ES8326_MUTE_MASK,
++			   ES8326_MUTE);
++
++	regmap_write(es8326->regmap, ES8326_HPDET_TYPE, 0x80 |
++			((es8326->version == ES8326_VERSION_B) ?
++			(ES8326_HP_DET_SRC_PIN9 | es8326->jack_pol) :
++			(ES8326_HP_DET_SRC_PIN9 | es8326->jack_pol | 0x04)));
  
- 	mutex_lock(&es8326->lock);
--	iface = snd_soc_component_read(comp, ES8326_HP_DETECT);
-+	iface = snd_soc_component_read(comp, ES8326_HPDET_STA);
- 	switch (iface) {
- 	case 0x93:
- 		/* pause button detected */
-@@ -578,7 +578,7 @@ static void es8326_jack_detect_handler(struct work_struct *work)
- 	unsigned int iface;
+ 	es8326_irq(es8326->irq, es8326);
+ 	return 0;
+@@ -688,6 +725,10 @@ static int es8326_suspend(struct snd_soc_component *component)
+ 	regcache_cache_only(es8326->regmap, true);
+ 	regcache_mark_dirty(es8326->regmap);
  
- 	mutex_lock(&es8326->lock);
--	iface = snd_soc_component_read(comp, ES8326_HP_DETECT);
-+	iface = snd_soc_component_read(comp, ES8326_HPDET_STA);
- 	dev_dbg(comp->dev, "gpio flag %#04x", iface);
- 	if ((iface & ES8326_HPINSERT_FLAG) == 0) {
- 		/* Jack unplugged or spurious IRQ */
-@@ -651,7 +651,7 @@ static int es8326_resume(struct snd_soc_component *component)
- 	regmap_write(es8326->regmap, ES8326_ADC1_SRC, es8326->mic1_src);
- 	regmap_write(es8326->regmap, ES8326_ADC2_SRC, es8326->mic2_src);
- 	regmap_write(es8326->regmap, ES8326_HPJACK_TIMER, 0x88);
--	regmap_write(es8326->regmap, ES8326_HP_DET,
-+	regmap_write(es8326->regmap, ES8326_HPDET_TYPE,
- 		     ES8326_HP_DET_SRC_PIN9 | es8326->jack_pol);
- 	regmap_write(es8326->regmap, ES8326_INT_SOURCE, es8326->interrupt_src);
- 	regmap_write(es8326->regmap, ES8326_INTOUT_IO, es8326->interrupt_clk);
-@@ -743,7 +743,7 @@ static void es8326_enable_jack_detect(struct snd_soc_component *component,
++	/* reset register value to default */
++	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x01);
++	usleep_range(1000, 3000);
++	regmap_write(es8326->regmap, ES8326_CSM_I2C_STA, 0x00);
+ 	return 0;
+ }
  
- 	mutex_lock(&es8326->lock);
- 	if (es8326->jd_inverted)
--		snd_soc_component_update_bits(component, ES8326_HP_DET,
-+		snd_soc_component_update_bits(component, ES8326_HPDET_TYPE,
- 					      ES8326_HP_DET_JACK_POL, ~es8326->jack_pol);
- 	es8326->jack = jack;
+@@ -717,7 +758,7 @@ static int es8326_probe(struct snd_soc_component *component)
+ 	ret = device_property_read_u8(component->dev, "everest,jack-pol", &es8326->jack_pol);
+ 	if (ret != 0) {
+ 		dev_dbg(component->dev, "jack-pol return %d", ret);
+-		es8326->jack_pol = ES8326_HP_DET_BUTTON_POL | ES8326_HP_TYPE_OMTP;
++		es8326->jack_pol = ES8326_HP_TYPE_AUTO;
+ 	}
+ 	dev_dbg(component->dev, "jack-pol %x", es8326->jack_pol);
  
 diff --git a/sound/soc/codecs/es8326.h b/sound/soc/codecs/es8326.h
-index 3f8f7da58062..cd04d11a88d9 100644
+index cd04d11a88d9..90a08351d6ac 100644
 --- a/sound/soc/codecs/es8326.h
 +++ b/sound/soc/codecs/es8326.h
-@@ -73,15 +73,19 @@
- #define ES8326_DRC_RECOVERY	0x53
- #define ES8326_DRC_WINSIZE	0x54
- #define ES8326_HPJACK_TIMER	0x56
--#define ES8326_HP_DET		0x57
-+#define ES8326_HPDET_TYPE	0x57
- #define ES8326_INT_SOURCE	0x58
- #define ES8326_INTOUT_IO	0x59
- #define ES8326_SDINOUT1_IO	0x5A
- #define ES8326_SDINOUT23_IO	0x5B
- #define ES8326_JACK_PULSE	0x5C
+@@ -160,6 +160,13 @@
+ #define ES8326_HP_TYPE_AUTO	(1 << 0)
+ #define ES8326_HP_TYPE_AUTO_INV	(0 << 0)
  
-+#define ES8326_HP_MISC		0xF7
-+#define ES8326_CTIA_OMTP_STA	0xF8
- #define ES8326_PULLUP_CTL	0xF9
--#define ES8326_HP_DETECT	0xFB
-+#define ES8326_CSM_I2C_STA	0xFA
-+#define ES8326_HPDET_STA	0xFB
-+#define ES8326_CSM_MUTE_STA	0xFC
- #define ES8326_CHIP_ID1		0xFD
- #define ES8326_CHIP_ID2		0xFE
- #define ES8326_CHIP_VERSION	0xFF
-@@ -146,7 +150,7 @@
- #define ES8326_ADC3_SHIFT 0
- #define ES8326_ADC4_SHIFT 3
- 
--/* ES8326_HP_DET */
-+/* ES8326_HPDET_TYPE */
- #define ES8326_HP_DET_SRC_PIN27 (1 << 5)
- #define ES8326_HP_DET_SRC_PIN9 (1 << 4)
- #define ES8326_HP_DET_JACK_POL (1 << 3)
-@@ -174,7 +178,7 @@
- #define ES8326_SDINOUT2_SHIFT 4
- #define ES8326_SDINOUT3_SHIFT 0
- 
--/* ES8326_HP_DETECT */
-+/* ES8326_HPDET_STA */
- #define ES8326_HPINSERT_FLAG (1 << 1)
++/* ES8326_INT_SOURCE */
++#define ES8326_INT_SRC_DAC_MOZ (1 << 0)
++#define ES8326_INT_SRC_ADC_MOZ (1 << 1)
++#define ES8326_INT_SRC_BUTTON (1 << 2)
++#define ES8326_INT_SRC_PIN9 (1 << 3)
++#define ES8326_INT_SRC_PIN27 (1 << 4)
++
+ /* ES8326_SDINOUT1_IO */
+ #define ES8326_IO_INPUT	(0 << 0)
+ #define ES8326_IO_SDIN_SLOT0 (1 << 0)
+@@ -183,6 +190,7 @@
  #define ES8326_HPBUTTON_FLAG (1 << 0)
  
-@@ -182,4 +186,3 @@
- #define ES8326_VERSION_B (1 << 0)
+ /* ES8326_CHIP_VERSION 0xFF */
+-#define ES8326_VERSION_B (1 << 0)
++#define ES8326_VERSION (1 << 0)
++#define ES8326_VERSION_B (3 << 0)
  
  #endif
--
 -- 
 2.34.1
 
