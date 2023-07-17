@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15E7AEB64DC
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 07:33:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68B9FEB64DC
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 07:34:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16187AE9;
-	Mon, 17 Jul 2023 09:32:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16187AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5668DF8;
+	Mon, 17 Jul 2023 09:33:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5668DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689579218;
-	bh=S1XUJ4vXHy3Re5SfrgdQEiA611RB1ezLcB08n3RMj0w=;
+	s=default; t=1689579244;
+	bh=DsEo2O8cv0Akxxr4ZWZPcfilntE2fFkfU32rnF9bBi8=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dOk0N6nPRPiP5hZGDjV5qEkBAdVpxaG+lJJZ9XamVfx1Uj38t+7zSMKKeA6dikB7f
-	 SJQ2GJtWuHrUi0G6DOprlPMMg/RHMwck87TAZq1gFOZ/PR1AyC9WzxwCuBrp8rxtAW
-	 gqM+if1JOwgOYiN66oioxNV+x1yOCg3Dk6NXb3/A=
+	b=MMxfzSS2ecAjU8bqT4XUmw8j/DnpCdPfxbZTPg8MslD4ror7bLe7Ms6wffLx+garI
+	 q53m+vx9QuN3ief7yySAIouUObm7Wq+7ki+FblOJV8LZVnbt7Ma6RE+lfrtTFdeCZG
+	 y8sVGgut8cX0GIrazdesvh1Odz9jJoSRY37Gi6vI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27001F8027B; Mon, 17 Jul 2023 09:32:20 +0200 (CEST)
+	id DA049F8055C; Mon, 17 Jul 2023 09:32:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9948FF8047D;
-	Mon, 17 Jul 2023 09:32:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7EFCBF80563;
+	Mon, 17 Jul 2023 09:32:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B288F8047D; Mon, 17 Jul 2023 09:32:10 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 7C451F80563; Mon, 17 Jul 2023 09:32:30 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B4612F800D2
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 09:32:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4612F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id D9746F8055B
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 09:32:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9746F8055B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=ZoFRw27I;
+ header.s=susede2_rsa header.b=sDBoZF+d;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=U0PmJCqz
+ header.s=susede2_ed25519 header.b=O8jhCIhO
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B942821979;
-	Mon, 17 Jul 2023 07:31:59 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8F6A31FD9B;
+	Mon, 17 Jul 2023 07:32:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1689579119;
+	t=1689579147;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Kwf5PJ5yYfG6d3GoOoValETQZ687TvFao+QYA+jhedo=;
-	b=ZoFRw27IvG4xobe++1BxEimsf+hWP+AEKaVAuuYX+LrwyhbZHr6bI0NwX8LYlqPizF1FG3
-	xYJ6Kxy7iPZPtNW0eh4GrzVRhF7XVjwVVFzzkerncBU/2f9wo/5KeH3EhaRWLA++CB52o8
-	4dl0kBhCPYb6GZLCmAnEZ5UWgFdZDIA=
+	bh=W4EEtug6iDFTIAfXpHmtAyC4ryV+KYV0KTYGOPD08ac=;
+	b=sDBoZF+dmX6BlYAbGELazYAaURaqxVWTylQFNIcbT5zPA9x2hFIcQ64n91YJOU1QusMxfI
+	eyq5lnDB/+tL+gVKJ6d/V1l72y/CRNVAVTcV+R9bryKuJqac12bRccZM64U49T9y+6Ay5f
+	upSkkJYyvUwkeXqIrLscvjy6ib5yEvY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689579119;
+	s=susede2_ed25519; t=1689579147;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Kwf5PJ5yYfG6d3GoOoValETQZ687TvFao+QYA+jhedo=;
-	b=U0PmJCqz4sb6xXdObJWJJAIQuT9WV1uMDTv2Tzv69ftsE+xhgMr2TzvtDtUt+Y51FmmSpo
-	oxkpGY+3LXYpuOCg==
+	bh=W4EEtug6iDFTIAfXpHmtAyC4ryV+KYV0KTYGOPD08ac=;
+	b=O8jhCIhOQV7nbZO5kRfEa1GgeAi5kNiPk+L0VLBg5o5+/89OobVj8g6klvTRC2oOwRss3H
+	9OFW6l2Mq6gs2bAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93831138F8;
-	Mon, 17 Jul 2023 07:31:59 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6FE99138F8;
+	Mon, 17 Jul 2023 07:32:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 0VQeI2/utGSiCgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 17 Jul 2023 07:31:59 +0000
-Date: Mon, 17 Jul 2023 09:31:59 +0200
-Message-ID: <87sf9nj8nk.wl-tiwai@suse.de>
+	id voBaGovutGTuCgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 17 Jul 2023 07:32:27 +0000
+Date: Mon, 17 Jul 2023 09:32:26 +0200
+Message-ID: <87pm4rj8mt.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 Cc: alsa-devel@alsa-project.org,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v2] ALSA: emu10k1: track loss of external clock on E-MU
- cards
-In-Reply-To: <20230715160738.326832-1-oswald.buddenhagen@gmx.de>
-References: <20230715160738.326832-1-oswald.buddenhagen@gmx.de>
+Subject: Re: [PATCH 1/2] ALSA: emu10k1: clean up driver status comments
+In-Reply-To: <20230715160839.326978-1-oswald.buddenhagen@gmx.de>
+References: <20230715160839.326978-1-oswald.buddenhagen@gmx.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: OKOOUQR5Y3LXY7AWZD7MMOUAE62ULYYC
-X-Message-ID-Hash: OKOOUQR5Y3LXY7AWZD7MMOUAE62ULYYC
+Message-ID-Hash: W7JUJIEU5UBK22LWIZ2DZ3M7THL5AZQF
+X-Message-ID-Hash: W7JUJIEU5UBK22LWIZ2DZ3M7THL5AZQF
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OKOOUQR5Y3LXY7AWZD7MMOUAE62ULYYC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W7JUJIEU5UBK22LWIZ2DZ3M7THL5AZQF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,38 +114,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 15 Jul 2023 18:07:38 +0200,
+On Sat, 15 Jul 2023 18:08:38 +0200,
 Oswald Buddenhagen wrote:
 > 
-> This uses IRQs to track spontaneous changes to the word clock source
-> register.
+> Empty BUGS and TODO sections don't really help anyone, so remove them.
 > 
-> FWIW, that this can happen in the first place is the reason why it is
-> futile to lock the clock source mixer setting while the device is open -
-> we can't consistently control the rate anyway. Though arguably, we
-> should reset any open streams when that happens, as they become
-> corrupted anyway.
+> Version information is chronically outdated, and not really useful in a
+> git world anyway, so remove it as well.
+> 
+> Also remove duplicated (and outdated, of course) status section from
+> p16v.h (the one in p16v.c is in better shape).
 > 
 > Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-> 
-> ---
-> v2:
-> - use driver-local lock instead of core's control_rwsem
-> 
-> ---
-> FIXME? while i'm not sure, i think this won't notice seamless switches
-> between 44.1 and 48 kHz. assuming that's the case, this seems like a
-> minor issue: firstly, just about nothing actually produces such a
-> seamless switch - my only device that can even do that is the e-mu card
-> itself, but the driver disrupts that by temporarily muting the output.
-> secondly, the user is unlikely to select an external source before
-> setting it up properly. and the easy workaround is actually never doing
-> that.
-> regardless, to actually test that i'd need a second e-mu card.
 
-The code change itself looks sane, so I took the patch as is now.
+Applied both patches.  Thanks.
 
-
-thanks,
 
 Takashi
