@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EFEFEB64DD
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:17:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F4ADEB64DA
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:17:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EB4C83E;
-	Tue, 18 Jul 2023 16:16:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EB4C83E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C7A6852;
+	Tue, 18 Jul 2023 16:16:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C7A6852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689689825;
-	bh=ujTvsoix7a+61iyd1/WRXFH3nwu/v1kWVxSaRd/90Gw=;
+	s=default; t=1689689844;
+	bh=kGlsNfeBpoCDoyOPY3hvtdbmI8Fc10eOhtkVtytiRCw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=D7JDGkh5u4Rz0RecDzVL/hBUv2rV3M4KLJp8x0jfGAvPCVOJI9Gotsie0iu68F2AU
-	 4hb0lemPXj2BXPicOZF6gtgQV3tZDZAN2Rorsa/+kWomMcZ5ki+Zyh///O/jUp9+cZ
-	 RL3jaF0ppjP1QeVLKoB5rLP/5CPvOfXEQdDuHqX4=
+	b=jjASMcHJPO1V9AUpQ6HMS72CnheYcLbwmdm/VoxbaA6ThEih8zsW805Edr4B62dPD
+	 Zs3aMul0mUxpU0UCkqU1ZJDW8y9cqw7AfeAZSjMR1CA4dT2GMsB+ETpfngt/apUd8z
+	 oniZs8TQ/FTIV200NCFAoxDaOtqMlRPDotHevwQo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6DEF3F805F6; Tue, 18 Jul 2023 16:14:01 +0200 (CEST)
+	id 816FFF80548; Tue, 18 Jul 2023 16:14:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1F9FF805F2;
-	Tue, 18 Jul 2023 16:14:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0F0BF8057C;
+	Tue, 18 Jul 2023 16:14:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B27CF805D6; Tue, 18 Jul 2023 16:13:52 +0200 (CEST)
+	id 0CF10F805C7; Tue, 18 Jul 2023 16:13:54 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4DE4BF80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id 35DE8F80549
 	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 16:13:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DE4BF80551
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35DE8F80549
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xjR0dDhB;
+ header.s=susede2_rsa header.b=u9BkKTYh;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=IyASm/na
+ header.s=susede2_ed25519 header.b=Rr3EQJKg
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9E26B1FDC5;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 373A21FDC0;
 	Tue, 18 Jul 2023 14:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
@@ -57,44 +57,47 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bbMrl3GuYS85GYIMhdn8D/fx4sfwnB1DSofv/91xi1M=;
-	b=xjR0dDhBWiRp7iX1U0ofarQK2rwzO/CNs5O4CYmFXEWuywneZBygMzgZ3YxFF3uEV0i1Y/
-	P2cGjayLRX/bEASNCOz6Jwhb+JLXvn17cexXaPBD8hB3BTtuMCZMZewadyxVJR+SiGxF2c
-	x0iuGhgAekLsLwKrLeMgIvdR7LulMK4=
+	bh=BcDEzrbkRqKzsapxFuOq3yrfLpAupt5MotP4t86n1fg=;
+	b=u9BkKTYhFekmE7NtOaU43IGHkQTZEwCsG8M/h7OqlA+p2+Ik88dAFstLBixK43SHo5pA0Q
+	GarVLlDZ6NqFETsH2hYGFNamxc7CzgzDcLTPgjcdbWwAmHt3X1qwqA04LCYY1uy5cT/lJB
+	2oF/DFB+dy76WQP5Qo5FIyldJOpy+/w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1689689595;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bbMrl3GuYS85GYIMhdn8D/fx4sfwnB1DSofv/91xi1M=;
-	b=IyASm/nasRLjVcrk5T2TAium5pQm2Zd/3aDfihFNy7xKdF+TpWa3COrgLaol9GwuiN3iM4
-	aNia2WCWGFbRnuCw==
+	bh=BcDEzrbkRqKzsapxFuOq3yrfLpAupt5MotP4t86n1fg=;
+	b=Rr3EQJKgDPW/CjTzuUkvPFAy9EHZdkKkhOgQ70EvDfuqUVPBCuwCdmMZlKpWm8d783k+3l
+	6RCE+Qvt83tlgKBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 820E1138EC;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0BF51134B0;
 	Tue, 18 Jul 2023 14:13:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id yHnMHvudtmQ8AQAAMHmgww
+	id YPsGAvudtmQ8AQAAMHmgww
 	(envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 14:13:15 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 05/11] ALSA: control: Add lockdep warning to internal
- functions
-Date: Tue, 18 Jul 2023 16:12:58 +0200
-Message-Id: <20230718141304.1032-6-tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Johan Hovold <johan@kernel.org>,
+	Alex Elder <elder@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	greybus-dev@lists.linaro.org
+Subject: [PATCH 02/11] staging: greybus: audio_helper: Use snd_ctl_remove_id()
+Date: Tue, 18 Jul 2023 16:12:55 +0200
+Message-Id: <20230718141304.1032-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230718141304.1032-1-tiwai@suse.de>
 References: <20230718141304.1032-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CSXJOWC542XCPEONOMERLVLUYKC6UPWQ
-X-Message-ID-Hash: CSXJOWC542XCPEONOMERLVLUYKC6UPWQ
+Message-ID-Hash: QL6HPIAHVBA4M5ZOMB5CZQPC7KD5IMSE
+X-Message-ID-Hash: QL6HPIAHVBA4M5ZOMB5CZQPC7KD5IMSE
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CSXJOWC542XCPEONOMERLVLUYKC6UPWQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QL6HPIAHVBA4M5ZOMB5CZQPC7KD5IMSE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,64 +119,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-To assure the proper locking, add the lockdep check to
-__snd_ctl_remove(), __snd_ctl_add_replace() and other internal
-functions to handle user controls.
+Use the standard snd_ctl_remove_id() helper function instead of open
+code.  This allows us to reduce the manual card->rwsem lock in the
+caller side.
 
+Cc: Johan Hovold <johan@kernel.org>
+Cc: Alex Elder <elder@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: greybus-dev@lists.linaro.org
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/control.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/staging/greybus/audio_helper.c | 20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 9c933350ec6b..8aaa2a84a670 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -469,6 +469,8 @@ static int __snd_ctl_add_replace(struct snd_card *card,
- 	struct snd_kcontrol *old;
- 	int err;
+diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
+index 223987616e07..97ce5b9ad7fd 100644
+--- a/drivers/staging/greybus/audio_helper.c
++++ b/drivers/staging/greybus/audio_helper.c
+@@ -149,7 +149,6 @@ static int gbaudio_remove_controls(struct snd_card *card, struct device *dev,
+ 	for (i = 0; i < num_controls; i++) {
+ 		const struct snd_kcontrol_new *control = &controls[i];
+ 		struct snd_ctl_elem_id id;
+-		struct snd_kcontrol *kctl;
  
-+	lockdep_assert_held_write(&card->controls_rwsem);
-+
- 	id = kcontrol->id;
- 	if (id.index > UINT_MAX - kcontrol->count)
- 		return -EINVAL;
-@@ -578,6 +580,8 @@ static int __snd_ctl_remove(struct snd_card *card,
+ 		if (prefix)
+ 			snprintf(id.name, sizeof(id.name), "%s %s", prefix,
+@@ -161,17 +160,10 @@ static int gbaudio_remove_controls(struct snd_card *card, struct device *dev,
+ 		id.device = control->device;
+ 		id.subdevice = control->subdevice;
+ 		id.index = control->index;
+-		kctl = snd_ctl_find_id(card, &id);
+-		if (!kctl) {
+-			dev_err(dev, "Failed to find %s\n", control->name);
+-			continue;
+-		}
+-		err = snd_ctl_remove(card, kctl);
+-		if (err < 0) {
++		err = snd_ctl_remove_id(card, &id);
++		if (err < 0)
+ 			dev_err(dev, "%d: Failed to remove %s\n", err,
+ 				control->name);
+-			continue;
+-		}
+ 	}
+ 	return 0;
+ }
+@@ -181,11 +173,7 @@ int gbaudio_remove_component_controls(struct snd_soc_component *component,
+ 				      unsigned int num_controls)
  {
- 	unsigned int idx;
+ 	struct snd_card *card = component->card->snd_card;
+-	int err;
  
-+	lockdep_assert_held_write(&card->controls_rwsem);
-+
- 	if (snd_BUG_ON(!card || !kcontrol))
- 		return -EINVAL;
- 	list_del(&kcontrol->list);
-@@ -1524,6 +1528,8 @@ static int replace_user_tlv(struct snd_kcontrol *kctl, unsigned int __user *buf,
- 	int i;
- 	int change;
- 
-+	lockdep_assert_held_write(&ue->card->controls_rwsem);
-+
- 	if (size > 1024 * 128)	/* sane value */
- 		return -EINVAL;
- 
-@@ -1600,6 +1606,8 @@ static int snd_ctl_elem_init_enum_names(struct user_element *ue)
- 	unsigned int i;
- 	const uintptr_t user_ptrval = ue->info.value.enumerated.names_ptr;
- 
-+	lockdep_assert_held_write(&ue->card->controls_rwsem);
-+
- 	buf_len = ue->info.value.enumerated.names_length;
- 	if (buf_len > 64 * 1024)
- 		return -EINVAL;
-@@ -1904,6 +1912,8 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
- 	struct snd_ctl_elem_id id;
- 	struct snd_kcontrol_volatile *vd;
- 
-+	lockdep_assert_held(&file->card->controls_rwsem);
-+
- 	if (copy_from_user(&header, buf, sizeof(header)))
- 		return -EFAULT;
- 
+-	down_write(&card->controls_rwsem);
+-	err = gbaudio_remove_controls(card, component->dev, controls,
+-				      num_controls, component->name_prefix);
+-	up_write(&card->controls_rwsem);
+-	return err;
++	return gbaudio_remove_controls(card, component->dev, controls,
++				       num_controls, component->name_prefix);
+ }
 -- 
 2.35.3
 
