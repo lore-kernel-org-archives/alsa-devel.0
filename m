@@ -4,92 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F3C8C0015E
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 00:32:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A546CEB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 05:50:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5E85E7D;
-	Tue, 18 Jul 2023 02:32:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5E85E7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id BBB2BAEA;
+	Tue, 18 Jul 2023 07:49:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBB2BAEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689640375;
-	bh=TnBFqbbzgjL9q9pFRoc5uu6BkdcO9YJ7JVR18QHszz8=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1689659417;
+	bh=vuN4lkpGSh6DU3cppUBr1q8WfVHLVfoJLfMo0WGQwHI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=c8c/KJP+RBk29RhbXrjMWN2bDu6mmYgE0iBd5+3kSh1bYgRjReARtS5XY75twzOXO
-	 GFAG3HfGRcSKgokPy5SO005SvPTNxsd6icH+rU35zjMJ6XGuRP1oo5USuNa2Fc9/iI
-	 JYwYzjJ4cUfyty35RvlKTpZMuybcabLagZVxefs0=
+	b=CudTTxDGI6YF3zpmhto80U2ZH8csdircT46Eg6q2PxefIghSlj1Xp34YPgQB7UqAF
+	 vs77S8mwsDgMhQS4a9JgS0iIyggIRhGOHM1YdPr+3lWy9GJcnrCIlx4+BX2u1DrshH
+	 pn6kElmmAhul5/G9gu9HWF+Lj1+o308AUzuP5WYY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AAB5CF805B6; Tue, 18 Jul 2023 02:30:29 +0200 (CEST)
+	id 2474FF804DA; Tue, 18 Jul 2023 07:49:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F844F805B1;
-	Tue, 18 Jul 2023 02:30:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75914F8032D;
+	Tue, 18 Jul 2023 07:49:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35080F8056F; Tue, 18 Jul 2023 02:30:20 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id DC03CF8032D; Tue, 18 Jul 2023 07:47:04 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5C7E3F8047D
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 02:30:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C7E3F8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id C340DF800D2
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 07:46:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C340DF800D2
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=QFCqQ5kp
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=hYixx3PT;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=BdBtupAG
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 489C2611E4;
-	Tue, 18 Jul 2023 00:30:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 227CEC433CB;
-	Tue, 18 Jul 2023 00:30:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689640205;
-	bh=TnBFqbbzgjL9q9pFRoc5uu6BkdcO9YJ7JVR18QHszz8=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=QFCqQ5kpDBAZut64is23SI4XYkwbREKPk7YnHtzhOX/44gm1e3W0iCQuWoN0WeXGO
-	 v6N/UtRzdGa8z5j176iLY6EvGSgc2kcColzkxtehcH7krcxnBrb/Lr1nsQlcNiySFE
-	 ySAuUTl4CR/UFybm39QMKnF0Obr72c//Q19eZudm3E7AjPSnpaEEjwpcUQxyOOAk7S
-	 rRpHTtpsYljDBneVm9z+lFExD7ty7C6ZIVSHgUOsR/SkshyYqaHU/kfCI4R1Hgq4Iv
-	 6Zt4fhVCgiJ7X+qhcTByDEXmqTPCo/5o1fGBU2T+nEMR9PIrn27zw6pwuM/LYPQH4B
-	 zrbyRqmGxlF6A==
-From: Mark Brown <broonie@kernel.org>
-Date: Tue, 18 Jul 2023 01:28:45 +0100
-Subject: [PATCH v2 4/5] kunit: Enable ASoC in all_tests.config
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-asoc-topology-kunit-enable-v2-4-0ee11e662b92@kernel.org>
-References: <20230718-asoc-topology-kunit-enable-v2-0-0ee11e662b92@kernel.org>
-In-Reply-To: 
- <20230718-asoc-topology-kunit-enable-v2-0-0ee11e662b92@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Brendan Higgins <brendan.higgins@linux.dev>,
- David Gow <davidgow@google.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
- kunit-dev@googlegroups.com, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=682; i=broonie@kernel.org;
- h=from:subject:message-id; bh=TnBFqbbzgjL9q9pFRoc5uu6BkdcO9YJ7JVR18QHszz8=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBktdz7HozPq6/0jZyA+LN1Ps89o2TkTwzkcl5KI
- J3xvqpfRNmJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZLXc+wAKCRAk1otyXVSH
- 0OFvB/9NgrBslexf8gRgZFmniJLbG2h+DpvBHPNQPNoMULIICq6HOmESVC9hKdYwmPPxJ92sKoN
- K3XTy52yPYwRCOLzALT3ySa0Z1SaKNagy+iV+u3y5XU/gIMRLdABWdb8ePxl7nA54dlUWTlQO/7
- Fr7rypotbMCcxtoBmOzWt2yvBM88Ec5e3mSnUfAFebD7kksS1+rWBt1V7Lf7gqPJJRfFknaX3CT
- 3duA4rIUoutsJveB9t+ciZaWXD6LZ4CsswIoWkzxE10yh+KgB8rispipeEsf6HvRVX/WokiXCL+
- Of9HYRLBc6vlT/zez7DgpLV56nl//xTUSX4DB/NR7tWGDtgj
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: M34BZOAVH45DZ2EUPH2ZMER4DWXWGNGL
-X-Message-ID-Hash: M34BZOAVH45DZ2EUPH2ZMER4DWXWGNGL
-X-MailFrom: broonie@kernel.org
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D8D3C1FDBC;
+	Tue, 18 Jul 2023 05:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1689659202;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Cx2ONDrSig1akU3irvmkBb2E7FUH6YZZVPsynoP1+dQ=;
+	b=hYixx3PTttEtD+kKR/6ISUKvYvOSPmCL+DtiO0WjplUn85fMgGAtMF3nAM1cHuGOduG4ap
+	WmN76o0gYr562MFKy6PESnRoB5coOFH7yN2ivAtaWrp6F7uJ9cJ2+swLcYIvw+5LEMaV96
+	eyQkpzLx+fYaMi2c9R0vGG++OqbP+O0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1689659202;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Cx2ONDrSig1akU3irvmkBb2E7FUH6YZZVPsynoP1+dQ=;
+	b=BdBtupAGUDTe/JmB/XV4+eoX9iqTBpNsR7wElqGZjEuGEUQfZEiIYJbVZxaROQeQnwijde
+	4GQQGNlEl+meY/DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A5979134B0;
+	Tue, 18 Jul 2023 05:46:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id c59dJ0IntmQxdAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 05:46:42 +0000
+Date: Tue, 18 Jul 2023 07:46:42 +0200
+Message-ID: <871qh5py9p.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] regmap: Add interface for checking if a register is
+ cached
+In-Reply-To: <20230717-regmap-cache-check-v1-0-73ef688afae3@kernel.org>
+References: <20230717-regmap-cache-check-v1-0-73ef688afae3@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: HPD37YPQMDKM72JBWDNBUZXRY5V6GN6S
+X-Message-ID-Hash: HPD37YPQMDKM72JBWDNBUZXRY5V6GN6S
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M34BZOAVH45DZ2EUPH2ZMER4DWXWGNGL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HPD37YPQMDKM72JBWDNBUZXRY5V6GN6S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,27 +116,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There are KUnit tests for some of the ASoC utility functions which are
-not enabled in the KUnit all_tests.config, do so.
+On Mon, 17 Jul 2023 22:33:02 +0200,
+Mark Brown wrote:
+> 
+> HDA has a use case for checking if a register is present in the cache
+> which it awkwardly open codes with use of _cache_only() and a read,
+> provide a direct API for this.
+> 
+> ---
+> Mark Brown (3):
+>       regmap: Let users check if a register is cached
+>       regmap: Provide test for regcache_reg_present()
+>       ALSA: hda: Use regcache_reg_cached() rather than open coding
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/kunit/configs/all_tests.config | 4 ++++
- 1 file changed, 4 insertions(+)
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
-index 0393940c706a..13d15bc693fb 100644
---- a/tools/testing/kunit/configs/all_tests.config
-+++ b/tools/testing/kunit/configs/all_tests.config
-@@ -35,3 +35,7 @@ CONFIG_DAMON_DBGFS=y
- 
- CONFIG_SECURITY=y
- CONFIG_SECURITY_APPARMOR=y
-+
-+CONFIG_SOUND=y
-+CONFIG_SND=y
-+CONFIG_SND_SOC=y
+I suppose you'll take those from regmap.git?
 
--- 
-2.39.2
 
+thanks,
+
+Takashi
+
+> 
+>  drivers/base/regmap/regcache.c     | 23 ++++++++++++++++++++++
+>  drivers/base/regmap/regmap-kunit.c | 40 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/regmap.h             |  1 +
+>  sound/hda/hdac_regmap.c            |  9 +++------
+>  4 files changed, 67 insertions(+), 6 deletions(-)
+> ---
+> base-commit: 3953d5c79c21defa716624a8623c4157c0f2fee0
+> change-id: 20230716-regmap-cache-check-6f6939f41ed5
+> 
+> Best regards,
+> -- 
+> Mark Brown <broonie@kernel.org>
+> 
