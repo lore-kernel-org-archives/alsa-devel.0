@@ -4,114 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B775AEB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:48:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB140EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:58:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C3A63E7;
-	Tue, 18 Jul 2023 16:47:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C3A63E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E9BB1F7;
+	Tue, 18 Jul 2023 16:58:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E9BB1F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689691716;
-	bh=nntp6Z+Ep86PUlXEipRd0P/YkBhZWRuQ9y0VhLJYKOg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=i6C7I7C/hwmjLfe8T5dCYJkgHshC/adC4tDUTVHobcJ+uf8RENYy+gw/c/FrN2sMR
-	 gHYSQWb6/k0BexGf7QSurFY3Lr+DL5Za+14EgD9KXyFKBhEbQu/wSL9diHXfW8z/8m
-	 Mmx6T6ccoKh6u85eWDsephLozbjarNUZdWRaj8l8=
+	s=default; t=1689692331;
+	bh=23DVkBCRtWSTnbEwufYPxoXTK/baG+Wo6ejhm+p4p1c=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=KRpijKRARqSyYY3/E5fWCZAEA4K3Q44K7Ik54n9LokEzRA+Aw8uHu0sColWl2E8Uw
+	 3dpdu2nQLZRKQ3C255bWgKnJu7LCHZAKTk+xF83qdBJHCoROZ8jfCm2dryq64ErqjM
+	 Aug2fDv4WclJyZ0ZbWSSPU4vRSkiqivgfTbdZhvE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5616F80544; Tue, 18 Jul 2023 16:47:04 +0200 (CEST)
+	id 10EDEF8032D; Tue, 18 Jul 2023 16:57:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EEF7F80548;
-	Tue, 18 Jul 2023 16:47:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFD08F80494;
+	Tue, 18 Jul 2023 16:57:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 43844F8032D; Tue, 18 Jul 2023 16:45:46 +0200 (CEST)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
- [IPv6:2a00:1450:4864:20::22b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 038E3F8032D; Tue, 18 Jul 2023 16:57:30 +0200 (CEST)
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com
+ [157.90.84.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3C86FF8027B
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 16:45:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C86FF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7E69EF80153
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 16:57:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E69EF80153
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=tuxon.dev header.i=@tuxon.dev header.a=rsa-sha256
- header.s=google header.b=Lezb0Ief
-Received: by mail-lj1-x22b.google.com with SMTP id
- 38308e7fff4ca-2b7430bda8bso94303421fa.0
-        for <alsa-devel@alsa-project.org>;
- Tue, 18 Jul 2023 07:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1689691534; x=1692283534;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=W2zwwCfkIozFWwLnA5jFpijFmfmyvTaUAGYURu2s/po=;
-        b=Lezb0Ief4c6JjTpxuohSz0hqGuHGjxf1QdXV8geVM+D9npulzjiNanxjBN2RcCVPeY
-         djlpd2XF1VdRmEv8mpvAx7Ff9LSQllankGgUDxyn3fgzOaqstufwOC6Dd9soUa7HBq/w
-         Uipm1fiYHJJ3WEyrGgrZpKRzw8hfM4DYqRusHsKZE+MMyquSstz5Cr3uslwA5R3pxHIX
-         3wxsOsQuGs3E+8ZEN4qtAsAbRX14EyJrgHhRPDa1hZnNZvwjCI/uE1w5cwxiWev5q/ZM
-         o8ZEmRbqkj+47wYDwykmhTh1UffOPnhzgUeDT7GzBTxbgMrORoary4r/mzJZiedx2Zcl
-         UZbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689691534; x=1692283534;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W2zwwCfkIozFWwLnA5jFpijFmfmyvTaUAGYURu2s/po=;
-        b=AOAL6JzuODOjMWONOFWKriigoDvH+Yt0FKg2qqCLh3XrrqYP+Bpd+YCZ9OTtu2MRHa
-         3TOXw1CgYlbF4bQ9sBNRFqwFkFlSuXDUD3Wc6Xzjho1D6+CI4GLw+bQIvdar3k5F5xWI
-         2zIv6nHDVK4gzIBK4eph/zYIFHQGDZ5N7XGP6cAEDjW6FbYj29zbeRPXKR4hVLTpnn+V
-         bWFAPCsCoaih/WCwMQ8RvSrBh6asxt78lnOtS5o2CH+ywaoZoMXdmK2hD3Cul9dRFck6
-         ittCX/JkIQoQrpu8Eb1p2UP+RXEjOPWgk0xNFLb428eHdbtvZhKSi6Rw4DanMyyiS16n
-         VPag==
-X-Gm-Message-State: ABy/qLZBZe53C95llRaDp5UnkoKj3MuIy0X9IHkZg9kVAywgabl834j4
-	iY9jFJqyP6j41Kj6RRhQIivctQ==
-X-Google-Smtp-Source: 
- APBJJlFt0um57HKV5iqSG5EAXXpTWqaxofl4/V8vxgmyPC9LAmOpuZWYnpdgbjb096PF/AK8UK3ZmA==
-X-Received: by 2002:a2e:a0cd:0:b0:2b9:412a:111d with SMTP id
- f13-20020a2ea0cd000000b002b9412a111dmr5641714ljm.42.1689691534470;
-        Tue, 18 Jul 2023 07:45:34 -0700 (PDT)
-Received: from [10.0.2.15] ([82.78.167.79])
-        by smtp.gmail.com with ESMTPSA id
- l13-20020a17090615cd00b00993150e5325sm1121623ejd.60.2023.07.18.07.45.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 07:45:34 -0700 (PDT)
-Message-ID: <485f05e3-75a4-4cda-7a40-8efdeb3da9d7@tuxon.dev>
-Date: Tue, 18 Jul 2023 17:45:32 +0300
+	dkim=pass (1024-bit key,
+ unprotected) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com
+ header.a=rsa-sha256 header.s=default header.b=mWq9nzDE
+Received: from wse.fritz.box (unknown [24.134.105.141])
+	(Authenticated sender: wse@tuxedocomputers.com)
+	by mail.tuxedocomputers.com (Postfix) with ESMTPA id 64B9E2FC004A;
+	Tue, 18 Jul 2023 16:57:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+	s=default; t=1689692245;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=J0wH3xEshvQGIG1GmT2WBF77V9pRpAS+2p8ii7k9Y4k=;
+	b=mWq9nzDEkvCD1Dmyj453JbHjnd4prvHZaEbWqMSP4ZxQRljNu8CrWEkg+4YEtaPsA1cE2F
+	pjFWSYByrhmdsNDq4ngNGBDkhrxQFh/Y44IwLI+HCNiK2gOqE4Oc4VZYw424KJTmF7SWzR
+	I3sEYBOpyhiRYtwBZn6pF7OoTa53gEg=
+Authentication-Results: mail.tuxedocomputers.com;
+	auth=pass smtp.auth=wse@tuxedocomputers.com
+ smtp.mailfrom=wse@tuxedocomputers.com
+From: Werner Sembach <wse@tuxedocomputers.com>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Christoffer Sandberg <cs@tuxedo.de>,
+	Werner Sembach <wse@tuxedocomputers.com>,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Clevo NS70AU
+Date: Tue, 18 Jul 2023 16:57:22 +0200
+Message-Id: <20230718145722.10592-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 03/11] ASoC: atmel: mchp-pdmc: Use snd_ctl_remove_id()
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Claudiu Beznea <claudiu.beznea@microchip.com>,
- Mark Brown <broonie@kernel.org>
-References: <20230718141304.1032-1-tiwai@suse.de>
- <20230718141304.1032-4-tiwai@suse.de>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230718141304.1032-4-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: claudiu.beznea@tuxon.dev
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: N23B2WGT7SCIB3IEUVTZ5W26ADEUN6NR
+X-Message-ID-Hash: N23B2WGT7SCIB3IEUVTZ5W26ADEUN6NR
+X-MailFrom: wse@tuxedocomputers.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: EEQQINCM6LOWTFIZXZBMYU4GNACPM33T
-X-Message-ID-Hash: EEQQINCM6LOWTFIZXZBMYU4GNACPM33T
-X-Mailman-Approved-At: Tue, 18 Jul 2023 14:47:02 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EEQQINCM6LOWTFIZXZBMYU4GNACPM33T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N23B2WGT7SCIB3IEUVTZ5W26ADEUN6NR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,49 +92,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 18.07.2023 17:12, Takashi Iwai wrote:
-> Use the standard snd_ctl_remove_id() helper instead of open code for
-> removing a kctl.  This helps for avoiding possible races.
-> 
-> Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+From: Christoffer Sandberg <cs@tuxedo.de>
 
-Reviewed-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Fixes headset detection on Clevo NS70AU.
 
-> ---
->   sound/soc/atmel/mchp-pdmc.c | 12 ++----------
->   1 file changed, 2 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/soc/atmel/mchp-pdmc.c b/sound/soc/atmel/mchp-pdmc.c
-> index c79c73e6791e..1a069f4cdcda 100644
-> --- a/sound/soc/atmel/mchp-pdmc.c
-> +++ b/sound/soc/atmel/mchp-pdmc.c
-> @@ -386,7 +386,6 @@ static int mchp_pdmc_open(struct snd_soc_component *component,
->   	for (i = 0; i < ARRAY_SIZE(mchp_pdmc_snd_controls); i++) {
->   		const struct snd_kcontrol_new *control = &mchp_pdmc_snd_controls[i];
->   		struct snd_ctl_elem_id id;
-> -		struct snd_kcontrol *kctl;
->   		int err;
->   
->   		if (component->name_prefix)
-> @@ -400,17 +399,10 @@ static int mchp_pdmc_open(struct snd_soc_component *component,
->   		id.device = control->device;
->   		id.subdevice = control->subdevice;
->   		id.index = control->index;
-> -		kctl = snd_ctl_find_id(component->card->snd_card, &id);
-> -		if (!kctl) {
-> -			dev_err(component->dev, "Failed to find %s\n", control->name);
-> -			continue;
-> -		}
-> -		err = snd_ctl_remove(component->card->snd_card, kctl);
-> -		if (err < 0) {
-> +		err = snd_ctl_remove_id(component->card->snd_card, &id);
-> +		if (err < 0)
->   			dev_err(component->dev, "%d: Failed to remove %s\n", err,
->   				control->name);
-> -			continue;
-> -		}
->   	}
->   
->   	return 0;
+Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Signed-off-by: Christoffer Sandberg <cs@tuxedo.de>
+Cc: <stable@vger.kernel.org>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index e2f8b608de82b..770b2953f0412 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9727,6 +9727,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1558, 0x5157, "Clevo W517GU1", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x51a1, "Clevo NS50MU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x51b1, "Clevo NS50AU", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1558, 0x51b3, "Clevo NS70AU", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x5630, "Clevo NP50RNJS", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x70a1, "Clevo NB70T[HJK]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x70b3, "Clevo NK70SB", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+-- 
+2.34.1
+
