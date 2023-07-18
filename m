@@ -4,120 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C26BDEB64DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 11:43:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85023EB64DA
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 11:49:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02169DF4;
-	Tue, 18 Jul 2023 13:43:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02169DF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74086AEA;
+	Tue, 18 Jul 2023 13:48:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74086AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689680632;
-	bh=FscZAanuLt52+mZHvtA9ybBTVsGaHIGou1sCUf8ad9Q=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1689680946;
+	bh=ZvqThxrRF3azwHa8S6/JSLLxksS+HHQlbfFAk7L6Oe4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iVTWG1Z/DDMfrWvPq41MhpN1PYofqEMCXm/5wXOEMCNYnoqAi1mZmwPr113UMwNGh
-	 flQUKzQOOTHWK3yhg0cVCXcoR9cMJcN+GD6dZv8HbDrkDuj2CmdgGnKGtd/EeSHijv
-	 l8rjgTBjPXUGYhCsup0btmbEpC0yTWvCn0Gxmwk4=
+	b=Wuag/n0QGpvT3WPmkAYPQJgp61asXWnONFchVGKjQzYY84UninZIrJGOSXQKw+ZbD
+	 J0lE6tqEafbEsE4Q+wiNqZShFLgoN4ooHtvNX8SF0Swd2Ydf/M3ywTmVPqDAjGPU+K
+	 8LbtRHQr7G5Alg8VijAmOo4wc8PpMck6N6bOHH+g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 96082F805BA; Tue, 18 Jul 2023 13:41:09 +0200 (CEST)
+	id 6AC74F800D2; Tue, 18 Jul 2023 13:47:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 338CAF805C3;
-	Tue, 18 Jul 2023 13:41:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09553F8032D;
+	Tue, 18 Jul 2023 13:47:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16964F80568; Tue, 18 Jul 2023 13:41:00 +0200 (CEST)
-Received: from mo4-p03-ob.smtp.rzone.de (mo4-p03-ob.smtp.rzone.de
- [85.215.255.104])
+	id 19773F8032D; Tue, 18 Jul 2023 13:47:47 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 16B7FF80153
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 13:40:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16B7FF80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2B522F80153
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 13:47:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B522F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gerhold.net header.i=@gerhold.net header.a=rsa-sha256
- header.s=strato-dkim-0002 header.b=aX6fe6Tg;
-	dkim=pass header.d=gerhold.net header.i=@gerhold.net header.a=ed25519-sha256
- header.s=strato-dkim-0003 header.b=S7LPsRV5
-ARC-Seal: i=1; a=rsa-sha256; t=1689680439; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=oK4gxsT3eHZ94nHchtRlLJNuPv6daCdQG84QKMwDIQb1l/IRIz0Vc55cAsTGKrz5xl
-    3sf06S+0ZVO1RZGXBPKnExg3ouantqpBgiuLyx4gz4lKbO2v7n7apjPGBBKPceMCjUnW
-    dA3S574x3mU2l7EwAC1eoxO/4ByhTd1/jDEGVLU03GmHv+R52zyI3yVrlML/mE5pU3J8
-    23HJImaBtet6YEA8OnETB5v10auCA4V6tE+mB/yHpiYHdPTvGagmF2Pf7kzuROtJQyLB
-    UL5sICQlAoDt0IHlEBAuogyypZUgHn2Yaj/xliqkq3mPXMXueoNQt4itLVtEMwwlbzmp
-    sllQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680439;
-    s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=DyT5d0eh0/jTHCEcjHCZZZfipa2RUFTxaspkR4U3YH0=;
-    b=sZG3TBQhz2wrONxoYWTlmGjH0gMDFgvbeSTqaTDiin48eJIdA74PIIL9LQxWT35ZMK
-    TfV9iu/q0AhiYlDUO5CH/LYQwacv+YKksii1X0iY2LZVrm5taBFcyIvpjg1U3VbD2wSj
-    TiqDsgvRrzrCU2kCcLwlt4r3TDx+Psths8NqKrHsfrIXw7HiW8biVeIwWf8zEwBv1Fv/
-    mGn7mjFivsQFxJqXJxSFzOhoEoOu9flFI4Xi+g52sfoVQB0C+O5Y1FGYl3c7reG3uZa8
-    aXlSbkKjUL/WL8garnF/I/nQ/OKZclN4AONlqOMFf+s7Gidny7q9Zvdj0FH3bpjXa2uH
-    iENA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo03
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680439;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=DyT5d0eh0/jTHCEcjHCZZZfipa2RUFTxaspkR4U3YH0=;
-    b=aX6fe6Tg9hQ7s1FUnfzoCnS75dXqnivx/hO36KNV3L47C2B33qLLwycE/nDn/j4+zS
-    5LD53T3zwgaPeASpvfJJon1oWf1+/XkGwGEMT8DHxDD3B3H8PiW+c7b+2iS7bwAwRRNl
-    YMVMcfgvTu2rWb+5ocwBibfVU8kguvZS5FTkNTEFyRmtvWHN3nUpJy485zAVE5DpTlSt
-    HFQrgxEsy1Uui7YXK97e+DMjGH0Ueik5JlS9SypS+WD+mApS3CpfSQtFYVz89aepaZvR
-    4lj7iAMyWBOBcyDYAbPpKIfQKUR2OjVwiAsR1+Ah1/NCZD3vQjWGU7OM8dftSYW/h4TJ
-    Xc5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1689680439;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=DyT5d0eh0/jTHCEcjHCZZZfipa2RUFTxaspkR4U3YH0=;
-    b=S7LPsRV5v19JJRqP3iHxccjg5XVH7nylcbO2qVkzF3oMoRIb4wGoCll2lbk5NwPzTL
-    DQG21kRboafaY21Wo9DA==
-X-RZG-AUTH: 
- ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u45/mw=="
-Received: from [192.168.244.3]
-    by smtp.strato.de (RZmta 49.6.0 DYNA|AUTH)
-    with ESMTPSA id D0d0a8z6IBedbpQ
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Tue, 18 Jul 2023 13:40:39 +0200 (CEST)
-From: Stephan Gerhold <stephan@gerhold.net>
-Date: Tue, 18 Jul 2023 13:40:17 +0200
-Subject: [PATCH 5/6] ASoC: codecs: msm8916-wcd-analog: Properly handle
- probe errors
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=NiyIriaV
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A6AB7614FB;
+	Tue, 18 Jul 2023 11:47:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1932C433C8;
+	Tue, 18 Jul 2023 11:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689680860;
+	bh=ZvqThxrRF3azwHa8S6/JSLLxksS+HHQlbfFAk7L6Oe4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=NiyIriaVDpbfpBBavIbmRiv2u8PnwyYoC11x/yVLsL8p8CCjVEDh2j4KeymwMZmkJ
+	 p8wsaLShwILFEDbEuSei/n/AQ+DZfB8bhV67lMZseBDXL5HwxxG4eh4TprvyACTwb6
+	 MBuHauz7LZm0c0omsmB7nO3KtGyB/RH7SetrcWypVSEdZC1uBeHTOD7vKhkwXS+gc9
+	 4mnK2i9Mi6W5ybAsdow/KBDfBwm76sdzKItlfTStf52ceFbxabgRi8O83C4BLEzCjY
+	 +Sr+BP4iatGJjSAKSsQhJAteHieNHZT6chdS3DmTyauRHyBvrdgGVQj50ERgnJv+DO
+	 fL8t9lbrIuotQ==
+From: Mark Brown <broonie@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Matus Gajdos <matuszpd@gmail.com>
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20230712124934.32232-1-matuszpd@gmail.com>
+References: <20230712124934.32232-1-matuszpd@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Disable bit clock with transmitter
+Message-Id: <168968085762.37584.16109191743669606574.b4-ty@kernel.org>
+Date: Tue, 18 Jul 2023 12:47:37 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-pm8916-mclk-v1-5-4b4a58b4240a@gerhold.net>
-References: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
-In-Reply-To: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
-To: Mark Brown <broonie@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- =?utf-8?q?Otto_Pfl=C3=BCger?= <otto.pflueger@abscue.de>,
- Stephan Gerhold <stephan@gerhold.net>
-X-Mailer: b4 0.12.3
-Message-ID-Hash: IGJPFSLYO4KG3KF3J6O2DAZPYDNLL7VO
-X-Message-ID-Hash: IGJPFSLYO4KG3KF3J6O2DAZPYDNLL7VO
-X-MailFrom: stephan@gerhold.net
+X-Mailer: b4 0.13-dev-099c9
+Message-ID-Hash: LD6T3JVA5MSTXLLYK35OHYR446VC6Q7Y
+X-Message-ID-Hash: LD6T3JVA5MSTXLLYK35OHYR446VC6Q7Y
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -129,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IGJPFSLYO4KG3KF3J6O2DAZPYDNLL7VO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LD6T3JVA5MSTXLLYK35OHYR446VC6Q7Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,58 +97,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The probe() function fails with an error for platform_get_irq_byname()
-but only logs when devm_request_threaded_irq() fails. Make this
-consistent and fail to probe in that case as well. In practice this
-should never happen unless something is really wrong.
+On Wed, 12 Jul 2023 14:49:33 +0200, Matus Gajdos wrote:
+> Otherwise bit clock remains running writing invalid data to the DAC.
+> 
+> 
 
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- sound/soc/codecs/msm8916-wcd-analog.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+Applied to
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index d4456a714c97..9ca381812975 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -1216,8 +1216,10 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
- 			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING |
- 			       IRQF_ONESHOT,
- 			       "mbhc switch irq", priv);
--	if (ret)
-+	if (ret) {
- 		dev_err(dev, "cannot request mbhc switch irq\n");
-+		return ret;
-+	}
- 
- 	if (priv->mbhc_btn_enabled) {
- 		irq = platform_get_irq_byname(pdev, "mbhc_but_press_det");
-@@ -1229,8 +1231,10 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
- 				       IRQF_TRIGGER_RISING |
- 				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 				       "mbhc btn press irq", priv);
--		if (ret)
-+		if (ret) {
- 			dev_err(dev, "cannot request mbhc button press irq\n");
-+			return ret;
-+		}
- 
- 		irq = platform_get_irq_byname(pdev, "mbhc_but_rel_det");
- 		if (irq < 0)
-@@ -1241,9 +1245,10 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
- 				       IRQF_TRIGGER_RISING |
- 				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 				       "mbhc btn release irq", priv);
--		if (ret)
-+		if (ret) {
- 			dev_err(dev, "cannot request mbhc button release irq\n");
--
-+			return ret;
-+		}
- 	}
- 
- 	dev_set_drvdata(dev, priv);
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
--- 
-2.41.0
+Thanks!
+
+[1/1] ASoC: fsl_sai: Disable bit clock with transmitter
+      commit: 269f399dc19f0e5c51711c3ba3bd06e0ef6ef403
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
