@@ -4,100 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3CA2EB64DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 11:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C26BDEB64DA
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 11:43:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDE64AEA;
-	Tue, 18 Jul 2023 13:42:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDE64AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02169DF4;
+	Tue, 18 Jul 2023 13:43:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02169DF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689680613;
-	bh=+WIU3b8CacsZhcQmAycbvXnFQd91r1QFPDw20Fdi0hA=;
-	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=HATWbvbsTtV1U5IRzRjci4N+GYi10nQbJe1EdMZChD1+OT0axCARSC2MlGLhcs+kT
-	 UhNZr60ssb9dnrhH3+laTzKqvWGPaZ52PxaHXFaYfGvN5AzbFE902/dA8nSOYsYNEV
-	 7DDDKSnP59GxgRtkZJFfwrX1Rup3vYlAzvpMrt0s=
+	s=default; t=1689680632;
+	bh=FscZAanuLt52+mZHvtA9ybBTVsGaHIGou1sCUf8ad9Q=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=iVTWG1Z/DDMfrWvPq41MhpN1PYofqEMCXm/5wXOEMCNYnoqAi1mZmwPr113UMwNGh
+	 flQUKzQOOTHWK3yhg0cVCXcoR9cMJcN+GD6dZv8HbDrkDuj2CmdgGnKGtd/EeSHijv
+	 l8rjgTBjPXUGYhCsup0btmbEpC0yTWvCn0Gxmwk4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C8A00F805BB; Tue, 18 Jul 2023 13:41:07 +0200 (CEST)
+	id 96082F805BA; Tue, 18 Jul 2023 13:41:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25233F805B4;
-	Tue, 18 Jul 2023 13:41:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 338CAF805C3;
+	Tue, 18 Jul 2023 13:41:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9CB06F80563; Tue, 18 Jul 2023 13:40:58 +0200 (CEST)
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [81.169.146.167])
+	id 16964F80568; Tue, 18 Jul 2023 13:41:00 +0200 (CEST)
+Received: from mo4-p03-ob.smtp.rzone.de (mo4-p03-ob.smtp.rzone.de
+ [85.215.255.104])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D426FF804DA
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 13:40:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D426FF804DA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 16B7FF80153
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 13:40:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16B7FF80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gerhold.net header.i=@gerhold.net header.a=rsa-sha256
- header.s=strato-dkim-0002 header.b=iUGNDL5j;
+ header.s=strato-dkim-0002 header.b=aX6fe6Tg;
 	dkim=pass header.d=gerhold.net header.i=@gerhold.net header.a=ed25519-sha256
- header.s=strato-dkim-0003 header.b=ayBkrkME
-ARC-Seal: i=1; a=rsa-sha256; t=1689680437; cv=none;
+ header.s=strato-dkim-0003 header.b=S7LPsRV5
+ARC-Seal: i=1; a=rsa-sha256; t=1689680439; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=XrUxc4tN3AEMjQ8WNc7/u/QDkgIlwO7XY/SN9uzZz0GcZi4Ql/hjzW4U1pbzq1j6UC
-    ISggJq1ohkzxEbbB9nR4KC8drFsA+9AZP31gka0cEqUg8Ad+i5UCSlXBFoPGFfScgkJj
-    6zOItKTyyjoO0EAVPDP4TaPV9h2/lwcc3kId4RvVBNBhm15nOILdeQ1vprvWCz51YdTv
-    FP60ewdVvkYYKpAkF5f7e0xMFlIKF8dOaiYRrcf+LpX7ftw12o+valewEXVUwhwwpwsF
-    VZN/yHbdh1cCO+pVoi+uE76ObAudf+iEGxsBF7ljkXK8adQVzMy2p7WLB9RKDdGN2Gkw
-    0q2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680437;
+    b=oK4gxsT3eHZ94nHchtRlLJNuPv6daCdQG84QKMwDIQb1l/IRIz0Vc55cAsTGKrz5xl
+    3sf06S+0ZVO1RZGXBPKnExg3ouantqpBgiuLyx4gz4lKbO2v7n7apjPGBBKPceMCjUnW
+    dA3S574x3mU2l7EwAC1eoxO/4ByhTd1/jDEGVLU03GmHv+R52zyI3yVrlML/mE5pU3J8
+    23HJImaBtet6YEA8OnETB5v10auCA4V6tE+mB/yHpiYHdPTvGagmF2Pf7kzuROtJQyLB
+    UL5sICQlAoDt0IHlEBAuogyypZUgHn2Yaj/xliqkq3mPXMXueoNQt4itLVtEMwwlbzmp
+    sllQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680439;
     s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
-    bh=sK/bMIayWR/eIaIWMCJ3yB3H0xpavoQPeZ0tqsYM7t4=;
-    b=kiSsWTcl+xSOZA3gHS6/9lLk1PCHycnJjSR6Mf1Zx9aGqI7vTKSY9dgFo0RXiis0aB
-    aABIwMn46OQlw+6rUlQsNAY2szCryBkrIv1hGsvIB/oaM3PgZSnB5salYFj6PT+c6A4k
-    GrNdWd3RDnVdsWmHrKWu1SGCSN+qDP/XKWiVCeJovy2XUbBspjmKdsOlxi65y9hZcF1F
-    RBJLlw2ESkN5EJFUhOKaA7J096pEBXBJuFsoVkXd5d4/zRAfbsaaiPkGVS/yMhiOAiiM
-    xevOH+J/smxHKk7edk3cyWRbLKmzTLomXOmwaNoke9zwiJd8FRiVWhhARRcAyZEbEsll
-    kzBw==
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=DyT5d0eh0/jTHCEcjHCZZZfipa2RUFTxaspkR4U3YH0=;
+    b=sZG3TBQhz2wrONxoYWTlmGjH0gMDFgvbeSTqaTDiin48eJIdA74PIIL9LQxWT35ZMK
+    TfV9iu/q0AhiYlDUO5CH/LYQwacv+YKksii1X0iY2LZVrm5taBFcyIvpjg1U3VbD2wSj
+    TiqDsgvRrzrCU2kCcLwlt4r3TDx+Psths8NqKrHsfrIXw7HiW8biVeIwWf8zEwBv1Fv/
+    mGn7mjFivsQFxJqXJxSFzOhoEoOu9flFI4Xi+g52sfoVQB0C+O5Y1FGYl3c7reG3uZa8
+    aXlSbkKjUL/WL8garnF/I/nQ/OKZclN4AONlqOMFf+s7Gidny7q9Zvdj0FH3bpjXa2uH
+    iENA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680437;
+X-RZG-CLASS-ID: mo03
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680439;
     s=strato-dkim-0002; d=gerhold.net;
-    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
-    bh=sK/bMIayWR/eIaIWMCJ3yB3H0xpavoQPeZ0tqsYM7t4=;
-    b=iUGNDL5jC3ufjlCgm5k5SHWfzXysbyyr5344sKE0RbCvB5QLMhAAKn8iXBPVxc+u+j
-    R/fc+Afn7liuJlq9Raq/03KuJN4Q0jjwwZqECVFzsOvMY28oa+xqvL1lkUBqaY+NZ4Qo
-    79Glng8RqCrixPZV9JNkSr6ZFJE21Mi5YwWGno2bocWmmHxcbyCn/JczmhrO29KiAXNK
-    dF4sKptnY5fbt5xmnnx7hU2PcW9qZnSwMPeGWFhIZAsOTgAMuIuCLNAYHbOI7suF3W3j
-    ANEQKm63VKr1ZodQvuS52drqmSg4OhYFvQoQ47996h5IHFrToJzhA3sKi9/sRPSgPcRF
-    2oRA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1689680437;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=DyT5d0eh0/jTHCEcjHCZZZfipa2RUFTxaspkR4U3YH0=;
+    b=aX6fe6Tg9hQ7s1FUnfzoCnS75dXqnivx/hO36KNV3L47C2B33qLLwycE/nDn/j4+zS
+    5LD53T3zwgaPeASpvfJJon1oWf1+/XkGwGEMT8DHxDD3B3H8PiW+c7b+2iS7bwAwRRNl
+    YMVMcfgvTu2rWb+5ocwBibfVU8kguvZS5FTkNTEFyRmtvWHN3nUpJy485zAVE5DpTlSt
+    HFQrgxEsy1Uui7YXK97e+DMjGH0Ueik5JlS9SypS+WD+mApS3CpfSQtFYVz89aepaZvR
+    4lj7iAMyWBOBcyDYAbPpKIfQKUR2OjVwiAsR1+Ah1/NCZD3vQjWGU7OM8dftSYW/h4TJ
+    Xc5Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1689680439;
     s=strato-dkim-0003; d=gerhold.net;
-    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
-    bh=sK/bMIayWR/eIaIWMCJ3yB3H0xpavoQPeZ0tqsYM7t4=;
-    b=ayBkrkMEbt7KJWw2wvCkQci6INdWNF50gF/nefwYHc5cUFTI1EMPGiSEqBRnr910Kg
-    nMO61MF8uzgMv7oWxHCg==
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=DyT5d0eh0/jTHCEcjHCZZZfipa2RUFTxaspkR4U3YH0=;
+    b=S7LPsRV5v19JJRqP3iHxccjg5XVH7nylcbO2qVkzF3oMoRIb4wGoCll2lbk5NwPzTL
+    DQG21kRboafaY21Wo9DA==
 X-RZG-AUTH: 
  ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u45/mw=="
 Received: from [192.168.244.3]
     by smtp.strato.de (RZmta 49.6.0 DYNA|AUTH)
-    with ESMTPSA id D0d0a8z6IBeabpI
+    with ESMTPSA id D0d0a8z6IBedbpQ
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Tue, 18 Jul 2023 13:40:36 +0200 (CEST)
+    Tue, 18 Jul 2023 13:40:39 +0200 (CEST)
 From: Stephan Gerhold <stephan@gerhold.net>
-Subject: [PATCH 0/6] ASoC: codecs: msm8916-wcd-analog: Cleanup DT bindings
-Date: Tue, 18 Jul 2023 13:40:12 +0200
-Message-Id: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
+Date: Tue, 18 Jul 2023 13:40:17 +0200
+Subject: [PATCH 5/6] ASoC: codecs: msm8916-wcd-analog: Properly handle
+ probe errors
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIABx6tmQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDc0Mj3YJcC0tDM93c5Jxs3ZSkZENzQzPLZFNLCyWgjoKi1LTMCrBp0bG
- 1tQAFvBI4XQAAAA==
+Message-Id: <20230718-pm8916-mclk-v1-5-4b4a58b4240a@gerhold.net>
+References: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
+In-Reply-To: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
 To: Mark Brown <broonie@kernel.org>
 Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
@@ -111,8 +115,8 @@ Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  =?utf-8?q?Otto_Pfl=C3=BCger?= <otto.pflueger@abscue.de>,
  Stephan Gerhold <stephan@gerhold.net>
 X-Mailer: b4 0.12.3
-Message-ID-Hash: X54GKMS64LL2NEJFZDWSIAUPDF74RHCW
-X-Message-ID-Hash: X54GKMS64LL2NEJFZDWSIAUPDF74RHCW
+Message-ID-Hash: IGJPFSLYO4KG3KF3J6O2DAZPYDNLL7VO
+X-Message-ID-Hash: IGJPFSLYO4KG3KF3J6O2DAZPYDNLL7VO
 X-MailFrom: stephan@gerhold.net
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -125,7 +129,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X54GKMS64LL2NEJFZDWSIAUPDF74RHCW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IGJPFSLYO4KG3KF3J6O2DAZPYDNLL7VO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,30 +138,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Drop the redundant reg-names and mclk from the PM8916 analog codec. 
-Having the mclk on the analog codec is incorrect because only the 
-digital codec consumes it directly.
+The probe() function fails with an error for platform_get_irq_byname()
+but only logs when devm_request_threaded_irq() fails. Make this
+consistent and fail to probe in that case as well. In practice this
+should never happen unless something is really wrong.
 
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
-Stephan Gerhold (6):
-      ASoC: dt-bindings: pm8916-analog-codec: Fix misleading example
-      ASoC: dt-bindings: pm8916-analog-codec: Drop pointless reg-names
-      ASoC: dt-bindings: pm8916-analog-codec: Drop invalid mclk
-      ASoC: codecs: msm8916-wcd-analog: Drop invalid mclk
-      ASoC: codecs: msm8916-wcd-analog: Properly handle probe errors
-      arm64: dts: qcom: pm8916: Drop codec reg-names and mclk
+ sound/soc/codecs/msm8916-wcd-analog.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
- .../sound/qcom,pm8916-wcd-analog-codec.yaml        | 101 ++++++++++-----------
- arch/arm64/boot/dts/qcom/apq8016-sbc.dts           |   2 -
- arch/arm64/boot/dts/qcom/pm8916.dtsi               |   3 -
- sound/soc/codecs/msm8916-wcd-analog.c              |  56 +++---------
- 4 files changed, 62 insertions(+), 100 deletions(-)
----
-base-commit: 78b31c16983bb9e540d5a14540417275e6f3f4a5
-change-id: 20230712-pm8916-mclk-dbc17169c598
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index d4456a714c97..9ca381812975 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -1216,8 +1216,10 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING |
+ 			       IRQF_ONESHOT,
+ 			       "mbhc switch irq", priv);
+-	if (ret)
++	if (ret) {
+ 		dev_err(dev, "cannot request mbhc switch irq\n");
++		return ret;
++	}
+ 
+ 	if (priv->mbhc_btn_enabled) {
+ 		irq = platform_get_irq_byname(pdev, "mbhc_but_press_det");
+@@ -1229,8 +1231,10 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 				       IRQF_TRIGGER_RISING |
+ 				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+ 				       "mbhc btn press irq", priv);
+-		if (ret)
++		if (ret) {
+ 			dev_err(dev, "cannot request mbhc button press irq\n");
++			return ret;
++		}
+ 
+ 		irq = platform_get_irq_byname(pdev, "mbhc_but_rel_det");
+ 		if (irq < 0)
+@@ -1241,9 +1245,10 @@ static int pm8916_wcd_analog_spmi_probe(struct platform_device *pdev)
+ 				       IRQF_TRIGGER_RISING |
+ 				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+ 				       "mbhc btn release irq", priv);
+-		if (ret)
++		if (ret) {
+ 			dev_err(dev, "cannot request mbhc button release irq\n");
+-
++			return ret;
++		}
+ 	}
+ 
+ 	dev_set_drvdata(dev, priv);
 
-Best regards,
 -- 
-Stephan Gerhold <stephan@gerhold.net>
+2.41.0
 
