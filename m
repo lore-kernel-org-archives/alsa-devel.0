@@ -4,87 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABB49EB64DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:16:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EFEFEB64DD
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:17:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E88A1E8;
-	Tue, 18 Jul 2023 16:15:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E88A1E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EB4C83E;
+	Tue, 18 Jul 2023 16:16:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EB4C83E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689689799;
-	bh=1GVZIwSM9BIamWibq6pepHnCBx3CgDKaQIbUpZGGjj0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1689689825;
+	bh=ujTvsoix7a+61iyd1/WRXFH3nwu/v1kWVxSaRd/90Gw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A2K8YG1lFw0gMaBjDAKARBeW5NYGVzze5xxNh+GFv2mUOkKbaokmw6hbDpVSbc4AR
-	 KAcHBFQPM++MOT3Om0Lvz5tPhIHTuI1eOW2RU9mk12GNWV39zNbFeHIxAVEr/bwTM3
-	 sZusBBOGXR/uz5DKmn/GLoPgEpWe9jVS4HFtrYCE=
+	b=D7JDGkh5u4Rz0RecDzVL/hBUv2rV3M4KLJp8x0jfGAvPCVOJI9Gotsie0iu68F2AU
+	 4hb0lemPXj2BXPicOZF6gtgQV3tZDZAN2Rorsa/+kWomMcZ5ki+Zyh///O/jUp9+cZ
+	 RL3jaF0ppjP1QeVLKoB5rLP/5CPvOfXEQdDuHqX4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D87EF805E7; Tue, 18 Jul 2023 16:13:59 +0200 (CEST)
+	id 6DEF3F805F6; Tue, 18 Jul 2023 16:14:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CAE0CF805E9;
-	Tue, 18 Jul 2023 16:13:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1F9FF805F2;
+	Tue, 18 Jul 2023 16:14:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35A1FF80153; Tue, 18 Jul 2023 16:13:48 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 8B27CF805D6; Tue, 18 Jul 2023 16:13:52 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 37F22F800D2;
-	Tue, 18 Jul 2023 16:13:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37F22F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4DE4BF80551
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 16:13:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DE4BF80551
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Mq8yJZ5h
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=xjR0dDhB;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=IyASm/na
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A2A6D615D9;
-	Tue, 18 Jul 2023 14:13:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09652C433C7;
-	Tue, 18 Jul 2023 14:13:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689689598;
-	bh=1GVZIwSM9BIamWibq6pepHnCBx3CgDKaQIbUpZGGjj0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Mq8yJZ5hVIWqZ1ekBoX75Yn9/y5jD5cHrpVzYyA4dLXVoM1/jj6uH11HE4ynmPSgS
-	 OVdoNuDcukH89+Ja3vsVjlTbqF1XcCsdGJa1S78TmoJsQxoucKvM6Jg8Kpu4EEah2C
-	 wzI0sS01Eh+DelVhNyh5fcYDmRKVqehm97eWGRlXhUIr2A5RO4qUzUftcL4yjfojIV
-	 nFTmlwrGCKH/5lSPOi+wm7GHaSJvGBD6BuxzSNYrIjrQzathjI2WbEADw65Xe9sUew
-	 54CGtCA83iu6RPRSXS1yxHZs8zBXY4HT4b2SK5d0Ys3zWxA8DvN7bObvGUuQ9OIzxo
-	 vvUkgfoaUwBfQ==
-Date: Tue, 18 Jul 2023 15:13:11 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
-	linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Daniel Baluta <daniel.baluta@nxp.com>,
-	Matthew Auld <matthew.auld@intel.com>
-Subject: Re: [PATCH 6/7] ASoC: SOF: Intel: Remove deferred probe for SOF
-Message-ID: <5a54647b-15fd-47dc-92ef-3e349bcc5d0b@sirena.org.uk>
-References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
- <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9E26B1FDC5;
+	Tue, 18 Jul 2023 14:13:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1689689595;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bbMrl3GuYS85GYIMhdn8D/fx4sfwnB1DSofv/91xi1M=;
+	b=xjR0dDhBWiRp7iX1U0ofarQK2rwzO/CNs5O4CYmFXEWuywneZBygMzgZ3YxFF3uEV0i1Y/
+	P2cGjayLRX/bEASNCOz6Jwhb+JLXvn17cexXaPBD8hB3BTtuMCZMZewadyxVJR+SiGxF2c
+	x0iuGhgAekLsLwKrLeMgIvdR7LulMK4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1689689595;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bbMrl3GuYS85GYIMhdn8D/fx4sfwnB1DSofv/91xi1M=;
+	b=IyASm/nasRLjVcrk5T2TAium5pQm2Zd/3aDfihFNy7xKdF+TpWa3COrgLaol9GwuiN3iM4
+	aNia2WCWGFbRnuCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 820E1138EC;
+	Tue, 18 Jul 2023 14:13:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id yHnMHvudtmQ8AQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 14:13:15 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 05/11] ALSA: control: Add lockdep warning to internal
+ functions
+Date: Tue, 18 Jul 2023 16:12:58 +0200
+Message-Id: <20230718141304.1032-6-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230718141304.1032-1-tiwai@suse.de>
+References: <20230718141304.1032-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="AMK9cj8txzvO4hFQ"
-Content-Disposition: inline
-In-Reply-To: <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
-X-Cookie: Nothing happens.
-Message-ID-Hash: I45WM5LQSFNNNOND5KT3VLMCATTRU57R
-X-Message-ID-Hash: I45WM5LQSFNNNOND5KT3VLMCATTRU57R
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: CSXJOWC542XCPEONOMERLVLUYKC6UPWQ
+X-Message-ID-Hash: CSXJOWC542XCPEONOMERLVLUYKC6UPWQ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I45WM5LQSFNNNOND5KT3VLMCATTRU57R/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CSXJOWC542XCPEONOMERLVLUYKC6UPWQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,32 +116,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+To assure the proper locking, add the lockdep check to
+__snd_ctl_remove(), __snd_ctl_add_replace() and other internal
+functions to handle user controls.
 
---AMK9cj8txzvO4hFQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/control.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-On Tue, Jul 18, 2023 at 10:45:21AM +0200, Maarten Lankhorst wrote:
-> This was only used to allow modprobing i915, by converting to the
-> -EPROBE_DEFER mechanism, it can be completely removed, and is in
-> fact counterproductive since -EPROBE_DEFER otherwise won't be
-> handled correctly.
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 9c933350ec6b..8aaa2a84a670 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -469,6 +469,8 @@ static int __snd_ctl_add_replace(struct snd_card *card,
+ 	struct snd_kcontrol *old;
+ 	int err;
+ 
++	lockdep_assert_held_write(&card->controls_rwsem);
++
+ 	id = kcontrol->id;
+ 	if (id.index > UINT_MAX - kcontrol->count)
+ 		return -EINVAL;
+@@ -578,6 +580,8 @@ static int __snd_ctl_remove(struct snd_card *card,
+ {
+ 	unsigned int idx;
+ 
++	lockdep_assert_held_write(&card->controls_rwsem);
++
+ 	if (snd_BUG_ON(!card || !kcontrol))
+ 		return -EINVAL;
+ 	list_del(&kcontrol->list);
+@@ -1524,6 +1528,8 @@ static int replace_user_tlv(struct snd_kcontrol *kctl, unsigned int __user *buf,
+ 	int i;
+ 	int change;
+ 
++	lockdep_assert_held_write(&ue->card->controls_rwsem);
++
+ 	if (size > 1024 * 128)	/* sane value */
+ 		return -EINVAL;
+ 
+@@ -1600,6 +1606,8 @@ static int snd_ctl_elem_init_enum_names(struct user_element *ue)
+ 	unsigned int i;
+ 	const uintptr_t user_ptrval = ue->info.value.enumerated.names_ptr;
+ 
++	lockdep_assert_held_write(&ue->card->controls_rwsem);
++
+ 	buf_len = ue->info.value.enumerated.names_length;
+ 	if (buf_len > 64 * 1024)
+ 		return -EINVAL;
+@@ -1904,6 +1912,8 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
+ 	struct snd_ctl_elem_id id;
+ 	struct snd_kcontrol_volatile *vd;
+ 
++	lockdep_assert_held(&file->card->controls_rwsem);
++
+ 	if (copy_from_user(&header, buf, sizeof(header)))
+ 		return -EFAULT;
+ 
+-- 
+2.35.3
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---AMK9cj8txzvO4hFQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS2nfcACgkQJNaLcl1U
-h9AF4Qf+K0+3rMDv85bxPfllcFehtwXonKlWt+F8HVh2UAi14oFjYoJj+ks/JRi1
-MJrFfldIHimsPOtCs0OFQXuudLtXQUvWH1v3v4fbX0KazOJAmi8UHdXk8ZKigc0V
-5aSf66WnV6nJCGYEldw+MHOv2oCOZQCzmFgsQfOQlbuWHdOP04lwG5CNCP3wlY03
-4anEdlNnBcCRtOh45C0CGldwB57mxdZ47zoddgfpKGzHfC46knQZQ/+QiWtu+03G
-w0VlVaJHbeBbDK5s0BClydgBj4fm8VyiikusXuH/yD2All8i0k9T3DLIuZp6mTRP
-+KF6doVSqVZ6Zhhp5KKu4q+IzQysiw==
-=ZsDS
------END PGP SIGNATURE-----
-
---AMK9cj8txzvO4hFQ--
