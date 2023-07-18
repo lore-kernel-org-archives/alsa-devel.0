@@ -4,97 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 321D7EB64DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:16:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABB49EB64DA
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:16:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86B8F84D;
-	Tue, 18 Jul 2023 16:15:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86B8F84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E88A1E8;
+	Tue, 18 Jul 2023 16:15:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E88A1E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689689789;
-	bh=suGC+6O7AgKTVT5lmq2HFhS76+Cl7FPXoM5ryMkM7lE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1689689799;
+	bh=1GVZIwSM9BIamWibq6pepHnCBx3CgDKaQIbUpZGGjj0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=poZw7BdH+UwI6t445qUo2Gny55ZRVnv3TcGgonGYSdcT5MI+Lc1uphdm9otT3Fgok
-	 c+bdAAyZEBXrbc5y469tgn8+I/KZ+3mx92+0dfJbN+eqkL5IY6T+ObYjD79X6JKHcy
-	 crkOT++rLWyxoVwlArCe6OQX17QFjtGmTdjS/kb8=
+	b=A2K8YG1lFw0gMaBjDAKARBeW5NYGVzze5xxNh+GFv2mUOkKbaokmw6hbDpVSbc4AR
+	 KAcHBFQPM++MOT3Om0Lvz5tPhIHTuI1eOW2RU9mk12GNWV39zNbFeHIxAVEr/bwTM3
+	 sZusBBOGXR/uz5DKmn/GLoPgEpWe9jVS4HFtrYCE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D86FFF805D7; Tue, 18 Jul 2023 16:13:55 +0200 (CEST)
+	id 3D87EF805E7; Tue, 18 Jul 2023 16:13:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52721F80549;
-	Tue, 18 Jul 2023 16:13:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAE0CF805E9;
+	Tue, 18 Jul 2023 16:13:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 08DDDF805BB; Tue, 18 Jul 2023 16:13:45 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 35A1FF80153; Tue, 18 Jul 2023 16:13:48 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ABD2FF8055B
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 16:13:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABD2FF8055B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 37F22F800D2;
+	Tue, 18 Jul 2023 16:13:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37F22F800D2
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=EsNP75bv;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=tAUnYsiF
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Mq8yJZ5h
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2BC701FDC7;
-	Tue, 18 Jul 2023 14:13:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1689689596;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wlT2QoI9JR4A5g5znaKqOFk+eGfB+vsK/7AliGTu7tg=;
-	b=EsNP75bv0OzDb6nQybwTdNnPcDRDN9T6dbLNCrIfVR6byHuvAfQfebzH7yKTlW37h78+iZ
-	HqPy+0BroFNJPD54OBmPkAfTnUCQtHHPTToE+Rp6nN2fZb76+8qx0qRb47J3CLJ/r+G/jT
-	6441IwSGGkEbESXA7CTzr9gx7aJr8Bc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689689596;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wlT2QoI9JR4A5g5znaKqOFk+eGfB+vsK/7AliGTu7tg=;
-	b=tAUnYsiF+LPEFp8bEqBr0N7plQ9oHxbiKAPfmzuli/twoqQSmCacxx4RSzELWKGmlNIWFH
-	inIH99pX3dmkslAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 10A70134B0;
-	Tue, 18 Jul 2023 14:13:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id IHYRA/ydtmQ8AQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 14:13:16 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 08/11] ALSA: control: Make snd_ctl_find_id() argument const
-Date: Tue, 18 Jul 2023 16:13:01 +0200
-Message-Id: <20230718141304.1032-9-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230718141304.1032-1-tiwai@suse.de>
-References: <20230718141304.1032-1-tiwai@suse.de>
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A2A6D615D9;
+	Tue, 18 Jul 2023 14:13:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09652C433C7;
+	Tue, 18 Jul 2023 14:13:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689689598;
+	bh=1GVZIwSM9BIamWibq6pepHnCBx3CgDKaQIbUpZGGjj0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Mq8yJZ5hVIWqZ1ekBoX75Yn9/y5jD5cHrpVzYyA4dLXVoM1/jj6uH11HE4ynmPSgS
+	 OVdoNuDcukH89+Ja3vsVjlTbqF1XcCsdGJa1S78TmoJsQxoucKvM6Jg8Kpu4EEah2C
+	 wzI0sS01Eh+DelVhNyh5fcYDmRKVqehm97eWGRlXhUIr2A5RO4qUzUftcL4yjfojIV
+	 nFTmlwrGCKH/5lSPOi+wm7GHaSJvGBD6BuxzSNYrIjrQzathjI2WbEADw65Xe9sUew
+	 54CGtCA83iu6RPRSXS1yxHZs8zBXY4HT4b2SK5d0Ys3zWxA8DvN7bObvGUuQ9OIzxo
+	 vvUkgfoaUwBfQ==
+Date: Tue, 18 Jul 2023 15:13:11 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
+	linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Matthew Auld <matthew.auld@intel.com>
+Subject: Re: [PATCH 6/7] ASoC: SOF: Intel: Remove deferred probe for SOF
+Message-ID: <5a54647b-15fd-47dc-92ef-3e349bcc5d0b@sirena.org.uk>
+References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
+ <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DF2LEE24VCIGVRPG4ZZW22JATCHI55U3
-X-Message-ID-Hash: DF2LEE24VCIGVRPG4ZZW22JATCHI55U3
-X-MailFrom: tiwai@suse.de
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="AMK9cj8txzvO4hFQ"
+Content-Disposition: inline
+In-Reply-To: <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
+X-Cookie: Nothing happens.
+Message-ID-Hash: I45WM5LQSFNNNOND5KT3VLMCATTRU57R
+X-Message-ID-Hash: I45WM5LQSFNNNOND5KT3VLMCATTRU57R
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DF2LEE24VCIGVRPG4ZZW22JATCHI55U3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I45WM5LQSFNNNOND5KT3VLMCATTRU57R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,41 +105,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The id object passed to snd_ctl_find_id() is only read, and we can
-mark it with const gracefully.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/control.h | 2 +-
- sound/core/control.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+--AMK9cj8txzvO4hFQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index cc3dcc6cfb0f..e61b749bf204 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -141,7 +141,7 @@ int snd_ctl_rename_id(struct snd_card * card, struct snd_ctl_elem_id *src_id, st
- void snd_ctl_rename(struct snd_card *card, struct snd_kcontrol *kctl, const char *name);
- int snd_ctl_activate_id(struct snd_card *card, struct snd_ctl_elem_id *id, int active);
- struct snd_kcontrol *snd_ctl_find_numid(struct snd_card * card, unsigned int numid);
--struct snd_kcontrol *snd_ctl_find_id(struct snd_card * card, struct snd_ctl_elem_id *id);
-+struct snd_kcontrol *snd_ctl_find_id(struct snd_card *card, const struct snd_ctl_elem_id *id);
- 
- int snd_ctl_create(struct snd_card *card);
- 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 8aaa2a84a670..180e5768a10f 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -858,7 +858,7 @@ EXPORT_SYMBOL(snd_ctl_find_numid);
-  *
-  */
- struct snd_kcontrol *snd_ctl_find_id(struct snd_card *card,
--				     struct snd_ctl_elem_id *id)
-+				     const struct snd_ctl_elem_id *id)
- {
- 	struct snd_kcontrol *kctl;
- 
--- 
-2.35.3
+On Tue, Jul 18, 2023 at 10:45:21AM +0200, Maarten Lankhorst wrote:
+> This was only used to allow modprobing i915, by converting to the
+> -EPROBE_DEFER mechanism, it can be completely removed, and is in
+> fact counterproductive since -EPROBE_DEFER otherwise won't be
+> handled correctly.
 
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--AMK9cj8txzvO4hFQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS2nfcACgkQJNaLcl1U
+h9AF4Qf+K0+3rMDv85bxPfllcFehtwXonKlWt+F8HVh2UAi14oFjYoJj+ks/JRi1
+MJrFfldIHimsPOtCs0OFQXuudLtXQUvWH1v3v4fbX0KazOJAmi8UHdXk8ZKigc0V
+5aSf66WnV6nJCGYEldw+MHOv2oCOZQCzmFgsQfOQlbuWHdOP04lwG5CNCP3wlY03
+4anEdlNnBcCRtOh45C0CGldwB57mxdZ47zoddgfpKGzHfC46knQZQ/+QiWtu+03G
+w0VlVaJHbeBbDK5s0BClydgBj4fm8VyiikusXuH/yD2All8i0k9T3DLIuZp6mTRP
++KF6doVSqVZ6Zhhp5KKu4q+IzQysiw==
+=ZsDS
+-----END PGP SIGNATURE-----
+
+--AMK9cj8txzvO4hFQ--
