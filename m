@@ -4,75 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DFFDC0015E
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Jul 2023 22:01:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36284C001DE
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 00:31:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 981DADF1;
-	Tue, 18 Jul 2023 00:00:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 981DADF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5312DAEA;
+	Tue, 18 Jul 2023 02:30:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5312DAEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689631302;
-	bh=MF2BkyFWl54rd0q27gv9WwRPLimYAj+ZoREQbH9d0Ew=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1689640293;
+	bh=CrZhbPZ9FwBTokvrtGGOK79L/OJY8CV+5y15IrPndTc=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ULGOrpn2zJkEzUx/ltKNKymYAtmVEiw/k3Z8hknlCC2CRvP01tLGrNcnY98fBrKAV
-	 wsUR+LCeeZD3MyqQwZvQg6qHduIA5IhhJyMhDZq2Ip3ufus6Aq2Vcn7z30TY00EjRy
-	 kmaF8a+mGWQgJWyac8eyVENFY3WG88iiZNMPZc70=
+	b=gJp487AEKAzmZxy7mQKuk+xFTw3GuAwc6KPgVcRzKQ+RYAOrsHekPc9CWpjtHze4K
+	 PAO++edHGhK9vW9SO05MGbOoUdx2jaB72fSMhxd0vUyEsnX4nnM2+2xsViEAJisMuF
+	 YoLJGUVVgISIXQScvqji3/9aCNEazU4/Wd4h4jEc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 64099F8056F; Mon, 17 Jul 2023 23:59:54 +0200 (CEST)
+	id 130A6F80494; Tue, 18 Jul 2023 02:30:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9FEB2F80568;
-	Mon, 17 Jul 2023 23:59:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53765F80494;
+	Tue, 18 Jul 2023 02:30:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9685AF8032D; Mon, 17 Jul 2023 23:59:48 +0200 (CEST)
+	id 452B9F8027B; Tue, 18 Jul 2023 02:30:09 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 723AAF8032D
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 23:59:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 723AAF8032D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2EF72F8027B
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 02:29:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EF72F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=RRo1ob0g
+ header.s=k20201202 header.b=ffFY7WQw
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E8ACB612B4;
-	Mon, 17 Jul 2023 21:59:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 494F2C433C9;
-	Mon, 17 Jul 2023 21:59:35 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id E4EB761371;
+	Tue, 18 Jul 2023 00:29:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E153C433CB;
+	Tue, 18 Jul 2023 00:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689631176;
-	bh=MF2BkyFWl54rd0q27gv9WwRPLimYAj+ZoREQbH9d0Ew=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=RRo1ob0gBJ3IvyK0X5r5oJHQD0gXsvQWIM/kTFkyk3oMxlMmDIVnGNsmkTc8EX81s
-	 YwFHyKN9IZBWECOGKyN4sIUZ4nua7RJA85KimrniJzkeGJVIo7UHdesYIYu/dyrRtO
-	 XmNbeadl/dk7ZO3gugY1X1hNffvHx2qQWZmMHiRjKHerr5IBDEbb9mm8k5TXS9tApx
-	 Es8M2xYn4qfP2J8v7G2FiSkOG+bNJTbEaWAz6Ny65oPkSWx6HWoJtHoFuqbbWVoK3s
-	 cJ+rbYOTM0kZaUv6RDJOs2OTLB53kHbN0S6JkxPNDcNA6X9ulCXrdryI4e5ENR+rPQ
-	 8Pf5jOnUcbskw==
+	s=k20201202; t=1689640195;
+	bh=CrZhbPZ9FwBTokvrtGGOK79L/OJY8CV+5y15IrPndTc=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=ffFY7WQwV/lqerPI7KGjBkdWpPe8ulAGvEL+wXiFTO16y+pNJ9c8f7GOBNJlmpgVS
+	 q1L59AjKvKUptn+tpiXZOAIwGOd8k8jXHPVoaVhPKGy8kEFj4cia9cgNUBKWiGDO2z
+	 BAiMeQtjYsnYltDjmxcygnG0CfiAM56ihDVDIhqNP2f88MzLw/Ak70pMTzBFdxN0Y1
+	 IRlQ9aeEyNfcFQBSFJ51mNms8lHrHPNY9WdKkn+Fbricq6jamNIRxff5kfNBDIYeWH
+	 n2CAPOzyEz1351o5EQZ5vr1eU+wC3ZUSuu1ynu49xdpHbrnqq2xjqNf0+r1HrjaqOM
+	 rgVRgtdH79D7A==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-In-Reply-To: <20230712-asoc-qcom-maple-v1-0-15f8089664b9@kernel.org>
-References: <20230712-asoc-qcom-maple-v1-0-15f8089664b9@kernel.org>
-Subject: Re: [PATCH 0/4] ASoC: qcom: Use the maple tree register cache
-Message-Id: <168963117501.522208.4963318993075097032.b4-ty@kernel.org>
-Date: Mon, 17 Jul 2023 22:59:35 +0100
+Date: Tue, 18 Jul 2023 01:28:42 +0100
+Subject: [PATCH v2 1/5] driver core: Provide stubs for !IOMEM builds
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20230718-asoc-topology-kunit-enable-v2-1-0ee11e662b92@kernel.org>
+References: <20230718-asoc-topology-kunit-enable-v2-0-0ee11e662b92@kernel.org>
+In-Reply-To: 
+ <20230718-asoc-topology-kunit-enable-v2-0-0ee11e662b92@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Brendan Higgins <brendan.higgins@linux.dev>,
+ David Gow <davidgow@google.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
+ kunit-dev@googlegroups.com, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: RPOCFDLZUWBAMNHBXGZWDTFB2NYGUGEO
-X-Message-ID-Hash: RPOCFDLZUWBAMNHBXGZWDTFB2NYGUGEO
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1963; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=CrZhbPZ9FwBTokvrtGGOK79L/OJY8CV+5y15IrPndTc=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBktdz5m2OQFGCRftcMVv/Funt3wXBqKcBsv56oL
+ Laitxdvs3yJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZLXc+QAKCRAk1otyXVSH
+ 0MefB/99za3fuZtdz0rVH5AeHcPCF7GaJTRkzzIhb5WwHhbT8jCNeBK3G8u+r9F0ahtSfH+YHlN
+ 1DcaMJ3qZtpnxkYNNO2VzxP9Z0swluuMgWoN5XbfsjVEyJz4xUkPpcK7J9avwS5Qs/xhm8br2YI
+ tcTu+Gkv56YKzfd/zcpFwU+ep5lRpZG9k9JV+l7VKUVcvkLjuM05U9HD6b79Jv6Fd/kEQTnhA+k
+ FmnRWzn141+lRfXHfXSmHxP8uDsSYB7guASWtRkdW/YAb5IABf8N3kZRC8RmRUpEF7vex++xnEp
+ VHZEv8dGY4WNMrykQUZZOSg862WtTXokJI/I8WxJPsWpv54O
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Message-ID-Hash: YG4CWDVZII3MMHMTPRT4TEPP2S4NSFKP
+X-Message-ID-Hash: YG4CWDVZII3MMHMTPRT4TEPP2S4NSFKP
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RPOCFDLZUWBAMNHBXGZWDTFB2NYGUGEO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YG4CWDVZII3MMHMTPRT4TEPP2S4NSFKP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,43 +110,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 12 Jul 2023 19:29:31 +0100, Mark Brown wrote:
-> The maple tree register cache should now be a good replacement for the
-> rbtree cache in almost all situations, update the Qualcomm CODEC drivers
-> to use the newer cache.
-> 
+The various _ioremap_resource functions are not built when
+CONFIG_HAS_IOMEM is disabled but no stubs are provided. Given how
+widespread IOMEM usage is in drivers and how rare !IOMEM configurations
+are in practical use let's just provide some stubs so users will build
+without having to add explicit dependencies on HAS_IOMEM.
 
-Applied to
+The most likely use case is builds with UML for KUnit testing.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/linux/device.h | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-Thanks!
+diff --git a/include/linux/device.h b/include/linux/device.h
+index bbaeabd04b0d..6731d7dc1a2a 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -349,6 +349,7 @@ unsigned long devm_get_free_pages(struct device *dev,
+ 				  gfp_t gfp_mask, unsigned int order);
+ void devm_free_pages(struct device *dev, unsigned long addr);
+ 
++#ifdef CONFIG_HAS_IOMEM
+ void __iomem *devm_ioremap_resource(struct device *dev,
+ 				    const struct resource *res);
+ void __iomem *devm_ioremap_resource_wc(struct device *dev,
+@@ -357,6 +358,31 @@ void __iomem *devm_ioremap_resource_wc(struct device *dev,
+ void __iomem *devm_of_iomap(struct device *dev,
+ 			    struct device_node *node, int index,
+ 			    resource_size_t *size);
++#else
++
++static inline
++void __iomem *devm_ioremap_resource(struct device *dev,
++				    const struct resource *res)
++{
++	return ERR_PTR(-EINVAL);
++}
++
++static inline
++void __iomem *devm_ioremap_resource_wc(struct device *dev,
++				       const struct resource *res)
++{
++	return ERR_PTR(-EINVAL);
++}
++
++static inline
++void __iomem *devm_of_iomap(struct device *dev,
++			    struct device_node *node, int index,
++			    resource_size_t *size)
++{
++	return ERR_PTR(-EINVAL);
++}
++
++#endif
+ 
+ /* allows to add/remove a custom action to devres stack */
+ void devm_remove_action(struct device *dev, void (*action)(void *), void *data);
 
-[1/4] ASoC: wcd9335: Update to use maple tree register cache
-      commit: 272aedb250cff93c2c25d19db9f4691329238f98
-[2/4] ASoC: wcd938x: Update to use maple tree register cache
-      commit: 8caeeb54d8283601eab27f6d0ca727476cba7f1c
-[3/4] ASoC: wsa881x: Update to use maple tree register cache
-      commit: daf95b06a0615d8b2a6716d14a3b8605b90f1ed2
-[4/4] ASoC: wsa883x: Update to use maple tree register cache
-      commit: e1de05805133d2f2803001b4804d010b6812ca4a
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+2.39.2
 
