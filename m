@@ -4,80 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0E11EB64DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 12:22:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BD5FEB64DA
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 12:32:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0BDBDF1;
-	Tue, 18 Jul 2023 14:21:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0BDBDF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FCD9DEB;
+	Tue, 18 Jul 2023 14:31:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FCD9DEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689682941;
-	bh=5dCL3lDSxIdcSu7OovkLTdDkIjmpDhADik8BCbJVh8k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1689683558;
+	bh=8GMn3j5Bz8xBcYnHZlg6ul/Gyg4GMkCrRKCRbKZYQxc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HB09jy64nDifHdYHbXY2g1TOpqAWdcfML0sHs56cXME2vSuopSv0Gx676mqfo68N6
-	 UaIiqFm/eg0pjlh3Gjt/o7PtRjntBsc0uy/qeOW+F2NJbTgrRGS1CVRDYIT132FVV7
-	 aaj6mr5J5eCkSiB9ku6nhR39FJ9+CqgWmAO0W3TA=
+	b=Tz0FlYxQLToy/Ha8jgyWK94xgtUClC3iVjIfVVdJuGvlDddM2kUVHfXvhBAd78h9L
+	 7/siswUhGboTfChajIz/XRJBrJNydErSxVZCoUWYGMkLfeaz36fmJhVuqbum6VDLFO
+	 JVsXdI5DkHpGHBILF0+SRrNGGHcUY3P56U7vWncY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 50CD2F80558; Tue, 18 Jul 2023 14:20:42 +0200 (CEST)
+	id 56AE9F80527; Tue, 18 Jul 2023 14:31:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94CE1F80548;
-	Tue, 18 Jul 2023 14:20:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88CBDF8032D;
+	Tue, 18 Jul 2023 14:31:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A06EAF8032D; Tue, 18 Jul 2023 13:59:04 +0200 (CEST)
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+	id A0178F8027B; Tue, 18 Jul 2023 14:31:15 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B5928F80153;
-	Tue, 18 Jul 2023 13:59:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5928F80153
-Message-ID: <812760a8-11c4-83af-7071-c16bee3e6900@linux.intel.com>
-Date: Tue, 18 Jul 2023 13:58:58 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: [v2 PATCH 2/2] ALSA: hda/intel: Move snd_hdac_i915_init to before
- probe_work.
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
- linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
-References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
- <20230718084522.116952-6-maarten.lankhorst@linux.intel.com>
- <87h6q1o82l.wl-tiwai@suse.de>
-From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <87h6q1o82l.wl-tiwai@suse.de>
-X-MailFrom: maarten.lankhorst@linux.intel.com
-X-Mailman-Rule-Hits: nonmember-moderation
+	by alsa1.perex.cz (Postfix) with ESMTPS id C7330F8007E
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 14:31:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7330F8007E
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=RymDNfSa;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=uLYybcIK
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id F40C22195A;
+	Tue, 18 Jul 2023 12:31:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1689683465;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KbjvdsHsS1PmNV4JGwm/IUUOXq5JvVmOTqBck+EzJEk=;
+	b=RymDNfSaGPwdSqtX2PwhA7GLLqrSo7DFLn8fHZrcCEzTV4W0ZDaLLD+PJ1FRHPXu5SMgGc
+	nCt9BxL8UUn0v7vXkgWrRRGXhKvEMpKGEpZhbTzb4J41+Iy1tapHlLc4WgIvZLfYjgCvd4
+	UxZ0GdERj5YY6gJk8lQL9178OX7pnZk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1689683465;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KbjvdsHsS1PmNV4JGwm/IUUOXq5JvVmOTqBck+EzJEk=;
+	b=uLYybcIKIBzGtKobmZyQ05Z9kjWOjiLzlEKIt6RmL5oXEsuCP67rph5FANpRa2tXuOmTyU
+	l4Wi0hxzHCF52gDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEE8F134B0;
+	Tue, 18 Jul 2023 12:31:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id sCHNKQiGtmQUSAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 12:31:04 +0000
+Date: Tue, 18 Jul 2023 14:31:04 +0200
+Message-ID: <87351lo0zb.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Amadeusz =?ISO-8859-2?Q?S=B3awi=F1ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,	Mark Brown <broonie@kernel.org>,
+	Takashi Iwai <tiwai@suse.com>,	alsa-devel@alsa-project.org,
+	linux-pci@vger.kernel.org,	linux-kernel@vger.kernel.org,	Cezary Rojewski
+ <cezary.rojewski@intel.com>,	Pierre-Louis Bossart
+ <pierre-louis.bossart@linux.intel.com>,	Kai Vehmanen
+ <kai.vehmanen@linux.intel.com>,	Andy Shevchenko
+ <andriy.shevchenko@intel.com>,	Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>,	Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v4 00/15] PCI: Define Intel PCI IDs and use them in
+ drivers
+In-Reply-To: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
+References: <20230717114511.484999-1-amadeuszx.slawinski@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: S6UHUTZXRKICFGIPCWTIYM5W6ZJAMFZT
+X-Message-ID-Hash: S6UHUTZXRKICFGIPCWTIYM5W6ZJAMFZT
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DR3CY4ALLE4HXDKLOPPZQN27ISFADKOE
-X-Message-ID-Hash: DR3CY4ALLE4HXDKLOPPZQN27ISFADKOE
-X-Mailman-Approved-At: Tue, 18 Jul 2023 12:20:35 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-Content-Filtered-By: Mailman/MimeDel 3.3.8
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DR3CY4ALLE4HXDKLOPPZQN27ISFADKOE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S6UHUTZXRKICFGIPCWTIYM5W6ZJAMFZT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -86,66 +125,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Tm93IHRoYXQgd2UgY2FuIHVzZSAtRVBST0JFX0RFRkVSLCBpdCdzIG5vIGxvbmdlciByZXF1aXJl
-ZCB0byBzcGluIG9mZg0KdGhlIHNuZF9oZGFjX2k5MTVfaW5pdCBpbnRvIGEgd29ya3F1ZXVlLg0K
-DQpVc2UgdGhlIC1FUFJPQkVfREVGRVIgbWVjaGFuaXNtIGluc3RlYWQsIHdoaWNoIG11c3QgYmUg
-cmV0dXJuZWQgaW4gdGhlDQpwcm9iZSBmdW5jdGlvbi4NCg0KQ2hhbmdlcyBzaW5jZSB2MToNCi0g
-VXNlIGRldl9lcnJfcHJvYmUoKQ0KLSBEb24ndCBtb3ZlIHByb2JlZF9kZXZzIGJpdG1hcCB1bm5l
-Y2Vzc2FyaWx5LiAodGl3YWkpDQotIFVzZSBnb3RvIG91dF9henhfZnJlZSBhZnRlciBjbGVhbnVw
-IG9mIGVycm9yIHBhdGguICh0aXdhaSkNCi0gTW92ZSBzbmRfaGRhY19pOTE1X2luaXQgc2xpZ2h0
-bHkgdXB3YXJkLCB0byBlbnN1cmUNCiAgIGl0J3MgYWx3YXlzIGluaXRpYWxpc2VkIGJlZm9yZSB2
-Z2Etc3dpdGNoZXJvbyBpcyBjYWxsZWQuDQoNClNpZ25lZC1vZmYtYnk6IE1hYXJ0ZW4gTGFua2hv
-cnN0PG1hYXJ0ZW4ubGFua2hvcnN0QGxpbnV4LmludGVsLmNvbT4NCi0tLQ0KICBzb3VuZC9wY2kv
-aGRhL2hkYV9pbnRlbC5jIHwgNjAgKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0t
-LS0tDQogIDEgZmlsZSBjaGFuZ2VkLCAzMSBpbnNlcnRpb25zKCspLCAyOSBkZWxldGlvbnMoLSkN
-Cg0KZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMgYi9zb3VuZC9wY2kvaGRh
-L2hkYV9pbnRlbC5jDQppbmRleCAxOTZjYTc2YWM0M2FkLi41OTAzOWExZjAxMDM1IDEwMDY0NA0K
-LS0tIGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYw0KKysrIGIvc291bmQvcGNpL2hkYS9oZGFf
-aW50ZWwuYw0KQEAgLTIxNDcsNiArMjE0NywzNiBAQCBzdGF0aWMgaW50IGF6eF9wcm9iZShzdHJ1
-Y3QgcGNpX2RldiAqcGNpLA0KICANCiAgCXBjaV9zZXRfZHJ2ZGF0YShwY2ksIGNhcmQpOw0KICAN
-CisjaWZkZWYgQ09ORklHX1NORF9IREFfSTkxNQ0KKwkvKiBiaW5kIHdpdGggaTkxNSBpZiBuZWVk
-ZWQgKi8NCisJaWYgKGNoaXAtPmRyaXZlcl9jYXBzICYgQVpYX0RDQVBTX0k5MTVfQ09NUE9ORU5U
-KSB7DQorCQllcnIgPSBzbmRfaGRhY19pOTE1X2luaXQoYXp4X2J1cyhjaGlwKSwgZmFsc2UpOw0K
-KwkJaWYgKGVyciA8IDApIHsNCisJCQkvKiBpZiB0aGUgY29udHJvbGxlciBpcyBib3VuZCBvbmx5
-IHdpdGggSERNSS9EUA0KKwkJCSAqIChmb3IgSFNXIGFuZCBCRFcpLCB3ZSBuZWVkIHRvIGFib3J0
-IHRoZSBwcm9iZTsNCisJCQkgKiBmb3Igb3RoZXIgY2hpcHMsIHN0aWxsIGNvbnRpbnVlIHByb2Jp
-bmcgYXMgb3RoZXINCisJCQkgKiBjb2RlY3MgY2FuIGJlIG9uIHRoZSBzYW1lIGxpbmsuDQorCQkJ
-ICovDQorCQkJaWYgKENPTlRST0xMRVJfSU5fR1BVKHBjaSkpIHsNCisJCQkJZGV2X2Vycl9wcm9i
-ZShjYXJkLT5kZXYsIGVyciwNCisJCQkJCSAgICAgIkhTVy9CRFcgSEQtYXVkaW8gSERNSS9EUCBy
-ZXF1aXJlcyBiaW5kaW5nIHdpdGggZ2Z4IGRyaXZlclxuIik7DQorDQorCQkJCWdvdG8gb3V0X2F6
-eF9mcmVlOw0KKwkJCX0gZWxzZSB7DQorCQkJCS8qIGRvbid0IGJvdGhlciBhbnkgbG9uZ2VyICov
-DQorCQkJCWNoaXAtPmRyaXZlcl9jYXBzICY9IH5BWlhfRENBUFNfSTkxNV9DT01QT05FTlQ7DQor
-CQkJfQ0KKwkJfQ0KKw0KKwkJLyogSFNXL0JEVyBjb250cm9sbGVycyBuZWVkIHRoaXMgcG93ZXIg
-Ki8NCisJCWlmIChDT05UUk9MTEVSX0lOX0dQVShwY2kpKQ0KKwkJCWhkYS0+bmVlZF9pOTE1X3Bv
-d2VyID0gdHJ1ZTsNCisJfQ0KKyNlbHNlDQorCWlmIChDT05UUk9MTEVSX0lOX0dQVShwY2kpKQ0K
-KwkJZGV2X2VycihjYXJkLT5kZXYsICJIYXN3ZWxsL0Jyb2Fkd2VsbCBIRE1JL0RQIG11c3QgYnVp
-bGQgaW4gQ09ORklHX1NORF9IREFfSTkxNVxuIik7DQorI2VuZGlmDQorDQogIAllcnIgPSByZWdp
-c3Rlcl92Z2Ffc3dpdGNoZXJvbyhjaGlwKTsNCiAgCWlmIChlcnIgPCAwKSB7DQogIAkJZGV2X2Vy
-cihjYXJkLT5kZXYsICJFcnJvciByZWdpc3RlcmluZyB2Z2Ffc3dpdGNoZXJvbyBjbGllbnRcbiIp
-Ow0KQEAgLTIxNzQsMTEgKzIyMDUsNiBAQCBzdGF0aWMgaW50IGF6eF9wcm9iZShzdHJ1Y3QgcGNp
-X2RldiAqcGNpLA0KICAJfQ0KICAjZW5kaWYgLyogQ09ORklHX1NORF9IREFfUEFUQ0hfTE9BREVS
-ICovDQogIA0KLSNpZm5kZWYgQ09ORklHX1NORF9IREFfSTkxNQ0KLQlpZiAoQ09OVFJPTExFUl9J
-Tl9HUFUocGNpKSkNCi0JCWRldl9lcnIoY2FyZC0+ZGV2LCAiSGFzd2VsbC9Ccm9hZHdlbGwgSERN
-SS9EUCBtdXN0IGJ1aWxkIGluIENPTkZJR19TTkRfSERBX0k5MTVcbiIpOw0KLSNlbmRpZg0KLQ0K
-ICAJaWYgKHNjaGVkdWxlX3Byb2JlKQ0KICAJCXNjaGVkdWxlX2RlbGF5ZWRfd29yaygmaGRhLT5w
-cm9iZV93b3JrLCAwKTsNCiAgDQpAQCAtMjI3NywzMCArMjMwMyw2IEBAIHN0YXRpYyBpbnQgYXp4
-X3Byb2JlX2NvbnRpbnVlKHN0cnVjdCBhenggKmNoaXApDQogIAl0b19oZGFfYnVzKGJ1cyktPmJ1
-c19wcm9iaW5nID0gMTsNCiAgCWhkYS0+cHJvYmVfY29udGludWVkID0gMTsNCiAgDQotCS8qIGJp
-bmQgd2l0aCBpOTE1IGlmIG5lZWRlZCAqLw0KLQlpZiAoY2hpcC0+ZHJpdmVyX2NhcHMgJiBBWlhf
-RENBUFNfSTkxNV9DT01QT05FTlQpIHsNCi0JCWVyciA9IHNuZF9oZGFjX2k5MTVfaW5pdChidXMs
-IHRydWUpOw0KLQkJaWYgKGVyciA8IDApIHsNCi0JCQkvKiBpZiB0aGUgY29udHJvbGxlciBpcyBi
-b3VuZCBvbmx5IHdpdGggSERNSS9EUA0KLQkJCSAqIChmb3IgSFNXIGFuZCBCRFcpLCB3ZSBuZWVk
-IHRvIGFib3J0IHRoZSBwcm9iZTsNCi0JCQkgKiBmb3Igb3RoZXIgY2hpcHMsIHN0aWxsIGNvbnRp
-bnVlIHByb2JpbmcgYXMgb3RoZXINCi0JCQkgKiBjb2RlY3MgY2FuIGJlIG9uIHRoZSBzYW1lIGxp
-bmsuDQotCQkJICovDQotCQkJaWYgKENPTlRST0xMRVJfSU5fR1BVKHBjaSkpIHsNCi0JCQkJZGV2
-X2VycihjaGlwLT5jYXJkLT5kZXYsDQotCQkJCQkiSFNXL0JEVyBIRC1hdWRpbyBIRE1JL0RQIHJl
-cXVpcmVzIGJpbmRpbmcgd2l0aCBnZnggZHJpdmVyXG4iKTsNCi0JCQkJZ290byBvdXRfZnJlZTsN
-Ci0JCQl9IGVsc2Ugew0KLQkJCQkvKiBkb24ndCBib3RoZXIgYW55IGxvbmdlciAqLw0KLQkJCQlj
-aGlwLT5kcml2ZXJfY2FwcyAmPSB+QVpYX0RDQVBTX0k5MTVfQ09NUE9ORU5UOw0KLQkJCX0NCi0J
-CX0NCi0NCi0JCS8qIEhTVy9CRFcgY29udHJvbGxlcnMgbmVlZCB0aGlzIHBvd2VyICovDQotCQlp
-ZiAoQ09OVFJPTExFUl9JTl9HUFUocGNpKSkNCi0JCQloZGEtPm5lZWRfaTkxNV9wb3dlciA9IHRy
-dWU7DQotCX0NCi0NCiAgCS8qIFJlcXVlc3QgZGlzcGxheSBwb3dlciB3ZWxsIGZvciB0aGUgSERB
-IGNvbnRyb2xsZXIgb3IgY29kZWMuIEZvcg0KICAJICogSGFzd2VsbC9Ccm9hZHdlbGwsIGJvdGgg
-dGhlIGRpc3BsYXkgSERBIGNvbnRyb2xsZXIgYW5kIGNvZGVjIG5lZWQNCiAgCSAqIHRoaXMgcG93
-ZXIuIEZvciBvdGhlciBwbGF0Zm9ybXMsIGxpa2UgQmF5dHJhaWwvQnJhc3dlbGwsIG9ubHkgdGhl
-DQotLSANCjIuMzkuMg0KDQo=
+On Mon, 17 Jul 2023 13:44:56 +0200,
+Amadeusz S³awiñski wrote:
+> 
+> PCI IDs for Intel HDA are duplicated across quite a few drivers, due to
+> various configurations and historical reasons. Currently almost all uses
+> of HDA PCI IDs have corresponding comment telling which platform it is.
+> Additionally there are some inconsistencies between drivers about which
+> ID corresponds to which device.
+> 
+> Simplify things, by adding PCI IDs to global header and make use of them
+> in drivers. This allows for removal of comments by having IDs themselves
+> being self explanatory. Additionally it allows for removal of existing
+> inconsistencies by having one source of truth.
+> 
+> Changes from v3:
+>  - Fix double space in commit message title (Ilpo)
+>  - Comment ACPI/PCI ID handling in Atom SST driver (Andy)
+>  - Rebased once again and used --base this time (Andy)
+> 
+> Changes from v2:
+>  - Change CHV to BSW (Andy)
+>  - Fix incorrectly rebased patches (Andy)
+>  - Fix commit message and add suggestions from Andy to SST patch (Andy)
+>  - Rebased on top of Linus tree commit: 4b810bf037e5
+> 
+> Changes from v1:
+>  - Remove BXT-T PCI ID as it is not released (Andy)
+>  - Reorder macros to start from pci_match_id() (Andy)
+>  - Add comment about BXT->APL name change in commit messages (Andy)
+>  - Use SST as part of macro name for DSP only devices (Andy)
+>  - Add PCI IDs for all SST combinations (Andy)
+> 
+> Changes from RFC:
+>  - Sort Intel PCI IDs before adding new ones
+>  - Fix ordering of new PCI IDs (Andy)
+>  - Define all used Intel IDs (Andy)
+>  - Add macros for controller type detection (Andy/Bjorn)
+>  - Add set of patches changing to use above macro (Andy/Bjorn)
+>  - Use PCI_DEVICE_DATA for Intel IDs in sound/pci/hda/hda_intel.c (Andy)
+>  - Commit message wording (Andy)
+>  - Remove unnecessary tabs (Andy)
+> 
+> Amadeusz S³awiñski (15):
+>   PCI: Sort Intel PCI IDs by number
+>   PCI: Add Intel Audio DSP devices to pci_ids.h
+>   ASoC: SOF: Remove unused Broxton PCI ID
+>   ALSA: Remove unused Broxton PCI ID
+>   ALSA: hda: Add controller matching macros
+>   ALSA: hda: Use global PCI match macro
+>   ALSA: hda/i915: Use global PCI match macro
+>   ASoC: Intel: Skylake: Use global PCI match macro
+>   ALSA: intel-dsp-config: Convert to PCI device IDs defines
+>   ALSA: hda: Convert to PCI device IDs defines
+>   ASoC: Intel: avs: Convert to PCI device IDs defines
+>   ASoC: Intel: avs: Convert to PCI device IDs defines
+>   ASoC: Intel: Skylake: Convert to PCI device IDs defines
+>   ASoC: SOF: Intel: Convert to PCI device IDs defines
+>   ASoC: Intel: sst: Convert to PCI device IDs defines
+
+Now applied all to sound.git tree, merged to for-next branch.
+
+I pushed a signed tag hda-pci-ids including those (based on 6.5-rc2).
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/hda-pci-ids
+
+Feel free to merge to other trees.
+
+
+thanks,
+
+Takashi
