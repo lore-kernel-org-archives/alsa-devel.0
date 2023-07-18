@@ -4,123 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 625B9EB64DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 12:18:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BFD6EB64DC
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 12:21:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E97B5AEA;
-	Tue, 18 Jul 2023 14:17:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E97B5AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 600D8AEA;
+	Tue, 18 Jul 2023 14:21:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 600D8AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689682730;
-	bh=fMRSVg/Lxjchh257ZeJ6r5vcPqTs5Cbp/lHd/4v9vlA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1689682916;
+	bh=Ri0zfK2hY4L0jOIG1zMaup7ETnipgavpYVEb/UyrYGw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QhxSof4OHG9omkmhoLPW7gpGAqP/hk0QAzYQbtuN4N40dopNxEJ6QIt4s9Z4jloBm
-	 DirJFTCDWglllPp4m/Vw7Z+0/Wf7b91OizglzCkRH+bvL7UUr0FssxUj7vfolCC7OA
-	 nhfMsVBkIw/phfBxJRuAEZrUEcARMNBBrOjOXblk=
+	b=KUnZ9beUIbkfFSAy16sQbVBoPGPjH3a2sUlKgPLvh+dUM9wAjovMVY5x+29k3LLnx
+	 LZtulSp+6K9wZXPIdklMyMpNd8Ntpd5c1ZuIkqP5+jO6u6C5PZ//yhK2RW6knBLsKk
+	 8vnYQsS0r8vmEtuu/AeUL/ZdJ2efihEtf3dz8HEg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F188F80535; Tue, 18 Jul 2023 14:17:48 +0200 (CEST)
+	id 38B6FF80527; Tue, 18 Jul 2023 14:20:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6EFEF8032D;
-	Tue, 18 Jul 2023 14:17:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D22B2F800D2;
+	Tue, 18 Jul 2023 14:20:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3A096F8032D; Tue, 18 Jul 2023 14:17:43 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id DAFA7F8032D; Tue, 18 Jul 2023 13:57:44 +0200 (CEST)
+Received: from mblankhorst.nl (lankhorst.se
+ [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D350F800D2;
-	Tue, 18 Jul 2023 14:17:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D350F800D2
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xynSjjn5;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=6vItAQ41
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1345221954;
-	Tue, 18 Jul 2023 12:17:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1689682656;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4TdEhciiSwsv5vinAbnDrmrQzodZb9a+RU42WAAQt0M=;
-	b=xynSjjn5vO58svXXYtRPzXTmqfuY8J/pBE2ZwCwpX6QGrZsy64IEF81aYnFjt8ghkcL1I2
-	8nVyxCoz1z+tHbV4Tx/r2p4j1ZihUw244OmvgBT7HvA9Fdjy9GHF/dm76wrUedFQc0CvWA
-	6bdeul9ncCG8FKuQnj7GzkBMPot/VxU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689682656;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4TdEhciiSwsv5vinAbnDrmrQzodZb9a+RU42WAAQt0M=;
-	b=6vItAQ41n5VLJt25wmWVdXqagnbDSsn7dzfymZpluHCe/p20Cnhrn/aFlX86UgESy2LzkJ
-	ZDrcARvCW4EKOlAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7127134B0;
-	Tue, 18 Jul 2023 12:17:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id FhivK9+CtmTnQAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 12:17:35 +0000
-Date: Tue, 18 Jul 2023 14:17:35 +0200
-Message-ID: <877cqxo1ls.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: alsa-devel@alsa-project.org,
-	sound-open-firmware@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Mark Brown
- <broonie@kernel.org>,
-	Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [v2 PATCH 1/2] ALSA: hda/intel: Fix error handling in azx_probe()
-In-Reply-To: <2a727311-46d8-e999-1461-2ed2f1b704e0@linux.intel.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 62E0EF80153;
+	Tue, 18 Jul 2023 13:57:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62E0EF80153
+Message-ID: <2a727311-46d8-e999-1461-2ed2f1b704e0@linux.intel.com>
+Date: Tue, 18 Jul 2023 13:57:33 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: [v2 PATCH 1/2] ALSA: hda/intel: Fix error handling in azx_probe()
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
+ linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
 References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
-	<20230718084522.116952-6-maarten.lankhorst@linux.intel.com>
-	<87h6q1o82l.wl-tiwai@suse.de>
-	<2a727311-46d8-e999-1461-2ed2f1b704e0@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: ITXQZ2NTZJUENETCJEAAD4SBXRG7WQ37
-X-Message-ID-Hash: ITXQZ2NTZJUENETCJEAAD4SBXRG7WQ37
-X-MailFrom: tiwai@suse.de
+ <20230718084522.116952-6-maarten.lankhorst@linux.intel.com>
+ <87h6q1o82l.wl-tiwai@suse.de>
+Content-Language: en-US
+From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <87h6q1o82l.wl-tiwai@suse.de>
+X-MailFrom: maarten.lankhorst@linux.intel.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 7M4626CXOGU7WT4G3ASP3WE3K4PL6MEA
+X-Message-ID-Hash: 7M4626CXOGU7WT4G3ASP3WE3K4PL6MEA
+X-Mailman-Approved-At: Tue, 18 Jul 2023 12:20:35 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Content-Filtered-By: Mailman/MimeDel 3.3.8
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ITXQZ2NTZJUENETCJEAAD4SBXRG7WQ37/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7M4626CXOGU7WT4G3ASP3WE3K4PL6MEA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,64 +86,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 18 Jul 2023 13:57:33 +0200,
-Maarten Lankhorst wrote:
-> 
-> 
-> Make sure azx is freed after azx_create() succeeded and an error was
-> encountered.
-> 
-> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> ---
->  sound/pci/hda/hda_intel.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 5af1138e745bc..196ca76ac43ad 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -2150,7 +2150,7 @@ static int azx_probe(struct pci_dev *pci,
->                       err = register_vga_switcheroo(chip);
->                       if (err < 0) {
->                                             dev_err(card->dev, "Error registering vga_switcheroo client\n");
-> -                                           goto out_free;
-> +                                           goto out_azx_free;
->                       }
->  
->                       if (check_hdmi_disabled(pci)) {
-> @@ -2169,7 +2169,7 @@ static int azx_probe(struct pci_dev *pci,
->                                                                                                                     &pci->dev, GFP_KERNEL, card,
->                                                                                                                     azx_firmware_cb);
->                                             if (err < 0)
-> -                                                                 goto out_free;
-> +                                                                 goto out_azx_free;
->                                             schedule_probe = false; /* continued in azx_firmware_cb() */
->                       }
->  #endif /* CONFIG_SND_HDA_PATCH_LOADER */
-> @@ -2187,6 +2187,9 @@ static int azx_probe(struct pci_dev *pci,
->                                             complete_all(&hda->probe_wait);
->                       return 0;
->  
-> +out_azx_free:
-> +                     azx_free(chip);
-
-This is superfluous.  Once when azx_create() succeeds, azx_free() is
-called from snd_card_free().  That is...
-
-> +                     pci_set_drvdata(pci, NULL);
-
-... only this call was missing.  And this can be put under out_free 
-label, as this is safe to call at any exit path.  So, it'll be a
-oneliner patch.
-
-
-thanks,
-
-Takashi
-
->  out_free:
->                       snd_card_free(card);
->                       return err;
-> -- 
-> 2.39.2
-> 
+SGV5LA0KDQpPbiAyMDIzLTA3LTE4IDExOjU3LCBUYWthc2hpIEl3YWkgd3JvdGU6DQo+IE9uIFR1
+ZSwgMTggSnVsIDIwMjMgMTA6NDU6MjAgKzAyMDAsDQo+IE1hYXJ0ZW4gTGFua2hvcnN0IHdyb3Rl
+Og0KPj4gTm93IHRoYXQgd2UgY2FuIHVzZSAtRVBST0JFX0RFRkVSLCBpdCdzIG5vIGxvbmdlciBy
+ZXF1aXJlZCB0byBzcGluIG9mZg0KPj4gdGhlIHNuZF9oZGFjX2k5MTVfaW5pdCBpbnRvIGEgd29y
+a3F1ZXVlLg0KPj4NCj4+IFVzZSB0aGUgLUVQUk9CRV9ERUZFUiBtZWNoYW5pc20gaW5zdGVhZCwg
+d2hpY2ggbXVzdCBiZSByZXR1cm5lZCBpbiB0aGUNCj4+IHByb2JlIGZ1bmN0aW9uLg0KPj4NCj4+
+IFNpZ25lZC1vZmYtYnk6IE1hYXJ0ZW4gTGFua2hvcnN0PG1hYXJ0ZW4ubGFua2hvcnN0QGxpbnV4
+LmludGVsLmNvbT4NCj4+IC0tLQ0KPj4gICBzb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jIHwgNTgg
+KysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tDQo+PiAgIDEgZmlsZSBjaGFu
+Z2VkLCAzMSBpbnNlcnRpb25zKCspLCAyNyBkZWxldGlvbnMoLSkNCj4+DQo+PiBkaWZmIC0tZ2l0
+IGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMN
+Cj4+IGluZGV4IDVhZjExMzhlNzQ1YmMuLmQ0MDM0NWEwMDg4ZDggMTAwNjQ0DQo+PiAtLS0gYS9z
+b3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jDQo+PiArKysgYi9zb3VuZC9wY2kvaGRhL2hkYV9pbnRl
+bC5jDQo+PiBAQCAtMjEzLDYgKzIxMyw3IEBAIE1PRFVMRV9ERVNDUklQVElPTigiSW50ZWwgSERB
+IGRyaXZlciIpOw0KPj4gICAjZW5kaWYNCj4+ICAgI2VuZGlmDQo+PiAgIA0KPj4gK3N0YXRpYyBE
+RUNMQVJFX0JJVE1BUChwcm9iZWRfZGV2cywgU05EUlZfQ0FSRFMpOw0KPj4gICANCj4+ICAgLyoN
+Cj4+ICAgICovDQo+PiBAQCAtMjA5NCw4ICsyMDk1LDYgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBo
+ZGFfY29udHJvbGxlcl9vcHMgcGNpX2hkYV9vcHMgPSB7DQo+PiAgIAkucG9zaXRpb25fY2hlY2sg
+PSBhenhfcG9zaXRpb25fY2hlY2ssDQo+PiAgIH07DQo+PiAgIA0KPj4gLXN0YXRpYyBERUNMQVJF
+X0JJVE1BUChwcm9iZWRfZGV2cywgU05EUlZfQ0FSRFMpOw0KPj4gLQ0KPj4gICBzdGF0aWMgaW50
+IGF6eF9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGNpLA0KPj4gICAJCSAgICAgY29uc3Qgc3RydWN0
+IHBjaV9kZXZpY2VfaWQgKnBjaV9pZCkNCj4+ICAgew0KPiBBbnkgc3BlY2lmaWMgcmVhc29uIHRv
+IG1vdmUgdGhlIGRlZmluaXRpb24/ICBPdGhlcndpc2UgbGV0J3MNCj4gY29uY2VudHJhdGUgb24g
+dGhlIG5lZWRlZCBjaGFuZ2UuDQoNCk9yaWdpbmFsbHkgSSBtb3ZlZCB0aGUgY2h1bmsgdG8gYXp4
+X2NyZWF0ZSgpLCBidXQgSSBmZWx0IGl0IHdhcyB0aGUgDQp3cm9uZyBwbGFjZS4gRml4ZWQgbm93
+Lg0KDQo+DQo+PiBAQCAtMjE3NCw3ICsyMTczLDM2IEBAIHN0YXRpYyBpbnQgYXp4X3Byb2JlKHN0
+cnVjdCBwY2lfZGV2ICpwY2ksDQo+PiAgIAl9DQo+PiAgICNlbmRpZiAvKiBDT05GSUdfU05EX0hE
+QV9QQVRDSF9MT0FERVIgKi8NCj4+ICAgDQo+PiAtI2lmbmRlZiBDT05GSUdfU05EX0hEQV9JOTE1
+DQo+PiArI2lmZGVmIENPTkZJR19TTkRfSERBX0k5MTUNCj4+ICsJLyogYmluZCB3aXRoIGk5MTUg
+aWYgbmVlZGVkICovDQo+PiArCWlmIChjaGlwLT5kcml2ZXJfY2FwcyAmIEFaWF9EQ0FQU19JOTE1
+X0NPTVBPTkVOVCkgew0KPj4gKwkJZXJyID0gc25kX2hkYWNfaTkxNV9pbml0KGF6eF9idXMoY2hp
+cCksIGZhbHNlKTsNCj4+ICsJCWlmIChlcnIgPCAwKSB7DQo+PiArCQkJLyogaWYgdGhlIGNvbnRy
+b2xsZXIgaXMgYm91bmQgb25seSB3aXRoIEhETUkvRFANCj4+ICsJCQkgKiAoZm9yIEhTVyBhbmQg
+QkRXKSwgd2UgbmVlZCB0byBhYm9ydCB0aGUgcHJvYmU7DQo+PiArCQkJICogZm9yIG90aGVyIGNo
+aXBzLCBzdGlsbCBjb250aW51ZSBwcm9iaW5nIGFzIG90aGVyDQo+PiArCQkJICogY29kZWNzIGNh
+biBiZSBvbiB0aGUgc2FtZSBsaW5rLg0KPj4gKwkJCSAqLw0KPj4gKwkJCWlmIChDT05UUk9MTEVS
+X0lOX0dQVShwY2kpKSB7DQo+PiArCQkJCWlmIChlcnIgIT0gLUVQUk9CRV9ERUZFUikNCj4+ICsJ
+CQkJCWRldl9lcnIoY2FyZC0+ZGV2LA0KPj4gKwkJCQkJCSJIU1cvQkRXIEhELWF1ZGlvIEhETUkv
+RFAgcmVxdWlyZXMgYmluZGluZyB3aXRoIGdmeCBkcml2ZXJcbiIpOw0KPj4gKw0KPj4gKwkJCQlj
+bGVhcl9iaXQoY2hpcC0+ZGV2X2luZGV4LCBwcm9iZWRfZGV2cyk7DQo+PiArCQkJCXBjaV9zZXRf
+ZHJ2ZGF0YShwY2ksIE5VTEwpOw0KPj4gKwkJCQlzbmRfZGV2aWNlX2ZyZWUoY2FyZCwgY2hpcCk7
+DQo+PiArCQkJCXJldHVybiBlcnI7DQo+IFRoaXMgbWF5IGxlYWsgcmVzb3VyY2VzLCBJJ20gYWZy
+YWlkLg0KPg0KPiBIZXJlIHlvdSBqdXN0IG5lZWQgdG8gImdvdG8gb3V0X2ZyZWU7IiBpbnN0ZWFk
+IG9mIG1hbnVhbCByZXNvdXJjZQ0KPiByZWxlYXNlcywgd2hpY2ggZXZlbnR1YWxseSBjYWxscyBz
+bmRfY2FyZF9mcmVlKCksIGFuZCB0aGF0J3MgYWxsLg0KPg0KPiAoVGhvdWdoLCBwY2lfc2V0X2Ry
+dmRhdGEocGNpLCBOVUxMKSBtaWdodCBiZSBzdGlsbCBtaXNzaW5nOyBidXQgaXQncw0KPiAgIG5v
+dCBvbmx5IGZvciB0aGlzIGNoYW5nZSwgYW5kIHdlJ2xsIG5lZWQgdG8gYWRkcmVzcyBpdCBpbiBh
+bm90aGVyDQo+ICAgcGF0Y2guKQ0KDQpnaXQgYW0gLS1zY2lzc29ycyBwYXRjaCBiZWxvdyBmb3Ig
+Y2xlYW51cCBvZiBlcnJvciBwYXRoLg0KDQpJdCBzZWVtcyBhenhfZnJlZSB3aWxsIHVucmVnaXN0
+ZXIgZnJvbSB2Z2Ffc3dpdGNoZXJvbyBzYWZlbHkuDQoNCi0tLS0tLS0tLS0tLT44LS0tDQoNCk1h
+a2Ugc3VyZSBhenggaXMgZnJlZWQgYWZ0ZXIgYXp4X2NyZWF0ZSgpIHN1Y2NlZWRlZCBhbmQgYW4g
+ZXJyb3Igd2FzDQplbmNvdW50ZXJlZC4NCg0KU2lnbmVkLW9mZi1ieTogTWFhcnRlbiBMYW5raG9y
+c3Q8bWFhcnRlbi5sYW5raG9yc3RAbGludXguaW50ZWwuY29tPg0KLS0tDQogIHNvdW5kL3BjaS9o
+ZGEvaGRhX2ludGVsLmMgfCA3ICsrKysrLS0NCiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9u
+cygrKSwgMiBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvaGRhX2lu
+dGVsLmMgYi9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jDQppbmRleCA1YWYxMTM4ZTc0NWJjLi4x
+OTZjYTc2YWM0M2FkIDEwMDY0NA0KLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYw0KKysr
+IGIvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYw0KQEAgLTIxNTAsNyArMjE1MCw3IEBAIHN0YXRp
+YyBpbnQgYXp4X3Byb2JlKHN0cnVjdCBwY2lfZGV2ICpwY2ksDQogIAllcnIgPSByZWdpc3Rlcl92
+Z2Ffc3dpdGNoZXJvbyhjaGlwKTsNCiAgCWlmIChlcnIgPCAwKSB7DQogIAkJZGV2X2VycihjYXJk
+LT5kZXYsICJFcnJvciByZWdpc3RlcmluZyB2Z2Ffc3dpdGNoZXJvbyBjbGllbnRcbiIpOw0KLQkJ
+Z290byBvdXRfZnJlZTsNCisJCWdvdG8gb3V0X2F6eF9mcmVlOw0KICAJfQ0KICANCiAgCWlmIChj
+aGVja19oZG1pX2Rpc2FibGVkKHBjaSkpIHsNCkBAIC0yMTY5LDcgKzIxNjksNyBAQCBzdGF0aWMg
+aW50IGF6eF9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGNpLA0KICAJCQkJCSAgICAgICZwY2ktPmRl
+diwgR0ZQX0tFUk5FTCwgY2FyZCwNCiAgCQkJCQkgICAgICBhenhfZmlybXdhcmVfY2IpOw0KICAJ
+CWlmIChlcnIgPCAwKQ0KLQkJCWdvdG8gb3V0X2ZyZWU7DQorCQkJZ290byBvdXRfYXp4X2ZyZWU7
+DQogIAkJc2NoZWR1bGVfcHJvYmUgPSBmYWxzZTsgLyogY29udGludWVkIGluIGF6eF9maXJtd2Fy
+ZV9jYigpICovDQogIAl9DQogICNlbmRpZiAvKiBDT05GSUdfU05EX0hEQV9QQVRDSF9MT0FERVIg
+Ki8NCkBAIC0yMTg3LDYgKzIxODcsOSBAQCBzdGF0aWMgaW50IGF6eF9wcm9iZShzdHJ1Y3QgcGNp
+X2RldiAqcGNpLA0KICAJCWNvbXBsZXRlX2FsbCgmaGRhLT5wcm9iZV93YWl0KTsNCiAgCXJldHVy
+biAwOw0KICANCitvdXRfYXp4X2ZyZWU6DQorCWF6eF9mcmVlKGNoaXApOw0KKwlwY2lfc2V0X2Ry
+dmRhdGEocGNpLCBOVUxMKTsNCiAgb3V0X2ZyZWU6DQogIAlzbmRfY2FyZF9mcmVlKGNhcmQpOw0K
+ICAJcmV0dXJuIGVycjsNCi0tIA0KMi4zOS4yDQoNCg==
