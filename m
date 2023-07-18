@@ -4,116 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA6DBEB64DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 06:26:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA1C1EB64DD
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 06:27:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2A77E10;
-	Tue, 18 Jul 2023 08:25:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2A77E10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EA8BE0F;
+	Tue, 18 Jul 2023 08:26:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EA8BE0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689661609;
-	bh=IImFXttQY2Rw8q8SKFP7CyUFqLmZz9d6WNBvhWGXTQA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1689661623;
+	bh=lRAf8pvgVJE37sbYG4AkQgI1mkzEm8ZxZlvvn5AiZxs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=u7dE0IK1AgU0YJRGVXsG/9vDeyRVw+Q3xm3hfIINlZZKJJ0qtEkRWLyR3Do2YrRmK
-	 jilCkso92oAuIoJVvWAEoefJ7QYGlt73oaLaJpi72wYQypdQv5ftC2xQfBZPJB6lbS
-	 Q/gwe3qD2z8i0jyZspZkDApVKlh+XlGcydPJWxxM=
+	b=UVnAT+TIjQ3nBdXN+Xsax90rYg0IP9ca94tkX42rCZcWq/RrWK0QFj5y6yMV+KPLF
+	 539P6bKv9wx7XxPaYHEiqfl8NTURoJkV30a3KiGybF9RVHsaLq+/K402JFRFG07s7j
+	 yka5ReDiQ022LLTSATvUSRY7PkfEKO/S8UJFMUR8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17108F8056F; Tue, 18 Jul 2023 08:25:03 +0200 (CEST)
+	id A07B6F80587; Tue, 18 Jul 2023 08:25:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC512F80564;
-	Tue, 18 Jul 2023 08:25:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5DE6BF80579;
+	Tue, 18 Jul 2023 08:25:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 852F2F8047D; Mon, 17 Jul 2023 21:38:32 +0200 (CEST)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 863EDF8032D; Tue, 18 Jul 2023 03:02:31 +0200 (CEST)
+Received: from mail.208.org (unknown [183.242.55.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 39ABEF8007E
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2023 21:38:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39ABEF8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id DD2C2F80153
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 03:02:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD2C2F80153
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=semihalf.com header.i=@semihalf.com header.a=rsa-sha256
- header.s=google header.b=SXlAzV3t
-Received: by mail-lf1-x130.google.com with SMTP id
- 2adb3069b0e04-4f95bf5c493so7763848e87.3
-        for <alsa-devel@alsa-project.org>;
- Mon, 17 Jul 2023 12:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1689622699; x=1692214699;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k0jx6KDLfrX0Uj2uqeAAYsN7zB5TQ1Hj76wJYAksz0s=;
-        b=SXlAzV3tbaSQ6pNe0nZHU/rEvYdEXgPHQJctTCRlEfb/0NE9pSyD9zDF/VkZJL2i4/
-         eQ3sYSGI+4dqA4+g95uJuENy9nwxOOyokDFM58PvZ+4WAMNjIx5nolWcpO+F++L6sOEZ
-         Y6iA3CgI4pl35+37ysCrwfiP6RkmtmKRolT2EaoATJHeT8r4YLbYmN1eIex3HwZqrm6T
-         labJ3mUnxRTBqjczKBwHI3qoz6PdQhoYMKn+l2tWbuHuhj4Mkv3UK+cT7RHvi0Kh4p+u
-         eXexdLt6OdcH1Iz3EB8R+4IVD0KU2GstELMILGAOUKzOwaLDJ4tUeT6alWHDl3IkvbMB
-         w//w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689622699; x=1692214699;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k0jx6KDLfrX0Uj2uqeAAYsN7zB5TQ1Hj76wJYAksz0s=;
-        b=ELT+uT7A5KsjGR/QK41ZvXBjuuTsX/qA+SBEq1Ufs+XzNj3DPYzXvaafdw5FT4fS+V
-         HWTgQhkyEQfk0p+cmzCKEjXV58P9uwDgBvBVvJL7E/RyrHvRt9LTNWMS9rzRxecyaAv7
-         bG5gViKoR81Iu9aRWHyakYzRPQ36PzEWmXgAdAuuFXnLcFVjNr0Eojb+tReLm9W4QZqX
-         MsS/4kN9VKgGAhbD+6tzEZpQM1Tw4mPx6uyNhvyfvu7sFSC0GM4u8U76mIoEh/44kr0s
-         KpRvRXJYos7iGaPzRabWYfcvnjT1ZDZuEU3mMnbWEMgwTAXN3kzQKGMVY6zEImObEiln
-         pIPQ==
-X-Gm-Message-State: ABy/qLYOsqyl83UiI3os6a/HJk2ozoOmpjMTAQxEmgPpdyK99QCaq1Iv
-	czIKFqo/E6kvfruIYf0NSfSt7g==
-X-Google-Smtp-Source: 
- APBJJlEtjryDAdE+QG1MLzFBSi5+Jxhgb3m6oKz8AiiWmVh0moF12fgKoo9kSySXXvqOeme9Zu71zQ==
-X-Received: by 2002:ac2:51ae:0:b0:4f9:607a:6508 with SMTP id
- f14-20020ac251ae000000b004f9607a6508mr8024325lfk.50.1689622698911;
-        Mon, 17 Jul 2023 12:38:18 -0700 (PDT)
-Received: from dmaluka.office.semihalf.net ([83.142.187.84])
-        by smtp.gmail.com with ESMTPSA id
- e5-20020ac25465000000b004fb75943ab3sm53124lfn.258.2023.07.17.12.38.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 12:38:18 -0700 (PDT)
-From: Dmytro Maluka <dmy@semihalf.com>
-To: Support Opensource <support.opensource@diasemi.com>,
-	DLG Support Opensource <DLG-Support.Opensource@lm.renesas.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Cc: Dmytro Maluka <dmy@semihalf.com>
-Subject: [PATCH 1/2] ASoC: da7219: Flush pending AAD IRQ when suspending
-Date: Mon, 17 Jul 2023 21:37:36 +0200
-Message-ID: <20230717193737.161784-2-dmy@semihalf.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-In-Reply-To: <20230717193737.161784-1-dmy@semihalf.com>
-References: <20230717193737.161784-1-dmy@semihalf.com>
+	dkim=fail reason="unknown key version" header.d=208.org header.i=@208.org
+ header.a=rsa-sha256 header.s=dkim header.b=CJh2plWW
+Received: from mail.208.org (email.208.org [127.0.0.1])
+	by mail.208.org (Postfix) with ESMTP id 4R4gdw57XyzBQsl6
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 09:02:12 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+	reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+	content-transfer-encoding:content-type:message-id:user-agent
+	:references:in-reply-to:subject:to:from:date:mime-version; s=
+	dkim; t=1689642131; x=1692234132; bh=lRAf8pvgVJE37sbYG4AkQgI1mkz
+	Em8ZxZlvvn5AiZxs=; b=CJh2plWWnXG1MKV0UKNjkuHRJ0wLe6z6hFnwFQQStU7
+	49O9PtNtbw42uTTAVyQtwY4aEmzsEcz9Ix6czkui+hE47HWfM7f4ls44TCnojvNl
+	YEKamI8gehhEefX5af6rKJ16qwF68Rve/TjGOy3GKErh1rA6GmvM62x9cPiHmkB8
+	PLvi2gtCRd0LeO+vIROMxkIs9wkrTS09w6FptD481u53gwrfZUAMHvP6F62SmqdJ
+	LMH9hA/o8WiLhFAWbW786EfddrtdNzBGcDZQJsHG2AKdyfCrxnCy/7t+iAc/cq88
+	L+0QMFaC8szF1CnUyumvx5/O1eg8WYszJdJlIpI2BQA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+	by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id oC0XdwHLBgHn for <alsa-devel@alsa-project.org>;
+	Tue, 18 Jul 2023 09:02:11 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+	by mail.208.org (Postfix) with ESMTPSA id 4R4gdv4YTZzBQsl1;
+	Tue, 18 Jul 2023 09:02:11 +0800 (CST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: dmy@semihalf.com
+Date: Tue, 18 Jul 2023 09:02:11 +0800
+From: shijie001@208suo.com
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: gus: Fix errors in gus_mem.c
+In-Reply-To: <tencent_A8FDB76658AA971B46D1614E4FE8F214FE08@qq.com>
+References: <tencent_A8FDB76658AA971B46D1614E4FE8F214FE08@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <49700e1a2452104bb89fcdca291fd429@208suo.com>
+X-Sender: shijie001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: shijie001@208suo.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 7RJHFKCCLXZPBGUTTQ4Z3FFNFQE3TLPC
-X-Message-ID-Hash: 7RJHFKCCLXZPBGUTTQ4Z3FFNFQE3TLPC
+Message-ID-Hash: TRYQBXTOR7GLUWDDLZFYUAKOMUREVP4V
+X-Message-ID-Hash: TRYQBXTOR7GLUWDDLZFYUAKOMUREVP4V
 X-Mailman-Approved-At: Tue, 18 Jul 2023 06:23:17 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7RJHFKCCLXZPBGUTTQ4Z3FFNFQE3TLPC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TRYQBXTOR7GLUWDDLZFYUAKOMUREVP4V/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,68 +99,129 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-da7219_aad_suspend() disables jack detection, which should prevent
-generating new interrupts by DA7219 while suspended. However, there is a
-theoretical possibility that there is a pending interrupt generated just
-before suspending DA7219 and not handled yet, so the IRQ handler may
-still run after DA7219 is suspended. To prevent that, wait until the
-pending IRQ handling is done.
+The following checkpatch errors are removed:
+ERROR: trailing whitespace
+ERROR: "foo * bar" should be "foo *bar"
 
-This patch arose as an attempt to fix the following I2C failure
-occurring sometimes during system suspend or resume:
-
-[  355.876211] i2c_designware i2c_designware.3: Transfer while suspended
-[  355.876245] WARNING: CPU: 2 PID: 3576 at drivers/i2c/busses/i2c-designware-master.c:570 i2c_dw_xfer+0x411/0x440
-...
-[  355.876462] Call Trace:
-[  355.876468]  <TASK>
-[  355.876475]  ? update_load_avg+0x1b3/0x615
-[  355.876484]  __i2c_transfer+0x101/0x1d8
-[  355.876494]  i2c_transfer+0x74/0x10d
-[  355.876504]  regmap_i2c_read+0x6a/0x9c
-[  355.876513]  _regmap_raw_read+0x179/0x223
-[  355.876521]  regmap_raw_read+0x1e1/0x28e
-[  355.876527]  regmap_bulk_read+0x17d/0x1ba
-[  355.876532]  ? __wake_up+0xed/0x1bb
-[  355.876542]  da7219_aad_irq_thread+0x54/0x2c9 [snd_soc_da7219 5fb8ebb2179cf2fea29af090f3145d68ed8e2184]
-[  355.876556]  irq_thread+0x13c/0x231
-[  355.876563]  ? irq_forced_thread_fn+0x5f/0x5f
-[  355.876570]  ? irq_thread_fn+0x4d/0x4d
-[  355.876576]  kthread+0x13a/0x152
-[  355.876581]  ? synchronize_irq+0xc3/0xc3
-[  355.876587]  ? kthread_blkcg+0x31/0x31
-[  355.876592]  ret_from_fork+0x1f/0x30
-[  355.876601]  </TASK>
-
-which indicates that the AAD IRQ handler is unexpectedly running when
-DA7219 is suspended, and as a result, is trying to read data from DA7219
-over I2C and is hitting the I2C driver "Transfer while suspended"
-failure.
-
-However, with this patch the above failure is still reproducible. So
-this patch does not fix any real observed issue so far, but at least is
-useful for confirming that the above issue is not caused by a pending
-IRQ but rather looks like a DA7219 hardware issue with an IRQ
-unexpectedly generated after jack detection is already disabled.
-
-Signed-off-by: Dmytro Maluka <dmy@semihalf.com>
+Signed-off-by: Jie Shi <shijie001@208suo.com>
 ---
- sound/soc/codecs/da7219-aad.c | 2 ++
- 1 file changed, 2 insertions(+)
+  sound/isa/gus/gus_mem.c | 24 ++++++++++++------------
+  1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-index c65256bd526d..202715b7bbea 100644
---- a/sound/soc/codecs/da7219-aad.c
-+++ b/sound/soc/codecs/da7219-aad.c
-@@ -944,6 +944,8 @@ void da7219_aad_suspend(struct snd_soc_component *component)
- 			}
- 		}
- 	}
-+
-+	synchronize_irq(da7219_aad->irq);
- }
- 
- void da7219_aad_resume(struct snd_soc_component *component)
--- 
-2.41.0.255.g8b1d071c50-goog
+diff --git a/sound/isa/gus/gus_mem.c b/sound/isa/gus/gus_mem.c
+index 3e56c01c4544..00c73c0b068f 100644
+--- a/sound/isa/gus/gus_mem.c
++++ b/sound/isa/gus/gus_mem.c
+@@ -11,11 +11,11 @@
+  #include <sound/info.h>
 
+  #ifdef CONFIG_SND_DEBUG
+-static void snd_gf1_mem_info_read(struct snd_info_entry *entry,
++static void snd_gf1_mem_info_read(struct snd_info_entry *entry,
+                    struct snd_info_buffer *buffer);
+  #endif
+
+-void snd_gf1_mem_lock(struct snd_gf1_mem * alloc, int xup)
++void snd_gf1_mem_lock(struct snd_gf1_mem *alloc, int xup)
+  {
+      if (!xup) {
+          mutex_lock(&alloc->memory_mutex);
+@@ -67,7 +67,7 @@ snd_gf1_mem_xalloc(struct snd_gf1_mem *alloc, struct 
+snd_gf1_mem_block *block,
+      return nblock;
+  }
+
+-int snd_gf1_mem_xfree(struct snd_gf1_mem * alloc, struct 
+snd_gf1_mem_block * block)
++int snd_gf1_mem_xfree(struct snd_gf1_mem *alloc, struct 
+snd_gf1_mem_block *block)
+  {
+      if (block->share) {    /* ok.. shared block */
+          block->share--;
+@@ -97,7 +97,7 @@ int snd_gf1_mem_xfree(struct snd_gf1_mem * alloc, 
+struct snd_gf1_mem_block * blo
+      return 0;
+  }
+
+-static struct snd_gf1_mem_block *snd_gf1_mem_look(struct snd_gf1_mem * 
+alloc,
++static struct snd_gf1_mem_block *snd_gf1_mem_look(struct snd_gf1_mem 
+*alloc,
+                           unsigned int address)
+  {
+      struct snd_gf1_mem_block *block;
+@@ -110,7 +110,7 @@ static struct snd_gf1_mem_block 
+*snd_gf1_mem_look(struct snd_gf1_mem * alloc,
+      return NULL;
+  }
+
+-static struct snd_gf1_mem_block *snd_gf1_mem_share(struct snd_gf1_mem * 
+alloc,
++static struct snd_gf1_mem_block *snd_gf1_mem_share(struct snd_gf1_mem 
+*alloc,
+                            unsigned int *share_id)
+  {
+      struct snd_gf1_mem_block *block;
+@@ -125,8 +125,8 @@ static struct snd_gf1_mem_block 
+*snd_gf1_mem_share(struct snd_gf1_mem * alloc,
+      return NULL;
+  }
+
+-static int snd_gf1_mem_find(struct snd_gf1_mem * alloc,
+-                struct snd_gf1_mem_block * block,
++static int snd_gf1_mem_find(struct snd_gf1_mem *alloc,
++                struct snd_gf1_mem_block *block,
+                  unsigned int size, int w_16, int align)
+  {
+      struct snd_gf1_bank_info *info = w_16 ? alloc->banks_16 : 
+alloc->banks_8;
+@@ -177,7 +177,7 @@ static int snd_gf1_mem_find(struct snd_gf1_mem * 
+alloc,
+      return -ENOMEM;
+  }
+
+-struct snd_gf1_mem_block *snd_gf1_mem_alloc(struct snd_gf1_mem * alloc, 
+int owner,
++struct snd_gf1_mem_block *snd_gf1_mem_alloc(struct snd_gf1_mem *alloc, 
+int owner,
+                         char *name, int size, int w_16, int align,
+                         unsigned int *share_id)
+  {
+@@ -210,7 +210,7 @@ struct snd_gf1_mem_block *snd_gf1_mem_alloc(struct 
+snd_gf1_mem * alloc, int owne
+      return nblock;
+  }
+
+-int snd_gf1_mem_free(struct snd_gf1_mem * alloc, unsigned int address)
++int snd_gf1_mem_free(struct snd_gf1_mem *alloc, unsigned int address)
+  {
+      int result;
+      struct snd_gf1_mem_block *block;
+@@ -226,7 +226,7 @@ int snd_gf1_mem_free(struct snd_gf1_mem * alloc, 
+unsigned int address)
+      return -EINVAL;
+  }
+
+-int snd_gf1_mem_init(struct snd_gus_card * gus)
++int snd_gf1_mem_init(struct snd_gus_card *gus)
+  {
+      struct snd_gf1_mem *alloc;
+      struct snd_gf1_mem_block block;
+@@ -255,7 +255,7 @@ int snd_gf1_mem_init(struct snd_gus_card * gus)
+      return 0;
+  }
+
+-int snd_gf1_mem_done(struct snd_gus_card * gus)
++int snd_gf1_mem_done(struct snd_gus_card *gus)
+  {
+      struct snd_gf1_mem *alloc;
+      struct snd_gf1_mem_block *block, *nblock;
+@@ -271,7 +271,7 @@ int snd_gf1_mem_done(struct snd_gus_card * gus)
+  }
+
+  #ifdef CONFIG_SND_DEBUG
+-static void snd_gf1_mem_info_read(struct snd_info_entry *entry,
++static void snd_gf1_mem_info_read(struct snd_info_entry *entry,
+                    struct snd_info_buffer *buffer)
+  {
+      struct snd_gus_card *gus;
