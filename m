@@ -4,98 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75B76EB64DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:17:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 167FEEB64DD
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:48:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 715E9AE8;
-	Tue, 18 Jul 2023 16:16:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 715E9AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3DC71F7;
+	Tue, 18 Jul 2023 16:47:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3DC71F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689689854;
-	bh=/RYem5osk1pDzsFMybyAoaMDjOifu4EQChTMNj1Khzs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=iLTGB3ypmpkKkahK5F+QF37IobK6CjypmcB17AD2ACNVH+20A0CTFaZrWrST8TtZ3
-	 fQhkvDmIIxR70Syel35q7Mu6Y43cCeiorCqsV52LVFko58t+FYaVvpOB2qTUgMJ3iD
-	 18Usk5RURAWBwwBiFb5CTK37HNQrN5D0WEZ0W+u8=
+	s=default; t=1689691697;
+	bh=qUIeHByOOABhazgK9uLD7rW2K/z0/dp/IZ15RZZuOgM=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Nf3R5Hm8WhuhI1A9OFFFArPe7S5D+0OgRLYvoswy8JEoMOs19OkxetrZWqAshHzhH
+	 AXhccJEcniR2ZHjBpavrTee5TBlHN/rHYXmKnNrZM2uZLew20RnOkZyceKgecbDv1G
+	 hHd/gzhRaswQTCb6Fpn9xGb7/Tpwh61hqCxkdDPA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ABF96F805FB; Tue, 18 Jul 2023 16:14:08 +0200 (CEST)
+	id 8EC27F8053B; Tue, 18 Jul 2023 16:46:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15ECBF805FF;
-	Tue, 18 Jul 2023 16:14:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 259CCF8032D;
+	Tue, 18 Jul 2023 16:46:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 930EDF805F2; Tue, 18 Jul 2023 16:14:01 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 54012F8032D; Tue, 18 Jul 2023 16:46:50 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1A303F80548
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 16:13:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A303F80548
+	by alsa1.perex.cz (Postfix) with ESMTPS id BA702F80153
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 16:46:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA702F80153
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=psV9aatt;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=N5umPApD
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7DD221FDC4;
-	Tue, 18 Jul 2023 14:13:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1689689595;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8EfVvkg6s7Ds0jKU7/Y8DqiRY5bktyU3vkVxnz+94Sk=;
-	b=psV9aatt9oF6+WehRvylR32GI1mbbdKVPopJK0xGQ4jlWlj3+QRzN8mLhTWCg7bZ4/NlcU
-	sFDv3hsDvVO1YkTrgSQdibVFCvuu7rg9s1QxxczTqAQmZyMJSl+enkA6rnO9w/LovBFdg8
-	1Wam9NsrQQJ7/fQoDehBF4KczuaE5Z0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689689595;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8EfVvkg6s7Ds0jKU7/Y8DqiRY5bktyU3vkVxnz+94Sk=;
-	b=N5umPApDPz9sVs+kdz/dhq6ao5FXy6gcp2Pb83UZNR0IgkgYew/fhLy+gBKGZS9ikZ2fmq
-	UfVhtIgKZ1g68qAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 60D29134B0;
-	Tue, 18 Jul 2023 14:13:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id uG25FvudtmQ8AQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 14:13:15 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 04/11] ALSA: control: Take controls_rwsem lock in
- snd_ctl_remove()
-Date: Tue, 18 Jul 2023 16:12:57 +0200
-Message-Id: <20230718141304.1032-5-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230718141304.1032-1-tiwai@suse.de>
-References: <20230718141304.1032-1-tiwai@suse.de>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=PNb+OnjB
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 36I7kHxC024058;
+	Tue, 18 Jul 2023 09:46:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=0
+	G3ywaHiTI2K4Iq59zz0mJoTcYfX+05Q6H/h75rm73M=; b=PNb+OnjBag/MGfHC0
+	00o37F5KNsBH6vj9JJBzi0ZTOSPfCd/vnL5fP6WVxBwBGf5SZM/WNp7wT39BgF/C
+	FbJakYU0eTtdFtRdhpp0mKO3wlASiMcK53/M38xm2pO22gLlAfXgFVB2EqcN1EFN
+	nfj9WuabIF/loeXPWNDm/fP7pvTwq0pycnPrOS6IxXCs34pfzl4VCIHKuxSj2XKF
+	yOvWb9qGcjgiDTSDunXwESK/9GxufHlX2jrJXBDd2SS4cz74ktBd9Ft4BDP2NyN8
+	vfAD8t4DvpT4pCNmHUrDBV4kKk9alBYLfDeu5LduWqMzklVmF8v8qC5Jp5Bi79Oa
+	cNGpA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3rus62ucu7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 18 Jul 2023 09:46:41 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 18 Jul
+ 2023 15:46:29 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Tue, 18 Jul 2023 15:46:29 +0100
+Received: from work-debian.ad.cirrus.com (unknown [198.61.65.142])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E77DD11AB;
+	Tue, 18 Jul 2023 14:46:28 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs35l56: Patch soft registers to defaults
+Date: Tue, 18 Jul 2023 15:46:25 +0100
+Message-ID: <20230718144625.39634-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AXFIO6DVF53XHATS3ZG654OX5G74DV5I
-X-Message-ID-Hash: AXFIO6DVF53XHATS3ZG654OX5G74DV5I
-X-MailFrom: tiwai@suse.de
+Content-Type: text/plain
+X-Proofpoint-GUID: v5oVImHN2qJH3UiahHtCUQ8k9EC0bKRg
+X-Proofpoint-ORIG-GUID: v5oVImHN2qJH3UiahHtCUQ8k9EC0bKRg
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: LS6NPLESGJY5JXPHPNOBFEARHCBCKO4X
+X-Message-ID-Hash: LS6NPLESGJY5JXPHPNOBFEARHCBCKO4X
+X-MailFrom: prvs=2563f3668e=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -107,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AXFIO6DVF53XHATS3ZG654OX5G74DV5I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LS6NPLESGJY5JXPHPNOBFEARHCBCKO4X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,235 +105,112 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-So far, snd_ctl_remove() requires its caller to take
-card->controls_rwsem manually before the call for avoiding possible
-races.  However, many callers don't care and miss the locking.
+The soft (firmware) registers for volume/mute/posture are not reset by
+a chip soft-reset, so use a regmap patch to set them to defaults.
 
-Basically it's cumbersome and error-prone to enforce it to each
-caller.  Moreover, card->controls_rwsem is a field that should be used
-only by internal or proper helpers, and it's not to be touched at
-random external places.
+cs35l56_reread_firmware_registers() has been removed. Its intent was to
+use whatever the firmware set as a default. But the driver now patches the
+defaults to the registers.
 
-This patch is an attempt to make those calls more consistent: now
-snd_ctl_remove() takes the card->controls_rwsem internally, just like
-other API functions for kctls.  Since a few callers already take the
-controls_rwsem locks, the patch removes those locks at the same time,
-too.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/core/control.c      | 27 +++++++++++++++++++++------
- sound/core/jack.c         |  2 --
- sound/core/pcm.c          |  2 --
- sound/isa/sb/emu8000.c    |  2 --
- sound/isa/sb/sb16_csp.c   |  2 --
- sound/pci/emu10k1/emufx.c |  2 --
- sound/pci/hda/hda_codec.c |  2 --
- sound/soc/soc-topology.c  |  3 ---
- 8 files changed, 21 insertions(+), 21 deletions(-)
+ include/sound/cs35l56.h           |  2 +-
+ sound/soc/codecs/cs35l56-shared.c | 38 +++++++++++++------------------
+ sound/soc/codecs/cs35l56.c        |  5 ++--
+ 3 files changed, 20 insertions(+), 25 deletions(-)
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index a41d19c46df2..9c933350ec6b 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -39,6 +39,9 @@ static LIST_HEAD(snd_control_compat_ioctls);
- #endif
- static struct snd_ctl_layer_ops *snd_ctl_layer;
+diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
+index 1f9713d7ca76..ec672daa36cf 100644
+--- a/include/sound/cs35l56.h
++++ b/include/sound/cs35l56.h
+@@ -260,7 +260,7 @@ extern const struct cs_dsp_region cs35l56_dsp1_regions[CS35L56_NUM_DSP_REGIONS];
+ extern const char * const cs35l56_tx_input_texts[CS35L56_NUM_INPUT_SRC];
+ extern const unsigned int cs35l56_tx_input_values[CS35L56_NUM_INPUT_SRC];
  
-+static int snd_ctl_remove_locked(struct snd_card *card,
-+				 struct snd_kcontrol *kcontrol);
+-void cs35l56_reread_firmware_registers(struct device *dev, struct regmap *regmap);
++int cs35l56_set_patch(struct regmap *regmap);
+ int cs35l56_get_bclk_freq_id(unsigned int freq);
+ void cs35l56_fill_supply_names(struct regulator_bulk_data *data);
+ 
+diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+index 60da8c75b7b9..7126f06b8047 100644
+--- a/sound/soc/codecs/cs35l56-shared.c
++++ b/sound/soc/codecs/cs35l56-shared.c
+@@ -11,6 +11,19 @@
+ 
+ #include "cs35l56.h"
+ 
++static const struct reg_sequence cs35l56_patch[] = {
++	/* These are not reset by a soft-reset, so patch to defaults. */
++	{ CS35L56_MAIN_RENDER_USER_MUTE,	0x00000000 },
++	{ CS35L56_MAIN_RENDER_USER_VOLUME,	0x00000000 },
++	{ CS35L56_MAIN_POSTURE_NUMBER,		0x00000000 },
++};
 +
- static int snd_ctl_open(struct inode *inode, struct file *file)
- {
- 	unsigned long flags;
-@@ -483,7 +486,7 @@ static int __snd_ctl_add_replace(struct snd_card *card,
- 			return -EBUSY;
- 		}
- 
--		err = snd_ctl_remove(card, old);
-+		err = snd_ctl_remove_locked(card, old);
- 		if (err < 0)
- 			return err;
- 	}
-@@ -589,20 +592,32 @@ static int __snd_ctl_remove(struct snd_card *card,
- 	return 0;
- }
- 
-+static inline int snd_ctl_remove_locked(struct snd_card *card,
-+					struct snd_kcontrol *kcontrol)
++int cs35l56_set_patch(struct regmap *regmap)
 +{
-+	return __snd_ctl_remove(card, kcontrol, true);
++	return regmap_register_patch(regmap, cs35l56_patch, ARRAY_SIZE(cs35l56_patch));
 +}
++EXPORT_SYMBOL_NS_GPL(cs35l56_set_patch, SND_SOC_CS35L56_SHARED);
 +
- /**
-  * snd_ctl_remove - remove the control from the card and release it
-  * @card: the card instance
-  * @kcontrol: the control instance to remove
-  *
-  * Removes the control from the card and then releases the instance.
-- * You don't need to call snd_ctl_free_one(). You must be in
-- * the write lock - down_write(&card->controls_rwsem).
-+ * You don't need to call snd_ctl_free_one().
-  *
-  * Return: 0 if successful, or a negative error code on failure.
-+ *
-+ * Note that this function takes card->controls_rwsem lock internally.
-  */
- int snd_ctl_remove(struct snd_card *card, struct snd_kcontrol *kcontrol)
- {
--	return __snd_ctl_remove(card, kcontrol, true);
-+	int ret;
-+
-+	down_write(&card->controls_rwsem);
-+	ret = snd_ctl_remove_locked(card, kcontrol);
-+	up_write(&card->controls_rwsem);
-+	return ret;
- }
- EXPORT_SYMBOL(snd_ctl_remove);
+ static const struct reg_default cs35l56_reg_defaults[] = {
+ 	{ CS35L56_ASP1_ENABLES1,		0x00000000 },
+ 	{ CS35L56_ASP1_CONTROL1,		0x00000028 },
+@@ -35,9 +48,9 @@ static const struct reg_default cs35l56_reg_defaults[] = {
+ 	{ CS35L56_IRQ1_MASK_8,			0xfc000fff },
+ 	{ CS35L56_IRQ1_MASK_18,			0x1f7df0ff },
+ 	{ CS35L56_IRQ1_MASK_20,			0x15c00000 },
+-	/* CS35L56_MAIN_RENDER_USER_MUTE - soft register, no default	*/
+-	/* CS35L56_MAIN_RENDER_USER_VOLUME - soft register, no default	*/
+-	/* CS35L56_MAIN_POSTURE_NUMBER - soft register, no default	*/
++	{ CS35L56_MAIN_RENDER_USER_MUTE,	0x00000000 },
++	{ CS35L56_MAIN_RENDER_USER_VOLUME,	0x00000000 },
++	{ CS35L56_MAIN_POSTURE_NUMBER,		0x00000000 },
+ };
  
-@@ -627,7 +642,7 @@ int snd_ctl_remove_id(struct snd_card *card, struct snd_ctl_elem_id *id)
- 		up_write(&card->controls_rwsem);
- 		return -ENOENT;
- 	}
--	ret = snd_ctl_remove(card, kctl);
-+	ret = snd_ctl_remove_locked(card, kctl);
- 	up_write(&card->controls_rwsem);
- 	return ret;
- }
-@@ -665,7 +680,7 @@ static int snd_ctl_remove_user_ctl(struct snd_ctl_file * file,
- 			ret = -EBUSY;
- 			goto error;
- 		}
--	ret = snd_ctl_remove(card, kctl);
-+	ret = snd_ctl_remove_locked(card, kctl);
- error:
- 	up_write(&card->controls_rwsem);
- 	return ret;
-diff --git a/sound/core/jack.c b/sound/core/jack.c
-index 03d155ed362b..e0f034e7275c 100644
---- a/sound/core/jack.c
-+++ b/sound/core/jack.c
-@@ -66,12 +66,10 @@ static int snd_jack_dev_free(struct snd_device *device)
- 	struct snd_card *card = device->card;
- 	struct snd_jack_kctl *jack_kctl, *tmp_jack_kctl;
- 
--	down_write(&card->controls_rwsem);
- 	list_for_each_entry_safe(jack_kctl, tmp_jack_kctl, &jack->kctl_list, list) {
- 		list_del_init(&jack_kctl->list);
- 		snd_ctl_remove(card, jack_kctl->kctl);
- 	}
--	up_write(&card->controls_rwsem);
- 
- 	if (jack->private_free)
- 		jack->private_free(jack);
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 9d95e3731123..1c0bb3a07bff 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -814,9 +814,7 @@ static void free_chmap(struct snd_pcm_str *pstr)
- 	if (pstr->chmap_kctl) {
- 		struct snd_card *card = pstr->pcm->card;
- 
--		down_write(&card->controls_rwsem);
- 		snd_ctl_remove(card, pstr->chmap_kctl);
--		up_write(&card->controls_rwsem);
- 		pstr->chmap_kctl = NULL;
+ static bool cs35l56_is_dsp_memory(unsigned int reg)
+@@ -181,25 +194,6 @@ static bool cs35l56_volatile_reg(struct device *dev, unsigned int reg)
  	}
  }
-diff --git a/sound/isa/sb/emu8000.c b/sound/isa/sb/emu8000.c
-index e02029677743..a6405772d537 100644
---- a/sound/isa/sb/emu8000.c
-+++ b/sound/isa/sb/emu8000.c
-@@ -1040,10 +1040,8 @@ snd_emu8000_create_mixer(struct snd_card *card, struct snd_emu8000 *emu)
  
- __error:
- 	for (i = 0; i < EMU8000_NUM_CONTROLS; i++) {
--		down_write(&card->controls_rwsem);
- 		if (emu->controls[i])
- 			snd_ctl_remove(card, emu->controls[i]);
--		up_write(&card->controls_rwsem);
- 	}
- 	return err;
- }
-diff --git a/sound/isa/sb/sb16_csp.c b/sound/isa/sb/sb16_csp.c
-index 7ad8c5f7b664..8d8357019719 100644
---- a/sound/isa/sb/sb16_csp.c
-+++ b/sound/isa/sb/sb16_csp.c
-@@ -1080,7 +1080,6 @@ static void snd_sb_qsound_destroy(struct snd_sb_csp * p)
+-static const u32 cs35l56_firmware_registers[] = {
+-	CS35L56_MAIN_RENDER_USER_MUTE,
+-	CS35L56_MAIN_RENDER_USER_VOLUME,
+-	CS35L56_MAIN_POSTURE_NUMBER,
+-};
+-
+-void cs35l56_reread_firmware_registers(struct device *dev, struct regmap *regmap)
+-{
+-	int i;
+-	unsigned int val;
+-
+-	for (i = 0; i < ARRAY_SIZE(cs35l56_firmware_registers); i++) {
+-		regmap_read(regmap, cs35l56_firmware_registers[i], &val);
+-		dev_dbg(dev, "%s: %d: %#x: %#x\n", __func__,
+-			i, cs35l56_firmware_registers[i], val);
+-	}
+-}
+-EXPORT_SYMBOL_NS_GPL(cs35l56_reread_firmware_registers, SND_SOC_CS35L56_SHARED);
+-
+ const struct cs_dsp_region cs35l56_dsp1_regions[] = {
+ 	{ .type = WMFW_HALO_PM_PACKED,	.base = CS35L56_DSP1_PMEM_0 },
+ 	{ .type = WMFW_HALO_XM_PACKED,	.base = CS35L56_DSP1_XMEM_PACKED_0 },
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index c03f9d3c9a13..e046fdd26b74 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -1572,8 +1572,9 @@ int cs35l56_init(struct cs35l56_private *cs35l56)
+ 	if (ret)
+ 		return ret;
  
- 	card = p->chip->card;	
- 	
--	down_write(&card->controls_rwsem);
- 	if (p->qsound_switch) {
- 		snd_ctl_remove(card, p->qsound_switch);
- 		p->qsound_switch = NULL;
-@@ -1089,7 +1088,6 @@ static void snd_sb_qsound_destroy(struct snd_sb_csp * p)
- 		snd_ctl_remove(card, p->qsound_space);
- 		p->qsound_space = NULL;
- 	}
--	up_write(&card->controls_rwsem);
+-	/* Populate soft registers in the regmap cache */
+-	cs35l56_reread_firmware_registers(cs35l56->dev, cs35l56->regmap);
++	ret = cs35l56_set_patch(cs35l56->regmap);
++	if (ret)
++		return ret;
  
- 	/* cancel pending transfer of QSound parameters */
- 	spin_lock_irqsave (&p->q_lock, flags);
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 9904bcfee106..70c8252a92d9 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -977,11 +977,9 @@ static int snd_emu10k1_del_controls(struct snd_emu10k1 *emu,
- 				       in_kernel);
- 		if (err < 0)
- 			return err;
--		down_write(&card->controls_rwsem);
- 		ctl = snd_emu10k1_look_for_ctl(emu, &id);
- 		if (ctl)
- 			snd_ctl_remove(card, ctl->kcontrol);
--		up_write(&card->controls_rwsem);
- 	}
- 	return 0;
- }
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index bd19f92aeeec..33af707a65ab 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1769,10 +1769,8 @@ void snd_hda_ctls_clear(struct hda_codec *codec)
- 	int i;
- 	struct hda_nid_item *items = codec->mixers.list;
- 
--	down_write(&codec->card->controls_rwsem);
- 	for (i = 0; i < codec->mixers.used; i++)
- 		snd_ctl_remove(codec->card, items[i].kctl);
--	up_write(&codec->card->controls_rwsem);
- 	snd_array_free(&codec->mixers);
- 	snd_array_free(&codec->nids);
- }
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 8add361e87c6..03ec3c5adc3a 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2564,7 +2564,6 @@ EXPORT_SYMBOL_GPL(snd_soc_tplg_component_load);
- /* remove dynamic controls from the component driver */
- int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
- {
--	struct snd_card *card = comp->card->snd_card;
- 	struct snd_soc_dobj *dobj, *next_dobj;
- 	int pass;
- 
-@@ -2572,7 +2571,6 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
- 	for (pass = SOC_TPLG_PASS_END; pass >= SOC_TPLG_PASS_START; pass--) {
- 
- 		/* remove mixer controls */
--		down_write(&card->controls_rwsem);
- 		list_for_each_entry_safe(dobj, next_dobj, &comp->dobj_list,
- 			list) {
- 
-@@ -2607,7 +2605,6 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
- 				break;
- 			}
- 		}
--		up_write(&card->controls_rwsem);
- 	}
- 
- 	/* let caller know if FW can be freed when no objects are left */
+ 	/* Registers could be dirty after soft reset or SoundWire enumeration */
+ 	regcache_sync(cs35l56->regmap);
 -- 
-2.35.3
+2.30.2
 
