@@ -4,113 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AECBEB64DA
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 10:18:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78C1DEB64DA
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 11:42:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 357AF844;
-	Tue, 18 Jul 2023 12:17:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 357AF844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D163DE5;
+	Tue, 18 Jul 2023 13:41:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D163DE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689675508;
-	bh=30+cHA5S7zRTTVgMYrGfBvMak8JmBCNgYjuJxOL1vkE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1689680533;
+	bh=QYbw7yPZBHEby2nFwhjz7buDmoUvGpgtKVePe++NQzI=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UUcmrRgC2LqOT1WWU/kyHLfotjqMcuQlEZdjLujNtKSUGgdjb0U9hvMY4fx0rj0a7
-	 8p5qWHm5W2nLtzZ9zvbUJB2s9LkaOe9q2KjW2zSTU2gy64rb/AvQmTztp4DDWnaqkO
-	 yJqHGyHpnn2Nuvq/ZD6F0aSPg8MA8RtfdyrFDECc=
+	b=ENBqZrcbSYVMTBpVzNL1ZdCWAa51VECNkWDjHtkqfNmSG0MMoRpUPKhpq/L6HCaUC
+	 xMhJBM1ofyNofq4/AhRNhXCnbo7icqFwmxEr1lJGQ5nmsc1+Scjq9hSg/oIEa7DXLQ
+	 7aocvmIrD4rLzrdDJdE1AJCjUD4IKpUVd9vm1AA8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4DD35F80600; Tue, 18 Jul 2023 12:14:28 +0200 (CEST)
+	id 98B9FF8047D; Tue, 18 Jul 2023 13:40:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C48EEF805F4;
-	Tue, 18 Jul 2023 12:14:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9540CF8027B;
+	Tue, 18 Jul 2023 13:40:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 312D1F8047D; Tue, 18 Jul 2023 11:03:56 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id B71D3F80535; Tue, 18 Jul 2023 13:40:49 +0200 (CEST)
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
+ [81.169.146.170])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1475FF8027B
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 11:03:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1475FF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4E530F8032D
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 13:40:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E530F8032D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20221208 header.b=1Ov8w5zs
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-3fbb07e7155so69955e9.0
-        for <alsa-devel@alsa-project.org>;
- Tue, 18 Jul 2023 02:03:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689671032; x=1692263032;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cZ7209PQgbYgQTR65k1k2Zl5Dyso4SJRqPX4Y5IaN+0=;
-        b=1Ov8w5zsUqp+N5Y3Db5oUEsfNKvXSXO4itdYoPXCmcgsZafNPosOn3LCQ4SiAclx9W
-         K1YMr7jGoIwMvwkRJEtcQujg2zbxZuRcAfICkaWpTjlah15Pdr7Z96TBQg6xmL8Gmxl5
-         HnL0DdP3LyVMeMRg7+4EC3BAK4Go97ADk4sBN0Ht91GMOJ2gUUbZruPx6velVXpYLHAN
-         SEu9C/4c38TdZ7HSX/LgMhyTn8PDiqJgYKD/h7Y5JrfhzY2Cw7N+MhfJjNLqLfN+gF1B
-         zyhIi4wu4aW7aq/8FthdkqfwUx6FuQzEUyMY9oa5VSw3ASmK6EYKkzdsVrIjQGH/N/iS
-         wqQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689671032; x=1692263032;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cZ7209PQgbYgQTR65k1k2Zl5Dyso4SJRqPX4Y5IaN+0=;
-        b=NN5veLYuiWPBzou7JP+jVOhG09x9NDb606ihh5MelerGnh731Lp/vrwvH0EywTSx6H
-         jhB8Gy4YiH/OKAVnA9vlcRotl6ZG0hl+0A04udBlVD+hN4VqiSrkff0wsPvmef+5KbAt
-         fFO+hlQ+NV0P6ERuS2ushgY3Qz05kMfdMJZ8fJf/KCVLoE2NfhS8lintg6MRiB0UWomu
-         okvubLJO1OqmZZIx5DKXxG5qW5l5ZAQaKuybznbaLW07uLv9qN+ohzxaR2Vpe/FiK1HN
-         zlZSyBs//aMZrWsTwsAQ/Sbop5W1yfYR6hmGiilxwDrwvqWPXPbOUVT8PcrOzcbKMn7u
-         7s2Q==
-X-Gm-Message-State: ABy/qLby/tT0iSeJxRh2shEgkNYfA0lMKPOP//faYuwtDV9rs0xqDDWq
-	GuA/XJeQk9lsUN6cC2BJsBQTEuThVFZ3GEuipo9Rcg==
-X-Google-Smtp-Source: 
- APBJJlHzArV2QXKYgA0t/tMpHektEc9XvleJFYO5Jycq9SutDVZ7cVY0PIL4w5F/KfUe0rAC0x+iTEAq8f0TIrcvl10=
-X-Received: by 2002:a05:600c:a39e:b0:3fb:ccae:cd4b with SMTP id
- hn30-20020a05600ca39e00b003fbccaecd4bmr80956wmb.2.1689671032449; Tue, 18 Jul
- 2023 02:03:52 -0700 (PDT)
+ unprotected) header.d=gerhold.net header.i=@gerhold.net header.a=rsa-sha256
+ header.s=strato-dkim-0002 header.b=b/WA35M2;
+	dkim=pass header.d=gerhold.net header.i=@gerhold.net header.a=ed25519-sha256
+ header.s=strato-dkim-0003 header.b=DevACCK4
+ARC-Seal: i=1; a=rsa-sha256; t=1689680437; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=CxRkUiuk1qoWsNI605971zn6aOa83fSLJnlK9x04FMmEzxkOI6PDfjqZpC70o9MMPe
+    3qXuQ+zA+v1vOSFwUu8fU1MLTGZiwCB15Ng5R2rYeyeujxesxaBecGf8r8PXBM9uuYas
+    DRrCC+VjB3qgbyRoUnoJlvB51rqk5GzlYNeZSXWUKF9/klWN2YJyVpZonAw2v16IScbd
+    6He6pLBWu9GOhw8XuSS2coqDCsU81I0jAFWex/QJZqeELvFuu3LkgNkrQgbuNhJAaurT
+    wQ5neJSJSmze309rDJYLt41M5Ngkbl9lEg/2OPxwkBnNvASz6NcoMS4S5+iRypKlWXCm
+    Ix3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680437;
+    s=strato-dkim-0002; d=strato.com;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=41FgpaaFBB/EYR10zVy+xYoyinNOFdObIZ1G8lDObro=;
+    b=Ljj59MTlXUpSptntIk7qgpGtJ9/wJz8TXuiMlebtWYdC2GqRktkRoHloriUUcCcKTG
+    RyP3ioano8sUHKMlSSYGYTOAdooBblntcogf31wAOmQPV4UjpEQA3IpiMqQnwr+qYKev
+    QjkZC64H8uonCOQr6b7K9folS57sOreT8bi/mPv5kQ+KkPbc/BIH/5Vvn+ubMIC6J3Rn
+    G1S9imK8bPQnlDnMIRoyLuQ/555amVuC3F4KJOMaXjs5oaNONEyJQAxxZ3plq93s4XiC
+    MkhWWadfPq6GHsF76ym+yUqeGXJH/sYUrZiD/nAA/1/vR1Bfsq6s4+6rFw7Xd4rnBztf
+    DrWg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1689680437;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=41FgpaaFBB/EYR10zVy+xYoyinNOFdObIZ1G8lDObro=;
+    b=b/WA35M2/fd2FL4jEfTcUtLMFQmh9MtQhRnsBew/TPHMvktpS7yAqcL61kG1Ej/5O0
+    54avBcpxuamOYhqrWv0lmp2RNMeFrmR3IURN19qi/o8VXNHHfCa9hiuhzn6TykbAJz0o
+    jQ0mg724wnDdNzWPiAiQgHPK3trOul7AZbjHo01oTJ1AYwtgycwdIA+ZLt4OMgDzj0dz
+    8UcChvECGj+FgBvHvYdoUfvN80rscMg1DHpUzx7QuCOs5wBGFc5LYpbLEo6VkQEDS5n2
+    qQFDcxDVUUsmBQWmwu5BV01DdjUpNj9HPS8w+bodT+bRP+hrLmMwD13CmVNz8CJiXfps
+    bKsQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1689680437;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=41FgpaaFBB/EYR10zVy+xYoyinNOFdObIZ1G8lDObro=;
+    b=DevACCK470s9gV9DOy2GyX8xBNUP/mcmqr+oh+6bVh2dcA2ylyS/kNdJHoFqJxia+u
+    PviK5ps8vPvMzLWOKADg==
+X-RZG-AUTH: 
+ ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u45/mw=="
+Received: from [192.168.244.3]
+    by smtp.strato.de (RZmta 49.6.0 DYNA|AUTH)
+    with ESMTPSA id D0d0a8z6IBebbpJ
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 18 Jul 2023 13:40:37 +0200 (CEST)
+From: Stephan Gerhold <stephan@gerhold.net>
+Date: Tue, 18 Jul 2023 13:40:13 +0200
+Subject: [PATCH 1/6] ASoC: dt-bindings: pm8916-analog-codec: Fix misleading
+ example
 MIME-Version: 1.0
-References: <20230718-asoc-topology-kunit-enable-v2-0-0ee11e662b92@kernel.org>
- <20230718-asoc-topology-kunit-enable-v2-4-0ee11e662b92@kernel.org>
-In-Reply-To: 
- <20230718-asoc-topology-kunit-enable-v2-4-0ee11e662b92@kernel.org>
-From: David Gow <davidgow@google.com>
-Date: Tue, 18 Jul 2023 17:03:41 +0800
-Message-ID: 
- <CABVgOSkJ9KASn9zxWMr23xh0U61er0WUPwQprjq1ADY67oxX8g@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] kunit: Enable ASoC in all_tests.config
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230718-pm8916-mclk-v1-1-4b4a58b4240a@gerhold.net>
+References: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
+In-Reply-To: <20230718-pm8916-mclk-v1-0-4b4a58b4240a@gerhold.net>
 To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
- Brendan Higgins <brendan.higgins@linux.dev>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
-	alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
-	kunit-dev@googlegroups.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature";
- micalg=sha-256;
-	boundary="000000000000b1a7e70600bf3129"
-X-MailFrom: davidgow@google.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ =?utf-8?q?Otto_Pfl=C3=BCger?= <otto.pflueger@abscue.de>,
+ Stephan Gerhold <stephan@gerhold.net>
+X-Mailer: b4 0.12.3
+Message-ID-Hash: 44TQDQM4XVTQQZJZ6GNYD7VSVQUZKHPW
+X-Message-ID-Hash: 44TQDQM4XVTQQZJZ6GNYD7VSVQUZKHPW
+X-MailFrom: stephan@gerhold.net
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RCTYGPQFF7KLNZUKCIS4N2CSNU2ONS67
-X-Message-ID-Hash: RCTYGPQFF7KLNZUKCIS4N2CSNU2ONS67
-X-Mailman-Approved-At: Tue, 18 Jul 2023 10:14:06 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RCTYGPQFF7KLNZUKCIS4N2CSNU2ONS67/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/44TQDQM4XVTQQZJZ6GNYD7VSVQUZKHPW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,125 +138,125 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
---000000000000b1a7e70600bf3129
-Content-Type: text/plain; charset="UTF-8"
+SPMI devices typically have a single address cell and no size cell,
+i.e. reg = <0xf000> for the audio codec instead of reg = <0xf000 0x200>.
 
-On Tue, 18 Jul 2023 at 08:30, Mark Brown <broonie@kernel.org> wrote:
->
-> There are KUnit tests for some of the ASoC utility functions which are
-> not enabled in the KUnit all_tests.config, do so.
->
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
+The example is a bit misleading because it uses the latter. Copying
+this into the device tree would be incorrect and was fixed before for
+pm8916.dtsi in commit c2f0cbb57dba ("arm64: dts: qcom: pm8916: Remove
+invalid reg size from wcd_codec").
 
-If the other patches go through, this is great for me. (I've already
-used it to test some in-progress changes with the struct device
-handling.)
+Make the example more clear by adding the outer "pmic" node which
+specifies the same #address/size-cells that would be used in the
+real deivce tree.
 
-I'm happy to take this via the KUnit tree, but if it's easier to take
-all of these via ALSA or another tree, let me know.
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+ .../sound/qcom,pm8916-wcd-analog-codec.yaml        | 92 ++++++++++++----------
+ 1 file changed, 50 insertions(+), 42 deletions(-)
 
-Reviewed-by: David Gow <davidgow@google.com>
+diff --git a/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml b/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
+index c385028c4296..77e3cfba4746 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,pm8916-wcd-analog-codec.yaml
+@@ -115,46 +115,54 @@ examples:
+   - |
+     #include <dt-bindings/clock/qcom,gcc-msm8916.h>
+     #include <dt-bindings/interrupt-controller/irq.h>
+-
+-    audio-codec@f000{
+-      compatible = "qcom,pm8916-wcd-analog-codec";
+-      reg = <0xf000 0x200>;
+-      reg-names = "pmic-codec-core";
+-      clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
+-      clock-names = "mclk";
+-      qcom,mbhc-vthreshold-low = <75 150 237 450 500>;
+-      qcom,mbhc-vthreshold-high = <75 150 237 450 500>;
+-      interrupt-parent = <&spmi_bus>;
+-      interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
+-            <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
+-            <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
+-            <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
+-            <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
+-            <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
+-            <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
+-            <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
+-            <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
+-            <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
+-            <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
+-            <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
+-            <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
+-            <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
+-      interrupt-names = "cdc_spk_cnp_int",
+-                        "cdc_spk_clip_int",
+-                        "cdc_spk_ocp_int",
+-                        "mbhc_ins_rem_det1",
+-                        "mbhc_but_rel_det",
+-                        "mbhc_but_press_det",
+-                        "mbhc_ins_rem_det",
+-                        "mbhc_switch_int",
+-                        "cdc_ear_ocp_int",
+-                        "cdc_hphr_ocp_int",
+-                        "cdc_hphl_ocp_det",
+-                        "cdc_ear_cnp_int",
+-                        "cdc_hphr_cnp_int",
+-                        "cdc_hphl_cnp_int";
+-      vdd-cdc-io-supply = <&pm8916_l5>;
+-      vdd-cdc-tx-rx-cx-supply = <&pm8916_l5>;
+-      vdd-micbias-supply = <&pm8916_l13>;
+-      #sound-dai-cells = <1>;
++    #include <dt-bindings/spmi/spmi.h>
++
++    pmic@1 {
++      compatible = "qcom,pm8916", "qcom,spmi-pmic";
++      reg = <0x1 SPMI_USID>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      audio-codec@f000 {
++        compatible = "qcom,pm8916-wcd-analog-codec";
++        reg = <0xf000>;
++        reg-names = "pmic-codec-core";
++        clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
++        clock-names = "mclk";
++        qcom,mbhc-vthreshold-low = <75 150 237 450 500>;
++        qcom,mbhc-vthreshold-high = <75 150 237 450 500>;
++        interrupt-parent = <&spmi_bus>;
++        interrupts = <0x1 0xf0 0x0 IRQ_TYPE_NONE>,
++              <0x1 0xf0 0x1 IRQ_TYPE_NONE>,
++              <0x1 0xf0 0x2 IRQ_TYPE_NONE>,
++              <0x1 0xf0 0x3 IRQ_TYPE_NONE>,
++              <0x1 0xf0 0x4 IRQ_TYPE_NONE>,
++              <0x1 0xf0 0x5 IRQ_TYPE_NONE>,
++              <0x1 0xf0 0x6 IRQ_TYPE_NONE>,
++              <0x1 0xf0 0x7 IRQ_TYPE_NONE>,
++              <0x1 0xf1 0x0 IRQ_TYPE_NONE>,
++              <0x1 0xf1 0x1 IRQ_TYPE_NONE>,
++              <0x1 0xf1 0x2 IRQ_TYPE_NONE>,
++              <0x1 0xf1 0x3 IRQ_TYPE_NONE>,
++              <0x1 0xf1 0x4 IRQ_TYPE_NONE>,
++              <0x1 0xf1 0x5 IRQ_TYPE_NONE>;
++        interrupt-names = "cdc_spk_cnp_int",
++                          "cdc_spk_clip_int",
++                          "cdc_spk_ocp_int",
++                          "mbhc_ins_rem_det1",
++                          "mbhc_but_rel_det",
++                          "mbhc_but_press_det",
++                          "mbhc_ins_rem_det",
++                          "mbhc_switch_int",
++                          "cdc_ear_ocp_int",
++                          "cdc_hphr_ocp_int",
++                          "cdc_hphl_ocp_det",
++                          "cdc_ear_cnp_int",
++                          "cdc_hphr_cnp_int",
++                          "cdc_hphl_cnp_int";
++        vdd-cdc-io-supply = <&pm8916_l5>;
++        vdd-cdc-tx-rx-cx-supply = <&pm8916_l5>;
++        vdd-micbias-supply = <&pm8916_l13>;
++        #sound-dai-cells = <1>;
++      };
+     };
 
-Cheers,
--- David
+-- 
+2.41.0
 
-
->  tools/testing/kunit/configs/all_tests.config | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
-> index 0393940c706a..13d15bc693fb 100644
-> --- a/tools/testing/kunit/configs/all_tests.config
-> +++ b/tools/testing/kunit/configs/all_tests.config
-> @@ -35,3 +35,7 @@ CONFIG_DAMON_DBGFS=y
->
->  CONFIG_SECURITY=y
->  CONFIG_SECURITY_APPARMOR=y
-> +
-> +CONFIG_SOUND=y
-> +CONFIG_SND=y
-> +CONFIG_SND_SOC=y
->
-> --
-> 2.39.2
->
-
---000000000000b1a7e70600bf3129
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
-Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
-iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
-jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
-jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
-FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCF
-sYO2UYX/gHmix0YPXh2VEw4AHvbkwusegwfPsgnKmjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA3MTgwOTAzNTJaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEALG6ZrOhvkpDokYbc2aaz
-YqAZZIWcv+jZTYOhpKrQREFA1XDaRxDFsN+HKaycw+KrXpHU4z1uWym7CoE5sT67oStrV/xQdoOK
-pMialboDhCoxibS80ei0IwQZZyIC+lzHINy4P3aQtIpZ+k/m+C4AgFOk8dHw8r8MGOSwu8Q5lcZS
-qL7aAAebTmWd8XVD+ExJ64ZD16ew1pW5iQBqH645S+Q3VDvkg1n6noYBmRn8nQFZ282Zx22GzYOu
-J7Vp1Apzuy1hOaof9KGdoBU/g5/G5pRkJmqF3MrrhQusEShSWUg4Q3l2gky5HJMPdkQMwBX+k5vi
-eN+3Mx43UvxSlZeW3g==
---000000000000b1a7e70600bf3129--
