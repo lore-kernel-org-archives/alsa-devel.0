@@ -4,97 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB527EB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:15:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9963EB64DA
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 14:15:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E9C321F6;
-	Tue, 18 Jul 2023 16:14:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9C321F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51A1A201;
+	Tue, 18 Jul 2023 16:14:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51A1A201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689689721;
-	bh=lnc2KoUgRG3lwpxDCiPgnX5sIJoytStqVfE8awnvY3w=;
+	s=default; t=1689689732;
+	bh=jMcaqMvtelif2rc0BP/Jg3iyn1T7ZYfxR8k1L++gSIY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TfguWjGRcg9lMPW8wZnvdmgQILysofDIhRZ/nKBwAGlIAFEBI9WH6fJSFz4U/MKiU
-	 XJcQ0fUmfDFiidgHMLwoC5QaugPUMabp/7jNBXM0SUq+vc2TUFfWR2l8tpxyx0IFaf
-	 YfOz58fa1qOGu9Qs3PKQpFcecgFYfV87dX7FccyU=
+	b=coGfzJd3qtjvJnAjrpbsu63L9mpP9ebkwN2Cbym6YFP0Yfh+hIsvDpewBISNtU8gp
+	 YzKJVFBMi7LU3P1h77YSmWzo1udLk/5pKK7lfRUj2BfzC/Jr4OaH0fWnVTQ4uOuY4D
+	 RS7clV+dkHBc4qQaUSTj8LGAbjtpuT6Kk1EvDyw8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EAE0DF805AD; Tue, 18 Jul 2023 16:13:37 +0200 (CEST)
+	id 77923F80544; Tue, 18 Jul 2023 16:13:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1493FF805A8;
-	Tue, 18 Jul 2023 16:13:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7227F805B0;
+	Tue, 18 Jul 2023 16:13:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A071F80587; Tue, 18 Jul 2023 16:13:32 +0200 (CEST)
+	id B1CE8F8057E; Tue, 18 Jul 2023 16:13:32 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1F383F80557
+	by alsa1.perex.cz (Postfix) with ESMTPS id DAC31F80553
 	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 16:13:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F383F80557
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAC31F80553
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=UmSnC/8N;
+ header.s=susede2_rsa header.b=BCk5X7H0;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=a/c7sDuO
+ header.s=susede2_ed25519 header.b=+R09Rnok
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8EE8E2192D;
-	Tue, 18 Jul 2023 14:13:16 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D3DA82191A;
+	Tue, 18 Jul 2023 14:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1689689596;
+	t=1689689595;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=iIrqHue+vf3qZavIkbDu6YFbh1oK68e6yOjrTSxU3IQ=;
-	b=UmSnC/8NupZsC/KIEJ9gNG2ZE83GjoMJoBbgO4yltuTTWJJBRbWLl0nUjDTitR4EwqIWOD
-	KDgCLACIldUCzk08FzVdBMklTwYy9b8/OPcC2o4Ux9yls7e2R15QM7WAhDq0jVFq8pBzBe
-	L4wqTV41IN0QuDesqe4NM2DCm/6eZf0=
+	bh=nMxjF4QiWmENq+vWzZ8quubwayGSLdwjgpDFbtrSo7Q=;
+	b=BCk5X7H0idm78PN1Z81i0BMNGz8zjo9gFjSzcOLjFgKEIdph5sYzWFFN0Q5sqT7EMzV6Zn
+	SdXg9Kq/RzIOuwMOOeabtznsC5YYRKoXESefBK7xkUUikCQYnKjTQ4Rj7wB665TcNZEg/l
+	2HIBwZFPk50sxHtaf/gGLJkJCebDZZ8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689689596;
+	s=susede2_ed25519; t=1689689595;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=iIrqHue+vf3qZavIkbDu6YFbh1oK68e6yOjrTSxU3IQ=;
-	b=a/c7sDuOlNCLRxlfs8P//U8PXrTOr5Cwu2/f+PP4azQ1Hx9X/mHEc6/bNDiGMpdq4Jg9vi
-	24Me/ZZwMVajUwCg==
+	bh=nMxjF4QiWmENq+vWzZ8quubwayGSLdwjgpDFbtrSo7Q=;
+	b=+R09Rnokl3uo0KaPsr6dzz6thOpK0VAbtp6zKRpjp/6zHm6mz58w06psDb26YYah5dRpIa
+	a1UX5kogvCbFsUAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74A4D134B0;
-	Tue, 18 Jul 2023 14:13:16 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A0986134B0;
+	Tue, 18 Jul 2023 14:13:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id cGGfG/ydtmQ8AQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 14:13:16 +0000
+	id EH5GJvudtmQ8AQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 18 Jul 2023 14:13:15 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 11/11] ALSA: emu10k1: Go back and simplify with
- snd_ctl_find_id()
-Date: Tue, 18 Jul 2023 16:13:04 +0200
-Message-Id: <20230718141304.1032-12-tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	=?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+	Mark Brown <broonie@kernel.org>
+Subject: [PATCH 06/11] ASoC: sigmadsp: Simplify with snd_ctl_activate_id()
+Date: Tue, 18 Jul 2023 16:12:59 +0200
+Message-Id: <20230718141304.1032-7-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230718141304.1032-1-tiwai@suse.de>
 References: <20230718141304.1032-1-tiwai@suse.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7TFSXAXS3QEYXIS3KLSQAHRJKG3D7PT3
-X-Message-ID-Hash: 7TFSXAXS3QEYXIS3KLSQAHRJKG3D7PT3
+Message-ID-Hash: UHSR4TLFWONUDHZQKHGQMGW5OXPM4WES
+X-Message-ID-Hash: UHSR4TLFWONUDHZQKHGQMGW5OXPM4WES
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7TFSXAXS3QEYXIS3KLSQAHRJKG3D7PT3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UHSR4TLFWONUDHZQKHGQMGW5OXPM4WES/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,33 +119,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Now that snd_ctl_find_id() takes the locking itself, we can get rid of
-the messy locking in the caller side in snd_emu10k1_verify_controls().
+Use the standard snd_ctl_activate_id() helper instead of an open code
+for code simplification.
 
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "Nuno Sá" <nuno.sa@analog.com>
+Cc: Mark Brown <broonie@kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/emu10k1/emufx.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ sound/soc/codecs/sigmadsp.c | 25 ++++---------------------
+ 1 file changed, 4 insertions(+), 21 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
-index 318a064f2cec..f114bda25eea 100644
---- a/sound/pci/emu10k1/emufx.c
-+++ b/sound/pci/emu10k1/emufx.c
-@@ -799,13 +799,10 @@ static int snd_emu10k1_verify_controls(struct snd_emu10k1 *emu,
- 		if (snd_emu10k1_look_for_ctl(emu, &gctl->id))
- 			continue;
- 		gctl_id = (struct snd_ctl_elem_id *)&gctl->id;
--		down_read(&emu->card->controls_rwsem);
--		if (snd_ctl_find_id_locked(emu->card, gctl_id)) {
--			up_read(&emu->card->controls_rwsem);
-+		if (snd_ctl_find_id(emu->card, gctl_id)) {
- 			err = -EEXIST;
- 			goto __error;
- 		}
--		up_read(&emu->card->controls_rwsem);
- 		if (gctl_id->iface != SNDRV_CTL_ELEM_IFACE_MIXER &&
- 		    gctl_id->iface != SNDRV_CTL_ELEM_IFACE_PCM) {
- 			err = -EINVAL;
+diff --git a/sound/soc/codecs/sigmadsp.c b/sound/soc/codecs/sigmadsp.c
+index 3047a6fbb380..b93c078a8040 100644
+--- a/sound/soc/codecs/sigmadsp.c
++++ b/sound/soc/codecs/sigmadsp.c
+@@ -669,36 +669,19 @@ static void sigmadsp_activate_ctrl(struct sigmadsp *sigmadsp,
+ 	struct sigmadsp_control *ctrl, unsigned int samplerate_mask)
+ {
+ 	struct snd_card *card = sigmadsp->component->card->snd_card;
+-	struct snd_kcontrol_volatile *vd;
+-	struct snd_ctl_elem_id id;
+ 	bool active;
+-	bool changed = false;
++	int changed;
+ 
+ 	active = sigmadsp_samplerate_valid(ctrl->samplerates, samplerate_mask);
+-
+-	down_write(&card->controls_rwsem);
+-	if (!ctrl->kcontrol) {
+-		up_write(&card->controls_rwsem);
++	if (!ctrl->kcontrol)
+ 		return;
+-	}
+-
+-	id = ctrl->kcontrol->id;
+-	vd = &ctrl->kcontrol->vd[0];
+-	if (active == (bool)(vd->access & SNDRV_CTL_ELEM_ACCESS_INACTIVE)) {
+-		vd->access ^= SNDRV_CTL_ELEM_ACCESS_INACTIVE;
+-		changed = true;
+-	}
+-	up_write(&card->controls_rwsem);
+-
+-	if (active && changed) {
++	changed = snd_ctl_activate_id(card, &ctrl->kcontrol->id, active);
++	if (active && changed > 0) {
+ 		mutex_lock(&sigmadsp->lock);
+ 		if (ctrl->cached)
+ 			sigmadsp_ctrl_write(sigmadsp, ctrl, ctrl->cache);
+ 		mutex_unlock(&sigmadsp->lock);
+ 	}
+-
+-	if (changed)
+-		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_INFO, &id);
+ }
+ 
+ /**
 -- 
 2.35.3
 
