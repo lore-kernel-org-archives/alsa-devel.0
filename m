@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95B1CEB64DC
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 00:32:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E921C0015E
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Jul 2023 00:32:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05936BC0;
-	Tue, 18 Jul 2023 02:31:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05936BC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28A8AAE8;
+	Tue, 18 Jul 2023 02:31:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28A8AAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689640344;
-	bh=snD0Eo/VYjRjGit1jZ3DB3f+21qBXC5DToerjkMGLGM=;
+	s=default; t=1689640369;
+	bh=JAzoOFG/Nu8slUNucj7uOz4cfFujARjvN2vXgzUIK1A=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=atkZ1nUa+Ct/+wmLTPXc/Tc3F/9Ov2DcnosV5wONlwy/oVwowKRzn0X0n8yFkbz3f
-	 XfHp63mdr5fHP6RkNGv9awQLFI8eSaF9WCVJXD6LGihzH8Rnuelu0j7WHrZ4gf+gNn
-	 GalUBwJfZPAa7NL2ZL03u4paEjf/uWL0hhJttdKA=
+	b=ItH6RPP/YY+4EwOq/dwTG56wxW30ecwi26yJbGqgLfhHs8rYao1liC8RhXDQOX8yG
+	 UjZX5H/ro85X38YhVzYdBR1hOPph+fMXQ6CvELlNpceYpmhARedboJoCtkId16A65p
+	 swAcyIk2NCjRW2R2LgDZZ9c9iX+lf5N0RwEt5QrY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E79C6F80587; Tue, 18 Jul 2023 02:30:23 +0200 (CEST)
+	id F077DF805AC; Tue, 18 Jul 2023 02:30:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76334F8057E;
-	Tue, 18 Jul 2023 02:30:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87456F80589;
+	Tue, 18 Jul 2023 02:30:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3CA2AF8027B; Tue, 18 Jul 2023 02:30:13 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 30720F80549; Tue, 18 Jul 2023 02:30:17 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 58E5BF8032D
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 02:30:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58E5BF8032D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 866BBF8007E
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2023 02:30:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 866BBF8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=EASJiqi7
+ header.s=k20201202 header.b=YvQqEprQ
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 451B061370;
-	Tue, 18 Jul 2023 00:30:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D47CBC433CA;
-	Tue, 18 Jul 2023 00:29:59 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7F8C661373;
+	Tue, 18 Jul 2023 00:30:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25D6FC433CD;
+	Tue, 18 Jul 2023 00:30:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689640202;
-	bh=snD0Eo/VYjRjGit1jZ3DB3f+21qBXC5DToerjkMGLGM=;
+	s=k20201202; t=1689640208;
+	bh=JAzoOFG/Nu8slUNucj7uOz4cfFujARjvN2vXgzUIK1A=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=EASJiqi7Ly00yQGpkuE68DknJ2uuk81E+xf84VkP6/LvzK2+EyM2xkKbswtkHeoqa
-	 tZ0ImiGE0GItbBWGDp6gmalV1wKrmCNt3+5SmOvCENeIQ/HTI6VyX9iaU86Z8QqfUT
-	 AYfaQTZ2BbRBghwtycDsx4i4xpGQ4bwqBKUBS9v0vkOqUlYnSOPTMMS0IUvSjcG4w8
-	 7snqjWeGqMXUCraC43lHkm+luQ0BSGEaihe7xxetFzr/ar6+tlrH++gxmGKWV4W/ha
-	 SqLgCzqeH3ShsHujBZY5lLl3SdNgAstuAl5BGOYfLY9vtnh1rXdadrOdmCYJ9o8roT
-	 +aT9GnK56QD5Q==
+	b=YvQqEprQqVyhFnp8+OUXg8pRCxeC3vbWvTgFQQNCproWiJCdMA1DDRIsSKz2TkAaw
+	 cVBDdOw7VHIHK6zpdW38XrTD19lh8KooRc4CDnfATXrw37yoL7kwklK4PvrvYLObxa
+	 zNAvVTnLLKIMcQhWUjgAxF3ZUvf9m8wGcdO30+RnEv7YKT6s7Su2o1BCMJq8v0xPTC
+	 DsBdd/LS5VIPJfzHR6u+q6qXEcsfB++icmKKpryicPS3fCCeSGSW77LIvc8S2WREtC
+	 /TMcpVvDgJ1PpkbBr0XetNnoArXBrZc4RRkunkV2LbN5CIkmYP+uGt+FqQoAuq6taS
+	 x3CicQ841H9lA==
 From: Mark Brown <broonie@kernel.org>
-Date: Tue, 18 Jul 2023 01:28:44 +0100
-Subject: [PATCH v2 3/5] ALSA: Enable build with UML
+Date: Tue, 18 Jul 2023 01:28:46 +0100
+Subject: [PATCH v2 5/5] ASoC: topology: Add explicit build option
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-asoc-topology-kunit-enable-v2-3-0ee11e662b92@kernel.org>
+Message-Id: <20230718-asoc-topology-kunit-enable-v2-5-0ee11e662b92@kernel.org>
 References: <20230718-asoc-topology-kunit-enable-v2-0-0ee11e662b92@kernel.org>
 In-Reply-To: 
  <20230718-asoc-topology-kunit-enable-v2-0-0ee11e662b92@kernel.org>
@@ -76,19 +78,19 @@ To: Liam Girdwood <lgirdwood@gmail.com>,
 Cc: alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
  kunit-dev@googlegroups.com, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1000; i=broonie@kernel.org;
- h=from:subject:message-id; bh=snD0Eo/VYjRjGit1jZ3DB3f+21qBXC5DToerjkMGLGM=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBktdz6QD6q9FAILvFmBY8HlF3zn6cc9gUPfjrQS
- OQ9Y5c72fKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZLXc+gAKCRAk1otyXVSH
- 0GOPB/9bMFYsS1o4LqHp876+Z8FMoLwbWJqrzAD4yRpkJGzYmmvjkgcmEgpoQ8PqIsWLwcS0lhH
- 8KiyzGYfeVEPHd7KCfGFlAmYXUkUKdnOBPLJ+Soncc7w6AXIHvULLU+UFtXhbBYpGAmZfHl8Lue
- w1Fz3y2zUFXFwE6PgzipDZ+tKN5rEB4H2Jjzu2Dyk+VDqulT4CiOeOgZPTAvxOXpmOtlOL/pwAc
- QAWOaiK+37tXolRxEiy5fLptJL6lLbSyZr24lY6ptIkT6erfXvRB8fisEkf3eELagl9UHBHKZVE
- 1pNTd21Jy4nepcNB44BulWg9iVtFUF2Au/W8kG86TJs4co6a
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1884; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=JAzoOFG/Nu8slUNucj7uOz4cfFujARjvN2vXgzUIK1A=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBktdz89eZeCatJqqik+rdtJuQ3aMTz8rpLjbLzp
+ bAzrGqDcOCJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZLXc/AAKCRAk1otyXVSH
+ 0DheB/93ie1XMriGLa9EzlZkgGTvUtO7p43OdgwKKPP7V5pc/KvlqZhprG2rZyQzCPEaMfWPp/M
+ q5J2PB/o2q0ZSEjWgy38TBC0uet1p/JYDykObACJxtmPEgVrestHy9wbcmdiNF89yybkxChwIsS
+ d/CPt2BjwQ7WjAxMFNR+tk3kUs+V5d6n8jeE1MT++rToKx0p9U1kYtnuCHpOZESuDG4h52GQsG6
+ xO9KwVRLwzzteUD4bJKYmsJ/zk94AHMS6FiCYgRx9RzxIBLCkApiMkiCXhAZapKf3j9bFs9+SjU
+ cynKPWoetBvG7IgiVec6xpuS+bW+jipEV7h1yJIcW6F5gtGP
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: IVJ5OXIFL5QRCWUE5KMMHMKBNZOU72RS
-X-Message-ID-Hash: IVJ5OXIFL5QRCWUE5KMMHMKBNZOU72RS
+Message-ID-Hash: KRHEYJENZGBOLSBDECHEHTLYKJRDDBXV
+X-Message-ID-Hash: KRHEYJENZGBOLSBDECHEHTLYKJRDDBXV
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IVJ5OXIFL5QRCWUE5KMMHMKBNZOU72RS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KRHEYJENZGBOLSBDECHEHTLYKJRDDBXV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,41 +112,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In order to facilitate testing using KUnit allow ALSA to build with UML,
-it's not super useful at runtime but that's a user problem rather than
-an actual dependency.  The apparent reason for the dependency was the
-widespread use of iomem APIs in ALSA drivers, earlier patches in this
-series have provided stubs for these APIs so that there are no build
-time issues even without individual drivers having IOMEM dependencies
-added.
+The default KUnit build options are not supposed to enable any
+subsystems that were not already enabled but the topology code is a
+library which is generally selected by drivers that want to use it.
+Since KUnit is frequently run in virtual environments with minimal
+driver support this makes it difficult to enable the toplogy tests so
+provide an explicit Kconfig option which can be directly enabled when
+using KUnit, and also include this in the KUnit all_tests.config.
 
+Reviewed-by: David Gow <davidgow@google.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/Kconfig | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/Kconfig                            | 11 +++++++++++
+ tools/testing/kunit/configs/all_tests.config |  1 +
+ 2 files changed, 12 insertions(+)
 
-diff --git a/sound/Kconfig b/sound/Kconfig
-index 0ddfb717b81d..f0e15822e858 100644
---- a/sound/Kconfig
-+++ b/sound/Kconfig
-@@ -39,8 +39,6 @@ config SOUND_OSS_CORE_PRECLAIM
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index bfa9622e1ab1..439fa631c342 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -38,6 +38,17 @@ config SND_SOC_TOPOLOGY
+ 	bool
+ 	select SND_DYNAMIC_MINORS
  
- source "sound/oss/dmasound/Kconfig"
- 
--if !UML
--
- menuconfig SND
- 	tristate "Advanced Linux Sound Architecture"
- 	help
-@@ -103,8 +101,6 @@ source "sound/virtio/Kconfig"
- 
- endif # SND
- 
--endif # !UML
--
- endif # SOUND
- 
- config AC97_BUS
++config SND_SOC_TOPOLOGY_BUILD
++	bool "Build topology core"
++	select SND_SOC_TOPOLOGY
++	depends on KUNIT
++	help
++	  This option exists to facilitate running the KUnit tests for
++	  the topology core, KUnit is frequently tested in virtual
++	  environments with minimal drivers enabled but the topology
++	  core is usually selected by drivers.  There is little reason
++	  to enable it if not doing a KUnit build.
++
+ config SND_SOC_TOPOLOGY_KUNIT_TEST
+ 	tristate "KUnit tests for SoC topology"
+ 	depends on KUNIT
+diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
+index 13d15bc693fb..b8adb59455ef 100644
+--- a/tools/testing/kunit/configs/all_tests.config
++++ b/tools/testing/kunit/configs/all_tests.config
+@@ -39,3 +39,4 @@ CONFIG_SECURITY_APPARMOR=y
+ CONFIG_SOUND=y
+ CONFIG_SND=y
+ CONFIG_SND_SOC=y
++CONFIG_SND_SOC_TOPOLOGY_BUILD=y
 
 -- 
 2.39.2
