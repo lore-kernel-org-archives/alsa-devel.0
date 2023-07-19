@@ -4,94 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6936BEB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:00:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAB60EB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:02:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C0ED201;
-	Fri, 21 Jul 2023 09:59:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C0ED201
+	by alsa0.perex.cz (Postfix) with ESMTPS id 707F91FA;
+	Fri, 21 Jul 2023 10:02:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 707F91FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689926421;
-	bh=N2PEMeZJ9b5SlVCWEYVt1aINdwFqkHLWjucVt4NofwY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1689926573;
+	bh=B/wkicaUvd7cyO3AUH9zd+w0EAiPAvu9OUwEnEXC4cM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uSkhRIjdyi7d4OU/4DnSG+JNYWp4EiGO63q6NY9J9zMkcv0VR+sM3ZFNW8+nxshSq
-	 vXgd+h0k+k8Sq3OBOyWUgZXxwyhGMnBUYNA3wVXWFJmyiUrRk1D4NkM+Sm7fKeLuvZ
-	 Dh3zaPPxlRQ9Dt5iF2PTrREC56QHzgiHBnv0mjyk=
+	b=AKTtr5CQXub/OrPp/PddsXXSjv6P4Jid5zh9jU12BBBDqs5+PFUfoWm3+pIjlGy5z
+	 UwOr5Ab+umG/822Kmsy+xqOgANubNa87xJeQL/mdtK4aYBEIzlF48un0RoARB9VdcK
+	 26P/aiJ8wV6nSNPaL6YFpo2Fzewkkfdo81WyWbVk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D23DF8047D; Fri, 21 Jul 2023 09:59:08 +0200 (CEST)
+	id 77677F80548; Fri, 21 Jul 2023 10:01:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F30DF8047D;
-	Fri, 21 Jul 2023 09:59:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3DDCF8047D;
+	Fri, 21 Jul 2023 10:01:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2246EF8047D; Fri, 21 Jul 2023 09:59:05 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 35675F8032D; Wed, 19 Jul 2023 17:54:46 +0200 (CEST)
+Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D025AF8007E
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 09:59:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D025AF8007E
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=PsQ7i225
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 97C2561642;
-	Fri, 21 Jul 2023 07:59:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82059C433C7;
-	Fri, 21 Jul 2023 07:58:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689926340;
-	bh=N2PEMeZJ9b5SlVCWEYVt1aINdwFqkHLWjucVt4NofwY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PsQ7i225uLYOP+wwcVtk4oiybbfHVs8yBptuTohptP2nr9RTaHWGUDvySJjvNfwK/
-	 Vew/Jl5uhEchZqZnyEOgC2nCbdK0Kvwg+tzh0W6/6MVXa1SDcW+ERv6E8FgAuUsSO8
-	 T2EKulha+honeEia9gL2/os3UYzzbl1/rZszf0zFZvbfdhVfJzPNFAu0A3c7wu9IPA
-	 uUBrhzS53wKSUNZ7hlNwZGalLl2R+LBsZOHq8viAPa0i1i0TBkB+uupnbuJrVAIf9u
-	 Yt2lZklJQ98YM/9mIVdDX2LL4K9xmuQ9I5uEjyoR0hlhw1Q0EHXlUBOW738Ww8la5g
-	 25PMraWhMxb4w==
-Date: Fri, 21 Jul 2023 08:58:54 +0100
-From: Lee Jones <lee@kernel.org>
-To: broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	linus.walleij@linaro.org, vkoul@kernel.org,
-	Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: robh+dt@kernel.org, conor+dt@kernel.org, lgirdwood@gmail.com,
-	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v5 0/6] Add cs42l43 PC focused SoundWire CODEC
-Message-ID: <20230721075854.GA1908841@google.com>
-References: <20230619095623.1987742-1-ckeepax@opensource.cirrus.com>
- <168992615492.1924396.13464534208592126033.b4-ty@kernel.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id B6A82F800D2;
+	Wed, 19 Jul 2023 17:54:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6A82F800D2
+Message-ID: <a913df90-174c-7132-bbfa-bf30f0664d9c@linux.intel.com>
+Date: Wed, 19 Jul 2023 17:54:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 3/7] ASoC: Intel: avs: Move snd_hdac_i915_init to before
+ probe_work.
+Content-Language: en-US
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+Cc: sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
+References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
+ <20230718084522.116952-4-maarten.lankhorst@linux.intel.com>
+ <18fb40b9-f5b4-60d8-79df-e0719cf48231@intel.com>
+From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <18fb40b9-f5b4-60d8-79df-e0719cf48231@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <168992615492.1924396.13464534208592126033.b4-ty@kernel.org>
-Message-ID-Hash: 7Q4W733BZFRGC7QUUS6YLXH6LPCYB5MP
-X-Message-ID-Hash: 7Q4W733BZFRGC7QUUS6YLXH6LPCYB5MP
-X-MailFrom: lee@kernel.org
+X-MailFrom: maarten.lankhorst@linux.intel.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: XRKF33OL6NTEBFTWPMT7Z5TTFA4EA6YW
+X-Message-ID-Hash: XRKF33OL6NTEBFTWPMT7Z5TTFA4EA6YW
+X-Mailman-Approved-At: Fri, 21 Jul 2023 08:01:33 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7Q4W733BZFRGC7QUUS6YLXH6LPCYB5MP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XRKF33OL6NTEBFTWPMT7Z5TTFA4EA6YW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,28 +84,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 21 Jul 2023, Lee Jones wrote:
+Hey,
 
-> On Mon, 19 Jun 2023 10:56:17 +0100, Charles Keepax wrote:
-> > This patch chain adds support for the Cirrus Logic cs42l43 PC focused
-> > SoundWire CODEC. The chain is currently based of Lee's for-mfd-next
-> > branch.
-> > 
-> > Thanks,
-> > Charles
-> > 
-> > [...]
+On 2023-07-19 17:26, Cezary Rojewski wrote:
+> On 2023-07-18 10:45 AM, Maarten Lankhorst wrote:
+>> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+>> the snd_hdac_i915_init into a workqueue. It's likely the whole workqueue
+>> can be destroyed, but I don't have the means to test this.
+>>
+>> Removing the workqueue would simplify init even further, but is left
+>> as exercise for the reviewer.
+>>
+>> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+>> ---
+>>   sound/soc/intel/avs/core.c | 13 +++++++++----
+>>   1 file changed, 9 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+>> index 3311a6f142001..d3a7f42387e9b 100644
+>> --- a/sound/soc/intel/avs/core.c
+>> +++ b/sound/soc/intel/avs/core.c
+>> @@ -191,10 +191,6 @@ static void avs_hda_probe_work(struct work_struct 
+>> *work)
+>>       pm_runtime_set_active(bus->dev); /* clear runtime_error flag */
+>> -    ret = snd_hdac_i915_init(bus, true);
+>> -    if (ret < 0)
+>> -        dev_info(bus->dev, "i915 init unsuccessful: %d\n", ret);
+>> -
+>>       snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+>>       avs_hdac_bus_init_chip(bus, true);
+>>       avs_hdac_bus_probe_codecs(bus);
+>> @@ -465,10 +461,19 @@ static int avs_pci_probe(struct pci_dev *pci, 
+>> const struct pci_device_id *id)
+>>       pci_set_drvdata(pci, bus);
+>>       device_disable_async_suspend(dev);
+>> +    ret = snd_hdac_i915_init(bus, false);
+>> +    if (ret == -EPROBE_DEFER)
+>> +        goto err_unmaster;
+>> +    else if (ret < 0)
+>> +        dev_info(bus->dev, "i915 init unsuccessful: %d\n", ret);
+>> +
 > 
-> Applied, thanks!
+> While our tests are currently passing I have my doubts about 
+> EPROBE_DEFER. We do want to have audio functionality there even if some 
+> problems with HDMI arise along the way - some audio is better than no 
+> audio. Here, i915 may ruin the day for a platform equipped with 
+> hda/hdmi/i2c/dmic chips simultaneously.
 > 
-> [2/6] dt-bindings: mfd: cirrus,cs42l43: Add initial DT binding
->       commit: e62ba8443b11f12b45c61444249458a2f8c2f4ef
-> [3/6] mfd: cs42l43: Add support for cs42l43 core driver
->       commit: 843079209e1506c94fde797fc0ff914e2c9e6645
-> [4/6] pinctrl: cs42l43: Add support for the cs42l43
->       commit: 85f034dd7ff0a66aded653cc91dbc406fba7cf1a
+> Also, why call snd_hdac_i915_init() _after_ setting drvdata?
 
-Pull-request to follow.
+I wanted to make the most cautious change. The previous flow called the 
+function immediately from probe_work, so I moved it to right before the 
+scheduling of probe_work
 
--- 
-Lee Jones [李琼斯]
+>>       schedule_work(&adev->probe_work);
+>>       return 0;
+>> +err_unmaster:
+>> +    pci_clear_master(pci);
+>> +    pci_set_drvdata(pci, NULL);
+> 
+> Not a fan. It's hard to grasp entire error-step within name of a single 
+> label. Thus I'd suggest "err_<cause>" naming pattern instead. Even here, 
+> under "unmaster" you hid clearing master and drvdata both. Let's do 
+> "err_i915_init" instead.
+> 
+Ok, will rename.
+
+~Maarten
