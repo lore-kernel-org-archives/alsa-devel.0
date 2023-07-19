@@ -4,97 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E7E3EB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 08:11:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33E89EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 08:44:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5EF73201;
-	Wed, 19 Jul 2023 10:10:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EF73201
+	by alsa0.perex.cz (Postfix) with ESMTPS id 155FE1F4;
+	Wed, 19 Jul 2023 10:44:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 155FE1F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689754296;
-	bh=/QOQFQ3WcWGBRgutJ0Z42zqE8oIkXMPmEHY8D/mlYmI=;
+	s=default; t=1689756294;
+	bh=wb3ZJIKRO3I1IC9B0qNMxT18AfFdZj2SzNZcSWNZZTk=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ii54wshD4meWDMsY214E7ue2Zv8nxNQVXY4WGd5d3W0bvQHdqqbmomK8dxe6W1qPw
-	 nIhf3ugC/1jVUdCAF8fGhcyNFvAbcvFdZZPgYurS5qD7YQ4EoJCkdy+gClpUV+sH5W
-	 LE3+Y1V3V/7lcu2h7fPoI1HspNRQTr2ZcCR6iS38=
+	b=OtMSXG8632PkS7K3gQuYAX8ehqeD8MO7o1m2KTiNTkcgK/6BcD1NMcLH2T4njyA+O
+	 /G951yxSZue/iM9YfNRQ895QZfY2FL8jD6/sYM8upL6Onm8HtgCyAHl4KNsCD9f/Cp
+	 JMY7DaqfZM9/gQ6+yOiBczvF8t9rDFd1qJYKQKgY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8E78F80535; Wed, 19 Jul 2023 10:10:20 +0200 (CEST)
+	id B4FA5F80494; Wed, 19 Jul 2023 10:43:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43ABEF8007E;
-	Wed, 19 Jul 2023 10:10:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27E25F8047D;
+	Wed, 19 Jul 2023 10:43:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E7D23F8047D; Wed, 19 Jul 2023 10:10:16 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
+	id B12F9F8047D; Wed, 19 Jul 2023 10:43:30 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D627AF8007E
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 10:10:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D627AF8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9294FF800D2
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 10:43:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9294FF800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=DmSRK0Zq;
+ header.s=susede2_rsa header.b=thyUnjWW;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=vtz7e43n
+ header.s=susede2_ed25519 header.b=srHYmZhs
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 63DF5219AB;
-	Wed, 19 Jul 2023 08:10:13 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CB0E61FD6C;
+	Wed, 19 Jul 2023 08:43:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1689754213;
+	t=1689756202;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CHxVAwTYgXY8FVynIko6DC+CplrYiMW0wQPJCUEbN+U=;
-	b=DmSRK0ZqC/PYRa+pKo/k0W7OEfLCBsACLIo2PR5LFCORvsP069434v7ofliqq6rPslR7vd
-	vdicfV0DJPlO+CmNVIxxGeSHFDYJ1C4O7nEpgFn6Fsbxd1VIjZIpG7qzRlPzJlxo/VWFGF
-	hdawzbw1dKZzoxm6nQxCIdACxVL3G94=
+	bh=vvc5kdPqlVi6elOqQ/AkBycnfOHbHukWEB5/Lp3RNUo=;
+	b=thyUnjWWKT2CH2cptX1yIvH4Fk3u2rTNxCuvxQryYFH95FYRGmSVWfcxrLFrLeZme8KEWw
+	jSzrxZw7nhbUIT+0aykKfxKQlcB3Jex01Pk5ZIj0Bfqkwl+fYaoh4WG5RVvdm2ckZDJ2Fd
+	rctKkLhL3lU+kXN13X0H/3+bkKw8zxA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689754213;
+	s=susede2_ed25519; t=1689756202;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CHxVAwTYgXY8FVynIko6DC+CplrYiMW0wQPJCUEbN+U=;
-	b=vtz7e43nSJE/VK70W/Ha5Vn8v7ZFk+rUe1q2vXAcSaCLazaaT2WgTrJryc7BsTpVKmF/tE
-	iDxzgMnF/9muSvDQ==
+	bh=vvc5kdPqlVi6elOqQ/AkBycnfOHbHukWEB5/Lp3RNUo=;
+	b=srHYmZhsyqoSfUGkYsoml9/8eWFqW6jakUkX+zYxPeR9odb0h2DJQqMDlMTkr0CoF0LuHC
+	L9bJgo2W7v9J/wBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 431CD13460;
-	Wed, 19 Jul 2023 08:10:13 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA1AF1361C;
+	Wed, 19 Jul 2023 08:43:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id GYpFD2Wat2RKcwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 19 Jul 2023 08:10:13 +0000
-Date: Wed, 19 Jul 2023 10:10:12 +0200
-Message-ID: <87pm4ol3tn.wl-tiwai@suse.de>
+	id ED+2KCqit2R0BgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 19 Jul 2023 08:43:22 +0000
+Date: Wed, 19 Jul 2023 10:43:22 +0200
+Message-ID: <87mszsl2ad.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Luka Guzenko <l.guzenko@web.de>
-Cc: tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda/realtek: Enable Mute LED on HP Laptop
- 15s-eq2xxx
-In-Reply-To: <20230718161241.393181-1-l.guzenko@web.de>
-References: <20230718161241.393181-1-l.guzenko@web.de>
+To: Carl Klemm <carl@uvos.xyz>
+Cc: alsa-devel@alsa-project.org,
+    Takashi Iwai <tiwai@suse.de>
+Subject: Re: [BUG REPORT] sound: pci: ctxfi: htimestamp dose not work on
+ EMU20k during recording
+In-Reply-To: <f9387d7455ed16cd59b24482a5f9ac5fdf274796.camel@uvos.xyz>
+References: <dde0a305793ad7ddbd9e001e463207a84c2afcc9.camel@uvos.xyz>
+	<87y1jcl5sj.wl-tiwai@suse.de>
+	<f9387d7455ed16cd59b24482a5f9ac5fdf274796.camel@uvos.xyz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: Z3RMTHNUXGEPLC32OZK3CTTJGYO5EYFG
-X-Message-ID-Hash: Z3RMTHNUXGEPLC32OZK3CTTJGYO5EYFG
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: ZP736GJOWE6ACHJCYENWRCJL3OAGCFYJ
+X-Message-ID-Hash: ZP736GJOWE6ACHJCYENWRCJL3OAGCFYJ
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z3RMTHNUXGEPLC32OZK3CTTJGYO5EYFG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZP736GJOWE6ACHJCYENWRCJL3OAGCFYJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,16 +120,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 18 Jul 2023 18:12:41 +0200,
-Luka Guzenko wrote:
-> 
-> The HP Laptop 15s-eq2xxx uses ALC236 codec and controls the mute LED using
-> COEF 0x07 index 1. No existing quirk covers this configuration.
-> Adds a new quirk and enables it for the device.
-> 
-> Signed-off-by: Luka Guzenko <l.guzenko@web.de>
+[Please keep ML in Cc.]
 
-Thanks, applied now.
+On Wed, 19 Jul 2023 10:10:47 +0200,
+Carl Klemm wrote:
+> 
+> Hi,
+> 
+> The values only seam nonsensical if playback and record is active at
+> the same time, otherwise eatch on its own is fine
 
+That's an interesting point.  You mean "values" as the PCM positions?
+That is, when running in full-duplex mode, only the capture stream
+shows strange PCM positions, while PCM playback shows correctly?
+Or are both screwed up?
+
+And, how strange they are?  They jump up/down, random values, or any
+patterns?
+
+
+thanks,
 
 Takashi
+
+> 
+> Carl Klemm
+> 
+> On Wed, 2023-07-19 at 09:27 +0200, Takashi Iwai wrote:
+> > On Wed, 19 Jul 2023 09:10:12 +0200,
+> > Carl Klemm wrote:
+> > > 
+> > > Hi,
+> > > 
+> > > see https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/3352
+> > > htimestamp returns nonesensical values when recording is active on
+> > > a
+> > > EMU20k device
+> > 
+> > The driver doesn't provide any own implementation of PCM tstamp,
+> > hence
+> > it must be the standard values.  That said, the incorrect values are
+> > rather the "avail", that is the PCM position, not the timestamp
+> > itself, I suppose.
+> > 
+> > Is it only about recording, i.e. playback doesn't show any wrong
+> > values?
+> > 
+> > In anyway, try to enable the tracing for snd_pcm, get the position
+> > and
+> > the system timestamp during recording, and verify whether the
+> > reported
+> > values are reasonable or not.
+> > 
+> > 
+> > Takashi
+> 
