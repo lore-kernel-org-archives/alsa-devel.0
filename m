@@ -4,36 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77605EB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:06:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 489E2EB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:06:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F5EE210;
-	Fri, 21 Jul 2023 10:05:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F5EE210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 189751F3;
+	Fri, 21 Jul 2023 10:06:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 189751F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689926802;
-	bh=z6h69GluYK7rZ3f48ZDX8mdHy0EcK56C2B/mGh/yiak=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=U8pO1jx3q6WINTn8nF1xUussjTtkenE+/asw6oFJvU6ZpRqoUkTaCJbKDlaXqXEZG
-	 AGqmSkWJsiwbXNwdp3P1YZq9keuhvlZm5VVIqLC3UlEFWVP8FUZcfMgxG70N+mZ0hB
-	 JB9WdbZhAXOywsPabW6Az1l/DZQjK49AJgPWreAc=
+	s=default; t=1689926815;
+	bh=PrPpN8OiP+t/uEsEZG4BHRzkrLEBiw85I44Bz2ysyY8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=uIOoZudtbuuJFfQbZOXf87BS9j1RLS4rShDdoXOzcp2/VCDJHWbx0qe1/kOkFHOj8
+	 ZnBjBMf/gqRJrK6vvkkPyLCHJlAUM13mG4AsAHgfCdbULHJlABcyDA9Ijkty1N40/7
+	 rDCrD7RXRqVItBr+PQTBV8tl0elIGZIRjemj6X0M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0ECFDF8032D; Fri, 21 Jul 2023 10:05:51 +0200 (CEST)
+	id C95E3F8007E; Fri, 21 Jul 2023 10:05:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24A78F80494;
-	Fri, 21 Jul 2023 10:05:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0180EF8007E;
+	Fri, 21 Jul 2023 10:05:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F0A79F80535; Wed, 19 Jul 2023 18:41:53 +0200 (CEST)
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+	id DD32AF8053B; Wed, 19 Jul 2023 18:41:56 +0200 (CEST)
+Received: from mblankhorst.nl (lankhorst.se
+ [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 339C2F8007E;
-	Wed, 19 Jul 2023 18:41:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 339C2F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id BEA0EF8047D;
+	Wed, 19 Jul 2023 18:41:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEA0EF8047D
 From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: sound-open-firmware@alsa-project.org,
@@ -50,11 +53,12 @@ Cc: sound-open-firmware@alsa-project.org,
 	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>,
 	Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH v2 0/9] sound: Use -EPROBE_DEFER instead of i915 module
- loading.
-Date: Wed, 19 Jul 2023 18:41:32 +0200
-Message-Id: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v2 2/9] ALSA: hda/i915: Allow override of gpu binding.
+Date: Wed, 19 Jul 2023 18:41:34 +0200
+Message-Id: <20230719164141.228073-3-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: mlankhorst@mblankhorst.nl
@@ -63,15 +67,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: UPHQSMZUUHCDJY4N657OHNRTR7TLCW7Y
-X-Message-ID-Hash: UPHQSMZUUHCDJY4N657OHNRTR7TLCW7Y
+Message-ID-Hash: GOW45XQN4S3TSTW7OOBS7M2JH3H4M7EP
+X-Message-ID-Hash: GOW45XQN4S3TSTW7OOBS7M2JH3H4M7EP
 X-Mailman-Approved-At: Fri, 21 Jul 2023 08:05:47 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UPHQSMZUUHCDJY4N657OHNRTR7TLCW7Y/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GOW45XQN4S3TSTW7OOBS7M2JH3H4M7EP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -80,71 +84,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Explicitly loading i915 becomes a problem when upstreaming the new intel driver
-for Tiger Lake and higher graphics (xe). By loading i915, it doesn't wait for
-driver load of xe, and will fail completely before it loads.
+Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
+video_firmware_drivers_only(). This can be used as a first
+approximation on whether i915 will be available. It's safe to use as
+this is only built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
 
--EPROBE_DEFER has to be returned before any device is created in probe(),
-otherwise the removal of the device will cause EPROBE_DEFER to try again
-in an infinite loop.
+It's not completely fool proof, as you can boot with "nomodeset
+i915.modeset=1" to make i915 load regardless, or use
+"i915.force_probe=!*" to never load i915, but the common case of
+booting with nomodeset to disable all GPU drivers this will work as
+intended.
 
-The conversion is done in gradual steps. First I add an argument to
-snd_hdac_i915_init to allow for -EPROBE_DEFER so I can convert each driver
-separately. Then I convert each driver to move snd_hdac_i915_init out of the
-workqueue. Finally I drop the ability to choose modprobe behavior after the
-last user is converted.
+Because of this, we add an extra module parameter,
+snd_hda_core.gpu_bind that can be used to signal users intent.
+-1 follows nomodeset, 0 disables binding, 1 forces wait/-EPROBE_DEFER
+on binding.
 
-I suspect the avs and skylake drivers used snd_hdac_i915_init purely for the
-modprobe, but I don't have the hardware to test if it can be safely removed.
-It can still be done easily in a followup patch to simplify probing.
-
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 ---
-New since first version:
+ sound/hda/hdac_i915.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-- snd_hda_core.gpu_bind is added as a mechanism to force gpu binding,
-  for testing. snd_hda_core.gpu_bind=0 forces waiting for GPU bind to
-  off, snd_hda_core.gpu_bind=1 forces waiting for gpu bind. Default
-  setting depends on whether kernel booted with nomodeset.
-- Incorporated all feedback review.
-
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Cc: sound-open-firmware@alsa-project.org
-
-Maarten Lankhorst (9):
-  ALSA: hda/intel: Fix error handling in azx_probe()
-  ALSA: hda/i915: Allow override of gpu binding.
-  ALSA: hda/i915: Add an allow_modprobe argument to snd_hdac_i915_init
-  ALSA: hda/i915: Allow xe as match for i915_component_master_match
-  ASoC: Intel: avs: Move snd_hdac_i915_init to before probe_work.
-  ASoC: Intel: Skylake: Move snd_hdac_i915_init to before probe_work.
-  ALSA: hda/intel: Move snd_hdac_i915_init to before probe_work.
-  ASoC: SOF: Intel: Remove deferred probe for SOF
-  ALSA: hda/i915: Remove extra argument from snd_hdac_i915_init
-
- sound/hda/hdac_i915.c         | 25 ++++++++-------
- sound/pci/hda/hda_intel.c     | 60 ++++++++++++++++++-----------------
- sound/soc/intel/avs/core.c    | 13 +++++---
- sound/soc/intel/skylake/skl.c | 31 ++++++------------
- sound/soc/sof/Kconfig         | 19 -----------
- sound/soc/sof/core.c          | 38 ++--------------------
- sound/soc/sof/intel/Kconfig   |  1 -
- sound/soc/sof/intel/hda.c     | 32 +++++++++++--------
- sound/soc/sof/sof-pci-dev.c   |  3 +-
- sound/soc/sof/sof-priv.h      |  5 ---
- 10 files changed, 85 insertions(+), 142 deletions(-)
-
+diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+index 161a9711cd63e..c32709fa4115f 100644
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -11,6 +11,13 @@
+ #include <sound/hda_i915.h>
+ #include <sound/hda_register.h>
+ 
++#include <video/nomodeset.h>
++
++static int gpu_bind = -1;
++module_param(gpu_bind, int, 0644);
++MODULE_PARM_DESC(gpu_bind, "Whether to bind sound component to GPU "
++			   "(1=always, 0=never, -1=on nomodeset(default))");
++
+ #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
+ 				((pci)->device == 0x0c0c) || \
+ 				((pci)->device == 0x0d0c) || \
+@@ -121,6 +128,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
+ {
+ 	struct pci_dev *display_dev = NULL;
+ 
++	if (!gpu_bind || (gpu_bind < 0 && video_firmware_drivers_only()))
++		return false;
++
+ 	for_each_pci_dev(display_dev) {
+ 		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
+ 		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
 -- 
 2.39.2
 
