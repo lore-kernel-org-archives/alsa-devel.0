@@ -4,110 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6AEAC0015E
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 06:26:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FAA3EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 07:14:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D40721F2;
-	Wed, 19 Jul 2023 08:25:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D40721F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FFED1F2;
+	Wed, 19 Jul 2023 09:13:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FFED1F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689747962;
-	bh=K1AOcBsxzaW7FIM6Rwid3kVFunpcZnvCPv0vTyhGTxU=;
+	s=default; t=1689750884;
+	bh=8MuIWZRxNWHP9l/0O/zijMrYt/R4yoKMoecsRnbpVzg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=p8eI7F4pazbcHTZ15Qg+mIoUA/kOvrIi1zn8NqxyK2tLoKeMixQWNuVJXjq7SX5GF
-	 rAPPcVGIrqvf8mLzAnGFhnwASm8ssl7uyK2xtU5kpcH1EpE/HbCGRqFU7SwP8WoH5X
-	 HhIrbnqsrbIMB0B5MTEggMOwPzUFQ3mC3/tqdK9E=
+	b=i3aBIPnVC2L51XlHU/dG+svh9zb0WNoU3QWLOIF30mcYoy38wYLlDNGXzKIbK0Ppn
+	 q18Kayi8EkYZ9DGsgkBQ+xRv5Ip6O48CIYKPSD/lO10p+eNkWfrBBeVLfWC0E+h7C+
+	 nr7mHG47lNtVDNr/E/2zNlhJCjHuM3veQZffdg9s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E2BAF80153; Wed, 19 Jul 2023 08:24:51 +0200 (CEST)
+	id 44288F8032D; Wed, 19 Jul 2023 09:13:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42B79F8047D;
-	Wed, 19 Jul 2023 08:24:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5AF72F8047D;
+	Wed, 19 Jul 2023 09:13:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F4C9F8047D; Wed, 19 Jul 2023 08:24:47 +0200 (CEST)
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
- [IPv6:2a00:1450:4864:20::52e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id B5BA8F8047D; Wed, 19 Jul 2023 09:13:19 +0200 (CEST)
+Received: from smtpng3.i.mail.ru (smtpng3.i.mail.ru [94.100.177.149])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7F54AF80153
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 08:24:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F54AF80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id 02794F800D2
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 09:13:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02794F800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=ve4angk7
-Received: by mail-ed1-x52e.google.com with SMTP id
- 4fb4d7f45d1cf-52164adea19so7158843a12.1
-        for <alsa-devel@alsa-project.org>;
- Tue, 18 Jul 2023 23:24:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689747882; x=1692339882;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ccyKM4c4UEqeSLzEinIny4sZDE5dNDTL0N9N17eCxtE=;
-        b=ve4angk7F91LhVNlCl1qkrEK7LFpZTU/+7owB4XDF2ZVdh+Lc+uK2tw1TEUV70KrSX
-         wF7Q7BQOc0UTlYil0POfFquiw0pzfSTKHpUdGRAaVcz3NKxzaCllxGlgE9rjde76/FIe
-         kam3I+BV4TaI4YJ9zvkkx1wGBJWCX+A4vD0WKhv/oPuQ6u3E+AKw6cgPpLrA+VekMP9o
-         WVmLc2mm+N6o1Xw8zGdh4h/nlBpyALWjXQPJy64ysqExD6nFZrHzXBqLKg2KYCO5LRUO
-         IWagxcOGY+6Gn3GwjcKFTCZp3Qaohzce1zdo48rkOZe5q8KP1Aey6V1URTGEJvj05O0J
-         MItA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689747882; x=1692339882;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ccyKM4c4UEqeSLzEinIny4sZDE5dNDTL0N9N17eCxtE=;
-        b=NhFeVCgd6M+CoRd8f/HfG6TPx8RUSzNlYHgy0g7i19RqWk7nnRz0i1iOJkkQtnH8zB
-         ph7kZIivtbEu9zgT3GqcFB2Z6VE7UZjIu15bkz8ijPjZEsdwBpkV9NiWsQ4JOcb2tY+M
-         VwJkEFd9hc9McIHw9XHI1/IAGivAG32lUfRkEqcE6jFSJBzAae4CibWz6Xswq15uOceM
-         13YRmbmeZdOQwT5EM+LGNUFsnXxoxnlolXXcBYjrS9YWD9pDcdFbGw0c/YvSwZFJ04Y+
-         D852U13RBpatoU6F+fRry9QNtrqaWV6YP54IZgwxTeGR7HIwcNghJshQ/qgg8ijSHGAg
-         23nw==
-X-Gm-Message-State: ABy/qLZwUXqv1NJsiFdo2e9X3NalO1SCaKzs/Ylz7CHkrGKlAR+LIwM9
-	tCZ8N6ywaNOYRgBMzxfptkjtdg==
-X-Google-Smtp-Source: 
- APBJJlG0SJESoICmsz810RgoxjW57d1zLBusGoGAMt4TEGBP2HcOV3sxDWwzLWhu8xl61MKTC25u6g==
-X-Received: by 2002:aa7:c944:0:b0:51d:f3b2:87b8 with SMTP id
- h4-20020aa7c944000000b0051df3b287b8mr1450218edt.0.1689747882319;
-        Tue, 18 Jul 2023 23:24:42 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id
- g21-20020a056402115500b0051de52f8adesm2288656edw.32.2023.07.18.23.24.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jul 2023 23:24:41 -0700 (PDT)
-Message-ID: <4096c968-aa77-5638-7f67-2a478d41ded3@linaro.org>
-Date: Wed, 19 Jul 2023 08:24:39 +0200
+ unprotected) header.d=inbox.ru header.i=@inbox.ru header.a=rsa-sha256
+ header.s=mail4 header.b=eLVtcBGE
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru;
+ s=mail4;
+	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc;
+ bh=fH++TWJtjIxjGX5EhbifPIIL4W8rrEuOP0ikLJnLDss=;
+	t=1689750793;x=1689840793;
+	b=eLVtcBGEq25i2MlPGu4a9NwUPGPK1/zmtrU/jDJKVwHsU7Upv6jbG+Yev37DJlzzFsUF67pLzR0yBQ2IJAZ5IrH0vDmXCR5fQqyhW08E22HPiDHI2A7xLRg4guKs78Zb9XIV0tfehG1C1aM6mmghhkEhvum/8RLHmSitR4ebhYNgdUf4ebkdpMzpiZNZmkZEDgMsuylW7Yw3j2TlksjMTMzvwRjwkWUV/ZTd43yHPL4AKfpoGYN+I6tPEVCjDvB+23Qchl2oiTKCkWu241Sg6PL6hbNbeDw6VZ+MuPYtKRYzxAkaf8p+NowQO8c1aVzsnY1eWJhWHcLtXoEH2BBxqg==;
+Received: by smtpng3.m.smailru.net with esmtpa (envelope-from
+ <fido_max@inbox.ru>)
+	id 1qM1Mz-0006vr-AQ; Wed, 19 Jul 2023 10:13:10 +0300
+Message-ID: <78fdef90-6841-b7c6-198b-5902cdc06298@inbox.ru>
+Date: Wed, 19 Jul 2023 10:13:07 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH V1 2/5] ASoC: codecs: aw88261 function for ALSA Audio
- Driver
+Subject: Re: [PATCH v2] ASoC: dt-bindings: simple-card: add triggers
+ properties
+To: Rob Herring <robh@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Sameer Pujar <spujar@nvidia.com>, Astrid Rost <astrid.rost@axis.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Herve Codina <herve.codina@bootlin.com>,
+ Aidan MacDonald <aidanmacdonald.0x0@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20230715083046.108674-1-fido_max@inbox.ru>
+ <20230715083046.108674-3-fido_max@inbox.ru>
+ <20230718220843.GA1944897-robh@kernel.org>
 Content-Language: en-US
-To: wangweidong.a@awinic.com
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- ckeepax@opensource.cirrus.com, colin.i.king@gmail.com, conor+dt@kernel.org,
- devicetree@vger.kernel.org, doug@schmorgal.com, fido_max@inbox.ru,
- flatmax@flatmax.com, herve.codina@bootlin.com, kiseok.jo@irondevice.com,
- krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, liweilei@awinic.com, perex@perex.cz,
- pierre-louis.bossart@linux.intel.com, rf@opensource.cirrus.com,
- robh+dt@kernel.org, shumingf@realtek.com, tiwai@suse.com, trix@redhat.com,
- yijiangtao@awinic.com, zhangjianming@awinic.com
-References: <4ef0d83e-b0c9-1f6e-c1a4-24d650630fe4@linaro.org>
- <20230719030955.41489-1-wangweidong.a@awinic.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230719030955.41489-1-wangweidong.a@awinic.com>
-Content-Type: text/plain; charset=UTF-8
+From: Maxim Kochetkov <fido_max@inbox.ru>
+In-Reply-To: <20230718220843.GA1944897-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: SGFOGU4V5W42FYO27GWNRMNESNZZAPNQ
-X-Message-ID-Hash: SGFOGU4V5W42FYO27GWNRMNESNZZAPNQ
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Authentication-Results: smtpng3.m.smailru.net;
+ auth=pass smtp.auth=fido_max@inbox.ru smtp.mailfrom=fido_max@inbox.ru
+X-Mailru-Src: smtp
+X-7564579A: EEAE043A70213CC8
+X-77F55803: 
+ 4F1203BC0FB41BD9260BFC270D398E26256A1388358BCC2ABA9A4E6A75BB68CE182A05F5380850404C228DA9ACA6FE2760339751B026D2C514D29B42FC712A19F66A526C91EEE5FEF0631C29E6E4FBBB
+X-7FA49CB5: 
+ FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7D950999244A4B2E6EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637976142D429C486548638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D82BD5945AB679A852F55F44EC11A897846F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE74A95F4E53E8DCE969FA2833FD35BB23D9E625A9149C048EE33AC447995A7AD182CC0D3CB04F14752D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8BA2C6A0109559C168A471835C12D1D977C4224003CC8364762BB6847A3DEAEFB0F43C7A68FF6260569E8FC8737B5C2249EC8D19AE6D49635B68655334FD4449CB9ECD01F8117BC8BEAAAE862A0553A39223F8577A6DFFEA7C468D16C903838CAB43847C11F186F3C59DAA53EE0834AAEE
+X-87b9d050: 1
+X-C1DE0DAB: 
+ 0D63561A33F958A5CE618E196A538662FA342655A6BBEC0F492C14056082EDCBF87CCE6106E1FC07E67D4AC08A07B9B0B355ED1E20F5346ACB5012B2E24CD356
+X-C8649E89: 
+ 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF8B78B62552CEFB988F7579A3A6137389BB8945F48FC4F62BB28AC2747C34186B182FB9261F6240E87A512D943FCE53BFB310A82119D837DB70531D70938160D56A5887467130CEBC4C41F94D744909CEE921556F0E976A29E6EC0772259F8F8F8815B87D7EC76CB9
+X-D57D3AED: 
+ 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojg78zLelqjbYh46SMB2AQ2A==
+X-Mailru-Sender: 
+ 689FA8AB762F73930F533AC2B33E986B0E58DE3008AEF620C23C1C26EEFFDDBF98CC072019C18A892CA7F8C7C9492E1F2F5E575105D0B01ADBE2EF17B331888EEAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: Ok
+Message-ID-Hash: ENNO4DQKX7QAY45QOBE4YPX6DXADUMJI
+X-Message-ID-Hash: ENNO4DQKX7QAY45QOBE4YPX6DXADUMJI
+X-MailFrom: fido_max@inbox.ru
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -119,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SGFOGU4V5W42FYO27GWNRMNESNZZAPNQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ENNO4DQKX7QAY45QOBE4YPX6DXADUMJI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,77 +116,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 19/07/2023 05:09, wangweidong.a@awinic.com wrote:
-> Hi, Krzysztof,
-> Thank you very much for your advice, 
->  but I have a few questions I'd like to discuss with you
-> 
-> On 18/07/2023 16:58, krzysztof.kozlowski@linaro.org wrote:
->> On 17/07/2023 13:58, wangweidong.a@awinic.com wrote:
->>> From: Weidong Wang <wangweidong.a@awinic.com>
->>>
->>> The AW88261 is an I2S/TDM input, high efficiency
->>> digital Smart K audio amplifier with an integrated 10.25V
->>> smart boost convert
-> 
->> It's the same as in patch before. This does not help and does not
->> justify having one driver split into two.
-> 
-> I will modify the commit information and differentiate the commit 
->  information for each file
-> 
->>>
-> 
-> ...
-> 
->>> +
->>> +static void aw_dev_i2s_tx_enable(struct aw_device *aw_dev, bool flag)
->>> +{
->>> +	int ret;
->>> +
->>> +	if (flag) {
->>> +		ret = regmap_update_bits(aw_dev->regmap, AW88261_I2SCFG1_REG,
->>> +			~AW88261_I2STXEN_MASK, AW88261_I2STXEN_ENABLE_VALUE);
->>> +	} else {
->>> +		ret = regmap_update_bits(aw_dev->regmap, AW88261_I2SCFG1_REG,
->>> +			~AW88261_I2STXEN_MASK, AW88261_I2STXEN_DISABLE_VALUE);
->>> +	}
-> 
->> You should not need {} here and in multiple other places.
-> 
-> I will delete {} as suggested
-> 
->>> +	if (ret)
->>> +		dev_dbg(aw_dev->dev, "%s failed", __func__);
-> 
->> Why you are not handling the errors properly?
-> 
-> Do you need to use dev_err instead?
 
-No, return err and handle it somehow (if it is reasonable).
 
-..
-
->>> +	} else {
->>> +		if (aw_dev->prof_cur != aw_dev->prof_index) {
->>> +			ret = aw88261_dev_fw_update(aw_dev);
->>> +			if (ret < 0)
->>> +				return ret;
->>> +		}
->>> +	}
->>> +
->>> +	aw_dev->prof_cur = aw_dev->prof_index;
->>> +
->>> +	return ret;
->>> +}
->>> +EXPORT_SYMBOL_GPL(aw88261_dev_reg_update);
+On 19.07.2023 01:08, Rob Herring wrote:
+> On Sat, Jul 15, 2023 at 11:30:43AM +0300, Maxim Kochetkov wrote:
+>> The trigger-start/stop properties allows to specify DAI link
+>> trigger ordering method.
 > 
->> Same question. And in all other places as well.
+> Obviously. Why do you need these? What problem does it solve?
+
+It allows using simple card for some DMA-based CPU component which 
+requires different start/stop sequence (stop DMA before CPU component, 
+start DMA after CPU component).
+There are a lot of boards which have no audio codec on board. It has 
+only I2S/TDM/etc... and you can attach any external codec on its pins. 
+It looks like simple audio card is enough for this cases. It is much 
+better than to copy-paste simple audio card code to the new custom 
+driver with new combination of CPU/codec.
+
 > 
-> This function will be called in aw88261.c, can I keep it?
+> I don't think these belong in simple-card. What's next? What if you need
+> delays between each step? This is the problem with 'simple' or 'generic'
+> bindings. It's a never ending addition of properties which are not well
+> thought out.
 
-Not really. Being used in other unit does not mean you need export.
+Can you please suggest the better way to specify start/stop trigger 
+order via DT?
 
-Best regards,
-Krzysztof
+>> +  trigger-start:
+>> +    description: |-
+>> +      Start trigger ordering method:
+>> +      default: Link->Component->DAI
+>> +      ldc: Link->DAI->Component
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    items:
+>> +      enum:
+>> +        - default
+> 
+> Why do you need a value of 'default'? What's the default when the
+> property is not present?
+It comes from
+enum snd_soc_trigger_order {
+	SND_SOC_TRIGGER_ORDER_DEFAULT	= 0,	
+	SND_SOC_TRIGGER_ORDER_LDC,		
+	SND_SOC_TRIGGER_ORDER_MAX,
+};
+default value is 0 (SND_SOC_TRIGGER_ORDER_DEFAULT)
+
+>>     format:
+>>       description: audio format.
+>>       items:
+>> @@ -210,6 +232,10 @@ properties:
+>>       maxItems: 1
+>>     simple-audio-card,mic-det-gpio:
+>>       maxItems: 1
+>> +  simple-audio-card,trigger-start:
+>> +    $ref: "#/definitions/trigger-start"
+>> +  simple-audio-card,trigger-stop:
+>> +    $ref: "#/definitions/trigger-stop"
+> 
+> Don't continue this 'simple-audio-card,' prefix pattern. With it, no
+> other binding can use these properties.
+
+Ok.
+
+> 
+>>   
+>>   patternProperties:
+>>     "^simple-audio-card,cpu(@[0-9a-f]+)?$":
+>> @@ -259,6 +285,11 @@ patternProperties:
+>>           maxItems: 1
+>>         mic-det-gpio:
+>>           maxItems: 1
+>> +      trigger-start:
+>> +        $ref: "#/definitions/trigger-start"
+>> +      trigger-stop:
+>> +        $ref: "#/definitions/trigger-stop"
+>> +
+
+Should I keep only this section?
 
