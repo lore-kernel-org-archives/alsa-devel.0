@@ -4,114 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD0A2EB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 12:49:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4393EEB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 12:49:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75C4D200;
-	Wed, 19 Jul 2023 14:48:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75C4D200
+	by alsa0.perex.cz (Postfix) with ESMTPS id 920C4208;
+	Wed, 19 Jul 2023 14:48:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 920C4208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689770951;
-	bh=eULpCTANuOwXdcm8NRzZzI00PPYK0V9rPMvU55WagdM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1689770960;
+	bh=TKonb7ri7B03ZBVsNZLJ34UsMXcCiIc//zz/rciSZ2U=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YB3RCdOiCDZfbYMDD2Zp7jHkRMbV/TRiCJ8or5lKB7eKRjmTSTZiqyXXJAdfFQOcG
-	 8hfMKY8WnFMozsbyFyYA66FO99SpEoLOgy+xaVHijCI7UTNmpvDNrBUvRNa5BiYEhJ
-	 LoTcbVzz/Abc1UY1VRGQmBhNArm/KkteiH9VsviA=
+	b=nACuBAbrsq0WKuRE61ZYa1nh2qusK1acPybVlOUU8YPiA8XvKbF9KfikVIDt4z4Vm
+	 0W4oX66QNANHZ54hh6Lzq+xjV4/8UkZ1e/9Q1Zffu1k6N9YWf5xEpXej5wnNwCXYmA
+	 N/Fs6gePT6nsQ/+SgIFq+43EtJpoClUQcl1j5jVU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A0122F8053B; Wed, 19 Jul 2023 14:47:55 +0200 (CEST)
+	id 77473F8056F; Wed, 19 Jul 2023 14:48:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F789F8047D;
-	Wed, 19 Jul 2023 14:47:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89665F8055C;
+	Wed, 19 Jul 2023 14:48:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F9B9F8047D; Wed, 19 Jul 2023 14:47:51 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 78D8FF80564; Wed, 19 Jul 2023 14:48:04 +0200 (CEST)
+Received: from mail11.truemail.it (mail11.truemail.it
+ [IPv6:2001:4b7e:0:8::81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B7B9DF80153;
-	Wed, 19 Jul 2023 14:47:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7B9DF80153
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=1aKSfbgn;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Ov/01hsT
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B731F1FF13;
-	Wed, 19 Jul 2023 12:47:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1689770864;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kxETokD9SAc/wRhOVt8MvBPZMGFuOcbQTtb5gLkVU78=;
-	b=1aKSfbgn2PvswS2cwrPQIVjoUw4GqWZswnTB1uZtTDGT1ZQqXfBd22iKJ8Va/dV5Dfx9CL
-	RY+5IRBgau/GJ0d0VvM2Za/biKliJ46PMbzbesIxY3hYKnK6DdLxXAa11iQvrZmbtdZcW1
-	jGdnaZJfhU6Hnl+9lr8FO35n9FQkZKA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689770864;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kxETokD9SAc/wRhOVt8MvBPZMGFuOcbQTtb5gLkVU78=;
-	b=Ov/01hsT/NEJyHEdy7OhhqmQhtaQFxa+O3GW/ggQ+MryZOe8HiEwslYkGrDMPjhnnOsL2b
-	ed085g26KkbFviAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9614D13460;
-	Wed, 19 Jul 2023 12:47:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id EvgaJHDbt2SmEAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 19 Jul 2023 12:47:44 +0000
-Date: Wed, 19 Jul 2023 14:47:44 +0200
-Message-ID: <87edl4f4pb.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Alsa-devel <alsa-devel@alsa-project.org>,
-	sound-open-firmware@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	by alsa1.perex.cz (Postfix) with ESMTPS id E4E34F80557
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 14:47:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4E34F80557
+Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it
+ [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id A7484209AC;
+	Wed, 19 Jul 2023 14:47:57 +0200 (CEST)
+From: Francesco Dolcini <francesco@dolcini.it>
+To: alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Francesco Dolcini <francesco.dolcini@toradex.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
-	Daniel Baluta <daniel.baluta@nxp.com>,
-	Matthew Auld <matthew.auld@intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: Remove deferred probe for SOF
-In-Reply-To: <2ed288d0-c8fe-1856-dbe9-74f4f7c075ba@linux.intel.com>
-References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
-	<20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
-	<alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com>
-	<874jm0modf.wl-tiwai@suse.de>
-	<66d22637-069f-5262-2249-6041ef9d4614@linux.intel.com>
-	<875y6g5feo.wl-tiwai@suse.de>
-	<2ed288d0-c8fe-1856-dbe9-74f4f7c075ba@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: OKKRWO23D7CX2WM4LTNZU3M7567L5D7O
-X-Message-ID-Hash: OKKRWO23D7CX2WM4LTNZU3M7567L5D7O
-X-MailFrom: tiwai@suse.de
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	CTLIN0@nuvoton.com
+Subject: [PATCH v1 2/2] ASoC: dt-bindings: nau8822: Add MCLK clock
+Date: Wed, 19 Jul 2023 14:47:52 +0200
+Message-Id: <20230719124752.248898-3-francesco@dolcini.it>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230719124752.248898-1-francesco@dolcini.it>
+References: <20230719124752.248898-1-francesco@dolcini.it>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: BWBWEHJPP4UKQWIE66GBWQTFAWOLACJT
+X-Message-ID-Hash: BWBWEHJPP4UKQWIE66GBWQTFAWOLACJT
+X-MailFrom: francesco@dolcini.it
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -123,7 +73,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OKKRWO23D7CX2WM4LTNZU3M7567L5D7O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BWBWEHJPP4UKQWIE66GBWQTFAWOLACJT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,83 +82,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 19 Jul 2023 14:13:59 +0200,
-Maarten Lankhorst wrote:
-> 
-> 
-> On 2023-07-19 13:06, Takashi Iwai wrote:
-> > On Wed, 19 Jul 2023 11:48:06 +0200,
-> > Maarten Lankhorst wrote:
-> >> 
-> >>      The 60 seconds timeout is a thing "better than complete disablement",
-> >>      so it's not ideal, either.  Maybe we can add something like the
-> >>      following:
-> >>           - Check when the deferred probe takes too long, and warn
-> >> it
-> >>      - Provide some runtime option to disable the component binding, so
-> >>        that user can work around it if needed
-> >>      A module option to snd_hdac_i915_init would probably be the
-> >> least of all evils
-> >> here.
-> > 
-> > Yes, probably it's the easiest option and sufficient.
-> > 
-> > 
-> > thanks,
-> > 
-> > Takashi
-> Hey,
-> 
-> Patch below, can be applied immediately iresspective of the other patches.
-> 
-> ---->8----------
-> 
-> Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
-> video_firmware_drivers_only(). This can be used as a first
-> approximation
-> on whether i915 will be available. It's safe to use as this is only
-> built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
-> 
-> It's not completely fool proof, as you can boot with "nomodeset
-> i915.modeset=1" to make i915 load regardless, or use
-> "i915.force_probe=!*" to never load i915, but the common case of booting
-> with nomodeset to disable all GPU drivers this will work as intended.
+From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-The check of video_firmware_drivers_only() may help a bit, but I
-believe we still need an option to override the behavior, from the
-same reason as why i915.modeset option behaves so.  In general,
-nomodeset is for a debugging purpose, and without an option, you'll
-have no way to re-enable the HD-audio even if you could reload the
-graphics driver.
+Add nau8822 master clock input.
 
+Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+---
+ .../devicetree/bindings/sound/nuvoton,nau8822.yaml          | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-thanks,
+diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8822.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8822.yaml
+index edc8cc756980..cb8182bbc491 100644
+--- a/Documentation/devicetree/bindings/sound/nuvoton,nau8822.yaml
++++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8822.yaml
+@@ -24,6 +24,12 @@ properties:
+   "#sound-dai-cells":
+     const: 0
+ 
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: mclk
++
+   nuvoton,spk-btl:
+     description:
+       If set, configure the two loudspeaker outputs as a Bridge Tied Load output
+-- 
+2.25.1
 
-Takashi
-
-> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> ---
-> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-> index 1637dc6e630a6..90bcf84f7b2ce 100644
-> --- a/sound/hda/hdac_i915.c
-> +++ b/sound/hda/hdac_i915.c
-> @@ -11,6 +11,8 @@
->  #include <sound/hda_i915.h>
->  #include <sound/hda_register.h>
-> 
-> +#include <video/nomodeset.h>
-> +
->  #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
->  				((pci)->device == 0x0c0c) || \
->  				((pci)->device == 0x0d0c) || \
-> @@ -122,6 +124,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
->  {
->  	struct pci_dev *display_dev = NULL;
-> 
-> +	if (video_firmware_drivers_only())
-> +		return false;
-> +
->  	for_each_pci_dev(display_dev) {
->  		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
->  		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
-> 
