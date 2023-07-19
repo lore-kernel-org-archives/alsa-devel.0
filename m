@@ -4,116 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36C47C001B0
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 13:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AC1AEB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 13:25:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DC2C200;
-	Wed, 19 Jul 2023 15:21:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DC2C200
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FADD201;
+	Wed, 19 Jul 2023 15:24:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FADD201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689772950;
-	bh=nhDtT66urv6j+1iAMm5alY4A4UU+8lPBsE5nNPyABDY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=sw4avju/d9NHP6jDe6EzbWzdA+vhRYXTdMpl22K22wpgN+mRkBnw/NLyaVg9Lgl0l
-	 kB69pQaSfLyRo72D5kaTvmiIrfQP3VgwGZWlRu+riBTKyBVWo2hVt002IKXjH88v7X
-	 BzUr9ANXmzNc0P0zDJmBp1qOmlvaM90rYJtb1DBQ=
+	s=default; t=1689773101;
+	bh=ZrukAGIhZTYULpa8szj3oqcN+fWG5zRbYqEplOiarbo=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=So/lTjlwkWSUwEmHkPung9XLDk+Es0mjxAyxkCGPpHI8AcHK8IBXHxrzp9a9lAl5t
+	 4FyYTRvP6JxBqyR2PAeGvkM5ehehHvkoECOLzd0rKyhjO7JuoVB/SC4mOBUrOOEDIo
+	 Ufoyfog6rEEC6YvqCC8sRnSrMXEaM6R8uEd0+qus=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16938F80520; Wed, 19 Jul 2023 15:21:18 +0200 (CEST)
+	id 14238F8032D; Wed, 19 Jul 2023 15:23:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D971F8047D;
-	Wed, 19 Jul 2023 15:21:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5853DF80494;
+	Wed, 19 Jul 2023 15:23:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 824F8F800D2; Wed, 19 Jul 2023 15:21:15 +0200 (CEST)
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com
- [IPv6:2607:f8b0:4864:20::32e])
+	id 34F9DF8047D; Wed, 19 Jul 2023 14:13:39 +0200 (CEST)
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
+ [IPv6:2a00:1450:4864:20::22b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 40413F800D2
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 15:21:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40413F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 68279F800D2
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 14:13:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68279F800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=ae6fRop9
-Received: by mail-ot1-x32e.google.com with SMTP id
- 46e09a7af769-6b9defb36a2so2026325a34.2
+ header.s=20221208 header.b=AMe2VhIK
+Received: by mail-lj1-x22b.google.com with SMTP id
+ 38308e7fff4ca-2b93dcfe64fso11024101fa.1
         for <alsa-devel@alsa-project.org>;
- Wed, 19 Jul 2023 06:21:07 -0700 (PDT)
+ Wed, 19 Jul 2023 05:13:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689772866; x=1692364866;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ql6hMIj8o/PVbOQtvLSuTczzzXne3ShLX5+9XETdRV4=;
-        b=ae6fRop9/rqf11JSBIjcGGu9Fpl3xv3a7Ksf4lWmsfEo5dz1Q0fAnYJRsM+U5AlSIG
-         5agmc7KfOjMqrFqYMMT+RaM9oo4rM0kHN++NB89waCl6t5CTSgQZivC4VCyW+RhznRLS
-         0TbBwZZY3g97Cg6DcRz5LUxDrEj8RfAuY4F6REpYUEtvWMEVTUgq1gimYGrcrVLsVlsw
-         dXIahwQStAqVu3f5YArstC+SRYDecHCTjkI/3zKB2/ywckoXhl57i/vOP9SVDk5npKDe
-         tJFNu8RLtciu2FQg7w3CQQ784GiLsGOhe1qQGqqe1lo2ZwBBPMugNBxsvZpuWcOaDmME
-         Y8rA==
+        d=gmail.com; s=20221208; t=1689768812; x=1692360812;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z99DUAH7xZ+9Qc+iPnS2oNOZjSJ09fjgfWFXuW8zGLs=;
+        b=AMe2VhIKab3Wn5NWAVhLYDRHSTHLBr2Ufk7YSptCDvW1xyE5/YPcpw0G5BUhgv5L1q
+         RP2sD2cLDogX7UzpmD9PvxhFEnfZgLIQN691Ihg5VAr7EXZjtRWwT71bkB/G0f2FSo3l
+         QZsvxobkCN6UVcKfQvQVALvhDlSPbBmiiCIH+3ULgKbXy1PVqeFYlosmY6e/J0p7G925
+         T+IY3GwrM+uLiJDMJtO05YZgxVEaUwXf4g3OCyD2XAXbm4h/hsJjYhz3ijPBhq+vNhaH
+         Rlwcy20+Eg7B/mIFuvO1xP01DKmWtwT44s23d2Ef0gqwLLMd0kk0U2HTNVzW//kjQUt6
+         owKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689772866; x=1692364866;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ql6hMIj8o/PVbOQtvLSuTczzzXne3ShLX5+9XETdRV4=;
-        b=TI8NcoP0oc5DrFRm0i8WAp5nRclN2F3384r6bASKLH0265ckstWQpP11Ee0OtpJlZo
-         mz+VlaEb1F9rWip9E/zHgEB9mlf6MZra2SrTsbmnsIikFSNieelq392+N4JBvu057JMG
-         meGotzD7KgFGXQ9QWPa1Ahwj8BRYHcZXpzAVyKySQqMVadrTfcJdEoaix1rPn/7x1UkN
-         HU4M6AHnywxJqCDLWIONu9FRe5qEc/pe64H6/myrrafWEWqP0xrfrzSgxMA10/C9SMDn
-         TuSUd5lJ3OupVfG1dveCCftIBMPNNWEE3P9YdrUm72sWcilnqrWaJxaKQZGAnCQhtBat
-         JOAQ==
-X-Gm-Message-State: ABy/qLY85vz165759AezZ6NfM9khldQL3S7r72lph1UDwCSSstmaghR8
-	tLHpZnsZPmwCFSFQeNwbm+o=
+        d=1e100.net; s=20221208; t=1689768812; x=1692360812;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z99DUAH7xZ+9Qc+iPnS2oNOZjSJ09fjgfWFXuW8zGLs=;
+        b=FF/jHLQz9RvG6qUmQagR2G8sY2A7dIVO+uZ6wFRzhNmkFt4cwdebp2sSexl6IEEEhU
+         U1/37Cb5X5x7HpBUz5jMHskyuLP1RskFm+ZVNILskx0ebfLxx4BhmE8K6jZZDQdpPlxK
+         uWq1XgC4LT2tdPpl5rc4dlkfz4moPqVHwDqV2yyVhiR3NUOc7UwJXaatE0yIXPEx6Ye2
+         +AB3YpOxKgaBJiAzYHxquZr9VWbQr5twzmMsLaBm7GgnKvBsfWDWtzh4CHaNs/hmTTzK
+         syvX9f7agJzIr3W7C4jdz9CqTDq7pnzcHuTx81ZOiC+a+OZzaLXFXYo6LVfpwfGKi/Q/
+         lj2Q==
+X-Gm-Message-State: ABy/qLbsUMJl1d+dIC0+NUbygEazBUohsJtO4EKLpiB05XYz4uVmA4Tf
+	m4ItuZf5qPeETQfVwvOG780=
 X-Google-Smtp-Source: 
- APBJJlG5c61qqprqfXiuTXgkvvpo4AR+QmpvS6HMP+5nz//Y3q/5XZh7jEVNSEHzRYJh1swqpvAlYA==
-X-Received: by 2002:a9d:6c02:0:b0:6b7:53df:1db3 with SMTP id
- f2-20020a9d6c02000000b006b753df1db3mr17012512otq.0.1689772865664;
-        Wed, 19 Jul 2023 06:21:05 -0700 (PDT)
-Received: from geday ([2804:7f2:8006:a438:f194:617f:f5b4:cc70])
+ APBJJlFVJ0gCRzrgCOlgKul02zB/ZwuPfWiEBAW6smDTTwU6aL1NoGLW3fJbk0ixH3KBQ5PN1d4dJg==
+X-Received: by 2002:ac2:559b:0:b0:4fd:d186:6603 with SMTP id
+ v27-20020ac2559b000000b004fdd1866603mr1353550lfg.0.1689768812217;
+        Wed, 19 Jul 2023 05:13:32 -0700 (PDT)
+Received: from [10.10.19.213] ([178.160.196.94])
         by smtp.gmail.com with ESMTPSA id
- r24-20020a056830135800b006b98fe3b5c9sm1754114otq.1.2023.07.19.06.21.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jul 2023 06:21:05 -0700 (PDT)
-Date: Wed, 19 Jul 2023 10:21:01 -0300
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Ico Bukvic <ico@vt.edu>, alsa-devel@alsa-project.org
-Subject: Re: Fwd: Odd issue with ALSA connecting directly to HDMI audio output
-Message-ID: <ZLfjPcIRb0Bn3KlY@geday>
-References: 
- <CAJrgGbZfPYHhf+p1TJO_LQe=pxkxDtAMPsY6sXOh1xVxq0b69w@mail.gmail.com>
- <CAJrgGbbg-WQ1iAqsG9fe559FvOQUz-hmxj08wcP1oDPTXUyeqQ@mail.gmail.com>
- <ZLbH+qC2j9FQ5pTE@geday>
- <ZLddxy5Bxgudk9vi@geday>
- <CAJrgGbbe5rmCS0UK7_Qc=+PR1LCBSU-oRRX2zB_Ljsq2J15oFw@mail.gmail.com>
- <87r0p4l3x7.wl-tiwai@suse.de>
- <CAJrgGbZm+haEO-_mpu6Sf45UPRYzuNZzVxQT27ZzAfH7VWPoHQ@mail.gmail.com>
- <87cz0o13e7.wl-tiwai@suse.de>
+ v17-20020ac25931000000b004fbe2172f7csm923524lfi.49.2023.07.19.05.13.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jul 2023 05:13:32 -0700 (PDT)
+Message-ID: <7eaf33be-78fb-4b35-ce61-79b4cbcc4eb8@gmail.com>
+Date: Wed, 19 Jul 2023 16:13:28 +0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87cz0o13e7.wl-tiwai@suse.de>
-Message-ID-Hash: 4HJHKI7TJ4JGTCJH37K7CZK37FWSDX74
-X-Message-ID-Hash: 4HJHKI7TJ4JGTCJH37K7CZK37FWSDX74
-X-MailFrom: geraldogabriel@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] selftests: ALSA: Add test-pcmtest-driver to .gitignore
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+References: <20230719114336.18409-1-tiwai@suse.de>
+From: Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <20230719114336.18409-1-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: ivan.orlov0322@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 3ZEOKW3UO5HT4JWAKQVGWAVUMGTAXY3Q
+X-Message-ID-Hash: 3ZEOKW3UO5HT4JWAKQVGWAVUMGTAXY3Q
+X-Mailman-Approved-At: Wed, 19 Jul 2023 13:23:44 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4HJHKI7TJ4JGTCJH37K7CZK37FWSDX74/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3ZEOKW3UO5HT4JWAKQVGWAVUMGTAXY3Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,39 +117,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Jul 19, 2023 at 02:39:44PM +0200, Takashi Iwai wrote:
-> On Wed, 19 Jul 2023 14:27:21 +0200,
-> Ico Bukvic wrote:
-> > 
-> > 
-> > Thank you, Takashi.
-> > 
-> > On Raspberry Pi 400 (one with built-in keyboard, although any RPi or Linux
-> > computer with HDMI monitor with loudspeakers will do), open pd-l2ork (a
-> > variant of pure-data available at http://bit.ly/pd-l2ork; pure-data also has
-> > this same problem) and enable DSP. Do the same after changing audio settings
-> > via the Preferences window (Edit->Preferences), where you can switch among
-> > backends (ALSA vs Portaudio, vs JACK; JACK does not work with any setting). If
-> > you have proper audio settings (0 in, 2 out, and a supported SR, r.g.
-> > 44,1kHz), you will hear the buzz, and will also hear the desired audio
-> > produced (e.g. by running Media->Audio Tester) faintly, with buzz bring at the
-> > forefront. Or, you will hear everything OK (default Pulse settings), or
-> > nothing. ALSA and PortAudio settings are default Raspbian(RPi)/Ubuntu
-> > (desktop). Thank you.
+On 7/19/23 15:43, Takashi Iwai wrote:
+> It was forgotten to add the new binary to .gitignore.  Let's fix it.
 > 
-> Well, the question is how the ALSA PCM device is opened, how
-> configured and how played.  As Geraldo already suggested, VC4 HDMI on
-> RPi has a special format with IEC958 encoding.  Also it has IEC958
-> status bit setups.  So, for example, if you'd need to play a normal
-> PCM stream with aplay, you'd need to open the device with "hdmi:$CARD"
-> device -- then the rest is done in alsa-lib's plugin, and that's
-> almost equivalent with what PA does.
+> Fixes: 10b98a4db11a ("selftests: ALSA: Add test for the 'pcmtest' driver")
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   tools/testing/selftests/alsa/.gitignore | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/testing/selftests/alsa/.gitignore b/tools/testing/selftests/alsa/.gitignore
+> index 2b0d11797f25..12dc3fcd3456 100644
+> --- a/tools/testing/selftests/alsa/.gitignore
+> +++ b/tools/testing/selftests/alsa/.gitignore
+> @@ -1,2 +1,3 @@
+>   mixer-test
+>   pcm-test
+> +test-pcmtest-driver
 
-Hi Takashi, thanks for taking Ico's report. Perhaps the right
-configuration that he needs to use aplay could be:
-https://github.com/alsa-project/alsa-lib/blob/master/src/conf/cards/vc4-hdmi.conf
+Looks good, thank you for doing this!
 
-That is, if I understand correctly?
-
-Thanks,
-Geraldo Nascimento
+--
+Kind regards,
+Ivan Orlov
