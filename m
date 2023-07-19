@@ -4,91 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0886AC001DC
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 11:45:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67C37EB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 12:20:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AB09201;
-	Wed, 19 Jul 2023 13:44:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AB09201
+	by alsa0.perex.cz (Postfix) with ESMTPS id 332D61FE;
+	Wed, 19 Jul 2023 14:20:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 332D61FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689767112;
-	bh=CfgKLGH3Z8ObYSNnn/H48ibZhkX7RS6ADUlcss6qFI8=;
+	s=default; t=1689769254;
+	bh=w8QgN80szna0uniayEpqCFNgVNaPz9uDgGXR6mVopZk=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=G0UiWcckIt/uwQTp6y300xjChmB4gDesKyvMIqIEm+tSPhCKajFDHSSTxhyhmGor4
-	 z5tBS1KF52Q4Z4JKAe3RVbj0I21SIqDYbBfKji6W/XrBlGw361aJChYhFDNqnQB5Hv
-	 Sv8p9km4X6NzDrOBxzZno5BrqW+5wGz4qZvcpCqw=
+	b=DPXnAuGkFDIoT64J7l+CCsIrAqYlxIaegsocf1vBRcMFIFgKs1QvA47XnPMdnS05R
+	 z2nYLeVFlMSzJL+A54C6/xuAtM+8vR8ePQ2HTqa0ECdCUUQ4SLXyIqpXrtAyTLhPGA
+	 1eryTenyg+b9FS1+dNj/EoS22jbPTmdxN2sdYHzg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20AC2F80527; Wed, 19 Jul 2023 13:43:50 +0200 (CEST)
+	id A01FEF800D2; Wed, 19 Jul 2023 14:19:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACF77F8047D;
-	Wed, 19 Jul 2023 13:43:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3128FF8007E;
+	Wed, 19 Jul 2023 14:19:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F229F8047D; Wed, 19 Jul 2023 13:43:45 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 2976EF8047D; Wed, 19 Jul 2023 14:19:33 +0200 (CEST)
+Received: from mail11.truemail.it (mail11.truemail.it
+ [IPv6:2001:4b7e:0:8::81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 17D07F800D2
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 13:43:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17D07F800D2
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=LduMIvKs;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=jVPLnwKE
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4E84D1FEBC;
-	Wed, 19 Jul 2023 11:43:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1689767018;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=D7k0jAiof48Gr3Y20c1akB3ktrrFyapC002SOgteJ7A=;
-	b=LduMIvKsiyfG1Ta+w+L86vOySHxXDbhXeZuGpZIG8z5iO2x4tNxwl+an5z2VI7nbsvsvhJ
-	PR89o4sn7nx9+QIXdUdVmAkEKYT4Ix05vfkMKmnDi29qN38pNIqDqCgmZwZF+FAmV8EypY
-	9LFNPL6Ln73IIOaGskzqAOLtlPql0JU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689767018;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=D7k0jAiof48Gr3Y20c1akB3ktrrFyapC002SOgteJ7A=;
-	b=jVPLnwKEQIxTBPdstFeM4LdulqQJr40rMTMb+u4Pu5RCMApGwPUY4fZj2bOBp+dPmrxb4G
-	UGeGG8DJpCbqBtCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3763513460;
-	Wed, 19 Jul 2023 11:43:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 2qYBDWrMt2QnagAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 19 Jul 2023 11:43:38 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Cc: Ivan Orlov <ivan.orlov0322@gmail.com>
-Subject: [PATCH] selftests: ALSA: Add test-pcmtest-driver to .gitignore
-Date: Wed, 19 Jul 2023 13:43:36 +0200
-Message-Id: <20230719114336.18409-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+	by alsa1.perex.cz (Postfix) with ESMTPS id A21D0F800D2
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 14:19:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A21D0F800D2
+Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it
+ [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 6AD99209A8;
+	Wed, 19 Jul 2023 14:19:23 +0200 (CEST)
+From: Francesco Dolcini <francesco@dolcini.it>
+To: alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Francesco Dolcini <francesco.dolcini@toradex.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	patches@opensource.cirrus.com
+Subject: [PATCH v1] ASoC: dt-bindings: wm8904: Convert to dtschema
+Date: Wed, 19 Jul 2023 14:19:18 +0200
+Message-Id: <20230719121918.247397-1-francesco@dolcini.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: L42QLR7GGF4RYXRCPCAPQTHQU2AA3N5Z
-X-Message-ID-Hash: L42QLR7GGF4RYXRCPCAPQTHQU2AA3N5Z
-X-MailFrom: tiwai@suse.de
+Message-ID-Hash: PL44M4YCALHKJAZCCBN5YPQVOS2ITXXP
+X-Message-ID-Hash: PL44M4YCALHKJAZCCBN5YPQVOS2ITXXP
+X-MailFrom: francesco@dolcini.it
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +71,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L42QLR7GGF4RYXRCPCAPQTHQU2AA3N5Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PL44M4YCALHKJAZCCBN5YPQVOS2ITXXP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,22 +80,142 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-It was forgotten to add the new binary to .gitignore.  Let's fix it.
+From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-Fixes: 10b98a4db11a ("selftests: ALSA: Add test for the 'pcmtest' driver")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Convert the WM8904 audio CODEC bindings to DT schema.
+
+Compared to the original binding #sound-dai-cells and the missing power
+supplies are added. The latter are all required as described in the
+datasheet.
+
+Datasheet: https://statics.cirrus.com/pubs/proDatasheet/WM8904_Rev4.1.pdf
+Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 ---
- tools/testing/selftests/alsa/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
+ .../devicetree/bindings/sound/wlf,wm8904.yaml | 74 +++++++++++++++++++
+ .../devicetree/bindings/sound/wm8904.txt      | 33 ---------
+ 2 files changed, 74 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8904.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/wm8904.txt
 
-diff --git a/tools/testing/selftests/alsa/.gitignore b/tools/testing/selftests/alsa/.gitignore
-index 2b0d11797f25..12dc3fcd3456 100644
---- a/tools/testing/selftests/alsa/.gitignore
-+++ b/tools/testing/selftests/alsa/.gitignore
-@@ -1,2 +1,3 @@
- mixer-test
- pcm-test
-+test-pcmtest-driver
+diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8904.yaml b/Documentation/devicetree/bindings/sound/wlf,wm8904.yaml
+new file mode 100644
+index 000000000000..329260cf0fa0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/wlf,wm8904.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/wlf,wm8904.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Wolfson WM8904/WM8912 audio codecs
++
++maintainers:
++  - patches@opensource.cirrus.com
++
++description: |
++  Pins on the device (for linking into audio routes):
++  IN1L, IN1R, IN2L, IN2R, IN3L, IN3R, HPOUTL, HPOUTR, LINEOUTL, LINEOUTR,
++  MICBIAS
++
++properties:
++  compatible:
++    enum:
++      - wlf,wm8904
++      - wlf,wm8912
++
++  reg:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: mclk
++
++  AVDD-supply: true
++  CPVDD-supply: true
++  DBVDD-supply: true
++  DCVDD-supply: true
++  MICVDD-supply: true
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - AVDD-supply
++  - CPVDD-supply
++  - DBVDD-supply
++  - DCVDD-supply
++  - MICVDD-supply
++
++allOf:
++  - $ref: dai-common.yaml#
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        codec@1a {
++            compatible = "wlf,wm8904";
++            reg = <0x1a>;
++            clocks = <&pck0>;
++            clock-names = "mclk";
++            AVDD-supply = <&reg_1p8v>;
++            CPVDD-supply = <&reg_1p8v>;
++            DBVDD-supply = <&reg_1p8v>;
++            DCVDD-supply = <&reg_1p8v>;
++            MICVDD-supply = <&reg_1p8v>;
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/sound/wm8904.txt b/Documentation/devicetree/bindings/sound/wm8904.txt
+deleted file mode 100644
+index 66bf261423b9..000000000000
+--- a/Documentation/devicetree/bindings/sound/wm8904.txt
++++ /dev/null
+@@ -1,33 +0,0 @@
+-WM8904 audio CODEC
+-
+-This device supports I2C only.
+-
+-Required properties:
+-  - compatible: "wlf,wm8904" or "wlf,wm8912"
+-  - reg: the I2C address of the device.
+-  - clock-names: "mclk"
+-  - clocks: reference to
+-    <Documentation/devicetree/bindings/clock/clock-bindings.txt>
+-
+-Pins on the device (for linking into audio routes):
+-
+-  * IN1L
+-  * IN1R
+-  * IN2L
+-  * IN2R
+-  * IN3L
+-  * IN3R
+-  * HPOUTL
+-  * HPOUTR
+-  * LINEOUTL
+-  * LINEOUTR
+-  * MICBIAS
+-
+-Examples:
+-
+-codec: wm8904@1a {
+-	compatible = "wlf,wm8904";
+-	reg = <0x1a>;
+-	clocks = <&pck0>;
+-	clock-names = "mclk";
+-};
 -- 
-2.35.3
+2.25.1
 
