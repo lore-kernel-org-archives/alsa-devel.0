@@ -4,98 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BD5DC001B0
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 07:37:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12B82C0015E
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 08:09:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A225100;
-	Wed, 19 Jul 2023 09:36:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A225100
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBDE2201;
+	Wed, 19 Jul 2023 10:08:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBDE2201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689752230;
-	bh=ch99UwWfSZtxB2tVAYGPC3X9f/VqmwoB5kZqzylaNvA=;
-	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=jnn5Q6L64G56N6Gs5h/eNFjE/mHVOhBty+5l+1YzpCRRf7acpmV9yTZMZrwEmgFGe
-	 Mzb8uQTO2Qo4LLY6Jp61rfXfHPPbj/f2HBNdxbZXNXJKM+pQmVlo0ihHXRWHAm95kO
-	 hRUFjYf5YPkz6NIN3DZjJam1/1Zu7GZUFwyb8WD0=
+	s=default; t=1689754182;
+	bh=2PrnpjzALn/zzpa53AeYvdnhIjcEgggoRW7pq0/1Rkk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=mmSwm15q1b8LQB/BAyXs4Swf3uXn4dlhMyCSqdU9JDSb1Hg1m8HIscuIdbYfy0DKx
+	 7VViHk5f9fL8BKfQJ9GIALPObQSFpFWFwY/QljFc6/w2FHEwi2x+t0g10K7UAOrIby
+	 BzNRJEz5+2cQ9TFzcLTQEcVf4bOuuPDUw65TNpiM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BFBC6F80578; Wed, 19 Jul 2023 09:35:28 +0200 (CEST)
+	id 0D913F8007E; Wed, 19 Jul 2023 10:08:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 858BFF80580;
-	Wed, 19 Jul 2023 09:35:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C9E7F8047D;
+	Wed, 19 Jul 2023 10:08:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 525C4F8047D; Wed, 19 Jul 2023 04:26:22 +0200 (CEST)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
- [IPv6:2a00:1450:4864:20::636])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id CC0B7F8047D; Wed, 19 Jul 2023 10:08:17 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 594EDF800D2
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 04:26:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 594EDF800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2B7B7F8007E
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 10:08:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B7B7F8007E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20221208 header.b=kaKWKqrU
-Received: by mail-ej1-x636.google.com with SMTP id
- a640c23a62f3a-98dfb3f9af6so872385966b.2
-        for <alsa-devel@alsa-project.org>;
- Tue, 18 Jul 2023 19:26:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689733573; x=1692325573;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ch99UwWfSZtxB2tVAYGPC3X9f/VqmwoB5kZqzylaNvA=;
-        b=kaKWKqrUipae3n35cXLzMAdA/UOpHY7a5WweF31980el5z/VB1pnRYaA2/RxgWSTV2
-         L5fmcqeSrEriz4tuUM5zfXFCmWWQo9JKrAjRx0B73CUj7qBCDyMTlT2yayp23PFgyXIY
-         xtT9jLh54MXiNfe0mfjc8fhwr8ifOx2sQXnJ0vGY1hxsqXCUZ9u/uR4lLMhBKiOaVzmK
-         cqMZwfbApnHrF0LE4zj2EOoA9dObyZT4KGZtAI3PKd8kOx7aMhGjl//BMkm0G8GfFrkM
-         0qEyQ6btTWvC1tEJphkzb5A5tZuAkr/ZWhDR3z1430yzmlbZ7gMK9uMj/XyF+Z1cWtGD
-         F1dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689733573; x=1692325573;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ch99UwWfSZtxB2tVAYGPC3X9f/VqmwoB5kZqzylaNvA=;
-        b=Y1gB67w8lsf+uNYvQ5fjw++cmx2qxoXDWYpysEiBPRM6IqXYfEDRfIxk98liKgiM3p
-         iRS7LFLw76WHjG8t5cSb+rCMAaogFM0mA6ZDagbFmMNDVD6/gKV1I+fWSrXlSFDs8xLQ
-         mZJgXmIqO3uqOG7Nan2CRlFTrnMraH+SLGXnnrdiYW3ON7tS0lcExHjk2ilNvXJkDHgu
-         34bS3l9qqY45Wffji4p2Hr4imJbL2YZpleWxUd81eSgBCF/5vU9c4FXnssF9R8ebpN6R
-         CPP+84MwJxDW3GVJ6KakVGHhzZheQPhEdXtCXVY+Xf+FHrZzpcWSaK15eVXgp9oKw/7p
-         xkKw==
-X-Gm-Message-State: ABy/qLaamVPotAilEu0jcmeMKDwq55ZXUGPU2NnGnvSKAR3u+csjAthF
-	CNBKlBSILw9vLdwtIsNoPyCCMvSOChyhJGhEJjkKosdM/8g1owBjjH8Ucw==
-X-Google-Smtp-Source: 
- APBJJlHnJbJrFfX2GSkOhmmMsNhLluRobzk1kXLPOGHEt6aebU40MYsyDE07uwUqkGVivx9scbUesj8P7sAecxEZ1P4=
-X-Received: by 2002:a17:906:1dd:b0:98e:2334:af12 with SMTP id
- 29-20020a17090601dd00b0098e2334af12mr1250275ejj.45.1689733572570; Tue, 18 Jul
- 2023 19:26:12 -0700 (PDT)
-MIME-Version: 1.0
-From: Chas Leichner <cleichner@google.com>
-Date: Tue, 18 Jul 2023 19:25:35 -0700
-Message-ID: 
- <CAA=k9AuqMMJF=deoQkpBetNdMf5XFZ+SfcFwZNjnCBYcwA5LEQ@mail.gmail.com>
-Subject: Correct Home For Documentation of ALSA's PCM State Machine
-To: alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-X-MailFrom: cleichner@google.com
-X-Mailman-Rule-Hits: nonmember-moderation
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=LeZx9uTJ;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=AP+RDI29
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 644E1219A5;
+	Wed, 19 Jul 2023 08:08:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1689754085;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IB/B0VxfpWsD/SY4kNzWY9fDJ8L/pNb+Cy08sowV2JQ=;
+	b=LeZx9uTJtggPEtCWXBObTt8O6HQbXhDoRyi0wQYrnIPEY8m3o4kP8Xm9Ju8Ldch6lsAxHl
+	CwGrWbDKRkDMg45BbzIOTA3unxezDC+Uza+AqAXbELvYxSufto6fZOEjHWN1JXqK55QSpZ
+	e//T8D73ZmJtOSbyPzajmgjjpone/vA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1689754085;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IB/B0VxfpWsD/SY4kNzWY9fDJ8L/pNb+Cy08sowV2JQ=;
+	b=AP+RDI291yIWU9wFSqryFXTQ8HWcwSVopygMYoZ30TXFw+S/dMu0kKn//Der4JHL7AbuMZ
+	eyIAVF85W17OA2BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4229213460;
+	Wed, 19 Jul 2023 08:08:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id JKFAD+WZt2Q2cgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 19 Jul 2023 08:08:05 +0000
+Date: Wed, 19 Jul 2023 10:08:04 +0200
+Message-ID: <87r0p4l3x7.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Ico Bukvic <ico@vt.edu>
+Cc: Geraldo Nascimento <geraldogabriel@gmail.com>,
+	alsa-devel@alsa-project.org
+Subject: Re: Fwd: Odd issue with ALSA connecting directly to HDMI audio output
+In-Reply-To: 
+ <CAJrgGbbe5rmCS0UK7_Qc=+PR1LCBSU-oRRX2zB_Ljsq2J15oFw@mail.gmail.com>
+References: 
+ <CAJrgGbZfPYHhf+p1TJO_LQe=pxkxDtAMPsY6sXOh1xVxq0b69w@mail.gmail.com>
+	<CAJrgGbbg-WQ1iAqsG9fe559FvOQUz-hmxj08wcP1oDPTXUyeqQ@mail.gmail.com>
+	<ZLbH+qC2j9FQ5pTE@geday>
+	<ZLddxy5Bxgudk9vi@geday>
+	<CAJrgGbbe5rmCS0UK7_Qc=+PR1LCBSU-oRRX2zB_Ljsq2J15oFw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: KWTL3HQ7QLDQQYQBER433FB73KDUE5TB
+X-Message-ID-Hash: KWTL3HQ7QLDQQYQBER433FB73KDUE5TB
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: G3WBN6RPHYIYKWAN7YG5L3QMC52VIGIQ
-X-Message-ID-Hash: G3WBN6RPHYIYKWAN7YG5L3QMC52VIGIQ
-X-Mailman-Approved-At: Wed, 19 Jul 2023 07:35:25 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G3WBN6RPHYIYKWAN7YG5L3QMC52VIGIQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KWTL3HQ7QLDQQYQBER433FB73KDUE5TB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,17 +122,144 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi all,
+On Wed, 19 Jul 2023 07:58:17 +0200,
+Ico Bukvic wrote:
+> 
+> Thank you for a follow-up. How would one set such a flag in alsa? Using
+> alsactl or by editing a config file? The app in question seeks to open the
+> audio hardware directly to minimize latency. Any examples are appreciated.
 
-Several years ago, I went through the kernel and documented how ALSA
-API calls influence the PCM state.
-(https://source.chromium.org/chromium/chromium/src/+/main:chromecast/media/cma/backend/alsa/alsa_fsm.dot;drc=249548aedd61993a7d919ca1de32bd96697f8bdb)
-One of my coworkers noted that this was still a useful document for
-their work, so I thought it might be worthwhile to put it somewhere a
-bit more discoverable than deep in the Chromium source tree, but I
-don't see an obvious spot from poking around the ALSA wiki.
+Could you show how exactly you did test?
 
-Do you have a suggested location for it?
+The fact that PA works implies that the device is basically working
+when running with a proper setup (e.g. with hdmi:* PCM, etc.)
 
-Thank you,
-Chas
+
+Takashi
+
+> 
+> Best,
+> 
+> Ico
+> 
+> -- 
+> Ivica Ico Bukvic, D.M.A.
+> Director, Creativity + Innovation
+> Director, Human-Centered Design iPhD
+> Institute for Creativity, Arts, and Technology
+> 
+> Virginia Tech
+> Creative Technologies in Music
+> School of Performing Arts – 0141
+> Blacksburg, VA 24061
+> (540) 231-6139
+> ico@vt.edu
+> 
+> ci.icat.vt.edu
+> l2ork.icat.vt.edu
+> ico.bukvic.net
+> 
+> 
+> 
+> On Tue, Jul 18, 2023 at 11:51 PM Geraldo Nascimento <
+> geraldogabriel@gmail.com> wrote:
+> 
+> > On Tue, Jul 18, 2023 at 02:12:31PM -0300, Geraldo Nascimento wrote:
+> > > On Tue, Jul 18, 2023 at 12:22:35PM -0400, Ico Bukvic wrote:
+> > > > Hi all,
+> > >
+> > > Hi Ico and friends,
+> > >
+> > > >
+> > > > I have a consumer-level setup audio question. My research project uses
+> > a
+> > > > Raspberry Pi in conjunction with a small portable monitor that has
+> > built-in
+> > > > loudspeakers that are to be used via HDMI connection. The goal here is
+> > > > portability and minimal cost.
+> > > >
+> > > > Curiously, when trying to connect to monitor's loudspeakers (via HDMI)
+> > > > using ALSA, no matter what settings I pick, at worst I cannot get
+> > > > audio out, and at best, get a buzzy sound whose waveform is in the
+> > attached
+> > > > image. The sound is clearly periodic and impulse-like. It happens
+> > every 59
+> > > > samples. Changing sample rate increases pitch, suggesting 59 samples
+> > remain
+> > > > constant regardless of the sampling rate. When playing the actual
+> > audio,
+> > > > you can hear it in the background, but this buzz is easily
+> > overpowering it.
+> > > >
+> > >
+> > > Ico, just a wild guess but are you sure you are not capturing the raw
+> > SPDIF
+> > > signal going through HDMI instead of Linear PCM audio signal?
+> >
+> > Here's a comment from the VC4 HDMI driver:
+> >
+> >  * HDMI audio is implemented entirely within the HDMI IP block.  A
+> >  * register in the HDMI encoder takes SPDIF frames from the DMA engine
+> >  * and transfers them over an internal MAI (multi-channel audio
+> >  * interconnect) bus to the encoder side for insertion into the video
+> >  * blank regions.
+> >
+> > And there's this perhaps closely related old issue with the vendor
+> > kernel and Android:
+> > https://github.com/raspberrypi/linux/issues/4654
+> >
+> > >
+> > > > Changing sample rate or bit depth, or buffering, makes no difference.
+> > > > Selecting 8 channels for output (one of HDMI's standards, as far as I
+> > can
+> > > > tell), sometimes manages to output a tiny chunk of a good audio
+> > sample, and
+> > > > then goes silent.
+> > > >
+> > > > Now, even more curiously, when using the portaudio backend and
+> > connecting
+> > > > to the default pulseaudio sink, works just fine. What could be causing
+> > this
+> > > > discrepancy?
+> > >
+> > > Perhaps PortAudio is forcing the Linear PCM bits on the underlying ALSA
+> > > backend somehow, see for example:
+> > > https://fossies.org/linux/alsa-lib/src/conf/pcm/iec958.conf
+> > > But this is just wild speculation, it may or may not be the case with
+> > > your report. It's best if you ask Takashi Iwai and Jaroslav Kysela
+> > > directly through the list with Cc: in case nobody else has any more
+> > > ideas of what could be the root cause of your report.
+> >
+> > You're probably sending PCM data to HDMI, which expects SPDIF frames
+> > instead, and PortAudio + PulseAudio seems to be aware of this. That's my
+> > theory at least. Setting the necessary bits and necessary IEC958 format
+> > on your ALSA playback may resolve your issue.
+> >
+> > >
+> > > Good luck,
+> > > Geraldo Nascimento
+> > >
+> > > >
+> > > > Best,
+> > > >
+> > > > Ico
+> > > >
+> > > > --
+> > > > Ivica Ico Bukvic, D.M.A.
+> > > > Director, Creativity + Innovation
+> > > > Director, Human-Centered Design iPhD
+> > > > Institute for Creativity, Arts, and Technology
+> > > >
+> > > > Virginia Tech
+> > > > Creative Technologies in Music
+> > > > School of Performing Arts – 0141
+> > > > Blacksburg, VA 24061
+> > > > (540) 231-6139
+> > > > ico@vt.edu
+> > > >
+> > > > ci.icat.vt.edu
+> > > > l2ork.icat.vt.edu
+> > > > ico.bukvic.net
+> > >
+> > >
+> >
