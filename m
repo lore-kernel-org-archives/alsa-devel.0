@@ -4,84 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62FC9C001DE
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 13:25:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2845EC0015E
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 13:35:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F926206;
-	Wed, 19 Jul 2023 15:24:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F926206
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D0711FC;
+	Wed, 19 Jul 2023 15:34:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D0711FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689773129;
-	bh=ZLLTSx0IzKCM/an51/aXKuOB95zBOZBM8T9n0lJWTy0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1689773700;
+	bh=bRvmDa89F8tiiWEs4W8W25Rz7T9FiMmeQyv4PQo01ww=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ikn0XNxHDubvVHS5JINebea7YGpDxGKBe50ve2/xW59/ZqkWhqOZfZxpRE+5ATBIz
-	 jFaTm0rRz6flfifs/IvczG57DNzmpvsXAh8e0L7pO0wy6Yg8NEyhrHWZvhwRNtERUr
-	 vdDiaRkbTI5Xbxv8ILR99OzHTJFyqou5Y84ZZuY8=
+	b=agmATwW6WbDxXkv6TwruH4gWuvxiQDvMoHaaHrnh0IENcbivFjWxDylrNxj1HAH2T
+	 ACdbXN53VmX2unvVuwEqvdmAU7g0K+U4D+7yKnxaVlQIs4+zuVwAJ6B9t4AIBM7mfB
+	 0Gga2FhHnDRb90f6n93PEpNBADv6TkQTHAWtstaM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A6BFF80544; Wed, 19 Jul 2023 15:23:50 +0200 (CEST)
+	id 73AB6F804DA; Wed, 19 Jul 2023 15:33:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8893F80549;
-	Wed, 19 Jul 2023 15:23:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7C8BF800D2;
+	Wed, 19 Jul 2023 15:33:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82B58F8047D; Wed, 19 Jul 2023 14:14:12 +0200 (CEST)
-Received: from mblankhorst.nl (lankhorst.se
- [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
+	id 8C361F8047D; Wed, 19 Jul 2023 15:33:37 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C93CDF800D2;
-	Wed, 19 Jul 2023 14:14:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C93CDF800D2
-Message-ID: <2ed288d0-c8fe-1856-dbe9-74f4f7c075ba@linux.intel.com>
-Date: Wed, 19 Jul 2023 14:13:59 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 58FF9F8007E
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 15:33:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58FF9F8007E
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Z7UhaFJW
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id BC7536167A;
+	Wed, 19 Jul 2023 13:33:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D842FC433C7;
+	Wed, 19 Jul 2023 13:33:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689773606;
+	bh=bRvmDa89F8tiiWEs4W8W25Rz7T9FiMmeQyv4PQo01ww=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Z7UhaFJWNJTQ+acILXK8LbHJN90m1mM0O9bfhS9NeWy89PpfAR3Pnltqiwx2ZDs7l
+	 lK+BPRHAdj+yKqiOzwqL7cKu8W95UjpeiN894kf+pOZheHU230Wc9AUfjtzFLYT5XB
+	 bM0nTz2xLjpnUulF5gYZ7Q6V0e8VmwhCLw37bkGpGNACHflzJ5TrPKiBDs1juOeJGm
+	 Nkmknf/upBUWdvxQY71zO+VgyJogGm/YazfLE0htRxwEKw54GoeAdZl0qms9skEWCf
+	 SakPebAR8hTqJuxAy9eArIuiTfDsYtlqmizJNwjSwGmWTl2YWscXTLiJuxhhm1US+g
+	 v3NCj2ip75UYg==
+From: Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230717-regmap-cache-check-v1-0-73ef688afae3@kernel.org>
+References: <20230717-regmap-cache-check-v1-0-73ef688afae3@kernel.org>
+Subject: Re: [PATCH 0/3] regmap: Add interface for checking if a register
+ is cached
+Message-Id: <168977360558.39760.4789872825823703528.b4-ty@kernel.org>
+Date: Wed, 19 Jul 2023 14:33:25 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: [PATCH] ASoC: SOF: Intel: Remove deferred probe for SOF
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Alsa-devel <alsa-devel@alsa-project.org>,
- sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
- Matthew Auld <matthew.auld@intel.com>
-References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
- <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
- <alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com>
- <874jm0modf.wl-tiwai@suse.de>
- <66d22637-069f-5262-2249-6041ef9d4614@linux.intel.com>
- <875y6g5feo.wl-tiwai@suse.de>
-From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <875y6g5feo.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-MailFrom: maarten.lankhorst@linux.intel.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-Mailer: b4 0.13-dev-099c9
+Message-ID-Hash: HOLAMN43ETIASLLW4JC2YD7IJFN7QGVU
+X-Message-ID-Hash: HOLAMN43ETIASLLW4JC2YD7IJFN7QGVU
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IT62ZFUE7436KRXVMCS2CQLYCXBEMNLL
-X-Message-ID-Hash: IT62ZFUE7436KRXVMCS2CQLYCXBEMNLL
-X-Mailman-Approved-At: Wed, 19 Jul 2023 13:23:45 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IT62ZFUE7436KRXVMCS2CQLYCXBEMNLL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HOLAMN43ETIASLLW4JC2YD7IJFN7QGVU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,66 +95,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-On 2023-07-19 13:06, Takashi Iwai wrote:
-> On Wed, 19 Jul 2023 11:48:06 +0200,
-> Maarten Lankhorst wrote:
->>
->>      The 60 seconds timeout is a thing "better than complete disablement",
->>      so it's not ideal, either.  Maybe we can add something like the
->>      following:
->>      
->>      - Check when the deferred probe takes too long, and warn it
->>      - Provide some runtime option to disable the component binding, so
->>        that user can work around it if needed
->>      
->> A module option to snd_hdac_i915_init would probably be the least of all evils
->> here.
+On Mon, 17 Jul 2023 21:33:02 +0100, Mark Brown wrote:
+> HDA has a use case for checking if a register is present in the cache
+> which it awkwardly open codes with use of _cache_only() and a read,
+> provide a direct API for this.
 > 
-> Yes, probably it's the easiest option and sufficient.
-> 
-> 
-> thanks,
-> 
-> Takashi
-Hey,
 
-Patch below, can be applied immediately iresspective of the other patches.
+Applied to
 
----->8----------
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
-Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports 
-video_firmware_drivers_only(). This can be used as a first approximation
-on whether i915 will be available. It's safe to use as this is only 
-built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
+Thanks!
 
-It's not completely fool proof, as you can boot with "nomodeset 
-i915.modeset=1" to make i915 load regardless, or use
-"i915.force_probe=!*" to never load i915, but the common case of booting
-with nomodeset to disable all GPU drivers this will work as intended.
+[1/3] regmap: Let users check if a register is cached
+      commit: 78908f45ccf1dc2f4d5fb395c460fdbbf7e9ac3a
+[2/3] regmap: Provide test for regcache_reg_present()
+      commit: d881ee5a872fd539a8c693e4c8656b9343c9aae0
+[3/3] ALSA: hda: Use regcache_reg_cached() rather than open coding
+      commit: 99aae70551f99536936438bbcfc562df69eeb79c
 
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
----
-diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index 1637dc6e630a6..90bcf84f7b2ce 100644
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -11,6 +11,8 @@
-  #include <sound/hda_i915.h>
-  #include <sound/hda_register.h>
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-+#include <video/nomodeset.h>
-+
-  #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
-  				((pci)->device == 0x0c0c) || \
-  				((pci)->device == 0x0d0c) || \
-@@ -122,6 +124,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
-  {
-  	struct pci_dev *display_dev = NULL;
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-+	if (video_firmware_drivers_only())
-+		return false;
-+
-  	for_each_pci_dev(display_dev) {
-  		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
-  		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
