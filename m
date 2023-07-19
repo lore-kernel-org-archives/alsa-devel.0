@@ -4,78 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAB60EB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:02:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35B5EEB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:05:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 707F91FA;
-	Fri, 21 Jul 2023 10:02:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 707F91FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3ACC01F6;
+	Fri, 21 Jul 2023 10:04:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ACC01F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689926573;
-	bh=B/wkicaUvd7cyO3AUH9zd+w0EAiPAvu9OUwEnEXC4cM=;
+	s=default; t=1689926749;
+	bh=u7pl41cx1E9pSqKdR5uyMPbKntCtWP0OWuxw4zXSz0s=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AKTtr5CQXub/OrPp/PddsXXSjv6P4Jid5zh9jU12BBBDqs5+PFUfoWm3+pIjlGy5z
-	 UwOr5Ab+umG/822Kmsy+xqOgANubNa87xJeQL/mdtK4aYBEIzlF48un0RoARB9VdcK
-	 26P/aiJ8wV6nSNPaL6YFpo2Fzewkkfdo81WyWbVk=
+	b=bkBTkYPsky3NmfpJ+cuxFUt8tOMpzzuFA3FkGHiWhx4II0pYX7egcsfkxISMmw3A+
+	 MYRNFSYG0vv9sj+mZiSioo4kU6/Y4AO4mQ4QjCaHjEDlmDyNqF14kY2QUfC2t+mA41
+	 eLXRH1xbs4xAx+zZ9HdCJQlnbbYekD0drvFmJqaY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 77677F80548; Fri, 21 Jul 2023 10:01:37 +0200 (CEST)
+	id 56CC1F80535; Fri, 21 Jul 2023 10:04:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3DDCF8047D;
-	Fri, 21 Jul 2023 10:01:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E33C1F804DA;
+	Fri, 21 Jul 2023 10:04:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35675F8032D; Wed, 19 Jul 2023 17:54:46 +0200 (CEST)
+	id 7E96FF8032D; Wed, 19 Jul 2023 18:00:02 +0200 (CEST)
 Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B6A82F800D2;
-	Wed, 19 Jul 2023 17:54:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6A82F800D2
-Message-ID: <a913df90-174c-7132-bbfa-bf30f0664d9c@linux.intel.com>
-Date: Wed, 19 Jul 2023 17:54:34 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1B84CF8007E;
+	Wed, 19 Jul 2023 17:59:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B84CF8007E
+Message-ID: <5cd0d41b-8307-9db3-fb4f-037b181a390d@linux.intel.com>
+Date: Wed, 19 Jul 2023 17:59:52 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH 3/7] ASoC: Intel: avs: Move snd_hdac_i915_init to before
- probe_work.
+Subject: Re: [PATCH] ASoC: SOF: Intel: Remove deferred probe for SOF
 Content-Language: en-US
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-Cc: sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Kai Vehmanen
+ <kai.vehmanen@linux.intel.com>, Alsa-devel <alsa-devel@alsa-project.org>,
+ sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
+ Daniel Baluta <daniel.baluta@nxp.com>, Matthew Auld <matthew.auld@intel.com>
 References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
- <20230718084522.116952-4-maarten.lankhorst@linux.intel.com>
- <18fb40b9-f5b4-60d8-79df-e0719cf48231@intel.com>
+ <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
+ <alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com>
+ <874jm0modf.wl-tiwai@suse.de>
+ <66d22637-069f-5262-2249-6041ef9d4614@linux.intel.com>
+ <875y6g5feo.wl-tiwai@suse.de>
+ <2ed288d0-c8fe-1856-dbe9-74f4f7c075ba@linux.intel.com>
+ <04ed7ed8-8a8d-427a-84e1-a326feee5547@sirena.org.uk>
 From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <18fb40b9-f5b4-60d8-79df-e0719cf48231@intel.com>
+In-Reply-To: <04ed7ed8-8a8d-427a-84e1-a326feee5547@sirena.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-MailFrom: maarten.lankhorst@linux.intel.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: XRKF33OL6NTEBFTWPMT7Z5TTFA4EA6YW
-X-Message-ID-Hash: XRKF33OL6NTEBFTWPMT7Z5TTFA4EA6YW
-X-Mailman-Approved-At: Fri, 21 Jul 2023 08:01:33 +0000
+Message-ID-Hash: UEBSUYOFZILBB2PU2FTYHVG63IT4LCZ7
+X-Message-ID-Hash: UEBSUYOFZILBB2PU2FTYHVG63IT4LCZ7
+X-Mailman-Approved-At: Fri, 21 Jul 2023 08:04:22 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XRKF33OL6NTEBFTWPMT7Z5TTFA4EA6YW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UEBSUYOFZILBB2PU2FTYHVG63IT4LCZ7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -86,68 +91,48 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 Hey,
 
-On 2023-07-19 17:26, Cezary Rojewski wrote:
-> On 2023-07-18 10:45 AM, Maarten Lankhorst wrote:
->> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
->> the snd_hdac_i915_init into a workqueue. It's likely the whole workqueue
->> can be destroyed, but I don't have the means to test this.
+On 2023-07-19 14:39, Mark Brown wrote:
+> On Wed, Jul 19, 2023 at 02:13:59PM +0200, Maarten Lankhorst wrote:
 >>
->> Removing the workqueue would simplify init even further, but is left
->> as exercise for the reviewer.
+>> On 2023-07-19 13:06, Takashi Iwai wrote:
+>>> On Wed, 19 Jul 2023 11:48:06 +0200,
+>>> Maarten Lankhorst wrote:
+>>>>
+>>>>       The 60 seconds timeout is a thing "better than complete disablement",
+>>>>       so it's not ideal, either.  Maybe we can add something like the
+>>>>       following:
+>>>>       - Check when the deferred probe takes too long, and warn it
+>>>>       - Provide some runtime option to disable the component binding, so
+>>>>         that user can work around it if needed
+>>>> A module option to snd_hdac_i915_init would probably be the least of all evils
+>>>> here.
+>>>
+>>> Yes, probably it's the easiest option and sufficient.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>> Hey,
 >>
->> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
->> ---
->>   sound/soc/intel/avs/core.c | 13 +++++++++----
->>   1 file changed, 9 insertions(+), 4 deletions(-)
+>> Patch below, can be applied immediately iresspective of the other patches.
 >>
->> diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
->> index 3311a6f142001..d3a7f42387e9b 100644
->> --- a/sound/soc/intel/avs/core.c
->> +++ b/sound/soc/intel/avs/core.c
->> @@ -191,10 +191,6 @@ static void avs_hda_probe_work(struct work_struct 
->> *work)
->>       pm_runtime_set_active(bus->dev); /* clear runtime_error flag */
->> -    ret = snd_hdac_i915_init(bus, true);
->> -    if (ret < 0)
->> -        dev_info(bus->dev, "i915 init unsuccessful: %d\n", ret);
->> -
->>       snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
->>       avs_hdac_bus_init_chip(bus, true);
->>       avs_hdac_bus_probe_codecs(bus);
->> @@ -465,10 +461,19 @@ static int avs_pci_probe(struct pci_dev *pci, 
->> const struct pci_device_id *id)
->>       pci_set_drvdata(pci, bus);
->>       device_disable_async_suspend(dev);
->> +    ret = snd_hdac_i915_init(bus, false);
->> +    if (ret == -EPROBE_DEFER)
->> +        goto err_unmaster;
->> +    else if (ret < 0)
->> +        dev_info(bus->dev, "i915 init unsuccessful: %d\n", ret);
->> +
+>> ---->8----------
+>>
+>> Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
+>> video_firmware_drivers_only(). This can be used as a first approximation
+>> on whether i915 will be available. It's safe to use as this is only built
 > 
-> While our tests are currently passing I have my doubts about 
-> EPROBE_DEFER. We do want to have audio functionality there even if some 
-> problems with HDMI arise along the way - some audio is better than no 
-> audio. Here, i915 may ruin the day for a platform equipped with 
-> hda/hdmi/i2c/dmic chips simultaneously.
+> Please don't bury new patches in the middle of mails, it just makes it
+> hard to apply the patch since tooling doesn't understand what's going
+> on.
 > 
-> Also, why call snd_hdac_i915_init() _after_ setting drvdata?
+> Please don't send new patches in reply to old patches or serieses, this
+> makes it harder for both people and tools to understand what is going
+> on - it can bury things in mailboxes and make it difficult to keep track
+> of what current patches are, both for the new patches and the old ones.
+I will send a new version in a bit, with all comments addressed.
 
-I wanted to make the most cautious change. The previous flow called the 
-function immediately from probe_work, so I moved it to right before the 
-scheduling of probe_work
-
->>       schedule_work(&adev->probe_work);
->>       return 0;
->> +err_unmaster:
->> +    pci_clear_master(pci);
->> +    pci_set_drvdata(pci, NULL);
-> 
-> Not a fan. It's hard to grasp entire error-step within name of a single 
-> label. Thus I'd suggest "err_<cause>" naming pattern instead. Even here, 
-> under "unmaster" you hid clearing master and drvdata both. Let's do 
-> "err_i915_init" instead.
-> 
-Ok, will rename.
+I need to finish testing first.
 
 ~Maarten
