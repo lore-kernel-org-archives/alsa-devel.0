@@ -4,148 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 273CAEB64DA
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 13:37:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54A1BEB64DA
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 13:58:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77515204;
-	Wed, 19 Jul 2023 15:36:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77515204
+	by alsa0.perex.cz (Postfix) with ESMTPS id B84B21F7;
+	Wed, 19 Jul 2023 15:58:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B84B21F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689773844;
-	bh=pKPyYiK1DHf3uGwJfokTQrZ+i3quqe2Cf6khHC46LJc=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1689775131;
+	bh=8npZXLd2IRgCTmZxfiXFlG2B2pE9tuqQvGjSRbcdj60=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NCR/599l1c4Ayv0quhJhdzG9RqPDKfYSmgU7p3iD9anQu2raHPFG7+cJx9bW5a/ur
-	 PEF7dfXZhqShyBWlkLS40l4ngh0H4WlL2diVBgo2U8tzIhdeZBD3YlVmwKfGHDseDX
-	 Y1X3Oh4dyajl3zLs35m2A+r/UbYe5ouzQxRRL3v8=
+	b=CKmGN9kn/lmOK8MiLFWMkWlxfB0L8oQbrohPcNYjfhn1J25TsrzMk816BdKZzffF5
+	 kI5Yv0e+EUtaZqIQqVxltA+7Hvl5/CInIj8cGaJd3qqeMzKTfmcqeeVTWTa2ZcYbnY
+	 eCMkzcL4rZSv1BYYt4h760RFET0AVuDfPuLXNoTk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D596EF80549; Wed, 19 Jul 2023 15:36:08 +0200 (CEST)
+	id 27576F8007E; Wed, 19 Jul 2023 15:58:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F10BF80527;
-	Wed, 19 Jul 2023 15:36:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8311F804DA;
+	Wed, 19 Jul 2023 15:58:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78C1FF8047D; Wed, 19 Jul 2023 15:36:03 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id C443DF80494; Wed, 19 Jul 2023 15:57:56 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 24725F800D2;
-	Wed, 19 Jul 2023 15:35:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24725F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 97E54F800D2
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2023 15:57:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97E54F800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VwUg3ZyK
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689773757; x=1721309757;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=wfPSbk3KPqoC/jBdA7CzlHdvMnbUfG0A2+TB1XSaqrw=;
-  b=VwUg3ZyK39+4KtDgELqg9jkpWR/FdxNXYgxUDqd1m9t69h36olDfYwAc
-   YZT463tZ/ibWuD0uiUs/01RrXz1bfG+/GvO/njhyR67mQHG8ACxveJC26
-   R5RVipjCo0uH17p4Ya0m1GeR2rDILprXi4cUorC5w75HCBBeTFxfX5+R3
-   TsJtjSTQtwX/D2v8dTpflhINmF3WmHnrigK6PiCsoXNxkKwexZvlxKPmc
-   LZoJz9Lsp3qs8DRY1lBFNpMXjkGta5gR7C8RP0usLrGJgwc0HutADhGPH
-   1Vt5l1eX+IXIY7RVno6PzcqO/MRw2bx1YEzDwMBI6v9UqrjsGcbIOnVoK
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="397324607"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200";
-   d="scan'208";a="397324607"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jul 2023 06:35:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10776"; a="674297037"
-X-IronPort-AV: E=Sophos;i="6.01,216,1684825200";
-   d="scan'208";a="674297037"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jul 2023 06:35:48 -0700
-Date: Wed, 19 Jul 2023 16:32:28 +0300 (EEST)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-cc: Takashi Iwai <tiwai@suse.de>, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-    Alsa-devel <alsa-devel@alsa-project.org>,
-    sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
-    Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-    Cezary Rojewski <cezary.rojewski@intel.com>,
-    Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-    Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-    Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-    Bard Liao <yung-chuan.liao@linux.intel.com>,
-    Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-    Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
-    Matthew Auld <matthew.auld@intel.com>
-Subject: Re: [PATCH 6/7] ASoC: SOF: Intel: Remove deferred probe for SOF
-In-Reply-To: <66d22637-069f-5262-2249-6041ef9d4614@linux.intel.com>
-Message-ID: 
- <alpine.DEB.2.22.394.2307191613460.3532114@eliteleevi.tm.intel.com>
-References: <20230718084522.116952-1-maarten.lankhorst@linux.intel.com>
- <20230718084522.116952-7-maarten.lankhorst@linux.intel.com>
- <alpine.DEB.2.22.394.2307181922160.3532114@eliteleevi.tm.intel.com>
- <874jm0modf.wl-tiwai@suse.de>
- <66d22637-069f-5262-2249-6041ef9d4614@linux.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=TSixOYvp
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7D2436171E;
+	Wed, 19 Jul 2023 13:57:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 406D5C433D9;
+	Wed, 19 Jul 2023 13:57:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689775068;
+	bh=8npZXLd2IRgCTmZxfiXFlG2B2pE9tuqQvGjSRbcdj60=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=TSixOYvpqdudxfNNWYntqJIv9QWoDxI+GvREThZlZLQ2tsif3QqmKEt4ZfUHKd2iL
+	 U11UBGYJOsgcylv0boux2dvektMmH0ohvEv75MKPXJZl7DkJNneM+Li3t8ZP8oPTQt
+	 5Mc1WbrpG6zWjsG4mHdCdkFmXMeozukSkfImLyeIZ5wXuIitkOHndxjl8d918zo6O/
+	 +fnlhmO4WBugSW6n3ZyKS7s9e66rVRbLVEOarUbq03pU86Qiw9GOhSVct0XWhUFkza
+	 eY3aysc5X6UKYlNcP3JPtpJVSVYlv2l75iu1PPmFPDl1dp6ND3fhCNhlFZJQNMfSs7
+	 xIC0ndR0GOMlA==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Brendan Higgins <brendan.higgins@linux.dev>,
+ David Gow <davidgow@google.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
+ kunit-dev@googlegroups.com
+In-Reply-To: 
+ <20230712-asoc-topology-kunit-enable-v1-0-b9f2da9dca23@kernel.org>
+References: <20230712-asoc-topology-kunit-enable-v1-0-b9f2da9dca23@kernel.org>
+Subject: Re: [PATCH 0/2] ASoC: Improve coverage in default KUnit runs
+Message-Id: <168977506472.48720.7264353211816565204.b4-ty@kernel.org>
+Date: Wed, 19 Jul 2023 14:57:44 +0100
 MIME-Version: 1.0
-Message-ID-Hash: YYDCNW6PZL6OSGRKKOIYPOHM4I2W5KED
-X-Message-ID-Hash: YYDCNW6PZL6OSGRKKOIYPOHM4I2W5KED
-X-MailFrom: kai.vehmanen@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+Message-ID-Hash: KMJO244IGQ44GWLNRAGQ5J3N7ZZ3PPJH
+X-Message-ID-Hash: KMJO244IGQ44GWLNRAGQ5J3N7ZZ3PPJH
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
-X-Content-Filtered-By: Mailman/MimeDel 3.3.8
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YYDCNW6PZL6OSGRKKOIYPOHM4I2W5KED/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KMJO244IGQ44GWLNRAGQ5J3N7ZZ3PPJH/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGksDQoNCk9uIFdlZCwgMTkgSnVsIDIwMjMsIE1hYXJ0ZW4gTGFua2hvcnN0IHdyb3RlOg0KDQo+
-IE9uIFR1ZSwgMTggSnVsIDIwMjMgMTk6MDQ6NDEgKzAyMDAsIEthaSBWZWhtYW5lbiB3cm90ZToN
-Cj4+IE15IG9ubHkgYmlnZ2VyIGNvbmNlcm4gaXMgY29ybmVyIGNhc2VzIHdoZXJlIHRoZSBkaXNw
-bGF5IFBDSSBkZXZpY2UgaXMgDQpvbiANCj4+IHRoZSBidXMgYW5kIHZpc2libGUgdG8ga2VybmVs
-LCBidXQgZm9yIHNvbWUgcmVhc29uIHRoZXJlIGlzIG5vIHdvcmtpbmcgDQo+PiBkcml2ZXIgaW4g
-dGhlIHN5c3RlbSBvciBpdCBpcyBkaXNhYmxlZC4NCj4gDQo+IFllYWgsIEkgaGF2ZSBubyBhbnN3
-ZXIgZm9yIHRoaXMuIE15IGd1ZXNzIGlzwqB0aGF0IGluIGFuIGlkZWFsIHdvcmxkLCB0aGUgb3B0
-aW9uYWwgZmVhdHVyZXMNCj4gcmVsYXRlZCB0byBIRE1JIG91dHB1dHMgd291bGQgYmUgcHV0IGlu
-IGEgc2VwYXJhdGUgc3ViLWRyaXZlciwgd2hpY2ggY291bGQgLUVQUk9CRV9ERUZFUi4NCj4gT25s
-eSB3aGVuIHRoaXMgZHJpdmVyIGxvYWRzLCBmZWF0dXJlcyByZWxhdGVkIHRvIGRpc3BsYXkgd2ls
-bCB3b3JrLCBidXQgdGhlIG1haW4gYXVkaW8gZHJpdmVyDQo+IGNvdWxkIHN0aWxsIGxvYWQuDQoN
-CmluIGxvbmdlciB0ZXJtLCB3ZSBoYXZlIG9uZ29pbmcgd29yayBpbiBTT0YgdG8gYWxsb3cgZXhw
-b3NpbmcgbXVsdGlwbGUgDQpjYXJkcyAoZS5nLiB0byBoYXZlIGEgc2VwYXJhdGUgY2FyZCBmb3Ig
-SERNSS9EUCBQQ00gZGV2aWNlcyksIGFuZCB3ZQ0KYXJlIGNvbnRpbnVvdXNseSB3b3JraW5nIGF0
-IGltcHJvdmluZyB0aGUgZGF0YSB3ZSBnZXQgZnJvbSBBQ1BJIHRvIA0KaGF2ZSBsZXNzIGd1ZXNz
-d29yayBpbiB0aGUgZHJpdmVyLiBCdXQgdGhpcyByZWFsbHkgZG9lc24ndCBoZWxwIGluIHRoZSAN
-CnNob3J0dGVybSBhbmQvb3IgY292ZXIgYWxsIHNjZW5hcmlvcy4NCg0KU28gZm9yIG5vdywgdGhp
-cyBpcyBsZWdhY3kgd2UganVzdCBuZWVkIHRvIGRlYWwgd2l0aC4gT1RPSCwgSSBkbyBhZ3JlZQ0K
-dGhhdC4uLg0KDQo+IEEgbW9kdWxlIG9wdGlvbiB0byBzbmRfaGRhY19pOTE1X2luaXQgd291bGQg
-cHJvYmFibHkgYmUgdGhlIGxlYXN0IG9mIGFsbCBldmlscyBoZXJlLg0KPiANCj4gSSBzZWUgdGhl
-IHJlbW92YWwgb2YgdGhlIDYwIHNlY29uZCB0aW1lb3V0IGFzIGEgZ29vZCB0aGluZyByZWdhcmRs
-ZXNzLiA6LSkgVXN1YWxseSB3aGVuIG5vbW9kZXNldCBpcyB1c2VkLCBpdCdzIGp1c3QgZm9yIHNh
-ZmUNCj4gbW9kZS4NCj4gDQo+IFdpdGggdGhlIGFkZGl0aW9uIG9mwqAgdGhlIHhlIGRyaXZlciwg
-YmxpbmRseSBtb2Rwcm9iaW5nIGk5MTUgd2lsbCBmYWxsIGFwYXJ0IHJlZ2FyZGxlc3MuDQoNClRo
-ZSBtb2Rwcm9iaW5nIG9mIGk5MTUgZnJvbSB0aGUgYXVkaW8gZHJpdmVyLCBoYXMgYWx3YXlzIGZl
-bHQgYSBiaXQgDQpvdXQtb2YtcGxhY2UsIGFuZCB3aXRoIHRoZSB4ZSBkcml2ZXIsIHRoaXMgc2lt
-cGx5IHdvbid0IHNjYWxlIGFueW1vcmUuDQoNClRoZSB0ZXN0IHJlc3VsdHMgc28gZmFyIGxvb2sg
-Z29vZCBhbmQgdGhpcyBwYXRjaHNldCB3b3JrcyBvayBldmVuIGlmIHNvbWUgDQpvZiB0aGUgbW9y
-ZSBjb21wbGV4IG11bHRpLUdQVSBjb25maWd1cmF0aW9ucyB3ZSBoYXZlLCBzbyBJIHRoaW5rIHdp
-dGggYSANCm1vZHVsZSBvcHRpb24gdG8gc25kX2hkYWNfaTkxNSwgSSdkIGJlIHJlYWR5IHRvIGdv
-IHdpdGggdGhpcy4NCg0KQnIsIEthaQ==
+On Wed, 12 Jul 2023 16:40:33 +0100, Mark Brown wrote:
+> We have some KUnit tests for ASoC but they're not being run as much as
+> they should be since ASoC isn't enabled in the configs used by default
+> with KUnit and in the case of the topolofy tests there is no way to
+> enable them without enabling drivers that use them.  Let's improve that.
+> 
+> 
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/2] kunit: Enable ASoC in all_tests.config
+      commit: 5aaa4024e14f8b878a348338a74b4c97bc2478b1
+[2/2] ASoC: topology: Add explicit build option
+      commit: b7dc237ef8b0897f5750a738d2c57469909a6a15
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
