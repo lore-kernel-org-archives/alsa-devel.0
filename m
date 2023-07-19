@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C2FBC001B0
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 22:41:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4497EC001B0
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Jul 2023 22:41:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 410223E;
-	Thu, 20 Jul 2023 00:40:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 410223E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41A371FE;
+	Thu, 20 Jul 2023 00:40:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41A371FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689806467;
-	bh=7D7RzRHaJGxKAepbVKlDzJZQhozzOzlVH3Up8dTxW/o=;
+	s=default; t=1689806495;
+	bh=8UkSiNiVeE9+fz85NbdSbU/eHOWoE2ija6HcvmQcNtc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Mo/iPgmF1qv0GE74ZPZnZ/auMQKF5ZgCuc4AZtafpcN172M0sofmnqs7Br8lbdaD5
-	 W2wetvZt/p0mBGtg4OI3eWchYVjNQnjmXs2PF90xJBxpBvsdQx4cMkCApiNYHJyBsa
-	 eJKIgTd+25hAGv492PZAN43FKm8UrRocOTISxYhc=
+	b=qm9f4DWprrafDBcZ7j0YzIfyDXa95QKyRE2kcu5QRs5FvUL9w4L/9BPoqjfFx3VVJ
+	 2Q1gMVv9LtiTEoWG8La75T9MS4VkFC1o14eemG9bejxuYjJXnBzwH0OmCz61CXiB4m
+	 NS1bjQI73S+w+rH4M+/Bj/5N3BG19YjQm0FSmwDY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 073A6F80527; Thu, 20 Jul 2023 00:40:07 +0200 (CEST)
+	id 5639DF8055C; Thu, 20 Jul 2023 00:40:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB889F800D2;
-	Thu, 20 Jul 2023 00:40:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5B6CF80551;
+	Thu, 20 Jul 2023 00:40:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 474A7F8047D; Thu, 20 Jul 2023 00:40:01 +0200 (CEST)
+	id 41D3BF80551; Thu, 20 Jul 2023 00:40:20 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1F6C9F800D2
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 00:39:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F6C9F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id F2B57F80153
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 00:40:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2B57F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=pNJIjpan
+ header.s=k20201202 header.b=HMRIuOmH
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 832CF617C9;
-	Wed, 19 Jul 2023 22:39:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1346AC433C8;
-	Wed, 19 Jul 2023 22:39:49 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9D48D61856;
+	Wed, 19 Jul 2023 22:40:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CD7DC433C8;
+	Wed, 19 Jul 2023 22:40:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689806390;
-	bh=7D7RzRHaJGxKAepbVKlDzJZQhozzOzlVH3Up8dTxW/o=;
+	s=k20201202; t=1689806416;
+	bh=8UkSiNiVeE9+fz85NbdSbU/eHOWoE2ija6HcvmQcNtc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pNJIjpang2qGoODuNSTGtHART5RZ5YCQpI6rZrVH95dMPqQDAlXivNJ9SP4mV5INb
-	 yifBacyI/4VjOOBda5zOlJCy+lcS55oq1KhYdpbjLdtwrN8IciuD7G6HCqaEVVsOpf
-	 YBM+dHOvRl5uQPEQWaMzQwclVYJdLZ9SvHNMNQXN+9dPiDuB2+hX+v7aXTXk8gcGHz
-	 LXQxFvnAFlr+Sj506GtAvuSbozCblWCfNnIHB2+FstBJxADx8cO5iYc/fL50hdTgo8
-	 Sf/YDljGqFM5DpfzZZgv4151cjjCrdrR51eHo5sp5nfk1jHeX0dLt/HoiCTUrI7Zfl
-	 C0v7D3JTEbDaA==
-Received: (nullmailer pid 899913 invoked by uid 1000);
-	Wed, 19 Jul 2023 22:39:49 -0000
-Date: Wed, 19 Jul 2023 16:39:49 -0600
+	b=HMRIuOmH74tUoEaDWhDjbvBmRBEnTKZDDblR4iDpUHmDPSQHKpZDz2nOFlzicbAhn
+	 jjlVqftFzcExqQo4sbs59MqC97T/kpXf3/sRYGx8KJbbyO3v8u/WSfA9+k/4+03hmd
+	 B5BiQlTzxHmNuETowZRx92kNf1Gl+37CraoWN0jlcGlXdyizXqqBUmfhZosFkx2iK8
+	 VQj910usiJGJGFvyXOSPZVPgbUJGk1hfMmkjrOqLf/1Lh/6BwyCuvfYtSd/DAguny3
+	 PsM77X/vExgeiu2qBsUMRlzbiwGCYCQ/7zY/N+i10ldze+643KsVYl10EKxEn+1yjd
+	 TxhS2QN4jvKMg==
+Received: (nullmailer pid 900473 invoked by uid 1000);
+	Wed, 19 Jul 2023 22:40:14 -0000
+Date: Wed, 19 Jul 2023 16:40:14 -0600
 From: Rob Herring <robh@kernel.org>
 To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Francesco Dolcini <francesco.dolcini@toradex.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+Cc: linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, CTLIN0@nuvoton.com,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- devicetree@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH v1] ASoC: dt-bindings: wm8904: Convert to dtschema
-Message-ID: <168980638831.899860.9131467971421415167.robh@kernel.org>
-References: <20230719121918.247397-1-francesco@dolcini.it>
+ Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+ Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+ Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [PATCH v1 1/2] ASoC: dt-bindings: nau8822: Add #sound-dai-cells
+Message-ID: <168980641364.900412.9978374566695268236.robh@kernel.org>
+References: <20230719124752.248898-1-francesco@dolcini.it>
+ <20230719124752.248898-2-francesco@dolcini.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230719121918.247397-1-francesco@dolcini.it>
-Message-ID-Hash: OCOHPKUJ2MXTRKUQWDXA23GEW66GB47N
-X-Message-ID-Hash: OCOHPKUJ2MXTRKUQWDXA23GEW66GB47N
+In-Reply-To: <20230719124752.248898-2-francesco@dolcini.it>
+Message-ID-Hash: V4U3MNYDFVEMFYXAJKLBZOWU4BRDC5K4
+X-Message-ID-Hash: V4U3MNYDFVEMFYXAJKLBZOWU4BRDC5K4
 X-MailFrom: SRS0=QU89=DF=robh_at_kernel.org=rob@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OCOHPKUJ2MXTRKUQWDXA23GEW66GB47N/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V4U3MNYDFVEMFYXAJKLBZOWU4BRDC5K4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,23 +100,16 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On Wed, 19 Jul 2023 14:19:18 +0200, Francesco Dolcini wrote:
+On Wed, 19 Jul 2023 14:47:51 +0200, Francesco Dolcini wrote:
 > From: Francesco Dolcini <francesco.dolcini@toradex.com>
 > 
-> Convert the WM8904 audio CODEC bindings to DT schema.
+> Add #sound-dai-cells property and reference dai-common.yaml schema, this
+> is required since NAU8822 can be used as a platform DAI link.
 > 
-> Compared to the original binding #sound-dai-cells and the missing power
-> supplies are added. The latter are all required as described in the
-> datasheet.
-> 
-> Datasheet: https://statics.cirrus.com/pubs/proDatasheet/WM8904_Rev4.1.pdf
 > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 > ---
->  .../devicetree/bindings/sound/wlf,wm8904.yaml | 74 +++++++++++++++++++
->  .../devicetree/bindings/sound/wm8904.txt      | 33 ---------
->  2 files changed, 74 insertions(+), 33 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8904.yaml
->  delete mode 100644 Documentation/devicetree/bindings/sound/wm8904.txt
+>  .../devicetree/bindings/sound/nuvoton,nau8822.yaml          | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
