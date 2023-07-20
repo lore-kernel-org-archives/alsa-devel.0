@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 762F5EB64DC
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 08:22:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C78DAC001DC
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 08:23:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52AC7207;
-	Thu, 20 Jul 2023 10:21:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52AC7207
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF51E1FE;
+	Thu, 20 Jul 2023 10:22:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF51E1FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689841366;
-	bh=ttdmDmLJzKov7q6ZzFVoreZPmgxZSZarpVuWEDB5mys=;
+	s=default; t=1689841386;
+	bh=HQlTMk0Z1K9Qkrg1H/Tfhp/RLCfyzJI/kjA7oAgjWiQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jfl9ymXSOxFhOZXCiKqs/uhPSgGgdaGGPWgIPw00hIs190Qcan8MveSgRqzB6JFrU
-	 ZJBgMRH4wIpKyc7eb2VRXBsHZY7+QydFtoV2u0OWznSpkwpAWNjPoaev1XjPoNwyhU
-	 XuRGAX+GXT/NrS2t71uIeRQze/fK7ngm/HDeqot8=
+	b=hME+TiomLHzjQZKH4qhsfom1pgZqNScqsXkZGfE/YUlqkRtjWXcOdM/XUJSBdsHr2
+	 AqDGdNpkgecDRwvIwuJaeL4XautBR3r6s+WRzDCx/HCjakkFdpp+eXpZKn0JNyvXbf
+	 mgkJLJJ0oZoxd78Hv696/uHS7eGrZjshDd/SOAPE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9635F80568; Thu, 20 Jul 2023 10:21:24 +0200 (CEST)
+	id 73A3BF8059F; Thu, 20 Jul 2023 10:21:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67C0AF80568;
-	Thu, 20 Jul 2023 10:21:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13DBAF800D2;
+	Thu, 20 Jul 2023 10:21:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58298F8057C; Thu, 20 Jul 2023 10:21:20 +0200 (CEST)
+	id 99B77F8057B; Thu, 20 Jul 2023 10:21:22 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2E72AF80557
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:21:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E72AF80557
+	by alsa1.perex.cz (Postfix) with ESMTPS id 86C50F80563
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:21:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86C50F80563
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=N4+FuRuX;
+ header.s=susede2_rsa header.b=c9vjqDTn;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Sa9ibJjT
+ header.s=susede2_ed25519 header.b=GxUjEbrM
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AEA2E20598;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EF25620599;
 	Thu, 20 Jul 2023 08:21:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
@@ -57,43 +57,43 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HZ2jjyvedNZu7vtrtVYWzfG6FJ6u9u6YNWL9iFvKWCw=;
-	b=N4+FuRuXOZ7nVVFExWaT+Fr5ZBpSqaVSBWoUoRwbgB4J/6VG0WNv3azPQwEqhCfhVm0tS+
-	g2KR8pCUK/3FgQ8cmR6+ULCRgYp9Wq30JvJ6UtJ9UvqwHyTuyoUtqzujDengunezPIikS7
-	JAjf4OpQnz4pqsrq5MnY//WW2rTBnPc=
+	bh=OxGSFeOvASua+zngCw7ZinrgYKEkfs0LHfbTvB1Kl1M=;
+	b=c9vjqDTnKd0pFdyhUR5GEkC4wycwwJeI0O/CjG8J37Y5IfZMkpoFbckw9vUMHIyyPSsVfn
+	JjWMC0j+gL97l8Hx0nXxdge2Yyx5JT9qy+zutblABJeVTf9xhOlAcQP/v6clarn7a/0ias
+	CIoM8Un8MrPQTNRumIEU1Dhj4tX26w8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1689841275;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HZ2jjyvedNZu7vtrtVYWzfG6FJ6u9u6YNWL9iFvKWCw=;
-	b=Sa9ibJjT3LcEiUjJVrqkTdGMIjGKVET7LHgaN1NxGa+8HmfAIbJtIxyuwiTMwzq0uoifRb
-	XZur16DSmptK9zAw==
+	bh=OxGSFeOvASua+zngCw7ZinrgYKEkfs0LHfbTvB1Kl1M=;
+	b=GxUjEbrMIZ8FPn4TQ47f0kUD10YAAyf9B5C2rB5pRRlqxfqKWYmgykMDF10Y0G8dTAybHY
+	R3TDjLe03FiptiCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93F9D13924;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D07CD13924;
 	Thu, 20 Jul 2023 08:21:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id iGAwI3vuuGQmIgAAMHmgww
+	id 2KQAMnvuuGQmIgAAMHmgww
 	(envelope-from <tiwai@suse.de>); Thu, 20 Jul 2023 08:21:15 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 01/11] ALSA: control: Introduce snd_ctl_find_id_mixer()
-Date: Thu, 20 Jul 2023 10:20:58 +0200
-Message-Id: <20230720082108.31346-2-tiwai@suse.de>
+Subject: [PATCH 03/11] ALSA: cs46xx: Simplify with snd_ctl_find_id_mixer()
+Date: Thu, 20 Jul 2023 10:21:00 +0200
+Message-Id: <20230720082108.31346-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230720082108.31346-1-tiwai@suse.de>
 References: <20230720082108.31346-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LDNZSXQRANCOXMCIXFNW2SSXD5DPHCNZ
-X-Message-ID-Hash: LDNZSXQRANCOXMCIXFNW2SSXD5DPHCNZ
+Message-ID-Hash: RB7ASXZTWBMVFCYTHZ4DHEB3XOS34GP3
+X-Message-ID-Hash: RB7ASXZTWBMVFCYTHZ4DHEB3XOS34GP3
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LDNZSXQRANCOXMCIXFNW2SSXD5DPHCNZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RB7ASXZTWBMVFCYTHZ4DHEB3XOS34GP3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,48 +115,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-A commonly seen pattern is to run snd_ctl_find_id() for a mixer
-control element with a given string.  Let's provide a standard helper
-for achieving that for simplifying the code.
+Replace an open code with the new snd_ctl_find_id_mixer().
+There is no functional change.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/control.h | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ sound/pci/cs46xx/cs46xx_lib.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index 42e8dbb22d8e..69d950a34ca3 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -145,6 +145,28 @@ struct snd_kcontrol *snd_ctl_find_numid(struct snd_card *card, unsigned int numi
- struct snd_kcontrol *snd_ctl_find_id_locked(struct snd_card *card, const struct snd_ctl_elem_id *id);
- struct snd_kcontrol *snd_ctl_find_id(struct snd_card *card, const struct snd_ctl_elem_id *id);
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index 7d882b33d45e..f3a94bb537bd 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -2449,7 +2449,6 @@ static int cs46xx_detect_codec(struct snd_cs46xx *chip, int codec)
+ int snd_cs46xx_mixer(struct snd_cs46xx *chip, int spdif_device)
+ {
+ 	struct snd_card *card = chip->card;
+-	struct snd_ctl_elem_id id;
+ 	int err;
+ 	unsigned int idx;
+ 	static const struct snd_ac97_bus_ops ops = {
+@@ -2490,10 +2489,8 @@ int snd_cs46xx_mixer(struct snd_cs46xx *chip, int spdif_device)
+ 	}
  
-+/**
-+ * snd_ctl_find_id_mixer - find the control instance with the given name string
-+ * @card: the card instance
-+ * @name: the name string
-+ *
-+ * Finds the control instance with the given name and
-+ * @SNDRV_CTL_ELEM_IFACE_MIXER. Other fields are set to zero.
-+ *
-+ * This is merely a wrapper to snd_ctl_find_id().
-+ *
-+ * Return: The pointer of the instance if found, or %NULL if not.
-+ */
-+static inline struct snd_kcontrol *
-+snd_ctl_find_id_mixer(struct snd_card *card, const char *name)
-+{
-+	struct snd_ctl_elem_id id = {};
-+
-+	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	strscpy(id.name, name, sizeof(id.name));
-+	return snd_ctl_find_id(card, &id);
-+}
-+
- int snd_ctl_create(struct snd_card *card);
- 
- int snd_ctl_register_ioctl(snd_kctl_ioctl_func_t fcn);
+ 	/* get EAPD mixer switch (for voyetra hack) */
+-	memset(&id, 0, sizeof(id));
+-	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+-	strcpy(id.name, "External Amplifier");
+-	chip->eapd_switch = snd_ctl_find_id(chip->card, &id);
++	chip->eapd_switch = snd_ctl_find_id_mixer(chip->card,
++						  "External Amplifier");
+     
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+ 	if (chip->nr_ac97_codecs == 1) {
 -- 
 2.35.3
 
