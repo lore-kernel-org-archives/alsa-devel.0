@@ -4,98 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6BF4EB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:21:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B062EB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:33:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FCB41FC;
-	Thu, 20 Jul 2023 15:20:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FCB41FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD8DC1F7;
+	Thu, 20 Jul 2023 15:32:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD8DC1F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689859298;
-	bh=U+5c4b9MxdCNaRVvbdA/gzMbwWHERdwqmhuZXzWTTFM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1689860020;
+	bh=a4DfggC+aA+beBDflOX2B/PfmAwi2kVp+F54iqBIrkg=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eQEkoXAQWotn5IGStKG7BXMPG3/PYFzLWuicUBAtRv/TwRFPj8LzY44nMVQGcTnkh
-	 Xmg9cvlTIxPmOBAYDpTT+fmrlLC/qsDTFk0hyC6HbaIVnz9c1h5EjIb+SFwE1uKbNn
-	 14bMLCO19Et0PqwLMoJBm5BGx+lxi9UIhVd0NoC0=
+	b=GT1yM597298Y42KFuZSdW6vpi6mX7UcNXe19HrR7Z4H+YKUup33WM+M92ODuEEPhT
+	 O6hcZ6nIWTuJYoIvAIJuJc+aOtU8TiCDgSGgjktZyqmP9cVxLMFB82RCrh1zjpPy8u
+	 GQ9W+CUIlBJadHNf4f1i0XLsUSmQHEW0gF4eSvSY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE1B0F80153; Thu, 20 Jul 2023 15:20:26 +0200 (CEST)
+	id 7DDBBF80563; Thu, 20 Jul 2023 15:32:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44274F8047D;
-	Thu, 20 Jul 2023 15:20:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA782F80551;
+	Thu, 20 Jul 2023 15:32:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C4359F8047D; Thu, 20 Jul 2023 15:20:22 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 78E60F80549; Thu, 20 Jul 2023 15:32:18 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 541D7F80153
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 15:20:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 541D7F80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2528FF8032D
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 15:32:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2528FF8032D
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=fMpDKEa8;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=IFhWb5Cq
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B818D22BD6;
-	Thu, 20 Jul 2023 13:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1689859217;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rubRhHJWBI8/dkpPxnYiJ9ku11m2zq+Fr5FtgSWdbxk=;
-	b=fMpDKEa8J1XmOeodUL7JgyZdencl3LTEUbkopM17V/+NjOqvoXsyMXzVc1uDJWzzHIK0we
-	qNAfzMMbH6OpbtyTzDetRed/p7K+kig8y0fCorF2dkh77Sm051X5GfE5TSEnYi/Qj/WPfA
-	Y21S+c4EKn8v6wu1LellIybaXokvBBE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689859217;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rubRhHJWBI8/dkpPxnYiJ9ku11m2zq+Fr5FtgSWdbxk=;
-	b=IFhWb5Cqm2QT8zKmULWMsgDaOSwktXnkgsmtVl0lxrTBSm1DyvMc8YiziLwTzggi7mm6j0
-	8CAz+VuM/Z1G5gBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9701A133DD;
-	Thu, 20 Jul 2023 13:20:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id PgfjI5E0uWSCSwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 20 Jul 2023 13:20:17 +0000
-Date: Thu, 20 Jul 2023 15:20:17 +0200
-Message-ID: <87351ik9da.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v6.5-rc1-2
-In-Reply-To: <20230720130519.D1DFEC433C7@smtp.kernel.org>
-References: <20230720130519.D1DFEC433C7@smtp.kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-2
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=JZzg7Tbb
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 36KAupUl002185;
+	Thu, 20 Jul 2023 08:32:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=VPgIFBsUn3H5pnKrozNRp6S6xNZJzvk/yj1GdWeV/2w=; b=
+	JZzg7TbbEWkADx7X0qO5spXwqteSoGXVgJJ0N63WpkzzBUsPDDgHHsyYjnaivf1h
+	kF3RK9epLVpmV5aCOl/1I4mK9avpjCcq9p1oY6NStb0AtC/N/6o3SvOx5WbQhKLA
+	rmaAA5ObSBYhKFhnOXZEwt+zOwY9UjxtNuoBJySjirV/cFegnW0BIzlxorE/inhd
+	UsHmKxkcSQfM9tAz8yV2UFH/BZvodi3QO9WquYF7jkM3NuLFi+ClvplymgcXsKWC
+	ti6QDksvjFozioqnT+rKHz07ZW1kHeWnHXxcFkpRcqIF9TL/i+znH0CbbXTWPOxJ
+	PU2GgAFPty4Nn8b9UowkDA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mq-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 20 Jul 2023 08:32:11 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
+ 2023 14:32:10 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Thu, 20 Jul 2023 14:32:10 +0100
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.219])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 08214458;
+	Thu, 20 Jul 2023 13:32:10 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi
+ Iwai <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Stefan Binding
+	<sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 04/11] ALSA: hda: cs35l41: Ensure we pass up any errors
+ during system suspend.
+Date: Thu, 20 Jul 2023 14:31:40 +0100
+Message-ID: <20230720133147.1294337-5-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
+References: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: Q6MECELSJKTYXSFFEOD37ICUV25DXCHV
-X-Message-ID-Hash: Q6MECELSJKTYXSFFEOD37ICUV25DXCHV
-X-MailFrom: tiwai@suse.de
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: Af9XEeFodxBjUlIT4FXOh7Y1r7cvoIzM
+X-Proofpoint-GUID: Af9XEeFodxBjUlIT4FXOh7Y1r7cvoIzM
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 2XRCUZMTH4KJFXACDTXC74IIP57TQ7XL
+X-Message-ID-Hash: 2XRCUZMTH4KJFXACDTXC74IIP57TQ7XL
+X-MailFrom: prvs=25651755c6=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -107,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q6MECELSJKTYXSFFEOD37ICUV25DXCHV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2XRCUZMTH4KJFXACDTXC74IIP57TQ7XL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,116 +111,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 20 Jul 2023 15:05:08 +0200,
-Mark Brown wrote:
-> 
-> The following changes since commit fdf0eaf11452d72945af31804e2a1048ee1b574c:
-> 
->   Linux 6.5-rc2 (2023-07-16 15:10:37 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.5-rc1-2
-> 
-> for you to fetch changes up to 269f399dc19f0e5c51711c3ba3bd06e0ef6ef403:
-> 
->   ASoC: fsl_sai: Disable bit clock with transmitter (2023-07-17 19:15:07 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v6.5
-> 
-> A few more fixes for v6.5, just small driver specific ones.
-> 
-> ----------------------------------------------------------------
-> Dan Carpenter (1):
->       ASoC: SOF: ipc3-dtrace: uninitialized data in dfsentry_trace_filter_write()
-> 
-> Derek Fang (1):
->       ASoC: rt5640: Fix the issue of speaker noise
-> 
-> Fabio Estevam (1):
->       ASoC: fsl_sai: Revert "ASoC: fsl_sai: Enable MCTL_MCLK_EN bit for master mode"
-> 
-> Geert Uytterhoeven (1):
->       ASoC: codecs: SND_SOC_WCD934X should select REGMAP_IRQ
-> 
-> Johan Hovold (15):
->       ASoC: codecs: wcd938x: fix codec initialisation race
->       ASoC: codecs: wcd938x: fix mbhc impedance loglevel
->       ASoC: codecs: wcd938x: drop inline keywords
->       ASoC: codecs: wcd938x: use dev_printk() for impedance logging
->       ASoC: codecs: wcd934x: demote impedance printk
->       ASoC: codecs: wcd934x: drop inline keywords
->       ASoC: codecs: wcd938x: fix soundwire initialisation race
->       ASoC: codecs: wcd938x: fix missing mbhc init error handling
->       ASoC: qdsp6: audioreach: fix topology probe deferral
->       ASoC: codecs: wcd938x: fix missing clsh ctrl error handling
->       ASoC: codecs: wcd938x: fix resource leaks on component remove
->       ASoC: codecs: wcd934x: fix resource leaks on component remove
->       ASoC: codecs: wcd-mbhc-v2: fix resource leaks on component remove
->       ASoC: topology: suppress probe deferral errors
->       ASoC: core: suppress probe deferral errors
-> 
-> Mario Limonciello (1):
->       ASoC: amd: ps: Fix extraneous error messages
-> 
-> Mark Brown (3):
->       ASoC: codecs: wcd938x/wcd934x: loglevel fix and
->       ASoC/soundwire/qdsp6/wcd: fix leaks and probe deferral
->       ASoC: Merge v6.5-rc2
-> 
-> Martin Povi¹er (1):
->       MAINTAINERS: Redo addition of ssm3515 to APPLE SOUND
-> 
-> Mastan Katragadda (1):
->       ASoC: SOF: amd: add revision check for sending sha dma completion command
-> 
-> Matthias Reichl (1):
->       ASoC: hdmi-codec: fix channel info for compressed formats
-> 
-> Matus Gajdos (1):
->       ASoC: fsl_sai: Disable bit clock with transmitter
-> 
-> Nathan Chancellor (1):
->       ASoC: cs35l45: Select REGMAP_IRQ
-> 
-> Rob Herring (1):
->       ASoC: dt-bindings: audio-graph-card2: Drop incomplete example
-> 
-> Rohit kumar (1):
->       ASoC: dt-bindings: Update maintainer email id
-> 
-> Sameer Pujar (1):
->       ASoC: rt5640: Fix sleep in atomic context
-> 
-> Sheetal (2):
->       ASoC: tegra: Fix AMX byte map
->       ASoC: tegra: Fix ADX byte map
-> 
-> Shuming Fan (1):
->       ASoC: rt5645: check return value after reading device id
-> 
-> Srinivas Kandagatla (4):
->       ASoC: qdsp6: q6apm: use dai link pcm id as pcm device number
->       ASoC: qcom: q6afe-dai: fix Display Port Playback stream name
->       ASoC: codecs: wcd938x: fix dB range for HPHL and HPHR
->       ASoC: qcom: q6apm: do not close GPR port before closing graph
-> 
-> Thomas Petazzoni (1):
->       ASoC: cs42l51: fix driver to properly autoload with automatic module loading
-> 
-> Vijendar Mukunda (6):
->       ASoC: amd: ps: add comments for DMA irq bits mapping
->       ASoC: amd: ps: add fix for dma irq mask for rx streams for SDW0 instance
->       ASoC: amd: ps: fix for position register set for AUDIO0 RX stream
->       ASoC: amd: ps: add comments for DMA register mapping
->       ASoC: amd: ps: fix byte count return value for invalid SoundWire manager instance
->       ASoC: amd: acp: fix for invalid dai id handling in acp_get_byte_count()
+There are several steps required to put the system into system suspend.
+Some of these steps may fail, so the driver should pass up the errors
+if they occur.
 
-The shortlog is confusing as if this contains so many changes,
-although it's basically only three no-merge commits.
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/cs35l41_hda.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-In anyway, I pulled now.  Thanks.
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index f42457147ce47..d4a11f7b5dbd1 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -626,17 +626,22 @@ static int cs35l41_system_suspend(struct device *dev)
+ 	}
+ 
+ 	ret = pm_runtime_force_suspend(dev);
+-	if (ret)
++	if (ret) {
++		dev_err(dev, "System Suspend Failed, unable to runtime suspend: %d\n", ret);
+ 		return ret;
++	}
+ 
+ 	/* Shutdown DSP before system suspend */
+-	cs35l41_ready_for_reset(cs35l41);
++	ret = cs35l41_ready_for_reset(cs35l41);
++
++	if (ret)
++		dev_err(dev, "System Suspend Failed, not ready for Reset: %d\n", ret);
+ 
+ 	/*
+ 	 * Reset GPIO may be shared, so cannot reset here.
+ 	 * However beyond this point, amps may be powered down.
+ 	 */
+-	return 0;
++	return ret;
+ }
+ 
+ static int cs35l41_system_resume(struct device *dev)
+@@ -659,9 +664,13 @@ static int cs35l41_system_resume(struct device *dev)
+ 	usleep_range(2000, 2100);
+ 
+ 	ret = pm_runtime_force_resume(dev);
++	if (ret) {
++		dev_err(dev, "System Resume Failed: Unable to runtime resume: %d\n", ret);
++		return ret;
++	}
+ 
+ 	mutex_lock(&cs35l41->fw_mutex);
+-	if (!ret && cs35l41->request_fw_load && !cs35l41->fw_request_ongoing) {
++	if (cs35l41->request_fw_load && !cs35l41->fw_request_ongoing) {
+ 		cs35l41->fw_request_ongoing = true;
+ 		schedule_work(&cs35l41->fw_load_work);
+ 	}
+-- 
+2.34.1
 
-
-Takashi
