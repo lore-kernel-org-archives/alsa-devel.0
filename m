@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E543EB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:36:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9A55EB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:36:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EA36208;
-	Thu, 20 Jul 2023 15:35:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EA36208
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA74885D;
+	Thu, 20 Jul 2023 15:35:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA74885D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689860171;
-	bh=kk9csLHNwA8avf4Sjd/RKTiBUJJ+SbAVz06eMNameoc=;
+	s=default; t=1689860176;
+	bh=jWkuXWMLw+RaQjql2zwrsdDhUhNod9b/x/Ew/6Km3ro=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bXx0+6nK9Y+/4+BQSUwzC3C7JqSD/ZubxK1H2XrXp79P6UxSLOa9CSprsb5tl7RXi
-	 tIuymJ2MXREMdGGBplAaQ20wr8UfMmSC4PGoLC+sRr/Va5spFST2kGGGlxF6eGdFiL
-	 lrR0px6ExonKu+VhSiAcPiW35F6SrNU3VJHP0y0o=
+	b=U1KimVJj2pA5MEPtLe/nbcImo3nlYObZoCwpqhAliTZ7I5MsK/kvaXOnZ0Q8yHb0i
+	 j85swqgTSG+QxNkvs6K2/ZqGS62iYcEdAfeV4rAZiWn0yzMAzHc3TQ8Nzv6KmKbpk3
+	 m0ZCSbkGMGkzmeGjWkAP/4DJ0mAhQIpi7vF4cN2c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 12200F80558; Thu, 20 Jul 2023 15:33:46 +0200 (CEST)
+	id CD44BF80567; Thu, 20 Jul 2023 15:33:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48AF1F80153;
-	Thu, 20 Jul 2023 15:33:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B5B6F8056F;
+	Thu, 20 Jul 2023 15:33:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 43CE3F8047D; Thu, 20 Jul 2023 15:33:41 +0200 (CEST)
+	id 1ADD1F8047D; Thu, 20 Jul 2023 15:33:42 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 59391F80535
+	by alsa1.perex.cz (Postfix) with ESMTPS id A0316F804DA
 	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 15:32:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59391F80535
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0316F804DA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=kbnguTSp
+ header.s=PODMain02222019 header.b=L5RPClh3
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 36KAupUn002185;
-	Thu, 20 Jul 2023 08:32:12 -0500
+ 36K6Acqc016432;
+	Thu, 20 Jul 2023 08:32:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=bnOAAEmWyve6CI2E3qxgDsyTBy0nDrUWAehd/iigJAs=; b=
-	kbnguTSpJGBDJPZ0lK8V8J8j3shpQC6PT/E+31+BLEsuv1w6Qx/4NjIZE5knsrsG
-	qFY+rR7gWaKiyXaN9By2PmB1xcRu7TZpXkQN8T+4L+FlPs+DOIBOnFcfTTSNtSAk
-	nPfL6OVbHhhMoThacPEjeXPgkCN86PhAcChWthpRpolDF5ycqy37SpkhVMZctMSD
-	lOqiJQv5vDLshsspejuPXK8J0zDxQwoL4dSt9hINd5VBDVr7guQ2VPjop9tvIaL3
-	vL9/wY2d2KkrF58VYM2Z70HQqqSZkJAAqaAYeYcwNdt24lyUJBA5Qm/m/LS6kdX8
-	XOTf7LtnYnZ3t/VXie6XTw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mq-4
+	PODMain02222019; bh=m5DeZEEz3jTkGzJxONdedtCu4Ycd4osYT9FUHogrdRw=; b=
+	L5RPClh3va/cVVEpEQHB8xeYk5qjogPNW2zTbnasC039m+oZ1Va7iayS27CjvpSe
+	FubZ7OJWwA+UY0dA9V0SoNihIlTHGLTnNGAEw6xIwpY2z5qpO2pPBd98wH/+cBjd
+	xBCrYQg7yvQwp1hlnPfvc4PbGjEcc5Db8w/ASQIwHEOycs4mvOMlwlMILLkwNagy
+	z2KUga6yAv7DO+lh0FccAXisXm1IaW3hNfT40Qj9BGu4vkUvtr8PYoimVfiWRDV9
+	WFHhO2FrZP/QI8RU5ekT3nFQrVugskCt8QLXFPJ7bwiZuraeX0WgsUDIcI26qsHF
+	ZGE9c0pgtckBUTOktkN6jQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mr-4
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 20 Jul 2023 08:32:12 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
- 2023 14:32:10 +0100
+ 2023 14:32:11 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Thu, 20 Jul 2023 14:32:10 +0100
+ 15.2.1118.30 via Frontend Transport; Thu, 20 Jul 2023 14:32:11 +0100
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.219])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 992BE356C;
-	Thu, 20 Jul 2023 13:32:10 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6F2F5475;
+	Thu, 20 Jul 2023 13:32:11 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
         Takashi
@@ -75,21 +75,21 @@ CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
         Stefan Binding
 	<sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 06/11] ALSA: hda: hda_component: Add pre and post playback
- hooks to hda_component
-Date: Thu, 20 Jul 2023 14:31:42 +0100
-Message-ID: <20230720133147.1294337-7-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 09/11] ALSA: hda/realtek: Support pre-/post- playback hooks
+ for cs35l41
+Date: Thu, 20 Jul 2023 14:31:45 +0100
+Message-ID: <20230720133147.1294337-10-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
 References: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: BRvf9KiVnvmrbAwiCK7SOMreFWg9xIXB
-X-Proofpoint-GUID: BRvf9KiVnvmrbAwiCK7SOMreFWg9xIXB
+X-Proofpoint-ORIG-GUID: ZDUwygU2_yM0CQX7uNIKvHJnlAUeJ-EG
+X-Proofpoint-GUID: ZDUwygU2_yM0CQX7uNIKvHJnlAUeJ-EG
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: YCSHXNBLSJYHYG5MSY5WTNG4LXEIJDAG
-X-Message-ID-Hash: YCSHXNBLSJYHYG5MSY5WTNG4LXEIJDAG
+Message-ID-Hash: WQAMJ73OKJETLUOZICNN5I4O7MD6T6FD
+X-Message-ID-Hash: WQAMJ73OKJETLUOZICNN5I4O7MD6T6FD
 X-MailFrom: prvs=25651755c6=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YCSHXNBLSJYHYG5MSY5WTNG4LXEIJDAG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQAMJ73OKJETLUOZICNN5I4O7MD6T6FD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,29 +111,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-These hooks can be used to add callbacks that would be run before and after
-the main playback hooks. These hooks would be called for all amps, before
-moving on to the next hook, i.e. pre_playback_hook would be called for
-all amps, before the playback_hook is called for all amps, then finally
-the post_playback_hook is called for all amps.
+hda_component now supports pre and post playback hooks.
+These should be called for each amp in a loop before moving on
+to the next hook.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/pci/hda/hda_component.h | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/patch_realtek.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_component.h b/sound/pci/hda/hda_component.h
-index 534e845b9cd1d..f170aec967c18 100644
---- a/sound/pci/hda/hda_component.h
-+++ b/sound/pci/hda/hda_component.h
-@@ -15,5 +15,7 @@ struct hda_component {
- 	struct device *dev;
- 	char name[HDA_MAX_NAME_SIZE];
- 	struct hda_codec *codec;
-+	void (*pre_playback_hook)(struct device *dev, int action);
- 	void (*playback_hook)(struct device *dev, int action);
-+	void (*post_playback_hook)(struct device *dev, int action);
- };
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ac29965951833..4aa49d37ed9e6 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6716,9 +6716,17 @@ static void comp_generic_playback_hook(struct hda_pcm_stream *hinfo, struct hda_
+ 	int i;
+ 
+ 	for (i = 0; i < HDA_MAX_COMPONENTS; i++) {
+-		if (spec->comps[i].dev)
++		if (spec->comps[i].dev && spec->comps[i].pre_playback_hook)
++			spec->comps[i].pre_playback_hook(spec->comps[i].dev, action);
++	}
++	for (i = 0; i < HDA_MAX_COMPONENTS; i++) {
++		if (spec->comps[i].dev && spec->comps[i].playback_hook)
+ 			spec->comps[i].playback_hook(spec->comps[i].dev, action);
+ 	}
++	for (i = 0; i < HDA_MAX_COMPONENTS; i++) {
++		if (spec->comps[i].dev && spec->comps[i].post_playback_hook)
++			spec->comps[i].post_playback_hook(spec->comps[i].dev, action);
++	}
+ }
+ 
+ struct cs35l41_dev_name {
 -- 
 2.34.1
 
