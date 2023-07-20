@@ -4,96 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACF7FEB64DC
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B64BEB64DA
 	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 08:27:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 476D27F4;
-	Thu, 20 Jul 2023 10:26:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 476D27F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CAFA868;
+	Thu, 20 Jul 2023 10:26:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CAFA868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689841663;
-	bh=qFSg4Nrsi/B+e2tlyqbg1y99VJaof9FeiooHLd1AtWQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=a1GobNeJBaVghsdOt/k9K3AQOvGOAEmWUwlgvE+C8MMQbutSmsq0PbB+0jQO9GoW3
-	 NBzBCoL1NMb2V0Jfcmya0MgU/BKDjED4U3zj0E0eg1vtrpdCOuD1db8xUYJ4pc7RvX
-	 EQgjxtg8QOHgM9HW+QpdEwnFjEbyww4+tH8iVDPQ=
+	s=default; t=1689841667;
+	bh=duqcatkRNhH6j4aYUTaIzakDDrCnXDnRTFu6DdOR+Fo=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=oZhQLDDn6/S6Iw7nUSJBGP0uap+IgVnhERybFWvvpfq9ZcShnxfhfokjSQy6eCbHq
+	 +597podaoDS4MbwU+rY90BqzxIitKdGpevV5mv5X2oe52Cu8j3mvuK3kFRj9vaquzo
+	 g1EMOGMPjY3/R+DV58tlLEM+iFpgsbrOGYTtakcg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69BFDF8055A; Thu, 20 Jul 2023 10:26:06 +0200 (CEST)
+	id EB6F8F80548; Thu, 20 Jul 2023 10:26:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A22CFF80551;
-	Thu, 20 Jul 2023 10:26:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 154FDF80570;
+	Thu, 20 Jul 2023 10:26:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DB80F80520; Thu, 20 Jul 2023 10:26:00 +0200 (CEST)
+	id 073ACF80494; Thu, 20 Jul 2023 10:26:01 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5A930F800D2
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:25:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A930F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8863AF804DA
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:25:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8863AF804DA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Nry2dmEc;
+ header.s=susede2_rsa header.b=WP/8Yvb3;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=TrSUc2Ss
+ header.s=susede2_ed25519 header.b=KYp4dSiM
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 16E8522A23;
-	Thu, 20 Jul 2023 08:25:57 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id ADFF522A20;
+	Thu, 20 Jul 2023 08:25:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1689841557;
+	t=1689841556;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/ArAGPYt99/duFoPW1QhLnK4nczAggyoc5eHLNDPC00=;
-	b=Nry2dmEcmrNjRjLdY84HQe1tVeN2P+CpXy4VZr89juLl4zl6zMhjZP5vvER+hNu8AqFw4m
-	ZNzo6oCpW5e7t/bBSuHMxa3Ad+ReCpN4Z0xWZIFzphEXPRUPPO1x/dWRRN8Q1a+WZx+51x
-	+4Tju+eSmfQZn/R6X1GsiyFCo2S0FqU=
+  content-transfer-encoding:content-transfer-encoding;
+	bh=fgqTvDPRysettugJTBf1/exiUYXS5sDklMtMYkVndyY=;
+	b=WP/8Yvb3UmJaYhHOJU5hCrVMiSz/XyoZJWsL1Ig7u7T2bokijNY2DllQVXgN+CLV0Mfsh7
+	4N4bSTyvpUjWhomDIkEAKc0GdpMq0UxK10ixls9Euiqn/0k7r5A7UgHstG6TJUMOmEpAhk
+	+9hQasxubOOnRYE9+M4jyo2Z8LoWsig=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689841557;
+	s=susede2_ed25519; t=1689841556;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/ArAGPYt99/duFoPW1QhLnK4nczAggyoc5eHLNDPC00=;
-	b=TrSUc2SsBWym/VP6yWt9MKNzXLkW1SfwZFZhqhq5MGMc1tJz5/xE32EJcVT8VJ513+6SVD
-	YJ7AnFIynH59IeAA==
+  content-transfer-encoding:content-transfer-encoding;
+	bh=fgqTvDPRysettugJTBf1/exiUYXS5sDklMtMYkVndyY=;
+	b=KYp4dSiMYj55bDIpmeCqrVM40gVkHwDVbTAY5Lcg+vYdBlpqy3588l+y4Gb64f+sNqQm2S
+	WmUy2DPm8wX3E7Dg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE41213924;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E490133DD;
 	Thu, 20 Jul 2023 08:25:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id oCVHOZTvuGRrJAAAMHmgww
+	id Te3UIZTvuGRrJAAAMHmgww
 	(envelope-from <tiwai@suse.de>); Thu, 20 Jul 2023 08:25:56 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/4] ALSA: ca0106: Use the standard snd_ctl_add_followers()
- helper
-Date: Thu, 20 Jul 2023 10:25:53 +0200
-Message-Id: <20230720082554.31891-4-tiwai@suse.de>
+Subject: [PATCH 0/4] ALSA: Cleanup with snd_ctl_add_followers()
+Date: Thu, 20 Jul 2023 10:25:50 +0200
+Message-Id: <20230720082554.31891-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230720082554.31891-1-tiwai@suse.de>
-References: <20230720082554.31891-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: C26JJQGGQL4INIGM5KQE3LH2HA3RL5C2
-X-Message-ID-Hash: C26JJQGGQL4INIGM5KQE3LH2HA3RL5C2
+Message-ID-Hash: XWDWDEQJ67RX7KYDEJVTZBL42RLEYVRM
+X-Message-ID-Hash: XWDWDEQJ67RX7KYDEJVTZBL42RLEYVRM
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C26JJQGGQL4INIGM5KQE3LH2HA3RL5C2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XWDWDEQJ67RX7KYDEJVTZBL42RLEYVRM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,61 +109,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Instead of open-code, use the new standard helper to manage vmaster
-stuff for code simplification.
+This is another set of cleanup patches: introduce a new standard
+helper for adding vmaster control elements, and replace the open code
+in a few drivers with it.
 
-Also, handle the errors from the helper more properly instead of
-silently ignoring.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
+Takashi
+
+===
+
+Takashi Iwai (4):
+  ALSA: vmaster: Add snd_ctl_add_followers() helper
+  ALSA: ac97: Use the standard snd_ctl_add_followers() helper
+  ALSA: ca0106: Use the standard snd_ctl_add_followers() helper
+  ALSA: ice1712: Use the standard snd_ctl_add_followers() helper
+
+ include/sound/control.h         |  3 +++
+ sound/core/vmaster.c            | 28 ++++++++++++++++++++++++++++
+ sound/pci/ac97/ac97_patch.c     | 16 +++-------------
  sound/pci/ca0106/ca0106_mixer.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ sound/pci/ice1712/juli.c        | 19 +++----------------
+ sound/pci/ice1712/quartet.c     | 15 +++------------
+ 6 files changed, 46 insertions(+), 54 deletions(-)
 
-diff --git a/sound/pci/ca0106/ca0106_mixer.c b/sound/pci/ca0106/ca0106_mixer.c
-index 2f37d2c3dd38..1d5a899b2c24 100644
---- a/sound/pci/ca0106/ca0106_mixer.c
-+++ b/sound/pci/ca0106/ca0106_mixer.c
-@@ -751,17 +751,6 @@ static const char * const follower_sws[] = {
- 	NULL
- };
- 
--static void add_followers(struct snd_card *card,
--			  struct snd_kcontrol *master, const char * const *list)
--{
--	for (; *list; list++) {
--		struct snd_kcontrol *follower =
--			snd_ctl_find_id_mixer(card, *list);
--		if (follower)
--			snd_ctl_add_follower(master, follower);
--	}
--}
--
- int snd_ca0106_mixer(struct snd_ca0106 *emu)
- {
- 	int err;
-@@ -843,7 +832,9 @@ int snd_ca0106_mixer(struct snd_ca0106 *emu)
- 	err = snd_ctl_add(card, vmaster);
- 	if (err < 0)
- 		return err;
--	add_followers(card, vmaster, follower_vols);
-+	err = snd_ctl_add_followers(card, vmaster, follower_vols);
-+	if (err < 0)
-+		return err;
- 
- 	if (emu->details->spi_dac) {
- 		vmaster = snd_ctl_make_virtual_master("Master Playback Switch",
-@@ -853,7 +844,9 @@ int snd_ca0106_mixer(struct snd_ca0106 *emu)
- 		err = snd_ctl_add(card, vmaster);
- 		if (err < 0)
- 			return err;
--		add_followers(card, vmaster, follower_sws);
-+		err = snd_ctl_add_followers(card, vmaster, follower_sws);
-+		if (err < 0)
-+			return err;
- 	}
- 
- 	strcpy(card->mixername, "CA0106");
 -- 
 2.35.3
 
