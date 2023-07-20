@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 318FDEB64DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:14:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A733CEB64DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:15:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3EBD2201;
-	Fri, 21 Jul 2023 10:13:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EBD2201
+	by alsa0.perex.cz (Postfix) with ESMTPS id B05D51F3;
+	Fri, 21 Jul 2023 10:14:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B05D51F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689927280;
-	bh=va5J4/46mslygu3t42hp70oLRRlw+7Nts0Jc01mkQvw=;
+	s=default; t=1689927303;
+	bh=ZaxORRml2/lUTaXfWV+lqHl7eKYvLegbVtQFCdOuGEM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WCs0nhPshixTCPKk3nGdr8p75Qsia6iA9xviR7MqDP8MajCCGvh7ttH6tCABPnmaO
-	 GHuiFKC7HCDQr4CVOVjyXVoAVM0nczcXkQzgEdsiFlgG3odPfB39UIqcmd7QNeo/v3
-	 2a5lEoMY4cM7TXd3LLBNC09aaudq6fB0TJesSkEY=
+	b=lglHR8NrZYWTG1Wjhxgh8M9TjpZmmhGkQYjeJIwyYWyBoCcxtGnloZTlu4hv/xNhT
+	 a16hjCvWMp5/VvWNKs2xZZCqsxkm+315YHW0Ho9A0rDkr59gYUc+Q5GCr+WvzROz+F
+	 phi9KxcHmftJUROFkCDNRalup9QzBnbT2gtLQlyc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79806F80635; Fri, 21 Jul 2023 10:09:36 +0200 (CEST)
+	id 88330F8064C; Fri, 21 Jul 2023 10:09:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1041F80635;
-	Fri, 21 Jul 2023 10:09:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BFBFF8063C;
+	Fri, 21 Jul 2023 10:09:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D905F80494; Thu, 20 Jul 2023 10:30:35 +0200 (CEST)
+	id D2EB6F80153; Thu, 20 Jul 2023 10:30:36 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D92ABF80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id A51D0F80548
 	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:30:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D92ABF80551
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A51D0F80548
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=AQ49xFI0
+ header.s=k20201202 header.b=Pfkali8T
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 361F26192D;
-	Thu, 20 Jul 2023 08:30:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 48C26C4E756;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id BBFF561B04;
+	Thu, 20 Jul 2023 08:29:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2A081C611B2;
 	Thu, 20 Jul 2023 08:29:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1689841797;
-	bh=va5J4/46mslygu3t42hp70oLRRlw+7Nts0Jc01mkQvw=;
+	bh=ZaxORRml2/lUTaXfWV+lqHl7eKYvLegbVtQFCdOuGEM=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=AQ49xFI0ByGPbrW8u7ICBVAigwt0IuBUth2XS6fwL3YmnAw/Cqiw65p/deJfpQIwT
-	 zGnn0gLKgr2o+lM4cOXL7zTpykav86EN/3xjOQlMUokVK03kM5vm+xjXLJzAXjc0cs
-	 Ao2psvuoqN98OqmOqiGTSxDXTBWTPZpZ34b44vrDF2/SiNRtnvZgyu3pa0p6yp1S+O
-	 +reDE8gThsD4jQOSSQDhlsv+ic4amaFCXh1ZUBaIqCisSBuo4wsSXkrTqMW345yqta
-	 vMo4KFccQ4j+GuLReZnhPJwlFpaSld1cyIWniU1xrnadzvSP483z6tcNgDu86xEbj5
-	 BzkugKkL12kNg==
+	b=Pfkali8TESsCKFDto9+HeftpFHrTEYgJJ79jBRAI1DHoTczxpHW1/Lb4QVhLEn5bq
+	 ByBA4lwOkabboSlIkPMIZ5aryrW/nMpVRzdt6WBkXRIFLxZZcrtJywtloexryqZqgP
+	 p9gvuP3za3oyCSWU0gz7EjGoznbTm/HmWmzfCkue49ixAEvq9xjfKaT2SH0pURpbr4
+	 GpiH+jgyvV5ouKjyU4Y/F/rAC3wGbbK3+eXofeWobzmKFKAAmdvSWDu8djsmILWR8r
+	 pynMauCrlJ0cJpmjGU86pthFsg7gHjnRlSAHlzLRQ64KKMVSZixTbl42l25GjIT87h
+	 9iShgIpTvcfkQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org
  (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 369B2C04A6A;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 162FCC04FDF;
 	Thu, 20 Jul 2023 08:29:57 +0000 (UTC)
 From: 
  Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:12 +0300
-Subject: [PATCH v3 12/42] dt-bindings: watchdog: Add Cirrus EP93x
+Date: Thu, 20 Jul 2023 14:29:10 +0300
+Subject: [PATCH v3 10/42] dt-bindings: rtc: Add Cirrus EP93xx
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230605-ep93xx-v3-12-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-10-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>,
@@ -111,11 +111,11 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
  linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852590; l=1654;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852590; l=1502;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=OW3jB/Bw/Sytk4KvRrNgrPhxfNJ5V/D9v8TTy8Da/Ik=; =?utf-8?q?b=3DqS75CvpwleSk?=
- =?utf-8?q?zjIANVVSAWQfIraAEyXihorhY16EaIFa+NGw83nPYPqthQ6lCbf7tg00gyEzPkri?=
- 5IStgF5uAPwysWIo6O6YOhub9RuDu5AhcmWNAfjfeZUY/hVQ5ut0
+ bh=+WJELTPi3SR7doWQgplH5f3NbLfPmDLMIfALGyN06QE=; =?utf-8?q?b=3DcenhKOgIJxOV?=
+ =?utf-8?q?n12V9vrA3E1aFvJSNOu5v5StgwWBq4m0DqfHsUBodXUS8L+KZbmGzHEjkkVNaUAA?=
+ 36Q7NOp3DA+B+6xLeqQyy5kWtN5/t1Mx6AO2fjvLelovXEYnzlCc
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: 
@@ -127,17 +127,17 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: HAHJ2SZWXNKXSL6ADMZRWDAQEKT5Y3NM
-X-Message-ID-Hash: HAHJ2SZWXNKXSL6ADMZRWDAQEKT5Y3NM
-X-Mailman-Approved-At: Fri, 21 Jul 2023 08:09:01 +0000
+Message-ID-Hash: FFI2YI2MGFSX2UFQI3XSAMBZIGJISSZ3
+X-Message-ID-Hash: FFI2YI2MGFSX2UFQI3XSAMBZIGJISSZ3
+X-Mailman-Approved-At: Fri, 21 Jul 2023 08:09:02 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 Reply-To: nikita.shubin@maquefel.me
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FFI2YI2MGFSX2UFQI3XSAMBZIGJISSZ3/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -147,48 +147,42 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
 This adds device tree bindings for the Cirrus Logic EP93xx
-watchdog block used in these SoCs.
+RTC block used in these SoCs.
 
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- .../bindings/watchdog/cirrus,ep9301-wdt.yaml       | 46 ++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ .../devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml | 40 ++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml b/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml
+diff --git a/Documentation/devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml b/Documentation/devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml
 new file mode 100644
-index 000000000000..d54595174a12
+index 000000000000..63572c197e92
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml
-@@ -0,0 +1,46 @@
++++ b/Documentation/devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml
+@@ -0,0 +1,40 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/watchdog/cirrus,ep9301-wdt.yaml#
++$id: http://devicetree.org/schemas/rtc/cirrus,ep9301-rtc.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Cirrus Logic EP93xx Watchdog Timer
++title: Cirrus EP93xx Real Time Clock controller
 +
 +maintainers:
-+  - Nikita Shubin <nikita.shubin@maquefel.me>
++  - Hartley Sweeten <hsweeten@visionengravers.com>
 +  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
-+
-+description:
-+  Cirrus Logic EP93xx SoC family has it's own watchdog implementation
-+
-+allOf:
-+  - $ref: watchdog.yaml#
 +
 +properties:
 +  compatible:
 +    oneOf:
-+      - const: cirrus,ep9301-wdt
++      - const: cirrus,ep9301-rtc
 +      - items:
 +          - enum:
-+              - cirrus,ep9302-wdt
-+              - cirrus,ep9307-wdt
-+              - cirrus,ep9312-wdt
-+              - cirrus,ep9315-wdt
-+          - const: cirrus,ep9301-wdt
++              - cirrus,ep9302-rtc
++              - cirrus,ep9307-rtc
++              - cirrus,ep9312-rtc
++              - cirrus,ep9315-rtc
++          - const: cirrus,ep9301-rtc
 +
 +  reg:
 +    maxItems: 1
@@ -197,13 +191,13 @@ index 000000000000..d54595174a12
 +  - compatible
 +  - reg
 +
-+unevaluatedProperties: false
++additionalProperties: false
 +
 +examples:
 +  - |
-+    watchdog@80940000 {
-+        compatible = "cirrus,ep9301-wdt";
-+        reg = <0x80940000 0x08>;
++    rtc@80920000 {
++      compatible = "cirrus,ep9301-rtc";
++      reg = <0x80920000 0x100>;
 +    };
 +
 
