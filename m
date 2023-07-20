@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9A55EB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:36:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C81CEEB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:36:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA74885D;
-	Thu, 20 Jul 2023 15:35:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA74885D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 118387F8;
+	Thu, 20 Jul 2023 15:35:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 118387F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689860176;
-	bh=jWkuXWMLw+RaQjql2zwrsdDhUhNod9b/x/Ew/6Km3ro=;
+	s=default; t=1689860201;
+	bh=PIupXYEf/+s25/RlU+j6tA6D81v4eV4EBMT4CXUjk4w=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=U1KimVJj2pA5MEPtLe/nbcImo3nlYObZoCwpqhAliTZ7I5MsK/kvaXOnZ0Q8yHb0i
-	 j85swqgTSG+QxNkvs6K2/ZqGS62iYcEdAfeV4rAZiWn0yzMAzHc3TQ8Nzv6KmKbpk3
-	 m0ZCSbkGMGkzmeGjWkAP/4DJ0mAhQIpi7vF4cN2c=
+	b=H6CGHNJWOux4srykWvZEEfIWJMCyOdMysl2TpWPLpBN6IBMAVIxHojUoZRoKWGFVu
+	 jH49SH45h0v+flI5EogMl0v0Mzd9pI0hJffrSJokOIL7s2hWKQ5NXRVpbLFT68tkpm
+	 xtBPms1Yt1wEJuZetkhOwGsFbZpegEHECQFO4RxE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD44BF80567; Thu, 20 Jul 2023 15:33:49 +0200 (CEST)
+	id DD83AF8058C; Thu, 20 Jul 2023 15:33:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B5B6F8056F;
-	Thu, 20 Jul 2023 15:33:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C6DDF805EC;
+	Thu, 20 Jul 2023 15:33:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1ADD1F8047D; Thu, 20 Jul 2023 15:33:42 +0200 (CEST)
+	id EB69CF8047D; Thu, 20 Jul 2023 15:33:43 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A0316F804DA
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 15:32:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0316F804DA
+	by alsa1.perex.cz (Postfix) with ESMTPS id DD589F80494
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 15:32:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD589F80494
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=L5RPClh3
+ header.s=PODMain02222019 header.b=IRODg8lJ
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 36K6Acqc016432;
-	Thu, 20 Jul 2023 08:32:13 -0500
+ 36KAupUm002185;
+	Thu, 20 Jul 2023 08:32:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=m5DeZEEz3jTkGzJxONdedtCu4Ycd4osYT9FUHogrdRw=; b=
-	L5RPClh3va/cVVEpEQHB8xeYk5qjogPNW2zTbnasC039m+oZ1Va7iayS27CjvpSe
-	FubZ7OJWwA+UY0dA9V0SoNihIlTHGLTnNGAEw6xIwpY2z5qpO2pPBd98wH/+cBjd
-	xBCrYQg7yvQwp1hlnPfvc4PbGjEcc5Db8w/ASQIwHEOycs4mvOMlwlMILLkwNagy
-	z2KUga6yAv7DO+lh0FccAXisXm1IaW3hNfT40Qj9BGu4vkUvtr8PYoimVfiWRDV9
-	WFHhO2FrZP/QI8RU5ekT3nFQrVugskCt8QLXFPJ7bwiZuraeX0WgsUDIcI26qsHF
-	ZGE9c0pgtckBUTOktkN6jQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mr-4
+	PODMain02222019; bh=bf5LPR1X7g9IbS0pw4I5MglPP8kBfPeDlXd9XwzFREY=; b=
+	IRODg8lJCeqX+gQfTFH+/rOY6gik17yT/Go8JSF/7RRDnQovmVVZBN73+8/JZrsJ
+	PhsGrB9RAVU1zMlJdWJnzml6l1CEcok4cjfRBct8ro7MTgEu0+TWYV3GwN+1IuJ6
+	zpM+FLlHUVsU/twOjtZGOl/L8a4LO51Aty2UDQzA8k77dj2bKrIqVP1X4gozjJaR
+	w6yzA0/nwIbLxSqm5UuRvF6WFgKHFhdv91EFZrUO/X+Che9Eei2PPfC5Y4r2sg+V
+	Kjo2SXaH+4/ntjwQ6ZBhcn1d+4uI3/9yC7TD1WIIXRhvYDeO1jITxspZa4eq4jZm
+	ryB+n+BWDLDhNkmNgTcJZw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mq-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 20 Jul 2023 08:32:12 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
- 2023 14:32:11 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Thu, 20 Jul 2023 14:32:11 +0100
+ 2023 14:32:10 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Thu, 20 Jul 2023 14:32:10 +0100
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.219])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6F2F5475;
-	Thu, 20 Jul 2023 13:32:11 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4B8553563;
+	Thu, 20 Jul 2023 13:32:10 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
         Takashi
@@ -75,21 +75,21 @@ CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
         Stefan Binding
 	<sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 09/11] ALSA: hda/realtek: Support pre-/post- playback hooks
- for cs35l41
-Date: Thu, 20 Jul 2023 14:31:45 +0100
-Message-ID: <20230720133147.1294337-10-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 05/11] ALSA: hda: cs35l41: Move Play and Pause into
+ separate functions
+Date: Thu, 20 Jul 2023 14:31:41 +0100
+Message-ID: <20230720133147.1294337-6-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
 References: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ZDUwygU2_yM0CQX7uNIKvHJnlAUeJ-EG
-X-Proofpoint-GUID: ZDUwygU2_yM0CQX7uNIKvHJnlAUeJ-EG
+X-Proofpoint-ORIG-GUID: GHXYW9FNQyLBdu7WMKt_SMRE0MebXl-4
+X-Proofpoint-GUID: GHXYW9FNQyLBdu7WMKt_SMRE0MebXl-4
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: WQAMJ73OKJETLUOZICNN5I4O7MD6T6FD
-X-Message-ID-Hash: WQAMJ73OKJETLUOZICNN5I4O7MD6T6FD
+Message-ID-Hash: IKL2VOGSVROPOL2NX6ONF27RC3UMXSOT
+X-Message-ID-Hash: IKL2VOGSVROPOL2NX6ONF27RC3UMXSOT
 X-MailFrom: prvs=25651755c6=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQAMJ73OKJETLUOZICNN5I4O7MD6T6FD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IKL2VOGSVROPOL2NX6ONF27RC3UMXSOT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,38 +111,190 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-hda_component now supports pre and post playback hooks.
-These should be called for each amp in a loop before moving on
-to the next hook.
+This allows play and pause to be called from multiple places,
+which is necessary for system suspend and resume.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/pci/hda/patch_realtek.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/pci/hda/cs35l41_hda.c | 131 ++++++++++++++++++++++--------------
+ 1 file changed, 79 insertions(+), 52 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index ac29965951833..4aa49d37ed9e6 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6716,9 +6716,17 @@ static void comp_generic_playback_hook(struct hda_pcm_stream *hinfo, struct hda_
- 	int i;
- 
- 	for (i = 0; i < HDA_MAX_COMPONENTS; i++) {
--		if (spec->comps[i].dev)
-+		if (spec->comps[i].dev && spec->comps[i].pre_playback_hook)
-+			spec->comps[i].pre_playback_hook(spec->comps[i].dev, action);
-+	}
-+	for (i = 0; i < HDA_MAX_COMPONENTS; i++) {
-+		if (spec->comps[i].dev && spec->comps[i].playback_hook)
- 			spec->comps[i].playback_hook(spec->comps[i].dev, action);
- 	}
-+	for (i = 0; i < HDA_MAX_COMPONENTS; i++) {
-+		if (spec->comps[i].dev && spec->comps[i].post_playback_hook)
-+			spec->comps[i].post_playback_hook(spec->comps[i].dev, action);
-+	}
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index d4a11f7b5dbd1..f77583b46b6b0 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -483,63 +483,103 @@ static void cs35l41_irq_release(struct cs35l41_hda *cs35l41)
+ 	cs35l41->irq_errors = 0;
  }
  
- struct cs35l41_dev_name {
+-static void cs35l41_hda_playback_hook(struct device *dev, int action)
++static void cs35l41_hda_play_start(struct device *dev)
+ {
+ 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
+ 	struct regmap *reg = cs35l41->regmap;
+-	int ret = 0;
++
++	dev_dbg(dev, "Play (Start)\n");
++
++	if (cs35l41->playback_started) {
++		dev_dbg(dev, "Playback already started.");
++		return;
++	}
++
++	cs35l41->playback_started = true;
++
++	if (cs35l41->firmware_running) {
++		regmap_multi_reg_write(reg, cs35l41_hda_config_dsp,
++				       ARRAY_SIZE(cs35l41_hda_config_dsp));
++		regmap_update_bits(reg, CS35L41_PWR_CTRL2,
++				   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
++				   1 << CS35L41_VMON_EN_SHIFT | 1 << CS35L41_IMON_EN_SHIFT);
++		cs35l41_set_cspl_mbox_cmd(cs35l41->dev, reg, CSPL_MBOX_CMD_RESUME);
++	} else {
++		regmap_multi_reg_write(reg, cs35l41_hda_config, ARRAY_SIZE(cs35l41_hda_config));
++	}
++	regmap_update_bits(reg, CS35L41_PWR_CTRL2, CS35L41_AMP_EN_MASK, 1 << CS35L41_AMP_EN_SHIFT);
++	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
++		regmap_write(reg, CS35L41_GPIO1_CTRL1, 0x00008001);
++
++}
++
++static void cs35l41_hda_play_done(struct device *dev)
++{
++	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
++	struct regmap *reg = cs35l41->regmap;
++
++	dev_dbg(dev, "Play (Complete)\n");
++
++	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 1, NULL,
++			      cs35l41->firmware_running);
++}
++
++static void cs35l41_hda_pause_start(struct device *dev)
++{
++	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
++	struct regmap *reg = cs35l41->regmap;
++
++	dev_dbg(dev, "Pause (Start)\n");
++
++	regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
++	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 0, NULL,
++			      cs35l41->firmware_running);
++}
++
++static void cs35l41_hda_pause_done(struct device *dev)
++{
++	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
++	struct regmap *reg = cs35l41->regmap;
++
++	dev_dbg(dev, "Pause (Complete)\n");
++
++	regmap_update_bits(reg, CS35L41_PWR_CTRL2, CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
++	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
++		regmap_write(reg, CS35L41_GPIO1_CTRL1, 0x00000001);
++	if (cs35l41->firmware_running) {
++		cs35l41_set_cspl_mbox_cmd(dev, reg, CSPL_MBOX_CMD_PAUSE);
++		regmap_update_bits(reg, CS35L41_PWR_CTRL2,
++				   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
++				   0 << CS35L41_VMON_EN_SHIFT | 0 << CS35L41_IMON_EN_SHIFT);
++	}
++	cs35l41_irq_release(cs35l41);
++	cs35l41->playback_started = false;
++}
++
++static void cs35l41_hda_playback_hook(struct device *dev, int action)
++{
++	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
+ 
+ 	switch (action) {
+ 	case HDA_GEN_PCM_ACT_OPEN:
+ 		pm_runtime_get_sync(dev);
+ 		mutex_lock(&cs35l41->fw_mutex);
+-		cs35l41->playback_started = true;
+-		if (cs35l41->firmware_running) {
+-			regmap_multi_reg_write(reg, cs35l41_hda_config_dsp,
+-					       ARRAY_SIZE(cs35l41_hda_config_dsp));
+-			regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-					   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
+-					   1 << CS35L41_VMON_EN_SHIFT | 1 << CS35L41_IMON_EN_SHIFT);
+-			cs35l41_set_cspl_mbox_cmd(cs35l41->dev, cs35l41->regmap,
+-						  CSPL_MBOX_CMD_RESUME);
+-		} else {
+-			regmap_multi_reg_write(reg, cs35l41_hda_config,
+-					       ARRAY_SIZE(cs35l41_hda_config));
+-		}
+-		ret = regmap_update_bits(reg, CS35L41_PWR_CTRL2,
+-					 CS35L41_AMP_EN_MASK, 1 << CS35L41_AMP_EN_SHIFT);
+-		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
+-			regmap_write(reg, CS35L41_GPIO1_CTRL1, 0x00008001);
++		cs35l41_hda_play_start(dev);
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_PREPARE:
+ 		mutex_lock(&cs35l41->fw_mutex);
+-		ret = cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 1, NULL,
+-					    cs35l41->firmware_running);
++		cs35l41_hda_play_done(dev);
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLEANUP:
+ 		mutex_lock(&cs35l41->fw_mutex);
+-		regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
+-		ret = cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 0, NULL,
+-					    cs35l41->firmware_running);
++		cs35l41_hda_pause_start(dev);
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLOSE:
+ 		mutex_lock(&cs35l41->fw_mutex);
+-		ret = regmap_update_bits(reg, CS35L41_PWR_CTRL2,
+-					 CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
+-		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
+-			regmap_write(reg, CS35L41_GPIO1_CTRL1, 0x00000001);
+-		if (cs35l41->firmware_running) {
+-			cs35l41_set_cspl_mbox_cmd(cs35l41->dev, cs35l41->regmap,
+-						  CSPL_MBOX_CMD_PAUSE);
+-			regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-					   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
+-					   0 << CS35L41_VMON_EN_SHIFT | 0 << CS35L41_IMON_EN_SHIFT);
+-		}
+-		cs35l41_irq_release(cs35l41);
+-		cs35l41->playback_started = false;
++		cs35l41_hda_pause_done(dev);
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 
+ 		pm_runtime_mark_last_busy(dev);
+@@ -549,9 +589,6 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
+ 		dev_warn(cs35l41->dev, "Playback action not supported: %d\n", action);
+ 		break;
+ 	}
+-
+-	if (ret)
+-		dev_err(cs35l41->dev, "Regmap access fail: %d\n", ret);
+ }
+ 
+ static int cs35l41_hda_channel_map(struct device *dev, unsigned int tx_num, unsigned int *tx_slot,
+@@ -703,18 +740,8 @@ static int cs35l41_runtime_suspend(struct device *dev)
+ 	mutex_lock(&cs35l41->fw_mutex);
+ 
+ 	if (cs35l41->playback_started) {
+-		regmap_multi_reg_write(cs35l41->regmap, cs35l41_hda_mute,
+-				       ARRAY_SIZE(cs35l41_hda_mute));
+-		cs35l41_global_enable(cs35l41->dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0,
+-				      NULL, cs35l41->firmware_running);
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
+-		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
+-			regmap_write(cs35l41->regmap, CS35L41_GPIO1_CTRL1, 0x00000001);
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
+-				   0 << CS35L41_VMON_EN_SHIFT | 0 << CS35L41_IMON_EN_SHIFT);
+-		cs35l41->playback_started = false;
++		cs35l41_hda_pause_start(dev);
++		cs35l41_hda_pause_done(dev);
+ 	}
+ 
+ 	if (cs35l41->firmware_running) {
 -- 
 2.34.1
 
