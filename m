@@ -4,93 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C81CEEB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:36:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13672EB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 14:08:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 118387F8;
-	Thu, 20 Jul 2023 15:35:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 118387F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id C90DA1F4;
+	Thu, 20 Jul 2023 16:07:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C90DA1F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689860201;
-	bh=PIupXYEf/+s25/RlU+j6tA6D81v4eV4EBMT4CXUjk4w=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1689862117;
+	bh=BS0X5yzg72EX3G7E13uL0WPBPoREFNzMn83URNwQ8Mw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=H6CGHNJWOux4srykWvZEEfIWJMCyOdMysl2TpWPLpBN6IBMAVIxHojUoZRoKWGFVu
-	 jH49SH45h0v+flI5EogMl0v0Mzd9pI0hJffrSJokOIL7s2hWKQ5NXRVpbLFT68tkpm
-	 xtBPms1Yt1wEJuZetkhOwGsFbZpegEHECQFO4RxE=
+	b=RZG6D4F7yI/hzoS06HUZ1V5adY7ohPS/nzzVi/LpLr6ji6J8Gh7SgEfOg074R4fe9
+	 2pEuN096YKuDFQoTQb56xQTG4WOghKOCQlINZ+Z7obpzsFUTRlKhcsNzkz91mSSgtY
+	 D4paE/raLKPbsRkaLs71+pufxeSyHLj41zgXCX38=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DD83AF8058C; Thu, 20 Jul 2023 15:33:51 +0200 (CEST)
+	id 94E72F8047D; Thu, 20 Jul 2023 16:07:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C6DDF805EC;
-	Thu, 20 Jul 2023 15:33:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1556F8047D;
+	Thu, 20 Jul 2023 16:07:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB69CF8047D; Thu, 20 Jul 2023 15:33:43 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 9BC77F8047D; Thu, 20 Jul 2023 16:07:16 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DD589F80494
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 15:32:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD589F80494
+	by alsa1.perex.cz (Postfix) with ESMTPS id 26933F80153
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 16:07:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26933F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=IRODg8lJ
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 36KAupUm002185;
-	Thu, 20 Jul 2023 08:32:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=bf5LPR1X7g9IbS0pw4I5MglPP8kBfPeDlXd9XwzFREY=; b=
-	IRODg8lJCeqX+gQfTFH+/rOY6gik17yT/Go8JSF/7RRDnQovmVVZBN73+8/JZrsJ
-	PhsGrB9RAVU1zMlJdWJnzml6l1CEcok4cjfRBct8ro7MTgEu0+TWYV3GwN+1IuJ6
-	zpM+FLlHUVsU/twOjtZGOl/L8a4LO51Aty2UDQzA8k77dj2bKrIqVP1X4gozjJaR
-	w6yzA0/nwIbLxSqm5UuRvF6WFgKHFhdv91EFZrUO/X+Che9Eei2PPfC5Y4r2sg+V
-	Kjo2SXaH+4/ntjwQ6ZBhcn1d+4uI3/9yC7TD1WIIXRhvYDeO1jITxspZa4eq4jZm
-	ryB+n+BWDLDhNkmNgTcJZw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mq-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 20 Jul 2023 08:32:12 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
- 2023 14:32:10 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Thu, 20 Jul 2023 14:32:10 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.219])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4B8553563;
-	Thu, 20 Jul 2023 13:32:10 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi
- Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Stefan Binding
-	<sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 05/11] ALSA: hda: cs35l41: Move Play and Pause into
- separate functions
-Date: Thu, 20 Jul 2023 14:31:41 +0100
-Message-ID: <20230720133147.1294337-6-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
-References: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=FpZ5rlZ9
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9FEE561AF8;
+	Thu, 20 Jul 2023 14:07:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31E34C433C9;
+	Thu, 20 Jul 2023 14:07:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689862030;
+	bh=BS0X5yzg72EX3G7E13uL0WPBPoREFNzMn83URNwQ8Mw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FpZ5rlZ9kq4emjeId0Khb5Rh8Rx+OQyXV4RI+hL7Uoj2BXCqpOkZRm8Fs/IXialJi
+	 /dX1USOXstaVwWbuzUhcgX31PbRZX6hTgFN5Y3r4EZP45X3GCz8LH4pVIzaeS3ILt3
+	 0cSca4U+znkD0x0HAfZmOPC/CxTCxy94w/N0sjkear1qLDKgVe9Zuvl+CSN5cy8mv6
+	 E6Z2WBfww3F52NqtQFlFbk1GyL4jYnene0fIpnct3aKYAAWQUw7XM52uKXtzBysEIw
+	 G/tcn2a8C74P30yH4k5FZZ95T9YmpIZuaAmG2mrAnkUxXYLjSrkPDuHiJk2o42m3l3
+	 ZbC5ELI62p2+w==
+Date: Thu, 20 Jul 2023 15:07:06 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Subject: Re: [GIT PULL] ASoC fixes for v6.5-rc1-2
+Message-ID: <3cda87c3-f502-4034-99a5-394c8e4195cc@sirena.org.uk>
+References: <20230720130519.D1DFEC433C7@smtp.kernel.org>
+ <87351ik9da.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: GHXYW9FNQyLBdu7WMKt_SMRE0MebXl-4
-X-Proofpoint-GUID: GHXYW9FNQyLBdu7WMKt_SMRE0MebXl-4
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: IKL2VOGSVROPOL2NX6ONF27RC3UMXSOT
-X-Message-ID-Hash: IKL2VOGSVROPOL2NX6ONF27RC3UMXSOT
-X-MailFrom: prvs=25651755c6=sbinding@opensource.cirrus.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="F9zDDvvWegZUNHXD"
+Content-Disposition: inline
+In-Reply-To: <87351ik9da.wl-tiwai@suse.de>
+X-Cookie: Ginger snap.
+Message-ID-Hash: NPVLD5752H7UGBX7GM3WDNTKQMHMYMWW
+X-Message-ID-Hash: NPVLD5752H7UGBX7GM3WDNTKQMHMYMWW
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IKL2VOGSVROPOL2NX6ONF27RC3UMXSOT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NPVLD5752H7UGBX7GM3WDNTKQMHMYMWW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,190 +95,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This allows play and pause to be called from multiple places,
-which is necessary for system suspend and resume.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda.c | 131 ++++++++++++++++++++++--------------
- 1 file changed, 79 insertions(+), 52 deletions(-)
+--F9zDDvvWegZUNHXD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index d4a11f7b5dbd1..f77583b46b6b0 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -483,63 +483,103 @@ static void cs35l41_irq_release(struct cs35l41_hda *cs35l41)
- 	cs35l41->irq_errors = 0;
- }
- 
--static void cs35l41_hda_playback_hook(struct device *dev, int action)
-+static void cs35l41_hda_play_start(struct device *dev)
- {
- 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
- 	struct regmap *reg = cs35l41->regmap;
--	int ret = 0;
-+
-+	dev_dbg(dev, "Play (Start)\n");
-+
-+	if (cs35l41->playback_started) {
-+		dev_dbg(dev, "Playback already started.");
-+		return;
-+	}
-+
-+	cs35l41->playback_started = true;
-+
-+	if (cs35l41->firmware_running) {
-+		regmap_multi_reg_write(reg, cs35l41_hda_config_dsp,
-+				       ARRAY_SIZE(cs35l41_hda_config_dsp));
-+		regmap_update_bits(reg, CS35L41_PWR_CTRL2,
-+				   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
-+				   1 << CS35L41_VMON_EN_SHIFT | 1 << CS35L41_IMON_EN_SHIFT);
-+		cs35l41_set_cspl_mbox_cmd(cs35l41->dev, reg, CSPL_MBOX_CMD_RESUME);
-+	} else {
-+		regmap_multi_reg_write(reg, cs35l41_hda_config, ARRAY_SIZE(cs35l41_hda_config));
-+	}
-+	regmap_update_bits(reg, CS35L41_PWR_CTRL2, CS35L41_AMP_EN_MASK, 1 << CS35L41_AMP_EN_SHIFT);
-+	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
-+		regmap_write(reg, CS35L41_GPIO1_CTRL1, 0x00008001);
-+
-+}
-+
-+static void cs35l41_hda_play_done(struct device *dev)
-+{
-+	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-+	struct regmap *reg = cs35l41->regmap;
-+
-+	dev_dbg(dev, "Play (Complete)\n");
-+
-+	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 1, NULL,
-+			      cs35l41->firmware_running);
-+}
-+
-+static void cs35l41_hda_pause_start(struct device *dev)
-+{
-+	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-+	struct regmap *reg = cs35l41->regmap;
-+
-+	dev_dbg(dev, "Pause (Start)\n");
-+
-+	regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
-+	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 0, NULL,
-+			      cs35l41->firmware_running);
-+}
-+
-+static void cs35l41_hda_pause_done(struct device *dev)
-+{
-+	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-+	struct regmap *reg = cs35l41->regmap;
-+
-+	dev_dbg(dev, "Pause (Complete)\n");
-+
-+	regmap_update_bits(reg, CS35L41_PWR_CTRL2, CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
-+	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
-+		regmap_write(reg, CS35L41_GPIO1_CTRL1, 0x00000001);
-+	if (cs35l41->firmware_running) {
-+		cs35l41_set_cspl_mbox_cmd(dev, reg, CSPL_MBOX_CMD_PAUSE);
-+		regmap_update_bits(reg, CS35L41_PWR_CTRL2,
-+				   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
-+				   0 << CS35L41_VMON_EN_SHIFT | 0 << CS35L41_IMON_EN_SHIFT);
-+	}
-+	cs35l41_irq_release(cs35l41);
-+	cs35l41->playback_started = false;
-+}
-+
-+static void cs35l41_hda_playback_hook(struct device *dev, int action)
-+{
-+	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
- 
- 	switch (action) {
- 	case HDA_GEN_PCM_ACT_OPEN:
- 		pm_runtime_get_sync(dev);
- 		mutex_lock(&cs35l41->fw_mutex);
--		cs35l41->playback_started = true;
--		if (cs35l41->firmware_running) {
--			regmap_multi_reg_write(reg, cs35l41_hda_config_dsp,
--					       ARRAY_SIZE(cs35l41_hda_config_dsp));
--			regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
--					   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
--					   1 << CS35L41_VMON_EN_SHIFT | 1 << CS35L41_IMON_EN_SHIFT);
--			cs35l41_set_cspl_mbox_cmd(cs35l41->dev, cs35l41->regmap,
--						  CSPL_MBOX_CMD_RESUME);
--		} else {
--			regmap_multi_reg_write(reg, cs35l41_hda_config,
--					       ARRAY_SIZE(cs35l41_hda_config));
--		}
--		ret = regmap_update_bits(reg, CS35L41_PWR_CTRL2,
--					 CS35L41_AMP_EN_MASK, 1 << CS35L41_AMP_EN_SHIFT);
--		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
--			regmap_write(reg, CS35L41_GPIO1_CTRL1, 0x00008001);
-+		cs35l41_hda_play_start(dev);
- 		mutex_unlock(&cs35l41->fw_mutex);
- 		break;
- 	case HDA_GEN_PCM_ACT_PREPARE:
- 		mutex_lock(&cs35l41->fw_mutex);
--		ret = cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 1, NULL,
--					    cs35l41->firmware_running);
-+		cs35l41_hda_play_done(dev);
- 		mutex_unlock(&cs35l41->fw_mutex);
- 		break;
- 	case HDA_GEN_PCM_ACT_CLEANUP:
- 		mutex_lock(&cs35l41->fw_mutex);
--		regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
--		ret = cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 0, NULL,
--					    cs35l41->firmware_running);
-+		cs35l41_hda_pause_start(dev);
- 		mutex_unlock(&cs35l41->fw_mutex);
- 		break;
- 	case HDA_GEN_PCM_ACT_CLOSE:
- 		mutex_lock(&cs35l41->fw_mutex);
--		ret = regmap_update_bits(reg, CS35L41_PWR_CTRL2,
--					 CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
--		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
--			regmap_write(reg, CS35L41_GPIO1_CTRL1, 0x00000001);
--		if (cs35l41->firmware_running) {
--			cs35l41_set_cspl_mbox_cmd(cs35l41->dev, cs35l41->regmap,
--						  CSPL_MBOX_CMD_PAUSE);
--			regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
--					   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
--					   0 << CS35L41_VMON_EN_SHIFT | 0 << CS35L41_IMON_EN_SHIFT);
--		}
--		cs35l41_irq_release(cs35l41);
--		cs35l41->playback_started = false;
-+		cs35l41_hda_pause_done(dev);
- 		mutex_unlock(&cs35l41->fw_mutex);
- 
- 		pm_runtime_mark_last_busy(dev);
-@@ -549,9 +589,6 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
- 		dev_warn(cs35l41->dev, "Playback action not supported: %d\n", action);
- 		break;
- 	}
--
--	if (ret)
--		dev_err(cs35l41->dev, "Regmap access fail: %d\n", ret);
- }
- 
- static int cs35l41_hda_channel_map(struct device *dev, unsigned int tx_num, unsigned int *tx_slot,
-@@ -703,18 +740,8 @@ static int cs35l41_runtime_suspend(struct device *dev)
- 	mutex_lock(&cs35l41->fw_mutex);
- 
- 	if (cs35l41->playback_started) {
--		regmap_multi_reg_write(cs35l41->regmap, cs35l41_hda_mute,
--				       ARRAY_SIZE(cs35l41_hda_mute));
--		cs35l41_global_enable(cs35l41->dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0,
--				      NULL, cs35l41->firmware_running);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
--				   CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
--		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
--			regmap_write(cs35l41->regmap, CS35L41_GPIO1_CTRL1, 0x00000001);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
--				   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
--				   0 << CS35L41_VMON_EN_SHIFT | 0 << CS35L41_IMON_EN_SHIFT);
--		cs35l41->playback_started = false;
-+		cs35l41_hda_pause_start(dev);
-+		cs35l41_hda_pause_done(dev);
- 	}
- 
- 	if (cs35l41->firmware_running) {
--- 
-2.34.1
+On Thu, Jul 20, 2023 at 03:20:17PM +0200, Takashi Iwai wrote:
+> On Thu, 20 Jul 2023 15:05:08 +0200,
 
+> The shortlog is confusing as if this contains so many changes,
+> although it's basically only three no-merge commits.
+
+It got confused since I sent you an earlier pull request that hasn't
+gone to Linus yet - not sure what the best way of handling that is, just
+using your branch as the base blows up badly if I merge Linus' tree to
+get platform fixes.
+
+> In anyway, I pulled now.  Thanks.
+
+Thanks.
+
+--F9zDDvvWegZUNHXD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS5P4kACgkQJNaLcl1U
+h9DUjQf7B9WimS8lw3j3sRkx2i/gLRDbzE33Arz+62gdUOsW0W3wbj/XK19vtWxs
+odiZ7GNeCcoJ/tB6A/+gIOkJQqZPBQ2aX2cTpt7tK+30+S49xPYlxsNfQYf/lrox
+a4lsawT4OlHrGMw9EGjgK2wc3qvX2IRzdd1r+ccWGWRSWezXHhz2qUOu8f5tRDF7
+Y/cIqkYb0wBxyRvPkUgHipr2hmklE0Q1UqXu/2Ipyw48fIpY6qMF/xRpbgUV6JoE
+7WL6NGQ5yIGSB1l5lOoPRxyVIWwaLMGhyA34LTBWdRfdR+PtKR6XMjuC5K2IkOlY
+lbzhGg34vVxY+szikjX10GO4QIE6sA==
+=oM/2
+-----END PGP SIGNATURE-----
+
+--F9zDDvvWegZUNHXD--
