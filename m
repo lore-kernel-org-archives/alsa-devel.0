@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6261EB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:18:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F5C1C001DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:18:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9443386E;
-	Fri, 21 Jul 2023 10:17:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9443386E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1AEF847;
+	Fri, 21 Jul 2023 10:17:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1AEF847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689927499;
-	bh=rEDCpXmOkCDtSG8mRHGhhuSIhl1uhn9gwQojgpWpdXE=;
+	s=default; t=1689927512;
+	bh=0O4XaD7hqsnlsi2+/cns72bJJxVQuyLr5nMDr7PCcE4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UCJKlLn5q6Y9w0Zi3YfMFGDl2RtH8feXGXmBdXJac2pr4TKRXfTYmLYUdFsG7O2th
-	 GjytoZZMcFtYC1NXRLVJ61GYA7hBoMpw569YZgid9QnNiOfujt87AaZ3W0NVX6vRBU
-	 HgZxCQitSgGY6Az+CZ8bt3hJ8ANyC2MjwBaWkr4M=
+	b=fwGdE+PRb0GsVfgfDtXVgcB3HXMbJXrtQ4dAKeGU73DOHsPUtcyB8rd5+qqsQIL1t
+	 f4ZQwoHiDTD05E5AS4gqkfsul7KgBGs/O/rJCuGOCl/GRt2kovrCXgjq5/3wDyC3h6
+	 zFWH3ZxjHFfuM+DqilNnSyN/QmfBZmPgn0IGCNPk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53EA7F806B6; Fri, 21 Jul 2023 10:10:51 +0200 (CEST)
+	id 1981EF806BA; Fri, 21 Jul 2023 10:10:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1D3EF806AE;
-	Fri, 21 Jul 2023 10:10:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24C56F806BA;
+	Fri, 21 Jul 2023 10:10:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 89080F80153; Thu, 20 Jul 2023 10:30:53 +0200 (CEST)
+	id 946B7F80535; Thu, 20 Jul 2023 10:30:54 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8640AF80564
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:30:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8640AF80564
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0537F8057A
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:30:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0537F8057A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fQV6w/7J
+ header.s=k20201202 header.b=Ffr8aZl6
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id B9B5761BEF;
-	Thu, 20 Jul 2023 08:30:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 411BDC4163D;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8C95B61C30;
+	Thu, 20 Jul 2023 08:30:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 835E9C568BD;
 	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1689841798;
-	bh=rEDCpXmOkCDtSG8mRHGhhuSIhl1uhn9gwQojgpWpdXE=;
+	bh=0O4XaD7hqsnlsi2+/cns72bJJxVQuyLr5nMDr7PCcE4=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=fQV6w/7JIzAXic8rHU/5ftSVY2WAoVIu2kQyvmctJxfjmSLjD8/6755dd22zy7XMM
-	 LtRUdJPZW7L6e3vgzg4y0QjmhOl7vPQkxj1525PsuhS729OScDmAI/4I+js328Pxfc
-	 miOdXJ373akY6/WTQFzW1r9hdA96wHZEtB1kGhR2Dd8xGpEHdH44BJu5J2Onp2I1J0
-	 rmJIUe32rv2CR92muEn6dc3YLhTQMI4OiUFqGVftB7/R3kKTajLcxNSJhaiECznOkU
-	 +96PIh0gXoFdHCsH6p3n3aSH1VUHOhYHV4YQrQKsdlSE2NmssPoyp+6WJt6zcA3zEx
-	 Cskh9OCtO85eA==
+	b=Ffr8aZl6rN3VojIRxQu1rgqtxKa152MaK5vBFG93QHd5nRs6crxfz2K57pmEKexC0
+	 WyQomccqujeqaF7jDSEsbUNE+E13KN727cR5pH0zpHMuV/b1XbnKmhtO0kjzBENvoL
+	 uOmk48vTJCnay4NZWLPPRV56O1hTQD0vUDyInGa8WAaDShAI61EiJ9y/6LTPJKzSyz
+	 qDMhudddE4J+kpUlKgGTp1MbCXMcLEXXU312sg36AqaFul5wrrUz88JoZSYgiL95Jc
+	 WZBbKW6wGnZtZrq8sBNaySuoFJhxkUpJzeUyLkh9VrWS5BN3MWVCyUZOx92e/RoErl
+	 50YEgXtGd7zRg==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org
  (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DA46C05053;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70207C25B5F;
 	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
 From: 
  Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:27 +0300
-Subject: [PATCH v3 27/42] dt-bindings: input: Add Cirrus EP93xx keypad
+Date: Thu, 20 Jul 2023 14:29:31 +0300
+Subject: [PATCH v3 31/42] dt-bindings: wdt: Add ts72xx
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230605-ep93xx-v3-27-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-31-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>,
@@ -111,11 +111,11 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
  linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=3019;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=1621;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=g0MUCZkg2rX+GKJDRd4qYqHcSTO79UgcgnWDEBlcpgs=; =?utf-8?q?b=3DSoq9yCs9gqZ4?=
- =?utf-8?q?jcR50fZ/ujDjbxFtrJNBCjnYwgzlSG3lrE9fWcFzviCIYGa/ieHN5cQ5/DAdzE6C?=
- og338hrCCKAjHuPVnoyz1kGLUiQbgyVHWp04Yi5IIOrBcXqDYghV
+ bh=+iYdXLpj952sAwmYjKp/GVeiFhMZU99T9LpFVI9aGx0=; =?utf-8?q?b=3DPYSrwjwZv3XM?=
+ =?utf-8?q?UrmUJ9Az9NVYoHn7v8/AorkIYoItE7iogjVur0EJBmY3tfD/koJ6+KDVHoBUk+kM?=
+ k0IoLxwnDZgB/qsuAZxmKuToLG10AKjeCt/JSJTZIho3VrzkJ2eT
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: 
@@ -127,8 +127,8 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZJU2MCYQZ3U7QTVO6ENJENSBYJ5FFJIQ
-X-Message-ID-Hash: ZJU2MCYQZ3U7QTVO6ENJENSBYJ5FFJIQ
+Message-ID-Hash: 7IY2S2KUMZXMOKAPERQNXC5YTIJRSW4A
+X-Message-ID-Hash: 7IY2S2KUMZXMOKAPERQNXC5YTIJRSW4A
 X-Mailman-Approved-At: Fri, 21 Jul 2023 08:10:33 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
@@ -136,7 +136,7 @@ Reply-To: nikita.shubin@maquefel.me
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZJU2MCYQZ3U7QTVO6ENJENSBYJ5FFJIQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7IY2S2KUMZXMOKAPERQNXC5YTIJRSW4A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -147,106 +147,65 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Add YAML bindings for ep93xx SoC keypad.
+Add DT binding for Technologic Systems TS-72xx watchdog.
 
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- .../bindings/input/cirrus,ep9307-keypad.yaml       | 87 ++++++++++++++++++++++
- 1 file changed, 87 insertions(+)
+ .../bindings/watchdog/technologic,ts7200-wdt.yaml  | 46 ++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/input/cirrus,ep9307-keypad.yaml b/Documentation/devicetree/bindings/input/cirrus,ep9307-keypad.yaml
+diff --git a/Documentation/devicetree/bindings/watchdog/technologic,ts7200-wdt.yaml b/Documentation/devicetree/bindings/watchdog/technologic,ts7200-wdt.yaml
 new file mode 100644
-index 000000000000..8b6be0c5a688
+index 000000000000..4f7f004ffdd3
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/input/cirrus,ep9307-keypad.yaml
-@@ -0,0 +1,87 @@
++++ b/Documentation/devicetree/bindings/watchdog/technologic,ts7200-wdt.yaml
+@@ -0,0 +1,46 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/input/cirrus,ep9307-keypad.yaml#
++$id: http://devicetree.org/schemas/watchdog/technologic,ts7200-wdt.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Cirrus ep93xx keypad
++title: Technologic Systems TS-72xx based SBCs watchdog
 +
 +maintainers:
-+  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
++  - Nikita Shubin <nikita.shubin@maquefel.me>
 +
 +allOf:
-+  - $ref: /schemas/input/matrix-keymap.yaml#
-+
-+description:
-+  The KPP is designed to interface with a keypad matrix with 2-point contact
-+  or 3-point contact keys. The KPP is designed to simplify the software task
-+  of scanning a keypad matrix. The KPP is capable of detecting, debouncing,
-+  and decoding one or multiple keys pressed simultaneously on a keypad.
++  - $ref: watchdog.yaml#
 +
 +properties:
 +  compatible:
 +    oneOf:
-+      - const: cirrus,ep9307-keypad
++      - const: technologic,ts7200-wdt
 +      - items:
 +          - enum:
-+              - cirrus,ep9312-keypad
-+              - cirrus,ep9315-keypad
-+          - const: cirrus,ep9307-keypad
++              - technologic,ts7300-wdt
++              - technologic,ts7260-wdt
++              - technologic,ts7250-wdt
++          - const: technologic,ts7200-wdt
 +
 +  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  debounce-delay-ms:
-+    description: |
-+          Time in microseconds that key must be pressed or
-+          released for state change interrupt to trigger.
-+
-+  cirrus,prescale:
-+    description: row/column counter pre-scaler load value
-+    $ref: /schemas/types.yaml#/definitions/uint16
-+    maximum: 1023
++    items:
++      - description: control register
++      - description: feed register
 +
 +required:
 +  - compatible
 +  - reg
-+  - interrupts
-+  - clocks
-+  - linux,keymap
 +
 +unevaluatedProperties: false
 +
 +examples:
 +  - |
-+    #include <dt-bindings/clock/cirrus,ep93xx-clock.h>
-+    #include <dt-bindings/input/input.h>
-+    keypad@800f0000 {
-+      compatible = "cirrus,ep9307-keypad";
-+      reg = <0x800f0000 0x0c>;
-+      interrupt-parent = <&vic0>;
-+      interrupts = <29>;
-+      clocks = <&syscon EP93XX_CLK_KEYPAD>;
-+      pinctrl-names = "default";
-+      pinctrl-0 = <&keypad_default_pins>;
-+      linux,keymap = <KEY_UP>,
-+                     <KEY_DOWN>,
-+                     <KEY_VOLUMEDOWN>,
-+                     <KEY_HOME>,
-+                     <KEY_RIGHT>,
-+                     <KEY_LEFT>,
-+                     <KEY_ENTER>,
-+                     <KEY_VOLUMEUP>,
-+                     <KEY_F6>,
-+                     <KEY_F8>,
-+                     <KEY_F9>,
-+                     <KEY_F10>,
-+                     <KEY_F1>,
-+                     <KEY_F2>,
-+                     <KEY_F3>,
-+                     <KEY_POWER>;
++    watchdog@23800000 {
++      compatible = "technologic,ts7200-wdt";
++      reg = <0x23800000 0x01>, <0x23c00000 0x01>;
++      timeout-sec = <30>;
 +    };
++
++...
++
 
 -- 
 2.39.2
