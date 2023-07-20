@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6CA3EB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED240EB64DC
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:34:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCAFC846;
-	Thu, 20 Jul 2023 15:33:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCAFC846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D212206;
+	Thu, 20 Jul 2023 15:34:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D212206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689860072;
-	bh=De+MieM1Jel576IPtwvHpSppU5zDx/qASpqAqj5an4g=;
+	s=default; t=1689860094;
+	bh=eoZWR569YA0i76IYg/gBaUZ5W1EO/sHnPxAuKFSgpDM=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ovEC9tH8NTl7+Yh7KJgFb/aREyAnuWmJQJD1rroR3FA02cjRpm+ZW5+oTG0MgU9/N
-	 bCApBFboZAhWU8oqM2OMyWMr82lTn8hGelEUA16b+FoR91+/5o4H0Th3gfCDYCN2o2
-	 HbVnXJcEgBuyi5JoR3ELBodQ6YxTX9EC5hOMpmSk=
+	b=YlhnoyY/eVE4HGXR04WvbyblzaqfXEAhi3Ua/LWN/imSoWrtZKGhxN9et41DHm2jj
+	 GQIzVUvv14DqoU8Mz/dRZflOY+jhwb6YnQJb3qOh6P96hp6ykJRaEm1Y9MtfLwEv1W
+	 yv9rWwIa/SsWA0QPtJMPlDGlpcigbv2ApcLTFCkQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82C8DF805AC; Thu, 20 Jul 2023 15:32:34 +0200 (CEST)
+	id 38B75F805B2; Thu, 20 Jul 2023 15:32:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A91B7F805A9;
-	Thu, 20 Jul 2023 15:32:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85612F80544;
+	Thu, 20 Jul 2023 15:32:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B6BEF80571; Thu, 20 Jul 2023 15:32:27 +0200 (CEST)
+	id DA47DF8057F; Thu, 20 Jul 2023 15:32:30 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CC53EF8047D
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 15:32:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC53EF8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 353A5F80520
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 15:32:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 353A5F80520
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=I1wqhfTK
+ header.s=PODMain02222019 header.b=dFk67YTM
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 36K6Acqb016432;
-	Thu, 20 Jul 2023 08:32:12 -0500
+ 36KAupUo002185;
+	Thu, 20 Jul 2023 08:32:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=Ud/QBJHaAFqyPCB/So8Atv4/aEQFcV6W/YWOD6HpSgY=; b=
-	I1wqhfTKKUOwzKpVHLzgGt2KiYujmtkvGCZze+QY2PjtNPLeCiTSqZbnlTMHzeJI
-	W9Tisain17c3wcf9QoShKPy+fQdYc4RNeCZnIsxicNE5sEy9n3jDzrwD1HrwagN/
-	U4BGqnvmSq7LHHarGCG6vgXVwKPk+euhneaEhHjPHXT8t3cCqhZrJwjmO4e23gke
-	jnBJ6J6EywWmqdP5Iv2HTyvdw7amYOgLXDw4ls6Nej94bdEfSaD4zxo78aK8hi64
-	CqGgfa5zRzT21IZW/9+zOpOFQiXssXn1y0CHqanwbi1DNAeur7tf3ofgaBJBHwuo
-	xFStDMU/t6wP0lrq9Um+xw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mr-3
+	PODMain02222019; bh=i4r8F+GfmuK4opOrNQVX10rqTiZBZAw0XXyfo15gL98=; b=
+	dFk67YTMY5c5RWTsHAt7Ol3HXH+cHjSXlh/q/qCrQ5sIkodtT6H9UZUlo0AhJOeu
+	FdDddWduJQMY7e4sFBfikZ8UO40zAULB/70Czuvx4Lc8TQLFvYlnKvwFNko8xDwe
+	t3PhzScjoxdF2x63wb+yZAr5zQK8althk1kz55TBlwlfmpAxP2+jltYumlBvoYDN
+	bTtMAV8ESYPfLJuZw087RXpvbEb5AW+ep3ZILSk23k+XWjzD+UEAJ0qXiOuT6Udf
+	z762fOHeU6oiNxdh5GH2eVrSMvhXVS/BbKOQivNeVlFTKroKPg0EVZKruS2eDg71
+	7UpO1KYuQklYWjScGGDeDQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mq-5
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 20 Jul 2023 08:32:12 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 20 Jul 2023 08:32:13 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
- 2023 14:32:09 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Thu, 20 Jul 2023 14:32:09 +0100
+ 2023 14:32:11 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Thu, 20 Jul 2023 14:32:11 +0100
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.219])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BA1E315B6;
-	Thu, 20 Jul 2023 13:32:09 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E26CF3572;
+	Thu, 20 Jul 2023 13:32:10 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
         Takashi
@@ -75,21 +75,20 @@ CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
         Stefan Binding
 	<sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 03/11] ALSA: hda: cs35l41: Ensure we correctly re-sync
- regmap before system suspending.
-Date: Thu, 20 Jul 2023 14:31:39 +0100
-Message-ID: <20230720133147.1294337-4-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 07/11] ALSA: hda: cs35l41: Use pre and post playback hooks
+Date: Thu, 20 Jul 2023 14:31:43 +0100
+Message-ID: <20230720133147.1294337-8-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
 References: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: xVu4ZQprtLwieDlWeBcu45sp_o6nxplp
-X-Proofpoint-GUID: xVu4ZQprtLwieDlWeBcu45sp_o6nxplp
+X-Proofpoint-ORIG-GUID: GECEfqfM1kfzXNjxWcsoAtfCzATbTnOz
+X-Proofpoint-GUID: GECEfqfM1kfzXNjxWcsoAtfCzATbTnOz
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: WANNZPA65IXUUXLWYMLYNGUVGEJPSN2I
-X-Message-ID-Hash: WANNZPA65IXUUXLWYMLYNGUVGEJPSN2I
+Message-ID-Hash: UZDZCIQ2UJXOG7YK7NLJ6RZI3Z2HFYZH
+X-Message-ID-Hash: UZDZCIQ2UJXOG7YK7NLJ6RZI3Z2HFYZH
 X-MailFrom: prvs=25651755c6=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WANNZPA65IXUUXLWYMLYNGUVGEJPSN2I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UZDZCIQ2UJXOG7YK7NLJ6RZI3Z2HFYZH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,71 +110,120 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In order to properly system suspend, it is necessary to unload the firmware
-and ensure the chip is ready for shutdown (if necessary). If the system
-is currently in runtime suspend, it is necessary to wake up the device,
-and then make it ready. Currently, the wake does not correctly resync
-the device, which may mean it cannot suspend correctly. Fix this by
-performaing a resync.
+Use new hooks to ensure separation between play/pause actions,
+as required by external boost.
+
+External Boost on CS35L41 requires the amp to go through a
+particular sequence of steps. One of these steps involes
+the setting of a GPIO. This GPIO is connected to one or
+more of the amps, and it may control the boost for all of
+the amps. To ensure that the GPIO is set when it is safe
+to do so, and to ensure that boost is ready for the rest of
+the sequence to be able to continue, we must ensure that
+the each part of the sequence is executed for each amp
+before moving on to the next part of the sequence.
+
+Some of the Play and Pause actions have moved from Open to
+Prepare. This is because Open is not guaranteed to be called
+again on system resume, whereas Prepare should.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l41_hda.c | 32 +++++++++++++++++++++++++++-----
- 1 file changed, 27 insertions(+), 5 deletions(-)
+ sound/pci/hda/cs35l41_hda.c | 53 ++++++++++++++++++++++++++++++-------
+ 1 file changed, 43 insertions(+), 10 deletions(-)
 
 diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 29f1dce45f1dc..f42457147ce47 100644
+index f77583b46b6b0..a482d4752b3f8 100644
 --- a/sound/pci/hda/cs35l41_hda.c
 +++ b/sound/pci/hda/cs35l41_hda.c
-@@ -574,21 +574,43 @@ static int cs35l41_hda_channel_map(struct device *dev, unsigned int tx_num, unsi
- 				    rx_slot);
+@@ -556,37 +556,68 @@ static void cs35l41_hda_pause_done(struct device *dev)
+ 	cs35l41->playback_started = false;
  }
  
--static void cs35l41_ready_for_reset(struct cs35l41_hda *cs35l41)
-+static int cs35l41_ready_for_reset(struct cs35l41_hda *cs35l41)
++static void cs35l41_hda_pre_playback_hook(struct device *dev, int action)
++{
++	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
++
++	switch (action) {
++	case HDA_GEN_PCM_ACT_CLEANUP:
++		mutex_lock(&cs35l41->fw_mutex);
++		cs35l41_hda_pause_start(dev);
++		mutex_unlock(&cs35l41->fw_mutex);
++		break;
++	default:
++		break;
++	}
++}
+ static void cs35l41_hda_playback_hook(struct device *dev, int action)
  {
-+	int ret = 0;
-+
- 	mutex_lock(&cs35l41->fw_mutex);
- 	if (cs35l41->firmware_running) {
+ 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
  
- 		regcache_cache_only(cs35l41->regmap, false);
- 
--		cs35l41_exit_hibernate(cs35l41->dev, cs35l41->regmap);
-+		ret = cs35l41_exit_hibernate(cs35l41->dev, cs35l41->regmap);
-+		if (ret) {
-+			dev_warn(cs35l41->dev, "Unable to exit Hibernate.");
-+			goto err;
-+		}
-+
-+		/* Test key needs to be unlocked to allow the OTP settings to re-apply */
-+		cs35l41_test_key_unlock(cs35l41->dev, cs35l41->regmap);
-+		ret = regcache_sync(cs35l41->regmap);
-+		cs35l41_test_key_lock(cs35l41->dev, cs35l41->regmap);
-+		if (ret) {
-+			dev_err(cs35l41->dev, "Failed to restore register cache: %d\n", ret);
-+			goto err;
-+		}
-+
-+		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
-+			cs35l41_init_boost(cs35l41->dev, cs35l41->regmap, &cs35l41->hw_cfg);
-+
- 		cs35l41_shutdown_dsp(cs35l41);
- 		cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type);
+ 	switch (action) {
+ 	case HDA_GEN_PCM_ACT_OPEN:
++		/*
++		 * All amps must be resumed before we can start playing back.
++		 * This ensures, for external boost, that all amps are in AMP_SAFE mode.
++		 * Do this in HDA_GEN_PCM_ACT_OPEN, since this is run prior to any of the
++		 * other actions.
++		 */
+ 		pm_runtime_get_sync(dev);
+-		mutex_lock(&cs35l41->fw_mutex);
+-		cs35l41_hda_play_start(dev);
+-		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_PREPARE:
+ 		mutex_lock(&cs35l41->fw_mutex);
+-		cs35l41_hda_play_done(dev);
++		cs35l41_hda_play_start(dev);
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLEANUP:
+ 		mutex_lock(&cs35l41->fw_mutex);
+-		cs35l41_hda_pause_start(dev);
++		cs35l41_hda_pause_done(dev);
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLOSE:
+-		mutex_lock(&cs35l41->fw_mutex);
+-		cs35l41_hda_pause_done(dev);
+-		mutex_unlock(&cs35l41->fw_mutex);
 -
--		regcache_cache_only(cs35l41->regmap, true);
--		regcache_mark_dirty(cs35l41->regmap);
++		/*
++		 * Playback must be finished for all amps before we start runtime suspend.
++		 * This ensures no amps are playing back when we start putting them to sleep.
++		 */
+ 		pm_runtime_mark_last_busy(dev);
+ 		pm_runtime_put_autosuspend(dev);
+ 		break;
+ 	default:
+-		dev_warn(cs35l41->dev, "Playback action not supported: %d\n", action);
++		break;
++	}
++}
++
++static void cs35l41_hda_post_playback_hook(struct device *dev, int action)
++{
++	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
++
++	switch (action) {
++	case HDA_GEN_PCM_ACT_PREPARE:
++		mutex_lock(&cs35l41->fw_mutex);
++		cs35l41_hda_play_done(dev);
++		mutex_unlock(&cs35l41->fw_mutex);
++		break;
++	default:
+ 		break;
  	}
-+err:
-+	regcache_cache_only(cs35l41->regmap, true);
-+	regcache_mark_dirty(cs35l41->regmap);
-+
- 	mutex_unlock(&cs35l41->fw_mutex);
-+
-+	return ret;
  }
+@@ -1037,6 +1068,8 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
+ 	ret = cs35l41_create_controls(cs35l41);
  
- static int cs35l41_system_suspend(struct device *dev)
+ 	comps->playback_hook = cs35l41_hda_playback_hook;
++	comps->pre_playback_hook = cs35l41_hda_pre_playback_hook;
++	comps->post_playback_hook = cs35l41_hda_post_playback_hook;
+ 
+ 	mutex_unlock(&cs35l41->fw_mutex);
+ 
 -- 
 2.34.1
 
