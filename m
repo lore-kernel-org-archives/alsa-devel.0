@@ -4,58 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3BEAEB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 10:37:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DF3BEB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 11:01:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CF251FC;
-	Thu, 20 Jul 2023 12:36:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CF251FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id C94981F7;
+	Thu, 20 Jul 2023 13:00:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C94981F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689849417;
-	bh=C797DpfHq5YCjhuRfxRmK+v/8E7YUkETrWn20rC71Qo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1689850876;
+	bh=7h82jsuKfivQtkaGA0lrhOLLva/ryLgWgNAlymEclII=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UNf6d4qAZRBcy5sXdYsv8/fC3x7iwuByzxUWSH8yD9+yroqTX53NFrH7CAgsVxMCn
-	 D/hhLorh3OJ1fGSveW4FrfNAb2GiGfdwor5UFXg673a8yaIrykgvtFoM1j6CadcQ4K
-	 rZItcP5h968/+Xqm/lzXrgAo1r2io8r7T/xcMaAs=
+	b=XwlNCn4QZw53pI2z9NmK/VyumYKNBI3VDC3HiNwZRcO8cwu8wtfiMPfoHZ8Isz2bI
+	 UXqC4u6X0d8h1qwHXVq6Ca6PTg5pboIHuvu4Vb3z95gGZgn09HGMFTV7Cgpne2F6j5
+	 U4ZfE4Ve/IVCgtZPaQxhjdwQVyKzo6zxqZUYuWlQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61D7BF80494; Thu, 20 Jul 2023 12:35:38 +0200 (CEST)
+	id 56C61F80520; Thu, 20 Jul 2023 13:00:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABE4DF8047D;
-	Thu, 20 Jul 2023 12:35:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3148F8027B;
+	Thu, 20 Jul 2023 12:59:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8ADFDF8047D; Thu, 20 Jul 2023 12:35:31 +0200 (CEST)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id B27F2F8047D; Thu, 20 Jul 2023 12:59:55 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A7DA0F8027B
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 12:35:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7DA0F8027B
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 97F7F23FFF;
-	Thu, 20 Jul 2023 06:35:22 -0400 (EDT)
-Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1qMR0E-eJX-00; Thu, 20 Jul 2023 12:35:22 +0200
-Date: Thu, 20 Jul 2023 12:35:22 +0200
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: Takashi Iwai <tiwai@suse.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 32859F800D2
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 12:59:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32859F800D2
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=bzSe972d;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=AqHlKKGk
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 907D122C02;
+	Thu, 20 Jul 2023 10:59:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1689850788;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wLDMyOpMqvk1CB3wclbSBePnaQomK0tr/DEQEjZou9I=;
+	b=bzSe972dh5gyUYqs36mXri9DXGT0u4Nb2uNHs7kJAWGbqZtYHsMZnWbVomBUIqQAV6cSA0
+	euHc7KFMFDsufVHuAp43uUscYyY9R1cNXtTa9O/AHnmO/X6Hpg+80rhsLFvGYj5fA7d3+j
+	BF7DN9idruPPUem3hbzsUuRzWnO66V4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1689850788;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wLDMyOpMqvk1CB3wclbSBePnaQomK0tr/DEQEjZou9I=;
+	b=AqHlKKGk+xAg1TKXAjDROHoHexjZlBvKWsR0hV+4DtAaQWkLaGyEelSI1/Zxrb3F/BxlOg
+	j9vKAQHbz3Qo42Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 744AF133DD;
+	Thu, 20 Jul 2023 10:59:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id qz8xG6QTuWREdwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 20 Jul 2023 10:59:48 +0000
+Date: Thu, 20 Jul 2023 12:59:48 +0200
+Message-ID: <87bkg6kfvf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 Cc: alsa-devel@alsa-project.org
 Subject: Re: [PATCH 2/4] ALSA: ac97: Use the standard snd_ctl_add_followers()
  helper
-Message-ID: <ZLkN6jK5Gw19ZNqU@ugly>
+In-Reply-To: <ZLkN6jK5Gw19ZNqU@ugly>
 References: <20230720082554.31891-1-tiwai@suse.de>
- <20230720082554.31891-3-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230720082554.31891-3-tiwai@suse.de>
-Message-ID-Hash: 7OCDSWJWAZGTRSTMKETFWZI7ZNLNURPP
-X-Message-ID-Hash: 7OCDSWJWAZGTRSTMKETFWZI7ZNLNURPP
-X-MailFrom: ossi@kde.org
+	<20230720082554.31891-3-tiwai@suse.de>
+	<ZLkN6jK5Gw19ZNqU@ugly>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: GYKBVVCANMLCHYKLAPNK7Q6MLMBRKUTC
+X-Message-ID-Hash: GYKBVVCANMLCHYKLAPNK7Q6MLMBRKUTC
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -67,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7OCDSWJWAZGTRSTMKETFWZI7ZNLNURPP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GYKBVVCANMLCHYKLAPNK7Q6MLMBRKUTC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -76,20 +115,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, Jul 20, 2023 at 10:25:52AM +0200, Takashi Iwai wrote:
->+	err = snd_ctl_add_followers(ac97->bus->card, kctl, followers);
->+	if (err < 0)
->+		return err;
+On Thu, 20 Jul 2023 12:35:22 +0200,
+Oswald Buddenhagen wrote:
 > 
-> 	return 0;
->
-this seems a bit pointless - you could just
-   return snd_ctl_add_followers(...
-directly.
+> On Thu, Jul 20, 2023 at 10:25:52AM +0200, Takashi Iwai wrote:
+> > +	err = snd_ctl_add_followers(ac97->bus->card, kctl, followers);
+> > +	if (err < 0)
+> > +		return err;
+> > 
+> > 	return 0;
+> > 
+> this seems a bit pointless - you could just
+>   return snd_ctl_add_followers(...
+> directly.
 
-(more instances may be affected, but i don't see it due to little diff 
-context.)
+Right, this can be simplified.  Will fold into the v2 patch.
 
-> }
 
-regards
+thanks,
+
+Takashi
