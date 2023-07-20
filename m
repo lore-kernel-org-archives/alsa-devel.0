@@ -4,101 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8339C001E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 09:14:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3BEAEB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 10:37:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA3D11FC;
-	Thu, 20 Jul 2023 11:13:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA3D11FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3CF251FC;
+	Thu, 20 Jul 2023 12:36:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CF251FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689844469;
-	bh=SnxUJL/OwsW7FxbEefaBcOS5g1pJF/5Wpr8s6JjCwhA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1689849417;
+	bh=C797DpfHq5YCjhuRfxRmK+v/8E7YUkETrWn20rC71Qo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BI4nLI/ouxVstIkpDVV+s3lMRlFB1fCVSVOUSFZwAQCGk0tjHqzfIlJ4fNKlxgKL/
-	 VSlB9UXDihF1RWUeKmyZwx+2Mugi6ctNoXj4vbbZU4fEGKhtlsNiQsrkuztr5KLmp/
-	 b4mVauYMc5MbAH/+HrtCCObLwBAf0hLjlouQFi18=
+	b=UNf6d4qAZRBcy5sXdYsv8/fC3x7iwuByzxUWSH8yD9+yroqTX53NFrH7CAgsVxMCn
+	 D/hhLorh3OJ1fGSveW4FrfNAb2GiGfdwor5UFXg673a8yaIrykgvtFoM1j6CadcQ4K
+	 rZItcP5h968/+Xqm/lzXrgAo1r2io8r7T/xcMaAs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 890CCF8047D; Thu, 20 Jul 2023 11:13:16 +0200 (CEST)
+	id 61D7BF80494; Thu, 20 Jul 2023 12:35:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 350F1F80494;
-	Thu, 20 Jul 2023 11:13:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABE4DF8047D;
+	Thu, 20 Jul 2023 12:35:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E436F8047D; Thu, 20 Jul 2023 11:13:11 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 8ADFDF8047D; Thu, 20 Jul 2023 12:35:31 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E5B2DF800D2
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 11:13:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5B2DF800D2
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=AUfMa6yu;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=aci71edN
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 07161205DF;
-	Thu, 20 Jul 2023 09:13:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1689844386;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sOcRRE/RoPfR/kyMhPVMaNgA8dPrYIYtV6s0v609Uno=;
-	b=AUfMa6yuJai9uw5BuN0FVHy28qBlou+n3bk543B/U5AvX0WkldQbAGQZc1OMRSpMhE40V2
-	F2bQ/j7ZlVdTQ6aRrSnu9qBJ1qgXWr0Cvp7zVGlSGqgYIyMm9UKSPrcQtNYTZpsJQqbOFj
-	j8zH+s5ImLUU6oNc5LYrkhWGbLqJ4zs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689844386;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sOcRRE/RoPfR/kyMhPVMaNgA8dPrYIYtV6s0v609Uno=;
-	b=aci71edNDCzCib08f9tr83vRqZhVVu6iXV0c+DrPsYM0j4vKTEJ47JECQmQQOC51ZHSL5y
-	OyT321ccpGcDKKDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A598C133DD;
-	Thu, 20 Jul 2023 09:13:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id qQ6AJ6H6uGRdPgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 20 Jul 2023 09:13:05 +0000
-Date: Thu, 20 Jul 2023 11:13:05 +0200
-Message-ID: <87ilafj68u.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Cc: Takashi Iwai <tiwai@suse.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	<alsa-devel@alsa-project.org>,
-	<patches@opensource.cirrus.com>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] ALSA: hda/realtek: Fix generic fixup definition for
- cs35l41 amp
-In-Reply-To: <20230720082022.13033-1-vitalyr@opensource.cirrus.com>
-References: <20230720082022.13033-1-vitalyr@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: 3ZOQN2M2KNPHIKD3WKIWMY3YMRRHIUQN
-X-Message-ID-Hash: 3ZOQN2M2KNPHIKD3WKIWMY3YMRRHIUQN
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id A7DA0F8027B
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 12:35:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7DA0F8027B
+Received: from ugly.fritz.box (localhost [127.0.0.1])
+	by bluemchen.kde.org (Postfix) with ESMTP id 97F7F23FFF;
+	Thu, 20 Jul 2023 06:35:22 -0400 (EDT)
+Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
+	id 1qMR0E-eJX-00; Thu, 20 Jul 2023 12:35:22 +0200
+Date: Thu, 20 Jul 2023 12:35:22 +0200
+From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [PATCH 2/4] ALSA: ac97: Use the standard snd_ctl_add_followers()
+ helper
+Message-ID: <ZLkN6jK5Gw19ZNqU@ugly>
+References: <20230720082554.31891-1-tiwai@suse.de>
+ <20230720082554.31891-3-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230720082554.31891-3-tiwai@suse.de>
+Message-ID-Hash: 7OCDSWJWAZGTRSTMKETFWZI7ZNLNURPP
+X-Message-ID-Hash: 7OCDSWJWAZGTRSTMKETFWZI7ZNLNURPP
+X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -110,7 +67,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3ZOQN2M2KNPHIKD3WKIWMY3YMRRHIUQN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7OCDSWJWAZGTRSTMKETFWZI7ZNLNURPP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,17 +76,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 20 Jul 2023 10:20:21 +0200,
-Vitaly Rodionov wrote:
+On Thu, Jul 20, 2023 at 10:25:52AM +0200, Takashi Iwai wrote:
+>+	err = snd_ctl_add_followers(ac97->bus->card, kctl, followers);
+>+	if (err < 0)
+>+		return err;
 > 
-> Generic fixup for CS35L41 amplifies should not have vendor specific
-> chained fixup. For ThinkPad laptops with led issue, we can just add
-> specific fixup.
-> 
-> Fixes: a6ac60b36dade (ALSA: hda/realtek: Fix mute led issue on thinkpad with cs35l41 s-codec)
-> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> 	return 0;
+>
+this seems a bit pointless - you could just
+   return snd_ctl_add_followers(...
+directly.
 
-Applied both patches now.  Thanks.
+(more instances may be affected, but i don't see it due to little diff 
+context.)
 
+> }
 
-Takashi
+regards
