@@ -4,97 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DF3BEB64DA
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 11:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A41D2EB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 11:08:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C94981F7;
-	Thu, 20 Jul 2023 13:00:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C94981F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A6171FE;
+	Thu, 20 Jul 2023 13:07:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A6171FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689850876;
-	bh=7h82jsuKfivQtkaGA0lrhOLLva/ryLgWgNAlymEclII=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1689851328;
+	bh=sWX+8kC+xmLhQRlXo/nVpuYmm9b5PpePRUuKYkS2wdM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XwlNCn4QZw53pI2z9NmK/VyumYKNBI3VDC3HiNwZRcO8cwu8wtfiMPfoHZ8Isz2bI
-	 UXqC4u6X0d8h1qwHXVq6Ca6PTg5pboIHuvu4Vb3z95gGZgn09HGMFTV7Cgpne2F6j5
-	 U4ZfE4Ve/IVCgtZPaQxhjdwQVyKzo6zxqZUYuWlQ=
+	b=TjKCIpk2y8AC89argoOaFacdltu+vCAOJFunWVLirnStiL5sbdSIJ0ZAy8kBqY5JW
+	 iBxuSYJnth3zLQ4mMjR/iyGVZPq1WeLVs2XoJ8HfZ+dkUVkkwFE97oaflAhaLS1rMT
+	 p/Dduqm28CZiQOIhZRv3xEkE1LBjpYGqwDkG9AC4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56C61F80520; Thu, 20 Jul 2023 13:00:00 +0200 (CEST)
+	id 8206BF80535; Thu, 20 Jul 2023 13:07:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3148F8027B;
-	Thu, 20 Jul 2023 12:59:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27CE6F8047D;
+	Thu, 20 Jul 2023 13:07:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B27F2F8047D; Thu, 20 Jul 2023 12:59:55 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C38DDF8047D; Thu, 20 Jul 2023 13:07:32 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org
+ [IPv6:2001:470:142:8::100])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 32859F800D2
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 12:59:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32859F800D2
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=bzSe972d;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=AqHlKKGk
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 907D122C02;
-	Thu, 20 Jul 2023 10:59:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1689850788;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wLDMyOpMqvk1CB3wclbSBePnaQomK0tr/DEQEjZou9I=;
-	b=bzSe972dh5gyUYqs36mXri9DXGT0u4Nb2uNHs7kJAWGbqZtYHsMZnWbVomBUIqQAV6cSA0
-	euHc7KFMFDsufVHuAp43uUscYyY9R1cNXtTa9O/AHnmO/X6Hpg+80rhsLFvGYj5fA7d3+j
-	BF7DN9idruPPUem3hbzsUuRzWnO66V4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689850788;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wLDMyOpMqvk1CB3wclbSBePnaQomK0tr/DEQEjZou9I=;
-	b=AqHlKKGk+xAg1TKXAjDROHoHexjZlBvKWsR0hV+4DtAaQWkLaGyEelSI1/Zxrb3F/BxlOg
-	j9vKAQHbz3Qo42Cg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 744AF133DD;
-	Thu, 20 Jul 2023 10:59:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id qz8xG6QTuWREdwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 20 Jul 2023 10:59:48 +0000
-Date: Thu, 20 Jul 2023 12:59:48 +0200
-Message-ID: <87bkg6kfvf.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [PATCH 2/4] ALSA: ac97: Use the standard snd_ctl_add_followers()
- helper
-In-Reply-To: <ZLkN6jK5Gw19ZNqU@ugly>
-References: <20230720082554.31891-1-tiwai@suse.de>
-	<20230720082554.31891-3-tiwai@suse.de>
-	<ZLkN6jK5Gw19ZNqU@ugly>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: GYKBVVCANMLCHYKLAPNK7Q6MLMBRKUTC
-X-Message-ID-Hash: GYKBVVCANMLCHYKLAPNK7Q6MLMBRKUTC
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id 00999F800D2
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 13:07:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00999F800D2
+Received: from ugly.fritz.box (localhost [127.0.0.1])
+	by bluemchen.kde.org (Postfix) with ESMTP id B03C323FAC;
+	Thu, 20 Jul 2023 07:07:21 -0400 (EDT)
+Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
+	id 1qMRVB-fPl-00; Thu, 20 Jul 2023 13:07:21 +0200
+From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH v4] ALSA: add snd_ctl_add_locked() & export
+ snd_ctl_remove_locked()
+Date: Thu, 20 Jul 2023 13:07:21 +0200
+Message-Id: <20230720110721.635848-1-oswald.buddenhagen@gmx.de>
+X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <87h6q2wvc2.wl-tiwai@suse.de>
+References: <87h6q2wvc2.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: E4M3LRG3WPFF4S54RH3C22KDPJJTKXDT
+X-Message-ID-Hash: E4M3LRG3WPFF4S54RH3C22KDPJJTKXDT
+X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +67,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GYKBVVCANMLCHYKLAPNK7Q6MLMBRKUTC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E4M3LRG3WPFF4S54RH3C22KDPJJTKXDT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,23 +76,125 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 20 Jul 2023 12:35:22 +0200,
-Oswald Buddenhagen wrote:
-> 
-> On Thu, Jul 20, 2023 at 10:25:52AM +0200, Takashi Iwai wrote:
-> > +	err = snd_ctl_add_followers(ac97->bus->card, kctl, followers);
-> > +	if (err < 0)
-> > +		return err;
-> > 
-> > 	return 0;
-> > 
-> this seems a bit pointless - you could just
->   return snd_ctl_add_followers(...
-> directly.
+This will be used to dynamically change the available controls from
+another control's put() callback, which is already locked.
 
-Right, this can be simplified.  Will fold into the v2 patch.
+One might want to add snd_ctl_replace_locked() for completeness, but I
+have no use for it now.
 
+Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+---
 
-thanks,
+applying this upstream would simplify applying the emu10k1 high bit-rate
+patchset locally, as it would limit the affected modules to the driver
+itself.
 
-Takashi
+v4:
+- adjust to recent locking changes
+- mark exports as internal
+
+v3:
+- fixed typo in commit message
+
+v2:
+- extended commit message
+---
+ include/sound/control.h |  2 ++
+ sound/core/control.c    | 43 ++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 40 insertions(+), 5 deletions(-)
+
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 42e8dbb22d8e..6b85df6aba96 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -133,7 +133,9 @@ void snd_ctl_notify_one(struct snd_card * card, unsigned int mask, struct snd_kc
+ 
+ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new * kcontrolnew, void * private_data);
+ void snd_ctl_free_one(struct snd_kcontrol * kcontrol);
++int snd_ctl_add_locked(struct snd_card *card, struct snd_kcontrol *kcontrol);
+ int snd_ctl_add(struct snd_card * card, struct snd_kcontrol * kcontrol);
++int snd_ctl_remove_locked(struct snd_card *card, struct snd_kcontrol *kcontrol);
+ int snd_ctl_remove(struct snd_card * card, struct snd_kcontrol * kcontrol);
+ int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol, bool add_on_replace);
+ int snd_ctl_remove_id(struct snd_card * card, struct snd_ctl_elem_id *id);
+diff --git a/sound/core/control.c b/sound/core/control.c
+index e13e9d6b3b89..d21d7f773772 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -39,9 +39,6 @@ static LIST_HEAD(snd_control_compat_ioctls);
+ #endif
+ static struct snd_ctl_layer_ops *snd_ctl_layer;
+ 
+-static int snd_ctl_remove_locked(struct snd_card *card,
+-				 struct snd_kcontrol *kcontrol);
+-
+ static int snd_ctl_open(struct inode *inode, struct file *file)
+ {
+ 	unsigned long flags;
+@@ -509,6 +506,27 @@ static int __snd_ctl_add_replace(struct snd_card *card,
+ 	return 0;
+ }
+ 
++static int snd_ctl_add_replace_locked(struct snd_card *card,
++				      struct snd_kcontrol *kcontrol,
++				      enum snd_ctl_add_mode mode)
++{
++	int err = -EINVAL;
++
++	if (! kcontrol)
++		return err;
++	if (snd_BUG_ON(!card || !kcontrol->info))
++		goto error;
++
++	err = __snd_ctl_add_replace(card, kcontrol, mode);
++	if (err < 0)
++		goto error;
++	return 0;
++
++ error:
++	snd_ctl_free_one(kcontrol);
++	return err;
++}
++
+ static int snd_ctl_add_replace(struct snd_card *card,
+ 			       struct snd_kcontrol *kcontrol,
+ 			       enum snd_ctl_add_mode mode)
+@@ -532,6 +550,16 @@ static int snd_ctl_add_replace(struct snd_card *card,
+ 	return err;
+ }
+ 
++/**
++ * snd_ctl_add_locked - same as snd_ctl_add(), but card->controls_rwsem
++ * is expected to be already locked if necessary.
++ */
++int snd_ctl_add_locked(struct snd_card *card, struct snd_kcontrol *kcontrol)
++{
++	return snd_ctl_add_replace_locked(card, kcontrol, CTL_ADD_EXCLUSIVE);
++}
++EXPORT_SYMBOL_GPL(snd_ctl_add_locked);
++
+ /**
+  * snd_ctl_add - add the control instance to the card
+  * @card: the card instance
+@@ -596,11 +624,16 @@ static int __snd_ctl_remove(struct snd_card *card,
+ 	return 0;
+ }
+ 
+-static inline int snd_ctl_remove_locked(struct snd_card *card,
+-					struct snd_kcontrol *kcontrol)
++/**
++ * snd_ctl_remove_locked - same as snd_ctl_remove(), but card->controls_rwsem
++ * is expected to be already locked if necessary.
++ */
++int snd_ctl_remove_locked(struct snd_card *card,
++			  struct snd_kcontrol *kcontrol)
+ {
+ 	return __snd_ctl_remove(card, kcontrol, true);
+ }
++EXPORT_SYMBOL_GPL(snd_ctl_remove_locked);
+ 
+ /**
+  * snd_ctl_remove - remove the control from the card and release it
+-- 
+2.40.0.152.g15d061e6df
+
