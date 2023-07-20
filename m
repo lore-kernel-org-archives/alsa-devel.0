@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7751BEB64DD
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:35:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAB0CEB64DA
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Jul 2023 13:35:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E459B886;
-	Thu, 20 Jul 2023 15:34:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E459B886
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3A87820;
+	Thu, 20 Jul 2023 15:34:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3A87820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689860100;
-	bh=JsqpwRhiFFtLVNabz3wLhVcikUOJn4jU34y5fTRkv7w=;
+	s=default; t=1689860122;
+	bh=23M1U+9FJKtF5qg48nEfTBHunMBf5Bc3x0qH17D1urw=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QRLt6z9N6PhTlQi1+37mfB+tX16NQl2E5pa1++sdXOUXQxswHcUF8aOHAvj5v3MXC
-	 CNY1+0Ew3ZrlG2M8J/VkLjQrAV5sirly4sirIIXNJDdDn4kLuZPbM+mKZtX3/Z10lZ
-	 J9FDwRvFbbAa6hSuZXAGPGJvCNCE+pMguYtlsdm8=
+	b=F4UDhkpxVoLO7/GPyoefXLQdfqFKm3lT6Fnf/C3MYxAW3Pdo9WPu+mDVbGo1FsxB0
+	 32uAGB7Hv6N4GiAyFJ76PtkdLXLxeCEvI3n+Zbf5Ntx38PkkUqmM0vTChFvh7ewIGC
+	 gk9/CmL2oM+pF5Rsn7To9pMtOjAevXZiioUS1CHY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03229F805C3; Thu, 20 Jul 2023 15:32:40 +0200 (CEST)
+	id D05E3F805C4; Thu, 20 Jul 2023 15:32:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9FA98F805BE;
-	Thu, 20 Jul 2023 15:32:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20A62F805D4;
+	Thu, 20 Jul 2023 15:32:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39C6FF805A1; Thu, 20 Jul 2023 15:32:33 +0200 (CEST)
+	id 6A693F805AF; Thu, 20 Jul 2023 15:32:35 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8E19EF80527
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9CE95F80544
 	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 15:32:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E19EF80527
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CE95F80544
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=csSq7RS9
+ header.s=PODMain02222019 header.b=CWcVXas2
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 36K6Acqd016432;
+ 36KAupUp002185;
 	Thu, 20 Jul 2023 08:32:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=SouSdl0krn87qnxGImLLbDeHt3AjI3/2rWOxCps/3Ts=; b=
-	csSq7RS949aMbRTm92yJE/lh1RQ6faqHP0AXFhsOUbKuMQ8icvCpKr6BpeYf5b2N
-	lvba1gzac5gr+Iz2vAYi5X8OzNzN0ue9yRruoLs2a/PTzYwRY28sArnG6HwF9bVO
-	1NVfgVYlWkXp7Zb+7cXfFJKlFd8zsZoC4Q6KOOfdIv65FTsgx+nXLOHbcjud110z
-	KnYEdc1IulsGdbn3yhUZmFHX/pUILMz3zolIciTkBWHprk+9eGbzWG9oK4D2SdSH
-	lxmmx50FOZQnU0qSjZuudAfDq+MSwbQjC8P4iq6MhB3+UTi/jS0UBE7jjd6kPuin
-	JMEU3LWB+wX1nf8MedWZvQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mr-5
+	PODMain02222019; bh=JqcxCQdId6GERpPzL031OjgEbu9ZZ+nMWXjwJ4Papww=; b=
+	CWcVXas2kL/EYnIWX94FD/TM3ZKcdS/ojD3n1ci/DgdteXi+UsL+kDvLsj8XoDjy
+	tPjAK/OYNmBL0gt2ntoxtjv4KDjPDsyXM9pdJwCDe2aC84npTtvqIJmYrc362L1S
+	iqD7ad82gyRYghjwljD1/zVuC5naF2BvSR0tCpGsR21CuQBMzJ40WJDPvbmXAUKl
+	pVetpgTZCeZLBIu5mzvCtZdnjSFk8VNQffbOSrZ5iNf60z+gYozKcAKMf3Kixlfo
+	3d/7wcYQ+iZvox9/KNtHJNvfNQjRrFH84dicVeCEO/wkVhTdmCEyFuE+Pbhy66ps
+	RU+3xHV3zf9w+fPajd89sA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3rus6gx5mq-6
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 20 Jul 2023 08:32:13 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 20 Jul
- 2023 14:32:12 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Thu, 20 Jul 2023 14:32:12 +0100
+ 2023 14:32:11 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Thu, 20 Jul 2023 14:32:11 +0100
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.219])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E76A53563;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2EB5B3573;
 	Thu, 20 Jul 2023 13:32:11 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
@@ -75,21 +75,21 @@ CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
         Stefan Binding
 	<sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 11/11] ALSA: hda: cs35l41: Ensure amp is only unmuted
- during playback
-Date: Thu, 20 Jul 2023 14:31:47 +0100
-Message-ID: <20230720133147.1294337-12-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 08/11] ALSA: hda: cs35l41: Rework System Suspend to ensure
+ correct call separation
+Date: Thu, 20 Jul 2023 14:31:44 +0100
+Message-ID: <20230720133147.1294337-9-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
 References: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: o6pVmOxNJF9GblLfmDxfvyfRPM7p9JtK
-X-Proofpoint-GUID: o6pVmOxNJF9GblLfmDxfvyfRPM7p9JtK
+X-Proofpoint-ORIG-GUID: E96zCp-pWz8hLaBlgv7tYd2abOl1nOP8
+X-Proofpoint-GUID: E96zCp-pWz8hLaBlgv7tYd2abOl1nOP8
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: PDNLEONJA7O64L77UJ7KASPS3J3QVAG4
-X-Message-ID-Hash: PDNLEONJA7O64L77UJ7KASPS3J3QVAG4
+Message-ID-Hash: TMQVURLWBKKFZPXJD2MZIPGTRKOMIWP4
+X-Message-ID-Hash: TMQVURLWBKKFZPXJD2MZIPGTRKOMIWP4
 X-MailFrom: prvs=25651755c6=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PDNLEONJA7O64L77UJ7KASPS3J3QVAG4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TMQVURLWBKKFZPXJD2MZIPGTRKOMIWP4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,70 +111,111 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently we only mute after playback has finished, and unmute
-prior to setting global enable. To prevent any possible pops
-and clicks, mute at probe, and then only unmute after global
-enable is set.
+In order to correctly pause audio on suspend, amps using external boost
+require parts of the pause sequence to be called for all amps before moving
+on to the next steps.
+For example, as part of pausing the audio, the VSPK GPIO must be disabled,
+but since this GPIO is controlled by one amp, but controls the boost for
+all amps, it is required to separate the calls.
+During playback this is achieved by using the pre and post playback hooks,
+however during system suspend, this is not possible, so to separate the
+calls, we use both the .prepare and .suspend calls to pause the audio.
+
+Currently, for this reason, we do not restart audio on system resume.
+However, we can support this by relying on the playback hook to resume
+playback after system suspend.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l41_hda.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ sound/pci/hda/cs35l41_hda.c | 40 ++++++++++++++++++++++++++++++++-----
+ 1 file changed, 35 insertions(+), 5 deletions(-)
 
 diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 175378cdf9dfa..98feb5ccd5866 100644
+index a482d4752b3f8..70aa819cfbd64 100644
 --- a/sound/pci/hda/cs35l41_hda.c
 +++ b/sound/pci/hda/cs35l41_hda.c
-@@ -58,8 +58,6 @@ static const struct reg_sequence cs35l41_hda_config[] = {
- 	{ CS35L41_DSP1_RX3_SRC,         0x00000018 }, // DSP1RX3 SRC = VMON
- 	{ CS35L41_DSP1_RX4_SRC,         0x00000019 }, // DSP1RX4 SRC = IMON
- 	{ CS35L41_DSP1_RX5_SRC,         0x00000020 }, // DSP1RX5 SRC = ERRVOL
--	{ CS35L41_AMP_DIG_VOL_CTRL,	0x00008000 }, // AMP_HPF_PCM_EN = 1, AMP_VOL_PCM  0.0 dB
--	{ CS35L41_AMP_GAIN_CTRL,	0x00000084 }, // AMP_GAIN_PCM 4.5 dB
- };
- 
- static const struct reg_sequence cs35l41_hda_config_dsp[] = {
-@@ -82,6 +80,14 @@ static const struct reg_sequence cs35l41_hda_config_dsp[] = {
- 	{ CS35L41_DSP1_RX3_SRC,         0x00000018 }, // DSP1RX3 SRC = VMON
- 	{ CS35L41_DSP1_RX4_SRC,         0x00000019 }, // DSP1RX4 SRC = IMON
- 	{ CS35L41_DSP1_RX5_SRC,         0x00000029 }, // DSP1RX5 SRC = VBSTMON
-+};
+@@ -595,6 +595,15 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLOSE:
++		mutex_lock(&cs35l41->fw_mutex);
++		if (!cs35l41->firmware_running && cs35l41->request_fw_load &&
++		    !cs35l41->fw_request_ongoing) {
++			dev_info(dev, "Requesting Firmware Load after HDA_GEN_PCM_ACT_CLOSE\n");
++			cs35l41->fw_request_ongoing = true;
++			schedule_work(&cs35l41->fw_load_work);
++		}
++		mutex_unlock(&cs35l41->fw_mutex);
 +
-+static const struct reg_sequence cs35l41_hda_unmute[] = {
-+	{ CS35L41_AMP_DIG_VOL_CTRL,	0x00008000 }, // AMP_HPF_PCM_EN = 1, AMP_VOL_PCM  0.0 dB
-+	{ CS35L41_AMP_GAIN_CTRL,	0x00000084 }, // AMP_GAIN_PCM 4.5 dB
-+};
-+
-+static const struct reg_sequence cs35l41_hda_unmute_dsp[] = {
- 	{ CS35L41_AMP_DIG_VOL_CTRL,	0x00008000 }, // AMP_HPF_PCM_EN = 1, AMP_VOL_PCM  0.0 dB
- 	{ CS35L41_AMP_GAIN_CTRL,	0x00000233 }, // AMP_GAIN_PCM = 17.5dB AMP_GAIN_PDM = 19.5dB
- };
-@@ -522,6 +528,13 @@ static void cs35l41_hda_play_done(struct device *dev)
- 
- 	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 1, NULL,
- 			      cs35l41->firmware_running);
-+	if (cs35l41->firmware_running) {
-+		regmap_multi_reg_write(reg, cs35l41_hda_unmute_dsp,
-+				       ARRAY_SIZE(cs35l41_hda_unmute_dsp));
-+	} else {
-+		regmap_multi_reg_write(reg, cs35l41_hda_unmute,
-+				       ARRAY_SIZE(cs35l41_hda_unmute));
-+	}
+ 		/*
+ 		 * Playback must be finished for all amps before we start runtime suspend.
+ 		 * This ensures no amps are playing back when we start putting them to sleep.
+@@ -681,6 +690,25 @@ static int cs35l41_ready_for_reset(struct cs35l41_hda *cs35l41)
+ 	return ret;
  }
  
- static void cs35l41_hda_pause_start(struct device *dev)
-@@ -1616,6 +1629,11 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 	if (ret)
- 		goto err;
- 
-+	ret = regmap_multi_reg_write(cs35l41->regmap, cs35l41_hda_mute,
-+				     ARRAY_SIZE(cs35l41_hda_mute));
-+	if (ret)
-+		goto err;
++static int cs35l41_system_suspend_prep(struct device *dev)
++{
++	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
 +
- 	INIT_WORK(&cs35l41->fw_load_work, cs35l41_fw_load_work);
- 	mutex_init(&cs35l41->fw_mutex);
++	dev_dbg(cs35l41->dev, "System Suspend Prepare\n");
++
++	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST_NO_VSPK_SWITCH) {
++		dev_err_once(cs35l41->dev, "System Suspend not supported\n");
++		return 0; /* don't block the whole system suspend */
++	}
++
++	mutex_lock(&cs35l41->fw_mutex);
++	if (cs35l41->playback_started)
++		cs35l41_hda_pause_start(dev);
++	mutex_unlock(&cs35l41->fw_mutex);
++
++	return 0;
++}
++
+ static int cs35l41_system_suspend(struct device *dev)
+ {
+ 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
+@@ -693,6 +721,11 @@ static int cs35l41_system_suspend(struct device *dev)
+ 		return 0; /* don't block the whole system suspend */
+ 	}
  
++	mutex_lock(&cs35l41->fw_mutex);
++	if (cs35l41->playback_started)
++		cs35l41_hda_pause_done(dev);
++	mutex_unlock(&cs35l41->fw_mutex);
++
+ 	ret = pm_runtime_force_suspend(dev);
+ 	if (ret) {
+ 		dev_err(dev, "System Suspend Failed, unable to runtime suspend: %d\n", ret);
+@@ -738,6 +771,7 @@ static int cs35l41_system_resume(struct device *dev)
+ 	}
+ 
+ 	mutex_lock(&cs35l41->fw_mutex);
++
+ 	if (cs35l41->request_fw_load && !cs35l41->fw_request_ongoing) {
+ 		cs35l41->fw_request_ongoing = true;
+ 		schedule_work(&cs35l41->fw_load_work);
+@@ -770,11 +804,6 @@ static int cs35l41_runtime_suspend(struct device *dev)
+ 
+ 	mutex_lock(&cs35l41->fw_mutex);
+ 
+-	if (cs35l41->playback_started) {
+-		cs35l41_hda_pause_start(dev);
+-		cs35l41_hda_pause_done(dev);
+-	}
+-
+ 	if (cs35l41->firmware_running) {
+ 		ret = cs35l41_enter_hibernate(cs35l41->dev, cs35l41->regmap,
+ 					      cs35l41->hw_cfg.bst_type);
+@@ -1641,6 +1670,7 @@ EXPORT_SYMBOL_NS_GPL(cs35l41_hda_remove, SND_HDA_SCODEC_CS35L41);
+ const struct dev_pm_ops cs35l41_hda_pm_ops = {
+ 	RUNTIME_PM_OPS(cs35l41_runtime_suspend, cs35l41_runtime_resume,
+ 		       cs35l41_runtime_idle)
++	.prepare = cs35l41_system_suspend_prep,
+ 	SYSTEM_SLEEP_PM_OPS(cs35l41_system_suspend, cs35l41_system_resume)
+ };
+ EXPORT_SYMBOL_NS_GPL(cs35l41_hda_pm_ops, SND_HDA_SCODEC_CS35L41);
 -- 
 2.34.1
 
