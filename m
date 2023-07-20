@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6BB6EB64DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:12:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5530EB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:12:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CE63DEE;
-	Fri, 21 Jul 2023 10:11:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CE63DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD8F2E80;
+	Fri, 21 Jul 2023 10:11:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD8F2E80
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689927151;
-	bh=ATONI3oQ7w6W5U/QjS7XG3yFALNIbOuzI6jSyOFIQvI=;
+	s=default; t=1689927166;
+	bh=Icc0A/kj6yGqYeaOj4SJjOewb0mc8Woa4wczTJOoFwo=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fJ6BYb81U6wuzjdE0MS4wqxjzQ8KisrdD0f1gaQxPw2UcZBiS0u7ndmCSxX6B6RCe
-	 g1gDUA2ghDUyHJz/+QoKZeL15hq7wbAkS8xDxPEcuJMzpxeIjTywW8zlqjEPjEShYe
-	 b8rC5EQoOC8MEPtug4I9E8fgDfpbkU5NDDQzu/yU=
+	b=fxOiE8LEP2GKJy70eRCZjLuAhALtRDBc2PAK+XJe29Us74nHCkbA0lsq3gAmBElIv
+	 bGqliUAqD7JF0/pgIySjtH2MmhII/ZW0/0xrURWL7ftByPOnNvlVyZyJDeeMIDduqJ
+	 k8Ruvt9cAQTbBpn2smA3JWfvN0DDTEkJR2+EmyRk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4193BF805EC; Fri, 21 Jul 2023 10:09:11 +0200 (CEST)
+	id A6488F805EE; Fri, 21 Jul 2023 10:09:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75283F805E8;
-	Fri, 21 Jul 2023 10:09:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD7E1F805F2;
+	Fri, 21 Jul 2023 10:09:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9F85F805A1; Thu, 20 Jul 2023 10:30:23 +0200 (CEST)
+	id D431AF804DA; Thu, 20 Jul 2023 10:30:24 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7DC8AF80494
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:30:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DC8AF80494
+	by alsa1.perex.cz (Postfix) with ESMTPS id DE723F800D2
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:30:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE723F800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=UeCGNmr6
+ header.s=k20201202 header.b=e0uKYqNV
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 1A6B6619F6;
-	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 33231C433B7;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4454D61935;
+	Thu, 20 Jul 2023 08:29:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A8169C611AB;
 	Thu, 20 Jul 2023 08:29:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1689841796;
-	bh=ATONI3oQ7w6W5U/QjS7XG3yFALNIbOuzI6jSyOFIQvI=;
+	bh=Icc0A/kj6yGqYeaOj4SJjOewb0mc8Woa4wczTJOoFwo=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=UeCGNmr60CbBfDosh3Ehoiipb6mSwjH/B82+ZYA6z1dy6g/l3j1vzXkNVVyniugMQ
-	 hgKoxBpHVKn30+e4cRRevaBxDAsnqjQ66GyBL7rmMWm1V0Wtnt+mFF7DTAhf9ipxZG
-	 /ZyRQBf1fyMU3+Px5X+rbYnH4R+oPGkn9n8H1aAA8sCOTBN82xH7aukQP1eO712fEm
-	 9/bFjwFShD4eeppzUW7I62YokUyflsvbA57n3sOi5a9NjKuKr3vGCbuVMtOxyHPYRo
-	 v4ZvQq4zO2lYb+n5eNKK2ZOk/MJ6qg4yVUO5zdjbJAlzCk4cj7LFGrQXnx56Iad151
-	 /ynV62OblWPQQ==
+	b=e0uKYqNVqnMW7v1S4ZnwZbhakubhgeHsmxXOi4ur2uoAlIYAkT6QLG4SU9UhgdAe0
+	 kAGXAGkii9/ECrZAG7pdHHgYJc2tjp6V3pfiVsq7pnxSkfpd3+17mEdK/YxN7icYCU
+	 6Yl34bzaDwTEcALvrAJR8NvlBgjIAqQQn2UjMd1TBU3n7ysTOQYaX16/VWTwq1UUN0
+	 F+Uv2iWEMD76OgsGdznqwiGHxw35O4LvzkMBM5ELL5DdLolxsRQvEilozTb1BWf+pL
+	 n2uReCm8+Mdgek2VJVr1nse92N8XS1gdz+2owMIO/+xZ0gKQsIoxLOfEXN0W9bIu20
+	 fRBY+TfeQfnqA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org
  (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A74DEB64DD;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8557FC0015E;
 	Thu, 20 Jul 2023 08:29:56 +0000 (UTC)
 From: 
  Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:03 +0300
-Subject: [PATCH v3 03/42] clk: ep93xx: add DT support for Cirrus EP93xx
+Date: Thu, 20 Jul 2023 14:29:07 +0300
+Subject: [PATCH v3 07/42] soc: Add SoC driver for Cirrus ep93xx
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230605-ep93xx-v3-3-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>,
@@ -111,11 +111,11 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
  linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852590; l=24223;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852590; l=11384;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=7NL5TB4x4kyDhU79IcMjfwtxEf1O3P/f48+pcwo8xRM=; =?utf-8?q?b=3DLBf+AE08NRHW?=
- =?utf-8?q?YXadjiK4Cl1jeLVc/rikXtKY8hpVZm06yUc9qGWZGj0sES5WvyM2dujUwRhxdRLj?=
- 6LDvrYWqD25//+k9v5IipvX0Zr6+8FGLNYpcNDb5m4fSbT8KU0G9
+ bh=hdAydcSmJdWTCsh9yNDgwo1kPIf17UX/m4OJVEY7qN4=; =?utf-8?q?b=3DKIYngc1oJbho?=
+ =?utf-8?q?J3zNeKRkvNqM18Cfr+rAd7yueRxLazdHd5qw4z/g9gwaK3HzDy8suoitNbUl5g62?=
+ ka3ygVV1Bu1FV4rg5Oo2ge6sFuLM4xCaEEj8JqCEvqdoxGml93VB
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: 
@@ -127,8 +127,8 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: E7GV72I3GRGAFQLXWA2DC72TXS5HEPKJ
-X-Message-ID-Hash: E7GV72I3GRGAFQLXWA2DC72TXS5HEPKJ
+Message-ID-Hash: WFRYLRE4MJIFSHS3VP6NB2L6FC56JBKI
+X-Message-ID-Hash: WFRYLRE4MJIFSHS3VP6NB2L6FC56JBKI
 X-Mailman-Approved-At: Fri, 21 Jul 2023 08:08:46 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
@@ -136,7 +136,7 @@ Reply-To: nikita.shubin@maquefel.me
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E7GV72I3GRGAFQLXWA2DC72TXS5HEPKJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WFRYLRE4MJIFSHS3VP6NB2L6FC56JBKI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -147,825 +147,356 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-This is a rewrite of EP93xx clock driver in arch/arm/mach-ep93xx/clock.c
-trying to do everything the device tree way:
+This adds an SoC driver for the ep93xx. Currently there
+is only one thing not fitting into any other framework,
+and that is the swlock setting.
 
-- provide clock acces via of
-- drop clk_hw_register_clkdev
-- drop init code and use builtin_platform_driver_probe
+It's used for clock settings and restart.
 
-Also moved all clocks not accessed via device tree to syscon.
-
-Co-developed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/clk/Kconfig      |   8 +
- drivers/clk/Makefile     |   1 +
- drivers/clk/clk-ep93xx.c | 764 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 773 insertions(+)
+ drivers/soc/Kconfig               |   1 +
+ drivers/soc/Makefile              |   1 +
+ drivers/soc/cirrus/Kconfig        |  12 ++
+ drivers/soc/cirrus/Makefile       |   2 +
+ drivers/soc/cirrus/soc-ep93xx.c   | 231 ++++++++++++++++++++++++++++++++++++++
+ include/linux/soc/cirrus/ep93xx.h |  18 ++-
+ 6 files changed, 264 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index 93f38a8178ba..0c13ea504820 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -218,6 +218,14 @@ config COMMON_CLK_EN7523
- 	  This driver provides the fixed clocks and gates present on Airoha
- 	  ARM silicon.
- 
-+config COMMON_CLK_EP93XX
-+	bool "Clock driver for Cirrus Logic ep93xx SoC"
-+	depends on ARCH_EP93XX || COMPILE_TEST
-+	select MFD_SYSCON
-+	select REGMAP
-+	help
-+	  This driver supports the SoC clocks on the Cirrus Logic ep93xx.
-+
- config COMMON_CLK_FSL_FLEXSPI
- 	tristate "Clock driver for FlexSPI on Layerscape SoCs"
- 	depends on ARCH_LAYERSCAPE || COMPILE_TEST
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index 7cb000549b61..6049a2073a25 100644
---- a/drivers/clk/Makefile
-+++ b/drivers/clk/Makefile
-@@ -29,6 +29,7 @@ obj-$(CONFIG_COMMON_CLK_CDCE706)	+= clk-cdce706.o
- obj-$(CONFIG_COMMON_CLK_CDCE925)	+= clk-cdce925.o
- obj-$(CONFIG_ARCH_CLPS711X)		+= clk-clps711x.o
- obj-$(CONFIG_COMMON_CLK_CS2000_CP)	+= clk-cs2000-cp.o
-+obj-$(CONFIG_COMMON_CLK_EP93XX)		+= clk-ep93xx.o
- obj-$(CONFIG_ARCH_SPARX5)		+= clk-sparx5.o
- obj-$(CONFIG_COMMON_CLK_EN7523)		+= clk-en7523.o
- obj-$(CONFIG_COMMON_CLK_FIXED_MMIO)	+= clk-fixed-mmio.o
-diff --git a/drivers/clk/clk-ep93xx.c b/drivers/clk/clk-ep93xx.c
+diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
+index 4e176280113a..16327b63b773 100644
+--- a/drivers/soc/Kconfig
++++ b/drivers/soc/Kconfig
+@@ -8,6 +8,7 @@ source "drivers/soc/aspeed/Kconfig"
+ source "drivers/soc/atmel/Kconfig"
+ source "drivers/soc/bcm/Kconfig"
+ source "drivers/soc/canaan/Kconfig"
++source "drivers/soc/cirrus/Kconfig"
+ source "drivers/soc/fsl/Kconfig"
+ source "drivers/soc/fujitsu/Kconfig"
+ source "drivers/soc/imx/Kconfig"
+diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
+index 3b0f9fb3b5c8..b76a03fe808e 100644
+--- a/drivers/soc/Makefile
++++ b/drivers/soc/Makefile
+@@ -9,6 +9,7 @@ obj-y				+= aspeed/
+ obj-$(CONFIG_ARCH_AT91)		+= atmel/
+ obj-y				+= bcm/
+ obj-$(CONFIG_SOC_CANAAN)	+= canaan/
++obj-$(CONFIG_EP93XX_SOC)        += cirrus/
+ obj-$(CONFIG_ARCH_DOVE)		+= dove/
+ obj-$(CONFIG_MACH_DOVE)		+= dove/
+ obj-y				+= fsl/
+diff --git a/drivers/soc/cirrus/Kconfig b/drivers/soc/cirrus/Kconfig
 new file mode 100644
-index 000000000000..7b9b3a0894ab
+index 000000000000..408f3343a265
 --- /dev/null
-+++ b/drivers/clk/clk-ep93xx.c
-@@ -0,0 +1,764 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Clock control for Cirrus EP93xx chips.
-+ * Copyright (C) 2021 Nikita Shubin <nikita.shubin@maquefel.me>
-+ *
-+ * Based on a rewrite of arch/arm/mach-ep93xx/clock.c:
-+ * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
-+ */
-+#define pr_fmt(fmt) "ep93xx " KBUILD_MODNAME ": " fmt
++++ b/drivers/soc/cirrus/Kconfig
+@@ -0,0 +1,12 @@
++# SPDX-License-Identifier: GPL-2.0
 +
-+#include <linux/bits.h>
++if ARCH_EP93XX
++
++config EP93XX_SOC
++	bool "Cirrus EP93xx chips SoC"
++	select SOC_BUS
++	default y if !EP93XX_SOC_COMMON
++	help
++	  Support SoC for Cirrus EP93xx chips.
++
++endif
+diff --git a/drivers/soc/cirrus/Makefile b/drivers/soc/cirrus/Makefile
+new file mode 100644
+index 000000000000..ed6752844c6f
+--- /dev/null
++++ b/drivers/soc/cirrus/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0
++obj-y	+= soc-ep93xx.o
+diff --git a/drivers/soc/cirrus/soc-ep93xx.c b/drivers/soc/cirrus/soc-ep93xx.c
+new file mode 100644
+index 000000000000..2fd48d900f24
+--- /dev/null
++++ b/drivers/soc/cirrus/soc-ep93xx.c
+@@ -0,0 +1,231 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * SoC driver for Cirrus EP93xx chips.
++ * Copyright (C) 2022 Nikita Shubin <nikita.shubin@maquefel.me>
++ *
++ * Based on a rewrite of arch/arm/mach-ep93xx/core.c
++ * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
++ * Copyright (C) 2007 Herbert Valerio Riedel <hvr@gnu.org>
++ *
++ * Thanks go to Michael Burian and Ray Lehtiniemi for their key
++ * role in the ep93xx Linux community
++ */
++
 +#include <linux/clk-provider.h>
-+#include <linux/clk.h>
-+#include <linux/clkdev.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
++#include <linux/init.h>
 +#include <linux/kernel.h>
 +#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
 +#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
 +#include <linux/regmap.h>
-+#include <linux/spinlock.h>
-+#include <linux/string.h>
++#include <linux/slab.h>
 +#include <linux/sys_soc.h>
-+
 +#include <linux/soc/cirrus/ep93xx.h>
-+#include <dt-bindings/clock/cirrus,ep93xx-clock.h>
 +
-+#include <asm/div64.h>
++#define EP93XX_EXT_CLK_RATE		14745600
 +
-+#define EP93XX_EXT_RTC_RATE		32768
-+
-+#define EP93XX_SYSCON_POWER_STATE	0x00
-+#define EP93XX_SYSCON_PWRCNT		0x04
-+#define EP93XX_SYSCON_PWRCNT_UARTBAUD	BIT(29)
-+#define EP93XX_SYSCON_PWRCNT_USH_EN	28
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2M1	27
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2M0	26
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2P8	25
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2P9	24
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2P6	23
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2P7	22
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2P4	21
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2P5	20
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2P2	19
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2P3	18
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2P0	17
-+#define EP93XX_SYSCON_PWRCNT_DMA_M2P1	16
 +#define EP93XX_SYSCON_DEVCFG		0x80
-+#define EP93XX_SYSCON_DEVCFG_U3EN	24
-+#define EP93XX_SYSCON_DEVCFG_U2EN	20
-+#define EP93XX_SYSCON_DEVCFG_U1EN	18
-+#define EP93XX_SYSCON_VIDCLKDIV		0x84
-+#define EP93XX_SYSCON_CLKDIV_ENABLE	15
-+#define EP93XX_SYSCON_CLKDIV_ESEL	BIT(14)
-+#define EP93XX_SYSCON_CLKDIV_PSEL	BIT(13)
-+#define EP93XX_SYSCON_CLKDIV_MASK	GENMASK(14, 13)
-+#define EP93XX_SYSCON_CLKDIV_PDIV_SHIFT	8
-+#define EP93XX_SYSCON_I2SCLKDIV		0x8c
-+#define EP93XX_SYSCON_I2SCLKDIV_SENA	31
-+#define EP93XX_SYSCON_I2SCLKDIV_ORIDE	BIT(29)
-+#define EP93XX_SYSCON_I2SCLKDIV_SPOL	BIT(19)
-+#define EP93XX_I2SCLKDIV_SDIV		(1 << 16)
-+#define EP93XX_I2SCLKDIV_LRDIV32	(0 << 17)
-+#define EP93XX_I2SCLKDIV_LRDIV64	(1 << 17)
-+#define EP93XX_I2SCLKDIV_LRDIV128	(2 << 17)
-+#define EP93XX_I2SCLKDIV_LRDIV_MASK	(3 << 17)
-+#define EP93XX_SYSCON_KEYTCHCLKDIV	0x90
-+#define EP93XX_SYSCON_KEYTCHCLKDIV_TSEN	31
-+#define EP93XX_SYSCON_KEYTCHCLKDIV_ADIV	16
-+#define EP93XX_SYSCON_KEYTCHCLKDIV_KEN	15
-+#define EP93XX_SYSCON_KEYTCHCLKDIV_KDIV	0
-+#define EP93XX_SYSCON_CHIPID		0x94
-+#define EP93XX_SYSCON_CHIPID_ID		0x9213
 +
-+/* Keeps track of all clocks */
-+static const char adc_divisors[] = { 16, 4 };
-+static const char sclk_divisors[] = { 2, 4 };
-+static const char lrclk_divisors[] = { 32, 64, 128 };
++#define EP93XX_SWLOCK_MAGICK		0xaa
++#define EP93XX_SYSCON_SWLOCK		0xc0
++#define EP93XX_SYSCON_SYSCFG		0x9c
++#define EP93XX_SYSCON_SYSCFG_REV_MASK	0xf0000000
++#define EP93XX_SYSCON_SYSCFG_REV_SHIFT	28
 +
-+#define EP_PARENT(NAME) { .name = NAME, .fw_name = NAME }
++#define EP93XX_SYSCON_CLKSET1		0x20
++#define EP93XX_SYSCON_CLKSET1_NBYP1	BIT(23)
++#define EP93XX_SYSCON_CLKSET2		0x24
++#define EP93XX_SYSCON_CLKSET2_NBYP2	BIT(19)
++#define EP93XX_SYSCON_CLKSET2_PLL2_EN	BIT(18)
 +
-+static const struct clk_parent_data ep93xx_clk_parents[] = {
-+	EP_PARENT("xtali"),
-+	EP_PARENT("pll1"),
-+	EP_PARENT("pll2"),
-+};
++static DEFINE_SPINLOCK(ep93xx_swlock);
 +
-+struct ep93xx_clk {
-+	struct clk_hw hw;
-+	u16 idx;
-+	u16 reg;
-+	u32 mask;
-+	u8 bit_idx;
-+	u8 shift;
-+	u8 width;
-+	u8 num_div;
-+	const char *div;
-+};
-+
-+struct ep93xx_clk_priv {
-+	spinlock_t lock;
-+	struct device *dev;
-+	void __iomem *base;
-+	struct regmap *map;
-+	struct clk_hw *fixed[16];
-+	struct ep93xx_clk reg[];
-+};
-+
-+static struct ep93xx_clk *ep93xx_clk_from(struct clk_hw *hw)
++/* EP93xx System Controller software locked register write */
++void ep93xx_syscon_swlocked_write(struct regmap *map, unsigned int reg, unsigned int val)
 +{
-+	return container_of(hw, struct ep93xx_clk, hw);
-+}
-+
-+static struct ep93xx_clk_priv *ep93xx_priv_from(struct ep93xx_clk *clk)
-+{
-+	return container_of(clk, struct ep93xx_clk_priv, reg[clk->idx]);
-+}
-+
-+static int ep93xx_clk_is_enabled(struct clk_hw *hw)
-+{
-+	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-+	u32 val;
-+
-+	regmap_read(priv->map, clk->reg, &val);
-+
-+	return !!(val & BIT(clk->bit_idx));
-+}
-+
-+static int ep93xx_clk_enable(struct clk_hw *hw)
-+{
-+	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
 +	unsigned long flags;
-+	u32 val;
 +
-+	spin_lock_irqsave(&priv->lock, flags);
++	spin_lock_irqsave(&ep93xx_swlock, flags);
 +
-+	regmap_read(priv->map, clk->reg, &val);
-+	val |= BIT(clk->bit_idx);
++	regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
++	regmap_write(map, reg, val);
 +
-+	ep93xx_syscon_swlocked_write(priv->map, clk->reg, val);
-+
-+	spin_unlock_irqrestore(&priv->lock, flags);
-+
-+	return 0;
++	spin_unlock_irqrestore(&ep93xx_swlock, flags);
 +}
++EXPORT_SYMBOL_NS_GPL(ep93xx_syscon_swlocked_write, EP93XX_SOC);
 +
-+static void ep93xx_clk_disable(struct clk_hw *hw)
++void ep93xx_devcfg_set_clear(struct regmap *map, unsigned int set_bits, unsigned int clear_bits)
 +{
-+	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
 +	unsigned long flags;
-+	u32 val;
++	unsigned int val;
 +
-+	spin_lock_irqsave(&priv->lock, flags);
++	spin_lock_irqsave(&ep93xx_swlock, flags);
 +
-+	regmap_read(priv->map, clk->reg, &val);
-+	val &= ~BIT(clk->bit_idx);
++	regmap_read(map, EP93XX_SYSCON_DEVCFG, &val);
++	val &= ~clear_bits;
++	val |= set_bits;
++	regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
++	regmap_write(map, EP93XX_SYSCON_DEVCFG, val);
 +
-+	ep93xx_syscon_swlocked_write(priv->map, clk->reg, val);
++	spin_unlock_irqrestore(&ep93xx_swlock, flags);
++}
++EXPORT_SYMBOL_NS_GPL(ep93xx_devcfg_set_clear, EP93XX_SOC);
 +
-+	spin_unlock_irqrestore(&priv->lock, flags);
++void ep93xx_swlocked_update_bits(struct regmap *map, unsigned int reg,
++				 unsigned int mask, unsigned int val)
++{
++	unsigned long flags;
++	unsigned int tmp, orig;
++
++	spin_lock_irqsave(&ep93xx_swlock, flags);
++
++	regmap_read(map, EP93XX_SYSCON_DEVCFG, &orig);
++	tmp = orig & ~mask;
++	tmp |= val & mask;
++	if (tmp != orig) {
++		regmap_write(map, EP93XX_SYSCON_SWLOCK, EP93XX_SWLOCK_MAGICK);
++		regmap_write(map, reg, tmp);
++	}
++
++	spin_unlock_irqrestore(&ep93xx_swlock, flags);
++}
++EXPORT_SYMBOL_NS_GPL(ep93xx_swlocked_update_bits, EP93XX_SOC);
++
++unsigned int __init ep93xx_chip_revision(struct regmap *map)
++{
++	unsigned int val;
++
++	regmap_read(map, EP93XX_SYSCON_SYSCFG, &val);
++	val &= EP93XX_SYSCON_SYSCFG_REV_MASK;
++	val >>= EP93XX_SYSCON_SYSCFG_REV_SHIFT;
++	return val;
 +}
 +
-+static const struct clk_ops clk_ep93xx_gate_ops = {
-+	.enable = ep93xx_clk_enable,
-+	.disable = ep93xx_clk_disable,
-+	.is_enabled = ep93xx_clk_is_enabled,
-+};
-+
-+static int ep93xx_clk_register_gate(struct ep93xx_clk *clk,
-+					const char *name,
-+					const char *parent_name,
-+					unsigned long flags,
-+					unsigned int reg,
-+					u8 bit_idx)
++static const char __init *ep93xx_get_soc_rev(struct regmap *map)
 +{
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-+	struct clk_parent_data parent_data = { };
-+	struct clk_init_data init = { };
++	int rev = ep93xx_chip_revision(map);
 +
-+	init.name = name;
-+	init.ops = &clk_ep93xx_gate_ops;
-+	init.flags = flags;
-+
-+	parent_data.fw_name = parent_name;
-+	parent_data.name = parent_name;
-+	init.parent_data = &parent_data;
-+	init.num_parents = 1;
-+
-+	clk->reg = reg;
-+	clk->bit_idx = bit_idx;
-+	clk->hw.init = &init;
-+
-+	return devm_clk_hw_register(priv->dev, &clk->hw);
-+}
-+
-+static u8 ep93xx_mux_get_parent(struct clk_hw *hw)
-+{
-+	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-+	u32 val;
-+
-+	regmap_read(priv->map, clk->reg, &val);
-+
-+	val &= EP93XX_SYSCON_CLKDIV_MASK;
-+
-+	switch (val) {
-+	case EP93XX_SYSCON_CLKDIV_ESEL:
-+		return 1; // PLL1
-+	case EP93XX_SYSCON_CLKDIV_MASK:
-+		return 2; // PLL2
++	switch (rev) {
++	case EP93XX_CHIP_REV_D0:
++		return "D0";
++	case EP93XX_CHIP_REV_D1:
++		return "D1";
++	case EP93XX_CHIP_REV_E0:
++		return "E0";
++	case EP93XX_CHIP_REV_E1:
++		return "E1";
++	case EP93XX_CHIP_REV_E2:
++		return "E2";
 +	default:
-+		break;
-+	};
-+
-+	return 0; // XTALI
-+}
-+
-+static int ep93xx_mux_set_parent_lock(struct clk_hw *hw, u8 index)
-+{
-+	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-+	unsigned long flags;
-+	u32 val;
-+
-+	if (index >= ARRAY_SIZE(ep93xx_clk_parents))
-+		return -EINVAL;
-+
-+	spin_lock_irqsave(&priv->lock, flags);
-+
-+	regmap_read(priv->map, clk->reg, &val);
-+	val &= ~(EP93XX_SYSCON_CLKDIV_MASK);
-+	if (index) {
-+		val |= EP93XX_SYSCON_CLKDIV_ESEL;
-+		val |= (index - 1) ? EP93XX_SYSCON_CLKDIV_PSEL : 0;
++		return "unknown";
 +	}
-+
-+	ep93xx_syscon_swlocked_write(priv->map, clk->reg, val);
-+
-+	spin_unlock_irqrestore(&priv->lock, flags);
-+
-+	return 0;
 +}
 +
-+static bool is_best(unsigned long rate, unsigned long now,
-+		     unsigned long best)
++/*
++ * PLL rate = 14.7456 MHz * (X1FBD + 1) * (X2FBD + 1) / (X2IPD + 1) / 2^PS
++ */
++static unsigned long __init calc_pll_rate(u64 rate, u32 config_word)
 +{
-+	return abs(rate - now) < abs(rate - best);
++	rate *= ((config_word >> 11) & GENMASK(4, 0)) + 1;	/* X1FBD */
++	rate *= ((config_word >> 5) & GENMASK(5, 0)) + 1;	/* X2FBD */
++	do_div(rate, (config_word & GENMASK(4, 0)) + 1);	/* X2IPD */
++	rate >>= ((config_word >> 16) & 3);			/* PS */
++
++	return rate;
 +}
 +
-+static int ep93xx_mux_determine_rate(struct clk_hw *hw,
-+				struct clk_rate_request *req)
++static int __init ep93xx_soc_init(void)
 +{
-+	unsigned long best_rate = 0, actual_rate, mclk_rate;
-+	unsigned long rate = req->rate;
-+	struct clk_hw *parent_best = NULL;
-+	unsigned long parent_rate_best;
-+	unsigned long parent_rate;
-+	int div, pdiv;
-+	unsigned int i;
-+
-+	/*
-+	 * Try the two pll's and the external clock
-+	 * Because the valid predividers are 2, 2.5 and 3, we multiply
-+	 * all the clocks by 2 to avoid floating point math.
-+	 *
-+	 * This is based on the algorithm in the ep93xx raster guide:
-+	 * http://be-a-maverick.com/en/pubs/appNote/AN269REV1.pdf
-+	 *
-+	 */
-+	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
-+		struct clk_hw *parent = clk_hw_get_parent_by_index(hw, i);
-+
-+		parent_rate = clk_hw_get_rate(parent);
-+		mclk_rate = parent_rate * 2;
-+
-+		/* Try each predivider value */
-+		for (pdiv = 4; pdiv <= 6; pdiv++) {
-+			div = DIV_ROUND_CLOSEST(mclk_rate, rate * pdiv);
-+			if (div < 1 || div > 127)
-+				continue;
-+
-+			actual_rate = DIV_ROUND_CLOSEST(mclk_rate, pdiv * div);
-+			if (is_best(rate, actual_rate, best_rate)) {
-+				best_rate = actual_rate;
-+				parent_rate_best = parent_rate;
-+				parent_best = parent;
-+			}
-+		}
-+	}
-+
-+	if (!parent_best)
-+		return -EINVAL;
-+
-+	req->best_parent_rate = parent_rate_best;
-+	req->best_parent_hw = parent_best;
-+	req->rate = best_rate;
-+
-+	return 0;
-+}
-+
-+static unsigned long ep93xx_ddiv_recalc_rate(struct clk_hw *hw,
-+						unsigned long parent_rate)
-+{
-+	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-+	unsigned int pdiv, div;
-+	u32 val;
-+
-+	regmap_read(priv->map, clk->reg, &val);
-+	pdiv = ((val >> EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) & 0x03);
-+	div = val & GENMASK(6, 0);
-+	if (!div)
-+		return 0;
-+
-+	return DIV_ROUND_CLOSEST(parent_rate * 2, (pdiv + 3) * div);
-+}
-+
-+static int ep93xx_ddiv_set_rate(struct clk_hw *hw, unsigned long rate,
-+				unsigned long parent_rate)
-+{
-+	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-+	int pdiv, div, npdiv, ndiv;
-+	unsigned long actual_rate, mclk_rate, rate_err = ULONG_MAX;
-+	u32 val;
-+
-+	regmap_read(priv->map, clk->reg, &val);
-+	mclk_rate = parent_rate * 2;
-+
-+	for (pdiv = 4; pdiv <= 6; pdiv++) {
-+		div = DIV_ROUND_CLOSEST(mclk_rate, rate * pdiv);
-+		if (div < 1 || div > 127)
-+			continue;
-+
-+		actual_rate = DIV_ROUND_CLOSEST(mclk_rate, pdiv * div);
-+		if (abs(actual_rate - rate) < rate_err) {
-+			npdiv = pdiv - 3;
-+			ndiv = div;
-+			rate_err = abs(actual_rate - rate);
-+		}
-+	}
-+
-+	if (rate_err == ULONG_MAX)
-+		return -EINVAL;
-+
-+	/* Clear old dividers */
-+	val &= ~(GENMASK(9, 0) & ~BIT(7));
-+
-+	/* Set the new pdiv and div bits for the new clock rate */
-+	val |= (npdiv << EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) | ndiv;
-+
-+	ep93xx_syscon_swlocked_write(priv->map, clk->reg, val);
-+
-+	return 0;
-+}
-+
-+static const struct clk_ops clk_ddiv_ops = {
-+	.enable = ep93xx_clk_enable,
-+	.disable = ep93xx_clk_disable,
-+	.is_enabled = ep93xx_clk_is_enabled,
-+	.get_parent = ep93xx_mux_get_parent,
-+	.set_parent = ep93xx_mux_set_parent_lock,
-+	.determine_rate = ep93xx_mux_determine_rate,
-+	.recalc_rate = ep93xx_ddiv_recalc_rate,
-+	.set_rate = ep93xx_ddiv_set_rate,
-+};
-+
-+static int clk_hw_register_ddiv(struct ep93xx_clk *clk,
-+						const char *name,
-+						unsigned int reg,
-+						u8 bit_idx)
-+{
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-+	struct clk_init_data init = { };
-+
-+	init.name = name;
-+	init.ops = &clk_ddiv_ops;
-+	init.flags = 0;
-+	init.parent_data = ep93xx_clk_parents;
-+	init.num_parents = ARRAY_SIZE(ep93xx_clk_parents);
-+
-+	clk->reg = reg;
-+	clk->bit_idx = bit_idx;
-+	clk->hw.init = &init;
-+
-+	return devm_clk_hw_register(priv->dev, &clk->hw);
-+}
-+
-+static unsigned long ep93xx_div_recalc_rate(struct clk_hw *hw,
-+					    unsigned long parent_rate)
-+{
-+	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-+	u32 val;
-+	u8 index;
-+
-+	regmap_read(priv->map, clk->reg, &val);
-+	index = (val & clk->mask) >> clk->shift;
-+	if (index > clk->num_div)
-+		return 0;
-+
-+	return DIV_ROUND_CLOSEST(parent_rate, clk->div[index]);
-+}
-+
-+static long ep93xx_div_round_rate(struct clk_hw *hw, unsigned long rate,
-+				   unsigned long *parent_rate)
-+{
-+	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-+	unsigned long best = 0, now;
-+	unsigned int i;
-+
-+	for (i = 0; i < clk->num_div; i++) {
-+		if ((rate * clk->div[i]) == *parent_rate)
-+			return rate;
-+
-+		now = DIV_ROUND_CLOSEST(*parent_rate, clk->div[i]);
-+		if (!best || is_best(rate, now, best))
-+			best = now;
-+	}
-+
-+	return best;
-+}
-+
-+static int ep93xx_div_set_rate(struct clk_hw *hw, unsigned long rate,
-+			       unsigned long parent_rate)
-+{
-+	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-+	unsigned int i;
-+	u32 val;
-+
-+	regmap_read(priv->map, clk->reg, &val);
-+	val &= ~clk->mask;
-+	for (i = 0; i < clk->num_div; i++)
-+		if (rate == DIV_ROUND_CLOSEST(parent_rate, clk->div[i])) {
-+			val |= i << clk->shift;
-+			break;
-+		}
-+
-+	if (i == clk->num_div)
-+		return -EINVAL;
-+
-+	ep93xx_syscon_swlocked_write(priv->map, clk->reg, val);
-+
-+	return 0;
-+}
-+
-+static const struct clk_ops ep93xx_div_ops = {
-+	.enable = ep93xx_clk_enable,
-+	.disable = ep93xx_clk_disable,
-+	.is_enabled = ep93xx_clk_is_enabled,
-+	.recalc_rate = ep93xx_div_recalc_rate,
-+	.round_rate = ep93xx_div_round_rate,
-+	.set_rate = ep93xx_div_set_rate,
-+};
-+
-+static int clk_hw_register_div(struct ep93xx_clk *clk,
-+					  const char *name,
-+					  const char *parent_name,
-+					  unsigned int reg,
-+					  u8 enable_bit,
-+					  u8 shift,
-+					  u8 width,
-+					  const char *clk_divisors,
-+					  u8 num_div)
-+{
-+	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-+	struct clk_parent_data parent_data = { };
-+	struct clk_init_data init = { };
-+
-+	init.name = name;
-+	init.ops = &ep93xx_div_ops;
-+	init.flags = 0;
-+	parent_data.fw_name = parent_name;
-+	parent_data.name = parent_name;
-+	init.parent_data = &parent_data;
-+	init.num_parents = 1;
-+
-+	clk->reg = reg;
-+	clk->bit_idx = enable_bit;
-+	clk->mask = GENMASK(shift + width - 1, shift);
-+	clk->shift = shift;
-+	clk->div = clk_divisors;
-+	clk->num_div = num_div;
-+	clk->hw.init = &init;
-+
-+	return devm_clk_hw_register(priv->dev, &clk->hw);
-+}
-+
-+struct ep93xx_gate {
-+	unsigned int idx;
-+	unsigned int bit;
-+	const char *name;
-+};
-+
-+static const struct ep93xx_gate ep93xx_uarts[] = {
-+	{ EP93XX_CLK_UART1, EP93XX_SYSCON_DEVCFG_U1EN, "uart1" },
-+	{ EP93XX_CLK_UART2, EP93XX_SYSCON_DEVCFG_U2EN, "uart2" },
-+	{ EP93XX_CLK_UART3, EP93XX_SYSCON_DEVCFG_U3EN, "uart3" },
-+};
-+
-+static int ep93xx_uart_clock_init(struct ep93xx_clk_priv *priv)
-+{
-+	struct ep93xx_clk *clk;
-+	unsigned int i, ret, clk_uart_div;
-+	u32 val;
-+
-+	regmap_read(priv->map, EP93XX_SYSCON_PWRCNT, &val);
-+	if (val & EP93XX_SYSCON_PWRCNT_UARTBAUD)
-+		clk_uart_div = 1;
-+	else
-+		clk_uart_div = 2;
-+
-+	priv->fixed[0] = clk_hw_register_fixed_factor(NULL, "uart", "xtali", 0, 1, clk_uart_div);
-+
-+	/* parenting uart gate clocks to uart clock */
-+	for (i = 0; i < ARRAY_SIZE(ep93xx_uarts); i++) {
-+		clk = &priv->reg[ep93xx_uarts[i].idx];
-+		clk->idx = ep93xx_uarts[i].idx;
-+		ret = ep93xx_clk_register_gate(clk,
-+					ep93xx_uarts[i].name,
-+					"uart", CLK_SET_RATE_PARENT,
-+					EP93XX_SYSCON_DEVCFG,
-+					ep93xx_uarts[i].bit);
-+		if (ret)
-+			return dev_err_probe(priv->dev, ret, "failed to register dma clock\n");
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct ep93xx_gate ep93xx_dmas[] = {
-+	{ EP93XX_CLK_M2M0, EP93XX_SYSCON_PWRCNT_DMA_M2M0, "m2m0" },
-+	{ EP93XX_CLK_M2M1, EP93XX_SYSCON_PWRCNT_DMA_M2M1, "m2m1" },
-+	{ EP93XX_CLK_M2P0, EP93XX_SYSCON_PWRCNT_DMA_M2P0, "m2p0" },
-+	{ EP93XX_CLK_M2P1, EP93XX_SYSCON_PWRCNT_DMA_M2P1, "m2p1" },
-+	{ EP93XX_CLK_M2P2, EP93XX_SYSCON_PWRCNT_DMA_M2P2, "m2p2" },
-+	{ EP93XX_CLK_M2P3, EP93XX_SYSCON_PWRCNT_DMA_M2P3, "m2p3" },
-+	{ EP93XX_CLK_M2P4, EP93XX_SYSCON_PWRCNT_DMA_M2P4, "m2p4" },
-+	{ EP93XX_CLK_M2P5, EP93XX_SYSCON_PWRCNT_DMA_M2P5, "m2p5" },
-+	{ EP93XX_CLK_M2P6, EP93XX_SYSCON_PWRCNT_DMA_M2P6, "m2p6" },
-+	{ EP93XX_CLK_M2P7, EP93XX_SYSCON_PWRCNT_DMA_M2P7, "m2p7" },
-+	{ EP93XX_CLK_M2P8, EP93XX_SYSCON_PWRCNT_DMA_M2P8, "m2p8" },
-+	{ EP93XX_CLK_M2P9, EP93XX_SYSCON_PWRCNT_DMA_M2P9, "m2p9" },
-+};
-+
-+static int ep93xx_dma_clock_init(struct ep93xx_clk_priv *priv)
-+{
-+	unsigned int i, idx;
-+
-+	for (i = 0; i < ARRAY_SIZE(ep93xx_dmas); i++) {
-+		idx = ep93xx_dmas[i].idx - EP93XX_CLK_UART;
-+		priv->fixed[idx] = devm_clk_hw_register_gate(priv->dev,
-+					ep93xx_dmas[i].name,
-+					"hclk", 0,
-+					priv->base + EP93XX_SYSCON_PWRCNT,
-+					ep93xx_dmas[i].bit,
-+					0,
-+					&priv->lock);
-+		if (IS_ERR(priv->fixed[idx]))
-+			return PTR_ERR(priv->fixed[idx]);
-+	}
-+
-+	return 0;
-+}
-+
-+static struct clk_hw *ep93xx_clk_get(struct of_phandle_args *clkspec, void *data)
-+{
-+	struct ep93xx_clk_priv *priv = data;
-+	unsigned int idx = clkspec->args[0];
-+
-+	if (idx < EP93XX_CLK_UART)
-+		return &priv->reg[idx].hw;
-+
-+	if (idx < EP93XX_CLK_END)
-+		return priv->fixed[idx - EP93XX_CLK_UART];
-+
-+	return ERR_PTR(-EINVAL);
-+}
-+
-+static const struct soc_device_attribute ep93xx_soc_table[] = {
-+	{ .revision = "E2", .data = (void *)1 },
-+	{ /* sentinel */ }
-+};
-+
-+static int ep93xx_clk_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+	const struct soc_device_attribute *match;
-+	struct ep93xx_clk_priv *priv;
-+	struct ep93xx_clk *clk;
-+	struct device_node *parent;
-+	unsigned long clk_spi_div;
-+	int ret;
++	struct soc_device_attribute *attrs;
++	struct soc_device *soc_dev;
++	struct device_node *np;
++	struct regmap *map;
++	struct clk_hw *hw;
++	unsigned long clk_pll1_rate, clk_pll2_rate;
++	unsigned int clk_f_div, clk_h_div, clk_p_div, clk_usb_div;
++	const char fclk_divisors[] = { 1, 2, 4, 8, 16, 1, 1, 1 };
++	const char hclk_divisors[] = { 1, 2, 4, 5, 6, 8, 16, 32 };
++	const char pclk_divisors[] = { 1, 2, 4, 8 };
++	const char *machine = NULL;
 +	u32 value;
 +
-+	priv = devm_kzalloc(dev, struct_size(priv, reg, EP93XX_CLK_UART), GFP_KERNEL);
-+	if (!priv)
++	/* Multiplatform guard, only proceed on ep93xx */
++	if (!of_machine_is_compatible("cirrus,ep9301"))
++		return 0;
++
++	map = syscon_regmap_lookup_by_compatible("cirrus,ep9301-syscon");
++	if (IS_ERR(map))
++		return PTR_ERR(map);
++
++	/* Determine the bootloader configured pll1 rate */
++	regmap_read(map, EP93XX_SYSCON_CLKSET1, &value);
++	if (!(value & EP93XX_SYSCON_CLKSET1_NBYP1))
++		clk_pll1_rate = EP93XX_EXT_CLK_RATE;
++	else
++		clk_pll1_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
++
++	hw = clk_hw_register_fixed_rate(NULL, "pll1", "xtali", 0, clk_pll1_rate);
++	if (IS_ERR(hw))
++		return PTR_ERR(hw);
++
++	/* Initialize the pll1 derived clocks */
++	clk_f_div = fclk_divisors[(value >> 25) & 0x7];
++	clk_h_div = hclk_divisors[(value >> 20) & 0x7];
++	clk_p_div = pclk_divisors[(value >> 18) & 0x3];
++
++	hw = clk_hw_register_fixed_factor(NULL, "fclk", "pll1", 0, 1, clk_f_div);
++	if (IS_ERR(hw))
++		return PTR_ERR(hw);
++
++	hw = clk_hw_register_fixed_factor(NULL, "hclk", "pll1", 0, 1, clk_h_div);
++	if (IS_ERR(hw))
++		return PTR_ERR(hw);
++
++	hw = clk_hw_register_fixed_factor(NULL, "pclk", "hclk", 0, 1, clk_p_div);
++	if (IS_ERR(hw))
++		return PTR_ERR(hw);
++
++	/* Determine the bootloader configured pll2 rate */
++	regmap_read(map, EP93XX_SYSCON_CLKSET2, &value);
++	if (!(value & EP93XX_SYSCON_CLKSET2_NBYP2))
++		clk_pll2_rate = EP93XX_EXT_CLK_RATE;
++	else if (value & EP93XX_SYSCON_CLKSET2_PLL2_EN)
++		clk_pll2_rate = calc_pll_rate(EP93XX_EXT_CLK_RATE, value);
++	else
++		clk_pll2_rate = 0;
++
++	hw = clk_hw_register_fixed_rate(NULL, "pll2", "xtali", 0, clk_pll2_rate);
++	if (IS_ERR(hw))
++		return PTR_ERR(hw);
++
++	regmap_read(map, EP93XX_SYSCON_CLKSET2, &value);
++	clk_usb_div = (((value >> 28) & GENMASK(3, 0)) + 1);
++	hw = clk_hw_register_fixed_factor(NULL, "usb_clk", "pll2", 0, 1, clk_usb_div);
++	if (IS_ERR(hw))
++		return PTR_ERR(hw);
++
++	attrs = kzalloc(sizeof(*attrs), GFP_KERNEL);
++	if (!attrs)
 +		return -ENOMEM;
 +
-+	spin_lock_init(&priv->lock);
-+	priv->dev = dev;
-+	parent = of_get_parent(np);
-+	if (!parent)
-+		return dev_err_probe(dev, -EINVAL, "no syscon parent for clk node\n");
++	np = of_find_node_by_path("/");
++	of_property_read_string(np, "model", &machine);
++	if (machine)
++		attrs->machine = kstrdup(machine, GFP_KERNEL);
++	of_node_put(np);
 +
-+	priv->map = syscon_node_to_regmap(parent);
-+	if (IS_ERR(priv->map)) {
-+		of_node_put(parent);
-+		return dev_err_probe(dev, -EINVAL, "no syscon regmap\n");
++	attrs->family = "Cirrus Logic EP93xx";
++	attrs->revision = ep93xx_get_soc_rev(map);
++
++	soc_dev = soc_device_register(attrs);
++	if (IS_ERR(soc_dev)) {
++		kfree(attrs->soc_id);
++		kfree(attrs->serial_number);
++		kfree(attrs);
++		return PTR_ERR(soc_dev);
 +	}
 +
-+	priv->base = devm_of_iomap(dev, parent, 0, NULL);
-+	of_node_put(parent);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
++	pr_info("EP93xx SoC revision %s\n", attrs->revision);
 +
-+	ret = ep93xx_uart_clock_init(priv);
-+	if (ret)
-+		return ret;
-+
-+	ret = ep93xx_dma_clock_init(priv);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * EP93xx SSP clock rate was doubled in version E2. For more information
-+	 * see:
-+	 *     http://www.cirrus.com/en/pubs/appNote/AN273REV4.pdf
-+	 */
-+	clk_spi_div = 2;
-+	match = soc_device_match(ep93xx_soc_table);
-+	if (match)
-+		clk_spi_div = (unsigned long)match->data;
-+
-+	priv->fixed[1] = devm_clk_hw_register_fixed_factor(dev, "ep93xx-spi.0", "xtali",
-+							0, 1, clk_spi_div);
-+	if (IS_ERR(priv->fixed[1]))
-+		return PTR_ERR(priv->fixed[1]);
-+
-+	/* PWM clock */
-+	priv->fixed[2] = devm_clk_hw_register_fixed_factor(dev, "pwm_clk", "xtali", 0, 1, 1);
-+	if (IS_ERR(priv->fixed[2]))
-+		return PTR_ERR(priv->fixed[2]);
-+
-+	/* USB clock */
-+	priv->fixed[3] = devm_clk_hw_register_gate(priv->dev,
-+					"ohci-platform",
-+					"usb_clk", 0,
-+					priv->base + EP93XX_SYSCON_PWRCNT,
-+					EP93XX_SYSCON_PWRCNT_USH_EN,
-+					0,
-+					&priv->lock);
-+	if (IS_ERR(priv->fixed[3]))
-+		return PTR_ERR(priv->fixed[3]);
-+
-+	/* touchscreen/adc clock */
-+	clk = &priv->reg[EP93XX_CLK_ADC];
-+	clk->idx = EP93XX_CLK_ADC;
-+	ret = clk_hw_register_div(clk, "ep93xx-adc", "xtali",
-+				EP93XX_SYSCON_KEYTCHCLKDIV,
-+				EP93XX_SYSCON_KEYTCHCLKDIV_TSEN,
-+				EP93XX_SYSCON_KEYTCHCLKDIV_ADIV,
-+				1,
-+				adc_divisors,
-+				ARRAY_SIZE(adc_divisors));
-+
-+
-+	/* keypad clock */
-+	clk = &priv->reg[EP93XX_CLK_KEYPAD];
-+	clk->idx = EP93XX_CLK_KEYPAD;
-+	ret = clk_hw_register_div(clk, "ep93xx-keypad", "xtali",
-+				EP93XX_SYSCON_KEYTCHCLKDIV,
-+				EP93XX_SYSCON_KEYTCHCLKDIV_KEN,
-+				EP93XX_SYSCON_KEYTCHCLKDIV_KDIV,
-+				1,
-+				adc_divisors,
-+				ARRAY_SIZE(adc_divisors));
-+
-+	/*
-+	 * On reset PDIV and VDIV is set to zero, while PDIV zero
-+	 * means clock disable, VDIV shouldn't be zero.
-+	 * So i set both dividers to minimum.
-+	 */
-+	/* ENA - Enable CLK divider. */
-+	/* PDIV - 00 - Disable clock */
-+	/* VDIV - at least 2 */
-+	/* Check and enable video clk registers */
-+	regmap_read(priv->map, EP93XX_SYSCON_VIDCLKDIV, &value);
-+	value |= BIT(EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) | 2;
-+	ep93xx_syscon_swlocked_write(priv->map, EP93XX_SYSCON_VIDCLKDIV, value);
-+
-+	/* check and enable i2s clk registers */
-+	regmap_read(priv->map, EP93XX_SYSCON_I2SCLKDIV, &value);
-+	value |= BIT(EP93XX_SYSCON_CLKDIV_PDIV_SHIFT) | 2;
-+	/*
-+	 * Override the SAI_MSTR_CLK_CFG from the I2S block and use the
-+	 * I2SClkDiv Register settings. LRCLK transitions on the falling SCLK
-+	 * edge.
-+	 */
-+	value |= EP93XX_SYSCON_I2SCLKDIV_ORIDE | EP93XX_SYSCON_I2SCLKDIV_SPOL;
-+	ep93xx_syscon_swlocked_write(priv->map, EP93XX_SYSCON_I2SCLKDIV, value);
-+
-+	/* video clk */
-+	clk = &priv->reg[EP93XX_CLK_VIDEO];
-+	clk->idx = EP93XX_CLK_VIDEO;
-+	ret = clk_hw_register_ddiv(clk, "ep93xx-fb",
-+				EP93XX_SYSCON_VIDCLKDIV,
-+				EP93XX_SYSCON_CLKDIV_ENABLE);
-+
-+	/* i2s clk */
-+	clk = &priv->reg[EP93XX_CLK_I2S_MCLK];
-+	clk->idx = EP93XX_CLK_I2S_MCLK;
-+	ret = clk_hw_register_ddiv(clk, "mclk",
-+				EP93XX_SYSCON_I2SCLKDIV,
-+				EP93XX_SYSCON_CLKDIV_ENABLE);
-+
-+	/* i2s sclk */
-+	clk = &priv->reg[EP93XX_CLK_I2S_SCLK];
-+	clk->idx = EP93XX_CLK_I2S_SCLK;
-+	ret = clk_hw_register_div(clk, "sclk", "mclk",
-+				EP93XX_SYSCON_I2SCLKDIV,
-+				EP93XX_SYSCON_I2SCLKDIV_SENA,
-+				16, /* EP93XX_I2SCLKDIV_SDIV_SHIFT */
-+				1,  /* EP93XX_I2SCLKDIV_SDIV_WIDTH */
-+				sclk_divisors,
-+				ARRAY_SIZE(sclk_divisors));
-+
-+	/* i2s lrclk */
-+	clk = &priv->reg[EP93XX_CLK_I2S_LRCLK];
-+	clk->idx = EP93XX_CLK_I2S_LRCLK;
-+	ret = clk_hw_register_div(clk, "lrclk", "sclk",
-+				EP93XX_SYSCON_I2SCLKDIV,
-+				EP93XX_SYSCON_I2SCLKDIV_SENA,
-+				17, /* EP93XX_I2SCLKDIV_LRDIV32_SHIFT */
-+				2,  /* EP93XX_I2SCLKDIV_LRDIV32_WIDTH */
-+				lrclk_divisors,
-+				ARRAY_SIZE(lrclk_divisors));
-+
-+	/* IrDa clk uses same pattern but no init code presents in original clock driver */
-+	return devm_of_clk_add_hw_provider(priv->dev, ep93xx_clk_get, priv);
++	return 0;
 +}
++core_initcall(ep93xx_soc_init);
+diff --git a/include/linux/soc/cirrus/ep93xx.h b/include/linux/soc/cirrus/ep93xx.h
+index 56fbe2dc59b1..f38937a6f08c 100644
+--- a/include/linux/soc/cirrus/ep93xx.h
++++ b/include/linux/soc/cirrus/ep93xx.h
+@@ -3,6 +3,7 @@
+ #define _SOC_EP93XX_H
+ 
+ struct platform_device;
++struct regmap;
+ 
+ #define EP93XX_CHIP_REV_D0	3
+ #define EP93XX_CHIP_REV_D1	4
+@@ -10,7 +11,7 @@ struct platform_device;
+ #define EP93XX_CHIP_REV_E1	6
+ #define EP93XX_CHIP_REV_E2	7
+ 
+-#ifdef CONFIG_ARCH_EP93XX
++#if defined(CONFIG_EP93XX_SOC_COMMON)
+ int ep93xx_pwm_acquire_gpio(struct platform_device *pdev);
+ void ep93xx_pwm_release_gpio(struct platform_device *pdev);
+ int ep93xx_ide_acquire_gpio(struct platform_device *pdev);
+@@ -30,7 +31,22 @@ static inline int ep93xx_keypad_acquire_gpio(struct platform_device *pdev) { ret
+ static inline void ep93xx_keypad_release_gpio(struct platform_device *pdev) {}
+ static inline int ep93xx_i2s_acquire(void) { return 0; }
+ static inline void ep93xx_i2s_release(void) {}
 +
-+static const struct of_device_id ep93xx_clk_dt_ids[] = {
-+	{ .compatible = "cirrus,ep9301-clk" },
-+	{ /* sentinel */ }
-+};
++#if defined(CONFIG_EP93XX_SOC)
++void ep93xx_syscon_swlocked_write(struct regmap *map, unsigned int reg, unsigned int val);
++void ep93xx_devcfg_set_clear(struct regmap *map, unsigned int set_bits, unsigned int clear_bits);
++void ep93xx_swlocked_update_bits(struct regmap *map, unsigned int reg,
++				 unsigned int mask, unsigned int val);
++#else
++static inline void ep93xx_syscon_swlocked_write(struct regmap *map, unsigned int reg,
++						unsigned int val) { }
++static inline void ep93xx_devcfg_set_clear(struct regmap *map, unsigned int set_bits,
++						unsigned int clear_bits) { }
 +
-+static struct platform_driver ep93xx_clk_driver = {
-+	.driver = {
-+		.name = "ep93xx-clk",
-+		.of_match_table = ep93xx_clk_dt_ids,
-+		.suppress_bind_attrs = true,
-+	},
-+};
-+builtin_platform_driver_probe(ep93xx_clk_driver, ep93xx_clk_probe);
-+MODULE_IMPORT_NS(EP93XX_SOC);
++void ep93xx_swlocked_update_bits(struct regmap *map, unsigned int reg,
++				unsigned int mask, unsigned int val) { }
+ static inline unsigned int ep93xx_chip_revision(void) { return 0; }
++#endif
+ 
+ #endif
+ 
 
 -- 
 2.39.2
