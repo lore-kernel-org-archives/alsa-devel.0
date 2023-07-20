@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DFEAEB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:55:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 072DFC0015E
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:55:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4C9A886;
-	Fri, 21 Jul 2023 10:54:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4C9A886
+	by alsa0.perex.cz (Postfix) with ESMTPS id F279DE81;
+	Fri, 21 Jul 2023 10:54:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F279DE81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689929704;
-	bh=7ySSkKjStDzOOF2fqFcYk8v1kG5xvtpuW9ZxOz+/+PE=;
+	s=default; t=1689929708;
+	bh=tQpRwOI9qd6EISdIVOISFvSg8C78HBc9uOA039m8NQg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Kw5pxDPNaVFmIMfWn6bgGJLM9kQIzNggv3U504/zBCj7jIem9Uhy7YjbRmYKqB7lc
-	 zUCxC3WaLWUkssRECGMczLu28F93HMDfocNKLwmMWR4pqI1XVHmBPuNuVmtcN206b1
-	 N4LF2w6S8ddu3hTciyS4hRMxfrFbk/AcoitYV1vk=
+	b=UjsGRobXfLd1bTHZC4UzyIWTajbMBikfI91abDDpZAvkpDYX6mWQTMEd7cvKH2+/q
+	 iAGJQQ3wMzqgQrlpXTW9OMVq5AeGCMUqCFPQWNEbMO4rj9RAZ3gzHBNO/YqaNx2S6y
+	 R684dNU4VZRm/7//zOQ/coAW4uT8TcDdG76FFraE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF79BF80548; Fri, 21 Jul 2023 10:53:25 +0200 (CEST)
+	id C80A9F8056F; Fri, 21 Jul 2023 10:53:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6680F80552;
-	Fri, 21 Jul 2023 10:53:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D149F8055C;
+	Fri, 21 Jul 2023 10:53:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9EF1F8032D; Thu, 20 Jul 2023 10:31:12 +0200 (CEST)
+	id E7C80F8032D; Thu, 20 Jul 2023 10:31:18 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4F835F8057F
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:30:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F835F8057F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 24A9AF8058C
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2023 10:30:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24A9AF8058C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=EBu/f4nv
+ header.s=k20201202 header.b=GYbSz1Zo
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 0026761CAE;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id BA1F761CCB;
 	Thu, 20 Jul 2023 08:30:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F31BBC00921;
-	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 30F85C0092B;
+	Thu, 20 Jul 2023 08:29:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1689841799;
-	bh=7ySSkKjStDzOOF2fqFcYk8v1kG5xvtpuW9ZxOz+/+PE=;
+	bh=tQpRwOI9qd6EISdIVOISFvSg8C78HBc9uOA039m8NQg=;
 	h=From:Date:Subject:References:In-Reply-To:List-Id:To:Cc:Reply-To:
 	 From;
-	b=EBu/f4nvd1aICvh0l2w6wjA3aJ7njEIKCsMcdvowSGog2SZTG8FaeQ/FVKxBC9iMW
-	 5RfHyMvmqZcjSNn1fh8V10dwG0Mab30+GeS2TZb0vvsdtvTbxaA1uJWfLzasdqvEku
-	 CuWPBs3hcw4s8YhPGYp8BH8L9FpneIvvj7iCOZLz46AEF0taYDeUGGXLy9dewbsLkl
-	 H8U1/JIDQ5ARfwBCNdMZ/nQCc8pHOJ2R3OoiG9OkrEk/KS1dE8htCy03wrKVyZoijr
-	 jSiLCvCBG9Az/VKZvsZx2s1JPn7H1zJsOQ7ngQ+zO7M28arDVeI3J3VZNcX/FDJSiT
-	 sompFe8ZL6cqA==
+	b=GYbSz1ZoNassX5VMn5FpD+ybpDhMRbSkdezpYilMz21rr4TFD09A9QUxVOM9EU2d1
+	 fRKnKL9EiKTjs0Gl+QB274vqlfyg+r1TU0YPhE4sRo9jft2Y8NNqZHujaY0O4hmIsq
+	 7WiCrHq+nr0MmiebQ31LJjbYmioDU5CZDMsrVhf0gM7h5SHFJW/N00dZWHc946j3ny
+	 0N59EfKsyRy+GStQ4K01OVWWS+xHmousoWq/ygeJpSGWyFFedv7UmgniZvyR56sJmn
+	 v8V0CDlpogmUrQkVak1dTx/qsdJaj91pfL2Z2eo3143FXcUowXPimeEh0/UFx5Nwab
+	 MhSeLnODLnygQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org
  (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D59E1C3DA49;
-	Thu, 20 Jul 2023 08:29:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 160E6C25B74;
+	Thu, 20 Jul 2023 08:29:59 +0000 (UTC)
 From: 
  Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Thu, 20 Jul 2023 14:29:38 +0300
-Subject: [PATCH v3 38/42] ata: pata_ep93xx: remove legacy pinctrl use
+Date: Thu, 20 Jul 2023 14:29:41 +0300
+Subject: [PATCH v3 41/42] ARM: dts: ep93xx: Add EDB9302 DT
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230605-ep93xx-v3-38-3d63a5f1103e@maquefel.me>
+Message-Id: <20230605-ep93xx-v3-41-3d63a5f1103e@maquefel.me>
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 In-Reply-To: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
 To: Hartley Sweeten <hsweeten@visionengravers.com>,
@@ -111,11 +111,11 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
  linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=5097;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689852591; l=4512;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=Yfth7RCqN3bk1KCE0VD4AFUcLhcPkJPGr6wnRBug0VU=; =?utf-8?q?b=3DW+4pFo+57mpE?=
- =?utf-8?q?IkWI1WzLCkq37SkZsYf4y7isLCOQvX/Ldu6/JyH2OIR89vTIxSjEltpb3VQc3pyS?=
- qGEHOS81BAaTyJ/XxCrpq82upkbLGgt0aSedWJ1W7uOJj3KQJ2ru
+ bh=5A/29Z9MEsZn34YHAjSZrcVyC80yiuUqer7DzC/dFHU=; =?utf-8?q?b=3DQQcWlnw/kBKF?=
+ =?utf-8?q?Rps3KM+YKWtLXhoIshjWyk2O7eP9CGncWEaSJERWuOZCZZyVcCUKfMYJqTqP2u64?=
+ COrsnPXNAU5aP+LE3xWErGGy0JDSJA+HL3C6+HFsQ35RKBIDKxBW
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: 
@@ -127,16 +127,16 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 36DFAPLFEJFL7L6MIBE5QLTQGZKXNS3J
-X-Message-ID-Hash: 36DFAPLFEJFL7L6MIBE5QLTQGZKXNS3J
-X-Mailman-Approved-At: Fri, 21 Jul 2023 08:53:19 +0000
+Message-ID-Hash: ACUC5EI4QOFUWJMGQ6N7IJLELHLPL3AK
+X-Message-ID-Hash: ACUC5EI4QOFUWJMGQ6N7IJLELHLPL3AK
+X-Mailman-Approved-At: Fri, 21 Jul 2023 08:53:20 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 Reply-To: nikita.shubin@maquefel.me
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/36DFAPLFEJFL7L6MIBE5QLTQGZKXNS3J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ACUC5EI4QOFUWJMGQ6N7IJLELHLPL3AK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -145,176 +145,212 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Nikita Shubin <nikita.shubin@maquefel.me>
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 
-Drop legacy acquire/release since we are using pinctrl for this now.
+Add device tree for Cirrus EDB9302.
 
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- arch/arm/mach-ep93xx/core.c       | 72 ---------------------------------------
- drivers/ata/pata_ep93xx.c         | 25 ++++----------
- include/linux/soc/cirrus/ep93xx.h |  4 ---
- 3 files changed, 6 insertions(+), 95 deletions(-)
+ arch/arm/boot/dts/cirrus/Makefile           |   1 +
+ arch/arm/boot/dts/cirrus/ep93xx-edb9302.dts | 178 ++++++++++++++++++++++++++++
+ 2 files changed, 179 insertions(+)
 
-diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
-index 9afc6095d1c1..66dba9b4a6f9 100644
---- a/arch/arm/mach-ep93xx/core.c
-+++ b/arch/arm/mach-ep93xx/core.c
-@@ -778,78 +778,6 @@ void __init ep93xx_register_ide(void)
- 	platform_device_register(&ep93xx_ide_device);
- }
- 
--int ep93xx_ide_acquire_gpio(struct platform_device *pdev)
--{
--	int err;
--	int i;
--
--	err = gpio_request(EP93XX_GPIO_LINE_EGPIO2, dev_name(&pdev->dev));
--	if (err)
--		return err;
--	err = gpio_request(EP93XX_GPIO_LINE_EGPIO15, dev_name(&pdev->dev));
--	if (err)
--		goto fail_egpio15;
--	for (i = 2; i < 8; i++) {
--		err = gpio_request(EP93XX_GPIO_LINE_E(i), dev_name(&pdev->dev));
--		if (err)
--			goto fail_gpio_e;
--	}
--	for (i = 4; i < 8; i++) {
--		err = gpio_request(EP93XX_GPIO_LINE_G(i), dev_name(&pdev->dev));
--		if (err)
--			goto fail_gpio_g;
--	}
--	for (i = 0; i < 8; i++) {
--		err = gpio_request(EP93XX_GPIO_LINE_H(i), dev_name(&pdev->dev));
--		if (err)
--			goto fail_gpio_h;
--	}
--
--	/* GPIO ports E[7:2], G[7:4] and H used by IDE */
--	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_EONIDE |
--				 EP93XX_SYSCON_DEVCFG_GONIDE |
--				 EP93XX_SYSCON_DEVCFG_HONIDE);
--	return 0;
--
--fail_gpio_h:
--	for (--i; i >= 0; --i)
--		gpio_free(EP93XX_GPIO_LINE_H(i));
--	i = 8;
--fail_gpio_g:
--	for (--i; i >= 4; --i)
--		gpio_free(EP93XX_GPIO_LINE_G(i));
--	i = 8;
--fail_gpio_e:
--	for (--i; i >= 2; --i)
--		gpio_free(EP93XX_GPIO_LINE_E(i));
--	gpio_free(EP93XX_GPIO_LINE_EGPIO15);
--fail_egpio15:
--	gpio_free(EP93XX_GPIO_LINE_EGPIO2);
--	return err;
--}
--EXPORT_SYMBOL(ep93xx_ide_acquire_gpio);
--
--void ep93xx_ide_release_gpio(struct platform_device *pdev)
--{
--	int i;
--
--	for (i = 2; i < 8; i++)
--		gpio_free(EP93XX_GPIO_LINE_E(i));
--	for (i = 4; i < 8; i++)
--		gpio_free(EP93XX_GPIO_LINE_G(i));
--	for (i = 0; i < 8; i++)
--		gpio_free(EP93XX_GPIO_LINE_H(i));
--	gpio_free(EP93XX_GPIO_LINE_EGPIO15);
--	gpio_free(EP93XX_GPIO_LINE_EGPIO2);
--
--
--	/* GPIO ports E[7:2], G[7:4] and H used by GPIO */
--	ep93xx_devcfg_set_bits(EP93XX_SYSCON_DEVCFG_EONIDE |
--			       EP93XX_SYSCON_DEVCFG_GONIDE |
--			       EP93XX_SYSCON_DEVCFG_HONIDE);
--}
--EXPORT_SYMBOL(ep93xx_ide_release_gpio);
--
- /*************************************************************************
-  * EP93xx ADC
-  *************************************************************************/
-diff --git a/drivers/ata/pata_ep93xx.c b/drivers/ata/pata_ep93xx.c
-index a88824dfc5fa..22f9852715f1 100644
---- a/drivers/ata/pata_ep93xx.c
-+++ b/drivers/ata/pata_ep93xx.c
-@@ -928,28 +928,18 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
- 	void __iomem *ide_base;
- 	int err;
- 
--	err = ep93xx_ide_acquire_gpio(pdev);
--	if (err)
--		return err;
--
- 	/* INT[3] (IRQ_EP93XX_EXT3) line connected as pull down */
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0) {
--		err = irq;
--		goto err_rel_gpio;
--	}
-+	if (irq < 0)
-+		return irq;
- 
- 	ide_base = devm_platform_get_and_ioremap_resource(pdev, 0, &mem_res);
--	if (IS_ERR(ide_base)) {
--		err = PTR_ERR(ide_base);
--		goto err_rel_gpio;
--	}
-+	if (IS_ERR(ide_base))
-+		return PTR_ERR(ide_base);
- 
- 	drv_data = devm_kzalloc(&pdev->dev, sizeof(*drv_data), GFP_KERNEL);
--	if (!drv_data) {
--		err = -ENOMEM;
--		goto err_rel_gpio;
--	}
-+	if (!drv_data)
-+		return -ENXIO;
- 
- 	drv_data->pdev = pdev;
- 	drv_data->ide_base = ide_base;
-@@ -1006,8 +996,6 @@ static int ep93xx_pata_probe(struct platform_device *pdev)
- 
- err_rel_dma:
- 	ep93xx_pata_release_dma(drv_data);
--err_rel_gpio:
--	ep93xx_ide_release_gpio(pdev);
- 	return err;
- }
- 
-@@ -1019,7 +1007,6 @@ static int ep93xx_pata_remove(struct platform_device *pdev)
- 	ata_host_detach(host);
- 	ep93xx_pata_release_dma(drv_data);
- 	ep93xx_pata_clear_regs(drv_data->ide_base);
--	ep93xx_ide_release_gpio(pdev);
- 	return 0;
- }
- 
-diff --git a/include/linux/soc/cirrus/ep93xx.h b/include/linux/soc/cirrus/ep93xx.h
-index ed94e4390b98..77490fe466c6 100644
---- a/include/linux/soc/cirrus/ep93xx.h
-+++ b/include/linux/soc/cirrus/ep93xx.h
-@@ -12,15 +12,11 @@ struct regmap;
- #define EP93XX_CHIP_REV_E2	7
- 
- #if defined(CONFIG_EP93XX_SOC_COMMON)
--int ep93xx_ide_acquire_gpio(struct platform_device *pdev);
--void ep93xx_ide_release_gpio(struct platform_device *pdev);
- int ep93xx_i2s_acquire(void);
- void ep93xx_i2s_release(void);
- unsigned int ep93xx_chip_revision(void);
- 
- #else
--static inline int ep93xx_ide_acquire_gpio(struct platform_device *pdev) { return 0; }
--static inline void ep93xx_ide_release_gpio(struct platform_device *pdev) {}
- static inline int ep93xx_i2s_acquire(void) { return 0; }
- static inline void ep93xx_i2s_release(void) {}
- 
+diff --git a/arch/arm/boot/dts/cirrus/Makefile b/arch/arm/boot/dts/cirrus/Makefile
+index 211a7e2f2115..e6015983e464 100644
+--- a/arch/arm/boot/dts/cirrus/Makefile
++++ b/arch/arm/boot/dts/cirrus/Makefile
+@@ -4,5 +4,6 @@ dtb-$(CONFIG_ARCH_CLPS711X) += \
+ dtb-$(CONFIG_ARCH_CLPS711X) += \
+ 	ep7211-edb7211.dtb
+ dtb-$(CONFIG_ARCH_EP93XX) += \
++	ep93xx-edb9302.dtb \
+ 	ep93xx-bk3.dtb \
+ 	ep93xx-ts7250.dtb
+diff --git a/arch/arm/boot/dts/cirrus/ep93xx-edb9302.dts b/arch/arm/boot/dts/cirrus/ep93xx-edb9302.dts
+new file mode 100644
+index 000000000000..b048fd131aa5
+--- /dev/null
++++ b/arch/arm/boot/dts/cirrus/ep93xx-edb9302.dts
+@@ -0,0 +1,178 @@
++// SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++/*
++ * Device Tree file for Cirrus Logic EDB9302 board based on EP9302 SoC
++ */
++/dts-v1/;
++#include "ep93xx.dtsi"
++#include <dt-bindings/dma/cirrus,ep93xx-dma.h>
++
++/ {
++	#address-cells = <1>;
++	#size-cells = <1>;
++	compatible = "cirrus,edb9302", "cirrus,ep9301";
++	model = "cirrus,edb9302";
++
++	chosen {
++	};
++
++	memory@0 {
++		device_type = "memory";
++		/* should be set from ATAGS */
++		reg = <0x0000000 0x800000>,
++		      <0x1000000 0x800000>,
++		      <0x4000000 0x800000>,
++		      <0x5000000 0x800000>;
++	};
++
++	flash@60000000 {
++		compatible = "cfi-flash";
++		reg = <0x60000000 0x1000000>;
++		bank-width = <2>;
++	};
++
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "EDB93XX";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,mclk-fs = <256>;
++		simple-audio-card,convert-channels = <2>;
++		simple-audio-card,convert-sample-format = "s32_le";
++
++		simple-audio-card,cpu {
++			sound-dai = <&i2s>;
++			system-clock-direction-out;
++			frame-master;
++			bitclock-master;
++			dai-sample-format = "s32_le";
++			dai-channels = <2>;
++		};
++
++		simple-audio-card,codec {
++			sound-dai = <&cs4271>;
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++		led-0 {
++			label = "grled";
++			gpios = <&gpio4 0 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++			function = LED_FUNCTION_HEARTBEAT;
++		};
++
++		led-1 {
++			label = "rdled";
++			gpios = <&gpio4 1 GPIO_ACTIVE_HIGH>;
++			function = LED_FUNCTION_FAULT;
++		};
++	};
++};
++
++&adc {
++	status = "okay";
++};
++
++&eth0 {
++	phy-handle = <&phy0>;
++};
++
++&gpio0 {
++	gpio-ranges = <&pinctrl 0 153 1>,
++		      <&pinctrl 1 152 1>,
++		      <&pinctrl 2 151 1>,
++		      <&pinctrl 3 148 1>,
++		      <&pinctrl 4 147 1>,
++		      <&pinctrl 5 146 1>,
++		      <&pinctrl 6 145 1>,
++		      <&pinctrl 7 144 1>;
++};
++
++&gpio1 {
++	gpio-ranges = <&pinctrl 0 143 1>,
++		      <&pinctrl 1 142 1>,
++		      <&pinctrl 2 141 1>,
++		      <&pinctrl 3 140 1>,
++		      <&pinctrl 4 165 1>,
++		      <&pinctrl 5 164 1>,
++		      <&pinctrl 6 163 1>,
++		      <&pinctrl 7 160 1>;
++};
++
++&gpio2 {
++	gpio-ranges = <&pinctrl 0 115 1>;
++	status = "okay";
++};
++
++&gpio4 {
++	gpio-ranges = <&pinctrl 0 97 2>;
++	status = "okay";
++};
++
++&gpio5 {
++	gpio-ranges = <&pinctrl 1 170 1>,
++		      <&pinctrl 2 169 1>,
++		      <&pinctrl 3 168 1>;
++};
++
++&gpio6 {
++	gpio-ranges = <&pinctrl 0 87 2>;
++	status = "okay";
++};
++
++&gpio7 {
++	gpio-ranges = <&pinctrl 2 199 4>;
++	status = "okay";
++};
++
++&i2s {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2s_on_ac97_pins>;
++	status = "okay";
++};
++
++&mdio0 {
++	phy0: ethernet-phy@1 {
++		reg = <1>;
++		device_type = "ethernet-phy";
++	};
++};
++
++&spi0 {
++	cs-gpios = <&gpio0 6 GPIO_ACTIVE_LOW
++		    &gpio0 7 GPIO_ACTIVE_LOW>;
++	dmas = <&dma1 EP93XX_DMA_SSP>;
++	status = "okay";
++
++	cs4271: codec@0 {
++		compatible = "cirrus,cs4271";
++		reg = <0>;
++		#sound-dai-cells = <0>;
++		spi-max-frequency = <6000000>;
++		spi-cpol;
++		spi-cpha;
++		reset-gpio = <&gpio0 1 GPIO_ACTIVE_HIGH>;
++	};
++
++	at25f1024: eeprom@1 {
++		compatible = "atmel,at25";
++		reg = <1>;
++		address-width = <8>;
++		size = <0x20000>;
++		pagesize = <256>;
++		spi-max-frequency = <20000000>;
++	};
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&uart1 {
++	status = "okay";
++};
++
++&usb0 {
++	status = "okay";
++};
++
 
 -- 
 2.39.2
