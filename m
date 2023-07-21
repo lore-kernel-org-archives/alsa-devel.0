@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6D22C0015E
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Jul 2023 17:07:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DFC1C0015E
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Jul 2023 17:07:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5762820;
-	Sat, 22 Jul 2023 19:06:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5762820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C68A84A;
+	Sat, 22 Jul 2023 19:06:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C68A84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690045644;
-	bh=lOUocZF5E0d7KWN8wOq9w4FsOZgiaX/S9PiaqD66cQA=;
+	s=default; t=1690045662;
+	bh=eAgVQxAQDwqYiLDsfh+Sz6k0iEXvkKfUzzOqcou6ms0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VJbdAXfGd4AgOepcODA2IFkeU5N1Ub7GTIuqghLo+pR5SSYCkMLkPutijI8l3HJMA
-	 nKqDKZovhXFM/DPKMhZME8WuotaazhXr6cJV7BKBxT5cFNYBkF4Fi1ZKOgaecvcpt2
-	 OdetTuB89dxb2/WOCm4bmCp2HfqdIBU4UTjFYBOk=
+	b=pAFQyqBDQHDLNS1DGyZMlHOEqQENm9axaP5gvLmoAeIx1rm1SJ1bSB5eHLojU7jsk
+	 dB3AeX0jZWVatCDXHSHN7sGSbOKZFAw4N6QkkTrtfOgop3t4nZMd2cHICYNxTi9TjX
+	 WAvT5n1VUE4v22vn82W3V9aJqTNbCM23mzyvH4ys=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B5719F80568; Sat, 22 Jul 2023 19:05:40 +0200 (CEST)
+	id 24F4AF8057A; Sat, 22 Jul 2023 19:05:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB556F8055B;
-	Sat, 22 Jul 2023 19:05:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9BFBF8057A;
+	Sat, 22 Jul 2023 19:05:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93F7CF8047D; Fri, 21 Jul 2023 15:58:36 +0200 (CEST)
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
- [IPv6:2a00:1450:4864:20::135])
+	id 8662AF8047D; Fri, 21 Jul 2023 16:01:50 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F2038F8027B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 15:58:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2038F8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id E5118F8027B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 16:01:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5118F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=hovoUSXR
-Received: by mail-lf1-x135.google.com with SMTP id
- 2adb3069b0e04-4fbf09a9139so3243635e87.2
+ header.s=google header.b=ZiVB2hHS
+Received: by mail-wr1-x429.google.com with SMTP id
+ ffacd0b85a97d-3142a9ffa89so1701769f8f.0
         for <alsa-devel@alsa-project.org>;
- Fri, 21 Jul 2023 06:58:29 -0700 (PDT)
+ Fri, 21 Jul 2023 07:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689947907; x=1690552707;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1689948104; x=1690552904;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Uoi5Y4jjgnWGfQC+MA3PSzDO/nJ69a0U86XqjtM9qm4=;
-        b=hovoUSXRq28HNft26oRNivk53rfhvkFzFlsE+3eJGaPu6W9o4Hh4e/ClQ4euEk52Lc
-         Ek5BSaAroh2dCUY6scEF0qTX6SJCRLeM3gAKGHAwhgN2TXx3tl8zBKhqZNypY/tWkFHc
-         oe7SRYPVtulOU518is+mkTPudusWNGrbXpmSCwGn9SIS+3Qdck423+6xju48zvzmYRLu
-         SrCXzGzyT5RKNGORyZpIV27gIbAKSA970kJAUEzrStzCaI6yIn2cD69S96IGPnLOrWz9
-         MC4iNZlM1SAONUv1Jf8RdW+s5o5HTVZUOtOFBP3reutBNZI02r+6aCCx7r231ZzUbq/y
-         Rnqg==
+        bh=kGZ5LqU0Zryf5RXxHBpf5dofqREFTyZTeFWlFYPBfA8=;
+        b=ZiVB2hHSTZRmiaMmbMREaMhbawMx/KUt3cg1qeF1gBfCQQAGIBGPHjWK50hX362tpU
+         fMapfTUkHNiMW2EcbBz3SgWGkAp6pnHxDhqm4HHqfVuIIfYvxWb4ogcWbai4vpYhJADI
+         nWulY7lsgECJ57xXy/eajLo129aMmkczTVRAjkIe0wiSagmvvtOEMM8dttszF+P0remm
+         RGTV8zYGxv0/wyu9CCIL2fyYMd0tbEu3edlaV1yZeI84Bkx+jEwwKA/R03nUuupkA/DL
+         bFjJcVPJ1Os8KPfwF5c406w0MGIwcfg3il9N5GJ9UXq+jvImjTaQ3Zov5AQGHQM9OcQ+
+         H5mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689947907; x=1690552707;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1689948104; x=1690552904;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uoi5Y4jjgnWGfQC+MA3PSzDO/nJ69a0U86XqjtM9qm4=;
-        b=WnutPHJ8aSTQoFlbRTDgFL7pFEzE905IePNGWjwYIcbFKDii38j1NxYfR9NNMwkzfj
-         Fe0Rr4N19VAGMlCR5ncHKwmUil4P3D21gKU8XCoAOu7faznjrTDHBSIRyeFEdQnBdafu
-         h5ON7Su6eos/+gOoEmB9OHuwx4aEhVFIVoh7DzkhV3CHSknmLPUqpJ3qM95ed/Hr5IWs
-         FBxJfpIRPI1tCAU1hlgegUrcMueoB6TqSXvsKu2qgw9HPguH6lLBgTyeSVCgu9Ia8AqO
-         vAbU1ea68d1t4tWDZcDNuxXh9XOx2LkvfyZ5RKYw6In+7tZ1CgMfeBnVY4R0g4T8G8YI
-         e+XQ==
-X-Gm-Message-State: ABy/qLY3yw07G+b6ELXRBJJgx+r0Q0ltzAGUuQ7hDhGdQN4eeerjq9Qf
-	d4gDluQWfwM6iyWm7omCdsnCUw==
+        bh=kGZ5LqU0Zryf5RXxHBpf5dofqREFTyZTeFWlFYPBfA8=;
+        b=iCOQKFA7gPvOOrbcG2GhO9E1Va0qzZ1v/lsfEM9SHlD1OjIusEnQrvW+xme1VFSS1M
+         fzzExdX737FpmJvy8sraNAbi8EMRD4EmyVSAlTX8Ah5lZ4FTMY76N0xODXSwDkgf0cvO
+         8MxBXQicvfn2VW+inNuKFJJfVSaBESLE2VERiUKlz3L0wPFcGBfhdaiQ9yXXictahby0
+         FxCQotjqBMUMc4S5xA4I+BroPD7jEEdW3Vw1S2rFgTYQlUQWDmMZNJ94WU8JSxPZ2ll7
+         hHolBSgXCPjsCFNzGfw0f8deOjprm7YxlbMGJ7OQVraXsB+6vDhanS6B3BtK/AWUmddo
+         +Lzw==
+X-Gm-Message-State: ABy/qLatSxC6HDMoyU1vvODmcyqNyAYphM00TtFIuM/XIuX8BWJ0i+PH
+	Mdv1xAGmdJh1i0Gbpb24i1BTyQ==
 X-Google-Smtp-Source: 
- APBJJlFJQPGeO+dM+/CogGYGFX3IbIoIu/R+CmmEzNoP5XS6uM+gVvd5Uqi6hxrOAM8nRxnGkKL4wA==
-X-Received: by 2002:a05:6512:1095:b0:4f8:cd67:88e6 with SMTP id
- j21-20020a056512109500b004f8cd6788e6mr1382568lfg.44.1689947907244;
-        Fri, 21 Jul 2023 06:58:27 -0700 (PDT)
+ APBJJlFl0X021T0an8cBRN2rsT+BJ+nZ0MYlRyFEpg2gd2RFuh46KGFuFZP+LfRCosw99RkgkE80Jg==
+X-Received: by 2002:adf:ea50:0:b0:314:2732:e81e with SMTP id
+ j16-20020adfea50000000b003142732e81emr1636390wrn.8.1689948103685;
+        Fri, 21 Jul 2023 07:01:43 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.104])
         by smtp.gmail.com with ESMTPSA id
- h15-20020aa7c94f000000b0051d890b2407sm2111001edt.81.2023.07.21.06.58.23
+ r5-20020adff105000000b003145521f4e5sm4278545wro.116.2023.07.21.07.01.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Jul 2023 06:58:26 -0700 (PDT)
-Message-ID: <53c26a74-3374-cbc4-57cf-3b1cc0904300@linaro.org>
-Date: Fri, 21 Jul 2023 15:58:22 +0200
+        Fri, 21 Jul 2023 07:01:42 -0700 (PDT)
+Message-ID: <66fba798-c6ef-1105-656a-5d593a056448@linaro.org>
+Date: Fri, 21 Jul 2023 16:01:38 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v3 02/42] dt-bindings: clock: Add Cirrus EP93xx
+Subject: Re: [PATCH v3 04/42] dt-bindings: pinctrl: Add Cirrus EP93xx
+Content-Language: en-US
 To: nikita.shubin@maquefel.me, Hartley Sweeten
  <hsweeten@visionengravers.com>, Lennert Buytenhek <kernel@wantstofly.org>,
  Alexander Sverdlin <alexander.sverdlin@gmail.com>,
@@ -123,10 +124,9 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
  linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-2-3d63a5f1103e@maquefel.me>
-Content-Language: en-US
+ <20230605-ep93xx-v3-4-3d63a5f1103e@maquefel.me>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230605-ep93xx-v3-2-3d63a5f1103e@maquefel.me>
+In-Reply-To: <20230605-ep93xx-v3-4-3d63a5f1103e@maquefel.me>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-MailFrom: krzysztof.kozlowski@linaro.org
@@ -137,15 +137,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: 6HYNTEL7MCTYTUG54OAG22Z5XMPIPFKK
-X-Message-ID-Hash: 6HYNTEL7MCTYTUG54OAG22Z5XMPIPFKK
+Message-ID-Hash: XNOGCPZIMA673IQHVDDK7WIEM7XDUIDV
+X-Message-ID-Hash: XNOGCPZIMA673IQHVDDK7WIEM7XDUIDV
 X-Mailman-Approved-At: Sat, 22 Jul 2023 17:03:51 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6HYNTEL7MCTYTUG54OAG22Z5XMPIPFKK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XNOGCPZIMA673IQHVDDK7WIEM7XDUIDV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -157,28 +157,27 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
 > From: Nikita Shubin <nikita.shubin@maquefel.me>
 > 
-> This adds device tree bindings for the Cirrus Logic EP93xx
-> clock block used in these SoCs.
+> Add YAML bindings for ep93xx SoC pinctrl.
 > 
 > Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  .../bindings/clock/cirrus,ep9301-clk.yaml          | 46 ++++++++++++++++++++++
->  include/dt-bindings/clock/cirrus,ep93xx-clock.h    | 41 +++++++++++++++++++
->  2 files changed, 87 insertions(+)
+>  .../bindings/pinctrl/cirrus,ep9301-pinctrl.yaml    | 58 ++++++++++++++++++++++
+>  1 file changed, 58 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml b/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml
+> diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml
 > new file mode 100644
-> index 000000000000..111e016601fb
+> index 000000000000..d5682531b0da
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/cirrus,ep9301-clk.yaml
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +++ b/Documentation/devicetree/bindings/pinctrl/cirrus,ep9301-pinctrl.yaml
+> @@ -0,0 +1,58 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 > +%YAML 1.2
 > +---
-> +$id: http://devicetree.org/schemas/clock/cirrus,ep9301-clk.yaml#
+> +$id: http://devicetree.org/schemas/pinctrl/cirrus,ep9301-pinctrl.yaml#
 > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +title: Cirrus Logic ep93xx SoC's clock controller
+> +title: Cirrus ep93xx pins mux controller
 > +
 > +maintainers:
 > +  - Nikita Shubin <nikita.shubin@maquefel.me>
@@ -187,44 +186,25 @@ On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
 > +properties:
 > +  compatible:
 > +    oneOf:
-> +      - const: cirrus,ep9301-clk
+> +      - const: cirrus,ep9301-pinctrl
 > +      - items:
 > +          - enum:
-> +              - cirrus,ep9302-clk
-> +              - cirrus,ep9307-clk
-> +              - cirrus,ep9312-clk
-> +              - cirrus,ep9315-clk
-> +          - const: cirrus,ep9301-clk
+> +              - cirrus,ep9302-pinctrl
+> +              - cirrus,ep9307-pinctrl
+> +              - cirrus,ep9312-pinctrl
+> +              - cirrus,ep9315-pinctrl
+> +          - const: cirrus,ep9301-pinctrl
 > +
-> +  "#clock-cells":
-> +    const: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: reference clock
-> +
-> +required:
-> +  - compatible
-> +  - "#clock-cells"
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    clock-controller {
-> +      compatible = "cirrus,ep9301-clk";
-> +      #clock-cells = <1>;
-> +      clocks = <&xtali>;
-> +    };
-> +...
-> diff --git a/include/dt-bindings/clock/cirrus,ep93xx-clock.h b/include/dt-bindings/clock/cirrus,ep93xx-clock.h
-> new file mode 100644
-> index 000000000000..3cd053c0fdea
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/cirrus,ep93xx-clock.h
+> +patternProperties:
+> +  '^pins-':
+> +    type: object
+> +    description: pin node
+> +    $ref: pinmux-node.yaml#
 
-Keep the same filename as bindings file.
+You need:
+unevaluatedProperties: false
+
+
 
 Best regards,
 Krzysztof
