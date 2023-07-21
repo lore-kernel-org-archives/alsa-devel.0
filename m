@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D45B9EB64DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 07:57:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF009EB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 07:57:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0830D1FC;
-	Fri, 21 Jul 2023 09:56:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0830D1FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23BE4206;
+	Fri, 21 Jul 2023 09:57:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23BE4206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689926249;
-	bh=W/RkNM0LA5FIGb1qUz9Yr77W0ObcTph4orlH2jwmqyY=;
+	s=default; t=1689926273;
+	bh=uIQ8q7XSnF8hoWoQCg3GFFGmD657fExNIBt1fiMAPaw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aiVmlFERaFANGTgAj1SjNRXEGDtd9hq0pa3/O1I0SOv976um+UMbazpCAhECngSQo
-	 P84IB3yDqXUiEue/cRTlPaZfa9Z2LiZD5z3BHxWHg3yba0ZxheO5tlKv0PBjDVDgrH
-	 VfoQolHPWuGfWdHsxvScHUdQA5ZGyJS8iAK2//Vs=
+	b=TqHI2sOFu+bFmUzSkrrrsJYHwILBBbXnL+KT9lGYx+9e/RG2QGYjREXCrzbliBoWC
+	 jcnN753XpcIe+vK+T20rLsaquA1+1HJ54EIv9fgexjjNm+59haKTFG8C3T9feBmIkb
+	 SrwULR0E8Mq3scJPEJKB0gOF6IPi3tcq0yA93syI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3343FF8053B; Fri, 21 Jul 2023 09:56:11 +0200 (CEST)
+	id 08DA1F80535; Fri, 21 Jul 2023 09:56:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 335BBF8047D;
-	Fri, 21 Jul 2023 09:56:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46DA1F80548;
+	Fri, 21 Jul 2023 09:56:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66181F80494; Fri, 21 Jul 2023 09:56:05 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id AA850F8047D; Fri, 21 Jul 2023 09:56:06 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E24DDF8007E
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 09:55:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E24DDF8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8E7D0F8027B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 09:56:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E7D0F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=e+57HDZH
+ header.s=k20201202 header.b=SE9P4icI
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 789A16157A;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4723861595;
+	Fri, 21 Jul 2023 07:55:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C7F8C43395;
 	Fri, 21 Jul 2023 07:55:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DD3DC433CB;
-	Fri, 21 Jul 2023 07:55:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689926154;
-	bh=W/RkNM0LA5FIGb1qUz9Yr77W0ObcTph4orlH2jwmqyY=;
+	s=k20201202; t=1689926158;
+	bh=uIQ8q7XSnF8hoWoQCg3GFFGmD657fExNIBt1fiMAPaw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=e+57HDZHTD0q/GUnjCakwBVBoc+qFkkhXjO3myoKj8mt7VlEBpr9veGJJlqhtofYN
-	 XXs3rdUG5Xy1EHVmlcSlCkVGihhAoOitrpKUDcaxJyYxkm0EhtmHKgL4KYnbFCHvCz
-	 bMhhDAJ5E1GCToR+vFk0vHL99MPim78UiOvv2Evt/FwRtDhd8xRjfl3gijXBA3b4mn
-	 vUZjAXPshYhaWLWl49u6IsZmhMnDjnrk6MoH4WN5UipTsX7WmXd5RSCny7arzN4429
-	 TBsm4TuZ1cANfF+00lhIH5cQ1ZGSxtkqL035SfvTvnW3Bnk1ZAUWUtPNXqJFqIB6V1
-	 zVeBLZfaVOwfQ==
+	b=SE9P4icIE0VBim2cgG9RpUwM3JoSWh/zzU4yPJNunSKyEyW0gXC3ez8X4kTQ4z+NY
+	 5f1D1REkn8OjifY3N+CTj2AQrZ6yh8lk7IHCcZSyBSvMIufqcEucn/jxveOE7RUT6O
+	 E3hsNcLGqHaCwe8Z6Z7UV8kJdw8EmB/5K4jp9qrsLRwJWbZYtQOXPMrGMrYMwv+UZP
+	 Ik3VQeAAsHFHv3OU8uqplhmkoiUbtSszn5lEZJ0rgPcGCDkeBg5jG1VZvPJ5PxggIW
+	 eaXVJa8vWo3zJGwieOKx4OKu/F2ePu9MFRG0s5pyRvdvbu/y+YdRWCYbj13RdZQrTR
+	 5hMY89qArpteQ==
 From: Lee Jones <lee@kernel.org>
 To: broonie@kernel.org, lee@kernel.org, krzysztof.kozlowski+dt@linaro.org,
  linus.walleij@linaro.org, vkoul@kernel.org,
@@ -69,19 +68,17 @@ Cc: robh+dt@kernel.org, conor+dt@kernel.org, lgirdwood@gmail.com,
  patches@opensource.cirrus.com, devicetree@vger.kernel.org,
  linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
  linux-kernel@vger.kernel.org
-In-Reply-To: <20230619095623.1987742-5-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20230619095623.1987742-1-ckeepax@opensource.cirrus.com>
 References: <20230619095623.1987742-1-ckeepax@opensource.cirrus.com>
- <20230619095623.1987742-5-ckeepax@opensource.cirrus.com>
-Subject: Re: (subset) [PATCH v5 4/6] pinctrl: cs42l43: Add support for the
- cs42l43
-Message-Id: <168992615117.1924396.3669045288825154363.b4-ty@kernel.org>
-Date: Fri, 21 Jul 2023 08:55:51 +0100
+Subject: Re: (subset) [PATCH v5 0/6] Add cs42l43 PC focused SoundWire CODEC
+Message-Id: <168992615492.1924396.13464534208592126033.b4-ty@kernel.org>
+Date: Fri, 21 Jul 2023 08:55:54 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.12.2
-Message-ID-Hash: JU3KHJVJKY3CNLQ2IAZESNRQDHVUHJ3G
-X-Message-ID-Hash: JU3KHJVJKY3CNLQ2IAZESNRQDHVUHJ3G
+Message-ID-Hash: YTGA4MUX2V5HPSYCKDOCJ2HWMQNM4R7M
+X-Message-ID-Hash: YTGA4MUX2V5HPSYCKDOCJ2HWMQNM4R7M
 X-MailFrom: lee@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JU3KHJVJKY3CNLQ2IAZESNRQDHVUHJ3G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YTGA4MUX2V5HPSYCKDOCJ2HWMQNM4R7M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,18 +100,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 19 Jun 2023 10:56:21 +0100, Charles Keepax wrote:
-> The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
-> (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
-> for portable applications. It provides a high dynamic range, stereo
-> DAC for headphone output, two integrated Class D amplifiers for
-> loudspeakers, and two ADCs for wired headset microphone input or
-> stereo line input. PDM inputs are provided for digital microphones.
+On Mon, 19 Jun 2023 10:56:17 +0100, Charles Keepax wrote:
+> This patch chain adds support for the Cirrus Logic cs42l43 PC focused
+> SoundWire CODEC. The chain is currently based of Lee's for-mfd-next
+> branch.
+> 
+> Thanks,
+> Charles
 > 
 > [...]
 
 Applied, thanks!
 
+[2/6] dt-bindings: mfd: cirrus,cs42l43: Add initial DT binding
+      commit: e62ba8443b11f12b45c61444249458a2f8c2f4ef
+[3/6] mfd: cs42l43: Add support for cs42l43 core driver
+      commit: 843079209e1506c94fde797fc0ff914e2c9e6645
 [4/6] pinctrl: cs42l43: Add support for the cs42l43
       commit: 85f034dd7ff0a66aded653cc91dbc406fba7cf1a
 
