@@ -4,93 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF66CEB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 10:10:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5CD6EB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 10:28:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 209B0DF2;
-	Fri, 21 Jul 2023 12:10:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 209B0DF2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 625247F8;
+	Fri, 21 Jul 2023 12:27:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 625247F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689934250;
-	bh=zfD3fxGaaJVbEP0Mg/47kMaERmFrmee6teDl/NH72f4=;
+	s=default; t=1689935285;
+	bh=luIDifDHrPHIWI9MpFWas0pGglYEXpJCGh+rjVBvQ+c=;
 	h=Date:From:To:cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=da+cPdygeUJuJK3wcMooEOGtX6GPFwbY827gKvFX9UvwEky65dNf9K99WaiU7NhiI
-	 zwTzjz3QlrTM95fVkxCb0ubFngee8tK16+PnqiVCT6zFgGhD1/gKkT8bgFl6T08Kt7
-	 67Pg2TtaZeDAqgAU9eWUDhxL13x5LsA0l8WJUEpI=
+	b=ZpIp6rcoy5L5nyhGx2Q2/rlJncxFGQ+cut0uXYzbE4uHMMjAK64OyTfjIfUjzBDh1
+	 2e9w1lCb3vQ30e/fZD178oSaHvzTJZjFNxxQaFORVwTOQNH3AxDtx8VfXl8nVD72iz
+	 yu9k99uPPO4B33DXbTJ2U6tZKYTTD8mfID6vEpIo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1854F80553; Fri, 21 Jul 2023 12:09:59 +0200 (CEST)
+	id 06BA0F80549; Fri, 21 Jul 2023 12:26:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71CBEF80535;
-	Fri, 21 Jul 2023 12:09:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDFA8F800D2;
+	Fri, 21 Jul 2023 12:26:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0D59FF80527; Fri, 21 Jul 2023 12:09:56 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+	id 818B4F8047D; Fri, 21 Jul 2023 12:26:45 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3CBB0F8007E;
-	Fri, 21 Jul 2023 12:09:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CBB0F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 264ADF8027B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 12:26:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 264ADF8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=GEzyGjQb
+ header.s=Intel header.b=GBb/RuMs
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689934191; x=1721470191;
+  t=1689935201; x=1721471201;
   h=date:from:to:cc:subject:in-reply-to:message-id:
    references:mime-version;
-  bh=zfD3fxGaaJVbEP0Mg/47kMaERmFrmee6teDl/NH72f4=;
-  b=GEzyGjQboh2pSIRNVz3aXrdG3ZnETBsvFKAD6ktxR86g44wlgPSYC38R
-   GWJQ4/8tfxeRJYKIhdJRc6J33Bzt2HmFpmsk9SzSfGj+YjsIGOOzF//rS
-   +1ERLH5SeVJfQIGHB0tXSIZo2rFzFuevLszU+8KWgw7gxrUc7PjZJ+jsr
-   g3dpSu+2sg98z7wZ2+Vaby4Ytrsqwq/LXNgNEGhYxYwRnmwm5TsDFCnlX
-   /6ZNw4xJ2aixtVKaZaDuV2T7/XelFYDtGgk0bPkycHr36o4VxbWVby9e4
-   t6TTpeOr1Q7BegDF0cjtoj4Tmf7rZDNKKMqM2P0XpEedomKa0RC3Ngbaa
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="346581195"
+  bh=3la85cW8/KmPX/dcr+1vrlAz048TD7nuQ3LGUmKvcgY=;
+  b=GBb/RuMsrDZLwmuFiT89HQ6Q5YVCyybPRlXDXFe4W2642axpWYvnUy6C
+   nrAnrJNwzp6ynCEGwYkPtz3yMs5mruyJx9+KeCeCoOUPl0kgFgzsS5KwS
+   qqrcP7dSoL/LOeV/Pwg2YB+To2CyjFi/Gw5c9TialHD87uiP70Q0a+IR5
+   7fSJ765BKChIyiHmXP8x2GYzXeR435gn4dppRpoN6HtXf9/Wwiy/vcANo
+   /IAZAItcAj/Nftu43Q7Zz9aY+BVUQGfCjORsdCOOThc+9cUA8YtKHZPpz
+   OxEvNq7ykyeuAaeEny7+iB03OnFMcJnJ+VE1KU3fv5GGmR9WIRB2HYoOE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="369664215"
 X-IronPort-AV: E=Sophos;i="6.01,220,1684825200";
-   d="scan'208";a="346581195"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jul 2023 03:09:46 -0700
+   d="scan'208";a="369664215"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Jul 2023 03:26:35 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="674991008"
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="971398246"
 X-IronPort-AV: E=Sophos;i="6.01,220,1684825200";
-   d="scan'208";a="674991008"
+   d="scan'208";a="971398246"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jul 2023 03:09:41 -0700
-Date: Fri, 21 Jul 2023 13:06:21 +0300 (EEST)
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Jul 2023 03:26:33 -0700
+Date: Fri, 21 Jul 2023 13:23:07 +0300 (EEST)
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-cc: Alsa-devel <alsa-devel@alsa-project.org>,
-    sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
-    Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-    Cezary Rojewski <cezary.rojewski@intel.com>,
-    Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-    Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-    Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-    Bard Liao <yung-chuan.liao@linux.intel.com>,
-    Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-    Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-    Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH v2 0/9] sound: Use -EPROBE_DEFER instead of i915 module
- loading.
-In-Reply-To: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+To: Racinglee <cydiaimpactor2003@gmail.com>
+cc: Bagas Sanjaya <bagasdotme@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+    Takashi Iwai <tiwai@suse.com>,
+    Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+    Linux Regressions <regressions@lists.linux.dev>,
+    Linux ALSA Development <alsa-devel@alsa-project.org>
+Subject: Re: 6.4 and higher causes audio distortion
+In-Reply-To: 
+ <CAL4Djy3KeD51LtT0bT2aRe9S_uwMiAfa-X=V2SfdnYt-MYp5ng@mail.gmail.com>
 Message-ID: 
- <alpine.DEB.2.22.394.2307211300270.3532114@eliteleevi.tm.intel.com>
-References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+ <alpine.DEB.2.22.394.2307211322100.3532114@eliteleevi.tm.intel.com>
+References: <3ee79b53-5c1b-1542-ceea-e51141e3ab74@gmail.com>
+ <CAL4Djy3KeD51LtT0bT2aRe9S_uwMiAfa-X=V2SfdnYt-MYp5ng@mail.gmail.com>
 User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: 3OP4QU2N7GQER4NRH6K3MLXKALUSLTR3
-X-Message-ID-Hash: 3OP4QU2N7GQER4NRH6K3MLXKALUSLTR3
+Message-ID-Hash: A7SNNV6QCZ3PU42RZVNUSDQU23OYLSAA
+X-Message-ID-Hash: A7SNNV6QCZ3PU42RZVNUSDQU23OYLSAA
 X-MailFrom: kai.vehmanen@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,43 +92,40 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+X-Content-Filtered-By: Mailman/MimeDel 3.3.8
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3OP4QU2N7GQER4NRH6K3MLXKALUSLTR3/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A7SNNV6QCZ3PU42RZVNUSDQU23OYLSAA/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
-
-On Wed, 19 Jul 2023, Maarten Lankhorst wrote:
-
-> Explicitly loading i915 becomes a problem when upstreaming the new intel driver
-> for Tiger Lake and higher graphics (xe). By loading i915, it doesn't wait for
-> driver load of xe, and will fail completely before it loads.
-> 
-> -EPROBE_DEFER has to be returned before any device is created in probe(),
-> otherwise the removal of the device will cause EPROBE_DEFER to try again
-> in an infinite loop.
-
-thanks, series looks good to me now. We'll need to adopt the new gpu_bind
-parameter in a number of CI systems (where we test without i915/xe), but 
-this looks perfectly doable.
-  
-I'll give my 
-
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-
-... for the hdac_i915.c changes. For AVS and SOF, I'd ask for some 
-more review time to allow Cezary, Pierre et al to weigh in. I don't
-personally recall e.g. where we've used CONFIG_SOF_FORCE_PROBE_WORKQUEUE
-and do we have grounds to keep it even if workqueue is no longer set
-for HDA codec support.
-
-Br, Kai
+SGksDQoNCg0KT24gV2VkLCAxOSBKdWwgMjAyMywgUmFjaW5nbGVlIHdyb3RlOg0KDQo+IE9uIFNh
+dCwgSnVsIDE1LCAyMDIzIGF0IDM6NTbigK9BTSBCYWdhcyBTYW5qYXlhIDxiYWdhc2RvdG1lQGdt
+YWlsLmNvbT4gd3JvdGU6DQo+ID4gSSBub3RpY2UgYSByZWdyZXNzaW9uIHJlcG9ydCBvbiBCdWd6
+aWxsYSBbMV0uIFF1b3RpbmcgZnJvbSBpdDoNCj4gPg0KPiA+ID4gSSBoYXZlIGEgTGVub3ZvIFRo
+aW5rUGFkIFgxIFlvZ2EgR2VuIDcgcnVubmluZyBBcmNoIExpbnV4LiBMaW51eCA2LjQgDQo+ID4g
+PiBhbmQgaGlnaGVyLCBjYXVzZSBhdWRpbyBkaXN0b3J0aW9uLiBTb21ldGltZXMsIHRoaXMgb2Nj
+dXJzIHRvIHRoZSANCj4gPiA+IHBvaW50IHRoYXQgbmVhcmx5IG5vdGhpbmcgaXMgZGlzY2Vybmli
+bGUuIFRoaXMgY2FycmllcyBvdmVyIHRvIHdpcmVkIA0KPiA+ID4gaGVhZHBob25lcy4gVGhlIGlz
+c3VlIG9jY3VycyBvbiB0aGUgZW50aXJlIG1haW5saW5lIDYuNC54IGtlcm5lbCANCj4gPiA+IHNl
+cmllcyBhbmQgYWxzbyB0aGUgNi40LjMgc3RhYmxlIGFuZCA2LjUgUkMxIGtlcm5lbCwgd2hpY2gg
+YXJlIHRoZSANCj4gPiA+IGxhdGVzdCBhdCB0aGUgdGltZSBvZiB3cml0aW5nLiBUaGUgaXNzdWUg
+b2NjdXJzIG9uIGJvdGggdGhlIEFyY2ggDQo+ID4gPiBkaXN0cmlidXRlZCBrZXJuZWxzLCBhbmQg
+dGhlIG1haW5saW5lIGtlcm5lbHMuDQpbLi4uXQ0KPiBVcGRhdGluZyByZWd6Ym90IGFmdGVyIG5l
+d2VyIGZpbmRpbmdzIGFuZCBkZXRlcm1pbmF0aW9ucyBhYm91dCB0aGUNCj4gcG9zc2libGUgY3Vs
+cHJpdCBjb21taXQNCj4gDQo+ICNyZWd6Ym90IHRpdGxlOiA2LjQgYW5kIGhpZ2hlciBjYXVzZXMg
+YXVkaW8gZGlzdG9ydGlvbg0KPiANCj4gI3JlZ3pib3QgaW50cm9kdWNlZDogdjYuNC1yYzEuLjFi
+ZjgzZmE2NjU0Yw0KPiBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lk
+PTIxNzY3MyNjNQ0KPiANCg0KdGhhbmsgeW91LCBmaWxlZCBhIGJ1ZyB0byBTT0YgYmFzZWQgb24g
+dGhlIGJpc2VjdCByZXN1bHRzOg0KaHR0cHM6Ly9naXRodWIuY29tL3RoZXNvZnByb2plY3QvbGlu
+dXgvaXNzdWVzLzQ0ODINCg0KQnIsIEthaQ==
