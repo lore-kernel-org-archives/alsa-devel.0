@@ -4,72 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3ED3EB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 12:24:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A423C001DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 12:59:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D7A11F7;
-	Fri, 21 Jul 2023 14:23:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D7A11F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28E4A200;
+	Fri, 21 Jul 2023 14:59:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28E4A200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689942280;
-	bh=JD3DA7FWnk4rDwR+K2o083cTF4lv08vGj1BSNFLUw04=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=BUVNOkJ9NIWBxr1Xo9/F1EyP/I/uqShhdj/Gd9nNADEaVDeVTrHShk5em6mZW+/dd
-	 4R7T9DQYhe1XoXaOx4WGjMQohKddsoK1HEiiTJIP5Tsn0+p/b3jER9bamIO2H+MLQA
-	 Ibqi3B60GBaCdxSa8pPkryWaYIuSNNOuAHf1kfLs=
+	s=default; t=1689944392;
+	bh=zHA3NMVEahQuxN9TbalHSR//3tVFIu25x6Hg5W/vUXk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=R3I6RBDfKCJm9inyxSIQPiOlJcu/n2tm4h4mvwt+e3EhSCxRIjBrrFryjOOxmemTa
+	 gfMdskhW33wH+kW22Og3X1QNRPS+R8GbbwPi1h05R39kTXJ5CdjEvF183ZRB1FGabe
+	 oTV10HiWBi2tBU8qu282iZkgc6Gzxn2pllhvxiHo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20B0FF800D2; Fri, 21 Jul 2023 14:23:49 +0200 (CEST)
+	id 7CB29F80549; Fri, 21 Jul 2023 14:58:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91D4FF800D2;
-	Fri, 21 Jul 2023 14:23:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21EFDF8047D;
+	Fri, 21 Jul 2023 14:58:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66624F8047D; Fri, 21 Jul 2023 12:00:24 +0200 (CEST)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 54B5BF8047D; Fri, 21 Jul 2023 14:58:21 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C18C0F8027B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 12:00:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C18C0F8027B
-Received: from dggpemm500001.china.huawei.com (unknown [172.30.72.55])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R6lQP6nvYzrRsG;
-	Fri, 21 Jul 2023 17:59:25 +0800 (CST)
-Received: from octopus.huawei.com (10.67.174.191) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 21 Jul 2023 18:00:12 +0800
-From: Wang Weiyang <wangweiyang2@huawei.com>
-To: <perex@perex.cz>, <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-	<wangweiyang2@huawei.com>
-Subject: [PATCH -next] ALSA: seq: remove redundant unsigned comparison to zero
-Date: Fri, 21 Jul 2023 18:31:24 +0800
-Message-ID: <20230721103124.18522-1-wangweiyang2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 576C3F800D2
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 14:58:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 576C3F800D2
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=SFT8aKD0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689944297; x=1721480297;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zHA3NMVEahQuxN9TbalHSR//3tVFIu25x6Hg5W/vUXk=;
+  b=SFT8aKD0lQzi3DeYzJF8ywgxr5dFNnp2LgOYUBq+5RL5nCj13plIT0vx
+   8dGL/gJ6pdrm2w3xGMg4ssWpeOBI6PT4Khn1DaLGYwqFy/Op6xwC4la7w
+   oi84b5UvMZcaUer9NeYUQdjfOjT3vE9wmJ9G3K8vi77rPcOB0+GoVSQWw
+   YCLnFyibiGkViRGlP7X8Wrc8aRxra6y+TlqHPUj63e+Xue2HaSPyC5cRO
+   K7Xffm3e3cVfDfpjq9WItvnCHp8FI0KkMLAY9pDr8M9GeCvbAj1I9ryA7
+   nVkIfj7FjB9cfIvQjLMT/NXLkPDPuQmub1gbnO24dU41q1PrJ1jC0Ddng
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="346614671"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200";
+   d="scan'208";a="346614671"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Jul 2023 05:58:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10777"; a="718806314"
+X-IronPort-AV: E=Sophos;i="6.01,220,1684825200";
+   d="scan'208";a="718806314"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP; 21 Jul 2023 05:58:07 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1qMpht-005DfM-2R;
+	Fri, 21 Jul 2023 15:58:05 +0300
+Date: Fri, 21 Jul 2023 15:58:05 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v1 1/1] ALSA: korg1212: Re-use sockptr_t and respective
+ APIs
+Message-ID: <ZLqA3f8tdqxzZn/k@smile.fi.intel.com>
+References: <20230721100146.67293-1-andriy.shevchenko@linux.intel.com>
+ <878rb9h901.wl-tiwai@suse.de>
+ <ZLphAJG4Tz8zLUSN@smile.fi.intel.com>
+ <87y1j9fs55.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.191]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
-X-MailFrom: wangweiyang2@huawei.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y1j9fs55.wl-tiwai@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID-Hash: AHTIK5II3MGX3VORUP7MJL5POSK4RFZW
+X-Message-ID-Hash: AHTIK5II3MGX3VORUP7MJL5POSK4RFZW
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 37VCITAXI5Z74MQH5A64KPUAXDLXCB65
-X-Message-ID-Hash: 37VCITAXI5Z74MQH5A64KPUAXDLXCB65
-X-Mailman-Approved-At: Fri, 21 Jul 2023 12:23:46 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/37VCITAXI5Z74MQH5A64KPUAXDLXCB65/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AHTIK5II3MGX3VORUP7MJL5POSK4RFZW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -78,28 +108,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Since struct snd_ump_block_info::first_group is unsigned char, comparison
-to zero is redundant
+On Fri, Jul 21, 2023 at 12:58:14PM +0200, Takashi Iwai wrote:
+> On Fri, 21 Jul 2023 12:42:08 +0200,
+> Andy Shevchenko wrote:
+> > On Fri, Jul 21, 2023 at 12:08:46PM +0200, Takashi Iwai wrote:
+> > > On Fri, 21 Jul 2023 12:01:46 +0200,
+> > > Andy Shevchenko wrote:
 
-Signed-off-by: Wang Weiyang <wangweiyang2@huawei.com>
----
- sound/core/seq/seq_ump_client.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+...
 
-diff --git a/sound/core/seq/seq_ump_client.c b/sound/core/seq/seq_ump_client.c
-index fe21c801af74..f26a1812dfa7 100644
---- a/sound/core/seq/seq_ump_client.c
-+++ b/sound/core/seq/seq_ump_client.c
-@@ -298,8 +298,7 @@ static void update_group_attrs(struct seq_ump_client *client)
- 	}
- 
- 	list_for_each_entry(fb, &client->ump->block_list, list) {
--		if (fb->info.first_group < 0 ||
--		    fb->info.first_group + fb->info.num_groups > SNDRV_UMP_MAX_GROUPS)
-+		if (fb->info.first_group + fb->info.num_groups > SNDRV_UMP_MAX_GROUPS)
- 			break;
- 		group = &client->groups[fb->info.first_group];
- 		for (i = 0; i < fb->info.num_groups; i++, group++) {
+> > > While I see the benefit, I feel this is very confusing.  If we use the
+> > > API for a generic use, it should be renamed at first.
+
+> > Any suggestion for the name?
+> 
+> It's a universal pointer...  uniptr_t?
+> Or a generic pointer, genptr_t?
+> 
+> I'm not good at naming, and I'm open for it.
+
+It seems it's already spread enough with this name, I would rather stick with
+it for now (besides net it's used in crypto, nvme, and security).
+
+The (new) callback though makes a lot of sense on its own.
+
+What do you think?
+
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
