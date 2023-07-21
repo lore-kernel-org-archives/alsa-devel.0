@@ -4,91 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66663EB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 13:25:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 406ACEB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 13:51:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54A0820C;
-	Fri, 21 Jul 2023 15:25:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54A0820C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 384CF1FC;
+	Fri, 21 Jul 2023 15:50:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 384CF1FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689945957;
-	bh=Q2uZnM5Io0qoWetB+qKh5+ZvbdOLgSsvqj6l2Nt5CqM=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=BSBoAFlxBo1rkMIs+i0PxRWYSFjmEvDQOFVS4onSswCfP40CudSEZ9n/j30Vw/LVX
-	 H8WE993Jpt4F+JRLuflOHDar7Naf/orePKfaN8IVriWO3lAKCT/IxpjVwax0Qa71vv
-	 Nz8SyHoFn/TcmpUKSvyRdxKK2prT/KPzSyDl2z2g=
+	s=default; t=1689947498;
+	bh=YsQzXX3Iw4UgmsXP3jpsMX5rLlr+D3/qJOyXveoe34g=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=dlwUw+2J44gIyFdF/rMPUdrPPzSNkMsfRNldALO/Q2CIfQpYrWhQgU5f6jB29vvmH
+	 hFEiwbIr0/S67JN5bGkY7N1JNxGTT41QrSd+qGqHkPKpGIZGpBhOiqMQWiGIaHZTs8
+	 nGTpRfiLqVrFVCgIm5IlPjaOv1GFnyWxwQ38zsG0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 516CAF805F3; Fri, 21 Jul 2023 15:22:26 +0200 (CEST)
+	id C051DF80527; Fri, 21 Jul 2023 15:50:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C9ACF805F0;
-	Fri, 21 Jul 2023 15:22:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 200E9F8027B;
+	Fri, 21 Jul 2023 15:50:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9E98F80535; Fri, 21 Jul 2023 15:22:16 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id B89A7F8047D; Fri, 21 Jul 2023 15:50:16 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D8CBF80544
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 15:21:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D8CBF80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id A3D70F8027B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 15:50:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3D70F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=DEniDHUs
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 36LBeOqN003184;
-	Fri, 21 Jul 2023 08:21:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=dyx+8JEfgh2peLe8efZxTUFVMObXdsP7O0pAQJQQ1+c=; b=
-	DEniDHUscLuozK/jFxPvCeMOWLy+6cFWYePcBAtBwUvXvWe/YlB9aOz96uWaK8Fs
-	8QtBhCaBIbKaSjfYFornrbISQ0XxeA/uRQ3JhBIhSlrb9qDltbEXYFnInKJYPe6C
-	0ybCyrkYarxakAljFrpJSFJplIKCL8PXweompEfR+RVO2HIsi4zj16+mg7LTYAPP
-	SbdO+AkZC9CcARcpcvxdI8oOLMDw7a+0Vr2XCAt4pd1nnHk3BreVViIkV9OmqVV6
-	LrfpsmqsTUEdZ2G62LsDU+dDwvfSIIrQCre9zZz9NTCdDTHRf3EskOXoTelXyz9h
-	3j2phDDrlKICL1jrOLyD/g==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3rus62y4hx-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 21 Jul 2023 08:21:30 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 21 Jul
- 2023 14:21:27 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Fri, 21 Jul 2023 14:21:27 +0100
-Received: from work-debian.ad.cirrus.com (unknown [198.61.64.172])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 942B515B6;
-	Fri, 21 Jul 2023 13:21:27 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>, <tiwai@suse.com>
-CC: <perex@perex.cz>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        Richard
- Fitzgerald <rf@opensource.cirrus.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v5 10/11] ALSA: hda: Fix missing header dependencies
-Date: Fri, 21 Jul 2023 14:21:19 +0100
-Message-ID: <20230721132120.5523-11-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230721132120.5523-1-rf@opensource.cirrus.com>
-References: <20230721132120.5523-1-rf@opensource.cirrus.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=fwELfVEu
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3844E61B23;
+	Fri, 21 Jul 2023 13:50:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93751C433C7;
+	Fri, 21 Jul 2023 13:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1689947409;
+	bh=YsQzXX3Iw4UgmsXP3jpsMX5rLlr+D3/qJOyXveoe34g=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=fwELfVEuxyxClMKPH1dG7QgyZxtfj91aX+6/L5bchj2GmldVYbN7x7mFpfswsmShj
+	 jXbi4PsTBDpp2UbuIDZI/xBC0sdllU5uRJFYYfCcC+285Kf3z1cdQjvK0+JqFd/Ahn
+	 QUvNmLq31RY5dXM2FyKlujUvMS8D0HWyU3gg1F5RQWZzJGGbXrf+GaPwDUTpRz3oHX
+	 OmSJSWrYyu3XEe9zKqo76zZQAUla4vtc94XOqv+nx+7EMxKS/P4y0dfZYO+8JKrm2d
+	 RwMtd46frJAfAzBxmGCexFAbsuVESE37SUTG/jsiXFc531gNZSygD7T2dRc2BWJcmC
+	 N+p9pM/GFhmlQ==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
+ patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>
+In-Reply-To: <1689927842-21165-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1689927842-21165-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v2] ASoC: wm8960: Add DAC filter characteristics
+ selection
+Message-Id: <168994740616.98802.14306640760170381648.b4-ty@kernel.org>
+Date: Fri, 21 Jul 2023 14:50:06 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 6BJcp0nlH4utn8g5JO5Yq_pdI1LrUsCy
-X-Proofpoint-ORIG-GUID: 6BJcp0nlH4utn8g5JO5Yq_pdI1LrUsCy
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: N53BAH77W4DEMTNZOHZRDGEYGOBH4L2S
-X-Message-ID-Hash: N53BAH77W4DEMTNZOHZRDGEYGOBH4L2S
-X-MailFrom: prvs=25664d1566=rf@opensource.cirrus.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+Message-ID-Hash: YOIRTQREIBTWUTAPMUCEVAFDQSXQIVNJ
+X-Message-ID-Hash: YOIRTQREIBTWUTAPMUCEVAFDQSXQIVNJ
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N53BAH77W4DEMTNZOHZRDGEYGOBH4L2S/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YOIRTQREIBTWUTAPMUCEVAFDQSXQIVNJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,49 +97,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add #includes of dependencies into hda_auto_parser.h and hda_generic.h
+On Fri, 21 Jul 2023 16:24:02 +0800, Shengjiu Wang wrote:
+> Support DAC filter characteristics selection: Normal mode
+> and Sloping stopband. Sloping stopband may have
+> better frequency response.
+> 
+> 
 
-hda_auto_parser.h uses definitions in hda_local.h.
+Applied to
 
-hda_generic.h uses definitions in hda_local.h and hda_auto_parser.h.
-It also references struct hda_jack_callback, but only as a pointer.
-This has been forward-declared so hda_jack.h only needs to be
-included in source that actually uses it.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_auto_parser.h | 2 ++
- sound/pci/hda/hda_generic.h     | 3 +++
- 2 files changed, 5 insertions(+)
+Thanks!
 
-diff --git a/sound/pci/hda/hda_auto_parser.h b/sound/pci/hda/hda_auto_parser.h
-index df63d66af1ab..579b11beac71 100644
---- a/sound/pci/hda/hda_auto_parser.h
-+++ b/sound/pci/hda/hda_auto_parser.h
-@@ -8,6 +8,8 @@
- #ifndef __SOUND_HDA_AUTO_PARSER_H
- #define __SOUND_HDA_AUTO_PARSER_H
- 
-+#include "hda_local.h"
-+
- /*
-  * Helper for automatic pin configuration
-  */
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 34eba40cc6e6..a8eea8367629 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -9,6 +9,9 @@
- #define __SOUND_HDA_GENERIC_H
- 
- #include <linux/leds.h>
-+#include "hda_auto_parser.h"
-+
-+struct hda_jack_callback;
- 
- /* table entry for multi-io paths */
- struct hda_multi_io {
--- 
-2.30.2
+[1/1] ASoC: wm8960: Add DAC filter characteristics selection
+      commit: 8cf2e3b1961e59dabc75e9e917d58439164a8f84
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
