@@ -4,64 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B58CEB64DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:27:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A2BFEB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 08:28:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 441F3E97;
-	Fri, 21 Jul 2023 10:26:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 441F3E97
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B139EA4;
+	Fri, 21 Jul 2023 10:27:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B139EA4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689928051;
-	bh=fjkwoYEet82kXX5nCKnW/U40nFPSyt/Ky9ww18b5XoM=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1689928078;
+	bh=1PmjbTeRGiRPYo8AJ6R/wBAbXmmLjmnNBE0auP1OJ1w=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Aw7rfDkXKpKA8qRRz7d7lSUOrh+sifAs09OZEH9whzWH85yyXGDadq2N8LIu4uChf
-	 rnrlPLxhSO1kR18IhoJy/FFcyvGzpy3eBQftx+OgCtNWyIrKhwz7+BaJf/llNss2xo
-	 EfEd8wm+KBHJUMCPDVdkWPYViF9QKhR0QPWI6Knc=
+	b=GjVaOQ9Oiupt9M8L4SND/6xOtWyA/rpLGKdDAPWRXrJo8I56ZDIQDq/gEi/ZLt7LS
+	 uRxKB+r3EthvBui1QTWnHRX+5Gvj3FxK3dXmjQUUKIE/VoIL/9nJGy3/rcJr3rEMH7
+	 GWw+q6OIxrV9f6J47oRNUyjBCM8U5I2MkoeVxnyU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2357DF8007E; Fri, 21 Jul 2023 10:26:19 +0200 (CEST)
+	id 48708F80549; Fri, 21 Jul 2023 10:27:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63E25F800D2;
-	Fri, 21 Jul 2023 10:26:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9451FF80527;
+	Fri, 21 Jul 2023 10:27:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4FCE2F8032D; Fri, 21 Jul 2023 10:26:14 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E09B5F8007E
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 10:26:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E09B5F8007E
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 39B5E1A04CE;
-	Fri, 21 Jul 2023 10:26:10 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F24761A04D7;
-	Fri, 21 Jul 2023 10:26:09 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 9A16D183486C;
-	Fri, 21 Jul 2023 16:26:08 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	ckeepax@opensource.cirrus.com,
-	kuninori.morimoto.gx@renesas.com,
-	patches@opensource.cirrus.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: wm8960: Add DAC filter characteristics selection
-Date: Fri, 21 Jul 2023 15:52:28 +0800
-Message-Id: <1689925948-21001-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: RE4QGVNEXHQPWHDFP3MVMQWJM53PRCJ7
-X-Message-ID-Hash: RE4QGVNEXHQPWHDFP3MVMQWJM53PRCJ7
-X-MailFrom: shengjiu.wang@nxp.com
+	id 23BC3F80527; Fri, 21 Jul 2023 10:27:02 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BECAF800D2
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 10:26:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BECAF800D2
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36L8QhJtA006516,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+	by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36L8QhJtA006516
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+	Fri, 21 Jul 2023 16:26:43 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 21 Jul 2023 16:26:52 +0800
+Received: from ubuntu.localdomain (172.22.102.209) by RTEXMBS01.realtek.com.tw
+ (172.21.6.94) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 21 Jul
+ 2023 16:26:51 +0800
+From: <shumingf@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
+        <oder_chiou@realtek.com>, <jack.yu@realtek.com>,
+        <derek.fang@realtek.com>, <Vijendar.Mukunda@amd.com>,
+        Shuming Fan <shumingf@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt711-sdca: fix key tone missing
+Date: Fri, 21 Jul 2023 16:26:45 +0800
+Message-ID: <20230721082645.114050-1-shumingf@realtek.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.209]
+X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+Message-ID-Hash: JIPXP2S5OKBQ6NMXXSCQXHFUP4GOVCEQ
+X-Message-ID-Hash: JIPXP2S5OKBQ6NMXXSCQXHFUP4GOVCEQ
+X-MailFrom: shumingf@realtek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -73,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RE4QGVNEXHQPWHDFP3MVMQWJM53PRCJ7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JIPXP2S5OKBQ6NMXXSCQXHFUP4GOVCEQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,43 +93,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Support DAC filter characteristics selection: Normal mode
-and Sloping stopband. Sloping stopband may have
-better frequency response.
+From: Shuming Fan <shumingf@realtek.com>
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+This patch uses a bit to check whether the system was hibernated or not.
+It could avoid repeating the recalibration and CBJ detection.
+
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
 ---
- sound/soc/codecs/wm8960.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/rt711-sdca-sdw.c |  1 +
+ sound/soc/codecs/rt711-sdca.c     | 17 ++++++++++++++++-
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 366f5d769d6d..ff1355306b43 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -155,6 +155,7 @@ static const char *wm8960_adc_data_output_sel[] = {
- 	"Left Data = Right ADC; Right Data = Left ADC",
- };
- static const char *wm8960_dmonomix[] = {"Stereo", "Mono"};
-+static const char *wm8960_dacslope[] = {"Normal", "Sloping"};
+diff --git a/sound/soc/codecs/rt711-sdca-sdw.c b/sound/soc/codecs/rt711-sdca-sdw.c
+index 119e1f9605d7..cb27b4a98fb6 100644
+--- a/sound/soc/codecs/rt711-sdca-sdw.c
++++ b/sound/soc/codecs/rt711-sdca-sdw.c
+@@ -101,6 +101,7 @@ static bool rt711_sdca_mbq_volatile_register(struct device *dev, unsigned int re
+ 	case 0x2000080:
+ 	case 0x2000081:
+ 	case 0x2000083:
++	case 0x200009f:
+ 	case 0x5800000:
+ 	case 0x5800001:
+ 	case 0x5f00001:
+diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
+index 07640d2f6e56..f1a93e3ffa1c 100644
+--- a/sound/soc/codecs/rt711-sdca.c
++++ b/sound/soc/codecs/rt711-sdca.c
+@@ -488,6 +488,12 @@ static void rt711_sdca_jack_init(struct rt711_sdca_priv *rt711)
+ 		/* set SCP_SDCA_IntMask2[0]=1 */
+ 		sdw_write_no_pm(rt711->slave, SDW_SCP_SDCA_INTMASK2, SDW_SCP_SDCA_INTMASK_SDCA_8);
+ 		dev_dbg(&rt711->slave->dev, "in %s enable\n", __func__);
++
++		/* trigger GE interrupt */
++		rt711_sdca_index_update_bits(rt711, RT711_VENDOR_HDA_CTL,
++			RT711_GE_MODE_RELATED_CTL, 0x0080, 0x0080);
++		rt711_sdca_index_update_bits(rt711, RT711_VENDOR_HDA_CTL,
++			RT711_GE_MODE_RELATED_CTL, 0x0080, 0x0000);
+ 	} else {
+ 		/* disable HID 1/2 event */
+ 		rt711_sdca_index_update_bits(rt711, RT711_VENDOR_HDA_CTL,
+@@ -1493,7 +1499,7 @@ int rt711_sdca_io_init(struct device *dev, struct sdw_slave *slave)
+ {
+ 	struct rt711_sdca_priv *rt711 = dev_get_drvdata(dev);
+ 	int ret = 0;
+-	unsigned int val;
++	unsigned int val, hibernation_flag;
  
- static const struct soc_enum wm8960_enum[] = {
- 	SOC_ENUM_SINGLE(WM8960_DACCTL1, 5, 4, wm8960_polarity),
-@@ -165,6 +166,7 @@ static const struct soc_enum wm8960_enum[] = {
- 	SOC_ENUM_SINGLE(WM8960_ALC3, 8, 2, wm8960_alcmode),
- 	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 2, 4, wm8960_adc_data_output_sel),
- 	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 4, 2, wm8960_dmonomix),
-+	SOC_ENUM_SINGLE(WM8960_DACCTL2, 1, 2, wm8960_dacslope),
- };
+ 	rt711->disable_irq = false;
  
- static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
-@@ -307,6 +309,7 @@ SOC_SINGLE_TLV("Right Output Mixer RINPUT3 Volume",
+@@ -1525,6 +1531,11 @@ int rt711_sdca_io_init(struct device *dev, struct sdw_slave *slave)
  
- SOC_ENUM("ADC Data Output Select", wm8960_enum[6]),
- SOC_ENUM("DAC Mono Mix", wm8960_enum[7]),
-+SOC_ENUM("DAC filter characteristics", wm8960_enum[8]),
- };
+ 	pm_runtime_get_noresume(&slave->dev);
  
- static const struct snd_kcontrol_new wm8960_lin_boost[] = {
++	rt711_sdca_index_read(rt711, RT711_VENDOR_REG, 0x9f, &val);
++	hibernation_flag = (val >> 8);
++	if (hibernation_flag)
++		goto _preset_ready_;
++
+ 	rt711_sdca_reset(rt711);
+ 
+ 	rt711_sdca_index_read(rt711, RT711_VENDOR_REG, RT711_JD_PRODUCT_NUM, &val);
+@@ -1559,6 +1570,10 @@ int rt711_sdca_io_init(struct device *dev, struct sdw_slave *slave)
+ 	if (rt711->hs_jack)
+ 		rt711_sdca_jack_init(rt711);
+ 
++	if (!hibernation_flag)
++		rt711_sdca_index_update_bits(rt711, RT711_VENDOR_REG, 0x9f, 0x0100, 0x0100);
++
++_preset_ready_:
+ 	if (rt711->first_hw_init) {
+ 		regcache_cache_bypass(rt711->regmap, false);
+ 		regcache_mark_dirty(rt711->regmap);
 -- 
 2.34.1
 
