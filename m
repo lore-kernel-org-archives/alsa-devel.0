@@ -4,104 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED2CAEB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 15:06:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0593EB64DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 15:20:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B99B1F4;
-	Fri, 21 Jul 2023 17:05:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B99B1F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D7D54E;
+	Fri, 21 Jul 2023 17:19:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D7D54E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689951999;
-	bh=O86D9qWX4fj6OF+4HTLNl7+5ZBUltxqkilpPBKzUWkI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1689952806;
+	bh=efEUaNG0WfUCnRkmgngAHrJCFGgRIQgL4I7wGYG8qcU=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=P/ZMYJ3uE8n+ME+nWjSN7ZqqDF2CHBIXL2Trlmo42Xo1k/FElH/fljspB5gRn5SUJ
-	 90uhN5G86LfXuCv8JudZNzlfwpTbMHClMbQHNmzjOe7IvN3qzg0kR1mBGBj3yvXUVd
-	 DYaCQ22+TFpxzZV5sKOhN3bN/X9Fl2J2tUEXOfc4=
+	b=mIltnBZz3/H9XGt+2NZh3AXIb0auTC225PcujX09JOTPN5NLIc4pzXTedASuhTRpZ
+	 TxGCpvF8ucht4Ay85VKfoY6UggNLx6qRvWuAi79ACM9xoqiZCNKCaUwSfexo0UYgch
+	 a8VtGIXfxoWdJ9rfeVGVlH5vNv6ymRzMFhpGcR84=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 19407F8047D; Fri, 21 Jul 2023 17:05:49 +0200 (CEST)
+	id D07FEF8032D; Fri, 21 Jul 2023 17:18:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFC98F80494;
-	Fri, 21 Jul 2023 17:05:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4201CF8032D;
+	Fri, 21 Jul 2023 17:18:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 635E4F80494; Fri, 21 Jul 2023 17:05:45 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id DCD7DF80552; Fri, 21 Jul 2023 17:18:38 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 06B5FF8007E
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 17:05:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06B5FF8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3CBE5F800D2
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 17:18:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CBE5F800D2
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=t4gEHRUn;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=w6JhbvP0
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AE4BE218B0;
-	Fri, 21 Jul 2023 15:05:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1689951942;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FNa2Ga/vdBWuEamymR1djSQjbjCUdeP1tyXN5hm2If8=;
-	b=t4gEHRUn/4R1W1nvw16UePnaCr7czzXy/iJLYd2r+M3+434Q0UFdraRXzjH8hTOP6DE+oH
-	WPeuxmi61S3jX50XqOk28s0nZfZUoqzC7seehhRj6HZyk+KjIBK1Rj/8PvWo8ADZy1BdZK
-	mMqSV7HQMLxnGGdzkmtnVepqnUXrlbs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689951942;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FNa2Ga/vdBWuEamymR1djSQjbjCUdeP1tyXN5hm2If8=;
-	b=w6JhbvP0+FjcIugs7BlpcG0tVg43PKwHZg8p7vEm8rkRhu+vgkf29KvGOvwHqpCUemJF74
-	9F2WxABiH/6v9+Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 79021134BA;
-	Fri, 21 Jul 2023 15:05:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ZSWVHMaeumQ2IQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 21 Jul 2023 15:05:42 +0000
-Date: Fri, 21 Jul 2023 17:05:42 +0200
-Message-ID: <875y6dz4mx.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi
- Iwai <tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>,
-	<patches@opensource.cirrus.com>
-Subject: Re: [PATCH v1 10/11] ALSA: hda: cs35l41: Add device_link between HDA
- and cs35l41_hda
-In-Reply-To: <bf6b5496-bcf9-771d-5921-fe137fa3bec0@opensource.cirrus.com>
-References: <20230720133147.1294337-1-sbinding@opensource.cirrus.com>
-	<20230720133147.1294337-11-sbinding@opensource.cirrus.com>
-	<87v8eeiryp.wl-tiwai@suse.de>
-	<bf6b5496-bcf9-771d-5921-fe137fa3bec0@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: GFMENYZSPUKZPO6UUGHAL3MXKF4MM6DP
-X-Message-ID-Hash: GFMENYZSPUKZPO6UUGHAL3MXKF4MM6DP
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=VxAtXxwj
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 36LDppwh011284;
+	Fri, 21 Jul 2023 10:18:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=Pop765tX/espGAVNilT1iKAuALz1mWdpJ3qDXGWdFD0=; b=
+	VxAtXxwjrf2nrMjxotSepqnw1wM8AvXiG32QUSegfv5vsOs2ktJtPfG8bT/I/hxc
+	ebjLMMhE7Q6W0FeWWKATJRg8jDjHnKHTJ+dunbFq9bc0N96q9lC2qYlCPwhvhiJ0
+	5GV7dQcMpnr+3aWFZeyDJ3Q3T/yuqBEHFW5xOb7zS9klkPTggjIGmwWkZnmr65Vh
+	McAkFnySGE0pKrwYUmAmc84yEDYGE0Yd8yncDGaF2hUUyHK4VnXkkJum1uqZRIYU
+	KjGVvNNTDQHQuS2BCt9TqaucO8aC6w3O+RmAiUBcqoiuzQYei7GzTNLMo+osv5LH
+	4gJHqCIm2kJH4NpxnjwOQA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3rus62y8g5-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 21 Jul 2023 10:18:28 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 21 Jul
+ 2023 16:18:25 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Fri, 21 Jul 2023 16:18:25 +0100
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.219])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A3FBE3560;
+	Fri, 21 Jul 2023 15:18:25 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi
+ Iwai <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Stefan Binding
+	<sbinding@opensource.cirrus.com>
+Subject: [PATCH v2 01/11] ALSA: cs35l41: Use mbox command to enable speaker
+ output for external boost
+Date: Fri, 21 Jul 2023 16:18:06 +0100
+Message-ID: <20230721151816.2080453-2-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230721151816.2080453-1-sbinding@opensource.cirrus.com>
+References: <20230721151816.2080453-1-sbinding@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: OFpE8lYm0V3lcYYJhpnchy2usvP-uh9J
+X-Proofpoint-ORIG-GUID: OFpE8lYm0V3lcYYJhpnchy2usvP-uh9J
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 5EB2V4P2A3ZLVN5OGJJV3TW2RLT6BSU3
+X-Message-ID-Hash: 5EB2V4P2A3ZLVN5OGJJV3TW2RLT6BSU3
+X-MailFrom: prvs=2566513517=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -113,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GFMENYZSPUKZPO6UUGHAL3MXKF4MM6DP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5EB2V4P2A3ZLVN5OGJJV3TW2RLT6BSU3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,54 +111,235 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 21 Jul 2023 16:55:43 +0200,
-Stefan Binding wrote:
-> 
-> 
-> On 20/07/2023 15:21, Takashi Iwai wrote:
-> > On Thu, 20 Jul 2023 15:31:46 +0200,
-> > Stefan Binding wrote:
-> >> To ensure consistency between the HDA core and the CS35L41 HDA
-> >> driver, add a device_link between them. This ensures that the
-> >> HDA core will suspend first, and resume second, meaning the
-> >> amp driver will not miss any events from the playback hook from
-> >> the HDA core during system suspend and resume.
-> >> 
-> >> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-> >> ---
-> >>   sound/pci/hda/cs35l41_hda.c | 13 ++++++++++++-
-> >>   1 file changed, 12 insertions(+), 1 deletion(-)
-> >> 
-> >> diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-> >> index 70aa819cfbd64..175378cdf9dfa 100644
-> >> --- a/sound/pci/hda/cs35l41_hda.c
-> >> +++ b/sound/pci/hda/cs35l41_hda.c
-> >> @@ -1063,6 +1063,7 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
-> >>   {
-> >>   	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-> >>   	struct hda_component *comps = master_data;
-> >> +	unsigned int sleep_flags;
-> >>   	int ret = 0;
-> >>     	if (!comps || cs35l41->index < 0 || cs35l41->index >=
-> >> HDA_MAX_COMPONENTS)
-> >> @@ -1102,6 +1103,11 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
-> >>     	mutex_unlock(&cs35l41->fw_mutex);
-> >>   +	sleep_flags = lock_system_sleep();
-> >> +	if (!device_link_add(&comps->codec->core.dev, cs35l41->dev, DL_FLAG_STATELESS))
-> >> +		dev_warn(dev, "Unable to create device link\n");
-> >> +	unlock_system_sleep(sleep_flags);
-> > Is lock_system_sleep() mandatory for device_link_add()?  The function
-> > takes its rw lock for the race, I suppose.
-> 
-> I believe this is mandatory, to ensure we don't try to add the device
-> link during a suspend/resume transition.
-> Its probably unlikely that that would occur during the component bind,
-> but just in case.
+To enable the speaker output in external boost mode, 2 registers must
+be set, one after another. The longer the time between the writes of
+the two registers, the more likely, and more loudly a pop may occur.
+To minimize this, an mbox command can be used to allow the firmware
+to perform this action, minimizing any delay between write, thus
+minimizing any pop or click as a result. The old method will remain
+when running without firmware.
 
-OK, it seems needed in this case.  I found the description in
-device_link.rst, too.
+Acked-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ include/sound/cs35l41.h        |  5 ++-
+ sound/pci/hda/cs35l41_hda.c    |  9 ++--
+ sound/soc/codecs/cs35l41-lib.c | 76 +++++++++++++++++++++++++++-------
+ sound/soc/codecs/cs35l41.c     |  8 ++--
+ 4 files changed, 74 insertions(+), 24 deletions(-)
 
+diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
+index 7239d943942cb..1bf757901d024 100644
+--- a/include/sound/cs35l41.h
++++ b/include/sound/cs35l41.h
+@@ -829,6 +829,7 @@ enum cs35l41_cspl_mbox_cmd {
+ 	CSPL_MBOX_CMD_STOP_PRE_REINIT = 4,
+ 	CSPL_MBOX_CMD_HIBERNATE = 5,
+ 	CSPL_MBOX_CMD_OUT_OF_HIBERNATE = 6,
++	CSPL_MBOX_CMD_SPK_OUT_ENABLE = 7,
+ 	CSPL_MBOX_CMD_UNKNOWN_CMD = -1,
+ 	CSPL_MBOX_CMD_INVALID_SEQUENCE = -2,
+ };
+@@ -901,7 +902,7 @@ int cs35l41_exit_hibernate(struct device *dev, struct regmap *regmap);
+ int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
+ 		       struct cs35l41_hw_cfg *hw_cfg);
+ bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type);
+-int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable,
+-			  struct completion *pll_lock);
++int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l41_boost_type b_type,
++			  int enable, struct completion *pll_lock, bool firmware_running);
+ 
+ #endif /* __CS35L41_H */
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index ce5faa6205170..f9c97270db6f6 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -514,13 +514,15 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
+ 		break;
+ 	case HDA_GEN_PCM_ACT_PREPARE:
+ 		mutex_lock(&cs35l41->fw_mutex);
+-		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 1, NULL);
++		ret = cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 1, NULL,
++					    cs35l41->firmware_running);
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLEANUP:
+ 		mutex_lock(&cs35l41->fw_mutex);
+ 		regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
+-		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 0, NULL);
++		ret = cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 0, NULL,
++					    cs35l41->firmware_running);
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLOSE:
+@@ -672,7 +674,8 @@ static int cs35l41_runtime_suspend(struct device *dev)
+ 	if (cs35l41->playback_started) {
+ 		regmap_multi_reg_write(cs35l41->regmap, cs35l41_hda_mute,
+ 				       ARRAY_SIZE(cs35l41_hda_mute));
+-		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0, NULL);
++		cs35l41_global_enable(cs35l41->dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0,
++				      NULL, cs35l41->firmware_running);
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+ 				   CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
+ 		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index ac7cc492bcb05..ce3f475023756 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -1080,28 +1080,32 @@ static const struct reg_sequence cs35l41_safe_to_reset[] = {
+ 	{ 0x00000040,			0x00000033 },
+ };
+ 
+-static const struct reg_sequence cs35l41_active_to_safe[] = {
++static const struct reg_sequence cs35l41_active_to_safe_start[] = {
+ 	{ 0x00000040,			0x00000055 },
+ 	{ 0x00000040,			0x000000AA },
+ 	{ 0x00007438,			0x00585941 },
+ 	{ CS35L41_PWR_CTRL1,		0x00000000 },
+-	{ 0x0000742C,			0x00000009, 3000 },
++	{ 0x0000742C,			0x00000009 },
++};
++
++static const struct reg_sequence cs35l41_active_to_safe_end[] = {
+ 	{ 0x00007438,			0x00580941 },
+ 	{ 0x00000040,			0x000000CC },
+ 	{ 0x00000040,			0x00000033 },
+ };
+ 
+-static const struct reg_sequence cs35l41_safe_to_active[] = {
++static const struct reg_sequence cs35l41_safe_to_active_start[] = {
+ 	{ 0x00000040,			0x00000055 },
+ 	{ 0x00000040,			0x000000AA },
+ 	{ 0x0000742C,			0x0000000F },
+ 	{ 0x0000742C,			0x00000079 },
+ 	{ 0x00007438,			0x00585941 },
+-	{ CS35L41_PWR_CTRL1,		0x00000001, 3000 }, // GLOBAL_EN = 1
++	{ CS35L41_PWR_CTRL1,		0x00000001 }, // GLOBAL_EN = 1
++};
++
++static const struct reg_sequence cs35l41_safe_to_active_en_spk[] = {
+ 	{ 0x0000742C,			0x000000F9 },
+ 	{ 0x00007438,			0x00580941 },
+-	{ 0x00000040,			0x000000CC },
+-	{ 0x00000040,			0x00000033 },
+ };
+ 
+ static const struct reg_sequence cs35l41_reset_to_safe[] = {
+@@ -1188,11 +1192,11 @@ bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type)
+ }
+ EXPORT_SYMBOL_GPL(cs35l41_safe_reset);
+ 
+-int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable,
+-			  struct completion *pll_lock)
++int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l41_boost_type b_type,
++			  int enable, struct completion *pll_lock, bool firmware_running)
+ {
+ 	int ret;
+-	unsigned int gpio1_func, pad_control, pwr_ctrl1, pwr_ctrl3;
++	unsigned int gpio1_func, pad_control, pwr_ctrl1, pwr_ctrl3, int_status;
+ 	struct reg_sequence cs35l41_mdsync_down_seq[] = {
+ 		{CS35L41_PWR_CTRL3,		0},
+ 		{CS35L41_GPIO_PAD_CONTROL,	0},
+@@ -1204,6 +1208,14 @@ int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type,
+ 		{CS35L41_PWR_CTRL1,	0x00000001, 3000},
+ 	};
+ 
++	if ((pwr_ctl1_val & CS35L41_GLOBAL_EN_MASK) && enable) {
++		dev_dbg(dev, "Cannot set Global Enable - already set.\n");
++		return 0;
++	} else if (!(pwr_ctl1_val & CS35L41_GLOBAL_EN_MASK) && !enable) {
++		dev_dbg(dev, "Cannot unset Global Enable - not set.\n");
++		return 0;
++	}
++
+ 	switch (b_type) {
+ 	case CS35L41_SHD_BOOST_ACTV:
+ 	case CS35L41_SHD_BOOST_PASS:
+@@ -1244,16 +1256,48 @@ int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type,
+ 	case CS35L41_INT_BOOST:
+ 		ret = regmap_update_bits(regmap, CS35L41_PWR_CTRL1, CS35L41_GLOBAL_EN_MASK,
+ 					 enable << CS35L41_GLOBAL_EN_SHIFT);
++		if (ret) {
++			dev_err(dev, "CS35L41_PWR_CTRL1 set failed: %d\n", ret);
++			return ret;
++		}
+ 		usleep_range(3000, 3100);
+ 		break;
+ 	case CS35L41_EXT_BOOST:
+ 	case CS35L41_EXT_BOOST_NO_VSPK_SWITCH:
+-		if (enable)
+-			ret = regmap_multi_reg_write(regmap, cs35l41_safe_to_active,
+-						     ARRAY_SIZE(cs35l41_safe_to_active));
+-		else
+-			ret = regmap_multi_reg_write(regmap, cs35l41_active_to_safe,
+-						     ARRAY_SIZE(cs35l41_active_to_safe));
++		if (enable) {
++			/* Test Key is unlocked here */
++			ret = regmap_multi_reg_write(regmap, cs35l41_safe_to_active_start,
++						     ARRAY_SIZE(cs35l41_safe_to_active_start));
++			if (ret)
++				return ret;
++
++			usleep_range(3000, 3100);
++
++			if (firmware_running)
++				ret = cs35l41_set_cspl_mbox_cmd(dev, regmap,
++								CSPL_MBOX_CMD_SPK_OUT_ENABLE);
++			else
++				ret = regmap_multi_reg_write(regmap, cs35l41_safe_to_active_en_spk,
++							ARRAY_SIZE(cs35l41_safe_to_active_en_spk));
++
++			/* Lock the test key, it was unlocked during the multi_reg_write */
++			cs35l41_test_key_lock(dev, regmap);
++		} else {
++			/* Test Key is unlocked here */
++			ret = regmap_multi_reg_write(regmap, cs35l41_active_to_safe_start,
++						     ARRAY_SIZE(cs35l41_active_to_safe_start));
++			if (ret) {
++				/* Lock the test key, it was unlocked during the multi_reg_write */
++				cs35l41_test_key_lock(dev, regmap);
++				return ret;
++			}
++
++			usleep_range(3000, 3100);
++
++			/* Test Key is locked here */
++			ret = regmap_multi_reg_write(regmap, cs35l41_active_to_safe_end,
++						     ARRAY_SIZE(cs35l41_active_to_safe_end));
++		}
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -1344,6 +1388,8 @@ static bool cs35l41_check_cspl_mbox_sts(enum cs35l41_cspl_mbox_cmd cmd,
+ 		return (sts == CSPL_MBOX_STS_RUNNING);
+ 	case CSPL_MBOX_CMD_STOP_PRE_REINIT:
+ 		return (sts == CSPL_MBOX_STS_RDY_FOR_REINIT);
++	case CSPL_MBOX_CMD_SPK_OUT_ENABLE:
++		return (sts == CSPL_MBOX_STS_RUNNING);
+ 	default:
+ 		return false;
+ 	}
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index 6ac501f008eca..d4e9c9d9b50a6 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -500,12 +500,12 @@ static int cs35l41_main_amp_event(struct snd_soc_dapm_widget *w,
+ 						cs35l41_pup_patch,
+ 						ARRAY_SIZE(cs35l41_pup_patch));
+ 
+-		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 1,
+-				      &cs35l41->pll_lock);
++		ret = cs35l41_global_enable(cs35l41->dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type,
++					    1, &cs35l41->pll_lock, cs35l41->dsp.cs_dsp.running);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+-		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0,
+-				      &cs35l41->pll_lock);
++		ret = cs35l41_global_enable(cs35l41->dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type,
++					    0, &cs35l41->pll_lock, cs35l41->dsp.cs_dsp.running);
+ 
+ 		ret = regmap_read_poll_timeout(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
+ 					       val, val &  CS35L41_PDN_DONE_MASK,
+-- 
+2.34.1
 
-thanks,
-
-Takashi
