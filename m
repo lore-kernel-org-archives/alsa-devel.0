@@ -4,125 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCB25EB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 09:00:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 009B7EB64DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 09:00:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22E52DF1;
-	Fri, 21 Jul 2023 10:59:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22E52DF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33E7AE72;
+	Fri, 21 Jul 2023 10:59:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33E7AE72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689930005;
-	bh=a4AHURSxiytJBac5kwivWGdA/WlEISpyKphzmSmNh6A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ubGqouapJozMCb8J2DPux8jIjPc+CKf4aQAak8j8pQvgKWJYMIhlxZkc7JmuFfHs9
-	 psZ643M4SNbEykJ4zFLnk4ofmsEOedN3zloI1c2/9dGyrupJblKzACbKOAFVEvHtHT
-	 Wvd2L37M6vZ3yBf299CYeu1grgdpk9fT4oBs6GuQ=
+	s=default; t=1689930023;
+	bh=kU2Bs5vS/3uiQcEVO7vkNTXtJKfpO9ftuilDt0XCrP0=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=odhLSu/55NwB+w5c8xwvFdmNT932LMBtK014JV8MmlzWmdFUU3cjnPkI9xUzRXm3G
+	 EUDCMZbZQIHviRzRa8c9zufq4IXh54gKuyHBGCLGFGkNP2gnug9U2+CnJqbUcen9L+
+	 taiAyLUF97o7Ij7URZXfkWXPGSarHcMwBfeanCsQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31A95F8067F; Fri, 21 Jul 2023 10:54:48 +0200 (CEST)
+	id 8155AF800D2; Fri, 21 Jul 2023 10:57:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F55BF80589;
-	Fri, 21 Jul 2023 10:54:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50F0BF800D2;
+	Fri, 21 Jul 2023 10:57:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DEEEEF8047D; Fri, 21 Jul 2023 03:28:36 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 67F84F804DA; Fri, 21 Jul 2023 10:57:51 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ABDD7F800D2
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 03:28:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABDD7F800D2
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Bh7kn/mw
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 6E3AA61CB7;
-	Fri, 21 Jul 2023 01:28:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EAEFC433C8;
-	Fri, 21 Jul 2023 01:28:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689902903;
-	bh=a4AHURSxiytJBac5kwivWGdA/WlEISpyKphzmSmNh6A=;
-	h=Date:Subject:List-Id:To:Cc:References:From:In-Reply-To:From;
-	b=Bh7kn/mwf0nhdrrHVZnP/CabZGOK0o9Nj1DGlUXPvFkiXVfJWGkG2zMDPI80AK+m5
-	 ndpyeyJpablIa+svIhfVjApTiNWm38SXLM5Ip2QZ1idixkK02EzxiSk9v2k9CuYOr1
-	 +bNpNG675bAEv7dbDWKSynAFISmDYpBY9qPHKqwht0VfplcSCDRpV5sTXQtBkgi5XV
-	 gB5AP9YDs7KIJooJBHnCt2W5CpJndgSVfQtABWSOuSnZyhtkD1dA2tthPNpk12wfU0
-	 w0rlbYd13UZ5R111b3lBf03n6AJ7WJ7kRCoc3spI9UJIUtI/Bv6SK+uFPJ1HwKrG0p
-	 uhLnHHcDPIonw==
-Message-ID: <3aa9db67-09e5-edff-d71e-2ec39e626f13@kernel.org>
-Date: Fri, 21 Jul 2023 10:28:17 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 38/42] ata: pata_ep93xx: remove legacy pinctrl use
-Content-Language: en-US
-To: nikita.shubin@maquefel.me, Hartley Sweeten
- <hsweeten@visionengravers.com>, Lennert Buytenhek <kernel@wantstofly.org>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Lukasz Majewski <lukma@denx.de>,
- Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
- <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>, Alessandro Zummo
- <a.zummo@towertech.it>, Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck
- <linux@roeck-us.net>, Sebastian Reichel <sre@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
- Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Sergey Shtylyov <s.shtylyov@omp.ru>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- Olof Johansson <olof@lixom.net>, soc@kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andy@kernel.org>,
- Michael Peters <mpeters@embeddedTS.com>, Kris Bahnsen <kris@embeddedTS.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
- netdev@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
- linux-input@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-38-3d63a5f1103e@maquefel.me>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20230605-ep93xx-v3-38-3d63a5f1103e@maquefel.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-MailFrom: dlemoal@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0D17F800D2
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 10:57:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0D17F800D2
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 53C102004DB;
+	Fri, 21 Jul 2023 10:57:47 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1AFC02004B5;
+	Fri, 21 Jul 2023 10:57:47 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id B7DF21820F57;
+	Fri, 21 Jul 2023 16:57:45 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	ckeepax@opensource.cirrus.com,
+	kuninori.morimoto.gx@renesas.com,
+	patches@opensource.cirrus.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ASoC: wm8960: Add DAC filter characteristics selection
+Date: Fri, 21 Jul 2023 16:24:02 +0800
+Message-Id: <1689927842-21165-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Message-ID-Hash: D7GDIFBXKNQEO5D3HNMWA6O4ZMJML6NB
+X-Message-ID-Hash: D7GDIFBXKNQEO5D3HNMWA6O4ZMJML6NB
+X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: VFJ75O3VGCZ6KU7MSXRABIKNADFSGT7G
-X-Message-ID-Hash: VFJ75O3VGCZ6KU7MSXRABIKNADFSGT7G
-X-Mailman-Approved-At: Fri, 21 Jul 2023 08:54:44 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VFJ75O3VGCZ6KU7MSXRABIKNADFSGT7G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D7GDIFBXKNQEO5D3HNMWA6O4ZMJML6NB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,16 +82,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 7/20/23 20:29, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
-> 
-> Drop legacy acquire/release since we are using pinctrl for this now.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Support DAC filter characteristics selection: Normal mode
+and Sloping stopband. Sloping stopband may have
+better frequency response.
 
-Acked-by: Damien Le Moal <dlemoal@kernel.org>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+changes in v2:
+- modify capitalise
 
+ sound/soc/codecs/wm8960.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 366f5d769d6d..5db9b0338396 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -155,6 +155,7 @@ static const char *wm8960_adc_data_output_sel[] = {
+ 	"Left Data = Right ADC; Right Data = Left ADC",
+ };
+ static const char *wm8960_dmonomix[] = {"Stereo", "Mono"};
++static const char *wm8960_dacslope[] = {"Normal", "Sloping"};
+ 
+ static const struct soc_enum wm8960_enum[] = {
+ 	SOC_ENUM_SINGLE(WM8960_DACCTL1, 5, 4, wm8960_polarity),
+@@ -165,6 +166,7 @@ static const struct soc_enum wm8960_enum[] = {
+ 	SOC_ENUM_SINGLE(WM8960_ALC3, 8, 2, wm8960_alcmode),
+ 	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 2, 4, wm8960_adc_data_output_sel),
+ 	SOC_ENUM_SINGLE(WM8960_ADDCTL1, 4, 2, wm8960_dmonomix),
++	SOC_ENUM_SINGLE(WM8960_DACCTL2, 1, 2, wm8960_dacslope),
+ };
+ 
+ static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
+@@ -307,6 +309,7 @@ SOC_SINGLE_TLV("Right Output Mixer RINPUT3 Volume",
+ 
+ SOC_ENUM("ADC Data Output Select", wm8960_enum[6]),
+ SOC_ENUM("DAC Mono Mix", wm8960_enum[7]),
++SOC_ENUM("DAC Filter Characteristics", wm8960_enum[8]),
+ };
+ 
+ static const struct snd_kcontrol_new wm8960_lin_boost[] = {
 -- 
-Damien Le Moal
-Western Digital Research
+2.34.1
 
