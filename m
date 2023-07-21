@@ -4,95 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87137C001DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 07:22:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CC36EB64DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 07:22:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA52784C;
-	Fri, 21 Jul 2023 09:21:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA52784C
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC577208;
+	Fri, 21 Jul 2023 09:21:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC577208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689924134;
-	bh=/GkoOe3o90wZZyP0e0Y0uFIPGWntQPNFMNFR+AcvQIs=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=aiMBTKDM7YY97CtqbAhjVNMsA/lR8/Q/Cr2rBwBj7/DYUKvkF4LUzt8mTbpoGO7sf
-	 m/fD9KIivyilDBAKaEHAb1mvDoqJHDkfpnyUMnopRFGosq4emtKTXS+CRH+ITxtDqQ
-	 4L0sraduoYH7rtQ93pd30BtlyYu+b5AgjExTGe7I=
+	s=default; t=1689924156;
+	bh=qL7QxbxFCaP4mZldKskbjYppg/qkhneHem+jWoW6wbY=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Sv51m+Dvcstz4I6+CSI13bDBhERUD6/7fz1pHgW7Ntn8Cj+JFawDuGSRd0rfF65j0
+	 LYAWI3QvEypb50R2ASuKt0zZvjFQvT/KBrUixLNSgkNHP6mGNRwokxGqtEPgO0LSXq
+	 T7kdwcTT6mzESlVpPafOHcBRtx53Gk6WpNQ+6Shg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0FECDF8057A; Fri, 21 Jul 2023 09:20:10 +0200 (CEST)
+	id 7952BF80587; Fri, 21 Jul 2023 09:20:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9686CF8057A;
-	Fri, 21 Jul 2023 09:20:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38797F80588;
+	Fri, 21 Jul 2023 09:20:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4915FF8047D; Fri, 21 Jul 2023 09:17:20 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 0C7D9F8032D; Fri, 21 Jul 2023 09:17:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0007F80494
+	by alsa1.perex.cz (Postfix) with ESMTPS id E4A3AF8007E
 	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 09:17:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0007F80494
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4A3AF8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=YqbBNGa5;
+ header.s=susede2_rsa header.b=ZQjZBNAn;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=3STythtX
+ header.s=susede2_ed25519 header.b=3zPZt7zv
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 38A23201D9;
-	Fri, 21 Jul 2023 07:17:08 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B68131FFDE;
+	Fri, 21 Jul 2023 07:17:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1689923828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1689923827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nTQ14JC6mQ5BgjoLhLF6hiXxW4MD7lvfHG7W+rD963g=;
-	b=YqbBNGa5SEzVbzlXe+mlVui0YbybUuQ28o4NmfBmSvy/Ec0GlZE0BxC6Zf8h9maZZSSZff
-	o4cT6UvhaOspBiG5A9iwio++YDoJclKPtN1zPwhskVgdFGKQaF6Gj5B63X5vdiKZLJA81y
-	iKEMe5qCr2E4pJHToUdQWPEqYLuSUZ0=
+  content-transfer-encoding:content-transfer-encoding;
+	bh=IUxv/KVtFCYVsCs/qDEXGCMMwfd55CTKjVbLFhIukf0=;
+	b=ZQjZBNAnJ4i6TqdDjBNIAhh61KyWji9zmh/F9ChUrHPvkAbzkstSUbOS43mBjDjYwQi4Gg
+	74KJRGd8rTcv83KO+BYKECPirf+y4xaEm6GvpWWJ0OR0hdKtlJkJ5YpIW34eniG80bWLn6
+	ewflh5+nQLoU6c/p9RW68zAXMfZeLA0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689923828;
+	s=susede2_ed25519; t=1689923827;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nTQ14JC6mQ5BgjoLhLF6hiXxW4MD7lvfHG7W+rD963g=;
-	b=3STythtXjE/gj+9g1jCG5rz/NRkc7BY8xt/fK3598+SXOsgNtmmwAjErt310phVJ8cphsK
-	oN88pvvwjkuxkdBw==
+  content-transfer-encoding:content-transfer-encoding;
+	bh=IUxv/KVtFCYVsCs/qDEXGCMMwfd55CTKjVbLFhIukf0=;
+	b=3zPZt7zvpF1NUNcUHYnXRMBM7m5oH+XgK/gFYhgeF2rq3lrdSj71h/V7JhOXEiyXLgS4ja
+	fOEfslCnTebcDUCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D1CC134B0;
-	Fri, 21 Jul 2023 07:17:08 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 98DCA134B0;
+	Fri, 21 Jul 2023 07:17:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id QD1UBvQwumRdLgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 21 Jul 2023 07:17:08 +0000
+	id emJBJPMwumRdLgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 21 Jul 2023 07:17:07 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 4/4] ALSA: ice1712: Use the standard
- snd_ctl_add_followers() helper
-Date: Fri, 21 Jul 2023 09:16:43 +0200
-Message-Id: <20230721071643.3631-5-tiwai@suse.de>
+Subject: [PATCH v2 0/4] ALSA: Cleanup with snd_ctl_add_followers()
+Date: Fri, 21 Jul 2023 09:16:39 +0200
+Message-Id: <20230721071643.3631-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230721071643.3631-1-tiwai@suse.de>
-References: <20230721071643.3631-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QX4OG5MGQRQLEVYYNB3AY6V4JYV3XGHA
-X-Message-ID-Hash: QX4OG5MGQRQLEVYYNB3AY6V4JYV3XGHA
+Message-ID-Hash: 43SXV2N3KWZBEASJ2CZOWE7LATR7YKZX
+X-Message-ID-Hash: 43SXV2N3KWZBEASJ2CZOWE7LATR7YKZX
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QX4OG5MGQRQLEVYYNB3AY6V4JYV3XGHA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/43SXV2N3KWZBEASJ2CZOWE7LATR7YKZX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,94 +107,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Instead of open-code, use the new standard helper to manage vmaster
-stuff for code simplification.
+This is another set of cleanup patches: introduce a new standard
+helper for adding vmaster control elements, and replace the open code
+in a few drivers with it.
 
-Also, handle the errors from the helper more properly instead of
-silently ignoring.
 
-The code changes the call order of snd_ctl_add() of the vmaster object
-and its followers for avoiding the possible memory leaks at error
-path.  But there should be no difference in the functionality.
+Takashi
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/ice1712/juli.c    | 19 +++----------------
- sound/pci/ice1712/quartet.c | 15 +++------------
- 2 files changed, 6 insertions(+), 28 deletions(-)
+===
 
-diff --git a/sound/pci/ice1712/juli.c b/sound/pci/ice1712/juli.c
-index d80ecf1edc16..d679842ae1bd 100644
---- a/sound/pci/ice1712/juli.c
-+++ b/sound/pci/ice1712/juli.c
-@@ -408,21 +408,6 @@ static const char * const follower_vols[] = {
- static
- DECLARE_TLV_DB_SCALE(juli_master_db_scale, -6350, 50, 1);
- 
--static void add_followers(struct snd_card *card,
--			  struct snd_kcontrol *master,
--			  const char * const *list)
--{
--	for (; *list; list++) {
--		struct snd_kcontrol *follower =
--			snd_ctl_find_id_mixer(card, *list);
--		/* dev_dbg(card->dev, "add_followers - %s\n", *list); */
--		if (follower) {
--			/* dev_dbg(card->dev, "follower %s found\n", *list); */
--			snd_ctl_add_follower(master, follower);
--		}
--	}
--}
--
- static int juli_add_controls(struct snd_ice1712 *ice)
- {
- 	struct juli_spec *spec = ice->spec;
-@@ -445,8 +430,10 @@ static int juli_add_controls(struct snd_ice1712 *ice)
- 					      juli_master_db_scale);
- 	if (!vmaster)
- 		return -ENOMEM;
--	add_followers(ice->card, vmaster, follower_vols);
- 	err = snd_ctl_add(ice->card, vmaster);
-+	if (err < 0)
-+		return err;
-+	err = snd_ctl_add_followers(ice->card, vmaster, follower_vols);
- 	if (err < 0)
- 		return err;
- 
-diff --git a/sound/pci/ice1712/quartet.c b/sound/pci/ice1712/quartet.c
-index 9450c4b104f7..f61ee9f5c754 100644
---- a/sound/pci/ice1712/quartet.c
-+++ b/sound/pci/ice1712/quartet.c
-@@ -766,17 +766,6 @@ static const char * const follower_vols[] = {
- static
- DECLARE_TLV_DB_SCALE(qtet_master_db_scale, -6350, 50, 1);
- 
--static void add_followers(struct snd_card *card,
--			  struct snd_kcontrol *master, const char * const *list)
--{
--	for (; *list; list++) {
--		struct snd_kcontrol *follower =
--			snd_ctl_find_id_mixer(card, *list);
--		if (follower)
--			snd_ctl_add_follower(master, follower);
--	}
--}
--
- static int qtet_add_controls(struct snd_ice1712 *ice)
- {
- 	struct qtet_spec *spec = ice->spec;
-@@ -797,8 +786,10 @@ static int qtet_add_controls(struct snd_ice1712 *ice)
- 			qtet_master_db_scale);
- 	if (!vmaster)
- 		return -ENOMEM;
--	add_followers(ice->card, vmaster, follower_vols);
- 	err = snd_ctl_add(ice->card, vmaster);
-+	if (err < 0)
-+		return err;
-+	err = snd_ctl_add_followers(ice->card, vmaster, follower_vols);
- 	if (err < 0)
- 		return err;
- 	/* only capture SPDIF over AK4113 */
+v1->v2: Cleanup of ac97 patch to drop unnecessary check of the error
+        condition
+
+===
+
+Takashi Iwai (4):
+  ALSA: vmaster: Add snd_ctl_add_followers() helper
+  ALSA: ac97: Use the standard snd_ctl_add_followers() helper
+  ALSA: ca0106: Use the standard snd_ctl_add_followers() helper
+  ALSA: ice1712: Use the standard snd_ctl_add_followers() helper
+
+ include/sound/control.h         |  3 +++
+ sound/core/vmaster.c            | 28 ++++++++++++++++++++++++++++
+ sound/pci/ac97/ac97_patch.c     | 16 +---------------
+ sound/pci/ca0106/ca0106_mixer.c | 19 ++++++-------------
+ sound/pci/ice1712/juli.c        | 19 +++----------------
+ sound/pci/ice1712/quartet.c     | 15 +++------------
+ 6 files changed, 44 insertions(+), 56 deletions(-)
+
 -- 
 2.35.3
 
