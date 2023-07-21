@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A11ABEB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 07:21:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87137C001DC
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 07:22:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2603583B;
-	Fri, 21 Jul 2023 09:21:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2603583B
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA52784C;
+	Fri, 21 Jul 2023 09:21:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA52784C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689924113;
-	bh=AdAa4a4l6t+0i6luIonpBKcVhVziMDJAtLhKuk14D78=;
+	s=default; t=1689924134;
+	bh=/GkoOe3o90wZZyP0e0Y0uFIPGWntQPNFMNFR+AcvQIs=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=OUeMvPGOWtZcpwRcCzB9ApeJZqVnlShf7VwVbOEaGNTqU3ggHjKHgTo1utXvBv7V3
-	 l1iUcL+clpzuI5VXK/5DSTevUgOkw55OhnIU05GSf3kuSXMXq75h1lVg7jEyYMvgov
-	 bMdNBKcB9vFt0o6PwwyWVYLOZ1gPIK6nmifZqHKA=
+	b=aiMBTKDM7YY97CtqbAhjVNMsA/lR8/Q/Cr2rBwBj7/DYUKvkF4LUzt8mTbpoGO7sf
+	 m/fD9KIivyilDBAKaEHAb1mvDoqJHDkfpnyUMnopRFGosq4emtKTXS+CRH+ITxtDqQ
+	 4L0sraduoYH7rtQ93pd30BtlyYu+b5AgjExTGe7I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 721F2F80568; Fri, 21 Jul 2023 09:20:10 +0200 (CEST)
+	id 0FECDF8057A; Fri, 21 Jul 2023 09:20:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19CD9F80563;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9686CF8057A;
 	Fri, 21 Jul 2023 09:20:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27EE1F8047D; Fri, 21 Jul 2023 09:17:18 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
+	id 4915FF8047D; Fri, 21 Jul 2023 09:17:20 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3809FF804DA
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0007F80494
 	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 09:17:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3809FF804DA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0007F80494
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=bLYT8e+j;
+ header.s=susede2_rsa header.b=YqbBNGa5;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=kG9MovDL
+ header.s=susede2_ed25519 header.b=3STythtX
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F11BD219BF;
-	Fri, 21 Jul 2023 07:17:07 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 38A23201D9;
+	Fri, 21 Jul 2023 07:17:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1689923827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1689923828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sWOtayF0fMT2IzKmQM67ZAWCMTbEJtvjXLr+Lli/Zi8=;
-	b=bLYT8e+jgFO3pSqFs6Wp76zk0uPJkpyHlChpppS+IQ20EbOs1FV/Ho5k2hMny/NPok+ISg
-	vtDJwTBwCgK3g4mMD61X89Ag73VFjouflQrN/YZACObTltrs7BQXkYZpZCj4tCYEgOfKxo
-	qZyLvYFtFC2AcIv9T5AuKzv49tAKWSA=
+	bh=nTQ14JC6mQ5BgjoLhLF6hiXxW4MD7lvfHG7W+rD963g=;
+	b=YqbBNGa5SEzVbzlXe+mlVui0YbybUuQ28o4NmfBmSvy/Ec0GlZE0BxC6Zf8h9maZZSSZff
+	o4cT6UvhaOspBiG5A9iwio++YDoJclKPtN1zPwhskVgdFGKQaF6Gj5B63X5vdiKZLJA81y
+	iKEMe5qCr2E4pJHToUdQWPEqYLuSUZ0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1689923827;
+	s=susede2_ed25519; t=1689923828;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sWOtayF0fMT2IzKmQM67ZAWCMTbEJtvjXLr+Lli/Zi8=;
-	b=kG9MovDLIlaaVoH04IzxVszUQcZuJq8BMWb/+JVpSOYNf3LQOcXU3EWGR7q5apNA3lS9tc
-	+L/txKlYb3xGUXAg==
+	bh=nTQ14JC6mQ5BgjoLhLF6hiXxW4MD7lvfHG7W+rD963g=;
+	b=3STythtXjE/gj+9g1jCG5rz/NRkc7BY8xt/fK3598+SXOsgNtmmwAjErt310phVJ8cphsK
+	oN88pvvwjkuxkdBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D7B2F134B0;
-	Fri, 21 Jul 2023 07:17:07 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D1CC134B0;
+	Fri, 21 Jul 2023 07:17:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id IMXDM/MwumRdLgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 21 Jul 2023 07:17:07 +0000
+	id QD1UBvQwumRdLgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 21 Jul 2023 07:17:08 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 2/4] ALSA: ac97: Use the standard snd_ctl_add_followers()
- helper
-Date: Fri, 21 Jul 2023 09:16:41 +0200
-Message-Id: <20230721071643.3631-3-tiwai@suse.de>
+Subject: [PATCH v2 4/4] ALSA: ice1712: Use the standard
+ snd_ctl_add_followers() helper
+Date: Fri, 21 Jul 2023 09:16:43 +0200
+Message-Id: <20230721071643.3631-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230721071643.3631-1-tiwai@suse.de>
 References: <20230721071643.3631-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: U6HMLU2HAERADKQXU7M7QXURNI3KCJON
-X-Message-ID-Hash: U6HMLU2HAERADKQXU7M7QXURNI3KCJON
+Message-ID-Hash: QX4OG5MGQRQLEVYYNB3AY6V4JYV3XGHA
+X-Message-ID-Hash: QX4OG5MGQRQLEVYYNB3AY6V4JYV3XGHA
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U6HMLU2HAERADKQXU7M7QXURNI3KCJON/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QX4OG5MGQRQLEVYYNB3AY6V4JYV3XGHA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,49 +117,91 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 Instead of open-code, use the new standard helper to manage vmaster
 stuff for code simplification.
 
-Except for a debug print, there should be no functional change.
+Also, handle the errors from the helper more properly instead of
+silently ignoring.
+
+The code changes the call order of snd_ctl_add() of the vmaster object
+and its followers for avoiding the possible memory leaks at error
+path.  But there should be no difference in the functionality.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
-v1->v2: drop unnecessary check of the error condition
+ sound/pci/ice1712/juli.c    | 19 +++----------------
+ sound/pci/ice1712/quartet.c | 15 +++------------
+ 2 files changed, 6 insertions(+), 28 deletions(-)
 
- sound/pci/ac97/ac97_patch.c | 16 +---------------
- 1 file changed, 1 insertion(+), 15 deletions(-)
-
-diff --git a/sound/pci/ac97/ac97_patch.c b/sound/pci/ac97/ac97_patch.c
-index ccfd9c7bf900..1d786bd5ce3e 100644
---- a/sound/pci/ac97/ac97_patch.c
-+++ b/sound/pci/ac97/ac97_patch.c
-@@ -3440,7 +3440,6 @@ static int snd_ac97_add_vmaster(struct snd_ac97 *ac97, char *name,
- 				const char * const *followers)
- {
- 	struct snd_kcontrol *kctl;
--	const char * const *s;
- 	int err;
+diff --git a/sound/pci/ice1712/juli.c b/sound/pci/ice1712/juli.c
+index d80ecf1edc16..d679842ae1bd 100644
+--- a/sound/pci/ice1712/juli.c
++++ b/sound/pci/ice1712/juli.c
+@@ -408,21 +408,6 @@ static const char * const follower_vols[] = {
+ static
+ DECLARE_TLV_DB_SCALE(juli_master_db_scale, -6350, 50, 1);
  
- 	kctl = snd_ctl_make_virtual_master(name, tlv);
-@@ -3450,20 +3449,7 @@ static int snd_ac97_add_vmaster(struct snd_ac97 *ac97, char *name,
+-static void add_followers(struct snd_card *card,
+-			  struct snd_kcontrol *master,
+-			  const char * const *list)
+-{
+-	for (; *list; list++) {
+-		struct snd_kcontrol *follower =
+-			snd_ctl_find_id_mixer(card, *list);
+-		/* dev_dbg(card->dev, "add_followers - %s\n", *list); */
+-		if (follower) {
+-			/* dev_dbg(card->dev, "follower %s found\n", *list); */
+-			snd_ctl_add_follower(master, follower);
+-		}
+-	}
+-}
+-
+ static int juli_add_controls(struct snd_ice1712 *ice)
+ {
+ 	struct juli_spec *spec = ice->spec;
+@@ -445,8 +430,10 @@ static int juli_add_controls(struct snd_ice1712 *ice)
+ 					      juli_master_db_scale);
+ 	if (!vmaster)
+ 		return -ENOMEM;
+-	add_followers(ice->card, vmaster, follower_vols);
+ 	err = snd_ctl_add(ice->card, vmaster);
++	if (err < 0)
++		return err;
++	err = snd_ctl_add_followers(ice->card, vmaster, follower_vols);
  	if (err < 0)
  		return err;
  
--	for (s = followers; *s; s++) {
--		struct snd_kcontrol *sctl;
--
--		sctl = snd_ac97_find_mixer_ctl(ac97, *s);
--		if (!sctl) {
--			dev_dbg(ac97->bus->card->dev,
--				"Cannot find follower %s, skipped\n", *s);
--			continue;
--		}
--		err = snd_ctl_add_follower(kctl, sctl);
--		if (err < 0)
--			return err;
--	}
--	return 0;
-+	return snd_ctl_add_followers(ac97->bus->card, kctl, followers);
- }
+diff --git a/sound/pci/ice1712/quartet.c b/sound/pci/ice1712/quartet.c
+index 9450c4b104f7..f61ee9f5c754 100644
+--- a/sound/pci/ice1712/quartet.c
++++ b/sound/pci/ice1712/quartet.c
+@@ -766,17 +766,6 @@ static const char * const follower_vols[] = {
+ static
+ DECLARE_TLV_DB_SCALE(qtet_master_db_scale, -6350, 50, 1);
  
- static int patch_vt1616_specific(struct snd_ac97 * ac97)
+-static void add_followers(struct snd_card *card,
+-			  struct snd_kcontrol *master, const char * const *list)
+-{
+-	for (; *list; list++) {
+-		struct snd_kcontrol *follower =
+-			snd_ctl_find_id_mixer(card, *list);
+-		if (follower)
+-			snd_ctl_add_follower(master, follower);
+-	}
+-}
+-
+ static int qtet_add_controls(struct snd_ice1712 *ice)
+ {
+ 	struct qtet_spec *spec = ice->spec;
+@@ -797,8 +786,10 @@ static int qtet_add_controls(struct snd_ice1712 *ice)
+ 			qtet_master_db_scale);
+ 	if (!vmaster)
+ 		return -ENOMEM;
+-	add_followers(ice->card, vmaster, follower_vols);
+ 	err = snd_ctl_add(ice->card, vmaster);
++	if (err < 0)
++		return err;
++	err = snd_ctl_add_followers(ice->card, vmaster, follower_vols);
+ 	if (err < 0)
+ 		return err;
+ 	/* only capture SPDIF over AK4113 */
 -- 
 2.35.3
 
