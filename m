@@ -4,93 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5BF6EB64DC
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 15:23:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D122CC0015E
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Jul 2023 15:36:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1E7185D;
-	Fri, 21 Jul 2023 17:22:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1E7185D
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBAB8204;
+	Fri, 21 Jul 2023 17:35:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBAB8204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1689952978;
-	bh=23M1U+9FJKtF5qg48nEfTBHunMBf5Bc3x0qH17D1urw=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1689953778;
+	bh=irLPeFYdIAVMeHehinj1el/hcOVoBMIexeNX0/wGQZA=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TwkNgeQVXG3PBu1299Raa7GAeFkOLDyHytEKv7eIJqUmpGu8N2h6ccO5x1FAAnniF
-	 9cMngJznKceljVToCKSVcl3qZuU652mw5MObPf/QRxI9Tin6idJsh6KKUfBUMuYPQR
-	 s3tZT90viuOEJfgd7PftotpM8sPmJ7X/6JMnZeVA=
+	b=m9sfE+Q++8UXpysVskS3NdtETitnAd2t5M4R9hX4mSaPKZwSAzft3eLwz7TOlMrlb
+	 UNQM78aiQVmybK88QbkeNcmNNfUqS5G6F0LBnn5jz8kLbORzwdRW5WCQ19LRzhWT+C
+	 wkDxmkdKu+s7FZXXNqFoyAnfPB5Pwq9A3GEeuiLg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8648BF805A9; Fri, 21 Jul 2023 17:20:23 +0200 (CEST)
+	id 7F330F8032D; Fri, 21 Jul 2023 17:35:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B366F8055A;
-	Fri, 21 Jul 2023 17:20:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0518F804DA;
+	Fri, 21 Jul 2023 17:34:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB01FF80494; Fri, 21 Jul 2023 17:20:16 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 00EBEF804DA
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 17:18:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00EBEF804DA
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=FxrRorTa
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 36LDls9h007648;
-	Fri, 21 Jul 2023 10:18:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=JqcxCQdId6GERpPzL031OjgEbu9ZZ+nMWXjwJ4Papww=; b=
-	FxrRorTa5JQoZzhPi37nwFjoQu9jPxHar5pTpLxqZuhEaNREG6b97Ou3V4TxsmAX
-	zfQLVrkR/NrcZza2akvJZgDh9ArDxbGdmSfdRKNiEVMdms3QgeykZ3cJgMfOGp99
-	USV+nBeH1lBNtidgqe8BzZMMJ5qkqZJrunn2i9AjArMRhCBjbLdhxcwx5rkeUDiw
-	FZWapHZixvZTgbKE1BOrmdvtZCC6PY+CJr+3ox8xFQurr1x4ECPH4aTxfuUxjAiV
-	4Sf3woh/o38hh+cx55v1TBApLqe7vcEDhYNDyjev2tKQVbM6cykCeVKO48jrmxPq
-	JtufpWkuTG+4qQ5D88+TBA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3rus62y8g9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 21 Jul 2023 10:18:30 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 21 Jul
- 2023 16:18:28 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Fri, 21 Jul 2023 16:18:27 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.219])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B8506356C;
-	Fri, 21 Jul 2023 15:18:27 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi
- Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Stefan Binding
-	<sbinding@opensource.cirrus.com>
-Subject: [PATCH v2 09/11] ALSA: hda: cs35l41: Rework System Suspend to ensure
- correct call separation
-Date: Fri, 21 Jul 2023 16:18:14 +0100
-Message-ID: <20230721151816.2080453-10-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230721151816.2080453-1-sbinding@opensource.cirrus.com>
-References: <20230721151816.2080453-1-sbinding@opensource.cirrus.com>
+	id 42432F8047D; Fri, 21 Jul 2023 17:34:51 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	by alsa1.perex.cz (Postfix) with ESMTP id 663D6F8007E
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2023 17:34:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 663D6F8007E
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36LFYSDO0000343,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+	by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36LFYSDO0000343
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+	Fri, 21 Jul 2023 23:34:28 +0800
+Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 21 Jul 2023 23:34:38 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Fri, 21 Jul 2023 23:34:37 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b]) by
+ RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b%5]) with mapi id
+ 15.01.2375.007; Fri, 21 Jul 2023 23:34:37 +0800
+From: =?big5?B?U2h1bWluZyBbrVOu0bvKXQ==?= <shumingf@realtek.com>
+To: Mark Brown <broonie@kernel.org>
+CC: "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "alsa-devel@alsa-project.org"
+	<alsa-devel@alsa-project.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "Flove(HsinFu)" <flove@realtek.com>,
+        Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
+        =?big5?B?RGVyZWsgW6TovHe4cV0=?=
+	<derek.fang@realtek.com>,
+        "Vijendar.Mukunda@amd.com"
+	<Vijendar.Mukunda@amd.com>
+Subject: RE: [PATCH 2/2] ASoC: rt1316: fix key tone missing
+Thread-Topic: [PATCH 2/2] ASoC: rt1316: fix key tone missing
+Thread-Index: AQHZu6vl7r7DyBPZ9UCV8ccGbVFWQa/DjJkAgABHqRA=
+Date: Fri, 21 Jul 2023 15:34:37 +0000
+Message-ID: <423480b14c6c4a7ab4d9bfcf8b29cccb@realtek.com>
+References: <20230721081807.113125-1-shumingf@realtek.com>
+ <3f407d2e-fe11-4ad1-8fb3-561053d343a9@sirena.org.uk>
+In-Reply-To: <3f407d2e-fe11-4ad1-8fb3-561053d343a9@sirena.org.uk>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.102.209]
+x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 5ljoq-ymjV2Rku04-0r5YW4IfO0MXVlU
-X-Proofpoint-ORIG-GUID: 5ljoq-ymjV2Rku04-0r5YW4IfO0MXVlU
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 3HZD6OYVDS4XIK2PAJSGSEGGKAXTNCHB
-X-Message-ID-Hash: 3HZD6OYVDS4XIK2PAJSGSEGGKAXTNCHB
-X-MailFrom: prvs=2566513517=sbinding@opensource.cirrus.com
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+Message-ID-Hash: UVTH74PGRM7DM55W2BGUXGBPKNEYL6YX
+X-Message-ID-Hash: UVTH74PGRM7DM55W2BGUXGBPKNEYL6YX
+X-MailFrom: shumingf@realtek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3HZD6OYVDS4XIK2PAJSGSEGGKAXTNCHB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UVTH74PGRM7DM55W2BGUXGBPKNEYL6YX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,111 +109,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In order to correctly pause audio on suspend, amps using external boost
-require parts of the pause sequence to be called for all amps before moving
-on to the next steps.
-For example, as part of pausing the audio, the VSPK GPIO must be disabled,
-but since this GPIO is controlled by one amp, but controls the boost for
-all amps, it is required to separate the calls.
-During playback this is achieved by using the pre and post playback hooks,
-however during system suspend, this is not possible, so to separate the
-calls, we use both the .prepare and .suspend calls to pause the audio.
-
-Currently, for this reason, we do not restart audio on system resume.
-However, we can support this by relying on the playback hook to resume
-playback after system suspend.
-
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda.c | 40 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 35 insertions(+), 5 deletions(-)
-
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index a482d4752b3f8..70aa819cfbd64 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -595,6 +595,15 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
- 		mutex_unlock(&cs35l41->fw_mutex);
- 		break;
- 	case HDA_GEN_PCM_ACT_CLOSE:
-+		mutex_lock(&cs35l41->fw_mutex);
-+		if (!cs35l41->firmware_running && cs35l41->request_fw_load &&
-+		    !cs35l41->fw_request_ongoing) {
-+			dev_info(dev, "Requesting Firmware Load after HDA_GEN_PCM_ACT_CLOSE\n");
-+			cs35l41->fw_request_ongoing = true;
-+			schedule_work(&cs35l41->fw_load_work);
-+		}
-+		mutex_unlock(&cs35l41->fw_mutex);
-+
- 		/*
- 		 * Playback must be finished for all amps before we start runtime suspend.
- 		 * This ensures no amps are playing back when we start putting them to sleep.
-@@ -681,6 +690,25 @@ static int cs35l41_ready_for_reset(struct cs35l41_hda *cs35l41)
- 	return ret;
- }
- 
-+static int cs35l41_system_suspend_prep(struct device *dev)
-+{
-+	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-+
-+	dev_dbg(cs35l41->dev, "System Suspend Prepare\n");
-+
-+	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST_NO_VSPK_SWITCH) {
-+		dev_err_once(cs35l41->dev, "System Suspend not supported\n");
-+		return 0; /* don't block the whole system suspend */
-+	}
-+
-+	mutex_lock(&cs35l41->fw_mutex);
-+	if (cs35l41->playback_started)
-+		cs35l41_hda_pause_start(dev);
-+	mutex_unlock(&cs35l41->fw_mutex);
-+
-+	return 0;
-+}
-+
- static int cs35l41_system_suspend(struct device *dev)
- {
- 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-@@ -693,6 +721,11 @@ static int cs35l41_system_suspend(struct device *dev)
- 		return 0; /* don't block the whole system suspend */
- 	}
- 
-+	mutex_lock(&cs35l41->fw_mutex);
-+	if (cs35l41->playback_started)
-+		cs35l41_hda_pause_done(dev);
-+	mutex_unlock(&cs35l41->fw_mutex);
-+
- 	ret = pm_runtime_force_suspend(dev);
- 	if (ret) {
- 		dev_err(dev, "System Suspend Failed, unable to runtime suspend: %d\n", ret);
-@@ -738,6 +771,7 @@ static int cs35l41_system_resume(struct device *dev)
- 	}
- 
- 	mutex_lock(&cs35l41->fw_mutex);
-+
- 	if (cs35l41->request_fw_load && !cs35l41->fw_request_ongoing) {
- 		cs35l41->fw_request_ongoing = true;
- 		schedule_work(&cs35l41->fw_load_work);
-@@ -770,11 +804,6 @@ static int cs35l41_runtime_suspend(struct device *dev)
- 
- 	mutex_lock(&cs35l41->fw_mutex);
- 
--	if (cs35l41->playback_started) {
--		cs35l41_hda_pause_start(dev);
--		cs35l41_hda_pause_done(dev);
--	}
--
- 	if (cs35l41->firmware_running) {
- 		ret = cs35l41_enter_hibernate(cs35l41->dev, cs35l41->regmap,
- 					      cs35l41->hw_cfg.bst_type);
-@@ -1641,6 +1670,7 @@ EXPORT_SYMBOL_NS_GPL(cs35l41_hda_remove, SND_HDA_SCODEC_CS35L41);
- const struct dev_pm_ops cs35l41_hda_pm_ops = {
- 	RUNTIME_PM_OPS(cs35l41_runtime_suspend, cs35l41_runtime_resume,
- 		       cs35l41_runtime_idle)
-+	.prepare = cs35l41_system_suspend_prep,
- 	SYSTEM_SLEEP_PM_OPS(cs35l41_system_suspend, cs35l41_system_resume)
- };
- EXPORT_SYMBOL_NS_GPL(cs35l41_hda_pm_ops, SND_HDA_SCODEC_CS35L41);
--- 
-2.34.1
-
+PiA+IEZyb206IFNodW1pbmcgRmFuIDxzaHVtaW5nZkByZWFsdGVrLmNvbT4NCj4gPg0KPiA+IFRo
+aXMgcGF0Y2ggZGlzYWJsZXMgdGhlIHNvZnQgcmFtcCB0byBvdXRwdXQgaW1tZWRpYXRlbHkuDQo+
+IA0KPiA+ICAJeyAweGMwOWQsIDB4ODAgfSwNCj4gPiAgCXsgMHhjMGIwLCAweDc3IH0sDQo+ID4g
+LQl7IDB4YzAxMCwgMHhhNSB9LA0KPiA+ICsJeyAweGMwMTAsIDB4MjUgfSwNCj4gPiAgCXsgMHhj
+MDUwLCAweDgzIH0sDQo+IA0KPiBUaGlzIHNob3VsZCBwcm9iYWJseSBiZSBhbiBhY3R1YWwgY29u
+dHJvbCBub3Qgc29tZXRoaW5nIHBhdGNoZWQgaW50byB0aGUNCj4gcmVnaXN0ZXJzIC0gc29tZSB1
+c2VycyBtaWdodCBwcmVmZXIgdG9lIHNvZnQgcmFtcC4NCg0KR290IGl0LiBJIHdpbGwgYWRkIGEg
+bWl4ZXIgY29udHJvbCBmb3IgaXQuIFRoYW5rcy4NCg0KPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIg
+dGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCg==
