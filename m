@@ -4,88 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDC0BC001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 09:12:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A25DC001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 09:13:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91846210;
-	Mon, 24 Jul 2023 11:11:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91846210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B75183B;
+	Mon, 24 Jul 2023 11:12:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B75183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690189930;
-	bh=R8MoBTG8FHXPKYM/dy8lKyFiiYXOSBv/75gFE2jR2Y4=;
+	s=default; t=1690189986;
+	bh=IJuS2NPpHW5yxPKPbFGIfcOiW3Jkp5gRaCUPlulOu7Y=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=M5hXCqr0PjxeNndu8q+QUGim6oy+8jqXei0VY547FOXlwixantBxeOh7CLWX58tEN
-	 Jp19PfXhEopHh2K4Ljm/7G8W8v7rywj4hkwd4k/0bu9b740Zv67w9/mLzb5cYVWFoR
-	 qWgoHbo53C28EMcFxHj22MPf1ts7x/LS9bTjoKWY=
+	b=o3nNeAjaQZxGNVDb8ofnAq3IqG85ta7W/Lg0K+cVFZhNmuW4TrfMvyYTOut9/qPMX
+	 /ky9nvZQ416TxdheFdKKkq6fAJVwGq8Ibhe57B8yhgLUlvE7lzWmwEEENO64snCE93
+	 qpcaJwsnnYhGEWENUXuWHUtjt+5rXpIG5AXRpBG8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F27BBF80163; Mon, 24 Jul 2023 11:11:19 +0200 (CEST)
+	id 623E6F8055A; Mon, 24 Jul 2023 11:11:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D108F800D2;
-	Mon, 24 Jul 2023 11:11:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D895AF80549;
+	Mon, 24 Jul 2023 11:11:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 014ADF8019B; Mon, 24 Jul 2023 11:11:15 +0200 (CEST)
+	id 4EB8DF80549; Mon, 24 Jul 2023 11:11:37 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 141E0F80153
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 11:11:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 141E0F80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id C3D26F8019B
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 11:11:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3D26F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=fPV0dOLt
+ header.s=Intel header.b=YKNhnT18
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690189870; x=1721725870;
+  t=1690189894; x=1721725894;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=R8MoBTG8FHXPKYM/dy8lKyFiiYXOSBv/75gFE2jR2Y4=;
-  b=fPV0dOLtRjCa01ZnGksL1aSjzWmKyfzpTrIrb1B8z2Ia8tmCzeBJDetn
-   KXQwZB69ar0kpTCS7zv5msps5cxMsQUkKalfuSMSpJP53H3O/6uvrBvrn
-   YkXIRct8CE9ksQwg5AjBA+rIYnJOYPAkbpCjKRkIg7I9P02c3WO3hceJx
-   jTSbpIL7mMAzAAvXjEyyB5AdV9sSW2hLLe0E3Y+X0cO5sIcGL3rXgclbs
-   g1PqxS2sOrJrJc1GpTmPKBpjrm9vDglUyy/jZMCQA2xaoM6cJxlqc0Bog
-   RJ4v6ejDxNqadLWxG9HGmFBWgeTtfUv0K6thjSGHDd2tvJ9q3+h8LIHUW
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="370060526"
+  bh=IJuS2NPpHW5yxPKPbFGIfcOiW3Jkp5gRaCUPlulOu7Y=;
+  b=YKNhnT18DIvKoHjSy/okAWO4pzC974rzAlqe6nmQEvF+BOrA9/BT8Tsp
+   chYTeu/0Cc6Pg6XDBr2IihfmQAcnwW4IKuoH64OQntDYXAN5wPUAd+xrW
+   D5KNWWDNXIy2fb0/KLj6q5oE0d1V+P+uogQ9X/t9/k7rVEx/I6Bf3cds2
+   9N/nCdtVIDOTN1ZLiFYgJvA+W4vw+o7vKZOvMSjVVaZsdMJQ8/feWctt8
+   Z4Fzy5ZcGh9QOo5sm3RhUh4CLlcTEwV6ZW9Mfa4F6OQsNyKRjxG7N7OAu
+   zzPZOSqCL+NCM9kPmVGCGr9fcvclcDbjMcqU145Fxs83EwAsANt/bctaD
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="370060619"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200";
-   d="scan'208";a="370060526"
+   d="scan'208";a="370060619"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jul 2023 02:11:05 -0700
+ 24 Jul 2023 02:11:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="1056353705"
+X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="1056353961"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200";
-   d="scan'208";a="1056353705"
+   d="scan'208";a="1056353961"
 Received: from sosterlu-mobl.ger.corp.intel.com (HELO [10.249.37.56])
  ([10.249.37.56])
   by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jul 2023 02:11:02 -0700
-Message-ID: <10dc2616-0cc3-8827-b46b-ebea8874ac73@linux.intel.com>
-Date: Mon, 24 Jul 2023 11:11:00 +0200
+ 24 Jul 2023 02:11:24 -0700
+Message-ID: <dc6de509-6984-1434-b53f-9600e8bc7c49@linux.intel.com>
+Date: Mon, 24 Jul 2023 11:08:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: fix application of sizeof to
- pointer
+Subject: Re: [PATCH 1/2] ASoC: Intel: maxim-common: get codec number from ACPI
 Content-Language: en-US
-To: sunran001@208suo.com, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>,
+To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-References: <20230720073836.3285-1-xujianghui@cdjrlc.com>
- <74739aaaa05f52084757b526bc8348c8@208suo.com>
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Yong Zhi <yong.zhi@intel.com>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Uday M Bhat <uday.m.bhat@intel.com>, Terry Cheong <htcheong@chromium.org>,
+ Mac Chiang <mac.chiang@intel.com>,
+ "Dharageswari . R" <dharageswari.r@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20230720092628.758834-1-brent.lu@intel.com>
+ <20230720092628.758834-2-brent.lu@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <74739aaaa05f52084757b526bc8348c8@208suo.com>
+In-Reply-To: <20230720092628.758834-2-brent.lu@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GLZPINBZXSWQAQDNGADQIAIBPQU4BDVJ
-X-Message-ID-Hash: GLZPINBZXSWQAQDNGADQIAIBPQU4BDVJ
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: DZSX3ONQPHMFRWFNLQBQSWGR5SX2T37Z
+X-Message-ID-Hash: DZSX3ONQPHMFRWFNLQBQSWGR5SX2T37Z
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GLZPINBZXSWQAQDNGADQIAIBPQU4BDVJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DZSX3ONQPHMFRWFNLQBQSWGR5SX2T37Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,29 +119,52 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 
-On 7/20/23 10:43, sunran001@208suo.com wrote:
-> The coccinelle check report:
-> ./drivers/scsi/csiostor/csio_mb.c:1554:46-52: ERROR: application of
-> sizeof to pointer
+On 7/20/23 11:26, Brent Lu wrote:
+> Implement a helper function to get number of codecs from ACPI
+> subsystem to remove the need of quirk flag in machine driver.
 > 
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
 > ---
->  sound/soc/sof/ipc4-topology.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  sound/soc/intel/boards/sof_maxim_common.c | 174 +++++++++++++---------
+>  sound/soc/intel/boards/sof_maxim_common.h |  21 ++-
+>  2 files changed, 113 insertions(+), 82 deletions(-)
 > 
-> diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-> index a4e1a70b607d..2dbe87dbd239 100644
-> --- a/sound/soc/sof/ipc4-topology.c
-> +++ b/sound/soc/sof/ipc4-topology.c
-> @@ -218,7 +218,7 @@ static int sof_ipc4_get_audio_fmt(struct
-> snd_soc_component *scomp,
-> 
->      ret = sof_update_ipc_object(scomp, available_fmt,
->                      SOF_AUDIO_FMT_NUM_TOKENS, swidget->tuples,
-> -                    swidget->num_tuples, sizeof(available_fmt), 1);
-> +                    swidget->num_tuples, sizeof(*available_fmt), 1);
->      if (ret) {
->          dev_err(scomp->dev, "Failed to parse audio format token count\n");
->          return ret;
+> diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
+> index 112e89951da0..f8b44a81fec1 100644
+> --- a/sound/soc/intel/boards/sof_maxim_common.c
+> +++ b/sound/soc/intel/boards/sof_maxim_common.c
+> @@ -4,6 +4,7 @@
+>  #include <linux/module.h>
+>  #include <linux/string.h>
+>  #include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+>  #include <sound/soc.h>
+>  #include <sound/soc-acpi.h>
+>  #include <sound/soc-dai.h>
+> @@ -11,6 +12,21 @@
+>  #include <uapi/sound/asound.h>
+>  #include "sof_maxim_common.h"
+>  
+> +/* helper function to get the number of specific codec */
+> +static int get_num_codecs(const char *hid)
+> +{
+> +	struct acpi_device *adev = NULL;
+> +	int dev_num = 0;
+> +
+> +	do {
+> +		adev = acpi_dev_get_next_match_dev(adev, hid, NULL, -1);
 
-you need to Cc: maintainers and SOF folks who are knowledgeable on IPC4.
+Humm, I am a bit worried about reference counts.
+
+See
+https://elixir.bootlin.com/linux/latest/source/drivers/acpi/utils.c#L916,
+it's not clear to me where the get() is done.
+
+Adding Andy to make sure this is done right.
+
+> +		if (adev)
+> +			dev_num++;
+> +	} while (adev != NULL);
+> +
+> +	return dev_num;
+> +}
