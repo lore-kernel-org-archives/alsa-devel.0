@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A588FC00528
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 01:27:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0108AC001DC
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 01:28:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1A5FDF3;
-	Mon, 24 Jul 2023 03:26:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1A5FDF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4163DFA;
+	Mon, 24 Jul 2023 03:27:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4163DFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690162059;
-	bh=2KANAftaD78TguohAtEcbgQmDSJotr6QWfpIsNWzpxc=;
+	s=default; t=1690162082;
+	bh=xD6kS3i3cakEYlp+H0DnsPIgxxpklw9jnkMzhsFp3I0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kGul/7jx3vQgYqe0nndRMa/TXlejhNUPK4hFVJaRx3td3GbLQCmWJVf0a4HxnWkJT
-	 79z+8zyMTkGPdZ+HBTqLDcGiYkRXopuZY4+FljE6J60v+TIVKD9f15l680aXz4Yo6s
-	 O3R7BINTfqFNgrcDY3MbeI/U34vXVXoFl/mN/4Aw=
+	b=m6mBjW4Fzi1ixfNGGr+k1KkO1If7zU0FOjAjn55VBTJA/GfX5Oxc+RtT6oLI0Gkxh
+	 Ls7g+wk2mkv1FcCe+sULZiIbyoDaTowS2fM0m5oIxMgg+Nno7BXoV4Hs/DhfjugTy9
+	 GnH3kID4ZByWQxGzDyWofKr0Pw8KmGEwWM9feVnc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D0E3F805E8; Mon, 24 Jul 2023 03:24:36 +0200 (CEST)
+	id 0544BF805FB; Mon, 24 Jul 2023 03:24:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77418F805EC;
-	Mon, 24 Jul 2023 03:24:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40B9EF805F8;
+	Mon, 24 Jul 2023 03:24:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49C1DF805C3; Mon, 24 Jul 2023 03:24:30 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id AFFE2F80570; Mon, 24 Jul 2023 03:24:31 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 06F50F8057C
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 03:24:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06F50F8057C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 78B37F805E3
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 03:24:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78B37F805E3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=u6nepXz8
+ header.s=k20201202 header.b=P+Y7+lNi
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E085260F2D;
-	Mon, 24 Jul 2023 01:24:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67945C433CB;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6CEEE60F2F;
 	Mon, 24 Jul 2023 01:24:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4C31C433C8;
+	Mon, 24 Jul 2023 01:24:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690161866;
-	bh=2KANAftaD78TguohAtEcbgQmDSJotr6QWfpIsNWzpxc=;
+	s=k20201202; t=1690161864;
+	bh=xD6kS3i3cakEYlp+H0DnsPIgxxpklw9jnkMzhsFp3I0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=u6nepXz8JepxC4TpPzVZoc6UJYNbKvlFZk+7GN7ZKDiHFW8yV7oVcD7et+9NWzDbO
-	 73m1Gv00wCR1wCRdsJ464fwEBZWhMabL2rJMrsjqi/528FGJcs6F+LiLHY6PRXW7iL
-	 L+lXms8E2b1et/+2dF5Kd1t91sMKi3LNN2E51wxyPFOk+hAhuzHGtcVAl97F+ddCVS
-	 phRuK7Bu3ncYUgWOMiDa4t0vFL+SxPO8eyUP3/EjOK/FxyFmZVYRe2V4ddn1+b7JBu
-	 EYdqPSTxGbKNcTV82mNpqcok3Sxfcb71BoIKHNrPCbPqSo2sECnpalfAUP/N7e70t2
-	 z/ox9E9oCdsNA==
+	b=P+Y7+lNiK4myv8S0MTiblNoUnt9wUAE8q1tVIw0qutRJH9QGbu7KPD72I1UlWgPPY
+	 WUNH1S7lmbqonUY/AfQyG2FcxT0OT6hytfutnBXw5yhDzXHiFHDtDfZdSyqOAU7znG
+	 LA9XERNtW3YjzASitP/I/c+veGTwgM0JaC9SeH272MuUH2GJsxQHED4zXZhxW7t2ik
+	 1Z2lkbBQ6SnHbPHkiJTZDUu4g4MHLQuUtnqvUawk4gNvai2Iatup5jUAdwDFj3QxPY
+	 algkved+rDrJpAnYvW7+dJ3E2Jhuc7JJLLOOSl8r/MxxPxAT71EKqDgNg7FLHULu1K
+	 KZ3kE3cdNwAuw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	lgirdwood@gmail.com,
 	broonie@kernel.org,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 04/22] ASoC: Intel: sof_sdw: add quirk for LNL
+Subject: [PATCH AUTOSEL 5.10 03/22] ASoC: Intel: sof_sdw: add quirk for MTL
  RVP
-Date: Sun, 23 Jul 2023 21:24:01 -0400
-Message-Id: <20230724012419.2317649-4-sashal@kernel.org>
+Date: Sun, 23 Jul 2023 21:24:00 -0400
+Message-Id: <20230724012419.2317649-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012419.2317649-1-sashal@kernel.org>
 References: <20230724012419.2317649-1-sashal@kernel.org>
@@ -79,8 +80,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.186
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TI6J7JEFNDIVC7KADEXLX6X4XLXX2Q3X
-X-Message-ID-Hash: TI6J7JEFNDIVC7KADEXLX6X4XLXX2Q3X
+Message-ID-Hash: A2YZT4EP7O6GPCZ5IC4WEWZZ47425ZBQ
+X-Message-ID-Hash: A2YZT4EP7O6GPCZ5IC4WEWZZ47425ZBQ
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TI6J7JEFNDIVC7KADEXLX6X4XLXX2Q3X/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A2YZT4EP7O6GPCZ5IC4WEWZZ47425ZBQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,36 +103,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-[ Upstream commit dfe25fea968dc4884e12d471c8263f0f611b380a ]
+[ Upstream commit 289e1df00e49a229a1c924c059242e759a552f01 ]
 
-We should use RT711_JD2_100K for on board rt711
+We should use RT711_JD2_100K for on board rt711.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com
-Link: https://lore.kernel.org/r/20230512173305.65399-9-pierre-louis.bossart@linux.intel.com
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com
+Link: https://lore.kernel.org/r/20230512173305.65399-4-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 91a7cb33042d8..30cc8bbceb79b 100644
+index f5d8f7951cfc3..91a7cb33042d8 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -207,6 +207,15 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		},
- 		.driver_data = (void *)(RT711_JD2_100K),
+@@ -199,6 +199,14 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_PCH_DMIC),
  	},
-+	/* LunarLake devices */
 +	{
 +		.callback = sof_sdw_quirk_cb,
 +		.matches = {
 +			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corporation"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Lunar Lake Client Platform"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Meteor Lake Client Platform"),
 +		},
 +		.driver_data = (void *)(RT711_JD2_100K),
 +	},
