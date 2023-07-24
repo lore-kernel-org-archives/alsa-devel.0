@@ -4,99 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A25DC001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 09:13:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 527E3C001B0
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 09:13:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B75183B;
-	Mon, 24 Jul 2023 11:12:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B75183B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AA9B844;
+	Mon, 24 Jul 2023 11:12:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AA9B844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690189986;
-	bh=IJuS2NPpHW5yxPKPbFGIfcOiW3Jkp5gRaCUPlulOu7Y=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1690190019;
+	bh=wz3bTrUNMqokyUiP1XN6QbRVv0hbnaVJdbcU9j9Sy0M=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=o3nNeAjaQZxGNVDb8ofnAq3IqG85ta7W/Lg0K+cVFZhNmuW4TrfMvyYTOut9/qPMX
-	 /ky9nvZQ416TxdheFdKKkq6fAJVwGq8Ibhe57B8yhgLUlvE7lzWmwEEENO64snCE93
-	 qpcaJwsnnYhGEWENUXuWHUtjt+5rXpIG5AXRpBG8=
+	b=pt1ZexjrOCXWV5AjNxc/JZskYAmCh64vZw6gwNJFUNuxnHrkexeDB3UsNrTyNBt06
+	 s8h37RhEQe28dA4mrohlv2Xk/T/zBHtOgtoqAaQyZbvj5dw4XWblDRnOZqA5bYz+Pm
+	 pk9lcqWuu/WKgsDLSIh/adBSq1Uh6O5rYXxUyvbo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 623E6F8055A; Mon, 24 Jul 2023 11:11:40 +0200 (CEST)
+	id 542E9F80544; Mon, 24 Jul 2023 11:12:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D895AF80549;
-	Mon, 24 Jul 2023 11:11:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80E9EF8019B;
+	Mon, 24 Jul 2023 11:12:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4EB8DF80549; Mon, 24 Jul 2023 11:11:37 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id F3CB1F8019B; Mon, 24 Jul 2023 11:12:43 +0200 (CEST)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
+ [IPv6:2a00:1450:4864:20::62d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C3D26F8019B
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 11:11:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3D26F8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7C5CAF800D2
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 11:12:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C5CAF800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=YKNhnT18
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690189894; x=1721725894;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=IJuS2NPpHW5yxPKPbFGIfcOiW3Jkp5gRaCUPlulOu7Y=;
-  b=YKNhnT18DIvKoHjSy/okAWO4pzC974rzAlqe6nmQEvF+BOrA9/BT8Tsp
-   chYTeu/0Cc6Pg6XDBr2IihfmQAcnwW4IKuoH64OQntDYXAN5wPUAd+xrW
-   D5KNWWDNXIy2fb0/KLj6q5oE0d1V+P+uogQ9X/t9/k7rVEx/I6Bf3cds2
-   9N/nCdtVIDOTN1ZLiFYgJvA+W4vw+o7vKZOvMSjVVaZsdMJQ8/feWctt8
-   Z4Fzy5ZcGh9QOo5sm3RhUh4CLlcTEwV6ZW9Mfa4F6OQsNyKRjxG7N7OAu
-   zzPZOSqCL+NCM9kPmVGCGr9fcvclcDbjMcqU145Fxs83EwAsANt/bctaD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="370060619"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200";
-   d="scan'208";a="370060619"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jul 2023 02:11:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10780"; a="1056353961"
-X-IronPort-AV: E=Sophos;i="6.01,228,1684825200";
-   d="scan'208";a="1056353961"
-Received: from sosterlu-mobl.ger.corp.intel.com (HELO [10.249.37.56])
- ([10.249.37.56])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jul 2023 02:11:24 -0700
-Message-ID: <dc6de509-6984-1434-b53f-9600e8bc7c49@linux.intel.com>
-Date: Mon, 24 Jul 2023 11:08:17 +0200
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=k7sd9ry9
+Received: by mail-ej1-x62d.google.com with SMTP id
+ a640c23a62f3a-993d1f899d7so727243666b.2
+        for <alsa-devel@alsa-project.org>;
+ Mon, 24 Jul 2023 02:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690189954; x=1690794754;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Fh4EDpkUKXX0i2jSGB1PBtJy0KS6P9QG8sx5m74zofM=;
+        b=k7sd9ry9f7KEkVokM1xv+AAbCPIUgxP9XVqzO2oMvoiFvG/KjABl32DheQa3U+CUC4
+         FiNKfOU4mjEp9GJcI0Im9xwYFtPAIZbXJzoxBZ/rr6RF5MlQJ0kJAVrUTUTeDxI9XkQy
+         qWGaACOxgXzHWqRKbhJnXkE+kOdZMIe41i0vCaZUNjm760cbJH+6w5Ty3z/OHyDLnvEN
+         0EPDsV6gNixv/DBpu2SVDzffU4PrMSt6DhSna0c1zR0eAOASjDQZI/BWq7g2AcuTy7jr
+         2bgX4+HoikeVPH6/aaWveSXFCU0WTMON9pJ61shYVBFC1X5Oxw9lu+khduMMptAw9RbC
+         lGkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690189954; x=1690794754;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fh4EDpkUKXX0i2jSGB1PBtJy0KS6P9QG8sx5m74zofM=;
+        b=NbQSSaNLTlaSf5YrQDYoYPyxquFgiYpIlu1j9Zqv8TVjEDZ/ZrnEdb30onuyB3Fp8f
+         QyFr2Lp08AJJx2wOjT5pXbgeoOdTYvcy9VAC8BIWBv8uH5jqJp9oaqrF2WIDd/JIegqp
+         yGuHVM7CMzG05FxbcwOTNPGgXZ8eM2EW/jZijlbGJUOZyiyMm742G3NaG/P40xl7voqI
+         VPCw4i5oOv55rfaPvQZAuV8RSYxwdcAN4P3LgrxjNtcdaaqdJlOKL5KaKsAo8DZnNHnA
+         FKELoZGRGV6DZHREIQ5Qtt+Mxm5z67bwSvdrg91Kd4rfzV/99SI7UpplO6BxR3A5lR4u
+         eauA==
+X-Gm-Message-State: ABy/qLaG3q0eWEl5mpxNo6OpGQHUMHyr0A82n68X+4BM9e9oh3RGkdb4
+	saNQ8ZaGoMP3H+R6mFVgtLtMEg==
+X-Google-Smtp-Source: 
+ APBJJlFyiqbyrtae4oPoU8c9essn66hxwhB/tZ54efWazcZSBJL34UATeiWbByL1xXKVtIQgz5XF7Q==
+X-Received: by 2002:a17:906:64d2:b0:993:d6a7:13b with SMTP id
+ p18-20020a17090664d200b00993d6a7013bmr10019595ejn.22.1690189954456;
+        Mon, 24 Jul 2023 02:12:34 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id
+ j15-20020a170906254f00b00992d122af63sm6445656ejb.89.2023.07.24.02.12.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 02:12:33 -0700 (PDT)
+Message-ID: <4d8143bc-03db-4f6b-9833-44cbaf95ecac@linaro.org>
+Date: Mon, 24 Jul 2023 11:12:30 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] ASoC: Intel: maxim-common: get codec number from ACPI
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 09/11] dt-bindings: arm: msm: kpss-acc: Make the optional
+ reg truly optional
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ cros-qcom-dts-watchers@chromium.org, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Benjamin Li <benl@squareup.com>, James Willcox <jwillcox@squareup.com>,
+ Joseph Gates <jgates@squareup.com>, Stephan Gerhold <stephan@gerhold.net>,
+ Zac Crosby <zac@squareup.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Lee Jones <lee@kernel.org>,
+ Stephen Boyd <sboyd@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Xu Yang
+ <xu.yang_2@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+ Christian Marangi <ansuelsmth@gmail.com>,
+ Wesley Cheng <quic_wcheng@quicinc.com>, Jun Nie <jun.nie@linaro.org>,
+ Max Chen <mchen@squareup.com>, Shawn Guo <shawn.guo@linaro.org>,
+ Vivek Gautam <vivek.gautam@codeaurora.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Vincent Knecht <vincent.knecht@mailoo.org>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Konrad Dybcio <konradybcio@kernel.org>, alsa-devel@alsa-project.org,
+ iommu@lists.linux.dev, linux-usb@vger.kernel.org,
+ Leo Yan <leo.yan@linaro.org>, Rob Herring <robh@kernel.org>,
+ Andy Gross <andy.gross@linaro.org>
+References: <20230627-topic-more_bindings-v1-0-6b4b6cd081e5@linaro.org>
+ <20230627-topic-more_bindings-v1-9-6b4b6cd081e5@linaro.org>
+ <c52ee94f-f60b-f8f0-f93c-221beec0224a@linaro.org>
 Content-Language: en-US
-To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Yong Zhi <yong.zhi@intel.com>,
- Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- Uday M Bhat <uday.m.bhat@intel.com>, Terry Cheong <htcheong@chromium.org>,
- Mac Chiang <mac.chiang@intel.com>,
- "Dharageswari . R" <dharageswari.r@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20230720092628.758834-1-brent.lu@intel.com>
- <20230720092628.758834-2-brent.lu@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230720092628.758834-2-brent.lu@intel.com>
+In-Reply-To: <c52ee94f-f60b-f8f0-f93c-221beec0224a@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: DZSX3ONQPHMFRWFNLQBQSWGR5SX2T37Z
-X-Message-ID-Hash: DZSX3ONQPHMFRWFNLQBQSWGR5SX2T37Z
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Message-ID-Hash: KALYNSLZAJJTA6GTZJZYEPDDKI2QNKQK
+X-Message-ID-Hash: KALYNSLZAJJTA6GTZJZYEPDDKI2QNKQK
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +138,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DZSX3ONQPHMFRWFNLQBQSWGR5SX2T37Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KALYNSLZAJJTA6GTZJZYEPDDKI2QNKQK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,54 +147,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 7/20/23 11:26, Brent Lu wrote:
-> Implement a helper function to get number of codecs from ACPI
-> subsystem to remove the need of quirk flag in machine driver.
+On 24/07/2023 11:05, Krzysztof Kozlowski wrote:
+> On 27/06/2023 18:24, Konrad Dybcio wrote:
+>> The description of reg[1] says that register is optional. Adjust
+>> minItems to make it truly optional.
+>>
+>> Fixes: 12f40018b6a9 ("dt-bindings: arm: msm: Convert kpss-acc driver Documentation to yaml")
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> ---
 > 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->  sound/soc/intel/boards/sof_maxim_common.c | 174 +++++++++++++---------
->  sound/soc/intel/boards/sof_maxim_common.h |  21 ++-
->  2 files changed, 113 insertions(+), 82 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
-> index 112e89951da0..f8b44a81fec1 100644
-> --- a/sound/soc/intel/boards/sof_maxim_common.c
-> +++ b/sound/soc/intel/boards/sof_maxim_common.c
-> @@ -4,6 +4,7 @@
->  #include <linux/module.h>
->  #include <linux/string.h>
->  #include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
->  #include <sound/soc.h>
->  #include <sound/soc-acpi.h>
->  #include <sound/soc-dai.h>
-> @@ -11,6 +12,21 @@
->  #include <uapi/sound/asound.h>
->  #include "sof_maxim_common.h"
->  
-> +/* helper function to get the number of specific codec */
-> +static int get_num_codecs(const char *hid)
-> +{
-> +	struct acpi_device *adev = NULL;
-> +	int dev_num = 0;
-> +
-> +	do {
-> +		adev = acpi_dev_get_next_match_dev(adev, hid, NULL, -1);
+> This patch does not make sense. It wasn't also tested. The code
+> (minItems) is already there.
 
-Humm, I am a bit worried about reference counts.
 
-See
-https://elixir.bootlin.com/linux/latest/source/drivers/acpi/utils.c#L916,
-it's not clear to me where the get() is done.
+What's more - there is no such commit as 12f40018b6a9!
 
-Adding Andy to make sure this is done right.
+Bjorn,
+You might find this useful (fake Fixes tag should be detected):
+https://github.com/krzk/tools/blob/master/linux/git-hooks-post-commit
 
-> +		if (adev)
-> +			dev_num++;
-> +	} while (adev != NULL);
-> +
-> +	return dev_num;
-> +}
+Best regards,
+Krzysztof
+
