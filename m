@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 490A3C00528
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 01:35:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2472DC001B0
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 01:36:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2491AE91;
-	Mon, 24 Jul 2023 03:35:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2491AE91
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED810E8B;
+	Mon, 24 Jul 2023 03:35:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED810E8B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690162556;
-	bh=8hK+dgPatDV1HxA1X+qNNVXvqz6JBIppiONjrSHEvsc=;
+	s=default; t=1690162572;
+	bh=dCIu+iCSnb+D4y4TtE1ybraxr0I5guXtdHax2SlSBGs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tmigIsttJcyKY9bpLfvIhjYU3UeGR8yJtz9DztDf2qpesATvZ/6FevkOzVp4GfHIH
-	 4f77w9/Qq0L0VhVvZYEFktkTXZcJJSUdATkMpVYZb4d5BEAgdJS7dBnG/Ln+waSYkT
-	 mc4u2iaPWaxVqGtnuDiQWEaf/9dS2qlV0fyrrblQ=
+	b=qkJVk033MT1BpDc/MU7rdag36xdxkItbTMHcxIlBa6wSaMgBOpuklQiaAU7jQkh0d
+	 hyAP916xJy6/vGpGKi7L5Ldxr4Tw/hjbt2APsskvP8NMgChE4bPAiYJAz86tuw1A/P
+	 ohp0nYim6ydlHvnQLlTzv7iAoVAKQGtCbj5NbecM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 115C8F8019B; Mon, 24 Jul 2023 03:33:27 +0200 (CEST)
+	id 19649F80310; Mon, 24 Jul 2023 03:33:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73322F80310;
-	Mon, 24 Jul 2023 03:33:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9549EF805D2;
+	Mon, 24 Jul 2023 03:33:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA845F805C0; Mon, 24 Jul 2023 03:33:21 +0200 (CEST)
+	id A7A02F805C6; Mon, 24 Jul 2023 03:33:24 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C1087F80310
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 03:33:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1087F80310
+	by alsa1.perex.cz (Postfix) with ESMTPS id 45EAAF8019B
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 03:33:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45EAAF8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=l931QGT4
+ header.s=k20201202 header.b=YQvca1Zt
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 6DD0F60FFD;
-	Mon, 24 Jul 2023 01:33:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10B91C433CA;
-	Mon, 24 Jul 2023 01:33:16 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3788260FF8;
+	Mon, 24 Jul 2023 01:33:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB7ABC433C9;
+	Mon, 24 Jul 2023 01:33:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690162397;
-	bh=8hK+dgPatDV1HxA1X+qNNVXvqz6JBIppiONjrSHEvsc=;
+	s=k20201202; t=1690162400;
+	bh=dCIu+iCSnb+D4y4TtE1ybraxr0I5guXtdHax2SlSBGs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l931QGT4mrpSpmVU8Wt4ZkAwHxAvLVjy8QAS+NXlvckMfD/R5S0VsQy6ylsDxfNSR
-	 kdTvsOkxfOumN6VPXng+zVMNtKp8hF1DtGK3wJEwHLkMmn3/yERPdjRRjNH/f0gBP2
-	 jiA4FY2wlkvKcdbTowaFHBXMJyxFyqFJqRHNCmtZiCszDsM1NJ7qa8eamLlMv+2ymg
-	 FZ7e/xoWhUKRFOqsl3+xzdE1XKMV0TU80oaIzbaLlmAGkjs/cuFPCZBC/PqRcwFBKd
-	 7E4pEuHmNE6XypCroYpV0QobYOfxXhbYfqlUY7tp10JGXrr+CpMu1PU1EjLyMFJ7Ge
-	 EoiQEvJT2xE2g==
+	b=YQvca1ZtkcnHGW3RWw5X+EQ2e7jCixrLWTBsGcWnGsQ4XARg5jfYmSfOB36DkCLsv
+	 mK/gjq1BU824QsLbY7tqiL+GDuYbKdwnh9rq188IjlL90Ea2pRo/X3I1DlpFq0Jw46
+	 GkHrkU1EEtvZbgVJ6S6G7QS5JpXZ8H1sjoF7TjOt3bQIeCYT95WLWvVg40i36pbYRu
+	 NgxBgxdYOmjZ8Ds9AD27N/ad4DIkyJytC4PMHhFCWAIcuGqHqWoVeFB+1tKDxZOLYd
+	 4UZF7UOuNEWkmbv5Q9dXisjTAW4zo9RpvticjJOwlyUAIf88oTQEewNTh9b/il1Nd7
+	 EYZ44nJVUiHCA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: dengxiang <dengxiang@nfschina.com>,
+Cc: "Luke D. Jones" <luke@ljones.dev>,
 	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 29/34] ALSA: hda/realtek: Add quirks for Unis H3C
- Desktop B760 & Q760
-Date: Sun, 23 Jul 2023 21:32:32 -0400
-Message-Id: <20230724013238.2329166-29-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 31/34] ALSA: hda/realtek: Add quirk for ASUS ROG
+ GX650P
+Date: Sun, 23 Jul 2023 21:32:34 -0400
+Message-Id: <20230724013238.2329166-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724013238.2329166-1-sashal@kernel.org>
 References: <20230724013238.2329166-1-sashal@kernel.org>
@@ -78,8 +78,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.40
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4F6XRBXOOBKTDUQRBGFBMKIIGUPXMFVU
-X-Message-ID-Hash: 4F6XRBXOOBKTDUQRBGFBMKIIGUPXMFVU
+Message-ID-Hash: G5XIJE4TWSGNI4WKWTDU7G5WAC562B6M
+X-Message-ID-Hash: G5XIJE4TWSGNI4WKWTDU7G5WAC562B6M
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4F6XRBXOOBKTDUQRBGFBMKIIGUPXMFVU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G5XIJE4TWSGNI4WKWTDU7G5WAC562B6M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,57 +101,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: dengxiang <dengxiang@nfschina.com>
+From: "Luke D. Jones" <luke@ljones.dev>
 
-[ Upstream commit 73f1c75d5e6bd8ce2a887ef493a66ad1b16ed704 ]
+[ Upstream commit 8cc87c055d28320e5fa5457922f43bc07dec58bd ]
 
-These models use NSIWAY amplifiers for internal speaker, but cannot put
-sound outside from these amplifiers. So eapd verbs are needed to initialize
-the amplifiers. They can be added during boot to get working sound out
-of internal speaker.
+Adds the required quirk to enable the Cirrus amp and correct pins
+on the ASUS ROG GV601V series which uses an I2C connected Cirrus amp.
 
-Signed-off-by: dengxiang <dengxiang@nfschina.com>
-Link: https://lore.kernel.org/r/20230703021751.2945750-1-dengxiang@nfschina.com
+While this works if the related _DSD properties are made available, these
+aren't included in the ACPI of these laptops (yet).
+
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
+Link: https://lore.kernel.org/r/20230704044619.19343-2-luke@ljones.dev
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/pci/hda/patch_realtek.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index eb049014f87ac..ce560129e2faa 100644
+index ce560129e2faa..5cb843d56cd16 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -11235,6 +11235,7 @@ enum {
- 	ALC897_FIXUP_HP_HSMIC_VERB,
- 	ALC897_FIXUP_LENOVO_HEADSET_MODE,
- 	ALC897_FIXUP_HEADSET_MIC_PIN2,
-+	ALC897_FIXUP_UNIS_H3C_X500S,
- };
- 
- static const struct hda_fixup alc662_fixups[] = {
-@@ -11674,6 +11675,13 @@ static const struct hda_fixup alc662_fixups[] = {
+@@ -7065,6 +7065,8 @@ enum {
+ 	ALC285_FIXUP_SPEAKER2_TO_DAC1,
+ 	ALC285_FIXUP_ASUS_SPEAKER2_TO_DAC1,
+ 	ALC285_FIXUP_ASUS_HEADSET_MIC,
++	ALC285_FIXUP_ASUS_I2C_SPEAKER2_TO_DAC1,
++	ALC285_FIXUP_ASUS_I2C_HEADSET_MIC,
+ 	ALC280_FIXUP_HP_HEADSET_MIC,
+ 	ALC221_FIXUP_HP_FRONT_MIC,
+ 	ALC292_FIXUP_TPT460,
+@@ -8051,6 +8053,22 @@ static const struct hda_fixup alc269_fixups[] = {
  		.chained = true,
- 		.chain_id = ALC897_FIXUP_LENOVO_HEADSET_MODE
+ 		.chain_id = ALC285_FIXUP_ASUS_SPEAKER2_TO_DAC1
  	},
-+	[ALC897_FIXUP_UNIS_H3C_X500S] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			{ 0x14, AC_VERB_SET_EAPD_BTLENABLE, 0 },
-+			{}
-+		},
++	[ALC285_FIXUP_ASUS_I2C_SPEAKER2_TO_DAC1] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc285_fixup_speaker2_to_dac1,
++		.chained = true,
++		.chain_id = ALC287_FIXUP_CS35L41_I2C_2
 +	},
- };
- 
- static const struct snd_pci_quirk alc662_fixup_tbl[] = {
-@@ -11835,6 +11843,7 @@ static const struct hda_model_fixup alc662_fixup_models[] = {
- 	{.id = ALC662_FIXUP_USI_HEADSET_MODE, .name = "usi-headset"},
- 	{.id = ALC662_FIXUP_LENOVO_MULTI_CODECS, .name = "dual-codecs"},
- 	{.id = ALC669_FIXUP_ACER_ASPIRE_ETHOS, .name = "aspire-ethos"},
-+	{.id = ALC897_FIXUP_UNIS_H3C_X500S, .name = "unis-h3c-x500s"},
- 	{}
- };
- 
++	[ALC285_FIXUP_ASUS_I2C_HEADSET_MIC] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x03a11050 },
++			{ 0x1b, 0x03a11c30 },
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC285_FIXUP_ASUS_I2C_SPEAKER2_TO_DAC1
++	},
+ 	[ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -9525,6 +9543,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1313, "Asus K42JZ", ALC269VB_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x13b0, "ASUS Z550SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
++	SND_PCI_QUIRK(0x1043, 0x1433, "ASUS GX650P", ALC285_FIXUP_ASUS_I2C_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1473, "ASUS GU604V", ALC285_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1483, "ASUS GU603V", ALC285_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
 -- 
 2.39.2
 
