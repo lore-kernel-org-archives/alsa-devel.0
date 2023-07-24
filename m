@@ -4,84 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06390C41513
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 01:24:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF6C8C001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 01:24:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4FC50846;
-	Mon, 24 Jul 2023 03:23:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FC50846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D24E851;
+	Mon, 24 Jul 2023 03:24:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D24E851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690161883;
-	bh=pKbT0YJEeagCXhI1F2Iwc6xJrSko5tOfjYeUhgCEFnU=;
+	s=default; t=1690161895;
+	bh=cuQKFuDN/KbeP5Jj+OE+BMByISsDjSbpEHiq7E59KKw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LZrFrtz0wBZOqAqlG4kcmsrjIznUX0RiizAJDchlU1wq/rGEQFV8ehhL1L+04leRW
-	 HDjjwcBw6Rm4/n2DVTFBqnlPcjL9fUtYNXtVp3cRE6uTE/UqMw6ozc97p9bFjpFw9Q
-	 gMGpikQcs7Wna3pjjNDwyTnoMjawQ+or2n+uBnyg=
+	b=aRM519g+Sc5ZXIZCIDdCMEnyd8oSVLrpcfifmeRTr9XkJJpoN8QA8BTbxqmIkLL07
+	 Ep/hFswMlsl5M2P6Yg3r/d8VNdIatrJgfXMPXcYW+TyzJTN33Lqujzng/QTswxIOA6
+	 6RtmVQt6Phd6qDe+dzbRMZqv6AsALAdpZkz3YoHo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9396FF805C9; Mon, 24 Jul 2023 03:22:37 +0200 (CEST)
+	id 207DBF805D2; Mon, 24 Jul 2023 03:22:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1EC36F805BA;
-	Mon, 24 Jul 2023 03:22:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F203DF80553;
+	Mon, 24 Jul 2023 03:22:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E128EF805C2; Mon, 24 Jul 2023 03:22:32 +0200 (CEST)
+	id 0FECBF805CA; Mon, 24 Jul 2023 03:22:38 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A0DB6F805BD
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 03:22:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0DB6F805BD
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5D186F8055B;
+	Mon, 24 Jul 2023 03:22:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D186F8055B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fsRl3jhT
+ header.s=k20201202 header.b=iwpSUbth
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 90BC360F00;
-	Mon, 24 Jul 2023 01:22:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30655C433C7;
-	Mon, 24 Jul 2023 01:22:27 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4D68E60F31;
+	Mon, 24 Jul 2023 01:22:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 364AEC433C8;
+	Mon, 24 Jul 2023 01:22:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690161749;
-	bh=pKbT0YJEeagCXhI1F2Iwc6xJrSko5tOfjYeUhgCEFnU=;
+	s=k20201202; t=1690161752;
+	bh=cuQKFuDN/KbeP5Jj+OE+BMByISsDjSbpEHiq7E59KKw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fsRl3jhTyl6z8SCHTocs6hCmguUArNF/LVYNpPTnGf1VHm9BqKz+tQSTzozQXS5GC
-	 rr+UvsExetjv22qMhcEgkZSK6FrM4Noj9JvRn3swIuv6TJ5Buvj2wFvYISnBLEvml3
-	 szRndi4gu9dikzPV8vYCVO91ErsZgLWw2GcgkIPfWEC2yE6LmtI3uQ7J+xpsA38+oo
-	 1zaLcIEjcztZupoTt31SzMT1T/9gICF4rJ8B9rkYsMsRAU/o5K9qbgNb58FdhE0b8i
-	 WefxYRcNZ+7MZl2Y09xZC9CrCBLvHHtQLGQbkHUunhXW0A+eBG25QdBE9IVEDut65J
-	 bI7lj9B+s1lfA==
+	b=iwpSUbthhD6Vc6bdCAOzhPIbCWiqSkFEKdLsIjxe4n2vSw8VHp6zDqkL52oeyM/FD
+	 chIuGFx/I7ASBB1BGFLrg1NWVQjwDZ7bZnQd90/Sv+hcbqY0AzbNJE+KxpcaYUkI9a
+	 tCxRzeZIQvieNRKfEftiejYI9xoRxGDiZ2hlFo2/DvelM7EAWuLLz+tWyUCLt0DxPs
+	 wYA7G7WsPJO0iSUTzPqgP5QuUJmfCC7pcXTwv2tJgHhmtZLKtSq6AJuPiUicZWZTxI
+	 ViHH8nGSyOxqdF/CVLnapJiaw7PinEDbUUPJm2ZAtc0nuu3oZfCVha5qFBNxGDY3kA
+	 0AE2JEvET33hQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yanteng Si <siyanteng@loongson.cn>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	bhelgaas@google.com,
+	lgirdwood@gmail.com,
+	kai.vehmanen@linux.intel.com,
+	daniel.baluta@nxp.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	gregkh@linuxfoundation.org,
-	pierre-louis.bossart@linux.intel.com,
-	rander.wang@intel.com,
-	yung-chuan.liao@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	amadeuszx.slawinski@linux.intel.com,
-	jasontao@glenfly.com,
-	evan.quan@amd.com,
-	mkumard@nvidia.com,
-	linux-pci@vger.kernel.org,
+	peter.ujfalusi@linux.intel.com,
+	fred.oh@linux.intel.com,
+	noah.klayman@intel.com,
+	sound-open-firmware@alsa-project.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 20/41] ALSA: hda: Add Loongson LS7A HD-Audio
- support
-Date: Sun, 23 Jul 2023 21:20:53 -0400
-Message-Id: <20230724012118.2316073-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 21/41] ASoC: SOF: Intel: fix SoundWire/HDaudio
+ mutual exclusion
+Date: Sun, 23 Jul 2023 21:20:54 -0400
+Message-Id: <20230724012118.2316073-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012118.2316073-1-sashal@kernel.org>
 References: <20230724012118.2316073-1-sashal@kernel.org>
@@ -90,8 +87,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.40
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: D5PHBCU4WL2AWYC2AEA4WBQCUY2VHXZR
-X-Message-ID-Hash: D5PHBCU4WL2AWYC2AEA4WBQCUY2VHXZR
+Message-ID-Hash: XKANLMJMWD7VLCG4KZYC3RQTDBXA5EGE
+X-Message-ID-Hash: XKANLMJMWD7VLCG4KZYC3RQTDBXA5EGE
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D5PHBCU4WL2AWYC2AEA4WBQCUY2VHXZR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XKANLMJMWD7VLCG4KZYC3RQTDBXA5EGE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,95 +110,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Yanteng Si <siyanteng@loongson.cn>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 28bd137a3c8e105587ba8c55b68ef43b519b270f ]
+[ Upstream commit f751b99255cacd9ffe8c4bbf99767ad670cee1f7 ]
 
-Add the new PCI ID 0x0014 0x7a07 and the new PCI ID 0x0014 0x7a37
-Loongson HDA controller.
+The functionality described in Commit 61bef9e68dca ("ASoC: SOF: Intel: hda: enforce exclusion between HDaudio and SoundWire")
+does not seem to be properly implemented with two issues that need to
+be corrected.
 
-Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
-Acked-by: Huacai Chen <chenhuacai@loongson.cn>
-Link: https://lore.kernel.org/r/993587483b9509796b29a416f257fcfb4b15c6ea.1686128807.git.siyanteng@loongson.cn
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+a) The test used is incorrect when DisplayAudio codecs are not supported.
+
+b) Conversely when only Display Audio codecs can be found, we do want
+to start the SoundWire links, if any. That will help add the relevant
+topologies and machine descriptors, and identify cases where the
+SoundWire information in ACPI needs to be modified with a quirk.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20230606222529.57156-2-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/pci_ids.h    | 3 +++
- sound/hda/hdac_device.c    | 1 +
- sound/pci/hda/hda_intel.c  | 7 +++++++
- sound/pci/hda/patch_hdmi.c | 1 +
- 4 files changed, 12 insertions(+)
+ sound/soc/sof/intel/hda.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 95f33dadb2be2..c0c4ca8e28510 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -158,6 +158,9 @@
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 1188ec51816bd..63764afdcf617 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -1309,12 +1309,22 @@ static void hda_generic_machine_select(struct snd_sof_dev *sdev,
+ 			hda_mach->mach_params.dmic_num = dmic_num;
+ 			pdata->tplg_filename = tplg_filename;
  
- #define PCI_VENDOR_ID_LOONGSON		0x0014
- 
-+#define PCI_DEVICE_ID_LOONGSON_HDA      0x7a07
-+#define PCI_DEVICE_ID_LOONGSON_HDMI     0x7a37
+-			if (codec_num == 2) {
++			if (codec_num == 2 ||
++			    (codec_num == 1 && !HDA_IDISP_CODEC(bus->codec_mask))) {
+ 				/*
+ 				 * Prevent SoundWire links from starting when an external
+ 				 * HDaudio codec is used
+ 				 */
+ 				hda_mach->mach_params.link_mask = 0;
++			} else {
++				/*
++				 * Allow SoundWire links to start when no external HDaudio codec
++				 * was detected. This will not create a SoundWire card but
++				 * will help detect if any SoundWire codec reports as ATTACHED.
++				 */
++				struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
 +
- #define PCI_VENDOR_ID_TTTECH		0x0357
- #define PCI_DEVICE_ID_TTTECH_MC322	0x000a
++				hda_mach->mach_params.link_mask = hdev->info.link_mask;
+ 			}
  
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index bfd8585776767..5315a3eb114ee 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -645,6 +645,7 @@ struct hda_vendor_id {
- };
- 
- static const struct hda_vendor_id hda_vendor_ids[] = {
-+	{ 0x0014, "Loongson" },
- 	{ 0x1002, "ATI" },
- 	{ 0x1013, "Cirrus Logic" },
- 	{ 0x1057, "Motorola" },
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 3226691ac923c..9c353dc7740c4 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -237,6 +237,7 @@ enum {
- 	AZX_DRIVER_CTHDA,
- 	AZX_DRIVER_CMEDIA,
- 	AZX_DRIVER_ZHAOXIN,
-+	AZX_DRIVER_LOONGSON,
- 	AZX_DRIVER_GENERIC,
- 	AZX_NUM_DRIVERS, /* keep this as last entry */
- };
-@@ -360,6 +361,7 @@ static const char * const driver_short_names[] = {
- 	[AZX_DRIVER_CTHDA] = "HDA Creative",
- 	[AZX_DRIVER_CMEDIA] = "HDA C-Media",
- 	[AZX_DRIVER_ZHAOXIN] = "HDA Zhaoxin",
-+	[AZX_DRIVER_LOONGSON] = "HDA Loongson",
- 	[AZX_DRIVER_GENERIC] = "HD-Audio Generic",
- };
- 
-@@ -2809,6 +2811,11 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_HDMI },
- 	/* Zhaoxin */
- 	{ PCI_DEVICE(0x1d17, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
-+	/* Loongson HDAudio*/
-+	{PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_HDA),
-+	  .driver_data = AZX_DRIVER_LOONGSON },
-+	{PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_HDMI),
-+	  .driver_data = AZX_DRIVER_LOONGSON },
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, azx_ids);
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 7b5e09070ab9b..b9b138de57951 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -4509,6 +4509,7 @@ static int patch_gf_hdmi(struct hda_codec *codec)
-  * patch entries
-  */
- static const struct hda_device_id snd_hda_id_hdmi[] = {
-+HDA_CODEC_ENTRY(0x00147a47, "Loongson HDMI",	patch_generic_hdmi),
- HDA_CODEC_ENTRY(0x1002793c, "RS600 HDMI",	patch_atihdmi),
- HDA_CODEC_ENTRY(0x10027919, "RS600 HDMI",	patch_atihdmi),
- HDA_CODEC_ENTRY(0x1002791a, "RS690/780 HDMI",	patch_atihdmi),
+ 			*mach = hda_mach;
 -- 
 2.39.2
 
