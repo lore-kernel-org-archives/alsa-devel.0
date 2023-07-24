@@ -4,81 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E400C001E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 01:23:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 912DBC001DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 01:23:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C3C5845;
-	Mon, 24 Jul 2023 03:22:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C3C5845
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC2E2200;
+	Mon, 24 Jul 2023 03:23:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC2E2200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690161809;
-	bh=krRizrxy8Iu8UHROs52EgTvumzfT8G8EdVUxFRQNM08=;
+	s=default; t=1690161830;
+	bh=U1z3VtG0pGPvExFdvOAtlP5ooExECdMsVdDb35dBOsI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gCRmDkwIdKaMKWNoIKg/QAWd63B9qrP5YEmElTbANH8xNKraaK71zBolYWhWEiqwn
-	 rfsCsKPQk2QAQYk8+HDcNWB0vZDFCy4xXrXsL98Z/VSQoi4yvZqFAKfdEbexoB+0zJ
-	 ekQaQ2ZiqgbkvtQnN2nAyiZ7pPb15Ajz46EBnrVY=
+	b=bIFTBgIWHIJDS1EMgdXCxzUDPBWjKWsevtcOv68k2ko/pQyKYe+xbbrJyhXKTU9Wd
+	 CQDoAU5k/I7/m6Jbi7Hpz/cZLgdZr2fli18KRTzjbW9hDnzdKNspiZo8rAk0J4mErG
+	 qHkSv6Knt6Rnwzt948Zha6gIC3lE7ypeQdLxGZbc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A914F80153; Mon, 24 Jul 2023 03:22:13 +0200 (CEST)
+	id BD049F805A9; Mon, 24 Jul 2023 03:22:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7521EF80551;
-	Mon, 24 Jul 2023 03:22:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DE30F805A8;
+	Mon, 24 Jul 2023 03:22:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49098F80551; Mon, 24 Jul 2023 03:22:09 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 46595F805A0; Mon, 24 Jul 2023 03:22:15 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 400BCF800D2;
-	Mon, 24 Jul 2023 03:22:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 400BCF800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2CB83F805A8
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 03:22:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CB83F805A8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=eCx/ytrP
+ header.s=k20201202 header.b=o0pS9zXb
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D433060F00;
-	Mon, 24 Jul 2023 01:22:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9945C433C8;
-	Mon, 24 Jul 2023 01:22:01 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 16B5460F1E;
+	Mon, 24 Jul 2023 01:22:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B9BDC433C8;
+	Mon, 24 Jul 2023 01:22:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690161723;
-	bh=krRizrxy8Iu8UHROs52EgTvumzfT8G8EdVUxFRQNM08=;
+	s=k20201202; t=1690161731;
+	bh=U1z3VtG0pGPvExFdvOAtlP5ooExECdMsVdDb35dBOsI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eCx/ytrPXvUZIUVFWtT687GXetHf5993KAJKRCYttzIR2zpRWDXwzPDMWNbTnhwRN
-	 7/JVvFV76H722jDUEXBOx+Eh93XmCn+w+t1MiTJAXV+9nTPYqDx5FpBKn5Zn08cZ5A
-	 OwB5J+GUmi7YLGrAr5uH1zo80P0rm4FpYR0I1drEm+g4FKDtp8vJOuSa5blUtRadEk
-	 MU8dfdQWKozC3mvR/mPL2/QSQVGyJ54f0Mmr4v1Ct53WKM7lUC+W4ptvnNeEnxSS2K
-	 UMHxiFifFWe3KTuNgbhBsv+8nj6dh/yC5VHt5iKTyJi5IdoPRDZpz6CukA9SF0+5vs
-	 ANOpmlxUihSYw==
+	b=o0pS9zXbmxpcc5y+TtcC1XOwyWcbwzcqHWs5BQBYI6l9TAO5+niARLTWG9hVcnQID
+	 9fB7oKLP9Do8bHasg27LOenKDLruN5qSVwsYaJ2hzHWOu1DynTN3/u6VlV266DJ/y6
+	 CTaaKVsDYgXngNblJ37xpmkRpE5ibc7DihQMGPJEbAb4RY4rGnwC/TzX9IXJcNdJfj
+	 tNRTLEAch+/PuzOjYFDEwso27RoTKgDiNio3xw4YNH7Oc7Bm8gUPlKnzH5VjeAbLRQ
+	 apFFjTyhn4rYDftv+CDOJ3A86gJnR7CrMhkH/jFZeuuiKGZu8WGHKNZolycs+CKCVj
+	 IfyekALokCPNw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	pierre-louis.bossart@linux.intel.com,
 	lgirdwood@gmail.com,
-	peter.ujfalusi@linux.intel.com,
-	yung-chuan.liao@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	daniel.baluta@nxp.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	Vsujithkumar.Reddy@amd.com,
-	Vijendar.Mukunda@amd.com,
-	AjitKumar.Pandey@amd.com,
-	sound-open-firmware@alsa-project.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 10/41] ASoC: SOF: amd: Add pci revision id check
-Date: Sun, 23 Jul 2023 21:20:43 -0400
-Message-Id: <20230724012118.2316073-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 13/41] ASoC: amd: vangogh: Add check for acp
+ config flags in vangogh platform
+Date: Sun, 23 Jul 2023 21:20:46 -0400
+Message-Id: <20230724012118.2316073-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230724012118.2316073-1-sashal@kernel.org>
 References: <20230724012118.2316073-1-sashal@kernel.org>
@@ -87,8 +80,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.40
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CDCR47ZUWE3643EGSZHQ3ZDU537LWS7C
-X-Message-ID-Hash: CDCR47ZUWE3643EGSZHQ3ZDU537LWS7C
+Message-ID-Hash: IVDMEKEOU4KNPRFVCVFNNKIY3ZWXMNCX
+X-Message-ID-Hash: IVDMEKEOU4KNPRFVCVFNNKIY3ZWXMNCX
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CDCR47ZUWE3643EGSZHQ3ZDU537LWS7C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IVDMEKEOU4KNPRFVCVFNNKIY3ZWXMNCX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,61 +105,57 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
 
-[ Upstream commit 1d4a84632b90d88316986b05bcdfe715399a33db ]
+[ Upstream commit e89f45edb747ed88e97a5771dd6d3dd1eb517873 ]
 
-Add pci revision id check for renoir and rembrandt platforms.
+We have SOF and generic ACP support enabled for Vangogh platform
+on some machines. Since we have same PCI id used for probing,
+add check for machine configuration flag to avoid conflict with
+newer pci drivers. Such machine flag has been initialized via
+dmi match on few Vangogh based machines. If no flag is
+specified probe and register older platform device.
 
 Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Link: https://lore.kernel.org/r/20230523072009.2379198-1-venkataprasad.potturu@amd.com
+Link: https://lore.kernel.org/r/20230530110802.674939-1-venkataprasad.potturu@amd.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/amd/acp.h     | 3 +++
- sound/soc/sof/amd/pci-rmb.c | 3 +++
- sound/soc/sof/amd/pci-rn.c  | 3 +++
- 3 files changed, 9 insertions(+)
+ sound/soc/amd/vangogh/acp5x.h     | 2 ++
+ sound/soc/amd/vangogh/pci-acp5x.c | 7 ++++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
-index dd3c072d01721..14148c311f504 100644
---- a/sound/soc/sof/amd/acp.h
-+++ b/sound/soc/sof/amd/acp.h
-@@ -54,6 +54,9 @@
+diff --git a/sound/soc/amd/vangogh/acp5x.h b/sound/soc/amd/vangogh/acp5x.h
+index bd9f1c5684d17..ac1936a8c43ff 100644
+--- a/sound/soc/amd/vangogh/acp5x.h
++++ b/sound/soc/amd/vangogh/acp5x.h
+@@ -147,6 +147,8 @@ static inline void acp_writel(u32 val, void __iomem *base_addr)
+ 	writel(val, base_addr - ACP5x_PHY_BASE_ADDRESS);
+ }
  
- #define ACP_DSP_TO_HOST_IRQ			0x04
- 
-+#define ACP_RN_PCI_ID				0x01
-+#define ACP_RMB_PCI_ID				0x6F
++int snd_amd_acp_find_config(struct pci_dev *pci);
 +
- #define HOST_BRIDGE_CZN				0x1630
- #define HOST_BRIDGE_RMB				0x14B5
- #define ACP_SHA_STAT				0x8000
-diff --git a/sound/soc/sof/amd/pci-rmb.c b/sound/soc/sof/amd/pci-rmb.c
-index 4e1de462b431b..5698d910b26f3 100644
---- a/sound/soc/sof/amd/pci-rmb.c
-+++ b/sound/soc/sof/amd/pci-rmb.c
-@@ -90,6 +90,9 @@ static int acp_pci_rmb_probe(struct pci_dev *pci, const struct pci_device_id *pc
- 	unsigned int flag, i, addr;
- 	int ret;
+ static inline u64 acp_get_byte_count(struct i2s_stream_instance *rtd,
+ 				     int direction)
+ {
+diff --git a/sound/soc/amd/vangogh/pci-acp5x.c b/sound/soc/amd/vangogh/pci-acp5x.c
+index e0df17c88e8e0..c4634a8a17cdc 100644
+--- a/sound/soc/amd/vangogh/pci-acp5x.c
++++ b/sound/soc/amd/vangogh/pci-acp5x.c
+@@ -125,10 +125,15 @@ static int snd_acp5x_probe(struct pci_dev *pci,
+ {
+ 	struct acp5x_dev_data *adata;
+ 	struct platform_device_info pdevinfo[ACP5x_DEVS];
+-	unsigned int irqflags;
++	unsigned int irqflags, flag;
+ 	int ret, i;
+ 	u32 addr, val;
  
-+	if (pci->revision != ACP_RMB_PCI_ID)
++	/* Return if acp config flag is defined */
++	flag = snd_amd_acp_find_config(pci);
++	if (flag)
 +		return -ENODEV;
 +
- 	flag = snd_amd_acp_find_config(pci);
- 	if (flag != FLAG_AMD_SOF && flag != FLAG_AMD_SOF_ONLY_DMIC)
- 		return -ENODEV;
-diff --git a/sound/soc/sof/amd/pci-rn.c b/sound/soc/sof/amd/pci-rn.c
-index fca40b261671b..9189f63632789 100644
---- a/sound/soc/sof/amd/pci-rn.c
-+++ b/sound/soc/sof/amd/pci-rn.c
-@@ -90,6 +90,9 @@ static int acp_pci_rn_probe(struct pci_dev *pci, const struct pci_device_id *pci
- 	unsigned int flag, i, addr;
- 	int ret;
- 
-+	if (pci->revision != ACP_RN_PCI_ID)
-+		return -ENODEV;
-+
- 	flag = snd_amd_acp_find_config(pci);
- 	if (flag != FLAG_AMD_SOF && flag != FLAG_AMD_SOF_ONLY_DMIC)
+ 	irqflags = IRQF_SHARED;
+ 	if (pci->revision != 0x50)
  		return -ENODEV;
 -- 
 2.39.2
