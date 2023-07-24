@@ -4,76 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7D17C0015E
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 18:29:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7890FC001B0
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Jul 2023 20:02:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 009E73E7;
-	Mon, 24 Jul 2023 20:28:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 009E73E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id D81F67F8;
+	Mon, 24 Jul 2023 22:01:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D81F67F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690223389;
-	bh=Y5BZ90s7VncOPk/FjooP6FsblsLhIzYhA3fNDj4Hjb4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=doS6D0XJWsfCBtaKrejmbbMEMFisonp3uOWffaFSyF2zKdYW2oNP5zvZwXkIw2rlv
-	 TXfinz/bRaMKXrM5NWxG6cxsNyD2RZiZL5suh8DDFID8hwYfDhJrxI/2FQtbrEPAkG
-	 aMQnehnzYJIsbdBZXkRyrbv9ULm746zXdJbW3pdw=
+	s=default; t=1690228921;
+	bh=wumUdGoEsO+wr1meCTzDTGQK/LPizykrI6DIYemvJKQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=GDNh6ydcRtQSQzY/+hwl4Wu54RO24XOf7FJfRNt2Cvqqkr1A+2sSoBGolsYU/2Y6f
+	 PbKnxZxtSO7MZg9V9tvCeF7kBV/rq9Sa8QT5k62znkp0HxR3TphHGNseVu1faXcw6S
+	 Rlllj62V4iBQLN6K/8vRUsCtydFov4wn7KS4dpJg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6FB12F8053B; Mon, 24 Jul 2023 20:28:32 +0200 (CEST)
+	id 8EA2DF80544; Mon, 24 Jul 2023 22:00:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB560F8019B;
-	Mon, 24 Jul 2023 20:28:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCAF4F801F5;
+	Mon, 24 Jul 2023 22:00:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78155F8019B; Mon, 24 Jul 2023 20:28:24 +0200 (CEST)
+	id 1D8EAF801F5; Mon, 24 Jul 2023 22:00:33 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B9D88F800D2
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 20:28:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9D88F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1533EF800C7
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 22:00:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1533EF800C7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Yx/KqbS8
+ header.s=k20201202 header.b=gWgTxiwX
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 965B861368;
-	Mon, 24 Jul 2023 18:28:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9648CC433C7;
-	Mon, 24 Jul 2023 18:28:08 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5A55E6137C;
+	Mon, 24 Jul 2023 20:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A63BBC433C8;
+	Mon, 24 Jul 2023 20:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690223289;
-	bh=Y5BZ90s7VncOPk/FjooP6FsblsLhIzYhA3fNDj4Hjb4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Yx/KqbS8eULe1hAuvi7MQ2Y+vpce4EGyxZpfKKmrHEaPLAKAm+9QztqMv/+s0JPPf
-	 q0GAvn+H5cjTQF7qgRmjfA0WC6l6hNc30+YAR+s7jnc1titTuLx7gGczDnDxIxLpOV
-	 xNY96uzVYOooRSuwQAiXw9+quHy+VnGoQ6+9RBa9zS+YFYMHYFReim/yLpGUIJqg4M
-	 KurdvqfmMY/IikXg2INw0ETdzmlZ4/VnCKSD0s2hTY8tUafmYMOEtD41+o471KnUCq
-	 t9okbb57wKPZp5dpQvGqn39AsyVuvE5AMCqa/XLD9lIhniq+lZPRra3+NK6CCtf9jU
-	 j6ME4n4ZeXG+g==
+	s=k20201202; t=1690228817;
+	bh=wumUdGoEsO+wr1meCTzDTGQK/LPizykrI6DIYemvJKQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=gWgTxiwXbitkE+gwiExq+3oBsVPDlLQ2BuuFan2BGgtOOimEBrmD29tzZlaGN+LwF
+	 19O57xJ5kSWpD5hCm4NZZiFjsSdLhctUFNdoQMnRUwG2rpIkXdYgTf0jMBIppKCv2k
+	 wmYmDtf6RQmT2hZY5HeFYtpT2IjxoX/0ZFvPuh0pY+XDIf94+NAv8PBMII1m635O7x
+	 Br/i677M8IYwcz/4TJFC6rWfBLlP75yG61Fyxj8qLwFxMM/uy99puzaHJ0gwMAUaPo
+	 839OM8TE2tULk+KBWhJPc1tcKVl+tm5n/qWEMR8/dWdtIlXFCL1THaGL2PMqVti6PV
+	 h7jjitzcaFONg==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: perex@perex.cz, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20230721132120.5523-1-rf@opensource.cirrus.com>
-References: <20230721132120.5523-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH v5 00/11] ALSA: hda: Adding support for CS35L56 on HDA
- systems
-Message-Id: <169022328831.1044066.6080075080661040862.b4-ty@kernel.org>
-Date: Mon, 24 Jul 2023 19:28:08 +0100
+To: Support Opensource <support.opensource@diasemi.com>,
+ DLG Support Opensource <DLG-Support.Opensource@lm.renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Dmytro Maluka <dmy@semihalf.com>
+In-Reply-To: <20230717193737.161784-1-dmy@semihalf.com>
+References: <20230717193737.161784-1-dmy@semihalf.com>
+Subject: Re: [PATCH 0/2] ASoC: da7219: Patches related to a spurious AAD
+ IRQ issue
+Message-Id: <169022881524.1309709.2293379191441567680.b4-ty@kernel.org>
+Date: Mon, 24 Jul 2023 21:00:15 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: TERSOEN5EOSURYH2RBOAO6FALUPYT6AV
-X-Message-ID-Hash: TERSOEN5EOSURYH2RBOAO6FALUPYT6AV
+Message-ID-Hash: RLK5JFWM73V34VWKZBB7NPP2JXN2DOVN
+X-Message-ID-Hash: RLK5JFWM73V34VWKZBB7NPP2JXN2DOVN
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TERSOEN5EOSURYH2RBOAO6FALUPYT6AV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RLK5JFWM73V34VWKZBB7NPP2JXN2DOVN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,15 +97,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 21 Jul 2023 14:21:09 +0100, Richard Fitzgerald wrote:
-> This set of patches adds support for using the CS35L56 boosted smart
-> amplifier on HDA systems. In these systems the CS35L56 audio is
-> routed through a HDA-to-I2S bridge codec.
+On Mon, 17 Jul 2023 21:37:35 +0200, Dmytro Maluka wrote:
+> This series includes 2 patches related to (but not fixing) the following
+> I2C failure which occurs sometimes during system suspend or resume and
+> indicates a problem with a spurious DA7219 interrupt:
 > 
-> This doesn't include the changes to the Realtek driver to actually hook
-> up the CS35L56 driver, because we don't yet have the QUIRK IDs to
-> associate it with. But we want to publish the driver now so that it is
-> available for bringing up hardware with the CS35L56.
+> [  355.876211] i2c_designware i2c_designware.3: Transfer while suspended
+> [  355.876245] WARNING: CPU: 2 PID: 3576 at drivers/i2c/busses/i2c-designware-master.c:570 i2c_dw_xfer+0x411/0x440
+> ...
+> [  355.876462] Call Trace:
+> [  355.876468]  <TASK>
+> [  355.876475]  ? update_load_avg+0x1b3/0x615
+> [  355.876484]  __i2c_transfer+0x101/0x1d8
+> [  355.876494]  i2c_transfer+0x74/0x10d
+> [  355.876504]  regmap_i2c_read+0x6a/0x9c
+> [  355.876513]  _regmap_raw_read+0x179/0x223
+> [  355.876521]  regmap_raw_read+0x1e1/0x28e
+> [  355.876527]  regmap_bulk_read+0x17d/0x1ba
+> [  355.876532]  ? __wake_up+0xed/0x1bb
+> [  355.876542]  da7219_aad_irq_thread+0x54/0x2c9 [snd_soc_da7219 5fb8ebb2179cf2fea29af090f3145d68ed8e2184]
+> [  355.876556]  irq_thread+0x13c/0x231
+> [  355.876563]  ? irq_forced_thread_fn+0x5f/0x5f
+> [  355.876570]  ? irq_thread_fn+0x4d/0x4d
+> [  355.876576]  kthread+0x13a/0x152
+> [  355.876581]  ? synchronize_irq+0xc3/0xc3
+> [  355.876587]  ? kthread_blkcg+0x31/0x31
+> [  355.876592]  ret_from_fork+0x1f/0x30
+> [  355.876601]  </TASK>
 > 
 > [...]
 
@@ -113,28 +133,10 @@ Applied to
 
 Thanks!
 
-[01/11] ASoC: cs35l56: Move shared data into a common data structure
-        commit: 898673b905b9318489430663083f629bc38c7461
-[02/11] ASoC: cs35l56: Make cs35l56_system_reset() code more generic
-        commit: cf6e7486de80b680fe178a6517dd7c4166a12dbc
-[03/11] ASoC: cs35l56: Convert utility functions to use common data structure
-        commit: 0a2e49230f7f1796aa79c532426d56e8739ee4b1
-[04/11] ASoC: cs35l56: Move utility functions to shared file
-        commit: 8a731fd37f8b33026e545f5ee5cdd7b9a837cbeb
-[05/11] ASoC: cs35l56: Move runtime suspend/resume to shared library
-        commit: 9974d5b57697770cba2a99c6fe925d01152cd544
-[06/11] ASoC: cs35l56: Move cs_dsp init into shared library
-        commit: 22e51dbb257a218e43de42764b5bdc5302f27cd1
-[07/11] ASoC: cs35l56: Move part of cs35l56_init() to shared library
-        commit: 84851aa055c890f2ea731a128e8feb64520c2c8e
-[08/11] ASoC: cs35l56: Make common function for control port wait
-        commit: f32a2bcbc092d60ba8a1b00a22607b220d53a25e
-[09/11] ASoC: cs35l56: Make a common function to shutdown the DSP
-        commit: 444dfa0912639fb2431553e8e54d2b35fdf590c2
-[10/11] ALSA: hda: Fix missing header dependencies
-        commit: 64e05321506261b737abdbfc7a82144f30d0a925
-[11/11] ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier
-        commit: 73cfbfa9caea8eda54b4c6e49a9555533660aa1e
+[1/2] ASoC: da7219: Flush pending AAD IRQ when suspending
+      commit: 91e292917dad64ab8d1d5ca2ab3069ad9dac6f72
+[2/2] ASoC: da7219: Check for failure reading AAD IRQ events
+      commit: f0691dc16206f21b13c464434366e2cd632b8ed7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
