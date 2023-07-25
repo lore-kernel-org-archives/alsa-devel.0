@@ -4,72 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABC15C001DE
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 16:31:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01590C001DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 16:43:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4810827;
-	Tue, 25 Jul 2023 18:30:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4810827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7100B7F4;
+	Tue, 25 Jul 2023 18:42:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7100B7F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690302659;
-	bh=8V3JU6dJEtGUWklvo/YnWOtYSGFsSMLIx1oBF8E8QBE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1690303380;
+	bh=8NuDHU+UwooI+MQUkdnO89GBWgCvSwS3xfEzPScAyOM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NNW+xui1osUU09BnobfAT0NjgyvA+H1Qotc8HtdBYjMkl9w/NMPUWtRJSe4ulAzQL
-	 srRkuxOeB+4fXGOwi3c+/OSJ7bAOBsoV1YAr+gtp5mIXDlosZdZ24mNJdJoOWw6Qd9
-	 CWuXFB7z8AuXCXkstqwuNhZ+gQmtyMje6bGSM28k=
+	b=rfXkjRnaXFlFvE0zcGsTlCIUwoIk2i6hdLEVbL1XgHeLxi9BrukJ94/XWov51ZmVO
+	 mSMo0M1f1U+1UZ1oLBl8K4QUngU9sZtXpgqAHZKn3q42itqA4p6tqggjnUGGuvEmr8
+	 WkjZL7WyuDkK0GuDvySQmQxMB+oLfMBi3dBVpliw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BFF3FF80535; Tue, 25 Jul 2023 18:29:40 +0200 (CEST)
+	id 181DEF802E8; Tue, 25 Jul 2023 18:41:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2145EF8019B;
-	Tue, 25 Jul 2023 18:29:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65FDEF8019B;
+	Tue, 25 Jul 2023 18:41:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 41D59F8019B; Tue, 25 Jul 2023 18:29:31 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id C24E8F8019B; Tue, 25 Jul 2023 18:41:41 +0200 (CEST)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:3::133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C6829F800C7
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 18:29:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6829F800C7
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5D6ACF80153
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 18:41:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D6ACF80153
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=xI9jD8nP
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id CD1B7617B9;
-	Tue, 25 Jul 2023 16:29:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE7A2C433C7;
-	Tue, 25 Jul 2023 16:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1690302555;
-	bh=8V3JU6dJEtGUWklvo/YnWOtYSGFsSMLIx1oBF8E8QBE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=xI9jD8nPfS4CfSdJJIQFbHgjwL9Yw2WTfzkz9O+8d8Y9G7GVLu5eq0/yHQDCnemYE
-	 myFhEYy+2bV3bPmQ4pmvClerAqtdAxo1h4Tuwkg5ECziImuJURePjk0teHaq2dGvti
-	 GFoqRC5T/SFiQnEUGCBpYMwGGHObIj3j4obIoCP8=
-Date: Tue, 25 Jul 2023 18:29:08 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/7] usb: Add USB MIDI 2.0 Gadget Function Driver
-Message-ID: <2023072550-refocus-depth-1086@gregkh>
-References: <20230725062206.9674-1-tiwai@suse.de>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=infradead.org header.i=@infradead.org
+ header.a=rsa-sha256 header.s=bombadil.20210309 header.b=OE0Yv0C1
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=VOpi6FeyBBxDJ9AWuyvGv6z4rjqWqlFn0g7noxTOdPg=; b=OE0Yv0C1dfCRicRWSmNMM59Dgv
+	MSlzOqH2FV32nJBQJYdaqktbAXnisAv4pM7CWD5mP9T7qa9mLIz8K9Ttq4APloaqzMCPgRMRhlsS/
+	muNPAvD9OZaUubBkxJZvQp1mw6eIdlwtFYM3JoCaGNhX/kBG+VrMhTclgrlCHqbDInmNRjBuZE1rJ
+	miJiFycFAZZ8O+qr9Lk/9p72vtqzNt4lDguzRfxt3Kx5aWulYjUwyyPDyD+I+qFRnn/HclzHEHzUA
+	UtHYz2xsCpPl/gEJBy/hGRuLEzy4irKjnW8K0JJrZkxj8GlXfp8f9fi4l2nTMdRRrYaQTpTls0+vh
+	uXR7iMsA==;
+Received: from [2601:1c2:980:9ec0::2764]
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1qOL64-0083WK-1X;
+	Tue, 25 Jul 2023 16:41:16 +0000
+Message-ID: <ce045e96-e9b6-ae66-dd54-67a958ca1774@infradead.org>
+Date: Tue, 25 Jul 2023 09:41:14 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725062206.9674-1-tiwai@suse.de>
-Message-ID-Hash: 5AGKDA6RMZOQO2E4S5L3DGRYVWFOXSJQ
-X-Message-ID-Hash: 5AGKDA6RMZOQO2E4S5L3DGRYVWFOXSJQ
-X-MailFrom: gregkh@linuxfoundation.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 24/26] ASoC: codecs: Add support for the framer codec
+Content-Language: en-US
+To: Herve Codina <herve.codina@bootlin.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Qiang Zhao <qiang.zhao@nxp.com>,
+ Li Yang <leoyang.li@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ alsa-devel@alsa-project.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20230725092417.43706-1-herve.codina@bootlin.com>
+ <20230725092417.43706-25-herve.codina@bootlin.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230725092417.43706-25-herve.codina@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: DXSKKFRPKS46NJXDOMWXF7QRT6RWLAD3
+X-Message-ID-Hash: DXSKKFRPKS46NJXDOMWXF7QRT6RWLAD3
+X-MailFrom: rdunlap@infradead.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -81,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5AGKDA6RMZOQO2E4S5L3DGRYVWFOXSJQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DXSKKFRPKS46NJXDOMWXF7QRT6RWLAD3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,26 +108,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jul 25, 2023 at 08:21:59AM +0200, Takashi Iwai wrote:
-> Hi,
-> 
-> This is a patch set for adding a USB gadget function driver for USB
-> MIDI 2.0 interface.  The MIDI 2.0 support in the host side was already
-> enabled since 6.5 kernel in snd-usb-audio driver.  Now, this provides
-> a similar gadget functionality using the existing ALSA UMP helper
-> functions.
-> 
-> The gadget driver provides both MIDI 2.0 and MIDI 1.0 fallback
-> interfaces with one or more loopback UMP rawmidi devices.  The
-> configfs implementation is flexible enough to allow users to set up
-> multiple UMP Endpoints and Function Blocks.
-> 
-> The first patch adds the bare f_midi2 driver without configfs support,
-> followed by the configfs support, MIDI 1.0 interface support and a few
-> other extensions and documentation.
-> 
 
-Very cool, thanks for doing this!  All now queued up, let's see what the
-builders say...
 
-greg k-h
+On 7/25/23 02:24, Herve Codina wrote:
+> +config SND_SOC_FRAMER
+> +	tristate "Framer codec"
+> +	depends on GENERIC_FRAMER
+> +	help
+> +	  Enable support for the framer codec.
+> +	  The framer codec uses the generic framer infrastructure to transport
+> +	  some audio data over an analog E1/T1/J1 line.
+> +	  This codec allows to use some of the time slots available on the TDM
+> +	  bus on with the framer is connected to transport the audio data.
+
+	      on which
+
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called snd-soc-framer.
+
+-- 
+~Randy
