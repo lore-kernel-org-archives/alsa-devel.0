@@ -4,110 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A981C001E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jul 2023 07:19:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 122CFC001DC
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jul 2023 07:38:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78119845;
-	Thu, 27 Jul 2023 09:19:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78119845
+	by alsa0.perex.cz (Postfix) with ESMTPS id 146361E0;
+	Thu, 27 Jul 2023 09:37:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 146361E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690442394;
-	bh=7zwco2DV4b+/glr9zC5XJL0mjn83U4fq5xufN5v+hRg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=V/nM4UXzd/ysQVSqCKpu+tlVeUrRNKmiYI2YsJUgIAGoCk9q3ldmsvSiAewQ6Pluw
-	 Wu7VOz90NAowbMCigydvfwwZDEL+qfJwNoybPhPh20mkSs52nG34rn4wSV/y1LgKiJ
-	 e0t5cO8o73vpFftojQXCtLXFO6Bi7SrC2S+Z8b2E=
+	s=default; t=1690443508;
+	bh=LgeMHA6oKPUvuLG2EmXJcP0J7ixsc0/ixubxmz26tzQ=;
+	h=Date:From:To:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=mvcEeqKi78PuI01b8aLWfeechwz7hlLRY9wqC8w8HSVuTmu3pu1Sy6svrbzeZZm3L
+	 otxXUXZ54fsw7AQGCxFUEAGE7UFZvxK23f7J72OEUnlmNT0mnmhdAPFqEtaas5E9jv
+	 INMB+COu2iYF+i3FPGss5t5KYeYt0rMKQZ2bYZ6E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2CC7BF80149; Thu, 27 Jul 2023 09:18:41 +0200 (CEST)
+	id 697D8F80535; Thu, 27 Jul 2023 09:37:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5551F8019B;
-	Thu, 27 Jul 2023 09:18:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6465F8019B;
+	Thu, 27 Jul 2023 09:37:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79564F8019B; Thu, 27 Jul 2023 09:18:36 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 31D3CF8019B; Wed, 26 Jul 2023 00:50:19 +0200 (CEST)
+Received: from out-17.mta1.migadu.com (out-17.mta1.migadu.com [95.215.58.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5C2B4F80153
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2023 09:18:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C2B4F80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id 25398F80149
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 00:50:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25398F80149
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=EO0fQYZT;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Ul850kfc
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CF98F21B73;
-	Thu, 27 Jul 2023 07:18:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1690442310;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BbqG0EHD1iZY1Uc8pX8klfq3MJgfowuBi3jaQrv08RE=;
-	b=EO0fQYZTM31t9eHDaItSx/8aazhb3gDdnOkmIuScbvNWjpO+/Cm0taRLboGazUiEJhc7V5
-	XSlhXHEpc8/ofkKWBH7ITnq7d9aGp18SWXyV0USF4VWop1olZcPa0oVpo6xwKndAEZU6kP
-	TU1UED+VoTzesx1/3hMGX2hCsdFv95U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1690442310;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BbqG0EHD1iZY1Uc8pX8klfq3MJgfowuBi3jaQrv08RE=;
-	b=Ul850kfc+tz7DEeYtuhu2WIaiHdRCP+SXR+fYBEyg7h6gyCrzs5LAngWyOlP2b6cDUl45s
-	HuJzh2t2+8qKbdDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA3CC138E5;
-	Thu, 27 Jul 2023 07:18:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id JlWTKEYawmShLgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 27 Jul 2023 07:18:30 +0000
-Date: Thu, 27 Jul 2023 09:18:30 +0200
-Message-ID: <87tttp6cvt.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pavel Asyutchenko <svenpavel@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	"Luke D . Jones" <luke@ljones.dev>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda/realtek: Support ASUS G713PV laptop
-In-Reply-To: <20230726223732.20775-1-svenpavel@gmail.com>
-References: <20230726223732.20775-1-svenpavel@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: FFV6YXQNZGU3YCYPOROVU2GBVHW5SJVG
-X-Message-ID-Hash: FFV6YXQNZGU3YCYPOROVU2GBVHW5SJVG
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=jookia.org header.i=@jookia.org header.a=rsa-sha256
+ header.s=key1 header.b=v46hsXf1
+Date: Wed, 26 Jul 2023 08:48:18 +1000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+	t=1690325407;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=TkrjGMGP0WkP/3Kq5VF0Jg0B8f96Y+GRQVOPVNkz1Qo=;
+	b=v46hsXf1d9jTbLxer6pGDWCFm7Gzt7H9w2VkphVt+MOKbwXv6uj7NmU5g+z1sF7isVCZRm
+	1WkMk6TmgKNGm0eA8MncDDW2rk/ikrQodrx+gBqSOelX0TbloG/r9g5X5J9wvFHvMLz2Ga
+	P2XhKLXmx7bQeRo5GG6B4IJLnzmCkAUx7aNXtZWOYnoE/98iHcDRURhAh61seLvcTS6iKB
+	O31GjA5AfFYINmYdPpidJM7tXR6DauwWmjb24P3iw0YlqSm8qNSd0GPOrvTMKR5p4oVDBb
+	BseF46lme+WQdyTuAobsXTWghVRE3a66i2nE65I3tR1txYw7yUA+r04Va6FXxg==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+From: John Watts <contact@jookia.org>
+To: alsa-devel@alsa-project.org
+Subject: How do I set up multiple codecs on one I2S - without TDM?
+Message-ID: <ZMBRMnv0GQF4wyfQ@titan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
+X-MailFrom: contact@jookia.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: R7GMDS6OWWENLDUI4226ZKQCSFT27SEZ
+X-Message-ID-Hash: R7GMDS6OWWENLDUI4226ZKQCSFT27SEZ
+X-Mailman-Approved-At: Thu, 27 Jul 2023 07:36:58 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FFV6YXQNZGU3YCYPOROVU2GBVHW5SJVG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R7GMDS6OWWENLDUI4226ZKQCSFT27SEZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,17 +83,121 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 27 Jul 2023 00:37:32 +0200,
-Pavel Asyutchenko wrote:
-> 
-> This laptop has CS35L41 amp connected via I2C.
-> 
-> With this patch speakers begin to work if the
-> missing _DSD properties are added to ACPI tables.
-> 
-> Signed-off-by: Pavel Asyutchenko <svenpavel@gmail.com>
+Hello there!
 
-Thanks, applied now.
+I have an interesting problem that I'm trying to solve. It will require
+writing adding driver support but right now I'm struggling to understand
+how I should go about it all.
 
+As a background, this is with the Allwinner D1 or T113. It has a 16
+channel I2S controller and each channel can be configured to use a
+specific pin and TDM time slice. Even channels are low LRCLK, odd are
+high LRCLK.
 
-Takashi
+So for my situation I want to have six channels:
+
+- Channel 0: Timeslot 0, Pin 0, LRCLK 0 -> ADC 1
+- Channel 1: Timeslot 0, Pin 0, LRCLK 1 -> ADC 1
+- Channel 2: Timeslot 0, Pin 1, LRCLK 0 -> ADC 2
+- Channel 3: Timeslot 0, Pin 1, LRCLK 1 -> ADC 2
+- Channel 4: Timeslot 0, Pin 2, LRCLK 0 -> ADC 3
+- Channel 5: Timeslot 0, Pin 2, LRCLK 1 -> ADC 3
+
+These ADCs are WM8782s, completely TDM unaware. If they were TDM aware
+then I could run even more ADCs by having multiple separate TDMs going
+on each pin.
+
+I have tried to look online for I2S controllers that do the same thing
+but haven't had much luck. The current driver for this controller only
+supports TDM. So I will have to add support for this.
+
+So my questions are: 
+- How do I express this in terms of ALSA and sound card concepts?
+- How do I express this in the device tree?
+
+My immediate thought is that this is a situation where I have a card
+with 3 dai-links between the I2S controller and each separate codec.
+I have written this tree as a test:
+
+    wm8782_1: stereo-adc {
+    	compatible = "wlf,wm8782";
+    	Vdda-supply = <&reg_vcc>;
+    	Vdd-supply = <&reg_vcc>;
+    	#sound-dai-cells = <0>;
+    };
+    
+    wm8782_2: stereo-adc {
+    	compatible = "wlf,wm8782";
+    	Vdda-supply = <&reg_vcc>;
+    	Vdd-supply = <&reg_vcc>;
+    	#sound-dai-cells = <0>;
+    };
+    
+    wm8782_3: stereo-adc {
+    	compatible = "wlf,wm8782";
+    	Vdda-supply = <&reg_vcc>;
+    	Vdd-supply = <&reg_vcc>;
+    	#sound-dai-cells = <0>;
+    };
+    
+    sound {
+    	compatible = "simple-audio-card";
+    	simple-audio-card,name = "Testcard In";
+    	simple-audio-card,format = "i2s";
+    	simple-audio-card,bitclock-master = <&sound_cpu>;
+    	simple-audio-card,frame-master = <&sound_cpu>;
+    	simple-audio-card,mclk-fs = <128>;
+    	#address-cells = <1>;
+    	#size-cells = <0>;
+    	simple-audio-card,dai-link@0 {
+    		reg = <0>;
+    		sound_cpu: cpu {
+    			sound-dai = <&i2s2>;
+    		};
+    		codec {
+    			sound-dai = <&wm8782_1>;
+    		};
+    	};
+    	simple-audio-card,dai-link@1 {
+    		reg = <1>;
+    		cpu {
+    			sound-dai = <&i2s2>;
+    		};
+    		codec {
+    			sound-dai = <&wm8782_2>;
+    		};
+    	};
+    	simple-audio-card,dai-link@2 {
+    		reg = <2>;
+    		cpu {
+    			sound-dai = <&i2s2>;
+    		};
+    		codec {
+    			sound-dai = <&wm8782_3>;
+    		};
+    	};
+    };
+
+But I get this kernel error:
+
+    kobject_add_internal failed for 2034000.i2s-wm8782 with -EEXIST, don't try to register things with the same name
+    asoc-simple-card: probe of sound failed with error -12
+
+The WM8782 doesn't support TDM or multiplexing so I'm not exactly sure
+if this is correct behaviour or my mistake configuring.
+
+I tried adding TDM nodes which didn't help.
+
+I also tried having a single link with multiple codecs on sound-dai
+which did create a sound card but it was unclear to me if this was
+ignoring the other codecs I had listed or not.
+
+I also can't test this at this point as the sunxi codec driver assumes
+that the number of channels is equal to TDM slots, which isn't true any
+more.
+
+Any pointers in the right direction would be a huge help.
+Surely someone else has had this problem.
+
+Thanks,
+John.
