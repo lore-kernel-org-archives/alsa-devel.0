@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2C05C001DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 06:56:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51600C001DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 06:58:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 756D2EB0;
-	Tue, 25 Jul 2023 08:55:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 756D2EB0
+	by alsa0.perex.cz (Postfix) with ESMTPS id E2625EAF;
+	Tue, 25 Jul 2023 08:57:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2625EAF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690268208;
-	bh=QgLBWCfVsMra+5/d7zwaxyLgcCSyh90t57HOdYI+GlI=;
+	s=default; t=1690268312;
+	bh=ZOWvNA0RUEm4A2QLxn+Mk8r05tkv6yHwarXm4mOtvyM=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ojwAuG95iHj9cntJAgqgbAYhCl6F5bRbaBvLUE7DW31WrqLl8uKT0oqQq35WPmhe/
-	 YTe28a0kIbsvASTgKJ3lE7APABUbM+9us1U0/PnhahoYskR6edYTQu8bEuDxWfuNKZ
-	 dm8VfulObJBYVibZ9H+Dhrek10LkqUpZFW2csVfg=
+	b=BqrzLtgCecVK5/OgBT+bW8kgeFveE/ILZ3eZ4eMQPUsigr0Y6Ps7DRiWygW89tM8U
+	 tw+bqTfHxHIenEL+ckW3/PEHljD9XAFUcid55qHM4M6CEJnYWd94kdltrvXK6f6RCk
+	 zgYxhOqUByoOvi/Jf7q6a2vOpfPpGAysqu95dcVg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2DD5AF801F5; Tue, 25 Jul 2023 08:55:37 +0200 (CEST)
+	id 9CC69F80163; Tue, 25 Jul 2023 08:57:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE875F80310;
-	Tue, 25 Jul 2023 08:55:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49021F800C7;
+	Tue, 25 Jul 2023 08:57:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34F9CF8019B; Tue, 25 Jul 2023 08:55:33 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id CB8A4F8019B; Tue, 25 Jul 2023 08:57:37 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D6FE4F800C7
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 08:55:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6FE4F800C7
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7CBE5F800C7
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 08:57:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CBE5F800C7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=RZouMMWp;
+ header.s=susede2_rsa header.b=0zxnnVkq;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=7PZKUyQ/
+ header.s=susede2_ed25519 header.b=jGs9ToYV
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 707511F460;
-	Tue, 25 Jul 2023 06:55:29 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 16A77218A2;
+	Tue, 25 Jul 2023 06:57:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1690268129;
+	t=1690268255;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FW60ca4OfmtA62jqaIvoPbHSo4Qh3qo4WXB3S+Vrgbg=;
-	b=RZouMMWpjtWvn4VUwfWniFkz9SA46/V7OpupxU74R0sZRCwWfDhtV9qG2oGbe6ibtI8wgx
-	aFmnmxlI3cAWTNPlSbVLdz+WjjelmEWNl4j4T8wPFzW6MYni53WJG3Fqf2gGoT91mTVTgk
-	Qgyc5usSL1Pgh7vPxPXjR7XfnBoLMH0=
+	bh=9Oi3czKnpvE6a+3o5E+2OD3NX8ZHwPHEeEjkU+816sI=;
+	b=0zxnnVkqjhYogR+gSX8ALAzMUJOePN8qiWPDDTsnTWm/yobi1+3EfgQcJPR/00OSQE3cns
+	lovd+FP4k4hD5UunNTWUeUimHGaaPPsjm2QqNe1ITsTrY8NCMTzqcg/pXDEM0WEBjABovF
+	hvsNvTBNDqkuhFP0aVEMpfGAfGZ65dg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1690268129;
+	s=susede2_ed25519; t=1690268255;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FW60ca4OfmtA62jqaIvoPbHSo4Qh3qo4WXB3S+Vrgbg=;
-	b=7PZKUyQ/sM07QOcCpimwJFlHEZx/sF7OB5wGCJmkjX2zQulgpyjxLuXGlhicSzNi245L8S
-	YAsRblS8+/EeTnCA==
+	bh=9Oi3czKnpvE6a+3o5E+2OD3NX8ZHwPHEeEjkU+816sI=;
+	b=jGs9ToYVVp0Pnq39eX42g+FlWEbZnjh5urcI3qMPD09lMmi+Ywi9lpeBohzDI/SDbw6+Ym
+	zyLzL4gbUmK1P5Bw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CF46313487;
-	Tue, 25 Jul 2023 06:55:28 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8278713487;
+	Tue, 25 Jul 2023 06:57:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id I+3HMeBxv2RyBQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 06:55:28 +0000
-Date: Tue, 25 Jul 2023 08:55:28 +0200
-Message-ID: <87edkwv5sv.wl-tiwai@suse.de>
+	id 7VDhHl5yv2R1BgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 06:57:34 +0000
+Date: Tue, 25 Jul 2023 08:57:34 +0200
+Message-ID: <87cz0gv5pd.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Wesley Cheng <quic_wcheng@quicinc.com>
 Cc: <agross@kernel.org>,
@@ -109,16 +109,16 @@ Cc: <agross@kernel.org>,
 	<oneukum@suse.com>,
 	<albertccwang@google.com>,
 	<o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v4 11/32] sound: usb: card: Introduce USB SND platform op
- callbacks
-In-Reply-To: <20230725023416.11205-12-quic_wcheng@quicinc.com>
+Subject: Re: [PATCH v4 19/32] sound: usb: card: Check for support for
+ requested audio format
+In-Reply-To: <20230725023416.11205-20-quic_wcheng@quicinc.com>
 References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
-	<20230725023416.11205-12-quic_wcheng@quicinc.com>
+	<20230725023416.11205-20-quic_wcheng@quicinc.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: DFGLAF7RUA5WXUAAVBXTCHMCXR3SVBKL
-X-Message-ID-Hash: DFGLAF7RUA5WXUAAVBXTCHMCXR3SVBKL
+Message-ID-Hash: 3HBGTKPYKQEWDN2MYESZNDX4V6GQXXXE
+X-Message-ID-Hash: 3HBGTKPYKQEWDN2MYESZNDX4V6GQXXXE
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -131,7 +131,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DFGLAF7RUA5WXUAAVBXTCHMCXR3SVBKL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3HBGTKPYKQEWDN2MYESZNDX4V6GQXXXE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -140,76 +140,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 25 Jul 2023 04:33:55 +0200,
+On Tue, 25 Jul 2023 04:34:03 +0200,
 Wesley Cheng wrote:
 > 
-> Allow for different platforms to be notified on USB SND connect/disconnect
-> seqeunces.  This allows for platform USB SND modules to properly initialize
-> and populate internal structures with references to the USB SND chip
-> device.
+> Allow for checks on a specific USB audio device to see if a requested PCM
+> format is supported.  This is needed for support for when playback is
+> initiated by the ASoC USB backend path.
 > 
 > Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 > ---
->  sound/usb/card.c | 36 ++++++++++++++++++++++++++++++++++++
->  sound/usb/card.h | 20 ++++++++++++++++++++
->  2 files changed, 56 insertions(+)
+>  sound/usb/card.c | 28 ++++++++++++++++++++++++++++
+>  sound/usb/card.h |  8 ++++++++
+>  2 files changed, 36 insertions(+)
 > 
 > diff --git a/sound/usb/card.c b/sound/usb/card.c
-> index f6e99ced8068..9365d1e17836 100644
+> index a3fad66a3337..365f6d978608 100644
 > --- a/sound/usb/card.c
 > +++ b/sound/usb/card.c
-> @@ -117,6 +117,30 @@ MODULE_PARM_DESC(skip_validation, "Skip unit descriptor validation (default: no)
->  static DEFINE_MUTEX(register_mutex);
->  static struct snd_usb_audio *usb_chip[SNDRV_CARDS];
->  static struct usb_driver usb_audio_driver;
-> +static struct snd_usb_platform_ops *platform_ops;
-> +
-> +int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops)
-> +{
-> +	if (platform_ops)
-> +		return -EEXIST;
-> +	mutex_lock(&register_mutex);
-> +	platform_ops = ops;
-> +	mutex_unlock(&register_mutex);
-
-The check should be inside register_mutex lock, too.
-Otherwise it's racy.
-
-
-> --- a/sound/usb/card.h
-> +++ b/sound/usb/card.h
-> @@ -207,4 +207,24 @@ struct snd_usb_stream {
->  	struct list_head list;
->  };
+> @@ -142,6 +142,34 @@ int snd_usb_unregister_platform_ops(void)
+>  }
+>  EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
 >  
-> +struct snd_usb_platform_ops {
-> +	void (*connect_cb)(struct snd_usb_audio *chip);
-> +	void (*disconnect_cb)(struct snd_usb_audio *chip);
-> +	void (*suspend_cb)(struct usb_interface *intf, pm_message_t message);
-> +};
-
-Don't we need resume_cb?  Even if it's unused for your platform, it'd
-make sense to be a pair.
-
-> +#if IS_ENABLED(CONFIG_SND_USB_AUDIO)
-> +int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
-> +int snd_usb_unregister_platform_ops(void);
-> +#else
-> +static int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops)
+> +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+> +			struct snd_pcm_hw_params *params, int direction)
 > +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static int snd_usb_unregister_platform_ops(void)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +#endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
 
-Any need for dummy function definitions?  I thought those exported
-functions are always with CONFIG_SND_USB_AUDIO enabled?
+Please add a comment what this function does.
 
-IOW, are they use of those functions without USB audio driver?
+
+> +	struct snd_usb_audio *chip = usb_chip[card_idx];
+
+Is the dereference safe without locking?
+If the call is supposed to be allowed only in a safe situation, it
+should be mentioned in the function description.
 
 
 thanks,
