@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A73CC001E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 09:33:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B9BCC001DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 09:33:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 200A6156D;
-	Tue, 25 Jul 2023 11:32:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 200A6156D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69A1D154F;
+	Tue, 25 Jul 2023 11:32:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69A1D154F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690277591;
-	bh=kLKaXXf5pvcypL+xm2XWPqgij5tRMMT0TJX7daQBZ3s=;
+	s=default; t=1690277606;
+	bh=GunbMm+MArD0iaqaUcaNrzycmay5FKZ7vFo6rvEc4JY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZSWSSZ4uSpNhXShJPnXNhNONtri93q75nFq+iqQGc8ildmtfaXBFlSkS06Pkyot0d
-	 sGBkawYKKl69PR3BciAV3KpsMx51ZiZMqUOA172CBZ4MQKD1icJROGiW0nvoqrggsa
-	 ULflFk6OniaxyBALV/ryG66ZSC42b61LICNT+hsI=
+	b=BVQRUYWUdz+99Snbjs0Xc4FEQesiW5xfuHd3J1aBPT3I4gxaAj+gKq1P6HVSQK/eW
+	 4bzwmhxS8PkI/cCx3pWQMMIC2Mm0XpuoRxYut3Ks8eRtBVdoN3vAlSz3vdM8xh2FL6
+	 fbeCqEHg4gSOWPQYSLUucAz/q/bbc3l3RHfGSMXU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36FB2F805AC; Tue, 25 Jul 2023 11:27:23 +0200 (CEST)
+	id 4DCFAF805C4; Tue, 25 Jul 2023 11:27:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6973F805A8;
-	Tue, 25 Jul 2023 11:27:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C67D3F805B1;
+	Tue, 25 Jul 2023 11:27:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BFFD1F80558; Tue, 25 Jul 2023 11:27:13 +0200 (CEST)
+	id 40724F8057E; Tue, 25 Jul 2023 11:27:18 +0200 (CEST)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
  [217.70.183.194])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC447F8060D
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 11:25:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC447F8060D
+	by alsa1.perex.cz (Postfix) with ESMTPS id D3F81F80551
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 11:25:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3F81F80551
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=dU6pkHQJ
-Received: by mail.gandi.net (Postfix) with ESMTPA id F0A8F40003;
-	Tue, 25 Jul 2023 09:25:41 +0000 (UTC)
+ header.s=gm1 header.b=JgBT5qn8
+Received: by mail.gandi.net (Postfix) with ESMTPA id 2C71940010;
+	Tue, 25 Jul 2023 09:25:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690277144;
+	t=1690277107;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IPnLP2W4dklOpklFcPF63S6IvwywdYLG/H5kf/2m1hQ=;
-	b=dU6pkHQJTaNOFLAZxnNWWcQ+yPZLLWex7tEgH13rZKatQHLKe4bBowsZRjQp0jQ1Zq3C+7
-	/bSfS0dXH0T+ABQJHi+XsZPBLn4/FxWkXsxufXay7K5r7irS0q1c7zShzzwLVM33NuzGxB
-	s/J0UjciQiL3WmkJaqZEXN1uyNnQVwDZuYZaMeOyjZYE8okDl8MRG54hiexoTp0MP8AHpl
-	Aan7i3aediO2m0iOY3AJxKNBWHkU0TomMmVa5IMMBjDLwAvIyTYHBy/4mlWIF00opJNBGi
-	xfKXHe91OHvj3NY+YghC9P9vhZv+rzddBJHpDaiWUp2mRgg/pUMui0q3DwBizQ==
+	bh=LjavZ9iPIbc/+iWfuLBI+v/BNeYUWlNA3MKyV63eNTQ=;
+	b=JgBT5qn8HORaFOts2wUY2OxgT5kQSVMZjScRAwOk3H5cLsbe6AFrU+F/mQSM6undGp8027
+	tqkJQ1tOse1/QD4cBfgSNF5JGWmBWEzMpW8VxaCdzD7qMLXKhlOKHnj1xtEpG8C0/NfWAJ
+	180iuHaCpLVAPB0bkg+ExCFVFbN/DsXQ82jMP6dyXH9IL0l3zziD2VuLieMxo+xc6qOOfl
+	ALulyD0Lz58g2qj+e227dGIfpyvOYt0I09h5hodZcReg48Emc771rjX/2G+wZqnQHyEmjo
+	auZGRp2BP1AjUAeGbA89Jn2RU/WPerV0qJOKr+E3AWwIsW69x6EIYHnpqIlh+A==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -84,17 +84,17 @@ Cc: netdev@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 18/26] net: wan: Add framer framework support
-Date: Tue, 25 Jul 2023 11:23:54 +0200
-Message-ID: <20230725092417.43706-19-herve.codina@bootlin.com>
+Subject: [PATCH 04/26] net: wan: Add support for QMC HDLC
+Date: Tue, 25 Jul 2023 11:23:40 +0200
+Message-ID: <20230725092417.43706-5-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230725092417.43706-1-herve.codina@bootlin.com>
 References: <20230725092417.43706-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: IS74ZVAYOFIURGT6T7XUVVRHXZMDVYZ4
-X-Message-ID-Hash: IS74ZVAYOFIURGT6T7XUVVRHXZMDVYZ4
+Message-ID-Hash: 6N7UE2AJDOCQ4MWQZF3JCKHGEBZS6BMN
+X-Message-ID-Hash: 6N7UE2AJDOCQ4MWQZF3JCKHGEBZS6BMN
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IS74ZVAYOFIURGT6T7XUVVRHXZMDVYZ4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6N7UE2AJDOCQ4MWQZF3JCKHGEBZS6BMN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,1462 +116,480 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-A framer is a component in charge of an E1/T1 line interface.
-Connected usually to a TDM bus, it converts TDM frames to/from E1/T1
-frames. It also provides information related to the E1/T1 line.
-
-The framer framework provides a set of APIs for the framer drivers
-(framer provider) to create/destroy a framer and APIs for the framer
-users (framer consumer) to obtain a reference to the framer, and
-use the framer.
-
-This basic implementation provides a framer abstraction for:
- - power on/off the framer
- - get the framer status (line state)
- - be notified on framer status changes
- - get/set the framer configuration
+The QMC HDLC driver provides support for HDLC using the QMC (QUICC
+Multichannel Controller) to transfer the HDLC data.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- drivers/net/wan/Kconfig                |   2 +
- drivers/net/wan/Makefile               |   2 +
- drivers/net/wan/framer/Kconfig         |  19 +
- drivers/net/wan/framer/Makefile        |   6 +
- drivers/net/wan/framer/framer-core.c   | 935 +++++++++++++++++++++++++
- include/linux/framer/framer-provider.h | 194 +++++
- include/linux/framer/framer.h          | 215 ++++++
- 7 files changed, 1373 insertions(+)
- create mode 100644 drivers/net/wan/framer/Kconfig
- create mode 100644 drivers/net/wan/framer/Makefile
- create mode 100644 drivers/net/wan/framer/framer-core.c
- create mode 100644 include/linux/framer/framer-provider.h
- create mode 100644 include/linux/framer/framer.h
+ drivers/net/wan/Kconfig        |  12 +
+ drivers/net/wan/Makefile       |   1 +
+ drivers/net/wan/fsl_qmc_hdlc.c | 422 +++++++++++++++++++++++++++++++++
+ 3 files changed, 435 insertions(+)
+ create mode 100644 drivers/net/wan/fsl_qmc_hdlc.c
 
 diff --git a/drivers/net/wan/Kconfig b/drivers/net/wan/Kconfig
-index 8de99f4b647b..31ab2136cdf1 100644
+index dcb069dde66b..8de99f4b647b 100644
 --- a/drivers/net/wan/Kconfig
 +++ b/drivers/net/wan/Kconfig
-@@ -95,6 +95,8 @@ config HDLC_X25
- comment "X.25/LAPB support is disabled"
- 	depends on HDLC && (LAPB!=m || HDLC!=m) && LAPB!=y
+@@ -195,6 +195,18 @@ config FARSYNC
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called farsync.
  
-+source "drivers/net/wan/framer/Kconfig"
++config FSL_QMC_HDLC
++	tristate "Freescale QMC HDLC support"
++	depends on HDLC
++	depends on CPM_QMC
++	help
++	  HDLC support using the Freescale QUICC Multichannel Controller (QMC).
 +
- config PCI200SYN
- 	tristate "Goramo PCI200SYN support"
- 	depends on HDLC && PCI
++	  To compile this driver as a module, choose M here: the
++	  module will be called fsl_qmc_hdlc.
++
++	  If unsure, say N.
++
+ config FSL_UCC_HDLC
+ 	tristate "Freescale QUICC Engine HDLC support"
+ 	depends on HDLC
 diff --git a/drivers/net/wan/Makefile b/drivers/net/wan/Makefile
-index f338f4830626..00e9b7ee1e01 100644
+index 5bec8fae47f8..f338f4830626 100644
 --- a/drivers/net/wan/Makefile
 +++ b/drivers/net/wan/Makefile
-@@ -14,6 +14,8 @@ obj-$(CONFIG_HDLC_FR)		+= hdlc_fr.o
- obj-$(CONFIG_HDLC_PPP)		+= hdlc_ppp.o
- obj-$(CONFIG_HDLC_X25)		+= hdlc_x25.o
+@@ -23,6 +23,7 @@ obj-$(CONFIG_WANXL)		+= wanxl.o
+ obj-$(CONFIG_PCI200SYN)		+= pci200syn.o
+ obj-$(CONFIG_PC300TOO)		+= pc300too.o
+ obj-$(CONFIG_IXP4XX_HSS)	+= ixp4xx_hss.o
++obj-$(CONFIG_FSL_QMC_HDLC)	+= fsl_qmc_hdlc.o
+ obj-$(CONFIG_FSL_UCC_HDLC)	+= fsl_ucc_hdlc.o
+ obj-$(CONFIG_SLIC_DS26522)	+= slic_ds26522.o
  
-+obj-y				+= framer/
-+
- obj-$(CONFIG_FARSYNC)		+= farsync.o
- 
- obj-$(CONFIG_LAPBETHER)		+= lapbether.o
-diff --git a/drivers/net/wan/framer/Kconfig b/drivers/net/wan/framer/Kconfig
+diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
 new file mode 100644
-index 000000000000..96ef1e7ba8eb
+index 000000000000..b4ebae963d39
 --- /dev/null
-+++ b/drivers/net/wan/framer/Kconfig
-@@ -0,0 +1,19 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# FRAMER
-+#
-+
-+menu "Framer Subsystem"
-+
-+config GENERIC_FRAMER
-+	bool "Framer Core"
-+	help
-+	  Generic Framer support.
-+
-+	  This framework is designed to provide a generic interface for framer
-+	  devices present in the kernel. This layer will have the generic
-+	  API by which framer drivers can create framer using the framer
-+	  framework and framer users can obtain reference to the framer.
-+	  All the users of this framework should select this config.
-+
-+endmenu
-diff --git a/drivers/net/wan/framer/Makefile b/drivers/net/wan/framer/Makefile
-new file mode 100644
-index 000000000000..78dbd8e563d0
---- /dev/null
-+++ b/drivers/net/wan/framer/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Makefile for the framer drivers.
-+#
-+
-+obj-$(CONFIG_GENERIC_FRAMER)			+= framer-core.o
-diff --git a/drivers/net/wan/framer/framer-core.c b/drivers/net/wan/framer/framer-core.c
-new file mode 100644
-index 000000000000..ef93b7d74fd1
---- /dev/null
-+++ b/drivers/net/wan/framer/framer-core.c
-@@ -0,0 +1,935 @@
++++ b/drivers/net/wan/fsl_qmc_hdlc.c
+@@ -0,0 +1,422 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Generic Framer framework.
++ * Freescale QMC HDLC Device Driver
 + *
 + * Copyright 2023 CS GROUP France
 + *
 + * Author: Herve Codina <herve.codina@bootlin.com>
 + */
 +
-+#include <linux/device.h>
-+#include <linux/framer/framer.h>
-+#include <linux/framer/framer-provider.h>
-+#include <linux/idr.h>
++#include <linux/dma-mapping.h>
++#include <linux/hdlc.h>
 +#include <linux/module.h>
-+#include <linux/notifier.h>
 +#include <linux/of.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regulator/consumer.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
 +#include <linux/slab.h>
++#include <soc/fsl/qe/qmc.h>
 +
-+static struct class *framer_class;
-+static DEFINE_MUTEX(framer_provider_mutex);
-+static LIST_HEAD(framer_provider_list);
-+static DEFINE_IDA(framer_ida);
++struct qmc_hdlc_desc {
++	struct net_device *netdev;
++	struct sk_buff *skb; /* NULL if the descriptor is not in use */
++	dma_addr_t dma_addr;
++	size_t dma_size;
++};
 +
-+#define dev_to_framer(a)	(container_of((a), struct framer, dev))
++struct qmc_hdlc {
++	struct device *dev;
++	struct qmc_chan *qmc_chan;
++	struct net_device *netdev;
++	bool is_crc32;
++	spinlock_t tx_lock; /* Protect tx descriptors */
++	struct qmc_hdlc_desc tx_descs[8];
++	unsigned int tx_out;
++	struct qmc_hdlc_desc rx_descs[4];
++};
 +
-+int framer_pm_runtime_get(struct framer *framer)
++static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
 +{
++	return (struct qmc_hdlc *)dev_to_hdlc(netdev)->priv;
++}
++
++static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
++
++#define QMC_HDLC_RX_ERROR_FLAGS (QMC_RX_FLAG_HDLC_OVF | \
++				 QMC_RX_FLAG_HDLC_UNA | \
++				 QMC_RX_FLAG_HDLC_ABORT | \
++				 QMC_RX_FLAG_HDLC_CRC)
++
++static void qmc_hcld_recv_complete(void *context, size_t length, unsigned int flags)
++{
++	struct qmc_hdlc_desc *desc = context;
++	struct net_device *netdev = desc->netdev;
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(desc->netdev);
 +	int ret;
 +
-+	if (!framer)
-+		return 0;
++	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_FROM_DEVICE);
 +
-+	if (!pm_runtime_enabled(&framer->dev))
-+		return -EOPNOTSUPP;
++	if (flags & QMC_HDLC_RX_ERROR_FLAGS) {
++		netdev->stats.rx_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_OVF) /* Data overflow */
++			netdev->stats.rx_over_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_UNA) /* bits received not multiple of 8 */
++			netdev->stats.rx_frame_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_ABORT) /* Received an abort sequence */
++			netdev->stats.rx_frame_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_CRC) /* CRC error */
++			netdev->stats.rx_crc_errors++;
++		kfree_skb(desc->skb);
++	} else {
++		netdev->stats.rx_packets++;
++		netdev->stats.rx_bytes += length;
 +
-+	ret = pm_runtime_get(&framer->dev);
-+	if (ret < 0 && ret != -EINPROGRESS)
-+		pm_runtime_put_noidle(&framer->dev);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(framer_pm_runtime_get);
-+
-+int framer_pm_runtime_get_sync(struct framer *framer)
-+{
-+	int ret;
-+
-+	if (!framer)
-+		return 0;
-+
-+	if (!pm_runtime_enabled(&framer->dev))
-+		return -EOPNOTSUPP;
-+
-+	ret = pm_runtime_get_sync(&framer->dev);
-+	if (ret < 0)
-+		pm_runtime_put_sync(&framer->dev);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(framer_pm_runtime_get_sync);
-+
-+int framer_pm_runtime_put(struct framer *framer)
-+{
-+	if (!framer)
-+		return 0;
-+
-+	if (!pm_runtime_enabled(&framer->dev))
-+		return -EOPNOTSUPP;
-+
-+	return pm_runtime_put(&framer->dev);
-+}
-+EXPORT_SYMBOL_GPL(framer_pm_runtime_put);
-+
-+int framer_pm_runtime_put_sync(struct framer *framer)
-+{
-+	if (!framer)
-+		return 0;
-+
-+	if (!pm_runtime_enabled(&framer->dev))
-+		return -EOPNOTSUPP;
-+
-+	return pm_runtime_put_sync(&framer->dev);
-+}
-+EXPORT_SYMBOL_GPL(framer_pm_runtime_put_sync);
-+
-+/**
-+ * framer_init - framer internal initialization before framer operation
-+ * @framer: the framer returned by framer_get()
-+ *
-+ * Used to allow framer's driver to perform framer internal initialization,
-+ * such as PLL block powering, clock initialization or anything that's
-+ * is required by the framer to perform the start of operation.
-+ * Must be called before framer_power_on().
-+ *
-+ * Return: %0 if successful, a negative error code otherwise
-+ */
-+int framer_init(struct framer *framer)
-+{
-+	bool start_polling = false;
-+	int ret;
-+
-+	if (!framer)
-+		return 0;
-+
-+	ret = framer_pm_runtime_get_sync(framer);
-+	if (ret < 0 && ret != -EOPNOTSUPP)
-+		return ret;
-+	ret = 0; /* Override possible ret == -EOPNOTSUPP */
-+
-+	mutex_lock(&framer->mutex);
-+	if (framer->power_count > framer->init_count)
-+		dev_warn(&framer->dev, "framer_power_on was called before framer init\n");
-+
-+	if (framer->init_count == 0) {
-+		if (framer->ops->init) {
-+			ret = framer->ops->init(framer);
-+			if (ret < 0) {
-+				dev_err(&framer->dev, "framer init failed --> %d\n", ret);
-+				goto out;
-+			}
-+		}
-+		if (framer->ops->flags & FRAMER_FLAG_POLL_STATUS)
-+			start_polling = true;
-+	}
-+	++framer->init_count;
-+
-+out:
-+	mutex_unlock(&framer->mutex);
-+
-+	if (!ret && start_polling) {
-+		ret = framer_get_status(framer, &framer->prev_status);
-+		if (ret < 0) {
-+			dev_warn(&framer->dev, "framer get status failed --> %d\n", ret);
-+			/* Will be retried on polling_work */
-+			ret = 0;
-+		}
-+		queue_delayed_work(system_power_efficient_wq, &framer->polling_work, 1 * HZ);
++		skb_put(desc->skb, length);
++		desc->skb->protocol = hdlc_type_trans(desc->skb, netdev);
++		netif_rx(desc->skb);
 +	}
 +
-+	framer_pm_runtime_put(framer);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(framer_init);
-+
-+/**
-+ * framer_exit - Framer internal un-initialization
-+ * @framer: the framer returned by framer_get()
-+ *
-+ * Must be called after framer_power_off().
-+ */
-+int framer_exit(struct framer *framer)
-+{
-+	int ret;
-+
-+	if (!framer)
-+		return 0;
-+
-+	ret = framer_pm_runtime_get_sync(framer);
-+	if (ret < 0 && ret != -EOPNOTSUPP)
-+		return ret;
-+	ret = 0; /* Override possible ret == -EOPNOTSUPP */
-+
-+	mutex_lock(&framer->mutex);
-+	--framer->init_count;
-+	if (framer->init_count == 0) {
-+		if (framer->ops->flags & FRAMER_FLAG_POLL_STATUS) {
-+			mutex_unlock(&framer->mutex);
-+			cancel_delayed_work_sync(&framer->polling_work);
-+			mutex_lock(&framer->mutex);
-+		}
-+
-+		if (framer->ops->exit)
-+			framer->ops->exit(framer);
-+	}
-+
-+	mutex_unlock(&framer->mutex);
-+	framer_pm_runtime_put(framer);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(framer_exit);
-+
-+/**
-+ * framer_power_on - Enable the framer and enter proper operation
-+ * @framer: the framer returned by framer_get()
-+ *
-+ * Must be called after framer_init().
-+ *
-+ * Return: %0 if successful, a negative error code otherwise
-+ */
-+int framer_power_on(struct framer *framer)
-+{
-+	int ret = 0;
-+
-+	if (!framer)
-+		goto out;
-+
-+	if (framer->pwr) {
-+		ret = regulator_enable(framer->pwr);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	ret = framer_pm_runtime_get_sync(framer);
-+	if (ret < 0 && ret != -EOPNOTSUPP)
-+		goto err_pm_sync;
-+
-+	ret = 0; /* Override possible ret == -EOPNOTSUPP */
-+
-+	mutex_lock(&framer->mutex);
-+	if (framer->power_count == 0 && framer->ops->power_on) {
-+		ret = framer->ops->power_on(framer);
-+		if (ret < 0) {
-+			dev_err(&framer->dev, "framer poweron failed --> %d\n", ret);
-+			goto err_pwr_on;
-+		}
-+	}
-+	++framer->power_count;
-+	mutex_unlock(&framer->mutex);
-+	return 0;
-+
-+err_pwr_on:
-+	mutex_unlock(&framer->mutex);
-+	framer_pm_runtime_put_sync(framer);
-+err_pm_sync:
-+	if (framer->pwr)
-+		regulator_disable(framer->pwr);
-+out:
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(framer_power_on);
-+
-+/**
-+ * framer_power_off - Disable the framer.
-+ * @framer: the framer returned by framer_get()
-+ *
-+ * Must be called before framer_exit().
-+ *
-+ * Return: %0 if successful, a negative error code otherwise
-+ */
-+int framer_power_off(struct framer *framer)
-+{
-+	int ret;
-+
-+	if (!framer)
-+		return 0;
-+
-+	mutex_lock(&framer->mutex);
-+	if (framer->power_count == 1 && framer->ops->power_off) {
-+		ret =  framer->ops->power_off(framer);
-+		if (ret < 0) {
-+			dev_err(&framer->dev, "framer poweroff failed --> %d\n", ret);
-+			mutex_unlock(&framer->mutex);
-+			return ret;
-+		}
-+	}
-+	--framer->power_count;
-+	mutex_unlock(&framer->mutex);
-+	framer_pm_runtime_put(framer);
-+
-+	if (framer->pwr)
-+		regulator_disable(framer->pwr);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(framer_power_off);
-+
-+/**
-+ * framer_get_status() - Gets the framer status
-+ * @framer: the framer returned by framer_get()
-+ * @status: the status to retrieve
-+ *
-+ * Used to get the framer status. framer_init() must have been called
-+ * on the framer.
-+ *
-+ * Return: %0 if successful, a negative error code otherwise
-+ */
-+int framer_get_status(struct framer *framer, struct framer_status *status)
-+{
-+	int ret;
-+
-+	if (!framer)
-+		return -EINVAL;
-+
-+	if (!framer->ops->get_status)
-+		return -EOPNOTSUPP;
-+
-+	/* Be sure to have known values (struct padding and future extensions) */
-+	memset(status, 0, sizeof(*status));
-+
-+	mutex_lock(&framer->mutex);
-+	ret = framer->ops->get_status(framer, status);
-+	mutex_unlock(&framer->mutex);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(framer_get_status);
-+
-+/**
-+ * framer_set_config() - Sets the framer configuration
-+ * @framer: the framer returned by framer_get()
-+ * @config: the configuration to set
-+ *
-+ * Used to set the framer configuration. framer_init() must have been called
-+ * on the framer.
-+ *
-+ * Return: %0 if successful, a negative error code otherwise
-+ */
-+int framer_set_config(struct framer *framer, const struct framer_config *config)
-+{
-+	int ret;
-+
-+	if (!framer)
-+		return -EINVAL;
-+
-+	if (!framer->ops->set_config)
-+		return -EOPNOTSUPP;
-+
-+	mutex_lock(&framer->mutex);
-+	ret = framer->ops->set_config(framer, config);
-+	mutex_unlock(&framer->mutex);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(framer_set_config);
-+
-+/**
-+ * framer_get_config() - Gets the framer configuration
-+ * @framer: the framer returned by framer_get()
-+ * @config: the configuration to retrieve
-+ *
-+ * Used to get the framer configuration. framer_init() must have been called
-+ * on the framer.
-+ *
-+ * Return: %0 if successful, a negative error code otherwise
-+ */
-+int framer_get_config(struct framer *framer, struct framer_config *config)
-+{
-+	int ret;
-+
-+	if (!framer)
-+		return -EINVAL;
-+
-+	if (!framer->ops->get_config)
-+		return -EOPNOTSUPP;
-+
-+	mutex_lock(&framer->mutex);
-+	ret = framer->ops->get_config(framer, config);
-+	mutex_unlock(&framer->mutex);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(framer_get_config);
-+
-+static void framer_polling_work(struct work_struct *work)
-+{
-+	struct framer *framer = container_of(work, struct framer, polling_work.work);
-+	struct framer_status status;
-+	int ret;
-+
-+	ret = framer_get_status(framer, &status);
++	/* Re-queue a transfer using the same descriptor */
++	ret = qmc_hdlc_recv_queue(qmc_hdlc, desc, desc->dma_size);
 +	if (ret) {
-+		dev_err(&framer->dev, "polling, get status failed (%d)\n", ret);
-+		goto end;
++		dev_err(qmc_hdlc->dev, "queue recv desc failed (%d)\n", ret);
++		netdev->stats.rx_errors++;
 +	}
-+	if (memcmp(&framer->prev_status, &status, sizeof(status))) {
-+		blocking_notifier_call_chain(&framer->notifier_list,
-+					     FRAMER_EVENT_STATUS, NULL);
-+		memcpy(&framer->prev_status, &status, sizeof(status));
-+	}
-+
-+end:
-+	/* Re-schedule task in 1 sec */
-+	queue_delayed_work(system_power_efficient_wq, &framer->polling_work, 1 * HZ);
 +}
 +
-+/**
-+ * framer_notifier_register() - Registers a notifier
-+ * @framer: the framer returned by framer_get()
-+ * @nb: the notifier block to register
-+ *
-+ * Used to register a notifier block on framer events. framer_init() must have
-+ * been called on the framer.
-+ * The available framer events are present in enum framer_events.
-+ *
-+ * Return: %0 if successful, a negative error code otherwise
-+ */
-+int framer_notifier_register(struct framer *framer, struct notifier_block *nb)
++static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size)
 +{
-+	if (!framer)
-+		return 0;
-+
-+	return blocking_notifier_chain_register(&framer->notifier_list, nb);
-+}
-+EXPORT_SYMBOL_GPL(framer_notifier_register);
-+
-+/**
-+ * framer_notifier_unregister() - Unregisters a notifier
-+ * @framer: the framer returned by framer_get()
-+ * @nb: the notifier block to unregister
-+ *
-+ * Used to unregister a notifier block. framer_init() must have
-+ * been called on the framer.
-+ *
-+ * Return: %0 if successful, a negative error code otherwise
-+ */
-+int framer_notifier_unregister(struct framer *framer, struct notifier_block *nb)
-+{
-+	if (!framer)
-+		return -EINVAL;
-+
-+	return blocking_notifier_chain_unregister(&framer->notifier_list, nb);
-+}
-+EXPORT_SYMBOL_GPL(framer_atomic_notifier_unregister);
-+
-+static struct framer_provider *framer_provider_of_lookup(const struct device_node *node)
-+{
-+	struct framer_provider *framer_provider;
-+
-+	list_for_each_entry(framer_provider, &framer_provider_list, list) {
-+		if (device_match_of_node(framer_provider->dev, node))
-+			return framer_provider;
-+	}
-+
-+	return ERR_PTR(-EPROBE_DEFER);
-+}
-+
-+static struct framer *framer_of_get_from_provider(struct of_phandle_args *args)
-+{
-+	struct framer_provider *framer_provider;
-+	struct framer *framer;
-+
-+	mutex_lock(&framer_provider_mutex);
-+	framer_provider = framer_provider_of_lookup(args->np);
-+	if (IS_ERR(framer_provider) || !try_module_get(framer_provider->owner)) {
-+		framer = ERR_PTR(-EPROBE_DEFER);
-+		goto end;
-+	}
-+
-+	framer = framer_provider->of_xlate(framer_provider->dev, args);
-+
-+	module_put(framer_provider->owner);
-+
-+end:
-+	mutex_unlock(&framer_provider_mutex);
-+
-+	return framer;
-+}
-+
-+static struct framer *framer_of_get_byphandle(struct device_node *np, const char *propname,
-+					      int index)
-+{
-+	struct of_phandle_args args;
-+	struct framer *framer;
 +	int ret;
 +
-+	ret = of_parse_phandle_with_args(np, propname, "#framer-cells", index, &args);
++	desc->skb = dev_alloc_skb(size);
++	if (!desc->skb)
++		return -ENOMEM;
++
++	desc->dma_size = size;
++	desc->dma_addr = dma_map_single(qmc_hdlc->dev, desc->skb->data,
++					desc->dma_size, DMA_FROM_DEVICE);
++	ret = dma_mapping_error(qmc_hdlc->dev, desc->dma_addr);
 +	if (ret)
-+		return ERR_PTR(-ENODEV);
++		goto free_skb;
 +
-+	if (!of_device_is_available(args.np)) {
-+		framer = ERR_PTR(-ENODEV);
-+		goto out_node_put;
-+	}
++	ret = qmc_chan_read_submit(qmc_hdlc->qmc_chan, desc->dma_addr, desc->dma_size,
++				   qmc_hcld_recv_complete, desc);
++	if (ret)
++		goto dma_unmap;
 +
-+	framer = framer_of_get_from_provider(&args);
++	return 0;
 +
-+out_node_put:
-+	of_node_put(args.np);
-+
-+	return framer;
++dma_unmap:
++	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_FROM_DEVICE);
++free_skb:
++	kfree_skb(desc->skb);
++	desc->skb = NULL;
++	return ret;
 +}
 +
-+static struct framer *framer_of_get_byparent(struct device_node *np, int index)
++static void qmc_hdlc_xmit_complete(void *context)
 +{
-+	struct of_phandle_args args;
-+	struct framer *framer;
++	struct qmc_hdlc_desc *desc = context;
++	struct net_device *netdev = desc->netdev;
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct sk_buff *skb;
++	unsigned long flags;
 +
-+	args.np = of_get_parent(np);
-+	args.args_count = 1;
-+	args.args[0] = index;
++	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
++	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_TO_DEVICE);
++	skb = desc->skb;
++	desc->skb = NULL; /* Release the descriptor */
++	if (netif_queue_stopped(netdev))
++		netif_wake_queue(netdev);
++	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
 +
-+	while (args.np) {
-+		framer = framer_of_get_from_provider(&args);
-+		if (IS_ERR(framer) && PTR_ERR(framer) != -EPROBE_DEFER) {
-+			args.np = of_get_next_parent(args.np);
-+			continue;
-+		}
-+		of_node_put(args.np);
-+		return framer;
-+	}
++	netdev->stats.tx_packets++;
++	netdev->stats.tx_bytes += skb->len;
 +
-+	return ERR_PTR(-ENODEV);
++	dev_consume_skb_any(skb);
 +}
 +
-+/**
-+ * framer_get() - lookup and obtain a reference to a framer.
-+ * @dev: device that requests the framer
-+ * @con_id: name of the framer from device's point of view
-+ *
-+ * Returns the framer driver, after getting a refcount to it; or
-+ * -ENODEV if there is no such framer. The caller is responsible for
-+ * calling framer_put() to release that count.
-+ */
-+struct framer *framer_get(struct device *dev, const char *con_id)
++static int qmc_hdlc_xmit_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc)
 +{
-+	struct framer *framer = ERR_PTR(-ENODEV);
-+	struct device_link *link;
 +	int ret;
 +
-+	if (dev->of_node) {
-+		if (con_id)
-+			framer = framer_of_get_byphandle(dev->of_node, con_id, 0);
-+		else
-+			framer = framer_of_get_byparent(dev->of_node, 0);
++	desc->dma_addr = dma_map_single(qmc_hdlc->dev, desc->skb->data,
++					desc->dma_size, DMA_TO_DEVICE);
++	ret = dma_mapping_error(qmc_hdlc->dev, desc->dma_addr);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "failed to map skb\n");
++		return ret;
 +	}
 +
-+	if (IS_ERR(framer))
-+		return framer;
-+
-+	get_device(&framer->dev);
-+
-+	if (!try_module_get(framer->ops->owner)) {
-+		ret = -EPROBE_DEFER;
-+		goto err_put_device;
++	ret = qmc_chan_write_submit(qmc_hdlc->qmc_chan, desc->dma_addr, desc->dma_size,
++				    qmc_hdlc_xmit_complete, desc);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "qmc chan write returns %d\n", ret);
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_TO_DEVICE);
++		return ret;
 +	}
-+
-+	link = device_link_add(dev, &framer->dev, DL_FLAG_STATELESS);
-+	if (!link) {
-+		dev_err(dev, "failed to create device_link to %s\n", dev_name(&framer->dev));
-+		ret = -EPROBE_DEFER;
-+		goto err_module_put;
-+	}
-+
-+	return framer;
-+
-+err_module_put:
-+	module_put(framer->ops->owner);
-+err_put_device:
-+	put_device(&framer->dev);
-+	return ERR_PTR(ret);
-+}
-+EXPORT_SYMBOL_GPL(framer_get);
-+
-+/**
-+ * framer_put() - release the framer
-+ * @dev: device that wants to release this framer
-+ * @framer: the framer returned by framer_get()
-+ *
-+ * Releases a refcount the caller received from framer_get().
-+ */
-+void framer_put(struct device *dev, struct framer *framer)
-+{
-+	if (!framer || IS_ERR(framer))
-+		return;
-+
-+	device_link_remove(dev, &framer->dev);
-+
-+	module_put(framer->ops->owner);
-+	put_device(&framer->dev);
-+}
-+EXPORT_SYMBOL_GPL(framer_put);
-+
-+static void devm_framer_put(struct device *dev, void *res)
-+{
-+	struct framer *framer = *(struct framer **)res;
-+
-+	framer_put(dev, framer);
-+}
-+
-+/**
-+ * devm_framer_get() - lookup and obtain a reference to a framer.
-+ * @dev: device that requests this framer
-+ * @con_id: name of the framer from device's point of view
-+ *
-+ * Gets the framer using framer_get(), and associates a device with it using
-+ * devres. On driver detach, framer_put() function is invoked on the devres
-+ * data, then, devres data is freed.
-+ */
-+struct framer *devm_framer_get(struct device *dev, const char *con_id)
-+{
-+	struct framer **ptr, *framer;
-+
-+	ptr = devres_alloc(devm_framer_put, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	framer = framer_get(dev, con_id);
-+	if (!IS_ERR(framer)) {
-+		*ptr = framer;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
-+		return framer;
-+	}
-+
-+	return framer;
-+}
-+EXPORT_SYMBOL_GPL(devm_framer_get);
-+
-+/**
-+ * devm_framer_optional_get() - lookup and obtain a reference to an optional
-+ * framer.
-+ * @dev: device that requests this framer
-+ * @con_id: name of the framer from device's point of view
-+ *
-+ * Same as devm_framer_get() except that if the framer does not exist, it is not
-+ * considered an error and -ENODEV will not be returned. Instead the NULL framer
-+ * is returned, which can be passed to other framer consumer calls.
-+ */
-+struct framer *devm_framer_optional_get(struct device *dev, const char *con_id)
-+{
-+	struct framer *framer = devm_framer_get(dev, con_id);
-+
-+	if (PTR_ERR(framer) == -ENODEV)
-+		framer = NULL;
-+
-+	return framer;
-+}
-+EXPORT_SYMBOL_GPL(devm_framer_optional_get);
-+
-+static void framer_notify_status_work(struct work_struct *work)
-+{
-+	struct framer *framer = container_of(work, struct framer, notify_status_work);
-+
-+	blocking_notifier_call_chain(&framer->notifier_list, FRAMER_EVENT_STATUS, NULL);
-+}
-+
-+void framer_notify_status_change(struct framer *framer)
-+{
-+	if (!framer)
-+		return;
-+
-+	/* Can be called from atomic context -> just schedule a task to call
-+	 * blocking notifiers
-+	 */
-+	queue_work(system_power_efficient_wq, &framer->notify_status_work);
-+}
-+EXPORT_SYMBOL_GPL(framer_notify_status_change);
-+
-+/**
-+ * framer_create() - create a new framer
-+ * @dev: device that is creating the new framer
-+ * @node: device node of the framer. default to dev->of_node.
-+ * @ops: function pointers for performing framer operations
-+ *
-+ * Called to create a framer using framer framework.
-+ */
-+struct framer *framer_create(struct device *dev, struct device_node *node,
-+			     const struct framer_ops *ops)
-+{
-+	int ret;
-+	int id;
-+	struct framer *framer;
-+
-+	if (WARN_ON(!dev))
-+		return ERR_PTR(-EINVAL);
-+
-+	/* get_status() is mandatory if the provider ask for polling status */
-+	if (WARN_ON((ops->flags & FRAMER_FLAG_POLL_STATUS) && !ops->get_status))
-+		return ERR_PTR(-EINVAL);
-+
-+	framer = kzalloc(sizeof(*framer), GFP_KERNEL);
-+	if (!framer)
-+		return ERR_PTR(-ENOMEM);
-+
-+	id = ida_simple_get(&framer_ida, 0, 0, GFP_KERNEL);
-+	if (id < 0) {
-+		dev_err(dev, "unable to get id\n");
-+		ret = id;
-+		goto free_framer;
-+	}
-+
-+	device_initialize(&framer->dev);
-+	mutex_init(&framer->mutex);
-+	INIT_WORK(&framer->notify_status_work, framer_notify_status_work);
-+	INIT_DELAYED_WORK(&framer->polling_work, framer_polling_work);
-+	BLOCKING_INIT_NOTIFIER_HEAD(&framer->notifier_list);
-+
-+	framer->dev.class = framer_class;
-+	framer->dev.parent = dev;
-+	framer->dev.of_node = node ? node : dev->of_node;
-+	framer->id = id;
-+	framer->ops = ops;
-+
-+	ret = dev_set_name(&framer->dev, "framer-%s.%d", dev_name(dev), id);
-+	if (ret)
-+		goto put_dev;
-+
-+	/* framer-supply */
-+	framer->pwr = regulator_get_optional(&framer->dev, "framer");
-+	if (IS_ERR(framer->pwr)) {
-+		ret = PTR_ERR(framer->pwr);
-+		if (ret == -EPROBE_DEFER)
-+			goto put_dev;
-+
-+		framer->pwr = NULL;
-+	}
-+
-+	ret = device_add(&framer->dev);
-+	if (ret)
-+		goto put_dev;
-+
-+	if (pm_runtime_enabled(dev)) {
-+		pm_runtime_enable(&framer->dev);
-+		pm_runtime_no_callbacks(&framer->dev);
-+	}
-+
-+	return framer;
-+
-+put_dev:
-+	put_device(&framer->dev);  /* calls framer_release() which frees resources */
-+	return ERR_PTR(ret);
-+
-+free_framer:
-+	kfree(framer);
-+	return ERR_PTR(ret);
-+}
-+EXPORT_SYMBOL_GPL(framer_create);
-+
-+/**
-+ * framer_destroy() - destroy the framer
-+ * @framer: the framer to be destroyed
-+ *
-+ * Called to destroy the framer.
-+ */
-+void framer_destroy(struct framer *framer)
-+{
-+	/* polling_work should already be stopped but if framer_exit() was not
-+	 * called (bug), here it's the last time to do that ...
-+	 */
-+	cancel_delayed_work_sync(&framer->polling_work);
-+	cancel_work_sync(&framer->notify_status_work);
-+	pm_runtime_disable(&framer->dev);
-+	device_unregister(&framer->dev); /* calls framer_release() which frees resources */
-+}
-+EXPORT_SYMBOL_GPL(framer_destroy);
-+
-+static void devm_framer_destroy(struct device *dev, void *res)
-+{
-+	struct framer *framer = *(struct framer **)res;
-+
-+	framer_destroy(framer);
-+}
-+
-+/**
-+ * devm_framer_create() - create a new framer
-+ * @dev: device that is creating the new framer
-+ * @node: device node of the framer
-+ * @ops: function pointers for performing framer operations
-+ *
-+ * Creates a new framer device adding it to the framer class.
-+ * While at that, it also associates the device with the framer using devres.
-+ * On driver detach, release function is invoked on the devres data,
-+ * then, devres data is freed.
-+ */
-+struct framer *devm_framer_create(struct device *dev, struct device_node *node,
-+				  const struct framer_ops *ops)
-+{
-+	struct framer **ptr, *framer;
-+
-+	ptr = devres_alloc(devm_framer_destroy, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	framer = framer_create(dev, node, ops);
-+	if (!IS_ERR(framer)) {
-+		*ptr = framer;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
-+	}
-+
-+	return framer;
-+}
-+EXPORT_SYMBOL_GPL(devm_framer_create);
-+
-+/**
-+ * framer_provider_simple_of_xlate() - returns the framer instance from framer provider
-+ * @dev: the framer provider device
-+ * @args: of_phandle_args (not used here)
-+ *
-+ * Intended to be used by framer provider for the common case where #framer-cells is
-+ * 0. For other cases where #framer-cells is greater than '0', the framer provider
-+ * should provide a custom of_xlate function that reads the *args* and returns
-+ * the appropriate framer.
-+ */
-+struct framer *framer_provider_simple_of_xlate(struct device *dev, struct of_phandle_args *args)
-+{
-+	struct framer *framer;
-+	struct class_dev_iter iter;
-+
-+	class_dev_iter_init(&iter, framer_class, NULL, NULL);
-+	while ((dev = class_dev_iter_next(&iter))) {
-+		framer = dev_to_framer(dev);
-+		if (args->np != framer->dev.of_node)
-+			continue;
-+
-+		class_dev_iter_exit(&iter);
-+		return framer;
-+	}
-+
-+	class_dev_iter_exit(&iter);
-+	return ERR_PTR(-ENODEV);
-+}
-+EXPORT_SYMBOL_GPL(framer_simple_of_xlate);
-+
-+/**
-+ * __framer_provider_of_register() - create/register framer provider with the framework
-+ * @dev: struct device of the framer provider
-+ * @owner: the module owner containing of_xlate
-+ * @of_xlate: function pointer to obtain framer instance from framer provider
-+ *
-+ * Creates struct framer_provider from dev and of_xlate function pointer.
-+ * This is used in the case of dt boot for finding the framer instance from
-+ * framer provider.
-+ */
-+struct framer_provider *
-+__framer_provider_of_register(struct device *dev, struct module *owner,
-+			      struct framer *(*of_xlate)(struct device *dev,
-+							 struct of_phandle_args *args))
-+{
-+	struct framer_provider *framer_provider;
-+
-+	framer_provider = kzalloc(sizeof(*framer_provider), GFP_KERNEL);
-+	if (!framer_provider)
-+		return ERR_PTR(-ENOMEM);
-+
-+	framer_provider->dev = dev;
-+	framer_provider->owner = owner;
-+	framer_provider->of_xlate = of_xlate;
-+
-+	of_node_get(framer_provider->dev->of_node);
-+
-+	mutex_lock(&framer_provider_mutex);
-+	list_add_tail(&framer_provider->list, &framer_provider_list);
-+	mutex_unlock(&framer_provider_mutex);
-+
-+	return framer_provider;
-+}
-+EXPORT_SYMBOL_GPL(__framer_provider_of_register);
-+
-+/**
-+ * framer_provider_of_unregister() - unregister framer provider from the framework
-+ * @framer_provider: framer provider returned by framer_provider_of_register()
-+ *
-+ * Removes the framer_provider created using framer_provider_of_register().
-+ */
-+void framer_provider_of_unregister(struct framer_provider *framer_provider)
-+{
-+	if (IS_ERR(framer_provider))
-+		return;
-+
-+	mutex_lock(&framer_provider_mutex);
-+	list_del(&framer_provider->list);
-+	of_node_put(framer_provider->dev->of_node);
-+	kfree(framer_provider);
-+	mutex_unlock(&framer_provider_mutex);
-+}
-+EXPORT_SYMBOL_GPL(of_framer_provider_unregister);
-+
-+static void devm_framer_provider_of_unregister(struct device *dev, void *res)
-+{
-+	struct framer_provider *framer_provider = *(struct framer_provider **)res;
-+
-+	framer_provider_of_unregister(framer_provider);
-+}
-+
-+/**
-+ * __devm_framer_provider_of_register() - create/register framer provider with
-+ * the framework
-+ * @dev: struct device of the framer provider
-+ * @owner: the module owner containing of_xlate
-+ * @of_xlate: function pointer to obtain framer instance from framer provider
-+ *
-+ * Creates struct framer_provider from dev and of_xlate function pointer.
-+ * This is used in the case of dt boot for finding the framer instance from
-+ * framer provider. While at that, it also associates the device with the
-+ * framer provider using devres. On driver detach, release function is invoked
-+ * on the devres data, then, devres data is freed.
-+ */
-+struct framer_provider *
-+__devm_framer_provider_of_register(struct device *dev, struct module *owner,
-+				   struct framer *(*of_xlate)(struct device *dev,
-+							      struct of_phandle_args *args))
-+{
-+	struct framer_provider **ptr, *framer_provider;
-+
-+	ptr = devres_alloc(devm_framer_provider_of_unregister, sizeof(*ptr), GFP_KERNEL);
-+	if (!ptr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	framer_provider = __framer_provider_of_register(dev, owner, of_xlate);
-+	if (!IS_ERR(framer_provider)) {
-+		*ptr = framer_provider;
-+		devres_add(dev, ptr);
-+	} else {
-+		devres_free(ptr);
-+	}
-+
-+	return framer_provider;
-+}
-+EXPORT_SYMBOL_GPL(__devm_framer_provider_of_register);
-+
-+/**
-+ * framer_release() - release the framer
-+ * @dev: the dev member within framer
-+ *
-+ * When the last reference to the device is removed, it is called
-+ * from the embedded kobject as release method.
-+ */
-+static void framer_release(struct device *dev)
-+{
-+	struct framer *framer;
-+
-+	framer = dev_to_framer(dev);
-+	regulator_put(framer->pwr);
-+	ida_simple_remove(&framer_ida, framer->id);
-+	kfree(framer);
-+}
-+
-+static int __init framer_core_init(void)
-+{
-+	framer_class = class_create("framer");
-+	if (IS_ERR(framer_class)) {
-+		pr_err("failed to create framer class (%pe)\n", framer_class);
-+		return PTR_ERR(framer_class);
-+	}
-+
-+	framer_class->dev_release = framer_release;
 +
 +	return 0;
 +}
-+device_initcall(framer_core_init);
-diff --git a/include/linux/framer/framer-provider.h b/include/linux/framer/framer-provider.h
-new file mode 100644
-index 000000000000..941a343c3ba7
---- /dev/null
-+++ b/include/linux/framer/framer-provider.h
-@@ -0,0 +1,194 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Generic framer profider header file
-+ *
-+ * Copyright 2023 CS GROUP France
-+ *
-+ * Author: Herve Codina <herve.codina@bootlin.com>
-+ */
 +
-+#ifndef __DRIVERS_PROVIDER_FRAMER_H
-+#define __DRIVERS_PROVIDER_FRAMER_H
++static netdev_tx_t qmc_hdlc_xmit(struct sk_buff *skb, struct net_device *netdev)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct qmc_hdlc_desc *desc;
++	unsigned long flags;
++	int ret;
 +
-+#include <linux/export.h>
-+#include <linux/framer/framer.h>
-+#include <linux/types.h>
++	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
++	desc = &qmc_hdlc->tx_descs[qmc_hdlc->tx_out];
++	if (desc->skb) {
++		/* Should never happen.
++		 * Previous xmit should have already stopped the queue.
++		 */
++		netif_stop_queue(netdev);
++		spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
++		return NETDEV_TX_BUSY;
++	}
++	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
 +
-+#define FRAMER_FLAG_POLL_STATUS  BIT(0)
++	desc->netdev = netdev;
++	desc->dma_size = skb->len;
++	desc->skb = skb;
++	ret = qmc_hdlc_xmit_queue(qmc_hdlc, desc);
++	if (ret) {
++		desc->skb = NULL; /* Release the descriptor */
++		if (ret == -EBUSY) {
++			netif_stop_queue(netdev);
++			return NETDEV_TX_BUSY;
++		}
++		dev_kfree_skb(skb);
++		netdev->stats.tx_dropped++;
++		return NETDEV_TX_OK;
++	}
 +
-+/**
-+ * struct framer_ops - set of function pointers for performing framer operations
-+ * @init: operation to be performed for initializing the framer
-+ * @exit: operation to be performed while exiting
-+ * @power_on: powering on the framer
-+ * @power_off: powering off the framer
-+ * @flags: OR-ed flags (FRAMER_FLAG_*) to ask for core functionality
-+ *          - @FRAMER_FLAG_POLL_STATUS:
-+ *            Ask the core to perfom a polling to get the framer status and
-+ *            notify consumers on change.
-+ *            The framer should call @framer_notify_status_change() when it
-+ *            detects a status change. This is usally done using interrutps.
-+ *            If the framer cannot detect this change, it can ask the core for
-+ *            a status polling. The core will call @get_status() periodically
-+ *            and, on change detected, it will notify the consumer.
-+ *            the @get_status()
-+ * @owner: the module owner containing the ops
-+ */
-+struct framer_ops {
-+	int	(*init)(struct framer *framer);
-+	void	(*exit)(struct framer *framer);
-+	int	(*power_on)(struct framer *framer);
-+	int	(*power_off)(struct framer *framer);
++	qmc_hdlc->tx_out = (qmc_hdlc->tx_out + 1) % ARRAY_SIZE(qmc_hdlc->tx_descs);
 +
-+	/**
-+	 * @get_status:
-+	 *
-+	 * Optional.
-+	 *
-+	 * Used to get the framer status. framer_init() must have
-+	 * been called on the framer.
-+	 *
-+	 * Returns: 0 if successful, an negative error code otherwise
++	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
++	if (qmc_hdlc->tx_descs[qmc_hdlc->tx_out].skb)
++		netif_stop_queue(netdev);
++	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
++
++	return NETDEV_TX_OK;
++}
++
++static int qmc_hdlc_open(struct net_device *netdev)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct qmc_chan_param chan_param;
++	struct qmc_hdlc_desc *desc;
++	int ret;
++	int i;
++
++	ret = hdlc_open(netdev);
++	if (ret)
++		return ret;
++
++	chan_param.mode = QMC_HDLC;
++	/* HDLC_MAX_MRU + 4 for the CRC
++	 * HDLC_MAX_MRU + 4 + 8 for the CRC and some extraspace needed by the QMC
 +	 */
-+	int	(*get_status)(struct framer *framer, struct framer_status *status);
++	chan_param.hdlc.max_rx_buf_size = HDLC_MAX_MRU + 4 + 8;
++	chan_param.hdlc.max_rx_frame_size = HDLC_MAX_MRU + 4;
++	chan_param.hdlc.is_crc32 = qmc_hdlc->is_crc32;
++	ret = qmc_chan_set_param(qmc_hdlc->qmc_chan, &chan_param);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "failed to set param (%d)\n", ret);
++		goto hdlc_close;
++	}
 +
-+	/**
-+	 * @set_config:
-+	 *
-+	 * Optional.
-+	 *
-+	 * Used to set the framer configuration. framer_init() must have
-+	 * been called on the framer.
-+	 *
-+	 * Returns: 0 if successful, an negative error code otherwise
-+	 */
-+	int	(*set_config)(struct framer *framer, const struct framer_config *config);
++	/* Queue as many recv descriptors as possible */
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
++		desc = &qmc_hdlc->rx_descs[i];
 +
-+	/**
-+	 * @get_config:
-+	 *
-+	 * Optional.
-+	 *
-+	 * Used to get the framer configuration. framer_init() must have
-+	 * been called on the framer.
-+	 *
-+	 * Returns: 0 if successful, an negative error code otherwise
-+	 */
-+	int	(*get_config)(struct framer *framer, struct framer_config *config);
++		desc->netdev = netdev;
++		ret = qmc_hdlc_recv_queue(qmc_hdlc, desc, chan_param.hdlc.max_rx_buf_size);
++		if (ret) {
++			if (ret == -EBUSY && i != 0)
++				break; /* We use all the QMC chan capability */
++			goto free_desc;
++		}
++	}
 +
-+	u32 flags;
-+	struct module *owner;
++	ret = qmc_chan_start(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "qmc chan start failed (%d)\n", ret);
++		goto free_desc;
++	}
++
++	netif_start_queue(netdev);
++
++	return 0;
++
++free_desc:
++	qmc_chan_reset(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
++		desc = &qmc_hdlc->rx_descs[i];
++		if (!desc->skb)
++			continue;
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
++				 DMA_FROM_DEVICE);
++		kfree_skb(desc->skb);
++		desc->skb = NULL;
++	}
++hdlc_close:
++	hdlc_close(netdev);
++	return ret;
++}
++
++static int qmc_hdlc_close(struct net_device *netdev)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct qmc_hdlc_desc *desc;
++	int i;
++
++	netif_stop_queue(netdev);
++
++	qmc_chan_stop(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++	qmc_chan_reset(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->tx_descs); i++) {
++		desc = &qmc_hdlc->tx_descs[i];
++		if (!desc->skb)
++			continue;
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
++				 DMA_TO_DEVICE);
++		kfree_skb(desc->skb);
++		desc->skb = NULL;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
++		desc = &qmc_hdlc->rx_descs[i];
++		if (!desc->skb)
++			continue;
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
++				 DMA_FROM_DEVICE);
++		kfree_skb(desc->skb);
++		desc->skb = NULL;
++	}
++
++	hdlc_close(netdev);
++	return 0;
++}
++
++static int qmc_hdlc_attach(struct net_device *netdev, unsigned short encoding,
++			   unsigned short parity)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++
++	if (encoding != ENCODING_NRZ)
++		return -EINVAL;
++
++	switch (parity) {
++	case PARITY_CRC16_PR1_CCITT:
++		qmc_hdlc->is_crc32 = false;
++		break;
++	case PARITY_CRC32_PR1_CCITT:
++		qmc_hdlc->is_crc32 = true;
++		break;
++	default:
++		dev_err(qmc_hdlc->dev, "unsupported parity %u\n", parity);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static const struct net_device_ops qmc_hdlc_netdev_ops = {
++	.ndo_open       = qmc_hdlc_open,
++	.ndo_stop       = qmc_hdlc_close,
++	.ndo_start_xmit = hdlc_start_xmit,
++	.ndo_siocwandev	= hdlc_ioctl,
 +};
 +
-+/**
-+ * struct framer_provider - represents the framer provider
-+ * @dev: framer provider device
-+ * @children: can be used to override the default (dev->of_node) child node
-+ * @owner: the module owner having of_xlate
-+ * @list: to maintain a linked list of framer providers
-+ * @of_xlate: function pointer to obtain framer instance from framer pointer
-+ */
-+struct framer_provider {
-+	struct device		*dev;
-+	struct module		*owner;
-+	struct list_head	list;
-+	struct framer * (*of_xlate)(struct device *dev,
-+				    struct of_phandle_args *args);
++static int qmc_hdlc_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct qmc_hdlc *qmc_hdlc;
++	struct qmc_chan_info info;
++	hdlc_device *hdlc;
++	int ret;
++
++	qmc_hdlc = devm_kzalloc(&pdev->dev, sizeof(*qmc_hdlc), GFP_KERNEL);
++	if (!qmc_hdlc)
++		return -ENOMEM;
++
++	qmc_hdlc->dev = &pdev->dev;
++	spin_lock_init(&qmc_hdlc->tx_lock);
++
++	qmc_hdlc->qmc_chan = devm_qmc_chan_get_byphandle(qmc_hdlc->dev, np, "fsl,qmc-chan");
++	if (IS_ERR(qmc_hdlc->qmc_chan)) {
++		ret = PTR_ERR(qmc_hdlc->qmc_chan);
++		return dev_err_probe(qmc_hdlc->dev, ret, "get QMC channel failed\n");
++	}
++
++	ret = qmc_chan_get_info(qmc_hdlc->qmc_chan, &info);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "get QMC channel info failed %d\n", ret);
++		return ret;
++	}
++
++	if (info.mode != QMC_HDLC) {
++		dev_err(qmc_hdlc->dev, "QMC chan mode %d is not QMC_HDLC\n",
++			info.mode);
++		return -EINVAL;
++	}
++
++	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
++	if (!qmc_hdlc->netdev) {
++		dev_err(qmc_hdlc->dev, "failed to alloc hdlc dev\n");
++		return -ENOMEM;
++	}
++
++	hdlc = dev_to_hdlc(qmc_hdlc->netdev);
++	hdlc->attach = qmc_hdlc_attach;
++	hdlc->xmit = qmc_hdlc_xmit;
++	SET_NETDEV_DEV(qmc_hdlc->netdev, qmc_hdlc->dev);
++	qmc_hdlc->netdev->tx_queue_len = ARRAY_SIZE(qmc_hdlc->tx_descs);
++	qmc_hdlc->netdev->netdev_ops = &qmc_hdlc_netdev_ops;
++	ret = register_hdlc_device(qmc_hdlc->netdev);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "failed to register hdlc device (%d)\n", ret);
++		goto free_netdev;
++	}
++
++	platform_set_drvdata(pdev, qmc_hdlc);
++
++	return 0;
++
++free_netdev:
++	free_netdev(qmc_hdlc->netdev);
++	return ret;
++}
++
++static int qmc_hdlc_remove(struct platform_device *pdev)
++{
++	struct qmc_hdlc *qmc_hdlc = platform_get_drvdata(pdev);
++
++	unregister_hdlc_device(qmc_hdlc->netdev);
++	free_netdev(qmc_hdlc->netdev);
++
++	return 0;
++}
++
++static const struct of_device_id qmc_hdlc_id_table[] = {
++	{ .compatible = "fsl,qmc-hdlc" },
++	{} /* sentinel */
 +};
++MODULE_DEVICE_TABLE(of, qmc_hdlc_driver);
 +
-+static inline void framer_set_drvdata(struct framer *framer, void *data)
-+{
-+	dev_set_drvdata(&framer->dev, data);
-+}
-+
-+static inline void *framer_get_drvdata(struct framer *framer)
-+{
-+	return dev_get_drvdata(&framer->dev);
-+}
-+
-+#if IS_ENABLED(CONFIG_GENERIC_FRAMER)
-+
-+/* Create and destroy a framer */
-+struct framer *framer_create(struct device *dev, struct device_node *node,
-+			     const struct framer_ops *ops);
-+void framer_destroy(struct framer *framer);
-+
-+/* devm version */
-+struct framer *devm_framer_create(struct device *dev, struct device_node *node,
-+				  const struct framer_ops *ops);
-+
-+struct framer *framer_provider_simple_of_xlate(struct device *dev,
-+					       struct of_phandle_args *args);
-+
-+struct framer_provider *
-+__framer_provider_of_register(struct device *dev, struct module *owner,
-+			      struct framer *(*of_xlate)(struct device *dev,
-+							 struct of_phandle_args *args));
-+
-+void framer_provider_of_unregister(struct framer_provider *framer_provider);
-+
-+struct framer_provider *
-+__devm_framer_provider_of_register(struct device *dev, struct module *owner,
-+				   struct framer *(*of_xlate)(struct device *dev,
-+							      struct of_phandle_args *args));
-+
-+void framer_notify_status_change(struct framer *framer);
-+
-+#else /* IS_ENABLED(CONFIG_GENERIC_FRAMER) */
-+
-+static inline struct framer *framer_create(struct device *dev, struct device_node *node,
-+					   const struct framer_ops *ops)
-+{
-+	return ERR_PTR(-ENOSYS);
-+}
-+
-+static inline void framer_destroy(struct framer *framer)
-+{
-+}
-+
-+/* devm version */
-+static inline struct framer *devm_framer_create(struct device *dev, struct device_node *node,
-+						const struct framer_ops *ops)
-+{
-+	return ERR_PTR(-ENOSYS);
-+}
-+
-+static inline struct framer *framer_provider_simple_of_xlate(struct device *dev,
-+							     struct of_phandle_args *args)
-+{
-+	return ERR_PTR(-ENOSYS);
-+}
-+
-+static inline struct framer_provider *
-+__framer_provider_of_register(struct device *dev, struct module *owner,
-+			      struct framer *(*of_xlate)(struct device *dev,
-+							 struct of_phandle_args *args))
-+{
-+	return ERR_PTR(-ENOSYS);
-+}
-+
-+void framer_provider_of_unregister(struct framer_provider *framer_provider)
-+{
-+}
-+
-+static inline struct framer_provider *
-+__devm_framer_provider_of_register(struct device *dev, struct module *owner,
-+				   struct framer *(*of_xlate)(struct device *dev,
-+							      struct of_phandle_args *args))
-+{
-+	return ERR_PTR(-ENOSYS);
-+}
-+
-+void framer_notify_status_change(struct framer *framer)
-+{
-+}
-+
-+#endif /* IS_ENABLED(CONFIG_GENERIC_FRAMER) */
-+
-+#define framer_provider_of_register(dev, xlate)		\
-+	__framer_provider_of_register((dev), THIS_MODULE, (xlate))
-+
-+#define devm_framer_provider_of_register(dev, xlate)	\
-+	__devm_framer_provider_of_register((dev), THIS_MODULE, (xlate))
-+
-+#endif /* __DRIVERS_PROVIDER_FRAMER_H */
-diff --git a/include/linux/framer/framer.h b/include/linux/framer/framer.h
-new file mode 100644
-index 000000000000..b735027f6801
---- /dev/null
-+++ b/include/linux/framer/framer.h
-@@ -0,0 +1,215 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Generic framer header file
-+ *
-+ * Copyright 2023 CS GROUP France
-+ *
-+ * Author: Herve Codina <herve.codina@bootlin.com>
-+ */
-+
-+#ifndef __DRIVERS_FRAMER_H
-+#define __DRIVERS_FRAMER_H
-+
-+#include <linux/err.h>
-+#include <linux/mutex.h>
-+#include <linux/notifier.h>
-+#include <linux/of.h>
-+#include <linux/device.h>
-+#include <linux/workqueue.h>
-+
-+/**
-+ * enum framer_iface - Framer interface
-+ */
-+enum framer_iface {
-+	FRAMER_IFACE_E1,      /* E1 interface */
-+	FRAMER_IFACE_T1,      /* T1 interface */
++static struct platform_driver qmc_hdlc_driver = {
++	.driver = {
++		.name = "fsl-qmc-hdlc",
++		.of_match_table = qmc_hdlc_id_table,
++	},
++	.probe = qmc_hdlc_probe,
++	.remove = qmc_hdlc_remove,
 +};
++module_platform_driver(qmc_hdlc_driver);
 +
-+/**
-+ * enum framer_clock_mode - Framer clock mode
-+ */
-+enum framer_clock_type {
-+	FRAMER_CLOCK_EXT, /* External clock */
-+	FRAMER_CLOCK_INT, /* Internal clock */
-+};
-+
-+/**
-+ * struct framer_configuration - Framer configuration
-+ * @line_iface: Framer line interface
-+ * @clock_mode: Framer clock type
-+ * @clock_rate: Framer clock rate
-+ */
-+struct framer_config {
-+	enum framer_iface iface;
-+	enum framer_clock_type clock_type;
-+	unsigned long line_clock_rate;
-+};
-+
-+/**
-+ * struct framer_status - Framer status
-+ * @link_is_on: Framer link state. true, the link is on, false, the link is off.
-+ */
-+struct framer_status {
-+	bool link_is_on;
-+};
-+
-+/**
-+ * framer_event - event available for notification
-+ */
-+enum framer_event {
-+	FRAMER_EVENT_STATUS,	/* Event notified on framer_status changes */
-+};
-+
-+/**
-+ * struct framer - represents the framer device
-+ * @dev: framer device
-+ * @id: id of the framer device
-+ * @ops: function pointers for performing framer operations
-+ * @mutex: mutex to protect framer_ops
-+ * @init_count: used to protect when the framer is used by multiple consumers
-+ * @power_count: used to protect when the framer is used by multiple consumers
-+ * @pwr: power regulator associated with the framer
-+ * @polling_task: polling task used if framer notifier operations are not provided
-+ * @polling_notifier_list: notifier list used by the polling task
-+ * @prev_status: previous read status used by the polling task to detect changes
-+ */
-+struct framer {
-+	struct device			dev;
-+	int				id;
-+	const struct framer_ops		*ops;
-+	struct mutex			mutex;	/* Protect framer */
-+	int				init_count;
-+	int				power_count;
-+	struct regulator		*pwr;
-+	struct work_struct		notify_status_work;
-+	struct blocking_notifier_head	notifier_list;
-+	struct delayed_work		polling_work;
-+	struct framer_status		prev_status;
-+};
-+
-+#if IS_ENABLED(CONFIG_GENERIC_FRAMER)
-+int framer_pm_runtime_get(struct framer *framer);
-+int framer_pm_runtime_get_sync(struct framer *framer);
-+int framer_pm_runtime_put(struct framer *framer);
-+int framer_pm_runtime_put_sync(struct framer *framer);
-+int framer_init(struct framer *framer);
-+int framer_exit(struct framer *framer);
-+int framer_power_on(struct framer *framer);
-+int framer_power_off(struct framer *framer);
-+int framer_get_status(struct framer *framer, struct framer_status *status);
-+int framer_get_config(struct framer *framer, struct framer_config *config);
-+int framer_set_config(struct framer *framer, const struct framer_config *config);
-+int framer_notifier_register(struct framer *framer, struct notifier_block *nb);
-+int framer_notifier_unregister(struct framer *framer, struct notifier_block *nb);
-+
-+struct framer *framer_get(struct device *dev, const char *con_id);
-+void framer_put(struct device *dev, struct framer *framer);
-+
-+struct framer *devm_framer_get(struct device *dev, const char *con_id);
-+struct framer *devm_framer_optional_get(struct device *dev, const char *con_id);
-+#else
-+static inline int framer_pm_runtime_get(struct framer *framer)
-+{
-+	if (!framer)
-+		return 0;
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_pm_runtime_get_sync(struct framer *framer)
-+{
-+	if (!framer)
-+		return 0;
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_pm_runtime_put(struct framer *framer)
-+{
-+	if (!framer)
-+		return 0;
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_pm_runtime_put_sync(struct framer *framer)
-+{
-+	if (!framer)
-+		return 0;
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_init(struct framer *framer)
-+{
-+	if (!framer)
-+		return 0;
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_exit(struct framer *framer)
-+{
-+	if (!framer)
-+		return 0;
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_power_on(struct framer *framer)
-+{
-+	if (!framer)
-+		return 0;
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_power_off(struct framer *framer)
-+{
-+	if (!framer)
-+		return 0;
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_get_status(struct framer *framer, struct framer_status *status)
-+{
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_get_config(struct framer *framer, struct framer_config *config)
-+{
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_set_config(struct framer *framer, const struct framer_config *config)
-+{
-+	if (!framer)
-+		return 0;
-+
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_notifier_register(struct framer *framer,
-+					   struct notifier_block *nb)
-+{
-+	if (!framer)
-+		return 0;
-+
-+	return -ENOSYS;
-+}
-+
-+static inline int framer_notifier_unregister(struct framer *framer,
-+					     struct notifier_block *nb)
-+{
-+	if (!framer)
-+		return 0;
-+
-+	return -ENOSYS;
-+}
-+
-+static inline struct framer *devm_framer_get(struct device *dev, const char *con_id)
-+{
-+	return ERR_PTR(-ENOSYS);
-+}
-+
-+static inline struct framer *devm_framer_optional_get(struct device *dev, const char *con_id)
-+{
-+	return NULL;
-+}
-+
-+#endif
-+
-+#endif /* __DRIVERS_FRAMER_H */
++MODULE_AUTHOR("Herve Codina <herve.codina@bootlin.com>");
++MODULE_DESCRIPTION("QMC HDLC driver");
++MODULE_LICENSE("GPL");
 -- 
 2.41.0
 
