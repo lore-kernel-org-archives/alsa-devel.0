@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4884C001DE
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 09:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E16AEC001DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 09:20:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B46FECF;
-	Tue, 25 Jul 2023 11:19:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B46FECF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6345EECE;
+	Tue, 25 Jul 2023 11:19:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6345EECE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690276796;
-	bh=+Q06PentsIanzmdfnoZS42vyVmRdVGNF/39w4Rf8BrE=;
+	s=default; t=1690276821;
+	bh=LKtaiWNgDWK8U+v+CSkjSmMLNgc+6CwnEmQrVA3o6hk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hZ1Tt/B1UAm4ihRdmTKiSqvYsazg6wdBJ67Mo+EeS5e/oyIgpqYVQodds3jsWkRY/
-	 EAs303j8VJerrwNzGup2hiIf/UCoe/r0M88VDUXiT9xyZBCc5HegPQNmyJwCNuYidi
-	 KrMUL+GhC5QVFexaPznDYTWmo2B35n40NTal/TOs=
+	b=ZL0FbKu3q0Rjsra0B5mnu30ErfpQ5bRNKTOTKLa1jEyWZay3A64sfZAws/k9gx6r5
+	 hNlBDIGeQGb87j59aZN68CKCJYzDc+KZ/TessKeQ0CzgvoL7JYkxjJ1jab4Mh20lXR
+	 BeAT41VwmI2fuAdaX4bQx2Raq+dzyv26EItNEN7c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6DBD8F80544; Tue, 25 Jul 2023 11:18:40 +0200 (CEST)
+	id 523F0F80553; Tue, 25 Jul 2023 11:18:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC9C2F80163;
-	Tue, 25 Jul 2023 11:18:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A06B7F8053B;
+	Tue, 25 Jul 2023 11:18:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8AA9FF8019B; Tue, 25 Jul 2023 11:18:36 +0200 (CEST)
+	id 55D1FF80549; Tue, 25 Jul 2023 11:18:42 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 73DC2F80149
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 11:18:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73DC2F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0FE86F80153
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 11:18:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FE86F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=fbX0CH05
+ header.s=Intel header.b=e863I8Jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690276709; x=1721812709;
+  t=1690276718; x=1721812718;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=+Q06PentsIanzmdfnoZS42vyVmRdVGNF/39w4Rf8BrE=;
-  b=fbX0CH05klFuifyrOqgl1Hcyh86aR4wEstCN7NQ2AW1V57asUNOGo1Ri
-   snXpsDFrjqsLjXpruza72kYfAgjsqOcM95I+CEwJv2iEIS7ej2vwQAxOK
-   O+HaseWnDtcdhJP7O67uTzVR6PL78+Hnb6eXEJk7Nz7oGGJq+Dv/ZqC2W
-   1re26WVStPBloSzFprau14M05Z5ffN3htX67dsj690lm7M46J32GhMo2b
-   MQYIvQoWguRdKXyfNjHaGqu634mG8vG5oBxtJsDdVwSrX7a/FeJz+DQXe
-   R3AcnvWOWoxAvqXGG9ZY2nBE4eHafHLHxok0Wqndz1CxtpgT13oPGsF/O
+  bh=LKtaiWNgDWK8U+v+CSkjSmMLNgc+6CwnEmQrVA3o6hk=;
+  b=e863I8JpgRIGBHGEW5jZmcDrPQqWIY7BhshJNFBAUcgBNz7Gk/W064At
+   jocZeCUAqDk6Q+yQt+xfF5WnnWASUFRSGwzxWwx7XlJFzhWOhUbmcQKnO
+   9vzqqqmLpNy8CSlRbDyRK/vmSXac4ZXLMPQrYTin8xuqrKrSAF8lbWkRk
+   aRXsr3NuQwGr31Riu2yHOVsBAJM/Cd8LRtMdJK9/JaWsoYMlpLszCZEZd
+   WoI4ptkzRqLxh6v8IhMu+mmGnRw0WOODW+dhdpRleormIVFDapyc6xOPe
+   z2ZsvzcejGKni1lapHleodSLQnDbL3UuEYexMdPEVbzMEmGEZt6F05Uvv
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="454048782"
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="454048841"
 X-IronPort-AV: E=Sophos;i="6.01,230,1684825200";
-   d="scan'208";a="454048782"
+   d="scan'208";a="454048841"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jul 2023 02:18:24 -0700
+ 25 Jul 2023 02:18:34 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719980272"
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="719980312"
 X-IronPort-AV: E=Sophos;i="6.01,230,1684825200";
-   d="scan'208";a="719980272"
+   d="scan'208";a="719980312"
 Received: from mongola-mobl.ger.corp.intel.com (HELO [10.249.37.129])
  ([10.249.37.129])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jul 2023 02:18:17 -0700
-Message-ID: <9e391c7d-f45b-42f4-fae4-72fba32482db@linux.intel.com>
-Date: Tue, 25 Jul 2023 10:10:06 +0200
+ 25 Jul 2023 02:18:28 -0700
+Message-ID: <eb1c679b-f50b-1f20-c7c8-da3f4857bec1@linux.intel.com>
+Date: Tue, 25 Jul 2023 10:27:00 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 06/32] ASoC: Add SOC USB APIs for adding an USB backend
+Subject: Re: [PATCH v4 08/32] ASoC: qcom: qdsp6: Introduce USB AFE port to
+ q6dsp
 Content-Language: en-US
 To: Wesley Cheng <quic_wcheng@quicinc.com>, agross@kernel.org,
  andersson@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -85,13 +86,13 @@ Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  quic_jackp@quicinc.com, oneukum@suse.com, albertccwang@google.com,
  o-takashi@sakamocchi.jp
 References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-7-quic_wcheng@quicinc.com>
+ <20230725023416.11205-9-quic_wcheng@quicinc.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230725023416.11205-7-quic_wcheng@quicinc.com>
+In-Reply-To: <20230725023416.11205-9-quic_wcheng@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: TNUPZMLRXD5WZTSUEEWXHCMJG5TCT77E
-X-Message-ID-Hash: TNUPZMLRXD5WZTSUEEWXHCMJG5TCT77E
+Message-ID-Hash: ZUVHFIFGEJ7QLFYYU66Y7XCGASM4SYPG
+X-Message-ID-Hash: ZUVHFIFGEJ7QLFYYU66Y7XCGASM4SYPG
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TNUPZMLRXD5WZTSUEEWXHCMJG5TCT77E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZUVHFIFGEJ7QLFYYU66Y7XCGASM4SYPG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,199 +115,156 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
+> +static const struct snd_soc_dai_ops q6usb_ops = {
+> +	.prepare	= q6afe_dai_prepare,
+> +	.hw_params	= q6usb_hw_params,
+> +	.shutdown	= q6afe_dai_shutdown,
+
+it's a bit odd to see a .shutdown without a .startup?
+
+Is this intentional and should a comment be added?
+
+
+> +/* device token of actual end USB aduio device */
+
+audio
+
+> +	u32                  dev_token;
+> +/* endianness of this interface */
+> +	u32                   endian;
+> +/* service interval */
+> +	u32                  service_interval;
+> +} __packed;
+> +
 > +/**
-> + * struct snd_soc_usb
-> + * @list - list head for SND SOC struct list
-> + * @dev - USB backend device reference
-> + * @component - reference to DAPM component
+> + * struct afe_param_id_usb_audio_dev_params
+> + * @cfg_minor_version: Minor version used for tracking USB audio device
+> + * configuration.
+> + * Supported values:
+> + *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
+> + * @dev_token: device token of actual end USB aduio device
 
-ASoC component, not DAPM.
+audio. please run a spell-checker.
 
-> + * @connection_status_cb - callback to notify connection events
-> + * @priv_data - driver data
+
+> +	svc_int.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
+> +	svc_int.svc_interval = pcfg->usb_cfg.service_interval;
+> +	ret = q6afe_port_set_param_v2(port, &svc_int,
+> +				      AFE_PARAM_ID_USB_AUDIO_SVC_INTERVAL,
+> +				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(svc_int));
+> +	if (ret) {
+> +		dev_err(port->afe->dev, "%s: AFE device param cmd svc_interval failed %d\n",
+> +			__func__, ret);
+> +		ret = -EINVAL;
+
+why do you override the return value?
+
+> +		goto exit;
+
+not necessary, this is a jump to the next line. Looks like copy-paste ...
+
+> +	}
+> +exit:
+> +	return ret;
+> +}
+> +
+> +/**
+> + * q6afe_usb_port_prepare() - Prepare usb afe port.
+> + *
+> + * @port: Instance of afe port
+> + * @cfg: USB configuration for the afe port
+> + *
+> + */
+> +void q6afe_usb_port_prepare(struct q6afe_port *port,
+> +			     struct q6afe_usb_cfg *cfg)
+> +{
+> +	union afe_port_config *pcfg = &port->port_cfg;
+> +
+> +	pcfg->usb_cfg.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
+> +	pcfg->usb_cfg.sample_rate = cfg->sample_rate;
+> +	pcfg->usb_cfg.num_channels = cfg->num_channels;
+> +	pcfg->usb_cfg.bit_width = cfg->bit_width;
+> +
+> +	afe_port_send_usb_dev_param(port, cfg);
+> +}
+> +EXPORT_SYMBOL_GPL(q6afe_usb_port_prepare);
+> +
+>  /**
+>   * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
+>   *
+> @@ -1611,7 +1791,10 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+>  		break;
+>  	case AFE_PORT_ID_WSA_CODEC_DMA_RX_0 ... AFE_PORT_ID_RX_CODEC_DMA_RX_7:
+>  		cfg_type = AFE_PARAM_ID_CODEC_DMA_CONFIG;
+> -	break;
+> +		break;
+> +	case AFE_PORT_ID_USB_RX:
+> +		cfg_type = AFE_PARAM_ID_USB_AUDIO_CONFIG;
+> +		break;
+>  	default:
+>  		dev_err(dev, "Invalid port id 0x%x\n", port_id);
+>  		return ERR_PTR(-EINVAL);
+> diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
+> index 30fd77e2f458..e098a3e15135 100644
+> --- a/sound/soc/qcom/qdsp6/q6afe.h
+> +++ b/sound/soc/qcom/qdsp6/q6afe.h
+> @@ -5,7 +5,7 @@
+>  
+>  #include <dt-bindings/sound/qcom,q6afe.h>
+>  
+> -#define AFE_PORT_MAX		129
+> +#define AFE_PORT_MAX		130
+>  
+>  #define MSM_AFE_PORT_TYPE_RX 0
+>  #define MSM_AFE_PORT_TYPE_TX 1
+> @@ -205,6 +205,47 @@ struct q6afe_cdc_dma_cfg {
+>  	u16	active_channels_mask;
+>  };
+>  
+> +/**
+> + * struct q6afe_usb_cfg
+> + * @cfg_minor_version: Minor version used for tracking USB audio device
+> + * configuration.
+> + * Supported values:
+> + *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
+> + * @sample_rate: Sampling rate of the port
+> + *    Supported values:
+> + *      AFE_PORT_SAMPLE_RATE_8K
+> + *      AFE_PORT_SAMPLE_RATE_11025
+> + *      AFE_PORT_SAMPLE_RATE_12K
+> + *      AFE_PORT_SAMPLE_RATE_16K
+> + *      AFE_PORT_SAMPLE_RATE_22050
+> + *      AFE_PORT_SAMPLE_RATE_24K
+> + *      AFE_PORT_SAMPLE_RATE_32K
+> + *      AFE_PORT_SAMPLE_RATE_44P1K
+> + *      AFE_PORT_SAMPLE_RATE_48K
+> + *      AFE_PORT_SAMPLE_RATE_96K
+> + *      AFE_PORT_SAMPLE_RATE_192K
+> + * @bit_width: Bit width of the sample.
+> + *    Supported values: 16, 24
+> + * @num_channels: Number of channels
+> + *    Supported values: 1, 2
+> + * @data_format: Data format supported by the USB
+> + *    Supported values: 0
+> + * @reserved: this field must be 0
+> + * @dev_token: device token of actual end USB audio device
+> + * @endian: endianness of this interface
+> + * @service_interval: service interval
 > + **/
-> +struct snd_soc_usb {
-> +	struct list_head list;
-> +	struct device *dev;
-> +	struct snd_soc_component *component;
-> +	int (*connection_status_cb)(struct snd_soc_usb *usb, int card_idx,
-> +				int connected);
-
-It's not clear what 'connected' really refers to, is this a boolean
-really or is this a "connection_event?
-
-
-> +	void *priv_data;
+> +struct q6afe_usb_cfg {
+> +	u32	cfg_minor_version;
+> +	u32     sample_rate;
+> +	u16	bit_width;
+> +	u16	num_channels;
+> +	u16	data_format;
+> +	u16	reserved;
+> +	u32	dev_token;
+> +	u32	endian;
+> +	u32	service_interval;
 > +};
-> +
-> +int snd_soc_usb_connect(struct device *usbdev, int card_idx);
-> +int snd_soc_usb_disconnect(struct device *usbdev);
-> +void snd_soc_usb_set_priv_data(struct device *dev, void *priv);
 
-this function is not part of this patch, is this intentional to have a
-get but not a set?
-
-> +void *snd_soc_usb_get_priv_data(struct device *usbdev);
-
-you are using 'usbdev' and 'dev' for the same type of parameters, why
-not align on one set of definition with a consistent naming.
+this definition looks exactly the same as
+struct afe_param_id_usb_cfg
+??
 
 
-> +static struct snd_soc_usb *snd_soc_find_usb_ctx(struct device *dev)
-> +{
-> +	struct device_node *node;
-> +	struct snd_soc_usb *ctx = NULL;
-
-this init doesn't seem required?
-
-> +
-> +	node = snd_soc_find_phandle(dev);
-> +	if (IS_ERR(node))
-> +		return NULL;
-> +
-> +	mutex_lock(&ctx_mutex);
-> +	list_for_each_entry(ctx, &usb_ctx_list, list) {
-> +		if (ctx->dev->of_node == node) {
-> +			of_node_put(node);
-> +			mutex_unlock(&ctx_mutex);
-> +			return ctx;
-> +		}
-> +	}
-> +	of_node_put(node);
-> +	mutex_unlock(&ctx_mutex);
-> +
-> +	return NULL;
-> +}
-> +
-> +/**
-> + * snd_soc_usb_get_priv_data() - Retrieve private data stored
-> + * @dev: device reference
-> + *
-> + * Fetch the private data stored in the USB SND SOC structure.
-> + *
-> + */
-> +void *snd_soc_usb_get_priv_data(struct device *dev)
-> +{
-> +	struct snd_soc_usb *ctx;
-> +
-> +	ctx = snd_soc_find_usb_ctx(dev);
-
-so in this function you walk through the usb_ctx_list with locking...
-
-> +	if (!ctx) {
-> +		/* Check if backend device */
-> +		list_for_each_entry(ctx, &usb_ctx_list, list) {
-
-... and here you walk again through the list without locking.
-
-Something's weird here, if this was intentional you need to add comments.
-
-> +			if (dev->of_node == ctx->dev->of_node)
-> +				goto out;
-> +		}
-> +		ctx = NULL;
-> +	}
-> +out:
-> +	return ctx ? ctx->priv_data : NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_usb_get_priv_data);
-> +
-> +/**
-> + * snd_soc_usb_add_port() - Add a USB backend port
-> + * @dev: USB backend device
-> + * @priv: private data
-> + * @connection_cb: connection status callback
-> + *
-> + * Register a USB backend device to the SND USB SOC framework.  Memory is
-> + * allocated as part of the USB backend device.
-> + *
-> + */
-> +struct snd_soc_usb *snd_soc_usb_add_port(struct device *dev, void *priv,
-> +			int (*connection_cb)(struct snd_soc_usb *usb, int card_idx,
-> +			int connected))
-> +{
-> +	struct snd_soc_usb *usb;
-> +
-> +	usb = devm_kzalloc(dev, sizeof(*usb), GFP_KERNEL);
-> +	if (!usb)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	usb->connection_status_cb = connection_cb;
-> +	usb->dev = dev;
-> +	usb->priv_data = priv;
-
-back to my comment above, you don't seem to need the set_priv_data() ?
-
-> +
-> +	mutex_lock(&ctx_mutex);
-> +	list_add_tail(&usb->list, &usb_ctx_list);
-> +	mutex_unlock(&ctx_mutex);
-> +
-> +	return usb;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_usb_add_port);
-
-> +/**
-> + * snd_soc_usb_connect() - Notification of USB device connection
-> + * @usbdev: USB bus device
-> + * @card_idx: USB SND card instance
-> + *
-> + * Notify of a new USB SND device connection.  The card_idx can be used to
-> + * handle how the USB backend selects, which device to enable offloading on.
-
-"USB backend" is confusing, not sure if this is the same concept as DPCM
-"backend" or something else. Please try to avoid overloaded terms.
-
-> + *
-> + */
-> +int snd_soc_usb_connect(struct device *usbdev, int card_idx)
-> +{
-> +	struct snd_soc_usb *ctx;
-> +
-> +	if (!usbdev)
-> +		return -ENODEV;
-> +
-> +	ctx = snd_soc_find_usb_ctx(usbdev);
-> +	if (!ctx)
-> +		return -ENODEV;
-> +
-> +	if (ctx->connection_status_cb)
-> +		ctx->connection_status_cb(ctx, card_idx, 1);
-
-so either the 'connected' value is 1...
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_usb_connect);
-> +
-> +/**
-> + * snd_soc_usb_disconnect() - Notification of USB device disconnection
-> + * @usbdev: USB bus device
-> + *
-> + * Notify of a new USB SND device disconnection to the USB backend.
-> + *
-> + */
-> +int snd_soc_usb_disconnect(struct device *usbdev)
-> +{
-> +	struct snd_soc_usb *ctx;
-> +
-> +	if (!usbdev)
-> +		return -ENODEV;
-> +
-> +	ctx = snd_soc_find_usb_ctx(usbdev);
-> +	if (!ctx)
-> +		return -ENODEV;
-> +
-> +	if (ctx->connection_status_cb)
-> +		ctx->connection_status_cb(ctx, -1, 0);
-
-...and here it's zero.
-
-should this 'connected' parameter be a boolean then with true/false
-value, or do you want to add enums/defines for more flexibility down the
-road?
-
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_usb_disconnect);
