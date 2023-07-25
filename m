@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65D81C001E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 11:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 662B5C0015E
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 11:54:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 543DA1511;
-	Tue, 25 Jul 2023 13:53:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 543DA1511
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6089C150F;
+	Tue, 25 Jul 2023 13:53:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6089C150F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690286053;
-	bh=XUKOZQeLBW7kgaR9Ww++9u71TXdB2qXHA0yT42XGoao=;
+	s=default; t=1690286064;
+	bh=R3yO1JQxEFIRfLkf6Z68bVBGgIfaqBVrbJHVow8bK+A=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=a3YK1cShxDnaEys0GCkSvMGULnT4B4s2FCN3pabQq+ehT0p0AkKLPDZF5lKgyPnrg
-	 Rig8gZOmrYfyjmjdfaz0VCAyPCv4QvOiX1t6gNdMd27LfkCFYL9QXHAH0rPOjExXF/
-	 AyH7jeu0O5jC+htQA23EI9Ie6ejtvWpOmOklxQc4=
+	b=la0mWBvxv35SCzGmq1vEAaPWTro5aGNxNSSyrIXIF1McgPzwp8qXIrKAtRUUePhNB
+	 I5vAiePQeId2A2MKj9dyPHMiprmcfX9QgF+Bo9MFcMWs5UC9uFqsXTiCgncuSmU2vl
+	 ScN73cymXtlEqGH4Z1fW+YqN79+xp8++AVirGleg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95745F805A1; Tue, 25 Jul 2023 13:51:48 +0200 (CEST)
+	id 59870F805B2; Tue, 25 Jul 2023 13:51:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D91FF805AB;
-	Tue, 25 Jul 2023 13:51:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B637BF805A0;
+	Tue, 25 Jul 2023 13:51:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF241F80163; Tue, 25 Jul 2023 12:13:30 +0200 (CEST)
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+	id 585A5F80163; Tue, 25 Jul 2023 12:29:17 +0200 (CEST)
+Received: from mblankhorst.nl (lankhorst.se
+ [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7F948F80149;
-	Tue, 25 Jul 2023 12:13:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F948F80149
-Message-ID: <35720f76-e8b0-578b-e326-ebfce536be04@linux.intel.com>
-Date: Tue, 25 Jul 2023 12:13:20 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 62E72F800C7;
+	Tue, 25 Jul 2023 12:29:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62E72F800C7
+Message-ID: <1bb7858d-fab0-f3c2-b786-a93f3789b400@linux.intel.com>
+Date: Tue, 25 Jul 2023 12:29:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH v2 7/9] ALSA: hda/intel: Move snd_hdac_i915_init to before
- probe_work.
+Subject: Re: [PATCH v2 8/9] ASoC: SOF: Intel: Remove deferred probe for SOF
 Content-Language: en-US
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org
@@ -53,28 +53,30 @@ Cc: sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
+ <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
+ Matthew Auld <matthew.auld@intel.com>
 References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
- <20230719164141.228073-8-maarten.lankhorst@linux.intel.com>
- <a895de13-5320-953b-3d1c-34cee259d1d2@linux.intel.com>
+ <20230719164141.228073-9-maarten.lankhorst@linux.intel.com>
+ <03d5abcd-53a6-bf61-227e-d608c5fbfe70@linux.intel.com>
 From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <a895de13-5320-953b-3d1c-34cee259d1d2@linux.intel.com>
+In-Reply-To: <03d5abcd-53a6-bf61-227e-d608c5fbfe70@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-MailFrom: maarten.lankhorst@linux.intel.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: KGTJ7DKYNTTEJK67OAIDXY2PADJVD34N
-X-Message-ID-Hash: KGTJ7DKYNTTEJK67OAIDXY2PADJVD34N
+Message-ID-Hash: 6QX4PUVKOGTD62IFKCE2Q3GM7ORJFH45
+X-Message-ID-Hash: 6QX4PUVKOGTD62IFKCE2Q3GM7ORJFH45
 X-Mailman-Approved-At: Tue, 25 Jul 2023 11:51:33 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6QX4PUVKOGTD62IFKCE2Q3GM7ORJFH45/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,79 +87,44 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 Hey,
 
-On 2023-07-24 12:58, Pierre-Louis Bossart wrote:
+On 2023-07-24 13:32, Pierre-Louis Bossart wrote:
 > 
 > 
 > On 7/19/23 18:41, Maarten Lankhorst wrote:
->> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
->> the snd_hdac_i915_init into a workqueue.
->>
->> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
->> probe function.
->>
->> Changes since v1:
->> - Use dev_err_probe()
->> - Don't move probed_devs bitmap unnecessarily. (tiwai)
->> - Move snd_hdac_i915_init slightly upward, to ensure
->>    it's always initialised before vga-switcheroo is called.
->>
->> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
->> ---
->>   sound/pci/hda/hda_intel.c | 59 ++++++++++++++++++++-------------------
->>   1 file changed, 30 insertions(+), 29 deletions(-)
->>
->> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->> index 11cf9907f039f..e3128d7d742e7 100644
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
->> @@ -2147,6 +2147,36 @@ static int azx_probe(struct pci_dev *pci,
->>   
->>   	pci_set_drvdata(pci, card);
->>   
->> +#ifdef CONFIG_SND_HDA_I915
->> +	/* bind with i915 if needed */
->> +	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
->> +		err = snd_hdac_i915_init(azx_bus(chip), false);
->> +		if (err < 0) {
->> +			/* if the controller is bound only with HDMI/DP
->> +			 * (for HSW and BDW), we need to abort the probe;
->> +			 * for other chips, still continue probing as other
->> +			 * codecs can be on the same link.
->> +			 */
->> +			if (CONTROLLER_IN_GPU(pci)) {
->> +				dev_err_probe(card->dev, err,
->> +					     "HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
->> +
->> +				goto out_free;
->> +			} else {
->> +				/* don't bother any longer */
->> +				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
->> +			}
->> +		}
->> +
->> +		/* HSW/BDW controllers need this power */
->> +		if (CONTROLLER_IN_GPU(pci))
->> +			hda->need_i915_power = true;
->> +	}
->> +#else
->> +	if (CONTROLLER_IN_GPU(pci))
->> +		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
->> +#endif
+>> This was only used to allow modprobing i915, by converting to the
+>> -EPROBE_DEFER mechanism, it can be completely removed, and is in
+>> fact counterproductive since -EPROBE_DEFER otherwise won't be
+>> handled correctly.
 > 
-> Is it intentional that the display_power() is left in the probe workqueue?
+> I personally remember only that the request_module("i915") was the main
+> motivation for the use of the workqueue, but when it comes to the
+> HDaudio codec management we don't even know what we don't know.
 > 
-> this piece of code follows the stuff above in the existing code?
+> I am a bit worried that the snd-hda-intel driver keeps the workqueue for
+> HDaudio codec initialization, and this patch removes the workqueue
+> completely for SOF. That doesn't seem right. Either both drivers need a
+> workqueue or none need a workqueue.
 > 
-> /* Request display power well for the HDA controller or codec. For
->   * Haswell/Broadwell, both the display HDA controller and codec need
->   * this power. For other platforms, like Baytrail/Braswell, only the
->   * display codec needs the power and it can be released after probe.
->   */
-> display_power(chip, true);
+> Maybe what we need is to move the i915/xe initialization out of the
+> workqueue, and see in a second pass if that workqueue can be safely
+> removed from the SOF driver?
+> 
+As I mentioned in some of the other sound driver conversions. I believe 
+it's possible to completely kill off most workqueues.
 
-I think for the binding itself, there isn't any harm. We are not poking 
-any hardware when binding,
-only software. This appears to be true on the i915 side as well.
+However, I don´t have the hardware or knowledge to test it. I saw that 
+the SOF had the non-workqueue path already, so it felt less risky to 
+simply convert it to always use that path.
+
+avs/skylake drivers should be easy to convert too. This is why I left 
+the comment: "Removing the workqueue would simplify init even further, 
+but is left as exercise for the reviewer."
+
+HDA-intel has this retry-probe logic used on AMD's,
+which makes me more hesitant to convert it.
+
+I wanted to tackle one problem at a time, I believe workqueue removal 
+can be done by anyone.
 
 Cheers,
 ~Maarten
