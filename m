@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7396C001DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 16:44:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41C51C001DE
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 16:44:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9571283B;
-	Tue, 25 Jul 2023 18:43:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9571283B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A606820;
+	Tue, 25 Jul 2023 18:43:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A606820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690303447;
-	bh=vJhljiyriy6deuVu0eq1OnLtRna5jDqyQLHr3nhMLq4=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=NGs/C+uWWvNmSAIrrcjUzHfAPOPw4ZiwwJXcYlZUnX4C1Akzm0qll3Xc9RFLmq4rF
-	 W+hR1hwAOyb8RpneJq3VFY8r1yBXPeILAajOKcqaDLOne32OjMuuRTLpUhKTvrqfeR
-	 vxTMXkw+UwlUvpWmHvA0ogLQoKsLQRFb3ve98mlo=
+	s=default; t=1690303458;
+	bh=noHooOaMkM8xt8kznbSLp9yfP/0aVP5Bz0Y15cj4CKI=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=AdrwsKVL4KZH5upQu+cYLMBsBaqp2TxVloj0uvy/cED9ejZi9UjcME46FeOQL7/39
+	 BOBfhByqBHK7aKyhbfk88/WZ4YtbNmOMy2BcM782lcYt37DclxD0BCqCIvOYi4eVz5
+	 p1gtGI3q9GeMPxTZo6+Kf4/FUYsYFYT2jieJYqf8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0EB8CF80544; Tue, 25 Jul 2023 18:43:01 +0200 (CEST)
+	id 3A7F9F80567; Tue, 25 Jul 2023 18:43:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 638C0F8055A;
-	Tue, 25 Jul 2023 18:43:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98108F80567;
+	Tue, 25 Jul 2023 18:43:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB27CF80520; Tue, 25 Jul 2023 18:42:54 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [185.132.182.106])
+	id 5420BF80553; Tue, 25 Jul 2023 18:42:57 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9A071F80153
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 18:42:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A071F80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6C932F80163
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 18:42:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C932F80163
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=YyiQBSUd
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+ header.s=selector1 header.b=tqATn94R
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
 	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 36PELblK027164;
-	Tue, 25 Jul 2023 18:42:43 +0200
+ 36PDXDri010531;
+	Tue, 25 Jul 2023 18:42:42 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=selector1;
- bh=h0YyLUqvRFQIY5qvOKn4ibgHT6lUEDiJN/sMHtwa7nY=;
- b=YyiQBSUdd9S4DJlCtBHxFXpORIBrij9JIfWgWHlUiHPnVotjB5ijyRF7ojdNrc5yr8Ry
- ZRXtKib7Nw1YA55qT7d3ZrAF6u5yeUlGKeGCAD39/902LT/rkpfiOjiuM527EV09n7YF
- 3bLH2JJbneY1TdDHfLtlxSRrWcrmMspY+G7IW3v2RtHydyr8JK7cOjX0yY7x3K6xVzZT
- OnwGAFTPdDMAzDJKVl+/HOWPXUAUu6rJyQ9i9RmvYyp9nUHT+Hhv8GDnEYlA9yH9+LMw
- qm8umQ88NF6btuIs7YsShc+DUTdffPCUUUFnury4KI0eEo1gcUl4nFf7KKQ6tIlgDPQc ug==
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=6QnlhmKHdbeIl7Hs8Qk0Ib7pRhywX3PL8ioGr6WJgP0=;
+ b=tqATn94RAc/T938gUBGjTrCig0CvEhzQXomhmUndO9aUfJGo471b5d30oR5LPgv6qyTA
+ xUC+N80/b03AzEFVyg0X4rI4JOn82CYgzuboeqdvBCuKewyo4I77RMUAGweO8g8Tgtn7
+ etyQXfs5X6jtAmTA86/4yRUrDVpK4hcAZldrzOJ0ciqyOylZyPo4cTV+/paEQ6zID/8c
+ kwLL/qDj0H0UUTmTwjcs+bMxWj5rlQObqOuPvX3y8+BB3ihK2ZJ30z1gyHRSxpVhXJm3
+ /bqQ1TriJgNRJOPXgpwOjWYvv1bgkaxfbBY18Cx+odYBbmLp7VllCglkgArwtAWWIKVW 7Q==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2g3a0rk1-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2bkbjqh9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 25 Jul 2023 18:42:43 +0200
+	Tue, 25 Jul 2023 18:42:42 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7D24E10004D;
-	Tue, 25 Jul 2023 18:42:42 +0200 (CEST)
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3A23A100048;
+	Tue, 25 Jul 2023 18:42:40 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 73559257AB5;
-	Tue, 25 Jul 2023 18:42:42 +0200 (CEST)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4F505257AB5;
+	Tue, 25 Jul 2023 18:42:40 +0200 (CEST)
 Received: from localhost (10.201.21.121) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 25 Jul
- 2023 18:42:42 +0200
+ 2023 18:42:40 +0200
 From: Gatien Chevallier <gatien.chevallier@foss.st.com>
 To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
         <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
@@ -91,12 +90,10 @@ CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-usb@vger.kernel.org>,
         Gatien Chevallier
 	<gatien.chevallier@foss.st.com>
-Subject: [PATCH v2 03/11] dt-bindings: bus: document ETZPC
-Date: Tue, 25 Jul 2023 18:40:56 +0200
-Message-ID: <20230725164104.273965-4-gatien.chevallier@foss.st.com>
+Subject: [PATCH v2 00/11] Introduce STM32 Firewall framework
+Date: Tue, 25 Jul 2023 18:40:53 +0200
+Message-ID: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
-References: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -106,8 +103,8 @@ X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-25_08,2023-07-25_01,2023-05-22_02
-Message-ID-Hash: EFY2KQ3KGG4VWVJZZV6HYME7YB3NYMFF
-X-Message-ID-Hash: EFY2KQ3KGG4VWVJZZV6HYME7YB3NYMFF
+Message-ID-Hash: BDP3BI4NDQRWBKOXGITYPHVQSMVJEGWN
+X-Message-ID-Hash: BDP3BI4NDQRWBKOXGITYPHVQSMVJEGWN
 X-MailFrom: prvs=557065b4ce=gatien.chevallier@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -120,138 +117,188 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EFY2KQ3KGG4VWVJZZV6HYME7YB3NYMFF/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BDP3BI4NDQRWBKOXGITYPHVQSMVJEGWN/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Document ETZPC (Extended TrustZone protection controller). ETZPC is a
-firewall controller.
+Introduce STM32 Firewall framework for STM32MP1x and STM32MP2x
+platforms. STM32MP1x(ETZPC) and STM32MP2x(RIFSC) Firewall controllers
+register to the framework to offer firewall services such as access
+granting.
 
-Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
----
+This series of patches is a new approach on the previous STM32 system
+bus, history is available here:
+https://lore.kernel.org/lkml/20230127164040.1047583/
 
-Changes in V2: 
-	- Corrected errors highlighted by Rob's robot
-	- No longer define the maxItems for the "feature-domains"
-	  property
-	- Fix example (node name, status)
-	- Declare "feature-domain-names" as an optional
-	  property for child nodes
-	- Fix description of "feature-domains" property
-	- Reorder the properties so it matches RIFSC
-	- Add missing "feature-domain-controller" property
+The need for such framework arises from the fact that there are now
+multiple hardware firewalls implemented across multiple products.
+Drivers are shared between different products, using the same code.
+When it comes to firewalls, the purpose mostly stays the same: Protect
+hardware resources. But the implementation differs, and there are
+multiple types of firewalls: peripheral, memory, ... 
 
- .../bindings/bus/st,stm32-etzpc.yaml          | 96 +++++++++++++++++++
- 1 file changed, 96 insertions(+)
+Some hardware firewall controllers such as the RIFSC implemented on
+STM32MP2x platforms may require to take ownership of a resource before
+being able to use it, hence the requirement for firewall services to
+take/release the ownership of such resources.
+
+On the other hand, hardware firewall configurations are becoming
+more and more complex. These mecanisms prevent platform crashes
+or other firewall-related incoveniences by denying access to some
+resources.
+
+The stm32 firewall framework offers an API that is defined in
+firewall controllers drivers to best fit the specificity of each
+firewall.
+
+For every peripherals protected by either the ETZPC or the RIFSC, the
+firewall framework checks the firewall controlelr registers to see if
+the peripheral's access is granted to the Linux kernel. If not, the
+peripheral is configured as secure, the node is marked populated,
+so that the driver is not probed for that device.
+
+The firewall framework relies on the feature-domain-controller device
+tree bindings: https://lore.kernel.org/lkml/0c0a82bb-18ae-d057-562b.
+It is used by peripherals to reference a domain controller, in this
+case a firewall feature domain. The bus uses the ID referenced by
+the feature-domains property to know where to look in the firewall
+to get the security configuration for the peripheral. This allows
+a device tree description rather than a hardcoded peripheral table
+in the bus driver.
+
+The STM32 ETZPC device is responsible for filtering accesses based on
+security level, or co-processor isolation for any resource connected
+to it.
+
+The RIFSC is responsible for filtering accesses based on Compartment
+ID / security level / privilege level for any resource connected to
+it.
+
+STM32MP13/15/25 SoC device tree files are updated in this series to
+implement this mecanism.
+
+Changes in V2:
+
+	generic:
+		- Add fw_devlink dependency for "feature-domains"
+		  property.
+
+	bindings:
+		- Corrected YAMLS errors highlighted by Rob's robot
+		- Firewall controllers YAMLs no longer define the
+		  maxItems for the "feature-domains" property
+		- Renamed st,stm32-rifsc.yaml to
+		  st,stm32mp25-rifsc.yaml
+		- Fix examples in YAML files
+		- Change feature-domains maxItems to 2 in firewall
+		  consumer files as there should not be more than
+		  2 entries for now
+		- Declare "feature-domain-names" as an optional
+		  property for firewall controllers child nodes.
+		- Add missing "feature-domains" property declaration
+		  in bosch,m_can.yaml and st,stm32-cryp.yaml files
+
+	firewall framework:
+		- Support multiple entries for "feature-domains"
+		  property
+		- Better handle the device-tree parsing using
+		  phandle+args APIs
+		- Remove "resource firewall" type
+		- Add a field for the name of the firewall entry
+		- Fix licenses
+	
+	RIFSC:
+		- Add controller name
+		- Driver is now a module_platform_driver
+		- Fix license
+
+	ETZPC:
+		- Add controller name
+		- Driver is now a module_platform_driver
+		- Fix license
+
+	Device trees:
+		- Fix rifsc node name
+		- Move the "ranges" property under the
+		  "feature-domains" one
+		
+
+Oleksii Moisieiev (1):
+  dt-bindings: Document common device controller bindings
+
+Gatien Chevallier (10):
+  dt-bindings: bus: document RIFSC
+  dt-bindings: bus: document ETZPC
+  dt-bindings: treewide: add feature-domains description
+  firewall: introduce stm32_firewall framework
+  of: property: fw_devlink: Add support for "feature-domains"
+  bus: rifsc: introduce RIFSC firewall controller driver
+  arm64: dts: st: add RIFSC as a domain controller for STM32MP25x boards
+  bus: etzpc: introduce ETZPC firewall controller driver
+  ARM: dts: stm32: add ETZPC as a system bus for STM32MP15x boards
+  ARM: dts: stm32: add ETZPC as a system bus for STM32MP13x boards
+
+ .../bindings/bus/st,stm32-etzpc.yaml          |   96 +
+ .../bindings/bus/st,stm32mp25-rifsc.yaml      |  105 +
+ .../bindings/crypto/st,stm32-cryp.yaml        |    4 +
+ .../bindings/crypto/st,stm32-hash.yaml        |    4 +
+ .../devicetree/bindings/dma/st,stm32-dma.yaml |    4 +
+ .../bindings/dma/st,stm32-dmamux.yaml         |    4 +
+ .../feature-domain-controller.yaml            |   84 +
+ .../devicetree/bindings/i2c/st,stm32-i2c.yaml |    4 +
+ .../bindings/iio/adc/st,stm32-adc.yaml        |    4 +
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  |    4 +
+ .../bindings/iio/dac/st,stm32-dac.yaml        |    4 +
+ .../bindings/media/cec/st,stm32-cec.yaml      |    4 +
+ .../bindings/media/st,stm32-dcmi.yaml         |    4 +
+ .../memory-controllers/st,stm32-fmc2-ebi.yaml |    4 +
+ .../bindings/mfd/st,stm32-lptimer.yaml        |    4 +
+ .../bindings/mfd/st,stm32-timers.yaml         |    5 +
+ .../devicetree/bindings/mmc/arm,pl18x.yaml    |    4 +
+ .../bindings/net/can/bosch,m_can.yaml         |    4 +
+ .../devicetree/bindings/net/stm32-dwmac.yaml  |    4 +
+ .../bindings/phy/phy-stm32-usbphyc.yaml       |    4 +
+ .../bindings/regulator/st,stm32-vrefbuf.yaml  |    4 +
+ .../devicetree/bindings/rng/st,stm32-rng.yaml |    4 +
+ .../bindings/serial/st,stm32-uart.yaml        |    4 +
+ .../bindings/sound/st,stm32-i2s.yaml          |    4 +
+ .../bindings/sound/st,stm32-sai.yaml          |    4 +
+ .../bindings/sound/st,stm32-spdifrx.yaml      |    4 +
+ .../bindings/spi/st,stm32-qspi.yaml           |    4 +
+ .../devicetree/bindings/spi/st,stm32-spi.yaml |    4 +
+ .../devicetree/bindings/usb/dwc2.yaml         |    4 +
+ MAINTAINERS                                   |    7 +
+ arch/arm/boot/dts/st/stm32mp131.dtsi          | 1027 +++---
+ arch/arm/boot/dts/st/stm32mp133.dtsi          |   51 +-
+ arch/arm/boot/dts/st/stm32mp13xc.dtsi         |   19 +-
+ arch/arm/boot/dts/st/stm32mp13xf.dtsi         |   19 +-
+ arch/arm/boot/dts/st/stm32mp151.dtsi          | 2757 +++++++++--------
+ arch/arm/boot/dts/st/stm32mp153.dtsi          |   52 +-
+ arch/arm/boot/dts/st/stm32mp15xc.dtsi         |   19 +-
+ arch/arm64/Kconfig.platforms                  |    1 +
+ arch/arm64/boot/dts/st/stm32mp251.dtsi        |    7 +-
+ drivers/bus/Kconfig                           |    9 +
+ drivers/bus/Makefile                          |    1 +
+ drivers/bus/stm32_etzpc.c                     |  141 +
+ drivers/bus/stm32_firewall.c                  |  288 ++
+ drivers/bus/stm32_firewall.h                  |   83 +
+ drivers/bus/stm32_rifsc.c                     |  252 ++
+ drivers/of/property.c                         |    2 +
+ include/linux/bus/stm32_firewall_device.h     |  140 +
+ 47 files changed, 3346 insertions(+), 1919 deletions(-)
  create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+ create mode 100644 Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
+ create mode 100644 drivers/bus/stm32_etzpc.c
+ create mode 100644 drivers/bus/stm32_firewall.c
+ create mode 100644 drivers/bus/stm32_firewall.h
+ create mode 100644 drivers/bus/stm32_rifsc.c
+ create mode 100644 include/linux/bus/stm32_firewall_device.h
 
-diff --git a/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml b/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
-new file mode 100644
-index 000000000000..ef5979c0d6f2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
-@@ -0,0 +1,96 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/bus/st,stm32-etzpc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STM32 Extended TrustZone protection controller
-+
-+description: |
-+  The ETZPC configures TrustZone security in a SoC having bus masters and
-+  devices with programmable-security attributes (securable resources).
-+
-+maintainers:
-+  - Gatien Chevallier <gatien.chevallier@foss.st.com>
-+
-+properties:
-+  compatible:
-+    contains:
-+      const: st,stm32-etzpc
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 1
-+
-+  ranges: true
-+
-+  "#feature-domain-cells":
-+    const: 1
-+
-+  feature-domain-controller: true
-+
-+patternProperties:
-+  "^.*@[0-9a-f]+$":
-+    description: Peripherals
-+    type: object
-+    properties:
-+      feature-domains:
-+        minItems: 1
-+        description:
-+          The phandle of the firewall controller of the peripheral and the
-+          platform-specific firewall ID of the peripheral.
-+
-+      feature-domain-names:
-+        minItems: 1
-+
-+    required:
-+      - feature-domains
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#address-cells"
-+  - "#size-cells"
-+  - feature-domain-controller
-+  - "#feature-domain-cells"
-+  - ranges
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    // In this example, the usart2 device refers to rifsc as its domain
-+    // controller.
-+    // Access rights are verified before creating devices.
-+
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/stm32mp13-clks.h>
-+    #include <dt-bindings/reset/stm32mp13-resets.h>
-+
-+    etzpc: bus@5c007000 {
-+        compatible = "st,stm32-etzpc";
-+        reg = <0x5c007000 0x400>;
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        feature-domain-controller;
-+        #feature-domain-cells = <1>;
-+        ranges;
-+
-+        usart2: serial@4c001000 {
-+            compatible = "st,stm32h7-uart";
-+            reg = <0x4c001000 0x400>;
-+            interrupts-extended = <&exti 27 IRQ_TYPE_LEVEL_HIGH>;
-+            clocks = <&rcc USART2_K>;
-+            resets = <&rcc USART2_R>;
-+            wakeup-source;
-+            dmas = <&dmamux1 43 0x400 0x5>,
-+                    <&dmamux1 44 0x400 0x1>;
-+            dma-names = "rx", "tx";
-+            feature-domains = <&etzpc 17>;
-+        };
-+    };
 -- 
 2.35.3
 
