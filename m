@@ -4,84 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 820B1EB64DD
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 05:39:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2E18C001DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 06:24:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B43FDF5;
-	Tue, 25 Jul 2023 07:38:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B43FDF5
+	by alsa0.perex.cz (Postfix) with ESMTPS id D412BE84;
+	Tue, 25 Jul 2023 08:23:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D412BE84
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690263549;
-	bh=oEqOvaYTtYD0cDhlp47C+7XbAkxvJEjRKWIZtt4DxJc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1690266247;
+	bh=d1USetInsrU+AeZMYEEtQ5CXYIOC92GslcjUA2WPjWU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iMh6JdfZWSiwZ4+keUd91p5pLL9WO1Di1aGAPB2ZTv9mZVAVqd3V7gq/TSuVCyO2F
-	 wgZTC9SnvfnfPsp5xTbdZJHmFSVOt9o1dYb1KuMNMfs0r3QhdR/WJoqqTssiDIhKZD
-	 JnxbIEBfWlqe7tt3exVc4l19syn4N1hSXwWeo3nA=
+	b=sBZOtYJHJDndePdTMIUb9WlLXVvJZkxolKkRAxOUkDHeJ+ltErTV//F4sBqDGfCWy
+	 5mwi4M5G04TFIyBWImI0bz6uzzeMiUs3Q098K5mWN459NPD1+ub4p3kLwRx76nW1Jb
+	 vCh7/DvNzIyTa2MZ9/FecvHYr0NxKnQgwAiueeRI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8A2E0F80163; Tue, 25 Jul 2023 07:37:53 +0200 (CEST)
+	id A9BFBF8055B; Tue, 25 Jul 2023 08:22:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF400F8019B;
-	Tue, 25 Jul 2023 07:37:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16365F8053B;
+	Tue, 25 Jul 2023 08:22:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ACFEBF8019B; Tue, 25 Jul 2023 07:36:06 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id DC995F80544; Tue, 25 Jul 2023 08:22:29 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9C48F80153
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 07:35:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9C48F80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9F62FF8019B
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 08:22:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F62FF8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=i9kVXjf1
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=zw/9WulH;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=DzLAgFUk
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C25FC61526;
-	Tue, 25 Jul 2023 05:35:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE699C433C7;
-	Tue, 25 Jul 2023 05:35:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1690263345;
-	bh=oEqOvaYTtYD0cDhlp47C+7XbAkxvJEjRKWIZtt4DxJc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=i9kVXjf1HBDSjHedbx4wMwqTpNqKR8EFUdQJlMmhXfBLthblmuZkU77Z1IhdaR0wK
-	 x1OLHGpuEV3kutCyQ2/LY1/oaReoB/VEuw+Gs4FrtcJVkBIZkitCPYTSkInvuDJmCG
-	 SETBLrckjO2tXk+VvPn76Wm6pQeqppYZjuaQHbRk=
-Date: Tue, 25 Jul 2023 07:35:42 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Wesley Cheng <quic_wcheng@quicinc.com>
-Cc: agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	catalin.marinas@arm.com, will@kernel.org, mathias.nyman@intel.com,
-	lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-	tiwai@suse.com, srinivas.kandagatla@linaro.org,
-	bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-usb@vger.kernel.org, alsa-devel@alsa-project.org,
-	quic_jackp@quicinc.com, pierre-louis.bossart@linux.intel.com,
-	oneukum@suse.com, albertccwang@google.com, o-takashi@sakamocchi.jp,
-	Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: [PATCH v4 01/32] xhci: add support to allocate several
- interrupters
-Message-ID: <2023072520-footbath-pessimist-670d@gregkh>
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-2-quic_wcheng@quicinc.com>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 390192249D;
+	Tue, 25 Jul 2023 06:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1690266132;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NRKx0VeOYoR12sVFtMBeiLGHl5ooEUwXfcy64qyVtcY=;
+	b=zw/9WulH1Jlb9JoRC09Al9CXvMWAqtlYioidBpO2WxNFBPVwFIdjwsjHikb/w6UKv7Z8RE
+	HleebipqFnEHZ44/a9u7qH2F4a6zauaujpZU7jMcNnTiiQ+OT28WGOdspBQOpdsXDoAja7
+	CykYNzJG8n1wakESfkoC+N67IqdvSgo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1690266132;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NRKx0VeOYoR12sVFtMBeiLGHl5ooEUwXfcy64qyVtcY=;
+	b=DzLAgFUkmNyD91roXAO9nQVKgMidL+Zk8vVs087iYNL2yC6oL4eh+a3h8P0tp+0rbzrsiw
+	+D2lyu7amGk8giBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D6C813342;
+	Tue, 25 Jul 2023 06:22:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id yANkAhRqv2S0dQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 06:22:12 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: alsa-devel@alsa-project.org,
+	linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 3/7] usb: gadget: midi2: Dynamically create MIDI 1.0 altset
+ descriptors
+Date: Tue, 25 Jul 2023 08:22:02 +0200
+Message-Id: <20230725062206.9674-4-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230725062206.9674-1-tiwai@suse.de>
+References: <20230725062206.9674-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725023416.11205-2-quic_wcheng@quicinc.com>
-Message-ID-Hash: MJDLK5ZNKGGJZAJRVX5RKCH2XUW7MO6V
-X-Message-ID-Hash: MJDLK5ZNKGGJZAJRVX5RKCH2XUW7MO6V
-X-MailFrom: gregkh@linuxfoundation.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: JFWBYBFS5VMUMR5O7BBIGRUUUAJJ4UIU
+X-Message-ID-Hash: JFWBYBFS5VMUMR5O7BBIGRUUUAJJ4UIU
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MJDLK5ZNKGGJZAJRVX5RKCH2XUW7MO6V/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JFWBYBFS5VMUMR5O7BBIGRUUUAJJ4UIU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,68 +117,354 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jul 24, 2023 at 07:33:45PM -0700, Wesley Cheng wrote:
-> From: Mathias Nyman <mathias.nyman@linux.intel.com>
-> 
-> Modify the XHCI drivers to accommodate for handling multiple event rings in
-> case there are multiple interrupters.  Add the required APIs so clients are
-> able to allocate/request for an interrupter ring, and pass this information
-> back to the client driver.  This allows for users to handle the resource
-> accordingly, such as passing the event ring base address to an audio DSP.
-> There is no actual support for multiple MSI/MSI-X vectors.
-> 
-> Factoring out XHCI interrupter APIs and structures done by Wesley Cheng, in
-> order to allow for USB class drivers to utilze them.
-> 
-> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-> Co-developed-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/sm8350.dtsi.rej | 14 ++++
->  arch/arm64/configs/defconfig.rej         | 24 ++++++
->  drivers/usb/host/xhci-debugfs.c          |  2 +-
->  drivers/usb/host/xhci-mem.c              | 93 ++++++++++++++++++++++--
->  drivers/usb/host/xhci-ring.c             |  2 +-
->  drivers/usb/host/xhci.c                  | 49 ++++++++-----
->  drivers/usb/host/xhci.h                  | 77 +-------------------
->  include/linux/usb/xhci-intr.h            | 86 ++++++++++++++++++++++
->  8 files changed, 245 insertions(+), 102 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/qcom/sm8350.dtsi.rej
->  create mode 100644 arch/arm64/configs/defconfig.rej
->  create mode 100644 include/linux/usb/xhci-intr.h
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi.rej b/arch/arm64/boot/dts/qcom/sm8350.dtsi.rej
-> new file mode 100644
-> index 000000000000..e96ef1120160
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi.rej
-> @@ -0,0 +1,14 @@
-> +--- arch/arm64/boot/dts/qcom/sm8350.dtsi
-> ++++ arch/arm64/boot/dts/qcom/sm8350.dtsi
-> +@@ -2254,9 +2254,9 @@
-> + 				iommus = <&apps_smmu 0x0 0x0>;
-> + 				snps,dis_u2_susphy_quirk;
-> + 				snps,dis_enblslpm_quirk;
-> +-				phys = <&usb_1_hsphy>, <&usb_1_qmpphy QMP_USB43DP_USB3_PHY>;
-> ++				phys = <&usb_1_hsphy>, <&usb_1_qmpphy>;
-> + 				phy-names = "usb2-phy", "usb3-phy";
-> +-
-> ++				dr_mode = "host";
-> + 				ports {
-> + 					#address-cells = <1>;
-> + 					#size-cells = <0>;
-> diff --git a/arch/arm64/configs/defconfig.rej b/arch/arm64/configs/defconfig.rej
+This patch extends MIDI 2.0 function driver to deal with more MIDI1
+Jacks depending on the given Block configuration.
 
-<snip>
+For MIDI 1.0, we take the configuration given in Function Block 0, and
+create MIDI Jacks and Endpoints depending on the definition there.
+That is, when more UMP Groups are defined in the Block 0, the
+corresponding MIDI1 Jacks will be created.
 
-I think you need to look at this patch series a bit better and clean it
-up before sending it out.  These files obviously are not going to work,
-and prevent any of this from being able to be applied or tested by any
-bots or test systems :(
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ drivers/usb/gadget/function/f_midi2.c | 228 ++++++++++++++++++--------
+ 1 file changed, 157 insertions(+), 71 deletions(-)
 
-I've stopped here in my review of this series (except for the obvious
-global symbol name comment.)
+diff --git a/drivers/usb/gadget/function/f_midi2.c b/drivers/usb/gadget/function/f_midi2.c
+index c68a6fa0d237..b15d832ff441 100644
+--- a/drivers/usb/gadget/function/f_midi2.c
++++ b/drivers/usb/gadget/function/f_midi2.c
+@@ -151,7 +151,7 @@ static struct usb_ms20_gr_trm_block_descriptor gtb_desc = {
+ };
+ 
+ DECLARE_USB_MIDI_OUT_JACK_DESCRIPTOR(1);
+-DECLARE_USB_MS_ENDPOINT_DESCRIPTOR(1);
++DECLARE_USB_MS_ENDPOINT_DESCRIPTOR(16);
+ DECLARE_UAC_AC_HEADER_DESCRIPTOR(1);
+ DECLARE_USB_MS20_ENDPOINT_DESCRIPTOR(32);
+ 
+@@ -185,7 +185,7 @@ static struct usb_interface_descriptor midi2_midi1_if_desc = {
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 	.bInterfaceNumber =	0, // to be filled
+ 	.bAlternateSetting =	0,
+-	.bNumEndpoints =	2,
++	.bNumEndpoints =	2, // to be filled
+ 	.bInterfaceClass =	USB_CLASS_AUDIO,
+ 	.bInterfaceSubClass =	USB_SUBCLASS_MIDISTREAMING,
+ 	.bInterfaceProtocol =	0,
+@@ -200,50 +200,6 @@ static struct usb_ms_header_descriptor midi2_midi1_class_desc = {
+ 	.wTotalLength =		__cpu_to_le16(0x41), // to be calculated
+ };
+ 
+-/* MIDI 1.0 IN (Embedded) Jack */
+-static struct usb_midi_in_jack_descriptor midi2_midi1_in_jack1_desc = {
+-	.bLength =		0x06,
+-	.bDescriptorType =	USB_DT_CS_INTERFACE,
+-	.bDescriptorSubtype =	USB_MS_MIDI_IN_JACK,
+-	.bJackType =		USB_MS_EMBEDDED,
+-	.bJackID =		0x01,
+-	.iJack =		0,
+-};
+-
+-/* MIDI 1.0 IN (External) Jack */
+-static struct usb_midi_in_jack_descriptor midi2_midi1_in_jack2_desc = {
+-	.bLength =		0x06,
+-	.bDescriptorType =	USB_DT_CS_INTERFACE,
+-	.bDescriptorSubtype =	USB_MS_MIDI_IN_JACK,
+-	.bJackType =		USB_MS_EXTERNAL,
+-	.bJackID =		0x02,
+-	.iJack =		0,
+-};
+-
+-/* MIDI 1.0 OUT (Embedded) Jack */
+-static struct usb_midi_out_jack_descriptor_1 midi2_midi1_out_jack1_desc = {
+-	.bLength =		0x09,
+-	.bDescriptorType =	USB_DT_CS_INTERFACE,
+-	.bDescriptorSubtype =	USB_MS_MIDI_OUT_JACK,
+-	.bJackType =		USB_MS_EMBEDDED,
+-	.bJackID =		0x03,
+-	.bNrInputPins =		1,
+-	.pins =			{ { 0x02, 0x01 } },
+-	.iJack =		0,
+-};
+-
+-/* MIDI 1.0 OUT (External) Jack */
+-static struct usb_midi_out_jack_descriptor_1 midi2_midi1_out_jack2_desc = {
+-	.bLength =		0x09,
+-	.bDescriptorType =	USB_DT_CS_INTERFACE,
+-	.bDescriptorSubtype =	USB_MS_MIDI_OUT_JACK,
+-	.bJackType =		USB_MS_EXTERNAL,
+-	.bJackID =		0x04,
+-	.bNrInputPins =		1,
+-	.pins =			{ { 0x01, 0x01 } },
+-	.iJack =		0,
+-};
+-
+ /* MIDI 1.0 EP OUT */
+ static struct usb_endpoint_descriptor midi2_midi1_ep_out_desc = {
+ 	.bLength =		USB_DT_ENDPOINT_AUDIO_SIZE,
+@@ -257,8 +213,8 @@ static struct usb_ss_ep_comp_descriptor midi2_midi1_ep_out_ss_comp_desc = {
+ 	.bDescriptorType        = USB_DT_SS_ENDPOINT_COMP,
+ };
+ 
+-static struct usb_ms_endpoint_descriptor_1 midi2_midi1_ep_out_class_desc = {
+-	.bLength =		0x05,
++static struct usb_ms_endpoint_descriptor_16 midi2_midi1_ep_out_class_desc = {
++	.bLength =		0x05, // to be filled
+ 	.bDescriptorType =	USB_DT_CS_ENDPOINT,
+ 	.bDescriptorSubtype =	USB_MS_GENERAL,
+ 	.bNumEmbMIDIJack =	1,
+@@ -278,8 +234,8 @@ static struct usb_ss_ep_comp_descriptor midi2_midi1_ep_in_ss_comp_desc = {
+ 	.bDescriptorType        = USB_DT_SS_ENDPOINT_COMP,
+ };
+ 
+-static struct usb_ms_endpoint_descriptor_1 midi2_midi1_ep_in_class_desc = {
+-	.bLength =		0x05,
++static struct usb_ms_endpoint_descriptor_16 midi2_midi1_ep_in_class_desc = {
++	.bLength =		0x05, // to be filled
+ 	.bDescriptorType =	USB_DT_CS_ENDPOINT,
+ 	.bDescriptorSubtype =	USB_MS_GENERAL,
+ 	.bNumEmbMIDIJack =	1,
+@@ -337,25 +293,29 @@ static void *midi2_audio_descs[] = {
+ static void *midi2_midi1_descs[] = {
+ 	&midi2_midi1_if_desc,
+ 	&midi2_midi1_class_desc,
+-	&midi2_midi1_in_jack1_desc,
+-	&midi2_midi1_in_jack2_desc,
+-	&midi2_midi1_out_jack1_desc,
+-	&midi2_midi1_out_jack2_desc,
+ 	NULL
+ };
+ 
+-static void *midi2_midi1_ep_descs[] = {
++static void *midi2_midi1_ep_out_descs[] = {
+ 	&midi2_midi1_ep_out_desc,
+ 	&midi2_midi1_ep_out_class_desc,
++	NULL
++};
++
++static void *midi2_midi1_ep_in_descs[] = {
+ 	&midi2_midi1_ep_in_desc,
+ 	&midi2_midi1_ep_in_class_desc,
+ 	NULL
+ };
+ 
+-static void *midi2_midi1_ep_ss_descs[] = {
++static void *midi2_midi1_ep_out_ss_descs[] = {
+ 	&midi2_midi1_ep_out_desc,
+ 	&midi2_midi1_ep_out_ss_comp_desc,
+ 	&midi2_midi1_ep_out_class_desc,
++	NULL
++};
++
++static void *midi2_midi1_ep_in_ss_descs[] = {
+ 	&midi2_midi1_ep_in_desc,
+ 	&midi2_midi1_ep_in_ss_comp_desc,
+ 	&midi2_midi1_ep_in_class_desc,
+@@ -1197,6 +1157,11 @@ struct f_midi2_usb_config {
+ 	struct usb_descriptor_header **list;
+ 	unsigned int size;
+ 	unsigned int alloc;
++
++	/* MIDI 1.0 jacks */
++	unsigned char jack_in, jack_out, jack_id;
++	struct usb_midi_in_jack_descriptor jack_ins[16];
++	struct usb_midi_out_jack_descriptor_1 jack_outs[16];
+ };
+ 
+ static int append_config(struct f_midi2_usb_config *config, void *d)
+@@ -1231,12 +1196,61 @@ static int append_configs(struct f_midi2_usb_config *config, void **d)
+ 	return 0;
+ }
+ 
++static int append_midi1_in_jack(struct f_midi2 *midi2,
++				struct f_midi2_usb_config *config,
++				unsigned int type)
++{
++	struct usb_midi_in_jack_descriptor *jack =
++		&config->jack_ins[config->jack_in++];
++	int id = ++config->jack_id;
++	int err;
++
++	jack->bLength = 0x06;
++	jack->bDescriptorType = USB_DT_CS_INTERFACE;
++	jack->bDescriptorSubtype = USB_MS_MIDI_IN_JACK;
++	jack->bJackType = type;
++	jack->bJackID = id;
++	jack->iJack = midi2->strings[STR_GTB1].id; // TODO: better names?
++
++	err = append_config(config, jack);
++	if (err < 0)
++		return err;
++	return id;
++}
++
++static int append_midi1_out_jack(struct f_midi2 *midi2,
++				 struct f_midi2_usb_config *config,
++				 unsigned int type, unsigned int source)
++{
++	struct usb_midi_out_jack_descriptor_1 *jack =
++		&config->jack_outs[config->jack_out++];
++	int id = ++config->jack_id;
++	int err;
++
++	jack->bLength = 0x09;
++	jack->bDescriptorType = USB_DT_CS_INTERFACE;
++	jack->bDescriptorSubtype = USB_MS_MIDI_OUT_JACK;
++	jack->bJackType = type;
++	jack->bJackID = id;
++	jack->bNrInputPins = 1;
++	jack->pins[0].baSourceID = source;
++	jack->pins[0].baSourcePin = 0x01;
++	jack->iJack = midi2->strings[STR_GTB1].id; // TODO: better names?
++
++	err = append_config(config, jack);
++	if (err < 0)
++		return err;
++	return id;
++}
++
+ static int f_midi2_create_usb_configs(struct f_midi2 *midi2,
+ 				      struct f_midi2_usb_config *config,
+ 				      int speed)
+ {
+-	void **midi1_eps;
+-	int i, err;
++	struct f_midi2_block *blk = &midi2->midi2_eps[0].blks[0];
++	void **midi1_in_eps, **midi1_out_eps;
++	int i, jack, total;
++	int err;
+ 
+ 	switch (speed) {
+ 	default:
+@@ -1248,7 +1262,8 @@ static int f_midi2_create_usb_configs(struct f_midi2 *midi2,
+ 				cpu_to_le16(512);
+ 		fallthrough;
+ 	case USB_SPEED_FULL:
+-		midi1_eps = midi2_midi1_ep_descs;
++		midi1_in_eps = midi2_midi1_ep_in_descs;
++		midi1_out_eps = midi2_midi1_ep_out_descs;
+ 		break;
+ 	case USB_SPEED_SUPER:
+ 	case USB_SPEED_SUPER_PLUS:
+@@ -1257,19 +1272,85 @@ static int f_midi2_create_usb_configs(struct f_midi2 *midi2,
+ 		for (i = 0; i < midi2->num_eps; i++)
+ 			midi2_midi2_ep_out_desc[i].wMaxPacketSize =
+ 				cpu_to_le16(1024);
+-		midi1_eps = midi2_midi1_ep_ss_descs;
++		midi1_in_eps = midi2_midi1_ep_in_ss_descs;
++		midi1_out_eps = midi2_midi1_ep_out_ss_descs;
+ 		break;
+ 	}
+ 
+ 	err = append_configs(config, midi2_audio_descs);
+ 	if (err < 0)
+ 		return err;
++
++	switch (blk->info.direction) {
++	case SNDRV_UMP_DIR_INPUT:
++	case SNDRV_UMP_DIR_OUTPUT:
++		midi2_midi1_if_desc.bNumEndpoints = 1;
++		break;
++	default:
++		midi2_midi1_if_desc.bNumEndpoints = 2;
++		break;
++	}
++
+ 	err = append_configs(config, midi2_midi1_descs);
+ 	if (err < 0)
+ 		return err;
+-	err = append_configs(config, midi1_eps);
+-	if (err < 0)
+-		return err;
++
++	total = USB_DT_MS_HEADER_SIZE;
++	if (blk->info.direction != SNDRV_UMP_DIR_INPUT) {
++		midi2_midi1_ep_out_class_desc.bLength =
++			USB_DT_MS_ENDPOINT_SIZE(blk->info.num_groups);
++		total += midi2_midi1_ep_out_class_desc.bLength;
++		midi2_midi1_ep_out_class_desc.bNumEmbMIDIJack =
++			blk->info.num_groups;
++		total += blk->info.num_groups *
++			(USB_DT_MIDI_IN_SIZE + USB_DT_MIDI_OUT_SIZE(1));
++		for (i = 0; i < blk->info.num_groups; i++) {
++			jack = append_midi1_in_jack(midi2, config,
++						    USB_MS_EMBEDDED);
++			if (jack < 0)
++				return jack;
++			midi2_midi1_ep_out_class_desc.baAssocJackID[i] = jack;
++			jack = append_midi1_out_jack(midi2, config,
++						     USB_MS_EXTERNAL, jack);
++			if (jack < 0)
++				return jack;
++		}
++	}
++
++	if (blk->info.direction != SNDRV_UMP_DIR_OUTPUT) {
++		midi2_midi1_ep_in_class_desc.bLength =
++			USB_DT_MS_ENDPOINT_SIZE(blk->info.num_groups);
++		total += midi2_midi1_ep_in_class_desc.bLength;
++		midi2_midi1_ep_in_class_desc.bNumEmbMIDIJack =
++			blk->info.num_groups;
++		total += blk->info.num_groups *
++			(USB_DT_MIDI_IN_SIZE + USB_DT_MIDI_OUT_SIZE(1));
++		for (i = 0; i < blk->info.num_groups; i++) {
++			jack = append_midi1_in_jack(midi2, config,
++						    USB_MS_EXTERNAL);
++			if (jack < 0)
++				return jack;
++			jack = append_midi1_out_jack(midi2, config,
++						     USB_MS_EMBEDDED, jack);
++			if (jack < 0)
++				return jack;
++			midi2_midi1_ep_in_class_desc.baAssocJackID[i] = jack;
++		}
++	}
++
++	midi2_midi1_class_desc.wTotalLength = cpu_to_le16(total);
++
++	if (blk->info.direction != SNDRV_UMP_DIR_INPUT) {
++		err = append_configs(config, midi1_out_eps);
++		if (err < 0)
++			return err;
++	}
++	if (blk->info.direction != SNDRV_UMP_DIR_OUTPUT) {
++		err = append_configs(config, midi1_in_eps);
++		if (err < 0)
++			return err;
++	}
++
+ 	err = append_configs(config, midi2_midi2_descs);
+ 	if (err < 0)
+ 		return err;
+@@ -1421,14 +1502,19 @@ static int f_midi2_bind(struct usb_configuration *c, struct usb_function *f)
+ 	midi2_audio_class_desc.baInterfaceNr[0] = status;
+ 
+ 	/* allocate instance-specific endpoints */
+-	status = f_midi2_init_ep(midi2, NULL, &midi2->midi1_ep_in,
+-				 &midi2_midi1_ep_in_desc, 0, NULL);
+-	if (status)
+-		goto fail;
+-	status = f_midi2_init_ep(midi2, NULL, &midi2->midi1_ep_out,
+-				 &midi2_midi1_ep_out_desc, 0, NULL);
+-	if (status)
+-		goto fail;
++	if (midi2->midi2_eps[0].blks[0].info.direction != SNDRV_UMP_DIR_OUTPUT) {
++		status = f_midi2_init_ep(midi2, NULL, &midi2->midi1_ep_in,
++					 &midi2_midi1_ep_in_desc, 0, NULL);
++		if (status)
++			goto fail;
++	}
++
++	if (midi2->midi2_eps[0].blks[0].info.direction != SNDRV_UMP_DIR_INPUT) {
++		status = f_midi2_init_ep(midi2, NULL, &midi2->midi1_ep_out,
++					 &midi2_midi1_ep_out_desc, 0, NULL);
++		if (status)
++			goto fail;
++	}
+ 
+ 	for (i = 0; i < midi2->num_eps; i++) {
+ 		status = f_midi2_init_midi2_ep_in(midi2, i);
+-- 
+2.35.3
 
-thanks,
-
-greg k-h
