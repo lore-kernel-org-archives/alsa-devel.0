@@ -4,119 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8DCCC0015E
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 11:53:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36215C41513
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 11:53:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 453E81513;
-	Tue, 25 Jul 2023 13:52:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 453E81513
+	by alsa0.perex.cz (Postfix) with ESMTPS id 970A31520;
+	Tue, 25 Jul 2023 13:52:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 970A31520
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690286002;
-	bh=R1cMTZX1PUU2KkohyDFYTgVjZODSeThTo605Qizu2/o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1690286021;
+	bh=k6/u/1XMQpXjvrXgtgebDH12/mWRzw4Bj/4oC6lpoks=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=k4rF1TD0PJqK5zr1vV4XlyTuuQGjaHr/A1dyTanyIbnxHmfrJW3ES50tu5NKLJdrt
-	 yub1DIVmgxNCQMbbO2CCmFW5ft9jG+cEtlR6hWBpn2djSydM6M91vWZhQmMKMdg5EY
-	 LsX4XM+frcaGFcER4eEl81Vd3DRgdlfqkApTosBc=
+	b=m2/k1NqiSm4IoFuBqjgHV3bHFHDZw+tSr8EHb8CazWnu93nLAK+jy3ne5O+HuxoeZ
+	 IWr41S0614KQ4eGyiWz+kwNq08jdG0ljCwm8Aj6Cm52929nN/AHhqEjAb8aGw5WNfz
+	 C3lEVLzhBFt6Tf05Z6wNDjjniPYYhiW5GiBHrE1E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9B20F80163; Tue, 25 Jul 2023 13:51:38 +0200 (CEST)
+	id B9B1AF80578; Tue, 25 Jul 2023 13:51:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C068F8019B;
-	Tue, 25 Jul 2023 13:51:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B363F80568;
+	Tue, 25 Jul 2023 13:51:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29EC7F8019B; Mon, 24 Jul 2023 09:09:27 +0200 (CEST)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::221])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 3E86CF80163; Tue, 25 Jul 2023 11:54:50 +0200 (CEST)
+Received: from mblankhorst.nl (lankhorst.se
+ [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0FB0F800C7
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2023 09:09:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0FB0F800C7
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=iC5ZIY44
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6C2E524000E;
-	Mon, 24 Jul 2023 07:09:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690182552;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0OTdgWQ6Vo/4tl1ZM7En0YdjITPLKGIP2IIxkkPFJRM=;
-	b=iC5ZIY44VFrCSUNoeMIdYmOyqSrlrW7N4tyY+Hq53oXBVph3jCQ5ij8fsDynsYh6NybKfF
-	47iBUwR964ggu52YB13yaU1E18wok2aDQAXdbpXfZnCVzqeybMcvNBEm04M8MJv49vz912
-	60p20TKBhztddQMV6EZbSo0vTLzFb3Ok+FWErn92iDiDFjDyPmqRh1JKdYw5xT3hwpwVlV
-	u4k2GthKUnBFuRNrRP/XoPSerupU1HIaiVySzO/QpWk35FaiLI3dwdIhQ2brWGTyOPPUCM
-	8E3/Ier83smwYkYCv/LsZ20OWFpB5I2g8A5epoX659Pa/Omr3Rckh60nqnZ+5A==
-Date: Mon, 24 Jul 2023 09:09:02 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Andy Shevchenko <andy@kernel.org>
-Cc: nikita.shubin@maquefel.me, Hartley Sweeten
- <hsweeten@visionengravers.com>, Lennert Buytenhek <kernel@wantstofly.org>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Lukasz Majewski <lukma@denx.de>, Linus Walleij
- <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas
- Gleixner <tglx@linutronix.de>, Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Wim Van Sebroeck
- <wim@linux-watchdog.org>, Guenter Roeck <linux@roeck-us.net>, Sebastian
- Reichel <sre@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, Uwe
- =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>, Mark
- Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Damien
- Le Moal <dlemoal@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, Dmitry
- Torokhov <dmitry.torokhov@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Olof
- Johansson <olof@lixom.net>, soc@kernel.org, Liam Girdwood
- <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
- <tiwai@suse.com>, Michael Peters <mpeters@embeddedts.com>, Kris Bahnsen
- <kris@embeddedts.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-spi@vger.kernel.org, netdev@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-ide@vger.kernel.org, linux-input@vger.kernel.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 24/42] mtd: nand: add support for ts72xx
-Message-ID: <20230724090902.679ea56d@xps-13>
-In-Reply-To: <ZLqx+Osn3gcHjUph@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
-	<20230605-ep93xx-v3-24-3d63a5f1103e@maquefel.me>
-	<ZLqx+Osn3gcHjUph@smile.fi.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	by alsa1.perex.cz (Postfix) with ESMTPS id A31DAF80149;
+	Tue, 25 Jul 2023 11:54:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A31DAF80149
+Message-ID: <932c4293-375f-685c-2cfd-0bc80fd80683@linux.intel.com>
+Date: Tue, 25 Jul 2023 11:54:41 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-MailFrom: miquel.raynal@bootlin.com
-X-Mailman-Rule-Hits: max-recipients
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 2/9] ALSA: hda/i915: Allow override of gpu binding.
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ alsa-devel@alsa-project.org
+Cc: sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
+References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+ <20230719164141.228073-3-maarten.lankhorst@linux.intel.com>
+ <9b285ede-eaeb-40a2-086d-30cf74185784@linux.intel.com>
+ <d75c1902-b715-4a33-1965-ec06d625e3ac@linux.intel.com>
+Content-Language: en-US
+From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <d75c1902-b715-4a33-1965-ec06d625e3ac@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-MailFrom: maarten.lankhorst@linux.intel.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: JVCHUMNHXNIZ2L65HRXD7ECL7QXVGQXZ
-X-Message-ID-Hash: JVCHUMNHXNIZ2L65HRXD7ECL7QXVGQXZ
-X-Mailman-Approved-At: Tue, 25 Jul 2023 11:51:32 +0000
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: U7NYYVPFGR76PR7NERGKCLVQPSSP7KNQ
+X-Message-ID-Hash: U7NYYVPFGR76PR7NERGKCLVQPSSP7KNQ
+X-Mailman-Approved-At: Tue, 25 Jul 2023 11:51:33 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JVCHUMNHXNIZ2L65HRXD7ECL7QXVGQXZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U7NYYVPFGR76PR7NERGKCLVQPSSP7KNQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,53 +86,79 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Andy,
+Hey,
 
-> > +static int ts72xx_nand_attach_chip(struct nand_chip *chip)
-> > +{
-> > +	switch (chip->ecc.engine_type) {
-> > +	case NAND_ECC_ENGINE_TYPE_SOFT:
-> > +		if (chip->ecc.algo =3D=3D NAND_ECC_ALGO_UNKNOWN)
-> > +			chip->ecc.algo =3D NAND_ECC_ALGO_HAMMING;
-> > +		break;
-> > +	case NAND_ECC_ENGINE_TYPE_ON_HOST:
-> > +		return -EINVAL;
-> > +	default: =20
->=20
-> > +		break; =20
->=20
-> Here it will return 0, is it a problem?
+On 2023-07-24 12:25, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 7/21/23 14:19, Péter Ujfalusi wrote:
+>>
+>>
+>> On 19/07/2023 19:41, Maarten Lankhorst wrote:
+>>> Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
+>>> video_firmware_drivers_only(). This can be used as a first
+>>> approximation on whether i915 will be available. It's safe to use as
+>>> this is only built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
+>>>
+>>> It's not completely fool proof, as you can boot with "nomodeset
+>>> i915.modeset=1" to make i915 load regardless, or use
+>>> "i915.force_probe=!*" to never load i915, but the common case of
+>>> booting with nomodeset to disable all GPU drivers this will work as
+>>> intended.
+>>>
+>>> Because of this, we add an extra module parameter,
+>>> snd_hda_core.gpu_bind that can be used to signal users intent.
+>>> -1 follows nomodeset, 0 disables binding, 1 forces wait/-EPROBE_DEFER
+>>> on binding.
+>>
+>> Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+>>
+>>> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+>>> ---
+>>>   sound/hda/hdac_i915.c | 10 ++++++++++
+>>>   1 file changed, 10 insertions(+)
+>>>
+>>> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+>>> index 161a9711cd63e..c32709fa4115f 100644
+>>> --- a/sound/hda/hdac_i915.c
+>>> +++ b/sound/hda/hdac_i915.c
+>>> @@ -11,6 +11,13 @@
+>>>   #include <sound/hda_i915.h>
+>>>   #include <sound/hda_register.h>
+>>>   
+>>> +#include <video/nomodeset.h>
+>>> +
+>>> +static int gpu_bind = -1;
+>>> +module_param(gpu_bind, int, 0644);
+>>> +MODULE_PARM_DESC(gpu_bind, "Whether to bind sound component to GPU "
+>>> +			   "(1=always, 0=never, -1=on nomodeset(default))");
+>>> +
+>>>   #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
+>>>   				((pci)->device == 0x0c0c) || \
+>>>   				((pci)->device == 0x0d0c) || \
+>>> @@ -121,6 +128,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
+>>>   {
+>>>   	struct pci_dev *display_dev = NULL;
+>>>   
+>>> +	if (!gpu_bind || (gpu_bind < 0 && video_firmware_drivers_only()))
+>>> +		return false;
+> 
+> 
+> Bear with me since I am just going back to work mode but I can't figure
+> out what the second part of the test does
+> 
+> bool video_firmware_drivers_only(void)
+> {
+> 	return video_nomodeset;
+> }
+> EXPORT_SYMBOL(video_firmware_drivers_only);
+> 
+> and video_nomodeset=1 by default, so why would we return false when
+> gpu_bind = -1?
+> 
+> This seems to be a change of functionality, what am I missing?
+video_nomodeset is 0 by default, only when nomodeset is given as 
+argument is it set to 1. :-)
 
-Seems ok, there are two other situations: on-die ECC engine and no ECC
-engine, both do not require any specific handling on the controller
-side.
-
->=20
-> > +	}
-> > +
-> > +	return 0;
-> > +} =20
->=20
-> ...
->=20
-> > +static void ts72xx_nand_remove(struct platform_device *pdev)
-> > +{
-> > +	struct ts72xx_nand_data *data =3D platform_get_drvdata(pdev);
-> > +	struct nand_chip *chip =3D &data->chip;
-> > +	int ret;
-> > +
-> > +	ret =3D mtd_device_unregister(nand_to_mtd(chip)); =20
->=20
-> > +	WARN_ON(ret); =20
->=20
-> Why?!  Is it like this in other MTD drivers?
-
-Yes, we did not yet change the internal machinery to return void, and
-we don't want people to think getting errors there is normal.
-
-> > +	nand_cleanup(chip);
-> > +} =20
->=20
-
-Thanks,
-Miqu=C3=A8l
+Cheers,
+~Maarten
