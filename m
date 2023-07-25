@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E923C0015E
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 09:32:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12DADC0015E
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 09:32:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58C401562;
-	Tue, 25 Jul 2023 11:31:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58C401562
+	by alsa0.perex.cz (Postfix) with ESMTPS id 713041565;
+	Tue, 25 Jul 2023 11:31:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 713041565
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690277540;
-	bh=IFKu3KJlJ5q1ynvpWvTP2KO9e4zTS7aO+Mt/WKQ3+iI=;
+	s=default; t=1690277550;
+	bh=WbyJ7Rfs8yrXcpnmwU1oXSDJjKPRO1pMIgZXqBpe9bg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KL4QQXu9q7TUE5f11/x5dcqO4Hr12YJLTy2tklDPkcTUQUXFcP939veQ8v1UW4Jus
-	 Rjn5i/K9DbFeyOIFXfEtOlIeL9LgHpG9RHdlUFdag1oQ0LuDPl7RjdP2v2FgK2cSrS
-	 oYhhOYrYrgrVMXkCb5RPzp6OWujyv9oMiXC/3b7s=
+	b=cDZ9GSAZ3sGu55K9/LYFZhC/URGv0GfN28DmELlkWtwPlVLMdytXSDzEoNviErsfD
+	 7liBQSp4y8Aa5z6GGciPYBVGthwXKgofnSLx8K+6F6Igg+ucMhV7VA73q1Jy89fM2c
+	 XdSf/9hLPegCpGYjkHa27B3/JIWwyC4YKAxR2Mqs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 520C3F8068A; Tue, 25 Jul 2023 11:26:22 +0200 (CEST)
+	id 07D12F8057C; Tue, 25 Jul 2023 11:27:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88389F80688;
-	Tue, 25 Jul 2023 11:26:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4909BF8055A;
+	Tue, 25 Jul 2023 11:27:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 24A91F8065B; Tue, 25 Jul 2023 11:26:16 +0200 (CEST)
+	id 45A8EF80558; Tue, 25 Jul 2023 11:27:11 +0200 (CEST)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
  [217.70.183.194])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5977EF8063A
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 11:26:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5977EF8063A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0CB0CF805B2
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 11:25:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CB0CF805B2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=NLRkIh20
-Received: by mail.gandi.net (Postfix) with ESMTPA id 5A2924001F;
-	Tue, 25 Jul 2023 09:26:03 +0000 (UTC)
+ header.s=gm1 header.b=gMWe2QPx
+Received: by mail.gandi.net (Postfix) with ESMTPA id C69BD40010;
+	Tue, 25 Jul 2023 09:25:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690277167;
+	t=1690277120;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JpKbyG26eTZMvJJ64Oa7XIjphJvLiFaid7x29nljsbY=;
-	b=NLRkIh201h/MUOt68uNjnsgGLM1SdxrYGJPX0+4WMDTfxgUdq8OY6V2g9ZqDz9BMugyHOL
-	ezumxC8g+Az2d9dxUANbSD/r6s2LWDZzG8ywq4Q8QdEJ6SsMMGY2srSRaCfDjQhF/703jV
-	KmpaZJZWMb1Qk2Otbr+CIpwSX/pjsixc3cW325c1Y3JGx/wJS3TwAefAxTl4O6Mdux8Fnv
-	eGk0OVXHoKH2q1cT3TMt3GGMq1daH5h2/xr1NU2skfGO4rq6vtsnRLAVTBMdkud9K2u6Tv
-	jaQqan0QVA1caPQ/wf2qDuVrU4929ocHhKFD/pGfF3KzGD/q1CP/Ob5B7OcQ/A==
+	bh=s7w3iKiIQQKpkTMMXXn0294Vp/dBJJ/qKhQwo2K5GQI=;
+	b=gMWe2QPxe48dfbhBHhTaeuwcCtg5sj21ma0MMuCrG6OjXUXR2fxuwZz6r6qDCmpQfFhETG
+	RFhoNS5V912y5UZqLqN1ourEFdYcQuDptcir+3o2PGuJ7Tvw6bY0Jae5x2cIdPpI6vb3L/
+	bE0QDA7XW30s92VP/mGVL4jC5ueurGHEVu+hwzaJjClFAmNbp5t4TjVnCBcefZdxa0vrF+
+	udg0ooSBRexi2/98fNNipRjZwJljOFsJLPEZdUA8HqEQNj2niUbpgkJQ0TBguNY0NQhBJP
+	6pESPkUT9pPI4AKHIYpn9myBCWtPfuN8aWEAwkyVNyn2r3cJ/rkWo7JSuTMXrA==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -84,17 +84,18 @@ Cc: netdev@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 26/26] net: wan: fsl_qmc_hdlc: Add framer support
-Date: Tue, 25 Jul 2023 11:24:02 +0200
-Message-ID: <20230725092417.43706-27-herve.codina@bootlin.com>
+Subject: [PATCH 09/26] soc: fsl: cpm1: qmc: Remove no more needed checks from
+ qmc_check_chans()
+Date: Tue, 25 Jul 2023 11:23:45 +0200
+Message-ID: <20230725092417.43706-10-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230725092417.43706-1-herve.codina@bootlin.com>
 References: <20230725092417.43706-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: X3OQRP4VVUTJTHDXUSZ2EICV4UWUMNPW
-X-Message-ID-Hash: X3OQRP4VVUTJTHDXUSZ2EICV4UWUMNPW
+Message-ID-Hash: MZFCQMOHADMMPLALSMLWKOYGUPC6K3D2
+X-Message-ID-Hash: MZFCQMOHADMMPLALSMLWKOYGUPC6K3D2
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X3OQRP4VVUTJTHDXUSZ2EICV4UWUMNPW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MZFCQMOHADMMPLALSMLWKOYGUPC6K3D2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,361 +117,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add framer support in the fsl_qmc_hdlc driver in order to be able to
-signal carrier changes to the network stack based on the framer status
-Also use this framer to provide information related to the E1/T1 line
-interface on IF_GET_IFACE and configure the line interface according to
-IF_IFACE_{E1,T1} information.
+The newly introduced qmc_chan_setup_tsa* functions check that the
+channel entries are not already used.
+These checks are also performed by qmc_check_chans() and are no more
+needed.
+
+Remove them from qmc_check_chans().
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- drivers/net/wan/fsl_qmc_hdlc.c | 238 ++++++++++++++++++++++++++++++++-
- 1 file changed, 234 insertions(+), 4 deletions(-)
+ drivers/soc/fsl/qe/qmc.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
-diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
-index 7eb0ebaa30e7..a873071fa5ca 100644
---- a/drivers/net/wan/fsl_qmc_hdlc.c
-+++ b/drivers/net/wan/fsl_qmc_hdlc.c
-@@ -8,6 +8,7 @@
-  */
- 
- #include <linux/dma-mapping.h>
-+#include <linux/framer/framer.h>
- #include <linux/hdlc.h>
- #include <linux/module.h>
- #include <linux/of.h>
-@@ -27,6 +28,9 @@ struct qmc_hdlc {
- 	struct device *dev;
- 	struct qmc_chan *qmc_chan;
- 	struct net_device *netdev;
-+	struct framer *framer;
-+	spinlock_t carrier_lock; /* Protect carrier detection */
-+	struct notifier_block nb;
- 	bool is_crc32;
- 	spinlock_t tx_lock; /* Protect tx descriptors */
- 	struct qmc_hdlc_desc tx_descs[8];
-@@ -40,6 +44,195 @@ static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
- 	return (struct qmc_hdlc *)dev_to_hdlc(netdev)->priv;
- }
- 
-+static int qmc_hdlc_framer_set_carrier(struct qmc_hdlc *qmc_hdlc)
-+{
-+	struct framer_status framer_status;
-+	unsigned long flags;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	spin_lock_irqsave(&qmc_hdlc->carrier_lock, flags);
-+
-+	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-+		goto end;
-+	}
-+	if (framer_status.link_is_on)
-+		netif_carrier_on(qmc_hdlc->netdev);
-+	else
-+		netif_carrier_off(qmc_hdlc->netdev);
-+
-+end:
-+	spin_unlock_irqrestore(&qmc_hdlc->carrier_lock, flags);
-+	return ret;
-+}
-+
-+static int qmc_hdlc_framer_notifier(struct notifier_block *nb, unsigned long action,
-+				    void *data)
-+{
-+	struct qmc_hdlc *qmc_hdlc = container_of(nb, struct qmc_hdlc, nb);
-+	int ret;
-+
-+	if (action != FRAMER_EVENT_STATUS)
-+		return NOTIFY_DONE;
-+
-+	ret = qmc_hdlc_framer_set_carrier(qmc_hdlc);
-+	return ret ? NOTIFY_DONE : NOTIFY_OK;
-+}
-+
-+static int qmc_hdlc_framer_start(struct qmc_hdlc *qmc_hdlc)
-+{
-+	struct framer_status framer_status;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_power_on(qmc_hdlc->framer);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer power-on failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	/* Be sure that get_status is supported */
-+	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-+		goto framer_power_off;
-+	}
-+
-+	qmc_hdlc->nb.notifier_call = qmc_hdlc_framer_notifier;
-+	ret = framer_notifier_register(qmc_hdlc->framer, &qmc_hdlc->nb);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer notifier register failed (%d)\n", ret);
-+		goto framer_power_off;
-+	}
-+
-+	return 0;
-+
-+framer_power_off:
-+	framer_power_off(qmc_hdlc->framer);
-+	return ret;
-+}
-+
-+static void qmc_hdlc_framer_stop(struct qmc_hdlc *qmc_hdlc)
-+{
-+	if (!qmc_hdlc->framer)
-+		return;
-+
-+	framer_notifier_unregister(qmc_hdlc->framer, &qmc_hdlc->nb);
-+	framer_power_off(qmc_hdlc->framer);
-+}
-+
-+static int qmc_hdlc_framer_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface,
-+				     const te1_settings *te1)
-+{
-+	struct framer_config config;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_get_config(qmc_hdlc->framer, &config);
-+	if (ret)
-+		return ret;
-+
-+	switch (if_iface) {
-+	case IF_IFACE_E1:
-+		config.iface = FRAMER_IFACE_E1;
-+		break;
-+	case IF_IFACE_T1:
-+		config.iface = FRAMER_IFACE_T1;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (te1->clock_type) {
-+	case CLOCK_DEFAULT:
-+		/* Keep current value */
-+		break;
-+	case CLOCK_EXT:
-+		config.clock_type = FRAMER_CLOCK_EXT;
-+		break;
-+	case CLOCK_INT:
-+		config.clock_type = FRAMER_CLOCK_INT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	config.line_clock_rate = te1->clock_rate;
-+
-+	return framer_set_config(qmc_hdlc->framer, &config);
-+}
-+
-+static int qmc_hdlc_framer_get_iface(struct qmc_hdlc *qmc_hdlc, int *if_iface, te1_settings *te1)
-+{
-+	struct framer_config config;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer) {
-+		*if_iface = IF_IFACE_E1;
-+		return 0;
-+	}
-+
-+	ret = framer_get_config(qmc_hdlc->framer, &config);
-+	if (ret)
-+		return ret;
-+
-+	switch (config.iface) {
-+	case FRAMER_IFACE_E1:
-+		*if_iface = IF_IFACE_E1;
-+		break;
-+	case FRAMER_IFACE_T1:
-+		*if_iface = IF_IFACE_T1;
-+		break;
-+	}
-+
-+	if (!te1)
-+		return 0; /* Only iface type requested */
-+
-+	switch (config.clock_type) {
-+	case FRAMER_CLOCK_EXT:
-+		te1->clock_type = CLOCK_EXT;
-+		break;
-+	case FRAMER_CLOCK_INT:
-+		te1->clock_type = CLOCK_INT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	te1->clock_rate = config.line_clock_rate;
-+	return 0;
-+}
-+
-+static int qmc_hdlc_framer_init(struct qmc_hdlc *qmc_hdlc)
-+{
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_init(qmc_hdlc->framer);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer init failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void qmc_hdlc_framer_exit(struct qmc_hdlc *qmc_hdlc)
-+{
-+	if (!qmc_hdlc->framer)
-+		return;
-+
-+	framer_exit(qmc_hdlc->framer);
-+}
-+
- static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
- 
- #define QMC_HDLC_RX_ERROR_FLAGS (QMC_RX_FLAG_HDLC_OVF | \
-@@ -313,6 +506,12 @@ static int qmc_hdlc_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface, const te1
- 
- 	qmc_hdlc->slot_map = te1->slot_map;
- 
-+	ret = qmc_hdlc_framer_set_iface(qmc_hdlc, if_iface, te1);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer set iface failed %d\n", ret);
-+		return ret;
-+	}
-+
- 	return 0;
- }
- 
-@@ -324,8 +523,12 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
- 
- 	switch (ifs->type) {
- 	case IF_GET_IFACE:
--		ifs->type = IF_IFACE_E1;
- 		if (ifs->size < sizeof(te1)) {
-+			/* Retrieve type only */
-+			ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, NULL);
-+			if (ret)
-+				return ret;
-+
- 			if (!ifs->size)
- 				return 0; /* only type requested */
- 
-@@ -335,6 +538,11 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
- 
- 		memset(&te1, 0, sizeof(te1));
- 
-+		/* Retrieve info from framer */
-+		ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, &te1);
-+		if (ret)
-+			return ret;
-+
- 		/* Update slot_map */
- 		te1.slot_map = qmc_hdlc->slot_map;
- 
-@@ -368,10 +576,17 @@ static int qmc_hdlc_open(struct net_device *netdev)
+diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+index a9aba9943ab7..658aef63505e 100644
+--- a/drivers/soc/fsl/qe/qmc.c
++++ b/drivers/soc/fsl/qe/qmc.c
+@@ -884,10 +884,7 @@ EXPORT_SYMBOL(qmc_chan_reset);
+ static int qmc_check_chans(struct qmc *qmc)
+ {
+ 	struct tsa_serial_info info;
+-	bool is_one_table = false;
+ 	struct qmc_chan *chan;
+-	u64 tx_ts_mask = 0;
+-	u64 rx_ts_mask = 0;
+ 	u64 tx_ts_assigned_mask;
+ 	u64 rx_ts_assigned_mask;
  	int ret;
- 	int i;
- 
--	ret = hdlc_open(netdev);
-+	ret = qmc_hdlc_framer_start(qmc_hdlc);
- 	if (ret)
- 		return ret;
- 
-+	ret = hdlc_open(netdev);
-+	if (ret)
-+		goto framer_stop;
-+
-+	/* Update carrier */
-+	qmc_hdlc_framer_set_carrier(qmc_hdlc);
-+
- 	chan_param.mode = QMC_HDLC;
- 	/* HDLC_MAX_MRU + 4 for the CRC
- 	 * HDLC_MAX_MRU + 4 + 8 for the CRC and some extraspace needed by the QMC
-@@ -421,6 +636,8 @@ static int qmc_hdlc_open(struct net_device *netdev)
- 	}
- hdlc_close:
- 	hdlc_close(netdev);
-+framer_stop:
-+	qmc_hdlc_framer_stop(qmc_hdlc);
- 	return ret;
- }
- 
-@@ -456,6 +673,7 @@ static int qmc_hdlc_close(struct net_device *netdev)
+@@ -911,7 +908,6 @@ static int qmc_check_chans(struct qmc *qmc)
+ 			dev_err(qmc->dev, "Number of TSA Tx/Rx TS assigned are not equal\n");
+ 			return -EINVAL;
+ 		}
+-		is_one_table = true;
  	}
  
- 	hdlc_close(netdev);
-+	qmc_hdlc_framer_stop(qmc_hdlc);
- 	return 0;
- }
+ 	tx_ts_assigned_mask = info.nb_tx_ts == 64 ? U64_MAX : (((u64)1) << info.nb_tx_ts) - 1;
+@@ -922,27 +918,11 @@ static int qmc_check_chans(struct qmc *qmc)
+ 			dev_err(qmc->dev, "chan %u uses TSA unassigned Tx TS\n", chan->id);
+ 			return -EINVAL;
+ 		}
+-		if (tx_ts_mask & chan->tx_ts_mask) {
+-			dev_err(qmc->dev, "chan %u uses an already used Tx TS\n", chan->id);
+-			return -EINVAL;
+-		}
  
-@@ -504,6 +722,7 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 
- 	qmc_hdlc->dev = &pdev->dev;
- 	spin_lock_init(&qmc_hdlc->tx_lock);
-+	spin_lock_init(&qmc_hdlc->carrier_lock);
- 
- 	qmc_hdlc->qmc_chan = devm_qmc_chan_get_byphandle(qmc_hdlc->dev, np, "fsl,qmc-chan");
- 	if (IS_ERR(qmc_hdlc->qmc_chan)) {
-@@ -532,10 +751,19 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	qmc_hdlc->framer = devm_framer_optional_get(qmc_hdlc->dev, "framer");
-+	if (IS_ERR(qmc_hdlc->framer))
-+		return PTR_ERR(qmc_hdlc->framer);
-+
-+	ret = qmc_hdlc_framer_init(qmc_hdlc);
-+	if (ret)
-+		return ret;
-+
- 	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
- 	if (!qmc_hdlc->netdev) {
- 		dev_err(qmc_hdlc->dev, "failed to alloc hdlc dev\n");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto framer_exit;
- 	}
- 
- 	hdlc = dev_to_hdlc(qmc_hdlc->netdev);
-@@ -551,11 +779,12 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 	}
- 
- 	platform_set_drvdata(pdev, qmc_hdlc);
+ 		if (chan->rx_ts_mask > rx_ts_assigned_mask) {
+ 			dev_err(qmc->dev, "chan %u uses TSA unassigned Rx TS\n", chan->id);
+ 			return -EINVAL;
+ 		}
+-		if (rx_ts_mask & chan->rx_ts_mask) {
+-			dev_err(qmc->dev, "chan %u uses an already used Rx TS\n", chan->id);
+-			return -EINVAL;
+-		}
 -
- 	return 0;
- 
- free_netdev:
- 	free_netdev(qmc_hdlc->netdev);
-+framer_exit:
-+	qmc_hdlc_framer_exit(qmc_hdlc);
- 	return ret;
- }
- 
-@@ -565,6 +794,7 @@ static int qmc_hdlc_remove(struct platform_device *pdev)
- 
- 	unregister_hdlc_device(qmc_hdlc->netdev);
- 	free_netdev(qmc_hdlc->netdev);
-+	qmc_hdlc_framer_exit(qmc_hdlc);
+-		if (is_one_table && (chan->tx_ts_mask != chan->rx_ts_mask)) {
+-			dev_err(qmc->dev, "chan %u uses different Rx and Tx TS\n", chan->id);
+-			return -EINVAL;
+-		}
+-
+-		tx_ts_mask |= chan->tx_ts_mask;
+-		rx_ts_mask |= chan->rx_ts_mask;
+ 	}
  
  	return 0;
- }
 -- 
 2.41.0
 
