@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C583C0015E
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 09:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8528CC41513
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 09:27:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8481E1487;
-	Tue, 25 Jul 2023 11:26:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8481E1487
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FBCE14A9;
+	Tue, 25 Jul 2023 11:26:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FBCE14A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690277237;
-	bh=rdTlvX9eLxywWeEuDo4q50A57WMhniuwW452UK1ZfV4=;
+	s=default; t=1690277248;
+	bh=2kbAXaMUmMNh+cxV3aZu4YH9RCd/QmB2SL7W4VBKcoY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=STZq34trLemU4/dDYMyWOlE3KdONEH3pycd/2CfDKxurxOoVRiXBnJV4/3CgncthR
-	 JOGkje5c5cSx0h+eq3RJYPktgMaAlSN5cRVk8W8F64DlQW6eatDXEAs7UHu0fwxVsC
-	 URkbCdgv2TPaEJgFlsEC6/1c0bJkkHNij53rS6RE=
+	b=XGXKszI3aYbCM31SGqJMgI2I2bdxS4TAF0CyDceRJ9uWqqc4aZysxNF9OiwXoNVPb
+	 AOEOi4HE7KcJgM/a6pmprdkFUmwwAgtff+0ZoPmDjkkR+jFFI2PSHVq/O+Aro4D7Ui
+	 PHO+IXZRzNH1ESfXOKFrgSQt+bCXf4Gn8cwsPjG4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04C4AF80588; Tue, 25 Jul 2023 11:25:15 +0200 (CEST)
+	id F1064F805A9; Tue, 25 Jul 2023 11:25:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85174F80588;
-	Tue, 25 Jul 2023 11:25:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59939F80567;
+	Tue, 25 Jul 2023 11:25:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD58CF80563; Tue, 25 Jul 2023 11:25:09 +0200 (CEST)
+	id AB099F80580; Tue, 25 Jul 2023 11:25:14 +0200 (CEST)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
  [217.70.183.194])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 49F02F80149
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 11:25:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49F02F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5633DF80567
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 11:25:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5633DF80567
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=hlCdvQbx
-Received: by mail.gandi.net (Postfix) with ESMTPA id F1BF840008;
-	Tue, 25 Jul 2023 09:25:00 +0000 (UTC)
+ header.s=gm1 header.b=hAgB5rTf
+Received: by mail.gandi.net (Postfix) with ESMTPA id B9C1340007;
+	Tue, 25 Jul 2023 09:25:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690277104;
+	t=1690277111;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9Yo43qISdINrTXoBGMrpCx+B9kqhLajfGlqFUUD8Czs=;
-	b=hlCdvQbxeve6hG8yi+7vxdIc1azx1JXyYRmkFu+1UKc2rJ6kabWxhF10Bed1z4BWDmpcWp
-	v41Zmf6DNeCiZ9UvSBGTcTCCDWYF2Xmg5Bcf4mwA+Ed9seDLsvKKykjiNZHLi29VicVUAI
-	eP2d51mb+rsvNBqlhWmVM0dXU9ZJoGxvwqV7lvg8soHb7latBvHKf5oZJIkDCbtDieG2lf
-	6AWrkKgYGqd59gHU2ZnpBNUdLLpXgSBmD/Czh4QFay4ZIjMOn0Jrv+rEu7Hake71o5eIGy
-	Ic6vErwVpLHEw8Pu6XDMoljzP9RDqV/bdISilESfSiWnN/HKC1eij4MwrgJ6Tg==
+	bh=DTGknezdyiZk9bMBK1nMMSA2F/Bkc0Kki250K3B4O9I=;
+	b=hAgB5rTfYmXjEuaFnyv4rRN9yj8xVTDmyq/tIFRmBFecLjZBQZJCLnHvAX+eGmc/Hk+hLE
+	7tF+Wlb3tiH5ELs/hafn0OEEEg4wmN5+lqLWC7xnq6iasDQTlNzXP3wP8ZQfPjEutG0qRS
+	ROSYoSFe0EtL1j34JwYWnOSg5QVXKf1G5Jg50PjBTrc86yItrydfdmKcvrKgO5/3BMp/Oc
+	3XUPtUUKhwvk4UMOXsDHrqCUARWi7dRr4rokCu0xlzsCOiphziSb+yIhOQHa1PXft3WKIz
+	nxHXoZei5fSGZBI32zAQRnFfrmEbD2m8pskE0Fp6RPoB0CcD89aiuv/by/WWwg==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -84,17 +84,17 @@ Cc: netdev@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 03/26] dt-bindings: net: Add support for QMC HDLC
-Date: Tue, 25 Jul 2023 11:23:39 +0200
-Message-ID: <20230725092417.43706-4-herve.codina@bootlin.com>
+Subject: [PATCH 05/26] MAINTAINERS: Add the Freescale QMC HDLC driver entry
+Date: Tue, 25 Jul 2023 11:23:41 +0200
+Message-ID: <20230725092417.43706-6-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230725092417.43706-1-herve.codina@bootlin.com>
 References: <20230725092417.43706-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: YAMD7HP5NQ3OTVRQZR4IIC3S7HDPGF3L
-X-Message-ID-Hash: YAMD7HP5NQ3OTVRQZR4IIC3S7HDPGF3L
+Message-ID-Hash: J6XKZRYNP7O7NNBETJXB4WH7PCDJRJQ5
+X-Message-ID-Hash: J6XKZRYNP7O7NNBETJXB4WH7PCDJRJQ5
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YAMD7HP5NQ3OTVRQZR4IIC3S7HDPGF3L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J6XKZRYNP7O7NNBETJXB4WH7PCDJRJQ5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,63 +116,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The QMC (QUICC mutichannel controller) is a controller present in some
-PowerQUICC SoC such as MPC885.
-The QMC HDLC uses the QMC controller to transfer HDLC data.
+After contributing the driver, add myself as the maintainer for the
+Freescale QMC HDLC driver.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- .../devicetree/bindings/net/fsl,qmc-hdlc.yaml | 41 +++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml b/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-new file mode 100644
-index 000000000000..8bb6f34602d9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/fsl,qmc-hdlc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aee340630eca..14041d90f9c8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8304,6 +8304,14 @@ F:	Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
+ F:	drivers/soc/fsl/qe/qmc.c
+ F:	include/soc/fsl/qe/qmc.h
+ 
++FREESCALE QUICC ENGINE QMC HDLC DRIVER
++M:	Herve Codina <herve.codina@bootlin.com>
++L:	netdev@vger.kernel.org
++L:	linuxppc-dev@lists.ozlabs.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
++F:	drivers/net/wan/fsl_qmc_hdlc.c
 +
-+title: QMC HDLC
-+
-+maintainers:
-+  - Herve Codina <herve.codina@bootlin.com>
-+
-+description: |
-+  The QMC HDLC uses a QMC (QUICC Multichannel Controller) channel to transfer
-+  HDLC data.
-+
-+properties:
-+  compatible:
-+    const: fsl,qmc-hdlc
-+
-+  fsl,qmc-chan:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      - items:
-+          - description: phandle to QMC node
-+          - description: Channel number
-+    description:
-+      Should be a phandle/number pair. The phandle to QMC node and the QMC
-+      channel to use.
-+
-+required:
-+  - compatible
-+  - fsl,qmc-chan
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    hdlc {
-+        compatible = "fsl,qmc-hdlc";
-+        fsl,qmc-chan = <&qmc 16>;
-+    };
+ FREESCALE QUICC ENGINE TSA DRIVER
+ M:	Herve Codina <herve.codina@bootlin.com>
+ L:	linuxppc-dev@lists.ozlabs.org
 -- 
 2.41.0
 
