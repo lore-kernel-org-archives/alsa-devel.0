@@ -4,99 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F096C41513
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 11:17:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4ACDAC001DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 11:52:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2FAA150C;
-	Tue, 25 Jul 2023 13:16:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2FAA150C
+	by alsa0.perex.cz (Postfix) with ESMTPS id C63261509;
+	Tue, 25 Jul 2023 13:52:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C63261509
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690283835;
-	bh=JgvVNzBT8P4UzxGtOp1DNJMrISv/OE1o39OgkVldOMw=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=k8cuIjDAxv1UxVn538ndIeHZ8r8CNfDH3AfbtxSP07P9quTKROjdgl5ri4g0L3IIO
-	 8DhfAVytt1PToGFAWZmbgO/bl266Q5djMmcqDXG+Y7vvzhtiN0goEXxu5iKrCi9XoQ
-	 9YdLnGBVfZ4cHr2CrfPvTzwGcS+WzLaa42wLNs/k=
+	s=default; t=1690285976;
+	bh=9/YvjBPcLH30RK+bbBDWlVYN+1BP0YZqmwCForWIemM=;
+	h=Date:Subject:From:To:CC:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=uxOk4XcRyY0tWNtbV34Us1F3AdbTkNRbJdpIp0yyaXE0AolTJZtVnxK9QbFg9DKSX
+	 gAtUe+5BkZHHzTeIu9QtGXs6u8noNGPpABE23/9pN8PJanBUwQYe+4qMxAcAREtgBn
+	 G/hTEERmmDDmyPyYcldxowqeBGJKMQY3ibv6yWZs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C531AF80163; Tue, 25 Jul 2023 13:15:52 +0200 (CEST)
+	id 483BAF80520; Tue, 25 Jul 2023 13:51:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42D5BF80149;
-	Tue, 25 Jul 2023 13:15:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D121F80549;
+	Tue, 25 Jul 2023 13:51:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61B7BF8019B; Tue, 25 Jul 2023 13:15:48 +0200 (CEST)
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id D55DDF8019B; Tue, 25 Jul 2023 10:27:52 +0200 (CEST)
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
+ [61.152.239.71])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 559F2F80153
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 13:15:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 559F2F80153
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=web.de header.i=l.guzenko@web.de header.a=rsa-sha256
- header.s=s29768273 header.b=dEYrdzC0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
- s=s29768273; t=1690283742; x=1690888542; i=l.guzenko@web.de;
- bh=JgvVNzBT8P4UzxGtOp1DNJMrISv/OE1o39OgkVldOMw=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
- b=dEYrdzC0Be2BPl24rBXGnj4QZLod/vTYNL7pYBUaPMGXymHmSo6xcK9Jsd7B97Fr39EDOf+
- Rvw4bNk09KCmfTxhq6/OSkmemK4eKL/UvWu5r+iWFnq7QR5HiboqelQ3XzYzNV3+tsHcgM9xR
- WP/H8FMfPgHDHeVCQPqfG1J8WufPqf5eSD5HygrsY0gpFp/FWf81WQasAAB1mXjBDqk0P3yfa
- Doyeq78QPeQ8AeOTdjiXCytZif219+fEKzgpCBWM+qtI3sINShRL+C6aPB9dkxaVc9Jdk/Kaz
- de+NqVGLiJ+I8yOUhoEr0ECsuZNIhB6yWNL1UGYiwPyltEdAZ2TA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from localhost.localdomain ([77.190.186.198]) by smtp.web.de
- (mrweb005 [213.165.67.108]) with ESMTPSA (Nemesis) id
- 1MvKbd-1q6Jah0cTZ-00rKLt; Tue, 25 Jul 2023 13:15:42 +0200
-From: Luka Guzenko <l.guzenko@web.de>
-To: tiwai@suse.com
-Cc: alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Luka Guzenko <l.guzenko@web.de>
-Subject: [PATCH] ALSA: hda/relatek: Enable Mute LED on HP 250 G8
-Date: Tue, 25 Jul 2023 13:15:09 +0200
-Message-ID: <20230725111509.623773-1-l.guzenko@web.de>
-X-Mailer: git-send-email 2.41.0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6A4F9F80153
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 10:27:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A4F9F80153
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 90D1C83D4;
+	Tue, 25 Jul 2023 16:27:31 +0800 (CST)
+Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 25 Jul
+ 2023 16:27:31 +0800
+Received: from [192.168.125.84] (183.27.99.135) by EXMBX172.cuchost.com
+ (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 25 Jul
+ 2023 16:27:30 +0800
+Message-ID: <62ddb368-d714-8986-9904-2e44edfb069c@starfivetech.com>
+Date: Tue, 25 Jul 2023 16:27:29 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dP2sA9hxbvF2xuNjNlapa1Rw2atOLZirE9LfTzImJDaUZEgB2Yj
- 3Av8+8ZDt6aygMnHuQyGZ2Qvy1gtCkc2btrpOsMh0E/r0YJjVWXtauVeOFTniXYrOFnUev4
- 6iv/f8dj+Hy1a5XnVpO9K/VcsCbiKY6N5TCcY1jdx1nBpT4G7TpC93EelRfAXmhOlqj0m27
- Pc6yA44/WCn8xl1iD2xsw==
-UI-OutboundReport: notjunk:1;M01:P0:HN3HGk2ZQPM=;RaJpNN5hQpL8UGQu9RE6L1Kfk97
- m+pdLywbn8REMEEdAVO0MSEeRE6xVoiDdhDPj5xBW7RNUTR9gMxMAYAfSWSSMsJz5sg6xJG0I
- dFXiZOdc/8ipsA13t6vBWBfBHNgSN2+rw/f5EzvZPQ3Ari85EnvqPkyqeKg43dj4OyvvKhH8g
- +RFDUn8YSOAe60yx5ML2+UasNdqAjmF6nHHv2VOAb+eT0f3Vc/Iszl31dnZwtAHoPRuP99NOr
- pYhLPEkpzU2O95MwIzwxg7z3P5YDnoiCOlksiW1hDKRvUNVqjlMpmgUcA6qKzbyK2TrN0bg6l
- EOg6tTIqzbbmkPNtzGCTUTFVL4nI/vCczwZBBUigrtbZoqjddyQF+82E824GPGWvHKAqdHF1m
- Tdd7YLzzKnLKMCn5gJbNXhOF7UWbJAxxQzGYmx902ICUNPzS+5VH94wiFTvbZJjbVA9723p7r
- 1t3rjbp10VKWHBirKnI8aEmIwaXB5yw++Kh1AUBZzglh4pm81jSpBlSTue4s24e5YHw4J0v13
- +BjkLlOj7zTCk+KSD6JdolU9WNCrH2DNFm7zxiUI9Zd9rBzJiSOuPAfLNbpruhP7r9g5wbn7i
- 2BfZ5SlbQ4degSCqVwK6xC6SFV/LH9eyBJ12BopxnHdRU2JkUXbY2la1CaTpsaz0gjooibTBY
- 3hqsnfSSNpZyupv/1wYp/DQFaqKcifBroS/xwLX4kZIvPwWFi76hK7q84DB/xAbFsYT3cQBwe
- S7JRz2RWPEpwOqrXZWSvoWzT5OgHrb9XSvxxQxzRXvp8H/KLqxA0NodDIu34QwC5L7HK1D67M
- 1X+xQy2DDAUnw2ZLKARv7HWS5fqR0JUVbQU/zhptJh+EoVTdM1vGnKhopHDvVzJCUq4YLrLxm
- Ef29/DoBJOdI269eG2tEhAVeP+2qAXGI74Scn7b+Cg5QP2FRceA3hhTeSpDJOzjbcT6YsWApR
- cg5Gjimf6gyFZZT9rZ3ps75uAU4=
-Message-ID-Hash: RWVAUHQQJOWOIU3FLPJYDHGU5KL3LLLB
-X-Message-ID-Hash: RWVAUHQQJOWOIU3FLPJYDHGU5KL3LLLB
-X-MailFrom: l.guzenko@web.de
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH v1 1/5] ASoC: dt-bindings: Add StarFive JH7110 dummy
+ PWM-DAC transmitter
+From: Hal Feng <hal.feng@starfivetech.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Mark Brown
+	<broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela
+	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor@kernel.org>, "Walker
+ Chen" <walker.chen@starfivetech.com>, Xingyu Wu <xingyu.wu@starfivetech.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20230626110909.38718-1-hal.feng@starfivetech.com>
+ <20230626110909.38718-2-hal.feng@starfivetech.com>
+ <006ddacd-0496-70d1-3310-99b16706de84@linaro.org>
+ <0312262c-28c0-9445-c6f7-2079a57db8c7@starfivetech.com>
+ <c0244a98-4c91-93d8-a3e4-5210d0b3f205@linaro.org>
+ <d046796e-34a0-56e5-a740-6a1fcf41d216@starfivetech.com>
+Content-Language: en-US
+In-Reply-To: <d046796e-34a0-56e5-a740-6a1fcf41d216@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [183.27.99.135]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX172.cuchost.com
+ (172.16.6.92)
+X-YovoleRuleAgent: yovoleflag
+X-MailFrom: hal.feng@starfivetech.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 2KCQB6F4DBMCYD53GVSF244ASIXYHAC5
+X-Message-ID-Hash: 2KCQB6F4DBMCYD53GVSF244ASIXYHAC5
+X-Mailman-Approved-At: Tue, 25 Jul 2023 11:51:33 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RWVAUHQQJOWOIU3FLPJYDHGU5KL3LLLB/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,34 +99,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This HP Notebook used ALC236 codec with COEF 0x07 idx 1 controlling
-the mute LED. Enable already existing quirk for this device.
+On Mon, 10 Jul 2023 11:22:50 +0800, Hal Feng wrote:
+> On Sat, 1 Jul 2023 10:17:51 +0200, Krzysztof Kozlowski wrote:
+>> On 30/06/2023 03:57, Hal Feng wrote:
+>>> On Mon, 26 Jun 2023 17:34:56 +0200, Krzysztof Kozlowski wrote:
+>>>> On 26/06/2023 13:09, Hal Feng wrote:
+>>>>> Add bindings for StarFive JH7110 dummy PWM-DAC transmitter.
+>>>>
+>>>> ...
+>>>>
+>>>>> +required:
+>>>>> +  - compatible
+>>>>> +  - "#sound-dai-cells"
+>>>>> +
+>>>>> +additionalProperties: false
+>>>>> +
+>>>>> +examples:
+>>>>> +  - |
+>>>>> +    pwmdac-dit {
+>>>>> +        compatible = "starfive,jh7110-pwmdac-dit";
+>>>>> +        #sound-dai-cells = <0>;
+>>>>
+>>>> BTW, I don't see any resources here. Neither in the driver. I think you
+>>>> just added this for driver, not for a real hardware.
+>>> 
+>>> Yes, this is a dummy PWM-DAC transmitter as described in the title. The
+>>> StarFive JH7110 PWM-DAC module doesn't need a hardware codec, but a
+>>> dummy codec is needed for the driver.
+>> 
+>> Bindings are no for drivers, therefore with such reasoning the answer
+>> is: drop entire binding. If you think otherwise, please give me some
+>> more details about the hardware.
+> 
+> I agreed. I will drop this binding and the compatible in patch 2. Thanks.
 
-Signed-off-by: Luka Guzenko <l.guzenko@web.de>
-=2D--
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi, Krzysztof,
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 52ea7d757d6a..9a65dfb00cb2 100644
-=2D-- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9541,6 +9541,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]=
- =3D {
- 	SND_PCI_QUIRK(0x103c, 0x880d, "HP EliteBook 830 G8 Notebook PC", ALC285_=
-FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8811, "HP Spectre x360 15-eb1xxx", ALC285_FIXUP_=
-HP_SPECTRE_X360_EB1),
- 	SND_PCI_QUIRK(0x103c, 0x8812, "HP Spectre x360 15-eb1xxx", ALC285_FIXUP_=
-HP_SPECTRE_X360_EB1),
-+	SND_PCI_QUIRK(0x103c, 0x881d, "HP 250 G8 Notebook PC", ALC236_FIXUP_HP_M=
-UTE_LED_COEFBIT2),
- 	SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_=
-FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8847, "HP EliteBook x360 830 G8 Notebook PC", AL=
-C285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x884b, "HP EliteBook 840 Aero G8 Notebook PC", AL=
-C285_FIXUP_HP_GPIO_LED),
-=2D-
-2.41.0
+Could I use the dummy spdif codec [1][2] which is already upstream? The dummy
+spdif codec is really compatible with the one which JH7110 PWM-DAC needed.
+They are mostly similar.
 
+[1] Documentation/devicetree/bindings/sound/linux,spdif-dit.yaml
+[2] sound/soc/codecs/spdif_transmitter.c
+
+In that way, patch 1 & 2 can be dropped and patch 5 will be modified as follows.
+
++	pwmdac_dit: pwmdac-dit {
++		compatible = "linux,spdif-dit";
++		#sound-dai-cells = <0>;
++	};
++
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "StarFive-PWMDAC-Sound-Card";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		simple-audio-card,dai-link@0 {
++			reg = <0>;
++			format = "left_j";
++			bitclock-master = <&sndcpu0>;
++			frame-master = <&sndcpu0>;
++
++			sndcpu0: cpu {
++				sound-dai = <&pwmdac>;
++			};
++
++			codec {
++				sound-dai = <&pwmdac_dit>;
++			};
++		};
++	};
+
+Best regards,
+Hal
