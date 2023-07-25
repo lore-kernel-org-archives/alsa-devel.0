@@ -4,78 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD33FC001DE
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 16:51:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 505F7C001DE
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 17:51:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08167DEB;
-	Tue, 25 Jul 2023 18:50:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08167DEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86A53827;
+	Tue, 25 Jul 2023 19:50:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86A53827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690303870;
-	bh=1F7griQ+z3bvllj2m8OXOd5aUu8hpTnYOGJgxms+w/Q=;
+	s=default; t=1690307465;
+	bh=w7dbONTIy2Co3mAFj/AcsnLbCERRs5c4tblF0g/VRPU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A3AvAX4lZCQkdcU5j4j4YvbT26Qu/eLZac1Ch2OqXYPF5/A3287Km8qVPGcI5FGmH
-	 OCIezpL1gVSSqAmHnSGK1TtkLhmvUXcMXRDXotXtKYwGpxTTEZlT4p7AU0OhFLqoPA
-	 5i6jwyvYR6ItNi35aWKgVrVx2rNRrgSxQJf0BzJk=
+	b=IFgJY8cUAKzuAWfSAJxjCZ377eidsw1yCoMcxEkUENxfvIXlDiu9A9WldNrshDz7l
+	 FDmofe0M229g9cinlghvxrUAT477GR/+wCwkzofNqmiH53SAZMU7v26Dpb3M8G5ZMB
+	 wb1ai2+mAIumoh5mgWzwOpbc7nQxc3ryW2UeT0fA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 733AFF80571; Tue, 25 Jul 2023 18:49:26 +0200 (CEST)
+	id 9F0A3F80149; Tue, 25 Jul 2023 19:49:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25B69F80570;
-	Tue, 25 Jul 2023 18:49:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7596F800C7;
+	Tue, 25 Jul 2023 19:49:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9145F8019B; Tue, 25 Jul 2023 18:49:20 +0200 (CEST)
+	id B0118F802E8; Tue, 25 Jul 2023 19:49:47 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 74BA6F800C7
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 18:49:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74BA6F800C7
+	by alsa1.perex.cz (Postfix) with ESMTPS id BBFD1F80163
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 19:49:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBFD1F80163
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
+	dkim=fail reason="signature verification failed" (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=gfN2Yb5q
+ header.s=k20201202 header.b=qRmvy9rH
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5B99A6181D;
-	Tue, 25 Jul 2023 16:49:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EE4AC433C7;
-	Tue, 25 Jul 2023 16:49:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5473F61847;
+	Tue, 25 Jul 2023 17:49:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C4F6C433C8;
+	Tue, 25 Jul 2023 17:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690303756;
-	bh=1F7griQ+z3bvllj2m8OXOd5aUu8hpTnYOGJgxms+w/Q=;
+	s=k20201202; t=1690307369;
+	bh=w7dbONTIy2Co3mAFj/AcsnLbCERRs5c4tblF0g/VRPU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=gfN2Yb5qnFZhfS7QoywqxwZbY/GgJaljlE/TeJL42bf1B4d7S+c8Dzr9ZoGUCZ1ru
-	 caQeMpyyi+CYAWaeBWWaf1O7kaqFKLMNBPulmx2gMWPESRYqyXE3nyR1aENY35ZjMD
-	 R7zXSdGODLBG9EzhxUfUSlA70MeFPcCDCSTPAOGk0yC189yXwDTfwcSIp93y3cRoAT
-	 TlL9J3Yrm+2yMgfRmsk8UijAWhkXWZYmoNEspJ4jlOTHFV0njQbKUAMrDjrOeDzg3u
-	 Ama2eMDAqeS0NkSNCgtRR5zanDWZTR5ghu445OMNq+sD+g2H3Zv/hLSXQXPVvTC9KB
-	 3mEpHUJClS/jA==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Peter Suti <peter.suti@streamunlimited.com>
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20230713095258.3393827-1-peter.suti@streamunlimited.com>
-References: <20230713095258.3393827-1-peter.suti@streamunlimited.com>
-Subject: Re: [RFC PATCH] ASoC: soc-dai: don't call PCM audio ops if the
- stream is not supported
-Message-Id: <169030375511.1462400.7618926843800056957.b4-ty@kernel.org>
-Date: Tue, 25 Jul 2023 17:49:15 +0100
-MIME-Version: 1.0
+	b=qRmvy9rHWcDnpixwhpi8DTuQcPdUyIZr5ZNx9ydG3F5boc73mSyEcLxTRGyRsCrB3
+	 vClccnArnxXoaiGAgIdoaS2+TOFRAoqZK63Wk0bXfrXFknhfb+CydSPKk0rOsuu3hH
+	 TLEWzXb38mM81F0bbsLAvvpzt0taCiE7A8213w6F+7Ut1V3wYK9UY5byb1RK9gdLLH
+	 A8/Iy7F8eWp47Q1Fq/3T9a96ynyIDqiSA2oI0PcsUAwZGhiXzTUnrxDNnd0AH129MP
+	 pymfYyEwQoff+K9nqQse31QUqBocLgoqy3MvVJHBF8sdscLUh2TInqE0lKi9416xVB
+	 K25mir6FU0ktQ==
+Received: (nullmailer pid 3497934 invoked by uid 1000);
+	Tue, 25 Jul 2023 17:49:25 -0000
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: MGCSJMPUBJNC7K3M3CCU4SUAQLGVABZ4
-X-Message-ID-Hash: MGCSJMPUBJNC7K3M3CCU4SUAQLGVABZ4
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+To: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc: kuba@kernel.org, will@kernel.org, linux-serial@vger.kernel.org,
+ linux-phy@lists.infradead.org,
+ Oleksii Moisieiev <oleksii_moisieiev@epam.com>, linux-spi@vger.kernel.org,
+ Frank Rowand <frowand.list@gmail.com>, lee@kernel.org, robh+dt@kernel.org,
+ linux-usb@vger.kernel.org, gregkh@linuxfoundation.org,
+ arnaud.pouliquen@foss.st.com, Oleksii_Moisieiev@epam.com, arnd@kernel.org,
+ hugues.fruchet@foss.st.com, ulf.hansson@linaro.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, jic23@kernel.org,
+ alexandre.torgue@foss.st.com, pabeni@redhat.com, andi.shyti@kernel.org,
+ netdev@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mmc@vger.kernel.org, edumazet@google.com, vkoul@kernel.org,
+ dmaengine@vger.kernel.org, catalin.marinas@arm.com,
+ herbert@gondor.apana.org.au, fabrice.gasnier@foss.st.com, mchehab@kernel.org,
+ linux-iio@vger.kernel.org, richardcochran@gmail.com, davem@davemloft.net,
+ conor+dt@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.
+ org, alsa-devel@alsa-project.org, linux-crypto@vger.kernel.org,
+ linux-i2c@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ olivier.moysan@foss.st.com
+In-Reply-To: <20230725164104.273965-2-gatien.chevallier@foss.st.com>
+References: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
+ <20230725164104.273965-2-gatien.chevallier@foss.st.com>
+Message-Id: <169030736341.3497818.1740404012211043486.robh@kernel.org>
+Subject: Re: [IGNORE][PATCH v2 01/11] dt-bindings: Document common device
+ controller bindings
+Date: Tue, 25 Jul 2023 11:49:25 -0600
+Message-ID-Hash: 3SPQYP3GRK34T3PVWEXI3FOPZN77EUDM
+X-Message-ID-Hash: 3SPQYP3GRK34T3PVWEXI3FOPZN77EUDM
+X-MailFrom: SRS0=nS92=DL=robh_at_kernel.org=rob@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MGCSJMPUBJNC7K3M3CCU4SUAQLGVABZ4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3SPQYP3GRK34T3PVWEXI3FOPZN77EUDM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,41 +115,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 13 Jul 2023 11:52:58 +0200, Peter Suti wrote:
-> PCM audio ops may be called when the stream is not supported.
-> We should not call the ops in that case to avoid unexpected behavior.
+
+On Tue, 25 Jul 2023 18:40:54 +0200, Gatien Chevallier wrote:
+> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
 > 
-> hw_params is handled already in soc-pcm.c
+> Introducing of the common device controller bindings for the controller
+> provider and consumer devices. Those bindings are intended to allow
+> divided system on chip into muliple domains, that can be used to
+> configure hardware permissions.
 > 
-> [0] https://lore.kernel.org/alsa-devel/ae06b00a-f3f7-f9d1-0b58-4d71f3394416@linux.intel.com/T/#t
+> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> ---
+>  .../feature-domain-controller.yaml            | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
 > 
-> [...]
 
-Applied to
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+yamllint warnings/errors:
 
-Thanks!
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml: title: 'Generic Domain Controller bindings' should not be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
+	hint: Everything is a binding/schema, no need to say it. Describe what hardware the binding is for.
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
 
-[1/1] ASoC: soc-dai: don't call PCM audio ops if the stream is not supported
-      commit: 4005d1ba0a7e5cf32f669bf0014dca0dd12c2a44
+doc reference errors (make refcheckdocs):
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230725164104.273965-2-gatien.chevallier@foss.st.com
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+pip3 install dtschema --upgrade
 
-Thanks,
-Mark
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
