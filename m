@@ -4,90 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01590C001DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 16:43:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65C25C001DE
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 16:43:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7100B7F4;
-	Tue, 25 Jul 2023 18:42:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7100B7F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id B27CD83A;
+	Tue, 25 Jul 2023 18:42:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B27CD83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690303380;
-	bh=8NuDHU+UwooI+MQUkdnO89GBWgCvSwS3xfEzPScAyOM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1690303427;
+	bh=Z15aw3M9k3AqbrxXO/lFErJf5gwVGvT373xrtFaj/4w=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rfXkjRnaXFlFvE0zcGsTlCIUwoIk2i6hdLEVbL1XgHeLxi9BrukJ94/XWov51ZmVO
-	 mSMo0M1f1U+1UZ1oLBl8K4QUngU9sZtXpgqAHZKn3q42itqA4p6tqggjnUGGuvEmr8
-	 WkjZL7WyuDkK0GuDvySQmQxMB+oLfMBi3dBVpliw=
+	b=dvJXxpC0dMVY01YE2PjrM2vz0FVKUxU6L1e3e4bw8DOFt5S+/BVWWDI502pUs2xPf
+	 oU/EUCP7FsubqdOkBBuoPx4/Db9PJvGLRJwuu6eUOdHaCBdQWTgNYJtNuYDR0ghbuJ
+	 GfG7it83oZipdcOSYabKub2ZSFbpNKSl/2EBa3KQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 181DEF802E8; Tue, 25 Jul 2023 18:41:46 +0200 (CEST)
+	id 0F643F800C7; Tue, 25 Jul 2023 18:42:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65FDEF8019B;
-	Tue, 25 Jul 2023 18:41:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44E2EF800C7;
+	Tue, 25 Jul 2023 18:42:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C24E8F8019B; Tue, 25 Jul 2023 18:41:41 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:3::133])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 9176EF80535; Tue, 25 Jul 2023 18:42:52 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [185.132.182.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5D6ACF80153
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 18:41:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D6ACF80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id 45033F800C7
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 18:42:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45033F800C7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=infradead.org header.i=@infradead.org
- header.a=rsa-sha256 header.s=bombadil.20210309 header.b=OE0Yv0C1
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=VOpi6FeyBBxDJ9AWuyvGv6z4rjqWqlFn0g7noxTOdPg=; b=OE0Yv0C1dfCRicRWSmNMM59Dgv
-	MSlzOqH2FV32nJBQJYdaqktbAXnisAv4pM7CWD5mP9T7qa9mLIz8K9Ttq4APloaqzMCPgRMRhlsS/
-	muNPAvD9OZaUubBkxJZvQp1mw6eIdlwtFYM3JoCaGNhX/kBG+VrMhTclgrlCHqbDInmNRjBuZE1rJ
-	miJiFycFAZZ8O+qr9Lk/9p72vtqzNt4lDguzRfxt3Kx5aWulYjUwyyPDyD+I+qFRnn/HclzHEHzUA
-	UtHYz2xsCpPl/gEJBy/hGRuLEzy4irKjnW8K0JJrZkxj8GlXfp8f9fi4l2nTMdRRrYaQTpTls0+vh
-	uXR7iMsA==;
-Received: from [2601:1c2:980:9ec0::2764]
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOL64-0083WK-1X;
-	Tue, 25 Jul 2023 16:41:16 +0000
-Message-ID: <ce045e96-e9b6-ae66-dd54-67a958ca1774@infradead.org>
-Date: Tue, 25 Jul 2023 09:41:14 -0700
+ unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
+ header.s=selector1 header.b=Hy6/YoTS
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 36PELblJ027164;
+	Tue, 25 Jul 2023 18:42:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=selector1;
+ bh=I45pB3cNw6l4Xcm6iYiUyclnyr+tZB7GHR7hwjNrzmQ=;
+ b=Hy6/YoTSaKRPAAa6+jndUuB6Av2yjyjGqB8BrGNGYiYfvpxx65hNRBo0CwHcZszaJRmc
+ Bsep7SCnLwdpvfHMjdlkwOw0sFLP2gB2WtBnv58a+7OFNMkhNvayBuepv519PyAA6ZRo
+ GFY2XGnABEOrux3ZMn+Nb4pxu4k+83aDIUS5oRjUHlUk9NrAc0TpNMkvBagpao+3ZK5e
+ mX0TCMQO0hCkYT9ao/XJJdQ8V3qAeOpv5mgOtOjEb9m0HzmOWSdIOOV0/mma6+5RS+GN
+ TreFLIa/E0iQ8dG8vO/6cmz95yQBXBc+4hqxcxy6OfCDzqDx0sxJr+B4yykuoQxx71fr Lw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2g3a0rjy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 25 Jul 2023 18:42:42 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C36F010002A;
+	Tue, 25 Jul 2023 18:42:41 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B5D402721C4;
+	Tue, 25 Jul 2023 18:42:41 +0200 (CEST)
+Received: from localhost (10.201.21.121) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 25 Jul
+ 2023 18:42:41 +0200
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <vkoul@kernel.org>, <jic23@kernel.org>, <olivier.moysan@foss.st.com>,
+        <arnaud.pouliquen@foss.st.com>, <mchehab@kernel.org>,
+        <fabrice.gasnier@foss.st.com>, <andi.shyti@kernel.org>,
+        <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <hugues.fruchet@foss.st.com>, <lee@kernel.org>,
+        <will@kernel.org>, <catalin.marinas@arm.com>, <arnd@kernel.org>,
+        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>
+CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>,
+        Gatien Chevallier
+	<gatien.chevallier@foss.st.com>
+Subject: [PATCH v2 02/11] dt-bindings: bus: document RIFSC
+Date: Tue, 25 Jul 2023 18:40:55 +0200
+Message-ID: <20230725164104.273965-3-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
+References: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 24/26] ASoC: codecs: Add support for the framer codec
-Content-Language: en-US
-To: Herve Codina <herve.codina@bootlin.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, Qiang Zhao <qiang.zhao@nxp.com>,
- Li Yang <leoyang.li@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- alsa-devel@alsa-project.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20230725092417.43706-1-herve.codina@bootlin.com>
- <20230725092417.43706-25-herve.codina@bootlin.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230725092417.43706-25-herve.codina@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: DXSKKFRPKS46NJXDOMWXF7QRT6RWLAD3
-X-Message-ID-Hash: DXSKKFRPKS46NJXDOMWXF7QRT6RWLAD3
-X-MailFrom: rdunlap@infradead.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.21.121]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-25_08,2023-07-25_01,2023-05-22_02
+Message-ID-Hash: 4ASHHOGRSUOHDNB5AALZUBYLL2ZTJS3B
+X-Message-ID-Hash: 4ASHHOGRSUOHDNB5AALZUBYLL2ZTJS3B
+X-MailFrom: prvs=557065b4ce=gatien.chevallier@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DXSKKFRPKS46NJXDOMWXF7QRT6RWLAD3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4ASHHOGRSUOHDNB5AALZUBYLL2ZTJS3B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,24 +129,136 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Document RIFSC (RIF security controller). RIFSC is a firewall controller
+composed of different kinds of hardware resources.
 
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+---
 
-On 7/25/23 02:24, Herve Codina wrote:
-> +config SND_SOC_FRAMER
-> +	tristate "Framer codec"
-> +	depends on GENERIC_FRAMER
-> +	help
-> +	  Enable support for the framer codec.
-> +	  The framer codec uses the generic framer infrastructure to transport
-> +	  some audio data over an analog E1/T1/J1 line.
-> +	  This codec allows to use some of the time slots available on the TDM
-> +	  bus on with the framer is connected to transport the audio data.
+Changes in V2: 
+	- Corrected errors highlighted by Rob's robot
+	- No longer define the maxItems for the "feature-domains"
+	  property
+	- Fix example (node name, status)
+	- Declare "feature-domain-names" as an optional
+	  property for child nodes
+	- Fix description of "feature-domains" property
 
-	      on which
+ .../bindings/bus/st,stm32mp25-rifsc.yaml      | 105 ++++++++++++++++++
+ 1 file changed, 105 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
 
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called snd-soc-framer.
-
+diff --git a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+new file mode 100644
+index 000000000000..7aeb38296616
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+@@ -0,0 +1,105 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/st,stm32mp25-rifsc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STM32 Resource isolation framework security controller
++
++maintainers:
++  - Gatien Chevallier <gatien.chevallier@foss.st.com>
++
++description: |
++  Resource isolation framework (RIF) is a comprehensive set of hardware blocks
++  designed to enforce and manage isolation of STM32 hardware resources like
++  memory and peripherals.
++
++  The RIFSC (RIF security controller) is composed of three sets of registers,
++  each managing a specific set of hardware resources:
++    - RISC registers associated with RISUP logic (resource isolation device unit
++      for peripherals), assign all non-RIF aware peripherals to zero, one or
++      any security domains (secure, privilege, compartment).
++    - RIMC registers: associated with RIMU logic (resource isolation master
++      unit), assign all non RIF-aware bus master to one security domain by
++      setting secure, privileged and compartment information on the system bus.
++      Alternatively, the RISUP logic controlling the device port access to a
++      peripheral can assign target bus attributes to this peripheral master port
++      (supported attribute: CID).
++    - RISC registers associated with RISAL logic (resource isolation device unit
++      for address space - Lite version), assign address space subregions to one
++      security domains (secure, privilege, compartment).
++
++properties:
++  compatible:
++    contains:
++      const: st,stm32mp25-rifsc
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++  ranges: true
++
++  "#feature-domain-cells":
++    const: 1
++
++  feature-domain-controller: true
++
++patternProperties:
++  "^.*@[0-9a-f]+$":
++    description: Peripherals
++    type: object
++    properties:
++      feature-domains:
++        minItems: 1
++        description:
++          The phandle of the firewall controller of the peripheral and the
++          platform-specific firewall ID of the peripheral.
++
++      feature-domain-names:
++        minItems: 1
++
++    required:
++      - feature-domains
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++  - feature-domain-controller
++  - "#feature-domain-cells"
++  - ranges
++
++additionalProperties: false
++
++examples:
++  - |
++    // In this example, the usart2 device refers to rifsc as its domain
++    // controller.
++    // Access rights are verified before creating devices.
++
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    rifsc: bus@42080000 {
++        compatible = "st,stm32mp25-rifsc";
++        reg = <0x42080000 0x1000>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        feature-domain-controller;
++        #feature-domain-cells = <1>;
++        ranges;
++
++        usart2: serial@400e0000 {
++              compatible = "st,stm32h7-uart";
++              reg = <0x400e0000 0x400>;
++              interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
++              clocks = <&ck_flexgen_08>;
++              feature-domains = <&rifsc 32>;
++        };
++    };
 -- 
-~Randy
+2.35.3
+
