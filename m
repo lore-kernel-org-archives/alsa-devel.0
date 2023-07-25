@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5095C04A6A
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 02:37:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5972FC00528
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 02:37:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAFEBA4E;
-	Tue, 25 Jul 2023 04:36:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAFEBA4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 53658DEF;
+	Tue, 25 Jul 2023 04:36:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53658DEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690252627;
-	bh=Lu6O4k8sgMlycDnfwWb7/ixLPEt1/lgkVbw9RYekKE8=;
+	s=default; t=1690252652;
+	bh=bRWGauWjxPfM66zWQhWAjhLrWqynVyP4dGslnvnPB2E=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=oel/PMyu8FJk0XZP03DOy5STHRNzO0JguyqLeYrkDwYRFcAyEgCs3wNIJISNg4tCn
-	 krhWW1lGjSYJMyipeX/eTnqRHdbraQieJyaxkRXPTQncyeLNlWd31a8g9dpbFY1Qsz
-	 j9j8aORXqoe6M4y8c4KQjsQc1AcviEmKButEet7w=
+	b=sUpRb4M9B9089PU//angXG4yz91IbKUuhSyJ3LsScc2lBFUfXxJXXENwUNhDp75H3
+	 j8a2E8q2pGW0oM4T7dpZLYjIPA5fhEudJeN1ZgzTWwdaQsdWWzeSub2y7ONYIij8cG
+	 wutxjGWC6dpG9GbT6DUWrizDsyTKjhqPZR+h/WEo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F7F9F805C9; Tue, 25 Jul 2023 04:35:08 +0200 (CEST)
+	id BED56F805D5; Tue, 25 Jul 2023 04:35:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 569B9F805BE;
-	Tue, 25 Jul 2023 04:35:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0BA5FF805C7;
+	Tue, 25 Jul 2023 04:35:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29345F805AD; Tue, 25 Jul 2023 04:35:01 +0200 (CEST)
+	id 2E44FF802E8; Tue, 25 Jul 2023 04:35:01 +0200 (CEST)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 84ECEF802E8
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 04:34:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84ECEF802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 72EE1F80310
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 04:34:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72EE1F80310
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=Y8BKZlFU
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=cCw1Uegg
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 36P1JwDB008693;
-	Tue, 25 Jul 2023 02:34:34 GMT
+ 36P0LPnj004114;
+	Tue, 25 Jul 2023 02:34:39 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=g3TCSR7drO55mwAZsoyGTQxZ/AyFry1A4DMX9Sz1JVM=;
- b=Y8BKZlFU/4J177nv2m351V9c4O/rnOrMsPeRgxHOe6K2odH8DMxn8fYWzbZJbiIK/IEf
- 3q5Ii+qJklKqj3odYlcfnf/Lwsc0gAjE2pRJ/bLRfA53FsQKY1CJKAsgrnA5WIDhJx9/
- W6NUkvmcVPfynGqIhoxh1eZTJv+c0wz0VrRLMr6DBZ2ORA5Dz+hh5/bsrHDVaL1eWjbX
- tJCAVaMPgXUfS7ttV3kbihGg3LvF5hWWRz0aM59nqulp5chCyr6IswuxgAiEphVQERCA
- x6SvLVglo5b4JI3RUhU7bZbI5tGG3xg/yjL8+Ww4Zw/E9DASiiISrzOY9a5f1H41uj+Q Wg==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com
+ bh=qESTLjNotgpRP5wCXSW9tvitIhySXt1EmcaRMKR0lGY=;
+ b=cCw1UeggRQJE0ZLWDY3sHlWMbPJRod6RUQBpHcXUQx6TIDORPNiSkSe60a0WKQlQTR6a
+ 8GGYiTBNNg/2MJsmVqZ64cyyLEJHQEmgIsYdDnS2EzI5KKViv4xXVxvpzNjq/r7OzXzV
+ S+9wJX+4o5QQYRFK9HOYvdG1E0aGy0QFq1XdLGNNvHIbcwfHcKomHE1XoCxAOvaSlZlx
+ W4woHS746BUsQ9Fn28SiL5lNcsqCdaGEnZq/Gb9tQGUogOGFKUIn30S2uWnLQeTZ35Hk
+ NRTgTLmm89yQ6yKgXlYw10WNHsrMRYSNBO+wk8tTqWbFWZ/P9NOKFFbITAaPQfDSn3bb TA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com
  [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1qassvxp-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s1vh8h4bu-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 25 Jul 2023 02:34:34 +0000
+	Tue, 25 Jul 2023 02:34:39 +0000
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com
  [10.46.141.250])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 36P2YWin012109
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 36P2Ycls015169
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 25 Jul 2023 02:34:32 GMT
+	Tue, 25 Jul 2023 02:34:38 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 24 Jul 2023 19:34:31 -0700
+ 15.2.1118.30; Mon, 24 Jul 2023 19:34:37 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
@@ -83,10 +83,9 @@ CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <quic_jackp@quicinc.com>, <pierre-louis.bossart@linux.intel.com>,
         <oneukum@suse.com>, <albertccwang@google.com>,
         <o-takashi@sakamocchi.jp>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v4 04/32] usb: host: xhci-mem: Cleanup pending secondary event
- ring events
-Date: Mon, 24 Jul 2023 19:33:48 -0700
-Message-ID: <20230725023416.11205-5-quic_wcheng@quicinc.com>
+Subject: [PATCH v4 12/32] sound: usb: Export USB SND APIs for modules
+Date: Mon, 24 Jul 2023 19:33:56 -0700
+Message-ID: <20230725023416.11205-13-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230725023416.11205-1-quic_wcheng@quicinc.com>
 References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
@@ -98,19 +97,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: Sem_0RP80LoFT_FARNTLjE2dfgJHcDIA
-X-Proofpoint-GUID: Sem_0RP80LoFT_FARNTLjE2dfgJHcDIA
+X-Proofpoint-ORIG-GUID: wLyo_ANT_-r_tWigX_RUN37Xok-sqrXx
+X-Proofpoint-GUID: wLyo_ANT_-r_tWigX_RUN37Xok-sqrXx
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-24_18,2023-07-24_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 phishscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=734 adultscore=0 priorityscore=1501
- clxscore=1015 spamscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307250020
-Message-ID-Hash: PE7QLFVY2BTOY7U4DAV2YOXSAIGV73FN
-X-Message-ID-Hash: PE7QLFVY2BTOY7U4DAV2YOXSAIGV73FN
+ clxscore=1015 bulkscore=0
+ impostorscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307250020
+Message-ID-Hash: PS6CT3OYUY575BS75TZHSLRQ6YLGWOLY
+X-Message-ID-Hash: PS6CT3OYUY575BS75TZHSLRQ6YLGWOLY
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -123,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PE7QLFVY2BTOY7U4DAV2YOXSAIGV73FN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PS6CT3OYUY575BS75TZHSLRQ6YLGWOLY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,116 +131,153 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-As part of xHCI bus suspend, the XHCI is halted.  However, if there are
-pending events in the secondary event ring, it is observed that the xHCI
-controller stops responding to further commands upon host or device
-initiated bus resume.  Iterate through all pending events and updating the
-dequeue pointer to the last pending event trb.
+Some vendor modules will utilize useful parsing and endpoint management
+APIs to start audio playback/capture.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-mem.c | 74 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 69 insertions(+), 5 deletions(-)
+ sound/core/oss/pcm_oss.c |  4 ++--
+ sound/usb/card.c         |  2 ++
+ sound/usb/endpoint.c     |  2 ++
+ sound/usb/helper.c       |  1 +
+ sound/usb/pcm.c          |  9 ++++++---
+ sound/usb/pcm.h          | 12 ++++++++++++
+ 6 files changed, 25 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index c51150af22f2..6b01d56c176f 100644
---- a/drivers/usb/host/xhci-mem.c
-+++ b/drivers/usb/host/xhci-mem.c
-@@ -1799,17 +1799,85 @@ int xhci_alloc_erst(struct xhci_hcd *xhci,
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index 728c211142d1..7773b5362e1a 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -444,8 +444,8 @@ static int snd_pcm_hw_param_near(struct snd_pcm_substream *pcm,
+ }
+ 
+ static int _snd_pcm_hw_param_set(struct snd_pcm_hw_params *params,
+-				 snd_pcm_hw_param_t var, unsigned int val,
+-				 int dir)
++				snd_pcm_hw_param_t var, unsigned int val,
++				int dir)
+ {
+ 	int changed;
+ 	if (hw_is_mask(var)) {
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 9365d1e17836..a3fad66a3337 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -1076,6 +1076,7 @@ int snd_usb_autoresume(struct snd_usb_audio *chip)
+ 	}
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_autoresume);
+ 
+ void snd_usb_autosuspend(struct snd_usb_audio *chip)
+ {
+@@ -1089,6 +1090,7 @@ void snd_usb_autosuspend(struct snd_usb_audio *chip)
+ 	for (i = 0; i < chip->num_interfaces; i++)
+ 		usb_autopm_put_interface(chip->intf[i]);
+ }
++EXPORT_SYMBOL_GPL(snd_usb_autosuspend);
+ 
+ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ {
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index a385e85c4650..0757499599c8 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -866,6 +866,7 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+ 	mutex_unlock(&chip->mutex);
+ 	return ep;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_endpoint_open);
+ 
+ /*
+  * snd_usb_endpoint_set_sync: Link data and sync endpoints
+@@ -1503,6 +1504,7 @@ int snd_usb_endpoint_prepare(struct snd_usb_audio *chip,
+ 	mutex_unlock(&chip->mutex);
+ 	return err;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_endpoint_prepare);
+ 
+ /* get the current rate set to the given clock by any endpoint */
+ int snd_usb_endpoint_get_clock_rate(struct snd_usb_audio *chip, int clock)
+diff --git a/sound/usb/helper.c b/sound/usb/helper.c
+index bf80e55d013a..4322ae3738e6 100644
+--- a/sound/usb/helper.c
++++ b/sound/usb/helper.c
+@@ -62,6 +62,7 @@ void *snd_usb_find_csint_desc(void *buffer, int buflen, void *after, u8 dsubtype
+ 	}
+ 	return NULL;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_find_csint_desc);
+ 
+ /*
+  * Wrapper for usb_control_msg().
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index eec5232f9fb2..b6fb6d84d9eb 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -87,7 +87,7 @@ static snd_pcm_uframes_t snd_usb_pcm_pointer(struct snd_pcm_substream *substream
+ /*
+  * find a matching audio format
+  */
+-static const struct audioformat *
++const struct audioformat *
+ find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
+ 	    unsigned int rate, unsigned int channels, bool strict_match,
+ 	    struct snd_usb_substream *subs)
+@@ -147,8 +147,9 @@ find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
+ 	}
+ 	return found;
+ }
++EXPORT_SYMBOL_GPL(find_format);
+ 
+-static const struct audioformat *
++const struct audioformat *
+ find_substream_format(struct snd_usb_substream *subs,
+ 		      const struct snd_pcm_hw_params *params)
+ {
+@@ -156,6 +157,7 @@ find_substream_format(struct snd_usb_substream *subs,
+ 			   params_rate(params), params_channels(params),
+ 			   true, subs);
+ }
++EXPORT_SYMBOL_GPL(find_substream_format);
+ 
+ bool snd_usb_pcm_has_fixed_rate(struct snd_usb_substream *subs)
+ {
+@@ -446,7 +448,7 @@ int snd_usb_pcm_resume(struct snd_usb_stream *as)
  	return 0;
  }
  
-+static void xhci_handle_sec_intr_events(struct xhci_hcd *xhci,
-+	struct xhci_ring *ring,	struct xhci_intr_reg __iomem *ir_set,
-+	struct xhci_erst *erst)
-+{
-+	union xhci_trb *erdp_trb, *current_trb;
-+	struct xhci_segment	*seg;
-+	u64 erdp_reg;
-+	u32 iman_reg;
-+	dma_addr_t deq;
-+	unsigned long segment_offset;
-+
-+	/* disable irq, ack pending interrupt and ack all pending events */
-+	iman_reg = readl_relaxed(&ir_set->irq_pending);
-+	iman_reg &= ~IMAN_IE;
-+	writel_relaxed(iman_reg, &ir_set->irq_pending);
-+	iman_reg = readl_relaxed(&ir_set->irq_pending);
-+	if (iman_reg & IMAN_IP)
-+		writel_relaxed(iman_reg, &ir_set->irq_pending);
-+
-+	/* last acked event trb is in erdp reg  */
-+	erdp_reg = xhci_read_64(xhci, &ir_set->erst_dequeue);
-+	deq = (dma_addr_t)(erdp_reg & ~ERST_PTR_MASK);
-+	if (!deq) {
-+		xhci_dbg(xhci, "event ring handling not required\n");
-+		return;
-+	}
-+
-+	seg = ring->first_seg;
-+	segment_offset = deq - seg->dma;
-+
-+	/* find out virtual address of the last acked event trb */
-+	erdp_trb = current_trb = &seg->trbs[0] +
-+				(segment_offset/sizeof(*current_trb));
-+
-+	/* read cycle state of the last acked trb to find out CCS */
-+	ring->cycle_state = le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE;
-+
-+	while (1) {
-+		/* last trb of the event ring: toggle cycle state */
-+		if (current_trb == &seg->trbs[TRBS_PER_SEGMENT - 1]) {
-+			ring->cycle_state ^= 1;
-+			current_trb = &seg->trbs[0];
-+		} else {
-+			current_trb++;
-+		}
-+
-+		/* cycle state transition */
-+		if ((le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE) !=
-+		    ring->cycle_state)
-+			break;
-+	}
-+
-+	if (erdp_trb != current_trb) {
-+		deq = xhci_trb_virt_to_dma(ring->deq_seg, current_trb);
-+		if (deq == 0)
-+			xhci_warn(xhci,
-+				"WARN invalid SW event ring dequeue ptr.\n");
-+		/* Update HC event ring dequeue pointer */
-+		erdp_reg &= ERST_PTR_MASK;
-+		erdp_reg |= ((u64) deq & (u64) ~ERST_PTR_MASK);
-+	}
-+
-+	/* Clear the event handler busy flag (RW1C); event ring is empty. */
-+	erdp_reg |= ERST_EHB;
-+	xhci_write_64(xhci, erdp_reg, &ir_set->erst_dequeue);
-+}
-+
- static void
- xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
+-static void close_endpoints(struct snd_usb_audio *chip,
++void close_endpoints(struct snd_usb_audio *chip,
+ 			    struct snd_usb_substream *subs)
  {
- 	struct device *dev = xhci_to_hcd(xhci)->self.sysdev;
- 	size_t erst_size;
--	u64 tmp64;
- 	u32 tmp;
- 
- 	if (!ir)
- 		return;
- 
-+	xhci_handle_sec_intr_events(xhci, ir->event_ring, ir->ir_set, &ir->erst);
-+
- 	erst_size = sizeof(struct xhci_erst_entry) * ir->erst.num_entries;
- 	if (ir->erst.entries)
- 		dma_free_coherent(dev, erst_size,
-@@ -1826,10 +1894,6 @@ xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
- 		tmp = readl(&ir->ir_set->erst_size);
- 		tmp &= ERST_SIZE_MASK;
- 		writel(tmp, &ir->ir_set->erst_size);
--
--		tmp64 = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
--		tmp64 &= (u64) ERST_PTR_MASK;
--		xhci_write_64(xhci, tmp64, &ir->ir_set->erst_dequeue);
+ 	if (subs->data_endpoint) {
+@@ -460,6 +462,7 @@ static void close_endpoints(struct snd_usb_audio *chip,
+ 		subs->sync_endpoint = NULL;
  	}
+ }
++EXPORT_SYMBOL(close_endpoints);
  
- 	/* free interrrupter event ring */
+ /*
+  * hw_params callback
+diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
+index 388fe2ba346d..b5216cb19e75 100644
+--- a/sound/usb/pcm.h
++++ b/sound/usb/pcm.h
+@@ -15,4 +15,16 @@ void snd_usb_preallocate_buffer(struct snd_usb_substream *subs);
+ int snd_usb_audioformat_set_sync_ep(struct snd_usb_audio *chip,
+ 				    struct audioformat *fmt);
+ 
++void close_endpoints(struct snd_usb_audio *chip,
++			    struct snd_usb_substream *subs);
++int configure_endpoints(struct snd_usb_audio *chip,
++			       struct snd_usb_substream *subs);
++
++const struct audioformat *
++find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
++	    unsigned int rate, unsigned int channels, bool strict_match,
++	    struct snd_usb_substream *subs);
++const struct audioformat *
++find_substream_format(struct snd_usb_substream *subs,
++		      const struct snd_pcm_hw_params *params);
+ #endif /* __USBAUDIO_PCM_H */
