@@ -4,86 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B920FEB64DD
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 03:00:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CAC3C0015E
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 03:56:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF1FA203;
-	Tue, 25 Jul 2023 04:59:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF1FA203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EA4BDEE;
+	Tue, 25 Jul 2023 05:55:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EA4BDEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690254006;
-	bh=BwOMSnz7/0cxQYiQuwy9Kgzz4888eRunmiInf2DfjSY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1690257368;
+	bh=DZte3AUa0uEEdWhJGew1eOFG9wE1V3Sf1NWjNnPsQvI=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AUM2br2r3BtVgBg2LOfQPiZsZOMZM5kTp1xJ46WI6kUlEQE0QaAvUqLDHt7QqBHjf
-	 Za1JMPwAKfAVDbKSiT4exrgDOI5oTLUYdDi/lbWiDTLUxPs3ANS1NncPsLJc5KIaON
-	 AOpuYFbeUg/nL5b4yU0lnoyqfoO1UA3QIybL1iy0=
+	b=OtkaNFoKAjLx8pzXtJYT38SjiZ7ghbUjjrErUOg2zicQNBZXfR6VwJtlZuy8zVa+l
+	 yaVTkPou6V0zaLJXyZ4gkechPeWKuqa46hg4qv7wj8oUEkMDMBfi8oefhpiQqsVXNP
+	 CC00h7yNiQjeypqLCC14CZH3sFqZ281OlXOfmztI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17052F80557; Tue, 25 Jul 2023 04:58:26 +0200 (CEST)
+	id 1AC48F80535; Tue, 25 Jul 2023 05:54:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A133F801F5;
-	Tue, 25 Jul 2023 04:58:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2379F801F5;
+	Tue, 25 Jul 2023 05:54:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73510F8019B; Tue, 25 Jul 2023 04:58:20 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:3::133])
+	id F1C9AF80310; Tue, 25 Jul 2023 05:53:39 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B64C5F80153
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 04:58:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B64C5F80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id D58D6F80149
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 05:53:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D58D6F80149
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=infradead.org header.i=@infradead.org
- header.a=rsa-sha256 header.s=bombadil.20210309 header.b=mUaCnpfd
+	dkim=pass (1024-bit key,
+ unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
+ header.s=dk header.b=ubp69Jpr
+X-UUID: c414113a2a9e11ee9cb5633481061a41-20230725
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=45bHUFKTD/380fgU5lYTQ/UsscSGYyfLmPiWaWhqXAM=; b=mUaCnpfd8eJWZ2XRSGrN+QnqS4
-	hKjl9Pqrx99tX2t18F/qI9F+x00Yw+cukt+JIclzANGI9a+QAmoSG751eoBQ0SY/uIYQ0pMOMZWPA
-	JxKQCkeikB2Fk5GSQi7N5auLbhIPV+kNupQHVF2N5nGwH+kAjbsyRdRmCwvpw+rHKVXgXNGB9NOdD
-	L/YKEkQ+OtO+fp+WVa/s/prmzOCxEuVBTmk47UFeYj2arrGDg9e3zuB5qGe/FuGQKe3MOFUJcA9kE
-	AsC+rfyuu/4c6jhkLC5V/n5lGGUxPrHyZU8t+QEthWot9rNXcEeOvtA2z20rFAONoAiO9LBw3MAV9
-	P5QB8rsw==;
-Received: from [2601:1c2:980:9ec0::2764]
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1qO8FB-005yV0-0u;
-	Tue, 25 Jul 2023 02:57:49 +0000
-Message-ID: <e1d01143-0b25-05fa-5bc9-557d233c45f6@infradead.org>
-Date: Mon, 24 Jul 2023 19:57:45 -0700
+ d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=bkuFlQZm1wGXwCPWMA9dpYXbQ7euJCFPWKLDx347OEc=;
+	b=ubp69JprWmDfGzxGEXavzXr/gV6AImb1kHHIUJ9FvlPUTGtj7rUOfi5zyXeu1/Rfh/9YOFRzAw48yKE2m0A0ZixM/sQ3t4nRlF2cVYj+1c54F70zacFYS+XrAEiZOpNITmT1/TFZhk4OBTOhbAIhyCKaLmCJ9uvNdZNZAN8MZb8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.29,REQID:8df923d3-a68e-4c15-b743-df486784f5f4,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:70
+X-CID-INFO: VERSION:1.1.29,REQID:8df923d3-a68e-4c15-b743-df486784f5f4,IP:0,URL
+	:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTI
+	ON:quarantine,TS:70
+X-CID-META: VersionHash:e7562a7,CLOUDID:575549d2-cd77-4e67-bbfd-aa4eaace762f,B
+	ulkID:230725115308CPP61VZA,BulkQuantity:0,Recheck:0,SF:19|48|38|29|28|17,T
+	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+	,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,
+	TF_CID_SPAM_FSD
+X-UUID: c414113a2a9e11ee9cb5633481061a41-20230725
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by
+ mailgw01.mediatek.com
+	(envelope-from <trevor.wu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 418060739; Tue, 25 Jul 2023 11:53:07 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 25 Jul 2023 11:53:06 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 25 Jul 2023 11:53:06 +0800
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
+	<perex@perex.cz>, <matthias.bgg@gmail.com>,
+	<angelogioacchino.delregno@collabora.com>
+CC: <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/3] ASoC: mediatek: mt8188-mt6359: support dynamic pinctrl
+Date: Tue, 25 Jul 2023 11:53:02 +0800
+Message-ID: <20230725035304.2864-2-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230725035304.2864-1-trevor.wu@mediatek.com>
+References: <20230725035304.2864-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 18/32] sound: usb: Introduce QC USB SND offloading
- support
-Content-Language: en-US
-To: Wesley Cheng <quic_wcheng@quicinc.com>, agross@kernel.org,
- andersson@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
- mathias.nyman@intel.com, gregkh@linuxfoundation.org, lgirdwood@gmail.com,
- broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
- Thinh.Nguyen@synopsys.com
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-usb@vger.kernel.org, alsa-devel@alsa-project.org,
- quic_jackp@quicinc.com, pierre-louis.bossart@linux.intel.com,
- oneukum@suse.com, albertccwang@google.com, o-takashi@sakamocchi.jp
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-19-quic_wcheng@quicinc.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230725023416.11205-19-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: M6OD62Z3HQB6B6GZSYHY7YJ4Q3FREUAJ
-X-Message-ID-Hash: M6OD62Z3HQB6B6GZSYHY7YJ4Q3FREUAJ
-X-MailFrom: rdunlap@infradead.org
+Content-Type: text/plain
+X-MTK: N
+Message-ID-Hash: ZKTSGSY4HRDCGIHWHZS2EVDKUJCEFRLL
+X-Message-ID-Hash: ZKTSGSY4HRDCGIHWHZS2EVDKUJCEFRLL
+X-MailFrom: trevor.wu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M6OD62Z3HQB6B6GZSYHY7YJ4Q3FREUAJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZKTSGSY4HRDCGIHWHZS2EVDKUJCEFRLL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,34 +113,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+To avoid power leakage, it is recommended to replace the default pinctrl
+state with dynamic pinctrl since certain audio pinmux functions can
+remain in a HIGH state even when audio is disabled. Linking pinctrl with
+DAPM using SND_SOC_DAPM_PINCTRL will ensure that audio pins remain in
+GPIO mode by default and only switch to an audio function when necessary.
 
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+---
+ sound/soc/mediatek/mt8188/mt8188-mt6359.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-On 7/24/23 19:34, Wesley Cheng wrote:
-> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
-> index 059242f15d75..44b0fa92b6cc 100644
-> --- a/sound/usb/Kconfig
-> +++ b/sound/usb/Kconfig
-> @@ -165,6 +165,21 @@ config SND_BCD2000
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called snd-bcd2000.
->  
-> +config QC_USB_AUDIO_OFFLOAD
-> +	tristate "Qualcomm Audio Offload driver"
-> +	depends on QCOM_QMI_HELPERS
-> +	select SND_PCM
-> +	help
-> +	  Say Y here to enable the Qualcomm USB audio offloading feature
-
-	                                                         feature.
-
-> +
-> +	  This module sets up the required QMI stream enable/disable
-> +	  responses to requests generated by the audio DSP.  It passes the
-> +	  USB transfer resource references, so that the audio DSP can issue
-> +	  USB transfers to the host controller.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called qc-audio-offload.
-
+diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+index 7c9e08e6a4f5..667d79f33bf2 100644
+--- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
++++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+@@ -246,6 +246,11 @@ static const struct snd_soc_dapm_widget mt8188_mt6359_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_SINK("HDMI"),
+ 	SND_SOC_DAPM_SINK("DP"),
++
++	/* dynamic pinctrl */
++	SND_SOC_DAPM_PINCTRL("ETDM_SPK_PIN", "aud_etdm_spk_on", "aud_etdm_spk_off"),
++	SND_SOC_DAPM_PINCTRL("ETDM_HP_PIN", "aud_etdm_hp_on", "aud_etdm_hp_off"),
++	SND_SOC_DAPM_PINCTRL("MTKAIF_PIN", "aud_mtkaif_on", "aud_mtkaif_off"),
+ };
+ 
+ static const struct snd_kcontrol_new mt8188_mt6359_controls[] = {
+@@ -267,6 +272,7 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
+ 		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+ 	struct snd_soc_component *cmpnt_codec =
+ 		asoc_rtd_to_codec(rtd, 0)->component;
++	struct snd_soc_dapm_widget *pin_w = NULL, *w;
+ 	struct mtk_base_afe *afe;
+ 	struct mt8188_afe_private *afe_priv;
+ 	struct mtkaif_param *param;
+@@ -306,6 +312,18 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
+ 		return 0;
+ 	}
+ 
++	for_each_card_widgets(rtd->card, w) {
++		if (!strcmp(w->name, "MTKAIF_PIN")) {
++			pin_w = w;
++			break;
++		}
++	}
++
++	if (!pin_w)
++		dev_dbg(afe->dev, "%s(), no pinmux widget, please check if default on\n", __func__);
++	else
++		dapm_pinctrl_event(pin_w, NULL, SND_SOC_DAPM_PRE_PMU);
++
+ 	pm_runtime_get_sync(afe->dev);
+ 	mt6359_mtkaif_calibration_enable(cmpnt_codec);
+ 
+@@ -403,6 +421,9 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
+ 	for (i = 0; i < MT8188_MTKAIF_MISO_NUM; i++)
+ 		param->mtkaif_phase_cycle[i] = mtkaif_phase_cycle[i];
+ 
++	if (pin_w)
++		dapm_pinctrl_event(pin_w, NULL, SND_SOC_DAPM_POST_PMD);
++
+ 	dev_dbg(afe->dev, "%s(), end, calibration ok %d\n",
+ 		__func__, param->mtkaif_calibration_ok);
+ 
 -- 
-~Randy
+2.18.0
+
