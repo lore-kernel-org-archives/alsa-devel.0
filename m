@@ -4,45 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1263C0015E
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 11:53:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65D81C001E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 11:54:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F10661531;
-	Tue, 25 Jul 2023 13:52:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F10661531
+	by alsa0.perex.cz (Postfix) with ESMTPS id 543DA1511;
+	Tue, 25 Jul 2023 13:53:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 543DA1511
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690286029;
-	bh=wt30PyyiUGKguLZ/4q3Z0Vuj8Tz6MCttN0LhOD4lre0=;
+	s=default; t=1690286053;
+	bh=XUKOZQeLBW7kgaR9Ww++9u71TXdB2qXHA0yT42XGoao=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tjUxnfuhwkStTnQOoPFfIP9uzyxge57zT41WV/9ZzAYHYa2VFN6RdtRZ/KiqGEQ4t
-	 bC4e/zRYDe7PHm4g14tQvaDBg5V5tkVM9fA6Cs86Ple1CLlNyyUBRFxeOnM5Oluv5C
-	 PN1kJrlD1Yg0EH2XCmppi+3p2cUqof4q9+JjP0AE=
+	b=a3YK1cShxDnaEys0GCkSvMGULnT4B4s2FCN3pabQq+ehT0p0AkKLPDZF5lKgyPnrg
+	 Rig8gZOmrYfyjmjdfaz0VCAyPCv4QvOiX1t6gNdMd27LfkCFYL9QXHAH0rPOjExXF/
+	 AyH7jeu0O5jC+htQA23EI9Ie6ejtvWpOmOklxQc4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86C8AF80571; Tue, 25 Jul 2023 13:51:46 +0200 (CEST)
+	id 95745F805A1; Tue, 25 Jul 2023 13:51:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6D7DF80589;
-	Tue, 25 Jul 2023 13:51:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D91FF805AB;
+	Tue, 25 Jul 2023 13:51:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E5D8F80163; Tue, 25 Jul 2023 12:04:27 +0200 (CEST)
+	id BF241F80163; Tue, 25 Jul 2023 12:13:30 +0200 (CEST)
 Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 62B43F80149;
-	Tue, 25 Jul 2023 12:04:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62B43F80149
-Message-ID: <bf495f63-0dcb-e680-4b74-0c4d1ff3463e@linux.intel.com>
-Date: Tue, 25 Jul 2023 12:04:19 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7F948F80149;
+	Tue, 25 Jul 2023 12:13:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F948F80149
+Message-ID: <35720f76-e8b0-578b-e326-ebfce536be04@linux.intel.com>
+Date: Tue, 25 Jul 2023 12:13:20 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH v2 4/9] ALSA: hda/i915: Allow xe as match for
- i915_component_master_match
+Subject: Re: [PATCH v2 7/9] ALSA: hda/intel: Move snd_hdac_i915_init to before
+ probe_work.
 Content-Language: en-US
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org
@@ -56,10 +55,10 @@ Cc: sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
  <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
 References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
- <20230719164141.228073-5-maarten.lankhorst@linux.intel.com>
- <518bb7a9-3a85-2c13-68bf-63baaff176ef@linux.intel.com>
+ <20230719164141.228073-8-maarten.lankhorst@linux.intel.com>
+ <a895de13-5320-953b-3d1c-34cee259d1d2@linux.intel.com>
 From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <518bb7a9-3a85-2c13-68bf-63baaff176ef@linux.intel.com>
+In-Reply-To: <a895de13-5320-953b-3d1c-34cee259d1d2@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-MailFrom: maarten.lankhorst@linux.intel.com
@@ -68,15 +67,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: GK2YQGJV3ZTW6MZUU5JPAZBLPQSPAPCZ
-X-Message-ID-Hash: GK2YQGJV3ZTW6MZUU5JPAZBLPQSPAPCZ
+Message-ID-Hash: KGTJ7DKYNTTEJK67OAIDXY2PADJVD34N
+X-Message-ID-Hash: KGTJ7DKYNTTEJK67OAIDXY2PADJVD34N
 X-Mailman-Approved-At: Tue, 25 Jul 2023 11:51:33 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GK2YQGJV3ZTW6MZUU5JPAZBLPQSPAPCZ/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -87,31 +85,79 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 Hey,
 
-On 2023-07-24 12:28, Pierre-Louis Bossart wrote:
+On 2023-07-24 12:58, Pierre-Louis Bossart wrote:
 > 
 > 
 > On 7/19/23 18:41, Maarten Lankhorst wrote:
->> xe is a new driver for intel GPU's that shares the sound related code
->> with i915.
+>> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+>> the snd_hdac_i915_init into a workqueue.
 >>
->> Don't allow it to be modprobed though; the module is not upstream yet
->> and we should exclusively use the EPROBE_DEFER mechanism.
+>> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+>> probe function.
+>>
+>> Changes since v1:
+>> - Use dev_err_probe()
+>> - Don't move probed_devs bitmap unnecessarily. (tiwai)
+>> - Move snd_hdac_i915_init slightly upward, to ensure
+>>    it's always initialised before vga-switcheroo is called.
+>>
+>> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+>> ---
+>>   sound/pci/hda/hda_intel.c | 59 ++++++++++++++++++++-------------------
+>>   1 file changed, 30 insertions(+), 29 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>> index 11cf9907f039f..e3128d7d742e7 100644
+>> --- a/sound/pci/hda/hda_intel.c
+>> +++ b/sound/pci/hda/hda_intel.c
+>> @@ -2147,6 +2147,36 @@ static int azx_probe(struct pci_dev *pci,
+>>   
+>>   	pci_set_drvdata(pci, card);
+>>   
+>> +#ifdef CONFIG_SND_HDA_I915
+>> +	/* bind with i915 if needed */
+>> +	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
+>> +		err = snd_hdac_i915_init(azx_bus(chip), false);
+>> +		if (err < 0) {
+>> +			/* if the controller is bound only with HDMI/DP
+>> +			 * (for HSW and BDW), we need to abort the probe;
+>> +			 * for other chips, still continue probing as other
+>> +			 * codecs can be on the same link.
+>> +			 */
+>> +			if (CONTROLLER_IN_GPU(pci)) {
+>> +				dev_err_probe(card->dev, err,
+>> +					     "HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
+>> +
+>> +				goto out_free;
+>> +			} else {
+>> +				/* don't bother any longer */
+>> +				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
+>> +			}
+>> +		}
+>> +
+>> +		/* HSW/BDW controllers need this power */
+>> +		if (CONTROLLER_IN_GPU(pci))
+>> +			hda->need_i915_power = true;
+>> +	}
+>> +#else
+>> +	if (CONTROLLER_IN_GPU(pci))
+>> +		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
+>> +#endif
 > 
-> I can't figure out what this comment means.
+> Is it intentional that the display_power() is left in the probe workqueue?
 > 
-> how would the -EPROBE_DEFER mechanism help if the driver that will
-> trigger a new probe is not upstream?
+> this piece of code follows the stuff above in the existing code?
 > 
-> Not following at all what you intended to explain.
+> /* Request display power well for the HDA controller or codec. For
+>   * Haswell/Broadwell, both the display HDA controller and codec need
+>   * this power. For other platforms, like Baytrail/Braswell, only the
+>   * display codec needs the power and it can be released after probe.
+>   */
+> display_power(chip, true);
 
-What I mean is that there is code inside the current code that does 
-request_module("i915"), the comment meant I didn't try to add any logic 
-for request_module("xe"), as the driver is not merged yet.
-
-Additionally I am removing the request_module logic, but this comment 
-was written when I first tried the simple solution of request_module("xe").
-
-Turns out telepathy is hard, and using -EPROBE_DEFER is much simpler. :-)
+I think for the binding itself, there isn't any harm. We are not poking 
+any hardware when binding,
+only software. This appears to be true on the i915 side as well.
 
 Cheers,
 ~Maarten
