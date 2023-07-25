@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4458C001DF
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 16:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB88EC001DE
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 16:46:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC6B4845;
-	Tue, 25 Jul 2023 18:45:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC6B4845
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA16D7F8;
+	Tue, 25 Jul 2023 18:45:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA16D7F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690303561;
-	bh=fVzthaVUERTPRfcE/7jgiv+MxgYtHIHkpeUaDD+wpug=;
+	s=default; t=1690303583;
+	bh=3fiLyL2AHf7MEt35jQySvVYb5krd/7YTlvdYtvcqoGU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cixyyRZcs7DVLwuXqKyk87pcPe4zgcTnVJE3BMoRl40evu+gt5vZCU0lw559KOu84
-	 599KeDoWounrLTX9nNLRFuKXsVfY9J8lPUiPM98WKUPvQChnUdEG8H8jnfETsYmuTW
-	 Hf1fb1sZdyweVKDnhm1nrZ74zOnc8sN9tqMf/jgo=
+	b=Q3zIJo4gF4atMJVwc1yEXRd4c6byzG6yIgMUTBRBJy4r4MuewFLzKpQGcMCmw54/2
+	 USbbldbcO/GumRRtmZ7703e3L1dG3MOhBh0rBRLhcX3QdSp+F30LpPI16LW/t7q7/d
+	 JaKPy+5OPitOtkHGlObHQXPwZ30HJBVUF73RobXI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35DD8F805A8; Tue, 25 Jul 2023 18:44:24 +0200 (CEST)
+	id 66B8FF805C3; Tue, 25 Jul 2023 18:44:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 938CDF805AE;
-	Tue, 25 Jul 2023 18:44:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D261F805B1;
+	Tue, 25 Jul 2023 18:44:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5066BF80563; Tue, 25 Jul 2023 18:44:15 +0200 (CEST)
+	id 29A6FF80571; Tue, 25 Jul 2023 18:44:16 +0200 (CEST)
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 44317F801F5
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 18:42:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44317F801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id CBE17F80520
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 18:43:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBE17F80520
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=MzAXc0G1
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+ header.s=selector1 header.b=gPvcoqnT
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
 	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 36PDkOF1006161;
-	Tue, 25 Jul 2023 18:42:44 +0200
+ 36PDS97S010561;
+	Tue, 25 Jul 2023 18:43:57 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=selector1;
- bh=4z+CMjmnNSllvM0qjlYzhWsRtVdq0gvawPBhZvKLtIE=;
- b=MzAXc0G1nWij8ZOad9UqOqFDgv1KhnqYztCo3BK3Rh0ADNETsKj6i5aQpfNzVes0EpaN
- EmW9ycaZMYtJNahtLs5Ws72uMeBuZYBe7pLRHiDZckuxy9+hJmsqYlTD1+ViPNhkQilG
- AepC+LoRIcBsoTNayfTLSzXamh0CwG4LXIyNcIzNop4wj7CCGoxtfQc3XOvz3UWe4piQ
- DATmkL7katZZqgHkjYSL7VHQcxy8HVLiCwKpcvCreLnStOXHP3dcq6gE0hrM9dl/19EA
- PIcTwrAWB6FAaE8KnopY1dwtXW4vUGyDaD++chc5rfMzNMdiwwENt5DNik05l7y3MOk2 Zg==
+ bh=Gigknf/mhA1u/uET1gyId2DnPQNiOv40D33cx6scQfg=;
+ b=gPvcoqnTKaHrFgYNWssYK09nXZQJexGGfUWtuiDwPCVy8MkVLGe5Nsp+jxHBpUnWJ/3R
+ tUSmSchvKUWn1Y9Kx2aFFqatYCOPCFGaCAHL/lf6wb+AMYU76q5bFgAifG6QVKaLaASy
+ baPF2OqMdtH0tTZBvgz4a8zcqS0pefnc+W0Qg3P/pKhheeB1CrOQcywruAXZtP6Pyk2H
+ sgYCAHIiqDGIWH8cIL2dmXUnacy/SAScm2cYWr/aeeN0B0HSqhV07oRwNHu1VCCaoebb
+ 2fp5mE42yLdov4Losf+DjSgMQb0mpws+lxC+Psa9+IJ/NDrIBkf6pO4Xl6Lv6Cz+Ejfc gg==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2fjnh01v-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2bkbjqrd-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 25 Jul 2023 18:42:43 +0200
+	Tue, 25 Jul 2023 18:43:57 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 44F2710002A;
-	Tue, 25 Jul 2023 18:42:43 +0200 (CEST)
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C9381100048;
+	Tue, 25 Jul 2023 18:43:56 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 356C326DDDD;
-	Tue, 25 Jul 2023 18:42:43 +0200 (CEST)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BCF9C27FAB5;
+	Tue, 25 Jul 2023 18:43:56 +0200 (CEST)
 Received: from localhost (10.201.21.121) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 25 Jul
- 2023 18:42:42 +0200
+ 2023 18:43:56 +0200
 From: Gatien Chevallier <gatien.chevallier@foss.st.com>
 To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
         <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
@@ -91,10 +91,10 @@ CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-usb@vger.kernel.org>,
         Gatien Chevallier
 	<gatien.chevallier@foss.st.com>
-Subject: [PATCH v2 04/11] dt-bindings: treewide: add feature-domains
- description
-Date: Tue, 25 Jul 2023 18:40:57 +0200
-Message-ID: <20230725164104.273965-5-gatien.chevallier@foss.st.com>
+Subject: [PATCH v2 09/11] bus: etzpc: introduce ETZPC firewall controller
+ driver
+Date: Tue, 25 Jul 2023 18:41:02 +0200
+Message-ID: <20230725164104.273965-10-gatien.chevallier@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
 References: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
@@ -107,8 +107,8 @@ X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-25_08,2023-07-25_01,2023-05-22_02
-Message-ID-Hash: TTKOBQ3QZH7SZPAJN422WQMWCHT337F4
-X-Message-ID-Hash: TTKOBQ3QZH7SZPAJN422WQMWCHT337F4
+Message-ID-Hash: W5DYLHC2LNK64WYRZ4G7QQQKEMHZPQAJ
+X-Message-ID-Hash: W5DYLHC2LNK64WYRZ4G7QQQKEMHZPQAJ
 X-MailFrom: prvs=557065b4ce=gatien.chevallier@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -121,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TTKOBQ3QZH7SZPAJN422WQMWCHT337F4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W5DYLHC2LNK64WYRZ4G7QQQKEMHZPQAJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,441 +130,197 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-feature-domains is an optional property that allows a peripheral to
-refer to one or more feature domain controller(s).
-
-Description of this property is added to all peripheral binding files of
-the peripheral under the STM32 firewall controllers. It allows an accurate
-representation of the hardware, where various peripherals are connected
-to this firewall bus. The firewall can then check the peripheral accesses
-before allowing it to probe.
+ETZPC is a peripheral and memory firewall controller that filter accesses
+based on Arm TrustZone secure state and Arm CPU privilege execution level.
+It handles MCU isolation as well.
 
 Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
 ---
 
-Changes in V2: 
-	- Add missing "feature-domains" property declaration
-	  in bosch,m_can.yaml and st,stm32-cryp.yaml files
+Changes in V2:
+	- Add controller name
+	- Driver is now a module_platform_driver
+	- Use error code returned by stm32_firewall_populate_bus()
+	- Fix license
 
- Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml  | 4 ++++
- Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml  | 4 ++++
- Documentation/devicetree/bindings/dma/st,stm32-dma.yaml      | 4 ++++
- Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml   | 4 ++++
- Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml      | 4 ++++
- Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml  | 4 ++++
- .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml      | 4 ++++
- Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml  | 4 ++++
- .../devicetree/bindings/media/cec/st,stm32-cec.yaml          | 4 ++++
- Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml   | 4 ++++
- .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml       | 4 ++++
- Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml  | 4 ++++
- Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml   | 5 +++++
- Documentation/devicetree/bindings/mmc/arm,pl18x.yaml         | 4 ++++
- Documentation/devicetree/bindings/net/can/bosch,m_can.yaml   | 4 ++++
- Documentation/devicetree/bindings/net/stm32-dwmac.yaml       | 4 ++++
- Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml | 4 ++++
- .../devicetree/bindings/regulator/st,stm32-vrefbuf.yaml      | 4 ++++
- Documentation/devicetree/bindings/rng/st,stm32-rng.yaml      | 4 ++++
- Documentation/devicetree/bindings/serial/st,stm32-uart.yaml  | 4 ++++
- Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml    | 4 ++++
- Documentation/devicetree/bindings/sound/st,stm32-sai.yaml    | 4 ++++
- .../devicetree/bindings/sound/st,stm32-spdifrx.yaml          | 4 ++++
- Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml     | 4 ++++
- Documentation/devicetree/bindings/spi/st,stm32-spi.yaml      | 4 ++++
- Documentation/devicetree/bindings/usb/dwc2.yaml              | 4 ++++
- 26 files changed, 105 insertions(+)
+ MAINTAINERS               |   1 +
+ drivers/bus/Makefile      |   2 +-
+ drivers/bus/stm32_etzpc.c | 141 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 143 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/bus/stm32_etzpc.c
 
-diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
-index 0ddeb8a9a7a0..87a578327fc0 100644
---- a/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
-+++ b/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
-@@ -46,6 +46,10 @@ properties:
-   power-domains:
-     maxItems: 1
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9dcf69a9e30c..a55fa36e25db 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -20140,6 +20140,7 @@ F:	drivers/media/i2c/st-mipid02.c
+ ST STM32 FIREWALL
+ M:	Gatien Chevallier <gatien.chevallier@foss.st.com>
+ S:	Maintained
++F:	drivers/bus/stm32_etzpc.c
+ F:	drivers/bus/stm32_firewall.c
+ F:	drivers/bus/stm32_rifsc.c
  
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
+diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
+index e50d18e1d141..cddd4984d6af 100644
+--- a/drivers/bus/Makefile
++++ b/drivers/bus/Makefile
+@@ -26,7 +26,7 @@ obj-$(CONFIG_OMAP_INTERCONNECT)	+= omap_l3_smx.o omap_l3_noc.o
+ obj-$(CONFIG_OMAP_OCP2SCP)	+= omap-ocp2scp.o
+ obj-$(CONFIG_QCOM_EBI2)		+= qcom-ebi2.o
+ obj-$(CONFIG_QCOM_SSC_BLOCK_BUS)	+= qcom-ssc-block-bus.o
+-obj-$(CONFIG_STM32_FIREWALL)	+= stm32_firewall.o stm32_rifsc.o
++obj-$(CONFIG_STM32_FIREWALL)	+= stm32_firewall.o stm32_rifsc.o stm32_etzpc.o
+ obj-$(CONFIG_SUN50I_DE2_BUS)	+= sun50i-de2.o
+ obj-$(CONFIG_SUNXI_RSB)		+= sunxi-rsb.o
+ obj-$(CONFIG_OF)		+= simple-pm-bus.o
+diff --git a/drivers/bus/stm32_etzpc.c b/drivers/bus/stm32_etzpc.c
+new file mode 100644
+index 000000000000..7fc0f16960be
+--- /dev/null
++++ b/drivers/bus/stm32_etzpc.c
+@@ -0,0 +1,141 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
++ */
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
-index b767ec72a999..042a1e005ab2 100644
---- a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
-+++ b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
-@@ -50,6 +50,10 @@ properties:
-   power-domains:
-     maxItems: 1
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++#include <linux/bitfield.h>
++#include <linux/bits.h>
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
++#include <linux/types.h>
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
-index 329847ef096a..9f60915e6130 100644
---- a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
-+++ b/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
-@@ -82,6 +82,10 @@ properties:
-     description: if defined, it indicates that the controller
-       supports memory-to-memory transfer
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++#include "stm32_firewall.h"
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
-index e722fbcd8a5f..15d33d41098f 100644
---- a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
-+++ b/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
-@@ -28,6 +28,10 @@ properties:
-   resets:
-     maxItems: 1
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++/*
++ * ETZPC registers
++ */
++#define ETZPC_DECPROT			0x10
++#define ETZPC_HWCFGR			0x3F0
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-index 94b75d9f66cd..8a1a21faab8c 100644
---- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-+++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
-@@ -99,6 +99,10 @@ properties:
- 
-   wakeup-source: true
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++/*
++ * HWCFGR register
++ */
++#define ETZPC_HWCFGR_NUM_TZMA		GENMASK(7, 0)
++#define ETZPC_HWCFGR_NUM_PER_SEC	GENMASK(15, 8)
++#define ETZPC_HWCFGR_NUM_AHB_SEC	GENMASK(23, 16)
++#define ETZPC_HWCFGR_CHUNKS1N4		GENMASK(31, 24)
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
-index 995cbf8cefc6..d59ac9282a28 100644
---- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
-@@ -93,6 +93,10 @@ properties:
-   '#size-cells':
-     const: 0
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++/*
++ * ETZPC miscellaneous
++ */
++#define ETZPC_PROT_MASK			GENMASK(1, 0)
++#define ETZPC_PROT_A7NS			0x3
++#define ETZPC_DECPROT_SHIFT		1
 +
- allOf:
-   - if:
-       properties:
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-index 1970503389aa..39ee55aa4dd8 100644
---- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-@@ -59,6 +59,10 @@ properties:
-       If not, SPI CLKOUT frequency will not be accurate.
-     maximum: 20000000
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++#define IDS_PER_DECPROT_REGS		16
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml b/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
-index 04045b932bd2..184d0a44d1de 100644
---- a/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
-+++ b/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
-@@ -45,6 +45,10 @@ properties:
-   '#size-cells':
-     const: 0
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++static int stm32_etzpc_grant_access(struct stm32_firewall_controller *ctrl, u32 firewall_id)
++{
++	u32 offset, reg_offset, sec_val;
 +
- additionalProperties: false
- 
- required:
-diff --git a/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml b/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml
-index 2314a9a14650..41db21373301 100644
---- a/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml
-+++ b/Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml
-@@ -29,6 +29,10 @@ properties:
-       - const: cec
-       - const: hdmi-cec
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	if (firewall_id >= ctrl->max_entries) {
++		dev_err(ctrl->dev, "Invalid sys bus ID %u", firewall_id);
++		return -EINVAL;
++	}
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-index 6b3e413cedb2..81e1cd5e30cc 100644
---- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-+++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
-@@ -36,6 +36,10 @@ properties:
-   resets:
-     maxItems: 1
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	/* Check access configuration, 16 peripherals per register */
++	reg_offset = ETZPC_DECPROT + 0x4 * (firewall_id / IDS_PER_DECPROT_REGS);
++	offset = (firewall_id % IDS_PER_DECPROT_REGS) << ETZPC_DECPROT_SHIFT;
 +
-   port:
-     $ref: /schemas/graph.yaml#/$defs/port-base
-     unevaluatedProperties: false
-diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
-index 14f1833d37c9..4ef01ee4a5e5 100644
---- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
-+++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
-@@ -45,6 +45,10 @@ properties:
-       Reflects the memory layout with four integer values per bank. Format:
-       <bank-number> 0 <address of the bank> <size>
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	/* Verify peripheral is non-secure and attributed to cortex A7 */
++	sec_val = (readl(ctrl->mmio + reg_offset) >> offset) & ETZPC_PROT_MASK;
++	if (sec_val != ETZPC_PROT_A7NS) {
++		dev_dbg(ctrl->dev, "Invalid bus configuration: reg_offset %#x, value %d\n",
++			reg_offset, sec_val);
++		return -EACCES;
++	}
 +
- patternProperties:
-   "^.*@[0-4],[a-f0-9]+$":
-     additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
-index 27329c5dc38e..156aed282fb8 100644
---- a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
-+++ b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
-@@ -44,6 +44,10 @@ properties:
- 
-   wakeup-source: true
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	return 0;
++}
 +
-   pwm:
-     type: object
-     additionalProperties: false
-diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
-index f84e09a5743b..d19981ef3fce 100644
---- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
-+++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
-@@ -67,6 +67,11 @@ properties:
-   "#size-cells":
-     const: 0
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++static void stm32_etzpc_release_access(struct stm32_firewall_controller *ctrl __maybe_unused,
++				       u32 firewall_id __maybe_unused)
++{
++}
 +
++static int stm32_etzpc_probe(struct platform_device *pdev)
++{
++	struct stm32_firewall_controller *etzpc_controller;
++	struct device_node *np = pdev->dev.of_node;
++	u32 nb_per, nb_master;
++	struct resource *res;
++	void __iomem *mmio;
++	int rc;
 +
-   pwm:
-     type: object
-     additionalProperties: false
-diff --git a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
-index 2459a55ed540..5a8b53d5c35f 100644
---- a/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
-+++ b/Documentation/devicetree/bindings/mmc/arm,pl18x.yaml
-@@ -79,6 +79,10 @@ properties:
-           - const: rx
-           - const: tx
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	etzpc_controller = devm_kzalloc(&pdev->dev, sizeof(*etzpc_controller), GFP_KERNEL);
++	if (!etzpc_controller)
++		return -ENOMEM;
 +
-   power-domains: true
- 
-   resets:
-diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-index 67879aab623b..144cbcbefa37 100644
---- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-+++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
-@@ -118,6 +118,10 @@ properties:
-   phys:
-     maxItems: 1
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	mmio = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
++	if (IS_ERR(mmio))
++		return PTR_ERR(mmio);
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-index fc8c96b08d7d..133e1edbd561 100644
---- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-+++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-@@ -93,6 +93,10 @@ properties:
-       select RCC clock instead of ETH_REF_CLK.
-     type: boolean
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	etzpc_controller->dev = &pdev->dev;
++	etzpc_controller->mmio = mmio;
++	etzpc_controller->name = dev_driver_string(etzpc_controller->dev);
++	etzpc_controller->type = STM32_PERIPHERAL_FIREWALL | STM32_MEMORY_FIREWALL;
++	etzpc_controller->grant_access = stm32_etzpc_grant_access;
++	etzpc_controller->release_access = stm32_etzpc_release_access;
 +
- required:
-   - compatible
-   - clocks
-diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
-index 24a3dbde223b..89fa65f31d20 100644
---- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
-+++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
-@@ -55,6 +55,10 @@ properties:
-     description: number of clock cells for ck_usbo_48m consumer
-     const: 0
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	/* Get number of etzpc entries*/
++	nb_per = FIELD_GET(ETZPC_HWCFGR_NUM_PER_SEC,
++			   readl(etzpc_controller->mmio + ETZPC_HWCFGR));
++	nb_master = FIELD_GET(ETZPC_HWCFGR_NUM_AHB_SEC,
++			      readl(etzpc_controller->mmio + ETZPC_HWCFGR));
++	etzpc_controller->max_entries = nb_per + nb_master;
 +
- # Required child nodes:
- 
- patternProperties:
-diff --git a/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml b/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
-index 05f4ad2c7d3a..b73a97f89fe4 100644
---- a/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
-+++ b/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
-@@ -30,6 +30,10 @@ properties:
-   vdda-supply:
-     description: phandle to the vdda input analog voltage.
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	platform_set_drvdata(pdev, etzpc_controller);
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
-index 187b172d0cca..c45e6285653c 100644
---- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
-+++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
-@@ -30,6 +30,10 @@ properties:
-     type: boolean
-     description: If set enable the clock detection management
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	rc = stm32_firewall_controller_register(etzpc_controller);
++	if (rc) {
++		dev_err(etzpc_controller->dev, "Couldn't register as a firewall controller: %d",
++			rc);
++		return rc;
++	}
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-index 1df8ffe95fc6..b80d5a8ff4e8 100644
---- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-+++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-@@ -70,6 +70,10 @@ properties:
-     enum: [1, 2, 4, 8, 12, 14, 16]
-     default: 8
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	rc = stm32_firewall_populate_bus(etzpc_controller);
++	if (rc) {
++		dev_err(etzpc_controller->dev, "Couldn't populate ETZPC bus: %d",
++			rc);
++		return rc;
++	}
 +
- allOf:
-   - $ref: rs485.yaml#
-   - $ref: serial.yaml#
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
-index b9111d375b93..30339447cc24 100644
---- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
-@@ -65,6 +65,10 @@ properties:
-     $ref: audio-graph-port.yaml#
-     unevaluatedProperties: false
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++	/* Populate all allowed nodes */
++	return of_platform_populate(np, NULL, NULL, &pdev->dev);
++}
 +
- required:
-   - compatible
-   - "#sound-dai-cells"
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-index 56d206f97a96..f59770ead3e3 100644
---- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-@@ -48,6 +48,10 @@ properties:
-   clock-names:
-     maxItems: 3
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++static const struct of_device_id stm32_etzpc_of_match[] = {
++	{ .compatible = "st,stm32-etzpc" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, stm32_etzpc_of_match);
 +
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
-index bc48151b9adb..480ce8704fda 100644
---- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
-@@ -50,6 +50,10 @@ properties:
-   resets:
-     maxItems: 1
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
++static struct platform_driver stm32_etzpc_driver = {
++	.probe  = stm32_etzpc_probe,
++	.driver = {
++		.name = "stm32-etzpc",
++		.of_match_table = stm32_etzpc_of_match,
++	},
++};
++module_platform_driver(stm32_etzpc_driver);
 +
- required:
-   - compatible
-   - "#sound-dai-cells"
-diff --git a/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
-index 8bba965a9ae6..3331f6cd1b75 100644
---- a/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
-+++ b/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
-@@ -46,6 +46,10 @@ properties:
-       - const: tx
-       - const: rx
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
-+
- required:
-   - compatible
-   - reg
-diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-index 9ca1a843c820..a0664a0fcabf 100644
---- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-+++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
-@@ -59,6 +59,10 @@ properties:
-       - const: rx
-       - const: tx
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
-+
- patternProperties:
-   "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-f]+$":
-     type: object
-diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
-index 0a5c98ea711d..95b615ee3a07 100644
---- a/Documentation/devicetree/bindings/usb/dwc2.yaml
-+++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
-@@ -172,6 +172,10 @@ properties:
- 
-   tpl-support: true
- 
-+  feature-domains:
-+    minItems: 1
-+    maxItems: 2
-+
- dependencies:
-   port: [ usb-role-switch ]
-   role-switch-default-mode: [ usb-role-switch ]
++MODULE_AUTHOR("Gatien Chevallier <gatien.chevallier@foss.st.com>");
++MODULE_DESCRIPTION("STMicroelectronics ETZPC driver");
++MODULE_LICENSE("GPL");
 -- 
 2.35.3
 
