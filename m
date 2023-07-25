@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49DB1C00528
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 06:48:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1981C04A6A
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Jul 2023 06:48:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3219EB4;
-	Tue, 25 Jul 2023 08:47:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3219EB4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7DFC5ECE;
+	Tue, 25 Jul 2023 08:47:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DFC5ECE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690267714;
-	bh=ErXZNooESu6m/WLnIbGKfWXPXiEhNyXmySySlNyL3HU=;
+	s=default; t=1690267716;
+	bh=SUGjA9n8gHS2G3mzAMLrZhYAhbujvCvU12wQOFvuaO4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Gm7dUSxDQWaXMsXBhOM3ZeYAelhNsAZ2ylUG0OGL9CQ/OFGjCvdjTU2PXLssA9pQ+
-	 qi2lYjW4bAWtlKfa+m5098pNcBJtH0Z3MVKOZYlrUkmc2HjkywcQPcLbqRFDLgaEVP
-	 MpcCi3Wg47XWhturSMCVs+OjxMrjj+n5zx3fB24c=
+	b=vUtSF7pJM9gHDtYnv05sJDqQEKME5IKA7mQvZvEmPuEW3zqIW1vBphUDkPN8DyKgX
+	 jP2bomvfCypXdtpJChgQgbH8xi1N+66wc0ktskTawAFUTzPJui/BXgad58GXsboT6j
+	 JgzJ0Ibl7gvFNbuWo9dMeOGvsPrxNOAERLOItwaM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9E558F8057C; Tue, 25 Jul 2023 08:46:41 +0200 (CEST)
+	id 3CFF4F80588; Tue, 25 Jul 2023 08:46:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6602F80580;
-	Tue, 25 Jul 2023 08:46:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9EE6F8059F;
+	Tue, 25 Jul 2023 08:46:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E51CF80535; Tue, 25 Jul 2023 08:46:33 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	id E110BF8019B; Tue, 25 Jul 2023 08:46:33 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 83F96F80153
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 08:46:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83F96F80153
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E218B200B18;
-	Tue, 25 Jul 2023 08:46:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7C636F80163
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2023 08:46:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C636F80163
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2056E1A1626;
+	Tue, 25 Jul 2023 08:46:20 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7ADCF200706;
-	Tue, 25 Jul 2023 08:46:22 +0200 (CEST)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AD7F91A1623;
+	Tue, 25 Jul 2023 08:46:19 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 90EAB1800318;
-	Tue, 25 Jul 2023 14:46:20 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id BFD991800319;
+	Tue, 25 Jul 2023 14:46:17 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,15 +63,16 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [RFC PATCH v2 4/7] media: v4l2: Add audio capture and output support
-Date: Tue, 25 Jul 2023 14:12:17 +0800
-Message-Id: <1690265540-25999-5-git-send-email-shengjiu.wang@nxp.com>
+Subject: [RFC PATCH v2 2/7] ASoC: fsl_easrc: define functions for memory to
+ memory usage
+Date: Tue, 25 Jul 2023 14:12:15 +0800
+Message-Id: <1690265540-25999-3-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: 7QP6AKCJEWEDMWTO4BAEKOSWIWQHIWNK
-X-Message-ID-Hash: 7QP6AKCJEWEDMWTO4BAEKOSWIWQHIWNK
+Message-ID-Hash: EBKMQXX4X2UMRNDJXEOA4XKXR2RHZ5SN
+X-Message-ID-Hash: EBKMQXX4X2UMRNDJXEOA4XKXR2RHZ5SN
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7QP6AKCJEWEDMWTO4BAEKOSWIWQHIWNK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EBKMQXX4X2UMRNDJXEOA4XKXR2RHZ5SN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,374 +94,271 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Audio signal processing has the requirement for memory to
-memory similar as Video.
-
-This patch is to add this support in v4l2 framework, defined
-new buffer type V4L2_BUF_TYPE_AUDIO_CAPTURE and
-V4L2_BUF_TYPE_AUDIO_OUTPUT, defined new format v4l2_audio_format
-for audio case usage.
-
-The created audio device is named "/dev/audioX".
+ASRC can be used on memory to memory case, define several
+functions for m2m usage and export them as function pointer.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../media/common/videobuf2/videobuf2-v4l2.c   |  4 ++
- drivers/media/v4l2-core/v4l2-dev.c            | 17 ++++++
- drivers/media/v4l2-core/v4l2-ioctl.c          | 52 +++++++++++++++++++
- include/media/v4l2-dev.h                      |  2 +
- include/media/v4l2-ioctl.h                    | 34 ++++++++++++
- include/uapi/linux/videodev2.h                | 19 +++++++
- 6 files changed, 128 insertions(+)
+ sound/soc/fsl/fsl_easrc.c | 214 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/fsl/fsl_easrc.h |   6 ++
+ 2 files changed, 220 insertions(+)
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-index c7a54d82a55e..12f2be2773a2 100644
---- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-+++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-@@ -785,6 +785,10 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
- 	case V4L2_BUF_TYPE_META_OUTPUT:
- 		requested_sizes[0] = f->fmt.meta.buffersize;
- 		break;
-+	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+		requested_sizes[0] = f->fmt.audio.buffersize;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
-index f81279492682..67484f4c6eaf 100644
---- a/drivers/media/v4l2-core/v4l2-dev.c
-+++ b/drivers/media/v4l2-core/v4l2-dev.c
-@@ -553,6 +553,7 @@ static void determine_valid_ioctls(struct video_device *vdev)
- 	bool is_tch = vdev->vfl_type == VFL_TYPE_TOUCH;
- 	bool is_meta = vdev->vfl_type == VFL_TYPE_VIDEO &&
- 		       (vdev->device_caps & meta_caps);
-+	bool is_audio = vdev->vfl_type == VFL_TYPE_AUDIO;
- 	bool is_rx = vdev->vfl_dir != VFL_DIR_TX;
- 	bool is_tx = vdev->vfl_dir != VFL_DIR_RX;
- 	bool is_io_mc = vdev->device_caps & V4L2_CAP_IO_MC;
-@@ -664,6 +665,19 @@ static void determine_valid_ioctls(struct video_device *vdev)
- 		SET_VALID_IOCTL(ops, VIDIOC_S_FMT, vidioc_s_fmt_meta_out);
- 		SET_VALID_IOCTL(ops, VIDIOC_TRY_FMT, vidioc_try_fmt_meta_out);
- 	}
-+	if (is_audio && is_rx) {
-+		/* audio capture specific ioctls */
-+		SET_VALID_IOCTL(ops, VIDIOC_ENUM_FMT, vidioc_enum_fmt_audio_cap);
-+		SET_VALID_IOCTL(ops, VIDIOC_G_FMT, vidioc_g_fmt_audio_cap);
-+		SET_VALID_IOCTL(ops, VIDIOC_S_FMT, vidioc_s_fmt_audio_cap);
-+		SET_VALID_IOCTL(ops, VIDIOC_TRY_FMT, vidioc_try_fmt_audio_cap);
-+	} else if (is_audio && is_tx) {
-+		/* audio output specific ioctls */
-+		SET_VALID_IOCTL(ops, VIDIOC_ENUM_FMT, vidioc_enum_fmt_audio_out);
-+		SET_VALID_IOCTL(ops, VIDIOC_G_FMT, vidioc_g_fmt_audio_out);
-+		SET_VALID_IOCTL(ops, VIDIOC_S_FMT, vidioc_s_fmt_audio_out);
-+		SET_VALID_IOCTL(ops, VIDIOC_TRY_FMT, vidioc_try_fmt_audio_out);
-+	}
- 	if (is_vbi) {
- 		/* vbi specific ioctls */
- 		if ((is_rx && (ops->vidioc_g_fmt_vbi_cap ||
-@@ -927,6 +941,9 @@ int __video_register_device(struct video_device *vdev,
- 	case VFL_TYPE_TOUCH:
- 		name_base = "v4l-touch";
- 		break;
-+	case VFL_TYPE_AUDIO:
-+		name_base = "audio";
-+		break;
- 	default:
- 		pr_err("%s called with unknown type: %d\n",
- 		       __func__, type);
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 01ba27f2ef87..aa9d872bba8d 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -188,6 +188,8 @@ const char *v4l2_type_names[] = {
- 	[V4L2_BUF_TYPE_SDR_OUTPUT]         = "sdr-out",
- 	[V4L2_BUF_TYPE_META_CAPTURE]       = "meta-cap",
- 	[V4L2_BUF_TYPE_META_OUTPUT]	   = "meta-out",
-+	[V4L2_BUF_TYPE_AUDIO_CAPTURE]      = "audio-cap",
-+	[V4L2_BUF_TYPE_AUDIO_OUTPUT]	   = "audio-out",
- };
- EXPORT_SYMBOL(v4l2_type_names);
- 
-@@ -276,6 +278,7 @@ static void v4l_print_format(const void *arg, bool write_only)
- 	const struct v4l2_sliced_vbi_format *sliced;
- 	const struct v4l2_window *win;
- 	const struct v4l2_meta_format *meta;
-+	const struct v4l2_audio_format *audio;
- 	u32 pixelformat;
- 	u32 planes;
- 	unsigned i;
-@@ -346,6 +349,12 @@ static void v4l_print_format(const void *arg, bool write_only)
- 		pr_cont(", dataformat=%p4cc, buffersize=%u\n",
- 			&pixelformat, meta->buffersize);
- 		break;
-+	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+		audio = &p->fmt.audio;
-+		pr_cont(", rate=%u, format=%u, channels=%u, buffersize=%u\n",
-+			audio->rate, audio->format, audio->channels, audio->buffersize);
-+		break;
- 	}
+diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
+index 670cbdb361b6..b735b24badc2 100644
+--- a/sound/soc/fsl/fsl_easrc.c
++++ b/sound/soc/fsl/fsl_easrc.c
+@@ -1861,6 +1861,210 @@ static int fsl_easrc_get_fifo_addr(u8 dir, enum asrc_pair_index index)
+ 	return REG_EASRC_FIFO(dir, index);
  }
  
-@@ -927,6 +936,7 @@ static int check_fmt(struct file *file, enum v4l2_buf_type type)
- 	bool is_tch = vfd->vfl_type == VFL_TYPE_TOUCH;
- 	bool is_meta = vfd->vfl_type == VFL_TYPE_VIDEO &&
- 		       (vfd->device_caps & meta_caps);
-+	bool is_audio = vfd->vfl_type == VFL_TYPE_AUDIO;
- 	bool is_rx = vfd->vfl_dir != VFL_DIR_TX;
- 	bool is_tx = vfd->vfl_dir != VFL_DIR_RX;
- 
-@@ -992,6 +1002,14 @@ static int check_fmt(struct file *file, enum v4l2_buf_type type)
- 		if (is_meta && is_tx && ops->vidioc_g_fmt_meta_out)
- 			return 0;
- 		break;
-+	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+		if (is_audio && is_rx && ops->vidioc_g_fmt_audio_cap)
-+			return 0;
-+		break;
-+	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+		if (is_audio && is_tx && ops->vidioc_g_fmt_audio_out)
-+			return 0;
-+		break;
- 	default:
- 		break;
- 	}
-@@ -1594,6 +1612,16 @@ static int v4l_enum_fmt(const struct v4l2_ioctl_ops *ops,
- 			break;
- 		ret = ops->vidioc_enum_fmt_meta_out(file, fh, arg);
- 		break;
-+	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+		if (unlikely(!ops->vidioc_enum_fmt_audio_cap))
-+			break;
-+		ret = ops->vidioc_enum_fmt_audio_cap(file, fh, arg);
-+		break;
-+	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+		if (unlikely(!ops->vidioc_enum_fmt_audio_out))
-+			break;
-+		ret = ops->vidioc_enum_fmt_audio_out(file, fh, arg);
-+		break;
- 	}
- 	if (ret == 0)
- 		v4l_fill_fmtdesc(p);
-@@ -1670,6 +1698,10 @@ static int v4l_g_fmt(const struct v4l2_ioctl_ops *ops,
- 		return ops->vidioc_g_fmt_meta_cap(file, fh, arg);
- 	case V4L2_BUF_TYPE_META_OUTPUT:
- 		return ops->vidioc_g_fmt_meta_out(file, fh, arg);
-+	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+		return ops->vidioc_g_fmt_audio_cap(file, fh, arg);
-+	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+		return ops->vidioc_g_fmt_audio_out(file, fh, arg);
- 	}
- 	return -EINVAL;
- }
-@@ -1781,6 +1813,16 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
- 			break;
- 		memset_after(p, 0, fmt.meta);
- 		return ops->vidioc_s_fmt_meta_out(file, fh, arg);
-+	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+		if (unlikely(!ops->vidioc_s_fmt_audio_cap))
-+			break;
-+		memset_after(p, 0, fmt.audio);
-+		return ops->vidioc_s_fmt_audio_cap(file, fh, arg);
-+	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+		if (unlikely(!ops->vidioc_s_fmt_audio_out))
-+			break;
-+		memset_after(p, 0, fmt.audio);
-+		return ops->vidioc_s_fmt_audio_out(file, fh, arg);
- 	}
- 	return -EINVAL;
- }
-@@ -1889,6 +1931,16 @@ static int v4l_try_fmt(const struct v4l2_ioctl_ops *ops,
- 			break;
- 		memset_after(p, 0, fmt.meta);
- 		return ops->vidioc_try_fmt_meta_out(file, fh, arg);
-+	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+		if (unlikely(!ops->vidioc_try_fmt_audio_cap))
-+			break;
-+		memset_after(p, 0, fmt.audio);
-+		return ops->vidioc_try_fmt_audio_cap(file, fh, arg);
-+	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+		if (unlikely(!ops->vidioc_try_fmt_audio_out))
-+			break;
-+		memset_after(p, 0, fmt.audio);
-+		return ops->vidioc_try_fmt_audio_out(file, fh, arg);
- 	}
- 	return -EINVAL;
- }
-diff --git a/include/media/v4l2-dev.h b/include/media/v4l2-dev.h
-index e0a13505f88d..0924e6d1dab1 100644
---- a/include/media/v4l2-dev.h
-+++ b/include/media/v4l2-dev.h
-@@ -30,6 +30,7 @@
-  * @VFL_TYPE_SUBDEV:	for V4L2 subdevices
-  * @VFL_TYPE_SDR:	for Software Defined Radio tuners
-  * @VFL_TYPE_TOUCH:	for touch sensors
-+ * @VFL_TYPE_AUDIO:	for audio input/output devices
-  * @VFL_TYPE_MAX:	number of VFL types, must always be last in the enum
-  */
- enum vfl_devnode_type {
-@@ -39,6 +40,7 @@ enum vfl_devnode_type {
- 	VFL_TYPE_SUBDEV,
- 	VFL_TYPE_SDR,
- 	VFL_TYPE_TOUCH,
-+	VFL_TYPE_AUDIO,
- 	VFL_TYPE_MAX /* Shall be the last one */
- };
- 
-diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
-index edb733f21604..f840cf740ce1 100644
---- a/include/media/v4l2-ioctl.h
-+++ b/include/media/v4l2-ioctl.h
-@@ -45,6 +45,12 @@ struct v4l2_fh;
-  * @vidioc_enum_fmt_meta_out: pointer to the function that implements
-  *	:ref:`VIDIOC_ENUM_FMT <vidioc_enum_fmt>` ioctl logic
-  *	for metadata output
-+ * @vidioc_enum_fmt_audio_cap: pointer to the function that implements
-+ *	:ref:`VIDIOC_ENUM_FMT <vidioc_enum_fmt>` ioctl logic
-+ *	for audio capture
-+ * @vidioc_enum_fmt_audio_out: pointer to the function that implements
-+ *	:ref:`VIDIOC_ENUM_FMT <vidioc_enum_fmt>` ioctl logic
-+ *	for audio output
-  * @vidioc_g_fmt_vid_cap: pointer to the function that implements
-  *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for video capture
-  *	in single plane mode
-@@ -79,6 +85,10 @@ struct v4l2_fh;
-  *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for metadata capture
-  * @vidioc_g_fmt_meta_out: pointer to the function that implements
-  *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for metadata output
-+ * @vidioc_g_fmt_audio_cap: pointer to the function that implements
-+ *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for audio capture
-+ * @vidioc_g_fmt_audio_out: pointer to the function that implements
-+ *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for audio output
-  * @vidioc_s_fmt_vid_cap: pointer to the function that implements
-  *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for video capture
-  *	in single plane mode
-@@ -113,6 +123,10 @@ struct v4l2_fh;
-  *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for metadata capture
-  * @vidioc_s_fmt_meta_out: pointer to the function that implements
-  *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for metadata output
-+ * @vidioc_s_fmt_audio_cap: pointer to the function that implements
-+ *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for audio capture
-+ * @vidioc_s_fmt_audio_out: pointer to the function that implements
-+ *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for audio output
-  * @vidioc_try_fmt_vid_cap: pointer to the function that implements
-  *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for video capture
-  *	in single plane mode
-@@ -149,6 +163,10 @@ struct v4l2_fh;
-  *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for metadata capture
-  * @vidioc_try_fmt_meta_out: pointer to the function that implements
-  *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for metadata output
-+ * @vidioc_try_fmt_audio_cap: pointer to the function that implements
-+ *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for audio capture
-+ * @vidioc_try_fmt_audio_out: pointer to the function that implements
-+ *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for audio output
-  * @vidioc_reqbufs: pointer to the function that implements
-  *	:ref:`VIDIOC_REQBUFS <vidioc_reqbufs>` ioctl
-  * @vidioc_querybuf: pointer to the function that implements
-@@ -315,6 +333,10 @@ struct v4l2_ioctl_ops {
- 					struct v4l2_fmtdesc *f);
- 	int (*vidioc_enum_fmt_meta_out)(struct file *file, void *fh,
- 					struct v4l2_fmtdesc *f);
-+	int (*vidioc_enum_fmt_audio_cap)(struct file *file, void *fh,
-+					 struct v4l2_fmtdesc *f);
-+	int (*vidioc_enum_fmt_audio_out)(struct file *file, void *fh,
-+					 struct v4l2_fmtdesc *f);
- 
- 	/* VIDIOC_G_FMT handlers */
- 	int (*vidioc_g_fmt_vid_cap)(struct file *file, void *fh,
-@@ -345,6 +367,10 @@ struct v4l2_ioctl_ops {
- 				     struct v4l2_format *f);
- 	int (*vidioc_g_fmt_meta_out)(struct file *file, void *fh,
- 				     struct v4l2_format *f);
-+	int (*vidioc_g_fmt_audio_cap)(struct file *file, void *fh,
-+				      struct v4l2_format *f);
-+	int (*vidioc_g_fmt_audio_out)(struct file *file, void *fh,
-+				      struct v4l2_format *f);
- 
- 	/* VIDIOC_S_FMT handlers */
- 	int (*vidioc_s_fmt_vid_cap)(struct file *file, void *fh,
-@@ -375,6 +401,10 @@ struct v4l2_ioctl_ops {
- 				     struct v4l2_format *f);
- 	int (*vidioc_s_fmt_meta_out)(struct file *file, void *fh,
- 				     struct v4l2_format *f);
-+	int (*vidioc_s_fmt_audio_cap)(struct file *file, void *fh,
-+				      struct v4l2_format *f);
-+	int (*vidioc_s_fmt_audio_out)(struct file *file, void *fh,
-+				      struct v4l2_format *f);
- 
- 	/* VIDIOC_TRY_FMT handlers */
- 	int (*vidioc_try_fmt_vid_cap)(struct file *file, void *fh,
-@@ -405,6 +435,10 @@ struct v4l2_ioctl_ops {
- 				       struct v4l2_format *f);
- 	int (*vidioc_try_fmt_meta_out)(struct file *file, void *fh,
- 				       struct v4l2_format *f);
-+	int (*vidioc_try_fmt_audio_cap)(struct file *file, void *fh,
-+					struct v4l2_format *f);
-+	int (*vidioc_try_fmt_audio_out)(struct file *file, void *fh,
-+					struct v4l2_format *f);
- 
- 	/* Buffer handlers */
- 	int (*vidioc_reqbufs)(struct file *file, void *fh,
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 3af6a82d0cad..e5051410928a 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -153,6 +153,8 @@ enum v4l2_buf_type {
- 	V4L2_BUF_TYPE_SDR_OUTPUT           = 12,
- 	V4L2_BUF_TYPE_META_CAPTURE         = 13,
- 	V4L2_BUF_TYPE_META_OUTPUT	   = 14,
-+	V4L2_BUF_TYPE_AUDIO_CAPTURE        = 15,
-+	V4L2_BUF_TYPE_AUDIO_OUTPUT         = 16,
- 	/* Deprecated, do not use */
- 	V4L2_BUF_TYPE_PRIVATE              = 0x80,
- };
-@@ -169,6 +171,7 @@ enum v4l2_buf_type {
- 	 || (type) == V4L2_BUF_TYPE_VBI_OUTPUT			\
- 	 || (type) == V4L2_BUF_TYPE_SLICED_VBI_OUTPUT		\
- 	 || (type) == V4L2_BUF_TYPE_SDR_OUTPUT			\
-+	 || (type) == V4L2_BUF_TYPE_AUDIO_OUTPUT		\
- 	 || (type) == V4L2_BUF_TYPE_META_OUTPUT)
- 
- #define V4L2_TYPE_IS_CAPTURE(type) (!V4L2_TYPE_IS_OUTPUT(type))
-@@ -2415,6 +2418,20 @@ struct v4l2_meta_format {
- 	__u32				buffersize;
- } __attribute__ ((packed));
- 
-+/**
-+ * struct v4l2_audio_format - audio data format definition
-+ * @rate:		sample rate
-+ * @format:		sample format
-+ * @channels:		channel numbers
-+ * @buffersize:		maximum size in bytes required for data
-+ */
-+struct v4l2_audio_format {
-+	__u32				rate;
-+	__u32				format;
-+	__u32				channels;
-+	__u32				buffersize;
-+} __attribute__ ((packed));
++/* Get sample numbers in FIFO */
++static unsigned int fsl_easrc_get_output_fifo_size(struct fsl_asrc_pair *pair)
++{
++	struct fsl_asrc *asrc = pair->asrc;
++	enum asrc_pair_index index = pair->index;
++	u32 val;
 +
- /**
-  * struct v4l2_format - stream data format
-  * @type:	enum v4l2_buf_type; type of the data stream
-@@ -2423,6 +2440,7 @@ struct v4l2_meta_format {
-  * @win:	definition of an overlaid image
-  * @vbi:	raw VBI capture or output parameters
-  * @sliced:	sliced VBI capture or output parameters
-+ * @audio:	definition of an audio format
-  * @raw_data:	placeholder for future extensions and custom formats
-  * @fmt:	union of @pix, @pix_mp, @win, @vbi, @sliced, @sdr, @meta
-  *		and @raw_data
-@@ -2437,6 +2455,7 @@ struct v4l2_format {
- 		struct v4l2_sliced_vbi_format	sliced;  /* V4L2_BUF_TYPE_SLICED_VBI_CAPTURE */
- 		struct v4l2_sdr_format		sdr;     /* V4L2_BUF_TYPE_SDR_CAPTURE */
- 		struct v4l2_meta_format		meta;    /* V4L2_BUF_TYPE_META_CAPTURE */
-+		struct v4l2_audio_format	audio;   /* V4L2_BUF_TYPE_AUDIO_CAPTURE */
- 		__u8	raw_data[200];                   /* user-defined */
- 	} fmt;
++	regmap_read(asrc->regmap, REG_EASRC_SFS(index), &val);
++	val &= EASRC_SFS_NSGO_MASK;
++
++	return val >> EASRC_SFS_NSGO_SHIFT;
++}
++
++static int fsl_easrc_m2m_start_part_one(struct fsl_asrc_pair *pair)
++{
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++	struct fsl_asrc *asrc = pair->asrc;
++	struct device *dev = &asrc->pdev->dev;
++	int ret;
++
++	ctx_priv->in_params.sample_rate = pair->rate[IN];
++	ctx_priv->in_params.sample_format = pair->sample_format[IN];
++	ctx_priv->out_params.sample_rate = pair->rate[OUT];
++	ctx_priv->out_params.sample_format = pair->sample_format[OUT];
++
++	ctx_priv->in_params.fifo_wtmk = FSL_EASRC_INPUTFIFO_WML;
++	ctx_priv->out_params.fifo_wtmk = FSL_EASRC_OUTPUTFIFO_WML;
++	/* Fill the right half of the re-sampler with zeros */
++	ctx_priv->rs_init_mode = 0x2;
++	/* Zero fill the right half of the prefilter */
++	ctx_priv->pf_init_mode = 0x2;
++
++	ret = fsl_easrc_set_ctx_format(pair,
++				       &ctx_priv->in_params.sample_format,
++				       &ctx_priv->out_params.sample_format);
++	if (ret) {
++		dev_err(dev, "failed to set context format: %d\n", ret);
++		return ret;
++	}
++
++	ret = fsl_easrc_config_context(asrc, pair->index);
++	if (ret) {
++		dev_err(dev, "failed to config context %d\n", ret);
++		return ret;
++	}
++
++	ctx_priv->in_params.iterations = 1;
++	ctx_priv->in_params.group_len = pair->channels;
++	ctx_priv->in_params.access_len = pair->channels;
++	ctx_priv->out_params.iterations = 1;
++	ctx_priv->out_params.group_len = pair->channels;
++	ctx_priv->out_params.access_len = pair->channels;
++
++	ret = fsl_easrc_set_ctx_organziation(pair);
++	if (ret) {
++		dev_err(dev, "failed to set fifo organization\n");
++		return ret;
++	}
++
++	/* The context start flag */
++	ctx_priv->first_convert = 1;
++	return 0;
++}
++
++static int fsl_easrc_m2m_start_part_two(struct fsl_asrc_pair *pair)
++{
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++	/* start context once */
++	if (ctx_priv->first_convert) {
++		fsl_easrc_start_context(pair);
++		ctx_priv->first_convert = 0;
++	}
++
++	return 0;
++}
++
++static int fsl_easrc_m2m_stop_part_two(struct fsl_asrc_pair *pair)
++{
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++	/* Stop pair/context */
++	if (!ctx_priv->first_convert) {
++		fsl_easrc_stop_context(pair);
++		ctx_priv->first_convert = 1;
++	}
++
++	return 0;
++}
++
++static int fsl_easrc_m2m_check_format(u8 dir, u32 rate, u32 channels, u32 format)
++{
++	u64 support_format = FSL_EASRC_FORMATS;
++
++	if (channels < 1 || channels > 32)
++		return -EINVAL;
++
++	if (rate < 8000 || rate > 768000)
++		return -EINVAL;
++
++	if (dir == OUT)
++		support_format |= SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE;
++
++	if (!(1 << format & support_format))
++		return -EINVAL;
++
++	return 0;
++}
++
++/* calculate capture data length according to output data length and sample rate */
++static int fsl_easrc_m2m_calc_out_len(struct fsl_asrc_pair *pair, int input_buffer_length)
++{
++	struct fsl_asrc *easrc = pair->asrc;
++	struct fsl_easrc_priv *easrc_priv = easrc->private;
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++	unsigned int in_rate = ctx_priv->in_params.norm_rate;
++	unsigned int out_rate = ctx_priv->out_params.norm_rate;
++	unsigned int channels = pair->channels;
++	unsigned int in_samples, out_samples;
++	unsigned int in_width, out_width;
++	unsigned int out_length;
++	unsigned int frac_bits;
++	u64 val1, val2;
++
++	switch (easrc_priv->rs_num_taps) {
++	case EASRC_RS_32_TAPS:
++		/* integer bits = 5; */
++		frac_bits = 39;
++		break;
++	case EASRC_RS_64_TAPS:
++		/* integer bits = 6; */
++		frac_bits = 38;
++		break;
++	case EASRC_RS_128_TAPS:
++		/* integer bits = 7; */
++		frac_bits = 37;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	val1 = (u64)in_rate << frac_bits;
++	do_div(val1, out_rate);
++	val1 = val1 + ctx_priv->ratio_mod;
++
++	in_width = snd_pcm_format_physical_width(ctx_priv->in_params.sample_format) / 8;
++	out_width = snd_pcm_format_physical_width(ctx_priv->out_params.sample_format) / 8;
++
++	ctx_priv->in_filled_len += input_buffer_length;
++	if (ctx_priv->in_filled_len <= ctx_priv->in_filled_sample * in_width * channels) {
++		out_length = 0;
++	} else {
++		in_samples = ctx_priv->in_filled_len / (in_width * channels) -
++			     ctx_priv->in_filled_sample;
++
++		/* right shift 12 bit to make ratio in 32bit space */
++		val2 = (u64)in_samples << (frac_bits - 12);
++		val1 = val1 >> 12;
++		do_div(val2, val1);
++		out_samples = val2;
++
++		out_length = out_samples * out_width * channels;
++		ctx_priv->in_filled_len = ctx_priv->in_filled_sample * in_width * channels;
++	}
++
++	return out_length;
++}
++
++static int fsl_easrc_m2m_get_maxburst(u8 dir, struct fsl_asrc_pair *pair)
++{
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++
++	if (dir == IN)
++		return ctx_priv->in_params.fifo_wtmk * pair->channels;
++	else
++		return ctx_priv->out_params.fifo_wtmk * pair->channels;
++}
++
++static int fsl_easrc_m2m_pair_suspend(struct fsl_asrc_pair *pair)
++{
++	fsl_easrc_stop_context(pair);
++
++	return 0;
++}
++
++static int fsl_easrc_m2m_pair_resume(struct fsl_asrc_pair *pair)
++{
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++
++	ctx_priv->first_convert = 1;
++	ctx_priv->in_filled_len = 0;
++
++	return 0;
++}
++
++static int fsl_easrc_m2m_set_ratio_mod(struct fsl_asrc_pair *pair, int val)
++{
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++	struct fsl_asrc *easrc = pair->asrc;
++
++	ctx_priv->ratio_mod += val;
++	regmap_write(easrc->regmap, REG_EASRC_RUC(pair->index), EASRC_RSUC_RS_RM(val));
++
++	return 0;
++}
++
+ static const struct of_device_id fsl_easrc_dt_ids[] = {
+ 	{ .compatible = "fsl,imx8mn-easrc",},
+ 	{}
+@@ -1926,6 +2130,16 @@ static int fsl_easrc_probe(struct platform_device *pdev)
+ 	easrc->release_pair = fsl_easrc_release_context;
+ 	easrc->get_fifo_addr = fsl_easrc_get_fifo_addr;
+ 	easrc->pair_priv_size = sizeof(struct fsl_easrc_ctx_priv);
++	easrc->m2m_start_part_one = fsl_easrc_m2m_start_part_one;
++	easrc->m2m_start_part_two = fsl_easrc_m2m_start_part_two;
++	easrc->m2m_stop_part_two = fsl_easrc_m2m_stop_part_two;
++	easrc->get_output_fifo_size = fsl_easrc_get_output_fifo_size;
++	easrc->m2m_check_format = fsl_easrc_m2m_check_format;
++	easrc->m2m_calc_out_len = fsl_easrc_m2m_calc_out_len;
++	easrc->m2m_get_maxburst = fsl_easrc_m2m_get_maxburst;
++	easrc->m2m_pair_suspend = fsl_easrc_m2m_pair_suspend;
++	easrc->m2m_pair_resume = fsl_easrc_m2m_pair_resume;
++	easrc->m2m_set_ratio_mod = fsl_easrc_m2m_set_ratio_mod;
+ 
+ 	easrc_priv->rs_num_taps = EASRC_RS_32_TAPS;
+ 	easrc_priv->const_coeff = 0x3FF0000000000000;
+diff --git a/sound/soc/fsl/fsl_easrc.h b/sound/soc/fsl/fsl_easrc.h
+index 7c70dac52713..bee887c8b4f2 100644
+--- a/sound/soc/fsl/fsl_easrc.h
++++ b/sound/soc/fsl/fsl_easrc.h
+@@ -601,6 +601,9 @@ struct fsl_easrc_slot {
+  * @out_missed_sample: sample missed in output
+  * @st1_addexp: exponent added for stage1
+  * @st2_addexp: exponent added for stage2
++ * @ratio_mod: update ratio
++ * @first_convert: start of conversion
++ * @in_filled_len: input filled length
+  */
+ struct fsl_easrc_ctx_priv {
+ 	struct fsl_easrc_io_params in_params;
+@@ -618,6 +621,9 @@ struct fsl_easrc_ctx_priv {
+ 	int out_missed_sample;
+ 	int st1_addexp;
+ 	int st2_addexp;
++	int ratio_mod;
++	unsigned int first_convert;
++	unsigned int in_filled_len;
  };
+ 
+ /**
 -- 
 2.34.1
 
