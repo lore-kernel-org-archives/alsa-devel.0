@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D62EC0015E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 10:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30F26C0015E
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 10:41:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C4166C1;
-	Wed, 26 Jul 2023 12:38:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C4166C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2E57827;
+	Wed, 26 Jul 2023 12:40:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2E57827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690367947;
-	bh=K7vK1DMSCtJtnZcF9X+/K4r87/eXmWtQPA2uuFjvj7M=;
+	s=default; t=1690368065;
+	bh=YXpcQEzb8PcCW7PbU3HlggIQ5hgpiREjZdSrFdQj5SE=;
 	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=L47UZIzQlKyPyy/wn8G1k3kzzqWMfIi1NqBo1UNx+0swMRrF2wgJKX9yyDQ8sVhYU
-	 8olC7TDILSrjB7qlkN5Srh3xBF32DC5gCj0pRUWaRaXRCQ8qViXidPcq1ReHA5Tl9b
-	 8/0Vq2NvddMO5aQZfdLjrQ8etjDu3WpDWALSRF2s=
+	b=PxSm5JLG7KHzBJm80TnjAotkvdcWg8EBz6K0vBWgAtjWnVvSU60RjnpqPxrSBFKxU
+	 aWYoJV/G1/bB/sRVArrZSXjbm9R0NLbZYRt/WQhnvkIQRPCRd+9e7M8Mp7am/TjnXs
+	 IZ+uq+D8b/OwBNpU3jCf68tzAG4D3123w5mrJWVo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A77BEF801F5; Wed, 26 Jul 2023 12:38:16 +0200 (CEST)
+	id 2371EF80310; Wed, 26 Jul 2023 12:39:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59FB7F801F5;
-	Wed, 26 Jul 2023 12:38:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D44A1F8019B;
+	Wed, 26 Jul 2023 12:39:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6B880F8019B; Wed, 26 Jul 2023 12:38:12 +0200 (CEST)
+	id 0F825F8019B; Wed, 26 Jul 2023 12:39:40 +0200 (CEST)
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
  [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DCFC0F800D2
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 12:38:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCFC0F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id B38F8F80149
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 12:39:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B38F8F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=StqXKwyL
+ header.s=selector1 header.b=qLRE5+Km
 Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
 	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 36Q7VVTF007894;
-	Wed, 26 Jul 2023 12:38:04 +0200
+ 36Q7VZaZ007966;
+	Wed, 26 Jul 2023 12:39:37 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=message-id : date :
  mime-version : subject : to : cc : references : from : in-reply-to :
  content-type : content-transfer-encoding; s=selector1;
- bh=m3mYWrA/DTLv41VpwfV17mvsYoyUfau6u7+hEa+ifQc=;
- b=StqXKwyL7+7LDaIZyI07PQqK9myM1eGjwiJXVgV7hXd1HYwrwqVxv0Ke6+jBU+gEHnNF
- C4IWMIndiWGcKwbazL4krgpwvf0h+hRpncBgnU0chBIWga4Ti/udQnnasVMjaruPCDHt
- SGLg56OGWAZ5MLGhf7vm28pQPHuWDFIdooMSYiONkEHXPU9h8iM3l1CmJnyRESF0yefK
- /LeH2/ekGQ5JH8AUoemR6NcabEhFT60e7RnR9S4yJUcJvDQoU5WwMRE4ECf+VSFP9dWq
- gThtuuQifp5g4G1WsHdpQU8TXWWKcSSiWY4Mv9xfZ5XkPtDsodKpJhg5UXAukT11wbv2 +A==
+ bh=W8GLfB17+jUE7Nw68o8tScgzzDDgHpp5NKWkRxESZlI=;
+ b=qLRE5+KmvbKk5B/UW10nGEjBoDKipiB1flNkgDwSQYqmZMZdBpctbst7Vwt4EUF87UAQ
+ lGs1OpG9iWa7NPx/eqb8ySrQnjHJTDAhdOqjGv8LVHdxJLHd4/JhOqgzW88/jAn5GpJe
+ /9sWA3Z+uL0eH5JViXAbOVXN00Amp02Tix6WttAS9w4R9wAmpstvy5KIJGiwDfWDgPWe
+ 7Ll7vUdK2tWD46wDK1zTVYHE+KrDhr1nsi10XJw0x7tkd+qwL727Kpu0HqUADsa0lQkG
+ 4pxFNpRPxpJfDasvoPH+WokzK6DrXEtEA/wNoEISShjpOySH6a8QFdhtHwnQ+A4I7C3/ 6g==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2y641bv3-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2y641c6j-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 26 Jul 2023 12:38:04 +0200
+	Wed, 26 Jul 2023 12:39:37 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AC79A10002A;
-	Wed, 26 Jul 2023 12:38:03 +0200 (CEST)
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C13A210002A;
+	Wed, 26 Jul 2023 12:39:36 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9C31C217876;
-	Wed, 26 Jul 2023 12:38:03 +0200 (CEST)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B6D7C21787E;
+	Wed, 26 Jul 2023 12:39:36 +0200 (CEST)
 Received: from [10.201.21.121] (10.201.21.121) by SHFDAG1NODE1.st.com
  (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 26 Jul
- 2023 12:38:01 +0200
-Message-ID: <d228e17b-4f5f-d5e0-1c59-d247cbc0693e@foss.st.com>
-Date: Wed, 26 Jul 2023 12:38:00 +0200
+ 2023 12:39:34 +0200
+Message-ID: <9f34d34b-911a-c064-9e44-34e030b76786@foss.st.com>
+Date: Wed, 26 Jul 2023 12:39:31 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
@@ -98,9 +98,9 @@ CC: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
         <linux-usb@vger.kernel.org>
 References: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
  <20230725164104.273965-6-gatien.chevallier@foss.st.com>
- <ZMDzNSkRvvVsxUto@corigine.com>
+ <ZMDz1AhlEeZTM/vi@corigine.com>
 From: Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
-In-Reply-To: <ZMDzNSkRvvVsxUto@corigine.com>
+In-Reply-To: <ZMDz1AhlEeZTM/vi@corigine.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.201.21.121]
@@ -109,8 +109,8 @@ X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-26_04,2023-07-25_01,2023-05-22_02
-Message-ID-Hash: 7HKBDTCJEO66QV4KKW5WPESJN3CFBIOG
-X-Message-ID-Hash: 7HKBDTCJEO66QV4KKW5WPESJN3CFBIOG
+Message-ID-Hash: UUVFGGESREJSET2ZTVVB36BRKWJXBE6N
+X-Message-ID-Hash: UUVFGGESREJSET2ZTVVB36BRKWJXBE6N
 X-MailFrom: prvs=5571ed6ca5=gatien.chevallier@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -123,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7HKBDTCJEO66QV4KKW5WPESJN3CFBIOG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UUVFGGESREJSET2ZTVVB36BRKWJXBE6N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,22 +134,8 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 
-On 7/26/23 12:19, Simon Horman wrote:
+On 7/26/23 12:22, Simon Horman wrote:
 > On Tue, Jul 25, 2023 at 06:40:58PM +0200, Gatien Chevallier wrote:
->> Introduce a STM32 firewall framework that offers to firewall consumers
->> different firewall services such as the ability to check their access
->> rights against their firewall controller(s).
->>
->> The STM32 firewall framework offers a generic API for STM32 firewall
->> controllers that is defined in their drivers to best fit the
->> specificity of each firewall.
->>
->> There are various types of firewalls:
->> -Peripheral firewalls that filter accesses to peripherals
->> -Memory firewalls that filter accesses to memories or memory regions
->> -No type for undefined type of firewall
->>
->> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
 > 
 > ...
 > 
@@ -157,196 +143,28 @@ On 7/26/23 12:19, Simon Horman wrote:
 > 
 > ...
 > 
->> +int stm32_firewall_populate_bus(struct stm32_firewall_controller *firewall_controller)
+>> +int stm32_firewall_controller_register(struct stm32_firewall_controller *firewall_controller)
 >> +{
->> +	struct stm32_firewall *firewalls;
->> +	struct device_node *child;
->> +	struct device *parent;
->> +	unsigned int i;
->> +	int len;
->> +	int err;
+>> +	struct stm32_firewall_controller *ctrl;
 >> +
->> +	parent = firewall_controller->dev;
+>> +	pr_info("Registering %s firewall controller\n", firewall_controller->name);
 >> +
->> +	dev_dbg(parent, "Populating %s system bus\n", dev_name(firewall_controller->dev));
->> +
->> +	for_each_available_child_of_node(dev_of_node(parent), child) {
->> +		/* The feature-domains property is mandatory for firewall bus devices */
->> +		len = of_count_phandle_with_args(child, "feature-domains", "#feature-domain-cells");
->> +		if (len <= 0)
+>> +	if (!firewall_controller)
+>> +		return -ENODEV;
 > 
-> Coccinelle says that, due to breaking out of a
-> for_each_available_child_of_node() loop, a call to of_node_put()
-> is needed here
+> HI Gatien,
 > 
-
-Hi Simon,
-
-Thank you, I already sent a V3 correcting the patch ordering issue. I
-will implement this for V4.
-
->> +			return -EINVAL;
->> +
->> +		firewalls = kcalloc(len, sizeof(*firewalls), GFP_KERNEL);
->> +		if (!firewalls)
+> Sorry, one more on this patch, that I missed before sending my previous
+> email.
 > 
-> And here.
+> firewall_controller is checked for NULL here.
+> But it is already dereferenced on the line above the check.
 > 
-
-ditto
-
->> +			return -ENOMEM;
->> +
->> +		err = stm32_firewall_get_firewall(child, firewalls, (unsigned int)len);
->> +		if (err) {
->> +			kfree(firewalls);
-> 
-> And here.
-> 
-
-ditto
-
->> +			return err;
->> +		}
->> +
->> +		for (i = 0; i < len; i++) {
->> +			if (firewall_controller->grant_access(firewall_controller,
->> +							      firewalls[i].firewall_id)) {
->> +				/*
->> +				 * Peripheral access not allowed or not defined.
->> +				 * Mark the node as populated so platform bus won't probe it
->> +				 */
->> +				of_node_set_flag(child, OF_POPULATED);
->> +				dev_err(parent, "%s: Device driver will not be probed\n",
->> +					child->full_name);
->> +			}
->> +		}
->> +
->> +		kfree(firewalls);
->> +	}
->> +
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(stm32_firewall_populate_bus);
-> 
->> diff --git a/drivers/bus/stm32_firewall.h b/drivers/bus/stm32_firewall.h
+> Flagged by Smatch.
 > 
 > ...
-> 
->> +/**
->> + * struct stm32_firewall_controller - Information on firewall controller supplying services
->> + *
->> + * @name			Name of the firewall controller
-> 
-> kernel-doc complains that name and the other fields of
-> struct stm32_firewall_controller are not documented.
-> I believe this is because a ':' is needed after the name of
-> the parameter (in this case 'name').
-> 
->   * @name:			Name of the firewall controller
-> 
-> Likewise, elsewhere.
-> 
 
-I will implement it in V4, thank you.
+Indeed, thank you. I will change this for V4
 
->> + * @dev				Device reference of the firewall controller
->> + * @mmio			Base address of the firewall controller
->> + * @entry			List entry of the firewall controller list
->> + * @type			Type of firewall
->> + * @max_entries			Number of entries covered by the firewall
->> + * @grant_access		Callback used to grant access for a device access against a
->> + *				firewall controller
->> + * @release_access		Callback used to release resources taken by a device when access was
->> + *				granted
->> + * @grant_memory_range_access	Callback used to grant access for a device to a given memory region
->> + */
->> +struct stm32_firewall_controller {
->> +	const char *name;
->> +	struct device *dev;
->> +	void __iomem *mmio;
->> +	struct list_head entry;
->> +	unsigned int type;
->> +	unsigned int max_entries;
->> +
->> +	int (*grant_access)(struct stm32_firewall_controller *ctrl, u32 id);
->> +	void (*release_access)(struct stm32_firewall_controller *ctrl, u32 id);
->> +	int (*grant_memory_range_access)(struct stm32_firewall_controller *ctrl, phys_addr_t paddr,
->> +					 size_t size);
->> +};
->> +
->> +/**
->> + * int stm32_firewall_controller_register - Register a firewall controller to the STM32 firewall
-> 
-> kernel-doc seems unhappy about the presence of 'int' on this line.
-> 
->   * stm32_firewall_controller_register - Register a firewall controller to the STM32 firewall
-> 
-> Likewise, elsewhere.
-> 
-
-Yes, I will remove the type in V4.
-
->> + *					    framework
->> + * @firewall_controller		Firewall controller to register
->> + *
->> + * Returns 0 in case of success or -ENODEV if no controller was given.
->> + */
->> +int stm32_firewall_controller_register(struct stm32_firewall_controller *firewall_controller);
-> 
-> ...
-> 
->> diff --git a/include/linux/bus/stm32_firewall_device.h b/include/linux/bus/stm32_firewall_device.h
->> new file mode 100644
->> index 000000000000..9bdc4060154c
->> --- /dev/null
->> +++ b/include/linux/bus/stm32_firewall_device.h
->> @@ -0,0 +1,140 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
->> + */
->> +
->> +#ifndef STM32_FIREWALL_DEVICE_H
->> +#define STM32_FIREWALL_DEVICE_H
->> +
->> +#include <linux/of.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/types.h>
->> +
->> +#define STM32_FIREWALL_MAX_EXTRA_ARGS		5
->> +
->> +/* Opaque reference to stm32_firewall_controller */
->> +struct stm32_firewall_controller;
->> +
->> +/**
->> + * stm32_firewall - Information on a device's firewall. Each device can have more than one firewall.
-> 
-> kernel-doc seems unhappy about the absence of struct on this line.
-> 
->   * struct stm32_firewall - Information on a device's firewall. Each device can have more than one firewall.
-> 
-
-Yes, I will add the struct in V4.
-
->> + *
->> + * @firewall_ctrl		Pointer referencing a firewall controller of the device. It is
->> + *				opaque so a device cannot manipulate the controller's ops or access
->> + *				the controller's data
->> + * @extra_args			Extra arguments that are implementation dependent
->> + * @entry			Name of the firewall entry
->> + * @extra_args_size		Number of extra arguments
->> + * @firewall_id			Firewall ID associated the device for this firewall controller
->> + */
->> +struct stm32_firewall {
->> +	struct stm32_firewall_controller *firewall_ctrl;
->> +	u32 extra_args[STM32_FIREWALL_MAX_EXTRA_ARGS];
->> +	const char *entry;
->> +	size_t extra_args_size;
->> +	u32 firewall_id;
->> +};
-> 
-> ...
-> 
 Best regards,
 Gatien
