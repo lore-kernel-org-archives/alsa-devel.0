@@ -4,98 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A2A4C0015E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 15:12:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E16FC0015E
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 16:18:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25434DF6;
-	Wed, 26 Jul 2023 17:11:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25434DF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B011A827;
+	Wed, 26 Jul 2023 18:17:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B011A827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690384333;
-	bh=T6p9VtDwK8167e9dyZCiy9B1REQlIna4UB8eih9akJg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=OhJMkqDl2JG/q5+Qxd04P68kvt6fbGmwbJ0Q3bqh+huhCw5pJQrZyrhD5iN+ofe5D
-	 pdkpxKUKHjzRqGv2UsBl/o3zriQrjlHewC83Gidjn4wdx/y/OKBhaAxp5mUyC9IGMF
-	 pLnIrsEL9zu3Uk/GcAm950p1svo0yTqw0ApnkHD4=
+	s=default; t=1690388286;
+	bh=KZMh6gXb5/w9VAYcBbs3HMPGR9VX5lnocJ18hEQ/n2s=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=My5I/5AddaXheFef1xgpRJ1cgL4mBFyKtzzlKMeT7Ym6Ux6+dcRV3rtfWrDFHZPDv
+	 3+rSIp2kXYFUEpWBWS5HxJxTshiNkBi3aB7Lzb2KZgf4T+hiX2PB0IMxHDMZyEx/J4
+	 VTd0SHyuzzT3sMOsAK9JAk0sjFYDwGxtX33Nj+9I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F0E8EF80153; Wed, 26 Jul 2023 17:04:56 +0200 (CEST)
+	id 0CB4EF80535; Wed, 26 Jul 2023 18:16:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6BDD4F80153;
-	Wed, 26 Jul 2023 17:04:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50EBCF8019B;
+	Wed, 26 Jul 2023 18:16:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18D2DF806A2; Wed, 26 Jul 2023 17:04:42 +0200 (CEST)
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::225])
+	id 173EDF8019B; Wed, 26 Jul 2023 18:16:42 +0200 (CEST)
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::227])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AA827F80659
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 17:04:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA827F80659
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4571FF80149
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 18:16:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4571FF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=VDJFTfsl
-Received: by mail.gandi.net (Postfix) with ESMTPA id 480361C0008;
-	Wed, 26 Jul 2023 15:04:13 +0000 (UTC)
+ header.s=gm1 header.b=N6BxAX76
+Received: by mail.gandi.net (Postfix) with ESMTPA id CB81420003;
+	Wed, 26 Jul 2023 16:16:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690383856;
+	t=1690388186;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/7VRBWCE3zQkjZUnwqNM+hf1oXBkNM8jqaefsT3cImE=;
-	b=VDJFTfslBhM2nEBN2krY5yuVwQ57ITkjy49bePw0G/vUAySjFFFSODJmXjyc8WgsHYxDUV
-	yKyv5zavc5TfUk7zyy/R6xPyJs3yjGgqKDPq/l6u79zljmSq7gSeY34yxPEewido5vbTbc
-	hmGtsQpR4QSIBiOPJ+cDkUZ/rGO66jVKqa3l0gajvDgwWEh41jfoPHZOf/uOhYQNfcQCnt
-	fyOzi0dizFQgwnSufUVSbz4P8izRFttN9KDckFAZH/VUL/S+cvW6nahdNSXNIYloYJ7i2P
-	to//NoUd3WvlqBZkelmr5GZW506i/Pz7TBngjE0DMKndauYkU0mP2kObKvMp7w==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=eBmzEf3kjVQ82BbqkAs+ELGEXlJ8CUzuDkLRObIRhk4=;
+	b=N6BxAX76EenROMlARU/JmssigVE/7f+lesvsSK/kILa36HBHNRwtPOP1C/NA8GneXVZWlo
+	vwidYrwh4GOQ7EQWfGtYjcJIsu9vsAZ24pXLxDAjV6aWECeREVMNS0+TtlGuuLxzAzdEv7
+	hTixV+QT0O9oFHPfYJHM3x7zLuMoq3x8VN68tjceNpjiTvTsnUgoEpeaFRhUvZeij+bfX7
+	gPinUZg2zf75u1p9QXu4K/ZDUaRYE1EL0khQUcBr7IlqLu5uW+UM7N6c4E7U8LyuoFUu5l
+	3W6JvMGmhe7koaf81QJ5s0Z4aBWTKumknM2zq7NyO9B2zd5f4rtOeDdZekfD4A==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Lee Jones <lee@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Qiang Zhao <qiang.zhao@nxp.com>,
-	Li Yang <leoyang.li@nxp.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
 	Shengjiu Wang <shengjiu.wang@gmail.com>,
 	Xiubo Li <Xiubo.Lee@gmail.com>,
 	Fabio Estevam <festevam@gmail.com>,
 	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Randy Dunlap <rdunlap@infradead.org>
-Cc: netdev@vger.kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org,
-	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2 27/28] dt-bindings: net: fsl,qmc-hdlc: Add framer support
-Date: Wed, 26 Jul 2023 17:02:23 +0200
-Message-ID: <20230726150225.483464-28-herve.codina@bootlin.com>
+Subject: [PATCH 1/1] ASoC: fsl: fsl_qmc_audio: Fix snd_pcm_format_t values
+ handling
+Date: Wed, 26 Jul 2023 18:16:20 +0200
+Message-ID: <20230726161620.495298-1-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230726150225.483464-1-herve.codina@bootlin.com>
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: PDH342FXNBS44KD555FOEEYMTOM4YXTW
-X-Message-ID-Hash: PDH342FXNBS44KD555FOEEYMTOM4YXTW
+Message-ID-Hash: 3RTUEENVSCNY3B3WLACAGYPYVNTD4IER
+X-Message-ID-Hash: 3RTUEENVSCNY3B3WLACAGYPYVNTD4IER
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -108,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PDH342FXNBS44KD555FOEEYMTOM4YXTW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3RTUEENVSCNY3B3WLACAGYPYVNTD4IER/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,35 +97,105 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-A framer can be connected to the QMC HDLC.
-If present, this framer is the interface between the TDM used by the QMC
-HDLC and the E1/T1 line.
-The QMC HDLC can use this framer to get information about the line and
-configure the line.
+Running sparse on fsl_qmc_audio (make C=1) raises the following warnings:
+ fsl_qmc_audio.c:387:26: warning: restricted snd_pcm_format_t degrades to integer
+ fsl_qmc_audio.c:389:59: warning: incorrect type in argument 1 (different base types)
+ fsl_qmc_audio.c:389:59:    expected restricted snd_pcm_format_t [usertype] format
+ fsl_qmc_audio.c:389:59:    got unsigned int [assigned] i
+ fsl_qmc_audio.c:564:26: warning: restricted snd_pcm_format_t degrades to integer
+ fsl_qmc_audio.c:569:50: warning: incorrect type in argument 1 (different base types)
+ fsl_qmc_audio.c:569:50:    expected restricted snd_pcm_format_t [usertype] format
+ fsl_qmc_audio.c:569:50:    got int [assigned] i
+ fsl_qmc_audio.c:573:62: warning: incorrect type in argument 1 (different base types)
+ fsl_qmc_audio.c:573:62:    expected restricted snd_pcm_format_t [usertype] format
+ fsl_qmc_audio.c:573:62:    got int [assigned] i
 
-Add an optional framer property to reference the framer itself.
+These warnings are due to snd_pcm_format_t values handling done in the
+driver. Some macros and functions exist to handle safely these values.
 
+Use dedicated macros and functions to remove these warnings.
+
+Fixes: 075c7125b11c ("ASoC: fsl: Add support for QMC audio")
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/fsl/fsl_qmc_audio.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml b/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-index 8bb6f34602d9..bf29863ab419 100644
---- a/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-+++ b/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-@@ -27,6 +27,11 @@ properties:
-       Should be a phandle/number pair. The phandle to QMC node and the QMC
-       channel to use.
+diff --git a/sound/soc/fsl/fsl_qmc_audio.c b/sound/soc/fsl/fsl_qmc_audio.c
+index 7cbb8e4758cc..56d6b0b039a2 100644
+--- a/sound/soc/fsl/fsl_qmc_audio.c
++++ b/sound/soc/fsl/fsl_qmc_audio.c
+@@ -372,8 +372,8 @@ static int qmc_dai_hw_rule_format_by_channels(struct qmc_dai *qmc_dai,
+ 	struct snd_mask *f_old = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int slot_width;
++	snd_pcm_format_t format;
+ 	struct snd_mask f_new;
+-	unsigned int i;
  
-+  framer:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      phandle to the framer node
-+
- required:
-   - compatible
-   - fsl,qmc-chan
+ 	if (!channels || channels > nb_ts) {
+ 		dev_err(qmc_dai->dev, "channels %u not supported\n",
+@@ -384,10 +384,10 @@ static int qmc_dai_hw_rule_format_by_channels(struct qmc_dai *qmc_dai,
+ 	slot_width = (nb_ts / channels) * 8;
+ 
+ 	snd_mask_none(&f_new);
+-	for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
+-		if (snd_mask_test(f_old, i)) {
+-			if (snd_pcm_format_physical_width(i) <= slot_width)
+-				snd_mask_set(&f_new, i);
++	pcm_for_each_format(format) {
++		if (snd_mask_test_format(f_old, format)) {
++			if (snd_pcm_format_physical_width(format) <= slot_width)
++				snd_mask_set_format(&f_new, format);
+ 		}
+ 	}
+ 
+@@ -551,26 +551,26 @@ static const struct snd_soc_dai_ops qmc_dai_ops = {
+ 
+ static u64 qmc_audio_formats(u8 nb_ts)
+ {
+-	u64 formats;
+-	unsigned int chan_width;
+ 	unsigned int format_width;
+-	int i;
++	unsigned int chan_width;
++	snd_pcm_format_t format;
++	u64 formats_mask;
+ 
+ 	if (!nb_ts)
+ 		return 0;
+ 
+-	formats = 0;
++	formats_mask = 0;
+ 	chan_width = nb_ts * 8;
+-	for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
++	pcm_for_each_format(format) {
+ 		/*
+ 		 * Support format other than little-endian (ie big-endian or
+ 		 * without endianness such as 8bit formats)
+ 		 */
+-		if (snd_pcm_format_little_endian(i) == 1)
++		if (snd_pcm_format_little_endian(format) == 1)
+ 			continue;
+ 
+ 		/* Support physical width multiple of 8bit */
+-		format_width = snd_pcm_format_physical_width(i);
++		format_width = snd_pcm_format_physical_width(format);
+ 		if (format_width == 0 || format_width % 8)
+ 			continue;
+ 
+@@ -581,9 +581,9 @@ static u64 qmc_audio_formats(u8 nb_ts)
+ 		if (format_width > chan_width || chan_width % format_width)
+ 			continue;
+ 
+-		formats |= (1ULL << i);
++		formats_mask |= pcm_format_to_bits(format);
+ 	}
+-	return formats;
++	return formats_mask;
+ }
+ 
+ static int qmc_audio_dai_parse(struct qmc_audio *qmc_audio, struct device_node *np,
 -- 
 2.41.0
 
