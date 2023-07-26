@@ -4,83 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7935EC001DE
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 05:05:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EABAAC001E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 06:19:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82935828;
-	Wed, 26 Jul 2023 07:04:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82935828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C0C8820;
+	Wed, 26 Jul 2023 08:18:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C0C8820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690347931;
-	bh=e9H3JC4nrF1mlH7bgAYFwCwqqme2EeRSHsKv5h5ytm4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Nd2+l4tEsq/EbO86guv81SK9VMmxtuczb0Wmk3nklBZ7KFrLj/dfVqqCt17sF/Egy
-	 LuJbP+IQGakgGKTdGBPpOAIBv9F7+M/ptZqQNZI7umLYx2lYxLzcnGwWhq4vthDNs+
-	 pUXGj3W8VyNbZ4KqwHxXkyeKPK5kT7ZBh/SAWUw4=
+	s=default; t=1690352349;
+	bh=js5eLjuH8dKH2vHgVoNL1hwwICaDvEgaMk24LXytU+c=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=nIeWzG5w1/r3UUvnPwvE1ayfPMW7NIhGvnhX7ddCBdbNzFJLT/YFbwSgCcfEhZ3yO
+	 2BDA72itGw7FoCX2lwNYl+j5pci730kTNybwyF5yPqj3PGlo17oNgKQX+Az0Se54+y
+	 NT1+pczdxoF8oIiS+fW1puH/TNgDImMVsoKf3uFw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A476F80549; Wed, 26 Jul 2023 07:04:20 +0200 (CEST)
+	id C7C97F80535; Wed, 26 Jul 2023 08:17:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 704ABF800C7;
-	Wed, 26 Jul 2023 07:04:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B3D1F8019B;
+	Wed, 26 Jul 2023 08:17:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7FE9AF8019B; Wed, 26 Jul 2023 07:04:13 +0200 (CEST)
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com
- [IPv6:2607:f8b0:4864:20::634])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 65C20F800C7; Wed, 26 Jul 2023 08:15:16 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 791DDF80149
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 07:04:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 791DDF80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 36106F800C7
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 08:15:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36106F800C7
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
- header.s=google header.b=i8e5D386
-Received: by mail-pl1-x634.google.com with SMTP id
- d9443c01a7336-1bb8e45185bso18415815ad.1
-        for <alsa-devel@alsa-project.org>;
- Tue, 25 Jul 2023 22:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690347842; x=1690952642;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EmNxf7H0BywXLtYlbyzZ0cohOxG3KN5qwoqWHBea/DE=;
-        b=i8e5D386JPazAaCSpTbvVvQTdkpO/Ce+xooq5vf1A56euX8LkYV7aNAeJur95KwXHH
-         ycurDepI7RCrgNILIlWlKTX7cyLGIWzf4CfyzwHQWGa8r30kjLHPbjR9KGdkvoeh1xvl
-         sFpkufDwIYceHjLLxu80f6mvHGi7o4Hh+AyhE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690347842; x=1690952642;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EmNxf7H0BywXLtYlbyzZ0cohOxG3KN5qwoqWHBea/DE=;
-        b=K9fxmXoDDzJjXPyF1rRMafKtmLbid12tfbWxzLgfei1jgMu1Oz7w1KF+UVejUyoQmk
-         yVc/fPYam5ELIaJmX98pkdWo2QkfLKc/0nyy2lnAeqlpBsTXEM2kHR8U7CuEtqQ9gRQx
-         46fPpGt/XjoRApDQgAUXLAvjEMfoLZbLNNFumG9MZ3+QjblCMET7gOJQi5DrxWC/HDf+
-         A2BtM+oG2hyODLhkiv689GKshkhZGuZTcyg5fiEccdu8auHcBhQ1hXpPdVYxWM7OFhk/
-         jWKYr5hkyKZ43slxBeLT9CD1IgL6EFOLe84AUox+TXq8SA/2nwg7zlWSo0n8odD3k4/I
-         G94g==
-X-Gm-Message-State: ABy/qLY1VbAH14binFP9bS8l476CbPwhClbNv/cFgO5lXJoiyrE8V6+Q
-	D8mHbWDpRdl+DIadWgfQzJ/3yjiszbqLpvj0UBM=
-X-Google-Smtp-Source: 
- APBJJlHCsyMGDfR/HSI4jTFBKt05j4ib5fipfp9CPEPiAJolZuOa93xPQomZb9+LBBoHaiuhXeFkKA==
-X-Received: by 2002:a17:903:120d:b0:1b7:c0b3:b17d with SMTP id
- l13-20020a170903120d00b001b7c0b3b17dmr1003936plh.5.1690347841574;
-        Tue, 25 Jul 2023 22:04:01 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net.
- [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id
- p1-20020a1709028a8100b001b3ce619e2esm11893529plo.179.2023.07.25.22.04.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jul 2023 22:04:01 -0700 (PDT)
-Date: Tue, 25 Jul 2023 22:04:00 -0700
-From: Kees Cook <keescook@chromium.org>
-To: justinstitt@google.com
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=hoq/8oKx
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690352106; x=1721888106;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=js5eLjuH8dKH2vHgVoNL1hwwICaDvEgaMk24LXytU+c=;
+  b=hoq/8oKx15GooU8PdZsL8CCSZ1MZhjmrK+IN33MY107YjLsmi4qaM8dn
+   Cm1SP+pVneG+L5gws7WNeIS3emo4SNO773n/9qKGop/oOzvsuBUqHy/6n
+   wAlRV8BmW2FIZmldDtS/QW5eClURVyCC8vE9xVMQxuJgmSZ6P/NDujPWe
+   ZT9lwINYqs1QDjdVolcOsT8OL/fBPWbTRGaw90QBTJ6CTJTpAwSCf0Ms6
+   jVwkEY7bHdV3J7S6Qh4LaYsMNxpBO6WV/bA/K3LoZ/pKOVJY7zDyfbDCx
+   phhfi7NhXcq2PGclQxpzyPZBhnYPgWzCG4MZBwrVIlTvr9Hl+6lxVkoxq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="367950241"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200";
+   d="scan'208";a="367950241"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jul 2023 23:14:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="703606278"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200";
+   d="scan'208";a="703606278"
+Received: from brentlu-desktop.itwn.intel.com ([10.5.252.92])
+  by orsmga006.jf.intel.com with ESMTP; 25 Jul 2023 23:14:54 -0700
+From: Brent Lu <brent.lu@intel.com>
+To: alsa-devel@alsa-project.org
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
@@ -88,21 +71,29 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH] ASoC: intel: avs: refactor strncpy usage in topology
-Message-ID: <202307252157.90B1933@keescook>
-References: 
- <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Brent Lu <brent.lu@intel.com>,
+	linux-kernel@vger.kernel.org,
+	Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+	Yong Zhi <yong.zhi@intel.com>,
+	Terry Cheong <htcheong@chromium.org>,
+	Uday M Bhat <uday.m.bhat@intel.com>,
+	Mac Chiang <mac.chiang@intel.com>,
+	"Dharageswari . R" <dharageswari.r@intel.com>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	ye xingchen <ye.xingchen@zte.com.cn>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 0/2] Intel: sof_rt5682: remove quirk flag
+Date: Wed, 26 Jul 2023 22:08:46 +0800
+Message-Id: <20230726140848.2267568-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: 
- <20230725-sound-soc-intel-avs-remove-deprecated-strncpy-v1-1-6357a1f8e9cf@google.com>
-Message-ID-Hash: GJDUXBZJG2CHFQLUD62RJCT6IYUVS642
-X-Message-ID-Hash: GJDUXBZJG2CHFQLUD62RJCT6IYUVS642
-X-MailFrom: keescook@chromium.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: NIJRFCYUS4NB3S5G23R53RVGHAJBEO34
+X-Message-ID-Hash: NIJRFCYUS4NB3S5G23R53RVGHAJBEO34
+X-MailFrom: brent.lu@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -114,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GJDUXBZJG2CHFQLUD62RJCT6IYUVS642/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NIJRFCYUS4NB3S5G23R53RVGHAJBEO34/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,86 +114,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jul 25, 2023 at 10:08:38PM +0000, justinstitt@google.com wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1].
-> 
-> A suitable replacement is `strscpy` [2].
+We add a helper function to detect amplifier number according to device instance
+in ACPI table so the SOF_MAX98390_TWEETER_SPEAKER_PRESENT flag and a dmi quirk
+for 4-amplifier configuration could be safely removed.
 
-For future patches like this, can you include the rationale for _why_
-strscpy() is suitable? (i.e. how did you check that it doesn't need
-zero-padding, the dest is expected to always be NUL-terminated, etc.)
+Also refactor the max_98390_hw_params() function to use an array to handle the
+TDM parameter.
 
-I had fun looking through this code -- it's a bit of a maze! I can see
-in the initializer for "route" (soc_tplg_dapm_graph_elems_load()), that
-all the strings pointed at from "elem" are being checked for NUL-termination.
+Amplifier number detection and TDM parameter are tested on two Chromebooks. One
+with 2 MAX98390 and one with 4 MAX98390 amplifier.
 
-That this code is doing an in-place rewrite of the string is pretty
-unusual (i.e. specifically casting around the "const"), but it looks
-quite intentional. :)
+V2 Changes:
+- fix some typos in cover letter
+- use for_each_acpi_dev_match() macro to simplify the codec
+- use 'unsign int' for codec number variable
 
-> There are some hopes that someday the `strncpy` api could be ripped out
+Brent Lu (2):
+  ASoC: Intel: maxim-common: get codec number from ACPI
+  ASoC: Intel: sof_rt5682: remove SOF_MAX98390_TWEETER_SPEAKER_PRESENT
+    flag
 
-This can be rephrased, perhaps, as:
-
-There is a goal to eliminate the `strncpy` API in the kernel, as its
-use is too ambiguous, instead moving to the unambiguous replacements
-(strscpy, strscpy_pad, strtomem, strtomem_pad, strlcpy) [1].
-
-> due to the vast number of suitable replacements (strscpy, strscpy_pad,
-> strtomem, strtomem_pad, strlcpy) [1].
-> 
-> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-> [2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-> 
-> ---
-^^^^ this triple-dash is going to cause some tooling to lose your S-o-b,
-as it indicates the end of the commit log.
-
-> 
-> 
-> Link: https://github.com/KSPP/linux/issues/90
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-
-But otherwise, looks good:
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
-> ---
->  sound/soc/intel/avs/topology.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
-> index cdb4ec500261..45d0eb2a8e71 100644
-> --- a/sound/soc/intel/avs/topology.c
-> +++ b/sound/soc/intel/avs/topology.c
-> @@ -1388,12 +1388,12 @@ static int avs_route_load(struct snd_soc_component *comp, int index,
->  		port = __ffs(mach->mach_params.i2s_link_mask);
->  
->  		snprintf(buf, len, route->source, port);
-> -		strncpy((char *)route->source, buf, len);
-> +		strscpy((char *)route->source, buf, len);
->  		snprintf(buf, len, route->sink, port);
-> -		strncpy((char *)route->sink, buf, len);
-> +		strscpy((char *)route->sink, buf, len);
->  		if (route->control) {
->  			snprintf(buf, len, route->control, port);
-> -			strncpy((char *)route->control, buf, len);
-> +			strscpy((char *)route->control, buf, len);
->  		}
->  	}
->  
-> 
-> ---
-> base-commit: 0b4a9fdc9317440a71d4d4c264a5650bf4a90f3c
-> change-id: 20230725-sound-soc-intel-avs-remove-deprecated-strncpy-2bc41a5a5f81
-> 
-> Best regards,
-> -- 
-> Justin Stitt <justinstitt@google.com>
-> 
+ sound/soc/intel/boards/sof_maxim_common.c | 171 +++++++++++++---------
+ sound/soc/intel/boards/sof_maxim_common.h |  21 ++-
+ sound/soc/intel/boards/sof_rt5682.c       |  37 +----
+ 3 files changed, 112 insertions(+), 117 deletions(-)
 
 -- 
-Kees Cook
+2.34.1
+
