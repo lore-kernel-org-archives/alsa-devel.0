@@ -4,98 +4,190 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93CA0C001DC
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 06:19:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7864C001DC
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 06:19:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 110AB844;
-	Wed, 26 Jul 2023 08:18:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 110AB844
+	by alsa0.perex.cz (Postfix) with ESMTPS id F31386C1;
+	Wed, 26 Jul 2023 08:18:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F31386C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690352373;
-	bh=czFsb2UY7MjSTq47Q5fzoRo36x484NeNCEgyeW9DTXI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1690352384;
+	bh=R7EU344W1umB9+dJrtIlb0bv61JrXH+EInMMXxPC9pA=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SEjl+nlc+1H1VOvNCQa0zt2GiT3xD8cs1Sfg2rqnC9raonWZkvRGwCCczBZsqVK6a
-	 eVZvBLPqhgdSiu/87Hvkg92mhteXmkFigkpf/j9jWK1bP5wbLODHDbqmlxrh1qXfbS
-	 jPgwhznDrEIAr4uNISCssw/Cp0IVoUK5uV+IzVd0=
+	b=RkwT99kZXxZVqZoToLB6ZYasZMQPQIT8TfYj+wTASJ8TQDVm2LNUXyk35X4boJBiE
+	 odBTNoeX/AEhwSs2dcdci/WW1T693FwnHX6RDQjpMC1OMUdy4dl1i0LLU3/Km/KKv/
+	 CtkuX7DQDJpsBoOqIkJIICmo1bZ7feB1ixXZPYmc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4FB4F80549; Wed, 26 Jul 2023 08:17:53 +0200 (CEST)
+	id 12E65F8057A; Wed, 26 Jul 2023 08:18:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60E4EF80549;
-	Wed, 26 Jul 2023 08:17:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7A7CF8057A;
+	Wed, 26 Jul 2023 08:18:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB071F802E8; Wed, 26 Jul 2023 08:15:22 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+	id 8A5B0F8019B; Wed, 26 Jul 2023 08:16:54 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5CE6CF800D2
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 08:15:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CE6CF800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0096BF800C7
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 08:16:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0096BF800C7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Yo0Oz0RT
+ header.s=Intel header.b=SQt+zXcC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690352108; x=1721888108;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=czFsb2UY7MjSTq47Q5fzoRo36x484NeNCEgyeW9DTXI=;
-  b=Yo0Oz0RTLqiz4y6AoDc2RstoBCn7Dy3pxhYZNW+zy+RgXUYdmF5jsRI4
-   e3hjQCf0MTCsapNjHcpCuNzK1goBmlIMus8bLc1IDK/lYWEazUAAfXp+/
-   5eht0/l0aYbXNeSMIS9Kwonsw1JLiWY6LOc/yplopOdT7vAvC9MLc0jvM
-   8JOFTbHVPhb9WzgNqJWi29TBFyoD1YdoeA6r7NlnDWXYHNMGZMugw/C38
-   1AEwlSQlD8E5V5oz6Bq6RhITmIJ75BjWwhbk1G69QUMs5Yz7yIbiWGW1v
-   8g4NZXxjYFKqVs/mu/3N7geJLdeAdBxdeNx00adGJriTfJ4raDwfqV3GT
+  t=1690352209; x=1721888209;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=R7EU344W1umB9+dJrtIlb0bv61JrXH+EInMMXxPC9pA=;
+  b=SQt+zXcC1IuOcuQKO2vt4jnc3ZWA/uIM0KLjQuXcAbE9E7DfGnluyc7q
+   wVCWFD39FYiumMJIhsFw8aoEmi1sFV3K9ye4LFCgqHsdCY/xCZqJ/vmnY
+   +/tYzBvIx/IsAp/KqqgoNEEnIA2RqIzyiw4mxX9ybuipKGvdCUHdg/n8e
+   dN95FqapkyC8QDZP9W+tZFWsHFsJPrn3gf9UQag5DIp1PCbEpi0ImDv+m
+   GUU/YJt+2/Bms9GDP53slayl6AYf45mX7T8O5eTbDTnlv9Gbl61I7a2v3
+   rQCoqZ3QuFhF35Z+el2kW44tH7zOy/x+mW9lPd3rPRsBc/t/hKhrf58Sv
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="367950268"
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="366813742"
 X-IronPort-AV: E=Sophos;i="6.01,231,1684825200";
-   d="scan'208";a="367950268"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jul 2023 23:15:05 -0700
+   d="scan'208";a="366813742"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jul 2023 23:16:44 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="703606331"
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="796423802"
 X-IronPort-AV: E=Sophos;i="6.01,231,1684825200";
-   d="scan'208";a="703606331"
-Received: from brentlu-desktop.itwn.intel.com ([10.5.252.92])
-  by orsmga006.jf.intel.com with ESMTP; 25 Jul 2023 23:15:00 -0700
-From: Brent Lu <brent.lu@intel.com>
-To: alsa-devel@alsa-project.org
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Brent Lu <brent.lu@intel.com>,
-	linux-kernel@vger.kernel.org,
-	Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
-	Yong Zhi <yong.zhi@intel.com>,
-	Terry Cheong <htcheong@chromium.org>,
-	Uday M Bhat <uday.m.bhat@intel.com>,
-	Mac Chiang <mac.chiang@intel.com>,
-	"Dharageswari . R" <dharageswari.r@intel.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	ye xingchen <ye.xingchen@zte.com.cn>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 1/2] ASoC: Intel: maxim-common: get codec number from ACPI
-Date: Wed, 26 Jul 2023 22:08:47 +0800
-Message-Id: <20230726140848.2267568-2-brent.lu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230726140848.2267568-1-brent.lu@intel.com>
-References: <20230726140848.2267568-1-brent.lu@intel.com>
+   d="scan'208";a="796423802"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga004.fm.intel.com with ESMTP; 25 Jul 2023 23:16:44 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 25 Jul 2023 23:16:43 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 25 Jul 2023 23:16:43 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.44) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 25 Jul 2023 23:16:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AhLFccOn81VqambNna0E+7jvl1oCA/gFMeEesQn2scBuoHNyZhdOPJQEcTiXQz/vqgptN8YQx3M8b8mihEqWMxElLJ4Jlo0tn0BmYnCWjvIlFMcYvXaauK5mm93ybRmnBPlZnzT/xiMJZosi6fLISdKQQbdyeGcnZarVIi8Ly4ON4VC9roPib1Wga73Lgf8nsktGUNShjCT9MgjOU3sMmvIZQFXSnH7kQRvcqU1uHnx9NRFcms6ku9UXsNKEA+Hfh2eHmmcOyctV/Uc8UehR5uLQ0uPFS5nEoKVhrQOQmf6uZvwaKh5mPX5oc14to64+MxRc94pY4w5GEcEHr8ipRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8eAwYiI8w/6YwQs8EjCip+sTfTNr7r1XCHeHjUqJXvQ=;
+ b=hc5w9tD6peMlwihZ4U52erZK6PmbBbMSbT7vn+A9dIwfcJOH1DXanZhbQ6VrmN0lpKooag1A3yJtUHgnQCBvMA/fneROxwsSFpX1QvA2h9heDfcsqMpU5aj+GvKdaGyeB2zkm1520B6IJXv76RpHwEwquIJ703oWZMf0v3ftfNBNE12eenpG7Z6aGb6ETZBw21HCripmfMo6vUke93rOAQc8ctB6uh8g75W1VzstGYbKB1FRcZGdsMJNEuvozeLofmdKuEH2EedQmuz3yl/Vup/MWinXAoENl1U9MH/47QO4MHeTt8bDSzau4erq9BsSAi93QOs/iq9/UnKlZkm4Eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CY5PR11MB6257.namprd11.prod.outlook.com (2603:10b6:930:26::22)
+ by LV2PR11MB5973.namprd11.prod.outlook.com (2603:10b6:408:14e::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Wed, 26 Jul
+ 2023 06:16:41 +0000
+Received: from CY5PR11MB6257.namprd11.prod.outlook.com
+ ([fe80::12c9:6f97:4016:eabb]) by CY5PR11MB6257.namprd11.prod.outlook.com
+ ([fe80::12c9:6f97:4016:eabb%7]) with mapi id 15.20.6631.026; Wed, 26 Jul 2023
+ 06:16:41 +0000
+From: "Lu, Brent" <brent.lu@intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rojewski,
+ Cezary" <cezary.rojewski@intel.com>, Liam Girdwood
+	<liam.r.girdwood@linux.intel.com>, Peter Ujfalusi
+	<peter.ujfalusi@linux.intel.com>, Bard Liao
+	<yung-chuan.liao@linux.intel.com>, Ranjani Sridharan
+	<ranjani.sridharan@linux.intel.com>, Kai Vehmanen
+	<kai.vehmanen@linux.intel.com>, Mark Brown <broonie@kernel.org>, "Jaroslav
+ Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Zhi, Yong"
+	<yong.zhi@intel.com>, Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+	"Bhat, Uday M" <uday.m.bhat@intel.com>, Terry Cheong <htcheong@chromium.org>,
+	"Chiang, Mac" <mac.chiang@intel.com>, "R, Dharageswari"
+	<dharageswari.r@intel.com>, Kuninori Morimoto
+	<kuninori.morimoto.gx@renesas.com>
+Subject: RE: [PATCH 1/2] ASoC: Intel: maxim-common: get codec number from ACPI
+Thread-Topic: [PATCH 1/2] ASoC: Intel: maxim-common: get codec number from
+ ACPI
+Thread-Index: AQHZuqoaXCiyShA7oEmUALJNRLZwbK/Ip3CAgAAMRwCAABEQ8IAABnIAgALQmIA=
+Date: Wed, 26 Jul 2023 06:16:41 +0000
+Message-ID: 
+ <CY5PR11MB6257F604AFC69AEE6AF025599700A@CY5PR11MB6257.namprd11.prod.outlook.com>
+References: <20230720092628.758834-1-brent.lu@intel.com>
+ <20230720092628.758834-2-brent.lu@intel.com>
+ <dc6de509-6984-1434-b53f-9600e8bc7c49@linux.intel.com>
+ <ZL5Jzod5NBETv9Dp@smile.fi.intel.com>
+ <CY5PR11MB62579D3B679BB437017529D79702A@CY5PR11MB6257.namprd11.prod.outlook.com>
+ <ZL5dhosg28uIpcFd@smile.fi.intel.com>
+In-Reply-To: <ZL5dhosg28uIpcFd@smile.fi.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR11MB6257:EE_|LV2PR11MB5973:EE_
+x-ms-office365-filtering-correlation-id: 920c7602-6802-49af-f625-08db8d9fe09f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ m76CJFguEhBRiS5g9EbZ15Z9Z2kybvfLDMk6/QPZ66GwRD4Q67T50Lz26Gelz+MexzG/LG1/X9+0JiWR6osF4BBnMGiutUn0NUwBFcYLNzsZDp4RhF/WQTyN5ChRXy4RPaRo+zVseZvtTrY8gqdvMqN523eRFL5wt3datTnat3Lpcc26DlQTgHqTse6FcP2iKQKjnHWLYA01d35OtQuDzPeGbvIme0r9E8NJ27SYqHbAKJZi+aW+nufNIRHIj2PRlzv5lmX0ULDk5/w7UcBMQXOeNxZ7lGcH9ZaaE0McAD2D60BmZPFVcxADuLBaxY5NTDripV3DLfHNvkghVWk1PJ+md0hm5kAqW70lwjRiWc4lznPlXdU1ScLRuYeW2CkypGS9THiu2J8jwxEiNB1o/kpL1BBV5s1x/n6xnzMROibckg5wUc5d3WCFsGTk5222RIU/GDmNbZ/eGcKKSIVkBEGibIb3J3DsOm8yS1Y/yEX0ugVEiNO2nFZlV+u61VE9KXjP4WDg3QNO8TmadyhMKY0GyPE8zz637iJb9qW/zwIYeachS5vNy0CP4l5/plNKl/QqgeVK9h91NEddgBYQZOdaEvH3vd5SWWcxVMlTbgf7dMF5dITfoSV7AZJRxNYo
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6257.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(376002)(396003)(366004)(39860400002)(451199021)(7696005)(478600001)(9686003)(71200400001)(54906003)(38070700005)(86362001)(186003)(33656002)(55016003)(4744005)(2906002)(6506007)(26005)(82960400001)(38100700002)(6916009)(66946007)(4326008)(8936002)(52536014)(66446008)(8676002)(76116006)(64756008)(122000001)(66556008)(7416002)(41300700001)(66476007)(316002)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?vv9qSDdD+rGkBOs9dYjjYR8aW+4vpLljCb1767u/1owItru0z4haOFRGazGv?=
+ =?us-ascii?Q?py87raFaWFvWU7qBC3tjcJscv/UEEcPzgwRDhSeb0SHV2PWnnA8Uu1fvddTz?=
+ =?us-ascii?Q?wK6UXazhrP1CuOYmtfzLl8KHQDpEIa1/YQlygLJnE2AnJF5MgtPbnhI77Ud8?=
+ =?us-ascii?Q?/b+SP+lSPs9RKu5+tKJDQ9RQ7tU8Gi8tSMPP6ppYZn2BZMDutVa2V2+8APlP?=
+ =?us-ascii?Q?mjIg/acKZK+6J7NuASu5lrHThNVqX6aP/unT/0mkgwGvHIAWAXd6BgLYWhyi?=
+ =?us-ascii?Q?eRcTg+VOwOv5xQfwj3LAj6hc6WnxKhiZ3g4gjB/1oMLPEQMkXFIXKrEcZ6E0?=
+ =?us-ascii?Q?7yEw83P95rY0KVvdklKrh8oTxNDyYnkGzMB/hcNupxi1hFbJEQQOPVQHTAzn?=
+ =?us-ascii?Q?c3XzXr6pATpoEWz6evXpJflTL0fw5ioxXnjOyciPh2DXWtdl7MUVqjvboJHE?=
+ =?us-ascii?Q?Wzo9h3XxpU+HZ+tuX+oyePHvofHCgUfCy71rlr7N1WDkcd04ddC2OP5KJTmm?=
+ =?us-ascii?Q?LYeZJ4RPkdDj6dd9nDS78L0NPM9OVmfScXmHAo02RLokF6c8mbzQ/4RDegPx?=
+ =?us-ascii?Q?zQsFHefpviYkWtZOz8UvqU76Mg69ayacxn/pg3VTlisM4Ajj4XJ8KbUVB+Cx?=
+ =?us-ascii?Q?5bPXQWX66Lv5pjNF9a1iKNyobwjFEaUYF2o4zuiRViVy0O+1y8jfatbDhFMT?=
+ =?us-ascii?Q?MMg3lolPBARkoTB1JQUq1NeroiU0Zb42jCvzS7AxB6lpzVqo+UZ9FufvUv6k?=
+ =?us-ascii?Q?7e+ZzaZqf439OIZ+5z8K+qLPjGTkjQgbAbWHdANoQD3O6tOZGkiwiGMeBt/t?=
+ =?us-ascii?Q?mDveEjjd4xVZlIBMqzSUVK6d353L42/toosZGqZ4pwwVIQJNVQRJN9T0J3f+?=
+ =?us-ascii?Q?WG3PTDEjVUGIexXaZbPoFjjxNEGwAekt0CKNf/YK1zuLGqNpliqdc7EGq9NV?=
+ =?us-ascii?Q?vkoupodIzDUv2gUOY7qtcQc/dduaR5uSgMbLfXlKXyzDg+4uKCl2K9F1t+6M?=
+ =?us-ascii?Q?6a2/4+WdT+goa7171VhtqyP2H0eI3v26IY8IQ5JEBw7YMBUdfKgKNgVmYfHz?=
+ =?us-ascii?Q?MhvGy4zWK/xu49mPhHyc6akES/QJdcDagMCX3ASbDeYpKMWb6z1oYC18UW6w?=
+ =?us-ascii?Q?1cnL1c0HlNzzRLNBcJTGnLcXjogEknAW9tB2mA8RXKYed0By1+YXO4Pw/YbB?=
+ =?us-ascii?Q?6GUedLk6VHHwVqohXDzdf7ZdwC+hTkVvVMfVgPlEHGoRX2rfFYoJsq0gjkt5?=
+ =?us-ascii?Q?pHEHoPK9qlfjcQ3dnXcy1Ti3byEwL6w7aIeIfC0tn+3E735wHXjSFa4LTBjW?=
+ =?us-ascii?Q?qPkGc6/LDzQ0NpzwzPpet10jzwXnQvxYMX9/+uot+mkEfPjyDTglotIburfT?=
+ =?us-ascii?Q?d01RUWea4Rp6O1/XmvfQ1vcGuLrfa0/U5/+/JfIvPVSqtReztAVrCgSLBQwe?=
+ =?us-ascii?Q?t/5YAbisJFdwidkuqqy4uAjpRZ8LTxvHF2VSURBMNBQK6QH2HREyotspIvuQ?=
+ =?us-ascii?Q?gPCRZ2WxMf0dBWbeHkyY+aQ2PhrW1zq1qerTJMsueiiuOvWQ7UW1kOvrde94?=
+ =?us-ascii?Q?k+J0xEiXhvuqo9eQyLs=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: S5MXIR7NZJOUNWKZGPFAF5SSGGRP47LX
-X-Message-ID-Hash: S5MXIR7NZJOUNWKZGPFAF5SSGGRP47LX
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6257.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 920c7602-6802-49af-f625-08db8d9fe09f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2023 06:16:41.0735
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ tNDdEEGft4D2HQLuOMDCzITtFTbsPDjGHOQ+QvYt5Mw8fgbE38lonyUWugYtiYYyYZ4xKTpspiVxYnTaOWL++Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR11MB5973
+X-OriginatorOrg: intel.com
+Message-ID-Hash: U5H4WZSPFK3RNCGC7KXDIRNNF4AYIHTI
+X-Message-ID-Hash: U5H4WZSPFK3RNCGC7KXDIRNNF4AYIHTI
 X-MailFrom: brent.lu@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -108,7 +200,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S5MXIR7NZJOUNWKZGPFAF5SSGGRP47LX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U5H4WZSPFK3RNCGC7KXDIRNNF4AYIHTI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,301 +209,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Implement a helper function to get number of codecs from ACPI
-subsystem to remove the need of quirk flag in machine driver.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/intel/boards/sof_maxim_common.c | 171 +++++++++++++---------
- sound/soc/intel/boards/sof_maxim_common.h |  21 ++-
- 2 files changed, 110 insertions(+), 82 deletions(-)
+>=20
+> size_t here or at least unsigned int is more correct.
+>=20
+> > 	for_each_acpi_dev_match(adev, hid, NULL, -1)
+> > 		dev_num++;
+> >
+> > 	return dev_num;
+> > }
+>=20
+> Otherwise, yes, that's what I have in mind.
+>=20
+> > Will test it in next few days.
+>=20
+> --
+> With Best Regards,
+> Andy Shevchenko
+>=20
 
-diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
-index 112e89951da0..1fdd66f5adc2 100644
---- a/sound/soc/intel/boards/sof_maxim_common.c
-+++ b/sound/soc/intel/boards/sof_maxim_common.c
-@@ -4,6 +4,7 @@
- #include <linux/module.h>
- #include <linux/string.h>
- #include <sound/pcm.h>
-+#include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/soc-acpi.h>
- #include <sound/soc-dai.h>
-@@ -11,6 +12,18 @@
- #include <uapi/sound/asound.h>
- #include "sof_maxim_common.h"
- 
-+/* helper function to get the number of specific codec */
-+static unsigned int get_num_codecs(const char *hid)
-+{
-+	struct acpi_device *adev;
-+	unsigned int dev_num = 0;
-+
-+	for_each_acpi_dev_match(adev, hid, NULL, -1)
-+		dev_num++;
-+
-+	return dev_num;
-+}
-+
- #define MAX_98373_PIN_NAME 16
- 
- const struct snd_soc_dapm_route max_98373_dapm_routes[] = {
-@@ -168,17 +181,6 @@ static struct snd_soc_codec_conf max_98390_codec_conf[] = {
- 		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
- 		.name_prefix = "Left",
- 	},
--};
--
--static struct snd_soc_codec_conf max_98390_4spk_codec_conf[] = {
--	{
--		.dlc = COMP_CODEC_CONF(MAX_98390_DEV0_NAME),
--		.name_prefix = "Right",
--	},
--	{
--		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
--		.name_prefix = "Left",
--	},
- 	{
- 		.dlc = COMP_CODEC_CONF(MAX_98390_DEV2_NAME),
- 		.name_prefix = "Tweeter Right",
-@@ -189,19 +191,7 @@ static struct snd_soc_codec_conf max_98390_4spk_codec_conf[] = {
- 	},
- };
- 
--struct snd_soc_dai_link_component max_98390_components[] = {
--	{
--		.name = MAX_98390_DEV0_NAME,
--		.dai_name = MAX_98390_CODEC_DAI,
--	},
--	{
--		.name = MAX_98390_DEV1_NAME,
--		.dai_name = MAX_98390_CODEC_DAI,
--	},
--};
--EXPORT_SYMBOL_NS(max_98390_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
--
--struct snd_soc_dai_link_component max_98390_4spk_components[] = {
-+static struct snd_soc_dai_link_component max_98390_components[] = {
- 	{
- 		.name = MAX_98390_DEV0_NAME,
- 		.dai_name = MAX_98390_CODEC_DAI,
-@@ -219,62 +209,56 @@ struct snd_soc_dai_link_component max_98390_4spk_components[] = {
- 		.dai_name = MAX_98390_CODEC_DAI,
- 	},
- };
--EXPORT_SYMBOL_NS(max_98390_4spk_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-+
-+static const struct {
-+	unsigned int tx;
-+	unsigned int rx;
-+} max_98390_tdm_mask[] = {
-+	{.tx = 0x01, .rx = 0x3},
-+	{.tx = 0x02, .rx = 0x3},
-+	{.tx = 0x04, .rx = 0x3},
-+	{.tx = 0x08, .rx = 0x3},
-+};
- 
- static int max_98390_hw_params(struct snd_pcm_substream *substream,
- 			       struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai;
--	int i;
-+	int i, ret = 0;
- 
- 	for_each_rtd_codec_dais(rtd, i, codec_dai) {
--		if (i >= ARRAY_SIZE(max_98390_4spk_components)) {
-+		if (i >= ARRAY_SIZE(max_98390_tdm_mask)) {
- 			dev_err(codec_dai->dev, "invalid codec index %d\n", i);
- 			return -ENODEV;
- 		}
- 
--		if (!strcmp(codec_dai->component->name, MAX_98390_DEV0_NAME)) {
--			/* DEV0 tdm slot configuration Right */
--			snd_soc_dai_set_tdm_slot(codec_dai, 0x01, 3, 4, 32);
--		}
--		if (!strcmp(codec_dai->component->name, MAX_98390_DEV1_NAME)) {
--			/* DEV1 tdm slot configuration Left */
--			snd_soc_dai_set_tdm_slot(codec_dai, 0x02, 3, 4, 32);
--		}
--
--		if (!strcmp(codec_dai->component->name, MAX_98390_DEV2_NAME)) {
--			/* DEVi2 tdm slot configuration Tweeter Right */
--			snd_soc_dai_set_tdm_slot(codec_dai, 0x04, 3, 4, 32);
--		}
--		if (!strcmp(codec_dai->component->name, MAX_98390_DEV3_NAME)) {
--			/* DEV3 tdm slot configuration Tweeter Left */
--			snd_soc_dai_set_tdm_slot(codec_dai, 0x08, 3, 4, 32);
-+		ret = snd_soc_dai_set_tdm_slot(codec_dai, max_98390_tdm_mask[i].tx,
-+					       max_98390_tdm_mask[i].rx, 4,
-+					       params_width(params));
-+		if (ret < 0) {
-+			dev_err(codec_dai->dev, "fail to set tdm slot, ret %d\n",
-+				ret);
-+			return ret;
- 		}
- 	}
- 	return 0;
- }
- 
--int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
-+static int max_98390_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_card *card = rtd->card;
-+	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
- 	int ret;
- 
--	/* add regular speakers dapm route */
--	ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
--				      ARRAY_SIZE(max_98390_dapm_routes));
--	if (ret) {
--		dev_err(rtd->dev, "unable to add Left/Right Speaker dapm, ret %d\n", ret);
--		return ret;
--	}
--
--	/* add widgets/controls/dapm for tweeter speakers */
--	if (acpi_dev_present("MX98390", "3", -1)) {
-+	switch (num_codecs) {
-+	case 4:
-+		/* add widgets/controls/dapm for tweeter speakers */
- 		ret = snd_soc_dapm_new_controls(&card->dapm, max_98390_tt_dapm_widgets,
- 						ARRAY_SIZE(max_98390_tt_dapm_widgets));
--
- 		if (ret) {
--			dev_err(rtd->dev, "unable to add tweeter dapm controls, ret %d\n", ret);
-+			dev_err(rtd->dev, "unable to add tweeter dapm widgets, ret %d\n",
-+				ret);
- 			/* Don't need to add routes if widget addition failed */
- 			return ret;
- 		}
-@@ -282,33 +266,80 @@ int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
- 		ret = snd_soc_add_card_controls(card, max_98390_tt_kcontrols,
- 						ARRAY_SIZE(max_98390_tt_kcontrols));
- 		if (ret) {
--			dev_err(rtd->dev, "unable to add tweeter card controls, ret %d\n", ret);
-+			dev_err(rtd->dev, "unable to add tweeter controls, ret %d\n",
-+				ret);
- 			return ret;
- 		}
- 
- 		ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_tt_dapm_routes,
- 					      ARRAY_SIZE(max_98390_tt_dapm_routes));
--		if (ret)
--			dev_err(rtd->dev,
--				"unable to add Tweeter Left/Right Speaker dapm, ret %d\n", ret);
-+		if (ret) {
-+			dev_err(rtd->dev, "unable to add tweeter dapm routes, ret %d\n",
-+				ret);
-+			return ret;
-+		}
-+
-+		fallthrough;
-+	case 2:
-+		/* add regular speakers dapm route */
-+		ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
-+					      ARRAY_SIZE(max_98390_dapm_routes));
-+		if (ret) {
-+			dev_err(rtd->dev, "unable to add dapm routes, ret %d\n",
-+				ret);
-+			return ret;
-+		}
-+		break;
-+	default:
-+		dev_err(rtd->dev, "invalid codec number %d\n", num_codecs);
-+		ret = -EINVAL;
-+		break;
- 	}
-+
- 	return ret;
- }
--EXPORT_SYMBOL_NS(max_98390_spk_codec_init, SND_SOC_INTEL_SOF_MAXIM_COMMON);
- 
--const struct snd_soc_ops max_98390_ops = {
-+static const struct snd_soc_ops max_98390_ops = {
- 	.hw_params = max_98390_hw_params,
- };
--EXPORT_SYMBOL_NS(max_98390_ops, SND_SOC_INTEL_SOF_MAXIM_COMMON);
- 
--void max_98390_set_codec_conf(struct snd_soc_card *card, int ch)
-+void max_98390_dai_link(struct snd_soc_dai_link *link)
-+{
-+	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
-+
-+	link->codecs = max_98390_components;
-+
-+	switch (num_codecs) {
-+	case 2:
-+	case 4:
-+		link->num_codecs = num_codecs;
-+		break;
-+	default:
-+		pr_err("invalid codec number %d for %s\n", num_codecs,
-+			MAX_98390_ACPI_HID);
-+		break;
-+	}
-+
-+	link->init = max_98390_init;
-+	link->ops = &max_98390_ops;
-+}
-+EXPORT_SYMBOL_NS(max_98390_dai_link, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-+
-+void max_98390_set_codec_conf(struct snd_soc_card *card)
- {
--	if (ch == ARRAY_SIZE(max_98390_4spk_codec_conf)) {
--		card->codec_conf = max_98390_4spk_codec_conf;
--		card->num_configs = ARRAY_SIZE(max_98390_4spk_codec_conf);
--	} else {
--		card->codec_conf = max_98390_codec_conf;
--		card->num_configs = ARRAY_SIZE(max_98390_codec_conf);
-+	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
-+
-+	card->codec_conf = max_98390_codec_conf;
-+
-+	switch (num_codecs) {
-+	case 2:
-+	case 4:
-+		card->num_configs = num_codecs;
-+		break;
-+	default:
-+		pr_err("invalid codec number %d for %s\n", num_codecs,
-+			MAX_98390_ACPI_HID);
-+		break;
- 	}
- }
- EXPORT_SYMBOL_NS(max_98390_set_codec_conf, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-diff --git a/sound/soc/intel/boards/sof_maxim_common.h b/sound/soc/intel/boards/sof_maxim_common.h
-index 7a8c53049e4d..a3676d68cc12 100644
---- a/sound/soc/intel/boards/sof_maxim_common.h
-+++ b/sound/soc/intel/boards/sof_maxim_common.h
-@@ -27,18 +27,15 @@ int max_98373_trigger(struct snd_pcm_substream *substream, int cmd);
- /*
-  * Maxim MAX98390
-  */
--#define MAX_98390_CODEC_DAI     "max98390-aif1"
--#define MAX_98390_DEV0_NAME     "i2c-MX98390:00"
--#define MAX_98390_DEV1_NAME     "i2c-MX98390:01"
--#define MAX_98390_DEV2_NAME     "i2c-MX98390:02"
--#define MAX_98390_DEV3_NAME     "i2c-MX98390:03"
--
--extern struct snd_soc_dai_link_component max_98390_components[2];
--extern struct snd_soc_dai_link_component max_98390_4spk_components[4];
--extern const struct snd_soc_ops max_98390_ops;
--
--void max_98390_set_codec_conf(struct snd_soc_card *card, int ch);
--int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd);
-+#define MAX_98390_ACPI_HID	"MX98390"
-+#define MAX_98390_CODEC_DAI	"max98390-aif1"
-+#define MAX_98390_DEV0_NAME	"i2c-MX98390:00"
-+#define MAX_98390_DEV1_NAME	"i2c-MX98390:01"
-+#define MAX_98390_DEV2_NAME	"i2c-MX98390:02"
-+#define MAX_98390_DEV3_NAME	"i2c-MX98390:03"
-+
-+void max_98390_dai_link(struct snd_soc_dai_link *link);
-+void max_98390_set_codec_conf(struct snd_soc_card *card);
- 
- /*
-  * Maxim MAX98357A/MAX98360A
--- 
-2.34.1
+Thanks for the review. I've modified the v2 patch accordingly.
+
+Regards,
+Brent
 
