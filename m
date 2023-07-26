@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB922C001DE
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 15:10:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B063AC0015E
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 15:11:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAAA5AE8;
-	Wed, 26 Jul 2023 17:10:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAAA5AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id E569F847;
+	Wed, 26 Jul 2023 17:10:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E569F847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690384254;
-	bh=YMHSrkoaD1BqV4RVMTbWxgCBdzpsHNsvjEfGMhjMq1g=;
+	s=default; t=1690384263;
+	bh=rw36epAe3l/WLQjLsb62uFqz3pzX4hSbPjdVGh0MGf8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=onGsFDnxxs9V6vnqKCcKgdrS9YUHcA9Pmb3xkkOWwuMX38ZAURwn3szQWGhZjQpZ+
-	 QxM3Ud8TyRvYvqmVeO3+OIJZLa/zs/kw+UEtYoJkXJl2IvaDAqCvmIIKgy56DKhHnA
-	 zlcZGbG005CEb6I8ZSkBnemAIyPRLPF6J7CRSC2k=
+	b=vMNJ/v3hDuA4+ExWHNVbM84l+qWr74XLiruIM990zp8EjGFsiofXp3ApHhuZWRoFR
+	 NwEsjkwVhlysR8blKfkmB+IO9QZOOgfrLCeOoB3aE4ZiR15xet2N8zpy9B1NiW6qaw
+	 sqQUkv75EkOI5PxWZ67hpMmrhLSheaFTj0GYfEhE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66701F8069E; Wed, 26 Jul 2023 17:04:41 +0200 (CEST)
+	id 2ADA6F806A3; Wed, 26 Jul 2023 17:04:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E6C9F8069D;
-	Wed, 26 Jul 2023 17:04:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77922F806A4;
+	Wed, 26 Jul 2023 17:04:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFC4EF80681; Wed, 26 Jul 2023 17:04:29 +0200 (CEST)
+	id B0607F8068E; Wed, 26 Jul 2023 17:04:32 +0200 (CEST)
 Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::225])
+ [217.70.183.197])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B272EF800C7
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 17:02:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B272EF800C7
+	by alsa1.perex.cz (Postfix) with ESMTPS id D6B10F8063E
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 17:04:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6B10F8063E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=bO0ZNy9O
-Received: by mail.gandi.net (Postfix) with ESMTPA id 15BE81C0012;
-	Wed, 26 Jul 2023 15:02:45 +0000 (UTC)
+ header.s=gm1 header.b=j+pc6Gi8
+Received: by mail.gandi.net (Postfix) with ESMTPA id C623A1C001E;
+	Wed, 26 Jul 2023 15:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690383769;
+	t=1690383849;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QoMDIJrsKyLFOD+WXVaf69zrolS4M2DQ0TjsajmLiUM=;
-	b=bO0ZNy9OHlbvphnL7l7TNIIyiCR53YDiWYwR/pAWYnEV60/BJY8fHoR4xgbWiEYOhofaVv
-	qzajocNwLfG5lm5NM3wf1vj0LU2dwBMhxYpEbvMJNTfgDKgQXvPpblqpwNUbxBZvJ+j1zJ
-	nf2lx1Y3wuKqH6w3eOp/aTzkG5J1aRzzhxQkRe5Ov+JgAxBYHx4ylzeD6DcrSpbjJ382/w
-	up9gn9asuZT/N6Jpx8kcaAxeK41NIQ22wjQWKpqoDOmpPNjAXQfcrAsLBjwjilrI9VJTXL
-	ilfTDHeTtUX9Kh3Pgy6eU7GT8Kjpb1Qn1sQFhdFYGEx3sdjTjqLXBJivJ7PgpQ==
+	bh=BA3F2u1SZiCY48MSiDxa+5DDfOyOk5GnyA6qyBP7qGk=;
+	b=j+pc6Gi8klAXsESdM35sXRM/dunG9qgWdVQpe+v+MHccgXxfJ56UqZNmuk3mDf7GXAjO/z
+	BVDfS2v3abq+6hHvZ9xlTuZ+sGhL/C79W8yiq0hi6FXQLX7FIRBt1mEAswugR085+qHUGO
+	8eW2Qzw9pxO88MnkZuzwT0afghx0HuQ5UmnXa/AtKVWNA/YKS+aBOD9RH0GWJ3XiCNXzDh
+	GcUDqrUOWFUb7nz7aY4mRg5OlDICb4GS9YPEVjh530QTbCooomqps6Xo3GVY6wcPrMMKCr
+	5VCRew4T6aUZQM/rejBIvsCdn93EV/UI0gmfhD5BDDcvVhysjTdgN4nuCIG+Pw==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -85,18 +85,17 @@ Cc: netdev@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2 04/28] soc: fsl: cpm1: qmc: Extend the API to provide Rx
- status
-Date: Wed, 26 Jul 2023 17:02:00 +0200
-Message-ID: <20230726150225.483464-5-herve.codina@bootlin.com>
+Subject: [PATCH v2 25/28] MAINTAINERS: Add the Lantiq PEF2256 driver entry
+Date: Wed, 26 Jul 2023 17:02:21 +0200
+Message-ID: <20230726150225.483464-26-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230726150225.483464-1-herve.codina@bootlin.com>
 References: <20230726150225.483464-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: YKU5GOCRL2LVX3OWRPRQPHD7HPVZFDVW
-X-Message-ID-Hash: YKU5GOCRL2LVX3OWRPRQPHD7HPVZFDVW
+Message-ID-Hash: UHO75ZEPGUZT3U6LI2WFC3Z45YESHGKZ
+X-Message-ID-Hash: UHO75ZEPGUZT3U6LI2WFC3Z45YESHGKZ
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -109,148 +108,42 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YKU5GOCRL2LVX3OWRPRQPHD7HPVZFDVW/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UHO75ZEPGUZT3U6LI2WFC3Z45YESHGKZ/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In HDLC mode, some status flags related to the data read transfer can be
-set by the hardware and need to be known by a QMC consumer for further
-analysis.
-
-Extend the API in order to provide these transfer status flags at the
-read complete() call.
-
-In TRANSPARENT mode, these flags have no meaning. Keep only one read
-complete() API and update the consumers working in transparent mode.
-In this case, the newly introduced flags parameter is simply unused.
+After contributing the driver, add myself as the maintainer for the
+Lantiq PEF2256 driver.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- drivers/soc/fsl/qe/qmc.c      | 29 +++++++++++++++++++++++++----
- include/soc/fsl/qe/qmc.h      | 15 ++++++++++++++-
- sound/soc/fsl/fsl_qmc_audio.c |  2 +-
- 3 files changed, 40 insertions(+), 6 deletions(-)
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 8dc73cc1a83b..2d2a9d88ba6c 100644
---- a/drivers/soc/fsl/qe/qmc.c
-+++ b/drivers/soc/fsl/qe/qmc.c
-@@ -166,7 +166,7 @@
- struct qmc_xfer_desc {
- 	union {
- 		void (*tx_complete)(void *context);
--		void (*rx_complete)(void *context, size_t length);
-+		void (*rx_complete)(void *context, size_t length, unsigned int flags);
- 	};
- 	void *context;
- };
-@@ -421,7 +421,8 @@ static void qmc_chan_write_done(struct qmc_chan *chan)
- }
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 14041d90f9c8..07a7d9fca3c4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11776,6 +11776,15 @@ S:	Maintained
+ F:	arch/mips/lantiq
+ F:	drivers/soc/lantiq
  
- int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
--			 void (*complete)(void *context, size_t length), void *context)
-+			 void (*complete)(void *context, size_t length, unsigned int flags),
-+			 void *context)
- {
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
-@@ -454,6 +455,10 @@ int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
- 	xfer_desc->rx_complete = complete;
- 	xfer_desc->context = context;
- 
-+	/* Clear previous status flags */
-+	ctrl &= ~(QMC_BD_RX_L | QMC_BD_RX_F | QMC_BD_RX_LG | QMC_BD_RX_NO |
-+		  QMC_BD_RX_AB | QMC_BD_RX_CR);
++LANTIQ PEF2256 DRIVER
++M:	Herve Codina <herve.codina@bootlin.com>
++S:	Maintained
++F:	Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
++F:	drivers/net/wan/framer/pef2256/
++F:	drivers/pinctrl/pinctrl-pef2256-regs.h
++F:	drivers/pinctrl/pinctrl-pef2256.c
++F:	include/linux/framer/pef2256.h
 +
- 	/* Activate the descriptor */
- 	ctrl |= (QMC_BD_RX_E | QMC_BD_RX_UB);
- 	wmb(); /* Be sure to flush data before descriptor activation */
-@@ -485,7 +490,7 @@ EXPORT_SYMBOL(qmc_chan_read_submit);
- 
- static void qmc_chan_read_done(struct qmc_chan *chan)
- {
--	void (*complete)(void *context, size_t size);
-+	void (*complete)(void *context, size_t size, unsigned int flags);
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
- 	cbd_t __iomem *bd;
-@@ -527,7 +532,23 @@ static void qmc_chan_read_done(struct qmc_chan *chan)
- 
- 		if (complete) {
- 			spin_unlock_irqrestore(&chan->rx_lock, flags);
--			complete(context, datalen);
-+
-+			/*
-+			 * Avoid conversion between internal hardware flags and
-+			 * the software API flags.
-+			 * -> Be sure that the software API flags are consistent
-+			 *    with the hardware flags
-+			 */
-+			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_LAST  != QMC_BD_RX_L);
-+			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_FIRST != QMC_BD_RX_F);
-+			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_OVF   != QMC_BD_RX_LG);
-+			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_UNA   != QMC_BD_RX_NO);
-+			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_ABORT != QMC_BD_RX_AB);
-+			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_CRC   != QMC_BD_RX_CR);
-+
-+			complete(context, datalen,
-+				 ctrl & (QMC_BD_RX_L | QMC_BD_RX_F | QMC_BD_RX_LG |
-+					 QMC_BD_RX_NO | QMC_BD_RX_AB | QMC_BD_RX_CR));
- 			spin_lock_irqsave(&chan->rx_lock, flags);
- 		}
- 
-diff --git a/include/soc/fsl/qe/qmc.h b/include/soc/fsl/qe/qmc.h
-index 3c61a50d2ae2..6f1d6cebc9fe 100644
---- a/include/soc/fsl/qe/qmc.h
-+++ b/include/soc/fsl/qe/qmc.h
-@@ -9,6 +9,7 @@
- #ifndef __SOC_FSL_QMC_H__
- #define __SOC_FSL_QMC_H__
- 
-+#include <linux/bits.h>
- #include <linux/types.h>
- 
- struct device_node;
-@@ -56,8 +57,20 @@ int qmc_chan_set_param(struct qmc_chan *chan, const struct qmc_chan_param *param
- int qmc_chan_write_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
- 			  void (*complete)(void *context), void *context);
- 
-+/* Flags available (ORed) for read complete() flags parameter in HDLC mode.
-+ * No flags are available in transparent mode and the read complete() flags
-+ * parameter has no meaning in transparent mode.
-+ */
-+#define QMC_RX_FLAG_HDLC_LAST	BIT(11) /* Last in frame */
-+#define QMC_RX_FLAG_HDLC_FIRST	BIT(10) /* First in frame */
-+#define QMC_RX_FLAG_HDLC_OVF	BIT(5)  /* Data overflow */
-+#define QMC_RX_FLAG_HDLC_UNA	BIT(4)  /* Unaligned (ie. bits received not multiple of 8) */
-+#define QMC_RX_FLAG_HDLC_ABORT	BIT(3)  /* Received an abort sequence (seven consecutive ones) */
-+#define QMC_RX_FLAG_HDLC_CRC	BIT(2)  /* CRC error */
-+
- int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
--			 void (*complete)(void *context, size_t length),
-+			 void (*complete)(void *context, size_t length,
-+					  unsigned int flags),
- 			 void *context);
- 
- #define QMC_CHAN_READ  (1<<0)
-diff --git a/sound/soc/fsl/fsl_qmc_audio.c b/sound/soc/fsl/fsl_qmc_audio.c
-index 7cbb8e4758cc..5d745aae17a8 100644
---- a/sound/soc/fsl/fsl_qmc_audio.c
-+++ b/sound/soc/fsl/fsl_qmc_audio.c
-@@ -99,7 +99,7 @@ static void qmc_audio_pcm_write_complete(void *context)
- 	snd_pcm_period_elapsed(prtd->substream);
- }
- 
--static void qmc_audio_pcm_read_complete(void *context, size_t length)
-+static void qmc_audio_pcm_read_complete(void *context, size_t length, unsigned int flags)
- {
- 	struct qmc_dai_prtd *prtd = context;
- 	int ret;
+ LASI 53c700 driver for PARISC
+ M:	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+ L:	linux-scsi@vger.kernel.org
 -- 
 2.41.0
 
