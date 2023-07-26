@@ -4,116 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17FE2C41513
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 09:05:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C235C001E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 09:12:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D79C86E;
-	Wed, 26 Jul 2023 11:04:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D79C86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DEB8FFA;
+	Wed, 26 Jul 2023 11:11:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEB8FFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690362337;
-	bh=xAUEy0Jf2Zs4cqgvHuFvyR1nlvdcxaDwJc7NTVF6Xh0=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=mUypKqP3ci1WiZIr6LjHjceWBDVKQ0oEiJSUhZjnJx0XX6M5sa1MI+AhLwnmSL0kw
-	 TwMAEe+w7y8bmfoZfFgL56qtfjrUu2IqQK8r11PaukTXEsLs+tLFVGkhMpgWstv2pe
-	 NpcNjTdYpGRJCNhuvwIP/ThpGD2x+kcmR8DLhDkc=
+	s=default; t=1690362761;
+	bh=X1dUfZEbupeIwim/opFMnIXqh5u4FOapK8rET02P2mY=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=RmdNr1AZoDX8gONdnVcMOo6ZC1GWj0lo7CwUiH4jBnsIlszIRh83LfJibFXtw3WTA
+	 ANp0EammtWJq54CME4MV+a8fFzR38SShWyR5mkAj959ds0cdfq1xEkuM6YrskSqZQy
+	 jrHQdX1QMdSB8SxIAMstlk0xRlJCReE56GpgU3gU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68F76F80153; Wed, 26 Jul 2023 11:04:28 +0200 (CEST)
+	id 18731F80310; Wed, 26 Jul 2023 11:11:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE613F802E8;
-	Wed, 26 Jul 2023 11:04:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7E19F8019B;
+	Wed, 26 Jul 2023 11:11:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9ADD7F80548; Wed, 26 Jul 2023 11:04:24 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B7D46F80535
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 11:04:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7D46F80535
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=zO3V27Rg
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 36Q8fK2J008196;
-	Wed, 26 Jul 2023 11:04:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=mHlSDUHrC46OTsxrd1MgTw0c0UTb8rmL5Uuj7fDW+n0=;
- b=zO3V27RgKExY/q85tnvfYLxhy2slSf7Knw1gPHQf1WoyeM7uiF8GSo1HznFiPyivKlq4
- L6CKD1U051jxT89xFuqjU/17wMDs9euvT7E9nzje/VEkTvWeYLOCZ6cGOXYOCNFYYfFZ
- 5/xEUkV7rFy/XBYdkTEq6JpgOFqOWREZgROdss/Mt2JSe0VWdZSCuM2agejgclldDvuF
- bCBjlpm6D7UbVjE5CUgrTIKrckaEo9oaPGeIbr9rw5b8vbc4Yi80Jy/IuujGL9AEBH4E
- 29bz4VSinulO+vTqLeac2u1LjXFK0Jqfr53vxDsceG483W5WzuNtgT2Co+XpVgDPakkq ww==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s306u876r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 26 Jul 2023 11:04:20 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8659710002A;
-	Wed, 26 Jul 2023 11:04:19 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7C2052115FC;
-	Wed, 26 Jul 2023 11:04:19 +0200 (CEST)
-Received: from [10.201.21.121] (10.201.21.121) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 26 Jul
- 2023 11:04:17 +0200
-Message-ID: <5458d1d3-6c4c-738c-6dec-8b7ff78a5431@foss.st.com>
-Date: Wed, 26 Jul 2023 11:04:16 +0200
+	id 7110DF8019B; Wed, 26 Jul 2023 11:11:18 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	by alsa1.perex.cz (Postfix) with ESMTP id EBBF3F800C7
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 11:11:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBBF3F800C7
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36Q9AmjeE001602,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+	by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36Q9AmjeE001602
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+	Wed, 26 Jul 2023 17:10:48 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Wed, 26 Jul 2023 17:11:00 +0800
+Received: from sw-server.realtek.com.tw (172.22.102.117) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Wed, 26 Jul 2023 17:10:59 +0800
+From: <shumingf@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
+        <oder_chiou@realtek.com>, <jack.yu@realtek.com>,
+        <derek.fang@realtek.com>, <Vijendar.Mukunda@amd.com>,
+        Shuming Fan <shumingf@realtek.com>
+Subject: [PATCH v2] ASoC: rt1316: fix key tone missing
+Date: Wed, 26 Jul 2023 09:10:51 +0000
+Message-ID: <20230726091051.658754-1-shumingf@realtek.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [IGNORE][PATCH v3 01/11] dt-bindings: Document common device
- controller bindings
-Content-Language: en-US
-To: Greg KH <gregkh@linuxfoundation.org>
-CC: <Oleksii_Moisieiev@epam.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <alexandre.torgue@foss.st.com>, <vkoul@kernel.org>,
- <jic23@kernel.org>,
-        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
-        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
-        <catalin.marinas@arm.com>, <arnd@kernel.org>,
-        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>
-References: <20230726083810.232100-1-gatien.chevallier@foss.st.com>
- <20230726083810.232100-2-gatien.chevallier@foss.st.com>
- <2023072605-removed-pacemaker-faff@gregkh>
-From: Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
-In-Reply-To: <2023072605-removed-pacemaker-faff@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.121]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_03,2023-07-25_01,2023-05-22_02
-Message-ID-Hash: 7D4FSKB2W72OUCYGXCXHO2I6JYT33UJK
-X-Message-ID-Hash: 7D4FSKB2W72OUCYGXCXHO2I6JYT33UJK
-X-MailFrom: prvs=5571ed6ca5=gatien.chevallier@foss.st.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.117]
+X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+Message-ID-Hash: XRZCTRSBBLVWMIC6K4OFPAHXCIDFQXWF
+X-Message-ID-Hash: XRZCTRSBBLVWMIC6K4OFPAHXCIDFQXWF
+X-MailFrom: shumingf@realtek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -125,7 +80,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7D4FSKB2W72OUCYGXCXHO2I6JYT33UJK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XRZCTRSBBLVWMIC6K4OFPAHXCIDFQXWF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,33 +89,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello Greg,
+From: Shuming Fan <shumingf@realtek.com>
 
-On 7/26/23 10:48, Greg KH wrote:
-> On Wed, Jul 26, 2023 at 10:38:00AM +0200, Gatien Chevallier wrote:
->> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
->>
->> Introducing of the common device controller bindings for the controller
->> provider and consumer devices. Those bindings are intended to allow
->> divided system on chip into muliple domains, that can be used to
->> configure hardware permissions.
->>
->> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
->> ---
->>   .../feature-domain-controller.yaml            | 84 +++++++++++++++++++
->>   1 file changed, 84 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
-> 
-> What is the [IGNORE] prefix for?
-> 
+This patch adds a control that there are three options to control the digital volume output.
+The user could select "immediately" to make volume updates immediately
+and avoid key tone missing issues.
+In default, the driver selects that the volume update when a zero-crossing with a soft ramp.
 
-I put this prefix to specify that the review for this patch should
-not be done on this thread.
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+Reported-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+---
+ sound/soc/codecs/rt1316-sdw.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-It is still under review on the thread linked in the cover-letter.
+diff --git a/sound/soc/codecs/rt1316-sdw.c b/sound/soc/codecs/rt1316-sdw.c
+index 721821d9e9af..10a53c8d4874 100644
+--- a/sound/soc/codecs/rt1316-sdw.c
++++ b/sound/soc/codecs/rt1316-sdw.c
+@@ -424,6 +424,15 @@ static SOC_ENUM_SINGLE_DECL(rt1316_rx_data_ch_enum,
+ 	SDW_SDCA_CTL(FUNC_NUM_SMART_AMP, RT1316_SDCA_ENT_UDMPU21, RT1316_SDCA_CTL_UDMPU_CLUSTER, 0), 0,
+ 	rt1316_rx_data_ch_select);
+ 
++static const char * const rt1316_dac_output_vol_select[] = {
++	"immediately",
++	"zero crossing",
++	"zero crossing with soft ramp",
++};
++
++static SOC_ENUM_SINGLE_DECL(rt1316_dac_vol_ctl_enum,
++	0xc010, 6, rt1316_dac_output_vol_select);
++
+ static const struct snd_kcontrol_new rt1316_snd_controls[] = {
+ 
+ 	/* I2S Data Channel Selection */
+@@ -442,6 +451,9 @@ static const struct snd_kcontrol_new rt1316_snd_controls[] = {
+ 	/* IV mixer Control */
+ 	SOC_DOUBLE("Isense Mixer Switch", 0xc605, 2, 0, 1, 1),
+ 	SOC_DOUBLE("Vsense Mixer Switch", 0xc605, 3, 1, 1, 1),
++
++	/* DAC Output Volume Control */
++	SOC_ENUM("DAC Output Vol Control", rt1316_dac_vol_ctl_enum),
+ };
+ 
+ static const struct snd_kcontrol_new rt1316_sto_dac =
+-- 
+2.34.1
 
-This series aims to provide a use-case for this binding so its scope
-can be better defined.
-
-Best regards,
-Gatien
