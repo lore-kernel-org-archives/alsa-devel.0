@@ -4,114 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30F26C0015E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 10:41:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8A0AC001DC
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 11:27:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2E57827;
-	Wed, 26 Jul 2023 12:40:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2E57827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 565A6828;
+	Wed, 26 Jul 2023 13:26:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 565A6828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690368065;
-	bh=YXpcQEzb8PcCW7PbU3HlggIQ5hgpiREjZdSrFdQj5SE=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1690370833;
+	bh=mnQJuBYjxws9dKF7YJmo1pX1cJQyyI8SIC/3VVKu3MI=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PxSm5JLG7KHzBJm80TnjAotkvdcWg8EBz6K0vBWgAtjWnVvSU60RjnpqPxrSBFKxU
-	 aWYoJV/G1/bB/sRVArrZSXjbm9R0NLbZYRt/WQhnvkIQRPCRd+9e7M8Mp7am/TjnXs
-	 IZ+uq+D8b/OwBNpU3jCf68tzAG4D3123w5mrJWVo=
+	b=VzwHy55Qx0rl55O/ntRgkaxwiEcURBLCPqP3tsVdlnfp/2c9+SthBbsZN7bxwJoBy
+	 YISBapt3dnlieKvynjSI0QyjS2MG3CXDTajwX9ShcdZenf4BS3RD91WoYlGPPMe7+P
+	 2pRs3dCN6bwO4x5c4qDoA6mksXqQBhMCvQeBT/LY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2371EF80310; Wed, 26 Jul 2023 12:39:43 +0200 (CEST)
+	id 1E2E1F80310; Wed, 26 Jul 2023 13:25:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D44A1F8019B;
-	Wed, 26 Jul 2023 12:39:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 963AFF800C7;
+	Wed, 26 Jul 2023 13:25:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F825F8019B; Wed, 26 Jul 2023 12:39:40 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [185.132.182.106])
+	id 0730AF8019B; Wed, 26 Jul 2023 13:25:49 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B38F8F80149
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 12:39:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B38F8F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 08C4BF800C7
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 13:25:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08C4BF800C7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=qLRE5+Km
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 36Q7VZaZ007966;
-	Wed, 26 Jul 2023 12:39:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=W8GLfB17+jUE7Nw68o8tScgzzDDgHpp5NKWkRxESZlI=;
- b=qLRE5+KmvbKk5B/UW10nGEjBoDKipiB1flNkgDwSQYqmZMZdBpctbst7Vwt4EUF87UAQ
- lGs1OpG9iWa7NPx/eqb8ySrQnjHJTDAhdOqjGv8LVHdxJLHd4/JhOqgzW88/jAn5GpJe
- /9sWA3Z+uL0eH5JViXAbOVXN00Amp02Tix6WttAS9w4R9wAmpstvy5KIJGiwDfWDgPWe
- 7Ll7vUdK2tWD46wDK1zTVYHE+KrDhr1nsi10XJw0x7tkd+qwL727Kpu0HqUADsa0lQkG
- 4pxFNpRPxpJfDasvoPH+WokzK6DrXEtEA/wNoEISShjpOySH6a8QFdhtHwnQ+A4I7C3/ 6g==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s2y641c6j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 26 Jul 2023 12:39:37 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C13A210002A;
-	Wed, 26 Jul 2023 12:39:36 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B6D7C21787E;
-	Wed, 26 Jul 2023 12:39:36 +0200 (CEST)
-Received: from [10.201.21.121] (10.201.21.121) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 26 Jul
- 2023 12:39:34 +0200
-Message-ID: <9f34d34b-911a-c064-9e44-34e030b76786@foss.st.com>
-Date: Wed, 26 Jul 2023 12:39:31 +0200
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=lmuMs8Cj
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690370744; x=1721906744;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=mnQJuBYjxws9dKF7YJmo1pX1cJQyyI8SIC/3VVKu3MI=;
+  b=lmuMs8CjWM/feZvQmboUdNOGKzhOAQHh14buIUVXqoxfDBzMCciXonee
+   VtWmYES6G8S76IuBNfW0XUDACijs6JmOziTlJl8W3VOBO6+ou4K5Zl5vM
+   5hocw8SldotM4sieg0hJISd2MQKiuhxB2jOz/eF467d3T7UFvZspx0bpo
+   xK4j/wt80h+wyK60WmKuT0mwUGdwJV7iX/5PQAVx21ULE/pF1TrlbVfSR
+   UWNpjEwNU0ps+L/IUzknAhqwi0y/Z9h0qLPZxeW0Gx7LDOFhI6Vqg5070
+   YnI2gUMtnbVk9gAHJs4rRpn6SW1PkYGAB1iPUw9x/MxjITJiUlPqdNreZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="454362782"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200";
+   d="scan'208";a="454362782"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jul 2023 04:25:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="840221570"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200";
+   d="scan'208";a="840221570"
+Received: from yungchua-mobl2.ccr.corp.intel.com (HELO [10.92.2.114])
+ ([10.92.2.114])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jul 2023 04:25:34 -0700
+Message-ID: <00321a54-2c13-2a93-a6ab-7a76f1a87a3d@linux.intel.com>
+Date: Wed, 26 Jul 2023 19:25:31 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 05/11] firewall: introduce stm32_firewall framework
+Subject: Re: [PATCH 1/2] ASoC: Intel: maxim-common: get codec number from ACPI
 Content-Language: en-US
-To: Simon Horman <simon.horman@corigine.com>
-CC: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
-        <vkoul@kernel.org>, <jic23@kernel.org>, <olivier.moysan@foss.st.com>,
-        <arnaud.pouliquen@foss.st.com>, <mchehab@kernel.org>,
-        <fabrice.gasnier@foss.st.com>, <andi.shyti@kernel.org>,
-        <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <hugues.fruchet@foss.st.com>, <lee@kernel.org>,
-        <will@kernel.org>, <catalin.marinas@arm.com>, <arnd@kernel.org>,
-        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>
-References: <20230725164104.273965-1-gatien.chevallier@foss.st.com>
- <20230725164104.273965-6-gatien.chevallier@foss.st.com>
- <ZMDz1AhlEeZTM/vi@corigine.com>
-From: Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
-In-Reply-To: <ZMDz1AhlEeZTM/vi@corigine.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.121]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_04,2023-07-25_01,2023-05-22_02
-Message-ID-Hash: UUVFGGESREJSET2ZTVVB36BRKWJXBE6N
-X-Message-ID-Hash: UUVFGGESREJSET2ZTVVB36BRKWJXBE6N
-X-MailFrom: prvs=5571ed6ca5=gatien.chevallier@foss.st.com
+From: "Liao, Bard" <yung-chuan.liao@linux.intel.com>
+To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Yong Zhi <yong.zhi@intel.com>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Uday M Bhat <uday.m.bhat@intel.com>, Terry Cheong <htcheong@chromium.org>,
+ Mac Chiang <mac.chiang@intel.com>,
+ "Dharageswari . R" <dharageswari.r@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <20230720092628.758834-1-brent.lu@intel.com>
+ <20230720092628.758834-2-brent.lu@intel.com>
+ <ff55e63f-1c17-12ef-57e6-144a5bea4480@linux.intel.com>
+In-Reply-To: <ff55e63f-1c17-12ef-57e6-144a5bea4480@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: N5NBJJ6COLCFEMUMMMBRUDEE2GBGUS4X
+X-Message-ID-Hash: N5NBJJ6COLCFEMUMMMBRUDEE2GBGUS4X
+X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -123,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UUVFGGESREJSET2ZTVVB36BRKWJXBE6N/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N5NBJJ6COLCFEMUMMMBRUDEE2GBGUS4X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -133,38 +118,16 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
+On 7/26/2023 4:47 PM, Liao, Bard wrote:
+> ;
+>>   -    /* add regular speakers dapm route */
+>> -    ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
+>> -                      ARRAY_SIZE(max_98390_dapm_routes));
+>
+> Don't we need to add max_98390_dapm_routes for the 4 speakers case?
+>
+Please ignore this comment. I didn't notice that it is a fallthrough not
 
-On 7/26/23 12:22, Simon Horman wrote:
-> On Tue, Jul 25, 2023 at 06:40:58PM +0200, Gatien Chevallier wrote:
-> 
-> ...
-> 
->> diff --git a/drivers/bus/stm32_firewall.c b/drivers/bus/stm32_firewall.c
-> 
-> ...
-> 
->> +int stm32_firewall_controller_register(struct stm32_firewall_controller *firewall_controller)
->> +{
->> +	struct stm32_firewall_controller *ctrl;
->> +
->> +	pr_info("Registering %s firewall controller\n", firewall_controller->name);
->> +
->> +	if (!firewall_controller)
->> +		return -ENODEV;
-> 
-> HI Gatien,
-> 
-> Sorry, one more on this patch, that I missed before sending my previous
-> email.
-> 
-> firewall_controller is checked for NULL here.
-> But it is already dereferenced on the line above the check.
-> 
-> Flagged by Smatch.
-> 
-> ...
+break in the end of case 4.
 
-Indeed, thank you. I will change this for V4
 
-Best regards,
-Gatien
