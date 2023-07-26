@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51710C0015E
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 15:05:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2E36C001DC
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Jul 2023 15:05:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF71286F;
-	Wed, 26 Jul 2023 17:04:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF71286F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 736E1203;
+	Wed, 26 Jul 2023 17:04:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 736E1203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690383904;
-	bh=2kbAXaMUmMNh+cxV3aZu4YH9RCd/QmB2SL7W4VBKcoY=;
+	s=default; t=1690383920;
+	bh=/T+bsMT29E8a8UW/YJw+zADGJwxCO2u0d8rMOVHttug=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cch9CktHtVPMwfPCjIvPwpZrCtyURHozXEpgEFU0LoI9v/fbmhKBaJ2BwcZiYVZ+f
-	 lnc+yV/Iq+RNupWYMvLWeTU3/dzR1mWjcN4KCeDBkK4LOF4aLcKrnak8WojcJ0H1Xb
-	 ikT+gmJbui7NYA6Gsg9QFZD7gTq5A71FnBuON/TE=
+	b=AFWOthVHmrN1qCQOlAZ5GOumK9NxhGKAyKaXsFSf1gmB30qk1y8DHvAKS924iRHET
+	 2abLjsEF5KPTCH400nQ/1ANxmB4sisx7wxpHXd6SQxRJGch7Qrkf4ZSAW+ufq2f191
+	 o3KiQk/i1tMAvSssNtwBf7kSCIfIwIkFuzf/GHb8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0D303F80580; Wed, 26 Jul 2023 17:03:16 +0200 (CEST)
+	id 4599DF8057A; Wed, 26 Jul 2023 17:03:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3E8AF80578;
-	Wed, 26 Jul 2023 17:03:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 782EAF805A0;
+	Wed, 26 Jul 2023 17:03:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5D8A4F8053B; Wed, 26 Jul 2023 17:03:08 +0200 (CEST)
+	id 486A8F80544; Wed, 26 Jul 2023 17:03:11 +0200 (CEST)
 Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [217.70.183.197])
+ [IPv6:2001:4b98:dc4:8::225])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 90235F801F5
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 17:03:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90235F801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5A781F800D2
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2023 17:02:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A781F800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=Ss5DGkm7
-Received: by mail.gandi.net (Postfix) with ESMTPA id A210E1C000F;
-	Wed, 26 Jul 2023 15:02:57 +0000 (UTC)
+ header.s=gm1 header.b=YM+uZ6Jn
+Received: by mail.gandi.net (Postfix) with ESMTPA id AC8551C000B;
+	Wed, 26 Jul 2023 15:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1690383781;
+	t=1690383762;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DTGknezdyiZk9bMBK1nMMSA2F/Bkc0Kki250K3B4O9I=;
-	b=Ss5DGkm7BF7D4TNPrxx82rtGBbWjNUJXvVGKeBn3dMclW5NMpz70u706uOw3xP0beSNbyv
-	5fTiHxvNsrVmJnjjqHPAV5nALHPV6dyk6yczt5BTmAW3JcvmLRrEKu2iov5ya9gb4qiQQL
-	Cx8Kn/Y1jV15fj1lqztAayiOxAIeQzR90t9BLGcerGjw1M8j8edTmwj7kyTb7BOSu6MY5L
-	ADzM8Yci5UHhiYVdbBa9S8lpA6KuG2FpTzMeFXIxxatyDZCW8OIODaCxM8lX765ZIKG6WR
-	pMAQ0Cpdra3Vko7/W22uBvtdxAkiRmr2zbN5TNxtVxmCLjbvuGAcnIawHUp22w==
+	bh=IvsSBegc9pgmzpU7O90D8P4g/Q1ZVDoqJ10PIf/CD3A=;
+	b=YM+uZ6Jn9YuccRLbD6QASruuciDfTFzdvuRTBST5aLpMRT7DISQRhee1bCYL5kz3b9H38a
+	zj6EVx4/+F/QHbccVysBaQWAnzdijoPv6vifAbj1GDdjqTVOSvVp0TWRgOYCcki+aHlXdJ
+	L8FuCk3AFjelYOSmuWm+IATp3Gy1wLvvMhNNABi3Bd3adf3QO6OjkzgwJhPKjLeeZibpSe
+	fz3nfbOjuIeT/OOV4S3+Jc4DYGY1VCv/p1wmSsNDnvg4XTaklPc431cNUGBeL2BZr/Ab0C
+	cSOsC7E0Zc8I2vrBJEtisuMxc1Bx2yn95nSGw3VPKbaGRCy3GW/jvv4WPwazsg==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -85,17 +85,18 @@ Cc: netdev@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2 07/28] MAINTAINERS: Add the Freescale QMC HDLC driver entry
-Date: Wed, 26 Jul 2023 17:02:03 +0200
-Message-ID: <20230726150225.483464-8-herve.codina@bootlin.com>
+Subject: [PATCH v2 02/28] soc: fsl: cpm1: qmc: Fix __iomem addresses
+ declaration
+Date: Wed, 26 Jul 2023 17:01:58 +0200
+Message-ID: <20230726150225.483464-3-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230726150225.483464-1-herve.codina@bootlin.com>
 References: <20230726150225.483464-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: 4OM7ASGXWFR6QVZXZ6FGUYW7Z3XR2YEH
-X-Message-ID-Hash: 4OM7ASGXWFR6QVZXZ6FGUYW7Z3XR2YEH
+Message-ID-Hash: VJRONYNRS7UFBNMLRIULIGXK5PD4SSCB
+X-Message-ID-Hash: VJRONYNRS7UFBNMLRIULIGXK5PD4SSCB
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -108,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4OM7ASGXWFR6QVZXZ6FGUYW7Z3XR2YEH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VJRONYNRS7UFBNMLRIULIGXK5PD4SSCB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,33 +118,149 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-After contributing the driver, add myself as the maintainer for the
-Freescale QMC HDLC driver.
+Running sparse (make C=1) on qmc.c raises a lot of warning such as:
+  ...
+  warning: incorrect type in assignment (different address spaces)
+     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free
+  ...
 
+Indeed, some variable were declared 'type *__iomem var' instead of
+'type __iomem *var'.
+
+Use the correct declaration to remove these warnings.
+
+Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/soc/fsl/qe/qmc.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aee340630eca..14041d90f9c8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8304,6 +8304,14 @@ F:	Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
- F:	drivers/soc/fsl/qe/qmc.c
- F:	include/soc/fsl/qe/qmc.h
+diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+index b3c292c9a14e..7ad0d77f1740 100644
+--- a/drivers/soc/fsl/qe/qmc.c
++++ b/drivers/soc/fsl/qe/qmc.c
+@@ -175,7 +175,7 @@ struct qmc_chan {
+ 	struct list_head list;
+ 	unsigned int id;
+ 	struct qmc *qmc;
+-	void *__iomem s_param;
++	void __iomem *s_param;
+ 	enum qmc_mode mode;
+ 	u64	tx_ts_mask;
+ 	u64	rx_ts_mask;
+@@ -203,9 +203,9 @@ struct qmc_chan {
+ struct qmc {
+ 	struct device *dev;
+ 	struct tsa_serial *tsa_serial;
+-	void *__iomem scc_regs;
+-	void *__iomem scc_pram;
+-	void *__iomem dpram;
++	void __iomem *scc_regs;
++	void __iomem *scc_pram;
++	void __iomem *dpram;
+ 	u16 scc_pram_offset;
+ 	cbd_t __iomem *bd_table;
+ 	dma_addr_t bd_dma_addr;
+@@ -218,37 +218,37 @@ struct qmc {
+ 	struct qmc_chan *chans[64];
+ };
  
-+FREESCALE QUICC ENGINE QMC HDLC DRIVER
-+M:	Herve Codina <herve.codina@bootlin.com>
-+L:	netdev@vger.kernel.org
-+L:	linuxppc-dev@lists.ozlabs.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-+F:	drivers/net/wan/fsl_qmc_hdlc.c
-+
- FREESCALE QUICC ENGINE TSA DRIVER
- M:	Herve Codina <herve.codina@bootlin.com>
- L:	linuxppc-dev@lists.ozlabs.org
+-static inline void qmc_write16(void *__iomem addr, u16 val)
++static inline void qmc_write16(void __iomem *addr, u16 val)
+ {
+ 	iowrite16be(val, addr);
+ }
+ 
+-static inline u16 qmc_read16(void *__iomem addr)
++static inline u16 qmc_read16(void __iomem *addr)
+ {
+ 	return ioread16be(addr);
+ }
+ 
+-static inline void qmc_setbits16(void *__iomem addr, u16 set)
++static inline void qmc_setbits16(void __iomem *addr, u16 set)
+ {
+ 	qmc_write16(addr, qmc_read16(addr) | set);
+ }
+ 
+-static inline void qmc_clrbits16(void *__iomem addr, u16 clr)
++static inline void qmc_clrbits16(void __iomem *addr, u16 clr)
+ {
+ 	qmc_write16(addr, qmc_read16(addr) & ~clr);
+ }
+ 
+-static inline void qmc_write32(void *__iomem addr, u32 val)
++static inline void qmc_write32(void __iomem *addr, u32 val)
+ {
+ 	iowrite32be(val, addr);
+ }
+ 
+-static inline u32 qmc_read32(void *__iomem addr)
++static inline u32 qmc_read32(void __iomem *addr)
+ {
+ 	return ioread32be(addr);
+ }
+ 
+-static inline void qmc_setbits32(void *__iomem addr, u32 set)
++static inline void qmc_setbits32(void __iomem *addr, u32 set)
+ {
+ 	qmc_write32(addr, qmc_read32(addr) | set);
+ }
+@@ -318,7 +318,7 @@ int qmc_chan_write_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 	int ret;
+ 
+@@ -374,7 +374,7 @@ static void qmc_chan_write_done(struct qmc_chan *chan)
+ 	void (*complete)(void *context);
+ 	unsigned long flags;
+ 	void *context;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 
+ 	/*
+@@ -425,7 +425,7 @@ int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 	int ret;
+ 
+@@ -488,7 +488,7 @@ static void qmc_chan_read_done(struct qmc_chan *chan)
+ 	void (*complete)(void *context, size_t size);
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	void *context;
+ 	u16 datalen;
+ 	u16 ctrl;
+@@ -663,7 +663,7 @@ static void qmc_chan_reset_rx(struct qmc_chan *chan)
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 
+ 	spin_lock_irqsave(&chan->rx_lock, flags);
+@@ -694,7 +694,7 @@ static void qmc_chan_reset_tx(struct qmc_chan *chan)
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 
+ 	spin_lock_irqsave(&chan->tx_lock, flags);
 -- 
 2.41.0
 
