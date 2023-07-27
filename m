@@ -4,147 +4,189 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D348FC001DF
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jul 2023 03:18:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 871CCC0015E
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jul 2023 03:20:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5ABCAE9;
-	Thu, 27 Jul 2023 05:17:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5ABCAE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id C286C844;
+	Thu, 27 Jul 2023 05:19:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C286C844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690427881;
-	bh=Dw3mIPFlz9+QKeRlaD8gvltMy5XTrQzqq/xy+HYqGxc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1690428019;
+	bh=QXTFMPZ75ZclvLt2leSzwRgNP0ref9H9TkCnXPoWaFk=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iQWi3T6X2lAnXr2rzJSBMPiYIJ03fLb/IPFBOZ6n67nQacQZUbf4gFQo0l6Vz+G4D
-	 Brl464RzoO7fSe0nK3g2uE2VPR1f1y/SwjiKlF/ydK4o1jX/rWj4DzeGUiQ+ppckmr
-	 0KP3aUTI1Q3EgD1+1bOBRg5elO+9mrTGtv8vNCMw=
+	b=lDRB3klwqsi6zNM2PurNZKsoRCCmBKrJTnigQI7lZCdmEnR0ZDkvQUXlvnzbkTTeS
+	 WyNc/REnqq5jFd9liAebIdshr0+sxo/1Ts/vMHCwB5NfoHgtUwQMe+yqMQE64XRWf0
+	 eT3HXe1kgQqMRPrJVlsJ52MS7TfANLn/RX7PgbLM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 768A8F80153; Thu, 27 Jul 2023 05:16:22 +0200 (CEST)
+	id 527ADF800D2; Thu, 27 Jul 2023 05:18:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5307DF80153;
-	Thu, 27 Jul 2023 05:16:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1519DF8019B;
+	Thu, 27 Jul 2023 05:18:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C154AF8057D; Thu, 27 Jul 2023 05:16:13 +0200 (CEST)
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur02on20621.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe12::621])
+	id C3C78F8019B; Thu, 27 Jul 2023 05:18:46 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0C0DAF80153
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2023 05:15:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C0DAF80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id 79D27F80153
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2023 05:18:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79D27F80153
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=nxp.com header.i=@nxp.com header.a=rsa-sha256
- header.s=selector2 header.b=FLJ1rYMc
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=eKccrBuC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690427920; x=1721963920;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=QXTFMPZ75ZclvLt2leSzwRgNP0ref9H9TkCnXPoWaFk=;
+  b=eKccrBuCV+2MaK3FLlOJdZjBpz/kuwyhqJZW9k3XV77YmUQ60lKKqc+4
+   9UjsHyV7RuX6hEBLDgfEzXdpX0ddIEITA6Llj6OvjmOcpYtwN7hwfyxJQ
+   QR90V85y3FRVRc77pZD3zGZGOg4tlQ0rjtxV+b1zQg6HPTI4cic7AF98w
+   nr07/zZKaMTgHVLf7R3mEAILEySYQee8AJFriqam01TE5uxQxfroW2lyJ
+   ODEOkdbUw6V/amNNLZ82NtRWCE+iWJQ/p+/VpFQsG4pmQOPTc/w5VevE/
+   XINwkWtG0V/dcs+1xOvLGwFtR1I0pQd44eq2gjTjKsuAVRdBOX4fTOlw6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="399129127"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200";
+   d="scan'208";a="399129127"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jul 2023 20:18:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="726772070"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200";
+   d="scan'208";a="726772070"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga002.jf.intel.com with ESMTP; 26 Jul 2023 20:18:35 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 20:18:35 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 26 Jul 2023 20:18:35 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.172)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 26 Jul 2023 20:18:35 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MPh/UvLHvfZ/4m2dZKUsPWykvY/mPV/tfV/mz0YvWGWhdduMiB6yhGXwVUp/ViTZ0QcYIDVQRowPBJ2WSON9IkjHs1KoFDS69Sp0JP5TsBmTITxzvAQkNwPa5pDwkWz9KrwwM2e73/7on/ksUPbQDowqr2OpKkyQa0rD3ZTzJ5+MDIqQNXBnJ7lVtJ2M6AbeIpJ8VhU/FYTV9Pd/jAz2r38pRuVK6ha4jo8setlqwGsS0c1YVZZJKmNOQhotpIduwr4KeI3p8I6yZ5vc2ClNNYpMjpr+PTOzEjpD/QvpoFoPNP57kzMDrDom6Q1Ph6D6lIuiXxhFZlfflAD/Aa5+6Q==
+ b=PTeOMc0FC3k571xM0NrW7QOAnC1dmVw47TsoFTYnP7zmH1FMchfwlEn7Y9z2LzXlLRG3SId3S3FiRYAsjWfvx7+JkRiV5XHS+TAd37bPM00UQn3xegaWzUaqulxcHX8jZyCR24XYupXC7EiuWTOKwBDOFTmgXlHg8cmaYF9fjpB5Ed3JpOlxWF9hsfInnXvuNNQ/qN7wF5uPfpwJ6gHIvtErgmhOS5QmBXhY0EYd4cOM/gWVPgk0yXonG2IfZ8HEHo9dG1zzfml4p9u9rMEsHggY8rq5cnSSdpFdTWr9w9/pPABWB8EKUKCQHMFXkbTqFPWbOMKRGbxivmfwN3s3bw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8W2fRhJKUeHxwsuTEJ7fKxOuuZm3h+8SgzxirAYYaeE=;
- b=IjY/HODy8DSypzTbYGjCnFA9vr1ZNrIGs60C9/F4ru82CPhQmb5wozEqLyzprTqeEYlAL5G2u4s45dSe0q8jbsSAH+yed75AofOkrui9ALT6MwEEC0fNIyEBdkTeQq9WgpWyI8238arNM4TPvACyW5GmgkGBgHa7lN4Fagl/2mpn+qkEEr2wF507TbHlG1QYoCi09OfrX1Ov8h+k6Q4I5prllKhUDtUUNjyoL0VPyrb2A+J7V3pxB29axE3VNy/ok43zlNGM5Y9NUrj7PGCJCk25UC0g6fLMYEhvk7Xvki5zsbVLAC/mY77kYswVOCXqIbO2PVPDV9IQH2iA5Oie0g==
+ bh=3scCrBvS+z4X6Zup6ZAo43aQc62jyV5Isi7wG9CiKTw=;
+ b=KUCzbafCJVaKMUUEel0/lvZdQXQP8BOtvomtEpdXhWfvmKuJMdVHKASFO4O61GTfGJnIDtbljK8LOuIz6SIi6R78z79uJyZwgvjNt3Z9Kx8KjFPeO/1eJFgIiMzNAT/rub6Ewqgg4dOvim66aW4XZD0jiqPvNW5aP/47pVNuKn1zlHHD0PN+xn/g6qz+2Kr8HFRx4OvJ24ttwA5zQcE604ZvJ8bfusbdDTVXNwgQgDDAcp+EP8j4WpMn2mowHIROVs7hRGAAuzAr0N41IRrAIUez5hmFmmOG3jJ+iXS8axmFYAEPDh5QJZiyhUwGJQ0T5FtLmwuk70zmL0Yt15RzVw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8W2fRhJKUeHxwsuTEJ7fKxOuuZm3h+8SgzxirAYYaeE=;
- b=FLJ1rYMcWo7JFx4G1oLC4VGPa/2EJ74eODdEUk2s/vDwtJ971515QcrINN7toxoakqB583rBLwa6YW1T3TmsosIt52pGto+HFnZUvvfB80Rg0ILEUh/kpZfJFcltOSsPsy2SPYYMYS8gcmMo2oo0kMWJMTWN6lw/cC8/1sinCS8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by AS4PR04MB9411.eurprd04.prod.outlook.com (2603:10a6:20b:4ea::18) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CY5PR11MB6257.namprd11.prod.outlook.com (2603:10b6:930:26::22)
+ by LV8PR11MB8722.namprd11.prod.outlook.com (2603:10b6:408:207::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
- 2023 03:15:38 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::cda8:5cad:29b6:3c96]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::cda8:5cad:29b6:3c96%7]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
- 03:15:38 +0000
-From: Chancel Liu <chancel.liu@nxp.com>
-To: shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Cc: Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH 2/3] ASoC: fsl_micfil: Add fsl_micfil_check_version function
-Date: Thu, 27 Jul 2023 11:14:58 +0800
-Message-Id: <20230727031459.571559-3-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230727031459.571559-1-chancel.liu@nxp.com>
-References: <20230727031459.571559-1-chancel.liu@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0126.apcprd03.prod.outlook.com
- (2603:1096:4:91::30) To DB9PR04MB9498.eurprd04.prod.outlook.com
- (2603:10a6:10:360::21)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Thu, 27 Jul
+ 2023 03:18:32 +0000
+Received: from CY5PR11MB6257.namprd11.prod.outlook.com
+ ([fe80::12c9:6f97:4016:eabb]) by CY5PR11MB6257.namprd11.prod.outlook.com
+ ([fe80::12c9:6f97:4016:eabb%7]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
+ 03:18:31 +0000
+From: "Lu, Brent" <brent.lu@intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Rojewski,
+ Cezary" <cezary.rojewski@intel.com>, Pierre-Louis Bossart
+	<pierre-louis.bossart@linux.intel.com>, Liam Girdwood
+	<liam.r.girdwood@linux.intel.com>, Peter Ujfalusi
+	<peter.ujfalusi@linux.intel.com>, Bard Liao
+	<yung-chuan.liao@linux.intel.com>, Ranjani Sridharan
+	<ranjani.sridharan@linux.intel.com>, Kai Vehmanen
+	<kai.vehmanen@linux.intel.com>, Mark Brown <broonie@kernel.org>, "Jaroslav
+ Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ajye Huang
+	<ajye_huang@compal.corp-partner.google.com>, "Zhi, Yong"
+	<yong.zhi@intel.com>, Terry Cheong <htcheong@chromium.org>, "Bhat, Uday M"
+	<uday.m.bhat@intel.com>, "Chiang, Mac" <mac.chiang@intel.com>, "R,
+ Dharageswari" <dharageswari.r@intel.com>, Kuninori Morimoto
+	<kuninori.morimoto.gx@renesas.com>, ye xingchen <ye.xingchen@zte.com.cn>
+Subject: RE: [PATCH v2 1/2] ASoC: Intel: maxim-common: get codec number from
+ ACPI
+Thread-Topic: [PATCH v2 1/2] ASoC: Intel: maxim-common: get codec number from
+ ACPI
+Thread-Index: AQHZv4iOElXQr78YhkykGlIThIMz5K/MPSOAgAC1oIA=
+Date: Thu, 27 Jul 2023 03:18:31 +0000
+Message-ID: 
+ <CY5PR11MB625703D8CC3F26441A4E73DD9701A@CY5PR11MB6257.namprd11.prod.outlook.com>
+References: <20230726140848.2267568-1-brent.lu@intel.com>
+ <20230726140848.2267568-2-brent.lu@intel.com>
+ <ZMFJf2MM35KBFR95@smile.fi.intel.com>
+In-Reply-To: <ZMFJf2MM35KBFR95@smile.fi.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR11MB6257:EE_|LV8PR11MB8722:EE_
+x-ms-office365-filtering-correlation-id: 0e77e3aa-d2ec-407b-950a-08db8e50278e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ 42BUzpSv1rfamcp0iwH9fAY2SQbrppJkKXsM1U6zvfqzwnZLVMsC+Eik7UIIhYQ67QD3FTV306mKe0iFkFVRbB00gCJcvcsS8Znee/tgR8gjncdZWxepQsjcxJSU63JfQB94H5jChfDsQC1FXLD6qHuG+zwr245rG6xESFNylmGUL1OxweTmXEceZ1C30Wr0m4n3SI0GeYPcvZF8qzxOUvl7EO473pla9iAkDDOz7ulQtgDS+5pryKNYgq808sfGYnsoMrQGs4n8R1uM6mZ1EZxC0EtgT2vw+o+du/bbqwg9WwzHxWM7XakLxzdFOvUSjdT7g0ojBtGVltZZfGjDeH//mfv1Q39gb37SpYFhOOiytCFczTpmT1lrsB1g7CmfvY6ZidQo3uFiebxv66WfNWAu4inCfat6fMWMhR/0Wl7cICjUcDrIVVYhgVBKK6Ak3ziq6eUKGuryV+25RmcafeugmZZBVl8Bz8LRgBIvlf1gCUNeWCSuJYJhBUYrnyQNgpCrZFyjfa4sA7HN7RdQZxBKkcMqdSg/DR1wDg77+OtWlzLjtJOEcbc/2LNW4uDP/gkeWrp+GCu30rTfIVDBhP2CaXaP+/XoLHuyHaswNbM=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6257.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(39860400002)(366004)(376002)(346002)(396003)(451199021)(186003)(71200400001)(6506007)(26005)(2906002)(38070700005)(41300700001)(38100700002)(122000001)(4326008)(66476007)(83380400001)(6916009)(52536014)(76116006)(66556008)(5660300002)(33656002)(316002)(66946007)(55016003)(558084003)(64756008)(8676002)(8936002)(66446008)(86362001)(82960400001)(7416002)(7696005)(9686003)(478600001)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?u/Dd5xsBZfVGRC7LvGwizLCaQOxW5/6XtjW5TRho/rTqUYF5Xl/HCxKEzuuw?=
+ =?us-ascii?Q?A/FbOmHHTpeRDuL3T/gZ5pyqdYrjPwFkU5daHfIAj0im0gLkXZAofciP08/B?=
+ =?us-ascii?Q?9UiFt2Z30ZnV7WUw/MGv2QS28tbvR5pbHvKcqZRAB1e9745qAVz4bDLgRKiU?=
+ =?us-ascii?Q?PPETXgqRc+4m2LzRnnRwnz5QKrQYLH8vRYf9ajcvEQktrjWIPp/01pqbmovN?=
+ =?us-ascii?Q?GbOSRzcAdAYs73vnQNe4O3DBGnU4mECZV4QnCYYPpdetcRsekhzSSN6VEQDz?=
+ =?us-ascii?Q?WXlo5utDJx1mbQme/7xi+x/2tkfTW5fJJHpw5Vlv6s5zJfBdbkhvIgQy5OsM?=
+ =?us-ascii?Q?cB47Y073usC8QoI6PsI3nsQVRta5ANMraLehhW9EpxsyxsrCLrnyEJXCWbtG?=
+ =?us-ascii?Q?Won1ygsJY7FzJwDONyNG2tvuD6oxpPGbFUCAy0zxDU9Nah/dhbfnPEf1eoqt?=
+ =?us-ascii?Q?rnKFPvD9Mevp+dlxLziwezhbKAgLdqfbV8MZ5YLo8CqdI9DSkYkwglhlIGTq?=
+ =?us-ascii?Q?mAsPjLY/WhIvH6nfhX6pW9MgiXduTHyUa8MEaTjwu7ooG21FueUGew9HsaDt?=
+ =?us-ascii?Q?m1SNGKzNqMCgVIM7aRb18rfn6s9CiydBtDyNPPBv8UGE84flj+LF8sPeH4km?=
+ =?us-ascii?Q?KwR2FynTgNXatU3+6OT7eo/uu6UK2ELPwEN5GO9iFG3BHx4BZVMvD7eDWqUQ?=
+ =?us-ascii?Q?w9ArMSCm+OTaO0Hgwp2i2XpxETPto7HX8MfaWmP9LijnaU4PdP8Sh7lUJMiq?=
+ =?us-ascii?Q?z8KvI14U/SZtVnDLX30Pl904Mfy7pjPMBZFP0Higo1mC+qoQozxQ83wGcUon?=
+ =?us-ascii?Q?hmYP8ZTz3I10ouqDg6wgDBHYf3ACS9Wd2qY9Sg+v6niWaIOmxNq9hpfcQB5m?=
+ =?us-ascii?Q?fmnP1tCPcsuI5nHWOHNX4CFFkUdWxlZlleMEwxtuYQb1IO91bE3TGJcXvdMK?=
+ =?us-ascii?Q?/ZYJU7nALZup5IgCl89f352TMvfSnRTX2npCmavEGPhGN2QE4Jjc7UuJLrb9?=
+ =?us-ascii?Q?wvQzwbwflQzJbR8w7cLP9/mIkyS52v9WtxStoCSAIPBMEhUue8p/VxMN7ib/?=
+ =?us-ascii?Q?IqOSv4ymiy/mDBiq1tk42e+LY+KsCUeQnvxjIIMRvryFzm9NSShP0rim7I1y?=
+ =?us-ascii?Q?5TtPPUoI7zyd/3t1NEEGZbdrF94NFwG79ZZMVVoSEA1Dep4hHaRb2LRlLP6+?=
+ =?us-ascii?Q?gZkus50vxcrGLAJCxwGj/6UkVEq2KsA7DGJ8asKFX8Rj6FKaVQ3ISqJpqyms?=
+ =?us-ascii?Q?7WSBtq6OkOmlKOPkWwy0MgJ25UNmPd3wnwhhBjoOIwwF7HsGS9O8Tq7bCIus?=
+ =?us-ascii?Q?sivX+JJNzqemZGFWNjjjxdW3J0G0oUqHyU6kzwof4IzZqmZmdfr4RlOfiuqY?=
+ =?us-ascii?Q?5facwWtcx3WkJzLnhZRtHo0mpjGu3Vv9ojFhucgJkw1K93yMUmXy+017YtvS?=
+ =?us-ascii?Q?JOlloHqR3fQd8+2/kWHtPuiWF4ljxAgiIgYZiv5M1zPqPXY2TiA1hkVq1fln?=
+ =?us-ascii?Q?MKy2J2YpQN0gZi6Nxnc3Q0rFqzyUnawEIy9/+Gy7KYhTaCCw8edDgWx97uT0?=
+ =?us-ascii?Q?yGC8maEEapzuwjELz48=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|AS4PR04MB9411:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6d590b6c-de7f-4742-1abe-08db8e4fc06f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	P6tUzRktDYl2YX2j35czfnEWCAP0P/y4byhdwKOqgu0LGVnKXLWMzvad2xE62jQpMqtd5shdLmjq7bt2o9RKhlJSTabTV5Gl2Ld+3d68wQopFsh/6O26rWX9Yz631XN+5IYITFnth3nvIyyrZGRl+HSaYlfa6zlsuOnoZu4AYzR32WIU4NdcANZOClM6wgZRTSM+ulktSir8z2f/kKVpZsTnnIO3Xm1jiM4AO5Dn7gQAihwQ44DK5gPgFDMxNnnKNz8pIOsyHE49ygHg02hb7BuXjDB33X4xTDiGY7fZDw6GUcwOlbQJNH4mxV9I64py7oasL3hK05YuTgbqE9s2OjLj7F5sILr/L6bcjutF/s3H+WFvTb5UjKdp14R+5kOj8nGcwvyCt6/1flkev2d3k7LWa6O0LEBZ6TO2S/+BVUlHA3+dbczr2pYjYWxwwXbnXclDJW/tOzThEnR0E2/jYUO7V3U2Ei+YLgICswRvCzs0zaokTrPAkJMATStBAVTXQoKPjpCZjcC0PlkG3RG9Pu5M1bkJSQaDSClB0G/GEgyFMt4hlcwZIjtxI9sHFU8BFKVwtRwBUSq5eb4WAAn11T2o3ildONrSoGSQwxybvGdmvEJ575So4wnEDOnCZgA7uiGwztR0ZIIHDc6qACuDJQ==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(136003)(376002)(346002)(366004)(451199021)(36756003)(86362001)(921005)(52116002)(2906002)(478600001)(38100700002)(38350700002)(186003)(26005)(1076003)(2616005)(6506007)(41300700001)(7416002)(44832011)(8676002)(6666004)(6512007)(5660300002)(6486002)(66556008)(66946007)(83380400001)(66476007)(4326008)(8936002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?tGA0IZHwuS7L2TxZqggeMqJOPtb8OsuWW8BUJe1lkHxqghjMBSsS9+Y2vDnA?=
- =?us-ascii?Q?vOR2hqNPwZUczKnOEaWa1BxbU6aA9G4uGgj0lWPUWdMgOGsR7Niihk3OrkOU?=
- =?us-ascii?Q?/nH4WYy0SqB/D2tzyCToTFR3nOVsOBY/9q4aEnT1SvE69yhM1QDdobwP+WWs?=
- =?us-ascii?Q?GwpA+QHdYikNvsV533szhcpDSni9wP5BOhz8Pt6xDqFjusEdK4oCgU/lAmIf?=
- =?us-ascii?Q?n6fe5JTzCR4L8NPwcFeN52AaSyCVC3HQ0oTnfw7BnPAzEM+Z/fzv/0SDsJjj?=
- =?us-ascii?Q?ofCSZvGIMbaqDmNc6y9TDj0/4fhyouEykDDWV5l689HEIZIeTY5+cRS/9rbp?=
- =?us-ascii?Q?C4hed/cFvs/WypuHEB78uMPhiXAFkk31t6Pt19zp/gdh5CjXB6z1kO46XeQA?=
- =?us-ascii?Q?wkSHKwpnQpZ+deLz0GwTA9ZnDhglZsdtlnxl6PLUI5tY6+W+212piuaCTr/s?=
- =?us-ascii?Q?eBuVmQM2uBBm0Ayi5xku8/T5We+84H67B9sBjZX+GtxgZcoz4w0jBozjGB83?=
- =?us-ascii?Q?8FSjNbwTBic+EnpabPOQtsG3+LOP1qrwlOQuyqtL5XUrYRiNGoNOcFiW9Lfp?=
- =?us-ascii?Q?KkM1ASKLI5KPBGQBtrLhdlAZ7/7gXrVuVoz70wOWh3B4mOv2mTYmqEm/JFkV?=
- =?us-ascii?Q?uAzhCBJkd2OsHJz0jdmrfLWyuZpAb4cGCiF9RpjRwYq/V5/7aZGLHTvHm6gF?=
- =?us-ascii?Q?+78WTIx4yinJM0OVqbNTvyZawRAH3l87e8KewxIKd5Ys9qE+cWp5UL1AFk7y?=
- =?us-ascii?Q?+GEhilhaFaLfhTqsJvhFwP7mOfiU9kAaBrNbNUSHW4I21FIGKrycrH2vxRgO?=
- =?us-ascii?Q?yMVsIZA1MHoWneP2Ljh79NrjBD2n6tFMQWX/MpvK+0Nj098WNtqKMNwXxPR+?=
- =?us-ascii?Q?FIfVfZGNkd36m9zVSGVKNEj6MuNYYGblRCcxItvlQapxtZfqXPtwFVXC5LvF?=
- =?us-ascii?Q?KDiqF0zQTB/0IRMw+sWSi7EUxEv9+CA4orHjv0yFww2Pc/TQf8od7NYQurvh?=
- =?us-ascii?Q?omhGWWKBEc6ZeUx/2q63SJSd3mkhd8O7ZHWUff+YdI6hXVL8+32jw+BkIOcf?=
- =?us-ascii?Q?UBIIzevt3j2VGquaFEHkEfK7VYbr3Q6g0IsPEYooS+fRrIlIWJtZ4T8uYGa7?=
- =?us-ascii?Q?gtbL+ialSrIYhtlDr2m8oyf0oPhx8pt8ujsgTjeeGUHD6ISuAtptCm3iJ0Wk?=
- =?us-ascii?Q?BVwrdbINgJNyoRvPXjeTdG5zn2FgbwH8Avjkk80c/ru4Wj8jGuv2EA2e8igK?=
- =?us-ascii?Q?KVUHB2IqyBCUBMMdz1HOKoTgBYjP/Z7aGTsEZBH3QozfXBMi8D0pmxtPnHaQ?=
- =?us-ascii?Q?a3/2zHABOeibxg8Smyo3VZDH2Ckyzkxz5HIYC6lHUCJDFNdSV+/WooylG1XE?=
- =?us-ascii?Q?lPuOCsKY1nqiQIR+5Y/cO1OiXLXsVm6iDeDT6FRh5P8jDFHwQwYhWP5NlF0a?=
- =?us-ascii?Q?hpYJ0mIVm1ZD4j+TVwZmtATK+5z0A7X76cI/LFNFDPaPFMfeE/XWoezZj6UY?=
- =?us-ascii?Q?9WrwFmbizWztHEr2FGgzqfaFSfWjMAPt7frRFT7toafa5N+in19EoBDej6Yb?=
- =?us-ascii?Q?ZOfKDcNZ/tje0BGSMN6Nuck3dQInrMtJdXw+20lg?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 6d590b6c-de7f-4742-1abe-08db8e4fc06f
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 03:15:38.6723
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6257.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 0e77e3aa-d2ec-407b-950a-08db8e50278e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jul 2023 03:18:31.4709
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- ESkXOgNgv1l1Hxoa5ZX/pKLgjoVi/v9Ap6Lwq6aqPBqzaakE4VOqwzFwk6UDTUrNhSEBAL4O57Ab+pb6ReeHKg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR04MB9411
-Message-ID-Hash: SMYG742NWWFB6E2FVVHOD3632HOQZSGW
-X-Message-ID-Hash: SMYG742NWWFB6E2FVVHOD3632HOQZSGW
-X-MailFrom: chancel.liu@nxp.com
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ PXTWdtKNEDDVmJ56xLNmHKTO4PCTLA/df6o520n+q/3aD6bwyYXkCZeeHV8i1H0YbKt03p9R3mCdrSar888UKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8722
+X-OriginatorOrg: intel.com
+Message-ID-Hash: VKH3OWNZRALEPFREMNJK74BGQMF7QZSM
+X-Message-ID-Hash: VKH3OWNZRALEPFREMNJK74BGQMF7QZSM
+X-MailFrom: brent.lu@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -156,7 +198,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SMYG742NWWFB6E2FVVHOD3632HOQZSGW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VKH3OWNZRALEPFREMNJK74BGQMF7QZSM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -165,205 +207,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-fsl_micfil_check_version can help to parse the version info in VERID
-and PARAM registers. Since the two registers are added only on i.MX93
-platform, a member flag called check_version is introduced to soc data
-structure which indicates need to check version.
+>=20
+> > +		pr_err("invalid codec number %d for %s\n", num_codecs,
+> > +			MAX_98390_ACPI_HID);
+>=20
+> I believe you have struct device pointer available, use dev_err().
+>=20
 
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
----
- sound/soc/fsl/fsl_micfil.c | 76 +++++++++++++++++++++++++++++++++++++-
- sound/soc/fsl/fsl_micfil.h | 36 ++++++++++++++++++
- 2 files changed, 110 insertions(+), 2 deletions(-)
+Fixed in V3 patch. Thanks.
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index b15febf19c02..46eda6e8c4b6 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -56,6 +56,8 @@ struct fsl_micfil {
- 	int vad_init_mode;
- 	int vad_enabled;
- 	int vad_detected;
-+	struct fsl_micfil_verid verid;
-+	struct fsl_micfil_param param;
- };
- 
- struct fsl_micfil_soc_data {
-@@ -64,6 +66,7 @@ struct fsl_micfil_soc_data {
- 	unsigned int dataline;
- 	bool imx;
- 	bool use_edma;
-+	bool check_version;
- 	u64  formats;
- };
- 
-@@ -90,6 +93,7 @@ static struct fsl_micfil_soc_data fsl_micfil_imx93 = {
- 	.dataline =  0xf,
- 	.formats = SNDRV_PCM_FMTBIT_S32_LE,
- 	.use_edma = true,
-+	.check_version = true,
- };
- 
- static const struct of_device_id fsl_micfil_dt_ids[] = {
-@@ -356,6 +360,49 @@ static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
- 	SOC_SINGLE_BOOL_EXT("VAD Detected", 0, hwvad_detected, NULL),
- };
- 
-+static int fsl_micfil_check_version(struct device *dev)
-+{
-+	struct fsl_micfil *micfil = dev_get_drvdata(dev);
-+	unsigned int val;
-+	int ret;
-+
-+	if (!micfil->soc->check_version)
-+		return 0;
-+
-+	ret = regmap_read(micfil->regmap, REG_MICFIL_VERID, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	dev_dbg(dev, "VERID: 0x%016X\n", val);
-+
-+	micfil->verid.version = val &
-+		(MICFIL_VERID_MAJOR_MASK | MICFIL_VERID_MINOR_MASK);
-+	micfil->verid.version >>= MICFIL_VERID_MINOR_SHIFT;
-+	micfil->verid.feature = val & MICFIL_VERID_FEATURE_MASK;
-+
-+	ret = regmap_read(micfil->regmap, REG_MICFIL_PARAM, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	dev_dbg(dev, "PARAM: 0x%016X\n", val);
-+
-+	micfil->param.hwvad_num = (val & MICFIL_PARAM_NUM_HWVAD_MASK) >>
-+		MICFIL_PARAM_NUM_HWVAD_SHIFT;
-+	micfil->param.hwvad_zcd = val & MICFIL_PARAM_HWVAD_ZCD;
-+	micfil->param.hwvad_energy_mode = val & MICFIL_PARAM_HWVAD_ENERGY_MODE;
-+	micfil->param.hwvad = val & MICFIL_PARAM_HWVAD;
-+	micfil->param.dc_out_bypass = val & MICFIL_PARAM_DC_OUT_BYPASS;
-+	micfil->param.dc_in_bypass = val & MICFIL_PARAM_DC_IN_BYPASS;
-+	micfil->param.low_power = val & MICFIL_PARAM_LOW_POWER;
-+	micfil->param.fil_out_width = val & MICFIL_PARAM_FIL_OUT_WIDTH;
-+	micfil->param.fifo_ptrwid = (val & MICFIL_PARAM_FIFO_PTRWID_MASK) >>
-+		MICFIL_PARAM_FIFO_PTRWID_SHIFT;
-+	micfil->param.npair = (val & MICFIL_PARAM_NPAIR_MASK) >>
-+		MICFIL_PARAM_NPAIR_SHIFT;
-+
-+	return 0;
-+}
-+
- /* The SRES is a self-negated bit which provides the CPU with the
-  * capability to initialize the PDM Interface module through the
-  * slave-bus interface. This bit always reads as zero, and this
-@@ -1037,6 +1084,9 @@ static irqreturn_t hwvad_err_isr(int irq, void *devid)
- 	return IRQ_HANDLED;
- }
- 
-+static int fsl_micfil_runtime_suspend(struct device *dev);
-+static int fsl_micfil_runtime_resume(struct device *dev);
-+
- static int fsl_micfil_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -1156,6 +1206,25 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, micfil);
- 
- 	pm_runtime_enable(&pdev->dev);
-+	if (!pm_runtime_enabled(&pdev->dev)) {
-+		ret = fsl_micfil_runtime_resume(&pdev->dev);
-+		if (ret)
-+			goto err_pm_disable;
-+	}
-+
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
-+	if (ret < 0)
-+		goto err_pm_get_sync;
-+
-+	/* Get micfil version */
-+	ret = fsl_micfil_check_version(&pdev->dev);
-+	if (ret < 0)
-+		dev_warn(&pdev->dev, "Error reading MICFIL version: %d\n", ret);
-+
-+	ret = pm_runtime_put_sync(&pdev->dev);
-+	if (ret < 0 && ret != -ENOSYS)
-+		goto err_pm_get_sync;
-+
- 	regcache_cache_only(micfil->regmap, true);
- 
- 	/*
-@@ -1180,6 +1249,9 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 
- 	return ret;
- 
-+err_pm_get_sync:
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		fsl_micfil_runtime_suspend(&pdev->dev);
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
- 
-@@ -1191,7 +1263,7 @@ static void fsl_micfil_remove(struct platform_device *pdev)
- 	pm_runtime_disable(&pdev->dev);
- }
- 
--static int __maybe_unused fsl_micfil_runtime_suspend(struct device *dev)
-+static int fsl_micfil_runtime_suspend(struct device *dev)
- {
- 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
- 
-@@ -1203,7 +1275,7 @@ static int __maybe_unused fsl_micfil_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused fsl_micfil_runtime_resume(struct device *dev)
-+static int fsl_micfil_runtime_resume(struct device *dev)
- {
- 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
- 	int ret;
-diff --git a/sound/soc/fsl/fsl_micfil.h b/sound/soc/fsl/fsl_micfil.h
-index b3c392ef5daf..231a52aff024 100644
---- a/sound/soc/fsl/fsl_micfil.h
-+++ b/sound/soc/fsl/fsl_micfil.h
-@@ -174,4 +174,40 @@
- #define MICFIL_HWVAD_ENVELOPE_MODE	0
- #define MICFIL_HWVAD_ENERGY_MODE	1
- 
-+/**
-+ * struct fsl_micfil_verid - version id data
-+ * @version: version number
-+ * @feature: feature specification number
-+ */
-+struct fsl_micfil_verid {
-+	u32 version;
-+	u32 feature;
-+};
-+
-+/**
-+ * struct fsl_micfil_param - parameter data
-+ * @hwvad_num: the number of HWVADs
-+ * @hwvad_zcd: HWVAD zero-cross detector is active
-+ * @hwvad_energy_mode: HWVAD energy mode is active
-+ * @hwvad: HWVAD is active
-+ * @dc_out_bypass: points out if the output DC remover is disabled
-+ * @dc_in_bypass: points out if the input DC remover is disabled
-+ * @low_power: low power decimation filter
-+ * @fil_out_width: filter output width
-+ * @fifo_ptrwid: FIFO pointer width
-+ * @npair: number of microphone pairs
-+ */
-+struct fsl_micfil_param {
-+	u32 hwvad_num;
-+	bool hwvad_zcd;
-+	bool hwvad_energy_mode;
-+	bool hwvad;
-+	bool dc_out_bypass;
-+	bool dc_in_bypass;
-+	bool low_power;
-+	bool fil_out_width;
-+	u32 fifo_ptrwid;
-+	u32 npair;
-+};
-+
- #endif /* _FSL_MICFIL_H */
--- 
-2.25.1
+Regards,
+Brent
 
