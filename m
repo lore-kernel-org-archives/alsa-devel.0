@@ -4,110 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C63E6C001E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jul 2023 07:40:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C749C00528
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jul 2023 08:13:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2A17DEC;
-	Thu, 27 Jul 2023 09:39:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2A17DEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 386E7846;
+	Thu, 27 Jul 2023 10:12:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 386E7846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690443647;
-	bh=i4FtvcnHP1eZuNAHRmk+vFCHET61dT7uoic7/rel1NI=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=hitlOaCTX0yYSqDjB57gCsFVzT7kegTO/BNDMEmou8Kek76LQhWUYEIjKtfzAvXC7
-	 JgTUQZ+8Zsv0ir2j/fkfqcbHw0DLkgjKUoCIjH08DCSTLLrVkOiSI0HNXUnFqcNRBm
-	 I9bOfc2tB6NyWaCK/bzcVn+6HzP6VH2p+3s36q1c=
+	s=default; t=1690445618;
+	bh=tnGIkZ0IfVSxC+Yq+6QYwbRcNs+y3LaIpY7itDA1DY0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=IdTuS8MG0fGZdE2jThmbQffgCfgfNOwVMK/ES2K/GCdM8MJF8E6iwzu1eYq5vW4y8
+	 mBD2kLDWgg8rZHcnxmJ3skKa/YNPKJ0uiP8wgOBy+dHiGW35Hd1LvXbBtqwUViYHuN
+	 8FnmnKs2bLuhHAADTkBQ/ss59LM4T1dqCRETxICs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E7C37F805C1; Thu, 27 Jul 2023 09:38:23 +0200 (CEST)
+	id 668E0F80535; Thu, 27 Jul 2023 10:12:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E7A7F805C1;
-	Thu, 27 Jul 2023 09:38:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E913BF801F5;
+	Thu, 27 Jul 2023 10:12:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2ED4BF8019B; Thu, 27 Jul 2023 09:16:45 +0200 (CEST)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 15268F8019B; Thu, 27 Jul 2023 10:12:20 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 41F91F80149
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2023 09:16:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41F91F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id AFCD8F80153
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2023 10:12:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFCD8F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=vOhAluSi
-Received: by mail-wm1-x330.google.com with SMTP id
- 5b1f17b1804b1-3fbea14706eso6525775e9.2
-        for <alsa-devel@alsa-project.org>;
- Thu, 27 Jul 2023 00:16:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690442197; x=1691046997;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hkADfI1IITAtEX5v+S8j3Mm4PQmUqoleV9IfpFo9m5w=;
-        b=vOhAluSiGvZlYqXw23vgq1DpLCehDHSf1+Kos+7coPZq2YLiiaurcBlSc5Qc+vh4yj
-         TYnvNcOq4Tzy1eQlXmS63lYMSvTaeuuJeXunzCt6E4GAS0MXpFpMBcRmx7p+NO5irLPN
-         Tn1URsTkC4QCjnSmBMHVSjKg4wQx2NRD5FpK2w+BdUkPJzeaQ2eVPPd9d0+sXYffbKhQ
-         yLYbBA8PCVNx+45x8aWVRl9mg+srViwkfskslQ25DIQM+Y25BOEg9YP/+56skGWMa8c8
-         8GMhtd4ZTyWjkgQdNggXiI+CFdYFYISynoq5P7HixW3M8bZtAlXeWadIvGtxlz1b2HoH
-         LloQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690442197; x=1691046997;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hkADfI1IITAtEX5v+S8j3Mm4PQmUqoleV9IfpFo9m5w=;
-        b=g6VKvI8P6HSxvoXmlVVMoqmaXi3+fq8JA/sZKkYJ74/wALYrr72/jMdjwm4o8kSazx
-         ftnUKRWTbKLdkMkiLk75+k2v/81vRDeC5SyyFfNKFXAvHQxTJ/RHq9dYHyvJO7rfILTg
-         pH+7QLeK2U9/jpxyUgskHioL+v7O9QxQl3jFd9nCqmaXZxpqzAOP7DgWkkQUiQcp0uOk
-         7kf13b4GIXaZJUzrlHnNoDVJPfkC5/bV3PtpuZFcQPblr15xag/zu6xdsxvxOSG0CUom
-         Dpu5Pv4rmNm8TK1UZDANZMNdIW/665ho/5VKXU1jmaAWVQ6QUSJhcNsTvMLH3faR5PMB
-         oWuQ==
-X-Gm-Message-State: ABy/qLZSf1K9UuF2FN0joHsu57dPJZ709TkzlMgdEXqmNFJEctqjF+qI
-	MzauBqbEAPY/KBbqxijf5yGH4w==
-X-Google-Smtp-Source: 
- APBJJlGX8E9P4/I5JQDGiC2JpjRcVDZJdtV/ZWZICj5PRQB90Ll5/+I0L2gBa5R0jGBYo/1MSo0sKQ==
-X-Received: by 2002:a5d:4942:0:b0:317:6fff:c32b with SMTP id
- r2-20020a5d4942000000b003176fffc32bmr977308wrs.53.1690442197192;
-        Thu, 27 Jul 2023 00:16:37 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id
- z1-20020adfd0c1000000b0031424f4ef1dsm1165692wrh.19.2023.07.27.00.16.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 00:16:36 -0700 (PDT)
-Date: Thu, 27 Jul 2023 10:16:33 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Simon Trimmer <simont@opensource.cirrus.com>
-Cc: James Schulman <james.schulman@cirrus.com>,
-	David Rhodes <david.rhodes@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org
-Subject: [PATCH] ALSA: hda/cs35l56: Do some clean up on probe error
-Message-ID: <465160f4-b7cf-41d5-931e-d6c9e68fa3c7@moroto.mountain>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=g3X0c1vs
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A690461DA0;
+	Thu, 27 Jul 2023 08:12:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 516EEC433C8;
+	Thu, 27 Jul 2023 08:12:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690445529;
+	bh=tnGIkZ0IfVSxC+Yq+6QYwbRcNs+y3LaIpY7itDA1DY0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g3X0c1vs3a2ExMXkrF+1tcbDsnN2aqJCcQvv2E42gHFtthXoxHT+jaSco+ZogIg0G
+	 w7tGNnMsZDib2IGYF984hf9xZSY5adT9vxpurLoOMGGSONNQFd8WdhzgsuAmXgk49K
+	 dMaePLC2CGqQT2i6n9Et/bGw1iCT+XmtAMUlBT4nI1PHdiAY5WWzAFBFfDovs3hpXv
+	 VjrgM0AtFh5s4anoNx0c7HbquZbJdD7PnTZfXSJhncYy2kd13o4lyvqr8/JOKnY3vL
+	 zIUldsQfgz0SOIYaMa8Oar3jUOZj5tjJxq7oN5ca+/JEtWuvauejQ5M5bDpTAv+tlm
+	 KMdwa+ZVqnw1A==
+Date: Thu, 27 Jul 2023 09:12:01 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 27/28] dt-bindings: net: fsl,qmc-hdlc: Add framer
+ support
+Message-ID: <20230727-jailer-recede-a62ab2238581@spud>
+References: <20230726150225.483464-1-herve.codina@bootlin.com>
+ <20230726150225.483464-28-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="eYAsfQrSrlZJPeWa"
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-MailFrom: dan.carpenter@linaro.org
-X-Mailman-Rule-Hits: nonmember-moderation
+In-Reply-To: <20230726150225.483464-28-herve.codina@bootlin.com>
+Message-ID-Hash: SE7KS7AOSGV5O4UNUKDWPI7BONRYJ2ZX
+X-Message-ID-Hash: SE7KS7AOSGV5O4UNUKDWPI7BONRYJ2ZX
+X-MailFrom: conor@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: G3PCZK5ZKJNCDRBG7ROSUWN4GP3Q4ADH
-X-Message-ID-Hash: G3PCZK5ZKJNCDRBG7ROSUWN4GP3Q4ADH
-X-Mailman-Approved-At: Thu, 27 Jul 2023 07:37:00 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G3PCZK5ZKJNCDRBG7ROSUWN4GP3Q4ADH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SE7KS7AOSGV5O4UNUKDWPI7BONRYJ2ZX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,32 +114,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Smatch complains that this return should be a goto:
 
-    sound/pci/hda/cs35l56_hda.c:910 cs35l56_hda_common_probe()
-    warn: missing unwind goto?
+--eYAsfQrSrlZJPeWa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The goto error disables cansleep so that seems reasonable.
+On Wed, Jul 26, 2023 at 05:02:23PM +0200, Herve Codina wrote:
+> A framer can be connected to the QMC HDLC.
+> If present, this framer is the interface between the TDM used by the QMC
+> HDLC and the E1/T1 line.
+> The QMC HDLC can use this framer to get information about the line and
+> configure the line.
+>=20
+> Add an optional framer property to reference the framer itself.
+>=20
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 
-Fixes: 73cfbfa9caea ("ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- sound/pci/hda/cs35l56_hda.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Why not fully describe the hardware in one patch in this series, rather
+than split this over two different ones?
 
-diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index 71e95e64f8a4..4c3279f61b94 100644
---- a/sound/pci/hda/cs35l56_hda.c
-+++ b/sound/pci/hda/cs35l56_hda.c
-@@ -907,7 +907,7 @@ int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int id)
- 
- 	ret = cs35l56_set_patch(&cs35l56->base);
- 	if (ret)
--		return ret;
-+		goto err;
- 
- 	regcache_mark_dirty(cs35l56->base.regmap);
- 	regcache_sync(cs35l56->base.regmap);
--- 
-2.39.2
+> ---
+>  Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml b/Do=
+cumentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
+> index 8bb6f34602d9..bf29863ab419 100644
+> --- a/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
+> +++ b/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
+> @@ -27,6 +27,11 @@ properties:
+>        Should be a phandle/number pair. The phandle to QMC node and the Q=
+MC
+>        channel to use.
+> =20
+> +  framer:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      phandle to the framer node
+> +
+>  required:
+>    - compatible
+>    - fsl,qmc-chan
+> --=20
+> 2.41.0
+>=20
 
+--eYAsfQrSrlZJPeWa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMIm0AAKCRB4tDGHoIJi
+0kUJAPwNtjLVJN1zsHlbb6aaExnJrN4N1c/y81aSzDXGP/5mtwD/ZlFY9Kf3kK6f
+ZSCmoVzzU0F7LpDiZu5VLWEDSKophAY=
+=Scw7
+-----END PGP SIGNATURE-----
+
+--eYAsfQrSrlZJPeWa--
