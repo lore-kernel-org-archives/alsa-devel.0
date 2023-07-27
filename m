@@ -4,96 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 256E3C001E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jul 2023 13:12:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C872FC0015E
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jul 2023 15:01:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23AC184A;
-	Thu, 27 Jul 2023 15:11:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23AC184A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F8B684B;
+	Thu, 27 Jul 2023 17:00:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F8B684B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690463552;
-	bh=vUmENAs/1cTT+DGAYGPlCtIT+JAbd069Wvnn2YfAKdU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=UnpVKauiAb17LGlDAYzrBfHgqzg2EPEgp9ZKMjxBfBJNMaBda/D5BETE0TKI97gBV
-	 81j1GjgYjbubC/NK0qwCkglTTnjLlEtkgrmF3HZr917Ia+K0oUYMjK2qX8PKfPNMrY
-	 wkNKJm7Sh0nkEKLHMZJ//Nx+qoCR3rH6GLAAOQ+E=
+	s=default; t=1690470081;
+	bh=sYAFTE79+RoX0LsvWor3HthbARpspjQmix6P+HTVRLs=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=tsLnOeL4ui8cX9wURQqM6/WMJuW9PcEcRMPgg97uPZJUp4ObA8leIgNQWT4wJVB7e
+	 s3ZUr3Fjr/0JwUiJftwRm6VdBBqFXeBbG9knHQCVMGVqP6tiu9rsPZlgmWVNPbwvz9
+	 QoriAg+aW4ChyEiMth8BY7wsZQhpQYN6jc5XWtFg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56058F80520; Thu, 27 Jul 2023 15:11:14 +0200 (CEST)
+	id 3EED5F80163; Thu, 27 Jul 2023 17:00:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E9D2F8019B;
-	Thu, 27 Jul 2023 15:11:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C38DF80149;
+	Thu, 27 Jul 2023 17:00:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86A24F8019B; Thu, 27 Jul 2023 15:11:09 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id AA514F8019B; Thu, 27 Jul 2023 16:59:56 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E8E92F800D2
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2023 15:10:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8E92F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 98643F80153
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2023 16:59:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98643F80153
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=E2WkFIu1;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=bcrgDnKL
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CBE7321AED;
-	Thu, 27 Jul 2023 13:10:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1690463445;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=01qV6FkBa+XL0T32UsVWy/unfABT93niNV9gpO0mV/Q=;
-	b=E2WkFIu1doyNi567RiuonW2XY/V0Wp67hezRJ86kW565L1zWdqWoM8ynzFYp9CicyrTnGO
-	YE5dUBmvPC8p15jQGPkVrQpW1sCpIkkYZtzdypa2631kg8FMR6RbJrsovLakyvHkT3dvvi
-	9o+igPFJREDGIdVhUjoV1xVpRGDJCjg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1690463445;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=01qV6FkBa+XL0T32UsVWy/unfABT93niNV9gpO0mV/Q=;
-	b=bcrgDnKLsd/InBCS99eYvNLPT9TLbwImOKBCtTiT23dibce61n3OesFRmACVAxarUFJK9I
-	F3CDds8HpIP2tLCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE72F13902;
-	Thu, 27 Jul 2023 13:10:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id izeOKdVswmTTZAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 27 Jul 2023 13:10:45 +0000
-Date: Thu, 27 Jul 2023 15:10:45 +0200
-Message-ID: <87y1j14i0a.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v6.5-rc3
-In-Reply-To: <20230727121944.556C6C433C7@smtp.kernel.org>
-References: <20230727121944.556C6C433C7@smtp.kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: 2NYLZHXYGJBTEIDN3ISI2HF2YS4XQMNK
-X-Message-ID-Hash: 2NYLZHXYGJBTEIDN3ISI2HF2YS4XQMNK
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
+ header.s=selector1 header.b=kXoqR2HH
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 36RAH1wh027816;
+	Thu, 27 Jul 2023 16:59:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=doC1Pd1d3NibZb37WWHiE70DKjD6XTr1B8pDdUXXdeU=;
+ b=kXoqR2HH0CWHQ1GPMt9yevGGyieem0U7ABUHEI8AmP2jQ74X6lp+4e/m9W1c3cfgJAlG
+ I9c66gZAgkGwIQpL9H1UMF6EvN2OQyzcIKohIHp5uPysjh9skOJA39QRfRDtdPNjiJ86
+ 35aaX6kA73vd6cJ3jOBIMVozJ42aY33abrMRiPWyrxkc+HKv7Hz1VyMxUf9aAo7Ofssm
+ x8zFgTbacmiCB70yHXShcna0D9XLE3G1WcNJEQX9vOVqOvUoR5pMZmlTkhWWUHxMqmmh
+ 2q7paXg/5Tdm9VbdmYqn7lIrdtqf1wdL0hiRKK2E3uNbGyWhhyjFDCDqpyMRbN+5i0WF 1g==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s3kn2b15h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 27 Jul 2023 16:59:46 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D66C710002A;
+	Thu, 27 Jul 2023 16:59:44 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 787F2209721;
+	Thu, 27 Jul 2023 16:59:44 +0200 (CEST)
+Received: from localhost (10.201.20.178) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 27 Jul
+ 2023 16:59:44 +0200
+From: Olivier Moysan <olivier.moysan@foss.st.com>
+To: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Arnaud Pouliquen
+	<arnaud.pouliquen@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Frank Rowand
+	<frowand.list@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+	<broonie@kernel.org>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+CC: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [RFC v2 00/11] iio: add iio backend device type
+Date: Thu, 27 Jul 2023 16:59:26 +0200
+Message-ID: <20230727145939.1157607-1-olivier.moysan@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.178]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_07,2023-07-26_01,2023-05-22_02
+Message-ID-Hash: V5BKVW6NBPI7BRY6VTT5YTWHC4MHCEG5
+X-Message-ID-Hash: V5BKVW6NBPI7BRY6VTT5YTWHC4MHCEG5
+X-MailFrom: prvs=5572493f00=olivier.moysan@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -105,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2NYLZHXYGJBTEIDN3ISI2HF2YS4XQMNK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V5BKVW6NBPI7BRY6VTT5YTWHC4MHCEG5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,29 +122,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 27 Jul 2023 14:19:31 +0200,
-Mark Brown wrote:
-> 
-> The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
-> 
->   Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.5-rc3
-> 
-> for you to fetch changes up to f85739c0b2b0d98a32f5ca4fcc5501d2b76df4f6:
-> 
->   ASoC: atmel: Fix the 8K sample parameter in I2SC master (2023-07-25 12:10:00 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v6.5
-> 
-> A collection of device specific fixes, none particularly remarkable.
-> There's a set of repetitive fixes for the RealTek drivers fixing an
-> issue with suspend that was replicated in multiple drivers.
+This v2 is an addon to initial RFC:
+https://lore.kernel.org/lkml/20230623140944.2613002-1-olivier.moysan@foss.st.com/
 
-Pulled now.  Thanks.
+Despite the "IIO backend" naming has to be changed (as pointed out by
+Jonathan previously), it has been kept here, for time being. The
+appropriated naming still has to be discussed later on.
 
+In the previous RFC the "IIO backend" concept was proposed through
+a set of template APIs.
 
-Takashi
+This v2 implements a functionnal exemple based on STM32 DFSDM,
+to bring scaling support to this peripheral.
+
+Olivier Moysan (11):
+  iio: introduce iio backend device
+  of: property: add device link support for io-backends
+  dt-bindings: iio: stm32-dfsdm-adc: add scaling support
+  dt-bindings: iio: adc: add scaling support to sd modulator
+  iio: adc: stm32-dfsdm: manage dfsdm as a channel provider
+  iio: adc: stm32-dfsdm: adopt generic channel bindings
+  iio: adc: stm32-dfsdm: add scaling support to dfsdm
+  iio: adc: sd modulator: add scale and offset support
+  ARM: dts: stm32: adopt new dfsdm bindings on stm32mp151
+  ARM: dts: stm32: add dfsdm pins muxing on stm32mp15
+  ARM: dts: stm32: add dfsdm iio support on stm32mp157c-ev
+
+ .../iio/adc/sigma-delta-modulator.yaml        |   9 +-
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  | 189 ++++++------------
+ arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi   |  39 ++++
+ arch/arm/boot/dts/st/stm32mp151.dtsi          |  18 +-
+ arch/arm/boot/dts/st/stm32mp157c-ev1.dts      |  68 +++++++
+ drivers/iio/Makefile                          |   1 +
+ drivers/iio/adc/sd_adc_modulator.c            | 106 ++++++++--
+ drivers/iio/adc/stm32-dfsdm-adc.c             | 187 +++++++++++------
+ drivers/iio/industrialio-backend.c            | 107 ++++++++++
+ drivers/of/property.c                         |   2 +
+ include/linux/iio/backend.h                   |  56 ++++++
+ 11 files changed, 561 insertions(+), 221 deletions(-)
+ create mode 100644 drivers/iio/industrialio-backend.c
+ create mode 100644 include/linux/iio/backend.h
+
+-- 
+2.25.1
+
