@@ -4,84 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 026B2C001DC
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jul 2023 15:54:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13E71EB64DD
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Jul 2023 20:32:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98E4383E;
-	Thu, 27 Jul 2023 17:53:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98E4383E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0518F83A;
+	Thu, 27 Jul 2023 22:31:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0518F83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690473253;
-	bh=V2aH0vwTvDcXMuV7cQlSjt46toCvcqNWtjA04RTm5Bw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1690489951;
+	bh=ekRYz8xbmy5B35whJHZOKa2NN55Pqt6uzdTr4Owj6tU=;
+	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jTP+d/GBMkLbZlRId/cb5swngcSZj1kzrpMX+08a+/56RB7f788ckKflJSYCYcn37
-	 3AIzyvB7rpw56nfgWvneUJWjr/iWjPqTgHEr3DAlxh2A1VW8+5v9m8ut1qSI0WZKOL
-	 WkuOiZXsX1jLDvDoG6y8nkfBKJ+GQpjw/0u+CzfE=
+	b=McvXgr8x1RD48zVQGzsh+02cpPxcP2yUij89gILxXXeD7JrSsWtPw+wxWLxR0Pnky
+	 WsMfDHAuGXSQ15Zlij3vfo/xaEkaSUYs3ElkT2+/K1Fe5/Ywqu3lcYFfDqoXsQcETh
+	 cg9qFw5q3vbaBCTfoHT8zF1h9s8zjQ0iKbBG+qpA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68D48F80544; Thu, 27 Jul 2023 17:53:02 +0200 (CEST)
+	id 6EE26F80544; Thu, 27 Jul 2023 22:31:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5AC0F8019B;
-	Thu, 27 Jul 2023 17:53:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07737F8019B;
+	Thu, 27 Jul 2023 22:31:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 671A0F8019B; Thu, 27 Jul 2023 11:51:02 +0200 (CEST)
-Received: from out-113.mta0.migadu.com (out-113.mta0.migadu.com
- [91.218.175.113])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id C5B58F8019B; Thu, 27 Jul 2023 22:31:07 +0200 (CEST)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com
+ [IPv6:2607:f8b0:4864:20::b4a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3D3FEF80153
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2023 11:50:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D3FEF80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id 69EEEF80149
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2023 22:30:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69EEEF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=jookia.org header.i=@jookia.org header.a=rsa-sha256
- header.s=key1 header.b=T298/Bwh
-Date: Thu, 27 Jul 2023 19:50:36 +1000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-	t=1690451455;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tpGulMNGBLGeCQsQWgv21Wi66CtJAGM5/rQdNeGYsjk=;
-	b=T298/BwhHCdJVHBlfM6PVWLwOt80cn2rGyCcxgdCQ6KysXhzJdQ1dV3DRe/cbt1nmcJLaY
-	dRZRQITmJX4FXoI2L4w89dmtjTyhVh6QqnQ5aCELttROQKKMLZWOm4gXTERY7qcNIf94ie
-	g7at2lL6PRWvXkLK9WhJSw9g/bg4dn+zf22UuiGcZHIAeB73sVfh9eKjEGo8+eDQhZFUnX
-	UQX3jyUsVRM/B+si6VZ1foMb0XXXDDAduG2dpbXXHoAHsLZY5w3MeHnBatB0K56Z7MbZYk
-	MaG8J5TAfuFAp0o3DUG5fcI+H5RW5JLePVB8mFeGBs2QuM8qC6Lhx/TONmOP0w==
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-From: John Watts <contact@jookia.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: How do I set up multiple codecs on one I2S - without TDM?
-Message-ID: <ZMI97Pk0giYpLFdv@titan>
-References: <ZMBRMnv0GQF4wyfQ@titan>
- <c2f5a9ec-2927-f9bf-86a1-3388d0bac015@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c2f5a9ec-2927-f9bf-86a1-3388d0bac015@linux.intel.com>
-X-Migadu-Flow: FLOW_OUT
-X-MailFrom: contact@jookia.org
-X-Mailman-Rule-Hits: nonmember-moderation
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20221208 header.b=JQC4MlN3
+Received: by mail-yb1-xb4a.google.com with SMTP id
+ 3f1490d57ef6-c64ef5bde93so1323549276.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 27 Jul 2023 13:30:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690489854; x=1691094654;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lEKw26+6RZdhI/anFRn58wCKq7xAbjFEyn0dAkNnpG0=;
+        b=JQC4MlN38CgOxQdZXvHWUw5mbVGP5ZPWx3/5G8h/aF0HPkdXFJcNXoEoXMLjnMoF+x
+         4Hu7uggmX2FpspBq6lxF6wv2JjPXaPL+uGbaW+Nd7y8gpo8X88P8w29kKuvtOUw19yXA
+         zphnSGDV8E05vxXMRCAAt9K2cv2wVtwHz4LUJ5smBonEAlaEnG7uioYbPbvxaUBOgFyn
+         f9D0nZZnJcuVdYQjNi024aRj9xHd9AEX9poOXq/xImJab3PtyMVu7Znmvks/rO0yWHkY
+         cFEs01yQ6Z2Gh4IzSHsnInDvM54A6RIJuGDOnwXLr9ngP2bmUs2Orsu+Gx7Slb7I84Di
+         fGSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690489854; x=1691094654;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lEKw26+6RZdhI/anFRn58wCKq7xAbjFEyn0dAkNnpG0=;
+        b=k6p1aaBKzLhYdOLs6/9+SzciUrvdP8Cv5hhY4v2CFzWOREkDKfY7thH1YyfMHp5LFT
+         b1ID/r1XCA+pkUC21vpRpeAIuvThlJakV/MKbEArRTkV0Fv8vbFMpJ0V7COPLT8PQE2L
+         KNCFdOVb6r/QjtT9q3MqpixNsrYHGUY3nmcsO0pbPTk6Qt9VgOrJPA8jca2PzztdJ1Ns
+         yIj/DD79JIbIMp4u2n9SNQ3jQjuM3302yVzgsn0HXD1Ze0DV9MsL2UxfWd44o7mUpDp3
+         rrWHHRSJbsPolhJUylaeLNWCgod4+/EGK1dqPLCbxZC9xv3thUSsunac4IAC/nYWb6e0
+         87gw==
+X-Gm-Message-State: ABy/qLZ5mygcZafi/Kr91zaHFQ4fixB8Eo83GB6Wbi+ZgihaOG6+Z7AX
+	QYaA21Z+wHcSbgUC1iR5nH42iV23wYaWAZmJ1Q==
+X-Google-Smtp-Source: 
+ APBJJlGl9kr0YKjXXClaNvO5YXYK+bsI4pnNFzpD0RmmC23yYTH1+wRPxm/hihZJnIhi6nmd3x0pGnlwMsmYe8YXBg==
+X-Received: from jstitt-linux1.c.googlers.com
+ ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:c0cd:0:b0:d0f:dec4:87a0 with SMTP
+ id c196-20020a25c0cd000000b00d0fdec487a0mr2722ybf.2.1690489854578; Thu, 27
+ Jul 2023 13:30:54 -0700 (PDT)
+Date: Thu, 27 Jul 2023 20:30:18 +0000
+In-Reply-To: 
+ <20230726-asoc-intel-skylake-remove-deprecated-strncpy-v1-1-020e04184c7d@google.com>
+Mime-Version: 1.0
+References: 
+ <20230726-asoc-intel-skylake-remove-deprecated-strncpy-v1-1-020e04184c7d@google.com>
+X-Developer-Key: i=justinstitt@google.com; a=ed25519;
+ pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690489451; l=2099;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=ekRYz8xbmy5B35whJHZOKa2NN55Pqt6uzdTr4Owj6tU=;
+ b=ZHerNq4/0/izYJjYC4OPRwRQsf1JjGaWzyKG1n6tatiOox8osMHj5IC5H3w7pomkovsRZW+Mr
+ ZalieCCjJkOBFVxsodA8i2CfMpi8W7SOSDjFdBjxoR32Os1IBvPaV8a
+X-Mailer: b4 0.12.3
+Message-ID: 
+ <20230727-asoc-intel-skylake-remove-deprecated-strncpy-v2-1-152830093921@google.com>
+Subject: [PATCH v2] ASoC: Intel: Skylake: replace deprecated strncpy with
+ strscpy
+From: Justin Stitt <justinstitt@google.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Justin Stitt <justinstitt@google.com>, Kees Cook <keescook@chromium.org>,
+	Nathan Chancellor <nathan@kernel.org>, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Message-ID-Hash: BVOR6NI7N3J2AFXQBIXO3L33BB64G3DM
+X-Message-ID-Hash: BVOR6NI7N3J2AFXQBIXO3L33BB64G3DM
+X-MailFrom: 
+ 3_tPCZAsKCt0ITRSHMRSHSSFNNFKD.BNL9KR9-CDUDK9KR9-OQNIDBS.NQF@flex--justinstitt.bounces.google.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: NJLNSEPZUCWRKB7VMSJW4ASQNWDBRROQ
-X-Message-ID-Hash: NJLNSEPZUCWRKB7VMSJW4ASQNWDBRROQ
-X-Mailman-Approved-At: Thu, 27 Jul 2023 15:52:58 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NJLNSEPZUCWRKB7VMSJW4ASQNWDBRROQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BVOR6NI7N3J2AFXQBIXO3L33BB64G3DM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,45 +131,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, Jul 27, 2023 at 11:45:01AM +0200, Pierre-Louis Bossart wrote:
-> On 7/26/23 12:48 AM, John Watts wrote:
-> > Hello there!
-> > 
-> > I have an interesting problem that I'm trying to solve. It will require
-> > writing adding driver support but right now I'm struggling to understand
-> > how I should go about it all.
-> > 
-> > As a background, this is with the Allwinner D1 or T113. It has a 16
-> > channel I2S controller and each channel can be configured to use a
-> > specific pin and TDM time slice. Even channels are low LRCLK, odd are
-> > high LRCLK.
-> > 
-> > So for my situation I want to have six channels:
-> > 
-> > - Channel 0: Timeslot 0, Pin 0, LRCLK 0 -> ADC 1
-> > - Channel 1: Timeslot 0, Pin 0, LRCLK 1 -> ADC 1
-> > - Channel 2: Timeslot 0, Pin 1, LRCLK 0 -> ADC 2
-> > - Channel 3: Timeslot 0, Pin 1, LRCLK 1 -> ADC 2
-> > - Channel 4: Timeslot 0, Pin 2, LRCLK 0 -> ADC 3
-> > - Channel 5: Timeslot 0, Pin 2, LRCLK 1 -> ADC 3
-> 
-> It would help if you described what those different 'channels' are supposed
-> to transmit. Usually channels mean a group of data that is rendered at the
-> same time. It looks like you plan on transmitting independent streams that
-> may be enabled/disabled separately.
-> 
-> Also you should describe if there are independent clocks or if all those 6
-> 'channels' are transmitted with a single pair of bit/frame clocks? That
-> completely changes the model, in the former case you could represent
-> independent DAIs/dailinks but in the latter case you really have a single
-> muxed stream.
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Hello,
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
 
-These channels are intended for measuring vibration at various points in a
-vehicle. Each channel is a vibration measurement.
+It was pretty difficult, in this case, to try and figure out whether or
+not the destination buffer was zero-initialized. If it is and this
+behavior is relied on then perhaps `strscpy_pad` is the preferred
+option here.
 
-These all use the same I2S clock, multiplexing is handled by having each ADC
-connected to a different I2S pin.
+Kees was able to help me out and identify the following code snippet
+which seems to show that the destination buffer is zero-initialized.
 
-John.
+|       skl = devm_kzalloc(&pci->dev, sizeof(*skl), GFP_KERNEL);
+
+With this information, I opted for `strscpy` since padding is seemingly
+not required.
+
+[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+[2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+
+Link: https://github.com/KSPP/linux/issues/90
+Suggested-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- Remove extraneous logic change (thanks Kees)
+- Link to v1: https://lore.kernel.org/r/20230726-asoc-intel-skylake-remove-deprecated-strncpy-v1-1-020e04184c7d@google.com
+---
+ sound/soc/intel/skylake/skl-topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 96cfebded072..0ead3ea605cd 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -3159,7 +3159,7 @@ static int skl_tplg_fill_str_mfest_tkn(struct device *dev,
+ 			return -EINVAL;
+ 		}
+ 
+-		strncpy(skl->lib_info[ref_count].name,
++		strscpy(skl->lib_info[ref_count].name,
+ 			str_elem->string,
+ 			ARRAY_SIZE(skl->lib_info[ref_count].name));
+ 		ref_count++;
+
+---
+base-commit: 0b4a9fdc9317440a71d4d4c264a5650bf4a90f3c
+change-id: 20230726-asoc-intel-skylake-remove-deprecated-strncpy-9dbcfc26040c
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
