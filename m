@@ -4,97 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C4DBC001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 08:47:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BAD0C001DC
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 09:18:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6965E85D;
-	Mon, 31 Jul 2023 10:46:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6965E85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77AFE4E;
+	Mon, 31 Jul 2023 11:17:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77AFE4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690793267;
-	bh=q8SJvmTRN/QrgEBLtmSIU3TUp+MWJ40CCg6CQ8CCKx0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1690795126;
+	bh=9cLix/YKxH7lzuGtSKFakpQjTQu+3UVNSEjYcMlH7zM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LTgu5P2FXNAiRHiJnxwKna24Lx9lBXPkXdeAyLgMAr7NqMX37y9kUMe8jI7QKCvER
-	 e/DhqeWZww3/Q2HVrKnC9TA0DAu7ahbSik00nQKfBLqqdp3hsyM5S2jpATz8pxMg0p
-	 ZWmEK0ZsqBkduHLazoFBUYefgAmE3TCwqS/Sz6IA=
+	b=q3e4yHT6KTkqwGK3KNYJW0nEjlQLcL7PMdnjyL6t2BOczq8lD6Sq5d8RzZYPhDqoH
+	 gPOBkFqeZXSYo81O345R0sON9NWGvkAd8L8tr6yqYZkvvTKEtUSvqbQIlHSIu93684
+	 ZHOH6o1JYsbZays0Ptm/Nmf4tklo2aloUPXPPipE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DB1CBF8057E; Mon, 31 Jul 2023 10:45:49 +0200 (CEST)
+	id 5903FF80153; Mon, 31 Jul 2023 11:17:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65581F8057A;
-	Mon, 31 Jul 2023 10:45:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F3D5F8016D;
+	Mon, 31 Jul 2023 11:17:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 19ADBF8055C; Mon, 31 Jul 2023 10:45:45 +0200 (CEST)
-Received: from mgamail.intel.com (unknown [192.55.52.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id C5173F8019B; Fri, 28 Jul 2023 06:47:30 +0200 (CEST)
+Received: from mailhost.m5p.com (mailhost.m5p.com [74.104.188.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 288B7F80163
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 10:45:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 288B7F80163
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XPYF09tZ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690793131; x=1722329131;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=q8SJvmTRN/QrgEBLtmSIU3TUp+MWJ40CCg6CQ8CCKx0=;
-  b=XPYF09tZObQ9Jk/cjTwhNzv/IEk0evfSigBooWCA3fFTw3oCcyTi2qmO
-   p4uJC6hx7o1dZkXrS6oIMVKAIrWTPV6PD08lJ+BWRTp7QvfxU0odcLtti
-   1E/CRR3xq3sXfMH6mCxA2q79os2YV/XvkpiwGmlrX/XfyszpolxCWTHBA
-   zS1ZS82B74WbTH5SGoLuhMUiXKcPEPmQsevUSusvO8Pj7qf/49AVaKJev
-   fHE4WXKirsiu4dxvTh18dMj5T9F521ZRokV5LYEmOGYM1qIW7TOvGzkni
-   ZOReYT7byJfmwHS2YSK2BjCFeElJEaH2MpcldgER7iM61rtC51qgfXDhR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="348557536"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200";
-   d="scan'208";a="348557536"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 01:45:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="678232351"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200";
-   d="scan'208";a="678232351"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 01:45:25 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Cc: vinod.koul@linaro.org,
-	linux-kernel@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	bard.liao@intel.com
-Subject: [PATCH v2 3/3] soundwire: intel_auxdevice: add hybrid IDA-based
- device_number allocation
-Date: Mon, 31 Jul 2023 17:13:33 +0800
-Message-Id: <20230731091333.3593132-4-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230731091333.3593132-1-yung-chuan.liao@linux.intel.com>
-References: <20230731091333.3593132-1-yung-chuan.liao@linux.intel.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 78F8DF80153
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2023 06:47:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78F8DF80153
+Received: from m5p.com (mailhost.m5p.com [IPv6:2001:470:1f07:15ff:0:0:0:f7])
+	by mailhost.m5p.com (8.16.1/8.15.2) with ESMTPS id 36S4kbWF078991
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Fri, 28 Jul 2023 00:46:43 -0400 (EDT)
+	(envelope-from ehem@m5p.com)
+Received: (from ehem@localhost)
+	by m5p.com (8.16.1/8.15.2/Submit) id 36S4ka3c078990;
+	Thu, 27 Jul 2023 21:46:36 -0700 (PDT)
+	(envelope-from ehem)
+Date: Thu, 27 Jul 2023 21:46:36 -0700
+From: Elliott Mitchell <ehem+xen@m5p.com>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] ALSA: xen-front: refactor deprecated strncpy
+Message-ID: <ZMNILDgqHEGf8fNF@mattapan.m5p.com>
+References: <20230727-sound-xen-v1-1-89dd161351f1@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: Q7MJF34O6RVWIY7JQ5QK7WPP53SQHYKD
-X-Message-ID-Hash: Q7MJF34O6RVWIY7JQ5QK7WPP53SQHYKD
-X-MailFrom: yung-chuan.liao@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727-sound-xen-v1-1-89dd161351f1@google.com>
+X-MailFrom: ehem@m5p.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 4BD4A6CTFMH4FPV5N3HIOMJVGLDYJHH3
+X-Message-ID-Hash: 4BD4A6CTFMH4FPV5N3HIOMJVGLDYJHH3
+X-Mailman-Approved-At: Mon, 31 Jul 2023 09:17:20 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q7MJF34O6RVWIY7JQ5QK7WPP53SQHYKD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4BD4A6CTFMH4FPV5N3HIOMJVGLDYJHH3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,171 +82,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Thu, Jul 27, 2023 at 09:53:24PM +0000, Justin Stitt wrote:
+> Technically, my patch yields subtly different behavior. The original
+> implementation with `strncpy` would fill the entire destination buffer
+> with null bytes [3] while `strscpy` will leave the junk, uninitialized
+> bytes trailing after the _mandatory_ NUL-termination. So, if somehow
+> `pcm->name` or `card->driver/shortname/longname` require this
+> NUL-padding behavior then `strscpy_pad` should be used. My
+> interpretation, though, is that the aforementioned fields are just fine
+> as NUL-terminated strings. Please correct my assumptions if needed and
+> I'll send in a v2.
 
-The IDA-based allocation is useful to simplify debug, but it was also
-introduced as a prerequisite to deal with the Intel Lunar Lake
-hardware programming sequences: the wake-ups have to be handled with a
-system-unique SDI address at the HDaudio controller level.
+"uninitialized bytes" => "leak of sensitive information" => "security hole"
 
-At the time, the restriction introduced by the IDA to 8 devices total
-seemed perfectly fine, but recently hardware vendors created
-configurations with more than 8 devices.
+One hopes the unitialized bytes don't contain sensitive information, but
+that is the start of the chain.  One can hope the VM on the other end is
+friendly, but that isn't something to rely on.
 
-Add a new allocation strategy to allow for more than 8 devices using
-information on the type of devices, and only use the IDA-based
-allocation for devices capable of generating a wake.
+I'm not in charge of any of the appropriate subsystems, I just happened
+to randomly look at this as message on a mailing list I'm on.  Could be
+the maintainers will find this acceptable.
 
-In theory the information on wake capabilities should come from
-firmware, but none of the existing ACPI tables provide it. The drivers
-set the 'wake_capable' property, but this cannot be used reliably: if
-the driver probe happens *after* the enumeration, then that property
-is not initialized yet. Trying to modify the device_number on-the-fly
-proved to be an impossible task generating race conditions left and
-right.
 
-The only reliable work-around to control the enumeration is to add a
-quirk table. It's ugly but until platform firmware improves, hopefully as a
-result of MIPI/SDCA stardization, we can expect that quirk table to
-grow for each new headset or microphone codec.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel_auxdevice.c | 72 +++++++++++++++++++++++++----
- include/linux/soundwire/sdw_intel.h |  7 +++
- 2 files changed, 69 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/soundwire/intel_auxdevice.c b/drivers/soundwire/intel_auxdevice.c
-index 9d998a010162..238025a0e35c 100644
---- a/drivers/soundwire/intel_auxdevice.c
-+++ b/drivers/soundwire/intel_auxdevice.c
-@@ -23,9 +23,6 @@
- #include "intel.h"
- #include "intel_auxdevice.h"
- 
--/* IDA min selected to avoid conflicts with HDaudio/iDISP SDI values */
--#define INTEL_DEV_NUM_IDA_MIN           4
--
- #define INTEL_MASTER_SUSPEND_DELAY_MS	3000
- 
- /*
-@@ -44,6 +41,39 @@ static int md_flags;
- module_param_named(sdw_md_flags, md_flags, int, 0444);
- MODULE_PARM_DESC(sdw_md_flags, "SoundWire Intel Master device flags (0x0 all off)");
- 
-+struct wake_capable_part {
-+	const u16 mfg_id;
-+	const u16 part_id;
-+};
-+
-+static struct wake_capable_part wake_capable_list[] = {
-+	{0x025d, 0x5682},
-+	{0x025d, 0x700},
-+	{0x025d, 0x711},
-+	{0x025d, 0x1712},
-+	{0x025d, 0x1713},
-+	{0x025d, 0x1716},
-+	{0x025d, 0x1717},
-+	{0x025d, 0x712},
-+	{0x025d, 0x713},
-+	{0x025d, 0x714},
-+	{0x025d, 0x715},
-+	{0x025d, 0x716},
-+	{0x025d, 0x717},
-+	{0x025d, 0x722},
-+};
-+
-+static bool is_wake_capable(struct sdw_slave *slave)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(wake_capable_list); i++)
-+		if (slave->id.part_id == wake_capable_list[i].part_id &&
-+		    slave->id.mfg_id == wake_capable_list[i].mfg_id)
-+			return true;
-+	return false;
-+}
-+
- static int generic_pre_bank_switch(struct sdw_bus *bus)
- {
- 	struct sdw_cdns *cdns = bus_to_cdns(bus);
-@@ -66,14 +96,26 @@ static void generic_new_peripheral_assigned(struct sdw_bus *bus,
- {
- 	struct sdw_cdns *cdns = bus_to_cdns(bus);
- 	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+	int dev_num_min;
-+	int dev_num_max;
-+	bool wake_capable = slave->prop.wake_capable || is_wake_capable(slave);
-+
-+	if (wake_capable) {
-+		dev_num_min = SDW_INTEL_DEV_NUM_IDA_MIN;
-+		dev_num_max = SDW_MAX_DEVICES;
-+	} else {
-+		dev_num_min = 1;
-+		dev_num_max = SDW_INTEL_DEV_NUM_IDA_MIN - 1;
-+	}
- 
- 	/* paranoia check, this should never happen */
--	if (dev_num < INTEL_DEV_NUM_IDA_MIN || dev_num > SDW_MAX_DEVICES)  {
--		dev_err(bus->dev, "%s: invalid dev_num %d\n", __func__, dev_num);
-+	if (dev_num < dev_num_min || dev_num > dev_num_max)  {
-+		dev_err(bus->dev, "%s: invalid dev_num %d, wake supported %d\n",
-+			__func__, dev_num, slave->prop.wake_capable);
- 		return;
- 	}
- 
--	if (sdw->link_res->hw_ops->program_sdi)
-+	if (sdw->link_res->hw_ops->program_sdi && wake_capable)
- 		sdw->link_res->hw_ops->program_sdi(sdw, dev_num);
- }
- 
-@@ -129,14 +171,24 @@ static DEFINE_IDA(intel_peripheral_ida);
- 
- static int intel_get_device_num_ida(struct sdw_bus *bus, struct sdw_slave *slave)
- {
--	return ida_alloc_range(&intel_peripheral_ida,
--			       INTEL_DEV_NUM_IDA_MIN, SDW_MAX_DEVICES,
--			       GFP_KERNEL);
-+	int bit;
-+
-+	if (slave->prop.wake_capable || is_wake_capable(slave))
-+		return ida_alloc_range(&intel_peripheral_ida,
-+				       SDW_INTEL_DEV_NUM_IDA_MIN, SDW_MAX_DEVICES,
-+				       GFP_KERNEL);
-+
-+	bit = find_first_zero_bit(slave->bus->assigned, SDW_MAX_DEVICES);
-+	if (bit == SDW_MAX_DEVICES)
-+		return -ENODEV;
-+
-+	return bit;
- }
- 
- static void intel_put_device_num_ida(struct sdw_bus *bus, struct sdw_slave *slave)
- {
--	return ida_free(&intel_peripheral_ida, slave->dev_num);
-+	if (slave->prop.wake_capable || is_wake_capable(slave))
-+		ida_free(&intel_peripheral_ida, slave->dev_num);
- }
- 
- static struct sdw_master_ops sdw_intel_ops = {
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 11fc88fb0d78..3a824cae7379 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -433,4 +433,11 @@ struct sdw_intel_hw_ops {
- extern const struct sdw_intel_hw_ops sdw_intel_cnl_hw_ops;
- extern const struct sdw_intel_hw_ops sdw_intel_lnl_hw_ops;
- 
-+/*
-+ * IDA min selected to allow for 5 unconstrained devices per link,
-+ * and 6 system-unique Device Numbers for wake-capable devices.
-+ */
-+
-+#define SDW_INTEL_DEV_NUM_IDA_MIN           6
-+
- #endif
 -- 
-2.25.1
+(\___(\___(\______          --=> 8-) EHM <=--          ______/)___/)___/)
+ \BS (    |         ehem+sigmsg@m5p.com  PGP 87145445         |    )   /
+  \_CS\   |  _____  -O #include <stddisclaimer.h> O-   _____  |   /  _/
+8A19\___\_|_/58D2 7E3D DDF4 7BA6 <-PGP-> 41D1 B375 37D0 8714\_|_/___/5445
+
 
