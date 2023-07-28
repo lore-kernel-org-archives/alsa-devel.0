@@ -4,72 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44A43C001E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 09:20:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 773EAC001DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 09:20:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DA32846;
-	Mon, 31 Jul 2023 11:19:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DA32846
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9B8284A;
+	Mon, 31 Jul 2023 11:20:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9B8284A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690795243;
-	bh=UDviUBm+auK5ZMJ/h7BYXibM9zX1oPxZeQLQpQfx0lw=;
+	s=default; t=1690795257;
+	bh=b/8rCtKTsPMdR8vfXKLyvqSx5yYDLPF1qMJXM9bPWYs=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WG2z6LTlM/BN4yMPqExonSo+4oglnHnGk61tCTa7Xu3Don4wBY9nL5/AOnc610IBD
-	 aSvke0mv4hRbhW+8cIspXm2uaKEtePVCnKk47fvJt6yiwlWU9vsUQM2h+7lHIsnGtx
-	 I9Fa8MLrUC6zfeHk6DMlehQ0UWR1vvd1RW5RG/iw=
+	b=DEsFMah8BUWK6Xa7HmcPMayewqipFOWx5p8mQIAtYa3OmgC4imysD2JJPqaxEmcQe
+	 5TUNx5x1LbKcnEGlbPRN5ssysX7UuHEOAqKpxwsaNj6NBQMhkemGQkQy4NHgYGaqZY
+	 wwgROVmEMxxLhm4BrE2isfAI0SxhVArRXmvSWpwk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 012E5F805D6; Mon, 31 Jul 2023 11:17:51 +0200 (CEST)
+	id AC895F805E4; Mon, 31 Jul 2023 11:17:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D89CF805CA;
-	Mon, 31 Jul 2023 11:17:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C571F805E4;
+	Mon, 31 Jul 2023 11:17:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05D9FF801F5; Fri, 28 Jul 2023 11:10:07 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	id AC071F801F5; Fri, 28 Jul 2023 11:10:09 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B111CF80163
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2023 11:08:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B111CF80163
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0D6EEF802E8
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2023 11:09:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D6EEF802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=h7GHSKiM
-X-UUID: 5f0d0d2a2d2611eeb20a276fd37b9834-20230728
+ header.s=dk header.b=tSnG0mEn
+X-UUID: 624ea3fe2d2611ee9cb5633481061a41-20230728
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
 	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=IkARJXQYgTeXGkYcE/uxXUXg6xOjAWmzzNs8TbyUKdM=;
-	b=h7GHSKiMFSKUH6E5xZjZyg35lgPhX9dsOh9okBTC1ix1ngLxW9lJ9xyJ/JedQoOBwF1ES3qaZhKap5xfA0y5FzUWpmxxZMj1zUpfP5YfchNBAr8zfddSb8vNU6zEV8O+0Kqqa69n5qY6HR07CWM8aWt900VIbSUZBxLOi5VpBNU=;
+ bh=bbjmhOdykU83KPH/M1QU2kpF8BWkVdXUxY/Ht/Ui5AU=;
+	b=tSnG0mEnekHzsFk17sSgTIP4t+PRhtlfhANIyvqkVvfZ4B0WqbmByf85A6TpHU6HYjQJAyCNBB9tSuyOjio5FBTmC5OanaHQN+wKQPBZ5vFwYDT1qMI+sJpu1Vuv4zlpOZcPQ+MlvoI94NF04sJTItP7All/B5+LrLpMCFb7k+M=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.30,REQID:b222fe25-6706-4468-b821-d3d64e2e1f7c,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:1fcc6f8,CLOUDID:fab58e42-d291-4e62-b539-43d7d78362ba,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-	DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-O-INFO: VERSION:1.1.30,REQID:ff804065-7364-424e-afc2-8894d3728ea9,IP:0,U
+	RL:25,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:95
+X-CID-INFO: VERSION:1.1.30,REQID:ff804065-7364-424e-afc2-8894d3728ea9,IP:0,URL
+	:25,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACT
+	ION:quarantine,TS:95
+X-CID-META: VersionHash:1fcc6f8,CLOUDID:fc39a2a0-0933-4333-8d4f-6c3c53ebd55b,B
+	ulkID:230728170858FLODCKLR,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
+	C:nil,Content:0,EDM:-3,IP:nil,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 5f0d0d2a2d2611eeb20a276fd37b9834-20230728
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by
- mailgw02.mediatek.com
+X-CID-FACTOR: TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
+	TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
+X-UUID: 624ea3fe2d2611ee9cb5633481061a41-20230728
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
+ mailgw01.mediatek.com
 	(envelope-from <maso.huang@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 669410212; Fri, 28 Jul 2023 17:08:52 +0800
+	with ESMTP id 2124003612; Fri, 28 Jul 2023 17:08:57 +0800
 Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
  MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 28 Jul 2023 17:08:50 +0800
+ 15.2.1118.26; Fri, 28 Jul 2023 17:08:56 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 28 Jul 2023 17:08:50 +0800
+ 15.2.1118.26 via Frontend Transport; Fri, 28 Jul 2023 17:08:56 +0800
 From: Maso Huang <maso.huang@mediatek.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
  Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
@@ -83,9 +87,10 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
 CC: Maso Huang <maso.huang@mediatek.com>
-Subject: [PATCH v3 4/6] ASoC: mediatek: mt7986: add machine driver with wm8960
-Date: Fri, 28 Jul 2023 17:08:17 +0800
-Message-ID: <20230728090819.18038-5-maso.huang@mediatek.com>
+Subject: [PATCH v3 6/6] ASoC: dt-bindings: mediatek,mt7986-afe: add audio afe
+ document
+Date: Fri, 28 Jul 2023 17:08:19 +0800
+Message-ID: <20230728090819.18038-7-maso.huang@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20230728090819.18038-1-maso.huang@mediatek.com>
 References: <20230728090819.18038-1-maso.huang@mediatek.com>
@@ -97,15 +102,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DHQU4PKDQLZREJQHVCJOU6WRIYDBIVKL
-X-Message-ID-Hash: DHQU4PKDQLZREJQHVCJOU6WRIYDBIVKL
+Message-ID-Hash: RXS6BLPDBHFLS5Q4HIWXCVI42QN6OCVR
+X-Message-ID-Hash: RXS6BLPDBHFLS5Q4HIWXCVI42QN6OCVR
 X-Mailman-Approved-At: Mon, 31 Jul 2023 09:17:25 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DHQU4PKDQLZREJQHVCJOU6WRIYDBIVKL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RXS6BLPDBHFLS5Q4HIWXCVI42QN6OCVR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,236 +119,109 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add support for mt7986 board with wm8960.
+Add mt7986 audio afe document.
 
 Signed-off-by: Maso Huang <maso.huang@mediatek.com>
 ---
- sound/soc/mediatek/Kconfig                |  10 ++
- sound/soc/mediatek/mt7986/Makefile        |   1 +
- sound/soc/mediatek/mt7986/mt7986-wm8960.c | 184 ++++++++++++++++++++++
- 3 files changed, 195 insertions(+)
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-wm8960.c
+ .../bindings/sound/mediatek,mt7986-afe.yaml   | 89 +++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt7986-afe.yaml
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 558827755a8d..8d1bc8814486 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -64,6 +64,16 @@ config SND_SOC_MT7986
- 	  Select Y if you have such device.
- 	  If unsure select "N".
- 
-+config SND_SOC_MT7986_WM8960
-+	tristate "ASoc Audio driver for MT7986 with WM8960 codec"
-+	depends on SND_SOC_MT7986 && I2C
-+	select SND_SOC_WM8960
-+	help
-+	  This adds support for ASoC machine driver for MediaTek MT7986
-+	  boards with the WM8960 codecs.
-+	  Select Y if you have such device.
-+	  If unsure select "N".
-+
- config SND_SOC_MT8173
- 	tristate "ASoC support for Mediatek MT8173 chip"
- 	depends on ARCH_MEDIATEK
-diff --git a/sound/soc/mediatek/mt7986/Makefile b/sound/soc/mediatek/mt7986/Makefile
-index de0742a67cae..fc4c82559b29 100644
---- a/sound/soc/mediatek/mt7986/Makefile
-+++ b/sound/soc/mediatek/mt7986/Makefile
-@@ -6,3 +6,4 @@ snd-soc-mt7986-afe-objs := \
- 	mt7986-dai-etdm.o
- 
- obj-$(CONFIG_SND_SOC_MT7986) += snd-soc-mt7986-afe.o
-+obj-$(CONFIG_SND_SOC_MT7986_WM8960) += mt7986-wm8960.o
-diff --git a/sound/soc/mediatek/mt7986/mt7986-wm8960.c b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
+diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt7986-afe.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt7986-afe.yaml
 new file mode 100644
-index 000000000000..a880fcb8662e
+index 000000000000..ebb151c6400f
 --- /dev/null
-+++ b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
-@@ -0,0 +1,184 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * mt7986-wm8960.c  --  MT7986-WM8960 ALSA SoC machine driver
-+ *
-+ * Copyright (c) 2021 MediaTek Inc.
-+ * Author: Vic Wu <vic.wu@mediatek.com>
-+ *         Maso Huang <maso.huang@mediatek.com>
-+ */
++++ b/Documentation/devicetree/bindings/sound/mediatek,mt7986-afe.yaml
+@@ -0,0 +1,89 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/mediatek,mt7986-afe.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#include <linux/module.h>
-+#include <sound/soc.h>
++title: MediaTek AFE PCM controller for MT7986
 +
-+#include "mt7986-afe-common.h"
++maintainers:
++  - Maso Huang <maso.huang@mediatek.com>
 +
-+struct mt7986_wm8960_priv {
-+	struct device_node *platform_node;
-+	struct device_node *codec_node;
-+};
++properties:
++  compatible:
++    oneOf:
++      - const: mediatek,mt7986-afe
++      - items:
++          - enum:
++              - mediatek,mt7981-afe
++              - mediatek,mt7988-afe
++          - const: mediatek,mt7986-afe
 +
-+static const struct snd_soc_dapm_widget mt7986_wm8960_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("AMIC", NULL),
-+};
++  reg:
++    maxItems: 1
 +
-+static const struct snd_kcontrol_new mt7986_wm8960_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone"),
-+	SOC_DAPM_PIN_SWITCH("AMIC"),
-+};
++  interrupts:
++    maxItems: 1
 +
-+SND_SOC_DAILINK_DEFS(playback,
-+	DAILINK_COMP_ARRAY(COMP_CPU("DL1")),
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++  clocks:
++    minItems: 5
++    items:
++      - description: audio bus clock
++      - description: audio 26M clock
++      - description: audio intbus clock
++      - description: audio hopping clock
++      - description: audio pll clock
++      - description: mux for pcm_mck
++      - description: audio i2s/pcm mck
 +
-+SND_SOC_DAILINK_DEFS(capture,
-+	DAILINK_COMP_ARRAY(COMP_CPU("UL1")),
-+	DAILINK_COMP_ARRAY(COMP_DUMMY()),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++  clock-names:
++    minItems: 5
++    items:
++      - const: bus_ck
++      - const: 26m_ck
++      - const: l_ck
++      - const: aud_ck
++      - const: eg2_ck
++      - const: sel
++      - const: i2s_m
 +
-+SND_SOC_DAILINK_DEFS(codec,
-+	DAILINK_COMP_ARRAY(COMP_CPU("ETDM")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8960-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - assigned-clocks
++  - assigned-clock-parents
 +
-+static struct snd_soc_dai_link mt7986_wm8960_dai_links[] = {
-+	/* FE */
-+	{
-+		.name = "wm8960-playback",
-+		.stream_name = "wm8960-playback",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST,
-+			    SND_SOC_DPCM_TRIGGER_POST},
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+		SND_SOC_DAILINK_REG(playback),
-+	},
-+	{
-+		.name = "wm8960-capture",
-+		.stream_name = "wm8960-capture",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_POST,
-+			    SND_SOC_DPCM_TRIGGER_POST},
-+		.dynamic = 1,
-+		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(capture),
-+	},
-+	/* BE */
-+	{
-+		.name = "wm8960-codec",
-+		.no_pcm = 1,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS |
-+			SND_SOC_DAIFMT_GATED,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		SND_SOC_DAILINK_REG(codec),
-+	},
-+};
++additionalProperties: false
 +
-+static struct snd_soc_card mt7986_wm8960_card = {
-+	.name = "mt7986-wm8960",
-+	.owner = THIS_MODULE,
-+	.dai_link = mt7986_wm8960_dai_links,
-+	.num_links = ARRAY_SIZE(mt7986_wm8960_dai_links),
-+	.controls = mt7986_wm8960_controls,
-+	.num_controls = ARRAY_SIZE(mt7986_wm8960_controls),
-+	.dapm_widgets = mt7986_wm8960_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(mt7986_wm8960_widgets),
-+};
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/clock/mt7986-clk.h>
 +
-+static int mt7986_wm8960_machine_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &mt7986_wm8960_card;
-+	struct snd_soc_dai_link *dai_link;
-+	struct mt7986_wm8960_priv *priv;
-+	int ret, i;
++    afe@11210000 {
++        compatible = "mediatek,mt7986-afe";
++        reg = <0x11210000 0x9000>;
++        interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&infracfg_ao CLK_INFRA_AUD_BUS_CK>,
++                 <&infracfg_ao CLK_INFRA_AUD_26M_CK>,
++                 <&infracfg_ao CLK_INFRA_AUD_L_CK>,
++                 <&infracfg_ao CLK_INFRA_AUD_AUD_CK>,
++                 <&infracfg_ao CLK_INFRA_AUD_EG2_CK>;
++        clock-names = "bus_ck",
++                      "26m_ck",
++                      "l_ck",
++                      "aud_ck",
++                      "eg2_ck";
++        assigned-clocks = <&topckgen CLK_TOP_A1SYS_SEL>,
++                          <&topckgen CLK_TOP_AUD_L_SEL>,
++                          <&topckgen CLK_TOP_A_TUNER_SEL>;
++        assigned-clock-parents = <&topckgen CLK_TOP_APLL2_D4>,
++                                 <&apmixedsys CLK_APMIXED_APLL2>,
++                                 <&topckgen CLK_TOP_APLL2_D4>;
++    };
 +
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->platform_node = of_parse_phandle(pdev->dev.of_node,
-+					       "mediatek,platform", 0);
-+	if (!priv->platform_node) {
-+		dev_err(&pdev->dev, "Property 'platform' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	for_each_card_prelinks(card, i, dai_link) {
-+		if (dai_link->platforms->name)
-+			continue;
-+		dai_link->platforms->of_node = priv->platform_node;
-+	}
-+
-+	card->dev = &pdev->dev;
-+
-+	priv->codec_node = of_parse_phandle(pdev->dev.of_node,
-+					    "mediatek,audio-codec", 0);
-+	if (!priv->codec_node) {
-+		dev_err(&pdev->dev,
-+			"Property 'audio-codec' missing or invalid\n");
-+		of_node_put(priv->platform_node);
-+		return -EINVAL;
-+	}
-+
-+	for_each_card_prelinks(card, i, dai_link) {
-+		if (dai_link->codecs->name)
-+			continue;
-+		dai_link->codecs->of_node = priv->codec_node;
-+	}
-+
-+	ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to parse audio-routing: %d\n", ret);
-+		goto err_of_node_put;
-+	}
-+
-+	ret = devm_snd_soc_register_card(&pdev->dev, card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s snd_soc_register_card fail %d\n",
-+			__func__, ret);
-+		goto err_of_node_put;
-+	}
-+
-+err_of_node_put:
-+	of_node_put(priv->codec_node);
-+	of_node_put(priv->platform_node);
-+	return ret;
-+}
-+
-+static void mt7986_wm8960_machine_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct mt7986_wm8960_priv *priv = snd_soc_card_get_drvdata(card);
-+
-+	of_node_put(priv->codec_node);
-+	of_node_put(priv->platform_node);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id mt7986_wm8960_machine_dt_match[] = {
-+	{.compatible = "mediatek,mt7986-wm8960-machine",},
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, mt7986_wm8960_machine_dt_match);
-+#endif
-+
-+static struct platform_driver mt7986_wm8960_machine = {
-+	.driver = {
-+		.name = "mt7986-wm8960",
-+#ifdef CONFIG_OF
-+		.of_match_table = mt7986_wm8960_machine_dt_match,
-+#endif
-+	},
-+	.probe = mt7986_wm8960_machine_probe,
-+	.remove_new = mt7986_wm8960_machine_remove,
-+};
-+
-+module_platform_driver(mt7986_wm8960_machine);
-+
-+/* Module information */
-+MODULE_DESCRIPTION("MT7986 WM8960 ALSA SoC machine driver");
-+MODULE_AUTHOR("Vic Wu <vic.wu@mediatek.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("mt7986 wm8960 soc card");
++...
 -- 
 2.18.0
 
