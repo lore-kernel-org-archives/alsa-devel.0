@@ -4,104 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 048C0C001DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 30 Jul 2023 17:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42510C001DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 30 Jul 2023 18:11:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2754E82A;
-	Sun, 30 Jul 2023 19:55:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2754E82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 053D9832;
+	Sun, 30 Jul 2023 20:10:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 053D9832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690739794;
-	bh=750oJ2P+yYUlPVA1010tF5T1woaedYv0DopTLIEhLAs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1690740684;
+	bh=IA+ugJ+PJMq59xlAVqzmg1eHEt0RcdhYl/eJMtxH80k=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QuR3nPzcPRyyOCFoG3DPdL8MEEsi7w+bHMTgsTtCctg0xMFbPpbFhtt3R+RXf3sTP
-	 UVy9T0YZHIWNBqXK7WJqqoOfIFEKRD0itaCCtcoqpVALrbdmV3qwRf4VjxLUk9LgXy
-	 elr0/aSJVwyQXmIyIL5BWVyrNSauN/5JVuoRJPv4=
+	b=rbip+L+5K+TBhZckgmEQxRM3VR1xQvhRccjnA5GkrPMJOFFp/bOmtNw6pzKgjQc8q
+	 2hZu6Ew5Mr59D/5FuccQ0zAAB7DXJFFr8obSn7QpZeba2UrawIfOoGaiBHqPH/KSzm
+	 USdICf794maG2VFgTbulAJKM2fg5iK6PN7f78Wwg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DBB59F801D5; Sun, 30 Jul 2023 19:55:10 +0200 (CEST)
+	id EB66FF80544; Sun, 30 Jul 2023 20:10:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 321D7F80087;
-	Sun, 30 Jul 2023 19:55:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D18A3F801D5;
+	Sun, 30 Jul 2023 20:10:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72C36F8016D; Sun, 30 Jul 2023 19:55:03 +0200 (CEST)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
- [IPv6:2a00:1450:4864:20::62c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id B1149F80425; Sun, 30 Jul 2023 20:08:27 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 85DFAF80087
-	for <alsa-devel@alsa-project.org>; Sun, 30 Jul 2023 19:54:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85DFAF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id BB955F80163
+	for <alsa-devel@alsa-project.org>; Sun, 30 Jul 2023 20:08:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB955F80163
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=P6jbYQ5c
-Received: by mail-ej1-x62c.google.com with SMTP id
- a640c23a62f3a-99bed101b70so415749366b.3
-        for <alsa-devel@alsa-project.org>;
- Sun, 30 Jul 2023 10:54:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690739691; x=1691344491;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mbjS6TBC9NtU6oekBePBL31Nw/0x/d6yu4TOb6mnKIY=;
-        b=P6jbYQ5csvD+4BbInxE1FPGjPTs2AnewX7WnsbjMJJTq1EGfetuG3xSy0ZMuXtqCJ3
-         o9AoI1/Lw/WQKNpVpn6emK3roLzIW+M7xKJ5eBsnY93SBI0uUd2XF2jERi7d5g9NdzzF
-         KbHkXXv8jBA5YtV/6F2dpt6+44XF/NjeovU8WmQqfZ1LnjvBORzorbZoI4SvePFazmMV
-         WbG9QJ5j4f6RIz0GG0k285iwJDjNxAKLEolpuk9RD+r0d6Y7U6wmLc5PBPizOp+SkLCc
-         CjuOvYnzSY5xhj1flC3DiycTNUatTKTkPYl34xm6+SmW8rO4K/jdz09gOQIZMdKX/NLd
-         eSmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690739691; x=1691344491;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mbjS6TBC9NtU6oekBePBL31Nw/0x/d6yu4TOb6mnKIY=;
-        b=fhxEe4FgdCrbV3wGyrPIxjzSjbgERaAdzAQ+K7H4eS+Gt9BJU8mlQZiLr/PxuhYz+Z
-         KJhkO71RRXsGgaeeEtQ+5+mGSSGNTMUIT1J4wNoK8/RedlGBnWo/zAJGuOn38FyExV0V
-         YBdVoIPqle9MTHKcbztF1fCZVv6BQDSP2uit7uzifS3Avhtmo52dp+rvUwTFjn9aeU87
-         KD9zci0Fhd2nn731C+fBBAtPjhC15ZnPerJp0CpZmWRKPUFePtnQfZuXpdEGqFvDq6+Z
-         +VTYaqBbtYlxuW3lH0485jkqxGJil3Rkn0hPBdoK8G9KIXxbII3t/tmlcDonC9Ag9iVj
-         l6cw==
-X-Gm-Message-State: ABy/qLYxb3Nd6PJ5XTTuiNGASCEOlIZfd3coGdoQrcFSiIW+yYV6lxX/
-	/p8qa8/IQ1U47phZyKDlgNRrgA==
-X-Google-Smtp-Source: 
- APBJJlGKotrJF4ynR3yW3bafZKtRVjvSfy65pHmi1rA3GyhmcmsJZikumlPXSdF9eBN8iCEA/B9qfA==
-X-Received: by 2002:a17:907:7711:b0:99b:d1cb:5add with SMTP id
- kw17-20020a170907771100b0099bd1cb5addmr5645098ejc.35.1690739691213;
-        Sun, 30 Jul 2023 10:54:51 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id
- t7-20020a1709063e4700b0098d15d170a0sm4875349eji.202.2023.07.30.10.54.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Jul 2023 10:54:50 -0700 (PDT)
-Message-ID: <acd8e4ea-0d8f-3dc2-16ef-4c1deee281d8@linaro.org>
-Date: Sun, 30 Jul 2023 19:54:49 +0200
+	dkim=pass (1024-bit key,
+ unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
+ header.s=dk header.b=at7QoIuq
+X-UUID: 0a6d24142f0411ee9cb5633481061a41-20230731
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=rUtEDz36Ege3wRJGsZeZHbrLvnL2PPOHhITk/HK+wd0=;
+	b=at7QoIuqMX8n3cyreCSdGqy1h85o7k9lAplZYTz3wrLdW1LIotoI8uAS4wegTuDfaImU8FVaRUm0T8bCHXWgw3yFNxtXl+OOQgrBX0iUO3uJQB1rTBYUtOH253TOz1ftsVwhivOh8AwhXIF721BNPUU+kcLRoq+TWZNrTF8qDmg=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.30,REQID:c9e47b98-cd78-4fe9-8a38-dd8f7fbc5fb1,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:1fcc6f8,CLOUDID:9c94f2b3-a467-4aa9-9e04-f584452e3794,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+	DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 0a6d24142f0411ee9cb5633481061a41-20230731
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by
+ mailgw01.mediatek.com
+	(envelope-from <jiaxin.yu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 584771536; Mon, 31 Jul 2023 02:08:09 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 31 Jul 2023 02:08:09 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 31 Jul 2023 02:08:08 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>, <andrzej.hajda@intel.com>,
+	<neil.armstrong@linaro.org>, <robert.foss@linaro.org>,
+	<Laurent.pinchart@ideasonboard.com>, <kuninori.morimoto.gx@renesas.com>,
+	<angelogioacchino.delregno@collabora.com>, <nfraprado@collabora.com>
+CC: <chunxu.li@mediatek.com>, <ajye_huang@compal.corp-partner.google.com>,
+	<allen-kh.cheng@mediatek.com>, <dri-devel@lists.freedesktop.org>,
+	<alsa-devel@alsa-project.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>, Jiaxin Yu
+	<jiaxin.yu@mediatek.com>
+Subject: [v3 3/3] drm/bridge: it6505: Add audio support
+Date: Mon, 31 Jul 2023 02:08:03 +0800
+Message-ID: <20230730180803.22570-4-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
+References: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH RESEND v2] dt-bindings: sound: gtm601: convert to YAML
-Content-Language: en-US
-To: David Heidelberg <david@ixit.cz>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, - <kernel@puri.sm>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230730115150.38887-1-david@ixit.cz>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230730115150.38887-1-david@ixit.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: IHS3CZFQURXBI7ZTZR6NLCJGMR6W6PHG
-X-Message-ID-Hash: IHS3CZFQURXBI7ZTZR6NLCJGMR6W6PHG
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
+Message-ID-Hash: YVCGUB636LX5J5H2W54NYBAJZ5XI35QG
+X-Message-ID-Hash: YVCGUB636LX5J5H2W54NYBAJZ5XI35QG
+X-MailFrom: jiaxin.yu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -113,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IHS3CZFQURXBI7ZTZR6NLCJGMR6W6PHG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YVCGUB636LX5J5H2W54NYBAJZ5XI35QG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,113 +114,139 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 30/07/2023 13:51, David Heidelberg wrote:
-> Convert GTM601 binding to the YAML format.
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> 
+Add audio support for it6505
 
-No need for blank line between tags.
+1. Bridge to hdmi-codec to support audio feature. At the same time,
+   the function of automatically detecting audio is removed.
+2. It is observed that some DP-to-HDMI dongles will get into bad
+   states if sending InfoFrame without audio data. Defer to enable
+   it6505's audio feature when PCM triggers START or RESUME.
 
-> Cc: kernel@puri.sm
-> ---
-> v2:
->  - add #sound-dai-cells
->  - put kernel@puri.sm into maintainers
-> 
->  .../devicetree/bindings/sound/gtm601.txt      | 19 ----------
->  .../devicetree/bindings/sound/gtm601.yaml     | 36 +++++++++++++++++++
+Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+---
+ drivers/gpu/drm/bridge/ite-it6505.c | 81 ++++++++++++++++++++++++++---
+ 1 file changed, 75 insertions(+), 6 deletions(-)
 
-Filename like compatible, please, so option,gtm601.yaml
-
->  2 files changed, 36 insertions(+), 19 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/gtm601.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/gtm601.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/gtm601.txt b/Documentation/devicetree/bindings/sound/gtm601.txt
-> deleted file mode 100644
-> index efa32a486c4a..000000000000
-> --- a/Documentation/devicetree/bindings/sound/gtm601.txt
-> +++ /dev/null
-> @@ -1,19 +0,0 @@
-> -GTM601 UMTS modem audio interface CODEC
-> -
-> -This device has no configuration interface. The sample rate and channels are
-> -based on the compatible string
-> -	"option,gtm601" = 8kHz mono
-> -	"broadmobi,bm818" = 48KHz stereo
-> -
-> -Required properties:
-> -
-> -  - compatible : one of
-> -	"option,gtm601"
-> -	"broadmobi,bm818"
-> -
-> -
-> -Example:
-> -
-> -codec: gtm601_codec {
-> -	compatible = "option,gtm601";
-> -};
-> diff --git a/Documentation/devicetree/bindings/sound/gtm601.yaml b/Documentation/devicetree/bindings/sound/gtm601.yaml
-> new file mode 100644
-> index 000000000000..e81a6aa75522
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/gtm601.yaml
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/gtm601.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: GTM601 UMTS modem audio interface CODEC
-> +
-> +maintainers:
-> +  - kernel@puri.sm
-> +
-> +description: >
-> +  This device has no configuration interface. The sample rate and channels are
-> +  based on the compatible string
-> +
-
-Missing $ref to dai-common.yaml
-
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: broadmobi,bm818
-> +          - const: option,gtm601
-> +      - items:
-
-No "items" needed here, just use enum.
-
-> +          - enum:
-> +              - broadmobi,bm818  # 48 kHz stereo
-> +              - option,gtm601  # 8 kHz mono
-
-This does not make much sense. bm818 is either compatible with gtm601 or
-is not. Cannot be both.
-
-> +
-> +  '#sound-dai-cells':
-> +    const: 0
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gtm601_codec {
-
-No underscores, generic names, so "codec" or "audio-codec".
-
-> +        compatible = "option,gtm601";
-
-Add dai cells also to the example to make it complete.
-
-> +    };
-
-Best regards,
-Krzysztof
+diff --git a/drivers/gpu/drm/bridge/ite-it6505.c b/drivers/gpu/drm/bridge/ite-it6505.c
+index 504d51c42f79..1cfcb0731288 100644
+--- a/drivers/gpu/drm/bridge/ite-it6505.c
++++ b/drivers/gpu/drm/bridge/ite-it6505.c
+@@ -2162,7 +2162,6 @@ static void it6505_stop_link_train(struct it6505 *it6505)
+ 
+ static void it6505_link_train_ok(struct it6505 *it6505)
+ {
+-	struct device *dev = &it6505->client->dev;
+ 
+ 	it6505->link_state = LINK_OK;
+ 	/* disalbe mute enable avi info frame */
+@@ -2170,11 +2169,6 @@ static void it6505_link_train_ok(struct it6505 *it6505)
+ 	it6505_set_bits(it6505, REG_INFOFRAME_CTRL,
+ 			EN_VID_CTRL_PKT, EN_VID_CTRL_PKT);
+ 
+-	if (it6505_audio_input(it6505)) {
+-		DRM_DEV_DEBUG_DRIVER(dev, "Enable audio!");
+-		it6505_enable_audio(it6505);
+-	}
+-
+ 	if (it6505->hdcp_desired)
+ 		it6505_start_hdcp(it6505);
+ }
+@@ -2846,6 +2840,45 @@ static void __maybe_unused it6505_audio_shutdown(struct device *dev, void *data)
+ 		it6505_disable_audio(it6505);
+ }
+ 
++static int it6505_audio_hw_params(struct device *dev, void *data,
++				  struct hdmi_codec_daifmt *daifmt,
++				  struct hdmi_codec_params *params)
++{
++	struct it6505 *it6505 = dev_get_drvdata(dev);
++
++	return it6505_audio_setup_hw_params(it6505, params);
++}
++
++static int it6505_audio_setup_trigger(struct it6505 *it6505, int cmd)
++{
++	struct device *dev = &it6505->client->dev;
++
++	DRM_DEV_DEBUG_DRIVER(dev, "event: %d", cmd);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		queue_delayed_work(system_wq, &it6505->delayed_audio,
++				   msecs_to_jiffies(180));
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		cancel_delayed_work(&it6505->delayed_audio);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int it6505_audio_trigger(struct device *dev, int cmd)
++{
++	struct it6505 *it6505 = dev_get_drvdata(dev);
++
++	return it6505_audio_setup_trigger(it6505, cmd);
++}
++
+ static int __maybe_unused it6505_audio_hook_plugged_cb(struct device *dev,
+ 						       void *data,
+ 						       hdmi_codec_plugged_cb fn,
+@@ -2860,6 +2893,36 @@ static int __maybe_unused it6505_audio_hook_plugged_cb(struct device *dev,
+ 	return 0;
+ }
+ 
++static const struct hdmi_codec_ops it6505_audio_codec_ops = {
++	.hw_params = it6505_audio_hw_params,
++	.trigger = it6505_audio_trigger,
++	.audio_shutdown = it6505_audio_shutdown,
++	.hook_plugged_cb = it6505_audio_hook_plugged_cb,
++};
++
++static int it6505_register_audio_driver(struct device *dev)
++{
++	struct it6505 *it6505 = dev_get_drvdata(dev);
++	struct hdmi_codec_pdata codec_data = {
++		.ops = &it6505_audio_codec_ops,
++		.max_i2s_channels = 8,
++		.i2s = 1,
++		.data = it6505,
++	};
++	struct platform_device *pdev;
++
++	pdev = platform_device_register_data(dev, HDMI_CODEC_DRV_NAME,
++					     PLATFORM_DEVID_AUTO, &codec_data,
++					     sizeof(codec_data));
++	if (IS_ERR(pdev))
++		return PTR_ERR(pdev);
++
++	INIT_DELAYED_WORK(&it6505->delayed_audio, it6505_delayed_audio);
++	DRM_DEV_DEBUG_DRIVER(dev, "bound to %s", HDMI_CODEC_DRV_NAME);
++
++	return 0;
++}
++
+ static inline struct it6505 *bridge_to_it6505(struct drm_bridge *bridge)
+ {
+ 	return container_of(bridge, struct it6505, bridge);
+@@ -3421,6 +3484,12 @@ static int it6505_i2c_probe(struct i2c_client *client)
+ 		return err;
+ 	}
+ 
++	err = it6505_register_audio_driver(dev);
++	if (err < 0) {
++		DRM_DEV_ERROR(dev, "Failed to register audio driver: %d", err);
++		return err;
++	}
++
+ 	INIT_WORK(&it6505->link_works, it6505_link_training_work);
+ 	INIT_WORK(&it6505->hdcp_wait_ksv_list, it6505_hdcp_wait_ksv_list);
+ 	INIT_DELAYED_WORK(&it6505->hdcp_work, it6505_hdcp_work);
+-- 
+2.25.1
 
