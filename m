@@ -4,91 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BD3DC001DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:10:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2CC8C001DC
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:20:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB453844;
-	Mon, 31 Jul 2023 17:09:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB453844
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA417823;
+	Mon, 31 Jul 2023 17:19:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA417823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690816231;
-	bh=3DWYlpzm301gOtSJGIxQod832HmRfMtkgQEHQm1ZthI=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1690816811;
+	bh=tHseUDP5ewIZ91U0WgZQH8SlyWmcwyeqJNAjRGZdQ4c=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hUSr8JecNiPuA5IEAk3x/Bau8VgIc+VFSkoyHcM/hGvsRLLgCwygWll7zNikrIfnd
-	 dkrTagiVt0gDlNFwuI+a5hdqaVpAvSFmay2aKMUkvb6OpfeGXtMhZBW9FbR1a4N/FF
-	 BcalWEtsHwLTY86huq2LycCCD5yJ8tBETJgpQJ38=
+	b=hMy9bcEAV4ne3jL8YqgXTnGMG848wa3lbEyFfJqHKscRruX7i8MGWJiBOhxXnBrPD
+	 WOFgl63aMqUrVlUdfhdORtJcDMTAr+6RPMsFwIHztkDk9exrXJkze8EN1dR89bwhm3
+	 uzU7UOidtQtJQ1O2e3C6F3N93EP8FqMF7ZSN6Zu0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 64279F80558; Mon, 31 Jul 2023 17:09:05 +0200 (CEST)
+	id 6E066F80520; Mon, 31 Jul 2023 17:18:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3179F80549;
-	Mon, 31 Jul 2023 17:09:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02EF5F8016D;
+	Mon, 31 Jul 2023 17:18:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0D863F80549; Mon, 31 Jul 2023 17:09:00 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+	id 26D9FF8016D; Mon, 31 Jul 2023 17:18:50 +0200 (CEST)
+Received: from mgamail.intel.com (unknown [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9522EF80544
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:08:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9522EF80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id E32D7F8015B
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:18:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E32D7F8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=p//P01Wv
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 36VDp2Qn022362;
-	Mon, 31 Jul 2023 10:08:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=Sgj8HRPTlGuwo3T
-	29LBXapIwqz/RNdE/KoELg/AckWM=; b=p//P01Wve+x7MDXRKwrlVP+x3O5ZtpM
-	Cm3/dGEzFUVzG0gOPhIMRfxii7DsQB83EG5PNMuYreV2UCq7KgbPoP2vurk7NGXd
-	vWGq8KzIieYK1aLEPh7FteUtCD10FT6bxA+zU91UemvWerdxVZZvCuBqe5JJPbce
-	UJYmr2zx/5ESE43n4XXX6E4Be9Kb0dxQzmnFgAUs9o6AxCiMqS/Pwc8z+TsWEYJ0
-	+S8myoiDcXyVet1RsPkpmLNVC6u75GJ2PUWF1OHEPke04OlnccIEt9pM+m2qvBRa
-	bLmx8ijIwiqu+oDJa3O/L4LWTTc0aXkIN7X38hNsFt4oFvdPEeAq3NA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s5gk1sbtu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 31 Jul 2023 10:08:42 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 16:08:40 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Mon, 31 Jul 2023 16:08:40 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 81B1045D;
-	Mon, 31 Jul 2023 15:08:40 +0000 (UTC)
-Date: Mon, 31 Jul 2023 15:08:40 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>
-CC: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <patches@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: wm8960: Make automatic the default clocking
- mode
-Message-ID: <20230731150840.GO103419@ediswmail.ad.cirrus.com>
-References: <20230731-asoc-wm8960-clk-v1-0-69f9ffa2b10a@kernel.org>
- <20230731-asoc-wm8960-clk-v1-2-69f9ffa2b10a@kernel.org>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=CL2F+Ja9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690816725; x=1722352725;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=tHseUDP5ewIZ91U0WgZQH8SlyWmcwyeqJNAjRGZdQ4c=;
+  b=CL2F+Ja9U1U4HAJ/aO4OMuQAv+lkkVYWA9rPwQCpX6LlKYHiaZAjpSmY
+   4y+ELLALu7Jz47b1ejZ0Bpq+mFZJyAUvh542zvWabj1TdFdhAMY15xxRE
+   qt/qobvu/liCD51NjC/mnnxwJeyMQdTjJw78LsHU1N82rfXwDuAiQe4/h
+   PzYkoE0mKU9mSZ6HNjR+HJPnyPP/Fi5hhJ9XWt2uHNFQV31bvgKFvI4vu
+   zDtky/P0GWsKjlMl+/uqph6XRQz9fwtjS/323A4sVdeoatKAwJ8ZxGbYe
+   e1Yhycai6dk9IUzt/sn3ZOl2292w1UQBQt5KcOUx4aAGUZlNNu6WeQATc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="432863979"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200";
+   d="scan'208";a="432863979"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2023 08:18:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="852095057"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200";
+   d="scan'208";a="852095057"
+Received: from sambriz-mobl.amr.corp.intel.com (HELO [10.212.68.117])
+ ([10.212.68.117])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2023 08:18:33 -0700
+Message-ID: <f3b6e859-3cf1-e12c-4de7-83cce04a122f@linux.intel.com>
+Date: Mon, 31 Jul 2023 09:53:02 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230731-asoc-wm8960-clk-v1-2-69f9ffa2b10a@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: jqdVLszwbwFFuOD7Q_qAbKMDhDYEhfA4
-X-Proofpoint-ORIG-GUID: jqdVLszwbwFFuOD7Q_qAbKMDhDYEhfA4
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: ECI66Q7YXRETYPIBX3HUZ7PMVHRWXLP7
-X-Message-ID-Hash: ECI66Q7YXRETYPIBX3HUZ7PMVHRWXLP7
-X-MailFrom: prvs=3576316b2c=ckeepax@opensource.cirrus.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 1/1] ASoC: Intel: maxim-common: get codec number from
+ ACPI table
+Content-Language: en-US
+To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Yong Zhi <yong.zhi@intel.com>, Terry Cheong <htcheong@chromium.org>,
+ Uday M Bhat <uday.m.bhat@intel.com>, Mac Chiang <mac.chiang@intel.com>,
+ "Dharageswari . R" <dharageswari.r@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20230731103419.2536036-1-brent.lu@intel.com>
+ <20230731103419.2536036-2-brent.lu@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230731103419.2536036-2-brent.lu@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: KHZBG4BEQFB5UUHRSW7RAUO6BD2PPTIY
+X-Message-ID-Hash: KHZBG4BEQFB5UUHRSW7RAUO6BD2PPTIY
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ECI66Q7YXRETYPIBX3HUZ7PMVHRWXLP7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KHZBG4BEQFB5UUHRSW7RAUO6BD2PPTIY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,24 +118,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Jul 31, 2023 at 11:47:03AM +0100, Mark Brown wrote:
-> The wm8960 driver supports an automatic clocking mode which will use the
-> MCLK directly where possible and fall back to the PLL if there is no
-> suitable configuration directly using the MCLK.  Clock 0 will be used by
-> the generic cards when configuring things, currently this is a MCLK only
-> mode but using AUTO mode would be more functional.  Since the driver
-> still prefers to use MCLK directly where possible there should be no
-> negative impact on systems which are able to use MCLK directly.
-> 
-> As far as I can see nothing is using the system clock as part of the
-> ABI, the only reference I can see to a mode in a machine driver is the
-> Freescale i.MX card which uses the automatic mode with an explicit in
-> kernel call using the constant so will be unaffected.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Thanks,
-Charles
+On 7/31/23 05:34, Brent Lu wrote:
+> We implement a helper function to get number of codecs from ACPI
+> subsystem instead of using quirk flag in machine driver. Also refactor
+> module interface by adding max_98390_dai_link() function.
+> 
+> On the sof_rt5682 machine driver side, we remove the quirk flag
+> SOF_MAX98390_TWEETER_SPEAKER_PRESENT and use the new interface of
+> max98390 to setup dai link.
+> 
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
