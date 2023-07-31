@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41D60C001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:39:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 062F4C001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:40:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61F16836;
-	Mon, 31 Jul 2023 23:39:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61F16836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07F8E86E;
+	Mon, 31 Jul 2023 23:39:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07F8E86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690839594;
-	bh=eIHSLTn49PLH6BaHj9sdqt6aQ09Bsd1DBy7WeFJFRvA=;
+	s=default; t=1690839610;
+	bh=Bzebpf+PgboJ9OXM7CKrNmzDFd2cjkZIXNYVnb6RFbs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kQWraN/wDjWs25SLsK5QJGPcSSqOnYi2zngDtL/5ydhJk97JDs3yfuSkoMZLlhCg9
-	 GgMw/lWebP55E2e3833DGUqNozXkPxZmgVRZ/CIehVhgpKrNyU0yU4wSnCu6zNCWdY
-	 8jl2gcpi5D17zfxFda46QKie25bS3WhaA7i5Sh7k=
+	b=pwzEanQ4HTw7PM9l55sd6jIL4mzVPynhTrapu9a5EFK0dfwkFo+Z8/++IfhZ5o/dZ
+	 G/wVtY2fnk/p+Q28g60ThVGGGv1i47Thypgo1b0gtKsg33/6qwi5yNsLvZZlcKJr/E
+	 AK4Q5Xxppd2hAMv1sC8LEwrj0w2mzpHNajaYvJ8o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B47AF80544; Mon, 31 Jul 2023 23:38:24 +0200 (CEST)
+	id EA460F805A0; Mon, 31 Jul 2023 23:38:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5246F80544;
-	Mon, 31 Jul 2023 23:38:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68C5CF8059F;
+	Mon, 31 Jul 2023 23:38:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A92FAF8055C; Mon, 31 Jul 2023 23:38:15 +0200 (CEST)
+	id 0F526F80564; Mon, 31 Jul 2023 23:38:17 +0200 (CEST)
 Received: from mgamail.intel.com (unknown [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B9CE3F80563
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:38:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9CE3F80563
+	by alsa1.perex.cz (Postfix) with ESMTPS id B42FEF80551
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:38:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B42FEF80551
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=nxGNcvC4
+ header.s=Intel header.b=FlGTKX19
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1690839494; x=1722375494;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=eIHSLTn49PLH6BaHj9sdqt6aQ09Bsd1DBy7WeFJFRvA=;
-  b=nxGNcvC4cH2nb2OPMJbEie+wwoYgLtpCvfBuo94z/5BeQIswWNThlpj6
-   41j+Lxl6aKpC4eHxffMBGm2MX47uqUzSnUN42VHQFK4ZuIATgNqJ3hvvL
-   ar7Joq5VXkEKhyFgzIUZbBabopEaphpYZuaW7t5YMVIVA3EhSue25ZTRd
-   G55jHOiHDxcRwKVS/+Md1NDk5dlUzSLzSXIzOn8qlcYLGYzW/edRC5Bi+
-   vnLITXxuokxoNWarQkpZ/d7QOVW2RscQVCshpNquW5wHw4bNMAMsZQSQO
-   ENqqK3ZQBjU6DaNzf9k3KBhWyT350I/PNmQdR0vk0G4n9wV8PwVDdpn5/
+  bh=Bzebpf+PgboJ9OXM7CKrNmzDFd2cjkZIXNYVnb6RFbs=;
+  b=FlGTKX19sGHj6pEq1v+pal7q4xO2k8cdt5662cFSw3/zRwGv4Cv1iTeb
+   oYbO7m4ajibVrOv9Wzu7jXNd3IvEM4ZwQTK09s2R77VFQl0TBr9BHCK7O
+   iLTQSK64b9a6CYqejKBFKux7opobjSrYacBigXKm6SzDt9dZ3r8HDwRR3
+   og6LWTYG+L3ziNPB2JQV+9opBgpAUUzKRWnyqMn1MxmSSPk81kquatIZD
+   W2H0baxADAhFTM38qNCfT1ZAjtW910jzTb1a8t0Jp8dEpB2kivwl+duLt
+   /L6SAC8ALPxwQu8sjj+Pm3JmgyMRyaWrCdefxquGVhBNLqVcgbyq3fuZt
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="366604116"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="366604126"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="366604116"
+   d="scan'208";a="366604126"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:38:11 -0700
+ 31 Jul 2023 14:38:12 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="793880069"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="793880073"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="793880069"
+   d="scan'208";a="793880073"
 Received: from youngnic-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.180.66])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:38:10 -0700
+ 31 Jul 2023 14:38:11 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -73,17 +73,18 @@ Cc: tiwai@suse.de,
 	Rander Wang <rander.wang@intel.com>,
 	Daniel Baluta <daniel.baluta@nxp.com>,
 	Yaochun Hung <yc.hung@mediatek.com>
-Subject: [PATCH 5/8] ASoC: SOF: mediatek: remove error checks on NULL ipc
-Date: Mon, 31 Jul 2023 16:37:45 -0500
-Message-Id: <20230731213748.440285-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 6/8] ASoC: Intel: bdw_rt286: add checks to avoid static
+ analysis warnings
+Date: Mon, 31 Jul 2023 16:37:46 -0500
+Message-Id: <20230731213748.440285-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230731213748.440285-1-pierre-louis.bossart@linux.intel.com>
 References: <20230731213748.440285-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ERUS7LZ25KT6XL6TIRJUF2EVGJRWFNGW
-X-Message-ID-Hash: ERUS7LZ25KT6XL6TIRJUF2EVGJRWFNGW
+Message-ID-Hash: TUJ6KIJDQ4QNSIRGLU7NXXCP7E6EG3GA
+X-Message-ID-Hash: TUJ6KIJDQ4QNSIRGLU7NXXCP7E6EG3GA
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,53 +97,64 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ERUS7LZ25KT6XL6TIRJUF2EVGJRWFNGW/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TUJ6KIJDQ4QNSIRGLU7NXXCP7E6EG3GA/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-mtk_adsp_ipc_get_data() can return NULL, but the value is not checked
-before being used, leading to static analysis warnings.
+snd_soc_card_get_codec_dai() can return NULL, but that value is not
+checked for, leading to false-positive static analysis warnings
 
-sound/soc/sof/mediatek/mt8195/mt8195.c:90:32: error: dereference of
-NULL ‘0’ [CWE-476] [-Werror=analyzer-null-dereference]
+sound/soc/intel/boards/bdw_rt286.c:190:16: error: dereference of NULL
+‘codec_dai’ [CWE-476] [-Werror=analyzer-null-dereference]
 
-   90 |         spin_lock_irqsave(&priv->sdev->ipc_lock, flags);
-      |                            ~~~~^~~~~~
+  190 |         return snd_soc_component_set_jack(codec_dai->component, NULL, NULL);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ‘card_suspend_pre’: event 1
+    |
+    |  190 |         return snd_soc_component_set_jack(codec_dai->component, NULL, NULL);
+    |      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    |      |                |
+    |      |                (1) dereference of NULL ‘codec_dai’
 
-It appears this is not really a possible problem, so remove those checks.
+This NULL dereference cannot happen, the codec-dai "rt286-aif1" must exists
+otherwise the card would not be created. Static analysis cannot know
+that however so we might as well squelch this report.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
 ---
- include/linux/firmware/mediatek/mtk-adsp-ipc.h | 6 ------
- 1 file changed, 6 deletions(-)
+ sound/soc/intel/boards/bdw_rt286.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/include/linux/firmware/mediatek/mtk-adsp-ipc.h b/include/linux/firmware/mediatek/mtk-adsp-ipc.h
-index 28fd313340b8..5b1d16fa3f56 100644
---- a/include/linux/firmware/mediatek/mtk-adsp-ipc.h
-+++ b/include/linux/firmware/mediatek/mtk-adsp-ipc.h
-@@ -46,17 +46,11 @@ struct mtk_adsp_ipc {
- 
- static inline void mtk_adsp_ipc_set_data(struct mtk_adsp_ipc *ipc, void *data)
+diff --git a/sound/soc/intel/boards/bdw_rt286.c b/sound/soc/intel/boards/bdw_rt286.c
+index b7687a93a923..036579331d8f 100644
+--- a/sound/soc/intel/boards/bdw_rt286.c
++++ b/sound/soc/intel/boards/bdw_rt286.c
+@@ -187,6 +187,9 @@ static int card_suspend_pre(struct snd_soc_card *card)
  {
--	if (!ipc)
--		return;
--
- 	ipc->private_data = data;
+ 	struct snd_soc_dai *codec_dai = snd_soc_card_get_codec_dai(card, "rt286-aif1");
+ 
++	if (!codec_dai)
++		return 0;
++
+ 	return snd_soc_component_set_jack(codec_dai->component, NULL, NULL);
  }
  
- static inline void *mtk_adsp_ipc_get_data(struct mtk_adsp_ipc *ipc)
+@@ -194,6 +197,9 @@ static int card_resume_post(struct snd_soc_card *card)
  {
--	if (!ipc)
--		return NULL;
--
- 	return ipc->private_data;
+ 	struct snd_soc_dai *codec_dai = snd_soc_card_get_codec_dai(card, "rt286-aif1");
+ 
++	if (!codec_dai)
++		return 0;
++
+ 	return snd_soc_component_set_jack(codec_dai->component, &card_headset, NULL);
  }
  
 -- 
