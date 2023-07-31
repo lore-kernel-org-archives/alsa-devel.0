@@ -4,97 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DF19C001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:52:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCA27C001E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:53:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68A7A829;
-	Mon, 31 Jul 2023 17:51:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68A7A829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C148846;
+	Mon, 31 Jul 2023 17:52:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C148846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690818769;
-	bh=TnPlhSxqlROyzSBHtNWdR5Cnz38t0TXqINiKDh/UoiY=;
+	s=default; t=1690818790;
+	bh=VvHOBTkJO8p+2F8/LYGnNrobtkWQRLeqdvJvIUsi4xk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bpYpSQnsdXbN7X5K9IxlP0vWalltnFZ7Wr92jJswNtZl1XD51HeVFQMThE3d/w11T
-	 VB0cmTfBWVx2gpqwC0QFekKXLMPyNDxZI3tP3qQteR3ogP+wXGWRYwnbVZxLxJahF9
-	 okBpPmIE6ADTtZfIQ8QxGL7zg86lFQjQlK+mfdDc=
+	b=s2JEZxZ4wlXVCw8f7MN9Mmd2vFxUkaWb/euHO7cSXJsYcd/cY6B7YERhYHM/pXmpB
+	 c71Q8aBevea87zazhFl0yGf7VhIuKRxTzValCV8NYMV4BvTJHfoFX1UzsuWevrZW9R
+	 uTobTTZrdLT+BA82ij9/GenIUI3nCXTYwL/gn0aw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DB5B9F8057C; Mon, 31 Jul 2023 17:48:29 +0200 (CEST)
+	id 03DC2F80621; Mon, 31 Jul 2023 17:48:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BBA3F80617;
-	Mon, 31 Jul 2023 17:48:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E487F80619;
+	Mon, 31 Jul 2023 17:48:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0619F80163; Mon, 31 Jul 2023 17:48:21 +0200 (CEST)
+	id 245BDF80612; Mon, 31 Jul 2023 17:48:24 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 484B8F80163
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:47:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 484B8F80163
+	by alsa1.perex.cz (Postfix) with ESMTPS id 854BCF80153
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:47:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 854BCF80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=mNBFkpwc;
+ header.s=susede2_rsa header.b=Uu80SKvF;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=EEnH7mPL
+ header.s=susede2_ed25519 header.b=a3cxvrFp
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 736C6221DF;
-	Mon, 31 Jul 2023 15:47:27 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 62702221CF;
+	Mon, 31 Jul 2023 15:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1690818447;
+	t=1690818444;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UTZsiUon4MyqacTn+bvjQe32AeuuhNqmUBxuxc7XiqM=;
-	b=mNBFkpwck945PDxWfuluIzMcCj46kHrVnh8UmJJYObyFlI0a9UudS+SDPsX8BnS+dJ8fIK
-	t5f943UEaDbzk99OjYv7cPs2KgGRVqLJojw0lyqC9G0R53SqJB+M2zKO3K7TVUHJzmN1/Y
-	n0bn4TR2GbqDZVwEFNIeTVfwmtLr+0M=
+	bh=huTJf2uf0zf87I+FdS82mnMeiH9LrVaaUyhEm9M0+GA=;
+	b=Uu80SKvFy4bMvnCbuZyR4L0z50IkwFtfgMDQd+yNN60udXdITOWH6JG4qZKpUqMW4i7qYC
+	RUBVn4aWudjuR8I9Rtf/3KmJ3teyJrbBIcm20WvJPDKg+CyoPJ9i1Vf3KVh83Vi0ip73pd
+	emMXng4UvhIF8HyWxl+p/BWXe+cOVts=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1690818447;
+	s=susede2_ed25519; t=1690818444;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UTZsiUon4MyqacTn+bvjQe32AeuuhNqmUBxuxc7XiqM=;
-	b=EEnH7mPLp/uracpMKtbYSqhgJM+egmKBvCm3Hoip4hvxdTtqPUyCiXaVeSEqSs5FUt3XAf
-	KmNOGVqelYhwvIAA==
+	bh=huTJf2uf0zf87I+FdS82mnMeiH9LrVaaUyhEm9M0+GA=;
+	b=a3cxvrFp6+owD516/yeE7GcmjBWnrVKdG6WP5oir7p0AvUh7NKx/NBA+/EzI++gb3GMiHh
+	DG0JhslXDoWi2mAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 585C0138EE;
-	Mon, 31 Jul 2023 15:47:27 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 464C2138EE;
+	Mon, 31 Jul 2023 15:47:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id GEe0FI/Xx2Q3fwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 15:47:27 +0000
+	id iI1cEIzXx2Q3fwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 15:47:24 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 24/24] ALSA: pcm: Drop obsoleted PCM copy_user and copy_kernel
- ops
-Date: Mon, 31 Jul 2023 17:47:18 +0200
-Message-Id: <20230731154718.31048-25-tiwai@suse.de>
+Subject: [PATCH 05/24] ALSA: emu8000: Convert to generic PCM copy ops
+Date: Mon, 31 Jul 2023 17:46:59 +0200
+Message-Id: <20230731154718.31048-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230731154718.31048-1-tiwai@suse.de>
 References: <20230731154718.31048-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LN2JVNQOEAWMLTR4D6YQ7KO6OQ34KUPA
-X-Message-ID-Hash: LN2JVNQOEAWMLTR4D6YQ7KO6OQ34KUPA
+Message-ID-Hash: T2DUOLVPNR32FOELCFLPHQWF6BINJ7J7
+X-Message-ID-Hash: T2DUOLVPNR32FOELCFLPHQWF6BINJ7J7
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,88 +106,193 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LN2JVNQOEAWMLTR4D6YQ7KO6OQ34KUPA/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T2DUOLVPNR32FOELCFLPHQWF6BINJ7J7/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Finally all users have been converted to the new PCM copy ops, let's
-drop the obsoleted copy_kernel and copy_user ops completely.
+This patch converts the SB Emu8000 driver code to use the new unified
+PCM copy callback.  The conversion is a bit complicated because of
+many open code in emu8000_pcm.c.  GET_VAL() and LOOP_WRITE() macros
+were rewritten / simplified with copy_from_sockptr_offset().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm.h     |  5 -----
- sound/core/pcm_lib.c    | 16 ----------------
- sound/core/pcm_native.c |  2 +-
- 3 files changed, 1 insertion(+), 22 deletions(-)
+ sound/isa/sb/emu8000_pcm.c | 79 ++++++++++----------------------------
+ 1 file changed, 21 insertions(+), 58 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 9b7054f0cea0..2700ca1c9db8 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -71,11 +71,6 @@ struct snd_pcm_ops {
- 			    unsigned long pos, unsigned long bytes);
- 	int (*copy)(struct snd_pcm_substream *substream, int channel,
- 		    unsigned long pos, sockptr_t buf, unsigned long bytes);
--	int (*copy_user)(struct snd_pcm_substream *substream, int channel,
--			 unsigned long pos, void __user *buf,
--			 unsigned long bytes);
--	int (*copy_kernel)(struct snd_pcm_substream *substream, int channel,
--			   unsigned long pos, void *buf, unsigned long bytes);
- 	struct page *(*page)(struct snd_pcm_substream *substream,
- 			     unsigned long offset);
- 	int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct *vma);
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 1dd630cd22a7..1d10de7eeac6 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -2031,19 +2031,6 @@ static int default_read_copy(struct snd_pcm_substream *substream,
+diff --git a/sound/isa/sb/emu8000_pcm.c b/sound/isa/sb/emu8000_pcm.c
+index c8afc4347c54..31a5e5fa278d 100644
+--- a/sound/isa/sb/emu8000_pcm.c
++++ b/sound/isa/sb/emu8000_pcm.c
+@@ -409,40 +409,28 @@ do { \
+ 		return -EAGAIN;\
+ } while (0)
+ 
+-enum {
+-	COPY_USER, COPY_KERNEL, FILL_SILENCE,
+-};
+-
+-#define GET_VAL(sval, buf, mode)					\
++#define GET_VAL(sval, buf, offset)					\
+ 	do {								\
+-		switch (mode) {						\
+-		case FILL_SILENCE:					\
++		if (sockptr_is_null(buf))				\
+ 			sval = 0;					\
+-			break;						\
+-		case COPY_KERNEL:					\
+-			sval = *buf++;					\
+-			break;						\
+-		default:						\
+-			if (get_user(sval, (unsigned short __user *)buf)) \
+-				return -EFAULT;				\
+-			buf++;						\
+-			break;						\
+-		}							\
++		else if (copy_from_sockptr_offset(&sval, buf, offset, 2)) \
++			return -EFAULT;					\
+ 	} while (0)
+ 
+ #ifdef USE_NONINTERLEAVE
+ 
+-#define LOOP_WRITE(rec, offset, _buf, count, mode)		\
++#define LOOP_WRITE(rec, offset, buf, count)			\
+ 	do {							\
+ 		struct snd_emu8000 *emu = (rec)->emu;		\
+-		unsigned short *buf = (__force unsigned short *)(_buf); \
++		unsigned int offset = 0;			\
+ 		snd_emu8000_write_wait(emu, 1);			\
+ 		EMU8000_SMALW_WRITE(emu, offset);		\
+ 		while (count > 0) {				\
+ 			unsigned short sval;			\
+ 			CHECK_SCHEDULER();			\
+-			GET_VAL(sval, buf, mode);		\
++			GET_VAL(sval, buf, offset);		\
+ 			EMU8000_SMLD_WRITE(emu, sval);		\
++			offset += 2;				\
+ 			count--;				\
+ 		}						\
+ 	} while (0)
+@@ -450,27 +438,14 @@ enum {
+ /* copy one channel block */
+ static int emu8k_pcm_copy(struct snd_pcm_substream *subs,
+ 			  int voice, unsigned long pos,
+-			  void __user *src, unsigned long count)
++			  sockptr_t src, unsigned long count)
+ {
+ 	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
+ 
+ 	/* convert to word unit */
+ 	pos = (pos << 1) + rec->loop_start[voice];
+ 	count <<= 1;
+-	LOOP_WRITE(rec, pos, src, count, COPY_USER);
+-	return 0;
+-}
+-
+-static int emu8k_pcm_copy_kernel(struct snd_pcm_substream *subs,
+-				 int voice, unsigned long pos,
+-				 void *src, unsigned long count)
+-{
+-	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
+-
+-	/* convert to word unit */
+-	pos = (pos << 1) + rec->loop_start[voice];
+-	count <<= 1;
+-	LOOP_WRITE(rec, pos, src, count, COPY_KERNEL);
++	LOOP_WRITE(rec, pos, src, count);
  	return 0;
  }
  
--/* a wrapper for calling old copy_kernel or copy_user ops */
--static int call_old_copy(struct snd_pcm_substream *substream,
--			 int channel, unsigned long hwoff,
--			 sockptr_t buf, unsigned long bytes)
--{
--	if (sockptr_is_kernel(buf))
--		return substream->ops->copy_kernel(substream, channel, hwoff,
--						   buf.kernel, bytes);
--	else
--		return substream->ops->copy_user(substream, channel, hwoff,
--						 buf.user, bytes);
+@@ -483,16 +458,16 @@ static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
+ 	/* convert to word unit */
+ 	pos = (pos << 1) + rec->loop_start[voice];
+ 	count <<= 1;
+-	LOOP_WRITE(rec, pos, NULL, count, FILL_SILENCE);
++	LOOP_WRITE(rec, pos, USER_SOCKPTR(NULL), count);
+ 	return 0;
+ }
+ 
+ #else /* interleave */
+ 
+-#define LOOP_WRITE(rec, pos, _buf, count, mode)				\
++#define LOOP_WRITE(rec, pos, buf, count)				\
+ 	do {								\
+ 		struct snd_emu8000 *emu = rec->emu;			\
+-		unsigned short *buf = (__force unsigned short *)(_buf);	\
++		unsigned int offset = 0;				\
+ 		snd_emu8000_write_wait(emu, 1);				\
+ 		EMU8000_SMALW_WRITE(emu, pos + rec->loop_start[0]);	\
+ 		if (rec->voices > 1)					\
+@@ -500,12 +475,14 @@ static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
+ 		while (count > 0) {					\
+ 			unsigned short sval;				\
+ 			CHECK_SCHEDULER();				\
+-			GET_VAL(sval, buf, mode);			\
++			GET_VAL(sval, buf, offset);			\
+ 			EMU8000_SMLD_WRITE(emu, sval);			\
++			offset += 2;					\
+ 			if (rec->voices > 1) {				\
+ 				CHECK_SCHEDULER();			\
+-				GET_VAL(sval, buf, mode);		\
++				GET_VAL(sval, buf, offset);		\
+ 				EMU8000_SMRD_WRITE(emu, sval);		\
++				offset += 2;				\
+ 			}						\
+ 			count--;					\
+ 		}							\
+@@ -518,27 +495,14 @@ static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
+  */
+ static int emu8k_pcm_copy(struct snd_pcm_substream *subs,
+ 			  int voice, unsigned long pos,
+-			  void __user *src, unsigned long count)
++			  sockptr_t src, unsigned long count)
+ {
+ 	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
+ 
+ 	/* convert to frames */
+ 	pos = bytes_to_frames(subs->runtime, pos);
+ 	count = bytes_to_frames(subs->runtime, count);
+-	LOOP_WRITE(rec, pos, src, count, COPY_USER);
+-	return 0;
 -}
 -
- /* create a sockptr_t */
- static inline sockptr_t make_sockptr(void *p, bool in_kernel)
- {
-@@ -2241,9 +2228,6 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 	} else {
- 		if (substream->ops->copy)
- 			transfer = substream->ops->copy;
--		else if ((in_kernel && substream->ops->copy_kernel) ||
--			 (!in_kernel && substream->ops->copy_user))
--			transfer = call_old_copy;
- 		else
- 			transfer = is_playback ?
- 				default_write_copy : default_read_copy;
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 34efd4d198d6..bd9ddf412b46 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -809,7 +809,7 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
- 		runtime->boundary *= 2;
+-static int emu8k_pcm_copy_kernel(struct snd_pcm_substream *subs,
+-				 int voice, unsigned long pos,
+-				 void *src, unsigned long count)
+-{
+-	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
+-
+-	/* convert to frames */
+-	pos = bytes_to_frames(subs->runtime, pos);
+-	count = bytes_to_frames(subs->runtime, count);
+-	LOOP_WRITE(rec, pos, src, count, COPY_KERNEL);
++	LOOP_WRITE(rec, pos, src, count);
+ 	return 0;
+ }
  
- 	/* clear the buffer for avoiding possible kernel info leaks */
--	if (runtime->dma_area && !substream->ops->copy && !substream->ops->copy_user) {
-+	if (runtime->dma_area && !substream->ops->copy) {
- 		size_t size = runtime->dma_bytes;
+@@ -550,7 +514,7 @@ static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
+ 	/* convert to frames */
+ 	pos = bytes_to_frames(subs->runtime, pos);
+ 	count = bytes_to_frames(subs->runtime, count);
+-	LOOP_WRITE(rec, pos, NULL, count, FILL_SILENCE);
++	LOOP_WRITE(rec, pos, USER_SOCKPTR(NULL), count);
+ 	return 0;
+ }
+ #endif
+@@ -666,8 +630,7 @@ static const struct snd_pcm_ops emu8k_pcm_ops = {
+ 	.prepare =	emu8k_pcm_prepare,
+ 	.trigger =	emu8k_pcm_trigger,
+ 	.pointer =	emu8k_pcm_pointer,
+-	.copy_user =	emu8k_pcm_copy,
+-	.copy_kernel =	emu8k_pcm_copy_kernel,
++	.copy =		emu8k_pcm_copy,
+ 	.fill_silence =	emu8k_pcm_silence,
+ };
  
- 		if (runtime->info & SNDRV_PCM_INFO_MMAP)
 -- 
 2.35.3
 
