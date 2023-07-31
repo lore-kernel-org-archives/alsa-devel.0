@@ -4,77 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9863C001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 17:00:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66958C001E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 17:01:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E39C6845;
-	Mon, 31 Jul 2023 19:00:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E39C6845
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A8BD832;
+	Mon, 31 Jul 2023 19:00:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A8BD832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690822851;
-	bh=CJXv5LTyvEZlFSDwEZHeU4bYBpFsz8Qe4FlzBgpaJXk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1690822871;
+	bh=HvFBGCFP+p8mCT+m3rY5jD+yRPApp9InbENtx358KpQ=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vEnkS5JU2cPyFPA3jVG/68BY1Df0pOX27ByKQin4paYpax05ohQHDT6MFYw7AoQAs
-	 uiEpsT4Y2C/Ubac3AGO+FWMR6q1A7rMxg4Hpk6+k1jE7DavT8BfH2vwRZVj/ESdi9i
-	 +Ui7YE9dvRnGMdBAdTnd8YJo7cfaN0OYlUK/6zXY=
+	b=FSsfO6rw60uaf3TCQaW6CCAjmUBjyvLBwu2/6RgHEhM7rCmMCHpOD4ue3tN85O9t7
+	 NWlyjWVrxs9Mo0MfIyNVLYOAayGQBQeI4XvZEUTKwziGtMy6oZwxdACtH962xM9REO
+	 W+8mx7WXCdWeYFvtiNIZVCWvAsuW9qynjZowrVl0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3627BF80544; Mon, 31 Jul 2023 18:58:22 +0200 (CEST)
+	id 56F0DF805D4; Mon, 31 Jul 2023 18:58:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF784F80553;
-	Mon, 31 Jul 2023 18:58:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC953F80149;
+	Mon, 31 Jul 2023 18:58:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 896D9F805C5; Mon, 31 Jul 2023 18:58:18 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 21222F805D4; Mon, 31 Jul 2023 18:58:26 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 449D7F80548
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 18:58:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 449D7F80548
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0D9CF80149
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 18:57:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0D9CF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=mWdHtK6e
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3DDDC6123E;
-	Mon, 31 Jul 2023 16:58:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 906BFC433C8;
-	Mon, 31 Jul 2023 16:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690822689;
-	bh=CJXv5LTyvEZlFSDwEZHeU4bYBpFsz8Qe4FlzBgpaJXk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=mWdHtK6eRA+JGRP2MaoMMo72/BqzlMnoO3Lw2tx+VUmXmUqh9S4hFR5Ea8ZvkEGOY
-	 C0oYF8sOZK+mJnTMZKuq+kbmOf5KUMHgL/q8xop5dztVOQv3Z0VZdP5iIqiS20pFaq
-	 M1HYrWt+F+PcRxU8wUb0t6yidzC3aDeHSfZ/ltN3IIvi0TkAmEdGO0KWUAkMI8qvX7
-	 GXlbm5/f8tzOo4K8e98bPZEmWHZR/m1JEVw2EMZZxVOPIYdbSY4eiOJS+wFoV2FouU
-	 8TlomChhqc638ExpmF+ZMLnoXANOp9YXh7UNRkyOxttco2r3GwAbAiNHe31R57tkGV
-	 aIC9Ep10U0SLA==
-From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, devicetree@vger.kernel.org
-In-Reply-To: <87y1j6b1ne.wl-kuninori.morimoto.gx@renesas.com>
-References: <87y1j6b1ne.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 0/5] ASoC: rsnd: add multi Component support
-Message-Id: <169082268827.169960.7424993017597355804.b4-ty@kernel.org>
-Date: Mon, 31 Jul 2023 17:58:08 +0100
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=GXj7G97G
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 36V5lNJO017071;
+	Mon, 31 Jul 2023 11:57:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=DFQy9O4rVl1fkUzjYQguq6VsjkwR+stb5618BZFSP9g=; b=
+	GXj7G97GLpBXmDuPdeCnNCloJ7nG4k+fnNYQtwHw8TdnH2/uXLD9hsZHSGB53SWa
+	fR20aHMQoV6yrS4l7oJD9HnPlSGGOngmjg8p1rOfmBadxWBLxvFizVqBR4UzHQYF
+	qC5CEAYz+0AuMSMwfKmTjnKAxk2aJpUSeog8CFY1NUC97OLnHzA0hgNjQqSz4WjQ
+	nvzlcMcEMZHyXiQvEzuup0ypYx8SfBFdy9mQmBYQqWoMdd6sK6Q3IB1LVI90WJdI
+	hJjUmLYAM1dtaPYyzgMZw5vd8Oe/m4LQgDmU6IdcL4NmPuCFcoaqoqwZWNVENpm1
+	xLh/DA8ZTOWNl5/uLIWXag==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s5gk1sg45-6
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 31 Jul 2023 11:57:36 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
+ 2023 17:57:32 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Mon, 31 Jul 2023 17:57:32 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
+ [198.61.64.107])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3C28C475;
+	Mon, 31 Jul 2023 16:57:32 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <tiwai@suse.com>
+CC: <perex@perex.cz>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        Richard
+ Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 7/9] ALSA: hda/cs35l56: Do not download firmware over existing
+ RAM firmware
+Date: Mon, 31 Jul 2023 17:57:24 +0100
+Message-ID: <20230731165726.7940-8-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230731165726.7940-1-rf@opensource.cirrus.com>
+References: <20230731165726.7940-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: X3KOA3XD2OTLHP5R4QWKCIN6LI4O66V4
-X-Message-ID-Hash: X3KOA3XD2OTLHP5R4QWKCIN6LI4O66V4
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: VQTKml7zteD00oUvbI_K6i472yRGO6xo
+X-Proofpoint-ORIG-GUID: VQTKml7zteD00oUvbI_K6i472yRGO6xo
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 4MTVB4ASC5IHNLUDSYRECCTZJVDHNN4I
+X-Message-ID-Hash: 4MTVB4ASC5IHNLUDSYRECCTZJVDHNN4I
+X-MailFrom: prvs=3576b45159=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X3KOA3XD2OTLHP5R4QWKCIN6LI4O66V4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4MTVB4ASC5IHNLUDSYRECCTZJVDHNN4I/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,56 +110,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 24 Jul 2023 00:20:54 +0000, Kuninori Morimoto wrote:
-> These are part of "ASoC: add multi Component support" patch-set.
-> The patch-set supports below case as "2 Cards".
-> 
-> 	+-- basic board --------+
-> 	|+--------+             |
-> 	|| CPU ch0| <--> CodecA |
-> 	||     ch1| <-+         |
-> 	|+--------+   |         |
-> 	+-------------|---------+
-> 	+-- expansion board ----+
-> 	|             |         |
-> 	|             +-> CodecB|
-> 	+-----------------------+
-> 
-> [...]
+A RAM firmware can only be downloaded if the CS35L56 is currently
+running from ROM firmware. The driver must not try to overwrite
+the RAM if the CS35L56 is already running from that RAM.
 
-Applied to
+Firmware can be downloaded in these two cases:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+- The BIOS has already patched the firmware (secured mode).
+  In this case the firmware files will only contain tunings that
+  are safe to overwrite.
 
-Thanks!
+- The CS35L56 is running the built-in ROM firmware.
 
-[1/5] ASoC: rsnd: use DAI driver ID instead of DAI ID
-      commit: 8897a1475f278eb36d76df9684466b17b8dd4cab
-[2/5] ASoC: rsnd: cleanup rsnd_dai_of_node()
-      commit: 6328489c135b60380b9e12b4d23854433e96a8b0
-[3/5] ASoC: rsnd: enable multi Component support for Audio Graph Card/Card2
-      commit: 547b02f74e4ac1e7d295a6266d5bc93a647cd4ac
-[4/5] ASoC: dt-bindings: renesas,rsnd.yaml: add common port-def
-      commit: 289f6e3bdc3f3cf752794be3820b0e5c394b2733
-[5/5] ASoC: dt-bindings: renesas,rsnd.yaml: enable multi ports for multi Component support
-      commit: 1638290414bd68a87acae125e9fe3e419267bd01
+After a RAM firmware has been downloaded it can only be cleared by
+hard resetting CS35L56. Some systems only hard-reset during
+power-on and do not give the driver control of hard reset.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/pci/hda/cs35l56_hda.c | 27 +++++++++++++++++++++++----
+ 1 file changed, 23 insertions(+), 4 deletions(-)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
+index 803fa2da9ea4..8f1665d38c92 100644
+--- a/sound/pci/hda/cs35l56_hda.c
++++ b/sound/pci/hda/cs35l56_hda.c
+@@ -525,6 +525,7 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
+ 	const struct firmware *wmfw_firmware = NULL;
+ 	char *coeff_filename = NULL;
+ 	char *wmfw_filename = NULL;
++	unsigned int firmware_missing;
+ 	int ret = 0;
+ 
+ 	/* Prepare for a new DSP power-up */
+@@ -533,11 +534,28 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
+ 
+ 	cs35l56->base.fw_patched = false;
+ 
+-	cs35l56_hda_request_firmware_files(cs35l56, &wmfw_firmware, &wmfw_filename,
+-					   &coeff_firmware, &coeff_filename);
++	pm_runtime_get_sync(cs35l56->base.dev);
++
++	ret = regmap_read(cs35l56->base.regmap, CS35L56_PROTECTION_STATUS, &firmware_missing);
++	if (ret) {
++		dev_err(cs35l56->base.dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
++		goto err_pm_put;
++	}
++
++	firmware_missing &= CS35L56_FIRMWARE_MISSING;
++
++	/*
++	 * Firmware can only be downloaded if the CS35L56 is secured or is
++	 * running from the built-in ROM. If it is secured the BIOS will have
++	 * downloaded firmware, and the wmfw/bin files will only contain
++	 * tunings that are safe to download with the firmware running.
++	 */
++	if (cs35l56->base.secured || firmware_missing) {
++		cs35l56_hda_request_firmware_files(cs35l56, &wmfw_firmware, &wmfw_filename,
++						   &coeff_firmware, &coeff_filename);
++	}
+ 
+ 	mutex_lock(&cs35l56->base.irq_lock);
+-	pm_runtime_get_sync(cs35l56->base.dev);
+ 
+ 	/*
+ 	 * When the device is running in secure mode the firmware files can
+@@ -596,11 +614,12 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
+ 	if (!cs35l56->base.fw_patched)
+ 		cs_dsp_power_down(&cs35l56->cs_dsp);
+ err:
+-	pm_runtime_put(cs35l56->base.dev);
+ 	mutex_unlock(&cs35l56->base.irq_lock);
+ 
+ 	cs35l56_hda_release_firmware_files(wmfw_firmware, wmfw_filename,
+ 					   coeff_firmware, coeff_filename);
++err_pm_put:
++	pm_runtime_put(cs35l56->base.dev);
+ 
+ 	return ret;
+ }
+-- 
+2.30.2
 
