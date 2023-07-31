@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA41FC001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:47:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD5BBC001E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:47:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A48FE72;
-	Mon, 31 Jul 2023 23:46:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A48FE72
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15FABE0F;
+	Mon, 31 Jul 2023 23:46:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15FABE0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690840036;
-	bh=QSZEaFY8AMkVL52kcnerQ3L5icJby/JL1zgARxHQ/Fc=;
+	s=default; t=1690840052;
+	bh=Sl+JnvzvCZ2oRoZq5fmpGrYfOIUrPUnGbPnSvBgk4R0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SlIdfnUpUv+GnCdCOSI7CyZxTwM8CsMMmVwYzkqKV4x4W2paFomlc2wAwExMDMprY
-	 n71uzzASQc4PRdL8iPsZT/0OqFTiMKxuHs2dOpX5TCYJijZc715ZQCurI603zc3Oaj
-	 8aNxOaXoqYCY5mtexWmZZtU5+wI0SAB3jhe8zD+4=
+	b=aYuxtRHlsk+/qZH2y8E8oHY27fqpOq+xb+u0V+ePdVg/WIXzobT4bLbHtKXu7xygI
+	 tUtIQF1DvLXEpCElLGC0ShcKK4dh2v/goTBykNam+S8Pn2tVMSDlwFX2NHh7+8UFDO
+	 bll4SgHct9IQusMOyv8K6HjJNGnJJ/+gCychhCfY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EF77F805F2; Mon, 31 Jul 2023 23:43:53 +0200 (CEST)
+	id 9F02CF805F1; Mon, 31 Jul 2023 23:43:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF98EF805ED;
-	Mon, 31 Jul 2023 23:43:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F3C4F805FA;
+	Mon, 31 Jul 2023 23:43:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5C929F8059F; Mon, 31 Jul 2023 23:43:28 +0200 (CEST)
+	id D271CF80557; Mon, 31 Jul 2023 23:43:28 +0200 (CEST)
 Received: from mgamail.intel.com (unknown [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A7667F8016D
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7667F8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9F094F80567
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F094F80567
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=iXeYwbII
+ header.s=Intel header.b=XmXE2Dqj
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690839799; x=1722375799;
+  t=1690839801; x=1722375801;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=QSZEaFY8AMkVL52kcnerQ3L5icJby/JL1zgARxHQ/Fc=;
-  b=iXeYwbIImHIgbAJGIgwdxfLcRDqKvKll1CCVWSBft7toCh5cNVHmJait
-   9DQEFn+y7xHeUzPxXwz+Eq5RJTV0r8mPzPYa4NTR4khEGjHMWb6kgudos
-   dZaDNAbztxRpNof58t9JpFUNhj9Nj4RvuXLnPitTJcH4N+MM3Afz6tdfc
-   a89bZcOc+sBxnI94EMhvdoOdr3bbST8dgRFxkmxOU1eMOZELqxJxt0EnO
-   RWDIvlF9fgrNYJd/ZsgDnelRk2psYLuvQ0kmPLp7UdDN00k1oAkhHJcrW
-   mkxWvnMgl0H9kQAmQ568EsqnegPQEJBGgSWqKWZ0mMoOEVxNCK+oSfMZ3
+  bh=Sl+JnvzvCZ2oRoZq5fmpGrYfOIUrPUnGbPnSvBgk4R0=;
+  b=XmXE2DqjqzyKaaho92d4aHZMSjK+9Z0K7CNhXPYtMRmeOqNfcb5+w6Ur
+   LFUhbVuGEg8ytfeVH/V+S9NsT3hxt3Am/sWR2ND3FogvN659l9fB66wXK
+   EvWZ0JSqQFBv/hIqsWbslv5paeoHUzQxae66LMHNXNm1EasRWNBjex8eX
+   9kreWGRueYiYrsMK4raNJ8qiCjGWdj54t4E2Tkals1lFNUCpilbq9qX78
+   5pFY2U14RN/z09cyhauGQaESa/31tNjMJSuNu81ZZKtziqz2dgij/lFgJ
+   FBC9jLySEzJ7z3UwNeFJMXcK3ozdMrzg+ehInCI6JsG6diXqePDNWuKrz
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449770"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449784"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="435449770"
+   d="scan'208";a="435449784"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:15 -0700
+ 31 Jul 2023 14:43:17 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523545"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523555"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="763523545"
+   d="scan'208";a="763523555"
 Received: from youngnic-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.180.66])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:14 -0700
+ 31 Jul 2023 14:43:16 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -74,16 +74,17 @@ Cc: tiwai@suse.de,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Rander Wang <rander.wang@intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 11/23] ASoC: intel: sof_sdw: Remove some extra line breaks
-Date: Mon, 31 Jul 2023 16:42:45 -0500
-Message-Id: <20230731214257.444605-12-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 14/23] ASoC: intel: sof_sdw: Constify parameter to
+ find_codec_part_info
+Date: Mon, 31 Jul 2023 16:42:48 -0500
+Message-Id: <20230731214257.444605-15-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 References: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NJKFQJ6U6JEJXAI7EHEPDIEOYQTZX4N7
-X-Message-ID-Hash: NJKFQJ6U6JEJXAI7EHEPDIEOYQTZX4N7
+Message-ID-Hash: IUJMRV55TGEOBWCRMXZSBYT5YP4H5TE7
+X-Message-ID-Hash: IUJMRV55TGEOBWCRMXZSBYT5YP4H5TE7
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +96,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IUJMRV55TGEOBWCRMXZSBYT5YP4H5TE7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,61 +108,30 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
+The address passed to find_codec_part_info should be const.
+
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 0743bf04aa88..4f7ef83c21c5 100644
+index d3222f40d798..fc67029b3a64 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -523,7 +523,6 @@ int sdw_prepare(struct snd_pcm_substream *substream)
- 	dai = asoc_rtd_to_cpu(rtd, 0);
+@@ -974,7 +974,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 	},
+ };
  
- 	sdw_stream = snd_soc_dai_get_stream(dai, substream->stream);
--
- 	if (IS_ERR(sdw_stream)) {
- 		dev_err(rtd->dev, "no stream found for DAI %s", dai->name);
- 		return PTR_ERR(sdw_stream);
-@@ -543,7 +542,6 @@ int sdw_trigger(struct snd_pcm_substream *substream, int cmd)
- 	dai = asoc_rtd_to_cpu(rtd, 0);
- 
- 	sdw_stream = snd_soc_dai_get_stream(dai, substream->stream);
--
- 	if (IS_ERR(sdw_stream)) {
- 		dev_err(rtd->dev, "no stream found for DAI %s", dai->name);
- 		return PTR_ERR(sdw_stream);
-@@ -631,7 +629,6 @@ int sdw_hw_free(struct snd_pcm_substream *substream)
- 	dai = asoc_rtd_to_cpu(rtd, 0);
- 
- 	sdw_stream = snd_soc_dai_get_stream(dai, substream->stream);
--
- 	if (IS_ERR(sdw_stream)) {
- 		dev_err(rtd->dev, "no stream found for DAI %s", dai->name);
- 		return PTR_ERR(sdw_stream);
-@@ -1107,8 +1104,7 @@ static bool is_unique_device(const struct snd_soc_acpi_link_adr *adr_link,
- 			     unsigned int mfg_id,
- 			     unsigned int part_id,
- 			     unsigned int class_id,
--			     int index_in_link
--			    )
-+			     int index_in_link)
+-static inline int find_codec_info_part(u64 adr)
++static inline int find_codec_info_part(const u64 adr)
  {
+ 	unsigned int part_id, sdw_version;
  	int i;
- 
-@@ -1232,7 +1228,6 @@ static int set_codec_init_func(struct snd_soc_card *card,
- 			int codec_index;
- 
- 			codec_index = find_codec_info_part(adr_link->adr_d[i].adr);
--
- 			if (codec_index < 0)
- 				return codec_index;
- 
 -- 
 2.39.2
 
