@@ -4,86 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7347C001E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:41:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C779AC001E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:44:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1573E868;
-	Mon, 31 Jul 2023 23:40:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1573E868
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC3B9832;
+	Mon, 31 Jul 2023 23:43:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC3B9832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690839678;
-	bh=OAI2qcEg7OqvHUBhJ2efMbqxaB8PVBmIckjGoOZBK50=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=GUY1sNHH4g5QSbCxGoC5JJ8z+34pZY3lbZZ4hsnVcoln0dmKkzHiJlj+Gwa46ieNY
-	 C7RopqTexlY5QV+YHQ8v8iRtiqco4Sb5+LnaYrKexGpzIySvmuKBHMcqd+M6oa4u/F
-	 cJfq8QjEQ6xYHWwPb3rDdsDQH2S8sExNhlh/UUUI=
+	s=default; t=1690839871;
+	bh=T7eZDF27bRlV7Ysq1nozDQWCv+2Itxzb3N/TMUzXoSs=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=VbTYbhe1k5zLIy+rUwDnFwciMWXYj4tI55TT5yaxnvPjEaxXu1BvLCojkvqWIksOz
+	 /GeqHW63AwqMycbNEBFbrHZRchIvjXwTDKFWwgWwsKxtrOvNwqh6QmjJm9DZuszRRT
+	 iHHgLo6p33KtrmZc/+8RpbEN1djV07B1GALR8lNU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 055C4F805D5; Mon, 31 Jul 2023 23:38:42 +0200 (CEST)
+	id 50173F8055B; Mon, 31 Jul 2023 23:43:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6350DF805CA;
-	Mon, 31 Jul 2023 23:38:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAEA0F80544;
+	Mon, 31 Jul 2023 23:43:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A8D0F80588; Mon, 31 Jul 2023 23:38:23 +0200 (CEST)
-Received: from mgamail.intel.com (unknown [192.55.52.93])
+	id B59B8F80425; Mon, 31 Jul 2023 23:43:14 +0200 (CEST)
+Received: from mgamail.intel.com (unknown [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 80CA9F8056F
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:38:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80CA9F8056F
+	by alsa1.perex.cz (Postfix) with ESMTPS id C391FF80153
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C391FF80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XgC8OyPX
+ header.s=Intel header.b=ndN2BBRp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690839501; x=1722375501;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OAI2qcEg7OqvHUBhJ2efMbqxaB8PVBmIckjGoOZBK50=;
-  b=XgC8OyPXjtxxd3y5vbxijW+GVBoFiPHt3i5maXvP+KA0uBPZnaNHVllb
-   bt9svEGP+lGSFLKcW5UGV2jQADsx0leCuOzGvG5EjwprMhMfB6ctna4vL
-   wYO0gtIugye/fuUyJAAEzsMgg24VTso1vO/4CFVArpelHbMAkLsU4GDzu
-   mTLe35KTxXEkm2nC/acFL3njM8yF886ioBhLT5CHswqtlH1Nvl5fEPcw/
-   h+ajK21z2HtV/6b0nK2hl0QZR3JpqlA5m9YiUU+IiOLsoTr2bNzvjYLdf
-   FMPNOo3ijW6S2Q2GE8uEU6Ec/9nfW7Oif5ll3IZLlyH7DuIcLy/0Vy78v
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="366604154"
+  t=1690839792; x=1722375792;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=T7eZDF27bRlV7Ysq1nozDQWCv+2Itxzb3N/TMUzXoSs=;
+  b=ndN2BBRpmm1gHRsv+oIW6XKz76+Kml/D0UxaTc4PfnmWnusZFxJBKcpy
+   G/WnxSWEW784Zcvs/Gax/Awa4g0MAz9RZEZhBHCsUqffkw7GBsNU4YtUL
+   e3BVW59XUxEwS0zzsWmb96giE/bwXvvUXf4oIlz4xUDAQQnhfBzK0X2sq
+   ck/qt3XZ3HRsfJPtIBLHRt4fjOivhwKsmrAQaHq5ACnvb4eJNHQSZ16Qc
+   wGEspBBOnI5Kege1eqCIFhbPyh69bGXsfvv7ZxRab3SFoin7Nx0NmvpKD
+   0fTaXqnLU0c62apBuKdf8J3wNNiWFX1Tw2Bs9Nq/cXfdVXA/VuM3R/xJ8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449725"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="366604154"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:38:20 -0700
+   d="scan'208";a="435449725"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2023 14:43:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="793880102"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523515"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="793880102"
+   d="scan'208";a="763523515"
 Received: from youngnic-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.180.66])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:38:13 -0700
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2023 14:43:07 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>,
-	Daniel Baluta <daniel.baluta@nxp.com>,
-	Yaochun Hung <yc.hung@mediatek.com>
-Subject: [PATCH 8/8] ASoC: amd: acp5x-mach:add checks to avoid static analysis
- warnings
-Date: Mon, 31 Jul 2023 16:37:48 -0500
-Message-Id: <20230731213748.440285-9-pierre-louis.bossart@linux.intel.com>
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 00/23] ASoC: Intel: machine driver updates for 6.6
+Date: Mon, 31 Jul 2023 16:42:34 -0500
+Message-Id: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230731213748.440285-1-pierre-louis.bossart@linux.intel.com>
-References: <20230731213748.440285-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ET26PBT6VAV5J66OAERMM42GLM7PMCLX
-X-Message-ID-Hash: ET26PBT6VAV5J66OAERMM42GLM7PMCLX
+Message-ID-Hash: IWMGLMSVEIGSWTVRSESCUSU2GRFGJNGO
+X-Message-ID-Hash: IWMGLMSVEIGSWTVRSESCUSU2GRFGJNGO
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ET26PBT6VAV5J66OAERMM42GLM7PMCLX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IWMGLMSVEIGSWTVRSESCUSU2GRFGJNGO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,31 +98,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-snd_soc_card_get_codec_dai() can return NULL, but that value is not
-checked for, leading to static analysis warnings.
+Lots of small cleanups coming from Bard Liao and Charles Keepax for
+SoundWire platforms, and minor additions for RVPs and Chromebooks.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
----
- sound/soc/amd/vangogh/acp5x-mach.c | 3 +++
- 1 file changed, 3 insertions(+)
+Balamurugan C (1):
+  ASoC: Intel: soc-acpi: Add entry for rt711-sdca-sdw at link 0 in RPL
+    match table
 
-diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index 125a8e93478d..eda464545866 100644
---- a/sound/soc/amd/vangogh/acp5x-mach.c
-+++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -170,6 +170,9 @@ static int acp5x_nau8821_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *dai = snd_soc_card_get_codec_dai(card, ACP5X_NAU8821_DAI_NAME);
- 	int ret, bclk;
- 
-+	if (!dai)
-+		return -EINVAL;
-+
- 	ret = snd_soc_dai_set_sysclk(dai, NAU8821_CLK_FLL_BLK, 0, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		dev_err(card->dev, "can't set FS clock %d\n", ret);
+Bard Liao (2):
+  ASoC: Intel: sof_sdw: rename link_id to be_id
+  ASoC: Intel: sof_sdw: break earlier when a adr link contains different
+    codecs
+
+Chao Song (1):
+  ASoC: Intel: sof_sdw: add cs35l56 codec info
+
+Charles Keepax (13):
+  ASoC: intel: sof_sdw: Use consistent variable naming for links
+  ASoC: intel: sof_sdw: Rename codec_idx to codec_dlc_index
+  ASoC: intel: sof_sdw: Remove some extra line breaks
+  ASoC: intel: sof_sdw: Use a module device table
+  ASoC: intel: sof_sdw: Simplify find_codec_info_acpi
+  ASoC: intel: sof_sdw: Constify parameter to find_codec_part_info
+  ASoC: intel: sof_sdw: Minor tidy up of mc_probe
+  ASoC: intel: sof_sdw: Remove redundant parameters in dai creation
+  ASoC: intel: sof_sdw: Move amp_num initialisation to mc_probe
+  ASoC: intel: sof_sdw: Allow direct specification of CODEC name
+  ASoC: intel: sof_sdw: Clean up DAI link counting
+  ASoC: intel: sof_sdw: Merge codec_conf_alloc into dailink_info
+  ASoC: intel: sof_sdw: Move group_generated logic
+
+Pierre-Louis Bossart (3):
+  ASoC: Intel: sof_sdw: reorder SoundWire codecs in Kconfig
+  ASoC: Intel: sof_sdw: allow mockup amplifier to provide feedback
+  ASoC: Intel: sof_sdw: add support for SKU 0AFE
+
+Terry Cheong (1):
+  ASoC: Intel: sof_rt5682: add RPL support for MAX98357A speaker
+
+Uday M Bhat (1):
+  ASoC: Intel: sof_sdw: Update BT offload config for soundwire config
+
+apoorv (1):
+  ASoC: Intel: sof_rt5682 add support for HDMI_In capture
+
+ sound/soc/intel/boards/Kconfig                |   5 +-
+ sound/soc/intel/boards/Makefile               |   2 +-
+ sound/soc/intel/boards/sof_rt5682.c           |  55 +++
+ sound/soc/intel/boards/sof_sdw.c              | 404 +++++++++---------
+ sound/soc/intel/boards/sof_sdw_common.h       |   7 +
+ sound/soc/intel/boards/sof_sdw_cs_amp.c       |  47 ++
+ .../intel/common/soc-acpi-intel-adl-match.c   |   7 +
+ .../intel/common/soc-acpi-intel-rpl-match.c   |  27 ++
+ 8 files changed, 342 insertions(+), 212 deletions(-)
+ create mode 100644 sound/soc/intel/boards/sof_sdw_cs_amp.c
+
 -- 
 2.39.2
 
