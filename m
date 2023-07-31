@@ -4,88 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8490C001E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Aug 2023 15:43:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FFEFC001DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Aug 2023 15:51:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECC6A823;
-	Tue,  1 Aug 2023 17:42:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECC6A823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 880B1832;
+	Tue,  1 Aug 2023 17:50:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 880B1832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690904625;
-	bh=kYHQfSx2ZnIe/mloaLHf4HbNajqw8Gi4jx3qIU/TEH0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1690905065;
+	bh=Ao9jKG02zCn9mT46E7t4bpXrC0zyjDPbbvJx/0zuRN0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UpeVHraHlxDeiPcuml7Hi3X2NIvRsjIm2cRNHHEyLv/QdvbQQepY/P9TeE9cThoxc
-	 6EJdbdXPs4jVoK3wQAWcFA/US0NIYuyNlC2dPlGwjS+13GtSmmOKgelL/yH6qx7Cv8
-	 5J8ciAJK2KQDIIrFyl0wXzUOG1mGEtZiRgGB+ABE=
+	b=FMMchQHQ0SyxOMQPZu7XmTh+jVWd4FtdLBrvs9PNO97wmm67m0nBZdJLeV1WSpY0r
+	 IKZEYQq/t4UaKdF+PEIkiAmsXClhqsM4bV3K54yJrZWMT/C1g3CFi4ZkrxCp/lmyUN
+	 CDHCyxJNsMnb8f44Aasgxdh6Sjkuhk9/NemJ74+U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B132CF802BE; Tue,  1 Aug 2023 17:42:23 +0200 (CEST)
+	id 77F68F80549; Tue,  1 Aug 2023 17:49:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EC64F801D5;
-	Tue,  1 Aug 2023 17:42:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80624F80520;
+	Tue,  1 Aug 2023 17:49:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B0FEF801D5; Tue,  1 Aug 2023 17:41:53 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 5E083F8016D; Mon, 31 Jul 2023 14:11:34 +0200 (CEST)
+Received: from honk.sigxcpu.org (honk.sigxcpu.org [24.134.29.49])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0911F80087
-	for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2023 17:41:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0911F80087
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=TjTFAppW
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2B31161515;
-	Tue,  1 Aug 2023 15:41:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB4EEC433C9;
-	Tue,  1 Aug 2023 15:41:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690904485;
-	bh=kYHQfSx2ZnIe/mloaLHf4HbNajqw8Gi4jx3qIU/TEH0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=TjTFAppWCYtBoZahCp184jzYr7jsnC3/rIy5seaNfhN3KWVGkibRimfGxTG9GrxFW
-	 VDfAjNMTSXg05YtgW2f2nwhGvlXrZzLnpZa8T9ObZBgcF5lQ6wLAyX6hiSlD+5zgdQ
-	 hBxEIRjKeFe8z4QxEIxoe47XsxSflvn+TAbqw1ZPMyQLFVapE/UjXHiAbPiOLeSN/i
-	 98+aMVQqHVtp3kEzwjEud7S5cSBi4bwHu7HHGQ/k5wVs4ouE+IlM+GU9CNGahdw0wG
-	 teKB8jqLofiqGJ3XI2WIjPznLqcv9F3TD+vqzT8LhRcGaoWMDvmjTozaFDnKOUyHr2
-	 l8raXubYSGerw==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de
-In-Reply-To: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
-References: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/23] ASoC: Intel: machine driver updates for 6.6
-Message-Id: <169090448461.50882.6811703974217949939.b4-ty@kernel.org>
-Date: Tue, 01 Aug 2023 16:41:24 +0100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 453EDF8015B
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 14:11:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 453EDF8015B
+Received: from localhost (localhost [127.0.0.1])
+	by honk.sigxcpu.org (Postfix) with ESMTP id A7A9CFB03;
+	Mon, 31 Jul 2023 14:11:16 +0200 (CEST)
+Received: from honk.sigxcpu.org ([127.0.0.1])
+	by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id s8Fn4PzHcjuu; Mon, 31 Jul 2023 14:11:15 +0200 (CEST)
+Date: Mon, 31 Jul 2023 14:11:13 +0200
+From: Guido =?iso-8859-1?Q?G=FCnther?= <guido.gunther@puri.sm>
+To: David Heidelberg <david@ixit.cz>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, - <kernel@puri.sm>,
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] dt-bindings: sound: gtm601: convert to YAML
+Message-ID: <ZMek4XHZQ/HVahKV@qwark.sigxcpu.org>
+References: <20230730191742.117013-1-david@ixit.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: UTTPT3IKODIPI47QBINY4E4T345KZH2X
-X-Message-ID-Hash: UTTPT3IKODIPI47QBINY4E4T345KZH2X
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230730191742.117013-1-david@ixit.cz>
+X-MailFrom: guido.gunther@puri.sm
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: NHP6KB7SCFC5DCK7SIMPU5YPGYOROTHC
+X-Message-ID-Hash: NHP6KB7SCFC5DCK7SIMPU5YPGYOROTHC
+X-Mailman-Approved-At: Tue, 01 Aug 2023 15:47:38 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UTTPT3IKODIPI47QBINY4E4T345KZH2X/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NHP6KB7SCFC5DCK7SIMPU5YPGYOROTHC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,85 +81,113 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 31 Jul 2023 16:42:34 -0500, Pierre-Louis Bossart wrote:
-> Lots of small cleanups coming from Bard Liao and Charles Keepax for
-> SoundWire platforms, and minor additions for RVPs and Chromebooks.
+Hi,
+
+On Sun, Jul 30, 2023 at 10:17:42PM +0300, David Heidelberg wrote:
+> Convert GTM601 binding to the YAML format.
 > 
-> Balamurugan C (1):
->   ASoC: Intel: soc-acpi: Add entry for rt711-sdca-sdw at link 0 in RPL
->     match table
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+> v4:
+>  - added missing required property
+> v3:
+>  - incorporated feedback from Krzysztof
+> v2:
+>  - add #sound-dai-cells
+>  - put kernel@puri.sm into maintainers
 > 
-> [...]
+>  .../devicetree/bindings/sound/gtm601.txt      | 19 ---------
+>  .../bindings/sound/option,gtm601.yaml         | 40 +++++++++++++++++++
+>  2 files changed, 40 insertions(+), 19 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/gtm601.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/option,gtm601.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/gtm601.txt b/Documentation/devicetree/bindings/sound/gtm601.txt
+> deleted file mode 100644
+> index efa32a486c4a..000000000000
+> --- a/Documentation/devicetree/bindings/sound/gtm601.txt
+> +++ /dev/null
+> @@ -1,19 +0,0 @@
+> -GTM601 UMTS modem audio interface CODEC
+> -
+> -This device has no configuration interface. The sample rate and channels are
+> -based on the compatible string
+> -	"option,gtm601" = 8kHz mono
+> -	"broadmobi,bm818" = 48KHz stereo
+> -
+> -Required properties:
+> -
+> -  - compatible : one of
+> -	"option,gtm601"
+> -	"broadmobi,bm818"
+> -
+> -
+> -Example:
+> -
+> -codec: gtm601_codec {
+> -	compatible = "option,gtm601";
+> -};
+> diff --git a/Documentation/devicetree/bindings/sound/option,gtm601.yaml b/Documentation/devicetree/bindings/sound/option,gtm601.yaml
+> new file mode 100644
+> index 000000000000..69c2ccc79dc5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/option,gtm601.yaml
+> @@ -0,0 +1,40 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/option,gtm601.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: GTM601 UMTS modem audio interface CODEC
+> +
+> +maintainers:
+> +  - kernel@puri.sm
+> +
+> +description: >
+> +  This device has no configuration interface. The sample rate and channels are
+> +  based on the compatible string
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:  # 48 kHz stereo
+> +          - const: broadmobi,bm818
+> +          - const: option,gtm601
+> +      - const: option,gtm601  # 8 kHz mono
 
-Applied to
+This looks good to me. I just wonder if it makes sense to use a description
+instead of comments to make the sampling rate/channel requirements a bit
+more obvious:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+      - description: Broadmobi BM818 (48kHz stereo)
+        items:
+           - const: broadmobi,bm818
+           - const: option,gtm601
+      - description:  Option GTM601 audio code (8kHz mono) 
+        const: option,gtm601
 
-Thanks!
+Cheers,
+ -- Guido
 
-[01/23] ASoC: Intel: soc-acpi: Add entry for rt711-sdca-sdw at link 0 in RPL match table
-        commit: e63e2810edd229e320249dc85c20c22f4894919e
-[02/23] ASoC: Intel: sof_rt5682: add RPL support for MAX98357A speaker
-        commit: 26d9726f667e18134bfc77a3e4e0da7518a8b180
-[03/23] ASoC: Intel: sof_rt5682 add support for HDMI_In capture
-        commit: f3c37847c704c5d398fa6808c77e4f7c997c0abb
-[04/23] ASoC: Intel: sof_sdw: Update BT offload config for soundwire config
-        commit: a14aded9299187bb17ef90700eb2cf1120ef5885
-[05/23] ASoC: Intel: sof_sdw: reorder SoundWire codecs in Kconfig
-        commit: 4b68ce6912fd87b1743eb2e66aeba81cae2067fe
-[06/23] ASoC: Intel: sof_sdw: allow mockup amplifier to provide feedback
-        commit: 3390d4ed823e716618095c16ad6792f33cc66190
-[07/23] ASoC: Intel: sof_sdw: rename link_id to be_id
-        commit: 616bee2c06ca1cd24631ae0db1b4cba1d6b9ad25
-[08/23] ASoC: Intel: sof_sdw: add support for SKU 0AFE
-        commit: 0cc85f2bfbcb84754ee6cd43a6fb9953f18cd2dc
-[09/23] ASoC: intel: sof_sdw: Use consistent variable naming for links
-        commit: 1d1062382b1807679e9001d79704112525576057
-[10/23] ASoC: intel: sof_sdw: Rename codec_idx to codec_dlc_index
-        commit: 4fc16d21b7abb969935162d8b01fba21496cf513
-[11/23] ASoC: intel: sof_sdw: Remove some extra line breaks
-        commit: 08f62f6291bae6e0cc5f3f50e4e1043e6a270e80
-[12/23] ASoC: intel: sof_sdw: Use a module device table
-        commit: 18c45cb362fcd6918548a4e11128304aa634acf3
-[13/23] ASoC: intel: sof_sdw: Simplify find_codec_info_acpi
-        commit: 31a54f78ad1d294432d63e9f72db08dc14cca432
-[14/23] ASoC: intel: sof_sdw: Constify parameter to find_codec_part_info
-        commit: fad1a9eff67d34b6f90cf4d1d2f1dc2632dfeeb4
-[15/23] ASoC: intel: sof_sdw: Minor tidy up of mc_probe
-        commit: 855e69f4ff9d726df4c8c47e7b40934fdb49d9c5
-[16/23] ASoC: intel: sof_sdw: Remove redundant parameters in dai creation
-        commit: febac07b4c69242d7870944457c3a1158ab97bdc
-[17/23] ASoC: intel: sof_sdw: Move amp_num initialisation to mc_probe
-        commit: 8673e68b594684fac53398ec5783a6c8469a07a1
-[18/23] ASoC: Intel: sof_sdw: break earlier when a adr link contains different codecs
-        commit: 656dd91a3a1ca27a02d9a79d1720b2ca40d272cf
-[19/23] ASoC: intel: sof_sdw: Allow direct specification of CODEC name
-        commit: 009582008182bc0a2956d245fd0362e036f31dfe
-[20/23] ASoC: Intel: sof_sdw: add cs35l56 codec info
-        commit: 4754e29c779fe2a2677ba62896daf4bf980602a1
-[21/23] ASoC: intel: sof_sdw: Clean up DAI link counting
-        commit: 98a7a1143f83289a84cba6dab60a4531cc4dfae2
-[22/23] ASoC: intel: sof_sdw: Merge codec_conf_alloc into dailink_info
-        commit: a386162e7dc2c8bc1be2777b1c6d41156f69b210
-[23/23] ASoC: intel: sof_sdw: Move group_generated logic
-        commit: a60ed3b738705dbcb4afce9a24af00e2671edf19
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+> +
+> +  '#sound-dai-cells':
+> +    const: 0
+> +
+> +required:
+> +  - compatible
+> +
+> +allOf:
+> +  - $ref: dai-common.yaml#
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    codec {
+> +        compatible = "option,gtm601";
+> +        #sound-dai-cells = <0>;
+> +    };
+> -- 
+> 2.40.1
+> 
