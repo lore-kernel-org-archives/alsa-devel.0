@@ -4,92 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7A84C001DC
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 17:01:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D623C001DC
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 17:22:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94DA1AE8;
-	Mon, 31 Jul 2023 19:00:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94DA1AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68F17827;
+	Mon, 31 Jul 2023 19:21:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68F17827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690822901;
-	bh=u87Pr1O7Hl4rKiv7kc2px8tp6+12lmYBZXtNJK/4A1A=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1690824156;
+	bh=mftMsYiz9ZJ4o2udCBL/LK6NqmaRzMvUrLtaxc6+ExM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=i5Ed6QrxhDI1qOBAnGuzLf/rvM5+sag7KMRu1DvkRKUDOHOcmy9GKJRtDeEsFtLhs
-	 1B6E9LpZKr0OYVqieOJ4nh9zlPdmX6sKuNakaaTD47RaA0LnF3jiuNk0NkSt5hMo04
-	 iOLnhGMHbHIAbymwZZX6captcRcdcSjmmm+BF9WA=
+	b=PGZAn/TPoHIYBAun7bkuV6jYOg1f46FRlPmhW6XVpHdZUPF+iWUw5wXVsMB40LG49
+	 i12e5CtIyOkknWZairadd9ykW+y7PambjFPSuNS471PDWmCV8JEQ72wvMypTsv2/7k
+	 MKjovuApCR8lE0HaSIo+1otdEVfi4X+psbsnKV2Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05B1BF80567; Mon, 31 Jul 2023 18:58:36 +0200 (CEST)
+	id 25E9AF8015B; Mon, 31 Jul 2023 19:21:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91D96F8053B;
-	Mon, 31 Jul 2023 18:58:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A63C0F8016D;
+	Mon, 31 Jul 2023 19:21:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F7BCF80553; Mon, 31 Jul 2023 18:58:29 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 3F9C8F8016D; Mon, 31 Jul 2023 19:21:12 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 31CFFF801D5
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 18:57:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31CFFF801D5
+	by alsa1.perex.cz (Postfix) with ESMTPS id C8741F8015B
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 19:21:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8741F8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=oLjutGfm
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 36V5lNJN017071;
-	Mon, 31 Jul 2023 11:57:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=R7ZjjUfa6yJOj++gCN2+TabvdRaWxzaSedPyz17+U0k=; b=
-	oLjutGfmin0E7RLlySjbfdbDa+44PhaRSXLZYdAAMUmSF/GvUGRRZHgdsOCafOCl
-	Ejgrk3ZW+tSrGQtFR58CvV4+cRNPxDInLVviCiSoxB1yS0RaAikpyq6nrjnpChj9
-	l0DWmBOPSRd3QZGBxkEbeYtjICZRznrlzTtnwiVLUzendX95Mdrkm7eVrOcLUI3N
-	2nrSFdKBzm5MjPIbPoLkw+AOaGYkUPz+dvZSI8fOgcPUQCuzH9gOuhASUcLLlCte
-	kUJQ5+LnjPaIz/UPrCiA3ODrfYWJ637+Qsbl97SEFUZNf07e0ftbazJDSeEoXYkt
-	keMuQKhUl435GnYzWxW9MQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s5gk1sg45-5
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 31 Jul 2023 11:57:35 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 17:57:32 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Mon, 31 Jul 2023 17:57:32 +0100
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
- [198.61.64.107])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CEA4E45D;
-	Mon, 31 Jul 2023 16:57:31 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <tiwai@suse.com>
-CC: <perex@perex.cz>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        Richard
- Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 6/9] ALSA: hda/cs35l56: cs_dsp_power_down() on
- cs35l56_hda_fw_load() error path
-Date: Mon, 31 Jul 2023 17:57:23 +0100
-Message-ID: <20230731165726.7940-7-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230731165726.7940-1-rf@opensource.cirrus.com>
-References: <20230731165726.7940-1-rf@opensource.cirrus.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=SIuH/vWC
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6234E6124B;
+	Mon, 31 Jul 2023 17:21:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57DD2C433C8;
+	Mon, 31 Jul 2023 17:20:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690824060;
+	bh=mftMsYiz9ZJ4o2udCBL/LK6NqmaRzMvUrLtaxc6+ExM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SIuH/vWC0Z//bAHS2Y+ReRPL+XB6AshDM0VvyslpumMHkUh8btF1eBGmB+FVDNt2W
+	 qm0tF94AwLtjbT/FtCTVDhM46eCHLOAXbsZYUTJtv7LyR/HrEWEphMZnZ7qKlGxkS0
+	 1olJzc+vrxjV93iG+bTpCewIXkEnpr3fmc7cUV+zDrgq77F7ANAF1s+FHa8JxRJTQf
+	 CrczT9BjPicytrwXkddCggE8BewLAKcejC+rpo1OwtcrZN13PtffSpA6r7b7VrYut0
+	 PUhb+fLowx3LEBj6zKV+E8RhBYkBXxXGSeGYfN2RjgUK1+3pzQnmilsKv3Ax/zlPWN
+	 1igMAnbI+UiIw==
+Date: Mon, 31 Jul 2023 18:20:54 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Andrey Utkin <andrey_utkin@fastmail.com>,
+	Anton Sviridenko <anton@corp.bluecherry.net>,
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Bluecherry Maintainers <maintainers@bluecherrydvr.com>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Ismael Luceno <ismael@iodev.co.uk>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+	Olivier Moysan <olivier.moysan@foss.st.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	linux-media@vger.kernel.org, xen-devel@lists.xenproject.org
+Subject: Re: [PATCH 00/24] ALSA: Generic PCM copy ops using sockptr_t
+Message-ID: <b906d60b-ece4-45b5-8167-2046c8dc00f4@sirena.org.uk>
+References: <20230731154718.31048-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: bB_xhwoyVLFnhBvAfJRqahOqp3F2rvgI
-X-Proofpoint-ORIG-GUID: bB_xhwoyVLFnhBvAfJRqahOqp3F2rvgI
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: YGRZMQ3UPIWXQPA54GVZ53Z5OH4SOOGO
-X-Message-ID-Hash: YGRZMQ3UPIWXQPA54GVZ53Z5OH4SOOGO
-X-MailFrom: prvs=3576b45159=rf@opensource.cirrus.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qMccpUQ9T4oLw/AQ"
+Content-Disposition: inline
+In-Reply-To: <20230731154718.31048-1-tiwai@suse.de>
+X-Cookie: Single tasking: Just Say No.
+Message-ID-Hash: LXHYELGL4QUJ3NP7XIGZGWDYBYN3I6TA
+X-Message-ID-Hash: LXHYELGL4QUJ3NP7XIGZGWDYBYN3I6TA
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YGRZMQ3UPIWXQPA54GVZ53Z5OH4SOOGO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LXHYELGL4QUJ3NP7XIGZGWDYBYN3I6TA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,52 +107,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-If cs35l56_hda_fw_load() successfully called cs_dsp_power_up() the error
-path must balance that with a call to cs_dsp_power_down().
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/pci/hda/cs35l56_hda.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+--qMccpUQ9T4oLw/AQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index e8c41a4a0c40..803fa2da9ea4 100644
---- a/sound/pci/hda/cs35l56_hda.c
-+++ b/sound/pci/hda/cs35l56_hda.c
-@@ -567,20 +567,20 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
- 	if (cs35l56->base.secured) {
- 		ret = cs35l56_mbox_send(&cs35l56->base, CS35L56_MBOX_CMD_AUDIO_REINIT);
- 		if (ret)
--			goto err;
-+			goto err_powered_up;
- 	} else if (wmfw_firmware || coeff_firmware) {
- 		/* If we downloaded firmware, reset the device and wait for it to boot */
- 		cs35l56_system_reset(&cs35l56->base, false);
- 		regcache_mark_dirty(cs35l56->base.regmap);
- 		ret = cs35l56_wait_for_firmware_boot(&cs35l56->base);
- 		if (ret)
--			goto err;
-+			goto err_powered_up;
- 	}
- 
- 	/* Disable auto-hibernate so that runtime_pm has control */
- 	ret = cs35l56_mbox_send(&cs35l56->base, CS35L56_MBOX_CMD_PREVENT_AUTO_HIBERNATE);
- 	if (ret)
--		goto err;
-+		goto err_powered_up;
- 
- 	regcache_sync(cs35l56->base.regmap);
- 
-@@ -592,6 +592,9 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
- 	if (ret)
- 		dev_dbg(cs35l56->base.dev, "%s: cs_dsp_run ret %d\n", __func__, ret);
- 
-+err_powered_up:
-+	if (!cs35l56->base.fw_patched)
-+		cs_dsp_power_down(&cs35l56->cs_dsp);
- err:
- 	pm_runtime_put(cs35l56->base.dev);
- 	mutex_unlock(&cs35l56->base.irq_lock);
--- 
-2.30.2
+On Mon, Jul 31, 2023 at 05:46:54PM +0200, Takashi Iwai wrote:
 
+> this is a patch set to clean up the PCM copy ops using sockptr_t as a
+> "universal" pointer, inspired by the recent patch from Andy
+> Shevchenko:
+>   https://lore.kernel.org/r/20230721100146.67293-1-andriy.shevchenko@linux.intel.com
+
+> Even though it sounds a bit weird, sockptr_t is a generic type that is
+> used already in wide ranges, and it can fit our purpose, too.  With
+> sockptr_t, the former split of copy_user and copy_kernel PCM ops can
+> be unified again gracefully.
+
+It really feels like we ought to rename, or add an alias for, the type
+if we're going to start using it more widely - it's not helping to make
+the code clearer.
+
+--qMccpUQ9T4oLw/AQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTH7XUACgkQJNaLcl1U
+h9DwvAf+MAtXkGii5+gytkR+D3QTsuA6sY3aBk9dt1dWPILYWbXmsLkkIbGCtvq+
+KIRLogTAKw9JbmzspD9GP/aj49lZi+dMH3wj9bfNKb9tJ1kfu5sSa8Bmr73fU/gy
+tSYcApUWSN+uSIqVD6z7zDJj+BOa0gIUUQNbJxaPxp8YfsNTZAgCtB6forR7hI3h
+OrPzmZkmMgkVjA1N/rHbWeubemc68OgSpUdUO1JF8wrGySsBmwXr/5VoVbBex+cK
+Xg1f+g849RnopbiTFg1H7lfkp6wk1nQPWbtdq7y0Ws2HUkNqHS3Kmm4oVamjvlwP
+ZmnL1wekh8FNsZS/jWPCv7xMdle/MQ==
+=2oaj
+-----END PGP SIGNATURE-----
+
+--qMccpUQ9T4oLw/AQ--
