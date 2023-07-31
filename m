@@ -4,95 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32CCAC001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 676EDC001E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:50:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D12F820;
-	Mon, 31 Jul 2023 17:49:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D12F820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 782C8950;
+	Mon, 31 Jul 2023 17:49:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 782C8950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690818614;
-	bh=cQKRuVnvL6VEm4PmKgDf0Nd5FEtuvTfDiLVqc8exlmw=;
+	s=default; t=1690818642;
+	bh=X78XwEB7drgtJ6rBld0VUHLqH+bzsioFacEFObC4UAs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kwxRZMU5KIzW0PwXlXe8MUmdDUWaxi6pCINUoc1sdtBDO22UF4uXsykN0cO2EXaFb
-	 05NsEK6/dBhwN6wmEfnQXkdK6X3OUH9zxPJVLR/zmP/RWH+ptnJ+GgvEHTMuwYKhgz
-	 nYzdn3pjiPeXQbnr6hbCs4TkYawmDH8F1ck7r+gQ=
+	b=moIKPX9aw1Q3xK8LdMDuvWlIAKN9PVSfb328X1FfHU3ueffhf7pIxmIeyIKvECkz+
+	 w3QTHSqS1IBI1qb5qlOqV6n83XPKwE8mspvmXxkncITJExWHIQvtrfok2Dru/esQLD
+	 TlHbtyDuE91vq1HH0gBmNoy0gXU+QPofAlAmihZo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F8BAF805C1; Mon, 31 Jul 2023 17:47:57 +0200 (CEST)
+	id 2A3B8F805D5; Mon, 31 Jul 2023 17:48:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B34AEF805C1;
-	Mon, 31 Jul 2023 17:47:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 341B6F805C7;
+	Mon, 31 Jul 2023 17:48:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D453F8059F; Mon, 31 Jul 2023 17:47:46 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id D5CBFF805AB; Mon, 31 Jul 2023 17:47:48 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 637CBF80553
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:47:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 637CBF80553
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1D3BAF80558
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:47:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D3BAF80558
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=k25t2ou8;
+ header.s=susede2_rsa header.b=aSQqcARF;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=InJ7VDz+
+ header.s=susede2_ed25519 header.b=HwDV9MZC
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 855AC221D6;
-	Mon, 31 Jul 2023 15:47:25 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3675A1F8BF;
+	Mon, 31 Jul 2023 15:47:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1690818445;
+	t=1690818446;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s4v3FHD9rAA+qtVdJIOPCEHHvCgzf8AaiYvI0TPR1ME=;
-	b=k25t2ou8vibBX/0X/olV7M4D/yj964u9ppVjv4MKOQQxTuK81Gr8Ig27MNZjZCd24/wD+k
-	1n5Zj48VQYLQ3WWVxQHVUoedjJiHcgvlXLQCkG9ZNlCz7tG8nPfU424U3gH6d3kOiVtRT4
-	dv0zA80ykc2aThPPrfXERBcEVi+mzDg=
+	bh=RudEpgqBpzUZEZ/efl/S8ueFFz+2NnOYxnTv0J7PwVw=;
+	b=aSQqcARF6ZJU3S16SFMmu0dkCcwxMfG0haDW29+Qc//+GtZ84W5jwQR0DByS584Tv0CjcC
+	h4aRQihoQZ7lbhD+NvdpKlSF6CsghaO6ZOYYkfFd03Z94j+y48RCma+j8rYA4Soh/ZiwVE
+	7atHfdFo5AnfWBFNozofSyH0VJmblJ4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1690818445;
+	s=susede2_ed25519; t=1690818446;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s4v3FHD9rAA+qtVdJIOPCEHHvCgzf8AaiYvI0TPR1ME=;
-	b=InJ7VDz+UO45oXv2aTxiuNvkIlDX5bkiWz0tXjv/k4ewhTT+4caEDwyha643dxdDVeHdiA
-	ZLLM2kl0D6R/9YAg==
+	bh=RudEpgqBpzUZEZ/efl/S8ueFFz+2NnOYxnTv0J7PwVw=;
+	b=HwDV9MZCndvRSMI7fd+QCOBVykhYk6w41PXyUSOG84EHonZYMSCoVx55lFic9qTyMfEHNx
+	bvYwEB1RHTURtYDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65A451322C;
-	Mon, 31 Jul 2023 15:47:25 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 161FB138EE;
+	Mon, 31 Jul 2023 15:47:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ALeQF43Xx2Q3fwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 15:47:25 +0000
+	id eGRRBI7Xx2Q3fwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 15:47:26 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 13/24] ALSA: sh: Convert to generic PCM copy ops
-Date: Mon, 31 Jul 2023 17:47:07 +0200
-Message-Id: <20230731154718.31048-14-tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Mark Brown <broonie@kernel.org>
+Subject: [PATCH 17/24] ASoC: component: Add generic PCM copy ops
+Date: Mon, 31 Jul 2023 17:47:11 +0200
+Message-Id: <20230731154718.31048-18-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230731154718.31048-1-tiwai@suse.de>
 References: <20230731154718.31048-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XAZJUNPZJL7GCDNHKLNN5HHAOR6CTZFY
-X-Message-ID-Hash: XAZJUNPZJL7GCDNHKLNN5HHAOR6CTZFY
+Message-ID-Hash: HW3PX6D66ELYMCWAU3X237VW2KDAAT43
+X-Message-ID-Hash: HW3PX6D66ELYMCWAU3X237VW2KDAAT43
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,79 +105,104 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XAZJUNPZJL7GCDNHKLNN5HHAOR6CTZFY/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+Archived-At: <>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch converts the sh_dac_audio driver code to use the new
-unified PCM copy callback.  It's a straightforward conversion from
-*_user() to *_sockptr() variants.
+For following the ALSA PCM core change, a new PCM copy ops is added
+toe ASoC component framework: snd_soc_component_driver receives the
+copy ops, and snd_soc_pcm_component_copy() helper is provided.
 
+This also fixes a long-standing potential bug where the ASoC driver
+covers only copy_user PCM callback and misses the copy from kernel
+pointers (such as OSS PCM layer), too.
+
+As of this patch, the old copy_user is still kept, but it'll be
+dropped later after all drivers are converted.
+
+Cc: Mark Brown <broonie@kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/sh/sh_dac_audio.c | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
+ include/sound/soc-component.h |  7 +++++++
+ sound/soc/soc-component.c     | 20 ++++++++++++++++++++
+ sound/soc/soc-pcm.c           |  4 +++-
+ 3 files changed, 30 insertions(+), 1 deletion(-)
 
-diff --git a/sound/sh/sh_dac_audio.c b/sound/sh/sh_dac_audio.c
-index 8cf571955c9d..40e783219b44 100644
---- a/sound/sh/sh_dac_audio.c
-+++ b/sound/sh/sh_dac_audio.c
-@@ -158,12 +158,12 @@ static int snd_sh_dac_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 
- static int snd_sh_dac_pcm_copy(struct snd_pcm_substream *substream,
- 			       int channel, unsigned long pos,
--			       void __user *src, unsigned long count)
-+			       sockptr_t src, unsigned long count)
- {
- 	/* channel is not used (interleaved data) */
- 	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
- 
--	if (copy_from_user_toio(chip->data_buffer + pos, src, count))
-+	if (copy_from_sockptr_toio(chip->data_buffer + pos, src, count))
- 		return -EFAULT;
- 	chip->buffer_end = chip->data_buffer + pos + count;
- 
-@@ -175,24 +175,6 @@ static int snd_sh_dac_pcm_copy(struct snd_pcm_substream *substream,
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index 87f248a06271..d9388eac82ee 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -141,6 +141,10 @@ struct snd_soc_component_driver {
+ 			 struct snd_pcm_substream *substream, int channel,
+ 			 unsigned long pos, void __user *buf,
+ 			 unsigned long bytes);
++	int (*copy)(struct snd_soc_component *component,
++		    struct snd_pcm_substream *substream, int channel,
++		    unsigned long pos, sockptr_t buf,
++		    unsigned long bytes);
+ 	struct page *(*page)(struct snd_soc_component *component,
+ 			     struct snd_pcm_substream *substream,
+ 			     unsigned long offset);
+@@ -512,6 +516,9 @@ int snd_soc_pcm_component_sync_stop(struct snd_pcm_substream *substream);
+ int snd_soc_pcm_component_copy_user(struct snd_pcm_substream *substream,
+ 				    int channel, unsigned long pos,
+ 				    void __user *buf, unsigned long bytes);
++int snd_soc_pcm_component_copy(struct snd_pcm_substream *substream,
++			       int channel, unsigned long pos,
++			       sockptr_t buf, unsigned long bytes);
+ struct page *snd_soc_pcm_component_page(struct snd_pcm_substream *substream,
+ 					unsigned long offset);
+ int snd_soc_pcm_component_mmap(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index 4356cc320fea..efae007f0f82 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -1052,6 +1052,26 @@ int snd_soc_pcm_component_sync_stop(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static int snd_sh_dac_pcm_copy_kernel(struct snd_pcm_substream *substream,
--				      int channel, unsigned long pos,
--				      void *src, unsigned long count)
--{
--	/* channel is not used (interleaved data) */
--	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
--
--	memcpy_toio(chip->data_buffer + pos, src, count);
--	chip->buffer_end = chip->data_buffer + pos + count;
--
--	if (chip->empty) {
--		chip->empty = 0;
--		dac_audio_start_timer(chip);
--	}
--
--	return 0;
--}
--
- static int snd_sh_dac_pcm_silence(struct snd_pcm_substream *substream,
- 				  int channel, unsigned long pos,
- 				  unsigned long count)
-@@ -227,8 +209,7 @@ static const struct snd_pcm_ops snd_sh_dac_pcm_ops = {
- 	.prepare	= snd_sh_dac_pcm_prepare,
- 	.trigger	= snd_sh_dac_pcm_trigger,
- 	.pointer	= snd_sh_dac_pcm_pointer,
--	.copy_user	= snd_sh_dac_pcm_copy,
--	.copy_kernel	= snd_sh_dac_pcm_copy_kernel,
-+	.copy		= snd_sh_dac_pcm_copy,
- 	.fill_silence	= snd_sh_dac_pcm_silence,
- 	.mmap		= snd_pcm_lib_mmap_iomem,
- };
++int snd_soc_pcm_component_copy(struct snd_pcm_substream *substream,
++			       int channel, unsigned long pos,
++			       sockptr_t buf, unsigned long bytes)
++{
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_component *component;
++	int i;
++
++	/* FIXME. it returns 1st copy now */
++	for_each_rtd_components(rtd, i, component)
++		if (component->driver->copy)
++			return soc_component_ret(
++				component,
++				component->driver->copy(
++					component, substream, channel,
++					pos, buf, bytes));
++
++	return -EINVAL;
++}
++
+ int snd_soc_pcm_component_copy_user(struct snd_pcm_substream *substream,
+ 				    int channel, unsigned long pos,
+ 				    void __user *buf, unsigned long bytes)
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 8896227e4fb7..71403da28d37 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2973,7 +2973,9 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 			rtd->ops.ioctl		= snd_soc_pcm_component_ioctl;
+ 		if (drv->sync_stop)
+ 			rtd->ops.sync_stop	= snd_soc_pcm_component_sync_stop;
+-		if (drv->copy_user)
++		if (drv->copy)
++			rtd->ops.copy		= snd_soc_pcm_component_copy;
++		else if (drv->copy_user)
+ 			rtd->ops.copy_user	= snd_soc_pcm_component_copy_user;
+ 		if (drv->page)
+ 			rtd->ops.page		= snd_soc_pcm_component_page;
 -- 
 2.35.3
 
