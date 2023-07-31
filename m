@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 626C4C001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:49:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14E0FC001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:49:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01E83823;
-	Mon, 31 Jul 2023 17:48:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01E83823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3760A85D;
+	Mon, 31 Jul 2023 17:48:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3760A85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690818581;
-	bh=KPXZ1ZbXG3BWRVFcLrpr4Mcp3ccSU0mFFwSGrbbkG8c=;
+	s=default; t=1690818587;
+	bh=TRCefZNHPU+1f+aJGXvpnU6eA2xR6gPHC7il7u4ioBU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qFWNzEhu+mhx07I52QmSTKGgJOropehqEINSCiesm9sY8PnyWSat03MYUX8WjIchh
-	 hiksel3/kQRg5llJIafWxaYa5pHiT9L5A8G/14Z/q+RywaE4LUzCyElMRjmcPItxRX
-	 BegtCozis4AxsXPbhAP04A1e1bGBBNqxMj3Eb2yM=
+	b=dpcYh6/pvK3wM41XrYCcSabWOKNP0uzKZhG8gktlzg7sj14FGZefTep9YmqkZdPgb
+	 +q2WeOTqVySaXjYTyyZZr+lQcy79QfYWcuBBqT5H/REnKrw2Wm6TLdoSjDeH67BHtH
+	 eEpkYWQbK6iXW51HSYSuIWL2lK3WBN7eV8PhI50I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 720C2F80551; Mon, 31 Jul 2023 17:47:47 +0200 (CEST)
+	id A70B2F805B3; Mon, 31 Jul 2023 17:47:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAC33F80551;
-	Mon, 31 Jul 2023 17:47:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 192B8F805AD;
+	Mon, 31 Jul 2023 17:47:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 961B7F8057E; Mon, 31 Jul 2023 17:47:40 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 5F144F80578; Mon, 31 Jul 2023 17:47:42 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 11695F8016D
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:47:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11695F8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id D5FCEF80548
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:47:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5FCEF80548
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=KGBKhCUW;
+ header.s=susede2_rsa header.b=XcQDLg3p;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=cMmwQfmI
+ header.s=susede2_ed25519 header.b=Jn9017XR
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 87CAB1F86B;
-	Mon, 31 Jul 2023 15:47:24 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 386AC221D4;
+	Mon, 31 Jul 2023 15:47:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1690818444;
+	t=1690818445;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ocb2iaZLSY/Mo6h70ckS5fI0amTcB8dwyZywSMtbbcw=;
-	b=KGBKhCUW+zO2sugXtK2N3bvAtr7ekjBFL7Ydn52fRgrFjmY69PXM0CTpVyZ779tvNVvqgw
-	sbK4DX6wwJW7qMOYqkP4ODYRBDKPomVVHVDJlF/BrA5bFEWYtPtq5nEx+yhIYVS5b2kduG
-	PHPYQnZ913N8MEz4qKlKj1c22yeQlBw=
+	bh=NhGyuv2QhrKeVLN8MkQSIrUPA/3JOG2HNobZuqC2b+g=;
+	b=XcQDLg3pzr9Mduz9XSyUAYHSUSUOM3ObwocxMQpBKDu3ahXkSH8uUL1/iA1Y5xBEq4fqd1
+	2mJ1YqzkePd+3Sh3LNjGg5wUZ3eMrlV4FRveiJdEZrR8N2uM547B15G5cnlPAWM5GusFdV
+	VkEIQWIau03s5SXkUrEo0aQq/STCqa4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1690818444;
+	s=susede2_ed25519; t=1690818445;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ocb2iaZLSY/Mo6h70ckS5fI0amTcB8dwyZywSMtbbcw=;
-	b=cMmwQfmIAnWW0gOakMX/7ru3CIINo825UMNBSvNh95g0K2gU8RCQkf1qiuFnjs16MgSTXU
-	EslNVhbM+XFEUlCA==
+	bh=NhGyuv2QhrKeVLN8MkQSIrUPA/3JOG2HNobZuqC2b+g=;
+	b=Jn9017XRBwJhdjBGdpeFGQ+Ue3EAIvNhSoBrDxhgc8hTGbO4u0JPWM9oWIagSzg2JkOMh7
+	y90wW4VqgITSh1Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6643D1322C;
-	Mon, 31 Jul 2023 15:47:24 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D0A1138EE;
+	Mon, 31 Jul 2023 15:47:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id aCXdF4zXx2Q3fwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 15:47:24 +0000
+	id YJ48Bo3Xx2Q3fwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 15:47:25 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/24] ALSA: es1938: Convert to generic PCM copy ops
-Date: Mon, 31 Jul 2023 17:47:00 +0200
-Message-Id: <20230731154718.31048-7-tiwai@suse.de>
+Subject: [PATCH 11/24] ALSA: hdsp: Convert to generic PCM copy ops
+Date: Mon, 31 Jul 2023 17:47:05 +0200
+Message-Id: <20230731154718.31048-12-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230731154718.31048-1-tiwai@suse.de>
 References: <20230731154718.31048-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AHYOQJLPZTPK4IUP7CZB5T7ABGAR4LPI
-X-Message-ID-Hash: AHYOQJLPZTPK4IUP7CZB5T7ABGAR4LPI
+Message-ID-Hash: PMOPRAWX5L2A4BT2HGQGVA7MSLAQKOZQ
+X-Message-ID-Hash: PMOPRAWX5L2A4BT2HGQGVA7MSLAQKOZQ
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AHYOQJLPZTPK4IUP7CZB5T7ABGAR4LPI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PMOPRAWX5L2A4BT2HGQGVA7MSLAQKOZQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,81 +114,106 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch converts the es1938 driver code to use the new unified PCM
+This patch converts the hdsp driver code to use the new unified PCM
 copy callback.  It's a straightforward conversion from *_user() to
-*_sockptr() variants in most parts.  The only no 1:1 conversion is
-put_user() for a byte write, which was replaced with
-copy_to_sockptr*(), too.
+*_sockptr() variants.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/es1938.c | 31 ++++++-------------------------
- 1 file changed, 6 insertions(+), 25 deletions(-)
+ sound/pci/rme9652/hdsp.c | 42 ++++++----------------------------------
+ 1 file changed, 6 insertions(+), 36 deletions(-)
 
-diff --git a/sound/pci/es1938.c b/sound/pci/es1938.c
-index e34ec6f89e7e..1fddbca395d0 100644
---- a/sound/pci/es1938.c
-+++ b/sound/pci/es1938.c
-@@ -824,7 +824,7 @@ static snd_pcm_uframes_t snd_es1938_playback_pointer(struct snd_pcm_substream *s
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index 65add92c88aa..6d8410ea4244 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -3961,7 +3961,7 @@ static signed char *hdsp_channel_buffer_location(struct hdsp *hdsp,
  
- static int snd_es1938_capture_copy(struct snd_pcm_substream *substream,
- 				   int channel, unsigned long pos,
--				   void __user *dst, unsigned long count)
-+				   sockptr_t dst, unsigned long count)
+ static int snd_hdsp_playback_copy(struct snd_pcm_substream *substream,
+ 				  int channel, unsigned long pos,
+-				  void __user *src, unsigned long count)
++				  sockptr_t src, unsigned long count)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct es1938 *chip = snd_pcm_substream_chip(substream);
-@@ -832,36 +832,18 @@ static int snd_es1938_capture_copy(struct snd_pcm_substream *substream,
- 	if (snd_BUG_ON(pos + count > chip->dma1_size))
- 		return -EINVAL;
- 	if (pos + count < chip->dma1_size) {
--		if (copy_to_user(dst, runtime->dma_area + pos + 1, count))
-+		if (copy_to_sockptr(dst, runtime->dma_area + pos + 1, count))
- 			return -EFAULT;
- 	} else {
--		if (copy_to_user(dst, runtime->dma_area + pos + 1, count - 1))
-+		if (copy_to_sockptr(dst, runtime->dma_area + pos + 1, count - 1))
- 			return -EFAULT;
--		if (put_user(runtime->dma_area[0],
--			     ((unsigned char __user *)dst) + count - 1))
-+		if (copy_to_sockptr_offset(dst, count - 1,
-+					   runtime->dma_area, 1))
- 			return -EFAULT;
- 	}
+ 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
+ 	signed char *channel_buf;
+@@ -3972,28 +3972,14 @@ static int snd_hdsp_playback_copy(struct snd_pcm_substream *substream,
+ 	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	if (copy_from_user(channel_buf + pos, src, count))
++	if (copy_from_sockptr(channel_buf + pos, src, count))
+ 		return -EFAULT;
  	return 0;
  }
  
--static int snd_es1938_capture_copy_kernel(struct snd_pcm_substream *substream,
--					  int channel, unsigned long pos,
--					  void *dst, unsigned long count)
+-static int snd_hdsp_playback_copy_kernel(struct snd_pcm_substream *substream,
+-					 int channel, unsigned long pos,
+-					 void *src, unsigned long count)
 -{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct es1938 *chip = snd_pcm_substream_chip(substream);
+-	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
+-	signed char *channel_buf;
 -
--	if (snd_BUG_ON(pos + count > chip->dma1_size))
--		return -EINVAL;
--	if (pos + count < chip->dma1_size) {
--		memcpy(dst, runtime->dma_area + pos + 1, count);
--	} else {
--		memcpy(dst, runtime->dma_area + pos + 1, count - 1);
--		runtime->dma_area[0] = *((unsigned char *)dst + count - 1);
--	}
+-	channel_buf = hdsp_channel_buffer_location(hdsp, substream->pstr->stream, channel);
+-	if (snd_BUG_ON(!channel_buf))
+-		return -EIO;
+-	memcpy(channel_buf + pos, src, count);
 -	return 0;
 -}
 -
- /* ----------------------------------------------------------------------
-  * Audio1 Capture (ADC)
-  * ----------------------------------------------------------------------*/
-@@ -987,8 +969,7 @@ static const struct snd_pcm_ops snd_es1938_capture_ops = {
- 	.prepare =	snd_es1938_capture_prepare,
- 	.trigger =	snd_es1938_capture_trigger,
- 	.pointer =	snd_es1938_capture_pointer,
--	.copy_user =	snd_es1938_capture_copy,
--	.copy_kernel =	snd_es1938_capture_copy_kernel,
-+	.copy =		snd_es1938_capture_copy,
+ static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream,
+ 				 int channel, unsigned long pos,
+-				 void __user *dst, unsigned long count)
++				 sockptr_t dst, unsigned long count)
+ {
+ 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
+ 	signed char *channel_buf;
+@@ -4004,25 +3990,11 @@ static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream,
+ 	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	if (copy_to_user(dst, channel_buf + pos, count))
++	if (copy_to_sockptr(dst, channel_buf + pos, count))
+ 		return -EFAULT;
+ 	return 0;
+ }
+ 
+-static int snd_hdsp_capture_copy_kernel(struct snd_pcm_substream *substream,
+-					int channel, unsigned long pos,
+-					void *dst, unsigned long count)
+-{
+-	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
+-	signed char *channel_buf;
+-
+-	channel_buf = hdsp_channel_buffer_location(hdsp, substream->pstr->stream, channel);
+-	if (snd_BUG_ON(!channel_buf))
+-		return -EIO;
+-	memcpy(dst, channel_buf + pos, count);
+-	return 0;
+-}
+-
+ static int snd_hdsp_hw_silence(struct snd_pcm_substream *substream,
+ 			       int channel, unsigned long pos,
+ 			       unsigned long count)
+@@ -4950,8 +4922,7 @@ static const struct snd_pcm_ops snd_hdsp_playback_ops = {
+ 	.prepare =	snd_hdsp_prepare,
+ 	.trigger =	snd_hdsp_trigger,
+ 	.pointer =	snd_hdsp_hw_pointer,
+-	.copy_user =	snd_hdsp_playback_copy,
+-	.copy_kernel =	snd_hdsp_playback_copy_kernel,
++	.copy =		snd_hdsp_playback_copy,
+ 	.fill_silence =	snd_hdsp_hw_silence,
  };
  
- static int snd_es1938_new_pcm(struct es1938 *chip, int device)
+@@ -4963,8 +4934,7 @@ static const struct snd_pcm_ops snd_hdsp_capture_ops = {
+ 	.prepare =	snd_hdsp_prepare,
+ 	.trigger =	snd_hdsp_trigger,
+ 	.pointer =	snd_hdsp_hw_pointer,
+-	.copy_user =	snd_hdsp_capture_copy,
+-	.copy_kernel =	snd_hdsp_capture_copy_kernel,
++	.copy =		snd_hdsp_capture_copy,
+ };
+ 
+ static int snd_hdsp_create_hwdep(struct snd_card *card, struct hdsp *hdsp)
 -- 
 2.35.3
 
