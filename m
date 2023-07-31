@@ -4,85 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC098C04A94
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:36:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 232D6C001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:38:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D21AD828;
-	Mon, 31 Jul 2023 23:35:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D21AD828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 948B382A;
+	Mon, 31 Jul 2023 23:37:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 948B382A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690839371;
-	bh=/G6qEZR7l6CuFZLwRfa/+iMq+7jtKFHIeF5aGbGrc1Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1690839528;
+	bh=vj96umHy5Xr60cLrlkkEJA8m1Xb97ziR4gGWBgDzPh4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UUlne14ezGkzIzOS5zYaRmXFiZnel4cHsSvxHl1aZA5PFV3OSDdEtg9VfQDYb7tSr
-	 tmPoZxlzdkD/RC43TfUb2is6eGKoNzDrPSq8svB2bOvEmRl5+gya0Xdd/LP3MY2dIU
-	 Mo6s+cK1JtpmjuLTKzf8sy7WrbdzgbIVp/iOeZNQ=
+	b=ClWVbDf/F9fYFwvJG5oSIIqNj8PfNLli2tWylVIHa/TFe1nr6QXEAiHYWTj/uwqc7
+	 sd/0oCftowF19gtu78fWJ+Qa5lZrc1Fr8eHLM+Exi2M1QuNg6expWUob/wJr5Iiy8I
+	 Uq6QATg6kjuyiHXD30MbduIA1XzYNLk8jFFlIdNc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88C03F8055B; Mon, 31 Jul 2023 23:34:56 +0200 (CEST)
+	id 8CD6FF80153; Mon, 31 Jul 2023 23:37:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7F9CF80578;
-	Mon, 31 Jul 2023 23:34:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F08A8F8025A;
+	Mon, 31 Jul 2023 23:37:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 328EEF80549; Mon, 31 Jul 2023 23:34:51 +0200 (CEST)
-Received: from mgamail.intel.com (unknown [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id EA49CF80163; Mon, 31 Jul 2023 23:37:29 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC741F80153
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:33:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC741F80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id BD086F80153
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:37:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD086F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VCp7TX7H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690839190; x=1722375190;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=/G6qEZR7l6CuFZLwRfa/+iMq+7jtKFHIeF5aGbGrc1Y=;
-  b=VCp7TX7HjJrtrdOHSaojZZRmTwAb7sNBKoYviKo68MC1g1lb59lbAjDN
-   Qa7YLVThHtywSRV+qbRNItlXceEZj1mlci8QwDtf96KZyXn9y8uP7rA5E
-   Rr7hwJTLrqt93rjN3V1m+/YSDxSBeJlSFgEn+h00yHQHRqfOop54vnusV
-   +EqnLPaVbAqpPLqHvZzmlRgtAbi1M7vMqZ1FwUCsEz4EpLlfXbepbl+zC
-   7HUiO+wtepyxR8KavjPuuILbNHAeVe8gl6ux6DYBXhk/3YQCkvbW98lc9
-   rhKJgJskNlWoZVVXt8/uP0osrMpicoha76sc+6NvkQhCfhhI74zPC2nDW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435447533"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="435447533"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:33:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="731708912"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="731708912"
-Received: from youngnic-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.209.180.66])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:33:07 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de,
-	broonie@kernel.org,
-	Curtis Malainey <cujomalainey@chromium.org>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 5/6] ASoC: SOF: Deprecate invalid enums in IPC3
-Date: Mon, 31 Jul 2023 16:32:41 -0500
-Message-Id: <20230731213242.434594-6-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230731213242.434594-1-pierre-louis.bossart@linux.intel.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=terM4GAk
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id F04D2612D6;
+	Mon, 31 Jul 2023 21:37:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02452C433C7;
+	Mon, 31 Jul 2023 21:37:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1690839443;
+	bh=vj96umHy5Xr60cLrlkkEJA8m1Xb97ziR4gGWBgDzPh4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=terM4GAkenKnKwMxYm59xOR8nbrUnzYoqSRgOYru0Bgs80HMy9f9Jjj1m9cWZTWRC
+	 xfjiFK01X/H6U9Sij/YZ7OSsRZkbFUSyehypVKHg1Ur3GPALDjTG0UEkC3tflfzcPn
+	 mGClDNZ7FXjPbOoSpgzCCcm9blbPjcc9NPbwUcGuwCN8IJwhwjjqfyqIQ17rCHBJNX
+	 kOQWToFCcw1LHQOGotL8tTOc1VHRrh8wHRUgiinZSPoBQNOaI1qhjYOEYN7pC3HWBO
+	 bOCHKXOeTBrp76VKz/uvhgZ4idxEt6Reqirk0VdsuU6nU3MNxFncqkdsMGgdN1TiNW
+	 QkfFyxNdqNrTQ==
+Date: Mon, 31 Jul 2023 22:37:18 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
+	Trevor Wu <trevor.wu@mediatek.com>,
+	Yaochun Hung <yc.hung@mediatek.com>,
+	Kuan-Hsun Cheng <Allen-KH.Cheng@mediatek.com>
+Subject: Re: [PATCH 6/6] ASoC: SOF: mediatek: mt8186 modify dram type as
+ non-cache
+Message-ID: <db547382-40f8-4dd9-962c-deedd7fdd50a@sirena.org.uk>
 References: <20230731213242.434594-1-pierre-louis.bossart@linux.intel.com>
+ <20230731213242.434594-7-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MSRMNBPUTUTNJMFECNW4OE3RRF4IA53L
-X-Message-ID-Hash: MSRMNBPUTUTNJMFECNW4OE3RRF4IA53L
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="OeYtHYc1queCO9jV"
+Content-Disposition: inline
+In-Reply-To: <20230731213242.434594-7-pierre-louis.bossart@linux.intel.com>
+X-Cookie: Single tasking: Just Say No.
+Message-ID-Hash: I5IEMTYTAB4WLLJVYBN5BFJO36R66ODH
+X-Message-ID-Hash: I5IEMTYTAB4WLLJVYBN5BFJO36R66ODH
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -94,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MSRMNBPUTUTNJMFECNW4OE3RRF4IA53L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I5IEMTYTAB4WLLJVYBN5BFJO36R66ODH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,40 +100,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Curtis Malainey <cujomalainey@chromium.org>
 
-The switch component was never completed and sat half empty for over 3
-years. It was recently deleted. For modern components this would
-require not change in the kernel but since this was a legacy allocation
-from the enum days of IPC3 we should mark the respective enum as
-deprecated.
+--OeYtHYc1queCO9jV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The splitter component was never even got a source file in the firmware.
-Therefore also delete it since this is not needed.
+On Mon, Jul 31, 2023 at 04:32:42PM -0500, Pierre-Louis Bossart wrote:
+> From: Trevor Wu <trevor.wu@mediatek.com>
+>=20
+> To prevent incorrect access between the host and DSP sides, we need to
+> modify DRAM as a non-cache memory type. Additionally, we can retrieve
+> the size of shared DMA from the device tree.
+>=20
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
+> Reviewed-by: Kuan-Hsun Cheng <Allen-KH.Cheng@mediatek.com>
+> ---
 
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- include/sound/sof/topology.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/sof/topology.h b/include/sound/sof/topology.h
-index 88560281d420..906e2f327ad2 100644
---- a/include/sound/sof/topology.h
-+++ b/include/sound/sof/topology.h
-@@ -26,9 +26,9 @@ enum sof_comp_type {
- 	SOF_COMP_MIXER,
- 	SOF_COMP_MUX,
- 	SOF_COMP_SRC,
--	SOF_COMP_SPLITTER,
-+	SOF_COMP_DEPRECATED0, /* Formerly SOF_COMP_SPLITTER */
- 	SOF_COMP_TONE,
--	SOF_COMP_SWITCH,
-+	SOF_COMP_DEPRECATED1, /* Formerly SOF_COMP_SWITCH */
- 	SOF_COMP_BUFFER,
- 	SOF_COMP_EQ_IIR,
- 	SOF_COMP_EQ_FIR,
--- 
-2.39.2
+You've not provided a Signed-off-by for this so I can't do anything with
+it, please see Documentation/process/submitting-patches.rst for details
+on what this is and why it's important.
 
+--OeYtHYc1queCO9jV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTIKY4ACgkQJNaLcl1U
+h9BEBgf+IIYwz7Jj0zZ1Vb/qVb6scrjfzWEFRX2j0qNbCJmxZu6WxODt32OrtBzW
+cdvytbXrkUVGtcPvIF94wivLWvR+UG9/xE/Ozl6aBGpi/kLsNISI6wH98Wz1Lems
+mLlrBKOKwnptMI/h7eJ8yfV1tXjpEDe28mjlFJjLuEzgOqw+1xHTgyb73pEqBLVf
+EBhLvw9j85MIfpV5SeAAOvpPk0qPYwvavwcwXqb9+h7VzTHE5uxq7/y4IkFFGQTp
+K9j2MwEIQy86uhoskfiuXtBOFgM9NntvXpKrnzpQhlalWs1gLjNAZY5VJhr3LB/Q
+GGjY/be2zsncOIX9ZIXtV/tIdWCqdA==
+=tb0j
+-----END PGP SIGNATURE-----
+
+--OeYtHYc1queCO9jV--
