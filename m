@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBAA6C001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:48:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0744DC001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:48:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0C0DE10;
-	Mon, 31 Jul 2023 23:47:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0C0DE10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BAA4AE9;
+	Mon, 31 Jul 2023 23:47:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BAA4AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690840109;
-	bh=RI33WpAAA+EOpdqoqvrmLpLVwloHUcbzIZbRm1IPer4=;
+	s=default; t=1690840117;
+	bh=s/h/nHDpyPDzg5v9orQjSPWTTnDelCpj81jdq4JEjHY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cVZOCFkCd63tK/YPAfN675zmbSf9FwSkQhncp6b59v5blLze/bvULygFPA4J5uNid
-	 ZnIPMDaQ3sHYvo6GITiVDvbQNrWOv710J16Q6jdgqFe+NxIhRXtqLcS1V74hWxuhuV
-	 vAn4K02vj9lmaKyeuyWbRplGWr97VNDZPwhRoMx8=
+	b=oy8ne440+SwD917vdDKe10QuHWAoD/4X+KHVagP/d1p/YX9APPiEUBStNyI/FQRWc
+	 M3oi1/nvaxj2XD2SBJ2ux/BM23tSZQMoSo7ipYtxuWTYNfC0mtg91WTsxDMk8BcmbV
+	 Nb0fEfH1FOXep4raa5evW1adoPZlqfDV2hKlptK4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AC675F8061C; Mon, 31 Jul 2023 23:44:07 +0200 (CEST)
+	id 907DAF80621; Mon, 31 Jul 2023 23:44:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 555F6F80616;
-	Mon, 31 Jul 2023 23:44:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2335F8061F;
+	Mon, 31 Jul 2023 23:44:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 81B3EF805B5; Mon, 31 Jul 2023 23:43:32 +0200 (CEST)
+	id 2C4A3F805B4; Mon, 31 Jul 2023 23:43:33 +0200 (CEST)
 Received: from mgamail.intel.com (unknown [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A57B6F805A1
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A57B6F805A1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 09830F8055C
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09830F8055C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Wd+xg/h3
+ header.s=Intel header.b=b/+9ULOX
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690839803; x=1722375803;
+  t=1690839801; x=1722375801;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=RI33WpAAA+EOpdqoqvrmLpLVwloHUcbzIZbRm1IPer4=;
-  b=Wd+xg/h3Y6YY9FXks2e8p/CwxyiV4hj0tsmgXq6Lach8O8smBQ+igDwY
-   JqGK0yX/x5waiVG4LLDOT+OGhaoZk8NCsw9dUUSMLocfhqNSusQG0/nGL
-   rFPu9rY0kw9JmTWOz3fye62lxOK2TWKTg+W2GSfXSoJctg25Km1O3ebAj
-   G85bbi/xA9qtuSUwCd4sojjhqeIey6yO0dp5ExZo7EfljyPgFPzmTcETw
-   8GSJLb0X9sKl5Zs0U1Ojctv9m+tjU2r/guKkBqtdd1MoYHd/aiq9hcLsH
-   eQ1HQLX+Rvn4RB0rynXsWUpVU7OqsxipUnbF/itn+o7MDY7jw+2R6k0NU
+  bh=s/h/nHDpyPDzg5v9orQjSPWTTnDelCpj81jdq4JEjHY=;
+  b=b/+9ULOXU9CYN6Yqhj2lOODEDP31Fu1zL8fRmBrHbxpx39qK/p79a2aV
+   GbjuNZbVzUdupymeaj29NeecP8nTuXVgYXM+0N8XhIA1nShCvu67/CuuS
+   9WKJC+3R9zUbGwGS4o+ZxSn3N/JuyvHQhn1ce/q3a5FnxEf+e6J3jfndf
+   PJmgQjnl6Fcf7pIMX5ZOV0dQXy5ktif1xF4jwDn1mapTDs7Q8q31FFcZH
+   uJO+9SrY5LYCsM1Imtn6StKbD5oxaN9dW5NwBhu26nWHrCF+7z/gMuxgy
+   LPVL2nAL/GUxTqlYFZk6o1ZkUrtAYiyPF2kt8VLfcy7gEH8Z3PQcxp20Q
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449798"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449779"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="435449798"
+   d="scan'208";a="435449779"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:19 -0700
+ 31 Jul 2023 14:43:16 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523564"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523552"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="763523564"
+   d="scan'208";a="763523552"
 Received: from youngnic-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.180.66])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:18 -0700
+ 31 Jul 2023 14:43:15 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -74,17 +74,16 @@ Cc: tiwai@suse.de,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Rander Wang <rander.wang@intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 17/23] ASoC: intel: sof_sdw: Move amp_num initialisation to
- mc_probe
-Date: Mon, 31 Jul 2023 16:42:51 -0500
-Message-Id: <20230731214257.444605-18-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 13/23] ASoC: intel: sof_sdw: Simplify find_codec_info_acpi
+Date: Mon, 31 Jul 2023 16:42:47 -0500
+Message-Id: <20230731214257.444605-14-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 References: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: Z2ICJK46T4GA46YYCFPHVPSB4TFTLK2H
-X-Message-ID-Hash: Z2ICJK46T4GA46YYCFPHVPSB4TFTLK2H
+Message-ID-Hash: DLWWOH5HAVEU6TLYPOX4ZBTJSONYZE64
+X-Message-ID-Hash: DLWWOH5HAVEU6TLYPOX4ZBTJSONYZE64
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,8 +96,9 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z2ICJK46T4GA46YYCFPHVPSB4TFTLK2H/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DLWWOH5HAVEU6TLYPOX4ZBTJSONYZE64/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -107,11 +107,7 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-The amp_num member of the info struct is zeroed at the start of
-sof_card_dai_links_create, but then summed in mc_probe after
-sof_card_dai_links_create is called. It is a little clearer to hoist the
-initialisation out of sof_card_dai_links_create so it is on the same
-level as the summation.
+Use a return rather than a break and an additional range check.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
@@ -119,35 +115,31 @@ Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index dc5337ea75da..1a60965439dd 100644
+index 6b55bcdccccc..d3222f40d798 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1599,10 +1599,6 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
- 	if (ret < 0)
- 		return ret;
+@@ -1003,14 +1003,10 @@ static inline int find_codec_info_acpi(const u8 *acpi_id)
+ 		return -EINVAL;
  
--	/* reset amp_num to ensure amp_num++ starts from 0 in each probe */
--	for (i = 0; i < ARRAY_SIZE(codec_info_list); i++)
--		codec_info_list[i].amp_num = 0;
+ 	for (i = 0; i < ARRAY_SIZE(codec_info_list); i++)
+-		if (!memcmp(codec_info_list[i].acpi_id, acpi_id,
+-			    ACPI_ID_LEN))
+-			break;
++		if (!memcmp(codec_info_list[i].acpi_id, acpi_id, ACPI_ID_LEN))
++			return i;
+ 
+-	if (i == ARRAY_SIZE(codec_info_list))
+-		return -EINVAL;
 -
- 	if (mach_params->codec_mask & IDISP_CODEC_MASK) {
- 		ctx->idisp_codec = true;
+-	return i;
++	return -EINVAL;
+ }
  
-@@ -1991,6 +1987,10 @@ static int mc_probe(struct platform_device *pdev)
- 
- 	log_quirks(card->dev);
- 
-+	/* reset amp_num to ensure amp_num++ starts from 0 in each probe */
-+	for (i = 0; i < ARRAY_SIZE(codec_info_list); i++)
-+		codec_info_list[i].amp_num = 0;
-+
- 	ret = sof_card_dai_links_create(card);
- 	if (ret < 0)
- 		return ret;
+ /*
 -- 
 2.39.2
 
