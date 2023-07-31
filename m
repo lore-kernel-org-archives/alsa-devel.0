@@ -4,95 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3947DC001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:55:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04F25C00528
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:55:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00999827;
-	Mon, 31 Jul 2023 17:54:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00999827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3869184D;
+	Mon, 31 Jul 2023 17:54:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3869184D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690818919;
-	bh=0F1/IIweBnRzvRe7MBa/nxzJ1sXGdycbTAfWOtRTt7g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=XSXi7dSpnEEeJpHbNKCLVfh4VC+zM9EMmaobN7ruyd2MplE5ppYHofiaSjSdh00Ad
-	 yILooyYjer1It4WERJfpZnXDCsHt0mbR5cKEgRTRjFr+hKIUghf/7rtsAtEBs+ra6Y
-	 4SsPwkg97UM4vZRN5907PzosnBTRLizb29GhHhzM=
+	s=default; t=1690818934;
+	bh=u+pgaen+Zes8+Ry4gyHAQ42kBH6Zl2OOctsLBTBWTpM=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=EddIewxAw+PTSFcKcRiomXlEO7PVwXxS75ywVDvPoDl0K4yfhBCfTdaMPzw2RpIxn
+	 x0wKWTAwDWQ4IaGpcgwdtib5q5BtHJdHEs9WPs+sxsWfcZL5UWwJm9gkzugexgxJsd
+	 XAD7ShpSyJl3golKCqy4e689PhoosrUdUyK54sgQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 454D9F805D4; Mon, 31 Jul 2023 17:50:01 +0200 (CEST)
+	id DA599F805BD; Mon, 31 Jul 2023 17:50:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A2BBF805BD;
-	Mon, 31 Jul 2023 17:50:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4143F80520;
+	Mon, 31 Jul 2023 17:50:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32284F805BD; Mon, 31 Jul 2023 17:49:57 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 4D4E0F805BD; Mon, 31 Jul 2023 17:49:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B1664F80535
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:47:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1664F80535
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9D7A4F80520
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:47:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D7A4F80520
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=yA1h4VU2;
+ header.s=susede2_rsa header.b=rhCV7DQX;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=+VOTK6T0
+ header.s=susede2_ed25519 header.b=1hce7oJg
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5C19F1F897;
-	Mon, 31 Jul 2023 15:47:25 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B35B21F385;
+	Mon, 31 Jul 2023 15:47:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1690818445;
+	t=1690818443;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MexT8NL+1vwMVjV4cfikcPxrrKoiTFUYYm0OdbGYxVw=;
-	b=yA1h4VU2zjrggnrKDO4Oa4lfRry3Pd9X/qyb0TaE8QIK3Euckmmnh636f2Qs48LLeejCsW
-	/qVEnYUvDuylZ2kWX27TvS1Me3RyxIvp4yL+kJlZO5T02m1UnE2gIfWIP94lAjbtHux3WW
-	NWvfjax+dM/oE3mttbaIEnu65JryikU=
+  content-transfer-encoding:content-transfer-encoding;
+	bh=t3IBo6+Xh2NmTnvBSm+b5LtxORuubw5R26/pUdx5lvQ=;
+	b=rhCV7DQXwa+unzKT3opzFC6boo5uZYaa4z9NwGfSq4Io7QBHD2ni5op4Z1RNLHOiDDEa2k
+	+KCCws2BT0O1mIOTeJytKqi6Lxmp3k4vkcz4+h9PPq8cwb+RTErNbVqgfUD1hnldMRn4u/
+	Znq7cvbGgSupFudpbC7mCtTWfLq4Oic=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1690818445;
+	s=susede2_ed25519; t=1690818443;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MexT8NL+1vwMVjV4cfikcPxrrKoiTFUYYm0OdbGYxVw=;
-	b=+VOTK6T0y/p+TDL4kSFqeGsRdLroK3t8i6za0FZtqYL3zD/NNyUCflmj5EzuvWx/RzSkbF
-	azpjU6Z/uuLjx6CA==
+  content-transfer-encoding:content-transfer-encoding;
+	bh=t3IBo6+Xh2NmTnvBSm+b5LtxORuubw5R26/pUdx5lvQ=;
+	b=1hce7oJgp7vNPcAZisDxdfNeDXcXTojPVPAnbeD684LHbINwF/3jcXav44ynQXxRXqVRWa
+	K9EYUuceH80eoDCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3D6031322C;
-	Mon, 31 Jul 2023 15:47:25 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 555E51322C;
+	Mon, 31 Jul 2023 15:47:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id oCclDo3Xx2Q3fwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 15:47:25 +0000
+	id aoTYE4vXx2Q3fwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 15:47:23 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 12/24] ALSA: rme9652: Convert to generic PCM copy ops
-Date: Mon, 31 Jul 2023 17:47:06 +0200
-Message-Id: <20230731154718.31048-13-tiwai@suse.de>
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Andrey Utkin <andrey_utkin@fastmail.com>,
+	Anton Sviridenko <anton@corp.bluecherry.net>,
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Bluecherry Maintainers <maintainers@bluecherrydvr.com>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Ismael Luceno <ismael@iodev.co.uk>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Mark Brown <broonie@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+	Olivier Moysan <olivier.moysan@foss.st.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	linux-media@vger.kernel.org,
+	xen-devel@lists.xenproject.org
+Subject: [PATCH 00/24] ALSA: Generic PCM copy ops using sockptr_t
+Date: Mon, 31 Jul 2023 17:46:54 +0200
+Message-Id: <20230731154718.31048-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230731154718.31048-1-tiwai@suse.de>
-References: <20230731154718.31048-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7DKKFRQSYYKKRSFHOG5WGMF54RZ3KQMX
-X-Message-ID-Hash: 7DKKFRQSYYKKRSFHOG5WGMF54RZ3KQMX
+Message-ID-Hash: ZJT7NRVL5ZADLHIZP2N6ORKJ22Y7IBKS
+X-Message-ID-Hash: ZJT7NRVL5ZADLHIZP2N6ORKJ22Y7IBKS
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7DKKFRQSYYKKRSFHOG5WGMF54RZ3KQMX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZJT7NRVL5ZADLHIZP2N6ORKJ22Y7IBKS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,110 +126,111 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch converts the rme9652 driver code to use the new unified PCM
-copy callback.  It's a straightforward conversion from *_user() to
-*_sockptr() variants.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/rme9652/rme9652.c | 46 +++++--------------------------------
- 1 file changed, 6 insertions(+), 40 deletions(-)
+this is a patch set to clean up the PCM copy ops using sockptr_t as a
+"universal" pointer, inspired by the recent patch from Andy
+Shevchenko:
+  https://lore.kernel.org/r/20230721100146.67293-1-andriy.shevchenko@linux.intel.com
 
-diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
-index e7c320afefe8..a1f844799466 100644
---- a/sound/pci/rme9652/rme9652.c
-+++ b/sound/pci/rme9652/rme9652.c
-@@ -1844,7 +1844,7 @@ static signed char *rme9652_channel_buffer_location(struct snd_rme9652 *rme9652,
- 
- static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream,
- 				     int channel, unsigned long pos,
--				     void __user *src, unsigned long count)
-+				     sockptr_t src, unsigned long count)
- {
- 	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
- 	signed char *channel_buf;
-@@ -1857,30 +1857,14 @@ static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream,
- 						       channel);
- 	if (snd_BUG_ON(!channel_buf))
- 		return -EIO;
--	if (copy_from_user(channel_buf + pos, src, count))
-+	if (copy_from_sockptr(channel_buf + pos, src, count))
- 		return -EFAULT;
- 	return 0;
- }
- 
--static int snd_rme9652_playback_copy_kernel(struct snd_pcm_substream *substream,
--					    int channel, unsigned long pos,
--					    void *src, unsigned long count)
--{
--	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
--	signed char *channel_buf;
--
--	channel_buf = rme9652_channel_buffer_location(rme9652,
--						      substream->pstr->stream,
--						      channel);
--	if (snd_BUG_ON(!channel_buf))
--		return -EIO;
--	memcpy(channel_buf + pos, src, count);
--	return 0;
--}
--
- static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream,
- 				    int channel, unsigned long pos,
--				    void __user *dst, unsigned long count)
-+				    sockptr_t dst, unsigned long count)
- {
- 	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
- 	signed char *channel_buf;
-@@ -1893,27 +1877,11 @@ static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream,
- 						       channel);
- 	if (snd_BUG_ON(!channel_buf))
- 		return -EIO;
--	if (copy_to_user(dst, channel_buf + pos, count))
-+	if (copy_to_sockptr(dst, channel_buf + pos, count))
- 		return -EFAULT;
- 	return 0;
- }
- 
--static int snd_rme9652_capture_copy_kernel(struct snd_pcm_substream *substream,
--					   int channel, unsigned long pos,
--					   void *dst, unsigned long count)
--{
--	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
--	signed char *channel_buf;
--
--	channel_buf = rme9652_channel_buffer_location(rme9652,
--						      substream->pstr->stream,
--						      channel);
--	if (snd_BUG_ON(!channel_buf))
--		return -EIO;
--	memcpy(dst, channel_buf + pos, count);
--	return 0;
--}
--
- static int snd_rme9652_hw_silence(struct snd_pcm_substream *substream,
- 				  int channel, unsigned long pos,
- 				  unsigned long count)
-@@ -2370,8 +2338,7 @@ static const struct snd_pcm_ops snd_rme9652_playback_ops = {
- 	.prepare =	snd_rme9652_prepare,
- 	.trigger =	snd_rme9652_trigger,
- 	.pointer =	snd_rme9652_hw_pointer,
--	.copy_user =	snd_rme9652_playback_copy,
--	.copy_kernel =	snd_rme9652_playback_copy_kernel,
-+	.copy =		snd_rme9652_playback_copy,
- 	.fill_silence =	snd_rme9652_hw_silence,
- };
- 
-@@ -2383,8 +2350,7 @@ static const struct snd_pcm_ops snd_rme9652_capture_ops = {
- 	.prepare =	snd_rme9652_prepare,
- 	.trigger =	snd_rme9652_trigger,
- 	.pointer =	snd_rme9652_hw_pointer,
--	.copy_user =	snd_rme9652_capture_copy,
--	.copy_kernel =	snd_rme9652_capture_copy_kernel,
-+	.copy =		snd_rme9652_capture_copy,
- };
- 
- static int snd_rme9652_create_pcm(struct snd_card *card,
+Even though it sounds a bit weird, sockptr_t is a generic type that is
+used already in wide ranges, and it can fit our purpose, too.  With
+sockptr_t, the former split of copy_user and copy_kernel PCM ops can
+be unified again gracefully.
+
+The patch set introduces the new PCM ops, converting users, and drops
+the old PCM ops.  Most of conversions are straightforward, simply
+replacing copy_*_user() with copy_*_sockptr() variants.
+
+Note that the conversion in ASoC will fix a potential problem of ASoC
+PCM that has been for long time.  Since ASoC component takes care of
+only copy_user, the conversion form/to kernel space might have been
+missing.  With this patch set, both cases are handled with sockptr_t
+by a single callback.
+
+The patches are lightly tested (with a faked PCM copy implementation
+on HD-audio), while most of patches are only compile-tested.
+
+
+Takashi
+
+===
+
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Andrey Utkin <andrey_utkin@fastmail.com>
+Cc: Anton Sviridenko <anton@corp.bluecherry.net>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc: Banajit Goswami <bgoswami@quicinc.com>
+Cc: Bluecherry Maintainers <maintainers@bluecherrydvr.com>
+Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: Ismael Luceno <ismael@iodev.co.uk>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Cc: Olivier Moysan <olivier.moysan@foss.st.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: linux-media@vger.kernel.org
+Cc: xen-devel@lists.xenproject.org
+
+===
+
+Takashi Iwai (24):
+  ALSA: pcm: Add copy ops with universal sockptr_t
+  ALSA: core: Add memory copy helpers between sockptr and iomem
+  ALSA: dummy: Convert to generic PCM copy ops
+  ALSA: gus: Convert to generic PCM copy ops
+  ALSA: emu8000: Convert to generic PCM copy ops
+  ALSA: es1938: Convert to generic PCM copy ops
+  ALSA: korg1212: Convert to generic PCM copy ops
+  ALSA: nm256: Convert to generic PCM copy ops
+  ALSA: rme32: Convert to generic PCM copy ops
+  ALSA: rme96: Convert to generic PCM copy ops
+  ALSA: hdsp: Convert to generic PCM copy ops
+  ALSA: rme9652: Convert to generic PCM copy ops
+  ALSA: sh: Convert to generic PCM copy ops
+  ALSA: xen: Convert to generic PCM copy ops
+  ALSA: pcmtest: Update comment about PCM copy ops
+  media: solo6x10: Convert to generic PCM copy ops
+  ASoC: component: Add generic PCM copy ops
+  ASoC: mediatek: Convert to generic PCM copy ops
+  ASoC: qcom: Convert to generic PCM copy ops
+  ASoC: dmaengine: Convert to generic PCM copy ops
+  ASoC: dmaengine: Use sockptr_t for process callback, too
+  ALSA: doc: Update description for the new PCM copy ops
+  ASoC: pcm: Drop obsoleted PCM copy_user ops
+  ALSA: pcm: Drop obsoleted PCM copy_user and copy_kernel ops
+
+ .../kernel-api/writing-an-alsa-driver.rst     | 59 +++++---------
+ drivers/media/pci/solo6x10/solo6x10-g723.c    | 41 ++--------
+ include/sound/dmaengine_pcm.h                 |  2 +-
+ include/sound/pcm.h                           | 12 +--
+ include/sound/soc-component.h                 | 14 ++--
+ sound/core/memory.c                           | 39 +++++++++
+ sound/core/pcm_lib.c                          | 81 +++++++++----------
+ sound/core/pcm_native.c                       |  2 +-
+ sound/drivers/dummy.c                         | 12 +--
+ sound/drivers/pcmtest.c                       |  2 +-
+ sound/isa/gus/gus_pcm.c                       | 23 +-----
+ sound/isa/sb/emu8000_pcm.c                    | 79 +++++-------------
+ sound/pci/es1938.c                            | 31 ++-----
+ sound/pci/korg1212/korg1212.c                 | 46 +++--------
+ sound/pci/nm256/nm256.c                       | 42 ++--------
+ sound/pci/rme32.c                             | 50 +++---------
+ sound/pci/rme96.c                             | 48 +++--------
+ sound/pci/rme9652/hdsp.c                      | 42 ++--------
+ sound/pci/rme9652/rme9652.c                   | 46 ++---------
+ sound/sh/sh_dac_audio.c                       | 25 +-----
+ sound/soc/atmel/mchp-pdmc.c                   |  2 +-
+ sound/soc/mediatek/common/mtk-btcvsd.c        | 22 ++---
+ sound/soc/qcom/lpass-platform.c               | 12 +--
+ sound/soc/soc-component.c                     | 10 +--
+ sound/soc/soc-generic-dmaengine-pcm.c         | 18 ++---
+ sound/soc/soc-pcm.c                           |  4 +-
+ sound/soc/stm/stm32_sai_sub.c                 |  2 +-
+ sound/xen/xen_snd_front_alsa.c                | 55 +++----------
+ 28 files changed, 251 insertions(+), 570 deletions(-)
+
 -- 
 2.35.3
 
