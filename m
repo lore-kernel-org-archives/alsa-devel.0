@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD5BBC001E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:47:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 741B7C04FE0
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:47:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15FABE0F;
-	Mon, 31 Jul 2023 23:46:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15FABE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF0EADE5;
+	Mon, 31 Jul 2023 23:46:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF0EADE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690840052;
-	bh=Sl+JnvzvCZ2oRoZq5fmpGrYfOIUrPUnGbPnSvBgk4R0=;
+	s=default; t=1690840068;
+	bh=slYSQ1zk9zLf+x6fzq0FvAhOUxuCFVa63EqUyleJmk4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aYuxtRHlsk+/qZH2y8E8oHY27fqpOq+xb+u0V+ePdVg/WIXzobT4bLbHtKXu7xygI
-	 tUtIQF1DvLXEpCElLGC0ShcKK4dh2v/goTBykNam+S8Pn2tVMSDlwFX2NHh7+8UFDO
-	 bll4SgHct9IQusMOyv8K6HjJNGnJJ/+gCychhCfY=
+	b=dWAifaANbLp4e2p8VfFz/SaLtEUXK0GRYVAnCJ9uRsX4Z0qYh9lDKZW4R+0uRJ0gx
+	 OPQmbx9vL7obkCwg5E52iKRqRIpnTVD3hR9Sxmm2L6GIxZoFbnCNjZ3YC8bnTeLG+A
+	 dWH2rC4skW9ACkqL6wVrhTsUtjxUAqsnPJ208f2k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F02CF805F1; Mon, 31 Jul 2023 23:43:56 +0200 (CEST)
+	id 1378EF805FF; Mon, 31 Jul 2023 23:44:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F3C4F805FA;
-	Mon, 31 Jul 2023 23:43:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 437DCF805FA;
+	Mon, 31 Jul 2023 23:44:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D271CF80557; Mon, 31 Jul 2023 23:43:28 +0200 (CEST)
+	id 49A03F8016D; Mon, 31 Jul 2023 23:43:30 +0200 (CEST)
 Received: from mgamail.intel.com (unknown [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9F094F80567
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F094F80567
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4272DF80578
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4272DF80578
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XmXE2Dqj
+ header.s=Intel header.b=TaiLVjfO
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690839801; x=1722375801;
+  t=1690839800; x=1722375800;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Sl+JnvzvCZ2oRoZq5fmpGrYfOIUrPUnGbPnSvBgk4R0=;
-  b=XmXE2DqjqzyKaaho92d4aHZMSjK+9Z0K7CNhXPYtMRmeOqNfcb5+w6Ur
-   LFUhbVuGEg8ytfeVH/V+S9NsT3hxt3Am/sWR2ND3FogvN659l9fB66wXK
-   EvWZ0JSqQFBv/hIqsWbslv5paeoHUzQxae66LMHNXNm1EasRWNBjex8eX
-   9kreWGRueYiYrsMK4raNJ8qiCjGWdj54t4E2Tkals1lFNUCpilbq9qX78
-   5pFY2U14RN/z09cyhauGQaESa/31tNjMJSuNu81ZZKtziqz2dgij/lFgJ
-   FBC9jLySEzJ7z3UwNeFJMXcK3ozdMrzg+ehInCI6JsG6diXqePDNWuKrz
+  bh=slYSQ1zk9zLf+x6fzq0FvAhOUxuCFVa63EqUyleJmk4=;
+  b=TaiLVjfOudac75bug3b6q0OxEj16CYat8T7zoUIBhRBTxV7y0sAmPgao
+   ny07Ac5LDPz0ox6r3B52gUQpiwv0er4/0VsdHsA6543u1rMnYFWZoUhTk
+   ncRPeyVJHEZcp62NQJs9EB2SKqpbN0Dl21fd7eL+Imyf8WIWiXYwRWg08
+   JbH6Saa0uPyJYxKDZn9Q5S12S4fnJSx2j2YXcvZCEx+gym1QZfGk3TAw5
+   Z9Q1klKoxfVpRWw4t8i0a3xh8ggLiy2Hhayducs9Ciuycy9ex/WCDyJiu
+   4pRBh1I4QqaPOEL4TBIs0duWht+Q61IBk6avVc3t1K+lyGNepe265odsD
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449784"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449775"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="435449784"
+   d="scan'208";a="435449775"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:17 -0700
+ 31 Jul 2023 14:43:15 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523555"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523548"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="763523555"
+   d="scan'208";a="763523548"
 Received: from youngnic-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.180.66])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:16 -0700
+ 31 Jul 2023 14:43:15 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -74,17 +74,16 @@ Cc: tiwai@suse.de,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Rander Wang <rander.wang@intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 14/23] ASoC: intel: sof_sdw: Constify parameter to
- find_codec_part_info
-Date: Mon, 31 Jul 2023 16:42:48 -0500
-Message-Id: <20230731214257.444605-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 12/23] ASoC: intel: sof_sdw: Use a module device table
+Date: Mon, 31 Jul 2023 16:42:46 -0500
+Message-Id: <20230731214257.444605-13-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 References: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IUJMRV55TGEOBWCRMXZSBYT5YP4H5TE7
-X-Message-ID-Hash: IUJMRV55TGEOBWCRMXZSBYT5YP4H5TE7
+Message-ID-Hash: JJDWTRJA5AGRIBBLPRH4NNPGLJP5YYSI
+X-Message-ID-Hash: JJDWTRJA5AGRIBBLPRH4NNPGLJP5YYSI
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,10 +95,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IUJMRV55TGEOBWCRMXZSBYT5YP4H5TE7/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+Archived-At: <>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -108,7 +105,8 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-The address passed to find_codec_part_info should be const.
+A module device table is generally preferred over hard coding a
+MODULE_ALIAS.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
@@ -116,22 +114,41 @@ Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/sof_sdw.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index d3222f40d798..fc67029b3a64 100644
+index 4f7ef83c21c5..6b55bcdccccc 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -974,7 +974,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+@@ -2045,6 +2045,12 @@ static void mc_remove(struct platform_device *pdev)
+ 	mc_dailink_exit_loop(card);
+ }
+ 
++static const struct platform_device_id mc_id_table[] = {
++	{ "sof_sdw", },
++	{}
++};
++MODULE_DEVICE_TABLE(platform, mc_id_table);
++
+ static struct platform_driver sof_sdw_driver = {
+ 	.driver = {
+ 		.name = "sof_sdw",
+@@ -2052,6 +2058,7 @@ static struct platform_driver sof_sdw_driver = {
  	},
+ 	.probe = mc_probe,
+ 	.remove_new = mc_remove,
++	.id_table = mc_id_table,
  };
  
--static inline int find_codec_info_part(u64 adr)
-+static inline int find_codec_info_part(const u64 adr)
- {
- 	unsigned int part_id, sdw_version;
- 	int i;
+ module_platform_driver(sof_sdw_driver);
+@@ -2061,6 +2068,5 @@ MODULE_AUTHOR("Bard Liao <yung-chuan.liao@linux.intel.com>");
+ MODULE_AUTHOR("Rander Wang <rander.wang@linux.intel.com>");
+ MODULE_AUTHOR("Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>");
+ MODULE_LICENSE("GPL v2");
+-MODULE_ALIAS("platform:sof_sdw");
+ MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
+ MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_MAXIM_COMMON);
 -- 
 2.39.2
 
