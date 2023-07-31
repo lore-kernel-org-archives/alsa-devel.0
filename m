@@ -4,88 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F05AC001DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 10:49:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01D4AC001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 10:53:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DC22868;
-	Mon, 31 Jul 2023 12:48:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DC22868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A2C883A;
+	Mon, 31 Jul 2023 12:52:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A2C883A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690800551;
-	bh=ItT7al2kLjWBYdbBXx0GhyFJpTHNsPm5yEH1Oa3IPGA=;
-	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qpssj4o0lfs1MHUwlMKmEkOrAgEwLUu8CchpwcY5OFYjodkKkjO6KBNHgDqJ+3txk
-	 Lcil9g8lKgmUHqg0oOTxonaV99mROaJIW77rV+p/yIZBT7ohI0uSFDBZPTDP5oXT16
-	 NJEWVo5pz3XJ5XCjO+wZa+c74O0yEfy4dQs7hqrA=
+	s=default; t=1690800786;
+	bh=RS2Kje527LAoh7KwjfjJ3UAjRfiJQsMXl2WRMM9TVkU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=JDtjBkYFojeTf8Uexs+JyIpzdXLg+2bavbYBQSzC/GaZfrRnqTVAwh1z6CbQitoMc
+	 A210ovs8wYAWZi5AXg9hXNS2Ow5jUIZJ6zssQ0GdmYDYHjfzd7g51h+SWeDTr7awz9
+	 TO5e+ZCTTdaVd+jc8ekzSGGWuvbNLPdlxj/zId6I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 769D2F80578; Mon, 31 Jul 2023 12:47:29 +0200 (CEST)
+	id 19E76F8015B; Mon, 31 Jul 2023 12:52:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C6FCF8055C;
-	Mon, 31 Jul 2023 12:47:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E44AF8025A;
+	Mon, 31 Jul 2023 12:52:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5C306F80548; Mon, 31 Jul 2023 12:47:24 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id D845AF801D5; Mon, 31 Jul 2023 12:51:57 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 54E68F8016D
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 12:47:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54E68F8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4D86EF80149
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 12:51:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D86EF80149
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
+	dkim=fail reason="signature verification failed" (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=k1qORWVJ
+ header.s=k20201202 header.b=kvFxpcw1
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 702C46100B;
-	Mon, 31 Jul 2023 10:47:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C0ECC433C7;
-	Mon, 31 Jul 2023 10:47:07 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7D8BC60FCE;
+	Mon, 31 Jul 2023 10:51:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F00EAC433C8;
+	Mon, 31 Jul 2023 10:51:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690800429;
-	bh=ItT7al2kLjWBYdbBXx0GhyFJpTHNsPm5yEH1Oa3IPGA=;
-	h=From:Subject:Date:To:Cc:From;
-	b=k1qORWVJ72bX6Z5XRWBae/S3rzJChNbP/1e6RpNV4KWMsqT3LJc4gvmFSBI9cPuxN
-	 IwpoaO+DqWGsNEnle9kojh8J4YGlV0L0XE5F/61iBtHxU2fk/0M0mEYw9Ah+Cb3dra
-	 665yWUl2pwvefNQKgrM0WywDKxNtGwsm/Rp2r991w/Sv/HHABN6bXyIPlcp2xHjCeI
-	 SFgBu9kqPJZD/itEwWFSZ/IGZ/pkpgCS6qgtsQqbpcX3fVq3yzBNjYSIw+CMfDNNmr
-	 UOFv6Ck1YhD/V5MDJoVKHfd+okeMNvVU+rxJNbYPMU5OUwIzA7k4P7/vKT0Kwww7rX
-	 hMPYxdjIIS/tw==
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 0/2] ASoC: wm8960: Clocking tweaks
-Date: Mon, 31 Jul 2023 11:47:01 +0100
-Message-Id: <20230731-asoc-wm8960-clk-v1-0-69f9ffa2b10a@kernel.org>
-MIME-Version: 1.0
+	s=k20201202; t=1690800709;
+	bh=RS2Kje527LAoh7KwjfjJ3UAjRfiJQsMXl2WRMM9TVkU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=kvFxpcw1lbAvb5Ahv13xNMEks4kU46H5mak33N3O7inv+OIR+bU4ELKHc4DoCFD6q
+	 vF9XKIqmyVwAnBCpfzSu1QHfDCbbKcU4TM0yPEEM5ws/ua9VjYerJeQuLZN0lslt1Z
+	 rhHJfjmaXJUHuvETwHXEBmM1OW7sFKs5D2mXlBo23hUl2UO+jeqDgM0NK6RlQ9e48B
+	 FIvPW31eSvT9HOhMHIQvT04/sU2ERXgVTWOab6apIEZCjsnui7RNU3ASr/ZMkRktUF
+	 2433J9evnlrW413p/dkduvw3rV9HkboDmez3Na6ZAFHh/oUcGr1pnF/RlwVW6y0C0d
+	 QHzGFxoyzWRoQ==
+Received: (nullmailer pid 2405192 invoked by uid 1000);
+	Mon, 31 Jul 2023 10:51:46 -0000
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIACWRx2QC/x3MQQ5AMBBA0as0szZJFS2uIhbUYIKSNkEi7q6xf
- Iv/HwjkmQLU4gFPJwfeXUSaCLBz5yZCHqJBSZVJk0nswm7x2spKS7TrgtqaPC2IlOpziNXhaeT
- 7Pzbt+35vJYT0YQAAAA==
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=598; i=broonie@kernel.org;
- h=from:subject:message-id; bh=ItT7al2kLjWBYdbBXx0GhyFJpTHNsPm5yEH1Oa3IPGA=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkx5EpgWXWV98NW60roVRK8eWTgIbE5ZqLI0sVf
- AkX38Rxmx2JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZMeRKQAKCRAk1otyXVSH
- 0H7dB/4zEuAuIb7XTusuLQ2NskvHRq2v3Eh+FmYBsn2pailwlv7SCdchAwds1R1J04lXtmPEgy8
- V874V+MzK7fCcoR9MW7pfK5SdL0LLM9JMVAST7CaEtyBbPYiG8UCsJZzmM2N948Hp48Q5YZ8XvF
- wa7AZM12qtd0xSsFu3TcW5Hm4QY2Z/0mH3O7uVCuQ+IMHYXUv3A7H8hF4FH1A8EnN1pWWO4I2XP
- pQIft9ph9DruV63Lw1QDgHqlEq1bMZLRFfvZyXEpgysPFve678GRknGmh0ZXFVLSCeHnZT5807u
- ApETXMpmH/4zhetCviznbAvmtwKsKFa36aPmW1dTRF8w+mUF
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: 7CE6FWVIKVKDYQYJ4TXDGHYIVKKOY2EF
-X-Message-ID-Hash: 7CE6FWVIKVKDYQYJ4TXDGHYIVKKOY2EF
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Judy Hsiao <judyhsiao@chromium.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, linux-mediatek@lists.infradead.org,
+ Fabio Estevam <festevam@gmail.com>, alsa-devel@alsa-project.org,
+ NXP Linux Team <linux-imx@nxp.com>, Rao Mandadapu <srivasam@codeaurora.org>,
+ Trevor Wu <trevor.wu@mediatek.com>, Jonathan Bakker <xc-racer2@live.ca>,
+ Jerome Brunet <jbrunet@baylibre.com>, linux-arm-kernel@lists.infradead.org,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Cheng-Yi Chiang <cychiang@chromium.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, devicetree@vger.kernel.org,
+ Rohit kumar <quic_rohkumar@quicinc.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Liam Girdwood <l
+ girdwood@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20230731094303.185067-4-krzysztof.kozlowski@linaro.org>
+References: <20230731094303.185067-1-krzysztof.kozlowski@linaro.org>
+ <20230731094303.185067-4-krzysztof.kozlowski@linaro.org>
+Message-Id: <169080070077.2404962.11506468692056687115.robh@kernel.org>
+Subject: Re: [PATCH 03/12] ASoC: dt-bindings: mediatek,mt8188-mt6359: use
+ common sound card
+Date: Mon, 31 Jul 2023 04:51:46 -0600
+Message-ID-Hash: 72CK45JWLRFEI76EGIFVOKPB3YFB3RA4
+X-Message-ID-Hash: 72CK45JWLRFEI76EGIFVOKPB3YFB3RA4
+X-MailFrom: SRS0=3R/A=DR=robh_at_kernel.org=rob@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7CE6FWVIKVKDYQYJ4TXDGHYIVKKOY2EF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/72CK45JWLRFEI76EGIFVOKPB3YFB3RA4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,23 +113,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-A couple of minor clocking improvements that make the wm8960 driver work
-a bit better with generic cards.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
-Mark Brown (2):
-      ASoC: wm8960: Read initial MCLK rate from clock API
-      ASoC: wm8960: Make automatic the default clocking mode
+On Mon, 31 Jul 2023 11:42:54 +0200, Krzysztof Kozlowski wrote:
+> The mediatek,mt8188-mt6359 Linux sound machine driver requires the
+> "model" property, so binding was incomplete.  Reference the common sound
+> card properties to fix that which also allows to remove duplicated
+> property definitions.  Leave the relevant parts of "audio-routing"
+> description.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../bindings/sound/mediatek,mt8188-mt6359.yaml  | 17 +++++++----------
+>  1 file changed, 7 insertions(+), 10 deletions(-)
+> 
 
- sound/soc/codecs/wm8960.c | 8 ++++++++
- sound/soc/codecs/wm8960.h | 4 ++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
----
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-change-id: 20230730-asoc-wm8960-clk-6c7415ee22b4
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml:
+Error in referenced schema matching $id: http://devicetree.org/schemas/sound/sound-card-common.yaml
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.example.dtb: sound: False schema does not allow {'compatible': ['mediatek,mt8188-mt6359-evb'], 'model': ['MT6359-EVB'], 'mediatek,platform': [[4294967295]], 'pinctrl-names': ['default'], 'pinctrl-0': [[4294967295]], 'audio-routing': ['Headphone', 'Headphone L', 'Headphone', 'Headphone R', 'AIN1', 'Headset Mic'], 'dai-link-0': {'link-name': ['ETDM3_OUT_BE'], 'dai-format': ['i2s'], 'mediatek,clk-provider': ['cpu'], 'codec': {'sound-dai': [[4294967295]]}}, '$nodename': ['sound']}
+	from schema $id: http://devicetree.org/schemas/sound/mediatek,mt8188-mt6359.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.example.dtb: sound: Unevaluated properties are not allowed ('model' was unexpected)
+	from schema $id: http://devicetree.org/schemas/sound/mediatek,mt8188-mt6359.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230731094303.185067-4-krzysztof.kozlowski@linaro.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
