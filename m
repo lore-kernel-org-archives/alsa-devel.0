@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B586C001DC
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 16:59:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6BBEC001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 16:59:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 600D784A;
-	Mon, 31 Jul 2023 18:58:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 600D784A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13AA2850;
+	Mon, 31 Jul 2023 18:59:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13AA2850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690822770;
-	bh=Jb6aLZPK4CwvetGQrTqSldlZPCKgqDm0ez1lpYXX2yE=;
+	s=default; t=1690822791;
+	bh=IyJfsigd4+829FJmgHuDda4IWBtjDOLWqBUgN4NP6VE=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VDBe19SWMgfZL6n3N6VbvkunWCGFlw/0Grkp5CLc4QlJKuBY5Kb+jWtsNqSPcxeQh
-	 5SzzDOvD6K4pcXkxDiDgrFlCliwT4zLpMXpx8N6snA0BLAU39d7wbq6GxoaDIy92WL
-	 eQWAS0Wg7e5o1KyTZdr02RvVmbYRKPBbbuBA8w0g=
+	b=aJU/7Oq07rUmsH23jgdWa5qbkt8CD7Ax5gJRpk4ro1BMapAV43sGidCS8yiYVKcKD
+	 Mf+uHDLX0rPPkn+4sC4AK8MnJuvjnv+TbalLtsIvR19kNz9mC1EWEPm0BDuf/b0FOz
+	 wNZbcdahK2nB/zFDCWRhgoytzJ2pTvVFThetY4z8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 001DCF8056F; Mon, 31 Jul 2023 18:57:49 +0200 (CEST)
+	id 35241F805A8; Mon, 31 Jul 2023 18:57:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 150BDF8056F;
-	Mon, 31 Jul 2023 18:57:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 198F7F80587;
+	Mon, 31 Jul 2023 18:57:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E6AFFF80544; Mon, 31 Jul 2023 18:57:42 +0200 (CEST)
+	id 8E6F0F80551; Mon, 31 Jul 2023 18:57:44 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 97A5CF8016D
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 18:57:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97A5CF8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0555EF8025A
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 18:57:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0555EF8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=pgWhXHho
+ header.s=PODMain02222019 header.b=dR3leKCT
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 36VDp2Y2022362;
+ 36V5lNJL017071;
 	Mon, 31 Jul 2023 11:57:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=uIxcNFIlhCWl+DHFeYj1CnUBImgYJ6FmRvXCKssmj0Y=; b=
-	pgWhXHhoM571lbT5+7eFEG99yK8Y0Zy/5q+7ey11g/2RUMB61bfa+ZPtP/QZQFgj
-	4qOVAYm0ddVNUMwRT+qy3pnq3eKqSEK/twLAKrBD3y+OqBitRA/Ln6NT2/m2URPq
-	82iucUFPpcWd6v2EO1TRKcOfEgnQdXFVzcg2IxaveqeGpdtFrgahQ+2ygmQ/mU/b
-	lYPxP0OPA5K3Zz8ZcWRc/R9ITGfrSECvXkNxzn8jWq50qmY8PVMKyxsfaNLLalPk
-	oCPwI/fCNefjCz4Cvv7jO5XafoWSREB3BI8xrY1W4CAIHj3YkMku0Pt1g9Uo5yCi
-	Up6yWGbLEeXqLSYqGzEksw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s5gk1sg46-1
+	PODMain02222019; bh=AXY+yhAp337Xwcjj3zvet6CtUqG0Njj546QB9XWh5P4=; b=
+	dR3leKCTZAVrxwO0wPK+UWwW3uv94qwZytByxI1VNDrgjUIld+LaOg3VSFvq2hEY
+	gsi9PJRFqeakomq5K22j6ALxETFbYrdnfmRu+KoITHpQQPyX1zL373aWg1GkGwgv
+	0SMnFX2tNyPOY+gdVS2cpA3IHqtfp8MVt8aVvoUuzSgUL1+w4dhg3QqQnIwq36+G
+	MXXkAf+0nckqRsfYqbrpj3J9sevjUTAgzEDKbwFuld6TEoHkvFiD0JpJ9YFabMFF
+	uymVysTy77zAdAtemnmO/C4UiaFjiQFiN6aCpSpdmnkLuUySKhHi/fudSe3zEKsr
+	gmOUdjQHVcKTGSPrzh+GpA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s5gk1sg45-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Mon, 31 Jul 2023 11:57:33 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 17:57:31 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Mon, 31 Jul 2023 17:57:31 +0100
+ 2023 17:57:30 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Mon, 31 Jul 2023 17:57:30 +0100
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.64.107])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 70B6311D3;
-	Mon, 31 Jul 2023 16:57:31 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AEBFF11CA;
+	Mon, 31 Jul 2023 16:57:30 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <tiwai@suse.com>
 CC: <perex@perex.cz>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         Richard
  Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 5/9] ALSA: hda/cs35l56: Call cs_dsp_power_down() before
- calling cs_dsp_remove()
-Date: Mon, 31 Jul 2023 17:57:22 +0100
-Message-ID: <20230731165726.7940-6-rf@opensource.cirrus.com>
+Subject: [PATCH 3/9] ALSA: hda/cs35l56: Call cs_dsp_power_down() before
+ reloading firmware
+Date: Mon, 31 Jul 2023 17:57:20 +0100
+Message-ID: <20230731165726.7940-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230731165726.7940-1-rf@opensource.cirrus.com>
 References: <20230731165726.7940-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: GwJk94tO8R7z1VWfOhv5pfJ5SXsoxW-V
-X-Proofpoint-ORIG-GUID: GwJk94tO8R7z1VWfOhv5pfJ5SXsoxW-V
+X-Proofpoint-GUID: OyU2U_LcCaKSimPOtdrXDTdjC5YFF-F0
+X-Proofpoint-ORIG-GUID: OyU2U_LcCaKSimPOtdrXDTdjC5YFF-F0
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: A2CJTOJOZN6CN6EEIU47MIBUA5PIZGI7
-X-Message-ID-Hash: A2CJTOJOZN6CN6EEIU47MIBUA5PIZGI7
+Message-ID-Hash: N52UZECMUGMOIJDNSLI5VBK2KIU5JAFF
+X-Message-ID-Hash: N52UZECMUGMOIJDNSLI5VBK2KIU5JAFF
 X-MailFrom: prvs=3576b45159=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N52UZECMUGMOIJDNSLI5VBK2KIU5JAFF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,28 +110,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In cs35l56_hda_unbind() cs_dsp_power_down() must be called to cleanup
-before calling cs_dsp_remove cs_dsp_remove().
+When firmware is reloaded after a system resume cs_dsp_power_down() should
+be called before calling cs_dsp_power_up().
+
+The fw_patched flag should also be cleared and only set again if the
+firmware download succeeded.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l56_hda.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/hda/cs35l56_hda.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index 2870f82bfa45..e8c41a4a0c40 100644
+index fda716e0db09..b6b8cb21da75 100644
 --- a/sound/pci/hda/cs35l56_hda.c
 +++ b/sound/pci/hda/cs35l56_hda.c
-@@ -649,6 +649,9 @@ static void cs35l56_hda_unbind(struct device *dev, struct device *master, void *
- 	debugfs_remove_recursive(cs35l56->debugfs_root);
- #endif
+@@ -527,6 +527,12 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
+ 	char *wmfw_filename = NULL;
+ 	int ret = 0;
  
++	/* Prepare for a new DSP power-up */
 +	if (cs35l56->base.fw_patched)
 +		cs_dsp_power_down(&cs35l56->cs_dsp);
 +
- 	cs_dsp_remove(&cs35l56->cs_dsp);
++	cs35l56->base.fw_patched = false;
++
+ 	cs35l56_hda_request_firmware_files(cs35l56, &wmfw_firmware, &wmfw_filename,
+ 					   &coeff_firmware, &coeff_filename);
  
- 	if (comps[cs35l56->index].dev == dev)
 -- 
 2.30.2
 
