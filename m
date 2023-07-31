@@ -4,100 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0A0AC001E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 14:48:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48676C001DC
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 14:58:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E69B82A;
-	Mon, 31 Jul 2023 16:47:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E69B82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D6FC828;
+	Mon, 31 Jul 2023 16:57:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D6FC828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690814908;
-	bh=PqlYAMnZ+JfeuRXdftAEQ5hSDtUAYpYdfgTVGuT3sEo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=qw45xR0d53wqQ5qk0K6Kb97R/ZG7+ADa1NgGtd1OjsDKvegz9b1XriFAfEml/uY4o
-	 T8S/gfENGJc7dLCEUjXUSLnYcv6TN9Lh3/OIzxFO8MiJTGafcAnh06nITpbTu5SFtN
-	 IQmHnAJY5i/NaL5gmZvGUPlELdVyQ+1iRIeuaF6o=
+	s=default; t=1690815492;
+	bh=21YC088aq64JalYTUnpkFuCD693IkdKcn/NFtT+rD5E=;
+	h=Date:Subject:From:To:References:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=g7YpyEVeKTH29t8dBEtz+hSiZX3d44q07H0FVyM88SwfBB6k2F4Ef4PpVBp3HJNH8
+	 aCS0mXUEWexga9Bu7JASaKzkisBUw6QfWUp4axpu+oeS2nGf00QlEFwwEv4FavetiA
+	 9DLv0SsbhJF79YMA5Pv6YF0mmaiZOiJR2FYp09VI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E9E3F8025A; Mon, 31 Jul 2023 16:47:06 +0200 (CEST)
+	id 113ADF8025A; Mon, 31 Jul 2023 16:56:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F440F80520;
-	Mon, 31 Jul 2023 16:47:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 695D6F8016D;
+	Mon, 31 Jul 2023 16:56:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6BE73F8016D; Mon, 31 Jul 2023 16:47:02 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 5FB06F8016D; Mon, 31 Jul 2023 16:56:50 +0200 (CEST)
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
+ [IPv6:2a00:1450:4864:20::232])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 686FCF8015B
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 16:46:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 686FCF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id D9243F8015B
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 16:56:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9243F8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=TwBcAZY0
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 591416117A;
-	Mon, 31 Jul 2023 14:46:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FDC9C433C7;
-	Mon, 31 Jul 2023 14:46:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690814817;
-	bh=PqlYAMnZ+JfeuRXdftAEQ5hSDtUAYpYdfgTVGuT3sEo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TwBcAZY0NKbmJ5/K/4M5wt/q/Snl9MV8edbQpaIhW2ZSTntBQ5f77YrshzZRcfM+e
-	 +F4hKqaNsjLncLgFqOvZfW0HTRgOF62Qj+B0thqCeMAO1sC0HScYVmGQXi9sCw3tlE
-	 jNdt632W55A8xLfTP6hJe+b2z/6VkX4dsVXfN58691SetbITwgu8P2d5JsmecepkZz
-	 cbcedP4GmD28lPvBAMgkr2cFU2ZZcTFJtp2TaoRVBUJEdVolw+8kdcbqOCBPDUY1vj
-	 3eHpHAdbQdsOklnI7ZBoCcTqoia9YDAlfoAXiwlUaTTTfyYYY6J2NrnAvZbstdDn8M
-	 XABBzcl7BB2VQ==
-Date: Mon, 31 Jul 2023 15:46:49 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>,
-	Rohit kumar <quic_rohkumar@quicinc.com>,
-	Cheng-Yi Chiang <cychiang@chromium.org>,
-	Rao Mandadapu <srivasam@codeaurora.org>,
-	Judy Hsiao <judyhsiao@chromium.org>,
-	Trevor Wu <trevor.wu@mediatek.com>,
-	Jonathan Bakker <xc-racer2@live.ca>, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 01/12] ASoC: dt-bindings: amlogic,gx-sound-card: correct
- maxItems constraints
-Message-ID: <076d8a7d-8369-4e88-9997-d54b91b7920d@sirena.org.uk>
-References: <20230731094303.185067-1-krzysztof.kozlowski@linaro.org>
- <20230731094303.185067-2-krzysztof.kozlowski@linaro.org>
- <1jr0oowg6m.fsf@starbuckisacylon.baylibre.com>
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=Bps7HKIG
+Received: by mail-lj1-x232.google.com with SMTP id
+ 38308e7fff4ca-2b974031aeaso68695241fa.0
+        for <alsa-devel@alsa-project.org>;
+ Mon, 31 Jul 2023 07:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690815402; x=1691420202;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :to:from:subject:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Oa1SB02KtfMLxNE4mkxxs1OYoxXlIjwBI7+LigCTgCc=;
+        b=Bps7HKIGU1d7zGk6EnCBSZB+lUHreffolw38t62M9CWeJ/hAtTcLbWEyRGx0OLdxN+
+         tVMbbmbRF2ohu2WxxLjNYl3IyaP6ok/GnwlqlRN29C3tUtFbSqIks28iNf8Ip0n3TGVQ
+         ZauRAK3cDiIdUD/7Fu+6khTozBYPwXrwsueNQklYPH4vrbltQb4xTuyZ2h2GKYMpFzYh
+         5Q9Lc9qZWNJwsss83IMWvph8fAq0e2bgQavQ2H3qcjE5rf3kzV+sqjYnCqFfs+Lc8znr
+         R2I9f4B8oxB6w1zJ5akEPy0M0Q7S5mHA5OPRYR+cBxdd/K8CBZV/lFEYIJcLPjhl60FZ
+         ahYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690815402; x=1691420202;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Oa1SB02KtfMLxNE4mkxxs1OYoxXlIjwBI7+LigCTgCc=;
+        b=KohvundeNOkpl3s0QJrcpdsVUXm9Em90O1lAtAgiW4svI31N6LqYv0G61/pshQQq8n
+         3Rdmwu1pYYzlv8xH/5gE94a4eG6x5/AgsG5vR88qZGnXoCEMRhRC8ExuirW6Xz7PK+DC
+         OmEndTspl+J3TIlxSwZPoptdtoZ6Y8Zt+/jp9dtmBCwotJ64Wy+2t6i/7uWyG/glmU5B
+         vDjSQV/diOjTlVxnw/TqFW5vE6sN29UM7/yybiHsW0VJB79BgnA4zINYgwjIWuGSIny8
+         +dXpjBhsSDKN1q83OQFbbTHVE8lrEZDHBQ0wthHranmAeQ6WAFx1gDMOV8Z90jZ6qiGc
+         +/Vg==
+X-Gm-Message-State: ABy/qLY+aMqjdBWD+LYEfFk9Iw9yIOLXcNI636DjzBmXKfv8q6Q5Jicd
+	k8Jr2ajsQz4jTXCvdcXxLJSKvQ==
+X-Google-Smtp-Source: 
+ APBJJlF7zuWD7Kp6ngSgGXo2OLttXqzIQ2Sxj/NgV2Jy37GYeVH1VK7pokm/jJZBd1ud+kDxL8TYug==
+X-Received: by 2002:a2e:8e92:0:b0:2b9:edcd:8770 with SMTP id
+ z18-20020a2e8e92000000b002b9edcd8770mr138066ljk.43.1690815402023;
+        Mon, 31 Jul 2023 07:56:42 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id
+ u17-20020a1709060b1100b00992bea2e9d2sm6335878ejg.62.2023.07.31.07.56.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 07:56:41 -0700 (PDT)
+Message-ID: <26224f81-9993-0a4c-4c46-91acd1ff5f42@linaro.org>
+Date: Mon, 31 Jul 2023 16:56:39 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hTgg8DCib5JQmztO"
-Content-Disposition: inline
-In-Reply-To: <1jr0oowg6m.fsf@starbuckisacylon.baylibre.com>
-X-Cookie: Single tasking: Just Say No.
-Message-ID-Hash: 3NWV7FVHNTTH6A3IYQMTAMP2PMT3OWMW
-X-Message-ID-Hash: 3NWV7FVHNTTH6A3IYQMTAMP2PMT3OWMW
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v3 5/6] ASoC: dt-bindings: mediatek,mt7986-wm8960: add
+ mt7986-wm8960 document
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: =?UTF-8?B?TWFzbyBIdWFuZyAo6buD5Yqg56u5KQ==?= <Maso.Huang@mediatek.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "chenxiangrui@huaqin.corp-partner.google.com"
+ <chenxiangrui@huaqin.corp-partner.google.com>,
+ =?UTF-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ =?UTF-8?B?QWxsZW4tS0ggQ2hlbmcgKOeoi+WGoOWLsik=?=
+ <Allen-KH.Cheng@mediatek.com>, "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com"
+ <lgirdwood@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "perex@perex.cz" <perex@perex.cz>, "arnd@arndb.de" <arnd@arndb.de>,
+ "angelogioacchino.delregno@collabora.com"
+ <angelogioacchino.delregno@collabora.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+References: <20230728090819.18038-1-maso.huang@mediatek.com>
+ <20230728090819.18038-6-maso.huang@mediatek.com>
+ <7d70f893-ee75-d355-4b4c-4afe7a72cd7c@linaro.org>
+ <5f794f6d3595e845433aab3c48eb47ec7962c929.camel@mediatek.com>
+ <ab66c8a4-6a5e-651b-8f77-047980ebc238@linaro.org>
+Content-Language: en-US
+In-Reply-To: <ab66c8a4-6a5e-651b-8f77-047980ebc238@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: LKAFKGOKZHCRJTIQVXGQH3HKZQTF4PVY
+X-Message-ID-Hash: LKAFKGOKZHCRJTIQVXGQH3HKZQTF4PVY
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +133,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3NWV7FVHNTTH6A3IYQMTAMP2PMT3OWMW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LKAFKGOKZHCRJTIQVXGQH3HKZQTF4PVY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,39 +142,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 31/07/2023 10:14, Krzysztof Kozlowski wrote:
+>>>> +  mediatek,audio-codec:
+>>>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>>>> +    description: The phandle of wm8960 codec.
+>>>> +
+>>>
+>>> How did you implement Rob's comment? Or did you just ignore it?
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>>
+>> Hi Krzysztof,
+>>
+>> Sorry, I did not mean to ignore Rob's comment.
+>> I waited for some suggestion in mail below, but it seems Rob was a
+>> little busy.
+>>
+>> https://lore.kernel.org/lkml/8c6316e79e40406e4d46709f602dcb14a4c00562.camel@mediatek.com/
+>>
+>> After gentle ping last week and receiving your advice, I thought that
+>> means to send the v3 patch and might discuss dtbingding in v3 series.
+>>
+>> So sorry for misunderstanding it, I'll check the details with Rob in v3
+>> series then refine it in v4.
+> 
+> The problem is that you did not reference in this patch any ongoing
+> discussion and further questions, so comment looks like addressed, while
+> it was not.
+> 
+> Rob said:
+> "in a common schema and reference them "
+> You said:
+> "common part yaml and reference to it"
+> so I think you both agreed on the same.
+> 
+> The advice would be to create common binding which is then referenced by
+> other and your bindings. However if you start doing it, you will notice
+> that it is impossible, because you have conflicting types for
+> "audio-codec", so you cannot have one definition.
+> 
+> This leads to the point - property is probably wrong and you need
+> dai-link with sound-dai property, just like most cards are doing.
 
---hTgg8DCib5JQmztO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+BTW, might be useful for you, just sent:
+https://lore.kernel.org/linux-devicetree/20230731094303.185067-1-krzysztof.kozlowski@linaro.org/T/#t
 
-On Mon, Jul 31, 2023 at 11:52:53AM +0200, Jerome Brunet wrote:
+Anyway you need dai-links, I think.
 
-> The upper limit of 8 might work now but is very likely to be wrong for
-> the next device to come.
+Best regards,
+Krzysztof
 
-> Is there way to correctly describe this "pair" contraint with DT schema ?
-
-> If not, then I guess the most adequate solution is to drop minItems and
-> give no bound, like simple-card is doing for the same type of properties.
-
-> Same goes for the audio-widgets property
-
-Right, dropping minItems seems better than pulling a maxItems out of
-thin air.
-
---hTgg8DCib5JQmztO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTHyVgACgkQJNaLcl1U
-h9CwBgf9GKwK7KuMoeQQsc9Rl6Sc5X+7lsuk+17rjQr+cd3VJNRkXwkjGCYVxgeP
-X6JVUsaKujgeRg/hH9ICfqh0FPemGcEpBh23RVIalVSMA8XZZMGzqwsUw4HUinch
-cMfTWev5z6ga9lBwr0CclsNVXu/JYkQXKWPBk3vIYH6sTGwblalUI5AbB6WlwH3F
-uzJ7ejviucxNzfnFYheFgckbVJ2MIM+IC4WESBp+Cychr+veWiyr9bihzgSe/9f5
-dwEhwsZzQAXdxL6eh5P/shLLT2qHgRFiDfKL101YuzqFSze8ZWSsZ/7Xd0GEkzQa
-OF73R/jk4LKgIilX+yNwWW545Ynefw==
-=iYq3
------END PGP SIGNATURE-----
-
---hTgg8DCib5JQmztO--
