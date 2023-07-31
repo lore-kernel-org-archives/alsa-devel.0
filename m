@@ -4,87 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 311ABC001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:49:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72EC3C001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:50:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A795E79;
-	Mon, 31 Jul 2023 23:49:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A795E79
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1BB0DFA;
+	Mon, 31 Jul 2023 23:49:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1BB0DFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690840197;
-	bh=VOg2y9kMbxP64SqeJhnseY+asSF8IgRfVRngUHkThY0=;
+	s=default; t=1690840216;
+	bh=f1XRoUR5OQs7kIKgmqGrQ4p+W2AL3vXJ5sq97FSKeNg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NwO4arJyVu3Uvdhhn2hBQbYJZlWjhNUcavUH7tgHk32M4JMnvafJ5xGAZcFGml0Zc
-	 LxuHOYiAWWKj9F9Q82TOl30wOP469185R9FYn4lx8xO/mIazGjgbAwiCHcoo7p7fNo
-	 8X//CHeuCgTjwTtocnGJ0JwmUwa58I5whkZlwZOA=
+	b=ncPzIQQWNBfOTkdu7uoeFw4Zp877H7u6Kr1aNrE2C7xE92JYTGk37ctku+yrK+iOU
+	 tNlZFrxHpTwG6nCOM3O+L1mdSaixf7YvkABeqg4/ZOYaA0d2zBObmFieWMSLL9bDaK
+	 1mng5PvOYLxucbuSV2mu6mJMBF2ImV3/nIgbscq0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 76BDFF80676; Mon, 31 Jul 2023 23:44:24 +0200 (CEST)
+	id B6428F8067C; Mon, 31 Jul 2023 23:44:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DDCDF80672;
-	Mon, 31 Jul 2023 23:44:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 046BAF8067B;
+	Mon, 31 Jul 2023 23:44:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 917AFF805AA; Mon, 31 Jul 2023 23:43:38 +0200 (CEST)
+	id 202CBF8057C; Mon, 31 Jul 2023 23:43:39 +0200 (CEST)
 Received: from mgamail.intel.com (unknown [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F3F0CF8057C
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3F0CF8057C
+	by alsa1.perex.cz (Postfix) with ESMTPS id D1568F805B0
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1568F805B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Xonbpgp/
+ header.s=Intel header.b=mxtUBR3w
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690839803; x=1722375803;
+  t=1690839807; x=1722375807;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=VOg2y9kMbxP64SqeJhnseY+asSF8IgRfVRngUHkThY0=;
-  b=Xonbpgp/IIV8kRuTTGcS03MdEm4ePZyYOVF6mqYJLPG1ohwAhsGP23CJ
-   JlPEUckt9Y2dQvP1KN5b+yI21zTgKXDi+ncX0zSe0mbvyBrltowiN6PBw
-   E+/NgkkeHMbDQ+kIc6PmyglxQ2HUe/xLw1MtG8z1omsv1CHnPLtfMcGMu
-   IDEkwdF2alXE4z6LD/oJ1FmXsl3LrxI8sGmYfd/PCYJ5nzKZ85DD3MyIY
-   kJibv6glwGuPK+nw3LWsmf04jlEL0yH7pvOyKxY0/GUI92um5exlzs8cp
-   01qgSU2d9Jj7BTLoLRfpvJvIvnKKTqqFEPRgXFL4P0U+BiPN9alju/Eqj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449792"
+  bh=f1XRoUR5OQs7kIKgmqGrQ4p+W2AL3vXJ5sq97FSKeNg=;
+  b=mxtUBR3w7w7pGvI5cvSkLYtBLXuaKhlPzxwSzwM27egO/ciuO8sjv28Z
+   4uC7KNDWwCh7MT1qvgkn7l2rogHwC21vDhV+f9RO3VcwjNQz5LC/l7cxo
+   B5K14nSVVujPRVBIM4f6G9gUO20WZVbH46CIaxpEExpZndOlRkOOqIMkg
+   x4szvGufvlN7ZCOP6YzT715N5p+unoebcy6kLCnHPVOAZ9trf0oCKYdNq
+   SwZuCuk9xRdVkVQkTIZKc5MZBGrzHO0eqO3tYXZ+ueo77iJNke/JBJTq3
+   idZX7YNvi6Juh6NvaYPGgBuPl7BQoBrTuhVNsWj48oXF1jOqQ6yYVguAS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449819"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="435449792"
+   d="scan'208";a="435449819"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:18 -0700
+ 31 Jul 2023 14:43:22 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523561"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523571"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="763523561"
+   d="scan'208";a="763523571"
 Received: from youngnic-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.180.66])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:18 -0700
+ 31 Jul 2023 14:43:22 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
 	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 16/23] ASoC: intel: sof_sdw: Remove redundant parameters in
- dai creation
-Date: Mon, 31 Jul 2023 16:42:50 -0500
-Message-Id: <20230731214257.444605-17-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 22/23] ASoC: intel: sof_sdw: Merge codec_conf_alloc into
+ dailink_info
+Date: Mon, 31 Jul 2023 16:42:56 -0500
+Message-Id: <20230731214257.444605-23-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 References: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SLQUKND7T3EKUFTXCKLBA4GPOAS5Q7TV
-X-Message-ID-Hash: SLQUKND7T3EKUFTXCKLBA4GPOAS5Q7TV
+Message-ID-Hash: VKUVOCKJLLJSQVIF42HHRA6767N3GSFW
+X-Message-ID-Hash: VKUVOCKJLLJSQVIF42HHRA6767N3GSFW
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SLQUKND7T3EKUFTXCKLBA4GPOAS5Q7TV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VKUVOCKJLLJSQVIF42HHRA6767N3GSFW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,72 +107,157 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Pull the device and mach struct out of the card rather than explicitly
-passing to sof_card_dai_links_create.
+Rename get_sdw_dailink_info to simply get_dailink_info and have it also
+return the number of codecs present. Then hoist the allocation of the
+codec conf structure up into sof_card_dai_links_create. This saves an
+extra loop through the adr_link array, allows us to get rid of
+sof_card_codec_conf_alloc and makes the allocation more explicit.
 
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 75 ++++++++++----------------------
+ 1 file changed, 23 insertions(+), 52 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index d4f2711b6f26..dc5337ea75da 100644
+index dc6ea21b3341..25644eff5251 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1348,8 +1348,7 @@ static void set_dailink_map(struct snd_soc_dai_link_codec_ch_map *sdw_codec_ch_m
- 
- static const char * const type_strings[] = {"SimpleJack", "SmartAmp", "SmartMic"};
- 
--static int create_sdw_dailink(struct snd_soc_card *card,
--			      struct device *dev, int *link_index,
-+static int create_sdw_dailink(struct snd_soc_card *card, int *link_index,
- 			      struct snd_soc_dai_link *dai_links,
- 			      int sdw_be_num, int sdw_cpu_dai_num,
- 			      struct snd_soc_dai_link_component *cpus,
-@@ -1363,6 +1362,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
- 			      int adr_index,
- 			      int dai_index)
+@@ -1027,9 +1027,9 @@ static inline int find_codec_info_acpi(const u8 *acpi_id)
+  * Since some sdw slaves may be aggregated, the CPU DAI number
+  * may be larger than the number of BE dailinks.
+  */
+-static int get_sdw_dailink_info(struct device *dev,
+-				const struct snd_soc_acpi_link_adr *adr_link,
+-				int *sdw_be_num, int *sdw_cpu_dai_num)
++static int get_dailink_info(struct device *dev,
++			    const struct snd_soc_acpi_link_adr *adr_link,
++			    int *sdw_be_num, int *sdw_cpu_dai_num, int *codecs_num)
  {
-+	struct device *dev = card->dev;
- 	const struct snd_soc_acpi_link_adr *adr_link_next;
- 	struct snd_soc_dai_link_component *codecs;
- 	struct sof_sdw_codec_info *codec_info;
-@@ -1563,10 +1563,10 @@ static int sof_card_codec_conf_alloc(struct device *dev,
- 	return 0;
- }
- 
--static int sof_card_dai_links_create(struct device *dev,
--				     struct snd_soc_acpi_mach *mach,
--				     struct snd_soc_card *card)
-+static int sof_card_dai_links_create(struct snd_soc_card *card)
- {
-+	struct device *dev = card->dev;
-+	struct snd_soc_acpi_mach *mach = dev_get_platdata(card->dev);
- 	int ssp_num, sdw_be_num = 0, hdmi_num = 0, dmic_num;
- 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
- 	struct snd_soc_dai_link_component *idisp_components;
-@@ -1723,7 +1723,7 @@ static int sof_card_dai_links_create(struct device *dev,
+ 	bool group_visited[SDW_MAX_GROUPS];
+ 	bool no_aggregation;
+@@ -1058,8 +1058,17 @@ static int get_sdw_dailink_info(struct device *dev,
+ 			codec_index = find_codec_info_part(adr);
+ 			if (codec_index < 0)
  				return codec_index;
++
+ 			codec_info = &codec_info_list[codec_index];
  
- 			for (j = 0; j < codec_info_list[codec_index].dai_num ; j++) {
--				ret = create_sdw_dailink(card, dev, &link_index, dai_links,
-+				ret = create_sdw_dailink(card, &link_index, dai_links,
++			*codecs_num += codec_info->dai_num;
++
++			if (!adr_link->adr_d[i].name_prefix) {
++				dev_err(dev, "codec 0x%llx does not have a name prefix\n",
++					adr_link->adr_d[i].adr);
++				return -EINVAL;
++			}
++
+ 			endpoint = adr_link->adr_d[i].endpoints;
+ 
+ 			for (j = 0; j < codec_info->dai_num; j++) {
+@@ -1540,46 +1549,6 @@ static int create_sdw_dailink(struct snd_soc_card *card, int *link_index,
+ 
+ #define IDISP_CODEC_MASK	0x4
+ 
+-static int sof_card_codec_conf_alloc(struct device *dev,
+-				     struct snd_soc_acpi_mach_params *mach_params,
+-				     struct snd_soc_codec_conf **codec_conf,
+-				     int *codec_conf_count)
+-{
+-	const struct snd_soc_acpi_link_adr *adr_link;
+-	struct snd_soc_codec_conf *c_conf;
+-	int num_codecs = 0;
+-	int codec_index;
+-	int i;
+-
+-	adr_link = mach_params->links;
+-	if (!adr_link)
+-		return -EINVAL;
+-
+-	/* generate DAI links by each sdw link */
+-	for (; adr_link->num_adr; adr_link++) {
+-		for (i = 0; i < adr_link->num_adr; i++) {
+-			if (!adr_link->adr_d[i].name_prefix) {
+-				dev_err(dev, "codec 0x%llx does not have a name prefix\n",
+-					adr_link->adr_d[i].adr);
+-				return -EINVAL;
+-			}
+-			codec_index = find_codec_info_part(adr_link->adr_d[i].adr);
+-			if (codec_index < 0)
+-				return codec_index;
+-			num_codecs += codec_info_list[codec_index].dai_num;
+-		}
+-	}
+-
+-	c_conf = devm_kzalloc(dev, num_codecs * sizeof(*c_conf), GFP_KERNEL);
+-	if (!c_conf)
+-		return -ENOMEM;
+-
+-	*codec_conf = c_conf;
+-	*codec_conf_count = num_codecs;
+-
+-	return 0;
+-}
+-
+ static int sof_card_dai_links_create(struct snd_soc_card *card)
+ {
+ 	struct device *dev = card->dev;
+@@ -1594,7 +1563,7 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
+ 	struct snd_soc_codec_conf *codec_conf;
+ 	bool append_dai_type = false;
+ 	bool ignore_pch_dmic = false;
+-	int codec_conf_count;
++	int codec_conf_num = 0;
+ 	int codec_conf_index = 0;
+ 	bool group_generated[SDW_MAX_GROUPS];
+ 	int ssp_codec_index, ssp_mask;
+@@ -1608,12 +1577,8 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
+ 	int cpu_id = 0;
+ 	int ret;
+ 
+-	/* allocate codec conf, will be populated when dailinks are created */
+-	ret = sof_card_codec_conf_alloc(dev, mach_params, &codec_conf, &codec_conf_count);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = get_sdw_dailink_info(dev, adr_link, &sdw_be_num, &sdw_cpu_dai_num);
++	ret = get_dailink_info(dev, adr_link, &sdw_be_num, &sdw_cpu_dai_num,
++			       &codec_conf_num);
+ 	if (ret < 0) {
+ 		dev_err(dev, "failed to get sdw link info %d\n", ret);
+ 		return ret;
+@@ -1662,6 +1627,12 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
+ 	if (!cpus)
+ 		return -ENOMEM;
+ 
++	/* allocate codec conf, will be populated when dailinks are created */
++	codec_conf = devm_kcalloc(dev, codec_conf_num, sizeof(*codec_conf),
++				  GFP_KERNEL);
++	if (!codec_conf)
++		return -ENOMEM;
++
+ 	/* SDW */
+ 	if (!sdw_be_num)
+ 		goto SSP;
+@@ -1736,7 +1707,7 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
+ 				ret = create_sdw_dailink(card, &link_index, dai_links,
  							 sdw_be_num, sdw_cpu_dai_num, cpus,
  							 adr_link, &cpu_id, group_generated,
- 							 codec_conf, codec_conf_count,
-@@ -1991,7 +1991,7 @@ static int mc_probe(struct platform_device *pdev)
+-							 codec_conf, codec_conf_count,
++							 codec_conf, codec_conf_num,
+ 							 &be_id, &codec_conf_index,
+ 							 &ignore_pch_dmic, append_dai_type, i, j);
+ 				if (ret < 0) {
+@@ -1888,7 +1859,7 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
+ 	card->num_links = num_links;
  
- 	log_quirks(card->dev);
+ 	card->codec_conf = codec_conf;
+-	card->num_configs = codec_conf_count;
++	card->num_configs = codec_conf_num;
  
--	ret = sof_card_dai_links_create(card->dev, mach, card);
-+	ret = sof_card_dai_links_create(card);
- 	if (ret < 0)
- 		return ret;
- 
+ 	return 0;
+ }
 -- 
 2.39.2
 
