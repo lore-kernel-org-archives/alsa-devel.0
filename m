@@ -4,100 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2CC8C001DC
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:20:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2C8FC001E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 15:49:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA417823;
-	Mon, 31 Jul 2023 17:19:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA417823
+	by alsa0.perex.cz (Postfix) with ESMTPS id C26A482A;
+	Mon, 31 Jul 2023 17:48:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C26A482A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690816811;
-	bh=tHseUDP5ewIZ91U0WgZQH8SlyWmcwyeqJNAjRGZdQ4c=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1690818540;
+	bh=KZxSuTAmB67+CK1T9f7i7B2SK77qfWFlhZ8CzJDK3L4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hMy9bcEAV4ne3jL8YqgXTnGMG848wa3lbEyFfJqHKscRruX7i8MGWJiBOhxXnBrPD
-	 WOFgl63aMqUrVlUdfhdORtJcDMTAr+6RPMsFwIHztkDk9exrXJkze8EN1dR89bwhm3
-	 uzU7UOidtQtJQ1O2e3C6F3N93EP8FqMF7ZSN6Zu0=
+	b=M7mTmNjiMIIwwryofD5zddpmcDUXiqE+wi3xSYNTl3A4mHngvw3+hcwYOqEme1Em2
+	 MFbaYa2wYcg4vmvB6w0YK6caBXsByFvsmTX/Ll7zxgpAnS2X2W3MHt3TuZqBIr1q8h
+	 4KHFgWsTQ4MctlZ56ajnjmmG9h0jmUnUURe3/B2s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E066F80520; Mon, 31 Jul 2023 17:18:54 +0200 (CEST)
+	id 313E5F80570; Mon, 31 Jul 2023 17:47:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02EF5F8016D;
-	Mon, 31 Jul 2023 17:18:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6779F8055C;
+	Mon, 31 Jul 2023 17:47:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26D9FF8016D; Mon, 31 Jul 2023 17:18:50 +0200 (CEST)
-Received: from mgamail.intel.com (unknown [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 2D2F7F80570; Mon, 31 Jul 2023 17:47:31 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E32D7F8015B
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:18:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E32D7F8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8B68DF80163
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 17:47:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B68DF80163
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=CL2F+Ja9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690816725; x=1722352725;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=tHseUDP5ewIZ91U0WgZQH8SlyWmcwyeqJNAjRGZdQ4c=;
-  b=CL2F+Ja9U1U4HAJ/aO4OMuQAv+lkkVYWA9rPwQCpX6LlKYHiaZAjpSmY
-   4y+ELLALu7Jz47b1ejZ0Bpq+mFZJyAUvh542zvWabj1TdFdhAMY15xxRE
-   qt/qobvu/liCD51NjC/mnnxwJeyMQdTjJw78LsHU1N82rfXwDuAiQe4/h
-   PzYkoE0mKU9mSZ6HNjR+HJPnyPP/Fi5hhJ9XWt2uHNFQV31bvgKFvI4vu
-   zDtky/P0GWsKjlMl+/uqph6XRQz9fwtjS/323A4sVdeoatKAwJ8ZxGbYe
-   e1Yhycai6dk9IUzt/sn3ZOl2292w1UQBQt5KcOUx4aAGUZlNNu6WeQATc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="432863979"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200";
-   d="scan'208";a="432863979"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 08:18:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="852095057"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200";
-   d="scan'208";a="852095057"
-Received: from sambriz-mobl.amr.corp.intel.com (HELO [10.212.68.117])
- ([10.212.68.117])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 08:18:33 -0700
-Message-ID: <f3b6e859-3cf1-e12c-4de7-83cce04a122f@linux.intel.com>
-Date: Mon, 31 Jul 2023 09:53:02 -0500
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=wb/OZKyI;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=B2Q0AsX2
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 253E0221CE;
+	Mon, 31 Jul 2023 15:47:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1690818444;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L22SFbFRQjDwIrjDrJD0afISEv0WXPqabErMGWgzUoU=;
+	b=wb/OZKyIg6q0+IoyRWMNs+s4co3GX+NW9MuGhnfgoecI9CGuRiG/BPMHOLI4t77fhhkp1S
+	ivSIC+foX2VQZwDkUhVif4RNFrkEBlr1SUXekZAJQaSKFyq/VNrEIRfAB1wnunpd8TLXaj
+	IOTVbdZ8Ol6Nq2lBouy5JlH3WAxf2bU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1690818444;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L22SFbFRQjDwIrjDrJD0afISEv0WXPqabErMGWgzUoU=;
+	b=B2Q0AsX28ObybIwAgM/nTNcoH3WdmMRZNVAF8FhR2smUP1HmxlY7EqeCOw/GT1cIqMcp4L
+	tWiHGXHXXoQo1QCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 03C3C138EE;
+	Mon, 31 Jul 2023 15:47:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id UJOaO4vXx2Q3fwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 15:47:23 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 03/24] ALSA: dummy: Convert to generic PCM copy ops
+Date: Mon, 31 Jul 2023 17:46:57 +0200
+Message-Id: <20230731154718.31048-4-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230731154718.31048-1-tiwai@suse.de>
+References: <20230731154718.31048-1-tiwai@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 1/1] ASoC: Intel: maxim-common: get codec number from
- ACPI table
-Content-Language: en-US
-To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- Yong Zhi <yong.zhi@intel.com>, Terry Cheong <htcheong@chromium.org>,
- Uday M Bhat <uday.m.bhat@intel.com>, Mac Chiang <mac.chiang@intel.com>,
- "Dharageswari . R" <dharageswari.r@intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- ye xingchen <ye.xingchen@zte.com.cn>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20230731103419.2536036-1-brent.lu@intel.com>
- <20230731103419.2536036-2-brent.lu@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230731103419.2536036-2-brent.lu@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: KHZBG4BEQFB5UUHRSW7RAUO6BD2PPTIY
-X-Message-ID-Hash: KHZBG4BEQFB5UUHRSW7RAUO6BD2PPTIY
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: NDGL7CFVDCI3YWEMLHD43L577ZFAWABR
+X-Message-ID-Hash: NDGL7CFVDCI3YWEMLHD43L577ZFAWABR
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KHZBG4BEQFB5UUHRSW7RAUO6BD2PPTIY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NDGL7CFVDCI3YWEMLHD43L577ZFAWABR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,17 +114,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+This patch converts the dummy driver code to use the new unified PCM
+copy callback.  As dummy driver doesn't do anything in the callback,
+it's just a simple replacement.
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/drivers/dummy.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-On 7/31/23 05:34, Brent Lu wrote:
-> We implement a helper function to get number of codecs from ACPI
-> subsystem instead of using quirk flag in machine driver. Also refactor
-> module interface by adding max_98390_dai_link() function.
-> 
-> On the sof_rt5682 machine driver side, we remove the quirk flag
-> SOF_MAX98390_TWEETER_SPEAKER_PRESENT and use the new interface of
-> max98390 to setup dai link.
-> 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
+diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
+index 9c17b49a2ae1..eef71535e4d0 100644
+--- a/sound/drivers/dummy.c
++++ b/sound/drivers/dummy.c
+@@ -626,14 +626,7 @@ static int alloc_fake_buffer(void)
+ 
+ static int dummy_pcm_copy(struct snd_pcm_substream *substream,
+ 			  int channel, unsigned long pos,
+-			  void __user *dst, unsigned long bytes)
+-{
+-	return 0; /* do nothing */
+-}
+-
+-static int dummy_pcm_copy_kernel(struct snd_pcm_substream *substream,
+-				 int channel, unsigned long pos,
+-				 void *dst, unsigned long bytes)
++			  sockptr_t dst, unsigned long bytes)
+ {
+ 	return 0; /* do nothing */
+ }
+@@ -667,8 +660,7 @@ static const struct snd_pcm_ops dummy_pcm_ops_no_buf = {
+ 	.prepare =	dummy_pcm_prepare,
+ 	.trigger =	dummy_pcm_trigger,
+ 	.pointer =	dummy_pcm_pointer,
+-	.copy_user =	dummy_pcm_copy,
+-	.copy_kernel =	dummy_pcm_copy_kernel,
++	.copy =		dummy_pcm_copy,
+ 	.fill_silence =	dummy_pcm_silence,
+ 	.page =		dummy_pcm_page,
+ };
+-- 
+2.35.3
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
