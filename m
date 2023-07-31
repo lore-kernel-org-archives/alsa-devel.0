@@ -4,85 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4638C001E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:46:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FF24C001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:46:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBA83AEA;
-	Mon, 31 Jul 2023 23:45:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBA83AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80BE7820;
+	Mon, 31 Jul 2023 23:45:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80BE7820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690839972;
-	bh=tnLINPijn4O9CvkI3DyjWwv8HmZpb3SZanOkC0r+AuY=;
+	s=default; t=1690839996;
+	bh=yqVF/bVG/uHDk11u4SX8tAYg6rmI6nvqQtzEy6ojGdQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eykSqlfEejpe99jE1Ln3TRc3diM1tDa8CAwNopLU27WjlAdPNyv4H+kQad+SM43eW
-	 CqhbyjCuiFucFgq/DCY6hLG+TXxl+aGq+jf+FWhE1tIMvnNH/Dz4JQk40W8kqUA7e1
-	 QbnM53TNE6/A5MVqZf3mMBnM6+MvdzBQCV9quWPM=
+	b=XbjBqfaT2wzE/7RgfxJRLrn+8OvKxX2FcaOKV0PZBInw/ExabRJKTffzO+TVwpfhx
+	 17rGTl4we4VyXwKjTQrA3DLUssGubYB4ZRgzK/e63/vAsZdfRXEeMVNu3/qcZ4M7yR
+	 lqVORBOXRSplB1kNqw5O6lklTVS/KKSY1GS0MVEc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 481C0F805BD; Mon, 31 Jul 2023 23:43:41 +0200 (CEST)
+	id B6E19F805C2; Mon, 31 Jul 2023 23:43:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3883F805AA;
-	Mon, 31 Jul 2023 23:43:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10E5EF805C2;
+	Mon, 31 Jul 2023 23:43:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40CB9F8059F; Mon, 31 Jul 2023 23:43:25 +0200 (CEST)
+	id 843B0F8059F; Mon, 31 Jul 2023 23:43:26 +0200 (CEST)
 Received: from mgamail.intel.com (unknown [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1A39DF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id BC501F80425
 	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A39DF8015B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC501F80425
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=l5TEbVjk
+ header.s=Intel header.b=EMXRsRiX
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690839796; x=1722375796;
+  t=1690839795; x=1722375795;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=tnLINPijn4O9CvkI3DyjWwv8HmZpb3SZanOkC0r+AuY=;
-  b=l5TEbVjkhNSxDuLBF1wbJzhYzHuvTSeKm8UoPgPP2GeAcGYdSD0fu2wy
-   JJ7JrxvpONazEMUdn9aSPZ33p64ZymAAbDZXeFCxMUVRmUZbP2RPL/6Xx
-   2ajE/eQ4N+US605/sdP6n50ixURRhe13x3W6PI9kjPSP0BpUXRTVbaQHw
-   As028m9wQrhQOIozElJGmn4QYIVT/Kv1cWBtmZ9u+q2SWHiIYMadeQMdI
-   GEzIhwg8g3Z2OSb6XMWf7GSW1QcvdPIX0I6l01nAdrK2Ziqk0uYIRmDju
-   JyUHwJVdC0RV+8YiH87DhENFhaDOe02aD78n/M4+gQ3sUSDEABvPytbEv
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449750"
+  bh=yqVF/bVG/uHDk11u4SX8tAYg6rmI6nvqQtzEy6ojGdQ=;
+  b=EMXRsRiXE7EJ4GwO0Aqatbfp8J7hlPq1G2r6NYBK0gVQJuY7Dm4dpvtb
+   IU5o6lL6SPqm3wADNekSMt/kdTHb5LTA6X+uKtGdQ7x1UvtLV8/aWK+7c
+   VpnzNiHKp4J4SVUvna6zpMpOklmLfIbLw3TlhkMMK9MWaEMj6xTibxz0/
+   7ItpPYNpSQLAaT3WtRq+FWwJv1tM5FTaVaOaTylQ4x1cHt++qdZeffywU
+   UqpJ1/wPP6f0sU9oI0E26Bd1XZ1C8uOpCeBj1lCsjtro1UskPPhkmNL6Y
+   /ncQpZPNEcKQOCOBttULsFBmxqFLN7NWApMJr+HqiHAFnTEZrACMwmGLg
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449745"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="435449750"
+   d="scan'208";a="435449745"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  31 Jul 2023 14:43:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523532"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523531"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="763523532"
+   d="scan'208";a="763523531"
 Received: from youngnic-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.180.66])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:11 -0700
+ 31 Jul 2023 14:43:10 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [PATCH 06/23] ASoC: Intel: sof_sdw: allow mockup amplifier to provide
- feedback
-Date: Mon, 31 Jul 2023 16:42:40 -0500
-Message-Id: <20230731214257.444605-7-pierre-louis.bossart@linux.intel.com>
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Rander Wang <rander.wang@intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 05/23] ASoC: Intel: sof_sdw: reorder SoundWire codecs in
+ Kconfig
+Date: Mon, 31 Jul 2023 16:42:39 -0500
+Message-Id: <20230731214257.444605-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 References: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: WOQBW7M2IWSI7CZ75ISJTXPE46FCTUBU
-X-Message-ID-Hash: WOQBW7M2IWSI7CZ75ISJTXPE46FCTUBU
+Message-ID-Hash: IBCVWHUVRKKFKD7WJM2XDJI4IJZEOC7K
+X-Message-ID-Hash: IBCVWHUVRKKFKD7WJM2XDJI4IJZEOC7K
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WOQBW7M2IWSI7CZ75ISJTXPE46FCTUBU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IBCVWHUVRKKFKD7WJM2XDJI4IJZEOC7K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,33 +105,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The capture setting are missing and preventing topologies with
-feedback from loading.
+No functionality change, just sort Realtek codecs using increasing
+part IDs.
 
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 4 ++--
+ sound/soc/intel/boards/Kconfig | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index b811446be4cd..7e43be46cfa8 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -942,10 +942,10 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 		.version_id = 0,
- 		.dais = {
- 			{
--				.direction = {true, false},
-+				.direction = {true, true},
- 				.dai_name = "sdw-mockup-aif1",
- 				.dai_type = SOF_SDW_DAI_TYPE_AMP,
--				.dailink = {SDW_AMP_OUT_DAI_ID, SDW_UNUSED_DAI_ID},
-+				.dailink = {SDW_AMP_OUT_DAI_ID, SDW_AMP_IN_DAI_ID},
- 				.init = NULL,
- 			},
- 		},
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 1fe830af2b84..141fba0f8c70 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -671,12 +671,12 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
+ 	select SND_SOC_RT711_SDCA_SDW
+ 	select SND_SOC_RT712_SDCA_SDW
+ 	select SND_SOC_RT712_SDCA_DMIC_SDW
++	select SND_SOC_RT715_SDW
++	select SND_SOC_RT715_SDCA_SDW
+ 	select SND_SOC_RT1308_SDW
+ 	select SND_SOC_RT1308
+ 	select SND_SOC_RT1316_SDW
+ 	select SND_SOC_RT1318_SDW
+-	select SND_SOC_RT715_SDW
+-	select SND_SOC_RT715_SDCA_SDW
+ 	select SND_SOC_RT5682_SDW
+ 	select SND_SOC_CS42L42_SDW
+ 	select SND_SOC_DMIC
 -- 
 2.39.2
 
