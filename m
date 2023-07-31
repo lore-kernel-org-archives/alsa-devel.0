@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF0E9C001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:40:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E0F2C04A94
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:40:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3474D7F8;
-	Mon, 31 Jul 2023 23:39:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3474D7F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AF70846;
+	Mon, 31 Jul 2023 23:40:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AF70846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690839630;
-	bh=n+gYWPAWWn2JLZPyHWV+sZix+i/KMcgEQnVBlEXCl/0=;
+	s=default; t=1690839650;
+	bh=bx1kbEvqfdBzjp5ne8h2vYYEwMySusNwUEtHoqCIXbg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HjTQv7BdTzS9+b2S4GMQQLXEVxVOuqOMzyY+ezrj93DJA+1o7l4dJBmi39+CNAqA1
-	 H9iW2stutgjTEOK5eEVfskI6clkJ9VcoCl82ksLAoC+6E6HLp/bIU17XHfePai5dUL
-	 qfDbs+AfJQi+lj+PDKkdrujuVslURcwt9Uquw65Y=
+	b=bb/g5C6vDm+9E69S+30jvrx4mIIMj/E3/g2H774ctE+WxFZ6ALuJuHGIFuSBLlZHV
+	 QrXcXkhF2wbtHFyXAuXz7CC1n+c2Q1VLpo26cmsMzUN6cuTqpLEvBAcvNlwCg7sUMs
+	 eEYyvHpva8l0IwfqfjKtgkzHQB6AAE6WKcyjLziw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A5386F805B1; Mon, 31 Jul 2023 23:38:33 +0200 (CEST)
+	id F35BFF805C4; Mon, 31 Jul 2023 23:38:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF5F0F805A9;
-	Mon, 31 Jul 2023 23:38:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B54BF805BD;
+	Mon, 31 Jul 2023 23:38:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7695DF80578; Mon, 31 Jul 2023 23:38:20 +0200 (CEST)
+	id CDFF9F8057B; Mon, 31 Jul 2023 23:38:21 +0200 (CEST)
 Received: from mgamail.intel.com (unknown [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BA838F8055A
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:38:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA838F8055A
+	by alsa1.perex.cz (Postfix) with ESMTPS id B5908F80544
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:38:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5908F80544
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=QgWirXHq
+ header.s=Intel header.b=Bw1qGuCn
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690839496; x=1722375496;
+  t=1690839492; x=1722375492;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=n+gYWPAWWn2JLZPyHWV+sZix+i/KMcgEQnVBlEXCl/0=;
-  b=QgWirXHqN9GWSxHju5FgGkFSf/9VLtOGTEG6j+almCKXheoNuCqQhyvw
-   xzHYGxXjbt5PXNTD9jbQO2VqHOoJhFXjs/bDBMnazxe9jNyvfunH/ortu
-   5RdU6VrSaNCXuMLgu0iISoewKaCMzVQhoLRDX4nRDHr1NFDXPXpMRl7wW
-   66LReZJJaQZ6ks0Qdj3rCU8wQIBpXoRIWseOJ95HYtEcY/oRRV8C9t96i
-   M0C47aTziU9dd4ytzWmRwaUy8V7LNNalm0hYefLikydJ7GzYMewE/037S
-   zpirT7h17BqJT5LzWJeuLlrAoMpcYU03LaoQ87YP7v8SSB6agnjPRmwu5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="366604136"
+  bh=bx1kbEvqfdBzjp5ne8h2vYYEwMySusNwUEtHoqCIXbg=;
+  b=Bw1qGuCnJVZO9oYYwziOOiejrI4HaNtoJmAWIzJq57eirS+s/Yy1PToi
+   /xPzM6tEok+e4Tnu3YBzj6ot2bUYy/OZH5qiqEOQfQw2pc0mu2XV9ziAm
+   KGyT3Tiet1jGqtsik7xWGi8vzLHMvYfX6s/586wbUfwcDc1etUZRI5nz+
+   hK/Ci/xBeToLfORIOVhnsEnILarUqa/0LbXZ6jCUvdCMUbhiDJHUUR+Y9
+   Khy3syUAOCIygqS+mSHWuzinXA+d2S5s2TTR3LoFm/P06lmkckRE4Wjv6
+   c7IIKJ3OetaSDmWEr6e8B+swcMCorTa2ybFjEBzRdBKD8go+bbDS6JOrf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="366604112"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="366604136"
+   d="scan'208";a="366604112"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:38:13 -0700
+ 31 Jul 2023 14:38:09 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="793880083"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="793880050"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="793880083"
+   d="scan'208";a="793880050"
 Received: from youngnic-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.180.66])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:38:12 -0700
+ 31 Jul 2023 14:38:07 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -73,17 +73,17 @@ Cc: tiwai@suse.de,
 	Rander Wang <rander.wang@intel.com>,
 	Daniel Baluta <daniel.baluta@nxp.com>,
 	Yaochun Hung <yc.hung@mediatek.com>
-Subject: [PATCH 7/8] ASoC: Intel: atom: remove static analysis false positive
-Date: Mon, 31 Jul 2023 16:37:47 -0500
-Message-Id: <20230731213748.440285-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/8] ASoC: SOF: imx: remove error checks on NULL ipc
+Date: Mon, 31 Jul 2023 16:37:44 -0500
+Message-Id: <20230731213748.440285-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230731213748.440285-1-pierre-louis.bossart@linux.intel.com>
 References: <20230731213748.440285-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7TT6XNC3NMKJUGH667WQZN24O57SBCK2
-X-Message-ID-Hash: 7TT6XNC3NMKJUGH667WQZN24O57SBCK2
+Message-ID-Hash: AL4KUUL5YRQOAV5YUZISYY57W5GX2V6D
+X-Message-ID-Hash: AL4KUUL5YRQOAV5YUZISYY57W5GX2V6D
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,8 +95,7 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7TT6XNC3NMKJUGH667WQZN24O57SBCK2/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,88 +104,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-make KCFLAGS='-fanalyzer' sound/soc/intel/atom/ reports a possible
-NULL pointer dereference.
+imx_dsp_get_data() can return NULL, but the value is not checked
+before being usd, leading to static analysis warnings.
 
-sound/soc/intel/atom/sst/sst_stream.c:221:40: error: dereference of
-NULL ‘block’ [CWE-476] [-Werror=analyzer-null-dereference]
-  221 |                         unsigned char *r = block->data;
+sound/soc/sof/imx/imx8.c:85:32: error: dereference of NULL ‘0’
+[CWE-476] [-Werror=analyzer-null-dereference]
 
-This is a false-positive, the GCC analyzer generated that report by
-considering if (bytes->block) as true in some cases and false in
-others.
+   85 |         spin_lock_irqsave(&priv->sdev->ipc_lock, flags);
+      |                            ~~~~^~~~~~
 
-We can simplify the code and use a local variable so that static
-analysis does not try to look for cases where bytes->block can be
-modified concurrently.
+It appears this is not really a possible problem, so remove those checks.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
 ---
- sound/soc/intel/atom/sst/sst_stream.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ include/linux/firmware/imx/dsp.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
-index 862a19ae5429..288221db7323 100644
---- a/sound/soc/intel/atom/sst/sst_stream.c
-+++ b/sound/soc/intel/atom/sst/sst_stream.c
-@@ -173,10 +173,11 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
- 	u32 length;
- 	int pvt_id, ret = 0;
- 	struct sst_block *block = NULL;
-+	u8 bytes_block = bytes->block;
+diff --git a/include/linux/firmware/imx/dsp.h b/include/linux/firmware/imx/dsp.h
+index 4f7895a3b73c..1f176a2683fe 100644
+--- a/include/linux/firmware/imx/dsp.h
++++ b/include/linux/firmware/imx/dsp.h
+@@ -37,17 +37,11 @@ struct imx_dsp_ipc {
  
- 	dev_dbg(sst_drv_ctx->dev,
- 		"type:%u ipc_msg:%u block:%u task_id:%u pipe: %#x length:%#x\n",
--		bytes->type, bytes->ipc_msg, bytes->block, bytes->task_id,
-+		bytes->type, bytes->ipc_msg, bytes_block, bytes->task_id,
- 		bytes->pipe_id, bytes->len);
+ static inline void imx_dsp_set_data(struct imx_dsp_ipc *ipc, void *data)
+ {
+-	if (!ipc)
+-		return;
+-
+ 	ipc->private_data = data;
+ }
  
- 	if (sst_create_ipc_msg(&msg, true))
-@@ -185,12 +186,12 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
- 	pvt_id = sst_assign_pvt_id(sst_drv_ctx);
- 	sst_fill_header_mrfld(&msg->mrfld_header, bytes->ipc_msg,
- 			bytes->task_id, 1, pvt_id);
--	msg->mrfld_header.p.header_high.part.res_rqd = bytes->block;
-+	msg->mrfld_header.p.header_high.part.res_rqd = bytes_block;
- 	length = bytes->len;
- 	msg->mrfld_header.p.header_low_payload = length;
- 	dev_dbg(sst_drv_ctx->dev, "length is %d\n", length);
- 	memcpy(msg->mailbox_data, &bytes->bytes, bytes->len);
--	if (bytes->block) {
-+	if (bytes_block) {
- 		block = sst_create_block(sst_drv_ctx, bytes->ipc_msg, pvt_id);
- 		if (block == NULL) {
- 			kfree(msg);
-@@ -203,7 +204,7 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
- 	dev_dbg(sst_drv_ctx->dev, "msg->mrfld_header.p.header_low_payload:%d",
- 			msg->mrfld_header.p.header_low_payload);
+ static inline void *imx_dsp_get_data(struct imx_dsp_ipc *ipc)
+ {
+-	if (!ipc)
+-		return NULL;
+-
+ 	return ipc->private_data;
+ }
  
--	if (bytes->block) {
-+	if (bytes_block) {
- 		ret = sst_wait_timeout(sst_drv_ctx, block);
- 		if (ret) {
- 			dev_err(sst_drv_ctx->dev, "fw returned err %d\n", ret);
-@@ -216,7 +217,7 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
- 		 * copy the reply and send back
- 		 * we need to update only sz and payload
- 		 */
--		if (bytes->block) {
-+		if (bytes_block) {
- 			unsigned char *r = block->data;
- 
- 			dev_dbg(sst_drv_ctx->dev, "read back %d bytes",
-@@ -224,7 +225,7 @@ int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
- 			memcpy(bytes->bytes, r, bytes->len);
- 		}
- 	}
--	if (bytes->block)
-+	if (bytes_block)
- 		sst_free_block(sst_drv_ctx, block);
- out:
- 	test_and_clear_bit(pvt_id, &sst_drv_ctx->pvt_id);
 -- 
 2.39.2
 
