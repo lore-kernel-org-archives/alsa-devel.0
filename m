@@ -4,85 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA36EC001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:45:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 203CBC001E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:45:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB019823;
-	Mon, 31 Jul 2023 23:44:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB019823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4725C85D;
+	Mon, 31 Jul 2023 23:45:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4725C85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690839945;
-	bh=VsiZmhINio/NVDO0AijMJGUfKJp2g5mtREObtxVR7Ls=;
+	s=default; t=1690839956;
+	bh=XhFb8HPXCtI8GJ2CUPoxt6HyksVXJHAZVG6unoEcZRQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VVdl++BAiHOVDcLKOy1NXFNQdv7yireC+rTiacmNRdeofihimgLFGPvv+lIJtT1qd
-	 t4ud0BaqPOU0l0TfB66PqptY3mX9o9C/pLWXdaUrw4v+SADWX3pFmiP96Zy97C/hhw
-	 aouszeup0jFkm8bHZbfzyckWBfuZLz7OUSj5N38U=
+	b=h7xSm0VfXkMGEsdLuje19EBgYxcVLlSdiWTgX0FnR6Pw8mXKXmRC1Tqng51n1OUH5
+	 ys2f9vQaQ/hP3U7NmsNLDzqVKtfidLeb7sdI1hB6+szDHMuXaxgBRt/CCw1icLxBXd
+	 zydSss8xHYlXdrmnOYGTTGH3pt2hOc7BBkKyqOWk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C25CDF8059F; Mon, 31 Jul 2023 23:43:31 +0200 (CEST)
+	id BE322F805B6; Mon, 31 Jul 2023 23:43:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F285BF8059F;
-	Mon, 31 Jul 2023 23:43:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7557AF805BA;
+	Mon, 31 Jul 2023 23:43:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2ADC6F80579; Mon, 31 Jul 2023 23:43:23 +0200 (CEST)
+	id C68A7F8059F; Mon, 31 Jul 2023 23:43:24 +0200 (CEST)
 Received: from mgamail.intel.com (unknown [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AF894F80163
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF894F80163
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3175FF8025A
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:43:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3175FF8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=hJ/YkXQk
+ header.s=Intel header.b=KLM8JaiD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690839793; x=1722375793;
+  t=1690839797; x=1722375797;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=VsiZmhINio/NVDO0AijMJGUfKJp2g5mtREObtxVR7Ls=;
-  b=hJ/YkXQkuUyexhdmYjXhXCtpRfj/2c4ZngF9Zza0m1bPN6k4FZeCM1+k
-   jftVAl5ygSjydNlZDMzj57fqjKJZW+zotls4ugI5Z0qYIyC2SME16H2LX
-   rMqFjhzgCmC8hggg6gzZZIoRaGgpuX4vkQKGz0IAfHTZRt2Q4p3x0xkNs
-   SayaIVE3a1tmOoFN9R2T5b1pzIyKqX2uhse7D+iknkfzm7uQ7wZCK/Lj5
-   8OsWodtNC+rjkSwBKk/I436oChjICIm1gffXnNPvrpJwtCO1kE/mEWq+e
-   Q4c8EuzzAY1qcWcEdXN3xBZpJZC8TnLkLjM/A/G0WRAXsvqjYEHUctxBi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449736"
+  bh=XhFb8HPXCtI8GJ2CUPoxt6HyksVXJHAZVG6unoEcZRQ=;
+  b=KLM8JaiDs7gIOX2KOOXE1zFfUV83IyethJS6i2oTCmGBVmPXznnwlOdP
+   UPC9KH5++c62J6xHtWpeYN8ZTOy0yF9biq+rY1KhLR8uIN6ETxzUwjxLl
+   8bbYhwdCF1IBSg1i1SDDTnuDOC0W1QGxMJrLyJwD9E0ihufZO9LbZB0Ii
+   MVPBf1QeguXztCq4Dge7nWYd+0CwMhY2yeHgb4/AvSVLV2dPXjDzjZur6
+   lH9wAcpv5t8PchTD56glXmTFJylSLkKQyf/PJImswWj9zqRgFeRw1mqUC
+   d+bxCtPzR0HTaGYHc6qiFva4SfKzsQKqQZpz0LqGxt3+pwuQ2niichiMb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435449754"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="435449736"
+   d="scan'208";a="435449754"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:09 -0700
+ 31 Jul 2023 14:43:12 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523524"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="763523535"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
-   d="scan'208";a="763523524"
+   d="scan'208";a="763523535"
 Received: from youngnic-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.180.66])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jul 2023 14:43:09 -0700
+ 31 Jul 2023 14:43:11 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
-	apoorv <apoorv@intel.com>,
-	CBM <balamurugan.c@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Rander Wang <rander.wang@intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 03/23] ASoC: Intel: sof_rt5682 add support for HDMI_In capture
-Date: Mon, 31 Jul 2023 16:42:37 -0500
-Message-Id: <20230731214257.444605-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 07/23] ASoC: Intel: sof_sdw: rename link_id to be_id
+Date: Mon, 31 Jul 2023 16:42:41 -0500
+Message-Id: <20230731214257.444605-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 References: <20230731214257.444605-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ODQTWGEOS6643HSGOVZRZPDLUBCXOFPZ
-X-Message-ID-Hash: ODQTWGEOS6643HSGOVZRZPDLUBCXOFPZ
+Message-ID-Hash: XTFVFGCCM5NCPXSJAMN4Z27PVSAB4XMX
+X-Message-ID-Hash: XTFVFGCCM5NCPXSJAMN4Z27PVSAB4XMX
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ODQTWGEOS6643HSGOVZRZPDLUBCXOFPZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XTFVFGCCM5NCPXSJAMN4Z27PVSAB4XMX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,124 +103,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: apoorv <apoorv@intel.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Adding support for 2 streams of HDMI-In capture via I2S with rt5682s
-codec variant
+The link_id parameter in create_sdw_dailink is actually the BE link id.
+Rename it to be_id to be consistent with the caller and less confusion.
+No functionality change.
 
-Reviewed-by: CBM <balamurugan.c@intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: apoorv <apoorv@intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c           | 47 +++++++++++++++++++
- .../intel/common/soc-acpi-intel-adl-match.c   |  7 +++
- 2 files changed, 54 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 5e29853ae4f1..febf3a5bae95 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -63,6 +63,11 @@
- #define SOF_RT1019_SPEAKER_AMP_PRESENT	BIT(26)
- #define SOF_RT5650_HEADPHONE_CODEC_PRESENT	BIT(27)
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 7e43be46cfa8..acaedd3b2224 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -1354,7 +1354,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
+ 			      const struct snd_soc_acpi_link_adr *link,
+ 			      int *cpu_id, bool *group_generated,
+ 			      struct snd_soc_codec_conf *codec_conf,
+-			      int codec_count, int *link_id,
++			      int codec_count, int *be_id,
+ 			      int *codec_conf_index,
+ 			      bool *ignore_pch_dmic,
+ 			      bool append_dai_type,
+@@ -1433,9 +1433,9 @@ static int create_sdw_dailink(struct snd_soc_card *card,
+ 		if (!codec_info->dais[dai_index].direction[stream])
+ 			continue;
  
-+/* HDMI capture*/
-+#define SOF_NO_OF_HDMI_CAPTURE_SSP_SHIFT  27
-+#define SOF_SSP_HDMI_CAPTURE_PRESENT_MASK (GENMASK(30, 27))
-+#define SOF_HDMI_CAPTURE_SSP_MASK(quirk)   \
-+	(((quirk) << SOF_NO_OF_HDMI_CAPTURE_SSP_SHIFT) & SOF_SSP_HDMI_CAPTURE_PRESENT_MASK)
+-		*link_id = codec_info->dais[dai_index].dailink[stream];
+-		if (*link_id < 0) {
+-			dev_err(dev, "Invalid dailink id %d\n", *link_id);
++		*be_id = codec_info->dais[dai_index].dailink[stream];
++		if (*be_id < 0) {
++			dev_err(dev, "Invalid dailink id %d\n", *be_id);
+ 			return -EINVAL;
+ 		}
  
- /* Default: MCLK on, MCLK 19.2M, SSP0  */
- static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
-@@ -688,6 +693,7 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 	struct snd_soc_dai_link_component *cpus;
- 	struct snd_soc_dai_link *links;
- 	int i, id = 0;
-+	int hdmi_id_offset = 0;
+@@ -1492,7 +1492,7 @@ static int create_sdw_dailink(struct snd_soc_card *card,
  
- 	links = devm_kcalloc(dev, sof_audio_card_rt5682.num_links,
- 			    sizeof(struct snd_soc_dai_link), GFP_KERNEL);
-@@ -919,6 +925,34 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 		links[id].num_cpus = 1;
- 	}
- 
-+	/* HDMI-In SSP */
-+	if (sof_rt5682_quirk & SOF_SSP_HDMI_CAPTURE_PRESENT_MASK) {
-+		unsigned long hdmi_in_ssp = (sof_rt5682_quirk &
-+				SOF_SSP_HDMI_CAPTURE_PRESENT_MASK) >>
-+				SOF_NO_OF_HDMI_CAPTURE_SSP_SHIFT;
-+		int port = 0;
-+
-+		for_each_set_bit(port, &hdmi_in_ssp, 32) {
-+			links[id].cpus = &cpus[id];
-+			links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-+								  "SSP%d Pin", port);
-+			if (!links[id].cpus->dai_name)
-+				return NULL;
-+			links[id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-HDMI", port);
-+			if (!links[id].name)
-+				return NULL;
-+			links[id].id = id + hdmi_id_offset;
-+			links[id].codecs = &asoc_dummy_dlc;
-+			links[id].num_codecs = 1;
-+			links[id].platforms = platform_component;
-+			links[id].num_platforms = ARRAY_SIZE(platform_component);
-+			links[id].dpcm_capture = 1;
-+			links[id].no_pcm = 1;
-+			links[id].num_cpus = 1;
-+			id++;
-+		}
-+	}
-+
- 	return links;
- devm_err:
- 	return NULL;
-@@ -1030,6 +1064,11 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
- 		sof_audio_card_rt5682.num_links++;
- 
-+	if (sof_rt5682_quirk & SOF_SSP_HDMI_CAPTURE_PRESENT_MASK)
-+		sof_audio_card_rt5682.num_links +=
-+			hweight32((sof_rt5682_quirk & SOF_SSP_HDMI_CAPTURE_PRESENT_MASK) >>
-+					SOF_NO_OF_HDMI_CAPTURE_SSP_SHIFT);
-+
- 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
- 					      dmic_be_num, hdmi_num, ctx->idisp_codec);
- 	if (!dai_links)
-@@ -1196,6 +1235,14 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_BT_OFFLOAD_SSP(2) |
- 					SOF_SSP_BT_OFFLOAD_PRESENT),
- 	},
-+	{
-+		.name = "adl_rt5682_c1_h02",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_SSP_CODEC(1) |
-+					SOF_RT5682_NUM_HDMIDEV(3) |
-+					/* SSP 0 and SSP 2 are used for HDMI IN */
-+					SOF_HDMI_CAPTURE_SSP_MASK(0x5)),
-+	},
- 	{
- 		.name = "rpl_mx98357_rt5682",
- 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-index bcd66e0094b4..8e995edf4c10 100644
---- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-@@ -568,6 +568,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 		.quirk_data = &adl_max98390_amp,
- 		.sof_tplg_filename = "sof-adl-max98390-rt5682.tplg",
- 	},
-+	{
-+		.comp_ids = &adl_rt5682_rt5682s_hp,
-+		.drv_name = "adl_rt5682_c1_h02",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &adl_lt6911_hdmi,
-+		.sof_tplg_filename = "sof-adl-rt5682-ssp1-hdmi-ssp02.tplg",
-+	},
- 	{
- 		.comp_ids = &adl_rt5682_rt5682s_hp,
- 		.drv_name = "adl_rt5682",
+ 		playback = (stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 		capture = (stream == SNDRV_PCM_STREAM_CAPTURE);
+-		init_dai_link(dev, dai_links + *link_index, (*link_id)++, name,
++		init_dai_link(dev, dai_links + *link_index, (*be_id)++, name,
+ 			      playback, capture,
+ 			      cpus + *cpu_id, cpu_dai_num,
+ 			      codecs, codec_num,
 -- 
 2.39.2
 
