@@ -4,48 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2708EC001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:26:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 640D2C001DE
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 21:34:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F290820;
-	Mon, 31 Jul 2023 23:26:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F290820
+	by alsa0.perex.cz (Postfix) with ESMTPS id C14B0828;
+	Mon, 31 Jul 2023 23:33:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C14B0828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690838817;
-	bh=6dJZWSBRR/dnfFbrqRijyELVF67Un5ZaIINbq8Vur3U=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=SXac2UikGR+ojw3Cs4mORY+wSR2RXR7+6bk+2YdtH4RYI/RQI81qW1ON5aDSZ+jcm
-	 Snr0wvG4IrDJ7w+cG6B3reovelFGw7C2fSCNPjGdptrVV7UWVcbs7u4J4fo8uQgFEE
-	 8oCTv1pC8xsuPwbrN9yajCh6R+f/GnOR1GeUrnUU=
+	s=default; t=1690839271;
+	bh=kuPC8qSJrqRWpQ5mAz16jjjJQ6KDBMkcC8Wd5z2os2g=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=I7IZIpHCGyB3pXw19a/yPjqHVrj4KPBdGu5GtPCqF8aAU/O+0wV2x6pe+0jIxDFLS
+	 5CZwSmHJmulcxtFXoT8MqwEbb2bGv/nWsbaObe2vdt9zO5O6rCPi2IXGR958VPR42q
+	 Ee/rQ0vbKjw0L1f55I3ITFhh0UO78rXvqFDppyPQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1499DF80551; Mon, 31 Jul 2023 23:25:40 +0200 (CEST)
+	id 75052F80549; Mon, 31 Jul 2023 23:33:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E2AFF8016D;
-	Mon, 31 Jul 2023 23:25:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69E40F80520;
+	Mon, 31 Jul 2023 23:33:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 979A3F8016D; Mon, 31 Jul 2023 23:25:35 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBBB5F80153
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:25:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBBB5F80153
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+	id 8677FF80520; Mon, 31 Jul 2023 23:33:10 +0200 (CEST)
+Received: from mgamail.intel.com (unknown [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 48205F80153
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 23:33:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48205F80153
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=a23fOXd5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690839184; x=1722375184;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kuPC8qSJrqRWpQ5mAz16jjjJQ6KDBMkcC8Wd5z2os2g=;
+  b=a23fOXd5CKGjBwkzO56cQtQqlswLSvnqlmp0IMIDC9mQDmUiyPaapOaJ
+   a7dRS4qF+1JnggjEaVn7BoakHRltARTxB5pVijIuL7ATixXWEj1xmDJFm
+   s3P5GcfE1dQGNrpo3TDoZgLZILZaDUKQ2+Pumr6tFX6BTVrahtmL+2TJf
+   60uQzb3jPPxFN9+bqVuiRENpGv5vRf3WHf2aBJz6tfqlwqSew0QfNuNJA
+   HgQP+ruVI69XfwDDBmHG0RDs5bHjaL9PXbeRmQi2bOpY0fVir1UAZAfpe
+   xTiG6OGZSrictpslxmY3aa9ib7L7N0YGb7/8d1PeHjx9d4CiPnf7JUI3t
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435447487"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
+   d="scan'208";a="435447487"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2023 14:33:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="731708874"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200";
+   d="scan'208";a="731708874"
+Received: from youngnic-mobl1.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.209.180.66])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jul 2023 14:32:58 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1690838731879931688-webhooks-bot@alsa-project.org>
-References: <1690838731879931688-webhooks-bot@alsa-project.org>
-Subject: params_free functions don't work
-Message-Id: <20230731212535.979A3F8016D@alsa1.perex.cz>
-Date: Mon, 31 Jul 2023 23:25:35 +0200 (CEST)
-Message-ID-Hash: VYYZAHTB2HG2E3X5ESPYL476WQV6VW7H
-X-Message-ID-Hash: VYYZAHTB2HG2E3X5ESPYL476WQV6VW7H
-X-MailFrom: github@alsa-project.org
+Cc: tiwai@suse.de,
+	broonie@kernel.org,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/6] ASoC: SOF: misc updates for 6.6
+Date: Mon, 31 Jul 2023 16:32:36 -0500
+Message-Id: <20230731213242.434594-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: MPI7E7I63UQTNM42UMHRFKVA75O7K6ML
+X-Message-ID-Hash: MPI7E7I63UQTNM42UMHRFKVA75O7K6ML
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VYYZAHTB2HG2E3X5ESPYL476WQV6VW7H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPI7E7I63UQTNM42UMHRFKVA75O7K6ML/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,22 +98,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #341 was opened from imyxh:
+Cleanups, move of code to promote reuse and Mediatek minor updates.
 
-The following code segfaults on the call to `snd_pcm_hw_params_free` on my machine:
+Curtis Malainey (1):
+  ASoC: SOF: Deprecate invalid enums in IPC3
 
-```c
-#include <alsa/asoundlib.h>
-void main() {
-	snd_pcm_hw_params_t *params;
-	snd_pcm_hw_params_alloca(&params);
-	snd_pcm_hw_params_free(params);
-}
-```
+Pierre-Louis Bossart (3):
+  ASoC: SOF: Intel: start simplify the signature of link_slaves_found()
+  ASoC: soc-acpi: move link_slaves_found()
+  ASoC: soc-acpi: improve log messagesin link_slaves_found()
 
-The same goes for `s/hw/sw/g`. Am I doing something wrong? In more complex examples it seems to fail with munmap_chunk complaining about an invalid pointer, or free complaining about an invalid size.
+Trevor Wu (2):
+  ASoC: SOF: ipc3: update dai_link_fixup for SOF_DAI_MEDIATEK_AFE
+  ASoC: SOF: mediatek: mt8186 modify dram type as non-cache
 
-How are the `*_params_free` functions meant to be used?
+ include/linux/soundwire/sdw.h          |  5 ++
+ include/linux/soundwire/sdw_intel.h    |  7 +--
+ include/sound/soc-acpi.h               |  6 ++
+ include/sound/sof/topology.h           |  4 +-
+ sound/soc/soc-acpi.c                   | 73 +++++++++++++++++++++++
+ sound/soc/sof/intel/hda.c              | 81 +-------------------------
+ sound/soc/sof/ipc3-pcm.c               | 17 ++++++
+ sound/soc/sof/mediatek/mt8186/mt8186.c | 40 +++++++------
+ 8 files changed, 130 insertions(+), 103 deletions(-)
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/341
-Repository URL: https://github.com/alsa-project/alsa-lib
+-- 
+2.39.2
+
