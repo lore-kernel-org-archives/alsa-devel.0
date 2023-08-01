@@ -4,100 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9398C0015E
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Aug 2023 14:17:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96D52C0015E
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Aug 2023 15:03:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBC5282A;
-	Tue,  1 Aug 2023 16:16:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBC5282A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1896F7F4;
+	Tue,  1 Aug 2023 17:02:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1896F7F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690899422;
-	bh=J7b+YrbsRicuC+TMJc5DzeNzxmkVbyW8D3Ko3IAnr3M=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=W7pg4WQWn4bt01oOzSBkeQVQvDsIggEB6xfG3ZZnTA+NMPBeSsovIBjCjq3/52K7X
-	 Dy8v8EKCcL2JUyTFJkO0RvFLnIejGcu3Vj96YhAZn2dmKI6jD2imz+zYwIjkV/oPAx
-	 IsIqosZcEpRp7iWL1x8BfzxCX4G3bl9OAHrsAUzU=
+	s=default; t=1690902202;
+	bh=aEx++5ZStYjeR5ZjZMNxNmR+5jWzNH9PPrI3Jp4NvQo=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=jardTlIe7hJ6KTM72s5SMcrL488uGa3RiQNgqFg91aX5Etx3bqwPVGaV7gfZ6/wVB
+	 BrWmUJwdr11oztQEkJQZ2MRdnbqSXQ+vuNq/zy0Qc4xkb/IbkEAxMVqCq1nTPZO50x
+	 6m8MvZHtSCW02i/Xfisjd3IZzEh9NXokMw4JKKno=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CE65CF80549; Tue,  1 Aug 2023 16:15:36 +0200 (CEST)
+	id B342FF80520; Tue,  1 Aug 2023 17:01:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E144F8016D;
-	Tue,  1 Aug 2023 16:15:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45363F8015B;
+	Tue,  1 Aug 2023 17:01:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C57E4F80549; Tue,  1 Aug 2023 16:15:31 +0200 (CEST)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
- [IPv6:2a00:1450:4864:20::529])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 84AD1F801D5; Tue,  1 Aug 2023 16:47:10 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7AEAFF8016D
-	for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2023 16:15:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AEAFF8016D
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=q9RCquid
-Received: by mail-ed1-x529.google.com with SMTP id
- 4fb4d7f45d1cf-51a52a7d859so14413177a12.0
-        for <alsa-devel@alsa-project.org>;
- Tue, 01 Aug 2023 07:15:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690899324; x=1691504124;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o5wcObMxzRxgJ/VGkUZYGz4Wsi7oqPu6vEBYDrbZUZY=;
-        b=q9RCquidQw67B2U7NV0lUR3RLSgvUdXx4mxan8WfH2/O9eZwsXL0bb1PGVAvYsxwnp
-         06M0pK1KK8u8zta9fnO88ZYgHMAO7KGAxVIrcdaHAEVSyWv0qiywWjMKoBH6w3jOCIEr
-         WK2NVGFvFF5rQGSPakaNAHtu60j0MPF4TbUvVPOwTPZ4cQMeYni54zHK6GKbWETrEuAm
-         i+FGO/azI+j2M6O6eyNx2KH8lZblsHQWg7zAyqy8Q/Df7OR9+9+IDohM3w2ml6RMZsyD
-         liKDKUJgQQoTkbo/+tDmoAhDISUOswqX96AemW3CV8vny1Le1XQT2CdNRhzzYtaawU06
-         AmNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690899324; x=1691504124;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o5wcObMxzRxgJ/VGkUZYGz4Wsi7oqPu6vEBYDrbZUZY=;
-        b=LYDkwDqTPeMnBKLclUjQozmvHOIf/vG3bqH605PGaxA3K1Zl5ekQ8VYSDeJRLfeDzr
-         BMb+EVPqRbWhKtfkQYhYINXNx0ibmM/OXWKFCdKRcMd4DW2uu+hPio3dkFoIw5BKcNez
-         ljuVGINN+xgreRGj9IFb08tYOQUnkdY5vBD+wec6Y2zhTltahc6d9L098IsGQtgv/sZR
-         gPEJ1+jLMjX82vpayw8MvP70Qu2omh6RaxOjA1zIzWzu2Gt2zRdoFROzeoLS8P5nANL+
-         o1KcAe1oAI+XScKnQzRBO3/OBzygC5+eluSOVSWBeDXVELY83d2DkJ31dBC00nH932PP
-         nEoA==
-X-Gm-Message-State: ABy/qLYn9Xs/e6rbbF/WPZLBGwQ8YKrU3UWzX8Fusq/If4wf436YmOCV
-	/gWK3sRQO6pb9gTcIagQS9/11M+ZDMcvIRWlc80=
-X-Google-Smtp-Source: 
- APBJJlEiW7hEWKS0AOx5RN387hGF4qaTWWByX/+/lv6OzQgkUgUaVOdvPTiZdaS48r4jh/JdMc5HjLdpR7IqvxcQCu8=
-X-Received: by 2002:a05:6402:517a:b0:522:582c:f427 with SMTP id
- d26-20020a056402517a00b00522582cf427mr3659632ede.14.1690899324010; Tue, 01
- Aug 2023 07:15:24 -0700 (PDT)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7FE17F80149
+	for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2023 16:45:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FE17F80149
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RFd9H64BSzNmYd;
+	Tue,  1 Aug 2023 22:41:55 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 1 Aug
+ 2023 22:45:21 +0800
+From: Yue Haibing <yuehaibing@huawei.com>
+To: <perex@perex.cz>, <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, Yue Haibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ALSA: usb-audio: Remove unused function declaration
+Date: Tue, 1 Aug 2023 22:45:12 +0800
+Message-ID: <20230801144512.18716-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
- <1690265540-25999-6-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1690265540-25999-6-git-send-email-shengjiu.wang@nxp.com>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Tue, 1 Aug 2023 17:15:12 +0300
-Message-ID: 
- <CAEnQRZBAde4t5V2HCvCQfVwVYaQPhzJ-t3hzePjueyTONEim=w@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 5/7] media: imx: fsl_asrc: Add memory to memory
- driver
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: hverkuil@xs4all.nl, sakari.ailus@iki.fi, tfiga@chromium.org,
-	m.szyprowski@samsung.com, mchehab@kernel.org, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com,
-	festevam@gmail.com, nicoleotsuka@gmail.com, lgirdwood@gmail.com,
-	broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-	alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: 7HVQQ2BIBTHYKQ6PSNFS3APTYUOIIHLD
-X-Message-ID-Hash: 7HVQQ2BIBTHYKQ6PSNFS3APTYUOIIHLD
-X-MailFrom: daniel.baluta@gmail.com
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+Message-ID-Hash: BHO5JNXOMHRCJ6OUQUQNJ2G7HIM2IDDX
+X-Message-ID-Hash: BHO5JNXOMHRCJ6OUQUQNJ2G7HIM2IDDX
+X-MailFrom: yuehaibing@huawei.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +67,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7HVQQ2BIBTHYKQ6PSNFS3APTYUOIIHLD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BHO5JNXOMHRCJ6OUQUQNJ2G7HIM2IDDX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,49 +76,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jul 25, 2023 at 10:31=E2=80=AFAM Shengjiu Wang <shengjiu.wang@nxp.c=
-om> wrote:
->
-> Implement the ASRC memory to memory function using
-> the v4l2 framework, user can use this function with
-> v4l2 ioctl interface.
->
-> User send the output and capture buffer to driver and
-> driver store the converted data to the capture buffer.
->
-> This feature can be shared by ASRC and EASRC drivers
->
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  drivers/media/platform/nxp/Kconfig        |  12 +
->  drivers/media/platform/nxp/Makefile       |   1 +
->  drivers/media/platform/nxp/fsl_asrc_m2m.c | 962 ++++++++++++++++++++++
->  include/sound/fsl_asrc_common.h           |   9 +
->  4 files changed, 984 insertions(+)
->  create mode 100644 drivers/media/platform/nxp/fsl_asrc_m2m.c
->
-> diff --git a/drivers/media/platform/nxp/Kconfig b/drivers/media/platform/=
-nxp/Kconfig
-> index a0ca6b297fb8..359f11fe2a80 100644
-> --- a/drivers/media/platform/nxp/Kconfig
-> +++ b/drivers/media/platform/nxp/Kconfig
-> @@ -56,3 +56,15 @@ config VIDEO_MX2_EMMAPRP
->
->  source "drivers/media/platform/nxp/dw100/Kconfig"
->  source "drivers/media/platform/nxp/imx-jpeg/Kconfig"
-> +
-> +config VIDEO_FSL_ASRC_M2M
-> +       tristate "MXP i.MX ASRC M2M support"
+Commit 68e67f40b734 ("ALSA: snd-usb: move calls to usb_set_interface")
+leave this unused declaration.
 
-s/MXP/NXP
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ sound/usb/endpoint.h | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
+index c09f68ce08b1..ba70f52f6860 100644
+--- a/sound/usb/endpoint.h
++++ b/sound/usb/endpoint.h
+@@ -44,7 +44,6 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep);
+ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep, bool keep_pending);
+ void snd_usb_endpoint_sync_pending_stop(struct snd_usb_endpoint *ep);
+ void snd_usb_endpoint_suspend(struct snd_usb_endpoint *ep);
+-int  snd_usb_endpoint_activate(struct snd_usb_endpoint *ep);
+ void snd_usb_endpoint_release(struct snd_usb_endpoint *ep);
+ void snd_usb_endpoint_free_all(struct snd_usb_audio *chip);
+ 
+-- 
+2.34.1
 
-> +       depends on V4L_MEM2MEM_DRIVERS
-> +       depends on MEDIA_SUPPORT
-> +       select VIDEOBUF2_DMA_CONTIG
-> +       select V4L2_MEM2MEM_DEV
-> +       help
-> +           Say Y if you want to add ASRC M2M support for NXP CPUs.
-> +           It is a completement for ASRC M2P and ASRC P2M features.
-
-Complement for?
