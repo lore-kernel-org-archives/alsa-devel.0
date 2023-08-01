@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A865C0015E
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Aug 2023 09:33:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D6D9C04A94
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Aug 2023 09:35:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94C45823;
-	Tue,  1 Aug 2023 11:32:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94C45823
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8C38827;
+	Tue,  1 Aug 2023 11:34:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8C38827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690882392;
-	bh=1nKXkEqZwTd3uRoVofQCKuZKNXzI4foutF0EbJgxGlI=;
+	s=default; t=1690882521;
+	bh=YMW8tAcOgTnYXC8nV6UZcXYyN3C7t3laKsHSKE2OFNs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FHOY2PzvPilX5MVegtUW00acJRGowxu9ei0b/GFkarQZYtoepmzPv+lRUUBkbBL60
-	 d7gbtWGfITTBZ5olmYEz6iWV/QF1mCmpUUSEZyvCw+tbzLkP0QrJwCD3W0cBKO4wy+
-	 HbcJmiNU4mRsu72qaZGhczjh+jcrwZzHDNIp01PY=
+	b=tRSGtn4bDM3iyZXZnBrN6JobKfwWu6BcPzrJIDUZzJT/unCquqhKCTW5pmctRdArf
+	 lBjLJ1FzYSIWfuFgGdw5wz5v5a37gfkIlnZHfOKTuktdwjwSNfDGI7B5PCn/QyfneB
+	 WUCxs22Fr5M1/2w6d45KYRLm7dmm3lGMoZ4DYpLA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3767DF8053B; Tue,  1 Aug 2023 11:32:15 +0200 (CEST)
+	id A4C09F8025A; Tue,  1 Aug 2023 11:34:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78297F801D5;
-	Tue,  1 Aug 2023 11:32:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D2A8F80087;
+	Tue,  1 Aug 2023 11:34:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4E2CF801D5; Tue,  1 Aug 2023 11:32:08 +0200 (CEST)
+	id A7E9BF801D5; Tue,  1 Aug 2023 11:34:00 +0200 (CEST)
 Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6B9A4F80087
-	for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2023 11:31:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B9A4F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8DB18F80087
+	for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2023 11:33:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DB18F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=lunn.ch header.i=@lunn.ch header.a=rsa-sha256
- header.s=20171124 header.b=Ldkgc0vk
+ header.s=20171124 header.b=cpjULsYI
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
 	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
 	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=rtEWlJyO83/pdRflVwgnsb07PGLvZQOy27saQA+Hr3Y=; b=Ldkgc0vkfzNJfbj4Ae6A1Lxn45
-	hIKCC9qlfiJcd7HdXnHDWNyEUYK7FXjn9AFTjBXOhA01G0WBSTnrJ2ejRDaS5mvYZswMeYBBOgG9k
-	aivgKHvD11VsSiSZXVcq2doyLqiOELy6bQ4QobsPf4vSjX3WlJtDZKVpYNO/m6pwos0E=;
+	bh=SNYkC/g1c+YfS8ZTo9JQVhuDkdGL5+kyeQ/yUz57+AY=; b=cpjULsYII+lR9kpuqlTcGQ64zN
+	YSf+oKkf8S3cxbtVU6PG3VprE3zGNQKRdFk4YRWAlLpSUWcI89OGnauzXWhFks7zwwPc6AgNlmSAM
+	XSkvQCdoANl7AS3AScQk7zhRMqAUCtHM+WmJjXGc08EE+CSOX31TtFFEZBL4KJbm/B6E=;
 Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
 	(envelope-from <andrew@lunn.ch>)
-	id 1qQlj2-002mea-Vy; Tue, 01 Aug 2023 11:31:32 +0200
-Date: Tue, 1 Aug 2023 11:31:32 +0200
+	id 1qQll5-002mfV-Ob; Tue, 01 Aug 2023 11:33:39 +0200
+Date: Tue, 1 Aug 2023 11:33:39 +0200
 From: Andrew Lunn <andrew@lunn.ch>
 To: Herve Codina <herve.codina@bootlin.com>
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -74,16 +74,17 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 06/28] net: wan: Add support for QMC HDLC
-Message-ID: <80341a96-c40f-4a45-9bad-359a890edfc4@lunn.ch>
+Subject: Re: [PATCH v2 08/28] soc: fsl: cpm1: qmc: Introduce available
+ timeslots masks
+Message-ID: <dd34fa03-0b34-44a4-9e70-9d9a69f95403@lunn.ch>
 References: <20230726150225.483464-1-herve.codina@bootlin.com>
- <20230726150225.483464-7-herve.codina@bootlin.com>
+ <20230726150225.483464-9-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230726150225.483464-7-herve.codina@bootlin.com>
-Message-ID-Hash: U7NMMJPRAVA6WA4ELBZCNKO5QJZRARB3
-X-Message-ID-Hash: U7NMMJPRAVA6WA4ELBZCNKO5QJZRARB3
+In-Reply-To: <20230726150225.483464-9-herve.codina@bootlin.com>
+Message-ID-Hash: AC3UPFTMKIG2IVWSYG5QUBC7XB6UUNHQ
+X-Message-ID-Hash: AC3UPFTMKIG2IVWSYG5QUBC7XB6UUNHQ
 X-MailFrom: andrew@lunn.ch
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U7NMMJPRAVA6WA4ELBZCNKO5QJZRARB3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AC3UPFTMKIG2IVWSYG5QUBC7XB6UUNHQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,10 +106,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> +static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
-> +{
-> +	return (struct qmc_hdlc *)dev_to_hdlc(netdev)->priv;
+On Wed, Jul 26, 2023 at 05:02:04PM +0200, Herve Codina wrote:
+> Available timeslots masks define timeslots available for the related
+> channel. These timeslots are defined by the QMC binding.
+> 
+> Timeslots used are initialized to available timeslots but can be a
+> subset of available timeslots.
+> This prepares the dynamic timeslots management (ie. changing timeslots
+> at runtime).
+> 
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> ---
+>  drivers/soc/fsl/qe/qmc.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+> index 2d2a9d88ba6c..21ad7e79e7bd 100644
+> --- a/drivers/soc/fsl/qe/qmc.c
+> +++ b/drivers/soc/fsl/qe/qmc.c
+> @@ -177,7 +177,9 @@ struct qmc_chan {
+>  	struct qmc *qmc;
+>  	void __iomem *s_param;
+>  	enum qmc_mode mode;
+> +	u64	tx_ts_mask_avail;
+>  	u64	tx_ts_mask;
+> +	u64	rx_ts_mask_avail;
+>  	u64	rx_ts_mask;
 
-priv is a void *, so you don't need the cast.
+Is this for E1? So there is a maximum of 32 slots? A u32 would be
+sufficient i think?
 
-     Andrew
+	   Andrew
