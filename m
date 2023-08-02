@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE7A2C001E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 15:38:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8613C04A6A
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 15:38:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3AE47F4;
-	Wed,  2 Aug 2023 17:37:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3AE47F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94C20832;
+	Wed,  2 Aug 2023 17:38:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94C20832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690990713;
-	bh=EZyCgKdSR3540GKvUB7qA9zXSwTteYue0NtQh+qrIgw=;
+	s=default; t=1690990731;
+	bh=9zcvg//WylNXc9U6cfVGksjHJOsyWWYtGl8IYeYbxco=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=m3HHw9tlem6tGZswtkjxPrqwm8tC+ogXq8GSGD6PF6SkGGFnB+1A4QMfUb48hK2O7
-	 jsMgeep/Yt2y98H/qAn8VI61cqlbd05BGAcE9TTWybo1KxcTNYZvruRUx3w4LtMUzc
-	 OqBFhTsljQp7Wz10cdqLX+U/JgJSwRdhY5Ewruds=
+	b=Cgw9IWs4XQQqQSrn8lfVY9YAaPMv2KU/WG4h13HeFHRrKf+PJX1fOrXL4cQf66gxN
+	 VWVudEcJ1GZP/kqajD6bnGT63bQDyK87oo097px8EZk+DLiLx4j5DRSxr3sbtvP6Pq
+	 6TvC18dD5YcOYYx68u0JSnCwvsqtsfMzZec4bIco=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5E077F80567; Wed,  2 Aug 2023 17:37:10 +0200 (CEST)
+	id AC9A2F80149; Wed,  2 Aug 2023 17:37:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2C19F8055B;
-	Wed,  2 Aug 2023 17:37:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 332DBF80571;
+	Wed,  2 Aug 2023 17:37:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D594F80553; Wed,  2 Aug 2023 17:37:04 +0200 (CEST)
+	id 672D8F80558; Wed,  2 Aug 2023 17:37:06 +0200 (CEST)
 Received: from mgamail.intel.com (unknown [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3AD76F8016D
-	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 17:36:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AD76F8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8D348F8025A
+	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 17:36:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D348F8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=igfJ3W/c
+ header.s=Intel header.b=EIG6cs08
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1690990617; x=1722526617;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=EZyCgKdSR3540GKvUB7qA9zXSwTteYue0NtQh+qrIgw=;
-  b=igfJ3W/c6d6GAPlpX6kgF0070S25ZCNDewMC50t+3mL4zc1KfP/9QQgI
-   xKuegZVAIS9r066jraO0RSP4lW9OJkdBYkTWvxmFjrI2zkYKumXDGodfE
-   Uhc9jLA82qNbixOv3oUMSoAaucc/2TDROn8UqOI97dIEpyDvvuU/FfyB1
-   q0K9BDYRY1WLiymyAHjTmmSgpbC8NxM3FKRnbQoRF0Wsx3QoXjN1kYY5B
-   I2kG0W1PnPLFuTHgNuqkUKLl5YFCMq5tI7ah9HmM9+YsYx0gl8XOoj7EI
-   Y6Pm040DDoDV9K503liJbAy96n+lPnvSSlRbcNnjgWgX6341cdqhKabKm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372350750"
+  bh=9zcvg//WylNXc9U6cfVGksjHJOsyWWYtGl8IYeYbxco=;
+  b=EIG6cs08JvdSXhhim61/Fd/J1hk+mpi3e429anGxWzTuODEE2S+8ZEXl
+   TR0l9xj1MpTCc2Sjir+plWnlOlwjm4StFPHy+gx97Ke2G+uJ/TJ9JWlno
+   RrkFeKrJtoHst3jpVcPmZX39qWAb2IpVy4Ao7v5w3iGIsF9nbbsNJOOrq
+   slL6KGgvw+qmJi0Sk0mzCVb8Fq8j+wZPHvzzFLvDeAHat9y4KzzSuSJRQ
+   BOvu1j2JU4cXfSRLs/S2YV17yzXVgaclrnsoj/Rh0ss5VccAe0UObnsYI
+   5AOo/x399CXuixiSrpDw47DDlYhDx5k34kZm5ldDa65TTku4JflyMMQ+/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372350731"
 X-IronPort-AV: E=Sophos;i="6.01,249,1684825200";
-   d="scan'208";a="372350750"
+   d="scan'208";a="372350731"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2023 08:36:44 -0700
+ 02 Aug 2023 08:36:43 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="722886953"
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="722886918"
 X-IronPort-AV: E=Sophos;i="6.01,249,1684825200";
-   d="scan'208";a="722886953"
+   d="scan'208";a="722886918"
 Received: from rickylop-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.125.114])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2023 08:36:43 -0700
+ 02 Aug 2023 08:36:42 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Rander Wang <rander.wang@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 03/16] ASoC: rt5682-sdw: make regmap cache-only in probe
-Date: Wed,  2 Aug 2023 10:36:16 -0500
-Message-Id: <20230802153629.53576-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 01/16] ASoC: SoundWire codecs: return error status in probe
+Date: Wed,  2 Aug 2023 10:36:14 -0500
+Message-Id: <20230802153629.53576-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230802153629.53576-1-pierre-louis.bossart@linux.intel.com>
 References: <20230802153629.53576-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YE2ZLWZ3MPR4U4QRFV25THXIDNSWM2BG
-X-Message-ID-Hash: YE2ZLWZ3MPR4U4QRFV25THXIDNSWM2BG
+Message-ID-Hash: 5RAPKSUJCRVZPQGMK6SHMJWFVCKA4CNK
+X-Message-ID-Hash: 5RAPKSUJCRVZPQGMK6SHMJWFVCKA4CNK
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YE2ZLWZ3MPR4U4QRFV25THXIDNSWM2BG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5RAPKSUJCRVZPQGMK6SHMJWFVCKA4CNK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,76 +104,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The RT5682 needs specific attention: there are two regmap in
-rt5682_priv struct, one is sdw_regmap which is for IO transfer, and
-the other is used for registers control.
+For some reason the first batch of SoundWire codec drivers squelch
+errors in the SoundWire probe callback.
 
-We need to set both regmaps when we set cache only. Because if we set
-rt5682->sdw_regmap only, rt5682->regmap won't set/get the right value
-when it call regmap_write/read(rt5682->sdw_regmap, ...). If we set
-rt5682->regmap only, regmap_write(rt5682->sdw_regmap, ...) is used
-in rt5682_clock_config which will be called by the ..bus_config ops.
-
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/codecs/rt5682-sdw.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/codecs/rt1308-sdw.c | 4 +---
+ sound/soc/codecs/rt5682-sdw.c | 4 +---
+ sound/soc/codecs/rt700-sdw.c  | 4 +---
+ sound/soc/codecs/rt711-sdw.c  | 4 +---
+ sound/soc/codecs/rt715-sdw.c  | 4 +---
+ 5 files changed, 5 insertions(+), 15 deletions(-)
 
+diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
+index f43520ca3187..a7740549d35c 100644
+--- a/sound/soc/codecs/rt1308-sdw.c
++++ b/sound/soc/codecs/rt1308-sdw.c
+@@ -715,9 +715,7 @@ static int rt1308_sdw_probe(struct sdw_slave *slave,
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
+ 
+-	rt1308_sdw_init(&slave->dev, regmap, slave);
+-
+-	return 0;
++	return rt1308_sdw_init(&slave->dev, regmap, slave);
+ }
+ 
+ static int rt1308_sdw_remove(struct sdw_slave *slave)
 diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
-index 7d53dd62ce17..6726458cf329 100644
+index 4968a8c0064d..7d53dd62ce17 100644
 --- a/sound/soc/codecs/rt5682-sdw.c
 +++ b/sound/soc/codecs/rt5682-sdw.c
-@@ -322,6 +322,9 @@ static int rt5682_sdw_init(struct device *dev, struct regmap *regmap,
- 		return ret;
- 	}
+@@ -674,9 +674,7 @@ static int rt5682_sdw_probe(struct sdw_slave *slave,
+ 	if (IS_ERR(regmap))
+ 		return -EINVAL;
  
-+	regcache_cache_only(rt5682->sdw_regmap, true);
-+	regcache_cache_only(rt5682->regmap, true);
-+
- 	/*
- 	 * Mark hw_init to false
- 	 * HW init will be performed when device reports present
-@@ -352,6 +355,11 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt5682->hw_init)
- 		return 0;
- 
-+	regcache_cache_only(rt5682->sdw_regmap, false);
-+	regcache_cache_only(rt5682->regmap, false);
-+	if (rt5682->first_hw_init)
-+		regcache_cache_bypass(rt5682->regmap, true);
-+
- 	/*
- 	 * PM runtime is only enabled when a Slave reports as Attached
- 	 */
-@@ -371,11 +379,6 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
- 
- 	pm_runtime_get_noresume(&slave->dev);
- 
--	if (rt5682->first_hw_init) {
--		regcache_cache_only(rt5682->regmap, false);
--		regcache_cache_bypass(rt5682->regmap, true);
--	}
+-	rt5682_sdw_init(&slave->dev, regmap, slave);
 -
- 	while (loop > 0) {
- 		regmap_read(rt5682->regmap, RT5682_DEVICE_ID, &val);
- 		if (val == DEVICE_ID)
-@@ -705,6 +708,7 @@ static int __maybe_unused rt5682_dev_suspend(struct device *dev)
+-	return 0;
++	return rt5682_sdw_init(&slave->dev, regmap, slave);
+ }
  
- 	cancel_delayed_work_sync(&rt5682->jack_detect_work);
+ static int rt5682_sdw_remove(struct sdw_slave *slave)
+diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
+index 8b28e47775cc..53e7973e0bf9 100644
+--- a/sound/soc/codecs/rt700-sdw.c
++++ b/sound/soc/codecs/rt700-sdw.c
+@@ -452,9 +452,7 @@ static int rt700_sdw_probe(struct sdw_slave *slave,
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
  
-+	regcache_cache_only(rt5682->sdw_regmap, true);
- 	regcache_cache_only(rt5682->regmap, true);
- 	regcache_mark_dirty(rt5682->regmap);
+-	rt700_init(&slave->dev, sdw_regmap, regmap, slave);
+-
+-	return 0;
++	return rt700_init(&slave->dev, sdw_regmap, regmap, slave);
+ }
  
-@@ -769,6 +773,7 @@ static int __maybe_unused rt5682_dev_resume(struct device *dev)
+ static int rt700_sdw_remove(struct sdw_slave *slave)
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index 33dced388f9e..530d1ae32c04 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -453,9 +453,7 @@ static int rt711_sdw_probe(struct sdw_slave *slave,
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
  
- regmap_sync:
- 	slave->unattach_request = 0;
-+	regcache_cache_only(rt5682->sdw_regmap, false);
- 	regcache_cache_only(rt5682->regmap, false);
- 	regcache_sync(rt5682->regmap);
+-	rt711_init(&slave->dev, sdw_regmap, regmap, slave);
+-
+-	return 0;
++	return rt711_init(&slave->dev, sdw_regmap, regmap, slave);
+ }
  
+ static int rt711_sdw_remove(struct sdw_slave *slave)
+diff --git a/sound/soc/codecs/rt715-sdw.c b/sound/soc/codecs/rt715-sdw.c
+index 6db87442b783..d09b3061096d 100644
+--- a/sound/soc/codecs/rt715-sdw.c
++++ b/sound/soc/codecs/rt715-sdw.c
+@@ -508,9 +508,7 @@ static int rt715_sdw_probe(struct sdw_slave *slave,
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
+ 
+-	rt715_init(&slave->dev, sdw_regmap, regmap, slave);
+-
+-	return 0;
++	return rt715_init(&slave->dev, sdw_regmap, regmap, slave);
+ }
+ 
+ static int rt715_sdw_remove(struct sdw_slave *slave)
 -- 
 2.39.2
 
