@@ -4,86 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 135A5C001DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 15:15:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE7A2C001E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 15:38:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 072E6857;
-	Wed,  2 Aug 2023 17:14:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 072E6857
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3AE47F4;
+	Wed,  2 Aug 2023 17:37:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3AE47F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690989324;
-	bh=AUNY4fOKGSINjHCvUnG98cy9TPxbQGOZ0uRCfqLy5bE=;
+	s=default; t=1690990713;
+	bh=EZyCgKdSR3540GKvUB7qA9zXSwTteYue0NtQh+qrIgw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FGi6MREdtUjwlhHPTbRsnP8fmT5zbjHAuHs6OfY7qpuIdfxwhuzH/n74EFgPdu6HQ
-	 efzjYQwxNdOo3t0S2H0GTDlOJj5gtMCz3DZFAy5DlwlugusibpnSeGIos7GRtaAe+K
-	 K0VW9uPixjIIGWEbky6Lgr37Ly91skrjv++NVwxQ=
+	b=m3HHw9tlem6tGZswtkjxPrqwm8tC+ogXq8GSGD6PF6SkGGFnB+1A4QMfUb48hK2O7
+	 jsMgeep/Yt2y98H/qAn8VI61cqlbd05BGAcE9TTWybo1KxcTNYZvruRUx3w4LtMUzc
+	 OqBFhTsljQp7Wz10cdqLX+U/JgJSwRdhY5Ewruds=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35281F805AC; Wed,  2 Aug 2023 17:13:04 +0200 (CEST)
+	id 5E077F80567; Wed,  2 Aug 2023 17:37:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86FB9F8058C;
-	Wed,  2 Aug 2023 17:13:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2C19F8055B;
+	Wed,  2 Aug 2023 17:37:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7DD4AF80563; Wed,  2 Aug 2023 17:12:53 +0200 (CEST)
-Received: from mgamail.intel.com (unknown [192.55.52.115])
+	id 1D594F80553; Wed,  2 Aug 2023 17:37:04 +0200 (CEST)
+Received: from mgamail.intel.com (unknown [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7E698F8016D
-	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 17:12:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E698F8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3AD76F8016D
+	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 17:36:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AD76F8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Q8bHS5Yb
+ header.s=Intel header.b=igfJ3W/c
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690989167; x=1722525167;
+  t=1690990617; x=1722526617;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=AUNY4fOKGSINjHCvUnG98cy9TPxbQGOZ0uRCfqLy5bE=;
-  b=Q8bHS5YbMN6TarAiDC4X39CzftTypk8oj9qUun498adDUj5YYFmcp0Pj
-   3znEVn2bsx8cXD5etp1i6yxTdedHmb3moYCci/ITXIs7C7DYr6i7xirb0
-   CnwiXlG5Qos7nHM3gaHluLDsZk+8yzPiOmEw5fJQAEtr8JIlaieyrHnN6
-   /mMUiIT8Rka8leczKkri5YQnCoW7MLOuOX61GNdHG/GUamV0kcTaCoato
-   bmjnqWTl1nv09HcYsC8zwTRKtgZUa8eVgzZnnzLcMkAAbj/fwXxJBOiCt
-   FEdY2t3lpOEnREftUPmlqoqVTnBwMMzFwl+XDcqJuc8mLX8KwSY5qb8nT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="369607277"
+  bh=EZyCgKdSR3540GKvUB7qA9zXSwTteYue0NtQh+qrIgw=;
+  b=igfJ3W/c6d6GAPlpX6kgF0070S25ZCNDewMC50t+3mL4zc1KfP/9QQgI
+   xKuegZVAIS9r066jraO0RSP4lW9OJkdBYkTWvxmFjrI2zkYKumXDGodfE
+   Uhc9jLA82qNbixOv3oUMSoAaucc/2TDROn8UqOI97dIEpyDvvuU/FfyB1
+   q0K9BDYRY1WLiymyAHjTmmSgpbC8NxM3FKRnbQoRF0Wsx3QoXjN1kYY5B
+   I2kG0W1PnPLFuTHgNuqkUKLl5YFCMq5tI7ah9HmM9+YsYx0gl8XOoj7EI
+   Y6Pm040DDoDV9K503liJbAy96n+lPnvSSlRbcNnjgWgX6341cdqhKabKm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372350750"
 X-IronPort-AV: E=Sophos;i="6.01,249,1684825200";
-   d="scan'208";a="369607277"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2023 08:01:16 -0700
+   d="scan'208";a="372350750"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Aug 2023 08:36:44 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="732428688"
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="722886953"
 X-IronPort-AV: E=Sophos;i="6.01,249,1684825200";
-   d="scan'208";a="732428688"
+   d="scan'208";a="722886953"
 Received: from rickylop-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.125.114])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2023 08:01:15 -0700
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Aug 2023 08:36:43 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 4/5] ALSA: hda: intel-dsp-cfg: add LunarLake support
-Date: Wed,  2 Aug 2023 10:01:04 -0500
-Message-Id: <20230802150105.24604-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 03/16] ASoC: rt5682-sdw: make regmap cache-only in probe
+Date: Wed,  2 Aug 2023 10:36:16 -0500
+Message-Id: <20230802153629.53576-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230802150105.24604-1-pierre-louis.bossart@linux.intel.com>
-References: <20230802150105.24604-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230802153629.53576-1-pierre-louis.bossart@linux.intel.com>
+References: <20230802153629.53576-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: APSJOOXBKJQREUIISZFGURPWZDHQZWS4
-X-Message-ID-Hash: APSJOOXBKJQREUIISZFGURPWZDHQZWS4
+Message-ID-Hash: YE2ZLWZ3MPR4U4QRFV25THXIDNSWM2BG
+X-Message-ID-Hash: YE2ZLWZ3MPR4U4QRFV25THXIDNSWM2BG
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/APSJOOXBKJQREUIISZFGURPWZDHQZWS4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YE2ZLWZ3MPR4U4QRFV25THXIDNSWM2BG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,34 +102,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-One more PCI ID for the road.
+The RT5682 needs specific attention: there are two regmap in
+rt5682_priv struct, one is sdw_regmap which is for IO transfer, and
+the other is used for registers control.
 
+We need to set both regmaps when we set cache only. Because if we set
+rt5682->sdw_regmap only, rt5682->regmap won't set/get the right value
+when it call regmap_write/read(rt5682->sdw_regmap, ...). If we set
+rt5682->regmap only, regmap_write(rt5682->sdw_regmap, ...) is used
+in rt5682_clock_config which will be called by the ..bus_config ops.
+
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/hda/intel-dsp-config.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/rt5682-sdw.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 1abe65f0ba1b..dcf2453138a5 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -465,6 +465,14 @@ static const struct config_entry config_table[] = {
- 	},
- #endif
+diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
+index 7d53dd62ce17..6726458cf329 100644
+--- a/sound/soc/codecs/rt5682-sdw.c
++++ b/sound/soc/codecs/rt5682-sdw.c
+@@ -322,6 +322,9 @@ static int rt5682_sdw_init(struct device *dev, struct regmap *regmap,
+ 		return ret;
+ 	}
  
-+/* Lunar Lake */
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_LUNARLAKE)
-+	/* Lunarlake-P */
-+	{
-+		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
-+		.device = PCI_DEVICE_ID_INTEL_HDA_LNL_P,
-+	},
-+#endif
- };
++	regcache_cache_only(rt5682->sdw_regmap, true);
++	regcache_cache_only(rt5682->regmap, true);
++
+ 	/*
+ 	 * Mark hw_init to false
+ 	 * HW init will be performed when device reports present
+@@ -352,6 +355,11 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
+ 	if (rt5682->hw_init)
+ 		return 0;
  
- static const struct config_entry *snd_intel_dsp_find_config
++	regcache_cache_only(rt5682->sdw_regmap, false);
++	regcache_cache_only(rt5682->regmap, false);
++	if (rt5682->first_hw_init)
++		regcache_cache_bypass(rt5682->regmap, true);
++
+ 	/*
+ 	 * PM runtime is only enabled when a Slave reports as Attached
+ 	 */
+@@ -371,11 +379,6 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
+ 
+ 	pm_runtime_get_noresume(&slave->dev);
+ 
+-	if (rt5682->first_hw_init) {
+-		regcache_cache_only(rt5682->regmap, false);
+-		regcache_cache_bypass(rt5682->regmap, true);
+-	}
+-
+ 	while (loop > 0) {
+ 		regmap_read(rt5682->regmap, RT5682_DEVICE_ID, &val);
+ 		if (val == DEVICE_ID)
+@@ -705,6 +708,7 @@ static int __maybe_unused rt5682_dev_suspend(struct device *dev)
+ 
+ 	cancel_delayed_work_sync(&rt5682->jack_detect_work);
+ 
++	regcache_cache_only(rt5682->sdw_regmap, true);
+ 	regcache_cache_only(rt5682->regmap, true);
+ 	regcache_mark_dirty(rt5682->regmap);
+ 
+@@ -769,6 +773,7 @@ static int __maybe_unused rt5682_dev_resume(struct device *dev)
+ 
+ regmap_sync:
+ 	slave->unattach_request = 0;
++	regcache_cache_only(rt5682->sdw_regmap, false);
+ 	regcache_cache_only(rt5682->regmap, false);
+ 	regcache_sync(rt5682->regmap);
+ 
 -- 
 2.39.2
 
