@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 106FDC001E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 15:42:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C816C001E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 15:42:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE6581DD;
-	Wed,  2 Aug 2023 17:41:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE6581DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94CDA7F8;
+	Wed,  2 Aug 2023 17:42:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94CDA7F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690990957;
-	bh=ju5jk1SsL81iJwt0dO9WXzYXRhoBpsugYd4wduXB/gk=;
+	s=default; t=1690990971;
+	bh=OvAqH+RtASHkuchds9WYDK/Ng2Sb/LvYs6QG1arjcjk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mC+Mz/9UghurRUs7Cld4APSBIVd6ZCAqyqIsG13Tiflf1AkKKyrKp8aByTd6dJbfu
-	 FK7ZVkjk6dlkCinf53BoTGQ8Q+HFyjX7L6Ki/7r+zVf24Ju9h+asGDxJ5RL7bU/Kne
-	 Vyj8YM03N7Fardd2DqLxdRnCQa4xM2fhi7ITQsS8=
+	b=hoQ9rDxfwtgltuwNzG4yDSp+0G2q33J5MWRSX+e4bY4hp/mZQkYdUHyXRCMQfTJj5
+	 FOtIJADx2rLwCBFC12HJzo9BjNkyGhO45E9Q96auKV5p50YhGG9WUKYUpjwiSWNc9U
+	 z2L1gbrkKSjnviLi+HHzzNU5wkVYG8wqJ4fru0hE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1F4BF80624; Wed,  2 Aug 2023 17:38:19 +0200 (CEST)
+	id 0C8A7F8063A; Wed,  2 Aug 2023 17:38:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4B88F80621;
-	Wed,  2 Aug 2023 17:38:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 183D2F8062E;
+	Wed,  2 Aug 2023 17:38:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5EBF7F8060E; Wed,  2 Aug 2023 17:38:14 +0200 (CEST)
+	id 6B163F8060E; Wed,  2 Aug 2023 17:38:19 +0200 (CEST)
 Received: from mgamail.intel.com (unknown [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2FFA5F802BE
-	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 17:36:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FFA5F802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8C8D3F801D5
+	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 17:36:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C8D3F801D5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=RD5JlHmu
+ header.s=Intel header.b=A6JvfHn3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690990618; x=1722526618;
+  t=1690990620; x=1722526620;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ju5jk1SsL81iJwt0dO9WXzYXRhoBpsugYd4wduXB/gk=;
-  b=RD5JlHmug53xYy6yYqWZcmXI7KBSrVgGuhOqrIe82ZPrRidT5HFzGB68
-   KyCu1DHfnrxHdPsKx62/cNgvQhUgiZXR0Z4l8cZfD7shLz71SgdYheNCZ
-   5WxdSF6dN1L5ezdQEH8ct8n3Vgne2nQg4MBmt93KNp8KZLNU+QDDtjcGC
-   YIVevu/QcPe2i+jXhU6UWAsgzP0phLTUuASRYe5JVJKGNLBUqBrnKPQI0
-   9GaHII95Agb7TYmyTgEcyQtc6e36G6lhSxcR4v0c4p362ZTYq7uVop0Oq
-   C1pNqQ18a3E7dos3+owokhCRTgCBPQBumu9TIoGLdqKXqtF2QWbjshc3O
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372350738"
+  bh=OvAqH+RtASHkuchds9WYDK/Ng2Sb/LvYs6QG1arjcjk=;
+  b=A6JvfHn37h016rM1fAx095k+rHHxqZLvZb6PZRNvMBsTetZkZCcHDR5O
+   b3JUEgHzdLOl7c16i683FAG7C/hOtIEVcoveV8SlKT9m9QJjbx2w2dRS7
+   LC1KqYve4EMhyY2+i+vusR3C8uWCtIzC+EJYglLJ4NIl4x5RmuR0vS7nR
+   +KXOgkSGOhsh9bwg4snps/U7SVuySvMzLdNcbwFH606lWAmoevWTWIOHZ
+   yz0HoGVRqJA9Se4/bdOrKwUDYd93cO4kg4+rmYhHKe4X27PuOPsXbdc2Y
+   kG/hnGi6GIaUsdXzErd+PW9GlzJ2lO8ElaXZpxBeOCyCEBik1a1CJ7QuQ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372350778"
 X-IronPort-AV: E=Sophos;i="6.01,249,1684825200";
-   d="scan'208";a="372350738"
+   d="scan'208";a="372350778"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2023 08:36:44 -0700
+ 02 Aug 2023 08:36:47 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="722886949"
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="722887056"
 X-IronPort-AV: E=Sophos;i="6.01,249,1684825200";
-   d="scan'208";a="722886949"
+   d="scan'208";a="722887056"
 Received: from rickylop-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.125.114])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Aug 2023 08:36:43 -0700
+ 02 Aug 2023 08:36:45 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -73,16 +73,17 @@ Cc: tiwai@suse.de,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Rander Wang <rander.wang@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 02/16] ASoC: SoundWire codecs: make regmap cache-only in probe
-Date: Wed,  2 Aug 2023 10:36:15 -0500
-Message-Id: <20230802153629.53576-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 06/16] ASoC: rt700: enable pm_runtime in probe,
+ keep status as 'suspended'
+Date: Wed,  2 Aug 2023 10:36:19 -0500
+Message-Id: <20230802153629.53576-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230802153629.53576-1-pierre-louis.bossart@linux.intel.com>
 References: <20230802153629.53576-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: K5JK3TX7EUX3BYMWVKT73K4NR4TGYAWV
-X-Message-ID-Hash: K5JK3TX7EUX3BYMWVKT73K4NR4TGYAWV
+Message-ID-Hash: RC4C4EG3QMJILOIZS7KH27LN56DXAEFT
+X-Message-ID-Hash: RC4C4EG3QMJILOIZS7KH27LN56DXAEFT
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K5JK3TX7EUX3BYMWVKT73K4NR4TGYAWV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RC4C4EG3QMJILOIZS7KH27LN56DXAEFT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,345 +105,115 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The SoundWire bus may start after the probe where the SoundWire ASoC
-components are registered. This creates a time window where the card
-can be created and the registers be accessed.
+This patch suggests enabling pm_runtime during the probe, but marking the
+device as 'active' only after it is enumerated. That will force a
+dependency between the card and the codec, pm_runtime_get_sync() will
+have to wait for the codec device to resume and hence implicitly wait
+for the enumeration/initialization to be completed. In the nominal
+case where the codec device is already active the get_sync() would
+only perform a ref-count increase.
 
-As discussed on the mailing list, we can't really control when codecs
-are enumerated and initialized, but we can make sure the access to the
-codecs is cached until the hardware is accessible.
+The changes are directly inspired by RT711 and RT711-sdca changes.
 
-This patch configures regcache_cache_only() with a 'true' parameter in
-the probe function, and a 'false' parameter in the io_init routine.
-
-The rt5682 is handled through a different patch due to its specific
-cache handling.
-
-Link: https://lore.kernel.org/alsa-devel/20230503144102.242240-1-krzysztof.kozlowski@linaro.org/
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/codecs/max98363.c        | 7 ++++---
- sound/soc/codecs/max98373-sdw.c    | 7 ++++---
- sound/soc/codecs/rt1308-sdw.c      | 7 ++++---
- sound/soc/codecs/rt1316-sdw.c      | 4 +++-
- sound/soc/codecs/rt1318-sdw.c      | 4 +++-
- sound/soc/codecs/rt700.c           | 7 ++++---
- sound/soc/codecs/rt711-sdca.c      | 8 ++++++--
- sound/soc/codecs/rt711.c           | 7 ++++---
- sound/soc/codecs/rt712-sdca-dmic.c | 7 +++++--
- sound/soc/codecs/rt712-sdca.c      | 7 +++++--
- sound/soc/codecs/rt715-sdca.c      | 7 +++++++
- sound/soc/codecs/rt715.c           | 4 ++++
- 12 files changed, 53 insertions(+), 23 deletions(-)
+ sound/soc/codecs/rt700-sdw.c |  3 +--
+ sound/soc/codecs/rt700.c     | 39 ++++++++++++++++++++++++------------
+ 2 files changed, 27 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/codecs/max98363.c b/sound/soc/codecs/max98363.c
-index b5c69bba0e48..80a1cb482183 100644
---- a/sound/soc/codecs/max98363.c
-+++ b/sound/soc/codecs/max98363.c
-@@ -160,10 +160,9 @@ static int max98363_io_init(struct sdw_slave *slave)
- 	struct max98363_priv *max98363 = dev_get_drvdata(dev);
- 	int ret, reg;
+diff --git a/sound/soc/codecs/rt700-sdw.c b/sound/soc/codecs/rt700-sdw.c
+index 53e7973e0bf9..52c33d56b143 100644
+--- a/sound/soc/codecs/rt700-sdw.c
++++ b/sound/soc/codecs/rt700-sdw.c
+@@ -464,8 +464,7 @@ static int rt700_sdw_remove(struct sdw_slave *slave)
+ 		cancel_delayed_work_sync(&rt700->jack_btn_check_work);
+ 	}
  
--	if (max98363->first_hw_init) {
--		regcache_cache_only(max98363->regmap, false);
-+	regcache_cache_only(max98363->regmap, false);
-+	if (max98363->first_hw_init)
- 		regcache_cache_bypass(max98363->regmap, true);
--	}
+-	if (rt700->first_hw_init)
+-		pm_runtime_disable(&slave->dev);
++	pm_runtime_disable(&slave->dev);
  
- 	/*
- 	 * PM runtime is only enabled when a Slave reports as Attached
-@@ -409,6 +408,8 @@ static int max98363_init(struct sdw_slave *slave, struct regmap *regmap)
- 	max98363->regmap = regmap;
- 	max98363->slave = slave;
- 
-+	regcache_cache_only(max98363->regmap, true);
-+
- 	max98363->hw_init = false;
- 	max98363->first_hw_init = false;
- 
-diff --git a/sound/soc/codecs/max98373-sdw.c b/sound/soc/codecs/max98373-sdw.c
-index df92242af960..92d2b872f9f8 100644
---- a/sound/soc/codecs/max98373-sdw.c
-+++ b/sound/soc/codecs/max98373-sdw.c
-@@ -361,10 +361,9 @@ static int max98373_io_init(struct sdw_slave *slave)
- 	struct device *dev = &slave->dev;
- 	struct max98373_priv *max98373 = dev_get_drvdata(dev);
- 
--	if (max98373->first_hw_init) {
--		regcache_cache_only(max98373->regmap, false);
-+	regcache_cache_only(max98373->regmap, false);
-+	if (max98373->first_hw_init)
- 		regcache_cache_bypass(max98373->regmap, true);
--	}
- 
- 	/*
- 	 * PM runtime is only enabled when a Slave reports as Attached
-@@ -753,6 +752,8 @@ static int max98373_init(struct sdw_slave *slave, struct regmap *regmap)
- 	max98373->regmap = regmap;
- 	max98373->slave = slave;
- 
-+	regcache_cache_only(max98373->regmap, true);
-+
- 	max98373->cache_num = ARRAY_SIZE(max98373_sdw_cache_reg);
- 	max98373->cache = devm_kcalloc(dev, max98373->cache_num,
- 				       sizeof(*max98373->cache),
-diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
-index a7740549d35c..2c4e5330c2df 100644
---- a/sound/soc/codecs/rt1308-sdw.c
-+++ b/sound/soc/codecs/rt1308-sdw.c
-@@ -218,10 +218,9 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt1308->hw_init)
- 		return 0;
- 
--	if (rt1308->first_hw_init) {
--		regcache_cache_only(rt1308->regmap, false);
-+	regcache_cache_only(rt1308->regmap, false);
-+	if (rt1308->first_hw_init)
- 		regcache_cache_bypass(rt1308->regmap, true);
--	}
- 
- 	/*
- 	 * PM runtime is only enabled when a Slave reports as Attached
-@@ -688,6 +687,8 @@ static int rt1308_sdw_init(struct device *dev, struct regmap *regmap,
- 	rt1308->sdw_slave = slave;
- 	rt1308->regmap = regmap;
- 
-+	regcache_cache_only(rt1308->regmap, true);
-+
- 	/*
- 	 * Mark hw_init to false
- 	 * HW init will be performed when device reports present
-diff --git a/sound/soc/codecs/rt1316-sdw.c b/sound/soc/codecs/rt1316-sdw.c
-index 10a53c8d4874..57abbe2de7cf 100644
---- a/sound/soc/codecs/rt1316-sdw.c
-+++ b/sound/soc/codecs/rt1316-sdw.c
-@@ -272,8 +272,8 @@ static int rt1316_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt1316->hw_init)
- 		return 0;
- 
-+	regcache_cache_only(rt1316->regmap, false);
- 	if (rt1316->first_hw_init) {
--		regcache_cache_only(rt1316->regmap, false);
- 		regcache_cache_bypass(rt1316->regmap, true);
- 	} else {
- 		/*
-@@ -674,6 +674,8 @@ static int rt1316_sdw_init(struct device *dev, struct regmap *regmap,
- 	rt1316->sdw_slave = slave;
- 	rt1316->regmap = regmap;
- 
-+	regcache_cache_only(rt1316->regmap, true);
-+
- 	/*
- 	 * Mark hw_init to false
- 	 * HW init will be performed when device reports present
-diff --git a/sound/soc/codecs/rt1318-sdw.c b/sound/soc/codecs/rt1318-sdw.c
-index 16d750102c8c..d7803342f5c2 100644
---- a/sound/soc/codecs/rt1318-sdw.c
-+++ b/sound/soc/codecs/rt1318-sdw.c
-@@ -408,8 +408,8 @@ static int rt1318_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt1318->hw_init)
- 		return 0;
- 
-+	regcache_cache_only(rt1318->regmap, false);
- 	if (rt1318->first_hw_init) {
--		regcache_cache_only(rt1318->regmap, false);
- 		regcache_cache_bypass(rt1318->regmap, true);
- 	} else {
- 		/*
-@@ -752,6 +752,8 @@ static int rt1318_sdw_init(struct device *dev, struct regmap *regmap,
- 	rt1318->sdw_slave = slave;
- 	rt1318->regmap = regmap;
- 
-+	regcache_cache_only(rt1318->regmap, true);
-+
- 	/*
- 	 * Mark hw_init to false
- 	 * HW init will be performed when device reports present
+ 	return 0;
+ }
 diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
-index a04b9246256b..b774349dfdae 100644
+index b774349dfdae..0ebf344a1b60 100644
 --- a/sound/soc/codecs/rt700.c
 +++ b/sound/soc/codecs/rt700.c
-@@ -1099,6 +1099,8 @@ int rt700_init(struct device *dev, struct regmap *sdw_regmap,
- 	rt700->sdw_regmap = sdw_regmap;
- 	rt700->regmap = regmap;
+@@ -320,6 +320,10 @@ static int rt700_set_jack_detect(struct snd_soc_component *component,
  
-+	regcache_cache_only(rt700->regmap, true);
+ 	rt700->hs_jack = hs_jack;
+ 
++	/* we can only resume if the device was initialized at least once */
++	if (!rt700->first_hw_init)
++		return 0;
 +
- 	mutex_init(&rt700->disable_irq_lock);
+ 	ret = pm_runtime_resume_and_get(component->dev);
+ 	if (ret < 0) {
+ 		if (ret != -EACCES) {
+@@ -823,6 +827,9 @@ static int rt700_probe(struct snd_soc_component *component)
  
- 	INIT_DELAYED_WORK(&rt700->jack_detect_work,
-@@ -1132,10 +1134,9 @@ int rt700_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt700->hw_init)
- 		return 0;
+ 	rt700->component = component;
  
--	if (rt700->first_hw_init) {
--		regcache_cache_only(rt700->regmap, false);
-+	regcache_cache_only(rt700->regmap, false);
-+	if (rt700->first_hw_init)
- 		regcache_cache_bypass(rt700->regmap, true);
--	}
- 
- 	/*
- 	 * PM runtime is only enabled when a Slave reports as Attached
-diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
-index 07640d2f6e56..bd0f5e05874b 100644
---- a/sound/soc/codecs/rt711-sdca.c
-+++ b/sound/soc/codecs/rt711-sdca.c
-@@ -1406,6 +1406,9 @@ int rt711_sdca_init(struct device *dev, struct regmap *regmap,
- 	rt711->regmap = regmap;
- 	rt711->mbq_regmap = mbq_regmap;
- 
-+	regcache_cache_only(rt711->regmap, true);
-+	regcache_cache_only(rt711->mbq_regmap, true);
++	if (!rt700->first_hw_init)
++		return 0;
 +
- 	mutex_init(&rt711->calibrate_mutex);
- 	mutex_init(&rt711->disable_irq_lock);
+ 	ret = pm_runtime_resume(component->dev);
+ 	if (ret < 0 && ret != -EACCES)
+ 		return ret;
+@@ -1119,10 +1126,26 @@ int rt700_init(struct device *dev, struct regmap *sdw_regmap,
+ 				&soc_codec_dev_rt700,
+ 				rt700_dai,
+ 				ARRAY_SIZE(rt700_dai));
++	if (ret < 0)
++		return ret;
  
-@@ -1500,10 +1503,11 @@ int rt711_sdca_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt711->hw_init)
- 		return 0;
- 
-+	regcache_cache_only(rt711->regmap, false);
-+	regcache_cache_only(rt711->mbq_regmap, false);
++	/* set autosuspend parameters */
++	pm_runtime_set_autosuspend_delay(dev, 3000);
++	pm_runtime_use_autosuspend(dev);
 +
- 	if (rt711->first_hw_init) {
--		regcache_cache_only(rt711->regmap, false);
- 		regcache_cache_bypass(rt711->regmap, true);
--		regcache_cache_only(rt711->mbq_regmap, false);
- 		regcache_cache_bypass(rt711->mbq_regmap, true);
- 	} else {
- 		/*
-diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
-index af53cbcc7bf2..0ca955e2f4e7 100644
---- a/sound/soc/codecs/rt711.c
-+++ b/sound/soc/codecs/rt711.c
-@@ -1183,6 +1183,8 @@ int rt711_init(struct device *dev, struct regmap *sdw_regmap,
- 	rt711->sdw_regmap = sdw_regmap;
- 	rt711->regmap = regmap;
- 
-+	regcache_cache_only(rt711->regmap, true);
++	/* make sure the device does not suspend immediately */
++	pm_runtime_mark_last_busy(dev);
 +
- 	mutex_init(&rt711->calibrate_mutex);
- 	mutex_init(&rt711->disable_irq_lock);
- 
-@@ -1219,10 +1221,9 @@ int rt711_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt711->hw_init)
- 		return 0;
- 
--	if (rt711->first_hw_init) {
--		regcache_cache_only(rt711->regmap, false);
-+	regcache_cache_only(rt711->regmap, false);
-+	if (rt711->first_hw_init)
- 		regcache_cache_bypass(rt711->regmap, true);
--	}
- 
- 	/*
- 	 * PM runtime is only enabled when a Slave reports as Attached
-diff --git a/sound/soc/codecs/rt712-sdca-dmic.c b/sound/soc/codecs/rt712-sdca-dmic.c
-index 869cc7bfd178..0102bad0b66a 100644
---- a/sound/soc/codecs/rt712-sdca-dmic.c
-+++ b/sound/soc/codecs/rt712-sdca-dmic.c
-@@ -182,10 +182,10 @@ static int rt712_sdca_dmic_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt712->hw_init)
- 		return 0;
- 
-+	regcache_cache_only(rt712->regmap, false);
-+	regcache_cache_only(rt712->mbq_regmap, false);
- 	if (rt712->first_hw_init) {
--		regcache_cache_only(rt712->regmap, false);
- 		regcache_cache_bypass(rt712->regmap, true);
--		regcache_cache_only(rt712->mbq_regmap, false);
- 		regcache_cache_bypass(rt712->mbq_regmap, true);
- 	} else {
- 		/*
-@@ -777,6 +777,9 @@ static int rt712_sdca_dmic_init(struct device *dev, struct regmap *regmap,
- 	rt712->regmap = regmap;
- 	rt712->mbq_regmap = mbq_regmap;
- 
-+	regcache_cache_only(rt712->regmap, true);
-+	regcache_cache_only(rt712->mbq_regmap, true);
++	pm_runtime_enable(dev);
 +
- 	/*
- 	 * Mark hw_init to false
- 	 * HW init will be performed when device reports present
-diff --git a/sound/soc/codecs/rt712-sdca.c b/sound/soc/codecs/rt712-sdca.c
-index 89d245655ca4..88f6c895722e 100644
---- a/sound/soc/codecs/rt712-sdca.c
-+++ b/sound/soc/codecs/rt712-sdca.c
-@@ -1183,6 +1183,9 @@ int rt712_sdca_init(struct device *dev, struct regmap *regmap,
- 	rt712->regmap = regmap;
- 	rt712->mbq_regmap = mbq_regmap;
++	/* important note: the device is NOT tagged as 'active' and will remain
++	 * 'suspended' until the hardware is enumerated/initialized. This is required
++	 * to make sure the ASoC framework use of pm_runtime_get_sync() does not silently
++	 * fail with -EACCESS because of race conditions between card creation and enumeration
++	 */
+ 	dev_dbg(&slave->dev, "%s\n", __func__);
  
-+	regcache_cache_only(rt712->regmap, true);
-+	regcache_cache_only(rt712->mbq_regmap, true);
-+
- 	mutex_init(&rt712->calibrate_mutex);
- 	mutex_init(&rt712->disable_irq_lock);
+-	return ret;
++	return 0;
+ }
  
-@@ -1224,10 +1227,10 @@ int rt712_sdca_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt712->hw_init)
- 		return 0;
- 
-+	regcache_cache_only(rt712->regmap, false);
-+	regcache_cache_only(rt712->mbq_regmap, false);
- 	if (rt712->first_hw_init) {
--		regcache_cache_only(rt712->regmap, false);
- 		regcache_cache_bypass(rt712->regmap, true);
--		regcache_cache_only(rt712->mbq_regmap, false);
- 		regcache_cache_bypass(rt712->mbq_regmap, true);
- 	} else {
- 		/*
-diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
-index b989f907784b..176340a43446 100644
---- a/sound/soc/codecs/rt715-sdca.c
-+++ b/sound/soc/codecs/rt715-sdca.c
-@@ -977,6 +977,10 @@ int rt715_sdca_init(struct device *dev, struct regmap *mbq_regmap,
- 	rt715->regmap = regmap;
- 	rt715->mbq_regmap = mbq_regmap;
- 	rt715->hw_sdw_ver = slave->id.sdw_version;
-+
-+	regcache_cache_only(rt715->regmap, true);
-+	regcache_cache_only(rt715->mbq_regmap, true);
-+
- 	/*
- 	 * Mark hw_init to false
- 	 * HW init will be performed when device reports present
-@@ -1000,6 +1004,9 @@ int rt715_sdca_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt715->hw_init)
- 		return 0;
- 
-+	regcache_cache_only(rt715->regmap, false);
-+	regcache_cache_only(rt715->mbq_regmap, false);
-+
+ int rt700_io_init(struct device *dev, struct sdw_slave *slave)
+@@ -1141,20 +1164,10 @@ int rt700_io_init(struct device *dev, struct sdw_slave *slave)
  	/*
  	 * PM runtime is only enabled when a Slave reports as Attached
  	 */
-diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
-index 6c2e165dd621..1bd2fe8aa625 100644
---- a/sound/soc/codecs/rt715.c
-+++ b/sound/soc/codecs/rt715.c
-@@ -984,6 +984,8 @@ int rt715_init(struct device *dev, struct regmap *sdw_regmap,
- 	rt715->regmap = regmap;
- 	rt715->sdw_regmap = sdw_regmap;
+-	if (!rt700->first_hw_init) {
+-		/* set autosuspend parameters */
+-		pm_runtime_set_autosuspend_delay(&slave->dev, 3000);
+-		pm_runtime_use_autosuspend(&slave->dev);
+-
+-		/* update count of parent 'active' children */
++	if (!rt700->first_hw_init)
++		/* PM runtime status is marked as 'active' only when a Slave reports as Attached */
+ 		pm_runtime_set_active(&slave->dev);
  
-+	regcache_cache_only(rt715->regmap, true);
-+
- 	/*
- 	 * Mark hw_init to false
- 	 * HW init will be performed when device reports present
-@@ -1006,6 +1008,8 @@ int rt715_io_init(struct device *dev, struct sdw_slave *slave)
- 	if (rt715->hw_init)
- 		return 0;
+-		/* make sure the device does not suspend immediately */
+-		pm_runtime_mark_last_busy(&slave->dev);
+-
+-		pm_runtime_enable(&slave->dev);
+-	}
+-
+ 	pm_runtime_get_noresume(&slave->dev);
  
-+	regcache_cache_only(rt715->regmap, false);
-+
- 	/*
- 	 * PM runtime is only enabled when a Slave reports as Attached
- 	 */
+ 	/* reset */
 -- 
 2.39.2
 
