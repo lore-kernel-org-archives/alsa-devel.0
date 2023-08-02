@@ -4,48 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B541C001DF
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 09:40:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68A40C00528
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 09:40:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D12D827;
-	Fri,  4 Aug 2023 11:39:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D12D827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 310E0886;
+	Fri,  4 Aug 2023 11:39:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 310E0886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691142023;
-	bh=BNkya1TDh4qDREfKESk7raNUCcaMAKGApyhk3XkSe+Y=;
+	s=default; t=1691142030;
+	bh=jCI9mhGa0vozYcw+6TLdHtwgTLxbVQXk0QltuLFb1jI=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JPuxgpJt3MBQNygHcU/9Xrie1E8HXmluxoST011QPYWPuolEctU4U5XXhZiDoHZOb
-	 ABOuGApKPte56sr2bPKnaTCfwtSTYrm0jRiJBJzHkW3pcYmUp7MPd5pOctrJrZk9AE
-	 e3C/GCeymX30qGmYPZYwba7WefAu9uZB8H4JYBik=
+	b=sz6I2gln+9Yr6f+s4AjgjiVrdCENxauRrI+r6wJJAEnm3BwJkvQz5vcrbbKnFWicp
+	 dZkDbU9gk4ncfTja7j5CT6sWpOQ+9FaJxcyi+w3VOeR0jxbsE0II/0FQtLZDQ5KbiB
+	 z08V+qACM9V9Oy2wDv8Tj/fn7q2wO5ZmzV4TwSzE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27744F805B5; Fri,  4 Aug 2023 11:37:49 +0200 (CEST)
+	id B79C9F805B6; Fri,  4 Aug 2023 11:37:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E2ABF805B5;
-	Fri,  4 Aug 2023 11:37:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 446C3F805C0;
+	Fri,  4 Aug 2023 11:37:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C480EF8053B; Wed,  2 Aug 2023 10:43:24 +0200 (CEST)
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
- [61.152.239.71])
+	id EACABF80535; Wed,  2 Aug 2023 10:43:26 +0200 (CEST)
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
 	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0B528F80149
-	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 10:43:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B528F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 203C1F801D5
+	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 10:43:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 203C1F801D5
 Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by fd01.gateway.ufhost.com (Postfix) with ESMTP id A3F7582CA;
-	Wed,  2 Aug 2023 16:43:04 +0800 (CST)
+	by ex01.ufhost.com (Postfix) with ESMTP id 67EAC24E27D;
+	Wed,  2 Aug 2023 16:43:06 +0800 (CST)
 Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
  (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
- 2023 16:43:04 +0800
+ 2023 16:43:06 +0800
 Received: from localhost.localdomain (183.27.98.54) by EXMBX061.cuchost.com
  (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
- 2023 16:43:03 +0800
+ 2023 16:43:05 +0800
 From: Xingyu Wu <xingyu.wu@starfivetech.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Maxim
@@ -59,10 +58,10 @@ CC: Jose Abreu <joabreu@synopsys.com>, Paul Walmsley
  Wu" <xingyu.wu@starfivetech.com>, <devicetree@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
 	<linux-riscv@lists.infradead.org>
-Subject: [PATCH v1 2/5] ASoC: dt-bindings: snps,designware-i2s: Add StarFive
- JH7110 SoC support
-Date: Wed, 2 Aug 2023 16:42:58 +0800
-Message-ID: <20230802084301.134122-3-xingyu.wu@starfivetech.com>
+Subject: [PATCH v1 4/5] riscv: dts: starfive: pinfunc: Fix the pins name of
+ I2STX1
+Date: Wed, 2 Aug 2023 16:43:00 +0800
+Message-ID: <20230802084301.134122-5-xingyu.wu@starfivetech.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230802084301.134122-1-xingyu.wu@starfivetech.com>
 References: <20230802084301.134122-1-xingyu.wu@starfivetech.com>
@@ -79,14 +78,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 5GD6ZJFHOWGL6ZZJ4WXTMOS3HNAV6A5P
-X-Message-ID-Hash: 5GD6ZJFHOWGL6ZZJ4WXTMOS3HNAV6A5P
-X-Mailman-Approved-At: Fri, 04 Aug 2023 09:37:38 +0000
+Message-ID-Hash: JRMQDWDYV7NS6XZCL6RE5NMISJHLW6DC
+X-Message-ID-Hash: JRMQDWDYV7NS6XZCL6RE5NMISJHLW6DC
+X-Mailman-Approved-At: Fri, 04 Aug 2023 09:37:40 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JRMQDWDYV7NS6XZCL6RE5NMISJHLW6DC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,162 +95,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add the StarFive JH7110 (TX0/TX1/RX channel) SoC support in the bindings
-of Designware I2S controller. The I2S controller needs two reset items
-to work properly on the JH7110 SoC. And TX0 channel as master mode needs
-5 clock items and TX1/RX channels as slave mode need 9 clock items on
-the JH7110 SoC. The RX channel needs System Register Controller property
-to enable it and other platforms do not need it.
+These pins are actually I2STX1 clock input, not I2STX0,
+so their names should be changed.
 
 Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
 ---
- .../bindings/sound/snps,designware-i2s.yaml   | 101 +++++++++++++++++-
- 1 file changed, 98 insertions(+), 3 deletions(-)
+ arch/riscv/boot/dts/starfive/jh7110-pinfunc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/snps,designware-i2s.=
-yaml b/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
-index a970fd264b21..a5ab7f3e49b2 100644
---- a/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
-@@ -17,6 +17,9 @@ properties:
-           - const: snps,designware-i2s
-       - enum:
-           - snps,designware-i2s
-+          - starfive,jh7110-i2stx0
-+          - starfive,jh7110-i2stx1
-+          - starfive,jh7110-i2srx
-=20
-   reg:
-     maxItems: 1
-@@ -29,15 +32,36 @@ properties:
-     maxItems: 1
-=20
-   clocks:
--    description: Sampling rate reference clock
--    maxItems: 1
-+    items:
-+      - description: Sampling rate reference clock
-+      - description: APB clock
-+      - description: Audio master clock
-+      - description: Inner audio master clock source
-+      - description: External audio master clock source
-+      - description: Bit clock
-+      - description: Left/right channel clock
-+      - description: External bit clock
-+      - description: External left/right channel clock
-+    minItems: 1
-=20
-   clock-names:
--    const: i2sclk
-+    items:
-+      - const: i2sclk
-+      - const: apb
-+      - const: mclk
-+      - const: mclk_inner
-+      - const: mclk_ext
-+      - const: bclk
-+      - const: lrck
-+      - const: bclk_ext
-+      - const: lrck_ext
-+    minItems: 1
-=20
-   resets:
-     items:
-       - description: Optional controller resets
-+      - description: controller reset of Sampling rate
-+    minItems: 1
-=20
-   dmas:
-     items:
-@@ -51,6 +75,17 @@ properties:
-       - const: rx
-     minItems: 1
-=20
-+  starfive,syscon:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      - items:
-+          - description: phandle to System Register Controller sys_sysco=
-n node.
-+          - description: I2S-rx enabled control offset of SYS_SYSCONSAIF=
-__SYSCFG register.
-+          - description: I2S-rx enabled control mask
-+    description:
-+      The phandle to System Register Controller syscon node and the I2S-=
-rx(ADC)
-+      enabled control offset and mask of SYS_SYSCONSAIF__SYSCFG register=
-.
-+
- allOf:
-   - $ref: dai-common.yaml#
-   - if:
-@@ -66,6 +101,66 @@ allOf:
-       properties:
-         "#sound-dai-cells":
-           const: 0
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: snps,designware-i2s
-+    then:
-+      properties:
-+        clocks:
-+          maxItems: 1
-+        clock-names:
-+          maxItems: 1
-+        resets:
-+          maxItems: 1
-+    else:
-+      properties:
-+        resets:
-+          minItems: 2
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: starfive,jh7110-i2stx0
-+    then:
-+      properties:
-+        clocks:
-+          minItems: 5
-+        clock-names:
-+          minItems: 5
-+      required:
-+        - resets
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: starfive,jh7110-i2stx1
-+    then:
-+      properties:
-+        clocks:
-+          minItems: 9
-+        clock-names:
-+          minItems: 9
-+      required:
-+        - resets
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: starfive,jh7110-i2srx
-+    then:
-+      properties:
-+        clocks:
-+          minItems: 9
-+        clock-names:
-+          minItems: 9
-+      required:
-+        - resets
-+        - starfive,syscon
-+    else:
-+      properties:
-+        starfive,syscon: false
-=20
- required:
-   - compatible
+diff --git a/arch/riscv/boot/dts/starfive/jh7110-pinfunc.h b/arch/riscv/b=
+oot/dts/starfive/jh7110-pinfunc.h
+index fb0139b56723..256de17f5261 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110-pinfunc.h
++++ b/arch/riscv/boot/dts/starfive/jh7110-pinfunc.h
+@@ -240,8 +240,8 @@
+ #define GPI_SYS_MCLK_EXT			30
+ #define GPI_SYS_I2SRX_BCLK			31
+ #define GPI_SYS_I2SRX_LRCK			32
+-#define GPI_SYS_I2STX0_BCLK			33
+-#define GPI_SYS_I2STX0_LRCK			34
++#define GPI_SYS_I2STX1_BCLK			33
++#define GPI_SYS_I2STX1_LRCK			34
+ #define GPI_SYS_TDM_CLK				35
+ #define GPI_SYS_TDM_RXD				36
+ #define GPI_SYS_TDM_SYNC			37
 --=20
 2.25.1
 
