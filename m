@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A32F4C001DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 03:35:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01F30C001E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 03:53:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A9127F8;
-	Wed,  2 Aug 2023 05:34:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A9127F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19A696C0;
+	Wed,  2 Aug 2023 05:53:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19A696C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690947330;
-	bh=eA9FZhqDubY7F2rAvuLG3N+t8DmGYvtDYbk+ECdalHk=;
+	s=default; t=1690948437;
+	bh=pKBli4sXtzIzhc1Wbq+Gj5KVZtLVb8jCFhd63gFiceE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qpYu/qp/Y/boVqQNvsQ4z2BUlv+RxG17G2ePMULC/gyJSVTSHX8GzHcbvWAHFqKzu
-	 gyz7zlXka4tT3S4kCL0JO6nJdRlnujMts/75HQxukvA2ioKmO94rso1s/VJeO7Kcr/
-	 CdweoskvYdhBGFMM/7WjAzusWoW8SZFsjEoTm8/o=
+	b=UsWwqCGrjsRtbta3dkK5KXn1PKtrul2GO7aELQO2Y/bNyq36q5kvrusYtH7EbxM5B
+	 8ZMJa3xJdJjMPFIV0y58xQJz1bwk0afsVPkZaI2V928j966sTLuQhooJht2HKj+OBG
+	 HK0W368sCxEweWg/uPOsNDWPVP/a71CtWV8hIShg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE883F80535; Wed,  2 Aug 2023 05:34:10 +0200 (CEST)
+	id 815BAF80535; Wed,  2 Aug 2023 05:52:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36CFFF801D5;
-	Wed,  2 Aug 2023 05:34:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3762F801D5;
+	Wed,  2 Aug 2023 05:52:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6A6DCF80163; Wed,  2 Aug 2023 05:30:57 +0200 (CEST)
-Received: from mgamail.intel.com (unknown [192.55.52.88])
+	id 3D19BF801D5; Wed,  2 Aug 2023 05:52:33 +0200 (CEST)
+Received: from mgamail.intel.com (unknown [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 53813F80163
-	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 05:30:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53813F80163
+	by alsa1.perex.cz (Postfix) with ESMTPS id BBA86F80149
+	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 05:52:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBA86F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ZTFiyRql
+ header.s=Intel header.b=GsRCB2Qo
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690947014; x=1722483014;
+  t=1690948337; x=1722484337;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=eA9FZhqDubY7F2rAvuLG3N+t8DmGYvtDYbk+ECdalHk=;
-  b=ZTFiyRqlfcgfPCwkvJvi6uEJDLx7w1uadD2VHru0B+e+Sp16zqOwQqUc
-   vdBiEJKuHWx6dPCDAKMmNdXF3Pu95sPZYojpiF5I1Kk17p1koGvq0/1CY
-   /tbusN+z/9W0A8Bq3KhhljigGZ0mvbXNWQs5SQXMwTllIqvVpYFJrDATH
-   WbY2eJ8vdQHUWJXv0C0zh6PYq0QU3Cs7+wdXdbhpLJfKReE4HRDlRa+4x
-   euJHr2mM023yXx5WB/J//sr8EI888gZ1kljj4TV73nAaAZmuksW7fN/O8
-   n8l1gJGZ9eilMwMJdH5Jq9jOqI9QPvGR+CayblabqQ6bmfU9zfm8oLRSP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="400416638"
+  bh=pKBli4sXtzIzhc1Wbq+Gj5KVZtLVb8jCFhd63gFiceE=;
+  b=GsRCB2QolwerFKrlQlzQIC2VZeBWbyfp72kkJzFWIv/XGHrLFwMNq158
+   OX93SxX12/YnqVsoWANuHtvdaYebA77O3GFFpzz3Rx50aehD0UWcCVF1/
+   UjuQQIUSVA2cPZw1her+wTArDVwx/KktaD9lW4Yts0Gp7YNrGW+ephukI
+   I1QOfb+nNl+5g4myGhMDEEIvT9Xw+Ecg9XIREmoqMfkDO5QaflWkEK60M
+   IdB4ecYm2CCTNzZhsVW3OBIAxd1lMgKC/62OgpyzWK6QYIyAVXB0OMAzz
+   nZgUj6m9c8zIc2eFfNbRlP5P09Zt+XYv4L+b5l/qPJ9we/v6J2hBdeT1/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="433312662"
 X-IronPort-AV: E=Sophos;i="6.01,248,1684825200";
-   d="scan'208";a="400416638"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Aug 2023 20:30:08 -0700
+   d="scan'208";a="433312662"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Aug 2023 20:52:12 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="706022839"
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="852721900"
 X-IronPort-AV: E=Sophos;i="6.01,248,1684825200";
-   d="scan'208";a="706022839"
+   d="scan'208";a="852721900"
 Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 01 Aug 2023 20:30:05 -0700
+  by orsmga004.jf.intel.com with ESMTP; 01 Aug 2023 20:52:06 -0700
 Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1qR2Ym-0000o3-1c;
-	Wed, 02 Aug 2023 03:30:04 +0000
-Date: Wed, 2 Aug 2023 11:29:54 +0800
+	id 1qR2u5-0000pV-1F;
+	Wed, 02 Aug 2023 03:52:05 +0000
+Date: Wed, 2 Aug 2023 11:51:51 +0800
 From: kernel test robot <lkp@intel.com>
 To: cujomalainey@chromium.org, alsa-devel@alsa-project.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+Cc: oe-kbuild-all@lists.linux.dev,
 	Curtis Malainey <cujomalainey@chromium.org>,
 	Doug Anderson <dianders@chromium.org>,
 	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
@@ -80,14 +80,14 @@ Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
 	Ivan Orlov <ivan.orlov0322@gmail.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Subject: Re: [PATCH] sound: core: fix device ownership model in card and pcm
-Message-ID: <202308021152.c3aRSumS-lkp@intel.com>
+Message-ID: <202308021146.prrFapWM-lkp@intel.com>
 References: <20230801171928.1460120-1-cujomalainey@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20230801171928.1460120-1-cujomalainey@chromium.org>
-Message-ID-Hash: BU2ACDJEK5WMVOQWBT5UAOL67ZIWEJGY
-X-Message-ID-Hash: BU2ACDJEK5WMVOQWBT5UAOL67ZIWEJGY
+Message-ID-Hash: VIXA4XPEWZV7DDHFMYC5YVOLXQT6LSK2
+X-Message-ID-Hash: VIXA4XPEWZV7DDHFMYC5YVOLXQT6LSK2
 X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BU2ACDJEK5WMVOQWBT5UAOL67ZIWEJGY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VIXA4XPEWZV7DDHFMYC5YVOLXQT6LSK2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,26 +123,26 @@ url:    https://github.com/intel-lab-lkp/linux/commits/cujomalainey-chromium-org
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
 patch link:    https://lore.kernel.org/r/20230801171928.1460120-1-cujomalainey%40chromium.org
 patch subject: [PATCH] sound: core: fix device ownership model in card and pcm
-config: powerpc-randconfig-r014-20230801 (https://download.01.org/0day-ci/archive/20230802/202308021152.c3aRSumS-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230802/202308021152.c3aRSumS-lkp@intel.com/reproduce)
+config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20230802/202308021146.prrFapWM-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230802/202308021146.prrFapWM-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308021152.c3aRSumS-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308021146.prrFapWM-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
->> sound/aoa/soundbus/i2sbus/pcm.c:975:51: error: member reference type 'struct device *' is a pointer; did you mean to use '->'?
+   sound/aoa/soundbus/i2sbus/pcm.c: In function 'i2sbus_attach_codec':
+>> sound/aoa/soundbus/i2sbus/pcm.c:975:65: error: 'dev->pcm->streams[0].dev' is a pointer; did you mean to use '->'?
      975 |                 dev->pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].dev.parent =
-         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+         |                                                                 ^
          |                                                                 ->
-   sound/aoa/soundbus/i2sbus/pcm.c:992:50: error: member reference type 'struct device *' is a pointer; did you mean to use '->'?
+   sound/aoa/soundbus/i2sbus/pcm.c:992:64: error: 'dev->pcm->streams[1].dev' is a pointer; did you mean to use '->'?
      992 |                 dev->pcm->streams[SNDRV_PCM_STREAM_CAPTURE].dev.parent =
-         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+         |                                                                ^
          |                                                                ->
-   2 errors generated.
 
 
 vim +975 sound/aoa/soundbus/i2sbus/pcm.c
