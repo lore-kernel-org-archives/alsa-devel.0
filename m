@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6590FC04A94
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 18:04:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34400C001DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 18:04:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AA8986F;
-	Wed,  2 Aug 2023 20:03:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AA8986F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67E11DF5;
+	Wed,  2 Aug 2023 20:03:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67E11DF5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690999440;
-	bh=ug6nzxRs9glhiVgb2Ea08/qmpNdzgRpg07YW3+i9oSU=;
+	s=default; t=1690999452;
+	bh=lTDp1mQh6vg+tzNpPy7F9URVPhvq+UFfEK0gFqu6edI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rWvhAJhxRSm0viYiiTPgz2nzkA9KriSHLH9tixFkudLaZReyPNL3kNFMrEukj4bia
-	 3ZOmyLVm7Qn42Jdz5z8SCrDFunWUstzkRSPj+ORj6JLiC65XZFBA8QxvAHGJp/ysP6
-	 mEwEhV3wbiiN6OWy0PWXM+XT020roR3mEuhjKtR0=
+	b=jEgQwyn3y0TN7jDFPax2kD1/B8+qzw8x46BBds2dcLnYz5EEYTM4DV44P3sGYiXtw
+	 5FJwCDhkXa8pdVEjJvNSzrjn3JlkLdDJlKEDadlIPX3VKIWu8kTck5GRahkJDqyPtX
+	 c9VgHR88NgvbgIFani7iigEoAsL+xsMRw58VzklM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 062C9F80639; Wed,  2 Aug 2023 19:59:11 +0200 (CEST)
+	id 90AB9F80520; Wed,  2 Aug 2023 19:59:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DCC1F80639;
-	Wed,  2 Aug 2023 19:59:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08C1AF80641;
+	Wed,  2 Aug 2023 19:59:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6AB7F805E4; Wed,  2 Aug 2023 19:58:38 +0200 (CEST)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+	id 9EB15F80558; Wed,  2 Aug 2023 19:58:40 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 753D4F805DF
-	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 19:58:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 753D4F805DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9CA62F805E2
+	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 19:58:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CA62F805E2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=PgoxqIWg
-Received: by mail-wm1-x330.google.com with SMTP id
- 5b1f17b1804b1-3fbf1b82d9cso1211595e9.2
+ header.s=20221208 header.b=FTZxpdE5
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-3fe1d462762so1526365e9.0
         for <alsa-devel@alsa-project.org>;
- Wed, 02 Aug 2023 10:58:35 -0700 (PDT)
+ Wed, 02 Aug 2023 10:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690999114; x=1691603914;
+        d=gmail.com; s=20221208; t=1690999116; x=1691603916;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a+3O1DghoKTsvX8XNtwYPlplZlPGOuzWPkOeAp7AhV4=;
-        b=PgoxqIWgtjL86OEBXvSnfsDkFquIuj6IG9GHhXDef7BAFe669yJ8pdHyvfdrYYwBlD
-         GJC2YPeLVB7RRDLPXxqeK7DpCf64n+Y0JfuX5QUFoCDLTA1cTLmqwK6MWJXNnoQn9lZ9
-         Fnm5eKJbAGoQRfBAAA6Vkn/yc7R5iHcMtX3E9pHKhDjSa85/yQQQfd0ZF1wY8dwEV2AL
-         RoC+t9Qx2nm1lUj1c6k9px/zJAIAwTEAFH73/bvyf5o51OKy6gwrFhdABUXUOoaSHxP5
-         6UfFHPVJT8zl7mMVEEeo5atAu8JrfZkm8Ve/hqIvlWLmt78EyLV8gdlSoDrl+9IaOsBt
-         k2Xw==
+        bh=2zh/WX6wdJak4IhHc3jkL9iRoK+aXWh9O/IfQG1cm3A=;
+        b=FTZxpdE5nx4Y6zQSk5bttaigS8VbRibjeKA3ZCREfPBwHaEibBv3iLD8k9qccZtT4e
+         aZD09HP28KJsaWIUcrXrs3CEfvpd914hlqO0hNaxO+EcVsCXWA3vsRV4ehJWIiH1Wa0m
+         4wn57sn5rhYJtHRamKiJfDg/rbcpFgEruL5xAQ7YaHmSl9EWcj3T/Pi3Ruxn6R3agW0U
+         m+zQSRysHJ6Kd21dByfuCnyzcfIkxTRth8K/1GH0i/4tP1L1mi7NreUMNxUpIAAYSQbp
+         hIF7YEYJeeGSJu2iNQs7+/vSCrUJNyZEcw3URHIRTTdBEPpYg3W/+WNWflv31jJ54L80
+         39AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690999114; x=1691603914;
+        d=1e100.net; s=20221208; t=1690999116; x=1691603916;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a+3O1DghoKTsvX8XNtwYPlplZlPGOuzWPkOeAp7AhV4=;
-        b=QCNUa+0nWZshXt6mEqrdUOpcBcP0196BJANzX5YXnfEPgL8cSOsMolQreCadZm5Vjv
-         hcXiy6Twc8xTbX7sOyrza0p1nb7xOb66GsYeVQYVO5X3yAAGVp4KzNEeYWJxY19Eo6Cw
-         Cc1EjcnwJvvYEBgkeo+VNR/NuwTYeBAayyai2YtwQbvJ9LI6b0GufKyObvQ4rI07N3pD
-         oofOBKhA4w/NC6K/NIELmtzZR8jUsU2dBsrDLor6q3RITa9WvZzNRIYHjRGgZO/wjvpp
-         G6l0TuXLwH+egQruxEg1TOWbvLI2hwP31rUaegYs4nAgJhdQKbiDPdUj16xYuxvRAEhz
-         cxBg==
-X-Gm-Message-State: ABy/qLYrJsqKE2Lj2gM+gVbtWWrtfPtCPBLMwVlQz7myVZ0zg/Rduwne
-	kHvv3MzIHVXuFtgnGrJJVzSvo002Tv8=
+        bh=2zh/WX6wdJak4IhHc3jkL9iRoK+aXWh9O/IfQG1cm3A=;
+        b=kMGrO2Mpn7nkFZq4KGZOnQy8a+w2mnN20yuWQTxPWHbgEUiuhXTTpHBUkR329LSvrl
+         dSEpGSV5ma0W1QIda57ukf3pipl7CRv+c3QeiuXieayyAp2FKa2eifNp9eCfghSyDGBJ
+         vVHRkRekiA93J5Gf3xE8xtOE+Ad+7W3fBGGUQQbFoDEhCinFslKT7PW07a2WpLhXPU8J
+         1BzDn4MjRDj+6U89opuSVRMLSaGm499fUdcim+3xGnDKIi6/XEximmckffcnUpqTif7K
+         enCEWLOL4c9MwvZg2035LMGfHTwa2pLZWfZgaiRdlzLOuG8CHttWtiy8t/fW/q9HEqYH
+         5BZA==
+X-Gm-Message-State: ABy/qLZ1nwijPWhvnGKIAQrQURoseG4ZJM5YzzssmLMblYmmtDQr2aAB
+	g8AlOwz9CXIJgMm9G8+eVi4zZwo9+FU=
 X-Google-Smtp-Source: 
- APBJJlFXfxujtj6YpCKjtWZNCMBWWVwJcXqOlCDQOj6i8alThDmQeh9bj8gaybKQUMc6C5J1umD6GQ==
-X-Received: by 2002:a7b:c5d9:0:b0:3f7:678c:74b0 with SMTP id
- n25-20020a7bc5d9000000b003f7678c74b0mr5632761wmk.12.1690999113752;
-        Wed, 02 Aug 2023 10:58:33 -0700 (PDT)
+ APBJJlFfB53UV8DUxJrlC5VR+KxGVU5uRRmKWxImfq+r4JmICNTmBkIhF7ae8zlkVAqNbIoOqNS/zQ==
+X-Received: by 2002:a05:600c:20cb:b0:3f8:2777:15e with SMTP id
+ y11-20020a05600c20cb00b003f82777015emr5232003wmm.31.1690999115687;
+        Wed, 02 Aug 2023 10:58:35 -0700 (PDT)
 Received: from ALPER-PC.. ([178.233.24.1])
         by smtp.gmail.com with ESMTPSA id
- l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.32
+ l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 10:58:33 -0700 (PDT)
+        Wed, 02 Aug 2023 10:58:35 -0700 (PDT)
 From: Alper Nebi Yasak <alpernebiyasak@gmail.com>
 To: alsa-devel@alsa-project.org
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -96,16 +96,16 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	Matthias Brugger <matthias.bgg@gmail.com>,
 	=?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
  <nfraprado@collabora.com>
-Subject: [PATCH 20/27] ASoC: qcom: sc7180: Map missing jack kcontrols
-Date: Wed,  2 Aug 2023 20:57:30 +0300
-Message-Id: <20230802175737.263412-21-alpernebiyasak@gmail.com>
+Subject: [PATCH 21/27] ASoC: qcom: sc7280: Map missing jack kcontrols
+Date: Wed,  2 Aug 2023 20:57:31 +0300
+Message-Id: <20230802175737.263412-22-alpernebiyasak@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230802175737.263412-1-alpernebiyasak@gmail.com>
 References: <20230802175737.263412-1-alpernebiyasak@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZOEKKKFGJGR34H6SAATJL6BG33CY7IIZ
-X-Message-ID-Hash: ZOEKKKFGJGR34H6SAATJL6BG33CY7IIZ
+Message-ID-Hash: L56MWMJ5ZETPNW4OCMJKAKVSDVIWYCWY
+X-Message-ID-Hash: L56MWMJ5ZETPNW4OCMJKAKVSDVIWYCWY
 X-MailFrom: alpernebiyasak@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZOEKKKFGJGR34H6SAATJL6BG33CY7IIZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L56MWMJ5ZETPNW4OCMJKAKVSDVIWYCWY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,19 +134,21 @@ connections. Expose each to userspace as a kcontrol.
 
 Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
 ---
+Should the SND_JACK_LINEOUT be removed from the jack_new_pins calls?
+Would SND_JACK_MECHANICAL be useful as a kcontrol as well?
 
- sound/soc/qcom/sc7180.c | 40 +++++++++++++++++++++++++++++++++-------
- 1 file changed, 33 insertions(+), 7 deletions(-)
+ sound/soc/qcom/sc7280.c | 34 +++++++++++++++++++++++++++-------
+ 1 file changed, 27 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
-index f5f7c64b23a2..57c5f35dfcc5 100644
---- a/sound/soc/qcom/sc7180.c
-+++ b/sound/soc/qcom/sc7180.c
-@@ -42,6 +42,17 @@ static void sc7180_jack_free(struct snd_jack *jack)
+diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
+index 787dd49e03f6..43010e4e2242 100644
+--- a/sound/soc/qcom/sc7280.c
++++ b/sound/soc/qcom/sc7280.c
+@@ -43,6 +43,17 @@ static void sc7280_jack_free(struct snd_jack *jack)
  	snd_soc_component_set_jack(component, NULL, NULL);
  }
  
-+static struct snd_soc_jack_pin sc7180_jack_pins[] = {
++static struct snd_soc_jack_pin sc7280_jack_pins[] = {
 +	{
 +		.pin = "Headphone Jack",
 +		.mask = SND_JACK_HEADPHONE,
@@ -157,70 +159,53 @@ index f5f7c64b23a2..57c5f35dfcc5 100644
 +	},
 +};
 +
- static int sc7180_headset_init(struct snd_soc_pcm_runtime *rtd)
+ static int sc7280_headset_init(struct snd_soc_pcm_runtime *rtd)
  {
  	struct snd_soc_card *card = rtd->card;
-@@ -51,13 +62,14 @@ static int sc7180_headset_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_jack *jack;
- 	int rval;
+@@ -54,13 +65,15 @@ static int sc7280_headset_init(struct snd_soc_pcm_runtime *rtd)
+ 	int rval, i;
  
--	rval = snd_soc_card_jack_new(
--			card, "Headset Jack",
--			SND_JACK_HEADSET |
--			SND_JACK_HEADPHONE |
--			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
--			SND_JACK_BTN_2 | SND_JACK_BTN_3,
--			&pdata->hs_jack);
-+	rval = snd_soc_card_jack_new_pins(card, "Headset Jack",
-+					  SND_JACK_HEADSET |
-+					  SND_JACK_HEADPHONE |
-+					  SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+					  SND_JACK_BTN_2 | SND_JACK_BTN_3,
-+					  &pdata->hs_jack,
-+					  sc7180_jack_pins,
-+					  ARRAY_SIZE(sc7180_jack_pins));
+ 	if (!pdata->jack_setup) {
+-		rval = snd_soc_card_jack_new(card, "Headset Jack",
+-					     SND_JACK_HEADSET | SND_JACK_LINEOUT |
+-					     SND_JACK_MECHANICAL |
+-					     SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-					     SND_JACK_BTN_2 | SND_JACK_BTN_3 |
+-					     SND_JACK_BTN_4 | SND_JACK_BTN_5,
+-					     &pdata->hs_jack);
++		rval = snd_soc_card_jack_new_pins(card, "Headset Jack",
++						  SND_JACK_HEADSET | SND_JACK_LINEOUT |
++						  SND_JACK_MECHANICAL |
++						  SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++						  SND_JACK_BTN_2 | SND_JACK_BTN_3 |
++						  SND_JACK_BTN_4 | SND_JACK_BTN_5,
++						  &pdata->hs_jack,
++						  sc7280_jack_pins,
++						  ARRAY_SIZE(sc7280_jack_pins));
  
- 	if (rval < 0) {
- 		dev_err(card->dev, "Unable to add Headset Jack\n");
-@@ -297,6 +309,11 @@ static const struct snd_soc_dapm_widget sc7180_snd_widgets[] = {
+ 		if (rval < 0) {
+ 			dev_err(card->dev, "Unable to add Headset Jack\n");
+@@ -361,6 +374,11 @@ static const struct snd_soc_dapm_widget sc7280_snd_widgets[] = {
  	SND_SOC_DAPM_MIC("Headset Mic", NULL),
  };
  
-+static const struct snd_kcontrol_new sc7180_snd_controls[] = {
++static const struct snd_kcontrol_new sc7280_snd_controls[] = {
 +	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
 +	SOC_DAPM_PIN_SWITCH("Headset Mic"),
 +};
 +
- static const struct snd_soc_dapm_widget sc7180_adau7002_snd_widgets[] = {
- 	SND_SOC_DAPM_MIC("DMIC", NULL),
- };
-@@ -320,6 +337,11 @@ static const struct snd_soc_dapm_widget sc7180_snd_dual_mic_widgets[] = {
- 	SND_SOC_DAPM_MUX("Dmic Mux", SND_SOC_NOPM, 0, 0, &sc7180_dmic_mux_control),
- };
+ static int sc7280_snd_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 					 struct snd_pcm_hw_params *params)
+ {
+@@ -396,6 +414,8 @@ static int sc7280_snd_platform_probe(struct platform_device *pdev)
  
-+static const struct snd_kcontrol_new sc7180_snd_dual_mic_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+};
-+
- static const struct snd_soc_dapm_route sc7180_snd_dual_mic_audio_route[] = {
- 	{"Dmic Mux", "Front Mic", "DMIC"},
- 	{"Dmic Mux", "Rear Mic", "DMIC"},
-@@ -348,10 +370,14 @@ static int sc7180_snd_platform_probe(struct platform_device *pdev)
- 	card->dev = dev;
- 	card->dapm_widgets = sc7180_snd_widgets;
- 	card->num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets);
-+	card->controls = sc7180_snd_controls;
-+	card->num_controls = ARRAY_SIZE(sc7180_snd_controls);
+ 	card->dapm_widgets = sc7280_snd_widgets;
+ 	card->num_dapm_widgets = ARRAY_SIZE(sc7280_snd_widgets);
++	card->controls = sc7280_snd_controls;
++	card->num_controls = ARRAY_SIZE(sc7280_snd_controls);
  
- 	if (of_property_read_bool(dev->of_node, "dmic-gpios")) {
- 		card->dapm_widgets = sc7180_snd_dual_mic_widgets,
- 		card->num_dapm_widgets = ARRAY_SIZE(sc7180_snd_dual_mic_widgets),
-+		card->controls = sc7180_snd_dual_mic_controls,
-+		card->num_controls = ARRAY_SIZE(sc7180_snd_dual_mic_controls),
- 		card->dapm_routes = sc7180_snd_dual_mic_audio_route,
- 		card->num_dapm_routes = ARRAY_SIZE(sc7180_snd_dual_mic_audio_route),
- 		data->dmic_sel = devm_gpiod_get(&pdev->dev, "dmic", GPIOD_OUT_LOW);
+ 	ret = qcom_snd_parse_of(card);
+ 	if (ret)
 -- 
 2.40.1
 
