@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1B1AC001DF
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 18:00:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74863C001DF
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 18:01:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE76886F;
-	Wed,  2 Aug 2023 20:00:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE76886F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C59224E;
+	Wed,  2 Aug 2023 20:00:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C59224E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690999252;
-	bh=YBG5VsjTUOyJ4LHepKLqH8f4Aq/iaCkrf/F6JskqY10=;
+	s=default; t=1690999271;
+	bh=EV6sokUEFPBNAyyEgdkgFd6IVbLFp4RbjuU08yI99gw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aSTEqujwgmgFhV3hvnzgQvowBPJYbqZT9OsWCiz8vg4MhMIflLNAHx6CGb3bbdY14
-	 ok0cehGuWXNXvbpoTmlsjPAbUtPu/wiOtFoEezkALZQUe6Y33DVo/nZj15kHsB0oST
-	 4k3gNYo1/ByoLFarGCLFTDTeyS0x0Aq/tYVMAVtg=
+	b=Sv0WZlfLWcOQNpb/VuX7D0ByI4nB9+Fw43zvD1hNK9LRbilFpRrYMiWOJXNqsQMEM
+	 KdDfiCSEtymGIBua+zUIkvmmnw/e/FDCo9aCy1s6VccZCFa4aTktEmWMbkcc/ArRif
+	 da8t1IPHAV51/QgCV3221NXNVfUqH6wrCot4QIOo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59DA1F805C0; Wed,  2 Aug 2023 19:58:30 +0200 (CEST)
+	id 0CA6CF805C1; Wed,  2 Aug 2023 19:58:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A53AF805B6;
-	Wed,  2 Aug 2023 19:58:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AB81F805C1;
+	Wed,  2 Aug 2023 19:58:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D208CF80571; Wed,  2 Aug 2023 19:58:16 +0200 (CEST)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
+	id B4475F8056F; Wed,  2 Aug 2023 19:58:18 +0200 (CEST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 59474F80551
-	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 19:58:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59474F80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8CA57F80520
+	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 19:58:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CA57F80520
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=cH9DcH1D
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-3fbea147034so1550105e9.0
+ header.s=20221208 header.b=eUPPgU27
+Received: by mail-wm1-x32b.google.com with SMTP id
+ 5b1f17b1804b1-3fe2bc27029so1308615e9.3
         for <alsa-devel@alsa-project.org>;
- Wed, 02 Aug 2023 10:58:11 -0700 (PDT)
+ Wed, 02 Aug 2023 10:58:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690999090; x=1691603890;
+        d=gmail.com; s=20221208; t=1690999092; x=1691603892;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L5Agk2IhTlueKpAaOVZPmPiVBKk+AEjM8QiFyo+WrKQ=;
-        b=cH9DcH1DxY4Yz9Q9s2/zqrXiaeWRqIgZsmXk5aOM5TA9zaAmZZtz4Ue5dckgnO/7PR
-         LcDuoemcupnv+vTeCNJJqkCm8yylKBrOc40IT40+P6L8HWbHIzKll9CqbUlXScxvxEqK
-         YBUi0vnpPisZkI8DvtYQsrZXm7eArwxev7rnIKr+BU6Aa1F8RDAyEdz5rqDYN7GmB1pY
-         /zFPekPj6pIE04Pz5oCvTUYWillfyfKmFqAEA92JtC5znNz73IljhlYowHalEOkDIcQj
-         bzr4b4xQLJDSuuEIYhHEJhe8I2WL9FetkV1cmP37LVhXf23zYFf3Jc/USF8Nqu5muPyn
-         rUyA==
+        bh=gA29wr7vIe71PHnjZ5O12+t0Upf2Tn7RCA7Ahjy5Xv0=;
+        b=eUPPgU27Wo4JR9a2RIjYfG+xrznhiFt9Qe7qlU/+5xCKROjTMqCOKQuyxxbiACT0BO
+         X8LR3/sOH47/yXSL31SYbZpkxpD6j8RFN5Y1DlDIttR7gbZ8S8X0i2JxnlvfH3o4wX+W
+         m1TDvCHB9fKxLosYA3pbH4UypPxafLw4OU3trvvoM0Hvp1YcNe4GLPx/vz8V5o3FtyOW
+         WQjqlzzzwgIrbNNeMoLJSv06ywQxuwD1+xee4JTf4rb58FpNp06uKNHrLDUUJrmMM1y2
+         ufjo7mouFAdTL9DHyh8I9dWWRW9H8LSd19mvgdvrWaZ/DgDbXYtIdWEuzTgVfQHQfsiK
+         0y+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690999090; x=1691603890;
+        d=1e100.net; s=20221208; t=1690999092; x=1691603892;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L5Agk2IhTlueKpAaOVZPmPiVBKk+AEjM8QiFyo+WrKQ=;
-        b=j3acUtcSvaa7UnmqGvx7iUAzmsq9KjagfCv8EQ/iLhrBt4l3eELZScMIgy9OmwV6Ml
-         SAYtDhfJIJ78nEErFluzQ7N560PK5lK7zlmVJK/vatjD2vU/SGASVniTM6By7knin/Ez
-         93968S1rAaHUzy5L9mfkx6HZAZQ6wV5uthIiB1b5OFrQUg/rPvHnoyD3wH6vaUHivdJR
-         Hj1Pjmttlfeqn0PId3NA4E64PIU1uflQWnmDltA46CDT+pniNUzUkfa7G//P4yVRY96h
-         4SK2KGyT1GOIpoYzqVJRj9Wgp2G4Tn/45MStDWKTfpMFlc+h6jTzGIgnXxigie24URPt
-         ARXQ==
-X-Gm-Message-State: ABy/qLb3IbcDioVVQXsqVxTLQquXBgPHeq+++2XiU52QtGo62O5zW84P
-	z36ff4tI1b9++xrdZbd2u27DcBNN3V0=
+        bh=gA29wr7vIe71PHnjZ5O12+t0Upf2Tn7RCA7Ahjy5Xv0=;
+        b=bfwhaVZXtKDxk17qw2tNti6YtNRgikN0Yc5LrKxiB9u3PMc6Mb5FPhuHHffWdUmYpg
+         /gpE0jXvs34NPeKJR/qXywXBDWrHcEbDWPoEyPZFKPZtEnDSNeE6H62SdIZh9rOOxtzV
+         o8hl06isebKMseeZMq9usNMhoNHuA3UhHi1VJzyWX47Fkkwha51vKnMci8WZeU7RTEZl
+         MhC8aKL7kp2EFK1u0QtM9fkxwkfnj2/BdeQ2Yh3dqX1iqNPgxJu00nt+MvGrFwjoAsx2
+         vmsz1WxUKqRTvlZQHbd5+vXSWfOTnQQas62tO9uhiKP3LyslBGdxBSUMSNz6P6gHR1wO
+         1Ztg==
+X-Gm-Message-State: ABy/qLY8BLKIxgnZXzQeZDQCMsv4/kSySnAYeCFUEEcW6XLHfUVdtXRe
+	ktxNLGntDulhDiltavCQ4CxATC2uios=
 X-Google-Smtp-Source: 
- APBJJlHfdaDchRiKCzzj9hZwgTbQzwyxtzeuizDH16V+TqsJiCmpv7CuVvnxrhr/G1gG/9TOMuyrvA==
-X-Received: by 2002:a05:600c:2253:b0:3fd:3049:9496 with SMTP id
- a19-20020a05600c225300b003fd30499496mr5605696wmm.33.1690999090199;
-        Wed, 02 Aug 2023 10:58:10 -0700 (PDT)
+ APBJJlHngmzNEWhBf6DHJujPjqwuCj4M3FeWgtuZSVvq23YZ3ZtMNId2qLjVXZPX9ou5I5sdGphd8A==
+X-Received: by 2002:a05:600c:2216:b0:3fe:16d3:7d60 with SMTP id
+ z22-20020a05600c221600b003fe16d37d60mr5772777wml.9.1690999092232;
+        Wed, 02 Aug 2023 10:58:12 -0700 (PDT)
 Received: from ALPER-PC.. ([178.233.24.1])
         by smtp.gmail.com with ESMTPSA id
- l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.08
+ l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 10:58:09 -0700 (PDT)
+        Wed, 02 Aug 2023 10:58:11 -0700 (PDT)
 From: Alper Nebi Yasak <alpernebiyasak@gmail.com>
 To: alsa-devel@alsa-project.org
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -96,17 +96,17 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	Matthias Brugger <matthias.bgg@gmail.com>,
 	=?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
  <nfraprado@collabora.com>
-Subject: [PATCH 08/27] ASoC: Intel: kbl_da7219_max98357a: Map missing Line Out
+Subject: [PATCH 09/27] ASoC: Intel: kbl_da7219_max98927: Map missing Line Out
  jack kcontrol
-Date: Wed,  2 Aug 2023 20:57:18 +0300
-Message-Id: <20230802175737.263412-9-alpernebiyasak@gmail.com>
+Date: Wed,  2 Aug 2023 20:57:19 +0300
+Message-Id: <20230802175737.263412-10-alpernebiyasak@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230802175737.263412-1-alpernebiyasak@gmail.com>
 References: <20230802175737.263412-1-alpernebiyasak@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CPUYUDNJWX2CD6JTIWNR2HCJ4POAGIN6
-X-Message-ID-Hash: CPUYUDNJWX2CD6JTIWNR2HCJ4POAGIN6
+Message-ID-Hash: B7OKRGIC3I6WII4H4LRBCRSR7GUX2WOB
+X-Message-ID-Hash: B7OKRGIC3I6WII4H4LRBCRSR7GUX2WOB
 X-MailFrom: alpernebiyasak@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CPUYUDNJWX2CD6JTIWNR2HCJ4POAGIN6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B7OKRGIC3I6WII4H4LRBCRSR7GUX2WOB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,7 +128,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Commit c2065d43ae85 ("ASoC: Intel: kbl_da7219_max98357a: remap jack
+Commit b9f53b9fc14e ("ASoC: Intel: kbl_da7219_max98927: remap jack
 pins") maps kcontrols for Headphone and Headset Mic jacks for this
 driver so that PulseAudio and PipeWire can handle jack detection events
 for these peripherals.
@@ -140,47 +140,48 @@ latter to userspace as a kcontrol as well and add the necessary widgets.
 Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
 ---
 
- sound/soc/intel/boards/kbl_da7219_max98357a.c | 7 +++++++
+ sound/soc/intel/boards/kbl_da7219_max98927.c | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index 18365ce6bcba..97149513076f 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -83,12 +83,14 @@ static const struct snd_kcontrol_new kabylake_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+index ad4223fee0c5..a1f8234c77bd 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+@@ -102,6 +102,7 @@ static const struct snd_kcontrol_new kabylake_controls[] = {
  	SOC_DAPM_PIN_SWITCH("Headset Mic"),
- 	SOC_DAPM_PIN_SWITCH("Spk"),
+ 	SOC_DAPM_PIN_SWITCH("Left Spk"),
+ 	SOC_DAPM_PIN_SWITCH("Right Spk"),
 +	SOC_DAPM_PIN_SWITCH("Line Out"),
  };
  
  static const struct snd_soc_dapm_widget kabylake_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+@@ -109,6 +110,7 @@ static const struct snd_soc_dapm_widget kabylake_widgets[] = {
  	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_SPK("Spk", NULL),
+ 	SND_SOC_DAPM_SPK("Left Spk", NULL),
+ 	SND_SOC_DAPM_SPK("Right Spk", NULL),
 +	SND_SOC_DAPM_LINE("Line Out", NULL),
  	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
  	SND_SOC_DAPM_SPK("HDMI1", NULL),
  	SND_SOC_DAPM_SPK("HDMI2", NULL),
-@@ -107,6 +109,10 @@ static struct snd_soc_jack_pin jack_pins[] = {
+@@ -127,6 +129,10 @@ static struct snd_soc_jack_pin jack_pins[] = {
  		.pin    = "Headset Mic",
  		.mask   = SND_JACK_MICROPHONE,
  	},
 +	{
 +		.pin    = "Line Out",
-+		.mask   = SND_JACK_LINEOUT,
++		.mask   = SND_JACK_MICROPHONE,
 +	},
  };
  
  static const struct snd_soc_dapm_route kabylake_map[] = {
-@@ -147,6 +153,7 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+@@ -182,6 +188,7 @@ static const struct snd_soc_dapm_route kabylake_ssp1_map[] = {
  
  	{ "Headphone Jack", NULL, "Platform Clock" },
  	{ "Headset Mic", NULL, "Platform Clock" },
 +	{ "Line Out", NULL, "Platform Clock" },
  };
  
- static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
 -- 
 2.40.1
 
