@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C44BC001DE
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 05:23:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB590C001DE
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Aug 2023 05:25:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B3ED7F8;
-	Wed,  2 Aug 2023 07:22:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B3ED7F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 203927F8;
+	Wed,  2 Aug 2023 07:24:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 203927F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690953807;
-	bh=+tjsNFjesriWjA8VxbQgaE/36CDFPOydAoI+uJLEoRU=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ZfnDUGH5SNJhSlybpNiHjwtTDZLw7wz2Upw+JMUC67heiI3c8lSXzQPbobGB+yWwT
-	 ML9/FR+umjnFCJEroLvhX1YhHrNlMfo+d4ARCER9zHdiroR2eqapT8E4qloX1nBa5z
-	 FRQy8TV4poFPknbRNxKnp2N4ElnZ7iUUcDAk9BrQ=
+	s=default; t=1690953942;
+	bh=lu9ZmukZ7hZaN4y1TCUKegllSQmO0W/oF3RbvaT3xf8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=a6ih3Oy5F3d9beoxCFPaQ/GJy6PU8G3JiqUpEVdNvPzCsxsVo2JLajZk724kcTVEc
+	 nEvV10npMxwb4NjUul7KM3isn+uHk9qTa8h24IaKMIKuEbfxvjCdVpYWsvgezu5Sue
+	 fOI1mpH20UkAnuFIBVS4ScW0+XWFsTIqXE3EmEzw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C2571F8025A; Wed,  2 Aug 2023 07:22:08 +0200 (CEST)
+	id 52D22F80163; Wed,  2 Aug 2023 07:24:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B57AF8025A;
-	Wed,  2 Aug 2023 07:22:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F1B3F801D5;
+	Wed,  2 Aug 2023 07:24:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ABC01F802BE; Wed,  2 Aug 2023 07:22:01 +0200 (CEST)
+	id 36AABF802BE; Wed,  2 Aug 2023 07:22:04 +0200 (CEST)
 Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-db3eur04on061d.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe0c::61d])
+ (mail-db3eur04on0625.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe0c::625])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 09344F80163
-	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 07:21:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09344F80163
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7A70BF80163
+	for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2023 07:22:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A70BF80163
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=nxp.com header.i=@nxp.com header.a=rsa-sha256
- header.s=selector2 header.b=OWsKCHvm
+ header.s=selector2 header.b=nJZvsFGA
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sx6qx2bnbVvyYDhyZ7GdDZZLXrpma57fXPb0AxJCAieICHfwf0TIQ8V2nn6l5XDqvo6oMimIthBphzzGc6uY4RFaJR9TlZJgODiUZbu9QVZdRv0r6pv7Zq8nZP1hXbdG15WM6M+SjbAoMXXB9+mlxfgMMNO4yRtVVuWZqDle3RewFoKrzSKhwHUL1DJTKxfwULi7aDjD9NW/fa2cGH3hgB/UvsjmJtfeL7ZzZBG67RzcsaT7F9yuscvh+IfDs6282TXPYkIZ+jhORdArNlO0UWD/t9RXGo+4PIcRqR5+R2JE3WIGnmZ/XMtdwwWe0b3xilnIdRN2kODmC4H68S14Jw==
+ b=lr3iTa/okHCkIE2vMA+pYXTlOIZqB8pQmwmajiec01O0AJhbWIZ9ns4ac5EqqYR+gECoezxXHlGKD6q+1zy7/1+9FKWf9h68Z1YjzwyRgifNfS2ayY4fwIypzgjzGjFuUx619GgUwHs4sTqGZOH8jxO5PWQWLevshHXl67CnHf7iw6/Z8XhHqcb6MzBEJlKa9bS8Av7bco0G6+RZ02Z8kHN5SclT7OkjeQQNkYWd2YGPcg3ggDatLJoz7IbJJ48HoEpDOXihuHeXl4xwwppB1W16I7YOJlCHmzDJXjESYGeWzMPms4eV83V9FiFSbKu5o5LvHMi7WA77AiSM5cgE/w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CXbX6FoCnen4ROyHFV4aeWDFOqlkYlgy831bbi6vPmU=;
- b=JK5WC6T5rq3IvaSEiRNDcTbor0ewUwANAE3qghTikAdznYgJptrfuTLHnqsCJZCkx4ZeQZV4EH7UJtdJe5P2AxomQ3z9zuG0qZFtD0ZG3o6u3a1tglxtYMZtD3hzd+ZKFDMKyczZVmu0R9V+YuNjt3i/c46PRD6ygYRTzRVsgt0oEsTGeAD/lL8N9vfo0S0cc80KjWqA5t24rklqC+UIQOH6rE5vHIucZvbNEFy/M78vRWrqWplbujCSCNqmiL6t1aKS5akBXYZ/QUYVccragCPA3x3V+QUOYBqg9xYg4TKqKNYWsmW7nEnfiG5G9npiMknR7exRWZM0/rLuZ6bkwg==
+ bh=Ob6zfkfSxdhoM5cBdnx5fCLkmaSmm24sPinlzAYwBQ0=;
+ b=fPoK8H654WyNvxu9x0HJDpeG6iNZxJXzOkrMgmAoO3LkbGhgp5Z7ybrP+HjNp7E1JD2nxYuV5La+rH0U8NuCH4WE0giIjPQcc0hEVmeaJ0tRys54E4uzUfEQF0EiabXURYZHovxQAM8g0W2uC7V4+/qm+SAyIz2nXFeIdRlsZuYMfG/xQWg5NgWB6HEcEIgjRpe6zRt9wcNWENFgrEYmlKpaFxp7IsB/nqd3Q+mjdEIcvvlq4SxQWiJFHv2UdyC1ayln9TQ1fNjBLL9ytLwFShhgFHD24oOpEUo0BWy68n/6vLqscC3mZHLCOxPsJLMq3gjUIIH6sKzghslnub3N7w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CXbX6FoCnen4ROyHFV4aeWDFOqlkYlgy831bbi6vPmU=;
- b=OWsKCHvmQD5N8VsW/RM4wD6Hec80QdjneBWHLywa19NQ7Xiyz4+L0Xoq0FRVU0P6o8iSyby4sTqyvBdV4IuUpeJuR4CxIDT9UP237HoACqNUEtw/InP372Pqh1HWbU8LxUCk8Bojshv6txiXnMFRqwsW42ymDtqgAUbCmPQno7g=
+ bh=Ob6zfkfSxdhoM5cBdnx5fCLkmaSmm24sPinlzAYwBQ0=;
+ b=nJZvsFGABbpHMyoyTsRGmivQZsOhg4twQ9+EypITrba8G8nQ4CG1igob+cBXPySKXjiait1ogCNquEEBLmyMMh5YkMUhFGBoAHq02vpPI/sMViqtm6FNmScKVLs+/HSXlZsESefS8hHS8AWMAveYKtvIaBfh20FcgClDlpImqeQ=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by DUZPR04MB9946.eurprd04.prod.outlook.com (2603:10a6:10:4db::5) with
+ by VI1PR04MB7088.eurprd04.prod.outlook.com (2603:10a6:800:11d::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.44; Wed, 2 Aug
- 2023 05:21:49 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
+ 2023 05:21:57 +0000
 Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
  ([fe80::cda8:5cad:29b6:3c96]) by DB9PR04MB9498.eurprd04.prod.outlook.com
  ([fe80::cda8:5cad:29b6:3c96%7]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
- 05:21:49 +0000
+ 05:21:57 +0000
 From: Chancel Liu <chancel.liu@nxp.com>
 To: shengjiu.wang@gmail.com,
 	Xiubo.Lee@gmail.com,
@@ -77,10 +78,12 @@ To: shengjiu.wang@gmail.com,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org
 Cc: Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH v2 0/3] Update the register list of MICFIL
-Date: Wed,  2 Aug 2023 13:21:14 +0800
-Message-Id: <20230802052117.1293029-1-chancel.liu@nxp.com>
+Subject: [PATCH v2 2/3] ASoC: fsl_micfil: Add fsl_micfil_use_verid function
+Date: Wed,  2 Aug 2023 13:21:16 +0800
+Message-Id: <20230802052117.1293029-3-chancel.liu@nxp.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230802052117.1293029-1-chancel.liu@nxp.com>
+References: <20230802052117.1293029-1-chancel.liu@nxp.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: SI1PR02CA0025.apcprd02.prod.outlook.com
@@ -88,59 +91,59 @@ X-ClientProxiedBy: SI1PR02CA0025.apcprd02.prod.outlook.com
  (2603:10a6:10:360::21)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DUZPR04MB9946:EE_
-X-MS-Office365-Filtering-Correlation-Id: b2d3f8dc-2a3b-42dc-5649-08db93185f3c
+X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|VI1PR04MB7088:EE_
+X-MS-Office365-Filtering-Correlation-Id: 581c9bf6-2c37-4552-0c6b-08db931863fc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	WDtbXpTN5XRQDE3xIUJn2ihAlXcuT0alOSGK8PpeyEcFlPrIIkOUTGTdrFhARmdbcOmZy0Z35f9KA+I6gHd+vASEJlQ0R6g0dTZ5wEqsPY8IDCQiXzInlzswLGKEk+QSi9JbDD5ns0jz6OH3ahXEGSv2ly5c1V5ZcqrwRnGHLGbbR5udOaAIblC3hmwjcsLBD+sBo6s7H6AjQ//QGOkZt7guNZuDI+dXPVu2PsuCm1qOk0XWWDCm3d9BStimS+d50jn2WeX0eWenSievuWsnt+OquXnof7hyCt7+IU4kiMUC8DD6REn0RxN9BmKyg47iN6EqAHa4O4TUxIB/iuSLeGGyV0ja6UqwgH5+rwoUQI29aFeZOy8NTI0mlscJL7eKIkL+h6xTEuzX73rOEjn1Ts6llFQXEIm6MgwfZJ84rlObe2V0IIIeEblThAHvkXQo3MKNoFkbURYXcQUBQIqb5QKOpN49eFkBQHccm7nLSDGhH1O7cZI61LNBxwWIdaruFQ65WF1wo7elwmHI2ev7Mti3pzu8AorKiH5Y062rMSc0HMzTC8ECYYcQemVKd/OkdMi7Wd5+gjYogGMlJGl6QZFDbNOMg97BAdyDOpSVKz/fkul1BLH+nr5fjco1Jt/GWUOLN4PKF+Rga2nGY6ceQg==
+	yWi0BzRDVUwdM7533oQ0VvijOf4qFq7F6cD4tIClBNw96QmIQRn88fUnPJm42lcoga2HAQrGE17a+oEEzQhxSFmwi4kA5LPYFGUQFhOML2+KRHIea2Czl1XQL8OJWEzhDBcRReoDrOfeXVLXeq16bkXDZBNUKcMLRXmCxoMaf4nbiAuk5AemwVhYemx/50SyszZSpS+JwIVam0FCMeAcMYa/nJlbKvucxVm+HIlIy31bmDieslBu3NHhQxxGFyt7YvpAE1glbREkRDnMf3GNuF7uE/Umpl5BxfzLpB3EVB7FmgBmndudv53CoakJlvgjeiIdJvcEo/TrGp7bYZPt8S8ah4//WuD1oRre+GZTIk/5Xl0NPCqqNtRCsf2F9iJ5akCinKUI83QOs/nFW19gUkyb+1BF5R0w7mFPI5mGmxX9IjjZxkbSGQ8WF3R3CcJw2IpiEsvbygiFdYxPkJrQMurulgZMghcQdUGbPo+YHs3c12qkuI1gPPcXGGyw7/cQjAKwjtLsQ06ru/d99sUKr1sv3PjDqlE8ZMBycqkUQomHzrWnQRCd0288jmOsnixlHxe97bAyNjlbR7R9UBASEHrNorUhwAOvPcp6S5mqwkF7+DX5UNB/t3fA1P7Wetr8BYMpq7+MYbaJ18V+/6qBLQ==
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(366004)(39860400002)(346002)(376002)(451199021)(6512007)(7416002)(6666004)(5660300002)(186003)(66946007)(4326008)(66476007)(66556008)(478600001)(52116002)(6486002)(44832011)(316002)(41300700001)(8936002)(8676002)(26005)(38350700002)(38100700002)(86362001)(921005)(6506007)(36756003)(2906002)(83380400001)(1076003)(4744005)(2616005);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(346002)(39860400002)(376002)(366004)(451199021)(44832011)(66556008)(66476007)(4326008)(66946007)(2906002)(38100700002)(38350700002)(2616005)(921005)(186003)(6506007)(1076003)(26005)(7416002)(83380400001)(86362001)(36756003)(478600001)(6512007)(52116002)(6666004)(6486002)(41300700001)(8936002)(8676002)(5660300002)(316002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?T4ArstiCYbb6AP3p/EqEdBsGtK4OLvPwLiGcq822X5qMv3YqnXqF+uBr9xrd?=
- =?us-ascii?Q?ZDgbw+zFb4Dmg69gbZgv+kO0+CYpJg1sXF7hEw26X8i8fnfq80a3xLRjjg4D?=
- =?us-ascii?Q?+PGfeNdb+KGSeeqkex5QaWH9ddXZ1qzKES595K6lH8dHSnXA6bmUbGdF812B?=
- =?us-ascii?Q?mGg399kyHEnTSy7uXWOSAkSn72Q5ypnBKVwirBW75MI6rTFQTygbjemElIbG?=
- =?us-ascii?Q?+zFeopbufI0bXduNJ9RRGA2/TtzF5TG+grrhcmrUiGnko5nBSYSfDBDXye0k?=
- =?us-ascii?Q?RrXbPBW9cMZNl2VTsxC5FWZtbi81UW4Tvrgnc89We+FN2jP1W/7w1ihCxb8+?=
- =?us-ascii?Q?CpP9tEZml7pFpnCjVJPC4HJpcN8zdjmlnAdPI9wLQ0SOW3aPsfRgg/uJER6e?=
- =?us-ascii?Q?uXl4UUN4yIL80e2OfcX0q5MDI7tDUDH8Yx4MiqyiSAtYLvP6qARD4pyDJEvk?=
- =?us-ascii?Q?N6/rf4g+0ebmt9IGT2pvGROvZgQfSeWcQtDA/fTitahsnh0QTgheBat/FNlW?=
- =?us-ascii?Q?t+DoTgbK3KPT6t+qMGxOLDkHiaF8WEcDPxsExeZYR+KDa+HoBPfR49xgDtLU?=
- =?us-ascii?Q?ln2JKAOIpj2lXcndftbpKqdVhq1uhuLjTXSk1qn7IvRYVOA839bDGb+Ub5oD?=
- =?us-ascii?Q?QPfc5V6Qo3JkbwGemDAKdufRHzyt0OMVVMFXpNLXE5G7UkTMbt/cHb5oVSYC?=
- =?us-ascii?Q?lvH2RH37asCrY+a6DFDbuxFUeOGp3s4dcaxEOeVZVvGxvfsJnDTANcwFKLPX?=
- =?us-ascii?Q?MfZtLtrDSIaqct3mtB6d2ZocQQawcU80CLZkjLNSHD2GEIrRit83bPlZqZ8v?=
- =?us-ascii?Q?iimNXiCO910FqknfXqn7LG8Zh/IhsA3A+d5zEj4OYCkbO7FPSPWPacPG/HGj?=
- =?us-ascii?Q?fNhUJ3HsZm0R9rawQcJ3DWAvrNoVqS5l69f2hOfLp498AZAGomJTs3rmOeEy?=
- =?us-ascii?Q?kGjXDvr7vSCTdmEhgadUU0ZcyibLeHJU3KvFF4BzWEiaMosWrc+2VwWESGD7?=
- =?us-ascii?Q?EZMADfu0/et17cfyrJiXELBhpzOwkNRE0m5Zs9psTnh0PesRETdByqbuijtx?=
- =?us-ascii?Q?pF/A/IVROppSdflndtzi+YxqwdLOMdb95a6hwH0Q8UPm1v+HndBHoQIiM3o9?=
- =?us-ascii?Q?KzEGU4SxbAIyK5Sy1toAQtZT1kCLN/0NR9Jbs//ncrhBGn5p0mbG1UbQCv83?=
- =?us-ascii?Q?irJZynDYoiWlgY1U0Br6U9vTSs2S4Gaq75IFliLevMagH6F6k6gFyLjJXr4O?=
- =?us-ascii?Q?JNPkOtPfZIqZyeN1Usd+qVRWffOl1Zpgo+lispXycdLwpu0jvQYoNZTTZK/+?=
- =?us-ascii?Q?8IocF4wTDWNicLkX9shfbEGnXFo0YeL6IlEHg11jJ+IqFo2MdZy1iWi6S+Zg?=
- =?us-ascii?Q?siqP/EBtLXNevASZk7+mYFp8JLAckUxjssDICrykQZqQ1VpDy+ZUMdadrTOT?=
- =?us-ascii?Q?icjcb0PYtPNgcwUrnUVpsMyAXggDJxYQb3p8W/s/xx9UBA6SAYBeT4R6y8qM?=
- =?us-ascii?Q?gfJnXbjL7c7RIeRGH/RxdoFH6L9gtFwGQwDgEUYnaZYBh6fLnRgzrUnYmG+G?=
- =?us-ascii?Q?G3U5+gGiY1KFAI9UxUPg7j+SW2pshxTLneKzLm51?=
+	=?us-ascii?Q?pfemD8cVcvTz2KSz7VjgKuWWUgaassWnoP9dJakP5Bm2Cw+hAowelGC/kvg0?=
+ =?us-ascii?Q?afoMBqe0kGl9nC7zgjKNY15UfcjsAq9Ll4BvlDH0IuT5OSfNPUexf9R07qfT?=
+ =?us-ascii?Q?IieTUsZSLaio2UBCKIuhrSdKT7RYG+d//E4QcbofZ3bHv0RCHC5Rxczw0NHi?=
+ =?us-ascii?Q?7R3kOVoSJompaa/UQi7jkqIHmoxnN+TG+MHnMFMS7Hr/SgzQ4DCYOSu6W+s5?=
+ =?us-ascii?Q?4R0bOyd5+q20TU9oUPa1bWct79A2SevMjujq8e/3WwK2jUMQBiLL5iJqL0Mn?=
+ =?us-ascii?Q?cMrWV2t/Z4aT/s9jAhyeerNo5v4LRcuLHiKIacTKthJ6tPVtnDK47Nbuph7j?=
+ =?us-ascii?Q?+AVh4/jbP7FnBEyrqBpiZ5JQNAT6H1YpP/1tHiE2/tk3RKs7B1nf5bgriQaV?=
+ =?us-ascii?Q?KPh1722CLYbwfXtqK0IHKxbPZiJ40PhpQc77ZevvRqgKbOrgg57ZJTayzUkO?=
+ =?us-ascii?Q?wolDd1sat3jXHM6eQxjO9WxeJlIzuRPcdFTT68gZXyK8GVsAxWVmwigQuG/e?=
+ =?us-ascii?Q?eIJ2LOcLrrJ41ZSCRtgp3YvZU3qTKXkMYhHXnbFJNJKwAtxbcVIACOaZyL1I?=
+ =?us-ascii?Q?f8wqIJK8jSmNtRsrLDxihSBWqEjVHhsEmvc5TSmLVjPGAIZCzI48nDu+Q1Z+?=
+ =?us-ascii?Q?mTrdLdDurfdlH+FGFvxnM+marAlS5oJEIG4NIiebXJCrFJWCAq+PQCMqXKZL?=
+ =?us-ascii?Q?46OHvazOv63hMF9LKu+/+QSCXASwJ3Z/hx+MuqKJJE7UCYoOI9vy/FY7NtRs?=
+ =?us-ascii?Q?QfDCptqaLYYR8KZIRFQqYfZLB+d/VWR/WgJsPWPLJNkLjWry7FBho0Km6Q75?=
+ =?us-ascii?Q?VgyEs0fyqLtj9S/XNpO+Inc2eB7Lm/4t+Avaeqbd923U5GmaOY9vw6UQONyt?=
+ =?us-ascii?Q?f+i6zW5dqaK2byslNcJVVut05X1yfA2CWncbANRf5sPkwZt7agTHAGgpgsqT?=
+ =?us-ascii?Q?Ikwd8P3pqYISvK9U+BKNBEfIfryxPscYPCo9uFE9zYYi1Lu5hXNFHWoRHpDv?=
+ =?us-ascii?Q?f3giyYuV2wkT4+tTiMxwkiz5g+12jceXGw3lOrpE71oQTGFxSHzjRknXYnKC?=
+ =?us-ascii?Q?8sPuNRCJ0ZDE3B4Jf95SP/zrofUy7ABHbceeALFPD8XyZQ6+Kujk6ownWGOJ?=
+ =?us-ascii?Q?yrIG/8CfZxvI0X3C6oaiaC8tXKmAFXp8HYVFJIZWCbn0viJ19yR/ZoKhaFRS?=
+ =?us-ascii?Q?Cb9LLC13c26wQDupyqZLAOMxQv4sWoMAbWGjunMV5613hl6Hgj8U0dAjpMWy?=
+ =?us-ascii?Q?dmEeoL1w4RmeXvbuwmcV8yzJyi0wK7aJXZglw7ROi73Uro+DAruzBZqdKi9F?=
+ =?us-ascii?Q?+kMf9eFyaiNSiB8SsJQRr1nGh72rLX43cQRDmgrHrwNma+xxmghXjjBEzype?=
+ =?us-ascii?Q?3z2pzCShITjNxqj1rL9LolI+mfNeHtVfRDpatOOybKIUI8HIwMSaGaQrHtXm?=
+ =?us-ascii?Q?D79Qg4+Ng9yZqQMxw8vPOxZM0Q5gOUs1Y1knk5R5G2BG+Z/jT4oyZr+YVweq?=
+ =?us-ascii?Q?3ol8cc0PF0xE8/2x1C9Bx4pBefEXiNIMChQRTZfiBKFxsMizLZNGtyOKJIL4?=
+ =?us-ascii?Q?t9RlVhKHZoLZCls4v5kbmTpjBBMw3dC0XSqn0ib5?=
 X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- b2d3f8dc-2a3b-42dc-5649-08db93185f3c
+ 581c9bf6-2c37-4552-0c6b-08db931863fc
 X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2023 05:21:49.2857
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2023 05:21:57.0860
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: 
- WJ7rjhxRU5KxFnYVQvYrhpaOTBcFYXcX4DoD/1kQe5rPo8Tc6HDbHXZw9YQd3QPnCBYVNpm/4JmEfUt2urQr6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DUZPR04MB9946
-Message-ID-Hash: RPEP7MXSIAPPSKR4EI66VJ7D4UMCRTIO
-X-Message-ID-Hash: RPEP7MXSIAPPSKR4EI66VJ7D4UMCRTIO
+ PiJXKMqXD6hY1cDhpfA5Hrq9DYAQNIp5r3E8MxIADTwa4lAy/O66V8mtLaIiMTCltbaEypksiOLRrb3RajXvrQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7088
+Message-ID-Hash: 7NAPGBMKQLPFOTUDWIKQSM47CX4FRIIW
+X-Message-ID-Hash: 7NAPGBMKQLPFOTUDWIKQSM47CX4FRIIW
 X-MailFrom: chancel.liu@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -153,7 +156,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RPEP7MXSIAPPSKR4EI66VJ7D4UMCRTIO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7NAPGBMKQLPFOTUDWIKQSM47CX4FRIIW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -162,23 +165,205 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-MICFIL IP is upgraded on i.MX93 platform. Add new registers and new bit
-definition.
+fsl_micfil_use_verid() can help to parse the version info in VERID and
+PARAM registers. Since the two registers are added only on i.MX93
+platform, a member flag called use_verid is introduced to soc data
+structure which indicates acquiring MICFIL version.
 
-changes in v2:
-- rename check_version to use_verid to make it more explicit
-- rename fsl_micfil_check_version to fsl_micfil_use_verid
+Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+---
+ sound/soc/fsl/fsl_micfil.c | 76 +++++++++++++++++++++++++++++++++++++-
+ sound/soc/fsl/fsl_micfil.h | 36 ++++++++++++++++++
+ 2 files changed, 110 insertions(+), 2 deletions(-)
 
-
-Chancel Liu (3):
-  ASoC: fsl_micfil: Add new registers and new bit definition
-  ASoC: fsl_micfil: Add fsl_micfil_use_verid function
-  ASoC: fsl_micfil: Use SET_SYSTEM_SLEEP_PM_OPS to simplify PM
-
- sound/soc/fsl/fsl_micfil.c | 100 ++++++++++++++++++++++++++++++-------
- sound/soc/fsl/fsl_micfil.h |  64 ++++++++++++++++++++++++
- 2 files changed, 146 insertions(+), 18 deletions(-)
-
---
+diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+index b15febf19c02..c4ff8ea49390 100644
+--- a/sound/soc/fsl/fsl_micfil.c
++++ b/sound/soc/fsl/fsl_micfil.c
+@@ -56,6 +56,8 @@ struct fsl_micfil {
+ 	int vad_init_mode;
+ 	int vad_enabled;
+ 	int vad_detected;
++	struct fsl_micfil_verid verid;
++	struct fsl_micfil_param param;
+ };
+ 
+ struct fsl_micfil_soc_data {
+@@ -64,6 +66,7 @@ struct fsl_micfil_soc_data {
+ 	unsigned int dataline;
+ 	bool imx;
+ 	bool use_edma;
++	bool use_verid;
+ 	u64  formats;
+ };
+ 
+@@ -90,6 +93,7 @@ static struct fsl_micfil_soc_data fsl_micfil_imx93 = {
+ 	.dataline =  0xf,
+ 	.formats = SNDRV_PCM_FMTBIT_S32_LE,
+ 	.use_edma = true,
++	.use_verid = true,
+ };
+ 
+ static const struct of_device_id fsl_micfil_dt_ids[] = {
+@@ -356,6 +360,49 @@ static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
+ 	SOC_SINGLE_BOOL_EXT("VAD Detected", 0, hwvad_detected, NULL),
+ };
+ 
++static int fsl_micfil_use_verid(struct device *dev)
++{
++	struct fsl_micfil *micfil = dev_get_drvdata(dev);
++	unsigned int val;
++	int ret;
++
++	if (!micfil->soc->use_verid)
++		return 0;
++
++	ret = regmap_read(micfil->regmap, REG_MICFIL_VERID, &val);
++	if (ret < 0)
++		return ret;
++
++	dev_dbg(dev, "VERID: 0x%016X\n", val);
++
++	micfil->verid.version = val &
++		(MICFIL_VERID_MAJOR_MASK | MICFIL_VERID_MINOR_MASK);
++	micfil->verid.version >>= MICFIL_VERID_MINOR_SHIFT;
++	micfil->verid.feature = val & MICFIL_VERID_FEATURE_MASK;
++
++	ret = regmap_read(micfil->regmap, REG_MICFIL_PARAM, &val);
++	if (ret < 0)
++		return ret;
++
++	dev_dbg(dev, "PARAM: 0x%016X\n", val);
++
++	micfil->param.hwvad_num = (val & MICFIL_PARAM_NUM_HWVAD_MASK) >>
++		MICFIL_PARAM_NUM_HWVAD_SHIFT;
++	micfil->param.hwvad_zcd = val & MICFIL_PARAM_HWVAD_ZCD;
++	micfil->param.hwvad_energy_mode = val & MICFIL_PARAM_HWVAD_ENERGY_MODE;
++	micfil->param.hwvad = val & MICFIL_PARAM_HWVAD;
++	micfil->param.dc_out_bypass = val & MICFIL_PARAM_DC_OUT_BYPASS;
++	micfil->param.dc_in_bypass = val & MICFIL_PARAM_DC_IN_BYPASS;
++	micfil->param.low_power = val & MICFIL_PARAM_LOW_POWER;
++	micfil->param.fil_out_width = val & MICFIL_PARAM_FIL_OUT_WIDTH;
++	micfil->param.fifo_ptrwid = (val & MICFIL_PARAM_FIFO_PTRWID_MASK) >>
++		MICFIL_PARAM_FIFO_PTRWID_SHIFT;
++	micfil->param.npair = (val & MICFIL_PARAM_NPAIR_MASK) >>
++		MICFIL_PARAM_NPAIR_SHIFT;
++
++	return 0;
++}
++
+ /* The SRES is a self-negated bit which provides the CPU with the
+  * capability to initialize the PDM Interface module through the
+  * slave-bus interface. This bit always reads as zero, and this
+@@ -1037,6 +1084,9 @@ static irqreturn_t hwvad_err_isr(int irq, void *devid)
+ 	return IRQ_HANDLED;
+ }
+ 
++static int fsl_micfil_runtime_suspend(struct device *dev);
++static int fsl_micfil_runtime_resume(struct device *dev);
++
+ static int fsl_micfil_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -1156,6 +1206,25 @@ static int fsl_micfil_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, micfil);
+ 
+ 	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = fsl_micfil_runtime_resume(&pdev->dev);
++		if (ret)
++			goto err_pm_disable;
++	}
++
++	ret = pm_runtime_resume_and_get(&pdev->dev);
++	if (ret < 0)
++		goto err_pm_get_sync;
++
++	/* Get micfil version */
++	ret = fsl_micfil_use_verid(&pdev->dev);
++	if (ret < 0)
++		dev_warn(&pdev->dev, "Error reading MICFIL version: %d\n", ret);
++
++	ret = pm_runtime_put_sync(&pdev->dev);
++	if (ret < 0 && ret != -ENOSYS)
++		goto err_pm_get_sync;
++
+ 	regcache_cache_only(micfil->regmap, true);
+ 
+ 	/*
+@@ -1180,6 +1249,9 @@ static int fsl_micfil_probe(struct platform_device *pdev)
+ 
+ 	return ret;
+ 
++err_pm_get_sync:
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		fsl_micfil_runtime_suspend(&pdev->dev);
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+ 
+@@ -1191,7 +1263,7 @@ static void fsl_micfil_remove(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
+ }
+ 
+-static int __maybe_unused fsl_micfil_runtime_suspend(struct device *dev)
++static int fsl_micfil_runtime_suspend(struct device *dev)
+ {
+ 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
+ 
+@@ -1203,7 +1275,7 @@ static int __maybe_unused fsl_micfil_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int __maybe_unused fsl_micfil_runtime_resume(struct device *dev)
++static int fsl_micfil_runtime_resume(struct device *dev)
+ {
+ 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
+ 	int ret;
+diff --git a/sound/soc/fsl/fsl_micfil.h b/sound/soc/fsl/fsl_micfil.h
+index b3c392ef5daf..231a52aff024 100644
+--- a/sound/soc/fsl/fsl_micfil.h
++++ b/sound/soc/fsl/fsl_micfil.h
+@@ -174,4 +174,40 @@
+ #define MICFIL_HWVAD_ENVELOPE_MODE	0
+ #define MICFIL_HWVAD_ENERGY_MODE	1
+ 
++/**
++ * struct fsl_micfil_verid - version id data
++ * @version: version number
++ * @feature: feature specification number
++ */
++struct fsl_micfil_verid {
++	u32 version;
++	u32 feature;
++};
++
++/**
++ * struct fsl_micfil_param - parameter data
++ * @hwvad_num: the number of HWVADs
++ * @hwvad_zcd: HWVAD zero-cross detector is active
++ * @hwvad_energy_mode: HWVAD energy mode is active
++ * @hwvad: HWVAD is active
++ * @dc_out_bypass: points out if the output DC remover is disabled
++ * @dc_in_bypass: points out if the input DC remover is disabled
++ * @low_power: low power decimation filter
++ * @fil_out_width: filter output width
++ * @fifo_ptrwid: FIFO pointer width
++ * @npair: number of microphone pairs
++ */
++struct fsl_micfil_param {
++	u32 hwvad_num;
++	bool hwvad_zcd;
++	bool hwvad_energy_mode;
++	bool hwvad;
++	bool dc_out_bypass;
++	bool dc_in_bypass;
++	bool low_power;
++	bool fil_out_width;
++	u32 fifo_ptrwid;
++	u32 npair;
++};
++
+ #endif /* _FSL_MICFIL_H */
+-- 
 2.25.1
 
