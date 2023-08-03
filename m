@@ -4,87 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECBAFEB64DD
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Aug 2023 05:49:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0625C001DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Aug 2023 06:25:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2804827;
-	Thu,  3 Aug 2023 07:48:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2804827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B03320C;
+	Thu,  3 Aug 2023 08:25:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B03320C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691041788;
-	bh=QCbdb5nqq9/Q+NILtUZslBccjeyrNUyVXQqeJ0eLu6s=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Gu9Cp24ZD7I6SqIMZIgP9tiLMpdAGzIufgA0B2QTjcbj1V5blRWJu5Q6qe5/lxy/f
-	 6voO3z9M/dMqS0+vuL4WowX0oQDAbr8hbp05XDHYQUfYq+1NPLX36Qw/yt55KgXnsL
-	 M6xORrJ/Ni4LtPLH2is9MRV47p8vX5oPznLoGxoo=
+	s=default; t=1691043955;
+	bh=5dHLhZfkM4fPP4ODNsxE3CV5Tq4sdvHjv7CD0L/AoHo=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=sCsfAfwv9lwf8gqPiZbHK+k3SFgmrPZiPgQJXIyk7sqVN6A2NESosew6KbFMXSU59
+	 sPewAJ5p1To8mnz6EwqvZUsyYpBAizSY3KE1gteFD0jYhvoLTL9X7B43+zXZ8KGmju
+	 2vjNedZ4vmkgUz4EdXveBL/9l8Eufj1iJ1AmmX5M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26775F8053B; Thu,  3 Aug 2023 07:48:28 +0200 (CEST)
+	id 141DDF80087; Thu,  3 Aug 2023 08:25:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0347F8025A;
-	Thu,  3 Aug 2023 07:48:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5FF39F8025A;
+	Thu,  3 Aug 2023 08:25:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2FEA8F8025A; Thu,  3 Aug 2023 07:48:21 +0200 (CEST)
-Received: from smtpng3.i.mail.ru (smtpng3.i.mail.ru [94.100.177.149])
+	id 6405DF802BE; Thu,  3 Aug 2023 08:24:58 +0200 (CEST)
+Received: from mgamail.intel.com (unknown [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2439DF80087
-	for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2023 07:48:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2439DF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 84A19F80087
+	for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2023 08:24:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84A19F80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=inbox.ru header.i=@inbox.ru header.a=rsa-sha256
- header.s=mail4 header.b=HA+b8qTP
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru;
- s=mail4;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc;
- bh=zIW/y+DcvZO+CvMHMjs75CtPARmm1smITFzSh+LOpxs=;
-	t=1691041695;x=1691131695;
-	b=HA+b8qTPOk+KQTIH0Y0ki/nvnZYdYac4UiJnFljs+EDVcD5dA3x56r5ntuDvesDAEwiB9p3tEu6tnzx0ErgNHJgImj4d3k2RvEeLxdtKEzuTVfYKDqcmo8YMnbBEsL9aIX3vT/wq08VSx8tYUraTa3CwNczI4ZwbbV0Q8V2zcIeGZC/3I2z9JqpR4mvUCXiAl8qrLlTbpuAk/6MiWxO1GBec2zQlc82ncIMK4yVMcUeeHI7/WkCj/eSvuC/c1v6i4i4Bz0lzsWa4tmp+dToI/FDx4yh0tC5RNahYQeSm86h4xlKDpj3m1cSsXm6QaHF/uYl3BppmkJgDakOFu+6OUw==;
-Received: by smtpng3.m.smailru.net with esmtpa (envelope-from
- <fido_max@inbox.ru>)
-	id 1qRRBz-0005e1-Aq; Thu, 03 Aug 2023 08:48:11 +0300
-Message-ID: <4f747185-6405-4cb6-f13c-de6572d2de8b@inbox.ru>
-Date: Thu, 3 Aug 2023 08:48:10 +0300
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=PTMKuI/V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691043892; x=1722579892;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5dHLhZfkM4fPP4ODNsxE3CV5Tq4sdvHjv7CD0L/AoHo=;
+  b=PTMKuI/VpyEbLw3HtT/o6/vJsvXpxYAuUQ94qOlWU6/Jwr1ZQnfJ+9bd
+   tbixhDUaGg/smyv55Qt6vu9fpCdxB9R7/7nCfNMBUFpY+BQ9ig/G2gbTn
+   oILYpE6lZtJ8ojAgB4J34BdlykhF9Ropd9is+X+d5fbtpi9cW9c4vc+84
+   34vIg7yAL49Eh3ODS+5frEh73cC4CyzKp4xy45jemwVBuSX7eMlqzfxF0
+   +FpDoJmrBjKnT5kO2VDak0af4kADXPYW9dZ8GsAZqO3W5S1M2XnpqI4eJ
+   xtuZ7a/WPTSJNIGK54O2YtklgtSTuV/Rhca3UAWYyPKvoGJeVboqRhj3G
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="350075219"
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200";
+   d="scan'208";a="350075219"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Aug 2023 23:23:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="1060117879"
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200";
+   d="scan'208";a="1060117879"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Aug 2023 23:23:57 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Cc: vinod.koul@linaro.org,
+	linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com,
+	bard.liao@intel.com
+Subject: [PATCH 0/2] soundwire: improve pm_runtime handling
+Date: Thu,  3 Aug 2023 14:52:18 +0800
+Message-Id: <20230803065220.3823269-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 06/38] ASoC: dwc: merge DAI call back functions into ops
-Content-Language: en-US
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-References: <87a5vauuzg.wl-kuninori.morimoto.gx@renesas.com>
- <871qgmuuxh.wl-kuninori.morimoto.gx@renesas.com>
-From: Maxim Kochetkov <fido_max@inbox.ru>
-In-Reply-To: <871qgmuuxh.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtpng3.m.smailru.net;
- auth=pass smtp.auth=fido_max@inbox.ru smtp.mailfrom=fido_max@inbox.ru
-X-Mailru-Src: smtp
-X-4EC0790: 10
-X-7564579A: B8F34718100C35BD
-X-77F55803: 
- 4F1203BC0FB41BD93761F2630DFFAF419FF9F365118383038215B45E24F6DA4B182A05F5380850404D9AAD3B3EA41D30BDD71ED413A97C8B5117B211968D06512D88ADF15DDE9D0B
-X-7FA49CB5: 
- FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7F65C230EDDCD559EEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F790063719899BAB9B61B3948638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8B3261CC6E7B0E7206C75D2C9D2B734D06F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE74A95F4E53E8DCE969FA2833FD35BB23D9E625A9149C048EE33AC447995A7AD18CB629EEF1311BF91D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8BF84B8A2F7AA0758EA471835C12D1D977C4224003CC8364762BB6847A3DEAEFB0F43C7A68FF6260569E8FC8737B5C2249EC8D19AE6D49635B68655334FD4449CB9ECD01F8117BC8BEAAAE862A0553A39223F8577A6DFFEA7CB24F08513AFFAC7943847C11F186F3C59DAA53EE0834AAEE
-X-C1DE0DAB: 
- 0D63561A33F958A5FDB2A64A0E74FA12E8381109C961419A6BECBE6364FED422F87CCE6106E1FC07E67D4AC08A07B9B097AD43380FEE24CACB5012B2E24CD356
-X-C8649E89: 
- 1C3962B70DF3F0ADE00A9FD3E00BEEDF3FED46C3ACD6F73ED3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFDFCE4C978A89768FBC35DD08E6EC7318CF2794AE7094001A0F4C06C458A803F60070534DE2CB11AA8553022043D0BC9AE85B4519C576127626DF6773F9476B9C7188EE918FF98BD002C26D483E81D6BEEB84411BD425175970A7FB4ED9620804ADE12199CE9660BE
-X-D57D3AED: 
- 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojcir52QaMQ81f8/l6lQPlFw==
-X-Mailru-Sender: 
- 689FA8AB762F73930F533AC2B33E986B865B60082A36ACD934426546732CA16098CC072019C18A892CA7F8C7C9492E1F2F5E575105D0B01ADBE2EF17B331888EEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
-Message-ID-Hash: NKEJJLVPVT6WGZ33XD4VJFUWQEP6WXQF
-X-Message-ID-Hash: NKEJJLVPVT6WGZ33XD4VJFUWQEP6WXQF
-X-MailFrom: fido_max@inbox.ru
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: ZV7JZPNPK5KHOD6L5YJRG7PWDQTJHC2K
+X-Message-ID-Hash: ZV7JZPNPK5KHOD6L5YJRG7PWDQTJHC2K
+X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NKEJJLVPVT6WGZ33XD4VJFUWQEP6WXQF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZV7JZPNPK5KHOD6L5YJRG7PWDQTJHC2K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,13 +99,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+This patchset improves the pm_runtime behavior in rare corner cases
+identified by the Intel CI in the last 6 months.
 
+a) in stress-tests, it's not uncommon to see the following type of
+warnings when the codec reports as ATTACHED
 
-On 02.08.2023 03:52, Kuninori Morimoto wrote:
-> ALSA SoC merges DAI call backs into .ops.
-> This patch merge thesse into one.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+    "rt711 sdw:0:025d:0711:00: runtime PM trying to activate child device
+    sdw:0:025d:0711:00 but parent (sdw-master-0) is not active"
 
-Reviewed-by: Maxim Kochetkov <fido_max@inbox.ru>
+This warning was not correlated with any functional issue, but it
+exposed a design issue on when to enable pm_runtime. The recommended
+practice in the pm_runtime documentation is to keep the devices in
+'suspended' mode and mark them as 'active' when they are really
+functional.
+
+Pierre-Louis Bossart (2):
+  soundwire: intel_auxdevice: enable pm_runtime earlier on startup
+  soundWire: intel_auxdevice: resume 'sdw-master' on startup and system
+    resume
+
+ drivers/soundwire/intel_auxdevice.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
+
+-- 
+2.25.1
 
