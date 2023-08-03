@@ -4,95 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF2E6C0015E
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Aug 2023 05:29:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECBAFEB64DD
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Aug 2023 05:49:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEE19828;
-	Thu,  3 Aug 2023 07:28:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEE19828
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2804827;
+	Thu,  3 Aug 2023 07:48:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2804827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691040585;
-	bh=SReOC9m6WqegTP+XJxeHkZ9xymbSQEVHDt3n4eUc5qk=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1691041788;
+	bh=QCbdb5nqq9/Q+NILtUZslBccjeyrNUyVXQqeJ0eLu6s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mzr9vAojli6TmhPtvHx5hrFZPEE4lR0HvnjLsnVIy1PinyPnmTam0JW46Jk3Du24v
-	 gVifQ+kxEJcke0RriJc+/S8CCs/sU/b0n94hY5Ct8FGipqRZ0Y9/C7VjTsNQLzexyB
-	 FEPu/3IkU4qbSZX9/VbachxBHVHbXFm/KvVl94Uk=
+	b=Gu9Cp24ZD7I6SqIMZIgP9tiLMpdAGzIufgA0B2QTjcbj1V5blRWJu5Q6qe5/lxy/f
+	 6voO3z9M/dMqS0+vuL4WowX0oQDAbr8hbp05XDHYQUfYq+1NPLX36Qw/yt55KgXnsL
+	 M6xORrJ/Ni4LtPLH2is9MRV47p8vX5oPznLoGxoo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7851AF80149; Thu,  3 Aug 2023 07:28:29 +0200 (CEST)
+	id 26775F8053B; Thu,  3 Aug 2023 07:48:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5672CF8025A;
-	Thu,  3 Aug 2023 07:28:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0347F8025A;
+	Thu,  3 Aug 2023 07:48:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5617EF8025A; Thu,  3 Aug 2023 07:28:22 +0200 (CEST)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 2FEA8F8025A; Thu,  3 Aug 2023 07:48:21 +0200 (CEST)
+Received: from smtpng3.i.mail.ru (smtpng3.i.mail.ru [94.100.177.149])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D3FADF801D5
-	for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2023 07:26:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3FADF801D5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2439DF80087
+	for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2023 07:48:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2439DF80087
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=D/+DfHPZ
-X-UUID: 41754fe231be11ee9cb5633481061a41-20230803
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=FkR+gqGCuuesY9WOQbPQ2Y2ld+iDLFnZPn/SNaXxV5E=;
-	b=D/+DfHPZ2FU502wGNVO1XdW+UcLF27SZTd9nIZDHJpJ0jKfUSW6U79/XwyoleGuGJ9Wav3CLORxCNygJM5+EwEsH7idnP9ZmtE97cpDZ0zn11GCI+D527D0lRfbOadLtnUEo+5YTUqEcsIySWDgmNRxwT8mFe0/ao7aokCKTFEs=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.30,REQID:31c507b6-1201-4754-bfff-222274acbb9b,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:70
-X-CID-INFO: VERSION:1.1.30,REQID:31c507b6-1201-4754-bfff-222274acbb9b,IP:0,URL
-	:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTI
-	ON:quarantine,TS:70
-X-CID-META: VersionHash:1fcc6f8,CLOUDID:b4cbd6a0-0933-4333-8d4f-6c3c53ebd55b,B
-	ulkID:230803132610T9EIB3X3,BulkQuantity:2,Recheck:0,SF:38|29|28|17|19|48,T
-	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:43,QS:nil,BEC:nil,COL:0,
-	OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,
-	TF_CID_SPAM_FSD
-X-UUID: 41754fe231be11ee9cb5633481061a41-20230803
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by
- mailgw01.mediatek.com
-	(envelope-from <trevor.wu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 211902098; Thu, 03 Aug 2023 13:26:10 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 3 Aug 2023 13:26:09 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 3 Aug 2023 13:26:09 +0800
-From: Trevor Wu <trevor.wu@mediatek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
-	<perex@perex.cz>, <matthias.bgg@gmail.com>,
-	<angelogioacchino.delregno@collabora.com>
-CC: <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 1/3] ASoC: mediatek: mt8188-mt6359: support dynamic pinctrl
-Date: Thu, 3 Aug 2023 13:26:05 +0800
-Message-ID: <20230803052607.25843-2-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230803052607.25843-1-trevor.wu@mediatek.com>
-References: <20230803052607.25843-1-trevor.wu@mediatek.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=inbox.ru header.i=@inbox.ru header.a=rsa-sha256
+ header.s=mail4 header.b=HA+b8qTP
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru;
+ s=mail4;
+	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc;
+ bh=zIW/y+DcvZO+CvMHMjs75CtPARmm1smITFzSh+LOpxs=;
+	t=1691041695;x=1691131695;
+	b=HA+b8qTPOk+KQTIH0Y0ki/nvnZYdYac4UiJnFljs+EDVcD5dA3x56r5ntuDvesDAEwiB9p3tEu6tnzx0ErgNHJgImj4d3k2RvEeLxdtKEzuTVfYKDqcmo8YMnbBEsL9aIX3vT/wq08VSx8tYUraTa3CwNczI4ZwbbV0Q8V2zcIeGZC/3I2z9JqpR4mvUCXiAl8qrLlTbpuAk/6MiWxO1GBec2zQlc82ncIMK4yVMcUeeHI7/WkCj/eSvuC/c1v6i4i4Bz0lzsWa4tmp+dToI/FDx4yh0tC5RNahYQeSm86h4xlKDpj3m1cSsXm6QaHF/uYl3BppmkJgDakOFu+6OUw==;
+Received: by smtpng3.m.smailru.net with esmtpa (envelope-from
+ <fido_max@inbox.ru>)
+	id 1qRRBz-0005e1-Aq; Thu, 03 Aug 2023 08:48:11 +0300
+Message-ID: <4f747185-6405-4cb6-f13c-de6572d2de8b@inbox.ru>
+Date: Thu, 3 Aug 2023 08:48:10 +0300
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
-Message-ID-Hash: YT7M6ICU4642BFPEJ2I765H2GLSDOQOE
-X-Message-ID-Hash: YT7M6ICU4642BFPEJ2I765H2GLSDOQOE
-X-MailFrom: trevor.wu@mediatek.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 06/38] ASoC: dwc: merge DAI call back functions into ops
+Content-Language: en-US
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+References: <87a5vauuzg.wl-kuninori.morimoto.gx@renesas.com>
+ <871qgmuuxh.wl-kuninori.morimoto.gx@renesas.com>
+From: Maxim Kochetkov <fido_max@inbox.ru>
+In-Reply-To: <871qgmuuxh.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtpng3.m.smailru.net;
+ auth=pass smtp.auth=fido_max@inbox.ru smtp.mailfrom=fido_max@inbox.ru
+X-Mailru-Src: smtp
+X-4EC0790: 10
+X-7564579A: B8F34718100C35BD
+X-77F55803: 
+ 4F1203BC0FB41BD93761F2630DFFAF419FF9F365118383038215B45E24F6DA4B182A05F5380850404D9AAD3B3EA41D30BDD71ED413A97C8B5117B211968D06512D88ADF15DDE9D0B
+X-7FA49CB5: 
+ FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7F65C230EDDCD559EEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F790063719899BAB9B61B3948638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8B3261CC6E7B0E7206C75D2C9D2B734D06F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE74A95F4E53E8DCE969FA2833FD35BB23D9E625A9149C048EE33AC447995A7AD18CB629EEF1311BF91D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8BF84B8A2F7AA0758EA471835C12D1D977C4224003CC8364762BB6847A3DEAEFB0F43C7A68FF6260569E8FC8737B5C2249EC8D19AE6D49635B68655334FD4449CB9ECD01F8117BC8BEAAAE862A0553A39223F8577A6DFFEA7CB24F08513AFFAC7943847C11F186F3C59DAA53EE0834AAEE
+X-C1DE0DAB: 
+ 0D63561A33F958A5FDB2A64A0E74FA12E8381109C961419A6BECBE6364FED422F87CCE6106E1FC07E67D4AC08A07B9B097AD43380FEE24CACB5012B2E24CD356
+X-C8649E89: 
+ 1C3962B70DF3F0ADE00A9FD3E00BEEDF3FED46C3ACD6F73ED3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFDFCE4C978A89768FBC35DD08E6EC7318CF2794AE7094001A0F4C06C458A803F60070534DE2CB11AA8553022043D0BC9AE85B4519C576127626DF6773F9476B9C7188EE918FF98BD002C26D483E81D6BEEB84411BD425175970A7FB4ED9620804ADE12199CE9660BE
+X-D57D3AED: 
+ 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojcir52QaMQ81f8/l6lQPlFw==
+X-Mailru-Sender: 
+ 689FA8AB762F73930F533AC2B33E986B865B60082A36ACD934426546732CA16098CC072019C18A892CA7F8C7C9492E1F2F5E575105D0B01ADBE2EF17B331888EEAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: Ok
+Message-ID-Hash: NKEJJLVPVT6WGZ33XD4VJFUWQEP6WXQF
+X-Message-ID-Hash: NKEJJLVPVT6WGZ33XD4VJFUWQEP6WXQF
+X-MailFrom: fido_max@inbox.ru
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -104,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YT7M6ICU4642BFPEJ2I765H2GLSDOQOE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NKEJJLVPVT6WGZ33XD4VJFUWQEP6WXQF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,71 +105,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-To avoid power leakage, it is recommended to replace the default pinctrl
-state with dynamic pinctrl since certain audio pinmux functions can
-remain in a HIGH state even when audio is disabled. Linking pinctrl with
-DAPM using SND_SOC_DAPM_PINCTRL will ensure that audio pins remain in
-GPIO mode by default and only switch to an audio function when necessary.
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- sound/soc/mediatek/mt8188/mt8188-mt6359.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-index 7c9e08e6a4f5..e7ac2b6671d3 100644
---- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-+++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-@@ -246,6 +246,11 @@ static const struct snd_soc_dapm_widget mt8188_mt6359_widgets[] = {
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_SINK("HDMI"),
- 	SND_SOC_DAPM_SINK("DP"),
-+
-+	/* dynamic pinctrl */
-+	SND_SOC_DAPM_PINCTRL("ETDM_SPK_PIN", "aud_etdm_spk_on", "aud_etdm_spk_off"),
-+	SND_SOC_DAPM_PINCTRL("ETDM_HP_PIN", "aud_etdm_hp_on", "aud_etdm_hp_off"),
-+	SND_SOC_DAPM_PINCTRL("MTKAIF_PIN", "aud_mtkaif_on", "aud_mtkaif_off"),
- };
- 
- static const struct snd_kcontrol_new mt8188_mt6359_controls[] = {
-@@ -267,6 +272,7 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
- 		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
- 	struct snd_soc_component *cmpnt_codec =
- 		asoc_rtd_to_codec(rtd, 0)->component;
-+	struct snd_soc_dapm_widget *pin_w = NULL, *w;
- 	struct mtk_base_afe *afe;
- 	struct mt8188_afe_private *afe_priv;
- 	struct mtkaif_param *param;
-@@ -306,6 +312,18 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
- 		return 0;
- 	}
- 
-+	for_each_card_widgets(rtd->card, w) {
-+		if (!strcmp(w->name, "MTKAIF_PIN")) {
-+			pin_w = w;
-+			break;
-+		}
-+	}
-+
-+	if (pin_w)
-+		dapm_pinctrl_event(pin_w, NULL, SND_SOC_DAPM_PRE_PMU);
-+	else
-+		dev_dbg(afe->dev, "%s(), no pinmux widget, please check if default on\n", __func__);
-+
- 	pm_runtime_get_sync(afe->dev);
- 	mt6359_mtkaif_calibration_enable(cmpnt_codec);
- 
-@@ -403,6 +421,9 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
- 	for (i = 0; i < MT8188_MTKAIF_MISO_NUM; i++)
- 		param->mtkaif_phase_cycle[i] = mtkaif_phase_cycle[i];
- 
-+	if (pin_w)
-+		dapm_pinctrl_event(pin_w, NULL, SND_SOC_DAPM_POST_PMD);
-+
- 	dev_dbg(afe->dev, "%s(), end, calibration ok %d\n",
- 		__func__, param->mtkaif_calibration_ok);
- 
--- 
-2.18.0
+On 02.08.2023 03:52, Kuninori Morimoto wrote:
+> ALSA SoC merges DAI call backs into .ops.
+> This patch merge thesse into one.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+Reviewed-by: Maxim Kochetkov <fido_max@inbox.ru>
 
