@@ -4,105 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C040EC04A6A
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Aug 2023 13:12:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D467C04A6A
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Aug 2023 13:19:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 847517F4;
-	Thu,  3 Aug 2023 15:11:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 847517F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55C766C0;
+	Thu,  3 Aug 2023 15:19:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55C766C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691068355;
-	bh=skXXTNpONJIhgpJJreenfYixIfgSYXTeNyg82h+LXYM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1691068790;
+	bh=mXsIbXhuu3AV2aRPUl40i281FIzPnle7h4ii+eoqmSc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=t03pYLCY3URRcptcBhKIeokImQ1VQmmmaW/qKgF6lBYCswYk8W82umfDNk/ZoXED/
-	 1jo4BXMw6Hqru94DF6c14cjcdzqRlthgiBSuv2BXFygd1zaLbSG2ndMTihzfGm3rlZ
-	 yp33k/IDGS7ulG2B3KE8cRD6HIXlrpiT5eoW10f0=
+	b=TS2AZEPzTU23nYdK+T0BA13N93X1/i3Arzg1BFf7ylF+3hrYRL5xMtYV3trTGwwEK
+	 JZIlrI8NyjgryYmBHB3wpUEJaX1W6FmIgyJan4EnXnfXXz2b6YAqA2dYzZzPbLMpke
+	 UKebxWhElZ+DY058mlAL3Gof2F6D7VEQxVgM6CoA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61EE5F8053B; Thu,  3 Aug 2023 15:11:43 +0200 (CEST)
+	id 68787F80425; Thu,  3 Aug 2023 15:18:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1DA9F8025A;
-	Thu,  3 Aug 2023 15:11:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE0F6F8025A;
+	Thu,  3 Aug 2023 15:18:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18C9BF8025A; Thu,  3 Aug 2023 15:11:40 +0200 (CEST)
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com
- [IPv6:2607:f8b0:4864:20::d35])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 0444DF8025A; Thu,  3 Aug 2023 15:18:30 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 49231F80149
-	for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2023 15:11:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49231F80149
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=OgeQqTU3
-Received: by mail-io1-xd35.google.com with SMTP id
- ca18e2360f4ac-790b080f2a0so30324139f.3
-        for <alsa-devel@alsa-project.org>;
- Thu, 03 Aug 2023 06:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691068291; x=1691673091;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7lC0SW0eAGcjrPelcOslL8Ss4E31DBBOJeX5ruPDUDU=;
-        b=OgeQqTU3eLsToIFQqpnPIA8g1WCwq6zItGL9mntQIrUxGhjbBitttp4rPonWdcsfxP
-         iRu6lmPdnlStCJoOCDCEuv4opy0zlLNTWrDmAEXCgmXENtRx5rA/fBxUCmTnEEXn1s3d
-         +b7fpiJVshrK7ErQ0MD+MO4FLFbHFFpyzV69Zs7aLy44fmoU9jTLoK5MvRuK820kS5RG
-         J+SRnf5gQSlsbchEYrjWURjn7aZhSZjoQmyVb5mdk1f9ajw0rn3vuOWoAlhOae+REEzD
-         zfGk59orqaoBC1o2Oruv8/rVXoVQYP4t+5ttTB6qg7JIglPFNGEO+kjJ6kcvnW4QH0jw
-         r2EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691068291; x=1691673091;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7lC0SW0eAGcjrPelcOslL8Ss4E31DBBOJeX5ruPDUDU=;
-        b=WgzPmJKPsHv2L7fxE3MOztRPKOjn+qSIPb0VbM86NXg4qaRMxzEJXacfgMI/ARm5rP
-         bpiyrauB9t9fYuY4xKrk8i1uZy+mgfpTcbnZVutEY2ChqlWDxUpgmQFxANRLLRtP9ztj
-         CusOfK3UBiT5s5cBfmWWl3a9KJ1ltyYKnLtFmDiZ+7+/bsQI7MoTpQ005u8VFPEXx9Bu
-         Qk75KqGJx/UHhU9Sv26zzh9Esh9zxyTwBGhT8lzimNZnDw9InWYMhear/6kiTeI5MQzd
-         D1M5rhjzYYl1kor63k1EcqmjcNLOBDTajqKa21fR8WaZPi49IzXRB2D9Q1MiBHnwUgQR
-         ELDQ==
-X-Gm-Message-State: ABy/qLY/uFFRenCyVBM7SsoqEQCtP2QEKVwz/bPXfBZUeFkFyZNA0RNT
-	n6yEoF7AgPhPo6A5aITWaYSHfsfQZ/XCeBlJgDk=
-X-Google-Smtp-Source: 
- APBJJlEtqzIxYCVUFEvV5fgDCP81fGeD3GZpt6levaG9H4upWh9g5EvLMYrqL4ob+7IT6h4Vjry/EVcjmBnCK9V7HJM=
-X-Received: by 2002:a05:6e02:1569:b0:348:c041:abd7 with SMTP id
- k9-20020a056e02156900b00348c041abd7mr15797226ilu.13.1691068290064; Thu, 03
- Aug 2023 06:11:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
- <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl>
- <87il9xu1ro.wl-tiwai@suse.de>
- <CAA+D8ANmBKMp_L2GS=Lp-saMQKja6L4E6No3yP-e=a5YQBD_jQ@mail.gmail.com>
- <87il9xoddo.wl-tiwai@suse.de>
- <CAA+D8AOVEpGxO0YNeS1p+Ym86k6VP-CNQB3JmbeT7mPKg0R99A@mail.gmail.com>
- <844ef9b6-d5e2-46a9-b7a5-7ee86a2e449c@sirena.org.uk>
-In-Reply-To: <844ef9b6-d5e2-46a9-b7a5-7ee86a2e449c@sirena.org.uk>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Thu, 3 Aug 2023 21:11:16 +0800
-Message-ID: 
- <CAA+D8AOnsx+7t3MrWm42waxtetL07nbKURLsh1hBx39LUDm+Zg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
+	by alsa1.perex.cz (Postfix) with ESMTPS id C1BB1F8015B
+	for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2023 15:18:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1BB1F8015B
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+	by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1qRYDe-00078u-6w; Thu, 03 Aug 2023 15:18:22 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1qRYDd-00070f-AE; Thu, 03 Aug 2023 15:18:21 +0200
+Date: Thu, 3 Aug 2023 15:18:21 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
 To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Hans Verkuil <hverkuil@xs4all.nl>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
- tfiga@chromium.org,
-	m.szyprowski@samsung.com, mchehab@kernel.org, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
-	nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-	alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: 7IVZGQZFYQ2WOU535Q5M6632TYBXPZGK
-X-Message-ID-Hash: 7IVZGQZFYQ2WOU535Q5M6632TYBXPZGK
-X-MailFrom: shengjiu.wang@gmail.com
+Cc: Daniel Baluta <daniel.baluta@oss.nxp.com>, shengjiu.wang@gmail.com,
+	alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com,
+	festevam@gmail.com, nicoleotsuka@gmail.com, lgirdwood@gmail.com,
+	perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org,
+	linux-imx@nxp.com
+Subject: Re: [PATCH] ASoC: fsl: micfil: Use dual license micfil code
+Message-ID: <20230803131821.GA26314@pengutronix.de>
+References: <20230803072638.640789-1-daniel.baluta@oss.nxp.com>
+ <8a1f9a9a-0962-4c64-8226-b48535a0ae86@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a1f9a9a-0962-4c64-8226-b48535a0ae86@sirena.org.uk>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Message-ID-Hash: 7YOMSHE2ITYZQYYCEOAHC5WPWLJ55LJS
+X-Message-ID-Hash: 7YOMSHE2ITYZQYYCEOAHC5WPWLJ55LJS
+X-MailFrom: sha@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -114,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7IVZGQZFYQ2WOU535Q5M6632TYBXPZGK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7YOMSHE2ITYZQYYCEOAHC5WPWLJ55LJS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,33 +95,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, Aug 3, 2023 at 1:28=E2=80=AFAM Mark Brown <broonie@kernel.org> wrot=
-e:
->
-> On Wed, Aug 02, 2023 at 10:41:43PM +0800, Shengjiu Wang wrote:
->
-> > Currently the ASRC in ALSA is to connect to another I2S device as
-> > a sound card.  But we'd like to the ASRC can be used by user space dire=
-ctly
-> > that user space application can get the output after conversion from AS=
-RC.
->
-> That sort of use case would be handled via DPCM at the minute, though
-> persuading it to connect two front ends together might be fun (which is
-> the sort of reason why we want to push digital information down into
-> DAPM and make everything a component).
+On Thu, Aug 03, 2023 at 12:32:45PM +0100, Mark Brown wrote:
+> On Thu, Aug 03, 2023 at 10:26:38AM +0300, Daniel Baluta wrote:
+> > From: Daniel Baluta <daniel.baluta@nxp.com>
+> > 
+> > We need this in order to easily reuse register definitions
+> > and some functions with Sound Open Firmware driver.
+> > 
+> > According to Documentation/process/license-rules.rst:
+> >     "Dual BSD/GPL"	The module is dual licensed under a GPL v2
+> > 			variant or BSD license choice. The exact
+> > 			variant of the BSD license can only be
+> > 			determined via the license information
+> > 			in the corresponding source files.
+> > 
+> > so use "Dual BSD/GPL" for license string.
+> 
+> Adding Sascha as he seems to have written a lot of the commits for the
+> driver including some features.  Leaving the full message for his
+> benefit.
 
-Thanks.
+I am fine with that change.
 
-ASRC M2M case needs to run as fast as possible, no sync clock control.
-If use sound card to handle ASRC M2M case,  the user application
-should be aplay/arecord, then we need to consider xrun issue, buffer
-may timeout, sync between aplay and arecord,  these should't be
-considered by pure memory to memory operation.
+Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-DPCM may achitect all the audio things in components and sound
-card,  it is good. but for the M2M case, it is complcated. not sure
-it is doable.
+Sascha
 
-best regards
-wang shengjiu
+> 
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> > ---
+> >  sound/soc/fsl/fsl_micfil.c | 4 ++--
+> >  sound/soc/fsl/fsl_micfil.h | 2 +-
+> >  2 files changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+> > index fe28b27e50d0..97cf315781ab 100644
+> > --- a/sound/soc/fsl/fsl_micfil.c
+> > +++ b/sound/soc/fsl/fsl_micfil.c
+> > @@ -1,4 +1,4 @@
+> > -// SPDX-License-Identifier: GPL-2.0
+> > +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> >  // Copyright 2018 NXP
+> >  
+> >  #include <linux/bitfield.h>
+> > @@ -1254,4 +1254,4 @@ module_platform_driver(fsl_micfil_driver);
+> >  
+> >  MODULE_AUTHOR("Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>");
+> >  MODULE_DESCRIPTION("NXP PDM Microphone Interface (MICFIL) driver");
+> > -MODULE_LICENSE("GPL v2");
+> > +MODULE_LICENSE("Dual BSD/GPL");
+> > diff --git a/sound/soc/fsl/fsl_micfil.h b/sound/soc/fsl/fsl_micfil.h
+> > index 9237a1c4cb8f..fee9fe3d9119 100644
+> > --- a/sound/soc/fsl/fsl_micfil.h
+> > +++ b/sound/soc/fsl/fsl_micfil.h
+> > @@ -1,4 +1,4 @@
+> > -/* SPDX-License-Identifier: GPL-2.0 */
+> > +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+> >  /*
+> >   * PDM Microphone Interface for the NXP i.MX SoC
+> >   * Copyright 2018 NXP
+> > -- 
+> > 2.25.1
+> > 
+
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
