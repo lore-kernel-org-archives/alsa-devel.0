@@ -4,102 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06564C00528
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Aug 2023 19:34:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56221C001DF
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Aug 2023 19:38:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B840F6C0;
-	Thu,  3 Aug 2023 21:33:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B840F6C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 648CA7F4;
+	Thu,  3 Aug 2023 21:37:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 648CA7F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691091268;
-	bh=Na39kC0nP6XiW875V274Re2PU/Nlj2wRY/n4Ot8HLjM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=RDTWBcFe7n1u1nLpXtKSqTb67w9aLd789MGXeVEhqQXGU5J8weSNnTDmyDLZkD8bH
-	 VBDQ5+B6l/xSZSVWiZkVY/bZOwIdMaFuVVtTKKAgoa2vnR0ny0T4Cl7rHf+xtWU44G
-	 x8nZ0wH9ThIBOJvUsc4PYezYSHEn8q3uUdNmynIo=
+	s=default; t=1691091513;
+	bh=P0M+BMtHtIHMTuHkmOp7SS8Q1e715kFf0lQ1SHEGD/A=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=U5aGaNZAUSu6cRgw7fsQB2gMphT9oYx/V7CXXkkeSZ5Y2IdkRbGWnTuyKSk5PklIN
+	 HthZQoSZMedumoAqgzZ+G8/H9geC+Fsl9lR7yl58wID5G77z8T1fK9rnfFKFz8tt0o
+	 o4/guiT5qtYp8PQZxDMEYk7QQaCCHmDPaAye0+No=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0875FF80087; Thu,  3 Aug 2023 21:33:37 +0200 (CEST)
+	id 08ACEF80548; Thu,  3 Aug 2023 21:37:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5025AF8025A;
-	Thu,  3 Aug 2023 21:33:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B69BF8025A;
+	Thu,  3 Aug 2023 21:37:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3DBB4F8025A; Thu,  3 Aug 2023 21:33:32 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 82CC5F8025A; Thu,  3 Aug 2023 21:37:36 +0200 (CEST)
+Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 357C7F8015B
-	for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2023 21:33:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 357C7F8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2D7F0F8015B
+	for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2023 21:37:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D7F0F8015B
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Vq2BHfXd
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D82FE61E58;
-	Thu,  3 Aug 2023 19:33:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C3AC433C7;
-	Thu,  3 Aug 2023 19:33:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691091202;
-	bh=Na39kC0nP6XiW875V274Re2PU/Nlj2wRY/n4Ot8HLjM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Vq2BHfXd0gAouZIkgnzf1DfzUa8NZDzU1x8y7+3dNLTFUILMcNkIJvKYBfYJQSzW3
-	 RYYZmW45VHl7DbGGghUJpfaBpUH7es8pY2cMU1BfFMZQEQ0Iqz4ZnMGRTfEr/XRwBy
-	 1bvtHux6jRaWV01Q2gCrU44FeWfqiLUgX1Qmj6zGCNRK+gxK98jY1X++g7wIfP24If
-	 a0E9MgRAXWgIB39M4D8d9tda3B8eJkLwYUhbevvI8+k6Nuu8n7GvRO8ULiKUfic2JV
-	 G3TZQwTX9hYfUSjPpfhPafGmOTpya0qnfqCkV8UxYslk+fOkc8JquUxObDallXK/R7
-	 /lKiMhto7KJrg==
-Date: Thu, 3 Aug 2023 20:33:15 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jiaxin Yu =?utf-8?B?KOS/nuWutumRqyk=?= <Jiaxin.Yu@mediatek.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"ajye_huang@compal.corp-partner.google.com"
- <ajye_huang@compal.corp-partner.google.com>,
-	Chunxu Li =?utf-8?B?KOadjuaYpeaXrSk=?= <Chunxu.Li@mediatek.com>,
-	Allen-KH Cheng =?utf-8?B?KOeoi+WGoOWLsik=?= <Allen-KH.Cheng@mediatek.com>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>,
-	"andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
-	"linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
-	Project_Global_Chrome_Upstream_Group
- <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	"robert.foss@linaro.org" <robert.foss@linaro.org>,
-	"Laurent.pinchart@ideasonboard.com" <Laurent.pinchart@ideasonboard.com>,
-	"neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-	"angelogioacchino.delregno@collabora.com"
- <angelogioacchino.delregno@collabora.com>,
-	"nfraprado@collabora.com" <nfraprado@collabora.com>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: Re: [v3 2/3] ASoC: mediatek: mt8186: correct the HDMI widgets
-Message-ID: <9c90185c-9cd4-4a08-9925-be5d460af54d@sirena.org.uk>
-References: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
- <20230730180803.22570-3-jiaxin.yu@mediatek.com>
- <25e6ab45-ecad-4bc3-bf4d-983243c939ad@sirena.org.uk>
- <c6ae8630d06138b6d0156c19323afebf0718f522.camel@mediatek.com>
- <089fe457-1c61-4b7b-ad37-a67e7f46cb56@sirena.org.uk>
- <6aa6947865795fc534b61f5b8a80b3c42fd5a0cd.camel@mediatek.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=mutex.one header.i=@mutex.one header.a=rsa-sha256
+ header.s=default header.b=DeJRxVk1
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.mutex.one (Postfix) with ESMTP id 6A3EE16C004D;
+	Thu,  3 Aug 2023 22:37:31 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
+Received: from mail.mutex.one ([127.0.0.1])
+	by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id UkDLHQPYQ4Tw; Thu,  3 Aug 2023 22:37:30 +0300 (EEST)
+From: Marian Postevca <posteuca@mutex.one>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
+	t=1691091450; bh=P0M+BMtHtIHMTuHkmOp7SS8Q1e715kFf0lQ1SHEGD/A=;
+	h=From:To:Cc:Subject:Date:From;
+	b=DeJRxVk1ZC1H6H36SbSolINpFMff0D0HNnOJOnV7f77SvoX+rdzSvN3Fjt49cXuVi
+	 lLA0fOSEYKKHoudZdYDTKy5343qvDRS4eqLjgyoP6N6E4G00cISMVV9gBmzF/57s64
+	 1pEbpn9nRl+AxkIXxCAbUNwe6r4iQA0S2AiClGFE=
+To: Syed Saba Kareem <Syed.SabaKareem@amd.com>
+Cc: <broonie@kernel.org>,
+        <alsa-devel@alsa-project.org>,
+        <Vijendar.Mukunda@amd.com>,
+        <Basavaraj.Hiregoudar@amd.com>,
+	<Sunil-kumar.Dommati@amd.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Yang Yingliang <yangyingliang@huawei.com>,
+	Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+	V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+	ye xingchen <ye.xingchen@zte.com.cn>,
+	<linux-kernel@vger.kernel.org>
+Subject: Regression apparently caused by commit
+ 088a40980efbc2c449b72f0f2c7ebd82f71d08e2 "ASoC: amd: acp: add pm ops
+ support for acp pci driver"
+Date: Thu, 03 Aug 2023 22:22:07 +0300
+Message-ID: <87a5v8szhc.fsf@mutex.one>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="+mbNnAHmVhFc8DSv"
-Content-Disposition: inline
-In-Reply-To: <6aa6947865795fc534b61f5b8a80b3c42fd5a0cd.camel@mediatek.com>
-X-Cookie: One Bell System - it works.
-Message-ID-Hash: X2NWYSUZ7JGUKQ5BDEGRVRQNRXTNT46H
-X-Message-ID-Hash: X2NWYSUZ7JGUKQ5BDEGRVRQNRXTNT46H
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain
+Message-ID-Hash: DO545R6C6IVPOE3WZWRZKDFF4CTHBB6R
+X-Message-ID-Hash: DO545R6C6IVPOE3WZWRZKDFF4CTHBB6R
+X-MailFrom: posteuca@mutex.one
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -111,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X2NWYSUZ7JGUKQ5BDEGRVRQNRXTNT46H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DO545R6C6IVPOE3WZWRZKDFF4CTHBB6R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,37 +94,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+I'm trying to develop a sound machine driver based on the acp legacy driver.
+The first version of the driver was sent for review on the alsa mailing list this
+spring: https://lore.kernel.org/all/20230320203519.20137-1-posteuca@mutex.one
 
---+mbNnAHmVhFc8DSv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm trying to fix some of the issues that were brought up during the review back then,
+but when I ported the patches to the latest commit on the for-next
+branch, I noticed a regression where I couldn't hear any sound at all.
 
-On Thu, Aug 03, 2023 at 07:20:15AM +0000, Jiaxin Yu (=E4=BF=9E=E5=AE=B6=E9=
-=91=AB) wrote:
+So I started a bisect session and found that the first bad commit is:
+ASoC: amd: acp: add pm ops support for acp pci driver
+commit 088a40980efbc2c449b72f0f2c7ebd82f71d08e2
+https://lore.kernel.org/lkml/20230622152406.3709231-11-Syed.SabaKareem@amd.com
 
-> I agree with you, in fact the speaker is indeed doing this way. But
-> about the hdmi that on the board, I did not find a defination link
-> snd_soc_dapm_hdmi, so I use snd_soc_dapm_line to replace. The purpose
-> is to control it link speaker. Or what do you suggest I should do?=20
+If I revert this commit sound works as expected. So I started tinkering a little bit
+with it and I believe that what happens is that the acp pci driver
+enters the autosuspend state and never leaves this state at all.
+I noticed this because if I increase the autosuspend delay to a much
+larger value, then the sound works until that delay passes.
+I added traces and I can see that when the delay expires the suspend callback snd_acp_suspend()
+gets called, but the resume callback snd_acp_resume() never gets called.
 
-I think the sensible thing here is to define a DIGITAL_OUTPUT() which
-can be used for HDMI, S/PDIF and anything else that comes up and isn't
-clearly wrong like reusing one of the analog descriptions is.
+I'm no expert in runtime power management (though I did read a bit on it), so I don't understand
+all the things that happen underneath, but one thing that is not clear to me is who's supposed
+to mark activity on this device and keep it from entering autosuspend if the user wants to play
+some sound? Shouldn't there be some counterpart that calls pm_runtime_mark_last_busy() ?
+I looked through the code and can't find who's calling pm_runtime_mark_last_busy().
 
---+mbNnAHmVhFc8DSv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTMAPoACgkQJNaLcl1U
-h9CWewf/XtBsII8aM+PvwnIJ4Sr4fN16oOfY1UY32SAMvG5kfv55GzqucnYVEkQW
-a1Xs2el6AlSouSelQ12FvpaBAXjHAlQpyUoMwI0BYjncBoJ1aHZEGgwE54710y5H
-eRQmJH2oarBgD4MbO5N1pqUVbajjCg4mtU61yWgPhYlniAMILOmzyF5jxcpE7EET
-7cd0djgpIZHR/osfIG3EA7WQKjuZyMtB/0YKncA1qRoUP0pqZQfetbeHqtchfqJy
-3YvmkidEFoaROm7dSZWbNImhDbRVPNal4iot/8JUghN+yo867eidr/0i1kgzgJ8j
-+A+PCUclKZDIDoGbmL2M5hlTe+Ihbg==
-=3kqt
------END PGP SIGNATURE-----
-
---+mbNnAHmVhFc8DSv--
+Some help here would be welcome. Is there something missing in my machine driver code, or
+is the runtime pm handling in acp pci driver wrong?
