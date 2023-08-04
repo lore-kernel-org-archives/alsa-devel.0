@@ -4,80 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFF53C001DE
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 03:21:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51E19C001DE
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 08:07:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A70A17F8;
-	Fri,  4 Aug 2023 05:20:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A70A17F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61BAE820;
+	Fri,  4 Aug 2023 10:06:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61BAE820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691119272;
-	bh=KMopAtCn67fdLSnPvCGkPIrhm4B/qxG9zoA1XjL7/xA=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=jbL04WOeHNCvHNkHje4X+B4v/YmxzF5x+KQF13LGbYq1lQquuKbNq3ovm/iks1oJG
-	 DD9bzUrap5vS9pMnkW+1aMU+6+R9Rw2foTZfV1sDsFOSFMCdy1Aaea37rAnT7QcAEV
-	 NX9k4pQ6MzOPORDVzr9pa0lrVfvg0v5RoVDfQBsY=
+	s=default; t=1691136439;
+	bh=/ADLlEkBOshOWtuo7nw3XifPzKql28ntc70tpoOZQJg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=qFc840m5rExcIptp0FIT66//nprgxwUzSnlcq4vX4MFBu9B2UAspAmytWAeccmoy7
+	 G9xI21LS6qPX7YoJ4HR0xtj+LBIcQnYrz2kfOu68GJyrG8OER3hGgnAP3LwXm+dYPG
+	 qKKi3/2zYm/aALucEg/N2Q/t6Q3JO+ZUvhl5l8n8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB94AF80551; Fri,  4 Aug 2023 05:20:00 +0200 (CEST)
+	id 7509FF80520; Fri,  4 Aug 2023 10:05:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC73AF80087;
-	Fri,  4 Aug 2023 05:19:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32DD9F8053B;
+	Fri,  4 Aug 2023 10:05:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC031F8025A; Fri,  4 Aug 2023 05:19:47 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id B3AF8F8025A; Fri,  4 Aug 2023 10:05:09 +0200 (CEST)
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com
+ [IPv6:2607:f8b0:4864:20::42c])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 569F6F8015B
-	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 05:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 569F6F8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F10CF80087
+	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 10:04:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F10CF80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=OoIgh32l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691119180; x=1722655180;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KMopAtCn67fdLSnPvCGkPIrhm4B/qxG9zoA1XjL7/xA=;
-  b=OoIgh32lQx55tW53tNktOVAch8WtmQBj5N3A7UZBkC5zsTYpfkoYbuqW
-   kQPGGDmqSCFSkemy7lodo7HIkAdoEKHvaqxsTIb/EOBiIClLvmE9+7cd0
-   HWtKcXFazuqI5D595pxYa6anqLhECKLhUF0T4pSgvv6airKh4yEFyxjVj
-   wsCaw0zCqZS6R75UpNcOIS2SIF/GaxgFP7Ds8NWjH+i7Aib5keLcARoM3
-   GRzkfvdEAB1LCSD+D/PEkH/G8ItyPO8WtWbubtTwlfB0SQhFrJDCXMADQ
-   sXb19NS55D9mMw2oI145b3c54wb1tC6NPrO4qpm/kwiCYGeJdIeuk+3oK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="350357686"
-X-IronPort-AV: E=Sophos;i="6.01,253,1684825200";
-   d="scan'208";a="350357686"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Aug 2023 20:19:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="759368739"
-X-IronPort-AV: E=Sophos;i="6.01,253,1684825200";
-   d="scan'208";a="759368739"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Aug 2023 20:19:13 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: broonie@kernel.org,
-	tiwai@suse.de
-Cc: alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com,
-	bard.liao@intel.com
-Subject: [PATCH] ASoC: max98363: don't return on success reading revision ID
-Date: Fri,  4 Aug 2023 11:47:34 +0800
-Message-Id: <20230804034734.3848227-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=FDTVqknY
+Received: by mail-pf1-x42c.google.com with SMTP id
+ d2e1a72fcca58-686e0213c0bso1355607b3a.1
+        for <alsa-devel@alsa-project.org>;
+ Fri, 04 Aug 2023 01:04:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691136296; x=1691741096;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VbV+gYNDujKbJYn2Rz5cAnqQGKoJDHNbW2fLENJYzXY=;
+        b=FDTVqknY2GDfTRU6BHkEVEI+YIi8YxR1dTYObLysTNsJ+pi58EstB2nQBKMYV3Kqd4
+         KhCHGimKFhUeuWMsHe/GTS00A/q4LlAW5ORHfo5WmYiQ9AGdiF/s9TPCH9GK8s/jVMG+
+         LXoIzNW6d/uPxVauzggs3TsNAY4MzVQ0VyREuyM/bd4VIN/QdqnjyhWiNohnED9ZtZS/
+         HQ6CRm0RM00k6KHcNbaCsq/blkgraad7p/J3+3bb2d9YTXf1ZkNQCbnxXeZCg5s66FN+
+         5VzZIs//1YlYz1Zo1Iq/TnqRW6LFFVeVcXeb0ibBBTTHmqxu9ttKMs/uY6K/x/RvID5r
+         pHGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691136296; x=1691741096;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VbV+gYNDujKbJYn2Rz5cAnqQGKoJDHNbW2fLENJYzXY=;
+        b=LEZVP/L1icyvlTs7KEGKB4A8kPiUgS3JWa9vfOA32JcMnCIxi40y/qFsOU4Fr6XgJc
+         1ggS2wHf5CE0rFcdw5MgXLxCqrdPQqPvp4LcE/y4q6Nhv+Iu/idxpU68NOr57hMgAglQ
+         +psZ2vEwQwE6xPul3y16OaAEsc43DH8K9br1OyS4S5f3fHNSpnk5AFPmTmOorNMBDUVR
+         R2l2KpeIb1EnzennygL1PS5XzD4/cQOhikIZr2qxemmh93BUCOt2JKYq5vGUYgYFiqzn
+         PKvj7rcLbQ9RLVvnMyQkPk/OQejyYzJ20S3UdNsoROtnPc++5vQ+aKoDj1xBSlwq6fY9
+         ttuw==
+X-Gm-Message-State: AOJu0YybMll0muwoaPI1t1ZTXdh9djboITIWcimrWGmQ4qxMbnIHmDt4
+	sAFL7MN2qyrzlpCDRJ9pi9I=
+X-Google-Smtp-Source: 
+ AGHT+IF+z3baLyPsBoBifRMrSdMiWRiq01bLpw51R9+4NPbdIk8fjEHIm9UHz51UfDkd8oCW8x/gnw==
+X-Received: by 2002:a05:6a20:7d8a:b0:132:cd2d:16fd with SMTP id
+ v10-20020a056a207d8a00b00132cd2d16fdmr1123760pzj.38.1691136296389;
+        Fri, 04 Aug 2023 01:04:56 -0700 (PDT)
+Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486?
+ ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
+        by smtp.gmail.com with ESMTPSA id
+ u2-20020aa78482000000b00666b3706be6sm1023976pfn.107.2023.08.04.01.04.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Aug 2023 01:04:55 -0700 (PDT)
+Message-ID: <277be798-9bd0-baa0-9e0d-8a7a9ac67f02@gmail.com>
+Date: Fri, 4 Aug 2023 17:04:52 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YOMH5GMRG6ZHAG4REPE66JSQTVFJOGAA
-X-Message-ID-Hash: YOMH5GMRG6ZHAG4REPE66JSQTVFJOGAA
-X-MailFrom: yung-chuan.liao@linux.intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/27] ASoC: amd: acp3x-rt5682-max9836: Map missing jack
+ kcontrols
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>,
+ Alper Nebi Yasak <alpernebiyasak@gmail.com>, alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>
+References: <20230802175737.263412-1-alpernebiyasak@gmail.com>
+ <20230802175737.263412-5-alpernebiyasak@gmail.com>
+From: Akihiko Odaki <akihiko.odaki@gmail.com>
+In-Reply-To: <20230802175737.263412-5-alpernebiyasak@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: RWBPLOVSRUGGJ2JVR3GXGD2B357PVF6G
+X-Message-ID-Hash: RWBPLOVSRUGGJ2JVR3GXGD2B357PVF6G
+X-MailFrom: akihiko.odaki@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -89,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YOMH5GMRG6ZHAG4REPE66JSQTVFJOGAA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RWBPLOVSRUGGJ2JVR3GXGD2B357PVF6G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,48 +127,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-max98363_io_init needs to keep going when we read revision ID
-successfully.
+On 2023/08/03 2:57, Alper Nebi Yasak wrote:
+> This driver does not properly map jack pins to kcontrols that PulseAudio
+> and PipeWire need to handle jack detection events. The RT5682, RT1015
+> and RT1015p codecs used here can detect Headphone and Headset Mic
+> connections. Expose the former two to userspace as kcontrols.
+> 
+> Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
+> ---
+> Should the SND_JACK_LINEOUT be removed from the jack_new_pins calls?
 
-Fixes: 18c0af945fa3 ("ASoC: max98363: add soundwire amplifier driver")
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/codecs/max98363.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+I had patches to remove SND_JACK_LINEOUT and to add separate kcontrols, 
+but I forgot them.
 
-diff --git a/sound/soc/codecs/max98363.c b/sound/soc/codecs/max98363.c
-index b5c69bba0e48..2dfaf4fcfbd3 100644
---- a/sound/soc/codecs/max98363.c
-+++ b/sound/soc/codecs/max98363.c
-@@ -185,10 +185,10 @@ static int max98363_io_init(struct sdw_slave *slave)
- 	pm_runtime_get_noresume(dev);
- 
- 	ret = regmap_read(max98363->regmap, MAX98363_R21FF_REV_ID, &reg);
--	if (!ret) {
-+	if (!ret)
- 		dev_info(dev, "Revision ID: %X\n", reg);
--		return ret;
--	}
-+	else
-+		goto out;
- 
- 	if (max98363->first_hw_init) {
- 		regcache_cache_bypass(max98363->regmap, false);
-@@ -198,10 +198,11 @@ static int max98363_io_init(struct sdw_slave *slave)
- 	max98363->first_hw_init = true;
- 	max98363->hw_init = true;
- 
-+out:
- 	pm_runtime_mark_last_busy(dev);
- 	pm_runtime_put_autosuspend(dev);
- 
--	return 0;
-+	return ret;
- }
- 
- #define MAX98363_RATES SNDRV_PCM_RATE_8000_192000
--- 
-2.25.1
+Mark Brown has a raised question if the jack is really not driven as a 
+line output[1], but I never answered him (sorry for that!) I don't know 
+if the hardware is capable, but I think we better to remove it for now 
+since the codec driver does not handle it.
 
+Mark, does it sound reasonable?
+
+Regards,
+Akihiko Odaki
+
+[1] https://www.spinics.net/lists/alsa-devel/msg147970.html
+
+> 
+>   sound/soc/amd/acp3x-rt5682-max9836.c | 23 ++++++++++++++++++-----
+>   1 file changed, 18 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
+> index 0543dda75b99..3bf7e1e83c36 100644
+> --- a/sound/soc/amd/acp3x-rt5682-max9836.c
+> +++ b/sound/soc/amd/acp3x-rt5682-max9836.c
+> @@ -28,6 +28,17 @@
+>   #define DUAL_CHANNEL		2
+>   
+>   static struct snd_soc_jack pco_jack;
+> +static struct snd_soc_jack_pin pco_jack_pins[] = {
+> +	{
+> +		.pin = "Headphone Jack",
+> +		.mask = SND_JACK_HEADPHONE,
+> +	},
+> +	{
+> +		.pin = "Headset Mic",
+> +		.mask = SND_JACK_MICROPHONE,
+> +	},
+> +};
+> +
+>   static struct clk *rt5682_dai_wclk;
+>   static struct clk *rt5682_dai_bclk;
+>   static struct gpio_desc *dmic_sel;
+> @@ -86,11 +97,13 @@ static int acp3x_5682_init(struct snd_soc_pcm_runtime *rtd)
+>   	rt5682_dai_wclk = clk_get(component->dev, "rt5682-dai-wclk");
+>   	rt5682_dai_bclk = clk_get(component->dev, "rt5682-dai-bclk");
+>   
+> -	ret = snd_soc_card_jack_new(card, "Headset Jack",
+> -				SND_JACK_HEADSET | SND_JACK_LINEOUT |
+> -				SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+> -				SND_JACK_BTN_2 | SND_JACK_BTN_3,
+> -				&pco_jack);
+> +	ret = snd_soc_card_jack_new_pins(card, "Headset Jack",
+> +					 SND_JACK_HEADSET | SND_JACK_LINEOUT |
+> +					 SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+> +					 SND_JACK_BTN_2 | SND_JACK_BTN_3,
+> +					 &pco_jack,
+> +					 pco_jack_pins,
+> +					 ARRAY_SIZE(pco_jack_pins));
+>   	if (ret) {
+>   		dev_err(card->dev, "HP jack creation failed %d\n", ret);
+>   		return ret;
