@@ -4,78 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDD83C04A6A
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 16:58:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8EBFC001DE
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 16:59:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4391D820;
-	Fri,  4 Aug 2023 18:57:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4391D820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A84B7F8;
+	Fri,  4 Aug 2023 18:58:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A84B7F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691168321;
-	bh=H2I4zXc2nLBpbMumRh3ZQqMyQSqwTBBH0hegTbmAV9Q=;
+	s=default; t=1691168364;
+	bh=EypImsegK9bJKnJsBqy304+rYPk0LV8Bbnk7RSxHhMQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jwOaOrCZ4s8rtLADXh5P7xQlrzvx/+iIjaU8Wvy8osdFmIxa0vBe0njkvnlJwDQpt
-	 ktCotqI0sHLN/SlkEWYBYyAinDSG1pGGFeGdTVJg/XVWrlIBRMj99ns19+ZlNewXZO
-	 KqhtKbWqrBpb/fV30VQplSBx/mkjKaJy2KFUqBuk=
+	b=Cr1fNyjsgn2OwHxd/QEzt5wXk4IBTDfEH9cJK61tM/nWP7T0f2gnd7ppRhthTjRrO
+	 poIDEwVp8cfkk1gMxr5iBPNU8+K8TL0F9pyQNheQRI+EyPhf+o1JiMTTK1bElpdgsi
+	 ETiyBVgwBqd/n8+hEQEZgtieaCnGMM9TvBEywagw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B24EF8015B; Fri,  4 Aug 2023 18:57:43 +0200 (CEST)
+	id 0463FF80564; Fri,  4 Aug 2023 18:57:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E00E8F8025A;
-	Fri,  4 Aug 2023 18:57:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A4E4F80551;
+	Fri,  4 Aug 2023 18:57:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69E6EF80425; Fri,  4 Aug 2023 18:57:37 +0200 (CEST)
+	id 1387BF802BE; Fri,  4 Aug 2023 18:57:39 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 979FFF8015B
-	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 18:57:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 979FFF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id A38FCF8025A;
+	Fri,  4 Aug 2023 18:57:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A38FCF8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ON1ljACx
+ header.s=k20201202 header.b=EqmSMS7T
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 80491620B7;
-	Fri,  4 Aug 2023 16:57:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75FE6C433C7;
-	Fri,  4 Aug 2023 16:57:21 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6C2A9620D2;
+	Fri,  4 Aug 2023 16:57:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A87BC433C7;
+	Fri,  4 Aug 2023 16:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691168243;
-	bh=H2I4zXc2nLBpbMumRh3ZQqMyQSqwTBBH0hegTbmAV9Q=;
+	s=k20201202; t=1691168249;
+	bh=EypImsegK9bJKnJsBqy304+rYPk0LV8Bbnk7RSxHhMQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ON1ljACxay13fH0eKtcQ0sm0HX+oy8oRyda6c84If7cwkab2VpSxBcYtJEnF6Zly4
-	 jnkWppiPqZC/aQPdeuVtXbaUT2gf7JFSaXXaouS9n1YsRQziu6A1cwv27QcDIDi9y8
-	 kofabDzbls8cWDGOERnWZ5dnGOYT/HJpdkIf2lI/dCTiC4xdFmvak8Dxfbv5g44+2m
-	 A2FQxuSRLUjQdwO+Rzqfj3UYeVlOYAObgAFnBDLACy1DTaDaEh0vzgpvf08KObYXwP
-	 24LPhGPKMJ9gi1oAgH9rYZSoyaolkdPXSXyx6cf7vTgNGcfMRxMdDibJfdWu6sV6QB
-	 EodIsV8ebMTRQ==
+	b=EqmSMS7TudlJ8JTc68GnSkQ6v1QbSvx9urhSxPhIn/xrw5CTd1uycJqW1/W0L5bC3
+	 ljN6G13tUtgvK7PVwW47ThVqaEbCpgUF6+uD7cN6LDO93uFywUhiGt/bBv3J9TL5NK
+	 YLbNxe2WbSqUI1beL+vIS4IxDbYPZpqbt5NWHblnyiXGY7AgyTp0nuGuoLBr4bpmQO
+	 WH5YwDEOcPn9xfBYlZ0kmRoWo8qzvdsJmb/IW2ackNKNMZS62bmq2VVla2dIBe1+Iq
+	 zZlRnfWHNJtbL/AOvQZOv7fQ2i7V/QD96XsnUNt3kzRhTDBaX+AH8tuYpYy72Hx6sh
+	 zUSZwSs/CmwHg==
 From: Mark Brown <broonie@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- shengjiu.wang@gmail.com, Fabio Estevam <festevam@denx.de>
-In-Reply-To: <20230803215506.142922-1-festevam@gmail.com>
-References: <20230803215506.142922-1-festevam@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: wlf,wm8960: Describe the power
- supplies
-Message-Id: <169116824118.110745.15372323880400701432.b4-ty@kernel.org>
-Date: Fri, 04 Aug 2023 17:57:21 +0100
+To: pierre-louis.bossart@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com, lgirdwood@gmail.com,
+ tiwai@suse.com, perex@perex.cz, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com, Trevor Wu <trevor.wu@mediatek.com>
+Cc: yc.hung@mediatek.com, allen-kh.cheng@mediatek.com,
+ sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20230803075028.32170-1-trevor.wu@mediatek.com>
+References: <20230803075028.32170-1-trevor.wu@mediatek.com>
+Subject: Re: [PATCH] ASoC: SOF: mediatek: mt8186 modify dram type as
+ non-cache
+Message-Id: <169116824521.110745.9626523635220489877.b4-ty@kernel.org>
+Date: Fri, 04 Aug 2023 17:57:25 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: IZXNTCGTAOXGMOBSFO65TQ7TFVTFE27D
-X-Message-ID-Hash: IZXNTCGTAOXGMOBSFO65TQ7TFVTFE27D
+Message-ID-Hash: MKUYNIOHLI5QGS5E62S5RJ4FMWW7QIMR
+X-Message-ID-Hash: MKUYNIOHLI5QGS5E62S5RJ4FMWW7QIMR
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IZXNTCGTAOXGMOBSFO65TQ7TFVTFE27D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MKUYNIOHLI5QGS5E62S5RJ4FMWW7QIMR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,16 +100,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 03 Aug 2023 18:55:05 -0300, Fabio Estevam wrote:
-> WM8960 has the following power supplies:
+On Thu, 03 Aug 2023 15:50:28 +0800, Trevor Wu wrote:
+> To prevent incorrect access between the host and DSP sides, we need to
+> modify DRAM as a non-cache memory type. Additionally, we can retrieve
+> the size of shared DMA from the device tree.
 > 
-> - AVDD
-> - DBVDD
-> - DCVDD
-> - SPKVDD1
-> - SPKVDD1
 > 
-> [...]
 
 Applied to
 
@@ -114,10 +113,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: wlf,wm8960: Describe the power supplies
-      commit: 6a41c3a1606089bdf7f8da2b267d1d82fb32b378
-[2/2] ASoC: wm8960: Add support for the power supplies
-      commit: 422f10adc3eb5a7ff8567bf6e6590a4e4fa756c3
+[1/1] ASoC: SOF: mediatek: mt8186 modify dram type as non-cache
+      commit: 1d54134df47684ee29d4d4bbe28174a4282389e0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
