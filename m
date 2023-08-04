@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FBACC001DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 15:16:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82315C001DF
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 15:41:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE1FD823;
-	Fri,  4 Aug 2023 17:16:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE1FD823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 422A4827;
+	Fri,  4 Aug 2023 17:40:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 422A4827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691162212;
-	bh=Ii4vnBXTV2fHEPMlaYmSPimAc/CJV6bzlx+PJEIBBDw=;
+	s=default; t=1691163695;
+	bh=bkzit33VmdoUD6BWlsNFe9JgzY2f8SKPYIRIBtcatOM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HdEB3yqjWWaNKTwyh5i7LYTLzUP2VnDdke1v39ScODGBFXzbSvvxW9eWW35YkZMIS
-	 mKq0O794u7ARD77902oqxwx5PmvApysjginyGwPySliuZTfHcsESbfuhVKcOD1Wim9
-	 WiYwpNYo57gPlmZWq/kdC7hcBK7yAPIPQXlxfgsM=
+	b=dESBVfrTGoAlBFeNX+8nvrGCoJ9dW+pByRw4wsKWm+CSK40mOA7XG1kWttQJPHdMH
+	 BxLJdjvJBH1tdO63uXUvW8Aed90RB85BCh71juWap0n+M2IHCM5P86hQDAtkJDDVN6
+	 ZWiyRnMKsjNB8DuXIZJfw76VrjEHWTvrNT2i/XRs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4F1CF80544; Fri,  4 Aug 2023 17:15:32 +0200 (CEST)
+	id 372EAF8053B; Fri,  4 Aug 2023 17:40:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EDF2F8025A;
-	Fri,  4 Aug 2023 17:15:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92C00F8025A;
+	Fri,  4 Aug 2023 17:40:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E887F8025A; Fri,  4 Aug 2023 17:15:28 +0200 (CEST)
+	id 55667F8025A; Fri,  4 Aug 2023 17:40:11 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F3F2BF8016D
-	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 17:15:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3F2BF8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2CC4BF80087
+	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 17:40:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CC4BF80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=RWFZ6z3u
+ header.s=k20201202 header.b=A/wmZHio
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 9A5486205C;
-	Fri,  4 Aug 2023 15:15:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2B8FC433C7;
-	Fri,  4 Aug 2023 15:15:17 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C4C79617D0;
+	Fri,  4 Aug 2023 15:39:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3022BC433C8;
+	Fri,  4 Aug 2023 15:39:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691162119;
-	bh=Ii4vnBXTV2fHEPMlaYmSPimAc/CJV6bzlx+PJEIBBDw=;
+	s=k20201202; t=1691163599;
+	bh=bkzit33VmdoUD6BWlsNFe9JgzY2f8SKPYIRIBtcatOM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RWFZ6z3u+etkHNQ6bj4QyAH+u2pvHnKHt/BVBAOY1g2CDK2CGQ9Z8LEc10YDEweeG
-	 +WBUq8+euq5CSnep2tJCjcKT2E82912gMuIwPs1WeDnNnJLvaqidoa1O6/txcpq7S6
-	 OQHCKKw5fdCdjP3DEU/C1fmwFeyQgb3MqnPFGd/1b0R+ZwzG95lOg1rqi7Jcew1/Py
-	 PnPaBeInkp7idBCp6vvlY9VJE4wBGKnZdcSlowPA2GqFHhM8jaHyr765quRfHyrCQy
-	 nbNTo4Q6v7dcxnI4AgwjH2RbNM1tJ7/2kpfNYLUF+FCM/3xI7Uxg/iIh16YhhKUVmd
-	 CAjv5vphHs7/w==
-Date: Fri, 4 Aug 2023 16:15:14 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: lower "no backend DAIs enabled for ... Port" log
- severity
-Message-ID: <c320a2f8-7e53-4e51-84b9-9e7763ce1541@sirena.org.uk>
-References: <20230804132628.302385-1-hdegoede@redhat.com>
- <63eec3cf-ebba-a366-a66b-34daf76bc0f2@linux.intel.com>
- <878raqq36t.wl-tiwai@suse.de>
+	b=A/wmZHiopppHK/MJlnx0llX9Mksf28G/kXdY8g7/v4ybME3mj4mfRGE4txu7To0U4
+	 D0DMqYnGWtVRN3lndOCOG5m+5uMh8laySuwipdk/uJQ4HJGUC8itVTsLuNcMKdfl2s
+	 MR+VcmtgeKVECnsWusAU/h1GR3PJcsLkqmWNRYn4ppQFJmifI5/XhiHymw+docKAD9
+	 C4mzEuj/Hr8CW8OFokEcGN9Kufe1/P5/TAjPy2B2KIogrK8jGerBeHyhw6FjXIWbr3
+	 uAwE1W/fmb3mSdcVu/RH3zHN5C+d5WYA9y5NCMpfok1DJRWQhhhpRhZ9Ax5wRE4bgr
+	 suzrzYJWsK6Ow==
+Date: Fri, 4 Aug 2023 16:39:54 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: broonie@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com,
+	Fabio Estevam <festevam@denx.de>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: wlf,wm8960: Describe the power
+ supplies
+Message-ID: <20230804-track-polymer-dff0f803645d@spud>
+References: <20230803215506.142922-1-festevam@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="zLGtIDBKqv2LU7pT"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="L0gVLHdTSEnPRpVf"
 Content-Disposition: inline
-In-Reply-To: <878raqq36t.wl-tiwai@suse.de>
-X-Cookie: I'm hungry, time to eat lunch.
-Message-ID-Hash: 2IYCA5ZN426SVR56AENL26CPJMAZITOT
-X-Message-ID-Hash: 2IYCA5ZN426SVR56AENL26CPJMAZITOT
-X-MailFrom: broonie@kernel.org
+In-Reply-To: <20230803215506.142922-1-festevam@gmail.com>
+Message-ID-Hash: FXZOHN5ULADERHML4C3EEUFAHHOOKEJW
+X-Message-ID-Hash: FXZOHN5ULADERHML4C3EEUFAHHOOKEJW
+X-MailFrom: conor@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2IYCA5ZN426SVR56AENL26CPJMAZITOT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FXZOHN5ULADERHML4C3EEUFAHHOOKEJW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,55 +100,40 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---zLGtIDBKqv2LU7pT
+--L0gVLHdTSEnPRpVf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 04, 2023 at 04:42:34PM +0200, Takashi Iwai wrote:
-> Pierre-Louis Bossart wrote:
+On Thu, Aug 03, 2023 at 06:55:05PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <festevam@denx.de>
+>=20
+> WM8960 has the following power supplies:
+>=20
+> - AVDD
+> - DBVDD
+> - DCVDD
+> - SPKVDD1
+> - SPKVDD1
+>=20
+> Add them to bindings to improve the hardware description.
+>=20
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
 
-> > > And also changes _soc_pcm_ret() to not log for -EINVAL errors, to fix
-> > > the other error. Userspace passing wrong parameters should not lead
-> > > to dmesg messages.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-> > Maybe, but it's a questionable flow if pipewire tries to open stuff
-> > without the mixer values set-up. Is there something done about this?
+Thanks,
+Conor.
 
-> I think it's an oft-seen problem when user runs the system without
-> installing a proper UCM profile.
-
-Yeah, it's really easy to do.
-
-> > It really makes no sense for userspace to try and open devices that are
-> > known to be problematic. We can push kernel error logs below the rug, it
-> > doesn't make the programming flows better.
-
-> Downgrading the message also hides to show what's wrong there.
-> Although the message doesn't indicate how to fix the problem, no
-> message would make debug harder.
-
-> So in general I agree that it's annoying and it should be fixed, but
-> hiding all as default can be bad, too.  Maybe we can introduce a
-> counter and shut out after three strikes?
-
-Hrm, do systems typically filter out debug logs?  Most of the systems I
-work on do still log debug logs, they just only include them in dmesg by
-default.  There are ratelimited printk APIs which we could use, though
-they're not quite ratelimited enough for this I think.
-
---zLGtIDBKqv2LU7pT
+--L0gVLHdTSEnPRpVf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTNFgEACgkQJNaLcl1U
-h9AguAf+ID+SZIufh/n1hId+HPgRfjfo3VdJ1FMJTt7mG/yN5hFQ9gszFl42sVZv
-bdnAtnMnNwzpWhmlQUboON+G115uZlMC7As0Exd1Dl/Ls0GqzyyaKhfNo4vDLY2I
-gJOmNRgELfl3aYVATD7qYnkmdp4nxkB1V/cMxNwcmDdUYCUTFkAUWpPt+eTVRFaB
-OUtxCyccqIlbPCt4ltSOmqQS4Sf3CZdYJ2TmvLbcWa0C0uDV3YXPt110yOMdIn+2
-pwtb2RnLwV0M3HRVs5GQhEgChL4EF8UQ2/qAbj6GtaWaorw/jNXvAY7XIP6dIY29
-jBD+XmM/svptwWAilvPxhPaX3G5WFA==
-=ECf5
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZM0bygAKCRB4tDGHoIJi
+0os0APwJQfgW205aF/eC8Y0ogViquNkLqRfa0+Pg/XQRRW156QD/Z10cvSfoQX1b
+wvrDDHnT/uKDDleuREkMlMuf2E8PVAA=
+=36x1
 -----END PGP SIGNATURE-----
 
---zLGtIDBKqv2LU7pT--
+--L0gVLHdTSEnPRpVf--
