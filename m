@@ -4,112 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E123C001DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 12:06:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9CDEC001DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 12:21:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FA0A210;
-	Fri,  4 Aug 2023 14:05:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FA0A210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10E4E7F4;
+	Fri,  4 Aug 2023 14:20:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10E4E7F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691150783;
-	bh=/3l+NjXIbbuC0DxQ/dtsQSzNW40dtr7StE61YsTd3g8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1691151677;
+	bh=QS2FhhkfEvOxkglRWjF4jgd13JYHGia3cJR5BIHCSgE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YZZx/JgjPa7nWgWD+O+FZxDJa8jFJzfS0COxEKDP0ugYewPI/NJ/wXIgvywW6LCNb
-	 CEvwpVjy/weWVQL+ZcWIafIRawmqg+16bJHaGn7MNcuWJ3L3PdBrAhPzG2uLYWdFnt
-	 af/OaBAzlMg4P6DCe1QeisHY1YQFWUGtmPrIfruQ=
+	b=eS8W4Qa1o1+aDhbT7HGDo0tMD8+tX0Ha6EZjfwkNipG8vZPJdUxdPhHm0j1A3s6rP
+	 SrXJMxN3ZooGqfM1wsWZU0wZnLJDVa/1dpv5gBXxoqpHQjCxsG4PRLhB5SUTUM5nvJ
+	 WrPijK8oBZ7A/r/fiCO2w80G3MscGEwdOjMIHQro=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A6D32F805AB; Fri,  4 Aug 2023 14:04:44 +0200 (CEST)
+	id 25704F80544; Fri,  4 Aug 2023 14:20:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41B30F805A9;
-	Fri,  4 Aug 2023 14:04:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4A13F8025A;
+	Fri,  4 Aug 2023 14:20:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7657F8025A; Fri,  4 Aug 2023 13:08:27 +0200 (CEST)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
+	id E2F52F8025A; Fri,  4 Aug 2023 14:20:21 +0200 (CEST)
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com
+ [IPv6:2607:f8b0:4864:20::12f])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9A930F8016D
-	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 13:08:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A930F8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 246C0F8015B
+	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 14:20:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 246C0F8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=sb2OsCJg
-Received: by mail-ej1-x633.google.com with SMTP id
- a640c23a62f3a-99c4e426714so54858166b.1
+ header.s=20221208 header.b=kbQlGVsJ
+Received: by mail-il1-x12f.google.com with SMTP id
+ e9e14a558f8ab-3490cf176feso7365875ab.0
         for <alsa-devel@alsa-project.org>;
- Fri, 04 Aug 2023 04:08:17 -0700 (PDT)
+ Fri, 04 Aug 2023 05:20:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691147295; x=1691752095;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691151606; x=1691756406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aIJ0wZyKm1oHflFxZiewsCGjiwbu4yH0OOsxMNtlRQA=;
-        b=sb2OsCJg8rCGJP8ARVMIpqDdFxuEh/lmMRim5Tgv0J7OpP61Zf/j6HcfRydESLJ8kp
-         O5KcX23un2JKdBMXiJVRyPBq2l7pFFBEii1FNpA5/6PuUSIJLYOunL+8cxF1H+rcx1Sq
-         WhryHozOCkNhQKCMpNlz93T28ixJu02X94LB8/VF/cAv8zZShlRk9/vT4w5y2F38xktU
-         eeEGRMzoL4yDny6/fIzJQKewUy7PrBDOdyjkjujfrb0Yr/recHXCPQa2TktcE28y5iW3
-         MJP3FfG/XM6tYdlm/oLtv6DMEEIagQSh2zgM/SNOQwZIG6rVPWrirP9w0VSu5561y9Y5
-         wUoQ==
+        bh=HrwOUvJz44BN5+OtSVByIy8J3CpPSze+6riYsFxfsMQ=;
+        b=kbQlGVsJp70sWB8QfAfHW27v/PNM84FAARz14y/rUBtAb4gtteYLF+sn3H3D69jwb4
+         iugxxkMuzylxdHfEz68QjqfCS3RjX+xRrF7VgiAJmgHYmZNCgzJLzl5t3NCgn19UakBF
+         Uri4Pbjl8XI0HprawdOaGavbl11N4d3J0u4idM0gNqUqtgZGiMFA46XMdGEnNaez+jGv
+         omJgYUuHUIyiRKUZrCKuW11ITVCEioymwgiMnOxdY079JEeNQ198TGzr1cuVWSfvmkMY
+         R5XueAh45t8KGN/CABOf79zw24ngPZXbrF2YJMsy5YewAvNxQQlydN/iyNlR8y2472/1
+         DdXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691147295; x=1691752095;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691151606; x=1691756406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aIJ0wZyKm1oHflFxZiewsCGjiwbu4yH0OOsxMNtlRQA=;
-        b=Iy2rbaAK4+3ImQAwwPM8vAhge6zOavXvvWo059h+L5tGFXFqQzPIvbIVsRdHxMIe15
-         0XEmBSs6MJXEvU51maV5a94YrRofMD2MXjuZ/d2VyZMtEvNL0vqlzM2GYMGLFl/GmAkF
-         Qw5/bp5PU+oc047D67vcykZKGb3S8FmFv3agXbpt13aovBlOqeK0370qEGbTIWqoWdCq
-         I4FMQHOj9UuZisRKpz+9D3wkZsqv1HPENKIJlKE1jEGoDXkwkP/SfRdinfE833YLJtIh
-         HcYJRUiUpYpVK3SCnc5kLeu7PlvLskyu9sWvVEum9M/Z6TlupVk701s3RRDTKLz8mqUc
-         CfCw==
-X-Gm-Message-State: AOJu0Yw+GPlb939KsChfFyxU6kkXmuieYhFvEmj9bx1BALczMi8Y1lyn
-	elIUoQ3aXipQBLfFqtxscKI=
+        bh=HrwOUvJz44BN5+OtSVByIy8J3CpPSze+6riYsFxfsMQ=;
+        b=GlLH4XYCiO+Bh+apZ1Ydyd6sMnyJlNQfijGgWgSrq0NdaZCfaLIbYQicljE+z0oGar
+         6Ftj0kvdRNxeh0VDE6qeIlwSmfJa+FdUB7gCqX7vti8E5j0X0NUyfp+BlAMeBLArJAE8
+         1L2xkQhE4cXtTwXzU9Eu1/GRoVUj1KhVME1gvQD2HLyNfCiCSDLOpuC6BfquTLnz0ZHR
+         Osxfbrh/oFvDMEsjg+Ts0qgE9ukiWzZS+ESJPxk6+qMV+dXTHK5VDJ9qC2vryVdf1Jvs
+         eu3EpODrMEz7HUrbBn/zRGgH656vjjNCmM+b4oM0PgAaanrh6tufsJaPps1psUl8Y/A2
+         CByw==
+X-Gm-Message-State: AOJu0YzMSGm3liO6zCeUIuDuWF9+w+VzMX2XSORyWqaJVr6xv/5YF9P9
+	NNPMZAl/FCWTt4u8XGN19Ia1dGQJrl768Gb4HiQ=
 X-Google-Smtp-Source: 
- APBJJlFn3bAfpeUS7bFYzuP6M36OObpUhU8sV+Ubp+nPBglgSjjoO/M81TcUo5jlFHzdz8R+3q9F4g==
-X-Received: by 2002:a17:906:51d6:b0:99c:5711:3187 with SMTP id
- v22-20020a17090651d600b0099c57113187mr4463468ejk.6.1691147295122;
-        Fri, 04 Aug 2023 04:08:15 -0700 (PDT)
-Received: from ivan-HLYL-WXX9.. ([178.160.196.94])
-        by smtp.gmail.com with ESMTPSA id
- bn10-20020a170906c0ca00b00992b0745548sm1149478ejb.152.2023.08.04.04.08.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 04:08:14 -0700 (PDT)
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Cc: Ivan Orlov <ivan.orlov0322@gmail.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] ALSA: pcmtest: Remove redundant definitions
-Date: Fri,  4 Aug 2023 15:07:40 +0400
-Message-Id: <20230804110740.9867-2-ivan.orlov0322@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230804110740.9867-1-ivan.orlov0322@gmail.com>
-References: <20230804110740.9867-1-ivan.orlov0322@gmail.com>
+ AGHT+IGXmtFNaA0hRyLJ1GmqVu20WaJ5uUAJgyR8e37qIbW6h/p7fMU2JoYVpgxxO9U9RB7zJ7ER+mQH+cMrPNHxCQQ=
+X-Received: by 2002:a05:6e02:184e:b0:345:cdbe:833c with SMTP id
+ b14-20020a056e02184e00b00345cdbe833cmr1983943ilv.28.1691151606515; Fri, 04
+ Aug 2023 05:20:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: ivan.orlov0322@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
+ <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl>
+ <87il9xu1ro.wl-tiwai@suse.de>
+ <CAA+D8ANmBKMp_L2GS=Lp-saMQKja6L4E6No3yP-e=a5YQBD_jQ@mail.gmail.com>
+ <d038360b-22a2-3869-cd64-2da827736faa@xs4all.nl>
+In-Reply-To: <d038360b-22a2-3869-cd64-2da827736faa@xs4all.nl>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Fri, 4 Aug 2023 20:19:49 +0800
+Message-ID: 
+ <CAA+D8ANSihjxvqkATE9z460sPz4nbcUqhDrR3eiEjPaU6ytrXQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Takashi Iwai <tiwai@suse.de>, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ sakari.ailus@iki.fi,
+	tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+	lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+	alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: A4DOUXWKCJ6F7CPOL7XZJERP2U5WB3DE
+X-Message-ID-Hash: A4DOUXWKCJ6F7CPOL7XZJERP2U5WB3DE
+X-MailFrom: shengjiu.wang@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZOOF7GS456RP7ELLAUSMFHZOHEST47IL
-X-Message-ID-Hash: ZOOF7GS456RP7ELLAUSMFHZOHEST47IL
-X-Mailman-Approved-At: Fri, 04 Aug 2023 12:04:33 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZOOF7GS456RP7ELLAUSMFHZOHEST47IL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A4DOUXWKCJ6F7CPOL7XZJERP2U5WB3DE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,46 +121,120 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Remove redundant definitions of DEVNAME and CARD_NAME, as they're not
-useful. The former is not used anywhere, and the latter is used only
-in module parameters descriptions.
+On Wed, Aug 2, 2023 at 8:28=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> wr=
+ote:
+>
+> On 02/08/2023 14:02, Shengjiu Wang wrote:
+> > On Wed, Aug 2, 2023 at 7:22=E2=80=AFPM Takashi Iwai <tiwai@suse.de> wro=
+te:
+> >>
+> >> On Wed, 02 Aug 2023 09:32:37 +0200,
+> >> Hans Verkuil wrote:
+> >>>
+> >>> Hi all,
+> >>>
+> >>> On 25/07/2023 08:12, Shengjiu Wang wrote:
+> >>>> Audio signal processing has the requirement for memory to
+> >>>> memory similar as Video.
+> >>>>
+> >>>> This patch is to add this support in v4l2 framework, defined
+> >>>> new buffer type V4L2_BUF_TYPE_AUDIO_CAPTURE and
+> >>>> V4L2_BUF_TYPE_AUDIO_OUTPUT, defined new format v4l2_audio_format
+> >>>> for audio case usage.
+> >>>>
+> >>>> The created audio device is named "/dev/audioX".
+> >>>>
+> >>>> And add memory to memory support for two kinds of i.MX ASRC
+> >>>> module
+> >>>
+> >>> Before I spend time on this: are the audio maintainers OK with doing
+> >>> this in V4L2?
+> >>>
+> >>> I do want to have a clear statement on this as it is not something I
+> >>> can decide.
+> >>
+> >> Well, I personally don't mind to have some audio capability in v4l2
+> >> layer.  But, the only uncertain thing for now is whether this is a
+> >> must-have or not.
+> >>
+> >
+> > Thanks,  I am also not sure about this.  I am also confused that why
+> > there is no m2m implementation for audio in the kernel.  Audio also
+> > has similar decoder encoder post-processing as video.
+> >
+> >>
+> >> IIRC, the implementation in the sound driver side was never done just
+> >> because there was no similar implementation?  If so, and if the
+> >> extension to the v4l2 core layer is needed, shouldn't it be more
+> >> considered for the possible other route?
+> >>
+> >
+> > Actually I'd like someone could point me to the other route. I'd like t=
+o
+> > try.
+> >
+> > The reason why I select to extend v4l2 for such audio usage is that v4l=
+2
+> > looks best for this audio m2m implementation.  v4l2 is designed for m2m
+> > usage.  if we need implement another 'route',  I don't think it can do =
+better
+> > that v4l2.
+> >
+> > I appreciate that someone can share his ideas or doable solutions.
+> > And please don't ignore my request, ignore my patch.
+>
+> To give a bit more background: if it is decided to use the v4l API for th=
+is
+> (and I have no objection to this from my side since API/framework-wise it=
+ is a
+> good fit for this), then there are a number of things that need to be don=
+e to
+> get this into the media subsystem:
+>
+> - documentation for the new uAPI
+> - add support for this to v4l2-ctl
+> - add v4l2-compliance tests for the new device
+> - highly desirable: have a virtual driver (similar to vim2m) that support=
+s this:
+>   it could be as simple as just copy input to output. This helps regressi=
+on
+>   testing.
+> - it might need media controller support as well. TBD.
+>
+> None of this is particularly complex, but taken all together it is a fair
+> amount of work that also needs a lot of review time from our side.
+>
+> I want to add one more option to the mix: drivers/media/core/v4l2-mem2mem=
+.c is
+> the main m2m framework, but it relies heavily on the videobuf2 framework =
+for
+> the capture and output queues.
+>
+> The core vb2 implementation in drivers/media/common/videobuf2/videobuf2-c=
+ore.c
+> is independent of V4L2 and can be used by other subsystems (in our case, =
+it is
+> also used by the DVB API). It is a possibility to create an alsa version =
+of
+> v4l2-mem2mem.c that uses the core vb2 code with an ALSA uAPI on top.
+>
+> So in drivers/media/common/videobuf2/ you would have a videobuf2-alsa.c b=
+esides
+> the already existing videobuf2-v4l2.c and -dvb.c.
+>
+> Perhaps parts of v4l2-mem2mem.c can be reused as well in that case, but I=
+ am
+> not sure if it is worth the effort. I suspect copying it to an alsa-mem2m=
+em.c
+> and adapting it for alsa is easiest if you want to go that way.
+>
 
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
----
-V1 -> V2:
-- Split changes in the patch into two different patches
+Thanks.
 
- sound/drivers/pcmtest.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Does this means that videobuf2-v4l2.c and v4l2-mem2mem.c are dedicate
+for video device? if audio want to use v4l2 framework,  need to create
+videobuf2-alsa.c and alsa-mem2mem.c, but it may cause a lot of function
+duplicate.
 
-diff --git a/sound/drivers/pcmtest.c b/sound/drivers/pcmtest.c
-index dc7c9c758537..7f170429eb8f 100644
---- a/sound/drivers/pcmtest.c
-+++ b/sound/drivers/pcmtest.c
-@@ -41,8 +41,6 @@
- #include <linux/debugfs.h>
- #include <linux/delay.h>
- 
--#define DEVNAME "pcmtestd"
--#define CARD_NAME "pcm-test-card"
- #define TIMER_PER_SEC 5
- #define TIMER_INTERVAL (HZ / TIMER_PER_SEC)
- #define DELAY_JIFFIES HZ
-@@ -74,11 +72,11 @@ static u8 ioctl_reset_test;
- static struct dentry *driver_debug_dir;
- 
- module_param(index, int, 0444);
--MODULE_PARM_DESC(index, "Index value for " CARD_NAME " soundcard");
-+MODULE_PARM_DESC(index, "Index value for pcmtest soundcard");
- module_param(id, charp, 0444);
--MODULE_PARM_DESC(id, "ID string for " CARD_NAME " soundcard");
-+MODULE_PARM_DESC(id, "ID string for pcmtest soundcard");
- module_param(enable, bool, 0444);
--MODULE_PARM_DESC(enable, "Enable " CARD_NAME " soundcard.");
-+MODULE_PARM_DESC(enable, "Enable pcmtest soundcard.");
- module_param(fill_mode, short, 0600);
- MODULE_PARM_DESC(fill_mode, "Buffer fill mode: rand(0) or pattern(1)");
- module_param(inject_delay, int, 0600);
--- 
-2.34.1
-
+Best regards
+Wang Shengjiu
