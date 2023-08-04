@@ -4,81 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8EBFC001DE
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 16:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2A66C001DF
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 16:59:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A84B7F8;
-	Fri,  4 Aug 2023 18:58:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A84B7F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02C8A857;
+	Fri,  4 Aug 2023 18:58:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02C8A857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691168364;
-	bh=EypImsegK9bJKnJsBqy304+rYPk0LV8Bbnk7RSxHhMQ=;
+	s=default; t=1691168373;
+	bh=AIyB0V+fmBm1nEWIRBjm9UjeEbb7XHhZZ7hR3ZnxFW8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Cr1fNyjsgn2OwHxd/QEzt5wXk4IBTDfEH9cJK61tM/nWP7T0f2gnd7ppRhthTjRrO
-	 poIDEwVp8cfkk1gMxr5iBPNU8+K8TL0F9pyQNheQRI+EyPhf+o1JiMTTK1bElpdgsi
-	 ETiyBVgwBqd/n8+hEQEZgtieaCnGMM9TvBEywagw=
+	b=sUMGLMz+BS3u91Kg/GwiL5jYkEbpNPX5kUAdzBgYLM0pN/wjktmoCTIULpkq071Ds
+	 s+7WQ374O/oLz7D924MLA3vLEpnrrfJcAk11VQiFbKcq/TJxcX1sFhKsXziEoMzkRY
+	 E7Cev0pdRSNm+5YUXahFpDCKMJq3eyMzAtRcLVi0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0463FF80564; Fri,  4 Aug 2023 18:57:44 +0200 (CEST)
+	id 1EA19F8056F; Fri,  4 Aug 2023 18:57:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A4E4F80551;
-	Fri,  4 Aug 2023 18:57:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A712F80578;
+	Fri,  4 Aug 2023 18:57:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1387BF802BE; Fri,  4 Aug 2023 18:57:39 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 4015EF8025A; Fri,  4 Aug 2023 18:57:41 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A38FCF8025A;
-	Fri,  4 Aug 2023 18:57:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A38FCF8025A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1577BF8016D
+	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 18:57:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1577BF8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=EqmSMS7T
+ header.s=k20201202 header.b=X5SigBDR
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 6C2A9620D2;
-	Fri,  4 Aug 2023 16:57:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A87BC433C7;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 78F6E620AE;
 	Fri,  4 Aug 2023 16:57:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDFCCC433C8;
+	Fri,  4 Aug 2023 16:57:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691168249;
-	bh=EypImsegK9bJKnJsBqy304+rYPk0LV8Bbnk7RSxHhMQ=;
+	s=k20201202; t=1691168244;
+	bh=AIyB0V+fmBm1nEWIRBjm9UjeEbb7XHhZZ7hR3ZnxFW8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=EqmSMS7TudlJ8JTc68GnSkQ6v1QbSvx9urhSxPhIn/xrw5CTd1uycJqW1/W0L5bC3
-	 ljN6G13tUtgvK7PVwW47ThVqaEbCpgUF6+uD7cN6LDO93uFywUhiGt/bBv3J9TL5NK
-	 YLbNxe2WbSqUI1beL+vIS4IxDbYPZpqbt5NWHblnyiXGY7AgyTp0nuGuoLBr4bpmQO
-	 WH5YwDEOcPn9xfBYlZ0kmRoWo8qzvdsJmb/IW2ackNKNMZS62bmq2VVla2dIBe1+Iq
-	 zZlRnfWHNJtbL/AOvQZOv7fQ2i7V/QD96XsnUNt3kzRhTDBaX+AH8tuYpYy72Hx6sh
-	 zUSZwSs/CmwHg==
+	b=X5SigBDRnyL8M6ydZcaxmr+nn5EvME04lZRZovORb1iSZqnMxu/EqQ3UJPf+kAPej
+	 rfdbKloceMFWAybAFePm3lRENBrFXPXhwVvSl9G7OWJ7mWnSyB1fRWqR37yUpRE7lH
+	 ie7JtrNg1w22tmT3kkKSwBkLIGNYfLYlhMUKsSWyilx5muSEcPONAqnONPunrgIeNF
+	 5ez7/wXWbQ+stOQnVnUV4PDwX4mA5BZSI4SamPsz2qrqdOgcMcRj/cBuW+iTcikaWr
+	 6qDYZNPppG/OCZ0WPFOl7AlaD8TUJ/5gmw3BiP33H7v0C12oHfvahNluo4piCZiOCF
+	 XyWUbmQxG5GcQ==
 From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, peter.ujfalusi@linux.intel.com,
- yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com, lgirdwood@gmail.com,
- tiwai@suse.com, perex@perex.cz, matthias.bgg@gmail.com,
- angelogioacchino.delregno@collabora.com, Trevor Wu <trevor.wu@mediatek.com>
-Cc: yc.hung@mediatek.com, allen-kh.cheng@mediatek.com,
- sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20230803075028.32170-1-trevor.wu@mediatek.com>
-References: <20230803075028.32170-1-trevor.wu@mediatek.com>
-Subject: Re: [PATCH] ASoC: SOF: mediatek: mt8186 modify dram type as
- non-cache
-Message-Id: <169116824521.110745.9626523635220489877.b4-ty@kernel.org>
-Date: Fri, 04 Aug 2023 17:57:25 +0100
+To: alsa-devel@alsa-project.org, Yang Yingliang <yangyingliang@huawei.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
+In-Reply-To: <20230804085402.1328033-1-yangyingliang@huawei.com>
+References: <20230804085402.1328033-1-yangyingliang@huawei.com>
+Subject: Re: [PATCH -next] ASoC: ti: davinci-evm: simplify the code with
+ module_platform_driver
+Message-Id: <169116824355.110745.17089237266580144139.b4-ty@kernel.org>
+Date: Fri, 04 Aug 2023 17:57:23 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: MKUYNIOHLI5QGS5E62S5RJ4FMWW7QIMR
-X-Message-ID-Hash: MKUYNIOHLI5QGS5E62S5RJ4FMWW7QIMR
+Message-ID-Hash: OC5QGDUTJJR7QSHJTWCAHF76YQG4K4MA
+X-Message-ID-Hash: OC5QGDUTJJR7QSHJTWCAHF76YQG4K4MA
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MKUYNIOHLI5QGS5E62S5RJ4FMWW7QIMR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OC5QGDUTJJR7QSHJTWCAHF76YQG4K4MA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,10 +95,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 03 Aug 2023 15:50:28 +0800, Trevor Wu wrote:
-> To prevent incorrect access between the host and DSP sides, we need to
-> modify DRAM as a non-cache memory type. Additionally, we can retrieve
-> the size of shared DMA from the device tree.
+On Fri, 04 Aug 2023 16:54:02 +0800, Yang Yingliang wrote:
+> The init/exit() of driver only calls platform_driver_register/unregister,
+> it can be simpilfied with module_platform_driver.
 > 
 > 
 
@@ -113,8 +107,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: mediatek: mt8186 modify dram type as non-cache
-      commit: 1d54134df47684ee29d4d4bbe28174a4282389e0
+[1/1] ASoC: ti: davinci-evm: simplify the code with module_platform_driver
+      commit: 9606cda3501ae5d1a865d839ee5dbae9552a7b37
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
