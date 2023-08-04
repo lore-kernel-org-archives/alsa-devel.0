@@ -4,92 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2303EC00528
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 12:00:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87B47C001DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 12:04:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26273836;
-	Fri,  4 Aug 2023 13:59:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26273836
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5A4F827;
+	Fri,  4 Aug 2023 14:04:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5A4F827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691150436;
-	bh=Xb2ACTD4PZsn1ysNMGCo4jBgCEijNCm6praOLhXsK6o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1691150693;
+	bh=fsQHQ2F5Jv/QXNUe3kqosa6/oBgqFTd5dntV4EDfQC4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=G0OAzgiSKP/qleDpAChuaB6cidblkPS/lPNr9i5dQsoUz6AmlWwT6WKRjd1xuyyeZ
-	 pHmTmgAA0QAochpQN++y/l7yDwRoIwX4O5KyUS1ZDQdc3nkaN7DJERh+reZ0v29ogi
-	 czMlUcrOma0xUmjF2Jzeju6ikP1fGEvwneNec9oo=
+	b=GI1cuRDMLqVsxb5Rn0OU4rfZQOSkpzTXfb1Ii5BQtunPQw/ynrTqbKj0xr73VbGG7
+	 1lUoKCpEuwORYSIdVtJEej92VoGoUmarK6y+MMQCFe98uwi7kpC2eBGv+PX5I+S8/2
+	 NF9xjuhhxhK99vW1OPU3mVrLqQCBOUtCdcs6yZKM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66F7DF801D5; Fri,  4 Aug 2023 13:59:23 +0200 (CEST)
+	id 1BB54F80544; Fri,  4 Aug 2023 14:03:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 036EFF8025A;
-	Fri,  4 Aug 2023 13:59:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B804AF8025A;
+	Fri,  4 Aug 2023 14:03:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 717B5F8025A; Fri,  4 Aug 2023 13:59:19 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 49BAFF8025A; Fri,  4 Aug 2023 14:03:37 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0CC34F8015B;
-	Fri,  4 Aug 2023 13:59:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CC34F8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id E413EF8015B
+	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 14:03:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E413EF8015B
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=eDQZm+TR
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=PSomGLS+;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=QBZSVfzQ
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 1F27161F84;
-	Fri,  4 Aug 2023 11:59:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BE30C433C8;
-	Fri,  4 Aug 2023 11:59:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691150352;
-	bh=Xb2ACTD4PZsn1ysNMGCo4jBgCEijNCm6praOLhXsK6o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eDQZm+TRy04HDZ8uNjebJcN2VENMYpkSnX0d+51YqR7w8jz4985UwjoVdV3n6EGIU
-	 2nOLWjq/RdpFbQ7as+VUE+u7wCMSlVYNk41Q8fr4BIDLlnbQ2qvqzKx8HSUapXHqpO
-	 nD0wrtG0VhKvJEF/HQJCUipmGZRM1rHcKM+JA979fOz43UjYYh8UWdJSRhsdIT2I5P
-	 7XYNwf0NA4XGnY73NYPL6JDWCT8Gh54rs6V0+tIUxaRFvE9NRXK/X6Dr0bNJ+YWMGd
-	 JWT0A73zegG0s8EWe6Nzv3NRaG5pm5c38iKuCTvOrdCGZkP+Ba+4lGIrq0ei29u8Lz
-	 uFuWQiCrF/BLA==
-Date: Fri, 4 Aug 2023 12:59:06 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-	sound-open-firmware@alsa-project.org, linux-kernel@vger.kernel.org,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: Move binding to display driver outside
- of deferred probe
-Message-ID: <383ebe0e-e333-4b6e-8688-98a20977d03c@sirena.org.uk>
-References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
- <87r0oohyea.wl-tiwai@suse.de>
- <ec653abc-f2f8-8a9d-4b8a-ea9d985d32fe@linux.intel.com>
- <f6efb6f9-11ae-e901-f2a5-a4ef94590290@linux.intel.com>
- <2719a8fc-d2e5-f499-ac4d-cf322941526c@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4UO/14p9t2UJznza"
-Content-Disposition: inline
-In-Reply-To: <2719a8fc-d2e5-f499-ac4d-cf322941526c@linux.intel.com>
-X-Cookie: I'm hungry, time to eat lunch.
-Message-ID-Hash: MDHD5RZ3HMLCVQYEWKDYNBYK222G6CSV
-X-Message-ID-Hash: MDHD5RZ3HMLCVQYEWKDYNBYK222G6CSV
-X-MailFrom: broonie@kernel.org
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B73701F86A;
+	Fri,  4 Aug 2023 12:03:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1691150611;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bmqw8T2EmmwMsoaJoEzQQ135V51ZzofGMQ8EynxvD7k=;
+	b=PSomGLS+pZnhA96JV73nImOBM1pY60sdNnKTeJJgTkDjN7Q4v3Y8/jfZR7qkM8KnElmMrb
+	yoPc3NpEi2pQ46n6BrBdWIy015guaJVZlXa2NvP72I5/KPfwsOvMF7QGh6+hb82hhbb9FG
+	zboGW0QzRln/F5ckMFl3MXxbTxFGGaI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1691150611;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bmqw8T2EmmwMsoaJoEzQQ135V51ZzofGMQ8EynxvD7k=;
+	b=QBZSVfzQdKXqyRlxw8msK2rbLH7AqBnOjeUcbqrNNV9cn/gsUrn2vTmigxOPPGrqzpImpA
+	Dni168tfKUok6fAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 953B113904;
+	Fri,  4 Aug 2023 12:03:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id N2hLIxPpzGQwZwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 04 Aug 2023 12:03:31 +0000
+Date: Fri, 04 Aug 2023 14:03:31 +0200
+Message-ID: <87wmybovzg.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	alsa-devel@alsa-project.org
+Subject: Re: [GIT PULL] ASoC fixes for v6.5-rc4
+In-Reply-To: <20230804115214.0988AC433C7@smtp.kernel.org>
+References: <20230804115214.0988AC433C7@smtp.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: GBRGGYDS2OX5TYMV25CAFDORLJ6BPAEP
+X-Message-ID-Hash: GBRGGYDS2OX5TYMV25CAFDORLJ6BPAEP
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MDHD5RZ3HMLCVQYEWKDYNBYK222G6CSV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GBRGGYDS2OX5TYMV25CAFDORLJ6BPAEP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,35 +114,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Fri, 04 Aug 2023 13:52:03 +0200,
+Mark Brown wrote:
+> 
+> The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
+> 
+>   Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.5-rc4
+> 
+> for you to fetch changes up to f803ec63686dec863a33cad87218d7d99c4b5e92:
+> 
+>   ASoC: fsl: micfil: Use dual license micfil code (2023-08-03 14:54:06 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fix for v6.5
+> 
+> Not really a fix, but rather a licensing update for the fsl_micfil
+> driver.
 
---4UO/14p9t2UJznza
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks, pulled now.
 
-On Fri, Aug 04, 2023 at 12:47:54PM +0200, Maarten Lankhorst wrote:
-> On 2023-08-01 18:32, Pierre-Louis Bossart wrote:
 
-> This mail can be applied with git am -c.
-> ------8<---------
-> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-
-Don't do this, it breaks my automation and means I very nearly just
-skipped the patch entirely since it looked like the middle of some x86
-discussion.
-
---4UO/14p9t2UJznza
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTM6AkACgkQJNaLcl1U
-h9AqsQf+P7GCoI7e9morAkeZoiDSbe8h47xmQIVwTLiIN3rMew8BRFPZ2jo7lwy1
-SV4utapq9mZxzxFZgt+wLIzEYMwgT3u5BSiG6yeSkL0UMsZxdoFYtJLNuzr03zr4
-icc85FHHQ1LEb961n6oFYf2JSz3KuoLh+wjJFWSUwLwPoCeRWAY5K4UaASKxdwpi
-SSZ+0lT4JGgGRsUVwRk29G9Kgp6gfqpjTb/I3npLyYSPz/u/ZgEwxi3KPLTvGYns
-pQvWGRrUUCvWkQx6W4hEyMR7gPP3VJTeFR0gGIhkvS6H181WiJlJ2YCUaDh04SyW
-QKVR5armzOrvQiImy2akR2HGaZ1GQQ==
-=fpv4
------END PGP SIGNATURE-----
-
---4UO/14p9t2UJznza--
+Takashi
