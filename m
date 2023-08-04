@@ -4,225 +4,147 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EE98C00528
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 09:48:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FA7CC001DF
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Aug 2023 09:49:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0BC6AEA;
-	Fri,  4 Aug 2023 11:48:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0BC6AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 474ECE7A;
+	Fri,  4 Aug 2023 11:48:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 474ECE7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691142530;
-	bh=3VfCIXa0o6lPlMqgLObVQKbgPy8BjrH0uFz89nlwuOg=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1691142539;
+	bh=MMX2/XpxL9ViUog0cOPswNTa6PVRq+6NEuYU4YobfJE=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=utJiVc9IjPNYMUbZka5JQ/L7va7xtm6CpAEE1m/StI3Z1OYE/0TX4UPuFTpZYnpl/
-	 7M6NXddsnkFHFA+b8qe36Lrln2TPNob1y6HvAPq1hq4nARDdrRRU6SOT1j3402zfVQ
-	 HTryAoJMAiCJlGbuIMZJTbLlzmkqdeTDXG0tQv/A=
+	b=AtmWKFcuHVAVbpgR/QbRGq5zEPxApdpn9BNn9lwBwJ/9bBHtmD8gELaFn8xa2z9Cm
+	 fgQ9kJ15f5K7r+Pvx5muWUroPsuAlvU+AIgcqqpm7QxlUzZR0uqBSgxPSNhxNRJXUT
+	 Q6rYhk5GjV0jnMgyaPP0LtlXZHi/udKghS4qPZ6Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DC7EDF8060A; Fri,  4 Aug 2023 11:44:56 +0200 (CEST)
+	id E50C4F80610; Fri,  4 Aug 2023 11:45:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B89B9F80607;
-	Fri,  4 Aug 2023 11:44:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E2B3F80611;
+	Fri,  4 Aug 2023 11:45:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0D71F8025A; Fri,  4 Aug 2023 11:25:01 +0200 (CEST)
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	id 7CE66F8060A; Fri,  4 Aug 2023 11:44:53 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9246F8016D
-	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 11:24:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9246F8016D
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id DB05324E2E3;
-	Fri,  4 Aug 2023 17:24:38 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 4 Aug
- 2023 17:24:39 +0800
-Received: from [192.168.125.128] (183.27.98.54) by EXMBX061.cuchost.com
- (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 4 Aug
- 2023 17:24:37 +0800
-Message-ID: <00553fc1-a033-5d4b-e8db-18f265f08492@starfivetech.com>
-Date: Fri, 4 Aug 2023 17:20:09 +0800
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C284F8057B
+	for <alsa-devel@alsa-project.org>; Fri,  4 Aug 2023 11:44:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C284F8057B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=i6CgkZvQ
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 3749DbxG023497;
+	Fri, 4 Aug 2023 04:44:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=V76O28R4V5m7Yxd
+	fHvtUcqjTBQI4PdU+QGJQ89ye07s=; b=i6CgkZvQG6mvmvDUAOhXTrzBVH3vq++
+	rF4i0ZUsvmlnB2c1byS8vMEjy8Vlg4ovlJyoPqlBAul063Kv+XDuRRgRzKF1mew7
+	2PilUgtHxu5/5oXE4bOHy4c/nKQSDA/Tgu00Qw1GDpyAY/hnIhYUlfeSMiBxFna6
+	dHMIu8Ldd+aJ5wRB13UOlEKfAwUbxKBW/Ex0sI8lMLUQAZI30S4wHvhcIxrV5hby
+	Mtl00M6NbsRRh6ROpmyk6KnmQpiGLNO1R66ZmaOhnAHw8EFyX6SalJSCEnvIv03Y
+	3W0BAQvyfNbL+JqI8LRX1fNgYKG1E4lGA+bnuAa6ArmMSHvy+lIZIsQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s4y6jwjmr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 04 Aug 2023 04:44:43 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 4 Aug
+ 2023 10:44:41 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Fri, 4 Aug 2023 10:44:41 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
+ [198.61.86.93])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A6D3C15B6;
+	Fri,  4 Aug 2023 09:44:41 +0000 (UTC)
+Date: Fri, 4 Aug 2023 09:44:41 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+CC: <alsa-devel@alsa-project.org>, <vkoul@kernel.org>,
+ <vinod.koul@linaro.org>,
+        <linux-kernel@vger.kernel.org>,
+ <pierre-louis.bossart@linux.intel.com>,
+        <bard.liao@intel.com>
+Subject: Re: [PATCH 1/2] soundwire: intel_auxdevice: enable pm_runtime
+ earlier on startup
+Message-ID: <20230804094441.GR103419@ediswmail.ad.cirrus.com>
+References: <20230803065220.3823269-1-yung-chuan.liao@linux.intel.com>
+ <20230803065220.3823269-2-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1 3/5] ASoC: dwc: i2s: Add StarFive JH7110 SoC support
-Content-Language: en-US
-To: Maxim Kochetkov <fido_max@inbox.ru>, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, "Takashi
- Iwai" <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor.dooley@microchip.com>, Emil Renner Berthing
-	<emil.renner.berthing@canonical.com>
-CC: Jose Abreu <joabreu@synopsys.com>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, Walker Chen <walker.chen@starfivetech.com>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<alsa-devel@alsa-project.org>, <linux-riscv@lists.infradead.org>
-References: <20230802084301.134122-1-xingyu.wu@starfivetech.com>
- <20230802084301.134122-4-xingyu.wu@starfivetech.com>
- <fdd771cc-9354-208b-e8be-50d2ec6a40c9@inbox.ru>
-From: Xingyu Wu <xingyu.wu@starfivetech.com>
-In-Reply-To: <fdd771cc-9354-208b-e8be-50d2ec6a40c9@inbox.ru>
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [183.27.98.54]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX061.cuchost.com
- (172.16.6.61)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: xingyu.wu@starfivetech.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230803065220.3823269-2-yung-chuan.liao@linux.intel.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: 8BVtdkhWAWc7AealSFsuAe2R37e-LTBN
+X-Proofpoint-ORIG-GUID: 8BVtdkhWAWc7AealSFsuAe2R37e-LTBN
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 3NLNJKFXIGSFFZGDTYMHFICRYFWBV6OX
+X-Message-ID-Hash: 3NLNJKFXIGSFFZGDTYMHFICRYFWBV6OX
+X-MailFrom: prvs=3580138b0b=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: XYHZBMFOZKO3QIRVIIU4HXEDHVE46DVS
-X-Message-ID-Hash: XYHZBMFOZKO3QIRVIIU4HXEDHVE46DVS
-X-Mailman-Approved-At: Fri, 04 Aug 2023 09:44:31 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XYHZBMFOZKO3QIRVIIU4HXEDHVE46DVS/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3NLNJKFXIGSFFZGDTYMHFICRYFWBV6OX/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 2023/8/3 13:16, Maxim Kochetkov wrote:
->=20
->=20
-> On 02.08.2023 11:42, Xingyu Wu wrote:
->=20
->> diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
->> index c076090a9864..4dfbd8ddbcf5 100644
->> --- a/sound/soc/dwc/dwc-i2s.c
->> +++ b/sound/soc/dwc/dwc-i2s.c
->> @@ -16,6 +16,7 @@
->> =C2=A0 #include <linux/init.h>
->> =C2=A0 #include <linux/io.h>
->> =C2=A0 #include <linux/interrupt.h>
->> +#include <linux/mfd/syscon.h>
->> =C2=A0 #include <linux/module.h>
->> =C2=A0 #include <linux/reset.h>
->> =C2=A0 #include <linux/slab.h>
->> @@ -198,7 +199,7 @@ static void i2s_start(struct dw_i2s_dev *dev,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2s_write_reg(d=
-ev->i2s_base, IRER, 1);
->> =C2=A0 -=C2=A0=C2=A0=C2=A0 if (dev->use_pio)
->> +=C2=A0=C2=A0=C2=A0 if (dev->use_pio || dev->is_jh7110)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2s_enable_irqs=
-(dev, substream->stream, config->chan_nr);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2s_enable_dma(=
-dev, substream->stream);
->> @@ -216,7 +217,7 @@ static void i2s_stop(struct dw_i2s_dev *dev,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2s_write_reg(d=
-ev->i2s_base, IRER, 0);
->> =C2=A0 -=C2=A0=C2=A0=C2=A0 if (dev->use_pio)
->> +=C2=A0=C2=A0=C2=A0 if (dev->use_pio || dev->is_jh7110)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2s_disable_irq=
-s(dev, substream->stream, 8);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2s_disable_dma=
-(dev, substream->stream);
->=20
-> Why do we need to enable interrupts for DMA mode?
+On Thu, Aug 03, 2023 at 02:52:19PM +0800, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> 
+> As soon as the bus starts, physical peripheral devices may report as
+> ATTACHED and set their status with pm_runtime_set_active() in their
+> update_status()/io_init().
+> 
+> This is problematic with the existing code, since the parent
+> pm_runtime status is changed to "active" after starting the bus. This
+> creates a time window where the pm_runtime framework can report an
+> issue, e.g.
+> 
+> "rt711 sdw:0:025d:0711:00: runtime PM trying to activate child device
+> sdw:0:025d:0711:00 but parent (sdw-master-0) is not active"
+> 
+> This patch enables runtime_pm earlier to make sure the auxiliary
+> device is pm_runtime active after powering-up, but before starting the
+> bus.
+> 
+> This problem was exposed by recent changes in the timing of the bus
+> reset, but was present in this driver since we introduced pm_runtime
+> support.
+> 
+> Closes: https://github.com/thesofproject/linux/issues/4328
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Reviewed-by: Rander Wang <rander.wang@intel.com>
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> ---
 
-This is special mechanism about data transmission by DMA controller on th=
-e
-StarFive JH7110 SoC.
-The DMA controller needs to make a handshake with I2S interrupt and canno=
-t
-move the audio data without enabling the I2S interrupt.
-So I should keep the I2S interrupt enabled in both interrupt or DMA mode.
+Doesn't seem to cause any problems on my SoundWire devices, so
+very loosely:
 
->=20
->> @@ -227,6 +228,21 @@ static void i2s_stop(struct dw_i2s_dev *dev,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0 }
->> =C2=A0 +static int dw_i2s_startup(struct snd_pcm_substream *substream,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 struct snd_soc_dai *cpu_dai)
->> +{
->> +=C2=A0=C2=A0=C2=A0 struct dw_i2s_dev *dev =3D snd_soc_dai_get_drvdata=
-(cpu_dai);
->> +
->> +=C2=A0=C2=A0=C2=A0 if (dev->is_jh7110) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct snd_soc_pcm_runtime=
- *rtd =3D asoc_substream_to_rtd(substream);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct snd_soc_dai_link *d=
-ai_link =3D rtd->dai_link;
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dai_link->trigger_stop =3D=
- SND_SOC_TRIGGER_ORDER_LDC;
->> +=C2=A0=C2=A0=C2=A0 }
->> +
->> +=C2=A0=C2=A0=C2=A0 return 0;
->> +}
->> +
->> =C2=A0 static void dw_i2s_config(struct dw_i2s_dev *dev, int stream)
->> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 ch_reg;
->> @@ -267,6 +283,11 @@ static int dw_i2s_hw_params(struct snd_pcm_substr=
-eam *substream,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 config->data_wi=
-dth =3D 16;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev->ccr =3D 0x=
-00;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev->xfer_resol=
-ution =3D 0x02;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Set DMA buswidth on JH7=
-110 */
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (dev->is_jh7110) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v->play_dma_data.dt.addr_width =3D DMA_SLAVE_BUSWIDTH_2_BYTES;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v->capture_dma_data.dt.addr_width =3D DMA_SLAVE_BUSWIDTH_2_BYTES;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->=20
-> Not needed.
-> See: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.gi=
-t/commit/?h=3Dnext-20230802&id=3D6f80197f40515853814d0f22e5209d53f899ab91
-> Proper bus width calculations is performed by snd_hwparams_to_dma_slave=
-_config()
-
-Will use this ops instead.
-
->=20
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case SNDRV_PCM_FORMAT_S24_LE:
->> @@ -279,6 +300,11 @@ static int dw_i2s_hw_params(struct snd_pcm_substr=
-eam *substream,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 config->data_wi=
-dth =3D 32;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev->ccr =3D 0x=
-10;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev->xfer_resol=
-ution =3D 0x05;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Set DMA buswidth on JH7=
-110 */
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (dev->is_jh7110) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v->play_dma_data.dt.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v->capture_dma_data.dt.addr_width =3D DMA_SLAVE_BUSWIDTH_4_BYTES;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->=20
-> Not needed
-Will drop.
-
->=20
+Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
-Xingyu Wu
-
+Charles
