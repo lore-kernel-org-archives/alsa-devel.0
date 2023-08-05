@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFE59C001DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 10:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45F1BC001DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 10:37:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 798FC3E7;
-	Tue,  8 Aug 2023 12:36:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 798FC3E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8140184D;
+	Tue,  8 Aug 2023 12:36:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8140184D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691491052;
-	bh=Q6eZMHDgpnQNehQaMvfuZ71S5hlVFmdFs5BVI6OVMsc=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=e/wpFFYrOx3XLM4uKhLq3yLYQFDU1Yoectp2KJTYmTAuhplZhumJnGZU82L35CvAy
-	 KAMdP6dmPmdo+JEYllzUwUPRXEtpLmXCbLRq1DcOBYepYU45zFAxsh+8EP2hSmx3sw
-	 u3s2dCN0zOk6Yo26v/W00BfeMTYoX/kPIEbEfnpE=
+	s=default; t=1691491062;
+	bh=6HRC0XlQPnRXwRjQgG4MtK5y6OnWUwRDwCc8sYV5Mjc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=TA6jpzvTNnMu2RaV95yjrsZBnj5K9FmMTRmH45ltjmmZiXMbulsNPFk3gPejNwJn/
+	 Y5n9EG2ZQqw7Zl7BXpyA5JzrIkB106aNqLLffmZSPWUJrZBgriWozVdeHR73TKR47V
+	 HpvoFe/AhLn0hJllRic0M8wwHuGb51QHgtamrXfA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63660F80570; Tue,  8 Aug 2023 12:35:34 +0200 (CEST)
+	id DA76FF8059F; Tue,  8 Aug 2023 12:35:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2C51F8056F;
-	Tue,  8 Aug 2023 12:35:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2640AF8059F;
+	Tue,  8 Aug 2023 12:35:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A53FF80425; Sat,  5 Aug 2023 20:05:49 +0200 (CEST)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
+	id CB588F80425; Sat,  5 Aug 2023 20:05:53 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1DE6EF80087
-	for <alsa-devel@alsa-project.org>; Sat,  5 Aug 2023 20:05:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DE6EF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56BCAF801D5
+	for <alsa-devel@alsa-project.org>; Sat,  5 Aug 2023 20:05:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56BCAF801D5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=n0fK/y30
-Received: by mail-wr1-x433.google.com with SMTP id
- ffacd0b85a97d-314172bac25so2521080f8f.3
+ header.s=20221208 header.b=JXaio9I8
+Received: by mail-wm1-x32d.google.com with SMTP id
+ 5b1f17b1804b1-3fe12820bffso28443445e9.3
         for <alsa-devel@alsa-project.org>;
- Sat, 05 Aug 2023 11:05:39 -0700 (PDT)
+ Sat, 05 Aug 2023 11:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691258738; x=1691863538;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sdRAieAfV+HXU2d8HHj56ySjii4cMQwtBoYAE7N8g5s=;
-        b=n0fK/y30pRu67o6OdFtdPg9SBOZqPhrCfGUIUocdWZjGdUAnThcdzYcbzdDR5Cy7ZF
-         Tb4BjhaShFAziu49DZm5WGefcbR8geefa8kJjdc8BO6EgWlYcMlFibBJiaEvgj9WlP6v
-         qSkkm02uz2+hqpZi66JrB69ZA+yjSKuauQ3jGgYf1Nxlp2aFzSycIoAcf4bklWfTILZA
-         v/fVLZmzWwh6YwsMLwsmDw2UMQXXP0k0iol0blojjuQXXalegi1jH91cCOwFeLvT8J2i
-         qlEXnndY6XpbggsMj9nzzDdKUDtQpzljDFtYbAqLz+ivTVk0PtRzBfmWnCXbzLTpMeWY
-         5N7w==
+        d=gmail.com; s=20221208; t=1691258745; x=1691863545;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ui9mFi+8YpeTm0k09SoqGWMWxqwLX8g/SM0GMtVVuxo=;
+        b=JXaio9I8DD4b5kA/e3J4i8BugFtaIhTeAsqI8YpbFje4l002vWoSJ8cMKU0hUZuEmx
+         lJAOUXG/CbuqOiK9JDZTQ473fZqnNUUQRQZYrGhXaFfFddAtxYbXuvYdP4MUOkxQVpCG
+         6k6GEhMUUMZw+XmGLr874mRvlbYTfED9V1LBPWg0EqkDvmmI9ce4MBY+N6pZa1lcQNdU
+         tR4H3XCjWUe/PW7LQiz97Swp4uEEos7FS9Z7u18Zjm1kVlHGpx/tx/NPI5jN2g5bkxQz
+         hbiHrAB7ihoLl3P2ybOtQlJLx4Ha62sof5/RxtfZL1sivlBqdiis7qyRd3rRo0eCwJD4
+         gekw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691258738; x=1691863538;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sdRAieAfV+HXU2d8HHj56ySjii4cMQwtBoYAE7N8g5s=;
-        b=MumSKEoihIatCcUaY+zrxRNUEnpL0tZva1hzjmRZBFZLUSqL3hJlzdPrkyxGWJuiL1
-         x84LavzdvnEyKEKjaIBDAnqW+e70WXQbtq0ocyxoqCXd3pMqCxqYoNWwAhHSPhINe9Ah
-         zKVVtrmgRn7fKurZ3+M9pSDOY7AFv+aOmvgG2mRL2sknYCol+REvkzIKWRTGOPzGooHX
-         LnPXmHrZZ3YBHkmYgye+rNBXuH1EbpWf07rH9+NFGTyID2dt0JeEr7IGDUsZlwoERica
-         RvPguCbXXdZL2LLjDt/D4V7TssA2sRXk5ccXBI1P8TYyabZsNaIbNdvLppggA4z7Y1HE
-         K8xw==
-X-Gm-Message-State: AOJu0YymZRtB8CO5VS+Kd5cXdjY329qdoEJYLXiygA97KAnoUHTbIRkL
-	j3i7+IRZeVzNk13/Li9RoPs=
+        d=1e100.net; s=20221208; t=1691258745; x=1691863545;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ui9mFi+8YpeTm0k09SoqGWMWxqwLX8g/SM0GMtVVuxo=;
+        b=P3Rp8MFl1D+gKolJ1euid0CTI4zQ1RXlOHMEa//y/KJI+U9/H4AIJJyhPWji7lqoi4
+         ye7VgQq9oeoUqIBJD+Fpv74HZFff40asySy1lGSJH/Tq6JyY9aEtbFEvJnz4CvelduTJ
+         bjQTG1ib1yX40sLHQ9TfsehGlZz4tLcvIXgFjwlsfKZ2k554tYGHX9MIVqL/Nz4ws9WG
+         08/iqz07cHQXAXXFDcTDJWWExyknNKsLHXDE5c9vpIQeyYQb+Q2a1QQEuJnUm6a4K5Ri
+         rknOMG/8B5VyKXo2kUwyo/RVgfy4yND3kJlfsI9Y5s7DzRoKhSqyRjpLZVUqyAso0HJA
+         +2RA==
+X-Gm-Message-State: AOJu0Yzl5wkOlyZqPdT32OyJ5mi0iDJEh+Bq8S8n8axFw2B0jMnTpF09
+	hiIDNvgtbDs/zpZ6iMl5Btw=
 X-Google-Smtp-Source: 
- AGHT+IE+5m/SQ3eshBedJihbRDlO9MZ+wChC74UcCgeJKgphC3WBm37dlSMr1RZdbjAWZFPdnVj2lA==
-X-Received: by 2002:a05:6000:10c6:b0:317:6fff:c32b with SMTP id
- b6-20020a05600010c600b003176fffc32bmr2915238wrx.53.1691258737930;
-        Sat, 05 Aug 2023 11:05:37 -0700 (PDT)
+ AGHT+IH52KbShgZ7/MyYYljmA/7meZEjQcL6qqHPDeWo7emmXLPpHbnsfG22wPwvuhUIyNpA/ptA7Q==
+X-Received: by 2002:a5d:4b43:0:b0:317:5d3d:d37c with SMTP id
+ w3-20020a5d4b43000000b003175d3dd37cmr2878909wrs.24.1691258744489;
+        Sat, 05 Aug 2023 11:05:44 -0700 (PDT)
 Received: from user-PC.. ([178.134.198.138])
         by smtp.gmail.com with ESMTPSA id
- v4-20020a5d6104000000b003176aa612b1sm5710402wrt.38.2023.08.05.11.05.35
+ v4-20020a5d6104000000b003176aa612b1sm5710402wrt.38.2023.08.05.11.05.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 11:05:37 -0700 (PDT)
+        Sat, 05 Aug 2023 11:05:44 -0700 (PDT)
 From: Maksim Kiselev <bigunclemax@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Maksim Kiselev <bigunclemax@gmail.com>,
@@ -101,11 +103,13 @@ Cc: Maksim Kiselev <bigunclemax@gmail.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-sunxi@lists.linux.dev,
 	linux-riscv@lists.infradead.org
-Subject: [PATCH v1 0/5] ASoC: sunxi: Add support for D1/T113s internal audio
- codec
-Date: Sat,  5 Aug 2023 21:05:00 +0300
-Message-Id: <20230805180506.718364-1-bigunclemax@gmail.com>
+Subject: [PATCH v1 2/5] ASoC: dt-bindings: Add schema for
+ "allwinner,sun20i-d1-codec-analog"
+Date: Sat,  5 Aug 2023 21:05:02 +0300
+Message-Id: <20230805180506.718364-3-bigunclemax@gmail.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230805180506.718364-1-bigunclemax@gmail.com>
+References: <20230805180506.718364-1-bigunclemax@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: bigunclemax@gmail.com
@@ -114,15 +118,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: XHFMEAS6GSXWEQ7F2GB3D3YFGD2LYPIY
-X-Message-ID-Hash: XHFMEAS6GSXWEQ7F2GB3D3YFGD2LYPIY
+Message-ID-Hash: WQYU4MFJWZKHDWHDFDDUPMIDZDKKP4ZZ
+X-Message-ID-Hash: WQYU4MFJWZKHDWHDFDDUPMIDZDKKP4ZZ
 X-Mailman-Approved-At: Tue, 08 Aug 2023 10:35:25 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XHFMEAS6GSXWEQ7F2GB3D3YFGD2LYPIY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQYU4MFJWZKHDWHDFDDUPMIDZDKKP4ZZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,47 +135,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+Add a DT schema to describe the analog part of the Allwinner D1/T113s
+internal audio codec.
 
-This is the series adding support for internal audio codec on
-Allwinner D1/T113s SoCs family.
-
-My work based on Icenowy Zheng's patches from sipeed repo that adds
-support for the R329 audio codec. But, unfortunately, these patches
-were not sent to upstream. So, I adapted them to fit the T113s.
-In the future, support for R329 could easily be added on top of
-this series. Because D1/T113s and R329 SoCs have almost the same audio
-codec IP, with slight differences in the analog part, plus the R329
-has two additional ADCs.
-
-The series includes modifications for the existing sun4i-codec driver
-that brings support for the digital part of the D1 codec. And adds the
-new sun20i-d1-codec-analog driver for the analog part.
-
-I would be glad if someone have a look :)
-
-Cheers,
-Maksim
-
-Maksim Kiselev (5):
-  ASoC: dt-bindings: sun4i-a10-codec: Add binding for Allwinner D1 SoC
-  ASoC: dt-bindings: Add schema for "allwinner,sun20i-d1-codec-analog"
-  ASoC: sunxi: sun4i-codec: add basic support for D1 audio codec
-  ASoC: sunxi: Add new driver for Allwinner D1/T113s codec's analog path
-    controls
-  riscv: dts: allwinner: d1: Add device nodes for internal audio codec
-
- .../allwinner,sun20i-d1-codec-analog.yaml     |  33 ++
- .../sound/allwinner,sun4i-a10-codec.yaml      |  64 ++-
- .../boot/dts/allwinner/sunxi-d1s-t113.dtsi    |  22 ++
- sound/soc/sunxi/Kconfig                       |  11 +
- sound/soc/sunxi/Makefile                      |   1 +
- sound/soc/sunxi/sun20i-d1-codec-analog.c      | 220 +++++++++++
- sound/soc/sunxi/sun4i-codec.c                 | 364 +++++++++++++++---
- 7 files changed, 643 insertions(+), 72 deletions(-)
+Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
+---
+ .../allwinner,sun20i-d1-codec-analog.yaml     | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun20i-d1-codec-analog.yaml
- create mode 100644 sound/soc/sunxi/sun20i-d1-codec-analog.c
 
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun20i-d1-codec-analog.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun20i-d1-codec-analog.yaml
+new file mode 100644
+index 000000000000..7586076b9bc5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun20i-d1-codec-analog.yaml
+@@ -0,0 +1,33 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/allwinner,sun20i-d1-codec-analog.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Allwinner D1 Analog Codec
++
++maintainers:
++  - Maksim Kiselev <bigunclemax@gmail.com>
++
++properties:
++  compatible:
++    const: allwinner,sun20i-d1-codec-analog
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    codec_analog: codec-analog@2030300 {
++        compatible = "allwinner,sun20i-d1-codec-analog";
++        reg = <0x02030300 0xd00>;
++    };
++
++...
++
 -- 
 2.39.2
 
