@@ -4,95 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FFC4C001DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 15:00:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77BD2C00528
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 15:23:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31A6F823;
-	Mon,  7 Aug 2023 16:59:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31A6F823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FA3882B;
+	Mon,  7 Aug 2023 17:22:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FA3882B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691420400;
-	bh=SUHQAeoPZgXBUwMl+B0ovX2ZyA2nHmqJqeRcETZsoR0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1691421808;
+	bh=4KzcKIJrFTKt6BYYCTH/0bkFuDF8emktLfBEAUaCVuM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XuL2X+Zsz+kbOnfcUH3T5dkKBNlWtNx9wJ5Y0pMyFwQb+pd6SUOMc30sGr9y+vPuE
-	 V5wQyLr3HgL3lERtaFXHGCv6eHDm6AFPmtabvKsDUQytG3cX6s/YTf3WUnDOQ9r4GO
-	 mYtsCo6US0xpgms3QZSL26vn60OK9LfBr5vBRiW0=
+	b=A26DNXJmaVQ2SO8dnEgU0Lct/N+YjDEtubh7KxZ49brNA9H77Dw9SWUGcXtPwb6zm
+	 NdJoRUodjAvUhznoEWfULSCRY1bp3nA2SENjHCzZ3cueXnofW0blAg6Wwm3n0zfEZP
+	 ub+zV/tH2lXSU3inCPh0t5FefaLeTskwowE8dqPI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 99981F805CB; Mon,  7 Aug 2023 16:57:09 +0200 (CEST)
+	id 25B6DF8016D; Mon,  7 Aug 2023 17:22:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D849F805C1;
-	Mon,  7 Aug 2023 16:57:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61F64F8016D;
+	Mon,  7 Aug 2023 17:22:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 036BAF80570; Mon,  7 Aug 2023 16:56:57 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 48129F8016D; Mon,  7 Aug 2023 17:22:26 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9F04DF80553;
-	Mon,  7 Aug 2023 16:56:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F04DF80553
+	by alsa1.perex.cz (Postfix) with ESMTPS id AA693F80087
+	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 17:22:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA693F80087
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=aNsBNDWX
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691420213; x=1722956213;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=SUHQAeoPZgXBUwMl+B0ovX2ZyA2nHmqJqeRcETZsoR0=;
-  b=aNsBNDWXcVh3VltuXqx/HwgSUn2Tqcg48DERV4E+S+ipHWqWdBfcHCLt
-   BWUH8yu5BP08OrtTmsFqCvldH4Jr430VUf5zpMsY2ugVrPiV+nR948xAF
-   eAS+sSALv9vwg+L2YADwW3azKyQdrMP+0mZlLuRn1rgxZV4uDMsh94Fnb
-   fMXgF7DWSOwC/2I99TWe8xzkwUr1AuT6c14yQKjeBt5OV93BLKUY2D6ks
-   /ibQMHPlH6sSt8DSaKaOvCR/XwKmIS0oklADbIWkngpA/JwdUVI9rl9nB
-   fKFLwExNfD00EV1boN6QDV0jy9GmUX+4zegmNZtqbidvwbr7B278iYiKM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434410645"
-X-IronPort-AV: E=Sophos;i="6.01,262,1684825200";
-   d="scan'208";a="434410645"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 07:56:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1061623896"
-X-IronPort-AV: E=Sophos;i="6.01,262,1684825200";
-   d="scan'208";a="1061623896"
-Received: from hweelee-mobl.amr.corp.intel.com (HELO [10.209.181.215])
- ([10.209.181.215])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 07:56:44 -0700
-Message-ID: <401de8fb-8d33-d699-ba09-a7b90356d915@linux.intel.com>
-Date: Mon, 7 Aug 2023 09:28:35 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 9/9] ALSA: hda/i915: Remove extra argument from
- snd_hdac_i915_init
-Content-Language: en-US
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- alsa-devel@alsa-project.org
-Cc: Maarten Lankhorst <dev@lankhorst.se>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
- linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
- <20230807090045.198993-10-maarten.lankhorst@linux.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230807090045.198993-10-maarten.lankhorst@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: O72CFINSW34Y5BYQBQ3GLOWNHHFE5CFE
-X-Message-ID-Hash: O72CFINSW34Y5BYQBQ3GLOWNHHFE5CFE
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=Wf8vbcxp;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=wsLdYZZz
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E97531FE64;
+	Mon,  7 Aug 2023 15:22:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1691421738;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GoN726XQvVM3O4Jmru+mvY7j3YKAGZ0sihu6ZlArcy0=;
+	b=Wf8vbcxp47efBkbpPARn1+tyjp1K9lorjSr6zw+RUXpkkx+j0xlBWJ9rkdEOqOtRtGzpmj
+	uD8r9u5a9VUJhpu4h+I1ovMLnfeBugWTqwj6SC9dbpUGexeKDmpZiY5rwZ8k4P7esevqv1
+	9h78CD6apzj7JVb1++2c0R0Z6vsTkSU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1691421738;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GoN726XQvVM3O4Jmru+mvY7j3YKAGZ0sihu6ZlArcy0=;
+	b=wsLdYZZzxzxpdYpNL5x4TK1cl7YIjiVlFWpaWYUIk0YcmOWEPxN3CihrdAW8Pcs2lZf0+0
+	FtN529EXC9vkz6Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9031713487;
+	Mon,  7 Aug 2023 15:22:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id /zcDIioM0WQqUwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 07 Aug 2023 15:22:18 +0000
+Date: Mon, 07 Aug 2023 17:22:18 +0200
+Message-ID: <87pm3yj2s5.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>,
+	alsa-devel@alsa-project.org,
+	Andrey Utkin <andrey_utkin@fastmail.com>,
+	Anton Sviridenko <anton@corp.bluecherry.net>,
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Bluecherry Maintainers <maintainers@bluecherrydvr.com>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Ismael Luceno <ismael@iodev.co.uk>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+	Olivier Moysan <olivier.moysan@foss.st.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	linux-media@vger.kernel.org,
+	xen-devel@lists.xenproject.org
+Subject: Re: [PATCH 00/24] ALSA: Generic PCM copy ops using sockptr_t
+In-Reply-To: <ZMlGKy7ibjkQ6ii7@smile.fi.intel.com>
+References: <20230731154718.31048-1-tiwai@suse.de>
+	<b906d60b-ece4-45b5-8167-2046c8dc00f4@sirena.org.uk>
+	<87h6pjj2ui.wl-tiwai@suse.de>
+	<a02cf5c3-1fac-4ec6-9d9c-f8e8d0c067e0@sirena.org.uk>
+	<87leeugbxm.wl-tiwai@suse.de>
+	<ZMlGKy7ibjkQ6ii7@smile.fi.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: 562EQQK4OIFEFACYBYTKD7US4ESQQKUA
+X-Message-ID-Hash: 562EQQK4OIFEFACYBYTKD7US4ESQQKUA
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -111,31 +131,153 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Tue, 01 Aug 2023 19:51:39 +0200,
+Andy Shevchenko wrote:
+> 
+> On Tue, Aug 01, 2023 at 02:54:45PM +0200, Takashi Iwai wrote:
+> > On Mon, 31 Jul 2023 21:40:20 +0200,
+> > Mark Brown wrote:
+> > > On Mon, Jul 31, 2023 at 09:30:29PM +0200, Takashi Iwai wrote:
+> > > > Mark Brown wrote:
+> > > 
+> > > > > It really feels like we ought to rename, or add an alias for, the type
+> > > > > if we're going to start using it more widely - it's not helping to make
+> > > > > the code clearer.
+> > > 
+> > > > That was my very first impression, too, but I changed my mind after
+> > > > seeing the already used code.  An alias might work, either typedef or
+> > > > define genptr_t or such as sockptr_t.  But we'll need to copy the
+> > > > bunch of helper functions, too...
+> > > 
+> > > I would predict that if the type becomes more widely used that'll happen
+> > > eventually and the longer it's left the more work it'll be.
+> > 
+> > That's true.  The question is how more widely it'll be used, then.
+> > 
+> > Is something like below what you had in mind, too?
+> 
+> I agree with your proposal (uniptr_t also works for me), but see below.
+> 
+> ...
+> 
+> > +#include <linux/slab.h>
+> > +#include <linux/uaccess.h>
+> 
+> But let make the list of the headers right this time.
+> 
+> It seems to me that
+> 
+> err.h
+> minmax.h // maybe not, see a remark at the bottom
+> string.h
+> types.h
+> 
+> are missing.
+
+OK, makes sense to add them.
+
+> 
+> More below.
+> 
+> ...
+> 
+> > +	void *p = kmalloc_track_caller(len, GFP_USER | __GFP_NOWARN);
+> > +
+> > +	if (!p)
+> > +		return ERR_PTR(-ENOMEM);
+> 
+> This can use cleanup.h.
+
+Hm, I don't think it can be replaced with that.
+There may be more use of cleanup.h, but it's no direct alternative for
+kmalloc_track_caller()...
+
+> > +	if (copy_from_uniptr(p, src, len)) {
+> > +		kfree(p);
+> > +		return ERR_PTR(-EFAULT);
+> > +	}
+> > +	return p;
+> > +}
+> > +
+> > +static inline void *memdup_uniptr_nul(uniptr_t src, size_t len)
+> > +{
+> > +	char *p = kmalloc_track_caller(len + 1, GFP_KERNEL);
+> 
+> Ditto.
+> 
+> > +	if (!p)
+> > +		return ERR_PTR(-ENOMEM);
+> > +	if (copy_from_uniptr(p, src, len)) {
+> > +		kfree(p);
+> > +		return ERR_PTR(-EFAULT);
+> > +	}
+> > +	p[len] = '\0';
+> > +	return p;
+> > +}
+> 
+> ...
+> 
+> > +static inline long strncpy_from_uniptr(char *dst, uniptr_t src, size_t count)
+> > +{
+> > +	if (uniptr_is_kernel(src)) {
+> > +		size_t len = min(strnlen(src.kernel, count - 1) + 1, count);
+> 
+> I didn't get why do we need min()? To check the count == 0 case?
+> 
+> Wouldn't
+> 
+> 		size_t len;
+> 
+> 		len = strnlen(src.kernel, count);
+> 		if (len == 0)
+> 			return 0;
+> 
+> 		/* Copy a trailing NUL if found */
+> 		if (len < count)
+> 			len++;
+> 
+> be a good equivalent?
+
+A good question.  I rather wonder why it can't be simple strncpy().
+
+> > +		memcpy(dst, src.kernel, len);
+> > +		return len;
+> > +	}
+> > +	return strncpy_from_user(dst, src.user, count);
+> > +}
+> 
+> ...
+> 
+> > +static inline int check_zeroed_uniptr(uniptr_t src, size_t offset, size_t size)
+> > +{
+> > +	if (!uniptr_is_kernel(src))
+> 
+> Why not to align all the functions to use same conditional (either always
+> positive or negative)?
+
+A different person, a different taste :)  But it's trivial to fix.
+
+> > +		return check_zeroed_user(src.user + offset, size);
+> > +	return memchr_inv(src.kernel + offset, 0, size) == NULL;
+> > +}
+> 
+> ...
+> 
+> Taking all remarks into account I would rather go with sockptr.h being
+> untouched for now, just a big
+> 
+> /* DO NOT USE, it's obsolete, use uniptr.h instead! */
+> 
+> to be added.
+
+Possibly that's a safer choice.  But the biggest question is whether
+we want a generic type or not.  Let's try to ask it first.
+
+Interestingly, this file doesn't belong to any subsystem in
+MAINTAINERS, so I'm not sure who to be Cc'ed.  Chirstoph as the
+original author and net dev, maybe.
 
 
+thanks,
 
-> @@ -172,18 +172,10 @@ int snd_hdac_i915_init(struct hdac_bus *bus, bool allow_modprobe)
->  	acomp = bus->audio_component;
->  	if (!acomp)
->  		return -ENODEV;
-> -	if (allow_modprobe && !acomp->ops) {
-> -		if (!IS_ENABLED(CONFIG_MODULES) ||
-> -		    !request_module("i915")) {
-> -			/* 60s timeout */
-> -			wait_for_completion_killable_timeout(&acomp->master_bind_complete,
-> -							     msecs_to_jiffies(60 * 1000));
-
-heads-up that I have a conflicting patch to make the 60s delay
-configurable, see https://github.com/thesofproject/linux/pull/4505
-
-> -		}
-> -	}
->  	if (!acomp->ops) {
-> -		int err = allow_modprobe ? -ENODEV : -EPROBE_DEFER;
->  		snd_hdac_acomp_exit(bus);
-> -		return dev_err_probe(bus->dev, err, "couldn't bind with audio component\n");
-> +		return dev_err_probe(bus->dev, -EPROBE_DEFER,
-> +				     "couldn't bind with audio component\n");
->  	}
->  	return 0;
->  }
+Takashi
