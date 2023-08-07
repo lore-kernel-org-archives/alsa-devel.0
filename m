@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22A15C001B0
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 14:28:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDF47C00528
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 14:37:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66BCA82B;
-	Mon,  7 Aug 2023 16:28:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66BCA82B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5BB382B;
+	Mon,  7 Aug 2023 16:36:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5BB382B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691418536;
-	bh=wuyt0v4YU3ONIEyFfiLNhNOINUTBy+tQGnLRULM36n8=;
+	s=default; t=1691419056;
+	bh=ke5upjysK6AX8emCowQngsKJbMWF9+VpIwLTcOxKcwI=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=p1DFyWNEgZBpmic30h94f54oHFU+fdBORLdupGkigqgQ2Fu31bX6MybVTKE5lGAhX
-	 fEOd9Dp04/NG496iBZ+F/8IWLMs996gVpFj3Te0Um5l4LMvQ/AkfnLeLCd4taIrUIj
-	 5aMWt6G5jX6eCc6O5+3mZ50oxIAKw1b4Zn9ydaWw=
+	b=Zk4ILsfPsVrgYaiplejhD0/A7P11H5B4sY/lPnyPvkg/dNcGKlr5OeZf3/YoFfGyC
+	 LTZTfQHoVY6L59uVYNzeF4PF0BdBdbeZMR9gsJ6WkxMQ3ssWoe77Ypv5kYyZ62KOG7
+	 Pqx7qYPnIsb/H/RVz74Gur9L12XlX93K1a32hbjk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06421F80548; Mon,  7 Aug 2023 16:27:36 +0200 (CEST)
+	id 350B2F8016B; Mon,  7 Aug 2023 16:36:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB607F80534;
-	Mon,  7 Aug 2023 16:27:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE9BEF8016D;
+	Mon,  7 Aug 2023 16:36:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5CB30F8016D; Mon,  7 Aug 2023 16:27:33 +0200 (CEST)
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
- [217.70.183.199])
+	id 2B973F8016D; Mon,  7 Aug 2023 16:36:36 +0200 (CEST)
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
+ [217.70.183.196])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B3822F8016A
-	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 16:27:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3822F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6CAE6F8016A
+	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 16:36:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CAE6F8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=LywQYvYZ
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A286EFF808;
-	Mon,  7 Aug 2023 14:27:22 +0000 (UTC)
+ header.s=gm1 header.b=HmQ6EWLU
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B7938E0008;
+	Mon,  7 Aug 2023 14:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1691418448;
+	t=1691418990;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nSKlAqEgzEsFnBW7d8u/9h1ZprRRwuRKRLFQ+P/wUY8=;
-	b=LywQYvYZoJqcYSSsOLGqNNJCC9NtdSGpEXpSP7h89QnexEqHiRwsI7y1Fopm8khwM4Jado
-	UYh+3ucNoG1TlHOxwycpd6wl86Ww1bH1aU60cma+N9WOR0OpLat30VEL6CeBvM4lykiuLw
-	YTsewxWRSsSjNtpcSTDCC/w5lLkMGaNv7Xw1yRiyjXwkVqDQrnGE9qAK5QvgIhhrsRkXmb
-	mp7wMTZO2Ss/rYbZR46XbfqZndue72KIO/PVTyaSLyZCXcr1LoUkH4LYGHzC6pgv3/FZsS
-	y1yxUPZoU8Fr9gDi5km21Xjd+hZnD+9mY+D/84flAYhqMYAgZ0XHWK6gTENonw==
-Date: Mon, 7 Aug 2023 16:27:21 +0200
+	bh=CoovJrYPxkDFGogd5wvVhZC1R5Dq4lKn3YHaDGn4/LM=;
+	b=HmQ6EWLUrDj97BUk7IGsXLcmAJ2miJvyMgaSQlOietWT5pvqGoMYmO6yr+Bhc0Lx67tKD6
+	df7Z6+KBom37uNEQWfw8FJht1ZSI3QWLiHNjcNXBmvIwSynDxYMQivLHbJtb7uzGw5pJZ2
+	EAinCJbElQ6rO13JeWO3s9sPGU4+27Q8M5T52pS7PcbF+R8WyuQKAjhFeLCmKcp+6TWkuR
+	IdO0UMWLzMibIMpfP4ahj/zKwHCDxTgVc0R059ZGQaSUIC06o5hsPMQ2XYgtkWYBNaUzS4
+	qP1VmAe+U2gpEDS1hmzhbhx0eTbGq6h1G2uNh4GG0oC80TOYZeIgosi77P7S8A==
+Date: Mon, 7 Aug 2023 16:36:26 +0200
 From: Herve Codina <herve.codina@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>, Rob Herring
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Linus Walleij <linus.walleij@linaro.org>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring
  <robh+dt@kernel.org>, Krzysztof Kozlowski
  <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
  Lee Jones <lee@kernel.org>, Qiang Zhao <qiang.zhao@nxp.com>, Li Yang
@@ -74,20 +74,21 @@ Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
  Petazzoni <thomas.petazzoni@bootlin.com>
 Subject: Re: [PATCH v2 24/28] pinctrl: Add support for the Lantic PEF2256
  pinmux
-Message-ID: <20230807162721.56318743@bootlin.com>
-In-Reply-To: 
- <CACRpkdYXCQRd3ZXNGHwMaQYiJc7tGtAJnBaSh5O-8ruDAJVdiA@mail.gmail.com>
+Message-ID: <20230807163626.79a5ca7b@bootlin.com>
+In-Reply-To: <eb99e739-6578-4aee-a0f4-7a0c5e5e81ef@lunn.ch>
 References: <20230726150225.483464-1-herve.codina@bootlin.com>
 	<20230726150225.483464-25-herve.codina@bootlin.com>
 	<CACRpkdYXCQRd3ZXNGHwMaQYiJc7tGtAJnBaSh5O-8ruDAJVdiA@mail.gmail.com>
+	<CACRpkdZebvrdGXooLXmgXhUcgdgxBczJBpdEoEyJDR39abaAqQ@mail.gmail.com>
+	<eb99e739-6578-4aee-a0f4-7a0c5e5e81ef@lunn.ch>
 Organization: Bootlin
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: 6VOW6N3C6FFXBO7HQSWE5LRWLWNQVFK4
-X-Message-ID-Hash: 6VOW6N3C6FFXBO7HQSWE5LRWLWNQVFK4
+Message-ID-Hash: VCRUHULOJU2BWCUEXBS5IDVWYVSIAOCW
+X-Message-ID-Hash: VCRUHULOJU2BWCUEXBS5IDVWYVSIAOCW
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,83 +108,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Linus,
+Hi Linus, Andrew,
 
-On Mon, 7 Aug 2023 15:05:15 +0200
-Linus Walleij <linus.walleij@linaro.org> wrote:
+On Mon, 7 Aug 2023 15:17:11 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-> Hi Herve,
+> On Mon, Aug 07, 2023 at 03:06:42PM +0200, Linus Walleij wrote:
+> > On Mon, Aug 7, 2023 at 3:05 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> >   
+> > > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>  
+> > >
+> > > So it is a bridge chip? Please use that terminology since Linux
+> > > DRM often talks about bridges.  
+> > 
+> > Replying to self: no it's not a bridge, it's a WAN thingy.
+> > 
+> > So perhaps write that this is a WAN interface adapter chip.  
 > 
-> thanks for your patch!
+> Hi Linus
 > 
-> First: is this patch something we could merge separately? I don't see
-> any dependency on the other patches.
+> In the E1/T1/J1 world, framer is a well understood concept. Maybe the
+> text needs a bit more background information to explain what this is
+> to somebody who does not have an old school telecoms background.
+> 
+>    Andrew
 
-It depends on pef2256:
-in drivers/pinctrl/Kconfig:
+Maybe I can add in my commit log:
 --- 8< ---
-+config PINCTRL_PEF2256
-+	tristate "Lantiq PEF2256 (FALC56) pin controller driver"
-+	depends on OF && FRAMER_PEF2256
---- 8< ---
-in drivers/pinctrl/pinctrl-pef2256.c
---- 8< ---
-+#include <linux/framer/pef2256.h>
+This kind of component can be found in old telecommunication system.
+It was used to digital transmission of many simultaneous telephone calls
+by time-division multiplexing. Also using HDLC protocol, WAN networks
+can be reached through the framer.
 --- 8< ---
 
-All the pef2256 it depends on is provided by
- path 23/28 "net: wan: framer: Add support for the Lantiq PEF2256 framer"
+Do you think it will be better ?
 
-> 
-> On Wed, Jul 26, 2023 at 5:04 PM Herve Codina <herve.codina@bootlin.com> wrote:
-> 
-> > The Lantiq PEF2256 is a framer and line interface component designed to
-> > fulfill all required interfacing between an analog E1/T1/J1 line and the
-> > digital PCM system highway/H.100 bus.
-> >
-> > This pinmux support handles the pin muxing part (pins RP(A..D) and pins
-> > XP(A..D)) of the PEF2256.
-> >
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>  
-> 
-> So it is a bridge chip? Please use that terminology since Linux
-> DRM often talks about bridges.
-> 
-> > +++ b/drivers/pinctrl/pinctrl-pef2256-regs.h  
-> (...)
-> > +#include "linux/bitfield.h"  
-> 
-> Really? I don't think there is such a file there.
-> 
-> Do you mean <linux/bitfield.h> and does this even compile?
+Regards,
+Hervé Codina
 
-Yes and it compiles (even with quoted included file).
-I will be changed to <linux/bitfield.h> in the next interation.
-
-> 
-> > diff --git a/drivers/pinctrl/pinctrl-pef2256.c b/drivers/pinctrl/pinctrl-pef2256.c  
-> (...)
-> > +struct pef2256_pinctrl {
-> > +       struct device *dev;
-> > +       struct regmap *regmap;
-> > +       enum pef2256_version version;
-> > +       struct {
-> > +               struct pinctrl_desc pctrl_desc;
-> > +               const struct pef2256_function_desc *functions;
-> > +               unsigned int nfunctions;
-> > +       } pinctrl;  
-> 
-> Uh anonymous struct... can't you just define the struct separately
-> with a name? Or fold it into struct pef2256_pinctrl without the
-> additional struct? Thanks.
-
-I will fold it into struct pef2256_pinctrl in the next iteration.
-
-Thanks
-Hervé
-
-> 
-> Otherwise it looks neat!
-> 
-> Yours,
-> Linus Walleij
+-- 
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
