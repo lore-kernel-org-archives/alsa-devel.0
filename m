@@ -4,97 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAF59C04A6A
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 13:57:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E43F3C001B0
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 14:16:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDE7B83A;
-	Mon,  7 Aug 2023 15:56:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDE7B83A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EFE182B;
+	Mon,  7 Aug 2023 16:15:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EFE182B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691416670;
-	bh=y8RkwnybKIPs/3zMq9D89If3ZC/uG2t7IIfrSIfZrMA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=AVEl4SWURiW+ao61uc6yZgY8qAM7TwrxgQzKMuRpe1OSARlcSaXRYSlLp6yfTuZqM
-	 5MRZi4XJmNL7SeZ4s61PxEEzOKC3iOd1nQdIW5k+0H8j8iaUlb9G2daOL+fXk5QzeU
-	 etPNITvepvpbyze+EnoKysGra9/w9GGAQVJleUgk=
+	s=default; t=1691417803;
+	bh=cVEwHQYr8fZfhOS/DoPtmillTn+DY0uBvkZq9fouiDM=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=AR97YHmOLjKNs+q1QRwwCOhd8sSdT9WdBgNuvHGSXCSiryepG00MJaFX5yNu1GlxY
+	 Oois8U3a3NHOcLfMq2GoqqYxJ/DSt3AyHyfqKQ2ZOWxz5K00pGcLY97D6WH1c2bK/k
+	 BQNVFb8tufSj7jQDEF5n68ThR32t3dzMykk3VCPk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17217F80544; Mon,  7 Aug 2023 15:56:37 +0200 (CEST)
+	id BEF63F80548; Mon,  7 Aug 2023 16:15:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AADDBF8016A;
-	Mon,  7 Aug 2023 15:56:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60C01F8016D;
+	Mon,  7 Aug 2023 16:15:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38253F8016D; Mon,  7 Aug 2023 15:56:34 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 96E06F8016D; Mon,  7 Aug 2023 16:15:46 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6525DF80116
-	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 15:56:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6525DF80116
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=n6o4gKz6;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=pthGl4Hz
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D44062190C;
-	Mon,  7 Aug 2023 13:56:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1691416591;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8BXMk+bpUpgfSoTJKFp5gVku3LPJ/BhfuHp1doHb7Nc=;
-	b=n6o4gKz6K0BZQIH4+4UfpNc1uUGDjQ0sPvmu1rHxQD2TSuHLeBkDLyqTAPqfKf2XgnMiAz
-	nyWksCFv4Q35PF1+6HtezGFSWJ9f7FZk5nKac3FffYqMvolbthxlI6dLXgfJ7IB0kyau+I
-	6QuP9Qr3FLYfzlQOaWLdQFXAchGui9Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1691416591;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8BXMk+bpUpgfSoTJKFp5gVku3LPJ/BhfuHp1doHb7Nc=;
-	b=pthGl4HzVo9/XPEMqlMSiLcHT4V4p7vOAiDJX47OXR9/mr+sR3X2X24oBeCexinJohERI/
-	BSa5xeQR5GxWZCAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7C4C13910;
-	Mon,  7 Aug 2023 13:56:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ouKMKw/40GSIKQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 07 Aug 2023 13:56:31 +0000
-Date: Mon, 07 Aug 2023 15:56:30 +0200
-Message-ID: <877cq7j6r5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Cc: Curtis Malainey <cujomalainey@chromium.org>
-Subject: Re: [PATCH 2/6] ALSA: core: Fix race between devres and delayed
- kobject release for card_dev
-In-Reply-To: <20230807135207.17708-4-tiwai@suse.de>
-References: <20230807135207.17708-1-tiwai@suse.de>
-	<20230807135207.17708-4-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: 2J2NEREDTLATYVH5QEYARULJXO46BHRB
-X-Message-ID-Hash: 2J2NEREDTLATYVH5QEYARULJXO46BHRB
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id E7B13F80087
+	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 16:15:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7B13F80087
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RKJGp0B1vzfbnw;
+	Mon,  7 Aug 2023 22:14:26 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 7 Aug
+ 2023 22:15:35 +0800
+From: Yue Haibing <yuehaibing@huawei.com>
+To: <perex@perex.cz>, <tiwai@suse.com>, <yuehaibing@huawei.com>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] ALSA: info: Remove unused function declarations
+Date: Mon, 7 Aug 2023 22:15:13 +0800
+Message-ID: <20230807141513.31440-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+Message-ID-Hash: AYANS2N3XXVLAHSSRKQDYE6CDHGHQALF
+X-Message-ID-Hash: AYANS2N3XXVLAHSSRKQDYE6CDHGHQALF
+X-MailFrom: yuehaibing@huawei.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -113,20 +74,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 07 Aug 2023 15:52:03 +0200,
-Takashi Iwai wrote:
-> 
-> Use a new refmem allocation for the card object, and fix the race
-> between the devres and the delayed kobj release.  Now the devres keeps
-> only the card object pointer, not the card object itself, and the card
-> object is unreferenced at both releases.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+These declarations is never used since beginning of git history.
 
-My bad, scratch this mail; it was slipped into the submission from the
-previously generated patch files...
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ include/sound/info.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-Other 6 patches (with RFC prefix) are fine.
+diff --git a/include/sound/info.h b/include/sound/info.h
+index 7c13bf52cc81..adbc506860d6 100644
+--- a/include/sound/info.h
++++ b/include/sound/info.h
+@@ -118,8 +118,6 @@ struct snd_info_entry *snd_info_create_card_entry(struct snd_card *card,
+ 					     const char *name,
+ 					     struct snd_info_entry *parent);
+ void snd_info_free_entry(struct snd_info_entry *entry);
+-int snd_info_store_text(struct snd_info_entry *entry);
+-int snd_info_restore_text(struct snd_info_entry *entry);
+ 
+ int snd_info_card_create(struct snd_card *card);
+ int snd_info_card_register(struct snd_card *card);
+-- 
+2.34.1
 
-
-Takashi
