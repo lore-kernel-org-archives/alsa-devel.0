@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 238E1C04A94
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 21:14:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22D84C001B0
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 21:15:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41F6E84C;
-	Mon,  7 Aug 2023 23:14:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41F6E84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDDBB886;
+	Mon,  7 Aug 2023 23:14:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDDBB886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691442890;
-	bh=WVMNxnMy9t7HCx+jL1wBGSpgc+8o3RjrWXhXUIfudkc=;
+	s=default; t=1691442904;
+	bh=7vAUbVt9p8S5MR1KprBy4KddpQvMW6IIwqM+gpUxSeE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=W6Pw/ViA/rAXG1Nk0080WhhgAPo9zwSRzonZg++pM6Bk5hHyE/xppAEVoH4oN4t6t
-	 Ype3oyM3nHx0RtE7jGhyPqoN2YF+d02H2ycs5Yr20g1q3fNk4CtkLqqEd0LbdHp7H2
-	 7FEOKAzBsXVSeP7cSQNwTmnBhW0v7sQwrFtapeLs=
+	b=I+EEaTgt2tMYyvyYs8pmIosoNBd1pKQjxtquXEcpb9aRM+TaGwlRfx0OvC5XF5P6f
+	 UUJQIpCiiVqsHkkMjG//d/9hyMqwdV3cRCCn0NMuULI3HdQVbUOdyQ/m8ZuJPBrZYs
+	 +E7iyEhttQGrshSJsvwARSqQVPTWFVDyst3sm8HA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16B13F805FA; Mon,  7 Aug 2023 23:10:57 +0200 (CEST)
+	id DB5F1F805FE; Mon,  7 Aug 2023 23:11:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D739F805FB;
-	Mon,  7 Aug 2023 23:10:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F26AF80570;
+	Mon,  7 Aug 2023 23:11:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4392DF805B6; Mon,  7 Aug 2023 23:10:40 +0200 (CEST)
+	id DFE5FF805BF; Mon,  7 Aug 2023 23:10:40 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CF52CF8053B
-	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 23:10:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF52CF8053B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 96CC1F80544
+	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 23:10:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96CC1F80544
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Cibiw2/U
+ header.s=Intel header.b=cHOslh72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691442623; x=1722978623;
+  t=1691442621; x=1722978621;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=WVMNxnMy9t7HCx+jL1wBGSpgc+8o3RjrWXhXUIfudkc=;
-  b=Cibiw2/UJKMsilfq4ssVw7mdkgNZ1RZ15uU5QbFMAbmosQYC2xFQtTo7
-   FJ2GoTrNcl5n2cJ+xYk2e7M89wbuvMKmotJ8snoCmgqSa+XNeaJVOt834
-   xda9Kfjq7TLDBUkIoqD4W945ukWNDyNzqjBBNlN9YRNxKxAgO34kwVlXB
-   rYdl/B2fPCXAkRrkxbOklnJ4rAYG7WC/MIHHzV9qYfWjHfdnYDR59zo2t
-   y6u2+trt3J0qkD5tfplyHrz/J62ZpPWfYsOmmmjnVGEcJX+SOfeQgd5PN
-   khqa920xcREr4R6hPi0yl4l7UNDNe5XE64DpscirDEB5OKp+UxdfuZF2T
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350244346"
+  bh=7vAUbVt9p8S5MR1KprBy4KddpQvMW6IIwqM+gpUxSeE=;
+  b=cHOslh72927jvz1vYpjMSknbRRfEjvY6qiN7zygfVIXdtVeoCcQcJz7K
+   uNeqK4b8dWD4osljXAUFT9+IQ2dATg7cGP/nxjXQQaPbHjQA5gIpB8IGM
+   qAaOal7oXBMVuAwVDzSFmnc61XRbhy52IetJkHzmO/D40j7ikZ1zXHcmC
+   L7qbiY99qBCdg0UZ43s7FsGpApXTkcVYsMljcjfgw2tBxtVek+DIhyY7k
+   cbopvNKCqyhxJpGxGV+ZqHbsom7nRwxNzMj7jWqGsOKTmnOt6tKJ9pbSB
+   NgdNi/lwgWRdMQWyQbDmNlnAHISTqMGNQ9vHS98s92tH2vGUZASPIAbF+
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350244342"
 X-IronPort-AV: E=Sophos;i="6.01,263,1684825200";
-   d="scan'208";a="350244346"
+   d="scan'208";a="350244342"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 14:10:14 -0700
+ 07 Aug 2023 14:10:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="796465216"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="796465200"
 X-IronPort-AV: E=Sophos;i="6.01,263,1684825200";
-   d="scan'208";a="796465216"
+   d="scan'208";a="796465200"
 Received: from hweelee-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.209.181.215])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
@@ -71,21 +71,19 @@ Cc: tiwai@suse.de,
 	broonie@kernel.org,
 	vkoul@kernel.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-Subject: [PATCH 09/20] ASoC: SOF: Intel: hda-dai-ops: add/select DMA ops for
- SSP
-Date: Mon,  7 Aug 2023 16:09:48 -0500
-Message-Id: <20230807210959.506849-10-pierre-louis.bossart@linux.intel.com>
+	Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 08/20] ASoC: SOF: Intel: LNL: enable DMIC/SSP offload in
+ probe/resume
+Date: Mon,  7 Aug 2023 16:09:47 -0500
+Message-Id: <20230807210959.506849-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230807210959.506849-1-pierre-louis.bossart@linux.intel.com>
 References: <20230807210959.506849-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DROPEEPG6J6EGXAD6XLGKTHQ2UAN4DXP
-X-Message-ID-Hash: DROPEEPG6J6EGXAD6XLGKTHQ2UAN4DXP
+Message-ID-Hash: TMXIW4J3A7VUPNX2LTTWMOHFF7QGR2O2
+X-Message-ID-Hash: TMXIW4J3A7VUPNX2LTTWMOHFF7QGR2O2
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,113 +103,107 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The DMA widget ops are almost similar to the HDaudio ones, with the
-exception of codec_dai_set_hext_stream() which is not relevant and the
-format calculation which isn't dependent on the codec dai.
+In the LunarLake hardware, the default IP ownership changed to the
+host driver, instead of the firmware in previous generation.
 
-The DMA ops can be selected only starting with ACE_2_0.
+In the absence of any capability negotiation, we need to assume a
+fixed partitioning between host driver and firmware. The OFLEN bit
+needs to be set as early as possible for resources handled by the
+firmware, since we can't control when the firmware might try to access
+the resources.
+
+For now DMIC and SSP are handled by the DSP firmware. SoundWire is a
+separate case, the OFLEN bit can be set when starting-up and resuming
+the aux device for each link.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai-ops.c | 53 ++++++++++++++++++++++++++++++-
- 1 file changed, 52 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/lnl.c | 56 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-dai-ops.c b/sound/soc/sof/intel/hda-dai-ops.c
-index e9ae38916434..05ef77be6435 100644
---- a/sound/soc/sof/intel/hda-dai-ops.c
-+++ b/sound/soc/sof/intel/hda-dai-ops.c
-@@ -7,6 +7,7 @@
- 
- #include <sound/pcm_params.h>
- #include <sound/hdaudio_ext.h>
-+#include <sound/hda-mlink.h>
- #include <sound/sof/ipc4/header.h>
- #include <uapi/sound/sof/header.h>
- #include "../ipc4-priv.h"
-@@ -219,6 +220,31 @@ static struct hdac_ext_link *hda_get_hlink(struct snd_sof_dev *sdev,
- 	return snd_hdac_ext_bus_get_hlink_by_name(bus, codec_dai->component->name);
- }
- 
-+static unsigned int generic_calc_stream_format(struct snd_sof_dev *sdev,
-+					       struct snd_pcm_substream *substream,
-+					       struct snd_pcm_hw_params *params)
-+{
-+	unsigned int format_val;
-+
-+	format_val = snd_hdac_calc_stream_format(params_rate(params), params_channels(params),
-+						 params_format(params),
-+						 params_physical_width(params),
-+						 0);
-+
-+	dev_dbg(sdev->dev, "format_val=%#x, rate=%d, ch=%d, format=%d\n", format_val,
-+		params_rate(params), params_channels(params), params_format(params));
-+
-+	return format_val;
-+}
-+
-+static struct hdac_ext_link *ssp_get_hlink(struct snd_sof_dev *sdev,
-+					   struct snd_pcm_substream *substream)
-+{
-+	struct hdac_bus *bus = sof_to_bus(sdev);
-+
-+	return hdac_bus_eml_ssp_get_hlink(bus);
-+}
-+
- static int hda_ipc4_pre_trigger(struct snd_sof_dev *sdev, struct snd_soc_dai *cpu_dai,
- 				struct snd_pcm_substream *substream, int cmd)
- {
-@@ -363,6 +389,19 @@ static const struct hda_dai_widget_dma_ops hda_ipc4_dma_ops = {
- 	.get_hlink = hda_get_hlink,
+diff --git a/sound/soc/sof/intel/lnl.c b/sound/soc/sof/intel/lnl.c
+index 65a78d9511e9..3d919b0b6891 100644
+--- a/sound/soc/sof/intel/lnl.c
++++ b/sound/soc/sof/intel/lnl.c
+@@ -29,6 +29,55 @@ static const struct snd_sof_debugfs_map lnl_dsp_debugfs[] = {
+ 	{"dsp", HDA_DSP_BAR,  0, 0x10000, SOF_DEBUGFS_ACCESS_ALWAYS},
  };
  
-+static const struct hda_dai_widget_dma_ops ssp_ipc4_dma_ops = {
-+	.get_hext_stream = hda_ipc4_get_hext_stream,
-+	.assign_hext_stream = hda_assign_hext_stream,
-+	.release_hext_stream = hda_release_hext_stream,
-+	.setup_hext_stream = hda_setup_hext_stream,
-+	.reset_hext_stream = hda_reset_hext_stream,
-+	.pre_trigger = hda_ipc4_pre_trigger,
-+	.trigger = hda_trigger,
-+	.post_trigger = hda_ipc4_post_trigger,
-+	.calc_stream_format = generic_calc_stream_format,
-+	.get_hlink = ssp_get_hlink,
-+};
++/* this helps allows the DSP to setup DMIC/SSP */
++static int hdac_bus_offload_dmic_ssp(struct hdac_bus *bus)
++{
++	int ret;
 +
- static const struct hda_dai_widget_dma_ops hda_ipc4_chain_dma_ops = {
- 	.get_hext_stream = hda_get_hext_stream,
- 	.assign_hext_stream = hda_assign_hext_stream,
-@@ -465,8 +504,13 @@ hda_select_dai_widget_ops(struct snd_sof_dev *sdev, struct snd_sof_widget *swidg
- 	case SOF_INTEL_IPC4:
- 	{
- 		struct sof_ipc4_copier *ipc4_copier = sdai->private;
-+		const struct sof_intel_dsp_desc *chip;
- 
--		if (ipc4_copier->dai_type == SOF_DAI_INTEL_HDA) {
-+		chip = get_chip_info(sdev->pdata);
++	ret = hdac_bus_eml_enable_offload(bus, true,  AZX_REG_ML_LEPTR_ID_INTEL_SSP, true);
++	if (ret < 0)
++		return ret;
 +
-+		switch (ipc4_copier->dai_type) {
-+		case SOF_DAI_INTEL_HDA:
-+		{
- 			struct snd_sof_widget *pipe_widget = swidget->spipe->pipe_widget;
- 			struct sof_ipc4_pipeline *pipeline = pipe_widget->private;
++	ret = hdac_bus_eml_enable_offload(bus, true,  AZX_REG_ML_LEPTR_ID_INTEL_DMIC, true);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static int lnl_hda_dsp_probe(struct snd_sof_dev *sdev)
++{
++	int ret;
++
++	ret = hda_dsp_probe(sdev);
++	if (ret < 0)
++		return ret;
++
++	return hdac_bus_offload_dmic_ssp(sof_to_bus(sdev));
++}
++
++static int lnl_hda_dsp_resume(struct snd_sof_dev *sdev)
++{
++	int ret;
++
++	ret = hda_dsp_resume(sdev);
++	if (ret < 0)
++		return ret;
++
++	return hdac_bus_offload_dmic_ssp(sof_to_bus(sdev));
++}
++
++static int lnl_hda_dsp_runtime_resume(struct snd_sof_dev *sdev)
++{
++	int ret;
++
++	ret = hda_dsp_runtime_resume(sdev);
++	if (ret < 0)
++		return ret;
++
++	return hdac_bus_offload_dmic_ssp(sof_to_bus(sdev));
++}
++
+ int sof_lnl_ops_init(struct snd_sof_dev *sdev)
+ {
+ 	struct sof_ipc4_fw_data *ipc4_data;
+@@ -36,6 +85,9 @@ int sof_lnl_ops_init(struct snd_sof_dev *sdev)
+ 	/* common defaults */
+ 	memcpy(&sof_lnl_ops, &sof_hda_common_ops, sizeof(struct snd_sof_dsp_ops));
  
-@@ -475,6 +519,13 @@ hda_select_dai_widget_ops(struct snd_sof_dev *sdev, struct snd_sof_widget *swidg
++	/* probe */
++	sof_lnl_ops.probe = lnl_hda_dsp_probe;
++
+ 	/* shutdown */
+ 	sof_lnl_ops.shutdown = hda_dsp_shutdown;
  
- 			return &hda_ipc4_dma_ops;
- 		}
-+		case SOF_DAI_INTEL_SSP:
-+			if (chip->hw_ip_version < SOF_INTEL_ACE_2_0)
-+				return NULL;
-+			return &ssp_ipc4_dma_ops;
-+		default:
-+			break;
-+		}
- 		break;
- 	}
- 	default:
+@@ -63,6 +115,10 @@ int sof_lnl_ops_init(struct snd_sof_dev *sdev)
+ 	/* dsp core get/put */
+ 	/* TODO: add core_get and core_put */
+ 
++	/* PM */
++	sof_lnl_ops.resume			= lnl_hda_dsp_resume;
++	sof_lnl_ops.runtime_resume		= lnl_hda_dsp_runtime_resume;
++
+ 	sof_lnl_ops.get_stream_position = mtl_dsp_get_stream_hda_link_position;
+ 
+ 	sdev->private = devm_kzalloc(sdev->dev, sizeof(struct sof_ipc4_fw_data), GFP_KERNEL);
 -- 
 2.39.2
 
