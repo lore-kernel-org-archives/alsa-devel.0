@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE151C001B0
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 21:12:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 944EDC001DF
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 21:12:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 241ED846;
-	Mon,  7 Aug 2023 23:11:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 241ED846
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD9CB852;
+	Mon,  7 Aug 2023 23:11:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD9CB852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691442732;
-	bh=kkjD2YgcnPb/YGquupC0278X5ncJUVKhKIpM50C7Xk8=;
+	s=default; t=1691442739;
+	bh=jgymx4mmC5mKtvqf1f6iKS++qHkEJTbB+DWVED3mUjY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gRiDedY9UB2ddJUDKCftomNzSDIk5S3xAp5Kow30Mw2ACiZjELd3sJ+RugGIuEmdX
-	 JyOtMirp4SxHDhpYkop4wbAatT/FF5k65m/4MA5eeYXpyEgo9/mQGEjhybQdBGBCcV
-	 tIqjjiEYvZNUuvEMAquj2QaJysrRW3h9z6pQLU38=
+	b=nKicKNkSkDAIWY825EQk+owUB3t74z9wsuPecMnIGyZElV25sdoAHvVh88Mss+Alm
+	 KUMmO0Kviluxt8RX/eQhHTsGGI5mEq/GycNy0fQQbmpPYOr/dNwjuT03Qd73ar+pda
+	 /q7uSMXZ48Zq7Zuz7/HKcqBbte2TS05l8PKrquqE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68459F80571; Mon,  7 Aug 2023 23:10:32 +0200 (CEST)
+	id 87BAFF805A8; Mon,  7 Aug 2023 23:10:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF927F80564;
-	Mon,  7 Aug 2023 23:10:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8841F8058C;
+	Mon,  7 Aug 2023 23:10:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB158F80558; Mon,  7 Aug 2023 23:10:25 +0200 (CEST)
+	id 4A920F80558; Mon,  7 Aug 2023 23:10:27 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 859DDF80116
-	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 23:10:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 859DDF80116
+	by alsa1.perex.cz (Postfix) with ESMTPS id 834AFF8051E
+	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 23:10:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 834AFF8051E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=eVBniyQZ
+ header.s=Intel header.b=ZVApWFg5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691442617; x=1722978617;
+  t=1691442619; x=1722978619;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=kkjD2YgcnPb/YGquupC0278X5ncJUVKhKIpM50C7Xk8=;
-  b=eVBniyQZhc7WW5k4mYp1zQXlLHwaStBWjcItXf/LMRifhZAtbKhW1ZsZ
-   lxLs0KWReCQX3U7HohnJnDCE9GYqqvwyy6NkDUEOVV2Z3XKvAtBKyBaVG
-   A3mUK4yrRxe0/M7A/cpXTod/IvXMaeL1fsShJ3Inup0JRRNA0Ir8MDMRB
-   1UCxAFZAodqkkSeZjUlGSUuYaYf3o4jNPQ/cQCcVjSZmeSD42xDJZfIYm
-   k5lBoJkj36DJnMx3FScFL/VaOGH6PvWaeAJjWYEuUQz5nA0K+G+LJZrFT
-   lvcgtfRZz2VcW0fSOnr7tBB3QSp6tPBduu6rF1/9f1onG5w1Yu5tkTn3j
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350244306"
+  bh=jgymx4mmC5mKtvqf1f6iKS++qHkEJTbB+DWVED3mUjY=;
+  b=ZVApWFg5i5jOF/otBXArWggjJvOz52446s+g1IMzTQdxIYbVFBDP1KzF
+   52RuQq34CDPgJHI68lAdkvhZEPsQ3sihUGp2qVYRirqEubO2Gh9jscVxh
+   dIM1xa9zMcUUP2F3uNHUdnWjVQWSzc74SJ/OBQdpivoSjujtNZ6FBk8Bg
+   hcmDkU3Sie/9IqDlemrGKrMQY1jGCskoU5yjclDMtTELgsOKqB4QoYF14
+   vX7OmxYWPIM9aw47kiX+k8VmkFiJgdIhQDS9BCTXG5L9UpmtihmVI7ewd
+   F7/dz1l4NUruuDeeNgCJbMZevVUnu4Wk4yVG+srUrK6SAp66Ru4jtOeBr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350244320"
 X-IronPort-AV: E=Sophos;i="6.01,263,1684825200";
-   d="scan'208";a="350244306"
+   d="scan'208";a="350244320"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 14:10:10 -0700
+ 07 Aug 2023 14:10:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="796465164"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="796465174"
 X-IronPort-AV: E=Sophos;i="6.01,263,1684825200";
-   d="scan'208";a="796465164"
+   d="scan'208";a="796465174"
 Received: from hweelee-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.209.181.215])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 14:10:09 -0700
+ 07 Aug 2023 14:10:10 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -72,17 +72,17 @@ Cc: tiwai@suse.de,
 	vkoul@kernel.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>
-Subject: [PATCH 02/20] ASoC: SOF: Intel: fix u16/32 confusion in LSDIID
-Date: Mon,  7 Aug 2023 16:09:41 -0500
-Message-Id: <20230807210959.506849-3-pierre-louis.bossart@linux.intel.com>
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 04/20] ASoC: SOF: ipc4-topology: restore gateway config length
+Date: Mon,  7 Aug 2023 16:09:43 -0500
+Message-Id: <20230807210959.506849-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230807210959.506849-1-pierre-louis.bossart@linux.intel.com>
 References: <20230807210959.506849-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: B2DQLM2UPXSQYBJOLJZELZHEYQRHTFBH
-X-Message-ID-Hash: B2DQLM2UPXSQYBJOLJZELZHEYQRHTFBH
+Message-ID-Hash: ITRQWETYJLWHUIOCOQVJL7BETMEIJEXT
+X-Message-ID-Hash: ITRQWETYJLWHUIOCOQVJL7BETMEIJEXT
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,39 +102,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Likely a combination of copy-paste and test coverage problem. Oops.
+The initial code had a logic flaw where the gateway config length kept
+increasing after each playback/capture trigger, with the DMA config
+TLV being added at every call of sof_ipc4_prepare_copier_module()
 
-Fixes: 87a6ddc0cf1c ("ASoC: SOF: Intel: hda-mlink: program SoundWire LSDIID registers")
+This didn't cause any issues with regular playback/capture, but this
+was flagged as an error by firmware in the case of multiple amplifiers
+on different links.
+
+Fixes: a0659f81c348 ("ASoC: SOF: ipc4-topology: add DMA config TLV to IPC data")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-mlink.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/sof/ipc4-topology.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-mlink.c b/sound/soc/sof/intel/hda-mlink.c
-index acad3ea2f471..df87b3791c23 100644
---- a/sound/soc/sof/intel/hda-mlink.c
-+++ b/sound/soc/sof/intel/hda-mlink.c
-@@ -331,14 +331,14 @@ static bool hdaml_link_check_cmdsync(u32 __iomem *lsync, u32 cmdsync_mask)
- 	return !!(val & cmdsync_mask);
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index 9bc94be072aa..0196cbfc0998 100644
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -1746,6 +1746,12 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
+ 	/* update pipeline memory usage */
+ 	sof_ipc4_update_resource_usage(sdev, swidget, &copier_data->base_config);
+ 
++	/*
++	 * Restore gateway config length now that IPC payload is prepared. This avoids
++	 * counting the DMA CONFIG TLV multiple times
++	 */
++	copier_data->gtw_cfg.config_length = gtw_cfg_config_length / 4;
++
+ 	return 0;
  }
  
--static void hdaml_link_set_lsdiid(u32 __iomem *lsdiid, int dev_num)
-+static void hdaml_link_set_lsdiid(u16 __iomem *lsdiid, int dev_num)
- {
--	u32 val;
-+	u16 val;
- 
--	val = readl(lsdiid);
-+	val = readw(lsdiid);
- 	val |= BIT(dev_num);
- 
--	writel(val, lsdiid);
-+	writew(val, lsdiid);
- }
- 
- static void hdaml_shim_map_stream_ch(u16 __iomem *pcmsycm, int lchan, int hchan,
 -- 
 2.39.2
 
