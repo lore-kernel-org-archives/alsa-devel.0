@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97363C001DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 14:58:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13521C001DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 14:59:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1D6D843;
-	Mon,  7 Aug 2023 16:58:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1D6D843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B935210;
+	Mon,  7 Aug 2023 16:58:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B935210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691420333;
-	bh=zgsHC0JFOAd4lgK0/kb45iQ6so6mT+vI8fCzwDnh0Yk=;
+	s=default; t=1691420363;
+	bh=Bv5qmy2opAFHK/vm1WhEMyCMP/qaOlo+EM1ix8neNAY=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LM3Y83WWkS7OqoScLPXOh8btFXVJFZEichO7jHgDE8ZGeOmMTWVEgosSAeHWdupPf
-	 8PMaVdaNcok0tpxXRn7IEFrLC6j5KhenmHNpu2P87mUiCFlBuvluBPhMsnYFAlGMtq
-	 ITlL8gTBrGtYbpuN0zMTa4dYXoWaNtKnBuLCvY4E=
+	b=vEcpAfwtSMxjt36FP3VXFrNMnuolm8K51A+/HnTeQMiR8uE4gAWBVWx0NkwtcNuw2
+	 XJBq2KMH9D9eWTHipnExQ6W68LQUHOD9CoQ3oJaQsGhR3FnMAInVxtLNyisgih3jPO
+	 MpuRKk0eIkUIi2NVH3vfJnibkkoyPEjUFLcXe8vs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 02C9BF80587; Mon,  7 Aug 2023 16:56:58 +0200 (CEST)
+	id 42C62F80589; Mon,  7 Aug 2023 16:56:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA5C2F80570;
-	Mon,  7 Aug 2023 16:56:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 956CFF80589;
+	Mon,  7 Aug 2023 16:56:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DE308F80558; Mon,  7 Aug 2023 16:56:51 +0200 (CEST)
+	id 16F4DF80568; Mon,  7 Aug 2023 16:56:54 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D3A4AF80087;
-	Mon,  7 Aug 2023 16:56:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3A4AF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id D1563F80534;
+	Mon,  7 Aug 2023 16:56:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1563F80534
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=hbU4VdZy
+ header.s=Intel header.b=LQdnaFE1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691420206; x=1722956206;
+  t=1691420211; x=1722956211;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=zgsHC0JFOAd4lgK0/kb45iQ6so6mT+vI8fCzwDnh0Yk=;
-  b=hbU4VdZya4e3dgPARir1q2Kr3WYFqfWmEEq9iSxByLfjyIKOVEbW6ilH
-   aiDfLsru7+k8Jq1fICh82kl5JZDFctcJXoH0c5YgJyUWSdJoJgmnYqEzJ
-   MAtA3mo9m/HLinf5itZv+fSSMVTgbXoRFagTSo/bOO5n/5lcbIuUMioyd
-   BlekHazLt3hZITTVx5sVZ+K/q/o6E7SzYRVDHmlCGsO+Y1RaU8lkXkT5G
-   PmQpbn1JPq+Geh1OhaKBxP6j5ELEmXmqodxn3x6CPkW8ei4rVd8kYlavu
-   +EYN/sqsnsOfxXChlVJBV8Qay6rIEGzmHljPOn2RGQjr84OUzX5WKkRao
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434410576"
+  bh=Bv5qmy2opAFHK/vm1WhEMyCMP/qaOlo+EM1ix8neNAY=;
+  b=LQdnaFE1GoGkbeaBnErFw4nWvUigms/kHwYiKNY5sJYCtC0H6+NF5RWl
+   R3/NtpduEhMzRZFFlatr/OdrGY3gBFAl5de+3jVoN/O76Mec5EWs11mSD
+   RgSo3MU8LBScFkDGaRLXZIg6K/+P/q81h5gZatlNcbazT8C42g1f6Uz+h
+   NUgi+fc8Ddw6WI8YXP1M7pRehZsv5nZKwyaqDe1L1NU3kY55+xkoRx132
+   rVoRwsKGbl0I5lv/1gUmIyzmrQRchMD4+OUfl9FG2H5nkKIluqHVWpz+y
+   9EKAo0ibbx4bbVNrruVxcsFNdPfg7rgX5ck2J1M2xh8HiIRWCEM3nC2W4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434410634"
 X-IronPort-AV: E=Sophos;i="6.01,262,1684825200";
-   d="scan'208";a="434410576"
+   d="scan'208";a="434410634"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
   by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 07:56:37 -0700
+ 07 Aug 2023 07:56:43 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1061623859"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1061623888"
 X-IronPort-AV: E=Sophos;i="6.01,262,1684825200";
-   d="scan'208";a="1061623859"
+   d="scan'208";a="1061623888"
 Received: from hweelee-mobl.amr.corp.intel.com (HELO [10.209.181.215])
  ([10.209.181.215])
   by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 07:56:35 -0700
-Message-ID: <cd826184-0a94-425b-8a6e-0988c997bf6f@linux.intel.com>
-Date: Mon, 7 Aug 2023 09:06:42 -0500
+ 07 Aug 2023 07:56:42 -0700
+Message-ID: <4acc7318-69b3-3eb5-1fe8-f7deea8adfad@linux.intel.com>
+Date: Mon, 7 Aug 2023 09:26:53 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 2/9] ALSA: hda/i915: Allow override of gpu binding.
+Subject: Re: [PATCH v3 8/9] ASoC: SOF: Intel: Move binding to display driver
+ outside of deferred probe
 Content-Language: en-US
 To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
  alsa-devel@alsa-project.org
@@ -84,13 +85,13 @@ Cc: Maarten Lankhorst <dev@lankhorst.se>, Jaroslav Kysela <perex@perex.cz>,
  <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
  linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
 References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
- <20230807090045.198993-3-maarten.lankhorst@linux.intel.com>
+ <20230807090045.198993-9-maarten.lankhorst@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230807090045.198993-3-maarten.lankhorst@linux.intel.com>
+In-Reply-To: <20230807090045.198993-9-maarten.lankhorst@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: RVWOCHXVU5RVKMP6OMWE5K6VMQ45IDXO
-X-Message-ID-Hash: RVWOCHXVU5RVKMP6OMWE5K6VMQ45IDXO
+Message-ID-Hash: A47E344M3JBVG5L7WHFSZ2DQT3AYVSYL
+X-Message-ID-Hash: A47E344M3JBVG5L7WHFSZ2DQT3AYVSYL
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -113,25 +114,95 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 On 8/7/23 04:00, Maarten Lankhorst wrote:
-> Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
-> video_firmware_drivers_only(). This can be used as a first
-> approximation on whether i915 will be available. It's safe to use as
-> this is only built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
+> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+> the snd_hdac_i915_init into a workqueue.
 > 
-> It's not completely fool proof, as you can boot with "nomodeset
-> i915.modeset=1" to make i915 load regardless, or use
-> "i915.force_probe=!*" to never load i915, but the common case of
-> booting with nomodeset to disable all GPU drivers this will work as
-> intended.
-> 
-> Because of this, we add an extra module parameter,
-> snd_hda_core.gpu_bind that can be used to signal users intent.
-> -1 follows nomodeset, 0 disables binding, 1 forces wait/-EPROBE_DEFER
-> on binding.
-> 
+> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+> probe function.
+
+I don't think this patch is aligned with the previous discussions. What
+we agreed on is that snd_hdac_i915_init() would be called from and not
+from the workqueue.
+
+But this patch also moves all codec initialization out of the workqueue.
+
+I think we need two callbacks for device-specific initilization, one
+that is called from the probe function and one from the workqueue,
+otherwise we'll have a structure that differs from the snd-hda-intel -
+which would be rather silly in terms of support/debug.
+
+I realize there's quite a bit of surgery involved, and most likely the
+SOF folks should provide this patch for you to build on.
+
 > Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
+> ---
+>  sound/soc/sof/core.c            | 19 +++++++------------
+>  sound/soc/sof/intel/hda-codec.c |  2 +-
+>  2 files changed, 8 insertions(+), 13 deletions(-)
+> 
+> diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+> index 30db685cc5f4..cd4d06d1800b 100644
+> --- a/sound/soc/sof/core.c
+> +++ b/sound/soc/sof/core.c
+> @@ -188,13 +188,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+>  	struct snd_sof_pdata *plat_data = sdev->pdata;
+>  	int ret;
+>  
+> -	/* probe the DSP hardware */
+> -	ret = snd_sof_probe(sdev);
+> -	if (ret < 0) {
+> -		dev_err(sdev->dev, "error: failed to probe DSP %d\n", ret);
+> -		goto probe_err;
+> -	}
+> -
+>  	sof_set_fw_state(sdev, SOF_FW_BOOT_PREPARE);
+>  
+>  	/* check machine info */
+> @@ -325,10 +318,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+>  dbg_err:
+>  	snd_sof_free_debug(sdev);
+>  dsp_err:
+> -	snd_sof_remove(sdev);
+> -probe_err:
+> -	sof_ops_free(sdev);
+> -
+>  	/* all resources freed, update state to match */
+>  	sof_set_fw_state(sdev, SOF_FW_BOOT_NOT_STARTED);
+>  	sdev->first_boot = true;
+> @@ -436,6 +425,12 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
+>  
+>  	sof_set_fw_state(sdev, SOF_FW_BOOT_NOT_STARTED);
+>  
+> +	ret = snd_sof_probe(sdev);
+> +	if (ret) {
+> +		dev_err_probe(sdev->dev, ret, "failed to probe DSP\n");
+> +		return ret;
+> +	}
+> +
+>  	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)) {
+>  		INIT_WORK(&sdev->probe_work, sof_probe_work);
+>  		schedule_work(&sdev->probe_work);
+> @@ -485,9 +480,9 @@ int snd_sof_device_remove(struct device *dev)
+>  
+>  		snd_sof_ipc_free(sdev);
+>  		snd_sof_free_debug(sdev);
+> -		snd_sof_remove(sdev);
+>  	}
+>  
+> +	snd_sof_remove(sdev);
+>  	sof_ops_free(sdev);
+>  
+>  	/* release firmware */
+> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+> index f1fd5b44aaac..344b61576c0e 100644
+> --- a/sound/soc/sof/intel/hda-codec.c
+> +++ b/sound/soc/sof/intel/hda-codec.c
+> @@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
+>  		return 0;
+>  
+>  	/* i915 exposes a HDA codec for HDMI audio */
+> -	ret = snd_hdac_i915_init(bus, true);
+> +	ret = snd_hdac_i915_init(bus, false);
+>  	if (ret < 0)
+>  		return ret;
+>  
