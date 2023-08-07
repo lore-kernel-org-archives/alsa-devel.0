@@ -4,77 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0AC2C001DF
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 19:57:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4254EC001B0
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 21:11:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 455CB827;
-	Mon,  7 Aug 2023 21:56:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 455CB827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95135823;
+	Mon,  7 Aug 2023 23:10:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95135823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691438222;
-	bh=tEbnU09vPVyTnjYTEByjdm9ue6dsfCiNeNTAbZgnfDk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=WWquPS8KabTv1jCGBm1aGRH8yYPzcXzarvd1IsbWB61SIiv4kDhpEZEDH46JdgyDW
-	 7Fa2GEP05a33ppt4X8qp6oefmUNDSRW6QcUY1MPj4HOfh8ouM26qFnkNGa3ZU2oIY7
-	 8GCBpkrww7xyJwfGROfiFIKCejKtO9yiaBS3kgIU=
+	s=default; t=1691442681;
+	bh=W8ooNiYBjHMyOWKbUXLQ/7pF3tde9CtK1CcCLiWk7aw=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=SNJdlMqkrOfmFNB91YRDw2kenPjUNsoGCtRPv+P5dPj/ohrmyW1XhOJk2aIZ8ipl2
+	 fXhuHu6rXynQfqAYEPEtU5W1AvLlpVHMX8+KLd4J+EYi/EGNOANk3GYVdahUp+L6aJ
+	 Fl+zCzg2Dbgxns8txqoSEUUGj+6x7+jS10CuVtRU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B5504F805AC; Mon,  7 Aug 2023 21:54:39 +0200 (CEST)
+	id 906A8F8055C; Mon,  7 Aug 2023 23:10:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62D04F805AD;
-	Mon,  7 Aug 2023 21:54:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5D36F8055C;
+	Mon,  7 Aug 2023 23:10:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C069EF80087; Mon,  7 Aug 2023 21:54:32 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id B0D3BF80548; Mon,  7 Aug 2023 23:10:23 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4F883F80087
-	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 21:54:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F883F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7C3DCF80087
+	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 23:10:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C3DCF80087
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=s6yMBKDj
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 68F4962188;
-	Mon,  7 Aug 2023 19:54:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAB06C433C7;
-	Mon,  7 Aug 2023 19:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691438059;
-	bh=tEbnU09vPVyTnjYTEByjdm9ue6dsfCiNeNTAbZgnfDk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=s6yMBKDj6TChjpPAPdjqPI7Gd0bKNEE9JS0/iM2SgMgn4guDb/EJsyG9xRT0GkHpC
-	 MLO/k6WFXGFlW7PdRWGXfY5b6SWVm0ut+Wmw28lv/CHBSRHc2IZnKfWFRBa6tqL/KI
-	 iWRysJziuE1tfcEFlkZdZa/Lact4HWRgkMO4RWJweRv5WRv310xlclO3CxNimpAwNZ
-	 lOGkpSUe+SBIgK53uhxBA9V/JnPGMQgCQtGda4KnGklcdyNsmuMbjZKGFAessEugp0
-	 5dJFzxlgoI7znv2RbOr0OBOYlD9NFY6Dm77c0yyhdt0Czv8x/2GD8MSpUh5JDIBwUU
-	 hS6PNI26UN4/A==
-From: Mark Brown <broonie@kernel.org>
-To: Paul Cercueil <paul@crapouillou.net>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: linux-mips@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <20230712-asoc-jz-maple-v1-1-3f745adf96e5@kernel.org>
-References: <20230712-asoc-jz-maple-v1-1-3f745adf96e5@kernel.org>
-Subject: Re: [PATCH] ASoC: jz4740: Update to use maple tree register cache
-Message-Id: <169143805855.302632.5921951627576966633.b4-ty@kernel.org>
-Date: Mon, 07 Aug 2023 20:54:18 +0100
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=kPm7s4zZ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691442615; x=1722978615;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=W8ooNiYBjHMyOWKbUXLQ/7pF3tde9CtK1CcCLiWk7aw=;
+  b=kPm7s4zZpF1WtF2uZUPtcAD2Y2pVgp95Kf0es0D+LnRDaxbk44Epr8XP
+   aFCQga2JNMsMHw2f5dNOOSeuJqxcypjsryIPHIOS/yRKv2o2THfxZ4+Ra
+   qWUGmj2bI2y2iOGcY9rNA1cmDjyRmUjHpA2fdV6Xx2DSMmRY/f7ic+J7b
+   V+ddbLTHeBtEcxAziv0YK3TdPr5NzHecldoAbI3q8hWjLSvd6W1YEiVo2
+   +XJpA7isFTiNhj1ovhfnye7ifG7D5IcFLyVGgNqIgqGebiu/DG23KITUj
+   lvj8hxU2MhH9TSi1b0CzlDbTdu1PxDDo8z3mhSDoUi79VrLsPTPwum6gv
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350244297"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200";
+   d="scan'208";a="350244297"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Aug 2023 14:10:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="796465138"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200";
+   d="scan'208";a="796465138"
+Received: from hweelee-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
+ ([10.209.181.215])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Aug 2023 14:10:08 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de,
+	broonie@kernel.org,
+	vkoul@kernel.org,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 00/20] ASoC: SOF: Intel: add LunarLake support
+Date: Mon,  7 Aug 2023 16:09:39 -0500
+Message-Id: <20230807210959.506849-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: EQ66TXZDXQDAVBCMHTDOWIEWXP45VEJP
-X-Message-ID-Hash: EQ66TXZDXQDAVBCMHTDOWIEWXP45VEJP
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: F3WQESAH2GNFYQ2RYZRQIC7PRCXBY6VC
+X-Message-ID-Hash: F3WQESAH2GNFYQ2RYZRQIC7PRCXBY6VC
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,41 +98,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 12 Jul 2023 12:14:21 +0100, Mark Brown wrote:
-> The maple tree register cache is based on a much more modern data structure
-> than the rbtree cache and makes optimisation choices which are probably
-> more appropriate for modern systems than those made by the rbtree cache. In
-> v6.5 it has also acquired the ability to generate multi-register writes in
-> sync operations, bringing performance up to parity with the rbtree cache
-> there.
-> 
-> [...]
+IMPORTANT NOTE: this patchset is dependent on Takashi's hda-intel-6.6
+tag. The PCI parts will not compile without merging this tag into the
+ASoC tree.
 
-Applied to
+This patchset first fixes a number of errors made in the hda-mlink
+support, then adds Lunar Lake definitions. The main contribution is
+the hda-dai changes where the HDaudio DMA is now used for SSP, DMIC
+and SoundWire. In previous hardware the GPDMA (aka DesignWare) was
+used and controlled by the audio firmware. The volume of code is
+minimized with the abstraction added in previous kernel cycles.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Due to cross-dependencies between ASoC and SoundWire trees, the full
+support for jack detection will be deferred to the next kernel
+cycle. There's not much point to ask for a sync of the two trees to
+support one patch for each tree - we are at -rc5 already.
 
-Thanks!
+Pierre-Louis Bossart (18):
+  ASoC: SOF: Intel: hda-mlink: fix off-by-one error
+  ASoC: SOF: Intel: fix u16/32 confusion in LSDIID
+  ASoC: SOF: ipc4-topology: restore gateway config length
+  ASoC: SOF: Intel: hda: add interface definitions for ACE2.x
+  ASoC: SOF: Intel: split MTL and LNL operations
+  ASoC: SOF: Intel: LNL: enable DMIC/SSP offload in probe/resume
+  ASoC: SOF: Intel: hda-dai-ops: add/select DMA ops for SSP
+  ASoC: SOF: Intel: hda-dai: add ops for SSP
+  ASoC: SOF: Intel: hda-dai: add DMIC support
+  ASoC: SOF: Intel: hda-dai-ops: only allocate/release streams for first
+    CPU DAI
+  ASoC: SOF: Intel: hda-dai-ops: add ops for SoundWire
+  ASoC: SOF: Intel: hda-dai: add helpers for SoundWire callbacks
+  ASoC: SOF: Intel: hda: add hw_params/free/trigger callbacks
+  ASoC: SOF: Intel: add abstraction for SoundWire wake-ups
+  ASoC: SOF: Intel: hda-mlink: add helper to get sublink LSDIID register
+  ASoC: SOF: Intel: hda-dai-ops: reset device count for SoundWire DAIs
+  ASoC: SOF: IPC4: clarify 'pipeline_ids' usage and logs
+  ASoC: SOF: Intel: hda-mlink: add sublink to dev_dbg() log
 
-[1/1] ASoC: jz4740: Update to use maple tree register cache
-      commit: 1ec6dffdedae4cbbd6e33b1d9be0e5a3dbb31804
+Ranjani Sridharan (2):
+  ASoC: SOF: ipc4: avoid uninitialized default instance 0
+  ASoC: SOF: Intel: LNL: Add support for Lunarlake platform
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+ include/sound/hda-mlink.h         |   4 +
+ sound/soc/sof/intel/Kconfig       |  16 +++
+ sound/soc/sof/intel/Makefile      |   4 +-
+ sound/soc/sof/intel/cnl.c         |   2 +
+ sound/soc/sof/intel/hda-dai-ops.c | 179 ++++++++++++++++++++++++-
+ sound/soc/sof/intel/hda-dai.c     | 211 +++++++++++++++++++++++++++++-
+ sound/soc/sof/intel/hda-mlink.c   |  45 ++++++-
+ sound/soc/sof/intel/hda.c         |  58 +++++++-
+ sound/soc/sof/intel/hda.h         |  21 +++
+ sound/soc/sof/intel/icl.c         |   1 +
+ sound/soc/sof/intel/lnl.c         | 189 ++++++++++++++++++++++++++
+ sound/soc/sof/intel/mtl.c         |  23 ++--
+ sound/soc/sof/intel/mtl.h         |  22 +++-
+ sound/soc/sof/intel/pci-lnl.c     |  71 ++++++++++
+ sound/soc/sof/intel/shim.h        |   1 +
+ sound/soc/sof/intel/tgl.c         |   4 +
+ sound/soc/sof/ipc4-pcm.c          |  21 +--
+ sound/soc/sof/ipc4-topology.c     |   7 +
+ sound/soc/sof/ipc4-topology.h     |   4 +-
+ sound/soc/sof/topology.c          |   2 +
+ 20 files changed, 842 insertions(+), 43 deletions(-)
+ create mode 100644 sound/soc/sof/intel/lnl.c
+ create mode 100644 sound/soc/sof/intel/pci-lnl.c
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+2.39.2
 
