@@ -4,97 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17092C001DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 13:55:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE274C001DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 13:55:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D7ED827;
-	Mon,  7 Aug 2023 15:54:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D7ED827
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8867825;
+	Mon,  7 Aug 2023 15:54:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8867825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691416520;
-	bh=1B0PU6iKuGgTa3v8xog+pp7rzt8cgLPXM34mweDfHL0=;
+	s=default; t=1691416527;
+	bh=SUDghj9Oqx0ofdNnKrx0JNxVpCVDc4i/Sbmh/T7pKG0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YgpI5UnaqXveLHTQg4stqBCiOj8TbsOADEG9Rur2Qp7e7A6TucRHjGF1Nah1qpq92
-	 85dot/cP8QTtKMhAUMVOII0cbVZP2mLELq5RZOuzebak3psAgscnFuFTU2neNga6Vy
-	 S7izwUFgGe5tOysYVWeSRBxDj7oY1eNpfEpaeBoQ=
+	b=TBmekWHCfzxiK+ZCucMRRaTgSmWgtWVgwCtRf73Bk27jnYfl0tgusFi2jzTre4+eI
+	 Sh3XTCaj/1iVt1ftkJHKVxo06P41oU1buzLA//h5Kh5z7VBHsH5xIAuUgS4f0J+LEu
+	 SsE/JYPigW+xSWsKOt4bMNy0DII0fSrxP9x/ques=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C8295F80548; Mon,  7 Aug 2023 15:53:30 +0200 (CEST)
+	id 642D8F805BB; Mon,  7 Aug 2023 15:53:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 329D8F8056F;
-	Mon,  7 Aug 2023 15:53:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 228A7F805BD;
+	Mon,  7 Aug 2023 15:53:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 631C6F8051E; Mon,  7 Aug 2023 15:53:25 +0200 (CEST)
+	id E4F64F8016D; Mon,  7 Aug 2023 15:53:25 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7A280F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5BB32F80535
 	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 15:52:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A280F8016A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BB32F80535
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=ZsrKaOoD;
+ header.s=susede2_rsa header.b=iYKh8pO2;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=c6ZC+nlG
+ header.s=susede2_ed25519 header.b=W4kw11c/
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B54651FDF0;
-	Mon,  7 Aug 2023 13:52:11 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6C7171FDF4;
+	Mon,  7 Aug 2023 13:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1691416331;
+	t=1691416332;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2icgKmNFV61ZDxAVK85eTeSq6RTwbU2hfWHpU5z0lvw=;
-	b=ZsrKaOoDucxfI/lywXM9/zm3h82e3bWPIJdXJxsv54ec9OK2lVqBwS2QVP5un4yBDG3jS/
-	CDH5YNpA0xR9+6GZYlZOJG07VLksuI5f2EwqPYkVz8CZWoKQfJqcJkXlOX7mqI+4xboW7I
-	mRRYPDsan0kqxTDdI4Aj4It2LtMtbG8=
+	bh=CHyRNooG5ngGjy65JnuP96SKT9Scua7aqQ1HTrWTV9Y=;
+	b=iYKh8pO2EnvO8mxaJO2J60KhmAdz3GCR3fk8sksSM2q9d/lyoe8k9SYvH6j9yho+KSv1FS
+	AYY3w4tAllNu/4Tv7xAf0dvqkbUG1gVXAWZ08DOlLDNRqdgvmvzFJE48HhVUQ/0GXWOYE7
+	DnxG/D5M05wsB+5IUZyATQPuE6B0PqI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1691416331;
+	s=susede2_ed25519; t=1691416332;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2icgKmNFV61ZDxAVK85eTeSq6RTwbU2hfWHpU5z0lvw=;
-	b=c6ZC+nlGXc4fjRjaRS1qlh7tfwGdol4RuqaI13dZVhQi/e2JnzYX+18tiFIX6o0O/V14Ty
-	jllbft7gPvcproBw==
+	bh=CHyRNooG5ngGjy65JnuP96SKT9Scua7aqQ1HTrWTV9Y=;
+	b=W4kw11c/h4Hh2Da/oEUTKMd+qCd9QIhHD0dvmbBCE3i6ZhX/H2zoEwvQUEJ/OXkbjrOavi
+	CqzJXUBSEbsZMfBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93DC813910;
-	Mon,  7 Aug 2023 13:52:11 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 324BE13A6F;
+	Mon,  7 Aug 2023 13:52:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id SBIjIwv30GS3JwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 07 Aug 2023 13:52:11 +0000
+	id KMJfCwz30GS3JwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 07 Aug 2023 13:52:12 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Curtis Malainey <cujomalainey@chromium.org>
-Subject: [PATCH RFC 2/6] ALSA: core: Fix potential UAF by delayed kobject
- release of card_dev
-Date: Mon,  7 Aug 2023 15:52:02 +0200
-Message-Id: <20230807135207.17708-3-tiwai@suse.de>
+Subject: [PATCH RFC 5/6] ALSA: control: Reference card by ctl_dev
+Date: Mon,  7 Aug 2023 15:52:06 +0200
+Message-Id: <20230807135207.17708-7-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230807135207.17708-1-tiwai@suse.de>
 References: <20230807135207.17708-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MO3BJNYVZBK6PQAYZVNRIU6P2VEDXXSD
-X-Message-ID-Hash: MO3BJNYVZBK6PQAYZVNRIU6P2VEDXXSD
+Message-ID-Hash: YNKGXORRLSQDATKHROMKPD37LZ2UG57C
+X-Message-ID-Hash: YNKGXORRLSQDATKHROMKPD37LZ2UG57C
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -114,99 +113,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use a new refmem allocation for the card object, and fix the potential
-UAF of card object due to the race between the devres and the delayed
-kobj release.  Now the devres keeps only the card object pointer, not
-the card object itself, and the card object is unreferenced at both
-releases.
+Add the reference to the card object at control device
+initialization.  This fixes the potential UAF by the delayed kobj
+release.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/init.c | 38 ++++++++++++++++++++++----------------
- 1 file changed, 22 insertions(+), 16 deletions(-)
+ sound/core/control.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 7e7c4b8d4e11..22da438faf40 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -231,7 +231,7 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 5b9340f5cb8c..7ac077b57709 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -2395,7 +2395,7 @@ int snd_ctl_create(struct snd_card *card)
+ 	if (snd_BUG_ON(card->number < 0 || card->number >= SNDRV_CARDS))
+ 		return -ENXIO;
  
- 	if (extra_size < 0)
- 		extra_size = 0;
--	card = kzalloc(sizeof(*card) + extra_size, GFP_KERNEL);
-+	card = snd_refmem_alloc(sizeof(*card) + extra_size, NULL);
- 	if (!card)
- 		return -ENOMEM;
+-	snd_device_initialize(&card->ctl_dev, card, NULL);
++	snd_device_initialize(&card->ctl_dev, card, card);
+ 	dev_set_name(&card->ctl_dev, "controlC%d", card->number);
  
-@@ -246,7 +246,14 @@ EXPORT_SYMBOL(snd_card_new);
- 
- static void __snd_card_release(struct device *dev, void *data)
- {
--	snd_card_free(data);
-+	struct snd_card **card_p = data;
-+	struct snd_card *card;
-+
-+	if (card_p) {
-+		card = *card_p;
-+		snd_card_free(card);
-+		snd_refmem_put(card);
-+	}
- }
- 
- /**
-@@ -279,21 +286,22 @@ int snd_devm_card_new(struct device *parent, int idx, const char *xid,
- 		      struct snd_card **card_ret)
- {
- 	struct snd_card *card;
-+	struct snd_card **card_devres;
- 	int err;
- 
- 	*card_ret = NULL;
--	card = devres_alloc(__snd_card_release, sizeof(*card) + extra_size,
--			    GFP_KERNEL);
--	if (!card)
-+	card_devres = devres_alloc(__snd_card_release, sizeof(void *), GFP_KERNEL);
-+	if (!card_devres)
- 		return -ENOMEM;
--	card->managed = true;
--	err = snd_card_init(card, parent, idx, xid, module, extra_size);
--	if (err < 0) {
--		devres_free(card); /* in managed mode, we need to free manually */
--		return err;
--	}
-+	devres_add(parent, card_devres);
- 
--	devres_add(parent, card);
-+	err = snd_card_new(parent, idx, xid, module, extra_size, &card);
-+	if (err)
-+		return err;
-+
-+	card->managed = true;
-+	snd_refmem_get(card);
-+	*card_devres = card;
- 	*card_ret = card;
- 	return 0;
- }
-@@ -353,8 +361,7 @@ static int snd_card_init(struct snd_card *card, struct device *parent,
- 		mutex_unlock(&snd_card_mutex);
- 		dev_err(parent, "cannot find the slot for index %d (range 0-%i), error: %d\n",
- 			 idx, snd_ecards_limit - 1, err);
--		if (!card->managed)
--			kfree(card); /* manually free here, as no destructor called */
-+		snd_refmem_put(card); /* manually free here, as no destructor called */
- 		return err;
- 	}
- 	set_bit(idx, snd_cards_lock);		/* lock it */
-@@ -650,8 +657,7 @@ static int snd_card_do_free(struct snd_card *card)
- #endif
- 	if (card->release_completion)
- 		complete(card->release_completion);
--	if (!card->managed)
--		kfree(card);
-+	snd_refmem_put(card);
- 	return 0;
- }
- 
+ 	err = snd_device_new(card, SNDRV_DEV_CONTROL, card, &ops);
 -- 
 2.35.3
 
