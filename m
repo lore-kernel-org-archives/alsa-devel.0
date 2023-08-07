@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC8CFC001DE
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 21:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB67AC001DE
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 21:16:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD42783B;
-	Mon,  7 Aug 2023 23:15:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD42783B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7073868;
+	Mon,  7 Aug 2023 23:15:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7073868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691442952;
-	bh=7qz/wMkBZaTxQnPV20579hvjZnSrtb5lnRuYc8grnO4=;
+	s=default; t=1691442969;
+	bh=QA7kHUykPDd0YjBfngflhZUlLrAxS1GzAate3UJRT+4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kf6+kw+/4ieK/hx9h2hg8db9nbVmhhlDf4Qd4vaZF6yEVXhBwyZ+JvSyeNTb2sNAy
-	 aKG3vmaypvO9F8OYoWDJOvfp8hMtN5R0eYg47fbI4/b8Xm3qH0FXqg5Z7ddM5CEsOQ
-	 jWdq9CDYgmaQ3sdZspZ4JCEbUyykG+eVR885252k=
+	b=d5xo/QUEoxEl0/lWHsoQ8pWcyJOuhZNu8kLKF3ej26n+w6aApsS7+RUQO+2Nccpei
+	 u+9lZXhek+U6eszhi+e9Uy1Rc6XuNOeNjMYDHjTWAIki2piZlf/DO021pVySy36Yd7
+	 ieLT+hZFK3pSCi1kYuTB37+xpIYhR4wqYkjb/+m0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4D631F80624; Mon,  7 Aug 2023 23:11:10 +0200 (CEST)
+	id B8F6EF80639; Mon,  7 Aug 2023 23:11:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2649BF80623;
-	Mon,  7 Aug 2023 23:11:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D482BF80634;
+	Mon,  7 Aug 2023 23:11:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2BA0BF805C0; Mon,  7 Aug 2023 23:10:44 +0200 (CEST)
+	id ACFF3F805BB; Mon,  7 Aug 2023 23:10:44 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B1D70F8055B
-	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 23:10:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1D70F8055B
+	by alsa1.perex.cz (Postfix) with ESMTPS id CB4EEF80548
+	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 23:10:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB4EEF80548
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=esoq5eEe
+ header.s=Intel header.b=khjj8lSp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691442628; x=1722978628;
+  t=1691442625; x=1722978625;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7qz/wMkBZaTxQnPV20579hvjZnSrtb5lnRuYc8grnO4=;
-  b=esoq5eEe3AxjfEbnw666yi5b09TGVt5D922pmCkGzCi4f1/ZyzNctvqF
-   b+PvFWDU5ns/W/7fBvBqTqbRjV3pKYCqlXF2b7/fgHzZUE8mUkIgUdrFW
-   6mrQkc3L8jiFU7LNuHpFW8fNvOJA0cIpr97o8EkhW3FJMXxDDCAqifmx4
-   Zlk2OQPiAyeIbcO5GGD0jVHLRifhEzm+OctAZtjqW8NhpXmjY5OfJlF6m
-   XWRZteNjBzCPN/mmbRKd55vTU0DBQkUghViwnoRXf3lWj+fiDVeicvgFJ
-   v6IXp2LccoTLO94TEnvtf2xanUvbRRwdgcbq9cB1IvDmizItb2aK37p0u
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350244393"
+  bh=QA7kHUykPDd0YjBfngflhZUlLrAxS1GzAate3UJRT+4=;
+  b=khjj8lSpXg2vySdK23RHo163JKYVfknQWvMQxtTm1WKHW1gJZa6tYKCp
+   DpzcFD3lJYi3UwUpIS52mrqI4yy2G1+8B+/CdoYZZah1qp5pSZE17QTX8
+   H754vmcolFJsK8cga47hcgmZiT1EQVhPWdp75zu6yBXaYOwMtGsqseJFO
+   Dfrcgz8ZYqZJ7NOzMYGaTmZVNcyVpvjKi1ZcKZKc6nUvU1J32tTQNV/R3
+   csaOSCcTh3rjQWOQvzbVZwixK9PNqvtNoICgRs4gbKhFSar/LTpYVnop5
+   e0SooKsL6o/LUKtx06BK/LAu0p2kuzl54PqWaXBcqLBsvy8r9gih0fiER
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350244359"
 X-IronPort-AV: E=Sophos;i="6.01,263,1684825200";
-   d="scan'208";a="350244393"
+   d="scan'208";a="350244359"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 14:10:19 -0700
+ 07 Aug 2023 14:10:16 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="796465259"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="796465237"
 X-IronPort-AV: E=Sophos;i="6.01,263,1684825200";
-   d="scan'208";a="796465259"
+   d="scan'208";a="796465237"
 Received: from hweelee-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.209.181.215])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 14:10:19 -0700
+ 07 Aug 2023 14:10:15 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
 	vkoul@kernel.org,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH 18/20] ASoC: SOF: Intel: hda-dai-ops: reset device count for
- SoundWire DAIs
-Date: Mon,  7 Aug 2023 16:09:57 -0500
-Message-Id: <20230807210959.506849-19-pierre-louis.bossart@linux.intel.com>
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Rander Wang <rander.wang@intel.com>
+Subject: [PATCH 12/20] ASoC: SOF: Intel: hda-dai-ops: only allocate/release
+ streams for first CPU DAI
+Date: Mon,  7 Aug 2023 16:09:51 -0500
+Message-Id: <20230807210959.506849-13-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230807210959.506849-1-pierre-louis.bossart@linux.intel.com>
 References: <20230807210959.506849-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 22J7VFTCQOLYEFHSLL3JUW43XWNDW73P
-X-Message-ID-Hash: 22J7VFTCQOLYEFHSLL3JUW43XWNDW73P
+Message-ID-Hash: WQW4WAZZQBEWCGOXQIYVDOVNG3C5JDAJ
+X-Message-ID-Hash: WQW4WAZZQBEWCGOXQIYVDOVNG3C5JDAJ
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,62 +103,66 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The solution used before LunarLake relies on a 'Multi-gateway'
-firmware configuration. This is no longer needed with the DMA hardware
-handling multiple links directly. To avoid adding a platform-specific
-quirk in the generic IPC4 code, this patch resets the device count
-when fetching the stream context.
+When we have multiple CPU DAIs in a dailink, typically for SoundWire
+aggregated solutions with amplifiers on multiple links, we only want
+to allocate one HDaudio stream_tag. The simplest solution is to
+allocate the hext_stream/stream_tag for the DAI with index 0 in the
+dailink, and reuse the same stream for all other CPU DAIs.
 
-Suggested-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+This assumption relies on serialization of DAIs by the ASoC core,
+where all CPU DAIs are handled in a loop.
+
+The stream release follows the same idea of releasing the tag for the
+first DAI only. Ideally we would want the loop to be handled in
+reverse-order to summetry, but there is no risk of reusing a
+stream_tag which is no longer valid.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
- sound/soc/sof/intel/hda-dai-ops.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/hda-dai-ops.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/sof/intel/hda-dai-ops.c b/sound/soc/sof/intel/hda-dai-ops.c
-index 4ae211141c40..ae4a5aa73bfc 100644
+index b66886244f24..9a6d995a8453 100644
 --- a/sound/soc/sof/intel/hda-dai-ops.c
 +++ b/sound/soc/sof/intel/hda-dai-ops.c
-@@ -434,6 +434,28 @@ static int hda_ipc4_post_trigger(struct snd_sof_dev *sdev, struct snd_soc_dai *c
- 	return ret;
+@@ -145,9 +145,17 @@ static struct hdac_ext_stream *hda_assign_hext_stream(struct snd_sof_dev *sdev,
+ 						      struct snd_soc_dai *cpu_dai,
+ 						      struct snd_pcm_substream *substream)
+ {
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *dai;
+ 	struct hdac_ext_stream *hext_stream;
+ 
+-	hext_stream = hda_link_stream_assign(sof_to_bus(sdev), substream);
++	/* only allocate a stream_tag for the first DAI in the dailink */
++	dai = asoc_rtd_to_cpu(rtd, 0);
++	if (dai == cpu_dai)
++		hext_stream = hda_link_stream_assign(sof_to_bus(sdev), substream);
++	else
++		hext_stream = snd_soc_dai_get_dma_data(dai, substream);
++
+ 	if (!hext_stream)
+ 		return NULL;
+ 
+@@ -160,9 +168,14 @@ static void hda_release_hext_stream(struct snd_sof_dev *sdev, struct snd_soc_dai
+ 				    struct snd_pcm_substream *substream)
+ {
+ 	struct hdac_ext_stream *hext_stream = hda_get_hext_stream(sdev, cpu_dai, substream);
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *dai;
+ 
++	/* only release a stream_tag for the first DAI in the dailink */
++	dai = asoc_rtd_to_cpu(rtd, 0);
++	if (dai == cpu_dai)
++		snd_hdac_ext_stream_release(hext_stream, HDAC_EXT_STREAM_TYPE_LINK);
+ 	snd_soc_dai_set_dma_data(cpu_dai, substream, NULL);
+-	snd_hdac_ext_stream_release(hext_stream, HDAC_EXT_STREAM_TYPE_LINK);
  }
  
-+static struct hdac_ext_stream *sdw_hda_ipc4_get_hext_stream(struct snd_sof_dev *sdev,
-+							    struct snd_soc_dai *cpu_dai,
-+							    struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(cpu_dai, substream->stream);
-+	struct snd_sof_widget *swidget = w->dobj.private;
-+	struct snd_sof_dai *dai = swidget->private;
-+	struct sof_ipc4_copier *ipc4_copier = dai->private;
-+	struct sof_ipc4_alh_configuration_blob *blob;
-+
-+	blob = (struct sof_ipc4_alh_configuration_blob *)ipc4_copier->copier_config;
-+
-+	/*
-+	 * Starting with ACE_2_0, re-setting the device_count is mandatory to avoid using
-+	 * the multi-gateway firmware configuration. The DMA hardware can take care of
-+	 * multiple links without needing any firmware assistance
-+	 */
-+	blob->alh_cfg.device_count = 1;
-+
-+	return hda_ipc4_get_hext_stream(sdev, cpu_dai, substream);
-+}
-+
- static const struct hda_dai_widget_dma_ops hda_ipc4_dma_ops = {
- 	.get_hext_stream = hda_ipc4_get_hext_stream,
- 	.assign_hext_stream = hda_assign_hext_stream,
-@@ -475,7 +497,7 @@ static const struct hda_dai_widget_dma_ops dmic_ipc4_dma_ops = {
- };
- 
- static const struct hda_dai_widget_dma_ops sdw_ipc4_dma_ops = {
--	.get_hext_stream = hda_ipc4_get_hext_stream,
-+	.get_hext_stream = sdw_hda_ipc4_get_hext_stream,
- 	.assign_hext_stream = hda_assign_hext_stream,
- 	.release_hext_stream = hda_release_hext_stream,
- 	.setup_hext_stream = hda_setup_hext_stream,
+ static void hda_setup_hext_stream(struct snd_sof_dev *sdev, struct hdac_ext_stream *hext_stream,
 -- 
 2.39.2
 
