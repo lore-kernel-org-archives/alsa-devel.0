@@ -4,37 +4,37 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C8ADC001B0
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 10:39:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9674AC001B0
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 10:39:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBC1D83B;
-	Tue,  8 Aug 2023 12:38:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBC1D83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB3EC839;
+	Tue,  8 Aug 2023 12:38:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB3EC839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691491163;
-	bh=owskpgSKDNkTj9st+Su/rnwI2JZB2NLJjtXl3WU5ZJk=;
+	s=default; t=1691491183;
+	bh=1umtv/RgOgL9ZUHVFB9Xm3aCN8rmiVHmAfjmnrmv4nU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=l6+3cJoDbeUySdAjOWBuGYTs7g1WhwtlNX2bOtGemVNsMx9gxW6FxvKD8f8lHoAK5
-	 vXXMC9KFmW8GW1jPv8g/mBCCLf9K++aGSyOWIzQoiFoPIu/nlOafUWiaSfyArOiuMB
-	 UJ5q6Slya9xrPLVDOZQw/IZAyHTQXZx6I/9Fy6dA=
+	b=gtUWVi5aBURmrG2qDpbdyxaSp8Klp6iUoIBkZpYbFJX1EozxJxGLzLFWd3izlI/tp
+	 CUHK7zQvi5s1jvv+I9b9ml8uL2nTAXMRn16rrNUcVyHtseOyLzKXQnEurAP02fsOzt
+	 P0Y7Tnv0quURTFjAjtQEkmbsJMmWhZAJ1OhGR04U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11B8FF805F9; Tue,  8 Aug 2023 12:35:55 +0200 (CEST)
+	id 2C7C6F80600; Tue,  8 Aug 2023 12:35:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B869FF805F4;
-	Tue,  8 Aug 2023 12:35:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAF5CF805F6;
+	Tue,  8 Aug 2023 12:35:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3A1A3F8016D; Mon,  7 Aug 2023 11:01:20 +0200 (CEST)
+	id EEDF3F80520; Mon,  7 Aug 2023 11:01:29 +0200 (CEST)
 Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DAF8EF80116;
-	Mon,  7 Aug 2023 11:01:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAF8EF80116
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0ABA9F8016B;
+	Mon,  7 Aug 2023 11:01:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ABA9F8016B
 From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: Maarten Lankhorst <dev@lankhorst.se>,
@@ -52,9 +52,9 @@ Cc: Maarten Lankhorst <dev@lankhorst.se>,
 	linux-kernel@vger.kernel.org,
 	sound-open-firmware@alsa-project.org,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH v3 1/9] ALSA: hda/intel: Fix error handling in azx_probe()
-Date: Mon,  7 Aug 2023 11:00:37 +0200
-Message-Id: <20230807090045.198993-2-maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v3 2/9] ALSA: hda/i915: Allow override of gpu binding.
+Date: Mon,  7 Aug 2023 11:00:38 +0200
+Message-Id: <20230807090045.198993-3-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
 References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
@@ -66,15 +66,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: GF3JAKHV4J4YPN4JTJQXTGRJP3FEPN5O
-X-Message-ID-Hash: GF3JAKHV4J4YPN4JTJQXTGRJP3FEPN5O
-X-Mailman-Approved-At: Tue, 08 Aug 2023 10:35:26 +0000
+Message-ID-Hash: HLEHJI62GAVL2BZCU2KFW5CSQNMVBLU7
+X-Message-ID-Hash: HLEHJI62GAVL2BZCU2KFW5CSQNMVBLU7
+X-Mailman-Approved-At: Tue, 08 Aug 2023 10:35:40 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GF3JAKHV4J4YPN4JTJQXTGRJP3FEPN5O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HLEHJI62GAVL2BZCU2KFW5CSQNMVBLU7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,28 +83,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add missing pci_set_drv to NULL call on error.
+Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
+video_firmware_drivers_only(). This can be used as a first
+approximation on whether i915 will be available. It's safe to use as
+this is only built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
+
+It's not completely fool proof, as you can boot with "nomodeset
+i915.modeset=1" to make i915 load regardless, or use
+"i915.force_probe=!*" to never load i915, but the common case of
+booting with nomodeset to disable all GPU drivers this will work as
+intended.
+
+Because of this, we add an extra module parameter,
+snd_hda_core.gpu_bind that can be used to signal users intent.
+-1 follows nomodeset, 0 disables binding, 1 forces wait/-EPROBE_DEFER
+on binding.
 
 Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/pci/hda/hda_intel.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/hda/hdac_i915.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index ef831770ca7d..0d2d6bc6c75e 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2188,6 +2188,7 @@ static int azx_probe(struct pci_dev *pci,
- 	return 0;
+diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+index 161a9711cd63..c32709fa4115 100644
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -11,6 +11,13 @@
+ #include <sound/hda_i915.h>
+ #include <sound/hda_register.h>
  
- out_free:
-+	pci_set_drvdata(pci, NULL);
- 	snd_card_free(card);
- 	return err;
- }
++#include <video/nomodeset.h>
++
++static int gpu_bind = -1;
++module_param(gpu_bind, int, 0644);
++MODULE_PARM_DESC(gpu_bind, "Whether to bind sound component to GPU "
++			   "(1=always, 0=never, -1=on nomodeset(default))");
++
+ #define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
+ 				((pci)->device == 0x0c0c) || \
+ 				((pci)->device == 0x0d0c) || \
+@@ -121,6 +128,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
+ {
+ 	struct pci_dev *display_dev = NULL;
+ 
++	if (!gpu_bind || (gpu_bind < 0 && video_firmware_drivers_only()))
++		return false;
++
+ 	for_each_pci_dev(display_dev) {
+ 		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
+ 		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
 -- 
 2.39.2
 
