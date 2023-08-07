@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CE5EC04A6A
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 14:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55CDAC001DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 14:59:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95B7F86F;
-	Mon,  7 Aug 2023 16:58:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95B7F86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79C69AE9;
+	Mon,  7 Aug 2023 16:58:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79C69AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691420364;
-	bh=lK5NaO7oefA5g11ZXsxw+6NSKHBHesJlzzBUmcoECcY=;
+	s=default; t=1691420375;
+	bh=JqeztFeqeIb8u0ximbuaFAtMKDPtvXdzUyTKSrRS9Kk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=H9Daq8tivY9aU4C2jCseRLl0mYq7W6QtdDWG4/Vd7Mz4KC+suRa1Ztq2JvdvlOaID
-	 nq0F0FYuhB3SvT6u7SQd8VhLBWLF954PwJqq14JVl7l6z9Y2LDC4vSa9WFNgsQT+Ck
-	 9SCc5MGG0KP5EdXhUfO7YJPcnF8MAUq7sCXtZMe0=
+	b=YR0Jnjqp06u5ICeanIw0tK3+5Fgtmv+bX4+5L0vVBP5ngw8nm5Ql4Ls35wMCDduJT
+	 AVhZnqrL69ipte4NOU3L7qoE4kqcxL9JVtVnq/Zeba9OFiBXbX5pKjpIdr74jZ4rKO
+	 AtWt8e0p3DhuEhA2XpdRrh1V1e4u3RLfj81pGWIg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B043EF805AD; Mon,  7 Aug 2023 16:57:02 +0200 (CEST)
+	id EB729F805BA; Mon,  7 Aug 2023 16:57:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B644F805AC;
-	Mon,  7 Aug 2023 16:57:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13546F805B3;
+	Mon,  7 Aug 2023 16:57:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C3ADF80570; Mon,  7 Aug 2023 16:56:54 +0200 (CEST)
+	id 02F81F8057B; Mon,  7 Aug 2023 16:56:56 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AB7B7F8051E;
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6B340F8016A;
 	Mon,  7 Aug 2023 16:56:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB7B7F8051E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B340F8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=YZCOkCvf
+ header.s=Intel header.b=S6yh2aNW
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691420210; x=1722956210;
+  t=1691420209; x=1722956209;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=lK5NaO7oefA5g11ZXsxw+6NSKHBHesJlzzBUmcoECcY=;
-  b=YZCOkCvfpIXFhs90SuMHPyGRxFczU+4L10l1jbJwkweAP5Wczg6mGKWT
-   ElqeHhNt1D7j8XTma9Tq7VoFzfihaN883Ztfvd1ahIN2pOEdPSFC+1mlk
-   rj0Ti+JhOo9BPk+PDHaw+uMV8OwarOVU5r/rBnlcrdtJTdE01xFyHkI9S
-   FfIXeCYkQy6LfA9pWbDMS0BQKtX2yb2fbfT4Y9mMT4N1dkdKCAeb6i6Jc
-   DFO7WQP9QD+8QqDG/vJ+zEXDEhEUlw/xdu3/QgmO7HD2BgeJfbOI5J62u
-   C99CcUTqcrRJ5z6r4dGU6LfBK+hD2vWWYWpaVN+luK8n6b2YWAVYI6I6V
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434410622"
+  bh=JqeztFeqeIb8u0ximbuaFAtMKDPtvXdzUyTKSrRS9Kk=;
+  b=S6yh2aNWwnqd+h9t9Ri3qt6KDKFyRvbPvSg8JPCvVmcZ6svvtn49oxpf
+   xwMKQDY6XcrQwsbqavDo3V5glBkgnBNLRiDRVhFp66uovA4lN0vEktFnA
+   /WkXJbplntO5orKCvYKJZGn5lgekB3JyfdFA1tB2c7+HiOFJMT3DZjrab
+   4oxrZCIAz4FaZyGwlo7lAyeD00uebZjtLppFL7Qf3YKyrl4OgSCqbyZnr
+   +YUbJyh5G2n3gFINH4bDZgZQ+ynXIvqfPm+rsLUnk02SP8AyYOLTQCioL
+   RYp9nU/98zRouvjlO2mncs/dKH9ux38NEhWRxa0qI4Ti6EXL+7nAQK7Yy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434410610"
 X-IronPort-AV: E=Sophos;i="6.01,262,1684825200";
-   d="scan'208";a="434410622"
+   d="scan'208";a="434410610"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
   by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 07:56:42 -0700
+ 07 Aug 2023 07:56:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1061623884"
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1061623880"
 X-IronPort-AV: E=Sophos;i="6.01,262,1684825200";
-   d="scan'208";a="1061623884"
+   d="scan'208";a="1061623880"
 Received: from hweelee-mobl.amr.corp.intel.com (HELO [10.209.181.215])
  ([10.209.181.215])
   by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Aug 2023 07:56:41 -0700
-Message-ID: <880a953d-bc81-5f00-7ad6-bbcf6eaac856@linux.intel.com>
-Date: Mon, 7 Aug 2023 09:17:43 -0500
+ 07 Aug 2023 07:56:39 -0700
+Message-ID: <e710e29b-73a3-735e-6c78-9fd4829a25cc@linux.intel.com>
+Date: Mon, 7 Aug 2023 09:13:57 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 7/9] ALSA: hda/intel: Move snd_hdac_i915_init to before
- probe_work.
+Subject: Re: [PATCH v3 5/9] ASoC: Intel: avs: Move snd_hdac_i915_init to
+ before probe_work.
 Content-Language: en-US
 To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
  alsa-devel@alsa-project.org
@@ -85,13 +85,13 @@ Cc: Maarten Lankhorst <dev@lankhorst.se>, Jaroslav Kysela <perex@perex.cz>,
  <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
  linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
 References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
- <20230807090045.198993-8-maarten.lankhorst@linux.intel.com>
+ <20230807090045.198993-6-maarten.lankhorst@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230807090045.198993-8-maarten.lankhorst@linux.intel.com>
+In-Reply-To: <20230807090045.198993-6-maarten.lankhorst@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: BWLRBVL7KK72YBVAIREP6JFHWXFDE3R5
-X-Message-ID-Hash: BWLRBVL7KK72YBVAIREP6JFHWXFDE3R5
+Message-ID-Hash: G7FTCM6Y3R6ZGLHWWPIQRWAMDPM4CH7I
+X-Message-ID-Hash: G7FTCM6Y3R6ZGLHWWPIQRWAMDPM4CH7I
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -115,21 +115,58 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 8/7/23 04:00, Maarten Lankhorst wrote:
 > Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-> the snd_hdac_i915_init into a workqueue.
+> the snd_hdac_i915_init into a workqueue. It's likely the whole workqueue
+> can be destroyed, but I don't have the means to test this.
 > 
-> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-> probe function.
+> Removing the workqueue would simplify init even further, but is left
+> as exercise for the reviewer.
 > 
 > Changes since v1:
-> - Use dev_err_probe()
-> - Don't move probed_devs bitmap unnecessarily. (tiwai)
-> - Move snd_hdac_i915_init slightly upward, to ensure
->   it's always initialised before vga-switcheroo is called.
+> - Rename error label.
 
-same issue with changes.
+same issue with changes, they need to be ...
 > 
 > Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Acked-by: Mark Brown <broonie@kernel.org>
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>> ---
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+...here
 
+>  sound/soc/intel/avs/core.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+> index 3311a6f14200..64e7a4e650a8 100644
+> --- a/sound/soc/intel/avs/core.c
+> +++ b/sound/soc/intel/avs/core.c
+> @@ -191,10 +191,6 @@ static void avs_hda_probe_work(struct work_struct *work)
+>  
+>  	pm_runtime_set_active(bus->dev); /* clear runtime_error flag */
+>  
+> -	ret = snd_hdac_i915_init(bus, true);
+> -	if (ret < 0)
+> -		dev_info(bus->dev, "i915 init unsuccessful: %d\n", ret);
+> -
+>  	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+>  	avs_hdac_bus_init_chip(bus, true);
+>  	avs_hdac_bus_probe_codecs(bus);
+> @@ -465,10 +461,19 @@ static int avs_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
+>  	pci_set_drvdata(pci, bus);
+>  	device_disable_async_suspend(dev);
+>  
+> +	ret = snd_hdac_i915_init(bus, false);
+> +	if (ret == -EPROBE_DEFER)
+> +		goto err_i915_init;
+> +	else if (ret < 0)
+> +		dev_info(bus->dev, "i915 init unsuccessful: %d\n", ret);
+> +
+>  	schedule_work(&adev->probe_work);
+>  
+>  	return 0;
+>  
+> +err_i915_init:
+> +	pci_clear_master(pci);
+> +	pci_set_drvdata(pci, NULL);
+>  err_acquire_irq:
+>  	snd_hdac_bus_free_stream_pages(bus);
+>  	snd_hdac_ext_stream_free_all(bus);
