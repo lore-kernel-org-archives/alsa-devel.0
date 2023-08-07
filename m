@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27E96C001DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 13:54:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DCB0C04A6A
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Aug 2023 13:55:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37A71839;
-	Mon,  7 Aug 2023 15:53:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37A71839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6808BAEA;
+	Mon,  7 Aug 2023 15:54:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6808BAEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691416489;
-	bh=RUFAT4WAzz9Iy8/CWg3K/H+kVUk5mLFxTI0IZWVm/Eo=;
+	s=default; t=1691416502;
+	bh=F5UBGA3uNyhZW/Snbi6YieWUBFm+/c1lKKGicfqt0zo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jWctMl2CKfwXiBoyAapJ/1+57SnMK4cGs3t3SuFTVWHF7NgVnrE/EZlCKIFJ+DSSB
-	 ExMqH0rBEHo/agAoTZaVq3E054Culg2KrYvQw12j0noreiEJpl6gPwbCRac8s2L5Fr
-	 tFFsTwYAF1bYQFJ9VzM25v+R7RCcwd6v8MsH3kS4=
+	b=Np995qjPDBGeF1tAvg7FONqRjt7NiQtMVpKI5OEI4sIGoVoNZHFhL4EiqdehGrwbF
+	 hJOMxujokPlawp+JZnrfQ/hiWHsc34sDyDyqUBVlcNyZQr1y9z9DogIGizGXBwZbGd
+	 UeG6JFSPoFH0bk2tf2JC9KcNMIgDzdIgMC4v7Erw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C112BF805AC; Mon,  7 Aug 2023 15:52:30 +0200 (CEST)
+	id 82918F80553; Mon,  7 Aug 2023 15:53:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47CEDF805AC;
-	Mon,  7 Aug 2023 15:52:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF3E4F8051E;
+	Mon,  7 Aug 2023 15:53:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DF175F80579; Mon,  7 Aug 2023 15:52:25 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id F2BAEF8051E; Mon,  7 Aug 2023 15:53:24 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 63877F8053B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 312C4F80534
 	for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2023 15:52:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63877F8053B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 312C4F80534
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=gf0q+oaa;
+ header.s=susede2_rsa header.b=BR35uX5Y;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=NbcPY6Mu
+ header.s=susede2_ed25519 header.b=Xe80AthX
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2FBF31FDF3;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A2AF721A84;
 	Mon,  7 Aug 2023 13:52:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
@@ -56,43 +56,43 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pFPF5Nrw2GKNzuqgeRhsZPYtcyFfU6WKf4YaXth90Ak=;
-	b=gf0q+oaaQhVuGC1pP5Q9zCr7GphHN0nICkoeH6FVD6MK1ZGQGpsDwhJM00cUyuZrddfKcB
-	jf0LXkLgGKFCnxfQPHWpQKkVH/f5cTT74B98tNihxj7iTFBrOSRqHyltH+1q+FY8nyYG2E
-	cLgTdu+F0i7GFB1Y2Qi0bgv1ALv6lF4=
+	bh=xeejrhn4dqDZnwj0CNviEVNLWOu4ithaovGao1w8l9E=;
+	b=BR35uX5YXGQ8J80QqgK5q/x99pkswlYyfzG9rB3L8jXXyX587m0EbMry8F1y71haFJwlN6
+	hXNitoIYmA7Q/nyTHiMsBsZpZe8h3/0XAB/VKHugtY2iI/1x3uPMthswq+QxsjcDGZHVxS
+	WiloGmwppOMyL48V73vJuSpahOdzFLg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1691416332;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pFPF5Nrw2GKNzuqgeRhsZPYtcyFfU6WKf4YaXth90Ak=;
-	b=NbcPY6MucNkkIAZiY6YeOxHkUwTQka4OzHRiEqn2lqRH/8fE0efaC09Ff2YB7sLmNWmHMv
-	RMoqJ1N37BC5weBg==
+	bh=xeejrhn4dqDZnwj0CNviEVNLWOu4ithaovGao1w8l9E=;
+	b=Xe80AthXLpNhXF2A3AxTVq5mA9Qe4mWxlMSIgKeCoxVU0AmqAyUl/OvRluYgFLMg+DPHh3
+	UyNDphozMjFsMAAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D1C413910;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6F2DA13910;
 	Mon,  7 Aug 2023 13:52:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id UL9IAgz30GS3JwAAMHmgww
+	id GGM4Ggz30GS3JwAAMHmgww
 	(envelope-from <tiwai@suse.de>); Mon, 07 Aug 2023 13:52:12 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Curtis Malainey <cujomalainey@chromium.org>
-Subject: [PATCH RFC 4/6] ALSA: pcm: Release memory with reference
-Date: Mon,  7 Aug 2023 15:52:05 +0200
-Message-Id: <20230807135207.17708-6-tiwai@suse.de>
+Subject: [PATCH RFC 6/6] ALSA: compress: Reference card by the device
+Date: Mon,  7 Aug 2023 15:52:07 +0200
+Message-Id: <20230807135207.17708-8-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230807135207.17708-1-tiwai@suse.de>
 References: <20230807135207.17708-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 5KA3H3UCICMUFGB2E35UMH3YL4OQ32MG
-X-Message-ID-Hash: 5KA3H3UCICMUFGB2E35UMH3YL4OQ32MG
+Message-ID-Hash: HFNJGOGYD7BKKWNX2UQBZ2E47JXXKSGY
+X-Message-ID-Hash: HFNJGOGYD7BKKWNX2UQBZ2E47JXXKSGY
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -112,46 +112,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use refmem allocation for the PCM object that holds two PCM devices
-(for playback and capture).  This fixes the UAF bug by the delayed
-kobj release.
+Add the reference to the card object at compress device
+initialization.  This fixes the potential UAF by the delayed kobj
+release.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/core/compress_offload.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 461a10cc0db9..1e96437f3f0e 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -650,7 +650,7 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
- 	if (!substream_count)
- 		return 0;
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index d91fa8925cde..971f6d9f5906 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -1189,7 +1189,7 @@ int snd_compress_new(struct snd_card *card, int device,
  
--	snd_device_initialize(&pstr->dev, pcm->card, NULL);
-+	snd_device_initialize(&pstr->dev, pcm->card, pcm);
- 	pstr->dev.groups = pcm_dev_attr_groups;
- 	pstr->dev.type = &pcm_dev_type;
- 	dev_set_name(&pstr->dev, "pcmC%iD%i%c", pcm->card->number, pcm->device,
-@@ -721,7 +721,7 @@ static int _snd_pcm_new(struct snd_card *card, const char *id, int device,
- 		return -ENXIO;
- 	if (rpcm)
- 		*rpcm = NULL;
--	pcm = kzalloc(sizeof(*pcm), GFP_KERNEL);
-+	pcm = snd_refmem_alloc(sizeof(*pcm), card);
- 	if (!pcm)
- 		return -ENOMEM;
- 	pcm->card = card;
-@@ -872,7 +872,7 @@ static int snd_pcm_free(struct snd_pcm *pcm)
- 	snd_pcm_lib_preallocate_free_for_all(pcm);
- 	snd_pcm_free_stream(&pcm->streams[SNDRV_PCM_STREAM_PLAYBACK]);
- 	snd_pcm_free_stream(&pcm->streams[SNDRV_PCM_STREAM_CAPTURE]);
--	kfree(pcm);
-+	snd_refmem_put(pcm);
- 	return 0;
- }
+ 	snd_compress_set_id(compr, id);
  
+-	snd_device_initialize(&compr->dev, card, NULL);
++	snd_device_initialize(&compr->dev, card, card);
+ 	dev_set_name(&compr->dev, "comprC%iD%i", card->number, device);
+ 
+ 	ret = snd_device_new(card, SNDRV_DEV_COMPRESS, compr, &ops);
 -- 
 2.35.3
 
